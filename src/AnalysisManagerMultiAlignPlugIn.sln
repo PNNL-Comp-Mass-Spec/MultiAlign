@@ -1,0 +1,19 @@
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{FD463EF6-5853-41AB-B4A3-0CF1CDC00E09}") = "AnalysisManagerMultiAlignPlugIn", "AnalysisManagerMultiAlignPlugIn.vbproj", "{3EE407DC-C7B7-41A3-8885-D8F058E70F85}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3EE407DC-C7B7-41A3-8885-D8F058E70F85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3EE407DC-C7B7-41A3-8885-D8F058E70F85}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3EE407DC-C7B7-41A3-8885-D8F058E70F85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3EE407DC-C7B7-41A3-8885-D8F058E70F85}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

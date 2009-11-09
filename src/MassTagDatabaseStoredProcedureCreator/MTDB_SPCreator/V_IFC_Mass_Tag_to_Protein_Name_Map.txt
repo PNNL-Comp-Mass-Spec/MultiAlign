@@ -1,0 +1,20 @@
+ALTER PROCEDURE dbo.V_IFC_Mass_Tag_to_Protein_Name_Map
+
+AS    
+  SELECT 
+	MTPM.Mass_Tag_ID,
+	Prot.Ref_ID AS Internal_Ref_ID,
+	Prot.Protein_DB_ID,
+	Prot.External_Reference_ID,
+	Prot.External_Protein_ID,
+	Prot.Reference, 
+	Prot.Description, 
+	Prot.Protein_Residue_Count,
+	Prot.Monoisotopic_Mass
+  FROM 
+	T_Mass_Tag_to_Protein_Map AS MTPM
+	INNER JOIN 
+		T_Proteins AS Prot 
+	ON 
+		MTPM.Ref_ID=Prot.Ref_ID;
+

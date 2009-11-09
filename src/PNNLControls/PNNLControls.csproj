@@ -1,0 +1,676 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectType>Local</ProjectType>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{9409DE9B-F3F0-41AA-95F5-8BFD525F5669}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ApplicationIcon>
+    </ApplicationIcon>
+    <AssemblyKeyContainerName>
+    </AssemblyKeyContainerName>
+    <AssemblyName>PNNLControls</AssemblyName>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+    <DefaultClientScript>JScript</DefaultClientScript>
+    <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
+    <DefaultTargetSchema>IE50</DefaultTargetSchema>
+    <DelaySign>false</DelaySign>
+    <OutputType>Library</OutputType>
+    <RootNamespace>PNNLControls</RootNamespace>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <StartupObject>
+    </StartupObject>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <DebugSymbols>true</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <NoWarn>
+    </NoWarn>
+    <Optimize>false</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <DebugType>full</DebugType>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>TRACE</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <DebugSymbols>false</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <NoWarn>
+    </NoWarn>
+    <Optimize>true</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <DebugType>none</DebugType>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release_32Bit|AnyCPU' ">
+    <OutputPath>bin\Release_32Bit\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <BaseAddress>285212672</BaseAddress>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Optimize>true</Optimize>
+    <DebugType>
+    </DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release_64Bit|AnyCPU' ">
+    <OutputPath>bin\Release_64Bit\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <BaseAddress>285212672</BaseAddress>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Optimize>true</Optimize>
+    <DebugType>
+    </DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AgentObjects, Version=1.5.0.0, Culture=neutral">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Help\AgentObjects.dll</HintPath>
+    </Reference>
+    <Reference Include="AgentServerObjects, Version=2.0.0.0, Culture=neutral">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Help\AgentServerObjects.dll</HintPath>
+    </Reference>
+    <Reference Include="CrystalDecisions.ReportSource, Version=10.2.3600.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
+    <Reference Include="CrystalDecisions.Shared, Version=10.2.3600.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
+    <Reference Include="CrystalDecisions.Windows.Forms, Version=10.2.3600.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
+    <Reference Include="mscorcfg">
+      <Name>mscorcfg</Name>
+    </Reference>
+    <Reference Include="System">
+      <Name>System</Name>
+    </Reference>
+    <Reference Include="System.Data">
+      <Name>System.Data</Name>
+    </Reference>
+    <Reference Include="System.Data.SQLite, Version=1.0.65.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=x86" />
+    <Reference Include="System.Design">
+      <Name>System.Design</Name>
+    </Reference>
+    <Reference Include="System.DirectoryServices">
+      <Name>System.DirectoryServices</Name>
+    </Reference>
+    <Reference Include="System.Drawing">
+      <Name>System.Drawing</Name>
+    </Reference>
+    <Reference Include="System.Messaging">
+      <Name>System.Messaging</Name>
+    </Reference>
+    <Reference Include="System.ServiceProcess">
+      <Name>System.ServiceProcess</Name>
+    </Reference>
+    <Reference Include="System.Web">
+      <Name>System.Web</Name>
+    </Reference>
+    <Reference Include="System.Web.Services">
+      <Name>System.Web.Services</Name>
+    </Reference>
+    <Reference Include="System.Windows.Forms">
+      <Name>System.Windows.Forms</Name>
+    </Reference>
+    <Reference Include="System.Xml">
+      <Name>System.XML</Name>
+    </Reference>
+    <ProjectReference Include="..\ExternalControls\ExternalControls.csproj">
+      <Project>{46C6D9CE-672F-4491-BF67-AA3F8DC811B7}</Project>
+      <Name>ExternalControls</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Data\ApplicationClipboard.cs" />
+    <Compile Include="Data\ClipboardMetafileHelper.cs" />
+    <Compile Include="Data\clsCacheArrayBase.cs" />
+    <Compile Include="Data\clsDataTableBase.cs" />
+    <Compile Include="Data\clsGroup.cs" />
+    <Compile Include="Data\clsPair.cs" />
+    <Compile Include="Data\clsSeries.cs" />
+    <Compile Include="Data\clsSeriesCollection.cs" />
+    <Compile Include="Data\clsSQLiteCacheArray.cs" />
+    <Compile Include="Data\clsTagGroup.cs" />
+    <Compile Include="Data\ctlDataFactorValueAssignment.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Data\ctlGroupDefine.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Data\ctlGroupMembership.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Data\ctlSeriesSelection.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Data\IntRangeSelector.cs" />
+    <Compile Include="Data\Range.cs" />
+    <Compile Include="Data\RangeSelectDataGridTextBoxColumnStyle.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Data\RangeSelectGrid.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Data\SelectionRangeCollection.cs" />
+    <Compile Include="Diagnostics\HiPerfTimer.cs" />
+    <Compile Include="Drawing\Axes\ctlSingleAxis.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Drawing\Axes\SingleAxis.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Drawing\BitmapTools.cs" />
+    <Compile Include="Drawing\Charting\ChartDesignTime.cs" />
+    <Compile Include="Drawing\Charting\ChartEvents.cs" />
+    <Compile Include="Drawing\Charting\ChartLayout.cs" />
+    <Compile Include="Drawing\Charting\ChartLegend.cs" />
+    <Compile Include="Drawing\Charting\ChartMarker.cs" />
+    <Compile Include="Drawing\Charting\ChartZoomHandler.cs" />
+    <Compile Include="Drawing\Charting\classLinearPointFilter.cs" />
+    <Compile Include="Drawing\Charting\classPointFilter.cs" />
+    <Compile Include="Drawing\Charting\clsMargins.cs" />
+    <Compile Include="Drawing\Charting\ctlChartBase.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Drawing\Charting\ctlHeatChart.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Drawing\Charting\ctlLineChart.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Drawing\Charting\ctlScatterChart.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Drawing\Charting\formLinearPointFilter.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Drawing\Charting\formLinearPointFilter.Designer.cs">
+      <DependentUpon>formLinearPointFilter.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Drawing\Charting\frmChartTitlesEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Drawing\Color\clsColorIterator.cs" />
+    <Compile Include="Drawing\Color\ColorInterpolater.cs" />
+    <Compile Include="Drawing\Color\pnlColorInterpolationEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Drawing\Color\pnlColorInterpolationViewer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Drawing\frmSaveDPI.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Drawing\Images\IconUtils.cs" />
+    <Compile Include="Drawing\Images\ImageCollection.cs" />
+    <Compile Include="Drawing\Images\ImageCollectionEditor.cs" />
+    <Compile Include="Drawing\Images\ImagesList.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Drawing\Labels\clsLabelAttributes.cs" />
+    <Compile Include="Drawing\Labels\clsLabelCollection.cs" />
+    <Compile Include="Drawing\Labels\clsLabelItemEX.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Drawing\Labels\clsPeakLabeler.cs" />
+    <Compile Include="Drawing\Labels\ctlHierarchalLabel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Drawing\Labels\ctlHLabelLevelProperties.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Drawing\Labels\ctlLabelEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Drawing\Labels\ctlLabelItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Drawing\Labels\frmHLabelProperties.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Drawing\Labels\LabelAttributes.cs" />
+    <Compile Include="Drawing\Labels\LabelItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Drawing\Legend\ctlLegendColor.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Drawing\Legend\ctlLegendEdit.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Drawing\Legend\frmHeatmapLegendEdit.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Drawing\Pen\ctlPenProviderEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Drawing\Pen\PenProvider.cs" />
+    <Compile Include="Drawing\Plotting\classHeatMap.cs" />
+    <Compile Include="Drawing\Plotting\clsPlotParams.cs" />
+    <Compile Include="Drawing\Plotting\clsPlotRange.cs" />
+    <Compile Include="Drawing\Plotting\clsPlotterAxis.cs" />
+    <Compile Include="Drawing\Plotting\controlHeatMap.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Drawing\Plotting\controlHeatMap.Designer.cs">
+      <DependentUpon>controlHeatMap.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Drawing\Plotting\ctlDataFrame.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Drawing\Plotting\ctlHeatMap.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Drawing\Plotting\ctlHeatMapClient.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Drawing\Plotting\ctlHeatMapLegend.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Drawing\Plotting\ctlPlotParamsEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Drawing\Plotting\ctlScatterPlot.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Drawing\Plotting\ctlScatterPlotClient.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Drawing\Plotting\frmPlotParams.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Drawing\Shapes\clsShape.cs" />
+    <Compile Include="Drawing\Shapes\LineF.cs" />
+    <Compile Include="Drawing\Viewport\ctlViewPortEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Drawing\Viewport\frmViewPortEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Drawing\Viewport\History.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Drawing\Viewport\ViewPortHistory.cs" />
+    <Compile Include="Drawing\WinGDI.cs" />
+    <Compile Include="Forms\CategorizedForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ColumnSequenceChangedEventArgs.cs" />
+    <Compile Include="Forms\ColumnSequenceChangingEventArgs.cs" />
+    <Compile Include="Forms\ColumnStartDragEventArgs.cs" />
+    <Compile Include="Forms\ctlDataGridColumnReorder.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\ctlFileView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Forms\ctlFilteredPropertyGrid.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Forms\ctlListSelection.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\ctlListViewFlickerless.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Forms\ctlNumEdit.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Forms\ctlNumericText.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\ctlNumericTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Forms\ctlTextEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\DataGridEx.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Forms\ExpandPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Forms\ExpandPanelConverter.cs" />
+    <Compile Include="Forms\FormTransparencyProxy.cs" />
+    <Compile Include="Forms\frmDialogBase.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmEditText.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmExpandPanelHeight.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmPropertyGrid.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ICategorizedForm.cs" />
+    <Compile Include="Forms\IWindowNotifier.cs" />
+    <Compile Include="Forms\ListViewEx.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Forms\ListViewItemEx.cs" />
+    <Compile Include="Forms\MenuUtils.cs" />
+    <Compile Include="Forms\NumEditBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Forms\UnselectableCheckBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="IO\clsContainerStream.cs" />
+    <Compile Include="IO\clsReadProgressStream.cs" />
+    <Compile Include="IO\clsTextDelimitedFileBase.cs" />
+    <Compile Include="IO\clsTextDelimitedFileReader.cs" />
+    <Compile Include="IO\clsTextDelimitedFileWriter.cs" />
+    <Compile Include="IO\ctlTextDelimitedFileLoader.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="IO\ctlTextDelimitedFileSave.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="IO\frmProperties.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="IO\frmTextDelimitedFileSave.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="IO\ImportExcel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="IO\Persistance.cs" />
+    <Compile Include="IO\xmlIO.cs" />
+    <Compile Include="Resource.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resource.resx</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="Data\ctlGroupDefine.resx">
+      <DependentUpon>ctlGroupDefine.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Data\ctlGroupMembership.resx">
+      <DependentUpon>ctlGroupMembership.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Data\ctlSeriesSelection.resx">
+      <DependentUpon>ctlSeriesSelection.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Data\RangeSelectDataGridTextBoxColumnStyle.resx">
+      <DependentUpon>RangeSelectDataGridTextBoxColumnStyle.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Data\RangeSelectGrid.resx">
+      <DependentUpon>RangeSelectGrid.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Drawing\Axes\ctlSingleAxis.resx">
+      <DependentUpon>ctlSingleAxis.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Drawing\Axes\SingleAxis.resx">
+      <DependentUpon>SingleAxis.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Drawing\Charting\ctlChartBase.resx">
+      <DependentUpon>ctlChartBase.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Drawing\Charting\ctlHeatChart.resx">
+      <DependentUpon>ctlHeatChart.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Drawing\Charting\ctlLineChart.resx">
+      <DependentUpon>ctlLineChart.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Drawing\Charting\ctlScatterChart.resx">
+      <DependentUpon>ctlScatterChart.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Drawing\Charting\formLinearPointFilter.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>formLinearPointFilter.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Drawing\Charting\frmChartTitlesEditor.resx">
+      <DependentUpon>frmChartTitlesEditor.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Drawing\Color\pnlColorInterpolationEditor.resx">
+      <DependentUpon>pnlColorInterpolationEditor.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Drawing\Color\pnlColorInterpolationViewer.resx">
+      <DependentUpon>pnlColorInterpolationViewer.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Drawing\frmSaveDPI.resx">
+      <DependentUpon>frmSaveDPI.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Drawing\Labels\ctlHierarchalLabel.resx">
+      <DependentUpon>ctlHierarchalLabel.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Drawing\Labels\ctlHLabelLevelProperties.resx">
+      <DependentUpon>ctlHLabelLevelProperties.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Drawing\Labels\ctlLabelEditor.resx">
+      <DependentUpon>ctlLabelEditor.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Drawing\Labels\ctlLabelItem.resx">
+      <DependentUpon>ctlLabelItem.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Drawing\Labels\frmHLabelProperties.resx">
+      <DependentUpon>frmHLabelProperties.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Drawing\Labels\LabelItem.resx">
+      <DependentUpon>LabelItem.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Drawing\Legend\ctlLegendColor.resx">
+      <DependentUpon>ctlLegendColor.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Drawing\Legend\ctlLegendEdit.resx">
+      <DependentUpon>ctlLegendEdit.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Drawing\Legend\frmHeatmapLegendEdit.resx">
+      <DependentUpon>frmHeatmapLegendEdit.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Drawing\Pen\ctlPenProviderEditor.resx">
+      <DependentUpon>ctlPenProviderEditor.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Drawing\Pen\PenProvider.resx">
+      <DependentUpon>PenProvider.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Drawing\Plotting\controlHeatMap.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>controlHeatMap.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Drawing\Plotting\ctlDataFrame.resx">
+      <DependentUpon>ctlDataFrame.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Drawing\Plotting\ctlHeatMap.resx">
+      <DependentUpon>ctlHeatMap.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Drawing\Plotting\ctlHeatMapClient.resx">
+      <DependentUpon>ctlHeatMapClient.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Drawing\Plotting\ctlHeatMapLegend.resx">
+      <DependentUpon>ctlHeatMapLegend.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Drawing\Plotting\ctlPlotParamsEditor.resx">
+      <DependentUpon>ctlPlotParamsEditor.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Drawing\Plotting\ctlScatterPlot.resx">
+      <DependentUpon>ctlScatterPlot.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Drawing\Plotting\ctlScatterPlotClient.resx">
+      <DependentUpon>ctlScatterPlotClient.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Drawing\Plotting\frmPlotParams.resx">
+      <DependentUpon>frmPlotParams.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Drawing\Viewport\ctlViewPortEditor.resx">
+      <DependentUpon>ctlViewPortEditor.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Drawing\Viewport\frmViewPortEditor.resx">
+      <DependentUpon>frmViewPortEditor.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ctlDataGridColumnReorder.resx">
+      <DependentUpon>ctlDataGridColumnReorder.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ctlFileView.resx">
+      <DependentUpon>ctlFileView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ctlFilteredPropertyGrid.resx">
+      <DependentUpon>ctlFilteredPropertyGrid.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ctlListSelection.resx">
+      <DependentUpon>ctlListSelection.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ctlNumEdit.resx">
+      <DependentUpon>ctlNumEdit.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ctlNumericText.resx">
+      <DependentUpon>ctlNumericText.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ctlNumericTextBox.resx">
+      <DependentUpon>ctlNumericTextBox.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ctlTextEditor.resx">
+      <DependentUpon>ctlTextEditor.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\DataGridEx.resx">
+      <DependentUpon>DataGridEx.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ExpandPanel.resx">
+      <DependentUpon>ExpandPanel.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmDialogBase.resx">
+      <DependentUpon>frmDialogBase.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmEditText.resx">
+      <DependentUpon>frmEditText.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmPropertyGrid.resx">
+      <DependentUpon>frmPropertyGrid.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ListViewEx.resx">
+      <DependentUpon>ListViewEx.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\NumEditBox.resx">
+      <DependentUpon>NumEditBox.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="IO\ctlTextDelimitedFileLoader.resx">
+      <DependentUpon>ctlTextDelimitedFileLoader.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="IO\ctlTextDelimitedFileSave.resx">
+      <DependentUpon>ctlTextDelimitedFileSave.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="IO\frmProperties.resx">
+      <DependentUpon>frmProperties.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="IO\frmTextDelimitedFileSave.resx">
+      <DependentUpon>frmTextDelimitedFileSave.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="IO\ImportExcel.resx">
+      <DependentUpon>ImportExcel.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resource.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Drawing\Icons\Thumbs.db" />
+    <None Include="Drawing\Icons\vssver.scc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Drawing\Icons\dataBitmap.bmp" />
+    <Content Include="Drawing\Icons\Detail.ico" />
+    <Content Include="Drawing\Icons\EmptyIcon.ico" />
+    <Content Include="Drawing\Icons\Form.ico" />
+    <Content Include="Drawing\Icons\Height.ico" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>

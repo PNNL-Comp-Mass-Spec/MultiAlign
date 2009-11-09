@@ -1,0 +1,101 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{BDFA22C4-5822-4AA5-996E-6FDE57F7118B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>PNNLProteomics</RootNamespace>
+    <AssemblyName>PNNLProteomics</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release_32Bit|AnyCPU' ">
+    <OutputPath>bin\Release_32Bit\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release_64Bit|AnyCPU' ">
+    <OutputPath>bin\Release_64Bit\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Analysis\clsEMNormalizer.cs" />
+    <Compile Include="Analysis\clsHistogram.cs" />
+    <Compile Include="Analysis\clsLinearNormalizer.cs" />
+    <Compile Include="Cephes\clsMathUtilities.cs" />
+    <Compile Include="MultiAlign\classMultiAnalysisConverters.cs" />
+    <Compile Include="MultiAlign\clsMultiAlignAnalysis.cs" />
+    <Compile Include="Analysis\clsNormalize.cs" />
+    <Compile Include="Analysis\clsTTest.cs" />
+    <Compile Include="Analysis\clsTTestVals.cs" />
+    <Compile Include="Data\Alignment\classAlignmentData.cs" />
+    <Compile Include="Data\clsDMSServerInformation.cs" />
+    <Compile Include="Data\clsPair.cs" />
+    <Compile Include="Data\Cluster\classClusterDataSummaryAttr.cs" />
+    <Compile Include="Data\Cluster\classClusterMassTagMatch.cs" />
+    <Compile Include="Data\enmToolID.cs" />
+    <Compile Include="Data\Factors\classFactorDefinition.cs" />
+    <Compile Include="Data\Factors\classFactorTree.cs" />
+    <Compile Include="Data\Factors\classTreeNode.cs" />
+    <Compile Include="Data\Factors\classTreeNodeConverter.cs" />
+    <Compile Include="Data\Loaders\clsDatabaseDatasetIDLoader.cs" />
+    <Compile Include="Data\Loaders\clsDatabaseDatasetLoader.cs" />
+    <Compile Include="Data\Loaders\clsDiskDatasetLoader.cs" />
+    <Compile Include="Data\Loaders\delegatesLoading.cs" />
+    <Compile Include="Data\MassTags\clsMassTags.cs" />
+    <Compile Include="EventModel\Delegates.cs" />
+    <Compile Include="EventModel\IMessageClass.cs" />
+    <Compile Include="IO\classContainerStream.cs" />
+    <Compile Include="IO\clsReadProgressStream.cs" />
+    <Compile Include="IO\xmlIO.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\SMART\SMARTWrapper\SMARTWrapper.vcproj">
+      <Project>{B5ECDBD9-5AF8-4083-B217-BC3031EA9A8D}</Project>
+      <Name>SMARTWrapper</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MultiAlign\MultiAlign.vcproj">
+      <Project>{5A7E3D3C-03F3-4586-8A2C-BAE1EBA4623E}</Project>
+      <Name>MultiAlignEngine</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

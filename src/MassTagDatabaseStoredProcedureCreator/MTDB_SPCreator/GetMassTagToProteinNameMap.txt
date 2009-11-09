@@ -1,0 +1,47 @@
+ALTER PROCEDURE dbo.GetMassTagToProteinNameMap
+(
+	@ConfirmedOnly tinyint = 0,			
+	@MinimumHighNormalizedScore float = 0,		
+	@MinimumPMTQualityScore float = 0,		
+	@MinimumHighDiscriminantScore real = 0,		
+	@MinimumPeptideProphetProbability real = 0	
+)
+AS    
+  SELECT  
+  	
+      PNM.Mass_Tag_ID,    
+      IIF( 
+        IIF(IsNull(PNM.Protein_DB_ID) = FALSE,PNM.Protein_DB_ID,-1) = 0,    
+           PNM.External_Protein_ID,
+           PNM.External_Reference_ID) 
+      AS Protein_ID,
+           PNM.Reference,
+           PNM.Internal_Ref_ID as Ref_ID                      
+   FROM   
+           T_Mass_Tags AS MT
+   INNER JOIN 
+           V_IFC_Mass_Tag_to_Protein_Name_Map AS PNM
+   ON 
+           MT.Mass_Tag_ID = PNM.Mass_Tag_ID 
+   WHERE 
+
+       IIF(@MinimumPMTQualityScore <> 0,
+               IIF(ISNULL(MT.PMT_Quality_Score)=TRUE,0,MT.PMT_Quality_Score) >= @MinimumPMTQualityScore,
+               TRUE
+           )
+    AND
+       IIF(@MinimumPeptideProphetProbability <> 0, 
+             IIF(ISNULL(MT.High_Peptide_Prophet_Probability)=TRUE,0,MT.High_Peptide_Prophet_Probability) >= @MinimumPeptideProphetProbability,
+             TRUE
+         )
+    AND
+       IIF(@MinimumHighNormalizedScore <> 0, 
+             IIF(ISNULL(MT.High_Normalized_Score)=TRUE,0,MT.High_Normalized_Score) >= @MinimumHighNormalizedScore,
+             TRUE
+         )
+    AND
+       IIF(@ConfirmedOnly <> 0, 
+             MT.Is_Confirmed = 1,
+             TRUE
+         )
+

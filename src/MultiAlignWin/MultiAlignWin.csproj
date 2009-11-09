@@ -1,0 +1,557 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release_64Bit|AnyCPU' ">
+    <OutputPath>bin\Release_64Bit\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <BaseAddress>285212672</BaseAddress>
+    <Optimize>true</Optimize>
+    <DebugType>
+    </DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ProjectType>Local</ProjectType>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{74B1D21D-3B38-4605-A617-4CA55683311C}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ApplicationIcon>MultiAlign.ico</ApplicationIcon>
+    <AssemblyKeyContainerName>
+    </AssemblyKeyContainerName>
+    <AssemblyName>MultiAlignWin</AssemblyName>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+    <DefaultClientScript>JScript</DefaultClientScript>
+    <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
+    <DefaultTargetSchema>IE50</DefaultTargetSchema>
+    <DelaySign>false</DelaySign>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>MultiAlignWin</RootNamespace>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <StartupObject>MultiAlignWin.Program</StartupObject>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <DebugSymbols>true</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <NoWarn>
+    </NoWarn>
+    <Optimize>false</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <DebugType>full</DebugType>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <DebugSymbols>false</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <NoWarn>
+    </NoWarn>
+    <Optimize>true</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <DebugType>none</DebugType>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release_32Bit|AnyCPU' ">
+    <OutputPath>bin\Release_32Bit\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <BaseAddress>285212672</BaseAddress>
+    <Optimize>true</Optimize>
+    <DebugType>
+    </DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.VisualC">
+      <Name>Microsoft.VisualC</Name>
+    </Reference>
+    <Reference Include="System">
+      <Name>System</Name>
+    </Reference>
+    <Reference Include="System.Data">
+      <Name>System.Data</Name>
+    </Reference>
+    <Reference Include="System.Design">
+      <Name>System.Design</Name>
+    </Reference>
+    <Reference Include="System.Drawing">
+      <Name>System.Drawing</Name>
+    </Reference>
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Services">
+      <Name>System.Web.Services</Name>
+    </Reference>
+    <Reference Include="System.Windows.Forms">
+      <Name>System.Windows.Forms</Name>
+    </Reference>
+    <Reference Include="System.Xml">
+      <Name>System.XML</Name>
+    </Reference>
+    <ProjectReference Include="..\..\..\..\SMART\SMARTWrapper\SMARTWrapper.vcproj">
+      <Project>{B5ECDBD9-5AF8-4083-B217-BC3031EA9A8D}</Project>
+      <Name>SMARTWrapper</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ExternalControls\ExternalControls.csproj">
+      <Project>{46C6D9CE-672F-4491-BF67-AA3F8DC811B7}</Project>
+      <Name>ExternalControls</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MultiAlign\MultiAlign.vcproj">
+      <Name>MultiAlignEngine</Name>
+      <Project>{5A7E3D3C-03F3-4586-8A2C-BAE1EBA4623E}</Project>
+      <Package>{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}</Package>
+    </ProjectReference>
+    <ProjectReference Include="..\PNNLControls\PNNLControls.csproj">
+      <Project>{9409DE9B-F3F0-41AA-95F5-8BFD525F5669}</Project>
+      <Name>PNNLControls</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PNNLProteomics\PNNLProteomics.csproj">
+      <Project>{BDFA22C4-5822-4AA5-996E-6FDE57F7118B}</Project>
+      <Name>PNNLProteomics</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Drawing\controlHistogram.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Drawing\controlHistogram.Designer.cs">
+      <DependentUpon>controlHistogram.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Drawing\frmIntensityDiff.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Cluster\ctlClusterChart.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\Cluster\ctlClusterGrid.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Forms\controlDatasetInformation.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\controlDatasetInformation.Designer.cs">
+      <DependentUpon>controlDatasetInformation.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\controlUMCData.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\controlUMCData.Designer.cs">
+      <DependentUpon>controlUMCData.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Factors\frmDataFactorAssignment.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Factors\frmDataFactorListView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Factors\frmDataFactorSelection.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Factors\frmDefineFactors.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Factors\frmLabelGroupEdit.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\formUMCData.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\formUMCData.Designer.cs">
+      <DependentUpon>formUMCData.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmLabelGroupEdit.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Parameters\formPeptideIDScoring.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Parameters\formPeptideIDScoring.Designer.cs">
+      <DependentUpon>formPeptideIDScoring.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Parameters\frmFeatureFindingParameters.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Drawing\ctlAlignmentHeatMap.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\frmAlign.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmAlignmentPreview.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Drawing\classRenderDatasetInfo.cs" />
+    <Compile Include="Forms\Summary\frmAnalysisSummary.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Parameters\frmMSAlignmentParameters.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmClustergram.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmClusterOptions.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Parameters\frmClusterParameters.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmReorderDataTable.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmSelectOneDataset.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Diagnostics\clsLogging.cs" />
+    <Compile Include="Forms\frmException.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmException.Designer.cs">
+      <DependentUpon>frmException.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmTracWebBugReport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Drawing\frmScatterPlot.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmAbout.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmDataView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmMdiMain.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmMdiMain.Designer.cs">
+      <DependentUpon>frmMdiMain.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmStatus.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Summary\ctlSummaryPages.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\Summary\frmDatasetSummary.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="IO\classAnalysisLogWriter.cs" />
+    <Compile Include="IO\clsConfigParms.cs" />
+    <Compile Include="Forms\frmDBName.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmInputBlockSize.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmLoadFactorsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmSaveFactors.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Network\clsDMSConnectionTester.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Settings.cs" />
+    <Compile Include="Wizard\ctlCompletedWizardPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Wizard\ctlDefineFactorsWizardPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Wizard\ctlLoadDatasetWizardPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Wizard\ctlLoadDatasetWizardPage.Designer.cs">
+      <DependentUpon>ctlLoadDatasetWizardPage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Wizard\ctlPerformAnalysisWizardPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Wizard\ctlSelectOutputNameWizardPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Wizard\ctlSelectParametersWizardPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Wizard\ctlWelcomeWizardPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\frmAnalysisWizard.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <EmbeddedResource Include="Drawing\controlHistogram.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>controlHistogram.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Drawing\frmIntensityDiff.resx">
+      <DependentUpon>frmIntensityDiff.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Cluster\ctlClusterChart.resx">
+      <DependentUpon>ctlClusterChart.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Cluster\ctlClusterGrid.resx">
+      <DependentUpon>ctlClusterGrid.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\controlDatasetInformation.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>controlDatasetInformation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\controlUMCData.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>controlUMCData.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Factors\frmDataFactorAssignment.resx">
+      <DependentUpon>frmDataFactorAssignment.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Factors\frmDataFactorListView.resx">
+      <DependentUpon>frmDataFactorListView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Factors\frmDataFactorSelection.resx">
+      <DependentUpon>frmDataFactorSelection.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Factors\frmDefineFactors.resx">
+      <DependentUpon>frmDefineFactors.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Factors\frmLabelGroupEdit.resx">
+      <DependentUpon>frmLabelGroupEdit.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\formUMCData.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>formUMCData.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmAlignmentPreview.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>frmAlignmentPreview.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmLabelGroupEdit.resx">
+      <DependentUpon>frmLabelGroupEdit.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmMdiMain.resx">
+      <DependentUpon>frmMdiMain.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Parameters\formPeptideIDScoring.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>formPeptideIDScoring.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Parameters\frmFeatureFindingParameters.resx">
+      <DependentUpon>frmFeatureFindingParameters.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmAlign.resx">
+      <DependentUpon>frmAlign.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Summary\frmAnalysisSummary.resx">
+      <DependentUpon>frmAnalysisSummary.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Parameters\frmMSAlignmentParameters.resx">
+      <DependentUpon>frmMSAlignmentParameters.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmClustergram.resx">
+      <DependentUpon>frmClustergram.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmClusterOptions.resx">
+      <DependentUpon>frmClusterOptions.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Parameters\frmClusterParameters.resx">
+      <DependentUpon>frmClusterParameters.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmReorderDataTable.resx">
+      <DependentUpon>frmReorderDataTable.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmSelectOneDataset.resx">
+      <DependentUpon>frmSelectOneDataset.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmException.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>frmException.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmTracWebBugReport.resx">
+      <DependentUpon>frmTracWebBugReport.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Drawing\frmScatterPlot.resx">
+      <DependentUpon>frmScatterPlot.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmAbout.resx">
+      <DependentUpon>frmAbout.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmDataView.resx">
+      <DependentUpon>frmDataView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmStatus.resx">
+      <DependentUpon>frmStatus.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Summary\ctlSummaryPages.resx">
+      <DependentUpon>ctlSummaryPages.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Summary\frmDatasetSummary.resx">
+      <DependentUpon>frmDatasetSummary.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmDBName.resx">
+      <DependentUpon>frmDBName.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmInputBlockSize.resx">
+      <DependentUpon>frmInputBlockSize.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmLoadFactorsForm.resx">
+      <DependentUpon>frmLoadFactorsForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmSaveFactors.resx">
+      <DependentUpon>frmSaveFactors.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Wizard\ctlCompletedWizardPage.resx">
+      <DependentUpon>ctlCompletedWizardPage.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Wizard\ctlDefineFactorsWizardPage.resx">
+      <DependentUpon>ctlDefineFactorsWizardPage.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Wizard\ctlLoadDatasetWizardPage.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ctlLoadDatasetWizardPage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Wizard\ctlPerformAnalysisWizardPage.resx">
+      <DependentUpon>ctlPerformAnalysisWizardPage.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Wizard\ctlSelectOutputNameWizardPage.resx">
+      <DependentUpon>ctlSelectOutputNameWizardPage.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Wizard\ctlSelectParametersWizardPage.resx">
+      <DependentUpon>ctlSelectParametersWizardPage.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Wizard\ctlWelcomeWizardPage.resx">
+      <DependentUpon>ctlWelcomeWizardPage.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmAnalysisWizard.resx">
+      <DependentUpon>frmAnalysisWizard.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Drawing\Bitmaps\malign1.jpg" />
+    <Content Include="Drawing\Bitmaps\App.ico" />
+    <Content Include="Drawing\Bitmaps\hat.gif" />
+    <Content Include="Drawing\Bitmaps\malign.ico" />
+    <Content Include="Drawing\Bitmaps\malign.jpg" />
+    <Content Include="Drawing\Bitmaps\malign16.ico" />
+    <Content Include="Drawing\Bitmaps\malign32.ico" />
+    <Content Include="Drawing\Bitmaps\MultiAlign.ico" />
+    <Content Include="Drawing\Bitmaps\MultiAlignLogo.jpg" />
+    <Content Include="Drawing\Bitmaps\multialignT.ico" />
+    <Content Include="Drawing\Bitmaps\perform.png" />
+    <Content Include="Drawing\Bitmaps\wizard.gif" />
+    <Content Include="MultiAlign.ico" />
+    <None Include="Resources\smart.png" />
+    <None Include="Resources\scoring.png" />
+    <None Include="Resources\intensityFilterHighBad.png" />
+    <None Include="Resources\intensityFilterHighGood.png" />
+    <None Include="Resources\databaseGlyph.png" />
+    <None Include="Resources\clusteringGlyph.png" />
+    <None Include="Resources\featuresGlyph.png" />
+    <None Include="Resources\alignmentGlyph.png" />
+    <None Include="Resources\analysis.bmp" />
+    <None Include="Resources\add.png" />
+    <None Include="Resources\DoubleRightArrowHS.png" />
+    <None Include="Resources\DOWNLOAD_00.gif" />
+    <None Include="Resources\Critical.bmp" />
+    <None Include="Resources\ExampleSidebar.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Update\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>

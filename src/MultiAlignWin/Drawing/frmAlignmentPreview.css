@@ -1,0 +1,361 @@
+using System;
+using System.Drawing;
+using System.Collections;
+using System.ComponentModel;
+using System.Windows.Forms;
+using MultiAlign;
+
+namespace MultiAlignWin
+{
+	/// <summary>
+	/// Summary description for frmAlignmentPreview.
+	/// </summary>
+	public class frmAlignmentPreview : PNNLControls.frmDialogBase
+	{
+		private System.Windows.Forms.Panel panelBaselineSelection;
+		private System.ComponentModel.Container components = null;
+		private MultiAlignWin.clsMultiAlignAnalysis mobj_analysis;
+		private System.Windows.Forms.Button btnAlign;
+		private System.Windows.Forms.Label lblBaseline;
+		private System.Windows.Forms.ComboBox cboBaseline;
+		private static MultiAlignWin.frmStatus mfrm_status = new frmStatus();
+		private System.Windows.Forms.TabControl tabControl1;
+		private System.Windows.Forms.TabPage tabHeatMap;
+		private MultiAlignWin.ctlAlignmentHeatMap mctl_AlignmentHeatMap;
+		private System.Windows.Forms.TabPage tabMassError;
+		private System.Windows.Forms.TabPage tabPage1;
+		private System.Windows.Forms.TabPage tabPage2;
+		private System.Windows.Forms.Button btnProperties;
+		private int mint_aligneeIndex;
+
+		private MultiAlignWin.clsMultiAlignAnalysis.dlgDatasetAligned mevntDatasetAligned ; 
+		private static MultiAlignWin.dlgSetPercentComplete mevntPercentComplete ; 
+		private static MultiAlignWin.dlgSetStatusMessage mevntStatusMessage ; 
+
+		static frmAlignmentPreview()
+		{
+			mevntPercentComplete = new dlgSetPercentComplete(mobj_analysis_mevntPercentComplete);
+			mevntStatusMessage	= new dlgSetStatusMessage(mobj_analysis_mevntStatusMessage);	
+		}
+
+
+		public frmAlignmentPreview(MultiAlignWin.clsMultiAlignAnalysis analysis, int aligneeIndex)
+		{
+			mint_aligneeIndex = aligneeIndex;
+
+			//
+			// Required for Windows Form Designer support
+			//
+			InitializeComponent();
+
+			mobj_analysis = analysis;
+			//ctlSummaryPages.CreateSummary("Alignment Options", mobj_analysis.DefaultAlignmentOptions);
+			
+
+			cboBaseline.Items.Clear();
+			foreach(clsDatasetInfo data in mobj_analysis.Files)
+			{
+				cboBaseline.Items.Add(data.mstrDatasetName);
+			}
+
+			mevntDatasetAligned = new MultiAlignWin.clsMultiAlignAnalysis.dlgDatasetAligned
+				(mobj_analysis_mevntDatasetAligned) ;
+
+			mobj_analysis.mevntDatasetAligned	+=  mevntDatasetAligned ;
+			mobj_analysis.mevntPercentComplete	+= mevntPercentComplete ;
+			mobj_analysis.mevntStatusMessage	+= mevntStatusMessage ;		
+
+			base.Closed +=new EventHandler(frmAlignmentPreview_Closed);
+		
+		}
+
+		/// <summary>
+		/// Clean up any resources being used.
+		/// </summary>
+		protected override void Dispose( bool disposing )
+		{
+
+			if (disposing)
+			{
+				if(components != null)
+				{
+					components.Dispose();
+				}
+			}
+			base.Dispose( disposing );
+
+		}
+
+		#region Windows Form Designer generated code
+		/// <summary>
+		/// Required method for Designer support - do not modify
+		/// the contents of this method with the code editor.
+		/// </summary>
+		private void InitializeComponent()
+		{
+			System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(frmAlignmentPreview));
+			this.panelBaselineSelection = new System.Windows.Forms.Panel();
+			this.btnProperties = new System.Windows.Forms.Button();
+			this.btnAlign = new System.Windows.Forms.Button();
+			this.lblBaseline = new System.Windows.Forms.Label();
+			this.cboBaseline = new System.Windows.Forms.ComboBox();
+			this.tabControl1 = new System.Windows.Forms.TabControl();
+			this.tabHeatMap = new System.Windows.Forms.TabPage();
+			this.mctl_AlignmentHeatMap = new MultiAlignWin.ctlAlignmentHeatMap();
+			this.tabMassError = new System.Windows.Forms.TabPage();
+			this.tabPage1 = new System.Windows.Forms.TabPage();
+			this.tabPage2 = new System.Windows.Forms.TabPage();
+			this.panelBaselineSelection.SuspendLayout();
+			this.tabControl1.SuspendLayout();
+			this.tabHeatMap.SuspendLayout();
+			this.SuspendLayout();
+			// 
+			// panelBaselineSelection
+			// 
+			this.panelBaselineSelection.Controls.Add(this.btnProperties);
+			this.panelBaselineSelection.Controls.Add(this.btnAlign);
+			this.panelBaselineSelection.Controls.Add(this.lblBaseline);
+			this.panelBaselineSelection.Controls.Add(this.cboBaseline);
+			this.panelBaselineSelection.Dock = System.Windows.Forms.DockStyle.Bottom;
+			this.panelBaselineSelection.Location = new System.Drawing.Point(0, 821);
+			this.panelBaselineSelection.Name = "panelBaselineSelection";
+			this.panelBaselineSelection.Size = new System.Drawing.Size(1104, 40);
+			this.panelBaselineSelection.TabIndex = 8;
+			// 
+			// btnProperties
+			// 
+			this.btnProperties.Location = new System.Drawing.Point(984, 8);
+			this.btnProperties.Name = "btnProperties";
+			this.btnProperties.Size = new System.Drawing.Size(120, 24);
+			this.btnProperties.TabIndex = 14;
+			this.btnProperties.Text = "Properties";
+			this.btnProperties.Click += new System.EventHandler(this.btnProperties_Click);
+			// 
+			// btnAlign
+			// 
+			this.btnAlign.Location = new System.Drawing.Point(856, 8);
+			this.btnAlign.Name = "btnAlign";
+			this.btnAlign.Size = new System.Drawing.Size(120, 24);
+			this.btnAlign.TabIndex = 13;
+			this.btnAlign.Text = "Align";
+			this.btnAlign.Click += new System.EventHandler(this.btnAlign_Click);
+			// 
+			// lblBaseline
+			// 
+			this.lblBaseline.Location = new System.Drawing.Point(8, 8);
+			this.lblBaseline.Name = "lblBaseline";
+			this.lblBaseline.Size = new System.Drawing.Size(120, 24);
+			this.lblBaseline.TabIndex = 12;
+			this.lblBaseline.Text = "Select Baseline:";
+			// 
+			// cboBaseline
+			// 
+			this.cboBaseline.Location = new System.Drawing.Point(128, 8);
+			this.cboBaseline.Name = "cboBaseline";
+			this.cboBaseline.Size = new System.Drawing.Size(704, 21);
+			this.cboBaseline.TabIndex = 11;
+			// 
+			// tabControl1
+			// 
+			this.tabControl1.Controls.Add(this.tabHeatMap);
+			this.tabControl1.Controls.Add(this.tabMassError);
+			this.tabControl1.Controls.Add(this.tabPage1);
+			this.tabControl1.Controls.Add(this.tabPage2);
+			this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.tabControl1.Location = new System.Drawing.Point(0, 0);
+			this.tabControl1.Name = "tabControl1";
+			this.tabControl1.SelectedIndex = 0;
+			this.tabControl1.Size = new System.Drawing.Size(1104, 821);
+			this.tabControl1.TabIndex = 12;
+			// 
+			// tabHeatMap
+			// 
+			this.tabHeatMap.Controls.Add(this.mctl_AlignmentHeatMap);
+			this.tabHeatMap.Location = new System.Drawing.Point(4, 22);
+			this.tabHeatMap.Name = "tabHeatMap";
+			this.tabHeatMap.Size = new System.Drawing.Size(1096, 795);
+			this.tabHeatMap.TabIndex = 0;
+			this.tabHeatMap.Text = "Heat Map";
+			// 
+			// mctl_AlignmentHeatMap
+			// 
+			this.mctl_AlignmentHeatMap.AlignmentFunction = null;
+			this.mctl_AlignmentHeatMap.Data = null;
+			this.mctl_AlignmentHeatMap.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.mctl_AlignmentHeatMap.DrawDemaractionLines = false;
+			this.mctl_AlignmentHeatMap.Location = new System.Drawing.Point(0, 0);
+			this.mctl_AlignmentHeatMap.Name = "mctl_AlignmentHeatMap";
+			this.mctl_AlignmentHeatMap.OverrideResize = false;
+			this.mctl_AlignmentHeatMap.ProgBarPercent = 0;
+			this.mctl_AlignmentHeatMap.ShowProgBar = false;
+			this.mctl_AlignmentHeatMap.ShowStatBar = true;
+			this.mctl_AlignmentHeatMap.Size = new System.Drawing.Size(1096, 795);
+			this.mctl_AlignmentHeatMap.TabIndex = 4;
+			this.mctl_AlignmentHeatMap.UpdateComplete = true;
+			// 
+			// tabMassError
+			// 
+			this.tabMassError.Location = new System.Drawing.Point(4, 22);
+			this.tabMassError.Name = "tabMassError";
+			this.tabMassError.Size = new System.Drawing.Size(1096, 795);
+			this.tabMassError.TabIndex = 1;
+			this.tabMassError.Text = "Mass Error ";
+			// 
+			// tabPage1
+			// 
+			this.tabPage1.Location = new System.Drawing.Point(4, 22);
+			this.tabPage1.Name = "tabPage1";
+			this.tabPage1.Size = new System.Drawing.Size(1096, 795);
+			this.tabPage1.TabIndex = 2;
+			this.tabPage1.Text = "Plot 3";
+			// 
+			// tabPage2
+			// 
+			this.tabPage2.Location = new System.Drawing.Point(4, 22);
+			this.tabPage2.Name = "tabPage2";
+			this.tabPage2.Size = new System.Drawing.Size(1096, 795);
+			this.tabPage2.TabIndex = 3;
+			this.tabPage2.Text = "Plot 4";
+			// 
+			// frmAlignmentPreview
+			// 
+			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
+			this.ClientSize = new System.Drawing.Size(1104, 909);
+			this.Controls.Add(this.tabControl1);
+			this.Controls.Add(this.panelBaselineSelection);
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.Name = "frmAlignmentPreview";
+			this.Text = "Alignment Preview Tool";
+			this.Controls.SetChildIndex(this.panelBaselineSelection, 0);
+			this.Controls.SetChildIndex(this.tabControl1, 0);
+			this.panelBaselineSelection.ResumeLayout(false);
+			this.tabControl1.ResumeLayout(false);
+			this.tabHeatMap.ResumeLayout(false);
+			this.ResumeLayout(false);
+
+		}
+		#endregion
+
+		
+		public void SetAlignmentHeatMap(MultiAlign.Alignment.clsAlignmentFunction alignmentFnc, string title, 
+			float [,] mScores, float minAligneeScan, float maxAligneeScan, float minBaselineScan, 
+			float maxBaselineScan)
+		{
+			try
+			{
+				// first zscore the data on the level of the x axis.
+				int numRows = mScores.GetUpperBound(0) - mScores.GetLowerBound(0) ; 
+				int numColumns = mScores.GetUpperBound(1) - mScores.GetLowerBound(1) ; 
+				for (int colNum = 0 ; colNum < numColumns ; colNum++)
+				{
+					for (int rowNum = 0 ; rowNum < numRows/2 ; rowNum++)
+					{
+						float tmp = mScores[rowNum, colNum] ; 
+						mScores[rowNum, colNum] = mScores[numRows-rowNum-1, colNum] ;
+						mScores[numRows-rowNum-1, colNum] = tmp ;  
+					}
+				}
+				mctl_AlignmentHeatMap.SetData(mScores, new PNNLControls.ctlHierarchalLabel.AxisRangeF(minAligneeScan, maxAligneeScan), 
+					new PNNLControls.ctlHierarchalLabel.AxisRangeF(minBaselineScan, maxBaselineScan)) ; 
+				mctl_AlignmentHeatMap.AlignmentFunction = alignmentFnc ; 
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex.Message + ex.StackTrace) ; 
+			}
+		}
+
+		private void mobj_analysis_mevntDatasetAligned
+			(MultiAlign.Alignment.clsAlignmentFunction alignmentFnc,
+			string fileName, ref float[,] mScores, float minX, 
+			float maxX, float minY, float maxY)
+		{	
+			System.Console.WriteLine("aligning the heat map stuff");
+			SetAlignmentHeatMap(alignmentFnc, fileName, mScores, minX, maxX, minY, maxY) ; 	
+		}
+
+		private static void mobj_analysis_mevntPercentComplete(int percentDone)
+		{
+			if (mfrm_status.mevntPercentComplete != null)
+				mfrm_status.mevntPercentComplete(percentDone);
+		}
+
+		private static void mobj_analysis_mevntStatusMessage(string status)
+		{
+			if (mfrm_status.mevntStatusMessage != null)
+				mfrm_status.mevntStatusMessage(status);
+		}
+
+<<<<<<< .mine
+		private void mobj_analysis_mevntPercentComplete(int percentDone)
+		{
+			Invoke(new UpdateProgressDelegate(this.UpdateAlignmentPercentComplete), new object[] {percentDone});
+		}
+
+		private void mobj_analysis_mevntStatusMessage(string status)
+		{
+			Invoke(new UpdateStatusDelegate(this.UpdateAlignmentStatusComplete), new object[] {status});
+		}
+
+		public delegate void UpdateProgress(int percent);
+=======
+>>>>>>> .r729
+		private void PerformAnalysis()
+		{
+			mobj_analysis.AlignDataset(mint_aligneeIndex);
+			mfrm_status.Hide() ; 
+		}
+
+		private void btnAlign_Click(object sender, System.EventArgs e)
+		{	
+			// need a new thread for this operation rather than performing it on the UI threads.
+			System.Threading.ThreadStart tStart = new System.Threading.ThreadStart(PerformAnalysis) ; 
+			System.Threading.Thread thread = new System.Threading.Thread(tStart) ;
+			thread.Start();
+
+			System.Threading.ThreadStart tStartMonitor = new System.Threading.ThreadStart(mobj_analysis.MonitorAlignments) ; 
+			System.Threading.Thread threadMonitor = new System.Threading.Thread(tStartMonitor) ;
+			threadMonitor.Start();
+			mfrm_status.ShowDialog();	
+<<<<<<< .mine
+			mfrm_status.Hide();
+=======
+			threadMonitor.Abort() ; 
+>>>>>>> .r729
+		}
+<<<<<<< .mine
+
+		private void btnProperties_Click(object sender, System.EventArgs e)
+		{
+			PNNLControls.frmPropertyGrid grid = new PNNLControls.frmPropertyGrid();
+			clsDatasetInfo dataInfo = mobj_analysis.Files[mint_aligneeIndex] as clsDatasetInfo;
+
+			grid.Icon = this.Icon;
+			if (dataInfo != null)
+				grid.Text = "Alignment Options for: " + dataInfo.mstrDatasetName;
+			else
+				grid.Text = "Alignment Options";
+
+			grid.SelectedObject = mobj_analysis.AlignmentOptions[mint_aligneeIndex];
+			grid.ShowDialog();
+		}
+=======
+
+		private void frmAlignmentPreview_Closed(object sender, EventArgs e)
+		{
+			if (mobj_analysis != null && mevntDatasetAligned != null)
+			{
+				mobj_analysis.mevntDatasetAligned -= mevntDatasetAligned ;
+			}
+			if (mobj_analysis != null && mevntPercentComplete != null)
+			{
+				mobj_analysis.mevntPercentComplete -= mevntPercentComplete ;
+			}
+			if (mobj_analysis != null && mevntStatusMessage != null)
+			{
+				mobj_analysis.mevntStatusMessage -= mevntStatusMessage ; 
+			}
+		}
+>>>>>>> .r729
+	}
+}

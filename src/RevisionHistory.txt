@@ -1,0 +1,5 @@
+MutliaAlign Revision History
+
+Version 1.1.2992.25141; March 09, 2008
+	- Updated MultiAlign with the ability to read and align datasets to an access database.
+	- Initial release version.
