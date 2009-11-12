@@ -25,7 +25,7 @@ namespace PNNLProteomics.Data
 		public void Set(int key, object val)
 		{
 			mint_key = key ; 
-			mobj_val = val ; 
+			mobj_val = val ;  
 		}
 
 		#region IComparable Members
