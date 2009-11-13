@@ -92,8 +92,20 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Iesi.Collections, Version=1.0.0.3, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\Iesi.Collections.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.VisualC">
       <Name>Microsoft.VisualC</Name>
+    </Reference>
+    <Reference Include="MultiAlignEngine, Version=1.0.3593.14833, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\MultiAlign\build\debug\MultiAlignEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="SMARTWrapper, Version=1.0.3600.18050, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\SMARTWrapper.dll</HintPath>
     </Reference>
     <Reference Include="System">
       <Name>System</Name>
@@ -101,6 +113,7 @@
     <Reference Include="System.Data">
       <Name>System.Data</Name>
     </Reference>
+    <Reference Include="System.Data.SQLite, Version=1.0.65.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=x86" />
     <Reference Include="System.Design">
       <Name>System.Design</Name>
     </Reference>
@@ -117,18 +130,9 @@
     <Reference Include="System.Xml">
       <Name>System.XML</Name>
     </Reference>
-    <ProjectReference Include="..\..\..\..\SMART\SMARTWrapper\SMARTWrapper.vcproj">
-      <Project>{B5ECDBD9-5AF8-4083-B217-BC3031EA9A8D}</Project>
-      <Name>SMARTWrapper</Name>
-    </ProjectReference>
     <ProjectReference Include="..\ExternalControls\ExternalControls.csproj">
       <Project>{46C6D9CE-672F-4491-BF67-AA3F8DC811B7}</Project>
       <Name>ExternalControls</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MultiAlign\MultiAlign.vcproj">
-      <Name>MultiAlignEngine</Name>
-      <Project>{5A7E3D3C-03F3-4586-8A2C-BAE1EBA4623E}</Project>
-      <Package>{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}</Package>
     </ProjectReference>
     <ProjectReference Include="..\PNNLControls\PNNLControls.csproj">
       <Project>{9409DE9B-F3F0-41AA-95F5-8BFD525F5669}</Project>

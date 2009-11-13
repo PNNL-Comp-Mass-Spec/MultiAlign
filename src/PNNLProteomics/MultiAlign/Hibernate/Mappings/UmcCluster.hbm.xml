@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" 
+                   assembly="PNNLProteomics" 
+                   namespace="PNNLProteomics.MultiAlign.Hibernate.Domain">
+
+	<class name="UmcCluster" table="T_UMC_CLUSTER">
+		<id name="Id" column="ID" type="integer">
+			<generator class="increment" />
+		</id>
+		<property name="Mass" column="MASS" type="double" not-null="false" />
+		<property name="MassCalibrated" column="MASS_CALIBRATED" type="double" not-null="false" />
+		<property name="Net" column="NET" type="double" not-null="false" />
+		<property name="NetAligned" column="NET_ALIGNED" type="double" not-null="false" />
+		<property name="Scan" column="SCAN" type="short" not-null="false" />
+		<property name="Charge" column="CHARGE" type="short" not-null="false" />
+		<set name="UmcSet" inverse="true">
+			<key column="ID"/>
+			<one-to-many class="Umc"/>
+		</set>
+		<set name="MassTagSet" inverse="true" table="CLUSTER_TO_MASS_TAG_MAP">
+			<key column="CLUSTER_ID"/>
+			<many-to-many column="MASS_TAG_ID" class="MassTag"/>
+		</set>
+	</class>
+
+</hibernate-mapping>

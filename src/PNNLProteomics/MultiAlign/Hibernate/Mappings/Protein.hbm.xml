@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" 
+                   assembly="PNNLProteomics" 
+                   namespace="PNNLProteomics.MultiAlign.Hibernate.Domain">
+
+	<class name="Protein" table="T_PROTEIN">
+		<id name="Id" column="ID" type="integer">
+			<generator class="assigned" />
+		</id>
+		<property name="ProteinString" column="PROTEIN" type="string" not-null="true" />
+		<property name="RefId" column="REF_ID" type="int" not-null="true" />
+		<set name="MassTagSet" table="MASS_TAG_TO_PROTEIN_MAP">
+			<key column="PROTEIN_ID"/>
+			<many-to-many column="MASS_TAG_ID" class="MassTag"/>
+		</set>
+	</class>
+
+</hibernate-mapping>

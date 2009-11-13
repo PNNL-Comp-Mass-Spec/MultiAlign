@@ -44,8 +44,37 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Castle.Core, Version=1.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.DynamicProxy2, Version=2.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\Castle.DynamicProxy2.dll</HintPath>
+    </Reference>
+    <Reference Include="Iesi.Collections, Version=1.0.0.3, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\Iesi.Collections.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="MultiAlignEngine, Version=1.0.3593.16506, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\MultiAlign\build\debug\MultiAlignEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="NHibernate, Version=2.1.1.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\NHibernate.dll</HintPath>
+    </Reference>
+    <Reference Include="SMARTWrapper, Version=1.0.3600.18050, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\SMARTWrapper.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.SQLite, Version=1.0.65.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=x86" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -78,17 +107,39 @@
     <Compile Include="IO\classContainerStream.cs" />
     <Compile Include="IO\clsReadProgressStream.cs" />
     <Compile Include="IO\xmlIO.cs" />
+    <Compile Include="MultiAlign\clsMultiAlignAnalysisReader.cs" />
+    <Compile Include="MultiAlign\clsMultiAlignAnalysisWriter.cs" />
+    <Compile Include="MultiAlign\Hibernate\Domain\Protein.cs" />
+    <Compile Include="MultiAlign\Hibernate\Domain\Modification.cs" />
+    <Compile Include="MultiAlign\Hibernate\Domain\MassTag.cs" />
+    <Compile Include="MultiAlign\Hibernate\Domain\Peptide.cs" />
+    <Compile Include="MultiAlign\Hibernate\Domain\DAO\IGenericDAO.cs" />
+    <Compile Include="MultiAlign\Hibernate\Domain\DAO\IProteinDAO.cs" />
+    <Compile Include="MultiAlign\Hibernate\Domain\DAO\IModificationDAO.cs" />
+    <Compile Include="MultiAlign\Hibernate\Domain\DAO\IMassTagDAO.cs" />
+    <Compile Include="MultiAlign\Hibernate\Domain\DAO\IPeptideDAO.cs" />
+    <Compile Include="MultiAlign\Hibernate\Domain\DAO\IUmcClusterDAO.cs" />
+    <Compile Include="MultiAlign\Hibernate\Domain\DAOHibernate\GenericDAOHibernate.cs" />
+    <Compile Include="MultiAlign\Hibernate\Domain\DAOHibernate\ProteinDAOHibernate.cs" />
+    <Compile Include="MultiAlign\Hibernate\Domain\DAOHibernate\ModificationDAOHibernate.cs" />
+    <Compile Include="MultiAlign\Hibernate\Domain\DAOHibernate\MassTagDAOHibernate.cs" />
+    <Compile Include="MultiAlign\Hibernate\Domain\DAOHibernate\PeptideDAOHibernate.cs" />
+    <Compile Include="MultiAlign\Hibernate\Domain\DAOHibernate\UmcClusterDAOHibernate.cs" />
+    <Compile Include="MultiAlign\Hibernate\Domain\UmcCluster.cs" />
+    <Compile Include="MultiAlign\Hibernate\Domain\DAO\IUmcDAO.cs" />
+    <Compile Include="MultiAlign\Hibernate\Domain\DAOHibernate\UmcDAOHibernate.cs" />
+    <Compile Include="MultiAlign\Hibernate\Domain\Umc.cs" />
+    <Compile Include="MultiAlign\Hibernate\NHibernateUtil.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\SMART\SMARTWrapper\SMARTWrapper.vcproj">
-      <Project>{B5ECDBD9-5AF8-4083-B217-BC3031EA9A8D}</Project>
-      <Name>SMARTWrapper</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MultiAlign\MultiAlign.vcproj">
-      <Project>{5A7E3D3C-03F3-4586-8A2C-BAE1EBA4623E}</Project>
-      <Name>MultiAlignEngine</Name>
-    </ProjectReference>
+    <Content Include="MultiAlign\Hibernate\hibernate.cfg.xml" />
+    <Content Include="MultiAlign\Hibernate\Mappings\Protein.hbm.xml" />
+    <Content Include="MultiAlign\Hibernate\Mappings\Modification.hbm.xml" />
+    <Content Include="MultiAlign\Hibernate\Mappings\MassTag.hbm.xml" />
+    <Content Include="MultiAlign\Hibernate\Mappings\Peptide.hbm.xml" />
+    <Content Include="MultiAlign\Hibernate\Mappings\UmcCluster.hbm.xml" />
+    <Content Include="MultiAlign\Hibernate\Mappings\Umc.hbm.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
