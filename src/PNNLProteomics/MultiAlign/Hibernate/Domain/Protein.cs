@@ -15,7 +15,6 @@ namespace PNNLProteomics.MultiAlign.Hibernate.Domain
 
         private int id;
         private string proteinString;
-        private int refId;
         private ISet<MassTag> massTagSet;
 
         public virtual int Id
@@ -28,12 +27,6 @@ namespace PNNLProteomics.MultiAlign.Hibernate.Domain
         {
             get { return proteinString; }
             set { proteinString = value; }
-        }
-
-        public virtual int RefId
-        {
-            get { return refId; }
-            set { refId = value; }
         }
 
         public virtual ISet<MassTag> MassTagSet

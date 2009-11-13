@@ -8,7 +8,6 @@
 			<generator class="assigned" />
 		</id>
 		<property name="ProteinString" column="PROTEIN" type="string" not-null="true" />
-		<property name="RefId" column="REF_ID" type="int" not-null="true" />
 		<set name="MassTagSet" table="MASS_TAG_TO_PROTEIN_MAP">
 			<key column="PROTEIN_ID"/>
 			<many-to-many column="MASS_TAG_ID" class="MassTag"/>
