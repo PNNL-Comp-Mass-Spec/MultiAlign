@@ -87,14 +87,14 @@ namespace PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate
         /// <summary>
         /// Adds a Set of Objects to the Database.
         /// </summary>
-        /// <param name="tSet">Set of Objects to be added</param>
-        public void AddAll(Set<T> tSet)
+		/// <param name="tList">List of Objects to be added</param>
+		public void AddAll(List<T> tList)
         {
             using (ISession session = GetSession())
             {
                 using (ITransaction transaction = session.BeginTransaction())
                 {
-                    foreach (T t in tSet)
+                    foreach (T t in tList)
                     {
                         session.Save(t);
                     }
@@ -122,14 +122,14 @@ namespace PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate
         /// <summary>
         /// Update method will not save a new Object; it will only update the Object if it already exists in the Database.
         /// </summary>
-        /// <param name="tSet">Set of Objects to be updated</param>
-        public void UpdateAll(Set<T> tSet)
+		/// <param name="tList">List of Objects to be updated</param>
+		public void UpdateAll(List<T> tList)
         {
             using (ISession session = GetSession())
             {
                 using (ITransaction transaction = session.BeginTransaction())
                 {
-                    foreach (T t in tSet)
+                    foreach (T t in tList)
                     {
                         session.Update(t);
                     }
@@ -157,14 +157,14 @@ namespace PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate
         /// <summary>
         /// Deletes a Set of Obejcts from the Database.
         /// </summary>
-        /// <param name="tSet">Set of Objects to be deleted</param>
-        public void DeleteAll(Set<T> tSet)
+		/// <param name="tList">List of Objects to be deleted</param>
+		public void DeleteAll(List<T> tList)
         {
             using (ISession session = GetSession())
             {
                 using (ITransaction transaction = session.BeginTransaction())
                 {
-                    foreach (T t in tSet)
+                    foreach (T t in tList)
                     {
                         session.Delete(t);
                     }

@@ -13,11 +13,11 @@ namespace PNNLProteomics.MultiAlign.Hibernate.Domain.DAO
     public interface IGenericDAO<T>
     {
         void Add(T t);
-        void AddAll(Set<T> tSet);
+        void AddAll(List<T> tList);
         void Update(T t);
-        void UpdateAll(Set<T> tSet);
+		void UpdateAll(List<T> tList);
         void Delete(T t);
-        void DeleteAll(Set<T> tSet);
+		void DeleteAll(List<T> tList);
         T FindById(int id);
         List<T> FindAll();
     }
