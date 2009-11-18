@@ -120,8 +120,12 @@ namespace MultiAlignWin
             this.textBoxMinUMCLen = new System.Windows.Forms.TextBox();
             this.mbtnDefaults = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.mtabPage_advanced = new System.Windows.Forms.TabPage();
+            this.mtabPage_generalOptions = new System.Windows.Forms.TabPage();
+            this.mgroupBox_abundanceReporting = new System.Windows.Forms.GroupBox();
+            this.mradioButton_usePeakMax = new System.Windows.Forms.RadioButton();
+            this.mradioButton_usePeakArea = new System.Windows.Forms.RadioButton();
             this.mtabPage_filters = new System.Windows.Forms.TabPage();
+            this.mlabel_invertedFilterIndicatorHigh = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.mlabel_invertedFilterIndicatorLow = new System.Windows.Forms.Label();
@@ -131,19 +135,15 @@ namespace MultiAlignWin
             this.mcheckBox_isotopicFitFilter = new System.Windows.Forms.CheckBox();
             this.mnum_isotopicIntensityFilter = new System.Windows.Forms.NumericUpDown();
             this.mheckBox_isotopicIntensityThreshold = new System.Windows.Forms.CheckBox();
-            this.mtabPage_generalOptions = new System.Windows.Forms.TabPage();
-            this.mlabel_invertedFilterIndicatorHigh = new System.Windows.Forms.Label();
-            this.mgroupBox_abundanceReporting = new System.Windows.Forms.GroupBox();
-            this.mradioButton_usePeakArea = new System.Windows.Forms.RadioButton();
-            this.mradioButton_usePeakMax = new System.Windows.Forms.RadioButton();
+            this.mtabPage_advanced = new System.Windows.Forms.TabPage();
             this.tabControl1.SuspendLayout();
-            this.mtabPage_advanced.SuspendLayout();
+            this.mtabPage_generalOptions.SuspendLayout();
+            this.mgroupBox_abundanceReporting.SuspendLayout();
             this.mtabPage_filters.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.mpicture_filterScoreGlyph)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.mnum_isotopicPeakFitFilter)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.mnum_isotopicIntensityFilter)).BeginInit();
-            this.mtabPage_generalOptions.SuspendLayout();
-            this.mgroupBox_abundanceReporting.SuspendLayout();
+            this.mtabPage_advanced.SuspendLayout();
             this.SuspendLayout();
             // 
             // labelMonoMass
@@ -223,7 +223,7 @@ namespace MultiAlignWin
             this.textBoxMonoMass.Location = new System.Drawing.Point(121, 37);
             this.textBoxMonoMass.Name = "textBoxMonoMass";
             this.textBoxMonoMass.Size = new System.Drawing.Size(56, 20);
-            this.textBoxMonoMass.TabIndex = 9;
+            this.textBoxMonoMass.TabIndex = 0;
             this.textBoxMonoMass.Text = "0.01";
             this.textBoxMonoMass.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
@@ -232,7 +232,7 @@ namespace MultiAlignWin
             this.textBoxAveMass.Location = new System.Drawing.Point(121, 61);
             this.textBoxAveMass.Name = "textBoxAveMass";
             this.textBoxAveMass.Size = new System.Drawing.Size(56, 20);
-            this.textBoxAveMass.TabIndex = 10;
+            this.textBoxAveMass.TabIndex = 1;
             this.textBoxAveMass.Text = "0.01";
             this.textBoxAveMass.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
@@ -241,7 +241,7 @@ namespace MultiAlignWin
             this.textBoxLogAbund.Location = new System.Drawing.Point(121, 85);
             this.textBoxLogAbund.Name = "textBoxLogAbund";
             this.textBoxLogAbund.Size = new System.Drawing.Size(56, 20);
-            this.textBoxLogAbund.TabIndex = 11;
+            this.textBoxLogAbund.TabIndex = 2;
             this.textBoxLogAbund.Text = "0.1";
             this.textBoxLogAbund.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
@@ -250,7 +250,7 @@ namespace MultiAlignWin
             this.textBoxScan.Location = new System.Drawing.Point(121, 109);
             this.textBoxScan.Name = "textBoxScan";
             this.textBoxScan.Size = new System.Drawing.Size(56, 20);
-            this.textBoxScan.TabIndex = 12;
+            this.textBoxScan.TabIndex = 3;
             this.textBoxScan.Text = "0.01";
             this.textBoxScan.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
@@ -259,7 +259,7 @@ namespace MultiAlignWin
             this.textBoxNET.Location = new System.Drawing.Point(121, 133);
             this.textBoxNET.Name = "textBoxNET";
             this.textBoxNET.Size = new System.Drawing.Size(56, 20);
-            this.textBoxNET.TabIndex = 13;
+            this.textBoxNET.TabIndex = 4;
             this.textBoxNET.Text = "0.1";
             this.textBoxNET.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
@@ -268,7 +268,7 @@ namespace MultiAlignWin
             this.textBoxFit.Location = new System.Drawing.Point(121, 157);
             this.textBoxFit.Name = "textBoxFit";
             this.textBoxFit.Size = new System.Drawing.Size(56, 20);
-            this.textBoxFit.TabIndex = 14;
+            this.textBoxFit.TabIndex = 6;
             this.textBoxFit.Text = "0.1";
             this.textBoxFit.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
@@ -285,7 +285,7 @@ namespace MultiAlignWin
             this.textBoxMonoMassCt.Location = new System.Drawing.Point(370, 35);
             this.textBoxMonoMassCt.Name = "textBoxMonoMassCt";
             this.textBoxMonoMassCt.Size = new System.Drawing.Size(56, 20);
-            this.textBoxMonoMassCt.TabIndex = 16;
+            this.textBoxMonoMassCt.TabIndex = 9;
             this.textBoxMonoMassCt.Text = "6.0";
             this.textBoxMonoMassCt.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
@@ -294,7 +294,7 @@ namespace MultiAlignWin
             this.textBoxAveMassCt.Location = new System.Drawing.Point(370, 61);
             this.textBoxAveMassCt.Name = "textBoxAveMassCt";
             this.textBoxAveMassCt.Size = new System.Drawing.Size(56, 20);
-            this.textBoxAveMassCt.TabIndex = 17;
+            this.textBoxAveMassCt.TabIndex = 10;
             this.textBoxAveMassCt.Text = "6.0";
             this.textBoxAveMassCt.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
@@ -339,7 +339,7 @@ namespace MultiAlignWin
             this.checkBoxUseNET.Location = new System.Drawing.Point(193, 133);
             this.checkBoxUseNET.Name = "checkBoxUseNET";
             this.checkBoxUseNET.Size = new System.Drawing.Size(72, 24);
-            this.checkBoxUseNET.TabIndex = 21;
+            this.checkBoxUseNET.TabIndex = 5;
             this.checkBoxUseNET.Text = "Use NET";
             this.checkBoxUseNET.CheckedChanged += new System.EventHandler(this.UseNETCheckChanged_event);
             // 
@@ -356,7 +356,7 @@ namespace MultiAlignWin
             this.textBoxMaxDist.Location = new System.Drawing.Point(121, 181);
             this.textBoxMaxDist.Name = "textBoxMaxDist";
             this.textBoxMaxDist.Size = new System.Drawing.Size(56, 20);
-            this.textBoxMaxDist.TabIndex = 23;
+            this.textBoxMaxDist.TabIndex = 7;
             this.textBoxMaxDist.Text = "0.1";
             this.textBoxMaxDist.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
@@ -373,7 +373,7 @@ namespace MultiAlignWin
             this.textBoxMinUMCLen.Location = new System.Drawing.Point(121, 205);
             this.textBoxMinUMCLen.Name = "textBoxMinUMCLen";
             this.textBoxMinUMCLen.Size = new System.Drawing.Size(56, 20);
-            this.textBoxMinUMCLen.TabIndex = 25;
+            this.textBoxMinUMCLen.TabIndex = 8;
             this.textBoxMinUMCLen.Text = "3";
             this.textBoxMinUMCLen.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
@@ -404,39 +404,51 @@ namespace MultiAlignWin
             this.tabControl1.Size = new System.Drawing.Size(477, 296);
             this.tabControl1.TabIndex = 27;
             // 
-            // mtabPage_advanced
+            // mtabPage_generalOptions
             // 
-            this.mtabPage_advanced.Controls.Add(this.label7);
-            this.mtabPage_advanced.Controls.Add(this.textBoxMinUMCLen);
-            this.mtabPage_advanced.Controls.Add(this.labelAveMass);
-            this.mtabPage_advanced.Controls.Add(this.labelMinUMCLen);
-            this.mtabPage_advanced.Controls.Add(this.labelLogAbund);
-            this.mtabPage_advanced.Controls.Add(this.textBoxMaxDist);
-            this.mtabPage_advanced.Controls.Add(this.labelScan);
-            this.mtabPage_advanced.Controls.Add(this.labelMaxDist);
-            this.mtabPage_advanced.Controls.Add(this.labelNET);
-            this.mtabPage_advanced.Controls.Add(this.checkBoxUseNET);
-            this.mtabPage_advanced.Controls.Add(this.labelFit);
-            this.mtabPage_advanced.Controls.Add(this.labelMonoMassCt);
-            this.mtabPage_advanced.Controls.Add(this.labelMMppm);
-            this.mtabPage_advanced.Controls.Add(this.labelAveMppm);
-            this.mtabPage_advanced.Controls.Add(this.textBoxMonoMass);
-            this.mtabPage_advanced.Controls.Add(this.textBoxAveMassCt);
-            this.mtabPage_advanced.Controls.Add(this.textBoxAveMass);
-            this.mtabPage_advanced.Controls.Add(this.textBoxMonoMassCt);
-            this.mtabPage_advanced.Controls.Add(this.textBoxLogAbund);
-            this.mtabPage_advanced.Controls.Add(this.labelAveMassCt);
-            this.mtabPage_advanced.Controls.Add(this.textBoxScan);
-            this.mtabPage_advanced.Controls.Add(this.textBoxFit);
-            this.mtabPage_advanced.Controls.Add(this.textBoxNET);
-            this.mtabPage_advanced.Controls.Add(this.labelMonoMass);
-            this.mtabPage_advanced.Location = new System.Drawing.Point(4, 22);
-            this.mtabPage_advanced.Name = "mtabPage_advanced";
-            this.mtabPage_advanced.Padding = new System.Windows.Forms.Padding(3);
-            this.mtabPage_advanced.Size = new System.Drawing.Size(469, 270);
-            this.mtabPage_advanced.TabIndex = 0;
-            this.mtabPage_advanced.Text = "Advanced Options";
-            this.mtabPage_advanced.UseVisualStyleBackColor = true;
+            this.mtabPage_generalOptions.Controls.Add(this.mgroupBox_abundanceReporting);
+            this.mtabPage_generalOptions.Location = new System.Drawing.Point(4, 22);
+            this.mtabPage_generalOptions.Name = "mtabPage_generalOptions";
+            this.mtabPage_generalOptions.Padding = new System.Windows.Forms.Padding(3);
+            this.mtabPage_generalOptions.Size = new System.Drawing.Size(469, 270);
+            this.mtabPage_generalOptions.TabIndex = 2;
+            this.mtabPage_generalOptions.Text = "UMC Finding Options";
+            this.mtabPage_generalOptions.UseVisualStyleBackColor = true;
+            // 
+            // mgroupBox_abundanceReporting
+            // 
+            this.mgroupBox_abundanceReporting.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.mgroupBox_abundanceReporting.Controls.Add(this.mradioButton_usePeakMax);
+            this.mgroupBox_abundanceReporting.Controls.Add(this.mradioButton_usePeakArea);
+            this.mgroupBox_abundanceReporting.Location = new System.Drawing.Point(7, 12);
+            this.mgroupBox_abundanceReporting.Name = "mgroupBox_abundanceReporting";
+            this.mgroupBox_abundanceReporting.Size = new System.Drawing.Size(456, 81);
+            this.mgroupBox_abundanceReporting.TabIndex = 0;
+            this.mgroupBox_abundanceReporting.TabStop = false;
+            this.mgroupBox_abundanceReporting.Text = "UMC Abundance Reporting";
+            // 
+            // mradioButton_usePeakMax
+            // 
+            this.mradioButton_usePeakMax.AutoSize = true;
+            this.mradioButton_usePeakMax.Checked = true;
+            this.mradioButton_usePeakMax.Location = new System.Drawing.Point(19, 48);
+            this.mradioButton_usePeakMax.Name = "mradioButton_usePeakMax";
+            this.mradioButton_usePeakMax.Size = new System.Drawing.Size(256, 17);
+            this.mradioButton_usePeakMax.TabIndex = 1;
+            this.mradioButton_usePeakMax.TabStop = true;
+            this.mradioButton_usePeakMax.Text = "Use Elution Profile Max Isotopic Peak [PeakMax]";
+            this.mradioButton_usePeakMax.UseVisualStyleBackColor = true;
+            // 
+            // mradioButton_usePeakArea
+            // 
+            this.mradioButton_usePeakArea.AutoSize = true;
+            this.mradioButton_usePeakArea.Location = new System.Drawing.Point(19, 25);
+            this.mradioButton_usePeakArea.Name = "mradioButton_usePeakArea";
+            this.mradioButton_usePeakArea.Size = new System.Drawing.Size(192, 17);
+            this.mradioButton_usePeakArea.TabIndex = 0;
+            this.mradioButton_usePeakArea.Text = "Use Elution Profile Area [PeakArea]";
+            this.mradioButton_usePeakArea.UseVisualStyleBackColor = true;
             // 
             // mtabPage_filters
             // 
@@ -453,10 +465,19 @@ namespace MultiAlignWin
             this.mtabPage_filters.Location = new System.Drawing.Point(4, 22);
             this.mtabPage_filters.Name = "mtabPage_filters";
             this.mtabPage_filters.Padding = new System.Windows.Forms.Padding(3);
-            this.mtabPage_filters.Size = new System.Drawing.Size(485, 270);
+            this.mtabPage_filters.Size = new System.Drawing.Size(469, 270);
             this.mtabPage_filters.TabIndex = 1;
             this.mtabPage_filters.Text = "Isotopic Filters";
             this.mtabPage_filters.UseVisualStyleBackColor = true;
+            // 
+            // mlabel_invertedFilterIndicatorHigh
+            // 
+            this.mlabel_invertedFilterIndicatorHigh.AutoSize = true;
+            this.mlabel_invertedFilterIndicatorHigh.Location = new System.Drawing.Point(335, 82);
+            this.mlabel_invertedFilterIndicatorHigh.Name = "mlabel_invertedFilterIndicatorHigh";
+            this.mlabel_invertedFilterIndicatorHigh.Size = new System.Drawing.Size(26, 13);
+            this.mlabel_invertedFilterIndicatorHigh.TabIndex = 12;
+            this.mlabel_invertedFilterIndicatorHigh.Text = "Bad";
             // 
             // label2
             // 
@@ -505,7 +526,7 @@ namespace MultiAlignWin
             0});
             this.mnum_isotopicPeakFitFilter.Name = "mnum_isotopicPeakFitFilter";
             this.mnum_isotopicPeakFitFilter.Size = new System.Drawing.Size(75, 20);
-            this.mnum_isotopicPeakFitFilter.TabIndex = 4;
+            this.mnum_isotopicPeakFitFilter.TabIndex = 3;
             this.mnum_isotopicPeakFitFilter.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // mcheckBox_scaleInverted
@@ -514,7 +535,7 @@ namespace MultiAlignWin
             this.mcheckBox_scaleInverted.Location = new System.Drawing.Point(269, 55);
             this.mcheckBox_scaleInverted.Name = "mcheckBox_scaleInverted";
             this.mcheckBox_scaleInverted.Size = new System.Drawing.Size(95, 17);
-            this.mcheckBox_scaleInverted.TabIndex = 7;
+            this.mcheckBox_scaleInverted.TabIndex = 4;
             this.mcheckBox_scaleInverted.Text = "Scale Inverted";
             this.mcheckBox_scaleInverted.UseVisualStyleBackColor = true;
             this.mcheckBox_scaleInverted.CheckedChanged += new System.EventHandler(this.mcheckBox_scaleInverted_CheckedChanged);
@@ -555,60 +576,39 @@ namespace MultiAlignWin
             this.mheckBox_isotopicIntensityThreshold.UseVisualStyleBackColor = true;
             this.mheckBox_isotopicIntensityThreshold.CheckedChanged += new System.EventHandler(this.mheckBox_isotopicIntensityThreshold_CheckedChanged);
             // 
-            // mtabPage_generalOptions
+            // mtabPage_advanced
             // 
-            this.mtabPage_generalOptions.Controls.Add(this.mgroupBox_abundanceReporting);
-            this.mtabPage_generalOptions.Location = new System.Drawing.Point(4, 22);
-            this.mtabPage_generalOptions.Name = "mtabPage_generalOptions";
-            this.mtabPage_generalOptions.Padding = new System.Windows.Forms.Padding(3);
-            this.mtabPage_generalOptions.Size = new System.Drawing.Size(469, 270);
-            this.mtabPage_generalOptions.TabIndex = 2;
-            this.mtabPage_generalOptions.Text = "UMC Finding Options";
-            this.mtabPage_generalOptions.UseVisualStyleBackColor = true;
-            // 
-            // mlabel_invertedFilterIndicatorHigh
-            // 
-            this.mlabel_invertedFilterIndicatorHigh.AutoSize = true;
-            this.mlabel_invertedFilterIndicatorHigh.Location = new System.Drawing.Point(335, 82);
-            this.mlabel_invertedFilterIndicatorHigh.Name = "mlabel_invertedFilterIndicatorHigh";
-            this.mlabel_invertedFilterIndicatorHigh.Size = new System.Drawing.Size(26, 13);
-            this.mlabel_invertedFilterIndicatorHigh.TabIndex = 12;
-            this.mlabel_invertedFilterIndicatorHigh.Text = "Bad";
-            // 
-            // mgroupBox_abundanceReporting
-            // 
-            this.mgroupBox_abundanceReporting.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.mgroupBox_abundanceReporting.Controls.Add(this.mradioButton_usePeakMax);
-            this.mgroupBox_abundanceReporting.Controls.Add(this.mradioButton_usePeakArea);
-            this.mgroupBox_abundanceReporting.Location = new System.Drawing.Point(7, 12);
-            this.mgroupBox_abundanceReporting.Name = "mgroupBox_abundanceReporting";
-            this.mgroupBox_abundanceReporting.Size = new System.Drawing.Size(456, 81);
-            this.mgroupBox_abundanceReporting.TabIndex = 0;
-            this.mgroupBox_abundanceReporting.TabStop = false;
-            this.mgroupBox_abundanceReporting.Text = "UMC Abundance Reporting";
-            // 
-            // mradioButton_usePeakArea
-            // 
-            this.mradioButton_usePeakArea.AutoSize = true;
-            this.mradioButton_usePeakArea.Location = new System.Drawing.Point(19, 25);
-            this.mradioButton_usePeakArea.Name = "mradioButton_usePeakArea";
-            this.mradioButton_usePeakArea.Size = new System.Drawing.Size(192, 17);
-            this.mradioButton_usePeakArea.TabIndex = 0;
-            this.mradioButton_usePeakArea.Text = "Use Elution Profile Area [PeakArea]";
-            this.mradioButton_usePeakArea.UseVisualStyleBackColor = true;
-            // 
-            // mradioButton_usePeakMax
-            // 
-            this.mradioButton_usePeakMax.AutoSize = true;
-            this.mradioButton_usePeakMax.Checked = true;
-            this.mradioButton_usePeakMax.Location = new System.Drawing.Point(19, 48);
-            this.mradioButton_usePeakMax.Name = "mradioButton_usePeakMax";
-            this.mradioButton_usePeakMax.Size = new System.Drawing.Size(256, 17);
-            this.mradioButton_usePeakMax.TabIndex = 1;
-            this.mradioButton_usePeakMax.TabStop = true;
-            this.mradioButton_usePeakMax.Text = "Use Elution Profile Max Isotopic Peak [PeakMax]";
-            this.mradioButton_usePeakMax.UseVisualStyleBackColor = true;
+            this.mtabPage_advanced.Controls.Add(this.label7);
+            this.mtabPage_advanced.Controls.Add(this.textBoxMinUMCLen);
+            this.mtabPage_advanced.Controls.Add(this.labelAveMass);
+            this.mtabPage_advanced.Controls.Add(this.labelMinUMCLen);
+            this.mtabPage_advanced.Controls.Add(this.labelLogAbund);
+            this.mtabPage_advanced.Controls.Add(this.textBoxMaxDist);
+            this.mtabPage_advanced.Controls.Add(this.labelScan);
+            this.mtabPage_advanced.Controls.Add(this.labelMaxDist);
+            this.mtabPage_advanced.Controls.Add(this.labelNET);
+            this.mtabPage_advanced.Controls.Add(this.checkBoxUseNET);
+            this.mtabPage_advanced.Controls.Add(this.labelFit);
+            this.mtabPage_advanced.Controls.Add(this.labelMonoMassCt);
+            this.mtabPage_advanced.Controls.Add(this.labelMMppm);
+            this.mtabPage_advanced.Controls.Add(this.labelAveMppm);
+            this.mtabPage_advanced.Controls.Add(this.textBoxMonoMass);
+            this.mtabPage_advanced.Controls.Add(this.textBoxAveMassCt);
+            this.mtabPage_advanced.Controls.Add(this.textBoxAveMass);
+            this.mtabPage_advanced.Controls.Add(this.textBoxMonoMassCt);
+            this.mtabPage_advanced.Controls.Add(this.textBoxLogAbund);
+            this.mtabPage_advanced.Controls.Add(this.labelAveMassCt);
+            this.mtabPage_advanced.Controls.Add(this.textBoxScan);
+            this.mtabPage_advanced.Controls.Add(this.textBoxFit);
+            this.mtabPage_advanced.Controls.Add(this.textBoxNET);
+            this.mtabPage_advanced.Controls.Add(this.labelMonoMass);
+            this.mtabPage_advanced.Location = new System.Drawing.Point(4, 22);
+            this.mtabPage_advanced.Name = "mtabPage_advanced";
+            this.mtabPage_advanced.Padding = new System.Windows.Forms.Padding(3);
+            this.mtabPage_advanced.Size = new System.Drawing.Size(469, 270);
+            this.mtabPage_advanced.TabIndex = 0;
+            this.mtabPage_advanced.Text = "Advanced Options";
+            this.mtabPage_advanced.UseVisualStyleBackColor = true;
             // 
             // frmFeatureFindingParameters
             // 
@@ -626,16 +626,16 @@ namespace MultiAlignWin
             this.Name = "frmFeatureFindingParameters";
             this.Text = "Feature Finding Parameters";
             this.tabControl1.ResumeLayout(false);
-            this.mtabPage_advanced.ResumeLayout(false);
-            this.mtabPage_advanced.PerformLayout();
+            this.mtabPage_generalOptions.ResumeLayout(false);
+            this.mgroupBox_abundanceReporting.ResumeLayout(false);
+            this.mgroupBox_abundanceReporting.PerformLayout();
             this.mtabPage_filters.ResumeLayout(false);
             this.mtabPage_filters.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.mpicture_filterScoreGlyph)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.mnum_isotopicPeakFitFilter)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.mnum_isotopicIntensityFilter)).EndInit();
-            this.mtabPage_generalOptions.ResumeLayout(false);
-            this.mgroupBox_abundanceReporting.ResumeLayout(false);
-            this.mgroupBox_abundanceReporting.PerformLayout();
+            this.mtabPage_advanced.ResumeLayout(false);
+            this.mtabPage_advanced.PerformLayout();
             this.ResumeLayout(false);
 
 		}

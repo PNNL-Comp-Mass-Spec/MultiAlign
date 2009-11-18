@@ -305,6 +305,12 @@ namespace MultiAlignWin
             options.ConstraintMonoMass = Convert.ToSingle(Properties.Settings.Default.UserPeakPickingMonoMassConstraintPPM);
             options.ConstraintAveMass = Convert.ToSingle(Properties.Settings.Default.UserPeakPickingAverageMassConstraintPPM);
             options.UMCAbundanceReportingType = MultiAlignEngine.Features.enmAbundanceReportingType.PeakMax;
+            
+            options.IsIsotopicFitFilterInverted = Properties.Settings.Default.UserPeakPickingInvertFitFilter;
+            options.IsotopicFitFilter = Properties.Settings.Default.UserPeakPickingFitFilter;
+            options.IsotopicIntensityFilter = Properties.Settings.Default.UserPeakPickingIntensityFilter;
+            options.UseIsotopicFitFilter = Properties.Settings.Default.UserPeakPickingUseFitFilter;
+            options.UseIsotopicIntensityFilter = Properties.Settings.Default.UserPeakPickingUseIntensity;
 
             if (Properties.Settings.Default.UserPeakPickingUMCReportingTypePeakArea == true)
             {
