@@ -17,6 +17,7 @@ namespace PNNLProteomics.MultiAlign.Hibernate.Domain
         private UmcCluster umcCluster;
         private double mass;
         private double massCalibrated;
+		private double massStandardDeviation;
         private double net;
         private ushort scan;
         private ushort scanStart;
@@ -57,6 +58,12 @@ namespace PNNLProteomics.MultiAlign.Hibernate.Domain
             get { return massCalibrated; }
             set { massCalibrated = value; }
         }
+
+		public virtual double MassStandardDeviation
+		{
+			get { return massStandardDeviation; }
+			set { massStandardDeviation = value; }
+		}
 
         public virtual double Net
         {

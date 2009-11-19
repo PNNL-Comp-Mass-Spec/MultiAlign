@@ -11,6 +11,7 @@
 		<many-to-one name="UmcCluster" class="UmcCluster" column="CLUSTER_ID" not-null="false" />
 		<property name="Mass" column="MASS" type="double" not-null="false" />
 		<property name="MassCalibrated" column="MASS_CALIBRATED" type="double" not-null="false" />
+    <property name="MassStandardDeviation" column="MASS_STANDARD_DEVIATION" type="double" not-null="false" />
 		<property name="Net" column="NET" type="double" not-null="false" />
 		<property name="Scan" column="SCAN" type="short" not-null="false" />
 		<property name="ScanStart" column="SCAN_START" type="short" not-null="false" />
