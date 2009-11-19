@@ -23,6 +23,7 @@ namespace PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate
 
         private Type m_persistentType;
         private ISession m_session = null;
+		private String m_dbLocation = null;
 
         #region Constructor
 
@@ -37,17 +38,17 @@ namespace PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate
 
         #endregion
 
-        #region Getter Methods
+        #region Member Methods
 
         /// <summary>
-        /// Uses NHibernateHelper to create and open a Hibernate Session if one does not already exist.
+        /// Uses NHibernateUtil to create and open a Hibernate Session if one does not already exist.
         /// </summary>
         /// <returns>A configured Hibernate ISession</returns>
         protected ISession GetSession()
         {
             if (m_session == null)
             {
-                m_session = NHibernateUtil.OpenSession();
+				m_session = NHibernateUtil.OpenSession();
             }
             return m_session;
         }
@@ -60,6 +61,15 @@ namespace PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate
         {
             return m_persistentType;
         }
+		
+		/// <summary>
+		/// A simple public getter and setter for m_dbLocation
+		/// </summary>
+		public String DbLocation
+		{
+			get { return m_dbLocation; }
+			set { m_dbLocation = value; }
+		}
 
         #endregion
 
