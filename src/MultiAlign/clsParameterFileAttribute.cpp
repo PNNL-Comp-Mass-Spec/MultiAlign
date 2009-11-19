@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+
 #include ".\clsParameterFileAttribute.h"
 #using <mscorlib.dll>
 

@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+
 #include ".\Protein.h"
 
 namespace MultiAlignEngine

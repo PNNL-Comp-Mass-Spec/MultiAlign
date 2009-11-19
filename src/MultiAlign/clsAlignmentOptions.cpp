@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+
 #include ".\clsalignmentoptions.h"
 #using <mscorlib.dll>
 

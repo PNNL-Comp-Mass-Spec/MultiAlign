@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+
 #include ".\clsclusterData.h"
 #include "clsMassTimeTag.h"
 #using <mscorlib.dll>
@@ -332,8 +332,24 @@ namespace MultiAlignEngine
 			for (int clusterNum = 0; clusterNum < mintNumClusters; clusterNum++)
 			{
 				clsCluster *cluster = dynamic_cast<Features::clsCluster *>(marrClusters->Item[clusterNum]); 
-				clsMassTimeTag *mtTag = new clsMassTimeTag(
-					cluster->mdouble_mass_calibrated, cluster->mdouble_aligned_net, clusterNum);
+									
+				clsMassTimeTag *mtTag = new clsMassTimeTag(	cluster->mdouble_mass_calibrated, 
+															cluster->mdouble_aligned_net, 
+															clusterNum);
+				arrMSFeatures->Add(mtTag); 
+			}
+			return arrMSFeatures; 
+		}
+ 		System::Collections::ArrayList* clsClusterData::GetMassAndTimeTags(double shiftDaltons)
+		{
+			System::Collections::ArrayList *arrMSFeatures = new System::Collections::ArrayList(mintNumClusters);
+			for (int clusterNum = 0; clusterNum < mintNumClusters; clusterNum++)
+			{
+				clsCluster *cluster = dynamic_cast<Features::clsCluster *>(marrClusters->Item[clusterNum]); 
+									
+				clsMassTimeTag *mtTag = new clsMassTimeTag(	cluster->mdouble_mass_calibrated + shiftDaltons, 
+															cluster->mdouble_aligned_net, 
+															clusterNum);
 				arrMSFeatures->Add(mtTag); 
 			}
 			return arrMSFeatures; 

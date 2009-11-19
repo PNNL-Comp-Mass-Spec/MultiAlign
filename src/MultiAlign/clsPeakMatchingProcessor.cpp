@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+
 #include "clsMassTimeTag.h" 
 #include ".\clsPeakMatchingProcessor.h"
 #using <mscorlib.dll>
@@ -97,10 +97,23 @@ namespace MultiAlignEngine
 			// Done peak matching!
 			return peakMatchingResults; 
 		}
-		clsPeakMatchingResults* clsPeakMatchingProcessor::PerformPeakMatching(Features::clsClusterData *clusterData, 
-			MassTags::clsMassTagDB *masstagDB)
+		clsPeakMatchingResults* clsPeakMatchingProcessor::PerformPeakMatching(
+												Features::clsClusterData *clusterData, 
+												MassTags::clsMassTagDB *masstagDB)
 		{
-			System::Collections::ArrayList *arrMSFeatures = clusterData->GetMassAndTimeTags(); 
+			return PerformPeakMatching(clusterData,
+								masstagDB,
+								0.0);
+		}
+		
+		clsPeakMatchingResults* clsPeakMatchingProcessor::PerformPeakMatching(
+												Features::clsClusterData *clusterData, 
+												MassTags::clsMassTagDB *masstagDB,
+												double shiftDaltons)
+		{
+			
+			
+			System::Collections::ArrayList *arrMSFeatures = clusterData->GetMassAndTimeTags(shiftDaltons); 
 
 			// copy mass tag database. 
 			System::Collections::ArrayList *arrMassTags = masstagDB->GetMassAndTimeTags(); 
@@ -122,11 +135,11 @@ namespace MultiAlignEngine
 				clsMassTimeTag *mtTag = dynamic_cast<clsMassTimeTag *>(arrMSFeatures->Item[elemNum]); 
 				if (!mtTag->mblnMSMS)
 				{
-					double lowerNET = mtTag->mdblNET - mdblNETTolerance; 
+					double lowerNET  = mtTag->mdblNET - mdblNETTolerance; 
 					double higherNET = mtTag->mdblNET + mdblNETTolerance; 
 
 					double currentMassTolerance = mtTag->mdblMass * mdblMassTolerance / 1000000.0;
-					double lowerMass = mtTag->mdblMass - currentMassTolerance;  
+					double lowerMass  = mtTag->mdblMass - currentMassTolerance;  
 					double higherMass = mtTag->mdblMass + currentMassTolerance;  
 
 					int matchIndex = elemNum -1;

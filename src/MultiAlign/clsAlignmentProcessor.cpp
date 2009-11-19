@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+
 #include "clsalignmentprocessor.h"
 #include "classAlignmentMZBoundary.h"
 

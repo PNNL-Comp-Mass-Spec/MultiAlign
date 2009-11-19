@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+
 #include ".\clsutilities.h"
 #using <mscorlib.dll>
 

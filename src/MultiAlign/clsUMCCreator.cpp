@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+
 #using	 <mscorlib.dll>
 #include "clsUMCCreator.h"
 

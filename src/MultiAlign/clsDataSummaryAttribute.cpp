@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+
 #include ".\clsdatasummaryAttribute.h"
 #using <mscorlib.dll>
 

@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+
 #include ".\point.h"
 
 namespace MultiAlignEngine

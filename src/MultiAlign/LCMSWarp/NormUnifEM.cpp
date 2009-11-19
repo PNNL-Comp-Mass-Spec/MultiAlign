@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+
 #include "normunifem.h"
 #include <float.h> 
 

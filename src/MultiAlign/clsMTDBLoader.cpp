@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+
 #include ".\clsmtdbloader.h"
 #using <mscorlib.dll>
 

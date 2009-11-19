@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+
 #include ".\clsprotein.h"
 #using <mscorlib.dll>
 

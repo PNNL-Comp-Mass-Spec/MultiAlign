@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+
 #include ".\clsalignmentfunction.h"
 
 namespace MultiAlignEngine

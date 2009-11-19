@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+
 #include "mathutils.h"
 #include <math.h>
 

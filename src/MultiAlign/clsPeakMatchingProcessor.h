@@ -26,7 +26,11 @@ namespace MultiAlignEngine
 			~clsPeakMatchingProcessor(void);
 
 			clsPeakMatchingResults* PerformPeakMatching(Features::clsUMCData *umcData, int datasetIndex, MassTags::clsMassTagDB *masstagDB); 
-			clsPeakMatchingResults* PerformPeakMatching(Features::clsClusterData *clusterData, MassTags::clsMassTagDB *masstagDB); 
+			clsPeakMatchingResults* PerformPeakMatching(Features::clsClusterData *clusterData, MassTags::clsMassTagDB *masstagDB);
+			clsPeakMatchingResults* clsPeakMatchingProcessor::PerformPeakMatching(
+												Features::clsClusterData *clusterData, 
+												MassTags::clsMassTagDB *masstagDB,
+												double shiftDaltons);
 
 			__property enmState get_State()
 			{

@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+
 #include "clsUtilities.h" 
 #include ".\clsPeakMatchingResults.h"
 #using <mscorlib.dll>

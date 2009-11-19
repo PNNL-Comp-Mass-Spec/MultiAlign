@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+
 #include <fstream> 
 #include <float.h> 
 #include <math.h>

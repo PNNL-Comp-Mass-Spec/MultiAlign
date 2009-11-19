@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+
 #include ".\clsClusterOptions.h"
 #using <mscorlib.dll>
 

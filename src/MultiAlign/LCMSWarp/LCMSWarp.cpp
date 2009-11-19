@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+
 #include ".\LCMSWarp.h"
 #include <math.h>
 #include <algorithm>

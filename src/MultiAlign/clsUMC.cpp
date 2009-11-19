@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+
 #include ".\clsumc.h"
 #include "UMCCreation\UMC.h"
 

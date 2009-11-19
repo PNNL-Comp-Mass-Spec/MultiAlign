@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+
 #include ".\MassTagDB.h"
 
 namespace MultiAlignEngine

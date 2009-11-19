@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+
 #include ".\combinedregression.h"
 #include <fstream> 
 using namespace std; 

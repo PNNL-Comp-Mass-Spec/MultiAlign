@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+
 #include ".\clscluster.h"
 #using <mscorlib.dll>
 namespace MultiAlignEngine

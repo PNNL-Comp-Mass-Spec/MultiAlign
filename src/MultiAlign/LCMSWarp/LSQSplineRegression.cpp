@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+
 
 #include <algorithm>
 #include "LSQSplineRegression.h"

@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+
 #include ".\clsfactorinfo.h"
 #using <mscorlib.dll>
 

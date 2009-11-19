@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+
 #include ".\MassTimeFeature.h"
 
 namespace MultiAlignEngine

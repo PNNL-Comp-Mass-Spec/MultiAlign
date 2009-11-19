@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+
 #include ".\FeatureMatch.h"
 #using <mscorlib.dll>
 

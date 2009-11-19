@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+
 #include ".\clsClusterProcessor.h"
 #using <mscorlib.dll>
 #include "SLClustering/MassTimeSLClustering.h" 

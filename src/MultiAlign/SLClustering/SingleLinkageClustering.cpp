@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+
 #include ".\Singlelinkageclustering.h"
 #include <algorithm> 
 

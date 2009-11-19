@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+
 #include ".\clsmasstagdatabaseoptions.h"
 #using <mscorlib.dll>
 

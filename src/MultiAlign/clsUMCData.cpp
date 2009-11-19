@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+
 #include ".\clsumcdata.h"
 #include "clsMassTimeTag.h"
 

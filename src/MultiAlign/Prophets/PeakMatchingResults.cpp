@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+
 #include "PeakMatchingResults.h"
 
 namespace MultiAlignEngine

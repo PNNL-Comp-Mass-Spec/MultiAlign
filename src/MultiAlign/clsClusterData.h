@@ -60,6 +60,7 @@ namespace MultiAlignEngine
 				return marrClusterMainMemberIndex[clusterIndex*mintNumDatasets + datasetNum]; 
 			}
 			System::Collections::ArrayList* GetMassAndTimeTags(); 
+			System::Collections::ArrayList* GetMassAndTimeTags(double shift); 
 			clsClusterData(MultiAlignEngine::Features::clsUMC *arrUmcs __gc[]);
 			~clsClusterData(void);
 			void GetMinMaxNET(float __gc &minNET, float __gc &maxNET) 

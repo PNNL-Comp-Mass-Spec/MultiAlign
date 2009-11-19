@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+
 #include ".\clsPeakProphetProcessor.h"
 #using <mscorlib.dll>
 
