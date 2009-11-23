@@ -18,7 +18,7 @@ namespace PNNLControls
 		private const int MIN_LEAF_HEIGHT = 30;
 
 		#region Event Delegate Declarations 
-		public delegate void UpdateProgress(bool show, int percent, string message);
+		public new delegate void UpdateProgress(bool show, int percent, string message);
 		public delegate void DelegateSelectedLabel(int labelIndex, bool selected, bool isRow);
 		public delegate void DelegateSelectedPlot(int startRow, int endRow, int startColumn, int endColumn, bool selected);		
 		/// <summary>

@@ -1137,7 +1137,7 @@ namespace ExternalControls
 		/// </summary>
 		[Browsable(true), Category("Appearance")]
 		[DefaultValue(defaultBorderStyle), Description("Indicates the color panel's border style.")]
-		public System.Windows.Forms.BorderStyle BorderStyle
+		public new System.Windows.Forms.BorderStyle BorderStyle
 		{
 			get
 			{

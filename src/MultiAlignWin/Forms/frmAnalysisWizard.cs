@@ -1298,7 +1298,7 @@ namespace MultiAlignWin
                     }
                     catch (ThreadAbortException ex)
                     {
-
+						System.Diagnostics.Trace.WriteLine(ex.Message);
                     }
                     catch
                     {

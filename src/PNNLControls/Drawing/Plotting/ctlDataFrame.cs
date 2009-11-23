@@ -43,7 +43,7 @@ namespace PNNLControls
 		/// 
 		/// </summary>
 		public delegate void ClientSizeDelegate (Size size);
-		public event ClientSizeDelegate ClientSize = null;
+		public new event ClientSizeDelegate ClientSize = null;
 
 		/// <summary>
 		/// 

@@ -861,7 +861,7 @@ namespace PNNLControls
 			return (mLeaves);
 		}
 
-		public ContextMenu ContextMenu
+		public override ContextMenu ContextMenu
 		{
 			get
 			{

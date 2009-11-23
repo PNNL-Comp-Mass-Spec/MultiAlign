@@ -467,7 +467,7 @@ namespace PNNLControls
 
 #endregion
 #region IDisposable Members
-		public void Dispose()
+		public new void Dispose()
 		{
 			CloseConnection();            
 		}

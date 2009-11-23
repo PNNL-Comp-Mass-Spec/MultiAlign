@@ -310,8 +310,8 @@ namespace MultiAlignEngine
 						int y_section_from = y_section - jump + mint_num_jumps; 
 						if (y_section_from < 0)
 							break; 
-						int previous_alignment_index = (x_section-1) * mint_num_y_bins + y_section_from; 
-						int previous_match_index = (x_section-1) * mint_num_section_matches 
+						std::vector<double>::size_type previous_alignment_index = (x_section-1) * mint_num_y_bins + y_section_from; 
+						std::vector<double>::size_type previous_match_index = (x_section-1) * mint_num_section_matches 
 											+ y_section_from * (2*mint_num_jumps+1) + jump;
 						if ((previous_alignment_index > mvect_alignment_scores.size() - 1) || 
 							(previous_match_index > mvect_match_scores.size() - 1))

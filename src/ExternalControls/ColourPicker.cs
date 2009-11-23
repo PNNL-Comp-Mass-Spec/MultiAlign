@@ -433,7 +433,7 @@ namespace ExternalControls
 		[Browsable(true), Category("Appearance")]
 		[Description("Indicates the border style of the picker control.")]
 		[DefaultValue(defaultBorderStyle)]
-		public System.Windows.Forms.BorderStyle BorderStyle
+		public new System.Windows.Forms.BorderStyle BorderStyle
 		{
 			get
 			{
@@ -705,7 +705,7 @@ namespace ExternalControls
 		/// </remarks>
 		[Browsable(true), Category("ColorPicker"), DefaultValue(defaultAutoSize)]
 		[Description("If true, the height of the control is fixed and depends on the font.")]
-		public bool AutoSize
+		public override bool AutoSize
 		{
 			get
 			{

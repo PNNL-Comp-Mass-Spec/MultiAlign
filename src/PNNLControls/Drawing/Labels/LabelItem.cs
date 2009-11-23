@@ -235,7 +235,7 @@ namespace PNNLControls
 		/// autosizes the font for the label text
 		/// </summary>
 		/// <param name="g"></param>
-		private void AutoSize (Graphics g)
+		private new void AutoSize (Graphics g)
 		{
 			double dpiY = (double) g.DpiY;
 			double height = 1.0;

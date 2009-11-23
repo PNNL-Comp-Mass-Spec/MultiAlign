@@ -307,7 +307,7 @@ namespace ExternalControls
 		/// pixel.
 		/// </remarks>
 		[Browsable(true), Category("ColorPanel")]
-		public bool AutoSize
+		public override bool AutoSize
 		{
 			get
 			{
@@ -353,7 +353,7 @@ namespace ExternalControls
 		/// Set/get the controls border style.
 		/// </summary>
 		[Browsable(true), Category("ColorPanel")]
-		public System.Windows.Forms.BorderStyle BorderStyle
+		public new System.Windows.Forms.BorderStyle BorderStyle
 		{
 			get
 			{

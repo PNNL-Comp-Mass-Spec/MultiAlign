@@ -581,13 +581,13 @@ namespace MultiAlignEngine
 			massErrorHistogram = new double __gc[massErrorBin.size(), 2]; 
 			netErrorHistogram  = new double __gc[netErrorBin.size(),  2]; 
 
-			for(int i = 0; i < massErrorBin.size(); i++)
+			for(std::vector<double>::size_type i = 0; i < massErrorBin.size(); i++)
 			{
 				massErrorHistogram[i,0] = massErrorBin[i];
 				massErrorHistogram[i,1] = massErrorFreq[i];
 			}
 
-			for(int i = 0; i < netErrorBin.size(); i++)
+			for(std::vector<double>::size_type i = 0; i < netErrorBin.size(); i++)
 			{
 				netErrorHistogram[i,0] = netErrorBin[i];
 				netErrorHistogram[i,1] = netErrorFreq[i];

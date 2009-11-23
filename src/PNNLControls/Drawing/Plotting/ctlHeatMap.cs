@@ -9,8 +9,8 @@ namespace PNNLControls
 	public class ctlHeatMap : PNNLControls.ctlDataFrame
 	{
 		private System.ComponentModel.IContainer components = null;
-		private System.Windows.Forms.Splitter splitterVertical;
-		private System.Windows.Forms.Splitter splitterHorizontal;
+		private new System.Windows.Forms.Splitter splitterVertical;
+		private new System.Windows.Forms.Splitter splitterHorizontal;
 		protected PNNLControls.ctlHeatMapClient hMapClient;
 
 		

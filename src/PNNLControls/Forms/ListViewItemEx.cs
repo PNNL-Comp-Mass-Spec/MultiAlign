@@ -48,7 +48,7 @@ namespace PNNLControls
 	public abstract class ListViewExSubItem: ListViewItem.ListViewSubItem
 	{			
 		public		event DelegateListViewExEvent Action;		
-		public		Rectangle Bounds;
+		public new	Rectangle Bounds;
 		protected	ToolTip m_tip = new ToolTip();						
 		private		Color mobj_highlightBackColor;
 		private		Color mobj_highlightForeColor;
