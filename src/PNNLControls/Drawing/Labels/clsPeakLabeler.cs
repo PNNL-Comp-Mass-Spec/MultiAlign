@@ -253,38 +253,43 @@ namespace PNNLControls
 			try
 			{
 				if (obj.GetType() != typeof(float))
-					return "" ; 
+					return "";
 
-				float val = (float) obj ; 
+				float val = (float)obj;
 
-				int index_of_point ; 
-				if (val == 0) 
+				/// 0 should format to 0.00
+				if (val == 0)
 				{
-					return "0";
+					return "0.00";
+				}
+				///If the number is not less than 1 and greater than -1, it should always show 2 decimals
+				else if (val >= 1 || val <= -1)
+				{
+					return Math.Round(val, mint_decimal_place).ToString("#0.00");
 				}
 
-				if (!this.ScientificNotationRequired)
+				//////////////////////////////////////////////////////////////////////////////////
+				/// Find the decimal place that is the location of the first non-zero digit
+				//////////////////////////////////////////////////////////////////////////////////
+				int decimalIndex = 0;
+				char[] decimals = val.ToString().Split('.')[1].ToCharArray();
+
+				for (int i = 0; i < decimals.Length; i++)
 				{
-					index_of_point = val.ToString().IndexOf('.') ;
-					int decimal_place_to_see_till = Convert.ToInt32(Math.Floor(Math.Log10(val))) ; 
-					if (index_of_point >= 0 && decimal_place_to_see_till < 0)
+					if (!decimals[i].Equals('0'))
 					{
-						return val.ToString("f" + (-1*decimal_place_to_see_till+mint_decimal_place-1).ToString()) ; 
-					}
-					else
-					{
-						string val_str = val.ToString() ; 
-						if (index_of_point == -1 || val_str.Length < index_of_point+1+mint_decimal_place )
-							return val_str ; 
-						return val_str.Substring(0, index_of_point+1+mint_decimal_place) ; 
+						decimalIndex = i;
+						break;
 					}
 				}
-				return "" ; 
+
+				///Round the value at the (decimal index found + mint_decimal_place) decimal and format to show 2 or more decimals
+				return Math.Round(val, mint_decimal_place + decimalIndex).ToString("#0.00###############");
 			}
 			catch (Exception e)
 			{
-				Console.WriteLine(e.Message + " at " + e.StackTrace) ; 
-				return "" ; 
+				Console.WriteLine(e.Message + " at " + e.StackTrace);
+				return "";
 			}
 		}
 
