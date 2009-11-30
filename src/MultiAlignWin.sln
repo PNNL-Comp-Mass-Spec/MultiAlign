@@ -18,8 +18,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MultiAlignEngine", "MultiAl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PNNLProteomics", "PNNLProteomics\PNNLProteomics.csproj", "{BDFA22C4-5822-4AA5-996E-6FDE57F7118B}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SMARTWrapper", "..\..\..\SMART\SMARTWrapper\SMARTWrapper.vcproj", "{B5ECDBD9-5AF8-4083-B217-BC3031EA9A8D}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -170,26 +168,6 @@ Global
 		{BDFA22C4-5822-4AA5-996E-6FDE57F7118B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BDFA22C4-5822-4AA5-996E-6FDE57F7118B}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{BDFA22C4-5822-4AA5-996E-6FDE57F7118B}.Release|Win32.ActiveCfg = Release|Any CPU
-		{B5ECDBD9-5AF8-4083-B217-BC3031EA9A8D}.Debug|Any CPU.ActiveCfg = Debug|Win32
-		{B5ECDBD9-5AF8-4083-B217-BC3031EA9A8D}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
-		{B5ECDBD9-5AF8-4083-B217-BC3031EA9A8D}.Debug|Mixed Platforms.Build.0 = Debug|Win32
-		{B5ECDBD9-5AF8-4083-B217-BC3031EA9A8D}.Debug|Win32.ActiveCfg = Debug|Win32
-		{B5ECDBD9-5AF8-4083-B217-BC3031EA9A8D}.Debug|Win32.Build.0 = Debug|Win32
-		{B5ECDBD9-5AF8-4083-B217-BC3031EA9A8D}.Release_32Bit|Any CPU.ActiveCfg = Release|Win32
-		{B5ECDBD9-5AF8-4083-B217-BC3031EA9A8D}.Release_32Bit|Mixed Platforms.ActiveCfg = Release|Win32
-		{B5ECDBD9-5AF8-4083-B217-BC3031EA9A8D}.Release_32Bit|Mixed Platforms.Build.0 = Release|Win32
-		{B5ECDBD9-5AF8-4083-B217-BC3031EA9A8D}.Release_32Bit|Win32.ActiveCfg = Release|Win32
-		{B5ECDBD9-5AF8-4083-B217-BC3031EA9A8D}.Release_32Bit|Win32.Build.0 = Release|Win32
-		{B5ECDBD9-5AF8-4083-B217-BC3031EA9A8D}.Release_64Bit|Any CPU.ActiveCfg = Release|Win32
-		{B5ECDBD9-5AF8-4083-B217-BC3031EA9A8D}.Release_64Bit|Mixed Platforms.ActiveCfg = Release|Win32
-		{B5ECDBD9-5AF8-4083-B217-BC3031EA9A8D}.Release_64Bit|Mixed Platforms.Build.0 = Release|Win32
-		{B5ECDBD9-5AF8-4083-B217-BC3031EA9A8D}.Release_64Bit|Win32.ActiveCfg = Release|Win32
-		{B5ECDBD9-5AF8-4083-B217-BC3031EA9A8D}.Release_64Bit|Win32.Build.0 = Release|Win32
-		{B5ECDBD9-5AF8-4083-B217-BC3031EA9A8D}.Release|Any CPU.ActiveCfg = Release|Win32
-		{B5ECDBD9-5AF8-4083-B217-BC3031EA9A8D}.Release|Mixed Platforms.ActiveCfg = Release|Win32
-		{B5ECDBD9-5AF8-4083-B217-BC3031EA9A8D}.Release|Mixed Platforms.Build.0 = Release|Win32
-		{B5ECDBD9-5AF8-4083-B217-BC3031EA9A8D}.Release|Win32.ActiveCfg = Release|Win32
-		{B5ECDBD9-5AF8-4083-B217-BC3031EA9A8D}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
