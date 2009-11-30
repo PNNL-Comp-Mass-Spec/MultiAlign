@@ -60,10 +60,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\log4net.dll</HintPath>
     </Reference>
-    <Reference Include="MultiAlignEngine, Version=1.0.3593.16506, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\MultiAlign\build\debug\MultiAlignEngine.dll</HintPath>
-    </Reference>
     <Reference Include="NHibernate, Version=2.1.1.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\NHibernate.dll</HintPath>
@@ -140,6 +136,12 @@
     <Content Include="MultiAlign\Hibernate\Mappings\Peptide.hbm.xml" />
     <Content Include="MultiAlign\Hibernate\Mappings\UmcCluster.hbm.xml" />
     <Content Include="MultiAlign\Hibernate\Mappings\Umc.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MultiAlign\MultiAlign.vcproj">
+      <Project>{5A7E3D3C-03F3-4586-8A2C-BAE1EBA4623E}</Project>
+      <Name>MultiAlignEngine</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

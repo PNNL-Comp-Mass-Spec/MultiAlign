@@ -99,10 +99,6 @@
     <Reference Include="Microsoft.VisualC">
       <Name>Microsoft.VisualC</Name>
     </Reference>
-    <Reference Include="MultiAlignEngine, Version=1.0.3593.14833, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\MultiAlign\build\debug\MultiAlignEngine.dll</HintPath>
-    </Reference>
     <Reference Include="SMARTWrapper, Version=1.0.3600.18050, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\SMARTWrapper.dll</HintPath>
@@ -133,6 +129,10 @@
     <ProjectReference Include="..\ExternalControls\ExternalControls.csproj">
       <Project>{46C6D9CE-672F-4491-BF67-AA3F8DC811B7}</Project>
       <Name>ExternalControls</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MultiAlign\MultiAlign.vcproj">
+      <Project>{5A7E3D3C-03F3-4586-8A2C-BAE1EBA4623E}</Project>
+      <Name>MultiAlignEngine</Name>
     </ProjectReference>
     <ProjectReference Include="..\PNNLControls\PNNLControls.csproj">
       <Project>{9409DE9B-F3F0-41AA-95F5-8BFD525F5669}</Project>
