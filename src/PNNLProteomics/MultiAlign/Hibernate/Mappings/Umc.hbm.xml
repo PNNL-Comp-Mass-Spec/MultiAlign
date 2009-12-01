@@ -11,7 +11,7 @@
 		<many-to-one name="UmcCluster" class="UmcCluster" column="CLUSTER_ID" not-null="false" />
 		<property name="Mass" column="MASS" type="double" not-null="false" />
 		<property name="MassCalibrated" column="MASS_CALIBRATED" type="double" not-null="false" />
-    <property name="MassStandardDeviation" column="MASS_STANDARD_DEVIATION" type="double" not-null="false" />
+		<property name="MassStandardDeviation" column="MASS_STANDARD_DEVIATION" type="double" not-null="false" />
 		<property name="Net" column="NET" type="double" not-null="false" />
 		<property name="Scan" column="SCAN" type="short" not-null="false" />
 		<property name="ScanStart" column="SCAN_START" type="short" not-null="false" />
@@ -22,6 +22,7 @@
 		<property name="SpectralCount" column="SPECTRAL_COUNT" type="short" not-null="false" />
 		<property name="AbundanceMax" column="ABUNDANCE_MAX" type="double" not-null="false" />
 		<property name="AbundanceSum" column="ABUNDANCE_SUM" type="double" not-null="false" />
+		<property name="DriftTime" column="DRIFT_TIME" type="float" not-null="false" />
 	</class>
 
 </hibernate-mapping>

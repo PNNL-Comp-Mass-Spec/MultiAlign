@@ -28,6 +28,7 @@ namespace PNNLProteomics.MultiAlign.Hibernate.Domain
         private ushort spectralCount;
         private double abundanceMax;
         private double abundanceSum;
+		private float driftTime;
 
         public virtual int Id
         {
@@ -124,6 +125,12 @@ namespace PNNLProteomics.MultiAlign.Hibernate.Domain
             get { return abundanceSum; }
             set { abundanceSum = value; }
         }
+
+		public virtual float DriftTime
+		{
+			get { return driftTime; }
+			set { driftTime = value; }
+		}
 
     }
 
