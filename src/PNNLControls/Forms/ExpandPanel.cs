@@ -1246,7 +1246,6 @@ namespace PNNLControls
 		{
 			inExpandContract = true;
 			this.animationTimer.Start();
-			//Console.WriteLine("Began contraction");
 			this.mExpansionStartTime = contractionStart;
 			this.mExpandMode = ExpandMode.Contracting;
 			this.OnContracting();
@@ -1255,7 +1254,6 @@ namespace PNNLControls
 			{
 				EndContraction();
 			}
-			//Console.WriteLine("Began end contraction");
 		}
 
 		/// <summary>
@@ -1281,7 +1279,6 @@ namespace PNNLControls
 		{
 			inExpandContract = true;
 			this.animationTimer.Start();
-			//Console.WriteLine("Began expansion");
 			this.mExpansionStartTime = expansionStart;
 			this.mExpandMode = ExpandMode.Expanding;
 			this.OnExpanding();
@@ -1333,7 +1330,6 @@ namespace PNNLControls
 		/// </summary>
 		private void ExpandInternal() 
 		{
-			//Console.WriteLine("Expand");
 			switch (ExpandMode) 
 			{
 				case ExpandMode.Expanded :
@@ -1597,7 +1593,6 @@ namespace PNNLControls
 			{
 				return;
 			}
-			//Console.WriteLine("Checked Changed");
 			bool show = this.headerButton.Checked;
 			this.mHeaderPanel.Invalidate();
 			
@@ -1609,7 +1604,6 @@ namespace PNNLControls
 			{
 				this.ContractInternal();
 			}
-			//Console.WriteLine("End check changed");
 		}
 
 		/// <summary>
@@ -1621,7 +1615,6 @@ namespace PNNLControls
 		{
 			if (inExpandContract) 
 			{
-				//Console.WriteLine("Animation Tick");
 				// Determine if the amount of time that the expansion has been 
 				// going on for is more than the time set for an expansion to take place.
 				TimeSpan elapsed = DateTime.Now.Subtract(this.mExpansionStartTime);
@@ -1630,7 +1623,6 @@ namespace PNNLControls
 				switch (this.ExpandMode)
 				{
 					case ExpandMode.Expanding :
-						//Console.WriteLine("Animation Tick Expanding");
 						// update the height of the control to the correct value
 						if (finished)
 						{
@@ -1664,7 +1656,6 @@ namespace PNNLControls
 		/// </summary>
 		private void UpdateStateImmediate()
 		{
-			//Console.WriteLine("Updating state");
 			if (this.headerButton.Checked)
 			{
 				this.EndExpansion();

@@ -1083,7 +1083,6 @@ namespace PNNLControls
 		/// <returns>The actual viewport to be used.</returns>
 		internal RectangleF GetActualViewPort(RectangleF potentialViewPort) 
 		{
-			//Console.WriteLine("Finding actual view port");
 			float yMin = potentialViewPort.Top;
 			float yMax = potentialViewPort.Bottom;
 			float xMin = potentialViewPort.Left;
@@ -2428,7 +2427,6 @@ namespace PNNLControls
 
 		private void ctlChartBase_MouseUp(object sender, System.Windows.Forms.MouseEventArgs e)
 		{
-			//Console.WriteLine("Mouse up");
 			Point p = new Point(e.X, e.Y);
 			ChartLocation location = this.GetLocation(p);
 			if (this.mChartClickState == ChartClickState.LegendMove) 
@@ -2827,7 +2825,6 @@ namespace PNNLControls
 			// allows for copying of settings.
 			if (mSelectedSeries.Values.Count == 0) 
 			{
-				Console.WriteLine("Copying chart");
 				Metafile mf = this.ToMetafile() ; 
 
 				try
@@ -2842,7 +2839,6 @@ namespace PNNLControls
 				// Has selected series, so copy as an array of clsSeries objects
 			else 
 			{
-				Console.WriteLine("Copying series");
 				int count = mSelectedSeries.Values.Count;
 				clsSeries[] seriesToCopy = new clsSeries[count];
 				int index = 0;
@@ -2873,7 +2869,6 @@ namespace PNNLControls
 
 		protected virtual void PasteSeries(clsSeries[] series, bool byReference) 
 		{
-			Console.WriteLine("PasteSeries");
 			foreach (clsSeries s in series) 
 			{
 				clsSeries newSeries = s;

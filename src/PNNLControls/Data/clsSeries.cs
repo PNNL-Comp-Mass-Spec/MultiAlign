@@ -288,8 +288,6 @@ namespace PNNLControls
 				this.mPlotData[i] = new ChartDataPoint(point.x, point.y, point.z, this.mobjPlotParams.GetColor(point.z));
 			}
 			this.mPlotDataCurrent = true;
-			//Console.WriteLine("Time to create plot data for {0} points: {1}", 
-			//	dataPoints.Count, DateTime.Now.Subtract(start));
 		}
 
 		private void PlotParamsChanged(Object sender, PlotParamsChangedEventArgs args) 

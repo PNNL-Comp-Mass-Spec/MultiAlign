@@ -357,15 +357,9 @@ namespace PNNLControls
 		public float SetTickAndFont(Graphics g)
 		{
 			mint_labeling_interval = 1 ; 
-			//Console.WriteLine("Beginning SetTickAndFont");
 			SetFirstTickVal() ; 
-			//Console.WriteLine("Set First Tick");
-			//Debug.WriteLine("Determined first tick value");
 			float val = SetFontForGraphics(g) ;
-			//Debug.WriteLine("Set font");
 			//SetLabelingInterval(g) ; 
-			//Debug.WriteLine("Set unit labeling interval");
-			//Console.WriteLine("Finished SetTickAndFort");
 			return val;
 		}
 
@@ -377,14 +371,11 @@ namespace PNNLControls
 		{
 			// font is already decided, all we need is the labeling interval for this 
 			// particular font and axis values.
-			//Console.WriteLine("Starting Layout");
 			this.SetLabelingInterval(g);
-			//Console.WriteLine("Finished Layout");
 		}
 
 		public void Draw(Graphics g, Color c)
 		{
-			//Console.WriteLine("Beginning Draw");
 			DrawAxis(g) ; 
 			DrawUnits(g, c) ;
 		}
@@ -413,7 +404,6 @@ namespace PNNLControls
 		private void DrawUnits(Graphics g, Color c)
 		{
 			Brush unit_brush = new SolidBrush(c);
-			//Console.WriteLine("Beginning Unit Drawing");
 			StringFormat strTextFormat = new System.Drawing.StringFormat();
 			strTextFormat.FormatFlags = System.Drawing.StringFormatFlags.NoClip ; 
 			strTextFormat.Alignment = System.Drawing.StringAlignment.Center;
@@ -448,7 +438,6 @@ namespace PNNLControls
 				}      
 			}
 			unit_brush.Dispose();
-			//Console.WriteLine("Draw units finished");
 		}
 
 
@@ -1243,18 +1232,11 @@ namespace PNNLControls
 
 		public void Draw(Graphics g, Color foreColor)
 		{  
-			//Console.WriteLine("Beginning axes draw");
-			//Debug.WriteLine("Starting axes drawing");
 			this.mobj_yUnitPlotter.Draw(g, foreColor) ; 
-			//Debug.WriteLine("Drew y units");
 			this.mobj_xUnitPlotter.Draw(g, foreColor) ;
-			//Debug.WriteLine("Drew x units");
 			this.mobj_xLabelPlotter.Draw(g, foreColor) ;
-			//Debug.WriteLine("Drew x lab, el");
 			this.mobj_yLabelPlotter.Draw(g, foreColor) ;
-			//Debug.WriteLine("Drew y label");
-//			this.mobj_TitlePlotter.Draw(g) ; 
-			//Debug.WriteLine("Drew title label");
+			//this.mobj_TitlePlotter.Draw(g) ; 
 		}
 		#endregion
 

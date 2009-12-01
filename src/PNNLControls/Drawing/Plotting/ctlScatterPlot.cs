@@ -829,7 +829,6 @@ namespace PNNLControls
 		private void OnRefresh()
 		{			
 			mnu_Save.Enabled = false;
-			System.Console.WriteLine("Scatterplot: ON_REFRESH");
 			try
 			{
 				//System.Diagnostics.StackTrace trace = new System.Diagnostics.StackTrace();
@@ -1381,12 +1380,10 @@ namespace PNNLControls
 				// Cause the base to repaint itself.
 				if (mnu_FitToScreen.Checked == true)
 				{
-					Console.WriteLine("\t\tScatterPlot: Resize Fit to screen");
 					FitToScreen();
 				}
 				else
 				{
-					
 					UpdateControlSize();
 				}
 				//m_redraw = false;

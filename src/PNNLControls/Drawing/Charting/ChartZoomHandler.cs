@@ -290,7 +290,6 @@ namespace PNNLControls
 			if (args.Button == MouseButtons.Left && 
 				System.Windows.Forms.ContainerControl.ModifierKeys == this.ModifierKeys) 
 			{
-				//Console.WriteLine("Mouse pressed");
 				// set initial point and move to new state
 				start = new Point(args.X, args.Y);
 				state = state.GetBeginZoomState((ctlChartBase)sender, start);
@@ -338,7 +337,6 @@ namespace PNNLControls
 		{
 			if (sender.Equals(activeChart) && args.Button == MouseButtons.Left) 
 			{
-				//Console.WriteLine("Mouse released");
 				end = new Point(args.X, args.Y);
 				// If state recognizes this as a valid zoom, actually do the zoom
 				if (state.ShouldZoom((ctlChartBase) activeChart, start, end)) 

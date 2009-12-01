@@ -426,7 +426,6 @@ namespace PNNLControls
 
 				if (!sameCategory) 
 				{
-					//Console.WriteLine("Changing category");
 					this.RemoveFormFromDisplay(item, false);
 					this.AddFormToDisplay(item, false);
 				} 
@@ -629,7 +628,6 @@ namespace PNNLControls
 			//Console.WriteLine("Message {0} {1} {2} {3}", m.HWnd, m.Msg.ToString("x4"), m.LParam, m.WParam);
 			if (m.Msg == WM_EXITMENULOOP) 
 			{
-				Console.WriteLine("Exited Context Menu");
 				m.Result = IntPtr.Zero;
 			}
 			base.WndProc (ref m);

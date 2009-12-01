@@ -2436,7 +2436,6 @@ namespace PNNLControls
 
 		private void ctlHierarchalLabel_Resize(object sender, System.EventArgs e)
 		{
-			Console.WriteLine("REDRAWING LABEL---------------------------------------");
 			if (mbln_overrideResize == false)
 			{
 				RedrawLabel();

@@ -228,7 +228,6 @@ namespace PNNLControls
 
 		private void ShowSelection()
 		{
-			Console.WriteLine("ctlHeatMapClient ShowSelection") ; 
 			//Clear previous selection 
 			mSelectedBitmap = new Bitmap(mBitmap);
 

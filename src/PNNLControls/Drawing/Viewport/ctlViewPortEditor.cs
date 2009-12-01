@@ -178,7 +178,6 @@ namespace PNNLControls
 
 		private void DecodeValue() 
 		{
-			Console.WriteLine("Validating");
 			try 
 			{
 				float xLow = float.Parse( this.textXLow.Text);

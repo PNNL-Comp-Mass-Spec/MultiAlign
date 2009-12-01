@@ -127,7 +127,6 @@ namespace PNNLControls
 
 		public void Layout(Graphics g) 
 		{
-			//Console.WriteLine("Layout of Marker layer");
 			RectangleF viewPort = this.mChart.ViewPort;
 			this.mCurrentlyVisibleMarkersList.Clear();
 			// Loop through markers, selecting all of those which are within the 

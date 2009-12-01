@@ -442,7 +442,6 @@ namespace PNNLControls
 		{
 			get
 			{
-				//Console.WriteLine("Getting property descriptor");
 				return null;
 			}
 		}
@@ -456,7 +455,6 @@ namespace PNNLControls
 			//Console.WriteLine("Type requested: {0}", serviceType);
 			if (serviceType == typeof(System.Windows.Forms.Design.IWindowsFormsEditorService)) 
 			{
-				//Console.WriteLine("Returning IWFES");
 				return new DialogWindowsFromsEditorService();
 			}
 			return null;
