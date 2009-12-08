@@ -23,7 +23,6 @@ namespace PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate
 
         private Type m_persistentType;
         private ISession m_session = null;
-		private String m_dbLocation = null;
 
         #region Constructor
 
@@ -62,15 +61,6 @@ namespace PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate
             return m_persistentType;
         }
 		
-		/// <summary>
-		/// A simple public getter and setter for m_dbLocation
-		/// </summary>
-		public String DbLocation
-		{
-			get { return m_dbLocation; }
-			set { m_dbLocation = value; }
-		}
-
         #endregion
 
         /// These methods will be available to all of the DAOHibernate classes.
