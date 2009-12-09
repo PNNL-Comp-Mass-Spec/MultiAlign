@@ -16,7 +16,7 @@
 		<mapping file="../../../PNNLProteomics/MultiAlign/Hibernate/Mappings/UmcCluster.hbm.xml"/>
 		<mapping file="../../../PNNLProteomics/MultiAlign/Hibernate/Mappings/Peptide.hbm.xml"/>
 		<mapping file="../../../PNNLProteomics/MultiAlign/Hibernate/Mappings/MassTag.hbm.xml"/>
-		<mapping file="../../../PNNLProteomics/MultiAlign/Hibernate/Mappings/Modification.hbm.xml"/>
+		<!--mapping file="../../../PNNLProteomics/MultiAlign/Hibernate/Mappings/Modification.hbm.xml"/-->
 		<mapping file="../../../PNNLProteomics/MultiAlign/Hibernate/Mappings/Protein.hbm.xml"/>
 	</session-factory>
 </hibernate-configuration>

@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" 
-                   assembly="PNNLProteomics" 
-                   namespace="PNNLProteomics.MultiAlign.Hibernate.Domain">
+                   assembly="MultiAlignEngine" 
+                   namespace="MultiAlignEngine.MassTags">
 
-	<class name="MassTag" table="T_MASS_TAG">
+	<class name="clsMassTag" table="T_MASS_TAG" lazy="false">
 		<id name="Id" column="ID" type="integer">
 			<generator class="assigned" />
 		</id>
@@ -13,11 +13,11 @@
 		<property name="NetStandardDeviation" column="NET_STANDARD_DEVIATION" type="double" not-null="false" />
 		<property name="XCorr" column="XCORR" type="double" not-null="false" />
 		<property name="DiscriminantMax" column="DISCRIMINANT_MAX" type="double" not-null="false" />
-		<property name="Charge1FScore" column="CHARGE_1_F_SCORE" type="double" not-null="false" />
-		<property name="Charge2FScore" column="CHARGE_2_F_SCORE" type="double" not-null="false" />
-		<property name="Charge3FScore" column="CHARGE_3_F_SCORE" type="double" not-null="false" />
+		<property name="Charge1FScore" column="CHARGE_1_F_SCORE" type="float" not-null="false" />
+		<property name="Charge2FScore" column="CHARGE_2_F_SCORE" type="float" not-null="false" />
+		<property name="Charge3FScore" column="CHARGE_3_F_SCORE" type="float" not-null="false" />
 		<property name="CleavageState" column="CLEAVAGE_STATE" type="short" not-null="false" />
-		<set name="UmcClusterSet" table="CLUSTER_TO_MASS_TAG_MAP">
+		<!--set name="UmcClusterSet" table="CLUSTER_TO_MASS_TAG_MAP">
 			<key column="MASS_TAG_ID"/>
 			<many-to-many column="CLUSTER_ID" class="UmcCluster"/>
 		</set>
@@ -32,7 +32,7 @@
 		<set name="ProteinSet" inverse="true"  table="MASS_TAG_TO_PROTEIN_MAP">
 			<key column="MASS_TAG_ID"/>
 			<many-to-many column="PROTEIN_ID" class="Protein"/>
-		</set>
+		</set-->
 	</class>
 
 </hibernate-mapping>

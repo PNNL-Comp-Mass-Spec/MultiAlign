@@ -5,12 +5,13 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using MultiAlignEngine.Features;
 
 namespace PNNLProteomics.MultiAlign.Hibernate.Domain.DAO
 {
-    public interface IUmcDAO : IGenericDAO<Umc>
+    public interface IUmcDAO : IGenericDAO<clsUMC>
     {
-        List<Umc> FindByMass(double mass);
-        List<Umc> FindByMassRange(double mass1, double mass2);
+        List<clsUMC> FindByMass(double mass);
+        List<clsUMC> FindByMassRange(double mass1, double mass2);
     }
 }

@@ -8,11 +8,12 @@ using System.Text;
 using PNNLProteomics.MultiAlign.Hibernate.Domain.DAO;
 using NHibernate;
 using NHibernate.Criterion;
+using MultiAlignEngine.MassTags;
 
 namespace PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate
 {
 
-    public class ProteinDAOHibernate : GenericDAOHibernate<Protein>, IProteinDAO
+	public class ProteinDAOHibernate : GenericDAOHibernate<clsProtein>, IProteinDAO
     {
 
         /// <summary>
@@ -20,7 +21,7 @@ namespace PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate
         /// </summary>
         /// <param name="proteinString">Protein String to be searched for</param>
         /// <returns>List of Protein Objects</returns>
-        public ICollection<Protein> FindByProteinString(string proteinString)
+		public ICollection<clsProtein> FindByProteinString(string proteinString)
         {
             ICriterion criterion = Expression.Eq("ProteinString", proteinString);
             List<ICriterion> criterionList = new List<ICriterion>();
