@@ -24,6 +24,7 @@ namespace PNNLProteomics.MultiAlign.Hibernate.Domain
         private double charge2FScore;
         private double charge3FScore;
         private ushort cleavageState;
+		private string modifications;
         private ISet<UmcCluster> umcClusterSet;
         private ISet<Peptide> peptideSet;
         private ISet<Modification> modificationSet;
@@ -118,6 +119,12 @@ namespace PNNLProteomics.MultiAlign.Hibernate.Domain
             get { return proteinSet; }
             set { proteinSet = value; }
         }
+
+		public virtual string Modifications
+		{
+			get { return modifications; }
+			set { modifications = value; }
+		}
 
     }
 

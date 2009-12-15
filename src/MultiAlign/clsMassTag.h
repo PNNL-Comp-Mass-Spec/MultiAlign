@@ -141,6 +141,15 @@ namespace MultiAlignEngine
 				mshortCleavageState = value;
 			}
 
+			__property System::String* get_Modifications()
+			{
+				return mstrModification;
+			}
+
+			__property void set_Modifications(System::String* value){
+				mstrModification = value;
+			}
+
 		};
 	}
 }

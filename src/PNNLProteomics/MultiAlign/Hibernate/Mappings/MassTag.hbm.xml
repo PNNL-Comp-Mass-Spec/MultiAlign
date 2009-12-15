@@ -17,6 +17,7 @@
 		<property name="Charge2FScore" column="CHARGE_2_F_SCORE" type="float" not-null="false" />
 		<property name="Charge3FScore" column="CHARGE_3_F_SCORE" type="float" not-null="false" />
 		<property name="CleavageState" column="CLEAVAGE_STATE" type="short" not-null="false" />
+		<property name="Modifications" column="MODIFICATIONS" type="string" not-null="false" />
 		<!--set name="UmcClusterSet" table="CLUSTER_TO_MASS_TAG_MAP">
 			<key column="MASS_TAG_ID"/>
 			<many-to-many column="CLUSTER_ID" class="UmcCluster"/>
