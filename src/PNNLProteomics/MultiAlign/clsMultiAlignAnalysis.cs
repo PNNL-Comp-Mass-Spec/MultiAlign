@@ -20,6 +20,7 @@ using PNNLProteomics.SMART;
 using PNNLProteomics.EventModel;
 using PNNLProteomics.Data.Factors;
 using PNNLProteomics.Data.Alignment;
+using PNNLProteomics.MultiAlign;
 
 
 namespace PNNLProteomics.Data.Analysis
@@ -456,6 +457,7 @@ namespace PNNLProteomics.Data.Analysis
 				procThread.Start() ;
 
                 int highestChargeState = 0;
+				clsUMC[] loadedUMCs = null;
 
 				for (int fileNum = 0 ; fileNum < FileNames.Length ; fileNum++)
 				{
@@ -466,23 +468,46 @@ namespace PNNLProteomics.Data.Analysis
                     }
 
                     mint_statusLevel++;
-					string extension = Path.GetExtension(FileNames[fileNum]).ToUpper(); 
-					if (extension  == ".PEK")					
-						mobjUMCCreator.LoadUMCs(true) ; 					
-					else if (extension == ".CSV")					
-						mobjUMCCreator.LoadUMCs(false) ; 					
-					else					
-						throw new ArgumentException("Incorrect extension for file. Please use pek or csv files as inputs.") ; 
-					
+					string extension = Path.GetExtension(FileNames[fileNum]).ToUpper();
 
-					if (IsotopePeaksLoadedForFile != null)					
-						IsotopePeaksLoadedForFile(FileNames[fileNum], mobjUMCCreator.GetIsotopePeaks()) ;
-                                   
-                    /// 
-                    /// Finds and calculates all UMCS
-                    /// 
-					mobjUMCCreator.FindUMCs() ; 
-					clsUMC [] loadedUMCs               =  mobjUMCCreator.GetUMCs();
+					// If we are using a UMC or Feature file
+					if (extension == ".TXT")
+					{
+						///
+						/// Grabs UMCs from UMC or Feature file
+						///
+						UmcReader umcReader = new UmcReader(FileNames[fileNum]);
+						loadedUMCs = umcReader.GetUmcList().ToArray();
+					}
+
+					// Else we are using a PEK or CSV file
+					else
+					{
+						if (extension == ".PEK")
+						{
+							mobjUMCCreator.LoadUMCs(true);
+						}
+						else if (extension == ".CSV")
+						{
+							mobjUMCCreator.LoadUMCs(false);
+						}
+						else
+						{
+							throw new ArgumentException("Incorrect extension for file. Please use pek or csv files as inputs.");
+						}
+
+						if (IsotopePeaksLoadedForFile != null)
+						{
+							IsotopePeaksLoadedForFile(FileNames[fileNum], mobjUMCCreator.GetIsotopePeaks());
+						}
+
+						/// 
+						/// Finds and calculates all UMCS
+						/// 
+						mobjUMCCreator.FindUMCs();
+						loadedUMCs = mobjUMCCreator.GetUMCs();
+						
+					}
 
                     /// 
                     /// Find the highest Charge State

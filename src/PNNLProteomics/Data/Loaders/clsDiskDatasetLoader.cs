@@ -137,20 +137,26 @@ namespace PNNLProteomics.Data.Loaders
                 
                 /// 
                 /// Build the alias
-                ///                 
-                int index = fileName.ToLower().LastIndexOf(".pek");
-                if (index < 0)
-                    index = fileName.ToLower().LastIndexOf("_isos.csv");
+                ///    
+				string fileNameLowerCase = fileName.ToLower();
+				string fileNameAlias = null;
 
-                string fileNameAlias = null;
-                if (index > 0)
-                {
-                    fileNameAlias = fileName.Substring(0, index);
-                }
-                else
-                {
-                    fileNameAlias = fileName;
-                }
+				if (fileNameLowerCase.Contains(".pek"))
+				{
+					fileNameAlias = fileName.Substring(0, fileNameLowerCase.LastIndexOf(".pek"));
+				}
+				else if (fileNameLowerCase.Contains("_isos.csv"))
+				{
+					fileNameAlias = fileName.Substring(0, fileNameLowerCase.LastIndexOf("_isos.csv"));
+				}
+				else if (fileNameLowerCase.Contains("_lcmsfeatures.txt"))
+				{
+					fileNameAlias = fileName.Substring(0, fileNameLowerCase.LastIndexOf("_lcmsfeatures.txt"));
+				}
+				else
+				{
+					fileNameAlias = fileName;
+				}
 
                 clsDatasetInfo datasetInfo      = new clsDatasetInfo();
                 datasetInfo.mstrDatasetName     = fileName;
