@@ -126,6 +126,7 @@
     <Compile Include="MultiAlign\Hibernate\Domain\DAOHibernate\UmcDAOHibernate.cs" />
     <Compile Include="MultiAlign\Hibernate\Domain\Umc.cs" />
     <Compile Include="MultiAlign\Hibernate\NHibernateUtil.cs" />
+    <Compile Include="MultiAlign\UmcReader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

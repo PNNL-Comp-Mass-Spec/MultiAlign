@@ -544,6 +544,102 @@
 					RelativePath=".\clsUMCFindingOptions.h"
 					>
 				</File>
+				<Filter
+					Name="MassTags"
+					>
+					<Filter
+						Name="Source Files"
+						>
+						<File
+							RelativePath=".\clsMassTag.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\clsMassTagDatabaseOptions.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\clsMassTagDB.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\clsMTDBLoader.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\clsPeptide.cpp"
+							>
+						</File>
+						<File
+							RelativePath=".\clsProtein.cpp"
+							>
+						</File>
+					</Filter>
+					<Filter
+						Name="Header Files"
+						>
+						<File
+							RelativePath=".\clsMassTag.h"
+							>
+						</File>
+						<File
+							RelativePath=".\clsMassTagDatabaseOptions.h"
+							>
+						</File>
+						<File
+							RelativePath=".\clsMassTagDB.h"
+							>
+						</File>
+						<File
+							RelativePath=".\clsMTDBLoader.h"
+							>
+						</File>
+						<File
+							RelativePath=".\clsPeptide.h"
+							>
+						</File>
+						<File
+							RelativePath=".\clsProtein.h"
+							>
+						</File>
+					</Filter>
+					<Filter
+						Name="MassTags"
+						>
+						<Filter
+							Name="Source Files"
+							>
+							<File
+								RelativePath=".\MassTags\MassTag.cpp"
+								>
+							</File>
+							<File
+								RelativePath=".\MassTags\MassTagDB.cpp"
+								>
+							</File>
+							<File
+								RelativePath=".\MassTags\Protein.cpp"
+								>
+							</File>
+						</Filter>
+						<Filter
+							Name="Header Files"
+							>
+							<File
+								RelativePath=".\MassTags\MassTag.h"
+								>
+							</File>
+							<File
+								RelativePath=".\MassTags\MassTagDB.h"
+								>
+							</File>
+							<File
+								RelativePath=".\MassTags\Protein.h"
+								>
+							</File>
+						</Filter>
+					</Filter>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="UMCCreation"
@@ -853,94 +949,6 @@
 					</File>
 					<File
 						RelativePath=".\LCMSWarp\Utilities.h"
-						>
-					</File>
-				</Filter>
-			</Filter>
-		</Filter>
-		<Filter
-			Name="MassTags"
-			>
-			<Filter
-				Name="Source Files"
-				>
-				<File
-					RelativePath=".\clsMassTag.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\clsMassTagDatabaseOptions.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\clsMassTagDB.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\clsMTDBLoader.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\clsProtein.cpp"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="Header Files"
-				>
-				<File
-					RelativePath=".\clsMassTag.h"
-					>
-				</File>
-				<File
-					RelativePath=".\clsMassTagDatabaseOptions.h"
-					>
-				</File>
-				<File
-					RelativePath=".\clsMassTagDB.h"
-					>
-				</File>
-				<File
-					RelativePath=".\clsMTDBLoader.h"
-					>
-				</File>
-				<File
-					RelativePath=".\clsProtein.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="MassTags"
-				>
-				<Filter
-					Name="Source Files"
-					>
-					<File
-						RelativePath=".\MassTags\MassTag.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\MassTags\MassTagDB.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\MassTags\Protein.cpp"
-						>
-					</File>
-				</Filter>
-				<Filter
-					Name="Header Files"
-					>
-					<File
-						RelativePath=".\MassTags\MassTag.h"
-						>
-					</File>
-					<File
-						RelativePath=".\MassTags\MassTagDB.h"
-						>
-					</File>
-					<File
-						RelativePath=".\MassTags\Protein.h"
 						>
 					</File>
 				</Filter>
