@@ -8,12 +8,7 @@ namespace MultiAlignEngine
 	{
 		bool SortDistances(SingleLinkageClustering::Distance &a, SingleLinkageClustering::Distance &b)
 		{
-			/*if (a.mdouble_distance <= b.mdouble_distance)
-				return true; 
-			if (a.mdouble_distance > b.mdouble_distance)
-				return false; 
-			return a.mint_elem_1 <= b.mint_elem_1; */
-			return (a.mdouble_distance <= b.mdouble_distance);
+			return (a.mdouble_distance < b.mdouble_distance);
 		}
 
 		SingleLinkageClustering::SingleLinkageClustering(void)
