@@ -7,7 +7,6 @@ namespace MultiAlignEngine
 {
 	namespace PeakMatching
 	{
-
 		[System::Serializable]
 		public __gc class clsPeakMatchingProcessor
 		{
@@ -16,21 +15,27 @@ namespace MultiAlignEngine
 			{
 				IDLE=0, PEAKMATCHING_INITIALIZED, PEAKMATCHING, DONE, ERROR
 			};
-		private:
-			enmState menmState; 
-			double mdblMassTolerance; 
-			double mdblNETTolerance;
-			int mintPercentDone; 
+		private:			
+			enmState	menmState; 
+			double		mdblMassTolerance; 
+			double		mdblNETTolerance;
+			int			mintPercentDone; 
+
 		public:
 			clsPeakMatchingProcessor(void);
 			~clsPeakMatchingProcessor(void);
 
-			clsPeakMatchingResults* PerformPeakMatching(Features::clsUMCData *umcData, int datasetIndex, MassTags::clsMassTagDB *masstagDB); 
-			clsPeakMatchingResults* PerformPeakMatching(Features::clsClusterData *clusterData, MassTags::clsMassTagDB *masstagDB);
-			clsPeakMatchingResults* clsPeakMatchingProcessor::PerformPeakMatching(
-												Features::clsClusterData *clusterData, 
-												MassTags::clsMassTagDB *masstagDB,
-												double shiftDaltons);
+			clsPeakMatchingResults* PerformPeakMatching(Features::clsUMCData *umcData, 
+														int datasetIndex,
+														MassTags::clsMassTagDB *masstagDB, 
+														double shiftDaltons); 
+			
+			clsPeakMatchingResults* PerformPeakMatching(Features::clsClusterData *clusterData,
+														MassTags::clsMassTagDB *masstagDB);
+
+			clsPeakMatchingResults* PerformPeakMatching(Features::clsClusterData *clusterData, 
+														MassTags::clsMassTagDB *masstagDB,
+														double shiftDaltons);
 
 			__property enmState get_State()
 			{
@@ -38,9 +43,8 @@ namespace MultiAlignEngine
 			}
 			__property int get_PercentDone()
 			{
-				return 0; 
+				return mintPercentDone; 
 			}
-
 			__property double get_MassTolerance()
 			{
 				return mdblMassTolerance; 

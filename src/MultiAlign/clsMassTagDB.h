@@ -111,7 +111,7 @@ namespace MultiAlignEngine
 			~clsMassTagDB(void);
 			void AddMassTags(clsMassTag *massTags __gc[]); 
 			void AddProteins(int refIds __gc[], System::String* names __gc[], int mtids __gc[]); 
-			System::Collections::ArrayList *GetMassAndTimeTags(); 
+			System::Collections::ArrayList *GetMassAndTimeTags(double daltonshift); 
 			inline clsMassTag* GetMassTag(int masstagID)
 			{
 				MultiAlignEngine::MassTags::MassTag mt =  mobjMasstagDB->GetMassTagFromID(masstagID); 

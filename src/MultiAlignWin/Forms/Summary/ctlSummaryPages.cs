@@ -307,7 +307,7 @@ namespace MultiAlignWin
 			string data = "";
 			foreach (ListViewItem item in list.SelectedItems)
 			{
-				data += item.Text;
+				//data += item.Text;
 				foreach(ListViewItem.ListViewSubItem subitem in item.SubItems)
 				{
 					data += subitem.Text + ",";

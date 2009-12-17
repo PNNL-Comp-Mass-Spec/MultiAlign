@@ -43,14 +43,14 @@ namespace MultiAlignEngine
 			}
 		}
 
-		System::Collections::ArrayList* clsMassTagDB::GetMassAndTimeTags()
+		System::Collections::ArrayList* clsMassTagDB::GetMassAndTimeTags(double shiftDaltons)
 		{
 			int numMTTags = mobjMasstagDB->GetNumMassTags(); 
 			System::Collections::ArrayList* arrMTTags = new System::Collections::ArrayList(numMTTags); 
 			for (int mtTagNum = 0; mtTagNum < numMTTags; mtTagNum++)
 			{
 				MultiAlignEngine::MassTags::MassTag mt = mobjMasstagDB->GetMassTagFromIndex(mtTagNum); 
-				MultiAlignEngine::clsMassTimeTag *mtTag = new MultiAlignEngine::clsMassTimeTag(mt.mdblMonoMass, mt.mdblAvgGANET, mt.mintMassTagId, true); 
+				MultiAlignEngine::clsMassTimeTag *mtTag = new MultiAlignEngine::clsMassTimeTag(mt.mdblMonoMass + shiftDaltons, mt.mdblAvgGANET, mt.mintMassTagId, true); 
 				arrMTTags->Add(mtTag); 
 			}
 			return arrMTTags; 

@@ -103,8 +103,6 @@
     <Compile Include="IO\classContainerStream.cs" />
     <Compile Include="IO\clsReadProgressStream.cs" />
     <Compile Include="IO\xmlIO.cs" />
-    <Compile Include="MultiAlign\clsMultiAlignAnalysisReader.cs" />
-    <Compile Include="MultiAlign\clsMultiAlignAnalysisWriter.cs" />
     <Compile Include="MultiAlign\Hibernate\Domain\Protein.cs" />
     <Compile Include="MultiAlign\Hibernate\Domain\Modification.cs" />
     <Compile Include="MultiAlign\Hibernate\Domain\MassTag.cs" />

@@ -208,7 +208,11 @@ namespace PNNLProteomics.Data.Analysis
         /// <summary>
         /// Peak matching results object.
         /// </summary>
-		private clsPeakMatchingResults      mobjPeakMatchingResults ; 
+		private clsPeakMatchingResults      mobjPeakMatchingResults ;
+        /// <summary>
+        /// Peak matching results object with 11 Da shift.
+        /// </summary>
+        private clsPeakMatchingResults      mobj_shiftedPeakMatchingResults;
         /// <summary>
         /// Object that processes the MTDB and UMC's to perform peak matching.
         /// </summary>
@@ -220,7 +224,11 @@ namespace PNNLProteomics.Data.Analysis
         /// <summary>
         /// List of smart results with summaries for each dataset.
         /// </summary>
-        private List<classSMARTResults> mlist_smartResults; 
+        private List<classSMARTResults> mlist_smartResults;
+        /// <summary>
+        /// False Discovery Rate as a result of the 11 da shift.
+        /// </summary>
+        private double mdouble_fdrRate;
         #endregion
 
         #region NonSerialized Members
@@ -288,7 +296,9 @@ namespace PNNLProteomics.Data.Analysis
             /// 
             /// This only matters if peptide peak matching was performed
             /// 
-            mbool_calculateSMARTScores = true;
+            mbool_calculateSMARTScores = false;
+
+            mdouble_fdrRate = double.NaN;
         }
         #endregion
 
@@ -1182,6 +1192,7 @@ namespace PNNLProteomics.Data.Analysis
                 menmState = enmState.ERROR;
             }
         }
+        
         /// <summary>
         /// Performs the peak matching of UMC's to the MTDB and inherent scoring.
         /// </summary>
@@ -1198,36 +1209,56 @@ namespace PNNLProteomics.Data.Analysis
                     AlignClustersToMassTagDB();
                 }
 
-                menmState = enmState.PEAKMATCHING;
-                System.Threading.Thread procThread = new System.Threading.Thread(new System.Threading.ThreadStart(MonitorPeakMatching));
-                mthread_currentStatus = procThread;
-                procThread.Name = "Peak Matching Thread Monitor";
-                procThread.Start();
-
-                if (StatusMessage != null)
+                if (mbool_calculateSMARTScores == false)
                 {
-                    StatusMessage(0, "Performing Peak Matching");
+
+                    menmState                           = enmState.PEAKMATCHING;
+                    System.Threading.Thread procThread  = new System.Threading.Thread(new System.Threading.ThreadStart(MonitorPeakMatching));
+                    mthread_currentStatus               = procThread;
+                    procThread.Name                     = "Peak Matching Thread Monitor";
+                    procThread.Start();
+
+                    if (StatusMessage != null)
+                    {
+                        StatusMessage(0, "Performing Peak Matching");
+                    }
+
+                    if (true)
+                    {
+                        mobjPeakMatcher.MassTolerance   = mobjClusteringOptions.MassTolerance;
+                        mobjPeakMatcher.NETTolerance    = mobjClusteringOptions.NETTolerance;
+                        mobjPeakMatchingResults         = mobjPeakMatcher.PerformPeakMatching(mobjUMCData.mobjClusterData, mobjMassTagDB);
+                        if (StatusMessage != null)
+                        {
+                            StatusMessage(0, "Shifting data by 11 Daltons to compute FDR");
+                        }
+                        mobj_shiftedPeakMatchingResults = mobjPeakMatcher.PerformPeakMatching(  mobjUMCData.mobjClusterData,
+                                                                                                mobjMassTagDB,
+                                                                                                11.0);                        
+                        /// 
+                        /// Total FDR value.
+                        /// 
+                        if (mobjPeakMatchingResults.NumMatches > 0)
+                        {
+                            mdouble_fdrRate = Convert.ToDouble(mobj_shiftedPeakMatchingResults.NumMassTagsMatched) / Convert.ToDouble(mobjPeakMatchingResults.NumMassTagsMatched);
+                        }
+                        else
+                        {
+                            mdouble_fdrRate = double.NaN;
+                        }
+                    }
+                    else 
+                    {
+                        //TODO: Add so that we dont peak match with clusters....?
+                    }
                 }
-
-                mobjPeakMatcher.MassTolerance = mobjClusteringOptions.MassTolerance;
-                mobjPeakMatcher.NETTolerance  = mobjClusteringOptions.NETTolerance;
-                mobjPeakMatchingResults       = mobjPeakMatcher.PerformPeakMatching(mobjUMCData.mobjClusterData, mobjMassTagDB);
-
-                StatusMessage(0, Convert.ToString(mobjPeakMatchingResults.NumMassTagsMatched) + " mass-tags matched to "
-                                + Convert.ToString(mobjPeakMatchingResults.NumProteinsMatched) + " proteins. Through "
-                                + Convert.ToString(mobjPeakMatchingResults.NumMatches) + " matches");
-
+                else
+                {
+                    CalculateSMARTScores();
+                }
                 mbool_peakMatchedToMasstagDB = true;
 
-
-                /// 
-                /// Then score those matches
-                /// 
-                //if (mbool_calculateSMARTScores == true)
-                //    CalculateSMARTScores();
-
                 menmState = enmState.PEAKMATCHING_DONE;
-
             }
             catch (System.Exception ex)
             {
@@ -1306,16 +1337,6 @@ namespace PNNLProteomics.Data.Analysis
         }
         #endregion
 
-        /// <summary>
-        /// Gets the SMART results calculated.
-        /// </summary>
-        public List<classSMARTResults> SMARTResults
-        {
-            get
-            {
-                return mlist_smartResults;
-            }
-        }
 
         #region Analysis
         /// <summary>
@@ -1564,7 +1585,27 @@ namespace PNNLProteomics.Data.Analysis
 		}
 		#endregion
 
-		#region Properties
+        #region Properties
+        /// <summary>
+        /// Gets the false discovery rate calculated by 11 Dalton Shift.
+        /// </summary>
+        public double FDR
+        {
+            get
+            {
+                return mdouble_fdrRate;
+            }
+        }
+        /// <summary>
+        /// Gets the SMART results calculated.
+        /// </summary>
+        public List<classSMARTResults> SMARTResults
+        {
+            get
+            {
+                return mlist_smartResults;
+            }
+        }
         /// <summary>
         /// Gets or sets the SMART Options to use.
         /// </summary>
@@ -1789,7 +1830,17 @@ namespace PNNLProteomics.Data.Analysis
 			{
 				return mobjPeakMatchingResults ; 
 			}
-		}		
+        }
+        /// <summary>
+        /// Gets the peak matching results from the 11 Da shift.
+        /// </summary>
+        public MultiAlignEngine.PeakMatching.clsPeakMatchingResults PeakMatchingResultsShifted
+        {
+            get
+            {
+                return mobj_shiftedPeakMatchingResults;
+            }
+        }	
         /// <summary>
         /// Gets the flag whether the results were peaked matched against the Mass Tag Database.
         /// </summary>

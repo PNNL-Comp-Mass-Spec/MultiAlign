@@ -1019,16 +1019,32 @@ namespace MultiAlignWin
             mcontrol_resultSummaryPages.CreateSummary("Global Summary", mobjAnalysis);            
             mcontrol_resultSummaryPages.CreateSummary("UMC Data", mobjAnalysis.UMCData);
             mcontrol_resultSummaryPages.CreateSummary("Cluster Data", mobjAnalysis.UMCData.mobjClusterData);
+            
 
             mcontrol_analysisInformation.CreateSummary("UMC Finding Options", mobjAnalysis.UMCFindingOptions);
             mcontrol_analysisInformation.CreateSummary("Alignment Options", mobjAnalysis.DefaultAlignmentOptions);
             mcontrol_analysisInformation.CreateSummary("Mass Tag Database Options (MTDB)", mobjAnalysis.MassTagDBOptions);
 
             /// 
-            /// In case the user didnt match against the MTDB
+            /// If the datasets were peak matched, then display this control page.
             /// 
             if (mobjAnalysis.PeakMatchingResults != null)
+            {
+                string peakMatchingResult = "Peak Matching Results";
+
                 mcontrol_resultSummaryPages.CreateSummary("Peak Matching Results", mobjAnalysis.PeakMatchingResults);
+                mcontrol_resultSummaryPages.AddData("Peak Matching Results",
+                                                    "False Discovery Rate via 11 Da shift (FDR)",
+                                                    string.Format("{0:0.00}",mobjAnalysis.FDR));
+
+
+                mcontrol_resultSummaryPages.AddData(peakMatchingResult, "11-Da Shifted Number of Mass Tags Matched",
+                    mobjAnalysis.PeakMatchingResultsShifted.NumMassTagsMatched.ToString());
+                mcontrol_resultSummaryPages.AddData(peakMatchingResult, "11-Da Shifted Number of Proteins Matched",
+                    mobjAnalysis.PeakMatchingResultsShifted.NumProteinsMatched.ToString());
+                mcontrol_resultSummaryPages.AddData(peakMatchingResult, "11-Da Shifted Number of Matches",
+                    mobjAnalysis.PeakMatchingResultsShifted.NumMatches.ToString());
+            }
 
             UpdateDatasetSummary();
 

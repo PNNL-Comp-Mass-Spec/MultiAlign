@@ -2,6 +2,7 @@ using System;
 using System.Windows.Forms;
 using System.ComponentModel;
 
+//using PNNLProteomics.DataSMART;
 using PNNLProteomics.SMART;
 
 namespace MultiAlignWin.Forms.Parameters
