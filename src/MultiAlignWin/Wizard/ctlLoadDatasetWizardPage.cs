@@ -128,10 +128,10 @@ namespace MultiAlignWin
             mobj_connectionTester       = new clsDMSConnectionTester(information.ConnectionExists, information);
             mobj_listViewItemComparer   = new ListViewItemComparer();
 
-            mobj_openFileDialog.Multiselect          = true;
-            mobj_openFileDialog.Filter               = "*_isos.csv files (*_isos.csv)|*_isos.csv|*.pek files (*.pek)|*.pek|All files (*.*)|*.*";
-            mobj_openFileDialog.FilterIndex          = 1;
-            mobj_openFileDialog.InitialDirectory     = Properties.Settings.Default.RawDataPath;
+            mobj_openFileDialog.Multiselect			= true;
+			mobj_openFileDialog.Filter				= "*_isos.csv files (*_isos.csv)|*_isos.csv|*.pek files (*.pek)|*.pek|*_LCMSFeatures.txt files (*_LCMSFeatures.txt)|*_LCMSFeatures.txt|All files (*.*)|*.*";
+            mobj_openFileDialog.FilterIndex			= 1;
+            mobj_openFileDialog.InitialDirectory	= Properties.Settings.Default.RawDataPath;
 
             mobj_openJobIDDialog.Multiselect         = false;
             mobj_openJobIDDialog.Filter              = "*.csv files (*.csv)|*.csv|All files (*.*)|*.*";
