@@ -335,6 +335,7 @@ namespace MultiAlignEngine
 									
 				clsMassTimeTag *mtTag = new clsMassTimeTag(	cluster->mdouble_mass_calibrated, 
 															cluster->mdouble_aligned_net, 
+															cluster->mdouble_driftTime,
 															clusterNum);
 				arrMSFeatures->Add(mtTag); 
 			}
@@ -348,7 +349,8 @@ namespace MultiAlignEngine
 				clsCluster *cluster = dynamic_cast<Features::clsCluster *>(marrClusters->Item[clusterNum]); 
 									
 				clsMassTimeTag *mtTag = new clsMassTimeTag(	cluster->mdouble_mass_calibrated + shiftDaltons, 
-															cluster->mdouble_aligned_net, 
+															cluster->mdouble_aligned_net,
+															cluster->mdouble_driftTime,
 															clusterNum);
 				arrMSFeatures->Add(mtTag); 
 			}

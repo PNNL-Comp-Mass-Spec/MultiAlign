@@ -7,6 +7,7 @@ namespace MultiAlignEngine
 	{
 		clsCluster::clsCluster(void)
 		{
+			mdouble_driftTime = 0;
 		}
 
 		clsCluster::~clsCluster(void)

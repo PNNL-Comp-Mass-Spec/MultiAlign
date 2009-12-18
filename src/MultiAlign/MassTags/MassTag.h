@@ -11,6 +11,7 @@ namespace MultiAlignEngine
 			int mintMassTagId; 
 			std::string mstrPeptide; 
 			std::string mstrModification; 
+			double mdblDriftTime;
 			double mdblMonoMass; 
 			double mdblAvgGANET; 
 			double mdblPNET; 

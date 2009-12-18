@@ -6,25 +6,28 @@
 using namespace MultiAlignEngine::Features;
 using namespace MultiAlignEngine::MassTags;
 
+
+
 namespace MultiAlignEngine
 {
 	namespace PeakMatching
 	{
 		clsPeakMatchingProcessor::clsPeakMatchingProcessor(void)
 		{
-			mdblMassTolerance = 30; 
-			mdblNETTolerance = 0.05;
-			mintPercentDone = 0; 
+			mdblMassTolerance		= 30; 
+			mdblNETTolerance		= 0.05;
+			mdblDriftTimeTolerance	= CONST_DRIFT_TIME_TOLERANCE; 
+			mintPercentDone			= 0; 
 		}
 
 		clsPeakMatchingProcessor::~clsPeakMatchingProcessor(void)
 		{
 		}
 
-		clsPeakMatchingResults* clsPeakMatchingProcessor::PerformPeakMatching(	Features::clsUMCData *umcData, 
-																				int datasetIndex,
-																				MassTags::clsMassTagDB *masstagDB, 
-																				double shiftDaltons)
+		clsPeakMatchingResults* clsPeakMatchingProcessor::PerformPeakMatching(	Features::clsUMCData	*umcData, 
+																				int						datasetIndex,
+																				MassTags::clsMassTagDB  *masstagDB, 
+																				double					shiftDaltons)
 		{
 			/*////////////////////////////////////////////////////////////////////////////////////////////////
 				Here we get a list of all the clusters which are groups of UMC's.  We are 
@@ -74,6 +77,9 @@ namespace MultiAlignEngine
 					double lowerNET		= mtTag->mdblNET - mdblNETTolerance; 
 					double higherNET	= mtTag->mdblNET + mdblNETTolerance; 
 
+					double lowerDritfTime  = mtTag->mdblDriftTime - mdblDriftTimeTolerance;
+					double higherDriftTime = mtTag->mdblDriftTime + mdblDriftTimeTolerance;
+
 					double currentMassTolerance = mtTag->mdblMass * mdblMassTolerance / 1000000.0;
 					double lowerMass			= mtTag->mdblMass - currentMassTolerance;  
 					double higherMass			= mtTag->mdblMass + currentMassTolerance;  
@@ -92,12 +98,15 @@ namespace MultiAlignEngine
 							break; 
 						}
 						if (mtTagToMatch->mblnMSMS && mtTagToMatch->mdblNET >= lowerNET && mtTagToMatch->mdblNET <= higherNET)
-						{
+						{							
 							// it is an MSMS mass and time tag, and it is withing mass and time tolerances.
 							// add it.
-							MultiAlignEngine::Features::clsUMC *umc = umcData->GetUMC(mtTag->mintID); 
-							MultiAlignEngine::MassTags::clsMassTag *massTag = masstagDB->GetMassTag(mtTagToMatch->mintID); 
-							peakMatchingResults->AddPeakMatchResult(massTag, umc); 
+							if (mtTagToMatch->mdblDriftTime >= lowerDritfTime && mtTagToMatch->mdblDriftTime <= higherDriftTime)
+							{
+								MultiAlignEngine::Features::clsUMC *umc = umcData->GetUMC(mtTag->mintID); 
+								MultiAlignEngine::MassTags::clsMassTag *massTag = masstagDB->GetMassTag(mtTagToMatch->mintID); 
+								peakMatchingResults->AddPeakMatchResult(massTag, umc); 
+							}
 						}
 						matchIndex--; 
 					}
@@ -117,9 +126,12 @@ namespace MultiAlignEngine
 						{
 							// it is an MSMS mass and time tag, and it is withing mass and time tolerances.
 							// add it.
-							clsUMC		*umc	 = umcData->GetUMC(mtTag->mintID); 
-							clsMassTag	*massTag = masstagDB->GetMassTag(mtTagToMatch->mintID); 
-							peakMatchingResults->AddPeakMatchResult(massTag, umc); 
+							if (mtTagToMatch->mdblDriftTime >= lowerDritfTime && mtTagToMatch->mdblDriftTime <= higherDriftTime)
+							{
+								clsUMC		*umc	 = umcData->GetUMC(mtTag->mintID); 
+								clsMassTag	*massTag = masstagDB->GetMassTag(mtTagToMatch->mintID); 
+								peakMatchingResults->AddPeakMatchResult(massTag, umc); 
+							}
 						}
 						matchIndex++; 
 					}
@@ -200,6 +212,9 @@ namespace MultiAlignEngine
 					double lowerNET  = mtTag->mdblNET - mdblNETTolerance; 
 					double higherNET = mtTag->mdblNET + mdblNETTolerance; 
 
+					double lowerDritfTime  = mtTag->mdblDriftTime - mdblDriftTimeTolerance;
+					double higherDriftTime = mtTag->mdblDriftTime + mdblDriftTimeTolerance;
+
 					double currentMassTolerance = mtTag->mdblMass * mdblMassTolerance / 1000000.0;
 					double lowerMass  = mtTag->mdblMass - currentMassTolerance ;  
 					double higherMass = mtTag->mdblMass + currentMassTolerance ;  
@@ -220,9 +235,12 @@ namespace MultiAlignEngine
 						}
 						if (mtTagToMatch->mblnMSMS && mtTagToMatch->mdblNET >= lowerNET && mtTagToMatch->mdblNET <= higherNET)
 						{
-							clsCluster *cluster	= clusterData->GetCluster(mtTag->mintID); 
-							clsMassTag *massTag	= masstagDB->GetMassTag(mtTagToMatch->mintID); 
-							peakMatchingResults->AddPeakMatchResult(massTag, cluster, mtTag->mintID); 
+							if (mtTagToMatch->mdblDriftTime >= lowerDritfTime && mtTagToMatch->mdblDriftTime <= higherDriftTime)
+							{
+								clsCluster *cluster	= clusterData->GetCluster(mtTag->mintID); 
+								clsMassTag *massTag	= masstagDB->GetMassTag(mtTagToMatch->mintID); 
+								peakMatchingResults->AddPeakMatchResult(massTag, cluster, mtTag->mintID); 
+							}
 						}
 						matchIndex--; 
 					}
@@ -240,9 +258,12 @@ namespace MultiAlignEngine
 						}
 						if (mtTagToMatch->mblnMSMS && mtTagToMatch->mdblNET >= lowerNET && mtTagToMatch->mdblNET <= higherNET)
 						{
-							clsCluster *cluster = clusterData->GetCluster(mtTag->mintID); 
-							clsMassTag *massTag = masstagDB->GetMassTag(mtTagToMatch->mintID); 
-							peakMatchingResults->AddPeakMatchResult(massTag, cluster, mtTag->mintID); 
+							if (mtTagToMatch->mdblDriftTime >= lowerDritfTime && mtTagToMatch->mdblDriftTime <= higherDriftTime)
+							{
+								clsCluster *cluster = clusterData->GetCluster(mtTag->mintID); 
+								clsMassTag *massTag = masstagDB->GetMassTag(mtTagToMatch->mintID); 
+								peakMatchingResults->AddPeakMatchResult(massTag, cluster, mtTag->mintID); 
+							}
 						}
 						matchIndex++; 
 					}									

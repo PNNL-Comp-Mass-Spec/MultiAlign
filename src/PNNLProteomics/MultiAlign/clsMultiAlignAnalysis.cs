@@ -1222,35 +1222,29 @@ namespace PNNLProteomics.Data.Analysis
                     {
                         StatusMessage(0, "Performing Peak Matching");
                     }
-
-                    if (true)
+                    
+                    mobjPeakMatcher.MassTolerance       = mobjClusteringOptions.MassTolerance;
+                    mobjPeakMatcher.NETTolerance        = mobjClusteringOptions.NETTolerance;
+                    mobjPeakMatcher.DriftTimeTolerance  = mobjClusteringOptions.DriftTimeTolerance; 
+                    mobjPeakMatchingResults             = mobjPeakMatcher.PerformPeakMatching(mobjUMCData.mobjClusterData, mobjMassTagDB);
+                    if (StatusMessage != null)
                     {
-                        mobjPeakMatcher.MassTolerance   = mobjClusteringOptions.MassTolerance;
-                        mobjPeakMatcher.NETTolerance    = mobjClusteringOptions.NETTolerance;
-                        mobjPeakMatchingResults         = mobjPeakMatcher.PerformPeakMatching(mobjUMCData.mobjClusterData, mobjMassTagDB);
-                        if (StatusMessage != null)
-                        {
-                            StatusMessage(0, "Shifting data by 11 Daltons to compute FDR");
-                        }
-                        mobj_shiftedPeakMatchingResults = mobjPeakMatcher.PerformPeakMatching(  mobjUMCData.mobjClusterData,
-                                                                                                mobjMassTagDB,
-                                                                                                11.0);                        
-                        /// 
-                        /// Total FDR value.
-                        /// 
-                        if (mobjPeakMatchingResults.NumMatches > 0)
-                        {
-                            mdouble_fdrRate = Convert.ToDouble(mobj_shiftedPeakMatchingResults.NumMassTagsMatched) / Convert.ToDouble(mobjPeakMatchingResults.NumMassTagsMatched);
-                        }
-                        else
-                        {
-                            mdouble_fdrRate = double.NaN;
-                        }
+                        StatusMessage(0, "Shifting data by 11 Daltons to compute FDR");
                     }
-                    else 
+                    mobj_shiftedPeakMatchingResults = mobjPeakMatcher.PerformPeakMatching(  mobjUMCData.mobjClusterData,
+                                                                                            mobjMassTagDB,
+                                                                                            11.0);                        
+                    /// 
+                    /// Total FDR value.
+                    /// 
+                    if (mobjPeakMatchingResults.NumMatches > 0)
                     {
-                        //TODO: Add so that we dont peak match with clusters....?
+                        mdouble_fdrRate = Convert.ToDouble(mobj_shiftedPeakMatchingResults.NumMassTagsMatched) / Convert.ToDouble(mobjPeakMatchingResults.NumMassTagsMatched);
                     }
+                    else
+                    {
+                        mdouble_fdrRate = double.NaN;
+                    }                    
                 }
                 else
                 {

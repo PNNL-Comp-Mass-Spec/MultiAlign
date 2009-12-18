@@ -15,6 +15,8 @@ namespace MultiAlignEngine
 			double mdouble_aligned_net; 
 			short mshort_charge; 
 			short mshort_num_dataset_members; 
+			double mdouble_driftTime;
+
 			clsCluster(void);
 			~clsCluster(void);
 

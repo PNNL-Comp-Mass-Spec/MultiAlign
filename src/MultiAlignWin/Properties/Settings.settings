@@ -173,5 +173,8 @@
     <Setting Name="UserAlignmentOptionsNETBinSize" Type="System.Double" Scope="User">
       <Value Profile="(Default)">0.001</Value>
     </Setting>
+    <Setting Name="UserClusterOptionsDriftTimeTolerance" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">50</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

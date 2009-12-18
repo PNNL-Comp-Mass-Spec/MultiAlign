@@ -274,7 +274,7 @@ namespace MultiAlignEngine
 			for (int umcIndex = start_index; umcIndex < stop_index; umcIndex++)
 			{
 				Features::clsUMC *umc = dynamic_cast<Features::clsUMC *>(marr_umcs->Item[umcIndex]); 
-				clsMassTimeTag *mtTag = new clsMassTimeTag(umc->mdouble_mono_mass, umc->mdouble_net, umcIndex);
+				clsMassTimeTag *mtTag = new clsMassTimeTag(umc->mdouble_mono_mass, umc->mdouble_net, 0, umcIndex);
 				arrMSFeatures->Add(mtTag); 
 			}
 			return arrMSFeatures; 

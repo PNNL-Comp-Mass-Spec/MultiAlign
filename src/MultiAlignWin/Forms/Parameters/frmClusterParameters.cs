@@ -12,9 +12,7 @@ namespace MultiAlignWin
 	public class frmClusterParameters : System.Windows.Forms.Form
 	{
 		private System.Windows.Forms.Label labelMassTol;
-		private System.Windows.Forms.Label labelNETTol;
-		private System.Windows.Forms.TextBox textBoxMassTol;
-		private System.Windows.Forms.TextBox textBoxNETTol;
+        private System.Windows.Forms.Label labelNETTol;
 		private System.Windows.Forms.RadioButton radioButtonMaxData;
 		private System.Windows.Forms.RadioButton radioButtonSumData;
 		private System.Windows.Forms.Button buttonOK;
@@ -24,6 +22,10 @@ namespace MultiAlignWin
 		private System.Windows.Forms.RadioButton radioButtonMedian;
 		private System.Windows.Forms.RadioButton radioButtonMean;
 		private System.Windows.Forms.Button mbtnDefaults;
+        private NumericUpDown mnum_MassTol;
+        private NumericUpDown mnum_NETTol;
+        private NumericUpDown mnum_driftTimeTolerance;
+        private Label mlabel_driftTimeTolerance;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
@@ -63,8 +65,6 @@ namespace MultiAlignWin
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmClusterParameters));
             this.labelMassTol = new System.Windows.Forms.Label();
             this.labelNETTol = new System.Windows.Forms.Label();
-            this.textBoxMassTol = new System.Windows.Forms.TextBox();
-            this.textBoxNETTol = new System.Windows.Forms.TextBox();
             this.groupBoxIntensity = new System.Windows.Forms.GroupBox();
             this.radioButtonSumData = new System.Windows.Forms.RadioButton();
             this.radioButtonMaxData = new System.Windows.Forms.RadioButton();
@@ -74,51 +74,42 @@ namespace MultiAlignWin
             this.radioButtonMedian = new System.Windows.Forms.RadioButton();
             this.radioButtonMean = new System.Windows.Forms.RadioButton();
             this.mbtnDefaults = new System.Windows.Forms.Button();
+            this.mnum_MassTol = new System.Windows.Forms.NumericUpDown();
+            this.mnum_NETTol = new System.Windows.Forms.NumericUpDown();
+            this.mnum_driftTimeTolerance = new System.Windows.Forms.NumericUpDown();
+            this.mlabel_driftTimeTolerance = new System.Windows.Forms.Label();
             this.groupBoxIntensity.SuspendLayout();
             this.groupBoxClassRep.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.mnum_MassTol)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.mnum_NETTol)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.mnum_driftTimeTolerance)).BeginInit();
             this.SuspendLayout();
             // 
             // labelMassTol
             // 
-            this.labelMassTol.Location = new System.Drawing.Point(24, 24);
+            this.labelMassTol.Location = new System.Drawing.Point(25, 24);
             this.labelMassTol.Name = "labelMassTol";
-            this.labelMassTol.Size = new System.Drawing.Size(100, 23);
+            this.labelMassTol.Size = new System.Drawing.Size(96, 23);
             this.labelMassTol.TabIndex = 0;
             this.labelMassTol.Text = "Mass Tolerance :";
             // 
             // labelNETTol
             // 
-            this.labelNETTol.Location = new System.Drawing.Point(240, 24);
+            this.labelNETTol.Location = new System.Drawing.Point(25, 47);
             this.labelNETTol.Name = "labelNETTol";
             this.labelNETTol.Size = new System.Drawing.Size(88, 23);
             this.labelNETTol.TabIndex = 1;
             this.labelNETTol.Text = "NET Tolerance :";
             // 
-            // textBoxMassTol
-            // 
-            this.textBoxMassTol.Location = new System.Drawing.Point(120, 24);
-            this.textBoxMassTol.Name = "textBoxMassTol";
-            this.textBoxMassTol.Size = new System.Drawing.Size(56, 20);
-            this.textBoxMassTol.TabIndex = 2;
-            this.textBoxMassTol.Text = "6";
-            this.textBoxMassTol.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            // 
-            // textBoxNETTol
-            // 
-            this.textBoxNETTol.Location = new System.Drawing.Point(328, 24);
-            this.textBoxNETTol.Name = "textBoxNETTol";
-            this.textBoxNETTol.Size = new System.Drawing.Size(56, 20);
-            this.textBoxNETTol.TabIndex = 3;
-            this.textBoxNETTol.Text = "0.03";
-            this.textBoxNETTol.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            // 
             // groupBoxIntensity
             // 
+            this.groupBoxIntensity.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBoxIntensity.Controls.Add(this.radioButtonSumData);
             this.groupBoxIntensity.Controls.Add(this.radioButtonMaxData);
-            this.groupBoxIntensity.Location = new System.Drawing.Point(16, 56);
+            this.groupBoxIntensity.Location = new System.Drawing.Point(12, 117);
             this.groupBoxIntensity.Name = "groupBoxIntensity";
-            this.groupBoxIntensity.Size = new System.Drawing.Size(184, 96);
+            this.groupBoxIntensity.Size = new System.Drawing.Size(324, 96);
             this.groupBoxIntensity.TabIndex = 4;
             this.groupBoxIntensity.TabStop = false;
             this.groupBoxIntensity.Text = "Dataset Intensity";
@@ -143,10 +134,11 @@ namespace MultiAlignWin
             // 
             // buttonOK
             // 
+            this.buttonOK.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.buttonOK.BackColor = System.Drawing.SystemColors.Control;
             this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.buttonOK.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.buttonOK.Location = new System.Drawing.Point(176, 168);
+            this.buttonOK.Location = new System.Drawing.Point(140, 340);
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.Size = new System.Drawing.Size(75, 23);
             this.buttonOK.TabIndex = 5;
@@ -156,10 +148,11 @@ namespace MultiAlignWin
             // 
             // buttonCancel
             // 
+            this.buttonCancel.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.buttonCancel.BackColor = System.Drawing.SystemColors.Control;
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.buttonCancel.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.buttonCancel.Location = new System.Drawing.Point(280, 168);
+            this.buttonCancel.Location = new System.Drawing.Point(225, 339);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
             this.buttonCancel.TabIndex = 6;
@@ -169,11 +162,13 @@ namespace MultiAlignWin
             // 
             // groupBoxClassRep
             // 
+            this.groupBoxClassRep.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBoxClassRep.Controls.Add(this.radioButtonMedian);
             this.groupBoxClassRep.Controls.Add(this.radioButtonMean);
-            this.groupBoxClassRep.Location = new System.Drawing.Point(224, 56);
+            this.groupBoxClassRep.Location = new System.Drawing.Point(12, 219);
             this.groupBoxClassRep.Name = "groupBoxClassRep";
-            this.groupBoxClassRep.Size = new System.Drawing.Size(184, 96);
+            this.groupBoxClassRep.Size = new System.Drawing.Size(324, 96);
             this.groupBoxClassRep.TabIndex = 7;
             this.groupBoxClassRep.TabStop = false;
             this.groupBoxClassRep.Text = "Cluster Representation";
@@ -198,9 +193,10 @@ namespace MultiAlignWin
             // 
             // mbtnDefaults
             // 
+            this.mbtnDefaults.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.mbtnDefaults.BackColor = System.Drawing.SystemColors.Control;
             this.mbtnDefaults.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.mbtnDefaults.Location = new System.Drawing.Point(72, 168);
+            this.mbtnDefaults.Location = new System.Drawing.Point(47, 339);
             this.mbtnDefaults.Name = "mbtnDefaults";
             this.mbtnDefaults.Size = new System.Drawing.Size(80, 24);
             this.mbtnDefaults.TabIndex = 8;
@@ -208,17 +204,87 @@ namespace MultiAlignWin
             this.mbtnDefaults.UseVisualStyleBackColor = false;
             this.mbtnDefaults.Click += new System.EventHandler(this.mbtnDefaults_Click);
             // 
+            // mnum_MassTol
+            // 
+            this.mnum_MassTol.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.mnum_MassTol.DecimalPlaces = 2;
+            this.mnum_MassTol.Location = new System.Drawing.Point(123, 22);
+            this.mnum_MassTol.Maximum = new decimal(new int[] {
+            100000,
+            0,
+            0,
+            0});
+            this.mnum_MassTol.Name = "mnum_MassTol";
+            this.mnum_MassTol.Size = new System.Drawing.Size(213, 20);
+            this.mnum_MassTol.TabIndex = 9;
+            this.mnum_MassTol.Value = new decimal(new int[] {
+            6,
+            0,
+            0,
+            0});
+            // 
+            // mnum_NETTol
+            // 
+            this.mnum_NETTol.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.mnum_NETTol.DecimalPlaces = 2;
+            this.mnum_NETTol.Location = new System.Drawing.Point(123, 47);
+            this.mnum_NETTol.Maximum = new decimal(new int[] {
+            5000,
+            0,
+            0,
+            0});
+            this.mnum_NETTol.Name = "mnum_NETTol";
+            this.mnum_NETTol.Size = new System.Drawing.Size(213, 20);
+            this.mnum_NETTol.TabIndex = 10;
+            this.mnum_NETTol.Value = new decimal(new int[] {
+            3,
+            0,
+            0,
+            131072});
+            // 
+            // mnum_driftTimeTolerance
+            // 
+            this.mnum_driftTimeTolerance.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.mnum_driftTimeTolerance.DecimalPlaces = 2;
+            this.mnum_driftTimeTolerance.Location = new System.Drawing.Point(123, 75);
+            this.mnum_driftTimeTolerance.Maximum = new decimal(new int[] {
+            5000,
+            0,
+            0,
+            0});
+            this.mnum_driftTimeTolerance.Name = "mnum_driftTimeTolerance";
+            this.mnum_driftTimeTolerance.Size = new System.Drawing.Size(213, 20);
+            this.mnum_driftTimeTolerance.TabIndex = 12;
+            this.mnum_driftTimeTolerance.Value = new decimal(new int[] {
+            3,
+            0,
+            0,
+            131072});
+            // 
+            // mlabel_driftTimeTolerance
+            // 
+            this.mlabel_driftTimeTolerance.Location = new System.Drawing.Point(25, 77);
+            this.mlabel_driftTimeTolerance.Name = "mlabel_driftTimeTolerance";
+            this.mlabel_driftTimeTolerance.Size = new System.Drawing.Size(88, 23);
+            this.mlabel_driftTimeTolerance.TabIndex = 11;
+            this.mlabel_driftTimeTolerance.Text = "Drift Time";
+            // 
             // frmClusterParameters
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(421, 206);
+            this.ClientSize = new System.Drawing.Size(348, 374);
+            this.Controls.Add(this.mnum_driftTimeTolerance);
+            this.Controls.Add(this.mlabel_driftTimeTolerance);
+            this.Controls.Add(this.mnum_NETTol);
+            this.Controls.Add(this.mnum_MassTol);
             this.Controls.Add(this.mbtnDefaults);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonOK);
             this.Controls.Add(this.groupBoxIntensity);
-            this.Controls.Add(this.textBoxNETTol);
-            this.Controls.Add(this.textBoxMassTol);
             this.Controls.Add(this.labelNETTol);
             this.Controls.Add(this.labelMassTol);
             this.Controls.Add(this.groupBoxClassRep);
@@ -227,11 +293,13 @@ namespace MultiAlignWin
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "frmClusterParameters";
-            this.Text = "Clustering Parameters";
+            this.Text = "UMC Clustering and Peak Matching Parameters";
             this.groupBoxIntensity.ResumeLayout(false);
             this.groupBoxClassRep.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.mnum_MassTol)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.mnum_NETTol)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.mnum_driftTimeTolerance)).EndInit();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
 		}
 		#endregion
@@ -246,6 +314,7 @@ namespace MultiAlignWin
             Properties.Settings.Default.UserClusterOptionsNETTolerance          = NETTolerance;
             Properties.Settings.Default.UserClusterOptionsUseMaxInDataset       = radioButtonMaxData.Checked;
             Properties.Settings.Default.UserClusterOptionsUseMeanRepresentation = (ClusterRepresentativeType == MultiAlignEngine.Clustering.clsClusterOptions.enmClusterRepresentativeType.MEAN);
+            //Properties.Settings.Default.UserclusterOptionsDrift
             Properties.Settings.Default.Save();
         }
 
@@ -269,29 +338,48 @@ namespace MultiAlignWin
 			ClusterOptions = defaults ;
 		}
 
+        /// <summary>
+        /// Gets or sets the mass tolerance.
+        /// </summary>
 		public double MassTolerance
 		{
 			get
 			{
-				return (Convert.ToDouble(textBoxMassTol.Text)) ;
+				return (Convert.ToDouble(mnum_MassTol.Value)) ;
 			}
 			set
 			{
-				textBoxMassTol.Text = Convert.ToString(value) ;
+				mnum_MassTol.Value = Convert.ToDecimal(value) ;
 			}
 		}
-
+        /// <summary>
+        /// Gets or sets the NET tolerance.
+        /// </summary>
 		public double NETTolerance
 		{
 			get
 			{
-				return (Convert.ToDouble(textBoxNETTol.Text)) ;
+				return (Convert.ToDouble(mnum_NETTol.Value)); 
 			}
 			set
 			{
-				textBoxNETTol.Text = Convert.ToString(value) ;
+				mnum_NETTol.Value = Convert.ToDecimal(value) ;
 			}
 		}
+        /// <summary>
+        /// Gets or sets the drift time tolerance.
+        /// </summary>
+        public double DriftTimeTolerance
+        {
+            get
+            {
+                return (Convert.ToDouble(mnum_driftTimeTolerance.Value));
+            }
+            set
+            {
+                mnum_driftTimeTolerance.Value = Convert.ToDecimal(value);
+            }
+        }
 
 		public MultiAlignEngine.Clustering.clsClusterOptions.enmClusterIntensityType ClusterIntensityType
 		{
@@ -329,7 +417,9 @@ namespace MultiAlignWin
 					radioButtonMedian.Checked = true ;
 			}
 		}
-
+        /// <summary>
+        /// Gets or sets the clustering/peak matching options.
+        /// </summary>
 		public MultiAlignEngine.Clustering.clsClusterOptions ClusterOptions
 		{
 			get
@@ -339,6 +429,7 @@ namespace MultiAlignWin
 				options.NETTolerance = NETTolerance ;
 				options.ClusterIntensityType = ClusterIntensityType ;
 				options.ClusterRepresentativeType = ClusterRepresentativeType ;
+                options.DriftTimeTolerance = DriftTimeTolerance;
 				return options ;
 			}
 			set
@@ -348,6 +439,7 @@ namespace MultiAlignWin
 				NETTolerance = options.NETTolerance ;
 				ClusterIntensityType = options.ClusterIntensityType ;
 				ClusterRepresentativeType = options.ClusterRepresentativeType ;
+                DriftTimeTolerance = options.DriftTimeTolerance;
 			}
 		}
 	}

@@ -3,6 +3,8 @@
 #include "clsMassTagDB.h" 
 #include "clsPeakMatchingResults.h" 
 
+#define CONST_DRIFT_TIME_TOLERANCE .5
+
 namespace MultiAlignEngine
 {
 	namespace PeakMatching
@@ -19,6 +21,7 @@ namespace MultiAlignEngine
 			enmState	menmState; 
 			double		mdblMassTolerance; 
 			double		mdblNETTolerance;
+			double      mdblDriftTimeTolerance;
 			int			mintPercentDone; 
 
 		public:
@@ -64,6 +67,14 @@ namespace MultiAlignEngine
 			{
 				mdblNETTolerance = tolerance; 
 			}
+			__property double get_DriftTimeTolerance()
+			{				
+				return mdblDriftTimeTolerance;
+			}
+			__property void set_DriftTimeTolerance(double value)
+			{
+				mdblDriftTimeTolerance = value;
+			}
 
 			__property System::String* get_StatusMessage()
 			{
@@ -84,6 +95,8 @@ namespace MultiAlignEngine
 				}
 				return 0; 
 			}
+		
+
 
 			__property int get_PercentComplete()
 			{

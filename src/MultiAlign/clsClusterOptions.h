@@ -9,13 +9,17 @@ namespace MultiAlignEngine
 		public __gc class clsClusterOptions
 		{
 			/// <summary>
-			/// Mass Tolerance used in the clustering
+			/// Mass Tolerance used in the clustering and peak matching.
 			/// </summary>
 			double mdblMassTolerance; 
 			/// <summary>
-			/// NET tolerance to be used in the clustering
+			/// NET tolerance to be used in the clustering and peak matching.
 			/// </summary>
 			double mdblNETTolerance; 
+			/// <summary>
+			/// Drift-Time Tolerance for peak matching.
+			/// </summary>
+			double mdblDriftTimeTolerance;
 		public:
 			/// <summary>
 			/// how the representative values of NET and mass are calculated from
@@ -55,6 +59,18 @@ namespace MultiAlignEngine
 			__property void set_NETTolerance(double value)
 			{
 				mdblNETTolerance = value; 
+			}
+
+			
+			[clsDataSummaryAttribute("Drift Time Tolerance")]			
+			[clsParameterFileAttribute("DriftTimeTolerance", "ClusterOptions")]
+			__property double get_DriftTimeTolerance()
+			{
+				return mdblDriftTimeTolerance; 
+			}
+			__property void set_DriftTimeTolerance(double value)
+			{
+				mdblDriftTimeTolerance = value; 
 			}
 
 			[clsDataSummaryAttribute("Cluster Intensity Type")]

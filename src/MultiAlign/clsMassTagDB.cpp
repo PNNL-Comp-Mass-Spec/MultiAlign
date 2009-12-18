@@ -50,7 +50,7 @@ namespace MultiAlignEngine
 			for (int mtTagNum = 0; mtTagNum < numMTTags; mtTagNum++)
 			{
 				MultiAlignEngine::MassTags::MassTag mt = mobjMasstagDB->GetMassTagFromIndex(mtTagNum); 
-				MultiAlignEngine::clsMassTimeTag *mtTag = new MultiAlignEngine::clsMassTimeTag(mt.mdblMonoMass + shiftDaltons, mt.mdblAvgGANET, mt.mintMassTagId, true); 
+				MultiAlignEngine::clsMassTimeTag *mtTag = new MultiAlignEngine::clsMassTimeTag(mt.mdblMonoMass + shiftDaltons, mt.mdblAvgGANET, mt.mdblDriftTime, mt.mintMassTagId, true); 
 				arrMTTags->Add(mtTag); 
 			}
 			return arrMTTags; 
