@@ -5,10 +5,11 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using MultiAlignEngine.MassTags;
 
 namespace PNNLProteomics.MultiAlign.Hibernate.Domain.DAO
 {
-    public interface IModificationDAO : IGenericDAO<Modification>
+    public interface IModificationDAO : IGenericDAO<clsModification>
     {
 
     }

@@ -9,6 +9,7 @@ using System.Data.SQLite;
 using System;
 using NHibernate.Tool.hbm2ddl;
 using System.IO;
+using System.Reflection;
 
 namespace PNNLProteomics.MultiAlign.Hibernate
 {
@@ -20,10 +21,6 @@ namespace PNNLProteomics.MultiAlign.Hibernate
     /// </summary>
     public class NHibernateUtil
     {
-
-        //Make sure that your hibernate.cfg.xml lives in this location
-        private const string m_pathToHibernateConfig = "../../../PNNLProteomics/MultiAlign/Hibernate/hibernate.cfg.xml";
-
 		private static String m_dbLocation = null;
 		private static Configuration configuration; 
         private static ISessionFactory m_sessionFactory;
@@ -34,7 +31,8 @@ namespace PNNLProteomics.MultiAlign.Hibernate
 		static NHibernateUtil()
 		{
 			configuration = new Configuration();
-			configuration.Configure(m_pathToHibernateConfig);
+			configuration.Configure();
+			configuration.AddAssembly(typeof(NHibernateUtil).Assembly);
 		}
 
 		/// <summary>

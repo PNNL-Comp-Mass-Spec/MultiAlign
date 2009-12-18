@@ -563,6 +563,10 @@
 							>
 						</File>
 						<File
+							RelativePath=".\clsModification.cpp"
+							>
+						</File>
+						<File
 							RelativePath=".\clsMTDBLoader.cpp"
 							>
 						</File>
@@ -588,6 +592,10 @@
 						</File>
 						<File
 							RelativePath=".\clsMassTagDB.h"
+							>
+						</File>
+						<File
+							RelativePath=".\clsModification.h"
 							>
 						</File>
 						<File
