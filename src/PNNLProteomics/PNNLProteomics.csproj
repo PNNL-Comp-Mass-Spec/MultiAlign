@@ -1,4 +1,4 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -103,10 +103,6 @@
     <Compile Include="IO\classContainerStream.cs" />
     <Compile Include="IO\clsReadProgressStream.cs" />
     <Compile Include="IO\xmlIO.cs" />
-    <Compile Include="MultiAlign\Hibernate\Domain\Protein.cs" />
-    <Compile Include="MultiAlign\Hibernate\Domain\Modification.cs" />
-    <Compile Include="MultiAlign\Hibernate\Domain\MassTag.cs" />
-    <Compile Include="MultiAlign\Hibernate\Domain\Peptide.cs" />
     <Compile Include="MultiAlign\Hibernate\Domain\DAO\IGenericDAO.cs" />
     <Compile Include="MultiAlign\Hibernate\Domain\DAO\IProteinDAO.cs" />
     <Compile Include="MultiAlign\Hibernate\Domain\DAO\IModificationDAO.cs" />
@@ -119,28 +115,30 @@
     <Compile Include="MultiAlign\Hibernate\Domain\DAOHibernate\MassTagDAOHibernate.cs" />
     <Compile Include="MultiAlign\Hibernate\Domain\DAOHibernate\PeptideDAOHibernate.cs" />
     <Compile Include="MultiAlign\Hibernate\Domain\DAOHibernate\UmcClusterDAOHibernate.cs" />
-    <Compile Include="MultiAlign\Hibernate\Domain\UmcCluster.cs" />
     <Compile Include="MultiAlign\Hibernate\Domain\DAO\IUmcDAO.cs" />
     <Compile Include="MultiAlign\Hibernate\Domain\DAOHibernate\UmcDAOHibernate.cs" />
-    <Compile Include="MultiAlign\Hibernate\Domain\Umc.cs" />
     <Compile Include="MultiAlign\Hibernate\NHibernateUtil.cs" />
     <Compile Include="MultiAlign\UmcReader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="MultiAlign\Hibernate\hibernate.cfg.xml" />
-    <Content Include="MultiAlign\Hibernate\Mappings\Protein.hbm.xml" />
-    <Content Include="MultiAlign\Hibernate\Mappings\Modification.hbm.xml" />
-    <Content Include="MultiAlign\Hibernate\Mappings\MassTag.hbm.xml" />
-    <Content Include="MultiAlign\Hibernate\Mappings\Peptide.hbm.xml" />
-    <Content Include="MultiAlign\Hibernate\Mappings\UmcCluster.hbm.xml" />
-    <Content Include="MultiAlign\Hibernate\Mappings\Umc.hbm.xml" />
+    <EmbeddedResource Include="MultiAlign\Hibernate\Mappings\MassTag.hbm.xml" />
+    <EmbeddedResource Include="MultiAlign\Hibernate\Mappings\Modification.hbm.xml" />
+    <EmbeddedResource Include="MultiAlign\Hibernate\Mappings\Peptide.hbm.xml" />
+    <EmbeddedResource Include="MultiAlign\Hibernate\Mappings\Protein.hbm.xml" />
+    <EmbeddedResource Include="MultiAlign\Hibernate\Mappings\Umc.hbm.xml" />
+    <EmbeddedResource Include="MultiAlign\Hibernate\Mappings\UmcCluster.hbm.xml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MultiAlign\MultiAlign.vcproj">
       <Project>{5A7E3D3C-03F3-4586-8A2C-BAE1EBA4623E}</Project>
       <Name>MultiAlignEngine</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="hibernate.cfg.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
