@@ -99,6 +99,10 @@
     <Reference Include="Microsoft.VisualC">
       <Name>Microsoft.VisualC</Name>
     </Reference>
+    <Reference Include="SMARTWrapper, Version=1.0.3667.27131, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\SMARTWrapper.dll</HintPath>
+    </Reference>
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
@@ -137,10 +141,6 @@
     <ProjectReference Include="..\PNNLProteomics\PNNLProteomics.csproj">
       <Project>{BDFA22C4-5822-4AA5-996E-6FDE57F7118B}</Project>
       <Name>PNNLProteomics</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SMARTWrapper\SMARTWrapper\SMARTWrapper2005.vcproj">
-      <Project>{8FD22131-4C5F-456F-8D4F-583E8528FDA9}</Project>
-      <Name>SMARTWrapper2005</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
