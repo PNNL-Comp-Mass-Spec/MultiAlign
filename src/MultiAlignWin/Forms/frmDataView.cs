@@ -174,8 +174,9 @@ namespace MultiAlignWin
             mtreeView_proteinViewer.Nodes[0].Nodes.Clear();
             TreeNode rootNode = mtreeView_proteinViewer.Nodes[0];
 
-            if (false)
-            {/// 
+            
+            {
+                /// 
                 /// Iterate through the number of proteins to map out their peptides.
                 /// 
                 foreach (string proteinName in proteins.Keys)
@@ -202,14 +203,15 @@ namespace MultiAlignWin
                         peptideNode.Text = peptideName;
                         proteinNode.Nodes.Add(peptideNode);
                     }
-
-                    proteinNode.Name = proteinName;
                     proteinNode.Expand();
+                    proteinNode.Name = proteinName;                    
                     rootNode.Nodes.Add(proteinNode);
                 }
             }
-            rootNode.Expand();
+            rootNode.ExpandAll();
             mtreeView_proteinViewer.Sort();
+            mlistView_proteinPeptideTable.Columns[0].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
+            mlistView_proteinPeptideTable.Columns[1].AutoResize(ColumnHeaderAutoResizeStyle.HeaderSize);
             mlistView_proteinPeptideTable.EndUpdate();
             mtreeView_proteinViewer.EndUpdate();
         }
