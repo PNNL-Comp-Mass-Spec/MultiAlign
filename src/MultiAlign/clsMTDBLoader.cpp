@@ -386,6 +386,7 @@ namespace MultiAlignEngine
 				cmd->Parameters->Add(new System::Data::SqlClient::SqlParameter("@ExperimentExclusionFilter", 0));
 				cmd->Parameters->Add(new System::Data::SqlClient::SqlParameter("@MinimumPeptideProphetProbability", __box(mobjMassTagDBOptions->mdblPeptideProphetVal)));
 
+				/*
 				System::Data::SqlClient::SqlDataAdapter * adapt = new System::Data::SqlClient::SqlDataAdapter(cmd);
 				
 				try
@@ -397,9 +398,10 @@ namespace MultiAlignEngine
 				}catch(...)
 				{
 				}
-				adapt->Dispose();
+				adapt->Dispose();*/
 				
 
+				mint_num_mtids_total = 1000;
 				// execute the command
 				menmStatus = DBConnectionStatus::Running; 
 				rdr = cmd->ExecuteReader();
