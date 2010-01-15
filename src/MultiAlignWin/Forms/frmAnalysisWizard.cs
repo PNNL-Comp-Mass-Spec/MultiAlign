@@ -1092,6 +1092,7 @@ namespace MultiAlignWin
             bool copySuccess        = false;
             
             mobjAnalysis.UseMassTagDBAsBaseline     = mctl_selectParametersPage.UseMassTagDBAsBaseline;
+            mobjAnalysis.UseSMART                   = mctl_selectParametersPage.UseSMART;
             string massTagDBName                    = mobjAnalysis.MassTagDBOptions.mstrDatabase;
             bool alignmentDatabaseInvalid           = false;
 

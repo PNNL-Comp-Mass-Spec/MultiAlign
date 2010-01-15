@@ -4,63 +4,6 @@
         <name>ExternalControls</name>
     </assembly>
     <members>
-        <member name="T:Wizard.UI.WizardBanner">
-            <summary>
-            Summary description for WizardBanner.
-            </summary>
-        </member>
-        <member name="F:Wizard.UI.WizardBanner.components">
-            <summary> 
-            Required designer variable.
-            </summary>
-        </member>
-        <member name="M:Wizard.UI.WizardBanner.Dispose(System.Boolean)">
-            <summary> 
-            Clean up any resources being used.
-            </summary>
-        </member>
-        <member name="M:Wizard.UI.WizardBanner.InitializeComponent">
-            <summary> 
-            Required method for Designer support - do not modify 
-            the contents of this method with the code editor.
-            </summary>
-        </member>
-        <member name="T:ExternalControls.Utils">
-            <summary>
-            Utility class.
-            </summary>
-        </member>
-        <member name="M:ExternalControls.Utils.CheckValidEnumValue(System.String,System.Object,System.Type)">
-            <summary>
-            Check that the supplied enum value belongs to the supplied System.Type.<br></br>
-            If not throw an InvalidEnumArgumentException.
-            </summary>
-            <param name="argumentName">The name of the argument.</param>
-            <param name="enumValue">The enum value.</param>
-            <param name="enumClass">The type of the enum that 'enumValue' should belong to.</param>
-        </member>
-        <member name="M:Wizard.UI.WizardPage.#ctor">
-            <summary>
-            Default constructor for a Wizard page control.
-            </summary>
-        </member>
-        <member name="M:Wizard.UI.WizardPage.InitializeComponent">
-            <summary> 
-            Required method for Designer support - do not modify 
-            the contents of this method with the code editor.
-            </summary>
-        </member>
-        <member name="M:Wizard.UI.InternalWizardPage.Dispose(System.Boolean)">
-            <summary>
-            Clean up any resources being used.
-            </summary>
-        </member>
-        <member name="M:Wizard.UI.InternalWizardPage.InitializeComponent">
-            <summary>
-            Required method for Designer support - do not modify
-            the contents of this method with the code editor.
-            </summary>
-        </member>
         <member name="T:ExternalControls.CustomColorPicker">
             <summary>
             A control that allows the user to select any color from the
@@ -143,11 +86,194 @@
             the color palette is fairly processor intensive.
             </summary>
         </member>
-        <member name="T:ExternalControls.ColorPanelWithCapture">
+        <member name="T:ExternalControls.ColorPanelForm">
             <summary>
-            This internal class adds mouse capture to the ColorPanel
-            so we can close the containing modal dialog 'ColorPanelForm'
-            appropriately.
+            ColorPanelForm is used to host an instance of ColorPanel.
+            <br></br>
+            This enable the ColorPanel control to be dropped down by the
+            ColorPicker.
+            <br></br><br></br>
+            </summary>
+        </member>
+        <member name="F:ExternalControls.ColorPanelForm.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:ExternalControls.ColorPanelForm.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+        </member>
+        <member name="M:ExternalControls.ColorPanelForm.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="P:ExternalControls.ColorPanelForm.ParentWidth">
+            <summary>
+            This is so ColorPicker can inform the ColorPanelForm/ColorPanel of the desired
+            width of the control.
+            </summary>
+        </member>
+        <member name="T:Wizard.UI.WizardSheet">
+            <summary>
+            Summary description for WizardSheet.
+            </summary>
+        </member>
+        <member name="F:Wizard.UI.WizardSheet.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:Wizard.UI.WizardSheet.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+        </member>
+        <member name="M:Wizard.UI.WizardSheet.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="M:Wizard.UI.WizardSheet.DisplayListOfSteps(System.Collections.Generic.List{System.String})">
+            <summary>
+            Displays the list of steps that will be performed.
+            </summary>
+            <param name="steps"></param>
+        </member>
+        <member name="M:Wizard.UI.WizardSheet.SetStep(System.Int32,System.String)">
+            <summary>
+            Displays the current step.
+            </summary>
+            <param name="index"></param>
+            <param name="stepName"></param>
+        </member>
+        <member name="M:Wizard.UI.WizardPage.#ctor">
+            <summary>
+            Default constructor for a Wizard page control.
+            </summary>
+        </member>
+        <member name="M:Wizard.UI.WizardPage.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="M:Wizard.UI.InternalWizardPage.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+        </member>
+        <member name="M:Wizard.UI.InternalWizardPage.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:ExternalControls.EditableListView">
+            <summary>
+            Summary description for UserControl1.
+            </summary>
+        </member>
+        <member name="F:ExternalControls.EditableListView.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:ExternalControls.EditableListView.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+        </member>
+        <member name="M:ExternalControls.EditableListView.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:ExternalControls.ZAxis">
+            <summary>
+            This represents the Z Axis of an RGB color cube.
+            </summary>
+        </member>
+        <member name="F:ExternalControls.ZAxis.red">
+            <summary>The Z Axis is red</summary>
+        </member>
+        <member name="F:ExternalControls.ZAxis.blue">
+            <summary>The Z Axis is blue</summary>
+        </member>
+        <member name="F:ExternalControls.ZAxis.green">
+            <summary>The Z Axis is green</summary>
+        </member>
+        <member name="T:ExternalControls.ColorSet">
+            <summary>Specifies the set of colors to be displayed in the color palette.</summary>
+            <remarks><I>If any other useful sets of colors are known please let me know.</I></remarks>
+        </member>
+        <member name="F:ExternalControls.ColorSet.System">
+            <summary>Show the system color palette.</summary>
+        </member>
+        <member name="F:ExternalControls.ColorSet.Web">
+            <summary>Show the web color palette.</summary>
+        </member>
+        <member name="F:ExternalControls.ColorSet.Custom">
+            <summary>Show user defined color palette.</summary>
+        </member>
+        <member name="T:ExternalControls.ColorSortOrder">
+            <summary>
+            Specifies the order the colors contained in the selected palette should be sorted.
+            </summary>
+            <remarks><I>If any other useful sort orders are known please let me know.</I></remarks>
+        </member>
+        <member name="F:ExternalControls.ColorSortOrder.Name">
+            <summary>Sort by name.</summary>
+        </member>
+        <member name="F:ExternalControls.ColorSortOrder.Brightness">
+            <summary>Sort by brightness.</summary>
+        </member>
+        <member name="F:ExternalControls.ColorSortOrder.Hue">
+            <summary>Sort by hue.</summary>
+        </member>
+        <member name="F:ExternalControls.ColorSortOrder.Saturation">
+            <summary>Sort by saturation.</summary>
+        </member>
+        <member name="F:ExternalControls.ColorSortOrder.Distance">
+            <summary>Sort by linear distance from the origin (0,0,0) of the RGB color space.</summary>
+        </member>
+        <member name="F:ExternalControls.ColorSortOrder.Unsorted">
+            <summary>
+            Colors are sorted according to their original order.<br></br>
+            For System and Web color sets this is the same as sort by name.<br></br>
+            For custom colors it will be the order of the colors in the array assigned to the CustomColors property
+            </summary>
+        </member>
+        <member name="T:ExternalControls.ColorChangedEventArgs">
+            <summary>
+            Provides data for the <c>ColorChanged</c> event.
+            </summary>
+            <remarks>
+            The ColorChanged event occurs when a user selects a new color in the
+            ColorPicker, ColorPanel or CustomColorPicker controls.
+            </remarks>
+        </member>
+        <member name="M:ExternalControls.ColorChangedEventArgs.#ctor(System.Drawing.Color)">
+            <summary>
+            Initializes a new instance of the <c>ColorChangedEventArgs</c> class.
+            </summary>
+            <param name="color">
+            The selected color.
+            </param>
+        </member>
+        <member name="P:ExternalControls.ColorChangedEventArgs.Color">
+            <summary>
+            Gets the selected color.
+            </summary>
+        </member>
+        <member name="T:ExternalControls.ColorChangedEventHandler">
+            <summary>
+            The ColorChangedEvent delegate.
             </summary>
         </member>
         <member name="T:ExternalControls.ColorPanel">
@@ -501,217 +627,101 @@
             <param name="selected"></param>
             <param name="pickColor"></param>
         </member>
-        <member name="M:ExternalControls.ColorPanelWithCapture.Dispose(System.Boolean)">
+        <member name="T:ExternalControls.CustomColorPanel">
             <summary>
+            <B>Not implemented.</B><br></br><br></br>
+            I intend to factor out the color panel in the CustomColorPicker into a separate control.
+            </summary>
+        </member>
+        <member name="F:ExternalControls.CustomColorPanel.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:ExternalControls.CustomColorPanel.#ctor">
+            <summary>
+            [T.B.D]
+            </summary>
+        </member>
+        <member name="M:ExternalControls.CustomColorPanel.Dispose(System.Boolean)">
+            <summary> 
             Clean up any resources being used.
             </summary>
         </member>
-        <member name="M:ExternalControls.ColorPanelWithCapture.InitializeComponent">
-            <summary>
-            Required method for Designer support - do not modify
+        <member name="M:ExternalControls.CustomColorPanel.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
             the contents of this method with the code editor.
             </summary>
         </member>
-        <member name="M:ExternalControls.ColorPanelWithCapture.GetPreferredWidth">
+        <member name="M:ExternalControls.CustomColorPanel.OnPaint(System.Windows.Forms.PaintEventArgs)">
             <summary>
-            Override the base class preferred width to be that of the 
-            our parent ColorPicker control.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:ExternalControls.ColorPanelWithCapture.OnGotFocus(System.EventArgs)">
-            <summary>
-            Overrides OnGotFocus in order to grab Mouse Capture.
+            [T.B.D]
             </summary>
             <param name="e"></param>
         </member>
-        <member name="T:ExternalControls.Properties.Resources">
+        <member name="M:ExternalControls.CustomColorPanel.OnPaintBackground(System.Windows.Forms.PaintEventArgs)">
             <summary>
-              A strongly-typed resource class, for looking up localized strings, etc.
+            Overrides OnPaintBackground.  Since the whole of the control is drawn
+            in OnPaint, OnPaintBackground is overridden to do nothing.
             </summary>
+            <param name="e"></param>
         </member>
-        <member name="P:ExternalControls.Properties.Resources.ResourceManager">
+        <member name="M:ExternalControls.CustomColorPanel.OnColorChanged(ExternalControls.ColorChangedEventArgs)">
             <summary>
-              Returns the cached ResourceManager instance used by this class.
+            Raises the ColorChanged event.
             </summary>
+            <param name="e"></param>
         </member>
-        <member name="P:ExternalControls.Properties.Resources.Culture">
+        <member name="M:ExternalControls.CustomColorPanel.OnEnabledChanged(System.EventArgs)">
             <summary>
-              Overrides the current thread's CurrentUICulture property for all
-              resource lookups using this strongly typed resource class.
+            Overrides OnEnabledChanged so the control can redraw itself 
+            enabled/disabled.
             </summary>
+            <param name="e"></param>
         </member>
-        <member name="T:Wizard.UI.EtchedLine">
+        <member name="M:ExternalControls.CustomColorPanel.UpdateBorderSize">
             <summary>
-            Summary description for UserControl1.
+            Update the border size values based on the current border style.
             </summary>
         </member>
-        <member name="F:Wizard.UI.EtchedLine.components">
+        <member name="E:ExternalControls.CustomColorPanel.ColorChanged">
             <summary>
-            Required designer variable.
+            The ColorChangedEvent event handler.
             </summary>
         </member>
-        <member name="M:Wizard.UI.EtchedLine.Dispose(System.Boolean)">
+        <member name="P:ExternalControls.CustomColorPanel.ZAxis">
             <summary>
-            Clean up any resources being used.
+            
             </summary>
         </member>
-        <member name="M:Wizard.UI.EtchedLine.InitializeComponent">
+        <member name="P:ExternalControls.CustomColorPanel.Color">
             <summary>
-            Required method for Designer support - do not modify 
-            the contents of this method with the code editor.
+            Sets/gets the pick color.
             </summary>
         </member>
-        <member name="F:ExternalControls.controlStepOverview.components">
-            <summary> 
-            Required designer variable.
-            </summary>
-        </member>
-        <member name="M:ExternalControls.controlStepOverview.Dispose(System.Boolean)">
-            <summary> 
-            Clean up any resources being used.
-            </summary>
-            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        </member>
-        <member name="M:ExternalControls.controlStepOverview.InitializeComponent">
-            <summary> 
-            Required method for Designer support - do not modify 
-            the contents of this method with the code editor.
-            </summary>
-        </member>
-        <member name="F:ExternalControls.controlStepOverview.mlabel_currentStep">
+        <member name="P:ExternalControls.CustomColorPanel.AutoSize">
             <summary>
-            Label for handling the current step.
+            Set/get the auto-size property.
             </summary>
+            <remarks>
+            Setting auto-size to <b>true</b> will fix the size of the control to 
+            256 x 256 (plus borders) so that every color will be displayed in one
+            pixel.
+            </remarks>
         </member>
-        <member name="F:ExternalControls.controlStepOverview.mlist_stepLabels">
+        <member name="P:ExternalControls.CustomColorPanel.Isotropic">
             <summary>
-            List of labels for handling the current step message.
+            Sets/gets the isotropic property.
             </summary>
+            <remarks>
+            If auto-size if <b>false</b> then the control can be scaled, but if
+            isotropic is <b>true</b> then the x and y axis will be the same.
+            </remarks>
         </member>
-        <member name="M:ExternalControls.controlStepOverview.#ctor">
+        <member name="P:ExternalControls.CustomColorPanel.BorderStyle">
             <summary>
-            Default construtor.
-            </summary>
-        </member>
-        <member name="M:ExternalControls.controlStepOverview.DisplayListOfSteps(System.Collections.Generic.List{System.String})">
-            <summary>
-            Displays the list of steps that will be performed.
-            </summary>
-            <param name="steps"></param>
-        </member>
-        <member name="M:ExternalControls.controlStepOverview.SetStep(System.Int32,System.String)">
-            <summary>
-            Displays the current step.
-            </summary>
-            <param name="index"></param>
-            <param name="stepName"></param>
-        </member>
-        <member name="T:Wizard.UI.WizardSheet">
-            <summary>
-            Summary description for WizardSheet.
-            </summary>
-        </member>
-        <member name="F:Wizard.UI.WizardSheet.components">
-            <summary>
-            Required designer variable.
-            </summary>
-        </member>
-        <member name="M:Wizard.UI.WizardSheet.Dispose(System.Boolean)">
-            <summary>
-            Clean up any resources being used.
-            </summary>
-        </member>
-        <member name="M:Wizard.UI.WizardSheet.InitializeComponent">
-            <summary>
-            Required method for Designer support - do not modify
-            the contents of this method with the code editor.
-            </summary>
-        </member>
-        <member name="M:Wizard.UI.WizardSheet.DisplayListOfSteps(System.Collections.Generic.List{System.String})">
-            <summary>
-            Displays the list of steps that will be performed.
-            </summary>
-            <param name="steps"></param>
-        </member>
-        <member name="M:Wizard.UI.WizardSheet.SetStep(System.Int32,System.String)">
-            <summary>
-            Displays the current step.
-            </summary>
-            <param name="index"></param>
-            <param name="stepName"></param>
-        </member>
-        <member name="T:ExternalControls.NiceLine">
-            <summary>
-            "NiceLine" draws a shaded line separator. Can have an aligned text caption.
-            </summary>
-        </member>
-        <member name="M:ExternalControls.NiceLine.Dispose(System.Boolean)">
-            <summary> 
-            Clean up any resources being used.
-            </summary>
-        </member>
-        <member name="M:ExternalControls.NiceLine.InitializeComponent">
-            <summary> 
-            Required method for Designer support - do not modify 
-            the contents of this method with the code editor.
-            </summary>
-        </member>
-        <member name="P:ExternalControls.NiceLine.Caption">
-            <summary>
-            The caption text displayed on the line. 
-            If the caption is "" (the default) the line is not broken
-            </summary>
-        </member>
-        <member name="P:ExternalControls.NiceLine.CaptionMarginSpace">
-            <summary>
-            The distance in pixels form the control margin to caption text
-            </summary>
-        </member>
-        <member name="P:ExternalControls.NiceLine.CaptionPadding">
-            <summary>
-            The space in pixels arrownd text caption
-            </summary>
-        </member>
-        <member name="P:ExternalControls.NiceLine.LineVerticalAlign">
-            <summary>
-            The vertical alignement of the line within the space of the control
-            </summary>
-        </member>
-        <member name="P:ExternalControls.NiceLine.CaptionOrizontalAlign">
-            <summary>
-            Tell where the text caption is aligned in the control
-            </summary>
-        </member>
-        <member name="T:ExternalControls.ColorPanelForm">
-            <summary>
-            ColorPanelForm is used to host an instance of ColorPanel.
-            <br></br>
-            This enable the ColorPanel control to be dropped down by the
-            ColorPicker.
-            <br></br><br></br>
-            </summary>
-        </member>
-        <member name="F:ExternalControls.ColorPanelForm.components">
-            <summary>
-            Required designer variable.
-            </summary>
-        </member>
-        <member name="M:ExternalControls.ColorPanelForm.Dispose(System.Boolean)">
-            <summary>
-            Clean up any resources being used.
-            </summary>
-        </member>
-        <member name="M:ExternalControls.ColorPanelForm.InitializeComponent">
-            <summary>
-            Required method for Designer support - do not modify
-            the contents of this method with the code editor.
-            </summary>
-        </member>
-        <member name="P:ExternalControls.ColorPanelForm.ParentWidth">
-            <summary>
-            This is so ColorPicker can inform the ColorPanelForm/ColorPanel of the desired
-            width of the control.
+            Set/get the controls border style.
             </summary>
         </member>
         <member name="T:ExternalControls.ColorPicker">
@@ -960,205 +970,129 @@
             Set/get the custom color palette to be displayed.
             </summary>
         </member>
-        <member name="T:ExternalControls.EditableListView">
+        <member name="T:ExternalControls.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:ExternalControls.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:ExternalControls.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="T:ExternalControls.NiceLine">
+            <summary>
+            "NiceLine" draws a shaded line separator. Can have an aligned text caption.
+            </summary>
+        </member>
+        <member name="M:ExternalControls.NiceLine.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+        </member>
+        <member name="M:ExternalControls.NiceLine.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="P:ExternalControls.NiceLine.Caption">
+            <summary>
+            The caption text displayed on the line. 
+            If the caption is "" (the default) the line is not broken
+            </summary>
+        </member>
+        <member name="P:ExternalControls.NiceLine.CaptionMarginSpace">
+            <summary>
+            The distance in pixels form the control margin to caption text
+            </summary>
+        </member>
+        <member name="P:ExternalControls.NiceLine.CaptionPadding">
+            <summary>
+            The space in pixels arrownd text caption
+            </summary>
+        </member>
+        <member name="P:ExternalControls.NiceLine.LineVerticalAlign">
+            <summary>
+            The vertical alignement of the line within the space of the control
+            </summary>
+        </member>
+        <member name="P:ExternalControls.NiceLine.CaptionOrizontalAlign">
+            <summary>
+            Tell where the text caption is aligned in the control
+            </summary>
+        </member>
+        <member name="T:Wizard.UI.EtchedLine">
             <summary>
             Summary description for UserControl1.
             </summary>
         </member>
-        <member name="F:ExternalControls.EditableListView.components">
+        <member name="F:Wizard.UI.EtchedLine.components">
             <summary>
             Required designer variable.
             </summary>
         </member>
-        <member name="M:ExternalControls.EditableListView.Dispose(System.Boolean)">
+        <member name="M:Wizard.UI.EtchedLine.Dispose(System.Boolean)">
             <summary>
             Clean up any resources being used.
             </summary>
         </member>
-        <member name="M:ExternalControls.EditableListView.InitializeComponent">
+        <member name="M:Wizard.UI.EtchedLine.InitializeComponent">
             <summary>
             Required method for Designer support - do not modify 
             the contents of this method with the code editor.
             </summary>
         </member>
-        <member name="T:ExternalControls.ZAxis">
+        <member name="T:ExternalControls.ColorPanelWithCapture">
             <summary>
-            This represents the Z Axis of an RGB color cube.
+            This internal class adds mouse capture to the ColorPanel
+            so we can close the containing modal dialog 'ColorPanelForm'
+            appropriately.
             </summary>
         </member>
-        <member name="F:ExternalControls.ZAxis.red">
-            <summary>The Z Axis is red</summary>
-        </member>
-        <member name="F:ExternalControls.ZAxis.blue">
-            <summary>The Z Axis is blue</summary>
-        </member>
-        <member name="F:ExternalControls.ZAxis.green">
-            <summary>The Z Axis is green</summary>
-        </member>
-        <member name="T:ExternalControls.ColorSet">
-            <summary>Specifies the set of colors to be displayed in the color palette.</summary>
-            <remarks><I>If any other useful sets of colors are known please let me know.</I></remarks>
-        </member>
-        <member name="F:ExternalControls.ColorSet.System">
-            <summary>Show the system color palette.</summary>
-        </member>
-        <member name="F:ExternalControls.ColorSet.Web">
-            <summary>Show the web color palette.</summary>
-        </member>
-        <member name="F:ExternalControls.ColorSet.Custom">
-            <summary>Show user defined color palette.</summary>
-        </member>
-        <member name="T:ExternalControls.ColorSortOrder">
+        <member name="M:ExternalControls.ColorPanelWithCapture.Dispose(System.Boolean)">
             <summary>
-            Specifies the order the colors contained in the selected palette should be sorted.
-            </summary>
-            <remarks><I>If any other useful sort orders are known please let me know.</I></remarks>
-        </member>
-        <member name="F:ExternalControls.ColorSortOrder.Name">
-            <summary>Sort by name.</summary>
-        </member>
-        <member name="F:ExternalControls.ColorSortOrder.Brightness">
-            <summary>Sort by brightness.</summary>
-        </member>
-        <member name="F:ExternalControls.ColorSortOrder.Hue">
-            <summary>Sort by hue.</summary>
-        </member>
-        <member name="F:ExternalControls.ColorSortOrder.Saturation">
-            <summary>Sort by saturation.</summary>
-        </member>
-        <member name="F:ExternalControls.ColorSortOrder.Distance">
-            <summary>Sort by linear distance from the origin (0,0,0) of the RGB color space.</summary>
-        </member>
-        <member name="F:ExternalControls.ColorSortOrder.Unsorted">
-            <summary>
-            Colors are sorted according to their original order.<br></br>
-            For System and Web color sets this is the same as sort by name.<br></br>
-            For custom colors it will be the order of the colors in the array assigned to the CustomColors property
-            </summary>
-        </member>
-        <member name="T:ExternalControls.ColorChangedEventArgs">
-            <summary>
-            Provides data for the <c>ColorChanged</c> event.
-            </summary>
-            <remarks>
-            The ColorChanged event occurs when a user selects a new color in the
-            ColorPicker, ColorPanel or CustomColorPicker controls.
-            </remarks>
-        </member>
-        <member name="M:ExternalControls.ColorChangedEventArgs.#ctor(System.Drawing.Color)">
-            <summary>
-            Initializes a new instance of the <c>ColorChangedEventArgs</c> class.
-            </summary>
-            <param name="color">
-            The selected color.
-            </param>
-        </member>
-        <member name="P:ExternalControls.ColorChangedEventArgs.Color">
-            <summary>
-            Gets the selected color.
-            </summary>
-        </member>
-        <member name="T:ExternalControls.ColorChangedEventHandler">
-            <summary>
-            The ColorChangedEvent delegate.
-            </summary>
-        </member>
-        <member name="T:ExternalControls.CustomColorPanel">
-            <summary>
-            <B>Not implemented.</B><br></br><br></br>
-            I intend to factor out the color panel in the CustomColorPicker into a separate control.
-            </summary>
-        </member>
-        <member name="F:ExternalControls.CustomColorPanel.components">
-            <summary> 
-            Required designer variable.
-            </summary>
-        </member>
-        <member name="M:ExternalControls.CustomColorPanel.#ctor">
-            <summary>
-            [T.B.D]
-            </summary>
-        </member>
-        <member name="M:ExternalControls.CustomColorPanel.Dispose(System.Boolean)">
-            <summary> 
             Clean up any resources being used.
             </summary>
         </member>
-        <member name="M:ExternalControls.CustomColorPanel.InitializeComponent">
-            <summary> 
-            Required method for Designer support - do not modify 
+        <member name="M:ExternalControls.ColorPanelWithCapture.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
             the contents of this method with the code editor.
             </summary>
         </member>
-        <member name="M:ExternalControls.CustomColorPanel.OnPaint(System.Windows.Forms.PaintEventArgs)">
+        <member name="M:ExternalControls.ColorPanelWithCapture.GetPreferredWidth">
             <summary>
-            [T.B.D]
+            Override the base class preferred width to be that of the 
+            our parent ColorPicker control.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ExternalControls.ColorPanelWithCapture.OnGotFocus(System.EventArgs)">
+            <summary>
+            Overrides OnGotFocus in order to grab Mouse Capture.
             </summary>
             <param name="e"></param>
         </member>
-        <member name="M:ExternalControls.CustomColorPanel.OnPaintBackground(System.Windows.Forms.PaintEventArgs)">
+        <member name="T:ExternalControls.Utils">
             <summary>
-            Overrides OnPaintBackground.  Since the whole of the control is drawn
-            in OnPaint, OnPaintBackground is overridden to do nothing.
-            </summary>
-            <param name="e"></param>
-        </member>
-        <member name="M:ExternalControls.CustomColorPanel.OnColorChanged(ExternalControls.ColorChangedEventArgs)">
-            <summary>
-            Raises the ColorChanged event.
-            </summary>
-            <param name="e"></param>
-        </member>
-        <member name="M:ExternalControls.CustomColorPanel.OnEnabledChanged(System.EventArgs)">
-            <summary>
-            Overrides OnEnabledChanged so the control can redraw itself 
-            enabled/disabled.
-            </summary>
-            <param name="e"></param>
-        </member>
-        <member name="M:ExternalControls.CustomColorPanel.UpdateBorderSize">
-            <summary>
-            Update the border size values based on the current border style.
+            Utility class.
             </summary>
         </member>
-        <member name="E:ExternalControls.CustomColorPanel.ColorChanged">
+        <member name="M:ExternalControls.Utils.CheckValidEnumValue(System.String,System.Object,System.Type)">
             <summary>
-            The ColorChangedEvent event handler.
+            Check that the supplied enum value belongs to the supplied System.Type.<br></br>
+            If not throw an InvalidEnumArgumentException.
             </summary>
-        </member>
-        <member name="P:ExternalControls.CustomColorPanel.ZAxis">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="P:ExternalControls.CustomColorPanel.Color">
-            <summary>
-            Sets/gets the pick color.
-            </summary>
-        </member>
-        <member name="P:ExternalControls.CustomColorPanel.AutoSize">
-            <summary>
-            Set/get the auto-size property.
-            </summary>
-            <remarks>
-            Setting auto-size to <b>true</b> will fix the size of the control to 
-            256 x 256 (plus borders) so that every color will be displayed in one
-            pixel.
-            </remarks>
-        </member>
-        <member name="P:ExternalControls.CustomColorPanel.Isotropic">
-            <summary>
-            Sets/gets the isotropic property.
-            </summary>
-            <remarks>
-            If auto-size if <b>false</b> then the control can be scaled, but if
-            isotropic is <b>true</b> then the x and y axis will be the same.
-            </remarks>
-        </member>
-        <member name="P:ExternalControls.CustomColorPanel.BorderStyle">
-            <summary>
-            Set/get the controls border style.
-            </summary>
+            <param name="argumentName">The name of the argument.</param>
+            <param name="enumValue">The enum value.</param>
+            <param name="enumClass">The type of the enum that 'enumValue' should belong to.</param>
         </member>
         <member name="M:Wizard.UI.ExternalWizardPage.Dispose(System.Boolean)">
             <summary>
@@ -1170,6 +1104,72 @@
             Required method for Designer support - do not modify
             the contents of this method with the code editor.
             </summary>
+        </member>
+        <member name="T:Wizard.UI.WizardBanner">
+            <summary>
+            Summary description for WizardBanner.
+            </summary>
+        </member>
+        <member name="F:Wizard.UI.WizardBanner.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:Wizard.UI.WizardBanner.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+        </member>
+        <member name="M:Wizard.UI.WizardBanner.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:ExternalControls.controlStepOverview.components">
+            <summary> 
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:ExternalControls.controlStepOverview.Dispose(System.Boolean)">
+            <summary> 
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:ExternalControls.controlStepOverview.InitializeComponent">
+            <summary> 
+            Required method for Designer support - do not modify 
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:ExternalControls.controlStepOverview.mlabel_currentStep">
+            <summary>
+            Label for handling the current step.
+            </summary>
+        </member>
+        <member name="F:ExternalControls.controlStepOverview.mlist_stepLabels">
+            <summary>
+            List of labels for handling the current step message.
+            </summary>
+        </member>
+        <member name="M:ExternalControls.controlStepOverview.#ctor">
+            <summary>
+            Default construtor.
+            </summary>
+        </member>
+        <member name="M:ExternalControls.controlStepOverview.DisplayListOfSteps(System.Collections.Generic.List{System.String})">
+            <summary>
+            Displays the list of steps that will be performed.
+            </summary>
+            <param name="steps"></param>
+        </member>
+        <member name="M:ExternalControls.controlStepOverview.SetStep(System.Int32,System.String)">
+            <summary>
+            Displays the current step.
+            </summary>
+            <param name="index"></param>
+            <param name="stepName"></param>
         </member>
     </members>
 </doc>

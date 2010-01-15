@@ -52,10 +52,11 @@ namespace MultiAlignWin
 		private const string mstring_umc_rep_net_col    = "NET" ; 
 		
 		private const string mstring_umc_rep_mass_calib_col  = "Calibrated Mass" ; 
-		private const string mstring_umc_rep_net_aligned_col = "Aligned NET" ; 
+		private const string mstring_umc_rep_net_aligned_col = "Aligned NET" ;
 
-		private const string mstring_umc_index_col      = "Row ID" ; 
-		private const string mstring_umc_rep_size_col   = "Cluster Size" ; 
+        private const string mstring_umc_index_col = "Row ID";
+        private const string mstring_umc_rep_size_col = "Cluster Size";
+        private const string mstring_umc_spectral_count = "Spectral Count"; 
 		private const string mstring_peptide_col        = "Peptide" ; 
 
 		private const string mstring_mass_tag_id_col = "Mass Tags" ;
@@ -204,13 +205,18 @@ namespace MultiAlignWin
 				table.Columns.Add(mstring_mass_tag_modification_col) ; 
 				table.Columns.Add(mstring_mass_tag_F_CS1) ; 
 				table.Columns.Add(mstring_mass_tag_F_CS2) ; 
-				table.Columns.Add(mstring_mass_tag_F_CS3) ; 
-				
+				table.Columns.Add(mstring_mass_tag_F_CS3) ;
+
+                /// 
+                /// If SMART was used, then we want to pull the data out of the analysis object
+                /// 
+                if (mobjAnalysis.UseSMART == true)
+                {
+                    table.Columns.Add("SMART Score");                    
+                }				
 			}
-
-
-            System.Collections.Generic.Dictionary<string, List<string>> proteinToPeptideMatches = new Dictionary<string,List<string>>();
-
+            
+            Dictionary<string, List<string>> proteinToPeptideMatches = new Dictionary<string,List<string>>();
 			try
 			{
                 /// 
@@ -297,6 +303,11 @@ namespace MultiAlignWin
 					table.Columns.Add(col_name, typeof(double)) ;
 
                     /// 
+                    /// Spectral count - # of peaks 
+                    /// 
+                    table.Columns.Add(mstring_umc_spectral_count + "_" + col_name, typeof(string));
+
+                    /// 
                     /// Charge state abundances
                     /// 
                     if (mbool_showCMCAbundances)
@@ -315,15 +326,15 @@ namespace MultiAlignWin
 
                 
 
-				int num_datasets_to_show = arr_datasets_to_show.Count ; 
-				int num_rows_so_far = 0 ; 
-				MultiAlignEngine.Features.clsUMC [] arrUMCs = mobjAnalysis.UMCData.marr_umcs ; 
-				int [] arrClusterMainMemberIndex = mobjAnalysis.UMCData.mobjClusterData.marrClusterMainMemberIndex ; 
-				double [] arrClusterMemberIntensity = mobjAnalysis.UMCData.mobjClusterData.marrClusterIntensity ; 
-				double [] arrClusterMemberNormalizedIntensity = mobjAnalysis.UMCData.mobjClusterData.marrClusterIntensityNormalized ; 
-				MultiAlignEngine.PeakMatching.clsPeakMatchingResults.clsPeakMatchingTriplet [] arrPeakMatchingTriplets = null ;
-				MultiAlignEngine.MassTags.clsProtein [] arrPeakMatchingProteins = null ; 
-				MultiAlignEngine.MassTags.clsMassTag [] arrPeakMatchingMassTags = null ; 
+				int num_datasets_to_show                        = arr_datasets_to_show.Count ; 
+				int num_rows_so_far                             = 0 ; 
+				clsUMC [] arrUMCs                               = mobjAnalysis.UMCData.marr_umcs ; 
+				int [] arrClusterMainMemberIndex                = mobjAnalysis.UMCData.mobjClusterData.marrClusterMainMemberIndex ; 
+				double [] arrClusterMemberIntensity             = mobjAnalysis.UMCData.mobjClusterData.marrClusterIntensity ; 
+				double [] arrClusterMemberNormalizedIntensity   = mobjAnalysis.UMCData.mobjClusterData.marrClusterIntensityNormalized ; 
+				clsPeakMatchingResults.clsPeakMatchingTriplet [] arrPeakMatchingTriplets = null ;
+				clsProtein [] arrPeakMatchingProteins = null ; 
+				clsMassTag [] arrPeakMatchingMassTags = null ; 
 
 				int clusterNum = 0 ; 
 				int currentPeakMatchNum = 0 ; 
@@ -339,7 +350,7 @@ namespace MultiAlignWin
 				int lastClusterNum = -1 ;
 
                 /// ////////////////////////////////////////////////////////////////////////////// 
-                /// Now we add the data
+                /// Now we add the data 
                 /// ////////////////////////////////////////////////////////////////////////////// 
 				while(clusterNum < num_clusters)
 				{
@@ -372,7 +383,6 @@ namespace MultiAlignWin
 							}
 						}
 					}
-
 
 					int num_non_empty = 0 ;                     
                     /// ////////////////////////////////////////////////////////////////////////////// 
@@ -461,6 +471,13 @@ namespace MultiAlignWin
                         }
 
                         /// //////////////////////////////////////////////////////////////////////////////
+                        /// Add spectral count information
+                        /// //////////////////////////////////////////////////////////////////////////////                        
+                        row[start_data_column_num + col_num] = Convert.ToString(umc.SpectralCount);
+                        col_num++;
+
+
+                        /// //////////////////////////////////////////////////////////////////////////////
                         /// Do we show the abundances for each charge state?
                         /// //////////////////////////////////////////////////////////////////////////////
                         if (mbool_showCMCAbundances)
@@ -515,7 +532,38 @@ namespace MultiAlignWin
 							row[current_column++]   = massTag.mstrModification ; 
 							row[current_column++]   = massTag.mfltAvgFCS1 ; 
 							row[current_column++]   = massTag.mfltAvgFCS2 ;
-                            row[current_column++] = massTag.mfltAvgFCS3;
+                            row[current_column++]   = massTag.mfltAvgFCS3;
+
+                            if (mobjAnalysis.UseSMART)
+                            {
+                                /// 
+                                /// See if a SMART score exists
+                                /// 
+                                List<PNNLProteomics.SMART.classSMARTProbabilityResult> smartScores = null;
+                                smartScores = mobjAnalysis.SMARTResults.GetResultFromUMCIndex(triplet.mintFeatureIndex);
+                                if (smartScores != null)
+                                {                                     
+                                    /// 
+                                    /// Then pull out the SMART score that matches for this triplet Mass Tag
+                                    /// 
+                                    PNNLProteomics.SMART.classSMARTProbabilityResult finalResult = null;
+                                    foreach (PNNLProteomics.SMART.classSMARTProbabilityResult score in smartScores)
+                                    {                                        
+                                        if (score.MassTagID == massTag.Id)
+                                        {
+                                            finalResult = score;
+                                            break;
+                                        }
+                                    }
+                                    /// 
+                                    /// If we have a final result, then we have a smart score for this MTID for the matched UMC.
+                                    /// 
+                                    if (finalResult != null)
+                                        row[current_column++] = Convert.ToString(finalResult.Score);
+                                    else
+                                        row[current_column++] = DBNull.Value;                                 
+                                }
+                            }
 
                             /// Map proteins to peptides 
                             if (proteinToPeptideMatches.ContainsKey(protein.mstrProteinName) == false)                            

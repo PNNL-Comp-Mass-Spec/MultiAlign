@@ -224,7 +224,7 @@ namespace PNNLProteomics.Data.Analysis
         /// <summary>
         /// List of smart results with summaries for each dataset.
         /// </summary>
-        private List<classSMARTResults> mlist_smartResults;
+        private classSMARTResults mobj_smartResults;
         /// <summary>
         /// False Discovery Rate as a result of the 11 da shift.
         /// </summary>
@@ -291,7 +291,7 @@ namespace PNNLProteomics.Data.Analysis
             /// Smart options for SMART Scoring and a collection to store the results.
             /// 
             mobj_smartOptions               = new classSMARTOptions();
-            mlist_smartResults              = new List<classSMARTResults>();
+            mobj_smartResults               = new classSMARTResults();
 
             /// 
             /// This only matters if peptide peak matching was performed
@@ -1135,6 +1135,20 @@ namespace PNNLProteomics.Data.Analysis
                 Console.WriteLine(ex.Message + ex.StackTrace);
             }
         }
+        private void ConstructClustersFromDataset(clsUMCData umcdata, int index)
+        {
+            clsUMC[] umcs = UMCData.GetUMCS(index);
+
+            foreach (clsUMC umc in umcs)
+            {
+                clsCluster cluster  = new clsCluster();
+                cluster.Charge      = umc.ChargeRepresentative;
+                cluster.Mass        = umc.MassCalibrated;
+                cluster.Net         = umc.mint_scan_aligned;
+                cluster.Scan        = umc.ScanAligned;
+
+            }            
+        }
         public void PerformClustering()
         {
             menmState = enmState.CLUSTERING;
@@ -1150,7 +1164,14 @@ namespace PNNLProteomics.Data.Analysis
             {
                 StatusMessage(0, "Performing Clustering of data points");
             }
-            mobjClusterProcessor.PerformClustering(mobjUMCData);
+            if (marrFileNames.Count > 0)
+            {
+                mobjClusterProcessor.PerformClustering(mobjUMCData);
+            }
+            else
+            {
+                //ConstructClustersFromDataset(mobjUMCData);
+            }
 
             mint_statusLevel--;
             // lets write it out.
@@ -1191,8 +1212,7 @@ namespace PNNLProteomics.Data.Analysis
                 Console.WriteLine(ex.Message + ex.StackTrace);
                 menmState = enmState.ERROR;
             }
-        }
-        
+        }        
         /// <summary>
         /// Performs the peak matching of UMC's to the MTDB and inherent scoring.
         /// </summary>
@@ -1265,72 +1285,153 @@ namespace PNNLProteomics.Data.Analysis
 
         #region SMART - Scoring 
         /// <summary>
-        /// Calculates the SMART Scores if matched to a AMTDB for peptide identification.
+        /// Calculates the SMART Scores if matched to a AMTDB 
+        /// for peptide identification.
         /// </summary>
         public void CalculateSMARTScores()
         {
-            classSMARTProcessor processor = new classSMARTProcessor();
-            List<classSMARTMassTag>  ms   = new List<classSMARTMassTag>();
 
-            mlist_smartResults.Clear();
-
-            /// 
-            /// Get all of the peptide information.
-            /// 
-            foreach (clsMassTag tag in mobjPeakMatchingResults.marrMasstags)
+            if (StatusMessage != null)
             {
+                StatusMessage(0, "Performing SMART");
+            }
+
+            classSMARTProcessor processor = new classSMARTProcessor();
+                        
+            /// 
+            /// Get all of the peptide information, find the
+            /// count first so we dont
+            /// make N number of native-managed calls.
+            /// 
+            List<classSMARTMassTag>  massTags   = 
+                new List<classSMARTMassTag>();
+            int totalTags                       = 
+                mobjMassTagDB.GetMassTagCount();
+            for(int i = 0; i < totalTags; i++)
+            {
+                clsMassTag tag                  = 
+                    mobjMassTagDB.GetMassTagFromIndex(i);
+
                 classSMARTMassTag msFeature     = new classSMARTMassTag();
-                msFeature.mbool_isDecoy         = false;
-                msFeature.mdouble_avgGANET      = tag.mdblAvgGANET;
-                msFeature.mdouble_fscoreCharge1 = tag.mfltAvgFCS1;
-                msFeature.mdouble_fscoreCharge2 = tag.mfltAvgFCS2;
-                msFeature.mdouble_fscoreCharge3 = tag.mfltAvgFCS3;
                 msFeature.mdouble_monoMass      = tag.mdblMonoMass;
-                msFeature.mdouble_NET           = tag.mdblPNET;
-                msFeature.mdouble_stdGANET      = tag.mdblStdGANET;
-                msFeature.mint_ID               = tag.mintMassTagId;
-                msFeature.mshort_countGANET     = (short) tag.mintNumObsPassingFilter;
-                msFeature.mshort_trypticState   = tag.mshortCleavageState;                
-                ms.Add(msFeature);                         
+                msFeature.mdouble_NET           = tag.NetAverage;
+                msFeature.mint_ID               = tag.mintMassTagId;                
+                massTags.Add(msFeature);                         
             }
 
             /// 
             /// For each dataset calculate the SMART results 
             /// 
-            for (int i = 0; i < mobjUMCData.NumDatasets; i++)
-            {                
+            int             totalClusters   = 
+                mobjUMCData.mobjClusterData.NumClusters;
+            clsClusterData  clusters        = mobjUMCData.mobjClusterData;
+
+            List<classSMARTUMC> smartFeatures = new List<classSMARTUMC>();
+            for (int i = 0; i < totalClusters; i++)
+            {
+                clsCluster cluster = clusters.GetCluster(i);
+                                       
+                classSMARTUMC feature    = new classSMARTUMC();
+                feature.mdouble_NET      = cluster.NetAligned;
+                feature.mdouble_monoMass = cluster.MassCalibrated;
+                feature.mint_id          = i;
+                smartFeatures.Add(feature);
+            }
+            mobj_smartResults            = 
+                processor.ScoreUMCMatches(massTags,
+                                          smartFeatures,
+                                          mobj_smartOptions);
+
+            mobjPeakMatchingResults      = 
+                ConvertSmartResultsToPeakResults(mobj_smartResults);
+            
+            /// 
+            /// Since we dont know what the FDR rate really is 
+            /// since we have multiple FDR's for 
+            /// each cutoff, then we just report a bogus number.
+            /// This way the user must go to the 
+            /// summary page to look at the FDR values for a given
+            /// cutoff...
+            /// 
+            mdouble_fdrRate                 = double.NaN;
+        }
+        /// <summary>
+        /// Converts the SMART Results into peak matching results.
+        /// </summary>
+        /// <param name="smart">Results computed using SMART.</param>
+        /// <returns>Peak matching results.</returns>
+        private clsPeakMatchingResults 
+            ConvertSmartResultsToPeakResults(classSMARTResults smart)
+        {
+            /// 
+            /// Create a new results object for holding peak matching data.
+            /// 
+            clsPeakMatchingResults results = new clsPeakMatchingResults();
+
+            /// 
+            /// Then, look through the UMC cluster keys, 
+            /// and pull out the clusters and MTID's from each.
+            /// 
+            int [] smartKeys = smart.GetUMCMatchIndices();
+            foreach (int key in smartKeys)
+            {
                 /// 
-                /// Get all of the UMC's for this dataset.
+                /// Get the list of all the UMC' data that matched to MTID's
                 /// 
-                clsUMC [] umcArray                  = mobjUMCData.GetUMCS(i);
-                List<classSMARTUMC> umcs            = new List<classSMARTUMC>();
-                foreach (clsUMC umc in umcArray)
+                List<classSMARTProbabilityResult> umcMatches = 
+                    smart.GetResultFromUMCIndex(key);
+                /// 
+                /// Just in case, make sure we have result data here...
+                /// 
+                if (umcMatches != null)
                 {
                     /// 
-                    /// Construct a feature that SMART understands.
+                    /// Then since we can have multiple MTID's 
+                    /// match to UMC's,
+                    /// pull out all possible probabilities and 
+                    /// add to the result
+                    /// matching data object to construct the 
+                    /// protein to UMC - MTID relationships                    
                     /// 
-                    classSMARTUMC feature           = new classSMARTUMC();
-                    feature.mdouble_maxAbundance    = umc.mdouble_max_abundance;
-                    feature.mdouble_monoMass        = umc.mdouble_mono_mass_calibrated ;
-                    feature.mdouble_NET             = umc.mdouble_net;
-                    feature.mdouble_numPoints       = mobjUMCFindingOptions.MinUMCLength;   // Not captured.
-                    feature.mdouble_stdDevMonoMass  = 0;                                    // Not captured.
-                    feature.mdouble_sumAbundance    = umc.mdouble_sum_abundance;
-                    feature.mint_id                 = umc.mint_umc_index;
-                    feature.mint_startScan          = umc.mint_start_scan;
-                    feature.mint_stopScan           = umc.mint_end_scan;                        
-                    
-                    umcs.Add(feature);
+                    /// First - we grab the cluster data, since 
+                    /// it should be the same for all probability
+                    /// matches
+                    /// 
+                    /// Second - we enumerate all the matches 
+                    /// of umc cluster to mtid adding them
+                    /// to the results object.
+                    ///                     
+                    clsCluster cluster  = 
+                        mobjUMCData.mobjClusterData.GetCluster(key);
+                    foreach (classSMARTProbabilityResult probability in
+                        umcMatches)
+                    {
+                        clsMassTag tag      =
+                            mobjMassTagDB.GetMassTag(probability.MassTagID);
+                        results.AddPeakMatchResult(tag, cluster, key);
+                    }
                 }
+            }
+            /// 
+            /// Finally, now that we have matches, we pull
+            /// out all of the protein
+            /// information that was retrieved and stored 
+            /// in the mass tag database object.            
+            /// 
+            results.ExtractProteinInformation(mobjMassTagDB);
 
-                classSMARTResults results = processor.ScoreUMCMatches(ms,
-                                                                      umcs,
-                                                                      mobj_smartOptions);
-                mlist_smartResults.Add(results);
-            }                        
+            /// 
+            /// And last, we finally tie together all of 
+            /// the information.
+            ///     MTID - Protein - UMC Cluster Index.  
+            /// This method will generate the triplet 
+            /// structures that are used to key off of each other.
+            /// 
+            results.UpdatePeakMatchArrays();
+
+            return results;
         }
         #endregion
-
 
         #region Analysis
         /// <summary>
@@ -1593,11 +1694,11 @@ namespace PNNLProteomics.Data.Analysis
         /// <summary>
         /// Gets the SMART results calculated.
         /// </summary>
-        public List<classSMARTResults> SMARTResults
+        public classSMARTResults SMARTResults
         {
             get
             {
-                return mlist_smartResults;
+                return mobj_smartResults;
             }
         }
         /// <summary>
@@ -1734,6 +1835,21 @@ namespace PNNLProteomics.Data.Analysis
 				mobjAlignmentOptions = value ; 
 			}
 		}
+        /// <summary>
+        /// Gets or sets whether to use SMART Scores or not.
+        /// </summary>
+        [MultiAlignEngine.clsDataSummaryAttribute("Calculate SMART Scores")]
+        public bool UseSMART
+        {
+            get
+            {
+                return mbool_calculateSMARTScores;
+            }
+            set
+            {
+                mbool_calculateSMARTScores = value;
+            }
+        }
         /// <summary>
         /// Gets or sets the Alignment Options.
         /// </summary>

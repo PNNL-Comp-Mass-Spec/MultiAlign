@@ -125,19 +125,41 @@ namespace MultiAlignWin
 			m_lists.Add(name, list);
 			UpdateSummary(list, o);
 			
-			ContextMenu menu = new ContextMenu();
-			MenuItem copyClipboardMenuItem = new MenuItem("Copy Selected Items");	
-			copyClipboardMenuItem.Click += new EventHandler(copyClipboardMenuItem_Click);
+			ContextMenu menu                = new ContextMenu();
+			MenuItem copyClipboardMenuItem  = new MenuItem("Copy Selected Items");	
+			copyClipboardMenuItem.Click     += new EventHandler(copyClipboardMenuItem_Click);
 			menu.MenuItems.Add (copyClipboardMenuItem);
-			list.ContextMenu   = menu;
-			list.FullRowSelect = true;
-			list.MultiSelect   = true;
-			list.KeyUp += new KeyEventHandler(list_KeyUp);
+
+			list.ContextMenu                = menu;
+			list.FullRowSelect              = true;
+			list.MultiSelect                = true;
+			list.KeyUp                      += new KeyEventHandler(list_KeyUp);
+
 			list.Columns.Add("Description", -1, System.Windows.Forms.HorizontalAlignment.Left);
 			list.Columns.Add("Value", -1, System.Windows.Forms.HorizontalAlignment.Left);
 
 			UpdateListColumnWidths(list);
 		}
+
+        public void AddCustomSummary(string name, ListView listview)
+        {
+            TabPage newPage     = new TabPage(name);
+            tabs.TabPages.Add(newPage);
+
+            listview.Dock        = DockStyle.Fill;
+            newPage.Controls.Add(listview);
+
+
+            ContextMenu menu                = new ContextMenu();
+            MenuItem copyClipboardMenuItem  = new MenuItem("Copy Selected Items");
+            copyClipboardMenuItem.Click     += new EventHandler(copyClipboardMenuItem_Click);
+            menu.MenuItems.Add(copyClipboardMenuItem);
+
+            listview.ContextMenu = menu;
+            listview.FullRowSelect = true;
+            listview.MultiSelect = true;
+            listview.KeyUp += new KeyEventHandler(list_KeyUp);
+        }
 
 		public void UpdateColumnWidths()
 		{
@@ -305,9 +327,22 @@ namespace MultiAlignWin
 		private void CopySelectedItemsToClipboard(ListView list)
 		{			
 			string data = "";
+            int i       = 0;
+            /// 
+            /// We also want to grab the column headers 
+            /// 
+            foreach (ColumnHeader header in list.Columns)
+            {
+                data += header.Text + ",";
+            }
+            data  = data.TrimEnd(',');
+            data += "\n";
+
+            /// 
+            /// Then grab the data 
+            /// 
 			foreach (ListViewItem item in list.SelectedItems)
-			{
-				//data += item.Text;
+			{				
 				foreach(ListViewItem.ListViewSubItem subitem in item.SubItems)
 				{
 					data += subitem.Text + ",";

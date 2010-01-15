@@ -117,6 +117,16 @@ namespace MultiAlignEngine
 				MultiAlignEngine::MassTags::MassTag mt =  mobjMasstagDB->GetMassTagFromID(masstagID); 
 				return CopyMassTag(mt); 
 			}
+			inline clsMassTag* GetMassTagFromIndex(int index)
+			{
+				MultiAlignEngine::MassTags::MassTag mt =  mobjMasstagDB->GetMassTagFromIndex(index); 
+				return CopyMassTag(mt); 
+			}
+			/// Gets the total number of mass tags available.
+			inline int GetMassTagCount()
+			{
+				return mobjMasstagDB->GetMassTagCount();
+			}
 			// copies the protein to peptides mapping in mobjMasstagDB to destination database
 			void CopyRelevantProteinsToMassTagDB(MultiAlignEngine::MassTags::MassTagDB &mtDBDest); 
 			void GetMassTagsAsMassTimeFeatures(std::vector<MultiAlignEngine::Alignment::MassTimeFeature> &vectFeatures); 

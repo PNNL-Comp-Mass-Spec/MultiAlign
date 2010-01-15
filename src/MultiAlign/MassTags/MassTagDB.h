@@ -64,6 +64,10 @@ namespace MultiAlignEngine
 			{
 				return mvectMassTags[index]; 
 			}
+			inline int GetMassTagCount()
+			{
+				return (int) mvectMassTags.size();
+			}
 
 			inline MassTag GetMassTagFromID(int massTagId)
 			{

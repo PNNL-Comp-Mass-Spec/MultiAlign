@@ -62,6 +62,7 @@ namespace MultiAlignWin
 
 			mobj_analysis = analysis;
 			ctlSummaryPages.CreateSummary("Alignment Options", mobj_analysis.DefaultAlignmentOptions);
+            ctlSummaryPages.CreateSummary("Other Options", mobj_analysis);
 			
 
             /// 

@@ -28,89 +28,29 @@ namespace MultiAlignWin.Forms.Parameters
         {
             get
             {
-                classSMARTOptions options = new classSMARTOptions();
-                
-                options.ApplyDynamicModification     = ApplyDynamicModification;
-                options.ApplyModification            = ApplyModification;                
+                classSMARTOptions options            = new classSMARTOptions();                              
                 options.IsDataPaired                 = IsDataPaired;                    
-                options.UseFScores                   = UseFScores;                     
-                options.MaxModifications             = MaxModifications;                
-                options.MinTrypticState              = MinimumTrypticState;
-                options.MinMSMSObs                   = MinimumMSMSObservations;                
-                options.ModificationAA               = Convert.ToSByte(ModificationAA);
-                options.MassTolerancePPM             = MassTolerancePPM;                
-                options.MinPeptideProphetProbability = MinimumPeptideProphetProbability;                    
-                options.ModMass                      = ModifiedMass;
+                options.UsePriorProbabilities                   = UsePriorProbabilities;                     
+                options.MinMSMSObs                   = MinimumMSMSObservations;          
+                options.MassTolerancePPM             = MassTolerancePPM;                                
                 options.NETTolerance                 = NETTolerance;
                 options.PairedMass                   = PairedMass;
-
                 return options;
             }
             set
             {
-                ApplyDynamicModification         = value.ApplyDynamicModification;
-                ApplyModification                = value.ApplyModification;
                 IsDataPaired                     = value.IsDataPaired;
-                UseFScores                       = value.UseFScores;
-                MaxModifications                 = value.MaxModifications;
-                MinimumTrypticState              = value.MinTrypticState;
+                UsePriorProbabilities                       = value.UsePriorProbabilities;
                 MinimumMSMSObservations          = value.MinMSMSObs;                
-                ModificationAA                   = Convert.ToString(value.ModificationAA);
                 MassTolerancePPM                 = value.MassTolerancePPM;
-                MinimumPeptideProphetProbability = value.MinPeptideProphetProbability;
-                ModifiedMass                     = value.ModMass;
                 NETTolerance                     = value.NETTolerance;
                 PairedMass                       = value.PairedMass;                
             }
         }
         #endregion
 
-        #region Char/String Properties
-        /// <summary>
-        /// Gets or sets the modification AA value.
-        /// </summary>
-        public string ModificationAA
-        {
-            get
-            {
-                return mtextBox_modificationChar.Text;
-            }
-            set
-            {
-                mtextBox_modificationChar.Text = value;
-            }
-        }
-        #endregion
 
-        #region Short/Integer Properties
-        /// <summary>
-        /// Gets or sets the maximum number of modifications.
-        /// </summary>
-        public short MaxModifications
-        {
-            get
-            {
-                return Convert.ToInt16(mnum_maxModifications.Value);
-            }
-            set
-            {
-                mnum_maxModifications.Value = Convert.ToDecimal(value);
-            }
-        }
-        /// <summary>
-        /// Gets or sets the minimum tryptic state
-        /// </summary>
-        public short MinimumTrypticState
-        {
-            get
-            {
-                return Convert.ToInt16(mnum_minimumTrypticState.Value);
-            }
-            set
-            {
-                mnum_minimumTrypticState.Value = Convert.ToDecimal(value);
-            }
-        }
+        #region Short/Integer Properties        
         /// <summary>
         /// Gets or sets the minimum number of MS/MS Observations
         /// </summary>
@@ -157,20 +97,6 @@ namespace MultiAlignWin.Forms.Parameters
             }
         }
         /// <summary>
-        /// Gets or sets the modified mass value.
-        /// </summary>
-        public double ModifiedMass
-        {
-            get
-            {
-                return Convert.ToDouble(mnum_modifiedMass.Value);
-            }
-            set
-            {
-                mnum_modifiedMass.Value = Convert.ToDecimal(value);
-            }
-        }
-        /// <summary>
         /// Gets or sets the NET tolerance value.
         /// </summary>
         public double NETTolerance
@@ -202,34 +128,6 @@ namespace MultiAlignWin.Forms.Parameters
 
         #region Boolean Properties
         /// <summary>
-        /// Gets or sets to check the apply dynamic modification checkbox.
-        /// </summary>
-        public bool ApplyDynamicModification
-        {
-            get
-            {
-                return mcheckBox_applyDynamicModification.Checked;
-            }
-            set
-            {
-                mcheckBox_applyDynamicModification.Checked = value;
-            }
-        }
-        /// <summary>
-        /// Gets or sets to check the apply modification checkbox.
-        /// </summary>
-        public bool ApplyModification
-        {
-            get
-            {
-                return mcheckBox_applyModification.Checked;
-            }
-            set
-            {
-                mcheckBox_applyModification.Checked = value;
-            }
-        }
-        /// <summary>
         /// Gets or sets to check the is data paired checkbox.
         /// </summary>
         public bool IsDataPaired
@@ -246,15 +144,15 @@ namespace MultiAlignWin.Forms.Parameters
         /// <summary>
         /// Gets or sets to check the use F scores checkbox for SEQUEST id confidence measures.
         /// </summary>
-        public bool UseFScores
+        public bool UsePriorProbabilities
         {
             get
             {
-                return mcheckBox_useFScores.Checked;
+                return mcheckBox_usePriorProbabilities.Checked;
             }
             set
             {
-                mcheckBox_useFScores.Checked = value;
+                mcheckBox_usePriorProbabilities.Checked = value;
             }
         }
         #endregion

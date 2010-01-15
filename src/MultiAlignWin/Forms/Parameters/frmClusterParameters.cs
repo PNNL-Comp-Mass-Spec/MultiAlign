@@ -109,7 +109,7 @@ namespace MultiAlignWin
             this.groupBoxIntensity.Controls.Add(this.radioButtonMaxData);
             this.groupBoxIntensity.Location = new System.Drawing.Point(12, 117);
             this.groupBoxIntensity.Name = "groupBoxIntensity";
-            this.groupBoxIntensity.Size = new System.Drawing.Size(324, 96);
+            this.groupBoxIntensity.Size = new System.Drawing.Size(250, 96);
             this.groupBoxIntensity.TabIndex = 4;
             this.groupBoxIntensity.TabStop = false;
             this.groupBoxIntensity.Text = "Dataset Intensity";
@@ -138,7 +138,7 @@ namespace MultiAlignWin
             this.buttonOK.BackColor = System.Drawing.SystemColors.Control;
             this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.buttonOK.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.buttonOK.Location = new System.Drawing.Point(140, 340);
+            this.buttonOK.Location = new System.Drawing.Point(103, 323);
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.Size = new System.Drawing.Size(75, 23);
             this.buttonOK.TabIndex = 5;
@@ -152,7 +152,7 @@ namespace MultiAlignWin
             this.buttonCancel.BackColor = System.Drawing.SystemColors.Control;
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.buttonCancel.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.buttonCancel.Location = new System.Drawing.Point(225, 339);
+            this.buttonCancel.Location = new System.Drawing.Point(188, 322);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
             this.buttonCancel.TabIndex = 6;
@@ -168,7 +168,7 @@ namespace MultiAlignWin
             this.groupBoxClassRep.Controls.Add(this.radioButtonMean);
             this.groupBoxClassRep.Location = new System.Drawing.Point(12, 219);
             this.groupBoxClassRep.Name = "groupBoxClassRep";
-            this.groupBoxClassRep.Size = new System.Drawing.Size(324, 96);
+            this.groupBoxClassRep.Size = new System.Drawing.Size(250, 96);
             this.groupBoxClassRep.TabIndex = 7;
             this.groupBoxClassRep.TabStop = false;
             this.groupBoxClassRep.Text = "Cluster Representation";
@@ -196,7 +196,7 @@ namespace MultiAlignWin
             this.mbtnDefaults.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.mbtnDefaults.BackColor = System.Drawing.SystemColors.Control;
             this.mbtnDefaults.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.mbtnDefaults.Location = new System.Drawing.Point(47, 339);
+            this.mbtnDefaults.Location = new System.Drawing.Point(10, 322);
             this.mbtnDefaults.Name = "mbtnDefaults";
             this.mbtnDefaults.Size = new System.Drawing.Size(80, 24);
             this.mbtnDefaults.TabIndex = 8;
@@ -216,7 +216,7 @@ namespace MultiAlignWin
             0,
             0});
             this.mnum_MassTol.Name = "mnum_MassTol";
-            this.mnum_MassTol.Size = new System.Drawing.Size(213, 20);
+            this.mnum_MassTol.Size = new System.Drawing.Size(139, 20);
             this.mnum_MassTol.TabIndex = 9;
             this.mnum_MassTol.Value = new decimal(new int[] {
             6,
@@ -236,7 +236,7 @@ namespace MultiAlignWin
             0,
             0});
             this.mnum_NETTol.Name = "mnum_NETTol";
-            this.mnum_NETTol.Size = new System.Drawing.Size(213, 20);
+            this.mnum_NETTol.Size = new System.Drawing.Size(139, 20);
             this.mnum_NETTol.TabIndex = 10;
             this.mnum_NETTol.Value = new decimal(new int[] {
             3,
@@ -256,7 +256,7 @@ namespace MultiAlignWin
             0,
             0});
             this.mnum_driftTimeTolerance.Name = "mnum_driftTimeTolerance";
-            this.mnum_driftTimeTolerance.Size = new System.Drawing.Size(213, 20);
+            this.mnum_driftTimeTolerance.Size = new System.Drawing.Size(139, 20);
             this.mnum_driftTimeTolerance.TabIndex = 12;
             this.mnum_driftTimeTolerance.Value = new decimal(new int[] {
             3,
@@ -276,7 +276,7 @@ namespace MultiAlignWin
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(348, 374);
+            this.ClientSize = new System.Drawing.Size(274, 357);
             this.Controls.Add(this.mnum_driftTimeTolerance);
             this.Controls.Add(this.mlabel_driftTimeTolerance);
             this.Controls.Add(this.mnum_NETTol);

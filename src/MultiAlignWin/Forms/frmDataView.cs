@@ -14,7 +14,7 @@ using MultiAlignWin.Forms;
 using MultiAlignEngine.Alignment;
 using MultiAlignEngine.Clustering;
 
-
+using PNNLProteomics.SMART;
 using PNNLProteomics.Data.Analysis;
 
 namespace MultiAlignWin
@@ -1012,6 +1012,69 @@ namespace MultiAlignWin
 
         #region Utility
         /// <summary>
+        /// Adds the SMART FDR Table to the summary view.
+        /// </summary>
+        /// <param name="smartResults">SMART Results.</param>
+        private void AddSMARTFDRTableToSummaryView(classSMARTResults smartResults)
+        {
+            if (smartResults == null)
+                return;
+
+            /// 
+            /// Construct a list view programmatically to add it to the tab pages.
+            /// 
+            ListView smartView = new ListView();
+            smartView.Dock = DockStyle.Fill;
+            smartView.View = View.Details;
+            smartView.GridLines = true;
+
+            smartView.BeginUpdate();
+
+            smartView.Columns.Add("Cutoff");
+            smartView.Columns.Add("Matches");
+            smartView.Columns.Add("Error");
+            smartView.Columns.Add("FDR");
+            
+
+            /// 
+            /// Pull out the summary table from the analysis object to dump into the listview.
+            /// 
+            List<classSMARTFdrResult> summaries = smartResults.GetSummaries();
+            ColumnHeaderAutoResizeStyle resizeStyle = ColumnHeaderAutoResizeStyle.HeaderSize;
+            if (summaries != null)
+            {
+                /// 
+                /// Iterate to add the FDR results to the results summary table 
+                /// 
+                foreach (classSMARTFdrResult fdr in summaries)
+                {
+                    ListViewItem item   = new ListViewItem();                    
+                    string cutoff       = string.Format("{0:0.00}", fdr.Cutoff);
+                    item.Text           = cutoff;
+                    item.SubItems.Add(new ListViewItem.ListViewSubItem(item, string.Format("{0:0}",     fdr.NumMatches)));
+                    item.SubItems.Add(new ListViewItem.ListViewSubItem(item, string.Format("{0:0.00}",  fdr.Error)));
+                    item.SubItems.Add(new ListViewItem.ListViewSubItem(item, string.Format("{0:0.00}",  fdr.FDR)));
+                    
+                    smartView.Items.Add(item);
+                }
+                /// 
+                /// Since we have added data, we want the size of the columns to be of the data itself.
+                /// 
+                resizeStyle = ColumnHeaderAutoResizeStyle.ColumnContent;
+            }
+            /// 
+            /// Resize the column content data.
+            /// 
+            foreach (ColumnHeader header in smartView.Columns) 
+            {
+                header.AutoResize(resizeStyle);            
+            }            
+            smartView.EndUpdate();
+
+            mcontrol_resultSummaryPages.AddCustomSummary("SMART Summary Table", smartView);
+        }
+
+        /// <summary>
         /// Updates both listview with appropiate cluster information
         /// </summary>
         private void UpdateListViews()
@@ -1033,17 +1096,24 @@ namespace MultiAlignWin
                 string peakMatchingResult = "Peak Matching Results";
 
                 mcontrol_resultSummaryPages.CreateSummary("Peak Matching Results", mobjAnalysis.PeakMatchingResults);
-                mcontrol_resultSummaryPages.AddData("Peak Matching Results",
+                if (mobjAnalysis.UseSMART == false)
+                {
+                    mcontrol_resultSummaryPages.AddData("Peak Matching Results",
                                                     "False Discovery Rate via 11 Da shift (FDR)",
-                                                    string.Format("{0:0.00}",mobjAnalysis.FDR));
+                                                    string.Format("{0:0.00}", mobjAnalysis.FDR));
 
 
-                mcontrol_resultSummaryPages.AddData(peakMatchingResult, "11-Da Shifted Number of Mass Tags Matched",
-                    mobjAnalysis.PeakMatchingResultsShifted.NumMassTagsMatched.ToString());
-                mcontrol_resultSummaryPages.AddData(peakMatchingResult, "11-Da Shifted Number of Proteins Matched",
-                    mobjAnalysis.PeakMatchingResultsShifted.NumProteinsMatched.ToString());
-                mcontrol_resultSummaryPages.AddData(peakMatchingResult, "11-Da Shifted Number of Matches",
-                    mobjAnalysis.PeakMatchingResultsShifted.NumMatches.ToString());
+                    mcontrol_resultSummaryPages.AddData(peakMatchingResult, "11-Da Shifted Number of Mass Tags Matched",
+                        mobjAnalysis.PeakMatchingResultsShifted.NumMassTagsMatched.ToString());
+                    mcontrol_resultSummaryPages.AddData(peakMatchingResult, "11-Da Shifted Number of Proteins Matched",
+                        mobjAnalysis.PeakMatchingResultsShifted.NumProteinsMatched.ToString());
+                    mcontrol_resultSummaryPages.AddData(peakMatchingResult, "11-Da Shifted Number of Matches",
+                        mobjAnalysis.PeakMatchingResultsShifted.NumMatches.ToString());
+                }
+                else
+                {
+                    AddSMARTFDRTableToSummaryView(mobjAnalysis.SMARTResults);
+                }
             }
 
             UpdateDatasetSummary();

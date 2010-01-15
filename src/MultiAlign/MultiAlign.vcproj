@@ -693,6 +693,26 @@
 					</File>
 				</Filter>
 			</Filter>
+			<Filter
+				Name="Parameters"
+				>
+				<File
+					RelativePath="..\MultiAlignWin\Forms\Parameters\formPeptideIDScoring.cs"
+					>
+				</File>
+				<File
+					RelativePath="..\MultiAlignWin\Forms\Parameters\frmClusterParameters.cs"
+					>
+				</File>
+				<File
+					RelativePath="..\MultiAlignWin\Forms\Parameters\frmFeatureFindingParameters.cs"
+					>
+				</File>
+				<File
+					RelativePath="..\MultiAlignWin\Forms\Parameters\frmMSAlignmentParameters.cs"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Alignment"
