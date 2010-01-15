@@ -475,7 +475,7 @@ namespace MultiAlignWin
             this.mbtn_ok.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.mbtn_ok.BackColor = System.Drawing.SystemColors.Control;
             this.mbtn_ok.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.mbtn_ok.Location = new System.Drawing.Point(492, 705);
+            this.mbtn_ok.Location = new System.Drawing.Point(495, 715);
             this.mbtn_ok.Name = "mbtn_ok";
             this.mbtn_ok.Size = new System.Drawing.Size(96, 24);
             this.mbtn_ok.TabIndex = 8;
@@ -488,7 +488,7 @@ namespace MultiAlignWin
             this.mbtn_cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.mbtn_cancel.BackColor = System.Drawing.SystemColors.Control;
             this.mbtn_cancel.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.mbtn_cancel.Location = new System.Drawing.Point(594, 705);
+            this.mbtn_cancel.Location = new System.Drawing.Point(597, 715);
             this.mbtn_cancel.Name = "mbtn_cancel";
             this.mbtn_cancel.Size = new System.Drawing.Size(96, 24);
             this.mbtn_cancel.TabIndex = 9;
@@ -503,14 +503,14 @@ namespace MultiAlignWin
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.mlstBoxDBNames.Location = new System.Drawing.Point(8, 35);
             this.mlstBoxDBNames.Name = "mlstBoxDBNames";
-            this.mlstBoxDBNames.Size = new System.Drawing.Size(326, 251);
+            this.mlstBoxDBNames.Size = new System.Drawing.Size(329, 251);
             this.mlstBoxDBNames.TabIndex = 0;
             this.mlstBoxDBNames.SelectedIndexChanged += new System.EventHandler(this.mlstBoxDBNames_SelectedIndexChanged);
             // 
             // chkBoxUnused
             // 
             this.chkBoxUnused.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.chkBoxUnused.Location = new System.Drawing.Point(6, 345);
+            this.chkBoxUnused.Location = new System.Drawing.Point(6, 355);
             this.chkBoxUnused.Name = "chkBoxUnused";
             this.chkBoxUnused.Size = new System.Drawing.Size(128, 16);
             this.chkBoxUnused.TabIndex = 1;
@@ -535,7 +535,7 @@ namespace MultiAlignWin
             this.groupRemoteDatabase.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.groupRemoteDatabase.Location = new System.Drawing.Point(31, 96);
             this.groupRemoteDatabase.Name = "groupRemoteDatabase";
-            this.groupRemoteDatabase.Size = new System.Drawing.Size(659, 371);
+            this.groupRemoteDatabase.Size = new System.Drawing.Size(662, 381);
             this.groupRemoteDatabase.TabIndex = 18;
             this.groupRemoteDatabase.TabStop = false;
             this.groupRemoteDatabase.Text = "Select Database";
@@ -565,7 +565,7 @@ namespace MultiAlignWin
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.mlistbox_recentdatabases.Location = new System.Drawing.Point(340, 35);
             this.mlistbox_recentdatabases.Name = "mlistbox_recentdatabases";
-            this.mlistbox_recentdatabases.Size = new System.Drawing.Size(313, 251);
+            this.mlistbox_recentdatabases.Size = new System.Drawing.Size(316, 251);
             this.mlistbox_recentdatabases.TabIndex = 21;
             this.mlistbox_recentdatabases.SelectedIndexChanged += new System.EventHandler(this.mlistbox_recentdatabases_SelectedIndexChanged);
             // 
@@ -574,9 +574,9 @@ namespace MultiAlignWin
             this.mlblDBdescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.mlblDBdescription.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.mlblDBdescription.Location = new System.Drawing.Point(3, 289);
+            this.mlblDBdescription.Location = new System.Drawing.Point(3, 299);
             this.mlblDBdescription.Name = "mlblDBdescription";
-            this.mlblDBdescription.Size = new System.Drawing.Size(642, 30);
+            this.mlblDBdescription.Size = new System.Drawing.Size(645, 30);
             this.mlblDBdescription.TabIndex = 19;
             this.mlblDBdescription.Text = "DB description";
             this.mlblDBdescription.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -585,18 +585,18 @@ namespace MultiAlignWin
             // 
             this.mlblTotalDBs.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.mlblTotalDBs.Location = new System.Drawing.Point(137, 346);
+            this.mlblTotalDBs.Location = new System.Drawing.Point(137, 356);
             this.mlblTotalDBs.Name = "mlblTotalDBs";
-            this.mlblTotalDBs.Size = new System.Drawing.Size(511, 16);
+            this.mlblTotalDBs.Size = new System.Drawing.Size(514, 16);
             this.mlblTotalDBs.TabIndex = 20;
             // 
             // mlblServer
             // 
             this.mlblServer.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.mlblServer.Location = new System.Drawing.Point(61, 319);
+            this.mlblServer.Location = new System.Drawing.Point(61, 329);
             this.mlblServer.Name = "mlblServer";
-            this.mlblServer.Size = new System.Drawing.Size(310, 23);
+            this.mlblServer.Size = new System.Drawing.Size(313, 23);
             this.mlblServer.TabIndex = 19;
             this.mlblServer.Text = "server";
             this.mlblServer.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -605,7 +605,7 @@ namespace MultiAlignWin
             // 
             this.mlblSeverTag.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.mlblSeverTag.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.mlblSeverTag.Location = new System.Drawing.Point(5, 320);
+            this.mlblSeverTag.Location = new System.Drawing.Point(5, 330);
             this.mlblSeverTag.Name = "mlblSeverTag";
             this.mlblSeverTag.Size = new System.Drawing.Size(49, 20);
             this.mlblSeverTag.TabIndex = 18;
@@ -617,7 +617,7 @@ namespace MultiAlignWin
             this.btnBrowse.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnBrowse.BackColor = System.Drawing.SystemColors.Control;
             this.btnBrowse.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.btnBrowse.Location = new System.Drawing.Point(623, 16);
+            this.btnBrowse.Location = new System.Drawing.Point(626, 16);
             this.btnBrowse.Name = "btnBrowse";
             this.btnBrowse.Size = new System.Drawing.Size(25, 20);
             this.btnBrowse.TabIndex = 24;
@@ -632,7 +632,7 @@ namespace MultiAlignWin
             this.mbtnShowMThits.BackColor = System.Drawing.SystemColors.Control;
             this.mbtnShowMThits.Enabled = false;
             this.mbtnShowMThits.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.mbtnShowMThits.Location = new System.Drawing.Point(28, 661);
+            this.mbtnShowMThits.Location = new System.Drawing.Point(28, 671);
             this.mbtnShowMThits.Name = "mbtnShowMThits";
             this.mbtnShowMThits.Size = new System.Drawing.Size(136, 23);
             this.mbtnShowMThits.TabIndex = 29;
@@ -645,7 +645,7 @@ namespace MultiAlignWin
             // 
             this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(25, 550);
+            this.label3.Location = new System.Drawing.Point(25, 560);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(104, 16);
             this.label3.TabIndex = 28;
@@ -657,7 +657,7 @@ namespace MultiAlignWin
             // 
             this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(25, 624);
+            this.label6.Location = new System.Drawing.Point(25, 634);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(140, 20);
             this.label6.TabIndex = 32;
@@ -668,7 +668,7 @@ namespace MultiAlignWin
             // mtxtPeptideProphet
             // 
             this.mtxtPeptideProphet.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.mtxtPeptideProphet.Location = new System.Drawing.Point(175, 627);
+            this.mtxtPeptideProphet.Location = new System.Drawing.Point(175, 637);
             this.mtxtPeptideProphet.Name = "mtxtPeptideProphet";
             this.mtxtPeptideProphet.Size = new System.Drawing.Size(56, 20);
             this.mtxtPeptideProphet.TabIndex = 27;
@@ -679,7 +679,7 @@ namespace MultiAlignWin
             // 
             this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(25, 600);
+            this.label5.Location = new System.Drawing.Point(25, 610);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(96, 16);
             this.label5.TabIndex = 31;
@@ -690,7 +690,7 @@ namespace MultiAlignWin
             // mtxtMinXCorr
             // 
             this.mtxtMinXCorr.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.mtxtMinXCorr.Location = new System.Drawing.Point(175, 575);
+            this.mtxtMinXCorr.Location = new System.Drawing.Point(175, 585);
             this.mtxtMinXCorr.Name = "mtxtMinXCorr";
             this.mtxtMinXCorr.Size = new System.Drawing.Size(56, 20);
             this.mtxtMinXCorr.TabIndex = 25;
@@ -700,7 +700,7 @@ namespace MultiAlignWin
             // mtxtMinDiscriminant
             // 
             this.mtxtMinDiscriminant.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.mtxtMinDiscriminant.Location = new System.Drawing.Point(175, 601);
+            this.mtxtMinDiscriminant.Location = new System.Drawing.Point(175, 611);
             this.mtxtMinDiscriminant.Name = "mtxtMinDiscriminant";
             this.mtxtMinDiscriminant.Size = new System.Drawing.Size(56, 20);
             this.mtxtMinDiscriminant.TabIndex = 26;
@@ -711,7 +711,7 @@ namespace MultiAlignWin
             // 
             this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(25, 575);
+            this.label4.Location = new System.Drawing.Point(25, 585);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(64, 16);
             this.label4.TabIndex = 30;
@@ -724,7 +724,7 @@ namespace MultiAlignWin
             this.mbtnDefaults.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.mbtnDefaults.BackColor = System.Drawing.SystemColors.Control;
             this.mbtnDefaults.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.mbtnDefaults.Location = new System.Drawing.Point(28, 705);
+            this.mbtnDefaults.Location = new System.Drawing.Point(28, 715);
             this.mbtnDefaults.Name = "mbtnDefaults";
             this.mbtnDefaults.Size = new System.Drawing.Size(136, 24);
             this.mbtnDefaults.TabIndex = 7;
@@ -749,7 +749,7 @@ namespace MultiAlignWin
             this.txtDataBasePath.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.FileSystem;
             this.txtDataBasePath.Location = new System.Drawing.Point(54, 16);
             this.txtDataBasePath.Name = "txtDataBasePath";
-            this.txtDataBasePath.Size = new System.Drawing.Size(563, 20);
+            this.txtDataBasePath.Size = new System.Drawing.Size(566, 20);
             this.txtDataBasePath.TabIndex = 23;
             // 
             // lblDatabasePath
@@ -764,7 +764,7 @@ namespace MultiAlignWin
             // 
             this.radioLocalDatabase.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.radioLocalDatabase.Checked = true;
-            this.radioLocalDatabase.Location = new System.Drawing.Point(13, 473);
+            this.radioLocalDatabase.Location = new System.Drawing.Point(13, 483);
             this.radioLocalDatabase.Name = "radioLocalDatabase";
             this.radioLocalDatabase.Size = new System.Drawing.Size(64, 16);
             this.radioLocalDatabase.TabIndex = 23;
@@ -776,7 +776,7 @@ namespace MultiAlignWin
             // 
             this.mlblMatchMTs.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.mlblMatchMTs.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.mlblMatchMTs.Location = new System.Drawing.Point(174, 661);
+            this.mlblMatchMTs.Location = new System.Drawing.Point(174, 671);
             this.mlblMatchMTs.Name = "mlblMatchMTs";
             this.mlblMatchMTs.Size = new System.Drawing.Size(57, 23);
             this.mlblMatchMTs.TabIndex = 33;
@@ -790,9 +790,9 @@ namespace MultiAlignWin
             this.groupLocalDatabase.Controls.Add(this.btnBrowse);
             this.groupLocalDatabase.Controls.Add(this.txtDataBasePath);
             this.groupLocalDatabase.Controls.Add(this.lblDatabasePath);
-            this.groupLocalDatabase.Location = new System.Drawing.Point(31, 495);
+            this.groupLocalDatabase.Location = new System.Drawing.Point(31, 505);
             this.groupLocalDatabase.Name = "groupLocalDatabase";
-            this.groupLocalDatabase.Size = new System.Drawing.Size(659, 45);
+            this.groupLocalDatabase.Size = new System.Drawing.Size(662, 45);
             this.groupLocalDatabase.TabIndex = 22;
             this.groupLocalDatabase.TabStop = false;
             this.groupLocalDatabase.Text = "Select Database";
@@ -848,30 +848,35 @@ namespace MultiAlignWin
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.mline.Location = new System.Drawing.Point(28, 62);
             this.mline.Name = "mline";
-            this.mline.Size = new System.Drawing.Size(661, 15);
+            this.mline.Size = new System.Drawing.Size(664, 15);
             this.mline.TabIndex = 59;
             // 
             // niceLine1
             // 
             this.niceLine1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.niceLine1.Location = new System.Drawing.Point(12, 690);
+            this.niceLine1.Location = new System.Drawing.Point(12, 700);
             this.niceLine1.Name = "niceLine1";
-            this.niceLine1.Size = new System.Drawing.Size(689, 15);
+            this.niceLine1.Size = new System.Drawing.Size(692, 15);
             this.niceLine1.TabIndex = 60;
             // 
             // mgroupBox_pmtQualityScore
             // 
+            this.mgroupBox_pmtQualityScore.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.mgroupBox_pmtQualityScore.Controls.Add(this.mlabel_pmtQualityScoreDescription);
-            this.mgroupBox_pmtQualityScore.Location = new System.Drawing.Point(323, 549);
+            this.mgroupBox_pmtQualityScore.Location = new System.Drawing.Point(323, 556);
             this.mgroupBox_pmtQualityScore.Name = "mgroupBox_pmtQualityScore";
-            this.mgroupBox_pmtQualityScore.Size = new System.Drawing.Size(369, 134);
+            this.mgroupBox_pmtQualityScore.Size = new System.Drawing.Size(370, 136);
             this.mgroupBox_pmtQualityScore.TabIndex = 61;
             this.mgroupBox_pmtQualityScore.TabStop = false;
             this.mgroupBox_pmtQualityScore.Text = "PMT Quality Score Description";
             // 
             // mlabel_pmtQualityScoreDescription
             // 
+            this.mlabel_pmtQualityScoreDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.mlabel_pmtQualityScoreDescription.Location = new System.Drawing.Point(9, 18);
             this.mlabel_pmtQualityScoreDescription.Name = "mlabel_pmtQualityScoreDescription";
             this.mlabel_pmtQualityScoreDescription.Size = new System.Drawing.Size(351, 104);
@@ -879,22 +884,25 @@ namespace MultiAlignWin
             // 
             // mline_pmtQualityScore
             // 
+            this.mline_pmtQualityScore.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.mline_pmtQualityScore.Edge = Wizard.UI.EtchEdge.Top;
-            this.mline_pmtQualityScore.Location = new System.Drawing.Point(226, 561);
+            this.mline_pmtQualityScore.Location = new System.Drawing.Point(226, 571);
             this.mline_pmtQualityScore.Name = "mline_pmtQualityScore";
-            this.mline_pmtQualityScore.Size = new System.Drawing.Size(103, 15);
+            this.mline_pmtQualityScore.Size = new System.Drawing.Size(106, 15);
             this.mline_pmtQualityScore.TabIndex = 62;
             // 
             // mnum_pmtQualityScore
             // 
-            this.mnum_pmtQualityScore.Location = new System.Drawing.Point(175, 550);
+            this.mnum_pmtQualityScore.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.mnum_pmtQualityScore.Location = new System.Drawing.Point(175, 560);
             this.mnum_pmtQualityScore.Maximum = new decimal(new int[] {
             5,
             0,
             0,
             0});
             this.mnum_pmtQualityScore.Name = "mnum_pmtQualityScore";
-            this.mnum_pmtQualityScore.Size = new System.Drawing.Size(54, 20);
+            this.mnum_pmtQualityScore.Size = new System.Drawing.Size(56, 20);
             this.mnum_pmtQualityScore.TabIndex = 63;
             this.mnum_pmtQualityScore.Value = new decimal(new int[] {
             1,
@@ -907,7 +915,7 @@ namespace MultiAlignWin
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(704, 743);
+            this.ClientSize = new System.Drawing.Size(707, 753);
             this.Controls.Add(this.mnum_pmtQualityScore);
             this.Controls.Add(this.mtxtMinXCorr);
             this.Controls.Add(this.mgroupBox_pmtQualityScore);
