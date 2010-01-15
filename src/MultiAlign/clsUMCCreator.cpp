@@ -290,6 +290,7 @@ namespace MultiAlignEngine
 				newUmc->mint_end_scan						= umc.mint_stop_scan; 
 				newUmc->mdouble_net							= System::Convert::ToDouble(umc.mint_max_abundance_scan); 
 				newUmc->mshort_class_highest_charge			= umc.mshort_class_highest_charge;
+				newUmc->SpectralCount						= umc.min_num_members;
 
 				/// Find the highest Charge State
 				mint_highestChargeState = Math::Max(mint_highestChargeState, Convert::ToInt32(newUmc->mshort_class_highest_charge));
@@ -311,7 +312,7 @@ namespace MultiAlignEngine
 				newUmc->mint_umc_index				= umc.mint_umc_index; 
 				newUmc->mshort_class_rep_charge		= (int) umc.mshort_class_rep_charge; 
 				newUmc->mshort_class_highest_charge = (int) umc.mshort_class_highest_charge;
-				arr_umcs[umcNum] = newUmc; 
+				arr_umcs[umcNum]					= newUmc; 
 			}
 
 			return arr_umcs; 
