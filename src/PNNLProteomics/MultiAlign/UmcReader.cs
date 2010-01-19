@@ -56,7 +56,7 @@ namespace PNNLProteomics.MultiAlign
 		/// <param name="dbLocation">String containing the location of the SQLite DB</param>
 		public void SaveDataToSQLite(String dbLocation)
 		{
-			NHibernateUtil.setDbLocation(dbLocation);
+			NHibernateUtil.SetDbLocation(dbLocation);
 			UmcDAOHibernate umcDAOHibernate = new UmcDAOHibernate();
 			umcDAOHibernate.AddAll(m_umcList);
 		}
@@ -93,10 +93,19 @@ namespace PNNLProteomics.MultiAlign
 					case "Feature_index":
 						columnMap.Add("Umc.Id", i);
 						break;
+					case "Feature_Index":
+						columnMap.Add("Umc.Id", i);
+						break;
 					case "ScanStart":
 						columnMap.Add("Umc.ScanStart", i);
 						break;
+					case "Scan_Start":
+						columnMap.Add("Umc.ScanStart", i);
+						break;
 					case "ScanEnd":
+						columnMap.Add("Umc.ScanEnd", i);
+						break;
+					case "Scan_End":
 						columnMap.Add("Umc.ScanEnd", i);
 						break;
 					case "ScanClassRep":
@@ -118,25 +127,44 @@ namespace PNNLProteomics.MultiAlign
 						columnMap.Add("Umc.Mass", i);
 						columnMap.Add("Umc.MassCalibrated", i);
                         break;
+					case "Monoisotopic_Mass":
+						columnMap.Add("Umc.Mass", i);
+						columnMap.Add("Umc.MassCalibrated", i);
+						break;
                     case "UMCMWStDev":
                         columnMap.Add("Umc.MassStandardDeviation", i);
                         break;
 					case "UMCMZForChargeBasis":
 						columnMap.Add("Umc.MZForCharge", i);
 						break;
+					case "Class_Rep_MZ":
+						columnMap.Add("Umc.MZForCharge", i);
+						break;
 					case "UMCAbundance":
+						columnMap.Add("Umc.AbundanceSum", i);
+						break;
+					case "Abundance":
 						columnMap.Add("Umc.AbundanceSum", i);
 						break;
 					case "MaxAbundance":
 						columnMap.Add("Umc.AbundanceMax", i);
 						break;
+					case "Max_Abundance":
+						columnMap.Add("Umc.AbundanceMax", i);
+						break;
 					case "ClassStatsChargeBasis":
+						columnMap.Add("Umc.ChargeRepresentative", i);
+						break;
+					case "Class_Rep_Charge":
 						columnMap.Add("Umc.ChargeRepresentative", i);
 						break;
 					case "ChargeStateMax":
 						columnMap.Add("Umc.ChargeMax", i);
 						break;
 					case "UMCMemberCount":
+						columnMap.Add("Umc.SpectralCount", i);
+						break;
+					case "UMC_Member_Count":
 						columnMap.Add("Umc.SpectralCount", i);
 						break;
 					default:
@@ -162,10 +190,10 @@ namespace PNNLProteomics.MultiAlign
 			int currentId = -99;
 			int idIndex = 0;
 
-			/// Read the rest of the Stream, 1 line at a time, and save the appropriate data into new Objects
+			// Read the rest of the Stream, 1 line at a time, and save the appropriate data into new Objects
 			while ((line = m_umcFileReader.ReadLine()) != null)
 			{
-				String[] columns = line.Split('\t', '\n');
+				String[] columns = line.Split(',', '\t', '\n');
 
 				if (m_columnMap.ContainsKey("Umc.Id"))
 				{
