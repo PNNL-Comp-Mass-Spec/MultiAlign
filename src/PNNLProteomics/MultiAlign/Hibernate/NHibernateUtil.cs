@@ -1,7 +1,3 @@
-/// <file>NHibernateUtil.cs</copyright>
-/// <copyright>Pacific Northwest National Laboratory</copyright>
-/// <author email="Kevin.Crowell@pnl.gov">Kevin Crowell</author>
-
 using PNNLProteomics.MultiAlign.Hibernate.Domain;
 using NHibernate;
 using NHibernate.Cfg;
