@@ -11,7 +11,7 @@
 		<property name="MassCalibrated" column="MASS_CALIBRATED" type="double" not-null="false" />
 		<property name="Net" column="NET" type="double" not-null="false" />
 		<property name="NetAligned" column="NET_ALIGNED" type="double" not-null="false" />
-		<property name="Scan" column="SCAN" type="short" not-null="false" />
+		<property name="Scan" column="SCAN" type="int" not-null="false" />
 		<property name="Charge" column="CHARGE" type="short" not-null="false" />
 		<!--set name="UmcSet" inverse="true">
 			<key column="ID"/>

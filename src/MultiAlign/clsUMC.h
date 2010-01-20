@@ -190,6 +190,14 @@ namespace MultiAlignEngine
 					mdouble_sum_abundance = value;
 				}
 
+				__property double get_MZForCharge()
+				{
+					return mdouble_class_rep_mz;
+				}
+
+				__property void set_MZForCharge(double value){
+					mdouble_class_rep_mz = value;
+				}
 		};
 	}
 }

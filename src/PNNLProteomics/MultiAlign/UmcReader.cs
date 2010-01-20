@@ -224,7 +224,7 @@ namespace PNNLProteomics.MultiAlign
 					if (m_columnMap.ContainsKey("Umc.ChargeRepresentative"))	umc.ChargeRepresentative = (short)Int16.Parse(columns[m_columnMap["Umc.ChargeRepresentative"]]);
 					if (m_columnMap.ContainsKey("Umc.ChargeMax"))				umc.ChargeMax = (short)Int16.Parse(columns[m_columnMap["Umc.ChargeMax"]]);
 					if (m_columnMap.ContainsKey("Umc.SpectralCount"))			umc.SpectralCount = (short)Int16.Parse(columns[m_columnMap["Umc.SpectralCount"]]);
-                    if (m_columnMap.ContainsKey("Umc.MZForCharge"))             umc.mdouble_class_rep_mz = Double.Parse(columns[m_columnMap["Umc.MZForCharge"]]);
+					if (m_columnMap.ContainsKey("Umc.MZForCharge"))				umc.MZForCharge = Double.Parse(columns[m_columnMap["Umc.MZForCharge"]]);
 					umcList.Add(umc);
 					previousId = currentId;
 				}
