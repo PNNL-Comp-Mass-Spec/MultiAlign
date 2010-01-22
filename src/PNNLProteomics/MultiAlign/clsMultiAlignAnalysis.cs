@@ -1259,7 +1259,9 @@ namespace PNNLProteomics.Data.Analysis
                     /// 
                     if (mobjPeakMatchingResults.NumMatches > 0)
                     {
-                        mdouble_fdrRate = Convert.ToDouble(mobj_shiftedPeakMatchingResults.NumMassTagsMatched) / Convert.ToDouble(mobjPeakMatchingResults.NumMassTagsMatched);
+                        int m = mobj_shiftedPeakMatchingResults.NumMatches;
+                        int n = mobjPeakMatchingResults.NumMatches;
+                        mdouble_fdrRate = Convert.ToDouble(2*m) / Convert.ToDouble(n + m);
                     }
                     else
                     {
