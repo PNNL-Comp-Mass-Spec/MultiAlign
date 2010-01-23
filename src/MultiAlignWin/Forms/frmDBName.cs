@@ -1324,12 +1324,22 @@ namespace MultiAlignWin
 
                 try
                 {
+                    scores.Add(0, "");
+
                     while (myReader.Read())
                     {
                         
                         int     score       = Convert.ToInt32(myReader.GetString(0));
                         string  description = myReader.GetString(2);
-                        scores.Add(score, description);
+
+                        /// 
+                        /// Just to make sure that the PMT quality score description gets synched with the 
+                        /// score of 0 that allows for all things to be considered
+                        /// 
+                        if (scores.ContainsKey(0) && score == 0)
+                            scores[0] = description;
+                        else
+                            scores.Add(score, description);
                     }
                     
                 }
