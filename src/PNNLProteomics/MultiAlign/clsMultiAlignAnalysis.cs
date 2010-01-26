@@ -21,6 +21,8 @@ using PNNLProteomics.EventModel;
 using PNNLProteomics.Data.Factors;
 using PNNLProteomics.Data.Alignment;
 using PNNLProteomics.MultiAlign;
+using PNNLProteomics.MultiAlign.Hibernate;
+using PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate;
 
 
 namespace PNNLProteomics.Data.Analysis
@@ -483,11 +485,39 @@ namespace PNNLProteomics.Data.Analysis
 					// If we are using a UMC or Feature file
 					if (extension == ".TXT")
 					{
-						///
-						/// Grabs UMCs from UMC or Feature file
-						///
+						// Grabs UMCs from UMC or Feature file
 						UmcReader umcReader = new UmcReader(FileNames[fileNum]);
 						loadedUMCs = umcReader.GetUmcList().ToArray();
+					}
+					
+					// SQLite DB
+					else if (extension == ".DB3" || extension == ".SQLITE")
+					{
+						NHibernateUtil.SetDbLocation(FileNames[fileNum]);
+
+						try
+						{
+							StatusMessage(mint_statusLevel, "Trying to load pre-made UMCs.");
+							UmcDAOHibernate umcDAOHibernate = new UmcDAOHibernate();
+							loadedUMCs = umcDAOHibernate.FindAll().ToArray();
+						}
+						// IF UMC table does not exist
+						catch (NHibernate.ADOException adoException)
+						{
+							StatusMessage(mint_statusLevel, "No UMCs found. Creating UMCs from provided data.");
+							loadedUMCs = new clsUMC[0];
+						}
+
+						// If no UMCs were loaded from the SQLite DB, then we need to create UMCs using MSFeature data from the DB
+						if (loadedUMCs.Length < 1)
+						{
+							MSFeatureDAOHibernate msFeatureDAOHibernate = new MSFeatureDAOHibernate();
+							clsIsotopePeak[] msFeatureArray = msFeatureDAOHibernate.FindAll().ToArray();
+
+							mobjUMCCreator.SetIsotopePeaks(ref msFeatureArray);
+							mobjUMCCreator.FindUMCs();
+							loadedUMCs = mobjUMCCreator.GetUMCs();
+						}
 					}
 
 					// Else we are using a PEK or CSV file
@@ -516,7 +546,6 @@ namespace PNNLProteomics.Data.Analysis
 						/// 
 						mobjUMCCreator.FindUMCs();
 						loadedUMCs = mobjUMCCreator.GetUMCs();
-						
 					}
 
                     /// 

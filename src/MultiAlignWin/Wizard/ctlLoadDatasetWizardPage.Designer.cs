@@ -548,7 +548,7 @@ namespace MultiAlignWin
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(207, 22);
 			this.label2.TabIndex = 48;
-			this.label2.Text = "Select .PEK, _is.CSV, .TXT files from disk:";
+			this.label2.Text = "Select files from disk:";
 			this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// mbutton_selectFilesFromDisk

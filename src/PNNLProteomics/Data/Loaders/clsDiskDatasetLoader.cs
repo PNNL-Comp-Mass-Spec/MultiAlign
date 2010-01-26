@@ -153,6 +153,14 @@ namespace PNNLProteomics.Data.Loaders
 				{
 					fileNameAlias = fileName.Substring(0, fileNameLowerCase.LastIndexOf("_lcmsfeatures.txt"));
 				}
+				else if (fileNameLowerCase.Contains(".db3"))
+				{
+					fileNameAlias = fileName.Substring(0, fileNameLowerCase.LastIndexOf(".db3"));
+				}
+				else if (fileNameLowerCase.Contains(".sqlite"))
+				{
+					fileNameAlias = fileName.Substring(0, fileNameLowerCase.LastIndexOf(".sqlite"));
+				}
 				else
 				{
 					fileNameAlias = fileName;

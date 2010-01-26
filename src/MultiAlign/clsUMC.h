@@ -23,6 +23,96 @@ namespace MultiAlignEngine
 				clsIsotopePeak()
 				{
 				};
+
+				__property int get_Id()
+				{
+					return mint_original_index;
+				}
+
+				__property void set_Id(int value){
+					mint_original_index = value;
+				}
+
+				__property int get_Scan()
+				{
+					return mint_scan;
+				}
+
+				__property void set_Scan(int value){
+					mint_scan = value;
+				}
+
+				__property short get_Charge()
+				{
+					return mshort_charge;
+				}
+
+				__property void set_Charge(short value){
+					mshort_charge = value;
+				}
+
+				__property double get_Abundance()
+				{
+					return mdouble_abundance;
+				}
+
+				__property void set_Abundance(double value){
+					mdouble_abundance = value;
+				}
+
+				__property double get_MZ()
+				{
+					return mdouble_mz;
+				}
+
+				__property void set_MZ(double value){
+					mdouble_mz = value;
+				}
+
+				__property float get_Fit()
+				{
+					return mflt_fit;
+				}
+
+				__property void set_Fit(float value){
+					mflt_fit = value;
+				}
+
+				__property double get_MassAverage()
+				{
+					return mdouble_average_mass;
+				}
+
+				__property void set_MassAverage(double value){
+					mdouble_average_mass = value;
+				}
+
+				__property double get_MassMonoisotopic()
+				{
+					return mdouble_mono_mass;
+				}
+
+				__property void set_MassMonoisotopic(double value){
+					mdouble_mono_mass = value;
+				}
+
+				__property double get_MassMostAbundant()
+				{
+					return mdouble_max_abundance_mass;
+				}
+
+				__property void set_MassMostAbundant(double value){
+					mdouble_max_abundance_mass = value;
+				}
+
+				__property double get_AbundancePlus2()
+				{
+					return mdouble_i2_abundance;
+				}
+
+				__property void set_AbundancePlus2(double value){
+					mdouble_i2_abundance = value;
+				}
 		}; 
 
 		[System::Serializable]

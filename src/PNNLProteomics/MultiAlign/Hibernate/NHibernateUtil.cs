@@ -44,9 +44,9 @@ namespace PNNLProteomics.MultiAlign.Hibernate
 		/// Creates a SQLite database based on the hibernate config file.
 		/// </summary>
 		/// <param name="dbLocation">The file location of the database file to be created. The file should not exist before the database is created.</param>
-		public static void createDatabase(String dbLocation)
+		public static void CreateDatabase(String dbLocation)
 		{
-			setConfigurationDbLocation(dbLocation);
+			SetConfigurationDbLocation(dbLocation);
 			m_dbLocation = dbLocation;
 			m_sessionFactory = null;
 
@@ -64,7 +64,7 @@ namespace PNNLProteomics.MultiAlign.Hibernate
 		/// The given database should already exist. If it does not, it will be created for you. Hurray!
 		/// </summary>
 		/// <param name="dbLocation">The file location of the database file</param>
-		public static void setDbLocation(string dbLocation)
+		public static void SetDbLocation(string dbLocation)
 		{
 			if (m_dbLocation == null || (m_dbLocation != null && !m_dbLocation.Equals(dbLocation)))
 			{
@@ -73,7 +73,7 @@ namespace PNNLProteomics.MultiAlign.Hibernate
 
 				if (!File.Exists(dbLocation))
 				{
-					createDatabase(dbLocation);
+					CreateDatabase(dbLocation);
 				}
 			}
 		}
@@ -90,7 +90,7 @@ namespace PNNLProteomics.MultiAlign.Hibernate
 				{
 					if (m_dbLocation != null)
 					{
-						setConfigurationDbLocation(m_dbLocation);
+						SetConfigurationDbLocation(m_dbLocation);
 					}
 					else
 					{
@@ -98,7 +98,7 @@ namespace PNNLProteomics.MultiAlign.Hibernate
 						string fileLocation = connectionString.Split('=', ';')[1];
 						if (!File.Exists(fileLocation))
 						{
-							createDatabase(fileLocation);
+							CreateDatabase(fileLocation);
 						}
 					}
 					m_sessionFactory = configuration.BuildSessionFactory();
@@ -111,7 +111,7 @@ namespace PNNLProteomics.MultiAlign.Hibernate
 		/// Sets the database file location in the Configuration so Hibernate knows where to look.
 		/// </summary>
 		/// <param name="dbLocation">The file location of the database file</param>
-		private static void setConfigurationDbLocation(string dbLocation)
+		private static void SetConfigurationDbLocation(string dbLocation)
 		{
 			configuration.SetProperty("connection.connection_string", "Data Source=" + dbLocation + ";Version=3");
 		}
