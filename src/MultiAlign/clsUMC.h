@@ -137,6 +137,7 @@ namespace MultiAlignEngine
 				double  mdouble_sum_abundance;
 				double	marray_chargeStatesAbundances __gc[];
 				short	mshort_spectral_count;
+				float	mfloat_drift_time;
 				//clsCluster *umcCluster;
 
 				clsUMC(void);
@@ -287,6 +288,15 @@ namespace MultiAlignEngine
 
 				__property void set_MZForCharge(double value){
 					mdouble_class_rep_mz = value;
+				}
+
+				__property float get_DriftTime()
+				{
+					return mdouble_drift_time;
+				}
+
+				__property void set_DriftTime(double value){
+					mdouble_drift_time = value;
 				}
 		};
 	}

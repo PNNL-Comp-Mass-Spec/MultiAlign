@@ -167,6 +167,9 @@ namespace PNNLProteomics.MultiAlign
 					case "UMC_Member_Count":
 						columnMap.Add("Umc.SpectralCount", i);
 						break;
+					case "Drift_Time":
+						columnMap.Add("Umc.DriftTime", i);
+						break;
 					default:
 						//Title not found.
 						break;
@@ -225,6 +228,7 @@ namespace PNNLProteomics.MultiAlign
 					if (m_columnMap.ContainsKey("Umc.ChargeMax"))				umc.ChargeMax = (short)Int16.Parse(columns[m_columnMap["Umc.ChargeMax"]]);
 					if (m_columnMap.ContainsKey("Umc.SpectralCount"))			umc.SpectralCount = (short)Int16.Parse(columns[m_columnMap["Umc.SpectralCount"]]);
 					if (m_columnMap.ContainsKey("Umc.MZForCharge"))				umc.MZForCharge = Double.Parse(columns[m_columnMap["Umc.MZForCharge"]]);
+					if (m_columnMap.ContainsKey("Umc.DriftTime"))				umc.DriftTime = float.Parse(columns[m_columnMap["Umc.DriftTime"]]);
 					umcList.Add(umc);
 					previousId = currentId;
 				}
