@@ -292,11 +292,11 @@ namespace MultiAlignEngine
 
 				__property float get_DriftTime()
 				{
-					return mdouble_drift_time;
+					return mfloat_drift_time;
 				}
 
-				__property void set_DriftTime(double value){
-					mdouble_drift_time = value;
+				__property void set_DriftTime(float value){
+					mfloat_drift_time = value;
 				}
 		};
 	}
