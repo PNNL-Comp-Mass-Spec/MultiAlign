@@ -85,7 +85,7 @@ namespace PNNLProteomics.MultiAlign
 
 			for (int i = 0; i < numOfColumns; i++)
 			{
-				switch (columnTitles[i])
+				switch (columnTitles[i].Trim())
 				{
 					case "UMCIndex":
 						columnMap.Add("Umc.Id", i);
