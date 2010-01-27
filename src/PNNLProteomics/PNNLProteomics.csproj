@@ -1,4 +1,4 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -103,7 +103,9 @@
     <Compile Include="IO\classContainerStream.cs" />
     <Compile Include="IO\clsReadProgressStream.cs" />
     <Compile Include="IO\xmlIO.cs" />
+    <Compile Include="MultiAlign\Hibernate\Domain\DAOHibernate\MSFeatureDAOHibernate.cs" />
     <Compile Include="MultiAlign\Hibernate\Domain\DAO\IGenericDAO.cs" />
+    <Compile Include="MultiAlign\Hibernate\Domain\DAO\IMSFeatureDAO.cs" />
     <Compile Include="MultiAlign\Hibernate\Domain\DAO\IProteinDAO.cs" />
     <Compile Include="MultiAlign\Hibernate\Domain\DAO\IModificationDAO.cs" />
     <Compile Include="MultiAlign\Hibernate\Domain\DAO\IMassTagDAO.cs" />
@@ -139,6 +141,7 @@
     <Content Include="hibernate.cfg.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <EmbeddedResource Include="MultiAlign\Hibernate\Mappings\MSFeature.hbm.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
