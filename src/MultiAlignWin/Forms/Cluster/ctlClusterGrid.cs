@@ -245,7 +245,12 @@ namespace MultiAlignWin
 				{
 					num_columns_per_dataset++ ; 
 				}
-                
+
+                /// 
+                /// Add anotehr column for the spectral count
+                /// 
+                num_columns_per_dataset++;
+
                 /// 
                 /// This is to output abundances for each charge state up to N charge states.
                 /// N is at most, 10 (unless changed in the engine).  Otherwise its the 
@@ -253,6 +258,7 @@ namespace MultiAlignWin
                 /// 
                 if (mbool_showCMCAbundances)
                     num_columns_per_dataset += mobjAnalysis.UMCData.HighestChargeState;
+
 
 				int start_data_column_num   = table.Columns.Count ; 
 				int num_datasets            = mobjAnalysis.UMCData.NumDatasets ; 
@@ -318,8 +324,7 @@ namespace MultiAlignWin
                             table.Columns.Add(string.Format("{0}_CS_{1}_{2}", CONST_CHARGE_ABUNDANCE_START,
                                                                                 chargeState,
                                                                                 col_name),
-                                                                                typeof(long));
-                            
+                                                                                typeof(long));                            
                         }
                     }
 				}
@@ -470,13 +475,20 @@ namespace MultiAlignWin
                             row[start_data_column_num + col_num] = DBNull.Value;
                         }
 
-                        /// //////////////////////////////////////////////////////////////////////////////
-                        /// Add spectral count information
-                        /// //////////////////////////////////////////////////////////////////////////////                        
-                        row[start_data_column_num + col_num] = Convert.ToString(umc.SpectralCount);
+
+
                         col_num++;
-
-
+                        if (umc != null)
+                        {
+                            /// //////////////////////////////////////////////////////////////////////////////
+                            /// Add spectral count information
+                            /// //////////////////////////////////////////////////////////////////////////////                        
+                            row[start_data_column_num + col_num] = Convert.ToString(umc.SpectralCount);
+                        }
+                        else
+                        {
+                            row[start_data_column_num + col_num] = DBNull.Value;
+                        }
                         /// //////////////////////////////////////////////////////////////////////////////
                         /// Do we show the abundances for each charge state?
                         /// //////////////////////////////////////////////////////////////////////////////
@@ -662,6 +674,7 @@ namespace MultiAlignWin
             ToolStripMenuItem mnu_save_grid         = new ToolStripMenuItem("Save Table");
             ToolStripMenuItem mnu_save_dante        = new ToolStripMenuItem("For Dante");
             ToolStripMenuItem mnu_save_asis        = new ToolStripMenuItem("As Displayed");
+            ToolStripMenuItem mnu_test = new ToolStripMenuItem("To SQLite");
 
 
             mnu_cluster.Enabled = false;
@@ -706,7 +719,8 @@ namespace MultiAlignWin
             /// 
             mnu_save_dante.Click            += new EventHandler(mnu_save_dante_Click);
             mnu_save_asis.Click             += new EventHandler(mnu_save_grid_Click);
-            mnu_save_grid.DropDownItems.AddRange(new ToolStripItem[] { mnu_save_asis, mnu_save_dante });
+            mnu_test.Click += new EventHandler(mnu_test_Click);
+            mnu_save_grid.DropDownItems.AddRange(new ToolStripItem[] { mnu_save_asis, mnu_save_dante, mnu_test });
 
 
             mnu_expression.Click            += new EventHandler(mnu_expression_Click);
@@ -816,6 +830,11 @@ namespace MultiAlignWin
                 mobj_contextMenu.Items.Clear();
             mobj_contextMenu = cntxtMenu;
             return cntxtMenu;
+        }
+
+        void mnu_test_Click(object sender, EventArgs e)
+        {
+            int x = 9;
         }
 
 
