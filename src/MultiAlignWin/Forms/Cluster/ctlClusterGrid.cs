@@ -36,7 +36,8 @@ namespace MultiAlignWin
 		private bool mbool_show_cluster_calibrated_mass = true ; 
 		private bool mbool_show_all_columns             = true ; 
 		private bool mbool_show_calibrated_mass_columns = true ; 
-		private bool mbool_show_mass_columns            = true ; 
+		private bool mbool_show_mass_columns            = true ;
+        private bool mbool_show_driftTime_columns       = true;
 		private bool mbool_show_scan_columns            = true ; 
 		private bool mbool_show_aligned_scan_columns    = true ; 
 		private bool mbool_show_umc_index_columns       = true ; 
@@ -76,9 +77,10 @@ namespace MultiAlignWin
 
 		private const string mstring_mass_colum = "Mass" ; 
 		private const string mstring_calibrated_mass_colum = "Calibrated_mass" ; 
-		private const string mstring_scan_colum = "Scan" ; 
-		private const string mstring_aligned_scan_colum = "Aligned Scan" ; 
-		private const string mstring_umc_index_column = "UMC index";
+		private const string mstring_scan_colum = "Scan" ;
+        private const string mstring_aligned_scan_colum = "Aligned Scan";
+        private const string mstring_umc_index_column = "UMC index";
+        private const string mstring_driftTime_column = "Drift Time";
         #endregion
 
         private string mstring_ttest_col_name = "T-Test" ; 
@@ -220,11 +222,11 @@ namespace MultiAlignWin
 			try
 			{
                 /// 
-                /// Each dataset starts with one column - This is for the abundance value.
+                /// Each dataset starts with two columns - This is for the abundance value.
                 /// Then we figure out what other columns each dataset needs.  Here
                 /// we see if we haev enough for all the calibrated masses etc.
                 /// 
-				int num_columns_per_dataset = 1 ; 
+				int num_columns_per_dataset = 2 ; 
 				if (mbool_show_mass_columns)
 				{
 					num_columns_per_dataset++ ; 
@@ -245,6 +247,9 @@ namespace MultiAlignWin
 				{
 					num_columns_per_dataset++ ; 
 				}
+
+                if (mbool_show_driftTime_columns)
+                    num_columns_per_dataset++;
 
                 /// 
                 /// Add anotehr column for the spectral count
@@ -302,11 +307,17 @@ namespace MultiAlignWin
 					{
                     	table.Columns.Add(mstring_umc_index_column + "_" + col_name, typeof(long)) ;
 					}
+
+                    if (mbool_show_driftTime_columns)
+                    {
+                        table.Columns.Add(mstring_driftTime_column + "_" + col_name, typeof(double));
+                    }
 					                    
                     /// 
                     /// This is for the abundance value 
                     /// 
-					table.Columns.Add(col_name, typeof(double)) ;
+                    table.Columns.Add("Abundance-Sum-" + col_name, typeof(double));
+                    table.Columns.Add("Abundance-Max-" + col_name, typeof(double));
 
                     /// 
                     /// Spectral count - # of peaks 
@@ -453,25 +464,31 @@ namespace MultiAlignWin
 							col_num++ ;
                         }
 
+
+                        if (mbool_show_driftTime_columns)
+                        {
+                            if (umc != null)
+                                row[start_data_column_num + col_num] = Convert.ToString(umc.DriftTime);
+                            else
+                                row[start_data_column_num + col_num] = DBNull.Value;
+                            col_num++;
+                        }
+
                         /// //////////////////////////////////////////////////////////////////////////////
                         /// Abundance Information
                         /// //////////////////////////////////////////////////////////////////////////////
                         if (umc != null)
                         {
                             double intensity = 0;
-                            if (mbool_show_normalized)
-                            {
-                                intensity = arrClusterMemberNormalizedIntensity[pt_index];
-                            }
-                            else
-                            {
-                                intensity = arrClusterMemberIntensity[pt_index];
-                            }
-                            row[start_data_column_num + col_num] = Convert.ToString(intensity);
+
+                            row[start_data_column_num + col_num] = Convert.ToString(umc.AbundanceSum);
+                            col_num++; 
+                            row[start_data_column_num + col_num] = Convert.ToString(umc.AbundanceMax);                            
                         }
                         else
                         {
                             // missing value set as 0
+                            row[start_data_column_num + col_num] = DBNull.Value;
                             row[start_data_column_num + col_num] = DBNull.Value;
                         }
 
@@ -719,8 +736,7 @@ namespace MultiAlignWin
             /// 
             mnu_save_dante.Click            += new EventHandler(mnu_save_dante_Click);
             mnu_save_asis.Click             += new EventHandler(mnu_save_grid_Click);
-            mnu_test.Click += new EventHandler(mnu_test_Click);
-            mnu_save_grid.DropDownItems.AddRange(new ToolStripItem[] { mnu_save_asis, mnu_save_dante, mnu_test });
+            mnu_save_grid.DropDownItems.AddRange(new ToolStripItem[] { mnu_save_asis, mnu_save_dante });
 
 
             mnu_expression.Click            += new EventHandler(mnu_expression_Click);
@@ -736,7 +752,7 @@ namespace MultiAlignWin
             ToolStripMenuItem mnu_columns_umc_index         = new ToolStripMenuItem("UMC Index");
             ToolStripMenuItem mnu_columns_ttest             = new ToolStripMenuItem("TTest");
             ToolStripMenuItem mnu_columns_calibrated_mass   = new ToolStripMenuItem("Calibrated Mass");
-
+            ToolStripMenuItem mnu_columns_driftTime = new ToolStripMenuItem("Drift Time");
 
             mnu_columns_all.Checked             = mbool_show_all_columns;
             mnu_columns_mass.Checked            = mbool_show_mass_columns;
@@ -746,6 +762,8 @@ namespace MultiAlignWin
             mnu_columns_umc_index.Checked       = mbool_show_umc_index_columns;
             mnu_columns_ttest.Checked           = mbool_show_ttest_column;
             mnu_columns_showCMC.Checked         = mbool_showCMCAbundances;
+            mnu_columns_driftTime.Checked       = mbool_show_driftTime_columns;
+            
 
             mnu_columns_showCMC.Click           += new EventHandler(mnu_columns_showCMC_Click);
             mnu_columns_all.Click               += new EventHandler(mnu_columns_all_Click);
@@ -756,7 +774,7 @@ namespace MultiAlignWin
             mnu_columns_aligned_scan.Click      += new EventHandler(mnu_columns_aligned_scan_Click);
             mnu_columns_umc_index.Click         += new EventHandler(mnu_columns_umc_index_Click);
             mnu_columns_calibrated_mass.Click   += new EventHandler(mnu_columns_calibrated_mass_Click);
-
+            mnu_columns_driftTime.Click += new EventHandler(mnu_columns_driftTime_Click);
 
 
             /// 
@@ -772,9 +790,9 @@ namespace MultiAlignWin
 																 mnu_columns_scans,
 																 mnu_columns_aligned_scan, 
 																 mnu_columns_umc_index,
+                                                                 mnu_columns_driftTime,
 																 mnu_columns_ttest,
-                                                                 mnu_columns_showCMC															 
-																});
+                                                                 mnu_columns_showCMC});																
             }
             else
             {
@@ -786,6 +804,7 @@ namespace MultiAlignWin
 																 mnu_columns_scans,
 																 mnu_columns_aligned_scan, 
 																 mnu_columns_umc_index,
+                                                                 mnu_columns_driftTime,
                                                                  mnu_columns_showCMC});
             }
 
@@ -831,12 +850,6 @@ namespace MultiAlignWin
             mobj_contextMenu = cntxtMenu;
             return cntxtMenu;
         }
-
-        void mnu_test_Click(object sender, EventArgs e)
-        {
-            int x = 9;
-        }
-
 
         #region Properties
         /// <summary>
@@ -912,6 +925,13 @@ namespace MultiAlignWin
 		#endregion
 
         #region "Context Menu Event Handlers"
+        void mnu_columns_driftTime_Click(object sender, EventArgs e)
+        {
+            ToolStripMenuItem cmd = sender as ToolStripMenuItem;
+            cmd.Checked = !cmd.Checked;
+            mbool_show_driftTime_columns = cmd.Checked;
+            AddClusterToTable();
+        }
         /// <summary>
         /// Shows all of the data.
         /// </summary>
