@@ -48,6 +48,14 @@ namespace MultiAlignEngine
 				[clsParameterFileAttribute("mstrServer","MassTagDBOptions")]
 				System::String *mstrServer; 
 				
+				[clsDataSummaryAttribute("Experiment Filter")]
+				[clsParameterFileAttribute("mstrExperimentFilter","MassTagDBOptions")]
+				System::String *mstrExperimentFilter; 
+
+				[clsDataSummaryAttribute("Experiment Exlusion Filter")]
+				[clsParameterFileAttribute("mstrExperimentExclusionFilter","MassTagDBOptions")]
+				System::String *mstrExperimentExclusionFilter; 
+								
 				[clsDataSummaryAttribute("Database Type")]
 				[clsParameterFileAttribute("menm_databaseType","DatabaseType")]
 				MassTagDatabaseType menm_databaseType;

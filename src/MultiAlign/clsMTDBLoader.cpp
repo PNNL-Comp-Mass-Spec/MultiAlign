@@ -42,6 +42,8 @@ namespace MultiAlignEngine
 				cmd->Parameters->Add(new System::Data::OleDb::OleDbParameter("@MinimumPMTQualityScore", __box(mobjMassTagDBOptions->mdecimalMinPMTScore)));
 				cmd->Parameters->Add(new System::Data::OleDb::OleDbParameter("@MinimumHighDiscriminantScore", __box(mobjMassTagDBOptions->mdblMinDiscriminant)));
 				cmd->Parameters->Add(new System::Data::OleDb::OleDbParameter("@MinimumPeptideProphetProbability", __box(mobjMassTagDBOptions->mdblPeptideProphetVal)));
+				
+
 
 				// execute the command
 				menmStatus = DBConnectionStatus::Running; 
@@ -277,6 +279,8 @@ namespace MultiAlignEngine
 				cmd->Parameters->Add(new System::Data::OleDb::OleDbParameter("@MinimumHighNormalizedScore", __box(mobjMassTagDBOptions->mfltMinXCorr)));
 				cmd->Parameters->Add(new System::Data::OleDb::OleDbParameter("@MinimumPMTQualityScore", __box(mobjMassTagDBOptions->mdecimalMinPMTScore)));
 				cmd->Parameters->Add(new System::Data::OleDb::OleDbParameter("@MinimumHighDiscriminantScore", __box(mobjMassTagDBOptions->mdblMinDiscriminant)));
+				cmd->Parameters->Add(new System::Data::OleDb::OleDbParameter("@ExperimentFilter", mobjMassTagDBOptions->mstrExperimentFilter));
+				cmd->Parameters->Add(new System::Data::OleDb::OleDbParameter("@ExperimentExclusionFilter", mobjMassTagDBOptions->mstrExperimentExclusionFilter));				
 				cmd->Parameters->Add(new System::Data::OleDb::OleDbParameter("@MinimumPeptideProphetProbability", __box(mobjMassTagDBOptions->mdblPeptideProphetVal)));
 
 				// execute the command

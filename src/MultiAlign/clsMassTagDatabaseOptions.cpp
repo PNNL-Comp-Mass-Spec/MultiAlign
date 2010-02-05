@@ -18,7 +18,10 @@ namespace MultiAlignEngine
 				mstrDatabase			= 0; 
 				mstrUserID				= S"mtuser"; 
 				mstrPasswd				= S"mt4fun"; 
-				menm_databaseType		= MassTagDatabaseType::None;
+
+				mstrExperimentExclusionFilter	= S""; 
+				mstrExperimentFilter			= S"";
+				menm_databaseType				= MassTagDatabaseType::None;
 		}
 
 		clsMassTagDatabaseOptions::~clsMassTagDatabaseOptions(void)

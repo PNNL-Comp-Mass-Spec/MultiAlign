@@ -801,5 +801,29 @@ namespace MultiAlignWin.Properties {
                 this["UserDBFormMTDBPriorProbabilities"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string UserDBFormExperimentFilter {
+            get {
+                return ((string)(this["UserDBFormExperimentFilter"]));
+            }
+            set {
+                this["UserDBFormExperimentFilter"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string UserDBFormExperimentExclusionFilter {
+            get {
+                return ((string)(this["UserDBFormExperimentExclusionFilter"]));
+            }
+            set {
+                this["UserDBFormExperimentExclusionFilter"] = value;
+            }
+        }
     }
 }
