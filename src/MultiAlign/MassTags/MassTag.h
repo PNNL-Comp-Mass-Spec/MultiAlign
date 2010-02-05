@@ -23,7 +23,8 @@ namespace MultiAlignEngine
 			float mfltAvgFCS1; 
 			float mfltAvgFCS2; 
 			float mfltAvgFCS3; 
-			short mshortCleavageState; 
+			short mshortCleavageState;
+			float HighPeptideProphetProbability;
 			MassTag(); 
 			~MassTag(); 
 		};

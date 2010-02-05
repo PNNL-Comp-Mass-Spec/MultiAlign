@@ -1168,14 +1168,18 @@ namespace PNNLProteomics.Data.Analysis
         {
             clsUMC[] umcs = UMCData.GetUMCS(index);
 
+            int i = 0;
             foreach (clsUMC umc in umcs)
             {
-                clsCluster cluster  = new clsCluster();
-                cluster.Charge      = umc.ChargeRepresentative;
-                cluster.Mass        = umc.MassCalibrated;
-                cluster.Net         = umc.mint_scan_aligned;
-                cluster.Scan        = umc.ScanAligned;
-
+                clsCluster cluster      = new clsCluster();
+                cluster.Charge          = umc.ChargeRepresentative;
+                cluster.Mass            = umc.Mass;
+                cluster.MassCalibrated  = umc.MassCalibrated;
+                cluster.mdouble_aligned_net = umc.mdouble_abundance;
+                cluster.mdouble_driftTime   = umc.mfloat_drift_time;                
+                cluster.Net             = umc.mint_scan_aligned;                
+                cluster.Scan            = umc.Scan;                
+                cluster.Id              = i++;                
             }            
         }
         public void PerformClustering()
@@ -1346,7 +1350,8 @@ namespace PNNLProteomics.Data.Analysis
                 classSMARTMassTag msFeature     = new classSMARTMassTag();
                 msFeature.mdouble_monoMass      = tag.mdblMonoMass;
                 msFeature.mdouble_NET           = tag.NetAverage;
-                msFeature.mint_ID               = tag.mintMassTagId;                
+                msFeature.mint_ID               = tag.mintMassTagId;
+                msFeature.mdouble_probability   = tag.HighPeptideProphetProbability;
                 massTags.Add(msFeature);                         
             }
 

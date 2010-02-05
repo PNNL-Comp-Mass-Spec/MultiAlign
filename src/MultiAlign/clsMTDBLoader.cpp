@@ -150,8 +150,13 @@ namespace MultiAlignEngine
 						{
 							modification_str = dynamic_cast<System::String*>(rdr->Item[S"Mod_Description"]);
 						}
+						float highPeptideProphetProbability = 0; 
+						if (rdr->Item[S"High_Peptide_Prophet_Probability"] != System::DBNull::Value)
+						{
+							highPeptideProphetProbability = System::Convert::ToSingle(rdr->Item[S"High_Peptide_Prophet_Probability"]);
+						}
 
-						// High_Peptide_Prophet_Probability	
+						// 	
 						// Mass_Tag_ID	
 						// ObsCount_CS1	
 						// ObsCount_CS2	
@@ -187,7 +192,8 @@ namespace MultiAlignEngine
 						mass_tag->mintNumObsPassingFilter	= num_obs; 
 						mass_tag->mfltAvgFCS1				= fmax_cs1; 
 						mass_tag->mfltAvgFCS2				= fmax_cs2; 
-						mass_tag->mfltAvgFCS3				= fmax_cs3; 
+						mass_tag->mfltAvgFCS3				= fmax_cs3;
+						mass_tag->HighPeptideProphetProbability	= highPeptideProphetProbability;
 
 						if (mass_tag->mdblAvgGANET != -1)
 						{
@@ -494,7 +500,12 @@ namespace MultiAlignEngine
 							modification_str = dynamic_cast<System::String*>(rdr->Item[S"Mod_Description"]);
 						}
 
-						// High_Peptide_Prophet_Probability	
+						float highPeptideProphetProbability = 0; 
+						if (rdr->Item[S"High_Peptide_Prophet_Probability"] != System::DBNull::Value)
+						{
+							highPeptideProphetProbability = System::Convert::ToSingle(rdr->Item[S"High_Peptide_Prophet_Probability"]);
+						}
+
 						// Mass_Tag_ID	
 						// ObsCount_CS1	
 						// ObsCount_CS2	
@@ -538,6 +549,7 @@ namespace MultiAlignEngine
 						mass_tag->mfltAvgFCS2 = favg_cs2; 
 						mass_tag->mfltAvgFCS3 = favg_cs3; 
 						mass_tag->mshortCleavageState = cleaveage_state; 
+						mass_tag->HighPeptideProphetProbability = highPeptideProphetProbability;
 
 						if (mass_tag->mdblAvgGANET != -1)
 						{

@@ -50,6 +50,7 @@ namespace MultiAlignEngine
 			massTagDest.mfltAvgFCS2 = mtSrc->mfltAvgFCS2;  
 			massTagDest.mfltAvgFCS3 = mtSrc->mfltAvgFCS3;  
 			massTagDest.mshortCleavageState = mtSrc->mshortCleavageState; 
+			massTagDest.HighPeptideProphetProbability = mtSrc->mfltHighPeptideProphetProbability;
 
 			char buffer[256]; 
 			CopyStr(mtSrc->mstrPeptide, buffer); 
@@ -74,6 +75,7 @@ namespace MultiAlignEngine
 			massTagDest->mfltAvgFCS2 = mtSrc.mfltAvgFCS2;  
 			massTagDest->mfltAvgFCS3 = mtSrc.mfltAvgFCS3;  
 			massTagDest->mshortCleavageState = mtSrc.mshortCleavageState; 
+			massTagDest->HighPeptideProphetProbability = mtSrc.HighPeptideProphetProbability;
 
 			massTagDest->mstrPeptide = new System::String (mtSrc.mstrPeptide.c_str()); 
 			massTagDest->mstrModification = new System::String (mtSrc.mstrModification.c_str()); 

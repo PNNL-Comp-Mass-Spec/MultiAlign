@@ -32,12 +32,13 @@ namespace MultiAlignEngine
 			double mdblPNET; 
 			double mdblHighXCorr; 
 			double mdblStdGANET; 
-			double mdblMaxDiscriminant; 
+			double mdblMaxDiscriminant;
 			int mintNumObsPassingFilter; 
 			short mshortModCount; 
 			float mfltAvgFCS1; 
 			float mfltAvgFCS2; 
 			float mfltAvgFCS3; 
+			float mfltHighPeptideProphetProbability;	// Used in smart to use priors
 			short mshortCleavageState; 
 			clsMassTag(); 
 			~clsMassTag(); 
@@ -104,6 +105,16 @@ namespace MultiAlignEngine
 			__property void set_DiscriminantMax(double value){
 				mdblMaxDiscriminant = value;
 			}
+			
+			__property float get_HighPeptideProphetProbability()
+			{
+				return mfltHighPeptideProphetProbability;
+			}
+
+			__property void set_HighPeptideProphetProbability(float value){
+				mfltHighPeptideProphetProbability = value;
+			}
+
 
 			__property float get_Charge1FScore()
 			{
@@ -149,6 +160,7 @@ namespace MultiAlignEngine
 			__property void set_Modifications(System::String* value){
 				mstrModification = value;
 			}
+
 
 		};
 	}
