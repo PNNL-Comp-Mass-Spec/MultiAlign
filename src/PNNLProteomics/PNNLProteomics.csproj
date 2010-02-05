@@ -1,4 +1,4 @@
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -78,6 +78,10 @@
     <Compile Include="Analysis\clsHistogram.cs" />
     <Compile Include="Analysis\clsLinearNormalizer.cs" />
     <Compile Include="Cephes\clsMathUtilities.cs" />
+    <Compile Include="Filters\DatasetMembersFilter.cs" />
+    <Compile Include="Filters\FilterUtil.cs" />
+    <Compile Include="Filters\IFilter.cs" />
+    <Compile Include="Filters\MassRangeFilter.cs" />
     <Compile Include="MultiAlign\classMultiAnalysisConverters.cs" />
     <Compile Include="MultiAlign\clsMultiAlignAnalysis.cs" />
     <Compile Include="Analysis\clsNormalize.cs" />
