@@ -1100,17 +1100,19 @@ namespace MultiAlignWin
                 mcontrol_resultSummaryPages.CreateSummary("Peak Matching Results", mobjAnalysis.PeakMatchingResults);
                 if (mobjAnalysis.UseSMART == false)
                 {
-                    mcontrol_resultSummaryPages.AddData("Peak Matching Results",
-                                                    "False Discovery Rate via 11 Da shift (FDR)",
-                                                    string.Format("{0:0.00}", mobjAnalysis.FDR));
-
-
                     mcontrol_resultSummaryPages.AddData(peakMatchingResult, "11-Da Shifted Number of Mass Tags Matched",
                         mobjAnalysis.PeakMatchingResultsShifted.NumMassTagsMatched.ToString());
                     mcontrol_resultSummaryPages.AddData(peakMatchingResult, "11-Da Shifted Number of Proteins Matched",
                         mobjAnalysis.PeakMatchingResultsShifted.NumProteinsMatched.ToString());
                     mcontrol_resultSummaryPages.AddData(peakMatchingResult, "11-Da Shifted Number of Matches",
                         mobjAnalysis.PeakMatchingResultsShifted.NumMatches.ToString());
+
+                    mcontrol_resultSummaryPages.AddData("Peak Matching Results",
+                                                    "FDR (11-da shift) Upper Bound",
+                                                    string.Format("{0:0.00}", mobjAnalysis.FDRUpperBound));
+                    mcontrol_resultSummaryPages.AddData("Peak Matching Results",
+                                                    "FDR (11-da shift) Lower Bound",
+                                                    string.Format("{0:0.00}", mobjAnalysis.FDRLowerBound));
                 }
                 else
                 {

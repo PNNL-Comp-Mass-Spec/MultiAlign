@@ -227,10 +227,6 @@ namespace PNNLProteomics.Data.Analysis
         /// List of smart results with summaries for each dataset.
         /// </summary>
         private classSMARTResults mobj_smartResults;
-        /// <summary>
-        /// False Discovery Rate as a result of the 11 da shift.
-        /// </summary>
-        private double mdouble_fdrRate;
         #endregion
 
         #region NonSerialized Members
@@ -299,8 +295,6 @@ namespace PNNLProteomics.Data.Analysis
             /// This only matters if peptide peak matching was performed
             /// 
             mbool_calculateSMARTScores = false;
-
-            mdouble_fdrRate = double.NaN;
         }
         #endregion
 
@@ -1286,20 +1280,7 @@ namespace PNNLProteomics.Data.Analysis
                     }
                     mobj_shiftedPeakMatchingResults = mobjPeakMatcher.PerformPeakMatching(  mobjUMCData.mobjClusterData,
                                                                                             mobjMassTagDB,
-                                                                                            11.0);                        
-                    /// 
-                    /// Total FDR value.
-                    /// 
-                    if (mobjPeakMatchingResults.NumMatches > 0)
-                    {
-                        int m = mobj_shiftedPeakMatchingResults.NumMatches;
-                        int n = mobjPeakMatchingResults.NumMatches;
-                        mdouble_fdrRate = Convert.ToDouble(2*m) / Convert.ToDouble(n + m);
-                    }
-                    else
-                    {
-                        mdouble_fdrRate = double.NaN;
-                    }                    
+                                                                                            11.0);                                                             
                 }
                 else
                 {
@@ -1379,17 +1360,7 @@ namespace PNNLProteomics.Data.Analysis
                                           mobj_smartOptions);
 
             mobjPeakMatchingResults      = 
-                ConvertSmartResultsToPeakResults(mobj_smartResults);
-            
-            /// 
-            /// Since we dont know what the FDR rate really is 
-            /// since we have multiple FDR's for 
-            /// each cutoff, then we just report a bogus number.
-            /// This way the user must go to the 
-            /// summary page to look at the FDR values for a given
-            /// cutoff...
-            /// 
-            mdouble_fdrRate                 = double.NaN;
+                ConvertSmartResultsToPeakResults(mobj_smartResults);            
         }
         /// <summary>
         /// Converts the SMART Results into peak matching results.
@@ -1718,13 +1689,39 @@ namespace PNNLProteomics.Data.Analysis
 
         #region Properties
         /// <summary>
-        /// Gets the false discovery rate calculated by 11 Dalton Shift.
+        /// Gets the lower bound false discovery rate calculated by 11 Dalton Shift.
         /// </summary>
-        public double FDR
+        public double FDRLowerBound
         {
             get
             {
-                return mdouble_fdrRate;
+                if (mobjPeakMatchingResults == null)
+                    return double.NaN;
+                if (mobj_shiftedPeakMatchingResults == null)
+                    return double.NaN;
+
+                double matches      = Convert.ToDouble(mobjPeakMatchingResults.NumMassTagsMatched);
+                double shiftMatches = Convert.ToDouble(mobj_shiftedPeakMatchingResults.NumMassTagsMatched);
+
+                return shiftMatches / (matches + shiftMatches);
+            }
+        }
+        /// <summary>
+        /// Gets the upper bound false discovery rate calculated by 11 Dalton Shift.
+        /// </summary>
+        public double FDRUpperBound
+        {
+            get
+            {
+                if (mobjPeakMatchingResults == null)
+                    return double.NaN;
+                if (mobj_shiftedPeakMatchingResults == null)
+                    return double.NaN;
+
+                double matches      = Convert.ToDouble(mobjPeakMatchingResults.NumMassTagsMatched);
+                double shiftMatches = Convert.ToDouble(mobj_shiftedPeakMatchingResults.NumMassTagsMatched);
+
+                return (2*shiftMatches) / (matches + shiftMatches);
             }
         }
         /// <summary>
