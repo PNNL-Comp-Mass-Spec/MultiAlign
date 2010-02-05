@@ -43,6 +43,7 @@ using PNNLProteomics.Data;
 using PNNLProteomics.EventModel;
 using PNNLProteomics.Data.Loaders;
 using PNNLProteomics.Data.Analysis;
+using PNNLProteomics.SMART;
 
 using MultiAlignWin.IO;
 using MultiAlignWin.Forms.Parameters;
@@ -182,6 +183,7 @@ namespace MultiAlignWin
             LoadClusterOptions();
             LoadFeatureFindingOptions();
             LoadDBOptions();
+            LoadSMARTOptions();
 
             mobjAnalysis.AnalysisComplete                       += new clsMultiAlignAnalysis.DelegateAnalysisComplete(mobjAnalysis_AnalysisComplete);
 
@@ -386,8 +388,14 @@ namespace MultiAlignWin
         /// Loads the SMART Options from the settings file.
         /// </summary>
         private void LoadSMARTOptions()
-        {
-            //TODO: Implement loading the SMART Options here.
+        {           
+            if (mobjAnalysis.SMARTOptions == null)
+                mobjAnalysis.SMARTOptions = new classSMARTOptions();
+            mobjAnalysis.SMARTOptions.IsDataPaired          = Properties.Settings.Default.SMARTIsDataPaired;
+            mobjAnalysis.SMARTOptions.MassTolerancePPM      = Properties.Settings.Default.SMARTMassTolerance;
+            mobjAnalysis.SMARTOptions.NETTolerance          = Properties.Settings.Default.SMARTNETTolerance;
+            mobjAnalysis.SMARTOptions.PairedMass            = Properties.Settings.Default.SMARTPairedMass;
+            mobjAnalysis.SMARTOptions.UsePriorProbabilities = Properties.Settings.Default.SMARTUsePriorProbabilities;            
         }
         /// <summary>
         /// Loads the analysis object.
@@ -948,6 +956,7 @@ namespace MultiAlignWin
 
             if (scoreForm.ShowDialog() == DialogResult.OK)
             {
+                
                 /// 
                 /// Get new options
                 /// 

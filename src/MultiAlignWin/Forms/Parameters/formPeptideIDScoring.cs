@@ -30,8 +30,7 @@ namespace MultiAlignWin.Forms.Parameters
             {
                 classSMARTOptions options            = new classSMARTOptions();                              
                 options.IsDataPaired                 = IsDataPaired;                    
-                options.UsePriorProbabilities                   = UsePriorProbabilities;                     
-                options.MinMSMSObs                   = MinimumMSMSObservations;          
+                options.UsePriorProbabilities        = UsePriorProbabilities;                                     
                 options.MassTolerancePPM             = MassTolerancePPM;                                
                 options.NETTolerance                 = NETTolerance;
                 options.PairedMass                   = PairedMass;
@@ -40,29 +39,10 @@ namespace MultiAlignWin.Forms.Parameters
             set
             {
                 IsDataPaired                     = value.IsDataPaired;
-                UsePriorProbabilities                       = value.UsePriorProbabilities;
-                MinimumMSMSObservations          = value.MinMSMSObs;                
+                UsePriorProbabilities            = value.UsePriorProbabilities;                
                 MassTolerancePPM                 = value.MassTolerancePPM;
                 NETTolerance                     = value.NETTolerance;
                 PairedMass                       = value.PairedMass;                
-            }
-        }
-        #endregion
-
-
-        #region Short/Integer Properties        
-        /// <summary>
-        /// Gets or sets the minimum number of MS/MS Observations
-        /// </summary>
-        public int MinimumMSMSObservations
-        {
-            get
-            {
-                return Convert.ToInt32(mnum_minimumMSMSObservations.Value);
-            }
-            set
-            {
-                mnum_minimumMSMSObservations.Value = Convert.ToDecimal(value);
             }
         }
         #endregion
@@ -80,20 +60,6 @@ namespace MultiAlignWin.Forms.Parameters
             set
             {
                 mnum_massTolerance.Value = Convert.ToDecimal(value);
-            }
-        }
-        /// <summary>
-        /// Gets or sets the minimum peptide prophet probability.
-        /// </summary>
-        public double MinimumPeptideProphetProbability
-        {
-            get
-            {
-                return Convert.ToDouble(mnum_minimumPeptideProphetProbability.Value);
-            }
-            set
-            {
-                mnum_minimumPeptideProphetProbability.Value = Convert.ToDecimal(value);
             }
         }
         /// <summary>
@@ -169,6 +135,20 @@ namespace MultiAlignWin.Forms.Parameters
             classSMARTOptions options = new classSMARTOptions();
             Options = options;
         }
-        #endregion
+        private void mbutton_ok_Click(object sender, EventArgs e)
+        {
+            DialogResult = DialogResult.OK;
+            SaveOptions();
+            Hide();
+        }
+        public void SaveOptions()
+        {
+            Properties.Settings.Default.SMARTIsDataPaired           = IsDataPaired;
+            Properties.Settings.Default.SMARTMassTolerance          = MassTolerancePPM;
+            Properties.Settings.Default.SMARTNETTolerance           = NETTolerance;
+            Properties.Settings.Default.SMARTUsePriorProbabilities  = UsePriorProbabilities;            
+            Properties.Settings.Default.Save();
+        }
+        #endregion        
     }
 }

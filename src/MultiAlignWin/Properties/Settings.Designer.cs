@@ -717,5 +717,89 @@ namespace MultiAlignWin.Properties {
                 this["UserClusterOptionsDriftTimeTolerance"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool SMARTIsDataPaired {
+            get {
+                return ((bool)(this["SMARTIsDataPaired"]));
+            }
+            set {
+                this["SMARTIsDataPaired"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.05")]
+        public double SMARTNETTolerance {
+            get {
+                return ((double)(this["SMARTNETTolerance"]));
+            }
+            set {
+                this["SMARTNETTolerance"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("20")]
+        public double SMARTMassTolerance {
+            get {
+                return ((double)(this["SMARTMassTolerance"]));
+            }
+            set {
+                this["SMARTMassTolerance"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool SMARTUsePriorProbabilities {
+            get {
+                return ((bool)(this["SMARTUsePriorProbabilities"]));
+            }
+            set {
+                this["SMARTUsePriorProbabilities"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("20")]
+        public double SMARTPairedMass {
+            get {
+                return ((double)(this["SMARTPairedMass"]));
+            }
+            set {
+                this["SMARTPairedMass"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string UserDBFormMTDBExperimentFilter {
+            get {
+                return ((string)(this["UserDBFormMTDBExperimentFilter"]));
+            }
+            set {
+                this["UserDBFormMTDBExperimentFilter"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string UserDBFormMTDBPriorProbabilities {
+            get {
+                return ((string)(this["UserDBFormMTDBPriorProbabilities"]));
+            }
+            set {
+                this["UserDBFormMTDBPriorProbabilities"] = value;
+            }
+        }
     }
 }
