@@ -181,6 +181,7 @@ namespace MultiAlignWin
 
             LoadAlignmentOptions();
             LoadClusterOptions();
+            LoadPeakMatchingOptions();
             LoadFeatureFindingOptions();
             LoadDBOptions();
             LoadSMARTOptions();
@@ -194,6 +195,7 @@ namespace MultiAlignWin
             mctl_selectParametersPage.LoadParametersFromFile    += new ctlSelectParametersWizardPage.OptionsButtonClicked(LoadParametersFromFileClicked);
             mctl_selectParametersPage.AlignmentParameters       += new ctlSelectParametersWizardPage.OptionsButtonClicked(AlignmentParametersClicked);
             mctl_selectParametersPage.ClusteringParameters      += new ctlSelectParametersWizardPage.OptionsButtonClicked(ClusteringParametersClicked);
+            mctl_selectParametersPage.PeakMatchingParameters    += new ctlSelectParametersWizardPage.OptionsButtonClicked(PeakMatchingParametersClicked);            
             mctl_selectParametersPage.SelectMassTagDatabase     += new ctlSelectParametersWizardPage.OptionsButtonClicked(SelectMassTagDatabaseClicked);
             mctl_selectParametersPage.ScoringParameters         += new ctlSelectParametersWizardPage.OptionsButtonClicked(ScoringParametersClicked);
 
@@ -328,7 +330,7 @@ namespace MultiAlignWin
             MultiAlignEngine.Clustering.clsClusterOptions options = new MultiAlignEngine.Clustering.clsClusterOptions();
             options.MassTolerance = Properties.Settings.Default.UserClusterOptionsMassTolerance;
             options.NETTolerance = Properties.Settings.Default.UserClusterOptionsNETTolerance;
-
+            options.DriftTimeTolerance = Properties.Settings.Default.UserClusterOptionsDriftTimeTolerance;
             options.ClusterIntensityType = MultiAlignEngine.Clustering.clsClusterOptions.enmClusterIntensityType.MAX_PER_DATASET;
             if (Properties.Settings.Default.UserClusterOptionsUseMaxInDataset == false)
                 options.ClusterIntensityType = MultiAlignEngine.Clustering.clsClusterOptions.enmClusterIntensityType.SUM_PER_DATASET;
@@ -338,6 +340,19 @@ namespace MultiAlignWin
                 options.ClusterRepresentativeType = MultiAlignEngine.Clustering.clsClusterOptions.enmClusterRepresentativeType.MEDIAN;
 
             mobjAnalysis.ClusterOptions = options;
+        }
+
+        /// <summary>
+        /// Loads the default cluster options from the settings file.
+        /// </summary>
+        private void LoadPeakMatchingOptions()
+        {
+            MultiAlignEngine.PeakMatching.clsPeakMatchingOptions options = new MultiAlignEngine.PeakMatching.clsPeakMatchingOptions();
+            options.MassTolerance = Properties.Settings.Default.UserPeakMatchingMassTolerance;
+            options.NETTolerance = Properties.Settings.Default.UserPeakMatchingNETTolerance;
+            options.DriftTimeTolerance = Properties.Settings.Default.UserPeakMatchingDriftTimeTolerance;
+
+            mobjAnalysis.PeakMatchingOptions = options;
         }
         /// <summary>
         /// Loads the saved alignment options from the settings file.
@@ -918,6 +933,15 @@ namespace MultiAlignWin
 				mobjAnalysis.ClusterOptions = clusterParametersForm.ClusterOptions ; 
 			}
 		}
+        private void PeakMatchingParametersClicked()
+        {
+            frmPeakMatchingParameters peakMatchingParametersForm = new frmPeakMatchingParameters();
+            peakMatchingParametersForm.PeakMatchingOptions = mobjAnalysis.PeakMatchingOptions;
+            if (peakMatchingParametersForm.ShowDialog() == DialogResult.OK)
+            {
+                mobjAnalysis.PeakMatchingOptions = peakMatchingParametersForm.PeakMatchingOptions;
+            }
+        }
 		private void SelectMassTagDatabaseClicked()
 		{
 			frmDBName dbForm = new frmDBName(mobj_serverInformation.ConnectionExists); 

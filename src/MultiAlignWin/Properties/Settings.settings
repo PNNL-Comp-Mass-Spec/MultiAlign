@@ -203,5 +203,14 @@
     <Setting Name="UserDBFormExperimentExclusionFilter" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="UserPeakMatchingNETTolerance" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">0.03</Value>
+    </Setting>
+    <Setting Name="UserPeakMatchingMassTolerance" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">10</Value>
+    </Setting>
+    <Setting Name="UserPeakMatchingDriftTimeTolerance" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">50</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

@@ -190,11 +190,15 @@ namespace PNNLProteomics.Data.Analysis
         /// <summary>
         /// Object that performs UMC clustring for peak matching.
         /// </summary>
-		private clsClusterProcessor         mobjClusterProcessor; 
+        private clsClusterProcessor mobjClusterProcessor;
         /// <summary>
         /// Object that holds the options for UMC clustering.
         /// </summary>
-		private clsClusterOptions           mobjClusteringOptions; 
+        private clsClusterOptions mobjClusteringOptions;
+        /// <summary>
+        /// Object that holds the options for peak matching.
+        /// </summary>
+        private clsPeakMatchingOptions mobjPeakMatchingOptions;        
         /// <summary>
         /// Object that holds the options for performing Mass Tag Database peak matching.
         /// </summary>
@@ -272,7 +276,8 @@ namespace PNNLProteomics.Data.Analysis
 			mobjUMCFindingOptions        = new MultiAlignEngine.Features.clsUMCFindingOptions() ; 
 			mobjUMCData                  = new MultiAlignEngine.Features.clsUMCData() ; 
 			mobjClusterProcessor         = new MultiAlignEngine.Clustering.clsClusterProcessor() ; 
-			mobjClusteringOptions        = new MultiAlignEngine.Clustering.clsClusterOptions() ; 
+			mobjClusteringOptions        = new MultiAlignEngine.Clustering.clsClusterOptions() ;
+            mobjPeakMatchingOptions         = new clsPeakMatchingOptions();
 			mobjMassTagDBOptions         = new MultiAlignEngine.MassTags.clsMassTagDatabaseOptions() ; 
 			mobjPeakMatcher              = new MultiAlignEngine.PeakMatching.clsPeakMatchingProcessor() ; 
 
@@ -1158,6 +1163,11 @@ namespace PNNLProteomics.Data.Analysis
                 Console.WriteLine(ex.Message + ex.StackTrace);
             }
         }
+        /// <summary>
+        /// For single datasets this will convert the umc's into a cluster.
+        /// </summary>
+        /// <param name="umcdata"></param>
+        /// <param name="index"></param>
         private void ConstructClustersFromDataset(clsUMCData umcdata, int index)
         {
             clsUMC[] umcs = UMCData.GetUMCS(index);
@@ -1169,11 +1179,9 @@ namespace PNNLProteomics.Data.Analysis
                 cluster.Charge          = umc.ChargeRepresentative;
                 cluster.Mass            = umc.Mass;
                 cluster.MassCalibrated  = umc.MassCalibrated;
-                cluster.mdouble_aligned_net = umc.mdouble_abundance;
-                cluster.mdouble_driftTime   = umc.mfloat_drift_time;                
-                cluster.Net             = umc.mint_scan_aligned;                
-                cluster.Scan            = umc.Scan;                
-                cluster.Id              = i++;                
+                
+              
+                
             }            
         }
         public void PerformClustering()
@@ -1270,9 +1278,9 @@ namespace PNNLProteomics.Data.Analysis
                         StatusMessage(0, "Performing Peak Matching");
                     }
                     
-                    mobjPeakMatcher.MassTolerance       = mobjClusteringOptions.MassTolerance;
-                    mobjPeakMatcher.NETTolerance        = mobjClusteringOptions.NETTolerance;
-                    mobjPeakMatcher.DriftTimeTolerance  = mobjClusteringOptions.DriftTimeTolerance; 
+                    mobjPeakMatcher.MassTolerance       = mobjPeakMatchingOptions.MassTolerance;
+                    mobjPeakMatcher.NETTolerance        = mobjPeakMatchingOptions.NETTolerance;
+                    mobjPeakMatcher.DriftTimeTolerance  = mobjPeakMatchingOptions.DriftTimeTolerance; 
                     mobjPeakMatchingResults             = mobjPeakMatcher.PerformPeakMatching(mobjUMCData.mobjClusterData, mobjMassTagDB);
                     if (StatusMessage != null)
                     {
@@ -1332,6 +1340,8 @@ namespace PNNLProteomics.Data.Analysis
                 msFeature.mdouble_monoMass      = tag.mdblMonoMass;
                 msFeature.mdouble_NET           = tag.NetAverage;
                 msFeature.mint_ID               = tag.mintMassTagId;
+                msFeature.mint_count            = tag.mintNumObsPassingFilter;
+                
                 msFeature.mdouble_probability   = tag.HighPeptideProphetProbability;
                 massTags.Add(msFeature);                         
             }
@@ -1354,6 +1364,7 @@ namespace PNNLProteomics.Data.Analysis
                 feature.mint_id          = i;
                 smartFeatures.Add(feature);
             }
+
             mobj_smartResults            = 
                 processor.ScoreUMCMatches(massTags,
                                           smartFeatures,
@@ -1939,21 +1950,35 @@ namespace PNNLProteomics.Data.Analysis
 			{
 				mobjUMCFindingOptions = value ;
 			}
-		}
+        }
         /// <summary>
         /// Gets or sets the cluster options.
         /// </summary>
-		public MultiAlignEngine.Clustering.clsClusterOptions ClusterOptions
-		{
-			get
-			{
-				return mobjClusteringOptions ;
-			}
-			set
-			{
-				mobjClusteringOptions = value ;
-			}
-		}
+        public MultiAlignEngine.Clustering.clsClusterOptions ClusterOptions
+        {
+            get
+            {
+                return mobjClusteringOptions;
+            }
+            set
+            {
+                mobjClusteringOptions = value;
+            }
+        }
+        /// <summary>
+        /// Gets or sets the cluster options.
+        /// </summary>
+        public MultiAlignEngine.PeakMatching.clsPeakMatchingOptions PeakMatchingOptions
+        {
+            get
+            {
+                return mobjPeakMatchingOptions;
+            }
+            set
+            {
+                mobjPeakMatchingOptions = value;
+            }
+        }
 		/// <summary>
 		/// Gets the UMC Data feature options.
 		/// </summary>

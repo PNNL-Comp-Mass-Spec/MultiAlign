@@ -12,7 +12,7 @@ namespace MultiAlignWin
 
         private Button mbtnPeakPickingParameters;
         private Button mbtnAlignmentParameters;
-        private Button clusteringPeakMatchingButton;
+        private Button peakMatchingButton;
         private IContainer components = null;
         private Button buttonLoadParametersFromFile;
         private ComboBox mcomboBox_baseline;
@@ -26,8 +26,9 @@ namespace MultiAlignWin
         public delegate void DelegatePeakMatchToDatabase(bool peakMatch);
         
         public event OptionsButtonClicked PeakPickingParameters ;
-		public event OptionsButtonClicked AlignmentParameters ;
-		public event OptionsButtonClicked ClusteringParameters ;
+        public event OptionsButtonClicked AlignmentParameters;
+        public event OptionsButtonClicked ClusteringParameters;
+        public event OptionsButtonClicked PeakMatchingParameters;
 		public event OptionsButtonClicked SelectMassTagDatabase ;
 		public event OptionsButtonClicked LoadParametersFromFile;
         /// <summary>
@@ -48,6 +49,7 @@ namespace MultiAlignWin
         private RadioButton mradioButton_useSMART;
         private Label mlabel_databaseSelected;
         private GroupBox peptideIdentificationGroupBox;
+        private Button mbutton_clustering;
 
         /// <summary>
         /// Flag indicating whether or not to use SMART.
@@ -88,12 +90,13 @@ namespace MultiAlignWin
 		{
             this.mbtnPeakPickingParameters = new System.Windows.Forms.Button();
             this.mbtnAlignmentParameters = new System.Windows.Forms.Button();
-            this.clusteringPeakMatchingButton = new System.Windows.Forms.Button();
+            this.peakMatchingButton = new System.Windows.Forms.Button();
             this.buttonLoadParametersFromFile = new System.Windows.Forms.Button();
             this.mcomboBox_baseline = new System.Windows.Forms.ComboBox();
             this.mgroupBox_parameters = new System.Windows.Forms.GroupBox();
-            this.mradioButton_useStandardPeakMatching = new System.Windows.Forms.RadioButton();
+            this.peptideIdentificationGroupBox = new System.Windows.Forms.GroupBox();
             this.mradioButton_useSMART = new System.Windows.Forms.RadioButton();
+            this.mradioButton_useStandardPeakMatching = new System.Windows.Forms.RadioButton();
             this.smartParametersButton = new System.Windows.Forms.Button();
             this.labelLoadParam = new System.Windows.Forms.Label();
             this.mbutton_loadMassTagDatabasePeaks = new System.Windows.Forms.Button();
@@ -102,10 +105,10 @@ namespace MultiAlignWin
             this.mlabel_databaseSelected = new System.Windows.Forms.Label();
             this.mradio_alignToMTDB = new System.Windows.Forms.RadioButton();
             this.mradio_alignToFile = new System.Windows.Forms.RadioButton();
-            this.peptideIdentificationGroupBox = new System.Windows.Forms.GroupBox();
+            this.mbutton_clustering = new System.Windows.Forms.Button();
             this.mgroupBox_parameters.SuspendLayout();
-            this.mgroupBox_alignment.SuspendLayout();
             this.peptideIdentificationGroupBox.SuspendLayout();
+            this.mgroupBox_alignment.SuspendLayout();
             this.SuspendLayout();
             // 
             // Banner
@@ -147,20 +150,20 @@ namespace MultiAlignWin
             this.mbtnAlignmentParameters.UseVisualStyleBackColor = false;
             this.mbtnAlignmentParameters.Click += new System.EventHandler(this.mbtnAlignmentParameters_Click);
             // 
-            // clusteringPeakMatchingButton
+            // peakMatchingButton
             // 
-            this.clusteringPeakMatchingButton.BackColor = System.Drawing.Color.White;
-            this.clusteringPeakMatchingButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.clusteringPeakMatchingButton.Image = global::MultiAlignWin.Properties.Resources.clusteringGlyph;
-            this.clusteringPeakMatchingButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.clusteringPeakMatchingButton.Location = new System.Drawing.Point(192, 19);
-            this.clusteringPeakMatchingButton.Name = "clusteringPeakMatchingButton";
-            this.clusteringPeakMatchingButton.Size = new System.Drawing.Size(221, 31);
-            this.clusteringPeakMatchingButton.TabIndex = 2;
-            this.clusteringPeakMatchingButton.Text = "Clustering and Peak Matching";
-            this.clusteringPeakMatchingButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.clusteringPeakMatchingButton.UseVisualStyleBackColor = false;
-            this.clusteringPeakMatchingButton.Click += new System.EventHandler(this.mbtnClusteringParameters_Click);
+            this.peakMatchingButton.BackColor = System.Drawing.Color.White;
+            this.peakMatchingButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.peakMatchingButton.Image = global::MultiAlignWin.Properties.Resources.clusteringGlyph;
+            this.peakMatchingButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.peakMatchingButton.Location = new System.Drawing.Point(192, 19);
+            this.peakMatchingButton.Name = "peakMatchingButton";
+            this.peakMatchingButton.Size = new System.Drawing.Size(221, 31);
+            this.peakMatchingButton.TabIndex = 2;
+            this.peakMatchingButton.Text = "Peak Matching";
+            this.peakMatchingButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.peakMatchingButton.UseVisualStyleBackColor = false;
+            this.peakMatchingButton.Click += new System.EventHandler(this.mbtnClusteringParameters_Click);
             // 
             // buttonLoadParametersFromFile
             // 
@@ -192,6 +195,7 @@ namespace MultiAlignWin
             // 
             this.mgroupBox_parameters.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
+            this.mgroupBox_parameters.Controls.Add(this.mbutton_clustering);
             this.mgroupBox_parameters.Controls.Add(this.peptideIdentificationGroupBox);
             this.mgroupBox_parameters.Controls.Add(this.buttonLoadParametersFromFile);
             this.mgroupBox_parameters.Controls.Add(this.labelLoadParam);
@@ -207,6 +211,35 @@ namespace MultiAlignWin
             this.mgroupBox_parameters.TabStop = false;
             this.mgroupBox_parameters.Text = "Set Parameters";
             // 
+            // peptideIdentificationGroupBox
+            // 
+            this.peptideIdentificationGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.peptideIdentificationGroupBox.Controls.Add(this.peakMatchingButton);
+            this.peptideIdentificationGroupBox.Controls.Add(this.mradioButton_useSMART);
+            this.peptideIdentificationGroupBox.Controls.Add(this.mradioButton_useStandardPeakMatching);
+            this.peptideIdentificationGroupBox.Controls.Add(this.smartParametersButton);
+            this.peptideIdentificationGroupBox.Enabled = false;
+            this.peptideIdentificationGroupBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.peptideIdentificationGroupBox.Location = new System.Drawing.Point(19, 238);
+            this.peptideIdentificationGroupBox.Name = "peptideIdentificationGroupBox";
+            this.peptideIdentificationGroupBox.Size = new System.Drawing.Size(641, 99);
+            this.peptideIdentificationGroupBox.TabIndex = 26;
+            this.peptideIdentificationGroupBox.TabStop = false;
+            this.peptideIdentificationGroupBox.Text = "Peptide Identification";
+            // 
+            // mradioButton_useSMART
+            // 
+            this.mradioButton_useSMART.AutoSize = true;
+            this.mradioButton_useSMART.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.mradioButton_useSMART.Location = new System.Drawing.Point(7, 63);
+            this.mradioButton_useSMART.Name = "mradioButton_useSMART";
+            this.mradioButton_useSMART.Size = new System.Drawing.Size(85, 17);
+            this.mradioButton_useSMART.TabIndex = 24;
+            this.mradioButton_useSMART.Text = "Use SMART";
+            this.mradioButton_useSMART.UseVisualStyleBackColor = true;
+            this.mradioButton_useSMART.CheckedChanged += new System.EventHandler(this.mradioButton_useSMART_CheckedChanged);
+            // 
             // mradioButton_useStandardPeakMatching
             // 
             this.mradioButton_useStandardPeakMatching.AutoSize = true;
@@ -220,18 +253,6 @@ namespace MultiAlignWin
             this.mradioButton_useStandardPeakMatching.Text = "Use Standard Peak Matching";
             this.mradioButton_useStandardPeakMatching.UseVisualStyleBackColor = true;
             this.mradioButton_useStandardPeakMatching.CheckedChanged += new System.EventHandler(this.mradioButton_useStandardPeakMatching_CheckedChanged);
-            // 
-            // mradioButton_useSMART
-            // 
-            this.mradioButton_useSMART.AutoSize = true;
-            this.mradioButton_useSMART.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.mradioButton_useSMART.Location = new System.Drawing.Point(7, 63);
-            this.mradioButton_useSMART.Name = "mradioButton_useSMART";
-            this.mradioButton_useSMART.Size = new System.Drawing.Size(85, 17);
-            this.mradioButton_useSMART.TabIndex = 24;
-            this.mradioButton_useSMART.Text = "Use SMART";
-            this.mradioButton_useSMART.UseVisualStyleBackColor = true;
-            this.mradioButton_useSMART.CheckedChanged += new System.EventHandler(this.mradioButton_useSMART_CheckedChanged);
             // 
             // smartParametersButton
             // 
@@ -344,22 +365,20 @@ namespace MultiAlignWin
             this.mradio_alignToFile.UseVisualStyleBackColor = true;
             this.mradio_alignToFile.CheckedChanged += new System.EventHandler(this.mradio_alignToFile_CheckedChanged);
             // 
-            // peptideIdentificationGroupBox
+            // mbutton_clustering
             // 
-            this.peptideIdentificationGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.peptideIdentificationGroupBox.Controls.Add(this.clusteringPeakMatchingButton);
-            this.peptideIdentificationGroupBox.Controls.Add(this.mradioButton_useSMART);
-            this.peptideIdentificationGroupBox.Controls.Add(this.mradioButton_useStandardPeakMatching);
-            this.peptideIdentificationGroupBox.Controls.Add(this.smartParametersButton);
-            this.peptideIdentificationGroupBox.Enabled = false;
-            this.peptideIdentificationGroupBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.peptideIdentificationGroupBox.Location = new System.Drawing.Point(19, 184);
-            this.peptideIdentificationGroupBox.Name = "peptideIdentificationGroupBox";
-            this.peptideIdentificationGroupBox.Size = new System.Drawing.Size(641, 153);
-            this.peptideIdentificationGroupBox.TabIndex = 26;
-            this.peptideIdentificationGroupBox.TabStop = false;
-            this.peptideIdentificationGroupBox.Text = "Peptide Identification";
+            this.mbutton_clustering.BackColor = System.Drawing.Color.White;
+            this.mbutton_clustering.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.mbutton_clustering.Image = global::MultiAlignWin.Properties.Resources.clusteringGlyph;
+            this.mbutton_clustering.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.mbutton_clustering.Location = new System.Drawing.Point(19, 184);
+            this.mbutton_clustering.Name = "mbutton_clustering";
+            this.mbutton_clustering.Size = new System.Drawing.Size(183, 31);
+            this.mbutton_clustering.TabIndex = 27;
+            this.mbutton_clustering.Text = "Clustering ";
+            this.mbutton_clustering.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.mbutton_clustering.UseVisualStyleBackColor = false;
+            this.mbutton_clustering.Click += new System.EventHandler(this.mbutton_clustering_Click);
             // 
             // ctlSelectParametersWizardPage
             // 
@@ -374,10 +393,10 @@ namespace MultiAlignWin
             this.Controls.SetChildIndex(this.mgroupBox_parameters, 0);
             this.Controls.SetChildIndex(this.Banner, 0);
             this.mgroupBox_parameters.ResumeLayout(false);
-            this.mgroupBox_alignment.ResumeLayout(false);
-            this.mgroupBox_alignment.PerformLayout();
             this.peptideIdentificationGroupBox.ResumeLayout(false);
             this.peptideIdentificationGroupBox.PerformLayout();
+            this.mgroupBox_alignment.ResumeLayout(false);
+            this.mgroupBox_alignment.PerformLayout();
             this.ResumeLayout(false);
 
 		}
@@ -516,7 +535,7 @@ namespace MultiAlignWin
             {
                 mbool_useSMART          = value;
                 smartParametersButton.Enabled = mbool_useSMART;
-                clusteringPeakMatchingButton.Enabled = (value == false);
+                peakMatchingButton.Enabled = (value == false);
             }
         }
         /// <summary>
@@ -554,9 +573,14 @@ namespace MultiAlignWin
 		}
 		private void mbtnClusteringParameters_Click(object sender, System.EventArgs e)
 		{
-			if (ClusteringParameters!= null)
-				ClusteringParameters() ;	
-		}
+            if (PeakMatchingParameters != null)
+                PeakMatchingParameters();
+        }
+        private void mbutton_clustering_Click(object sender, EventArgs e)
+        {
+            if (ClusteringParameters != null)
+                ClusteringParameters();
+        }
 		private void mbtnLoadMassTagDatabase_Click(object sender, System.EventArgs e)
 		{
 			if (SelectMassTagDatabase != null)
@@ -632,6 +656,7 @@ namespace MultiAlignWin
             AlignToDatabase(true);
         }
         #endregion
+
     }
 }
 

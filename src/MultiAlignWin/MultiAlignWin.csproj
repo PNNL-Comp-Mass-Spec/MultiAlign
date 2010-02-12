@@ -195,6 +195,9 @@
     <Compile Include="Forms\frmLabelGroupEdit.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Forms\Parameters\frmPeakMatchingParameters.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Forms\Parameters\formPeptideIDScoring.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -388,6 +391,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmMdiMain.resx">
       <DependentUpon>frmMdiMain.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Parameters\frmPeakMatchingParameters.resx">
+      <DependentUpon>frmPeakMatchingParameters.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Parameters\formPeptideIDScoring.resx">

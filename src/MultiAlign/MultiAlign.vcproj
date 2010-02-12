@@ -696,22 +696,6 @@
 			<Filter
 				Name="Parameters"
 				>
-				<File
-					RelativePath="..\MultiAlignWin\Forms\Parameters\formPeptideIDScoring.cs"
-					>
-				</File>
-				<File
-					RelativePath="..\MultiAlignWin\Forms\Parameters\frmClusterParameters.cs"
-					>
-				</File>
-				<File
-					RelativePath="..\MultiAlignWin\Forms\Parameters\frmFeatureFindingParameters.cs"
-					>
-				</File>
-				<File
-					RelativePath="..\MultiAlignWin\Forms\Parameters\frmMSAlignmentParameters.cs"
-					>
-				</File>
 			</Filter>
 		</Filter>
 		<Filter
@@ -993,6 +977,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\clsPeakMatchingOptions.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\clsPeakMatchingProcessor.cpp"
 					>
 				</File>
@@ -1010,6 +998,10 @@
 				>
 				<File
 					RelativePath=".\clsPeakMatch.h"
+					>
+				</File>
+				<File
+					RelativePath=".\clsPeakMatchingOptions.h"
 					>
 				</File>
 				<File

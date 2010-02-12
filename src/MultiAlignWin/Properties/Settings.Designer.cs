@@ -825,5 +825,41 @@ namespace MultiAlignWin.Properties {
                 this["UserDBFormExperimentExclusionFilter"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.03")]
+        public double UserPeakMatchingNETTolerance {
+            get {
+                return ((double)(this["UserPeakMatchingNETTolerance"]));
+            }
+            set {
+                this["UserPeakMatchingNETTolerance"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("10")]
+        public double UserPeakMatchingMassTolerance {
+            get {
+                return ((double)(this["UserPeakMatchingMassTolerance"]));
+            }
+            set {
+                this["UserPeakMatchingMassTolerance"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("50")]
+        public double UserPeakMatchingDriftTimeTolerance {
+            get {
+                return ((double)(this["UserPeakMatchingDriftTimeTolerance"]));
+            }
+            set {
+                this["UserPeakMatchingDriftTimeTolerance"] = value;
+            }
+        }
     }
 }
