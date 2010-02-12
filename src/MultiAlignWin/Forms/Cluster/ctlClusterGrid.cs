@@ -32,6 +32,7 @@ namespace MultiAlignWin
 		private System.ComponentModel.Container components = null;
 
         private int mint_numberOfRows = 0;
+        private bool mbool_proteinsMapped               = false;
 		private bool mbool_show_cluster_aligned_net     = true ; 
 		private bool mbool_show_cluster_calibrated_mass = true ; 
 		private bool mbool_show_all_columns             = true ; 
@@ -252,7 +253,7 @@ namespace MultiAlignWin
                     num_columns_per_dataset++;
 
                 /// 
-                /// Add anotehr column for the spectral count
+                /// Add another column for the spectral count
                 /// 
                 num_columns_per_dataset++;
 
@@ -489,6 +490,7 @@ namespace MultiAlignWin
                         {
                             // missing value set as 0
                             row[start_data_column_num + col_num] = DBNull.Value;
+                            col_num++;
                             row[start_data_column_num + col_num] = DBNull.Value;
                         }
 
@@ -636,10 +638,11 @@ namespace MultiAlignWin
             /// 
             /// Map the protein names if they havent been already.
             /// 
-            if (ProteinsMapped != null)            
+            if (ProteinsMapped != null && mbool_proteinsMapped == false)
+            {
                 ProteinsMapped(this, proteinToPeptideMatches);
-            
-            
+                mbool_proteinsMapped = true;
+            }                        
 		}
         /// <summary>
         /// Gets the number of rows displayed in the analysis.
@@ -927,8 +930,8 @@ namespace MultiAlignWin
         #region "Context Menu Event Handlers"
         void mnu_columns_driftTime_Click(object sender, EventArgs e)
         {
-            ToolStripMenuItem cmd = sender as ToolStripMenuItem;
-            cmd.Checked = !cmd.Checked;
+            ToolStripMenuItem cmd        = sender as ToolStripMenuItem;
+            cmd.Checked                  = !cmd.Checked;
             mbool_show_driftTime_columns = cmd.Checked;
             AddClusterToTable();
         }
@@ -985,7 +988,8 @@ namespace MultiAlignWin
                     mbool_show_calibrated_mass_columns  = true;
 					mbool_show_scan_columns             = true; 
 					mbool_show_aligned_scan_columns     = true; 
-					mbool_show_umc_index_columns        = true; 
+					mbool_show_umc_index_columns        = true;
+                    mbool_show_driftTime_columns        = true;
 
 					if (mbool_ttest_performed)
 						mbool_show_ttest_column         = true; 
