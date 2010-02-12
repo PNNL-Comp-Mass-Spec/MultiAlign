@@ -137,19 +137,15 @@ namespace PNNLProteomics.Data.Loaders
 
                     if (data.Length > 0)
                     {
-                        datasetID = data[0];
+                        foreach (string id in data)
+                        {
+                            datasetID   = id;                            
+                            aliasID     = datasetID;                            
 
-                        if (data.Length > 1)
-                        {
-                            aliasID = data[1];
+                            KeyValuePair<string, string> pair = new KeyValuePair<string, string>(datasetID, aliasID);
+                            if (mlist_datasetKeyValues.Contains(pair) == false)
+                                mlist_datasetKeyValues.Add(pair);
                         }
-                        else
-                        {
-                            aliasID = datasetID;
-                        }
-                        KeyValuePair<string, string> pair = new KeyValuePair<string, string>(datasetID, aliasID);   
-                        if (mlist_datasetKeyValues.Contains(pair) == false)
-                            mlist_datasetKeyValues.Add(pair);
                     }
                 }                
             }
