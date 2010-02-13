@@ -28,6 +28,13 @@ namespace MultiAlignEngine
 			CreateClustersFromClusterUMCIndexPair(arrUMCs); 
 		}
 
+		clsClusterData::clsClusterData()
+		{
+			menmClusterRepresentativeType	= MultiAlignEngine::Clustering::clsClusterOptions::enmClusterRepresentativeType::MEDIAN;
+			menmClusterIntensityType		= MultiAlignEngine::Clustering::clsClusterOptions::enmClusterIntensityType::SUM_PER_DATASET;
+			marrClusters					= new System::Collections::ArrayList(); 
+		}
+
 		clsClusterData::~clsClusterData(void)
 		{
 		}
@@ -325,6 +332,12 @@ namespace MultiAlignEngine
 			scans->Clear();
 			nets->Clear(); 
 			charges->Clear(); 
+		}
+		void clsClusterData::AddCluster(clsCluster *cluster)
+		{
+			marrClusters->Add(cluster);
+			mintNumClusters = marrClusters->Count;
+			
 		}
  		System::Collections::ArrayList* clsClusterData::GetMassAndTimeTags()
 		{

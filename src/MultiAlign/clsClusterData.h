@@ -12,10 +12,7 @@ namespace MultiAlignEngine
 		[System::Serializable]
 		public __gc class clsClusterData
 		{
-			int mintNumDatasets; 
 			int mintNumClusters; 
-			double mdblMinNET; 
-			double mdblMaxNET; 
 			System::Collections::ArrayList *marrClusters; 
 			Clustering::clsClusterOptions::enmClusterRepresentativeType menmClusterRepresentativeType; 
 			Clustering::clsClusterOptions::enmClusterIntensityType menmClusterIntensityType; 
@@ -45,6 +42,10 @@ namespace MultiAlignEngine
 			};
 			void CreateClustersFromClusterUMCIndexPair(MultiAlignEngine::Features::clsUMC *arrUMCs __gc[]); 
 	public:
+			double mdblMinNET; 
+			double mdblMaxNET; 
+			int mintNumDatasets; 
+			void AddCluster(clsCluster * cluster);
 			// array of intensities for all cluster in each dataset
 			double marrClusterIntensity __gc[]; 
 			// array of normalized intensities for all cluster in each dataset
@@ -61,8 +62,11 @@ namespace MultiAlignEngine
 			}
 			System::Collections::ArrayList* GetMassAndTimeTags(); 
 			System::Collections::ArrayList* GetMassAndTimeTags(double shift); 
+
 			clsClusterData(MultiAlignEngine::Features::clsUMC *arrUmcs __gc[]);
+			clsClusterData();
 			~clsClusterData(void);
+
 			void GetMinMaxNET(float __gc &minNET, float __gc &maxNET) 
 			{ 
 				minNET = (float) mdblMinNET; 

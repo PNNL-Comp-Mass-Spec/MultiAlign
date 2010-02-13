@@ -1173,16 +1173,37 @@ namespace PNNLProteomics.Data.Analysis
             clsUMC[] umcs = UMCData.GetUMCS(index);
 
             int i = 0;
+
+            clsClusterData clusters             = new clsClusterData();
+            clusters.marrClusterIntensity       = new double[umcs.Length];
+            clusters.marrClusterMainMemberIndex = new int[umcs.Length];
+            umcdata.mobjClusterData = clusters;
+            umcdata.mobjClusterData.mintNumDatasets = 1;
+
+            double minNET = double.MaxValue;
+            double maxNET = double.MinValue;
             foreach (clsUMC umc in umcs)
             {
                 clsCluster cluster      = new clsCluster();
-                cluster.Charge          = umc.ChargeRepresentative;
-                cluster.Mass            = umc.Mass;
-                cluster.MassCalibrated  = umc.MassCalibrated;
-                
-              
-                
-            }            
+               
+                cluster.mdouble_mass_calibrated = umc.MassCalibrated;
+                cluster.mdouble_mass            = umc.Mass;
+                cluster.mdouble_net             = umc.Net;
+                cluster.mshort_charge           = umc.mshort_class_rep_charge;
+                cluster.mint_scan               = umc.ScanAligned;
+
+                minNET = Math.Min(cluster.Net, minNET);
+                maxNET = Math.Max(cluster.Net, maxNET);
+
+                cluster.mshort_num_dataset_members      = 1;
+                clusters.marrClusterMainMemberIndex[i]  = i;
+                clusters.marrClusterIntensity[i]        = umc.AbundanceSum;
+                cluster.mint_cluster_index              = i++;
+                cluster.mdouble_driftTime               = umc.DriftTime;
+                umcdata.mobjClusterData.AddCluster(cluster);                                          
+            }
+            clusters.mdblMinNET = minNET;
+            clusters.mdblMaxNET = maxNET;    
         }
         public void PerformClustering()
         {
@@ -1199,13 +1220,13 @@ namespace PNNLProteomics.Data.Analysis
             {
                 StatusMessage(0, "Performing Clustering of data points");
             }
-            if (marrFileNames.Count > 0)
+            if (marrFileNames.Count > 1)
             {
                 mobjClusterProcessor.PerformClustering(mobjUMCData);
             }
             else
             {
-                //ConstructClustersFromDataset(mobjUMCData);
+                ConstructClustersFromDataset(mobjUMCData, 0);
             }
 
             mint_statusLevel--;
