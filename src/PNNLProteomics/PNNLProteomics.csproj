@@ -64,7 +64,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\NHibernate.dll</HintPath>
     </Reference>
-    <Reference Include="SMARTWrapper, Version=1.0.3667.21144, Culture=neutral, processorArchitecture=x86">
+    <Reference Include="SMARTWrapper, Version=1.0.3699.24788, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\SMARTWrapper.dll</HintPath>
     </Reference>

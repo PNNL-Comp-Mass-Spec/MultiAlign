@@ -138,7 +138,8 @@ namespace MultiAlignWin
         /// </summary>
 		private void AddClusterToTable()
 		{
-
+            
+            
             mint_numberOfRows = 0;
 
 			// Create a new table.
@@ -147,6 +148,7 @@ namespace MultiAlignWin
 			table.Columns.Add(mstring_umc_index_col, typeof(int)) ; 
 			table.Columns.Add(mstring_umc_rep_size_col, typeof(int)) ; 
 			table.Columns.Add(mstring_umc_rep_mass_col, typeof(double)) ;
+            
 
             Color[] colors = new Color[] { Color.Plum, Color.LightGray, Color.Lime };
 			
@@ -209,13 +211,15 @@ namespace MultiAlignWin
 				table.Columns.Add(mstring_mass_tag_F_CS1) ; 
 				table.Columns.Add(mstring_mass_tag_F_CS2) ; 
 				table.Columns.Add(mstring_mass_tag_F_CS3) ;
+                
 
                 /// 
                 /// If SMART was used, then we want to pull the data out of the analysis object
                 /// 
                 if (mobjAnalysis.UseSMART == true)
                 {
-                    table.Columns.Add("SMART Score");                    
+                    table.Columns.Add("SMART Score");
+                    table.Columns.Add("SMART Specificity");                    
                 }				
 			}
             
@@ -469,7 +473,7 @@ namespace MultiAlignWin
                         if (mbool_show_driftTime_columns)
                         {
                             if (umc != null)
-                                row[start_data_column_num + col_num] = Convert.ToString(umc.DriftTime);
+                                row[start_data_column_num + col_num] = umc.DriftTime;
                             else
                                 row[start_data_column_num + col_num] = DBNull.Value;
                             col_num++;
@@ -482,9 +486,9 @@ namespace MultiAlignWin
                         {
                             double intensity = 0;
 
-                            row[start_data_column_num + col_num] = Convert.ToString(umc.AbundanceSum);
+                            row[start_data_column_num + col_num] = umc.AbundanceSum;
                             col_num++; 
-                            row[start_data_column_num + col_num] = Convert.ToString(umc.AbundanceMax);                            
+                            row[start_data_column_num + col_num] = umc.AbundanceMax;                            
                         }
                         else
                         {
@@ -502,7 +506,7 @@ namespace MultiAlignWin
                             /// //////////////////////////////////////////////////////////////////////////////
                             /// Add spectral count information
                             /// //////////////////////////////////////////////////////////////////////////////                        
-                            row[start_data_column_num + col_num] = Convert.ToString(umc.SpectralCount);
+                            row[start_data_column_num + col_num] = umc.SpectralCount;
                         }
                         else
                         {
@@ -522,7 +526,7 @@ namespace MultiAlignWin
                                 col_num++;
                                 if (umc != null)
                                 {
-                                    row[start_data_column_num + col_num] = Convert.ToString(umc.marray_chargeStatesAbundances[j]);
+                                    row[start_data_column_num + col_num] = umc.marray_chargeStatesAbundances[j];
                                 }
                                 else
                                 {
@@ -590,7 +594,14 @@ namespace MultiAlignWin
                                     /// If we have a final result, then we have a smart score for this MTID for the matched UMC.
                                     /// 
                                     if (finalResult != null)
-                                        row[current_column++] = Convert.ToString(finalResult.Score);
+                                        row[current_column++] = finalResult.Score;
+                                    else
+                                        row[current_column++] = DBNull.Value;                                    
+                                    /// 
+                                    /// If we have a final result, then we have a smart score for this MTID for the matched UMC.
+                                    /// 
+                                    if (finalResult != null)
+                                        row[current_column++] = finalResult.Specificity;
                                     else
                                         row[current_column++] = DBNull.Value;                                 
                                 }
@@ -630,9 +641,8 @@ namespace MultiAlignWin
                 mint_numberOfRows = table.Rows.Count;
 			}
 			catch (Exception ex)
-			{				
-				DataSource = table ;
-                
+			{				                
+				DataSource = table ;                
 			}
 
             /// 
@@ -642,7 +652,7 @@ namespace MultiAlignWin
             {
                 ProteinsMapped(this, proteinToPeptideMatches);
                 mbool_proteinsMapped = true;
-            }                        
+            }                               
 		}
         /// <summary>
         /// Gets the number of rows displayed in the analysis.
@@ -670,7 +680,15 @@ namespace MultiAlignWin
 				DataGridTextBoxColumn colStyle = new DataGridTextBoxColumn();				
 				colStyle.MappingName = table.Columns[colNum].ColumnName ;
 				colStyle.HeaderText= table.Columns[colNum].ColumnName  ;
-				colStyle.NullText = mstring_empty ; 
+				colStyle.NullText = mstring_empty ;
+
+                if (table.Columns[colNum].DataType == typeof(string))
+                {
+                    colStyle.Format = "s";
+                }else
+                {
+                    colStyle.Format = "d";
+                }
 				myGridStyle.GridColumnStyles.Add(colStyle);
 			}
 			TableStyles.Add(myGridStyle);
@@ -851,6 +869,7 @@ namespace MultiAlignWin
             if (mobj_contextMenu != null)
                 mobj_contextMenu.Items.Clear();
             mobj_contextMenu = cntxtMenu;
+            
             return cntxtMenu;
         }
 
