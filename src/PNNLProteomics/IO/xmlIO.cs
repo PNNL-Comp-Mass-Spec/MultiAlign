@@ -150,7 +150,10 @@ namespace PNNLProteomics.IO
 
 			try 
 			{
-				type = type.Replace("System.", "");
+				type            = type.Replace("System.", "");
+                string[] types  = type.Split(',');
+                type            = types[0];
+
 				// first select the first element of the name xmlName
 				string xmlValue = GetString (id, index);
 
@@ -226,7 +229,7 @@ namespace PNNLProteomics.IO
 
 		public void SetValue(string id, Object obj, int index)
 		{
-			string typeName = obj.GetType().ToString().Replace ("System.", "");
+			string typeName = obj.GetType().AssemblyQualifiedName; //.Replace ("System.", "");
 
 			if(obj.GetType()==typeof(ArrayList))
 			{

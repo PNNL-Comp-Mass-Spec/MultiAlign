@@ -1516,6 +1516,13 @@ namespace PNNLProteomics.Data.Analysis
         {
             mbool_processing = true;
 
+            try
+            {
+                string parameterPath = System.IO.Path.Combine(Path.GetDirectoryName(mstring_pathname), mstring_analysisName + "_parameters.xml");
+                SaveParametersToFile(parameterPath);
+            }
+            catch{
+            }
             string massTagDBName = MassTagDBOptions.mstrDatabase;
 
             /// /////////////////////////////////////////////////////////
@@ -2315,13 +2322,14 @@ namespace PNNLProteomics.Data.Analysis
 		public void SaveParametersToFile(string filename)
 		{
 			// Extract parameters for now.			
-			MetaData metaData = new MetaData("PNNLProteomics");			
-		    //ReflectParameterOptions(AlignmentOptions[0], metaData.OpenChild("AlignmentOptions"));
-			ReflectParameterOptions(ClusterOptions, metaData.OpenChild("ClusterOptions"));
-			ReflectParameterOptions(DefaultAlignmentOptions, metaData.OpenChild("DefaultAlignmentOptions"));
+			MetaData metaData = new MetaData("PNNLProteomics");
+            //ReflectParameterOptions(AlignmentOptions[0], metaData.OpenChild("AlignmentOptions"));
+            ReflectParameterOptions(UMCFindingOptions, metaData.OpenChild("UMCFindingOptions"));
+            ReflectParameterOptions(DefaultAlignmentOptions, metaData.OpenChild("DefaultAlignmentOptions"));
 			ReflectParameterOptions(MassTagDBOptions, metaData.OpenChild("MassTagDBOptions"));
-			ReflectParameterOptions(UMCFindingOptions, metaData.OpenChild("UMCFindingOptions"));					
-			metaData.WriteFile(filename);
+            ReflectParameterOptions(ClusterOptions, metaData.OpenChild("ClusterOptions"));
+            ReflectParameterOptions(PeakMatchingOptions, metaData.OpenChild("PeakMatchingOptions"));
+            metaData.WriteFile(filename);
 		}
 		/// <summary>
 		/// Loads parameters from file specified in XML format
@@ -2333,7 +2341,9 @@ namespace PNNLProteomics.Data.Analysis
 			metaData.ReadFile(filename);
 						
 			//ReflectParameterOptions(AlignmentOptions[0], metaData.OpenChild("AlignmentOptions"));
-			LoadParameterOptions(ClusterOptions, metaData.OpenChild("ClusterOptions"));
+            LoadParameterOptions(AlignmentOptions, metaData.OpenChild("AlignmentOptions"));
+            LoadParameterOptions(ClusterOptions, metaData.OpenChild("ClusterOptions"));
+            LoadParameterOptions(PeakMatchingOptions, metaData.OpenChild("PeakMatchingOptions"));
 			LoadParameterOptions(DefaultAlignmentOptions, metaData.OpenChild("DefaultAlignmentOptions"));
 			LoadParameterOptions(MassTagDBOptions, metaData.OpenChild("MassTagDBOptions"));
 			LoadParameterOptions(UMCFindingOptions, metaData.OpenChild("UMCFindingOptions"));

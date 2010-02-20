@@ -9,7 +9,7 @@ namespace MultiAlignEngine
 	{
 		clsClusterData::clsClusterData(MultiAlignEngine::Features::clsUMC *arrUMCs __gc[])
 		{
-			menmClusterRepresentativeType = MultiAlignEngine::Clustering::clsClusterOptions::enmClusterRepresentativeType::MEAN; 
+			menmClusterRepresentativeType = MultiAlignEngine::Clustering::enmClusterRepresentativeType::MEAN; 
 			int numUMCs = arrUMCs->Length; 
 			if (numUMCs == 0)
 				return; 
@@ -30,8 +30,8 @@ namespace MultiAlignEngine
 
 		clsClusterData::clsClusterData()
 		{
-			menmClusterRepresentativeType	= MultiAlignEngine::Clustering::clsClusterOptions::enmClusterRepresentativeType::MEDIAN;
-			menmClusterIntensityType		= MultiAlignEngine::Clustering::clsClusterOptions::enmClusterIntensityType::SUM_PER_DATASET;
+			menmClusterRepresentativeType	= MultiAlignEngine::Clustering::enmClusterRepresentativeType::MEDIAN;
+			menmClusterIntensityType		= MultiAlignEngine::Clustering::enmClusterIntensityType::SUM_PER_DATASET;
 			marrClusters					= new System::Collections::ArrayList(); 
 		}
 
@@ -112,7 +112,7 @@ namespace MultiAlignEngine
 
 					switch (menmClusterRepresentativeType)
 					{
-						case MultiAlignEngine::Clustering::clsClusterOptions::enmClusterRepresentativeType::MEDIAN:
+						case MultiAlignEngine::Clustering::enmClusterRepresentativeType::MEDIAN:
 							if (num_nonzero == 1)
 							{
 								mass = *dynamic_cast<double __gc*>(masses->Item[0]); 
@@ -159,7 +159,7 @@ namespace MultiAlignEngine
 							if (net > mdblMaxNET)
 								mdblMaxNET = net; 
 							break; 
-						case MultiAlignEngine::Clustering::clsClusterOptions::enmClusterRepresentativeType::MEAN:
+						case MultiAlignEngine::Clustering::enmClusterRepresentativeType::MEAN:
 							avgMass = 0; 
 							avgCalibratedMass = 0; 
 							avg_scan = 0; 
@@ -214,7 +214,7 @@ namespace MultiAlignEngine
 					marrClusterMainMemberIndex[pt_index] = index;
 				}
 
-				if (menmClusterIntensityType == MultiAlignEngine::Clustering::clsClusterOptions::enmClusterIntensityType::SUM_PER_DATASET && !System::Double::IsNaN(marrClusterIntensity[pt_index]))
+				if (menmClusterIntensityType == MultiAlignEngine::Clustering::enmClusterIntensityType::SUM_PER_DATASET && !System::Double::IsNaN(marrClusterIntensity[pt_index]))
 				{
 					marrClusterIntensity[pt_index] += intensity;
 				}
@@ -247,7 +247,7 @@ namespace MultiAlignEngine
 
 			switch (menmClusterRepresentativeType)
 			{
-				case MultiAlignEngine::Clustering::clsClusterOptions::enmClusterRepresentativeType::MEDIAN:
+				case MultiAlignEngine::Clustering::enmClusterRepresentativeType::MEDIAN:
 					if (num_nonzero == 1)
 					{
 						mass = *dynamic_cast<double __gc*>(masses->Item[0]); 
@@ -294,7 +294,7 @@ namespace MultiAlignEngine
 					if (net > mdblMaxNET)
 						mdblMaxNET = net; 
 					break; 
-				case MultiAlignEngine::Clustering::clsClusterOptions::enmClusterRepresentativeType::MEAN:
+				case MultiAlignEngine::Clustering::enmClusterRepresentativeType::MEAN:
 					avgMass = 0; 
 					avgCalibratedMass = 0; 
 					avg_scan = 0; 

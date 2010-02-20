@@ -129,7 +129,7 @@ namespace MultiAlignEngine
 
 			
 			[clsDataSummaryAttribute("Isotopic Peak Intensity Filter")]	
-			[clsParameterFileAttribute("IsotopicIntensityFilter", "UMCFindingOptions")]
+			[clsParameterFileAttribute("IsotopicFitFilter", "UMCFindingOptions")]
 			__property double get_IsotopicFitFilter()
 			{
 				return mdouble_isostopicFitFilter;

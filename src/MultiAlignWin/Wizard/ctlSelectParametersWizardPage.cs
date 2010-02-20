@@ -94,6 +94,7 @@ namespace MultiAlignWin
             this.buttonLoadParametersFromFile = new System.Windows.Forms.Button();
             this.mcomboBox_baseline = new System.Windows.Forms.ComboBox();
             this.mgroupBox_parameters = new System.Windows.Forms.GroupBox();
+            this.mbutton_clustering = new System.Windows.Forms.Button();
             this.peptideIdentificationGroupBox = new System.Windows.Forms.GroupBox();
             this.mradioButton_useSMART = new System.Windows.Forms.RadioButton();
             this.mradioButton_useStandardPeakMatching = new System.Windows.Forms.RadioButton();
@@ -105,7 +106,6 @@ namespace MultiAlignWin
             this.mlabel_databaseSelected = new System.Windows.Forms.Label();
             this.mradio_alignToMTDB = new System.Windows.Forms.RadioButton();
             this.mradio_alignToFile = new System.Windows.Forms.RadioButton();
-            this.mbutton_clustering = new System.Windows.Forms.Button();
             this.mgroupBox_parameters.SuspendLayout();
             this.peptideIdentificationGroupBox.SuspendLayout();
             this.mgroupBox_alignment.SuspendLayout();
@@ -168,7 +168,6 @@ namespace MultiAlignWin
             // buttonLoadParametersFromFile
             // 
             this.buttonLoadParametersFromFile.BackColor = System.Drawing.SystemColors.Control;
-            this.buttonLoadParametersFromFile.Enabled = false;
             this.buttonLoadParametersFromFile.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.buttonLoadParametersFromFile.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.buttonLoadParametersFromFile.Location = new System.Drawing.Point(178, 27);
@@ -210,6 +209,21 @@ namespace MultiAlignWin
             this.mgroupBox_parameters.TabIndex = 16;
             this.mgroupBox_parameters.TabStop = false;
             this.mgroupBox_parameters.Text = "Set Parameters";
+            // 
+            // mbutton_clustering
+            // 
+            this.mbutton_clustering.BackColor = System.Drawing.Color.White;
+            this.mbutton_clustering.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.mbutton_clustering.Image = global::MultiAlignWin.Properties.Resources.clusteringGlyph;
+            this.mbutton_clustering.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.mbutton_clustering.Location = new System.Drawing.Point(19, 184);
+            this.mbutton_clustering.Name = "mbutton_clustering";
+            this.mbutton_clustering.Size = new System.Drawing.Size(183, 31);
+            this.mbutton_clustering.TabIndex = 27;
+            this.mbutton_clustering.Text = "Clustering ";
+            this.mbutton_clustering.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.mbutton_clustering.UseVisualStyleBackColor = false;
+            this.mbutton_clustering.Click += new System.EventHandler(this.mbutton_clustering_Click);
             // 
             // peptideIdentificationGroupBox
             // 
@@ -364,21 +378,6 @@ namespace MultiAlignWin
             this.mradio_alignToFile.Text = "Align to a dataset";
             this.mradio_alignToFile.UseVisualStyleBackColor = true;
             this.mradio_alignToFile.CheckedChanged += new System.EventHandler(this.mradio_alignToFile_CheckedChanged);
-            // 
-            // mbutton_clustering
-            // 
-            this.mbutton_clustering.BackColor = System.Drawing.Color.White;
-            this.mbutton_clustering.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.mbutton_clustering.Image = global::MultiAlignWin.Properties.Resources.clusteringGlyph;
-            this.mbutton_clustering.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.mbutton_clustering.Location = new System.Drawing.Point(19, 184);
-            this.mbutton_clustering.Name = "mbutton_clustering";
-            this.mbutton_clustering.Size = new System.Drawing.Size(183, 31);
-            this.mbutton_clustering.TabIndex = 27;
-            this.mbutton_clustering.Text = "Clustering ";
-            this.mbutton_clustering.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.mbutton_clustering.UseVisualStyleBackColor = false;
-            this.mbutton_clustering.Click += new System.EventHandler(this.mbutton_clustering_Click);
             // 
             // ctlSelectParametersWizardPage
             // 
@@ -604,7 +603,8 @@ namespace MultiAlignWin
         }
 		private void buttonLoadParametersFromFile_Click(object sender, System.EventArgs e)
 		{
-
+            if (LoadParametersFromFile != null)
+                LoadParametersFromFile();
         }
         /// <summary>
         /// Displays the scoring parameter window.

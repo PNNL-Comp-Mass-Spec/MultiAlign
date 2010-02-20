@@ -313,7 +313,7 @@ namespace MultiAlignWin
             Properties.Settings.Default.UserClusterOptionsMassTolerance         = MassTolerance;
             Properties.Settings.Default.UserClusterOptionsNETTolerance          = NETTolerance;
             Properties.Settings.Default.UserClusterOptionsUseMaxInDataset       = radioButtonMaxData.Checked;
-            Properties.Settings.Default.UserClusterOptionsUseMeanRepresentation = (ClusterRepresentativeType == MultiAlignEngine.Clustering.clsClusterOptions.enmClusterRepresentativeType.MEAN);
+            Properties.Settings.Default.UserClusterOptionsUseMeanRepresentation = (ClusterRepresentativeType == MultiAlignEngine.Clustering.enmClusterRepresentativeType.MEAN);
             Properties.Settings.Default.UserClusterOptionsDriftTimeTolerance    = DriftTimeTolerance;
             Properties.Settings.Default.Save();
         }
@@ -381,37 +381,37 @@ namespace MultiAlignWin
             }
         }
 
-		public MultiAlignEngine.Clustering.clsClusterOptions.enmClusterIntensityType ClusterIntensityType
+		public MultiAlignEngine.Clustering.enmClusterIntensityType ClusterIntensityType
 		{
 			get
 			{
 				if (radioButtonMaxData.Checked)
-					return MultiAlignEngine.Clustering.clsClusterOptions.enmClusterIntensityType.MAX_PER_DATASET ;
+					return MultiAlignEngine.Clustering.enmClusterIntensityType.MAX_PER_DATASET ;
 				else
-					return MultiAlignEngine.Clustering.clsClusterOptions.enmClusterIntensityType.SUM_PER_DATASET ;
+					return MultiAlignEngine.Clustering.enmClusterIntensityType.SUM_PER_DATASET ;
 
 			}
 			set
 			{
-				if (value == MultiAlignEngine.Clustering.clsClusterOptions.enmClusterIntensityType.MAX_PER_DATASET)
+				if (value == MultiAlignEngine.Clustering.enmClusterIntensityType.MAX_PER_DATASET)
 					radioButtonMaxData.Checked = true ;
 				else
 					radioButtonSumData.Checked = true ;
 			}
 		}
 
-		public MultiAlignEngine.Clustering.clsClusterOptions.enmClusterRepresentativeType ClusterRepresentativeType
+		public MultiAlignEngine.Clustering.enmClusterRepresentativeType ClusterRepresentativeType
 		{
 			get
 			{
 				if (radioButtonMean.Checked)
-					return MultiAlignEngine.Clustering.clsClusterOptions.enmClusterRepresentativeType.MEAN ;
+					return MultiAlignEngine.Clustering.enmClusterRepresentativeType.MEAN ;
 				else
-					return MultiAlignEngine.Clustering.clsClusterOptions.enmClusterRepresentativeType.MEDIAN ;
+					return MultiAlignEngine.Clustering.enmClusterRepresentativeType.MEDIAN ;
 			}
 			set
 			{
-				if (value == MultiAlignEngine.Clustering.clsClusterOptions.enmClusterRepresentativeType.MEAN)
+				if (value == MultiAlignEngine.Clustering.enmClusterRepresentativeType.MEAN)
 					radioButtonMean.Checked = true ;
 				else
 					radioButtonMedian.Checked = true ;

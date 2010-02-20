@@ -902,7 +902,9 @@ namespace MultiAlignWin
             }
             set
             {
-                mnum_massBinSize.Value = Convert.ToDecimal(value);
+                decimal d = Convert.ToDecimal(value);
+                d         = Math.Min(Math.Max(d, mnum_massBinSize.Minimum), mnum_massBinSize.Maximum);
+                mnum_massBinSize.Value = d;
             }
         }
         /// <summary>
@@ -916,7 +918,13 @@ namespace MultiAlignWin
             }
             set
             {
-                mnum_NETBinSize.Value = Convert.ToDecimal(value);
+                try
+                {
+                    mnum_NETBinSize.Value = Convert.ToDecimal(value);
+                }
+                catch
+                {
+                }
             }
         }
         public int NumTimeSections
@@ -1220,6 +1228,9 @@ namespace MultiAlignWin
                 /// Use the high boundary of the first boundary (since we only use one) to
                 /// display to the user.
                 /// 
+                if (value == null)
+                    return;
+
                 mnum_splitAlignment.Value = Convert.ToDecimal(value[0].HighBoundary);
             }
         }

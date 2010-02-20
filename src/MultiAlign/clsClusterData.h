@@ -14,8 +14,8 @@ namespace MultiAlignEngine
 		{
 			int mintNumClusters; 
 			System::Collections::ArrayList *marrClusters; 
-			Clustering::clsClusterOptions::enmClusterRepresentativeType menmClusterRepresentativeType; 
-			Clustering::clsClusterOptions::enmClusterIntensityType menmClusterIntensityType; 
+			Clustering::enmClusterRepresentativeType menmClusterRepresentativeType; 
+			Clustering::enmClusterIntensityType menmClusterIntensityType; 
 
 			/// <summary>
 			/// Class used for sorting pairs of key, value pairs based on key.
