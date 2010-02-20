@@ -331,13 +331,13 @@ namespace MultiAlignWin
             options.MassTolerance = Properties.Settings.Default.UserClusterOptionsMassTolerance;
             options.NETTolerance = Properties.Settings.Default.UserClusterOptionsNETTolerance;
             options.DriftTimeTolerance = Properties.Settings.Default.UserClusterOptionsDriftTimeTolerance;
-            options.ClusterIntensityType = MultiAlignEngine.Clustering.clsClusterOptions.enmClusterIntensityType.MAX_PER_DATASET;
+            options.ClusterIntensityType = MultiAlignEngine.Clustering.enmClusterIntensityType.MAX_PER_DATASET;
             if (Properties.Settings.Default.UserClusterOptionsUseMaxInDataset == false)
-                options.ClusterIntensityType = MultiAlignEngine.Clustering.clsClusterOptions.enmClusterIntensityType.SUM_PER_DATASET;
+                options.ClusterIntensityType = MultiAlignEngine.Clustering.enmClusterIntensityType.SUM_PER_DATASET;
 
-            options.ClusterRepresentativeType = MultiAlignEngine.Clustering.clsClusterOptions.enmClusterRepresentativeType.MEAN;
+            options.ClusterRepresentativeType = MultiAlignEngine.Clustering.enmClusterRepresentativeType.MEAN;
             if (Properties.Settings.Default.UserClusterOptionsUseMeanRepresentation == false)
-                options.ClusterRepresentativeType = MultiAlignEngine.Clustering.clsClusterOptions.enmClusterRepresentativeType.MEDIAN;
+                options.ClusterRepresentativeType = MultiAlignEngine.Clustering.enmClusterRepresentativeType.MEDIAN;
 
             mobjAnalysis.ClusterOptions = options;
         }
