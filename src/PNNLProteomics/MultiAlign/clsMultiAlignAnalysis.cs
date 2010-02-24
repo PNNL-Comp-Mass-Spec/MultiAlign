@@ -557,9 +557,19 @@ namespace PNNLProteomics.Data.Analysis
 					{
 						foreach (clsUMC umc in loadedUMCs)
 						{
-							if (umc.ChargeMax > highestChargeState)
+							if (umc.ChargeMax != null && umc.ChargeMax != 0)
 							{
-								highestChargeState = umc.ChargeMax;
+								if (umc.ChargeMax > highestChargeState)
+								{
+									highestChargeState = umc.ChargeMax;
+								}
+							}
+							else
+							{
+								if (umc.ChargeRepresentative > highestChargeState)
+								{
+									highestChargeState = umc.ChargeRepresentative;
+								}
 							}
 						}
 					}
