@@ -472,6 +472,7 @@ namespace PNNLProteomics.Data.Analysis
 
 				for (int fileNum = 0 ; fileNum < FileNames.Length ; fileNum++)
 				{
+					bool preDefinedUMCs = false;
 					mobjUMCCreator.FileName = FileNames[fileNum] ;
                     if (StatusMessage != null)
                     {
@@ -487,6 +488,7 @@ namespace PNNLProteomics.Data.Analysis
 						// Grabs UMCs from UMC or Feature file
 						UmcReader umcReader = new UmcReader(FileNames[fileNum]);
 						loadedUMCs = umcReader.GetUmcList().ToArray();
+						preDefinedUMCs = true;
 					}
 					
 					// SQLite DB
@@ -499,6 +501,7 @@ namespace PNNLProteomics.Data.Analysis
 							StatusMessage(mint_statusLevel, "Trying to load pre-made UMCs.");
 							UmcDAOHibernate umcDAOHibernate = new UmcDAOHibernate();
 							loadedUMCs = umcDAOHibernate.FindAll().ToArray();
+							preDefinedUMCs = true;
 						}
 						// IF UMC table does not exist
 						catch (NHibernate.ADOException adoException)
@@ -550,8 +553,20 @@ namespace PNNLProteomics.Data.Analysis
                     /// 
                     /// Find the highest Charge State
                     /// 
-                    //mobjUMCData.marr_umcs HighestChargeState[i]  = mobjUMCCreator.HighestChargeState;
-                    highestChargeState = Math.Max(highestChargeState, mobjUMCCreator.HighestChargeState);
+					if (preDefinedUMCs)
+					{
+						foreach (clsUMC umc in loadedUMCs)
+						{
+							if (umc.ChargeMax > highestChargeState)
+							{
+								highestChargeState = umc.ChargeMax;
+							}
+						}
+					}
+					else
+					{
+						highestChargeState = Math.Max(highestChargeState, mobjUMCCreator.HighestChargeState);
+					}
 
                     /// 
                     /// Notify listeners that we have loaded UMCS's for this dataset.
