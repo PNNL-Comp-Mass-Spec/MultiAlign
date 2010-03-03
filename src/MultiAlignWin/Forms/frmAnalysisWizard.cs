@@ -393,11 +393,15 @@ namespace MultiAlignWin
         /// </summary>
         private void LoadDBOptions()
         {
-            mobjAnalysis.MassTagDBOptions.mdecimalMinPMTScore = Convert.ToDecimal(Properties.Settings.Default.UserDBFormPMTQuality);
-            mobjAnalysis.MassTagDBOptions.mfltMinXCorr = Convert.ToSingle(Properties.Settings.Default.UserDBFormMinXCorr);
-            mobjAnalysis.MassTagDBOptions.mdblMinDiscriminant = Properties.Settings.Default.UserDBFormMinDiscriminant;
-            mobjAnalysis.MassTagDBOptions.mdblPeptideProphetVal = Properties.Settings.Default.UserDBFormPeptideProphetProbability;
-            mobjAnalysis.MassTagDBOptions.mstr_databaseFilePath = Properties.Settings.Default.UserDBFormLocalDatabasePath;
+            mobjAnalysis.MassTagDBOptions.mdecimalMinPMTScore           = Convert.ToDecimal(Properties.Settings.Default.UserDBFormPMTQuality);
+            mobjAnalysis.MassTagDBOptions.mfltMinXCorr                  = Convert.ToSingle(Properties.Settings.Default.UserDBFormMinXCorr);
+            mobjAnalysis.MassTagDBOptions.mdblMinDiscriminant           = Properties.Settings.Default.UserDBFormMinDiscriminant;
+            mobjAnalysis.MassTagDBOptions.mdblPeptideProphetVal         = Properties.Settings.Default.UserDBFormPeptideProphetProbability;
+            mobjAnalysis.MassTagDBOptions.mstr_databaseFilePath         = Properties.Settings.Default.UserDBFormLocalDatabasePath;
+            mobjAnalysis.MassTagDBOptions.mintMinObservationCountFilter = Properties.Settings.Default.UserDBFormMinObservationCountFilter;
+
+            mobjAnalysis.MassTagDBOptions.mstrExperimentFilter          = Properties.Settings.Default.UserDBFormExperimentFilter;
+            mobjAnalysis.MassTagDBOptions.mstrExperimentExclusionFilter = Properties.Settings.Default.UserDBFormExperimentExclusionFilter;
         }
         /// <summary>
         /// Loads the SMART Options from the settings file.

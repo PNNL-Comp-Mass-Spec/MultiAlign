@@ -23,6 +23,10 @@ namespace MultiAlignEngine
 				[clsDataSummaryAttribute("Minimum X-Correlation")]
 				[clsParameterFileAttribute("mfltMinXCorr","MassTagDBOptions")]
 				float mfltMinXCorr; 
+
+				[clsDataSummaryAttribute("Minimum MS-MS Observations")]
+				[clsParameterFileAttribute("mintMinObservationCountFilter","MassTagDBOptions")]
+				int mintMinObservationCountFilter;
 				
 				[clsDataSummaryAttribute("Minimum PMT Score")]
 				[clsParameterFileAttribute("mdecimalMinPMTScore","MassTagDBOptions")]

@@ -861,5 +861,17 @@ namespace MultiAlignWin.Properties {
                 this["UserPeakMatchingDriftTimeTolerance"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int UserDBFormMinObservationCountFilter {
+            get {
+                return ((int)(this["UserDBFormMinObservationCountFilter"]));
+            }
+            set {
+                this["UserDBFormMinObservationCountFilter"] = value;
+            }
+        }
     }
 }

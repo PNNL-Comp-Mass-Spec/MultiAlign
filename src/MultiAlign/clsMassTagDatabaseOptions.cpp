@@ -8,6 +8,7 @@ namespace MultiAlignEngine
 	{
 		clsMassTagDatabaseOptions::clsMassTagDatabaseOptions(void)
 		{
+				mintMinObservationCountFilter = 0;
 				mbyteConfirmedTags		= 0; 
 				mfltMinXCorr			= 0.0F; 
 				mdecimalMinPMTScore		= 1; 

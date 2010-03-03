@@ -132,6 +132,8 @@ namespace MultiAlignWin
         private ToolTip tipExperimentFilter;
         private ComboBox mcomboBox_experimentNames;
         private Label label10;
+        private NumericUpDown mnum_minNumberMSMSObservations;
+        private Label label9;
         /// <summary>
         /// A dictionary to a dictionary that holds pmt quality score information.
         /// </summary>
@@ -448,6 +450,8 @@ namespace MultiAlignWin
             this.mlstBoxDBNames = new System.Windows.Forms.ListBox();
             this.chkBoxUnused = new System.Windows.Forms.CheckBox();
             this.groupRemoteDatabase = new System.Windows.Forms.GroupBox();
+            this.label10 = new System.Windows.Forms.Label();
+            this.mcomboBox_experimentNames = new System.Windows.Forms.ComboBox();
             this.label7 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.mlistbox_recentdatabases = new System.Windows.Forms.ListBox();
@@ -488,12 +492,13 @@ namespace MultiAlignWin
             this.mtextBox_experimentExclusionFilter = new System.Windows.Forms.TextBox();
             this.tipExclusionFilter = new System.Windows.Forms.ToolTip(this.components);
             this.tipExperimentFilter = new System.Windows.Forms.ToolTip(this.components);
-            this.mcomboBox_experimentNames = new System.Windows.Forms.ComboBox();
-            this.label10 = new System.Windows.Forms.Label();
+            this.mnum_minNumberMSMSObservations = new System.Windows.Forms.NumericUpDown();
+            this.label9 = new System.Windows.Forms.Label();
             this.groupRemoteDatabase.SuspendLayout();
             this.groupLocalDatabase.SuspendLayout();
             this.mgroupBox_pmtQualityScore.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.mnum_pmtQualityScore)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.mnum_minNumberMSMSObservations)).BeginInit();
             this.SuspendLayout();
             // 
             // mbtn_ok
@@ -501,7 +506,7 @@ namespace MultiAlignWin
             this.mbtn_ok.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.mbtn_ok.BackColor = System.Drawing.SystemColors.Control;
             this.mbtn_ok.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.mbtn_ok.Location = new System.Drawing.Point(504, 748);
+            this.mbtn_ok.Location = new System.Drawing.Point(504, 806);
             this.mbtn_ok.Name = "mbtn_ok";
             this.mbtn_ok.Size = new System.Drawing.Size(96, 24);
             this.mbtn_ok.TabIndex = 8;
@@ -514,7 +519,7 @@ namespace MultiAlignWin
             this.mbtn_cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.mbtn_cancel.BackColor = System.Drawing.SystemColors.Control;
             this.mbtn_cancel.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.mbtn_cancel.Location = new System.Drawing.Point(606, 748);
+            this.mbtn_cancel.Location = new System.Drawing.Point(606, 806);
             this.mbtn_cancel.Name = "mbtn_cancel";
             this.mbtn_cancel.Size = new System.Drawing.Size(96, 24);
             this.mbtn_cancel.TabIndex = 9;
@@ -529,14 +534,14 @@ namespace MultiAlignWin
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.mlstBoxDBNames.Location = new System.Drawing.Point(8, 35);
             this.mlstBoxDBNames.Name = "mlstBoxDBNames";
-            this.mlstBoxDBNames.Size = new System.Drawing.Size(338, 238);
+            this.mlstBoxDBNames.Size = new System.Drawing.Size(338, 264);
             this.mlstBoxDBNames.TabIndex = 0;
             this.mlstBoxDBNames.SelectedIndexChanged += new System.EventHandler(this.mlstBoxDBNames_SelectedIndexChanged);
             // 
             // chkBoxUnused
             // 
             this.chkBoxUnused.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.chkBoxUnused.Location = new System.Drawing.Point(6, 363);
+            this.chkBoxUnused.Location = new System.Drawing.Point(6, 391);
             this.chkBoxUnused.Name = "chkBoxUnused";
             this.chkBoxUnused.Size = new System.Drawing.Size(128, 16);
             this.chkBoxUnused.TabIndex = 1;
@@ -563,10 +568,31 @@ namespace MultiAlignWin
             this.groupRemoteDatabase.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.groupRemoteDatabase.Location = new System.Drawing.Point(31, 96);
             this.groupRemoteDatabase.Name = "groupRemoteDatabase";
-            this.groupRemoteDatabase.Size = new System.Drawing.Size(671, 389);
+            this.groupRemoteDatabase.Size = new System.Drawing.Size(671, 417);
             this.groupRemoteDatabase.TabIndex = 18;
             this.groupRemoteDatabase.TabStop = false;
             this.groupRemoteDatabase.Text = "Select Database";
+            // 
+            // label10
+            // 
+            this.label10.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label10.Location = new System.Drawing.Point(6, 346);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(72, 20);
+            this.label10.TabIndex = 71;
+            this.label10.Text = "Experiments:";
+            this.label10.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // mcomboBox_experimentNames
+            // 
+            this.mcomboBox_experimentNames.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.mcomboBox_experimentNames.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.mcomboBox_experimentNames.FormattingEnabled = true;
+            this.mcomboBox_experimentNames.Location = new System.Drawing.Point(84, 345);
+            this.mcomboBox_experimentNames.Name = "mcomboBox_experimentNames";
+            this.mcomboBox_experimentNames.Size = new System.Drawing.Size(336, 21);
+            this.mcomboBox_experimentNames.TabIndex = 70;
             // 
             // label7
             // 
@@ -593,7 +619,7 @@ namespace MultiAlignWin
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.mlistbox_recentdatabases.Location = new System.Drawing.Point(348, 35);
             this.mlistbox_recentdatabases.Name = "mlistbox_recentdatabases";
-            this.mlistbox_recentdatabases.Size = new System.Drawing.Size(317, 238);
+            this.mlistbox_recentdatabases.Size = new System.Drawing.Size(317, 264);
             this.mlistbox_recentdatabases.TabIndex = 21;
             this.mlistbox_recentdatabases.SelectedIndexChanged += new System.EventHandler(this.mlistbox_recentdatabases_SelectedIndexChanged);
             // 
@@ -602,7 +628,7 @@ namespace MultiAlignWin
             this.mlblDBdescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.mlblDBdescription.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.mlblDBdescription.Location = new System.Drawing.Point(3, 284);
+            this.mlblDBdescription.Location = new System.Drawing.Point(5, 302);
             this.mlblDBdescription.Name = "mlblDBdescription";
             this.mlblDBdescription.Size = new System.Drawing.Size(654, 30);
             this.mlblDBdescription.TabIndex = 19;
@@ -613,7 +639,7 @@ namespace MultiAlignWin
             // 
             this.mlblTotalDBs.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.mlblTotalDBs.Location = new System.Drawing.Point(137, 364);
+            this.mlblTotalDBs.Location = new System.Drawing.Point(137, 392);
             this.mlblTotalDBs.Name = "mlblTotalDBs";
             this.mlblTotalDBs.Size = new System.Drawing.Size(523, 16);
             this.mlblTotalDBs.TabIndex = 20;
@@ -622,7 +648,7 @@ namespace MultiAlignWin
             // 
             this.mlblServer.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.mlblServer.Location = new System.Drawing.Point(61, 337);
+            this.mlblServer.Location = new System.Drawing.Point(61, 365);
             this.mlblServer.Name = "mlblServer";
             this.mlblServer.Size = new System.Drawing.Size(196, 23);
             this.mlblServer.TabIndex = 19;
@@ -633,7 +659,7 @@ namespace MultiAlignWin
             // 
             this.mlblSeverTag.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.mlblSeverTag.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.mlblSeverTag.Location = new System.Drawing.Point(5, 338);
+            this.mlblSeverTag.Location = new System.Drawing.Point(5, 366);
             this.mlblSeverTag.Name = "mlblSeverTag";
             this.mlblSeverTag.Size = new System.Drawing.Size(49, 20);
             this.mlblSeverTag.TabIndex = 18;
@@ -660,7 +686,7 @@ namespace MultiAlignWin
             this.mbtnShowMThits.BackColor = System.Drawing.SystemColors.Control;
             this.mbtnShowMThits.Enabled = false;
             this.mbtnShowMThits.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.mbtnShowMThits.Location = new System.Drawing.Point(28, 704);
+            this.mbtnShowMThits.Location = new System.Drawing.Point(28, 762);
             this.mbtnShowMThits.Name = "mbtnShowMThits";
             this.mbtnShowMThits.Size = new System.Drawing.Size(136, 23);
             this.mbtnShowMThits.TabIndex = 29;
@@ -673,7 +699,7 @@ namespace MultiAlignWin
             // 
             this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(25, 567);
+            this.label3.Location = new System.Drawing.Point(25, 590);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(104, 16);
             this.label3.TabIndex = 28;
@@ -685,7 +711,7 @@ namespace MultiAlignWin
             // 
             this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(25, 641);
+            this.label6.Location = new System.Drawing.Point(25, 664);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(140, 20);
             this.label6.TabIndex = 32;
@@ -696,7 +722,7 @@ namespace MultiAlignWin
             // mtxtPeptideProphet
             // 
             this.mtxtPeptideProphet.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.mtxtPeptideProphet.Location = new System.Drawing.Point(188, 644);
+            this.mtxtPeptideProphet.Location = new System.Drawing.Point(188, 667);
             this.mtxtPeptideProphet.Name = "mtxtPeptideProphet";
             this.mtxtPeptideProphet.Size = new System.Drawing.Size(111, 20);
             this.mtxtPeptideProphet.TabIndex = 27;
@@ -708,7 +734,7 @@ namespace MultiAlignWin
             // 
             this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(25, 617);
+            this.label5.Location = new System.Drawing.Point(25, 640);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(96, 16);
             this.label5.TabIndex = 31;
@@ -719,7 +745,7 @@ namespace MultiAlignWin
             // mtxtMinXCorr
             // 
             this.mtxtMinXCorr.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.mtxtMinXCorr.Location = new System.Drawing.Point(188, 592);
+            this.mtxtMinXCorr.Location = new System.Drawing.Point(188, 615);
             this.mtxtMinXCorr.Name = "mtxtMinXCorr";
             this.mtxtMinXCorr.Size = new System.Drawing.Size(111, 20);
             this.mtxtMinXCorr.TabIndex = 25;
@@ -730,7 +756,7 @@ namespace MultiAlignWin
             // mtxtMinDiscriminant
             // 
             this.mtxtMinDiscriminant.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.mtxtMinDiscriminant.Location = new System.Drawing.Point(188, 618);
+            this.mtxtMinDiscriminant.Location = new System.Drawing.Point(188, 641);
             this.mtxtMinDiscriminant.Name = "mtxtMinDiscriminant";
             this.mtxtMinDiscriminant.Size = new System.Drawing.Size(111, 20);
             this.mtxtMinDiscriminant.TabIndex = 26;
@@ -742,7 +768,7 @@ namespace MultiAlignWin
             // 
             this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(25, 592);
+            this.label4.Location = new System.Drawing.Point(25, 615);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(64, 16);
             this.label4.TabIndex = 30;
@@ -754,7 +780,7 @@ namespace MultiAlignWin
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(25, 670);
+            this.label1.Location = new System.Drawing.Point(25, 693);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(157, 20);
             this.label1.TabIndex = 65;
@@ -766,7 +792,7 @@ namespace MultiAlignWin
             // 
             this.label8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label8.Location = new System.Drawing.Point(320, 670);
+            this.label8.Location = new System.Drawing.Point(320, 694);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(175, 20);
             this.label8.TabIndex = 67;
@@ -777,7 +803,7 @@ namespace MultiAlignWin
             // mtextBox_experimentNameFilter
             // 
             this.mtextBox_experimentNameFilter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.mtextBox_experimentNameFilter.Location = new System.Drawing.Point(188, 670);
+            this.mtextBox_experimentNameFilter.Location = new System.Drawing.Point(188, 693);
             this.mtextBox_experimentNameFilter.Name = "mtextBox_experimentNameFilter";
             this.mtextBox_experimentNameFilter.Size = new System.Drawing.Size(111, 20);
             this.mtextBox_experimentNameFilter.TabIndex = 64;
@@ -789,7 +815,7 @@ namespace MultiAlignWin
             this.mbtnDefaults.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.mbtnDefaults.BackColor = System.Drawing.SystemColors.Control;
             this.mbtnDefaults.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.mbtnDefaults.Location = new System.Drawing.Point(28, 748);
+            this.mbtnDefaults.Location = new System.Drawing.Point(28, 806);
             this.mbtnDefaults.Name = "mbtnDefaults";
             this.mbtnDefaults.Size = new System.Drawing.Size(136, 24);
             this.mbtnDefaults.TabIndex = 7;
@@ -829,7 +855,7 @@ namespace MultiAlignWin
             // 
             this.radioLocalDatabase.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.radioLocalDatabase.Checked = true;
-            this.radioLocalDatabase.Location = new System.Drawing.Point(12, 491);
+            this.radioLocalDatabase.Location = new System.Drawing.Point(12, 518);
             this.radioLocalDatabase.Name = "radioLocalDatabase";
             this.radioLocalDatabase.Size = new System.Drawing.Size(64, 15);
             this.radioLocalDatabase.TabIndex = 23;
@@ -841,7 +867,7 @@ namespace MultiAlignWin
             // 
             this.mlblMatchMTs.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.mlblMatchMTs.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.mlblMatchMTs.Location = new System.Drawing.Point(186, 704);
+            this.mlblMatchMTs.Location = new System.Drawing.Point(186, 762);
             this.mlblMatchMTs.Name = "mlblMatchMTs";
             this.mlblMatchMTs.Size = new System.Drawing.Size(113, 23);
             this.mlblMatchMTs.TabIndex = 33;
@@ -855,7 +881,7 @@ namespace MultiAlignWin
             this.groupLocalDatabase.Controls.Add(this.btnBrowse);
             this.groupLocalDatabase.Controls.Add(this.txtDataBasePath);
             this.groupLocalDatabase.Controls.Add(this.lblDatabasePath);
-            this.groupLocalDatabase.Location = new System.Drawing.Point(31, 512);
+            this.groupLocalDatabase.Location = new System.Drawing.Point(31, 539);
             this.groupLocalDatabase.Name = "groupLocalDatabase";
             this.groupLocalDatabase.Size = new System.Drawing.Size(671, 45);
             this.groupLocalDatabase.TabIndex = 22;
@@ -920,7 +946,7 @@ namespace MultiAlignWin
             // 
             this.niceLine1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.niceLine1.Location = new System.Drawing.Point(12, 733);
+            this.niceLine1.Location = new System.Drawing.Point(12, 791);
             this.niceLine1.Name = "niceLine1";
             this.niceLine1.Size = new System.Drawing.Size(701, 15);
             this.niceLine1.TabIndex = 60;
@@ -930,7 +956,7 @@ namespace MultiAlignWin
             this.mgroupBox_pmtQualityScore.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.mgroupBox_pmtQualityScore.Controls.Add(this.mlabel_pmtQualityScoreDescription);
-            this.mgroupBox_pmtQualityScore.Location = new System.Drawing.Point(323, 563);
+            this.mgroupBox_pmtQualityScore.Location = new System.Drawing.Point(323, 590);
             this.mgroupBox_pmtQualityScore.Name = "mgroupBox_pmtQualityScore";
             this.mgroupBox_pmtQualityScore.Size = new System.Drawing.Size(379, 101);
             this.mgroupBox_pmtQualityScore.TabIndex = 61;
@@ -952,7 +978,7 @@ namespace MultiAlignWin
             this.mline_pmtQualityScore.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.mline_pmtQualityScore.Edge = Wizard.UI.EtchEdge.Top;
-            this.mline_pmtQualityScore.Location = new System.Drawing.Point(226, 578);
+            this.mline_pmtQualityScore.Location = new System.Drawing.Point(226, 601);
             this.mline_pmtQualityScore.Name = "mline_pmtQualityScore";
             this.mline_pmtQualityScore.Size = new System.Drawing.Size(115, 15);
             this.mline_pmtQualityScore.TabIndex = 62;
@@ -960,14 +986,14 @@ namespace MultiAlignWin
             // mnum_pmtQualityScore
             // 
             this.mnum_pmtQualityScore.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.mnum_pmtQualityScore.Location = new System.Drawing.Point(186, 567);
+            this.mnum_pmtQualityScore.Location = new System.Drawing.Point(188, 590);
             this.mnum_pmtQualityScore.Maximum = new decimal(new int[] {
             5,
             0,
             0,
             0});
             this.mnum_pmtQualityScore.Name = "mnum_pmtQualityScore";
-            this.mnum_pmtQualityScore.Size = new System.Drawing.Size(113, 20);
+            this.mnum_pmtQualityScore.Size = new System.Drawing.Size(111, 20);
             this.mnum_pmtQualityScore.TabIndex = 63;
             this.mnum_pmtQualityScore.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.mnum_pmtQualityScore.Value = new decimal(new int[] {
@@ -980,39 +1006,46 @@ namespace MultiAlignWin
             // mtextBox_experimentExclusionFilter
             // 
             this.mtextBox_experimentExclusionFilter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.mtextBox_experimentExclusionFilter.Location = new System.Drawing.Point(501, 670);
+            this.mtextBox_experimentExclusionFilter.Location = new System.Drawing.Point(501, 695);
             this.mtextBox_experimentExclusionFilter.Name = "mtextBox_experimentExclusionFilter";
             this.mtextBox_experimentExclusionFilter.Size = new System.Drawing.Size(120, 20);
             this.mtextBox_experimentExclusionFilter.TabIndex = 66;
             this.mtextBox_experimentExclusionFilter.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.tipExclusionFilter.SetToolTip(this.mtextBox_experimentExclusionFilter, "Experiment names to exclude when loading a subset of the MTDB. ");
             // 
-            // mcomboBox_experimentNames
+            // mnum_minNumberMSMSObservations
             // 
-            this.mcomboBox_experimentNames.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.mcomboBox_experimentNames.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.mcomboBox_experimentNames.FormattingEnabled = true;
-            this.mcomboBox_experimentNames.Location = new System.Drawing.Point(84, 317);
-            this.mcomboBox_experimentNames.Name = "mcomboBox_experimentNames";
-            this.mcomboBox_experimentNames.Size = new System.Drawing.Size(336, 21);
-            this.mcomboBox_experimentNames.TabIndex = 70;
+            this.mnum_minNumberMSMSObservations.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.mnum_minNumberMSMSObservations.Location = new System.Drawing.Point(188, 716);
+            this.mnum_minNumberMSMSObservations.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.mnum_minNumberMSMSObservations.Name = "mnum_minNumberMSMSObservations";
+            this.mnum_minNumberMSMSObservations.Size = new System.Drawing.Size(111, 20);
+            this.mnum_minNumberMSMSObservations.TabIndex = 68;
+            this.mnum_minNumberMSMSObservations.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
-            // label10
+            // label9
             // 
-            this.label10.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label10.Location = new System.Drawing.Point(6, 318);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(72, 20);
-            this.label10.TabIndex = 71;
-            this.label10.Text = "Experiments:";
-            this.label10.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.label9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label9.Location = new System.Drawing.Point(25, 713);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(138, 23);
+            this.label9.TabIndex = 69;
+            this.label9.Text = "Min. # of MS/MS Obs.";
+            this.label9.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.ttipPMT.SetToolTip(this.label9, "The minimum value required for High_Normalized_Score; 0 to allow all");
             // 
             // frmDBName
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(716, 786);
+            this.ClientSize = new System.Drawing.Size(716, 844);
+            this.Controls.Add(this.label9);
+            this.Controls.Add(this.mnum_minNumberMSMSObservations);
             this.Controls.Add(this.mtextBox_experimentExclusionFilter);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.mtextBox_experimentNameFilter);
@@ -1056,6 +1089,7 @@ namespace MultiAlignWin
             this.groupLocalDatabase.PerformLayout();
             this.mgroupBox_pmtQualityScore.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.mnum_pmtQualityScore)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.mnum_minNumberMSMSObservations)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1217,7 +1251,7 @@ namespace MultiAlignWin
 				try 
 				{
                     //TODO: Fix this!
-					myReader = myCommand.ExecuteReader();					
+					myReader = myCommand.ExecuteReader();	                    
 					while (myReader.Read()) 
 					{
 						count = myReader.GetInt32(0) ;
@@ -1333,6 +1367,7 @@ namespace MultiAlignWin
             Properties.Settings.Default.UserDBFormLocalDatabasePath = txtDataBasePath.Text;
             Properties.Settings.Default.UserDBFormExperimentExclusionFilter = mtextBox_experimentExclusionFilter.Text;
             Properties.Settings.Default.UserDBFormExperimentFilter = mtextBox_experimentNameFilter.Text;
+            Properties.Settings.Default.UserDBFormMinObservationCountFilter = MinimumNumberMSMSObservations;
             Properties.Settings.Default.Save();
         }
 
@@ -1756,7 +1791,7 @@ namespace MultiAlignWin
 				}
                 options.mstrExperimentExclusionFilter   = ExperimentExclusionFilter;
                 options.mstrExperimentFilter            = ExperimentFilter;
-
+                options.mintMinObservationCountFilter = MinimumNumberMSMSObservations;
 				options.mdecimalMinPMTScore     = MinPMTScore ;
 				options.mfltMinXCorr            = MinXCorr ; 
 				options.mdblMinDiscriminant     = MinDiscriminant ; 
@@ -1803,7 +1838,7 @@ namespace MultiAlignWin
 				MinPeptideProphet   = value.mdblPeptideProphetVal ;
                 ExperimentFilter            = value.mstrExperimentFilter;
                 ExperimentExclusionFilter   = value.mstrExperimentExclusionFilter;
-
+                MinimumNumberMSMSObservations = value.mintMinObservationCountFilter;
 			}
 		}
         private void txtDataBasePath_LostFocus(object sender, EventArgs e)
@@ -1825,6 +1860,21 @@ namespace MultiAlignWin
         #endregion
 
         #region "Private properties"
+
+        /// <summary>
+        /// Gets or sets the minimum number of MS/MS observations a Mass Tag must have.
+        /// </summary>
+        private int MinimumNumberMSMSObservations
+        {
+            get
+            {
+                return Convert.ToInt32(mnum_minNumberMSMSObservations.Value);
+            }
+            set
+            {
+                mnum_minNumberMSMSObservations.Value = Convert.ToDecimal(value);
+            }
+        }
         /// <summary>
         /// Gets or sets the experiment exclusion filter.
         /// </summary>

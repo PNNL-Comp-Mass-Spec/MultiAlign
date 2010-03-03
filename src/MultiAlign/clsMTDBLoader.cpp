@@ -43,7 +43,11 @@ namespace MultiAlignEngine
 				cmd->Parameters->Add(new System::Data::OleDb::OleDbParameter("@MinimumHighDiscriminantScore", __box(mobjMassTagDBOptions->mdblMinDiscriminant)));
 				cmd->Parameters->Add(new System::Data::OleDb::OleDbParameter("@MinimumPeptideProphetProbability", __box(mobjMassTagDBOptions->mdblPeptideProphetVal)));
 				
-
+				cmd->Parameters->Add(new System::Data::OleDb::OleDbParameter("@MT.Is_Confirmed", false));
+				cmd->Parameters->Add(new System::Data::OleDb::OleDbParameter("@MTPPS.PepProphet_Probability_Avg_CS1", 0));
+				cmd->Parameters->Add(new System::Data::OleDb::OleDbParameter("@MTPPS.PepProphet_Probability_Avg_CS2", 0));
+				cmd->Parameters->Add(new System::Data::OleDb::OleDbParameter("@MTPPS.PepProphet_Probability_Avg_CS3", 0));
+				
 
 				// execute the command
 				menmStatus = DBConnectionStatus::Running; 
@@ -182,30 +186,34 @@ namespace MultiAlignEngine
 							fmax_cs3 = System::Convert::ToSingle(rdr->Item[S"PepProphet_FScore_Avg_CS3"]);
 						}
 
-						mass_tag->mintMassTagId			= id; 
-						mass_tag->mstrPeptide			= peptide;
-						mass_tag->mdblAvgGANET			= ganet; 
-						mass_tag->mdblHighXCorr			= xcorr_max; 
-						mass_tag->mdblMaxDiscriminant	= high_discriminant;
-						mass_tag->mdblMonoMass			= mono_mass; 
-						mass_tag->mstrModification		= modification_str; 
-						mass_tag->mshortModCount		= mod_count; 
-						mass_tag->mdblStdGANET				= std_net;
-						mass_tag->mintNumObsPassingFilter	= num_obs; 
-						mass_tag->mfltAvgFCS1				= fmax_cs1; 
-						mass_tag->mfltAvgFCS2				= fmax_cs2; 
-						mass_tag->mfltAvgFCS3				= fmax_cs3;
-						mass_tag->HighPeptideProphetProbability	= highPeptideProphetProbability;
-
-						if (mass_tag->mdblAvgGANET != -1)
+						/// Make sure the mass tag has been seen enough times
+						if (num_obs >= mobjMassTagDBOptions->mintMinObservationCountFilter)
 						{
-							if (currentlyLoaded == allocated)
+							mass_tag->mintMassTagId			= id; 
+							mass_tag->mstrPeptide			= peptide;
+							mass_tag->mdblAvgGANET			= ganet; 
+							mass_tag->mdblHighXCorr			= xcorr_max; 
+							mass_tag->mdblMaxDiscriminant	= high_discriminant;
+							mass_tag->mdblMonoMass			= mono_mass; 
+							mass_tag->mstrModification		= modification_str; 
+							mass_tag->mshortModCount		= mod_count; 
+							mass_tag->mdblStdGANET				= std_net;
+							mass_tag->mintNumObsPassingFilter	= num_obs; 
+							mass_tag->mfltAvgFCS1				= fmax_cs1; 
+							mass_tag->mfltAvgFCS2				= fmax_cs2; 
+							mass_tag->mfltAvgFCS3				= fmax_cs3;
+							mass_tag->HighPeptideProphetProbability	= highPeptideProphetProbability;
+
+							if (mass_tag->mdblAvgGANET != -1)
 							{
-								currentlyLoaded = 0;
-								mtDB->AddMassTags(arrMassTags); 
+								if (currentlyLoaded == allocated)
+								{
+									currentlyLoaded = 0;
+									mtDB->AddMassTags(arrMassTags); 
+								}
+								arrMassTags[currentlyLoaded++] = mass_tag; 
+								mint_num_loaded++; 
 							}
-							arrMassTags[currentlyLoaded++] = mass_tag; 
-							mint_num_loaded++; 
 						}
 					}
 				}
@@ -395,20 +403,6 @@ namespace MultiAlignEngine
 				cmd->Parameters->Add(new System::Data::SqlClient::SqlParameter("@ExperimentFilter", 0));
 				cmd->Parameters->Add(new System::Data::SqlClient::SqlParameter("@ExperimentExclusionFilter", 0));
 				cmd->Parameters->Add(new System::Data::SqlClient::SqlParameter("@MinimumPeptideProphetProbability", __box(mobjMassTagDBOptions->mdblPeptideProphetVal)));
-
-				/*
-				System::Data::SqlClient::SqlDataAdapter * adapt = new System::Data::SqlClient::SqlDataAdapter(cmd);
-				
-				try
-				{
-					System::Data::DataTable *dataTable = new System::Data::DataTable(); 
-					adapt->Fill(dataTable);
-					mint_num_mtids_total = dataTable->Rows->Count;
-					dataTable->Dispose();
-				}catch(...)
-				{
-				}
-				adapt->Dispose();*/
 				
 
 				mint_num_mtids_total = 1000;
@@ -555,7 +549,7 @@ namespace MultiAlignEngine
 						mass_tag->mshortCleavageState = cleaveage_state; 
 						mass_tag->HighPeptideProphetProbability = highPeptideProphetProbability;
 
-						if (mass_tag->mdblAvgGANET != -1)
+						if (mass_tag->mdblAvgGANET != -1 && num_obs >= mobjMassTagDBOptions->mintMinObservationCountFilter)
 						{
 							if (currentlyLoaded == allocated)
 							{
