@@ -211,61 +211,155 @@ namespace MultiAlignWin.Forms
                         images[6],
                         images[7]);
         }
+        private bool AbortImagePreview()
+        {
+            return false;
+        }
+        private void SaveImages(Image [] images, string [] names)
+        {
+            //TODO: Clean up.
+            int i = 0; 
+            foreach (Image image in images)
+            {
+                try
+                {
+                    string name = mobj_analysis.FileNames[mint_datasetIndex] + names[i] + ".png";
+                    image.Save(name, System.Drawing.Imaging.ImageFormat.Png);                    
+                }catch
+                {
+                    //TODO: Propogate errors.
+                }
+                i++;
+            }
+        }
         /// <summary>
         /// Creates the preview images for display.
         /// </summary>
         public void RenderPreviews()
         {
+            int width, height;
+
+            width  = mpicture_alignmentHeatmap.Width;
+            height = mpicture_alignmentHeatmap.Height;
+
             /// 
             /// Previews
             /// 
             Image previewScanClusterNet = classRenderDatasetInfo.ScanVsClusterNet_Thumbnail(    mobj_analysis,
                                                                                                 mint_datasetIndex,
                                                                                                 mpicture_preview.Width,
-                                                                                                mpicture_preview.Height);
+                                                                                                mpicture_preview.Height,
+                                                                                                false, false, false);                                                                                                
             
 
-            /// 
-            /// Previews
-            /// 
-            Image previewClusterChart = classRenderDatasetInfo.ClusterChart_Thumbnail(          mobj_analysis,
+            
+            /// ------------------------------------------------------------------------------------
+            /// Cluster
+            /// ------------------------------------------------------------------------------------   
+            Image previewClusterChartHighRes = classRenderDatasetInfo.ClusterChart_Thumbnail(mobj_analysis,
                                                                                                 mint_datasetIndex,
-                                                                                                mpicture_preview.Width,
-                                                                                                mpicture_preview.Height,
+                                                                                                800,
+                                                                                                600,
                                                                                                 true,
-                                                                                                mint_chargeStates);
+                                                                                                mint_chargeStates, true, true, true);
+
+            Image previewClusterChart = classRenderDatasetInfo.ClusterChart_Thumbnail(mobj_analysis,
+                                                                                                mint_datasetIndex,
+                                                                                                width,
+                                                                                                height,
+                                                                                                true,
+                                                                                                mint_chargeStates, false, false, false);
+
+            /// ------------------------------------------------------------------------------------
+            /// Alignment
+            /// ------------------------------------------------------------------------------------            
+            Image alignmentHighRes = classRenderDatasetInfo.AlignmentHeatmap_Thumbnail(         mobj_analysis,
+                                                                                                mint_datasetIndex,
+                                                                                                1280, 1024);
 
             Image alignmentPreview = classRenderDatasetInfo.AlignmentHeatmap_Thumbnail(         mobj_analysis,
+                                                                                                mint_datasetIndex, width, height);
+            
+            /// ------------------------------------------------------------------------------------
+            /// Mass error histogram
+            /// ------------------------------------------------------------------------------------   
+            Image massErrorHistogramHighRes = classRenderDatasetInfo.MassErrorHistogram_Thumbnail(mobj_analysis,
                                                                                                 mint_datasetIndex,
-                                                                                                mpicture_preview.Width,
-                                                                                                mpicture_preview.Height);
+                                                                                                800,
+                                                                                                600,
+                                                                                                true, true, true);
 
-            Image massErrorHistogram = classRenderDatasetInfo.MassErrorHistogram_Thumbnail(     mobj_analysis,
+            Image massErrorHistogram = classRenderDatasetInfo.MassErrorHistogram_Thumbnail(mobj_analysis,
                                                                                                 mint_datasetIndex,
-                                                                                                mpicture_preview.Width,
-                                                                                                mpicture_preview.Height);
+                                                                                                width,
+                                                                                                height,
+                                                                                                false, false, false);
 
-            Image netErrorHistogram = classRenderDatasetInfo.NETErrorHistogram_Thumbnail(       mobj_analysis,
+
+            
+            /// ------------------------------------------------------------------------------------
+            /// NET error histogram
+            /// ------------------------------------------------------------------------------------   
+            Image netErrorHistogramHighRes = classRenderDatasetInfo.NETErrorHistogram_Thumbnail(mobj_analysis,
                                                                                                 mint_datasetIndex,
-                                                                                                mpicture_preview.Width,
-                                                                                                mpicture_preview.Height);
+                                                                                                800,
+                                                                                                600,
+                                                                                                true, true, true);
 
+            Image netErrorHistogram  = classRenderDatasetInfo.NETErrorHistogram_Thumbnail(mobj_analysis,
+                                                                                                mint_datasetIndex,
+                                                                                                width,
+                                                                                                height,
+                                                                                                false, false, false);
+
+            
+            /// ------------------------------------------------------------------------------------
+            /// Residual Net error histogram
+            /// ------------------------------------------------------------------------------------   
             Image alignedNetResidual = classRenderDatasetInfo.NETResiduals_Thumbnail(mobj_analysis,
                                                                                             mint_datasetIndex,
                                                                                             mpicture_netResiduals.Width,
-                                                                                            mpicture_netResiduals.Height);
+                                                                                            mpicture_netResiduals.Height,
+                                                                                                false, false, false);
 
+            
+            /// ------------------------------------------------------------------------------------
+            /// Mass Residual histogram
+            /// ------------------------------------------------------------------------------------   
             Image massResidual    = classRenderDatasetInfo.MassVsScanResiduals_Thumbnail(mobj_analysis,
                                                                                             mint_datasetIndex,
-                                                                                            mpicture_massResiduals.Width,
-                                                                                            mpicture_massResiduals.Height);
+                                                                                            width, height,
+                                                                                                false, false, false);
+                        
+            /// ------------------------------------------------------------------------------------
+            /// M/Z Residual
+            /// ------------------------------------------------------------------------------------                                                                       mpicture_massResiduals.Height);
             Image mzMassResidual = classRenderDatasetInfo.MassVsMZResidual_Thumbnail(mobj_analysis,
                                                                                             mint_datasetIndex,
                                                                                             mpictureBox_mzMassResidual.Width,
-                                                                                            mpictureBox_mzMassResidual.Height);
-    
+                                                                                            mpictureBox_mzMassResidual.Height,
+                                                                                                false, false, false);
 
 
+            /// 
+            /// Save high-res images
+            /// 
+
+            string[] names = new string[] { "LCMSFeatures",
+                                            "NetErrorHistogram",
+                                            "MassErrorHistogram",
+                                            "AlignmentHeatmap"};
+
+            if (mobj_analysis.AlignmentOptions[0].AlignmentBaselineName != mobj_analysis.FileNames[mint_datasetIndex])
+            {
+                /*SaveImages(new Image[] { previewClusterChartHighRes, netErrorHistogramHighRes, massErrorHistogramHighRes, alignmentHighRes },
+                    names);
+                 */
+            }
+
+            /// 
+            /// Display low-res images 
+            /// 
             Image [] images = new Image[]{  
                                             previewClusterChart,
                                             previewScanClusterNet, 
@@ -276,6 +370,8 @@ namespace MultiAlignWin.Forms
                                             massResidual,
                                             mzMassResidual                           
                                         };
+
+            
 
             if (InvokeRequired == true)
             {

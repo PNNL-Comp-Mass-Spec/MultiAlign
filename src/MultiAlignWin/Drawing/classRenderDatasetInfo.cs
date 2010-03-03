@@ -32,7 +32,10 @@ namespace MultiAlignWin.Drawing
         public static Image NETResiduals_Thumbnail( clsMultiAlignAnalysis analysis,
                                                     int datasetNum,
                                                     int width,
-                                                    int height)
+                                                    int height,
+                                                            bool displayLegend,
+                                                            bool displayAxis,
+                                                            bool displayTitle)
         {
 
             Image image = null;
@@ -47,9 +50,9 @@ namespace MultiAlignWin.Drawing
                     chart.Margins.BottomMarginMax = 1;
                     chart.Margins.BottomMarginMin = 1;
 
-                    chart.LegendVisible = false;
-                    chart.AxisVisible = false;
-                    chart.TitleVisible = false;
+                    chart.LegendVisible = displayLegend;
+                    chart.AxisVisible = displayAxis;
+                    chart.TitleVisible = displayTitle;
 
                     image = chart.ToBitmap(width, height);
                     chart.Dispose();
@@ -156,7 +159,10 @@ namespace MultiAlignWin.Drawing
         public static Image MassVsScanResiduals_Thumbnail(clsMultiAlignAnalysis analysis,
                                                         int datasetNum,
                                                         int width,
-                                                        int height)
+                                                        int height,
+                                                            bool displayLegend,
+                                                            bool displayAxis,
+                                                            bool displayTitle)
         {
 
             Image image = null;
@@ -171,9 +177,9 @@ namespace MultiAlignWin.Drawing
                     chart.Margins.BottomMarginMax   = 1;
                     chart.Margins.BottomMarginMin   = 1;
 
-                    chart.LegendVisible = false;
-                    chart.AxisVisible   = false;
-                    chart.TitleVisible  = false;
+                    chart.LegendVisible = displayLegend;
+                    chart.AxisVisible   = displayAxis;
+                    chart.TitleVisible  = displayTitle;
 
                     image = chart.ToBitmap(width, height);
                     chart.Dispose();
@@ -242,7 +248,10 @@ namespace MultiAlignWin.Drawing
         public static Image MassVsMZResidual_Thumbnail(clsMultiAlignAnalysis analysis,
                                                     int datasetNum,
                                                     int width,
-                                                    int height)
+                                                    int height,
+                                                            bool displayLegend,
+                                                            bool displayAxis,
+                                                            bool displayTitle)
         {
 
             Image image = null;
@@ -256,9 +265,9 @@ namespace MultiAlignWin.Drawing
                     chart.Margins.LeftMarginMax = 1;
                     chart.Margins.BottomMarginMax = 1;
                     chart.Margins.BottomMarginMin = 1;
-                    chart.LegendVisible = false;
-                    chart.AxisVisible = false;
-                    chart.TitleVisible = false;
+                    chart.LegendVisible = displayLegend;
+                    chart.AxisVisible = displayAxis;
+                    chart.TitleVisible = displayTitle;
                     image = chart.ToBitmap(width, height);
                     chart.Dispose();
                 }
@@ -277,7 +286,10 @@ namespace MultiAlignWin.Drawing
         public static Image MassErrorHistogram_Thumbnail(clsMultiAlignAnalysis analysis,
                                                             int datasetNum,
                                                             int width,
-                                                            int height)
+                                                            int height,
+                                                            bool displayLegend,
+                                                            bool displayAxis,
+                                                            bool displayTitle)
         {
 
             Image image = null;
@@ -292,9 +304,9 @@ namespace MultiAlignWin.Drawing
                     chart.Margins.BottomMarginMax = 1;
                     chart.Margins.BottomMarginMin = 1;
 
-                    chart.LegendVisible = false;
-                    chart.AxisVisible   = false;
-                    chart.TitleVisible  = false;
+                    chart.LegendVisible = displayLegend;
+                    chart.AxisVisible   = displayAxis;
+                    chart.TitleVisible  = displayTitle;
 
                     image               = chart.ToBitmap(width, height);
                     chart.Dispose();
@@ -348,7 +360,11 @@ namespace MultiAlignWin.Drawing
         public static Image NETErrorHistogram_Thumbnail(clsMultiAlignAnalysis analysis,
                                                             int datasetNum,
                                                             int width,
-                                                            int height)
+                                                            int height,
+                                                            bool displayLegend,
+                                                            bool displayAxis,
+                                                            bool displayTitle
+                                                            )
         {
 
             Image image = null;
@@ -421,7 +437,10 @@ namespace MultiAlignWin.Drawing
         public static Image ScanVsClusterNet_Thumbnail(clsMultiAlignAnalysis analysis,
                                                     int datasetNum,
                                                     int width,
-                                                    int height)
+                                                    int height,
+                                                            bool displayLegend,
+                                                            bool displayAxis,
+                                                            bool displayTitle)
         {
 
             Image image = null;
@@ -435,9 +454,9 @@ namespace MultiAlignWin.Drawing
                     chart.Margins.LeftMarginMax = 1;
                     chart.Margins.BottomMarginMax = 1;
                     chart.Margins.BottomMarginMin = 1;
-                    chart.LegendVisible = false;
-                    chart.AxisVisible = false;
-                    chart.TitleVisible = false;
+                    chart.LegendVisible = displayLegend;
+                    chart.AxisVisible = displayAxis;
+                    chart.TitleVisible = displayTitle;
                     image = chart.ToBitmap(width, height);
                     chart.Dispose();
                 }
@@ -582,36 +601,7 @@ namespace MultiAlignWin.Drawing
                 minAligneeScan  = data.minScanBaseline;
                 maxAligneeScan  = data.maxScanBaseline;
                 
-                /*minBaselineScan = data.minMTDBNET;
-                maxBaselineScan = data.maxMTDBNET;
-                minAligneeScan = data.minScanBaseline;
-                maxAligneeScan = data.maxScanBaseline;
-                */
-
-                /*GetAlignmentData(  datasetNum,
-                                        ref alignmentFnc, 
-                                        ref datasetName, 
-                                        ref mScores,
-                                        ref minAligneeScan,
-                                        ref maxAligneeScan,
-                                        ref minBaselineScan,
-                                        ref maxBaselineScan);
-                */
-
-                // first zscore the data on the level of the x axis.
-                /*
-                int numRows = mScores.GetUpperBound(0) - mScores.GetLowerBound(0);
-                int numColumns = mScores.GetUpperBound(1) - mScores.GetLowerBound(1);
-                for (int colNum = 0; colNum < numColumns; colNum++)
-                {
-                    for (int rowNum = 0; rowNum < numRows / 2; rowNum++)
-                    {
-                        float tmp = mScores[rowNum, colNum];
-                        mScores[rowNum, colNum] = mScores[numRows - rowNum - 1, colNum];
-                        mScores[numRows - rowNum - 1, colNum] = tmp;
-                    }
-                }
-                 */
+                
                 heatMap.SetData(mScores,
                                             new PNNLControls.ctlHierarchalLabel.AxisRangeF(minAligneeScan, maxAligneeScan),
                                             new PNNLControls.ctlHierarchalLabel.AxisRangeF(minBaselineScan, maxBaselineScan));
@@ -631,7 +621,10 @@ namespace MultiAlignWin.Drawing
                                                    int width,
                                                    int height,
                                                    bool aligned,
-                                                   int chargeStates)
+                                                   int chargeStates,
+                                                            bool displayLegend,
+                                                            bool displayAxis,
+                                                            bool displayTitle)
         {
             Image image = null;
             try
@@ -649,9 +642,9 @@ namespace MultiAlignWin.Drawing
                     chart.Margins.LeftMarginMax = 1;
                     chart.Margins.BottomMarginMax = 1;
                     chart.Margins.BottomMarginMin = 1;
-                    chart.LegendVisible = false;
-                    chart.AxisVisible = false;
-                    chart.TitleVisible = false;
+                    chart.LegendVisible = displayLegend;
+                    chart.AxisVisible = displayAxis;
+                    chart.TitleVisible = displayTitle;
                     image = chart.ToBitmap(width, height);
                     chart.Dispose();
                 }
