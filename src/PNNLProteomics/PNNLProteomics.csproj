@@ -78,10 +78,15 @@
     <Compile Include="Analysis\clsHistogram.cs" />
     <Compile Include="Analysis\clsLinearNormalizer.cs" />
     <Compile Include="Cephes\clsMathUtilities.cs" />
+    <Compile Include="Filters\ChargeFilter.cs" />
     <Compile Include="Filters\DatasetMembersFilter.cs" />
+    <Compile Include="Filters\DriftTimeFilter.cs" />
     <Compile Include="Filters\FilterUtil.cs" />
     <Compile Include="Filters\IFilter.cs" />
+    <Compile Include="Filters\IntensityFilter.cs" />
     <Compile Include="Filters\MassRangeFilter.cs" />
+    <Compile Include="Filters\NetFilter.cs" />
+    <Compile Include="Filters\SpectralCountFilter.cs" />
     <Compile Include="MultiAlign\classMultiAnalysisConverters.cs" />
     <Compile Include="MultiAlign\clsMultiAlignAnalysis.cs" />
     <Compile Include="Analysis\clsNormalize.cs" />

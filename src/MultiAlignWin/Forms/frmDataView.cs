@@ -24,7 +24,7 @@ namespace MultiAlignWin
 	/// </summary>
 	public class frmDataView : Form
     {        
-        #region Members        
+        #region Members
         private Splitter splitter1;
 		private Panel panelCharts;
 		private TabControl mtabcontrol_data;

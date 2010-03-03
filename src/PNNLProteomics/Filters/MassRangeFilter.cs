@@ -17,14 +17,37 @@ namespace PNNLProteomics.Filters
 			m_maxMass = Math.Max(lesserValue, greaterValue);
 		}
 
+        public double MinimumMass
+        {
+            get
+            {
+                return m_minMass;
+            }
+            set
+            {
+                m_minMass = value;
+            }
+        }
+        public double MaximumMass
+        {
+            get
+            {
+                return m_maxMass;
+            }
+            set
+            {
+                m_maxMass = value;
+            }
+        }
+
 		public bool DoesPassFilter(clsUMC umc)
 		{
-			return testMassRange(umc.mdouble_mono_mass);
+			return testMassRange(umc.mdouble_mono_mass_calibrated);
 		}
 
 		public bool DoesPassFilter(clsCluster umcCluster)
 		{
-			return testMassRange(umcCluster.mdouble_mass);
+			return testMassRange(umcCluster.mdouble_mass_calibrated);
 		}
 
 		private bool testMassRange(double massValue)

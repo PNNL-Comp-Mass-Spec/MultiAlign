@@ -13,6 +13,9 @@ using MultiAlignEngine.MassTags;
 using PNNLProteomics.Data.Analysis;
 using MultiAlignEngine.PeakMatching;
 
+using MultiAlignWin.Forms.Filters;
+using PNNLProteomics.Filters;
+
 namespace MultiAlignWin
 {
 	/// <summary>
@@ -102,6 +105,10 @@ namespace MultiAlignWin
         public SaveTableDelegate SaveTableDelegateMethod;
         public SaveTableDelegate SaveDanteDelegate;
         public SaveTableDelegate SaveAsIsDelegate;
+
+
+        private List<IFilter<clsUMC>>       mlist_umcFilters;
+        private List<IFilter<clsCluster>>   mlist_clusterFilters;
         #endregion
 
         #region Constructors
@@ -116,6 +123,9 @@ namespace MultiAlignWin
             SaveTableDelegateMethod = new SaveTableDelegate(mnu_save_grid_Click);
             SaveDanteDelegate       = new SaveTableDelegate(mnu_save_dante_Click);
             SaveAsIsDelegate        = new SaveTableDelegate(mnu_save_grid_Click);
+
+            mlist_clusterFilters    = new List<IFilter<clsCluster>>();
+            mlist_umcFilters        = new List<IFilter<clsUMC>>();
         }
         /// <summary>
         /// Constructor that takes an analysis object and an analysis name 
@@ -126,9 +136,7 @@ namespace MultiAlignWin
         {
             InitializeComponent();            
             Analysis                = analysis;
-            AllowUserToOrderColumns = true;    
-        
-            
+            AllowUserToOrderColumns = true;                   
         }
         #endregion
 		
@@ -137,9 +145,7 @@ namespace MultiAlignWin
         /// Creates the data table from a given analysis object.
         /// </summary>
 		private void AddClusterToTable()
-		{
-            
-            
+		{                        
             mint_numberOfRows = 0;
 
 			// Create a new table.
@@ -376,6 +382,26 @@ namespace MultiAlignWin
 				while(clusterNum < num_clusters)
 				{
 					clsCluster cluster  = mobjAnalysis.UMCData.mobjClusterData.GetCluster(clusterNum);
+
+                    /// 
+                    /// Check to make sure the cluster passes the filter.
+                    /// 
+                    bool passed = true;
+                    foreach (IFilter<clsCluster> filter in mlist_clusterFilters)
+                    {
+                        if (filter.DoesPassFilter(cluster) == false)
+                        {
+                            passed = false;
+                            break;
+                        }
+                    }
+                    if (passed == false)
+                    {
+                        clusterNum++;
+                        continue;
+                    }
+
+
 					DataRow row         = table.NewRow() ;
 					row[0]              = Convert.ToString(clusterNum + 1) ; 
 					row[2]              = Convert.ToString(cluster.mdouble_mass) ; 
@@ -425,6 +451,25 @@ namespace MultiAlignWin
 							umc = arrUMCs[index] ; 
 							num_non_empty++ ;
 						}
+
+                        /// 
+                        /// Check to make sure the UMC passes the filter.
+                        /// 
+                        passed = true;
+                        foreach (IFilter<clsUMC> filter in mlist_umcFilters)
+                        {
+                            if (filter.DoesPassFilter(umc) == false)
+                            {
+                                passed = false;
+                                break;
+                            }
+                        }
+                        if (passed == false)
+                        {
+                            col_num += num_columns_per_dataset;
+                            continue;
+                        }
+
 
 
 						if (mbool_show_mass_columns)
@@ -711,9 +756,8 @@ namespace MultiAlignWin
             ToolStripMenuItem mnu_columns_mass_tags = new ToolStripMenuItem("Mass Tags/Proteins");
             ToolStripMenuItem mnu_save_grid         = new ToolStripMenuItem("Save Table");
             ToolStripMenuItem mnu_save_dante        = new ToolStripMenuItem("For Dante");
-            ToolStripMenuItem mnu_save_asis        = new ToolStripMenuItem("As Displayed");
-            ToolStripMenuItem mnu_test = new ToolStripMenuItem("To SQLite");
-
+            ToolStripMenuItem mnu_save_asis         = new ToolStripMenuItem("As Displayed");
+            ToolStripMenuItem mnu_filters           = new ToolStripMenuItem("Filter");
 
             mnu_cluster.Enabled = false;
             mnu_align.Enabled   = false;
@@ -829,12 +873,18 @@ namespace MultiAlignWin
                                                                  mnu_columns_showCMC});
             }
 
+            mnu_filters.Click += new EventHandler(mnu_filters_Click);
+
             /// 
             /// Create the popup menu object
             /// 
             ContextMenuStrip cntxtMenu = new ContextMenuStrip();
 
-            // Define the list of menu commands
+
+
+            /// 
+            /// Define the list of menu commands
+            /// 
             if (!mobjAnalysis.UMCData.mobjClusterData.IsDataNormalized)
             {
                 cntxtMenu.Items.AddRange(new ToolStripMenuItem[]{mnu_columns,
@@ -842,7 +892,8 @@ namespace MultiAlignWin
 															   mnu_diff_abundance,
 															   mnu_cluster,
 															   mnu_align,
-                                                               mnu_save_grid});
+                                                               mnu_save_grid,
+                                                               mnu_filters});
 
                 cntxtMenu.Items.Add(new ToolStripSeparator());
                 cntxtMenu.Items.AddRange(new ToolStripMenuItem[] {
@@ -857,7 +908,8 @@ namespace MultiAlignWin
 															   mnu_diff_abundance,
 															   mnu_cluster,
 															   mnu_align,
-                                                               mnu_save_grid});
+                                                               mnu_save_grid,
+                                                               mnu_filters});
 
                 cntxtMenu.Items.Add(new ToolStripSeparator());
                 cntxtMenu.Items.AddRange(new ToolStripMenuItem[] {mnu_expression, 
@@ -871,6 +923,25 @@ namespace MultiAlignWin
             mobj_contextMenu = cntxtMenu;
             
             return cntxtMenu;
+        }
+
+        /// <summary>
+        /// Create a list of filters.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void mnu_filters_Click(object sender, EventArgs e)
+        {
+            DataFilters filters = new DataFilters(mlist_clusterFilters, mlist_umcFilters);
+            if (filters.ShowDialog() == DialogResult.OK)
+            {
+                mlist_clusterFilters.Clear();
+                mlist_clusterFilters = filters.GetClusterFilters();
+                mlist_umcFilters.Clear();
+                mlist_umcFilters = filters.GetUMCFilters();
+
+                AddClusterToTable();
+            }
         }
 
         #region Properties

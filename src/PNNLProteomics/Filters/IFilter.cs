@@ -6,6 +6,6 @@ namespace PNNLProteomics.Filters
 {
 	public interface IFilter<T>
 	{
-		bool DoesPassFilter(T t);
+		bool DoesPassFilter(T t);        
 	}
 }
