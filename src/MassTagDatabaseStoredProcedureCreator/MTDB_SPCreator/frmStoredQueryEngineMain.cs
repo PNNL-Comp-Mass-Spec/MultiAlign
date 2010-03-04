@@ -40,6 +40,8 @@ namespace MassTagDatabaseStoredQueryCreator
 		private System.Windows.Forms.StatusBar status;
 		private System.Windows.Forms.Button btnBrowseMassTagCount;
 		private System.Windows.Forms.TextBox txtMassTagCount;
+        private RadioButton access2007RadioButton;
+        private RadioButton access2003RadioButton;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
@@ -95,6 +97,8 @@ namespace MassTagDatabaseStoredQueryCreator
             this.mobj_dataGrid = new System.Windows.Forms.DataGrid();
             this.btnRunProteinNamedMap = new System.Windows.Forms.Button();
             this.status = new System.Windows.Forms.StatusBar();
+            this.access2003RadioButton = new System.Windows.Forms.RadioButton();
+            this.access2007RadioButton = new System.Windows.Forms.RadioButton();
             this.mobj_toolTabs.SuspendLayout();
             this.tabCreateStoredQuery.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -110,153 +114,174 @@ namespace MassTagDatabaseStoredQueryCreator
             this.mobj_toolTabs.Location = new System.Drawing.Point(0, 0);
             this.mobj_toolTabs.Name = "mobj_toolTabs";
             this.mobj_toolTabs.SelectedIndex = 0;
-            this.mobj_toolTabs.Size = new System.Drawing.Size(872, 525);
+            this.mobj_toolTabs.Size = new System.Drawing.Size(837, 441);
             this.mobj_toolTabs.TabIndex = 15;
             // 
             // tabCreateStoredQuery
             // 
-            this.tabCreateStoredQuery.Controls.Add(this.btnMakeStoredQueries);
             this.tabCreateStoredQuery.Controls.Add(this.groupBox1);
             this.tabCreateStoredQuery.Location = new System.Drawing.Point(4, 22);
             this.tabCreateStoredQuery.Name = "tabCreateStoredQuery";
-            this.tabCreateStoredQuery.Size = new System.Drawing.Size(864, 499);
+            this.tabCreateStoredQuery.Size = new System.Drawing.Size(829, 415);
             this.tabCreateStoredQuery.TabIndex = 0;
             this.tabCreateStoredQuery.Text = "Stored Query Creation Tool";
             // 
             // btnMakeStoredQueries
             // 
-            this.btnMakeStoredQueries.Location = new System.Drawing.Point(8, 312);
+            this.btnMakeStoredQueries.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnMakeStoredQueries.Location = new System.Drawing.Point(580, 385);
             this.btnMakeStoredQueries.Name = "btnMakeStoredQueries";
-            this.btnMakeStoredQueries.Size = new System.Drawing.Size(128, 24);
+            this.btnMakeStoredQueries.Size = new System.Drawing.Size(241, 24);
             this.btnMakeStoredQueries.TabIndex = 16;
             this.btnMakeStoredQueries.Text = "Make Stored Queries";
             this.btnMakeStoredQueries.Click += new System.EventHandler(this.btnMakeStoredQueries_Click);
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.access2007RadioButton);
+            this.groupBox1.Controls.Add(this.access2003RadioButton);
+            this.groupBox1.Controls.Add(this.btnMakeStoredQueries);
             this.groupBox1.Controls.Add(this.btnBrowseMassTagCount);
             this.groupBox1.Controls.Add(this.txtMassTagCount);
-            this.groupBox1.Controls.Add(this.btnFindVIFC);
             this.groupBox1.Controls.Add(this.txtVIFC);
+            this.groupBox1.Controls.Add(this.btnFindVIFC);
             this.groupBox1.Controls.Add(this.txtMassTagProteinNameMap);
-            this.groupBox1.Controls.Add(this.txtDatabasename);
-            this.groupBox1.Controls.Add(this.btnBrowseGetMassTagProteinNameMap);
-            this.groupBox1.Controls.Add(this.btnOpenDB);
             this.groupBox1.Controls.Add(this.btnBrowseMassTagPepProphetStats);
-            this.groupBox1.Controls.Add(this.txtMassTagsPlusPepProphetStatsWorker);
-            this.groupBox1.Controls.Add(this.txtMassTagsPlusPepProphetStats);
+            this.groupBox1.Controls.Add(this.txtDatabasename);
             this.groupBox1.Controls.Add(this.btnBrowseMassTagsPlusPepProphetStats);
-            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.groupBox1.Controls.Add(this.txtMassTagsPlusPepProphetStatsWorker);
+            this.groupBox1.Controls.Add(this.btnOpenDB);
+            this.groupBox1.Controls.Add(this.txtMassTagsPlusPepProphetStats);
+            this.groupBox1.Controls.Add(this.btnBrowseGetMassTagProteinNameMap);
+            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(864, 304);
+            this.groupBox1.Size = new System.Drawing.Size(829, 415);
             this.groupBox1.TabIndex = 15;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Stored Query Creation Tool";
             // 
             // btnBrowseMassTagCount
             // 
-            this.btnBrowseMassTagCount.Location = new System.Drawing.Point(8, 216);
+            this.btnBrowseMassTagCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnBrowseMassTagCount.Location = new System.Drawing.Point(580, 202);
             this.btnBrowseMassTagCount.Name = "btnBrowseMassTagCount";
-            this.btnBrowseMassTagCount.Size = new System.Drawing.Size(264, 24);
+            this.btnBrowseMassTagCount.Size = new System.Drawing.Size(241, 24);
             this.btnBrowseMassTagCount.TabIndex = 22;
             this.btnBrowseMassTagCount.Text = "Browse GetMassTagsMatchCount";
             this.btnBrowseMassTagCount.Click += new System.EventHandler(this.btnBrowseMassTagCount_Click);
             // 
             // txtMassTagCount
             // 
-            this.txtMassTagCount.Location = new System.Drawing.Point(288, 216);
+            this.txtMassTagCount.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtMassTagCount.Location = new System.Drawing.Point(8, 206);
             this.txtMassTagCount.Name = "txtMassTagCount";
-            this.txtMassTagCount.Size = new System.Drawing.Size(560, 20);
+            this.txtMassTagCount.Size = new System.Drawing.Size(566, 20);
             this.txtMassTagCount.TabIndex = 21;
             this.txtMassTagCount.Text = "C:\\Documents and Settings\\d3m276\\Desktop\\MA_Access_TestFiles\\GetMassTagsMatchCoun" +
                 "t.txt";
             // 
             // btnFindVIFC
             // 
-            this.btnFindVIFC.Location = new System.Drawing.Point(8, 88);
+            this.btnFindVIFC.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnFindVIFC.Location = new System.Drawing.Point(580, 114);
             this.btnFindVIFC.Name = "btnFindVIFC";
-            this.btnFindVIFC.Size = new System.Drawing.Size(264, 24);
+            this.btnFindVIFC.Size = new System.Drawing.Size(241, 24);
             this.btnFindVIFC.TabIndex = 20;
             this.btnFindVIFC.Text = "Browse VIFC";
             this.btnFindVIFC.Click += new System.EventHandler(this.btnFindVIFC_Click);
             // 
             // txtVIFC
             // 
-            this.txtVIFC.Location = new System.Drawing.Point(288, 88);
+            this.txtVIFC.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtVIFC.Location = new System.Drawing.Point(8, 114);
             this.txtVIFC.Name = "txtVIFC";
-            this.txtVIFC.Size = new System.Drawing.Size(560, 20);
+            this.txtVIFC.Size = new System.Drawing.Size(566, 20);
             this.txtVIFC.TabIndex = 19;
             this.txtVIFC.Text = "C:\\Documents and Settings\\d3m276\\Desktop\\MA_Access_TestFiles\\V_IFC_Mass_Tag_to_Pr" +
                 "otein_Name_Map.txt";
             // 
             // txtMassTagProteinNameMap
             // 
-            this.txtMassTagProteinNameMap.Location = new System.Drawing.Point(288, 56);
+            this.txtMassTagProteinNameMap.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtMassTagProteinNameMap.Location = new System.Drawing.Point(8, 84);
             this.txtMassTagProteinNameMap.Name = "txtMassTagProteinNameMap";
-            this.txtMassTagProteinNameMap.Size = new System.Drawing.Size(560, 20);
+            this.txtMassTagProteinNameMap.Size = new System.Drawing.Size(566, 20);
             this.txtMassTagProteinNameMap.TabIndex = 17;
             this.txtMassTagProteinNameMap.Text = "C:\\Documents and Settings\\d3m276\\Desktop\\MA_Access_TestFiles\\GetMassTagToProteinN" +
                 "ameMap.txt";
             // 
             // txtDatabasename
             // 
-            this.txtDatabasename.Location = new System.Drawing.Point(288, 16);
+            this.txtDatabasename.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtDatabasename.Location = new System.Drawing.Point(8, 19);
             this.txtDatabasename.Name = "txtDatabasename";
-            this.txtDatabasename.Size = new System.Drawing.Size(560, 20);
+            this.txtDatabasename.Size = new System.Drawing.Size(566, 20);
             this.txtDatabasename.TabIndex = 16;
             this.txtDatabasename.Text = "C:\\Documents and Settings\\d3m276\\Desktop\\MA_Access_TestFiles\\MT_Macaque_P395.mdb";
             // 
             // btnBrowseGetMassTagProteinNameMap
             // 
-            this.btnBrowseGetMassTagProteinNameMap.Location = new System.Drawing.Point(8, 56);
+            this.btnBrowseGetMassTagProteinNameMap.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnBrowseGetMassTagProteinNameMap.Location = new System.Drawing.Point(580, 82);
             this.btnBrowseGetMassTagProteinNameMap.Name = "btnBrowseGetMassTagProteinNameMap";
-            this.btnBrowseGetMassTagProteinNameMap.Size = new System.Drawing.Size(264, 24);
+            this.btnBrowseGetMassTagProteinNameMap.Size = new System.Drawing.Size(241, 24);
             this.btnBrowseGetMassTagProteinNameMap.TabIndex = 18;
             this.btnBrowseGetMassTagProteinNameMap.Text = "Browse MassTagProteinNameMap";
             this.btnBrowseGetMassTagProteinNameMap.Click += new System.EventHandler(this.btnBrowseGetMassTagProteinNameMap_Click);
             // 
             // btnOpenDB
             // 
-            this.btnOpenDB.Location = new System.Drawing.Point(8, 16);
+            this.btnOpenDB.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnOpenDB.Location = new System.Drawing.Point(580, 19);
             this.btnOpenDB.Name = "btnOpenDB";
-            this.btnOpenDB.Size = new System.Drawing.Size(264, 24);
+            this.btnOpenDB.Size = new System.Drawing.Size(241, 24);
             this.btnOpenDB.TabIndex = 15;
             this.btnOpenDB.Text = "Browse Database";
             this.btnOpenDB.Click += new System.EventHandler(this.btnOpenDB_Click);
             // 
             // btnBrowseMassTagPepProphetStats
             // 
-            this.btnBrowseMassTagPepProphetStats.Location = new System.Drawing.Point(8, 168);
+            this.btnBrowseMassTagPepProphetStats.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnBrowseMassTagPepProphetStats.Location = new System.Drawing.Point(580, 172);
             this.btnBrowseMassTagPepProphetStats.Name = "btnBrowseMassTagPepProphetStats";
-            this.btnBrowseMassTagPepProphetStats.Size = new System.Drawing.Size(264, 24);
+            this.btnBrowseMassTagPepProphetStats.Size = new System.Drawing.Size(241, 24);
             this.btnBrowseMassTagPepProphetStats.TabIndex = 14;
             this.btnBrowseMassTagPepProphetStats.Text = "Browse MassTags+PepProphetStats worker";
             this.btnBrowseMassTagPepProphetStats.Click += new System.EventHandler(this.btnBrowseMassTagPepProphetStats_Click);
             // 
             // txtMassTagsPlusPepProphetStatsWorker
             // 
-            this.txtMassTagsPlusPepProphetStatsWorker.Location = new System.Drawing.Point(288, 168);
+            this.txtMassTagsPlusPepProphetStatsWorker.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtMassTagsPlusPepProphetStatsWorker.Location = new System.Drawing.Point(8, 172);
             this.txtMassTagsPlusPepProphetStatsWorker.Name = "txtMassTagsPlusPepProphetStatsWorker";
-            this.txtMassTagsPlusPepProphetStatsWorker.Size = new System.Drawing.Size(560, 20);
+            this.txtMassTagsPlusPepProphetStatsWorker.Size = new System.Drawing.Size(566, 20);
             this.txtMassTagsPlusPepProphetStatsWorker.TabIndex = 13;
             this.txtMassTagsPlusPepProphetStatsWorker.Text = "C:\\Documents and Settings\\d3m276\\Desktop\\MA_Access_TestFiles\\GetMassTagsPassingFi" +
                 "ltersWork.txt";
             // 
             // txtMassTagsPlusPepProphetStats
             // 
-            this.txtMassTagsPlusPepProphetStats.Location = new System.Drawing.Point(288, 136);
+            this.txtMassTagsPlusPepProphetStats.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtMassTagsPlusPepProphetStats.Location = new System.Drawing.Point(8, 144);
             this.txtMassTagsPlusPepProphetStats.Name = "txtMassTagsPlusPepProphetStats";
-            this.txtMassTagsPlusPepProphetStats.Size = new System.Drawing.Size(560, 20);
+            this.txtMassTagsPlusPepProphetStats.Size = new System.Drawing.Size(566, 20);
             this.txtMassTagsPlusPepProphetStats.TabIndex = 11;
             this.txtMassTagsPlusPepProphetStats.Text = "C:\\Documents and Settings\\d3m276\\Desktop\\MA_Access_TestFiles\\GetMassTagsPlusPepPr" +
                 "ophetStats.txt";
             // 
             // btnBrowseMassTagsPlusPepProphetStats
             // 
-            this.btnBrowseMassTagsPlusPepProphetStats.Location = new System.Drawing.Point(8, 136);
+            this.btnBrowseMassTagsPlusPepProphetStats.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnBrowseMassTagsPlusPepProphetStats.Location = new System.Drawing.Point(580, 144);
             this.btnBrowseMassTagsPlusPepProphetStats.Name = "btnBrowseMassTagsPlusPepProphetStats";
-            this.btnBrowseMassTagsPlusPepProphetStats.Size = new System.Drawing.Size(264, 24);
+            this.btnBrowseMassTagsPlusPepProphetStats.Size = new System.Drawing.Size(241, 24);
             this.btnBrowseMassTagsPlusPepProphetStats.TabIndex = 12;
             this.btnBrowseMassTagsPlusPepProphetStats.Text = "Browse MassTags+PepProphetStats";
             this.btnBrowseMassTagsPlusPepProphetStats.Click += new System.EventHandler(this.btnBrowseMassTagsPlusPepProphetStats_Click);
@@ -270,13 +295,14 @@ namespace MassTagDatabaseStoredQueryCreator
             this.tabRunStoredQuery.Controls.Add(this.btnRunProteinNamedMap);
             this.tabRunStoredQuery.Location = new System.Drawing.Point(4, 22);
             this.tabRunStoredQuery.Name = "tabRunStoredQuery";
-            this.tabRunStoredQuery.Size = new System.Drawing.Size(864, 499);
+            this.tabRunStoredQuery.Size = new System.Drawing.Size(829, 415);
             this.tabRunStoredQuery.TabIndex = 1;
             this.tabRunStoredQuery.Text = "Stored Query Reader";
             // 
             // btnRunGetProphetStats
             // 
-            this.btnRunGetProphetStats.Location = new System.Drawing.Point(288, 72);
+            this.btnRunGetProphetStats.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnRunGetProphetStats.Location = new System.Drawing.Point(287, 34);
             this.btnRunGetProphetStats.Name = "btnRunGetProphetStats";
             this.btnRunGetProphetStats.Size = new System.Drawing.Size(264, 24);
             this.btnRunGetProphetStats.TabIndex = 19;
@@ -284,9 +310,11 @@ namespace MassTagDatabaseStoredQueryCreator
             // 
             // txtStoredQueryDatabase
             // 
+            this.txtStoredQueryDatabase.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.txtStoredQueryDatabase.Location = new System.Drawing.Point(288, 8);
             this.txtStoredQueryDatabase.Name = "txtStoredQueryDatabase";
-            this.txtStoredQueryDatabase.Size = new System.Drawing.Size(560, 20);
+            this.txtStoredQueryDatabase.Size = new System.Drawing.Size(533, 20);
             this.txtStoredQueryDatabase.TabIndex = 18;
             this.txtStoredQueryDatabase.Text = "C:\\Documents and Settings\\d3m276\\Desktop\\MA_Access_TestFiles\\ExampleDBForBrian.md" +
                 "b";
@@ -307,14 +335,15 @@ namespace MassTagDatabaseStoredQueryCreator
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.mobj_dataGrid.DataMember = "";
             this.mobj_dataGrid.HeaderForeColor = System.Drawing.SystemColors.ControlText;
-            this.mobj_dataGrid.Location = new System.Drawing.Point(0, 115);
+            this.mobj_dataGrid.Location = new System.Drawing.Point(0, 64);
             this.mobj_dataGrid.Name = "mobj_dataGrid";
-            this.mobj_dataGrid.Size = new System.Drawing.Size(864, 384);
+            this.mobj_dataGrid.Size = new System.Drawing.Size(829, 351);
             this.mobj_dataGrid.TabIndex = 15;
             // 
             // btnRunProteinNamedMap
             // 
-            this.btnRunProteinNamedMap.Location = new System.Drawing.Point(8, 72);
+            this.btnRunProteinNamedMap.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnRunProteinNamedMap.Location = new System.Drawing.Point(557, 34);
             this.btnRunProteinNamedMap.Name = "btnRunProteinNamedMap";
             this.btnRunProteinNamedMap.Size = new System.Drawing.Size(264, 24);
             this.btnRunProteinNamedMap.TabIndex = 14;
@@ -323,16 +352,39 @@ namespace MassTagDatabaseStoredQueryCreator
             // 
             // status
             // 
-            this.status.Location = new System.Drawing.Point(0, 525);
+            this.status.Location = new System.Drawing.Point(0, 441);
             this.status.Name = "status";
-            this.status.Size = new System.Drawing.Size(872, 16);
+            this.status.Size = new System.Drawing.Size(837, 16);
             this.status.TabIndex = 16;
             this.status.Text = "Ready.";
+            // 
+            // access2003RadioButton
+            // 
+            this.access2003RadioButton.AutoSize = true;
+            this.access2003RadioButton.Checked = true;
+            this.access2003RadioButton.Location = new System.Drawing.Point(13, 45);
+            this.access2003RadioButton.Name = "access2003RadioButton";
+            this.access2003RadioButton.Size = new System.Drawing.Size(133, 17);
+            this.access2003RadioButton.TabIndex = 23;
+            this.access2003RadioButton.TabStop = true;
+            this.access2003RadioButton.Text = "Microsoft Access 2003";
+            this.access2003RadioButton.UseVisualStyleBackColor = true;
+            // 
+            // access2007RadioButton
+            // 
+            this.access2007RadioButton.AutoSize = true;
+            this.access2007RadioButton.Location = new System.Drawing.Point(152, 45);
+            this.access2007RadioButton.Name = "access2007RadioButton";
+            this.access2007RadioButton.Size = new System.Drawing.Size(133, 17);
+            this.access2007RadioButton.TabIndex = 24;
+            this.access2007RadioButton.TabStop = true;
+            this.access2007RadioButton.Text = "Microsoft Access 2007";
+            this.access2007RadioButton.UseVisualStyleBackColor = true;
             // 
             // frmTestMain
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-            this.ClientSize = new System.Drawing.Size(872, 541);
+            this.ClientSize = new System.Drawing.Size(837, 457);
             this.Controls.Add(this.mobj_toolTabs);
             this.Controls.Add(this.status);
             this.Name = "frmTestMain";
@@ -390,7 +442,8 @@ namespace MassTagDatabaseStoredQueryCreator
 		private void btnRunProteinNamedMap_Click(object sender, System.EventArgs e)
 		{	
 			string filename = txtStoredQueryDatabase.Text;
-			clsAccessMassTagDBStoredQueryReader query = new clsAccessMassTagDBStoredQueryReader(filename);
+
+            clsAccessMassTagDBStoredQueryReader query = new clsAccessMassTagDBStoredQueryReader(clsAccessStoredQueryCreator.GetConnectionString(AccessType, txtDatabasename.Text));
 			DataSet data = query.GetMassTagToProteinNameMapData();
 			mobj_dataGrid.DataSource = data;
 		}
@@ -416,19 +469,26 @@ namespace MassTagDatabaseStoredQueryCreator
 		private void btnMakeStoredQueries_Click(object sender, System.EventArgs e)
 		{		
 			status.Text = "";
-			clsMassTagDBPeptideStoredQueryCreator creator = new clsMassTagDBPeptideStoredQueryCreator(txtDatabasename.Text);			
-			bool val = creator.CreateGetMassTagToProteinNameMapFromFile(
-				txtMassTagProteinNameMap.Text, 
-				txtVIFC.Text );						
-			val = val && creator.CreateGetMassTagsPlusPepProphetStatsFromFile(
-				txtMassTagsPlusPepProphetStats.Text,
-				txtMassTagsPlusPepProphetStatsWorker.Text);		
-			val = val && creator.CreateGetMassTagsMatchCountFromFile(txtMassTagCount.Text);
-			if (val == false)
-				status.Text = "Creating Stored Queries Failed.";
-			else
-				status.Text = "Creating Stored Queries Success.";
-				
+
+			clsMassTagDBPeptideStoredQueryCreator creator = new clsMassTagDBPeptideStoredQueryCreator(AccessType, txtDatabasename.Text);
+
+            try
+            {
+                creator.CreateGetMassTagToProteinNameMapFromFile(
+                    txtMassTagProteinNameMap.Text,
+                    txtVIFC.Text);
+
+                creator.CreateGetMassTagsPlusPepProphetStatsFromFile(
+                    txtMassTagsPlusPepProphetStats.Text,
+                    txtMassTagsPlusPepProphetStatsWorker.Text);
+
+                creator.CreateGetMassTagsMatchCountFromFile(txtMassTagCount.Text);
+                status.Text = "Creation success.";
+            }
+            catch(Exception ex)
+            {
+                status.Text = "Could not update the database with the stored procedures.  Do you have the right database format selected?" + ex.Message;
+            }
 		}
 
 		private void btnRunBrowseDatabase_Click(object sender, System.EventArgs e)
@@ -449,5 +509,28 @@ namespace MassTagDatabaseStoredQueryCreator
 			}
 		}
 
+        public AccessType AccessType
+        {
+            get
+            {
+                AccessType type = AccessType.Access2003;
+                if (access2007RadioButton.Checked == true)
+                    type = AccessType.Access2007;
+
+                return type;
+            }
+            set
+            {
+                switch (value)
+                {
+                    case AccessType.Access2003 :
+                        access2003RadioButton.Checked = true;
+                        break;
+                    case AccessType.Access2007:
+                        access2007RadioButton.Checked = true;
+                        break;
+                }
+            }
+        }
 	}
 }

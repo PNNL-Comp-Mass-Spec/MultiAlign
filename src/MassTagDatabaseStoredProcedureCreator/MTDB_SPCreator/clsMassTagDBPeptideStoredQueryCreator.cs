@@ -34,14 +34,16 @@ namespace MassTagDatabaseStoredQueryCreator
 		/// Reference to stored query creator.
 		/// </summary>
 		private clsAccessStoredQueryCreator mobj_storedQueryCreator;
+        private string mstring_connectionString;
 
 		/// <summary>
 		/// Default constructor for the Access Database stored query creator.  
 		/// </summary>
 		/// <param name="filename">Full path to the database location.</param>
-        public clsMassTagDBPeptideStoredQueryCreator(string databasePath)
+        public clsMassTagDBPeptideStoredQueryCreator(AccessType type, string databasePath)
         {
-            mobj_storedQueryCreator = new clsAccessStoredQueryCreator(databasePath);
+            mstring_connectionString = clsAccessStoredQueryCreator.GetConnectionString(type, databasePath);
+            mobj_storedQueryCreator  = new clsAccessStoredQueryCreator();
         }
 
 		/// <summary>
@@ -51,12 +53,10 @@ namespace MassTagDatabaseStoredQueryCreator
 		/// <param name="mainProteinNameMapFilename">Path of file that contains the stored query text.</param>
 		/// <param name="viewIFCFileName">Path of file that has the internal VIEW DMS used to create the protein name map.</param>
 		/// <returns>Boolean indicating failure (false) or success (true).  FileNotFoundException is not handled here.</returns>
-		public bool CreateGetMassTagToProteinNameMapFromFile(string mainProteinNameMapFilename, string viewIFCFileName)
-		{   						
-			bool val = false;			 
-			val = mobj_storedQueryCreator.CreateStoredQueryFromFile(viewIFCFileName);
-			val = val && mobj_storedQueryCreator.CreateStoredQueryFromFile(mainProteinNameMapFilename);
-			return val;
+		public void CreateGetMassTagToProteinNameMapFromFile(string mainProteinNameMapFilename, string viewIFCFileName)
+		{   									
+			mobj_storedQueryCreator.CreateStoredQueryFromFile(mstring_connectionString, viewIFCFileName);
+            mobj_storedQueryCreator.CreateStoredQueryFromFile(mstring_connectionString, mainProteinNameMapFilename);			
 		}
 
 		/// <summary>
@@ -65,12 +65,10 @@ namespace MassTagDatabaseStoredQueryCreator
 		/// <param name="peptideProphetStatsMainFilename">Path to main peptide propher stats stored query file that contains stored query text.</param>
 		/// <param name="peptideProphetViewFilename">Path to temporary prophet stored query that handles writting to the temp table.</param>
 		/// <returns>Boolean indicating failure (false) or success (true).  FileNotFoundException is not handled here.</returns>
-		public bool CreateGetMassTagsPlusPepProphetStatsFromFile(string peptideProphetStatsMainFilename, string peptideProphetViewFilename)
+		public void CreateGetMassTagsPlusPepProphetStatsFromFile(string peptideProphetStatsMainFilename, string peptideProphetViewFilename)
 		{   
-			 bool val = false;			 
-  			 val = mobj_storedQueryCreator.CreateStoredQueryFromFile(peptideProphetViewFilename);
-			 val = val && mobj_storedQueryCreator.CreateStoredQueryFromFile(peptideProphetStatsMainFilename);
-			 return val;
+             mobj_storedQueryCreator.CreateStoredQueryFromFile(mstring_connectionString, peptideProphetViewFilename);
+             mobj_storedQueryCreator.CreateStoredQueryFromFile(mstring_connectionString, peptideProphetStatsMainFilename);			  
 		}	
 		
 		/// <summary>
@@ -79,12 +77,10 @@ namespace MassTagDatabaseStoredQueryCreator
 		/// <param name="mainProteinNameMapFilename">Path of file that contains the stored query text.</param>
 		/// <param name="viewIFCFileName">Path of file that has the internal VIEW DMS used to create the protein name map.</param>
 		/// <returns>Boolean indicating failure (false) or success (true).</returns>
-		public bool CreateGetMassTagToProteinNameMap(string mainProteinNameMap, string viewIFC)
+		public void CreateGetMassTagToProteinNameMap(string mainProteinNameMap, string viewIFC)
 		{   						
-			bool val = false;			 
-			val = mobj_storedQueryCreator.CreateStoredQuery(viewIFC);
-			val = val && mobj_storedQueryCreator.CreateStoredQuery(mainProteinNameMap);
-			return val;
+			mobj_storedQueryCreator.CreateStoredQuery(mstring_connectionString, viewIFC);
+            mobj_storedQueryCreator.CreateStoredQuery(mstring_connectionString, mainProteinNameMap);			
 		}
 
 		/// <summary>
@@ -93,12 +89,10 @@ namespace MassTagDatabaseStoredQueryCreator
 		/// <param name="peptideProphetStatsMainFilename">Main peptide propher stats stored query that contains stored query text.</param>
 		/// <param name="peptideProphetViewFilename">Temporary prophet stored query that handles writting to the temp table.</param>
 		/// <returns>Boolean indicating failure (false) or success (true).</returns>
-		public bool CreateGetMassTagsPlusPepProphetStats(string peptideProphetStatsMain, string peptideProphetView)
+		public void CreateGetMassTagsPlusPepProphetStats(string peptideProphetStatsMain, string peptideProphetView)
 		{   
-			bool val = false;			 
-			val = mobj_storedQueryCreator.CreateStoredQuery(peptideProphetView);
-			val = val && mobj_storedQueryCreator.CreateStoredQuery(peptideProphetStatsMain);
-			return val;
+			mobj_storedQueryCreator.CreateStoredQuery(mstring_connectionString, peptideProphetView);
+            mobj_storedQueryCreator.CreateStoredQuery(mstring_connectionString, peptideProphetStatsMain);			
 		}		
 		
 		/// <summary>
@@ -106,11 +100,9 @@ namespace MassTagDatabaseStoredQueryCreator
 		/// </summary>
 		/// <param name="getMassTagCountCommandString">Stored Query Command text.</param>		
 		/// <returns>Boolean indicating failure (false) or success (true).</returns>
-		public bool CreateGetMassTagsMatchCount(string getMassTagCountCommandString)
+		public void CreateGetMassTagsMatchCount(string getMassTagCountCommandString)
 		{   
-			bool val = false;			 
-			val = mobj_storedQueryCreator.CreateStoredQuery(getMassTagCountCommandString);
-			return val;
+            mobj_storedQueryCreator.CreateStoredQuery(mstring_connectionString, getMassTagCountCommandString);			
 		}		
 		
 		/// <summary>
@@ -118,11 +110,9 @@ namespace MassTagDatabaseStoredQueryCreator
 		/// </summary>
 		/// <param name="getMassTagCountCommandFilePath">Path that contains GetMassTagMatchCount stored query text.</param>		
 		/// <returns>Boolean indicating failure (false) or success (true).</returns>
-		public bool CreateGetMassTagsMatchCountFromFile(string getMassTagCountCommandFilePath)
+		public void CreateGetMassTagsMatchCountFromFile(string getMassTagCountCommandFilePath)
 		{   
-			bool val = false;			 
-			val = mobj_storedQueryCreator.CreateStoredQueryFromFile(getMassTagCountCommandFilePath);
-			return val;
+            mobj_storedQueryCreator.CreateStoredQueryFromFile(mstring_connectionString, getMassTagCountCommandFilePath);			
 		}		
     }
 }

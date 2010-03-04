@@ -19,6 +19,12 @@ using System.Data.OleDb;
 
 namespace MassTagDatabaseStoredQueryCreator
 {
+    public enum AccessType
+    {
+        Access2003,
+        Access2007
+    }
+
 	/// <summary>
 	/// Class that can interface a Microsoft Access Database using Jet 4.0 for creating stored queries
 	/// given a stored query string.
@@ -26,26 +32,28 @@ namespace MassTagDatabaseStoredQueryCreator
 	public class clsAccessStoredQueryCreator
 	{			
 		/// <summary>
-		/// connection string to the database.
-		/// </summary>
-		private string mstr_connectionString;
-
-		/// <summary>
 		/// Default constructor.
 		/// </summary>
 		public clsAccessStoredQueryCreator()
-		{
-			mstr_connectionString = null;	
+		{		
 		}
 
-		/// <summary>
-		/// Default constructor for the Access Database stored query creator.  
-		/// </summary>
-		/// <param name="filename">Full path to the database location.</param>
-		public clsAccessStoredQueryCreator(string databasePath)
-		{
-			mstr_connectionString = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + databasePath;
-		}
+        public static string GetConnectionString(AccessType type, string databasePath)
+        {
+            string connectionString = "";
+            switch (type)
+            {
+                case AccessType.Access2003: 
+                    connectionString = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + databasePath;
+                    break;
+                case AccessType.Access2007:
+                default:
+                    connectionString = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + databasePath;
+                    break;
+            }
+
+            return connectionString;
+        }
 	
 		/// <summary>
 		/// Reads a file with the stored query in it.
@@ -73,24 +81,20 @@ namespace MassTagDatabaseStoredQueryCreator
 		/// </summary>
 		/// <param name="command">Stored query command to add to database.</param>
 		/// <returns>True if success, false if exception was thrown.</returns>
-		public bool CreateStoredQuery(string command)
-		{
-			if (mstr_connectionString == null || mstr_connectionString == "")
-				throw new InvalidOperationException("The database class was not supplied a connection string.");
-
+		public void CreateStoredQuery(string connectionString, string command)
+		{						
 			try
 			{			 
 				command			= command.Replace("ALTER", "CREATE");
 				command			= command.Replace("@", "");
 				command			= command.Replace("dbo.", "");
-				CreateStoredProcedure(mstr_connectionString, command);
+				CreateStoredProcedure(connectionString, command);
 			}
 			catch(Exception ex)
 			{
 				System.Diagnostics.Trace.WriteLine(ex.Message);
-				return false;
-			}
-			return true;
+                throw new Exception("Could not create the stored query.", ex);
+			}			
 		}
 
 		/// <summary>
@@ -99,9 +103,9 @@ namespace MassTagDatabaseStoredQueryCreator
 		/// </summary>
 		/// <param name="filePath">Path of stored query to add to database.</param>
 		/// <returns>True if creating the stored procedure was a success.  False if the creation failed.  This method internally handles database exceptions thrown.</returns>
-		public bool CreateStoredQueryFromFile(string filePath)
+		public void CreateStoredQueryFromFile(string connectionString, string filePath)
 		{
-			return CreateStoredQuery(ReadFile(filePath));
+			CreateStoredQuery(connectionString, ReadFile(filePath));
 		}
 	
 		/// <summary>

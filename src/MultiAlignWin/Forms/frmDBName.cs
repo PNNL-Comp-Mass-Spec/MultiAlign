@@ -1270,8 +1270,8 @@ namespace MultiAlignWin
 				}
 			}
 			else
-			{			
-				string connectionString		 =  string.Format("Provider=Microsoft.Jet.OLEDB.4.0;Data Source={0}", txtDataBasePath.Text);
+			{
+                string connectionString = string.Format("Provider=Microsoft.ACE.OLEDB.12.0;Data Source={0}", txtDataBasePath.Text);
 				OleDbConnection myConnection = new OleDbConnection(connectionString);
 				string commandName = "GetMassTagMatchCount" ;
 
@@ -1280,8 +1280,8 @@ namespace MultiAlignWin
 					myConnection.Open();
 				}
 				catch (OleDbException ex)
-				{
-					Console.WriteLine(ex.Message +  "DB get information error") ;  
+				{                   
+                    Console.WriteLine(ex.Message + "DB get information error");                    
 					return 0;
 				}
 

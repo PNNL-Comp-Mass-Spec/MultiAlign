@@ -31,9 +31,8 @@ namespace MassTagDatabaseStoredQueryCreator
 		/// Default constructor for interfacing the Access database to run stored queries.
 		/// </summary>
 		/// <param name="filename">Full path to database to query from.</param>
-		public clsAccessMassTagDBStoredQueryReader(string filename)
-		{
-			mstr_connectionString = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" +  filename;
+		public clsAccessMassTagDBStoredQueryReader(string connectionString)
+		{			
 			mstr_getMassTagToProteinNameMapStoredQueryName = STORED_QUERYNAME_MASS_TAG_PROTEIN_NAME_MAP;
 		}
 
