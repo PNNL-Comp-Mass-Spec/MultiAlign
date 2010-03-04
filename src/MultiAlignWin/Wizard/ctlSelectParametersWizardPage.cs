@@ -55,6 +55,11 @@ namespace MultiAlignWin
         /// Flag indicating whether or not to use SMART.
         /// </summary>
         private bool mbool_useSMART;
+
+		/// <summary>
+		/// Flag indicating whether or not to use Predefined features Only.
+		/// </summary>
+		private bool mbool_usePredefinedFeaturesOnly;
        
         /// <summary>
         /// Default constructor for a parameter wizard page.
@@ -62,8 +67,9 @@ namespace MultiAlignWin
         public ctlSelectParametersWizardPage()
         {
             InitializeComponent();
-            mbool_alignToDatabase   = false;
-            mbool_useSMART          = false;
+            mbool_alignToDatabase			= false;
+            mbool_useSMART					= false;
+			mbool_usePredefinedFeaturesOnly = false;
         }
 
         #region Windows Designer
@@ -537,6 +543,21 @@ namespace MultiAlignWin
                 peakMatchingButton.Enabled = (value == false);
             }
         }
+		/// <summary>
+		/// Gets or sets whether to use Predefined Features only.
+		/// </summary>
+		public bool UsePredefinedFeaturesOnly
+		{
+			get
+			{
+				return mbool_usePredefinedFeaturesOnly;
+			}
+			set
+			{
+				mbool_usePredefinedFeaturesOnly = value;
+				mbtnPeakPickingParameters.Enabled = !value;
+			}
+		}
         /// <summary>
         /// Gets the selected index to use as the baseline for alignment.
         /// </summary>

@@ -677,7 +677,7 @@ namespace MultiAlignWin
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void MoveToLoadDataSourcePage(object sender, WizardPageEventArgs e)
-        {            
+        {
            e.NewPage                                = mctl_loadDatasetPage.Name;
            mctl_loadDatasetPage.ExtraButtonVisible = false;
            SetStep(CONST_STEP_LOAD, mlist_wizardSteps[CONST_STEP_LOAD]);
@@ -688,11 +688,24 @@ namespace MultiAlignWin
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void MoveToParametersPage(object sender, WizardPageEventArgs e)
-        {            
-            string[] datasetNames                   = DataSetNames;         
-            mctl_selectParametersPage.DataSetNames  = datasetNames; 
-            e.NewPage                               = mctl_selectParametersPage.Name;
-            mctl_selectParametersPage.NextButtonText = "Next >";
+        {
+            string[] datasetNames                   = DataSetNames;
+			bool usePredefinedFeaturesOnly			= true;
+
+			foreach (string dataset in datasetNames)
+			{
+				if (!dataset.Contains("_LCMSFeatures"))
+				{
+					// At least 1 non-Predefined-Features file
+					usePredefinedFeaturesOnly = false;
+					break;
+				}
+			}
+
+			mctl_selectParametersPage.UsePredefinedFeaturesOnly = usePredefinedFeaturesOnly;
+            mctl_selectParametersPage.DataSetNames				= datasetNames; 
+            e.NewPage											= mctl_selectParametersPage.Name;
+            mctl_selectParametersPage.NextButtonText			= "Next >";
 
             /// 
             /// Set the parameters
@@ -710,8 +723,8 @@ namespace MultiAlignWin
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void MoveToDefineFactorsPage(object sender, WizardPageEventArgs e)
-		{			
-			string [] Aliases = FileAliases;			
+		{
+			string[] Aliases = FileAliases;
 			if (Aliases == null || Aliases.Length == 0)
 			{
 				MessageBox.Show("No files found, or the Aliases not set","Oops!", MessageBoxButtons.OK,MessageBoxIcon.Warning) ;
