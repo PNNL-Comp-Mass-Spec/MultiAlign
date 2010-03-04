@@ -69,9 +69,11 @@ namespace MultiAlignEngine
 			mstr_message	= new System::String(S"Creating UMC's - Clustering Isotope Peaks"); 
 			mobj_umc_creator->CreateUMCsSinglyLinkedWithAll(); 
 
+			/*
 			menm_state		= MultiAlignEngine::Features::enmState::CLUSTERING; 
 			mstr_message	= new System::String(S"Creating UMC's - Clustering Isotope Peaks"); 
 			mobj_umc_creator->CreateUMCsSinglyLinkedWithAll(); 
+			*/
 			
 			menm_state		= SUMMARIZING; 
 			mstr_message	= new System::String(S"Filtering out short isotopic clusters for UMC's"); 

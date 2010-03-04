@@ -136,7 +136,7 @@ namespace MultiAlignEngine
 				double  mdouble_max_abundance; 
 				double  mdouble_sum_abundance;
 				double	marray_chargeStatesAbundances __gc[];
-				short	mshort_spectral_count;
+				int		mint_spectral_count;
 				float	mfloat_drift_time;
 				//clsCluster *umcCluster;
 
@@ -232,6 +232,15 @@ namespace MultiAlignEngine
 					return mint_scan_aligned;
 				}
 
+				__property int get_SpectralCount()
+				{
+					return mint_spectral_count;
+				}
+
+				__property void set_SpectralCount(int value){
+					mint_spectral_count = value;
+				}
+
 				__property void set_ScanAligned(int value){
 					mint_scan_aligned = value;
 				}
@@ -252,15 +261,6 @@ namespace MultiAlignEngine
 
 				__property void set_ChargeMax(short value){
 					mshort_class_highest_charge = value;
-				}
-
-				__property short get_SpectralCount()
-				{
-					return mshort_spectral_count;
-				}
-
-				__property void set_SpectralCount(short value){
-					mshort_spectral_count = value;
 				}
 
 				__property double get_AbundanceMax()

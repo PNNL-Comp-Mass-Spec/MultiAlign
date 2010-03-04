@@ -215,10 +215,10 @@ namespace PNNLProteomics.MultiAlign
 				{
 					umc = new clsUMC();
 					umc.Id = currentId;
-					if (m_columnMap.ContainsKey("Umc.ScanStart"))				umc.ScanStart = Int16.Parse(columns[m_columnMap["Umc.ScanStart"]]);
-					if (m_columnMap.ContainsKey("Umc.ScanEnd"))					umc.ScanEnd = Int16.Parse(columns[m_columnMap["Umc.ScanEnd"]]);
-					if (m_columnMap.ContainsKey("Umc.Scan"))					umc.Scan = Int16.Parse(columns[m_columnMap["Umc.Scan"]]);
-					if (m_columnMap.ContainsKey("Umc.ScanAligned"))				umc.ScanAligned = Int16.Parse(columns[m_columnMap["Umc.ScanAligned"]]);
+					if (m_columnMap.ContainsKey("Umc.ScanStart"))				umc.ScanStart = int.Parse(columns[m_columnMap["Umc.ScanStart"]]);
+					if (m_columnMap.ContainsKey("Umc.ScanEnd"))					umc.ScanEnd = int.Parse(columns[m_columnMap["Umc.ScanEnd"]]);
+					if (m_columnMap.ContainsKey("Umc.Scan"))					umc.Scan = int.Parse(columns[m_columnMap["Umc.Scan"]]);
+					if (m_columnMap.ContainsKey("Umc.ScanAligned"))				umc.ScanAligned = int.Parse(columns[m_columnMap["Umc.ScanAligned"]]);
 					if (m_columnMap.ContainsKey("Umc.Net"))						umc.Net = Double.Parse(columns[m_columnMap["Umc.Net"]]);
 					if (m_columnMap.ContainsKey("Umc.Mass"))					umc.Mass = Double.Parse(columns[m_columnMap["Umc.Mass"]]);
 					if (m_columnMap.ContainsKey("Umc.MassCalibrated"))			umc.MassCalibrated = Double.Parse(columns[m_columnMap["Umc.MassCalibrated"]]);
@@ -226,7 +226,7 @@ namespace PNNLProteomics.MultiAlign
 					if (m_columnMap.ContainsKey("Umc.AbundanceMax"))			umc.AbundanceMax = Double.Parse(columns[m_columnMap["Umc.AbundanceMax"]]);
 					if (m_columnMap.ContainsKey("Umc.ChargeRepresentative"))	umc.ChargeRepresentative = (short)Int16.Parse(columns[m_columnMap["Umc.ChargeRepresentative"]]);
 					if (m_columnMap.ContainsKey("Umc.ChargeMax"))				umc.ChargeMax = (short)Int16.Parse(columns[m_columnMap["Umc.ChargeMax"]]);
-					if (m_columnMap.ContainsKey("Umc.SpectralCount"))			umc.SpectralCount = (short)Int16.Parse(columns[m_columnMap["Umc.SpectralCount"]]);
+					if (m_columnMap.ContainsKey("Umc.SpectralCount"))			umc.SpectralCount = int.Parse(columns[m_columnMap["Umc.SpectralCount"]]);
 					if (m_columnMap.ContainsKey("Umc.MZForCharge"))				umc.MZForCharge = Double.Parse(columns[m_columnMap["Umc.MZForCharge"]]);
 					if (m_columnMap.ContainsKey("Umc.DriftTime"))				umc.DriftTime = float.Parse(columns[m_columnMap["Umc.DriftTime"]]);
 					umcList.Add(umc);
