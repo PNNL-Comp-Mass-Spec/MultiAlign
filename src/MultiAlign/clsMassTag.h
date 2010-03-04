@@ -32,6 +32,7 @@ namespace MultiAlignEngine
 			double mdblPNET; 
 			double mdblHighXCorr; 
 			double mdblStdGANET; 
+			double mdblDriftTime;
 			double mdblMaxDiscriminant;
 			int mintNumObsPassingFilter; 
 			short mshortModCount; 
@@ -59,6 +60,15 @@ namespace MultiAlignEngine
 
 			__property void set_Mass(double value){
 				mdblMonoMass = value;
+			}
+
+			__property double get_DriftTime()
+			{
+				return mdblDriftTime;
+			}
+
+			__property void set_DriftTime(double value){
+				mdblDriftTime = value;
 			}
 
 			__property double get_NetAverage()

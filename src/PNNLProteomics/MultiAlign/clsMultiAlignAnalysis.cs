@@ -403,19 +403,29 @@ namespace PNNLProteomics.Data.Analysis
         /// </summary>
         public void LoadMassTagDB()
         {
-            menmState = enmState.LOADING_MASSTAGS;
-            Thread procThread       = new Thread(new ThreadStart(MonitorMassTagDBLoading));
-            mthread_currentStatus    = procThread;
-            procThread.Name = "Loading Mass Tag Database Thread Monitor";
+            menmState = enmState.LOADING_MASSTAGS;            
+            /// 
+            /// Make sure the path is not to an XAMT database
+            /// 
+            if (mobjMassTagDBOptions.menm_databaseType == MassTagDatabaseType.ACCESS &&
+                        System.IO.Path.GetExtension(mobjMassTagDBOptions.mstr_databaseFilePath) == ".txt")
+            {
+                XAMTReader reader = new XAMTReader();
+                mobjMassTagDB = reader.ReadXAMTDatabase(mobjMassTagDBOptions.mstr_databaseFilePath);
+            }
+            else
+            {
+                Thread procThread = new Thread(new ThreadStart(MonitorMassTagDBLoading));
+                mthread_currentStatus = procThread;
+                procThread.Name = "Loading Mass Tag Database Thread Monitor";
 
-            mobjMassTagDBLoader = new MultiAlignEngine.MassTags.clsMTDBLoader(mobjMassTagDBOptions);
-            procThread.Start();
+                mobjMassTagDBLoader = new MultiAlignEngine.MassTags.clsMTDBLoader(mobjMassTagDBOptions);
+                procThread.Start();
 
-            mobjMassTagDB   = mobjMassTagDBLoader.LoadMassTagDatabase();
-            StatusMessage(0, mobjMassTagDBLoader.StatusMessage);
+                mobjMassTagDB = mobjMassTagDBLoader.LoadMassTagDatabase();
+                StatusMessage(0, mobjMassTagDBLoader.StatusMessage);
+            }            
             menmState = enmState.LOADING_MASSTAGS_COMPLETE;
-
-            
         }
         #endregion
 		

@@ -37,6 +37,7 @@ namespace MultiAlignEngine
 
 		inline void CopyMassTag(const clsMassTag* mtSrc, MultiAlignEngine::MassTags::MassTag &massTagDest)
 		{
+			massTagDest.mdblDriftTime = mtSrc->mdblDriftTime;
 			massTagDest.mintMassTagId = mtSrc->mintMassTagId; 
 			massTagDest.mdblMonoMass = mtSrc->mdblMonoMass;  
 			massTagDest.mdblAvgGANET = mtSrc->mdblAvgGANET;  
@@ -63,6 +64,7 @@ namespace MultiAlignEngine
 		{
 			clsMassTag *massTagDest = new clsMassTag(); 
 			massTagDest->mintMassTagId = mtSrc.mintMassTagId; 
+			massTagDest->mdblDriftTime = mtSrc.mdblDriftTime;
 			massTagDest->mdblMonoMass = mtSrc.mdblMonoMass;  
 			massTagDest->mdblAvgGANET = mtSrc.mdblAvgGANET;  
 			massTagDest->mdblPNET = mtSrc.mdblPNET;  

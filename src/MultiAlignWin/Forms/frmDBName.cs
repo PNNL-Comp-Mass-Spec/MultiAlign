@@ -1760,7 +1760,7 @@ namespace MultiAlignWin
 			mlblDBdescription.Text = "None selected" ;
 
 			OpenFileDialog dialog = new OpenFileDialog();
-			dialog.Filter = "Access Databases (*.mdb)|*.mdb";
+            dialog.Filter = "Access Databases (*.mdb)|*.mdb|XAMT Tab Delimited (*.txt)|*.txt; ";
 			dialog.FileName = "";						
 			if (DialogResult.OK  == dialog.ShowDialog())
 			{

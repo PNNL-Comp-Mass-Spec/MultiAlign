@@ -87,6 +87,7 @@
     <Compile Include="Filters\MassRangeFilter.cs" />
     <Compile Include="Filters\NetFilter.cs" />
     <Compile Include="Filters\SpectralCountFilter.cs" />
+    <Compile Include="IO\XAMTReader.cs" />
     <Compile Include="MultiAlign\classMultiAnalysisConverters.cs" />
     <Compile Include="MultiAlign\clsMultiAlignAnalysis.cs" />
     <Compile Include="Analysis\clsNormalize.cs" />
