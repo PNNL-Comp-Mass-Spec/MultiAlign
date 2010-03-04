@@ -41,14 +41,8 @@ namespace MultiAlignEngine
 				cmd->Parameters->Add(new System::Data::OleDb::OleDbParameter("@MinimumHighNormalizedScore", __box(mobjMassTagDBOptions->mfltMinXCorr)));
 				cmd->Parameters->Add(new System::Data::OleDb::OleDbParameter("@MinimumPMTQualityScore", __box(mobjMassTagDBOptions->mdecimalMinPMTScore)));
 				cmd->Parameters->Add(new System::Data::OleDb::OleDbParameter("@MinimumHighDiscriminantScore", __box(mobjMassTagDBOptions->mdblMinDiscriminant)));
-				cmd->Parameters->Add(new System::Data::OleDb::OleDbParameter("@MinimumPeptideProphetProbability", __box(mobjMassTagDBOptions->mdblPeptideProphetVal)));
+				cmd->Parameters->Add(new System::Data::OleDb::OleDbParameter("@MinimumPeptideProphetProbability", __box(mobjMassTagDBOptions->mdblPeptideProphetVal)));			
 				
-				cmd->Parameters->Add(new System::Data::OleDb::OleDbParameter("@MT.Is_Confirmed", false));
-				cmd->Parameters->Add(new System::Data::OleDb::OleDbParameter("@MTPPS.PepProphet_Probability_Avg_CS1", 0));
-				cmd->Parameters->Add(new System::Data::OleDb::OleDbParameter("@MTPPS.PepProphet_Probability_Avg_CS2", 0));
-				cmd->Parameters->Add(new System::Data::OleDb::OleDbParameter("@MTPPS.PepProphet_Probability_Avg_CS3", 0));
-				
-
 				// execute the command
 				menmStatus = DBConnectionStatus::Running; 
 				rdr = cmd->ExecuteReader();
