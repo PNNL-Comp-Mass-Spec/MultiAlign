@@ -83,6 +83,7 @@ namespace MultiAlignWin
         private ToolStripStatusLabel toolStripStatusLabel1;
         private ToolStripMenuItem asIsToolStripMenuItem;
         private ToolStripMenuItem forDanteToolStripMenuItem;
+        private ToolStripMenuItem asSQLiteToolStripMenuItem;
         private IContainer components;
         #endregion
 
@@ -133,6 +134,7 @@ namespace MultiAlignWin
 
             this.saveTableToolStripMenuItem.Click   += new EventHandler(mobjClusterGrid.SaveTableDelegateMethod);
             this.forDanteToolStripMenuItem.Click    += new EventHandler(mobjClusterGrid.SaveDanteDelegate);
+            this.asSQLiteToolStripMenuItem.Click    += new EventHandler(mobjClusterGrid.SaveAsSQLiteDelegate);
             this.asIsToolStripMenuItem.Click        += new EventHandler(mobjClusterGrid.SaveAsIsDelegate);
             this.mtoolStrBtnSaveTable.Click         += new EventHandler(mobjClusterGrid.SaveTableDelegateMethod);
 
@@ -405,6 +407,7 @@ namespace MultiAlignWin
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.asIsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.forDanteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.asSQLiteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.expandPanelBottom)).BeginInit();
             this.panelCharts.SuspendLayout();
             this.mtabcontrol_data.SuspendLayout();
@@ -640,7 +643,8 @@ namespace MultiAlignWin
             // 
             this.saveTableToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.asIsToolStripMenuItem,
-            this.forDanteToolStripMenuItem});
+            this.forDanteToolStripMenuItem,
+            this.asSQLiteToolStripMenuItem});
             this.saveTableToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("saveTableToolStripMenuItem.Image")));
             this.saveTableToolStripMenuItem.MergeAction = System.Windows.Forms.MergeAction.Insert;
             this.saveTableToolStripMenuItem.MergeIndex = 4;
@@ -891,6 +895,12 @@ namespace MultiAlignWin
             this.forDanteToolStripMenuItem.Name = "forDanteToolStripMenuItem";
             this.forDanteToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.forDanteToolStripMenuItem.Text = "For Dante";
+            // 
+            // asSQLiteToolStripMenuItem
+            // 
+            this.asSQLiteToolStripMenuItem.Name = "asSQLiteToolStripMenuItem";
+            this.asSQLiteToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.asSQLiteToolStripMenuItem.Text = "As SQLite DB";
             // 
             // frmDataView
             // 

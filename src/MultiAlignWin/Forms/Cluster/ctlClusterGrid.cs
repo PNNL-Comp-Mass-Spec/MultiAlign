@@ -15,6 +15,8 @@ using MultiAlignEngine.PeakMatching;
 
 using MultiAlignWin.Forms.Filters;
 using PNNLProteomics.Filters;
+using PNNLProteomics.MultiAlign.Hibernate;
+using PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate;
 
 namespace MultiAlignWin
 {
@@ -104,6 +106,7 @@ namespace MultiAlignWin
         public delegate void SaveTableDelegate(object sender, EventArgs e);
         public SaveTableDelegate SaveTableDelegateMethod;
         public SaveTableDelegate SaveDanteDelegate;
+        public SaveTableDelegate SaveAsSQLiteDelegate;
         public SaveTableDelegate SaveAsIsDelegate;
 
 
@@ -122,6 +125,7 @@ namespace MultiAlignWin
 
             SaveTableDelegateMethod = new SaveTableDelegate(mnu_save_grid_Click);
             SaveDanteDelegate       = new SaveTableDelegate(mnu_save_dante_Click);
+            SaveAsSQLiteDelegate    = new SaveTableDelegate(mnu_save_sqlite_Click);
             SaveAsIsDelegate        = new SaveTableDelegate(mnu_save_grid_Click);
 
             mlist_clusterFilters    = new List<IFilter<clsCluster>>();
@@ -756,6 +760,7 @@ namespace MultiAlignWin
             ToolStripMenuItem mnu_columns_mass_tags = new ToolStripMenuItem("Mass Tags/Proteins");
             ToolStripMenuItem mnu_save_grid         = new ToolStripMenuItem("Save Table");
             ToolStripMenuItem mnu_save_dante        = new ToolStripMenuItem("For Dante");
+            ToolStripMenuItem mnu_save_sqlite       = new ToolStripMenuItem("As SQLite");
             ToolStripMenuItem mnu_save_asis         = new ToolStripMenuItem("As Displayed");
             ToolStripMenuItem mnu_filters           = new ToolStripMenuItem("Filter");
 
@@ -800,8 +805,9 @@ namespace MultiAlignWin
             /// Save as is or Dante for exporting the data.
             /// 
             mnu_save_dante.Click            += new EventHandler(mnu_save_dante_Click);
+            mnu_save_sqlite.Click           += new EventHandler(mnu_save_sqlite_Click);
             mnu_save_asis.Click             += new EventHandler(mnu_save_grid_Click);
-            mnu_save_grid.DropDownItems.AddRange(new ToolStripItem[] { mnu_save_asis, mnu_save_dante });
+            mnu_save_grid.DropDownItems.AddRange(new ToolStripItem[] { mnu_save_asis, mnu_save_dante, mnu_save_sqlite });
 
 
             mnu_expression.Click            += new EventHandler(mnu_expression_Click);
@@ -1196,7 +1202,38 @@ namespace MultiAlignWin
 		{
 			clsNormalize objNormalizer = new clsNormalize() ; 
 			objNormalizer.NormalizeData(mobjAnalysis) ; 
-		}         
+		}
+
+        private void mnu_save_sqlite_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog fileDialog = new System.Windows.Forms.SaveFileDialog();
+            fileDialog.AddExtension = true;
+            fileDialog.CheckPathExists = true;
+            fileDialog.DefaultExt = "*.db3";
+            fileDialog.DereferenceLinks = true;
+            fileDialog.ValidateNames = true;
+            fileDialog.Filter = "SQLite DB3 files (*.db3)|*.db3";
+            fileDialog.OverwritePrompt = true;
+
+            if (fileDialog.ShowDialog() != DialogResult.OK)
+            {
+                Console.WriteLine("File Dialog Result was not OK");
+                return;
+            }
+
+            NHibernateUtil.SetDbLocation(fileDialog.FileName);
+            UmcDAOHibernate umcDAOHibernate = new UmcDAOHibernate();
+            
+            clsUMCData umcData = mobjAnalysis.UMCData;
+
+            for (int i = 0; i < 1; i++)
+            //for (int i = 0; i < umcData.NumDatasets; i++)
+            {
+                clsUMC[] umcArray = mobjAnalysis.UMCData.GetUMCS(i);
+                umcDAOHibernate.AddAll(umcArray);   
+            }
+        }
+
 		private void mnu_save_grid_Click(object sender, EventArgs e)
 		{
 			try 
