@@ -81,7 +81,7 @@ namespace PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate
         }
 
         /// <summary>
-        /// Adds a Set of Objects to the Database.
+        /// Adds a List of Objects to the Database.
         /// </summary>
 		/// <param name="tList">List of Objects to be added</param>
 		public void AddAll(List<T> tList)
@@ -91,6 +91,25 @@ namespace PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate
                 using (ITransaction transaction = session.BeginTransaction())
                 {
                     foreach (T t in tList)
+                    {
+                        session.Save(t);
+                    }
+                    transaction.Commit();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Adds an Array of Objects to the Database.
+        /// </summary>
+        /// <param name="tArray">Array of Objects to be added</param>
+        public void AddAll(T[] tArray)
+        {
+            using (ISession session = GetSession())
+            {
+                using (ITransaction transaction = session.BeginTransaction())
+                {
+                    foreach (T t in tArray)
                     {
                         session.Save(t);
                     }
@@ -135,6 +154,25 @@ namespace PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate
         }
 
         /// <summary>
+        /// Update method will not save a new Object; it will only update the Object if it already exists in the Database.
+        /// </summary>
+        /// <param name="tArray">Array of Objects to be updated</param>
+        public void UpdateAll(T[] tArray)
+        {
+            using (ISession session = GetSession())
+            {
+                using (ITransaction transaction = session.BeginTransaction())
+                {
+                    foreach (T t in tArray)
+                    {
+                        session.Update(t);
+                    }
+                    transaction.Commit();
+                }
+            }
+        }
+
+        /// <summary>
         /// Deletes an Object from the Database.
         /// </summary>
         /// <param name="t">Object to be deleted</param>
@@ -151,7 +189,7 @@ namespace PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate
         }
 
         /// <summary>
-        /// Deletes a Set of Obejcts from the Database.
+        /// Deletes a List of Obejcts from the Database.
         /// </summary>
 		/// <param name="tList">List of Objects to be deleted</param>
 		public void DeleteAll(List<T> tList)
@@ -161,6 +199,25 @@ namespace PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate
                 using (ITransaction transaction = session.BeginTransaction())
                 {
                     foreach (T t in tList)
+                    {
+                        session.Delete(t);
+                    }
+                    transaction.Commit();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Deletes an Array of Obejcts from the Database.
+        /// </summary>
+        /// <param name="tArray">Array of Objects to be deleted</param>
+        public void DeleteAll(T[] tArray)
+        {
+            using (ISession session = GetSession())
+            {
+                using (ITransaction transaction = session.BeginTransaction())
+                {
+                    foreach (T t in tArray)
                     {
                         session.Delete(t);
                     }
