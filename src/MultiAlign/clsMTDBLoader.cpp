@@ -281,8 +281,6 @@ namespace MultiAlignEngine
 				cmd->Parameters->Add(new System::Data::OleDb::OleDbParameter("@MinimumHighNormalizedScore", __box(mobjMassTagDBOptions->mfltMinXCorr)));
 				cmd->Parameters->Add(new System::Data::OleDb::OleDbParameter("@MinimumPMTQualityScore", __box(mobjMassTagDBOptions->mdecimalMinPMTScore)));
 				cmd->Parameters->Add(new System::Data::OleDb::OleDbParameter("@MinimumHighDiscriminantScore", __box(mobjMassTagDBOptions->mdblMinDiscriminant)));
-				cmd->Parameters->Add(new System::Data::OleDb::OleDbParameter("@ExperimentFilter", mobjMassTagDBOptions->mstrExperimentFilter));
-				cmd->Parameters->Add(new System::Data::OleDb::OleDbParameter("@ExperimentExclusionFilter", mobjMassTagDBOptions->mstrExperimentExclusionFilter));				
 				cmd->Parameters->Add(new System::Data::OleDb::OleDbParameter("@MinimumPeptideProphetProbability", __box(mobjMassTagDBOptions->mdblPeptideProphetVal)));
 
 				// execute the command
@@ -304,9 +302,9 @@ namespace MultiAlignEngine
 						int id = System::Convert::ToInt32(rdr->Item[S"Mass_Tag_ID"]); 
 						System::String *refName = S"";
 						int proteinId = 0; 
-						if (rdr->Item[S"Protein_DB_ID"] != System::DBNull::Value) 
+						if (rdr->Item[S"Protein_ID"] != System::DBNull::Value) 
 						{
-							proteinId = System::Convert::ToInt32(rdr->Item[S"Protein_DB_ID"]);
+							proteinId = System::Convert::ToInt32(rdr->Item[S"Protein_ID"]);
 						}
 						if (rdr->Item[S"Reference"] != System::DBNull::Value) 
 						{
