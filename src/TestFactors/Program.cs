@@ -4,8 +4,7 @@ using System.Windows.Forms;
 using System.Collections;
 using System.Collections.Generic;
 
-//using MultiAlignWin.Data;
-using MultiAlignWin.Data.Factors;
+using Test.PeakMatching;
 
 namespace Test
 {
@@ -13,27 +12,36 @@ namespace Test
     {        
         static void Main(string[] args)
         {
-
-            TestFactors.Factors.Form1 f = new TestFactors.Factors.Form1();
-            f.ShowDialog();
-
-            bool boolTestFactors = false;
-            bool boolTestHeatmap = false;
-
-            /// 
-            /// Factor tests
-            /// 
-            if (boolTestFactors == true)
+            if (false)
             {
-                Test.TestFactorsProgram.TestFactorClass();
-                Test.TestFactorsProgram.TestNewFactorsForm();
+
+                TestFactors.Factors.Form1 f = new TestFactors.Factors.Form1();
+                f.ShowDialog();
+
+                bool boolTestFactors = false;
+                bool boolTestHeatmap = false;
+
+                /// 
+                /// Factor tests
+                /// 
+                if (boolTestFactors == true)
+                {
+                    Test.TestFactorsProgram.TestFactorClass();
+                    Test.TestFactorsProgram.TestNewFactorsForm();
+                }
+                /// 
+                /// Heatmap tests
+                /// 
+                if (boolTestHeatmap == true)
+                {
+                    Test.classTestHeatMap.TestHeatMap();
+                }
             }
-            /// 
-            /// Heatmap tests
-            /// 
-            if (boolTestHeatmap == true)
+
+            if (true)
             {
-                Test.classTestHeatMap.TestHeatMap();
+                PeakMatchingTest test = new PeakMatchingTest();
+                test.RunTests();
             }
 
             Console.WriteLine("Exit-Press Key");

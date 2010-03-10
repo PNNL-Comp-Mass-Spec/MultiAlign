@@ -4,8 +4,9 @@ using System.Collections;
 using System.Windows.Forms;
 using System.Collections.Generic;
 
-using MultiAlignWin.Data;
-using MultiAlignWin.Data.Factors;
+
+using PNNLProteomics.Data.Factors;
+using MultiAlignWin.Forms.Factors;
 
 namespace Test
 {
