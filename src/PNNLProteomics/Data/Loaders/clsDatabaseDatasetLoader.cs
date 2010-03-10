@@ -158,7 +158,7 @@ namespace PNNLProteomics.Data.Loaders
                         /// 
                         /// SELECT
                         /// 
-				        selectQry = "SELECT DISTINCT    ";
+				        /*selectQry = "SELECT DISTINCT    ";
                         selectQry += "  dbo.T_Dataset.Dataset_ID AS DatasetID " ;                               // 0
 				        selectQry += ", dbo.t_storage_path.SP_vol_name_client as volName " ;                    // 1 
 				        selectQry += ", dbo.t_storage_path.SP_path as path " ;                                  // 2
@@ -198,11 +198,13 @@ namespace PNNLProteomics.Data.Loaders
                         /// WHERE
                         /// 
                         selectQry += " WHERE  (dbo.T_Analysis_Job.AJ_analysisToolID IN (2, 7, 10, 11, 12, 16, 18))";
-                        selectQry += "         AND dbo.T_Dataset.Dataset_Num LIKE \'" + field + "\'";                            
+                        selectQry += "         AND dbo.T_Dataset.Dataset_Num LIKE \'" + field + "\'";  
+                         * */
+                        selectQry = "SELECT * FROM V_Analysis_Job_Export_MultiAlign WHERE datasetName LIKE \'" + field + "\' AND ToolID IN (2, 7, 10, 11, 12, 16, 18)";
                         break;
                     
                     case CONST_QUERY_DATASET_ID:
-                        selectQry = "SELECT  DISTINCT dbo.T_Dataset.Dataset_ID AS DatasetID ";
+                        /*selectQry = "SELECT  DISTINCT dbo.T_Dataset.Dataset_ID AS DatasetID ";
                         selectQry += ",dbo.t_storage_path.SP_vol_name_client as volName ";
                         selectQry += ", dbo.t_storage_path.SP_path as path ";
                         selectQry += ", dbo.T_Dataset.DS_folder_name as datasetFolder ";
@@ -236,7 +238,8 @@ namespace PNNLProteomics.Data.Loaders
                         selectQry += " INNER JOIN dbo.V_Dataset_Folder_Paths ON dbo.T_Dataset.Dataset_ID = dbo.V_Dataset_Folder_Paths.Dataset_ID";
                         selectQry += " WHERE  (dbo.T_Analysis_Job.AJ_analysisToolID IN (2, 7, 10, 11, 12, 16, 18))";
                         selectQry += " AND dbo.T_Dataset.Dataset_ID = " + field;
-
+                         * */
+                        selectQry = "SELECT * FROM V_Analysis_Job_Export_MultiAlign WHERE DatasetID = " + field + " AND ToolID IN (2, 7, 10, 11, 12, 16, 18)";                        
                         break;
 			    }				    
                 return selectQry;
@@ -399,7 +402,14 @@ namespace PNNLProteomics.Data.Loaders
                     datasetInfo.mstrResultsFolder           = Convert.ToString(row[4]);
                     datasetInfo.mstrAnalysisJobId           = Convert.ToString(row[6]);
                     datasetInfo.mintColumnID                = Convert.ToInt32(row[7]);
-                    datasetInfo.mdateAcquisitionStart       = Convert.ToDateTime(row[8]);
+                    try
+                    {
+                        datasetInfo.mdateAcquisitionStart = Convert.ToDateTime(row[8]);
+                    }
+                    catch
+                    {
+                        datasetInfo.mdateAcquisitionStart = DateTime.MinValue;
+                    }
                     string labelMedia                       = Convert.ToString(row[9]);
 
                     labelMedia.Replace("_", "");
