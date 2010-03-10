@@ -80,7 +80,7 @@ namespace MultiAlignWin.Drawing
             chart                           = new ctlScatterChart();
             chart.XAxisLabel                = "Scan #";
             chart.YAxisLabel                = "NET Residual";
-            chart.Title                     = analysis.UMCData.DatasetName[datasetNum] + " NET Residuals";
+            chart.Title                     = "NET Residuals " + analysis.UMCData.DatasetName[datasetNum];
             
             clsShape shape                  = new BubbleShape(CONST_PRE_POINT_SIZE, false);
             clsPlotParams plt_params        = new clsPlotParams(shape, Color.Blue);
@@ -113,7 +113,10 @@ namespace MultiAlignWin.Drawing
             ctlScatterChart chart = null;
 
             if (analysis.AlignmentData.Count < datasetNum)
-                return null; 
+                return null;
+
+
+            string name = analysis.FileNames[datasetNum];
 
             /// 
             /// Set the data for the chart. 
@@ -124,7 +127,7 @@ namespace MultiAlignWin.Drawing
             chart = new ctlScatterChart();
             chart.XAxisLabel = "Scan #";
             chart.YAxisLabel = "Mass Residual";
-            chart.Title = analysis.UMCData.DatasetName[datasetNum] + " Mass vs Scan Residual";
+            chart.Title = "Mass vs Scan Residual" + name;
             int ptSize     = CONST_PRE_POINT_SIZE;
             Color clr      = Color.Blue;
             clsShape shape = new BubbleShape(ptSize, false);
@@ -328,7 +331,8 @@ namespace MultiAlignWin.Drawing
             try
             {
                 
-                double [,] massError = analysis.AlignmentData[datasetNum].massErrorHistogram;
+                double [,] massError    = analysis.AlignmentData[datasetNum].massErrorHistogram;
+                string name             = analysis.FileNames[datasetNum];
                 /// 
                 /// Element by element copies take a lot of time but these arrays are not that big
                 /// So we take the perf hit here and just copy this that way.  Improvement could
@@ -343,7 +347,7 @@ namespace MultiAlignWin.Drawing
                     bins[i]  = Convert.ToSingle(massError[i, 0]);
                     freqs[i] = Convert.ToSingle(massError[i, 1]);
                 }                               
-                chart            = new controlHistogram(bins, freqs, "Mass Error Histogram");
+                chart            = new controlHistogram(bins, freqs, "Mass Error Histogram" + name);
                 chart.XAxisLabel = "Mass Error";
                 chart.YAxisLabel = "Count";
             }
@@ -404,6 +408,8 @@ namespace MultiAlignWin.Drawing
             {
 
                 double[,] NETError = analysis.AlignmentData[datasetNum].netErrorHistogram;
+                string name = analysis.FileNames[datasetNum];
+
                 /// 
                 /// Element by element copies take a lot of time but these arrays are not that big
                 /// So we take the perf hit here and just copy this that way.  Improvement could
@@ -418,7 +424,7 @@ namespace MultiAlignWin.Drawing
                     bins[i] = Convert.ToSingle(NETError[i, 0]);
                     freqs[i] = Convert.ToSingle(NETError[i, 1]);
                 }
-                chart            = new controlHistogram(bins, freqs, "NET Error Histogram");
+                chart            = new controlHistogram(bins, freqs, "NET Error Histogram " + name);
                 chart.XAxisLabel = "NET Error";
                 chart.YAxisLabel = "Count";
             }
