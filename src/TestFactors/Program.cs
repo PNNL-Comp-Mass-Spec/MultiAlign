@@ -5,11 +5,14 @@ using System.Collections;
 using System.Collections.Generic;
 
 using Test.PeakMatching;
+using Test.MTDBLoading;
 
 namespace Test
 {
     public class Program
-    {        
+    {
+        static bool testMTDB = true;
+
         static void Main(string[] args)
         {
             if (false)
@@ -41,6 +44,11 @@ namespace Test
             if (true)
             {
                 PeakMatchingTest test = new PeakMatchingTest();
+                test.RunTests();
+            }
+            if (testMTDB)
+            {
+                MTDBLoaderAccessTest test = new MTDBLoaderAccessTest();
                 test.RunTests();
             }
 

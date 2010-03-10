@@ -59,6 +59,7 @@
     </Compile>
     <Compile Include="Factors\testFactors.cs" />
     <Compile Include="Heatmap\testHeatmap.cs" />
+    <Compile Include="MTDBLoading\MTDBLoaderAccessTest.cs" />
     <Compile Include="PeakMatching\IMSPeakMatchingTest.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
