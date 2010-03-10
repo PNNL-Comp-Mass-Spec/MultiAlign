@@ -72,13 +72,13 @@
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="UserAlignmentOptionsCalibrationTypeNetRelationship" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
+      <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="UserAlignmentOptionsCalibrationTypeHybrid" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
+      <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="UserAlignmentOptionsUseRecalibrateMasses" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
+      <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="UserAlignmentOptionsNETTolerance" Type="System.Double" Scope="User">
       <Value Profile="(Default)">0.03</Value>

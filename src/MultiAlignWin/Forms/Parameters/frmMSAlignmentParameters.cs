@@ -132,11 +132,17 @@ namespace MultiAlignWin
             this.label5 = new System.Windows.Forms.Label();
             this.mtextBox_num_mass_delta_bins = new System.Windows.Forms.TextBox();
             this.mtabPageTolerances = new System.Windows.Forms.TabPage();
-            this.mcheckBox_recalibrate = new System.Windows.Forms.CheckBox();
+            this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.mnum_NETBinSize = new System.Windows.Forms.NumericUpDown();
+            this.mnum_massBinSize = new System.Windows.Forms.NumericUpDown();
+            this.label15 = new System.Windows.Forms.Label();
+            this.label14 = new System.Windows.Forms.Label();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.label12 = new System.Windows.Forms.Label();
+            this.mtextBox_mass_tolerance = new System.Windows.Forms.TextBox();
             this.mtextBox_NET_tolerance = new System.Windows.Forms.TextBox();
             this.label10 = new System.Windows.Forms.Label();
-            this.mtextBox_mass_tolerance = new System.Windows.Forms.TextBox();
-            this.label12 = new System.Windows.Forms.Label();
+            this.mcheckBox_recalibrate = new System.Windows.Forms.CheckBox();
             this.mtabPageCalibrationType = new System.Windows.Forms.TabPage();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.mradioButton_hybrid = new System.Windows.Forms.RadioButton();
@@ -149,26 +155,20 @@ namespace MultiAlignWin
             this.mbutton_ok = new System.Windows.Forms.Button();
             this.mbutton_cancel = new System.Windows.Forms.Button();
             this.mbtnDefaults = new System.Windows.Forms.Button();
-            this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.groupBox5 = new System.Windows.Forms.GroupBox();
-            this.label14 = new System.Windows.Forms.Label();
-            this.label15 = new System.Windows.Forms.Label();
-            this.mnum_massBinSize = new System.Windows.Forms.NumericUpDown();
-            this.mnum_NETBinSize = new System.Windows.Forms.NumericUpDown();
             this.mtabControlOptions.SuspendLayout();
             this.mtabPageNetOptions.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.mtabPageMassOptions.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.mtabPageTolerances.SuspendLayout();
+            this.groupBox5.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.mnum_NETBinSize)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.mnum_massBinSize)).BeginInit();
+            this.groupBox4.SuspendLayout();
             this.mtabPageCalibrationType.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.mtabPage_alignmentSplit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.mnum_splitAlignment)).BeginInit();
-            this.groupBox4.SuspendLayout();
-            this.groupBox5.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.mnum_massBinSize)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.mnum_NETBinSize)).BeginInit();
             this.SuspendLayout();
             // 
             // mtabControlOptions
@@ -193,7 +193,7 @@ namespace MultiAlignWin
             this.mtabPageNetOptions.Controls.Add(this.groupBox1);
             this.mtabPageNetOptions.Location = new System.Drawing.Point(4, 22);
             this.mtabPageNetOptions.Name = "mtabPageNetOptions";
-            this.mtabPageNetOptions.Size = new System.Drawing.Size(525, 139);
+            this.mtabPageNetOptions.Size = new System.Drawing.Size(533, 134);
             this.mtabPageNetOptions.TabIndex = 0;
             this.mtabPageNetOptions.Text = "NET Options";
             this.mtabPageNetOptions.UseVisualStyleBackColor = true;
@@ -213,7 +213,7 @@ namespace MultiAlignWin
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(525, 139);
+            this.groupBox1.Size = new System.Drawing.Size(533, 134);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "NET Warp Options";
@@ -307,7 +307,7 @@ namespace MultiAlignWin
             this.mtabPageMassOptions.Controls.Add(this.mtextBox_num_mass_delta_bins);
             this.mtabPageMassOptions.Location = new System.Drawing.Point(4, 22);
             this.mtabPageMassOptions.Name = "mtabPageMassOptions";
-            this.mtabPageMassOptions.Size = new System.Drawing.Size(525, 139);
+            this.mtabPageMassOptions.Size = new System.Drawing.Size(533, 134);
             this.mtabPageMassOptions.TabIndex = 1;
             this.mtabPageMassOptions.Text = "Mass Options";
             this.mtabPageMassOptions.UseVisualStyleBackColor = true;
@@ -322,7 +322,7 @@ namespace MultiAlignWin
             this.groupBox3.Controls.Add(this.label13);
             this.groupBox3.Location = new System.Drawing.Point(11, 77);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(501, 48);
+            this.groupBox3.Size = new System.Drawing.Size(509, 48);
             this.groupBox3.TabIndex = 11;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "LSQ Options";
@@ -461,13 +461,117 @@ namespace MultiAlignWin
             this.mtabPageTolerances.Text = "Tolerances and Histograms";
             this.mtabPageTolerances.UseVisualStyleBackColor = true;
             // 
-            // mcheckBox_recalibrate
+            // groupBox5
             // 
-            this.mcheckBox_recalibrate.Location = new System.Drawing.Point(11, 110);
-            this.mcheckBox_recalibrate.Name = "mcheckBox_recalibrate";
-            this.mcheckBox_recalibrate.Size = new System.Drawing.Size(162, 16);
-            this.mcheckBox_recalibrate.TabIndex = 14;
-            this.mcheckBox_recalibrate.Text = "Recalibrate Masses";
+            this.groupBox5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox5.Controls.Add(this.mnum_NETBinSize);
+            this.groupBox5.Controls.Add(this.mnum_massBinSize);
+            this.groupBox5.Controls.Add(this.label15);
+            this.groupBox5.Controls.Add(this.label14);
+            this.groupBox5.Location = new System.Drawing.Point(247, 13);
+            this.groupBox5.Name = "groupBox5";
+            this.groupBox5.Size = new System.Drawing.Size(265, 90);
+            this.groupBox5.TabIndex = 16;
+            this.groupBox5.TabStop = false;
+            this.groupBox5.Text = "Histogram Binning Options";
+            // 
+            // mnum_NETBinSize
+            // 
+            this.mnum_NETBinSize.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.mnum_NETBinSize.DecimalPlaces = 5;
+            this.mnum_NETBinSize.Location = new System.Drawing.Point(146, 39);
+            this.mnum_NETBinSize.Maximum = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            this.mnum_NETBinSize.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            327680});
+            this.mnum_NETBinSize.Name = "mnum_NETBinSize";
+            this.mnum_NETBinSize.Size = new System.Drawing.Size(93, 20);
+            this.mnum_NETBinSize.TabIndex = 3;
+            this.mnum_NETBinSize.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            196608});
+            // 
+            // mnum_massBinSize
+            // 
+            this.mnum_massBinSize.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.mnum_massBinSize.DecimalPlaces = 2;
+            this.mnum_massBinSize.Location = new System.Drawing.Point(146, 16);
+            this.mnum_massBinSize.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.mnum_massBinSize.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            131072});
+            this.mnum_massBinSize.Name = "mnum_massBinSize";
+            this.mnum_massBinSize.Size = new System.Drawing.Size(93, 20);
+            this.mnum_massBinSize.TabIndex = 2;
+            this.mnum_massBinSize.Value = new decimal(new int[] {
+            2,
+            0,
+            0,
+            65536});
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(13, 45);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(70, 13);
+            this.label15.TabIndex = 1;
+            this.label15.Text = "NET Bin Size";
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(13, 22);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(32, 13);
+            this.label14.TabIndex = 0;
+            this.label14.Text = "Mass";
+            // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.label12);
+            this.groupBox4.Controls.Add(this.mtextBox_mass_tolerance);
+            this.groupBox4.Controls.Add(this.mtextBox_NET_tolerance);
+            this.groupBox4.Controls.Add(this.label10);
+            this.groupBox4.Location = new System.Drawing.Point(3, 13);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(227, 91);
+            this.groupBox4.TabIndex = 15;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "Tolerances";
+            // 
+            // label12
+            // 
+            this.label12.Location = new System.Drawing.Point(6, 16);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(120, 16);
+            this.label12.TabIndex = 8;
+            this.label12.Text = "Mass Tolerance (ppm):";
+            // 
+            // mtextBox_mass_tolerance
+            // 
+            this.mtextBox_mass_tolerance.Location = new System.Drawing.Point(137, 13);
+            this.mtextBox_mass_tolerance.Name = "mtextBox_mass_tolerance";
+            this.mtextBox_mass_tolerance.Size = new System.Drawing.Size(38, 20);
+            this.mtextBox_mass_tolerance.TabIndex = 9;
+            this.mtextBox_mass_tolerance.Text = "6.0";
             // 
             // mtextBox_NET_tolerance
             // 
@@ -485,21 +589,15 @@ namespace MultiAlignWin
             this.label10.TabIndex = 12;
             this.label10.Text = "NET Tolerance:";
             // 
-            // mtextBox_mass_tolerance
+            // mcheckBox_recalibrate
             // 
-            this.mtextBox_mass_tolerance.Location = new System.Drawing.Point(137, 13);
-            this.mtextBox_mass_tolerance.Name = "mtextBox_mass_tolerance";
-            this.mtextBox_mass_tolerance.Size = new System.Drawing.Size(38, 20);
-            this.mtextBox_mass_tolerance.TabIndex = 9;
-            this.mtextBox_mass_tolerance.Text = "6.0";
-            // 
-            // label12
-            // 
-            this.label12.Location = new System.Drawing.Point(6, 16);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(120, 16);
-            this.label12.TabIndex = 8;
-            this.label12.Text = "Mass Tolerance (ppm):";
+            this.mcheckBox_recalibrate.Checked = true;
+            this.mcheckBox_recalibrate.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.mcheckBox_recalibrate.Location = new System.Drawing.Point(11, 110);
+            this.mcheckBox_recalibrate.Name = "mcheckBox_recalibrate";
+            this.mcheckBox_recalibrate.Size = new System.Drawing.Size(162, 16);
+            this.mcheckBox_recalibrate.TabIndex = 14;
+            this.mcheckBox_recalibrate.Text = "Recalibrate Masses";
             // 
             // mtabPageCalibrationType
             // 
@@ -507,7 +605,7 @@ namespace MultiAlignWin
             this.mtabPageCalibrationType.Controls.Add(this.groupBox2);
             this.mtabPageCalibrationType.Location = new System.Drawing.Point(4, 22);
             this.mtabPageCalibrationType.Name = "mtabPageCalibrationType";
-            this.mtabPageCalibrationType.Size = new System.Drawing.Size(525, 139);
+            this.mtabPageCalibrationType.Size = new System.Drawing.Size(533, 134);
             this.mtabPageCalibrationType.TabIndex = 3;
             this.mtabPageCalibrationType.Text = "Calibration Type";
             this.mtabPageCalibrationType.UseVisualStyleBackColor = true;
@@ -522,27 +620,27 @@ namespace MultiAlignWin
             this.groupBox2.Controls.Add(this.mradioButton_mz);
             this.groupBox2.Location = new System.Drawing.Point(2, 0);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(520, 136);
+            this.groupBox2.Size = new System.Drawing.Size(528, 131);
             this.groupBox2.TabIndex = 0;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Recalibration Type";
             // 
             // mradioButton_hybrid
             // 
+            this.mradioButton_hybrid.Checked = true;
             this.mradioButton_hybrid.Location = new System.Drawing.Point(24, 74);
             this.mradioButton_hybrid.Name = "mradioButton_hybrid";
             this.mradioButton_hybrid.Size = new System.Drawing.Size(195, 24);
             this.mradioButton_hybrid.TabIndex = 2;
+            this.mradioButton_hybrid.TabStop = true;
             this.mradioButton_hybrid.Text = "Hybrid Recalibration";
             // 
             // mradioButton_net
             // 
-            this.mradioButton_net.Checked = true;
             this.mradioButton_net.Location = new System.Drawing.Point(24, 44);
             this.mradioButton_net.Name = "mradioButton_net";
             this.mradioButton_net.Size = new System.Drawing.Size(290, 24);
             this.mradioButton_net.TabIndex = 1;
-            this.mradioButton_net.TabStop = true;
             this.mradioButton_net.Text = "Recalibrate Mass using net relationship";
             // 
             // mradioButton_mz
@@ -561,7 +659,7 @@ namespace MultiAlignWin
             this.mtabPage_alignmentSplit.Location = new System.Drawing.Point(4, 22);
             this.mtabPage_alignmentSplit.Name = "mtabPage_alignmentSplit";
             this.mtabPage_alignmentSplit.Padding = new System.Windows.Forms.Padding(3);
-            this.mtabPage_alignmentSplit.Size = new System.Drawing.Size(525, 139);
+            this.mtabPage_alignmentSplit.Size = new System.Drawing.Size(533, 134);
             this.mtabPage_alignmentSplit.TabIndex = 4;
             this.mtabPage_alignmentSplit.Text = "Split Alignment (Advanced)";
             this.mtabPage_alignmentSplit.UseVisualStyleBackColor = true;
@@ -635,102 +733,6 @@ namespace MultiAlignWin
             this.mbtnDefaults.Text = "Use Defaults";
             this.mbtnDefaults.Click += new System.EventHandler(this.mbtnDefaults_Click);
             // 
-            // groupBox4
-            // 
-            this.groupBox4.Controls.Add(this.label12);
-            this.groupBox4.Controls.Add(this.mtextBox_mass_tolerance);
-            this.groupBox4.Controls.Add(this.mtextBox_NET_tolerance);
-            this.groupBox4.Controls.Add(this.label10);
-            this.groupBox4.Location = new System.Drawing.Point(3, 13);
-            this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(227, 91);
-            this.groupBox4.TabIndex = 15;
-            this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "Tolerances";
-            // 
-            // groupBox5
-            // 
-            this.groupBox5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox5.Controls.Add(this.mnum_NETBinSize);
-            this.groupBox5.Controls.Add(this.mnum_massBinSize);
-            this.groupBox5.Controls.Add(this.label15);
-            this.groupBox5.Controls.Add(this.label14);
-            this.groupBox5.Location = new System.Drawing.Point(247, 13);
-            this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(265, 90);
-            this.groupBox5.TabIndex = 16;
-            this.groupBox5.TabStop = false;
-            this.groupBox5.Text = "Histogram Binning Options";
-            // 
-            // label14
-            // 
-            this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(13, 22);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(32, 13);
-            this.label14.TabIndex = 0;
-            this.label14.Text = "Mass";
-            // 
-            // label15
-            // 
-            this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(13, 45);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(70, 13);
-            this.label15.TabIndex = 1;
-            this.label15.Text = "NET Bin Size";
-            // 
-            // mnum_massBinSize
-            // 
-            this.mnum_massBinSize.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.mnum_massBinSize.DecimalPlaces = 2;
-            this.mnum_massBinSize.Location = new System.Drawing.Point(146, 16);
-            this.mnum_massBinSize.Maximum = new decimal(new int[] {
-            10000,
-            0,
-            0,
-            0});
-            this.mnum_massBinSize.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            131072});
-            this.mnum_massBinSize.Name = "mnum_massBinSize";
-            this.mnum_massBinSize.Size = new System.Drawing.Size(93, 20);
-            this.mnum_massBinSize.TabIndex = 2;
-            this.mnum_massBinSize.Value = new decimal(new int[] {
-            2,
-            0,
-            0,
-            65536});
-            // 
-            // mnum_NETBinSize
-            // 
-            this.mnum_NETBinSize.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.mnum_NETBinSize.DecimalPlaces = 5;
-            this.mnum_NETBinSize.Location = new System.Drawing.Point(146, 39);
-            this.mnum_NETBinSize.Maximum = new decimal(new int[] {
-            5,
-            0,
-            0,
-            0});
-            this.mnum_NETBinSize.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            327680});
-            this.mnum_NETBinSize.Name = "mnum_NETBinSize";
-            this.mnum_NETBinSize.Size = new System.Drawing.Size(93, 20);
-            this.mnum_NETBinSize.TabIndex = 3;
-            this.mnum_NETBinSize.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            196608});
-            // 
             // frmMSAlignmentParameters
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -755,17 +757,17 @@ namespace MultiAlignWin
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.mtabPageTolerances.ResumeLayout(false);
+            this.groupBox5.ResumeLayout(false);
+            this.groupBox5.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.mnum_NETBinSize)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.mnum_massBinSize)).EndInit();
+            this.groupBox4.ResumeLayout(false);
+            this.groupBox4.PerformLayout();
             this.mtabPageCalibrationType.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.mtabPage_alignmentSplit.ResumeLayout(false);
             this.mtabPage_alignmentSplit.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.mnum_splitAlignment)).EndInit();
-            this.groupBox4.ResumeLayout(false);
-            this.groupBox4.PerformLayout();
-            this.groupBox5.ResumeLayout(false);
-            this.groupBox5.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.mnum_massBinSize)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.mnum_NETBinSize)).EndInit();
             this.ResumeLayout(false);
 
 		}
