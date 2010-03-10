@@ -201,11 +201,13 @@ namespace MultiAlignWin
 
 
             mobjAnalysis.IsotopePeaksLoadedForFile              += new clsMultiAlignAnalysis.DelegateIsotopePeaksLoadedForFile(IsotopePeaksLoadedForFile);
+            mobjAnalysis.UMCSLoadedForFile                      += new clsMultiAlignAnalysis.DelegateUMCSLoadedForFile(mobjAnalysis_UMCSLoadedForFile);
             mobjAnalysis.DatasetAligned                         += new clsMultiAlignAnalysis.DelegateDatasetAligned(DatasetAligned);
             mobjAnalysis.ListOfSteps                            += new clsMultiAlignAnalysis.DelegateListOfSteps(mobjAnalysis_ListOfSteps);
             mobjAnalysis.CurrentStep                            += new clsMultiAlignAnalysis.DelegateCurrentStep(mobjAnalysis_CurrentStep);
             FormClosing                                         += new FormClosingEventHandler(frmAnalysisWizard_FormClosing);
         }
+
         /// <summary>
         /// Initializes the Wizard control pages.
         /// </summary>
@@ -1013,6 +1015,10 @@ namespace MultiAlignWin
             {
                 mobjAnalysis.LoadParametersFromFile(dialog.FileName);
             }
+        }
+        void mobjAnalysis_UMCSLoadedForFile(string fileName, MultiAlignEngine.Features.clsUMC[] umcs)
+        {
+            mctl_performAnalysisPage.DisplayUMCS(fileName, umcs);
         }
         private void IsotopePeaksLoadedForFile(string fileName, MultiAlignEngine.Features.clsIsotopePeak[] isotopePeaks)
         {

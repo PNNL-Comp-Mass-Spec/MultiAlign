@@ -58,8 +58,15 @@ namespace PNNLProteomics.Data.Analysis
         /// <summary>
         /// Fired when an isotope peak is loaded for a file.
         /// </summary>
-        [field: NonSerialized] public event DelegateIsotopePeaksLoadedForFile IsotopePeaksLoadedForFile;
+        [field: NonSerialized]
+        public event DelegateIsotopePeaksLoadedForFile IsotopePeaksLoadedForFile;
         public delegate void DelegateIsotopePeaksLoadedForFile(string fileName, clsIsotopePeak[] isotopePeaks);
+        /// <summary>
+        /// Fired when an isotope peak is loaded for a file.
+        /// </summary>
+        [field: NonSerialized]
+        public event DelegateUMCSLoadedForFile UMCSLoadedForFile;
+        public delegate void DelegateUMCSLoadedForFile(string fileName, clsUMC[] umcs);
         /// <summary>
         /// Fired when a UMC is calculated for a file.
         /// </summary>
@@ -499,6 +506,21 @@ namespace PNNLProteomics.Data.Analysis
 						UmcReader umcReader = new UmcReader(FileNames[fileNum]);
 						loadedUMCs = umcReader.GetUmcList().ToArray();
 						preDefinedUMCs = true;
+
+                        /// 
+                        /// At this point we dont know what the NET really is. 
+                        /// Instead, we are forced to use the mid point of the scans found in.  
+                        /// The UMC Creator finds this NET value as the most intense scan of the MS Features.
+                        ///  
+                        foreach (clsUMC umc in loadedUMCs)
+                        {
+                            umc.Net = umc.Scan;
+                        }
+
+                        if (UMCSLoadedForFile != null)
+                        {
+                            UMCSLoadedForFile(FileNames[fileNum], loadedUMCs);
+                        }
 					}
 					
 					// SQLite DB
@@ -529,6 +551,8 @@ namespace PNNLProteomics.Data.Analysis
 							mobjUMCCreator.SetIsotopePeaks(ref msFeatureArray);
 							mobjUMCCreator.FindUMCs();
 							loadedUMCs = mobjUMCCreator.GetUMCs();
+
+                            
 						}
 					}
 
@@ -558,6 +582,7 @@ namespace PNNLProteomics.Data.Analysis
 						/// 
 						mobjUMCCreator.FindUMCs();
 						loadedUMCs = mobjUMCCreator.GetUMCs();
+
 					}
 
                     /// 

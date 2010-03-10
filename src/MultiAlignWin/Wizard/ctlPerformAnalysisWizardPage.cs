@@ -395,8 +395,104 @@ namespace MultiAlignWin
 			mctlScatterChartFeatures.ViewPortHistory.Clear(); 
 			mctlScatterChartFeatures.AutoViewPortOnAddition = true ; 
 			PNNLControls.clsSeries series = new PNNLControls.clsSeries(ref scans, ref masses, plt_params) ; 
-			mctlScatterChartFeatures.AddSeries(series) ; 
-		}
+			mctlScatterChartFeatures.AddSeries(series) ;
+        }
+        public void DisplayUMCS(string fileName, MultiAlignEngine.Features.clsUMC[] umcs)
+        {
+            mctlScatterChartFeatures.BeginUpdate();
+            mctlScatterChartFeatures.SeriesCollection.Clear();
+            int numIsotopePeaks = umcs.Length;
+            mctlScatterChartFeatures.Title = fileName;
+
+            // Get data for charge 1. 
+            // how many charge 1 points are there ? 
+            int numCharge1 = 0;
+            for (int isoNum = 0; isoNum < numIsotopePeaks; isoNum++)
+            {
+                if (umcs[isoNum].ChargeRepresentative == 1)
+                    numCharge1++;
+            }
+            float[] massCharge1 = new float[numCharge1];
+            float[] scanCharge1 = new float[numCharge1];
+            int numCharge1SoFar = 0;
+            for (int isoNum = 0; isoNum < numIsotopePeaks; isoNum++)
+            {
+                if (umcs[isoNum].ChargeRepresentative == 1)
+                {
+                    massCharge1[numCharge1SoFar] = Convert.ToSingle(umcs[isoNum].mdouble_mono_mass);
+                    scanCharge1[numCharge1SoFar] = Convert.ToSingle(umcs[isoNum].mint_scan);
+                    numCharge1SoFar++;
+                }
+            }
+            AddPeaksToChart(ref scanCharge1, ref massCharge1, 1, System.Drawing.Color.Blue, "1");
+
+            // Get data for charge 2. 
+            // how many charge 2 points are there ? 
+            int numCharge2 = 0;
+            for (int isoNum = 0; isoNum < numIsotopePeaks; isoNum++)
+            {
+                if (umcs[isoNum].ChargeRepresentative == 2)
+                    numCharge2++;
+            }
+            float[] massCharge2 = new float[numCharge2];
+            float[] scanCharge2 = new float[numCharge2];
+            int numCharge2SoFar = 0;
+            for (int isoNum = 0; isoNum < numIsotopePeaks; isoNum++)
+            {
+                if (umcs[isoNum].ChargeRepresentative == 2)
+                {
+                    massCharge2[numCharge2SoFar] = Convert.ToSingle(umcs[isoNum].mdouble_mono_mass);
+                    scanCharge2[numCharge2SoFar] = Convert.ToSingle(umcs[isoNum].mint_scan);
+                    numCharge2SoFar++;
+                }
+            }
+            AddPeaksToChart(ref scanCharge2, ref massCharge2, 1, System.Drawing.Color.Red, "2");
+
+            // Get data for charge 3. 
+            // how many charge 3 points are there ? 
+            int numCharge3 = 0;
+            for (int isoNum = 0; isoNum < numIsotopePeaks; isoNum++)
+            {
+                if (umcs[isoNum].ChargeRepresentative == 3)
+                    numCharge3++;
+            }
+            float[] massCharge3 = new float[numCharge3];
+            float[] scanCharge3 = new float[numCharge3];
+            int numCharge3SoFar = 0;
+            for (int isoNum = 0; isoNum < numIsotopePeaks; isoNum++)
+            {
+                if (umcs[isoNum].ChargeRepresentative == 3)
+                {
+                    massCharge3[numCharge3SoFar] = Convert.ToSingle(umcs[isoNum].mdouble_mono_mass);
+                    scanCharge3[numCharge3SoFar] = Convert.ToSingle(umcs[isoNum].mint_scan);
+                    numCharge3SoFar++;
+                }
+            }
+            AddPeaksToChart(ref scanCharge3, ref massCharge3, 1, System.Drawing.Color.Green, "3");
+
+            // Get data for charge 4. 
+            // how many charge 4 points are there ? 
+            int numCharge4 = 0;
+            for (int isoNum = 0; isoNum < numIsotopePeaks; isoNum++)
+            {
+                if (umcs[isoNum].ChargeRepresentative >= 4)
+                    numCharge4++;
+            }
+            float[] massCharge4 = new float[numCharge4];
+            float[] scanCharge4 = new float[numCharge4];
+            int numCharge4SoFar = 0;
+            for (int isoNum = 0; isoNum < numIsotopePeaks; isoNum++)
+            {
+                if (umcs[isoNum].ChargeRepresentative >= 4)
+                {
+                    massCharge4[numCharge4SoFar] = Convert.ToSingle(umcs[isoNum].mdouble_mono_mass);
+                    scanCharge4[numCharge4SoFar] = Convert.ToSingle(umcs[isoNum].mint_scan);
+                    numCharge4SoFar++;
+                }
+            }
+            AddPeaksToChart(ref scanCharge4, ref massCharge4, 1, System.Drawing.Color.Yellow, ">=4");
+            mctlScatterChartFeatures.EndUpdate();
+        }
 	    public void DisplayIsotopePeaks(string fileName, MultiAlignEngine.Features.clsIsotopePeak []isotopePeaks)
 		{
 			mctlScatterChartFeatures.BeginUpdate() ; 
@@ -490,7 +586,7 @@ namespace MultiAlignWin
 					numCharge4SoFar++ ; 
 				}
 			}
-			AddPeaksToChart(ref scanCharge4, ref massCharge4, 1, System.Drawing.Color.Yellow, ">=4") ; 
+			AddPeaksToChart(ref scanCharge4, ref massCharge4, 1, System.Drawing.Color.Orange, ">=4") ; 
 			mctlScatterChartFeatures.EndUpdate() ; 
 		}
         /// <summary>
