@@ -13,7 +13,6 @@ namespace MultiAlignEngine
 		public __gc class clsClusterData
 		{
 			int mintNumClusters; 
-			System::Collections::ArrayList *marrClusters; 
 			Clustering::enmClusterRepresentativeType menmClusterRepresentativeType; 
 			Clustering::enmClusterIntensityType menmClusterIntensityType; 
 
@@ -51,6 +50,7 @@ namespace MultiAlignEngine
 			// array of normalized intensities for all cluster in each dataset
 			double marrClusterIntensityNormalized __gc[]; 
 			int marrClusterMainMemberIndex __gc[]; 
+			System::Collections::ArrayList *marrClusters;
 			System::Collections::ArrayList *marrClusterUMCIndexPair; 
 			inline clsCluster* GetCluster(int index)
 			{
