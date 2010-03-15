@@ -8,6 +8,7 @@
 			<generator class="increment" />
 		</id>
 		<property name="DatasetId" column="DATASET_ID" type="int" not-null="false" />
+		<property name="ClusterId" column="CLUSTER_ID" type="int" not-null="false" />
 		<!--many-to-one name="UmcCluster" class="clsCluster" column="CLUSTER_ID" not-null="false" /-->
 		<property name="Mass" column="MASS" type="double" not-null="false" />
 		<property name="MassCalibrated" column="MASS_CALIBRATED" type="double" not-null="false" />
@@ -22,7 +23,7 @@
 		<property name="SpectralCount" column="SPECTRAL_COUNT" type="short" not-null="false" />
 		<property name="AbundanceMax" column="ABUNDANCE_MAX" type="double" not-null="false" />
 		<property name="AbundanceSum" column="ABUNDANCE_SUM" type="double" not-null="false" />
-		<!--property name="DriftTime" column="DRIFT_TIME" type="float" not-null="false" /-->
+		<property name="DriftTime" column="DRIFT_TIME" type="float" not-null="false" />
 		<property name="MZForCharge" column="MZ" type="double" not-null="false" />
 	</class>
 

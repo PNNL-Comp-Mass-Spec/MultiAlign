@@ -526,7 +526,7 @@ namespace PNNLProteomics.Data.Analysis
 					// SQLite DB
 					else if (extension == ".DB3" || extension == ".SQLITE")
 					{
-						NHibernateUtil.SetDbLocation(FileNames[fileNum]);
+						NHibernateUtil.SetDbLocationForRead(FileNames[fileNum]);
 
 						try
 						{
@@ -592,7 +592,7 @@ namespace PNNLProteomics.Data.Analysis
 					{
 						foreach (clsUMC umc in loadedUMCs)
 						{
-							if (umc.ChargeMax != null && umc.ChargeMax != 0)
+							if (umc.ChargeMax != 0)
 							{
 								if (umc.ChargeMax > highestChargeState)
 								{

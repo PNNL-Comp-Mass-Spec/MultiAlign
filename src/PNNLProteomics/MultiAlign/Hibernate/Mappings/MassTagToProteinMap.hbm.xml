@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" 
+                   assembly="PNNLProteomics" 
+                   namespace="PNNLProteomics.MultiAlign.Hibernate.Domain">
+
+	<class name="MassTagToProteinMap" table="T_MASS_TAG_TO_PROTEIN_MAP" lazy="false">
+		<composite-id>
+			<key-property name="MassTagId" column="MASS_TAG_ID" type="int" />
+			<key-property name="ProteinId" column="PROTEIN_ID" type="int" />
+		</composite-id>
+	</class>
+</hibernate-mapping>

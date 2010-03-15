@@ -161,6 +161,15 @@ namespace MultiAlignEngine
 					mint_dataset_index = value;
 				}
 
+				__property int get_ClusterId()
+				{
+					return mint_cluster_index;
+				}
+
+				__property void set_ClusterId(int value){
+					mint_cluster_index = value;
+				}
+
 				/*
 				__property clsCluster* get_UmcCluster()
 				{

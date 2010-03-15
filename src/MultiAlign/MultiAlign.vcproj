@@ -963,15 +963,7 @@
 					>
 				</File>
 				<File
-					RelativePath=".\clsModification.cpp"
-					>
-				</File>
-				<File
 					RelativePath=".\clsMTDBLoader.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\clsPeptide.cpp"
 					>
 				</File>
 				<File
@@ -995,15 +987,7 @@
 					>
 				</File>
 				<File
-					RelativePath=".\clsModification.h"
-					>
-				</File>
-				<File
 					RelativePath=".\clsMTDBLoader.h"
-					>
-				</File>
-				<File
-					RelativePath=".\clsPeptide.h"
 					>
 				</File>
 				<File

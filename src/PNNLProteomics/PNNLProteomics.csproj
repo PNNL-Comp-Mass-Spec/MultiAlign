@@ -113,19 +113,17 @@
     <Compile Include="IO\classContainerStream.cs" />
     <Compile Include="IO\clsReadProgressStream.cs" />
     <Compile Include="IO\xmlIO.cs" />
+    <Compile Include="MultiAlign\Hibernate\Domain\ClusterToMassTagMap.cs" />
+    <Compile Include="MultiAlign\Hibernate\Domain\MassTagToProteinMap.cs" />
     <Compile Include="MultiAlign\Hibernate\Domain\DAOHibernate\MSFeatureDAOHibernate.cs" />
     <Compile Include="MultiAlign\Hibernate\Domain\DAO\IGenericDAO.cs" />
     <Compile Include="MultiAlign\Hibernate\Domain\DAO\IMSFeatureDAO.cs" />
     <Compile Include="MultiAlign\Hibernate\Domain\DAO\IProteinDAO.cs" />
-    <Compile Include="MultiAlign\Hibernate\Domain\DAO\IModificationDAO.cs" />
     <Compile Include="MultiAlign\Hibernate\Domain\DAO\IMassTagDAO.cs" />
-    <Compile Include="MultiAlign\Hibernate\Domain\DAO\IPeptideDAO.cs" />
     <Compile Include="MultiAlign\Hibernate\Domain\DAO\IUmcClusterDAO.cs" />
     <Compile Include="MultiAlign\Hibernate\Domain\DAOHibernate\GenericDAOHibernate.cs" />
     <Compile Include="MultiAlign\Hibernate\Domain\DAOHibernate\ProteinDAOHibernate.cs" />
-    <Compile Include="MultiAlign\Hibernate\Domain\DAOHibernate\ModificationDAOHibernate.cs" />
     <Compile Include="MultiAlign\Hibernate\Domain\DAOHibernate\MassTagDAOHibernate.cs" />
-    <Compile Include="MultiAlign\Hibernate\Domain\DAOHibernate\PeptideDAOHibernate.cs" />
     <Compile Include="MultiAlign\Hibernate\Domain\DAOHibernate\UmcClusterDAOHibernate.cs" />
     <Compile Include="MultiAlign\Hibernate\Domain\DAO\IUmcDAO.cs" />
     <Compile Include="MultiAlign\Hibernate\Domain\DAOHibernate\UmcDAOHibernate.cs" />
@@ -135,8 +133,6 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="MultiAlign\Hibernate\Mappings\MassTag.hbm.xml" />
-    <EmbeddedResource Include="MultiAlign\Hibernate\Mappings\Modification.hbm.xml" />
-    <EmbeddedResource Include="MultiAlign\Hibernate\Mappings\Peptide.hbm.xml" />
     <EmbeddedResource Include="MultiAlign\Hibernate\Mappings\Protein.hbm.xml" />
     <EmbeddedResource Include="MultiAlign\Hibernate\Mappings\Umc.hbm.xml" />
     <EmbeddedResource Include="MultiAlign\Hibernate\Mappings\UmcCluster.hbm.xml" />
@@ -151,6 +147,8 @@
     <Content Include="hibernate.cfg.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <EmbeddedResource Include="MultiAlign\Hibernate\Mappings\MassTagToProteinMap.hbm.xml" />
+    <EmbeddedResource Include="MultiAlign\Hibernate\Mappings\ClusterToMassTagMap.hbm.xml" />
     <EmbeddedResource Include="MultiAlign\Hibernate\Mappings\MSFeature.hbm.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

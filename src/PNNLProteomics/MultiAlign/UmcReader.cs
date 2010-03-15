@@ -51,17 +51,6 @@ namespace PNNLProteomics.MultiAlign
 		}
 
 		/// <summary>
-		/// Saves the data to a SQLite Database.
-		/// </summary>
-		/// <param name="dbLocation">String containing the location of the SQLite DB</param>
-		public void SaveDataToSQLite(String dbLocation)
-		{
-			NHibernateUtil.SetDbLocation(dbLocation);
-			UmcDAOHibernate umcDAOHibernate = new UmcDAOHibernate();
-			umcDAOHibernate.AddAll(m_umcList);
-		}
-
-		/// <summary>
 		/// Returns the umcList contained in this class
 		/// </summary>
 		public List<clsUMC> GetUmcList()

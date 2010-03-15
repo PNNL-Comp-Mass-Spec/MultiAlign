@@ -61,21 +61,50 @@ namespace PNNLProteomics.MultiAlign.Hibernate
 		/// <summary>
 		/// Sets the location of the database file that the Hibernate Session should be attached to. If a Session already existed,
 		/// it will be killed so that a new Session can be created that points to the new database location.
-		/// The given database should already exist. If it does not, it will be created for you. Hurray!
+		/// The given database should already exist. If it does not, an exception is thrown.
 		/// </summary>
 		/// <param name="dbLocation">The file location of the database file</param>
-		public static void SetDbLocation(string dbLocation)
+		public static void SetDbLocationForRead(string dbLocation)
 		{
 			if (m_dbLocation == null || (m_dbLocation != null && !m_dbLocation.Equals(dbLocation)))
 			{
 				m_dbLocation = dbLocation;
-				m_sessionFactory = null;
+
+				if (m_sessionFactory != null)
+				{
+					m_sessionFactory.Close();
+					m_sessionFactory = null;
+				}
 
 				if (!File.Exists(dbLocation))
 				{
-					CreateDatabase(dbLocation);
+					throw new Exception("Database cannot be read because it does not exist.");
 				}
 			}
+		}
+
+		/// <summary>
+		/// Sets the location of the database file that the Hibernate Session should be attached to. If a Session already existed,
+		/// it will be killed so that a new Session can be created that points to the new database location.
+		/// The given database should not already exist and it will be created for you. Hurray!
+		/// </summary>
+		/// <param name="dbLocation">The file location of the database file</param>
+		public static void SetDbLocationForWrite(string dbLocation)
+		{
+			m_dbLocation = dbLocation;
+
+			if (m_sessionFactory != null)
+			{
+				m_sessionFactory.Close();
+				m_sessionFactory = null;
+			}
+
+			if (File.Exists(dbLocation))
+			{
+				File.Delete(dbLocation);
+			}
+
+			CreateDatabase(dbLocation);
 		}
 
 		/// <summary>

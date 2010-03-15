@@ -125,7 +125,6 @@ namespace MultiAlignEngine
 				mfltHighPeptideProphetProbability = value;
 			}
 
-
 			__property float get_Charge1FScore()
 			{
 				return mfltAvgFCS1;
@@ -170,8 +169,15 @@ namespace MultiAlignEngine
 			__property void set_Modifications(System::String* value){
 				mstrModification = value;
 			}
+			
+			__property System::String* get_Peptide()
+			{
+				return mstrPeptide;
+			}
 
-
+			__property void set_Peptide(System::String* value){
+				mstrPeptide = value;
+			}
 		};
 	}
 }
