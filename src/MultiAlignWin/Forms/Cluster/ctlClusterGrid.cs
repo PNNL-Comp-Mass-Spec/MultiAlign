@@ -391,21 +391,11 @@ namespace MultiAlignWin
                     /// 
                     /// Check to make sure the cluster passes the filter.
                     /// 
-                    bool passed = true;
-                    foreach (IFilter<clsCluster> filter in mlist_clusterFilters)
-                    {
-                        if (filter.DoesPassFilter(cluster) == false)
-                        {
-                            passed = false;
-                            break;
-                        }
-                    }
-                    if (passed == false)
-                    {
-                        clusterNum++;
-                        continue;
-                    }
-
+					if (!FilterUtil<clsCluster>.PassesFilters(cluster, mlist_clusterFilters))
+					{
+						clusterNum++;
+						continue;
+					}
 
 					DataRow row         = table.NewRow() ;
 					row[0]              = Convert.ToString(clusterNum + 1) ; 
@@ -460,22 +450,11 @@ namespace MultiAlignWin
                         /// 
                         /// Check to make sure the UMC passes the filter.
                         /// 
-                        passed = true;
-                        foreach (IFilter<clsUMC> filter in mlist_umcFilters)
-                        {
-                            if (filter.DoesPassFilter(umc) == false)
-                            {
-                                passed = false;
-                                break;
-                            }
-                        }
-                        if (passed == false)
-                        {
-                            col_num += num_columns_per_dataset;
-                            continue;
-                        }
-
-
+						if (!FilterUtil<clsUMC>.PassesFilters(umc, mlist_umcFilters))
+						{
+							col_num += num_columns_per_dataset;
+							continue;
+						}
 
 						if (mbool_show_mass_columns)
 						{
@@ -1258,7 +1237,7 @@ namespace MultiAlignWin
 				clsCluster cluster = clusterData.GetCluster(i);
 
 				// If the Cluster does not pass the filters, go to the next Cluster
-				if (!PassesFilters(cluster))
+				if (!FilterUtil<clsCluster>.PassesFilters(cluster, mlist_clusterFilters))
 				{
 					continue;
 				}
@@ -1275,7 +1254,7 @@ namespace MultiAlignWin
 				foreach (clsUMC umc in umcArray)
 				{
 					// If the UMC does not pass the filters, go to the next UMC
-					if (!PassesFilters(umc))
+					if (!FilterUtil<clsUMC>.PassesFilters(umc, mlist_umcFilters))
 					{
 						continue;
 					}
@@ -1327,32 +1306,6 @@ namespace MultiAlignWin
 			clusterToMassTagMapDAOHibernate.AddAll(clusterToMassTagMapList);
 			massTagToProteinMapDAOHibernate.AddAll(massTagToProteinMapList);
         }
-
-		private bool PassesFilters(clsCluster cluster)
-		{
-			foreach (IFilter<clsCluster> filter in mlist_clusterFilters)
-			{
-				if (filter.DoesPassFilter(cluster) == false)
-				{
-					return false;
-				}
-			}
-
-			return true;
-		}
-
-		private bool PassesFilters(clsUMC umc)
-		{
-			foreach (IFilter<clsUMC> filter in mlist_umcFilters)
-			{
-				if (filter.DoesPassFilter(umc) == false)
-				{
-					return false;
-				}
-			}
-
-			return true;
-		}
 
 		private void mnu_save_grid_Click(object sender, EventArgs e)
 		{
