@@ -1,5 +1,15 @@
 MutliaAlign Revision History
 
+
+Version 2.4. March 07, 2010
+	- Added ability to read MS Access 2007 file formats.
+	- Added SMART for LC-MS data.
+	- Made cluster and peak matching options separate
+	- Added ability to read UMC files from LCMSFeatureFinder or VIPER
+	- Added drift time calculation additions for IMS data
+	- Modified the peak matching algorithm to use drift time.
+	- Added N out of M dataset filtering.
+
 Version 1.1.2992.25141; March 09, 2008
 	- Updated MultiAlign with the ability to read and align datasets to an access database.
 	- Initial release version.

@@ -3,15 +3,17 @@ MultiAlign
 The MultiAlign program can read [REQUIRED input files].  The program requires that
 the .net framework 1.1 is installed on your computer.
 
-Example input file is [REQUIRED].  Processing these peptides against
-[REQUIRED] produces output files [REQUIRED] and [REQUIRED]
+Example input file is *_isos.csv, or *.txt as defined by VIPER output or LCMSFeature
+finder output.  Processing these peptides against a AMT Database
+created using MTDBCreator and produces output files in tab delimited, comma separated
+or binary .net serialized output files (.mln).
 
 -------------------------------------------------------------------------------
-Written by Navdeep Jaitly, Brian LaMarche, Ashoka Polpitya, Derek Hopkins
+Written by Brian LaMarche, Navdeep Jaitly, Ashoka Polpitya, Kevin Crowell
 for the Department of Energy (PNNL, Richland, WA)
 Copyright 2008, Battelle Memorial Institute.  All Rights Reserved.
 
-E-mail: navdeep.jaitly@pnl.gov, brian.lamarche@pnl.gov, or ashoka.polpitiya@pnl.gov
+E-mail: brian.lamarche@pnl.gov, kevin.crowell@pnl.gov
 Website: http://ncrr.pnl.gov/ 
 -------------------------------------------------------------------------------
 
