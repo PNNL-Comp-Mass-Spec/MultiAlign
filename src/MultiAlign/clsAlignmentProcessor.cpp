@@ -593,7 +593,30 @@ namespace MultiAlignEngine
 				netErrorHistogram[i,1] = netErrorFreq[i];
 			}
 		}
-		
+		double clsAlignmentProcessor::GetMassStandardDeviation()
+		{
+			double massStd, netStd, netMu, massMu;
+			mobjLCMSWarp->GetStatistics(&massStd, &netStd, &massMu, &netMu);
+			return massStd;			
+		}
+		double clsAlignmentProcessor::GetNETStandardDeviation()
+		{
+			double massStd, netStd, netMu, massMu;
+			mobjLCMSWarp->GetStatistics(&massStd, &netStd, &massMu, &netMu);
+			return netStd;			
+		}
+		double clsAlignmentProcessor::GetMassMean()
+		{
+			double massStd, netStd, netMu, massMu;
+			mobjLCMSWarp->GetStatistics(&massStd, &netStd, &massMu, &netMu);
+			return massMu;			
+		}
+		double clsAlignmentProcessor::GetNETMean()
+		{
+			double massStd, netStd, netMu, massMu;
+			mobjLCMSWarp->GetStatistics(&massStd, &netStd, &massMu, &netMu);
+			return netMu;			
+		}		
 		/*////////////////////////////////////////////////////////////////////////////////
 			Function:	GetResiduals
 			Note:		Calculates the all of the residual data for the alignment.
@@ -658,6 +681,6 @@ namespace MultiAlignEngine
 			residualData->mzMassErrorCorrected	= mzMassErrorCorrected;
 
 			return residualData;
-		}			
+		}		
 	}
 }

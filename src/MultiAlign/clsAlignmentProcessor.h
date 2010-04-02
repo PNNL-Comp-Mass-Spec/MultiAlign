@@ -70,6 +70,11 @@ namespace MultiAlignEngine
 			}
 			clsAlignmentProcessor(void);
 			~clsAlignmentProcessor(void);
+			double GetMassStandardDeviation();
+			double GetNETStandardDeviation();
+			double GetMassMean();
+			double GetNETMean();
+
 			void ApplyNETMassFunctionToAligneeDatasetFeatures(MultiAlignEngine::Features::clsUMCData* &umcData); 
 			void ApplyNETMassFunctionToAligneeDatasetFeatures(MultiAlignEngine::Features::clsClusterData* &clusterData); 
 			void SetAligneeDatasetFeatures(	MultiAlignEngine::Features::clsUMCData *umcData, 

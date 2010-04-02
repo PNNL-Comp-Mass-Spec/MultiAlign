@@ -23,8 +23,10 @@ namespace MultiAlignEngine
 		{
 			try
 			{
-				mobjMassTimeSLClustering->SetOptions(mobjClusterOptions->get_MassTolerance(),
-					mobjClusterOptions->get_NETTolerance()); 
+				mobjMassTimeSLClustering->SetOptions(	mobjClusterOptions->get_MassTolerance(),
+														mobjClusterOptions->get_NETTolerance(),
+														mobjClusterOptions->get_DriftTimeTolerance(),
+														mobjClusterOptions->IgnoreCharge); 
 				menmState = clsClusterProcessor::SETTING_VARIABLES; 
 				std::vector<MultiAlignEngine::Clustering::Point> vectPoints; 
 				umcData->GetAllUMCsAsPoints(vectPoints); 

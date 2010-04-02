@@ -11,8 +11,9 @@ namespace MultiAlignEngine
 			mdblMassTolerance		 = 6.0; 
 			mdblNETTolerance		 = 0.03; 
 			mdblDriftTimeTolerance   = 50.0;
-			menmClusterIntensityType = enmClusterIntensityType::SUM_PER_DATASET; 
-			menmClusterRepresentativeType = MEDIAN; 
+			menmClusterIntensityType		= enmClusterIntensityType::SUM_PER_DATASET; 
+			menmClusterRepresentativeType	= MEDIAN; 
+			mbool_ignoreCharge				= true;
 		}
 
 		clsClusterOptions::~clsClusterOptions(void)

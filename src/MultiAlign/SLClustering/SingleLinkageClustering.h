@@ -35,7 +35,8 @@ namespace MultiAlignEngine
 				~Cluster() {};
 			};
 
-			std::vector <bool> mvect_top_level_cluster; 
+			std::vector <bool> mvect_top_level_cluster;
+			std::vector <int> mvect_datasetIDs; 
 			std::vector <Cluster> mvect_clusters;
 			// map to keep track of which cluster an 
 			// element belongs to. 
@@ -49,16 +50,24 @@ namespace MultiAlignEngine
 			public:
 				int mint_elem_1; 
 				int mint_elem_2; 
-				double mdouble_distance; 
-				Distance(): mint_elem_1(-1), mint_elem_2(-1), mdouble_distance(DBL_MAX){};
-				void Set(int elem1, int elem2, double dist) 
+				double mdouble_distance;
+				/// These track what dataset the element belonged to
+				int mint_dataset_elem_1; 
+				int mint_dataset_elem_2;
+				Distance(): mint_elem_1(-1), mint_elem_2(-1), mdouble_distance(DBL_MAX), mint_dataset_elem_1(-1), mint_dataset_elem_2(-1){};
+				void Set(int elem1, int elem2, double dist, int dataset1, int dataset2) 
 				{
+					mint_dataset_elem_1 = dataset1;
+					mint_dataset_elem_2 = dataset2;
 					mint_elem_1 = elem1; 
 					mint_elem_2 = elem2; 
-					mdouble_distance = dist; 
+					mdouble_distance	= dist; 
 				}
 				~Distance(){}; 
 			}; 
+
+
+			void SetNumberDataPoints(int dataPoints);
 			// multimap to keep track of members of a cluster.
 			// We will keep only the top level cluster members stored. 
 			// So this should be exactly mint_num_data_pts because each leaf

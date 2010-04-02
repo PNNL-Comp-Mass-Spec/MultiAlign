@@ -58,6 +58,9 @@ namespace MultiAlignWin.Forms
             this.mpicture_massResiduals = new System.Windows.Forms.PictureBox();
             this.label2 = new System.Windows.Forms.Label();
             this.mpictureBox_mzMassResidual = new System.Windows.Forms.PictureBox();
+            this.mlistview_stats = new System.Windows.Forms.ListView();
+            this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
+            this.columnHeader2 = new System.Windows.Forms.ColumnHeader();
             ((System.ComponentModel.ISupportInitialize)(this.mpicture_preview)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.mpicture_alignmentHeatmap)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.mpicture_rawData)).BeginInit();
@@ -172,7 +175,7 @@ namespace MultiAlignWin.Forms
             this.mbutton_baseline.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.mbutton_baseline.Location = new System.Drawing.Point(98, 58);
             this.mbutton_baseline.Name = "mbutton_baseline";
-            this.mbutton_baseline.Size = new System.Drawing.Size(766, 44);
+            this.mbutton_baseline.Size = new System.Drawing.Size(629, 44);
             this.mbutton_baseline.TabIndex = 9;
             this.mbutton_baseline.TabStop = true;
             this.mbutton_baseline.Text = "baseline";
@@ -330,12 +333,35 @@ namespace MultiAlignWin.Forms
             this.mpictureBox_mzMassResidual.TabStop = false;
             this.mpictureBox_mzMassResidual.Click += new System.EventHandler(this.mpictureBox_mzMassResidual_Click);
             // 
+            // mlistview_stats
+            // 
+            this.mlistview_stats.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1,
+            this.columnHeader2});
+            this.mlistview_stats.GridLines = true;
+            this.mlistview_stats.Location = new System.Drawing.Point(733, 19);
+            this.mlistview_stats.Name = "mlistview_stats";
+            this.mlistview_stats.Size = new System.Drawing.Size(410, 177);
+            this.mlistview_stats.TabIndex = 25;
+            this.mlistview_stats.UseCompatibleStateImageBehavior = false;
+            this.mlistview_stats.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeader1
+            // 
+            this.columnHeader1.Text = "Name";
+            // 
+            // columnHeader2
+            // 
+            this.columnHeader2.Text = "Value";
+            this.columnHeader2.Width = 345;
+            // 
             // controlDatasetInformation
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.Controls.Add(this.mlistview_stats);
             this.Controls.Add(this.mlabel_mzMassResiduals);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.mpictureBox_mzMassResidual);
@@ -401,6 +427,9 @@ namespace MultiAlignWin.Forms
         private System.Windows.Forms.PictureBox mpicture_massResiduals;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.PictureBox mpictureBox_mzMassResidual;
+        private System.Windows.Forms.ListView mlistview_stats;
+        private System.Windows.Forms.ColumnHeader columnHeader1;
+        private System.Windows.Forms.ColumnHeader columnHeader2;
 
     }
 }

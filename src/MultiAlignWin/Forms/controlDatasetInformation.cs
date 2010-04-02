@@ -59,6 +59,8 @@ namespace MultiAlignWin.Forms
         /// </summary>
         private int mint_chargeStates;
 
+        private PNNLProteomics.Data.Alignment.classAlignmentData mobj_alignmentData;
+
         /// <summary>
         /// Default constructor for a dataset class.
         /// </summary>
@@ -68,6 +70,7 @@ namespace MultiAlignWin.Forms
 
             mobj_dataset        = analysis.Files[datasetIndex] as clsDatasetInfo;
             mobj_alignment      = analysis.AlignmentOptions[datasetIndex] as clsAlignmentOptions;
+            mobj_alignmentData  = analysis.AlignmentData[datasetIndex]; 
             mobj_cluster        = analysis.ClusterOptions;
             mobj_analysis       = analysis;
             mint_datasetIndex   = datasetIndex;
@@ -122,6 +125,40 @@ namespace MultiAlignWin.Forms
             clsUMC [] umcs = mobj_analysis.UMCData.GetUMCS(mint_datasetIndex);
             mlabel_umcs.Text = string.Format("{0}", umcs.Length);
 
+            if (mobj_alignmentData != null)
+            {
+
+                ListViewItem massStdItem = new ListViewItem();
+                massStdItem.Text = "Alignment Mass Stdev";
+                massStdItem.SubItems.Add(new ListViewItem.ListViewSubItem(massStdItem, mobj_alignmentData.MassStandardDeviation.ToString()));
+                ListViewItem massMeanItem = new ListViewItem();
+                massMeanItem.Text = "Alignment Mass Mean";
+                massMeanItem.SubItems.Add(new ListViewItem.ListViewSubItem(massMeanItem, mobj_alignmentData.MassMean.ToString()));
+                ListViewItem massKurtosisItem = new ListViewItem();
+                massKurtosisItem.Text = "Alignment Mass Kurtosis";
+                massKurtosisItem.SubItems.Add(new ListViewItem.ListViewSubItem(massKurtosisItem, mobj_alignmentData.MassKurtosis.ToString()));
+
+                ListViewItem netStdItem = new ListViewItem();
+                netStdItem.Text = "Alignment Net Stdev";
+                netStdItem.SubItems.Add(new ListViewItem.ListViewSubItem(netStdItem, mobj_alignmentData.NETStandardDeviation.ToString()));
+                ListViewItem netMeanItem = new ListViewItem();
+                netMeanItem.Text = "Alignment Net Mean";
+                netMeanItem.SubItems.Add(new ListViewItem.ListViewSubItem(netMeanItem, mobj_alignmentData.NETMean.ToString()));
+                ListViewItem netKurtosisItem = new ListViewItem();
+                netKurtosisItem.Text = "Alignment Net Kurtosis";
+                netKurtosisItem.SubItems.Add(new ListViewItem.ListViewSubItem(netKurtosisItem, mobj_alignmentData.NETKurtosis.ToString()));
+
+                mlistview_stats.BeginUpdate();
+                mlistview_stats.Items.Add(massMeanItem);
+                mlistview_stats.Items.Add(massStdItem);
+                mlistview_stats.Items.Add(massKurtosisItem);
+                mlistview_stats.Items.Add(netMeanItem);
+                mlistview_stats.Items.Add(netStdItem);
+                mlistview_stats.Items.Add(netKurtosisItem);
+                mlistview_stats.Columns[0].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
+                mlistview_stats.Columns[1].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
+                mlistview_stats.EndUpdate();
+            }
             PerformLayout();
         }
         /// <summary>

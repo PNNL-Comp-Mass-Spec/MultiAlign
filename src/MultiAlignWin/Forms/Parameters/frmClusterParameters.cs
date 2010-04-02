@@ -26,6 +26,7 @@ namespace MultiAlignWin
         private NumericUpDown mnum_NETTol;
         private NumericUpDown mnum_driftTimeTolerance;
         private Label mlabel_driftTimeTolerance;
+        private CheckBox mcheckBox_ignoreChargeStates;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
@@ -78,6 +79,7 @@ namespace MultiAlignWin
             this.mnum_NETTol = new System.Windows.Forms.NumericUpDown();
             this.mnum_driftTimeTolerance = new System.Windows.Forms.NumericUpDown();
             this.mlabel_driftTimeTolerance = new System.Windows.Forms.Label();
+            this.mcheckBox_ignoreChargeStates = new System.Windows.Forms.CheckBox();
             this.groupBoxIntensity.SuspendLayout();
             this.groupBoxClassRep.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.mnum_MassTol)).BeginInit();
@@ -107,9 +109,9 @@ namespace MultiAlignWin
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBoxIntensity.Controls.Add(this.radioButtonSumData);
             this.groupBoxIntensity.Controls.Add(this.radioButtonMaxData);
-            this.groupBoxIntensity.Location = new System.Drawing.Point(12, 117);
+            this.groupBoxIntensity.Location = new System.Drawing.Point(12, 146);
             this.groupBoxIntensity.Name = "groupBoxIntensity";
-            this.groupBoxIntensity.Size = new System.Drawing.Size(328, 96);
+            this.groupBoxIntensity.Size = new System.Drawing.Size(327, 96);
             this.groupBoxIntensity.TabIndex = 4;
             this.groupBoxIntensity.TabStop = false;
             this.groupBoxIntensity.Text = "Dataset Intensity";
@@ -138,7 +140,7 @@ namespace MultiAlignWin
             this.buttonOK.BackColor = System.Drawing.SystemColors.Control;
             this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.buttonOK.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.buttonOK.Location = new System.Drawing.Point(142, 323);
+            this.buttonOK.Location = new System.Drawing.Point(141, 386);
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.Size = new System.Drawing.Size(75, 23);
             this.buttonOK.TabIndex = 5;
@@ -152,7 +154,7 @@ namespace MultiAlignWin
             this.buttonCancel.BackColor = System.Drawing.SystemColors.Control;
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.buttonCancel.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.buttonCancel.Location = new System.Drawing.Point(227, 322);
+            this.buttonCancel.Location = new System.Drawing.Point(226, 385);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
             this.buttonCancel.TabIndex = 6;
@@ -166,29 +168,29 @@ namespace MultiAlignWin
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBoxClassRep.Controls.Add(this.radioButtonMedian);
             this.groupBoxClassRep.Controls.Add(this.radioButtonMean);
-            this.groupBoxClassRep.Location = new System.Drawing.Point(12, 219);
+            this.groupBoxClassRep.Location = new System.Drawing.Point(12, 248);
             this.groupBoxClassRep.Name = "groupBoxClassRep";
-            this.groupBoxClassRep.Size = new System.Drawing.Size(328, 96);
+            this.groupBoxClassRep.Size = new System.Drawing.Size(327, 96);
             this.groupBoxClassRep.TabIndex = 7;
             this.groupBoxClassRep.TabStop = false;
             this.groupBoxClassRep.Text = "Cluster Representation";
             // 
             // radioButtonMedian
             // 
+            this.radioButtonMedian.Checked = true;
             this.radioButtonMedian.Location = new System.Drawing.Point(24, 56);
             this.radioButtonMedian.Name = "radioButtonMedian";
             this.radioButtonMedian.Size = new System.Drawing.Size(104, 24);
             this.radioButtonMedian.TabIndex = 6;
+            this.radioButtonMedian.TabStop = true;
             this.radioButtonMedian.Text = "Median";
             // 
             // radioButtonMean
             // 
-            this.radioButtonMean.Checked = true;
             this.radioButtonMean.Location = new System.Drawing.Point(24, 24);
             this.radioButtonMean.Name = "radioButtonMean";
             this.radioButtonMean.Size = new System.Drawing.Size(136, 24);
             this.radioButtonMean.TabIndex = 5;
-            this.radioButtonMean.TabStop = true;
             this.radioButtonMean.Text = "Mean";
             // 
             // mbtnDefaults
@@ -196,7 +198,7 @@ namespace MultiAlignWin
             this.mbtnDefaults.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.mbtnDefaults.BackColor = System.Drawing.SystemColors.Control;
             this.mbtnDefaults.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.mbtnDefaults.Location = new System.Drawing.Point(49, 322);
+            this.mbtnDefaults.Location = new System.Drawing.Point(48, 385);
             this.mbtnDefaults.Name = "mbtnDefaults";
             this.mbtnDefaults.Size = new System.Drawing.Size(80, 24);
             this.mbtnDefaults.TabIndex = 8;
@@ -216,7 +218,7 @@ namespace MultiAlignWin
             0,
             0});
             this.mnum_MassTol.Name = "mnum_MassTol";
-            this.mnum_MassTol.Size = new System.Drawing.Size(217, 20);
+            this.mnum_MassTol.Size = new System.Drawing.Size(216, 20);
             this.mnum_MassTol.TabIndex = 9;
             this.mnum_MassTol.Value = new decimal(new int[] {
             6,
@@ -236,7 +238,7 @@ namespace MultiAlignWin
             0,
             0});
             this.mnum_NETTol.Name = "mnum_NETTol";
-            this.mnum_NETTol.Size = new System.Drawing.Size(217, 20);
+            this.mnum_NETTol.Size = new System.Drawing.Size(216, 20);
             this.mnum_NETTol.TabIndex = 10;
             this.mnum_NETTol.Value = new decimal(new int[] {
             3,
@@ -256,7 +258,7 @@ namespace MultiAlignWin
             0,
             0});
             this.mnum_driftTimeTolerance.Name = "mnum_driftTimeTolerance";
-            this.mnum_driftTimeTolerance.Size = new System.Drawing.Size(217, 20);
+            this.mnum_driftTimeTolerance.Size = new System.Drawing.Size(216, 20);
             this.mnum_driftTimeTolerance.TabIndex = 12;
             this.mnum_driftTimeTolerance.Value = new decimal(new int[] {
             3,
@@ -272,11 +274,24 @@ namespace MultiAlignWin
             this.mlabel_driftTimeTolerance.TabIndex = 11;
             this.mlabel_driftTimeTolerance.Text = "Drift Time";
             // 
+            // mcheckBox_ignoreChargeStates
+            // 
+            this.mcheckBox_ignoreChargeStates.AutoSize = true;
+            this.mcheckBox_ignoreChargeStates.Checked = true;
+            this.mcheckBox_ignoreChargeStates.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.mcheckBox_ignoreChargeStates.Location = new System.Drawing.Point(12, 103);
+            this.mcheckBox_ignoreChargeStates.Name = "mcheckBox_ignoreChargeStates";
+            this.mcheckBox_ignoreChargeStates.Size = new System.Drawing.Size(333, 17);
+            this.mcheckBox_ignoreChargeStates.TabIndex = 13;
+            this.mcheckBox_ignoreChargeStates.Text = "Ignore Charge States (allows clusters with different charge states)";
+            this.mcheckBox_ignoreChargeStates.UseVisualStyleBackColor = true;
+            // 
             // frmClusterParameters
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(352, 357);
+            this.ClientSize = new System.Drawing.Size(351, 420);
+            this.Controls.Add(this.mcheckBox_ignoreChargeStates);
             this.Controls.Add(this.mnum_driftTimeTolerance);
             this.Controls.Add(this.mlabel_driftTimeTolerance);
             this.Controls.Add(this.mnum_NETTol);
@@ -293,13 +308,14 @@ namespace MultiAlignWin
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "frmClusterParameters";
-            this.Text = "UMC Clustering";
+            this.Text = "LC-MS Feature Clustering";
             this.groupBoxIntensity.ResumeLayout(false);
             this.groupBoxClassRep.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.mnum_MassTol)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.mnum_NETTol)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.mnum_driftTimeTolerance)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
 		}
 		#endregion
@@ -315,6 +331,7 @@ namespace MultiAlignWin
             Properties.Settings.Default.UserClusterOptionsUseMaxInDataset       = radioButtonMaxData.Checked;
             Properties.Settings.Default.UserClusterOptionsUseMeanRepresentation = (ClusterRepresentativeType == MultiAlignEngine.Clustering.enmClusterRepresentativeType.MEAN);
             Properties.Settings.Default.UserClusterOptionsDriftTimeTolerance    = DriftTimeTolerance;
+            Properties.Settings.Default.UserClusterOptionsIgnoreChargeStates    = IgnoreChargeStates;
             Properties.Settings.Default.Save();
         }
 
@@ -352,6 +369,20 @@ namespace MultiAlignWin
 				mnum_MassTol.Value = Convert.ToDecimal(value) ;
 			}
 		}
+        /// <summary>
+        /// Gets or sets whether to ignore charge states durign clustering.
+        /// </summary>
+        public bool IgnoreChargeStates
+        {
+            get
+            {
+                return mcheckBox_ignoreChargeStates.Checked;
+            }
+            set
+            {
+                mcheckBox_ignoreChargeStates.Checked = value;
+            }            
+        }
         /// <summary>
         /// Gets or sets the NET tolerance.
         /// </summary>
@@ -430,6 +461,7 @@ namespace MultiAlignWin
 				options.ClusterIntensityType = ClusterIntensityType ;
 				options.ClusterRepresentativeType = ClusterRepresentativeType ;
                 options.DriftTimeTolerance = DriftTimeTolerance;
+                options.IgnoreCharge = IgnoreChargeStates;
 				return options ;
 			}
 			set
@@ -440,6 +472,7 @@ namespace MultiAlignWin
 				ClusterIntensityType = options.ClusterIntensityType ;
 				ClusterRepresentativeType = options.ClusterRepresentativeType ;
                 DriftTimeTolerance = options.DriftTimeTolerance;
+                IgnoreChargeStates = options.IgnoreCharge;
 			}
 		}
 	}

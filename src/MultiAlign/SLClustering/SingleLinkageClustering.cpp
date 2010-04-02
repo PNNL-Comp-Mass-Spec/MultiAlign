@@ -27,6 +27,10 @@ namespace MultiAlignEngine
 			mvect_data_membership.clear(); 
 			mmap_cluster_members.clear(); 
 		}
+		void SingleLinkageClustering::SetNumberDataPoints(int pointCount)
+		{
+			mvect_datasetIDs.resize(pointCount, 0);			
+		}
 
 		void SingleLinkageClustering::CreateLeafClusters(int num_data_pts)
 		{
@@ -62,17 +66,66 @@ namespace MultiAlignEngine
 			Cluster new_cluster; 
 			std::multimap<int,int>::iterator cluster_member_iter; 
 			std::multimap<int,int>::iterator cluster_member_begin_iter; 
+			std::multimap<int,int>::iterator cluster_find_iter; 
+			std::multimap<int,int>::iterator cluster_find_begin_iter;
 			std::multimap<int,int>::iterator cluster_member_last_iter;
 
 			for (int elem_index = 0; elem_index < num_distances; elem_index++)
 			{
 				Distance distance = vect_distances[elem_index]; 
-				int elem1 = distance.mint_elem_1; 
-				int elem2 = distance.mint_elem_2; 
+				int elem1  = distance.mint_elem_1; 
+				int elem2  = distance.mint_elem_2; 
 				int clust1 = mvect_data_membership[elem1]; 
 				int clust2 = mvect_data_membership[elem2]; 
+
+				mvect_datasetIDs[elem1] = distance.mint_dataset_elem_1;
+				mvect_datasetIDs[elem2] = distance.mint_dataset_elem_2;
+
+				int datasetID1 = mvect_datasetIDs[elem1];
+				int datasetID2 = mvect_datasetIDs[elem2];
+
+				/// This would mean these items are already clustered so ignore.
 				if (clust1 == clust2)
 					continue; 
+
+				/*
+					This code makes sure we dont aggregate features from the same dataset into the same cluster!
+				*/
+				bool containsDuplicateDataset = false;		
+
+				// Search in cluster 1 to make sure that we dont have elements in both clusters that share datasets!
+				cluster_member_begin_iter = mmap_cluster_members.find(clust1); 
+				for (cluster_member_iter = cluster_member_begin_iter;
+					cluster_member_iter != mmap_cluster_members.end() && (*cluster_member_iter).first == clust1; )					
+				{
+					int elem_index = (*cluster_member_iter).second; 
+					cluster_member_iter++; 
+					
+					int datasetID1 = mvect_datasetIDs[elem_index];
+
+					// Search against the other dataset to see if we have that datasetID!
+					// If so break out and dont combine these two clusters.
+					cluster_find_begin_iter = mmap_cluster_members.find(clust2); 
+					for (cluster_find_iter = cluster_find_begin_iter;
+						cluster_find_iter != mmap_cluster_members.end() && (*cluster_find_iter).first == clust2; )					
+					{
+						int elem_index = (*cluster_find_iter).second; 
+						cluster_find_iter++; 
+					
+						int datasetID2 = mvect_datasetIDs[elem_index];
+						if (datasetID1 == datasetID2) 
+						{
+							containsDuplicateDataset = true;
+							break;
+						}					
+					}
+					if (containsDuplicateDataset == true)
+						break;
+				}
+
+				if (containsDuplicateDataset == true)
+					continue;
+
 				// now create new cluster that is an aggregation of clust1, clust2.
 				new_cluster.Set(clust1, clust2); 
 				int new_cluster_index = mvect_clusters.size(); 
@@ -82,6 +135,7 @@ namespace MultiAlignEngine
 
 				mvect_top_level_cluster.push_back(true); 
 				mvect_clusters.push_back(new_cluster); 
+				
 
 				// now each member that belongs to clust1 should belong to new_cluster
 				// and map from cluster to members should remove mapping of clust1 because

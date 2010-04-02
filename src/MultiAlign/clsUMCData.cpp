@@ -441,9 +441,11 @@ namespace MultiAlignEngine
 			MultiAlignEngine::Clustering::Point pt; 
 			for (int umcNum = 0; umcNum < mint_num_umcs; umcNum++)
 			{
-				pt.mint_index = umcNum; 
-				pt.mdouble_mass = marr_umcs[umcNum]->mdouble_mono_mass_calibrated; 
-				pt.mdouble_net = marr_umcs[umcNum]->mdouble_net; 
+				pt.mint_index      = umcNum; 
+				pt.mdouble_mass    = marr_umcs[umcNum]->mdouble_mono_mass_calibrated; 
+				pt.mdouble_net     = marr_umcs[umcNum]->mdouble_net; 
+				pt.mint_datasetID  = marr_umcs[umcNum]->DatasetId;
+				pt.mint_charge     = marr_umcs[umcNum]->ChargeRepresentative;
 				vectPoints[umcNum] = pt; 
 			}
 		}

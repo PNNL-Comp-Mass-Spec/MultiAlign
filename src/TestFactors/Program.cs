@@ -18,7 +18,7 @@ namespace Test
             if (false)
             {
 
-                TestFactors.Factors.Form1 f = new TestFactors.Factors.Form1();
+                /*Test.Factors.Form1 f = new TestFactors.Factors.Form1();
                 f.ShowDialog();
 
                 bool boolTestFactors = false;
@@ -31,14 +31,16 @@ namespace Test
                 {
                     Test.TestFactorsProgram.TestFactorClass();
                     Test.TestFactorsProgram.TestNewFactorsForm();
-                }
+                }*/
+
                 /// 
                 /// Heatmap tests
-                /// 
+                ///
+                /*
                 if (boolTestHeatmap == true)
                 {
                     Test.classTestHeatMap.TestHeatMap();
-                }
+                }*/
             }
 
             if (true)

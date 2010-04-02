@@ -334,6 +334,8 @@ namespace MultiAlignWin
             options.NETTolerance = Properties.Settings.Default.UserClusterOptionsNETTolerance;
             options.DriftTimeTolerance = Properties.Settings.Default.UserClusterOptionsDriftTimeTolerance;
             options.ClusterIntensityType = MultiAlignEngine.Clustering.enmClusterIntensityType.MAX_PER_DATASET;
+            options.IgnoreCharge = Properties.Settings.Default.UserClusterOptionsIgnoreChargeStates;
+
             if (Properties.Settings.Default.UserClusterOptionsUseMaxInDataset == false)
                 options.ClusterIntensityType = MultiAlignEngine.Clustering.enmClusterIntensityType.SUM_PER_DATASET;
 

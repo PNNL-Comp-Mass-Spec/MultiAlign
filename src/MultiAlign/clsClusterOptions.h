@@ -33,6 +33,8 @@ namespace MultiAlignEngine
 			/// Drift-Time Tolerance for peak matching.
 			/// </summary>
 			double mdblDriftTimeTolerance;
+			/// Ignores charge states in the clustering algorithm
+			bool mbool_ignoreCharge;
 		public:
 		private:
 			enmClusterRepresentativeType menmClusterRepresentativeType; 
@@ -61,6 +63,17 @@ namespace MultiAlignEngine
 			__property void set_NETTolerance(double value)
 			{
 				mdblNETTolerance = value; 
+			}
+			
+			[clsDataSummaryAttribute("Ignore Charge")]			
+			[clsParameterFileAttribute("IgnoreCharge", "ClusterOptions")]
+			__property bool get_IgnoreCharge()
+			{
+				return mbool_ignoreCharge; 
+			}
+			__property void set_IgnoreCharge(bool value)
+			{
+				mbool_ignoreCharge = value; 
 			}
 
 			
