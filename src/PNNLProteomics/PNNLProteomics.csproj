@@ -78,6 +78,7 @@
     <Compile Include="Analysis\clsHistogram.cs" />
     <Compile Include="Analysis\clsLinearNormalizer.cs" />
     <Compile Include="Cephes\clsMathUtilities.cs" />
+    <Compile Include="Data\Loaders\FactorLoader.cs" />
     <Compile Include="Filters\ChargeFilter.cs" />
     <Compile Include="Filters\DatasetMembersFilter.cs" />
     <Compile Include="Filters\DriftTimeFilter.cs" />

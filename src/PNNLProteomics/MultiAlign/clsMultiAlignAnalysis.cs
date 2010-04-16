@@ -514,7 +514,8 @@ namespace PNNLProteomics.Data.Analysis
                         ///  
                         foreach (clsUMC umc in loadedUMCs)
                         {
-                            umc.Net = umc.Scan;
+                            umc.mdouble_abundance  = umc.mdouble_max_abundance;
+                            umc.Net                = umc.Scan;
                         }
 
                         if (UMCSLoadedForFile != null)
@@ -692,7 +693,18 @@ namespace PNNLProteomics.Data.Analysis
             mobjAlignmentProcessor.AlignmentOptions = alignmentOptions ; 
 
 			int minScanRef = 0;
-            int maxScanRef = 0; 
+            int maxScanRef = 0;
+
+            /// 
+            /// Add space for storing the alignment functions, then store it.
+            /// We add space because we skip the baseline dataset alignment since
+            /// it would be a perfect R = 1.0 alignment value.
+            /// 
+            while (marrDatasetAlignmentFunctions.Count < datasetIndex + 1)
+            {
+                marrDatasetAlignmentFunctions.Add(null);
+                mlist_alignmentData.Add(null);
+            }        
 
             /// 
             /// If the baseline is a MTDB then make sure its loaded.
@@ -712,8 +724,11 @@ namespace PNNLProteomics.Data.Analysis
 					return ; 
 
 				mobjAlignmentProcessor.SetReferenceDatasetFeatures(mobjUMCData, baselineIndex) ; 
-				mobjUMCData.GetMinMaxScan(baselineIndex, ref minScanRef, ref maxScanRef) ; 
+				mobjUMCData.GetMinMaxScan(baselineIndex, ref minScanRef, ref maxScanRef) ;
+
+
 			}
+
 
             /// 
             /// Tell the listeners that we are aligning X to Y.
@@ -780,17 +795,7 @@ namespace PNNLProteomics.Data.Analysis
                 /// Grab the alignment function
                 /// 
                 clsAlignmentFunction alignmentFunction = mobjAlignmentProcessor.GetAlignmentFunction();
-
-                /// 
-                /// Add space for storing the alignment functions, then store it.
-                /// We add space because we skip the baseline dataset alignment since
-                /// it would be a perfect R = 1.0 alignment value.
-                /// 
-                while (marrDatasetAlignmentFunctions.Count < datasetIndex + 1)
-                {
-                    marrDatasetAlignmentFunctions.Add(null);
-                    mlist_alignmentData.Add(null);
-                }                
+        
                 ///
                 /// BLL marrDatasetAlignmentFunctions[datasetIndex] = alignmentFunction;
                 ///
@@ -873,7 +878,12 @@ namespace PNNLProteomics.Data.Analysis
                 data.NETIntercept       = mobjAlignmentProcessor.NETIntercept;
                 data.NETRsquared        = mobjAlignmentProcessor.NETLinearRSquared;
                 data.NETSlope           = mobjAlignmentProcessor.NETSlope;
-                data.ResidualData       = residualData;
+                data.ResidualData               = residualData;
+                data.MassMean                   = mobjAlignmentProcessor.GetMassMean();
+                data.MassStandardDeviation      = mobjAlignmentProcessor.GetMassStandardDeviation();
+                data.NETMean                    = mobjAlignmentProcessor.GetNETMean();
+                data.NETStandardDeviation       = mobjAlignmentProcessor.GetNETStandardDeviation();
+
                 /// 
                 /// Find out the max scan or NET value to use for the range depending on what 
                 /// type of baseline dataset it was (MTDB or dataset).
@@ -978,7 +988,7 @@ namespace PNNLProteomics.Data.Analysis
             mergedData.ResidualData.mz                      = new float[countMassResiduals];
             mergedData.ResidualData.mzMassError             = new float[countMassResiduals];
             mergedData.ResidualData.mzMassErrorCorrected    = new float[countMassResiduals];
-
+            
 
             int copyNETBlocks  = 0; 
             int copyMassBlocks = 0; 
@@ -1002,6 +1012,11 @@ namespace PNNLProteomics.Data.Analysis
                 copyNETBlocks  += alignmentData[i].ResidualData.scans.Length;
                 copyMassBlocks += alignmentData[i].ResidualData.mz.Length;
 
+                mergedData.NETMean               = alignmentData[i].NETMean;
+                mergedData.MassMean              = alignmentData[i].MassMean;
+                mergedData.MassStandardDeviation = alignmentData[i].MassStandardDeviation;
+                mergedData.NETStandardDeviation  = alignmentData[i].NETStandardDeviation;
+
                 if (i > 0)                
                     MergeHistogramData(netErrorHistogramData, alignmentData[i].netErrorHistogram, true);                
             }
@@ -1009,7 +1024,7 @@ namespace PNNLProteomics.Data.Analysis
             /// 
             /// Grab the heat scores!
             /// 
-            mergedData.heatScores = alignmentData[alignmentData.Count - 1].heatScores;
+            mergedData.heatScores               = alignmentData[alignmentData.Count - 1].heatScores;
             mergedData.massErrorHistogram       = massErrorHistogramData;
             mergedData.netErrorHistogram        = netErrorHistogramData;
             mlist_alignmentData[datasetIndex]   = mergedData;   
@@ -1280,7 +1295,7 @@ namespace PNNLProteomics.Data.Analysis
             {
                 StatusMessage(0, "Performing Clustering of data points");
             }
-            if (marrFileNames.Count > 1)
+            if (marrFileNames.Count > 0)
             {
                 mobjClusterProcessor.PerformClustering(mobjUMCData);
             }
@@ -1673,6 +1688,7 @@ namespace PNNLProteomics.Data.Analysis
             /// ////////////////////////////////////////////// 
             mint_statusLevel = CONST_FIRST_LEVEL;
             AlignDatasets();
+            
 
             /// ////////////////////////////////////////////// 
             /// Part Four:
@@ -1714,7 +1730,15 @@ namespace PNNLProteomics.Data.Analysis
             {
                 System.Diagnostics.Trace.WriteLine("Could not save results to file. " + ex.Message);
             }
-            
+
+            try
+            {
+                WriteAlignmentDataToFile(System.IO.Path.GetDirectoryName(mstring_pathname));
+            }
+            catch
+            {
+            }
+
             if (AnalysisComplete != null)
                 AnalysisComplete(this);
 
@@ -1724,6 +1748,37 @@ namespace PNNLProteomics.Data.Analysis
             mbool_processing = false;
         }
         #endregion
+
+        private void WriteAlignmentDataToFile(string directoryName)
+        {
+            string alignmentDataPath = mstring_analysisName + "-alignmentData.csv";
+            alignmentDataPath = System.IO.Path.Combine(directoryName, alignmentDataPath);
+
+
+            using (TextWriter writer = File.CreateText(alignmentDataPath))
+            {
+                writer.WriteLine("Filename, Mass Mean, Mass Std, Mass Kurtosis, NET Mean, NET Std, NET Kurtosis");
+                for(int i = 0; i < AlignmentData.Count; i++)
+                {
+                    classAlignmentData data = AlignmentData[i];
+                    writer.Write("{0},", System.IO.Path.GetFileNameWithoutExtension(this.FileNames[i]));
+                    if (data == null)
+                    {
+                        writer.WriteLine("Baseline dataset");
+                    }
+                    else
+                    {
+                        writer.WriteLine("{0},{1},{2},{3},{4},{5}",
+                            data.MassMean,
+                            data.MassStandardDeviation,
+                            data.MassKurtosis,
+                            data.NETMean,
+                            data.NETStandardDeviation,
+                            data.NETKurtosis);
+                    }
+                }
+            }
+        }
 
 		#region Factors
 		/// <summary>

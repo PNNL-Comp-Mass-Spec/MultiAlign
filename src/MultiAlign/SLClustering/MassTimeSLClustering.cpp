@@ -61,7 +61,7 @@ namespace MultiAlignEngine
 						//double dist = (mass_diff * mass_diff); /// (2* mdouble_std_mass * mdouble_std_mass) + (net_diff*net_diff) / (2*mdouble_std_net * mdouble_std_net); 
 						double dist = ((mass_diff * mass_diff) / (mdouble_std_mass * mdouble_std_mass)) + ((net_diff*net_diff) / (mdouble_std_net * mdouble_std_net)); 
 						//dist += (net_diff * net_diff);
-						//dist += (dt_diff  * dt_diff);
+						dist += (dt_diff  * dt_diff) / (mdouble_std_driftTime * mdouble_std_driftTime) ;
 						dist = sqrt(dist);
 
 						// BLL - we separate here if the datasets are the same, we dont want them to be.
