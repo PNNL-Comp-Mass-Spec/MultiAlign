@@ -227,7 +227,7 @@ namespace MultiAlignEngine
 			void CalculateAlignmentFunction(); 
 			void CalculateAlignmentMatrix(); 
 			void GetMatchProbabilities(); 
-
+			void GetStatistics(double *massStd, double *netStd, double *massMu, double *netMu);
 			/*/////////////////////////////////////////////////////////////////////////////////
 				GetResiduals
 					Purpose: Returns the residuals calculated between matches of baseline to 

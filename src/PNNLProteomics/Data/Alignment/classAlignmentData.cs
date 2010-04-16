@@ -20,7 +20,12 @@ namespace PNNLProteomics.Data.Alignment
         public double       NETRsquared;
         public double       NETSlope;
         public double       NETIntercept;
+        public double       MassMean;
+        public double       NETMean;
+        public double       MassStandardDeviation;
+        public double       NETStandardDeviation;
 
+        
         /// <summary>
         /// Gets or sets the residual alignment data.
         /// </summary>        
@@ -33,6 +38,21 @@ namespace PNNLProteomics.Data.Alignment
             set
             {
                 mobj_residualData = value;
+            }
+        }
+
+        public double MassKurtosis
+        {
+            get
+            {
+                return Math.Pow(MassMean, 4) / Math.Pow(MassStandardDeviation, 4);
+            }
+        }
+        public double NETKurtosis
+        {
+            get
+            {
+                return Math.Pow(NETMean, 4) / Math.Pow(NETStandardDeviation, 4);
             }
         }
     }

@@ -1058,6 +1058,13 @@ namespace MultiAlignEngine
 			Utilities::CreateHistogram<double>(net_errors,  net_error_bin, net_error_frequency, net_bin) ; 
 			
 		}
+		void LCMSWarp::GetStatistics(double *massStd, double *netStd, double *massMu, double *netMu)
+		{	
+			*netMu = mdblMuNET;
+			*massMu = mdblMuMass;
+			*netStd = mdouble_net_std;
+			*massStd = mdouble_mass_std;						
+		}
 		/// Calculates the alignment matches post alignment to baseline dataset (dataset or msms AMTDB)
 		void LCMSWarp::CalculateAlignmentMatches()
 		{
@@ -1426,7 +1433,7 @@ namespace MultiAlignEngine
 				mdblMuMass=0; 
 				mdblMuNET=0; 
 				Utilities::MathUtils::TwoDEM(vect_mass_deltas, vect_net_deltas, mdblNormalProb, mdblU, mdblMuMass, mdblMuNET, mdouble_mass_std, mdouble_net_std); 
-				std::cerr<<"Mass Error Mean ="<<mdblMuMass<<" NET Error Mean = "<<mdblMuNET<<" Mass Stdev ="<<mdouble_mass_std<<" NET Stdev = "<<mdouble_net_std<<std::endl; 
+				//std::cerr<<"Mass Error Mean ="<<mdblMuMass<<" NET Error Mean = "<<mdblMuNET<<" Mass Stdev ="<<mdouble_mass_std<<" NET Stdev = "<<mdouble_net_std<<std::endl; 
 				//Regression::NormUnifEM mixture_model_resolver; 
 				//mixture_model_resolver.CalculateDistributions(vect_mass_deltas); 
 				//mdouble_mass_std = mixture_model_resolver.GetStd(); 
