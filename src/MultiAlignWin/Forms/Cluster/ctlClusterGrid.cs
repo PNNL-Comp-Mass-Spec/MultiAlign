@@ -1270,8 +1270,11 @@ namespace MultiAlignWin
 				{
 					if (clusterIDs.Contains(triplet.mintFeatureIndex))
 					{
-						ClusterToMassTagMap clusterToMassTagMap = new ClusterToMassTagMap(triplet.mintFeatureIndex, triplet.mintMassTagIndex);
-						MassTagToProteinMap massTagToProteinMap = new MassTagToProteinMap(triplet.mintMassTagIndex, triplet.mintProteinIndex);
+						clsMassTag massTag = massTagArray[triplet.mintMassTagIndex];
+						clsProtein protein = proteinArray[triplet.mintProteinIndex];
+
+						ClusterToMassTagMap clusterToMassTagMap = new ClusterToMassTagMap(triplet.mintFeatureIndex, massTag.Id);
+						MassTagToProteinMap massTagToProteinMap = new MassTagToProteinMap(massTag.Id, protein.Id);
 
 						if (!clusterToMassTagMapList.Contains(clusterToMassTagMap))
 						{
@@ -1283,13 +1286,11 @@ namespace MultiAlignWin
 							massTagToProteinMapList.Add(massTagToProteinMap);
 						}
 
-						clsMassTag massTag = massTagArray[triplet.mintMassTagIndex];
 						if (!massTagList.Contains(massTag))
 						{
 							massTagList.Add(massTag);
 						}
-
-						clsProtein protein = proteinArray[triplet.mintProteinIndex];
+						
 						if (!proteinList.Contains(protein))
 						{
 							proteinList.Add(protein);
