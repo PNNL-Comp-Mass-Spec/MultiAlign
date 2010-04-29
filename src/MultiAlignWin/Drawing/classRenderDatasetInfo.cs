@@ -346,8 +346,11 @@ namespace MultiAlignWin.Drawing
                 {
                     bins[i]  = Convert.ToSingle(massError[i, 0]);
                     freqs[i] = Convert.ToSingle(massError[i, 1]);
-                }                               
+                }
+
+                float diff = bins[1] - bins[0];                
                 chart            = new controlHistogram(bins, freqs, "Mass Error Histogram" + name);
+                chart.BinSize = diff;
                 chart.XAxisLabel = "Mass Error";
                 chart.YAxisLabel = "Count";
             }
@@ -424,7 +427,9 @@ namespace MultiAlignWin.Drawing
                     bins[i] = Convert.ToSingle(NETError[i, 0]);
                     freqs[i] = Convert.ToSingle(NETError[i, 1]);
                 }
+                float diff = bins[1] - bins[0];
                 chart            = new controlHistogram(bins, freqs, "NET Error Histogram " + name);
+                chart.BinSize    = diff;
                 chart.XAxisLabel = "NET Error";
                 chart.YAxisLabel = "Count";
             }

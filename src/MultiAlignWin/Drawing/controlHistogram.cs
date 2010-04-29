@@ -8,10 +8,11 @@ using System.Collections.Generic;
 using PNNLControls;
 using PNNLProteomics.Data.Analysis;
 using PNNLControls.Drawing.Plotting;
+using PNNLControls.Drawing.Charting;
 
 namespace MultiAlignWin.Drawing
 {
-    public partial class controlHistogram : ctlLineChart
+    public partial class controlHistogram : ctlHistogram
     {
 
         public controlHistogram()

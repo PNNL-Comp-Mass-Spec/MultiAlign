@@ -204,6 +204,9 @@
     <Compile Include="Drawing\Charting\ctlHeatChart.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Drawing\Charting\ctlHistogram.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Drawing\Charting\ctlLineChart.cs">
       <SubType>UserControl</SubType>
     </Compile>
