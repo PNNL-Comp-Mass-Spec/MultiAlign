@@ -512,12 +512,20 @@ namespace PNNLProteomics.Data.Analysis
                         /// Instead, we are forced to use the mid point of the scans found in.  
                         /// The UMC Creator finds this NET value as the most intense scan of the MS Features.
                         ///  
+                        int minScan = int.MaxValue;
+                        int maxScan = int.MinValue;
+
                         foreach (clsUMC umc in loadedUMCs)
                         {
-                            umc.mdouble_abundance  = umc.mdouble_max_abundance;
-                            umc.Net                = umc.Scan;
+                            //umc.mdouble_abundance = umc.mdouble_max_abundance;
+                            minScan = Math.Min(umc.mint_start_scan, minScan);
+                            maxScan = Math.Max(umc.mint_end_scan, maxScan);                            
                         }
-
+                        foreach (clsUMC umc in loadedUMCs)
+                        {
+                            umc.Net = (umc.mint_scan - umc.mint_start_scan) / Convert.ToDouble(maxScan - minScan);                            
+                        }
+                        
                         if (UMCSLoadedForFile != null)
                         {
                             UMCSLoadedForFile(FileNames[fileNum], loadedUMCs);
@@ -704,7 +712,8 @@ namespace PNNLProteomics.Data.Analysis
             {
                 marrDatasetAlignmentFunctions.Add(null);
                 mlist_alignmentData.Add(null);
-            }        
+            }
+
 
             /// 
             /// If the baseline is a MTDB then make sure its loaded.
@@ -786,6 +795,9 @@ namespace PNNLProteomics.Data.Analysis
                 mobjAlignmentProcessor.SetAligneeDatasetFeatures(mobjUMCData,
                                                                 datasetIndex,
                                                                 mobjAlignmentOptions.MZBoundaries[i]);
+
+
+
                 /// 
                 /// Then perform the alignment.
                 /// 
@@ -1682,63 +1694,81 @@ namespace PNNLProteomics.Data.Analysis
                 CurrentStep(listSteps.IndexOf(stepAlignment), stepAlignment);
             SetDefaultAlignmentOptions();
 
-            /// ////////////////////////////////////////////// 
-            /// Part Four:
-            ///     Alignment
-            /// ////////////////////////////////////////////// 
-            mint_statusLevel = CONST_FIRST_LEVEL;
-            AlignDatasets();
-            
-
-            /// ////////////////////////////////////////////// 
-            /// Part Four:
-            ///         Clustering 
-            /// ////////////////////////////////////////////// 
-            mint_statusLevel    = CONST_FIRST_LEVEL;
-            if (CurrentStep != null)
-                CurrentStep(listSteps.IndexOf(stepCluster), stepCluster);
-            PerformClustering();
-
-            /// ////////////////////////////////////////////// 
-            /// Part Five:
-            ///     Perform Peak Matching
-            /// ////////////////////////////////////////////// 
-            mint_statusLevel = CONST_FIRST_LEVEL;
-            if (MassTagDBOptions.menm_databaseType != MultiAlignEngine.MassTags.MassTagDatabaseType.None)
+            /// 
+            /// For NxN alignment
+            /// 
+            //for (int i = 0; i < marrFiles.Count; i++)
             {
+                /// ////////////////////////////////////////////// 
+                /// Part Four:
+                ///     Alignment
+                /// ////////////////////////////////////////////// 
+                mint_statusLevel = CONST_FIRST_LEVEL;
+
+                //mobjAlignmentOptions.AlignmentBaselineName = marrFileNames[i];
+                AlignDatasets();
+
+
+                /// ////////////////////////////////////////////// 
+                /// Part Four:
+                ///         Clustering 
+                /// ////////////////////////////////////////////// 
+                mint_statusLevel = CONST_FIRST_LEVEL;
                 if (CurrentStep != null)
-                    CurrentStep(listSteps.IndexOf(stepPeakMatch), stepPeakMatch);
-                /// 
-                /// Run the peak matching steps and scoring
-                /// 
-                PerformPeakMatching();
-            }
+                    CurrentStep(listSteps.IndexOf(stepCluster), stepCluster);
+                PerformClustering();
 
-            /// ////////////////////////////////////////////// 
-            /// Part Six:
-            ///     Serialize the analysis to file.
-            /// ////////////////////////////////////////////// 
-            mint_statusLevel = CONST_FIRST_LEVEL;
-            if (CurrentStep != null)
-                CurrentStep(listSteps.IndexOf(stepSave), stepSave);
+                /// ////////////////////////////////////////////// 
+                /// Part Five:
+                ///     Perform Peak Matching
+                /// ////////////////////////////////////////////// 
+                mint_statusLevel = CONST_FIRST_LEVEL;
+                if (MassTagDBOptions.menm_databaseType != MultiAlignEngine.MassTags.MassTagDatabaseType.None)
+                {
+                    if (CurrentStep != null)
+                        CurrentStep(listSteps.IndexOf(stepPeakMatch), stepPeakMatch);
+                    /// 
+                    /// Run the peak matching steps and scoring
+                    /// 
+                    PerformPeakMatching();
+                }
 
-            try
-            {
-                SerializeAnalysisToFile(mstring_pathname);
-            }
-            catch(Exception ex)
-            {
-                System.Diagnostics.Trace.WriteLine("Could not save results to file. " + ex.Message);
-            }
+                /// ////////////////////////////////////////////// 
+                /// Part Six:
+                ///     Serialize the analysis to file.
+                /// ////////////////////////////////////////////// 
+                mint_statusLevel = CONST_FIRST_LEVEL;
+                if (CurrentStep != null)
+                    CurrentStep(listSteps.IndexOf(stepSave), stepSave);
 
-            try
-            {
-                WriteAlignmentDataToFile(System.IO.Path.GetDirectoryName(mstring_pathname));
-            }
-            catch
-            {
-            }
+                try
+                {
+                    string pathName = System.IO.Path.GetDirectoryName(mstring_pathname);
+                    string newPath  = System.IO.Path.Combine(pathName, mstring_analysisName + i.ToString());
+                    System.IO.Directory.CreateDirectory(newPath);
+                    
+                    SerializeAnalysisToFile(System.IO.Path.Combine(newPath, mstring_analysisName + i.ToString() + ".mln"));
 
+                    //mstring_pathname = System.IO.Path.Combine(newPath, mstring_analysisName + ".mln");
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Trace.WriteLine("Could not save results to file. " + ex.Message);
+                }
+
+                try
+                {
+
+                    string pathName = System.IO.Path.GetDirectoryName(mstring_pathname);
+                    string newPath = System.IO.Path.Combine(pathName, mstring_analysisName + i.ToString());
+                    System.IO.Directory.CreateDirectory(newPath);
+
+                    WriteAlignmentDataToFile(newPath , i);
+                }
+                catch
+                {
+                }
+            }
             if (AnalysisComplete != null)
                 AnalysisComplete(this);
 
@@ -1749,9 +1779,9 @@ namespace PNNLProteomics.Data.Analysis
         }
         #endregion
 
-        private void WriteAlignmentDataToFile(string directoryName)
+        private void WriteAlignmentDataToFile(string directoryName, int id)
         {
-            string alignmentDataPath = mstring_analysisName + "-alignmentData.csv";
+            string alignmentDataPath = mstring_analysisName + id.ToString() + "-alignmentData.csv";
             alignmentDataPath = System.IO.Path.Combine(directoryName, alignmentDataPath);
 
 
@@ -2163,6 +2193,13 @@ namespace PNNLProteomics.Data.Analysis
 				return mbool_peakMatchedToMasstagDB ; 
 			}
 		}
+        public clsMassTagDB MassTagDatabase
+        {
+            get
+            {
+                return mobjMassTagDB;
+            }
+        }
 		#endregion
 
         #region Analysis File 
@@ -2216,7 +2253,6 @@ namespace PNNLProteomics.Data.Analysis
             FileInfo fi = new FileInfo(fileName);
             if (mstring_analysisName == string.Empty)
                 mstring_analysisName = fi.Name;
-            mstring_pathname = fileName;
 
             // To serialize the hashtable and its key/value pairs,  
             // you must first open a stream for writing. 
