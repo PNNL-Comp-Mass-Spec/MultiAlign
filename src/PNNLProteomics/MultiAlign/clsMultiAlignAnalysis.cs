@@ -1697,6 +1697,7 @@ namespace PNNLProteomics.Data.Analysis
             /// 
             /// For NxN alignment
             /// 
+            int i = 0;
             //for (int i = 0; i < marrFiles.Count; i++)
             {
                 /// ////////////////////////////////////////////// 

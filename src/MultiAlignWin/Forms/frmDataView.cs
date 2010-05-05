@@ -595,7 +595,7 @@ namespace MultiAlignWin
             this.mtabPage_clusterPlot.Padding = new System.Windows.Forms.Padding(3);
             this.mtabPage_clusterPlot.Size = new System.Drawing.Size(1043, 495);
             this.mtabPage_clusterPlot.TabIndex = 6;
-            this.mtabPage_clusterPlot.Text = "Cluster Plot";
+            this.mtabPage_clusterPlot.Text = "Cluster Histogram";
             this.mtabPage_clusterPlot.UseVisualStyleBackColor = true;
             // 
             // menuStrip
@@ -1032,11 +1032,15 @@ namespace MultiAlignWin
             foreach (clsCluster cluster in mobjAnalysis.UMCData.mobjClusterData.marrClusters)
             {
                 maxClusters = Math.Max(cluster.mshort_num_dataset_members, maxClusters);
+                if (cluster.mdouble_netError < 0)
+                {
+                    /// do something
+                }
             }
 
-            if (maxClusters > 0)
+            if (maxClusters > 1)
             {
-                float[] bins  = new float[maxClusters];
+                float[] bins = new float[maxClusters];
                 float[] freqs = new float[maxClusters];
 
                 int i = 0;
@@ -1046,14 +1050,34 @@ namespace MultiAlignWin
                     freqs[i] = 0;
                 }
 
+                /// 
+                /// Make the cluster histogram
+                /// 
                 foreach (clsCluster cluster in mobjAnalysis.UMCData.mobjClusterData.marrClusters)
                 {
                     freqs[cluster.mshort_num_dataset_members - 1] = freqs[cluster.mshort_num_dataset_members - 1] + 1;
                 }
-                mcontrol_clusterHistogram.BinSize    = 1.0F;
+
+                
+                using (System.IO.TextWriter writer = System.IO.File.CreateText(@"c:\development\data\clusters.csv"))
+                {
+                    for(i = 0; i < maxClusters; i++)
+                    {
+                        writer.WriteLine("{0},{1:0.0}", bins[i], freqs[i]);
+                    }
+                }
+
+                /// 
+                /// Display the histogram.
+                /// 
+                mcontrol_clusterHistogram.BinSize       = 1.0F;
                 mcontrol_clusterHistogram.AddData(bins, freqs, "Cluster Sizes");
-                mcontrol_clusterHistogram.XAxisLabel = "Cluster Size";
-                mcontrol_clusterHistogram.YAxisLabel = "Count";
+                mcontrol_clusterHistogram.XAxisLabel    = "Cluster Size";
+                mcontrol_clusterHistogram.YAxisLabel    = "Count";                
+            }
+            else
+            {
+                mcontrol_clusterHistogram.Title         = "No clusters available.";
             }
         }
 

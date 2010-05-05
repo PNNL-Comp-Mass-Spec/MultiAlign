@@ -15,6 +15,7 @@ namespace MultiAlignWin
 {
 	public class ctlClusterChart : ctlScatterChart
 	{
+
 		private System.ComponentModel.IContainer components = null;
 		private clsMultiAlignAnalysis mobjAnalysis ; 
 
@@ -26,6 +27,8 @@ namespace MultiAlignWin
 		private bool mbln_hollow = false ;
         private CheckBox mcheckBox_showAligned;
         private CheckBox mcheckBox_showNET;
+
+        
 		/// <summary>
 		/// Show datasets aligned together
 		/// </summary>
@@ -33,11 +36,13 @@ namespace MultiAlignWin
 		public ctlClusterChart()
 	    {			
 			InitializeComponent();
-		}
+
+        }
 		public ctlClusterChart(clsMultiAlignAnalysis analysis)
 		{
-			InitializeComponent();
-			Analysis = analysis ; 
+            InitializeComponent();
+
+        	Analysis = analysis ;
 		}
 
 		private void AddAnalysisData()
@@ -140,36 +145,45 @@ namespace MultiAlignWin
 
             clsShape shape           = new DiamondShape(mint_pt_size + 3, true);
             clsPlotParams plotParams = new clsPlotParams(shape, Color.FromArgb(64, Color.DarkGray));
-            
+
             while(i < numberOfClusters)
             {
-                clsCluster cluster = mobjAnalysis.UMCData.mobjClusterData.GetCluster(i++);
+                float x, y;
+                clsCluster cluster = clusters.GetCluster(i);
                 if (cluster.mshort_num_dataset_members > 1)
                 {
                     if (mcheckBox_showAligned.Checked == true)
                     {
-                        massList.Add(Convert.ToSingle(cluster.mdouble_mass_calibrated));
+                        y = Convert.ToSingle(cluster.mdouble_mass_calibrated);
                     }
                     else 
                     {
-                        massList.Add(Convert.ToSingle(cluster.mdouble_mass));
+                        y = Convert.ToSingle(cluster.mdouble_mass);
                     }
+                    massList.Add(y);
+
                     if (mcheckBox_showNET.Checked == true)
                     {
-                        if (mcheckBox_showAligned.Checked == true)
+
+                        /// 
+                        /// the clusters will not be aligned if they are not peak matched 
+                        /// 
+                        if (mcheckBox_showAligned.Checked == true && mobjAnalysis.AlignmentOptions[0].IsAlignmentBaselineAMasstagDB)
                         {
-                            scanList.Add(Convert.ToSingle(cluster.mdouble_aligned_net));
+                            x = Convert.ToSingle(cluster.mdouble_aligned_net);
                         }
                         else
                         {
-                            scanList.Add(Convert.ToSingle(cluster.mdouble_net));
+                            x = Convert.ToSingle(cluster.mdouble_net);
                         }
                     }
                     else
                     {
-                        scanList.Add(Convert.ToSingle(cluster.mint_scan));
+                        x = Convert.ToSingle(cluster.mint_scan);
                     }
+                    scanList.Add(x);
                 }
+                i++;                
             }
             massList.CopyTo(masses);
             scanList.CopyTo(scans);
@@ -230,6 +244,7 @@ namespace MultiAlignWin
                                                             mcheckBox_showAligned.Checked,
                                                             ref masses,
                                                             ref scans);
+                    XAxisLabel = "NET";
             }
             else 
             {
@@ -237,6 +252,7 @@ namespace MultiAlignWin
                                                             mcheckBox_showAligned.Checked,
                                                             ref masses,
                                                             ref scans);
+                XAxisLabel = "Scans";
             }
             Color clr                = miter_color.GetColor(datasetNum);
             clsShape shape           = new DiamondShape(mint_pt_size, mbln_hollow); ;
@@ -387,6 +403,11 @@ namespace MultiAlignWin
             AutoViewPortOnAddition = true;
             this.SeriesCollection.Clear();
             AddAnalysisData();
+        }
+
+        protected override void PaintSeries(Graphics g, Bitmap bitmap, clsSeries series)
+        {
+            base.PaintSeries(g, bitmap, series);
         }
 	}
 }

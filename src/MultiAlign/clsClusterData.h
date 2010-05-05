@@ -49,6 +49,7 @@ namespace MultiAlignEngine
 			double marrClusterIntensity __gc[]; 
 			// array of normalized intensities for all cluster in each dataset
 			double marrClusterIntensityNormalized __gc[]; 
+			/// This array holds the umc index for a given cluster index and dataset index. 
 			int marrClusterMainMemberIndex __gc[]; 
 			System::Collections::ArrayList *marrClusters;
 			System::Collections::ArrayList *marrClusterUMCIndexPair; 
