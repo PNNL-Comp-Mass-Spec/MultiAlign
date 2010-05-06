@@ -88,6 +88,8 @@ namespace MultiAlignWin
         private ToolStripMenuItem asSQLiteToolStripMenuItem;
         private TabPage mtabPage_clusterPlot;
         private MultiAlignWin.Drawing.controlHistogram mcontrol_clusterHistogram;
+        private TabPage mtabPage_chargeStates;
+        private MultiAlignWin.Drawing.controlHistogram mcontrol_histogramChargeStates;
         private IContainer components;
         #endregion
 
@@ -315,6 +317,7 @@ namespace MultiAlignWin
                 /// Create the cluster histogram
                 /// 
                 CreateClusterHistogram();
+                CreateChargeHistogram();
 
                 UpdateListViews();
             }
@@ -365,6 +368,8 @@ namespace MultiAlignWin
             PNNLControls.PenProvider penProvider1 = new PNNLControls.PenProvider();
             PNNLControls.PenProvider penProvider2 = new PNNLControls.PenProvider();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmDataView));
+            PNNLControls.PenProvider penProvider3 = new PNNLControls.PenProvider();
+            PNNLControls.PenProvider penProvider4 = new PNNLControls.PenProvider();
             this.splitter1 = new System.Windows.Forms.Splitter();
             this.expandPanelBottom = new PNNLControls.ExpandPanel(80);
             this.panelCharts = new System.Windows.Forms.Panel();
@@ -372,7 +377,9 @@ namespace MultiAlignWin
             this.tabPageOverlayPlot = new System.Windows.Forms.TabPage();
             this.DataGrid = new System.Windows.Forms.TabPage();
             this.mtabPage_dataSummary = new System.Windows.Forms.TabPage();
+            this.mcontrol_resultSummaryPages = new MultiAlignWin.ctlSummaryPages();
             this.mtabPage_analysisInformation = new System.Windows.Forms.TabPage();
+            this.mcontrol_analysisInformation = new MultiAlignWin.ctlSummaryPages();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.mpanel_dataControls = new System.Windows.Forms.Panel();
             this.mtabPage_proteinMaps = new System.Windows.Forms.TabPage();
@@ -381,6 +388,7 @@ namespace MultiAlignWin
             this.columnHeader2 = new System.Windows.Forms.ColumnHeader();
             this.mtreeView_proteinViewer = new System.Windows.Forms.TreeView();
             this.mtabPage_clusterPlot = new System.Windows.Forms.TabPage();
+            this.mcontrol_clusterHistogram = new MultiAlignWin.Drawing.controlHistogram();
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -418,9 +426,8 @@ namespace MultiAlignWin
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.mlabel_rows = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.mcontrol_resultSummaryPages = new MultiAlignWin.ctlSummaryPages();
-            this.mcontrol_analysisInformation = new MultiAlignWin.ctlSummaryPages();
-            this.mcontrol_clusterHistogram = new MultiAlignWin.Drawing.controlHistogram();
+            this.mtabPage_chargeStates = new System.Windows.Forms.TabPage();
+            this.mcontrol_histogramChargeStates = new MultiAlignWin.Drawing.controlHistogram();
             ((System.ComponentModel.ISupportInitialize)(this.expandPanelBottom)).BeginInit();
             this.panelCharts.SuspendLayout();
             this.mtabcontrol_data.SuspendLayout();
@@ -429,10 +436,12 @@ namespace MultiAlignWin
             this.tabPage2.SuspendLayout();
             this.mtabPage_proteinMaps.SuspendLayout();
             this.mtabPage_clusterPlot.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.mcontrol_clusterHistogram)).BeginInit();
             this.menuStrip.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.mcontrol_clusterHistogram)).BeginInit();
+            this.mtabPage_chargeStates.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.mcontrol_histogramChargeStates)).BeginInit();
             this.SuspendLayout();
             // 
             // splitter1
@@ -472,6 +481,7 @@ namespace MultiAlignWin
             this.mtabcontrol_data.Controls.Add(this.tabPage2);
             this.mtabcontrol_data.Controls.Add(this.mtabPage_proteinMaps);
             this.mtabcontrol_data.Controls.Add(this.mtabPage_clusterPlot);
+            this.mtabcontrol_data.Controls.Add(this.mtabPage_chargeStates);
             this.mtabcontrol_data.Dock = System.Windows.Forms.DockStyle.Fill;
             this.mtabcontrol_data.Location = new System.Drawing.Point(0, 0);
             this.mtabcontrol_data.Name = "mtabcontrol_data";
@@ -509,6 +519,15 @@ namespace MultiAlignWin
             this.mtabPage_dataSummary.Text = "Results Summary";
             this.mtabPage_dataSummary.UseVisualStyleBackColor = true;
             // 
+            // mcontrol_resultSummaryPages
+            // 
+            this.mcontrol_resultSummaryPages.BackColor = System.Drawing.SystemColors.Control;
+            this.mcontrol_resultSummaryPages.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.mcontrol_resultSummaryPages.Location = new System.Drawing.Point(3, 3);
+            this.mcontrol_resultSummaryPages.Name = "mcontrol_resultSummaryPages";
+            this.mcontrol_resultSummaryPages.Size = new System.Drawing.Size(1037, 489);
+            this.mcontrol_resultSummaryPages.TabIndex = 1;
+            // 
             // mtabPage_analysisInformation
             // 
             this.mtabPage_analysisInformation.Controls.Add(this.mcontrol_analysisInformation);
@@ -519,6 +538,15 @@ namespace MultiAlignWin
             this.mtabPage_analysisInformation.TabIndex = 2;
             this.mtabPage_analysisInformation.Text = "Analysis Information";
             this.mtabPage_analysisInformation.UseVisualStyleBackColor = true;
+            // 
+            // mcontrol_analysisInformation
+            // 
+            this.mcontrol_analysisInformation.BackColor = System.Drawing.SystemColors.Control;
+            this.mcontrol_analysisInformation.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.mcontrol_analysisInformation.Location = new System.Drawing.Point(3, 3);
+            this.mcontrol_analysisInformation.Name = "mcontrol_analysisInformation";
+            this.mcontrol_analysisInformation.Size = new System.Drawing.Size(1037, 489);
+            this.mcontrol_analysisInformation.TabIndex = 2;
             // 
             // tabPage2
             // 
@@ -597,6 +625,64 @@ namespace MultiAlignWin
             this.mtabPage_clusterPlot.TabIndex = 6;
             this.mtabPage_clusterPlot.Text = "Cluster Histogram";
             this.mtabPage_clusterPlot.UseVisualStyleBackColor = true;
+            // 
+            // mcontrol_clusterHistogram
+            // 
+            this.mcontrol_clusterHistogram.AutoViewPortXBase = 0F;
+            this.mcontrol_clusterHistogram.AutoViewPortYBase = 0F;
+            this.mcontrol_clusterHistogram.AxisAndLabelFont = new System.Drawing.Font("Microsoft Sans Serif", 9F);
+            this.mcontrol_clusterHistogram.AxisAndLabelMaxFontSize = 15;
+            this.mcontrol_clusterHistogram.AxisAndLabelMinFontSize = 8;
+            this.mcontrol_clusterHistogram.AxisVisible = true;
+            this.mcontrol_clusterHistogram.BinSize = 1F;
+            this.mcontrol_clusterHistogram.ChartBackgroundColor = System.Drawing.Color.White;
+            this.mcontrol_clusterHistogram.ChartLayout.LegendFraction = 0.2F;
+            this.mcontrol_clusterHistogram.ChartLayout.LegendLocation = PNNLControls.ChartLegendLocation.Right;
+            this.mcontrol_clusterHistogram.ChartLayout.MaxLegendHeight = 150;
+            this.mcontrol_clusterHistogram.ChartLayout.MaxLegendWidth = 250;
+            this.mcontrol_clusterHistogram.ChartLayout.MaxTitleHeight = 50;
+            this.mcontrol_clusterHistogram.ChartLayout.MinLegendHeight = 50;
+            this.mcontrol_clusterHistogram.ChartLayout.MinLegendWidth = 75;
+            this.mcontrol_clusterHistogram.ChartLayout.MinTitleHeight = 15;
+            this.mcontrol_clusterHistogram.ChartLayout.TitleFraction = 0.1F;
+            this.mcontrol_clusterHistogram.DefaultZoomHandler.Active = true;
+            this.mcontrol_clusterHistogram.DefaultZoomHandler.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(119)))), ((int)(((byte)(136)))), ((int)(((byte)(153)))));
+            this.mcontrol_clusterHistogram.DefaultZoomHandler.LineColor = System.Drawing.Color.Black;
+            this.mcontrol_clusterHistogram.Dock = System.Windows.Forms.DockStyle.Fill;
+            penProvider1.Color = System.Drawing.Color.FromArgb(((int)(((byte)(211)))), ((int)(((byte)(211)))), ((int)(((byte)(211)))));
+            penProvider1.Width = 1F;
+            this.mcontrol_clusterHistogram.GridLinePen = penProvider1;
+            this.mcontrol_clusterHistogram.HilightColor = System.Drawing.Color.Magenta;
+            this.mcontrol_clusterHistogram.Legend.BackColor = System.Drawing.Color.Transparent;
+            penProvider2.Color = System.Drawing.Color.Black;
+            penProvider2.Width = 1F;
+            this.mcontrol_clusterHistogram.Legend.BorderPen = penProvider2;
+            this.mcontrol_clusterHistogram.Legend.Bounds = new System.Drawing.Rectangle(830, 80, 197, 367);
+            this.mcontrol_clusterHistogram.Legend.ColumnWidth = 125;
+            this.mcontrol_clusterHistogram.Legend.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+            this.mcontrol_clusterHistogram.Legend.MaxFontSize = 12F;
+            this.mcontrol_clusterHistogram.Legend.MinFontSize = 6F;
+            this.mcontrol_clusterHistogram.LegendVisible = true;
+            this.mcontrol_clusterHistogram.Location = new System.Drawing.Point(3, 3);
+            this.mcontrol_clusterHistogram.Margins.BottomMarginFraction = 0.1F;
+            this.mcontrol_clusterHistogram.Margins.BottomMarginMax = 72;
+            this.mcontrol_clusterHistogram.Margins.BottomMarginMin = 30;
+            this.mcontrol_clusterHistogram.Margins.DefaultMarginFraction = 0.05F;
+            this.mcontrol_clusterHistogram.Margins.DefaultMarginMax = 15;
+            this.mcontrol_clusterHistogram.Margins.DefaultMarginMin = 5;
+            this.mcontrol_clusterHistogram.Margins.LeftMarginFraction = 0.2F;
+            this.mcontrol_clusterHistogram.Margins.LeftMarginMax = 150;
+            this.mcontrol_clusterHistogram.Margins.LeftMarginMin = 72;
+            this.mcontrol_clusterHistogram.Name = "mcontrol_clusterHistogram";
+            this.mcontrol_clusterHistogram.Size = new System.Drawing.Size(1037, 489);
+            this.mcontrol_clusterHistogram.TabIndex = 0;
+            this.mcontrol_clusterHistogram.Title = "Cluster Histrogram";
+            this.mcontrol_clusterHistogram.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 29F);
+            this.mcontrol_clusterHistogram.TitleMaxFontSize = 50F;
+            this.mcontrol_clusterHistogram.TitleMinFontSize = 6F;
+            this.mcontrol_clusterHistogram.TitleVisible = true;
+            this.mcontrol_clusterHistogram.VerticalExpansion = 1F;
+            this.mcontrol_clusterHistogram.ViewPort = ((System.Drawing.RectangleF)(resources.GetObject("mcontrol_clusterHistogram.ViewPort")));
             // 
             // menuStrip
             // 
@@ -911,81 +997,75 @@ namespace MultiAlignWin
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
             this.toolStripStatusLabel1.Size = new System.Drawing.Size(0, 17);
             // 
-            // mcontrol_resultSummaryPages
+            // mtabPage_chargeStates
             // 
-            this.mcontrol_resultSummaryPages.BackColor = System.Drawing.SystemColors.Control;
-            this.mcontrol_resultSummaryPages.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.mcontrol_resultSummaryPages.Location = new System.Drawing.Point(3, 3);
-            this.mcontrol_resultSummaryPages.Name = "mcontrol_resultSummaryPages";
-            this.mcontrol_resultSummaryPages.Size = new System.Drawing.Size(1037, 489);
-            this.mcontrol_resultSummaryPages.TabIndex = 1;
+            this.mtabPage_chargeStates.Controls.Add(this.mcontrol_histogramChargeStates);
+            this.mtabPage_chargeStates.Location = new System.Drawing.Point(4, 22);
+            this.mtabPage_chargeStates.Name = "mtabPage_chargeStates";
+            this.mtabPage_chargeStates.Padding = new System.Windows.Forms.Padding(3);
+            this.mtabPage_chargeStates.Size = new System.Drawing.Size(1043, 495);
+            this.mtabPage_chargeStates.TabIndex = 7;
+            this.mtabPage_chargeStates.Text = "Charge State Histogram";
+            this.mtabPage_chargeStates.UseVisualStyleBackColor = true;
             // 
-            // mcontrol_analysisInformation
+            // mcontrol_histogramChargeStates
             // 
-            this.mcontrol_analysisInformation.BackColor = System.Drawing.SystemColors.Control;
-            this.mcontrol_analysisInformation.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.mcontrol_analysisInformation.Location = new System.Drawing.Point(3, 3);
-            this.mcontrol_analysisInformation.Name = "mcontrol_analysisInformation";
-            this.mcontrol_analysisInformation.Size = new System.Drawing.Size(1037, 489);
-            this.mcontrol_analysisInformation.TabIndex = 2;
-            // 
-            // mcontrol_clusterHistogram
-            // 
-            this.mcontrol_clusterHistogram.AutoViewPortXBase = 0F;
-            this.mcontrol_clusterHistogram.AutoViewPortYBase = 0F;
-            this.mcontrol_clusterHistogram.AxisAndLabelFont = new System.Drawing.Font("Microsoft Sans Serif", 9F);
-            this.mcontrol_clusterHistogram.AxisAndLabelMaxFontSize = 15;
-            this.mcontrol_clusterHistogram.AxisAndLabelMinFontSize = 8;
-            this.mcontrol_clusterHistogram.AxisVisible = true;
-            this.mcontrol_clusterHistogram.ChartBackgroundColor = System.Drawing.Color.White;
-            this.mcontrol_clusterHistogram.ChartLayout.LegendFraction = 0.2F;
-            this.mcontrol_clusterHistogram.ChartLayout.LegendLocation = PNNLControls.ChartLegendLocation.Right;
-            this.mcontrol_clusterHistogram.ChartLayout.MaxLegendHeight = 150;
-            this.mcontrol_clusterHistogram.ChartLayout.MaxLegendWidth = 250;
-            this.mcontrol_clusterHistogram.ChartLayout.MaxTitleHeight = 50;
-            this.mcontrol_clusterHistogram.ChartLayout.MinLegendHeight = 50;
-            this.mcontrol_clusterHistogram.ChartLayout.MinLegendWidth = 75;
-            this.mcontrol_clusterHistogram.ChartLayout.MinTitleHeight = 15;
-            this.mcontrol_clusterHistogram.ChartLayout.TitleFraction = 0.1F;
-            this.mcontrol_clusterHistogram.DefaultZoomHandler.Active = true;
-            this.mcontrol_clusterHistogram.DefaultZoomHandler.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(119)))), ((int)(((byte)(136)))), ((int)(((byte)(153)))));
-            this.mcontrol_clusterHistogram.DefaultZoomHandler.LineColor = System.Drawing.Color.Black;
-            this.mcontrol_clusterHistogram.Dock = System.Windows.Forms.DockStyle.Fill;
-            
-            penProvider1.Color = System.Drawing.Color.FromArgb(((int)(((byte)(211)))), ((int)(((byte)(211)))), ((int)(((byte)(211)))));
-            penProvider1.Width = 1F;
-            this.mcontrol_clusterHistogram.GridLinePen = penProvider1;
-            this.mcontrol_clusterHistogram.HilightColor = System.Drawing.Color.Magenta;
-            this.mcontrol_clusterHistogram.Legend.BackColor = System.Drawing.Color.Transparent;
-            penProvider2.Color = System.Drawing.Color.Black;
-            penProvider2.Width = 1F;
-            this.mcontrol_clusterHistogram.Legend.BorderPen = penProvider2;
-            this.mcontrol_clusterHistogram.Legend.Bounds = new System.Drawing.Rectangle(830, 80, 197, 367);
-            this.mcontrol_clusterHistogram.Legend.ColumnWidth = 125;
-            this.mcontrol_clusterHistogram.Legend.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.mcontrol_clusterHistogram.Legend.MaxFontSize = 12F;
-            this.mcontrol_clusterHistogram.Legend.MinFontSize = 6F;
-            this.mcontrol_clusterHistogram.LegendVisible = true;
-            this.mcontrol_clusterHistogram.Location = new System.Drawing.Point(3, 3);
-            this.mcontrol_clusterHistogram.Margins.BottomMarginFraction = 0.1F;
-            this.mcontrol_clusterHistogram.Margins.BottomMarginMax = 72;
-            this.mcontrol_clusterHistogram.Margins.BottomMarginMin = 30;
-            this.mcontrol_clusterHistogram.Margins.DefaultMarginFraction = 0.05F;
-            this.mcontrol_clusterHistogram.Margins.DefaultMarginMax = 15;
-            this.mcontrol_clusterHistogram.Margins.DefaultMarginMin = 5;
-            this.mcontrol_clusterHistogram.Margins.LeftMarginFraction = 0.2F;
-            this.mcontrol_clusterHistogram.Margins.LeftMarginMax = 150;
-            this.mcontrol_clusterHistogram.Margins.LeftMarginMin = 72;
-            this.mcontrol_clusterHistogram.Name = "mcontrol_clusterHistogram";
-            this.mcontrol_clusterHistogram.Size = new System.Drawing.Size(1037, 489);
-            this.mcontrol_clusterHistogram.TabIndex = 0;
-            this.mcontrol_clusterHistogram.Title = "Cluster Histrogram";
-            this.mcontrol_clusterHistogram.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 29F);
-            this.mcontrol_clusterHistogram.TitleMaxFontSize = 50F;
-            this.mcontrol_clusterHistogram.TitleMinFontSize = 6F;
-            this.mcontrol_clusterHistogram.TitleVisible = true;
-            this.mcontrol_clusterHistogram.VerticalExpansion = 1F;
-            this.mcontrol_clusterHistogram.ViewPort = ((System.Drawing.RectangleF)(resources.GetObject("mcontrol_clusterHistogram.ViewPort")));
+            this.mcontrol_histogramChargeStates.AutoViewPortXBase = 0F;
+            this.mcontrol_histogramChargeStates.AutoViewPortYBase = 0F;
+            this.mcontrol_histogramChargeStates.AxisAndLabelFont = new System.Drawing.Font("Microsoft Sans Serif", 9F);
+            this.mcontrol_histogramChargeStates.AxisAndLabelMaxFontSize = 15;
+            this.mcontrol_histogramChargeStates.AxisAndLabelMinFontSize = 8;
+            this.mcontrol_histogramChargeStates.AxisVisible = true;
+            this.mcontrol_histogramChargeStates.BinSize = 1F;
+            this.mcontrol_histogramChargeStates.ChartBackgroundColor = System.Drawing.Color.White;
+            this.mcontrol_histogramChargeStates.ChartLayout.LegendFraction = 0.2F;
+            this.mcontrol_histogramChargeStates.ChartLayout.LegendLocation = PNNLControls.ChartLegendLocation.Right;
+            this.mcontrol_histogramChargeStates.ChartLayout.MaxLegendHeight = 150;
+            this.mcontrol_histogramChargeStates.ChartLayout.MaxLegendWidth = 250;
+            this.mcontrol_histogramChargeStates.ChartLayout.MaxTitleHeight = 50;
+            this.mcontrol_histogramChargeStates.ChartLayout.MinLegendHeight = 50;
+            this.mcontrol_histogramChargeStates.ChartLayout.MinLegendWidth = 75;
+            this.mcontrol_histogramChargeStates.ChartLayout.MinTitleHeight = 15;
+            this.mcontrol_histogramChargeStates.ChartLayout.TitleFraction = 0.1F;
+            this.mcontrol_histogramChargeStates.DefaultZoomHandler.Active = true;
+            this.mcontrol_histogramChargeStates.DefaultZoomHandler.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(119)))), ((int)(((byte)(136)))), ((int)(((byte)(153)))));
+            this.mcontrol_histogramChargeStates.DefaultZoomHandler.LineColor = System.Drawing.Color.Black;
+            this.mcontrol_histogramChargeStates.Dock = System.Windows.Forms.DockStyle.Fill;
+            penProvider3.Color = System.Drawing.Color.FromArgb(((int)(((byte)(211)))), ((int)(((byte)(211)))), ((int)(((byte)(211)))));
+            penProvider3.Width = 1F;
+            this.mcontrol_histogramChargeStates.GridLinePen = penProvider3;
+            this.mcontrol_histogramChargeStates.HasLegend = false;
+            this.mcontrol_histogramChargeStates.HilightColor = System.Drawing.Color.Magenta;
+            this.mcontrol_histogramChargeStates.Legend.BackColor = System.Drawing.Color.Transparent;
+            penProvider4.Color = System.Drawing.Color.Black;
+            penProvider4.Width = 1F;
+            this.mcontrol_histogramChargeStates.Legend.BorderPen = penProvider4;
+            this.mcontrol_histogramChargeStates.Legend.Bounds = new System.Drawing.Rectangle(0, 0, 0, 0);
+            this.mcontrol_histogramChargeStates.Legend.ColumnWidth = 125;
+            this.mcontrol_histogramChargeStates.Legend.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+            this.mcontrol_histogramChargeStates.Legend.MaxFontSize = 12F;
+            this.mcontrol_histogramChargeStates.Legend.MinFontSize = 6F;
+            this.mcontrol_histogramChargeStates.LegendVisible = true;
+            this.mcontrol_histogramChargeStates.Location = new System.Drawing.Point(3, 3);
+            this.mcontrol_histogramChargeStates.Margins.BottomMarginFraction = 0.1F;
+            this.mcontrol_histogramChargeStates.Margins.BottomMarginMax = 72;
+            this.mcontrol_histogramChargeStates.Margins.BottomMarginMin = 30;
+            this.mcontrol_histogramChargeStates.Margins.DefaultMarginFraction = 0.05F;
+            this.mcontrol_histogramChargeStates.Margins.DefaultMarginMax = 15;
+            this.mcontrol_histogramChargeStates.Margins.DefaultMarginMin = 5;
+            this.mcontrol_histogramChargeStates.Margins.LeftMarginFraction = 0.2F;
+            this.mcontrol_histogramChargeStates.Margins.LeftMarginMax = 150;
+            this.mcontrol_histogramChargeStates.Margins.LeftMarginMin = 72;
+            this.mcontrol_histogramChargeStates.Name = "mcontrol_histogramChargeStates";
+            this.mcontrol_histogramChargeStates.Size = new System.Drawing.Size(1037, 489);
+            this.mcontrol_histogramChargeStates.TabIndex = 0;
+            this.mcontrol_histogramChargeStates.Title = "Charge States";
+            this.mcontrol_histogramChargeStates.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 29F);
+            this.mcontrol_histogramChargeStates.TitleMaxFontSize = 50F;
+            this.mcontrol_histogramChargeStates.TitleMinFontSize = 6F;
+            this.mcontrol_histogramChargeStates.TitleVisible = true;
+            this.mcontrol_histogramChargeStates.VerticalExpansion = 1F;
+            this.mcontrol_histogramChargeStates.ViewPort = ((System.Drawing.RectangleF)(resources.GetObject("mcontrol_histogramChargeStates.ViewPort")));
             // 
             // frmDataView
             // 
@@ -1009,13 +1089,15 @@ namespace MultiAlignWin
             this.tabPage2.ResumeLayout(false);
             this.mtabPage_proteinMaps.ResumeLayout(false);
             this.mtabPage_clusterPlot.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.mcontrol_clusterHistogram)).EndInit();
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.mcontrol_clusterHistogram)).EndInit();
+            this.mtabPage_chargeStates.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.mcontrol_histogramChargeStates)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1046,7 +1128,7 @@ namespace MultiAlignWin
                 int i = 0;
                 for (i = 0; i < maxClusters; i++)
                 {
-                    bins[i]  = Convert.ToSingle(i + 1);
+                    bins[i] = Convert.ToSingle(i + 1);
                     freqs[i] = 0;
                 }
 
@@ -1057,7 +1139,6 @@ namespace MultiAlignWin
                 {
                     freqs[cluster.mshort_num_dataset_members - 1] = freqs[cluster.mshort_num_dataset_members - 1] + 1;
                 }
-
                 
                 using (System.IO.TextWriter writer = System.IO.File.CreateText(@"c:\development\data\clusters.csv"))
                 {
@@ -1079,6 +1160,49 @@ namespace MultiAlignWin
             {
                 mcontrol_clusterHistogram.Title         = "No clusters available.";
             }
+        }
+        private void CreateChargeHistogram()
+        {
+            /// 
+            /// Find all of the charge states 
+            /// 
+            float[] charges = new float[30];
+            for (int i = 0; i < 30; i++)
+            {
+                charges[i] = 0;
+            }
+            int maxCharge = 0;
+            for(int i = 0; i < mobjAnalysis.Files.Count; i++)
+            {
+                clsUMC [] umcs = mobjAnalysis.UMCData.GetUMCS(i);
+                foreach (clsUMC umc in umcs)
+                {
+                    int j = umc.ChargeRepresentative;
+                    if (j > 30)
+                        j = 30;
+                    maxCharge = Math.Max(maxCharge, j);
+                    charges[j]++;
+                }                
+            }
+
+            /// 
+            /// Construct histogram
+            /// 
+            float[] bins  = new float[maxCharge];
+            float[] freqs = new float[maxCharge];            
+            for (int i = 0; i < maxCharge ; i++)
+            {
+                bins[i]  = Convert.ToSingle(i + 1);
+                freqs[i] = charges[i];
+            }
+
+            /// 
+            /// Display histogram 
+            /// 
+            mcontrol_histogramChargeStates.BinSize    = 1.0F;
+            mcontrol_histogramChargeStates.AddData(bins, freqs, "Charge States");
+            mcontrol_histogramChargeStates.XAxisLabel = "Charge States";
+            mcontrol_histogramChargeStates.YAxisLabel = "Count";        
         }
 
         /// <summary>

@@ -321,6 +321,7 @@ namespace MultiAlignWin
             /// Fill the list view with our datasets, and display any pertinent help messages.
             /// 
 			FillListView() ;
+
         }
         #endregion
         
@@ -850,6 +851,8 @@ namespace MultiAlignWin
         private void FillListView()
         {
             mlistview_datasets.BeginUpdate();
+            string[] datasetID = new string[marray_datasetInfo.Count];
+            int i = 0;
             foreach (clsDatasetInfo datasetInfo in marray_datasetInfo)
             {
                 /// 
@@ -866,6 +869,11 @@ namespace MultiAlignWin
                 dataItem.SubItems.Add(datasetInfo.mstrAnalysisJobId);
                 dataItem.SubItems.Add(datasetInfo.mstrDatasetName);
                 dataItem.SubItems.Add(datasetInfo.mstrAlias);
+
+                /// 
+                /// This is to query the factor information
+                /// 
+                datasetID[i++] = datasetInfo.mstrDatasetId;
 
                 /// 
                 /// Tag the listview item with the info reference
@@ -909,6 +917,26 @@ namespace MultiAlignWin
             mlistview_datasets.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
             mlistview_datasets.AutoResizeColumn(2, ColumnHeaderAutoResizeStyle.ColumnContent);
             mlistview_datasets.EndUpdate();
+
+
+            /// 
+            /// DMS Server connection information
+            /// 
+            //clsDMSServerInformation info = new clsDMSServerInformation();            
+            //info.ServerName         = Properties.Settings.Default.DMSServerName;
+            //info.DatabaseName       = Properties.Settings.Default.DMSDatabaseName;
+            //info.Username           = "dmswebuser";
+            //info.Password           = "icr4fun";
+            //info.ConnectionTimeout  = Properties.Settings.Default.DMSConnectionTimeout;
+
+            /// 
+            /// Factor Assignment Dictionary
+            /// 
+            //Dictionary<string, List<KeyValuePair<string, string>>> factorAssignments = new Dictionary<string, List<KeyValuePair<string, string>>>();
+            //Dictionary<string, List<string>> factorTable = new Dictionary<string, List<string>>();
+
+            //PNNLProteomics.Data.Loaders.FactorLoader factorloader   = new PNNLProteomics.Data.Loaders.FactorLoader(info);
+            //factorloader.LoadFactors(datasetID, out factorAssignments, out factorTable);            
         }
         /// <summary>
         /// Fills the list view factor values based off of a random number generator.

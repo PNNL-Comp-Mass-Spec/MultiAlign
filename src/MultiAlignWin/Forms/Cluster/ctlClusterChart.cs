@@ -27,6 +27,7 @@ namespace MultiAlignWin
 		private bool mbln_hollow = false ;
         private CheckBox mcheckBox_showAligned;
         private CheckBox mcheckBox_showNET;
+        private ComboBox mcomboBox_chargeStates;
 
         
 		/// <summary>
@@ -37,15 +38,29 @@ namespace MultiAlignWin
 	    {			
 			InitializeComponent();
 
+            mcomboBox_chargeStates.Items.Add("All");
+            for (int i = 0; i < 30; i++)
+                mcomboBox_chargeStates.Items.Add(i.ToString());
+            mcomboBox_chargeStates.SelectedIndex = 0;
+
+            this.mcomboBox_chargeStates.SelectedIndexChanged += new System.EventHandler(this.mcomboBox_chargeStates_SelectedIndexChanged);
         }
 		public ctlClusterChart(clsMultiAlignAnalysis analysis)
 		{
             InitializeComponent();
 
+
+            mcomboBox_chargeStates.Items.Add("All");
+            for (int i = 1; i < 31; i++)
+                mcomboBox_chargeStates.Items.Add(i.ToString());
+            mcomboBox_chargeStates.SelectedIndex = 0;
+
+            this.mcomboBox_chargeStates.SelectedIndexChanged += new System.EventHandler(this.mcomboBox_chargeStates_SelectedIndexChanged);
+
         	Analysis = analysis ;
 		}
 
-		private void AddAnalysisData()
+        private void AddAnalysisData()
 		{
             int num_datasets = mobjAnalysis.UMCData.NumDatasets;
 
@@ -54,20 +69,15 @@ namespace MultiAlignWin
                 AddClusterDataToChart(mobjAnalysis.UMCData.mobjClusterData);
             }
 
-            if (mobjAnalysis.PeakMatchedToMassTagDB == true)
-            {
-                try
-                {
-                    //AddMassTagDatabasePointsToChart(mobjAnalysis.MassTagDatabase);
-                }
-                catch
-                {
-                }
-            }
 
+            int charge = mcomboBox_chargeStates.SelectedIndex;
+            
 			for (int dataset_num = 0 ; dataset_num < num_datasets ; dataset_num++)
 			{
-				AddDatasetToOverlapChart(mobjAnalysis, dataset_num, mblnDatasetsAligned) ; 
+                if (charge == 0)
+				    AddDatasetToOverlapChart(mobjAnalysis, dataset_num, mblnDatasetsAligned) ; 
+                else
+                    AddChargeStateToOverlapChart(charge, mobjAnalysis, dataset_num, mblnDatasetsAligned);
 			}
 
 		}
@@ -315,6 +325,7 @@ namespace MultiAlignWin
             PNNLControls.PenProvider penProvider1 = new PNNLControls.PenProvider();
             this.mcheckBox_showAligned = new System.Windows.Forms.CheckBox();
             this.mcheckBox_showNET = new System.Windows.Forms.CheckBox();
+            this.mcomboBox_chargeStates = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
             this.SuspendLayout();
             // 
@@ -340,6 +351,15 @@ namespace MultiAlignWin
             this.mcheckBox_showNET.UseVisualStyleBackColor = true;
             this.mcheckBox_showNET.CheckedChanged += new System.EventHandler(this.mcheckBox_showNET_CheckedChanged);
             // 
+            // mcomboBox_chargeStates
+            // 
+            this.mcomboBox_chargeStates.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.mcomboBox_chargeStates.FormattingEnabled = true;
+            this.mcomboBox_chargeStates.Location = new System.Drawing.Point(453, 11);
+            this.mcomboBox_chargeStates.Name = "mcomboBox_chargeStates";
+            this.mcomboBox_chargeStates.Size = new System.Drawing.Size(107, 21);
+            this.mcomboBox_chargeStates.TabIndex = 2;
+            // 
             // ctlClusterChart
             // 
             this.AxisAndLabelMinFontSize = 10;
@@ -352,6 +372,7 @@ namespace MultiAlignWin
             this.ChartLayout.MinLegendWidth = 75;
             this.ChartLayout.MinTitleHeight = 15;
             this.ChartLayout.TitleFraction = 0.1F;
+            this.Controls.Add(this.mcomboBox_chargeStates);
             this.Controls.Add(this.mcheckBox_showNET);
             this.Controls.Add(this.mcheckBox_showAligned);
             this.DefaultZoomHandler.Active = true;
@@ -408,6 +429,13 @@ namespace MultiAlignWin
         protected override void PaintSeries(Graphics g, Bitmap bitmap, clsSeries series)
         {
             base.PaintSeries(g, bitmap, series);
+        }
+
+        private void mcomboBox_chargeStates_SelectedIndexChanged(object sender, EventArgs e)
+        {            
+            AutoViewPortOnAddition = true;
+            this.SeriesCollection.Clear();
+            AddAnalysisData();
         }
 	}
 }
