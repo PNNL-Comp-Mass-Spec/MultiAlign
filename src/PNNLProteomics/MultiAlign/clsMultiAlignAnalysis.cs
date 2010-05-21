@@ -1698,7 +1698,7 @@ namespace PNNLProteomics.Data.Analysis
             /// For NxN alignment
             /// 
             int i = 0;
-            //for (int i = 0; i < marrFiles.Count; i++)
+            //for (i = 0; i < marrFiles.Count; i++)
             {
                 /// ////////////////////////////////////////////// 
                 /// Part Four:
@@ -1745,10 +1745,11 @@ namespace PNNLProteomics.Data.Analysis
                 try
                 {
                     string pathName = System.IO.Path.GetDirectoryName(mstring_pathname);
-                    string newPath  = System.IO.Path.Combine(pathName, mstring_analysisName + i.ToString());
-                    System.IO.Directory.CreateDirectory(newPath);
-                    
-                    SerializeAnalysisToFile(System.IO.Path.Combine(newPath, mstring_analysisName + i.ToString() + ".mln"));
+                    string newPath  = System.IO.Path.Combine(pathName, mstring_analysisName ); //+ i.ToString());
+                    //System.IO.Directory.CreateDirectory(newPath);
+                    newPath = mstring_pathname;
+
+                    SerializeAnalysisToFile(System.IO.Path.Combine(newPath, mstring_analysisName /*i.ToString()*/ + ".mln"));
 
                     //mstring_pathname = System.IO.Path.Combine(newPath, mstring_analysisName + ".mln");
                 }

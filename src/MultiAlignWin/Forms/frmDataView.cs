@@ -1140,13 +1140,14 @@ namespace MultiAlignWin
                     freqs[cluster.mshort_num_dataset_members - 1] = freqs[cluster.mshort_num_dataset_members - 1] + 1;
                 }
                 
+                /*
                 using (System.IO.TextWriter writer = System.IO.File.CreateText(@"c:\development\data\clusters.csv"))
                 {
                     for(i = 0; i < maxClusters; i++)
                     {
                         writer.WriteLine("{0},{1:0.0}", bins[i], freqs[i]);
                     }
-                }
+                }*/
 
                 /// 
                 /// Display the histogram.
