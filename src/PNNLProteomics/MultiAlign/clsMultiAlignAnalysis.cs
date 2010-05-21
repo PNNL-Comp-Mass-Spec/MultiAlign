@@ -1749,7 +1749,7 @@ namespace PNNLProteomics.Data.Analysis
                     //System.IO.Directory.CreateDirectory(newPath);
                     newPath = mstring_pathname;
 
-                    SerializeAnalysisToFile(System.IO.Path.Combine(newPath, mstring_analysisName /*i.ToString()*/ + ".mln"));
+                    SerializeAnalysisToFile(mstring_pathname); // System.IO.Path.Combine(newPath, mstring_analysisName /*i.ToString()*/ + ".mln"));
 
                     //mstring_pathname = System.IO.Path.Combine(newPath, mstring_analysisName + ".mln");
                 }
