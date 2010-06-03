@@ -471,6 +471,7 @@ namespace MultiAlignWin
             this.label4 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
             this.mtextBox_experimentNameFilter = new System.Windows.Forms.TextBox();
             this.mbtnDefaults = new System.Windows.Forms.Button();
             this.radioRemoteDatabase = new System.Windows.Forms.RadioButton();
@@ -493,7 +494,6 @@ namespace MultiAlignWin
             this.tipExclusionFilter = new System.Windows.Forms.ToolTip(this.components);
             this.tipExperimentFilter = new System.Windows.Forms.ToolTip(this.components);
             this.mnum_minNumberMSMSObservations = new System.Windows.Forms.NumericUpDown();
-            this.label9 = new System.Windows.Forms.Label();
             this.groupRemoteDatabase.SuspendLayout();
             this.groupLocalDatabase.SuspendLayout();
             this.mgroupBox_pmtQualityScore.SuspendLayout();
@@ -686,11 +686,11 @@ namespace MultiAlignWin
             this.mbtnShowMThits.BackColor = System.Drawing.SystemColors.Control;
             this.mbtnShowMThits.Enabled = false;
             this.mbtnShowMThits.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.mbtnShowMThits.Location = new System.Drawing.Point(28, 762);
+            this.mbtnShowMThits.Location = new System.Drawing.Point(28, 739);
             this.mbtnShowMThits.Name = "mbtnShowMThits";
-            this.mbtnShowMThits.Size = new System.Drawing.Size(136, 23);
+            this.mbtnShowMThits.Size = new System.Drawing.Size(136, 46);
             this.mbtnShowMThits.TabIndex = 29;
-            this.mbtnShowMThits.Text = "Show Mass Tag Count";
+            this.mbtnShowMThits.Text = "Show Mass Tag Count (without Min MS/MS  Filter)";
             this.ttipPMT.SetToolTip(this.mbtnShowMThits, "Get the matching Mass Tag count for the choice of scores above.");
             this.mbtnShowMThits.UseVisualStyleBackColor = false;
             this.mbtnShowMThits.Click += new System.EventHandler(this.mbtnShowMThits_Click);
@@ -799,6 +799,18 @@ namespace MultiAlignWin
             this.label8.Text = "MTDB Experiment Exclusion Filter";
             this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.ttipPMT.SetToolTip(this.label8, "The minimum value required for High_Normalized_Score; 0 to allow all");
+            // 
+            // label9
+            // 
+            this.label9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label9.Location = new System.Drawing.Point(25, 713);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(138, 23);
+            this.label9.TabIndex = 69;
+            this.label9.Text = "Min. # of MS/MS Obs.";
+            this.label9.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.ttipPMT.SetToolTip(this.label9, "The minimum value required for High_Normalized_Score; 0 to allow all");
             // 
             // mtextBox_experimentNameFilter
             // 
@@ -1026,18 +1038,6 @@ namespace MultiAlignWin
             this.mnum_minNumberMSMSObservations.Size = new System.Drawing.Size(111, 20);
             this.mnum_minNumberMSMSObservations.TabIndex = 68;
             this.mnum_minNumberMSMSObservations.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // label9
-            // 
-            this.label9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label9.Location = new System.Drawing.Point(25, 713);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(138, 23);
-            this.label9.TabIndex = 69;
-            this.label9.Text = "Min. # of MS/MS Obs.";
-            this.label9.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.ttipPMT.SetToolTip(this.label9, "The minimum value required for High_Normalized_Score; 0 to allow all");
             // 
             // frmDBName
             // 
