@@ -73,19 +73,19 @@ namespace MultiAlignWin
             // 
             // labelMassTol
             // 
-            this.labelMassTol.Location = new System.Drawing.Point(25, 24);
+            this.labelMassTol.Location = new System.Drawing.Point(3, 22);
             this.labelMassTol.Name = "labelMassTol";
-            this.labelMassTol.Size = new System.Drawing.Size(96, 23);
+            this.labelMassTol.Size = new System.Drawing.Size(114, 23);
             this.labelMassTol.TabIndex = 0;
-            this.labelMassTol.Text = "Mass Tolerance :";
+            this.labelMassTol.Text = "Mass Tolerance (ppm)";
             // 
             // labelNETTol
             // 
-            this.labelNETTol.Location = new System.Drawing.Point(25, 47);
+            this.labelNETTol.Location = new System.Drawing.Point(3, 45);
             this.labelNETTol.Name = "labelNETTol";
-            this.labelNETTol.Size = new System.Drawing.Size(88, 23);
+            this.labelNETTol.Size = new System.Drawing.Size(102, 23);
             this.labelNETTol.TabIndex = 1;
-            this.labelNETTol.Text = "NET Tolerance :";
+            this.labelNETTol.Text = "NET Tolerance (%)";
             // 
             // buttonOK
             // 
@@ -132,7 +132,7 @@ namespace MultiAlignWin
             // 
             this.mnum_MassTol.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.mnum_MassTol.DecimalPlaces = 2;
+            this.mnum_MassTol.DecimalPlaces = 4;
             this.mnum_MassTol.Location = new System.Drawing.Point(123, 22);
             this.mnum_MassTol.Maximum = new decimal(new int[] {
             100000,
@@ -152,7 +152,7 @@ namespace MultiAlignWin
             // 
             this.mnum_NETTol.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.mnum_NETTol.DecimalPlaces = 2;
+            this.mnum_NETTol.DecimalPlaces = 4;
             this.mnum_NETTol.Location = new System.Drawing.Point(123, 47);
             this.mnum_NETTol.Maximum = new decimal(new int[] {
             5000,
@@ -172,7 +172,7 @@ namespace MultiAlignWin
             // 
             this.mnum_driftTimeTolerance.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.mnum_driftTimeTolerance.DecimalPlaces = 2;
+            this.mnum_driftTimeTolerance.DecimalPlaces = 4;
             this.mnum_driftTimeTolerance.Location = new System.Drawing.Point(123, 75);
             this.mnum_driftTimeTolerance.Maximum = new decimal(new int[] {
             5000,
@@ -190,11 +190,11 @@ namespace MultiAlignWin
             // 
             // mlabel_driftTimeTolerance
             // 
-            this.mlabel_driftTimeTolerance.Location = new System.Drawing.Point(25, 77);
+            this.mlabel_driftTimeTolerance.Location = new System.Drawing.Point(3, 77);
             this.mlabel_driftTimeTolerance.Name = "mlabel_driftTimeTolerance";
             this.mlabel_driftTimeTolerance.Size = new System.Drawing.Size(88, 23);
             this.mlabel_driftTimeTolerance.TabIndex = 11;
-            this.mlabel_driftTimeTolerance.Text = "Drift Time";
+            this.mlabel_driftTimeTolerance.Text = "Drift Time (ms)";
             // 
             // frmPeakMatchingParameters
             // 
