@@ -11,6 +11,8 @@ using MultiAlignEngine;
 using PNNLControls;
 using PNNLProteomics.Data;
 
+
+using MultiAlignWin.IO;
 using MultiAlignWin.Forms;
 using MultiAlignEngine.Features;
 using MultiAlignEngine.Alignment;
@@ -28,13 +30,9 @@ namespace MultiAlignWin
     {        
         #region Members
         private Splitter splitter1;
-		private Panel panelCharts;
-		private TabControl mtabcontrol_data;
-		private TabPage tabPageOverlayPlot;
-		private MultiAlignWin.ctlClusterChart mobjClusterChart ; 
-		private MultiAlignWin.ctlClusterGrid mobjClusterGrid ; 
-		private clsMultiAlignAnalysis mobjAnalysis ;
-		private PNNLControls.ExpandPanel expandPanelBottom;
+        private Panel panelCharts;
+		private MultiAlignWin.ctlClusterChart mobjClusterChart ;
+        private clsMultiAlignAnalysis mobjAnalysis;
 		private bool mblnDatasetModified ;
         private string mstrCurrentFileName;
         private MenuStrip menuStrip;
@@ -45,17 +43,10 @@ namespace MultiAlignWin
         private ToolStripMenuItem exportParametersToolStripMenuItem;
         private ToolStripMenuItem optionsToolStripMenuItem;
         private ToolStripMenuItem viewToolStripMenuItem;
-        private ToolStripMenuItem makeDataGridATabToolStripMenuItem;
         private ToolStripMenuItem saveTableToolStripMenuItem;
         private ToolStrip toolStrip1;
-        private ToolStripButton mtoolStrBtnSaveTable;
         private ToolStripButton mtoolstrBtnSaveMA;
         private ToolStripButton mtoolStrBtnMAsaveas;
-        private TabPage mtabPage_dataSummary;
-        private ctlSummaryPages mcontrol_resultSummaryPages;
-        private TabPage mtabPage_analysisInformation;
-        private ctlSummaryPages mcontrol_analysisInformation;
-        private TabPage tabPage2;
         private ToolStripMenuItem factorsToolStripMenuItem;
         private ToolStripMenuItem modifyToolStripMenuItem;
         private ToolStripMenuItem changeOrderingToolStripMenuItem;
@@ -73,23 +64,27 @@ namespace MultiAlignWin
         private ToolStripMenuItem datasetToolStripMenuItem;
         private ToolStripSeparator toolStripSeparator2;
         private ImageList mimageList_tabImages;
-        private Panel mpanel_dataControls;
-        private TabPage DataGrid;
-        private TabPage mtabPage_proteinMaps;
-        private TreeView mtreeView_proteinViewer;
-        private ListView mlistView_proteinPeptideTable;
-        private ColumnHeader columnHeader1;
-        private ColumnHeader columnHeader2;
         private StatusStrip statusStrip1;
         private ToolStripStatusLabel mlabel_rows;
         private ToolStripStatusLabel toolStripStatusLabel1;
-        private ToolStripMenuItem asIsToolStripMenuItem;
-        private ToolStripMenuItem forDanteToolStripMenuItem;
-        private ToolStripMenuItem asSQLiteToolStripMenuItem;
+        private TabControl mtabcontrol_data;
+        private TabPage tabPageOverlayPlot;
+        private TabPage mtabPage_dataSummary;
+        private ctlSummaryPages mcontrol_resultSummaryPages;
+        private TabPage mtabPage_analysisInformation;
+        private ctlSummaryPages mcontrol_analysisInformation;
+        private TabPage tabPage2;
+        private Panel mpanel_dataControls;
+        private TabPage mtabPage_proteinMaps;
+        private ListView mlistView_proteinPeptideTable;
+        private ColumnHeader columnHeader1;
+        private ColumnHeader columnHeader2;
+        private TreeView mtreeView_proteinViewer;
         private TabPage mtabPage_clusterPlot;
         private MultiAlignWin.Drawing.controlHistogram mcontrol_clusterHistogram;
         private TabPage mtabPage_chargeStates;
         private MultiAlignWin.Drawing.controlHistogram mcontrol_histogramChargeStates;
+        private ToolStripSeparator toolStripSeparator3;
         private IContainer components;
         #endregion
 
@@ -113,40 +108,20 @@ namespace MultiAlignWin
             mobjClusterChart.LegendVisible  = true;
 			mobjClusterChart.Dock           = DockStyle.Fill ;
             
-            mobjClusterGrid                 = new MultiAlignWin.ctlClusterGrid() ; 
-			mobjClusterGrid.ProteinsMapped += new ctlClusterGrid.DelegatePeptidesMatchedToProteins(mobjClusterGrid_ProteinsMapped);
+			//TODO: Map proteins to tree view mobjClusterGrid.ProteinsMapped += new ctlClusterGrid.DelegatePeptidesMatchedToProteins(mobjClusterGrid_ProteinsMapped);
+
             mtreeView_proteinViewer.Nodes.Add("Global Proteins Identified");
             mlistView_proteinPeptideTable.SelectedIndexChanged += new EventHandler(mlistView_proteinPeptideTable_SelectedIndexChanged);
 			tabPageOverlayPlot.Controls.Add(mobjClusterChart) ; 
 
-			mobjClusterGrid.Dock            = DockStyle.Fill ;
-            mobjClusterGrid.Visible         = true;
-			expandPanelBottom.Controls.Add(mobjClusterGrid) ; 
-
-			mobjClusterGrid.mevntExpressionPlotOpenClicked  +=  new MethodInvoker(ExpressionPlotOpenClicked);
-			mobjClusterGrid.mevntHeatMapClicked             +=  new MethodInvoker(ClustergramOpenClicked);
-			mobjClusterGrid.mevntScatterPlotOpenClicked     +=  new MethodInvoker(ScatterPlotOpenClicked);			
 			Closing                                         +=  new CancelEventHandler(frmDataView_Closing);
-            /// 
-            /// Context menu created when analysis is set for the cluster grid.
-            /// 
-            optionsToolStripMenuItem.Click                  +=  new EventHandler(mnu_Options_Click);
-
-            /// 
-            /// Make the data grid a tab
-            /// 
-            makeDataGridATabToolStripMenuItem.Checked         = true;
-            makeDataGridATabToolStripMenuItem.CheckedChanged += new EventHandler(makeDataGridATabToolStripMenuItem_CheckedChanged);
-
-            this.saveTableToolStripMenuItem.Click   += new EventHandler(mobjClusterGrid.SaveTableDelegateMethod);
+            
+            /*this.saveTableToolStripMenuItem.Click   += new EventHandler(mobjClusterGrid.SaveTableDelegateMethod);
             this.forDanteToolStripMenuItem.Click    += new EventHandler(mobjClusterGrid.SaveDanteDelegate);
             this.asSQLiteToolStripMenuItem.Click    += new EventHandler(mobjClusterGrid.SaveAsSQLiteDelegate);
             this.asIsToolStripMenuItem.Click        += new EventHandler(mobjClusterGrid.SaveAsIsDelegate);
             this.mtoolStrBtnSaveTable.Click         += new EventHandler(mobjClusterGrid.SaveTableDelegateMethod);
-
-            expandPanelBottom.Visible = false;
-            DataGrid.Controls.Add(mobjClusterGrid);
-
+            */            
         }
 
         #endregion
@@ -223,65 +198,7 @@ namespace MultiAlignWin
             mlistView_proteinPeptideTable.EndUpdate();
             mtreeView_proteinViewer.EndUpdate();
         }
-
-
-        #region Data Grid Rendering
-        /// <summary>
-        /// Handles when the user clicks to change the status of the check box.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void makeDataGridATabToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
-        {
-
-            if (makeDataGridATabToolStripMenuItem.Checked == true)
-            {
-                ShowDataGridInTabPage();
-            }
-            else
-            {
-                ShowDataGridInExpandPanel();
-            }
-        }
-        /// <summary>
-        /// Puts the data grid into a tab page.
-        /// </summary>
-        private void ShowDataGridInTabPage()
-        {
-            /// 
-            /// Make the cluster grid invisible if the user wants.
-            /// 
-            if (expandPanelBottom.Controls.Contains(mobjClusterGrid) == true)
-            {
-                expandPanelBottom.Controls.Remove(mobjClusterGrid);
-            }
-            expandPanelBottom.Visible = false;
-
-            /// 
-            /// Create a new tab page with the data cluster grid.
-            /// 
-            TabPage tab = new TabPage();
-            tab.Text = "Data Grid";
-            tab.Name = "DataGrid";
-            tab.Controls.Add(mobjClusterGrid);
-            mobjClusterGrid.Visible = true;
-            mtabcontrol_data.TabPages.Insert(1, tab);
-
-        }
-        /// <summary>
-        /// Puts the data grid into the expand panel.
-        /// </summary>
-        private void ShowDataGridInExpandPanel()
-        {
-            if (mtabcontrol_data.TabPages.ContainsKey("DataGrid") == true)
-            {
-                mtabcontrol_data.TabPages.RemoveByKey("DataGrid");
-            }
-            expandPanelBottom.Controls.Add(mobjClusterGrid);
-            expandPanelBottom.Visible = true;
-        }
-        #endregion
-
+        
         #region Properties
         public ToolStrip DataViewToolStrip
         {
@@ -299,20 +216,8 @@ namespace MultiAlignWin
 			{
 				mobjAnalysis              = value ; 
 				mobjClusterChart.Analysis = mobjAnalysis ;
-				mobjClusterGrid.Analysis  = mobjAnalysis ; 
 				mobjAnalysis.BuildFactorTree();
-
-                mlabel_rows.Text = mobjClusterGrid.NumberOfRows.ToString() + " rows.";
-
-                /// 
-                /// Create Context Menu;
-                /// 
-                optionsToolStripMenuItem.DropDownItems.Clear();
-                ContextMenuStrip strip = mobjClusterGrid.CreateContextMenu();
-                ToolStripItem [] itemArray = new ToolStripItem[strip.Items.Count];
-                strip.Items.CopyTo(itemArray, 0);
-                optionsToolStripMenuItem.DropDownItems.AddRange(itemArray);
-
+                
                 /// 
                 /// Create the cluster histogram
                 /// 
@@ -371,11 +276,9 @@ namespace MultiAlignWin
             PNNLControls.PenProvider penProvider3 = new PNNLControls.PenProvider();
             PNNLControls.PenProvider penProvider4 = new PNNLControls.PenProvider();
             this.splitter1 = new System.Windows.Forms.Splitter();
-            this.expandPanelBottom = new PNNLControls.ExpandPanel(80);
             this.panelCharts = new System.Windows.Forms.Panel();
             this.mtabcontrol_data = new System.Windows.Forms.TabControl();
             this.tabPageOverlayPlot = new System.Windows.Forms.TabPage();
-            this.DataGrid = new System.Windows.Forms.TabPage();
             this.mtabPage_dataSummary = new System.Windows.Forms.TabPage();
             this.mcontrol_resultSummaryPages = new MultiAlignWin.ctlSummaryPages();
             this.mtabPage_analysisInformation = new System.Windows.Forms.TabPage();
@@ -389,14 +292,14 @@ namespace MultiAlignWin
             this.mtreeView_proteinViewer = new System.Windows.Forms.TreeView();
             this.mtabPage_clusterPlot = new System.Windows.Forms.TabPage();
             this.mcontrol_clusterHistogram = new MultiAlignWin.Drawing.controlHistogram();
+            this.mtabPage_chargeStates = new System.Windows.Forms.TabPage();
+            this.mcontrol_histogramChargeStates = new MultiAlignWin.Drawing.controlHistogram();
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveTableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.asIsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.forDanteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.asSQLiteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.saveFactorsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.factorDefinitionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.factorAssignmentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -407,7 +310,6 @@ namespace MultiAlignWin
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.exportParametersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.makeDataGridATabToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reclusterFeaturesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -421,14 +323,10 @@ namespace MultiAlignWin
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.mtoolstrBtnSaveMA = new System.Windows.Forms.ToolStripButton();
             this.mtoolStrBtnMAsaveas = new System.Windows.Forms.ToolStripButton();
-            this.mtoolStrBtnSaveTable = new System.Windows.Forms.ToolStripButton();
             this.mimageList_tabImages = new System.Windows.Forms.ImageList(this.components);
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.mlabel_rows = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.mtabPage_chargeStates = new System.Windows.Forms.TabPage();
-            this.mcontrol_histogramChargeStates = new MultiAlignWin.Drawing.controlHistogram();
-            ((System.ComponentModel.ISupportInitialize)(this.expandPanelBottom)).BeginInit();
             this.panelCharts.SuspendLayout();
             this.mtabcontrol_data.SuspendLayout();
             this.mtabPage_dataSummary.SuspendLayout();
@@ -437,31 +335,21 @@ namespace MultiAlignWin
             this.mtabPage_proteinMaps.SuspendLayout();
             this.mtabPage_clusterPlot.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.mcontrol_clusterHistogram)).BeginInit();
+            this.mtabPage_chargeStates.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.mcontrol_histogramChargeStates)).BeginInit();
             this.menuStrip.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
-            this.mtabPage_chargeStates.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.mcontrol_histogramChargeStates)).BeginInit();
             this.SuspendLayout();
             // 
             // splitter1
             // 
             this.splitter1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.splitter1.Location = new System.Drawing.Point(0, 570);
+            this.splitter1.Location = new System.Drawing.Point(0, 670);
             this.splitter1.Name = "splitter1";
             this.splitter1.Size = new System.Drawing.Size(1051, 4);
             this.splitter1.TabIndex = 1;
             this.splitter1.TabStop = false;
-            // 
-            // expandPanelBottom
-            // 
-            this.expandPanelBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.expandPanelBottom.HeaderRightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.expandPanelBottom.HeaderTextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.expandPanelBottom.Location = new System.Drawing.Point(0, 574);
-            this.expandPanelBottom.Name = "expandPanelBottom";
-            this.expandPanelBottom.Size = new System.Drawing.Size(1051, 100);
-            this.expandPanelBottom.TabIndex = 3;
             // 
             // panelCharts
             // 
@@ -469,16 +357,15 @@ namespace MultiAlignWin
             this.panelCharts.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelCharts.Location = new System.Drawing.Point(0, 49);
             this.panelCharts.Name = "panelCharts";
-            this.panelCharts.Size = new System.Drawing.Size(1051, 521);
+            this.panelCharts.Size = new System.Drawing.Size(1051, 621);
             this.panelCharts.TabIndex = 2;
             // 
             // mtabcontrol_data
             // 
             this.mtabcontrol_data.Controls.Add(this.tabPageOverlayPlot);
-            this.mtabcontrol_data.Controls.Add(this.DataGrid);
             this.mtabcontrol_data.Controls.Add(this.mtabPage_dataSummary);
-            this.mtabcontrol_data.Controls.Add(this.mtabPage_analysisInformation);
             this.mtabcontrol_data.Controls.Add(this.tabPage2);
+            this.mtabcontrol_data.Controls.Add(this.mtabPage_analysisInformation);
             this.mtabcontrol_data.Controls.Add(this.mtabPage_proteinMaps);
             this.mtabcontrol_data.Controls.Add(this.mtabPage_clusterPlot);
             this.mtabcontrol_data.Controls.Add(this.mtabPage_chargeStates);
@@ -486,27 +373,17 @@ namespace MultiAlignWin
             this.mtabcontrol_data.Location = new System.Drawing.Point(0, 0);
             this.mtabcontrol_data.Name = "mtabcontrol_data";
             this.mtabcontrol_data.SelectedIndex = 0;
-            this.mtabcontrol_data.Size = new System.Drawing.Size(1051, 521);
+            this.mtabcontrol_data.Size = new System.Drawing.Size(1051, 621);
             this.mtabcontrol_data.TabIndex = 1;
             // 
             // tabPageOverlayPlot
             // 
             this.tabPageOverlayPlot.Location = new System.Drawing.Point(4, 22);
             this.tabPageOverlayPlot.Name = "tabPageOverlayPlot";
-            this.tabPageOverlayPlot.Size = new System.Drawing.Size(1043, 495);
+            this.tabPageOverlayPlot.Size = new System.Drawing.Size(1043, 595);
             this.tabPageOverlayPlot.TabIndex = 0;
             this.tabPageOverlayPlot.Text = "Feature Plot - Overlay ";
             this.tabPageOverlayPlot.UseVisualStyleBackColor = true;
-            // 
-            // DataGrid
-            // 
-            this.DataGrid.Location = new System.Drawing.Point(4, 22);
-            this.DataGrid.Name = "DataGrid";
-            this.DataGrid.Padding = new System.Windows.Forms.Padding(3);
-            this.DataGrid.Size = new System.Drawing.Size(1043, 495);
-            this.DataGrid.TabIndex = 4;
-            this.DataGrid.Text = "Data Grid";
-            this.DataGrid.UseVisualStyleBackColor = true;
             // 
             // mtabPage_dataSummary
             // 
@@ -514,7 +391,7 @@ namespace MultiAlignWin
             this.mtabPage_dataSummary.Location = new System.Drawing.Point(4, 22);
             this.mtabPage_dataSummary.Name = "mtabPage_dataSummary";
             this.mtabPage_dataSummary.Padding = new System.Windows.Forms.Padding(3);
-            this.mtabPage_dataSummary.Size = new System.Drawing.Size(1043, 495);
+            this.mtabPage_dataSummary.Size = new System.Drawing.Size(1043, 595);
             this.mtabPage_dataSummary.TabIndex = 1;
             this.mtabPage_dataSummary.Text = "Results Summary";
             this.mtabPage_dataSummary.UseVisualStyleBackColor = true;
@@ -525,7 +402,7 @@ namespace MultiAlignWin
             this.mcontrol_resultSummaryPages.Dock = System.Windows.Forms.DockStyle.Fill;
             this.mcontrol_resultSummaryPages.Location = new System.Drawing.Point(3, 3);
             this.mcontrol_resultSummaryPages.Name = "mcontrol_resultSummaryPages";
-            this.mcontrol_resultSummaryPages.Size = new System.Drawing.Size(1037, 489);
+            this.mcontrol_resultSummaryPages.Size = new System.Drawing.Size(1037, 589);
             this.mcontrol_resultSummaryPages.TabIndex = 1;
             // 
             // mtabPage_analysisInformation
@@ -534,7 +411,7 @@ namespace MultiAlignWin
             this.mtabPage_analysisInformation.Location = new System.Drawing.Point(4, 22);
             this.mtabPage_analysisInformation.Name = "mtabPage_analysisInformation";
             this.mtabPage_analysisInformation.Padding = new System.Windows.Forms.Padding(3);
-            this.mtabPage_analysisInformation.Size = new System.Drawing.Size(1043, 495);
+            this.mtabPage_analysisInformation.Size = new System.Drawing.Size(1043, 595);
             this.mtabPage_analysisInformation.TabIndex = 2;
             this.mtabPage_analysisInformation.Text = "Analysis Information";
             this.mtabPage_analysisInformation.UseVisualStyleBackColor = true;
@@ -545,7 +422,7 @@ namespace MultiAlignWin
             this.mcontrol_analysisInformation.Dock = System.Windows.Forms.DockStyle.Fill;
             this.mcontrol_analysisInformation.Location = new System.Drawing.Point(3, 3);
             this.mcontrol_analysisInformation.Name = "mcontrol_analysisInformation";
-            this.mcontrol_analysisInformation.Size = new System.Drawing.Size(1037, 489);
+            this.mcontrol_analysisInformation.Size = new System.Drawing.Size(1037, 589);
             this.mcontrol_analysisInformation.TabIndex = 2;
             // 
             // tabPage2
@@ -555,7 +432,7 @@ namespace MultiAlignWin
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(1043, 495);
+            this.tabPage2.Size = new System.Drawing.Size(1043, 595);
             this.tabPage2.TabIndex = 3;
             this.tabPage2.Text = "Datasets";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -566,7 +443,7 @@ namespace MultiAlignWin
             this.mpanel_dataControls.Dock = System.Windows.Forms.DockStyle.Fill;
             this.mpanel_dataControls.Location = new System.Drawing.Point(3, 3);
             this.mpanel_dataControls.Name = "mpanel_dataControls";
-            this.mpanel_dataControls.Size = new System.Drawing.Size(1037, 489);
+            this.mpanel_dataControls.Size = new System.Drawing.Size(1037, 589);
             this.mpanel_dataControls.TabIndex = 0;
             // 
             // mtabPage_proteinMaps
@@ -576,7 +453,7 @@ namespace MultiAlignWin
             this.mtabPage_proteinMaps.Location = new System.Drawing.Point(4, 22);
             this.mtabPage_proteinMaps.Name = "mtabPage_proteinMaps";
             this.mtabPage_proteinMaps.Padding = new System.Windows.Forms.Padding(3);
-            this.mtabPage_proteinMaps.Size = new System.Drawing.Size(1043, 495);
+            this.mtabPage_proteinMaps.Size = new System.Drawing.Size(1043, 595);
             this.mtabPage_proteinMaps.TabIndex = 5;
             this.mtabPage_proteinMaps.Text = "Protein Information";
             this.mtabPage_proteinMaps.UseVisualStyleBackColor = true;
@@ -592,7 +469,7 @@ namespace MultiAlignWin
             this.mlistView_proteinPeptideTable.GridLines = true;
             this.mlistView_proteinPeptideTable.Location = new System.Drawing.Point(484, 9);
             this.mlistView_proteinPeptideTable.Name = "mlistView_proteinPeptideTable";
-            this.mlistView_proteinPeptideTable.Size = new System.Drawing.Size(551, 480);
+            this.mlistView_proteinPeptideTable.Size = new System.Drawing.Size(551, 580);
             this.mlistView_proteinPeptideTable.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.mlistView_proteinPeptideTable.TabIndex = 1;
             this.mlistView_proteinPeptideTable.UseCompatibleStateImageBehavior = false;
@@ -612,7 +489,7 @@ namespace MultiAlignWin
                         | System.Windows.Forms.AnchorStyles.Left)));
             this.mtreeView_proteinViewer.Location = new System.Drawing.Point(8, 6);
             this.mtreeView_proteinViewer.Name = "mtreeView_proteinViewer";
-            this.mtreeView_proteinViewer.Size = new System.Drawing.Size(466, 483);
+            this.mtreeView_proteinViewer.Size = new System.Drawing.Size(466, 583);
             this.mtreeView_proteinViewer.TabIndex = 0;
             // 
             // mtabPage_clusterPlot
@@ -621,7 +498,7 @@ namespace MultiAlignWin
             this.mtabPage_clusterPlot.Location = new System.Drawing.Point(4, 22);
             this.mtabPage_clusterPlot.Name = "mtabPage_clusterPlot";
             this.mtabPage_clusterPlot.Padding = new System.Windows.Forms.Padding(3);
-            this.mtabPage_clusterPlot.Size = new System.Drawing.Size(1043, 495);
+            this.mtabPage_clusterPlot.Size = new System.Drawing.Size(1043, 595);
             this.mtabPage_clusterPlot.TabIndex = 6;
             this.mtabPage_clusterPlot.Text = "Cluster Histogram";
             this.mtabPage_clusterPlot.UseVisualStyleBackColor = true;
@@ -630,7 +507,7 @@ namespace MultiAlignWin
             // 
             this.mcontrol_clusterHistogram.AutoViewPortXBase = 0F;
             this.mcontrol_clusterHistogram.AutoViewPortYBase = 0F;
-            this.mcontrol_clusterHistogram.AxisAndLabelFont = new System.Drawing.Font("Microsoft Sans Serif", 9F);
+            this.mcontrol_clusterHistogram.AxisAndLabelFont = new System.Drawing.Font("Microsoft Sans Serif", 11F);
             this.mcontrol_clusterHistogram.AxisAndLabelMaxFontSize = 15;
             this.mcontrol_clusterHistogram.AxisAndLabelMinFontSize = 8;
             this.mcontrol_clusterHistogram.AxisVisible = true;
@@ -657,7 +534,7 @@ namespace MultiAlignWin
             penProvider2.Color = System.Drawing.Color.Black;
             penProvider2.Width = 1F;
             this.mcontrol_clusterHistogram.Legend.BorderPen = penProvider2;
-            this.mcontrol_clusterHistogram.Legend.Bounds = new System.Drawing.Rectangle(830, 80, 197, 367);
+            this.mcontrol_clusterHistogram.Legend.Bounds = new System.Drawing.Rectangle(830, 80, 197, 457);
             this.mcontrol_clusterHistogram.Legend.ColumnWidth = 125;
             this.mcontrol_clusterHistogram.Legend.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
             this.mcontrol_clusterHistogram.Legend.MaxFontSize = 12F;
@@ -674,15 +551,84 @@ namespace MultiAlignWin
             this.mcontrol_clusterHistogram.Margins.LeftMarginMax = 150;
             this.mcontrol_clusterHistogram.Margins.LeftMarginMin = 72;
             this.mcontrol_clusterHistogram.Name = "mcontrol_clusterHistogram";
-            this.mcontrol_clusterHistogram.Size = new System.Drawing.Size(1037, 489);
+            this.mcontrol_clusterHistogram.Size = new System.Drawing.Size(1037, 589);
             this.mcontrol_clusterHistogram.TabIndex = 0;
-            this.mcontrol_clusterHistogram.Title = "Cluster Histrogram";
+            this.mcontrol_clusterHistogram.Title = "Cluster Histogram";
             this.mcontrol_clusterHistogram.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 29F);
             this.mcontrol_clusterHistogram.TitleMaxFontSize = 50F;
             this.mcontrol_clusterHistogram.TitleMinFontSize = 6F;
             this.mcontrol_clusterHistogram.TitleVisible = true;
             this.mcontrol_clusterHistogram.VerticalExpansion = 1F;
             this.mcontrol_clusterHistogram.ViewPort = ((System.Drawing.RectangleF)(resources.GetObject("mcontrol_clusterHistogram.ViewPort")));
+            // 
+            // mtabPage_chargeStates
+            // 
+            this.mtabPage_chargeStates.Controls.Add(this.mcontrol_histogramChargeStates);
+            this.mtabPage_chargeStates.Location = new System.Drawing.Point(4, 22);
+            this.mtabPage_chargeStates.Name = "mtabPage_chargeStates";
+            this.mtabPage_chargeStates.Padding = new System.Windows.Forms.Padding(3);
+            this.mtabPage_chargeStates.Size = new System.Drawing.Size(1043, 595);
+            this.mtabPage_chargeStates.TabIndex = 7;
+            this.mtabPage_chargeStates.Text = "Charge State Histogram";
+            this.mtabPage_chargeStates.UseVisualStyleBackColor = true;
+            // 
+            // mcontrol_histogramChargeStates
+            // 
+            this.mcontrol_histogramChargeStates.AutoViewPortXBase = 0F;
+            this.mcontrol_histogramChargeStates.AutoViewPortYBase = 0F;
+            this.mcontrol_histogramChargeStates.AxisAndLabelFont = new System.Drawing.Font("Microsoft Sans Serif", 11F);
+            this.mcontrol_histogramChargeStates.AxisAndLabelMaxFontSize = 15;
+            this.mcontrol_histogramChargeStates.AxisAndLabelMinFontSize = 8;
+            this.mcontrol_histogramChargeStates.AxisVisible = true;
+            this.mcontrol_histogramChargeStates.BinSize = 1F;
+            this.mcontrol_histogramChargeStates.ChartBackgroundColor = System.Drawing.Color.White;
+            this.mcontrol_histogramChargeStates.ChartLayout.LegendFraction = 0.2F;
+            this.mcontrol_histogramChargeStates.ChartLayout.LegendLocation = PNNLControls.ChartLegendLocation.Right;
+            this.mcontrol_histogramChargeStates.ChartLayout.MaxLegendHeight = 150;
+            this.mcontrol_histogramChargeStates.ChartLayout.MaxLegendWidth = 250;
+            this.mcontrol_histogramChargeStates.ChartLayout.MaxTitleHeight = 50;
+            this.mcontrol_histogramChargeStates.ChartLayout.MinLegendHeight = 50;
+            this.mcontrol_histogramChargeStates.ChartLayout.MinLegendWidth = 75;
+            this.mcontrol_histogramChargeStates.ChartLayout.MinTitleHeight = 15;
+            this.mcontrol_histogramChargeStates.ChartLayout.TitleFraction = 0.1F;
+            this.mcontrol_histogramChargeStates.DefaultZoomHandler.Active = true;
+            this.mcontrol_histogramChargeStates.DefaultZoomHandler.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(119)))), ((int)(((byte)(136)))), ((int)(((byte)(153)))));
+            this.mcontrol_histogramChargeStates.DefaultZoomHandler.LineColor = System.Drawing.Color.Black;
+            this.mcontrol_histogramChargeStates.Dock = System.Windows.Forms.DockStyle.Fill;
+            penProvider3.Color = System.Drawing.Color.FromArgb(((int)(((byte)(211)))), ((int)(((byte)(211)))), ((int)(((byte)(211)))));
+            penProvider3.Width = 1F;
+            this.mcontrol_histogramChargeStates.GridLinePen = penProvider3;
+            this.mcontrol_histogramChargeStates.HilightColor = System.Drawing.Color.Magenta;
+            this.mcontrol_histogramChargeStates.Legend.BackColor = System.Drawing.Color.Transparent;
+            penProvider4.Color = System.Drawing.Color.Black;
+            penProvider4.Width = 1F;
+            this.mcontrol_histogramChargeStates.Legend.BorderPen = penProvider4;
+            this.mcontrol_histogramChargeStates.Legend.Bounds = new System.Drawing.Rectangle(830, 80, 197, 457);
+            this.mcontrol_histogramChargeStates.Legend.ColumnWidth = 125;
+            this.mcontrol_histogramChargeStates.Legend.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+            this.mcontrol_histogramChargeStates.Legend.MaxFontSize = 12F;
+            this.mcontrol_histogramChargeStates.Legend.MinFontSize = 6F;
+            this.mcontrol_histogramChargeStates.LegendVisible = true;
+            this.mcontrol_histogramChargeStates.Location = new System.Drawing.Point(3, 3);
+            this.mcontrol_histogramChargeStates.Margins.BottomMarginFraction = 0.1F;
+            this.mcontrol_histogramChargeStates.Margins.BottomMarginMax = 72;
+            this.mcontrol_histogramChargeStates.Margins.BottomMarginMin = 30;
+            this.mcontrol_histogramChargeStates.Margins.DefaultMarginFraction = 0.05F;
+            this.mcontrol_histogramChargeStates.Margins.DefaultMarginMax = 15;
+            this.mcontrol_histogramChargeStates.Margins.DefaultMarginMin = 5;
+            this.mcontrol_histogramChargeStates.Margins.LeftMarginFraction = 0.2F;
+            this.mcontrol_histogramChargeStates.Margins.LeftMarginMax = 150;
+            this.mcontrol_histogramChargeStates.Margins.LeftMarginMin = 72;
+            this.mcontrol_histogramChargeStates.Name = "mcontrol_histogramChargeStates";
+            this.mcontrol_histogramChargeStates.Size = new System.Drawing.Size(1037, 589);
+            this.mcontrol_histogramChargeStates.TabIndex = 0;
+            this.mcontrol_histogramChargeStates.Title = "Charge States";
+            this.mcontrol_histogramChargeStates.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 29F);
+            this.mcontrol_histogramChargeStates.TitleMaxFontSize = 50F;
+            this.mcontrol_histogramChargeStates.TitleMinFontSize = 6F;
+            this.mcontrol_histogramChargeStates.TitleVisible = true;
+            this.mcontrol_histogramChargeStates.VerticalExpansion = 1F;
+            this.mcontrol_histogramChargeStates.ViewPort = ((System.Drawing.RectangleF)(resources.GetObject("mcontrol_histogramChargeStates.ViewPort")));
             // 
             // menuStrip
             // 
@@ -704,6 +650,7 @@ namespace MultiAlignWin
             this.saveToolStripMenuItem,
             this.saveAsToolStripMenuItem,
             this.saveTableToolStripMenuItem,
+            this.toolStripSeparator3,
             this.saveFactorsToolStripMenuItem,
             this.saveSummariesToolStripMenuItem,
             this.toolStripSeparator1,
@@ -736,34 +683,17 @@ namespace MultiAlignWin
             // 
             // saveTableToolStripMenuItem
             // 
-            this.saveTableToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.asIsToolStripMenuItem,
-            this.forDanteToolStripMenuItem,
-            this.asSQLiteToolStripMenuItem});
-            this.saveTableToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("saveTableToolStripMenuItem.Image")));
             this.saveTableToolStripMenuItem.MergeAction = System.Windows.Forms.MergeAction.Insert;
             this.saveTableToolStripMenuItem.MergeIndex = 4;
             this.saveTableToolStripMenuItem.Name = "saveTableToolStripMenuItem";
             this.saveTableToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
-            this.saveTableToolStripMenuItem.Text = "Save Table";
+            this.saveTableToolStripMenuItem.Text = "Export";
+            this.saveTableToolStripMenuItem.Click += new System.EventHandler(this.saveTableToolStripMenuItem_Click);
             // 
-            // asIsToolStripMenuItem
+            // toolStripSeparator3
             // 
-            this.asIsToolStripMenuItem.Name = "asIsToolStripMenuItem";
-            this.asIsToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
-            this.asIsToolStripMenuItem.Text = "As Displayed";
-            // 
-            // forDanteToolStripMenuItem
-            // 
-            this.forDanteToolStripMenuItem.Name = "forDanteToolStripMenuItem";
-            this.forDanteToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
-            this.forDanteToolStripMenuItem.Text = "For Dante";
-            // 
-            // asSQLiteToolStripMenuItem
-            // 
-            this.asSQLiteToolStripMenuItem.Name = "asSQLiteToolStripMenuItem";
-            this.asSQLiteToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
-            this.asSQLiteToolStripMenuItem.Text = "As SQLite DB";
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(172, 6);
             // 
             // saveFactorsToolStripMenuItem
             // 
@@ -836,21 +766,11 @@ namespace MultiAlignWin
             // viewToolStripMenuItem
             // 
             this.viewToolStripMenuItem.CheckOnClick = true;
-            this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.makeDataGridATabToolStripMenuItem});
             this.viewToolStripMenuItem.MergeAction = System.Windows.Forms.MergeAction.MatchOnly;
             this.viewToolStripMenuItem.MergeIndex = 1;
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
             this.viewToolStripMenuItem.Size = new System.Drawing.Size(41, 20);
             this.viewToolStripMenuItem.Text = "View";
-            // 
-            // makeDataGridATabToolStripMenuItem
-            // 
-            this.makeDataGridATabToolStripMenuItem.MergeIndex = 2;
-            this.makeDataGridATabToolStripMenuItem.Name = "makeDataGridATabToolStripMenuItem";
-            this.makeDataGridATabToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
-            this.makeDataGridATabToolStripMenuItem.Text = "Make Data Grid a Tab";
-            this.makeDataGridATabToolStripMenuItem.Click += new System.EventHandler(this.makeDataGridATabToolStripMenuItem_Click);
             // 
             // optionsToolStripMenuItem
             // 
@@ -927,8 +847,7 @@ namespace MultiAlignWin
             // 
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mtoolstrBtnSaveMA,
-            this.mtoolStrBtnMAsaveas,
-            this.mtoolStrBtnSaveTable});
+            this.mtoolStrBtnMAsaveas});
             this.toolStrip1.Location = new System.Drawing.Point(0, 24);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(1051, 25);
@@ -959,17 +878,6 @@ namespace MultiAlignWin
             this.mtoolStrBtnMAsaveas.Text = "Save Analysis As(.mln)";
             this.mtoolStrBtnMAsaveas.Click += new System.EventHandler(this.saveAsToolStripMenuItem_Click);
             // 
-            // mtoolStrBtnSaveTable
-            // 
-            this.mtoolStrBtnSaveTable.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.mtoolStrBtnSaveTable.Image = ((System.Drawing.Image)(resources.GetObject("mtoolStrBtnSaveTable.Image")));
-            this.mtoolStrBtnSaveTable.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.mtoolStrBtnSaveTable.MergeAction = System.Windows.Forms.MergeAction.Insert;
-            this.mtoolStrBtnSaveTable.MergeIndex = 6;
-            this.mtoolStrBtnSaveTable.Name = "mtoolStrBtnSaveTable";
-            this.mtoolStrBtnSaveTable.Size = new System.Drawing.Size(23, 22);
-            this.mtoolStrBtnSaveTable.Text = "&Save Data Table";
-            // 
             // mimageList_tabImages
             // 
             this.mimageList_tabImages.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("mimageList_tabImages.ImageStream")));
@@ -997,83 +905,12 @@ namespace MultiAlignWin
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
             this.toolStripStatusLabel1.Size = new System.Drawing.Size(0, 17);
             // 
-            // mtabPage_chargeStates
-            // 
-            this.mtabPage_chargeStates.Controls.Add(this.mcontrol_histogramChargeStates);
-            this.mtabPage_chargeStates.Location = new System.Drawing.Point(4, 22);
-            this.mtabPage_chargeStates.Name = "mtabPage_chargeStates";
-            this.mtabPage_chargeStates.Padding = new System.Windows.Forms.Padding(3);
-            this.mtabPage_chargeStates.Size = new System.Drawing.Size(1043, 495);
-            this.mtabPage_chargeStates.TabIndex = 7;
-            this.mtabPage_chargeStates.Text = "Charge State Histogram";
-            this.mtabPage_chargeStates.UseVisualStyleBackColor = true;
-            // 
-            // mcontrol_histogramChargeStates
-            // 
-            this.mcontrol_histogramChargeStates.AutoViewPortXBase = 0F;
-            this.mcontrol_histogramChargeStates.AutoViewPortYBase = 0F;
-            this.mcontrol_histogramChargeStates.AxisAndLabelFont = new System.Drawing.Font("Microsoft Sans Serif", 9F);
-            this.mcontrol_histogramChargeStates.AxisAndLabelMaxFontSize = 15;
-            this.mcontrol_histogramChargeStates.AxisAndLabelMinFontSize = 8;
-            this.mcontrol_histogramChargeStates.AxisVisible = true;
-            this.mcontrol_histogramChargeStates.BinSize = 1F;
-            this.mcontrol_histogramChargeStates.ChartBackgroundColor = System.Drawing.Color.White;
-            this.mcontrol_histogramChargeStates.ChartLayout.LegendFraction = 0.2F;
-            this.mcontrol_histogramChargeStates.ChartLayout.LegendLocation = PNNLControls.ChartLegendLocation.Right;
-            this.mcontrol_histogramChargeStates.ChartLayout.MaxLegendHeight = 150;
-            this.mcontrol_histogramChargeStates.ChartLayout.MaxLegendWidth = 250;
-            this.mcontrol_histogramChargeStates.ChartLayout.MaxTitleHeight = 50;
-            this.mcontrol_histogramChargeStates.ChartLayout.MinLegendHeight = 50;
-            this.mcontrol_histogramChargeStates.ChartLayout.MinLegendWidth = 75;
-            this.mcontrol_histogramChargeStates.ChartLayout.MinTitleHeight = 15;
-            this.mcontrol_histogramChargeStates.ChartLayout.TitleFraction = 0.1F;
-            this.mcontrol_histogramChargeStates.DefaultZoomHandler.Active = true;
-            this.mcontrol_histogramChargeStates.DefaultZoomHandler.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(119)))), ((int)(((byte)(136)))), ((int)(((byte)(153)))));
-            this.mcontrol_histogramChargeStates.DefaultZoomHandler.LineColor = System.Drawing.Color.Black;
-            this.mcontrol_histogramChargeStates.Dock = System.Windows.Forms.DockStyle.Fill;
-            penProvider3.Color = System.Drawing.Color.FromArgb(((int)(((byte)(211)))), ((int)(((byte)(211)))), ((int)(((byte)(211)))));
-            penProvider3.Width = 1F;
-            this.mcontrol_histogramChargeStates.GridLinePen = penProvider3;
-            this.mcontrol_histogramChargeStates.HasLegend = false;
-            this.mcontrol_histogramChargeStates.HilightColor = System.Drawing.Color.Magenta;
-            this.mcontrol_histogramChargeStates.Legend.BackColor = System.Drawing.Color.Transparent;
-            penProvider4.Color = System.Drawing.Color.Black;
-            penProvider4.Width = 1F;
-            this.mcontrol_histogramChargeStates.Legend.BorderPen = penProvider4;
-            this.mcontrol_histogramChargeStates.Legend.Bounds = new System.Drawing.Rectangle(0, 0, 0, 0);
-            this.mcontrol_histogramChargeStates.Legend.ColumnWidth = 125;
-            this.mcontrol_histogramChargeStates.Legend.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.mcontrol_histogramChargeStates.Legend.MaxFontSize = 12F;
-            this.mcontrol_histogramChargeStates.Legend.MinFontSize = 6F;
-            this.mcontrol_histogramChargeStates.LegendVisible = true;
-            this.mcontrol_histogramChargeStates.Location = new System.Drawing.Point(3, 3);
-            this.mcontrol_histogramChargeStates.Margins.BottomMarginFraction = 0.1F;
-            this.mcontrol_histogramChargeStates.Margins.BottomMarginMax = 72;
-            this.mcontrol_histogramChargeStates.Margins.BottomMarginMin = 30;
-            this.mcontrol_histogramChargeStates.Margins.DefaultMarginFraction = 0.05F;
-            this.mcontrol_histogramChargeStates.Margins.DefaultMarginMax = 15;
-            this.mcontrol_histogramChargeStates.Margins.DefaultMarginMin = 5;
-            this.mcontrol_histogramChargeStates.Margins.LeftMarginFraction = 0.2F;
-            this.mcontrol_histogramChargeStates.Margins.LeftMarginMax = 150;
-            this.mcontrol_histogramChargeStates.Margins.LeftMarginMin = 72;
-            this.mcontrol_histogramChargeStates.Name = "mcontrol_histogramChargeStates";
-            this.mcontrol_histogramChargeStates.Size = new System.Drawing.Size(1037, 489);
-            this.mcontrol_histogramChargeStates.TabIndex = 0;
-            this.mcontrol_histogramChargeStates.Title = "Charge States";
-            this.mcontrol_histogramChargeStates.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 29F);
-            this.mcontrol_histogramChargeStates.TitleMaxFontSize = 50F;
-            this.mcontrol_histogramChargeStates.TitleMinFontSize = 6F;
-            this.mcontrol_histogramChargeStates.TitleVisible = true;
-            this.mcontrol_histogramChargeStates.VerticalExpansion = 1F;
-            this.mcontrol_histogramChargeStates.ViewPort = ((System.Drawing.RectangleF)(resources.GetObject("mcontrol_histogramChargeStates.ViewPort")));
-            // 
             // frmDataView
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
             this.ClientSize = new System.Drawing.Size(1051, 696);
             this.Controls.Add(this.panelCharts);
             this.Controls.Add(this.splitter1);
-            this.Controls.Add(this.expandPanelBottom);
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.menuStrip);
             this.Controls.Add(this.statusStrip1);
@@ -1081,7 +918,6 @@ namespace MultiAlignWin
             this.Name = "frmDataView";
             this.Text = "Data View";
             this.Load += new System.EventHandler(this.frmDataView_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.expandPanelBottom)).EndInit();
             this.panelCharts.ResumeLayout(false);
             this.mtabcontrol_data.ResumeLayout(false);
             this.mtabPage_dataSummary.ResumeLayout(false);
@@ -1090,14 +926,14 @@ namespace MultiAlignWin
             this.mtabPage_proteinMaps.ResumeLayout(false);
             this.mtabPage_clusterPlot.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.mcontrol_clusterHistogram)).EndInit();
+            this.mtabPage_chargeStates.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.mcontrol_histogramChargeStates)).EndInit();
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
-            this.mtabPage_chargeStates.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.mcontrol_histogramChargeStates)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1140,14 +976,14 @@ namespace MultiAlignWin
                     freqs[cluster.mshort_num_dataset_members - 1] = freqs[cluster.mshort_num_dataset_members - 1] + 1;
                 }
                 
-                /*
+                
                 using (System.IO.TextWriter writer = System.IO.File.CreateText(@"c:\development\data\clusters.csv"))
                 {
                     for(i = 0; i < maxClusters; i++)
                     {
                         writer.WriteLine("{0},{1:0.0}", bins[i], freqs[i]);
                     }
-                }*/
+                }
 
                 /// 
                 /// Display the histogram.
@@ -1404,16 +1240,6 @@ namespace MultiAlignWin
 
             mcontrol_resultSummaryPages.UpdateColumnWidths();
         }
-        /// <summary>
-        /// Displays the analysis summary for the entire set of datasets.
-        /// </summary>
-        private void ShowAnalysisSummary()
-        {
-			frmAnalysisSummary alignmentSummary = new frmAnalysisSummary(mobjAnalysis) ; 
-			alignmentSummary.DatasetModified = mblnDatasetModified ; 
-			alignmentSummary.ShowDialog(this) ; 
-			mblnDatasetModified = alignmentSummary.DatasetModified ;
-        }
         #endregion
         
         #region Cluster Grid Event HAndlers
@@ -1481,24 +1307,6 @@ namespace MultiAlignWin
 			{
 				mobjAnalysis.SerializeAnalysisToFile(mstrCurrentFileName) ; 
 			}
-		}		
-		private void mnu_Options_Click(object sender, EventArgs e)
-		{
-			if (mobjAnalysis != null)
-			{                
-                /// 
-                /// Create Context Menu;
-                /// 
-                optionsToolStripMenuItem.DropDownItems.Clear();
-                ContextMenuStrip strip = mobjClusterGrid.CreateContextMenu();
-                ToolStripItem[] itemArray = new ToolStripItem[strip.Items.Count];
-                strip.Items.CopyTo(itemArray, 0);
-                optionsToolStripMenuItem.DropDownItems.AddRange(itemArray);
-                //if (makeDataGridATabToolStripMenuItem.Checked == true)
-                //{
-                //    tabControlCharts.SelectedTab = tabControlCharts.TabPages["DataGrid"];
-                //}
-			}
 		}
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -1532,10 +1340,6 @@ namespace MultiAlignWin
                 }
             }
         }
-        private void makeDataGridATabToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            makeDataGridATabToolStripMenuItem.Checked = (makeDataGridATabToolStripMenuItem.Checked == false);
-        }
         private void frmDataView_Load(object sender, EventArgs e)
         {
             if (IsMdiChild)
@@ -1545,5 +1349,53 @@ namespace MultiAlignWin
             }
         }
         #endregion
+
+        #region Data Saving Menu Strip Item Handlers 
+        private void saveTableToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog dialog = new SaveFileDialog();
+            dialog.Title = "Save Analysis As";
+            dialog.AddExtension = true;
+            dialog.CheckPathExists = true;
+            dialog.DefaultExt = "*.csv";
+            dialog.DereferenceLinks = true;
+            dialog.ValidateNames = true;
+            dialog.Filter = "Comma Delimited (*.csv)|*.csv|Tab Delimited (*.txt)|*.txt|SQLite Database File (*.db3)|(*.db3) |All Files (*.*)|*.*";
+            dialog.FilterIndex = 1;
+
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                IAnalysisWriter writer = null;
+
+                string filename     = dialog.FileNames[0];
+                string extension    = System.IO.Path.GetExtension(filename);
+                AnalysisTableWriter tableWriter = null;
+                switch (extension)
+                {
+                    case ".csv":
+                        tableWriter = new AnalysisTableWriter();
+                        tableWriter.Delimeter = ",";
+                        writer = tableWriter;
+                        break;
+                    case ".txt":
+                        tableWriter = new AnalysisTableWriter();
+                        tableWriter.Delimeter = "\t";
+                        writer = tableWriter;
+                        break;
+                    case ".db3":
+                        writer = new AnalysisSQLiteDBWriter();
+                        break;
+                    default:
+                        tableWriter = new AnalysisTableWriter();
+                        tableWriter.Delimeter = ",";
+                        writer = tableWriter;
+                        break;
+                }
+                
+                writer.WriteAnalysis(filename, mobjAnalysis);
+            }
+            dialog.Dispose();
+        }
+        #endregion        
     }
 }
