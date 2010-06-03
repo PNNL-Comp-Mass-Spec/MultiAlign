@@ -288,7 +288,7 @@ namespace MultiAlignWin
             this.mcheckBox_ignore_promiscous.Name = "mcheckBox_ignore_promiscous";
             this.mcheckBox_ignore_promiscous.Size = new System.Drawing.Size(125, 24);
             this.mcheckBox_ignore_promiscous.TabIndex = 9;
-            this.mcheckBox_ignore_promiscous.Text = "Ignore Promiscous";
+            this.mcheckBox_ignore_promiscous.Text = "Ignore Promiscuous";
             // 
             // mtabPageMassOptions
             // 
