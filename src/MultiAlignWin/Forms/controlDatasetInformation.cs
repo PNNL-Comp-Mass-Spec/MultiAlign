@@ -98,10 +98,7 @@ namespace MultiAlignWin.Forms
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void mbutton_baseline_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {            
-            /*frmAlignmentPreview preview = new frmAlignmentPreview(mobj_analysis, mint_datasetIndex);
-            preview.ShowDialog();
-             **/
+        {         
         }
         #endregion 
 
@@ -127,7 +124,7 @@ namespace MultiAlignWin.Forms
 
             if (mobj_alignmentData != null)
             {
-
+                /*
                 ListViewItem massStdItem = new ListViewItem();
                 massStdItem.Text = "Alignment Mass Stdev";
                 massStdItem.SubItems.Add(new ListViewItem.ListViewSubItem(massStdItem, mobj_alignmentData.MassStandardDeviation.ToString()));
@@ -158,6 +155,10 @@ namespace MultiAlignWin.Forms
                 mlistview_stats.Columns[0].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
                 mlistview_stats.Columns[1].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
                 mlistview_stats.EndUpdate();
+                 */
+
+                mlabel_stdevMass.Text = string.Format("Stdev. Mass = {0:0.000}", mobj_alignmentData.MassStandardDeviation);
+                mlabel_stdevNET.Text  = string.Format("Stdev. NET = {0:0.000}", mobj_alignmentData.NETStandardDeviation);
             }
             PerformLayout();
         }
