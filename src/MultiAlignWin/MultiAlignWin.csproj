@@ -250,13 +250,7 @@
     <Compile Include="Forms\frmAlign.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\frmAlignmentPreview.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="Drawing\classRenderDatasetInfo.cs" />
-    <Compile Include="Forms\Summary\frmAnalysisSummary.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="Forms\Parameters\frmMSAlignmentParameters.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -309,6 +303,8 @@
     <Compile Include="Forms\Summary\frmDatasetSummary.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="IO\AnalysisSQLiteDBWriter.cs" />
+    <Compile Include="IO\AnalysisTableWriter.cs" />
     <Compile Include="IO\classAnalysisLogWriter.cs" />
     <Compile Include="IO\clsConfigParms.cs" />
     <Compile Include="Forms\frmDBName.cs">
@@ -419,10 +415,6 @@
       <SubType>Designer</SubType>
       <DependentUpon>formUMCData.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\frmAlignmentPreview.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>frmAlignmentPreview.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmDataView.resx">
       <DependentUpon>frmDataView.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -449,10 +441,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmAlign.resx">
       <DependentUpon>frmAlign.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Summary\frmAnalysisSummary.resx">
-      <DependentUpon>frmAnalysisSummary.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Parameters\frmMSAlignmentParameters.resx">
