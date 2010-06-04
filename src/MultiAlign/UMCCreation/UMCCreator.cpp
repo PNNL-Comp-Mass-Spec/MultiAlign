@@ -47,7 +47,8 @@ namespace MultiAlignEngine
 
 			// Setup header information
 			char *startTag					= "scan_num,charge,abundance,mz,fit,average_mw,monoisotopic_mw,mostabundant_mw,fwhm,signal_noise,mono_abundance,mono_plus2_abundance"; 
-			char *imsStartTag				= "frame_num,ims_scan_num,charge,abundance,mz,fit,average_mw,monoisotopic_mw,mostabundant_mw,fwhm,signal_noise,mono_abundance,mono_plus2_abundance,drift_time,cumulative_drift_time";
+			char *imsStartTag				= "frame_num,ims_scan_num,charge,abundance,mz,fit,average_mw,monoisotopic_mw,mostabundant_mw,fwhm,signal_noise,mono_abundance,mono_plus2_abundance,orig_intensity,TIA_orig_intensity,drift_time";
+			// "frame_num,ims_scan_num,charge,abundance,mz,fit,average_mw,monoisotopic_mw,mostabundant_mw,fwhm,signal_noise,mono_abundance,mono_plus2_abundance,drift_time,cumulative_drift_time";
 			int startTagLength				= (int)strlen(startTag); 
 			int startIMSTagLength			= (int) strlen(imsStartTag);
 
@@ -258,13 +259,15 @@ namespace MultiAlignEngine
 					// MonoIsostopic Abundance Plus 2
 					pk.mdouble_i2_abundance = strtod(stopPtr, &stopPtrNext); 
 					stopPtr = ++stopPtrNext; 
+					//Orig intensity
+					strtod(stopPtr, &stopPtrNext); 
+					stopPtr = ++stopPtrNext; 
+					//TIA_orig_intensity
+					strtod(stopPtr, &stopPtrNext); 
+					stopPtr = ++stopPtrNext; 
 					// IMS Drift Time
 					pk.mdouble_driftTime = strtod(stopPtr, &stopPtrNext);
 					stopPtr = ++stopPtrNext; 
-					// IMS Cumulative Drift Time
-					pk.mdouble_cumulativeDriftTime = strtod(stopPtr, &stopPtrNext);
-					stopPtr = ++stopPtrNext; 
-
 					// Count the peak number here.
 					pk.mint_original_index = numPeaks; 
 
