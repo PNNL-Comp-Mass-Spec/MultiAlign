@@ -107,8 +107,13 @@ namespace MultiAlignWin.IO
             clsUMCData umcData = analysis.UMCData;
             clsClusterData clusterData = umcData.mobjClusterData;
             ArrayList clusterArrayList = umcData.mobjClusterData.marrClusters;
-            clsMassTag[] massTagArray = analysis.PeakMatchingResults.marrMasstags;
-            clsProtein[] proteinArray = analysis.PeakMatchingResults.marrProteins;
+            clsMassTag[] massTagArray = null; // analysis.PeakMatchingResults.marrMasstags;
+            clsProtein[] proteinArray = null; // analysis.PeakMatchingResults.marrProteins;            
+            if (analysis.PeakMatchedToMassTagDB)
+            {
+                massTagArray = analysis.PeakMatchingResults.marrMasstags;
+                proteinArray = analysis.PeakMatchingResults.marrProteins;
+            }
 
             // Used to store which Cluster IDs are saved to SQLite
             List<int> clusterIDs = new List<int>();

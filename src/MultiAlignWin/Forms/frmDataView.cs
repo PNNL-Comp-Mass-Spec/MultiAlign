@@ -85,6 +85,7 @@ namespace MultiAlignWin
         private TabPage mtabPage_chargeStates;
         private MultiAlignWin.Drawing.controlHistogram mcontrol_histogramChargeStates;
         private ToolStripSeparator toolStripSeparator3;
+        private ToolStripSeparator toolStripSeparator4;
         private IContainer components;
         #endregion
 
@@ -281,10 +282,10 @@ namespace MultiAlignWin
             this.tabPageOverlayPlot = new System.Windows.Forms.TabPage();
             this.mtabPage_dataSummary = new System.Windows.Forms.TabPage();
             this.mcontrol_resultSummaryPages = new MultiAlignWin.ctlSummaryPages();
-            this.mtabPage_analysisInformation = new System.Windows.Forms.TabPage();
-            this.mcontrol_analysisInformation = new MultiAlignWin.ctlSummaryPages();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.mpanel_dataControls = new System.Windows.Forms.Panel();
+            this.mtabPage_analysisInformation = new System.Windows.Forms.TabPage();
+            this.mcontrol_analysisInformation = new MultiAlignWin.ctlSummaryPages();
             this.mtabPage_proteinMaps = new System.Windows.Forms.TabPage();
             this.mlistView_proteinPeptideTable = new System.Windows.Forms.ListView();
             this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
@@ -327,11 +328,12 @@ namespace MultiAlignWin
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.mlabel_rows = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.panelCharts.SuspendLayout();
             this.mtabcontrol_data.SuspendLayout();
             this.mtabPage_dataSummary.SuspendLayout();
-            this.mtabPage_analysisInformation.SuspendLayout();
             this.tabPage2.SuspendLayout();
+            this.mtabPage_analysisInformation.SuspendLayout();
             this.mtabPage_proteinMaps.SuspendLayout();
             this.mtabPage_clusterPlot.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.mcontrol_clusterHistogram)).BeginInit();
@@ -405,26 +407,6 @@ namespace MultiAlignWin
             this.mcontrol_resultSummaryPages.Size = new System.Drawing.Size(1037, 589);
             this.mcontrol_resultSummaryPages.TabIndex = 1;
             // 
-            // mtabPage_analysisInformation
-            // 
-            this.mtabPage_analysisInformation.Controls.Add(this.mcontrol_analysisInformation);
-            this.mtabPage_analysisInformation.Location = new System.Drawing.Point(4, 22);
-            this.mtabPage_analysisInformation.Name = "mtabPage_analysisInformation";
-            this.mtabPage_analysisInformation.Padding = new System.Windows.Forms.Padding(3);
-            this.mtabPage_analysisInformation.Size = new System.Drawing.Size(1043, 595);
-            this.mtabPage_analysisInformation.TabIndex = 2;
-            this.mtabPage_analysisInformation.Text = "Analysis Information";
-            this.mtabPage_analysisInformation.UseVisualStyleBackColor = true;
-            // 
-            // mcontrol_analysisInformation
-            // 
-            this.mcontrol_analysisInformation.BackColor = System.Drawing.SystemColors.Control;
-            this.mcontrol_analysisInformation.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.mcontrol_analysisInformation.Location = new System.Drawing.Point(3, 3);
-            this.mcontrol_analysisInformation.Name = "mcontrol_analysisInformation";
-            this.mcontrol_analysisInformation.Size = new System.Drawing.Size(1037, 589);
-            this.mcontrol_analysisInformation.TabIndex = 2;
-            // 
             // tabPage2
             // 
             this.tabPage2.AutoScroll = true;
@@ -445,6 +427,26 @@ namespace MultiAlignWin
             this.mpanel_dataControls.Name = "mpanel_dataControls";
             this.mpanel_dataControls.Size = new System.Drawing.Size(1037, 589);
             this.mpanel_dataControls.TabIndex = 0;
+            // 
+            // mtabPage_analysisInformation
+            // 
+            this.mtabPage_analysisInformation.Controls.Add(this.mcontrol_analysisInformation);
+            this.mtabPage_analysisInformation.Location = new System.Drawing.Point(4, 22);
+            this.mtabPage_analysisInformation.Name = "mtabPage_analysisInformation";
+            this.mtabPage_analysisInformation.Padding = new System.Windows.Forms.Padding(3);
+            this.mtabPage_analysisInformation.Size = new System.Drawing.Size(1043, 595);
+            this.mtabPage_analysisInformation.TabIndex = 2;
+            this.mtabPage_analysisInformation.Text = "Analysis Information";
+            this.mtabPage_analysisInformation.UseVisualStyleBackColor = true;
+            // 
+            // mcontrol_analysisInformation
+            // 
+            this.mcontrol_analysisInformation.BackColor = System.Drawing.SystemColors.Control;
+            this.mcontrol_analysisInformation.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.mcontrol_analysisInformation.Location = new System.Drawing.Point(3, 3);
+            this.mcontrol_analysisInformation.Name = "mcontrol_analysisInformation";
+            this.mcontrol_analysisInformation.Size = new System.Drawing.Size(1037, 589);
+            this.mcontrol_analysisInformation.TabIndex = 2;
             // 
             // mtabPage_proteinMaps
             // 
@@ -649,10 +651,11 @@ namespace MultiAlignWin
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.saveToolStripMenuItem,
             this.saveAsToolStripMenuItem,
-            this.saveTableToolStripMenuItem,
-            this.toolStripSeparator3,
             this.saveFactorsToolStripMenuItem,
             this.saveSummariesToolStripMenuItem,
+            this.toolStripSeparator4,
+            this.saveTableToolStripMenuItem,
+            this.toolStripSeparator3,
             this.toolStripSeparator1,
             this.exportParametersToolStripMenuItem});
             this.fileToolStripMenuItem.MergeAction = System.Windows.Forms.MergeAction.MatchOnly;
@@ -733,19 +736,19 @@ namespace MultiAlignWin
             // globalToolStripMenuItem
             // 
             this.globalToolStripMenuItem.Name = "globalToolStripMenuItem";
-            this.globalToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
+            this.globalToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.globalToolStripMenuItem.Text = "Global";
             // 
             // datasetToolStripMenuItem
             // 
             this.datasetToolStripMenuItem.Name = "datasetToolStripMenuItem";
-            this.datasetToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
+            this.datasetToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.datasetToolStripMenuItem.Text = "Dataset";
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(120, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(149, 6);
             // 
             // toolStripSeparator1
             // 
@@ -905,6 +908,11 @@ namespace MultiAlignWin
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
             this.toolStripStatusLabel1.Size = new System.Drawing.Size(0, 17);
             // 
+            // toolStripSeparator4
+            // 
+            this.toolStripSeparator4.Name = "toolStripSeparator4";
+            this.toolStripSeparator4.Size = new System.Drawing.Size(172, 6);
+            // 
             // frmDataView
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -921,8 +929,8 @@ namespace MultiAlignWin
             this.panelCharts.ResumeLayout(false);
             this.mtabcontrol_data.ResumeLayout(false);
             this.mtabPage_dataSummary.ResumeLayout(false);
-            this.mtabPage_analysisInformation.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
+            this.mtabPage_analysisInformation.ResumeLayout(false);
             this.mtabPage_proteinMaps.ResumeLayout(false);
             this.mtabPage_clusterPlot.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.mcontrol_clusterHistogram)).EndInit();
@@ -945,17 +953,8 @@ namespace MultiAlignWin
         /// Creates the cluster histograms.
         /// </summary>
         private void CreateClusterHistogram()
-        {
-            int maxClusters = 0;
-            foreach (clsCluster cluster in mobjAnalysis.UMCData.mobjClusterData.marrClusters)
-            {
-                maxClusters = Math.Max(cluster.mshort_num_dataset_members, maxClusters);
-                if (cluster.mdouble_netError < 0)
-                {
-                    /// do something
-                }
-            }
-
+        {            
+            int maxClusters = mobjAnalysis.FileNames.Length + 1;
             if (maxClusters > 1)
             {
                 float[] bins = new float[maxClusters];
@@ -976,15 +975,7 @@ namespace MultiAlignWin
                     freqs[cluster.mshort_num_dataset_members - 1] = freqs[cluster.mshort_num_dataset_members - 1] + 1;
                 }
                 
-                
-                using (System.IO.TextWriter writer = System.IO.File.CreateText(@"c:\development\data\clusters.csv"))
-                {
-                    for(i = 0; i < maxClusters; i++)
-                    {
-                        writer.WriteLine("{0},{1:0.0}", bins[i], freqs[i]);
-                    }
-                }
-
+                                
                 /// 
                 /// Display the histogram.
                 /// 
@@ -1198,13 +1189,14 @@ namespace MultiAlignWin
         private void UpdateListViews()
         {
             mcontrol_resultSummaryPages.CreateSummary("Global Summary", mobjAnalysis);            
-            mcontrol_resultSummaryPages.CreateSummary("UMC Data", mobjAnalysis.UMCData);
+            mcontrol_resultSummaryPages.CreateSummary("Feature Data", mobjAnalysis.UMCData);
             mcontrol_resultSummaryPages.CreateSummary("Cluster Data", mobjAnalysis.UMCData.mobjClusterData);
             
 
-            mcontrol_analysisInformation.CreateSummary("UMC Finding Options", mobjAnalysis.UMCFindingOptions);
+            mcontrol_analysisInformation.CreateSummary("Feature Finding Options", mobjAnalysis.UMCFindingOptions);
             mcontrol_analysisInformation.CreateSummary("Alignment Options", mobjAnalysis.DefaultAlignmentOptions);
             mcontrol_analysisInformation.CreateSummary("Mass Tag Database Options (MTDB)", mobjAnalysis.MassTagDBOptions);
+            mcontrol_analysisInformation.CreateSummary("Cluster Options", mobjAnalysis.ClusterOptions); 
 
             /// 
             /// If the datasets were peak matched, then display this control page.
@@ -1360,7 +1352,7 @@ namespace MultiAlignWin
             dialog.DefaultExt = "*.csv";
             dialog.DereferenceLinks = true;
             dialog.ValidateNames = true;
-            dialog.Filter = "Comma Delimited (*.csv)|*.csv|Tab Delimited (*.txt)|*.txt|SQLite Database File (*.db3)|(*.db3) |All Files (*.*)|*.*";
+            dialog.Filter = "Comma Delimited (*.csv)|*.csv|Tab Delimited (*.txt)|*.txt|SQLite Database File (*.db3)|*.db3|All Files (*.*)|*.*";
             dialog.FilterIndex = 1;
 
             if (dialog.ShowDialog() == DialogResult.OK)
