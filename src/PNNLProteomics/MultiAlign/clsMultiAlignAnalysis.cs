@@ -523,7 +523,7 @@ namespace PNNLProteomics.Data.Analysis
                         }
                         foreach (clsUMC umc in loadedUMCs)
                         {
-                            umc.Net = (umc.mint_scan - umc.mint_start_scan) / Convert.ToDouble(maxScan - minScan);                            
+                            umc.Net = Convert.ToDouble(umc.mint_scan - minScan) / Convert.ToDouble(maxScan - minScan);                            
                         }
                         
                         if (UMCSLoadedForFile != null)
@@ -1694,83 +1694,68 @@ namespace PNNLProteomics.Data.Analysis
                 CurrentStep(listSteps.IndexOf(stepAlignment), stepAlignment);
             SetDefaultAlignmentOptions();
 
-            /// 
-            /// For NxN alignment
-            /// 
-            int i = 0;
-            //for (i = 0; i < marrFiles.Count; i++)
+            
+            /// ////////////////////////////////////////////// 
+            /// Part Four:
+            ///     Alignment
+            /// ////////////////////////////////////////////// 
+            mint_statusLevel = CONST_FIRST_LEVEL;
+            AlignDatasets();
+
+
+            /// ////////////////////////////////////////////// 
+            /// Part Four:
+            ///         Clustering 
+            /// ////////////////////////////////////////////// 
+            mint_statusLevel = CONST_FIRST_LEVEL;
+            if (CurrentStep != null)
+                CurrentStep(listSteps.IndexOf(stepCluster), stepCluster);
+            PerformClustering();
+
+            /// ////////////////////////////////////////////// 
+            /// Part Five:
+            ///     Perform Peak Matching
+            /// ////////////////////////////////////////////// 
+            mint_statusLevel = CONST_FIRST_LEVEL;
+            if (MassTagDBOptions.menm_databaseType != MultiAlignEngine.MassTags.MassTagDatabaseType.None)
             {
-                /// ////////////////////////////////////////////// 
-                /// Part Four:
-                ///     Alignment
-                /// ////////////////////////////////////////////// 
-                mint_statusLevel = CONST_FIRST_LEVEL;
-
-                //mobjAlignmentOptions.AlignmentBaselineName = marrFileNames[i];
-                AlignDatasets();
-
-
-                /// ////////////////////////////////////////////// 
-                /// Part Four:
-                ///         Clustering 
-                /// ////////////////////////////////////////////// 
-                mint_statusLevel = CONST_FIRST_LEVEL;
                 if (CurrentStep != null)
-                    CurrentStep(listSteps.IndexOf(stepCluster), stepCluster);
-                PerformClustering();
-
-                /// ////////////////////////////////////////////// 
-                /// Part Five:
-                ///     Perform Peak Matching
-                /// ////////////////////////////////////////////// 
-                mint_statusLevel = CONST_FIRST_LEVEL;
-                if (MassTagDBOptions.menm_databaseType != MultiAlignEngine.MassTags.MassTagDatabaseType.None)
-                {
-                    if (CurrentStep != null)
-                        CurrentStep(listSteps.IndexOf(stepPeakMatch), stepPeakMatch);
-                    /// 
-                    /// Run the peak matching steps and scoring
-                    /// 
-                    PerformPeakMatching();
-                }
-
-                /// ////////////////////////////////////////////// 
-                /// Part Six:
-                ///     Serialize the analysis to file.
-                /// ////////////////////////////////////////////// 
-                mint_statusLevel = CONST_FIRST_LEVEL;
-                if (CurrentStep != null)
-                    CurrentStep(listSteps.IndexOf(stepSave), stepSave);
-
-                try
-                {
-                    string pathName = System.IO.Path.GetDirectoryName(mstring_pathname);
-                    string newPath  = System.IO.Path.Combine(pathName, mstring_analysisName ); //+ i.ToString());
-                    //System.IO.Directory.CreateDirectory(newPath);
-                    newPath = mstring_pathname;
-
-                    SerializeAnalysisToFile(mstring_pathname); // System.IO.Path.Combine(newPath, mstring_analysisName /*i.ToString()*/ + ".mln"));
-
-                    //mstring_pathname = System.IO.Path.Combine(newPath, mstring_analysisName + ".mln");
-                }
-                catch (Exception ex)
-                {
-                    System.Diagnostics.Trace.WriteLine("Could not save results to file. " + ex.Message);
-                }
-
-                try
-                {
-
-                    string pathName = System.IO.Path.GetDirectoryName(mstring_pathname);
-                    string newPath = System.IO.Path.Combine(pathName, mstring_analysisName + i.ToString());
-                    System.IO.Directory.CreateDirectory(newPath);
-
-                    WriteAlignmentDataToFile(newPath , i);
-                }
-                catch
-                {
-                }
+                    CurrentStep(listSteps.IndexOf(stepPeakMatch), stepPeakMatch);
+                /// 
+                /// Run the peak matching steps and scoring
+                /// 
+                PerformPeakMatching();
             }
+
+            /// ////////////////////////////////////////////// 
+            /// Part Six:
+            ///     Serialize the analysis to file.
+            /// ////////////////////////////////////////////// 
+            mint_statusLevel = CONST_FIRST_LEVEL;
+            if (CurrentStep != null)
+                CurrentStep(listSteps.IndexOf(stepSave), stepSave);
+
+            try
+            {
+                /// 
+                /// Get the path name and make a directory for the analysis.
+                /// 
+                string pathName     = System.IO.Path.GetDirectoryName(mstring_pathname);
+                string newPath      = System.IO.Path.Combine(pathName, mstring_analysisName);
+                System.IO.Directory.CreateDirectory(newPath);
+
+                /// 
+                /// Update the path name
+                /// 
+                mstring_pathname    = System.IO.Path.Combine(newPath, mstring_analysisName + ".mln");                   
+                SerializeAnalysisToFile(mstring_pathname);
+                WriteAlignmentDataToFile(newPath, 0);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Trace.WriteLine("Could not save results to file. " + ex.Message);
+            }
+            
             if (AnalysisComplete != null)
                 AnalysisComplete(this);
 
