@@ -129,7 +129,7 @@ namespace MultiAlignWin
             mobj_listViewItemComparer   = new ListViewItemComparer();
 
             mobj_openFileDialog.Multiselect			= true;
-			mobj_openFileDialog.Filter = "*_isos.csv files (*_isos.csv)|*_isos.csv|*.pek files (*.pek)|*.pek|UMC files (*.txt)|*.txt|SQLite DB3 files (*.db3)|*.db3|All files (*.*)|*.*";
+			mobj_openFileDialog.Filter = "*_isos.csv files (*_isos.csv)|*_isos.csv|*.pek files (*.pek)|*.pek|LC-MS Feature files (*.txt)|*.txt|SQLite DB3 files (*.db3)|*.db3|All files (*.*)|*.*";
             mobj_openFileDialog.FilterIndex			= 1;
             mobj_openFileDialog.InitialDirectory	= Properties.Settings.Default.RawDataPath;
 
