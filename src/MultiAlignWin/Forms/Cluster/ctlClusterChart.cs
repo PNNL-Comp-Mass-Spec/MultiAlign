@@ -39,7 +39,7 @@ namespace MultiAlignWin
 			InitializeComponent();
 
             mcomboBox_chargeStates.Items.Add("All");
-            for (int i = 0; i < 30; i++)
+            for (int i = 1; i < 31; i++)
                 mcomboBox_chargeStates.Items.Add(i.ToString());
             mcomboBox_chargeStates.SelectedIndex = 0;
 
