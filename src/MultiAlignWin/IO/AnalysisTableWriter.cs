@@ -234,212 +234,7 @@ namespace MultiAlignWin.IO
         }
         #endregion
 
-        #region Writing Cluster Methods
-        /// <summary>
-        /// Writes the data for a single cluster including mass tag data.
-        /// </summary>
-        /// <param name="writer"></param>
-        /// <param name="analysis"></param>
-        /// <param name="clusterNumber"></param>
-        /// <param name="peakMatchNumber"></param>
-        private void WriteCluster(  TextWriter writer,
-                                    clsMultiAlignAnalysis analysis,
-                                    int clusterNumber, 
-                                    ref int peakMatchNumber)
-        {
-            clsCluster cluster  = analysis.UMCData.mobjClusterData.GetCluster(clusterNumber);
-            int id              = clusterNumber + 1;
-            string data         = id.ToString();
-
-            /// 
-            /// The second column is the number of members stored in the cluster.
-            /// 
-            data += Delimeter + cluster.mshort_num_dataset_members.ToString();
-
-
-            clsPeakMatchingResults.clsPeakMatchingTriplet[] arrPeakMatchingTriplets = null;
-            clsProtein[] arrPeakMatchingProteins = null;
-            clsMassTag[] arrPeakMatchingMassTags = null;
-
-            clsUMC[] arrUMCs = analysis.UMCData.marr_umcs;
-            int[] arrClusterMainMemberIndex = analysis.UMCData.mobjClusterData.marrClusterMainMemberIndex;
-            double[] arrClusterMemberIntensity = analysis.UMCData.mobjClusterData.marrClusterIntensity;
-            double[] arrClusterMemberNormalizedIntensity = analysis.UMCData.mobjClusterData.marrClusterIntensityNormalized;
-
-
-            if (analysis.PeakMatchingResults != null)
-            {
-                arrPeakMatchingTriplets = analysis.PeakMatchingResults.marrPeakMatchingTriplet;
-                arrPeakMatchingProteins = analysis.PeakMatchingResults.marrProteins;
-                arrPeakMatchingMassTags = analysis.PeakMatchingResults.marrMasstags;
-            }
-
-            ///  ////////////////////////////////////////////////////////////////////////////// 
-            /// AddMassTags to Row
-            ///     if it is peakmatched, and show mass tags is enabled, everything shows. 
-            ///  ////////////////////////////////////////////////////////////////////////////// 
-            if (analysis.PeakMatchedToMassTagDB)
-            {
-                if (arrPeakMatchingTriplets != null && 
-                    peakMatchNumber < arrPeakMatchingTriplets.Length && 
-                    arrPeakMatchingTriplets[peakMatchNumber].mintFeatureIndex == clusterNumber)
-                {
-                    ///
-                    /// So this peakmatchtriplet corresponds to the current cluster.                     
-                    ///                     
-                    clsPeakMatchingResults.clsPeakMatchingTriplet triplet = arrPeakMatchingTriplets[peakMatchNumber];
-                    clsMassTag massTag = arrPeakMatchingMassTags[triplet.mintMassTagIndex];
-                    clsProtein protein = arrPeakMatchingProteins[triplet.mintProteinIndex];
-
-                    data += string.Format("{0}{1}{0}{2}{0}{3}{0}{4}{0}{5}{0}{6}{0}{7}{0}{8}{0}{9}",
-                                            Delimeter,
-                                            massTag.mstrPeptide,
-                                            protein.mstrProteinName,
-                                            protein.mintRefID,
-                                            massTag.mintMassTagId,
-                                            massTag.mdblMonoMass,
-                                            massTag.mdblAvgGANET,
-                                            massTag.mdblHighXCorr,
-                                            massTag.mshortModCount,
-                                            massTag.mstrModification,
-                                            massTag.mfltAvgFCS1,
-                                            massTag.mfltAvgFCS2,
-                                            massTag.mfltAvgFCS3);
-
-                    if (analysis.UseSMART)
-                    {
-                        /// 
-                        /// See if a SMART score exists
-                        /// 
-                        List<classSMARTProbabilityResult> smartScores = null;
-                        smartScores = analysis.SMARTResults.GetResultFromUMCIndex(triplet.mintFeatureIndex);
-                        if (smartScores != null)
-                        {
-                            /// 
-                            /// Then pull out the SMART score that matches for this triplet Mass Tag
-                            /// 
-                            PNNLProteomics.SMART.classSMARTProbabilityResult finalResult = null;
-                            foreach (PNNLProteomics.SMART.classSMARTProbabilityResult score in smartScores)
-                            {
-                                if (score.MassTagID == massTag.Id)
-                                {
-                                    finalResult = score;
-                                    break;
-                                }
-                            }
-                            /// 
-                            /// If we have a final result, then we have a smart score for this MTID for the matched UMC.
-                            /// 
-                            if (finalResult != null)
-                            {
-                                data += Delimeter + finalResult.Score.ToString();
-                                data += Delimeter + finalResult.Specificity.ToString();  
-                            }
-                            else
-                            {
-                                /// Otherwise just write delimeters or blank
-                                data += Delimeter;
-                                data += Delimeter;
-                            }                            
-                        }
-                    }
-                    peakMatchNumber++;                    
-                }
-                else
-                {
-                    /// 
-                    /// No peak matching...do we write delimeters?
-                    /// 
-                }
-            }
-
-            /// /////////////////////////////////////////////////////////////////////////////////////////////
-            /// Write cluster data
-            /// /////////////////////////////////////////////////////////////////////////////////////////////
-            data += Delimeter + Convert.ToString(cluster.mdouble_mass);            
-            data += Delimeter + Convert.ToString(cluster.mdouble_mass_calibrated);
-            data += Delimeter + Convert.ToString(cluster.mdouble_net);
-            data += Delimeter + Convert.ToString(cluster.mdouble_aligned_net);
-
-            
-            /// 
-            /// Find the total number of datasets to save 
-            /// 
-            int N = analysis.FileNames.Length;
-
-            /// ////////////////////////////////////////////////////////////////////////////// 
-            /// Add the UMC data for each dataset.
-            /// //////////////////////////////////////////////////////////////////////////////                                 
-            for (int i = 0; i < N; i++)
-            {
-                int pt_index = clusterNumber * N + i;
-                int index = arrClusterMainMemberIndex[pt_index];
-                clsUMC umc = null;
-
-                /// ////////////////////////////////////////////////////////////////////////////// 
-                /// Find the UMC so we can grab data from it to show
-                /// ////////////////////////////////////////////////////////////////////////////// 
-                if (index != -1)
-                {
-                    umc = arrUMCs[index];
-                }
-
-                /// 
-                /// Check to make sure the UMC passes the filter.
-                /// 
-                if (umc != null && FilterUtil<clsUMC>.PassesFilters(umc, mlist_umcFilters))
-                {
-                    data += string.Format("{0}{1}{0}{2}{0}{3}{0}{4}{0}{5}{0}{6}{0}{7}{0}{8}{0}{9}",
-                                            Delimeter,                          // 0
-                                            umc.mdouble_mono_mass,              // 1
-                                            umc.mdouble_mono_mass_calibrated,   // 2
-                                            umc.mint_scan,                      // 3
-                                            umc.mint_scan_aligned,              // 4
-                                            umc.mint_umc_index,                 // 5
-                                            umc.DriftTime,                      // 6
-                                            umc.AbundanceSum,                   // 7
-                                            umc.AbundanceMax,                   // 8
-                                            umc.SpectralCount);                 // 9
-
-                    for (int j = 0; j < analysis.UMCData.HighestChargeState; j++)
-                    {
-                        if (umc != null)
-                        {
-                            data += Delimeter + umc.marray_chargeStatesAbundances[j].ToString();
-                        }
-                    }
-                }
-                else
-                {
-                    data += string.Format("{0}{0}{0}{0}{0}{0}{0}{0}{0}", Delimeter);
-                    /*
-                     * 1  2  3  4  5  6  7  8  9
-                     */
-
-                    string chargeData = "";
-                    for (int j = 0; j < analysis.UMCData.HighestChargeState; j++)
-                    {
-                        chargeData = Delimeter + chargeData;
-                    }
-                    data += chargeData;
-                }
-            }
-            writer.WriteLine(data);  
-        }
-        /// <summary>
-        /// Writes blank cluster data
-        /// </summary>
-        /// <param name="writer"></param>
-        private void WriteBlankCluster(TextWriter writer)
-        {
-            /// 
-            /// Writes a blank cluster
-            /// 
-            //TODO: Implement 
-            int x = 9;
-        }
-        #endregion
-
+        
         #region Writing Analysis Methods
         /// <summary>
         /// Writes the analysis object to the file provided.
@@ -456,27 +251,252 @@ namespace MultiAlignWin.IO
                 WriteHeader(writer, analysis);                
                 int num_clusters            = analysis.UMCData.mobjClusterData.NumClusters;                                                                               
                 int clusterNum              = 0;
-                int currentPeakMatchNum     = 0;                                
+                int currentPeakMatchNum     = 0;
+
+                /// 
+                /// Cluster mapping arrays 
+                ///  
+                int[]    arrClusterMainMemberIndex = analysis.UMCData.mobjClusterData.marrClusterMainMemberIndex;
+                double[] arrClusterMemberIntensity = analysis.UMCData.mobjClusterData.marrClusterIntensity;
+                double[] arrClusterMemberNormalizedIntensity = analysis.UMCData.mobjClusterData.marrClusterIntensityNormalized;
+
+
+                /// 
+                /// Peak matching mapping arrays 
+                /// 
+                clsPeakMatchingResults.clsPeakMatchingTriplet[] arrPeakMatchingTriplets = null;
+                clsProtein[] arrPeakMatchingProteins = null;
+                clsMassTag[] arrPeakMatchingMassTags = null;
+
+                if (analysis.PeakMatchingResults != null)
+                {
+                    arrPeakMatchingTriplets = analysis.PeakMatchingResults.marrPeakMatchingTriplet;
+                    arrPeakMatchingProteins = analysis.PeakMatchingResults.marrProteins;
+                    arrPeakMatchingMassTags = analysis.PeakMatchingResults.marrMasstags;
+                }
+
+
+                int lastClusterNumber = -1;
 
                 /// ////////////////////////////////////////////////////////////////////////////// 
                 /// Now we add the data 
+                ///     We dont make this clustering writing into a separate method because 
+                ///     we have to account for clusters matching to more than one tag.
                 /// ////////////////////////////////////////////////////////////////////////////// 
                 while (clusterNum < num_clusters)
                 {
+
+                    bool clusterDidNotPeakMatch = false;
+
                     clsCluster cluster = analysis.UMCData.mobjClusterData.GetCluster(clusterNum);
 
                     /// 
                     /// Check to make sure the cluster passes the filter.
                     /// 
-                    if (!FilterUtil<clsCluster>.PassesFilters(cluster, mlist_clusterFilters))
+                    if (FilterUtil<clsCluster>.PassesFilters(cluster, mlist_clusterFilters) == false)
                     {
-                        WriteBlankCluster(writer);                     
+                        clusterNum++;
                     }
                     else
-                    {
-                        WriteCluster(writer, analysis, clusterNum, ref currentPeakMatchNum);
-                    }
-                    clusterNum++;                     
+                    {                        
+                        int id              = clusterNum + 1;
+                        string data         = id.ToString();
+
+                        /// 
+                        /// The second column is the number of members stored in the cluster.
+                        /// 
+                        data += Delimeter + cluster.mshort_num_dataset_members.ToString();
+
+                        clsUMC[] arrUMCs = analysis.UMCData.marr_umcs;
+                        
+                        string massTagData = "";
+
+                        ///  ////////////////////////////////////////////////////////////////////////////// 
+                        /// AddMassTags to Row
+                        ///     if it is peakmatched, and show mass tags is enabled, everything shows. 
+                        ///  ////////////////////////////////////////////////////////////////////////////// 
+                        if (analysis.PeakMatchedToMassTagDB)
+                        {
+                            if (arrPeakMatchingTriplets != null &&
+                                currentPeakMatchNum < arrPeakMatchingTriplets.Length &&
+                                arrPeakMatchingTriplets[currentPeakMatchNum].mintFeatureIndex == clusterNum)
+                            {
+                                ///
+                                /// So this peakmatchtriplet corresponds to the current cluster.                     
+                                ///                     
+                                clsPeakMatchingResults.clsPeakMatchingTriplet triplet = arrPeakMatchingTriplets[currentPeakMatchNum];
+                                clsMassTag massTag = arrPeakMatchingMassTags[triplet.mintMassTagIndex];
+                                clsProtein protein = arrPeakMatchingProteins[triplet.mintProteinIndex];
+
+                                massTagData += string.Format("{0}{1}{0}{2}{0}{3}{0}{4}{0}{5}{0}{6}{0}{7}{0}{8}{0}{9}{0}{10}{0}{11}{0}{12}",
+                                                        Delimeter,
+                                                        massTag.mstrPeptide,
+                                                        protein.mstrProteinName,
+
+                                                        protein.mintRefID,
+                                                        massTag.mintMassTagId,
+                                                        massTag.mdblMonoMass,
+
+                                                        massTag.mdblAvgGANET,
+                                                        massTag.mdblHighXCorr,
+                                                        massTag.mshortModCount,
+
+                                                        massTag.mstrModification,
+                                                        massTag.mfltAvgFCS1,
+                                                        massTag.mfltAvgFCS2,
+
+                                                        massTag.mfltAvgFCS3);
+
+                                if (analysis.UseSMART)
+                                {
+                                    /// 
+                                    /// See if a SMART score exists
+                                    /// 
+                                    List<classSMARTProbabilityResult> smartScores = null;
+                                    smartScores = analysis.SMARTResults.GetResultFromUMCIndex(triplet.mintFeatureIndex);
+                                    if (smartScores != null)
+                                    {
+                                        /// 
+                                        /// Then pull out the SMART score that matches for this triplet Mass Tag
+                                        /// 
+                                        PNNLProteomics.SMART.classSMARTProbabilityResult finalResult = null;
+                                        foreach (PNNLProteomics.SMART.classSMARTProbabilityResult score in smartScores)
+                                        {
+                                            if (score.MassTagID == massTag.Id)
+                                            {
+                                                finalResult = score;
+                                                break;
+                                            }
+                                        }
+                                        /// 
+                                        /// If we have a final result, then we have a smart score for this MTID for the matched UMC.
+                                        /// 
+                                        if (finalResult != null)
+                                        {
+                                            massTagData += Delimeter + finalResult.Score.ToString();
+                                            massTagData += Delimeter + finalResult.Specificity.ToString();
+                                        }
+                                        else
+                                        {
+                                            /// Otherwise just write delimeters or blank
+                                            massTagData += Delimeter;
+                                            massTagData += Delimeter;
+                                        }
+                                    }
+                                }
+                                currentPeakMatchNum++;
+                                clusterDidNotPeakMatch = false;
+                                lastClusterNumber = clusterNum;
+                            }
+                            else
+                            {
+                                massTagData += string.Format("{0}{0}{0}{0}{0}{0}{0}{0}{0}{0}{0}{0}",
+                                                       Delimeter
+                                                       );
+
+                                if (analysis.UseSMART)
+                                {
+                                    massTagData += Delimeter;
+                                    massTagData += Delimeter;
+                                }
+
+                                clusterDidNotPeakMatch = true;
+
+                                if (clusterNum == lastClusterNumber)
+                                {
+                                    clusterNum++;
+                                    continue;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            clusterDidNotPeakMatch = true;
+                        }
+
+                        /// /////////////////////////////////////////////////////////////////////////////////////////////
+                        /// Write cluster data
+                        /// /////////////////////////////////////////////////////////////////////////////////////////////
+                        data += Delimeter + Convert.ToString(cluster.mdouble_mass);            
+                        data += Delimeter + Convert.ToString(cluster.mdouble_mass_calibrated);
+                        data += Delimeter + Convert.ToString(cluster.mdouble_net);
+                        data += Delimeter + Convert.ToString(cluster.mdouble_aligned_net);
+
+                        data += massTagData;
+                        
+                        /// 
+                        /// Find the total number of datasets to save 
+                        /// 
+                        int N = analysis.FileNames.Length;
+
+                        /// ////////////////////////////////////////////////////////////////////////////// 
+                        /// Add the UMC data for each dataset.
+                        /// //////////////////////////////////////////////////////////////////////////////                                 
+                        for (int i = 0; i < N; i++)
+                        {
+                            int pt_index = clusterNum * N + i;
+                            int index = arrClusterMainMemberIndex[pt_index];
+                            clsUMC umc = null;
+
+                            /// ////////////////////////////////////////////////////////////////////////////// 
+                            /// Find the UMC so we can grab data from it to show
+                            /// ////////////////////////////////////////////////////////////////////////////// 
+                            if (index != -1)
+                            {
+                                umc = arrUMCs[index];
+                            }
+
+                            /// 
+                            /// Check to make sure the UMC passes the filter.
+                            /// 
+                            if (umc != null && FilterUtil<clsUMC>.PassesFilters(umc, mlist_umcFilters))
+                            {
+                                data += string.Format("{0}{1}{0}{2}{0}{3}{0}{4}{0}{5}{0}{6}{0}{7}{0}{8}{0}{9}",
+                                                        Delimeter,                          // 0
+                                                        umc.mdouble_mono_mass,              // 1
+                                                        umc.mdouble_mono_mass_calibrated,   // 2
+                                                        umc.mint_scan,                      // 3
+                                                        umc.mint_scan_aligned,              // 4
+                                                        umc.mint_umc_index,                 // 5
+                                                        umc.DriftTime,                      // 6
+                                                        umc.AbundanceSum,                   // 7
+                                                        umc.AbundanceMax,                   // 8
+                                                        umc.SpectralCount);                 // 9
+
+                                for (int j = 0; j < analysis.UMCData.HighestChargeState; j++)
+                                {
+                                    if (umc != null)
+                                    {
+                                        data += Delimeter + umc.marray_chargeStatesAbundances[j].ToString();
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                data += string.Format("{0}{0}{0}{0}{0}{0}{0}{0}{0}", Delimeter);
+                                /*
+                                 * 1  2  3  4  5  6  7  8  9
+                                 */
+
+                                string chargeData = "";
+                                for (int j = 0; j < analysis.UMCData.HighestChargeState; j++)
+                                {
+                                    chargeData = Delimeter + chargeData;
+                                }
+                                data += chargeData;
+                            }
+                        }
+
+                        /// 
+                        /// Only increment if we dont have more peak matching results...
+                        /// 
+                        if (clusterDidNotPeakMatch == true)
+                        {
+                            clusterNum++;
+                        }
+
+                        writer.WriteLine(data);  
+                    }                    
                 }
             }                     
         }

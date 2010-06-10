@@ -567,9 +567,11 @@ namespace MultiAlignWin
             // 
             // frmAnalysisWizard
             // 
+           // this.AcceptButton = this.nextButton;
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-            this.ClientSize = new System.Drawing.Size(708, 584);
+            this.ClientSize = new System.Drawing.Size(687, 551);
             this.Name = "frmAnalysisWizard";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "MultiAlign Analysis Wizard";
             this.ResumeLayout(false);
 

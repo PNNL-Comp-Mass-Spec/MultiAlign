@@ -150,47 +150,43 @@ namespace MultiAlignWin
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="proteins"></param>
-        void  mobjClusterGrid_ProteinsMapped(object sender, Dictionary<string,List<string>> proteins)
+        private void  DisplayProteinMaps(Dictionary<string,List<string>> proteins)
         {
-
             mlistView_proteinPeptideTable.BeginUpdate();
             mtreeView_proteinViewer.BeginUpdate();
             mtreeView_proteinViewer.Nodes[0].Nodes.Clear();
             TreeNode rootNode = mtreeView_proteinViewer.Nodes[0];
-
             
+            /// 
+            /// Iterate through the number of proteins to map out their peptides.
+            /// 
+            foreach (string proteinName in proteins.Keys)
             {
+
                 /// 
-                /// Iterate through the number of proteins to map out their peptides.
+                /// Make the table entry for how many peptides roll-up to the given protein.
                 /// 
-                foreach (string proteinName in proteins.Keys)
+                ListViewItem proteinListItem = new ListViewItem();
+                proteinListItem.Text = proteinName;
+                ListViewItem.ListViewSubItem numPeptidesItem = new ListViewItem.ListViewSubItem();
+                numPeptidesItem.Text = proteins[proteinName].Count.ToString();
+                proteinListItem.SubItems.Add(numPeptidesItem);
+                mlistView_proteinPeptideTable.Items.Add(proteinListItem);
+
+                /// 
+                /// Display map from protein to peptide
+                /// 
+                TreeNode proteinNode = new TreeNode();
+                proteinNode.Text = proteinName;
+                foreach (string peptideName in proteins[proteinName])
                 {
-
-                    /// 
-                    /// Make the table entry for how many peptides roll-up to the given protein.
-                    /// 
-                    ListViewItem proteinListItem = new ListViewItem();
-                    proteinListItem.Text = proteinName;
-                    ListViewItem.ListViewSubItem numPeptidesItem = new ListViewItem.ListViewSubItem();
-                    numPeptidesItem.Text = proteins[proteinName].Count.ToString();
-                    proteinListItem.SubItems.Add(numPeptidesItem);
-                    mlistView_proteinPeptideTable.Items.Add(proteinListItem);
-
-                    /// 
-                    /// Display map from protein to peptide
-                    /// 
-                    TreeNode proteinNode = new TreeNode();
-                    proteinNode.Text = proteinName;
-                    foreach (string peptideName in proteins[proteinName])
-                    {
-                        TreeNode peptideNode = new TreeNode();
-                        peptideNode.Text = peptideName;
-                        proteinNode.Nodes.Add(peptideNode);
-                    }
-                    proteinNode.Expand();
-                    proteinNode.Name = proteinName;                    
-                    rootNode.Nodes.Add(proteinNode);
+                    TreeNode peptideNode = new TreeNode();
+                    peptideNode.Text = peptideName;
+                    proteinNode.Nodes.Add(peptideNode);
                 }
+                proteinNode.Expand();
+                proteinNode.Name = proteinName;                    
+                rootNode.Nodes.Add(proteinNode);
             }
             rootNode.ExpandAll();
             mtreeView_proteinViewer.Sort();
@@ -215,16 +211,33 @@ namespace MultiAlignWin
 		{
 			set
 			{
+                /// 
+                /// Build factor trees and tables...
+                /// 
 				mobjAnalysis              = value ; 
 				mobjClusterChart.Analysis = mobjAnalysis ;
 				mobjAnalysis.BuildFactorTree();
-                
+
+                /// 
+                /// Display the protein maps if any matched
+                /// 
+                ProteinMapExtractor extractor = new ProteinMapExtractor();
+                Dictionary<string, List<string>> proteins = extractor.ExtractProteinMaps(mobjAnalysis);
+                DisplayProteinMaps(proteins);
+
                 /// 
                 /// Create the cluster histogram
                 /// 
                 CreateClusterHistogram();
+
+                /// 
+                /// Create the charge histogram 
+                /// 
                 CreateChargeHistogram();
 
+                /// 
+                /// Finally update all the list views...
+                /// 
                 UpdateListViews();
             }
 		}
