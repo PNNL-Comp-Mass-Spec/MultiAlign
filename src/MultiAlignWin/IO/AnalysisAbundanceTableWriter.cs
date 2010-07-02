@@ -16,11 +16,8 @@ using PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate;
 using PNNLProteomics.MultiAlign.Hibernate.Domain;
 
 namespace MultiAlignWin.IO
-{   
-    /// <summary>
-    /// Class that writes the MA analysis data to a delimited text file.
-    /// </summary>
-    public class AnalysisTableWriter: IAnalysisWriter
+{
+    public class AnalysisAbundanceTableWriter: IAnalysisWriter
     {
         #region Members and constants
         /// <summary>
@@ -33,7 +30,7 @@ namespace MultiAlignWin.IO
 		private const string CONST_umc_rep_net_aligned_col          = "Aligned NET" ;
         private const string CONST_umc_index_col                    = "Row ID";
         private const string CONST_umc_rep_size_col                 = "Cluster Size";
-        private const string CONST_umc_spectral_count               = "MS Feature Count"; 
+        private const string CONST_umc_spectral_count               = "Spectral Count"; 
 		private const string CONST_peptide_col                      = "Peptide" ; 
 		private const string CONST_mass_tag_id_col                  = "Mass Tags" ;
         private const string CONST_mass_tag_net_col                 = "Mass Tag NET";
@@ -50,12 +47,9 @@ namespace MultiAlignWin.IO
 		private const string CONST_mass_colum                       = "Mass" ; 
 		private const string CONST_calibrated_mass_colum            = "Calibrated_mass" ; 
 		private const string CONST_scan_colum                       = "Scan" ;
-        private const string CONST_net_colum                        = "NET";
+        private const string CONST_aligned_scan_colum               = "Aligned Scan";
         private const string CONST_umc_index_column                 = "UMC index";
         private const string CONST_driftTime_column                 = "Drift Time";
-        private const string CONST_abundance_sum                    = "Abundance Sum";
-        private const string CONST_abundance_max                    = "Abundance Max";
-
         
         /// <summary>
         /// Delimeter used between columns.
@@ -69,19 +63,14 @@ namespace MultiAlignWin.IO
         /// List of filters related to UMC Clusters
         /// </summary>
         private List<IFilter<clsCluster>> mlist_clusterFilters;
-        /// <summary>
-        /// Options object for selecting what data columns to output.
-        /// </summary>
-        private TableWriterColumnOptions mobj_writerOptions;
         #endregion
 
         /// <summary>
         /// Default constructor.
         /// </summary>
-        public AnalysisTableWriter(TableWriterColumnOptions options)
+        public AnalysisAbundanceTableWriter()
         {
             Clear();
-            mobj_writerOptions = options;
         }
 
         #region Properties
@@ -149,7 +138,8 @@ namespace MultiAlignWin.IO
             
             if (mlist_clusterFilters == null)
                 mlist_clusterFilters = new List<IFilter<clsCluster>>();
-            mlist_clusterFilters.Clear();            
+            mlist_clusterFilters.Clear();
+
         }
         #endregion
 
@@ -166,9 +156,7 @@ namespace MultiAlignWin.IO
             data += Delimeter + CONST_umc_rep_mass_col;
             data += Delimeter + CONST_umc_rep_mass_calib_col;
             data += Delimeter + CONST_umc_rep_net_col;
-
-            if (analysis.PeakMatchedToMassTagDB == true)
-                data += Delimeter + CONST_umc_rep_net_aligned_col;
+            data += Delimeter + CONST_umc_rep_net_aligned_col;
 
             if (analysis.PeakMatchedToMassTagDB == true)
             {
@@ -214,43 +202,15 @@ namespace MultiAlignWin.IO
         /// <param name="writer"></param>
         /// <param name="datasetID"></param>
         private void WriteDatasetHeader(TextWriter writer, clsMultiAlignAnalysis analysis, int datasetID)
-        {            
+        {
+            
             string file_name = analysis.UMCData.DatasetName[datasetID];
             int index        = file_name.LastIndexOf("\\");
             string col_name  = file_name.Substring(index + 1);
             string data      = "";
 
-            if (mobj_writerOptions.Mass) 
-                data += Delimeter + CONST_mass_colum + "_" + col_name;
-
-            if (mobj_writerOptions.MassCalibrated)
-                data += Delimeter + CONST_calibrated_mass_colum + "_" + col_name;
-
-            if (mobj_writerOptions.Scan)
-                data += Delimeter + CONST_scan_colum + "_" + col_name;
-            if (mobj_writerOptions.NET)
-                data += Delimeter + CONST_net_colum + "_" + col_name;
-            if (mobj_writerOptions.UMCIndex)
-                data += Delimeter + CONST_umc_index_column + "_" + col_name;
-            if (mobj_writerOptions.DriftTime)
-                data += Delimeter + CONST_driftTime_column + "_" + col_name;
-            if (mobj_writerOptions.AbundanceSum)
-                data += Delimeter + "Abundance-Sum-" + col_name;
-            if (mobj_writerOptions.AbundanceMax)
-                data += Delimeter + "Abundance-Max-" + col_name;
-            if (mobj_writerOptions.MSFeatureCount)
-                data += Delimeter + CONST_umc_spectral_count + "_" + col_name;
-
-            if (mobj_writerOptions.CMCAbundance)
-            {
-                for (int j = 0; j < analysis.UMCData.HighestChargeState; j++)
-                {
-                    int chargeState = j + 1;
-                    data += Delimeter + string.Format("{0}_CS_{1}_{2}", CONST_CHARGE_ABUNDANCE_START,
-                                                                        chargeState,
-                                                                        col_name);
-                }
-            }
+            data += Delimeter + "Abundance-Sum-" + col_name;
+            data += Delimeter + "Abundance-Max-" + col_name;
             writer.Write(data);
         }
         #endregion
@@ -353,15 +313,19 @@ namespace MultiAlignWin.IO
                                                         Delimeter,
                                                         massTag.mstrPeptide,
                                                         protein.mstrProteinName,
+
                                                         protein.mintRefID,
                                                         massTag.mintMassTagId,
                                                         massTag.mdblMonoMass,
+
                                                         massTag.mdblAvgGANET,
                                                         massTag.mdblHighXCorr,
                                                         massTag.mshortModCount,
+
                                                         massTag.mstrModification,
                                                         massTag.mfltAvgFCS1,
                                                         massTag.mfltAvgFCS2,
+
                                                         massTag.mfltAvgFCS3);
 
                                 if (analysis.UseSMART)
@@ -419,7 +383,6 @@ namespace MultiAlignWin.IO
 
                                 clusterDidNotPeakMatch = true;
 
-                                /// There was only one match...so go get the next cluster...
                                 if (clusterNum == lastClusterNumber)
                                 {
                                     clusterNum++;
@@ -438,9 +401,7 @@ namespace MultiAlignWin.IO
                         data += Delimeter + Convert.ToString(cluster.mdouble_mass);            
                         data += Delimeter + Convert.ToString(cluster.mdouble_mass_calibrated);
                         data += Delimeter + Convert.ToString(cluster.mdouble_net);
-
-                        if (analysis.PeakMatchedToMassTagDB == true) 
-                            data += Delimeter + Convert.ToString(cluster.mdouble_aligned_net);
+                        data += Delimeter + Convert.ToString(cluster.mdouble_aligned_net);
 
                         data += massTagData;
                         
@@ -470,65 +431,15 @@ namespace MultiAlignWin.IO
                             /// Check to make sure the UMC passes the filter.
                             /// 
                             if (umc != null && FilterUtil<clsUMC>.PassesFilters(umc, mlist_umcFilters))
-                            {                      
-                                if (mobj_writerOptions.Mass)
-                                    data += Delimeter + umc.mdouble_mono_mass.ToString();              // 1
-                                if (mobj_writerOptions.MassCalibrated)
-                                    data += Delimeter + umc.mdouble_mono_mass_calibrated.ToString();   // 2
-                                if (mobj_writerOptions.Scan)
-                                    data += Delimeter + umc.mint_scan.ToString();                      // 3
-                                if (mobj_writerOptions.NET)
-                                    data += Delimeter + umc.Net.ToString();                           // 4
-                                if (mobj_writerOptions.UMCIndex)
-                                    data += Delimeter + umc.mint_umc_index.ToString();                 // 5
-                                if (mobj_writerOptions.DriftTime)
-                                    data += Delimeter + umc.DriftTime.ToString();                      // 6
-                                if (mobj_writerOptions.AbundanceSum)
-                                    data += Delimeter + umc.AbundanceSum.ToString();                   // 7
-                                if (mobj_writerOptions.AbundanceMax)
-                                    data += Delimeter + umc.AbundanceMax.ToString();                   // 8
-                                if (mobj_writerOptions.MSFeatureCount)
-                                    data += Delimeter + umc.SpectralCount.ToString();                  // 9
-
-                                if (mobj_writerOptions.CMCAbundance)
-                                {
-                                    for (int j = 0; j < analysis.UMCData.HighestChargeState; j++)
-                                    {
-                                        data += Delimeter + umc.marray_chargeStatesAbundances[j].ToString();                                     
-                                    }
-                                }
+                            {
+                                data += string.Format("{0}{1}{0}{2}",
+                                                        Delimeter,                          // 0
+                                                        umc.AbundanceSum,                   // 1
+                                                        umc.AbundanceMax);                  // 2                                
                             }
                             else
                             {
-                                /// 
-                                /// Make sure we have a corresponding number of columns depending on what is selected to be output
-                                /// 
-                                if (mobj_writerOptions.Mass)
-                                    data += Delimeter;
-                                if (mobj_writerOptions.MassCalibrated)
-                                    data += Delimeter;
-                                if (mobj_writerOptions.Scan)
-                                    data += Delimeter;
-                                if (mobj_writerOptions.NET)
-                                    data += Delimeter;
-                                if (mobj_writerOptions.UMCIndex)
-                                    data += Delimeter;
-                                if (mobj_writerOptions.DriftTime)
-                                    data += Delimeter;
-                                if (mobj_writerOptions.AbundanceSum)
-                                    data += Delimeter;
-                                if (mobj_writerOptions.AbundanceMax)
-                                    data += Delimeter;
-                                if (mobj_writerOptions.MSFeatureCount)
-                                    data += Delimeter;
-
-                                if (mobj_writerOptions.CMCAbundance)
-                                {
-                                    string chargeData = "";
-                                    for (int j = 0; j < analysis.UMCData.HighestChargeState; j++)                                    
-                                        chargeData = Delimeter + chargeData;                                    
-                                    data += chargeData;
-                                }                                                                
+                                data += string.Format("{0}{0}", Delimeter);                                
                             }
                         }
 
@@ -539,17 +450,11 @@ namespace MultiAlignWin.IO
                         {
                             clusterNum++;
                         }
-
                         writer.WriteLine(data);  
                     }                    
                 }
             }                     
         }
         #endregion
-    }
-
-    public interface IAnalysisWriter
-    {
-        void WriteAnalysis(string path, clsMultiAlignAnalysis analysis);
     }
 }
