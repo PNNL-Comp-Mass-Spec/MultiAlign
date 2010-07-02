@@ -27,6 +27,7 @@ namespace MultiAlignWin
         private NumericUpDown mnum_driftTimeTolerance;
         private Label mlabel_driftTimeTolerance;
         private CheckBox mcheckBox_ignoreChargeStates;
+        private CheckBox mcheckbox_alignToDatabase;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
@@ -80,6 +81,7 @@ namespace MultiAlignWin
             this.mnum_driftTimeTolerance = new System.Windows.Forms.NumericUpDown();
             this.mlabel_driftTimeTolerance = new System.Windows.Forms.Label();
             this.mcheckBox_ignoreChargeStates = new System.Windows.Forms.CheckBox();
+            this.mcheckbox_alignToDatabase = new System.Windows.Forms.CheckBox();
             this.groupBoxIntensity.SuspendLayout();
             this.groupBoxClassRep.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.mnum_MassTol)).BeginInit();
@@ -109,7 +111,7 @@ namespace MultiAlignWin
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBoxIntensity.Controls.Add(this.radioButtonSumData);
             this.groupBoxIntensity.Controls.Add(this.radioButtonMaxData);
-            this.groupBoxIntensity.Location = new System.Drawing.Point(12, 146);
+            this.groupBoxIntensity.Location = new System.Drawing.Point(12, 164);
             this.groupBoxIntensity.Name = "groupBoxIntensity";
             this.groupBoxIntensity.Size = new System.Drawing.Size(327, 96);
             this.groupBoxIntensity.TabIndex = 4;
@@ -168,7 +170,7 @@ namespace MultiAlignWin
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBoxClassRep.Controls.Add(this.radioButtonMedian);
             this.groupBoxClassRep.Controls.Add(this.radioButtonMean);
-            this.groupBoxClassRep.Location = new System.Drawing.Point(12, 248);
+            this.groupBoxClassRep.Location = new System.Drawing.Point(12, 266);
             this.groupBoxClassRep.Name = "groupBoxClassRep";
             this.groupBoxClassRep.Size = new System.Drawing.Size(327, 96);
             this.groupBoxClassRep.TabIndex = 7;
@@ -286,11 +288,24 @@ namespace MultiAlignWin
             this.mcheckBox_ignoreChargeStates.Text = "Ignore Charge States (allows clusters with different charge states)";
             this.mcheckBox_ignoreChargeStates.UseVisualStyleBackColor = true;
             // 
+            // mcheckbox_alignToDatabase
+            // 
+            this.mcheckbox_alignToDatabase.AutoSize = true;
+            this.mcheckbox_alignToDatabase.Checked = true;
+            this.mcheckbox_alignToDatabase.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.mcheckbox_alignToDatabase.Location = new System.Drawing.Point(12, 126);
+            this.mcheckbox_alignToDatabase.Name = "mcheckbox_alignToDatabase";
+            this.mcheckbox_alignToDatabase.Size = new System.Drawing.Size(154, 17);
+            this.mcheckbox_alignToDatabase.TabIndex = 14;
+            this.mcheckbox_alignToDatabase.Text = "Align Clusters To Database";
+            this.mcheckbox_alignToDatabase.UseVisualStyleBackColor = true;
+            // 
             // frmClusterParameters
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(351, 420);
+            this.Controls.Add(this.mcheckbox_alignToDatabase);
             this.Controls.Add(this.mcheckBox_ignoreChargeStates);
             this.Controls.Add(this.mnum_driftTimeTolerance);
             this.Controls.Add(this.mlabel_driftTimeTolerance);
@@ -332,6 +347,7 @@ namespace MultiAlignWin
             Properties.Settings.Default.UserClusterOptionsUseMeanRepresentation = (ClusterRepresentativeType == MultiAlignEngine.Clustering.enmClusterRepresentativeType.MEAN);
             Properties.Settings.Default.UserClusterOptionsDriftTimeTolerance    = DriftTimeTolerance;
             Properties.Settings.Default.UserClusterOptionsIgnoreChargeStates    = IgnoreChargeStates;
+            Properties.Settings.Default.UserClusterOptionsAlignToDatabase = AlignToDatabase;
             Properties.Settings.Default.Save();
         }
 
@@ -398,6 +414,20 @@ namespace MultiAlignWin
 			}
 		}
         /// <summary>
+        /// Gets or sets whether to align the clusters to the database or not.
+        /// </summary>
+        public bool AlignToDatabase
+        {
+            get
+            {
+                return mcheckbox_alignToDatabase.Checked;
+            }
+            set
+            {
+                mcheckbox_alignToDatabase.Checked = value;
+            }
+        }
+        /// <summary>
         /// Gets or sets the drift time tolerance.
         /// </summary>
         public double DriftTimeTolerance
@@ -462,6 +492,7 @@ namespace MultiAlignWin
 				options.ClusterRepresentativeType = ClusterRepresentativeType ;
                 options.DriftTimeTolerance = DriftTimeTolerance;
                 options.IgnoreCharge = IgnoreChargeStates;
+                options.AlignClusters = AlignToDatabase;
 				return options ;
 			}
 			set
@@ -473,6 +504,7 @@ namespace MultiAlignWin
 				ClusterRepresentativeType = options.ClusterRepresentativeType ;
                 DriftTimeTolerance = options.DriftTimeTolerance;
                 IgnoreChargeStates = options.IgnoreCharge;
+                AlignToDatabase = options.AlignClusters;
 			}
 		}
 	}

@@ -11,6 +11,8 @@ namespace MultiAlignEngine
 			mdouble_driftError	= -1;
 			mdouble_netError	= -1;
 			mdouble_massError	= -1;
+			mdouble_medianScoreValue  = -1;
+			mdouble_meanScoreValue    = -1;
 		}
 
 		clsCluster::~clsCluster(void)

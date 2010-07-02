@@ -139,7 +139,8 @@ namespace MultiAlignEngine
 		}
 
 		void LCMSWarp::GetFeatureCalibratedMassesAndAlignedNETs(std::vector <int> &umcIndices, std::vector<double> &umcCalibratedMasses, 
-			std::vector<double> &umcAlignedNETS)
+			std::vector<double> &umcAlignedNETS,
+			std::vector<double> &vectAlignedDriftTimes)
 		{
 			int numFeatures = (int) mvect_features.size(); 
 			for (int featureNum = 0; featureNum < numFeatures; featureNum++)
@@ -148,10 +149,16 @@ namespace MultiAlignEngine
 				umcIndices.push_back(mtFeature.mint_id); 
 				umcCalibratedMasses.push_back(mtFeature.mdouble_mono_mass_calibrated); 
 				umcAlignedNETS.push_back(mtFeature.mdouble_aligned_net); 
+				vectAlignedDriftTimes.push_back(mtFeature.mdouble_driftTime);				
 			}
 		}
-		void LCMSWarp::GetFeatureCalibratedMassesAndAlignedNETs(std::vector <int> &umcIndices, std::vector<double> &umcCalibratedMasses, 
-			std::vector<double> &umcAlignedNETS, std::vector<int> &umcAlignedScans, int minScan, int maxScan)
+		void LCMSWarp::GetFeatureCalibratedMassesAndAlignedNETs(std::vector <int> &umcIndices, 
+																std::vector<double> &umcCalibratedMasses, 
+																std::vector<double> &umcAlignedNETS,
+																std::vector<int> &umcAlignedScans, 
+																std::vector<double> &umcDriftTimes,
+																int minScan,
+																int maxScan)
 		{
 			int numFeatures = (int) mvect_features.size(); 
 			for (int featureNum = 0; featureNum < numFeatures; featureNum++)
@@ -161,6 +168,7 @@ namespace MultiAlignEngine
 				umcCalibratedMasses.push_back(mtFeature.mdouble_mono_mass_calibrated); 
 				umcAlignedNETS.push_back(mtFeature.mdouble_aligned_net); 
 				umcAlignedScans.push_back(minScan + (int)(mtFeature.mdouble_aligned_net * (maxScan - minScan))); 
+				umcDriftTimes.push_back(mtFeature.mdouble_driftTime);
 			}
 		}
 

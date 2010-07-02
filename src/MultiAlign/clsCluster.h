@@ -7,20 +7,22 @@ namespace MultiAlignEngine
 		public __gc class clsCluster
 		{
 		public:
-			int mint_cluster_index;
+			int    mint_cluster_index;
 			double mdouble_mass; 
 			double mdouble_mass_calibrated; 
-			int mint_scan; 
+			int    mint_scan; 
 			double mdouble_net; 
 			double mdouble_aligned_net; 
-			short mshort_charge; 
-			short mshort_num_dataset_members; 
+			short  mshort_charge; 
+			short  mshort_num_dataset_members; 
 			double mdouble_driftTime;
 
 			double mdouble_netError	;
 			double mdouble_massError;
 			double mdouble_driftError;
-
+			double mdouble_medianScoreValue;
+			double mdouble_meanScoreValue;
+			
 			clsCluster(void);
 			~clsCluster(void);
 
@@ -31,6 +33,23 @@ namespace MultiAlignEngine
 
 			__property void set_Id(int value){
 				mint_cluster_index = value;
+			}
+			
+			__property double get_MeanScore()
+			{
+				return mdouble_meanScoreValue;
+			}
+
+			__property void set_MeanScore(double value){
+				mdouble_meanScoreValue = value;
+			}
+			__property double get_MedianScore()
+			{
+				return mdouble_medianScoreValue;
+			}
+
+			__property void set_MedianScore(double value){
+				mdouble_medianScoreValue = value;
 			}
 
 			__property double get_Mass()

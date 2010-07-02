@@ -34,7 +34,7 @@ namespace PNNLControls.Drawing.Charting
                 float y = GetScreenPixelY(point.y);
                 float width = GetScreenPixelX(point.x + mfloat_binSize);
                 
-                g.FillRectangle(new SolidBrush(Color.Red), x, y, width - x, baseY -  y); 
+                g.FillRectangle(new SolidBrush(data.PlotParams.Coloring.Colors[0]), x, y, width - x, baseY -  y); 
                 g.DrawRectangle(new Pen(new SolidBrush(Color.Black)), x, y, width - x, baseY - y); 
             }
 		}

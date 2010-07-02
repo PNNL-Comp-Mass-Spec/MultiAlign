@@ -229,8 +229,8 @@ namespace MultiAlignWin
                 /// 
                 if (mobjAnalysis.UseSMART == true)
                 {
-                    table.Columns.Add("SMART Score");
-                    table.Columns.Add("SMART Specificity");                    
+                    table.Columns.Add("STAC Score");
+                    table.Columns.Add("STAC-UP Score");                    
                 }				
 			}
             

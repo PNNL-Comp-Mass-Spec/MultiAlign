@@ -74,10 +74,14 @@ namespace MultiAlignEngine
 				maxNET = (float) mdblMaxNET; 
 			}; 
 
-			void SetClusterCalibratedMassedAndNETS(std::vector<int> &clusterIndices, std::vector<double> &clusterCalibratedMasses, 
-				std::vector<double> &clusterAlignedNETS); 
+			void SetClusterCalibratedMassedAndNETS( std::vector<int> &clusterIndices, 
+													std::vector<double> &clusterCalibratedMasses, 
+													std::vector<double> &clusterAlignedNETS, 
+													std::vector<double> &clusterDriftTimes); 
+
 			[clsDataSummaryAttribute("Number of Clusters")]
 			__property int get_NumClusters() { return mintNumClusters; }; 
+
 			[clsDataSummaryAttribute("Intensities Normalized")]
 			__property bool get_IsDataNormalized() { return marrClusterIntensityNormalized != 0; }; 
 		};

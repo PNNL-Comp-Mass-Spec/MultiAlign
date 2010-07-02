@@ -47,22 +47,17 @@ namespace MultiAlignWin.UI
             this.tileVerticalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tileHorizontalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpMenu = new System.Windows.Forms.ToolStripMenuItem();
-            this.checkForUpgradesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reportABugOrFeatureToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();            
-            this.contentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.indexToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.searchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mainToolStrip = new System.Windows.Forms.ToolStrip();
             this.mtoolBtnPerformAnalysis = new System.Windows.Forms.ToolStripButton();
             this.mtoolStrBtnOpenAnalysis = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.helpToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
-            this.ToolTip = new System.Windows.Forms.ToolTip(this.components);            
+            this.ToolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.mainMenuStrip.SuspendLayout();
             this.mainToolStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
@@ -88,8 +83,9 @@ namespace MultiAlignWin.UI
             this.fileMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.performAnalysisToolStripMenuItem,
             this.loadAnalysisToolStripMenuItem,
-            this.createAnalysisParameterFileToolStripMenuItem,
             this.toolStripSeparator3,
+            this.createAnalysisParameterFileToolStripMenuItem,
+            this.toolStripSeparator1,
             this.exitToolStripMenuItem});
             this.fileMenu.ImageTransparentColor = System.Drawing.SystemColors.ActiveBorder;
             this.fileMenu.MergeIndex = 0;
@@ -122,7 +118,8 @@ namespace MultiAlignWin.UI
             // 
             // createAnalysisParameterFileToolStripMenuItem
             // 
-            this.createAnalysisParameterFileToolStripMenuItem.MergeIndex = 7;
+            this.createAnalysisParameterFileToolStripMenuItem.MergeAction = System.Windows.Forms.MergeAction.Insert;
+            this.createAnalysisParameterFileToolStripMenuItem.MergeIndex = 9;
             this.createAnalysisParameterFileToolStripMenuItem.Name = "createAnalysisParameterFileToolStripMenuItem";
             this.createAnalysisParameterFileToolStripMenuItem.Size = new System.Drawing.Size(249, 22);
             this.createAnalysisParameterFileToolStripMenuItem.Text = "Create Analysis Parameter File";
@@ -130,14 +127,15 @@ namespace MultiAlignWin.UI
             // 
             // toolStripSeparator3
             // 
-            this.toolStripSeparator3.MergeIndex = 20;
+            this.toolStripSeparator3.MergeIndex = 2;
             this.toolStripSeparator3.Name = "toolStripSeparator3";
             this.toolStripSeparator3.Size = new System.Drawing.Size(246, 6);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("exitToolStripMenuItem.Image")));
-            this.exitToolStripMenuItem.MergeIndex = 21;
+            this.exitToolStripMenuItem.MergeAction = System.Windows.Forms.MergeAction.Insert;
+            this.exitToolStripMenuItem.MergeIndex = 11;
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
             this.exitToolStripMenuItem.Size = new System.Drawing.Size(249, 22);
             this.exitToolStripMenuItem.Text = "E&xit";
@@ -218,12 +216,7 @@ namespace MultiAlignWin.UI
             // helpMenu
             // 
             this.helpMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.checkForUpgradesToolStripMenuItem,
             this.reportABugOrFeatureToolStripMenuItem,
-            this.toolStripSeparator6,
-            this.contentsToolStripMenuItem,
-            this.indexToolStripMenuItem,
-            this.searchToolStripMenuItem,
             this.toolStripSeparator8,
             this.aboutToolStripMenuItem});
             this.helpMenu.MergeIndex = 21;
@@ -231,50 +224,12 @@ namespace MultiAlignWin.UI
             this.helpMenu.Size = new System.Drawing.Size(40, 20);
             this.helpMenu.Text = "&Help";
             // 
-            // checkForUpgradesToolStripMenuItem
-            // 
-            this.checkForUpgradesToolStripMenuItem.Enabled = false;
-            this.checkForUpgradesToolStripMenuItem.Name = "checkForUpgradesToolStripMenuItem";
-            this.checkForUpgradesToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
-            this.checkForUpgradesToolStripMenuItem.Text = "Check for upgrades";
-            // 
             // reportABugOrFeatureToolStripMenuItem
             // 
             this.reportABugOrFeatureToolStripMenuItem.Name = "reportABugOrFeatureToolStripMenuItem";
             this.reportABugOrFeatureToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
             this.reportABugOrFeatureToolStripMenuItem.Text = "Report a bug or feature";
             this.reportABugOrFeatureToolStripMenuItem.Click += new System.EventHandler(this.reportABugOrFeatureToolStripMenuItem_Click);
-            // 
-            // toolStripSeparator6
-            // 
-            this.toolStripSeparator6.Name = "toolStripSeparator6";
-            this.toolStripSeparator6.Size = new System.Drawing.Size(197, 6);            
-            // 
-            // contentsToolStripMenuItem
-            // 
-            this.contentsToolStripMenuItem.Enabled = false;
-            this.contentsToolStripMenuItem.Name = "contentsToolStripMenuItem";
-            this.contentsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F1)));
-            this.contentsToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
-            this.contentsToolStripMenuItem.Text = "&Contents";
-            // 
-            // indexToolStripMenuItem
-            // 
-            this.indexToolStripMenuItem.Enabled = false;
-            this.indexToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("indexToolStripMenuItem.Image")));
-            this.indexToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Black;
-            this.indexToolStripMenuItem.Name = "indexToolStripMenuItem";
-            this.indexToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
-            this.indexToolStripMenuItem.Text = "&Index";
-            // 
-            // searchToolStripMenuItem
-            // 
-            this.searchToolStripMenuItem.Enabled = false;
-            this.searchToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("searchToolStripMenuItem.Image")));
-            this.searchToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Black;
-            this.searchToolStripMenuItem.Name = "searchToolStripMenuItem";
-            this.searchToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
-            this.searchToolStripMenuItem.Text = "&Search";
             // 
             // toolStripSeparator8
             // 
@@ -293,8 +248,7 @@ namespace MultiAlignWin.UI
             this.mainToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mtoolBtnPerformAnalysis,
             this.mtoolStrBtnOpenAnalysis,
-            this.toolStripSeparator2,
-            this.helpToolStripButton});
+            this.toolStripSeparator2});
             this.mainToolStrip.Location = new System.Drawing.Point(0, 24);
             this.mainToolStrip.Name = "mainToolStrip";
             this.mainToolStrip.Size = new System.Drawing.Size(1207, 25);
@@ -329,16 +283,6 @@ namespace MultiAlignWin.UI
             this.toolStripSeparator2.Name = "toolStripSeparator2";
             this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
             // 
-            // helpToolStripButton
-            // 
-            this.helpToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.helpToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("helpToolStripButton.Image")));
-            this.helpToolStripButton.ImageTransparentColor = System.Drawing.Color.Black;
-            this.helpToolStripButton.MergeIndex = 20;
-            this.helpToolStripButton.Name = "helpToolStripButton";
-            this.helpToolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.helpToolStripButton.Text = "Help";
-            // 
             // statusStrip
             // 
             this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -354,6 +298,13 @@ namespace MultiAlignWin.UI
             this.toolStripStatusLabel.Name = "toolStripStatusLabel";
             this.toolStripStatusLabel.Size = new System.Drawing.Size(48, 17);
             this.toolStripStatusLabel.Text = "Loading.";
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.MergeAction = System.Windows.Forms.MergeAction.Insert;
+            this.toolStripSeparator1.MergeIndex = 10;
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(246, 6);
             // 
             // frmMdiMain
             // 
@@ -406,17 +357,12 @@ namespace MultiAlignWin.UI
         private System.Windows.Forms.ToolStripMenuItem tileVerticalToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem arrangeIconsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem helpMenu;
-        private System.Windows.Forms.ToolStripMenuItem contentsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem indexToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem searchToolStripMenuItem;
-        private System.Windows.Forms.ToolStripButton helpToolStripButton;
         private System.Windows.Forms.ToolTip ToolTip;
-        private System.Windows.Forms.ToolStripMenuItem checkForUpgradesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem reportABugOrFeatureToolStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
         private System.Windows.Forms.ToolStripMenuItem createAnalysisParameterFileToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton mtoolStrBtnOpenAnalysis;
         private System.Windows.Forms.ToolStripButton mtoolBtnPerformAnalysis;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
 
     }
 }

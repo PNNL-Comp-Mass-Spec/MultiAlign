@@ -3,6 +3,8 @@
 #include "clsMassTimeTag.h"
 #using <mscorlib.dll>
 
+using namespace System::Collections::Generic;
+
 namespace MultiAlignEngine
 {
 	namespace Features
@@ -39,18 +41,24 @@ namespace MultiAlignEngine
 		{
 		}
 
-		void clsClusterData::SetClusterCalibratedMassedAndNETS(std::vector <int> &clusterIndices, std::vector<double> &clusterCalibratedMasses, 
-				std::vector<double> &clusterAlignedNETS)
+		void clsClusterData::SetClusterCalibratedMassedAndNETS( std::vector <int> &clusterIndices,
+																std::vector<double> &clusterCalibratedMasses, 
+																std::vector<double> &clusterAlignedNETS,
+																std::vector<double> &clusterDriftTimes)
 		{
 			int numClusters = (int) clusterIndices.size(); 
 			for (int clusterNum = 0; clusterNum < numClusters; clusterNum++)
 			{
-				int clusterIndex = clusterIndices[clusterNum]; 
-				double calibratedMass = clusterCalibratedMasses[clusterNum]; 
-				double alignedNET = clusterAlignedNETS[clusterNum]; 
-				clsCluster *clustA = dynamic_cast<clsCluster*>(marrClusters->Item[clusterIndex]); 
-				clustA->mdouble_mass_calibrated = calibratedMass;
-				clustA->mdouble_aligned_net = alignedNET;
+				int clusterIndex					= clusterIndices[clusterNum]; 
+				double calibratedMass				= clusterCalibratedMasses[clusterNum]; 
+				double alignedNET					= clusterAlignedNETS[clusterNum]; 
+				double driftTime 					= clusterDriftTimes[clusterNum];
+
+				clsCluster *clustA					= dynamic_cast<clsCluster*>(marrClusters->Item[clusterIndex]); 
+				clustA->mdouble_mass_calibrated		= calibratedMass;
+				clustA->mdouble_aligned_net			= alignedNET;
+				clustA->mdouble_driftTime			= driftTime;
+
 				clsCluster *clustB = dynamic_cast<clsCluster*>(marrClusters->Item[clusterIndex]); 
 			}
 		}
@@ -73,23 +81,24 @@ namespace MultiAlignEngine
 			if (numElements == 0)
 				return;
 
-			System::Collections::ArrayList *masses = new System::Collections::ArrayList(); 
+			System::Collections::ArrayList *masses			 = new System::Collections::ArrayList(); 
 			System::Collections::ArrayList *calibratedMasses = new System::Collections::ArrayList(); 
-			System::Collections::ArrayList *scans = new System::Collections::ArrayList(); 
-			System::Collections::ArrayList *nets = new System::Collections::ArrayList(); 
-			System::Collections::ArrayList *charges = new System::Collections::ArrayList(); 
+			System::Collections::ArrayList *scans			 = new System::Collections::ArrayList(); 
+			System::Collections::ArrayList *nets			 = new System::Collections::ArrayList(); 
+			System::Collections::ArrayList *drifts			 = new System::Collections::ArrayList(); 
+			System::Collections::ArrayList *charges			 = new System::Collections::ArrayList(); 
 
-			clsUMC *umc; 
-			clsPair *pair = dynamic_cast<clsPair*>(marrClusterUMCIndexPair->Item[0]); 
-			int lastClusterNum = pair->mintClusterNum;
-			int num_nonzero; 
-			double mass, calibratedMass; 
-			short charge, avg_charge; 
-			int scan, mid_index; 
-			int avg_scan;
-			double avgMass, avgCalibratedMass; 
-			double net, avg_net;  
-			int pt_num; 
+			clsUMC	*umc; 
+			clsPair *pair			= dynamic_cast<clsPair*>(marrClusterUMCIndexPair->Item[0]); 
+			int		lastClusterNum	= pair->mintClusterNum;
+			int		num_nonzero; 
+			double	mass,	calibratedMass, driftTime, avg_driftTime; 
+			short	charge, avg_charge; 
+			int		scan,	mid_index; 
+			int		avg_scan;
+			int		pt_num; 
+			double	avgMass, avgCalibratedMass; 
+			double	net,	 avg_net;  
 
 			mdblMinNET = System::Double::MaxValue; 
 			mdblMaxNET = System::Double::MinValue; 
@@ -99,10 +108,10 @@ namespace MultiAlignEngine
 				pair = dynamic_cast<clsPair*>(marrClusterUMCIndexPair->Item[elementNum]); 
 				if (pair->mintClusterNum != lastClusterNum)
 				{
-					num_nonzero = masses->Count; 
-					clsCluster *clust = new clsCluster(); 
-					int clusterStartIndex = lastClusterNum * mintNumDatasets;
-					int clusterStopIndex = (lastClusterNum +1)* mintNumDatasets;
+					num_nonzero						  = masses->Count; 
+					clsCluster *clust				  = new clsCluster(); 
+					int clusterStartIndex			  = lastClusterNum * mintNumDatasets;
+					int clusterStopIndex			  = (lastClusterNum +1)* mintNumDatasets;
 					clust->mshort_num_dataset_members = 0;
 					for (int currentPtIndex = clusterStartIndex; currentPtIndex < clusterStopIndex; currentPtIndex++)
 					{
@@ -115,11 +124,12 @@ namespace MultiAlignEngine
 						case MultiAlignEngine::Clustering::enmClusterRepresentativeType::MEDIAN:
 							if (num_nonzero == 1)
 							{
-								mass = *dynamic_cast<double __gc*>(masses->Item[0]); 
-								calibratedMass = *dynamic_cast<double __gc*>(calibratedMasses->Item[0]); 
-								scan = *dynamic_cast<int __gc*>(scans->Item[0]); 
-								net = *dynamic_cast<double __gc*>(nets->Item[0]); 
-								charge = *dynamic_cast<short __gc*>(charges->Item[0]); 
+								mass			= *dynamic_cast<double __gc*>(masses->Item[0]); 
+								calibratedMass	= *dynamic_cast<double __gc*>(calibratedMasses->Item[0]); 
+								scan			= *dynamic_cast<int __gc*>(scans->Item[0]); 
+								net				= *dynamic_cast<double __gc*>(nets->Item[0]); 
+								charge			= *dynamic_cast<short __gc*>(charges->Item[0]); 
+								driftTime		= *dynamic_cast<float __gc*>(drifts->Item[0]); 
 							}
 							else
 							{
@@ -131,28 +141,31 @@ namespace MultiAlignEngine
 
 								if (num_nonzero%2 == 0)
 								{
-									mid_index = num_nonzero/2 - 1; 
-									mass = (*dynamic_cast<double __gc*>(masses->Item[mid_index]) + *dynamic_cast<double __gc*>(masses->Item[mid_index+1]))/2; 
-									calibratedMass = (*dynamic_cast<double __gc*>(calibratedMasses->Item[mid_index]) + *dynamic_cast<double __gc*>(calibratedMasses->Item[mid_index+1]))/2; 
-									scan = (*dynamic_cast<int __gc*>(scans->Item[mid_index]) + *dynamic_cast<int __gc*>(scans->Item[mid_index+1]))/2; 
-									net = (*dynamic_cast<double __gc*>(nets->Item[mid_index]) + *dynamic_cast<double __gc*>(nets->Item[mid_index+1]))/2; 
-									charge = *dynamic_cast<short __gc*>(charges->Item[mid_index]); 
+									mid_index	    = num_nonzero/2 - 1; 
+									mass			= (*dynamic_cast<double __gc*>(masses->Item[mid_index]) + *dynamic_cast<double __gc*>(masses->Item[mid_index+1]))/2; 
+									calibratedMass  = (*dynamic_cast<double __gc*>(calibratedMasses->Item[mid_index]) + *dynamic_cast<double __gc*>(calibratedMasses->Item[mid_index+1]))/2; 
+									scan			= (*dynamic_cast<int __gc*>(scans->Item[mid_index]) + *dynamic_cast<int __gc*>(scans->Item[mid_index+1]))/2; 
+									net				= (*dynamic_cast<double __gc*>(nets->Item[mid_index]) + *dynamic_cast<double __gc*>(nets->Item[mid_index+1]))/2; 
+									charge			= *dynamic_cast<short __gc*>(charges->Item[mid_index]); 
+									driftTime		= *dynamic_cast<float __gc*>(drifts->Item[mid_index]); 
 								}
 								else
 								{
-									mid_index = num_nonzero/2; 
-									mass = *dynamic_cast<double __gc*>(masses->Item[mid_index]); 
-									calibratedMass = *dynamic_cast<double __gc*>(calibratedMasses->Item[mid_index]);
-									scan = *dynamic_cast<int __gc*>(scans->Item[mid_index]); 
-									net = *dynamic_cast<double __gc*>(nets->Item[mid_index]);
-									charge = *dynamic_cast<short __gc*>( charges->Item[mid_index]);
+									mid_index		= num_nonzero/2; 
+									mass			= *dynamic_cast<double __gc*>(masses->Item[mid_index]); 
+									calibratedMass	= *dynamic_cast<double __gc*>(calibratedMasses->Item[mid_index]);
+									scan			= *dynamic_cast<int __gc*>(scans->Item[mid_index]); 
+									net				= *dynamic_cast<double __gc*>(nets->Item[mid_index]);
+									charge			= *dynamic_cast<short __gc*>( charges->Item[mid_index]);
+									driftTime		= *dynamic_cast<float __gc*>( drifts->Item[mid_index]);
 								}
 							}
-							clust->mdouble_mass = calibratedMass; 
-							clust->mdouble_mass_calibrated = calibratedMass; 
-							clust->mint_scan = scan; 
-							clust->mdouble_net = net; 
-							clust->mshort_charge = charge; 
+							clust->mdouble_mass				= calibratedMass; 
+							clust->mdouble_mass_calibrated	= calibratedMass; 
+							clust->mint_scan				= scan; 
+							clust->mdouble_net				= net; 
+							clust->mshort_charge			= charge; 
+							clust->mdouble_driftTime		= driftTime;
 							marrClusters->Add(clust); 
 							if (net < mdblMinNET)
 								mdblMinNET = net; 
@@ -160,30 +173,36 @@ namespace MultiAlignEngine
 								mdblMaxNET = net; 
 							break; 
 						case MultiAlignEngine::Clustering::enmClusterRepresentativeType::MEAN:
-							avgMass = 0; 
-							avgCalibratedMass = 0; 
-							avg_scan = 0; 
-							avg_net = 0; 
-							avg_charge = 0; 
+							avgMass				= 0; 
+							avgCalibratedMass	= 0; 
+							avg_scan			= 0; 
+							avg_net				= 0; 
+							avg_charge			= 0; 
+							avg_driftTime		= 0;
 							for (pt_num = 0; pt_num < num_nonzero; pt_num++)
 							{
-								avgMass += *dynamic_cast<double __gc*>(masses->Item[pt_num]); 
-								avgCalibratedMass += *dynamic_cast<double __gc*>(calibratedMasses->Item[pt_num]); 
-								avg_scan += *dynamic_cast<int __gc*>(scans->Item[pt_num]); 
-								avg_net += *dynamic_cast<double __gc*>(nets->Item[pt_num]); 
-								avg_charge += *dynamic_cast<short __gc*>( charges->Item[pt_num]); 
+								avgMass				+= *dynamic_cast<double __gc*>(masses->Item[pt_num]); 
+								avgCalibratedMass	+= *dynamic_cast<double __gc*>(calibratedMasses->Item[pt_num]); 
+								avg_scan			+= *dynamic_cast<int __gc*>(scans->Item[pt_num]); 
+								avg_net				+= *dynamic_cast<double __gc*>(nets->Item[pt_num]); 
+								avg_charge			+= *dynamic_cast<short __gc*>( charges->Item[pt_num]); 
+								avg_driftTime		+= *dynamic_cast<float __gc*>( drifts->Item[pt_num]); 
 							}
-							avgMass /= num_nonzero;
-							avgCalibratedMass /= num_nonzero;
-							avg_scan /= num_nonzero; 
-							avg_net /= num_nonzero; 
-							avg_charge /= num_nonzero; 
-							clust->mdouble_mass = avgCalibratedMass; 
-							clust->mdouble_mass_calibrated = avgCalibratedMass; 
-							clust->mint_scan = avg_scan; 
-							clust->mdouble_net = avg_net; 
-							clust->mshort_charge = avg_charge; 
+							avgMass				/= num_nonzero;
+							avgCalibratedMass	/= num_nonzero;
+							avg_scan			/= num_nonzero; 
+							avg_net				/= num_nonzero; 
+							avg_charge			/= num_nonzero; 
+							avg_driftTime		/= num_nonzero;
+
+							clust->mdouble_mass				= avgCalibratedMass; 
+							clust->mdouble_mass_calibrated	= avgCalibratedMass; 
+							clust->mint_scan				= avg_scan; 
+							clust->mdouble_net				= avg_net; 
+							clust->mshort_charge			= avg_charge; 
+							clust->mdouble_driftTime		= avg_driftTime;
 							marrClusters->Add(clust); 
+							
 							if (avg_net < mdblMinNET)
 								mdblMinNET =avg_net; 
 							if (avg_net > mdblMaxNET)
@@ -191,11 +210,48 @@ namespace MultiAlignEngine
 							break; 
 					}
 
+					// Given the centroid above calculate the average via Euclidean Distance 
+					double sumDistance = 0;
+					double distance    = 0;
+
+					List<double>* distances = new List<double>();
+					for (pt_num = 0; pt_num < num_nonzero; pt_num++)
+					{
+						double calibratedMass   = *dynamic_cast<double __gc*>(calibratedMasses->Item[pt_num]); 						
+						double net				= *dynamic_cast<double __gc*>(nets->Item[pt_num]); 
+						double drift			= System::Convert::ToDouble(*dynamic_cast<float __gc*>(drifts->Item[pt_num])); 
+
+						distance =	Math::Pow(clust->mdouble_mass_calibrated - calibratedMass, 2.0) + 
+									Math::Pow(clust->mdouble_aligned_net	 - net, 2.0) + 
+									Math::Pow(clust->mdouble_driftTime	  	 - drift, 2.0);
+						distance =  Math::Sqrt(distance);
+						sumDistance += distance;
+						distances->Add(distance);
+					}
+					distances->Sort();
+
+					clust->MeanScore= sumDistance / num_nonzero;
+					int count    = distances->Count;
+					int midIndex = 0;
+					if ((count % 2) == 0)
+					{
+						// if they are even
+						midIndex		  = count / 2;
+						int lowerMidIndex = midIndex - 1;						
+						clust->MedianScore = (distances->Item[midIndex] + distances->Item[lowerMidIndex]) / 2.0;
+					}
+					else
+					{
+						midIndex     = (count - 1) / 2; 
+						clust->MedianScore = distances->Item[midIndex];
+					}					
+
 					lastClusterNum = pair->mintClusterNum;
 					masses->Clear(); 
 					scans->Clear();
 					nets->Clear(); 
 					charges->Clear(); 
+					drifts->Clear();
 					calibratedMasses->Clear(); 
 				}
 				int index = pair->mintUMCIndex; 
@@ -232,6 +288,7 @@ namespace MultiAlignEngine
 				scans->Add(__box(rep_scan)); 
 				nets->Add(__box(rep_net)); 
 				charges->Add(__box(umc->mshort_class_rep_charge)); 
+				drifts->Add(__box(umc->DriftTime)); 
 			}
 
 			num_nonzero = masses->Count; 

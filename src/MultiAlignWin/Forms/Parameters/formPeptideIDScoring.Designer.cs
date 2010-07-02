@@ -104,7 +104,7 @@ namespace MultiAlignWin.Forms.Parameters
             this.mgroupBox_smart.Size = new System.Drawing.Size(348, 155);
             this.mgroupBox_smart.TabIndex = 12;
             this.mgroupBox_smart.TabStop = false;
-            this.mgroupBox_smart.Text = "SMART Parameters";
+            this.mgroupBox_smart.Text = "STAC Parameters";
             // 
             // mcheckBox_usePriorProbabilities
             // 
@@ -194,7 +194,7 @@ namespace MultiAlignWin.Forms.Parameters
             this.Controls.Add(this.mbutton_ok);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "formPeptideIDScoring";
-            this.Text = "SMART Options";
+            this.Text = "STAC Options";
             this.mgroupBox_smart.ResumeLayout(false);
             this.mgroupBox_smart.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.mnum_pairedMass)).EndInit();

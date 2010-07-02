@@ -175,6 +175,10 @@ namespace PNNLProteomics.Data.Analysis
         /// </summary>
         List<classAlignmentData>            mlist_alignmentData;
         /// <summary>
+        /// Clustered alignment data, null if clusters are not aligned to a MTDB.
+        /// </summary>
+        classAlignmentData mobj_clusterAlignmentData;
+        /// <summary>
         /// A managed object that holds all of the UMC data
         /// </summary>
 		private clsUMCData                  mobjUMCData ; 
@@ -734,10 +738,7 @@ namespace PNNLProteomics.Data.Analysis
 
 				mobjAlignmentProcessor.SetReferenceDatasetFeatures(mobjUMCData, baselineIndex) ; 
 				mobjUMCData.GetMinMaxScan(baselineIndex, ref minScanRef, ref maxScanRef) ;
-
-
 			}
-
 
             /// 
             /// Tell the listeners that we are aligning X to Y.
@@ -746,7 +747,6 @@ namespace PNNLProteomics.Data.Analysis
 			if (StatusMessage != null)
 			    StatusMessage(mint_statusLevel, "Aligning " + aligneeDataset + " to " + alignmentOptions.AlignmentBaselineName) ;
             mint_statusLevel++;
-
 
             /// 
             /// Determine if we need to split the data or not before aligning
@@ -1195,11 +1195,46 @@ namespace PNNLProteomics.Data.Analysis
 				float [] xIntervals  = new float[1] ; 
 				float [] yIntervals  = new float[1] ; 
 				mobjAlignmentProcessor.GetAlignmentHeatMap(ref heatScores, ref xIntervals, ref yIntervals) ;
+                                
 
 				float minClusterNET=0.0F , maxClusterNET = 1.0F ; 
 				mobjUMCData.mobjClusterData.GetMinMaxNET(ref minClusterNET, ref maxClusterNET) ; 
 				float minMTDBNET=0.0F , maxMTDBNET = 1.0F ; 
-				mobjAlignmentProcessor.GetReferenceNETRange(ref minMTDBNET, ref maxMTDBNET) ; 
+				mobjAlignmentProcessor.GetReferenceNETRange(ref minMTDBNET, ref maxMTDBNET) ;
+
+
+                float[,] linearNet = new float[1, 1];
+                float[,] customNet = new float[1, 1];
+                float[,] linearCustomNet = new float[1, 1];
+                float[,] massError = new float[1, 1];
+                float[,] massErrorCorrected = new float[1, 1];
+                float[,] mzMassError = new float[1, 1];
+                float[,] mzMassErrorCorrected = new float[1, 1];
+
+                classAlignmentResidualData residualData = mobjAlignmentProcessor.GetResidualData();    
+
+                double[,] netErrorHistogram                = new double[1,1];
+                double[,] massErrorHistogram               = new double[1,1];
+                
+                mobjAlignmentProcessor.GetErrorHistograms(  mobjAlignmentOptions.MassBinSize,
+                                                            mobjAlignmentOptions.NETBinSize,
+                                                            ref massErrorHistogram,
+                                                            ref netErrorHistogram);
+
+                mobj_clusterAlignmentData                    = new classAlignmentData();
+                mobj_clusterAlignmentData.alignmentFunction  = alignmentFunction;
+                mobj_clusterAlignmentData.heatScores         = heatScores;
+                mobj_clusterAlignmentData.massErrorHistogram = massErrorHistogram;
+                mobj_clusterAlignmentData.netErrorHistogram  = netErrorHistogram;
+                mobj_clusterAlignmentData.NETIntercept       = mobjAlignmentProcessor.NETIntercept;
+                mobj_clusterAlignmentData.NETRsquared        = mobjAlignmentProcessor.NETLinearRSquared;
+                mobj_clusterAlignmentData.NETSlope           = mobjAlignmentProcessor.NETSlope;
+                mobj_clusterAlignmentData.ResidualData          = residualData;
+                mobj_clusterAlignmentData.MassMean              = mobjAlignmentProcessor.GetMassMean();
+                mobj_clusterAlignmentData.MassStandardDeviation = mobjAlignmentProcessor.GetMassMean();
+                mobj_clusterAlignmentData.NETMean               = mobjAlignmentProcessor.GetNETMean();
+                mobj_clusterAlignmentData.NETStandardDeviation  = mobjAlignmentProcessor.GetNETStandardDeviation();
+
 
 				if (DatasetAligned != null)
 				{
@@ -1364,12 +1399,34 @@ namespace PNNLProteomics.Data.Analysis
             mint_statusLevel++;
             try
             {
-                // firstly, if things are not already aligned to a mass tag database then 
-                // lets align them now. 
-                //if (!mblnUseMassTagDBAsBaseline && mobjMassTagDBOptions.mstrDatabase != null)
-                if (mobjMassTagDBOptions.mstrDatabase != null)
+                /// 
+                /// Datasets are aligned to the database individually and then clustered.                
+                /// These clusters could have variation in them still.  Perform a cluster alignment 
+                /// to correct for centroidization.
+                /// 
+                /// Also, only do this alignment if we have more than one dataset.  This way
+                /// we dont over align the problem.
+                /// 
+                if (mobjMassTagDBOptions.mstrDatabase != null && marrFileNames.Count > 1)
                 {
-                    AlignClustersToMassTagDB();
+                    if (mobjClusteringOptions.AlignClusters == true)
+                    {
+
+                        AlignClustersToMassTagDB();
+                    }
+                    else
+                    {
+                        /// 
+                        /// Since we are not aligning then we will fake the cluster aligned data to be 
+                        /// its mass, NET.
+                        /// 
+                        for (int i = 0; i < mobjUMCData.mobjClusterData.NumClusters; i++)
+                        {
+                            clsCluster cluster      = mobjUMCData.mobjClusterData.GetCluster(i);
+                            cluster.NetAligned      = cluster.Net;
+                            cluster.MassCalibrated  = cluster.Mass;
+                        }
+                    }
                 }
 
                 if (mbool_calculateSMARTScores == false)
@@ -1425,7 +1482,7 @@ namespace PNNLProteomics.Data.Analysis
 
             if (StatusMessage != null)
             {
-                StatusMessage(0, "Performing SMART");
+                StatusMessage(0, "Performing STAC");
             }
 
             classSMARTProcessor processor = new classSMARTProcessor();
@@ -1859,6 +1916,14 @@ namespace PNNLProteomics.Data.Analysis
 		#endregion
 
         #region Properties
+        /// <summary>
+        /// Gets or sets the cluster alignment data.
+        /// </summary>
+        public classAlignmentData ClusterAlignmentData
+        {
+            get { return mobj_clusterAlignmentData; }
+            set { mobj_clusterAlignmentData = value; }
+        }
         /// <summary>
         /// Gets the lower bound false discovery rate calculated by 11 Dalton Shift.
         /// </summary>
@@ -2461,7 +2526,6 @@ namespace PNNLProteomics.Data.Analysis
 		{
 			// Extract parameters for now.			
 			MetaData metaData = new MetaData("PNNLProteomics");
-            //ReflectParameterOptions(AlignmentOptions[0], metaData.OpenChild("AlignmentOptions"));
             ReflectParameterOptions(UMCFindingOptions, metaData.OpenChild("UMCFindingOptions"));
             ReflectParameterOptions(DefaultAlignmentOptions, metaData.OpenChild("DefaultAlignmentOptions"));
 			ReflectParameterOptions(MassTagDBOptions, metaData.OpenChild("MassTagDBOptions"));
@@ -2482,7 +2546,11 @@ namespace PNNLProteomics.Data.Analysis
             LoadParameterOptions(AlignmentOptions, metaData.OpenChild("AlignmentOptions"));
             LoadParameterOptions(ClusterOptions, metaData.OpenChild("ClusterOptions"));
             LoadParameterOptions(PeakMatchingOptions, metaData.OpenChild("PeakMatchingOptions"));
+            
+            List<classAlignmentMZBoundary> boundaries = DefaultAlignmentOptions.MZBoundaries;
 			LoadParameterOptions(DefaultAlignmentOptions, metaData.OpenChild("DefaultAlignmentOptions"));
+            DefaultAlignmentOptions.MZBoundaries = boundaries;
+
 			LoadParameterOptions(MassTagDBOptions, metaData.OpenChild("MassTagDBOptions"));
 			LoadParameterOptions(UMCFindingOptions, metaData.OpenChild("UMCFindingOptions"));
         }

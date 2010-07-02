@@ -121,17 +121,21 @@ namespace MultiAlignEngine
 		*
 		*
 		*************************************************************************************************************/		
-		void clsUMCData::SetUMCCalibratedMassedAndNETS(std::vector <int> &umcIndices, std::vector<double> &umcCalibratedMasses, 
-			std::vector<double> &umcAlignedNETS)
+		void clsUMCData::SetUMCCalibratedMassedAndNETS(	std::vector <int> &umcIndices, 
+														std::vector<double> &umcCalibratedMasses, 
+														std::vector<double> &umcAlignedNETS, 
+														std::vector<double> &umcDriftTimes)
 		{
 			int numUMCs = (int) umcIndices.size(); 
 			for (int umcNum = 0; umcNum < numUMCs; umcNum++)
 			{
-				int umcIndex = umcIndices[umcNum]; 
-				double calibratedMass = umcCalibratedMasses[umcNum]; 
-				double alignedNET = umcAlignedNETS[umcNum]; 
-				marr_umcs[umcIndex]->mdouble_mono_mass_calibrated = calibratedMass; 
-				marr_umcs[umcIndex]->mdouble_net = alignedNET;
+				int umcIndex										= umcIndices[umcNum]; 
+				double calibratedMass								= umcCalibratedMasses[umcNum]; 
+				double alignedNET									= umcAlignedNETS[umcNum]; 
+				double driftTime									= umcDriftTimes[umcNum]; 
+				marr_umcs[umcIndex]->mdouble_mono_mass_calibrated	= calibratedMass; 
+				marr_umcs[umcIndex]->mdouble_net					= alignedNET;
+				marr_umcs[umcIndex]->DriftTime						= driftTime;
 			}
 		}
 		/*************************************************************************************************************
@@ -139,19 +143,25 @@ namespace MultiAlignEngine
 		*
 		*
 		*************************************************************************************************************/
-		void clsUMCData::SetUMCCalibratedMassedAndNETS(std::vector <int> &umcIndices, std::vector<double> &umcCalibratedMasses, 
-				std::vector<double> &umcAlignedNETS, std::vector<int> &umcAlignedScans)
+		void clsUMCData::SetUMCCalibratedMassedAndNETS( std::vector <int> &umcIndices, 
+														std::vector<double> &umcCalibratedMasses, 
+														std::vector<double> &umcAlignedNETS, 
+														std::vector<int> &umcAlignedScans, 
+														std::vector<double> &umcDriftTimes)
 		{
 			int numUMCs = (int) umcIndices.size(); 
 			for (int umcNum = 0; umcNum < numUMCs; umcNum++)
 			{
-				int umcIndex = umcIndices[umcNum]; 
-				double calibratedMass = umcCalibratedMasses[umcNum]; 
-				double alignedNET = umcAlignedNETS[umcNum]; 
-				int alignedScan = umcAlignedScans[umcNum]; 
-				marr_umcs[umcIndex]->mdouble_mono_mass_calibrated = calibratedMass; 
-				marr_umcs[umcIndex]->mdouble_net = alignedNET;
-				marr_umcs[umcIndex]->mint_scan_aligned = alignedScan;
+				int umcIndex			= umcIndices[umcNum]; 
+				double calibratedMass	= umcCalibratedMasses[umcNum]; 
+				double alignedNET		= umcAlignedNETS[umcNum]; 
+				int alignedScan			= umcAlignedScans[umcNum]; 
+				double driftTime		= umcDriftTimes[umcNum];
+				marr_umcs[umcIndex]->mdouble_mono_mass_calibrated	= calibratedMass; 
+				marr_umcs[umcIndex]->mdouble_net					= alignedNET;
+				marr_umcs[umcIndex]->mint_scan_aligned				= alignedScan;
+				marr_umcs[umcIndex]->mfloat_drift_time				= Convert::ToSingle(driftTime);
+
 			}
 		}
 		/*************************************************************************************************************
@@ -274,7 +284,7 @@ namespace MultiAlignEngine
 			for (int umcIndex = start_index; umcIndex < stop_index; umcIndex++)
 			{
 				Features::clsUMC *umc = dynamic_cast<Features::clsUMC *>(marr_umcs->Item[umcIndex]); 
-				clsMassTimeTag *mtTag = new clsMassTimeTag(umc->mdouble_mono_mass, umc->mdouble_net, 0, umcIndex);
+				clsMassTimeTag *mtTag = new clsMassTimeTag(umc->mdouble_mono_mass, umc->mdouble_net, umc->DriftTime, umcIndex);
 				arrMSFeatures->Add(mtTag); 
 			}
 			return arrMSFeatures; 
@@ -293,22 +303,91 @@ namespace MultiAlignEngine
 		*
 		*
 		*************************************************************************************************************/
-		void clsUMCData::GetMassesAndNETs(int dataset_num, bool calibrated_masses, float (&masses) __gc[], float (&nets) __gc[])
+		void clsUMCData::GetMassesAndNETs(int dataset_num, bool calibrated_masses, float (&masses) __gc[], float (&nets) __gc[], double (&driftTimes) __gc[])
 		{
 			int start_index = *dynamic_cast<__box Int32*>(marr_dataset_start_index->Item[dataset_num]); 
 			int stop_index	= *dynamic_cast<__box Int32*>(marr_dataset_stop_index->Item[dataset_num]); 
 			int num_pts		= stop_index - start_index;
 			int index; 
 
-			masses			= new float __gc[num_pts]; 
-			nets			= new float __gc[num_pts]; 
+			masses			= new float  __gc[num_pts]; 
+			nets			= new float  __gc[num_pts]; 
+			driftTimes		= new double __gc[num_pts]; 
 			for (index = start_index; index < stop_index; index++)
 			{
 				if (calibrated_masses)
 					masses[index-start_index]	= Convert::ToSingle(marr_umcs[index]->mdouble_mono_mass_calibrated); 
 				else
 					masses[index-start_index]	= Convert::ToSingle(marr_umcs[index]->mdouble_mono_mass); 
-				nets[index-start_index]			=  Convert::ToSingle(marr_umcs[index]->mdouble_net); 
+				nets[index-start_index]			= Convert::ToSingle(marr_umcs[index]->mdouble_net); 
+				driftTimes[index-start_index]	= Convert::ToDouble(marr_umcs[index]->DriftTime);
+			}
+		}
+		void clsUMCData::GetMZAndNETs(int dataset_num, float (&mz) __gc[], float (&nets) __gc[], double (&driftTimes) __gc[])
+		{
+			int start_index = *dynamic_cast<__box Int32*>(marr_dataset_start_index->Item[dataset_num]); 
+			int stop_index	= *dynamic_cast<__box Int32*>(marr_dataset_stop_index->Item[dataset_num]); 
+			int num_pts		= stop_index - start_index;
+			int index; 
+
+			mz				= new float  __gc[num_pts]; 
+			nets			= new float  __gc[num_pts]; 
+			driftTimes		= new double __gc[num_pts]; 
+			for (index = start_index; index < stop_index; index++)
+			{				
+				mz[index-start_index]	    = Convert::ToSingle(marr_umcs[index]->mdouble_class_rep_mz); 
+				nets[index-start_index]			= Convert::ToSingle(marr_umcs[index]->mdouble_net); 
+				driftTimes[index-start_index]	= Convert::ToDouble(marr_umcs[index]->DriftTime);
+			}
+		}
+		void clsUMCData::GetMZAndScans(int dataset_num, bool aligned,  float (&mz) __gc[], float (&scans) __gc[], double (&driftTimes) __gc[])
+		{
+			int start_index = *dynamic_cast<__box Int32*>(marr_dataset_start_index->Item[dataset_num]); 
+			int stop_index	= *dynamic_cast<__box Int32*>(marr_dataset_stop_index->Item[dataset_num]); 
+			int num_pts		= stop_index - start_index;
+			int index; 
+
+			mz				= new float  __gc[num_pts]; 
+			scans			= new float  __gc[num_pts]; 
+			driftTimes		= new double __gc[num_pts]; 
+			for (index = start_index; index < stop_index; index++)
+			{				
+				mz[index-start_index]			= Convert::ToSingle(marr_umcs[index]->mdouble_class_rep_mz); 
+				if (!aligned)
+				{
+					scans[index-start_index]			= Convert::ToSingle(marr_umcs[index]->mint_scan); 
+				}
+				else
+				{
+					scans[index-start_index]			=  Convert::ToSingle(marr_umcs[index]->mint_scan_aligned); 
+				}
+				driftTimes[index-start_index]	= Convert::ToDouble(marr_umcs[index]->DriftTime);
+			}
+		}
+		void clsUMCData::GetMZAndScans(int dataset_num, bool aligned,  float (&mz) __gc[], float (&scans) __gc[], 			
+			int chargeState)
+		{
+			int start_index = *dynamic_cast<__box Int32*>(marr_dataset_start_index->Item[dataset_num]); 
+			int stop_index	= *dynamic_cast<__box Int32*>(marr_dataset_stop_index->Item[dataset_num]); 
+			int num_pts		= stop_index - start_index;
+			int index; 
+
+			mz				= new float  __gc[num_pts]; 
+			scans			= new float  __gc[num_pts]; 
+			for (index = start_index; index < stop_index; index++)
+			{				
+				if (marr_umcs[index]->mshort_class_rep_charge == chargeState)
+				{
+					mz[index-start_index]			= Convert::ToSingle(marr_umcs[index]->mdouble_class_rep_mz); 
+					if (!aligned)
+					{
+						scans[index-start_index]			= Convert::ToSingle(marr_umcs[index]->mint_scan); 
+					}
+					else
+					{
+						scans[index-start_index]			=  Convert::ToSingle(marr_umcs[index]->mint_scan_aligned); 
+					}
+				}
 			}
 		}
 		
@@ -446,6 +525,7 @@ namespace MultiAlignEngine
 				pt.mdouble_net     = marr_umcs[umcNum]->mdouble_net; 
 				pt.mint_datasetID  = marr_umcs[umcNum]->DatasetId;
 				pt.mint_charge     = marr_umcs[umcNum]->ChargeRepresentative;
+				pt.mdouble_driftTime = marr_umcs[umcNum]->DriftTime;
 				vectPoints[umcNum] = pt; 
 			}
 		}

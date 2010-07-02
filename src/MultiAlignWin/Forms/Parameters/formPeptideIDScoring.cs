@@ -143,10 +143,10 @@ namespace MultiAlignWin.Forms.Parameters
         }
         public void SaveOptions()
         {
-            Properties.Settings.Default.SMARTIsDataPaired           = IsDataPaired;
-            Properties.Settings.Default.SMARTMassTolerance          = MassTolerancePPM;
-            Properties.Settings.Default.SMARTNETTolerance           = NETTolerance;
-            Properties.Settings.Default.SMARTUsePriorProbabilities  = UsePriorProbabilities;            
+            Properties.Settings.Default.STACIsDataPaired           = IsDataPaired;
+            Properties.Settings.Default.STACMassTolerance          = MassTolerancePPM;
+            Properties.Settings.Default.STACNETTolerance = NETTolerance;
+            Properties.Settings.Default.STACUsePriorProbabilities = UsePriorProbabilities;            
             Properties.Settings.Default.Save();
         }
         #endregion        

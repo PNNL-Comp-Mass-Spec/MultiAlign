@@ -296,9 +296,17 @@ namespace MultiAlignEngine
 			}
 
 			void GetFeatureCalibratedMassesAndAlignedNETs(std::vector <int> &umcIndices, std::vector<double> &umcCalibratedMasses, 
-				std::vector<double> &umcAlignedNETS); 
-			void GetFeatureCalibratedMassesAndAlignedNETs(std::vector <int> &umcIndices, std::vector<double> &umcCalibratedMasses, 
-				std::vector<double> &umcAlignedNETS, std::vector<int> &umcAlignedScans, int minScan, int maxScan); 
+				std::vector<double> &umcAlignedNETS,
+				std::vector<double> &vectAlignedDriftTimes); 
+
+
+			void GetFeatureCalibratedMassesAndAlignedNETs(std::vector <int> &umcIndices, 
+																std::vector<double> &umcCalibratedMasses, 
+																std::vector<double> &umcAlignedNETS,
+																std::vector<int> &umcAlignedScans, 
+																std::vector<double> &umcDriftTimes,
+																int minScan,
+																int maxScan);
 
 			void SetReferenceFeatures(std::vector<MassTimeFeature> &vectFeatures)
 			{

@@ -14,6 +14,7 @@ namespace MultiAlignEngine
 			menmClusterIntensityType		= enmClusterIntensityType::SUM_PER_DATASET; 
 			menmClusterRepresentativeType	= MEDIAN; 
 			mbool_ignoreCharge				= true;
+			mbool_alignToDatabase			= true;
 		}
 
 		clsClusterOptions::~clsClusterOptions(void)

@@ -35,6 +35,8 @@ namespace MultiAlignEngine
 			double mdblDriftTimeTolerance;
 			/// Ignores charge states in the clustering algorithm
 			bool mbool_ignoreCharge;
+			/// Flag indicating whether to align the clusters to the database if a database exists.
+			bool mbool_alignToDatabase;
 		public:
 		private:
 			enmClusterRepresentativeType menmClusterRepresentativeType; 
@@ -74,6 +76,17 @@ namespace MultiAlignEngine
 			__property void set_IgnoreCharge(bool value)
 			{
 				mbool_ignoreCharge = value; 
+			}
+
+			[clsDataSummaryAttribute("Align clusters to database")]			
+			[clsParameterFileAttribute("AlignClusters", "ClusterOptions")]
+			__property bool get_AlignClusters()
+			{
+				return mbool_alignToDatabase; 
+			}
+			__property void set_AlignClusters(bool value)
+			{
+				mbool_alignToDatabase = value; 
 			}
 
 			

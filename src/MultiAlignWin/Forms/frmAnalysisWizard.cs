@@ -335,6 +335,7 @@ namespace MultiAlignWin
             options.DriftTimeTolerance = Properties.Settings.Default.UserClusterOptionsDriftTimeTolerance;
             options.ClusterIntensityType = MultiAlignEngine.Clustering.enmClusterIntensityType.MAX_PER_DATASET;
             options.IgnoreCharge = Properties.Settings.Default.UserClusterOptionsIgnoreChargeStates;
+            options.AlignClusters = Properties.Settings.Default.UserClusterOptionsAlignToDatabase;
 
             if (Properties.Settings.Default.UserClusterOptionsUseMaxInDataset == false)
                 options.ClusterIntensityType = MultiAlignEngine.Clustering.enmClusterIntensityType.SUM_PER_DATASET;
@@ -414,11 +415,11 @@ namespace MultiAlignWin
         {           
             if (mobjAnalysis.SMARTOptions == null)
                 mobjAnalysis.SMARTOptions = new classSMARTOptions();
-            mobjAnalysis.SMARTOptions.IsDataPaired          = Properties.Settings.Default.SMARTIsDataPaired;
-            mobjAnalysis.SMARTOptions.MassTolerancePPM      = Properties.Settings.Default.SMARTMassTolerance;
-            mobjAnalysis.SMARTOptions.NETTolerance          = Properties.Settings.Default.SMARTNETTolerance;
-            mobjAnalysis.SMARTOptions.PairedMass            = Properties.Settings.Default.SMARTPairedMass;
-            mobjAnalysis.SMARTOptions.UsePriorProbabilities = Properties.Settings.Default.SMARTUsePriorProbabilities;            
+            mobjAnalysis.SMARTOptions.IsDataPaired = Properties.Settings.Default.STACIsDataPaired;
+            mobjAnalysis.SMARTOptions.MassTolerancePPM = Properties.Settings.Default.STACMassTolerance;
+            mobjAnalysis.SMARTOptions.NETTolerance = Properties.Settings.Default.STACNETTolerance;
+            mobjAnalysis.SMARTOptions.PairedMass = Properties.Settings.Default.STACPairedMass;
+            mobjAnalysis.SMARTOptions.UsePriorProbabilities = Properties.Settings.Default.STACUsePriorProbabilities;            
         }
         /// <summary>
         /// Loads the analysis object.

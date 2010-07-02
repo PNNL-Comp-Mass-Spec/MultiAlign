@@ -33,16 +33,26 @@ namespace MultiAlignWin.Drawing
         /// <param name="bins">X-component to render as bins</param>
         /// <param name="freq">Y-component to render as counts </param>
         /// <param name="name">Name to display for series.</param>
-        public void AddData(float[] bins, float[] freq, string name)
-        {                        
-            Color color              = Color.Black;
-            clsShape shape           = new PNNLControls.DiamondShape(1, false); ;
+        public void AddData(float[] bins, float[] freq, string name, Color color)
+        {
+            clsShape shape = new PNNLControls.DiamondShape(1, false); ;
             clsPlotParams plotParams = new PNNLControls.clsPlotParams(shape, color);
-            plotParams.Name          = name;
+            plotParams.Name = name;
 
             this.ViewPortHistory.Clear();
             this.AutoViewPortOnAddition = true;
-            this.AddSeries(new PNNLControls.clsSeries(ref bins, ref freq, plotParams)); 
+            this.AddSeries(new PNNLControls.clsSeries(ref bins, ref freq, plotParams));
+        }
+
+        /// <summary>
+        /// Adds data to the histogram data series.
+        /// </summary>
+        /// <param name="bins">X-component to render as bins</param>
+        /// <param name="freq">Y-component to render as counts </param>
+        /// <param name="name">Name to display for series.</param>
+        public void AddData(float[] bins, float[] freq, string name)
+        {
+            AddData(bins, freq, name, Color.Red);            
         }
     }
 }

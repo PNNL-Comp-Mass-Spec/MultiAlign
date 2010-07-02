@@ -11,6 +11,43 @@ using PNNLProteomics.Data.Analysis;
 namespace MultiAlignWin
 {
     /// <summary>
+    /// Class that holds a list of peptides and the number of times they were matched
+    /// </summary>
+    public class PeptideMatchExtender
+    {
+        /// <summary>
+        /// Dictionary holding peptide string and the matching counts
+        /// </summary>
+        private Dictionary<string, int> m_counts;
+
+        public PeptideMatchExtender()
+        {
+            m_counts = new Dictionary<string, int>();
+        }
+        /// <summary>
+        /// Gets or sets the peptide count dictionary.
+        /// </summary>
+        public Dictionary<string, int> PeptideMap
+        {
+            get
+            {
+                return m_counts;
+            }
+            set
+            {
+                m_counts = value;
+            }
+        }
+
+        public void AddPeptide(string peptide)
+        {
+            if (m_counts.ContainsKey(peptide) == false)
+                m_counts.Add(peptide, 1);
+            else
+                m_counts[peptide]++;
+        }
+    }
+    /// <summary>
     /// Extracts the protein and peptide maps discovered through peak matching.
     /// </summary>
     public class ProteinMapExtractor

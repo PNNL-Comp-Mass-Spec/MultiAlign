@@ -144,7 +144,9 @@ namespace PNNLControls
         /// <summary>
         /// Temporary rendering bitmap.
         /// </summary>
-		private Bitmap mTempBitmap = null;
+        private Bitmap mTempBitmap = null;
+        float mfloat_autoViewportPaddingX = 0.0F;
+        float mfloat_autoViewportPaddingY = 0.0F;
 
 		/// <summary>
 		/// The drawing area of the chart with only series drawn on it.
@@ -1173,6 +1175,33 @@ namespace PNNLControls
 			}
 		}
 
+
+        /// <summary>
+        /// Gets or sets flag of whether to pad the plot with 
+        /// </summary>
+        public float PadViewPortX
+        {
+            get
+            {
+                return mfloat_autoViewportPaddingX;
+            }
+            set
+            {
+                mfloat_autoViewportPaddingX = value;
+            }
+        }
+        public float PadViewPortY
+        {
+            get
+            {
+                return mfloat_autoViewportPaddingY;
+            }
+            set
+            {
+                mfloat_autoViewportPaddingY = value;
+            }
+        }
+
 		/// <summary>
 		/// Automatically set the viewport so that all data is displayed.
 		/// </summary>
@@ -1200,6 +1229,18 @@ namespace PNNLControls
 					}
 				}
 			}
+
+            /// 
+            /// Give in a little on autoviewport , allow for .1 on either side
+            /// 
+            float xdif = (xMax - xMin) * mfloat_autoViewportPaddingX;
+            float ydif = (yMax - yMin) * mfloat_autoViewportPaddingY;
+
+            xMin = xMin - xdif;
+            xMax = xMax + xdif;
+            yMin = yMin - ydif;
+            yMax = yMax + ydif;
+
 			if (xMin == xMax || yMin == yMax || xMin == float.MaxValue || xMax == float.MinValue 
 				|| yMin == float.MaxValue || yMax == float.MinValue) 
 			{

@@ -24,10 +24,15 @@ namespace MultiAlignWin.Forms
     /// </summary>
     public partial class controlDatasetInformation : UserControl
     {
+        #region Members
+        /// <summary>
+        /// Forms displayed by preview.
+        /// </summary>
+        private Dictionary<string, Form> mdict_forms = new Dictionary<string, Form>();
         /// <summary>
         /// Number of charge states to visually display in cluster chart.
         /// </summary>
-        private const int CONST_NUM_CHARGE_STATES = 4;
+        private const int CONST_NUM_CHARGE_STATES = 5;
         /// <summary>
         /// Delegate when the preview is finished rendering.
         /// </summary>
@@ -58,8 +63,11 @@ namespace MultiAlignWin.Forms
         /// Number of charge states to display on cluster chart.
         /// </summary>
         private int mint_chargeStates;
-
+        /// <summary>
+        /// Alignment data.
+        /// </summary>
         private PNNLProteomics.Data.Alignment.classAlignmentData mobj_alignmentData;
+        #endregion
 
         /// <summary>
         /// Default constructor for a dataset class.
@@ -76,7 +84,7 @@ namespace MultiAlignWin.Forms
             mint_datasetIndex   = datasetIndex;
             mint_chargeStates   = CONST_NUM_CHARGE_STATES;
 
-            UpdateUserInterface();
+            UpdateUserInterface();            
         }
 
 
@@ -124,39 +132,6 @@ namespace MultiAlignWin.Forms
 
             if (mobj_alignmentData != null)
             {
-                /*
-                ListViewItem massStdItem = new ListViewItem();
-                massStdItem.Text = "Alignment Mass Stdev";
-                massStdItem.SubItems.Add(new ListViewItem.ListViewSubItem(massStdItem, mobj_alignmentData.MassStandardDeviation.ToString()));
-                ListViewItem massMeanItem = new ListViewItem();
-                massMeanItem.Text = "Alignment Mass Mean";
-                massMeanItem.SubItems.Add(new ListViewItem.ListViewSubItem(massMeanItem, mobj_alignmentData.MassMean.ToString()));
-                ListViewItem massKurtosisItem = new ListViewItem();
-                massKurtosisItem.Text = "Alignment Mass Kurtosis";
-                massKurtosisItem.SubItems.Add(new ListViewItem.ListViewSubItem(massKurtosisItem, mobj_alignmentData.MassKurtosis.ToString()));
-
-                ListViewItem netStdItem = new ListViewItem();
-                netStdItem.Text = "Alignment Net Stdev";
-                netStdItem.SubItems.Add(new ListViewItem.ListViewSubItem(netStdItem, mobj_alignmentData.NETStandardDeviation.ToString()));
-                ListViewItem netMeanItem = new ListViewItem();
-                netMeanItem.Text = "Alignment Net Mean";
-                netMeanItem.SubItems.Add(new ListViewItem.ListViewSubItem(netMeanItem, mobj_alignmentData.NETMean.ToString()));
-                ListViewItem netKurtosisItem = new ListViewItem();
-                netKurtosisItem.Text = "Alignment Net Kurtosis";
-                netKurtosisItem.SubItems.Add(new ListViewItem.ListViewSubItem(netKurtosisItem, mobj_alignmentData.NETKurtosis.ToString()));
-
-                mlistview_stats.BeginUpdate();
-                mlistview_stats.Items.Add(massMeanItem);
-                mlistview_stats.Items.Add(massStdItem);
-                mlistview_stats.Items.Add(massKurtosisItem);
-                mlistview_stats.Items.Add(netMeanItem);
-                mlistview_stats.Items.Add(netStdItem);
-                mlistview_stats.Items.Add(netKurtosisItem);
-                mlistview_stats.Columns[0].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
-                mlistview_stats.Columns[1].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
-                mlistview_stats.EndUpdate();
-                 */
-
                 mlabel_stdevMass.Text = string.Format("Stdev. Mass = {0:0.000}", mobj_alignmentData.MassStandardDeviation);
                 mlabel_stdevNET.Text  = string.Format("Stdev. NET = {0:0.000}", mobj_alignmentData.NETStandardDeviation);
             }
@@ -175,7 +150,8 @@ namespace MultiAlignWin.Forms
                                 Image massError,
                                 Image alignedNetResidual,
                                 Image massResidual,
-                                Image mzMassResidual)
+                                Image mzMassResidual,
+                                Image massNetResidual)
         {
             if (alignment != null)
             {
@@ -207,14 +183,16 @@ namespace MultiAlignWin.Forms
                             format);
                 g.RotateTransform(45.0F);
 
-                mpicture_alignmentHeatmap.Image = image;
+                mpicture_preview.Image               = image;
+                mpicture_alignmentHeatmap.Image      = image;
                 mpictureBox_massErrorHistogram.Image = image;
-                mpictureBox_netErrorHistogram.Image = image;
-                mpicture_massResiduals.Image = image;
-                mpictureBox_mzMassResidual.Image = image;
-                mpicture_netResiduals.Image = image;
-                mpicture_alignmentHeatmap.Visible = true;
-                mlabel_alignment.Visible = true;
+                mpictureBox_netErrorHistogram.Image  = image;
+                mpicture_massResiduals.Image         = image;
+                mpictureBox_massNetResiduals.Image   = image;
+                mpictureBox_mzMassResidual.Image     = image;
+                mpicture_netResiduals.Image          = image;
+                mpicture_alignmentHeatmap.Visible    = true;
+                mlabel_alignment.Visible             = true;
             }
 
             if (scanNet != null)
@@ -231,6 +209,8 @@ namespace MultiAlignWin.Forms
                 mpicture_massResiduals.Image = massResidual;
             if (mzMassResidual != null)
                 mpictureBox_mzMassResidual.Image = mzMassResidual;
+            if (massNetResidual != null)
+                mpictureBox_massNetResiduals.Image = massNetResidual;
 
         }
         /// <summary>
@@ -247,7 +227,8 @@ namespace MultiAlignWin.Forms
                         images[4],
                         images[5],
                         images[6],
-                        images[7]);
+                        images[7],
+                        images[8]);
         }
         private bool AbortImagePreview()
         {
@@ -294,12 +275,6 @@ namespace MultiAlignWin.Forms
             /// ------------------------------------------------------------------------------------
             /// Cluster
             /// ------------------------------------------------------------------------------------   
-            Image previewClusterChartHighRes = classRenderDatasetInfo.ClusterChart_Thumbnail(mobj_analysis,
-                                                                                                mint_datasetIndex,
-                                                                                                800,
-                                                                                                600,
-                                                                                                true,
-                                                                                                mint_chargeStates, true, true, true);
 
             Image previewClusterChart = classRenderDatasetInfo.ClusterChart_Thumbnail(mobj_analysis,
                                                                                                 mint_datasetIndex,
@@ -311,10 +286,6 @@ namespace MultiAlignWin.Forms
             /// ------------------------------------------------------------------------------------
             /// Alignment
             /// ------------------------------------------------------------------------------------            
-            Image alignmentHighRes = classRenderDatasetInfo.AlignmentHeatmap_Thumbnail(         mobj_analysis,
-                                                                                                mint_datasetIndex,
-                                                                                                1280, 1024);
-
             Image alignmentPreview = classRenderDatasetInfo.AlignmentHeatmap_Thumbnail(         mobj_analysis,
                                                                                                 mint_datasetIndex, width, height);
             
@@ -379,6 +350,12 @@ namespace MultiAlignWin.Forms
                                                                                                 false, false, false);
 
 
+            Image massNetResidual = classRenderDatasetInfo.MassNETResiduals_Thumbnail(  mobj_analysis,
+                                                                                        mint_datasetIndex,
+                                                                                        mpictureBox_massNetResiduals.Width,
+                                                                                        mpictureBox_massNetResiduals.Height,
+                                                                                        false, false, false);
+
             /// 
             /// Save high-res images
             /// 
@@ -406,7 +383,8 @@ namespace MultiAlignWin.Forms
                                             massErrorHistogram,
                                             alignedNetResidual ,
                                             massResidual,
-                                            mzMassResidual                           
+                                            mzMassResidual,
+                                            massNetResidual          
                                         };
 
             
@@ -471,18 +449,18 @@ namespace MultiAlignWin.Forms
         /// <param name="e"></param>
         private void mpicture_preview_Click(object sender, EventArgs e)
         {
-            ctlScatterChart chart = classRenderDatasetInfo.ScanVsClusterNet_Chart(mobj_analysis, mint_datasetIndex);
+            string name = "Scan Vs. Cluster NET";
+            Form displayForm = RetrieveForm(name);
 
-            if (chart != null)
+            if (displayForm == null)
             {
-                Form displayform = new Form();
-                displayform.Size = ParentForm.Size;
-                chart.Title = mobj_dataset.mstrDatasetName;
-                chart.Dock = DockStyle.Fill;
-                chart.BackColor = Color.White;
-                displayform.Icon = ParentForm.Icon;
-                displayform.Controls.Add(chart);
-                displayform.ShowDialog();
+                ctlScatterChart chart = classRenderDatasetInfo.ScanVsClusterNet_Chart(mobj_analysis, mint_datasetIndex);
+                displayForm = RegisterChart(name, chart);
+            }
+            if (displayForm != null)
+            {
+                displayForm.Show();
+                displayForm.BringToFront();
             }
         }
         /// <summary>
@@ -491,19 +469,19 @@ namespace MultiAlignWin.Forms
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void mpicture_rawData_Click(object sender, EventArgs e)
-        {
-            ctlScatterChart chart = classRenderDatasetInfo.ClusterChart_Chart(mobj_analysis, mint_datasetIndex, false, mint_chargeStates);
+        {            
+            string name = "Cluster Chart";
+            Form displayForm = RetrieveForm(name);
 
-            if (chart != null)
+            if (displayForm == null)
             {
-                Form displayform    = new Form();
-                displayform.Size    = ParentForm.Size;
-                chart.Title         = mobj_dataset.mstrDatasetName;
-                chart.Dock          = DockStyle.Fill;
-                chart.BackColor     = Color.White;
-                displayform.Icon    = ParentForm.Icon;
-                displayform.Controls.Add(chart);
-                displayform.ShowDialog();
+                ctlScatterChart chart = classRenderDatasetInfo.ClusterChart_Chart(mobj_analysis, mint_datasetIndex, false, mint_chargeStates);
+                displayForm = RegisterChart(name, chart);
+            }
+            if (displayForm != null)
+            {
+                displayForm.Show();
+                displayForm.BringToFront();
             }
         }
         /// <summary>
@@ -512,22 +490,24 @@ namespace MultiAlignWin.Forms
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void mpictureBox_massErrorHistogram_Click(object sender, EventArgs e)
-        {
-            controlHistogram chart = classRenderDatasetInfo.MassErrorHistogram_Chart(mobj_analysis, mint_datasetIndex);
-            if (chart != null)
+        {                        
+            string name = "Mass Error Histogram";
+            Form displayForm = RetrieveForm(name);
+
+            if (displayForm == null)
             {
-                Form displayform = new Form();
-                displayform.Text = "Mass Error Histogram " + mobj_dataset.mstrDatasetName;
-                displayform.Size = ParentForm.Size;
-                chart.Title      = "Mass Error Histogram ";
-                chart.Dock       = DockStyle.Fill;
-                chart.BackColor  = Color.White;
+                controlHistogram chart = classRenderDatasetInfo.MassErrorHistogram_Chart(mobj_analysis, mint_datasetIndex);
+                if (chart == null)
+                    return; 
 
-                chart.LegendVisible = false;
-                displayform.Icon    = ParentForm.Icon;
-
-                displayform.Controls.Add(chart);
-                displayform.ShowDialog();
+                chart.Name  = name;
+                chart.Title = name;
+                displayForm = RegisterChart(name, chart);
+            }
+            if (displayForm != null)
+            {
+                displayForm.Show();
+                displayForm.BringToFront();
             }
         }
         /// <summary>
@@ -537,20 +517,23 @@ namespace MultiAlignWin.Forms
         /// <param name="e"></param>
         private void mpictureBox_netErrorHistogram_Click(object sender, EventArgs e)
         {
-            controlHistogram chart = classRenderDatasetInfo.NETErrorHistogram_Chart(mobj_analysis, mint_datasetIndex);
-            if (chart != null)
-            {
-                Form displayform = new Form();
-                displayform.Text = "NET Error Histogram " + mobj_dataset.mstrDatasetName;
-                displayform.Size = ParentForm.Size;
-                chart.Title      = "NET Error Histogram ";
-                chart.Dock       = DockStyle.Fill;
-                chart.BackColor  = Color.White;                
-                chart.LegendVisible = false;
-                displayform.Icon    = ParentForm.Icon;
+            string name = "NET Error Histogram";
+            Form displayForm = RetrieveForm(name);
 
-                displayform.Controls.Add(chart);
-                displayform.ShowDialog();
+            if (displayForm == null)
+            {
+                controlHistogram chart = classRenderDatasetInfo.NETErrorHistogram_Chart(mobj_analysis, mint_datasetIndex);
+                if (chart == null)
+                    return;
+
+                chart.Name = name;
+                chart.Title = name;
+                displayForm = RegisterChart(name, chart);
+            }
+            if (displayForm != null)
+            {
+                displayForm.Show();
+                displayForm.BringToFront();
             }
         }
         /// <summary>
@@ -560,17 +543,18 @@ namespace MultiAlignWin.Forms
         /// <param name="e"></param>
         private void mpicture_massResiduals_Click(object sender, EventArgs e)
         {
-            ctlScatterChart chart = classRenderDatasetInfo.MassVsScanResiduals_Chart(mobj_analysis, mint_datasetIndex);
+            string name = "Mass vs Scan Residuals";
+            Form displayForm = RetrieveForm(name);
 
-            if (chart != null)
+            if (displayForm == null)
             {
-                Form displayform    = new Form();
-                displayform.Size    = ParentForm.Size;                
-                chart.Dock          = DockStyle.Fill;
-                chart.BackColor     = Color.White;
-                displayform.Icon    = ParentForm.Icon;
-                displayform.Controls.Add(chart);
-                displayform.ShowDialog();
+                ctlScatterChart chart = classRenderDatasetInfo.MassVsScanResiduals_Chart(mobj_analysis, mint_datasetIndex);
+                displayForm = RegisterChart(name, chart);
+            }
+            if (displayForm != null)
+            {
+                displayForm.Show();
+                displayForm.BringToFront();
             }
         }
         /// <summary>
@@ -580,16 +564,18 @@ namespace MultiAlignWin.Forms
         /// <param name="e"></param>
         private void mpicture_netResiduals_Click(object sender, EventArgs e)
         {
-            ctlScatterChart chart = classRenderDatasetInfo.NETResiduals_Chart(mobj_analysis, mint_datasetIndex);
-            if (chart != null)
+            string name = "NET Residuals";
+            Form displayForm = RetrieveForm(name);
+
+            if (displayForm == null)
             {
-                Form displayform    = new Form();
-                displayform.Size    = ParentForm.Size;
-                chart.Dock          = DockStyle.Fill;
-                chart.BackColor     = Color.White;
-                displayform.Icon    = ParentForm.Icon;
-                displayform.Controls.Add(chart);
-                displayform.ShowDialog();
+                ctlScatterChart chart = classRenderDatasetInfo.NETResiduals_Chart(mobj_analysis, mint_datasetIndex);
+                displayForm = RegisterChart(name, chart);
+            }
+            if (displayForm != null)
+            {
+                displayForm.Show();
+                displayForm.BringToFront();
             }
         }
         /// <summary>
@@ -599,22 +585,111 @@ namespace MultiAlignWin.Forms
         /// <param name="e"></param>
         private void mpictureBox_mzMassResidual_Click(object sender, EventArgs e)
         {
+            string name = "Mass Vs. M/Z Residuals";
+            Form displayForm = RetrieveForm(name);
 
-            ctlScatterChart chart = classRenderDatasetInfo.MassVsMZResidual_Chart(mobj_analysis, mint_datasetIndex);
-
-            if (chart != null)
+            if (displayForm == null)
             {
-                Form displayform = new Form();
-                displayform.Size = ParentForm.Size;
-                chart.Dock = DockStyle.Fill;
-                chart.BackColor = Color.White;
-                displayform.Icon = ParentForm.Icon;
-                displayform.Controls.Add(chart);
-                displayform.ShowDialog();
+                ctlScatterChart chart = classRenderDatasetInfo.MassVsMZResidual_Chart(mobj_analysis, mint_datasetIndex);
+                displayForm = RegisterChart(name, chart);
+            }
+            if (displayForm != null)
+            {
+                displayForm.Show();
+                displayForm.BringToFront();
+            } 
+        }
+        private void mpicture_alignmentHeatmap_Click(object sender, EventArgs e)
+        {
+
+            //ctlAlignmentHeatMap chart = classRenderDatasetInfo.AlignmentHeatMap_Chart(mobj_analysis, mint_datasetIndex);
+            //if (chart != null)
+            //{
+            //    Form displayform = new Form();
+            //    displayform.Size = ParentForm.Size;
+            //    chart.Dock = DockStyle.Fill;
+            //    chart.BackColor = Color.White;
+            //    displayform.Icon = ParentForm.Icon;
+            //    displayform.Controls.Add(chart);
+            //    displayForm.Show();
+            //}
+        }
+
+        private void mpictureBox_massNetResiduals_Click(object sender, EventArgs e)
+        {
+            string name = "Mass and NET Residuals";
+            Form displayForm = RetrieveForm(name);
+
+            if (displayForm == null)
+            {
+                ctlScatterChart chart = classRenderDatasetInfo.MassNETResiduals_Chart(mobj_analysis, mint_datasetIndex);
+                displayForm = RegisterChart(name, chart);
+            }
+            if (displayForm != null)
+            {
+                displayForm.Show();
+                displayForm.BringToFront();
+            }                            
+        }
+        /// <summary>
+        /// Retrieves the form if a form exists
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        private Form RetrieveForm(string name)
+        {
+            if (mdict_forms.ContainsKey(name))
+                return mdict_forms[name];
+            else return null;
+        }
+        private Form RegisterChart(string name, Control chart)
+        {
+            if (chart == null)
+                return null;
+
+            if (mdict_forms.ContainsKey(name))
+                return mdict_forms[name];
+
+            Form displayform    = new Form();
+            displayform.FormClosing += new FormClosingEventHandler(displayform_FormClosing);
+            displayform.Size    = ParentForm.Size;
+            chart.Dock          = DockStyle.Fill;
+            chart.BackColor     = Color.White;
+            displayform.Icon    = ParentForm.Icon;
+            displayform.Name    = name; 
+            displayform.Controls.Add(chart);
+            displayform.MdiParent = ParentForm.MdiParent;
+
+            mdict_forms.Add(name, displayform);
+
+            return displayform;
+        }
+
+        void displayform_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (e.CloseReason == CloseReason.UserClosing)
+            {
+                e.Cancel = true;
+                Form form = sender as Form;
+                form.Hide();
             }
         }
         #endregion
 
+        /// <summary>
+        /// Closes all of the forms that are currenty displayed.
+        /// </summary>
+        private void CloseAllOpenCharts()
+        {
+            foreach (string key in mdict_forms.Keys)
+            {
+                Form f = mdict_forms[key];
+                if (f != null)
+                    f.Close();
+            }
+
+            mdict_forms.Clear();
+        }
     }
 }
 

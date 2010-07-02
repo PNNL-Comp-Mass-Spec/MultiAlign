@@ -100,6 +100,10 @@ namespace MultiAlignEngine
 			/*************************************************************************************************************
 			*		Methods
 			*************************************************************************************************************/
+			void clsUMCData::GetMZAndNETs(int dataset_num, float (&mz) __gc[], float (&nets) __gc[], double (&driftTimes) __gc[]);
+			void clsUMCData::GetMZAndScans(int dataset_num, bool aligned,  float (&mz) __gc[], float (&scans) __gc[], double (&driftTimes) __gc[]);
+			void clsUMCData::GetMZAndScans(int dataset_num, bool aligned,  float (&mz) __gc[], float (&scans) __gc[], int chargeState);
+				
 			int GetDatasetIndex(System::String *datasetPath)
 			{
 				int index = datasetPath->LastIndexOf("\\");
@@ -115,13 +119,16 @@ namespace MultiAlignEngine
 			}
 
 			clsUMC* GetUMCS(int dataset_num)__gc[]; 			
-			void SetUMCCalibratedMassedAndNETS( std::vector <int> &umcIndices,
+			void SetUMCCalibratedMassedAndNETS(	std::vector <int> &umcIndices, 
 												std::vector<double> &umcCalibratedMasses, 
-												std::vector<double> &umcAlignedNETS); 
+												std::vector<double> &umcAlignedNETS, 
+												std::vector<double> &umcDriftTimes);
+
 			void SetUMCCalibratedMassedAndNETS( std::vector <int> &umcIndices,
 												std::vector<double> &umcCalibratedMasses, 
 												std::vector<double> &umcAlignedNETS, 
-												std::vector<int> &umcAlignedScans); 
+												std::vector<int> &umcAlignedScans, 
+												std::vector<double> &umcDriftTimes); 
 			
 			int SetUMCS(System::String *file_path, 
 						clsUMC* (&umcs) __gc[], 
@@ -134,7 +141,8 @@ namespace MultiAlignEngine
 			void GetMassesAndNETs(	int dataset_num,
 									bool calibrated_masses, 
 									float (&masses) __gc[], 
-									float (&nets) __gc[]); 
+									float (&nets) __gc[],
+									double (&driftTimes) __gc[]); 
 
 			/// Finds a UMC given the dataset it belongs to, and the mass and scan number.			
 			clsUMC* clsUMCData::GetUMC( int dataset_num,

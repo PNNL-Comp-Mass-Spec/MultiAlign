@@ -59,13 +59,17 @@ namespace MultiAlignEngine
 			std::vector<double> vectClusterCalibratedMasses; 
 			std::vector<double> vectClusterAlignedNETs; 
 			std::vector<int>	vectClusterAlignedScans; 
+			std::vector<double>	vectClusterAlignedDriftTimes; 
 
 			mobjLCMSWarp->GetFeatureCalibratedMassesAndAlignedNETs( vectClusterIndices,
 																	vectClusterCalibratedMasses, 
-																	vectClusterAlignedNETs); 
+																	vectClusterAlignedNETs,
+																	vectClusterAlignedDriftTimes); 
+
 			clusterData->SetClusterCalibratedMassedAndNETS( vectClusterIndices, 
 															vectClusterCalibratedMasses,
-															vectClusterAlignedNETs); 
+															vectClusterAlignedNETs,
+															vectClusterAlignedDriftTimes); 
 		}
 
 		void clsAlignmentProcessor::ApplyNETMassFunctionToAligneeDatasetFeatures(MultiAlignEngine::Features::clsUMCData* &umcData)
@@ -79,15 +83,18 @@ namespace MultiAlignEngine
 			std::vector<double> vectUMCCalibratedMasses; 
 			std::vector<double> vectUMCAlignedNETs; 
 			std::vector<int>	vectUMCAlignedScans; 
+			std::vector<double>	vectUMCDriftTimes; 
 
 			if (mblnAligningToMassTagDB)
 			{
 				mobjLCMSWarp->GetFeatureCalibratedMassesAndAlignedNETs( vectUMCIndices,
 																		vectUMCCalibratedMasses, 
-																		vectUMCAlignedNETs); 
+																		vectUMCAlignedNETs,
+																		vectUMCDriftTimes); 
 				umcData->SetUMCCalibratedMassedAndNETS( vectUMCIndices,
 														vectUMCCalibratedMasses,
-														vectUMCAlignedNETs); 
+														vectUMCAlignedNETs,
+														vectUMCDriftTimes); 
 			}
 			else
 			{
@@ -95,13 +102,15 @@ namespace MultiAlignEngine
 																		vectUMCCalibratedMasses, 
 																		vectUMCAlignedNETs,
 																		vectUMCAlignedScans, 
+																		vectUMCDriftTimes,
 																		mintMinReferenceDatasetScan,
 																		mintMaxReferenceDatasetScan); 
 
 				umcData->SetUMCCalibratedMassedAndNETS( vectUMCIndices, 
 														vectUMCCalibratedMasses, 
 														vectUMCAlignedNETs, 
-														vectUMCAlignedScans); 
+														vectUMCAlignedScans,
+														vectUMCDriftTimes); 
 			}
 		}
 

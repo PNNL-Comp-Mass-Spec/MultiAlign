@@ -311,12 +311,6 @@ namespace MultiAlignWin.UI
         protected override void OnMdiChildActivate(EventArgs e)
         {
             ToolStripManager.RevertMerge(this.mainToolStrip);
-
-            frmDataView f = ActiveMdiChild as frmDataView;
-            if (f != null)
-            {
-                ToolStripManager.Merge(f.DataViewToolStrip, mainToolStrip.Name);
-            }
             base.OnMdiChildActivate(e);
         }
     }

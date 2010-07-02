@@ -721,60 +721,60 @@ namespace MultiAlignWin.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool SMARTIsDataPaired {
+        public bool STACIsDataPaired {
             get {
-                return ((bool)(this["SMARTIsDataPaired"]));
+                return ((bool)(this["STACIsDataPaired"]));
             }
             set {
-                this["SMARTIsDataPaired"] = value;
+                this["STACIsDataPaired"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("0.05")]
-        public double SMARTNETTolerance {
+        public double STACNETTolerance {
             get {
-                return ((double)(this["SMARTNETTolerance"]));
+                return ((double)(this["STACNETTolerance"]));
             }
             set {
-                this["SMARTNETTolerance"] = value;
+                this["STACNETTolerance"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("20")]
-        public double SMARTMassTolerance {
+        public double STACMassTolerance {
             get {
-                return ((double)(this["SMARTMassTolerance"]));
+                return ((double)(this["STACMassTolerance"]));
             }
             set {
-                this["SMARTMassTolerance"] = value;
+                this["STACMassTolerance"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool SMARTUsePriorProbabilities {
+        public bool STACUsePriorProbabilities {
             get {
-                return ((bool)(this["SMARTUsePriorProbabilities"]));
+                return ((bool)(this["STACUsePriorProbabilities"]));
             }
             set {
-                this["SMARTUsePriorProbabilities"] = value;
+                this["STACUsePriorProbabilities"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("20")]
-        public double SMARTPairedMass {
+        public double STACPairedMass {
             get {
-                return ((double)(this["SMARTPairedMass"]));
+                return ((double)(this["STACPairedMass"]));
             }
             set {
-                this["SMARTPairedMass"] = value;
+                this["STACPairedMass"] = value;
             }
         }
         
@@ -883,6 +883,18 @@ namespace MultiAlignWin.Properties {
             }
             set {
                 this["UserClusterOptionsIgnoreChargeStates"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool UserClusterOptionsAlignToDatabase {
+            get {
+                return ((bool)(this["UserClusterOptionsAlignToDatabase"]));
+            }
+            set {
+                this["UserClusterOptionsAlignToDatabase"] = value;
             }
         }
     }

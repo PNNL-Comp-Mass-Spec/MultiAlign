@@ -176,19 +176,19 @@
     <Setting Name="UserClusterOptionsDriftTimeTolerance" Type="System.Double" Scope="User">
       <Value Profile="(Default)">50</Value>
     </Setting>
-    <Setting Name="SMARTIsDataPaired" Type="System.Boolean" Scope="User">
+    <Setting Name="STACIsDataPaired" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="SMARTNETTolerance" Type="System.Double" Scope="User">
+    <Setting Name="STACNETTolerance" Type="System.Double" Scope="User">
       <Value Profile="(Default)">0.05</Value>
     </Setting>
-    <Setting Name="SMARTMassTolerance" Type="System.Double" Scope="User">
+    <Setting Name="STACMassTolerance" Type="System.Double" Scope="User">
       <Value Profile="(Default)">20</Value>
     </Setting>
-    <Setting Name="SMARTUsePriorProbabilities" Type="System.Boolean" Scope="User">
+    <Setting Name="STACUsePriorProbabilities" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="SMARTPairedMass" Type="System.Double" Scope="User">
+    <Setting Name="STACPairedMass" Type="System.Double" Scope="User">
       <Value Profile="(Default)">20</Value>
     </Setting>
     <Setting Name="UserDBFormMTDBExperimentFilter" Type="System.String" Scope="User">
@@ -216,6 +216,9 @@
       <Value Profile="(Default)">0</Value>
     </Setting>
     <Setting Name="UserClusterOptionsIgnoreChargeStates" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="UserClusterOptionsAlignToDatabase" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
   </Settings>

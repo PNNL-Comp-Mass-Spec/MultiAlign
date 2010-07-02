@@ -195,11 +195,23 @@
     <Compile Include="Drawing\frmIntensityDiff.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Drawing\PeptideProteinFinder.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Drawing\PeptideProteinFinder.Designer.cs">
+      <DependentUpon>PeptideProteinFinder.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Cluster\ctlClusterChart.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Forms\Cluster\ctlClusterGrid.cs">
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Forms\controlClusterInformation.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\controlClusterInformation.Designer.cs">
+      <DependentUpon>controlClusterInformation.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\controlDatasetInformation.cs">
       <SubType>UserControl</SubType>
@@ -342,8 +354,15 @@
     <Compile Include="Forms\Summary\frmDatasetSummary.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Forms\TableWriterColumnOptionsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\TableWriterColumnOptionsForm.Designer.cs">
+      <DependentUpon>TableWriterColumnOptionsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="IO\AnalysisSQLiteDBWriter.cs" />
     <Compile Include="IO\AnalysisTableWriter.cs" />
+    <Compile Include="IO\AnalysisAbundanceTableWriter.cs" />
     <Compile Include="IO\classAnalysisLogWriter.cs" />
     <Compile Include="IO\clsConfigParms.cs" />
     <Compile Include="Forms\frmDBName.cs">
@@ -358,6 +377,7 @@
     <Compile Include="Forms\frmSaveFactors.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="IO\TableWriterColumnOptions.cs" />
     <Compile Include="Network\clsDMSConnectionTester.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -407,6 +427,10 @@
       <DependentUpon>frmIntensityDiff.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Drawing\PeptideProteinFinder.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>PeptideProteinFinder.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\Cluster\ctlClusterChart.resx">
       <DependentUpon>ctlClusterChart.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -414,6 +438,10 @@
     <EmbeddedResource Include="Forms\Cluster\ctlClusterGrid.resx">
       <DependentUpon>ctlClusterGrid.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\controlClusterInformation.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>controlClusterInformation.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\controlDatasetInformation.resx">
       <SubType>Designer</SubType>
@@ -550,6 +578,10 @@
     <EmbeddedResource Include="Forms\frmSaveFactors.resx">
       <DependentUpon>frmSaveFactors.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\TableWriterColumnOptionsForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>TableWriterColumnOptionsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <SubType>Designer</SubType>

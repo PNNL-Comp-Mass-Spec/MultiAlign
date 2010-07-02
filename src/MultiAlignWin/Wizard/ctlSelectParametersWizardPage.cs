@@ -160,14 +160,12 @@ namespace MultiAlignWin
             // 
             this.peakMatchingButton.BackColor = System.Drawing.Color.White;
             this.peakMatchingButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.peakMatchingButton.Image = global::MultiAlignWin.Properties.Resources.clusteringGlyph;
             this.peakMatchingButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.peakMatchingButton.Location = new System.Drawing.Point(192, 19);
             this.peakMatchingButton.Name = "peakMatchingButton";
-            this.peakMatchingButton.Size = new System.Drawing.Size(221, 31);
+            this.peakMatchingButton.Size = new System.Drawing.Size(95, 31);
             this.peakMatchingButton.TabIndex = 2;
             this.peakMatchingButton.Text = "Peak Matching";
-            this.peakMatchingButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.peakMatchingButton.UseVisualStyleBackColor = false;
             this.peakMatchingButton.Click += new System.EventHandler(this.mbtnClusteringParameters_Click);
             // 
@@ -254,9 +252,9 @@ namespace MultiAlignWin
             this.mradioButton_useSMART.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.mradioButton_useSMART.Location = new System.Drawing.Point(7, 63);
             this.mradioButton_useSMART.Name = "mradioButton_useSMART";
-            this.mradioButton_useSMART.Size = new System.Drawing.Size(85, 17);
+            this.mradioButton_useSMART.Size = new System.Drawing.Size(75, 17);
             this.mradioButton_useSMART.TabIndex = 24;
-            this.mradioButton_useSMART.Text = "Use SMART";
+            this.mradioButton_useSMART.Text = "Use STAC";
             this.mradioButton_useSMART.UseVisualStyleBackColor = true;
             this.mradioButton_useSMART.CheckedChanged += new System.EventHandler(this.mradioButton_useSMART_CheckedChanged);
             // 
@@ -279,14 +277,12 @@ namespace MultiAlignWin
             this.smartParametersButton.BackColor = System.Drawing.Color.White;
             this.smartParametersButton.Enabled = false;
             this.smartParametersButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.smartParametersButton.Image = global::MultiAlignWin.Properties.Resources.smart;
             this.smartParametersButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.smartParametersButton.Location = new System.Drawing.Point(192, 56);
             this.smartParametersButton.Name = "smartParametersButton";
-            this.smartParametersButton.Size = new System.Drawing.Size(219, 30);
+            this.smartParametersButton.Size = new System.Drawing.Size(95, 30);
             this.smartParametersButton.TabIndex = 23;
-            this.smartParametersButton.Text = "SMART";
-            this.smartParametersButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.smartParametersButton.Text = "STAC";
             this.smartParametersButton.UseVisualStyleBackColor = false;
             this.smartParametersButton.Click += new System.EventHandler(this.mbutton_scoring_Click);
             // 
