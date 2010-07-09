@@ -528,6 +528,7 @@ namespace MultiAlignWin
             this.mprogressBar_connectionTest.Size = new System.Drawing.Size(358, 18);
             this.mprogressBar_connectionTest.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
             this.mprogressBar_connectionTest.TabIndex = 39;
+            this.mprogressBar_connectionTest.Value = 2;
             this.mprogressBar_connectionTest.Visible = false;
             // 
             // label3
