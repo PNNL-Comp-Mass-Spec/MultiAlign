@@ -138,19 +138,24 @@ namespace PNNLProteomics.Data.Loaders
                 /// 
                 /// Build the alias
                 ///    
-				string fileNameLowerCase = fileName.ToLower();
-				string fileNameAlias = null;
+				string fileNameLowerCase        = fileName.ToLower();
+                string fileNameAlias            = null;
+                clsDatasetInfo datasetInfo      = new clsDatasetInfo();
+                datasetInfo.menmDeisotopingTool = DeisotopingTool.NA;
 
 				if (fileNameLowerCase.Contains(".pek"))
-				{
+                {
+                    datasetInfo.menmDeisotopingTool = DeisotopingTool.ICR2LS;
 					fileNameAlias = fileName.Substring(0, fileNameLowerCase.LastIndexOf(".pek"));
 				}
 				else if (fileNameLowerCase.Contains("_isos.csv"))
-				{
+                {
+                    datasetInfo.menmDeisotopingTool = DeisotopingTool.Decon2LS;
 					fileNameAlias = fileName.Substring(0, fileNameLowerCase.LastIndexOf("_isos.csv"));
 				}
 				else if (fileNameLowerCase.Contains("_lcmsfeatures.txt"))
-				{
+                {
+                    datasetInfo.menmDeisotopingTool = DeisotopingTool.LCMSFeatureFinder;
 					fileNameAlias = fileName.Substring(0, fileNameLowerCase.LastIndexOf("_lcmsfeatures.txt"));
 				}
 				else if (fileNameLowerCase.Contains(".db3"))
@@ -166,14 +171,12 @@ namespace PNNLProteomics.Data.Loaders
 					fileNameAlias = fileName;
 				}
 
-                clsDatasetInfo datasetInfo      = new clsDatasetInfo();
                 datasetInfo.mstrDatasetName     = fileName;
                 datasetInfo.mstrAlias           = fileNameAlias;
                 datasetInfo.mstrDatasetId       = "NA";
                 datasetInfo.mstrAnalysisJobId   = "NA";
                 datasetInfo.mintBlockID         = 0;
                 datasetInfo.mintRunOrder        = 0;
-                datasetInfo.menmDeisotopingTool = DeisotopingTool.NA;
                 datasetInfo.mstrLocalPath       = filePath;
 
                 numLoaded++;

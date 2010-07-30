@@ -22,6 +22,7 @@ using System.Data;
 //using System.Drawing;
 using System.Threading;
 using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data.SqlClient;
 
@@ -200,7 +201,8 @@ namespace PNNLProteomics.Data.Loaders
                         selectQry += " WHERE  (dbo.T_Analysis_Job.AJ_analysisToolID IN (2, 7, 10, 11, 12, 16, 18))";
                         selectQry += "         AND dbo.T_Dataset.Dataset_Num LIKE \'" + field + "\'";  
                          * */
-                        selectQry = "SELECT * FROM V_Analysis_Job_Export_MultiAlign WHERE datasetName LIKE \'" + field + "\' AND ToolID IN (2, 7, 10, 11, 12, 16, 18)";
+                        selectQry = "SELECT * FROM V_Analysis_Job_Export_MultiAlign WHERE datasetName LIKE \'" + field + "\' AND ToolID IN (2, 7, 10, 11, 12, 16, 18, 27)";
+                        //27 is LCMSFeature Finder
                         break;
                     
                     case CONST_QUERY_DATASET_ID:
@@ -239,7 +241,8 @@ namespace PNNLProteomics.Data.Loaders
                         selectQry += " WHERE  (dbo.T_Analysis_Job.AJ_analysisToolID IN (2, 7, 10, 11, 12, 16, 18))";
                         selectQry += " AND dbo.T_Dataset.Dataset_ID = " + field;
                          * */
-                        selectQry = "SELECT * FROM V_Analysis_Job_Export_MultiAlign WHERE DatasetID = " + field + " AND ToolID IN (2, 7, 10, 11, 12, 16, 18)";                        
+                        selectQry = "SELECT * FROM V_Analysis_Job_Export_MultiAlign WHERE DatasetID = " + field + " AND ToolID IN (2, 7, 10, 11, 12, 16, 18, 27)";                        
+                        //27 is LCMSFeature Finder
                         break;
 			    }				    
                 return selectQry;
@@ -374,8 +377,7 @@ namespace PNNLProteomics.Data.Loaders
             /// <param name="FileName"></param>
             private void LoadDataAdapterResultsIntoArray(DataTable table)
             {
-                string pekFilePath;
-                string fileName;
+                string pekFilePath;               
 
                 Type labelType = typeof(MultiAlignEngine.LabelingType);
                 MultiAlignEngine.LabelingType[] labelTypes = (MultiAlignEngine.LabelingType[])Enum.GetValues(labelType);
@@ -500,26 +502,71 @@ namespace PNNLProteomics.Data.Loaders
                     {
                         datasetInfo.mintBatchID = 0;
                     }
+                    datasetInfo.mstrAlias = alias;
+                    datasetInfo.selected = false;
 
                     /// 
                     /// Data File Path
                     /// 
-                    pekFilePath                 = Path.Combine(Convert.ToString(row[17]), datasetInfo.mstrResultsFolder);                    
-                    fileName                    = GetFileNameFromDatabasePath(pekFilePath);                      
-                    datasetInfo.mstrLocalPath   = Path.Combine(pekFilePath, fileName);
-                    datasetInfo.mstrDatasetName = fileName;
-                    
+                    pekFilePath        = Path.Combine(Convert.ToString(row[17]), datasetInfo.mstrResultsFolder);                    
+                    List<string> files = GetFileNameFromDatabasePath(pekFilePath);
 
-                    datasetInfo.mstrAlias = alias;
-                    datasetInfo.selected  = false;
+                    foreach (string fileName in files)
+                    {
+                        clsDatasetInfo info = new clsDatasetInfo();
+                        if (info != null)
+                        {
+                            
+                            info.factorsDefined         = datasetInfo.factorsDefined;
+                            info.mdateAcquisitionStart  = datasetInfo.mdateAcquisitionStart;
+                            
+                            string extension = System.IO.Path.GetExtension(fileName);
+                            if (extension != ".txt")
+                            {
+                                info.menmDeisotopingTool = DeisotopingTool.Decon2LS;
+                                if (extension == ".pek")
+                                {
+                                    info.menmDeisotopingTool = DeisotopingTool.ICR2LS;
+                                }
+                            }else
+                            {
+                                info.menmDeisotopingTool = DeisotopingTool.LCMSFeatureFinder;
+                            }
 
-                    marrDatasetInfo.Add(datasetInfo);
+                            info.menmLabelingType       = datasetInfo.menmLabelingType;
+                            info.mintBatchID            = datasetInfo.mintBatchID;
+                            info.mintBlockID            = datasetInfo.mintBlockID;
+                            info.mintColumnID           = datasetInfo.mintColumnID;
+                            info.mintExperimentID       = datasetInfo.mintExperimentID;
+                            info.mintRunOrder           = datasetInfo.mintRunOrder;
+                            info.mstrAlias              = datasetInfo.mstrAlias;
+                            info.mstrAnalysisJobId      = datasetInfo.mstrAnalysisJobId;
+                            info.mstrBlockingFactor     = datasetInfo.mstrBlockingFactor;
+                            info.mstrComment            = datasetInfo.mstrComment;
+                            info.mstrDatasetId          = datasetInfo.mstrDatasetId;
+                            info.mstrInstrment          = datasetInfo.mstrInstrment;
+                            info.mstrInstrumentFolder   = datasetInfo.mstrInstrumentFolder;
+                            info.mstrOperator           = datasetInfo.mstrOperator;
+                            info.mstrReplicateName      = datasetInfo.mstrReplicateName;
+                            info.mstrReplicateName      = datasetInfo.mstrReplicateName;
+                            info.mstrResultsFolder      = datasetInfo.mstrResultsFolder;
+                            info.mstrVolume             = datasetInfo.mstrVolume;
+                            info.selected               = datasetInfo.selected;                            
+                            info.mstrLocalPath          = Path.Combine(pekFilePath, fileName);
+                            info.mstrDatasetName        = fileName;
 
-                    /// 
-                    /// Give the user a pointer to the loaded dataset
-                    /// 
-                    if (LoadedDataset != null)
-                        LoadedDataset(datasetInfo);
+
+                            marrDatasetInfo.Add(info);
+
+
+                            /// 
+                            /// Give the user a pointer to the loaded dataset
+                            /// 
+                            if (LoadedDataset != null)
+                                LoadedDataset(info);
+                        }
+                    }
+
 
                     /// 
                     /// Update the user on how many are loaded
@@ -551,36 +598,33 @@ namespace PNNLProteomics.Data.Loaders
             /// </summary>
             /// <param name="sourcePath"></param>
             /// <returns></returns>
-		    private string GetFileNameFromDatabasePath(string sourcePath)
+		    private List<string> GetFileNameFromDatabasePath(string sourcePath)
 		    {
-			    string fileName = null;                
-                string[] pekInfo  = Directory.GetFiles(sourcePath,"*.pek", SearchOption.TopDirectoryOnly);                
+                List<string> names  = new List<string>();			    
+                string[] files      = Directory.GetFiles(sourcePath, "*.*", SearchOption.TopDirectoryOnly);
+                string path = "";
                 /// 
                 /// Search first for pek file names
                 /// 
-                if (pekInfo.Length > 0)
+                foreach (string fileName in files)
                 {
-                    foreach (string pekFileName in pekInfo)
+                    if (fileName.IndexOf("_ic.pek") == -1 && fileName.ToLower().Contains(".pek"))
                     {
-                        if (pekFileName.IndexOf("_ic.pek") == -1)
-                        {
-                            FileInfo info = new FileInfo(pekFileName);
-                            fileName = info.Name;
-                            break;
-                        }
+                        path = System.IO.Path.GetFileName(fileName);
+                        names.Add(path);
                     }
-                }
-                else
-                {
-                    /// Then for isos.
-                    string[] isosInfo = Directory.GetFiles(sourcePath, "*_isos.csv", SearchOption.TopDirectoryOnly);
-                    if (isosInfo.Length > 0)
+                    else if (fileName.ToLower().Contains("_isos.csv"))
                     {
-                        FileInfo info = new FileInfo(isosInfo[0]);
-                        fileName = info.Name;
+                        path = System.IO.Path.GetFileName(fileName);
+                        names.Add(path);
                     }
-                }
-			    return fileName ;
+                    else if (fileName.ToLower().Contains("_lcmsfeatures.txt"))
+                    {
+                        path = System.IO.Path.GetFileName(fileName);
+                        names.Add(path);                         
+                    }
+                }                
+                return names;
 		    }    		
 		    #endregion		
 	    
