@@ -27,8 +27,8 @@ namespace MultiAlignWin.Drawing
     /// </summary>
     public class classRenderDatasetInfo
     {
-        private const int CONST_PRE_POINT_SIZE  = 2;
-        private const int CONST_POST_POINT_SIZE = 2;
+        private const int CONST_PRE_POINT_SIZE  = 1;
+        private const int CONST_POST_POINT_SIZE = 1;
 
 
         #region NET Residual Plots
@@ -199,15 +199,15 @@ namespace MultiAlignWin.Drawing
             /// and plot scan vs net of cluster. 
             /// 
             classAlignmentResidualData residual = analysis.AlignmentData[datasetNum].ResidualData;
-            chart = new ctlScatterChart();
-            chart.XAxisLabel = "Scan #";
-            chart.YAxisLabel = "Mass Residual (PPM)";
-            chart.Title = name + "Mass (PPM) vs Scan Residual";
-            chart.PadViewPortX = .1F;
-            chart.PadViewPortY = .1F;
-            int ptSize     = CONST_PRE_POINT_SIZE;
-            Color clr      = Color.Blue;
-            clsShape shape = new BubbleShape(ptSize, false);
+            chart               = new ctlScatterChart();
+            chart.XAxisLabel    = "Scan #";
+            chart.YAxisLabel    = "Mass Residual (PPM)";
+            chart.Title         = name + "Mass (PPM) vs Scan Residual";
+            chart.PadViewPortX  = .1F;
+            chart.PadViewPortY  = .1F;
+            int ptSize          = CONST_PRE_POINT_SIZE;
+            Color clr           = Color.Blue;
+            clsShape shape      = new BubbleShape(ptSize, false);
 
             /// 
             /// Residual Plots of mass error pre-corrected
@@ -215,19 +215,21 @@ namespace MultiAlignWin.Drawing
             clsPlotParams plt_params = new clsPlotParams(shape, Color.Blue);
             plt_params.Name = "Post-Alignment";
             chart.AutoViewPortOnAddition = true;
+
             clsSeries series = new clsSeries(ref residual.scans, ref residual.massError, plt_params);
             
 
             /// 
             /// Residual Plots of mass error post-corrected?
             /// 
-            clsShape alignedShape = new BubbleShape(CONST_POST_POINT_SIZE, false);
+            clsShape alignedShape           = new BubbleShape(CONST_POST_POINT_SIZE, false);
             clsPlotParams plt_paramsAligned = new clsPlotParams(alignedShape, Color.Red);
-            plt_paramsAligned.Name = "Pre-Alignment";
-            chart.AutoViewPortOnAddition = true;
+            plt_paramsAligned.Name          = "Pre-Alignment";
+            chart.AutoViewPortOnAddition    = true;
+
             clsSeries seriesCorrected = new clsSeries(ref residual.scans, ref residual.massErrorCorrected, plt_paramsAligned);
-            chart.ViewPortHistory.Clear();
             
+            chart.ViewPortHistory.Clear();            
             chart.AddSeries(seriesCorrected);
             chart.AddSeries(series);
 
@@ -312,20 +314,25 @@ namespace MultiAlignWin.Drawing
             /// 
             clsPlotParams plt_params = new clsPlotParams(shape, Color.Blue);
             plt_params.Name = "Post-Alignment";
-            chart.AutoViewPortOnAddition = true;
-            clsSeries series = new clsSeries(ref residual.mz, ref residual.mzMassError, plt_params);
+            chart.AutoViewPortOnAddition = true;            
+            clsSeries series = new clsSeries(ref residual.mz, ref residual.mzMassError, plt_params);            
             
 
             /// 
             /// Residual Plots of mass vs mz error post-correcteds
             /// 
             clsShape alignedShape = new BubbleShape(CONST_POST_POINT_SIZE, false);
-            clsPlotParams plt_paramsAligned = new clsPlotParams(alignedShape, Color.FromArgb(128, Color.Red));
+            clsPlotParams plt_paramsAligned = new clsPlotParams(alignedShape, Color.Red);
             plt_paramsAligned.Name = "Pre-Alignment";
             chart.AutoViewPortOnAddition = true;
-            clsSeries seriesCorrected = new clsSeries(ref residual.mz, ref residual.mzMassErrorCorrected, plt_paramsAligned);
 
+            float[] data = new float[residual.mzMassErrorCorrected.Length];
+            for (int kk = 0; kk < data.Length; kk++)
+                data[kk] = residual.mzMassErrorCorrected[kk] * -1;
 
+            clsSeries seriesCorrected = new clsSeries(ref residual.mz, ref data, plt_paramsAligned); //ref residual.mzMassErrorCorrected, plt_paramsAligned);
+
+            
             chart.AddSeries(seriesCorrected);
             chart.AddSeries(series);
             chart.ViewPortHistory.Clear();
@@ -663,9 +670,11 @@ namespace MultiAlignWin.Drawing
                 ctlAlignmentHeatMap chart = classRenderDatasetInfo.AlignmentHeatMap_Chart(analysis, datasetNum);
                 if (chart != null)
                 {
+                    chart.Legend.UseZScore = false;
                     image = chart.GetThumbnail(new Size(width, height));
                     chart.Dispose();
                 }
+
             }
             catch 
             {
@@ -1392,7 +1401,7 @@ namespace MultiAlignWin.Drawing
 
                 int N               = clusters.NumClusters;
                 float binSize       = 1; 
-                int totalBins       = 100;
+                int totalBins       = 20;
                 float[] bins        = new float[totalBins];
                 float[] freqsMedian = new float[totalBins];
                 float[] freqsMean   = new float[totalBins];
@@ -1527,23 +1536,31 @@ namespace MultiAlignWin.Drawing
                 List<float> meanScoreList   = new List<float>();
                 List<float> medianScoreList = new List<float>();
 
+                int minn, maxx;
+                minn = 100;
+                maxx = 0;
+                int[] x = new int[10];
                 for (int i = 0; i < N; i++)
                 {
                     clsCluster cluster = clusters.GetCluster(i);
-                    if (cluster.mshort_num_dataset_members > 1 && cluster.MeanScore >= 0 && cluster.MedianScore >=0 )
+
+                    minn = Math.Min(cluster.mshort_num_dataset_members, minn);
+                    maxx = Math.Max(cluster.mshort_num_dataset_members, maxx);
+
+                    if (cluster.MeanScore >= 0 && cluster.MedianScore >=0 )
                     {
+                        x[cluster.mshort_num_dataset_members]++;
                         meanScoreList.Add(Convert.ToSingle(cluster.MeanScore));
                         medianScoreList.Add(Convert.ToSingle(cluster.MedianScore));
                         sizeList.Add(Convert.ToSingle(cluster.mshort_num_dataset_members));
-
-                        if (cluster.MeanScore < 0 || cluster.MedianScore < 0)
-                        {
-                            int r = 323;
-
-                        }
                     }
-                    
                 }
+                medianScoreList.Add(1.0F);
+                medianScoreList.Add(.0F);
+                meanScoreList.Add(1.0F);
+                meanScoreList.Add(.0F);
+                sizeList.Add(8);
+                sizeList.Add(8);
                 float[] meanScores      = new float[meanScoreList.Count];
                 float[] medianScores    = new float[meanScoreList.Count];
                 float[] sizes           = new float[meanScoreList.Count];
@@ -1562,10 +1579,12 @@ namespace MultiAlignWin.Drawing
                 meanParameters.Name          = "Mean Score";
                 clsSeries meanSeries         = new clsSeries(ref sizes, ref meanScores, meanParameters);
 
-                chart.AutoViewPortOnSeriesChange = true;
-                chart.AutoViewPortOnAddition     = true;
+
+                chart.PadViewPortX = .01F;
+                chart.PadViewPortY = .01F;
                 chart.AddSeries(medianSeries);
                 chart.AddSeries(meanSeries);
+                chart.AutoViewPort();
                 
                 chart.Title         = "Cluster Scores Vs. Cluster Sizes";
                 chart.XAxisLabel    = "Cluster Size (Number of Datasets)";
@@ -1621,7 +1640,7 @@ namespace MultiAlignWin.Drawing
             int maxClusters = analysis.FileNames.Length + 1;
             if (maxClusters > 1)
             {
-                float[] bins = new float[maxClusters];
+                float[] bins  = new float[maxClusters];
                 float[] freqs = new float[maxClusters];
 
                 int i = 0;

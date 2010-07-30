@@ -407,7 +407,7 @@ namespace MultiAlignWin
             // 
             this.mcomboBox_chargeStates.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.mcomboBox_chargeStates.FormattingEnabled = true;
-            this.mcomboBox_chargeStates.Location = new System.Drawing.Point(482, 11);
+            this.mcomboBox_chargeStates.Location = new System.Drawing.Point(484, 11);
             this.mcomboBox_chargeStates.Name = "mcomboBox_chargeStates";
             this.mcomboBox_chargeStates.Size = new System.Drawing.Size(107, 21);
             this.mcomboBox_chargeStates.TabIndex = 2;
@@ -427,7 +427,7 @@ namespace MultiAlignWin
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(407, 14);
+            this.label1.Location = new System.Drawing.Point(409, 14);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(69, 13);
             this.label1.TabIndex = 4;
@@ -458,7 +458,7 @@ namespace MultiAlignWin
             penProvider1.Color = System.Drawing.Color.Black;
             penProvider1.Width = 1F;
             this.Legend.BorderPen = penProvider1;
-            this.Legend.Bounds = new System.Drawing.Rectangle(474, 80, 113, 325);
+            this.Legend.Bounds = new System.Drawing.Rectangle(476, 80, 113, 334);
             this.Legend.ColumnWidth = 125;
             this.Legend.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
             this.Legend.MaxFontSize = 11F;
@@ -473,7 +473,7 @@ namespace MultiAlignWin
             this.Margins.LeftMarginMax = 150;
             this.Margins.LeftMarginMin = 72;
             this.Name = "ctlClusterChart";
-            this.Size = new System.Drawing.Size(592, 442);
+            this.Size = new System.Drawing.Size(594, 452);
             this.Title = "Cluster Chart";
             this.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 20F);
             this.TitleMaxFontSize = 20F;

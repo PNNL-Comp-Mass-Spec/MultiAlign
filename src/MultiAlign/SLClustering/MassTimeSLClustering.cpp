@@ -161,6 +161,17 @@ namespace MultiAlignEngine
 
 			mobj_sl_clustering.SetNumberDataPoints(num_points);
 			
+
+			int breakpoints = 0; 
+			int singles = 0;
+			int spacePoints = 0;
+			
+			int N = 200;
+			int test[200];
+
+			for(int kk = 0; kk < N; kk++)
+				test[kk] = 0;
+
 			mint_num_clusters = 0; 
 			while(point_num < num_points-1)
 			{
@@ -178,9 +189,19 @@ namespace MultiAlignEngine
 						int current_cluster_num = mint_num_clusters; 
 						resultClusterIndices[index] = current_cluster_num; 
 						mint_num_clusters++; 
+						breakpoints++;
+						singles++;
 					}
 					else
 					{
+						breakpoints++;
+						spacePoints = point_num - start_point_num;
+
+						if (spacePoints > N)
+							test[N - 1]++;
+						else
+							test[spacePoints - 1]++;
+
 						// discovered a break point. Time to make clustering happen between 
 						// the features starting at start_point_num and the current one.
 						// For that, we need to find all the pairs of distances 
@@ -215,6 +236,7 @@ namespace MultiAlignEngine
 				point_num++; 
 			}
 
+			
 			// the last point is unattended to. 
 			current_point = points[point_num]; 
 			if (start_point_num == point_num)

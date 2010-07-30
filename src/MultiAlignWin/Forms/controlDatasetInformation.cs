@@ -602,17 +602,18 @@ namespace MultiAlignWin.Forms
         private void mpicture_alignmentHeatmap_Click(object sender, EventArgs e)
         {
 
-            //ctlAlignmentHeatMap chart = classRenderDatasetInfo.AlignmentHeatMap_Chart(mobj_analysis, mint_datasetIndex);
-            //if (chart != null)
-            //{
-            //    Form displayform = new Form();
-            //    displayform.Size = ParentForm.Size;
-            //    chart.Dock = DockStyle.Fill;
-            //    chart.BackColor = Color.White;
-            //    displayform.Icon = ParentForm.Icon;
-            //    displayform.Controls.Add(chart);
-            //    displayForm.Show();
-            //}
+            ctlAlignmentHeatMap chart = classRenderDatasetInfo.AlignmentHeatMap_Chart(mobj_analysis, mint_datasetIndex);
+            if (chart != null)
+            {
+                Form displayform = new Form();
+                displayform.Size = ParentForm.Size;
+                chart.Dock = DockStyle.Fill;
+                chart.BackColor = Color.White;
+
+                displayform.Icon = ParentForm.Icon;
+                displayform.Controls.Add(chart);
+                displayform.Show();
+            }
         }
 
         private void mpictureBox_massNetResiduals_Click(object sender, EventArgs e)

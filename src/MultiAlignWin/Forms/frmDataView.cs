@@ -84,10 +84,12 @@ namespace MultiAlignWin
         private Panel panel1;
         private Button clusterFiltersButton;
         private Button featureFiltersButton;
+        private Button mbutton_reCluster;
         /// <summary>
         /// Preview rendering thread.
         /// </summary>
-        private Thread mobj_renderThread;
+        private Thread mobj_datasetRenderThread;
+        private Thread mobj_clusterRenderThread;
         #endregion 
 
 
@@ -253,8 +255,10 @@ namespace MultiAlignWin
         protected override void Dispose(bool disposing)
         {
             if (disposing)
-            {                
-                AbortRenderThread();
+            {
+                AbortDatasetRenderThread();
+                AbortClusterRenderThread();
+
                 if (components != null)
                 {
                     components.Dispose();
@@ -281,8 +285,6 @@ namespace MultiAlignWin
             this.tabPageOverlayPlot = new System.Windows.Forms.TabPage();
             this.mtabPage_analysisInformation = new System.Windows.Forms.TabPage();
             this.mcontrol_analysisInformation = new MultiAlignWin.ctlSummaryPages();
-            this.mtabPage_dataSummary = new System.Windows.Forms.TabPage();
-            this.mcontrol_resultSummaryPages = new MultiAlignWin.ctlSummaryPages();
             this.mtabPage_clusterPlots = new System.Windows.Forms.TabPage();
             this.mtabPage_datasetSummary = new System.Windows.Forms.TabPage();
             this.mpanel_dataControls = new System.Windows.Forms.Panel();
@@ -291,6 +293,12 @@ namespace MultiAlignWin
             this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
             this.columnHeader2 = new System.Windows.Forms.ColumnHeader();
             this.mtreeView_proteinViewer = new System.Windows.Forms.TreeView();
+            this.mtabPage_dataSummary = new System.Windows.Forms.TabPage();
+            this.mcontrol_resultSummaryPages = new MultiAlignWin.ctlSummaryPages();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.mbutton_reCluster = new System.Windows.Forms.Button();
+            this.clusterFiltersButton = new System.Windows.Forms.Button();
+            this.featureFiltersButton = new System.Windows.Forms.Button();
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -306,31 +314,28 @@ namespace MultiAlignWin
             this.saveTableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.parametersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.filtersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.featuresToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.clustersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mimageList_tabImages = new System.Windows.Forms.ImageList(this.components);
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.mlabel_rows = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.filtersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.featuresToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.clustersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.featureFiltersButton = new System.Windows.Forms.Button();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.clusterFiltersButton = new System.Windows.Forms.Button();
             this.panelCharts.SuspendLayout();
             this.mtabcontrol_data.SuspendLayout();
             this.mtabPage_analysisInformation.SuspendLayout();
-            this.mtabPage_dataSummary.SuspendLayout();
             this.mtabPage_datasetSummary.SuspendLayout();
             this.mtabPage_proteinMaps.SuspendLayout();
+            this.mtabPage_dataSummary.SuspendLayout();
+            this.panel1.SuspendLayout();
             this.menuStrip.SuspendLayout();
             this.statusStrip1.SuspendLayout();
-            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // splitter1
             // 
             this.splitter1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.splitter1.Location = new System.Drawing.Point(0, 670);
+            this.splitter1.Location = new System.Drawing.Point(0, 469);
             this.splitter1.Name = "splitter1";
             this.splitter1.Size = new System.Drawing.Size(1051, 4);
             this.splitter1.TabIndex = 1;
@@ -343,7 +348,7 @@ namespace MultiAlignWin
             this.panelCharts.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelCharts.Location = new System.Drawing.Point(0, 24);
             this.panelCharts.Name = "panelCharts";
-            this.panelCharts.Size = new System.Drawing.Size(1051, 646);
+            this.panelCharts.Size = new System.Drawing.Size(1051, 445);
             this.panelCharts.TabIndex = 2;
             // 
             // mtabcontrol_data
@@ -358,14 +363,14 @@ namespace MultiAlignWin
             this.mtabcontrol_data.Location = new System.Drawing.Point(0, 0);
             this.mtabcontrol_data.Name = "mtabcontrol_data";
             this.mtabcontrol_data.SelectedIndex = 0;
-            this.mtabcontrol_data.Size = new System.Drawing.Size(1051, 611);
+            this.mtabcontrol_data.Size = new System.Drawing.Size(1051, 410);
             this.mtabcontrol_data.TabIndex = 1;
             // 
             // tabPageOverlayPlot
             // 
             this.tabPageOverlayPlot.Location = new System.Drawing.Point(4, 22);
             this.tabPageOverlayPlot.Name = "tabPageOverlayPlot";
-            this.tabPageOverlayPlot.Size = new System.Drawing.Size(1043, 585);
+            this.tabPageOverlayPlot.Size = new System.Drawing.Size(1043, 384);
             this.tabPageOverlayPlot.TabIndex = 0;
             this.tabPageOverlayPlot.Text = "Feature Cluster Plot";
             this.tabPageOverlayPlot.UseVisualStyleBackColor = true;
@@ -376,7 +381,7 @@ namespace MultiAlignWin
             this.mtabPage_analysisInformation.Location = new System.Drawing.Point(4, 22);
             this.mtabPage_analysisInformation.Name = "mtabPage_analysisInformation";
             this.mtabPage_analysisInformation.Padding = new System.Windows.Forms.Padding(3);
-            this.mtabPage_analysisInformation.Size = new System.Drawing.Size(962, 559);
+            this.mtabPage_analysisInformation.Size = new System.Drawing.Size(1043, 384);
             this.mtabPage_analysisInformation.TabIndex = 2;
             this.mtabPage_analysisInformation.Text = "Options";
             this.mtabPage_analysisInformation.UseVisualStyleBackColor = true;
@@ -387,35 +392,15 @@ namespace MultiAlignWin
             this.mcontrol_analysisInformation.Dock = System.Windows.Forms.DockStyle.Fill;
             this.mcontrol_analysisInformation.Location = new System.Drawing.Point(3, 3);
             this.mcontrol_analysisInformation.Name = "mcontrol_analysisInformation";
-            this.mcontrol_analysisInformation.Size = new System.Drawing.Size(956, 553);
+            this.mcontrol_analysisInformation.Size = new System.Drawing.Size(1037, 378);
             this.mcontrol_analysisInformation.TabIndex = 2;
-            // 
-            // mtabPage_dataSummary
-            // 
-            this.mtabPage_dataSummary.Controls.Add(this.mcontrol_resultSummaryPages);
-            this.mtabPage_dataSummary.Location = new System.Drawing.Point(4, 22);
-            this.mtabPage_dataSummary.Name = "mtabPage_dataSummary";
-            this.mtabPage_dataSummary.Padding = new System.Windows.Forms.Padding(3);
-            this.mtabPage_dataSummary.Size = new System.Drawing.Size(962, 559);
-            this.mtabPage_dataSummary.TabIndex = 1;
-            this.mtabPage_dataSummary.Text = "Results Summary";
-            this.mtabPage_dataSummary.UseVisualStyleBackColor = true;
-            // 
-            // mcontrol_resultSummaryPages
-            // 
-            this.mcontrol_resultSummaryPages.BackColor = System.Drawing.SystemColors.Control;
-            this.mcontrol_resultSummaryPages.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.mcontrol_resultSummaryPages.Location = new System.Drawing.Point(3, 3);
-            this.mcontrol_resultSummaryPages.Name = "mcontrol_resultSummaryPages";
-            this.mcontrol_resultSummaryPages.Size = new System.Drawing.Size(956, 553);
-            this.mcontrol_resultSummaryPages.TabIndex = 1;
             // 
             // mtabPage_clusterPlots
             // 
             this.mtabPage_clusterPlots.Location = new System.Drawing.Point(4, 22);
             this.mtabPage_clusterPlots.Name = "mtabPage_clusterPlots";
             this.mtabPage_clusterPlots.Padding = new System.Windows.Forms.Padding(3);
-            this.mtabPage_clusterPlots.Size = new System.Drawing.Size(962, 559);
+            this.mtabPage_clusterPlots.Size = new System.Drawing.Size(1043, 384);
             this.mtabPage_clusterPlots.TabIndex = 8;
             this.mtabPage_clusterPlots.Text = "Analysis Plots";
             this.mtabPage_clusterPlots.UseVisualStyleBackColor = true;
@@ -427,7 +412,7 @@ namespace MultiAlignWin
             this.mtabPage_datasetSummary.Location = new System.Drawing.Point(4, 22);
             this.mtabPage_datasetSummary.Name = "mtabPage_datasetSummary";
             this.mtabPage_datasetSummary.Padding = new System.Windows.Forms.Padding(3);
-            this.mtabPage_datasetSummary.Size = new System.Drawing.Size(962, 559);
+            this.mtabPage_datasetSummary.Size = new System.Drawing.Size(1043, 384);
             this.mtabPage_datasetSummary.TabIndex = 3;
             this.mtabPage_datasetSummary.Text = "Dataset Plots";
             this.mtabPage_datasetSummary.UseVisualStyleBackColor = true;
@@ -438,7 +423,7 @@ namespace MultiAlignWin
             this.mpanel_dataControls.Dock = System.Windows.Forms.DockStyle.Fill;
             this.mpanel_dataControls.Location = new System.Drawing.Point(3, 3);
             this.mpanel_dataControls.Name = "mpanel_dataControls";
-            this.mpanel_dataControls.Size = new System.Drawing.Size(956, 553);
+            this.mpanel_dataControls.Size = new System.Drawing.Size(1037, 378);
             this.mpanel_dataControls.TabIndex = 0;
             // 
             // mtabPage_proteinMaps
@@ -448,7 +433,7 @@ namespace MultiAlignWin
             this.mtabPage_proteinMaps.Location = new System.Drawing.Point(4, 22);
             this.mtabPage_proteinMaps.Name = "mtabPage_proteinMaps";
             this.mtabPage_proteinMaps.Padding = new System.Windows.Forms.Padding(3);
-            this.mtabPage_proteinMaps.Size = new System.Drawing.Size(962, 559);
+            this.mtabPage_proteinMaps.Size = new System.Drawing.Size(1043, 384);
             this.mtabPage_proteinMaps.TabIndex = 5;
             this.mtabPage_proteinMaps.Text = "Protein Information";
             this.mtabPage_proteinMaps.UseVisualStyleBackColor = true;
@@ -464,7 +449,7 @@ namespace MultiAlignWin
             this.mlistView_proteinPeptideTable.GridLines = true;
             this.mlistView_proteinPeptideTable.Location = new System.Drawing.Point(484, 9);
             this.mlistView_proteinPeptideTable.Name = "mlistView_proteinPeptideTable";
-            this.mlistView_proteinPeptideTable.Size = new System.Drawing.Size(551, 605);
+            this.mlistView_proteinPeptideTable.Size = new System.Drawing.Size(632, 430);
             this.mlistView_proteinPeptideTable.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.mlistView_proteinPeptideTable.TabIndex = 1;
             this.mlistView_proteinPeptideTable.UseCompatibleStateImageBehavior = false;
@@ -484,8 +469,72 @@ namespace MultiAlignWin
                         | System.Windows.Forms.AnchorStyles.Left)));
             this.mtreeView_proteinViewer.Location = new System.Drawing.Point(8, 6);
             this.mtreeView_proteinViewer.Name = "mtreeView_proteinViewer";
-            this.mtreeView_proteinViewer.Size = new System.Drawing.Size(466, 608);
+            this.mtreeView_proteinViewer.Size = new System.Drawing.Size(466, 433);
             this.mtreeView_proteinViewer.TabIndex = 0;
+            // 
+            // mtabPage_dataSummary
+            // 
+            this.mtabPage_dataSummary.Controls.Add(this.mcontrol_resultSummaryPages);
+            this.mtabPage_dataSummary.Location = new System.Drawing.Point(4, 22);
+            this.mtabPage_dataSummary.Name = "mtabPage_dataSummary";
+            this.mtabPage_dataSummary.Padding = new System.Windows.Forms.Padding(3);
+            this.mtabPage_dataSummary.Size = new System.Drawing.Size(1043, 384);
+            this.mtabPage_dataSummary.TabIndex = 1;
+            this.mtabPage_dataSummary.Text = "Results Summary";
+            this.mtabPage_dataSummary.UseVisualStyleBackColor = true;
+            // 
+            // mcontrol_resultSummaryPages
+            // 
+            this.mcontrol_resultSummaryPages.BackColor = System.Drawing.SystemColors.Control;
+            this.mcontrol_resultSummaryPages.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.mcontrol_resultSummaryPages.Location = new System.Drawing.Point(3, 3);
+            this.mcontrol_resultSummaryPages.Name = "mcontrol_resultSummaryPages";
+            this.mcontrol_resultSummaryPages.Size = new System.Drawing.Size(1037, 378);
+            this.mcontrol_resultSummaryPages.TabIndex = 1;
+            // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.mbutton_reCluster);
+            this.panel1.Controls.Add(this.clusterFiltersButton);
+            this.panel1.Controls.Add(this.featureFiltersButton);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panel1.Location = new System.Drawing.Point(0, 410);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(1051, 35);
+            this.panel1.TabIndex = 3;
+            // 
+            // mbutton_reCluster
+            // 
+            this.mbutton_reCluster.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.mbutton_reCluster.Location = new System.Drawing.Point(12, 3);
+            this.mbutton_reCluster.Name = "mbutton_reCluster";
+            this.mbutton_reCluster.Size = new System.Drawing.Size(85, 28);
+            this.mbutton_reCluster.TabIndex = 4;
+            this.mbutton_reCluster.Text = "Cluster";
+            this.mbutton_reCluster.UseVisualStyleBackColor = true;
+            this.mbutton_reCluster.Click += new System.EventHandler(this.mbutton_reCluster_Click);
+            // 
+            // clusterFiltersButton
+            // 
+            this.clusterFiltersButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.clusterFiltersButton.Enabled = false;
+            this.clusterFiltersButton.Location = new System.Drawing.Point(961, 4);
+            this.clusterFiltersButton.Name = "clusterFiltersButton";
+            this.clusterFiltersButton.Size = new System.Drawing.Size(85, 28);
+            this.clusterFiltersButton.TabIndex = 3;
+            this.clusterFiltersButton.Text = "Cluster Filters";
+            this.clusterFiltersButton.UseVisualStyleBackColor = true;
+            // 
+            // featureFiltersButton
+            // 
+            this.featureFiltersButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.featureFiltersButton.Enabled = false;
+            this.featureFiltersButton.Location = new System.Drawing.Point(870, 4);
+            this.featureFiltersButton.Name = "featureFiltersButton";
+            this.featureFiltersButton.Size = new System.Drawing.Size(85, 28);
+            this.featureFiltersButton.TabIndex = 2;
+            this.featureFiltersButton.Text = "Feature Filters";
+            this.featureFiltersButton.UseVisualStyleBackColor = true;
             // 
             // menuStrip
             // 
@@ -617,6 +666,28 @@ namespace MultiAlignWin
             this.parametersToolStripMenuItem.Text = "Parameters";
             this.parametersToolStripMenuItem.Click += new System.EventHandler(this.parametersToolStripMenuItem_Click);
             // 
+            // filtersToolStripMenuItem
+            // 
+            this.filtersToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.featuresToolStripMenuItem,
+            this.clustersToolStripMenuItem});
+            this.filtersToolStripMenuItem.MergeAction = System.Windows.Forms.MergeAction.Replace;
+            this.filtersToolStripMenuItem.Name = "filtersToolStripMenuItem";
+            this.filtersToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
+            this.filtersToolStripMenuItem.Text = "Filters";
+            // 
+            // featuresToolStripMenuItem
+            // 
+            this.featuresToolStripMenuItem.Name = "featuresToolStripMenuItem";
+            this.featuresToolStripMenuItem.Size = new System.Drawing.Size(128, 22);
+            this.featuresToolStripMenuItem.Text = "Features";
+            // 
+            // clustersToolStripMenuItem
+            // 
+            this.clustersToolStripMenuItem.Name = "clustersToolStripMenuItem";
+            this.clustersToolStripMenuItem.Size = new System.Drawing.Size(128, 22);
+            this.clustersToolStripMenuItem.Text = "Clusters";
+            // 
             // mimageList_tabImages
             // 
             this.mimageList_tabImages.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("mimageList_tabImages.ImageStream")));
@@ -628,7 +699,7 @@ namespace MultiAlignWin
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mlabel_rows,
             this.toolStripStatusLabel1});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 674);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 473);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(1051, 22);
             this.statusStrip1.TabIndex = 5;
@@ -644,62 +715,10 @@ namespace MultiAlignWin
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
             this.toolStripStatusLabel1.Size = new System.Drawing.Size(0, 17);
             // 
-            // filtersToolStripMenuItem
-            // 
-            this.filtersToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.featuresToolStripMenuItem,
-            this.clustersToolStripMenuItem});
-            this.filtersToolStripMenuItem.MergeAction = System.Windows.Forms.MergeAction.Replace;
-            this.filtersToolStripMenuItem.Name = "filtersToolStripMenuItem";
-            this.filtersToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
-            this.filtersToolStripMenuItem.Text = "Filters";
-            // 
-            // featuresToolStripMenuItem
-            // 
-            this.featuresToolStripMenuItem.Name = "featuresToolStripMenuItem";
-            this.featuresToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.featuresToolStripMenuItem.Text = "Features";
-            // 
-            // clustersToolStripMenuItem
-            // 
-            this.clustersToolStripMenuItem.Name = "clustersToolStripMenuItem";
-            this.clustersToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.clustersToolStripMenuItem.Text = "Clusters";
-            // 
-            // featureFiltersButton
-            // 
-            this.featureFiltersButton.Enabled = false;
-            this.featureFiltersButton.Location = new System.Drawing.Point(870, 4);
-            this.featureFiltersButton.Name = "featureFiltersButton";
-            this.featureFiltersButton.Size = new System.Drawing.Size(85, 28);
-            this.featureFiltersButton.TabIndex = 2;
-            this.featureFiltersButton.Text = "Feature Filters";
-            this.featureFiltersButton.UseVisualStyleBackColor = true;
-            // 
-            // panel1
-            // 
-            this.panel1.Controls.Add(this.clusterFiltersButton);
-            this.panel1.Controls.Add(this.featureFiltersButton);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 611);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1051, 35);
-            this.panel1.TabIndex = 3;
-            // 
-            // clusterFiltersButton
-            // 
-            this.clusterFiltersButton.Enabled = false;
-            this.clusterFiltersButton.Location = new System.Drawing.Point(961, 4);
-            this.clusterFiltersButton.Name = "clusterFiltersButton";
-            this.clusterFiltersButton.Size = new System.Drawing.Size(85, 28);
-            this.clusterFiltersButton.TabIndex = 3;
-            this.clusterFiltersButton.Text = "Cluster Filters";
-            this.clusterFiltersButton.UseVisualStyleBackColor = true;
-            // 
             // frmDataView
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-            this.ClientSize = new System.Drawing.Size(1051, 696);
+            this.ClientSize = new System.Drawing.Size(1051, 495);
             this.Controls.Add(this.panelCharts);
             this.Controls.Add(this.splitter1);
             this.Controls.Add(this.menuStrip);
@@ -711,14 +730,14 @@ namespace MultiAlignWin
             this.panelCharts.ResumeLayout(false);
             this.mtabcontrol_data.ResumeLayout(false);
             this.mtabPage_analysisInformation.ResumeLayout(false);
-            this.mtabPage_dataSummary.ResumeLayout(false);
             this.mtabPage_datasetSummary.ResumeLayout(false);
             this.mtabPage_proteinMaps.ResumeLayout(false);
+            this.mtabPage_dataSummary.ResumeLayout(false);
+            this.panel1.ResumeLayout(false);
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
-            this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -726,25 +745,45 @@ namespace MultiAlignWin
 		#endregion
 
         #region Previews and Dataset Information Display
-                
+
         /// <summary>
         /// Kills the rendering thread.
         /// </summary>
-        private void AbortRenderThread()
+        private void AbortDatasetRenderThread()
         {
-            if (mobj_renderThread == null)
+            if (mobj_datasetRenderThread == null)
                 return;
 
             try
             {
-                mobj_renderThread.Abort();
+                mobj_datasetRenderThread.Abort();
             }
             catch
             {
             }
             finally
             {
-                mobj_renderThread = null;            
+                mobj_datasetRenderThread = null;
+            }
+        }
+        /// <summary>
+        /// Kills the rendering thread.
+        /// </summary>
+        private void AbortClusterRenderThread()
+        {
+            if (mobj_clusterRenderThread == null)
+                return;
+
+            try
+            {
+                mobj_clusterRenderThread.Abort();
+            }
+            catch
+            {
+            }
+            finally
+            {
+                mobj_clusterRenderThread = null;
             }
         }
         /// <summary>
@@ -786,23 +825,36 @@ namespace MultiAlignWin
             /// 
             /// Start the preview rendering
             /// 
-            if (mobj_renderThread != null)
-                AbortRenderThread();
+            if (mobj_datasetRenderThread != null)
+                AbortDatasetRenderThread();
 
-            ThreadStart start = new ThreadStart(PreviewThreadStart);
-            mobj_renderThread = new Thread(start);
-            mobj_renderThread.Start();
+            if (mobj_clusterRenderThread != null)
+                AbortClusterRenderThread();
+
+            ThreadStart start = new ThreadStart(DatasetPreviewThreadStart);
+            mobj_datasetRenderThread = new Thread(start);
+            mobj_datasetRenderThread.Start();
+
+
+            ThreadStart startCluster = new ThreadStart(ClusterPreviewThreadStart);
+            mobj_clusterRenderThread = new Thread(startCluster);
+            mobj_clusterRenderThread.Start();
         }
         /// <summary>
         /// Starts rendering the preview icons.
         /// </summary>
-        private void PreviewThreadStart()
+        private void DatasetPreviewThreadStart()
         {
-            foreach(controlDatasetInformation info in mlist_datasets)
+            foreach (controlDatasetInformation info in mlist_datasets)
             {
                 info.RenderPreviews();
             }
-
+        }
+        /// <summary>
+        /// Starts rendering the preview icons.
+        /// </summary>
+        private void ClusterPreviewThreadStart()
+        {            
             if (mcontrol_clusterInformation != null)
                 mcontrol_clusterInformation.RenderPreviews();
         }
@@ -1113,6 +1165,28 @@ namespace MultiAlignWin
             mtabPage_clusterPlots.Controls.Add(clusterInformation);
             clusterInformation.Dock = DockStyle.Fill;
             mcontrol_clusterInformation = clusterInformation;
+        }
+
+        private void mbutton_reCluster_Click(object sender, EventArgs e)
+        {
+            frmClusterParameters parameters = new frmClusterParameters();
+            parameters.ClusterOptions = mobjAnalysis.ClusterOptions;
+
+            // Ask the user if they want to really re-cluster the data.            
+            if (parameters.ShowDialog() == DialogResult.OK)
+            {
+                mobjAnalysis.ClusterOptions = parameters.ClusterOptions;                
+                mobjAnalysis.PerformClustering();
+
+
+                // Render the preview afterwards.
+                if (mobj_clusterRenderThread != null)
+                    AbortClusterRenderThread();
+
+                ThreadStart startCluster = new ThreadStart(ClusterPreviewThreadStart);
+                mobj_clusterRenderThread = new Thread(startCluster);
+                mobj_clusterRenderThread.Start();
+            }                        
         }
     }
 }
