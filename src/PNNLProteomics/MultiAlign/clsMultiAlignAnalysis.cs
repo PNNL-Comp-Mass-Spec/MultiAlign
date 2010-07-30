@@ -1329,10 +1329,10 @@ namespace PNNLProteomics.Data.Analysis
         }
         public void PerformClustering()
         {
-            menmState = enmState.CLUSTERING;
-            System.Threading.Thread procThread = new System.Threading.Thread(new System.Threading.ThreadStart(MonitorClustering));
+            menmState                           = enmState.CLUSTERING;
+            System.Threading.Thread procThread  = new System.Threading.Thread(new System.Threading.ThreadStart(MonitorClustering));
             mthread_currentStatus = procThread;
-            procThread.Name = "Clustering Thread Monitor";
+            procThread.Name                     = "Clustering Thread Monitor";
             procThread.Start();
 
             mint_statusLevel++;
@@ -1659,10 +1659,13 @@ namespace PNNLProteomics.Data.Analysis
         private void PerformAnalysis()
         {
             mbool_processing = true;
-
+            string pathName = System.IO.Path.GetDirectoryName(mstring_pathname);
+            string newPath  = System.IO.Path.Combine(pathName, mstring_analysisName);
+            
             try
             {
-                string parameterPath = System.IO.Path.Combine(Path.GetDirectoryName(mstring_pathname), mstring_analysisName + "_parameters.xml");
+                System.IO.Directory.CreateDirectory(newPath);
+                string parameterPath = System.IO.Path.Combine(newpath, mstring_analysisName + "_parameters.xml");
                 SaveParametersToFile(parameterPath);
             }
             catch{
@@ -1797,16 +1800,13 @@ namespace PNNLProteomics.Data.Analysis
                 /// 
                 /// Get the path name and make a directory for the analysis.
                 /// 
-                string pathName     = System.IO.Path.GetDirectoryName(mstring_pathname);
-                string newPath      = System.IO.Path.Combine(pathName, mstring_analysisName);
-                System.IO.Directory.CreateDirectory(newPath);
-
+                //mstring_analysisName = System.IO.Path.GetFileNameWithoutExtension(BaselineDataset);
+                
                 /// 
                 /// Update the path name
                 /// 
                 mstring_pathname    = System.IO.Path.Combine(newPath, mstring_analysisName + ".mln");                   
-                SerializeAnalysisToFile(mstring_pathname);
-                WriteAlignmentDataToFile(newPath, 0);
+                SerializeAnalysisToFile(mstring_pathname);                
             }
             catch (Exception ex)
             {
