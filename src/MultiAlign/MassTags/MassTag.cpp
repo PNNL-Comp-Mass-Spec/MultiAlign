@@ -16,7 +16,7 @@ namespace MultiAlignEngine
 			mshortModCount(0), 
 			mfltAvgFCS1(-100),
 			mfltAvgFCS2(-100), 
-			mfltAvgFCS3(-100),
+			mfltAvgFCS3(-100), 
 			mshortCleavageState(2),
 			mdblDriftTime(0)
 		{
