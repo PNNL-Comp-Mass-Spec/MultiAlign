@@ -137,7 +137,7 @@ namespace PNNLControls
 
 				ZoomIn(low, high);	
 			}
-			catch(Exception ex){System.Windows.Forms.MessageBox.Show(ex.Message);}
+			catch(Exception ex){}//System.Windows.Forms.MessageBox.Show(ex.Message);}
 		}
 
 		/// <summary>
@@ -166,7 +166,9 @@ namespace PNNLControls
 				
 				ZoomIn(low, high);
 			}
-			catch(Exception ex){System.Windows.Forms.MessageBox.Show(ex.Message);}
+			catch(Exception ex){}//System.Windows.Forms.MessageBox.Show(ex.Message
+                
+            
 		}
 
 //		private void AxisZoomIn(Point start, Point stop)
@@ -192,7 +194,7 @@ namespace PNNLControls
 //
 //				ZoomIn(low, high);
 //			}
-//			catch(Exception ex){System.Windows.Forms.MessageBox.Show(ex.Message);}
+//			catch(Exception ex){}//System.Windows.Forms.MessageBox.Show(ex.Message);}
 //		}
 
 		private void LabelEditHandler(object sender, System.EventArgs e)
@@ -295,7 +297,7 @@ namespace PNNLControls
 					OnLabelsMoved();
 				}
 			}
-			catch(Exception ex){System.Windows.Forms.MessageBox.Show(ex.Message);}
+			catch(Exception ex){}//System.Windows.Forms.MessageBox.Show(ex.Message);}
 		}
 		private void DeleteLabelHandler(object sender, System.EventArgs e)
 		{
@@ -904,7 +906,7 @@ namespace PNNLControls
 
 				mUnselectedColor = l.BackColor;
 			}
-			catch(Exception ex){System.Windows.Forms.MessageBox.Show(ex.Message);}
+			catch(Exception ex){}//System.Windows.Forms.MessageBox.Show(ex.Message);}
 			return (l);
 		}
 
@@ -950,7 +952,7 @@ namespace PNNLControls
 					}
 				}
 			}
-			catch(Exception ex){System.Windows.Forms.MessageBox.Show(ex.Message);}
+			catch(Exception ex){}//System.Windows.Forms.MessageBox.Show(ex.Message);}
 		}
 
 		/// <summary>
@@ -974,7 +976,7 @@ namespace PNNLControls
 					}
 				}
 			}
-			catch(Exception ex){System.Windows.Forms.MessageBox.Show(ex.Message);}
+			catch(Exception ex){}//System.Windows.Forms.MessageBox.Show(ex.Message);}
 		}
 
 		private int LeafTop(clsLabelAttributes leaf)
@@ -1075,7 +1077,7 @@ namespace PNNLControls
 					lbl.Width = LeafRight(la.HighLeaf()) - lbl.Left;
 				}
 			}
-			catch(Exception ex){System.Windows.Forms.MessageBox.Show(ex.Message);}
+			catch(Exception ex){}//System.Windows.Forms.MessageBox.Show(ex.Message);}
 		}
 
 		//creates a collection of label pointers that represents labels
@@ -1118,7 +1120,7 @@ namespace PNNLControls
 					}
 				}
 			}
-			catch(Exception ex){System.Windows.Forms.MessageBox.Show(ex.Message);}	
+			catch(Exception ex){}//System.Windows.Forms.MessageBox.Show(ex.Message);}	
 	
 			return newLevel;
 		}
@@ -1166,7 +1168,7 @@ namespace PNNLControls
 
 				return newLevel;
 			}
-			catch(Exception ex){System.Windows.Forms.MessageBox.Show(ex.Message);}	
+			catch(Exception ex){}//System.Windows.Forms.MessageBox.Show(ex.Message);}	
 			
 			return null;
 		}
@@ -1223,7 +1225,7 @@ namespace PNNLControls
 				c.BuildAlignment();
 				
 			}
-			catch(Exception ex){System.Windows.Forms.MessageBox.Show(ex.Message);}		
+			catch(Exception ex){}//System.Windows.Forms.MessageBox.Show(ex.Message);}		
 		}
 
 		private void RaiseSize(int height, int width)
@@ -1353,7 +1355,7 @@ namespace PNNLControls
 					drawLeaves = true;
 				}
 			}
-			catch(Exception ex){System.Windows.Forms.MessageBox.Show(ex.Message);}
+			catch(Exception ex){}//System.Windows.Forms.MessageBox.Show(ex.Message);}
 
 			return drawLeaves;
 		}
@@ -1384,7 +1386,7 @@ namespace PNNLControls
 			}
 			catch(Exception e)
 			{
-				System.Windows.Forms.MessageBox.Show(e.Message);
+				//System.Windows.Forms.MessageBox.Show(e.Message);
 				return 0;
 			}
 		}
@@ -1539,7 +1541,7 @@ namespace PNNLControls
 				RaiseAlign();
 
 			}
-			catch(Exception ex){System.Windows.Forms.MessageBox.Show(ex.Message);}
+			catch(Exception ex){}//System.Windows.Forms.MessageBox.Show(ex.Message);}
 		}
 
 		public void Clear()
@@ -1825,7 +1827,7 @@ namespace PNNLControls
 						mHighlightMin=0;
 				}
 			}
-			catch(Exception ex){System.Windows.Forms.MessageBox.Show(ex.Message);}
+			catch(Exception ex){}//System.Windows.Forms.MessageBox.Show(ex.Message);}
 		}
 
 		/// <summary>
@@ -1862,7 +1864,7 @@ namespace PNNLControls
 				mHighlightMin = int.MinValue;
 				mHighlightMax = int.MinValue;
 			}
-			catch(Exception ex){System.Windows.Forms.MessageBox.Show(ex.Message);}
+			catch(Exception ex){}//System.Windows.Forms.MessageBox.Show(ex.Message);}
 		}
 
 		/// <summary>
@@ -1906,7 +1908,7 @@ namespace PNNLControls
 					LabelMouseHover(l.clsLabelAttributes);
 				}
 			}
-			catch(Exception ex){System.Windows.Forms.MessageBox.Show(ex.Message);}
+			catch(Exception ex){}//System.Windows.Forms.MessageBox.Show(ex.Message);}
 		}
 
 		/// <summary>
@@ -1960,7 +1962,7 @@ namespace PNNLControls
 				}
 
 			}
-			catch(Exception ex){System.Windows.Forms.MessageBox.Show(ex.Message);}
+			catch(Exception ex){}//System.Windows.Forms.MessageBox.Show(ex.Message);}
 		}
 
 		/// <summary>
@@ -1990,7 +1992,7 @@ namespace PNNLControls
 					LabelMouseUp(lbl.clsLabelAttributes);
 				}
 			}
-			catch(Exception ex){System.Windows.Forms.MessageBox.Show(ex.Message);}
+			catch(Exception ex){}//System.Windows.Forms.MessageBox.Show(ex.Message);}
 		}
 
 		/// <summary>
@@ -2017,7 +2019,7 @@ namespace PNNLControls
 						}
 					}
 				}
-				catch(Exception ex){System.Windows.Forms.MessageBox.Show(ex.Message);}
+				catch(Exception ex){}//System.Windows.Forms.MessageBox.Show(ex.Message);}
 			}
 		}
 
@@ -2043,7 +2045,7 @@ namespace PNNLControls
 						mCurrentDragOverLabel = target;
 					}
 				}
-				catch(Exception ex){System.Windows.Forms.MessageBox.Show(ex.Message);}
+				catch(Exception ex){}//System.Windows.Forms.MessageBox.Show(ex.Message);}
 			}
 		}
 
@@ -2106,7 +2108,7 @@ namespace PNNLControls
 						}				
 					}
 				}
-				catch(Exception ex){System.Windows.Forms.MessageBox.Show(ex.Message);}
+				catch(Exception ex){}//System.Windows.Forms.MessageBox.Show(ex.Message);}
 			}
 		}
 
@@ -2131,7 +2133,7 @@ namespace PNNLControls
 
 				InsertLabel(dest.clsLabelAttributes, lbl.clsLabelAttributes);
 			}
-			catch(Exception ex){System.Windows.Forms.MessageBox.Show(ex.Message);}
+			catch(Exception ex){}//System.Windows.Forms.MessageBox.Show(ex.Message);}
 		}
 
 //		/// <summary>
@@ -2179,7 +2181,7 @@ namespace PNNLControls
 //				if (MovedRange!=null)
 //					MovedRange(lowIndex, highIndex, pos);
 //			}
-//			catch(Exception ex){System.Windows.Forms.MessageBox.Show(ex.Message);}
+//			catch(Exception ex){}//System.Windows.Forms.MessageBox.Show(ex.Message);}
 //		}
 
 		/// <summary>
@@ -2204,7 +2206,7 @@ namespace PNNLControls
 					r=r.root as clsLabelAttributes;
 				}
 			}
-			catch(Exception ex){System.Windows.Forms.MessageBox.Show(ex.Message);}
+			catch(Exception ex){}//System.Windows.Forms.MessageBox.Show(ex.Message);}
 
 			return false;
 		}
@@ -2249,7 +2251,7 @@ namespace PNNLControls
 			}
 			catch(Exception e)
 			{
-				System.Windows.Forms.MessageBox.Show(e.Message);
+				//System.Windows.Forms.MessageBox.Show(e.Message);
 				return 0;
 			}
 		}
@@ -2269,7 +2271,7 @@ namespace PNNLControls
 				clsLabelAttributes newParent = AddBranch(currentParent, txt);
 				newParent.AddChildren(children, r);
 			}
-			catch(Exception ex){System.Windows.Forms.MessageBox.Show(ex.Message);}
+			catch(Exception ex){}//System.Windows.Forms.MessageBox.Show(ex.Message);}
 		}
 
 		private void AddChild(clsLabelAttributes parent, string txt)
@@ -2279,7 +2281,7 @@ namespace PNNLControls
 				AddBranch(parent, txt);
 				OnLabelsMoved();
 			}
-			catch(Exception ex){System.Windows.Forms.MessageBox.Show(ex.Message);}
+			catch(Exception ex){}//System.Windows.Forms.MessageBox.Show(ex.Message);}
 		}
 
 		private void AddLevel(clsLabelAttributes la)
@@ -2309,7 +2311,7 @@ namespace PNNLControls
 
 				OnLabelsMoved();
 			}
-			catch(Exception ex){System.Windows.Forms.MessageBox.Show(ex.Message);}
+			catch(Exception ex){}//System.Windows.Forms.MessageBox.Show(ex.Message);}
 		}
 
 		private void HandleSelect(int low, int high)
@@ -2366,7 +2368,7 @@ namespace PNNLControls
 					this.UpdateComplete = true;
 				}
 			}
-			catch(Exception ex){System.Windows.Forms.MessageBox.Show(ex.Message);}
+			catch(Exception ex){}//System.Windows.Forms.MessageBox.Show(ex.Message);}
 		}
 		#endregion
 
@@ -2464,7 +2466,7 @@ namespace PNNLControls
 				Invalidate();
 				//UpdateComplete = true;
 			}
-			catch(Exception ex){System.Windows.Forms.MessageBox.Show(ex.Message);}
+			catch(Exception ex){}//System.Windows.Forms.MessageBox.Show(ex.Message);}
 		}
 
 		private void hScroll_Scroll(object sender, System.Windows.Forms.ScrollEventArgs e)
@@ -2513,7 +2515,7 @@ namespace PNNLControls
 					}
 				}
 			}
-			catch(Exception ex){System.Windows.Forms.MessageBox.Show(ex.Message);}
+			catch(Exception ex){}//System.Windows.Forms.MessageBox.Show(ex.Message);}
 		}
 
 		public object Clone()

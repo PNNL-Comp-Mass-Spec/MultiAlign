@@ -223,7 +223,8 @@ namespace PNNLControls
 				
 				g.Dispose();
 			}
-			catch (Exception ex){System.Windows.Forms.MessageBox.Show(ex.Message);}
+			catch (Exception ex){}//System.Windows.Forms.MessageBox.Show(ex.Message);
+            
 		}
 
 		private void ctlSingleAxis_MouseHover(object sender, System.EventArgs e)
@@ -252,7 +253,7 @@ namespace PNNLControls
 					ControlPaint.DrawReversibleFrame(mZoomRectangle, this.BackColor, FrameStyle.Dashed);
 				}
 			}
-			catch(Exception ex){System.Windows.Forms.MessageBox.Show(ex.Message);}
+			catch(Exception ex){}//System.Windows.Forms.MessageBox.Show(ex.Message);}
 		}
 
 		private void Axis_MouseWheel(object sender, System.Windows.Forms.MouseEventArgs e)
@@ -286,7 +287,7 @@ namespace PNNLControls
 			{
 				ShowZoom((Control)sender, e.X, e.Y);
 			}
-			catch(Exception ex){System.Windows.Forms.MessageBox.Show(ex.Message);}
+			catch(Exception ex){}//System.Windows.Forms.MessageBox.Show(ex.Message);}
 		}
 
 		/// <summary>
@@ -316,7 +317,7 @@ namespace PNNLControls
 					Zoom(start, stop);
 				}
 			}
-			catch(Exception ex){System.Windows.Forms.MessageBox.Show(ex.Message);}
+			catch(Exception ex){}//System.Windows.Forms.MessageBox.Show(ex.Message);}
 		}
 
 		private void ctlSingleAxis_Paint(object sender, System.Windows.Forms.PaintEventArgs e)
@@ -349,7 +350,7 @@ namespace PNNLControls
 					ControlPaint.DrawReversibleFrame(mZoomRectangle, sender.BackColor, FrameStyle.Dashed);
 				}
 			}
-			catch(Exception ex){System.Windows.Forms.MessageBox.Show(ex.Message);}
+			catch(Exception ex){}//System.Windows.Forms.MessageBox.Show(ex.Message);}
 		}
 
 		public void UpdateAxis(float min, float max)
@@ -368,7 +369,7 @@ namespace PNNLControls
 				UpdateAxis();
 
 			}
-			catch(Exception ex){System.Windows.Forms.MessageBox.Show(ex.Message);}
+			catch(Exception ex){}//System.Windows.Forms.MessageBox.Show(ex.Message);}
 		}
 	}
 }

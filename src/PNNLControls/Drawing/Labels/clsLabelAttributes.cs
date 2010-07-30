@@ -55,7 +55,7 @@ namespace PNNLControls
 			}
 			catch(Exception e)
 			{
-				System.Windows.Forms.MessageBox.Show(e.Message);
+				//System.Windows.Forms.MessageBox.Show(e.Message);
 				return null;
 			}
 		}
@@ -74,7 +74,7 @@ namespace PNNLControls
 			}
 			catch(Exception e)
 			{
-				System.Windows.Forms.MessageBox.Show(e.Message);
+				//System.Windows.Forms.MessageBox.Show(e.Message);
 				return null;
 			}
 		}
@@ -93,7 +93,7 @@ namespace PNNLControls
 			}
 			catch(Exception e)
 			{
-				System.Windows.Forms.MessageBox.Show(e.Message);
+				//System.Windows.Forms.MessageBox.Show(e.Message);
 				return null;
 			}
 		}
@@ -119,7 +119,7 @@ namespace PNNLControls
 					this.AddBranch(children[i] as clsLabelAttributes);
 				}
 			}
-			catch(Exception ex){System.Windows.Forms.MessageBox.Show(ex.Message);}
+			catch(Exception ex){}//System.Windows.Forms.MessageBox.Show(ex.Message);}
 		}
 
 		#region ICloneable Members

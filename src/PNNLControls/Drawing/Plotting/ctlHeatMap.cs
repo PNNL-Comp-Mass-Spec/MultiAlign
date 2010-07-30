@@ -44,6 +44,8 @@ namespace PNNLControls
 			HorizontalLabel.UpdateComplete = false;
 			VerticalLabel.UpdateComplete = false;
 
+            Legend.UseZScore = false;
+
 			Data = data;
 
 			//setting root initializes label
