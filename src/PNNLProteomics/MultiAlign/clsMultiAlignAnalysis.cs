@@ -1665,7 +1665,7 @@ namespace PNNLProteomics.Data.Analysis
             try
             {
                 System.IO.Directory.CreateDirectory(newPath);
-                string parameterPath = System.IO.Path.Combine(newpath, mstring_analysisName + "_parameters.xml");
+                string parameterPath = System.IO.Path.Combine(newPath, mstring_analysisName + "_parameters.xml");
                 SaveParametersToFile(parameterPath);
             }
             catch{
