@@ -48,6 +48,10 @@ namespace MultiAlignWin.IO
         /// Flag indicating whether to output charge mass class abundance values (abundances at each charge state).
         /// </summary>
         private bool m_cmc;
+        /// <summary>
+        /// Flag indicating whether to output the charge state for each UMC.
+        /// </summary>
+        private bool m_chargeState;
         #endregion
 
         #region Constructors
@@ -73,6 +77,7 @@ namespace MultiAlignWin.IO
             m_abundance_sum         = true;
             m_msFeatureCount        = true;
             m_cmc                   = false;
+            m_chargeState           = false;
         }
         #endregion
 
@@ -215,6 +220,20 @@ namespace MultiAlignWin.IO
             set
             {
                 m_cmc = value;
+            }
+        }
+        /// <summary>
+        /// Gets or sets the charge state flag.
+        /// </summary>
+        public bool ChargeState
+        {
+            get
+            {
+                return m_chargeState;
+            }
+            set
+            {
+                m_chargeState = value;
             }
         }
         #endregion

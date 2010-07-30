@@ -41,6 +41,7 @@ namespace MultiAlignWin.IO
 		private const string CONST_mass_tag_F_CS1                   = "Charge 1 F Score" ; 
 		private const string CONST_mass_tag_F_CS2                   = "Charge 2 F Score" ; 
 		private const string CONST_mass_tag_F_CS3                   = "Charge 3 F Score" ;
+        private const string CONST_umc_charge_state                 = "Charge State ";
         private const string CONST_mass_tag_xcorr_col               = "Mass Tag Xcorr"; 
 		private const string CONST_mass_tag_modification_col        = "Modifications" ; 
 		private const string CONST_mass_tag_modification_count_col  = "Mod count" ; 
@@ -230,6 +231,8 @@ namespace MultiAlignWin.IO
                 data += Delimeter + CONST_scan_colum + "_" + col_name;
             if (mobj_writerOptions.NET)
                 data += Delimeter + CONST_net_colum + "_" + col_name;
+            if (mobj_writerOptions.ChargeState)
+                data += Delimeter + CONST_umc_charge_state + "_" + col_name;
             if (mobj_writerOptions.UMCIndex)
                 data += Delimeter + CONST_umc_index_column + "_" + col_name;
             if (mobj_writerOptions.DriftTime)
@@ -478,17 +481,19 @@ namespace MultiAlignWin.IO
                                 if (mobj_writerOptions.Scan)
                                     data += Delimeter + umc.mint_scan.ToString();                      // 3
                                 if (mobj_writerOptions.NET)
-                                    data += Delimeter + umc.Net.ToString();                           // 4
+                                    data += Delimeter + umc.Net.ToString();                            // 4
+                                if (mobj_writerOptions.ChargeState)
+                                    data += Delimeter + umc.ChargeRepresentative.ToString();           // 5
                                 if (mobj_writerOptions.UMCIndex)
-                                    data += Delimeter + umc.mint_umc_index.ToString();                 // 5
+                                    data += Delimeter + umc.mint_umc_index.ToString();                 // 6
                                 if (mobj_writerOptions.DriftTime)
-                                    data += Delimeter + umc.DriftTime.ToString();                      // 6
+                                    data += Delimeter + umc.DriftTime.ToString();                      // 7
                                 if (mobj_writerOptions.AbundanceSum)
-                                    data += Delimeter + umc.AbundanceSum.ToString();                   // 7
+                                    data += Delimeter + umc.AbundanceSum.ToString();                   // 8
                                 if (mobj_writerOptions.AbundanceMax)
-                                    data += Delimeter + umc.AbundanceMax.ToString();                   // 8
+                                    data += Delimeter + umc.AbundanceMax.ToString();                   // 9
                                 if (mobj_writerOptions.MSFeatureCount)
-                                    data += Delimeter + umc.SpectralCount.ToString();                  // 9
+                                    data += Delimeter + umc.SpectralCount.ToString();                  // 10
 
                                 if (mobj_writerOptions.CMCAbundance)
                                 {
@@ -510,6 +515,8 @@ namespace MultiAlignWin.IO
                                 if (mobj_writerOptions.Scan)
                                     data += Delimeter;
                                 if (mobj_writerOptions.NET)
+                                    data += Delimeter;
+                                if (mobj_writerOptions.ChargeState)
                                     data += Delimeter;
                                 if (mobj_writerOptions.UMCIndex)
                                     data += Delimeter;

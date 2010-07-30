@@ -38,6 +38,7 @@ namespace MultiAlignWin.Forms
                 m_options.UMCIndex          = umcIndexCheckbox.Checked;   
                 m_options.MSFeatureCount    = msFeatureCountCheckbox.Checked;
                 m_options.CMCAbundance      = cmcCheckbox.Checked;
+                m_options.ChargeState       = chargeStateCheckbox.Checked;
                 return m_options;
             }
             set
@@ -59,6 +60,7 @@ namespace MultiAlignWin.Forms
             umcIndexCheckbox.Checked        = m_options.UMCIndex;
             msFeatureCountCheckbox.Checked  = m_options.MSFeatureCount;
             cmcCheckbox.Checked             = m_options.CMCAbundance;
+            chargeStateCheckbox.Checked     = m_options.ChargeState;
         }
 
         #region Form Event Handlers 
