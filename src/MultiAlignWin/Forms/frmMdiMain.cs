@@ -89,7 +89,7 @@ namespace MultiAlignWin.UI
         /// <param name="e"></param>
         void frmMdiMain_Load(object sender, EventArgs e)
         {
-            WindowState = FormWindowState.Maximized;
+            //WindowState = FormWindowState.Maximized;
             
             /// 
             /// Get and display the version number to the screen

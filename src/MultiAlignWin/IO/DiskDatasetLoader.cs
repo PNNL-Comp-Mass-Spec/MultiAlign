@@ -25,9 +25,9 @@ using System.Collections.Generic;
 
 using MultiAlignEngine;
 
-namespace PNNLProteomics.Data.Loaders
+namespace MultiAlignWin.IO
 {
-    public class clsDiskDatasetLoader: IDisposable
+    public class DiskDatasetLoader: IDisposable
     {
         /// <summary>
         /// Fired when the loader finds how many datasets are available.
@@ -60,7 +60,7 @@ namespace PNNLProteomics.Data.Loaders
         /// <summary>
         /// Default constructor for loading datasets from disk.
         /// </summary>
-        public clsDiskDatasetLoader()
+        public DiskDatasetLoader()
         {
             marr_fileNames  = null;
             mobj_thread     = null;
@@ -145,12 +145,12 @@ namespace PNNLProteomics.Data.Loaders
 
 				if (fileNameLowerCase.Contains(".pek"))
                 {
-                    datasetInfo.menmDeisotopingTool = DeisotopingTool.ICR2LS;
+                    datasetInfo.menmDeisotopingTool = DeisotopingTool.ICR2ls;
 					fileNameAlias = fileName.Substring(0, fileNameLowerCase.LastIndexOf(".pek"));
 				}
 				else if (fileNameLowerCase.Contains("_isos.csv"))
                 {
-                    datasetInfo.menmDeisotopingTool = DeisotopingTool.Decon2LS;
+                    datasetInfo.menmDeisotopingTool = DeisotopingTool.Decon2ls;
 					fileNameAlias = fileName.Substring(0, fileNameLowerCase.LastIndexOf("_isos.csv"));
 				}
 				else if (fileNameLowerCase.Contains("_lcmsfeatures.txt"))

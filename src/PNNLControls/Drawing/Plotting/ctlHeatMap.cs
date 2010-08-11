@@ -9,8 +9,8 @@ namespace PNNLControls
 	public class ctlHeatMap : PNNLControls.ctlDataFrame
 	{
 		private System.ComponentModel.IContainer components = null;
-		private new System.Windows.Forms.Splitter splitterVertical;
-		private new System.Windows.Forms.Splitter splitterHorizontal;
+		private System.Windows.Forms.Splitter splitterVVertical;
+		private System.Windows.Forms.Splitter splitterVHorizontal;
 		protected PNNLControls.ctlHeatMapClient hMapClient;
 
 		
@@ -76,8 +76,8 @@ namespace PNNLControls
 			// This call is required by the Windows Form Designer.
 			InitializeComponent();
 
-			this.splitterHorizontal.BringToFront();
-			this.splitterVertical.BringToFront();
+			this.splitterVHorizontal.BringToFront();
+			this.splitterVVertical.BringToFront();
 
 			// TODO: Add any initialization after the InitializeComponent call
 
@@ -115,8 +115,8 @@ namespace PNNLControls
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.splitterVertical = new System.Windows.Forms.Splitter();
-			this.splitterHorizontal = new System.Windows.Forms.Splitter();
+			this.splitterVVertical = new System.Windows.Forms.Splitter();
+			this.splitterVHorizontal = new System.Windows.Forms.Splitter();
 			this.hMapClient = new PNNLControls.ctlHeatMapClient();
 			this.panel1.SuspendLayout();
 			this.pnlSE.SuspendLayout();
@@ -167,22 +167,22 @@ namespace PNNLControls
 			// 
 			// splitterVertical
 			// 
-			this.splitterVertical.BackColor = System.Drawing.SystemColors.Control;
-			this.splitterVertical.Location = new System.Drawing.Point(136, 24);
-			this.splitterVertical.Name = "splitterVertical";
-			this.splitterVertical.Size = new System.Drawing.Size(1, 456);
-			this.splitterVertical.TabIndex = 8;
-			this.splitterVertical.TabStop = false;
+			this.splitterVVertical.BackColor = System.Drawing.SystemColors.Control;
+			this.splitterVVertical.Location = new System.Drawing.Point(136, 24);
+			this.splitterVVertical.Name = "splitterVertical";
+			this.splitterVVertical.Size = new System.Drawing.Size(1, 456);
+			this.splitterVVertical.TabIndex = 8;
+			this.splitterVVertical.TabStop = false;
 			// 
 			// splitterHorizontal
 			// 
-			this.splitterHorizontal.BackColor = System.Drawing.SystemColors.Control;
-			this.splitterHorizontal.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.splitterHorizontal.Location = new System.Drawing.Point(137, 479);
-			this.splitterHorizontal.Name = "splitterHorizontal";
-			this.splitterHorizontal.Size = new System.Drawing.Size(455, 1);
-			this.splitterHorizontal.TabIndex = 9;
-			this.splitterHorizontal.TabStop = false;
+			this.splitterVHorizontal.BackColor = System.Drawing.SystemColors.Control;
+			this.splitterVHorizontal.Dock = System.Windows.Forms.DockStyle.Bottom;
+			this.splitterVHorizontal.Location = new System.Drawing.Point(137, 479);
+			this.splitterVHorizontal.Name = "splitterHorizontal";
+			this.splitterVHorizontal.Size = new System.Drawing.Size(455, 1);
+			this.splitterVHorizontal.TabIndex = 9;
+			this.splitterVHorizontal.TabStop = false;
 			// 
 			// hMapClient
 			// 
@@ -203,8 +203,8 @@ namespace PNNLControls
 			// ctlHeatMap
 			// 
 			this.Controls.Add(this.hMapClient);
-			this.Controls.Add(this.splitterHorizontal);
-			this.Controls.Add(this.splitterVertical);
+			this.Controls.Add(this.splitterVHorizontal);
+			this.Controls.Add(this.splitterVVertical);
 			this.Name = "ctlHeatMap";
 			this.LabelsUpdated += new PNNLControls.ctlHierarchalLabel.LabelUpdateDelegate(this.ctlHeatMap_LabelsUpdated);
 			this.AlignVertical += new PNNLControls.ctlHierarchalLabel.AlignDelegate(this.HeatMap_AlignVertical);
@@ -221,8 +221,8 @@ namespace PNNLControls
 			this.Controls.SetChildIndex(this.panel1, 0);
 			this.Controls.SetChildIndex(this.legend, 0);
 			this.Controls.SetChildIndex(this.hLabelVert, 0);
-			this.Controls.SetChildIndex(this.splitterVertical, 0);
-			this.Controls.SetChildIndex(this.splitterHorizontal, 0);
+			this.Controls.SetChildIndex(this.splitterVVertical, 0);
+			this.Controls.SetChildIndex(this.splitterVHorizontal, 0);
 			this.Controls.SetChildIndex(this.hMapClient, 0);
 			this.panel1.ResumeLayout(false);
 			this.pnlSE.ResumeLayout(false);

@@ -687,30 +687,30 @@ namespace MultiAlignWin.Drawing
         /// </summary>
         public static ctlAlignmentHeatMap AlignmentHeatMap_Chart(clsMultiAlignAnalysis analysis,
                                                     int datasetNum)
-        {            
+        {
             ctlAlignmentHeatMap heatMap = new ctlAlignmentHeatMap();
             clsAlignmentFunction alignmentFnc;
-            string   datasetName;
-            int      minAligneeScan, maxAligneeScan;
-            float    minBaselineScan, maxBaselineScan;
+            string datasetName;
+            int minAligneeScan, maxAligneeScan;
+            float minBaselineScan, maxBaselineScan;
             float[,] mScores;
 
             try
             {
-                datasetName = analysis.FileNames[datasetNum];                
-                classAlignmentData data = analysis.AlignmentData[datasetNum];                                
+                datasetName = analysis.FileNames[datasetNum];
+                classAlignmentData data = analysis.AlignmentData[datasetNum];
                 if (data == null)
                     return null;
 
-                alignmentFnc    = data.alignmentFunction;
-                datasetName     = data.aligneeDataset;
-                mScores         = data.heatScores;
+                alignmentFnc = data.alignmentFunction;
+                datasetName = data.aligneeDataset;
+                mScores = data.heatScores;
                 minBaselineScan = data.minMTDBNET;
                 maxBaselineScan = data.maxMTDBNET;
-                minAligneeScan  = data.minScanBaseline;
-                maxAligneeScan  = data.maxScanBaseline;
-                
-                
+                minAligneeScan = data.minScanBaseline;
+                maxAligneeScan = data.maxScanBaseline;
+
+
                 heatMap.SetData(mScores,
                                             new PNNLControls.ctlHierarchalLabel.AxisRangeF(minAligneeScan, maxAligneeScan),
                                             new PNNLControls.ctlHierarchalLabel.AxisRangeF(minBaselineScan, maxBaselineScan));
@@ -719,7 +719,47 @@ namespace MultiAlignWin.Drawing
             catch
             {
                 return null;
-            }  
+            }
+            return heatMap;
+        }
+        /// <summary>
+        /// Renders the scan versus the cluster net to the provided bitmap.
+        /// </summary>
+        public static Heatmap AlignmentHeatMap_Chart2(clsMultiAlignAnalysis analysis,
+                                                    int datasetNum)
+        {
+            Heatmap heatMap = new Heatmap();
+            clsAlignmentFunction alignmentFnc;
+            string datasetName;
+            int minAligneeScan, maxAligneeScan;
+            float minBaselineScan, maxBaselineScan;
+            float[,] mScores;
+
+            try
+            {
+                datasetName = analysis.FileNames[datasetNum];
+                classAlignmentData data = analysis.AlignmentData[datasetNum];
+                if (data == null)
+                    return null;
+
+                alignmentFnc = data.alignmentFunction;
+                datasetName = data.aligneeDataset;
+                mScores = data.heatScores;
+                minBaselineScan = data.minMTDBNET;
+                maxBaselineScan = data.maxMTDBNET;
+                minAligneeScan = data.minScanBaseline;
+                maxAligneeScan = data.maxScanBaseline;
+
+                heatMap.AlignmentFunction = alignmentFnc;
+                heatMap.SetData(mScores,
+                                new AxisRangeF(minAligneeScan, maxAligneeScan),
+                                new AxisRangeF(minBaselineScan, maxBaselineScan));
+                
+            }
+            catch
+            {
+                return null;
+            }
             return heatMap;
         }
         #endregion

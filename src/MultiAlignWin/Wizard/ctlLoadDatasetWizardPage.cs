@@ -11,8 +11,11 @@ using System.Collections.Generic;
 using MultiAlignEngine;
 using PNNLControls;
 using PNNLProteomics.Data;
+
+using MultiAlignWin.Forms;
 using MultiAlignWin.Network;
-using PNNLProteomics.Data.Loaders;
+
+using MultiAlignWin.IO;
 
 
 namespace MultiAlignWin
@@ -38,15 +41,15 @@ namespace MultiAlignWin
         /// <summary>
         /// Loader to load files from disk.
         /// </summary>
-        private clsDiskDatasetLoader mobj_diskLoader;
+        private DiskDatasetLoader mobj_diskLoader;
         /// <summary>
         /// Loader to load files from DMS.
         /// </summary>
-        private clsDatabaseDatasetLoader mobj_dmsLoader;
+        private DatabaseDatasetLoader mobj_dmsLoader;
         /// <summary>
         /// Loader that takes dataset information from a file and finds the id's in the DMS database.
         /// </summary>
-        private clsDatabaseDatasetIDLoader mobj_dataJobLoader;
+        private DatabaseDatasetIDLoader mobj_dataJobLoader;
         /// <summary>
         /// ListViewItem comparer for moving columns and sorting.
         /// </summary>
@@ -70,7 +73,11 @@ namespace MultiAlignWin
         /// <summary>
         /// Flag indicating if the items have been sorted based off if they are checked.
         /// </summary>
-        private bool mbool_sortChecked;
+        private bool mbool_sortChecked; 
+        /// <summary>
+        /// DMS Search options for filtering data. 
+        /// </summary>
+        private DMSDatasetSearchOptions m_searchOptions;
         #endregion
         
         /// <summary>
@@ -78,6 +85,7 @@ namespace MultiAlignWin
         /// </summary>
         public ctlLoadDatasetWizardPage( )
         {
+            m_searchOptions = new DMSDatasetSearchOptions();
 
             clsDMSServerInformation info = new clsDMSServerInformation();
             info = new clsDMSServerInformation();
@@ -122,9 +130,9 @@ namespace MultiAlignWin
 
             mobj_openFileDialog         = new OpenFileDialog();
             mobj_openJobIDDialog        = new OpenFileDialog();
-            mobj_dmsLoader              = new clsDatabaseDatasetLoader();
-            mobj_diskLoader             = new clsDiskDatasetLoader();
-            mobj_dataJobLoader          = new clsDatabaseDatasetIDLoader();
+            mobj_dmsLoader              = new DatabaseDatasetLoader();
+            mobj_diskLoader             = new DiskDatasetLoader();
+            mobj_dataJobLoader          = new DatabaseDatasetIDLoader();
             mobj_connectionTester       = new clsDMSConnectionTester(information.ConnectionExists, information);
             mobj_listViewItemComparer   = new ListViewItemComparer();
 
@@ -214,6 +222,7 @@ namespace MultiAlignWin
         {
             mtextbox_databaseFilterName.Enabled         = canLoadFromDMS;
             mbutton_databaseDatasetSearch.Enabled       = canLoadFromDMS;
+            m_showDMSSearchOptionsButton.Enabled = canLoadFromDMS;
             mbutton_databaseSelectDatasetIDFile.Enabled = canLoadFromDMS;
             if (canLoadFromDMS == true)
             {
@@ -415,8 +424,9 @@ namespace MultiAlignWin
                 {
                     enableDatabaseFeatures = mobj_connectionTester.HasDMSConnection;
                 }
-                mbutton_databaseDatasetSearch.Enabled = enableDatabaseFeatures;
-                mtextbox_databaseFilterName.Enabled = enableDatabaseFeatures;
+                mbutton_databaseDatasetSearch.Enabled       = enableDatabaseFeatures;
+                m_showDMSSearchOptionsButton.Enabled                    = enableDatabaseFeatures;
+                mtextbox_databaseFilterName.Enabled         = enableDatabaseFeatures;
                 mbutton_databaseSelectDatasetIDFile.Enabled = enableDatabaseFeatures;
 
                 mbutton_extractDatasets.Enabled = false;
@@ -470,8 +480,9 @@ namespace MultiAlignWin
             mlabel_percentLoadingComplete.Text = "Querying database for dataset information.  Please Wait...";
             mprogressBar_datasetLoading.Style  = ProgressBarStyle.Marquee;
             SetLoadingState(true);
-
-            mobj_dmsLoader.LoadDatasetsFromDatasetNames(wildcardFilter, true);
+            
+            m_searchOptions.DatasetName = wildcardFilter;
+            mobj_dmsLoader.LoadDatasetsFromDatasetNames(m_searchOptions, true);
         }
         /// <summary>
         /// Given a filename of dataset id's, this method loads that file, reads the ID's and pulls the
@@ -494,6 +505,8 @@ namespace MultiAlignWin
                 mlabel_percentLoadingComplete.Text = "Reading datasets from file and querying database for dataset information.  Please Wait...";
                 mprogressBar_datasetLoading.Style = ProgressBarStyle.Marquee;
                 SetLoadingState(true);
+
+                
                 mobj_dataJobLoader.LoadDatasets(mobj_openJobIDDialog.FileName, true);
             }
         }
@@ -531,7 +544,7 @@ namespace MultiAlignWin
             ListViewItem dataItem = new ListViewItem(datasetInfo.mstrDatasetId);
             dataItem.UseItemStyleForSubItems = false;
             dataItem.SubItems.Add(datasetInfo.mstrAnalysisJobId);
-            dataItem.SubItems.Add(datasetInfo.mstrDatasetName);
+            dataItem.SubItems.Add(datasetInfo.mstrDatasetName);            
             dataItem.SubItems.Add(datasetInfo.mstrAlias);
 
             if (datasetInfo.mintBlockID == 0)
@@ -555,17 +568,7 @@ namespace MultiAlignWin
                 dataItem.SubItems.Add(Convert.ToString(datasetInfo.mintBatchID));
 
             dataItem.SubItems.Add(datasetInfo.mdateAcquisitionStart.ToShortDateString());
-
-            if (File.Exists(datasetInfo.mstrLocalPath) == true)
-            {
-                FileInfo info = new FileInfo(datasetInfo.mstrLocalPath);
-                dataItem.SubItems.Add(info.Extension);
-            }
-            else
-            {
-                dataItem.SubItems.Add("");
-            }
-
+            dataItem.SubItems.Add(System.IO.Path.GetExtension(datasetInfo.mstrLocalPath));                
             dataItem.SubItems.Add(datasetInfo.menmDeisotopingTool.ToString());
             /// 
             /// the list control is stupid, so we have to make sure that 
@@ -583,6 +586,8 @@ namespace MultiAlignWin
             {
                 mint_numberCheckedItems++;
             }
+            dataItem.SubItems.Add(datasetInfo.mstrInstrment);
+
 
             dataItem.Name = datasetInfo.mstrDatasetName; 
             dataItem.Tag  = datasetInfo;
@@ -590,9 +595,9 @@ namespace MultiAlignWin
             if (mlistView_datasets.Items.ContainsKey(dataItem.Name) == true)
             {
                 mlabel_similarNamesFound.Visible = true;
-                dataItem.SubItems[2].BackColor = Color.Red;                                
+                dataItem.SubItems[2].BackColor   = Color.Salmon;                                
             }
-
+            
             mlistView_datasets.Items.Add(dataItem);
             mlistView_datasets.UpdateItem(dataItem.Index);
 
@@ -780,7 +785,7 @@ namespace MultiAlignWin
                 if (names.Contains(name))
                 {
                     mlabel_similarNamesFound.Visible = true;
-                    item.SubItems[2].BackColor = Color.Red;                    
+                    item.SubItems[2].BackColor = Color.Salmon;                    
                 }
                 names.Add(name);
             }
@@ -998,6 +1003,20 @@ namespace MultiAlignWin
             ClearAll();
         }
         #endregion                       
+
+        private void m_showAllOptions_Click(object sender, EventArgs e)
+        {
+            m_searchOptions.DatasetName                 = mtextbox_databaseFilterName.Text;
+
+            DMSDatasetSearchOptionsForm searchOptions   = new DMSDatasetSearchOptionsForm(m_searchOptions);            
+            searchOptions.StartPosition                 = FormStartPosition.CenterScreen;
+
+            if (searchOptions.ShowDialog() == DialogResult.OK)
+            {
+                m_searchOptions                  = searchOptions.Options;
+                mtextbox_databaseFilterName.Text = m_searchOptions.DatasetName;
+            }
+        }
     }
 
     #region Class that Implements the manual sorting of items by columns.

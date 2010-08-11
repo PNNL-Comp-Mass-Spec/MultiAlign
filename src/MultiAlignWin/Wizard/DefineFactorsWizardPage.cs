@@ -20,7 +20,7 @@ using MultiAlignWin.Forms.Factors;
 
 namespace MultiAlignWin
 {
-	public class ctlDefineFactorsWizardPage : Wizard.UI.InternalWizardPage
+	public class DefineFactorsWizardPage : Wizard.UI.InternalWizardPage
 	{
 		//public enum enmToolID {ICR2LS=2, QTOFPek=7, MLynxPek=10, AgilentTOFPek=11, LTQ_FTPek=12, Decon2LS=16, Decon2LS_Agilent=18} ; 
 	    private const int CONST_NUM_COLUMNS = 8;
@@ -69,7 +69,7 @@ namespace MultiAlignWin
         /// <summary>
         /// Default constructor.
         /// </summary>
-        public ctlDefineFactorsWizardPage()
+        public DefineFactorsWizardPage()
 		{
             InitializeComponent();		
 			mobj_listViewItemComparer             = new ListViewItemComparer();

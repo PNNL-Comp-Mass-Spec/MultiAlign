@@ -293,7 +293,7 @@ namespace PNNLControls
             this.legend.TabIndex = 5;
             this.legend.UnderColor = System.Drawing.Color.Black;
             this.legend.UpperRange = 0F;
-            this.legend.UseZScore = true;
+            this.legend.UseZScore = false;
             // 
             // pnlHeader
             // 

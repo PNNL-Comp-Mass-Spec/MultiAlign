@@ -8,9 +8,9 @@ using System.Collections.Generic;
 using MultiAlignEngine;
 using PNNLProteomics.Data;
 
-namespace PNNLProteomics.Data.Loaders
+namespace MultiAlignWin.IO
 {
-    public class clsDatabaseDatasetIDLoader
+    public class DatabaseDatasetIDLoader
     {
         #region Members
         /// <summary>
@@ -32,7 +32,7 @@ namespace PNNLProteomics.Data.Loaders
         /// <summary>
         /// DMS dataset loader.
         /// </summary>
-        private clsDatabaseDatasetLoader mobj_datasetLoader;
+        private DatabaseDatasetLoader mobj_datasetLoader;
         /// <summary>
         /// Collection of key->value pairs for dataset->alias pairs. 
         /// </summary>
@@ -50,9 +50,9 @@ namespace PNNLProteomics.Data.Loaders
         /// <summary>
         /// Default constructor for the dataset ID loader class.
         /// </summary>        
-        public clsDatabaseDatasetIDLoader()
+        public DatabaseDatasetIDLoader()
         {
-            mobj_datasetLoader      = new clsDatabaseDatasetLoader();
+            mobj_datasetLoader      = new DatabaseDatasetLoader();
             //marrDatasetInfo         = new ArrayList();
             mlist_datasetKeyValues  = new List<KeyValuePair<string, string>>();
             mobj_loadingThread      = null;
@@ -168,14 +168,13 @@ namespace PNNLProteomics.Data.Loaders
                 /// Don't thread the loading here because we should already be threaded.
                 /// 
                 mobj_datasetLoader.LoadDatasetsFromDatasetIDs(dataset, false);
-                ArrayList list = mobj_datasetLoader.DataSets;
+                List<clsDatasetInfo> list = mobj_datasetLoader.DataSets;
 
                 if (DatasetsFound != null && list != null)
                     DatasetsFound(list.Count);
                 
-                foreach (object o in list)
+                foreach (clsDatasetInfo info in list)
                 {
-                    clsDatasetInfo info = o as clsDatasetInfo;
                     if (info != null)
                     {
                         info.mstrAlias = alias;

@@ -3,7 +3,7 @@ using System.IO;
 
 namespace MultiAlignWin.IO
 {
-    public static class classAnalysisLogWriter
+    public static class AnalysisLogWriter
     {
         /// <summary>
         /// Writes the header and appends the newline constant.

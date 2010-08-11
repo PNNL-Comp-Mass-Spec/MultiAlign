@@ -14,10 +14,9 @@
  *          - Created file and comment header.
  * 
  *////////////////////////////////////////////////////////////////////////
-
 using MultiAlignEngine;
 
-namespace PNNLProteomics.Data.Loaders
+namespace MultiAlignWin.IO
 {
     #region Delegate Definitions
     /// <summary>

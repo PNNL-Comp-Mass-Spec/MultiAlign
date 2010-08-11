@@ -72,13 +72,38 @@ namespace MultiAlignWin.Forms
         {
             if (mobj_alignment == null || mobj_cluster == null)
                 return;
-                        
+
+            SuspendLayout();
+            /// 
+            /// Update the peak matching display first due to rendering z-order.
+            /// 
+            if (mobj_analysis.PeakMatchedToMassTagDB == false)
+            {
+                m_peakMatchingPanel.Visible = false;
+                m_peakMatchingPanel.BringToFront();
+            }
+            else
+            {
+                m_peakMatchingPanel.Visible = true;
+                m_peakMatchingPanel.SendToBack();
+            }
+
             if (mobj_analysis.ClusterAlignmentData != null)
             {
                 mlabel_stdevMass.Text = string.Format("Stdev. Mass = {0:0.000}", mobj_analysis.ClusterAlignmentData.MassStandardDeviation);
                 mlabel_stdevNET.Text = string.Format("Stdev. NET = {0:0.000}", mobj_analysis.ClusterAlignmentData.NETStandardDeviation);
+                m_alignmentPanel.Visible = true;
+                m_alignmentPanel.SendToBack();
+            }
+            else
+            {
+                m_alignmentPanel.Visible = false;
+                m_alignmentPanel.BringToFront();
             }
 
+            m_clusterPanel.SendToBack();
+
+            ResumeLayout();
             PerformLayout();
         }
         /// <summary>

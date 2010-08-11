@@ -601,8 +601,7 @@ namespace MultiAlignWin.Forms
         }
         private void mpicture_alignmentHeatmap_Click(object sender, EventArgs e)
         {
-
-            ctlAlignmentHeatMap chart = classRenderDatasetInfo.AlignmentHeatMap_Chart(mobj_analysis, mint_datasetIndex);
+            ctlAlignmentHeatMap chart = classRenderDatasetInfo.AlignmentHeatMap_Chart(mobj_analysis, mint_datasetIndex);            
             if (chart != null)
             {
                 Form displayform = new Form();

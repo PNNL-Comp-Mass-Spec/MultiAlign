@@ -50,8 +50,7 @@ namespace MultiAlignEngine
 
 			mint_num_datasets		 = 0; 
 			mint_num_umcs			 = 0; 
-			marr_umcs				 = new clsUMC* __gc[mint_default_umc_allocation]; 			
-			//marr_umcs				 = new PNNLControls::Data::clsSQLiteCacheArray<clsUMC*>("umcs.db", PNNLControls::Data::enmSQLiteDataCacheMode::Create, 10000, mint_default_umc_allocation);
+			marr_umcs				 = new clsUMC* __gc[mint_default_umc_allocation]; 						
 
 			marr_dataset_start_index = new ArrayList(); 
 			marr_dataset_stop_index  = new ArrayList(); 

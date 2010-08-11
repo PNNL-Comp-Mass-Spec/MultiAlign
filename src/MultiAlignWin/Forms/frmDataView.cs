@@ -82,8 +82,6 @@ namespace MultiAlignWin
         private ToolStripMenuItem featuresToolStripMenuItem;
         private ToolStripMenuItem clustersToolStripMenuItem;
         private Panel panel1;
-        private Button clusterFiltersButton;
-        private Button featureFiltersButton;
         private Button mbutton_reCluster;
         /// <summary>
         /// Preview rendering thread.
@@ -156,6 +154,12 @@ namespace MultiAlignWin
         /// <param name="proteins"></param>
         private void  DisplayProteinMaps(Dictionary<string,List<string>> proteins)
         {
+            if (mobjAnalysis.PeakMatchedToMassTagDB == false)
+            {
+                mtabcontrol_data.TabPages.Remove(mtabPage_proteinMaps);
+                return; 
+            }
+            
             mlistView_proteinPeptideTable.BeginUpdate();
             mtreeView_proteinViewer.BeginUpdate();
             mtreeView_proteinViewer.Nodes[0].Nodes.Clear();
@@ -297,8 +301,6 @@ namespace MultiAlignWin
             this.mcontrol_resultSummaryPages = new MultiAlignWin.ctlSummaryPages();
             this.panel1 = new System.Windows.Forms.Panel();
             this.mbutton_reCluster = new System.Windows.Forms.Button();
-            this.clusterFiltersButton = new System.Windows.Forms.Button();
-            this.featureFiltersButton = new System.Windows.Forms.Button();
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -335,9 +337,9 @@ namespace MultiAlignWin
             // splitter1
             // 
             this.splitter1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.splitter1.Location = new System.Drawing.Point(0, 469);
+            this.splitter1.Location = new System.Drawing.Point(0, 549);
             this.splitter1.Name = "splitter1";
-            this.splitter1.Size = new System.Drawing.Size(1051, 4);
+            this.splitter1.Size = new System.Drawing.Size(1046, 4);
             this.splitter1.TabIndex = 1;
             this.splitter1.TabStop = false;
             // 
@@ -348,7 +350,7 @@ namespace MultiAlignWin
             this.panelCharts.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelCharts.Location = new System.Drawing.Point(0, 24);
             this.panelCharts.Name = "panelCharts";
-            this.panelCharts.Size = new System.Drawing.Size(1051, 445);
+            this.panelCharts.Size = new System.Drawing.Size(1046, 525);
             this.panelCharts.TabIndex = 2;
             // 
             // mtabcontrol_data
@@ -363,14 +365,14 @@ namespace MultiAlignWin
             this.mtabcontrol_data.Location = new System.Drawing.Point(0, 0);
             this.mtabcontrol_data.Name = "mtabcontrol_data";
             this.mtabcontrol_data.SelectedIndex = 0;
-            this.mtabcontrol_data.Size = new System.Drawing.Size(1051, 410);
+            this.mtabcontrol_data.Size = new System.Drawing.Size(1046, 490);
             this.mtabcontrol_data.TabIndex = 1;
             // 
             // tabPageOverlayPlot
             // 
             this.tabPageOverlayPlot.Location = new System.Drawing.Point(4, 22);
             this.tabPageOverlayPlot.Name = "tabPageOverlayPlot";
-            this.tabPageOverlayPlot.Size = new System.Drawing.Size(1043, 384);
+            this.tabPageOverlayPlot.Size = new System.Drawing.Size(1038, 464);
             this.tabPageOverlayPlot.TabIndex = 0;
             this.tabPageOverlayPlot.Text = "Feature Cluster Plot";
             this.tabPageOverlayPlot.UseVisualStyleBackColor = true;
@@ -381,7 +383,7 @@ namespace MultiAlignWin
             this.mtabPage_analysisInformation.Location = new System.Drawing.Point(4, 22);
             this.mtabPage_analysisInformation.Name = "mtabPage_analysisInformation";
             this.mtabPage_analysisInformation.Padding = new System.Windows.Forms.Padding(3);
-            this.mtabPage_analysisInformation.Size = new System.Drawing.Size(1043, 384);
+            this.mtabPage_analysisInformation.Size = new System.Drawing.Size(1038, 464);
             this.mtabPage_analysisInformation.TabIndex = 2;
             this.mtabPage_analysisInformation.Text = "Options";
             this.mtabPage_analysisInformation.UseVisualStyleBackColor = true;
@@ -392,7 +394,7 @@ namespace MultiAlignWin
             this.mcontrol_analysisInformation.Dock = System.Windows.Forms.DockStyle.Fill;
             this.mcontrol_analysisInformation.Location = new System.Drawing.Point(3, 3);
             this.mcontrol_analysisInformation.Name = "mcontrol_analysisInformation";
-            this.mcontrol_analysisInformation.Size = new System.Drawing.Size(1037, 378);
+            this.mcontrol_analysisInformation.Size = new System.Drawing.Size(1032, 458);
             this.mcontrol_analysisInformation.TabIndex = 2;
             // 
             // mtabPage_clusterPlots
@@ -400,7 +402,7 @@ namespace MultiAlignWin
             this.mtabPage_clusterPlots.Location = new System.Drawing.Point(4, 22);
             this.mtabPage_clusterPlots.Name = "mtabPage_clusterPlots";
             this.mtabPage_clusterPlots.Padding = new System.Windows.Forms.Padding(3);
-            this.mtabPage_clusterPlots.Size = new System.Drawing.Size(1043, 384);
+            this.mtabPage_clusterPlots.Size = new System.Drawing.Size(1038, 464);
             this.mtabPage_clusterPlots.TabIndex = 8;
             this.mtabPage_clusterPlots.Text = "Analysis Plots";
             this.mtabPage_clusterPlots.UseVisualStyleBackColor = true;
@@ -412,7 +414,7 @@ namespace MultiAlignWin
             this.mtabPage_datasetSummary.Location = new System.Drawing.Point(4, 22);
             this.mtabPage_datasetSummary.Name = "mtabPage_datasetSummary";
             this.mtabPage_datasetSummary.Padding = new System.Windows.Forms.Padding(3);
-            this.mtabPage_datasetSummary.Size = new System.Drawing.Size(1043, 384);
+            this.mtabPage_datasetSummary.Size = new System.Drawing.Size(1038, 464);
             this.mtabPage_datasetSummary.TabIndex = 3;
             this.mtabPage_datasetSummary.Text = "Dataset Plots";
             this.mtabPage_datasetSummary.UseVisualStyleBackColor = true;
@@ -423,7 +425,7 @@ namespace MultiAlignWin
             this.mpanel_dataControls.Dock = System.Windows.Forms.DockStyle.Fill;
             this.mpanel_dataControls.Location = new System.Drawing.Point(3, 3);
             this.mpanel_dataControls.Name = "mpanel_dataControls";
-            this.mpanel_dataControls.Size = new System.Drawing.Size(1037, 378);
+            this.mpanel_dataControls.Size = new System.Drawing.Size(1032, 458);
             this.mpanel_dataControls.TabIndex = 0;
             // 
             // mtabPage_proteinMaps
@@ -433,7 +435,7 @@ namespace MultiAlignWin
             this.mtabPage_proteinMaps.Location = new System.Drawing.Point(4, 22);
             this.mtabPage_proteinMaps.Name = "mtabPage_proteinMaps";
             this.mtabPage_proteinMaps.Padding = new System.Windows.Forms.Padding(3);
-            this.mtabPage_proteinMaps.Size = new System.Drawing.Size(1043, 384);
+            this.mtabPage_proteinMaps.Size = new System.Drawing.Size(1038, 464);
             this.mtabPage_proteinMaps.TabIndex = 5;
             this.mtabPage_proteinMaps.Text = "Protein Information";
             this.mtabPage_proteinMaps.UseVisualStyleBackColor = true;
@@ -449,7 +451,7 @@ namespace MultiAlignWin
             this.mlistView_proteinPeptideTable.GridLines = true;
             this.mlistView_proteinPeptideTable.Location = new System.Drawing.Point(484, 9);
             this.mlistView_proteinPeptideTable.Name = "mlistView_proteinPeptideTable";
-            this.mlistView_proteinPeptideTable.Size = new System.Drawing.Size(632, 430);
+            this.mlistView_proteinPeptideTable.Size = new System.Drawing.Size(627, 510);
             this.mlistView_proteinPeptideTable.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.mlistView_proteinPeptideTable.TabIndex = 1;
             this.mlistView_proteinPeptideTable.UseCompatibleStateImageBehavior = false;
@@ -469,7 +471,7 @@ namespace MultiAlignWin
                         | System.Windows.Forms.AnchorStyles.Left)));
             this.mtreeView_proteinViewer.Location = new System.Drawing.Point(8, 6);
             this.mtreeView_proteinViewer.Name = "mtreeView_proteinViewer";
-            this.mtreeView_proteinViewer.Size = new System.Drawing.Size(466, 433);
+            this.mtreeView_proteinViewer.Size = new System.Drawing.Size(466, 513);
             this.mtreeView_proteinViewer.TabIndex = 0;
             // 
             // mtabPage_dataSummary
@@ -478,7 +480,7 @@ namespace MultiAlignWin
             this.mtabPage_dataSummary.Location = new System.Drawing.Point(4, 22);
             this.mtabPage_dataSummary.Name = "mtabPage_dataSummary";
             this.mtabPage_dataSummary.Padding = new System.Windows.Forms.Padding(3);
-            this.mtabPage_dataSummary.Size = new System.Drawing.Size(1043, 384);
+            this.mtabPage_dataSummary.Size = new System.Drawing.Size(1038, 464);
             this.mtabPage_dataSummary.TabIndex = 1;
             this.mtabPage_dataSummary.Text = "Results Summary";
             this.mtabPage_dataSummary.UseVisualStyleBackColor = true;
@@ -489,18 +491,16 @@ namespace MultiAlignWin
             this.mcontrol_resultSummaryPages.Dock = System.Windows.Forms.DockStyle.Fill;
             this.mcontrol_resultSummaryPages.Location = new System.Drawing.Point(3, 3);
             this.mcontrol_resultSummaryPages.Name = "mcontrol_resultSummaryPages";
-            this.mcontrol_resultSummaryPages.Size = new System.Drawing.Size(1037, 378);
+            this.mcontrol_resultSummaryPages.Size = new System.Drawing.Size(1032, 458);
             this.mcontrol_resultSummaryPages.TabIndex = 1;
             // 
             // panel1
             // 
             this.panel1.Controls.Add(this.mbutton_reCluster);
-            this.panel1.Controls.Add(this.clusterFiltersButton);
-            this.panel1.Controls.Add(this.featureFiltersButton);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(0, 410);
+            this.panel1.Location = new System.Drawing.Point(0, 490);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1051, 35);
+            this.panel1.Size = new System.Drawing.Size(1046, 35);
             this.panel1.TabIndex = 3;
             // 
             // mbutton_reCluster
@@ -512,29 +512,8 @@ namespace MultiAlignWin
             this.mbutton_reCluster.TabIndex = 4;
             this.mbutton_reCluster.Text = "Cluster";
             this.mbutton_reCluster.UseVisualStyleBackColor = true;
+            this.mbutton_reCluster.Visible = false;
             this.mbutton_reCluster.Click += new System.EventHandler(this.mbutton_reCluster_Click);
-            // 
-            // clusterFiltersButton
-            // 
-            this.clusterFiltersButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.clusterFiltersButton.Enabled = false;
-            this.clusterFiltersButton.Location = new System.Drawing.Point(961, 4);
-            this.clusterFiltersButton.Name = "clusterFiltersButton";
-            this.clusterFiltersButton.Size = new System.Drawing.Size(85, 28);
-            this.clusterFiltersButton.TabIndex = 3;
-            this.clusterFiltersButton.Text = "Cluster Filters";
-            this.clusterFiltersButton.UseVisualStyleBackColor = true;
-            // 
-            // featureFiltersButton
-            // 
-            this.featureFiltersButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.featureFiltersButton.Enabled = false;
-            this.featureFiltersButton.Location = new System.Drawing.Point(870, 4);
-            this.featureFiltersButton.Name = "featureFiltersButton";
-            this.featureFiltersButton.Size = new System.Drawing.Size(85, 28);
-            this.featureFiltersButton.TabIndex = 2;
-            this.featureFiltersButton.Text = "Feature Filters";
-            this.featureFiltersButton.UseVisualStyleBackColor = true;
             // 
             // menuStrip
             // 
@@ -543,7 +522,7 @@ namespace MultiAlignWin
             this.filtersToolStripMenuItem});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
-            this.menuStrip.Size = new System.Drawing.Size(1051, 24);
+            this.menuStrip.Size = new System.Drawing.Size(1046, 24);
             this.menuStrip.TabIndex = 3;
             this.menuStrip.Text = "menuStrip1";
             // 
@@ -699,9 +678,9 @@ namespace MultiAlignWin
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mlabel_rows,
             this.toolStripStatusLabel1});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 473);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 553);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(1051, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(1046, 22);
             this.statusStrip1.TabIndex = 5;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -718,7 +697,7 @@ namespace MultiAlignWin
             // frmDataView
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-            this.ClientSize = new System.Drawing.Size(1051, 495);
+            this.ClientSize = new System.Drawing.Size(1046, 575);
             this.Controls.Add(this.panelCharts);
             this.Controls.Add(this.splitter1);
             this.Controls.Add(this.menuStrip);
@@ -984,12 +963,6 @@ namespace MultiAlignWin
         #endregion
 
         #region Form Event Handlers
-        private void ClustergramOpenClicked()
-        {
-            frmClustergram heatForm = new frmClustergram();
-            heatForm.SetAnalysis(mobjAnalysis);
-            heatForm.ShowDialog(this);
-        }
         private void ScatterPlotOpenClicked()
         {
             frmScatterPlot scatterForm = new frmScatterPlot();
@@ -1075,6 +1048,11 @@ namespace MultiAlignWin
         #endregion
 
         #region Data Saving Menu Strip Item Handlers 
+
+        private PNNLProteomics.Filters.UMCFilters m_umcFilters            = new PNNLProteomics.Filters.UMCFilters();
+        private PNNLProteomics.Filters.UMCClusterFilters m_clusterFilters = new PNNLProteomics.Filters.UMCClusterFilters();
+
+
         private void Export()
         {
             SaveFileDialog dialog = new SaveFileDialog();
@@ -1096,9 +1074,13 @@ namespace MultiAlignWin
                 AnalysisTableWriter tableWriter = null;
 
                 TableWriterColumnOptionsForm optionsForm = new TableWriterColumnOptionsForm();
-                optionsForm.Options = m_columnOutputOptions;                
-                optionsForm.Icon = this.ParentForm.Icon;
-                optionsForm.StartPosition = FormStartPosition.CenterParent;
+                optionsForm.Options                      = m_columnOutputOptions;                
+                optionsForm.Icon                         = this.ParentForm.Icon;
+                optionsForm.StartPosition                = FormStartPosition.CenterParent;
+
+                MultiAlignWin.Forms.Filters.DataFilters filters = new MultiAlignWin.Forms.Filters.DataFilters(m_umcFilters, m_clusterFilters);
+                if (filters.ShowDialog() != DialogResult.OK)
+                    return;
 
                 switch (extension)
                 {
@@ -1131,7 +1113,10 @@ namespace MultiAlignWin
                         break;
                 }
 
-                writer.WriteAnalysis(filename, mobjAnalysis);
+                writer.WriteAnalysis(filename,
+                                    mobjAnalysis, 
+                                    m_umcFilters.GetFilterList(),
+                                    m_clusterFilters.GetFilterList());
             }
             dialog.Dispose();
         }
@@ -1187,6 +1172,15 @@ namespace MultiAlignWin
                 mobj_clusterRenderThread = new Thread(startCluster);
                 mobj_clusterRenderThread.Start();
             }                        
+        }
+
+        private void clusterFiltersButton_Click(object sender, EventArgs e)
+        {
+            MultiAlignWin.Forms.Filters.DataFilters filters = new MultiAlignWin.Forms.Filters.DataFilters(m_umcFilters, m_clusterFilters);
+            if (filters.ShowDialog() == DialogResult.OK)
+            {
+                //TODO: something here? references should have already been updated.
+            }
         }
     }
 }

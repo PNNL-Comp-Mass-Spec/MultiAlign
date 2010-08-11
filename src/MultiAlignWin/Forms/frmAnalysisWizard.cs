@@ -41,7 +41,6 @@ using MultiAlignEngine.Alignment;
 
 using PNNLProteomics.Data;
 using PNNLProteomics.EventModel;
-using PNNLProteomics.Data.Loaders;
 using PNNLProteomics.Data.Analysis;
 using PNNLProteomics.SMART;
 
@@ -97,7 +96,7 @@ namespace MultiAlignWin
 
         #region Wizard Controls
         ctlLoadDatasetWizardPage        mctl_loadDatasetPage;
-        ctlDefineFactorsWizardPage      mctl_defineFactorsPage;
+        DefineFactorsWizardPage      mctl_defineFactorsPage;
         ctlSelectParametersWizardPage   mctl_selectParametersPage;
         ctlSelectOutputNameWizardPage   mctl_selectOutputNamePage;
         ctlPerformAnalysisWizardPage    mctl_performAnalysisPage;
@@ -234,7 +233,7 @@ namespace MultiAlignWin
 
 
             mctl_loadDatasetPage = new ctlLoadDatasetWizardPage();
-            mctl_defineFactorsPage = new ctlDefineFactorsWizardPage();
+            mctl_defineFactorsPage = new DefineFactorsWizardPage();
             mctl_selectParametersPage = new ctlSelectParametersWizardPage();
             mctl_selectOutputNamePage = new ctlSelectOutputNameWizardPage();
             mctl_performAnalysisPage = new ctlPerformAnalysisWizardPage();
@@ -894,7 +893,7 @@ namespace MultiAlignWin
             {
                 string path = Path.GetDirectoryName(mobjAnalysis.PathName);
                 path        = Path.Combine(path, mobjAnalysis.AnalysisName + ".log");
-                classAnalysisLogWriter.WriteMessage(path, statusLevel, message);
+                AnalysisLogWriter.WriteMessage(path, statusLevel, message);
             }
             catch
             {
@@ -1209,7 +1208,7 @@ namespace MultiAlignWin
                 mobjAnalysis.Files = list;               
                 string outputPath = mctl_selectOutputNamePage.ProjectOutputFileName;
                 string logPath    = Path.Combine(Path.GetDirectoryName(outputPath), Path.GetFileNameWithoutExtension(outputPath) + ".log");
-                classAnalysisLogWriter.WriteHeader(logPath, "MultiAlign Analysis " + Path.GetFileNameWithoutExtension(outputPath) + " " + DateTime.Now);
+                AnalysisLogWriter.WriteHeader(logPath, "MultiAlign Analysis " + Path.GetFileNameWithoutExtension(outputPath) + " " + DateTime.Now);
                 mobjAnalysis.StartAnalysis(outputPath);                
                 return true;
             }

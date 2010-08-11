@@ -337,10 +337,6 @@
 			RelativePath="System.Data.dll"
 			AssemblyName="System.Data, Version=2.0.0.0, PublicKeyToken=b77a5c561934e089, processorArchitecture=x86"
 		/>
-		<ProjectReference
-			ReferencedProjectIdentifier="{9409DE9B-F3F0-41AA-95F5-8BFD525F5669}"
-			RelativePathToProject=".\PNNLControls\PNNLControls.csproj"
-		/>
 	</References>
 	<Files>
 		<Filter

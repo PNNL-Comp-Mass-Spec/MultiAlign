@@ -1,6 +1,6 @@
-namespace MultiAlignWin.Forms.Filters
+namespace MultiAlignWin.Drawing
 {
-    partial class NetFilterControl
+    partial class Heatmap
     {
         /// <summary> 
         /// Required designer variable.

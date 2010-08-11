@@ -14,7 +14,7 @@ using PNNLControls;
 using PNNLProteomics.Data;
 using MultiAlignEngine.MassTags;
 using MultiAlignWin.Network;
-using PNNLProteomics.Data.Loaders;
+using MultiAlignWin.IO;
 
 namespace MultiAlignWin
 {
@@ -701,9 +701,9 @@ namespace MultiAlignWin
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.Location = new System.Drawing.Point(25, 590);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(104, 16);
+            this.label3.Size = new System.Drawing.Size(140, 20);
             this.label3.TabIndex = 28;
-            this.label3.Text = "PMT Quality Score:";
+            this.label3.Text = "PMT Quality Score:      >=";
             this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.ttipPMT.SetToolTip(this.label3, "The minimum PMT_Quality_Score to allow; 0 to allow all");
             // 
@@ -713,16 +713,16 @@ namespace MultiAlignWin
             this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label6.Location = new System.Drawing.Point(25, 664);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(140, 20);
+            this.label6.Size = new System.Drawing.Size(175, 29);
             this.label6.TabIndex = 32;
-            this.label6.Text = "Peptide Prophet Probability:";
+            this.label6.Text = "Peptide Prophet Probability:      >=";
             this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.ttipPMT.SetToolTip(this.label6, "The minimum High_Peptide_Prophet_Probability value to allow; 0 to allow");
             // 
             // mtxtPeptideProphet
             // 
             this.mtxtPeptideProphet.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.mtxtPeptideProphet.Location = new System.Drawing.Point(188, 667);
+            this.mtxtPeptideProphet.Location = new System.Drawing.Point(198, 667);
             this.mtxtPeptideProphet.Name = "mtxtPeptideProphet";
             this.mtxtPeptideProphet.Size = new System.Drawing.Size(111, 20);
             this.mtxtPeptideProphet.TabIndex = 27;
@@ -736,16 +736,16 @@ namespace MultiAlignWin
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label5.Location = new System.Drawing.Point(25, 640);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(96, 16);
+            this.label5.Size = new System.Drawing.Size(138, 21);
             this.label5.TabIndex = 31;
-            this.label5.Text = "Min. Discriminant:";
+            this.label5.Text = "Min. Discriminant:         >=";
             this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.ttipPMT.SetToolTip(this.label5, "The minimum High_Discriminant_Score to allow; 0 to allow all");
             // 
             // mtxtMinXCorr
             // 
             this.mtxtMinXCorr.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.mtxtMinXCorr.Location = new System.Drawing.Point(188, 615);
+            this.mtxtMinXCorr.Location = new System.Drawing.Point(198, 615);
             this.mtxtMinXCorr.Name = "mtxtMinXCorr";
             this.mtxtMinXCorr.Size = new System.Drawing.Size(111, 20);
             this.mtxtMinXCorr.TabIndex = 25;
@@ -756,7 +756,7 @@ namespace MultiAlignWin
             // mtxtMinDiscriminant
             // 
             this.mtxtMinDiscriminant.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.mtxtMinDiscriminant.Location = new System.Drawing.Point(188, 641);
+            this.mtxtMinDiscriminant.Location = new System.Drawing.Point(198, 641);
             this.mtxtMinDiscriminant.Name = "mtxtMinDiscriminant";
             this.mtxtMinDiscriminant.Size = new System.Drawing.Size(111, 20);
             this.mtxtMinDiscriminant.TabIndex = 26;
@@ -770,9 +770,9 @@ namespace MultiAlignWin
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label4.Location = new System.Drawing.Point(25, 615);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(64, 16);
+            this.label4.Size = new System.Drawing.Size(140, 20);
             this.label4.TabIndex = 30;
-            this.label4.Text = "Min. XCorr:";
+            this.label4.Text = "Min. XCorr:                   >=";
             this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.ttipPMT.SetToolTip(this.label4, "The minimum value required for High_Normalized_Score; 0 to allow all");
             // 
@@ -806,16 +806,16 @@ namespace MultiAlignWin
             this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label9.Location = new System.Drawing.Point(25, 713);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(138, 23);
+            this.label9.Size = new System.Drawing.Size(167, 23);
             this.label9.TabIndex = 69;
-            this.label9.Text = "Min. # of MS/MS Obs.";
+            this.label9.Text = "Min. # of MS/MS Obs.             >=";
             this.label9.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.ttipPMT.SetToolTip(this.label9, "The minimum value required for High_Normalized_Score; 0 to allow all");
             // 
             // mtextBox_experimentNameFilter
             // 
             this.mtextBox_experimentNameFilter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.mtextBox_experimentNameFilter.Location = new System.Drawing.Point(188, 693);
+            this.mtextBox_experimentNameFilter.Location = new System.Drawing.Point(198, 693);
             this.mtextBox_experimentNameFilter.Name = "mtextBox_experimentNameFilter";
             this.mtextBox_experimentNameFilter.Size = new System.Drawing.Size(111, 20);
             this.mtextBox_experimentNameFilter.TabIndex = 64;
@@ -990,7 +990,7 @@ namespace MultiAlignWin
             this.mline_pmtQualityScore.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.mline_pmtQualityScore.Edge = Wizard.UI.EtchEdge.Top;
-            this.mline_pmtQualityScore.Location = new System.Drawing.Point(226, 601);
+            this.mline_pmtQualityScore.Location = new System.Drawing.Point(236, 601);
             this.mline_pmtQualityScore.Name = "mline_pmtQualityScore";
             this.mline_pmtQualityScore.Size = new System.Drawing.Size(115, 15);
             this.mline_pmtQualityScore.TabIndex = 62;
@@ -998,7 +998,7 @@ namespace MultiAlignWin
             // mnum_pmtQualityScore
             // 
             this.mnum_pmtQualityScore.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.mnum_pmtQualityScore.Location = new System.Drawing.Point(188, 590);
+            this.mnum_pmtQualityScore.Location = new System.Drawing.Point(198, 590);
             this.mnum_pmtQualityScore.Maximum = new decimal(new int[] {
             5,
             0,
@@ -1028,7 +1028,7 @@ namespace MultiAlignWin
             // mnum_minNumberMSMSObservations
             // 
             this.mnum_minNumberMSMSObservations.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.mnum_minNumberMSMSObservations.Location = new System.Drawing.Point(188, 716);
+            this.mnum_minNumberMSMSObservations.Location = new System.Drawing.Point(198, 716);
             this.mnum_minNumberMSMSObservations.Maximum = new decimal(new int[] {
             10000,
             0,
@@ -1044,6 +1044,7 @@ namespace MultiAlignWin
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(716, 844);
+            this.Controls.Add(this.mtxtPeptideProphet);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.mnum_minNumberMSMSObservations);
             this.Controls.Add(this.mtextBox_experimentExclusionFilter);
@@ -1063,7 +1064,6 @@ namespace MultiAlignWin
             this.Controls.Add(this.mlblMatchMTs);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label6);
-            this.Controls.Add(this.mtxtPeptideProphet);
             this.Controls.Add(this.mtxtMinDiscriminant);
             this.Controls.Add(this.radioRemoteDatabase);
             this.Controls.Add(this.label5);
@@ -1254,7 +1254,7 @@ namespace MultiAlignWin
 					myReader = myCommand.ExecuteReader();	                    
 					while (myReader.Read()) 
 					{
-						count = myReader.GetInt32(0) ;
+                        count++;
 					}					
 				}
 				catch(Exception ex)
@@ -1334,7 +1334,7 @@ namespace MultiAlignWin
 					myReader = myCommand.ExecuteReader();					
 					while (myReader.Read()) 
 					{
-						count = myReader.GetInt32(0) ;
+						count++; 
 					}
 					//mlblMatchMTs.Text = count.ToString() ;
 				}

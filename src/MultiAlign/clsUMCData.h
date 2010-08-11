@@ -55,8 +55,7 @@ namespace MultiAlignEngine
 			~clsUMCData(void); 
 
 			int											marr_highestChargeStates __gc[];
-			MultiAlignEngine::Features::clsUMC*			marr_umcs				 __gc[]; 			
-			//PNNLControls::Data::clsSQLiteCacheArray<clsUMC*>*	marr_umcs;
+			MultiAlignEngine::Features::clsUMC*			marr_umcs				 __gc[]; 						
 			MultiAlignEngine::Features::clsClusterData* mobjClusterData;						
 			
 			/*************************************************************************************************************

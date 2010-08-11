@@ -95,10 +95,12 @@ namespace MultiAlignWin
             this.mcolumnHeader_Date = new System.Windows.Forms.ColumnHeader();
             this.mcolumnHeader_FileType = new System.Windows.Forms.ColumnHeader();
             this.columnHeader_tool = new System.Windows.Forms.ColumnHeader();
+            this.m_instrumentColumn = new System.Windows.Forms.ColumnHeader();
             this.mbutton_clearUnchecked = new System.Windows.Forms.Button();
             this.mbutton_clearChecked = new System.Windows.Forms.Button();
             this.mbutton_checkAll = new System.Windows.Forms.Button();
             this.mgroupBox_selectData = new System.Windows.Forms.GroupBox();
+            this.m_showDMSSearchOptionsButton = new System.Windows.Forms.Button();
             this.mlabel_similarNamesFound = new System.Windows.Forms.Label();
             this.mlinkLabel_testConnection = new System.Windows.Forms.LinkLabel();
             this.mlink_showPNNLProperties = new System.Windows.Forms.LinkLabel();
@@ -126,7 +128,7 @@ namespace MultiAlignWin
             // Banner
             // 
             this.Banner.BackColor = System.Drawing.Color.White;
-            this.Banner.Size = new System.Drawing.Size(955, 50);
+            this.Banner.Size = new System.Drawing.Size(1050, 50);
             this.Banner.Subtitle = "Choose from different options of getting files.";
             this.Banner.Title = "Step 1. Select Data";
             // 
@@ -226,10 +228,10 @@ namespace MultiAlignWin
             this.mpanel_loading.Controls.Add(this.mlabel_percentLoadingComplete);
             this.mpanel_loading.Controls.Add(this.mlabel_downloadingImage);
             this.mpanel_loading.Controls.Add(this.mbutton_stopLoading);
-            this.mpanel_loading.Location = new System.Drawing.Point(6, 754);
+            this.mpanel_loading.Location = new System.Drawing.Point(6, 750);
             this.mpanel_loading.Name = "mpanel_loading";
             this.mpanel_loading.Padding = new System.Windows.Forms.Padding(3);
-            this.mpanel_loading.Size = new System.Drawing.Size(941, 33);
+            this.mpanel_loading.Size = new System.Drawing.Size(1036, 33);
             this.mpanel_loading.TabIndex = 5;
             this.mpanel_loading.Visible = false;
             // 
@@ -240,7 +242,7 @@ namespace MultiAlignWin
             this.mprogressBar_datasetLoading.ForeColor = System.Drawing.Color.Lime;
             this.mprogressBar_datasetLoading.Location = new System.Drawing.Point(3, 3);
             this.mprogressBar_datasetLoading.Name = "mprogressBar_datasetLoading";
-            this.mprogressBar_datasetLoading.Size = new System.Drawing.Size(767, 25);
+            this.mprogressBar_datasetLoading.Size = new System.Drawing.Size(862, 25);
             this.mprogressBar_datasetLoading.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
             this.mprogressBar_datasetLoading.TabIndex = 9;
             // 
@@ -251,7 +253,7 @@ namespace MultiAlignWin
             this.mlabel_percentLoadingComplete.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.mlabel_percentLoadingComplete.Dock = System.Windows.Forms.DockStyle.Right;
             this.mlabel_percentLoadingComplete.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.mlabel_percentLoadingComplete.Location = new System.Drawing.Point(770, 3);
+            this.mlabel_percentLoadingComplete.Location = new System.Drawing.Point(865, 3);
             this.mlabel_percentLoadingComplete.MinimumSize = new System.Drawing.Size(39, 22);
             this.mlabel_percentLoadingComplete.Name = "mlabel_percentLoadingComplete";
             this.mlabel_percentLoadingComplete.Size = new System.Drawing.Size(39, 22);
@@ -262,7 +264,7 @@ namespace MultiAlignWin
             // 
             this.mlabel_downloadingImage.Dock = System.Windows.Forms.DockStyle.Right;
             this.mlabel_downloadingImage.Image = global::MultiAlignWin.Properties.Resources.DOWNLOAD_00;
-            this.mlabel_downloadingImage.Location = new System.Drawing.Point(809, 3);
+            this.mlabel_downloadingImage.Location = new System.Drawing.Point(904, 3);
             this.mlabel_downloadingImage.Name = "mlabel_downloadingImage";
             this.mlabel_downloadingImage.Size = new System.Drawing.Size(31, 25);
             this.mlabel_downloadingImage.TabIndex = 61;
@@ -273,7 +275,7 @@ namespace MultiAlignWin
             this.mbutton_stopLoading.Dock = System.Windows.Forms.DockStyle.Right;
             this.mbutton_stopLoading.Image = global::MultiAlignWin.Properties.Resources.Critical;
             this.mbutton_stopLoading.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.mbutton_stopLoading.Location = new System.Drawing.Point(840, 3);
+            this.mbutton_stopLoading.Location = new System.Drawing.Point(935, 3);
             this.mbutton_stopLoading.Name = "mbutton_stopLoading";
             this.mbutton_stopLoading.Size = new System.Drawing.Size(96, 25);
             this.mbutton_stopLoading.TabIndex = 60;
@@ -298,7 +300,7 @@ namespace MultiAlignWin
             this.panelOptions.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelOptions.Location = new System.Drawing.Point(134, 0);
             this.panelOptions.Name = "panelOptions";
-            this.panelOptions.Size = new System.Drawing.Size(955, 790);
+            this.panelOptions.Size = new System.Drawing.Size(1050, 786);
             this.panelOptions.TabIndex = 2;
             // 
             // mlabel_totalChecked
@@ -310,7 +312,7 @@ namespace MultiAlignWin
             this.mlabel_totalChecked.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.mlabel_totalChecked.Location = new System.Drawing.Point(299, 286);
             this.mlabel_totalChecked.Name = "mlabel_totalChecked";
-            this.mlabel_totalChecked.Size = new System.Drawing.Size(381, 24);
+            this.mlabel_totalChecked.Size = new System.Drawing.Size(476, 24);
             this.mlabel_totalChecked.TabIndex = 59;
             this.mlabel_totalChecked.Text = "(0/0) Datasets Checked";
             this.mlabel_totalChecked.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -332,12 +334,13 @@ namespace MultiAlignWin
             this.batchID,
             this.mcolumnHeader_Date,
             this.mcolumnHeader_FileType,
-            this.columnHeader_tool});
+            this.columnHeader_tool,
+            this.m_instrumentColumn});
             this.mlistView_datasets.FullRowSelect = true;
             this.mlistView_datasets.GridLines = true;
             this.mlistView_datasets.Location = new System.Drawing.Point(6, 316);
             this.mlistView_datasets.Name = "mlistView_datasets";
-            this.mlistView_datasets.Size = new System.Drawing.Size(941, 432);
+            this.mlistView_datasets.Size = new System.Drawing.Size(1036, 428);
             this.mlistView_datasets.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.mlistView_datasets.TabIndex = 58;
             this.mlistView_datasets.UseCompatibleStateImageBehavior = false;
@@ -395,6 +398,12 @@ namespace MultiAlignWin
             // 
             this.columnHeader_tool.Text = "Tool";
             this.columnHeader_tool.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.columnHeader_tool.Width = 74;
+            // 
+            // m_instrumentColumn
+            // 
+            this.m_instrumentColumn.Text = "Instrument";
+            this.m_instrumentColumn.Width = 70;
             // 
             // mbutton_clearUnchecked
             // 
@@ -435,7 +444,7 @@ namespace MultiAlignWin
             this.mbutton_checkAll.Enabled = false;
             this.mbutton_checkAll.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.mbutton_checkAll.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.mbutton_checkAll.Location = new System.Drawing.Point(777, 286);
+            this.mbutton_checkAll.Location = new System.Drawing.Point(872, 286);
             this.mbutton_checkAll.Name = "mbutton_checkAll";
             this.mbutton_checkAll.Size = new System.Drawing.Size(83, 24);
             this.mbutton_checkAll.TabIndex = 53;
@@ -448,6 +457,7 @@ namespace MultiAlignWin
             this.mgroupBox_selectData.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.mgroupBox_selectData.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.mgroupBox_selectData.Controls.Add(this.m_showDMSSearchOptionsButton);
             this.mgroupBox_selectData.Controls.Add(this.mlabel_similarNamesFound);
             this.mgroupBox_selectData.Controls.Add(this.mlinkLabel_testConnection);
             this.mgroupBox_selectData.Controls.Add(this.mlink_showPNNLProperties);
@@ -466,17 +476,31 @@ namespace MultiAlignWin
             this.mgroupBox_selectData.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.mgroupBox_selectData.Location = new System.Drawing.Point(6, 56);
             this.mgroupBox_selectData.Name = "mgroupBox_selectData";
-            this.mgroupBox_selectData.Size = new System.Drawing.Size(941, 224);
+            this.mgroupBox_selectData.Size = new System.Drawing.Size(1036, 224);
             this.mgroupBox_selectData.TabIndex = 48;
             this.mgroupBox_selectData.TabStop = false;
             this.mgroupBox_selectData.Text = "Select Data ";
+            // 
+            // m_showDMSSearchOptionsButton
+            // 
+            this.m_showDMSSearchOptionsButton.BackColor = System.Drawing.SystemColors.Control;
+            this.m_showDMSSearchOptionsButton.Enabled = false;
+            this.m_showDMSSearchOptionsButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.m_showDMSSearchOptionsButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.m_showDMSSearchOptionsButton.Location = new System.Drawing.Point(413, 160);
+            this.m_showDMSSearchOptionsButton.Name = "m_showDMSSearchOptionsButton";
+            this.m_showDMSSearchOptionsButton.Size = new System.Drawing.Size(78, 22);
+            this.m_showDMSSearchOptionsButton.TabIndex = 57;
+            this.m_showDMSSearchOptionsButton.Text = "More Options";
+            this.m_showDMSSearchOptionsButton.UseVisualStyleBackColor = false;
+            this.m_showDMSSearchOptionsButton.Click += new System.EventHandler(this.m_showAllOptions_Click);
             // 
             // mlabel_similarNamesFound
             // 
             this.mlabel_similarNamesFound.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.mlabel_similarNamesFound.AutoSize = true;
             this.mlabel_similarNamesFound.ForeColor = System.Drawing.Color.Red;
-            this.mlabel_similarNamesFound.Location = new System.Drawing.Point(672, 205);
+            this.mlabel_similarNamesFound.Location = new System.Drawing.Point(767, 205);
             this.mlabel_similarNamesFound.Name = "mlabel_similarNamesFound";
             this.mlabel_similarNamesFound.Size = new System.Drawing.Size(265, 16);
             this.mlabel_similarNamesFound.TabIndex = 56;
@@ -525,7 +549,7 @@ namespace MultiAlignWin
             this.mprogressBar_connectionTest.ForeColor = System.Drawing.Color.Lime;
             this.mprogressBar_connectionTest.Location = new System.Drawing.Point(575, 96);
             this.mprogressBar_connectionTest.Name = "mprogressBar_connectionTest";
-            this.mprogressBar_connectionTest.Size = new System.Drawing.Size(358, 18);
+            this.mprogressBar_connectionTest.Size = new System.Drawing.Size(453, 18);
             this.mprogressBar_connectionTest.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
             this.mprogressBar_connectionTest.TabIndex = 39;
             this.mprogressBar_connectionTest.Value = 2;
@@ -582,7 +606,7 @@ namespace MultiAlignWin
             this.mbutton_databaseSelectDatasetIDFile.Enabled = false;
             this.mbutton_databaseSelectDatasetIDFile.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.mbutton_databaseSelectDatasetIDFile.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.mbutton_databaseSelectDatasetIDFile.Location = new System.Drawing.Point(283, 178);
+            this.mbutton_databaseSelectDatasetIDFile.Location = new System.Drawing.Point(283, 185);
             this.mbutton_databaseSelectDatasetIDFile.Name = "mbutton_databaseSelectDatasetIDFile";
             this.mbutton_databaseSelectDatasetIDFile.Size = new System.Drawing.Size(32, 24);
             this.mbutton_databaseSelectDatasetIDFile.TabIndex = 47;
@@ -607,9 +631,9 @@ namespace MultiAlignWin
             this.mbutton_databaseDatasetSearch.Enabled = false;
             this.mbutton_databaseDatasetSearch.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.mbutton_databaseDatasetSearch.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.mbutton_databaseDatasetSearch.Location = new System.Drawing.Point(505, 133);
+            this.mbutton_databaseDatasetSearch.Location = new System.Drawing.Point(497, 133);
             this.mbutton_databaseDatasetSearch.Name = "mbutton_databaseDatasetSearch";
-            this.mbutton_databaseDatasetSearch.Size = new System.Drawing.Size(45, 22);
+            this.mbutton_databaseDatasetSearch.Size = new System.Drawing.Size(72, 22);
             this.mbutton_databaseDatasetSearch.TabIndex = 1;
             this.mbutton_databaseDatasetSearch.Text = "GO!";
             this.mbutton_databaseDatasetSearch.UseVisualStyleBackColor = false;
@@ -618,7 +642,7 @@ namespace MultiAlignWin
             // mlabel_datasetAnalysisIDNumbers
             // 
             this.mlabel_datasetAnalysisIDNumbers.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.mlabel_datasetAnalysisIDNumbers.Location = new System.Drawing.Point(46, 178);
+            this.mlabel_datasetAnalysisIDNumbers.Location = new System.Drawing.Point(46, 185);
             this.mlabel_datasetAnalysisIDNumbers.Name = "mlabel_datasetAnalysisIDNumbers";
             this.mlabel_datasetAnalysisIDNumbers.Size = new System.Drawing.Size(190, 24);
             this.mlabel_datasetAnalysisIDNumbers.TabIndex = 46;
@@ -644,7 +668,7 @@ namespace MultiAlignWin
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.mline.Location = new System.Drawing.Point(49, 110);
             this.mline.Name = "mline";
-            this.mline.Size = new System.Drawing.Size(882, 17);
+            this.mline.Size = new System.Drawing.Size(977, 17);
             this.mline.TabIndex = 55;
             // 
             // mbutton_uncheckAll
@@ -654,7 +678,7 @@ namespace MultiAlignWin
             this.mbutton_uncheckAll.Enabled = false;
             this.mbutton_uncheckAll.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.mbutton_uncheckAll.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.mbutton_uncheckAll.Location = new System.Drawing.Point(688, 286);
+            this.mbutton_uncheckAll.Location = new System.Drawing.Point(783, 286);
             this.mbutton_uncheckAll.Name = "mbutton_uncheckAll";
             this.mbutton_uncheckAll.Size = new System.Drawing.Size(83, 24);
             this.mbutton_uncheckAll.TabIndex = 52;
@@ -685,7 +709,7 @@ namespace MultiAlignWin
             this.mbutton_toggleAll.Enabled = false;
             this.mbutton_toggleAll.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.mbutton_toggleAll.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.mbutton_toggleAll.Location = new System.Drawing.Point(864, 286);
+            this.mbutton_toggleAll.Location = new System.Drawing.Point(959, 286);
             this.mbutton_toggleAll.Name = "mbutton_toggleAll";
             this.mbutton_toggleAll.Size = new System.Drawing.Size(83, 24);
             this.mbutton_toggleAll.TabIndex = 50;
@@ -697,7 +721,7 @@ namespace MultiAlignWin
             // 
             this.Controls.Add(this.panelOptions);
             this.Name = "ctlLoadDatasetWizardPage";
-            this.Size = new System.Drawing.Size(1089, 790);
+            this.Size = new System.Drawing.Size(1184, 786);
             this.Controls.SetChildIndex(this.panelOptions, 0);
             this.Controls.SetChildIndex(this.Banner, 0);
             this.mcontextMenu_dataset.ResumeLayout(false);
@@ -766,5 +790,7 @@ namespace MultiAlignWin
 		private LinkLabel mlinkLabel_testConnection;
 		private ExternalControls.NiceLine mline;
 		private Label mlabel_similarNamesFound;
+        private ColumnHeader m_instrumentColumn;
+        private Button m_showDMSSearchOptionsButton;
 	}
 }

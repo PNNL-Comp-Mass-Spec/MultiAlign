@@ -13,7 +13,19 @@ namespace MultiAlignEngine
 	public __value enum LabelingType  {Leu_C13N15=0, SPICAT, ICAT, SulfoNHSLCBiotin, 
 		PheC13, N14N15, none, PhIST, CleavableICAT, O18, PhIAT, PEOBiotin, Unknown } ;
 
-	public __value enum DeisotopingTool  { ICR2LS=0, Decon2LS, NA, LCMSFeatureFinder } ; 
+	public __value enum DeisotopingTool  
+	{ 		
+        Decon2ls = 16,
+        ICR2ls = 2,	
+        //QTOFPek = 7,			Not Active
+        Decon2ls_V2 = 27,
+        LCMSFeatureFinder = 99,
+        //MLynxPek = 10,		Not Active
+        //AgilentTOFPek = 11,	Not Active
+        LTQ_FTPek = 12,
+        Decon2lsAgilent = 18,
+		NA = 0
+	} ; 
 
 	[System::Serializable]
 	public __gc class clsDatasetInfo : public System::IComparable

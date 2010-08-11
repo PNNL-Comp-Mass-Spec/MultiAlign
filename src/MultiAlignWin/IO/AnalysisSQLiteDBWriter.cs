@@ -81,7 +81,10 @@ namespace MultiAlignWin.IO
                 mlist_clusterFilters = new List<IFilter<clsCluster>>();
             mlist_clusterFilters.Clear();
         }
-        public void WriteAnalysis(string dbPath, clsMultiAlignAnalysis analysis)
+        public void WriteAnalysis(  string dbPath, 
+                                    clsMultiAlignAnalysis analysis,
+                                    List<IFilter<clsUMC>> umcFilters, 
+                                    List<IFilter<clsCluster>> clusterFilters)
         {
 
             // Set DB Location

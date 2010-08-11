@@ -55,14 +55,6 @@ namespace MultiAlignWin.IO
         /// Delimeter used between columns.
         /// </summary>
         private string mstring_delimeter;
-        /// <summary>
-        /// List of UMC filters for screening data.
-        /// </summary>
-        private List<IFilter<clsUMC>> mlist_umcFilters;
-        /// <summary>
-        /// List of filters related to UMC Clusters
-        /// </summary>
-        private List<IFilter<clsCluster>> mlist_clusterFilters;
         #endregion
 
         /// <summary>
@@ -88,34 +80,6 @@ namespace MultiAlignWin.IO
                 mstring_delimeter = value;
             }
         }
-        /// <summary>
-        /// Gets or sets the list of UMC Filters
-        /// </summary>
-        public List<IFilter<clsCluster>> FiltersClusters
-        {
-            get
-            {
-                return mlist_clusterFilters;
-            }
-            set
-            {
-                mlist_clusterFilters = value;
-            }
-        }
-        /// <summary>
-        /// Gets or sets the list of UMC Filters
-        /// </summary>
-        public List<IFilter<clsUMC>> FiltersUMC
-        {
-            get
-            {
-                return mlist_umcFilters;
-            }
-            set
-            {
-                mlist_umcFilters = value;
-            }
-        }
         #endregion
 
         #region Methods
@@ -128,17 +92,6 @@ namespace MultiAlignWin.IO
             /// Delimeter for text output
             /// 
             Delimeter = CONST_DELIMITER;
-
-            /// 
-            /// Create the filter lists
-            /// 
-            if (mlist_umcFilters == null)
-                mlist_umcFilters = new List<IFilter<clsUMC>>();
-            mlist_umcFilters.Clear();
-            
-            if (mlist_clusterFilters == null)
-                mlist_clusterFilters = new List<IFilter<clsCluster>>();
-            mlist_clusterFilters.Clear();
 
         }
         #endregion
@@ -222,7 +175,10 @@ namespace MultiAlignWin.IO
         /// </summary>
         /// <param name="analysis">Analysis object to write.</param>
         /// <param name="pathname">File path to write to.</param>
-        public void WriteAnalysis(string pathname, clsMultiAlignAnalysis analysis)
+        public void WriteAnalysis(string pathname,
+                                    clsMultiAlignAnalysis analysis,
+                                    List<IFilter<clsUMC>> umcFilters,
+                                    List<IFilter<clsCluster>> clusterFilters)
         {            
             /// 
             /// Write the data to file.
@@ -274,7 +230,7 @@ namespace MultiAlignWin.IO
                     /// 
                     /// Check to make sure the cluster passes the filter.
                     /// 
-                    if (FilterUtil<clsCluster>.PassesFilters(cluster, mlist_clusterFilters) == false)
+                    if (FilterUtil<clsCluster>.PassesFilters(cluster, clusterFilters) == false)
                     {
                         clusterNum++;
                     }
@@ -430,7 +386,7 @@ namespace MultiAlignWin.IO
                             /// 
                             /// Check to make sure the UMC passes the filter.
                             /// 
-                            if (umc != null && FilterUtil<clsUMC>.PassesFilters(umc, mlist_umcFilters))
+                            if (umc != null && FilterUtil<clsUMC>.PassesFilters(umc, umcFilters))
                             {
                                 data += string.Format("{0}{1}{0}{2}",
                                                         Delimeter,                          // 0

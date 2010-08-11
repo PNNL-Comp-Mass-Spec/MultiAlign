@@ -347,10 +347,10 @@ namespace PNNLControls
 				//regardless of display range, we need to generate data across the full length of the data rows
 				//in order to generated ZScore 
 				
-				Range r = new Range(displayRange);
+				Range r       = new Range(displayRange);
 				r.StartColumn = 0;
-				r.EndColumn = numColumns;
-				mAveragedData = AverageData(mData, r, numColumns, this.Height);
+                r.EndColumn = Width; //numColumns;
+				mAveragedData = AverageData(mData, r, this.Width, this.Height );// numColumns, this.Height);
 
 				r = new Range(0,0,mAveragedData.GetUpperBound(0),mAveragedData.GetUpperBound(1));
 				mBitmap = mLegend.ApplyLegend(mAveragedData, r);
@@ -369,6 +369,7 @@ namespace PNNLControls
 				if (mBitmap.Width != this.Width || mBitmap.Height != this.Height)
 				{
 					Console.WriteLine("Strecthing. Size of new bitmap = " + this.Size + " starting Bitmap size = " + mBitmap.Size) ; 
+                    
 					mBitmap = bmt.StretchAndAlignBitmap(mBitmap, this.Width, this.Height, 
 														this.mHorizontalAlignment, this.mVerticalAlignment);
 				}
@@ -519,338 +520,6 @@ namespace PNNLControls
 			return (destData);
 		}
 
-//		private float [,] midAverageData(float[,]srcData, Range displayRange, int destWidth, int destHeight)
-//		{
-//			float [,] destData = null;
-//			int nRecs = displayRange.NumRows;
-//			
-//			float frac = 1f;
-//
-//			try
-//			{
-//				if (nRecs<=destHeight) //no averaging needed, just map and copy
-//				{
-//					//note reversed dims
-//					destHeight = displayRange.NumRows;
-//					destWidth = displayRange.NumColumns;
-//					int srcWidth = srcData.GetUpperBound(1)+1;
-//
-//					//note reversal of dimensions
-//					destData = new float [destHeight, destWidth];
-//					fixed (float* s = srcData)
-//						fixed (float* d = destData)
-//							for (int col = 0; col <destWidth; col++)
-//							{
-//								int j = colIndices[col+displayRange.StartColumn];
-//								for (int row=0; row<destHeight; row++)
-//								{
-//									int i = (int)rowIndices[row+displayRange.StartRow];
-//									*(d+(destWidth*row)+col) = *(s+(srcWidth*(i))+j);
-//								}
-//							}
-//					return(destData);
-//				}
-//
-//				//note reversal of dimensions
-//				destData = new float [destHeight, destWidth];
-//
-//				float srcToDestRatio =  (float)nRecs  / (float) destHeight;
-//				
-//				fixed (float* s = srcData)
-//					fixed (float* d = destData)
-//						for (int col = 0; col <destWidth; col++)
-//						{
-//							int c = colIndices[col];
-//
-//							for (int row=0; row<destHeight; row++)
-//							{
-//								int i = (int)rowIndices[row];
-//
-//								float fi = (float)i;
-//								float startBinF = (float) displayRange.StartRow + fi*srcToDestRatio;
-//								float stopBinF = startBinF + srcToDestRatio;
-//								int startBin = (int) startBinF;
-//								int stopBin = (int) stopBinF;
-//								if (stopBin>=displayRange.EndRow) stopBin = displayRange.EndRow-1;
-//
-//								if (averageMode == AverageMode.average)
-//								{
-//									float val = 0f;
-//									float div = 0f;
-//									for (int j=startBin; j<stopBin; j++)
-//									{
-//										frac = (float) j + 1.0f - startBinF;
-//										if (!float.IsNaN(*(s+(destWidth*j)+c)))
-//										{
-//											val+=*(s+(destWidth*j)+c)*frac;
-//											div+=frac;
-//										}
-//										startBinF+=frac;
-//									}
-//									frac = stopBinF - startBinF;
-//									if (!float.IsNaN(*(s+(stopBin*destWidth)+c)))
-//									{
-//										val+=*(s+(stopBin*destWidth)+c)*frac;
-//										div+=frac;
-//									}
-//									startBinF=stopBinF;
-//									if (div>0f)
-//										*(d+(destWidth*i)+c) = val/div;
-//									else
-//										*(d+(destWidth*i)+c) = float.NaN;
-//								}
-//								else  //maximum value
-//								{
-//									float maxVal = float.MinValue;
-//									for (int j=startBin; j<stopBin; j++)
-//									{
-//										float val = *(s+(destWidth*j)+c); 
-//										if (!float.IsNaN(val))
-//										{
-//											maxVal = Math.Max(maxVal,val);
-//										}
-//									}
-//									if (maxVal == float.MinValue)
-//										*(d+(destWidth*i)+c) = float.NaN;
-//									else
-//										*(d+(destWidth*i)+c) = maxVal;
-//								}
-//							}
-//						}
-//			} 
-//			catch (Exception e){MessageBox.Show (e.ToString());}
-//			return (destData);
-//		}
-//
-//		private float [,] oldAverageData(float[,]srcData, Range displayRange, int destWidth, int destHeight)
-//		{
-//			float [,] destData = null;
-//			int nRecs = displayRange.EndRow - displayRange.StartRow + 1;
-//			float frac = 1f;
-//
-//			try
-//			{
-//				if (nRecs<=destHeight) //no averaging needed, just map and copy
-//				{
-//					destHeight = nRecs;
-//					//note reversal of dimensions
-//					destData = new float [destHeight, destWidth];
-//					fixed (float* s = srcData)
-//						fixed (float* d = destData)
-//							for (int col = 0; col <destWidth; col++)
-//							{
-//								int j = colIndices[col];
-//								for (int row=0; row<destHeight; row++)
-//								{
-//									int i = (int)rowIndices[row+displayRange.StartRow];
-//									*(d+(destWidth*row)+col) = *(s+(destWidth*(i))+j);
-//								}
-//							}
-//					return(destData);
-//				}
-//
-//				//note reversal of dimensions
-//				destData = new float [destHeight, destWidth];
-//
-//				float srcToDestRatio =  (float)nRecs  / (float) destHeight;
-//				
-//				fixed (float* s = srcData)
-//					fixed (float* d = destData)
-//						for (int col = 0; col <destWidth; col++)
-//						{
-//							int c = colIndices[col];
-//
-//							for (int row=0; row<destHeight; row++)
-//							{
-//								int i = (int)rowIndices[row];
-//
-//								float fi = (float)i;
-//								float startBinF = (float) displayRange.StartRow + fi*srcToDestRatio;
-//								float stopBinF = startBinF + srcToDestRatio;
-//								int startBin = (int) startBinF;
-//								int stopBin = (int) stopBinF;
-//								if (stopBin>=displayRange.EndRow) stopBin = displayRange.EndRow-1;
-//
-//								if (averageMode == AverageMode.average)
-//								{
-//									float val = 0f;
-//									float div = 0f;
-//									for (int j=startBin; j<stopBin; j++)
-//									{
-//										frac = (float) j + 1.0f - startBinF;
-//										if (!float.IsNaN(*(s+(destWidth*j)+c)))
-//										{
-//											val+=*(s+(destWidth*j)+c)*frac;
-//											div+=frac;
-//										}
-//										startBinF+=frac;
-//									}
-//									frac = stopBinF - startBinF;
-//									if (!float.IsNaN(*(s+(stopBin*destWidth)+c)))
-//									{
-//										val+=*(s+(stopBin*destWidth)+c)*frac;
-//										div+=frac;
-//									}
-//									startBinF=stopBinF;
-//									if (div>0f)
-//										*(d+(destWidth*i)+c) = val/div;
-//									else
-//										*(d+(destWidth*i)+c) = float.NaN;
-//								}
-//								else  //maximum value
-//								{
-//									float maxVal = float.MinValue;
-//									for (int j=startBin; j<stopBin; j++)
-//									{
-//										float val = *(s+(destWidth*j)+c); 
-//										if (!float.IsNaN(val))
-//										{
-//											maxVal = Math.Max(maxVal,val);
-//										}
-//									}
-//									if (maxVal == float.MinValue)
-//										*(d+(destWidth*i)+c) = float.NaN;
-//									else
-//										*(d+(destWidth*i)+c) = maxVal;
-//								}
-//							}
-//						}
-//			} 
-//			catch (Exception e){MessageBox.Show (e.ToString());}
-//			return (destData);
-//		}
-
-//		public Bitmap xStretchBitmap(Bitmap src, int width, int height)
-//		{
-//			if (width * height <= 0) return null;
-//
-//			BitmapTools.PixelData linePixel = new Derek.BitmapTools.PixelData();
-//
-//			Bitmap dest = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-//
-//			//used to interpolate src pixel to use at dest position
-//			double hFrac = (double) src.Height / (double) dest.Height;
-//			double wFrac = (double) src.Width  / (double) dest.Width;
-//
-//			//used to interpolate src pixel to use at dest position
-//			BitmapTools bmt = new BitmapTools();
-//			BitmapTools.BitmapInfo fromInfo = bmt.LockBitmap(src);
-//			BitmapTools.BitmapInfo toInfo = bmt.LockBitmap(dest);
-//
-//			for (int j=0; j<dest.Height; j++)
-//			{
-//				int y = (int) (hFrac*(j));
-//				for(int i=0; i<dest.Width; i++)
-//				{
-//					int x = (int) (wFrac*(i));
-//					BitmapTools.PixelData* srcPixel = bmt.PixelAt(fromInfo, x, y);
-//					BitmapTools.PixelData* destPixel = bmt.PixelAt(toInfo, i, j);
-//					*(destPixel) = *(srcPixel);
-//				}
-//			}
-//
-//			bmt.UnlockBitmap(src, fromInfo);
-//			bmt.UnlockBitmap(dest, toInfo);
-//
-//			DrawDemarcations(dest);
-//
-//			return(dest);
-//		}
-
-//		public Bitmap xxStretchBitmap(Bitmap src, int width, int height)
-//		{
-//			if (width * height <= 0) return null;
-//
-//			BitmapTools.PixelData linePixel = new Derek.BitmapTools.PixelData();
-//
-//			Bitmap dest = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-//
-//			//used to interpolate src pixel to use at dest position
-//			float hFrac = (float) src.Height / (float) dest.Height;
-//			float wFrac = (float) src.Width  / (float) dest.Width;
-//
-//			//used to interpolate src pixel to use at dest position
-//			BitmapTools bmt = new BitmapTools();
-//			BitmapTools.BitmapInfo fromInfo = bmt.LockBitmap(src);
-//			BitmapTools.BitmapInfo toInfo = bmt.LockBitmap(dest);
-//
-//			int y = 0;
-//			//old inverted method
-//			//for (int j=dest.Height-1; j>=0; j--)
-//			for (int j=0; j<dest.Height; j++)
-//				{
-//				//mVerticalAlignment=null;
-//				if (mVerticalAlignment!=null) //align bitmap to axis labels
-//				{
-//					//skip to the next demarcation
-//					if (vAlignIndex<mVerticalAlignment.Length-2 &&
-//							j==mVerticalAlignment[vAlignIndex+1]) 
-//						vAlignIndex++;
-//
-//					//calculate the midpoint to select the appropriate representative y axis point
-//					if (j==mVerticalAlignment[vAlignIndex])
-//					{
-//						y = mVerticalAlignment[vAlignIndex] + (mVerticalAlignment[vAlignIndex+1]-j)/2;
-//						y = (int) (hFrac * (float) (y));
-//					}
-//				}
-//				else
-//				{
-//					//y = (int) Math.Round(hFrac * (float) (j));
-//					int jjj = (int) (hFrac * (float) (j));
-//					y = (int) Math.Round(hFrac*j, 3);
-//					y = (int) (hFrac*(j+1));
-//					
-//					int xxx = y;
-//				}
-
-//				if (mHorizontalAlignment!=null) //align bitmap to axis labels
-//				{
-//					int x = 0;
-//					int hAlignIndex=0;
-//					for(int i=0; i<dest.Width; i++)
-//					{
-//						if (hAlignIndex<mHorizontalAlignment.Length-2 &&
-//							i==mHorizontalAlignment[hAlignIndex+1]) 
-//							hAlignIndex++;
-//
-//						//calculate the midpoint to select the appropriate representative X axis point
-//						if (i==mHorizontalAlignment[hAlignIndex])
-//						{
-//							x = mHorizontalAlignment[hAlignIndex] + (mHorizontalAlignment[hAlignIndex+1]-i)/2;
-//							x = (int) (wFrac * (float) (x));
-//						}
-//
-//						BitmapTools.PixelData* srcPixel = bmt.PixelAt(fromInfo, x, y);
-//						BitmapTools.PixelData* destPixel = bmt.PixelAt(toInfo, i, j);
-////						if (mVerticalAlignment!=null && j==mVerticalAlignment[vAlignIndex])
-////							*(destPixel) = linePixel;
-////						else if (mHorizontalAlignment!=null&&i==mHorizontalAlignment[hAlignIndex])
-////							*(destPixel) = linePixel;
-////						else
-//							*(destPixel) = *(srcPixel);
-//					}
-//				}
-//				else
-//				{
-//					for(int i=0; i<dest.Width; i++)
-//					{
-//						int x = (int) (wFrac * (float) (i));
-//						BitmapTools.PixelData* srcPixel = bmt.PixelAt(fromInfo, x, y);
-//						BitmapTools.PixelData* destPixel = bmt.PixelAt(toInfo, i, j);
-//						*(destPixel) = *(srcPixel);
-//					}
-//				}
-//			}
-//
-//			bmt.UnlockBitmap(src, fromInfo);
-//			bmt.UnlockBitmap(dest, toInfo);
-//
-//			DrawDemarcations(dest);
-//
-//			return(dest);
-//		}
-
 		public void DrawDemarcations(Graphics g)
 		{
 			
@@ -967,7 +636,6 @@ namespace PNNLControls
 
 		private void PaintBitmap(Graphics g)
 		{
-			Console.WriteLine("ctlHeatMapClient PaintBitmap: Size = "+ this.Size) ; 
 			if (mBitmap!=null)
 			{
 				g.DrawImage (mSelectedBitmap, 0, 0);
@@ -979,7 +647,7 @@ namespace PNNLControls
 		{
 			if (mBitmap != null && mBitmap.Size != this.Size)
 				OnRefresh() ; 
-			Console.WriteLine("ctlHeatMapClient: pnlDisplay_Paint: Size = "+ this.Size ) ; 
+			
 			PaintBitmap(e.Graphics);
 			if (BitmapPainted!=null)
 				BitmapPainted(e.Graphics);

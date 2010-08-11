@@ -29,12 +29,12 @@ using System.Data.SqlClient;
 using MultiAlignEngine;
 using PNNLProteomics.Data;
 
-namespace PNNLProteomics.Data.Loaders
+namespace MultiAlignWin.IO
 {                           
         /// <summary>
         /// Class for loading a dataset from a database.
         /// </summary>
-        public class clsDatabaseDatasetLoader: IDisposable
+        public class DatabaseDatasetLoader: IDisposable
         {            
             #region Members
             /// <summary>
@@ -68,15 +68,15 @@ namespace PNNLProteomics.Data.Loaders
             /// <summary>
             /// Arraylist containing all the present datasets.
             /// </summary>
-		    private ArrayList   marrDatasetInfo;		    
+		    private List<clsDatasetInfo>   m_datasetInfo;		    
             /// <summary>
             /// Thread for loading a lot of the dataset ID's.
             /// </summary>
-            private Thread      mobj_loadingThread;
+            private Thread mobj_loadingThread;
             /// <summary>
             /// Filter to use on the database while looking for dataset ids.
             /// </summary>
-            private string      mstring_filter;
+            private DMSDatasetSearchOptions m_searchOptions;
             /// <summary>
             /// DMS connection information.
             /// </summary>
@@ -90,23 +90,24 @@ namespace PNNLProteomics.Data.Loaders
             /// <summary>
             /// Default constructor for the dataset loader from a database.
             /// </summary>
-            public clsDatabaseDatasetLoader()
+            public DatabaseDatasetLoader()
             {
                 mobj_loadingThread      = null;
                 mobj_serverInformation  = new clsDMSServerInformation();
-                marrDatasetInfo         = new ArrayList();
+                m_datasetInfo           = new List<clsDatasetInfo>();
+                m_searchOptions         = new DMSDatasetSearchOptions();
             }
 
             #region Properties
-            public ArrayList DataSets
+            public List<clsDatasetInfo> DataSets
             {
                 get
                 {
-                    return marrDatasetInfo;
+                    return m_datasetInfo;
                 }
                 set
                 {
-                    marrDatasetInfo = value;
+                    m_datasetInfo = value;
                 }
             }
             /// <summary>
@@ -127,122 +128,54 @@ namespace PNNLProteomics.Data.Loaders
             #endregion
             
             #region Query Setup
+            private string CreateToolIDStringList(DMSDatasetSearchOptions options)
+            {
+                string toolList = "";
+                foreach (DeisotopingTool id in options.ToolIDs)
+                {
+                    if (id != DeisotopingTool.LCMSFeatureFinder)
+                    {
+                        toolList += ((int)id).ToString() + ",";
+                    }
+                    else 
+                    {
+                        toolList += ((int)DeisotopingTool.Decon2ls_V2);
+                    }
+                }
+                toolList = toolList.TrimEnd(new char[] { ',' });
+                return toolList;
+            }
             /// <summary>
             /// Constructs the query string based off the field to use, and the type of query to run.
             /// </summary>
             /// <param name="field">Filter string to run the query on.</param>
             /// <param name="flag">Type of query to run</param>
             /// <returns>SQL Query string</returns>
-            private string SetupQuery(string field, int flag)
+            private string SetupQuery(DMSDatasetSearchOptions options, int flag)
 		    {
 			    string selectQry = null;
+                string field     = "";
+                string tools     = CreateToolIDStringList(options);
+
                 switch(flag)
                 {
-
-                    case CONST_QUERY_DATASET_COUNT:
-                        /// 
-                        /// SELECT
-                        /// 
-                        selectQry = "SELECT COUNT (*)";
-                        /// From - Inner Join
-                        selectQry += " FROM dbo.T_Dataset INNER JOIN dbo.T_Analysis_Job ON ";
-                        selectQry += "      dbo.T_Dataset.Dataset_ID = dbo.T_Analysis_Job.AJ_datasetID INNER JOIN ";
-                        selectQry += "      dbo.t_storage_path ON dbo.T_Dataset.DS_storage_path_ID = dbo.t_storage_path.SP_path_ID ";
-                        /// 
-                        /// WHERE
-                        /// 
-                        selectQry += " WHERE  ( dbo.T_Analysis_Job.AJ_analysisToolID IN (2, 7, 10, 11, 12, 16, 18))"; 
-                        selectQry += "          AND dbo.T_Dataset.Dataset_Num like \'" + field + "\'";
-                        break;
-
-                    case CONST_QUERY_DATASET_ALL:			        
-                        /// 
-                        /// SELECT
-                        /// 
-				        /*selectQry = "SELECT DISTINCT    ";
-                        selectQry += "  dbo.T_Dataset.Dataset_ID AS DatasetID " ;                               // 0
-				        selectQry += ", dbo.t_storage_path.SP_vol_name_client as volName " ;                    // 1 
-				        selectQry += ", dbo.t_storage_path.SP_path as path " ;                                  // 2
-				        selectQry += ", dbo.T_Dataset.DS_folder_name as datasetFolder " ;                       // 3
-				        selectQry += ", dbo.T_Analysis_Job.AJ_resultsFolderName resultsFolder " ;               // 4
-				        selectQry += ", dbo.T_Dataset.Dataset_Num AS datasetName " ;                            // 5
-				        selectQry += ", dbo.T_Analysis_Job.AJ_jobID as JobId " ;                                // 6
-				        selectQry += ", dbo.T_Dataset.DS_LC_column_ID as ColumnID " ;                           // 7
-				        selectQry += ", dbo.T_Dataset.Acq_Time_Start as AcquisitionTime" ;                      // 8
-				        selectQry += ", dbo.T_Experiments.Ex_Labelling as Labelling" ;                          // 9
-				        selectQry += ", dbo.T_Instrument_Name.IN_Name as InstrumentName" ;                      //10
-				        selectQry += ", dbo.T_Analysis_Job.AJ_analysisToolID as ToolID" ;                       //11
-				        selectQry += ", dbo.T_Requested_Run_History.RDS_Block as BlockNum" ;                    //12
-				        selectQry += ", dbo.T_Requested_Run_History.RDS_Name as ReplicateName" ;                //13
-				        selectQry += ", dbo.T_Dataset.Exp_ID as ExperimentID" ;                                 //14
-				        selectQry += ", dbo.T_Requested_Run_History.RDS_Run_Order as RunOrder" ;                //15
-				        selectQry += ", dbo.T_Requested_Run_History.RDS_BatchID as BatchID" ;                   //16
-				        selectQry += ", dbo.V_Dataset_Folder_Paths.Archive_Folder_Path AS ArchPath" ;           //17 
-				        selectQry += ", dbo.V_Dataset_Folder_Paths.Dataset_Folder_Path AS DatasetFullPath" ;    //18
-
-
-                        selectQry += ", dbo.T_Organisms.og_name AS Organism";
-                        ///
-                        /// From - Inner Join
-                        /// 
-				        selectQry += " FROM dbo.T_Dataset INNER JOIN dbo.T_Analysis_Job ON " ; 
-				        selectQry += " dbo.T_Dataset.Dataset_ID = dbo.T_Analysis_Job.AJ_datasetID " ; 
-				        selectQry += " INNER JOIN dbo.T_Experiments ON dbo.T_Dataset.Exp_ID = dbo.T_Experiments.Exp_ID" ; 
-				        selectQry += " INNER JOIN dbo.T_Instrument_Name ON dbo.T_Dataset.DS_instrument_name_id = dbo.T_Instrument_Name.Instrument_ID " ; 
-				        selectQry += " INNER JOIN dbo.t_storage_path ON dbo.T_Dataset.DS_storage_path_ID = dbo.t_storage_path.SP_path_ID " ;
-
-                        selectQry += " INNER JOIN dbo.T_Organisms ON dbo.T_Experiments.EX_organism_ID = dbo.T_Organisms.Organism_ID";
-
-				        selectQry += " left outer JOIN dbo.T_Requested_Run_History ON dbo.T_Requested_Run_History.DatasetID = dbo.T_Dataset.Dataset_ID" ; 
-				        selectQry += " INNER JOIN dbo.V_Dataset_Folder_Paths ON dbo.T_Dataset.Dataset_ID = dbo.V_Dataset_Folder_Paths.Dataset_ID" ;
-                        /// 
-                        /// WHERE
-                        /// 
-                        selectQry += " WHERE  (dbo.T_Analysis_Job.AJ_analysisToolID IN (2, 7, 10, 11, 12, 16, 18))";
-                        selectQry += "         AND dbo.T_Dataset.Dataset_Num LIKE \'" + field + "\'";  
-                         * */
-                        selectQry = "SELECT * FROM V_Analysis_Job_Export_MultiAlign WHERE datasetName LIKE \'" + field + "\' AND ToolID IN (2, 7, 10, 11, 12, 16, 18, 27)";
-                        //27 is LCMSFeature Finder
+                    case CONST_QUERY_DATASET_ALL:
+                        field     = options.DatasetName;
+                        selectQry = "SELECT * FROM V_Analysis_Job_Export_MultiAlign WHERE datasetName LIKE \'" + field + "\' AND ToolID IN (" +  tools + ")";
+                        if (!string.IsNullOrEmpty(options.InstrumentName))
+                        {
+                            selectQry += " AND InstrumentName LIKE \'" + options.InstrumentName + "\'";
+                        }                        
                         break;
                     
                     case CONST_QUERY_DATASET_ID:
-                        /*selectQry = "SELECT  DISTINCT dbo.T_Dataset.Dataset_ID AS DatasetID ";
-                        selectQry += ",dbo.t_storage_path.SP_vol_name_client as volName ";
-                        selectQry += ", dbo.t_storage_path.SP_path as path ";
-                        selectQry += ", dbo.T_Dataset.DS_folder_name as datasetFolder ";
-                        selectQry += ", dbo.T_Analysis_Job.AJ_resultsFolderName resultsFolder ";
-                        selectQry += ", dbo.T_Dataset.Dataset_Num AS datasetName ";
-                        selectQry += ", dbo.T_Analysis_Job.AJ_jobID as JobId ";
-                        selectQry += ", dbo.T_Dataset.DS_LC_column_ID as ColumnID ";
-                        selectQry += ", dbo.T_Dataset.Acq_Time_Start as AcquisitionTime";
-                        selectQry += ", dbo.T_Experiments.Ex_Labelling as Labelling";
-                        selectQry += ", dbo.T_Instrument_Name.IN_Name as InstrumentName";
-                        selectQry += ", dbo.T_Analysis_Job.AJ_analysisToolID as ToolID";
-                        selectQry += ", dbo.T_Requested_Run_History.RDS_Block as BlockNum";
-                        selectQry += ", dbo.T_Requested_Run_History.RDS_Name as ReplicateName";
-                        selectQry += ", dbo.T_Dataset.Exp_ID as ExperimentID";
-                        selectQry += ", dbo.T_Requested_Run_History.RDS_Run_Order as RunOrder";
-                        selectQry += ", dbo.T_Requested_Run_History.RDS_BatchID as BatchID";
-                        selectQry += ", dbo.V_Dataset_Folder_Paths.Archive_Folder_Path AS ArchPath";
-                        selectQry += ", dbo.V_Dataset_Folder_Paths.Dataset_Folder_Path AS DatasetFullPath";
+                        field = options.DatasetID.ToString();
+                        selectQry = "SELECT * FROM V_Analysis_Job_Export_MultiAlign WHERE DatasetID = " + field + " AND ToolID IN (" + tools + ")";
 
-                        selectQry += ", dbo.T_Organisms.og_name AS Organism";
-
-                        selectQry += " FROM dbo.T_Dataset INNER JOIN dbo.T_Analysis_Job ON ";
-                        selectQry += " dbo.T_Dataset.Dataset_ID = dbo.T_Analysis_Job.AJ_datasetID ";
-                        selectQry += " INNER JOIN dbo.T_Experiments ON dbo.T_Dataset.Exp_ID = dbo.T_Experiments.Exp_ID";
-                        selectQry += " INNER JOIN dbo.T_Instrument_Name ON dbo.T_Dataset.DS_instrument_name_id = dbo.T_Instrument_Name.Instrument_ID ";
-                        selectQry += " INNER JOIN dbo.t_storage_path ON dbo.T_Dataset.DS_storage_path_ID = dbo.t_storage_path.SP_path_ID ";
-                        
-                        selectQry += " INNER JOIN dbo.T_Organisms ON dbo.T_Experiments.EX_organism_ID = dbo.T_Organisms.Organism_ID";
-
-                        selectQry += " left outer JOIN dbo.T_Requested_Run_History ON dbo.T_Requested_Run_History.DatasetID = dbo.T_Dataset.Dataset_ID";
-                        selectQry += " INNER JOIN dbo.V_Dataset_Folder_Paths ON dbo.T_Dataset.Dataset_ID = dbo.V_Dataset_Folder_Paths.Dataset_ID";
-                        selectQry += " WHERE  (dbo.T_Analysis_Job.AJ_analysisToolID IN (2, 7, 10, 11, 12, 16, 18))";
-                        selectQry += " AND dbo.T_Dataset.Dataset_ID = " + field;
-                         * */
-                        selectQry = "SELECT * FROM V_Analysis_Job_Export_MultiAlign WHERE DatasetID = " + field + " AND ToolID IN (2, 7, 10, 11, 12, 16, 18, 27)";                        
-                        //27 is LCMSFeature Finder
+                        if (!string.IsNullOrEmpty(options.InstrumentName))
+                        {
+                            selectQry += " AND InstrumentName LIKE \'" + options.InstrumentName + "\'";
+                        }    
                         break;
 			    }				    
                 return selectQry;
@@ -264,19 +197,22 @@ namespace PNNLProteomics.Data.Loaders
                 }
                 catch
                 {
+                    // Pass, we don't care.
                 }
                 finally
                 {
                     mobj_loadingThread = null;
                 }
             }
-            public void LoadDatasetsFromDatasetNames(string filter, bool thread)
+            public void LoadDatasetsFromDatasetNames(DMSDatasetSearchOptions options, bool thread)
             {
-                LoadDatasets(filter, thread, CONST_QUERY_DATASET_ALL);
+                LoadDatasets(options, thread, CONST_QUERY_DATASET_ALL);
             }
             public void LoadDatasetsFromDatasetIDs(string filter, bool thread)
             {
-                LoadDatasets(filter, thread, CONST_QUERY_DATASET_ID);
+                DMSDatasetSearchOptions options = new DMSDatasetSearchOptions();
+                options.DatasetID                       = filter;
+                LoadDatasets(options, thread, CONST_QUERY_DATASET_ID);
             }
             /// <summary>
             /// Load the data from the filter provided.  Thread if required and run a query type based on the flag.
@@ -284,14 +220,13 @@ namespace PNNLProteomics.Data.Loaders
             /// <param name="filter">Filter that corresponds with the query flag.</param>
             /// <param name="thread">Whether to thread the loading process.</param>
             /// <param name="flag">Query flag, 0=query dataset names, 1=query by dataset id.</param>
-            private void LoadDatasets(string filter, bool thread, int flag)
+            private void LoadDatasets(DMSDatasetSearchOptions options, bool thread, int flag)
             {
-                if (filter.Trim() != "")
-                {
-                    mint_queryFlag = flag;
-                    mstring_filter = filter;
+                
+                    mint_queryFlag  = flag;
+                    m_searchOptions = options;
 
-                    marrDatasetInfo.Clear();
+                    m_datasetInfo.Clear();
 
                     if (thread == true)
                     {                        
@@ -324,7 +259,7 @@ namespace PNNLProteomics.Data.Loaders
                        CancelLoadingDatasets();
                        LoadDatasetsThreadStart();
                    }
-                }                                 
+                                               
             }            
             /// <summary>
             /// Threaded start in charge of loading the datasets from the database.
@@ -338,7 +273,7 @@ namespace PNNLProteomics.Data.Loaders
                                                 mobj_serverInformation.Username,
                                                 mobj_serverInformation.Password);
 
-                string query = SetupQuery(mstring_filter, mint_queryFlag);
+                string query = SetupQuery(m_searchOptions, mint_queryFlag);
 
                 /// 
                 /// Create a connection to the database.
@@ -430,16 +365,14 @@ namespace PNNLProteomics.Data.Loaders
 
                     datasetInfo.mstrInstrment = Convert.ToString(row[10]);
                     int toolId = Convert.ToInt32(row[11]);
-                    /// 
-                    /// Tool Type
-                    /// 
-                    if (toolId == 16 || toolId == 18)
+                    
+                    // Tool Type -- Check to make sure we want to load this data type
+                    // we do a check again later.  Here we do a check so we don't ping the archive.
+                    datasetInfo.menmDeisotopingTool = DMSDatasetSearchOptions.MapToolIDToDeisotopingTool(toolId);
+                    if (m_searchOptions.ToolIDs.Contains(datasetInfo.menmDeisotopingTool) == false)
                     {
-                        datasetInfo.menmDeisotopingTool = MultiAlignEngine.DeisotopingTool.Decon2LS;
-                    }
-                    else
-                    {
-                        datasetInfo.menmDeisotopingTool = MultiAlignEngine.DeisotopingTool.ICR2LS;
+                        if (!m_searchOptions.ToolIDs.Contains(DeisotopingTool.LCMSFeatureFinder))
+                            continue;
                     }
 
                     /// 
@@ -520,19 +453,8 @@ namespace PNNLProteomics.Data.Loaders
                             info.factorsDefined         = datasetInfo.factorsDefined;
                             info.mdateAcquisitionStart  = datasetInfo.mdateAcquisitionStart;
                             
-                            string extension = System.IO.Path.GetExtension(fileName);
-                            if (extension != ".txt")
-                            {
-                                info.menmDeisotopingTool = DeisotopingTool.Decon2LS;
-                                if (extension == ".pek")
-                                {
-                                    info.menmDeisotopingTool = DeisotopingTool.ICR2LS;
-                                }
-                            }else
-                            {
-                                info.menmDeisotopingTool = DeisotopingTool.LCMSFeatureFinder;
-                            }
-
+                            string extension            = System.IO.Path.GetExtension(fileName);
+                            info.menmDeisotopingTool    = datasetInfo.menmDeisotopingTool;
                             info.menmLabelingType       = datasetInfo.menmLabelingType;
                             info.mintBatchID            = datasetInfo.mintBatchID;
                             info.mintBlockID            = datasetInfo.mintBlockID;
@@ -548,7 +470,6 @@ namespace PNNLProteomics.Data.Loaders
                             info.mstrInstrumentFolder   = datasetInfo.mstrInstrumentFolder;
                             info.mstrOperator           = datasetInfo.mstrOperator;
                             info.mstrReplicateName      = datasetInfo.mstrReplicateName;
-                            info.mstrReplicateName      = datasetInfo.mstrReplicateName;
                             info.mstrResultsFolder      = datasetInfo.mstrResultsFolder;
                             info.mstrVolume             = datasetInfo.mstrVolume;
                             info.selected               = datasetInfo.selected;                            
@@ -556,7 +477,23 @@ namespace PNNLProteomics.Data.Loaders
                             info.mstrDatasetName        = fileName;
 
 
-                            marrDatasetInfo.Add(info);
+                            // Check the file extension
+                            if (!string.IsNullOrEmpty(m_searchOptions.FileExtension) &&
+                                    !fileName.EndsWith(m_searchOptions.FileExtension))
+                            {
+                                continue;
+                            }
+
+                            if (System.IO.Path.GetExtension(fileName) == ".txt")
+                            {
+                                info.menmDeisotopingTool = DeisotopingTool.LCMSFeatureFinder;
+                            }
+
+                            if (m_searchOptions.ToolIDs.Contains(info.menmDeisotopingTool) == false)
+                                continue;
+
+                            m_datasetInfo.Add(info);
+                            
 
 
                             /// 

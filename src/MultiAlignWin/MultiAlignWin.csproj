@@ -195,6 +195,12 @@
     <Compile Include="Drawing\frmIntensityDiff.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Drawing\Heatmap.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Drawing\Heatmap.Designer.cs">
+      <DependentUpon>Heatmap.cs</DependentUpon>
+    </Compile>
     <Compile Include="Drawing\PeptideProteinFinder.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -225,6 +231,12 @@
     <Compile Include="Forms\controlUMCData.Designer.cs">
       <DependentUpon>controlUMCData.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\DMSDatasetSearchOptionsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\DMSDatasetSearchOptionsForm.Designer.cs">
+      <DependentUpon>DMSDatasetSearchOptionsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Factors\frmDataFactorAssignment.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -240,36 +252,11 @@
     <Compile Include="Forms\Factors\frmLabelGroupEdit.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Filters\CalibratedMassFilterControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Forms\Filters\CalibratedMassFilterControl.Designer.cs">
-      <DependentUpon>CalibratedMassFilterControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Filters\ChargeStateFilterControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Forms\Filters\ChargeStateFilterControl.Designer.cs">
-      <DependentUpon>ChargeStateFilterControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Filters\DataFilters.cs">
+    <Compile Include="Forms\DataFilters.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Filters\DataFilters.Designer.cs">
+    <Compile Include="Forms\DataFilters.Designer.cs">
       <DependentUpon>DataFilters.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Filters\IFilterControl.cs" />
-    <Compile Include="Forms\Filters\MembersInClusterControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Forms\Filters\MembersInClusterControl.Designer.cs">
-      <DependentUpon>MembersInClusterControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Filters\NetFilterControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Forms\Filters\NetFilterControl.Designer.cs">
-      <DependentUpon>NetFilterControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\formUMCData.cs">
       <SubType>Form</SubType>
@@ -305,16 +292,7 @@
     <Compile Include="Forms\Parameters\frmMSAlignmentParameters.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\frmClustergram.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\frmClusterOptions.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="Forms\Parameters\frmClusterParameters.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\frmReorderDataTable.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\frmSelectOneDataset.cs">
@@ -363,8 +341,7 @@
     <Compile Include="IO\AnalysisSQLiteDBWriter.cs" />
     <Compile Include="IO\AnalysisTableWriter.cs" />
     <Compile Include="IO\AnalysisAbundanceTableWriter.cs" />
-    <Compile Include="IO\classAnalysisLogWriter.cs" />
-    <Compile Include="IO\clsConfigParms.cs" />
+    <Compile Include="IO\AnalysisLogWriter.cs" />
     <Compile Include="Forms\frmDBName.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -377,6 +354,12 @@
     <Compile Include="Forms\frmSaveFactors.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="IO\DatabaseDatasetIDLoader.cs" />
+    <Compile Include="IO\DatabaseDatasetLoader.cs" />
+    <Compile Include="IO\DiskDatasetLoader.cs" />
+    <Compile Include="IO\DelegatesLoading.cs" />
+    <Compile Include="IO\DMSDatasetSearchOptions.cs" />
+    <Compile Include="IO\IAnalysisWriter.cs" />
     <Compile Include="IO\TableWriterColumnOptions.cs" />
     <Compile Include="Network\clsDMSConnectionTester.cs" />
     <Compile Include="Program.cs" />
@@ -392,10 +375,10 @@
     </Compile>
     <Compile Include="ProteinMapExtractor.cs" />
     <Compile Include="Settings.cs" />
-    <Compile Include="Wizard\ctlCompletedWizardPage.cs">
+    <Compile Include="Wizard\CompletedWizardPage.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Wizard\ctlDefineFactorsWizardPage.cs">
+    <Compile Include="Wizard\DefineFactorsWizardPage.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Wizard\ctlLoadDatasetWizardPage.cs">
@@ -413,7 +396,7 @@
     <Compile Include="Wizard\ctlSelectParametersWizardPage.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Wizard\ctlWelcomeWizardPage.cs">
+    <Compile Include="Wizard\WelcomeWizardPage.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Forms\frmAnalysisWizard.cs">
@@ -451,6 +434,10 @@
       <SubType>Designer</SubType>
       <DependentUpon>controlUMCData.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\DMSDatasetSearchOptionsForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>DMSDatasetSearchOptionsForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\Factors\frmDataFactorAssignment.resx">
       <DependentUpon>frmDataFactorAssignment.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -471,13 +458,9 @@
       <DependentUpon>frmLabelGroupEdit.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Filters\DataFilters.resx">
+    <EmbeddedResource Include="Forms\DataFilters.resx">
       <SubType>Designer</SubType>
       <DependentUpon>DataFilters.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Filters\MembersInClusterControl.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>MembersInClusterControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\formUMCData.resx">
       <SubType>Designer</SubType>
@@ -515,20 +498,8 @@
       <DependentUpon>frmMSAlignmentParameters.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\frmClustergram.resx">
-      <DependentUpon>frmClustergram.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\frmClusterOptions.resx">
-      <DependentUpon>frmClusterOptions.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="Forms\Parameters\frmClusterParameters.resx">
       <DependentUpon>frmClusterParameters.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\frmReorderDataTable.resx">
-      <DependentUpon>frmReorderDataTable.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmSelectOneDataset.resx">
@@ -588,12 +559,12 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Wizard\ctlCompletedWizardPage.resx">
-      <DependentUpon>ctlCompletedWizardPage.cs</DependentUpon>
+    <EmbeddedResource Include="Wizard\CompletedWizardPage.resx">
+      <DependentUpon>CompletedWizardPage.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Wizard\ctlDefineFactorsWizardPage.resx">
-      <DependentUpon>ctlDefineFactorsWizardPage.cs</DependentUpon>
+    <EmbeddedResource Include="Wizard\DefineFactorsWizardPage.resx">
+      <DependentUpon>DefineFactorsWizardPage.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Wizard\ctlLoadDatasetWizardPage.resx">
@@ -612,8 +583,8 @@
       <DependentUpon>ctlSelectParametersWizardPage.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Wizard\ctlWelcomeWizardPage.resx">
-      <DependentUpon>ctlWelcomeWizardPage.cs</DependentUpon>
+    <EmbeddedResource Include="Wizard\WelcomeWizardPage.resx">
+      <DependentUpon>WelcomeWizardPage.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmAnalysisWizard.resx">

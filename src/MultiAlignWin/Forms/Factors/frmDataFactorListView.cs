@@ -11,7 +11,7 @@ namespace MultiAlignWin
 	/// </summary>
 	public class frmDataFactorListView : PNNLControls.frmDialogBase
 	{
-		private MultiAlignWin.ctlDefineFactorsWizardPage ctlDefineFactorsWizardPage;
+		private MultiAlignWin.DefineFactorsWizardPage ctlDefineFactorsWizardPage;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
@@ -51,7 +51,7 @@ namespace MultiAlignWin
 		private void InitializeComponent()
 		{
 			System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(frmDataFactorListView));
-			this.ctlDefineFactorsWizardPage = new MultiAlignWin.ctlDefineFactorsWizardPage();
+			this.ctlDefineFactorsWizardPage = new MultiAlignWin.DefineFactorsWizardPage();
 			this.SuspendLayout();
 			// 
 			// ctlDefineFactorsWizardPage

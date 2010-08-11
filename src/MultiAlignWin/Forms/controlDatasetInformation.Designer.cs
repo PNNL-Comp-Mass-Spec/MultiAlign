@@ -105,7 +105,7 @@ namespace MultiAlignWin.Forms
             // 
             this.mlabel_preview.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.mlabel_preview.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.mlabel_preview.Location = new System.Drawing.Point(823, 155);
+            this.mlabel_preview.Location = new System.Drawing.Point(277, 155);
             this.mlabel_preview.Name = "mlabel_preview";
             this.mlabel_preview.Size = new System.Drawing.Size(84, 30);
             this.mlabel_preview.TabIndex = 5;
@@ -118,9 +118,9 @@ namespace MultiAlignWin.Forms
             this.mlabel_alignment.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.mlabel_alignment.Location = new System.Drawing.Point(190, 155);
             this.mlabel_alignment.Name = "mlabel_alignment";
-            this.mlabel_alignment.Size = new System.Drawing.Size(84, 30);
+            this.mlabel_alignment.Size = new System.Drawing.Size(84, 42);
             this.mlabel_alignment.TabIndex = 6;
-            this.mlabel_alignment.Text = "Alignment";
+            this.mlabel_alignment.Text = "Alignment Heatmap";
             this.mlabel_alignment.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.mlabel_alignment.Visible = false;
             // 
@@ -147,7 +147,7 @@ namespace MultiAlignWin.Forms
             // 
             this.mpicture_preview.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.mpicture_preview.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.mpicture_preview.Location = new System.Drawing.Point(826, 83);
+            this.mpicture_preview.Location = new System.Drawing.Point(280, 83);
             this.mpicture_preview.Name = "mpicture_preview";
             this.mpicture_preview.Size = new System.Drawing.Size(84, 69);
             this.mpicture_preview.TabIndex = 4;
@@ -235,7 +235,7 @@ namespace MultiAlignWin.Forms
             // 
             this.mlabel_massErrorHistogram.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.mlabel_massErrorHistogram.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.mlabel_massErrorHistogram.Location = new System.Drawing.Point(280, 155);
+            this.mlabel_massErrorHistogram.Location = new System.Drawing.Point(370, 155);
             this.mlabel_massErrorHistogram.Name = "mlabel_massErrorHistogram";
             this.mlabel_massErrorHistogram.Size = new System.Drawing.Size(84, 30);
             this.mlabel_massErrorHistogram.TabIndex = 16;
@@ -246,7 +246,7 @@ namespace MultiAlignWin.Forms
             // 
             this.mpictureBox_massErrorHistogram.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.mpictureBox_massErrorHistogram.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.mpictureBox_massErrorHistogram.Location = new System.Drawing.Point(280, 83);
+            this.mpictureBox_massErrorHistogram.Location = new System.Drawing.Point(370, 83);
             this.mpictureBox_massErrorHistogram.Name = "mpictureBox_massErrorHistogram";
             this.mpictureBox_massErrorHistogram.Size = new System.Drawing.Size(84, 69);
             this.mpictureBox_massErrorHistogram.TabIndex = 15;
@@ -257,7 +257,7 @@ namespace MultiAlignWin.Forms
             // 
             this.mlabel_netErrorHistogram.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.mlabel_netErrorHistogram.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.mlabel_netErrorHistogram.Location = new System.Drawing.Point(370, 155);
+            this.mlabel_netErrorHistogram.Location = new System.Drawing.Point(460, 155);
             this.mlabel_netErrorHistogram.Name = "mlabel_netErrorHistogram";
             this.mlabel_netErrorHistogram.Size = new System.Drawing.Size(84, 30);
             this.mlabel_netErrorHistogram.TabIndex = 18;
@@ -268,7 +268,7 @@ namespace MultiAlignWin.Forms
             // 
             this.mpictureBox_netErrorHistogram.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.mpictureBox_netErrorHistogram.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.mpictureBox_netErrorHistogram.Location = new System.Drawing.Point(373, 83);
+            this.mpictureBox_netErrorHistogram.Location = new System.Drawing.Point(463, 83);
             this.mpictureBox_netErrorHistogram.Name = "mpictureBox_netErrorHistogram";
             this.mpictureBox_netErrorHistogram.Size = new System.Drawing.Size(84, 69);
             this.mpictureBox_netErrorHistogram.TabIndex = 17;
@@ -279,7 +279,7 @@ namespace MultiAlignWin.Forms
             // 
             this.mlabel_netResiduals.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.mlabel_netResiduals.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.mlabel_netResiduals.Location = new System.Drawing.Point(733, 155);
+            this.mlabel_netResiduals.Location = new System.Drawing.Point(823, 155);
             this.mlabel_netResiduals.Name = "mlabel_netResiduals";
             this.mlabel_netResiduals.Size = new System.Drawing.Size(84, 30);
             this.mlabel_netResiduals.TabIndex = 22;
@@ -290,7 +290,7 @@ namespace MultiAlignWin.Forms
             // 
             this.mpicture_netResiduals.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.mpicture_netResiduals.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.mpicture_netResiduals.Location = new System.Drawing.Point(736, 83);
+            this.mpicture_netResiduals.Location = new System.Drawing.Point(826, 83);
             this.mpicture_netResiduals.Name = "mpicture_netResiduals";
             this.mpicture_netResiduals.Size = new System.Drawing.Size(84, 69);
             this.mpicture_netResiduals.TabIndex = 21;
@@ -301,7 +301,7 @@ namespace MultiAlignWin.Forms
             // 
             this.mlabel_mzMassResiduals.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.mlabel_mzMassResiduals.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.mlabel_mzMassResiduals.Location = new System.Drawing.Point(550, 155);
+            this.mlabel_mzMassResiduals.Location = new System.Drawing.Point(640, 155);
             this.mlabel_mzMassResiduals.Name = "mlabel_mzMassResiduals";
             this.mlabel_mzMassResiduals.Size = new System.Drawing.Size(87, 42);
             this.mlabel_mzMassResiduals.TabIndex = 20;
@@ -312,7 +312,7 @@ namespace MultiAlignWin.Forms
             // 
             this.mpicture_massResiduals.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.mpicture_massResiduals.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.mpicture_massResiduals.Location = new System.Drawing.Point(553, 83);
+            this.mpicture_massResiduals.Location = new System.Drawing.Point(643, 83);
             this.mpicture_massResiduals.Name = "mpicture_massResiduals";
             this.mpicture_massResiduals.Size = new System.Drawing.Size(84, 69);
             this.mpicture_massResiduals.TabIndex = 19;
@@ -323,7 +323,7 @@ namespace MultiAlignWin.Forms
             // 
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(637, 155);
+            this.label2.Location = new System.Drawing.Point(727, 155);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(94, 30);
             this.label2.TabIndex = 24;
@@ -334,7 +334,7 @@ namespace MultiAlignWin.Forms
             // 
             this.mpictureBox_mzMassResidual.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.mpictureBox_mzMassResidual.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.mpictureBox_mzMassResidual.Location = new System.Drawing.Point(643, 83);
+            this.mpictureBox_mzMassResidual.Location = new System.Drawing.Point(733, 83);
             this.mpictureBox_mzMassResidual.Name = "mpictureBox_mzMassResidual";
             this.mpictureBox_mzMassResidual.Size = new System.Drawing.Size(84, 69);
             this.mpictureBox_mzMassResidual.TabIndex = 23;
@@ -345,7 +345,7 @@ namespace MultiAlignWin.Forms
             // 
             this.mlabel_stdevMass.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.mlabel_stdevMass.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.mlabel_stdevMass.Location = new System.Drawing.Point(280, 196);
+            this.mlabel_stdevMass.Location = new System.Drawing.Point(370, 196);
             this.mlabel_stdevMass.Name = "mlabel_stdevMass";
             this.mlabel_stdevMass.Size = new System.Drawing.Size(84, 30);
             this.mlabel_stdevMass.TabIndex = 25;
@@ -355,7 +355,7 @@ namespace MultiAlignWin.Forms
             // 
             this.mlabel_stdevNET.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.mlabel_stdevNET.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.mlabel_stdevNET.Location = new System.Drawing.Point(373, 196);
+            this.mlabel_stdevNET.Location = new System.Drawing.Point(463, 196);
             this.mlabel_stdevNET.Name = "mlabel_stdevNET";
             this.mlabel_stdevNET.Size = new System.Drawing.Size(84, 30);
             this.mlabel_stdevNET.TabIndex = 26;
@@ -365,7 +365,7 @@ namespace MultiAlignWin.Forms
             // 
             this.mpictureBox_massNetResiduals.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.mpictureBox_massNetResiduals.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.mpictureBox_massNetResiduals.Location = new System.Drawing.Point(463, 83);
+            this.mpictureBox_massNetResiduals.Location = new System.Drawing.Point(553, 83);
             this.mpictureBox_massNetResiduals.Name = "mpictureBox_massNetResiduals";
             this.mpictureBox_massNetResiduals.Size = new System.Drawing.Size(84, 69);
             this.mpictureBox_massNetResiduals.TabIndex = 27;
@@ -376,7 +376,7 @@ namespace MultiAlignWin.Forms
             // 
             this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(460, 155);
+            this.label3.Location = new System.Drawing.Point(550, 155);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(87, 42);
             this.label3.TabIndex = 28;

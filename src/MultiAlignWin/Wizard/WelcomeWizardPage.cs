@@ -6,7 +6,7 @@ using System.Windows.Forms;
 
 namespace MultiAlignWin
 {
-	public class ctlWelcomeWizardPage : Wizard.UI.ExternalWizardPage
+	public class WelcomeWizardPage : Wizard.UI.ExternalWizardPage
 	{
 		private System.Windows.Forms.Panel panelMessage;
 		private System.Windows.Forms.Label labelWelcome;
@@ -16,7 +16,7 @@ namespace MultiAlignWin
 
         
 
-		public ctlWelcomeWizardPage( )
+		public WelcomeWizardPage( )
         {
 			// This call is required by the Windows Form Designer.
 			InitializeComponent();
@@ -47,7 +47,7 @@ namespace MultiAlignWin
 		/// </summary>
 		private void InitializeComponent()
 		{
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ctlWelcomeWizardPage));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(WelcomeWizardPage));
             this.panelMessage = new System.Windows.Forms.Panel();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.label1 = new System.Windows.Forms.Label();

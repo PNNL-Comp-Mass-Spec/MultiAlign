@@ -35,8 +35,9 @@ namespace MultiAlignWin.UI
             this.fileMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.performAnalysisToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadAnalysisToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.createAnalysisParameterFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.createAnalysisParameterFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.toolBarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -57,7 +58,6 @@ namespace MultiAlignWin.UI
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.ToolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.mainMenuStrip.SuspendLayout();
             this.mainToolStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
@@ -74,7 +74,7 @@ namespace MultiAlignWin.UI
             this.mainMenuStrip.Location = new System.Drawing.Point(0, 0);
             this.mainMenuStrip.MdiWindowListItem = this.windowsMenu;
             this.mainMenuStrip.Name = "mainMenuStrip";
-            this.mainMenuStrip.Size = new System.Drawing.Size(1207, 24);
+            this.mainMenuStrip.Size = new System.Drawing.Size(1266, 24);
             this.mainMenuStrip.TabIndex = 0;
             this.mainMenuStrip.Text = "MenuStrip";
             // 
@@ -116,6 +116,12 @@ namespace MultiAlignWin.UI
             this.loadAnalysisToolStripMenuItem.ToolTipText = "Load Analysis";
             this.loadAnalysisToolStripMenuItem.Click += new System.EventHandler(this.LoadAnalysis);
             // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.MergeIndex = 2;
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(246, 6);
+            // 
             // createAnalysisParameterFileToolStripMenuItem
             // 
             this.createAnalysisParameterFileToolStripMenuItem.MergeAction = System.Windows.Forms.MergeAction.Insert;
@@ -125,11 +131,12 @@ namespace MultiAlignWin.UI
             this.createAnalysisParameterFileToolStripMenuItem.Text = "Create Analysis Parameter File";
             this.createAnalysisParameterFileToolStripMenuItem.Click += new System.EventHandler(this.CreateAnalysisParameterFile);
             // 
-            // toolStripSeparator3
+            // toolStripSeparator1
             // 
-            this.toolStripSeparator3.MergeIndex = 2;
-            this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(246, 6);
+            this.toolStripSeparator1.MergeAction = System.Windows.Forms.MergeAction.Insert;
+            this.toolStripSeparator1.MergeIndex = 10;
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(246, 6);
             // 
             // exitToolStripMenuItem
             // 
@@ -251,7 +258,7 @@ namespace MultiAlignWin.UI
             this.toolStripSeparator2});
             this.mainToolStrip.Location = new System.Drawing.Point(0, 24);
             this.mainToolStrip.Name = "mainToolStrip";
-            this.mainToolStrip.Size = new System.Drawing.Size(1207, 25);
+            this.mainToolStrip.Size = new System.Drawing.Size(1266, 25);
             this.mainToolStrip.TabIndex = 1;
             this.mainToolStrip.Text = "ToolStrip";
             // 
@@ -287,9 +294,9 @@ namespace MultiAlignWin.UI
             // 
             this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel});
-            this.statusStrip.Location = new System.Drawing.Point(0, 812);
+            this.statusStrip.Location = new System.Drawing.Point(0, 956);
             this.statusStrip.Name = "statusStrip";
-            this.statusStrip.Size = new System.Drawing.Size(1207, 22);
+            this.statusStrip.Size = new System.Drawing.Size(1266, 22);
             this.statusStrip.TabIndex = 2;
             this.statusStrip.Text = "StatusStrip";
             // 
@@ -299,19 +306,12 @@ namespace MultiAlignWin.UI
             this.toolStripStatusLabel.Size = new System.Drawing.Size(48, 17);
             this.toolStripStatusLabel.Text = "Loading.";
             // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.MergeAction = System.Windows.Forms.MergeAction.Insert;
-            this.toolStripSeparator1.MergeIndex = 10;
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(246, 6);
-            // 
             // frmMdiMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.ClientSize = new System.Drawing.Size(1207, 834);
+            this.ClientSize = new System.Drawing.Size(1266, 978);
             this.Controls.Add(this.statusStrip);
             this.Controls.Add(this.mainToolStrip);
             this.Controls.Add(this.mainMenuStrip);
@@ -322,7 +322,6 @@ namespace MultiAlignWin.UI
             this.Name = "frmMdiMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "MultiAlign";
-            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.mainMenuStrip.ResumeLayout(false);
             this.mainMenuStrip.PerformLayout();
             this.mainToolStrip.ResumeLayout(false);

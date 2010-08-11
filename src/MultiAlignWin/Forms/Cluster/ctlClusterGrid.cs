@@ -859,7 +859,6 @@ namespace MultiAlignWin
                                                                  mnu_columns_showCMC});
             }
 
-            mnu_filters.Click += new EventHandler(mnu_filters_Click);
 
             /// 
             /// Create the popup menu object
@@ -911,24 +910,6 @@ namespace MultiAlignWin
             return cntxtMenu;
         }
 
-        /// <summary>
-        /// Create a list of filters.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void mnu_filters_Click(object sender, EventArgs e)
-        {
-            DataFilters filters = new DataFilters(mlist_clusterFilters, mlist_umcFilters);
-            if (filters.ShowDialog() == DialogResult.OK)
-            {
-                mlist_clusterFilters.Clear();
-                mlist_clusterFilters = filters.GetClusterFilters();
-                mlist_umcFilters.Clear();
-                mlist_umcFilters = filters.GetUMCFilters();
-
-                AddClusterToTable();
-            }
-        }
 
         #region Properties
         /// <summary>
@@ -1450,12 +1431,6 @@ namespace MultiAlignWin
 				mevntDataSummaryOpenClicked() ; 
 			}
 		}
-        private void mnu_reorderColumns_Click(object sender, EventArgs e)
-        {
-            frmReorderDataTable table = new frmReorderDataTable();
-            table.DataGrid = this;
-            table.ShowDialog();
-        }
 		#endregion
 
 		
