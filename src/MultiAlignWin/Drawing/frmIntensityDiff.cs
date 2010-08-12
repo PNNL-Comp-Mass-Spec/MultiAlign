@@ -32,7 +32,7 @@ namespace MultiAlignWin
 		private int mint_num_rows ; 
 		private int mint_num_columns ; 
 		//private bool mbln_logarithmic ;
-		private clsMultiAlignAnalysis mobjAnalysis ; 
+		private MultiAlignAnalysis mobjAnalysis ; 
 
 		private PNNLControls.clsColorIterator miter_color = new PNNLControls.clsColorIterator() ; 
 		private int mint_pt_size = 3 ;
@@ -70,7 +70,7 @@ namespace MultiAlignWin
 			//
 		}
 
-		public frmIntensityDiff(clsMultiAlignAnalysis analysis)
+		public frmIntensityDiff(MultiAlignAnalysis analysis)
 		{
 			//
 			// Required for Windows Form Designer support

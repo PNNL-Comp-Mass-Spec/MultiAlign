@@ -1250,11 +1250,11 @@ namespace MultiAlignWin
 				SqlDataReader myReader = null ;
 				try 
 				{
-                    //TODO: Fix this!
+                    
 					myReader = myCommand.ExecuteReader();	                    
 					while (myReader.Read()) 
 					{
-                        count++;
+                        count = (int)myReader.GetValue(0);
 					}					
 				}
 				catch(Exception ex)

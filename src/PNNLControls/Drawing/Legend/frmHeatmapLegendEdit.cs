@@ -84,7 +84,7 @@ namespace PNNLControls
 			this.legendEdit.Size = new System.Drawing.Size(424, 168);
 			this.legendEdit.TabIndex = 0;
 			this.legendEdit.UnderColor = System.Drawing.SystemColors.Control;
-			this.legendEdit.ZScore = true;
+			this.legendEdit.ZScore = false;
 			// 
 			// openLegend
 			// 

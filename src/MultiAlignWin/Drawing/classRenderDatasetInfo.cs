@@ -35,7 +35,7 @@ namespace MultiAlignWin.Drawing
         /// <summary>
         /// Renders the scan versus the cluster net to the provided bitmap.
         /// </summary>
-        public static Image NETResiduals_Thumbnail( clsMultiAlignAnalysis analysis,
+        public static Image NETResiduals_Thumbnail( MultiAlignAnalysis analysis,
                                                     int datasetNum,
                                                     int width,
                                                     int height,
@@ -73,7 +73,7 @@ namespace MultiAlignWin.Drawing
         /// <summary>
         /// Renders the scan versus the cluster net to the provided bitmap.
         /// </summary>
-        public static ctlScatterChart NETResiduals_Chart(clsMultiAlignAnalysis analysis, int datasetNum)
+        public static ctlScatterChart NETResiduals_Chart(MultiAlignAnalysis analysis, int datasetNum)
         {
             ctlScatterChart chart = null;
 
@@ -109,7 +109,7 @@ namespace MultiAlignWin.Drawing
         /// <summary>
         /// Renders the scan versus the cluster net to the provided bitmap.
         /// </summary>
-        public static Image MassNETResiduals_Thumbnail(clsMultiAlignAnalysis analysis,
+        public static Image MassNETResiduals_Thumbnail(MultiAlignAnalysis analysis,
                                                     int datasetNum,
                                                     int width,
                                                     int height,
@@ -145,7 +145,7 @@ namespace MultiAlignWin.Drawing
             }
             return image;
         }
-        public static ctlScatterChart MassNETResiduals_Chart(clsMultiAlignAnalysis analysis, int datasetNum)
+        public static ctlScatterChart MassNETResiduals_Chart(MultiAlignAnalysis analysis, int datasetNum)
         {
             ctlScatterChart chart = null;
 
@@ -181,7 +181,7 @@ namespace MultiAlignWin.Drawing
         /// <summary>
         /// Renders the scan versus the cluster net to the provided bitmap.
         /// </summary>
-        public static ctlScatterChart MassVsScanResiduals_Chart(clsMultiAlignAnalysis analysis, int datasetNum)
+        public static ctlScatterChart MassVsScanResiduals_Chart(MultiAlignAnalysis analysis, int datasetNum)
         {
             ctlScatterChart chart = null;
 
@@ -191,7 +191,9 @@ namespace MultiAlignWin.Drawing
             if (analysis.AlignmentData[datasetNum] == null)
                 return null;
 
-            string name = analysis.FileNames[datasetNum];
+            string name = analysis.Datasets[datasetNum].DatasetName;
+            if (name == null)
+                name = "";
 
             /// 
             /// Set the data for the chart. 
@@ -240,7 +242,7 @@ namespace MultiAlignWin.Drawing
         /// <summary>
         /// Renders the scan versus the cluster net to the provided bitmap.
         /// </summary>
-        public static Image MassVsScanResiduals_Thumbnail(clsMultiAlignAnalysis analysis,
+        public static Image MassVsScanResiduals_Thumbnail(MultiAlignAnalysis analysis,
                                                         int datasetNum,
                                                         int width,
                                                         int height,
@@ -282,7 +284,7 @@ namespace MultiAlignWin.Drawing
         /// <summary>
         /// Renders the scan versus the cluster net to the provided bitmap.
         /// </summary>
-        public static ctlScatterChart MassVsMZResidual_Chart(clsMultiAlignAnalysis analysis,
+        public static ctlScatterChart MassVsMZResidual_Chart(MultiAlignAnalysis analysis,
                                                     int datasetNum)
         {
             ctlScatterChart chart = null;
@@ -342,7 +344,7 @@ namespace MultiAlignWin.Drawing
         /// <summary>
         /// Renders the scan versus the cluster net to the provided bitmap.
         /// </summary>
-        public static Image MassVsMZResidual_Thumbnail(clsMultiAlignAnalysis analysis,
+        public static Image MassVsMZResidual_Thumbnail(MultiAlignAnalysis analysis,
                                                     int datasetNum,
                                                     int width,
                                                     int height,
@@ -380,7 +382,7 @@ namespace MultiAlignWin.Drawing
         /// <summary>
         /// Renders the scan versus the cluster net to the provided bitmap.
         /// </summary>
-        public static Image MassErrorHistogram_Thumbnail(clsMultiAlignAnalysis analysis,
+        public static Image MassErrorHistogram_Thumbnail(MultiAlignAnalysis analysis,
                                                             int datasetNum,
                                                             int width,
                                                             int height,
@@ -419,7 +421,7 @@ namespace MultiAlignWin.Drawing
         /// <summary>
         /// Renders the scan versus the cluster net to the provided bitmap.
         /// </summary>
-        public static controlHistogram MassErrorHistogram_Chart(clsMultiAlignAnalysis analysis,
+        public static controlHistogram MassErrorHistogram_Chart(MultiAlignAnalysis analysis,
                                                                 int datasetNum)
         {
             controlHistogram chart = null;
@@ -430,7 +432,7 @@ namespace MultiAlignWin.Drawing
                     return null;
                 
                 double [,] massError    = analysis.AlignmentData[datasetNum].massErrorHistogram;
-                string name             = analysis.FileNames[datasetNum];
+                string name             = analysis.Datasets[datasetNum].DatasetName;
                 /// 
                 /// Element by element copies take a lot of time but these arrays are not that big
                 /// So we take the perf hit here and just copy this that way.  Improvement could
@@ -462,7 +464,7 @@ namespace MultiAlignWin.Drawing
         /// <summary>
         /// Renders the scan versus the cluster net to the provided bitmap.
         /// </summary>
-        public static Image NETErrorHistogram_Thumbnail(clsMultiAlignAnalysis analysis,
+        public static Image NETErrorHistogram_Thumbnail(MultiAlignAnalysis analysis,
                                                             int datasetNum,
                                                             int width,
                                                             int height,
@@ -502,7 +504,7 @@ namespace MultiAlignWin.Drawing
         /// <summary>
         /// Renders the scan versus the cluster net to the provided bitmap.
         /// </summary>
-        public static controlHistogram NETErrorHistogram_Chart(clsMultiAlignAnalysis analysis,
+        public static controlHistogram NETErrorHistogram_Chart(MultiAlignAnalysis analysis,
                                                                 int datasetNum)
         {
             controlHistogram chart = null;
@@ -513,7 +515,7 @@ namespace MultiAlignWin.Drawing
                     return null;
 
                 double[,] NETError = analysis.AlignmentData[datasetNum].netErrorHistogram;
-                string name = analysis.FileNames[datasetNum];
+                string name = analysis.Datasets[datasetNum].DatasetName;
 
                 /// 
                 /// Element by element copies take a lot of time but these arrays are not that big
@@ -547,7 +549,7 @@ namespace MultiAlignWin.Drawing
         /// <summary>
         /// Renders the scan versus the cluster net to the provided bitmap.
         /// </summary>
-        public static Image ScanVsClusterNet_Thumbnail(clsMultiAlignAnalysis analysis,
+        public static Image ScanVsClusterNet_Thumbnail(MultiAlignAnalysis analysis,
                                                     int datasetNum,
                                                     int width,
                                                     int height,
@@ -584,7 +586,7 @@ namespace MultiAlignWin.Drawing
         /// <summary>
         /// Renders the scan versus the cluster net to the provided bitmap.
         /// </summary>
-        public static ctlScatterChart MassErrorVsScanResidual_Chart(clsMultiAlignAnalysis analysis,
+        public static ctlScatterChart MassErrorVsScanResidual_Chart(MultiAlignAnalysis analysis,
                                                     int datasetNum)
         {
             ctlScatterChart chart = null;
@@ -597,7 +599,7 @@ namespace MultiAlignWin.Drawing
         /// <summary>
         /// Renders the scan versus the cluster net to the provided bitmap.
         /// </summary>
-        public static ctlScatterChart ScanVsClusterNet_Chart(clsMultiAlignAnalysis analysis,
+        public static ctlScatterChart ScanVsClusterNet_Chart(MultiAlignAnalysis analysis,
                                                     int datasetNum)
         {
             ctlScatterChart chart = null;
@@ -659,7 +661,7 @@ namespace MultiAlignWin.Drawing
         /// <summary>
         /// Renders the alignment heatmap
         /// </summary>
-        public static Image AlignmentHeatmap_Thumbnail(clsMultiAlignAnalysis analysis,
+        public static Image AlignmentHeatmap_Thumbnail(MultiAlignAnalysis analysis,
                                                     int datasetNum,
                                                     int width,
                                                     int height)
@@ -685,7 +687,7 @@ namespace MultiAlignWin.Drawing
         /// <summary>
         /// Renders the scan versus the cluster net to the provided bitmap.
         /// </summary>
-        public static ctlAlignmentHeatMap AlignmentHeatMap_Chart(clsMultiAlignAnalysis analysis,
+        public static ctlAlignmentHeatMap AlignmentHeatMap_Chart(MultiAlignAnalysis analysis,
                                                     int datasetNum)
         {
             ctlAlignmentHeatMap heatMap = new ctlAlignmentHeatMap();
@@ -697,7 +699,7 @@ namespace MultiAlignWin.Drawing
 
             try
             {
-                datasetName = analysis.FileNames[datasetNum];
+                datasetName = analysis.Datasets[datasetNum].DatasetName;
                 classAlignmentData data = analysis.AlignmentData[datasetNum];
                 if (data == null)
                     return null;
@@ -707,8 +709,8 @@ namespace MultiAlignWin.Drawing
                 mScores = data.heatScores;
                 minBaselineScan = data.minMTDBNET;
                 maxBaselineScan = data.maxMTDBNET;
-                minAligneeScan = data.minScanBaseline;
-                maxAligneeScan = data.maxScanBaseline;
+                minAligneeScan  = data.minScanBaseline;
+                maxAligneeScan  = data.maxScanBaseline;
 
 
                 heatMap.SetData(mScores,
@@ -722,50 +724,10 @@ namespace MultiAlignWin.Drawing
             }
             return heatMap;
         }
-        /// <summary>
-        /// Renders the scan versus the cluster net to the provided bitmap.
-        /// </summary>
-        public static Heatmap AlignmentHeatMap_Chart2(clsMultiAlignAnalysis analysis,
-                                                    int datasetNum)
-        {
-            Heatmap heatMap = new Heatmap();
-            clsAlignmentFunction alignmentFnc;
-            string datasetName;
-            int minAligneeScan, maxAligneeScan;
-            float minBaselineScan, maxBaselineScan;
-            float[,] mScores;
-
-            try
-            {
-                datasetName = analysis.FileNames[datasetNum];
-                classAlignmentData data = analysis.AlignmentData[datasetNum];
-                if (data == null)
-                    return null;
-
-                alignmentFnc = data.alignmentFunction;
-                datasetName = data.aligneeDataset;
-                mScores = data.heatScores;
-                minBaselineScan = data.minMTDBNET;
-                maxBaselineScan = data.maxMTDBNET;
-                minAligneeScan = data.minScanBaseline;
-                maxAligneeScan = data.maxScanBaseline;
-
-                heatMap.AlignmentFunction = alignmentFnc;
-                heatMap.SetData(mScores,
-                                new AxisRangeF(minAligneeScan, maxAligneeScan),
-                                new AxisRangeF(minBaselineScan, maxBaselineScan));
-                
-            }
-            catch
-            {
-                return null;
-            }
-            return heatMap;
-        }
         #endregion
 
         #region Cluster Chart
-        public static Image ClusterChart_Thumbnail(clsMultiAlignAnalysis analysis,
+        public static Image ClusterChart_Thumbnail(MultiAlignAnalysis analysis,
                                                    int datasetNum,
                                                    int width,
                                                    int height,
@@ -806,7 +768,7 @@ namespace MultiAlignWin.Drawing
             }
             return image;
         }
-        public static ctlScatterChart ClusterChart_Chart(   clsMultiAlignAnalysis analysis,
+        public static ctlScatterChart ClusterChart_Chart(   MultiAlignAnalysis analysis,
                                                             int datasetNum,
                                                             bool aligned,
                                                             int chargeStates)
@@ -826,7 +788,7 @@ namespace MultiAlignWin.Drawing
         /// <summary>
         /// Renders the scan versus the cluster net to the provided bitmap.
         /// </summary>
-        public static Image ClusterNETResiduals_Thumbnail(clsMultiAlignAnalysis analysis,
+        public static Image ClusterNETResiduals_Thumbnail(MultiAlignAnalysis analysis,
                                                     int width,
                                                     int height,
                                                             bool displayLegend,
@@ -864,7 +826,7 @@ namespace MultiAlignWin.Drawing
         /// <summary>
         /// Renders the scan versus the cluster net to the provided bitmap.
         /// </summary>
-        public static ctlScatterChart ClusterNETResiduals_Chart(clsMultiAlignAnalysis analysis)
+        public static ctlScatterChart ClusterNETResiduals_Chart(MultiAlignAnalysis analysis)
         {
             ctlScatterChart chart = null;
 
@@ -898,7 +860,7 @@ namespace MultiAlignWin.Drawing
         /// <summary>
         /// Renders the scan versus the cluster net to the provided bitmap.
         /// </summary>
-        public static Image ClusterMassNETResiduals_Thumbnail(clsMultiAlignAnalysis analysis,                                                    
+        public static Image ClusterMassNETResiduals_Thumbnail(MultiAlignAnalysis analysis,                                                    
                                                     int width,
                                                     int height,
                                                     bool displayLegend,
@@ -938,7 +900,7 @@ namespace MultiAlignWin.Drawing
         /// </summary>
         /// <param name="analysis"></param>
         /// <returns></returns>
-        public static ctlScatterChart ClusterMassNETResiduals_Chart(clsMultiAlignAnalysis analysis)
+        public static ctlScatterChart ClusterMassNETResiduals_Chart(MultiAlignAnalysis analysis)
         {
             ctlScatterChart chart = null;
 
@@ -973,7 +935,7 @@ namespace MultiAlignWin.Drawing
         /// <summary>
         /// Renders the scan versus the cluster net to the provided bitmap.
         /// </summary>
-        public static Image ClusterMassVsScanResiduals_Thumbnail(clsMultiAlignAnalysis analysis,                                                        
+        public static Image ClusterMassVsScanResiduals_Thumbnail(MultiAlignAnalysis analysis,                                                        
                                                         int width,
                                                         int height,
                                                             bool displayLegend,
@@ -1011,7 +973,7 @@ namespace MultiAlignWin.Drawing
         /// <summary>
         /// Renders the scan versus the cluster net to the provided bitmap.
         /// </summary>
-        public static ctlScatterChart ClusterMassVsScanResiduals_Chart(clsMultiAlignAnalysis analysis)
+        public static ctlScatterChart ClusterMassVsScanResiduals_Chart(MultiAlignAnalysis analysis)
         {
             ctlScatterChart chart = null;
 
@@ -1066,7 +1028,7 @@ namespace MultiAlignWin.Drawing
         /// <summary>
         /// Renders the scan versus the cluster net to the provided bitmap.
         /// </summary>
-        public static ctlScatterChart ClusterMassVsMZResidual_Chart(clsMultiAlignAnalysis analysis)
+        public static ctlScatterChart ClusterMassVsMZResidual_Chart(MultiAlignAnalysis analysis)
         {
             ctlScatterChart chart = null;
 
@@ -1118,7 +1080,7 @@ namespace MultiAlignWin.Drawing
         /// <summary>
         /// Renders the scan versus the cluster net to the provided bitmap.
         /// </summary>
-        public static Image ClusterMassVsMZResidual_Thumbnail(clsMultiAlignAnalysis analysis,                                                    
+        public static Image ClusterMassVsMZResidual_Thumbnail(MultiAlignAnalysis analysis,                                                    
                                                     int width,
                                                     int height,
                                                             bool displayLegend,
@@ -1157,7 +1119,7 @@ namespace MultiAlignWin.Drawing
         /// <summary>
         /// Renders the scan versus the cluster net to the provided bitmap.
         /// </summary>
-        public static Image ClusterMassErrorHistogram_Thumbnail(clsMultiAlignAnalysis analysis,                                                            
+        public static Image ClusterMassErrorHistogram_Thumbnail(MultiAlignAnalysis analysis,                                                            
                                                             int width,
                                                             int height,
                                                             bool displayLegend,
@@ -1194,7 +1156,7 @@ namespace MultiAlignWin.Drawing
         /// <summary>
         /// Renders the scan versus the cluster net to the provided bitmap.
         /// </summary>
-        public static controlHistogram ClusterMassErrorHistogram_Chart(clsMultiAlignAnalysis analysis)
+        public static controlHistogram ClusterMassErrorHistogram_Chart(MultiAlignAnalysis analysis)
         {
             controlHistogram chart = null;
 
@@ -1236,7 +1198,7 @@ namespace MultiAlignWin.Drawing
         /// <summary>
         /// Renders the scan versus the cluster net to the provided bitmap.
         /// </summary>
-        public static Image ClusterNETErrorHistogram_Thumbnail(clsMultiAlignAnalysis analysis,
+        public static Image ClusterNETErrorHistogram_Thumbnail(MultiAlignAnalysis analysis,
                                                             int width,
                                                             int height,
                                                             bool displayLegend,
@@ -1275,7 +1237,7 @@ namespace MultiAlignWin.Drawing
         /// <summary>
         /// Renders the scan versus the cluster net to the provided bitmap.
         /// </summary>
-        public static controlHistogram ClusterNETErrorHistogram_Chart(clsMultiAlignAnalysis analysis)
+        public static controlHistogram ClusterNETErrorHistogram_Chart(MultiAlignAnalysis analysis)
         {
             controlHistogram chart = null;
 
@@ -1317,7 +1279,7 @@ namespace MultiAlignWin.Drawing
         /// <summary>
         /// Renders the scan versus the cluster net to the provided bitmap.
         /// </summary>
-        public static ctlScatterChart ClusterMassErrorVsScanResidual_Chart(clsMultiAlignAnalysis analysis)                                                    
+        public static ctlScatterChart ClusterMassErrorVsScanResidual_Chart(MultiAlignAnalysis analysis)                                                    
         {
             ctlScatterChart chart = null;
 
@@ -1329,7 +1291,7 @@ namespace MultiAlignWin.Drawing
         /// <summary>
         /// Renders the alignment heatmap
         /// </summary>
-        public static Image ClusterAlignmentHeatmap_Thumbnail(clsMultiAlignAnalysis analysis,                                                    
+        public static Image ClusterAlignmentHeatmap_Thumbnail(MultiAlignAnalysis analysis,                                                    
                                                     int width,
                                                     int height)
         {
@@ -1352,7 +1314,7 @@ namespace MultiAlignWin.Drawing
         /// <summary>
         /// Renders the scan versus the cluster net to the provided bitmap.
         /// </summary>
-        public static ctlAlignmentHeatMap ClusterAlignmentHeatMap_Chart(clsMultiAlignAnalysis analysis)
+        public static ctlAlignmentHeatMap ClusterAlignmentHeatMap_Chart(MultiAlignAnalysis analysis)
         {
             ctlAlignmentHeatMap heatMap = new ctlAlignmentHeatMap();
             clsAlignmentFunction alignmentFnc;
@@ -1394,7 +1356,7 @@ namespace MultiAlignWin.Drawing
         /// <summary>
         /// Renders the scan versus the cluster net to the provided bitmap.
         /// </summary>
-        public static Image ClusterScoreHistogram_Thumbnail(    clsMultiAlignAnalysis analysis,                                                            
+        public static Image ClusterScoreHistogram_Thumbnail(    MultiAlignAnalysis analysis,                                                            
                                                             int width,
                                                             int height,
                                                             bool displayLegend,
@@ -1525,7 +1487,7 @@ namespace MultiAlignWin.Drawing
         /// <summary>
         /// Renders the scan versus the cluster net to the provided bitmap.
         /// </summary>
-        public static Image ClusterScoreVsClusterSize_Thumbnail(clsMultiAlignAnalysis analysis,                                                            
+        public static Image ClusterScoreVsClusterSize_Thumbnail(MultiAlignAnalysis analysis,                                                            
                                                             int width,
                                                             int height,
                                                             bool displayLegend,
@@ -1639,7 +1601,7 @@ namespace MultiAlignWin.Drawing
         /// <summary>
         /// Renders the scan versus the cluster net to the provided bitmap.
         /// </summary>
-        public static Image ClusterSizeHistogram_Thumbnail(clsMultiAlignAnalysis analysis,
+        public static Image ClusterSizeHistogram_Thumbnail(MultiAlignAnalysis analysis,
                                                             int width,
                                                             int height,
                                                             bool displayLegend,
@@ -1675,9 +1637,9 @@ namespace MultiAlignWin.Drawing
             }
             return image;
         }
-        public static controlHistogram  ClusterSizeHistogram_Chart(clsMultiAlignAnalysis analysis)
+        public static controlHistogram  ClusterSizeHistogram_Chart(MultiAlignAnalysis analysis)
         {
-            int maxClusters = analysis.FileNames.Length + 1;
+            int maxClusters = analysis.Datasets.Count + 1;
             if (maxClusters > 1)
             {
                 float[] bins  = new float[maxClusters];
@@ -1714,7 +1676,7 @@ namespace MultiAlignWin.Drawing
         /// <summary>
         /// Renders the scan versus the cluster net to the provided bitmap.
         /// </summary>
-        public static Image ChargeStateHistogram_Thumbnail(clsMultiAlignAnalysis analysis,
+        public static Image ChargeStateHistogram_Thumbnail(MultiAlignAnalysis analysis,
                                                             int width,
                                                             int height,
                                                             bool displayLegend,
@@ -1750,7 +1712,7 @@ namespace MultiAlignWin.Drawing
             }
             return image;
         }
-        public static controlHistogram ChargeStateHistogram_Chart(clsMultiAlignAnalysis analysis)
+        public static controlHistogram ChargeStateHistogram_Chart(MultiAlignAnalysis analysis)
         {
             /// 
             /// Find all of the charge states 
@@ -1761,7 +1723,7 @@ namespace MultiAlignWin.Drawing
                 charges[i] = 0;
             }
             int maxCharge = 0;
-            for (int i = 0; i < analysis.Files.Count; i++)
+            for (int i = 0; i < analysis.Datasets.Count; i++)
             {
                 clsUMC[] umcs = analysis.UMCData.GetUMCS(i);
                 foreach (clsUMC umc in umcs)
@@ -1805,7 +1767,7 @@ namespace MultiAlignWin.Drawing
         /// <summary>
         /// Renders the scan versus the cluster net to the provided bitmap.
         /// </summary>
-        public static Image PeakMatchMassNET_Thumbnail(clsMultiAlignAnalysis analysis,int width, int height, bool displayLegend, bool displayAxis, bool displayTitle)
+        public static Image PeakMatchMassNET_Thumbnail(MultiAlignAnalysis analysis,int width, int height, bool displayLegend, bool displayAxis, bool displayTitle)
         {
 
             Image image = null;
@@ -1835,7 +1797,7 @@ namespace MultiAlignWin.Drawing
             }
             return image;
         }
-        public static ctlScatterChart PeakMatchMassNET_Chart(clsMultiAlignAnalysis analysis)
+        public static ctlScatterChart PeakMatchMassNET_Chart(MultiAlignAnalysis analysis)
         {
             clsPeakMatchingResults results = analysis.PeakMatchingResults;                                              
             if (results == null)
@@ -1918,7 +1880,7 @@ namespace MultiAlignWin.Drawing
         /// <summary>
         /// Renders the scan versus the cluster net to the provided bitmap.
         /// </summary>
-        public static Image SMARTScoreHistogram_Thumbnail(clsMultiAlignAnalysis analysis,int width, int height, bool displayLegend, bool displayAxis, bool displayTitle)
+        public static Image SMARTScoreHistogram_Thumbnail(MultiAlignAnalysis analysis,int width, int height, bool displayLegend, bool displayAxis, bool displayTitle)
         {
 
             Image image = null;
@@ -1948,7 +1910,7 @@ namespace MultiAlignWin.Drawing
             }
             return image;
         }
-        public static controlHistogram SMARTScoreHistogram_Chart(clsMultiAlignAnalysis analysis)
+        public static controlHistogram SMARTScoreHistogram_Chart(MultiAlignAnalysis analysis)
         {
             
             clsPeakMatchingResults results = analysis.PeakMatchingResults;                                              
@@ -2079,7 +2041,7 @@ namespace MultiAlignWin.Drawing
         /// <summary>
         /// Renders the scan versus the cluster net to the provided bitmap.
         /// </summary>
-        public static Image UnidentifiedFeatures_Thumbnail( clsMultiAlignAnalysis analysis, int width, int height, 
+        public static Image UnidentifiedFeatures_Thumbnail( MultiAlignAnalysis analysis, int width, int height, 
                                                             bool displayLegend, bool displayAxis, bool displayTitle,
                                                             double stacThreshold)
         {
@@ -2111,7 +2073,7 @@ namespace MultiAlignWin.Drawing
             }
             return image;
         }
-        public static ctlScatterChart UnidentifiedFeatures_Chart(clsMultiAlignAnalysis analysis, double stacThreshold)
+        public static ctlScatterChart UnidentifiedFeatures_Chart(MultiAlignAnalysis analysis, double stacThreshold)
         {
             clsPeakMatchingResults results = analysis.PeakMatchingResults;                                              
             if (results == null)
@@ -2234,9 +2196,9 @@ namespace MultiAlignWin.Drawing
             chart.YAxisLabel    = "Monoisotopic Mass";
 
             clsColorIterator iterator = new clsColorIterator();
-            iterator.CreateColorGradient(Color.Red, analysis.FileNames.Length);
+            iterator.CreateColorGradient(Color.Red, analysis.Datasets.Count);
 
-            for (int i = analysis.FileNames.Length; i > 0; i--)
+            for (int i = analysis.Datasets.Count; i > 0; i--)
             {
 
                 clsSeries sizeSeries = GetSeriesOfClusterSizes(i, clusters, "Unidentified clusters size = " + i.ToString(), iterator.GetColor(i));
@@ -2303,7 +2265,7 @@ namespace MultiAlignWin.Drawing
         /// <summary>
         /// Renders the scan versus the cluster net to the provided bitmap.
         /// </summary>
-        public static Image IdentifiedFeatures_Thumbnail(clsMultiAlignAnalysis analysis, int width, int height,
+        public static Image IdentifiedFeatures_Thumbnail(MultiAlignAnalysis analysis, int width, int height,
                                                             bool displayLegend, bool displayAxis, bool displayTitle,
                                                             double stacThreshold)
         {
@@ -2335,7 +2297,7 @@ namespace MultiAlignWin.Drawing
             }
             return image;
         }
-        public static ctlScatterChart IdentifiedFeatures_Chart(clsMultiAlignAnalysis analysis, double stacThreshold)
+        public static ctlScatterChart IdentifiedFeatures_Chart(MultiAlignAnalysis analysis, double stacThreshold)
         {
             clsPeakMatchingResults results = analysis.PeakMatchingResults;
             if (results == null)
@@ -2452,9 +2414,9 @@ namespace MultiAlignWin.Drawing
             chart.XAxisLabel = "NET";
             chart.YAxisLabel = "Monoisotopic Mass";
             clsColorIterator iterator = new clsColorIterator();
-            iterator.CreateColorGradient(Color.Red, analysis.FileNames.Length);
+            iterator.CreateColorGradient(Color.Red, analysis.Datasets.Count);
 
-            for (int i = analysis.FileNames.Length; i > 0; i--)
+            for (int i = analysis.Datasets.Count; i > 0; i--)
             {
 
                 clsSeries sizeSeries = GetSeriesOfClusterSizes(i, clusters, "Identified clusters size = " + i.ToString(), iterator.GetColor(i));

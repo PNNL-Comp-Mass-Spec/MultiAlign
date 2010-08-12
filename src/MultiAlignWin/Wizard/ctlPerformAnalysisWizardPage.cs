@@ -27,7 +27,6 @@ namespace MultiAlignWin
         private ctlScatterChart mctlScatterChartFeatures;
         private MultiAlignWin.Drawing.ctlAlignmentHeatMap mcontrol_heatMap;
         private PictureBox mpicture_alignment;
-        private Label mlabel_alignmentTitle;
 
         public delegate void DelegateControlLoaded();
         public event DelegateControlLoaded ReadyForAnalysis;
@@ -89,12 +88,11 @@ namespace MultiAlignWin
             this.mprogressBar_current = new System.Windows.Forms.ProgressBar();
             this.mtabs_messages = new System.Windows.Forms.TabControl();
             this.tabPgMessages = new System.Windows.Forms.TabPage();
-            this.mlabel_alignmentTitle = new System.Windows.Forms.Label();
             this.mpicture_alignment = new System.Windows.Forms.PictureBox();
-            this.mcontrol_heatMap = new MultiAlignWin.Drawing.ctlAlignmentHeatMap();
             this.mctlScatterChartFeatures = new PNNLControls.ctlScatterChart();
             this.mtreeview_statusMessages = new System.Windows.Forms.TreeView();
             this.mcontrol_steps = new ExternalControls.controlStepOverview();
+            this.mcontrol_heatMap = new MultiAlignWin.Drawing.ctlAlignmentHeatMap();
             this.mtabs_messages.SuspendLayout();
             this.tabPgMessages.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.mpicture_alignment)).BeginInit();
@@ -103,7 +101,7 @@ namespace MultiAlignWin
             // 
             // Banner
             // 
-            this.Banner.Size = new System.Drawing.Size(809, 64);
+            this.Banner.Size = new System.Drawing.Size(879, 64);
             this.Banner.Subtitle = "Create UMCs, Cluster, and Save";
             this.Banner.Title = "Step5. Performing MultiAlign Analysis";
             // 
@@ -130,7 +128,7 @@ namespace MultiAlignWin
             this.mprogressBar_current.ForeColor = System.Drawing.Color.Lime;
             this.mprogressBar_current.Location = new System.Drawing.Point(232, 139);
             this.mprogressBar_current.Name = "mprogressBar_current";
-            this.mprogressBar_current.Size = new System.Drawing.Size(691, 16);
+            this.mprogressBar_current.Size = new System.Drawing.Size(761, 16);
             this.mprogressBar_current.TabIndex = 4;
             this.mprogressBar_current.Click += new System.EventHandler(this.mprogressBar_current_Click);
             // 
@@ -143,60 +141,33 @@ namespace MultiAlignWin
             this.mtabs_messages.Location = new System.Drawing.Point(143, 170);
             this.mtabs_messages.Name = "mtabs_messages";
             this.mtabs_messages.SelectedIndex = 0;
-            this.mtabs_messages.Size = new System.Drawing.Size(800, 614);
+            this.mtabs_messages.Size = new System.Drawing.Size(870, 606);
             this.mtabs_messages.TabIndex = 7;
             // 
             // tabPgMessages
             // 
-            this.tabPgMessages.Controls.Add(this.mlabel_alignmentTitle);
             this.tabPgMessages.Controls.Add(this.mpicture_alignment);
-            this.tabPgMessages.Controls.Add(this.mcontrol_heatMap);
             this.tabPgMessages.Controls.Add(this.mctlScatterChartFeatures);
             this.tabPgMessages.Controls.Add(this.mtreeview_statusMessages);
+            this.tabPgMessages.Controls.Add(this.mcontrol_heatMap);
             this.tabPgMessages.Location = new System.Drawing.Point(4, 22);
             this.tabPgMessages.Name = "tabPgMessages";
             this.tabPgMessages.Padding = new System.Windows.Forms.Padding(10);
-            this.tabPgMessages.Size = new System.Drawing.Size(792, 588);
+            this.tabPgMessages.Size = new System.Drawing.Size(862, 580);
             this.tabPgMessages.TabIndex = 0;
             this.tabPgMessages.Text = "Messages";
             this.tabPgMessages.UseVisualStyleBackColor = true;
-            // 
-            // mlabel_alignmentTitle
-            // 
-            this.mlabel_alignmentTitle.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.mlabel_alignmentTitle.Location = new System.Drawing.Point(468, 263);
-            this.mlabel_alignmentTitle.Name = "mlabel_alignmentTitle";
-            this.mlabel_alignmentTitle.Size = new System.Drawing.Size(317, 35);
-            this.mlabel_alignmentTitle.TabIndex = 11;
-            this.mlabel_alignmentTitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // mpicture_alignment
             // 
             this.mpicture_alignment.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.mpicture_alignment.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.mpicture_alignment.Image = global::MultiAlignWin.Properties.Resources.bigImage;
-            this.mpicture_alignment.Location = new System.Drawing.Point(467, 301);
+            this.mpicture_alignment.Location = new System.Drawing.Point(541, 292);
             this.mpicture_alignment.Name = "mpicture_alignment";
-            this.mpicture_alignment.Size = new System.Drawing.Size(320, 274);
+            this.mpicture_alignment.Size = new System.Drawing.Size(303, 275);
             this.mpicture_alignment.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.mpicture_alignment.TabIndex = 10;
             this.mpicture_alignment.TabStop = false;
-            // 
-            // mcontrol_heatMap
-            // 
-            this.mcontrol_heatMap.AlignmentFunction = null;
-            this.mcontrol_heatMap.Data = null;
-            this.mcontrol_heatMap.DrawDemaractionLines = false;
-            this.mcontrol_heatMap.Location = new System.Drawing.Point(137, 265);
-            this.mcontrol_heatMap.Name = "mcontrol_heatMap";
-            this.mcontrol_heatMap.OverrideResize = false;
-            this.mcontrol_heatMap.ProgBarPercent = 0;
-            this.mcontrol_heatMap.ShowProgBar = false;
-            this.mcontrol_heatMap.ShowStatBar = true;
-            this.mcontrol_heatMap.Size = new System.Drawing.Size(317, 310);
-            this.mcontrol_heatMap.TabIndex = 9;
-            this.mcontrol_heatMap.UpdateComplete = true;
-            this.mcontrol_heatMap.Visible = false;
             // 
             // mctlScatterChartFeatures
             // 
@@ -237,7 +208,7 @@ namespace MultiAlignWin
             this.mctlScatterChartFeatures.Legend.MaxFontSize = 12F;
             this.mctlScatterChartFeatures.Legend.MinFontSize = 6F;
             this.mctlScatterChartFeatures.LegendVisible = false;
-            this.mctlScatterChartFeatures.Location = new System.Drawing.Point(468, 10);
+            this.mctlScatterChartFeatures.Location = new System.Drawing.Point(549, 10);
             this.mctlScatterChartFeatures.Margins.BottomMarginFraction = 0.1F;
             this.mctlScatterChartFeatures.Margins.BottomMarginMax = 72;
             this.mctlScatterChartFeatures.Margins.BottomMarginMin = 30;
@@ -248,7 +219,9 @@ namespace MultiAlignWin
             this.mctlScatterChartFeatures.Margins.LeftMarginMax = 150;
             this.mctlScatterChartFeatures.Margins.LeftMarginMin = 72;
             this.mctlScatterChartFeatures.Name = "mctlScatterChartFeatures";
-            this.mctlScatterChartFeatures.Size = new System.Drawing.Size(319, 249);
+            this.mctlScatterChartFeatures.PadViewPortX = 0F;
+            this.mctlScatterChartFeatures.PadViewPortY = 0F;
+            this.mctlScatterChartFeatures.Size = new System.Drawing.Size(295, 250);
             this.mctlScatterChartFeatures.TabIndex = 8;
             this.mctlScatterChartFeatures.Title = "Input Data";
             this.mctlScatterChartFeatures.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 8F);
@@ -267,7 +240,7 @@ namespace MultiAlignWin
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.mtreeview_statusMessages.Location = new System.Drawing.Point(10, 10);
             this.mtreeview_statusMessages.Name = "mtreeview_statusMessages";
-            this.mtreeview_statusMessages.Size = new System.Drawing.Size(454, 575);
+            this.mtreeview_statusMessages.Size = new System.Drawing.Size(514, 567);
             this.mtreeview_statusMessages.TabIndex = 7;
             // 
             // mcontrol_steps
@@ -276,8 +249,24 @@ namespace MultiAlignWin
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.mcontrol_steps.Location = new System.Drawing.Point(144, 83);
             this.mcontrol_steps.Name = "mcontrol_steps";
-            this.mcontrol_steps.Size = new System.Drawing.Size(792, 41);
+            this.mcontrol_steps.Size = new System.Drawing.Size(862, 41);
             this.mcontrol_steps.TabIndex = 8;
+            // 
+            // mcontrol_heatMap
+            // 
+            this.mcontrol_heatMap.AlignmentFunction = null;
+            this.mcontrol_heatMap.Data = null;
+            this.mcontrol_heatMap.DrawDemaractionLines = false;
+            this.mcontrol_heatMap.Location = new System.Drawing.Point(65, 113);
+            this.mcontrol_heatMap.Name = "mcontrol_heatMap";
+            this.mcontrol_heatMap.OverrideResize = false;
+            this.mcontrol_heatMap.ProgBarPercent = 0;
+            this.mcontrol_heatMap.ShowProgBar = false;
+            this.mcontrol_heatMap.ShowStatBar = true;
+            this.mcontrol_heatMap.Size = new System.Drawing.Size(478, 437);
+            this.mcontrol_heatMap.TabIndex = 9;
+            this.mcontrol_heatMap.UpdateComplete = true;
+            this.mcontrol_heatMap.Visible = false;
             // 
             // ctlPerformAnalysisWizardPage
             // 
@@ -288,7 +277,7 @@ namespace MultiAlignWin
             this.Controls.Add(this.label1);
             this.Controls.Add(this.ProgressBarLabel);
             this.Name = "ctlPerformAnalysisWizardPage";
-            this.Size = new System.Drawing.Size(943, 787);
+            this.Size = new System.Drawing.Size(1013, 779);
             this.Controls.SetChildIndex(this.Banner, 0);
             this.Controls.SetChildIndex(this.ProgressBarLabel, 0);
             this.Controls.SetChildIndex(this.label1, 0);
@@ -621,16 +610,14 @@ namespace MultiAlignWin
 						mScores[numRows-rowNum-1, colNum]   = tmp ;  
 					}
 				}
+
+                //mcontrol_heatMap.AlignmentFunction = alignmentFnc;
+                //mcontrol_heatMap.Legend.UseZScore = true;
 		    	mcontrol_heatMap.SetData(mScores,
                                             new PNNLControls.ctlHierarchalLabel.AxisRangeF(minAligneeScan, maxAligneeScan), 
 				                            new PNNLControls.ctlHierarchalLabel.AxisRangeF(minBaselineScan, maxBaselineScan)) ;
-                mcontrol_heatMap.AlignmentFunction  = alignmentFnc;
                 mpicture_alignment.Image            = mcontrol_heatMap.GetThumbnail(mpicture_alignment.Size);
 
-                string addText = "";
-                if (part >= 0)
-                    addText = " part " + part.ToString();
-                mlabel_alignmentTitle.Text          = title + addText;
 			}
 			catch (Exception ex)
 			{

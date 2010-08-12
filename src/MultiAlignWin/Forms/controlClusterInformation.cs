@@ -47,12 +47,12 @@ namespace MultiAlignWin.Forms
         /// <summary>
         /// Object that holds all of the analysis data.
         /// </summary>
-        private clsMultiAlignAnalysis mobj_analysis;        
+        private MultiAlignAnalysis mobj_analysis;        
         #endregion
 
 
 
-        public controlClusterInformation(clsMultiAlignAnalysis analysis)
+        public controlClusterInformation(MultiAlignAnalysis analysis)
         {
             InitializeComponent();
             

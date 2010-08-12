@@ -103,11 +103,10 @@ namespace MultiAlignWin
         ctlCompletedWizardPage          mctl_completedWizardPage;
         #endregion 
 
-        private clsDMSServerInformation mobj_serverInformation;
-        private string [] marrFileNames                 = null ;
-        private List<clsDatasetInfo> marrDatasetInfo    = new List<clsDatasetInfo>();   	
-        private enmAnalysisType         mobj_analysisType;
-        private clsMultiAlignAnalysis   mobjAnalysis;
+        private clsDMSServerInformation     mobj_serverInformation;        
+        private List<DatasetInformation>    marrDatasetInfo = new List<DatasetInformation>();   	
+        private enmAnalysisType             mobj_analysisType;
+        private MultiAlignAnalysis          mobjAnalysis;
         private int     mintBaselineIndex   = -1;
         private bool    MassTagDBselected   = false;
 		private string  destinationPath     = null;
@@ -116,7 +115,7 @@ namespace MultiAlignWin
         /// Flag indicating if the defaults were loaded on the first display of the parameters page.
         /// </summary>
         private bool mbool_parametersSet = false;
-        private string[] marr_tempCopiedFiles;
+        //private string[] marr_tempCopiedFiles;
 
         /// <summary>
         /// List of steps to complete.
@@ -175,7 +174,7 @@ namespace MultiAlignWin
             /// 
             /// Create a new analysis object and synch events.
             /// 
-            mobjAnalysis = new clsMultiAlignAnalysis(new DelegateSetPercentComplete(SetPercentComplete),
+            mobjAnalysis = new MultiAlignAnalysis(new DelegateSetPercentComplete(SetPercentComplete),
                                                      new DelegateSetStatusMessage(this.SetStatusMessage), null);
 
             LoadAlignmentOptions();
@@ -185,7 +184,7 @@ namespace MultiAlignWin
             LoadDBOptions();
             LoadSMARTOptions();
 
-            mobjAnalysis.AnalysisComplete                       += new clsMultiAlignAnalysis.DelegateAnalysisComplete(mobjAnalysis_AnalysisComplete);
+            mobjAnalysis.AnalysisComplete                       += new MultiAlignAnalysis.DelegateAnalysisComplete(mobjAnalysis_AnalysisComplete);
 
             /// 
             /// Paremeter Setting Handling Events
@@ -199,11 +198,11 @@ namespace MultiAlignWin
             mctl_selectParametersPage.ScoringParameters         += new ctlSelectParametersWizardPage.OptionsButtonClicked(ScoringParametersClicked);
 
 
-            mobjAnalysis.IsotopePeaksLoadedForFile              += new clsMultiAlignAnalysis.DelegateIsotopePeaksLoadedForFile(IsotopePeaksLoadedForFile);
-            mobjAnalysis.UMCSLoadedForFile                      += new clsMultiAlignAnalysis.DelegateUMCSLoadedForFile(mobjAnalysis_UMCSLoadedForFile);
-            mobjAnalysis.DatasetAligned                         += new clsMultiAlignAnalysis.DelegateDatasetAligned(DatasetAligned);
-            mobjAnalysis.ListOfSteps                            += new clsMultiAlignAnalysis.DelegateListOfSteps(mobjAnalysis_ListOfSteps);
-            mobjAnalysis.CurrentStep                            += new clsMultiAlignAnalysis.DelegateCurrentStep(mobjAnalysis_CurrentStep);
+            mobjAnalysis.IsotopePeaksLoadedForFile              += new MultiAlignAnalysis.DelegateIsotopePeaksLoadedForFile(IsotopePeaksLoadedForFile);
+            mobjAnalysis.UMCSLoadedForFile                      += new MultiAlignAnalysis.DelegateUMCSLoadedForFile(mobjAnalysis_UMCSLoadedForFile);
+            mobjAnalysis.DatasetAligned                         += new MultiAlignAnalysis.DelegateDatasetAligned(DatasetAligned);
+            mobjAnalysis.ListOfSteps                            += new MultiAlignAnalysis.DelegateListOfSteps(mobjAnalysis_ListOfSteps);
+            mobjAnalysis.CurrentStep                            += new MultiAlignAnalysis.DelegateCurrentStep(mobjAnalysis_CurrentStep);
             FormClosing                                         += new FormClosingEventHandler(frmAnalysisWizard_FormClosing);
         }
 
@@ -424,7 +423,7 @@ namespace MultiAlignWin
         /// Loads the analysis object.
         /// </summary>
         /// <param name="analysis"></param>
-        private void LoadDefaults(clsMultiAlignAnalysis analysis)
+        private void LoadDefaults(MultiAlignAnalysis analysis)
         {
             /// 
             /// Alignment Options
@@ -661,7 +660,7 @@ namespace MultiAlignWin
         /// <param name="e"></param>
         void mctl_loadDatasetPage_WizardNext(object sender, WizardPageEventArgs e)
         {
-            List<clsDatasetInfo> datasets = mctl_loadDatasetPage.Datasets;
+            List<DatasetInformation> datasets = mctl_loadDatasetPage.Datasets;
             mobj_serverInformation  = mctl_loadDatasetPage.ServerInformation;
             if (datasets == null)
             {
@@ -1176,8 +1175,7 @@ namespace MultiAlignWin
                 return false;
             }
 
-            sourcePaths = FileLocations;
-                        
+            sourcePaths = FileLocations;                        
             copySuccess = CopyFilesHandler(sourcePaths);
 
             /// 
@@ -1185,27 +1183,18 @@ namespace MultiAlignWin
             /// 
             if (copySuccess)
             {
+
+                mobjAnalysis.Datasets.AddRange(marrDatasetInfo);
                 if (mintBaselineIndex > -1)
                 {
-                    mobjAnalysis.BaselineDataset = marrFileNames[mintBaselineIndex];
+                    mobjAnalysis.BaselineDataset = mobjAnalysis.Datasets[mintBaselineIndex].mstrLocalPath;
                 }
                 else
                 {
                     mobjAnalysis.BaselineDataset = null;
                 }
-                mobjAnalysis.FileNames              = marrFileNames;
-
-                //TODO: Change the Files in the analysis object to a strong typed list.  
-                //  See if serialization of the files object will affect how data is serialized and deserialized.
-
-
-                ArrayList list = new ArrayList();
-                foreach (clsDatasetInfo info in marrDatasetInfo)
-                {
-                    list.Add(info);
-                }
-
-                mobjAnalysis.Files = list;               
+                       
+        
                 string outputPath = mctl_selectOutputNamePage.ProjectOutputFileName;
                 string logPath    = Path.Combine(Path.GetDirectoryName(outputPath), Path.GetFileNameWithoutExtension(outputPath) + ".log");
                 AnalysisLogWriter.WriteHeader(logPath, "MultiAlign Analysis " + Path.GetFileNameWithoutExtension(outputPath) + " " + DateTime.Now);
@@ -1234,8 +1223,7 @@ namespace MultiAlignWin
             int numFiles = sourceLocations.Length;
             string destination;
 
-            marr_tempCopiedFiles = new string[sourceLocations.Length];
-
+            
             /// 
             /// Copy the files to local disk.
             /// 
@@ -1260,8 +1248,7 @@ namespace MultiAlignWin
                         System.IO.File.Copy(sourcePathAndFileName, destination, true);
                         /// 
                         /// A thread safe way to atomically increment the counter of the number of files copied
-                        ///              
-                        marr_tempCopiedFiles[i] = destination;
+                        ///                                      
                         mint_numCopied++;
                     }
                     catch (Exception ex)
@@ -1274,8 +1261,7 @@ namespace MultiAlignWin
                     /// 
                     /// A thread safe way to atomically increment the counter of the number of files copied
                     ///              
-                    mint_numCopied++;
-                    marr_tempCopiedFiles[i] = destination;
+                    mint_numCopied++;                    
                 }
                 mint_numReviewedForCopy = i;
             }
@@ -1308,8 +1294,7 @@ namespace MultiAlignWin
                 mint_numCopied          = 0;
                 mint_numReviewedForCopy = 0;
                 mbool_finishedCopying   = false;
-                mbool_copyingFiles      = true;
-                marr_tempCopiedFiles    = new string[sourceLocations.Length];
+                mbool_copyingFiles      = true;                
                 int total               = sourceLocations.Length;
 
 
@@ -1372,9 +1357,7 @@ namespace MultiAlignWin
             /// If we copied enough of the files.
             /// 
 			if (mint_numCopied == sourceLocations.Length)
-			{
-                marrFileNames = new string[mint_numCopied];
-                marr_tempCopiedFiles.CopyTo(marrFileNames, 0);				
+			{                                
                 return true;
 			}
 			return false;
@@ -1391,7 +1374,7 @@ namespace MultiAlignWin
 				string[] fileAliases = new string[marrDatasetInfo.Count] ;
 				for (int i = 0 ; i < marrDatasetInfo.Count ; i++)
 				{
-					fileAliases[i] = ((MultiAlignEngine.clsDatasetInfo)marrDatasetInfo[i]).mstrAlias ;
+                    fileAliases[i] = marrDatasetInfo[i].mstrAlias;
 				}
 				return fileAliases ;
 			}
@@ -1406,7 +1389,7 @@ namespace MultiAlignWin
 				string[] datasetNames = new string[marrDatasetInfo.Count] ;
 				for (int i = 0 ; i < marrDatasetInfo.Count ; i++)
 				{
-					datasetNames[i] = ((MultiAlignEngine.clsDatasetInfo)marrDatasetInfo[i]).mstrDatasetName ;
+					datasetNames[i] = marrDatasetInfo[i].DatasetName ;
 				}
 				return datasetNames ;
 			}
@@ -1420,12 +1403,12 @@ namespace MultiAlignWin
 				string[] fileLocations = new string[marrDatasetInfo.Count] ;
 				for (int i = 0 ; i < marrDatasetInfo.Count ; i++)
 				{
-					fileLocations[i] = ((MultiAlignEngine.clsDatasetInfo)marrDatasetInfo[i]).mstrLocalPath ;
+					fileLocations[i] = marrDatasetInfo[i].mstrLocalPath ;
 				}
 				return fileLocations ;
 			}
 		}
-		public clsMultiAlignAnalysis MultiAlignAnalysis
+		public MultiAlignAnalysis MultiAlignAnalysis
 		{
 			get
 			{

@@ -82,7 +82,7 @@ namespace MultiAlignWin.IO
             mlist_clusterFilters.Clear();
         }
         public void WriteAnalysis(  string dbPath, 
-                                    clsMultiAlignAnalysis analysis,
+                                    MultiAlignAnalysis analysis,
                                     List<IFilter<clsUMC>> umcFilters, 
                                     List<IFilter<clsCluster>> clusterFilters)
         {

@@ -81,13 +81,6 @@ namespace MultiAlignWin.Properties {
             }
         }
         
-        internal static System.Drawing.Bitmap bigImage {
-            get {
-                object obj = ResourceManager.GetObject("bigImage", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
         internal static System.Drawing.Bitmap clusteringGlyph {
             get {
                 object obj = ResourceManager.GetObject("clusteringGlyph", resourceCulture);
@@ -151,24 +144,10 @@ namespace MultiAlignWin.Properties {
             }
         }
         
-        internal static System.Drawing.Bitmap malign {
-            get {
-                object obj = ResourceManager.GetObject("malign", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
         internal static System.Drawing.Icon MultiAlign {
             get {
                 object obj = ResourceManager.GetObject("MultiAlign", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap MultiAlignLogo {
-            get {
-                object obj = ResourceManager.GetObject("MultiAlignLogo", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
             }
         }
         

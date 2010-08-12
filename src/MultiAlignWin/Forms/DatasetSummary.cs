@@ -9,6 +9,7 @@ using MultiAlignEngine;
 using MultiAlignEngine.Alignment;
 using MultiAlignEngine.Clustering;
 
+using PNNLProteomics.Data;
 using PNNLControls;
 
 namespace MultiAlignWin
@@ -16,7 +17,7 @@ namespace MultiAlignWin
 	/// <summary>
 	/// Summary description for frmDatasetSummary.
 	/// </summary>
-	public class frmDatasetSummary : PNNLControls.frmDialogBase
+	public class DatasetSummary : PNNLControls.frmDialogBase
 	{
 		private System.Windows.Forms.MainMenu mainMenu1;
 		private System.Windows.Forms.MenuItem menuItem1;
@@ -24,7 +25,7 @@ namespace MultiAlignWin
         private IContainer components;		
 		private MultiAlignWin.ctlSummaryPages ctlSummaryPages;
 
-        private clsDatasetInfo      mobj_dataInfo;
+        private DatasetInformation mobj_dataInfo;
         private clsAlignmentOptions mobj_alignment;
         private clsClusterOptions   mobj_cluster;
 
@@ -34,7 +35,7 @@ namespace MultiAlignWin
         /// <param name="data"></param>
         /// <param name="alignment"></param>
         /// <param name="cluster"></param>
-		public frmDatasetSummary(clsDatasetInfo data,
+        public DatasetSummary(DatasetInformation data,
                                  clsAlignmentOptions alignment,
                                  clsClusterOptions cluster)
 		{
@@ -95,7 +96,7 @@ namespace MultiAlignWin
 		private void InitializeComponent()
 		{
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmDatasetSummary));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DatasetSummary));
             this.mainMenu1 = new System.Windows.Forms.MainMenu(this.components);
             this.menuItem1 = new System.Windows.Forms.MenuItem();
             this.mnuFileSave = new System.Windows.Forms.MenuItem();

@@ -186,31 +186,25 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Drawing\controlHistogram.cs">
+    <Compile Include="Forms\Charts\controlHistogram.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Drawing\controlHistogram.Designer.cs">
+    <Compile Include="Forms\Charts\controlHistogram.Designer.cs">
       <DependentUpon>controlHistogram.cs</DependentUpon>
     </Compile>
     <Compile Include="Drawing\frmIntensityDiff.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Drawing\Heatmap.cs">
+    <Compile Include="Forms\Charts\Heatmap.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Drawing\Heatmap.Designer.cs">
+    <Compile Include="Forms\Charts\Heatmap.Designer.cs">
       <DependentUpon>Heatmap.cs</DependentUpon>
     </Compile>
-    <Compile Include="Drawing\PeptideProteinFinder.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Drawing\PeptideProteinFinder.Designer.cs">
-      <DependentUpon>PeptideProteinFinder.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Cluster\ctlClusterChart.cs">
+    <Compile Include="Forms\Charts\ctlClusterChart.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\Cluster\ctlClusterGrid.cs">
+    <Compile Include="Forms\ctlClusterGrid.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Forms\controlClusterInformation.cs">
@@ -237,19 +231,19 @@
     <Compile Include="Forms\DMSDatasetSearchOptionsForm.Designer.cs">
       <DependentUpon>DMSDatasetSearchOptionsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Factors\frmDataFactorAssignment.cs">
-      <SubType>Form</SubType>
+    <Compile Include="Forms\FactorFilterControl.cs">
+      <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\Factors\frmDataFactorListView.cs">
-      <SubType>Form</SubType>
+    <Compile Include="Forms\FactorFilterControl.Designer.cs">
+      <DependentUpon>FactorFilterControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Factors\frmDataFactorSelection.cs">
-      <SubType>Form</SubType>
+    <Compile Include="Forms\FactorValueFilterControl.cs">
+      <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\Factors\frmDefineFactors.cs">
-      <SubType>Form</SubType>
+    <Compile Include="Forms\FactorValueFilterControl.Designer.cs">
+      <DependentUpon>FactorValueFilterControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Factors\frmLabelGroupEdit.cs">
+    <Compile Include="Forms\frmDefineFactors.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\DataFilters.cs">
@@ -263,9 +257,6 @@
     </Compile>
     <Compile Include="Forms\formUMCData.Designer.cs">
       <DependentUpon>formUMCData.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\frmLabelGroupEdit.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\Parameters\frmPeakMatchingParameters.cs">
       <SubType>Form</SubType>
@@ -282,7 +273,7 @@
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Drawing\ctlAlignmentHeatMap.cs">
+    <Compile Include="Forms\Charts\ctlAlignmentHeatMap.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Forms\frmAlign.cs">
@@ -308,13 +299,13 @@
     <Compile Include="Forms\frmTracWebBugReport.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Drawing\frmScatterPlot.cs">
+    <Compile Include="Forms\Charts\frmScatterPlot.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\frmAbout.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\frmDataView.cs">
+    <Compile Include="Forms\DataView.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\frmMdiMain.cs">
@@ -326,10 +317,10 @@
     <Compile Include="Forms\frmStatus.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Summary\ctlSummaryPages.cs">
+    <Compile Include="Forms\ctlSummaryPages.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\Summary\frmDatasetSummary.cs">
+    <Compile Include="Forms\DatasetSummary.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\TableWriterColumnOptionsForm.cs">
@@ -402,7 +393,7 @@
     <Compile Include="Forms\frmAnalysisWizard.cs">
       <SubType>Form</SubType>
     </Compile>
-    <EmbeddedResource Include="Drawing\controlHistogram.resx">
+    <EmbeddedResource Include="Forms\Charts\controlHistogram.resx">
       <SubType>Designer</SubType>
       <DependentUpon>controlHistogram.cs</DependentUpon>
     </EmbeddedResource>
@@ -410,15 +401,11 @@
       <DependentUpon>frmIntensityDiff.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Drawing\PeptideProteinFinder.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>PeptideProteinFinder.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Cluster\ctlClusterChart.resx">
+    <EmbeddedResource Include="Forms\Charts\ctlClusterChart.resx">
       <DependentUpon>ctlClusterChart.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Cluster\ctlClusterGrid.resx">
+    <EmbeddedResource Include="Forms\ctlClusterGrid.resx">
       <DependentUpon>ctlClusterGrid.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -438,24 +425,16 @@
       <SubType>Designer</SubType>
       <DependentUpon>DMSDatasetSearchOptionsForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Factors\frmDataFactorAssignment.resx">
-      <DependentUpon>frmDataFactorAssignment.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\FactorFilterControl.resx">
       <SubType>Designer</SubType>
+      <DependentUpon>FactorFilterControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Factors\frmDataFactorListView.resx">
-      <DependentUpon>frmDataFactorListView.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\FactorValueFilterControl.resx">
       <SubType>Designer</SubType>
+      <DependentUpon>FactorValueFilterControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Factors\frmDataFactorSelection.resx">
-      <DependentUpon>frmDataFactorSelection.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Factors\frmDefineFactors.resx">
+    <EmbeddedResource Include="Forms\frmDefineFactors.resx">
       <DependentUpon>frmDefineFactors.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Factors\frmLabelGroupEdit.resx">
-      <DependentUpon>frmLabelGroupEdit.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\DataFilters.resx">
@@ -466,12 +445,8 @@
       <SubType>Designer</SubType>
       <DependentUpon>formUMCData.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\frmDataView.resx">
-      <DependentUpon>frmDataView.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\frmLabelGroupEdit.resx">
-      <DependentUpon>frmLabelGroupEdit.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\DataView.resx">
+      <DependentUpon>DataView.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmMdiMain.resx">
@@ -514,7 +489,7 @@
       <DependentUpon>frmTracWebBugReport.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Drawing\frmScatterPlot.resx">
+    <EmbeddedResource Include="Forms\Charts\frmScatterPlot.resx">
       <DependentUpon>frmScatterPlot.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -526,12 +501,12 @@
       <DependentUpon>frmStatus.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Summary\ctlSummaryPages.resx">
+    <EmbeddedResource Include="Forms\ctlSummaryPages.resx">
       <DependentUpon>ctlSummaryPages.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Summary\frmDatasetSummary.resx">
-      <DependentUpon>frmDatasetSummary.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\DatasetSummary.resx">
+      <DependentUpon>DatasetSummary.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmDBName.resx">
@@ -600,18 +575,18 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Drawing\Bitmaps\malign1.jpg" />
-    <Content Include="Drawing\Bitmaps\App.ico" />
-    <Content Include="Drawing\Bitmaps\hat.gif" />
-    <Content Include="Drawing\Bitmaps\malign.ico" />
-    <Content Include="Drawing\Bitmaps\malign.jpg" />
-    <Content Include="Drawing\Bitmaps\malign16.ico" />
-    <Content Include="Drawing\Bitmaps\malign32.ico" />
-    <Content Include="Drawing\Bitmaps\MultiAlign.ico" />
-    <Content Include="Drawing\Bitmaps\MultiAlignLogo.jpg" />
-    <Content Include="Drawing\Bitmaps\multialignT.ico" />
-    <Content Include="Drawing\Bitmaps\perform.png" />
-    <Content Include="Drawing\Bitmaps\wizard.gif" />
+    <None Include="Bitmaps\malign1.jpg" />
+    <Content Include="Bitmaps\App.ico" />
+    <Content Include="Bitmaps\hat.gif" />
+    <Content Include="Bitmaps\malign.ico" />
+    <Content Include="Bitmaps\malign.jpg" />
+    <Content Include="Bitmaps\malign16.ico" />
+    <Content Include="Bitmaps\malign32.ico" />
+    <Content Include="Bitmaps\MultiAlign.ico" />
+    <Content Include="Bitmaps\MultiAlignLogo.jpg" />
+    <Content Include="Bitmaps\multialignT.ico" />
+    <Content Include="Bitmaps\perform.png" />
+    <Content Include="Bitmaps\wizard.gif" />
     <Content Include="MultiAlign.ico" />
     <None Include="Resources\smart.png" />
     <None Include="Resources\scoring.png" />
@@ -629,6 +604,7 @@
     <None Include="Resources\ExampleSidebar.bmp" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Forms\Summary\" />
     <Folder Include="Update\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

@@ -1,5 +1,6 @@
 using System;
 using System.Data ;
+using System.Collections.Generic;
 
 namespace PNNLProteomics.Data.Analysis
 {
@@ -157,7 +158,7 @@ namespace PNNLProteomics.Data.Analysis
 			}
 		}
 
-		private void SetData(int num_groups, int []group_indices, clsMultiAlignAnalysis analysis)
+		private void SetData(int num_groups, int []group_indices, MultiAlignAnalysis analysis)
 		{
 			int num_pts = analysis.UMCData.mobjClusterData.NumClusters ;
 			int numDatasets = analysis.UMCData.NumDatasets ; 
@@ -218,7 +219,7 @@ namespace PNNLProteomics.Data.Analysis
 
 		}
 
-		private void GetData(int num_groups, int []group_indices, clsMultiAlignAnalysis analysis)
+		private void GetData(int num_groups, int []group_indices, MultiAlignAnalysis analysis)
 		{
 			MultiAlignEngine.Features.clsClusterData clusterData = analysis.UMCData.mobjClusterData ; 
 			int num_pts = clusterData.NumClusters ; 
@@ -245,16 +246,15 @@ namespace PNNLProteomics.Data.Analysis
 
 		}
 
-		int GetGroups(ref int []groupIndices, clsMultiAlignAnalysis analysis)
+		int GetGroups(ref int []groupIndices, MultiAlignAnalysis analysis)
 		{
-			groupIndices = new int [analysis.FileNames.Length] ; // should be using analysis.Files.Length
+			groupIndices = new int [analysis.Datasets.Count] ; // should be using analysis.Files.Length
 
 			// check if factors have been defined. 
-			MultiAlignEngine.clsDatasetInfo [] arrDatasetInfo = (MultiAlignEngine.clsDatasetInfo []) 
-				analysis.Files.ToArray(typeof(MultiAlignEngine.clsDatasetInfo));
-			if (arrDatasetInfo == null || MultiAlignEngine.clsDatasetInfo.mintNumFactorsSpecified == 0)
+            List<DatasetInformation> arrDatasetInfo = analysis.Datasets; //.ToArray(typeof(DatasetInformation));
+            if (arrDatasetInfo == null || DatasetInformation.mintNumFactorsSpecified == 0)
 			{
-				for (int fileNum = 0 ; fileNum < analysis.FileNames.Length ; fileNum++)
+				for (int fileNum = 0 ; fileNum < analysis.Datasets.Count ; fileNum++)
 					groupIndices[fileNum] = 0 ; 
 				return 1 ; 
 			}
@@ -265,9 +265,9 @@ namespace PNNLProteomics.Data.Analysis
 				int numGroups = -1 ; 
 				bool nullFactorValueSeen = false ; 
 				int nullGroupNum = -1 ; 
-				for (int fileNum = 0 ; fileNum < arrDatasetInfo.Length ; fileNum++)
+				for (int fileNum = 0 ; fileNum < arrDatasetInfo.Count ; fileNum++)
 				{
-					MultiAlignEngine.clsDatasetInfo datasetInfo = arrDatasetInfo[fileNum] ; 
+                    DatasetInformation datasetInfo = arrDatasetInfo[fileNum]; 
 					if (datasetInfo.AssignedFactorValues == null || datasetInfo.AssignedFactorValues[0] == null || (string)datasetInfo.AssignedFactorValues[0] == "")
 					{
 						if (!nullFactorValueSeen)
@@ -295,7 +295,7 @@ namespace PNNLProteomics.Data.Analysis
 			}
 		}
 
-		public void NormalizeData(clsMultiAlignAnalysis analysis)
+		public void NormalizeData(MultiAlignAnalysis analysis)
 		{
 			int [] groupIndices = new int[1] ; 
 			int numGroups = GetGroups(ref groupIndices, analysis) ; 

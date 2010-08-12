@@ -35,6 +35,7 @@ namespace MultiAlignWin.Forms
             this.m_okButton = new System.Windows.Forms.Button();
             this.m_cancelButton = new System.Windows.Forms.Button();
             this.m_toolGroupbox = new System.Windows.Forms.GroupBox();
+            this.m_decon2lsVsCheckbox = new System.Windows.Forms.CheckBox();
             this.m_ltqftpekCheckBox = new System.Windows.Forms.CheckBox();
             this.m_decon2lsAgilentCheckBox = new System.Windows.Forms.CheckBox();
             this.label6 = new System.Windows.Forms.Label();
@@ -45,17 +46,18 @@ namespace MultiAlignWin.Forms
             this.m_datetime = new System.Windows.Forms.DateTimePicker();
             this.label4 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
-            this.m_decon2lsVsCheckbox = new System.Windows.Forms.CheckBox();
             this.m_fileExtensionTextbox = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.m_parameterFileTextbox = new System.Windows.Forms.TextBox();
             this.m_toolGroupbox.SuspendLayout();
             this.SuspendLayout();
             // 
             // m_datasetNameTextbox
             // 
-            this.m_datasetNameTextbox.Location = new System.Drawing.Point(105, 19);
+            this.m_datasetNameTextbox.Location = new System.Drawing.Point(167, 19);
             this.m_datasetNameTextbox.Name = "m_datasetNameTextbox";
-            this.m_datasetNameTextbox.Size = new System.Drawing.Size(289, 20);
+            this.m_datasetNameTextbox.Size = new System.Drawing.Size(277, 20);
             this.m_datasetNameTextbox.TabIndex = 0;
             // 
             // label1
@@ -70,24 +72,24 @@ namespace MultiAlignWin.Forms
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 76);
+            this.label2.Location = new System.Drawing.Point(12, 104);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(87, 13);
+            this.label2.Size = new System.Drawing.Size(130, 13);
             this.label2.TabIndex = 3;
-            this.label2.Text = "Instrument Name";
+            this.label2.Text = "Instrument Name contains";
             // 
             // m_instrumentNameTextbox
             // 
-            this.m_instrumentNameTextbox.Location = new System.Drawing.Point(106, 69);
+            this.m_instrumentNameTextbox.Location = new System.Drawing.Point(167, 97);
             this.m_instrumentNameTextbox.Name = "m_instrumentNameTextbox";
-            this.m_instrumentNameTextbox.Size = new System.Drawing.Size(288, 20);
+            this.m_instrumentNameTextbox.Size = new System.Drawing.Size(277, 20);
             this.m_instrumentNameTextbox.TabIndex = 2;
             // 
             // m_okButton
             // 
             this.m_okButton.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.m_okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.m_okButton.Location = new System.Drawing.Point(226, 382);
+            this.m_okButton.Location = new System.Drawing.Point(289, 360);
             this.m_okButton.Name = "m_okButton";
             this.m_okButton.Size = new System.Drawing.Size(74, 32);
             this.m_okButton.TabIndex = 4;
@@ -99,7 +101,7 @@ namespace MultiAlignWin.Forms
             // 
             this.m_cancelButton.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.m_cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.m_cancelButton.Location = new System.Drawing.Point(306, 382);
+            this.m_cancelButton.Location = new System.Drawing.Point(369, 360);
             this.m_cancelButton.Name = "m_cancelButton";
             this.m_cancelButton.Size = new System.Drawing.Size(74, 32);
             this.m_cancelButton.TabIndex = 5;
@@ -109,7 +111,6 @@ namespace MultiAlignWin.Forms
             // 
             // m_toolGroupbox
             // 
-            this.m_toolGroupbox.Controls.Add(this.m_decon2lsVsCheckbox);
             this.m_toolGroupbox.Controls.Add(this.m_ltqftpekCheckBox);
             this.m_toolGroupbox.Controls.Add(this.m_decon2lsAgilentCheckBox);
             this.m_toolGroupbox.Controls.Add(this.label6);
@@ -117,17 +118,27 @@ namespace MultiAlignWin.Forms
             this.m_toolGroupbox.Controls.Add(this.m_lcmsFeatureFinderCheckBox);
             this.m_toolGroupbox.Controls.Add(this.m_icr2lsCheckBox);
             this.m_toolGroupbox.Controls.Add(this.m_decon2lsCheckBox);
-            this.m_toolGroupbox.Location = new System.Drawing.Point(15, 131);
+            this.m_toolGroupbox.Controls.Add(this.m_decon2lsVsCheckbox);
+            this.m_toolGroupbox.Location = new System.Drawing.Point(15, 149);
             this.m_toolGroupbox.Name = "m_toolGroupbox";
-            this.m_toolGroupbox.Size = new System.Drawing.Size(378, 242);
+            this.m_toolGroupbox.Size = new System.Drawing.Size(429, 205);
             this.m_toolGroupbox.TabIndex = 6;
             this.m_toolGroupbox.TabStop = false;
             this.m_toolGroupbox.Text = "Tools";
             // 
+            // m_decon2lsVsCheckbox
+            // 
+            this.m_decon2lsVsCheckbox.Location = new System.Drawing.Point(16, 70);
+            this.m_decon2lsVsCheckbox.Name = "m_decon2lsVsCheckbox";
+            this.m_decon2lsVsCheckbox.Size = new System.Drawing.Size(93, 22);
+            this.m_decon2lsVsCheckbox.TabIndex = 10;
+            this.m_decon2lsVsCheckbox.Text = "Decon2ls_v2";
+            this.m_decon2lsVsCheckbox.UseVisualStyleBackColor = true;
+            // 
             // m_ltqftpekCheckBox
             // 
             this.m_ltqftpekCheckBox.AutoSize = true;
-            this.m_ltqftpekCheckBox.Location = new System.Drawing.Point(175, 50);
+            this.m_ltqftpekCheckBox.Location = new System.Drawing.Point(295, 50);
             this.m_ltqftpekCheckBox.Name = "m_ltqftpekCheckBox";
             this.m_ltqftpekCheckBox.Size = new System.Drawing.Size(85, 17);
             this.m_ltqftpekCheckBox.TabIndex = 9;
@@ -137,7 +148,7 @@ namespace MultiAlignWin.Forms
             // m_decon2lsAgilentCheckBox
             // 
             this.m_decon2lsAgilentCheckBox.AutoSize = true;
-            this.m_decon2lsAgilentCheckBox.Location = new System.Drawing.Point(16, 73);
+            this.m_decon2lsAgilentCheckBox.Location = new System.Drawing.Point(115, 50);
             this.m_decon2lsAgilentCheckBox.Name = "m_decon2lsAgilentCheckBox";
             this.m_decon2lsAgilentCheckBox.Size = new System.Drawing.Size(103, 17);
             this.m_decon2lsAgilentCheckBox.TabIndex = 7;
@@ -148,7 +159,7 @@ namespace MultiAlignWin.Forms
             // 
             this.label6.AutoSize = true;
             this.label6.ForeColor = System.Drawing.Color.Blue;
-            this.label6.Location = new System.Drawing.Point(13, 145);
+            this.label6.Location = new System.Drawing.Point(13, 114);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(121, 13);
             this.label6.TabIndex = 4;
@@ -166,9 +177,9 @@ namespace MultiAlignWin.Forms
             // 
             // m_lcmsFeatureFinderCheckBox
             // 
-            this.m_lcmsFeatureFinderCheckBox.Location = new System.Drawing.Point(16, 161);
+            this.m_lcmsFeatureFinderCheckBox.Location = new System.Drawing.Point(16, 130);
             this.m_lcmsFeatureFinderCheckBox.Name = "m_lcmsFeatureFinderCheckBox";
-            this.m_lcmsFeatureFinderCheckBox.Size = new System.Drawing.Size(216, 40);
+            this.m_lcmsFeatureFinderCheckBox.Size = new System.Drawing.Size(216, 24);
             this.m_lcmsFeatureFinderCheckBox.TabIndex = 2;
             this.m_lcmsFeatureFinderCheckBox.Text = "LCMS Feature Finder ";
             this.m_lcmsFeatureFinderCheckBox.UseVisualStyleBackColor = true;
@@ -176,7 +187,7 @@ namespace MultiAlignWin.Forms
             // m_icr2lsCheckBox
             // 
             this.m_icr2lsCheckBox.AutoSize = true;
-            this.m_icr2lsCheckBox.Location = new System.Drawing.Point(175, 73);
+            this.m_icr2lsCheckBox.Location = new System.Drawing.Point(224, 50);
             this.m_icr2lsCheckBox.Name = "m_icr2lsCheckBox";
             this.m_icr2lsCheckBox.Size = new System.Drawing.Size(57, 17);
             this.m_icr2lsCheckBox.TabIndex = 1;
@@ -195,26 +206,27 @@ namespace MultiAlignWin.Forms
             // 
             // m_datetime
             // 
-            this.m_datetime.CustomFormat = "MM, dd, yyyy     hh:mm:ss";
-            this.m_datetime.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.m_datetime.Location = new System.Drawing.Point(105, 95);
+            this.m_datetime.CustomFormat = "MM, dd, yyyy ";
+            this.m_datetime.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.m_datetime.Location = new System.Drawing.Point(167, 123);
             this.m_datetime.Name = "m_datetime";
-            this.m_datetime.Size = new System.Drawing.Size(289, 20);
+            this.m_datetime.Size = new System.Drawing.Size(277, 20);
             this.m_datetime.TabIndex = 9;
+            this.m_datetime.Value = new System.DateTime(2010, 8, 11, 0, 0, 0, 0);
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(13, 102);
+            this.label4.Location = new System.Drawing.Point(13, 130);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(79, 13);
+            this.label4.Size = new System.Drawing.Size(74, 13);
             this.label4.TabIndex = 10;
-            this.label4.Text = "Acquired Since";
+            this.label4.Text = "Acquired After";
             // 
             // button1
             // 
             this.button1.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.button1.Location = new System.Drawing.Point(21, 382);
+            this.button1.Location = new System.Drawing.Point(50, 360);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(74, 32);
             this.button1.TabIndex = 11;
@@ -222,20 +234,11 @@ namespace MultiAlignWin.Forms
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
-            // m_decon2lsVsCheckbox
-            // 
-            this.m_decon2lsVsCheckbox.Location = new System.Drawing.Point(16, 96);
-            this.m_decon2lsVsCheckbox.Name = "m_decon2lsVsCheckbox";
-            this.m_decon2lsVsCheckbox.Size = new System.Drawing.Size(216, 40);
-            this.m_decon2lsVsCheckbox.TabIndex = 10;
-            this.m_decon2lsVsCheckbox.Text = "Decon2ls_v2";
-            this.m_decon2lsVsCheckbox.UseVisualStyleBackColor = true;
-            // 
             // m_fileExtensionTextbox
             // 
-            this.m_fileExtensionTextbox.Location = new System.Drawing.Point(106, 43);
+            this.m_fileExtensionTextbox.Location = new System.Drawing.Point(167, 43);
             this.m_fileExtensionTextbox.Name = "m_fileExtensionTextbox";
-            this.m_fileExtensionTextbox.Size = new System.Drawing.Size(289, 20);
+            this.m_fileExtensionTextbox.Size = new System.Drawing.Size(278, 20);
             this.m_fileExtensionTextbox.TabIndex = 12;
             // 
             // label3
@@ -247,12 +250,30 @@ namespace MultiAlignWin.Forms
             this.label3.TabIndex = 13;
             this.label3.Text = "File Extension";
             // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(13, 76);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(148, 13);
+            this.label7.TabIndex = 15;
+            this.label7.Text = "Parameter File Name contains";
+            // 
+            // m_parameterFileTextbox
+            // 
+            this.m_parameterFileTextbox.Location = new System.Drawing.Point(167, 69);
+            this.m_parameterFileTextbox.Name = "m_parameterFileTextbox";
+            this.m_parameterFileTextbox.Size = new System.Drawing.Size(277, 20);
+            this.m_parameterFileTextbox.TabIndex = 14;
+            // 
             // DMSDatasetSearchOptionsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(399, 426);
+            this.ClientSize = new System.Drawing.Size(457, 404);
+            this.Controls.Add(this.label7);
+            this.Controls.Add(this.m_parameterFileTextbox);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.m_fileExtensionTextbox);
             this.Controls.Add(this.button1);
@@ -297,5 +318,7 @@ namespace MultiAlignWin.Forms
         private System.Windows.Forms.CheckBox m_decon2lsVsCheckbox;
         private System.Windows.Forms.TextBox m_fileExtensionTextbox;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.TextBox m_parameterFileTextbox;
     }
 }

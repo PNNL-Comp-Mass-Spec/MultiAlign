@@ -380,7 +380,7 @@ namespace MultiAlignWin
         /// Captures when a data set is loaded.
         /// </summary>
         /// <param name="dataset">Dataset to load.</param>
-        void LoadedDataset(clsDatasetInfo dataset)
+        void LoadedDataset(DatasetInformation dataset)
         {
             if (InvokeRequired == true)
             {
@@ -537,14 +537,14 @@ namespace MultiAlignWin
         /// Adds the dataset to the list view.
         /// </summary>
         /// <param name="datasetInfo"></param>
-        private void AddDatasetToListView(MultiAlignEngine.clsDatasetInfo datasetInfo)
+        private void AddDatasetToListView(DatasetInformation datasetInfo)
         {
             mlistView_datasets.BeginUpdate();
             
             ListViewItem dataItem = new ListViewItem(datasetInfo.mstrDatasetId);
             dataItem.UseItemStyleForSubItems = false;
             dataItem.SubItems.Add(datasetInfo.mstrAnalysisJobId);
-            dataItem.SubItems.Add(datasetInfo.mstrDatasetName);            
+            dataItem.SubItems.Add(datasetInfo.DatasetName);            
             dataItem.SubItems.Add(datasetInfo.mstrAlias);
 
             if (datasetInfo.mintBlockID == 0)
@@ -574,7 +574,7 @@ namespace MultiAlignWin
             /// the list control is stupid, so we have to make sure that 
             /// it doesnt eff up our count for a new item.
             /// 
-            dataItem.Checked   = datasetInfo.selected;
+            dataItem.Checked = datasetInfo.Selected;
 
             if (dataItem.Checked == true)
                 dataItem.BackColor = Color.LightGray;
@@ -589,7 +589,7 @@ namespace MultiAlignWin
             dataItem.SubItems.Add(datasetInfo.mstrInstrment);
 
 
-            dataItem.Name = datasetInfo.mstrDatasetName; 
+            dataItem.Name = datasetInfo.DatasetName; 
             dataItem.Tag  = datasetInfo;
 
             if (mlistView_datasets.Items.ContainsKey(dataItem.Name) == true)
@@ -657,12 +657,12 @@ namespace MultiAlignWin
         /// <summary>
         /// Updates what items are checked in the internal array.
         /// </summary>
-        private List<clsDatasetInfo> SelectCheckedItems()
+        private List<DatasetInformation> SelectCheckedItems()
         {
-            List<clsDatasetInfo> list = new List<clsDatasetInfo>();
+            List<DatasetInformation> list = new List<DatasetInformation>();
             foreach (ListViewItem item in mlistView_datasets.CheckedItems)
             {
-                clsDatasetInfo info = item.Tag as clsDatasetInfo;
+                DatasetInformation info = item.Tag as DatasetInformation;
                 if (info != null)
                 {
                     list.Add(info);
@@ -963,7 +963,7 @@ namespace MultiAlignWin
         /// <summary>
         /// Gets a list of available datasets.
         /// </summary>
-        public List<clsDatasetInfo> Datasets
+        public List<DatasetInformation> Datasets
         {
             get
             {

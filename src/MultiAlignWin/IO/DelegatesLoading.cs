@@ -16,6 +16,8 @@
  *////////////////////////////////////////////////////////////////////////
 using MultiAlignEngine;
 
+using PNNLProteomics.Data;
+
 namespace MultiAlignWin.IO
 {
     #region Delegate Definitions
@@ -23,7 +25,7 @@ namespace MultiAlignWin.IO
     /// Delegate method definition for adding a dataset to the listview controls and the internal array lists.
     /// </summary>
     /// <param name="dataset"></param>
-    public delegate void DelegateDataSetLoaded(clsDatasetInfo dataset);
+    public delegate void DelegateDataSetLoaded(DatasetInformation dataset);
     /// <summary>
     /// Delegate method for when a data set is loaded, to update the progress of the loading progress bar.
     /// </summary>

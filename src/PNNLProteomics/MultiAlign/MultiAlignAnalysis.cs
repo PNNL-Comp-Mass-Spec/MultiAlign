@@ -38,7 +38,7 @@ namespace PNNLProteomics.Data.Analysis
 	/// whoever passed in the events for monitoring through the IMessageClass
 	/// </summary>
 	[Serializable()]
-	public class clsMultiAlignAnalysis : IMessageClass, IDisposable
+	public class MultiAlignAnalysis : IMessageClass, IDisposable
     {
         /// <summary>
         /// Constant of the first level
@@ -139,9 +139,9 @@ namespace PNNLProteomics.Data.Analysis
         /// </summary>
         private bool mbool_calculateSMARTScores;
         /// <summary>
-		/// Array of MultiAlignEngine.clsDatasetInfo for datasets used in analysis.
+		/// Datasets used in analysis.
 		/// </summary>
-		private ArrayList marrFiles ; 
+		private List<DatasetInformation> m_datasetInformation; 
 		/// <summary>
 		/// Array of MultiAlignEngine.Alignment.clsAlignmentOptions for datasets used in analysis.
 		/// </summary>
@@ -149,11 +149,7 @@ namespace PNNLProteomics.Data.Analysis
 		/// <summary>
 		/// Array of MultiAlignEngine.Alignment.clsAlignmentFunction for datasets aligned in the analysis.
 		/// </summary>
-		private List<clsAlignmentFunction> marrDatasetAlignmentFunctions ; 		
-        /// <summary>
-        /// This should be removed in the long run and replaced with the ArrayList of clsDatasetInfo.  
-        /// </summary>
-        private List<string> marrFileNames;
+		private List<clsAlignmentFunction> marrDatasetAlignmentFunctions ; 		        
         /// <summary>
         /// String that holds the name of the baseline dataset.
         /// </summary>
@@ -251,8 +247,6 @@ namespace PNNLProteomics.Data.Analysis
         private Thread           mthread_currentStatus; 
 		[field: NonSerialized] 
         private classTreeNode    mobj_treeRoot;
-        [field: NonSerialized] 
-        private classFactorTree  mobj_factorTree = new classFactorTree();
         /// <summary>
         /// Flag indicating whether an analysis is currently running.
         /// </summary>
@@ -275,7 +269,7 @@ namespace PNNLProteomics.Data.Analysis
         /// <param name="evntPercentComplete"></param>
         /// <param name="evntStatusMessage"></param>
         /// <param name="evntTitleMessage"></param>
-        public clsMultiAlignAnalysis(DelegateSetPercentComplete evntPercentComplete, DelegateSetStatusMessage evntStatusMessage, DelegateSetStatusMessage evntTitleMessage)
+        public MultiAlignAnalysis(DelegateSetPercentComplete evntPercentComplete, DelegateSetStatusMessage evntStatusMessage, DelegateSetStatusMessage evntTitleMessage)
 		{			
 			PercentComplete = evntPercentComplete ; 
 			StatusMessage   = evntStatusMessage ; 
@@ -306,7 +300,7 @@ namespace PNNLProteomics.Data.Analysis
             /// 
             mobj_smartOptions               = new classSMARTOptions();
             mobj_smartResults               = new classSMARTResults();
-
+            m_datasetInformation            = new List<DatasetInformation>();
             /// 
             /// This only matters if peptide peak matching was performed
             /// 
@@ -315,7 +309,7 @@ namespace PNNLProteomics.Data.Analysis
         #endregion
 
         #region Disposing/Abort/Destruction
-        ~clsMultiAlignAnalysis()
+        ~MultiAlignAnalysis()
 		{
 			if (mthread_currentStatus != null)
 			{
@@ -338,10 +332,8 @@ namespace PNNLProteomics.Data.Analysis
 				mthread_currentStatus = null ; 
 			}
 
-            marrDatasetAlignmentOptions.Clear();
-            marrFileNames.Clear();
-            marrFiles.Clear();
-            this.FactorTree.ClearFactors();
+            marrDatasetAlignmentOptions.Clear();            
+            m_datasetInformation.Clear();
             this.UMCData.Clear();
 
             
@@ -491,23 +483,23 @@ namespace PNNLProteomics.Data.Analysis
                 int highestChargeState = 0;
 				clsUMC[] loadedUMCs = null;
 
-				for (int fileNum = 0 ; fileNum < FileNames.Length ; fileNum++)
+				foreach(DatasetInformation dataset in Datasets)
 				{
-					bool preDefinedUMCs = false;
-					mobjUMCCreator.FileName = FileNames[fileNum] ;
+					bool preDefinedUMCs     = false;
+                    mobjUMCCreator.FileName = dataset.mstrLocalPath;
                     if (StatusMessage != null)
                     {
-                        StatusMessage(mint_statusLevel, "Loading " + FileNames[fileNum]);
+                        StatusMessage(mint_statusLevel, "Loading " + dataset.mstrLocalPath);
                     }
 
                     mint_statusLevel++;
-					string extension = Path.GetExtension(FileNames[fileNum]).ToUpper();
+                    string extension = Path.GetExtension(dataset.mstrLocalPath).ToUpper();
 
 					// If we are using a UMC or Feature file
 					if (extension == ".TXT")
 					{
 						// Grabs UMCs from UMC or Feature file
-						UmcReader umcReader = new UmcReader(FileNames[fileNum]);
+                        UmcReader umcReader = new UmcReader(dataset.mstrLocalPath);
 						loadedUMCs = umcReader.GetUmcList().ToArray();
 						preDefinedUMCs = true;
 
@@ -532,14 +524,14 @@ namespace PNNLProteomics.Data.Analysis
                         
                         if (UMCSLoadedForFile != null)
                         {
-                            UMCSLoadedForFile(FileNames[fileNum], loadedUMCs);
+                            UMCSLoadedForFile(dataset.mstrLocalPath, loadedUMCs);
                         }
 					}
 					
 					// SQLite DB
 					else if (extension == ".DB3" || extension == ".SQLITE")
 					{
-						NHibernateUtil.SetDbLocationForRead(FileNames[fileNum]);
+						NHibernateUtil.SetDbLocationForRead(dataset.mstrLocalPath);
 
 						try
 						{
@@ -587,7 +579,7 @@ namespace PNNLProteomics.Data.Analysis
 
 						if (IsotopePeaksLoadedForFile != null)
 						{
-							IsotopePeaksLoadedForFile(FileNames[fileNum], mobjUMCCreator.GetIsotopePeaks());
+							IsotopePeaksLoadedForFile(dataset.mstrLocalPath, mobjUMCCreator.GetIsotopePeaks());
 						}
 
 						/// 
@@ -630,12 +622,12 @@ namespace PNNLProteomics.Data.Analysis
                     /// Notify listeners that we have loaded UMCS's for this dataset.
                     /// 
 					if (UMCsCalculatedForFile != null)					
-						UMCsCalculatedForFile(FileNames[fileNum], loadedUMCs) ; 
+						UMCsCalculatedForFile(dataset.mstrLocalPath, loadedUMCs) ; 
 					
                     /// 
                     /// Set the UMC Object with more umcs
                     /// 
-					mobjUMCData.SetUMCS(FileNames[fileNum], ref loadedUMCs);                 
+					mobjUMCData.SetUMCS(dataset.mstrLocalPath, ref loadedUMCs);                 
                     mint_statusLevel--;
 				}
 
@@ -688,7 +680,7 @@ namespace PNNLProteomics.Data.Analysis
 		public  void  SetDefaultAlignmentOptions()
 		{
 			marrDatasetAlignmentOptions.Clear() ;                          
-			for (int fileNum = 0 ; fileNum < marrFileNames.Count ; fileNum++)
+			for (int fileNum = 0 ; fileNum < Datasets.Count ; fileNum++)
 			{
 				MultiAlignEngine.Alignment.clsAlignmentOptions alignmentOptions = mobjAlignmentOptions ; 
 				marrDatasetAlignmentOptions.Add(alignmentOptions) ;
@@ -743,7 +735,7 @@ namespace PNNLProteomics.Data.Analysis
             /// 
             /// Tell the listeners that we are aligning X to Y.
             /// 
-			string aligneeDataset = (string) marrFileNames[datasetIndex] ; 
+			string aligneeDataset = (string) Datasets[datasetIndex].mstrLocalPath; 
 			if (StatusMessage != null)
 			    StatusMessage(mint_statusLevel, "Aligning " + aligneeDataset + " to " + alignmentOptions.AlignmentBaselineName) ;
             mint_statusLevel++;
@@ -1136,7 +1128,7 @@ namespace PNNLProteomics.Data.Analysis
             }
 
 
-            aligneeDataset    = (string)marrFileNames[datasetIndex];            
+            aligneeDataset    = Datasets[datasetIndex].mstrLocalPath;            
             alignmentFunction = mobjAlignmentProcessor.GetAlignmentFunction(); 
 
             return true;
@@ -1152,7 +1144,7 @@ namespace PNNLProteomics.Data.Analysis
 			procThread.Name                     = "Alignment Thread Monitor";
 			procThread.Start();
 
-            for (int datasetNum = 0; datasetNum < marrFileNames.Count; datasetNum++)
+            for (int datasetNum = 0; datasetNum < Datasets.Count; datasetNum++)
 			{
                 try
                 {
@@ -1342,7 +1334,7 @@ namespace PNNLProteomics.Data.Analysis
             {
                 StatusMessage(0, "Performing Clustering of data points");
             }
-            if (marrFileNames.Count > 0)
+            if (Datasets.Count > 0)
             {
                 mobjClusterProcessor.PerformClustering(mobjUMCData);
             }
@@ -1407,7 +1399,7 @@ namespace PNNLProteomics.Data.Analysis
                 /// Also, only do this alignment if we have more than one dataset.  This way
                 /// we dont over align the problem.
                 /// 
-                if (mobjMassTagDBOptions.mstrDatabase != null && marrFileNames.Count > 1)
+                if (mobjMassTagDBOptions.mstrDatabase != null && Datasets.Count > 1)
                 {
                     if (mobjClusteringOptions.AlignClusters == true)
                     {
@@ -1835,7 +1827,7 @@ namespace PNNLProteomics.Data.Analysis
                 for(int i = 0; i < AlignmentData.Count; i++)
                 {
                     classAlignmentData data = AlignmentData[i];
-                    writer.Write("{0},", System.IO.Path.GetFileNameWithoutExtension(this.FileNames[i]));
+                    writer.Write("{0},", System.IO.Path.GetFileNameWithoutExtension(Datasets[i].mstrLocalPath));
                     if (data == null)
                     {
                         writer.WriteLine("Baseline dataset");
@@ -1853,68 +1845,7 @@ namespace PNNLProteomics.Data.Analysis
                 }
             }
         }
-
-		#region Factors
-		/// <summary>
-		/// Builds the factor tree from the internal factor and dataset 
-        /// information, and builds the tree node heirarchy associated with
-		/// the dataset.
-		/// </summary>
-		/// <returns>Factor Tree Structure</returns>
-		public classTreeNode BuildFactorTreeNode()
-		{			
-			if (mobj_factorTree == null)
-                BuildFactorTree();
-
-			return mobj_factorTree.BuildTree();
-		}
-		/// <summary>
-		/// Builds the factor tree from the internal factor and dataset information.
-		/// </summary>
-		/// <returns>Factor tree</returns>
-		public classFactorTree BuildFactorTree()
-		{			
-			if (mobj_factorTree == null)
-				mobj_factorTree = new classFactorTree();
-
-			mobj_factorTree.Data.Clear();
-			mobj_factorTree.Factors.Clear();
-			mobj_factorTree.ClearFactors();
-			
-			foreach(MultiAlignEngine.clsDatasetInfo info in  Files)
-			{
-				/// 
-				/// Check to make sure we have factors first
-				/// 
-				if (info.factorsDefined == true)
-				{					
-					string datasetName = info.mstrDatasetName;				
-					Hashtable factors  = new Hashtable();					
-					for (int i =0 ; i < info.AssignedFactorValues.Count && i < info.Factors.Count; i++)
-					{
-						MultiAlignEngine.clsFactorInfo factorInfo = info.Factors[i] as clsFactorInfo;
-						factors.Add(factorInfo.mstrFactor, info.AssignedFactorValues[i]);						
-					}										
-					mobj_factorTree.AddData(datasetName, factors);		// add to dataset. 
-				}
-			}
-			MultiAlignEngine.clsDatasetInfo datasetInfo = Files[0] as MultiAlignEngine.clsDatasetInfo;
-            if (datasetInfo != null && datasetInfo.Factors != null)
-            {
-                foreach (clsFactorInfo factInfo in datasetInfo.Factors)
-                {
-                    StringCollection factorNames = new StringCollection();
-                    foreach (string values in factInfo.marrValues)
-                    {
-                        factorNames.Add(values);
-                    }
-                    mobj_factorTree.AddFactor(factInfo.mstrFactor, factorNames);
-                }
-            }
-			return mobj_factorTree;
-		}
-		#endregion
-
+		
         #region Properties
         /// <summary>
         /// Gets or sets the cluster alignment data.
@@ -2024,61 +1955,23 @@ namespace PNNLProteomics.Data.Analysis
 			}
 		}
         /// <summary>
-        /// Gets or sets the factor tree associated with the datasets.
-        /// </summary>
-		public classFactorTree FactorTree
-		{
-			get
-			{
-				return mobj_factorTree;
-			}
-			set
-			{
-				mobj_factorTree = value;
-
-				if (value == null)
-				{
-					mobj_treeRoot = null;
-					return;
-				}
-				// Build it to update the tree node structure so we have a fresh copy.
-				mobj_treeRoot	= value.BuildTree();
-			}
-		}
-        /// <summary>
         /// Gets or sets the list of files associated with this analysis.
         /// </summary>
-		public System.Collections.ArrayList Files
+		public List<DatasetInformation> Datasets
 		{
 			get
-			{
-                //TODO: See what is currently stored in this array list, actual file references?
-				return marrFiles ; 
+			{                
+				return m_datasetInformation ; 
 			}
 			set
 			{
-				marrFiles = value ; 
-			}
-		}
-        /// <summary>
-        /// Gets or sets the array of filenames associated with this analysis.
-        /// </summary>
-		public string [] FileNames 
-		{
-			get
-			{
-				return marrFileNames.ToArray();
-			}
-			set
-			{
-                marrFileNames = new List<string>(); 
-				marrFileNames.InsertRange(0, value); 
+				m_datasetInformation = value ; 
 			}
 		}
         /// <summary>
         /// Gets or sets the name of the baseline dataset.
         /// </summary>
-		[MultiAlignEngine.clsDataSummaryAttribute("Baseline Dataset")]
+		[clsDataSummaryAttribute("Baseline Dataset")]
 		public string BaselineDataset
 		{
 			get
@@ -2107,7 +2000,7 @@ namespace PNNLProteomics.Data.Analysis
         /// <summary>
         /// Gets or sets whether to use SMART Scores or not.
         /// </summary>
-        [MultiAlignEngine.clsDataSummaryAttribute("Calculate SMART Scores")]
+        [clsDataSummaryAttribute("Calculate SMART Scores")]
         public bool UseSMART
         {
             get
@@ -2150,7 +2043,7 @@ namespace PNNLProteomics.Data.Analysis
         /// <summary>
         /// Gets or sets whether to use the mass tag database as the baseline dataset.
         /// </summary>
-		[MultiAlignEngine.clsDataSummaryAttribute("Use MTDB As Baseline")]		
+		[clsDataSummaryAttribute("Use MTDB As Baseline")]		
 		public bool UseMassTagDBAsBaseline
 		{
 			get
@@ -2237,7 +2130,7 @@ namespace PNNLProteomics.Data.Analysis
         /// <summary>
         /// Gets the flag whether the results were peaked matched against the Mass Tag Database.
         /// </summary>
-		[MultiAlignEngine.clsDataSummaryAttribute("Peaks Matched to MTDB")]		
+		[clsDataSummaryAttribute("Peaks Matched to MTDB")]		
 		public bool PeakMatchedToMassTagDB
 		{
 			get
@@ -2262,15 +2155,15 @@ namespace PNNLProteomics.Data.Analysis
         /// <param name="progress"></param>
         private static void progressStream_ProgressChanged(object o, int progress)
 		{
-			if (clsMultiAlignAnalysis.ProgressChanged != null)
+			if (MultiAlignAnalysis.ProgressChanged != null)
 			{
-				clsMultiAlignAnalysis.ProgressChanged(o,progress, "loading analysis file...");
+				MultiAlignAnalysis.ProgressChanged(o,progress, "loading analysis file...");
 			}
         }       
         /// <summary>
         /// Gets or sets the name of the analysis.
         /// </summary>
-        [MultiAlignEngine.clsDataSummaryAttribute("Analysis Name")]
+        [clsDataSummaryAttribute("Analysis Name")]
         public string AnalysisName
         {
             get
@@ -2333,10 +2226,10 @@ namespace PNNLProteomics.Data.Analysis
         /// </summary>
         /// <param name="fileName">Path of the file to load the analysis from.</param>
         /// <returns> A new analysis object found in the file.</returns>
-        public static clsMultiAlignAnalysis DeserializeAnalysisFromFile(string fileName)
+        public static MultiAlignAnalysis DeserializeAnalysisFromFile(string fileName)
         {
             
-            clsMultiAlignAnalysis analysis = null;
+            MultiAlignAnalysis analysis = null;
 
             try
             {
@@ -2357,7 +2250,7 @@ namespace PNNLProteomics.Data.Analysis
                     BufferedStream bs = new BufferedStream(progressStream,
                             onePercentSize > defaultBufferSize ? defaultBufferSize : onePercentSize);
                     BinaryFormatter formatter = new BinaryFormatter();
-                    analysis = formatter.Deserialize(bs) as clsMultiAlignAnalysis;
+                    analysis = formatter.Deserialize(bs) as MultiAlignAnalysis;
                 }
                 catch (System.Runtime.Serialization.SerializationException e)
                 {

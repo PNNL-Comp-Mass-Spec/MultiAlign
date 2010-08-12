@@ -121,14 +121,8 @@
   <data name="DOWNLOAD_00" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\DOWNLOAD_00.gif;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="MultiAlignLogo" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Drawing\Bitmaps\MultiAlignLogo.jpg;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="MultiAlign" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\MultiAlignEngine.ico;System.Drawing.Icon, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="malign" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Drawing\Bitmaps\malign.jpg;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Critical" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Critical.bmp;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -144,9 +138,6 @@
   </data>
   <data name="analysis" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\analysis.bmp;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="bigImage" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Drawing\Bitmaps\malign1.jpg;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="alignmentGlyph" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\alignmentGlyph.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>

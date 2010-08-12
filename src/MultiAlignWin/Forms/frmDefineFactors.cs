@@ -41,7 +41,7 @@ namespace MultiAlignWin.Forms.Factors
         /// <summary>
         /// Reference to the list of factors and factor operations.
         /// </summary>
-        private classFactorDefinition mobj_factors;
+        private FactorCollection mobj_factors;
         private Label mlabel_hints;
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace MultiAlignWin.Forms.Factors
         /// Populates the interface with previously defined non-hierarchical factor definitions.  
         /// </summary>
         /// <param name="factors">Keys are strings and values should be stored in a strongly typed string List.</param>
-        public frmFactorDefinition(classFactorDefinition factors)
+        public frmFactorDefinition(FactorCollection factors)
         {
             InitializeComponent();
             Initialize();
@@ -84,7 +84,7 @@ namespace MultiAlignWin.Forms.Factors
             mtreeView_factorList.LostFocus              += new EventHandler(mtreeView_factorList_LostFocus);
             mtreeView_factorList.KeyUp                  += new KeyEventHandler(mtreeView_factorList_KeyUp);
 
-            mobj_factors = new classFactorDefinition();
+            mobj_factors = new FactorCollection();
         }
         #endregion
 
@@ -329,7 +329,7 @@ namespace MultiAlignWin.Forms.Factors
         /// Loads the factors provided by the argument into the tree.
         /// </summary>
         /// <param name="factors">Factors to display.</param>
-        private void LoadFactors(classFactorDefinition factors)
+        private void LoadFactors(FactorCollection factors)
         {            
             /// 
             /// If the factor values are null,
@@ -339,8 +339,8 @@ namespace MultiAlignWin.Forms.Factors
             mobj_factors = factors;
             if (factors == null)
             {
-                mobj_factors = new classFactorDefinition();
-                SetOkButton(mobj_factors.FullyDefined);
+                mobj_factors = new FactorCollection();
+                SetOkButton(mobj_factors.AreAllFactorsDefined);
                 return;
             }
 
@@ -354,7 +354,7 @@ namespace MultiAlignWin.Forms.Factors
                 TreeNode parentNode = new TreeNode();
                 parentNode.Name     = factor;
                 parentNode.Text     = factor;
-                List<string> values = factors.Factors[factor];
+                List<string> values = factors.Factors[factor].FactorValues;
 
                 /// 
                 /// Make sure that we dont have a null list for this factor
@@ -387,14 +387,14 @@ namespace MultiAlignWin.Forms.Factors
             /// 
             if (mobj_factors.Factors.Keys.Count < 1)
                 SetFactorValues(false);
-            SetOkButton(mobj_factors.FullyDefined);
+            SetOkButton(mobj_factors.AreAllFactorsDefined);
         }
 
         /// <summary>
         /// Gets or sets the list of factors as a HashTable of string keys, and a List of strings for factor values at each hash index.
         /// Each list of factor values is sorted alphabetically in ascending order.
         /// </summary>
-        public classFactorDefinition Factors
+        public FactorCollection Factors
         {
             get
             {
@@ -446,14 +446,14 @@ namespace MultiAlignWin.Forms.Factors
             /// 
             factorName = factorName.Replace(" ", "");
 
-            int added = mobj_factors.AddFactor(factorName);
+            FactorEditResult added = mobj_factors.AddFactor(factorName);
             
             /// Now handle the user-interface issues 
-            if (added == classFactorDefinition.CONST_FACTOR_EXISTS)
+            if (added == FactorEditResult.Exists)
             {
                 mlabel_status.Text = "The factor already exists.";                
             }
-            else if (added == classFactorDefinition.CONST_FACTOR_ADDED)
+            else if (added == FactorEditResult.Added)
             {
                 /// 
                 /// Add the node to the list of nodes.
@@ -483,7 +483,7 @@ namespace MultiAlignWin.Forms.Factors
                 SetDeleteButton(true);
                 result = true;
             }
-            SetOkButton(mobj_factors.FullyDefined);
+            SetOkButton(mobj_factors.AreAllFactorsDefined);
             return result;
         }
         /// <summary>
@@ -495,17 +495,17 @@ namespace MultiAlignWin.Forms.Factors
         {
             bool result = false;
 
-            int added = mobj_factors.AddFactorValue(factorName, factorValue);
-            if (added == classFactorDefinition.CONST_FACTOR_VALUE_EXISTS)
+            FactorEditResult added = mobj_factors.AddFactorValue(factorName, factorValue);
+            if (added == FactorEditResult.Exists)
             {
                 mlabel_status.Text = "The value already exists.";                
             }
-            else if (added == classFactorDefinition.CONST_FACTOR_VALUE_ADDED)
+            else if (added == FactorEditResult.Added)
             {
                 /// 
                 /// See if we can enable the factor button.
                 /// 
-                bool defined = mobj_factors.FullyDefined;
+                bool defined = mobj_factors.AreAllFactorsDefined;
                 mbutton_ok.Enabled = defined;
 
                 /// 
@@ -532,7 +532,7 @@ namespace MultiAlignWin.Forms.Factors
                 result = true;
             }
 
-            SetOkButton(mobj_factors.FullyDefined);
+            SetOkButton(mobj_factors.AreAllFactorsDefined);
             return result;
         }
         /// <summary>
@@ -548,7 +548,7 @@ namespace MultiAlignWin.Forms.Factors
             }
             if (mobj_factors.Factors.Keys.Count < 1)
                 SetFactorValues(false);
-            SetOkButton(mobj_factors.FullyDefined);
+            SetOkButton(mobj_factors.AreAllFactorsDefined);
         }
         /// <summary>
         /// Deletes the factor value given the specified factor treenode and value node.
@@ -564,7 +564,7 @@ namespace MultiAlignWin.Forms.Factors
             }
             if (mobj_factors.Factors.Keys.Count < 1)
                 SetFactorValues(false);
-            SetOkButton(mobj_factors.FullyDefined);
+            SetOkButton(mobj_factors.AreAllFactorsDefined);
         }
         #endregion
 
@@ -1057,21 +1057,17 @@ namespace MultiAlignWin.Forms.Factors
         private bool RenameFactorInput(TreeNode node, string text)
         {
             bool result = false;
-            int renamed = mobj_factors.RenameFactor(node.Text, text);
+            FactorEditResult renamed = mobj_factors.RenameFactor(node.Text, text);
 
-            if (renamed == classFactorDefinition.CONST_FACTOR_RENAMED)
+            if (renamed == FactorEditResult.Renamed)
             {                
                 node.Text = text;
                 node.Name = text;
                 result = true;
             }
-            else if (renamed == classFactorDefinition.CONST_FACTOR_NEW_EXISTS)
+            else if (renamed == FactorEditResult.Exists)
             {
-                mlabel_status.Text = "The factor name already exists.";
-            }
-            else if (renamed == classFactorDefinition.CONST_FACTOR_DOES_NOT_EXIST)
-            {
-                mlabel_status.Text = "The old factor name does not exist.";
+                mlabel_status.Text = "One of the factor names already exists.";
             }
             return result;
         }
@@ -1085,21 +1081,17 @@ namespace MultiAlignWin.Forms.Factors
         private bool RenameFactorValueInput(TreeNode parentNode, TreeNode node, string factorValue)
         {
             bool result = false;
-            int renamed = mobj_factors.RenameFactorValue(parentNode.Text, node.Text, factorValue);
+            FactorEditResult renamed = mobj_factors.RenameFactorValue(parentNode.Text, node.Text, factorValue);
 
-            if (renamed == classFactorDefinition.CONST_FACTOR_VALUE_RENAMED)
+            if (renamed == FactorEditResult.Renamed)
             {
                 node.Text = factorValue;
                 node.Name = factorValue;
                 result = true;
             }
-            else if (renamed == classFactorDefinition.CONST_FACTOR_VALUE_NEW_EXISTS)
+            else if (renamed == FactorEditResult.Exists)
             {
-                mlabel_status.Text = "The value already exists.";
-            }
-            else if (renamed == classFactorDefinition.CONST_FACTOR_VALUE_DOES_NOT_EXIST)
-            {
-                mlabel_status.Text = "The old value does not exist.";
+                mlabel_status.Text = "One of the the factor values already exists.";
             }
             return result;
         }

@@ -1,16 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
+using System.Data;
 using System.Text;
 using System.Windows.Forms;
 
-namespace MultiAlignWin.Drawing
+namespace MultiAlignWin.Forms
 {
-    public partial class PeptideProteinFinder : Form
+    public partial class FactorFilterControl : UserControl
     {
-        public PeptideProteinFinder()
+        public FactorFilterControl()
         {
             InitializeComponent();
         }

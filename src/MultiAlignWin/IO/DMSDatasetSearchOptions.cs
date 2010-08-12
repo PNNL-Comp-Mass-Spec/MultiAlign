@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 
+using PNNLProteomics.Data;
 using MultiAlignEngine;
 
 namespace MultiAlignWin.IO
@@ -18,6 +19,10 @@ namespace MultiAlignWin.IO
         private string m_datasetName;
         private string m_datasetID;
         private string m_fileExtension;
+        /// <summary>
+        /// Name of parameter file used to process the data.
+        /// </summary>
+        private string m_parameterFileName;
         #endregion
 
         /// <summary>
@@ -29,6 +34,20 @@ namespace MultiAlignWin.IO
         }
 
         #region Properties
+        /// <summary>
+        /// Gets or sets the name of the parameter file used.
+        /// </summary>
+        public string ParameterFileName
+        {
+            get
+            {
+                return m_parameterFileName;
+            }
+            set
+            {
+                m_parameterFileName = value;
+            }
+        }
         public string FileExtension
         {
             get

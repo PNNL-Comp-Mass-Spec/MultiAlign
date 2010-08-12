@@ -2,6 +2,7 @@ using System;
 using System.Windows.Forms;
 using System.Collections.Generic;
 
+using PNNLProteomics.Data;
 using MultiAlignEngine;
 using MultiAlignWin.IO;
 
@@ -40,7 +41,7 @@ namespace MultiAlignWin.Forms
             m_datasetNameTextbox.Text    = options.DatasetName;
             m_instrumentNameTextbox.Text = options.InstrumentName;            
             m_datetime.Value             = options.DateTime;
-            
+            m_parameterFileTextbox.Text  = options.ParameterFileName;
             m_decon2lsCheckBox.Checked          = false;
             m_decon2lsAgilentCheckBox.Checked   = false;
             m_icr2lsCheckBox.Checked            = false;
@@ -87,6 +88,7 @@ namespace MultiAlignWin.Forms
                 options.DatasetName             = m_datasetNameTextbox.Text;
                 options.InstrumentName          = m_instrumentNameTextbox.Text;                
                 options.DateTime                = m_datetime.Value;
+                options.ParameterFileName       = m_parameterFileTextbox.Text;
                 options.ToolIDs.Clear();
 
                 if (m_decon2lsVsCheckbox.Checked == true)

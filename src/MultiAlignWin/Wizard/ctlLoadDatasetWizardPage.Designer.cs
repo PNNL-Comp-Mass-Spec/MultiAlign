@@ -476,7 +476,7 @@ namespace MultiAlignWin
             this.mgroupBox_selectData.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.mgroupBox_selectData.Location = new System.Drawing.Point(6, 56);
             this.mgroupBox_selectData.Name = "mgroupBox_selectData";
-            this.mgroupBox_selectData.Size = new System.Drawing.Size(1036, 224);
+            this.mgroupBox_selectData.Size = new System.Drawing.Size(1036, 204);
             this.mgroupBox_selectData.TabIndex = 48;
             this.mgroupBox_selectData.TabStop = false;
             this.mgroupBox_selectData.Text = "Select Data ";
@@ -487,11 +487,11 @@ namespace MultiAlignWin
             this.m_showDMSSearchOptionsButton.Enabled = false;
             this.m_showDMSSearchOptionsButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.m_showDMSSearchOptionsButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.m_showDMSSearchOptionsButton.Location = new System.Drawing.Point(413, 160);
+            this.m_showDMSSearchOptionsButton.Location = new System.Drawing.Point(575, 124);
             this.m_showDMSSearchOptionsButton.Name = "m_showDMSSearchOptionsButton";
-            this.m_showDMSSearchOptionsButton.Size = new System.Drawing.Size(78, 22);
+            this.m_showDMSSearchOptionsButton.Size = new System.Drawing.Size(99, 37);
             this.m_showDMSSearchOptionsButton.TabIndex = 57;
-            this.m_showDMSSearchOptionsButton.Text = "More Options";
+            this.m_showDMSSearchOptionsButton.Text = "Search Options";
             this.m_showDMSSearchOptionsButton.UseVisualStyleBackColor = false;
             this.m_showDMSSearchOptionsButton.Click += new System.EventHandler(this.m_showAllOptions_Click);
             // 
@@ -500,7 +500,7 @@ namespace MultiAlignWin
             this.mlabel_similarNamesFound.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.mlabel_similarNamesFound.AutoSize = true;
             this.mlabel_similarNamesFound.ForeColor = System.Drawing.Color.Red;
-            this.mlabel_similarNamesFound.Location = new System.Drawing.Point(767, 205);
+            this.mlabel_similarNamesFound.Location = new System.Drawing.Point(767, 185);
             this.mlabel_similarNamesFound.Name = "mlabel_similarNamesFound";
             this.mlabel_similarNamesFound.Size = new System.Drawing.Size(265, 16);
             this.mlabel_similarNamesFound.TabIndex = 56;
@@ -606,7 +606,7 @@ namespace MultiAlignWin
             this.mbutton_databaseSelectDatasetIDFile.Enabled = false;
             this.mbutton_databaseSelectDatasetIDFile.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.mbutton_databaseSelectDatasetIDFile.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.mbutton_databaseSelectDatasetIDFile.Location = new System.Drawing.Point(283, 185);
+            this.mbutton_databaseSelectDatasetIDFile.Location = new System.Drawing.Point(283, 170);
             this.mbutton_databaseSelectDatasetIDFile.Name = "mbutton_databaseSelectDatasetIDFile";
             this.mbutton_databaseSelectDatasetIDFile.Size = new System.Drawing.Size(32, 24);
             this.mbutton_databaseSelectDatasetIDFile.TabIndex = 47;
@@ -631,9 +631,9 @@ namespace MultiAlignWin
             this.mbutton_databaseDatasetSearch.Enabled = false;
             this.mbutton_databaseDatasetSearch.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.mbutton_databaseDatasetSearch.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.mbutton_databaseDatasetSearch.Location = new System.Drawing.Point(497, 133);
+            this.mbutton_databaseDatasetSearch.Location = new System.Drawing.Point(497, 124);
             this.mbutton_databaseDatasetSearch.Name = "mbutton_databaseDatasetSearch";
-            this.mbutton_databaseDatasetSearch.Size = new System.Drawing.Size(72, 22);
+            this.mbutton_databaseDatasetSearch.Size = new System.Drawing.Size(72, 37);
             this.mbutton_databaseDatasetSearch.TabIndex = 1;
             this.mbutton_databaseDatasetSearch.Text = "GO!";
             this.mbutton_databaseDatasetSearch.UseVisualStyleBackColor = false;
@@ -642,7 +642,7 @@ namespace MultiAlignWin
             // mlabel_datasetAnalysisIDNumbers
             // 
             this.mlabel_datasetAnalysisIDNumbers.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.mlabel_datasetAnalysisIDNumbers.Location = new System.Drawing.Point(46, 185);
+            this.mlabel_datasetAnalysisIDNumbers.Location = new System.Drawing.Point(46, 170);
             this.mlabel_datasetAnalysisIDNumbers.Name = "mlabel_datasetAnalysisIDNumbers";
             this.mlabel_datasetAnalysisIDNumbers.Size = new System.Drawing.Size(190, 24);
             this.mlabel_datasetAnalysisIDNumbers.TabIndex = 46;

@@ -45,7 +45,7 @@ namespace MultiAlignWin.UI
         /// <summary>
         /// Main analysis object (current one.)
         /// </summary>
-        private clsMultiAlignAnalysis mobjAnalysis;
+        private MultiAlignAnalysis mobjAnalysis;
 
         /// <summary>
         /// Current analysis filename operating on.
@@ -248,10 +248,10 @@ namespace MultiAlignWin.UI
         {
 
             clsLogging.Trace(DebugLevel.MAJOR, "Loading analysis file.");
-            clsMultiAlignAnalysis.ProgressChanged +=
-                new clsMultiAlignAnalysis.DelegateProgressChangedEventHandler
+            MultiAlignAnalysis.ProgressChanged +=
+                new MultiAlignAnalysis.DelegateProgressChangedEventHandler
                 (clsMultiAlignAnalysis_ProgressChanged);
-            mobjAnalysis = clsMultiAlignAnalysis.DeserializeAnalysisFromFile(mstrCurrentFileName);
+            mobjAnalysis = MultiAlignAnalysis.DeserializeAnalysisFromFile(mstrCurrentFileName);
             Invoke(new MethodInvoker(InvokeHideStatus)); // mfrm_status.Hide(); 
             Invoke(new MethodInvoker(AddCurrentAnalysis));
         }

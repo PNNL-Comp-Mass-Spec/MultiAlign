@@ -168,12 +168,12 @@ namespace MultiAlignWin.IO
                 /// Don't thread the loading here because we should already be threaded.
                 /// 
                 mobj_datasetLoader.LoadDatasetsFromDatasetIDs(dataset, false);
-                List<clsDatasetInfo> list = mobj_datasetLoader.DataSets;
+                List<DatasetInformation> list = mobj_datasetLoader.DataSets;
 
                 if (DatasetsFound != null && list != null)
                     DatasetsFound(list.Count);
                 
-                foreach (clsDatasetInfo info in list)
+                foreach (DatasetInformation info in list)
                 {
                     if (info != null)
                     {

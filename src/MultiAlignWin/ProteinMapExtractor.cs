@@ -57,7 +57,7 @@ namespace MultiAlignWin
         /// </summary>
         /// <param name="analysis"></param>
         /// <returns></returns>
-        public Dictionary<string, List<string>> ExtractProteinMaps(clsMultiAlignAnalysis analysis)
+        public Dictionary<string, List<string>> ExtractProteinMaps(MultiAlignAnalysis analysis)
         {           
             Dictionary<string, List<string>> proteins = new Dictionary<string,List<string>>();
            

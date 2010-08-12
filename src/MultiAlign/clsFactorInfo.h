@@ -2,7 +2,7 @@
 
 namespace MultiAlignEngine
 {
-		[System::Serializable]
+	/*	[System::Serializable]
 	public __gc class clsFactorInfo
 	{			
 	public:
@@ -27,5 +27,5 @@ namespace MultiAlignEngine
 		{
 			return marrValues->get_Count(); 
 		}
-	};
+	};*/
 }

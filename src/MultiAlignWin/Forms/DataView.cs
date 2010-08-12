@@ -32,7 +32,7 @@ namespace MultiAlignWin
         private Splitter splitter1;
         private Panel panelCharts;
 		private MultiAlignWin.ctlClusterChart mobjClusterChart ;
-        private clsMultiAlignAnalysis mobjAnalysis;
+        private MultiAlignAnalysis mobjAnalysis;
 		private bool mblnDatasetModified ;
         private string mstrCurrentFileName;
         private MenuStrip menuStrip;
@@ -208,7 +208,7 @@ namespace MultiAlignWin
         /// <summary>
         /// Sets the analysis object.
         /// </summary>
-		public clsMultiAlignAnalysis Analysis
+		public MultiAlignAnalysis Analysis
 		{
 			set
 			{
@@ -217,7 +217,7 @@ namespace MultiAlignWin
                 /// 
 				mobjAnalysis              = value ; 
 				mobjClusterChart.Analysis = mobjAnalysis ;
-				mobjAnalysis.BuildFactorTree();
+				//mobjAnalysis.BuildFactorTree();
 
                 /// 
                 /// Display the protein maps if any matched
@@ -963,12 +963,12 @@ namespace MultiAlignWin
         #endregion
 
         #region Form Event Handlers
-        private void ScatterPlotOpenClicked()
-        {
-            frmScatterPlot scatterForm = new frmScatterPlot();
-            scatterForm.SetAnalysis(mobjAnalysis);
-            scatterForm.ShowDialog(this);
-        }
+        //private void ScatterPlotOpenClicked()
+        //{
+        //    //frmScatterPlot scatterForm = new frmScatterPlot();
+        //    //scatterForm.SetAnalysis(mobjAnalysis);
+        //    //scatterForm.ShowDialog(this);
+        //}
         /// <summary>
         /// Handles the key 
         /// </summary>

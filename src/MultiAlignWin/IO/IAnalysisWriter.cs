@@ -11,7 +11,7 @@ namespace MultiAlignWin.IO
     public interface IAnalysisWriter
     {
         void WriteAnalysis( string                    path, 
-                            clsMultiAlignAnalysis     analysis, 
+                            MultiAlignAnalysis     analysis, 
                             List<IFilter<clsUMC>>     umcFilters, 
                             List<IFilter<clsCluster>> clusterFilters);
     }

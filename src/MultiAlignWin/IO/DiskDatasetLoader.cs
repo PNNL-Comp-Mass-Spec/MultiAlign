@@ -24,6 +24,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 using MultiAlignEngine;
+using PNNLProteomics.Data;
 
 namespace MultiAlignWin.IO
 {
@@ -140,7 +141,7 @@ namespace MultiAlignWin.IO
                 ///    
 				string fileNameLowerCase        = fileName.ToLower();
                 string fileNameAlias            = null;
-                clsDatasetInfo datasetInfo      = new clsDatasetInfo();
+                DatasetInformation datasetInfo      = new DatasetInformation();
                 datasetInfo.menmDeisotopingTool = DeisotopingTool.NA;
 
 				if (fileNameLowerCase.Contains(".pek"))
@@ -171,7 +172,7 @@ namespace MultiAlignWin.IO
 					fileNameAlias = fileName;
 				}
 
-                datasetInfo.mstrDatasetName     = fileName;
+                datasetInfo.DatasetName     = fileName;
                 datasetInfo.mstrAlias           = fileNameAlias;
                 datasetInfo.mstrDatasetId       = "NA";
                 datasetInfo.mstrAnalysisJobId   = "NA";

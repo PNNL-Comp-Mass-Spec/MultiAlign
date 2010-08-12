@@ -114,7 +114,7 @@ namespace MultiAlignWin.IO
         /// </summary>
         /// <param name="writer"></param>
         private void WriteHeader(TextWriter writer,
-                                 clsMultiAlignAnalysis analysis)
+                                 MultiAlignAnalysis analysis)
         {
             string data = CONST_umc_index_col;
             data += Delimeter + CONST_umc_rep_size_col;
@@ -156,7 +156,7 @@ namespace MultiAlignWin.IO
             /// 
             /// Write the headers for each dataset                
             /// 
-            int N = analysis.FileNames.Length;
+            int N = analysis.Datasets.Count;
             for (int dataset_num = 0; dataset_num < N; dataset_num++)
             {
                 WriteDatasetHeader(writer, analysis, dataset_num);
@@ -168,7 +168,7 @@ namespace MultiAlignWin.IO
         /// </summary>
         /// <param name="writer"></param>
         /// <param name="datasetID"></param>
-        private void WriteDatasetHeader(TextWriter writer, clsMultiAlignAnalysis analysis, int datasetID)
+        private void WriteDatasetHeader(TextWriter writer, MultiAlignAnalysis analysis, int datasetID)
         {            
             string file_name = analysis.UMCData.DatasetName[datasetID];
             int index        = file_name.LastIndexOf("\\");
@@ -220,7 +220,7 @@ namespace MultiAlignWin.IO
         /// <param name="analysis">Analysis object to write.</param>
         /// <param name="pathname">File path to write to.</param>
         public void WriteAnalysis(string pathname,
-                                    clsMultiAlignAnalysis analysis,
+                                    MultiAlignAnalysis analysis,
                                     List<IFilter<clsUMC>> umcFilters,
                                     List<IFilter<clsCluster>> clusterFilters)
         {            
@@ -407,7 +407,7 @@ namespace MultiAlignWin.IO
                         /// 
                         /// Find the total number of datasets to save 
                         /// 
-                        int N = analysis.FileNames.Length;
+                        int N = analysis.Datasets.Count;
 
                         /// ////////////////////////////////////////////////////////////////////////////// 
                         /// Add the UMC data for each dataset.

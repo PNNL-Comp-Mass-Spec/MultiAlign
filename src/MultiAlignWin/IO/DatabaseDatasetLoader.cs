@@ -68,7 +68,7 @@ namespace MultiAlignWin.IO
             /// <summary>
             /// Arraylist containing all the present datasets.
             /// </summary>
-		    private List<clsDatasetInfo>   m_datasetInfo;		    
+            private List<DatasetInformation> m_datasetInfo;		    
             /// <summary>
             /// Thread for loading a lot of the dataset ID's.
             /// </summary>
@@ -94,12 +94,12 @@ namespace MultiAlignWin.IO
             {
                 mobj_loadingThread      = null;
                 mobj_serverInformation  = new clsDMSServerInformation();
-                m_datasetInfo           = new List<clsDatasetInfo>();
+                m_datasetInfo           = new List<DatasetInformation>();
                 m_searchOptions         = new DMSDatasetSearchOptions();
             }
 
             #region Properties
-            public List<clsDatasetInfo> DataSets
+            public List<DatasetInformation> DataSets
             {
                 get
                 {
@@ -151,7 +151,7 @@ namespace MultiAlignWin.IO
             /// <param name="field">Filter string to run the query on.</param>
             /// <param name="flag">Type of query to run</param>
             /// <returns>SQL Query string</returns>
-            private string SetupQuery(DMSDatasetSearchOptions options, int flag)
+            private string BuildQueryString(DMSDatasetSearchOptions options, int flag)
 		    {
 			    string selectQry = null;
                 string field     = "";
@@ -165,7 +165,12 @@ namespace MultiAlignWin.IO
                         if (!string.IsNullOrEmpty(options.InstrumentName))
                         {
                             selectQry += " AND InstrumentName LIKE \'" + options.InstrumentName + "\'";
-                        }                        
+                        }
+                        if (!string.IsNullOrEmpty(options.ParameterFileName))
+                        {
+                            selectQry += " AND ParameterFileName LIKE \'" + options.ParameterFileName + "\'";
+                        }
+                        selectQry += " AND AcquisitionTime >= '" + options.DateTime.ToShortDateString() + "'";
                         break;
                     
                     case CONST_QUERY_DATASET_ID:
@@ -175,7 +180,12 @@ namespace MultiAlignWin.IO
                         if (!string.IsNullOrEmpty(options.InstrumentName))
                         {
                             selectQry += " AND InstrumentName LIKE \'" + options.InstrumentName + "\'";
-                        }    
+                        }
+                        if (!string.IsNullOrEmpty(options.ParameterFileName))
+                        {
+                            selectQry += " AND ParameterFileName LIKE \'" + options.ParameterFileName + "\'";
+                        }
+                        selectQry += " AND AcquisitionTime >= '" + options.DateTime.ToShortDateString() + "'";
                         break;
 			    }				    
                 return selectQry;
@@ -273,7 +283,7 @@ namespace MultiAlignWin.IO
                                                 mobj_serverInformation.Username,
                                                 mobj_serverInformation.Password);
 
-                string query = SetupQuery(m_searchOptions, mint_queryFlag);
+                string query = BuildQueryString(m_searchOptions, mint_queryFlag);
 
                 /// 
                 /// Create a connection to the database.
@@ -314,8 +324,8 @@ namespace MultiAlignWin.IO
             {
                 string pekFilePath;               
 
-                Type labelType = typeof(MultiAlignEngine.LabelingType);
-                MultiAlignEngine.LabelingType[] labelTypes = (MultiAlignEngine.LabelingType[])Enum.GetValues(labelType);
+                Type labelType = typeof(LabelingType);
+                LabelingType[] labelTypes = (LabelingType[])Enum.GetValues(labelType);
 
                 int     numberLoaded  = 0;
                 double  percentLoaded = 0;
@@ -330,7 +340,7 @@ namespace MultiAlignWin.IO
                 foreach (DataRow row in table.Rows)
                 {
                     string alias;
-                    MultiAlignEngine.clsDatasetInfo datasetInfo   = new MultiAlignEngine.clsDatasetInfo();
+                    DatasetInformation datasetInfo          = new DatasetInformation();
                     datasetInfo.mstrDatasetId               = Convert.ToString(row[0]);
                     alias                                   = datasetInfo.mstrDatasetId;      /// This was set by default to be the same thing as the dataset id.
                     datasetInfo.mstrVolume                  = Convert.ToString(row[1]);
@@ -354,7 +364,7 @@ namespace MultiAlignWin.IO
                     labelMedia.Replace("/", "");
                     labelMedia.Replace("-", "");
 
-                    foreach (MultiAlignEngine.LabelingType type in labelTypes)
+                    foreach (LabelingType type in labelTypes)
                     {
                         if (type.ToString() == labelMedia)
                         {
@@ -436,7 +446,7 @@ namespace MultiAlignWin.IO
                         datasetInfo.mintBatchID = 0;
                     }
                     datasetInfo.mstrAlias = alias;
-                    datasetInfo.selected = false;
+                    datasetInfo.Selected = false;
 
                     /// 
                     /// Data File Path
@@ -446,11 +456,9 @@ namespace MultiAlignWin.IO
 
                     foreach (string fileName in files)
                     {
-                        clsDatasetInfo info = new clsDatasetInfo();
+                        DatasetInformation info = new DatasetInformation();
                         if (info != null)
-                        {
-                            
-                            info.factorsDefined         = datasetInfo.factorsDefined;
+                        {                                                        
                             info.mdateAcquisitionStart  = datasetInfo.mdateAcquisitionStart;
                             
                             string extension            = System.IO.Path.GetExtension(fileName);
@@ -472,9 +480,9 @@ namespace MultiAlignWin.IO
                             info.mstrReplicateName      = datasetInfo.mstrReplicateName;
                             info.mstrResultsFolder      = datasetInfo.mstrResultsFolder;
                             info.mstrVolume             = datasetInfo.mstrVolume;
-                            info.selected               = datasetInfo.selected;                            
+                            info.Selected               = datasetInfo.Selected;                            
                             info.mstrLocalPath          = Path.Combine(pekFilePath, fileName);
-                            info.mstrDatasetName        = fileName;
+                            info.DatasetName        = fileName;
 
 
                             // Check the file extension

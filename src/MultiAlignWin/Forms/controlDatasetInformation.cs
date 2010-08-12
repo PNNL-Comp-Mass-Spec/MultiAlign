@@ -15,6 +15,8 @@ using MultiAlignEngine.Clustering;
 
 using PNNLControls;
 using MultiAlignWin.Drawing;
+
+using PNNLProteomics.Data;
 using PNNLProteomics.Data.Analysis;
 
 namespace MultiAlignWin.Forms
@@ -42,7 +44,7 @@ namespace MultiAlignWin.Forms
         /// <summary>
         /// Dataset to probe.
         /// </summary>
-        private clsDatasetInfo mobj_dataset;
+        private DatasetInformation mobj_dataset;
         /// <summary>
         /// Options defining the alignment for this dataset.
         /// </summary>
@@ -54,7 +56,7 @@ namespace MultiAlignWin.Forms
         /// <summary>
         /// Object that holds all of the analysis data.
         /// </summary>
-        private clsMultiAlignAnalysis mobj_analysis;
+        private MultiAlignAnalysis mobj_analysis;
         /// <summary>
         /// Index of this dataset in the analysis.
         /// </summary>
@@ -72,11 +74,11 @@ namespace MultiAlignWin.Forms
         /// <summary>
         /// Default constructor for a dataset class.
         /// </summary>
-        public controlDatasetInformation(clsMultiAlignAnalysis analysis, int datasetIndex)
+        public controlDatasetInformation(MultiAlignAnalysis analysis, int datasetIndex)
         {
             InitializeComponent();
 
-            mobj_dataset        = analysis.Files[datasetIndex] as clsDatasetInfo;
+            mobj_dataset        = analysis.Datasets[datasetIndex] as DatasetInformation;
             mobj_alignment      = analysis.AlignmentOptions[datasetIndex] as clsAlignmentOptions;
             mobj_alignmentData  = analysis.AlignmentData[datasetIndex]; 
             mobj_cluster        = analysis.ClusterOptions;
@@ -97,7 +99,7 @@ namespace MultiAlignWin.Forms
         /// <param name="e"></param>
         private void mbutton_datasetName_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            frmDatasetSummary summary = new frmDatasetSummary(mobj_dataset, mobj_alignment, mobj_cluster);
+            DatasetSummary summary = new DatasetSummary(mobj_dataset, mobj_alignment, mobj_cluster);
             summary.ShowDialog();
         }
         /// <summary>
@@ -124,7 +126,7 @@ namespace MultiAlignWin.Forms
             /// Dataset information pane
             /// 
             mlabel_datasetID.Text    = string.Format("{0}", mobj_dataset.mstrDatasetId);
-            mbutton_datasetName.Text = string.Format("{0}", mobj_dataset.mstrDatasetName);
+            mbutton_datasetName.Text = string.Format("{0}", mobj_dataset.DatasetName);
             mbutton_baseline.Text    = Path.GetFileName(mobj_alignment.AlignmentBaselineName);
 
             clsUMC [] umcs = mobj_analysis.UMCData.GetUMCS(mint_datasetIndex);
@@ -163,7 +165,7 @@ namespace MultiAlignWin.Forms
             /// 
             /// If the dataset is the baseline display that.
             /// 
-            if (mobj_dataset.mstrDatasetName == Path.GetFileName(mobj_alignment.AlignmentBaselineName))
+            if (mobj_dataset.DatasetName == Path.GetFileName(mobj_alignment.AlignmentBaselineName))
             {
                 if (mpicture_alignmentHeatmap.Image != null)
                     mpicture_alignmentHeatmap.Image.Dispose();
@@ -233,24 +235,7 @@ namespace MultiAlignWin.Forms
         private bool AbortImagePreview()
         {
             return false;
-        }
-        private void SaveImages(Image [] images, string [] names)
-        {
-            //TODO: Clean up.
-            int i = 0; 
-            foreach (Image image in images)
-            {
-                try
-                {
-                    string name = mobj_analysis.FileNames[mint_datasetIndex] + names[i] + ".png";
-                    image.Save(name, System.Drawing.Imaging.ImageFormat.Png);                    
-                }catch
-                {
-                    //TODO: Propogate errors.
-                }
-                i++;
-            }
-        }
+        }       
         /// <summary>
         /// Creates the preview images for display.
         /// </summary>
@@ -363,14 +348,7 @@ namespace MultiAlignWin.Forms
             string[] names = new string[] { "LCMSFeatures",
                                             "NetErrorHistogram",
                                             "MassErrorHistogram",
-                                            "AlignmentHeatmap"};
-
-            if (mobj_analysis.AlignmentOptions[0].AlignmentBaselineName != mobj_analysis.FileNames[mint_datasetIndex])
-            {
-                /*SaveImages(new Image[] { previewClusterChartHighRes, netErrorHistogramHighRes, massErrorHistogramHighRes, alignmentHighRes },
-                    names);
-                 */
-            }
+                                            "AlignmentHeatmap"};            
 
             /// 
             /// Display low-res images 
@@ -406,7 +384,7 @@ namespace MultiAlignWin.Forms
         /// <summary>
         /// Gets or sets the dataset information.
         /// </summary>
-        public clsDatasetInfo Dataset
+        public DatasetInformation Dataset
         {
             get
             {

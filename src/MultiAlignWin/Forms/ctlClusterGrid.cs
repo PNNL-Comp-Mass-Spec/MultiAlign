@@ -96,7 +96,7 @@ namespace MultiAlignWin
         private ContextMenuStrip mobj_contextMenu;
 
 		private clsTTestVals [] marr_ttests = null ; 
-		private clsMultiAlignAnalysis mobjAnalysis ; 
+		private MultiAlignAnalysis mobjAnalysis ; 
 
 
 		public event MethodInvoker mevntExpressionPlotOpenClicked ; 
@@ -137,7 +137,7 @@ namespace MultiAlignWin
         /// </summary>
         /// <param name="analysis"></param>
         /// <param name="name"></param>
-        public ctlClusterGrid(clsMultiAlignAnalysis analysis, string name)
+        public ctlClusterGrid(MultiAlignAnalysis analysis, string name)
         {
             InitializeComponent();            
             Analysis                = analysis;
@@ -915,7 +915,7 @@ namespace MultiAlignWin
         /// <summary>
         /// Sets the analysis object held by this cluster grid.
         /// </summary>
-        public clsMultiAlignAnalysis Analysis
+        public MultiAlignAnalysis Analysis
         {
             set
             {
