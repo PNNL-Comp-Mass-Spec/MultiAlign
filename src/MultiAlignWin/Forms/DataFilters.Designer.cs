@@ -82,7 +82,6 @@ namespace MultiAlignWin.Forms.Filters
             this.m_minClusterMass = new System.Windows.Forms.NumericUpDown();
             this.label9 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
-            this.label12 = new System.Windows.Forms.Label();
             this.clusterDriftTimeCheckbox = new System.Windows.Forms.CheckBox();
             this.clusterMassCheckbox = new System.Windows.Forms.CheckBox();
             this.clusterNETCheckbox = new System.Windows.Forms.CheckBox();
@@ -94,6 +93,7 @@ namespace MultiAlignWin.Forms.Filters
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.label14 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.m_minUMCAbundanceMax)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.m_maxUMCAbundanceMax)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.m_minUMCScore)).BeginInit();
@@ -135,7 +135,7 @@ namespace MultiAlignWin.Forms.Filters
             // 
             this.okButton.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.okButton.Location = new System.Drawing.Point(225, 501);
+            this.okButton.Location = new System.Drawing.Point(151, 524);
             this.okButton.Name = "okButton";
             this.okButton.Size = new System.Drawing.Size(65, 32);
             this.okButton.TabIndex = 42;
@@ -147,7 +147,7 @@ namespace MultiAlignWin.Forms.Filters
             // 
             this.cancelButton.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cancelButton.Location = new System.Drawing.Point(296, 501);
+            this.cancelButton.Location = new System.Drawing.Point(222, 524);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(65, 32);
             this.cancelButton.TabIndex = 43;
@@ -159,7 +159,7 @@ namespace MultiAlignWin.Forms.Filters
             this.label13.AutoSize = true;
             this.label13.Enabled = false;
             this.label13.ForeColor = System.Drawing.Color.Blue;
-            this.label13.Location = new System.Drawing.Point(13, 383);
+            this.label13.Location = new System.Drawing.Point(13, 358);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(93, 13);
             this.label13.TabIndex = 115;
@@ -168,7 +168,7 @@ namespace MultiAlignWin.Forms.Filters
             // abundanceMaxCheckbox
             // 
             this.abundanceMaxCheckbox.AutoSize = true;
-            this.abundanceMaxCheckbox.Location = new System.Drawing.Point(26, 345);
+            this.abundanceMaxCheckbox.Location = new System.Drawing.Point(25, 315);
             this.abundanceMaxCheckbox.Name = "abundanceMaxCheckbox";
             this.abundanceMaxCheckbox.Size = new System.Drawing.Size(107, 17);
             this.abundanceMaxCheckbox.TabIndex = 112;
@@ -177,7 +177,7 @@ namespace MultiAlignWin.Forms.Filters
             // 
             // m_minUMCAbundanceMax
             // 
-            this.m_minUMCAbundanceMax.Location = new System.Drawing.Point(149, 342);
+            this.m_minUMCAbundanceMax.Location = new System.Drawing.Point(148, 312);
             this.m_minUMCAbundanceMax.Maximum = new decimal(new int[] {
             1215752192,
             23,
@@ -190,7 +190,7 @@ namespace MultiAlignWin.Forms.Filters
             // 
             // m_maxUMCAbundanceMax
             // 
-            this.m_maxUMCAbundanceMax.Location = new System.Drawing.Point(262, 342);
+            this.m_maxUMCAbundanceMax.Location = new System.Drawing.Point(261, 312);
             this.m_maxUMCAbundanceMax.Maximum = new decimal(new int[] {
             1215752192,
             23,
@@ -204,7 +204,7 @@ namespace MultiAlignWin.Forms.Filters
             // m_minUMCScore
             // 
             this.m_minUMCScore.Enabled = false;
-            this.m_minUMCScore.Location = new System.Drawing.Point(149, 396);
+            this.m_minUMCScore.Location = new System.Drawing.Point(149, 371);
             this.m_minUMCScore.Maximum = new decimal(new int[] {
             1215752192,
             23,
@@ -218,7 +218,7 @@ namespace MultiAlignWin.Forms.Filters
             // m_maxUMCDriftTime
             // 
             this.m_maxUMCDriftTime.DecimalPlaces = 4;
-            this.m_maxUMCDriftTime.Location = new System.Drawing.Point(262, 271);
+            this.m_maxUMCDriftTime.Location = new System.Drawing.Point(261, 229);
             this.m_maxUMCDriftTime.Maximum = new decimal(new int[] {
             1215752192,
             23,
@@ -232,7 +232,7 @@ namespace MultiAlignWin.Forms.Filters
             // m_maxUMCScore
             // 
             this.m_maxUMCScore.Enabled = false;
-            this.m_maxUMCScore.Location = new System.Drawing.Point(262, 396);
+            this.m_maxUMCScore.Location = new System.Drawing.Point(262, 371);
             this.m_maxUMCScore.Maximum = new decimal(new int[] {
             1215752192,
             23,
@@ -247,7 +247,7 @@ namespace MultiAlignWin.Forms.Filters
             // 
             this.scoreCheckbox.AutoSize = true;
             this.scoreCheckbox.Enabled = false;
-            this.scoreCheckbox.Location = new System.Drawing.Point(26, 399);
+            this.scoreCheckbox.Location = new System.Drawing.Point(26, 374);
             this.scoreCheckbox.Name = "scoreCheckbox";
             this.scoreCheckbox.Size = new System.Drawing.Size(54, 17);
             this.scoreCheckbox.TabIndex = 109;
@@ -257,7 +257,7 @@ namespace MultiAlignWin.Forms.Filters
             // m_minUMCDriftTime
             // 
             this.m_minUMCDriftTime.DecimalPlaces = 4;
-            this.m_minUMCDriftTime.Location = new System.Drawing.Point(149, 271);
+            this.m_minUMCDriftTime.Location = new System.Drawing.Point(148, 229);
             this.m_minUMCDriftTime.Maximum = new decimal(new int[] {
             1215752192,
             23,
@@ -270,7 +270,7 @@ namespace MultiAlignWin.Forms.Filters
             // 
             // m_maxUMCMSFeatureCount
             // 
-            this.m_maxUMCMSFeatureCount.Location = new System.Drawing.Point(262, 210);
+            this.m_maxUMCMSFeatureCount.Location = new System.Drawing.Point(262, 173);
             this.m_maxUMCMSFeatureCount.Maximum = new decimal(new int[] {
             1215752192,
             23,
@@ -283,7 +283,7 @@ namespace MultiAlignWin.Forms.Filters
             // 
             // m_minUMCMSFeatureCount
             // 
-            this.m_minUMCMSFeatureCount.Location = new System.Drawing.Point(149, 210);
+            this.m_minUMCMSFeatureCount.Location = new System.Drawing.Point(149, 173);
             this.m_minUMCMSFeatureCount.Maximum = new decimal(new int[] {
             1215752192,
             23,
@@ -298,7 +298,7 @@ namespace MultiAlignWin.Forms.Filters
             // 
             this.label2.AutoSize = true;
             this.label2.ForeColor = System.Drawing.Color.Blue;
-            this.label2.Location = new System.Drawing.Point(13, 304);
+            this.label2.Location = new System.Drawing.Point(13, 265);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(67, 13);
             this.label2.TabIndex = 27;
@@ -307,7 +307,7 @@ namespace MultiAlignWin.Forms.Filters
             // abundanceSumCheckbox
             // 
             this.abundanceSumCheckbox.AutoSize = true;
-            this.abundanceSumCheckbox.Location = new System.Drawing.Point(26, 320);
+            this.abundanceSumCheckbox.Location = new System.Drawing.Point(25, 290);
             this.abundanceSumCheckbox.Name = "abundanceSumCheckbox";
             this.abundanceSumCheckbox.Size = new System.Drawing.Size(108, 17);
             this.abundanceSumCheckbox.TabIndex = 21;
@@ -317,7 +317,7 @@ namespace MultiAlignWin.Forms.Filters
             // m_maxUMCNET
             // 
             this.m_maxUMCNET.DecimalPlaces = 4;
-            this.m_maxUMCNET.Location = new System.Drawing.Point(262, 184);
+            this.m_maxUMCNET.Location = new System.Drawing.Point(262, 147);
             this.m_maxUMCNET.Maximum = new decimal(new int[] {
             1,
             0,
@@ -330,7 +330,7 @@ namespace MultiAlignWin.Forms.Filters
             // 
             // m_minUMCAbundanceSum
             // 
-            this.m_minUMCAbundanceSum.Location = new System.Drawing.Point(149, 317);
+            this.m_minUMCAbundanceSum.Location = new System.Drawing.Point(148, 287);
             this.m_minUMCAbundanceSum.Maximum = new decimal(new int[] {
             1215752192,
             23,
@@ -344,7 +344,7 @@ namespace MultiAlignWin.Forms.Filters
             // m_minUMCNET
             // 
             this.m_minUMCNET.DecimalPlaces = 4;
-            this.m_minUMCNET.Location = new System.Drawing.Point(149, 184);
+            this.m_minUMCNET.Location = new System.Drawing.Point(149, 147);
             this.m_minUMCNET.Maximum = new decimal(new int[] {
             1,
             0,
@@ -357,7 +357,7 @@ namespace MultiAlignWin.Forms.Filters
             // 
             // m_maxUMCAbundanceSum
             // 
-            this.m_maxUMCAbundanceSum.Location = new System.Drawing.Point(262, 317);
+            this.m_maxUMCAbundanceSum.Location = new System.Drawing.Point(261, 287);
             this.m_maxUMCAbundanceSum.Maximum = new decimal(new int[] {
             1215752192,
             23,
@@ -370,7 +370,7 @@ namespace MultiAlignWin.Forms.Filters
             // 
             // m_maxUMCScan
             // 
-            this.m_maxUMCScan.Location = new System.Drawing.Point(262, 158);
+            this.m_maxUMCScan.Location = new System.Drawing.Point(262, 121);
             this.m_maxUMCScan.Maximum = new decimal(new int[] {
             1215752192,
             23,
@@ -383,7 +383,7 @@ namespace MultiAlignWin.Forms.Filters
             // 
             // m_minUMCScan
             // 
-            this.m_minUMCScan.Location = new System.Drawing.Point(149, 158);
+            this.m_minUMCScan.Location = new System.Drawing.Point(149, 121);
             this.m_minUMCScan.Maximum = new decimal(new int[] {
             1215752192,
             23,
@@ -396,7 +396,7 @@ namespace MultiAlignWin.Forms.Filters
             // 
             // m_maxUMCCharge
             // 
-            this.m_maxUMCCharge.Location = new System.Drawing.Point(262, 101);
+            this.m_maxUMCCharge.Location = new System.Drawing.Point(262, 79);
             this.m_maxUMCCharge.Maximum = new decimal(new int[] {
             50,
             0,
@@ -409,7 +409,7 @@ namespace MultiAlignWin.Forms.Filters
             // 
             // m_minUMCChargeState
             // 
-            this.m_minUMCChargeState.Location = new System.Drawing.Point(149, 101);
+            this.m_minUMCChargeState.Location = new System.Drawing.Point(149, 79);
             this.m_minUMCChargeState.Maximum = new decimal(new int[] {
             50,
             0,
@@ -423,7 +423,7 @@ namespace MultiAlignWin.Forms.Filters
             // m_maxUMCMassCalibrated
             // 
             this.m_maxUMCMassCalibrated.DecimalPlaces = 4;
-            this.m_maxUMCMassCalibrated.Location = new System.Drawing.Point(262, 75);
+            this.m_maxUMCMassCalibrated.Location = new System.Drawing.Point(262, 53);
             this.m_maxUMCMassCalibrated.Maximum = new decimal(new int[] {
             1215752192,
             23,
@@ -437,7 +437,7 @@ namespace MultiAlignWin.Forms.Filters
             // m_minUMCMassCalibrated
             // 
             this.m_minUMCMassCalibrated.DecimalPlaces = 4;
-            this.m_minUMCMassCalibrated.Location = new System.Drawing.Point(149, 75);
+            this.m_minUMCMassCalibrated.Location = new System.Drawing.Point(149, 53);
             this.m_minUMCMassCalibrated.Maximum = new decimal(new int[] {
             1215752192,
             23,
@@ -467,7 +467,7 @@ namespace MultiAlignWin.Forms.Filters
             // m_maxUMCMass
             // 
             this.m_maxUMCMass.DecimalPlaces = 4;
-            this.m_maxUMCMass.Location = new System.Drawing.Point(262, 48);
+            this.m_maxUMCMass.Location = new System.Drawing.Point(262, 26);
             this.m_maxUMCMass.Maximum = new decimal(new int[] {
             1215752192,
             23,
@@ -481,7 +481,7 @@ namespace MultiAlignWin.Forms.Filters
             // m_minUMCMass
             // 
             this.m_minUMCMass.DecimalPlaces = 4;
-            this.m_minUMCMass.Location = new System.Drawing.Point(149, 48);
+            this.m_minUMCMass.Location = new System.Drawing.Point(149, 26);
             this.m_minUMCMass.Maximum = new decimal(new int[] {
             1215752192,
             23,
@@ -495,7 +495,7 @@ namespace MultiAlignWin.Forms.Filters
             // chargeStateCheckbox
             // 
             this.chargeStateCheckbox.AutoSize = true;
-            this.chargeStateCheckbox.Location = new System.Drawing.Point(26, 97);
+            this.chargeStateCheckbox.Location = new System.Drawing.Point(26, 75);
             this.chargeStateCheckbox.Name = "chargeStateCheckbox";
             this.chargeStateCheckbox.Size = new System.Drawing.Size(88, 17);
             this.chargeStateCheckbox.TabIndex = 6;
@@ -506,7 +506,7 @@ namespace MultiAlignWin.Forms.Filters
             // 
             this.label4.AutoSize = true;
             this.label4.ForeColor = System.Drawing.Color.Blue;
-            this.label4.Location = new System.Drawing.Point(13, 244);
+            this.label4.Location = new System.Drawing.Point(13, 214);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(60, 13);
             this.label4.TabIndex = 29;
@@ -516,7 +516,7 @@ namespace MultiAlignWin.Forms.Filters
             // 
             this.label3.AutoSize = true;
             this.label3.ForeColor = System.Drawing.Color.Blue;
-            this.label3.Location = new System.Drawing.Point(13, 130);
+            this.label3.Location = new System.Drawing.Point(13, 108);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(115, 13);
             this.label3.TabIndex = 28;
@@ -526,16 +526,16 @@ namespace MultiAlignWin.Forms.Filters
             // 
             this.label1.AutoSize = true;
             this.label1.ForeColor = System.Drawing.Color.Blue;
-            this.label1.Location = new System.Drawing.Point(13, 32);
+            this.label1.Location = new System.Drawing.Point(13, 10);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(23, 13);
+            this.label1.Size = new System.Drawing.Size(83, 13);
             this.label1.TabIndex = 26;
-            this.label1.Text = "MS";
+            this.label1.Text = "Mass Data (MS)";
             // 
             // msFeatureCountCheckbox
             // 
             this.msFeatureCountCheckbox.AutoSize = true;
-            this.msFeatureCountCheckbox.Location = new System.Drawing.Point(26, 213);
+            this.msFeatureCountCheckbox.Location = new System.Drawing.Point(26, 176);
             this.msFeatureCountCheckbox.Name = "msFeatureCountCheckbox";
             this.msFeatureCountCheckbox.Size = new System.Drawing.Size(112, 17);
             this.msFeatureCountCheckbox.TabIndex = 15;
@@ -545,7 +545,7 @@ namespace MultiAlignWin.Forms.Filters
             // driftTimeCheckbox
             // 
             this.driftTimeCheckbox.AutoSize = true;
-            this.driftTimeCheckbox.Location = new System.Drawing.Point(26, 272);
+            this.driftTimeCheckbox.Location = new System.Drawing.Point(25, 230);
             this.driftTimeCheckbox.Name = "driftTimeCheckbox";
             this.driftTimeCheckbox.Size = new System.Drawing.Size(71, 17);
             this.driftTimeCheckbox.TabIndex = 18;
@@ -555,7 +555,7 @@ namespace MultiAlignWin.Forms.Filters
             // massCalibratedCheckbox
             // 
             this.massCalibratedCheckbox.AutoSize = true;
-            this.massCalibratedCheckbox.Location = new System.Drawing.Point(26, 74);
+            this.massCalibratedCheckbox.Location = new System.Drawing.Point(26, 52);
             this.massCalibratedCheckbox.Name = "massCalibratedCheckbox";
             this.massCalibratedCheckbox.Size = new System.Drawing.Size(101, 17);
             this.massCalibratedCheckbox.TabIndex = 3;
@@ -565,7 +565,7 @@ namespace MultiAlignWin.Forms.Filters
             // scanCheckbox
             // 
             this.scanCheckbox.AutoSize = true;
-            this.scanCheckbox.Location = new System.Drawing.Point(26, 161);
+            this.scanCheckbox.Location = new System.Drawing.Point(26, 124);
             this.scanCheckbox.Name = "scanCheckbox";
             this.scanCheckbox.Size = new System.Drawing.Size(54, 17);
             this.scanCheckbox.TabIndex = 9;
@@ -575,7 +575,7 @@ namespace MultiAlignWin.Forms.Filters
             // netAlignedCheckbox
             // 
             this.netAlignedCheckbox.AutoSize = true;
-            this.netAlignedCheckbox.Location = new System.Drawing.Point(26, 187);
+            this.netAlignedCheckbox.Location = new System.Drawing.Point(26, 150);
             this.netAlignedCheckbox.Name = "netAlignedCheckbox";
             this.netAlignedCheckbox.Size = new System.Drawing.Size(86, 17);
             this.netAlignedCheckbox.TabIndex = 12;
@@ -585,7 +585,7 @@ namespace MultiAlignWin.Forms.Filters
             // massCheckbox
             // 
             this.massCheckbox.AutoSize = true;
-            this.massCheckbox.Location = new System.Drawing.Point(26, 48);
+            this.massCheckbox.Location = new System.Drawing.Point(26, 26);
             this.massCheckbox.Name = "massCheckbox";
             this.massCheckbox.Size = new System.Drawing.Size(54, 17);
             this.massCheckbox.TabIndex = 0;
@@ -595,7 +595,7 @@ namespace MultiAlignWin.Forms.Filters
             // m_minClusterScoreMedian
             // 
             this.m_minClusterScoreMedian.DecimalPlaces = 4;
-            this.m_minClusterScoreMedian.Location = new System.Drawing.Point(152, 258);
+            this.m_minClusterScoreMedian.Location = new System.Drawing.Point(152, 223);
             this.m_minClusterScoreMedian.Maximum = new decimal(new int[] {
             1,
             0,
@@ -609,7 +609,7 @@ namespace MultiAlignWin.Forms.Filters
             // m_maxClusterScoreMedian
             // 
             this.m_maxClusterScoreMedian.DecimalPlaces = 4;
-            this.m_maxClusterScoreMedian.Location = new System.Drawing.Point(266, 259);
+            this.m_maxClusterScoreMedian.Location = new System.Drawing.Point(266, 224);
             this.m_maxClusterScoreMedian.Maximum = new decimal(new int[] {
             1,
             0,
@@ -623,7 +623,7 @@ namespace MultiAlignWin.Forms.Filters
             // clusterScoreMedian
             // 
             this.clusterScoreMedian.AutoSize = true;
-            this.clusterScoreMedian.Location = new System.Drawing.Point(25, 259);
+            this.clusterScoreMedian.Location = new System.Drawing.Point(25, 224);
             this.clusterScoreMedian.Name = "clusterScoreMedian";
             this.clusterScoreMedian.Size = new System.Drawing.Size(92, 17);
             this.clusterScoreMedian.TabIndex = 112;
@@ -633,7 +633,7 @@ namespace MultiAlignWin.Forms.Filters
             // m_minClusterScoreMean
             // 
             this.m_minClusterScoreMean.DecimalPlaces = 4;
-            this.m_minClusterScoreMean.Location = new System.Drawing.Point(152, 232);
+            this.m_minClusterScoreMean.Location = new System.Drawing.Point(152, 197);
             this.m_minClusterScoreMean.Maximum = new decimal(new int[] {
             1,
             0,
@@ -647,7 +647,7 @@ namespace MultiAlignWin.Forms.Filters
             // m_maxClusterScoreMean
             // 
             this.m_maxClusterScoreMean.DecimalPlaces = 4;
-            this.m_maxClusterScoreMean.Location = new System.Drawing.Point(266, 233);
+            this.m_maxClusterScoreMean.Location = new System.Drawing.Point(266, 198);
             this.m_maxClusterScoreMean.Maximum = new decimal(new int[] {
             1,
             0,
@@ -661,7 +661,7 @@ namespace MultiAlignWin.Forms.Filters
             // clusterScoreMean
             // 
             this.clusterScoreMean.AutoSize = true;
-            this.clusterScoreMean.Location = new System.Drawing.Point(25, 233);
+            this.clusterScoreMean.Location = new System.Drawing.Point(25, 198);
             this.clusterScoreMean.Name = "clusterScoreMean";
             this.clusterScoreMean.Size = new System.Drawing.Size(84, 17);
             this.clusterScoreMean.TabIndex = 109;
@@ -672,7 +672,7 @@ namespace MultiAlignWin.Forms.Filters
             // 
             this.label11.AutoSize = true;
             this.label11.ForeColor = System.Drawing.Color.Blue;
-            this.label11.Location = new System.Drawing.Point(11, 191);
+            this.label11.Location = new System.Drawing.Point(11, 156);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(89, 13);
             this.label11.TabIndex = 108;
@@ -681,7 +681,7 @@ namespace MultiAlignWin.Forms.Filters
             // m_maxClusterDriftTime
             // 
             this.m_maxClusterDriftTime.DecimalPlaces = 4;
-            this.m_maxClusterDriftTime.Location = new System.Drawing.Point(266, 149);
+            this.m_maxClusterDriftTime.Location = new System.Drawing.Point(266, 122);
             this.m_maxClusterDriftTime.Maximum = new decimal(new int[] {
             1215752192,
             23,
@@ -695,7 +695,7 @@ namespace MultiAlignWin.Forms.Filters
             // m_minClusterDriftTime
             // 
             this.m_minClusterDriftTime.DecimalPlaces = 4;
-            this.m_minClusterDriftTime.Location = new System.Drawing.Point(152, 149);
+            this.m_minClusterDriftTime.Location = new System.Drawing.Point(152, 122);
             this.m_minClusterDriftTime.Maximum = new decimal(new int[] {
             1215752192,
             23,
@@ -709,7 +709,7 @@ namespace MultiAlignWin.Forms.Filters
             // m_maxClusterNET
             // 
             this.m_maxClusterNET.DecimalPlaces = 4;
-            this.m_maxClusterNET.Location = new System.Drawing.Point(266, 95);
+            this.m_maxClusterNET.Location = new System.Drawing.Point(266, 68);
             this.m_maxClusterNET.Maximum = new decimal(new int[] {
             1,
             0,
@@ -723,7 +723,7 @@ namespace MultiAlignWin.Forms.Filters
             // m_minClusterNET
             // 
             this.m_minClusterNET.DecimalPlaces = 4;
-            this.m_minClusterNET.Location = new System.Drawing.Point(152, 95);
+            this.m_minClusterNET.Location = new System.Drawing.Point(152, 68);
             this.m_minClusterNET.Maximum = new decimal(new int[] {
             1,
             0,
@@ -737,7 +737,7 @@ namespace MultiAlignWin.Forms.Filters
             // m_maxClusterMass
             // 
             this.m_maxClusterMass.DecimalPlaces = 4;
-            this.m_maxClusterMass.Location = new System.Drawing.Point(265, 51);
+            this.m_maxClusterMass.Location = new System.Drawing.Point(265, 26);
             this.m_maxClusterMass.Maximum = new decimal(new int[] {
             1215752192,
             23,
@@ -751,7 +751,7 @@ namespace MultiAlignWin.Forms.Filters
             // m_minClusterMass
             // 
             this.m_minClusterMass.DecimalPlaces = 4;
-            this.m_minClusterMass.Location = new System.Drawing.Point(152, 51);
+            this.m_minClusterMass.Location = new System.Drawing.Point(152, 26);
             this.m_minClusterMass.Maximum = new decimal(new int[] {
             1215752192,
             23,
@@ -766,7 +766,7 @@ namespace MultiAlignWin.Forms.Filters
             // 
             this.label9.AutoSize = true;
             this.label9.ForeColor = System.Drawing.Color.Blue;
-            this.label9.Location = new System.Drawing.Point(11, 130);
+            this.label9.Location = new System.Drawing.Point(11, 103);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(60, 13);
             this.label9.TabIndex = 94;
@@ -776,26 +776,16 @@ namespace MultiAlignWin.Forms.Filters
             // 
             this.label10.AutoSize = true;
             this.label10.ForeColor = System.Drawing.Color.Blue;
-            this.label10.Location = new System.Drawing.Point(11, 82);
+            this.label10.Location = new System.Drawing.Point(11, 55);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(115, 13);
             this.label10.TabIndex = 93;
             this.label10.Text = "Liquid Chromatography";
             // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.ForeColor = System.Drawing.Color.Blue;
-            this.label12.Location = new System.Drawing.Point(11, 32);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(23, 13);
-            this.label12.TabIndex = 91;
-            this.label12.Text = "MS";
-            // 
             // clusterDriftTimeCheckbox
             // 
             this.clusterDriftTimeCheckbox.AutoSize = true;
-            this.clusterDriftTimeCheckbox.Location = new System.Drawing.Point(25, 152);
+            this.clusterDriftTimeCheckbox.Location = new System.Drawing.Point(25, 125);
             this.clusterDriftTimeCheckbox.Name = "clusterDriftTimeCheckbox";
             this.clusterDriftTimeCheckbox.Size = new System.Drawing.Size(71, 17);
             this.clusterDriftTimeCheckbox.TabIndex = 36;
@@ -805,7 +795,7 @@ namespace MultiAlignWin.Forms.Filters
             // clusterMassCheckbox
             // 
             this.clusterMassCheckbox.AutoSize = true;
-            this.clusterMassCheckbox.Location = new System.Drawing.Point(25, 51);
+            this.clusterMassCheckbox.Location = new System.Drawing.Point(25, 26);
             this.clusterMassCheckbox.Name = "clusterMassCheckbox";
             this.clusterMassCheckbox.Size = new System.Drawing.Size(54, 17);
             this.clusterMassCheckbox.TabIndex = 27;
@@ -815,7 +805,7 @@ namespace MultiAlignWin.Forms.Filters
             // clusterNETCheckbox
             // 
             this.clusterNETCheckbox.AutoSize = true;
-            this.clusterNETCheckbox.Location = new System.Drawing.Point(25, 98);
+            this.clusterNETCheckbox.Location = new System.Drawing.Point(25, 71);
             this.clusterNETCheckbox.Name = "clusterNETCheckbox";
             this.clusterNETCheckbox.Size = new System.Drawing.Size(51, 17);
             this.clusterNETCheckbox.TabIndex = 33;
@@ -824,7 +814,7 @@ namespace MultiAlignWin.Forms.Filters
             // 
             // m_minClusterSize
             // 
-            this.m_minClusterSize.Location = new System.Drawing.Point(152, 206);
+            this.m_minClusterSize.Location = new System.Drawing.Point(152, 171);
             this.m_minClusterSize.Maximum = new decimal(new int[] {
             1215752192,
             23,
@@ -837,7 +827,7 @@ namespace MultiAlignWin.Forms.Filters
             // 
             // m_maxClusterSize
             // 
-            this.m_maxClusterSize.Location = new System.Drawing.Point(266, 207);
+            this.m_maxClusterSize.Location = new System.Drawing.Point(266, 172);
             this.m_maxClusterSize.Maximum = new decimal(new int[] {
             1215752192,
             23,
@@ -867,7 +857,7 @@ namespace MultiAlignWin.Forms.Filters
             // clusterSizeCheckbox
             // 
             this.clusterSizeCheckbox.AutoSize = true;
-            this.clusterSizeCheckbox.Location = new System.Drawing.Point(25, 207);
+            this.clusterSizeCheckbox.Location = new System.Drawing.Point(25, 172);
             this.clusterSizeCheckbox.Name = "clusterSizeCheckbox";
             this.clusterSizeCheckbox.Size = new System.Drawing.Size(46, 17);
             this.clusterSizeCheckbox.TabIndex = 39;
@@ -881,10 +871,10 @@ namespace MultiAlignWin.Forms.Filters
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
-            this.tabControl1.Location = new System.Drawing.Point(1, 3);
+            this.tabControl1.Location = new System.Drawing.Point(4, 5);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(556, 493);
+            this.tabControl1.Size = new System.Drawing.Size(413, 512);
             this.tabControl1.TabIndex = 44;
             // 
             // tabPage1
@@ -929,13 +919,15 @@ namespace MultiAlignWin.Forms.Filters
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(548, 467);
+            this.tabPage1.Size = new System.Drawing.Size(386, 467);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "LC-MS Features";
             this.tabPage1.UseVisualStyleBackColor = true;
+            this.tabPage1.Click += new System.EventHandler(this.tabPage1_Click);
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.label14);
             this.tabPage2.Controls.Add(this.m_minClusterScoreMedian);
             this.tabPage2.Controls.Add(this.m_maxClusterScoreMedian);
             this.tabPage2.Controls.Add(this.label8);
@@ -954,7 +946,6 @@ namespace MultiAlignWin.Forms.Filters
             this.tabPage2.Controls.Add(this.m_minClusterDriftTime);
             this.tabPage2.Controls.Add(this.clusterDriftTimeCheckbox);
             this.tabPage2.Controls.Add(this.m_maxClusterNET);
-            this.tabPage2.Controls.Add(this.label12);
             this.tabPage2.Controls.Add(this.m_minClusterNET);
             this.tabPage2.Controls.Add(this.label10);
             this.tabPage2.Controls.Add(this.m_maxClusterMass);
@@ -963,17 +954,27 @@ namespace MultiAlignWin.Forms.Filters
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(548, 467);
+            this.tabPage2.Size = new System.Drawing.Size(405, 486);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Clusters";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.ForeColor = System.Drawing.Color.Blue;
+            this.label14.Location = new System.Drawing.Point(11, 10);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(83, 13);
+            this.label14.TabIndex = 115;
+            this.label14.Text = "Mass Data (MS)";
             // 
             // DataFilters
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(569, 545);
+            this.ClientSize = new System.Drawing.Size(421, 564);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.cancelButton);
             this.Controls.Add(this.okButton);
@@ -1069,7 +1070,6 @@ namespace MultiAlignWin.Forms.Filters
         private System.Windows.Forms.NumericUpDown m_minClusterMass;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.Label label12;
         private System.Windows.Forms.CheckBox clusterDriftTimeCheckbox;
         private System.Windows.Forms.CheckBox clusterMassCheckbox;
         private System.Windows.Forms.CheckBox clusterNETCheckbox;
@@ -1089,5 +1089,6 @@ namespace MultiAlignWin.Forms.Filters
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage2;
+        private System.Windows.Forms.Label label14;
     }
 }

@@ -164,11 +164,11 @@ namespace MultiAlignWin.IO
                         selectQry = "SELECT * FROM V_Analysis_Job_Export_MultiAlign WHERE datasetName LIKE \'" + field + "\' AND ToolID IN (" +  tools + ")";
                         if (!string.IsNullOrEmpty(options.InstrumentName))
                         {
-                            selectQry += " AND InstrumentName LIKE \'" + options.InstrumentName + "\'";
+                            selectQry += " AND InstrumentName LIKE \'%" + options.InstrumentName + "%\'";
                         }
                         if (!string.IsNullOrEmpty(options.ParameterFileName))
                         {
-                            selectQry += " AND ParameterFileName LIKE \'" + options.ParameterFileName + "\'";
+                            selectQry += " AND ParameterFileName LIKE \'%" + options.ParameterFileName + "%\'";
                         }
                         selectQry += " AND AcquisitionTime >= '" + options.DateTime.ToShortDateString() + "'";
                         break;
@@ -179,11 +179,11 @@ namespace MultiAlignWin.IO
 
                         if (!string.IsNullOrEmpty(options.InstrumentName))
                         {
-                            selectQry += " AND InstrumentName LIKE \'" + options.InstrumentName + "\'";
+                            selectQry += " AND InstrumentName LIKE \'%" + options.InstrumentName + "%\'";
                         }
                         if (!string.IsNullOrEmpty(options.ParameterFileName))
                         {
-                            selectQry += " AND ParameterFileName LIKE \'" + options.ParameterFileName + "\'";
+                            selectQry += " AND ParameterFileName LIKE \'%" + options.ParameterFileName + "%\'";
                         }
                         selectQry += " AND AcquisitionTime >= '" + options.DateTime.ToShortDateString() + "'";
                         break;
@@ -345,7 +345,7 @@ namespace MultiAlignWin.IO
                     alias                                   = datasetInfo.mstrDatasetId;      /// This was set by default to be the same thing as the dataset id.
                     datasetInfo.mstrVolume                  = Convert.ToString(row[1]);
                     datasetInfo.mstrInstrumentFolder        = Convert.ToString(row[2]);
-                    datasetInfo.mstrDatasetPath             = Convert.ToString(row[3]);
+                    datasetInfo.DatasetName                 = Convert.ToString(row[3]);
                     datasetInfo.mstrResultsFolder           = Convert.ToString(row[4]);
                     datasetInfo.mstrAnalysisJobId           = Convert.ToString(row[6]);
                     datasetInfo.mintColumnID                = Convert.ToInt32(row[7]);
@@ -449,6 +449,22 @@ namespace MultiAlignWin.IO
                     datasetInfo.Selected = false;
 
                     /// 
+                    /// Batch ID
+                    /// 
+                    if (row.IsNull(21) == false)
+                    {
+                        datasetInfo.ParameterFileName = Convert.ToString(row[21]);
+                    }
+                    else
+                    {
+                        datasetInfo.ParameterFileName = "";
+                    }
+                    datasetInfo.mstrAlias = alias;
+                    datasetInfo.Selected = false;
+
+
+
+                    /// 
                     /// Data File Path
                     /// 
                     pekFilePath        = Path.Combine(Convert.ToString(row[17]), datasetInfo.mstrResultsFolder);                    
@@ -481,8 +497,9 @@ namespace MultiAlignWin.IO
                             info.mstrResultsFolder      = datasetInfo.mstrResultsFolder;
                             info.mstrVolume             = datasetInfo.mstrVolume;
                             info.Selected               = datasetInfo.Selected;                            
-                            info.mstrLocalPath          = Path.Combine(pekFilePath, fileName);
-                            info.DatasetName        = fileName;
+                            info.ArchivePath            = Path.Combine(pekFilePath, fileName);
+                            info.ParameterFileName      = datasetInfo.ParameterFileName;
+                            info.DatasetName            = fileName;
 
 
                             // Check the file extension

@@ -88,14 +88,15 @@ namespace MultiAlignWin
             this.mcolumnHeader_jobnum = new System.Windows.Forms.ColumnHeader();
             this.mcolumnHeader_fileName = new System.Windows.Forms.ColumnHeader();
             this.mcolumnHeader_alias = new System.Windows.Forms.ColumnHeader();
+            this.batchID = new System.Windows.Forms.ColumnHeader();
             this.mcolumnHeader_block = new System.Windows.Forms.ColumnHeader();
             this.mcolumnHeader_runOrder = new System.Windows.Forms.ColumnHeader();
             this.lcColumnID = new System.Windows.Forms.ColumnHeader();
-            this.batchID = new System.Windows.Forms.ColumnHeader();
             this.mcolumnHeader_Date = new System.Windows.Forms.ColumnHeader();
             this.mcolumnHeader_FileType = new System.Windows.Forms.ColumnHeader();
             this.columnHeader_tool = new System.Windows.Forms.ColumnHeader();
             this.m_instrumentColumn = new System.Windows.Forms.ColumnHeader();
+            this.columnParameterFilename = new System.Windows.Forms.ColumnHeader();
             this.mbutton_clearUnchecked = new System.Windows.Forms.Button();
             this.mbutton_clearChecked = new System.Windows.Forms.Button();
             this.mbutton_checkAll = new System.Windows.Forms.Button();
@@ -128,7 +129,7 @@ namespace MultiAlignWin
             // Banner
             // 
             this.Banner.BackColor = System.Drawing.Color.White;
-            this.Banner.Size = new System.Drawing.Size(1050, 50);
+            this.Banner.Size = new System.Drawing.Size(1113, 50);
             this.Banner.Subtitle = "Choose from different options of getting files.";
             this.Banner.Title = "Step 1. Select Data";
             // 
@@ -231,7 +232,7 @@ namespace MultiAlignWin
             this.mpanel_loading.Location = new System.Drawing.Point(6, 750);
             this.mpanel_loading.Name = "mpanel_loading";
             this.mpanel_loading.Padding = new System.Windows.Forms.Padding(3);
-            this.mpanel_loading.Size = new System.Drawing.Size(1036, 33);
+            this.mpanel_loading.Size = new System.Drawing.Size(1099, 33);
             this.mpanel_loading.TabIndex = 5;
             this.mpanel_loading.Visible = false;
             // 
@@ -242,7 +243,7 @@ namespace MultiAlignWin
             this.mprogressBar_datasetLoading.ForeColor = System.Drawing.Color.Lime;
             this.mprogressBar_datasetLoading.Location = new System.Drawing.Point(3, 3);
             this.mprogressBar_datasetLoading.Name = "mprogressBar_datasetLoading";
-            this.mprogressBar_datasetLoading.Size = new System.Drawing.Size(862, 25);
+            this.mprogressBar_datasetLoading.Size = new System.Drawing.Size(925, 25);
             this.mprogressBar_datasetLoading.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
             this.mprogressBar_datasetLoading.TabIndex = 9;
             // 
@@ -253,7 +254,7 @@ namespace MultiAlignWin
             this.mlabel_percentLoadingComplete.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.mlabel_percentLoadingComplete.Dock = System.Windows.Forms.DockStyle.Right;
             this.mlabel_percentLoadingComplete.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.mlabel_percentLoadingComplete.Location = new System.Drawing.Point(865, 3);
+            this.mlabel_percentLoadingComplete.Location = new System.Drawing.Point(928, 3);
             this.mlabel_percentLoadingComplete.MinimumSize = new System.Drawing.Size(39, 22);
             this.mlabel_percentLoadingComplete.Name = "mlabel_percentLoadingComplete";
             this.mlabel_percentLoadingComplete.Size = new System.Drawing.Size(39, 22);
@@ -264,7 +265,7 @@ namespace MultiAlignWin
             // 
             this.mlabel_downloadingImage.Dock = System.Windows.Forms.DockStyle.Right;
             this.mlabel_downloadingImage.Image = global::MultiAlignWin.Properties.Resources.DOWNLOAD_00;
-            this.mlabel_downloadingImage.Location = new System.Drawing.Point(904, 3);
+            this.mlabel_downloadingImage.Location = new System.Drawing.Point(967, 3);
             this.mlabel_downloadingImage.Name = "mlabel_downloadingImage";
             this.mlabel_downloadingImage.Size = new System.Drawing.Size(31, 25);
             this.mlabel_downloadingImage.TabIndex = 61;
@@ -275,7 +276,7 @@ namespace MultiAlignWin
             this.mbutton_stopLoading.Dock = System.Windows.Forms.DockStyle.Right;
             this.mbutton_stopLoading.Image = global::MultiAlignWin.Properties.Resources.Critical;
             this.mbutton_stopLoading.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.mbutton_stopLoading.Location = new System.Drawing.Point(935, 3);
+            this.mbutton_stopLoading.Location = new System.Drawing.Point(998, 3);
             this.mbutton_stopLoading.Name = "mbutton_stopLoading";
             this.mbutton_stopLoading.Size = new System.Drawing.Size(96, 25);
             this.mbutton_stopLoading.TabIndex = 60;
@@ -300,7 +301,7 @@ namespace MultiAlignWin
             this.panelOptions.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelOptions.Location = new System.Drawing.Point(134, 0);
             this.panelOptions.Name = "panelOptions";
-            this.panelOptions.Size = new System.Drawing.Size(1050, 786);
+            this.panelOptions.Size = new System.Drawing.Size(1113, 786);
             this.panelOptions.TabIndex = 2;
             // 
             // mlabel_totalChecked
@@ -312,7 +313,7 @@ namespace MultiAlignWin
             this.mlabel_totalChecked.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.mlabel_totalChecked.Location = new System.Drawing.Point(299, 286);
             this.mlabel_totalChecked.Name = "mlabel_totalChecked";
-            this.mlabel_totalChecked.Size = new System.Drawing.Size(476, 24);
+            this.mlabel_totalChecked.Size = new System.Drawing.Size(539, 24);
             this.mlabel_totalChecked.TabIndex = 59;
             this.mlabel_totalChecked.Text = "(0/0) Datasets Checked";
             this.mlabel_totalChecked.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -328,19 +329,20 @@ namespace MultiAlignWin
             this.mcolumnHeader_jobnum,
             this.mcolumnHeader_fileName,
             this.mcolumnHeader_alias,
+            this.batchID,
             this.mcolumnHeader_block,
             this.mcolumnHeader_runOrder,
             this.lcColumnID,
-            this.batchID,
             this.mcolumnHeader_Date,
             this.mcolumnHeader_FileType,
             this.columnHeader_tool,
-            this.m_instrumentColumn});
+            this.m_instrumentColumn,
+            this.columnParameterFilename});
             this.mlistView_datasets.FullRowSelect = true;
             this.mlistView_datasets.GridLines = true;
             this.mlistView_datasets.Location = new System.Drawing.Point(6, 316);
             this.mlistView_datasets.Name = "mlistView_datasets";
-            this.mlistView_datasets.Size = new System.Drawing.Size(1036, 428);
+            this.mlistView_datasets.Size = new System.Drawing.Size(1099, 428);
             this.mlistView_datasets.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.mlistView_datasets.TabIndex = 58;
             this.mlistView_datasets.UseCompatibleStateImageBehavior = false;
@@ -365,6 +367,11 @@ namespace MultiAlignWin
             this.mcolumnHeader_alias.Text = "Alias";
             this.mcolumnHeader_alias.Width = 69;
             // 
+            // batchID
+            // 
+            this.batchID.Text = "Batch ID";
+            this.batchID.Width = 62;
+            // 
             // mcolumnHeader_block
             // 
             this.mcolumnHeader_block.Text = "Block";
@@ -379,15 +386,11 @@ namespace MultiAlignWin
             this.lcColumnID.Text = "Column ID";
             this.lcColumnID.Width = 77;
             // 
-            // batchID
-            // 
-            this.batchID.Text = "Batch ID";
-            // 
             // mcolumnHeader_Date
             // 
             this.mcolumnHeader_Date.Text = "Date Acquisition Start";
             this.mcolumnHeader_Date.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.mcolumnHeader_Date.Width = 122;
+            this.mcolumnHeader_Date.Width = 104;
             // 
             // mcolumnHeader_FileType
             // 
@@ -404,6 +407,11 @@ namespace MultiAlignWin
             // 
             this.m_instrumentColumn.Text = "Instrument";
             this.m_instrumentColumn.Width = 70;
+            // 
+            // columnParameterFilename
+            // 
+            this.columnParameterFilename.Text = "Parameter File";
+            this.columnParameterFilename.Width = 77;
             // 
             // mbutton_clearUnchecked
             // 
@@ -444,7 +452,7 @@ namespace MultiAlignWin
             this.mbutton_checkAll.Enabled = false;
             this.mbutton_checkAll.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.mbutton_checkAll.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.mbutton_checkAll.Location = new System.Drawing.Point(872, 286);
+            this.mbutton_checkAll.Location = new System.Drawing.Point(935, 286);
             this.mbutton_checkAll.Name = "mbutton_checkAll";
             this.mbutton_checkAll.Size = new System.Drawing.Size(83, 24);
             this.mbutton_checkAll.TabIndex = 53;
@@ -476,7 +484,7 @@ namespace MultiAlignWin
             this.mgroupBox_selectData.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.mgroupBox_selectData.Location = new System.Drawing.Point(6, 56);
             this.mgroupBox_selectData.Name = "mgroupBox_selectData";
-            this.mgroupBox_selectData.Size = new System.Drawing.Size(1036, 204);
+            this.mgroupBox_selectData.Size = new System.Drawing.Size(1099, 204);
             this.mgroupBox_selectData.TabIndex = 48;
             this.mgroupBox_selectData.TabStop = false;
             this.mgroupBox_selectData.Text = "Select Data ";
@@ -500,7 +508,7 @@ namespace MultiAlignWin
             this.mlabel_similarNamesFound.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.mlabel_similarNamesFound.AutoSize = true;
             this.mlabel_similarNamesFound.ForeColor = System.Drawing.Color.Red;
-            this.mlabel_similarNamesFound.Location = new System.Drawing.Point(767, 185);
+            this.mlabel_similarNamesFound.Location = new System.Drawing.Point(830, 185);
             this.mlabel_similarNamesFound.Name = "mlabel_similarNamesFound";
             this.mlabel_similarNamesFound.Size = new System.Drawing.Size(265, 16);
             this.mlabel_similarNamesFound.TabIndex = 56;
@@ -549,7 +557,7 @@ namespace MultiAlignWin
             this.mprogressBar_connectionTest.ForeColor = System.Drawing.Color.Lime;
             this.mprogressBar_connectionTest.Location = new System.Drawing.Point(575, 96);
             this.mprogressBar_connectionTest.Name = "mprogressBar_connectionTest";
-            this.mprogressBar_connectionTest.Size = new System.Drawing.Size(453, 18);
+            this.mprogressBar_connectionTest.Size = new System.Drawing.Size(516, 18);
             this.mprogressBar_connectionTest.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
             this.mprogressBar_connectionTest.TabIndex = 39;
             this.mprogressBar_connectionTest.Value = 2;
@@ -596,8 +604,8 @@ namespace MultiAlignWin
             this.labelSelect.Name = "labelSelect";
             this.labelSelect.Size = new System.Drawing.Size(225, 40);
             this.labelSelect.TabIndex = 0;
-            this.labelSelect.Text = "Specify part of the name of the dataset:\r\nYou can use regex (e.g. * for several)\r" +
-                "\n";
+            this.labelSelect.Text = "Specify part of the name of the dataset:\r\nYou can use * for several or % for part" +
+                "ial\r\n";
             this.labelSelect.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // mbutton_databaseSelectDatasetIDFile
@@ -668,7 +676,7 @@ namespace MultiAlignWin
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.mline.Location = new System.Drawing.Point(49, 110);
             this.mline.Name = "mline";
-            this.mline.Size = new System.Drawing.Size(977, 17);
+            this.mline.Size = new System.Drawing.Size(1040, 17);
             this.mline.TabIndex = 55;
             // 
             // mbutton_uncheckAll
@@ -678,7 +686,7 @@ namespace MultiAlignWin
             this.mbutton_uncheckAll.Enabled = false;
             this.mbutton_uncheckAll.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.mbutton_uncheckAll.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.mbutton_uncheckAll.Location = new System.Drawing.Point(783, 286);
+            this.mbutton_uncheckAll.Location = new System.Drawing.Point(846, 286);
             this.mbutton_uncheckAll.Name = "mbutton_uncheckAll";
             this.mbutton_uncheckAll.Size = new System.Drawing.Size(83, 24);
             this.mbutton_uncheckAll.TabIndex = 52;
@@ -709,7 +717,7 @@ namespace MultiAlignWin
             this.mbutton_toggleAll.Enabled = false;
             this.mbutton_toggleAll.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.mbutton_toggleAll.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.mbutton_toggleAll.Location = new System.Drawing.Point(959, 286);
+            this.mbutton_toggleAll.Location = new System.Drawing.Point(1022, 286);
             this.mbutton_toggleAll.Name = "mbutton_toggleAll";
             this.mbutton_toggleAll.Size = new System.Drawing.Size(83, 24);
             this.mbutton_toggleAll.TabIndex = 50;
@@ -721,7 +729,7 @@ namespace MultiAlignWin
             // 
             this.Controls.Add(this.panelOptions);
             this.Name = "ctlLoadDatasetWizardPage";
-            this.Size = new System.Drawing.Size(1184, 786);
+            this.Size = new System.Drawing.Size(1247, 786);
             this.Controls.SetChildIndex(this.panelOptions, 0);
             this.Controls.SetChildIndex(this.Banner, 0);
             this.mcontextMenu_dataset.ResumeLayout(false);
@@ -792,5 +800,6 @@ namespace MultiAlignWin
 		private Label mlabel_similarNamesFound;
         private ColumnHeader m_instrumentColumn;
         private Button m_showDMSSearchOptionsButton;
+        private ColumnHeader columnParameterFilename;
 	}
 }

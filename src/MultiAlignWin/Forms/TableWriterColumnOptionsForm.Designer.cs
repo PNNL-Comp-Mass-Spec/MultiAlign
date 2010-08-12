@@ -29,6 +29,9 @@ namespace MultiAlignWin.Forms
         private void InitializeComponent()
         {
             this.featureGroupBox = new System.Windows.Forms.GroupBox();
+            this.chargeStateCheckbox = new System.Windows.Forms.CheckBox();
+            this.m_okButton = new System.Windows.Forms.Button();
+            this.m_setToDefaultsButton = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -44,9 +47,6 @@ namespace MultiAlignWin.Forms
             this.scanCheckbox = new System.Windows.Forms.CheckBox();
             this.netAlignedCheckbox = new System.Windows.Forms.CheckBox();
             this.massCheckbox = new System.Windows.Forms.CheckBox();
-            this.m_okButton = new System.Windows.Forms.Button();
-            this.m_setToDefaultsButton = new System.Windows.Forms.Button();
-            this.chargeStateCheckbox = new System.Windows.Forms.CheckBox();
             this.featureGroupBox.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -56,8 +56,6 @@ namespace MultiAlignWin.Forms
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.featureGroupBox.Controls.Add(this.chargeStateCheckbox);
-            this.featureGroupBox.Controls.Add(this.m_okButton);
-            this.featureGroupBox.Controls.Add(this.m_setToDefaultsButton);
             this.featureGroupBox.Controls.Add(this.label5);
             this.featureGroupBox.Controls.Add(this.label4);
             this.featureGroupBox.Controls.Add(this.label3);
@@ -75,10 +73,40 @@ namespace MultiAlignWin.Forms
             this.featureGroupBox.Controls.Add(this.massCheckbox);
             this.featureGroupBox.Location = new System.Drawing.Point(12, 12);
             this.featureGroupBox.Name = "featureGroupBox";
-            this.featureGroupBox.Size = new System.Drawing.Size(449, 326);
+            this.featureGroupBox.Size = new System.Drawing.Size(449, 235);
             this.featureGroupBox.TabIndex = 0;
             this.featureGroupBox.TabStop = false;
             this.featureGroupBox.Text = "Feature Columns (Per Dataset)";
+            // 
+            // chargeStateCheckbox
+            // 
+            this.chargeStateCheckbox.AutoSize = true;
+            this.chargeStateCheckbox.Location = new System.Drawing.Point(13, 88);
+            this.chargeStateCheckbox.Name = "chargeStateCheckbox";
+            this.chargeStateCheckbox.Size = new System.Drawing.Size(88, 17);
+            this.chargeStateCheckbox.TabIndex = 15;
+            this.chargeStateCheckbox.Text = "Charge State";
+            this.chargeStateCheckbox.UseVisualStyleBackColor = true;
+            // 
+            // m_okButton
+            // 
+            this.m_okButton.Location = new System.Drawing.Point(380, 253);
+            this.m_okButton.Name = "m_okButton";
+            this.m_okButton.Size = new System.Drawing.Size(81, 30);
+            this.m_okButton.TabIndex = 1;
+            this.m_okButton.Text = "OK";
+            this.m_okButton.UseVisualStyleBackColor = true;
+            this.m_okButton.Click += new System.EventHandler(this.m_okButton_Click);
+            // 
+            // m_setToDefaultsButton
+            // 
+            this.m_setToDefaultsButton.Location = new System.Drawing.Point(12, 253);
+            this.m_setToDefaultsButton.Name = "m_setToDefaultsButton";
+            this.m_setToDefaultsButton.Size = new System.Drawing.Size(118, 30);
+            this.m_setToDefaultsButton.TabIndex = 2;
+            this.m_setToDefaultsButton.Text = "Set To Defaults";
+            this.m_setToDefaultsButton.UseVisualStyleBackColor = true;
+            this.m_setToDefaultsButton.Click += new System.EventHandler(this.m_setToDefaultsButton_Click);
             // 
             // label5
             // 
@@ -230,42 +258,15 @@ namespace MultiAlignWin.Forms
             this.massCheckbox.Text = "Mass ";
             this.massCheckbox.UseVisualStyleBackColor = true;
             // 
-            // m_okButton
-            // 
-            this.m_okButton.Location = new System.Drawing.Point(362, 280);
-            this.m_okButton.Name = "m_okButton";
-            this.m_okButton.Size = new System.Drawing.Size(81, 30);
-            this.m_okButton.TabIndex = 1;
-            this.m_okButton.Text = "OK";
-            this.m_okButton.UseVisualStyleBackColor = true;
-            this.m_okButton.Click += new System.EventHandler(this.m_okButton_Click);
-            // 
-            // m_setToDefaultsButton
-            // 
-            this.m_setToDefaultsButton.Location = new System.Drawing.Point(6, 280);
-            this.m_setToDefaultsButton.Name = "m_setToDefaultsButton";
-            this.m_setToDefaultsButton.Size = new System.Drawing.Size(118, 30);
-            this.m_setToDefaultsButton.TabIndex = 2;
-            this.m_setToDefaultsButton.Text = "Set To Defaults";
-            this.m_setToDefaultsButton.UseVisualStyleBackColor = true;
-            this.m_setToDefaultsButton.Click += new System.EventHandler(this.m_setToDefaultsButton_Click);
-            // 
-            // chargeStateCheckbox
-            // 
-            this.chargeStateCheckbox.AutoSize = true;
-            this.chargeStateCheckbox.Location = new System.Drawing.Point(13, 88);
-            this.chargeStateCheckbox.Name = "chargeStateCheckbox";
-            this.chargeStateCheckbox.Size = new System.Drawing.Size(88, 17);
-            this.chargeStateCheckbox.TabIndex = 15;
-            this.chargeStateCheckbox.Text = "Charge State";
-            this.chargeStateCheckbox.UseVisualStyleBackColor = true;
-            // 
             // TableWriterColumnOptionsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(473, 350);
+            this.BackColor = System.Drawing.Color.White;
+            this.ClientSize = new System.Drawing.Size(473, 293);
             this.Controls.Add(this.featureGroupBox);
+            this.Controls.Add(this.m_setToDefaultsButton);
+            this.Controls.Add(this.m_okButton);
             this.Name = "TableWriterColumnOptionsForm";
             this.Text = "Data Column Selection";
             this.featureGroupBox.ResumeLayout(false);

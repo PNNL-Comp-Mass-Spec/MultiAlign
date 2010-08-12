@@ -14,7 +14,7 @@ namespace MultiAlignWin.IO
         #region Members
         //TODO: add field comments.
         private string m_instrumentName;
-        private List<DeisotopingTool> m_toolIDList;        
+        private List<PNNLProteomics.Data.DeisotopingTool> m_toolIDList;        
         private DateTime m_dateTime;
         private string m_datasetName;
         private string m_datasetID;

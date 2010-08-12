@@ -178,6 +178,7 @@ namespace MultiAlignWin.IO
                 datasetInfo.mstrAnalysisJobId   = "NA";
                 datasetInfo.mintBlockID         = 0;
                 datasetInfo.mintRunOrder        = 0;
+                datasetInfo.ArchivePath         = filePath;
                 datasetInfo.mstrLocalPath       = filePath;
 
                 numLoaded++;

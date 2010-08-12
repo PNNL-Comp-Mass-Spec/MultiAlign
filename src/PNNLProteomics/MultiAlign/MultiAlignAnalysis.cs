@@ -489,7 +489,7 @@ namespace PNNLProteomics.Data.Analysis
                     mobjUMCCreator.FileName = dataset.mstrLocalPath;
                     if (StatusMessage != null)
                     {
-                        StatusMessage(mint_statusLevel, "Loading " + dataset.mstrLocalPath);
+                        StatusMessage(mint_statusLevel, "Loading " + dataset.DatasetName);
                     }
 
                     mint_statusLevel++;
@@ -735,7 +735,7 @@ namespace PNNLProteomics.Data.Analysis
             /// 
             /// Tell the listeners that we are aligning X to Y.
             /// 
-			string aligneeDataset = (string) Datasets[datasetIndex].mstrLocalPath; 
+			string aligneeDataset = (string) Datasets[datasetIndex].DatasetName; 
 			if (StatusMessage != null)
 			    StatusMessage(mint_statusLevel, "Aligning " + aligneeDataset + " to " + alignmentOptions.AlignmentBaselineName) ;
             mint_statusLevel++;

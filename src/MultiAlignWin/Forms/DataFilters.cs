@@ -140,8 +140,8 @@ namespace MultiAlignWin.Forms.Filters
             m_maxClusterScoreMean.Value         = Convert.ToDecimal(Clusters.ScoreMean.Maximum);                
             clusterScoreMean.Checked            = Clusters.ScoreMean.Active;
 
-            m_minClusterScoreMean.Value         = Convert.ToDecimal(Clusters.ScoreMedian.Minimum);
-            m_maxClusterScoreMean.Value         = Convert.ToDecimal(Clusters.ScoreMedian.Maximum);                
+            m_minClusterScoreMedian.Value       = Convert.ToDecimal(Clusters.ScoreMedian.Minimum);
+            m_maxClusterScoreMedian.Value       = Convert.ToDecimal(Clusters.ScoreMedian.Maximum);                
             clusterScoreMedian.Checked          = Clusters.ScoreMedian.Active;
                 
         }
@@ -228,6 +228,11 @@ namespace MultiAlignWin.Forms.Filters
             DialogResult = DialogResult.OK;
             UpdateFilters();
             Hide();
+        }
+
+        private void tabPage1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

@@ -72,7 +72,7 @@ namespace PNNLProteomics.Data.Factors
         public FactorEditResult AddFactor(string factorName)
         {
             // Make sure the factor is in the right format.
-            if (!string.IsNullOrEmpty(factorName))
+            if (string.IsNullOrEmpty(factorName))
             {
                 return FactorEditResult.IncorrectFormat;
             }

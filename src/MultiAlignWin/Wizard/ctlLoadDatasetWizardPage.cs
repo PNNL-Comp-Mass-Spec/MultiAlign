@@ -547,6 +547,11 @@ namespace MultiAlignWin
             dataItem.SubItems.Add(datasetInfo.DatasetName);            
             dataItem.SubItems.Add(datasetInfo.mstrAlias);
 
+            if (datasetInfo.mintBatchID == 0)
+                dataItem.SubItems.Add("NA");
+            else
+                dataItem.SubItems.Add(Convert.ToString(datasetInfo.mintBatchID));
+
             if (datasetInfo.mintBlockID == 0)
                 dataItem.SubItems.Add("NA");
             else
@@ -562,10 +567,6 @@ namespace MultiAlignWin
             else
                 dataItem.SubItems.Add(Convert.ToString(datasetInfo.mintColumnID));
 
-            if (datasetInfo.mintBatchID == 0)
-                dataItem.SubItems.Add("NA");
-            else
-                dataItem.SubItems.Add(Convert.ToString(datasetInfo.mintBatchID));
 
             dataItem.SubItems.Add(datasetInfo.mdateAcquisitionStart.ToShortDateString());
             dataItem.SubItems.Add(System.IO.Path.GetExtension(datasetInfo.mstrLocalPath));                
@@ -587,7 +588,7 @@ namespace MultiAlignWin
                 mint_numberCheckedItems++;
             }
             dataItem.SubItems.Add(datasetInfo.mstrInstrment);
-
+            dataItem.SubItems.Add(System.IO.Path.GetFileNameWithoutExtension(datasetInfo.ParameterFileName));
 
             dataItem.Name = datasetInfo.DatasetName; 
             dataItem.Tag  = datasetInfo;

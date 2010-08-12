@@ -28,16 +28,15 @@ namespace PNNLProteomics.Data
 		 public string  mstrVolume; 
 		 [clsDataSummaryAttribute("Instrument Folder")]
 		 public string  mstrInstrumentFolder; 
-		 [clsDataSummaryAttribute("Dataset Path")]
-		 public string  mstrDatasetPath; 
 		 [clsDataSummaryAttribute("Results Folder")]
 		 public string  mstrResultsFolder;
 		 [clsDataSummaryAttribute("Dataset Name")]
          private string mstrDatasetName;
 		 [clsDataSummaryAttribute("Analysis Job ID")]
-		 public string  mstrAnalysisJobId;
-		 [clsDataSummaryAttribute("Local Path")]
-		 public string  mstrLocalPath; 
+         public string mstrAnalysisJobId;
+         [clsDataSummaryAttribute("Local Path")]
+         public string mstrLocalPath;
+         private string m_archivePath; 
 		 [clsDataSummaryAttribute("Alias")]
 		 public string  mstrAlias;
 		 [clsDataSummaryAttribute("Column ID")]
@@ -84,6 +83,10 @@ namespace PNNLProteomics.Data
 		 /// </summary>
 		 [clsDataSummaryAttribute("Blocking Factor")]
 		 public string  mstrBlockingFactor;
+         /// <summary>
+         /// Name of the parameter file used.
+         /// </summary>
+         private string m_parameterFileName;
 
          //TODO: Clean this up and remove it
          private bool m_isSelected;
@@ -97,15 +100,50 @@ namespace PNNLProteomics.Data
 		    mintRunOrder		    = 0;
 
 		    mlist_assignedValues	= new List<string>();
-            m_factorInformation = new Dictionary<FactorInformation, string>();
+            m_factorInformation     = new Dictionary<FactorInformation, string>();
+            m_parameterFileName     = "";
+            m_archivePath           = "";
         }
 
         #region Properties
-
+        /// <summary>
+        /// Gets or sets the name of the dataset
+        /// </summary>
+        [clsDataSummaryAttribute("Dataset Name")]
         public string DatasetName
         {
             get { return mstrDatasetName; }
             set { mstrDatasetName = value; }
+        }
+        /// <summary>
+        /// Gets or sets the archive path.
+        /// </summary>
+        [clsDataSummaryAttribute("Archive Path")]
+        public string ArchivePath
+        {
+            get
+            { 
+                return m_archivePath; 
+            }
+            set
+            {
+                m_archivePath = value;
+            }
+        }
+        /// <summary>
+        /// Gets or sets the name of the parameter file used to peak pick the data.
+        /// </summary>
+        [clsDataSummaryAttribute("Parameter File Path")]
+        public string ParameterFileName
+        {
+            get
+            {
+                return m_parameterFileName;
+            }
+            set
+            {
+                m_parameterFileName = value;
+            }
         }
         /// <summary>
         /// Gets or sets the list of factors for this dataset.

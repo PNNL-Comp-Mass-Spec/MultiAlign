@@ -35,7 +35,6 @@ namespace MultiAlignWin.Forms
             this.m_okButton = new System.Windows.Forms.Button();
             this.m_cancelButton = new System.Windows.Forms.Button();
             this.m_toolGroupbox = new System.Windows.Forms.GroupBox();
-            this.m_decon2lsVsCheckbox = new System.Windows.Forms.CheckBox();
             this.m_ltqftpekCheckBox = new System.Windows.Forms.CheckBox();
             this.m_decon2lsAgilentCheckBox = new System.Windows.Forms.CheckBox();
             this.label6 = new System.Windows.Forms.Label();
@@ -43,6 +42,7 @@ namespace MultiAlignWin.Forms
             this.m_lcmsFeatureFinderCheckBox = new System.Windows.Forms.CheckBox();
             this.m_icr2lsCheckBox = new System.Windows.Forms.CheckBox();
             this.m_decon2lsCheckBox = new System.Windows.Forms.CheckBox();
+            this.m_decon2lsVsCheckbox = new System.Windows.Forms.CheckBox();
             this.m_datetime = new System.Windows.Forms.DateTimePicker();
             this.label4 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
@@ -126,15 +126,6 @@ namespace MultiAlignWin.Forms
             this.m_toolGroupbox.TabStop = false;
             this.m_toolGroupbox.Text = "Tools";
             // 
-            // m_decon2lsVsCheckbox
-            // 
-            this.m_decon2lsVsCheckbox.Location = new System.Drawing.Point(16, 70);
-            this.m_decon2lsVsCheckbox.Name = "m_decon2lsVsCheckbox";
-            this.m_decon2lsVsCheckbox.Size = new System.Drawing.Size(93, 22);
-            this.m_decon2lsVsCheckbox.TabIndex = 10;
-            this.m_decon2lsVsCheckbox.Text = "Decon2ls_v2";
-            this.m_decon2lsVsCheckbox.UseVisualStyleBackColor = true;
-            // 
             // m_ltqftpekCheckBox
             // 
             this.m_ltqftpekCheckBox.AutoSize = true;
@@ -204,6 +195,15 @@ namespace MultiAlignWin.Forms
             this.m_decon2lsCheckBox.Text = "Decon2ls";
             this.m_decon2lsCheckBox.UseVisualStyleBackColor = true;
             // 
+            // m_decon2lsVsCheckbox
+            // 
+            this.m_decon2lsVsCheckbox.Location = new System.Drawing.Point(16, 70);
+            this.m_decon2lsVsCheckbox.Name = "m_decon2lsVsCheckbox";
+            this.m_decon2lsVsCheckbox.Size = new System.Drawing.Size(93, 22);
+            this.m_decon2lsVsCheckbox.TabIndex = 10;
+            this.m_decon2lsVsCheckbox.Text = "Decon2ls_v2";
+            this.m_decon2lsVsCheckbox.UseVisualStyleBackColor = true;
+            // 
             // m_datetime
             // 
             this.m_datetime.CustomFormat = "MM, dd, yyyy ";
@@ -226,7 +226,7 @@ namespace MultiAlignWin.Forms
             // button1
             // 
             this.button1.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.button1.Location = new System.Drawing.Point(50, 360);
+            this.button1.Location = new System.Drawing.Point(16, 360);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(74, 32);
             this.button1.TabIndex = 11;

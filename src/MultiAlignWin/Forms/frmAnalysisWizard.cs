@@ -1175,8 +1175,8 @@ namespace MultiAlignWin
                 return false;
             }
 
-            sourcePaths = FileLocations;                        
-            copySuccess = CopyFilesHandler(sourcePaths);
+            sourcePaths = FileLocations;
+            copySuccess = CopyFilesHandler();
 
             /// 
             /// Make sure we get all the files locally first.
@@ -1216,11 +1216,11 @@ namespace MultiAlignWin
         /// <param name="o"></param>
         private void CopyFiles(object o)
         {
-            string[] sourceLocations = (string[])o;
+            List<DatasetInformation> datasets = o as List<DatasetInformation>;
 
             string sourcePathAndFileName = null;
             string filePath = null;
-            int numFiles = sourceLocations.Length;
+            int numFiles = datasets.Count;
             string destination;
 
             
@@ -1230,10 +1230,12 @@ namespace MultiAlignWin
             for (int i = 0; i < numFiles && mbool_copyingFiles == true; i++)
             {
 
-                sourcePathAndFileName = sourceLocations[i];
+                sourcePathAndFileName = datasets[i].ArchivePath;
 
-                int index = sourceLocations[i].LastIndexOf("\\");
-                filePath = sourcePathAndFileName.Substring(index + 1);
+                //int index = sourceLocations[i].LastIndexOf("\\");
+                //filePath = sourcePathAndFileName.Substring(index + 1);
+                filePath = System.IO.Path.GetFileName(sourcePathAndFileName);
+
 
                 //TODO: Fix the desintation path as a parameter...this is not thread safe!!!
                 destination = Path.Combine(destinationPath, filePath);
@@ -1250,6 +1252,7 @@ namespace MultiAlignWin
                         /// A thread safe way to atomically increment the counter of the number of files copied
                         ///                                      
                         mint_numCopied++;
+                        datasets[i].mstrLocalPath = destination;
                     }
                     catch (Exception ex)
                     {
@@ -1258,9 +1261,7 @@ namespace MultiAlignWin
                 }
                 else if (System.IO.File.Exists(destination))
                 {
-                    /// 
-                    /// A thread safe way to atomically increment the counter of the number of files copied
-                    ///              
+                    datasets[i].mstrLocalPath = destination;
                     mint_numCopied++;                    
                 }
                 mint_numReviewedForCopy = i;
@@ -1270,18 +1271,20 @@ namespace MultiAlignWin
             /// 
             mbool_finishedCopying = true;
         }
-		private bool CopyFilesHandler(string [] sourceLocations)
+		private bool CopyFilesHandler()
 		{
 
             mctl_performAnalysisPage.ClearListBox();
             mctl_performAnalysisPage.AddStatusMessage(0, "Copying files to working folder...");
             mctl_performAnalysisPage.Visible = true;
             mctl_performAnalysisPage.SetProgressBar(0);
-			            
+
+            int total = marrDatasetInfo.Count;
+   
 			/// 
             /// Make sure the user has selected files.
             /// 
-			if (sourceLocations.Length == 0)
+			if (total <= 0)
 			{
 				MessageBox.Show("No files selected/found");
                 return false;
@@ -1295,20 +1298,21 @@ namespace MultiAlignWin
                 mint_numReviewedForCopy = 0;
                 mbool_finishedCopying   = false;
                 mbool_copyingFiles      = true;                
-                int total               = sourceLocations.Length;
 
 
-                string[] localFileCache = new string[sourceLocations.Length];
-                string lastFileCopied   = Path.GetFileName(sourceLocations[0]);
-                mctl_performAnalysisPage.AddStatusMessage(1, "Copying " + lastFileCopied);                
-                sourceLocations.CopyTo(localFileCache, 0);
-
+                string lastFileCopied = marrDatasetInfo[0].DatasetName;
+                List<string> names    = new List<string>();                
+                foreach (DatasetInformation info in marrDatasetInfo)
+                {
+                    names.Add(info.DatasetName);
+                }
+                
                 /// 
                 /// Register the thread
                 ///                                 
                 ParameterizedThreadStart start = new ParameterizedThreadStart(CopyFiles);
                 Thread thread = new Thread(start);
-                thread.Start(sourceLocations);
+                thread.Start(this.marrDatasetInfo);
                 
                 /// 
                 /// Eh! the poor man's way of waiting for the thread to finish!!!
@@ -1321,15 +1325,14 @@ namespace MultiAlignWin
                     /// 
                     int copiedPercent  = Convert.ToInt32(100.0 * (Convert.ToDouble(mint_numCopied) / Convert.ToDouble(total)));                    
                     mctl_performAnalysisPage.SetProgressBar(copiedPercent);
-                    string currentCopy = Path.GetFileName(localFileCache[mint_numReviewedForCopy]);
+
+                    string currentCopy = names[mint_numReviewedForCopy];
                     if (currentCopy != lastFileCopied)
                     {
                         lastFileCopied = currentCopy;
                         mctl_performAnalysisPage.AddStatusMessage(1, "Copying " + lastFileCopied);  
                     }
-                    Application.DoEvents();
-
-                    
+                    Application.DoEvents();                    
                 }
 
                 /// 
@@ -1356,7 +1359,7 @@ namespace MultiAlignWin
             /// 
             /// If we copied enough of the files.
             /// 
-			if (mint_numCopied == sourceLocations.Length)
+			if (mint_numCopied == total)
 			{                                
                 return true;
 			}
