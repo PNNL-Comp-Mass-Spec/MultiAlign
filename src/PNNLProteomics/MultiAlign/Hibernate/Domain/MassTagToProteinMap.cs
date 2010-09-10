@@ -9,6 +9,8 @@ namespace PNNLProteomics.MultiAlign.Hibernate.Domain
 	{
 		private int m_massTagId;
 		private int m_proteinId;
+		private int m_cleavageState;
+		private int m_terminusState;
 
 		public MassTagToProteinMap()
 		{
@@ -64,6 +66,18 @@ namespace PNNLProteomics.MultiAlign.Hibernate.Domain
 		{
 			get { return m_proteinId; }
 			set { m_proteinId = value; }
+		}
+
+		public int CleavageState
+		{
+			get { return m_cleavageState; }
+			set { m_cleavageState = value; }
+		}
+
+		public int TerminusState
+		{
+			get { return m_terminusState; }
+			set { m_terminusState = value; }
 		}
 	}
 }

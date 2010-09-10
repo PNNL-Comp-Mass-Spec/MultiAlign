@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" 
+                   assembly="PNNLProteomics" 
+                   namespace="PNNLProteomics.MultiAlign.Hibernate.Domain">
+
+	<class name="Factor" table="T_Factors" lazy="false">
+		<id name="Id" column="Factor_ID" type="integer">
+			<generator class="assigned" />
+		</id>
+		<property name="DatasetId" column="Dataset_ID" type="int" not-null="false" />
+		<property name="FactorName" column="Factor_Name" type="string" not-null="false" />
+		<property name="FactorValue" column="Factor_Value" type="string" not-null="false" />
+	</class>
+
+</hibernate-mapping>

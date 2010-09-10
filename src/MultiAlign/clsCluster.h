@@ -106,6 +106,15 @@ namespace MultiAlignEngine
 				mshort_charge = value;
 			}
 
+			__property double get_DriftTime()
+			{
+				return mdouble_driftTime;
+			}
+
+			__property void set_DriftTime(double value){
+				mdouble_driftTime = value;
+			}
+
 		};
 	}
 }

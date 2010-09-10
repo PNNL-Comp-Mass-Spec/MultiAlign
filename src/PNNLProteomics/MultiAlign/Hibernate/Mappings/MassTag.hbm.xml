@@ -3,22 +3,26 @@
                    assembly="MultiAlignEngine" 
                    namespace="MultiAlignEngine.MassTags">
 
-	<class name="clsMassTag" table="T_MASS_TAG" lazy="false">
-		<id name="Id" column="ID" type="integer">
+	<class name="clsMassTag" table="T_Mass_Tags" lazy="false">
+		<id name="Id" column="Mass_Tag_ID" type="integer">
 			<generator class="assigned" />
 		</id>
-		<property name="Mass" column="MASS" type="double" not-null="false" />
-		<property name="NetAverage" column="NET_AVERAGE" type="double" not-null="false" />
-		<property name="NetPredicted" column="NET_PREDICTED" type="double" not-null="false" />
-		<property name="NetStandardDeviation" column="NET_STANDARD_DEVIATION" type="double" not-null="false" />
-		<property name="XCorr" column="XCORR" type="double" not-null="false" />
-		<property name="DiscriminantMax" column="DISCRIMINANT_MAX" type="double" not-null="false" />
-		<property name="Charge1FScore" column="CHARGE_1_F_SCORE" type="float" not-null="false" />
+		<property name="Mass" column="Mass" type="double" not-null="false" />
+		<property name="NetAverage" column="NET_Average" type="double" not-null="false" />
+		<property name="NetPredicted" column="NET_Predicted" type="double" not-null="false" />
+		<property name="NetStandardDeviation" column="NET_Std_Dev" type="double" not-null="false" />
+		<!--property name="XCorr" column="XCORR" type="double" not-null="false" /-->
+		<property name="DiscriminantMax" column="Normalized_Score_Max" type="double" not-null="false" />
+		<property name="MSGFSpecProbMax" column="MSGF_Spec_Prob_Max" type="double" not-null="false" />
+		<!--property name="Charge1FScore" column="CHARGE_1_F_SCORE" type="float" not-null="false" />
 		<property name="Charge2FScore" column="CHARGE_2_F_SCORE" type="float" not-null="false" />
-		<property name="Charge3FScore" column="CHARGE_3_F_SCORE" type="float" not-null="false" />
-		<property name="CleavageState" column="CLEAVAGE_STATE" type="short" not-null="false" />
-		<property name="Modifications" column="MODIFICATIONS" type="string" not-null="false" />
-		<property name="Peptide" column="PEPTIDE" type="string" not-null="false" />
+		<property name="Charge3FScore" column="CHARGE_3_F_SCORE" type="float" not-null="false" /-->
+		<property name="CleavageState" column="Cleavage_State" type="int" not-null="false" />
+		<property name="Modifications" column="Modifications" type="string" not-null="false" />
+		<property name="Peptide" column="Peptide" type="string" not-null="false" />
+		<property name="PeptideEx" column="Peptide_Ex" type="string" not-null="false" />
+		<property name="MSMSObserved" column="MS_MS_Observed" type="int" not-null="false" />
+		<property name="ModCount" column="Mod_Count" type="int" not-null="false" />
 		<!--set name="UmcClusterSet" table="CLUSTER_TO_MASS_TAG_MAP">
 			<key column="MASS_TAG_ID"/>
 			<many-to-many column="CLUSTER_ID" class="UmcCluster"/>

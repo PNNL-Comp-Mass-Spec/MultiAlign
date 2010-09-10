@@ -122,6 +122,7 @@ namespace MultiAlignEngine
 				int		mint_dataset_index; 
 				int		mint_cluster_index; 
 				int		mint_umc_index; 
+				int		mint_conformation_index;
 				double	mdouble_mono_mass; 
 				double	mdouble_class_rep_mz; 
 				short	mshort_class_rep_charge; 
@@ -138,6 +139,7 @@ namespace MultiAlignEngine
 				double	marray_chargeStatesAbundances __gc[];
 				int		mint_spectral_count;
 				float	mfloat_drift_time;
+				double	mdouble_score;
 				//clsCluster *umcCluster;
 
 				clsUMC(void);
@@ -168,6 +170,15 @@ namespace MultiAlignEngine
 
 				__property void set_ClusterId(int value){
 					mint_cluster_index = value;
+				}
+
+				__property int get_ConformationId()
+				{
+					return mint_conformation_index;
+				}
+
+				__property void set_ConformationId(int value){
+					mint_conformation_index = value;
 				}
 
 				/*
@@ -306,6 +317,15 @@ namespace MultiAlignEngine
 
 				__property void set_DriftTime(float value){
 					mfloat_drift_time = value;
+				}
+
+				__property double get_Score()
+				{
+					return mdouble_score;
+				}
+
+				__property void set_Score(double value){
+					mdouble_score = value;
 				}
 		};
 	}

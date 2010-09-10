@@ -123,6 +123,10 @@
     <Compile Include="Filters\UMCFilters.cs" />
     <Compile Include="ICloneable.cs" />
     <Compile Include="IO\XAMTReader.cs" />
+    <Compile Include="MultiAlign\Hibernate\Domain\Factor.cs" />
+    <Compile Include="MultiAlign\Hibernate\Domain\MassTagConformation.cs" />
+    <Compile Include="MultiAlign\Hibernate\Domain\StacFDR.cs" />
+    <Compile Include="MultiAlign\Hibernate\Domain\Dataset.cs" />
     <Compile Include="MultiAlign\MultiAlignAnalysis.cs" />
     <Compile Include="Analysis\clsNormalize.cs" />
     <Compile Include="Analysis\clsTTest.cs" />
@@ -176,6 +180,10 @@
     <Content Include="hibernate.cfg.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <EmbeddedResource Include="MultiAlign\Hibernate\Mappings\Factor.hbm.xml" />
+    <EmbeddedResource Include="MultiAlign\Hibernate\Mappings\MassTagConformations.hbm.xml" />
+    <EmbeddedResource Include="MultiAlign\Hibernate\Mappings\StacFDR.hbm.xml" />
+    <EmbeddedResource Include="MultiAlign\Hibernate\Mappings\Dataset.hbm.xml" />
     <EmbeddedResource Include="MultiAlign\Hibernate\Mappings\MassTagToProteinMap.hbm.xml" />
     <EmbeddedResource Include="MultiAlign\Hibernate\Mappings\ClusterToMassTagMap.hbm.xml" />
     <EmbeddedResource Include="MultiAlign\Hibernate\Mappings\MSFeature.hbm.xml" />

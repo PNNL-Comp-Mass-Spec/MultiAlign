@@ -10,6 +10,7 @@ namespace MultiAlignEngine
 		public:
 			int mintRefID; 
 			System::String* mstrProteinName; 
+			System::String* mstrProteinDescription;
 			clsProtein(void);
 			~clsProtein(void);
 
@@ -29,6 +30,15 @@ namespace MultiAlignEngine
 
 			__property void set_ProteinString(System::String* value){
 				mstrProteinName = value;
+			}
+
+			__property System::String* get_ProteinDescription()
+			{
+				return mstrProteinDescription;
+			}
+
+			__property void set_ProteinDescription(System::String* value){
+				mstrProteinDescription = value;
 			}
 		};
 	}

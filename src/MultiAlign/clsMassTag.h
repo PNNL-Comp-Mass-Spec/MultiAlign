@@ -25,7 +25,10 @@ namespace MultiAlignEngine
 				return 1; 
 			} 
 			int mintMassTagId; 
+			int mintMSMSObserved;
+			int mintModCount;
 			System::String *mstrPeptide; 
+			System::String *mstrPeptideEx;
 			System::String *mstrModification; 
 			double mdblMonoMass; 
 			double mdblAvgGANET; 
@@ -34,6 +37,7 @@ namespace MultiAlignEngine
 			double mdblStdGANET; 
 			double mdblDriftTime;
 			double mdblMaxDiscriminant;
+			double mdblMSGFSpecProbMax; 
 			int mintNumObsPassingFilter; 
 			short mshortModCount; 
 			float mfltAvgFCS1; 
@@ -51,6 +55,24 @@ namespace MultiAlignEngine
 
 			__property void set_Id(int value){
 				mintMassTagId = value;
+			}
+
+			__property int get_MSMSObserved()
+			{
+				return mintMSMSObserved;
+			}
+
+			__property void set_MSMSObserved(int value){
+				mintMSMSObserved = value;
+			}
+
+			__property int get_ModCount()
+			{
+				return mintModCount;
+			}
+
+			__property void set_ModCount(int value){
+				mintModCount = value;
 			}
 
 			__property double get_Mass()
@@ -115,6 +137,15 @@ namespace MultiAlignEngine
 			__property void set_DiscriminantMax(double value){
 				mdblMaxDiscriminant = value;
 			}
+
+			__property double get_MSGFSpecProbMax()
+			{
+				return mdblMSGFSpecProbMax;
+			}
+
+			__property void set_MSGFSpecProbMax(double value){
+				mdblMSGFSpecProbMax = value;
+			}
 			
 			__property float get_HighPeptideProphetProbability()
 			{
@@ -177,6 +208,15 @@ namespace MultiAlignEngine
 
 			__property void set_Peptide(System::String* value){
 				mstrPeptide = value;
+			}
+
+			__property System::String* get_PeptideEx()
+			{
+				return mstrPeptideEx;
+			}
+
+			__property void set_PeptideEx(System::String* value){
+				mstrPeptideEx = value;
 			}
 		};
 	}

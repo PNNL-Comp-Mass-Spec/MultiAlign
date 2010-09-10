@@ -3,11 +3,12 @@
                    assembly="MultiAlignEngine" 
                    namespace="MultiAlignEngine.MassTags">
 
-	<class name="clsProtein" table="T_PROTEIN" lazy="false">
-		<id name="Id" column="ID" type="integer">
+	<class name="clsProtein" table="T_Proteins" lazy="false">
+		<id name="Id" column="Protein_ID" type="integer">
 			<generator class="assigned" />
 		</id>
-		<property name="ProteinString" column="PROTEIN" type="string" not-null="true" />
+		<property name="ProteinString" column="Protein" type="string" not-null="true" />
+		<property name="ProteinDescription" column="Protein_Description" type="string" not-null="true" />
 		<!--set name="MassTagSet" table="MASS_TAG_TO_PROTEIN_MAP">
 			<key column="PROTEIN_ID"/>
 			<many-to-many column="MASS_TAG_ID" class="MassTag"/>

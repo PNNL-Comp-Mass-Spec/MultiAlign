@@ -3,12 +3,12 @@
                    assembly="PNNLProteomics" 
                    namespace="PNNLProteomics.MultiAlign.Hibernate.Domain">
 
-	<class name="ClusterToMassTagMap" table="T_Cluster_To_Mass_Tag_Map" lazy="false">
+	<class name="MassTagConformation" table="T_Mass_Tag_Conformations" lazy="false">
 		<composite-id>
-			<key-property name="ClusterId" column="Cluster_ID" type="int" />
 			<key-property name="MassTagId" column="Mass_Tag_ID" type="int" />
+			<key-property name="Charge" column="Charge" type="int" />
+			<key-property name="DriftTime" column="Drift_Time" type="double" />
 		</composite-id>
-		<property name="StacScore" column="STAC_Score" type="double" not-null="false" />
-		<property name="StacUP" column="STAC_UP" type="double" not-null="false" />
 	</class>
+
 </hibernate-mapping>

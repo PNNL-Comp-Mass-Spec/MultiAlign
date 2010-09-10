@@ -9,6 +9,8 @@ namespace PNNLProteomics.MultiAlign.Hibernate.Domain
 	{
 		private int m_clusterId;
 		private int m_massTagId;
+		private double m_stacScore;
+		private double m_stacUP;
 
 		public ClusterToMassTagMap()
 		{
@@ -64,6 +66,18 @@ namespace PNNLProteomics.MultiAlign.Hibernate.Domain
 		{
 			get { return m_massTagId; }
 			set { m_massTagId = value; }
+		}
+
+		public double StacScore
+		{
+			get { return m_stacScore; }
+			set { m_stacScore = value; }
+		}
+
+		public double StacUP
+		{
+			get { return m_stacUP; }
+			set { m_stacUP = value; }
 		}
 	}
 }

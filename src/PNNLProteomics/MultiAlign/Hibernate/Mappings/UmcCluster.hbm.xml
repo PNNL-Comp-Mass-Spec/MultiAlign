@@ -3,16 +3,18 @@
                    assembly="MultiAlignEngine" 
                    namespace="MultiAlignEngine.Features">
 
-	<class name="clsCluster" table="T_UMC_CLUSTER" lazy="false">
-		<id name="Id" column="ID" type="integer">
+	<class name="clsCluster" table="T_Clusters" lazy="false">
+		<id name="Id" column="Cluster_ID" type="integer">
 			<generator class="increment" />
 		</id>
-		<property name="Mass" column="MASS" type="double" not-null="false" />
-		<property name="MassCalibrated" column="MASS_CALIBRATED" type="double" not-null="false" />
+		<property name="Mass" column="Mass" type="double" not-null="false" />
+		<property name="MassCalibrated" column="Mass_Calibrated" type="double" not-null="false" />
 		<property name="Net" column="NET" type="double" not-null="false" />
-		<property name="NetAligned" column="NET_ALIGNED" type="double" not-null="false" />
-		<property name="Scan" column="SCAN" type="int" not-null="false" />
-		<property name="Charge" column="CHARGE" type="short" not-null="false" />
+		<property name="NetAligned" column="NET_Aligned" type="double" not-null="false" />
+		<property name="Scan" column="Scan_LC" type="int" not-null="false" />
+		<property name="Charge" column="Charge" type="int" not-null="false" />
+		<property name="DriftTime" column="Drift_Time" type="double" not-null="false" />
+		<property name="MeanScore" column="Score" type="double" not-null="false" />
 		<!--set name="UmcSet" inverse="true">
 			<key column="ID"/>
 			<one-to-many class="clsUMC"/>
