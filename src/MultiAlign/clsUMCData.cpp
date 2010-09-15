@@ -23,12 +23,22 @@ namespace MultiAlignEngine
 		void clsUMCData::Clear(void)
 		{
 			mblnClusterIndicesSet	= false; 
+			if (mobjClusterData != 0)
+				mobjClusterData->Clear();
+
 			mobjClusterData			= 0; 			
 			mint_highestChargeState = 0;
+			mhash_umc_2_dataset_num->Clear();
+			this->marr_dataset_max_scan = 0;
+			this->marr_dataset_min_scan = 0;
+			this->marr_dataset_start_index = 0;
+			this->marr_dataset_stop_index = 0;
 
 			this->marr_file_names->Clear();
 			marr_umcs->Clear();
 			
+
+			Allocate();
 		}
 		/*************************************************************************************************************
 		*
