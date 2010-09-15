@@ -23,6 +23,8 @@ namespace PNNLControls
 		protected clsPlotRange mobj_range = new clsPlotRange();
 		protected Derek.BitmapTools mobj_bitmap_tools = null ;
 
+        private SaveFileDialog m_saveFileDialog;
+
 		private bool m_autoViewportOnAddition = false;
 		private bool m_autoViewportOnSeriesChange = false;
 		private bool m_autoViewportYAxis = false;
@@ -216,18 +218,14 @@ namespace PNNLControls
 		private MenuItem menuItemPasteByReference;
 		private MenuItem menuItemBringToBack;
 		private MenuItem menuItemBringToFront;
-		private MenuItem menuItemSeperator1;
-		private MenuItem menuItemSeperator2;
+        private MenuItem menuItemSeperator1;
 		private MenuItem menuItemSelectedSeries;
 		private MenuItem menuItemSeriesSpecific;
-		private MenuItem menuItemCopyImage;
-		private MenuItem menuItemSeperator3;
-		private MenuItem menuItemSaveImage;
-		private MenuItem menuItemSaveAsJpg;
-		private MenuItem menuItemSaveImageAsGif;
-		private MenuItem menuItemSaveImageAsTiff;
+        private MenuItem menuItemCopyImage;
+        private MenuItem menuItemSaveImage;
+        private MenuItem menuItem2;
+        private MenuItem menuItem3;
         private MenuItem menuItem1;
-		private MenuItem menuItemSaveImageAsBmp;
         #endregion
 
 
@@ -293,6 +291,16 @@ namespace PNNLControls
 			// Hookup event handlers for selected series.
 			mSelectedSeries.IntAdded += new IntChangedHandler(this.mSeriesSelected_IntAdded);
 			mSelectedSeries.IntRemoved += new IntChangedHandler(this.mSeriesSelected_IntRemoved);
+
+
+            m_saveFileDialog = new SaveFileDialog();            
+            m_saveFileDialog.AddExtension = true;
+            m_saveFileDialog.CheckPathExists = true;
+            m_saveFileDialog.DereferenceLinks = true;
+            m_saveFileDialog.ValidateNames = true;
+            m_saveFileDialog.Filter = "WMF (*.wmf)|*.wmf|EMF (*.emf)|*.emf|Jpeg (*.jpg)|*.jpg|Tiff (*.tiff)|*.tiff|Gif (*.gif)|*.gif|Bitmap (*.bmp)|*.bmp";
+            m_saveFileDialog.OverwritePrompt = true;
+            m_saveFileDialog.FilterIndex = 1;
 
 			this.ResumeLayout();
 		}
@@ -387,7 +395,7 @@ namespace PNNLControls
 		/// is the current input focus and ShowFocus is true.  Otherwise, no focus rectangle 
 		/// will be drawn.</param>
 		private void DrawToGraphics(Graphics g, bool drawFocusRect, bool drawBackground) 
-		{
+		{            
 			if (drawBackground) 
 			{
 				g.FillRectangle(new SolidBrush(this.BackColor), 
@@ -2114,6 +2122,7 @@ namespace PNNLControls
 		{
             this.mContextMenu = new System.Windows.Forms.ContextMenu();
             this.menuShowAllData = new System.Windows.Forms.MenuItem();
+            this.menuItem1 = new System.Windows.Forms.MenuItem();
             this.menuLegend = new System.Windows.Forms.MenuItem();
             this.menuLegendShow = new System.Windows.Forms.MenuItem();
             this.menuLegendDivider = new System.Windows.Forms.MenuItem();
@@ -2130,14 +2139,8 @@ namespace PNNLControls
             this.menuItemCopy = new System.Windows.Forms.MenuItem();
             this.menuItemPaste = new System.Windows.Forms.MenuItem();
             this.menuItemPasteByReference = new System.Windows.Forms.MenuItem();
-            this.menuItemSeperator3 = new System.Windows.Forms.MenuItem();
             this.menuItemCopyImage = new System.Windows.Forms.MenuItem();
             this.menuItemSaveImage = new System.Windows.Forms.MenuItem();
-            this.menuItemSaveImageAsTiff = new System.Windows.Forms.MenuItem();
-            this.menuItemSaveImageAsBmp = new System.Windows.Forms.MenuItem();
-            this.menuItemSaveImageAsGif = new System.Windows.Forms.MenuItem();
-            this.menuItemSaveAsJpg = new System.Windows.Forms.MenuItem();
-            this.menuItemSeperator2 = new System.Windows.Forms.MenuItem();
             this.menuItemSelectAllSeries = new System.Windows.Forms.MenuItem();
             this.menuItemSelectedSeries = new System.Windows.Forms.MenuItem();
             this.menuItemDelete = new System.Windows.Forms.MenuItem();
@@ -2146,7 +2149,8 @@ namespace PNNLControls
             this.menuItemBringToFront = new System.Windows.Forms.MenuItem();
             this.menuItemBringToBack = new System.Windows.Forms.MenuItem();
             this.menuItemSeriesSpecific = new System.Windows.Forms.MenuItem();
-            this.menuItem1 = new System.Windows.Forms.MenuItem();
+            this.menuItem2 = new System.Windows.Forms.MenuItem();
+            this.menuItem3 = new System.Windows.Forms.MenuItem();
             this.SuspendLayout();
             // 
             // mContextMenu
@@ -2161,10 +2165,10 @@ namespace PNNLControls
             this.menuItemCopy,
             this.menuItemPaste,
             this.menuItemPasteByReference,
-            this.menuItemSeperator3,
+            this.menuItem2,
             this.menuItemCopyImage,
             this.menuItemSaveImage,
-            this.menuItemSeperator2,
+            this.menuItem3,
             this.menuItemSelectAllSeries,
             this.menuItemSelectedSeries,
             this.menuItemSeriesSpecific});
@@ -2175,6 +2179,11 @@ namespace PNNLControls
             this.menuShowAllData.Index = 0;
             this.menuShowAllData.Text = "Show All Data";
             this.menuShowAllData.Click += new System.EventHandler(this.menuShowAllData_Click);
+            // 
+            // menuItem1
+            // 
+            this.menuItem1.Index = 1;
+            this.menuItem1.Text = "-";
             // 
             // menuLegend
             // 
@@ -2290,12 +2299,6 @@ namespace PNNLControls
             this.menuItemPasteByReference.Text = "Paste by Reference";
             this.menuItemPasteByReference.Click += new System.EventHandler(this.menuItemPasteByReference_Click);
             // 
-            // menuItemSeperator3
-            // 
-            this.menuItemSeperator3.Index = 9;
-            this.menuItemSeperator3.MergeOrder = 10;
-            this.menuItemSeperator3.Text = "-";
-            // 
             // menuItemCopyImage
             // 
             this.menuItemCopyImage.Index = 10;
@@ -2306,43 +2309,9 @@ namespace PNNLControls
             // menuItemSaveImage
             // 
             this.menuItemSaveImage.Index = 11;
-            this.menuItemSaveImage.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-            this.menuItemSaveImageAsTiff,
-            this.menuItemSaveImageAsBmp,
-            this.menuItemSaveImageAsGif,
-            this.menuItemSaveAsJpg});
             this.menuItemSaveImage.MergeOrder = 10;
             this.menuItemSaveImage.Text = "Save Image";
-            // 
-            // menuItemSaveImageAsTiff
-            // 
-            this.menuItemSaveImageAsTiff.Index = 0;
-            this.menuItemSaveImageAsTiff.Text = "As tiff";
-            this.menuItemSaveImageAsTiff.Click += new System.EventHandler(this.menuItemSaveImageAsTiff_Click);
-            // 
-            // menuItemSaveImageAsBmp
-            // 
-            this.menuItemSaveImageAsBmp.Index = 1;
-            this.menuItemSaveImageAsBmp.Text = "As bmp";
-            this.menuItemSaveImageAsBmp.Click += new System.EventHandler(this.menuItemSaveImageAsBmp_Click);
-            // 
-            // menuItemSaveImageAsGif
-            // 
-            this.menuItemSaveImageAsGif.Index = 2;
-            this.menuItemSaveImageAsGif.Text = "As gif";
-            this.menuItemSaveImageAsGif.Click += new System.EventHandler(this.menuItemSaveImageAsGif_Click);
-            // 
-            // menuItemSaveAsJpg
-            // 
-            this.menuItemSaveAsJpg.Index = 3;
-            this.menuItemSaveAsJpg.Text = "As jpg";
-            this.menuItemSaveAsJpg.Click += new System.EventHandler(this.menuItemSaveAsJpg_Click);
-            // 
-            // menuItemSeperator2
-            // 
-            this.menuItemSeperator2.Index = 12;
-            this.menuItemSeperator2.MergeOrder = 10;
-            this.menuItemSeperator2.Text = "-";
+            this.menuItemSaveImage.Click += new System.EventHandler(this.menuItemSaveImage_Click);
             // 
             // menuItemSelectAllSeries
             // 
@@ -2402,10 +2371,15 @@ namespace PNNLControls
             this.menuItemSeriesSpecific.MergeOrder = 10;
             this.menuItemSeriesSpecific.Text = "Series Specific";
             // 
-            // menuItem1
+            // menuItem2
             // 
-            this.menuItem1.Index = 1;
-            this.menuItem1.Text = "-";
+            this.menuItem2.Index = 9;
+            this.menuItem2.Text = "-";
+            // 
+            // menuItem3
+            // 
+            this.menuItem3.Index = 12;
+            this.menuItem3.Text = "-";
             // 
             // ctlChartBase
             // 
@@ -3174,7 +3148,7 @@ namespace PNNLControls
 
 		public Bitmap ToBitmap() 
 		{
-			Bitmap image = new Bitmap(this.Width, this.Height);
+            Bitmap image = new Bitmap(this.Width, this.Height);            
 			using (Graphics g = Graphics.FromImage(image)) 
 			{
 				DrawToGraphics(g, false, true);
@@ -3190,16 +3164,18 @@ namespace PNNLControls
 			System.IntPtr hdc = graphics.GetHdc(); 
 			Bitmap tempBitmap = new Bitmap(mobj_bitmap) ; 
 			Metafile metafile = new Metafile(hdc, new Rectangle( 0, 0,(int) this.Width, (int) this.Height), MetafileFrameUnit.Point, EmfType.EmfPlusDual ); 
-			//Metafile metafile = new Metafile("c:\\test.emf", hdc, EmfType.EmfPlusDual, "WHAT") ; 
-
+			
 			// draw to the metafile
-			Graphics metafileGraphics = Graphics.FromImage( metafile ) ;
-			metafileGraphics.SmoothingMode = SmoothingMode.HighQuality; // smooth the 
+			Graphics metafileGraphics           = Graphics.FromImage( metafile ) ;
+			metafileGraphics.SmoothingMode      = SmoothingMode.HighQuality; // smooth the 
+            metafileGraphics.InterpolationMode  = InterpolationMode.HighQualityBicubic;
 
 			System.Drawing.Drawing2D.GraphicsContainer container = metafileGraphics.BeginContainer();
 			metafileGraphics.IntersectClip(this.mobj_axis_plotter.ChartAreaBounds);
 			metafileGraphics.TranslateTransform(this.mobj_axis_plotter.ChartAreaBounds.Left, 
 				this.mobj_axis_plotter.ChartAreaBounds.Top);
+
+            
 
 			// paint each series
 			for (int i = 0; i < this.mobj_series_collection.Count; i++)
@@ -3254,80 +3230,69 @@ namespace PNNLControls
 			this.Height     = tempHeight ; 
 			return image;
 		}
-
-		private void Save(System.Drawing.Imaging.ImageFormat format, String selector, String defaultExtension) 
+        /// <summary>
+        /// Displays a save dialog box and allows the user to set the dpi and name for the image.
+        /// </summary>
+        /// <param name="format">Format to save image in.</param>
+        /// <param name="selector">Save dialog filter.</param>
+        /// <param name="defaultExtension">Extension of file to save.</param>
+		private void Save() 
 		{
-			try 
-			{
-				System.Windows.Forms.SaveFileDialog fileDialog = new System.Windows.Forms.SaveFileDialog();
-				fileDialog.AddExtension = true;
-				fileDialog.CheckPathExists = true;
-				fileDialog.DefaultExt = defaultExtension;
-				fileDialog.DereferenceLinks = true;
-				fileDialog.ValidateNames = true;
-				fileDialog.Filter = selector;
-				fileDialog.OverwritePrompt = true;
-				fileDialog.FilterIndex = 1;
-				if (fileDialog.ShowDialog() != DialogResult.OK) 
-				{
-					return;
-				}
-				ToBitmap().Save(fileDialog.FileName, format);
-			}
-			catch (Exception e) 
-			{
-				MessageBox.Show("Save failed: " + e.Message);
-			}
-		}
-		private void menuItemSaveImageAsTiff_Click(object sender, System.EventArgs e)
-		{
-			// Save a file - get the filename
-			SaveFileDialog fileDialog = new System.Windows.Forms.SaveFileDialog();				
-			fileDialog.AddExtension = true;
-			fileDialog.CheckPathExists = true;
-			fileDialog.DefaultExt = "tiff" ;
-			fileDialog.DereferenceLinks = true;
-			fileDialog.ValidateNames = true;
-			fileDialog.Filter = "tiff (*.tiff)|*.tiff" ;
-			fileDialog.OverwritePrompt = true;
-			fileDialog.FilterIndex = 1;
 
-			if (fileDialog.ShowDialog() != DialogResult.OK) 
-			{
-				return;
-			}
+            frmSaveDPI frmSave = new frmSaveDPI();
+            try
+            {
+                
 
-			frmSaveDPI frmSave = new frmSaveDPI();		
-			Bitmap bmp = ToBitmap(1200,1000) ; 
-			bmp.SetResolution(1200.0f, 1000.0f) ; 
-			frmSave.NonLabeledBitmap = bmp;												
-			frmSave.Owner = ParentForm;
-			frmSave.LabeledBitmap    = bmp ;  
-			frmSave.DPI	   = 96.0f;				
-			frmSave.Text   += " for " + fileDialog.FileName;
+                if (m_saveFileDialog.ShowDialog() != DialogResult.OK)
+                {
+                    return;
+                }
 
-			System.Windows.Forms.DialogResult diagResult = frmSave.ShowDialog();								
-			if (diagResult == System.Windows.Forms.DialogResult.OK)
-			{							
-				Bitmap bmpSave = frmSave.Bitmap;					
-				bmpSave.Save(fileDialog.FileName, System.Drawing.Imaging.ImageFormat.Tiff);						
-			}
-			frmSave.Dispose();
-		}
+                string name      = m_saveFileDialog.FileName;
+                string extension = System.IO.Path.GetExtension(name);
 
-		private void menuItemSaveImageAsBmp_Click(object sender, System.EventArgs e)
-		{
-			Save(System.Drawing.Imaging.ImageFormat.Bmp, "Bitmap (*.bmp)|*.bmp", "bmp");
-		}
+                Image    image      = null;
+                Metafile metaImage  = null;
 
-		private void menuItemSaveImageAsGif_Click(object sender, System.EventArgs e)
-		{
-			Save(System.Drawing.Imaging.ImageFormat.Gif, "Gif (*.gif)|*.gif", "gif");
-		}
+                switch (extension.ToLower())
+                {
+                    case ".jpg":
+                        image = ToBitmap();                        
+                        image.Save(name, ImageFormat.Jpeg);
+                        break;
+                    case ".tiff":
+                        image = ToBitmap();
+                        image.Save(name, ImageFormat.Tiff);
+                        break;
+                    case ".gif":
+                        image = ToBitmap();
+                        image.Save(name, ImageFormat.Gif);
+                        break;
+                    case ".bmp":
+                        image = ToBitmap();
+                        image.Save(name, ImageFormat.Bmp);
+                        break;
+                    case ".wmf":
+                        metaImage = ToMetafile();
+                        metaImage.Save(name, ImageFormat.Wmf);
+                        break;
+                    case ".emf":
+                    default:
+                        metaImage = ToMetafile();
+                        metaImage.Save(name, ImageFormat.Emf);                                                
+                        break;
+                }
+            }
+            catch (Exception e)
+            {
 
-		private void menuItemSaveAsJpg_Click(object sender, System.EventArgs e)
-		{
-			Save(System.Drawing.Imaging.ImageFormat.Jpeg, "Jpeg (*.jpg)|*.jpg", "jpg");
+                MessageBox.Show("Save failed: " + e.Message);
+            }
+            finally
+            {
+                frmSave.Dispose();
+            }
 		}
 
 		#region "Marker Layer"
@@ -3339,6 +3304,12 @@ namespace PNNLControls
 			}
 		}
 		#endregion
+
+
+        private void menuItemSaveImage_Click(object sender, EventArgs e)
+        {
+            Save();
+        }
 	}
 	
 	/// <summary>

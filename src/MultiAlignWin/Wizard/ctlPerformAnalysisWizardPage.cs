@@ -319,9 +319,11 @@ namespace MultiAlignWin
         {
             TreeNode insertNode = new TreeNode();
             insertNode.Text     = message;
+            int lastNode        = mtreeview_statusMessages.Nodes.Count - 1;
+
             if (statusLevel > 0)
             {
-                mtreeview_statusMessages.Nodes[mtreeview_statusMessages.Nodes.Count - 1].Nodes.Add(insertNode);
+                mtreeview_statusMessages.Nodes[lastNode].Nodes.Add(insertNode);
             }
             else
             {                

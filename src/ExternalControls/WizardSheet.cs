@@ -15,7 +15,7 @@ namespace Wizard.UI
         #region Members
         private Wizard.UI.EtchedLine etchedLine1;
         private Button backButton;
-        private Button nextButton;
+        private Button m_nextButton;
         private Button finishButton;
         private Button cancelButton;
         private Panel buttonPanel;
@@ -60,7 +60,7 @@ namespace Wizard.UI
 		{
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(WizardSheet));
             this.backButton = new System.Windows.Forms.Button();
-            this.nextButton = new System.Windows.Forms.Button();
+            this.m_nextButton = new System.Windows.Forms.Button();
             this.finishButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
             this.buttonPanel = new System.Windows.Forms.Panel();
@@ -84,14 +84,14 @@ namespace Wizard.UI
             // 
             // nextButton
             // 
-            this.nextButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.nextButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.nextButton.Location = new System.Drawing.Point(581, 44);
-            this.nextButton.Name = "nextButton";
-            this.nextButton.Size = new System.Drawing.Size(68, 23);
-            this.nextButton.TabIndex = 1;
-            this.nextButton.Text = "&Next >";
-            this.nextButton.Click += new System.EventHandler(this.nextButton_Click);
+            this.m_nextButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.m_nextButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.m_nextButton.Location = new System.Drawing.Point(581, 44);
+            this.m_nextButton.Name = "nextButton";
+            this.m_nextButton.Size = new System.Drawing.Size(68, 23);
+            this.m_nextButton.TabIndex = 1;
+            this.m_nextButton.Text = "&Next >";
+            this.m_nextButton.Click += new System.EventHandler(this.nextButton_Click);
             // 
             // finishButton
             // 
@@ -124,7 +124,7 @@ namespace Wizard.UI
             this.buttonPanel.Controls.Add(this.cancelButton);
             this.buttonPanel.Controls.Add(this.backButton);
             this.buttonPanel.Controls.Add(this.finishButton);
-            this.buttonPanel.Controls.Add(this.nextButton);
+            this.buttonPanel.Controls.Add(this.m_nextButton);
             this.buttonPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.buttonPanel.Location = new System.Drawing.Point(0, 569);
             this.buttonPanel.Name = "buttonPanel";
@@ -351,8 +351,8 @@ namespace Wizard.UI
 				finishButton.Visible = true;
 				finishButton.Enabled = true;
 
-				nextButton.Visible = false;
-				nextButton.Enabled = false;
+				m_nextButton.Visible = false;
+				m_nextButton.Enabled = false;
 
 				this.AcceptButton = finishButton;
 			}
@@ -361,10 +361,10 @@ namespace Wizard.UI
 				finishButton.Visible = false;
 				finishButton.Enabled = false;
 
-				nextButton.Visible = true;
-				nextButton.Enabled = ((buttons & WizardButtons.Next) != 0);
+				m_nextButton.Visible = true;
+				m_nextButton.Enabled = ((buttons & WizardButtons.Next) != 0);
 
-				this.AcceptButton = nextButton;
+				this.AcceptButton = m_nextButton;
 			}
 		}
 		private WizardPageEventArgs PreChangePage(int delta)
@@ -437,7 +437,7 @@ namespace Wizard.UI
             if ((buttons & WizardButtons.Finish) == WizardButtons.Finish)
                 finishButton.PerformClick();
             else if ((buttons & WizardButtons.Next) == WizardButtons.Next)
-                nextButton.PerformClick();
+                m_nextButton.PerformClick();
             else if ((buttons & WizardButtons.Back) == WizardButtons.Back)
                 backButton.PerformClick();
         }    
@@ -485,11 +485,11 @@ namespace Wizard.UI
         {
             get
             {
-                return nextButton.Enabled;
+                return m_nextButton.Enabled;
             }
             set
             {
-                nextButton.Enabled = value;
+                m_nextButton.Enabled = value;
             }
 
         }
@@ -497,22 +497,22 @@ namespace Wizard.UI
         {
             get
             {
-                return nextButton.Visible;
+                return m_nextButton.Visible;
             }
             set
             {
-                nextButton.Visible = value;
+                m_nextButton.Visible = value;
             }
         }
         internal string NextButtonText
         {
             get
             {
-                return nextButton.Text;
+                return m_nextButton.Text;
             }
             set
             {
-                nextButton.Text = value;
+                m_nextButton.Text = value;
             }
         }
         #endregion

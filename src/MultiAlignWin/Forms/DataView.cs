@@ -26,14 +26,13 @@ namespace MultiAlignWin
 	/// <summary>
 	/// Form that displays all data related to an analysis.
 	/// </summary>
-	public class frmDataView : Form
+	public class DataView : Form
     {        
         #region Members
         private Splitter splitter1;
         private Panel panelCharts;
 		private MultiAlignWin.ctlClusterChart mobjClusterChart ;
-        private MultiAlignAnalysis mobjAnalysis;
-		private bool mblnDatasetModified ;
+        private MultiAlignAnalysis mobjAnalysis;		
         private string mstrCurrentFileName;
         private MenuStrip menuStrip;
         private ToolStripMenuItem fileToolStripMenuItem;
@@ -95,38 +94,23 @@ namespace MultiAlignWin
         /// <summary>
         /// Default constructor for the data view.
         /// </summary>
-		public frmDataView()
+		public DataView()
 		{
 			InitializeComponent();
-            Initialize();
+
+            mobjClusterChart = new MultiAlignWin.ctlClusterChart();
+            mobjClusterChart.LegendVisible = true;
+            mobjClusterChart.Dock = DockStyle.Fill;
+            
+            mtreeView_proteinViewer.Nodes.Add("Global Proteins Identified");
+            mlistView_proteinPeptideTable.SelectedIndexChanged += new EventHandler(mlistView_proteinPeptideTable_SelectedIndexChanged);
+            tabPageOverlayPlot.Controls.Add(mobjClusterChart);                   
 
             /// 
             /// column output options            
             /// 
-            m_columnOutputOptions = new TableWriterColumnOptions();
-            
-        }
-        private void Initialize()
-        {
-			Closing += new CancelEventHandler(frmDataView_Closing);
-
-			
-            mblnDatasetModified = false;
-            			
-			mobjClusterChart                = new MultiAlignWin.ctlClusterChart() ;
-            mobjClusterChart.LegendVisible  = true;
-			mobjClusterChart.Dock           = DockStyle.Fill ;
-            
-			//TODO: Map proteins to tree view mobjClusterGrid.ProteinsMapped += new ctlClusterGrid.DelegatePeptidesMatchedToProteins(mobjClusterGrid_ProteinsMapped);
-
-            mtreeView_proteinViewer.Nodes.Add("Global Proteins Identified");
-            mlistView_proteinPeptideTable.SelectedIndexChanged += new EventHandler(mlistView_proteinPeptideTable_SelectedIndexChanged);
-			tabPageOverlayPlot.Controls.Add(mobjClusterChart) ; 
-
-			Closing                                         +=  new CancelEventHandler(frmDataView_Closing);
-            
-        }
-
+            m_columnOutputOptions = new TableWriterColumnOptions();            
+        }        
         #endregion
 
         void mlistView_proteinPeptideTable_SelectedIndexChanged(object sender, EventArgs e)
@@ -269,9 +253,12 @@ namespace MultiAlignWin
                 }
                 mobjClusterChart.Dispose();
                 mobjAnalysis.Dispose();
+
             }
-            base.Dispose(disposing);
             mlist_datasets.Clear();             
+
+            base.Dispose(disposing);
+            
         }
 
         #region Windows Form Designer generated code
@@ -282,7 +269,7 @@ namespace MultiAlignWin
 		private void InitializeComponent()
 		{
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmDataView));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DataView));
             this.splitter1 = new System.Windows.Forms.Splitter();
             this.panelCharts = new System.Windows.Forms.Panel();
             this.mtabcontrol_data = new System.Windows.Forms.TabControl();
@@ -998,25 +985,12 @@ namespace MultiAlignWin
                     f.Close();
             }
         }
-        private void frmDataView_Closing(object sender, CancelEventArgs e)
-		{
-			if (!mblnDatasetModified)
-				return ; 
-			DialogResult rs = MessageBox.Show("About to close file. Save Changes ?","Save Changes",
-				MessageBoxButtons.YesNoCancel,MessageBoxIcon.Information);
-			if (rs == DialogResult.Cancel)
-			{
-				e.Cancel = true ; 
-				return ; 
-			}
-			if (rs == DialogResult.Yes)
-			{
-				mobjAnalysis.SerializeAnalysisToFile(mstrCurrentFileName) ; 
-			}
-		}
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            mobjAnalysis.SerializeAnalysisToFile(mobjAnalysis.PathName);
+            AnalysisBinaryWriter writer = new AnalysisBinaryWriter();
+            writer.WriteAnalysis(
+                System.IO.Path.Combine(mobjAnalysis.PathName, mobjAnalysis.AnalysisName + ".mln"),
+                mobjAnalysis);             
         }
         private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -1031,7 +1005,8 @@ namespace MultiAlignWin
             dialog.FilterIndex = 1;
             if (dialog.ShowDialog() == DialogResult.OK)
             {
-                mobjAnalysis.SerializeAnalysisToFile(dialog.FileName);
+                AnalysisBinaryWriter writer = new AnalysisBinaryWriter();
+                writer.WriteAnalysis(dialog.FileName, mobjAnalysis);
             }
             dialog.Dispose();
         }

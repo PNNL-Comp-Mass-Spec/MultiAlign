@@ -27,6 +27,27 @@ using PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate;
 
 namespace PNNLProteomics.Data.Analysis
 {
+    public class ExceptionArgs: System.EventArgs
+    {
+        private Exception m_exception;
+
+        public ExceptionArgs(Exception ex)
+        {
+            Exception = ex;
+        }
+        public Exception Exception 
+        {
+            get
+            {
+                return m_exception;
+            }
+            set
+            {
+                m_exception = value;
+            }
+        }
+    }
+
 	/// <summary>
 	/// The class is the class where all the analysis steps get called from and tracked. 
 	/// This includes loading of the files, loading of mass tag databases, alignments of the files,
@@ -45,6 +66,8 @@ namespace PNNLProteomics.Data.Analysis
         /// </summary>
         private const int CONST_FIRST_LEVEL = 0;
 
+
+        
         #region Enumerations
         public enum enmState
         {
@@ -55,6 +78,11 @@ namespace PNNLProteomics.Data.Analysis
         #endregion
 
         #region Delegates and Events
+        /// <summary>
+        /// Fired when an analysis exception is caught.
+        /// </summary>
+        [field: NonSerialized]
+        public event EventHandler<ExceptionArgs> AnalysisException;
         /// <summary>
         /// Fired when an isotope peak is loaded for a file.
         /// </summary>
@@ -95,11 +123,6 @@ namespace PNNLProteomics.Data.Analysis
                                                         float minY,            
                                                         float maxY,
                                                         int   part);
-        /// <summary>
-        /// Fired when progress has changed during an analysis.
-        /// </summary>
-        [field: NonSerialized] public static event     DelegateProgressChangedEventHandler ProgressChanged;
-        public delegate void DelegateProgressChangedEventHandler(object o, int progress, string message);
         /// <summary>
         /// Fired when the analysis has completed.
         /// </summary>
@@ -309,37 +332,17 @@ namespace PNNLProteomics.Data.Analysis
         #endregion
 
         #region Disposing/Abort/Destruction
-        ~MultiAlignAnalysis()
-		{
-			if (mthread_currentStatus != null)
-			{
-				if (mthread_currentStatus.IsAlive)
-					mthread_currentStatus.Abort() ; 
-				mthread_currentStatus = null ; 
-			}
-
-            AbortAnalysisThread();
-		}
+        
         /// <summary>
         /// Dispose method that will kill the analysis thread.
         /// </summary>
 		public void Dispose()
 		{
-			if (mthread_currentStatus != null)
-			{
-				if (mthread_currentStatus.IsAlive)
-					mthread_currentStatus.Abort() ; 
-				mthread_currentStatus = null ; 
-			}
+            Abort();
 
             marrDatasetAlignmentOptions.Clear();            
             m_datasetInformation.Clear();
-            this.UMCData.Clear();
-
-            
-			// because this class needs a destructor, it also needs this
-			// idiomatic Dispose method
-			System.GC.SuppressFinalize(this);
+            UMCData.Clear();
             
             /// 
             /// Force a collction
@@ -471,21 +474,21 @@ namespace PNNLProteomics.Data.Analysis
         /// </summary>
 		public void LoadData()
 		{
-			try
-			{
-				menmState                        = enmState.LOADING_FEATURES ; 
-				Thread procThread                = new  Thread(new System.Threading.ThreadStart(MonitorLoading));
-				mthread_currentStatus            = procThread ; 
-				procThread.Name                  = "Loading Thread Monitor";
+            try
+            {
+                menmState = enmState.LOADING_FEATURES;
+                Thread procThread = new Thread(new System.Threading.ThreadStart(MonitorLoading));
+                mthread_currentStatus = procThread;
+                procThread.Name = "Loading Thread Monitor";
                 mobjUMCCreator.UMCFindingOptions = mobjUMCFindingOptions;
-				procThread.Start() ;
+                procThread.Start();
 
                 int highestChargeState = 0;
-				clsUMC[] loadedUMCs = null;
+                clsUMC[] loadedUMCs = null;
 
-				foreach(DatasetInformation dataset in Datasets)
-				{
-					bool preDefinedUMCs     = false;
+                foreach (DatasetInformation dataset in Datasets)
+                {
+                    bool preDefinedUMCs = false;
                     mobjUMCCreator.FileName = dataset.mstrLocalPath;
                     if (StatusMessage != null)
                     {
@@ -495,13 +498,13 @@ namespace PNNLProteomics.Data.Analysis
                     mint_statusLevel++;
                     string extension = Path.GetExtension(dataset.mstrLocalPath).ToUpper();
 
-					// If we are using a UMC or Feature file
-					if (extension == ".TXT")
-					{
-						// Grabs UMCs from UMC or Feature file
+                    // If we are using a UMC or Feature file
+                    if (extension == ".TXT")
+                    {
+                        // Grabs UMCs from UMC or Feature file
                         UmcReader umcReader = new UmcReader(dataset.mstrLocalPath);
-						loadedUMCs = umcReader.GetUmcList().ToArray();
-						preDefinedUMCs = true;
+                        loadedUMCs = umcReader.GetUmcList().ToArray();
+                        preDefinedUMCs = true;
 
                         /// 
                         /// At this point we dont know what the NET really is. 
@@ -515,133 +518,140 @@ namespace PNNLProteomics.Data.Analysis
                         {
                             //umc.mdouble_abundance = umc.mdouble_max_abundance;
                             minScan = Math.Min(umc.mint_start_scan, minScan);
-                            maxScan = Math.Max(umc.mint_end_scan, maxScan);                            
+                            maxScan = Math.Max(umc.mint_end_scan, maxScan);
                         }
                         foreach (clsUMC umc in loadedUMCs)
                         {
-                            umc.Net = Convert.ToDouble(umc.mint_scan - minScan) / Convert.ToDouble(maxScan - minScan);                            
+                            umc.Net = Convert.ToDouble(umc.mint_scan - minScan) / Convert.ToDouble(maxScan - minScan);
                         }
-                        
+
                         if (UMCSLoadedForFile != null)
                         {
                             UMCSLoadedForFile(dataset.mstrLocalPath, loadedUMCs);
                         }
-					}
-					
-					// SQLite DB
-					else if (extension == ".DB3" || extension == ".SQLITE")
-					{
-						NHibernateUtil.SetDbLocationForRead(dataset.mstrLocalPath);
+                    }
 
-						try
-						{
-							StatusMessage(mint_statusLevel, "Trying to load pre-made UMCs.");
-							UmcDAOHibernate umcDAOHibernate = new UmcDAOHibernate();
-							loadedUMCs = umcDAOHibernate.FindAll().ToArray();
-							preDefinedUMCs = true;
-						}
-						// IF UMC table does not exist
-						catch (NHibernate.ADOException adoException)
-						{
-							StatusMessage(mint_statusLevel, "No UMCs found. Creating UMCs from provided data.");
-							loadedUMCs = new clsUMC[0];
-						}
+                    // SQLite DB
+                    else if (extension == ".DB3" || extension == ".SQLITE")
+                    {
+                        NHibernateUtil.SetDbLocationForRead(dataset.mstrLocalPath);
 
-						// If no UMCs were loaded from the SQLite DB, then we need to create UMCs using MSFeature data from the DB
-						if (loadedUMCs.Length < 1)
-						{
-							MSFeatureDAOHibernate msFeatureDAOHibernate = new MSFeatureDAOHibernate();
-							clsIsotopePeak[] msFeatureArray = msFeatureDAOHibernate.FindAll().ToArray();
+                        try
+                        {
+                            StatusMessage(mint_statusLevel, "Trying to load pre-made UMCs.");
+                            UmcDAOHibernate umcDAOHibernate = new UmcDAOHibernate();
+                            loadedUMCs = umcDAOHibernate.FindAll().ToArray();
+                            preDefinedUMCs = true;
+                        }
+                        // IF UMC table does not exist
+                        catch (NHibernate.ADOException adoException)
+                        {
+                            StatusMessage(mint_statusLevel, "No UMCs found. Creating UMCs from provided data.");
+                            loadedUMCs = new clsUMC[0];
+                        }
 
-							mobjUMCCreator.SetIsotopePeaks(ref msFeatureArray);
-							mobjUMCCreator.FindUMCs();
-							loadedUMCs = mobjUMCCreator.GetUMCs();
+                        // If no UMCs were loaded from the SQLite DB, then we need to create UMCs using MSFeature data from the DB
+                        if (loadedUMCs.Length < 1)
+                        {
+                            MSFeatureDAOHibernate msFeatureDAOHibernate = new MSFeatureDAOHibernate();
+                            clsIsotopePeak[] msFeatureArray = msFeatureDAOHibernate.FindAll().ToArray();
 
-                            
-						}
-					}
+                            mobjUMCCreator.SetIsotopePeaks(ref msFeatureArray);
+                            mobjUMCCreator.FindUMCs();
+                            loadedUMCs = mobjUMCCreator.GetUMCs();
 
-					// Else we are using a PEK or CSV file
-					else
-					{
-						if (extension == ".PEK")
-						{
-							mobjUMCCreator.LoadUMCs(true);
-						}
-						else if (extension == ".CSV")
-						{
-							mobjUMCCreator.LoadUMCs(false);
-						}
-						else
-						{
-							throw new ArgumentException("Incorrect extension for file. Please use pek or csv files as inputs.");
-						}
 
-						if (IsotopePeaksLoadedForFile != null)
-						{
-							IsotopePeaksLoadedForFile(dataset.mstrLocalPath, mobjUMCCreator.GetIsotopePeaks());
-						}
+                        }
+                    }
 
-						/// 
-						/// Finds and calculates all UMCS
-						/// 
-						mobjUMCCreator.FindUMCs();
-						loadedUMCs = mobjUMCCreator.GetUMCs();
+                    // Else we are using a PEK or CSV file
+                    else
+                    {
+                        if (extension == ".PEK")
+                        {
+                            mobjUMCCreator.LoadUMCs(true);
+                        }
+                        else if (extension == ".CSV")
+                        {
+                            mobjUMCCreator.LoadUMCs(false);
+                        }
+                        else
+                        {
+                            throw new ArgumentException("Incorrect extension for file. Please use pek or csv files as inputs.");
+                        }
 
-					}
+                        if (IsotopePeaksLoadedForFile != null)
+                        {
+                            IsotopePeaksLoadedForFile(dataset.mstrLocalPath, mobjUMCCreator.GetIsotopePeaks());
+                        }
+
+                        /// 
+                        /// Finds and calculates all UMCS
+                        /// 
+                        mobjUMCCreator.FindUMCs();
+                        loadedUMCs = mobjUMCCreator.GetUMCs();
+
+                    }
 
                     /// 
                     /// Find the highest Charge State
                     /// 
-					if (preDefinedUMCs)
-					{
-						foreach (clsUMC umc in loadedUMCs)
-						{
-							if (umc.ChargeMax != 0)
-							{
-								if (umc.ChargeMax > highestChargeState)
-								{
-									highestChargeState = umc.ChargeMax;
-								}
-							}
-							else
-							{
-								if (umc.ChargeRepresentative > highestChargeState)
-								{
-									highestChargeState = umc.ChargeRepresentative;
-								}
-							}
-						}
-					}
-					else
-					{
-						highestChargeState = Math.Max(highestChargeState, mobjUMCCreator.HighestChargeState);
-					}
+                    if (preDefinedUMCs)
+                    {
+                        foreach (clsUMC umc in loadedUMCs)
+                        {
+                            if (umc.ChargeMax != 0)
+                            {
+                                if (umc.ChargeMax > highestChargeState)
+                                {
+                                    highestChargeState = umc.ChargeMax;
+                                }
+                            }
+                            else
+                            {
+                                if (umc.ChargeRepresentative > highestChargeState)
+                                {
+                                    highestChargeState = umc.ChargeRepresentative;
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        highestChargeState = Math.Max(highestChargeState, mobjUMCCreator.HighestChargeState);
+                    }
 
                     /// 
                     /// Notify listeners that we have loaded UMCS's for this dataset.
                     /// 
-					if (UMCsCalculatedForFile != null)					
-						UMCsCalculatedForFile(dataset.mstrLocalPath, loadedUMCs) ; 
-					
+                    if (UMCsCalculatedForFile != null)
+                        UMCsCalculatedForFile(dataset.mstrLocalPath, loadedUMCs);
+
                     /// 
                     /// Set the UMC Object with more umcs
                     /// 
-					mobjUMCData.SetUMCS(dataset.mstrLocalPath, ref loadedUMCs);                 
+                    mobjUMCData.SetUMCS(dataset.mstrLocalPath, ref loadedUMCs);
                     mint_statusLevel--;
-				}
+                }
 
                 ///
                 /// Maintain the highest charge state was
                 ///  
-                mobjUMCData.HighestChargeState  = highestChargeState;
-				menmState                       = enmState.DONE_LOADING_FEATURES ; 
-			}
-			catch (Exception ex)
+                mobjUMCData.HighestChargeState = highestChargeState;
+                menmState = enmState.DONE_LOADING_FEATURES;
+
+                
+            }
+            catch (System.OutOfMemoryException ex)
             {
-                System.Diagnostics.Trace.WriteLine(ex.Message);
-				menmState = enmState.ERROR;
-			}
+                menmState = enmState.ERROR;
+                throw ex;
+            }
+            catch (Exception ex)
+            {                
+                menmState = enmState.ERROR;
+                throw ex;
+            }
 		}
 		#endregion 
 
@@ -1153,6 +1163,7 @@ namespace PNNLProteomics.Data.Analysis
                 catch (Exception ex)
                 {
                     System.Console.WriteLine(ex.Message);
+                    throw ex;
                 }
 			}
             menmState = enmState.DONE_ALIGNING; 
@@ -1616,11 +1627,9 @@ namespace PNNLProteomics.Data.Analysis
         {
             try
             {
-                mobj_analysisThread.Abort();
-            }
-            catch
-            {
-            }
+                if (mobj_analysisThread != null && mobj_analysisThread.IsAlive)
+                    mobj_analysisThread.Abort();
+            }                
             finally
             {
                 mbool_processing = false;
@@ -1630,220 +1639,193 @@ namespace PNNLProteomics.Data.Analysis
         /// <summary>
         /// Starts a multi-Align analysis job.
         /// </summary>
-        public void StartAnalysis(string saveFilePath)
-        {            
-            mstring_pathname     = saveFilePath;
-            mstring_analysisName = Path.GetFileNameWithoutExtension(saveFilePath);            
-
-            /// 
-            /// Kill the thread in case it already exists.
-            /// 
+        public void StartAnalysis()
+        {                     
+            // Make sure we start with a fresh analysis.
             AbortAnalysisThread();
+            mobjUMCData.Clear();
+                        
             ThreadStart tStart  = new ThreadStart(PerformAnalysis);
             mobj_analysisThread = new Thread(tStart);
             mobj_analysisThread.Start();
+            
+        }
+
+        void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            Exception ex = e.ExceptionObject as Exception;
+            if (ex != null)
+                throw new Exception("Could not complete the analysis.", ex);         
+            else
+                throw new Exception("Could not complete the analysis.");
         }
 
 
         /// <summary>
         /// Starts the main analysis.
         /// </summary>
-        private void PerformAnalysis()
+        private void PerformAnalysis()        
         {
-            mbool_processing = true;
-            string pathName = System.IO.Path.GetDirectoryName(mstring_pathname);
-            string newPath  = System.IO.Path.Combine(pathName, mstring_analysisName);
-            
             try
             {
-                System.IO.Directory.CreateDirectory(newPath);
-                string parameterPath = System.IO.Path.Combine(newPath, mstring_analysisName + "_parameters.xml");
-                SaveParametersToFile(parameterPath);
-            }
-            catch{
-            }
-            string massTagDBName = MassTagDBOptions.mstrDatabase;
+                mbool_processing        = true;
+                string massTagDBName    = MassTagDBOptions.mstrDatabase;
 
-            /// /////////////////////////////////////////////////////////
-            /// Create a list of steps to complete            
-            ///     Here are the list of steps to perform
-            ///         1.  Load MTDB*
-            ///         2.  Load Data 
-            ///         3.  Align
-            ///         4.  Cluster
-            ///         5.  Peak Match*
-            ///         6.  Save Data to file.
-            /// /////////////////////////////////////////////////////////
-            List<string> listSteps = new List<string>();
-            string stepLoadMTDB  = "Load MTDB";
-            string stepLoadData  = "Load Datasets";
-            string stepAlignment = "Align";
-            string stepCluster   = "Cluster";
-            string stepPeakMatch = "Peak Match";
-            string stepSave      = "Save";
-            listSteps.AddRange(new string[] { stepLoadData, stepAlignment, stepCluster });
+                /// /////////////////////////////////////////////////////////
+                /// Create a list of steps to complete            
+                ///     Here are the list of steps to perform
+                ///         1.  Load MTDB*
+                ///         2.  Load Data 
+                ///         3.  Align
+                ///         4.  Cluster
+                ///         5.  Peak Match*
+                ///         6.  Save Data to file.
+                /// /////////////////////////////////////////////////////////
+                List<string> listSteps = new List<string>();
+                string stepLoadMTDB = "Load MTDB";
+                string stepLoadData = "Load Datasets";
+                string stepAlignment = "Align";
+                string stepCluster = "Cluster";
+                string stepPeakMatch = "Peak Match";
+                string stepSave = "Save";
+                listSteps.AddRange(new string[] { stepLoadData, stepAlignment, stepCluster });
 
-            /// 
-            /// Determine what steps to run
-            /// 
-            if (MassTagDBOptions.menm_databaseType != MultiAlignEngine.MassTags.MassTagDatabaseType.None)
-            {
-                listSteps.Add(stepPeakMatch);
-            }
-            if (massTagDBName != null && massTagDBName != "" || 
-                MassTagDBOptions.menm_databaseType == MultiAlignEngine.MassTags.MassTagDatabaseType.ACCESS)
-            {
-                listSteps.Insert(0, stepLoadMTDB);
-            }
-            listSteps.Add(stepSave);
+                /// 
+                /// Determine what steps to run
+                /// 
+                if (MassTagDBOptions.menm_databaseType != MultiAlignEngine.MassTags.MassTagDatabaseType.None)
+                {
+                    listSteps.Add(stepPeakMatch);
+                }
+                if (massTagDBName != null && massTagDBName != "" ||
+                    MassTagDBOptions.menm_databaseType == MultiAlignEngine.MassTags.MassTagDatabaseType.ACCESS)
+                {
+                    listSteps.Insert(0, stepLoadMTDB);
+                }
+                listSteps.Add(stepSave);
 
-            /// 
-            /// Tell the listener what we are going to do.
-            /// 
-            if (ListOfSteps != null)
-                ListOfSteps(this, listSteps);
+                /// 
+                /// Tell the listener what we are going to do.
+                /// 
+                if (ListOfSteps != null)
+                    ListOfSteps(this, listSteps);
 
-            
-            /// ////////////////////////////////////////////// 
-            /// Part One: 
-            ///     Load Mass Tag Database 
-            /// //////////////////////////////////////////////    
-            mint_statusLevel = CONST_FIRST_LEVEL;
-            if (massTagDBName != null && massTagDBName != "" ||
-                MassTagDBOptions.menm_databaseType == MultiAlignEngine.MassTags.MassTagDatabaseType.ACCESS)
-            {
+
+                /// ////////////////////////////////////////////// 
+                /// Part One: 
+                ///     Load Mass Tag Database 
+                /// //////////////////////////////////////////////    
+                mint_statusLevel = CONST_FIRST_LEVEL;
+                if (massTagDBName != null && massTagDBName != "" ||
+                    MassTagDBOptions.menm_databaseType == MultiAlignEngine.MassTags.MassTagDatabaseType.ACCESS)
+                {
+                    if (CurrentStep != null)
+                        CurrentStep(listSteps.IndexOf(stepLoadMTDB), stepLoadData);
+                    LoadMassTagDB();
+                }
+
+                /// ////////////////////////////////////////////// 
+                /// Part Two:
+                ///     Loading Data
+                /// ////////////////////////////////////////////// 
+                mint_statusLevel = CONST_FIRST_LEVEL;
                 if (CurrentStep != null)
-                    CurrentStep(listSteps.IndexOf(stepLoadMTDB), stepLoadData);
-                LoadMassTagDB();                
-            }
+                    CurrentStep(listSteps.IndexOf(stepLoadData), stepLoadData);
+                LoadData();
 
-            /// ////////////////////////////////////////////// 
-            /// Part Two:
-            ///     Loading Data
-            /// ////////////////////////////////////////////// 
-            mint_statusLevel = CONST_FIRST_LEVEL;
-            if (CurrentStep != null)
-                CurrentStep(listSteps.IndexOf(stepLoadData), stepLoadData);
-            LoadData();
+                if (menmState == enmState.ERROR)
+                    throw new Exception("There was an error loading the data.  Cannot complete the analysis.");
 
-            /// ////////////////////////////////////////////// 
-            /// Part Three:
-            ///     Setting alignment options
-            /// //////////////////////////////////////////////             
-            if (BaselineDataset != null)
-            {
-                DefaultAlignmentOptions.AlignmentBaselineName           = BaselineDataset;
-                DefaultAlignmentOptions.IsAlignmentBaselineAMasstagDB   = false;
-            }
-            else
-            {                
-                DefaultAlignmentOptions.AlignmentBaselineName           = massTagDBName;
-                DefaultAlignmentOptions.IsAlignmentBaselineAMasstagDB   = true;
-                UseMassTagDBAsBaseline                                  = true;
-            }
-            mint_statusLevel = CONST_FIRST_LEVEL;
-            if (CurrentStep != null)
-                CurrentStep(listSteps.IndexOf(stepAlignment), stepAlignment);
-            SetDefaultAlignmentOptions();
-
-            
-            /// ////////////////////////////////////////////// 
-            /// Part Four:
-            ///     Alignment
-            /// ////////////////////////////////////////////// 
-            mint_statusLevel = CONST_FIRST_LEVEL;
-            AlignDatasets();
-
-
-            /// ////////////////////////////////////////////// 
-            /// Part Four:
-            ///         Clustering 
-            /// ////////////////////////////////////////////// 
-            mint_statusLevel = CONST_FIRST_LEVEL;
-            if (CurrentStep != null)
-                CurrentStep(listSteps.IndexOf(stepCluster), stepCluster);
-            PerformClustering();
-
-            /// ////////////////////////////////////////////// 
-            /// Part Five:
-            ///     Perform Peak Matching
-            /// ////////////////////////////////////////////// 
-            mint_statusLevel = CONST_FIRST_LEVEL;
-            if (MassTagDBOptions.menm_databaseType != MultiAlignEngine.MassTags.MassTagDatabaseType.None)
-            {
+                /// ////////////////////////////////////////////// 
+                /// Part Three:
+                ///     Setting alignment options
+                /// //////////////////////////////////////////////             
+                if (BaselineDataset != null)
+                {
+                    DefaultAlignmentOptions.AlignmentBaselineName = BaselineDataset;
+                    DefaultAlignmentOptions.IsAlignmentBaselineAMasstagDB = false;
+                }
+                else
+                {
+                    DefaultAlignmentOptions.AlignmentBaselineName = massTagDBName;
+                    DefaultAlignmentOptions.IsAlignmentBaselineAMasstagDB = true;
+                    UseMassTagDBAsBaseline = true;
+                }
+                mint_statusLevel = CONST_FIRST_LEVEL;
                 if (CurrentStep != null)
-                    CurrentStep(listSteps.IndexOf(stepPeakMatch), stepPeakMatch);
-                /// 
-                /// Run the peak matching steps and scoring
-                /// 
-                PerformPeakMatching();
-            }
+                    CurrentStep(listSteps.IndexOf(stepAlignment), stepAlignment);
+                SetDefaultAlignmentOptions();
 
-            /// ////////////////////////////////////////////// 
-            /// Part Six:
-            ///     Serialize the analysis to file.
-            /// ////////////////////////////////////////////// 
-            mint_statusLevel = CONST_FIRST_LEVEL;
-            if (CurrentStep != null)
-                CurrentStep(listSteps.IndexOf(stepSave), stepSave);
 
-            try
-            {
-                /// 
-                /// Get the path name and make a directory for the analysis.
-                /// 
-                //mstring_analysisName = System.IO.Path.GetFileNameWithoutExtension(BaselineDataset);
+                /// ////////////////////////////////////////////// 
+                /// Part Four:
+                ///     Alignment
+                /// ////////////////////////////////////////////// 
+                mint_statusLevel = CONST_FIRST_LEVEL;
+                AlignDatasets();
+
+
+                /// ////////////////////////////////////////////// 
+                /// Part Four:
+                ///         Clustering 
+                /// ////////////////////////////////////////////// 
+                mint_statusLevel = CONST_FIRST_LEVEL;
+                if (CurrentStep != null)
+                    CurrentStep(listSteps.IndexOf(stepCluster), stepCluster);
+                PerformClustering();
+
                 
-                /// 
-                /// Update the path name
-                /// 
-                mstring_pathname    = System.IO.Path.Combine(newPath, mstring_analysisName + ".mln");                   
-                SerializeAnalysisToFile(mstring_pathname);                
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Trace.WriteLine("Could not save results to file. " + ex.Message);
-            }
-            
-            if (AnalysisComplete != null)
-                AnalysisComplete(this);
 
-            /// 
-            /// Tell the user that processing is complete
-            /// 
-            mbool_processing = false;
+                /// ////////////////////////////////////////////// 
+                /// Part Five:
+                ///     Perform Peak Matching
+                /// ////////////////////////////////////////////// 
+                mint_statusLevel = CONST_FIRST_LEVEL;
+                if (MassTagDBOptions.menm_databaseType != MultiAlignEngine.MassTags.MassTagDatabaseType.None)
+                {
+                    if (CurrentStep != null)
+                        CurrentStep(listSteps.IndexOf(stepPeakMatch), stepPeakMatch);
+                    /// 
+                    /// Run the peak matching steps and scoring
+                    /// 
+                    PerformPeakMatching();
+                }
+
+                /// ////////////////////////////////////////////// 
+                /// Part Six:
+                ///     Serialize the analysis to file.
+                /// ////////////////////////////////////////////// 
+                mint_statusLevel = CONST_FIRST_LEVEL;
+                if (CurrentStep != null)
+                    CurrentStep(listSteps.IndexOf(stepSave), stepSave);
+
+
+                if (AnalysisComplete != null)
+                    AnalysisComplete(this);
+
+                /// 
+                /// Tell the user that processing is complete
+                /// 
+                mbool_processing = false;
+            }catch(ThreadAbortException) //abortEx)
+            {
+                // We dont care about this exception.            
+            }catch(System.Exception ex)
+            {
+                if (AnalysisException != null)
+                    AnalysisException(this, new ExceptionArgs(ex));
+            }
         }
         #endregion
 
-        private void WriteAlignmentDataToFile(string directoryName, int id)
+        /// <summary>
+        /// Writes the alignment data from the histograms to file.
+        /// </summary>
+        /// <param name="directoryName"></param>
+        /// <param name="id"></param>
+        public void WriteAlignmentDataToFile(string directoryName, int id)
         {
-            string alignmentDataPath = mstring_analysisName + id.ToString() + "-alignmentData.csv";
-            alignmentDataPath = System.IO.Path.Combine(directoryName, alignmentDataPath);
-
-
-            using (TextWriter writer = File.CreateText(alignmentDataPath))
-            {
-                writer.WriteLine("Filename, Mass Mean, Mass Std, Mass Kurtosis, NET Mean, NET Std, NET Kurtosis");
-                for(int i = 0; i < AlignmentData.Count; i++)
-                {
-                    classAlignmentData data = AlignmentData[i];
-                    writer.Write("{0},", System.IO.Path.GetFileNameWithoutExtension(Datasets[i].mstrLocalPath));
-                    if (data == null)
-                    {
-                        writer.WriteLine("Baseline dataset");
-                    }
-                    else
-                    {
-                        writer.WriteLine("{0},{1},{2},{3},{4},{5}",
-                            data.MassMean,
-                            data.MassStandardDeviation,
-                            data.MassKurtosis,
-                            data.NETMean,
-                            data.NETStandardDeviation,
-                            data.NETKurtosis);
-                    }
-                }
-            }
+            
         }
 		
         #region Properties
@@ -2149,18 +2131,6 @@ namespace PNNLProteomics.Data.Analysis
 
         #region Analysis File 
         /// <summary>
-        /// Handles the progress changed event from the analysis object file loader to display progress results.
-        /// </summary>
-        /// <param name="o"></param>
-        /// <param name="progress"></param>
-        private static void progressStream_ProgressChanged(object o, int progress)
-		{
-			if (MultiAlignAnalysis.ProgressChanged != null)
-			{
-				MultiAlignAnalysis.ProgressChanged(o,progress, "loading analysis file...");
-			}
-        }       
-        /// <summary>
         /// Gets or sets the name of the analysis.
         /// </summary>
         [clsDataSummaryAttribute("Analysis Name")]
@@ -2178,6 +2148,7 @@ namespace PNNLProteomics.Data.Analysis
         /// <summary>
         /// Gets or sets the pathname associated with the analysis.
         /// </summary>
+        [clsDataSummaryAttribute("Analysis Path")]
         public string PathName
         {
             get
@@ -2189,95 +2160,6 @@ namespace PNNLProteomics.Data.Analysis
                 mstring_pathname = value;
             }
         }
-        /// <summary>
-        /// Serializes the analysis to the path provided.
-        /// </summary>
-        /// <param name="fileName">Path to save the analysis to.</param>
-        public void SerializeAnalysisToFile(string fileName)
-        {
-            FileInfo fi = new FileInfo(fileName);
-            if (mstring_analysisName == string.Empty)
-                mstring_analysisName = fi.Name;
-
-            // To serialize the hashtable and its key/value pairs,  
-            // you must first open a stream for writing. 
-            // In this case, use a file stream.
-            FileStream fs = new FileStream(fileName, System.IO.FileMode.Create);
-
-            // Construct a BinaryFormatter and use it to serialize the data to the stream.
-            BinaryFormatter formatter = new BinaryFormatter();
-            try
-            {
-                formatter.Serialize(fs, this);
-                fs.Close();
-            }
-            catch (System.Runtime.Serialization.SerializationException e)
-            {
-                Console.WriteLine("Failed to serialize. Reason: " + e.Message);                
-            }
-            finally
-            {
-                fs.Close();
-                fs.Dispose();                
-            }
-        }
-        /// <summary>
-        /// Deserializes the binary file from the path provided into an analysis object.
-        /// </summary>
-        /// <param name="fileName">Path of the file to load the analysis from.</param>
-        /// <returns> A new analysis object found in the file.</returns>
-        public static MultiAlignAnalysis DeserializeAnalysisFromFile(string fileName)
-        {
-            
-            MultiAlignAnalysis analysis = null;
-
-            try
-            {
-
-                // Open the file containing the data that you want to deserialize.
-                System.IO.FileStream fs = new System.IO.FileStream(fileName, System.IO.FileMode.Open);
-                try
-                {
-                    if (fs == null)
-                        throw new ArgumentNullException("analysis stream");
-
-                    clsReadProgressStream progressStream = new clsReadProgressStream(fs);
-                    progressStream.ProgressChanged      += new clsReadProgressStream.ProgressChangedEventHandler(progressStream_ProgressChanged);
-
-                    const int defaultBufferSize = 4096;
-                    int onePercentSize = (int)Math.Ceiling(progressStream.Length / 100.0);
-
-                    BufferedStream bs = new BufferedStream(progressStream,
-                            onePercentSize > defaultBufferSize ? defaultBufferSize : onePercentSize);
-                    BinaryFormatter formatter = new BinaryFormatter();
-                    analysis = formatter.Deserialize(bs) as MultiAlignAnalysis;
-                }
-                catch (System.Runtime.Serialization.SerializationException e)
-                {
-                    Console.WriteLine("Failed to deserialize. Reason: " + e.Message);
-                    throw;
-                }
-                finally
-                {
-                    fs.Close();
-                }
-            }
-            catch 
-            {
-                ////System.Windows.Forms.MessageBox.Show("MultiAlign could not read the file.");                
-            }
-
-            if (analysis != null)
-            {
-                if (analysis.AnalysisName == null)
-                    analysis.AnalysisName = string.Empty;                
-                analysis.PathName = fileName;
-                if (analysis.AlignmentData == null)
-                    analysis.AlignmentData = new List<classAlignmentData>();
-            }
-            return analysis;
-        }
-        
         #endregion
 
         #region Parameter Options Reflection

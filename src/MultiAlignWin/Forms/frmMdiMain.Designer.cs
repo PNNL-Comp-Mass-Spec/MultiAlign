@@ -13,6 +13,14 @@ namespace MultiAlignWin.UI
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
+            // Clean up any data views still open.
+            foreach (DataView view in m_dataViews)
+            {
+                view.Close();
+                if (view != null)
+                    view.Dispose();
+            }
+
             if (disposing && (components != null))
             {
                 components.Dispose();

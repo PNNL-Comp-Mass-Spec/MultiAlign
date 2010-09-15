@@ -25,6 +25,8 @@ using System.Windows.Forms;
 using System.ComponentModel;
 using System.Collections.Generic;
 
+using PNNLProteomics.IO;
+using MultiAlignWin.IO;
 using MultiAlignWin.Diagnostics;
 using PNNLProteomics.Data.Analysis;
 
@@ -35,23 +37,26 @@ namespace MultiAlignWin.UI
     /// </summary>
     public partial class frmMdiMain : Form
     {
-         
+        private delegate void DelegateAnalysisLoaded(MultiAlignAnalysis analysis);
 
+        #region Members
         /// <summary>
         /// Status form for visual progress updates to user.
         /// </summary>
-        private frmStatus mfrm_status;
-
-        /// <summary>
-        /// Main analysis object (current one.)
-        /// </summary>
-        private MultiAlignAnalysis mobjAnalysis;
-
+        private frmStatus m_statusForm;
         /// <summary>
         /// Current analysis filename operating on.
         /// </summary>
-        private string mstrCurrentFileName; 
+        private string m_currentAnalysisFileName;
+        /// <summary>
+        /// List of analysis data view forms that are open.
+        /// </summary>
+        private List<DataView> m_dataViews;
+        #endregion
 
+        /// <summary>
+        /// Default constructor.
+        /// </summary>
         public frmMdiMain()
         {
             // Reduce the amount of flicker that occurs when windows are redocked within
@@ -60,61 +65,254 @@ namespace MultiAlignWin.UI
             SetStyle(ControlStyles.DoubleBuffer, true);
             SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 
-            // Required for Windows Form Designer support
             InitializeComponent();
-            Init();
+            
+            m_statusForm = new frmStatus();
+            m_dataViews  = new List<DataView>();
 
-
-            UpdateStatusLabel("Loading...");
-            Load += new EventHandler(frmMdiMain_Load);
-
-            UpdateStatusLabel("Ready.");
+            /// 
+            /// This allows for the child MDI forms to keep their menu items in their own little windows.
+            /// 
+            MainMenuStrip.AllowMerge = true; 
+            Load                    += new EventHandler(MainWindowLoad);
+            
             clsLogging.DebugLevel = DebugLevel.MAJOR;
             clsLogging.Trace(DebugLevel.MAJOR, "MultiAlign Loaded.");
         }
 
+        #region Performing Analysis
         /// <summary>
-        /// Updates the status label.
+        /// Handles when the user clicks to start a new analysis by displaying the wizard to them.
         /// </summary>
-        /// <param name="message"></param>
-        private void UpdateStatusLabel(string message)
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void PerformAnalysis(object sender, EventArgs e)
+        {            
+            frmAnalysisWizard analysisWizard    = new frmAnalysisWizard();
+            try
+            {
+                if (analysisWizard.ShowDialog(this) == DialogResult.OK)
+                {
+                    DataView dataView       = new DataView();
+                    dataView.Analysis       = analysisWizard.MultiAlignAnalysis;
+                    dataView.Text           = "Data View for: " + analysisWizard.MultiAlignAnalysis.AnalysisName;
+                    dataView.MdiParent      = this;
+
+                    dataView.FormClosed += new FormClosedEventHandler(dataView_FormClosed);
+                    m_dataViews.Add(dataView);
+
+                    dataView.Show();
+                }
+            }
+            catch (System.OutOfMemoryException ex)
+            {
+                MessageBox.Show("The analysis could not complete because not enough memory was available."); 
+            }
+            catch (System.Exception ex)
+            {
+                MessageBox.Show("There was an error during the analysis. " + ex.Message);
+            }
+            finally
+            {
+                analysisWizard.Dispose();
+            }
+        }
+        /// <summary>
+        /// Invokable status form hider method.
+        /// </summary>
+        private void InvokeHideStatus()
         {
-            toolStripStatusLabel.Text = message;
+            m_statusForm.Hide();
+        }
+        /// <summary>
+        /// Adds the current analysis object to the UI by creating a new dataview for the analysis object.
+        /// </summary>
+        private void AddAnalysis(MultiAlignAnalysis analysis)
+        {
+            if (analysis != null)
+            {
+                /// 
+                /// Force a cleanup of managed objects.  This should help reduce 
+                /// any extraneous garbage.
+                /// 
+                GC.Collect();
+
+                DataView dataView        = new DataView();
+                dataView.Text               = "Data View for: " + analysis.AnalysisName;
+                dataView.CurrentFileName    = m_currentAnalysisFileName;
+                dataView.Analysis           = analysis;
+                dataView.MdiParent          = this;
+                dataView.Show();
+            }
+        }
+        #endregion
+
+        #region Data View Form Handlers
+        /// <summary>
+        /// Handles when an analysis form is closed.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void dataView_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            m_dataViews.Remove(sender as DataView);
+        }
+        #endregion
+
+        #region Reading and Writing Analysis Files.
+        /// <summary>
+        /// Handles the user click to load a MultiAlign analysis file.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void LoadAnalysis(object sender, EventArgs e)
+        {
+            using (OpenFileDialog analysisOpenFileDialog = new OpenFileDialog())
+            {
+                analysisOpenFileDialog.Multiselect = false;
+                analysisOpenFileDialog.Filter = "*.MultiAlign files (*.mln)|*.mln";
+                analysisOpenFileDialog.FilterIndex = 1;
+                analysisOpenFileDialog.RestoreDirectory = true;
+
+                if (analysisOpenFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    clsLogging.Trace(DebugLevel.MAJOR, "Loading analysis.");
+                    m_currentAnalysisFileName = analysisOpenFileDialog.FileName;
+                    ThreadStart tStart = new ThreadStart(LoadMLNFile);
+                    Thread loadThread = new System.Threading.Thread(tStart);
+                    loadThread.Start();
+
+                    if (m_statusForm.ShowDialog() == DialogResult.Cancel)
+                    {
+                        try
+                        {
+                            loadThread.Abort();
+                        }
+                        catch (ThreadAbortException)
+                        {
+
+                        }
+                    }
+                }
+            }
         }
 
+        /// <summary>
+        /// Loads a previously saved .mln analysis file.
+        /// </summary>
+        private void LoadMLNFile()
+        {
+            bool fileLoaded = false;
+
+            clsLogging.Trace(DebugLevel.MAJOR, "Loading analysis file.");            
+            MultiAlignAnalysis analysis = null;
+
+            try
+            {
+                AnalysisBinaryReader reader = new AnalysisBinaryReader();
+                reader.Progress += new EventHandler<IOProgressEventArgs>(reader_Progress);
+                 analysis     = reader.ReadAnalysis(m_currentAnalysisFileName);
+                fileLoaded                      = true;
+            }
+            catch (System.Runtime.Serialization.SerializationException ex)
+            {
+                MessageBox.Show("Could not open the analysis file.  The file is corrupt. " + ex.Message);             
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Could not open the analysis file. " + ex.Message);                
+            }
+            finally
+            {
+                Invoke(new MethodInvoker(InvokeHideStatus));
+            }
+
+            if (fileLoaded && analysis != null)
+            {
+                if (InvokeRequired)
+                {
+                    BeginInvoke(new DelegateAnalysisLoaded(AddAnalysis), new object[] { analysis });
+                }
+                else
+                {
+                    AddAnalysis(analysis);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Handles progress events from the MultiAlign binary file reader.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void reader_Progress(object sender, IOProgressEventArgs e)
+        {
+            if (m_statusForm.mevntPercentComplete != null)
+                m_statusForm.mevntPercentComplete(e.Percent);
+
+            if (m_statusForm.mevntStatusMessage != null)
+                m_statusForm.mevntStatusMessage(0, e.Message);
+        }
+        /// <summary>
+        /// Handles when the user clicks to create a new analysis parameter file.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CreateAnalysisParameterFile(object sender, EventArgs e)
+        {
+            frmAnalysisWizard analysisWizard = new frmAnalysisWizard(enmAnalysisType.CREATE_PARAMETER_FILE);
+            if (analysisWizard.ShowDialog(this) == DialogResult.OK)
+            {
+                /// Create the parameter file here!	
+                SaveFileDialog dialog = new SaveFileDialog();
+                dialog.Title = "Save Parameter File";
+                dialog.Filter = "*.xml files (*.xml)|*.xml";
+                dialog.FilterIndex = 1;
+                if (dialog.ShowDialog() == DialogResult.OK)
+                {
+                    analysisWizard.MultiAlignAnalysis.SaveParametersToFile(dialog.FileName);
+                }
+            }
+        }
+        #endregion
+
+        #region Form Event Handlers
         /// <summary>
         /// Handles when the main form loads so that we can setup the UI for the user.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void frmMdiMain_Load(object sender, EventArgs e)
-        {
-            //WindowState = FormWindowState.Maximized;
-            
+        void MainWindowLoad(object sender, EventArgs e)
+        {            
             /// 
             /// Get and display the version number to the screen
             /// 
-            System.Reflection.Assembly assembly         = System.Reflection.Assembly.GetExecutingAssembly();
+            System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
             System.Reflection.AssemblyName assemblyName = assembly.GetName();
-            string versionString                        = assemblyName.Version.ToString();
+            string versionString = assemblyName.Version.ToString();
 
             Text = string.Format("MultiAlign [v.{0}]", versionString);
         }
-
         /// <summary>
-        /// Initializes other class level variables to be initialized the same way across multiple constructors. 
+        /// Displays the about form to the user.
         /// </summary>
-        private void Init()
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            mfrm_status = new frmStatus();
-
-            /// 
-            /// This allows for the child MDI forms to keep their menu items in their own little windows.
-            /// 
-            MainMenuStrip.AllowMerge = true;               
+            frmAbout mfrmAbout = new frmAbout();
+            mfrmAbout.Show();
         }
-        
-        #region MDI Window Handlers
+        private void reportABugOrFeatureToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            frmTracWebBugReport mfrmTracWeb = new frmTracWebBugReport();
+            mfrmTracWeb.Show();
+        }
+        protected override void OnMdiChildActivate(EventArgs e)
+        {
+            ToolStripManager.RevertMerge(this.mainToolStrip);
+            base.OnMdiChildActivate(e);
+        }
         private void ExitToolsStripMenuItem_Click(object sender, EventArgs e)
         {
             Application.Exit();
@@ -150,168 +348,5 @@ namespace MultiAlignWin.UI
             LayoutMdi(MdiLayout.ArrangeIcons);
         }
         #endregion
-
-
-        /// <summary>
-        /// Handles when the user clicks to start a new analysis by displaying the wizard to them.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void PerformAnalysis(object sender, EventArgs e)
-        {            
-            frmAnalysisWizard analysisWizard    = new frmAnalysisWizard();
-            if (analysisWizard.ShowDialog(this) == DialogResult.OK)
-            {
-                frmDataView dataView = new frmDataView();
-                dataView.Analysis        = analysisWizard.MultiAlignAnalysis;
-                dataView.Text = "Data View for: " + analysisWizard.MultiAlignAnalysis.AnalysisName;
-                dataView.MdiParent = this;                
-                dataView.Show();
-            }
-
-            analysisWizard.Dispose();
-        }
-
-
-        /// <summary>
-        /// Adds the current analysis object to the UI by creating a new dataview for the analysis object.
-        /// </summary>
-        private void AddCurrentAnalysis()
-        {
-            if (mobjAnalysis != null)
-            {
-                /// 
-                /// Force a cleanup of managed objects.  This should help reduce 
-                /// any extraneous garbage.
-                /// 
-                GC.Collect();
-
-                frmDataView dataView = new frmDataView();
-                dataView.Text = "Data View for: " + mobjAnalysis.AnalysisName;
-                dataView.CurrentFileName = mstrCurrentFileName;
-                dataView.Analysis = mobjAnalysis;
-                dataView.MdiParent = this;
-                dataView.Show();
-            }
-        }
-
-        /// <summary>
-        /// Invokable status form hider method.
-        /// </summary>
-        private void InvokeHideStatus()
-        {
-            mfrm_status.Hide();
-        }
-
-        /// <summary>
-        /// Handles the user click to load a MultiAlign analysis file.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void LoadAnalysis(object sender, EventArgs e)
-        {
-            OpenFileDialog openFileDialog1 = new OpenFileDialog();
-            openFileDialog1.Multiselect = false;
-            openFileDialog1.Filter = "*.MultiAlign files (*.mln)|*.mln";
-            openFileDialog1.FilterIndex = 1;
-            openFileDialog1.RestoreDirectory = true;
-
-            if (openFileDialog1.ShowDialog() == DialogResult.OK)
-            {
-                clsLogging.Trace(DebugLevel.MAJOR, "Loading analysis.");
-                mstrCurrentFileName = openFileDialog1.FileName;
-                System.Threading.ThreadStart tStart = new ThreadStart(LoadMLNFile);
-                System.Threading.Thread loadThread = new System.Threading.Thread(tStart);
-                loadThread.Start();
-
-                /// 
-                /// If cancel then abort the thread!
-                /// 
-                if (mfrm_status.ShowDialog() == DialogResult.Cancel)
-                {
-                    try
-                    {
-                        loadThread.Abort();
-                    }
-                    catch(ThreadAbortException ex)
-                    {
-                        Console.WriteLine("Aborted dataset loading.  " + ex.Message);
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Loads a previously saved .mln analysis file.
-        /// </summary>
-        private void LoadMLNFile()
-        {
-
-            clsLogging.Trace(DebugLevel.MAJOR, "Loading analysis file.");
-            MultiAlignAnalysis.ProgressChanged +=
-                new MultiAlignAnalysis.DelegateProgressChangedEventHandler
-                (clsMultiAlignAnalysis_ProgressChanged);
-            mobjAnalysis = MultiAlignAnalysis.DeserializeAnalysisFromFile(mstrCurrentFileName);
-            Invoke(new MethodInvoker(InvokeHideStatus)); // mfrm_status.Hide(); 
-            Invoke(new MethodInvoker(AddCurrentAnalysis));
-        }
-
-        /// <summary>
-        /// Handles when the user clicks to create a new analysis parameter file.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void CreateAnalysisParameterFile(object sender, EventArgs e)
-        {
-            frmAnalysisWizard analysisWizard = new frmAnalysisWizard(enmAnalysisType.CREATE_PARAMETER_FILE);
-            if (analysisWizard.ShowDialog(this) == DialogResult.OK)
-            {
-                /// Create the parameter file here!	
-                SaveFileDialog dialog = new SaveFileDialog();
-                dialog.Title = "Save Parameter File";
-                dialog.Filter = "*.xml files (*.xml)|*.xml";
-                dialog.FilterIndex = 1;
-                if (dialog.ShowDialog() == DialogResult.OK)
-                {
-                    analysisWizard.MultiAlignAnalysis.SaveParametersToFile(dialog.FileName);
-                }
-            }		
-        }
-
-        /// <summary>
-        /// Handles progress updates from the loading thread or the analysis thread for user progress updates.
-        /// </summary>
-        /// <param name="o"></param>
-        /// <param name="progress"></param>
-        /// <param name="message"></param>
-        private void clsMultiAlignAnalysis_ProgressChanged(object o, int progress, string message)
-        {
-            if (mfrm_status.mevntPercentComplete != null)
-                mfrm_status.mevntPercentComplete(progress);
-            if (mfrm_status.mevntStatusMessage != null)
-                mfrm_status.mevntStatusMessage(0, message);
-        }
-
-        /// <summary>
-        /// Displays the about form to the user.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            frmAbout mfrmAbout = new frmAbout();
-            mfrmAbout.Show();
-        }
-
-        private void reportABugOrFeatureToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            frmTracWebBugReport mfrmTracWeb = new frmTracWebBugReport();
-            mfrmTracWeb.Show();
-        }
-        protected override void OnMdiChildActivate(EventArgs e)
-        {
-            ToolStripManager.RevertMerge(this.mainToolStrip);
-            base.OnMdiChildActivate(e);
-        }
     }
 }

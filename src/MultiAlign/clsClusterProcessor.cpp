@@ -42,7 +42,8 @@ namespace MultiAlignEngine
 			catch (System::Exception *ex)
 			{
 				Console::WriteLine(ex->get_Message()); 
-				Console::WriteLine(ex->get_StackTrace()); 
+				Console::WriteLine(ex->get_StackTrace());
+				throw ex;
 			}
 		}
 	}

@@ -39,6 +39,7 @@ using PNNLControls;
 using MultiAlignEngine;
 using MultiAlignEngine.Alignment;
 
+using PNNLProteomics.IO;
 using PNNLProteomics.Data;
 using PNNLProteomics.EventModel;
 using PNNLProteomics.Data.Analysis;
@@ -103,38 +104,43 @@ namespace MultiAlignWin
         ctlCompletedWizardPage          mctl_completedWizardPage;
         #endregion 
 
-        private clsDMSServerInformation     mobj_serverInformation;        
-        private List<DatasetInformation>    marrDatasetInfo = new List<DatasetInformation>();   	
-        private enmAnalysisType             mobj_analysisType;
-        private MultiAlignAnalysis          mobjAnalysis;
-        private int     mintBaselineIndex   = -1;
-        private bool    MassTagDBselected   = false;
-		private string  destinationPath     = null;
-        private IContainer components       = null;
+        private clsDMSServerInformation     m_serverInformation;        
+        private List<DatasetInformation>    m_datasetInfoList = new List<DatasetInformation>();   	
+        private enmAnalysisType             m_analysisType;
+        private MultiAlignAnalysis          m_analysis;
+        private int     m_baselineIndex         = -1;
+        private bool    m_isMassTagDBselected   = false;
+		private string  m_destinationPath       = null;
+        private IContainer components           = null;
         /// <summary>
         /// Flag indicating if the defaults were loaded on the first display of the parameters page.
         /// </summary>
-        private bool mbool_parametersSet = false;
-        //private string[] marr_tempCopiedFiles;
-
+        private bool m_areParametersSet = false;        
         /// <summary>
         /// List of steps to complete.
         /// </summary>
-        private List<string> mlist_wizardSteps = new List<string>();
-
-
+        private List<string> m_wizardSteps = new List<string>();
         /// <summary>
         /// Delegate definition so we can pass a list of files to the thread to copy them for us.
         /// </summary>
         /// <param name="sourceLocations"></param>
         private delegate void DelegatedCopyFilesThreaded(string[] sourceLocations);
-        private volatile int mint_numCopied;
+        /// <summary>
+        /// Count of the number of files that have been copied.
+        /// </summary>
+        private volatile int m_numCopied;
         /// <summary>
         /// Total number of files we have reviewed for the copy.
         /// </summary>
-        private volatile int mint_numReviewedForCopy;
-        private volatile bool mbool_copyingFiles;
-        private volatile bool mbool_finishedCopying;
+        private volatile int m_numReviewedForCopy;
+        /// <summary>
+        /// Flag indicating whether files are finished copying.
+        /// </summary>
+        private volatile bool m_isCopyingFiles;
+        /// <summary>
+        /// Flag indicating whether copying has finished or not.
+        /// </summary>
+        private volatile bool m_isFinishedCopying;
 
         #endregion
 
@@ -144,7 +150,7 @@ namespace MultiAlignWin
         /// </summary>
 		public frmAnalysisWizard()
 		{
-			mobj_analysisType = enmAnalysisType.NEW;			
+			m_analysisType = enmAnalysisType.NEW;			
 			InitializeComponent();			
 			Init() ; 
 		}
@@ -154,7 +160,7 @@ namespace MultiAlignWin
 		/// <param name="typeOfAnalysis"></param>
 		public frmAnalysisWizard(enmAnalysisType typeOfAnalysis)
 		{
-			mobj_analysisType = typeOfAnalysis;
+			m_analysisType = typeOfAnalysis;
 			InitializeComponent();		
 			Init() ;
         }
@@ -174,7 +180,7 @@ namespace MultiAlignWin
             /// 
             /// Create a new analysis object and synch events.
             /// 
-            mobjAnalysis = new MultiAlignAnalysis(new DelegateSetPercentComplete(SetPercentComplete),
+            m_analysis = new MultiAlignAnalysis(new DelegateSetPercentComplete(SetPercentComplete),
                                                      new DelegateSetStatusMessage(this.SetStatusMessage), null);
 
             LoadAlignmentOptions();
@@ -184,7 +190,7 @@ namespace MultiAlignWin
             LoadDBOptions();
             LoadSMARTOptions();
 
-            mobjAnalysis.AnalysisComplete                       += new MultiAlignAnalysis.DelegateAnalysisComplete(mobjAnalysis_AnalysisComplete);
+            m_analysis.AnalysisComplete                       += new MultiAlignAnalysis.DelegateAnalysisComplete(mobjAnalysis_AnalysisComplete);
 
             /// 
             /// Paremeter Setting Handling Events
@@ -198,11 +204,11 @@ namespace MultiAlignWin
             mctl_selectParametersPage.ScoringParameters         += new ctlSelectParametersWizardPage.OptionsButtonClicked(ScoringParametersClicked);
 
 
-            mobjAnalysis.IsotopePeaksLoadedForFile              += new MultiAlignAnalysis.DelegateIsotopePeaksLoadedForFile(IsotopePeaksLoadedForFile);
-            mobjAnalysis.UMCSLoadedForFile                      += new MultiAlignAnalysis.DelegateUMCSLoadedForFile(mobjAnalysis_UMCSLoadedForFile);
-            mobjAnalysis.DatasetAligned                         += new MultiAlignAnalysis.DelegateDatasetAligned(DatasetAligned);
-            mobjAnalysis.ListOfSteps                            += new MultiAlignAnalysis.DelegateListOfSteps(mobjAnalysis_ListOfSteps);
-            mobjAnalysis.CurrentStep                            += new MultiAlignAnalysis.DelegateCurrentStep(mobjAnalysis_CurrentStep);
+            m_analysis.IsotopePeaksLoadedForFile              += new MultiAlignAnalysis.DelegateIsotopePeaksLoadedForFile(IsotopePeaksLoadedForFile);
+            m_analysis.UMCSLoadedForFile                      += new MultiAlignAnalysis.DelegateUMCSLoadedForFile(mobjAnalysis_UMCSLoadedForFile);
+            m_analysis.DatasetAligned                         += new MultiAlignAnalysis.DelegateDatasetAligned(DatasetAligned);
+            m_analysis.ListOfSteps                            += new MultiAlignAnalysis.DelegateListOfSteps(mobjAnalysis_ListOfSteps);
+            m_analysis.CurrentStep                            += new MultiAlignAnalysis.DelegateCurrentStep(mobjAnalysis_CurrentStep);
             FormClosing                                         += new FormClosingEventHandler(frmAnalysisWizard_FormClosing);
         }
 
@@ -214,20 +220,20 @@ namespace MultiAlignWin
             /// 
             /// Create some server information to pass to our server testers.
             /// 
-            mobj_serverInformation = new clsDMSServerInformation();
+            m_serverInformation = new clsDMSServerInformation();
 
             /// 
             /// Create a list of steps to perform.
             /// 
-            mlist_wizardSteps.Clear();
-            mlist_wizardSteps.AddRange(new string[] {"Select Data", 
+            m_wizardSteps.Clear();
+            m_wizardSteps.AddRange(new string[] {"Select Data", 
                                             "Define Factors", 
                                             "Define Alignment, Cluster, Peak Matching, and MTDB Parameters",
                                             "Select Save Location",
                                             "Analyze",
                                             "Done"}
                                         );
-            DisplayListOfSteps(mlist_wizardSteps);
+            DisplayListOfSteps(m_wizardSteps);
 
 
 
@@ -252,7 +258,7 @@ namespace MultiAlignWin
             /// 
             /// The user should not be able to move back from the parameter defintion page.
             /// 
-            if (mobj_analysisType == enmAnalysisType.NEW)
+            if (m_analysisType == enmAnalysisType.NEW)
             {
                 mctl_selectParametersPage.WizardBack += new WizardPageEventHandler(MoveToDefineFactorsPage);
                 mctl_selectParametersPage.WizardNext += new WizardPageEventHandler(MoveToSelectOutputPage);
@@ -269,7 +275,7 @@ namespace MultiAlignWin
             mctl_performAnalysisPage.WizardNext += new WizardPageEventHandler(StopAnalysisNextPress);
             mctl_performAnalysisPage.ReadyForAnalysis += new ctlPerformAnalysisWizardPage.DelegateControlLoaded(mctl_performAnalysisPage_ReadyForAnalysis);
 
-            if (mobj_analysisType == enmAnalysisType.NEW || mobj_analysisType == enmAnalysisType.LOAD_PARAMETER_FILE)
+            if (m_analysisType == enmAnalysisType.NEW || m_analysisType == enmAnalysisType.LOAD_PARAMETER_FILE)
             {
                 Pages.Add(mctl_loadDatasetPage);
                 Pages.Add(mctl_defineFactorsPage);
@@ -279,14 +285,14 @@ namespace MultiAlignWin
             /// By default everyone can select the parameters.
             /// 
             Pages.Add(mctl_selectParametersPage);
-            if (mobj_analysisType == enmAnalysisType.NEW ||
-                mobj_analysisType == enmAnalysisType.LOAD_PARAMETER_FILE)
+            if (m_analysisType == enmAnalysisType.NEW ||
+                m_analysisType == enmAnalysisType.LOAD_PARAMETER_FILE)
             {
                 Pages.Add(mctl_selectOutputNamePage);
                 Pages.Add(mctl_performAnalysisPage);
             }
             Pages.Add(mctl_completedWizardPage);
-            SetStep(CONST_STEP_LOAD, mlist_wizardSteps[CONST_STEP_LOAD]);
+            SetStep(CONST_STEP_LOAD, m_wizardSteps[CONST_STEP_LOAD]);
         }
         #endregion
 
@@ -320,7 +326,7 @@ namespace MultiAlignWin
             {
                 options.UMCAbundanceReportingType = MultiAlignEngine.Features.enmAbundanceReportingType.PeakArea;
             }
-            mobjAnalysis.UMCFindingOptions = options;
+            m_analysis.UMCFindingOptions = options;
         }
         /// <summary>
         /// Loads the default cluster options from the settings file.
@@ -342,7 +348,7 @@ namespace MultiAlignWin
             if (Properties.Settings.Default.UserClusterOptionsUseMeanRepresentation == false)
                 options.ClusterRepresentativeType = MultiAlignEngine.Clustering.enmClusterRepresentativeType.MEDIAN;
 
-            mobjAnalysis.ClusterOptions = options;
+            m_analysis.ClusterOptions = options;
         }
 
         /// <summary>
@@ -355,7 +361,7 @@ namespace MultiAlignWin
             options.NETTolerance = Properties.Settings.Default.UserPeakMatchingNETTolerance;
             options.DriftTimeTolerance = Properties.Settings.Default.UserPeakMatchingDriftTimeTolerance;
 
-            mobjAnalysis.PeakMatchingOptions = options;
+            m_analysis.PeakMatchingOptions = options;
         }
         /// <summary>
         /// Loads the saved alignment options from the settings file.
@@ -389,35 +395,35 @@ namespace MultiAlignWin
                 defOptions.RecalibrationType = MultiAlignEngine.Alignment.enmCalibrationType.SCAN_CALIB;
             defOptions.UsePromiscuousPoints = Properties.Settings.Default.UserAlignmentOptionsIgnorePromiscuity;
 
-            mobjAnalysis.DefaultAlignmentOptions = defOptions;
+            m_analysis.DefaultAlignmentOptions = defOptions;
         }
         /// <summary>
         /// Loads the saved database options from the settinsg file.
         /// </summary>
         private void LoadDBOptions()
         {
-            mobjAnalysis.MassTagDBOptions.mdecimalMinPMTScore           = Convert.ToDecimal(Properties.Settings.Default.UserDBFormPMTQuality);
-            mobjAnalysis.MassTagDBOptions.mfltMinXCorr                  = Convert.ToSingle(Properties.Settings.Default.UserDBFormMinXCorr);
-            mobjAnalysis.MassTagDBOptions.mdblMinDiscriminant           = Properties.Settings.Default.UserDBFormMinDiscriminant;
-            mobjAnalysis.MassTagDBOptions.mdblPeptideProphetVal         = Properties.Settings.Default.UserDBFormPeptideProphetProbability;
-            mobjAnalysis.MassTagDBOptions.mstr_databaseFilePath         = Properties.Settings.Default.UserDBFormLocalDatabasePath;
-            mobjAnalysis.MassTagDBOptions.mintMinObservationCountFilter = Properties.Settings.Default.UserDBFormMinObservationCountFilter;
+            m_analysis.MassTagDBOptions.mdecimalMinPMTScore           = Convert.ToDecimal(Properties.Settings.Default.UserDBFormPMTQuality);
+            m_analysis.MassTagDBOptions.mfltMinXCorr                  = Convert.ToSingle(Properties.Settings.Default.UserDBFormMinXCorr);
+            m_analysis.MassTagDBOptions.mdblMinDiscriminant           = Properties.Settings.Default.UserDBFormMinDiscriminant;
+            m_analysis.MassTagDBOptions.mdblPeptideProphetVal         = Properties.Settings.Default.UserDBFormPeptideProphetProbability;
+            m_analysis.MassTagDBOptions.mstr_databaseFilePath         = Properties.Settings.Default.UserDBFormLocalDatabasePath;
+            m_analysis.MassTagDBOptions.mintMinObservationCountFilter = Properties.Settings.Default.UserDBFormMinObservationCountFilter;
 
-            mobjAnalysis.MassTagDBOptions.mstrExperimentFilter          = Properties.Settings.Default.UserDBFormExperimentFilter;
-            mobjAnalysis.MassTagDBOptions.mstrExperimentExclusionFilter = Properties.Settings.Default.UserDBFormExperimentExclusionFilter;
+            m_analysis.MassTagDBOptions.mstrExperimentFilter          = Properties.Settings.Default.UserDBFormExperimentFilter;
+            m_analysis.MassTagDBOptions.mstrExperimentExclusionFilter = Properties.Settings.Default.UserDBFormExperimentExclusionFilter;
         }
         /// <summary>
         /// Loads the SMART Options from the settings file.
         /// </summary>
         private void LoadSMARTOptions()
         {           
-            if (mobjAnalysis.SMARTOptions == null)
-                mobjAnalysis.SMARTOptions = new classSMARTOptions();
-            mobjAnalysis.SMARTOptions.IsDataPaired = Properties.Settings.Default.STACIsDataPaired;
-            mobjAnalysis.SMARTOptions.MassTolerancePPM = Properties.Settings.Default.STACMassTolerance;
-            mobjAnalysis.SMARTOptions.NETTolerance = Properties.Settings.Default.STACNETTolerance;
-            mobjAnalysis.SMARTOptions.PairedMass = Properties.Settings.Default.STACPairedMass;
-            mobjAnalysis.SMARTOptions.UsePriorProbabilities = Properties.Settings.Default.STACUsePriorProbabilities;            
+            if (m_analysis.SMARTOptions == null)
+                m_analysis.SMARTOptions = new classSMARTOptions();
+            m_analysis.SMARTOptions.IsDataPaired = Properties.Settings.Default.STACIsDataPaired;
+            m_analysis.SMARTOptions.MassTolerancePPM = Properties.Settings.Default.STACMassTolerance;
+            m_analysis.SMARTOptions.NETTolerance = Properties.Settings.Default.STACNETTolerance;
+            m_analysis.SMARTOptions.PairedMass = Properties.Settings.Default.STACPairedMass;
+            m_analysis.SMARTOptions.UsePriorProbabilities = Properties.Settings.Default.STACUsePriorProbabilities;            
         }
         /// <summary>
         /// Loads the analysis object.
@@ -453,17 +459,17 @@ namespace MultiAlignWin
                 defOptions.RecalibrationType = enmCalibrationType.SCAN_CALIB;
             defOptions.UsePromiscuousPoints = Properties.Settings.Default.UserAlignmentOptionsIgnorePromiscuity;
 
-            for (int i = 0; i < mobjAnalysis.AlignmentOptions.Count; i++)
+            for (int i = 0; i < m_analysis.AlignmentOptions.Count; i++)
             {
-                clsAlignmentOptions options = mobjAnalysis.AlignmentOptions[i] as clsAlignmentOptions;
-                mobjAnalysis.AlignmentOptions[i] = defOptions;
+                clsAlignmentOptions options = m_analysis.AlignmentOptions[i] as clsAlignmentOptions;
+                m_analysis.AlignmentOptions[i] = defOptions;
             }
 
             /// 
             /// Cluster Options
             /// 
 
-            mbool_parametersSet = true;
+            m_areParametersSet = true;
         }
         #endregion
 
@@ -504,12 +510,37 @@ namespace MultiAlignWin
                 mctl_performAnalysisPage.DisplayListOfSteps(steps);
             }
         }
+        /// <summary>
+        /// 
+        /// </summary>
         void AnalysisComplete()
         {
+            try
+            {
+                /// 
+                /// Get the path name and make a directory for the analysis.
+                /// 
+                //mstring_analysisName = System.IO.Path.GetFileNameWithoutExtension(BaselineDataset);
+
+                /// 
+                /// Update the path name
+                /// 
+                AnalysisBinaryWriter writer = new AnalysisBinaryWriter();
+                writer.WriteAnalysis(Path.Combine(m_analysis.PathName, m_analysis.AnalysisName + ".mln"), m_analysis);                
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Could not serialize the analysis file.  "  + ex.Message);
+            }
+
             mctl_performAnalysisPage.NextButtonEnabled  = true;
             SetActivePage(Pages.IndexOf(mctl_completedWizardPage));
-            SetStep(CONST_STEP_DONE, mlist_wizardSteps[CONST_STEP_DONE]);            
+            SetStep(CONST_STEP_DONE, m_wizardSteps[CONST_STEP_DONE]);            
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
         void mobjAnalysis_AnalysisComplete(object sender)
         {
             if (InvokeRequired == true)
@@ -550,8 +581,8 @@ namespace MultiAlignWin
             /// 
             /// Kill the analysis thread if it exists.
             /// 
-            mobjAnalysis.Abort();
-            mobjAnalysis = null;
+            m_analysis.Abort();
+            m_analysis = null;
 
 			base.Dispose( disposing );
 		}
@@ -565,10 +596,10 @@ namespace MultiAlignWin
             this.SuspendLayout();
             // 
             // frmAnalysisWizard
-            // 
-           // this.AcceptButton = this.nextButton;
+            //             
+            //this.AcceptButton = this.mnextButton;
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-            this.ClientSize = new System.Drawing.Size(687, 551);
+            this.ClientSize = new System.Drawing.Size(603, 498);
             this.Name = "frmAnalysisWizard";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "MultiAlign Analysis Wizard";
@@ -595,7 +626,7 @@ namespace MultiAlignWin
                 /// 
                 /// Make sure the user wants to stop the analysis
                 /// 
-                if (mobjAnalysis != null && mobjAnalysis.Processing == true)
+                if (m_analysis != null && m_analysis.Processing == true)
                 {
                     bool stop = StopAnalysis(null, null);
                     if (stop == false)
@@ -661,7 +692,7 @@ namespace MultiAlignWin
         void mctl_loadDatasetPage_WizardNext(object sender, WizardPageEventArgs e)
         {
             List<DatasetInformation> datasets = mctl_loadDatasetPage.Datasets;
-            mobj_serverInformation  = mctl_loadDatasetPage.ServerInformation;
+            m_serverInformation  = mctl_loadDatasetPage.ServerInformation;
             if (datasets == null)
             {
                 /// 
@@ -671,9 +702,10 @@ namespace MultiAlignWin
             }
             else
             {
+                m_datasetInfoList                   = datasets;
                 mctl_defineFactorsPage.DatasetInfo  = datasets;
                 e.NewPage                           = mctl_defineFactorsPage.Name;
-                SetStep(CONST_STEP_FACTORS, mlist_wizardSteps[CONST_STEP_FACTORS]);
+                SetStep(CONST_STEP_FACTORS, m_wizardSteps[CONST_STEP_FACTORS]);
             }
         }
         /// <summary>
@@ -685,7 +717,7 @@ namespace MultiAlignWin
         {
            e.NewPage                                = mctl_loadDatasetPage.Name;
            mctl_loadDatasetPage.ExtraButtonVisible = false;
-           SetStep(CONST_STEP_LOAD, mlist_wizardSteps[CONST_STEP_LOAD]);
+           SetStep(CONST_STEP_LOAD, m_wizardSteps[CONST_STEP_LOAD]);
         }        
         /// <summary>
         /// Moves the wizard to the parameter loading page.
@@ -694,7 +726,14 @@ namespace MultiAlignWin
         /// <param name="e"></param>
         private void MoveToParametersPage(object sender, WizardPageEventArgs e)
         {
-            string[] datasetNames                   = DataSetNames;
+            List<string> names = new List<string>();
+            foreach (DatasetInformation info in m_datasetInfoList)
+            {
+                names.Add(info.DatasetName);
+            }
+            string[] datasetNames = new string[names.Count];
+            names.CopyTo(datasetNames);
+
 			bool usePredefinedFeaturesOnly			= true;
 
 			foreach (string dataset in datasetNames)
@@ -715,12 +754,12 @@ namespace MultiAlignWin
             /// 
             /// Set the parameters
             /// 
-            if (mbool_parametersSet == false)
+            if (m_areParametersSet == false)
             {
-                LoadDefaults(mobjAnalysis);
+                LoadDefaults(m_analysis);
             }
 
-            SetStep(CONST_STEP_PARAMETERS, mlist_wizardSteps[CONST_STEP_PARAMETERS]);
+            SetStep(CONST_STEP_PARAMETERS, m_wizardSteps[CONST_STEP_PARAMETERS]);
         }
         /// <summary>
         /// Moves the wizard to the factor definition page.
@@ -729,20 +768,18 @@ namespace MultiAlignWin
         /// <param name="e"></param>
         private void MoveToDefineFactorsPage(object sender, WizardPageEventArgs e)
 		{
-			string[] Aliases = FileAliases;
-			if (Aliases == null || Aliases.Length == 0)
+			
+			if (m_datasetInfoList.Count <= 0) 
 			{
-				MessageBox.Show("No files found, or the Aliases not set","Oops!", MessageBoxButtons.OK,MessageBoxIcon.Warning) ;
+				MessageBox.Show("No files selected.","Oops!", MessageBoxButtons.OK,MessageBoxIcon.Warning) ;
                 e.NewPage = mctl_loadDatasetPage.Name;
-                SetStep(CONST_STEP_LOAD, mlist_wizardSteps[CONST_STEP_LOAD]);		
+                SetStep(CONST_STEP_LOAD, m_wizardSteps[CONST_STEP_LOAD]);		
 			}
 			else
-			{
-				//marrDatasetInfo = mctl_selectJobIdsPage.DatasetInfo ;			
+			{				
 				e.NewPage                             = mctl_defineFactorsPage.Name ;
-				mctl_defineFactorsPage.DatasetInfo    = marrDatasetInfo ;
-                //mctl_defineFactorsPage.dataSource   = datasource ;
-                SetStep(CONST_STEP_FACTORS, mlist_wizardSteps[CONST_STEP_FACTORS]);
+				mctl_defineFactorsPage.DatasetInfo    = m_datasetInfoList ;
+                SetStep(CONST_STEP_FACTORS, m_wizardSteps[CONST_STEP_FACTORS]);
 			}
         }        
         /// <summary>
@@ -755,27 +792,27 @@ namespace MultiAlignWin
 			string []aliases = mctl_selectParametersPage.FileAliases ;
 			// check to see if the baseline has already been selected, e.g.: this is after a pressing 
 			// of back button when it's selected. If not selected, get from the form
-			if (mintBaselineIndex == -1) 
-				mintBaselineIndex = mctl_selectParametersPage.SelectedFileIndex;
+			if (m_baselineIndex == -1) 
+				m_baselineIndex = mctl_selectParametersPage.SelectedFileIndex;
 			// Still not selected, show a messagebox
-			if (mintBaselineIndex == -1 && !mctl_selectParametersPage.UseMassTagDBAsBaseline)
+			if (m_baselineIndex == -1 && !mctl_selectParametersPage.UseMassTagDBAsBaseline)
 			{
 				MessageBox.Show("Select a basline first.", "Baseline ?", MessageBoxButtons.OK,
 					MessageBoxIcon.Warning);
                 e.NewPage = mctl_selectParametersPage.Name;
-                SetStep(CONST_STEP_PARAMETERS, mlist_wizardSteps[CONST_STEP_PARAMETERS]);
+                SetStep(CONST_STEP_PARAMETERS, m_wizardSteps[CONST_STEP_PARAMETERS]);
 			}
-            else if (aliases.Length == 1 && !MassTagDBselected)
+            else if (aliases.Length == 1 && !m_isMassTagDBselected)
             {
                 MessageBox.Show("Mass Tag DB not loaded.", "Load Mass Tag DB", MessageBoxButtons.OK,
                     MessageBoxIcon.Warning);
                 e.NewPage = mctl_selectParametersPage.Name;
-                SetStep(CONST_STEP_PARAMETERS, mlist_wizardSteps[CONST_STEP_PARAMETERS]);
+                SetStep(CONST_STEP_PARAMETERS, m_wizardSteps[CONST_STEP_PARAMETERS]);
             }
             else
             {
                 e.NewPage = mctl_selectOutputNamePage.Name;
-                SetStep(CONST_STEP_SAVE, mlist_wizardSteps[CONST_STEP_SAVE]);
+                SetStep(CONST_STEP_SAVE, m_wizardSteps[CONST_STEP_SAVE]);
             }            
 		}
 
@@ -787,20 +824,20 @@ namespace MultiAlignWin
         private void MoveToPerformAnalysisPage(object sender, WizardPageEventArgs e)
         {
             string outputFilename = mctl_selectOutputNamePage.ProjectOutputFileName;
-            destinationPath       = mctl_selectOutputNamePage.DestinationFolder;
-            if (destinationPath == null)
+            m_destinationPath       = mctl_selectOutputNamePage.DestinationFolder;
+            if (m_destinationPath == null)
             {
                 MessageBox.Show("Destination folder doesn't exist.", "Folder problem...!");
                 e.NewPage = mctl_selectOutputNamePage.Name;
-                SetStep(CONST_STEP_SAVE, mlist_wizardSteps[CONST_STEP_SAVE]);
+                SetStep(CONST_STEP_SAVE, m_wizardSteps[CONST_STEP_SAVE]);
             }
             else if (outputFilename == null)
             {
                 MessageBox.Show("The output file name was incorrect!");
                 e.NewPage = mctl_selectOutputNamePage.Name;
-                SetStep(CONST_STEP_SAVE, mlist_wizardSteps[CONST_STEP_SAVE]);
+                SetStep(CONST_STEP_SAVE, m_wizardSteps[CONST_STEP_SAVE]);
             }
-            else if (System.IO.File.Exists(Path.Combine(destinationPath, outputFilename)) == true)
+            else if (System.IO.File.Exists(Path.Combine(m_destinationPath, outputFilename)) == true)
             {
                 DialogResult result = MessageBox.Show("The output file already exists.  Do you want to overwrite it?", "Confirm File Overwrite", MessageBoxButtons.YesNo);
                 /// 
@@ -810,14 +847,14 @@ namespace MultiAlignWin
                 {
                     // Go back!
                     e.NewPage = mctl_selectOutputNamePage.Name;
-                    SetStep(CONST_STEP_SAVE, mlist_wizardSteps[CONST_STEP_SAVE]);
+                    SetStep(CONST_STEP_SAVE, m_wizardSteps[CONST_STEP_SAVE]);
                 }
                 else
                 {
                     // Continue
                     
                     e.NewPage = mctl_performAnalysisPage.Name;
-                    SetStep(CONST_STEP_ANALYZE, mlist_wizardSteps[CONST_STEP_ANALYZE]);
+                    SetStep(CONST_STEP_ANALYZE, m_wizardSteps[CONST_STEP_ANALYZE]);
                     mctl_performAnalysisPage.NextButtonText = "Stop";
 
                 }
@@ -828,7 +865,7 @@ namespace MultiAlignWin
                 /// Display to start the analysis.
                 ///                 
                 e.NewPage = mctl_performAnalysisPage.Name;
-                SetStep(CONST_STEP_ANALYZE, mlist_wizardSteps[CONST_STEP_ANALYZE]);
+                SetStep(CONST_STEP_ANALYZE, m_wizardSteps[CONST_STEP_ANALYZE]);
                 mctl_performAnalysisPage.NextButtonText = "Stop";
             }
         }       
@@ -841,10 +878,10 @@ namespace MultiAlignWin
 		{
 			mctl_performAnalysisPage.ExtraButtonVisible = false;
 			mctl_performAnalysisPage.NextButtonEnabled  = true ;
-			mctl_selectOutputNamePage.DestinationFolder = destinationPath ;
+			mctl_selectOutputNamePage.DestinationFolder = m_destinationPath ;
             mctl_selectOutputNamePage.NextButtonText = "Re-start";
 
-            SetStep(CONST_STEP_SAVE, mlist_wizardSteps[CONST_STEP_SAVE]);
+            SetStep(CONST_STEP_SAVE, m_wizardSteps[CONST_STEP_SAVE]);
         }
         /// <summary>
         /// Perform Analysis Next.  The analysis is complete.
@@ -855,7 +892,7 @@ namespace MultiAlignWin
         {
             mctl_completedWizardPage.BackButtonEnabled  = false;
             e.NewPage                                   = mctl_completedWizardPage.Name;
-            SetStep(CONST_STEP_DONE, mlist_wizardSteps[CONST_STEP_DONE]);
+            SetStep(CONST_STEP_DONE, m_wizardSteps[CONST_STEP_DONE]);
         }
         #endregion
         
@@ -890,8 +927,8 @@ namespace MultiAlignWin
             /// 
             try
             {
-                string path = Path.GetDirectoryName(mobjAnalysis.PathName);
-                path        = Path.Combine(path, mobjAnalysis.AnalysisName + ".log");
+                string path = Path.GetDirectoryName(m_analysis.PathName);
+                path        = Path.Combine(path, m_analysis.AnalysisName + ".log");
                 AnalysisLogWriter.WriteMessage(path, statusLevel, message);
             }
             catch
@@ -909,84 +946,84 @@ namespace MultiAlignWin
         {
             if (string.IsNullOrEmpty(newMTDB) == true)
             {
-                if (mobjAnalysis.MassTagDBOptions != null)
+                if (m_analysis.MassTagDBOptions != null)
                 {
-                    if (mobjAnalysis.MassTagDBOptions.menm_databaseType == MultiAlignEngine.MassTags.MassTagDatabaseType.SQL)
+                    if (m_analysis.MassTagDBOptions.menm_databaseType == MultiAlignEngine.MassTags.MassTagDatabaseType.SQL)
                     {
                         mctl_selectParametersPage.MassTagDBName = newMTDB;
-                        MassTagDBselected = true;
+                        m_isMassTagDBselected = true;
                     }
-                    else if (mobjAnalysis.MassTagDBOptions.menm_databaseType == MultiAlignEngine.MassTags.MassTagDatabaseType.ACCESS)
+                    else if (m_analysis.MassTagDBOptions.menm_databaseType == MultiAlignEngine.MassTags.MassTagDatabaseType.ACCESS)
                     {
-                        mobjAnalysis.MassTagDBOptions.mstr_databaseFilePath = newMTDB;
-                        MassTagDBselected = true;
+                        m_analysis.MassTagDBOptions.mstr_databaseFilePath = newMTDB;
+                        m_isMassTagDBselected = true;
                     }
                 }
             }
             else
             {
-                MassTagDBselected = false;
+                m_isMassTagDBselected = false;
             }
         }
 		private void PeakPickingParametersClicked()
 		{
 			frmFeatureFindingParameters peakPickingOptionsForm = new frmFeatureFindingParameters() ;
-			peakPickingOptionsForm.UMCFindingOptions = mobjAnalysis.UMCFindingOptions ;
+			peakPickingOptionsForm.UMCFindingOptions = m_analysis.UMCFindingOptions ;
 			if (peakPickingOptionsForm.ShowDialog() == DialogResult.OK)
 			{
-				mobjAnalysis.UMCFindingOptions = peakPickingOptionsForm.UMCFindingOptions ;
+				m_analysis.UMCFindingOptions = peakPickingOptionsForm.UMCFindingOptions ;
 			}
 		}
 		private void AlignmentParametersClicked()
 		{
 			frmMSAlignmentParameters alignmentOptionsForm = new frmMSAlignmentParameters() ; 
-			alignmentOptionsForm.AlignmentOptions = mobjAnalysis.DefaultAlignmentOptions ; 
+			alignmentOptionsForm.AlignmentOptions = m_analysis.DefaultAlignmentOptions ; 
 			if (alignmentOptionsForm.ShowDialog() == DialogResult.OK)
 			{
-				mobjAnalysis.DefaultAlignmentOptions = alignmentOptionsForm.AlignmentOptions ; 
+				m_analysis.DefaultAlignmentOptions = alignmentOptionsForm.AlignmentOptions ; 
 			}
 		}
 		private void ClusteringParametersClicked()
 		{
 			frmClusterParameters clusterParametersForm = new frmClusterParameters() ;
-			clusterParametersForm.ClusterOptions = mobjAnalysis.ClusterOptions ;
+			clusterParametersForm.ClusterOptions = m_analysis.ClusterOptions ;
 			if (clusterParametersForm.ShowDialog() == DialogResult.OK)
 			{
-				mobjAnalysis.ClusterOptions = clusterParametersForm.ClusterOptions ; 
+				m_analysis.ClusterOptions = clusterParametersForm.ClusterOptions ; 
 			}
 		}
         private void PeakMatchingParametersClicked()
         {
             frmPeakMatchingParameters peakMatchingParametersForm = new frmPeakMatchingParameters();
-            peakMatchingParametersForm.PeakMatchingOptions = mobjAnalysis.PeakMatchingOptions;
+            peakMatchingParametersForm.PeakMatchingOptions = m_analysis.PeakMatchingOptions;
             if (peakMatchingParametersForm.ShowDialog() == DialogResult.OK)
             {
-                mobjAnalysis.PeakMatchingOptions = peakMatchingParametersForm.PeakMatchingOptions;
+                m_analysis.PeakMatchingOptions = peakMatchingParametersForm.PeakMatchingOptions;
             }
         }
 		private void SelectMassTagDatabaseClicked()
 		{
-			frmDBName dbForm = new frmDBName(mobj_serverInformation.ConnectionExists); 
+			frmDBName dbForm = new frmDBName(m_serverInformation.ConnectionExists); 
 			dbForm.Owner = this;
-			dbForm.MassTagDatabaseOptions = mobjAnalysis.MassTagDBOptions ; 
+			dbForm.MassTagDatabaseOptions = m_analysis.MassTagDBOptions ; 
 
 			if (dbForm.ShowDialog() == DialogResult.OK)
 			{
-				mobjAnalysis.MassTagDBOptions = dbForm.MassTagDatabaseOptions ; 
-				if (mobjAnalysis.MassTagDBOptions.mstrDatabase != null &&
-					mobjAnalysis.MassTagDBOptions.mstrDatabase != "" &&
-					mobjAnalysis.MassTagDBOptions.menm_databaseType == MultiAlignEngine.MassTags.MassTagDatabaseType.SQL
+				m_analysis.MassTagDBOptions = dbForm.MassTagDatabaseOptions ; 
+				if (m_analysis.MassTagDBOptions.mstrDatabase != null &&
+					m_analysis.MassTagDBOptions.mstrDatabase != "" &&
+					m_analysis.MassTagDBOptions.menm_databaseType == MultiAlignEngine.MassTags.MassTagDatabaseType.SQL
 					)
 				{
-					mctl_selectParametersPage.MassTagDBName = mobjAnalysis.MassTagDBOptions.mstrDatabase ;					
-					MassTagDBselected = true ;
+					mctl_selectParametersPage.MassTagDBName = m_analysis.MassTagDBOptions.mstrDatabase ;					
+					m_isMassTagDBselected = true ;
 				}
-				else if(mobjAnalysis.MassTagDBOptions.mstr_databaseFilePath != null &&
-					mobjAnalysis.MassTagDBOptions.mstr_databaseFilePath != "" &&
-					mobjAnalysis.MassTagDBOptions.menm_databaseType == MultiAlignEngine.MassTags.MassTagDatabaseType.ACCESS)
+				else if(m_analysis.MassTagDBOptions.mstr_databaseFilePath != null &&
+					m_analysis.MassTagDBOptions.mstr_databaseFilePath != "" &&
+					m_analysis.MassTagDBOptions.menm_databaseType == MultiAlignEngine.MassTags.MassTagDatabaseType.ACCESS)
 				{					
-					mctl_selectParametersPage.MassTagDBName = mobjAnalysis.MassTagDBOptions.mstr_databaseFilePath;
-					MassTagDBselected = true;
+					mctl_selectParametersPage.MassTagDBName = m_analysis.MassTagDBOptions.mstr_databaseFilePath;
+					m_isMassTagDBselected = true;
 				}
 			}
         }
@@ -998,7 +1035,7 @@ namespace MultiAlignWin
             formPeptideIDScoring scoreForm  = new formPeptideIDScoring();
             scoreForm.Owner                 = this;
             scoreForm.Icon                  = Icon;
-            scoreForm.Options               = mobjAnalysis.SMARTOptions;
+            scoreForm.Options               = m_analysis.SMARTOptions;
 
             if (scoreForm.ShowDialog() == DialogResult.OK)
             {
@@ -1006,7 +1043,7 @@ namespace MultiAlignWin
                 /// 
                 /// Get new options
                 /// 
-                mobjAnalysis.SMARTOptions = scoreForm.Options;
+                m_analysis.SMARTOptions = scoreForm.Options;
             }            
         }
         private void LoadParametersFromFileClicked()
@@ -1016,7 +1053,7 @@ namespace MultiAlignWin
 
             if (DialogResult.OK == dialog.ShowDialog())
             {
-                mobjAnalysis.LoadParametersFromFile(dialog.FileName);
+                m_analysis.LoadParametersFromFile(dialog.FileName);
             }
         }
         void mobjAnalysis_UMCSLoadedForFile(string fileName, MultiAlignEngine.Features.clsUMC[] umcs)
@@ -1055,7 +1092,7 @@ namespace MultiAlignWin
         /// <param name="e"></param>
         private void PerformAnalysisNextPressed(object sender, WizardPageEventArgs e)
         {
-            if (mobjAnalysis == null || mobjAnalysis.Processing == false)
+            if (m_analysis == null || m_analysis.Processing == false)
             {
 
             }
@@ -1093,18 +1130,22 @@ namespace MultiAlignWin
             /// 
             /// Tell the loading thread if it exists to stop copying files.
             /// 
-            mbool_copyingFiles = false;
+            m_isCopyingFiles = false;
 
             /// 
             /// Show stop analysis.
             /// 
             try
             {                
-                mobjAnalysis.Abort();
+                m_analysis.Abort();
+            }
+            catch (ThreadAbortException abortException)
+            {
+                //pass
             }
             catch (Exception ex)
             {
-                System.Console.WriteLine(ex.Message);
+                MessageBox.Show("There was an error stopping the analysis. " + ex.Message);
             }
             
             /// 
@@ -1130,84 +1171,142 @@ namespace MultiAlignWin
         /// <param name="e"></param>
         private bool StartAnalysis()
         {
-            //e.Cancel = true;
-            //e.NewPage = mctl_performAnalysisPage.Name;
+            SetStep(CONST_STEP_ANALYZE, m_wizardSteps[CONST_STEP_ANALYZE]);
 
-            SetStep(CONST_STEP_ANALYZE, mlist_wizardSteps[CONST_STEP_ANALYZE]);
-
-            /// 
-            /// Disable the buttons from the user hitting anything.
-            /// 
+            // Disable the buttons from the user hitting anything.
             mctl_performAnalysisPage.NextButtonText      = "Stop";
             mctl_performAnalysisPage.BackButtonEnabled   = false;
             mctl_performAnalysisPage.CancelButtonEnabled = false;
-
-            /// 
-            /// Barf! but we want this to show the current page now!
-            /// 
-            Application.DoEvents();
-
-            string[] sourcePaths    = null;
-            bool copySuccess        = false;
             
-            mobjAnalysis.UseMassTagDBAsBaseline     = mctl_selectParametersPage.UseMassTagDBAsBaseline;
-            mobjAnalysis.UseSMART                   = mctl_selectParametersPage.UseSMART;
-            string massTagDBName                    = mobjAnalysis.MassTagDBOptions.mstrDatabase;
+            m_analysis.UseMassTagDBAsBaseline       = mctl_selectParametersPage.UseMassTagDBAsBaseline;
+            m_analysis.UseSMART                     = mctl_selectParametersPage.UseSMART;
+            string massTagDBName                    = m_analysis.MassTagDBOptions.mstrDatabase;
             bool alignmentDatabaseInvalid           = false;
 
             /// 
             /// Check to make sure that the database selected / provided is valid.  
             /// 
-            if (mobjAnalysis.MassTagDBOptions.menm_databaseType == MultiAlignEngine.MassTags.MassTagDatabaseType.SQL)
+            if (m_analysis.MassTagDBOptions.menm_databaseType == MultiAlignEngine.MassTags.MassTagDatabaseType.SQL)
                 alignmentDatabaseInvalid = (massTagDBName == null || massTagDBName == "");
-            else if (mobjAnalysis.MassTagDBOptions.menm_databaseType == MultiAlignEngine.MassTags.MassTagDatabaseType.ACCESS)
-                alignmentDatabaseInvalid = (File.Exists(mobjAnalysis.MassTagDBOptions.mstr_databaseFilePath) == false);
+            else if (m_analysis.MassTagDBOptions.menm_databaseType == MultiAlignEngine.MassTags.MassTagDatabaseType.ACCESS)
+                alignmentDatabaseInvalid = (File.Exists(m_analysis.MassTagDBOptions.mstr_databaseFilePath) == false);
 
-            if (mobjAnalysis.UseMassTagDBAsBaseline && alignmentDatabaseInvalid)
+            if (m_analysis.UseMassTagDBAsBaseline && alignmentDatabaseInvalid)
             {
                 MessageBox.Show("Please select a mass tag database as you are going to use one as a baseline for alignment.");
                 return false;
             }
 
-            if (!mobjAnalysis.UseMassTagDBAsBaseline && mintBaselineIndex == -1)
+            if (!m_analysis.UseMassTagDBAsBaseline && m_baselineIndex == -1)
             {
                 MessageBox.Show("Please select either a mass tag database or a dataset as a baseline for alignment.");
                 return false;
             }
 
-            sourcePaths = FileLocations;
-            copySuccess = CopyFilesHandler();
+            // Copy all of the data files to the local drive.
+            DatasetDownloader downloader = new DatasetDownloader();
+            downloader.CopyingComplete  += new EventHandler(downloader_CopyingComplete);
+            downloader.FileCopied       += new EventHandler<FileCopyEventArgs>(downloader_FileCopied);
+            downloader.CopyFiles(m_datasetInfoList, m_destinationPath);
 
-            /// 
-            /// Make sure we get all the files locally first.
-            /// 
-            if (copySuccess)
-            {
-
-                mobjAnalysis.Datasets.AddRange(marrDatasetInfo);
-                if (mintBaselineIndex > -1)
-                {
-                    mobjAnalysis.BaselineDataset = mobjAnalysis.Datasets[mintBaselineIndex].mstrLocalPath;
-                }
-                else
-                {
-                    mobjAnalysis.BaselineDataset = null;
-                }
-                       
-        
-                string outputPath = mctl_selectOutputNamePage.ProjectOutputFileName;
-                string logPath    = Path.Combine(Path.GetDirectoryName(outputPath), Path.GetFileNameWithoutExtension(outputPath) + ".log");
-                AnalysisLogWriter.WriteHeader(logPath, "MultiAlign Analysis " + Path.GetFileNameWithoutExtension(outputPath) + " " + DateTime.Now);
-                mobjAnalysis.StartAnalysis(outputPath);                
-                return true;
-            }
-            else
-            {                
-                MessageBox.Show("Could not start the analysis.  One of the dataset files was unavailable.");
-                return false;
-            }
+            return true;
+        }            
+        /// <summary>
+        /// Displays the error message to the user when something bad happens.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void mobjAnalysis_AnalysisException(object sender, ExceptionArgs e)
+        {
+            MessageBox.Show("Could not complete the analysis. " + e.Exception.Message);
         }              
 		#endregion 
+        
+        #region Download Message Handler
+        /// <summary>
+        /// Marshals even to user interface thread for copy messages.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        delegate void DelegateDisplayCopiedData(FileCopyEventArgs e);
+        void downloader_FileCopied(object sender, FileCopyEventArgs e)
+        {
+            if (!InvokeRequired)
+            {
+                DisplayFileCopiedData(e);
+            }
+            else
+            {
+                Invoke(new DelegateDisplayCopiedData (DisplayFileCopiedData), new object[] { e });
+            }
+        }
+        /// <summary>
+        /// Updates the display with the file path that was copied.
+        /// </summary>
+        /// <param name="args"></param>
+        private void DisplayFileCopiedData(FileCopyEventArgs args)
+        {
+            string pathName = Path.GetFileNameWithoutExtension(args.DestinationPath);
+            mctl_performAnalysisPage.AddStatusMessage(0, "Copied " + pathName);    
+        }
+        /// <summary>
+        /// Triggers the analysis to continue.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void downloader_CopyingComplete(object sender, EventArgs e)
+        {
+            if (!InvokeRequired)
+            {
+                ContinueAnalysis();
+            }
+            else
+            {
+                BeginInvoke(new MethodInvoker(ContinueAnalysis));
+            }
+        }
+        /// <summary>
+        /// Continues with the rest of the analysis.
+        /// </summary>
+        private void ContinueAnalysis()
+        {
+            m_analysis.Datasets.Clear();
+            m_analysis.Datasets.AddRange(m_datasetInfoList);
+
+            string outputPath    = mctl_selectOutputNamePage.ProjectOutputFileName;
+            string dataPath      = Path.GetDirectoryName(outputPath);
+            string analysisName  = Path.GetFileNameWithoutExtension(outputPath); 
+            string analysisPath  = Path.Combine(dataPath, analysisName);            
+            string logPath       = Path.Combine(analysisPath, analysisName + ".log");            
+            string parameterPath = Path.Combine(analysisPath, analysisName + "_parameters.xml");
+
+            if (!Directory.Exists(analysisPath))
+            {
+                Directory.CreateDirectory(analysisPath);
+            }
+            
+            if (m_baselineIndex > -1)
+            {
+                m_analysis.BaselineDataset = m_analysis.Datasets[m_baselineIndex].mstrLocalPath;
+            }
+            else
+            {
+                // Make sure we have something to align to.
+                if (!m_analysis.PeakMatchedToMassTagDB)
+                    throw new Exception("The baseline dataset or MTDB has not been set.");
+
+                m_analysis.BaselineDataset = null;
+            }
+
+            m_analysis.PathName       = analysisPath;
+            m_analysis.AnalysisName   = analysisName;
+            m_analysis.SaveParametersToFile(parameterPath);
+            AnalysisLogWriter.WriteHeader(logPath, "MultiAlign Analysis " + analysisName + " " + DateTime.Now);
+
+            m_analysis.AnalysisException += new EventHandler<ExceptionArgs>(mobjAnalysis_AnalysisException);
+            m_analysis.StartAnalysis();
+        }
+        #endregion
         
         #region Copying of UMC Files
         /// <summary>
@@ -1227,7 +1326,7 @@ namespace MultiAlignWin
             /// 
             /// Copy the files to local disk.
             /// 
-            for (int i = 0; i < numFiles && mbool_copyingFiles == true; i++)
+            for (int i = 0; i < numFiles && m_isCopyingFiles == true; i++)
             {
 
                 sourcePathAndFileName = datasets[i].ArchivePath;
@@ -1238,7 +1337,7 @@ namespace MultiAlignWin
 
 
                 //TODO: Fix the desintation path as a parameter...this is not thread safe!!!
-                destination = Path.Combine(destinationPath, filePath);
+                destination = Path.Combine(m_destinationPath, filePath);
 
                 FileInfo fsource = new FileInfo(sourcePathAndFileName);
                 FileInfo fdest = new FileInfo(destination);
@@ -1251,7 +1350,7 @@ namespace MultiAlignWin
                         /// 
                         /// A thread safe way to atomically increment the counter of the number of files copied
                         ///                                      
-                        mint_numCopied++;
+                        m_numCopied++;
                         datasets[i].mstrLocalPath = destination;
                     }
                     catch (Exception ex)
@@ -1262,14 +1361,14 @@ namespace MultiAlignWin
                 else if (System.IO.File.Exists(destination))
                 {
                     datasets[i].mstrLocalPath = destination;
-                    mint_numCopied++;                    
+                    m_numCopied++;                    
                 }
-                mint_numReviewedForCopy = i;
+                m_numReviewedForCopy = i;
             }
             /// 
             /// Tell the listening thread we are done via a flag.
             /// 
-            mbool_finishedCopying = true;
+            m_isFinishedCopying = true;
         }
 		private bool CopyFilesHandler()
 		{
@@ -1279,7 +1378,7 @@ namespace MultiAlignWin
             mctl_performAnalysisPage.Visible = true;
             mctl_performAnalysisPage.SetProgressBar(0);
 
-            int total = marrDatasetInfo.Count;
+            int total = m_datasetInfoList.Count;
    
 			/// 
             /// Make sure the user has selected files.
@@ -1294,15 +1393,15 @@ namespace MultiAlignWin
                 /// 
                 /// Set the count to zero.
                 /// 
-                mint_numCopied          = 0;
-                mint_numReviewedForCopy = 0;
-                mbool_finishedCopying   = false;
-                mbool_copyingFiles      = true;                
+                m_numCopied          = 0;
+                m_numReviewedForCopy = 0;
+                m_isFinishedCopying   = false;
+                m_isCopyingFiles      = true;                
 
 
-                string lastFileCopied = marrDatasetInfo[0].DatasetName;
+                string lastFileCopied = m_datasetInfoList[0].DatasetName;
                 List<string> names    = new List<string>();                
-                foreach (DatasetInformation info in marrDatasetInfo)
+                foreach (DatasetInformation info in m_datasetInfoList)
                 {
                     names.Add(info.DatasetName);
                 }
@@ -1312,21 +1411,21 @@ namespace MultiAlignWin
                 ///                                 
                 ParameterizedThreadStart start = new ParameterizedThreadStart(CopyFiles);
                 Thread thread = new Thread(start);
-                thread.Start(this.marrDatasetInfo);
+                thread.Start(this.m_datasetInfoList);
                 
                 /// 
                 /// Eh! the poor man's way of waiting for the thread to finish!!!
                 /// 
-                while (mbool_copyingFiles == true && mbool_finishedCopying == false)
+                while (m_isCopyingFiles == true && m_isFinishedCopying == false)
                 {                    
                     Thread.Sleep(10);
                     /// 
                     /// Update the user interface.
                     /// 
-                    int copiedPercent  = Convert.ToInt32(100.0 * (Convert.ToDouble(mint_numCopied) / Convert.ToDouble(total)));                    
+                    int copiedPercent  = Convert.ToInt32(100.0 * (Convert.ToDouble(m_numCopied) / Convert.ToDouble(total)));                    
                     mctl_performAnalysisPage.SetProgressBar(copiedPercent);
 
-                    string currentCopy = names[mint_numReviewedForCopy];
+                    string currentCopy = names[m_numReviewedForCopy];
                     if (currentCopy != lastFileCopied)
                     {
                         lastFileCopied = currentCopy;
@@ -1338,7 +1437,7 @@ namespace MultiAlignWin
                 /// 
                 /// Someone cancelled the analysis....so kill the copy thread!
                 /// 
-                if (mbool_copyingFiles == true)
+                if (m_isCopyingFiles == true)
                 {
                     Thread.Sleep(100);
                     try
@@ -1359,7 +1458,7 @@ namespace MultiAlignWin
             /// 
             /// If we copied enough of the files.
             /// 
-			if (mint_numCopied == total)
+			if (m_numCopied == total)
 			{                                
                 return true;
 			}
@@ -1368,45 +1467,16 @@ namespace MultiAlignWin
 		#endregion 
 	
         #region Properties
-        public string [] FileAliases
-		{
-			get
-			{              
-                marrDatasetInfo = mctl_loadDatasetPage.Datasets;
-
-				string[] fileAliases = new string[marrDatasetInfo.Count] ;
-				for (int i = 0 ; i < marrDatasetInfo.Count ; i++)
-				{
-                    fileAliases[i] = marrDatasetInfo[i].mstrAlias;
-				}
-				return fileAliases ;
-			}
-		}
-		public string [] DataSetNames
-		{
-			get
-			{
-
-                marrDatasetInfo = mctl_loadDatasetPage.Datasets;
-
-				string[] datasetNames = new string[marrDatasetInfo.Count] ;
-				for (int i = 0 ; i < marrDatasetInfo.Count ; i++)
-				{
-					datasetNames[i] = marrDatasetInfo[i].DatasetName ;
-				}
-				return datasetNames ;
-			}
-		}
 		public string [] FileLocations
 		{
 			get
 			{
-                marrDatasetInfo = mctl_loadDatasetPage.Datasets;
+                m_datasetInfoList = mctl_loadDatasetPage.Datasets;
 
-				string[] fileLocations = new string[marrDatasetInfo.Count] ;
-				for (int i = 0 ; i < marrDatasetInfo.Count ; i++)
+				string[] fileLocations = new string[m_datasetInfoList.Count] ;
+				for (int i = 0 ; i < m_datasetInfoList.Count ; i++)
 				{
-					fileLocations[i] = marrDatasetInfo[i].mstrLocalPath ;
+					fileLocations[i] = m_datasetInfoList[i].mstrLocalPath ;
 				}
 				return fileLocations ;
 			}
@@ -1415,7 +1485,7 @@ namespace MultiAlignWin
 		{
 			get
 			{
-				return mobjAnalysis ; 
+				return m_analysis ; 
 			}
         }
         #endregion

@@ -122,6 +122,9 @@
     <Compile Include="Filters\UMCClusterFilters.cs" />
     <Compile Include="Filters\UMCFilters.cs" />
     <Compile Include="ICloneable.cs" />
+    <Compile Include="IO\IMultiAlignAnalysisReader.cs" />
+    <Compile Include="IO\IMultiAlignAnalysisWriter.cs" />
+    <Compile Include="IO\IOProgressEventArgs.cs" />
     <Compile Include="IO\XAMTReader.cs" />
     <Compile Include="MultiAlign\Hibernate\Domain\Factor.cs" />
     <Compile Include="MultiAlign\Hibernate\Domain\MassTagConformation.cs" />
