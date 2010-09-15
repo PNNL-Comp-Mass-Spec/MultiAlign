@@ -41,6 +41,16 @@ namespace MultiAlignEngine
 			};
 			void CreateClustersFromClusterUMCIndexPair(MultiAlignEngine::Features::clsUMC *arrUMCs __gc[]); 
 	public:
+			void Clear()
+			{
+
+				marrClusters->Clear();
+				if (marrClusterIntensityNormalized != 0)
+					marrClusterIntensityNormalized->Clear();				
+				marrClusterMainMemberIndex->Clear();
+				marrClusterIntensity->Clear();
+				marrClusterUMCIndexPair->Clear();
+			}
 			double mdblMinNET; 
 			double mdblMaxNET; 
 			int mintNumDatasets; 
