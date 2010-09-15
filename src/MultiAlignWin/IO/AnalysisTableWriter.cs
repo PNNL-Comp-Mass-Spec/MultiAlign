@@ -119,13 +119,23 @@ namespace MultiAlignWin.IO
             string data = CONST_umc_index_col;
             data += Delimeter + CONST_umc_rep_size_col;
             data += Delimeter + CONST_umc_rep_mass_col;
-            data += Delimeter + CONST_umc_rep_mass_calib_col;
+            if (analysis.PeakMatchedToMassTagDB)
+            {
+                data += Delimeter + CONST_umc_rep_mass_calib_col;
+            }
             data += Delimeter + CONST_umc_rep_net_col;
 
-            if (analysis.PeakMatchedToMassTagDB == true)
+            if (analysis.PeakMatchedToMassTagDB)
+            {
                 data += Delimeter + CONST_umc_rep_net_aligned_col;
+            }
 
-            if (analysis.PeakMatchedToMassTagDB == true)
+            if (mobj_writerOptions.DriftTime)
+            {
+                data += Delimeter + CONST_driftTime_column;
+            }
+
+            if (analysis.PeakMatchedToMassTagDB)
             {
                 data += Delimeter + CONST_peptide_col;
                 data += Delimeter + CONST_protein_col;
@@ -395,12 +405,23 @@ namespace MultiAlignWin.IO
                         /// /////////////////////////////////////////////////////////////////////////////////////////////
                         /// Write cluster data
                         /// /////////////////////////////////////////////////////////////////////////////////////////////
-                        data += Delimeter + Convert.ToString(cluster.mdouble_mass);            
-                        data += Delimeter + Convert.ToString(cluster.mdouble_mass_calibrated);
+                        data += Delimeter + Convert.ToString(cluster.mdouble_mass);
+                        if (analysis.PeakMatchedToMassTagDB == true)
+                        {
+                            data += Delimeter + Convert.ToString(cluster.mdouble_mass_calibrated);
+                        }
+
                         data += Delimeter + Convert.ToString(cluster.mdouble_net);
 
-                        if (analysis.PeakMatchedToMassTagDB == true) 
+                        if (analysis.PeakMatchedToMassTagDB == true)
+                        {
                             data += Delimeter + Convert.ToString(cluster.mdouble_aligned_net);
+                        }
+
+                        if (mobj_writerOptions.DriftTime)
+                        {
+                            data += Delimeter + Convert.ToString(cluster.mdouble_driftTime);
+                        }
 
                         data += massTagData;
                         

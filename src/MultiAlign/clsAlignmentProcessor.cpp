@@ -167,6 +167,7 @@ namespace MultiAlignEngine
 				ms_feature.mdouble_mz					= umc->mdouble_class_rep_mz; 
 				ms_feature.mdouble_abundance			= umc->mdouble_abundance;
 				ms_feature.mint_id						= umc->mint_umc_index; 
+				ms_feature.mdouble_driftTime			= umc->mfloat_drift_time;
 
 				/*
 					Only allow the feature to be aligned if we are splitting the alignment in m/z 
@@ -273,6 +274,7 @@ namespace MultiAlignEngine
 				ms_feature.mdouble_net = umc->mdouble_net; 
 				ms_feature.mdouble_mz = umc->mdouble_class_rep_mz; 
 				ms_feature.mdouble_abundance = umc->mdouble_abundance;
+				ms_feature.mdouble_driftTime = umc->mfloat_drift_time;
 				ms_feature.mint_id = umc->mint_umc_index; 
 				vectMassTimeFeatures.push_back(ms_feature); 
 				if (umc->mint_scan > mintMaxReferenceDatasetScan)
