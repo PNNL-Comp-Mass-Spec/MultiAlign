@@ -136,7 +136,6 @@ namespace MultiAlignEngine
 				double	mdouble_abundance; 
 				double  mdouble_max_abundance; 
 				double  mdouble_sum_abundance;
-				double	marray_chargeStatesAbundances __gc[];
 				int		mint_spectral_count;
 				float	mfloat_drift_time;
 				double	mdouble_score;

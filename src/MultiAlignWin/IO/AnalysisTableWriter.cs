@@ -452,13 +452,6 @@ namespace MultiAlignWin.IO
                                 if (mobj_writerOptions.MSFeatureCount)
                                     data += Delimeter + umc.SpectralCount.ToString();                  // 10
 
-                                if (mobj_writerOptions.CMCAbundance)
-                                {
-                                    for (int j = 0; j < analysis.UMCData.HighestChargeState; j++)
-                                    {
-                                        data += Delimeter + umc.marray_chargeStatesAbundances[j].ToString();                                     
-                                    }
-                                }
                             }
                             else
                             {

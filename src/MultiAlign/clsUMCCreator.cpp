@@ -305,12 +305,6 @@ namespace MultiAlignEngine
 
 				newUmc->mint_scan_aligned = umc.mint_max_abundance_scan; 
 
-				/// Add the abundances to the charge states.
-				for(int i = 0; i < NUM_CHARGE_STATES_LENGTH; i++)
-				{
-					newUmc->marray_chargeStatesAbundances[i] = umc.marray_chargeStateAbundances[i];
-				}
-
 				newUmc->mint_umc_index				= umc.mint_umc_index; 
 				newUmc->mshort_class_rep_charge		= (int) umc.mshort_class_rep_charge; 
 				newUmc->mshort_class_highest_charge = (int) umc.mshort_class_highest_charge;

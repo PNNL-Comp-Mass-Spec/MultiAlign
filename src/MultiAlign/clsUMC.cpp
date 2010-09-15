@@ -16,7 +16,6 @@ namespace MultiAlignEngine
 			mdouble_class_rep_mz				=  0; 
 			mshort_class_rep_charge			= -1; 
 			mshort_class_highest_charge		=  0;
-			marray_chargeStatesAbundances	= new double __gc[NUM_CHARGE_STATES_LENGTH];
 			mint_scan						= -1; 
 			mint_start_scan					= -1; 
 			mint_end_scan					= -1; 

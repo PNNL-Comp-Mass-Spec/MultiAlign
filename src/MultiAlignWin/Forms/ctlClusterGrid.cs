@@ -541,28 +541,6 @@ namespace MultiAlignWin
                         {
                             row[start_data_column_num + col_num] = DBNull.Value;
                         }
-                        /// //////////////////////////////////////////////////////////////////////////////
-                        /// Do we show the abundances for each charge state?
-                        /// //////////////////////////////////////////////////////////////////////////////
-                        if (mbool_showCMCAbundances)
-                        {
-                            
-                            /// 
-                            /// For each charge state, we should have a column of data available.
-                            /// 
-                            for(int j = 0; j < mobjAnalysis.UMCData.HighestChargeState; j++)
-                            {
-                                col_num++;
-                                if (umc != null)
-                                {
-                                    row[start_data_column_num + col_num] = umc.marray_chargeStatesAbundances[j];
-                                }
-                                else
-                                {
-                                    row[start_data_column_num + col_num] = DBNull.Value;
-                                }
-                            }
-                        }
 					}
 
 
