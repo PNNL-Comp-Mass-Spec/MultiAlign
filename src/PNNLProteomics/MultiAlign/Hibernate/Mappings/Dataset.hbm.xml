@@ -5,7 +5,7 @@
 
 	<class name="DatasetInformation" table="T_Datasets" lazy="false">
 		<composite-id>
-			<key-property name="DatasetId" column="Dataset_ID" type="int" />
+			<key-property name="DatasetId" column="Dataset_ID" type="string" />
 			<key-property name="JobId" column="Job" type="string" />
 		</composite-id>
 		<property name="DatasetName" column="File_Name" type="string" not-null="false" />
