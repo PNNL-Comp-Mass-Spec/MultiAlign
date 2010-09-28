@@ -58,6 +58,10 @@ namespace MultiAlignWin.IO
         /// Thread in charge of 
         /// </summary>
         private Thread mobj_thread;
+		/// <summary>
+		/// Number of total datasets to be loaded from disk
+		/// </summary>
+		private int m_numDiskDatasetsLoaded;
         /// <summary>
         /// Default constructor for loading datasets from disk.
         /// </summary>
@@ -67,6 +71,7 @@ namespace MultiAlignWin.IO
             mobj_thread     = null;
             mlist_data      = new ArrayList();
             marr_fileNames  = null;
+			m_numDiskDatasetsLoaded = 0;
         }
         /// <summary>
         /// Aborts the loading thread if it's currently threaded.
@@ -172,15 +177,16 @@ namespace MultiAlignWin.IO
 					fileNameAlias = fileName;
 				}
 
-                datasetInfo.DatasetName     = fileName;
+                datasetInfo.DatasetName			= fileName;
                 datasetInfo.mstrAlias           = fileNameAlias;
-                datasetInfo.mstrDatasetId       = "NA";
+				datasetInfo.mstrDatasetId		= m_numDiskDatasetsLoaded.ToString();
                 datasetInfo.mstrAnalysisJobId   = "NA";
                 datasetInfo.mintBlockID         = 0;
                 datasetInfo.mintRunOrder        = 0;
                 datasetInfo.ArchivePath         = filePath;
                 datasetInfo.mstrLocalPath       = filePath;
 
+				m_numDiskDatasetsLoaded++;
                 numLoaded++;
                 percentLoaded = 100.0 * (Convert.ToDouble(numLoaded) / Convert.ToDouble(marr_fileNames.Length));
                 if (LoadedDataset != null)                

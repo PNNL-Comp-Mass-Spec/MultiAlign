@@ -106,6 +106,24 @@ namespace PNNLProteomics.Data
         }
 
         #region Properties
+		/// <summary>
+		/// Gets or sets the ID of the dataset
+		/// </summary>
+		[clsDataSummaryAttribute("Dataset ID")]
+		public string DatasetId
+		{
+			get { return mstrDatasetId; }
+			set { mstrDatasetId = value; }
+		}
+		/// <summary>
+		/// Gets or sets the ID of the Analysis Job
+		/// </summary>
+		[clsDataSummaryAttribute("Analysis Job ID")]
+		public string JobId
+		{
+			get { return mstrAnalysisJobId; }
+			set { mstrAnalysisJobId = value; }
+		}
         /// <summary>
         /// Gets or sets the name of the dataset
         /// </summary>
@@ -198,7 +216,34 @@ namespace PNNLProteomics.Data
             }
         }
         #endregion
-	
+
+		public override bool Equals(object obj)
+		{
+			DatasetInformation dataset = (DatasetInformation)obj;
+
+			if (dataset == null)
+			{
+				return false;
+			}
+			else if (!this.DatasetId.Equals(dataset.DatasetId))
+			{
+				return false;
+			}
+			else
+			{
+				return this.JobId.Equals(dataset.JobId);
+			}
+		}
+
+		public override int GetHashCode()
+		{
+			int hash = 17;
+
+			hash = hash * 23 + mstrDatasetId.GetHashCode();
+			hash = hash * 23 + mstrAnalysisJobId.GetHashCode();
+
+			return hash;
+		}
 
         #region IComparable<DatasetInformation> Members
         public int  CompareTo(DatasetInformation other)

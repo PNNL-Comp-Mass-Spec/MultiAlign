@@ -126,10 +126,11 @@
     <Compile Include="IO\IMultiAlignAnalysisWriter.cs" />
     <Compile Include="IO\IOProgressEventArgs.cs" />
     <Compile Include="IO\XAMTReader.cs" />
+    <Compile Include="MultiAlign\Hibernate\Domain\DAOHibernate\DatasetDAOHibernate.cs" />
+    <Compile Include="MultiAlign\Hibernate\Domain\DAO\IDatasetDAO.cs" />
     <Compile Include="MultiAlign\Hibernate\Domain\Factor.cs" />
     <Compile Include="MultiAlign\Hibernate\Domain\MassTagConformation.cs" />
     <Compile Include="MultiAlign\Hibernate\Domain\StacFDR.cs" />
-    <Compile Include="MultiAlign\Hibernate\Domain\Dataset.cs" />
     <Compile Include="MultiAlign\MultiAlignAnalysis.cs" />
     <Compile Include="Analysis\clsNormalize.cs" />
     <Compile Include="Analysis\clsTTest.cs" />

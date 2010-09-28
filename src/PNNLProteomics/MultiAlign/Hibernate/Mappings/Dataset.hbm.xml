@@ -1,18 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" 
                    assembly="PNNLProteomics" 
-                   namespace="PNNLProteomics.MultiAlign.Hibernate.Domain">
+                   namespace="PNNLProteomics.Data">
 
-	<class name="Dataset" table="T_Datasets" lazy="false">
+	<class name="DatasetInformation" table="T_Datasets" lazy="false">
 		<composite-id>
 			<key-property name="DatasetId" column="Dataset_ID" type="int" />
-			<key-property name="Job" column="Job" type="int" />
+			<key-property name="JobId" column="Job" type="string" />
 		</composite-id>
-		<property name="FileName" column="File_Name" type="string" not-null="false" />
-		<property name="ParameterFile" column="Parameter_File" type="string" not-null="false" />
-		<property name="JobDateTime" column="Job_DateTime" type="string" not-null="false" />
-		<property name="DirectoryPath" column="Directory_Path" type="string" not-null="false" />
-		<property name="JobType" column="Job_Type" type="string" not-null="false" />
+		<property name="DatasetName" column="File_Name" type="string" not-null="false" />
+		<property name="ParameterFileName" column="Parameter_File" type="string" not-null="false" />
+		<!--property name="JobDateTime" column="Job_DateTime" type="string" not-null="false" /-->
+		<property name="ArchivePath" column="Directory_Path" type="string" not-null="false" />
+		<!--property name="JobType" column="Job_Type" type="string" not-null="false" /-->
 	</class>
 
 </hibernate-mapping>

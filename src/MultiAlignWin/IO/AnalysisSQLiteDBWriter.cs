@@ -18,6 +18,7 @@ using PNNLProteomics.Filters;
 using PNNLProteomics.MultiAlign.Hibernate;
 using PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate;
 using PNNLProteomics.MultiAlign.Hibernate.Domain;
+using PNNLProteomics.Data;
 
 namespace MultiAlignWin.IO
 {
@@ -91,6 +92,7 @@ namespace MultiAlignWin.IO
             NHibernateUtil.SetDbLocationForWrite(dbPath);
 
             // Setup DAOHibernates
+			DatasetDAOHibernate datasetDAOHibernate = new DatasetDAOHibernate();
             UmcDAOHibernate umcDAOHibernate = new UmcDAOHibernate();
             UmcClusterDAOHibernate umcClusterDAOHibernate = new UmcClusterDAOHibernate();
             MassTagDAOHibernate massTagDAOHibernate = new MassTagDAOHibernate();
@@ -99,6 +101,7 @@ namespace MultiAlignWin.IO
             GenericDAOHibernate<MassTagToProteinMap> massTagToProteinMapDAOHibernate = new GenericDAOHibernate<MassTagToProteinMap>();
 
             // Lists to hold the objects to be saved to SQLite
+			List<DatasetInformation> datasetList = new List<DatasetInformation>();
             List<clsUMC> umcList = new List<clsUMC>();
             List<clsCluster> clusterList = new List<clsCluster>();
             List<clsMassTag> massTagList = new List<clsMassTag>();
@@ -107,6 +110,7 @@ namespace MultiAlignWin.IO
             List<MassTagToProteinMap> massTagToProteinMapList = new List<MassTagToProteinMap>();
 
             // Grab all of the data from the analysis
+			datasetList = analysis.Datasets;
             clsUMCData umcData = analysis.UMCData;
             clsClusterData clusterData = umcData.mobjClusterData;
             ArrayList clusterArrayList = umcData.mobjClusterData.marrClusters;
@@ -190,6 +194,7 @@ namespace MultiAlignWin.IO
             }
 
             // Save the Lists to SQLite
+			datasetDAOHibernate.AddAll(datasetList);
             umcDAOHibernate.AddAll(umcList);
             umcClusterDAOHibernate.AddAll(clusterList);
             massTagDAOHibernate.AddAll(massTagList);
