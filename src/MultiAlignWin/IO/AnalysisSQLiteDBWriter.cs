@@ -92,6 +92,7 @@ namespace MultiAlignWin.IO
             NHibernateUtil.SetDbLocationForWrite(dbPath);
 
             // Setup DAOHibernates
+			FactorDAOHibernate factorDAOHibernate = new FactorDAOHibernate();
 			DatasetDAOHibernate datasetDAOHibernate = new DatasetDAOHibernate();
             UmcDAOHibernate umcDAOHibernate = new UmcDAOHibernate();
             UmcClusterDAOHibernate umcClusterDAOHibernate = new UmcClusterDAOHibernate();
@@ -101,6 +102,7 @@ namespace MultiAlignWin.IO
             GenericDAOHibernate<MassTagToProteinMap> massTagToProteinMapDAOHibernate = new GenericDAOHibernate<MassTagToProteinMap>();
 
             // Lists to hold the objects to be saved to SQLite
+			List<Factor> factorList = new List<Factor>();
 			List<DatasetInformation> datasetList = new List<DatasetInformation>();
             List<clsUMC> umcList = new List<clsUMC>();
             List<clsCluster> clusterList = new List<clsCluster>();
@@ -121,6 +123,12 @@ namespace MultiAlignWin.IO
                 massTagArray = analysis.PeakMatchingResults.marrMasstags;
                 proteinArray = analysis.PeakMatchingResults.marrProteins;
             }
+
+			// Populate Factor List
+			foreach (DatasetInformation dataset in datasetList)
+			{
+				factorList.AddRange(dataset.FactorList);
+			}
 
             // Used to store which Cluster IDs are saved to SQLite
             List<int> clusterIDs = new List<int>();
@@ -194,6 +202,7 @@ namespace MultiAlignWin.IO
             }
 
             // Save the Lists to SQLite
+			factorDAOHibernate.AddAll(factorList);
 			datasetDAOHibernate.AddAll(datasetList);
             umcDAOHibernate.AddAll(umcList);
             umcClusterDAOHibernate.AddAll(clusterList);

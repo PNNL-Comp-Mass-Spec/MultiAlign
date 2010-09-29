@@ -3,6 +3,8 @@ using System.Collections.Generic;
 
 using MultiAlignEngine;
 using PNNLProteomics.Data.Factors;
+using PNNLProteomics.MultiAlign.Hibernate.Domain;
+using Iesi.Collections.Generic;
 
 namespace PNNLProteomics.Data
 {
@@ -92,6 +94,11 @@ namespace PNNLProteomics.Data
 		private bool m_isSelected;
 
 		/// <summary>
+		/// The List of Factor Objects
+		/// </summary>
+		private IList<Factor> m_factorList;
+
+		/// <summary>
 		/// Default constructor.
 		/// </summary>
 		public DatasetInformation()
@@ -101,6 +108,7 @@ namespace PNNLProteomics.Data
 
 			mlist_assignedValues = new List<string>();
 			m_factorInformation = new Dictionary<FactorInformation, string>();
+			m_factorList = new List<Factor>();
 			m_parameterFileName = "";
 			m_archivePath = "";
 		}
@@ -190,6 +198,29 @@ namespace PNNLProteomics.Data
 			{
 				mlist_assignedValues = value;
 			}
+		}
+		/// <summary>
+		/// Gets or sets the list of Factor objects for this dataset.
+		/// </summary>
+		public IList<Factor> FactorList
+		{
+			get
+			{
+				IList<Factor> factorList = new List<Factor>();
+				foreach(KeyValuePair<FactorInformation, string> kvp in m_factorInformation)
+				{
+					FactorInformation factorInformation = kvp.Key;
+
+					Factor factor = new Factor();
+					factor.Dataset = this;
+					factor.FactorName = factorInformation.FactorName;
+					factor.FactorValue = factorInformation.FactorValues[0];
+					factorList.Add(factor);
+				}
+
+				return factorList;
+			}
+			set { m_factorList = value; }
 		}
 		/// <summary>
 		/// Gets whether this sample was part of a block.

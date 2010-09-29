@@ -4,10 +4,12 @@
                    namespace="PNNLProteomics.MultiAlign.Hibernate.Domain">
 
 	<class name="Factor" table="T_Factors" lazy="false">
-		<id name="Id" column="Factor_ID" type="integer">
-			<generator class="assigned" />
+		<id name="FactorId" column="Factor_ID" type="integer">
+			<generator class="increment" />
 		</id>
-		<property name="DatasetId" column="Dataset_ID" type="int" not-null="false" />
+		<many-to-one name="Dataset" class="PNNLProteomics.Data.DatasetInformation">
+			<column name="Dataset_ID" not-null="true" />
+		</many-to-one>
 		<property name="FactorName" column="Factor_Name" type="string" not-null="false" />
 		<property name="FactorValue" column="Factor_Value" type="string" not-null="false" />
 	</class>

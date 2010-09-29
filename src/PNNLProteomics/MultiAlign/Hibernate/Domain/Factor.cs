@@ -2,13 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Runtime.Serialization;
+using PNNLProteomics.Data;
 
 namespace PNNLProteomics.MultiAlign.Hibernate.Domain
 {
 	public class Factor : ISerializable
 	{
 		private int m_id;
-		private int m_datasetId;
+		private DatasetInformation m_dataset;
 		private string m_factorName;
 		private string m_factorValue;
 
@@ -16,10 +17,10 @@ namespace PNNLProteomics.MultiAlign.Hibernate.Domain
 		{
 		}
 
-		public Factor(int factorId, int datasetId, string factorName, string factorValue)
+		public Factor(int factorId, DatasetInformation datasetId, string factorName, string factorValue)
 		{
 			m_id = factorId;
-			m_datasetId = datasetId;
+			m_dataset = datasetId;
 			m_factorName = factorName;
 			m_factorValue = factorValue;
 		}
@@ -41,11 +42,11 @@ namespace PNNLProteomics.MultiAlign.Hibernate.Domain
 			{
 				return false;
 			}
-			else if (!this.Id.Equals(factor.Id))
+			else if (!this.FactorId.Equals(factor.FactorId))
 			{
 				return false;
 			}
-			else if (!this.DatasetId.Equals(factor.DatasetId))
+			else if (!this.Dataset.Equals(factor.Dataset))
 			{
 				return false;
 			}
@@ -64,23 +65,23 @@ namespace PNNLProteomics.MultiAlign.Hibernate.Domain
 			int hash = 17;
 
 			hash = hash * 23 + m_id.GetHashCode();
-			hash = hash * 23 + m_datasetId.GetHashCode();
+			hash = hash * 23 + m_dataset.GetHashCode();
 			hash = hash * 23 + m_factorName.GetHashCode();
 			hash = hash * 23 + m_factorValue.GetHashCode();
 
 			return hash;
 		}
 
-		public int Id
+		public int FactorId
 		{
 			get { return m_id; }
 			set { m_id = value; }
 		}
 
-		public int DatasetId
+		public DatasetInformation Dataset
 		{
-			get { return m_datasetId; }
-			set { m_datasetId = value; }
+			get { return m_dataset; }
+			set { m_dataset = value; }
 		}
 
 		public string FactorName
