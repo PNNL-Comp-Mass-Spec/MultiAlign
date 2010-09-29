@@ -120,6 +120,7 @@ namespace MultiAlignEngine
 		{
 			public:
 				int		mint_dataset_index; 
+				int		mint_dataset_id;
 				int		mint_cluster_index; 
 				int		mint_umc_index; 
 				int		mint_conformation_index;
@@ -155,11 +156,11 @@ namespace MultiAlignEngine
 
 				__property int get_DatasetId()
 				{
-					return mint_dataset_index;
+					return mint_dataset_id;
 				}
 
 				__property void set_DatasetId(int value){
-					mint_dataset_index = value;
+					mint_dataset_id = value;
 				}
 
 				__property int get_ClusterId()

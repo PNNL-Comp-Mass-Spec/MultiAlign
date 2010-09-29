@@ -632,6 +632,12 @@ namespace PNNLProteomics.Data.Analysis
                     /// 
                     mobjUMCData.SetUMCS(dataset.mstrLocalPath, ref loadedUMCs);
                     mint_statusLevel--;
+
+					// Set the Dataset Number for each UMC
+					foreach (clsUMC umc in loadedUMCs)
+					{
+						umc.DatasetId = int.Parse(dataset.DatasetId);
+					}
                 }
 
                 ///
