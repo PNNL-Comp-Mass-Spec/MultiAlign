@@ -24,7 +24,7 @@
 		<!--property name="ChargeMax" column="CHARGE_MAX" type="short" not-null="false" /-->
 		<!--property name="SpectralCount" column="SPECTRAL_COUNT" type="short" not-null="false" /-->
 		<property name="AbundanceMax" column="Abundance_Max" type="int" not-null="false" />
-		<property name="AbundanceSum" column="Abundance_Sum" type="int" not-null="false" />
+		<property name="AbundanceSum" column="Abundance_Sum" type="long" not-null="false" />
 		<property name="DriftTime" column="Drift_Time" type="double" not-null="false" />
 		<property name="Score" column="Score" type="double" not-null="false" />
 	</class>
