@@ -209,12 +209,10 @@ namespace PNNLProteomics.Data
 				IList<Factor> factorList = new List<Factor>();
 				foreach(KeyValuePair<FactorInformation, string> kvp in m_factorInformation)
 				{
-					FactorInformation factorInformation = kvp.Key;
-
 					Factor factor = new Factor();
 					factor.Dataset = this;
-					factor.FactorName = factorInformation.FactorName;
-					factor.FactorValue = factorInformation.FactorValues[0];
+					factor.FactorName = kvp.Key.FactorName;
+					factor.FactorValue = kvp.Value;
 					factorList.Add(factor);
 				}
 

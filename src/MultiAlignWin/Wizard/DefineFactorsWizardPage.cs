@@ -370,11 +370,15 @@ namespace MultiAlignWin
 		private void cmbBoxSelectedIndexChanged(object sender, System.EventArgs e)
 		{
 			int sel = cmbBox.SelectedIndex;
-			if ( sel >= 0 )
+			if (sel >= 0)
 			{
-				string itemSel = cmbBox.Items[sel].ToString();
-				mobj_selectedItem.SubItems[mint_subItemSelected].Text = itemSel;
-				UpdateDatasetFactorInfo() ;
+				string factorValue = cmbBox.Items[sel].ToString();
+				mobj_selectedItem.SubItems[mint_subItemSelected].Text = factorValue;
+
+				string datasetIdString = datasetID.ListView.Items[mobj_selectedItem.Index].Text;
+				string factorName = mlistview_datasets.Columns[mint_subItemSelected].Text;
+
+				UpdateDatasetFactorInfo(datasetIdString, factorName, factorValue);
 
                 /// 
                 /// Update the column length
@@ -663,22 +667,25 @@ namespace MultiAlignWin
                 }
             }
         }
-        private void UpdateDatasetFactorInfo()
+        private void UpdateDatasetFactorInfo(String datasetId, String factorName, String factorValue)
         {
-            int numEntries = mlistview_datasets.Items.Count;
-            FactorInformation currentFactor = new FactorInformation();
+			foreach (DatasetInformation dataset in marray_datasetInfo)
+			{
+				if (dataset.DatasetId.Equals(datasetId))
+				{
+					foreach (KeyValuePair<FactorInformation, string> kvp in dataset.Factors)
+					{
+						FactorInformation factor = kvp.Key;
+						if (factor.FactorName.Equals(factorName))
+						{
+							dataset.Factors[factor] = factorValue;
+							return;
+						}
+					}
+				}
+			}
 
-            for (int row = 0; row < numEntries; row++)
-            {
-                if (mlist_factorData.Count > 0) // update factors
-                {
-                    /*for (int i = 0 ; i < marray_factors.Length ; i++)
-                    {
-                        ((DatasetInformation)marray_datasetInfo[row]).AssignedFactorValues[i] = 
-                            mlistview_datasets.Items[row].SubItems[i+CONST_NUM_COLUMNS].Text ; 
-                    }*/
-                }
-            }
+			//throw new Exception("Were you trying to change dataset " + datasetID + ", Factor " + factorName + ", to " + factorValue + "?");
         }
         private void UpdateAliases()
         {
