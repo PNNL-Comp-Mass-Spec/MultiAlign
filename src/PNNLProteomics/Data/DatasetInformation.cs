@@ -17,7 +17,6 @@ namespace PNNLProteomics.Data
 		public static int mintNumFactorsSpecified = 0;
 		public const int MAX_LEVELS = 100;
 
-		private List<string> mlist_assignedValues;
 		/// <summary>
 		/// Dictionary that maps a factor object to it's factor value.
 		/// </summary>
@@ -106,7 +105,6 @@ namespace PNNLProteomics.Data
 			mintBatchID = 0;
 			mintRunOrder = 0;
 
-			mlist_assignedValues = new List<string>();
 			m_factorInformation = new Dictionary<FactorInformation, string>();
 			m_factorList = new List<Factor>();
 			m_parameterFileName = "";
@@ -183,20 +181,6 @@ namespace PNNLProteomics.Data
 			set
 			{
 				m_factorInformation = value;
-			}
-		}
-		/// <summary>
-		/// Gets or sets the assigned factor values.
-		/// </summary>
-		public List<string> AssignedFactorValues
-		{
-			get
-			{
-				return mlist_assignedValues;
-			}
-			set
-			{
-				mlist_assignedValues = value;
 			}
 		}
 		/// <summary>

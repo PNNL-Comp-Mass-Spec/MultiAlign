@@ -248,6 +248,9 @@ namespace PNNLProteomics.Data.Analysis
 
 		int GetGroups(ref int []groupIndices, MultiAlignAnalysis analysis)
 		{
+			return 1;
+
+			/*
 			groupIndices = new int [analysis.Datasets.Count] ; // should be using analysis.Files.Length
 
 			// check if factors have been defined. 
@@ -293,6 +296,7 @@ namespace PNNLProteomics.Data.Analysis
 				}
 				return numGroups ; 
 			}
+			*/ 
 		}
 
 		public void NormalizeData(MultiAlignAnalysis analysis)
