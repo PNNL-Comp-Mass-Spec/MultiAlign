@@ -96,7 +96,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy $(SolutionDir)\build\$(ConfigurationName)\$(TargetFileName) $(SolutionDir)..\lib"
+				CommandLine=""
 			/>
 		</Configuration>
 		<Configuration
@@ -179,7 +179,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy $(SolutionDir)\build\$(ConfigurationName)\$(TargetFileName) $(SolutionDir)..\lib"
+				CommandLine=""
 			/>
 		</Configuration>
 		<Configuration
@@ -256,7 +256,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy $(SolutionDir)\build\$(ConfigurationName)\$(TargetFileName) $(SolutionDir)..\lib"
+				CommandLine=""
 			/>
 		</Configuration>
 		<Configuration
