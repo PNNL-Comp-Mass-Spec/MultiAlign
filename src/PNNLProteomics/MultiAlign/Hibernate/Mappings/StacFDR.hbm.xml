@@ -5,10 +5,10 @@
 
 	<class name="StacFDR" table="T_STAC_FDR" lazy="false">
 		<id name="StacCutoff" column="STAC_Cutoff" type="double">
-			<generator class="increment" />
+			<generator class="assigned" />
 		</id>
 		<property name="NumMatches" column="Num_Matches" type="int" not-null="false" />
-		<property name="NumFalseMatches" column="Num_False_Matches" type="int" not-null="false" />
+		<property name="Errors" column="Errors" type="double" not-null="false" />
 		<property name="FDR" column="FDR" type="double" not-null="false" />
 	</class>
 

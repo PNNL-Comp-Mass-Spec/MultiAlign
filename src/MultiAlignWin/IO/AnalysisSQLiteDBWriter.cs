@@ -19,6 +19,7 @@ using PNNLProteomics.MultiAlign.Hibernate;
 using PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate;
 using PNNLProteomics.MultiAlign.Hibernate.Domain;
 using PNNLProteomics.Data;
+using PNNLProteomics.SMART;
 
 namespace MultiAlignWin.IO
 {
@@ -100,6 +101,7 @@ namespace MultiAlignWin.IO
             ProteinDAOHibernate proteinDAOHibernate = new ProteinDAOHibernate();
             GenericDAOHibernate<ClusterToMassTagMap> clusterToMassTagMapDAOHibernate = new GenericDAOHibernate<ClusterToMassTagMap>();
             GenericDAOHibernate<MassTagToProteinMap> massTagToProteinMapDAOHibernate = new GenericDAOHibernate<MassTagToProteinMap>();
+			GenericDAOHibernate<StacFDR> stacFDRDAOHibernate = new GenericDAOHibernate<StacFDR>();
 
             // Lists to hold the objects to be saved to SQLite
 			List<Factor> factorList = new List<Factor>();
@@ -110,6 +112,7 @@ namespace MultiAlignWin.IO
             List<clsProtein> proteinList = new List<clsProtein>();
             List<ClusterToMassTagMap> clusterToMassTagMapList = new List<ClusterToMassTagMap>();
             List<MassTagToProteinMap> massTagToProteinMapList = new List<MassTagToProteinMap>();
+			List<StacFDR> stacFDRResultsList = new List<StacFDR>();
 
             // Grab all of the data from the analysis
 			datasetList = analysis.Datasets;
@@ -118,6 +121,7 @@ namespace MultiAlignWin.IO
             ArrayList clusterArrayList = umcData.mobjClusterData.marrClusters;
             clsMassTag[] massTagArray = null; // analysis.PeakMatchingResults.marrMasstags;
             clsProtein[] proteinArray = null; // analysis.PeakMatchingResults.marrProteins;            
+
             if (analysis.PeakMatchedToMassTagDB)
             {
                 massTagArray = analysis.PeakMatchingResults.marrMasstags;
@@ -201,6 +205,11 @@ namespace MultiAlignWin.IO
                 }
             }
 
+			foreach (classSMARTFdrResult fdrResult in analysis.SMARTResults.GetSummaries())
+			{
+				stacFDRResultsList.Add(new StacFDR(fdrResult));
+			}
+
             // Save the Lists to SQLite
 			factorDAOHibernate.AddAll(factorList);
 			datasetDAOHibernate.AddAll(datasetList);
@@ -210,6 +219,7 @@ namespace MultiAlignWin.IO
             proteinDAOHibernate.AddAll(proteinList);
             clusterToMassTagMapDAOHibernate.AddAll(clusterToMassTagMapList);
             massTagToProteinMapDAOHibernate.AddAll(massTagToProteinMapList);
+			stacFDRDAOHibernate.AddAll(stacFDRResultsList);
         }
     }
 }

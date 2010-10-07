@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Runtime.Serialization;
+using PNNLProteomics.SMART;
 
 namespace PNNLProteomics.MultiAlign.Hibernate.Domain
 {
@@ -9,11 +10,19 @@ namespace PNNLProteomics.MultiAlign.Hibernate.Domain
 	{
 		private double m_stacCutoff;
 		private int m_numMatches;
-		private int m_numFalseMatches;
+		private double m_errors;
 		private double m_fdr;
 
 		public StacFDR()
 		{
+		}
+
+		public StacFDR(classSMARTFdrResult fdrResult)
+		{
+			m_stacCutoff = fdrResult.Cutoff;
+			m_numMatches = fdrResult.NumMatches;
+			m_errors = fdrResult.Error;
+			m_fdr = fdrResult.FDR;
 		}
 
 		#region ISerializable Members
@@ -41,7 +50,7 @@ namespace PNNLProteomics.MultiAlign.Hibernate.Domain
 			{
 				return false;
 			}
-			else if (!this.NumFalseMatches.Equals(stacFDR.NumFalseMatches))
+			else if (!this.Errors.Equals(stacFDR.Errors))
 			{
 				return false;
 			}
@@ -57,7 +66,7 @@ namespace PNNLProteomics.MultiAlign.Hibernate.Domain
 
 			hash = hash * 23 + m_stacCutoff.GetHashCode();
 			hash = hash * 23 + m_numMatches.GetHashCode();
-			hash = hash * 23 + m_numFalseMatches.GetHashCode();
+			hash = hash * 23 + m_errors.GetHashCode();
 			hash = hash * 23 + m_fdr.GetHashCode();
 
 			return hash;
@@ -75,10 +84,10 @@ namespace PNNLProteomics.MultiAlign.Hibernate.Domain
 			set { m_numMatches = value; }
 		}
 
-		public int NumFalseMatches
+		public double Errors
 		{
-			get { return m_numFalseMatches; }
-			set { m_numFalseMatches = value; }
+			get { return m_errors; }
+			set { m_errors = value; }
 		}
 
 		public double FDR
