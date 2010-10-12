@@ -4,10 +4,14 @@
                    namespace="MultiAlignEngine.Features">
 
 	<class name="clsUMC" table="T_LCMS_Features" lazy="false">
-		<id name="Id" column="Feature_ID" type="integer">
+		<composite-id>
+			<key-property name="Id" column="Feature_ID" type="integer" />
+			<key-property name="DatasetId" column="Dataset_ID" type="integer" />
+		</composite-id>
+		<!--id name="Id" column="Feature_ID" type="integer">
 			<generator class="increment" />
 		</id>
-		<property name="DatasetId" column="Dataset_ID" type="int" not-null="false" />
+		<property name="DatasetId" column="Dataset_ID" type="int" not-null="false" /-->
 		<property name="ClusterId" column="Cluster_ID" type="int" not-null="false" />
 		<property name="ConformationId" column="Conformation_ID" type="int" not-null="false" />
 		<!--many-to-one name="UmcCluster" class="clsCluster" column="CLUSTER_ID" not-null="false" /-->

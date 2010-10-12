@@ -9,7 +9,8 @@ namespace MultiAlignEngine
 		clsUMC::clsUMC(void)
 		{
 			mint_cluster_index				= -1; 
-			mint_umc_index					= -1; 			
+			mint_umc_index					= -1; 	
+			mint_umc_id						= -1;
 			mdouble_mono_mass					=  0; 
 			mdouble_mono_mass_calibrated		=  0; 
 			mdouble_abundance					=  0; 			

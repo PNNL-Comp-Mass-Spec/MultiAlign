@@ -122,7 +122,8 @@ namespace MultiAlignEngine
 				int		mint_dataset_index; 
 				int		mint_dataset_id;
 				int		mint_cluster_index; 
-				int		mint_umc_index; 
+				int		mint_umc_index;
+				int		mint_umc_id;
 				int		mint_conformation_index;
 				double	mdouble_mono_mass; 
 				double	mdouble_class_rep_mz; 
@@ -142,16 +143,47 @@ namespace MultiAlignEngine
 				double	mdouble_score;
 				//clsCluster *umcCluster;
 
+				bool Equals(System::Object *obj)
+				{
+					clsUMC *umc = dynamic_cast<clsUMC *>(obj); 
+					if (mint_dataset_id != umc->mint_dataset_id)
+					{
+						return false; 
+					}
+					if (mint_umc_index != umc->mint_umc_index)
+					{
+						return false; 
+					}
+					return true; 
+				}
+
+				int GetHashCode()
+				{
+					int hash = 17;
+
+					hash = hash * 23 + mint_dataset_id.GetHashCode();
+					hash = hash * 23 + mint_umc_index.GetHashCode();
+
+					return hash;
+				}
+
 				clsUMC(void);
 				~clsUMC(void);
 
 				__property int get_Id()
 				{
-					return mint_umc_index;
+					if(mint_umc_id >= 0)
+					{
+						return mint_umc_id;
+					}
+					else
+					{
+						return mint_umc_index;
+					}
 				}
 
 				__property void set_Id(int value){
-					mint_umc_index = value;
+					mint_umc_id = value;
 				}
 
 				__property int get_DatasetId()
