@@ -235,7 +235,7 @@ namespace PNNLProteomics.MultiAlign
 					if (m_columnMap.ContainsKey("Umc.SpectralCount"))			umc.SpectralCount = int.Parse(columns[m_columnMap["Umc.SpectralCount"]]);
 					if (m_columnMap.ContainsKey("Umc.MZForCharge"))				umc.MZForCharge = Double.Parse(columns[m_columnMap["Umc.MZForCharge"]]);
 					if (m_columnMap.ContainsKey("Umc.DriftTime"))				umc.DriftTime = float.Parse(columns[m_columnMap["Umc.DriftTime"]]);
-					if (m_columnMap.ContainsKey("Umc.Conformation_Fit_Score"))	umc.Score = Double.Parse(columns[m_columnMap["Umc.Conformation_Fit_Score"]]);
+					if (m_columnMap.ContainsKey("Umc.Score"))					umc.Score = Double.Parse(columns[m_columnMap["Umc.Score"]]);
 					umcList.Add(umc);
 					previousId = currentId;
 				}
