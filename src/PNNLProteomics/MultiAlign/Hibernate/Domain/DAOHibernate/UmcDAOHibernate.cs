@@ -50,7 +50,19 @@ namespace PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate
 
             return FindByCriteria(criterionList);
         }
-		
+
+		/// <summary>
+		/// Searches for and returns a List of Umc Objects in the Database that have the exact Dataset Id given.
+		/// </summary>
+		/// <param name="mass">Dataset value to be searched for</param>
+		/// <returns>List of Umc Objects</returns>
+		public List<clsUMC> FindByDatasetId(int datasetId)
+		{
+			ICriterion criterion = Expression.Eq("DatasetId", datasetId);
+			List<ICriterion> criterionList = new List<ICriterion>();
+			criterionList.Add(criterion);
+			return FindByCriteria(criterionList);
+		}
     }
 
 }
