@@ -160,7 +160,16 @@ namespace PNNLProteomics.MultiAlign
 						columnMap.Add("Umc.DriftTime", i);
 						break;
 					case "Conformation_Fit_Score":
-						columnMap.Add("Umc.Score", i);
+						columnMap.Add("Umc.ConformationFitScore", i);
+						break;
+					case "Average_Isotopic_Fit":
+						columnMap.Add("Umc.IsotopicFitScore", i);
+						break;
+					case "Members_Percentage":
+						columnMap.Add("Umc.MembersPercentageScore", i);
+						break;
+					case "Combined_Score":
+						columnMap.Add("Umc.CombinedScore", i);
 						break;
 					default:
 						//Title not found.
@@ -235,7 +244,10 @@ namespace PNNLProteomics.MultiAlign
 					if (m_columnMap.ContainsKey("Umc.SpectralCount"))			umc.SpectralCount = int.Parse(columns[m_columnMap["Umc.SpectralCount"]]);
 					if (m_columnMap.ContainsKey("Umc.MZForCharge"))				umc.MZForCharge = Double.Parse(columns[m_columnMap["Umc.MZForCharge"]]);
 					if (m_columnMap.ContainsKey("Umc.DriftTime"))				umc.DriftTime = float.Parse(columns[m_columnMap["Umc.DriftTime"]]);
-					if (m_columnMap.ContainsKey("Umc.Score"))					umc.Score = Double.Parse(columns[m_columnMap["Umc.Score"]]);
+					if (m_columnMap.ContainsKey("Umc.ConformationFitScore"))	umc.ConformationFitScore = Double.Parse(columns[m_columnMap["Umc.ConformationFitScore"]]);
+					if (m_columnMap.ContainsKey("Umc.IsotopicFitScore"))		umc.IsotopicFitScore = Double.Parse(columns[m_columnMap["Umc.IsotopicFitScore"]]);
+					if (m_columnMap.ContainsKey("Umc.MembersPercentageScore"))	umc.MembersPercentageScore = Double.Parse(columns[m_columnMap["Umc.MembersPercentageScore"]]);
+					if (m_columnMap.ContainsKey("Umc.CombinedScore"))			umc.CombinedScore = Double.Parse(columns[m_columnMap["Umc.CombinedScore"]]);
 					umcList.Add(umc);
 					previousId = currentId;
 				}

@@ -140,7 +140,10 @@ namespace MultiAlignEngine
 				__int64	mlong_sum_abundance;
 				int		mint_spectral_count;
 				float	mfloat_drift_time;
-				double	mdouble_score;
+				double	mdouble_conformationFitScore;
+				double	mdouble_isotopicFitScore;
+				double	mdouble_membersPercentageScore;
+				double	mdouble_combinedScore;
 				//clsCluster *umcCluster;
 
 				bool Equals(System::Object *obj)
@@ -351,13 +354,40 @@ namespace MultiAlignEngine
 					mfloat_drift_time = value;
 				}
 
-				__property double get_Score()
+				__property double get_ConformationFitScore()
 				{
-					return mdouble_score;
+					return mdouble_conformationFitScore;
 				}
 
-				__property void set_Score(double value){
-					mdouble_score = value;
+				__property void set_ConformationFitScore(double value){
+					mdouble_conformationFitScore = value;
+				}
+
+				__property double get_IsotopicFitScore()
+				{
+					return mdouble_isotopicFitScore;
+				}
+
+				__property void set_IsotopicFitScore(double value){
+					mdouble_isotopicFitScore = value;
+				}
+
+				__property double get_MembersPercentageScore()
+				{
+					return mdouble_membersPercentageScore;
+				}
+
+				__property void set_MembersPercentageScore(double value){
+					mdouble_membersPercentageScore = value;
+				}
+
+				__property double get_CombinedScore()
+				{
+					return mdouble_combinedScore;
+				}
+
+				__property void set_CombinedScore(double value){
+					mdouble_combinedScore = value;
 				}
 		};
 	}
