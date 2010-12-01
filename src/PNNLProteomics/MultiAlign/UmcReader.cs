@@ -216,7 +216,7 @@ namespace PNNLProteomics.MultiAlign
 					if (m_columnMap.ContainsKey("Umc.MassCalibrated"))			umc.MassCalibrated = Double.Parse(columns[m_columnMap["Umc.MassCalibrated"]]);
                     if (m_columnMap.ContainsKey("Umc.AbundanceSum"))
                     {
-                        umc.AbundanceSum = Double.Parse(columns[m_columnMap["Umc.AbundanceSum"]]);
+                        umc.AbundanceSum = Int64.Parse(columns[m_columnMap["Umc.AbundanceSum"]]);
                     }
                     if (m_columnMap.ContainsKey("Umc.AbundanceMax"))
                     {

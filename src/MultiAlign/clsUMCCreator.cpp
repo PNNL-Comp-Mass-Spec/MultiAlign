@@ -282,7 +282,7 @@ namespace MultiAlignEngine
 				{
 					newUmc->mdouble_abundance				= umc.mdouble_sum_abundance; 
 				}
-				newUmc->mdouble_sum_abundance			    = umc.mdouble_sum_abundance;
+				newUmc->mlong_sum_abundance					= umc.mdouble_sum_abundance;
 				newUmc->mdouble_max_abundance			    = umc.mdouble_max_abundance;	
 				newUmc->mdouble_class_rep_mz				= System::Convert::ToDouble(umc.mdouble_class_rep_mz); 
 				newUmc->mdouble_mono_mass					= System::Convert::ToDouble(umc.mdouble_median_mono_mass); 

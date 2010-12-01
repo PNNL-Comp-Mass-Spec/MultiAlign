@@ -137,7 +137,7 @@ namespace MultiAlignEngine
 				int		mint_scan_aligned; 
 				double	mdouble_abundance; 
 				double  mdouble_max_abundance; 
-				double  mdouble_sum_abundance;
+				__int64	mlong_sum_abundance;
 				int		mint_spectral_count;
 				float	mfloat_drift_time;
 				double	mdouble_score;
@@ -324,13 +324,13 @@ namespace MultiAlignEngine
 					mdouble_max_abundance = value;
 				}
 
-				__property double get_AbundanceSum()
+				__property __int64 get_AbundanceSum()
 				{
-					return mdouble_sum_abundance;
+					return mlong_sum_abundance;
 				}
 
-				__property void set_AbundanceSum(double value){
-					mdouble_sum_abundance = value;
+				__property void set_AbundanceSum(__int64 value){
+					mlong_sum_abundance = value;
 				}
 
 				__property double get_MZForCharge()
