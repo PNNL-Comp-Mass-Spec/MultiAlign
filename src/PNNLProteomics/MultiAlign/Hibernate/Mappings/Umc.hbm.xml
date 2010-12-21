@@ -23,7 +23,7 @@
 		<property name="Scan" column="Scan_LC" type="int" not-null="false" />
 		<property name="ScanStart" column="Scan_LC_Start" type="int" not-null="false" />
 		<property name="ScanEnd" column="Scan_LC_End" type="int" not-null="false" />
-		<!--property name="ScanAligned" column="SCAN_ALIGNED" type="int" not-null="false" /-->
+		<property name="ScanAligned" column="SCAN_ALIGNED" type="int" not-null="false" />
 		<property name="ChargeRepresentative" column="Charge" type="int" not-null="false" />
 		<!--property name="ChargeMax" column="CHARGE_MAX" type="short" not-null="false" /-->
 		<!--property name="SpectralCount" column="SPECTRAL_COUNT" type="short" not-null="false" /-->
