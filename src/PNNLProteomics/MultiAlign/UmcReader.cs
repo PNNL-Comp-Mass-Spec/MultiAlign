@@ -7,6 +7,7 @@ using PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate;
 using Iesi.Collections.Generic;
 using MultiAlignEngine.Features;
 using PNNLProteomics.MultiAlign.Hibernate;
+using System.Globalization;
 
 namespace PNNLProteomics.MultiAlign
 {
@@ -225,7 +226,7 @@ namespace PNNLProteomics.MultiAlign
 					if (m_columnMap.ContainsKey("Umc.MassCalibrated"))			umc.MassCalibrated = Double.Parse(columns[m_columnMap["Umc.MassCalibrated"]]);
                     if (m_columnMap.ContainsKey("Umc.AbundanceSum"))
                     {
-                        umc.AbundanceSum = Int64.Parse(columns[m_columnMap["Umc.AbundanceSum"]]);
+                        umc.AbundanceSum = Int64.Parse(columns[m_columnMap["Umc.AbundanceSum"]], NumberStyles.AllowDecimalPoint);
                     }
                     if (m_columnMap.ContainsKey("Umc.AbundanceMax"))
                     {
