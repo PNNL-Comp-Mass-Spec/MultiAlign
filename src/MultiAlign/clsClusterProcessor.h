@@ -3,6 +3,8 @@
 #include "clsClusterOptions.h" 
 #include "SLClustering\MassTimeSLClustering.h"
 
+using namespace System::Collections::Generic;
+
 namespace MultiAlignEngine
 {
 	namespace Clustering
@@ -31,7 +33,8 @@ namespace MultiAlignEngine
 				mobjMassTimeSLClustering = __nogc new MultiAlignEngine::Clustering::MassTimeSLClustering(); 
 			}
 
-			void PerformClustering(Features::clsUMCData *umcData); 
+			void PerformClustering(Features::clsUMCData *umcData); 			
+			clsClusterData* clsClusterProcessor::PerformClustering(List<Features::clsUMC*> *features);
 
 			__property enmState get_State()
 			{

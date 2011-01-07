@@ -116,6 +116,9 @@ namespace MultiAlignEngine
 			GetStr(mstr_file_name, file_name); 
 			menm_state = LOADING;
 			
+			bool truesx;
+			truesx = false;
+
 			if (is_pek_file)
 			{
 				mstr_message = new System::String(S"Loading PEK file"); 
@@ -280,7 +283,7 @@ namespace MultiAlignEngine
 				newUmc->mdouble_abundance					= umc.mdouble_max_abundance; 
 				if (menum_abundanceReportingType == enmAbundanceReportingType::PeakArea)
 				{
-					newUmc->mdouble_abundance				= umc.mdouble_sum_abundance; 
+					newUmc->mdouble_abundance				= umc.mdouble_sum_abundance;  
 				}
 				newUmc->mlong_sum_abundance					= umc.mdouble_sum_abundance;
 				newUmc->mdouble_max_abundance			    = umc.mdouble_max_abundance;	
@@ -419,7 +422,7 @@ namespace MultiAlignEngine
 											mobjUMCFindingOptions->get_IsotopicIntensityFilter(),
 											mobjUMCFindingOptions->get_UseIsotopicFitFilter(),
 											mobjUMCFindingOptions->get_IsIsotopicFitFilterInverted(),
-											mobjUMCFindingOptions->get_UseIsotopicIntensityFilter()
+											mobjUMCFindingOptions->get_UseIsotopicIntensityFilter() 
 											); 
 		}
 		/*************************************************************************************************************

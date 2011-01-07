@@ -18,7 +18,9 @@ namespace MultiAlignEngine
 		// When Baseline dataset is umc data, then input baseline time is net
 		// When baseline dataset is mass tag database then input baseline time is avgGANET
 		[System::Serializable]
-		public __gc class clsAlignmentProcessor: public System::Runtime::Serialization::IDeserializationCallback
+		public __gc class clsAlignmentProcessor: 
+			public System::Runtime::Serialization::IDeserializationCallback,
+			public System::IDisposable
 		{
 			bool mblnAligningToMassTagDB; 
 			bool mblnMassTagDBLoaded; 
@@ -62,6 +64,7 @@ namespace MultiAlignEngine
 			void PerformNetWarp(); 
 
 		public:
+			void Dispose();
 			void OnDeserialization(System::Object* sender) 
 			{
 				// After being deserialized, set this unmanaged object
@@ -75,18 +78,25 @@ namespace MultiAlignEngine
 			double GetMassMean();
 			double GetNETMean();
 
-			void ApplyNETMassFunctionToAligneeDatasetFeatures(MultiAlignEngine::Features::clsUMCData* &umcData); 
+			void ApplyNETMassFunctionToAligneeDatasetFeatures(MultiAlignEngine::Features::clsUMCData* &umcData); 			
+			void clsAlignmentProcessor::ApplyNETMassFunctionToAligneeDatasetFeatures(List<clsUMC*>* &features);
+
 			void ApplyNETMassFunctionToAligneeDatasetFeatures(MultiAlignEngine::Features::clsClusterData* &clusterData); 
 			void SetAligneeDatasetFeatures(	MultiAlignEngine::Features::clsUMCData *umcData, 
 											int datasetIndex,																
 											classAlignmentMZBoundary* boundary);
 			
+			//TODO: Remove!
 			void SetAligneeDatasetFeatures(	MultiAlignEngine::Features::clsClusterData *clusterData,																
 											classAlignmentMZBoundary* boundary); 
+
+			void SetAligneeDatasetFeatures(  List<clsUMC*> *features, 																														
+																classAlignmentMZBoundary* boundary);
 
 			void SetReferenceDatasetFeatures(	MultiAlignEngine::Features::clsUMCData *umcData, 
 												int referenceDatasetIndex); 
 			void SetReferenceDatasetFeatures(MultiAlignEngine::MassTags::clsMassTagDB *massTagDB); 
+			void clsAlignmentProcessor::SetReferenceDatasetFeatures(List<clsUMC*>* features);
 
 
 			/*////////////////////////////////////////////////////////////////////////////////

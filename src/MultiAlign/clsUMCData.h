@@ -154,7 +154,9 @@ namespace MultiAlignEngine
 			void Clear();
 			void GetAllUMCsAsPoints(std::vector<MultiAlignEngine::Clustering::Point> &vectPoints);
 			void SetUMCClusterNums(std::vector<int> &vectClusterIndices);
+
 			void CalculateClusters(); 
+			void CalculateClusters(MultiAlignEngine::Clustering::enmClusterRepresentativeType centroidType);
 
 			System::Collections::ArrayList* GetMassAndTimeTags(int datasetIndex); 
 			System::Collections::ArrayList* GetMassAndTimeTagsFromClusters(); 

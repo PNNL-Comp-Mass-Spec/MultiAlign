@@ -3,6 +3,8 @@
 #include "clsMassTagDB.h" 
 #include "clsPeakMatchingResults.h" 
 
+using namespace System::Collections::Generic;
+
 #define CONST_DRIFT_TIME_TOLERANCE .5
 
 namespace MultiAlignEngine
@@ -40,6 +42,9 @@ namespace MultiAlignEngine
 														MassTags::clsMassTagDB *masstagDB,
 														double shiftDaltons);
 
+			clsPeakMatchingResults* clsPeakMatchingProcessor::PerformPeakMatching(	List<clsCluster*> * clusters,
+																				MassTags::clsMassTagDB *masstagDB,
+																				double shiftDaltons);
 			__property enmState get_State()
 			{
 				return menmState; 

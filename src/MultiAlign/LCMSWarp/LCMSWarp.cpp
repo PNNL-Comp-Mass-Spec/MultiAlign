@@ -1554,8 +1554,7 @@ namespace MultiAlignEngine
 				startSection = mint_num_sections-1; 
 			if (endSection >= mint_num_sections)
 				endSection = mint_num_sections-1; 
-
-			std::cerr<<"Finding linear slopes. Using start section ="<<startSection<<" and end section = "<<endSection<<std::endl; 
+		
 
 			double SumY, SumX, SumXY, SumXX, SumYY; 
 			SumY = 0; 

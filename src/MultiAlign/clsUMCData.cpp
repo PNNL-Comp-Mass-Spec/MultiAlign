@@ -570,5 +570,14 @@ namespace MultiAlignEngine
 			RemoveUMCArrayPadding(); 
 			mobjClusterData = new clsClusterData(marr_umcs); 
 		}
+		void clsUMCData::CalculateClusters(MultiAlignEngine::Clustering::enmClusterRepresentativeType centroidType)
+		{
+			if (!mblnClusterIndicesSet)
+			{
+				throw new System::ApplicationException(S"Cluster indices were not set before CalculateClusters was called"); 
+			}
+			RemoveUMCArrayPadding(); 
+			mobjClusterData = new clsClusterData(marr_umcs, centroidType); 
+		}
 	}
 }

@@ -75,6 +75,8 @@ namespace MultiAlignEngine
 			System::Collections::ArrayList* GetMassAndTimeTags(double shift); 
 
 			clsClusterData(MultiAlignEngine::Features::clsUMC *arrUmcs __gc[]);
+			clsClusterData(MultiAlignEngine::Features::clsUMC *arrUmcs __gc[], MultiAlignEngine::Clustering::enmClusterRepresentativeType centroidType);			
+
 			clsClusterData();
 			~clsClusterData(void);
 

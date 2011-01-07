@@ -13,8 +13,8 @@ namespace MultiAlignEngine
 			int    mint_scan; 
 			double mdouble_net; 
 			double mdouble_aligned_net; 
-			short  mshort_charge; 
-			short  mshort_num_dataset_members; 
+			int    mshort_charge; 
+			int    mshort_num_dataset_members; 
 			double mdouble_driftTime;
 
 			double mdouble_netError	;
@@ -97,12 +97,12 @@ namespace MultiAlignEngine
 				mint_scan = value;
 			}
 
-			__property short get_Charge()
+			__property int get_Charge()
 			{
 				return mshort_charge;
 			}
 
-			__property void set_Charge(short value){
+			__property void set_Charge(int value){
 				mshort_charge = value;
 			}
 

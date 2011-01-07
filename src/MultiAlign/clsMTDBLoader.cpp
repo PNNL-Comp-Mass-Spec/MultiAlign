@@ -20,7 +20,16 @@ namespace MultiAlignEngine
 			mint_num_mtids_total    = 0;
 			try
 			{
-				mOleconnection->Open();
+				try
+				{
+					mOleconnection->Open();
+				}
+				catch(...)
+				{
+					mstrOleConnectionStr	=  System::String::Concat(S"Provider=Microsoft.Jet.OLEDB.4.0;Data Source=",mobjMassTagDBOptions->mstr_databaseFilePath);
+					mOleconnection			= new System::Data::OleDb::OleDbConnection(mstrOleConnectionStr);
+					mOleconnection->Open();
+				}
 				menmStatus = DBConnectionStatus::Connecting; 
 
 				// 1.  create a command object identifying
@@ -261,7 +270,16 @@ namespace MultiAlignEngine
 
 			try
 			{
-				mOleconnection->Open();
+				try
+				{
+					mOleconnection->Open();
+				}
+				catch(...)
+				{
+					mstrOleConnectionStr	=  System::String::Concat(S"Provider=Microsoft.Jet.OLEDB.4.0;Data Source=",mobjMassTagDBOptions->mstr_databaseFilePath);
+					mOleconnection			= new System::Data::OleDb::OleDbConnection(mstrOleConnectionStr);
+					mOleconnection->Open();
+				}
 				menmStatus = DBConnectionStatus::Connecting; 
 
 				// 1.  create a command object identifying
@@ -302,9 +320,11 @@ namespace MultiAlignEngine
 						int id = System::Convert::ToInt32(rdr->Item[S"Mass_Tag_ID"]); 
 						System::String *refName = S"";
 						int proteinId = 0; 
-						if (rdr->Item[S"Protein_ID"] != System::DBNull::Value) 
+						//if (rdr->Item[S"Protein_ID"] != System::DBNull::Value) 
+						if (rdr->Item[S"Ref_ID"] != System::DBNull::Value) 
 						{
-							proteinId = System::Convert::ToInt32(rdr->Item[S"Protein_ID"]);
+							//proteinId = System::Convert::ToInt32(rdr->Item[S"Protein_ID"]);
+							proteinId = System::Convert::ToInt32(rdr->Item[S"Ref_ID"]);
 						}
 						if (rdr->Item[S"Reference"] != System::DBNull::Value) 
 						{
@@ -602,7 +622,7 @@ namespace MultiAlignEngine
 			mint_num_loaded = 0; 
 
 			try
-			{
+			{				
 				mconnection->Open();
 				menmStatus = DBConnectionStatus::Connecting; 
 

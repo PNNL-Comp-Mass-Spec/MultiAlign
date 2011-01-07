@@ -25,7 +25,20 @@ namespace MultiAlignEngine
 		clsAlignmentProcessor::~clsAlignmentProcessor(void)
 		{
 			if (mobjLCMSWarp != NULL)
+			{
+				mobjLCMSWarp->Clear();				
 				delete mobjLCMSWarp; 
+				mobjLCMSWarp = NULL;
+			}
+		}
+		void clsAlignmentProcessor::Dispose()
+		{
+			if (mobjLCMSWarp != NULL)
+			{
+				mobjLCMSWarp->Clear();
+				delete mobjLCMSWarp;
+				mobjLCMSWarp = NULL;
+			}
 		}
 
 		void clsAlignmentProcessor::ApplyAlignmentOptions()
@@ -105,7 +118,7 @@ namespace MultiAlignEngine
 																		vectUMCDriftTimes,
 																		mintMinReferenceDatasetScan,
 																		mintMaxReferenceDatasetScan); 
-
+							
 				umcData->SetUMCCalibratedMassedAndNETS( vectUMCIndices, 
 														vectUMCCalibratedMasses, 
 														vectUMCAlignedNETs, 
@@ -113,6 +126,66 @@ namespace MultiAlignEngine
 														vectUMCDriftTimes); 
 			}
 		}
+
+		void clsAlignmentProcessor::ApplyNETMassFunctionToAligneeDatasetFeatures(List<clsUMC*>* &features)
+		{
+			// if deserialized, lcmswarp object will be null. recreate it.
+			if (mobjLCMSWarp == 0)
+				mobjLCMSWarp = __nogc new MultiAlignEngine::Alignment::LCMSWarp(); 
+
+			mintPercentDone = 0; 
+			std::vector<int>	umcIndices; 
+			std::vector<double> umcCalibratedMasses; 
+			std::vector<double> umcAlignedNETs; 
+			std::vector<int>	umcAlignedScans; 
+			std::vector<double>	umcDriftTimes; 
+
+			if (mblnAligningToMassTagDB)
+			{
+				mobjLCMSWarp->GetFeatureCalibratedMassesAndAlignedNETs( umcIndices,
+																		umcCalibratedMasses, 
+																		umcAlignedNETs,
+																		umcDriftTimes); 				
+				int numUMCs = (int) umcIndices.size(); 
+				for (int umcNum = 0; umcNum < numUMCs; umcNum++)
+				{
+					int		umcIndex		= umcIndices[umcNum]; 
+					double	calibratedMass	= umcCalibratedMasses[umcNum]; 
+					double	alignedNET		= umcAlignedNETs[umcNum]; 
+					double	driftTime		= umcDriftTimes[umcNum];
+					features->Item[umcIndex]->mdouble_mono_mass_calibrated	= calibratedMass; 
+					features->Item[umcIndex]->mdouble_net					= alignedNET;
+					features->Item[umcIndex]->mfloat_drift_time				= driftTime;
+				}					
+			}
+			else
+			{
+				mobjLCMSWarp->GetFeatureCalibratedMassesAndAlignedNETs( umcIndices, 
+																		umcCalibratedMasses, 
+																		umcAlignedNETs,
+																		umcAlignedScans, 
+																		umcDriftTimes,
+																		mintMinReferenceDatasetScan,
+																		mintMaxReferenceDatasetScan); 
+
+				
+				int numUMCs = (int) umcIndices.size(); 
+				for (int umcNum = 0; umcNum < numUMCs; umcNum++)
+				{
+					int		umcIndex		= umcIndices[umcNum]; 
+					double	calibratedMass	= umcCalibratedMasses[umcNum]; 
+					double	alignedNET		= umcAlignedNETs[umcNum]; 
+					int		alignedScan		= umcAlignedScans[umcNum]; 
+					double	driftTime		= umcDriftTimes[umcNum];
+					features->Item[umcIndex]->mdouble_mono_mass_calibrated	= calibratedMass; 
+					features->Item[umcIndex]->mdouble_net					= alignedNET;
+					features->Item[umcIndex]->mint_scan_aligned				= alignedScan;
+					features->Item[umcIndex]->mfloat_drift_time				= driftTime;
+
+				}				
+			}
+		}
+
 
 		/*///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
@@ -125,6 +198,68 @@ namespace MultiAlignEngine
 				return (mz < boundary->HighBoundary && mz >= boundary->LowBoundary);				
 			}
 			return true;
+		}
+		/*////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			Function: Set Alignee Features 
+			Description:
+				For a given dataset of UMC's.  Set the alignee (who we are warping to the baseline) features.
+				Above boundary will determine if we should allow features above the m/z range or below if the 
+				splitMZBoundary flag is set in the alignment options to true				
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+		void clsAlignmentProcessor::SetAligneeDatasetFeatures(  List<clsUMC*> *features, 																														
+																classAlignmentMZBoundary* boundary)
+		{
+			mintPercentDone		= 0; 
+			mblnClusterAlignee	= false;
+			int numPts			= features->Count;
+
+			std::vector<MultiAlignEngine::Alignment::MassTimeFeature> vectMassTimeFeatures;
+			vectMassTimeFeatures.reserve(numPts); 
+
+			mintMinAligneeDatasetScan = INT_MAX; 
+			mintMaxAligneeDatasetScan = INT_MIN; 
+			mdblMinAligneeDatasetMZ   = DBL_MAX; 
+			mdblMaxAligneeDatasetMZ   = -1 * DBL_MAX; 
+			
+			MultiAlignEngine::Alignment::MassTimeFeature ms_feature; 
+			for (int index = 0; index < numPts; index++)
+			{
+				mintPercentDone							= (index *100)/numPts; 
+				MultiAlignEngine::Features::clsUMC *umc = features->Item[index]; 
+				ms_feature.mdouble_mono_mass			= umc->mdouble_mono_mass; 
+				ms_feature.mdouble_mono_mass_calibrated = umc->mdouble_mono_mass_calibrated; 
+				ms_feature.mdouble_mono_mass_original	= umc->mdouble_mono_mass; 
+				ms_feature.mdouble_net					= (double) umc->mint_scan; 
+
+				/*
+					See if we want to split the alignment at some given m/z range.  If so then make sure that we do 
+				*/				
+				ms_feature.mdouble_mz					= umc->mdouble_class_rep_mz; 
+				ms_feature.mdouble_abundance			= umc->mdouble_abundance;
+				ms_feature.mint_id						= umc->mint_umc_index; 
+				ms_feature.mdouble_driftTime			= umc->mfloat_drift_time;
+
+				/*
+					Only allow the feature to be aligned if we are splitting the alignment in m/z 
+					and then if we are within the boundary the user specified.
+				*/
+				if (ValidateAlignmentBoundary(	mobjAlignmentOptions->SplitAlignmentInMZ,
+												ms_feature.mdouble_mz,
+												boundary))
+				{
+					vectMassTimeFeatures.push_back(ms_feature); 
+
+					if (umc->mint_scan > mintMaxAligneeDatasetScan)
+						mintMaxAligneeDatasetScan	= umc->mint_scan; 
+					if (umc->mint_scan < mintMinAligneeDatasetScan)
+						mintMinAligneeDatasetScan	= umc->mint_scan; 
+					if (umc->mdouble_class_rep_mz > mdblMaxAligneeDatasetMZ)
+						mdblMaxAligneeDatasetMZ		= umc->mdouble_class_rep_mz; 
+					if (umc->mdouble_class_rep_mz < mdblMinAligneeDatasetMZ)
+						mdblMinAligneeDatasetMZ		= umc->mdouble_class_rep_mz; 
+				}
+			}
+			mobjLCMSWarp->SetFeatures(vectMassTimeFeatures); 
 		}
 		/*////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			Function: Set Alignee Features 
@@ -276,6 +411,47 @@ namespace MultiAlignEngine
 				ms_feature.mdouble_abundance = umc->mdouble_abundance;
 				ms_feature.mdouble_driftTime = umc->mfloat_drift_time;
 				ms_feature.mint_id = umc->mint_umc_index; 
+				vectMassTimeFeatures.push_back(ms_feature); 
+				if (umc->mint_scan > mintMaxReferenceDatasetScan)
+					mintMaxReferenceDatasetScan = umc->mint_scan; 
+				if (umc->mint_scan < mintMinReferenceDatasetScan)
+					mintMinReferenceDatasetScan = umc->mint_scan; 
+				if (umc->mdouble_class_rep_mz > mdblMaxAligneeDatasetMZ)
+					mdblMaxAligneeDatasetMZ = umc->mdouble_class_rep_mz; 
+				if (umc->mdouble_class_rep_mz < mdblMinAligneeDatasetMZ)
+					mdblMinAligneeDatasetMZ = umc->mdouble_class_rep_mz; 
+			}
+			mobjLCMSWarp->SetReferenceFeatures(vectMassTimeFeatures); 
+		}
+
+		void clsAlignmentProcessor::SetReferenceDatasetFeatures(List<clsUMC*>* features)			
+		{
+			mblnAligningToMassTagDB = false; 
+			mblnMassTagDBLoaded		= false; 
+			mintPercentDone			= 0; 
+			
+			int numPts = features->Count; 
+
+			std::vector<MultiAlignEngine::Alignment::MassTimeFeature> vectMassTimeFeatures;
+			vectMassTimeFeatures.reserve(numPts); 
+
+			mintMinReferenceDatasetScan = INT_MAX; 
+			mintMaxReferenceDatasetScan = INT_MIN; 
+
+			MultiAlignEngine::Alignment::MassTimeFeature ms_feature; 
+			for (int index = 0; index < numPts; index++)
+			{
+				mintPercentDone = (index *100)/numPts; 
+				MultiAlignEngine::Features::clsUMC *umc = features->Item[index]; 
+				ms_feature.mdouble_mono_mass			= umc->mdouble_mono_mass ; 
+				ms_feature.mdouble_mono_mass_calibrated = umc->mdouble_mono_mass_calibrated; 
+				ms_feature.mdouble_mono_mass_original	= umc->mdouble_mono_mass  ; 
+				ms_feature.mdouble_net					= umc->mdouble_net; 
+				ms_feature.mdouble_mz					= umc->mdouble_class_rep_mz; 
+				ms_feature.mdouble_abundance			= umc->mdouble_abundance;
+				ms_feature.mdouble_driftTime			= umc->mfloat_drift_time;
+				ms_feature.mint_id						= umc->mint_umc_index; 
+
 				vectMassTimeFeatures.push_back(ms_feature); 
 				if (umc->mint_scan > mintMaxReferenceDatasetScan)
 					mintMaxReferenceDatasetScan = umc->mint_scan; 
