@@ -137,7 +137,7 @@ namespace PNNLControls
 
         public override void AddSeries(clsSeries series)
         {
-            FindExtrema(series);
+            //FindExtrema(series);
             base.AddSeries(series);
         }
 
@@ -187,7 +187,7 @@ namespace PNNLControls
 				float dataX = dataPoint.x;
 				float dataY = dataPoint.y;
                 
-                if (mobj_filterX.Filter(dataX) && mobj_filterY.Filter(dataY))
+                //if (mobj_filterX.Filter(dataX) && mobj_filterY.Filter(dataY))
                 {
 			        // translate dataX and dataY into bitmap offset x and y from the 
 			        // upper left corner
