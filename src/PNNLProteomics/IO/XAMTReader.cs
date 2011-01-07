@@ -84,8 +84,7 @@ namespace PNNLProteomics.IO
         /// <returns></returns>
         private clsMassTag ParseLine(string line)
         {
-            string[] data = line.Split(CONST_CHAR_DELIMITER);
-            int i = 0;
+            string[] data = line.Split(CONST_CHAR_DELIMITER);           
 
             clsMassTag tag      = new clsMassTag();
             tag.Id              = Convert.ToInt32(data[m_headerDictionary[CONST_MASS_TAG_ID]]);

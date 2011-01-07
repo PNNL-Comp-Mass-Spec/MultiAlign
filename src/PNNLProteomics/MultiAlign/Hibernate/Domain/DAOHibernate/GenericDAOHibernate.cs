@@ -44,7 +44,7 @@ namespace PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate
             if (m_session == null || !m_session.IsOpen)
             {
 				m_session = NHibernateUtil.OpenSession();
-            }
+            }            
             return m_session;
         }
 

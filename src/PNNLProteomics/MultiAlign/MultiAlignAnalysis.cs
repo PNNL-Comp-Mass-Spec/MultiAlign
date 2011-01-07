@@ -65,8 +65,6 @@ namespace PNNLProteomics.Data.Analysis
         /// Constant of the first level
         /// </summary>
         private const int CONST_FIRST_LEVEL = 0;
-
-
         
         #region Enumerations
         public enum enmState
@@ -709,7 +707,8 @@ namespace PNNLProteomics.Data.Analysis
 		public  void  AlignDataset(int datasetIndex)
 		{
 			menmState                               = enmState.ALIGNING ; 
-			clsAlignmentOptions alignmentOptions    = marrDatasetAlignmentOptions[datasetIndex] as clsAlignmentOptions; 			
+			clsAlignmentOptions alignmentOptions    = marrDatasetAlignmentOptions[datasetIndex] as clsAlignmentOptions;
+            mobjAlignmentProcessor = new MultiAlignEngine.Alignment.clsAlignmentProcessor(); 
             mobjAlignmentProcessor.AlignmentOptions = alignmentOptions ; 
 
 			int minScanRef = 0;
@@ -1320,6 +1319,7 @@ namespace PNNLProteomics.Data.Analysis
                 cluster.mdouble_mass_calibrated = umc.MassCalibrated;
                 cluster.mdouble_mass            = umc.Mass;
                 cluster.mdouble_net             = umc.Net;
+                cluster.mdouble_aligned_net     = umc.Net;               
                 cluster.mshort_charge           = umc.mshort_class_rep_charge;
                 cluster.mint_scan               = umc.ScanAligned;
 
@@ -1351,7 +1351,7 @@ namespace PNNLProteomics.Data.Analysis
             {
                 StatusMessage(0, "Performing Clustering of data points");
             }
-            if (Datasets.Count > 0)
+            if (Datasets.Count > 1)
             {
                 mobjClusterProcessor.PerformClustering(mobjUMCData);
             }
@@ -1666,6 +1666,164 @@ namespace PNNLProteomics.Data.Analysis
                 throw new Exception("Could not complete the analysis.");
         }
 
+        /// <summary>
+        /// Performs the Analysis and caches the alignment data
+        /// </summary>
+        /// <param name="cacheAlignmentData"></param>
+        private void PerformAnalysis(bool cacheAlignmentData)
+        {
+            try
+            {
+                mbool_processing        = true;
+                string massTagDBName    = MassTagDBOptions.mstrDatabase;
+
+                /// /////////////////////////////////////////////////////////
+                /// Create a list of steps to complete            
+                ///     Here are the list of steps to perform
+                ///         1.  Load MTDB*
+                ///         2.  Load Data 
+                ///         3.  Align
+                ///         4.  Cluster
+                ///         5.  Peak Match*
+                ///         6.  Save Data to file.
+                /// /////////////////////////////////////////////////////////
+                List<string> listSteps = new List<string>();
+                string stepLoadMTDB = "Load MTDB";
+                string stepLoadData = "Load Datasets";
+                string stepAlignment = "Align";
+                string stepCluster = "Cluster";
+                string stepPeakMatch = "Peak Match";
+                string stepSave = "Save";
+                listSteps.AddRange(new string[] { stepLoadData, stepAlignment, stepCluster });
+
+                /// 
+                /// Determine what steps to run
+                /// 
+                if (MassTagDBOptions.menm_databaseType != MultiAlignEngine.MassTags.MassTagDatabaseType.None)
+                {
+                    listSteps.Add(stepPeakMatch);
+                }
+                if (massTagDBName != null && massTagDBName != "" ||
+                    MassTagDBOptions.menm_databaseType == MultiAlignEngine.MassTags.MassTagDatabaseType.ACCESS)
+                {
+                    listSteps.Insert(0, stepLoadMTDB);
+                }
+                listSteps.Add(stepSave);
+
+                /// 
+                /// Tell the listener what we are going to do.
+                /// 
+                if (ListOfSteps != null)
+                    ListOfSteps(this, listSteps);
+
+
+                /// ////////////////////////////////////////////// 
+                /// Part One: 
+                ///     Load Mass Tag Database 
+                /// //////////////////////////////////////////////    
+                mint_statusLevel = CONST_FIRST_LEVEL;
+                if (massTagDBName != null && massTagDBName != "" ||
+                    MassTagDBOptions.menm_databaseType == MultiAlignEngine.MassTags.MassTagDatabaseType.ACCESS)
+                {
+                    if (CurrentStep != null)
+                        CurrentStep(listSteps.IndexOf(stepLoadMTDB), stepLoadData);
+                    LoadMassTagDB();
+                }
+
+                /// ////////////////////////////////////////////// 
+                /// Part Two:
+                ///     Loading Data
+                /// ////////////////////////////////////////////// 
+                mint_statusLevel = CONST_FIRST_LEVEL;
+                if (CurrentStep != null)
+                    CurrentStep(listSteps.IndexOf(stepLoadData), stepLoadData);
+                LoadData();
+
+                if (menmState == enmState.ERROR)
+                    throw new Exception("There was an error loading the data.  Cannot complete the analysis.");
+
+                /// ////////////////////////////////////////////// 
+                /// Part Three:
+                ///     Setting alignment options
+                /// //////////////////////////////////////////////             
+                if (BaselineDataset != null)
+                {
+                    DefaultAlignmentOptions.AlignmentBaselineName = BaselineDataset;
+                    DefaultAlignmentOptions.IsAlignmentBaselineAMasstagDB = false;
+                }
+                else
+                {
+                    DefaultAlignmentOptions.AlignmentBaselineName = massTagDBName;
+                    DefaultAlignmentOptions.IsAlignmentBaselineAMasstagDB = true;
+                    UseMassTagDBAsBaseline = true;
+                }
+                mint_statusLevel = CONST_FIRST_LEVEL;
+                if (CurrentStep != null)
+                    CurrentStep(listSteps.IndexOf(stepAlignment), stepAlignment);
+                SetDefaultAlignmentOptions();
+
+
+                /// ////////////////////////////////////////////// 
+                /// Part Four:
+                ///     Alignment
+                /// ////////////////////////////////////////////// 
+                mint_statusLevel = CONST_FIRST_LEVEL;
+                AlignDatasets();
+
+
+                /// ////////////////////////////////////////////// 
+                /// Part Four:
+                ///         Clustering 
+                /// ////////////////////////////////////////////// 
+                mint_statusLevel = CONST_FIRST_LEVEL;
+                if (CurrentStep != null)
+                    CurrentStep(listSteps.IndexOf(stepCluster), stepCluster);
+                PerformClustering();
+
+
+
+                /// ////////////////////////////////////////////// 
+                /// Part Five:
+                ///     Perform Peak Matching
+                /// ////////////////////////////////////////////// 
+                mint_statusLevel = CONST_FIRST_LEVEL;
+                if (MassTagDBOptions.menm_databaseType != MultiAlignEngine.MassTags.MassTagDatabaseType.None)
+                {
+                    if (CurrentStep != null)
+                        CurrentStep(listSteps.IndexOf(stepPeakMatch), stepPeakMatch);
+                    /// 
+                    /// Run the peak matching steps and scoring
+                    /// 
+                    PerformPeakMatching();
+                }
+
+                /// ////////////////////////////////////////////// 
+                /// Part Six:
+                ///     Serialize the analysis to file.
+                /// ////////////////////////////////////////////// 
+                mint_statusLevel = CONST_FIRST_LEVEL;
+                if (CurrentStep != null)
+                    CurrentStep(listSteps.IndexOf(stepSave), stepSave);
+
+
+                if (AnalysisComplete != null)
+                    AnalysisComplete(this);
+
+                /// 
+                /// Tell the user that processing is complete
+                /// 
+                mbool_processing = false;
+            }
+            catch (ThreadAbortException) //abortEx)
+            {
+                // We dont care about this exception.            
+            }
+            catch (System.Exception ex)
+            {
+                if (AnalysisException != null)
+                    AnalysisException(this, new ExceptionArgs(ex));
+            }
+        }
 
         /// <summary>
         /// Starts the main analysis.
@@ -1880,13 +2038,17 @@ namespace PNNLProteomics.Data.Analysis
             }
         }
         /// <summary>
-        /// Gets the SMART results calculated.
+        /// Gets or sets the SMART results calculated.
         /// </summary>
         public classSMARTResults SMARTResults
         {
             get
             {
                 return mobj_smartResults;
+            }
+            set
+            {
+                mobj_smartResults = value;
             }
         }
         /// <summary>
@@ -2104,6 +2266,10 @@ namespace PNNLProteomics.Data.Analysis
 			{
 				return mobjPeakMatchingResults ; 
 			}
+            set
+            {
+                mobjPeakMatchingResults = value;
+            }
         }
         /// <summary>
         /// Gets the peak matching results from the 11 Da shift.
@@ -2113,6 +2279,10 @@ namespace PNNLProteomics.Data.Analysis
             get
             {
                 return mobj_shiftedPeakMatchingResults;
+            }
+            set
+            {
+                mobj_shiftedPeakMatchingResults = value;
             }
         }	
         /// <summary>
@@ -2131,6 +2301,10 @@ namespace PNNLProteomics.Data.Analysis
             get
             {
                 return mobjMassTagDB;
+            }
+            set
+            {
+                mobjMassTagDB = value;
             }
         }
 		#endregion

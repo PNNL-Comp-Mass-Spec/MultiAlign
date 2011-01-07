@@ -23,6 +23,7 @@ namespace PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate
             ICriterion criterion = Expression.Eq("Mass", mass);
             List<ICriterion> criterionList = new List<ICriterion>();
             criterionList.Add(criterion);
+            
             return FindByCriteria(criterionList);
         }
 
@@ -50,7 +51,38 @@ namespace PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate
 
             return FindByCriteria(criterionList);
         }
+        /// <summary>
+        /// Finds a feature based on a feature id.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public clsUMC FindByFeatureID(int id)
+        {
+            ICriterion criterion = Expression.Eq("Id", id);
+            List<ICriterion> criterionList = new List<ICriterion>();
+            criterionList.Add(criterion);
+            List<clsUMC> umcs = FindByCriteria(criterionList);
+            if (umcs.Count < 1)
+                return null;
 
+            return umcs[0];
+        }
+        /// <summary>
+        /// Finds a feature based on a feature id.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public clsUMC FindByClusterID(int id)
+        {
+            ICriterion criterion = Expression.Eq("ClusterId", id);
+            List<ICriterion> criterionList = new List<ICriterion>();
+            criterionList.Add(criterion);
+            List<clsUMC> umcs = FindByCriteria(criterionList);
+            if (umcs.Count < 1)
+                return null;
+
+            return umcs[0];
+        }
 		/// <summary>
 		/// Searches for and returns a List of Umc Objects in the Database that have the exact Dataset Id given.
 		/// </summary>

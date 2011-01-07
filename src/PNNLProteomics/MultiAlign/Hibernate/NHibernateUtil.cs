@@ -15,7 +15,7 @@ namespace PNNLProteomics.MultiAlign.Hibernate
     /// To create a session, Hibernate will need to be configured.
     /// In the case of this class, we are using a Hibernate Configuration file.
     /// </summary>
-    public class NHibernateUtil
+    public static class NHibernateUtil
     {
 		private static String m_dbLocation = null;
 		private static Configuration configuration; 
@@ -26,7 +26,7 @@ namespace PNNLProteomics.MultiAlign.Hibernate
 		/// </summary>
 		static NHibernateUtil()
 		{
-			configuration = new Configuration();
+			configuration = new Configuration();            
 			configuration.Configure();
 			configuration.AddAssembly(typeof(NHibernateUtil).Assembly);
 		}
@@ -39,6 +39,14 @@ namespace PNNLProteomics.MultiAlign.Hibernate
 		{
 			return SessionFactory.OpenSession();
 		}
+
+        /// <summary>
+        /// Closes a session.
+        /// </summary>
+        public static void CloseSession()
+        {
+            SessionFactory.Close();
+        }
 
 		/// <summary>
 		/// Creates a SQLite database based on the hibernate config file.
@@ -145,6 +153,15 @@ namespace PNNLProteomics.MultiAlign.Hibernate
 			configuration.SetProperty("connection.connection_string", "Data Source=" + dbLocation + ";Version=3");
 		}
 
+
+        #region IDisposable Members
+
+        public static void Dispose()
+        {            
+            NHibernateUtil.SessionFactory.Dispose();
+        }
+
+        #endregion
     }
 
 }

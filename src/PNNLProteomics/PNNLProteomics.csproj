@@ -27,22 +27,6 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release_32Bit|AnyCPU' ">
-    <OutputPath>bin\Release_32Bit\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release_64Bit|AnyCPU' ">
-    <OutputPath>bin\Release_64Bit\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-  </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\x86\Debug\</OutputPath>
@@ -59,22 +43,6 @@
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release_32Bit|x86' ">
-    <OutputPath>bin\x86\Release_32Bit\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release_64Bit|x86' ">
-    <OutputPath>bin\x86\Release_64Bit\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-  </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\x64\Debug\</OutputPath>
@@ -85,22 +53,6 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
     <OutputPath>bin\x64\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release_32Bit|x64' ">
-    <OutputPath>bin\x64\Release_32Bit\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release_64Bit|x64' ">
-    <OutputPath>bin\x64\Release_64Bit\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
@@ -168,9 +120,17 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\log4net.dll</HintPath>
     </Reference>
+    <Reference Include="MammothLibrary, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\MammothLibrary.dll</HintPath>
+    </Reference>
     <Reference Include="NHibernate, Version=2.1.1.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\NHibernate.dll</HintPath>
+    </Reference>
+    <Reference Include="PNNLOmics, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\PNNLOMICS\x86\PNNLOmics.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -190,9 +150,28 @@
     <Compile Include="Filters\UMCClusterFilters.cs" />
     <Compile Include="Filters\UMCFilters.cs" />
     <Compile Include="ICloneable.cs" />
+    <Compile Include="IO\AnalysisAbundanceTableWriter.cs" />
+    <Compile Include="IO\AnalysisAlignmentDataWriter.cs" />
+    <Compile Include="IO\AnalysisDatasetUMCWriter.cs" />
+    <Compile Include="IO\AnalysisBinaryReader.cs" />
+    <Compile Include="IO\AnalysisBinaryWriter.cs" />
+    <Compile Include="IO\AnalysisLogWriter.cs" />
+    <Compile Include="IO\AnalysisSQLiteDBWriter.cs" />
+    <Compile Include="IO\AnalysisTableWriter.cs" />
+    <Compile Include="IO\DatabaseDatasetIDLoader.cs" />
+    <Compile Include="IO\DatabaseDatasetLoader.cs" />
+    <Compile Include="IO\DatasetDownloader.cs" />
+    <Compile Include="IO\DelegatesLoading.cs" />
+    <Compile Include="IO\DiskDatasetLoader.cs" />
+    <Compile Include="IO\DMSDatasetSearchOptions.cs" />
+    <Compile Include="IO\FileCopyEventArgs.cs" />
+    <Compile Include="IO\IAnalysisWriter.cs" />
     <Compile Include="IO\IMultiAlignAnalysisReader.cs" />
     <Compile Include="IO\IMultiAlignAnalysisWriter.cs" />
     <Compile Include="IO\IOProgressEventArgs.cs" />
+    <Compile Include="IO\MultiAlignParameterIniFileReader.cs" />
+    <Compile Include="IO\MultiAlignParameterIniFileWriter.cs" />
+    <Compile Include="IO\TableWriterColumnOptions.cs" />
     <Compile Include="IO\XAMTReader.cs" />
     <Compile Include="MultiAlign\Hibernate\Domain\DAOHibernate\FactorDAOHibernate.cs" />
     <Compile Include="MultiAlign\Hibernate\Domain\DAOHibernate\DatasetDAOHibernate.cs" />
@@ -235,6 +214,8 @@
     <Compile Include="MultiAlign\Hibernate\Domain\DAO\IUmcDAO.cs" />
     <Compile Include="MultiAlign\Hibernate\Domain\DAOHibernate\UmcDAOHibernate.cs" />
     <Compile Include="MultiAlign\Hibernate\NHibernateUtil.cs" />
+    <Compile Include="MultiAlign\MultiAlignAnalysisDelegates.cs" />
+    <Compile Include="MultiAlign\MultiAlignAnalysisProcessor.cs" />
     <Compile Include="MultiAlign\UmcReader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -243,12 +224,6 @@
     <EmbeddedResource Include="MultiAlign\Hibernate\Mappings\Protein.hbm.xml" />
     <EmbeddedResource Include="MultiAlign\Hibernate\Mappings\Umc.hbm.xml" />
     <EmbeddedResource Include="MultiAlign\Hibernate\Mappings\UmcCluster.hbm.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\MultiAlign\MultiAlign.vcproj">
-      <Project>{5A7E3D3C-03F3-4586-8A2C-BAE1EBA4623E}</Project>
-      <Name>MultiAlignEngine</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="hibernate.cfg.xml">
@@ -261,6 +236,12 @@
     <EmbeddedResource Include="MultiAlign\Hibernate\Mappings\MassTagToProteinMap.hbm.xml" />
     <EmbeddedResource Include="MultiAlign\Hibernate\Mappings\ClusterToMassTagMap.hbm.xml" />
     <EmbeddedResource Include="MultiAlign\Hibernate\Mappings\MSFeature.hbm.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MultiAlign\MultiAlign.vcproj">
+      <Project>{5A7E3D3C-03F3-4586-8A2C-BAE1EBA4623E}</Project>
+      <Name>MultiAlignEngine</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

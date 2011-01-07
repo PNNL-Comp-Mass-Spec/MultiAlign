@@ -4,7 +4,7 @@
                    namespace="MultiAlignEngine.Features">
 
 	<class name="clsCluster" table="T_Clusters" lazy="false">
-		<id name="Id" column="Cluster_ID" type="integer">
+		<id name="Id" column="Cluster_ID" type="int">
 			<generator class="increment" />
 		</id>
 		<property name="Mass" column="Mass" type="double" not-null="false" />
