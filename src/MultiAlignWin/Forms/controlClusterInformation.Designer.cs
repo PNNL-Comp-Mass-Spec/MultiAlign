@@ -53,7 +53,7 @@ namespace MultiAlignWin.Forms
             this.label5 = new System.Windows.Forms.Label();
             this.mpictureBox_scoreHistograms = new System.Windows.Forms.PictureBox();
             this.mpictureBox_SMARTScoreHistogram = new System.Windows.Forms.PictureBox();
-            this.label6 = new System.Windows.Forms.Label();
+            this.mlabel_stacScoreHistogram = new System.Windows.Forms.Label();
             this.mpictureBox_clusterSizeHistogram = new System.Windows.Forms.PictureBox();
             this.label7 = new System.Windows.Forms.Label();
             this.mpictureBox_unidentifiedScatterPlot = new System.Windows.Forms.PictureBox();
@@ -318,15 +318,15 @@ namespace MultiAlignWin.Forms
             this.mpictureBox_SMARTScoreHistogram.TabStop = false;
             this.mpictureBox_SMARTScoreHistogram.Click += new System.EventHandler(this.mpictureBox_SMARTScoreHistogram_Click);
             // 
-            // label6
+            // mlabel_stacScoreHistogram
             // 
-            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(382, 50);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(118, 30);
-            this.label6.TabIndex = 52;
-            this.label6.Text = "STAC Score Histogram";
-            this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.mlabel_stacScoreHistogram.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.mlabel_stacScoreHistogram.Location = new System.Drawing.Point(382, 50);
+            this.mlabel_stacScoreHistogram.Name = "mlabel_stacScoreHistogram";
+            this.mlabel_stacScoreHistogram.Size = new System.Drawing.Size(118, 30);
+            this.mlabel_stacScoreHistogram.TabIndex = 52;
+            this.mlabel_stacScoreHistogram.Text = "STAC Score Histogram";
+            this.mlabel_stacScoreHistogram.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // mpictureBox_clusterSizeHistogram
             // 
@@ -448,7 +448,7 @@ namespace MultiAlignWin.Forms
             this.m_peakMatchingPanel.Controls.Add(this.label1);
             this.m_peakMatchingPanel.Controls.Add(this.label11);
             this.m_peakMatchingPanel.Controls.Add(this.mpictureBox_peakMatchingResiduals);
-            this.m_peakMatchingPanel.Controls.Add(this.label6);
+            this.m_peakMatchingPanel.Controls.Add(this.mlabel_stacScoreHistogram);
             this.m_peakMatchingPanel.Controls.Add(this.mpictureBox_SMARTScoreHistogram);
             this.m_peakMatchingPanel.Controls.Add(this.label8);
             this.m_peakMatchingPanel.Controls.Add(this.mpictureBox_unidentifiedScatterPlot);
@@ -504,6 +504,7 @@ namespace MultiAlignWin.Forms
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.White;
             this.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.Controls.Add(this.m_peakMatchingPanel);
@@ -561,7 +562,7 @@ namespace MultiAlignWin.Forms
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.PictureBox mpictureBox_scoreHistograms;
         private System.Windows.Forms.PictureBox mpictureBox_SMARTScoreHistogram;
-        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label mlabel_stacScoreHistogram;
         private System.Windows.Forms.PictureBox mpictureBox_clusterSizeHistogram;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.PictureBox mpictureBox_unidentifiedScatterPlot;

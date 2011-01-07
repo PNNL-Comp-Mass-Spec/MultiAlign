@@ -45,7 +45,6 @@ using PNNLProteomics.EventModel;
 using PNNLProteomics.Data.Analysis;
 using PNNLProteomics.SMART;
 
-using MultiAlignWin.IO;
 using MultiAlignWin.Forms.Parameters;
 
 namespace MultiAlignWin
@@ -926,13 +925,14 @@ namespace MultiAlignWin
             /// Log the data by first constructing the path to the analysis output log.
             /// 
             try
-            {
-                string path = Path.GetDirectoryName(m_analysis.PathName);
-                path        = Path.Combine(path, m_analysis.AnalysisName + ".log");
-                AnalysisLogWriter.WriteMessage(path, statusLevel, message);
+            {                
+                string analysisPath  = Path.Combine(Path.GetDirectoryName(m_analysis.PathName), m_analysis.AnalysisName);
+                analysisPath         = Path.Combine(analysisPath, m_analysis.AnalysisName + ".log");
+                AnalysisLogWriter.WriteMessage(analysisPath, statusLevel, message);
             }
             catch
             {
+                //PASS
             }
         }
 		#endregion		 
@@ -1292,8 +1292,8 @@ namespace MultiAlignWin
             else
             {
                 // Make sure we have something to align to.
-                if (!m_analysis.PeakMatchedToMassTagDB)
-                    throw new Exception("The baseline dataset or MTDB has not been set.");
+                if (!m_analysis.UseMassTagDBAsBaseline)
+                    throw new Exception("The mass tag database (MTDB) was not selected.");
 
                 m_analysis.BaselineDataset = null;
             }

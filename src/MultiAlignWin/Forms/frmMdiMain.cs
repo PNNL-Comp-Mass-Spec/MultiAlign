@@ -26,7 +26,6 @@ using System.ComponentModel;
 using System.Collections.Generic;
 
 using PNNLProteomics.IO;
-using MultiAlignWin.IO;
 using MultiAlignWin.Diagnostics;
 using PNNLProteomics.Data.Analysis;
 

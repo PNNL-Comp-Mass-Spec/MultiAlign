@@ -10,12 +10,13 @@ using System.Collections.Generic;
 
 using MultiAlignEngine;
 using PNNLControls;
+using PNNLProteomics.IO;
 using PNNLProteomics.Data;
 
 using MultiAlignWin.Forms;
 using MultiAlignWin.Network;
 
-using MultiAlignWin.IO;
+
 
 
 namespace MultiAlignWin

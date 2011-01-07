@@ -14,8 +14,6 @@ using MultiAlignEngine.Alignment;
 using MultiAlignEngine.Clustering;
 using MultiAlignEngine.PeakMatching;
 
-using MultiAlignEngine.Features;
-
 using PNNLProteomics.SMART;
 using PNNLProteomics.Data.Analysis;
 using PNNLProteomics.Data.Alignment;
@@ -773,11 +771,7 @@ namespace MultiAlignWin.Drawing
                                                             bool aligned,
                                                             int chargeStates)
         {
-            ctlClusterChart chart = new ctlClusterChart(analysis, datasetNum);
-            chart.AddDatasetToOverlapChart(analysis,
-                                            datasetNum,
-                                            true, 
-                                            chargeStates);                           
+            ctlClusterChart chart = new ctlClusterChart(analysis, datasetNum);            
             return chart;
         }
         #endregion
@@ -1557,12 +1551,7 @@ namespace MultiAlignWin.Drawing
                         sizeList.Add(Convert.ToSingle(cluster.mshort_num_dataset_members));
                     }
                 }
-                medianScoreList.Add(1.0F);
-                medianScoreList.Add(.0F);
-                meanScoreList.Add(1.0F);
-                meanScoreList.Add(.0F);
-                sizeList.Add(8);
-                sizeList.Add(8);
+                
                 float[] meanScores      = new float[meanScoreList.Count];
                 float[] medianScores    = new float[meanScoreList.Count];
                 float[] sizes           = new float[meanScoreList.Count];

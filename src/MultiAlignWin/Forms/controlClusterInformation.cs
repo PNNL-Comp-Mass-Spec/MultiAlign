@@ -101,6 +101,14 @@ namespace MultiAlignWin.Forms
                 m_alignmentPanel.BringToFront();
             }
 
+            if (!mobj_analysis.UseSMART)
+            {
+                mpictureBox_SMARTScoreHistogram.Visible = false;
+                mpictureBox_SMARTScoreHistogram.Enabled = false;
+                mlabel_stacScoreHistogram.Visible = false;
+                mlabel_stacScoreHistogram.Enabled = false;
+            }
+
             m_clusterPanel.SendToBack();
 
             ResumeLayout();

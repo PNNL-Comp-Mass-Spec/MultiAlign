@@ -11,8 +11,8 @@ using MultiAlignEngine;
 using PNNLControls;
 using PNNLProteomics.Data;
 
+using PNNLProteomics.IO;
 
-using MultiAlignWin.IO;
 using MultiAlignWin.Forms;
 using MultiAlignEngine.Features;
 using MultiAlignEngine.Alignment;
@@ -86,6 +86,7 @@ namespace MultiAlignWin
         /// Preview rendering thread.
         /// </summary>
         private Thread mobj_datasetRenderThread;
+        private ToolStripSeparator toolStripSeparator1;
         private Thread mobj_clusterRenderThread;
         #endregion 
 
@@ -310,6 +311,7 @@ namespace MultiAlignWin
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.mlabel_rows = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.panelCharts.SuspendLayout();
             this.mtabcontrol_data.SuspendLayout();
             this.mtabPage_analysisInformation.SuspendLayout();
@@ -611,6 +613,7 @@ namespace MultiAlignWin
             // 
             this.saveTableToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.dataToolStripMenuItem,
+            this.toolStripSeparator1,
             this.parametersToolStripMenuItem});
             this.saveTableToolStripMenuItem.MergeAction = System.Windows.Forms.MergeAction.Insert;
             this.saveTableToolStripMenuItem.MergeIndex = 8;
@@ -621,14 +624,14 @@ namespace MultiAlignWin
             // dataToolStripMenuItem
             // 
             this.dataToolStripMenuItem.Name = "dataToolStripMenuItem";
-            this.dataToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
+            this.dataToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.dataToolStripMenuItem.Text = "Data";
             this.dataToolStripMenuItem.Click += new System.EventHandler(this.dataToolStripMenuItem_Click);
             // 
             // parametersToolStripMenuItem
             // 
             this.parametersToolStripMenuItem.Name = "parametersToolStripMenuItem";
-            this.parametersToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
+            this.parametersToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.parametersToolStripMenuItem.Text = "Parameters";
             this.parametersToolStripMenuItem.Click += new System.EventHandler(this.parametersToolStripMenuItem_Click);
             // 
@@ -681,7 +684,12 @@ namespace MultiAlignWin
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
             this.toolStripStatusLabel1.Size = new System.Drawing.Size(0, 17);
             // 
-            // frmDataView
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
+            // 
+            // DataView
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
             this.ClientSize = new System.Drawing.Size(1046, 575);
@@ -690,7 +698,7 @@ namespace MultiAlignWin
             this.Controls.Add(this.menuStrip);
             this.Controls.Add(this.statusStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "frmDataView";
+            this.Name = "DataView";
             this.Text = "Data View";
             this.Load += new System.EventHandler(this.frmDataView_Load);
             this.panelCharts.ResumeLayout(false);
@@ -1037,7 +1045,7 @@ namespace MultiAlignWin
             dialog.DefaultExt = "*.csv";
             dialog.DereferenceLinks = true;
             dialog.ValidateNames = true;
-            dialog.Filter = "Comma Delimited (*.csv)|*.csv|Tab Delimited (*.txt)|*.txt|SQLite Database File (*.db3)|*.db3|All Files (*.*)|*.*";
+            dialog.Filter = "Comma Delimited (*.csv)|*.csv|Tab Delimited (*.txt)|*.txt|Dataset UMC's (*.umc)|*.umc|SQLite Database File (*.db3)|*.db3|All Files (*.*)|*.*";
             dialog.FilterIndex = 1;
 
             if (dialog.ShowDialog() == DialogResult.OK)
@@ -1077,6 +1085,9 @@ namespace MultiAlignWin
                         break;
                     case ".db3":
                         writer = new AnalysisSQLiteDBWriter();
+                        break;
+                    case ".umc":
+                        writer = new AnalysisDatasetUMCWriter();
                         break;
                     default:
                         optionsForm.ShowDialog();

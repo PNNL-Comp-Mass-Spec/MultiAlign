@@ -1,15 +1,32 @@
 MutliaAlign Revision History
 
-
+Version 2.7.4 December 1, 2010
+	- Changed parameter file format to ini.  
+	- Created a console version of the application that caches features between each analysis step to allow for larger analysis.
+Version 2.7.3xx December 1, 2010
+	- Added several plots on the analysis page showing cluster distributions, errors, and overall scatter plots.
+	- Fixed the exception thrown when aligning to a MTDB via MTDB Creator saying a baseline is not set.
+	- Fixed the legend displaying charge state N multiple times.
+	- Fixed the protein name mapping problem
+	- Added feature that if you double click on a protein name and match count, it’ll take you to that protein in the tree view to the left.
+	- Fixed duplicate log files being generated (one in directory with analysis files, and another in the parent directory.)
+	- Fixed a bug in the cluster charts (cluster scores vs. cluster sizes) that displayed cluster scores of 0 and 1 for datasets of size 8.
+		- However, the abscissa is continuous showing cluster sizes of 1.2 and 1.5 etc.
+	- Fixed a bug when aligning a single dataset to a MTDB. No matches were detected due to a clustering issue.
+		- Made the cluster chart on the data view only show clusters (reduce memory overhead and clutter).
+	- Each cluster is colored based on charge state.
+	- Added scroll bar to analysis plots tab in the data view.  
+	- Added feature that if no STAC calculation was performed then the histogram of scores in the analysis plot window would be displayed.
+	- Added a date and time string to the log output.
+	- Added a feature to try and load the ACE OLEDB provider, if it fails, then it’ll load the JET provider (i.e. loads the Access 2003 DLL).
 Version 2.4. March 07, 2010
-	- Added ability to read MS Access 2007 file formats.
+	- Added ability to read MS Access 2007 file formats.  Changed provider from JET OLEDB to ACE OLEDB. This may require you to have Access 2007.
 	- Added SMART for LC-MS data.
 	- Made cluster and peak matching options separate
 	- Added ability to read UMC files from LCMSFeatureFinder or VIPER
 	- Added drift time calculation additions for IMS data
 	- Modified the peak matching algorithm to use drift time.
 	- Added N out of M dataset filtering.
-
 Version 1.1.2992.25141; March 09, 2008
 	- Updated MultiAlign with the ability to read and align datasets to an access database.
 	- Initial release version.

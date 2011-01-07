@@ -11,10 +11,10 @@ using System.Collections.Generic;
 
 
 using PNNLControls;
+using PNNLProteomics.IO;
 using PNNLProteomics.Data;
 using MultiAlignEngine.MassTags;
 using MultiAlignWin.Network;
-using MultiAlignWin.IO;
 
 namespace MultiAlignWin
 {

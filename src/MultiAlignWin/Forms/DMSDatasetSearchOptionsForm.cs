@@ -2,9 +2,9 @@ using System;
 using System.Windows.Forms;
 using System.Collections.Generic;
 
+using PNNLProteomics.IO;
 using PNNLProteomics.Data;
 using MultiAlignEngine;
-using MultiAlignWin.IO;
 
 namespace MultiAlignWin.Forms
 {
