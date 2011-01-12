@@ -1,4 +1,4 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">  
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\x64\Debug\</OutputPath>
@@ -17,7 +17,7 @@
     </DebugType>
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
-  </PropertyGroup>  
+  </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\x86\Debug\</OutputPath>
@@ -36,7 +36,7 @@
     </DebugType>
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
-  </PropertyGroup>  
+  </PropertyGroup>
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
     <ProductVersion>8.0.50727</ProductVersion>
@@ -187,6 +187,10 @@
       <Project>{46C6D9CE-672F-4491-BF67-AA3F8DC811B7}</Project>
       <Name>ExternalControls</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MultiAlignCustomControls\MultiAlignCustomControls.csproj">
+      <Project>{EE7596B2-FCD3-471A-856F-1270713DD5B1}</Project>
+      <Name>MultiAlignCustomControls</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MultiAlign\MultiAlign.vcproj">
       <Project>{5A7E3D3C-03F3-4586-8A2C-BAE1EBA4623E}</Project>
       <Name>MultiAlignEngine</Name>
@@ -201,12 +205,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Forms\Charts\controlHistogram.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Forms\Charts\controlHistogram.Designer.cs">
-      <DependentUpon>controlHistogram.cs</DependentUpon>
-    </Compile>
     <Compile Include="Drawing\frmIntensityDiff.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -215,9 +213,6 @@
     </Compile>
     <Compile Include="Forms\Charts\Heatmap.Designer.cs">
       <DependentUpon>Heatmap.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Charts\ctlClusterChart.cs">
-      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Forms\controlClusterInformation.cs">
       <SubType>UserControl</SubType>
@@ -285,13 +280,9 @@
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Forms\Charts\ctlAlignmentHeatMap.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
     <Compile Include="Forms\frmAlign.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Drawing\classRenderDatasetInfo.cs" />
     <Compile Include="Forms\Parameters\frmMSAlignmentParameters.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -394,10 +385,6 @@
     <Compile Include="Forms\frmAnalysisWizard.cs">
       <SubType>Form</SubType>
     </Compile>
-    <EmbeddedResource Include="Forms\Charts\controlHistogram.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>controlHistogram.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Drawing\frmIntensityDiff.resx">
       <DependentUpon>frmIntensityDiff.cs</DependentUpon>
       <SubType>Designer</SubType>

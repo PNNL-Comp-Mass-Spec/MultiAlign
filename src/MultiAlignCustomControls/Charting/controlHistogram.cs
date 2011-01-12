@@ -10,7 +10,7 @@ using PNNLProteomics.Data.Analysis;
 using PNNLControls.Drawing.Plotting;
 using PNNLControls.Drawing.Charting;
 
-namespace MultiAlignWin.Drawing
+namespace MultiAlign.Charting
 {
     public partial class controlHistogram : ctlHistogram
     {

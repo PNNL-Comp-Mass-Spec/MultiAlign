@@ -1,11 +1,12 @@
 using System;
 using System.IO;
 using System.Threading;
+using System.Drawing;
 using System.Diagnostics;
 using System.Collections.Generic;
 
+using MultiAlign.Drawing;
 using MultiAlignEngine.Features;
-
 
 using PNNLProteomics.IO;
 using MultiAlignEngine.Alignment;
@@ -23,9 +24,33 @@ namespace MultiAlignConsole
 {
     class Program
     {
+        #region Constants 
+        private const string THUMBNAIL_PATH = "Plots";
+        #endregion
+
         #region Members
         private static ManualResetEvent     m_triggerEvent;
         private static string               m_logPath;
+        /// <summary>
+        /// Where the data and plots needs to go.
+        /// </summary>
+        private static string m_analysisPath;
+        /// <summary>
+        /// The name of the analysis.
+        /// </summary>
+        private static string m_analysisName;
+        /// <summary>
+        /// Path to save the plots.
+        /// </summary>
+        private static string m_plotSavePath;
+        /// <summary>
+        /// Height of the thumbnail plots.
+        /// </summary>
+        private static int m_height;
+        /// <summary>
+        /// Width of the thumbnail plots.
+        /// </summary>
+        private static int m_width;
         #endregion
 
         #region Methods
@@ -45,7 +70,7 @@ namespace MultiAlignConsole
         static void PrintHelp()
         {
             Log("For baseline datasets - ");
-            Log("MultiAlignConsole fileInputList paramterFile.xml analysisPath");
+            Log("MultiAlignConsole fileInputList paramterFile.ini analysisPath analysisName");
             Log("   fileInputList     = ASCII Text file with input file names.");
             Log("      In list of files use asterik to indicate the baseline choice, e.g. 'dataset *'");                
             Log("   parameterFile.xml = XML file defining MultiAlign parameters.");
@@ -99,7 +124,14 @@ namespace MultiAlignConsole
         /// <param name="e"></param>
         static void processor_FeaturesAligned(object sender, FeaturesAlignedEventArgs e)
         {
-            Log("Features Aligned - " + e.AligneeDatasetInformation.DatasetName);            
+            Log("Features Aligned - " + e.AligneeDatasetInformation.DatasetName);
+
+            // Create the heatmap
+            Image image = RenderDatasetInfo.AlignmentHeatmap_Thumbnail(e.AlignmentData, m_width, m_height);            
+            string name = Path.GetFileNameWithoutExtension(e.AligneeDatasetInformation.DatasetName) + "_heatmap.png";
+            string path = Path.Combine(m_plotSavePath, name);
+
+            image.Save(name, System.Drawing.Imaging.ImageFormat.Png);            
         }
         /// <summary>
         /// Logs when features are clustered.
@@ -137,80 +169,13 @@ namespace MultiAlignConsole
         {
             Log(e.StatusMessage);
         }
+        /// <summary>
+        /// Handles triggering the main application thread to let it know the analysis is complete.
+        /// </summary>
+        /// <param name="sender"></param>
         static void analysis_AnalysisComplete(object sender)
         {
             m_triggerEvent.Set();
-        }
-        static void Fail(int id)
-        {
-            Log("Comparison Failed @ feature : " + id.ToString());
-        }
-        static void Compare(string cachePath, MultiAlignAnalysis analysis)
-        {
-            // Compare features 
-            NHibernateUtil.SetDbLocationForRead(cachePath);
-            UmcDAOHibernate featureCache        = new UmcDAOHibernate();
-            UmcClusterDAOHibernate clusterCache = new UmcClusterDAOHibernate();
-            
-            // Dataset information.
-            foreach (DatasetInformation information in analysis.Datasets)
-            {
-                int datasetID         = Convert.ToInt32(information.DatasetId);
-                clsUMC[] umcs         = analysis.UMCData.GetUMCS(datasetID);
-
-                List<clsUMC> features = featureCache.FindByDatasetId(datasetID);
-
-                Log("Comparing features");
-                for (int i = 0; i < features.Count; i++)
-                {
-                    clsUMC ma = umcs[i];
-                    clsUMC map = features[i];
-                    
-                    if (Math.Abs(ma.mfloat_drift_time - map.mfloat_drift_time) > .00000001)
-                        Fail(i);
-                    if (ma.mint_scan != map.mint_scan)
-                        Fail(i);
-                    if (Math.Abs(ma.mdouble_mono_mass - map.mdouble_mono_mass) > .00000001)
-                        Fail(i);
-                    if (ma.mint_umc_id != map.mint_umc_id)
-                        Fail(i);
-                    if (Math.Abs(ma.MZForCharge - map.MZForCharge) > .0000000001)
-                        Fail(i);
-                }
-
-                Log("Comparing aligned versions of features");
-                for (int i = 0; i < features.Count; i++)
-                {
-                    clsUMC ma  = umcs[i];
-                    clsUMC map = features[i];
-                    if (Math.Abs(ma.mdouble_net - map.mdouble_net) > .000000001)
-                        Fail(i);
-                    if (Math.Abs(ma.mdouble_mono_mass_calibrated - map.mdouble_mono_mass_calibrated) > .000000001)
-                        Fail(i);
-                    if (ma.mint_scan_aligned != map.mint_scan_aligned)
-                        Fail(i);
-                    if (Math.Abs(ma.MZForCharge - map.MZForCharge) > .000000001)
-                        Fail(i);
-                }
-            }
-            List<clsCluster> clusters = clusterCache.FindAll();
-            Log("Comparing cluster values");
-
-            for (int i = 0; i < clusters.Count; i++)
-            {
-                clsCluster ma  = analysis.UMCData.mobjClusterData.GetCluster(i);
-                clsCluster map = clusters[i];
-
-                if (Math.Abs(ma.Mass - map.Mass) > .00000001)
-                    Fail(i);
-                if (ma.Charge != map.Charge)
-                    Fail(i);
-                if (Math.Abs(ma.Net - map.Net) > .00000001)
-                    Fail(i);
-                if (Math.Abs(ma.DriftTime - map.DriftTime) > .0000000001)
-                    Fail(i);                
-            }
-            Log("Comparison successful.");
         }
         /// <summary>
         /// Calculates the current usage of current processes memory.
@@ -219,9 +184,9 @@ namespace MultiAlignConsole
         static long GetMemory()
         {
             Process process = Process.GetCurrentProcess();
-            long memory  = process.WorkingSet64;
-            memory      /= 1024;
-            memory      /= 1024;
+            long memory = process.WorkingSet64;
+            memory /= 1024;
+            memory /= 1024;
             process.Dispose();
 
             return memory;
@@ -243,10 +208,9 @@ namespace MultiAlignConsole
                                         now.Hour,
                                         now.Minute,
                                         now.Second);
-
-            Log("Staring MultiAlign Console."); 
-
-            if (args[0] == "-h" || args[0] == "-help")
+           
+            Log("Starting MultiAlign Console Application."); 
+            if (args.Length < 1 || args[0] == "-h" || args[0] == "-help")
             {
                 PrintHelp();
                 return;
@@ -254,15 +218,13 @@ namespace MultiAlignConsole
 
             // Determine options.
             string fileInputList = null;
-            string parameterFile = null;
-            string analysisPath  = null;
-            string analysisName  = null;
+            string parameterFile = null;            
             if (args.Length == 4)
             {
                 fileInputList   = args[0];
                 parameterFile   = args[1];
-                analysisPath    = args[2];
-                analysisName    = args[3];
+                m_analysisPath    = args[2];
+                m_analysisName    = args[3];
             }
             else
             {
@@ -271,7 +233,6 @@ namespace MultiAlignConsole
                 return;
             }
           
-
             // Read the input datasets.
             if (!File.Exists(fileInputList))
             {
@@ -280,7 +241,6 @@ namespace MultiAlignConsole
             }
 
             Log("Parsing Filenames.");
-
             string [] files         = File.ReadAllLines(fileInputList);
             List<string> filenames  = new List<string>();
             string baseline         = null;
@@ -301,20 +261,29 @@ namespace MultiAlignConsole
                 
             }
 
-
             // Construct an analysis object.
             DelegateSetPercentComplete complete     = new DelegateSetPercentComplete(DisplayPercentComplete);
             DelegateSetStatusMessage status         = new DelegateSetStatusMessage(DisplayStatus);
             DelegateSetStatusMessage title          = new DelegateSetStatusMessage(DisplayTitle);
 
-
             Log("Creating Analysis.");
             MultiAlignAnalysis analysis             = new MultiAlignAnalysis(complete, status, title);
-            analysis.PathName                       = analysisPath;
-            analysis.AnalysisName                   = analysisName;
+            analysis.PathName                       = m_analysisPath;
+            analysis.AnalysisName                   = m_analysisName;
             analysis.BaselineDataset                = baseline;
             MultiAlignAnalysisProcessor processor   = new MultiAlignAnalysisProcessor();
 
+            Log("Creating Plot Thumbnail Path");
+            // set the plot save path.
+            m_plotSavePath = Path.Combine(m_analysisPath, THUMBNAIL_PATH);
+
+            // Find out where it's located.
+            if (!Directory.Exists(m_plotSavePath))
+            {
+                Directory.CreateDirectory(m_plotSavePath);
+            }
+
+            // Use this to signal when the analysis is done.  We are using a asnychronous call here.
             m_triggerEvent = new ManualResetEvent(false);
 
             // Setup the parameters.
@@ -322,8 +291,7 @@ namespace MultiAlignConsole
             analysis.LoadParametersFromFile(parameterFile);
 
             MultiAlignParameterIniFileWriter writer = new MultiAlignParameterIniFileWriter();            
-            writer.WriteParametersToFile("options.ini", analysis);
-            
+            writer.WriteParametersToFile("options.ini", analysis);            
 
             // Create dataset information.
             int i = 0;

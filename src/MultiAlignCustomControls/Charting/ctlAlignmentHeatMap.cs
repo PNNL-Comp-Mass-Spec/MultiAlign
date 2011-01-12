@@ -4,7 +4,7 @@ using System.Collections;
 using System.Windows.Forms;
 using System.ComponentModel;
 
-namespace MultiAlignWin.Drawing
+namespace MultiAlign.Charting 
 {
 	public class ctlAlignmentHeatMap : PNNLControls.ctlHeatMap
 	{

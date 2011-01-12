@@ -1,4 +1,4 @@
-namespace MultiAlignWin.Drawing
+namespace MultiAlign.Charting
 {
     partial class controlHistogram
     {

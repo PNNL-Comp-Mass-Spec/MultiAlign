@@ -27,6 +27,9 @@ using PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate;
 using PNNLProteomics.Data;
 using PNNLProteomics.Data.Analysis;
 
+using PNNLOmics.Algorithms.FeatureClustering;
+using PNNLOmics.Data.Features;
+
 namespace PNNLProteomics.MultiAlign
 {        
     /// <summary>
@@ -885,10 +888,52 @@ namespace PNNLProteomics.MultiAlign
                 featuresToUpdate.Clear();
             }
         }
+
+        /// <summary>
+        /// Clusters using the original single linkage algorithm.
+        /// </summary>
+        /// <param name="analysis"></param>
+        /// <returns></returns>        
+        public List<clsCluster> PerformClustering(MultiAlignAnalysis analysis)
+        {
+            LinkageClustererBase<Mammoth.Data.MammothCluster> clusterer = null;
+            if (m_clusterType == ClusteringAlgorithmType.SingleLinkage)
+            {
+                clusterer = new UMCSingleLinkageClusterer<Mammoth.Data.MammothCluster>();
+            }
+            else
+            {    
+                clusterer = new UMCAverageLinkageClusterer<Mammoth.Data.MammothCluster>();            
+            }
+            //TODO: Fix, this happens twice.  
+            // Tolerances
+            PNNLOmics.Algorithms.FeatureTolerances tolerances = new PNNLOmics.Algorithms.FeatureTolerances();
+            tolerances.DriftTime     = analysis.ClusterOptions.DriftTimeTolerance;
+            tolerances.Mass          = analysis.ClusterOptions.MassTolerance;
+            tolerances.RetentionTime = analysis.ClusterOptions.NETTolerance;
+
+            // Parameters 
+            PNNLOmics.Algorithms.FeatureClustering.FeatureClusterParameters parameters = new PNNLOmics.Algorithms.FeatureClustering.FeatureClusterParameters();
+            parameters.CentroidRepresentation = PNNLOmics.Data.Features.ClusterCentroidRepresentation.Mean;
+            if (analysis.ClusterOptions.ClusterRepresentativeType == enmClusterRepresentativeType.MEDIAN)
+            {
+                parameters.CentroidRepresentation = PNNLOmics.Data.Features.ClusterCentroidRepresentation.Median;
+            }
+            parameters.Tolerances = tolerances;
+            parameters.OnlyClusterSameChargeStates = (analysis.ClusterOptions.IgnoreCharge == false);
+            List<clsCluster> clusters = new List<clsCluster>();
+
+            clusterer.Parameters = parameters;
+            return PerformClustering(analysis, clusterer);                                          
+        }
         /// <summary>
         /// 
         /// </summary>
-        public List<clsCluster> PerformClustering(MultiAlignAnalysis analysis)
+        /// <param name="analysis"></param>
+        /// <param name="clusterer"></param>
+        /// <returns></returns>
+        public List<clsCluster> PerformClustering(  MultiAlignAnalysis analysis,
+                                                    IClusterer<UMCLight, Mammoth.Data.MammothCluster> clusterer)
         {                        
             // Cluster Data!      
             UmcDAOHibernate featureCache            = new UmcDAOHibernate();
@@ -903,9 +948,9 @@ namespace PNNLProteomics.MultiAlign
 
             // Tolerances
             PNNLOmics.Algorithms.FeatureTolerances tolerances = new PNNLOmics.Algorithms.FeatureTolerances();
-            tolerances.DriftTime = analysis.ClusterOptions.DriftTimeTolerance;
-            tolerances.Mass      = analysis.ClusterOptions.MassTolerance;
-            tolerances.NET       = analysis.ClusterOptions.NETTolerance;            
+            tolerances.DriftTime            = analysis.ClusterOptions.DriftTimeTolerance;
+            tolerances.Mass                 = analysis.ClusterOptions.MassTolerance;
+            tolerances.RetentionTime        = analysis.ClusterOptions.NETTolerance;            
 
             // Parameters 
             PNNLOmics.Algorithms.FeatureClustering.FeatureClusterParameters parameters = new PNNLOmics.Algorithms.FeatureClustering.FeatureClusterParameters();
@@ -926,10 +971,12 @@ namespace PNNLProteomics.MultiAlign
                  // Create database
                 CreateMammothDatabase(analysis, featureCache, databaseName, -1);                    
 
+                
+
                 // Cluster 
                 Mammoth.Algorithms.MammothClusterer processor = new Mammoth.Algorithms.MammothClusterer();
-                processor.ClusterDatabase(databaseName, 5, parameters, range, parameters.Tolerances);
-
+                processor.ClusterDatabase(databaseName, 5, parameters, range, parameters.Tolerances, clusterer);
+                
                 // Retrieve clusters 
                 using (Mammoth.Data.MammothDatabase database = new Mammoth.Data.MammothDatabase(databaseName))
                 {
@@ -1267,6 +1314,27 @@ namespace PNNLProteomics.MultiAlign
             if (AnalysisComplete != null)
                 AnalysisComplete(this, null);            
         }
-        #endregion     
+        #endregion   
+  
+        private ClusteringAlgorithmType m_clusterType = ClusteringAlgorithmType.SingleLinkage;
+        //TODO: Fix this when the native code has been refactored.
+        public ClusteringAlgorithmType ClusterAlgorithmType
+        {
+            get
+            {
+                return m_clusterType;
+            }
+            set
+            {
+                m_clusterType = value;
+            }
+        }
+    }
+
+    //TODO: Fix this interface when the native code is all gone.
+    public enum ClusteringAlgorithmType
+    {
+        AverageLinkage,
+        SingleLinkage
     }
 }

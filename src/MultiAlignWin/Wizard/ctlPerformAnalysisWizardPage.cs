@@ -7,6 +7,7 @@ using System.ComponentModel;
 
 using PNNLControls;
 using PNNLProteomics.EventModel;
+using MultiAlign.Charting;
 
 namespace MultiAlignWin
 {
@@ -25,7 +26,7 @@ namespace MultiAlignWin
         #endregion        
         private ExternalControls.controlStepOverview mcontrol_steps;
         private ctlScatterChart mctlScatterChartFeatures;
-        private MultiAlignWin.Drawing.ctlAlignmentHeatMap mcontrol_heatMap;
+        private ctlAlignmentHeatMap mcontrol_heatMap;
         private PictureBox mpicture_alignment;
 
         public delegate void DelegateControlLoaded();
@@ -92,7 +93,7 @@ namespace MultiAlignWin
             this.mctlScatterChartFeatures = new PNNLControls.ctlScatterChart();
             this.mtreeview_statusMessages = new System.Windows.Forms.TreeView();
             this.mcontrol_steps = new ExternalControls.controlStepOverview();
-            this.mcontrol_heatMap = new MultiAlignWin.Drawing.ctlAlignmentHeatMap();
+            this.mcontrol_heatMap = new ctlAlignmentHeatMap();
             this.mtabs_messages.SuspendLayout();
             this.tabPgMessages.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.mpicture_alignment)).BeginInit();

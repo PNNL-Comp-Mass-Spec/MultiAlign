@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using PNNLControls;
 
 using MultiAlignEngine;
-using MultiAlignWin;
+
 using MultiAlignEngine.Features;
 using MultiAlignEngine.MassTags;
 using MultiAlignEngine.Alignment;
@@ -18,12 +18,14 @@ using PNNLProteomics.SMART;
 using PNNLProteomics.Data.Analysis;
 using PNNLProteomics.Data.Alignment;
 
-namespace MultiAlignWin.Drawing
+using MultiAlign.Charting;
+
+namespace MultiAlign.Drawing
 {
     /// <summary>
     /// Factory class for rendering information about a dataset info class.
     /// </summary>
-    public class classRenderDatasetInfo
+    public static class RenderDatasetInfo
     {
         private const int CONST_PRE_POINT_SIZE  = 1;
         private const int CONST_POST_POINT_SIZE = 1;
@@ -45,7 +47,7 @@ namespace MultiAlignWin.Drawing
             Image image = null;
             try
             {
-                ctlScatterChart chart = classRenderDatasetInfo.NETResiduals_Chart(analysis, datasetNum);
+                ctlScatterChart chart = RenderDatasetInfo.NETResiduals_Chart(analysis, datasetNum);
 
                 if (chart != null)
                 {
@@ -119,7 +121,7 @@ namespace MultiAlignWin.Drawing
             Image image = null;
             try
             {
-                ctlScatterChart chart = classRenderDatasetInfo.MassNETResiduals_Chart(analysis, datasetNum);
+                ctlScatterChart chart = RenderDatasetInfo.MassNETResiduals_Chart(analysis, datasetNum);
 
                 if (chart != null)
                 {
@@ -252,7 +254,7 @@ namespace MultiAlignWin.Drawing
             Image image = null;
             try
             {
-                ctlScatterChart chart = classRenderDatasetInfo.MassVsScanResiduals_Chart(analysis, datasetNum);
+                ctlScatterChart chart = RenderDatasetInfo.MassVsScanResiduals_Chart(analysis, datasetNum);
 
                 if (chart != null)
                 {
@@ -354,7 +356,7 @@ namespace MultiAlignWin.Drawing
             Image image = null;
             try
             {
-                ctlScatterChart chart = classRenderDatasetInfo.MassVsMZResidual_Chart(analysis, datasetNum);
+                ctlScatterChart chart = RenderDatasetInfo.MassVsMZResidual_Chart(analysis, datasetNum);
 
                 if (chart != null)
                 {
@@ -392,7 +394,7 @@ namespace MultiAlignWin.Drawing
             Image image = null;
             try
             {
-                controlHistogram chart = classRenderDatasetInfo.MassErrorHistogram_Chart(analysis, datasetNum);
+                controlHistogram chart = RenderDatasetInfo.MassErrorHistogram_Chart(analysis, datasetNum);
 
                 if (chart != null)
                 {
@@ -477,7 +479,7 @@ namespace MultiAlignWin.Drawing
             {
                 if (analysis.AlignmentData[datasetNum] == null)
                     return null;
-                controlHistogram chart = classRenderDatasetInfo.NETErrorHistogram_Chart(analysis, datasetNum);
+                controlHistogram chart = RenderDatasetInfo.NETErrorHistogram_Chart(analysis, datasetNum);
 
                 if (chart != null)
                 {
@@ -559,7 +561,7 @@ namespace MultiAlignWin.Drawing
             Image image = null;
             try
             {
-                ctlScatterChart chart = classRenderDatasetInfo.ScanVsClusterNet_Chart(analysis, datasetNum);
+                ctlScatterChart chart = RenderDatasetInfo.ScanVsClusterNet_Chart(analysis, datasetNum);
 
                 if (chart != null)
                 {
@@ -664,17 +666,30 @@ namespace MultiAlignWin.Drawing
                                                     int width,
                                                     int height)
         {
+            classAlignmentData data = analysis.AlignmentData[datasetNum];
+            return AlignmentHeatmap_Thumbnail(data, width, height);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        /// <returns></returns>
+        public static Image AlignmentHeatmap_Thumbnail(classAlignmentData data,                                                    
+                                                            int width,
+                                                            int height)
+        {
             Image image = null;            
             try
             {
-                ctlAlignmentHeatMap chart = classRenderDatasetInfo.AlignmentHeatMap_Chart(analysis, datasetNum);
+                ctlAlignmentHeatMap chart = RenderDatasetInfo.AlignmentHeatMap_Chart(data);
                 if (chart != null)
                 {
-                    chart.Legend.UseZScore = false;
-                    image = chart.GetThumbnail(new Size(width, height));
+                    chart.Legend.UseZScore  = false;
+                    image                   = chart.GetThumbnail(new Size(width, height));
                     chart.Dispose();
                 }
-
             }
             catch 
             {
@@ -683,33 +698,43 @@ namespace MultiAlignWin.Drawing
             return image;
         }
         /// <summary>
-        /// Renders the scan versus the cluster net to the provided bitmap.
+        /// 
         /// </summary>
+        /// <param name="analysis"></param>
+        /// <param name="datasetNum"></param>
+        /// <returns></returns>
         public static ctlAlignmentHeatMap AlignmentHeatMap_Chart(MultiAlignAnalysis analysis,
                                                     int datasetNum)
         {
-            ctlAlignmentHeatMap heatMap = new ctlAlignmentHeatMap();
-            clsAlignmentFunction alignmentFnc;
-            string datasetName;
-            int minAligneeScan, maxAligneeScan;
-            float minBaselineScan, maxBaselineScan;
+            
+            classAlignmentData data = analysis.AlignmentData[datasetNum];            
+            return AlignmentHeatMap_Chart(data);
+        }   
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public static ctlAlignmentHeatMap AlignmentHeatMap_Chart(classAlignmentData data)
+        {
+
+            if (data == null)
+                return null;
+
+            ctlAlignmentHeatMap     heatMap = new ctlAlignmentHeatMap();
+            clsAlignmentFunction    alignmentFnc;
+            int     minAligneeScan,     maxAligneeScan;
+            float   minBaselineScan,    maxBaselineScan;
             float[,] mScores;
 
             try
-            {
-                datasetName = analysis.Datasets[datasetNum].DatasetName;
-                classAlignmentData data = analysis.AlignmentData[datasetNum];
-                if (data == null)
-                    return null;
-
-                alignmentFnc = data.alignmentFunction;
-                datasetName = data.aligneeDataset;
-                mScores = data.heatScores;
+            {                
+                alignmentFnc    = data.alignmentFunction;
+                mScores         = data.heatScores;
                 minBaselineScan = data.minMTDBNET;
                 maxBaselineScan = data.maxMTDBNET;
                 minAligneeScan  = data.minScanBaseline;
                 maxAligneeScan  = data.maxScanBaseline;
-
 
                 heatMap.SetData(mScores,
                                             new PNNLControls.ctlHierarchalLabel.AxisRangeF(minAligneeScan, maxAligneeScan),
@@ -738,7 +763,7 @@ namespace MultiAlignWin.Drawing
             Image image = null;
             try
             {
-                ctlScatterChart chart = classRenderDatasetInfo.ClusterChart_Chart(analysis,
+                ctlScatterChart chart = RenderDatasetInfo.ClusterChart_Chart(analysis,
                                                                                     datasetNum,
                                                                                     aligned,
                                                                                     chargeStates);
@@ -793,7 +818,7 @@ namespace MultiAlignWin.Drawing
             Image image = null;
             try
             {
-                ctlScatterChart chart = classRenderDatasetInfo.ClusterNETResiduals_Chart(analysis);
+                ctlScatterChart chart = RenderDatasetInfo.ClusterNETResiduals_Chart(analysis);
 
                 if (chart != null)
                 {
@@ -865,7 +890,7 @@ namespace MultiAlignWin.Drawing
             Image image = null;
             try
             {
-                ctlScatterChart chart = classRenderDatasetInfo.ClusterMassNETResiduals_Chart(analysis);
+                ctlScatterChart chart = RenderDatasetInfo.ClusterMassNETResiduals_Chart(analysis);
 
                 if (chart != null)
                 {
@@ -940,7 +965,7 @@ namespace MultiAlignWin.Drawing
             Image image = null;
             try
             {
-                ctlScatterChart chart = classRenderDatasetInfo.ClusterMassVsScanResiduals_Chart(analysis);
+                ctlScatterChart chart = RenderDatasetInfo.ClusterMassVsScanResiduals_Chart(analysis);
 
                 if (chart != null)
                 {
@@ -1085,7 +1110,7 @@ namespace MultiAlignWin.Drawing
             Image image = null;
             try
             {
-                ctlScatterChart chart = classRenderDatasetInfo.ClusterMassVsMZResidual_Chart(analysis);
+                ctlScatterChart chart = RenderDatasetInfo.ClusterMassVsMZResidual_Chart(analysis);
 
                 if (chart != null)
                 {
@@ -1124,7 +1149,7 @@ namespace MultiAlignWin.Drawing
             Image image = null;
             try
             {
-                controlHistogram chart = classRenderDatasetInfo.ClusterMassErrorHistogram_Chart(analysis);
+                controlHistogram chart = RenderDatasetInfo.ClusterMassErrorHistogram_Chart(analysis);
                 if (chart != null)
                 {
                     chart.Margins.LeftMarginMin = 1;
@@ -1204,7 +1229,7 @@ namespace MultiAlignWin.Drawing
             Image image = null;
             try
             {                
-                controlHistogram chart = classRenderDatasetInfo.ClusterNETErrorHistogram_Chart(analysis);
+                controlHistogram chart = RenderDatasetInfo.ClusterNETErrorHistogram_Chart(analysis);
 
                 if (chart != null)
                 {
@@ -1292,7 +1317,7 @@ namespace MultiAlignWin.Drawing
             Image image = null;
             try
             {
-                ctlAlignmentHeatMap chart = classRenderDatasetInfo.ClusterAlignmentHeatMap_Chart(analysis);
+                ctlAlignmentHeatMap chart = RenderDatasetInfo.ClusterAlignmentHeatMap_Chart(analysis);
                 if (chart != null)
                 {
                     image = chart.GetThumbnail(new Size(width, height));
@@ -1362,7 +1387,7 @@ namespace MultiAlignWin.Drawing
             Image image = null;
             try
             {
-                controlHistogram chart = classRenderDatasetInfo.ClusterScoreHistogram_Chart(analysis.UMCData.mobjClusterData);
+                controlHistogram chart = RenderDatasetInfo.ClusterScoreHistogram_Chart(analysis.UMCData.mobjClusterData);
 
                 if (chart != null)
                 {
@@ -1493,7 +1518,7 @@ namespace MultiAlignWin.Drawing
             Image image = null;
             try
             {                
-                ctlScatterChart chart = classRenderDatasetInfo.ClusterScoreVsClusterSize_Chart(analysis.UMCData.mobjClusterData);
+                ctlScatterChart chart = RenderDatasetInfo.ClusterScoreVsClusterSize_Chart(analysis.UMCData.mobjClusterData);
 
                 if (chart != null)
                 {
@@ -1602,7 +1627,7 @@ namespace MultiAlignWin.Drawing
             Image image = null;
             try
             {
-                controlHistogram chart = classRenderDatasetInfo.ClusterSizeHistogram_Chart(analysis);
+                controlHistogram chart = RenderDatasetInfo.ClusterSizeHistogram_Chart(analysis);
 
                 if (chart != null)
                 {
@@ -1677,7 +1702,7 @@ namespace MultiAlignWin.Drawing
             Image image = null;
             try
             {
-                controlHistogram chart = classRenderDatasetInfo.ChargeStateHistogram_Chart(analysis);
+                controlHistogram chart = RenderDatasetInfo.ChargeStateHistogram_Chart(analysis);
 
                 if (chart != null)
                 {
@@ -1750,7 +1775,6 @@ namespace MultiAlignWin.Drawing
         }
         
         #endregion
-
         
         #region Peak Matching Plots     
         /// <summary>
@@ -1762,7 +1786,7 @@ namespace MultiAlignWin.Drawing
             Image image = null;
             try
             {
-                ctlScatterChart chart = classRenderDatasetInfo.PeakMatchMassNET_Chart(analysis);
+                ctlScatterChart chart = RenderDatasetInfo.PeakMatchMassNET_Chart(analysis);
 
                 if (chart != null)
                 {
@@ -1875,7 +1899,7 @@ namespace MultiAlignWin.Drawing
             Image image = null;
             try
             {
-                controlHistogram chart = classRenderDatasetInfo.SMARTScoreHistogram_Chart(analysis);
+                controlHistogram chart = RenderDatasetInfo.SMARTScoreHistogram_Chart(analysis);
 
                 if (chart != null)
                 {
@@ -2038,7 +2062,7 @@ namespace MultiAlignWin.Drawing
             Image image = null;
             try
             {
-                ctlScatterChart chart = classRenderDatasetInfo.UnidentifiedFeatures_Chart(analysis, stacThreshold);
+                ctlScatterChart chart = RenderDatasetInfo.UnidentifiedFeatures_Chart(analysis, stacThreshold);
 
                 if (chart != null)
                 {
@@ -2262,7 +2286,7 @@ namespace MultiAlignWin.Drawing
             Image image = null;
             try
             {
-                ctlScatterChart chart = classRenderDatasetInfo.IdentifiedFeatures_Chart(analysis, stacThreshold);
+                ctlScatterChart chart = RenderDatasetInfo.IdentifiedFeatures_Chart(analysis, stacThreshold);
 
                 if (chart != null)
                 {

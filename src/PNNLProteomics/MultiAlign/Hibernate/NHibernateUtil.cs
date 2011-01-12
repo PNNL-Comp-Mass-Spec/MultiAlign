@@ -150,7 +150,7 @@ namespace PNNLProteomics.MultiAlign.Hibernate
 		/// <param name="dbLocation">The file location of the database file</param>
 		private static void SetConfigurationDbLocation(string dbLocation)
 		{
-			configuration.SetProperty("connection.connection_string", "Data Source=" + dbLocation + ";Version=3");
+			configuration.SetProperty("connection.connection_string", "Data Source=" + dbLocation + ";Version=3;New=True");
 		}
 
 

@@ -13,6 +13,8 @@ using PNNLProteomics.Data;
 
 using PNNLProteomics.IO;
 
+using MultiAlign.Charting;
+
 using MultiAlignWin.Forms;
 using MultiAlignEngine.Features;
 using MultiAlignEngine.Alignment;
@@ -31,7 +33,7 @@ namespace MultiAlignWin
         #region Members
         private Splitter splitter1;
         private Panel panelCharts;
-		private MultiAlignWin.ctlClusterChart mobjClusterChart ;
+		private ctlClusterChart mobjClusterChart ;
         private MultiAlignAnalysis mobjAnalysis;		
         private string mstrCurrentFileName;
         private MenuStrip menuStrip;
@@ -99,7 +101,7 @@ namespace MultiAlignWin
 		{
 			InitializeComponent();
 
-            mobjClusterChart = new MultiAlignWin.ctlClusterChart();
+            mobjClusterChart = new ctlClusterChart();
             mobjClusterChart.LegendVisible = true;
             mobjClusterChart.Dock = DockStyle.Fill;
             

@@ -11,7 +11,7 @@ using MultiAlignEngine.Features;
 using MultiAlignEngine.MassTags;
 using PNNLProteomics.Data.Analysis;
 
-namespace MultiAlignWin
+namespace MultiAlign.Charting
 {
     /// <summary>
     /// Renders UMC Clusters and UMC Features as a scatter plot.
