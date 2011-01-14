@@ -249,6 +249,19 @@ namespace MultiAlignWin.Forms
             width  = mpicture_alignmentHeatmap.Width;
             height = mpicture_alignmentHeatmap.Height;
 
+            ChartDisplayOptions options = new ChartDisplayOptions();
+            options.DisplayTitle     = false;
+            options.DisplayLegend    = false;
+            options.DisplayGridLines = false;
+            options.DisplayAxis      = false;
+            options.Height           = height;
+            options.Width            = width;
+            options.XAxisLabel       = "";
+            options.YAxisLabel       = "";
+            options.Title            = "";
+            options.MarginMax        = 1;
+            options.MarginMin        = 0;
+
             /// 
             /// Previews
             /// 
@@ -257,13 +270,7 @@ namespace MultiAlignWin.Forms
                                                                                                 mpicture_preview.Width,
                                                                                                 mpicture_preview.Height,
                                                                                                 false, false, false);                                                                                                
-            
-
-            
-            /// ------------------------------------------------------------------------------------
-            /// Cluster
-            /// ------------------------------------------------------------------------------------   
-
+                        
             Image previewClusterChart = RenderDatasetInfo.ClusterChart_Thumbnail(mobj_analysis,
                                                                                                 mint_datasetIndex,
                                                                                                 width,
@@ -277,85 +284,46 @@ namespace MultiAlignWin.Forms
             Image alignmentPreview = RenderDatasetInfo.AlignmentHeatmap_Thumbnail(         mobj_analysis,
                                                                                                 mint_datasetIndex, width, height);
             
-            /// ------------------------------------------------------------------------------------
-            /// Mass error histogram
-            /// ------------------------------------------------------------------------------------   
-            Image massErrorHistogramHighRes = RenderDatasetInfo.MassErrorHistogram_Thumbnail(mobj_analysis,
-                                                                                                mint_datasetIndex,
-                                                                                                800,
-                                                                                                600,
-                                                                                                true, true, true);
-
-            Image massErrorHistogram = RenderDatasetInfo.MassErrorHistogram_Thumbnail(mobj_analysis,
-                                                                                                mint_datasetIndex,
-                                                                                                width,
-                                                                                                height,
-                                                                                                false, false, false);
-
-
             
-            /// ------------------------------------------------------------------------------------
-            /// NET error histogram
-            /// ------------------------------------------------------------------------------------   
-            Image netErrorHistogramHighRes = RenderDatasetInfo.NETErrorHistogram_Thumbnail(mobj_analysis,
-                                                                                                mint_datasetIndex,
-                                                                                                800,
-                                                                                                600,
-                                                                                                true, true, true);
+            Image massErrorHistogram = null;
+            Image netErrorHistogram  = null;            
+            Image alignedNetResidual = null;            
+            Image massResidual       = null;
+            Image mzMassResidual     = null;
+            Image massNetResidual    = null;
 
-            Image netErrorHistogram  = RenderDatasetInfo.NETErrorHistogram_Thumbnail(mobj_analysis,
-                                                                                                mint_datasetIndex,
-                                                                                                width,
-                                                                                                height,
-                                                                                                false, false, false);
+            if (mobj_alignmentData != null)
+            {
 
-            
-            /// ------------------------------------------------------------------------------------
-            /// Residual Net error histogram
-            /// ------------------------------------------------------------------------------------   
-            Image alignedNetResidual = RenderDatasetInfo.NETResiduals_Thumbnail(mobj_analysis,
-                                                                                            mint_datasetIndex,
-                                                                                            mpicture_netResiduals.Width,
-                                                                                            mpicture_netResiduals.Height,
-                                                                                                false, false, false);
+                massErrorHistogram = RenderDatasetInfo.ErrorHistogram_Thumbnail(mobj_alignmentData.massErrorHistogram, options);
+                netErrorHistogram = RenderDatasetInfo.ErrorHistogram_Thumbnail(mobj_alignmentData.netErrorHistogram, options);
 
-            
-            /// ------------------------------------------------------------------------------------
-            /// Mass Residual histogram
-            /// ------------------------------------------------------------------------------------   
-            Image massResidual    = RenderDatasetInfo.MassVsScanResiduals_Thumbnail(mobj_analysis,
-                                                                                            mint_datasetIndex,
-                                                                                            width, height,
-                                                                                                false, false, false);
-                        
-            /// ------------------------------------------------------------------------------------
-            /// M/Z Residual
-            /// ------------------------------------------------------------------------------------                                                                       mpicture_massResiduals.Height);
-            Image mzMassResidual = RenderDatasetInfo.MassVsMZResidual_Thumbnail(mobj_analysis,
-                                                                                            mint_datasetIndex,
-                                                                                            mpictureBox_mzMassResidual.Width,
-                                                                                            mpictureBox_mzMassResidual.Height,
-                                                                                                false, false, false);
+                if (mobj_alignmentData.ResidualData != null)
+                {
+                    //alignedNetResidual = RenderDatasetInfo.Residuals_Thumbnail(mobj_alignmentData.ResidualData.
+                    //                                                                            mint_datasetIndex,
+                    //                                                                            mpicture_netResiduals.Width,
+                    //                                                                            mpicture_netResiduals.Height,
+                    //                                                                                false, false, false);
 
 
-            Image massNetResidual = RenderDatasetInfo.MassNETResiduals_Thumbnail(  mobj_analysis,
-                                                                                        mint_datasetIndex,
-                                                                                        mpictureBox_massNetResiduals.Width,
-                                                                                        mpictureBox_massNetResiduals.Height,
-                                                                                        false, false, false);
+                    //massResidual = RenderDatasetInfo.MassVsScanResiduals_Thumbnail(mobj.options);
 
-            /// 
-            /// Save high-res images
-            /// 
+                    //mzMassResidual = RenderDatasetInfo.MassVsMZResidual_Thumbnail(mobj_analysis,
+                    //                                                                            mint_datasetIndex,
+                    //                                                                            mpictureBox_mzMassResidual.Width,
+                    //                                                                            mpictureBox_mzMassResidual.Height,
+                    //                                                                                false, false, false);
 
-            string[] names = new string[] { "LCMSFeatures",
-                                            "NetErrorHistogram",
-                                            "MassErrorHistogram",
-                                            "AlignmentHeatmap"};            
 
-            /// 
-            /// Display low-res images 
-            /// 
+                    //massNetResidual = RenderDatasetInfo.MassNETResiduals_Thumbnail(mobj_analysis,
+                    //                                                                        mint_datasetIndex,
+                    //                                                                        mpictureBox_massNetResiduals.Width,
+                    //                                                                        mpictureBox_massNetResiduals.Height,
+                    //                                                                    false, false, false);
+                }
+            }
+           
             Image [] images = new Image[]{  
                                             previewClusterChart,
                                             previewScanClusterNet, 
@@ -477,7 +445,14 @@ namespace MultiAlignWin.Forms
 
             if (displayForm == null)
             {
-                controlHistogram chart = RenderDatasetInfo.MassErrorHistogram_Chart(mobj_analysis, mint_datasetIndex);
+                ChartDisplayOptions options = new ChartDisplayOptions(true, true, true, true);
+                options.MarginMin = 100;
+                options.MarginMin = 0;
+                options.Title = "";
+                options.XAxisLabel = "Mass Error (PPM)";
+                options.YAxisLabel = "Count";
+                                
+                controlHistogram chart = RenderDatasetInfo.ErrorHistogram_Chart(mobj_alignmentData.massErrorHistogram, options);
                 if (chart == null)
                     return; 
 
@@ -503,11 +478,21 @@ namespace MultiAlignWin.Forms
 
             if (displayForm == null)
             {
-                controlHistogram chart = RenderDatasetInfo.NETErrorHistogram_Chart(mobj_analysis, mint_datasetIndex);
+                double[,] data = mobj_analysis.AlignmentData[mint_datasetIndex].netErrorHistogram;
+
+                
+                ChartDisplayOptions options = new ChartDisplayOptions(true, true, true, true);
+                options.MarginMin = 100;
+                options.MarginMin = 0;
+                options.Title = "";
+                options.XAxisLabel = "NET Error (%)";
+                options.YAxisLabel = "Count";
+
+                controlHistogram chart = RenderDatasetInfo.ErrorHistogram_Chart(mobj_alignmentData.netErrorHistogram, options);
                 if (chart == null)
                     return;
 
-                chart.Name = name;
+                chart.Name  = name;
                 chart.Title = name;
                 displayForm = RegisterChart(name, chart);
             }
@@ -566,19 +551,19 @@ namespace MultiAlignWin.Forms
         /// <param name="e"></param>
         private void mpictureBox_mzMassResidual_Click(object sender, EventArgs e)
         {
-            string name = "Mass Vs. M/Z Residuals";
-            Form displayForm = RetrieveForm(name);
+            //string name = "Mass Vs. M/Z Residuals";
+            //Form displayForm = RetrieveForm(name);
 
-            if (displayForm == null)
-            {
-                ctlScatterChart chart = RenderDatasetInfo.MassVsMZResidual_Chart(mobj_analysis, mint_datasetIndex);
-                displayForm = RegisterChart(name, chart);
-            }
-            if (displayForm != null)
-            {
-                displayForm.Show();
-                displayForm.BringToFront();
-            } 
+            //if (displayForm == null)
+            //{
+            //    ctlScatterChart chart = RenderDatasetInfo.MassVsMZResidual_Chart(mobj_analysis, mint_datasetIndex);
+            //    displayForm = RegisterChart(name, chart);
+            //}
+            //if (displayForm != null)
+            //{
+            //    displayForm.Show();
+            //    displayForm.BringToFront();
+            //} 
         }
         private void mpicture_alignmentHeatmap_Click(object sender, EventArgs e)
         {

@@ -247,8 +247,8 @@ namespace PNNLProteomics.MultiAlign
 					if (m_columnMap.ContainsKey("Umc.DriftTime"))				umc.DriftTime = float.Parse(columns[m_columnMap["Umc.DriftTime"]]);
 					if (m_columnMap.ContainsKey("Umc.ConformationFitScore"))	umc.ConformationFitScore = Double.Parse(columns[m_columnMap["Umc.ConformationFitScore"]]);
 					if (m_columnMap.ContainsKey("Umc.IsotopicFitScore"))		umc.IsotopicFitScore = Double.Parse(columns[m_columnMap["Umc.IsotopicFitScore"]]);
-					if (m_columnMap.ContainsKey("Umc.MembersPercentageScore"))	umc.MembersPercentageScore = Double.Parse(columns[m_columnMap["Umc.MembersPercentageScore"]]);
-					if (m_columnMap.ContainsKey("Umc.CombinedScore"))			umc.CombinedScore = Double.Parse(columns[m_columnMap["Umc.CombinedScore"]]);
+					//if (m_columnMap.ContainsKey("Umc.MembersPercentageScore"))	umc.MembersPercentageScore = Double.Parse(columns[m_columnMap["Umc.MembersPercentageScore"]]);
+					//if (m_columnMap.ContainsKey("Umc.CombinedScore"))			umc.CombinedScore = Double.Parse(columns[m_columnMap["Umc.CombinedScore"]]);
 					umcList.Add(umc);
 					previousId = currentId;
 				}

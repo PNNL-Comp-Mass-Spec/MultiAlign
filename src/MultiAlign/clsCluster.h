@@ -106,6 +106,15 @@ namespace MultiAlignEngine
 				mshort_charge = value;
 			}
 
+			__property int get_MemberCount()
+			{
+				return mshort_num_dataset_members;
+			}
+
+			__property void set_MemberCount(int value){
+				mshort_num_dataset_members = value;
+			}
+
 			__property double get_DriftTime()
 			{
 				return mdouble_driftTime;

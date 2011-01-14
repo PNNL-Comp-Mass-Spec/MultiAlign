@@ -1983,13 +1983,31 @@ namespace PNNLProteomics.Data.Analysis
         #endregion
 
         /// <summary>
-        /// Writes the alignment data from the histograms to file.
+        /// Returns a list of all UMC's stored.
         /// </summary>
-        /// <param name="directoryName"></param>
-        /// <param name="id"></param>
-        public void WriteAlignmentDataToFile(string directoryName, int id)
+        /// <returns></returns>
+        public List<clsUMC> GetAllUMCS()
         {
-            
+            List<clsUMC> umcs = new List<clsUMC>();
+            for (int i = 0; i < Datasets.Count; i++)
+            {
+                clsUMC[] umcData = UMCData.GetUMCS(i);
+                umcs.AddRange(umcData);
+            }
+            return umcs;
+        }
+        /// <summary>
+        /// Returns a list of UMC Clusters.
+        /// </summary>
+        /// <returns></returns>
+        public List<clsCluster> GetClusters()
+        {
+            List<clsCluster> clusters = new List<clsCluster>();
+            foreach (clsCluster cluster in UMCData.mobjClusterData.marrClusters)
+            {
+                clusters.Add(cluster);
+            }
+            return clusters;
         }
 		
         #region Properties

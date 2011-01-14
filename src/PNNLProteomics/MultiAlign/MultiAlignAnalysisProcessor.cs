@@ -1026,6 +1026,7 @@ namespace PNNLProteomics.MultiAlign
                             cluster.Id          = mammothCluster.ID;
                             cluster.Mass        = mammothCluster.MassMonoisotopic;
                             cluster.Net         = mammothCluster.NET;
+                            cluster.mshort_num_dataset_members = mammothCluster.UMCList.Count;
                             clusters.Add(cluster);
                     }
                     clusterCache.AddAll(clusters);

@@ -309,12 +309,12 @@ namespace MultiAlignEngine
 					mshort_class_rep_charge = value;
 				}
 
-				__property short get_ChargeMax()
+				__property int get_ChargeMax()
 				{
 					return mshort_class_highest_charge;
 				}
 
-				__property void set_ChargeMax(short value){
+				__property void set_ChargeMax(int value){
 					mshort_class_highest_charge = value;
 				}
 
@@ -345,12 +345,12 @@ namespace MultiAlignEngine
 					mdouble_class_rep_mz = value;
 				}
 
-				__property float get_DriftTime()
+				__property double get_DriftTime()
 				{
 					return mfloat_drift_time;
 				}
 
-				__property void set_DriftTime(float value){
+				__property void set_DriftTime(double value){
 					mfloat_drift_time = value;
 				}
 

@@ -72,7 +72,7 @@ namespace PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public clsUMC FindByClusterID(int id)
+        public List<clsUMC> FindByClusterID(int id)
         {
             ICriterion criterion = Expression.Eq("ClusterId", id);
             List<ICriterion> criterionList = new List<ICriterion>();
@@ -81,7 +81,7 @@ namespace PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate
             if (umcs.Count < 1)
                 return null;
 
-            return umcs[0];
+            return umcs;
         }
 		/// <summary>
 		/// Searches for and returns a List of Umc Objects in the Database that have the exact Dataset Id given.

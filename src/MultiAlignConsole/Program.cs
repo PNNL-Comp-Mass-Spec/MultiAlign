@@ -65,20 +65,29 @@ namespace MultiAlignConsole
             Console.WriteLine(newMessage);
         }
         /// <summary>
+        /// Prints a message to the console and log file.
+        /// </summary>
+        /// <param name="message"></param>
+        static void PrintMessage(string message)
+        {
+            File.AppendAllText(m_logPath, message + Environment.NewLine);
+            Console.WriteLine(message);
+        }
+        /// <summary>
         /// Prints the help message.
         /// </summary>
         static void PrintHelp()
         {
-            Log("For baseline datasets - ");
-            Log("MultiAlignConsole fileInputList paramterFile.ini analysisPath analysisName");
-            Log("   fileInputList     = ASCII Text file with input file names.");
-            Log("      In list of files use asterik to indicate the baseline choice, e.g. 'dataset *'");                
-            Log("   parameterFile.xml = XML file defining MultiAlign parameters.");
-            Log("   analysisPath      = file directory of where to put MultiAlign output.");
-            Log("For Mass Tag Databases - ");
-            Log("MultiAlignConsole paramterFile.xml analysisPath");                
-            Log("   parameterFile.xml = XML file defining MultiAlign parameters.");
-            Log("   analysisPath      = file directory of where to put MultiAlign output.");
+            PrintMessage("For baseline datasets - ");
+            PrintMessage("MultiAlignConsole fileInputList paramterFile.ini analysisPath analysisName");
+            PrintMessage("   fileInputList     = ASCII Text file with input file names.");
+            PrintMessage("      In list of files use asterik to indicate the baseline choice, e.g. 'dataset *'");                
+            PrintMessage("   parameterFile.xml = XML file defining MultiAlign parameters.");
+            PrintMessage("   analysisPath      = file directory of where to put MultiAlign output.");
+            PrintMessage("For Mass Tag Databases - ");
+            PrintMessage("MultiAlignConsole paramterFile.xml analysisPath");                
+            PrintMessage("   parameterFile.xml = XML file defining MultiAlign parameters.");
+            PrintMessage("   analysisPath      = file directory of where to put MultiAlign output.");
         }
         #endregion
 
@@ -115,6 +124,27 @@ namespace MultiAlignConsole
         /// <param name="e"></param>
         static void processor_AnalysisComplete(object sender, EventArgs e)
         {
+            // Create the heatmap
+            UmcDAOHibernate cache           = new UmcDAOHibernate();
+            List<clsUMC> umcs               = cache.FindAll();
+            ChartDisplayOptions options = new ChartDisplayOptions(true, true, true, true, 
+                                                1, 100, 
+                                                "Charge State Histogram", "Charge State", "Count", m_width, m_height);
+
+            Image image = RenderDatasetInfo.ChargeStateHistogram_Thumbnail(umcs, m_width, m_height, options);
+            string name = "chargeStates.png";
+            string path = Path.Combine(m_plotSavePath, name);
+            image.Save(path, System.Drawing.Imaging.ImageFormat.Png); 
+ 
+            UmcClusterDAOHibernate clusterCache = new UmcClusterDAOHibernate();
+            List<clsCluster> clusters = clusterCache.FindAll();
+
+            // Then render the cluster size image.
+            image = RenderDatasetInfo.ClusterSizeHistogram_Thumbnail(clusters, m_width, m_height, options);
+            name  = "clusterSizes.png";
+            path  = Path.Combine(m_plotSavePath, name);
+            image.Save(path, System.Drawing.Imaging.ImageFormat.Png);
+
             m_triggerEvent.Set();
         }
         /// <summary>
@@ -124,14 +154,38 @@ namespace MultiAlignConsole
         /// <param name="e"></param>
         static void processor_FeaturesAligned(object sender, FeaturesAlignedEventArgs e)
         {
-            Log("Features Aligned - " + e.AligneeDatasetInformation.DatasetName);
+            string name = e.AligneeDatasetInformation.DatasetName;
+
+            Log("Features Aligned - " + name);
+
+            ChartDisplayOptions options = new ChartDisplayOptions(false, true, true, true);
+
+            options.MarginMin   = 1;
+            options.MarginMax   = 100;
+            options.Title       = "NET Error Histogram " + name;
+            options.XAxisLabel  = "NET Error (%)";
+            options.YAxisLabel  = "Count";
+            options.Width       = m_width;
+            options.Height      = m_height;
 
             // Create the heatmap
-            Image image = RenderDatasetInfo.AlignmentHeatmap_Thumbnail(e.AlignmentData, m_width, m_height);            
-            string name = Path.GetFileNameWithoutExtension(e.AligneeDatasetInformation.DatasetName) + "_heatmap.png";
-            string path = Path.Combine(m_plotSavePath, name);
+            Image image      = RenderDatasetInfo.AlignmentHeatmap_Thumbnail(e.AlignmentData, m_width, m_height);            
+            string labelName = Path.GetFileNameWithoutExtension(name) + "_heatmap.png";
+            string path      = Path.Combine(m_plotSavePath, labelName);
+            image.Save(path, System.Drawing.Imaging.ImageFormat.Png);
 
-            image.Save(name, System.Drawing.Imaging.ImageFormat.Png);            
+            image       = RenderDatasetInfo.ErrorHistogram_Thumbnail(e.AlignmentData.netErrorHistogram, options);
+            labelName   = Path.GetFileNameWithoutExtension(name) + "_netErrorHistogram.png";
+            path        = Path.Combine(m_plotSavePath, labelName);
+            image.Save(path, System.Drawing.Imaging.ImageFormat.Png);
+
+            options.Title       = "Mass Error Histogram " + name;
+            options.XAxisLabel  = "Mass Error (PPM)";
+            image       = RenderDatasetInfo.ErrorHistogram_Thumbnail(e.AlignmentData.massErrorHistogram, options);
+            labelName   = Path.GetFileNameWithoutExtension(name) + "_massErrorHistogram.png";
+            path        = Path.Combine(m_plotSavePath, labelName);
+            image.Save(path, System.Drawing.Imaging.ImageFormat.Png);
+
         }
         /// <summary>
         /// Logs when features are clustered.
@@ -140,7 +194,7 @@ namespace MultiAlignConsole
         /// <param name="e"></param>
         static void processor_FeaturesClustered(object sender, FeaturesClusteredEventArgs e)
         {
-            Log("Features Clustered.");
+            Log("Features Clustered.");            
         }
         /// <summary>
         /// Logs when features are peak matched.
@@ -170,14 +224,6 @@ namespace MultiAlignConsole
             Log(e.StatusMessage);
         }
         /// <summary>
-        /// Handles triggering the main application thread to let it know the analysis is complete.
-        /// </summary>
-        /// <param name="sender"></param>
-        static void analysis_AnalysisComplete(object sender)
-        {
-            m_triggerEvent.Set();
-        }
-        /// <summary>
         /// Calculates the current usage of current processes memory.
         /// </summary>
         /// <returns>Memory usage of current process.</returns>
@@ -194,27 +240,11 @@ namespace MultiAlignConsole
         #endregion
 
         /// <summary>
-        /// Main entry point of application.
+        /// Processes the MA analysis data.
         /// </summary>
         /// <param name="args"></param>
-        static void Main(string[] args)
+        static void StartMultiAlign(string [] args)
         {
-            // Set the log path.
-            DateTime now = DateTime.Now;
-            m_logPath = string.Format("log_{1}-{0}-{2}-{3}-{4}-{5}.txt",
-                                        now.Day,
-                                        now.Month,
-                                        now.Year,
-                                        now.Hour,
-                                        now.Minute,
-                                        now.Second);
-           
-            Log("Starting MultiAlign Console Application."); 
-            if (args.Length < 1 || args[0] == "-h" || args[0] == "-help")
-            {
-                PrintHelp();
-                return;
-            }
 
             // Determine options.
             string fileInputList = null;
@@ -232,7 +262,11 @@ namespace MultiAlignConsole
                 PrintHelp();
                 return;
             }
-          
+
+            //TODO: Make this a default value constant 
+            m_width  = 800;
+            m_height = 800; 
+
             // Read the input datasets.
             if (!File.Exists(fileInputList))
             {
@@ -291,7 +325,8 @@ namespace MultiAlignConsole
             analysis.LoadParametersFromFile(parameterFile);
 
             MultiAlignParameterIniFileWriter writer = new MultiAlignParameterIniFileWriter();            
-            writer.WriteParametersToFile("options.ini", analysis);            
+            writer.WriteParametersToFile("options.ini", analysis);
+            processor.ClusterAlgorithmType = ClusteringAlgorithmType.AverageLinkage;
 
             // Create dataset information.
             int i = 0;
@@ -341,6 +376,33 @@ namespace MultiAlignConsole
             analysis.Dispose();
             processor.Dispose();
             Log("Analysis Complete.");                        
+        }
+
+
+        /// <summary>
+        /// Main entry point of application.
+        /// </summary>
+        /// <param name="args"></param>
+        static void Main(string[] args)
+        {
+            // Set the log path.
+            DateTime now = DateTime.Now;
+            m_logPath = string.Format("log_{1}-{0}-{2}-{3}-{4}-{5}.txt",
+                                        now.Day,
+                                        now.Month,
+                                        now.Year,
+                                        now.Hour,
+                                        now.Minute,
+                                        now.Second);
+
+            Log("Starting MultiAlign Console Application.");
+            if (args.Length < 1 || args[0] == "-h" || args[0] == "-help")
+            {
+                PrintHelp();
+                return;
+            }
+
+            StartMultiAlign(args);
         }
     }
 }

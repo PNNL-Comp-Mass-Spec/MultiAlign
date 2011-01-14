@@ -342,19 +342,15 @@ namespace MultiAlignWin.Forms
                                                                                               false,
                                                                                               false);
 
-                Image chargeStateHistogram = RenderDatasetInfo.ChargeStateHistogram_Thumbnail(mobj_analysis,
+                Image chargeStateHistogram = RenderDatasetInfo.ChargeStateHistogram_Thumbnail(mobj_analysis.GetAllUMCS(),
                                                                                               mpictureBox_scoreHistograms.Width,
                                                                                               mpictureBox_scoreHistograms.Height,
-                                                                                              false,
-                                                                                              false,
-                                                                                              false);
+                                                                                              new ChartDisplayOptions(false, false, false, false));
 
-                Image clusterSizeHistogram = RenderDatasetInfo.ClusterSizeHistogram_Thumbnail(mobj_analysis,
+                Image clusterSizeHistogram = RenderDatasetInfo.ClusterSizeHistogram_Thumbnail(mobj_analysis.GetClusters(),
                                                                                               mpictureBox_scoreHistograms.Width,
                                                                                               mpictureBox_scoreHistograms.Height,
-                                                                                              false,
-                                                                                              false,
-                                                                                              false);
+                                                                                              new ChartDisplayOptions(false, false, false, false));
                 Image scoreSize = RenderDatasetInfo.ClusterScoreVsClusterSize_Thumbnail(mobj_analysis,
                                                                                               mpictureBox_clusterSizeHistogram.Width,
                                                                                               mpictureBox_clusterSizeHistogram.Height,
@@ -614,7 +610,7 @@ namespace MultiAlignWin.Forms
 
             if (displayForm == null)
             {
-                controlHistogram chart = RenderDatasetInfo.ClusterSizeHistogram_Chart(mobj_analysis);
+                controlHistogram chart = RenderDatasetInfo.ClusterSizeHistogram_Chart(mobj_analysis.GetClusters());
                 displayForm = RegisterChart(name, chart);
             }
             if (displayForm != null)
@@ -686,7 +682,8 @@ namespace MultiAlignWin.Forms
 
             if (displayForm == null)
             {
-                controlHistogram chart = RenderDatasetInfo.ChargeStateHistogram_Chart(mobj_analysis);
+                List<clsUMC> umcs = mobj_analysis.GetAllUMCS();
+                controlHistogram chart = RenderDatasetInfo.ChargeStateHistogram_Chart(umcs);
                 displayForm = RegisterChart(name, chart);
             }
 
