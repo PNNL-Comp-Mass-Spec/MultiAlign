@@ -160,6 +160,9 @@ namespace PNNLProteomics.MultiAlign
 					case "Drift_Time":
 						columnMap.Add("Umc.DriftTime", i);
 						break;
+					case "Avg_Interference_Score":
+						columnMap.Add("Umc.AverageInterferenceScore", i);
+						break;
 					case "Conformation_Fit_Score":
 						columnMap.Add("Umc.ConformationFitScore", i);
 						break;
@@ -242,13 +245,14 @@ namespace PNNLProteomics.MultiAlign
                     {
                         umc.ChargeMax = (short)Int16.Parse(columns[m_columnMap["Umc.ChargeMax"]]);
                     }
-					if (m_columnMap.ContainsKey("Umc.SpectralCount"))			umc.SpectralCount = int.Parse(columns[m_columnMap["Umc.SpectralCount"]]);
-					if (m_columnMap.ContainsKey("Umc.MZForCharge"))				umc.MZForCharge = Double.Parse(columns[m_columnMap["Umc.MZForCharge"]]);
-					if (m_columnMap.ContainsKey("Umc.DriftTime"))				umc.DriftTime = float.Parse(columns[m_columnMap["Umc.DriftTime"]]);
-					if (m_columnMap.ContainsKey("Umc.ConformationFitScore"))	umc.ConformationFitScore = Double.Parse(columns[m_columnMap["Umc.ConformationFitScore"]]);
-					if (m_columnMap.ContainsKey("Umc.IsotopicFitScore"))		umc.IsotopicFitScore = Double.Parse(columns[m_columnMap["Umc.IsotopicFitScore"]]);
+					if (m_columnMap.ContainsKey("Umc.SpectralCount"))				umc.SpectralCount = int.Parse(columns[m_columnMap["Umc.SpectralCount"]]);
+					if (m_columnMap.ContainsKey("Umc.MZForCharge"))					umc.MZForCharge = Double.Parse(columns[m_columnMap["Umc.MZForCharge"]]);
+					if (m_columnMap.ContainsKey("Umc.DriftTime"))					umc.DriftTime = float.Parse(columns[m_columnMap["Umc.DriftTime"]]);
+					if (m_columnMap.ContainsKey("Umc.AverageInterferenceScore"))	umc.AverageInterferenceScore = Double.Parse(columns[m_columnMap["Umc.AverageInterferenceScore"]]);
+					if (m_columnMap.ContainsKey("Umc.ConformationFitScore"))		umc.ConformationFitScore = Double.Parse(columns[m_columnMap["Umc.ConformationFitScore"]]);
+					if (m_columnMap.ContainsKey("Umc.IsotopicFitScore"))			umc.IsotopicFitScore = Double.Parse(columns[m_columnMap["Umc.IsotopicFitScore"]]);
 					//if (m_columnMap.ContainsKey("Umc.MembersPercentageScore"))	umc.MembersPercentageScore = Double.Parse(columns[m_columnMap["Umc.MembersPercentageScore"]]);
-					//if (m_columnMap.ContainsKey("Umc.CombinedScore"))			umc.CombinedScore = Double.Parse(columns[m_columnMap["Umc.CombinedScore"]]);
+					//if (m_columnMap.ContainsKey("Umc.CombinedScore"))				umc.CombinedScore = Double.Parse(columns[m_columnMap["Umc.CombinedScore"]]);
 					umcList.Add(umc);
 					previousId = currentId;
 				}
