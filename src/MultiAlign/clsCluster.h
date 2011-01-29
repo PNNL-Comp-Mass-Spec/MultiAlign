@@ -15,6 +15,7 @@ namespace MultiAlignEngine
 			double mdouble_aligned_net; 
 			int    mshort_charge; 
 			int    mshort_num_dataset_members; 
+			int    mint_member_count;
 			double mdouble_driftTime;
 
 			double mdouble_netError	;
@@ -106,13 +107,21 @@ namespace MultiAlignEngine
 				mshort_charge = value;
 			}
 
-			__property int get_MemberCount()
+			__property int get_DatasetMemberCount()
 			{
 				return mshort_num_dataset_members;
 			}
 
-			__property void set_MemberCount(int value){
+			__property void set_DatasetMemberCount(int value){
 				mshort_num_dataset_members = value;
+			}
+			__property int get_MemberCount()
+			{
+				return mint_member_count;
+			}
+
+			__property void set_MemberCount(int value){
+				mint_member_count = value;
 			}
 
 			__property double get_DriftTime()

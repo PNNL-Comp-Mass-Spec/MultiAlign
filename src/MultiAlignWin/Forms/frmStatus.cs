@@ -86,7 +86,7 @@ namespace MultiAlignWin
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine(ex.Message + ex.StackTrace) ; 
+				
 			}
 
 		}

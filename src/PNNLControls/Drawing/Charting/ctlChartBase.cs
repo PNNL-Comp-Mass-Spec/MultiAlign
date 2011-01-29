@@ -461,12 +461,12 @@ namespace PNNLControls
 				}
 				catch (Exception ex) 
 				{
-					Console.WriteLine(ex);
+					
 				}			
 			} 
 			catch (Exception ex) 
 			{
-                Console.WriteLine(ex.Message);
+                //Console.WriteLine(ex.Message);
 			}
         }
         /// <summary>

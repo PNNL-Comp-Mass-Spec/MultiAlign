@@ -37,6 +37,8 @@ namespace MultiAlignEngine
 			bool mbool_ignoreCharge;
 			/// Flag indicating whether to align the clusters to the database if a database exists.
 			bool mbool_alignToDatabase;
+			/// number of recursion levels to use if using a cached clustering type.
+			int mint_recursionLevels ;
 		public:
 		private:
 			enmClusterRepresentativeType menmClusterRepresentativeType; 
@@ -44,6 +46,17 @@ namespace MultiAlignEngine
 		public: 
 			clsClusterOptions(void);
 			~clsClusterOptions(void);
+			
+			[clsDataSummaryAttribute("Recursion Levels")]			
+			[clsParameterFileAttribute("RecursionLevels", "ClusterOptions")]
+			__property int get_RecursionLevels()
+			{
+				return mint_recursionLevels;
+			}
+			__property void set_RecursionLevels(int value)
+			{
+				mint_recursionLevels = value; 
+			}
 
 			[clsDataSummaryAttribute("Mass Tolerance")]			
 			[clsParameterFileAttribute("MassTolerance", "ClusterOptions")]

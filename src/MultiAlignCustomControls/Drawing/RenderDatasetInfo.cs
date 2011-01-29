@@ -30,7 +30,33 @@ namespace MultiAlign.Drawing
     {
         private const int CONST_PRE_POINT_SIZE  = 1;
         private const int CONST_POST_POINT_SIZE = 1;
-        
+
+        /// <summary>
+        /// Creates a thumbnail from the chart provided.
+        /// </summary>
+        /// <param name="chart"></param>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        public static Image CreateThumbnailFromChart(ctlChartBase chart, ChartDisplayOptions options)
+        {
+            chart.XAxisLabel    = options.XAxisLabel;
+            chart.YAxisLabel    = options.YAxisLabel;
+            chart.Title         = options.Title;
+
+            chart.Margins.LeftMarginMin   = options.MarginMin;
+            chart.Margins.LeftMarginMax   = options.MarginMax;
+            chart.Margins.BottomMarginMax = options.MarginMax;
+            chart.Margins.BottomMarginMin = options.MarginMin;
+
+            chart.LegendVisible  = options.DisplayLegend;
+            chart.AxisVisible    = options.DisplayAxis;
+            chart.TitleVisible   = options.DisplayTitle;
+            chart.XAxisGridLines = options.DisplayGridLines;
+            chart.YAxisGridLines = options.DisplayGridLines;
+
+            return chart.ToBitmap(options.Width, options.Height);
+        }
+
         #region NET Residual Plots
         /// <summary>
         /// Renders the scan versus the cluster net to the provided bitmap.
@@ -69,6 +95,714 @@ namespace MultiAlign.Drawing
             {
             }
             return image;
+        }
+        public static Image ClusterScoreVsNET_Thumbnail(List<clsCluster> clusters, ChartDisplayOptions options)
+        {
+            Image image = null;
+
+            using (ctlChartBase chart = ClusterScoreVsNET_Chart(clusters, options))
+            {
+                if (chart == null)
+                    return null;
+                image = CreateThumbnailFromChart(chart, options);
+            }
+            return image;
+        }
+        /// <summary>
+        /// Creates a scan width chart for a set of clusters.
+        /// </summary>
+        /// <param name="clusters"></param>
+        /// <returns></returns>
+        public static ctlScatterChart ClusterScoreVsNET_Chart(List<clsCluster> clusters, ChartDisplayOptions options)
+        {
+            if (clusters == null)
+                return null;
+
+            if (clusters.Count < 1)
+                return null;
+
+            ctlScatterChart chart = new ctlScatterChart();
+            chart.XAxisLabel = options.XAxisLabel;
+            chart.YAxisLabel = options.YAxisLabel;
+            chart.Title = options.Title;
+
+            chart.Margins.LeftMarginMin = options.MarginMin;
+            chart.Margins.LeftMarginMax = options.MarginMax;
+            chart.Margins.BottomMarginMax = options.MarginMax;
+            chart.Margins.BottomMarginMin = options.MarginMin;
+
+            chart.LegendVisible = options.DisplayLegend;
+            chart.AxisVisible = options.DisplayAxis;
+            chart.TitleVisible = options.DisplayTitle;
+            chart.XAxisGridLines = options.DisplayGridLines;
+            chart.YAxisGridLines = options.DisplayGridLines;
+
+            float[] x = new float[clusters.Count];
+            float[] y = new float[clusters.Count];
+
+            int i = 0;
+            foreach (clsCluster cluster in clusters)
+            {
+                y[i] = Convert.ToSingle(cluster.MeanScore);
+                x[i] = Convert.ToSingle(cluster.Net);
+                i++;
+            }
+            clsPlotParams parameters = new clsPlotParams(new BubbleShape(1, false), Color.Black);
+            clsSeries series = new clsSeries(ref x, ref y, parameters);
+
+            chart.AddSeries(series);
+            chart.AutoViewPort();
+
+            return chart;
+        }
+        public static Image ClusterScoreVsMass_Thumbnail(List<clsCluster> clusters, ChartDisplayOptions options)
+        {
+            Image image = null;
+
+            using (ctlChartBase chart = ClusterScoreVsMass_Chart(clusters, options))
+            {
+                if (chart == null)
+                    return null;
+                image = CreateThumbnailFromChart(chart, options);
+            }
+            return image;
+        }
+        /// <summary>
+        /// Creates a scan width chart for a set of clusters.
+        /// </summary>
+        /// <param name="clusters"></param>
+        /// <returns></returns>
+        public static ctlScatterChart ClusterScoreVsMass_Chart(List<clsCluster> clusters, ChartDisplayOptions options)
+        {
+            if (clusters == null)
+                return null;
+
+            if (clusters.Count < 1)
+                return null;
+
+            ctlScatterChart chart = new ctlScatterChart();
+            chart.XAxisLabel = options.XAxisLabel;
+            chart.YAxisLabel = options.YAxisLabel;
+            chart.Title = options.Title;
+
+            chart.Margins.LeftMarginMin = options.MarginMin;
+            chart.Margins.LeftMarginMax = options.MarginMax;
+            chart.Margins.BottomMarginMax = options.MarginMax;
+            chart.Margins.BottomMarginMin = options.MarginMin;
+
+            chart.LegendVisible = options.DisplayLegend;
+            chart.AxisVisible = options.DisplayAxis;
+            chart.TitleVisible = options.DisplayTitle;
+            chart.XAxisGridLines = options.DisplayGridLines;
+            chart.YAxisGridLines = options.DisplayGridLines;
+
+            float[] x = new float[clusters.Count];
+            float[] y = new float[clusters.Count];
+
+            int i = 0;
+            foreach (clsCluster cluster in clusters)
+            {
+                y[i] = Convert.ToSingle(cluster.MeanScore);
+                x[i] = Convert.ToSingle(cluster.Mass);
+                i++;
+            }
+            clsPlotParams parameters = new clsPlotParams(new BubbleShape(1, false), Color.Black);
+            clsSeries series = new clsSeries(ref y, ref x, parameters);
+
+            chart.AddSeries(series);
+            chart.AutoViewPort();
+
+            return chart;
+        }
+        /// <summary>
+        /// Creates a scan width chart for a set of clusters.
+        /// </summary>
+        /// <param name="clusters"></param>
+        /// <returns></returns>
+        public static ctlLineChart ClusterScoreVsNetLine_Chart(List<clsCluster> clusters, ChartDisplayOptions options)
+        {
+            if (clusters == null)
+                return null;
+
+            if (clusters.Count < 1)
+                return null;
+
+            ctlLineChart chart = new ctlLineChart();
+            chart.XAxisLabel = options.XAxisLabel;
+            chart.YAxisLabel = options.YAxisLabel;
+            chart.Title = options.Title;
+
+            chart.Margins.LeftMarginMin = options.MarginMin;
+            chart.Margins.LeftMarginMax = options.MarginMax;
+            chart.Margins.BottomMarginMax = options.MarginMax;
+            chart.Margins.BottomMarginMin = options.MarginMin;
+
+            chart.LegendVisible = options.DisplayLegend;
+            chart.AxisVisible = options.DisplayAxis;
+            chart.TitleVisible = options.DisplayTitle;
+            chart.XAxisGridLines = options.DisplayGridLines;
+            chart.YAxisGridLines = options.DisplayGridLines;
+
+            int i = 0;
+            double maxMass = double.MinValue;
+            double minMass = double.MaxValue;
+
+            foreach (clsCluster cluster in clusters)
+            {
+                maxMass = Math.Max(maxMass, cluster.Net);
+                minMass = Math.Min(minMass, cluster.Net);
+            }
+
+            double dMass = (maxMass - minMass) / Convert.ToDouble(50);
+            float[] x = new float[50];
+            float[] y = new float[50];
+            int[] n = new int[50];
+            for (i = 0; i < x.Length; i++)
+            {
+                x[i] = Convert.ToSingle((i * dMass) + minMass);
+                n[i] = 0;
+            }
+            foreach (clsCluster cluster in clusters)
+            {
+                int massIndex = Convert.ToInt32(cluster.Net / dMass);
+                massIndex = Math.Max(0, Math.Min(49, massIndex));
+
+                y[massIndex] += Convert.ToSingle(cluster.MeanScore);
+                n[massIndex]++;
+            }
+
+            for (i = 0; i < x.Length; i++)
+            {
+                if (n[i] > 0)
+                {
+                    y[i] /= Convert.ToSingle(n[i]);
+                }
+            }
+
+            clsPlotParams parameters = new clsPlotParams(new BubbleShape(1, false), Color.Black);
+            clsSeries series = new clsSeries(ref x, ref y, parameters);
+
+            chart.AddSeries(series);
+            chart.AutoViewPort();
+            chart.VerticalLabels = false;
+
+            return chart;
+        }
+        public static Image ClusterScoreVsNetLine_Thumbnail(List<clsCluster> clusters, ChartDisplayOptions options)
+        {
+            Image image = null;
+
+            using (ctlChartBase chart = ClusterScoreVsNetLine_Chart(clusters, options))
+            {
+                if (chart == null)
+                    return null;
+                image = CreateThumbnailFromChart(chart, options);
+            }
+            return image;
+        }
+        /// <summary>
+        /// Creates a scan width chart for a set of clusters.
+        /// </summary>
+        /// <param name="clusters"></param>
+        /// <returns></returns>
+        public static ctlLineChart ClusterScoreVsMassLine_Chart(List<clsCluster> clusters, ChartDisplayOptions options)
+        {
+            if (clusters == null)
+                return null;
+
+            if (clusters.Count < 1)
+                return null;
+
+            ctlLineChart chart = new ctlLineChart();
+            chart.XAxisLabel = options.XAxisLabel;
+            chart.YAxisLabel = options.YAxisLabel;
+            chart.Title = options.Title;
+
+            chart.Margins.LeftMarginMin = options.MarginMin;
+            chart.Margins.LeftMarginMax = options.MarginMax;
+            chart.Margins.BottomMarginMax = options.MarginMax;
+            chart.Margins.BottomMarginMin = options.MarginMin;
+
+            chart.LegendVisible = options.DisplayLegend;
+            chart.AxisVisible = options.DisplayAxis;
+            chart.TitleVisible = options.DisplayTitle;
+            chart.XAxisGridLines = options.DisplayGridLines;
+            chart.YAxisGridLines = options.DisplayGridLines;
+            
+            int i = 0;
+            double maxMass = double.MinValue;
+            double minMass = double.MaxValue;
+
+            foreach (clsCluster cluster in clusters)
+            {
+                maxMass = Math.Max(maxMass, cluster.Mass);
+                minMass = Math.Min(minMass, cluster.Mass);
+            }
+
+            double dMass = (maxMass - minMass) / Convert.ToDouble(50);
+            float[] x = new float[50];
+            float[] y = new float[50];
+            int  [] n = new int[50];
+            for (i = 0; i < x.Length; i++)
+            {
+                x[i] = Convert.ToSingle((i * dMass) + minMass);                
+                n[i] = 0;
+            }
+            foreach (clsCluster cluster in clusters)
+            {
+                int massIndex = Convert.ToInt32(cluster.Mass / dMass);
+                massIndex     = Math.Max(0, Math.Min(49, massIndex));
+
+                y[massIndex] += Convert.ToSingle(cluster.MeanScore);
+                n[massIndex]++;                
+            }
+
+            for (i = 0; i < x.Length; i++)
+            {
+                if (n[i] > 0)
+                {
+                    y[i] /= Convert.ToSingle(n[i]);
+                }
+            }
+            
+            clsPlotParams parameters = new clsPlotParams(new BubbleShape(1, false), Color.Black);
+            clsSeries series = new clsSeries(ref y, ref x, parameters);
+            
+            chart.AddSeries(series);
+            chart.AutoViewPort();
+            chart.VerticalLabels = false;
+
+            return chart;
+        }
+        public static Image ClusterScoreVsMassLine_Thumbnail(List<clsCluster> clusters, ChartDisplayOptions options)
+        {
+            Image image = null;
+
+            using (ctlChartBase chart = ClusterScoreVsMassLine_Chart(clusters, options))
+            {
+                if (chart == null)
+                    return null;
+                image = CreateThumbnailFromChart(chart, options);
+            }
+            return image;
+        }
+        public static Image ClusterMemberVsNET_Thumbnail(List<clsCluster> clusters, ChartDisplayOptions options)
+        {
+            Image image = null;
+
+            using (ctlChartBase chart = ClusterMemberVsNET_Chart(clusters, options))
+            {
+                if (chart == null)
+                    return null;
+                image = CreateThumbnailFromChart(chart, options);
+            }
+            return image;
+        }
+        public static Image ClusterNetRangeVsScore_Thumbnail(List<double> ranges, List<double> scores, ChartDisplayOptions options)            
+        {
+            Image image = null;
+
+            using (ctlChartBase chart = ClusterNetRangeVsScore_Chart(ranges, scores, options))
+            {
+                if (chart == null)
+                    return null;
+                image = CreateThumbnailFromChart(chart, options);
+            }
+            return image;
+        }
+        public static Image ClusterMemberVsMass_Thumbnail(List<clsCluster> clusters, ChartDisplayOptions options)
+        {
+            Image image = null;
+
+            using (ctlChartBase chart = ClusterMemberVsNET_Chart(clusters, options))
+            {
+                if (chart == null)
+                    return null;
+                image = CreateThumbnailFromChart(chart, options);
+            }
+            return image;
+        }
+        public static Image ClustersPassingScoreScatterPlot_Thumbnail(List<clsCluster> clusters, double maxScore, ChartDisplayOptions options)
+        {
+            Image image = null;
+
+            using (ctlChartBase chart = ClustersPassingScoreScatterPlot_Chart(clusters, maxScore, options))
+            {
+                if (chart == null)
+                    return null;
+                image = CreateThumbnailFromChart(chart, options);
+            }
+            return image;
+        }
+        public static Image ClustersCountPassingScoreFilter_Thumbnail(List<clsCluster> clusters, double startScore, double stepScore, double maxScore, ChartDisplayOptions options)
+        {
+            Image image = null;
+
+            using (ctlChartBase chart = ClustersCountPassingScoreFilter_Chart(clusters, startScore, stepScore, maxScore, options))
+            {
+                if (chart == null)
+                    return null;
+                image = CreateThumbnailFromChart(chart, options);
+            }
+            return image;
+        }
+        public static Image ClusterSizeNETRange_Thumbnail(int size, List<double> widths, ChartDisplayOptions options)
+        {
+            Image image = null;
+
+            using (ctlChartBase chart = ClusterSizeNETRange_Chart(size, widths, options))
+            {
+                if (chart == null)
+                    return null;
+                image = CreateThumbnailFromChart(chart, options);
+            }
+            return image;
+        }
+        /// <summary>
+        /// Creates a scan width chart for a set of clusters.
+        /// </summary>
+        /// <param name="clusters"></param>
+        /// <returns></returns>
+        public static controlHistogram ClusterSizeNETRange_Chart(int size, List<double> widths, ChartDisplayOptions options)            
+        {
+            
+            if (widths == null)
+                return null;
+
+            if (widths.Count < 1)
+                return null;
+
+            controlHistogram chart = new controlHistogram();
+            chart.XAxisLabel = options.XAxisLabel;
+            chart.YAxisLabel = options.YAxisLabel;
+            chart.Title = options.Title;
+
+            chart.Margins.LeftMarginMin = options.MarginMin;
+            chart.Margins.LeftMarginMax = options.MarginMax;
+            chart.Margins.BottomMarginMax = options.MarginMax;
+            chart.Margins.BottomMarginMin = options.MarginMin;
+
+            chart.LegendVisible = options.DisplayLegend;
+            chart.AxisVisible = options.DisplayAxis;
+            chart.TitleVisible = options.DisplayTitle;
+            chart.XAxisGridLines = options.DisplayGridLines;
+            chart.YAxisGridLines = options.DisplayGridLines;
+
+            widths.Sort();
+            double max    = widths[widths.Count - 1];
+            double min    = widths[0];
+            double dWidth = (max - min) / 50; 
+            
+            float[] x = new float[51];
+            float[] y = new float[51];
+
+            // Edge case, if we have one value for the histogram then
+            // this wont work.
+            if (widths.Count == 1)
+            {
+                dWidth = widths[0] * .1;
+                min = widths[0] - (dWidth * 25);
+                for (int i = 0; i < 50; i++)
+                {
+                    x[i] = Convert.ToSingle((i * dWidth) + min);
+                }
+                 int index = Convert.ToInt32((widths[0] - min) / dWidth);
+                 index = Math.Min(49, Math.Max(0, index));
+                 y[index]++;                
+            }
+            else
+            {
+                for (int i = 0; i < 51; i++)
+                {
+                    x[i] = Convert.ToSingle((i * dWidth) + min);
+                }
+                for (int i = 0; i < widths.Count; i++)
+                {
+                    int index = 0;
+                    if (dWidth != 0)
+                    {
+                        index = Convert.ToInt32((widths[i] - min)/ dWidth);
+                    }
+                    index = Math.Min(49, Math.Max(0, index));
+                    y[index]++;
+                }
+            }
+            
+
+            clsPlotParams parameters = new clsPlotParams(new BubbleShape(1, false), Color.Red);
+            clsSeries series = new clsSeries(ref x, ref y, parameters);
+            chart.BinSize = Convert.ToSingle(dWidth);
+            chart.AddSeries(series);
+            chart.AutoViewPort();
+            
+            return chart;
+        }
+        /// <summary>
+        /// Creates a scan width chart for a set of clusters.
+        /// </summary>
+        /// <param name="clusters"></param>
+        /// <returns></returns>
+        public static ctlScatterChart ClusterMemberVsNET_Chart(List<clsCluster> clusters, ChartDisplayOptions options)
+        {
+            if (clusters == null)
+                return null;
+
+            if (clusters.Count < 1)
+                return null;
+
+            ctlScatterChart chart = new ctlScatterChart();
+            chart.XAxisLabel = options.XAxisLabel;
+            chart.YAxisLabel = options.YAxisLabel;
+            chart.Title = options.Title;
+
+            chart.Margins.LeftMarginMin = options.MarginMin;
+            chart.Margins.LeftMarginMax = options.MarginMax;
+            chart.Margins.BottomMarginMax = options.MarginMax;
+            chart.Margins.BottomMarginMin = options.MarginMin;
+
+            chart.LegendVisible = options.DisplayLegend;
+            chart.AxisVisible = options.DisplayAxis;
+            chart.TitleVisible = options.DisplayTitle;
+            chart.XAxisGridLines = options.DisplayGridLines;
+            chart.YAxisGridLines = options.DisplayGridLines;
+
+            float[] x = new float[clusters.Count];
+            float[] y = new float[clusters.Count];
+
+            int i = 0;
+            foreach (clsCluster cluster in clusters)
+            {
+                y[i] = cluster.DatasetMemberCount;
+                x[i] = Convert.ToSingle(cluster.Net);
+                i++;
+            }
+            clsPlotParams parameters = new clsPlotParams(new BubbleShape(1, false), Color.Black);
+            clsSeries series = new clsSeries(ref x, ref y, parameters);
+
+            chart.AddSeries(series);
+            chart.AutoViewPort();
+
+            return chart;
+        }
+
+        /// <summary>
+        /// Plots all clusters whose score is less than the max score.
+        /// </summary>
+        /// <param name="clusters"></param>
+        /// <returns></returns>
+        public static ctlScatterChart ClustersPassingScoreScatterPlot_Chart(List<clsCluster> clusters, double maxScore, ChartDisplayOptions options)
+        {
+            if (clusters == null)
+                return null;
+
+            if (clusters.Count < 1)
+                return null;
+
+            ctlScatterChart chart = new ctlScatterChart();
+            chart.XAxisLabel = options.XAxisLabel;
+            chart.YAxisLabel = options.YAxisLabel;
+            chart.Title = options.Title;
+
+            chart.Margins.LeftMarginMin = options.MarginMin;
+            chart.Margins.LeftMarginMax = options.MarginMax;
+            chart.Margins.BottomMarginMax = options.MarginMax;
+            chart.Margins.BottomMarginMin = options.MarginMin;
+
+            chart.LegendVisible = options.DisplayLegend;
+            chart.AxisVisible = options.DisplayAxis;
+            chart.TitleVisible = options.DisplayTitle;
+            chart.XAxisGridLines = options.DisplayGridLines;
+            chart.YAxisGridLines = options.DisplayGridLines;
+
+            
+            List<clsCluster> newClusters = new List<clsCluster>();
+
+            foreach (clsCluster cluster in clusters)
+            {
+                if (cluster.MeanScore < maxScore)
+                {
+                    newClusters.Add(cluster);
+                }
+            }             
+
+            if (newClusters.Count < 1)
+            {
+                return null;
+            }
+
+            float[] x = new float[newClusters.Count];
+            float[] y = new float[newClusters.Count];
+
+
+            for (int i = 0; i < newClusters.Count; i++)
+            {
+                y[i] = Convert.ToSingle(newClusters[i].Mass);
+                x[i] = Convert.ToSingle(newClusters[i].Net);
+            }
+
+            clsPlotParams parameters = new clsPlotParams(new BubbleShape(1, false), Color.Black);
+            clsSeries series = new clsSeries(ref x, ref y, parameters);
+
+            chart.AddSeries(series);
+            chart.AutoViewPort();
+
+            return chart;
+        }
+        /// <summary>
+        /// Plots all clusters whose score is less than the max score.
+        /// </summary>
+        /// <param name="clusters"></param>
+        /// <returns></returns>
+        public static ctlLineChart ClustersCountPassingScoreFilter_Chart(List<clsCluster> clusters, double scoreStart, double scoreStep, double maxScore, ChartDisplayOptions options)
+        {
+            if (clusters == null)
+                return null;
+
+            if (clusters.Count < 1)
+                return null;
+
+            ctlLineChart chart = new ctlLineChart();
+            chart.XAxisLabel = options.XAxisLabel;
+            chart.YAxisLabel = options.YAxisLabel;
+            chart.Title = options.Title;
+
+            chart.Margins.LeftMarginMin     = options.MarginMin;
+            chart.Margins.LeftMarginMax     = options.MarginMax;
+            chart.Margins.BottomMarginMax   = options.MarginMax;
+            chart.Margins.BottomMarginMin   = options.MarginMin;
+
+            chart.LegendVisible     = options.DisplayLegend;
+            chart.AxisVisible       = options.DisplayAxis;
+            chart.TitleVisible      = options.DisplayTitle;
+            chart.XAxisGridLines    = options.DisplayGridLines;
+            chart.YAxisGridLines    = options.DisplayGridLines;
+
+            List<double> xx = new List<double>();
+            List<int> counts = new List<int>();
+            for (double score = scoreStart; score < maxScore; score += scoreStep)
+            {
+                int count = 0;
+                foreach (clsCluster cluster in clusters)
+                {
+                    if (cluster.MeanScore < score)
+                    {
+                        count++;
+                    }
+                }
+                counts.Add(count);
+                xx.Add(score);
+            }
+            
+            if (xx.Count < 1)
+            {
+                return null;
+            }
+            float[] x = new float[xx.Count];
+            float[] y = new float[xx.Count];
+
+            
+            for(int i = 0; i < xx.Count; i++)
+            {
+                y[i] = Convert.ToSingle(counts[i]);
+                x[i] = Convert.ToSingle(xx[i]);                
+            }
+
+            clsPlotParams parameters = new clsPlotParams(new BubbleShape(2, false), Color.Black);
+            parameters.LinePen = new PenProvider(new Pen(new SolidBrush(Color.Black), 2.0F));
+            clsSeries series = new clsSeries(ref x, ref y, parameters);
+
+            chart.AddSeries(series);            
+            chart.AutoViewPort();
+
+            return chart;
+        }
+        /// <summary>
+        /// Creates a scan width chart for a set of clusters.
+        /// </summary>
+        /// <param name="clusters"></param>
+        /// <returns></returns>
+        public static ctlScatterChart ClusterNetRangeVsScore_Chart(List<double> ranges, List<double> scores, ChartDisplayOptions options)
+        {
+
+            ctlScatterChart chart = new ctlScatterChart();
+            chart.XAxisLabel = options.XAxisLabel;
+            chart.YAxisLabel = options.YAxisLabel;
+            chart.Title = options.Title;
+
+            chart.Margins.LeftMarginMin = options.MarginMin;
+            chart.Margins.LeftMarginMax = options.MarginMax;
+            chart.Margins.BottomMarginMax = options.MarginMax;
+            chart.Margins.BottomMarginMin = options.MarginMin;
+
+            chart.LegendVisible = options.DisplayLegend;
+            chart.AxisVisible = options.DisplayAxis;
+            chart.TitleVisible = options.DisplayTitle;
+            chart.XAxisGridLines = options.DisplayGridLines;
+            chart.YAxisGridLines = options.DisplayGridLines;
+
+            float[] x = new float[scores.Count];
+            float[] y = new float[scores.Count];
+
+            for(int i = 0; i < scores.Count; i++)
+            {
+                x[i] = Convert.ToSingle(ranges[i]);
+                y[i] = Convert.ToSingle(scores[i]);
+                i++;
+            }
+            clsPlotParams parameters = new clsPlotParams(new BubbleShape(1, false), Color.Black);
+            clsSeries series = new clsSeries(ref x, ref y, parameters);
+
+            chart.AddSeries(series);
+            chart.AutoViewPort();
+
+            return chart;
+        }
+        /// <summary>
+        /// Creates a scan width chart for a set of clusters.
+        /// </summary>
+        /// <param name="clusters"></param>
+        /// <returns></returns>
+        public static ctlScatterChart ClusterMemberVsMass_Chart(List<clsCluster> clusters, ChartDisplayOptions options)
+        {
+            if (clusters == null)
+                return null;
+
+            if (clusters.Count < 1)
+                return null;
+
+            ctlScatterChart chart = new ctlScatterChart();
+            chart.XAxisLabel = options.XAxisLabel;
+            chart.YAxisLabel = options.YAxisLabel;
+            chart.Title = options.Title;
+
+            chart.Margins.LeftMarginMin = options.MarginMin;
+            chart.Margins.LeftMarginMax = options.MarginMax;
+            chart.Margins.BottomMarginMax = options.MarginMax;
+            chart.Margins.BottomMarginMin = options.MarginMin;
+
+            chart.LegendVisible = options.DisplayLegend;
+            chart.AxisVisible = options.DisplayAxis;
+            chart.TitleVisible = options.DisplayTitle;
+            chart.XAxisGridLines = options.DisplayGridLines;
+            chart.YAxisGridLines = options.DisplayGridLines;
+
+            float[] x = new float[clusters.Count];
+            float[] y = new float[clusters.Count];
+
+            int i = 0;
+            foreach (clsCluster cluster in clusters)
+            {
+                y[i] = cluster.DatasetMemberCount;
+                x[i] = Convert.ToSingle(cluster.Mass);
+                i++;
+            }
+            clsPlotParams parameters = new clsPlotParams(new BubbleShape(1, false), Color.Black);
+            clsSeries series = new clsSeries(ref y, ref x, parameters);
+
+            chart.AddSeries(series);
+            chart.AutoViewPort();
+
+            return chart;
         }
         /// <summary>
         /// Renders the scan versus the cluster net to the provided bitmap.
@@ -381,28 +1115,29 @@ namespace MultiAlign.Drawing
             clsPlotParams plt_params     = new clsPlotParams(shape, Color.Blue);
             plt_params.Name              = "Post-Alignment";
             chart.AutoViewPortOnAddition = true;            
-            clsSeries series             = new clsSeries(ref x, ref error, plt_params);            
-                        
-            // Residual Plots of mass vs mz error post-correcteds             
-            clsShape alignedShape           = new BubbleShape(CONST_POST_POINT_SIZE, false);
-            clsPlotParams plt_paramsAligned = new clsPlotParams(alignedShape, Color.Red);
-            plt_paramsAligned.Name          = "Pre-Alignment";
-            chart.AutoViewPortOnAddition    = true;
+            clsSeries series             = new clsSeries(ref x, ref error, plt_params);
 
-            float[] data = corrected;
-            if (invert)
+            if (corrected != null)
             {
-                data = new float[corrected.Length];
-                for (int kk = 0; kk < data.Length; kk++)
-                    data[kk] = corrected[kk] * -1;
-            }
+                // Residual Plots of mass vs mz error post-correcteds             
+                clsShape alignedShape = new BubbleShape(CONST_POST_POINT_SIZE, false);
+                clsPlotParams plt_paramsAligned = new clsPlotParams(alignedShape, Color.Red);
+                plt_paramsAligned.Name = "Pre-Alignment";
+                chart.AutoViewPortOnAddition = true;
 
-            clsSeries seriesCorrected = new clsSeries(ref x, ref corrected, plt_paramsAligned); 
-            
-            chart.AddSeries(seriesCorrected);
+                float[] data = corrected;
+                if (invert)
+                {
+                    data = new float[corrected.Length];
+                    for (int kk = 0; kk < data.Length; kk++)
+                        data[kk] = corrected[kk] * -1;
+                }
+
+                clsSeries seriesCorrected = new clsSeries(ref x, ref corrected, plt_paramsAligned);
+                chart.AddSeries(seriesCorrected);
+            }
             chart.AddSeries(series);
             chart.ViewPortHistory.Clear();
-
             return chart;
         }
         /// <summary>
@@ -1599,7 +2334,7 @@ namespace MultiAlign.Drawing
             Image image = null;
             try
             {
-                controlHistogram chart = RenderDatasetInfo.ClusterSizeHistogram_Chart(clusters);
+                controlHistogram chart = RenderDatasetInfo.ClusterSizeHistogram_Chart(clusters, options);
 
                 if (chart != null)
                 {
@@ -1623,12 +2358,50 @@ namespace MultiAlign.Drawing
             }
             return image;
         }
+
+        /// <summary>
+        /// Renders the scan versus the cluster net to the provided bitmap.
+        /// </summary>
+        public static Image ClusterDatasetMemberSizeHistogram_Thumbnail(List<clsCluster> clusters,
+                                                            int width,
+                                                            int height,
+                                                            ChartDisplayOptions options
+                                                            )
+        {
+
+            Image image = null;
+            try
+            {
+                controlHistogram chart = RenderDatasetInfo.ClusterDatasetMemberSizeHistogram_Chart(clusters, options);
+
+                if (chart != null)
+                {
+                    chart.Margins.LeftMarginMin = options.MarginMin;
+                    chart.Margins.LeftMarginMax = options.MarginMax;
+                    chart.Margins.BottomMarginMax = options.MarginMax;
+                    chart.Margins.BottomMarginMin = options.MarginMin;
+
+                    chart.LegendVisible = options.DisplayLegend;
+                    chart.AxisVisible = options.DisplayAxis;
+                    chart.TitleVisible = options.DisplayTitle;
+                    chart.XAxisGridLines = options.DisplayGridLines;
+                    chart.YAxisGridLines = options.DisplayGridLines;
+
+                    image = chart.ToBitmap(width, height);
+                    chart.Dispose();
+                }
+            }
+            catch
+            {
+            }
+            return image;
+        }
         /// <summary>
         /// 
         /// </summary>
         /// <param name="analysis"></param>
         /// <returns></returns>
-        public static controlHistogram  ClusterSizeHistogram_Chart(List<clsCluster> clusters)
+        public static controlHistogram  ClusterSizeHistogram_Chart(List<clsCluster> clusters, ChartDisplayOptions options)
         {
             if (clusters.Count < 1)
                 return null;
@@ -1638,7 +2411,7 @@ namespace MultiAlign.Drawing
             // Bin all data.
             foreach (clsCluster cluster in clusters)
             {
-                int members = cluster.mshort_num_dataset_members;
+                int members = cluster.MemberCount;
                 if (!clusterMaps.ContainsKey(members))
                 {
                     clusterMaps.Add(members, 0);
@@ -1676,13 +2449,133 @@ namespace MultiAlign.Drawing
             controlHistogram histogram  = new controlHistogram();
             histogram.BinSize           = 1.0F;
             histogram.AddData(bins, freqs, "Cluster Sizes");
-            histogram.XAxisLabel        = "Cluster Size";
-            histogram.YAxisLabel        = "Count";
-            histogram.Title             = "Cluster Size histogram";
+            histogram.XAxisLabel        = options.YAxisLabel;
+            histogram.YAxisLabel        = options.XAxisLabel;
+            histogram.Title             = options.Title;
             histogram.AutoViewPort();
             histogram.Refresh();
             return histogram;                                    
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="analysis"></param>
+        /// <returns></returns>
+        public static controlHistogram ClusterDatasetMemberSizeHistogram_Chart(List<clsCluster> clusters, ChartDisplayOptions options)
+        {
+            if (clusters.Count < 1)
+                return null;
+
+
+            Dictionary<int, int> clusterMaps = new Dictionary<int, int>();
+            // Bin all data.
+            foreach (clsCluster cluster in clusters)
+            {
+                int members = cluster.DatasetMemberCount;
+                if (!clusterMaps.ContainsKey(members))
+                {
+                    clusterMaps.Add(members, 0);
+                }
+                clusterMaps[members] = clusterMaps[members] + 1;
+            }
+
+            // Find the maximum cluster size.
+            List<int> sizes = new List<int>();
+            foreach (int key in clusterMaps.Keys)
+            {
+                sizes.Add(key);
+            }
+            sizes.Sort();
+            int maxClusters = sizes[sizes.Count - 1] + 3;
+
+            // Create the histogram.
+            float[] bins = new float[maxClusters];
+            float[] freqs = new float[maxClusters];
+
+            int i = 0;
+            for (i = 0; i < maxClusters; i++)
+            {
+                bins[i] = Convert.ToSingle(i);
+                if (clusterMaps.ContainsKey(i))
+                {
+                    freqs[i] = clusterMaps[i];
+                }
+                else
+                {
+                    freqs[i] = 0;
+                }
+            }
+
+            controlHistogram histogram = new controlHistogram();
+            histogram.BinSize = 1.0F;
+            histogram.AddData(bins, freqs, "Cluster Sizes");
+            histogram.XAxisLabel = options.YAxisLabel;
+            histogram.YAxisLabel = options.XAxisLabel;
+            histogram.Title = options.Title;
+            histogram.AutoViewPort();
+            histogram.Refresh();
+            return histogram;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="analysis"></param>
+        /// <returns></returns>
+        //public static controlHistogram ClusterSizeHistogramWithUniqueDatasets_Chart(ChartDisplayOptions options)
+        //{
+        //    if (clusters.Count < 1)
+        //        return null;
+
+
+        //    Dictionary<int, int> clusterMaps = new Dictionary<int, int>();
+        //    // Bin all data.
+        //    foreach (clsCluster cluster in clusters)
+        //    {
+        //        int members = cluster.mshort_num_dataset_members;
+        //        if (!clusterMaps.ContainsKey(members))
+        //        {
+        //            clusterMaps.Add(members, 0);
+        //        }
+        //        clusterMaps[members] = clusterMaps[members] + 1;
+        //    }
+
+        //    // Find the maximum cluster size.
+        //    List<int> sizes = new List<int>();
+        //    foreach (int key in clusterMaps.Keys)
+        //    {
+        //        sizes.Add(key);
+        //    }
+        //    sizes.Sort();
+        //    int maxClusters = sizes[sizes.Count - 1] + 3;
+
+        //    // Create the histogram.
+        //    float[] bins = new float[maxClusters];
+        //    float[] freqs = new float[maxClusters];
+
+        //    int i = 0;
+        //    for (i = 0; i < maxClusters; i++)
+        //    {
+        //        bins[i] = Convert.ToSingle(i);
+        //        if (clusterMaps.ContainsKey(i))
+        //        {
+        //            freqs[i] = clusterMaps[i];
+        //        }
+        //        else
+        //        {
+        //            freqs[i] = 0;
+        //        }
+        //    }
+
+        //    controlHistogram histogram = new controlHistogram();
+        //    histogram.BinSize = 1.0F;
+        //    histogram.AddData(bins, freqs, "Cluster Sizes");
+        //    histogram.XAxisLabel = options.YAxisLabel;
+        //    histogram.YAxisLabel = options.XAxisLabel;
+        //    histogram.Title = options.Title;
+        //    histogram.AutoViewPort();
+        //    histogram.Refresh();
+        //    return histogram;
+        //}
         /// <summary>
         /// Renders the scan versus the cluster net to the provided bitmap.
         /// </summary>

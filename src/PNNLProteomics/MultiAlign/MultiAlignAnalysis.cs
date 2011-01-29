@@ -2503,7 +2503,7 @@ namespace PNNLProteomics.Data.Analysis
             ReflectParameterOptions(DefaultAlignmentOptions, metaData.OpenChild("DefaultAlignmentOptions"));
 			ReflectParameterOptions(MassTagDBOptions, metaData.OpenChild("MassTagDBOptions"));
             ReflectParameterOptions(ClusterOptions, metaData.OpenChild("ClusterOptions"));
-            ReflectParameterOptions(PeakMatchingOptions, metaData.OpenChild("PeakMatchingOptions"));
+            ReflectParameterOptions(PeakMatchingOptions, metaData.OpenChild("PeakMatchingOptions"));            
             metaData.WriteFile(filename);
 		}
 		/// <summary>
@@ -2514,7 +2514,7 @@ namespace PNNLProteomics.Data.Analysis
 		{
 			MetaData metaData = new MetaData("PNNLProteomics");
 			metaData.ReadFile(filename);
-						
+
 			//ReflectParameterOptions(AlignmentOptions[0], metaData.OpenChild("AlignmentOptions"));
             LoadParameterOptions(AlignmentOptions, metaData.OpenChild("AlignmentOptions"));
             LoadParameterOptions(ClusterOptions, metaData.OpenChild("ClusterOptions"));

@@ -82,7 +82,7 @@ namespace MultiAlignWin.Drawing
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message + ex.StackTrace);
+                //Console.WriteLine(ex.Message + ex.StackTrace);
             }   
         }
 

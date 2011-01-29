@@ -68,6 +68,22 @@ namespace PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate
             return umcs[0];
         }
         /// <summary>
+        /// Finds a feature based on a feature id.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public List<clsUMC> FindByFeatureID(List<int> id)
+        {
+            ICriterion criterion = Expression.In("Id", id);
+            List<ICriterion> criterionList = new List<ICriterion>();
+            criterionList.Add(criterion);
+            List<clsUMC> umcs = FindByCriteria(criterionList);
+            if (umcs.Count < 1)
+                return null;
+
+            return umcs;
+        }
+        /// <summary>
         /// Finds a feature based on a cluster id.
         /// </summary>
         /// <param name="id"></param>
@@ -88,7 +104,7 @@ namespace PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate
 		/// </summary>
 		/// <param name="id"></param>
 		/// <returns></returns>
-		public List<clsUMC> FindByClusterIDList(List<int> idList)
+		public List<clsUMC> FindByClusterID(List<int> idList)
 		{
 			ICriterion criterion = Expression.In("ClusterId", idList);
 			List<ICriterion> criterionList = new List<ICriterion>();

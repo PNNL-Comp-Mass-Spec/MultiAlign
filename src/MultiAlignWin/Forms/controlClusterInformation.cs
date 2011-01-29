@@ -610,7 +610,11 @@ namespace MultiAlignWin.Forms
 
             if (displayForm == null)
             {
-                controlHistogram chart = RenderDatasetInfo.ClusterSizeHistogram_Chart(mobj_analysis.GetClusters());
+                ChartDisplayOptions options = new ChartDisplayOptions();
+                options.Title = "Cluster Size Histogram";
+                options.YAxisLabel = "Count";
+                options.XAxisLabel = "Cluster Size";
+                controlHistogram chart = RenderDatasetInfo.ClusterSizeHistogram_Chart(mobj_analysis.GetClusters(), options);
                 displayForm = RegisterChart(name, chart);
             }
             if (displayForm != null)

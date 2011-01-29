@@ -15,6 +15,7 @@ namespace MultiAlignEngine
 			menmClusterRepresentativeType	= MEDIAN; 
 			mbool_ignoreCharge				= true;
 			mbool_alignToDatabase			= true;
+			mint_recursionLevels			= 1;
 		}
 
 		clsClusterOptions::~clsClusterOptions(void)

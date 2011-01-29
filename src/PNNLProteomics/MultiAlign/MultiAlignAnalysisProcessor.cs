@@ -69,7 +69,7 @@ namespace PNNLProteomics.MultiAlign
         /// <summary>
         /// Maximum number of features to allow in memory when linking clusters to features via Mammoth before persisting objects to the database.
         /// </summary>
-        private const int FEATURE_CLUSTER_LINK_CACHE_SIZE = 10000;
+        private const int FEATURE_CLUSTER_LINK_CACHE_SIZE = 500;
         #endregion
 
         #region Members
@@ -171,11 +171,12 @@ namespace PNNLProteomics.MultiAlign
 
                 foreach (clsUMC umc in features)
                 {
-                    umc.Id = index++;
+                    umc.Id = index++;                    
                 }
 
                 UmcDAOHibernate cache = new UmcDAOHibernate();
-                cache.AddAll(features);                
+                cache.AddAll(features);  
+                
 
                 if (FeaturesLoaded != null)
                 {
@@ -339,6 +340,7 @@ namespace PNNLProteomics.MultiAlign
         {
             clsAlignmentProcessor alignmentProcessor    = new clsAlignmentProcessor();
             alignmentProcessor.AlignmentOptions         = alignmentOptions;
+            
             alignmentProcessor.SetReferenceDatasetFeatures(baselineFeatures);
             classAlignmentData alignmentData            = AlignDataset( alignmentProcessor,
                                                                         features,
@@ -788,7 +790,8 @@ namespace PNNLProteomics.MultiAlign
                 minNET = Math.Min(cluster.Net, minNET);
                 maxNET = Math.Max(cluster.Net, maxNET);
 
-                cluster.mshort_num_dataset_members      = 1;
+                cluster.MemberCount        = 1;
+                cluster.DatasetMemberCount = 1;
                 clusters.marrClusterMainMemberIndex[i]  = i;
                 clusters.marrClusterIntensity[i]        = umc.AbundanceSum;
                 cluster.mint_cluster_index              = i++;
@@ -803,7 +806,7 @@ namespace PNNLProteomics.MultiAlign
         /// <summary>
         /// Creates a mammoth database to use in clustering.
         /// </summary>
-        private void CreateMammothDatabase(MultiAlignAnalysis analysis,
+        private int CreateMammothDatabase(MultiAlignAnalysis analysis,
                                             UmcDAOHibernate featureCache,
                                             string databaseName,
                                             int chargeStateFilter)
@@ -822,14 +825,15 @@ namespace PNNLProteomics.MultiAlign
                 {
                     connection.Open();
 
-                    command.CommandText = "CREATE TABLE T_CLUSTERS(id INTEGER PRIMARY KEY,  mass DOUBLE, net DOUBLE, drift_time DOUBLE, internal INTEGER)";
+                    command.CommandText = "CREATE TABLE T_CLUSTERS( id INTEGER PRIMARY KEY,  mass DOUBLE, net DOUBLE, drift_time DOUBLE, internal INTEGER)";
                     command.ExecuteNonQuery();
 
-                    command.CommandText = "CREATE TABLE T_FEATURES(id INTEGER PRIMARY KEY, mass DOUBLE, net DOUBLE, drift_time DOUBLE, dataset_id INTEGER, cluster INTEGER)";
+                    command.CommandText = "CREATE TABLE T_FEATURES(id INTEGER, mass DOUBLE, net DOUBLE, drift_time DOUBLE, dataset_id INTEGER, cluster INTEGER, PRIMARY KEY(id, dataset_id))";
                     command.ExecuteNonQuery();
                 }
             }
 
+            int totalFeatures = 0;
             // Add features into database.
             using (Mammoth.Data.MammothDatabase database = new Mammoth.Data.MammothDatabase(databaseName))
             {
@@ -837,11 +841,11 @@ namespace PNNLProteomics.MultiAlign
                 foreach (DatasetInformation info in analysis.Datasets)
                 {
                     List<clsUMC> datasetFeatures = featureCache.FindByDatasetId(Convert.ToInt32(info.DatasetId));
-                    //features.AddRange(datasetFeatures);
-
+                    
                     List<PNNLOmics.Data.Features.UMCLight> tempFeatures = new List<PNNLOmics.Data.Features.UMCLight>();
                     foreach (clsUMC umc in datasetFeatures)
                     {
+                        totalFeatures++;
                         PNNLOmics.Data.Features.UMCLight feature = new PNNLOmics.Data.Features.UMCLight();
                         feature.Abundance        = umc.AbundanceSum;
                         feature.ChargeState      = umc.ChargeRepresentative;
@@ -859,36 +863,72 @@ namespace PNNLProteomics.MultiAlign
                 }
                 database.Close();
             }
+
+            return totalFeatures;
         }
+        //BLL HACK BECAUSE THE HIBERNATE SHIT SUCKS
+        //private Dictionary<int, Dict
         /// <summary>
         /// Updates the feature cache with the appropiate cluster ID's.
         /// </summary>
         private void UpdateFeatureCacheWithClusters(UmcDAOHibernate featureCache,
                                                     List<Mammoth.Data.MammothCluster> clusters)            
-        {
-            List<clsUMC> featuresToUpdate = new List<clsUMC>();
+        {            
+            Dictionary<int, int> allFeatureIDsToClusterID = new Dictionary<int, int>();
+            Dictionary<int, int> featureIDToClusterID = new Dictionary<int, int>();
+            List<int> ids = new List<int>();
+
             foreach (Mammoth.Data.MammothCluster cluster in clusters)
             {
                 foreach (PNNLOmics.Data.Features.UMCLight feature in cluster.UMCList)
                 {
                     int id = feature.ID;
-                    clsUMC umc = featureCache.FindByFeatureID(id);
-                    umc.ClusterId = cluster.ID;
-                    featuresToUpdate.Add(umc);
-                    if (featuresToUpdate.Count > FEATURE_CLUSTER_LINK_CACHE_SIZE)
+                    //clsUMC umc = featureCache.FindByFeatureID(id);
+
+                    featureIDToClusterID.Add(id, cluster.ID);
+                    allFeatureIDsToClusterID.Add(id, cluster.ID);
+                    ids.Add(id);                                                            
+                    if (ids.Count > FEATURE_CLUSTER_LINK_CACHE_SIZE)
                     {
-                        featureCache.UpdateAll(featuresToUpdate);
-                        featuresToUpdate.Clear();
+                        List<clsUMC> umcs = featureCache.FindByFeatureID(ids);                        
+                        foreach (clsUMC umc in umcs)
+                        {
+                            umc.ClusterId = featureIDToClusterID[umc.Id];
+                        }
+                        featureCache.UpdateAll(umcs);
+                        umcs.Clear();
+                        ids.Clear();
+                        featureIDToClusterID.Clear();
                     }
                 }
             }
-            if (featuresToUpdate.Count > 0)
+            if (ids.Count > 0)
             {
-                featureCache.UpdateAll(featuresToUpdate);
-                featuresToUpdate.Clear();
+                List<clsUMC> umcs = featureCache.FindByFeatureID(ids);
+                foreach (clsUMC umc in umcs)
+                {
+                    umc.ClusterId = featureIDToClusterID[umc.Id];
+                }
+                featureCache.UpdateAll(umcs);
+                umcs.Clear();
+                ids.Clear();
+                featureIDToClusterID.Clear();             
             }
-        }
 
+
+            //List<clsUMC> storedFeatures = featureCache.FindAll();
+            //foreach (clsUMC umc in storedFeatures)
+            //{
+            //    if (umc.ClusterId > -1 && allFeatureIDsToClusterID.ContainsKey(umc.Id))
+            //    {
+            //        int id = allFeatureIDsToClusterID[umc.Id];
+            //        if (id != umc.ClusterId)
+            //        {
+            //            throw new Exception("UMC Cluster ID does not match ID");
+            //        }
+            //    }
+            //}
+        }
         /// <summary>
         /// Clusters using the original single linkage algorithm.
         /// </summary>
@@ -897,14 +937,19 @@ namespace PNNLProteomics.MultiAlign
         public List<clsCluster> PerformClustering(MultiAlignAnalysis analysis)
         {
             LinkageClustererBase<Mammoth.Data.MammothCluster> clusterer = null;
-            if (m_clusterType == ClusteringAlgorithmType.SingleLinkage)
+            switch(m_clusterType)
             {
-                clusterer = new UMCSingleLinkageClusterer<Mammoth.Data.MammothCluster>();
+                case ClusteringAlgorithmType.Centroid:
+                    clusterer = new UMCCentroidClusterer<Mammoth.Data.MammothCluster>();
+                    break;
+                case ClusteringAlgorithmType.AverageLinkage:                    
+                    clusterer = new UMCAverageLinkageClusterer<Mammoth.Data.MammothCluster>();    
+                    break;
+                case ClusteringAlgorithmType.SingleLinkage:
+                    clusterer = new UMCSingleLinkageClusterer<Mammoth.Data.MammothCluster>();
+                    break;            
             }
-            else
-            {    
-                clusterer = new UMCAverageLinkageClusterer<Mammoth.Data.MammothCluster>();            
-            }
+
             //TODO: Fix, this happens twice.  
             // Tolerances
             PNNLOmics.Algorithms.FeatureTolerances tolerances = new PNNLOmics.Algorithms.FeatureTolerances();
@@ -926,6 +971,31 @@ namespace PNNLProteomics.MultiAlign
             clusterer.Parameters = parameters;
             return PerformClustering(analysis, clusterer);                                          
         }
+        void FindWeights(MultiAlignAnalysis analysis, UmcDAOHibernate cache, ref double massWeight, ref double netWeight, ref double driftWeight)
+        {
+            //foreach (DatasetInformation info in analysis.Datasets)
+            //{
+            //    List<clsUMC> datasetFeatures = featureCache.FindByDatasetId(Convert.ToInt32(info.DatasetId));
+
+            //    List<PNNLOmics.Data.Features.UMCLight> tempFeatures = new List<PNNLOmics.Data.Features.UMCLight>();
+            //    foreach (clsUMC umc in datasetFeatures)
+            //    {
+            //        PNNLOmics.Data.Features.UMCLight feature = new PNNLOmics.Data.Features.UMCLight();
+            //        feature.Abundance = umc.AbundanceSum;
+            //        feature.ChargeState = umc.ChargeRepresentative;
+            //        feature.DriftTime = umc.DriftTime;
+            //        feature.GroupID = umc.DatasetId;
+            //        feature.ID = umc.Id;
+            //        feature.MassMonoisotopic = umc.MassCalibrated;
+            //        feature.NET = umc.Net;
+            //        if (chargeStateFilter < 0 || chargeStateFilter == feature.ChargeState)
+            //        {
+            //            tempFeatures.Add(feature);
+            //        }
+            //    }
+            //    database.AddFeatures(tempFeatures);
+            //}
+        }
         /// <summary>
         /// 
         /// </summary>
@@ -946,12 +1016,17 @@ namespace PNNLProteomics.MultiAlign
                                                                                             70, 
                                                                                             false);
 
+            UpdateStatus(clusterer.ToString());
+
             // Tolerances
             PNNLOmics.Algorithms.FeatureTolerances tolerances = new PNNLOmics.Algorithms.FeatureTolerances();
             tolerances.DriftTime            = analysis.ClusterOptions.DriftTimeTolerance;
             tolerances.Mass                 = analysis.ClusterOptions.MassTolerance;
-            tolerances.RetentionTime        = analysis.ClusterOptions.NETTolerance;            
+            tolerances.RetentionTime        = analysis.ClusterOptions.NETTolerance;
 
+            double massWeight, netWeight, driftWeight = 0;
+            //FindWeights(featureCache, ref massWeight, ref netWeight, ref driftWeight);
+            
             // Parameters 
             PNNLOmics.Algorithms.FeatureClustering.FeatureClusterParameters parameters = new PNNLOmics.Algorithms.FeatureClustering.FeatureClusterParameters();
             parameters.CentroidRepresentation = PNNLOmics.Data.Features.ClusterCentroidRepresentation.Mean;
@@ -960,6 +1035,7 @@ namespace PNNLProteomics.MultiAlign
                 parameters.CentroidRepresentation = PNNLOmics.Data.Features.ClusterCentroidRepresentation.Median;
             }
             parameters.Tolerances                   = tolerances;
+            
             parameters.OnlyClusterSameChargeStates  = (analysis.ClusterOptions.IgnoreCharge == false);
             List<clsCluster> clusters               = new List<clsCluster>();
 
@@ -968,14 +1044,14 @@ namespace PNNLProteomics.MultiAlign
             string databaseName = "mammothDatabase.db3";
             if (analysis.ClusterOptions.IgnoreCharge)
             {
-                 // Create database
+                UpdateStatus("Clustering all charge states.");
+
+                //TODO: Refactor this into it's own sub-method.
                 CreateMammothDatabase(analysis, featureCache, databaseName, -1);                    
-
                 
-
                 // Cluster 
                 Mammoth.Algorithms.MammothClusterer processor = new Mammoth.Algorithms.MammothClusterer();
-                processor.ClusterDatabase(databaseName, 5, parameters, range, parameters.Tolerances, clusterer);
+                processor.ClusterDatabase(databaseName, analysis.ClusterOptions.RecursionLevels, parameters, range, parameters.Tolerances, clusterer);
                 
                 // Retrieve clusters 
                 using (Mammoth.Data.MammothDatabase database = new Mammoth.Data.MammothDatabase(databaseName))
@@ -1015,8 +1091,12 @@ namespace PNNLProteomics.MultiAlign
                     
                     mammothClusters                  = database.GetClusters(newOptions);
 
-                    foreach (Mammoth.Data.MammothCluster mammothCluster in mammothClusters)
-                    {
+                    List<clsCluster> tempClusters = new List<clsCluster>();
+
+                    UpdateStatus(string.Format("Found {0} clusters.", tempClusters.Count));
+
+                    foreach(Mammoth.Data.MammothCluster mammothCluster in mammothClusters)
+                        {
                             mammothCluster.CalculateStatistics(parameters.CentroidRepresentation);
                             mammothCluster.ID   = id++; 
 
@@ -1026,25 +1106,50 @@ namespace PNNLProteomics.MultiAlign
                             cluster.Id          = mammothCluster.ID;
                             cluster.Mass        = mammothCluster.MassMonoisotopic;
                             cluster.Net         = mammothCluster.NET;
-                            cluster.mshort_num_dataset_members = mammothCluster.UMCList.Count;
-                            clusters.Add(cluster);
-                    }
-                    clusterCache.AddAll(clusters);
+                            cluster.MemberCount = mammothCluster.UMCList.Count;
+                            Dictionary<int, int> membercounts = new Dictionary<int, int>();
+                            int totalKeys = 0;
+                            foreach (UMCLight feature in mammothCluster.UMCList)
+                            {
+                                int key = feature.GroupID;
+                                bool contains = membercounts.ContainsKey(key);
+                                if (!contains)
+                                {
+                                    totalKeys++;
+                                    membercounts.Add(key, 0);
+                                }
+                                membercounts[key]++;
+                            }
+                            cluster.DatasetMemberCount = totalKeys;
+                            cluster.MeanScore   = mammothCluster.Score;
+                            cluster.MedianScore = mammothCluster.Score;
+                            tempClusters.Add(cluster);
+                        }
+                    clusterCache.AddAll(tempClusters);
                     UpdateFeatureCacheWithClusters(featureCache, mammothClusters); 
                     database.Close();
+                    clusters.AddRange(tempClusters);
                 }
             }
             else
             {                
                 // Group single charge states together only.
-                for(int chargeState = 0; chargeState < 10; chargeState++)
+                
+                for(int chargeState = 1; chargeState < 15; chargeState++)
                 {
+                    UpdateStatus(string.Format("Clustering Charge State = {0}.", chargeState));
+                    List<clsCluster> tempClusters = new List<clsCluster>();
                     // Create database
-                    CreateMammothDatabase(analysis, featureCache, databaseName, chargeState);                    
+                    int total = CreateMammothDatabase(analysis, featureCache, databaseName, chargeState);
+
+                    if (total <= 0)
+                    {
+                        continue;
+                    }
 
                     // Cluster 
                     Mammoth.Algorithms.MammothClusterer processor = new Mammoth.Algorithms.MammothClusterer();
-                    processor.ClusterDatabase(databaseName, 5, parameters, range, parameters.Tolerances); 
+                    processor.ClusterDatabase(databaseName, analysis.ClusterOptions.RecursionLevels, parameters, range, parameters.Tolerances, clusterer); 
                    
                     // Retrieve clusters 
                     using (Mammoth.Data.MammothDatabase database = new Mammoth.Data.MammothDatabase(databaseName))
@@ -1061,16 +1166,17 @@ namespace PNNLProteomics.MultiAlign
                         database.Connect();
                         
                         List<Mammoth.Data.MammothCluster> mammothClusters = new List<Mammoth.Data.MammothCluster>();
-                        retrievalRange.MassMaximum          += 500;
-                        retrievalRange.MassMinimum          -= 500;
-                        retrievalRange.NETMaximum           += 2;
-                        retrievalRange.MassMinimum          -= 2;
-                        retrievalRange.DriftTimeMaximum     += 50;
-                        retrievalRange.DriftTimeMinimum     -= 50;
-                        retrievalRange.InternalCluster       = false;
+                        retrievalRange.MassMaximum          += 50000;
+                        retrievalRange.MassMinimum          -= 50000;
+                        retrievalRange.NETMaximum           += 20;
+                        retrievalRange.NETMinimum           -= 20;
+                        retrievalRange.DriftTimeMaximum     += 500;
+                        retrievalRange.DriftTimeMinimum     -= 500;
+                        retrievalRange.InternalCluster       = true;
 
-                        mammothClusters = database.GetClusters(range);
+                        mammothClusters = database.GetClusters(retrievalRange);
 
+                        tempClusters.Clear();
                         foreach(Mammoth.Data.MammothCluster mammothCluster in mammothClusters)
                         {
                             mammothCluster.CalculateStatistics(parameters.CentroidRepresentation);
@@ -1082,14 +1188,33 @@ namespace PNNLProteomics.MultiAlign
                             cluster.Id          = mammothCluster.ID;
                             cluster.Mass        = mammothCluster.MassMonoisotopic;
                             cluster.Net         = mammothCluster.NET;
-
-                            //TODO: Calculate a score for a mammoth cluster.
-                            clusters.Add(cluster);
+                            cluster.MemberCount = mammothCluster.UMCList.Count;
+                            Dictionary<int, int> membercounts = new Dictionary<int, int>();
+                            int totalKeys = 0;
+                            foreach (UMCLight feature in mammothCluster.UMCList)
+                            {
+                                int key = feature.GroupID;
+                                bool contains = membercounts.ContainsKey(key);
+                                if (!contains)
+                                {
+                                    totalKeys++;
+                                    membercounts.Add(key, 0);
+                                }
+                                membercounts[key]++;
+                            }
+                            cluster.DatasetMemberCount = totalKeys;
+                            cluster.MeanScore   = mammothCluster.Score;
+                            cluster.MedianScore = mammothCluster.Score;
+                            tempClusters.Add(cluster);
                         }
 
-                        clusterCache.AddAll(clusters);
+                        UpdateStatus(string.Format("Found {0} clusters.", tempClusters.Count));
+
+                        clusterCache.AddAll(tempClusters);
                         UpdateFeatureCacheWithClusters(featureCache, mammothClusters);
                         database.Close();
+
+                        clusters.AddRange(tempClusters);
                     }
                 }
             }
@@ -1250,6 +1375,13 @@ namespace PNNLProteomics.MultiAlign
             m_analysisThread         = new Thread(threadStart);
             m_analysisThread.Start();
         }
+        private void UpdateStatus(string message)
+        {
+            if (Status != null)
+            {
+                Status(this, new AnalysisStatusEventArgs(message, 0));
+            }
+        }
         /// <summary>
         /// Starts the main analysis.
         /// </summary>
@@ -1258,6 +1390,8 @@ namespace PNNLProteomics.MultiAlign
             List<clsCluster> clusters    = null;                        
             clsMassTagDB database        = null;
 
+            UpdateStatus("Setting up parameters");
+            
             // Load the mass tag database if we are aligning, or if we are 
             // peak matching (but aligning to a reference dataset.
             if (m_analysis.UseMassTagDBAsBaseline)
@@ -1272,24 +1406,32 @@ namespace PNNLProteomics.MultiAlign
                 }
             }
             m_analysis.MassTagDatabase   = database;
-            
+
+            UpdateStatus("Loading data");
             // Load the features data which stores it to the cache!
             LoadData(m_analysis.Datasets, 
                             m_analysis.UMCFindingOptions, 
                             Path.Combine(m_analysis.PathName, m_analysis.AnalysisName));
 
+
+            UpdateStatus("Configuring data cache.");
             NHibernateUtil.SetDbLocationForRead(Path.Combine(m_analysis.PathName, m_analysis.AnalysisName));
-       
+
+
+            UpdateStatus("Aligning datasets.");
             // Align features
             AlignDatasets(m_analysis);
 
             // Cluster
+            UpdateStatus("Performing clustering.");
             clusters = PerformClustering(m_analysis);
             
             if (m_analysis.MassTagDatabase != null)
             {
                 if (m_analysis.UseSMART)
                 {
+
+                    UpdateStatus("Peak matching with SMART");
                     m_analysis.SMARTResults         = PerformSMART(clusters,
                                                             database,
                                                             m_analysis.SMARTOptions);
@@ -1300,17 +1442,22 @@ namespace PNNLProteomics.MultiAlign
                 }
                 else
                 {
+
+                    UpdateStatus("Peak matching");
                     // No-shift, and 11-dalton shift.
                     m_analysis.PeakMatchingResults          = PerformPeakMatching(clusters, database, m_analysis.PeakMatchingOptions, 0.0);
                     m_analysis.PeakMatchingResultsShifted   = PerformPeakMatching(clusters, database, m_analysis.PeakMatchingOptions, 11.0);
                 }
             }
 
-            NHibernateUtil.Dispose();
+            UpdateStatus("Cleaning up resources.");
+            
             GC.Collect();
             GC.WaitForPendingFinalizers();
             GC.Collect();
             GC.WaitForPendingFinalizers();
+
+            UpdateStatus("Analysis Run Completed.");
 
             if (AnalysisComplete != null)
                 AnalysisComplete(this, null);            
@@ -1336,6 +1483,7 @@ namespace PNNLProteomics.MultiAlign
     public enum ClusteringAlgorithmType
     {
         AverageLinkage,
-        SingleLinkage
+        SingleLinkage,
+        Centroid
     }
 }

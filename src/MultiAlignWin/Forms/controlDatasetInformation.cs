@@ -259,8 +259,8 @@ namespace MultiAlignWin.Forms
             options.XAxisLabel       = "";
             options.YAxisLabel       = "";
             options.Title            = "";
-            options.MarginMax        = 1;
-            options.MarginMin        = 0;
+            options.MarginMax        = 2;
+            options.MarginMin        = 1;
 
             /// 
             /// Previews
@@ -281,10 +281,10 @@ namespace MultiAlignWin.Forms
             /// ------------------------------------------------------------------------------------
             /// Alignment
             /// ------------------------------------------------------------------------------------            
-            Image alignmentPreview = RenderDatasetInfo.AlignmentHeatmap_Thumbnail(         mobj_analysis,
-                                                                                                mint_datasetIndex, width, height);
-            
-            
+            Image alignmentPreview = RenderDatasetInfo.AlignmentHeatmap_Thumbnail(mobj_analysis,
+                                                                                  mint_datasetIndex, 
+                                                                                  width,
+                                                                                  height);                        
             Image massErrorHistogram = null;
             Image netErrorHistogram  = null;            
             Image alignedNetResidual = null;            
@@ -300,27 +300,11 @@ namespace MultiAlignWin.Forms
 
                 if (mobj_alignmentData.ResidualData != null)
                 {
-                    //alignedNetResidual = RenderDatasetInfo.Residuals_Thumbnail(mobj_alignmentData.ResidualData.
-                    //                                                                            mint_datasetIndex,
-                    //                                                                            mpicture_netResiduals.Width,
-                    //                                                                            mpicture_netResiduals.Height,
-                    //                                                                                false, false, false);
-
-
-                    //massResidual = RenderDatasetInfo.MassVsScanResiduals_Thumbnail(mobj.options);
-
-                    //mzMassResidual = RenderDatasetInfo.MassVsMZResidual_Thumbnail(mobj_analysis,
-                    //                                                                            mint_datasetIndex,
-                    //                                                                            mpictureBox_mzMassResidual.Width,
-                    //                                                                            mpictureBox_mzMassResidual.Height,
-                    //                                                                                false, false, false);
-
-
-                    //massNetResidual = RenderDatasetInfo.MassNETResiduals_Thumbnail(mobj_analysis,
-                    //                                                                        mint_datasetIndex,
-                    //                                                                        mpictureBox_massNetResiduals.Width,
-                    //                                                                        mpictureBox_massNetResiduals.Height,
-                    //                                                                    false, false, false);
+                    classAlignmentResidualData data = mobj_alignmentData.ResidualData;         
+                    alignedNetResidual = RenderDatasetInfo.Residual_Thumbnail(data.scans, data.customNet, null, false, options);
+                    massResidual = RenderDatasetInfo.Residual_Thumbnail(data.scans, data.massError, data.massErrorCorrected, false, options);
+                    mzMassResidual = RenderDatasetInfo.Residual_Thumbnail(data.mz, data.mzMassError, data.mzMassErrorCorrected, true, options);
+                    massNetResidual = RenderDatasetInfo.Residual_Thumbnail(data.customNet, data.massError, null, false, options);                    
                 }
             }
            
@@ -334,10 +318,7 @@ namespace MultiAlignWin.Forms
                                             massResidual,
                                             mzMassResidual,
                                             massNetResidual          
-                                        };
-
-            
-
+                                        };            
             if (InvokeRequired == true)
             {
                 BeginInvoke(new DelegateUpdatePreview(PreviewHandler), new object[] { this, images });
@@ -345,9 +326,7 @@ namespace MultiAlignWin.Forms
             else
             {
                 PreviewHandler(this, images);
-            }
-
-            GC.Collect();
+            }            
         }
         #endregion
 
