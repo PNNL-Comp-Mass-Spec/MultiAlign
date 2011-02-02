@@ -31,8 +31,8 @@
 		<property name="AbundanceSum" column="Abundance_Sum" type="long" not-null="false" />
 		<property name="DriftTime" column="Drift_Time" type="double" not-null="false" />
 		<property name="AverageInterferenceScore" column="Average_Interference_Score" type="double" not-null="false" />
+		<property name="AverageDeconFitScore" column="Average_Decon_Fit_Score" type="double" not-null="false" />
 		<property name="ConformationFitScore" column="Conformation_Fit_Score" type="double" not-null="false" />
-		<property name="IsotopicFitScore" column="Isotopic_Fit_Score" type="double" not-null="false" />
 		<property name="MembersPercentageScore" column="Members_Percentage_Score" type="double" not-null="false" />
 		<property name="CombinedScore" column="Combined_Score" type="double" not-null="false" />
 	</class>

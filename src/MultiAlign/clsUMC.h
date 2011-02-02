@@ -141,8 +141,8 @@ namespace MultiAlignEngine
 				int		mint_spectral_count;
 				float	mfloat_drift_time;
 				double	mdouble_averageInterferenceScore;
+				double	mdouble_averageDeconFitScore;
 				double	mdouble_conformationFitScore;
-				double	mdouble_isotopicFitScore;
 				double	mdouble_membersPercentageScore;
 				double	mdouble_combinedScore;
 				//clsCluster *umcCluster;
@@ -373,13 +373,13 @@ namespace MultiAlignEngine
 					mdouble_conformationFitScore = value;
 				}
 
-				__property double get_IsotopicFitScore()
+				__property double get_AverageDeconFitScore()
 				{
-					return mdouble_isotopicFitScore;
+					return mdouble_averageDeconFitScore;
 				}
 
-				__property void set_IsotopicFitScore(double value){
-					mdouble_isotopicFitScore = value;
+				__property void set_AverageDeconFitScore(double value){
+					mdouble_averageDeconFitScore = value;
 				}
 
 				__property double get_MembersPercentageScore()

@@ -166,8 +166,8 @@ namespace PNNLProteomics.MultiAlign
 					case "Conformation_Fit_Score":
 						columnMap.Add("Umc.ConformationFitScore", i);
 						break;
-					case "Average_Isotopic_Fit":
-						columnMap.Add("Umc.IsotopicFitScore", i);
+					case "Decon2ls_Fit_Score":
+						columnMap.Add("Umc.AverageDeconFitScore", i);
 						break;
 					case "Members_Percentage":
 						columnMap.Add("Umc.MembersPercentageScore", i);
@@ -250,7 +250,7 @@ namespace PNNLProteomics.MultiAlign
 					if (m_columnMap.ContainsKey("Umc.DriftTime"))					umc.DriftTime = float.Parse(columns[m_columnMap["Umc.DriftTime"]]);
 					if (m_columnMap.ContainsKey("Umc.AverageInterferenceScore"))	umc.AverageInterferenceScore = Double.Parse(columns[m_columnMap["Umc.AverageInterferenceScore"]]);
 					if (m_columnMap.ContainsKey("Umc.ConformationFitScore"))		umc.ConformationFitScore = Double.Parse(columns[m_columnMap["Umc.ConformationFitScore"]]);
-					if (m_columnMap.ContainsKey("Umc.IsotopicFitScore"))			umc.IsotopicFitScore = Double.Parse(columns[m_columnMap["Umc.IsotopicFitScore"]]);
+					if (m_columnMap.ContainsKey("Umc.AverageDeconFitScore"))		umc.AverageDeconFitScore = Double.Parse(columns[m_columnMap["Umc.AverageDeconFitScore"]]);
 					//if (m_columnMap.ContainsKey("Umc.MembersPercentageScore"))	umc.MembersPercentageScore = Double.Parse(columns[m_columnMap["Umc.MembersPercentageScore"]]);
 					//if (m_columnMap.ContainsKey("Umc.CombinedScore"))				umc.CombinedScore = Double.Parse(columns[m_columnMap["Umc.CombinedScore"]]);
 					umcList.Add(umc);
