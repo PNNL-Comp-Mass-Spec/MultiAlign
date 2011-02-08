@@ -190,12 +190,16 @@
     </Compile>
     <Compile Include="Data\SelectionRangeCollection.cs" />
     <Compile Include="Diagnostics\HiPerfTimer.cs" />
+    <Compile Include="Drawing\Axes\AxisType.cs" />
     <Compile Include="Drawing\Axes\ctlSingleAxis.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Drawing\Axes\LabelPlotter.cs" />
+    <Compile Include="Drawing\Axes\PlotSingleAxis.cs" />
     <Compile Include="Drawing\Axes\SingleAxis.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Drawing\Axes\UnitPlotter.cs" />
     <Compile Include="Drawing\BitmapTools.cs" />
     <Compile Include="Drawing\Charting\ChartDesignTime.cs" />
     <Compile Include="Drawing\Charting\ChartEvents.cs" />

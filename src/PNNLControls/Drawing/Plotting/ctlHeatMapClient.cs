@@ -368,7 +368,7 @@ namespace PNNLControls
 
 				if (mBitmap.Width != this.Width || mBitmap.Height != this.Height)
 				{
-					Console.WriteLine("Strecthing. Size of new bitmap = " + this.Size + " starting Bitmap size = " + mBitmap.Size) ; 
+					//Console.WriteLine("Strecthing. Size of new bitmap = " + this.Size + " starting Bitmap size = " + mBitmap.Size) ; 
                     
 					mBitmap = bmt.StretchAndAlignBitmap(mBitmap, this.Width, this.Height, 
 														this.mHorizontalAlignment, this.mVerticalAlignment);
@@ -514,7 +514,7 @@ namespace PNNLControls
 			} 
 			catch (Exception e)
 			{
-				Console.WriteLine(e.ToString()) ; 
+				//Console.WriteLine(e.ToString()) ; 
 				//MessageBox.Show (e.ToString());
 			}
 			return (destData);

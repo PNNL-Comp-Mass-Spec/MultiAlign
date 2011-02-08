@@ -968,9 +968,6 @@ namespace PNNLControls
 			int width = displayRange.EndColumn - displayRange.StartColumn + 1;
 			int height = displayRange.EndRow - displayRange.StartRow + 1;
 
-			Console.WriteLine("ctlHeatMapLegend: ApplyLegend. Size = " + this.Size + "Width = " + width.ToString() 
-				+ " Height = " + height.ToString()) ; 
-
 			if (width*height<=0) return null;
 
 			Color c = mColorMapBMP.GetPixel(0, 256);

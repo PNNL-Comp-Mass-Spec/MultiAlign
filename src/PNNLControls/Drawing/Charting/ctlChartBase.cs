@@ -15,16 +15,13 @@ namespace PNNLControls
 	/// Summary description for ctlChartBase.
 	/// </summary>
 	public abstract class ctlChartBase : System.Windows.Forms.UserControl, System.ComponentModel.ISupportInitialize
-	{	
-		// Series collection
-		protected clsSeriesCollection mobj_series_collection;
-		// etc.
+    {
+        #region Members
+        protected clsSeriesCollection mobj_series_collection;		
 		protected clsMargins mobj_margins = new clsMargins();
 		protected clsPlotRange mobj_range = new clsPlotRange();
 		protected Derek.BitmapTools mobj_bitmap_tools = null ;
-
         private SaveFileDialog m_saveFileDialog;
-
 		private bool m_autoViewportOnAddition = false;
 		private bool m_autoViewportOnSeriesChange = false;
 		private bool m_autoViewportYAxis = false;
@@ -33,28 +30,23 @@ namespace PNNLControls
 		private float m_autoViewportXBase = 0;
 		private bool m_useAutoViewportYBase = false;
 		private bool m_useAutoViewportXBase = false;
-
 		/// <summary>
 		/// The color used for selected/hilighted series.
 		/// </summary>
 		private Color mHilightColor = Color.Magenta;
-
 		/// <summary>
 		/// The indexes of selected series.
 		/// </summary>
 		private IntRangeSelector mSelectedSeries = new IntRangeSelector();
-
 		/// <summary>
 		/// Tells whether the hilight bitmap mask for selected series needs to 
 		/// be recreated, or whether it is current.
 		/// </summary>
 		private bool mRecreateHilightMask = true;
-
 		/// <summary>
 		/// The hilight mask for selected series.
 		/// </summary>
 		private Bitmap mHilightMaskBitmap;
-
 		/// <summary>
 		/// Options for copy/paste
 		/// </summary>
@@ -62,7 +54,6 @@ namespace PNNLControls
 		private bool mSeriesCopyEnabled = true;
 		private bool mSeriesPasteEnabled = true;
 		private bool mParametersPasteEnabled = true;
-
         /// <summary>
         /// Determines if the series collection needs to be repainted or not.
         /// </summary>
@@ -74,12 +65,10 @@ namespace PNNLControls
 		private EventHandler m_gridLinePenProviderChangedHandler;
 		private ChartLayer m_gridLinesLayer = ChartLayer.UnderSeries;
 		private SolidBrush m_chartBackgroundBrush = new SolidBrush(Color.White);
-
 		/// <summary>
 		/// Enables or disables panning of the chart by using the arrow keys.
 		/// </summary>
 		private bool mPanWithArrowKeys = true;
-
 		/// <summary>
 		/// The fraction of the screen that the y axis is expanded above the highest peak.
 		/// </summary>
@@ -88,11 +77,8 @@ namespace PNNLControls
 		/// The fraction of the screen that is panned on arrow key clicks.
 		/// </summary>
 		private float mPanFraction = .1F;
-
 		private ChartMarkerLayer mMarkerLayer;
-
 		private ViewPortHistory mViewPortHistory;
-
 		/// <summary>
 		/// The three main drawing parts of the control that are handled by the 
 		/// chart itself.  The title, the legend, and the main plot area (chart + axes + labels).
@@ -123,12 +109,9 @@ namespace PNNLControls
 		/// this control.
 		/// </summary>
 		private ChartLayout m_layout;
-
-		//private ToolTip toolTip;
-
-		private bool m_hasLegend = true;
-        
-
+        protected bool m_xAxisCenterUnits;
+        protected bool m_yAxisCenterUnits;
+		private bool m_hasLegend = true;    
 		/// <summary>
 		/// Graphics object used to draw on bitmap during painting phase
 		/// </summary>
@@ -149,20 +132,24 @@ namespace PNNLControls
         private Bitmap mTempBitmap = null;
         float mfloat_autoViewportPaddingX = 0.0F;
         float mfloat_autoViewportPaddingY = 0.0F;
-
+        private Point mMouseBegin;
+        private ChartClickState mChartClickState = ChartClickState.Normal;
+        private Point mLegendTopLeft;
+        private Size mLegendSize;
+        private enum ChartClickState
+        {
+            LegendMove,
+            LegendSize,
+            Normal
+        }		
 		/// <summary>
 		/// The drawing area of the chart with only series drawn on it.
 		/// </summary>
 		//private Bitmap mobj_bitmap_plain = null;
-
-		private Bitmap mChartAreaInfoBitmap = null;
-		
+		private Bitmap mChartAreaInfoBitmap = null;		
 		private ChartZoomHandler m_defaultZoomHandler;
-
 		private bool mShowFocus = true;
-
 		private PNNLControls.SeriesChangedHandler m_seriesChangedHandler;
-
 		/// <summary>
 		/// Event that allows for post rendering of the chart area, such as the ChartZoomHandler does.
 		/// </summary>
@@ -171,30 +158,205 @@ namespace PNNLControls
 		/// List of &lt;PostProcessorPriority, ChartPostRenderingProcessor&gt; pairs.
 		/// </summary>
 		private SortedList mPostRenderingProcessors = new SortedList();
-
 		/// <summary>
 		/// Event that is raised when the viewport is changed through the 
 		/// ViewPort property
 		/// </summary>
-		public event ViewPortChangedHandler ViewPortChanged;
-		
+		public event ViewPortChangedHandler ViewPortChanged;		
 		/// <summary> 
 		/// Required designer variable.
 		/// </summary>
 		private System.ComponentModel.Container components = null;
-
 		private static readonly Color[] DEFAULT_SERIES_COLORS = new Color[] 
 			{
 				Color.Red, Color.Blue, Color.Yellow, Color.Purple, Color.Green, Color.Orange, 
 				Color.Pink, Color.Black, Color.SkyBlue, Color.ForestGreen, Color.Lavender, Color.Tan};
 
 		private bool mblnUpdateInProgress = false ; 
-
 		// The plot parameter
         private clsPlotParams m_plotParams;
         private PlotParamsChangedHandler m_plotParamsHandler;
+        #endregion
 
-        #region Windows Generated 
+        /// <summary>
+        /// Default construtor for a chart base object.
+        /// </summary>
+        public ctlChartBase()
+        {
+            this.SetStyle(ControlStyles.AllPaintingInWmPaint, true);
+            this.SetStyle(ControlStyles.DoubleBuffer, true);
+            this.SetStyle(ControlStyles.UserPaint, true);
+            this.SuspendLayout();
+
+            InitializeComponent();
+
+            this.m_seriesChangedHandler = new SeriesChangedHandler(SeriesChanged);
+            this.mMarkerLayer = new ChartMarkerLayer(this);
+            this.m_gridLinePenProviderChangedHandler = new EventHandler(GridLinePenProviderChanged);
+            mobj_series_collection = new clsSeriesCollection(this);
+            mobj_bitmap_tools = new Derek.BitmapTools();
+
+            this.m_plotParams = new clsPlotParams(new SquareShape(5, false), Color.Black);
+            this.m_plotParamsHandler = new PlotParamsChangedHandler(this.PlotParamsChanged);
+            this.m_plotParams.PlotParamsChanged += this.m_plotParamsHandler;
+
+
+            mbool_axisVisible = true;
+            mbool_legendVisible = true;
+            mbool_titleVisible = true;
+            m_xAxisCenterUnits = false;
+            m_yAxisCenterUnits = false;
+
+
+            this.m_legend = new ChartLegend(this);
+            this.mobj_axis_plotter = new clsPlotterAxis();
+            this.m_titlePlotter = new clsLabelPlotter();
+            this.m_titlePlotter.AutoSize = this.AutoSizeFonts;
+            this.m_layout = new ChartLayout(this);
+            this.LegendLocationChanged();
+
+            RectangleF initialViewPort = new RectangleF(0, 0, 1, 1);
+            this.mViewPortHistory = new ViewPortHistory(this, initialViewPort);
+            this.mViewPortHistory.CurrentEntryChanged += new CurrentEntryChangedHandler(this.ViewPortHistoryCurrentEntryChanged);
+            this.ViewPort = initialViewPort;
+
+            ViewPortHistoryMenu histMenu = new ViewPortHistoryMenu(this.mViewPortHistory);
+            this.menuViewPort.MenuItems.Add(histMenu.BackMenuItem);
+            histMenu.BackMenuItem.Index = 2;
+            MenuUtils.SetMaximumMenuHeight(histMenu.BackMenuItem, 220);
+            this.menuViewPort.MenuItems.Add(histMenu.ForwardMenuItem);
+            histMenu.ForwardMenuItem.Index = 3;
+            MenuUtils.SetMaximumMenuHeight(histMenu.ForwardMenuItem, 220);
+
+            this.mobj_margins.MarginsChanged += new EventHandler(MarginsChanged);
+
+            this.m_defaultZoomHandler = new ChartZoomHandler(this);
+            this.GridLinePen = new PenProvider(new Pen(Color.LightGray, 1));
+            this.m_gridLinePenProvider.PenChanged += new EventHandler(this.GridLinePenProviderChanged);
+            this.XAxisLabel = "X Axis";
+            this.YAxisLabel = "Y Axis";
+
+            this.mobj_axis_plotter.AutoSizeFonts = false;
+            this.m_titlePlotter.AutoSize = false;
+
+            // Hookup event handlers for selected series.
+            mSelectedSeries.IntAdded += new IntChangedHandler(this.mSeriesSelected_IntAdded);
+            mSelectedSeries.IntRemoved += new IntChangedHandler(this.mSeriesSelected_IntRemoved);
+
+
+            m_saveFileDialog = new SaveFileDialog();
+            m_saveFileDialog.AddExtension = true;
+            m_saveFileDialog.CheckPathExists = true;
+            m_saveFileDialog.DereferenceLinks = true;
+            m_saveFileDialog.ValidateNames = true;
+            m_saveFileDialog.Filter = "WMF (*.wmf)|*.wmf|EMF (*.emf)|*.emf|Jpeg (*.jpg)|*.jpg|Tiff (*.tiff)|*.tiff|Gif (*.gif)|*.gif|Bitmap (*.bmp)|*.bmp";
+            m_saveFileDialog.OverwritePrompt = true;
+            m_saveFileDialog.FilterIndex = 1;
+
+            this.ResumeLayout();
+        }
+
+        #region Properties
+        public bool ShouldCenterXAxisUnits
+        {
+            get
+            {
+                return false;
+            }
+            set
+            {
+            }
+        }
+        public bool ShouldCenterYAxisUnits
+        {
+            get
+            {
+                return false;
+            }
+            set
+            {
+                
+            }
+        }
+        [System.ComponentModel.DefaultValue(.1F)]
+        [System.ComponentModel.Description("The fraction of the chart area by which the chart is panned "
+             + " when the arrow keys are pressed.")]
+        public float PanFraction
+        {
+            get
+            {
+                return this.mPanFraction;
+            }
+            set
+            {
+                if (value <= 0)
+                {
+                    throw new ArgumentOutOfRangeException("PanFraction", value, "Pan fraction must be > 0");
+                }
+                this.mPanFraction = value;
+            }
+        }
+        /// <summary>
+        /// Merges the given menu with the currently set context menu (the defualt plus 
+        /// whatever has been added to it.)
+        /// </summary>
+        public override ContextMenu ContextMenu
+        {
+            get
+            {
+                return base.ContextMenu;
+            }
+            set
+            {
+                if (value == null)
+                {
+                    return;
+                }
+                if (this.ContextMenu != null)
+                {
+                    this.ContextMenu.MergeMenu(value);
+                }
+                else
+                {
+                    base.ContextMenu = value;
+                }
+            }
+        }
+        /// <summary>
+        /// Tells whether any series are currently selected
+        /// </summary>
+        /// <returns></returns>
+        private bool HasSelectedSeries
+        {
+            get
+            {
+                return this.mSelectedSeries.Values.Count > 0;
+            }
+        }
+        private bool HasOneSeriesSelected
+        {
+            get
+            {
+                return this.mSelectedSeries.Values.Count == 1;
+            }
+        }
+        public clsSeries[] SelectedSeries
+        {
+            get
+            {
+                int count = this.mSelectedSeries.Values.Count;
+                clsSeries[] series = new clsSeries[count];
+                int index = 0;
+                foreach (int i in this.mSelectedSeries.Values)
+                {
+                    series[index++] = SeriesCollection[i];
+                }
+                return series;
+            }
+        }
+        #endregion
+
+        #region Windows Generated
         private ContextMenu mContextMenu;
 		private MenuItem menuLegendLeft;
 		private MenuItem menuLegendRight;
@@ -227,83 +389,6 @@ namespace PNNLControls
         private MenuItem menuItem3;
         private MenuItem menuItem1;
         #endregion
-
-
-        /// <summary>
-        /// Default construtor for a chart base object.
-        /// </summary>
-		public ctlChartBase()
-		{
-			this.SetStyle(ControlStyles.AllPaintingInWmPaint, true);
-			this.SetStyle(ControlStyles.DoubleBuffer, true);
-			this.SetStyle(ControlStyles.UserPaint, true);
-			this.SuspendLayout();
-			
-			InitializeComponent();
-			
-			this.m_seriesChangedHandler = new SeriesChangedHandler(SeriesChanged);
-			this.mMarkerLayer = new ChartMarkerLayer(this);
-			this.m_gridLinePenProviderChangedHandler = new EventHandler(GridLinePenProviderChanged);
-			mobj_series_collection = new clsSeriesCollection(this) ;
-			mobj_bitmap_tools = new Derek.BitmapTools() ; 
-			
-			this.m_plotParams = new clsPlotParams(new SquareShape(5, false), Color.Black);
-			this.m_plotParamsHandler = new PlotParamsChangedHandler(this.PlotParamsChanged);
-			this.m_plotParams.PlotParamsChanged += this.m_plotParamsHandler;
-
-
-            mbool_axisVisible   = true;
-            mbool_legendVisible = true;
-            mbool_titleVisible  = true;
-
-
-			this.m_legend = new ChartLegend(this);
-			this.mobj_axis_plotter = new clsPlotterAxis();
-			this.m_titlePlotter = new clsLabelPlotter();
-			this.m_titlePlotter.AutoSize = this.AutoSizeFonts;
-			this.m_layout = new ChartLayout(this);
-			this.LegendLocationChanged();
-
-			RectangleF initialViewPort = new RectangleF(0, 0, 1, 1);
-			this.mViewPortHistory = new ViewPortHistory(this, initialViewPort);
-			this.mViewPortHistory.CurrentEntryChanged += new CurrentEntryChangedHandler(this.ViewPortHistoryCurrentEntryChanged);
-			this.ViewPort = initialViewPort;
-
-			ViewPortHistoryMenu histMenu = new ViewPortHistoryMenu(this.mViewPortHistory);
-			this.menuViewPort.MenuItems.Add(histMenu.BackMenuItem);
-			histMenu.BackMenuItem.Index = 2;
-			MenuUtils.SetMaximumMenuHeight(histMenu.BackMenuItem, 220);
-			this.menuViewPort.MenuItems.Add(histMenu.ForwardMenuItem);
-			histMenu.ForwardMenuItem.Index = 3;
-			MenuUtils.SetMaximumMenuHeight(histMenu.ForwardMenuItem, 220);
-
-			this.mobj_margins.MarginsChanged += new EventHandler(MarginsChanged);
-
-			this.m_defaultZoomHandler = new ChartZoomHandler(this);
-			this.GridLinePen = new PenProvider(new Pen(Color.LightGray, 1));
-			this.m_gridLinePenProvider.PenChanged += new EventHandler(this.GridLinePenProviderChanged);
-			this.XAxisLabel = "X Axis";
-			this.YAxisLabel = "Y Axis";
-
-			this.mobj_axis_plotter.AutoSizeFonts = false;
-			this.m_titlePlotter.AutoSize = false;
-
-			// Hookup event handlers for selected series.
-			mSelectedSeries.IntAdded += new IntChangedHandler(this.mSeriesSelected_IntAdded);
-			mSelectedSeries.IntRemoved += new IntChangedHandler(this.mSeriesSelected_IntRemoved);
-
-
-            m_saveFileDialog = new SaveFileDialog();            
-            m_saveFileDialog.AddExtension = true;
-            m_saveFileDialog.CheckPathExists = true;
-            m_saveFileDialog.DereferenceLinks = true;
-            m_saveFileDialog.ValidateNames = true;
-            m_saveFileDialog.Filter = "WMF (*.wmf)|*.wmf|EMF (*.emf)|*.emf|Jpeg (*.jpg)|*.jpg|Tiff (*.tiff)|*.tiff|Gif (*.gif)|*.gif|Bitmap (*.bmp)|*.bmp";
-            m_saveFileDialog.OverwritePrompt = true;
-            m_saveFileDialog.FilterIndex = 1;
-
-			this.ResumeLayout();
-		}
 
 		/// <summary> 
 		/// Clean up any resources being used.
@@ -1901,13 +1986,6 @@ namespace PNNLControls
 		#endregion
 
 		#region "Events"
-		//		protected override void OnResize(EventArgs e)
-		//		{
-		//			base.OnResize(e);
-		//			Console.WriteLine("Resized");
-		//			//this.PerformLayout();
-		//		}
-
 		private void PlotParamsChanged(Object sender, PNNLControls.PlotParamsChangedEventArgs args) 
 		{
 			// make sure all series have a valid plot params
@@ -1935,7 +2013,6 @@ namespace PNNLControls
 				}
 			}
 		}
-
 		private void SeriesChanged(Object sender, SeriesChangedEventArgs args) 
 		{
 			Console.WriteLine("Series Changed {0} {1}",((clsSeries) sender).PlotParams.Name, args.Cause);
@@ -1946,7 +2023,6 @@ namespace PNNLControls
 			this.SeriesChanged(true);
 			this.PerformLayout();
 		}
-
 		private void SeriesChanged(bool fullInvalidate) 
 		{
 			// make sure all series have a valid plot params
@@ -1968,7 +2044,6 @@ namespace PNNLControls
 				this.Invalidate();
 			}
 		}
-
 		protected override void OnLayout(LayoutEventArgs levent)
 		{
 			DateTime start = DateTime.Now;
@@ -2394,18 +2469,147 @@ namespace PNNLControls
 		}
 		#endregion
 
-		private Point mMouseBegin;
-		private ChartClickState mChartClickState = ChartClickState.Normal;
-		private Point mLegendTopLeft;
-		private Size mLegendSize;
-		private enum ChartClickState
-		{
-			LegendMove,
-			LegendSize,
-			Normal,
-			//Handled
-		}
-		
+        #region ISupportInitialize Members
+
+        private bool mInInit = false;
+        public void BeginInit()
+        {
+            this.mInInit = true;
+        }
+
+        public void EndInit()
+        {
+            this.mInInit = false;
+            // Once VS InitializeComponent finishes, the ViewPort will be set.
+            // Having the default [0, 1][0, 1] viewport in the history list looks bad, 
+            // so clear the history after initialization.
+            this.mViewPortHistory.Clear();
+            // Set the AutoSizeFonts option to the value set by the user
+            this.AutoSizeFonts = this.AutoSizeFonts;
+        }
+
+        #endregion
+
+        protected virtual void PasteSeries(clsSeries[] series, bool byReference)
+        {
+            foreach (clsSeries s in series)
+            {
+                clsSeries newSeries = s;
+                // Get a copy of the series if specified by the argument, or the series
+                // doesn't want to be copied by reference.
+                if (!byReference || !s.CopyByReferenceAllowed)
+                {
+                    newSeries = s.CopySeries();
+                }
+
+                /// 
+                /// Modified this to add new series values 
+                /// 
+                AddSeries(newSeries);
+                //this.SeriesCollection.Add(newSeries);				
+            }
+        }
+        /// <summary>
+        /// Allows derived classes to do custom copying of settings
+        /// </summary>
+        /// <param name="other"></param>
+        protected virtual void CopySettings(ctlChartBase other)
+        {
+            // only copy viewport related settings for the current time
+            this.AutoViewPortOnAddition = other.AutoViewPortOnAddition;
+            this.AutoViewPortOnSeriesChange = other.AutoViewPortOnSeriesChange;
+            this.UseAutoViewPortXBase = other.UseAutoViewPortXBase;
+            this.UseAutoViewPortYBase = other.UseAutoViewPortYBase;
+            this.AutoViewPortXAxis = other.AutoViewPortXAxis;
+            this.AutoViewPortXBase = other.AutoViewPortXBase;
+            this.AutoViewPortYAxis = other.AutoViewPortYAxis;
+            this.AutoViewPortYBase = other.AutoViewPortYBase;
+            this.ViewPort = other.ViewPort;
+        }
+        /// <summary>
+        /// Virtual method telling the listening form that the given series at point defined in X,Y was selected.
+        /// </summary>
+        /// <param name="series">Series index selected</param>
+        /// <param name="x">Y coordinate selected</param>
+        /// <param name="y">Y coordinate selected</param>
+        protected virtual void SeriesSelectedAtPoint(int series, int x, int y)
+        {
+            /// This method does nothing.
+        }
+        /// <summary>
+        /// Removes the built-in context menu for chart operations.
+        /// </summary>
+        public void RemoveDefaultContextMenu()
+        {
+            base.ContextMenu = null;
+        }
+        private void MarginsChanged(object sender, EventArgs e)
+        {
+            this.PerformLayout();
+            this.FullInvalidate();
+        }
+        protected override bool IsInputKey(Keys keyData)
+        {
+            Keys keysWithoutModifiers = keyData & ~Keys.Modifiers;
+            // Detect arrow keys as input, otherwise the form uses arrow keys to switch the
+            // active control
+            if (keysWithoutModifiers == Keys.Left || keysWithoutModifiers == Keys.Right ||
+                keysWithoutModifiers == Keys.Up || keysWithoutModifiers == Keys.Down)
+            {
+                return true;
+            }
+            return base.IsInputKey(keyData);
+        }
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            if (!e.Handled && this.PanWithArrowKeys)
+            {
+                float moveMultiplier = 1;
+                if (e.Modifiers == Keys.Shift)
+                {
+                    moveMultiplier = 10;
+                }
+                else if (e.Modifiers == Keys.Control)
+                {
+                    moveMultiplier = .1f;
+                }
+                switch (e.KeyCode)
+                {
+                    case Keys.Left:
+                        e.Handled = true;
+                        this.MoveViewPortLeft(this.PanFraction * moveMultiplier);
+                        break;
+                    case Keys.Right:
+                        e.Handled = true;
+                        this.MoveViewPortRight(this.PanFraction * moveMultiplier);
+                        break;
+                    case Keys.Up:
+                        e.Handled = true;
+                        this.MoveViewPortUp(this.PanFraction * moveMultiplier);
+                        break;
+                    case Keys.Down:
+                        e.Handled = true;
+                        this.MoveViewPortDown(this.PanFraction * moveMultiplier);
+                        break;
+                }
+            }
+            if (!e.Handled && e.KeyCode == Keys.Back)
+            {
+                if (e.Modifiers == Keys.None)
+                {
+                    e.Handled = true;
+                    this.mViewPortHistory.MoveBack(false);
+                }
+                else if (e.Modifiers == Keys.Shift)
+                {
+                    e.Handled = true;
+                    this.mViewPortHistory.MoveForward(false);
+                }
+            }
+            base.OnKeyDown(e);
+        }
+
+        #region Event Handers
 		private void ctlChartBase_MouseMove(object sender, System.Windows.Forms.MouseEventArgs e)
 		{
 			if (this.mChartClickState == ChartClickState.LegendMove) 
@@ -2439,7 +2643,6 @@ namespace PNNLControls
 				}
 			}													  
 		}
-
 		private void ctlChartBase_MouseUp(object sender, System.Windows.Forms.MouseEventArgs e)
 		{
 			Point p = new Point(e.X, e.Y);
@@ -2488,7 +2691,6 @@ namespace PNNLControls
 				this.PerformLayout();
 			}
 		}
-
 		protected virtual void ctlChartBase_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e)
 		{
 			// If Shift or Control not pressed, then a left click clears the current series 
@@ -2570,39 +2772,22 @@ namespace PNNLControls
 				}
 			}
 		}
-
-
-        /// <summary>
-        /// Virtual method telling the listening form that the given series at point defined in X,Y was selected.
-        /// </summary>
-        /// <param name="series">Series index selected</param>
-        /// <param name="x">Y coordinate selected</param>
-        /// <param name="y">Y coordinate selected</param>
-        protected virtual void SeriesSelectedAtPoint(int series, int x, int y)
-        {
-            /// This method does nothing.
-        }
-
 		private void menuLegendFloating_Click(object sender, System.EventArgs e)
 		{
 			this.ChartLayout.LegendLocation = ChartLegendLocation.Floating;
 		}
-
 		private void menuLegendTop_Click(object sender, System.EventArgs e)
 		{
 			this.ChartLayout.LegendLocation = ChartLegendLocation.UnderTitle;
 		}
-
 		private void menuLegendBottom_Click(object sender, System.EventArgs e)
 		{
 			this.ChartLayout.LegendLocation = ChartLegendLocation.Bottom;
 		}
-
 		private void menuLegendRight_Click(object sender, System.EventArgs e)
 		{
 			this.ChartLayout.LegendLocation = ChartLegendLocation.Right;
 		}
-
 		private void menuEditPlotParams_Click(object sender, System.EventArgs e)
 		{
 			PNNLControls.frmPlotParams editor = new frmPlotParams();
@@ -2611,19 +2796,16 @@ namespace PNNLControls
 			System.Windows.Forms.DialogResult result = editor.ShowDialog();
 			editor.Dispose();
 		}
-
 		private void menuLegendLeft_Click(object sender, System.EventArgs e)
 		{
 			this.ChartLayout.LegendLocation = ChartLegendLocation.Left;
 		}
-
 		private void menuPropertyGrid_Click(object sender, System.EventArgs e)
 		{
 			frmPropertyGrid fpg = new frmPropertyGrid();
 			fpg.SelectedObject = this;
 			fpg.ShowDialog();
 		}
-
 		internal void LegendLocationChanged() 
 		{
 			this.menuLegendLeft.Checked = false;
@@ -2653,17 +2835,14 @@ namespace PNNLControls
 				}
 			}
 		}
-
 		private void menuLegendShow_Click(object sender, System.EventArgs e)
 		{
 			this.HasLegend = !this.HasLegend;
 		}
-
 		private void menuShowAllData_Click(object sender, System.EventArgs e)
 		{
 			this.AutoViewPort();
 		}
-
 		private void menuViewPortEdit_Click(object sender, System.EventArgs e)
 		{
 			frmViewPortEditor fvpe = new frmViewPortEditor();
@@ -2678,156 +2857,10 @@ namespace PNNLControls
 			}
 			fvpe.Dispose();
 		}
-
-		#region ISupportInitialize Members
-
-		private bool mInInit = false;
-		public void BeginInit()
-		{
-			this.mInInit = true;
-		}
-
-		public void EndInit()
-		{
-			this.mInInit = false;
-			// Once VS InitializeComponent finishes, the ViewPort will be set.
-			// Having the default [0, 1][0, 1] viewport in the history list looks bad, 
-			// so clear the history after initialization.
-			this.mViewPortHistory.Clear();
-			// Set the AutoSizeFonts option to the value set by the user
-			this.AutoSizeFonts = this.AutoSizeFonts;
-		}
-
-		#endregion
-
-		/// <summary>
-		/// Merges the given menu with the currently set context menu (the defualt plus 
-		/// whatever has been added to it.)
-		/// </summary>
-		public override ContextMenu ContextMenu
-		{
-			get
-			{
-				return base.ContextMenu;
-			}
-			set
-			{
-				if (value == null) 
-				{
-					return;
-				}
-				if (this.ContextMenu != null) 
-				{
-					this.ContextMenu.MergeMenu(value);
-				}
-				else 
-				{
-					base.ContextMenu = value;
-				}
-			}
-		}
-
-		/// <summary>
-		/// Removes the built-in context menu for chart operations.
-		/// </summary>
-		public void RemoveDefaultContextMenu() 
-		{
-			base.ContextMenu = null;
-		}
-
-		protected override bool IsInputKey(Keys keyData)
-		{
-			Keys keysWithoutModifiers = keyData & ~Keys.Modifiers;
-			// Detect arrow keys as input, otherwise the form uses arrow keys to switch the
-			// active control
-			if (keysWithoutModifiers == Keys.Left || keysWithoutModifiers == Keys.Right ||
-				keysWithoutModifiers == Keys.Up || keysWithoutModifiers == Keys.Down) 
-			{
-				return true;
-			}
-			return base.IsInputKey(keyData);
-		}
-
-		[System.ComponentModel.DefaultValue(.1F)]
-		[System.ComponentModel.Description("The fraction of the chart area by which the chart is panned "
-			 + " when the arrow keys are pressed.")]
-		public float PanFraction 
-		{
-			get 
-			{
-				return this.mPanFraction;
-			}
-			set 
-			{
-				if (value <= 0)
-				{ 
-					throw new ArgumentOutOfRangeException("PanFraction", value, "Pan fraction must be > 0");
-				}
-				this.mPanFraction = value;
-			}
-		}
-
-		protected override void OnKeyDown(KeyEventArgs e)
-		{
-			if (!e.Handled && this.PanWithArrowKeys) 
-			{
-				float moveMultiplier = 1;
-				if(e.Modifiers == Keys.Shift) 
-				{
-					moveMultiplier = 10;
-				} 
-				else if (e.Modifiers == Keys.Control) 
-				{
-					moveMultiplier = .1f;
-				}
-				switch(e.KeyCode) 
-				{
-					case Keys.Left:
-						e.Handled = true;
-						this.MoveViewPortLeft(this.PanFraction * moveMultiplier);
-						break;
-					case Keys.Right : 
-						e.Handled = true;
-						this.MoveViewPortRight(this.PanFraction * moveMultiplier);
-						break;
-					case Keys.Up :
-						e.Handled = true;
-						this.MoveViewPortUp(this.PanFraction * moveMultiplier);
-						break;
-					case Keys.Down :
-						e.Handled = true;
-						this.MoveViewPortDown(this.PanFraction * moveMultiplier);
-						break;
-				}
-			}
-			if (!e.Handled && e.KeyCode == Keys.Back)
-			{
-				if (e.Modifiers == Keys.None) 
-				{
-					e.Handled = true;
-					this.mViewPortHistory.MoveBack(false);
-				} 
-				else if (e.Modifiers == Keys.Shift) 
-				{
-					e.Handled = true;
-					this.mViewPortHistory.MoveForward(false);
-				}
-			}
-			base.OnKeyDown(e);
-		}
-
 		private void menuClearViewPortHistory_Click(object sender, System.EventArgs e)
 		{
 			this.mViewPortHistory.Clear();
 		}
-
-
-		private void MarginsChanged(object sender, EventArgs e)
-		{
-			this.PerformLayout();
-			this.FullInvalidate();
-		}
-
 		/// <summary>
 		/// Copies the chart or currently selected series to the application 
 		/// clipboard.
@@ -2864,7 +2897,6 @@ namespace PNNLControls
 				ApplicationClipboard.SetData(seriesToCopy);
 			}
 		}
-
 		private void menuItemPaste_Click(object sender, System.EventArgs e)
 		{
 			// First check whether the clipboard has a ctlChartBase from which to 
@@ -2881,45 +2913,6 @@ namespace PNNLControls
 				PasteSeries(series, false);
 			}
 		}
-
-		protected virtual void PasteSeries(clsSeries[] series, bool byReference) 
-		{
-			foreach (clsSeries s in series) 
-			{
-				clsSeries newSeries = s;
-				// Get a copy of the series if specified by the argument, or the series
-				// doesn't want to be copied by reference.
-				if (!byReference || !s.CopyByReferenceAllowed) 
-				{
-					newSeries = s.CopySeries();
-				}
-                
-                /// 
-                /// Modified this to add new series values 
-                /// 
-                AddSeries(newSeries);
-				//this.SeriesCollection.Add(newSeries);				
-			}
-		}
-
-		/// <summary>
-		/// Allows derived classes to do custom copying of settings
-		/// </summary>
-		/// <param name="other"></param>
-		protected virtual void CopySettings(ctlChartBase other) 
-		{			
-			// only copy viewport related settings for the current time
-			this.AutoViewPortOnAddition = other.AutoViewPortOnAddition;
-			this.AutoViewPortOnSeriesChange = other.AutoViewPortOnSeriesChange;
-			this.UseAutoViewPortXBase = other.UseAutoViewPortXBase;
-			this.UseAutoViewPortYBase = other.UseAutoViewPortYBase;
-			this.AutoViewPortXAxis = other.AutoViewPortXAxis;
-			this.AutoViewPortXBase = other.AutoViewPortXBase;
-			this.AutoViewPortYAxis = other.AutoViewPortYAxis;
-			this.AutoViewPortYBase = other.AutoViewPortYBase;
-			this.ViewPort = other.ViewPort;
-		}
-
 		private void menuItemSelectAllSeries_Click(object sender, System.EventArgs e)
 		{
 			for (int i = 0; i < SeriesCollection.Count; i++) 
@@ -2927,22 +2920,6 @@ namespace PNNLControls
 				this.mSelectedSeries.Add(i);
 			}
 		}
-
-		public clsSeries[] SelectedSeries 
-		{
-			get 
-			{
-				int count = this.mSelectedSeries.Values.Count;
-				clsSeries[] series = new clsSeries[count];
-				int index = 0;
-				foreach (int i in this.mSelectedSeries.Values) 
-				{
-					series[index++] = SeriesCollection[i];
-				}
-				return series;
-			}
-		}
-
 		/// <summary>
 		/// Enables/Disables certain menu items on popup and merges in any custom 
 		/// context menu for the given series.
@@ -3028,27 +3005,6 @@ namespace PNNLControls
 				this.menuItemSeriesSpecific.Enabled = false;
 			}
 		}
-
-		/// <summary>
-		/// Tells whether any series are currently selected
-		/// </summary>
-		/// <returns></returns>
-		private bool HasSelectedSeries 
-		{
-			get 
-			{
-				return this.mSelectedSeries.Values.Count > 0;
-			}
-		}
-
-		private bool HasOneSeriesSelected 
-		{
-			get 
-			{
-				return this.mSelectedSeries.Values.Count == 1;
-			}
-		}
-
 		private void menuItemDisplayOptions_Click(object sender, System.EventArgs e)
 		{
 			if (SelectedSeries.Length > 0) 
@@ -3067,7 +3023,6 @@ namespace PNNLControls
 				form.Dispose();
 			}
 		}
-
 		private void menuItemPasteByReference_Click(object sender, System.EventArgs e)
 		{
 			// See if there are any clsSeries arrays available for copying
@@ -3077,7 +3032,6 @@ namespace PNNLControls
 				PasteSeries(series, true);
 			}
 		}
-
 		private void menuItemDelete_Click(object sender, System.EventArgs e)
 		{
 			this.SuspendLayout();
@@ -3090,7 +3044,6 @@ namespace PNNLControls
 			}
 			this.ResumeLayout();
 		}
-
 		private void menuItemSeriesVisible_Click(object sender, System.EventArgs e)
 		{
 			foreach (clsSeries series in this.SelectedSeries) 
@@ -3100,7 +3053,6 @@ namespace PNNLControls
 				series.PlotParams = p;
 			}
 		}
-
 		private void menuItemBringToFront_Click(object sender, System.EventArgs e)
 		{
 			// Turn off autozoom, since z-order change is done by adding and 
@@ -3115,7 +3067,6 @@ namespace PNNLControls
 			}
 			AutoViewPortOnAddition = autoZoom;
 		}
-
 		private void menuItemBringToBack_Click(object sender, System.EventArgs e)
 		{
 			// Turn off autozoom, since z-order change is done by adding and 
@@ -3130,7 +3081,6 @@ namespace PNNLControls
 			}
 			AutoViewPortOnAddition = autoZoom;
 		}
-
 		private void menuItemCopyImage_Click(object sender, System.EventArgs e)
 		{
 			try 
@@ -3144,9 +3094,15 @@ namespace PNNLControls
 			{
 				MessageBox.Show("Image Copy Failed: " + ex.Message);
 			}
-		}
-
-		public Bitmap ToBitmap() 
+        }
+        private void menuItemSaveImage_Click(object sender, EventArgs e)
+        {
+            Save();
+        }
+        #endregion
+        
+        #region Imaging
+        public Bitmap ToBitmap() 
 		{
             Bitmap image = new Bitmap(this.Width, this.Height);            
 			using (Graphics g = Graphics.FromImage(image)) 
@@ -3214,7 +3170,6 @@ namespace PNNLControls
 			metafileGraphics.Dispose() ; 
 			return metafile;
 		}
-
 		public Bitmap ToBitmap(int width, int height) 
 		{
 			int tempWidth   = this.Width ; 
@@ -3229,7 +3184,10 @@ namespace PNNLControls
 			this.Width      = tempWidth ; 
 			this.Height     = tempHeight ; 
 			return image;
-		}
+        }
+        #endregion
+
+        #region Saving
         /// <summary>
         /// Displays a save dialog box and allows the user to set the dpi and name for the image.
         /// </summary>
@@ -3293,10 +3251,11 @@ namespace PNNLControls
             {
                 frmSave.Dispose();
             }
-		}
+        }
+        #endregion
 
-		#region "Marker Layer"
-		public ChartMarkerLayer MarkerLayer 
+        #region "Marker Layer"
+        public ChartMarkerLayer MarkerLayer 
 		{
 			get 
 			{
@@ -3304,12 +3263,6 @@ namespace PNNLControls
 			}
 		}
 		#endregion
-
-
-        private void menuItemSaveImage_Click(object sender, EventArgs e)
-        {
-            Save();
-        }
 	}
 	
 	/// <summary>

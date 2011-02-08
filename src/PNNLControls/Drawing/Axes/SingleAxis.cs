@@ -17,14 +17,8 @@ namespace PNNLControls
 		/// </summary>
 		private System.ComponentModel.Container components = null;
 		private System.Windows.Forms.PictureBox pictureBox1;
-
 		private clsPlotSingleAxis plotter = new clsPlotSingleAxis();
 
-		public clsPlotSingleAxis Plotter 
-		{
-			get{return plotter;}
-			set{plotter=value;}
-		}
 
 		public bool IsVertical
 		{
@@ -34,12 +28,14 @@ namespace PNNLControls
 
 		public SingleAxis()
 		{
-			// This call is required by the Windows.Forms Form Designer.
 			InitializeComponent();
-
-			// TODO: Add any initialization after the InitializeComponent call
-
 		}
+
+        public clsPlotSingleAxis Plotter
+        {
+            get { return plotter; }
+            set { plotter = value; }
+        }
 
 		/// <summary> 
 		/// Clean up any resources being used.
@@ -82,21 +78,14 @@ namespace PNNLControls
 			this.Controls.Add(this.pictureBox1);
 			this.Name = "SingleAxis";
 			this.Size = new System.Drawing.Size(144, 288);
-			this.Load += new System.EventHandler(this.SingleAxis_Load);
 			this.ResumeLayout(false);
 
 		}
 		#endregion
 
-		private void SingleAxis_Load(object sender, System.EventArgs e)
-		{
-		
-		}
-
 		private void pictureBox1_Paint(object sender, System.Windows.Forms.PaintEventArgs e)
 		{
 			plotter.Bounds = this.Bounds;
-			//e.Graphics.FillRectangle(new SolidBrush(this.BackColor), pnlPlot.Bounds);
 			plotter.Layout(e.Graphics);
 			plotter.Draw(e.Graphics, Color.Black);
 		}

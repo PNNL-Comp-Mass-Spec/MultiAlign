@@ -2623,8 +2623,9 @@ namespace MultiAlign.Drawing
             /// 
             /// Find all of the charge states 
             /// 
-            float[] charges = new float[30];
-            for (int i = 0; i < 30; i++)
+            int N = 31;
+            float[] charges = new float[N];
+            for (int i = 0; i < N; i++)
             {
                 charges[i] = 0;
             }
@@ -2633,13 +2634,13 @@ namespace MultiAlign.Drawing
             foreach(clsUMC umc in umcs)
             {                
                 int j = umc.ChargeRepresentative;
-                if (j > 30)
-                    j = 30;
+                if (j > N - 1)
+                    j = N - 1;
                 maxCharge = Math.Max(maxCharge, j);
                 if (j < 1)
                     j = 1;
-                charges[j - 1]++;
-            }
+                charges[j]++;
+            }            
 
             /// 
             /// Construct histogram
@@ -2648,7 +2649,7 @@ namespace MultiAlign.Drawing
             float[] freqs = new float[maxCharge];
             for (int i = 0; i < maxCharge; i++)
             {
-                bins[i] = Convert.ToSingle(i + 1);
+                bins[i]  = Convert.ToSingle(i + 1);
                 freqs[i] = charges[i];
             }
 
@@ -2656,6 +2657,7 @@ namespace MultiAlign.Drawing
             /// Display histogram 
             /// 
             controlHistogram chart = new controlHistogram();
+            
             chart.BinSize = 1.0F;
             chart.AddData(bins, freqs, "Charge States");
             chart.XAxisLabel = "Charge States";

@@ -28,11 +28,12 @@ namespace PNNLControls.Drawing.Charting
 		{
             ChartDataPoint [] points = data.PlotData;
             float baseY = GetScreenPixelY(0);
+            float binSize = mfloat_binSize / 2;
             foreach (ChartDataPoint point in points)
             {
-                float x = GetScreenPixelX(point.x);
+                float x = GetScreenPixelX(point.x - binSize);
                 float y = GetScreenPixelY(point.y);
-                float width = GetScreenPixelX(point.x + mfloat_binSize);
+                float width = GetScreenPixelX(point.x + binSize);
                 
                 g.FillRectangle(new SolidBrush(data.PlotParams.Coloring.Colors[0]), x, y, width - x, baseY -  y); 
                 g.DrawRectangle(new Pen(new SolidBrush(Color.Black)), x, y, width - x, baseY - y); 

@@ -30,35 +30,41 @@ namespace PNNLControls
 		/// Required designer variable.
 		/// </summary>
 		private System.ComponentModel.Container components = null;
-
 		private clsPlotSingleAxis mPlotter = new clsPlotSingleAxis();
-
 		private Rectangle mZoomRectangle = new Rectangle(0,0,1,1);
-
 		private Range mSelected = new Range(int.MinValue,int.MinValue,int.MinValue,int.MinValue);
-
-		private int mMinSelectionRange = 10; //10 pixels
+        private int mMinSelectionRange = 10; //10 pixels
+        private int[] mAlignment = null;
 
 		private Color mSelectedColor = Color.Pink;
-		public Color SelectedColor 
-		{
-			get{return this.mSelectedColor;}
-			set{this.mSelectedColor = value;}
-		}
 
 		/// <summary>
 		/// flag which indicates whether we are in the process of selecting a zoom area
 		/// </summary>
 		private bool mZooming = false;
 
+
+        public ctlSingleAxis()
+        {
+            // This call is required by the Windows.Forms Form Designer.
+            InitializeComponent();
+            Color temp     = this.BackColor;
+            this.BackColor = SystemColors.Control;
+            this.BackColor = temp;
+            mPlotter.UnitPlotter.SetRange(0f, 100f);
+        }
+
+
+        public Color SelectedColor
+        {
+            get { return this.mSelectedColor; }
+            set { this.mSelectedColor = value; }
+        }
 		public clsPlotSingleAxis Plotter
 		{
 			get{return mPlotter;}
 			set{mPlotter = value;}
-		}
-
-		private int[] mAlignment = null;
-		
+		}	
 		public int[] Alignment 
 		{
 			get{return this.mAlignment;}
@@ -149,23 +155,6 @@ namespace PNNLControls
 			mSelected.EndColumn = highPixel;
 		}
 
-		public ctlSingleAxis()
-		{
-			// This call is required by the Windows.Forms Form Designer.
-			InitializeComponent();
-
-			// TODO: Add any initialization after the InitializeComponent call
-
-			//this is a DotWierdness that I've noticed in custom controls in .Net 2003.  The backcolor will default to black or transparent, 
-			//in spite of what is set in the designer properties.  This kludge works, but it is a "magic" kludge that has no explanation.  You tell me.
-			//dfh, 4/29/2007
-			Color temp = this.BackColor;
-			this.BackColor = SystemColors.Control;
-			this.BackColor = temp;
-
-			mPlotter.UnitPlotter.SetRange(0f, 100f);
-
-		}
 
 		/// <summary> 
 		/// Clean up any resources being used.
@@ -223,7 +212,9 @@ namespace PNNLControls
 				
 				g.Dispose();
 			}
-			catch (Exception ex){}//System.Windows.Forms.MessageBox.Show(ex.Message);
+			catch (Exception ex)
+            {
+            }
             
 		}
 
