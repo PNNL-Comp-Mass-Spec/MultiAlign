@@ -4,6 +4,7 @@ using System.Threading;
 using System.Drawing;
 using System.Diagnostics;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 using MultiAlign.Drawing;
 using MultiAlignEngine.Features;
@@ -38,6 +39,7 @@ namespace MultiAlignConsole
         private static List<string> m_htmlPage;
         private static ManualResetEvent     m_triggerEvent;
         private static string               m_logPath;
+        private static MultiAlignAnalysis   m_analysis;
         /// <summary>
         /// Where the data and plots needs to go.
         /// </summary>
@@ -614,7 +616,13 @@ namespace MultiAlignConsole
         /// <param name="sender"></param>
         /// <param name="e"></param>
         static void processor_AnalysisComplete(object sender, EventArgs e)
-        {              
+        {
+
+            Log("Saving dataset information to database.");
+            DatasetDAOHibernate datasetDAOHibernate = new DatasetDAOHibernate();
+            List<DatasetInformation> datasetList    = m_analysis.Datasets;
+            datasetDAOHibernate.AddAll(datasetList);
+
             CreateFinalAnalysisPlots();
             PushEndHeader();
             m_triggerEvent.Set();
@@ -919,6 +927,7 @@ namespace MultiAlignConsole
             analysis.PathName                       = m_analysisPath;
             analysis.AnalysisName                   = m_analysisName;
             analysis.BaselineDataset                = baseline;
+            m_analysis                              = analysis;
             MultiAlignAnalysisProcessor processor   = new MultiAlignAnalysisProcessor();
 
             Log("Creating Plot Thumbnail Path");
@@ -989,9 +998,8 @@ namespace MultiAlignConsole
             Log("Using Clustering Algorithm: " + clusterType.ToString());
             processor.ClusterAlgorithmType          = clusterType;
             analysis.ClusterOptions.RecursionLevels = 0;
-            
-            Log("Analysis Started.");            
-                        
+
+             
             
             processor.FeaturesAligned       += new EventHandler<FeaturesAlignedEventArgs>(processor_FeaturesAligned);
             processor.FeaturesLoaded        += new EventHandler<FeaturesLoadedEventArgs>(processor_FeaturesLoaded);
@@ -999,6 +1007,8 @@ namespace MultiAlignConsole
             processor.FeaturesPeakMatched   += new EventHandler<FeaturesPeakMatchedEventArgs>(processor_FeaturesPeakMatched);
             processor.AnalysisComplete      += new EventHandler(processor_AnalysisComplete);
             processor.Status                += new EventHandler<AnalysisStatusEventArgs>(processor_Status);
+
+            Log("Analysis Started.");    
             processor.StartAnalysis(analysis);
 
             // Wait for the analysis to complete.
@@ -1011,12 +1021,17 @@ namespace MultiAlignConsole
             Log("Analysis Complete.");                        
         }
 
-        /// <summary>
-        /// Main entry point of application.
-        /// </summary>
-        /// <param name="args"></param>
-        static void Main(string[] args)
-        {        
+        [DllImport("kernel32.dll")]
+		public static extern bool SetConsoleMode(IntPtr hConsoleHandle, uint dwMode);
+		private const uint ENABLE_EXTENDED_FLAGS = 0x0080;
+		private const int LC_DATA = 0;
+		private const int IMS_DATA = 1;
+
+		static void Main(string[] args)
+		{
+			IntPtr handle = Process.GetCurrentProcess().MainWindowHandle;
+			SetConsoleMode(handle, ENABLE_EXTENDED_FLAGS);
+
             StartMultiAlign(args);
         }
     }
