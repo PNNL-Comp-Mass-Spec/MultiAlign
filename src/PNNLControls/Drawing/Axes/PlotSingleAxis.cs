@@ -26,8 +26,8 @@ namespace PNNLControls
             m_minFontSize = 8;
             m_maxFontSize = 15;
             m_autoSizeFonts = true;
-            mobj_UnitPlotter = null;
-            mobj_LabelPlotter = null;
+            //mobj_UnitPlotter = null;
+            //mobj_LabelPlotter = null;
         }
         #endregion
 
