@@ -140,6 +140,7 @@ namespace MultiAlignEngine
 				__int64	mlong_sum_abundance;
 				int		mint_spectral_count;
 				float	mfloat_drift_time;
+				float	mfloat_drift_time_uncorrected;
 				double	mdouble_averageInterferenceScore;
 				double	mdouble_averageDeconFitScore;
 				double	mdouble_conformationFitScore;
@@ -353,6 +354,15 @@ namespace MultiAlignEngine
 
 				__property void set_DriftTime(double value){
 					mfloat_drift_time = value;
+				}
+
+				__property double get_DriftTimeUncorrected()
+				{
+					return mfloat_drift_time_uncorrected;
+				}
+
+				__property void set_DriftTimeUncorrected(double value){
+					mfloat_drift_time_uncorrected = value;
 				}
 
 				__property double get_AverageInterferenceScore()

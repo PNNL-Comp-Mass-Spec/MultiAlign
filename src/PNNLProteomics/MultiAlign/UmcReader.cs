@@ -160,6 +160,9 @@ namespace PNNLProteomics.MultiAlign
 					case "Drift_Time":
 						columnMap.Add("Umc.DriftTime", i);
 						break;
+					case "Drift_Time_Uncorrected":
+						columnMap.Add("Umc.DriftTimeUncorrected", i);
+						break;
 					case "Avg_Interference_Score":
 						columnMap.Add("Umc.AverageInterferenceScore", i);
 						break;
@@ -248,6 +251,7 @@ namespace PNNLProteomics.MultiAlign
 					if (m_columnMap.ContainsKey("Umc.SpectralCount"))				umc.SpectralCount = int.Parse(columns[m_columnMap["Umc.SpectralCount"]]);
 					if (m_columnMap.ContainsKey("Umc.MZForCharge"))					umc.MZForCharge = Double.Parse(columns[m_columnMap["Umc.MZForCharge"]]);
 					if (m_columnMap.ContainsKey("Umc.DriftTime"))					umc.DriftTime = float.Parse(columns[m_columnMap["Umc.DriftTime"]]);
+					if (m_columnMap.ContainsKey("Umc.DriftTimeUncorrected"))		umc.DriftTimeUncorrected = float.Parse(columns[m_columnMap["Umc.DriftTimeUncorrected"]]);
 					if (m_columnMap.ContainsKey("Umc.AverageInterferenceScore"))	umc.AverageInterferenceScore = Double.Parse(columns[m_columnMap["Umc.AverageInterferenceScore"]]);
 					if (m_columnMap.ContainsKey("Umc.ConformationFitScore"))		umc.ConformationFitScore = Double.Parse(columns[m_columnMap["Umc.ConformationFitScore"]]);
 					if (m_columnMap.ContainsKey("Umc.AverageDeconFitScore"))		umc.AverageDeconFitScore = Double.Parse(columns[m_columnMap["Umc.AverageDeconFitScore"]]);
