@@ -1039,6 +1039,16 @@ namespace PNNLProteomics.MultiAlign
             parameters.OnlyClusterSameChargeStates  = (analysis.ClusterOptions.IgnoreCharge == false);
             List<clsCluster> clusters               = new List<clsCluster>();
 
+            // This just tells us whether we are using mammoth memory partitions or not.
+            if (analysis.ClusterOptions.RecursionLevels > 0)
+            {
+                UpdateStatus(string.Format("Using Mammoth clustering framework with {0} recursive memory partitions.", analysis.ClusterOptions.RecursionLevels));
+            }
+            else
+            {
+                UpdateStatus("Using Mammoth clustering framework without partitions.  Clustering will run with all data loaded into memory.");
+            }
+
             int id = 0;
             // Group all charge states            
             string databaseName = "mammothDatabase.db3";

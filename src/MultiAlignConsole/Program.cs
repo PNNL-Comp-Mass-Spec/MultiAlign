@@ -996,8 +996,7 @@ namespace MultiAlignConsole
             }
 
             Log("Using Clustering Algorithm: " + clusterType.ToString());
-            processor.ClusterAlgorithmType          = clusterType;
-            analysis.ClusterOptions.RecursionLevels = 0;
+            processor.ClusterAlgorithmType          = clusterType;          
 
              
             
