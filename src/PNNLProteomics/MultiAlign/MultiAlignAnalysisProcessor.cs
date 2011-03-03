@@ -815,7 +815,16 @@ namespace PNNLProteomics.MultiAlign
             {
                 System.IO.File.Delete(databaseName);
             }
-            
+
+            if (chargeStateFilter > 0)
+            {
+                UpdateStatus(string.Format("Creating Mammoth Database For Charge State {0}", chargeStateFilter));
+            }
+            else
+            {
+                UpdateStatus(string.Format("Creating Mammoth Database For Clustering"));
+            }
+
             // Create the database file.
             System.Data.SQLite.SQLiteConnection.CreateFile(databaseName);
             using (System.Data.SQLite.SQLiteConnection connection =
@@ -825,10 +834,10 @@ namespace PNNLProteomics.MultiAlign
                 {
                     connection.Open();
 
-                    command.CommandText = "CREATE TABLE T_CLUSTERS( id INTEGER PRIMARY KEY,  mass DOUBLE, net DOUBLE, drift_time DOUBLE, internal INTEGER)";
+                    command.CommandText = "CREATE TABLE T_CLUSTERS( id INTEGER PRIMARY KEY,  mass DOUBLE, net DOUBLE, drift_time DOUBLE, internal INTEGER, charge INTEGER)";
                     command.ExecuteNonQuery();
 
-                    command.CommandText = "CREATE TABLE T_FEATURES(id INTEGER, mass DOUBLE, net DOUBLE, drift_time DOUBLE, dataset_id INTEGER, cluster INTEGER, PRIMARY KEY(id, dataset_id))";
+                    command.CommandText = "CREATE TABLE T_FEATURES(id INTEGER, mass DOUBLE, net DOUBLE, drift_time DOUBLE, dataset_id INTEGER, cluster INTEGER, charge INTEGER,  PRIMARY KEY(id, dataset_id))";
                     command.ExecuteNonQuery();
                 }
             }
@@ -863,7 +872,9 @@ namespace PNNLProteomics.MultiAlign
                 }
                 database.Close();
             }
-
+            
+            UpdateStatus("Mammoth database creation complete.");
+            
             return totalFeatures;
         }
         //BLL HACK BECAUSE THE HIBERNATE SHIT SUCKS
@@ -883,8 +894,7 @@ namespace PNNLProteomics.MultiAlign
                 foreach (PNNLOmics.Data.Features.UMCLight feature in cluster.UMCList)
                 {
                     int id = feature.ID;
-                    //clsUMC umc = featureCache.FindByFeatureID(id);
-
+             
                     featureIDToClusterID.Add(id, cluster.ID);
                     allFeatureIDsToClusterID.Add(id, cluster.ID);
                     ids.Add(id);                                                            
@@ -914,20 +924,6 @@ namespace PNNLProteomics.MultiAlign
                 ids.Clear();
                 featureIDToClusterID.Clear();             
             }
-
-
-            //List<clsUMC> storedFeatures = featureCache.FindAll();
-            //foreach (clsUMC umc in storedFeatures)
-            //{
-            //    if (umc.ClusterId > -1 && allFeatureIDsToClusterID.ContainsKey(umc.Id))
-            //    {
-            //        int id = allFeatureIDsToClusterID[umc.Id];
-            //        if (id != umc.ClusterId)
-            //        {
-            //            throw new Exception("UMC Cluster ID does not match ID");
-            //        }
-            //    }
-            //}
         }
         /// <summary>
         /// Clusters using the original single linkage algorithm.
@@ -1150,15 +1146,20 @@ namespace PNNLProteomics.MultiAlign
                     UpdateStatus(string.Format("Clustering Charge State = {0}.", chargeState));
                     List<clsCluster> tempClusters = new List<clsCluster>();
                     // Create database
+
+                    UpdateStatus("Creating Mammoth Database.");
                     int total = CreateMammothDatabase(analysis, featureCache, databaseName, chargeState);
 
                     if (total <= 0)
                     {
+                        UpdateStatus("Finished clustering charge state.  No features to cluster.");
                         continue;
                     }
 
                     // Cluster 
                     Mammoth.Algorithms.MammothClusterer processor = new Mammoth.Algorithms.MammothClusterer();
+
+                    UpdateStatus("Clustering.");
                     processor.ClusterDatabase(databaseName, analysis.ClusterOptions.RecursionLevels, parameters, range, parameters.Tolerances, clusterer); 
                    
                     // Retrieve clusters 
@@ -1184,8 +1185,11 @@ namespace PNNLProteomics.MultiAlign
                         retrievalRange.DriftTimeMinimum     -= 500;
                         retrievalRange.InternalCluster       = true;
 
+                        UpdateStatus("Retrieving mammoth clusters.");
                         mammothClusters = database.GetClusters(retrievalRange);
 
+
+                        UpdateStatus("Updating clusters.");
                         tempClusters.Clear();
                         foreach(Mammoth.Data.MammothCluster mammothCluster in mammothClusters)
                         {
@@ -1221,9 +1225,12 @@ namespace PNNLProteomics.MultiAlign
                         UpdateStatus(string.Format("Found {0} clusters.", tempClusters.Count));
 
                         clusterCache.AddAll(tempClusters);
+
+                        UpdateStatus("Updating features with cluster ids.");
                         UpdateFeatureCacheWithClusters(featureCache, mammothClusters);
                         database.Close();
 
+                        UpdateStatus("Finished clustering charge state.");
                         clusters.AddRange(tempClusters);
                     }
                 }

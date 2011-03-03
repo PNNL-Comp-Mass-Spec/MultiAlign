@@ -69,7 +69,7 @@ namespace FOX
 
             m_tolerances         = new FeatureTolerances();
             m_tolerances.Mass      = 30;
-            m_tolerances.NET = .1;
+            m_tolerances.RetentionTime = .1;
             m_tolerances.DriftTime = 15;
         }
 
@@ -81,8 +81,8 @@ namespace FOX
         /// <param name="y"></param>
         private bool AreClose(UMCClusterLight x, UMCClusterLight y)
         {
-            double netDiff = x.NET - y.NET;
-            if (Math.Abs(netDiff) > m_tolerances.NET)
+            double netDiff = x.RetentionTime - y.RetentionTime;
+            if (Math.Abs(netDiff) > m_tolerances.RetentionTime)
             {
                 return false;
             }
