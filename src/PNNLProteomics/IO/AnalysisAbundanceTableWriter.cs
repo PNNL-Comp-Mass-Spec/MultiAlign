@@ -288,7 +288,7 @@ namespace PNNLProteomics.IO
                                     /// See if a SMART score exists
                                     /// 
                                     List<classSMARTProbabilityResult> smartScores = null;
-                                    smartScores = analysis.SMARTResults.GetResultFromUMCIndex(triplet.mintFeatureIndex);
+                                    smartScores = analysis.STACTResults.GetResultFromUMCIndex(triplet.mintFeatureIndex);
                                     if (smartScores != null)
                                     {
                                         /// 

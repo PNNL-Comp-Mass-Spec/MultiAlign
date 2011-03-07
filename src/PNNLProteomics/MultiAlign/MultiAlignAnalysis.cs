@@ -254,11 +254,11 @@ namespace PNNLProteomics.Data.Analysis
         /// <summary>
         /// Object that holds the smart scoring options.
         /// </summary>
-        private classSMARTOptions mobj_smartOptions;
+        private classSMARTOptions mobj_stacOptions;
         /// <summary>
         /// List of smart results with summaries for each dataset.
         /// </summary>
-        private classSMARTResults mobj_smartResults;
+        private classSMARTResults mobj_stacResults;
         #endregion
 
         #region NonSerialized Members
@@ -319,8 +319,8 @@ namespace PNNLProteomics.Data.Analysis
             /// 
             /// Smart options for SMART Scoring and a collection to store the results.
             /// 
-            mobj_smartOptions               = new classSMARTOptions();
-            mobj_smartResults               = new classSMARTResults();
+            mobj_stacOptions               = new classSMARTOptions();
+            mobj_stacResults               = new classSMARTResults();
             m_datasetInformation            = new List<DatasetInformation>();
             /// 
             /// This only matters if peptide peak matching was performed
@@ -557,8 +557,6 @@ namespace PNNLProteomics.Data.Analysis
                             mobjUMCCreator.SetIsotopePeaks(ref msFeatureArray);
                             mobjUMCCreator.FindUMCs();
                             loadedUMCs = mobjUMCCreator.GetUMCs();
-
-
                         }
                     }
 
@@ -1539,13 +1537,13 @@ namespace PNNLProteomics.Data.Analysis
                 smartFeatures.Add(feature);
             }
 
-            mobj_smartResults            = 
+            mobj_stacResults            = 
                 processor.ScoreUMCMatches(massTags,
                                           smartFeatures,
-                                          mobj_smartOptions);
+                                          mobj_stacOptions);
 
             mobjPeakMatchingResults      = 
-                ConvertSmartResultsToPeakResults(mobj_smartResults);            
+                ConvertSmartResultsToPeakResults(mobj_stacResults);            
         }
         /// <summary>
         /// Converts the SMART Results into peak matching results.
@@ -2058,15 +2056,15 @@ namespace PNNLProteomics.Data.Analysis
         /// <summary>
         /// Gets or sets the SMART results calculated.
         /// </summary>
-        public classSMARTResults SMARTResults
+        public classSMARTResults STACTResults
         {
             get
             {
-                return mobj_smartResults;
+                return mobj_stacResults;
             }
             set
             {
-                mobj_smartResults = value;
+                mobj_stacResults = value;
             }
         }
         /// <summary>
@@ -2076,11 +2074,11 @@ namespace PNNLProteomics.Data.Analysis
         {
             get
             {
-                return mobj_smartOptions;
+                return mobj_stacOptions;
             }
             set
             {
-                mobj_smartOptions = value;
+                mobj_stacOptions = value;
             }
         }
         /// <summary>

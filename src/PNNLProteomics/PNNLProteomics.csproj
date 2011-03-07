@@ -161,6 +161,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Algorithms\AlgorithmProvider.cs" />
+    <Compile Include="Algorithms\Alignment\LCMSWarpFeatureAligner.cs" />
+    <Compile Include="Algorithms\Alignment\IFeatureAligner.cs" />
+    <Compile Include="Algorithms\AlgorithmBuilder.cs" />
+    <Compile Include="Algorithms\Clustering\ClusteringAlgorithmType.cs" />
+    <Compile Include="Algorithms\PeakMatching\IPeakMatcher.cs" />
+    <Compile Include="Algorithms\PeakMatching\PeakMatcher.cs" />
     <Compile Include="Analysis\clsEMNormalizer.cs" />
     <Compile Include="Analysis\clsHistogram.cs" />
     <Compile Include="Analysis\clsLinearNormalizer.cs" />
@@ -188,15 +195,19 @@
     <Compile Include="IO\DelegatesLoading.cs" />
     <Compile Include="IO\DiskDatasetLoader.cs" />
     <Compile Include="IO\DMSDatasetSearchOptions.cs" />
+    <Compile Include="IO\FeatureDataAccessProviders.cs" />
     <Compile Include="IO\FileCopyEventArgs.cs" />
     <Compile Include="IO\IAnalysisWriter.cs" />
     <Compile Include="IO\IMultiAlignAnalysisReader.cs" />
     <Compile Include="IO\IMultiAlignAnalysisWriter.cs" />
     <Compile Include="IO\IOProgressEventArgs.cs" />
+    <Compile Include="IO\MTDB\MTDBLoaderFactory.cs" />
     <Compile Include="IO\MultiAlignParameterIniFileReader.cs" />
     <Compile Include="IO\MultiAlignParameterIniFileWriter.cs" />
     <Compile Include="IO\TableWriterColumnOptions.cs" />
+    <Compile Include="IO\UMC\UMCLoaderFactory.cs" />
     <Compile Include="IO\XAMTReader.cs" />
+    <Compile Include="MultiAlign\AnalysisUtils.cs" />
     <Compile Include="MultiAlign\Hibernate\Domain\DAOHibernate\FactorDAOHibernate.cs" />
     <Compile Include="MultiAlign\Hibernate\Domain\DAOHibernate\DatasetDAOHibernate.cs" />
     <Compile Include="MultiAlign\Hibernate\Domain\DAO\IFactorDAO.cs" />
@@ -266,6 +277,9 @@
       <Project>{5A7E3D3C-03F3-4586-8A2C-BAE1EBA4623E}</Project>
       <Name>MultiAlignEngine</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Algorithms\FeatureFinding\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -17,9 +17,12 @@ using PNNLProteomics.Data;
 using PNNLProteomics.EventModel;
 using PNNLProteomics.MultiAlign;
 using PNNLProteomics.Data.Analysis;
-
+using PNNLProteomics.Algorithms.Clustering;
+using PNNLProteomics.MultiAlign.Hibernate.Domain.DAO;
+using PNNLProteomics.Algorithms;
 using PNNLProteomics.MultiAlign.Hibernate;
 using PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate;
+
 
 namespace MultiAlignConsole
 {
@@ -29,7 +32,14 @@ namespace MultiAlignConsole
     class Program
     {
         #region Constants 
-        private const string THUMBNAIL_PATH = "Plots";
+        /// <summary>
+        /// Default path for plots.
+        /// </summary>
+        private const string THUMBNAIL_PATH = "Plots";        
+        private const int PLOT_WIDTH        = 800; 
+        private const int PLOT_HEIGHT       = 800;
+        private const int PLOT_WIDTH_HTML   = 256; 
+        private const int PLOT_HEIGHT_HTML   = 256;            
         #endregion
 
         #region Members
@@ -623,7 +633,7 @@ namespace MultiAlignConsole
             List<DatasetInformation> datasetList    = m_analysis.Datasets;
             datasetDAOHibernate.AddAll(datasetList);
 
-            CreateFinalAnalysisPlots();
+            //CreateFinalAnalysisPlots();
             PushEndHeader();
             m_triggerEvent.Set();
         }
@@ -750,19 +760,47 @@ namespace MultiAlignConsole
         }
         #endregion
 
+        #region Data Provider Setup
+        /// <summary>
+        /// Sets up the NHibernate caches for storing and retrieving data.
+        /// </summary>
+        /// <param name="analysisPath"></param>
+        /// <returns></returns>
+        private static FeatureDataAccessProviders SetupDataProviders()
+        {
+            string path = AnalysisPathUtils.BuildAnalysisName(m_analysisPath, m_analysisName);
+
+            NHibernateUtil.SetDbLocationForWrite(path, true);
+            NHibernateUtil.SetDbLocationForRead(path);
+
+            IUmcDAO featureCache        = new UmcDAOHibernate();
+            IUmcClusterDAO clusterCache = new UmcClusterDAOHibernate();
+
+            FeatureDataAccessProviders providers =
+                new FeatureDataAccessProviders(featureCache, clusterCache);
+
+            return providers;
+        }
+        private static void CleanupDataProviders()
+        {            
+            NHibernateUtil.Dispose();
+        }
+        #endregion
+
         /// <summary>
         /// Processes the MA analysis data.
         /// </summary>
         /// <param name="args"></param>
         static void StartMultiAlign(string [] args)
-        {           
-            ClusteringAlgorithmType clusterType = ClusteringAlgorithmType.SingleLinkage; 
-           
-            //TODO: Make this a default value constant 
-            m_width         = 800;
-            m_height        = 800;
-            m_widthHTML     = 256;
-            m_heightHTML    = 256;
+        {
+            // Builds the list of algorithm providers.
+            AlgorithmBuilder builder = new AlgorithmBuilder();
+                       
+            
+            m_width         = PLOT_WIDTH;
+            m_height        = PLOT_HEIGHT;
+            m_widthHTML     = PLOT_WIDTH_HTML;
+            m_heightHTML    = PLOT_HEIGHT_HTML;
             m_logPath       = null;
 
             if (args.Length < 1 || args[0] == "-h" || args[0] == "-help")
@@ -845,14 +883,14 @@ namespace MultiAlignConsole
 
                 if (args.Length > 4)
                 {
-                    string algorithmType = args[4];
-                    if (algorithmType.ToLower() == "averagelinkage")
+                    string algorithmType = args[4];                    
+                    if (algorithmType.ToLower() == "centroid")
                     {
-                        clusterType = ClusteringAlgorithmType.AverageLinkage;
+                        builder.BuildClusterer(ClusteringAlgorithmType.Centroid);
                     }
-                    else if (algorithmType.ToLower() == "centroid")
+                    else if (algorithmType.ToLower() == "singlelinkage") 
                     {
-                        clusterType = ClusteringAlgorithmType.Centroid;
+                        builder.BuildClusterer(ClusteringAlgorithmType.SingleLinkage);
                     }
                 }
 
@@ -945,7 +983,6 @@ namespace MultiAlignConsole
 
             // Setup the parameters.
             Log("Loading parameters.");
-
             analysis.LoadParametersFromFile(parameterFile);
 
             MultiAlignParameterIniFileWriter writer = new MultiAlignParameterIniFileWriter();            
@@ -954,8 +991,7 @@ namespace MultiAlignConsole
             if (outParamPath != parameterFile)
             {
                 writer.WriteParametersToFile(outParamPath, analysis);
-            }
-            processor.ClusterAlgorithmType = ClusteringAlgorithmType.AverageLinkage;
+            }            
 
             // Create dataset information.
             int i = 0;
@@ -993,13 +1029,7 @@ namespace MultiAlignConsole
                 Log("No Baseline selected.  Please select a baseline dataset or MTDB.");
                 analysis.Dispose();
                 return;
-            }
-
-            Log("Using Clustering Algorithm: " + clusterType.ToString());
-            processor.ClusterAlgorithmType          = clusterType;          
-
-             
-            
+            }       
             processor.FeaturesAligned       += new EventHandler<FeaturesAlignedEventArgs>(processor_FeaturesAligned);
             processor.FeaturesLoaded        += new EventHandler<FeaturesLoadedEventArgs>(processor_FeaturesLoaded);
             processor.FeaturesClustered     += new EventHandler<FeaturesClusteredEventArgs>(processor_FeaturesClustered);
@@ -1007,16 +1037,21 @@ namespace MultiAlignConsole
             processor.AnalysisComplete      += new EventHandler(processor_AnalysisComplete);
             processor.Status                += new EventHandler<AnalysisStatusEventArgs>(processor_Status);
 
+            Log("Setting up data providers for caching and storage.");
+            FeatureDataAccessProviders providers = SetupDataProviders();
+            processor.DataProviders     = providers;
+            processor.AlgorithmProvders = builder.GetAlgorithmProvider();
+
             Log("Analysis Started.");    
             processor.StartAnalysis(analysis);
 
             // Wait for the analysis to complete.
             WaitHandle.WaitAll(new WaitHandle[] { m_triggerEvent });
-
             CreatePlotReport();
 
             analysis.Dispose();
             processor.Dispose();
+            CleanupDataProviders();
             Log("Analysis Complete.");                        
         }
 

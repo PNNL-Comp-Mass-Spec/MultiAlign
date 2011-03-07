@@ -6,6 +6,5 @@ namespace PNNLProteomics.MultiAlign.Hibernate.Domain.DAO
 {
 	public interface IMassTagDAO : IGenericDAO<clsMassTag>
     {
-
     }
 }

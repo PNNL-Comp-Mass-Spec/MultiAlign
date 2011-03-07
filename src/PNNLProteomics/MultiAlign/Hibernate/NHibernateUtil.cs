@@ -97,7 +97,7 @@ namespace PNNLProteomics.MultiAlign.Hibernate
 		/// The given database should not already exist and it will be created for you. Hurray!
 		/// </summary>
 		/// <param name="dbLocation">The file location of the database file</param>
-		public static void SetDbLocationForWrite(string dbLocation)
+		public static void SetDbLocationForWrite(string dbLocation, bool deleteIfExists)
 		{
 			m_dbLocation = dbLocation;
 
@@ -107,7 +107,7 @@ namespace PNNLProteomics.MultiAlign.Hibernate
 				m_sessionFactory = null;
 			}
 
-			if (File.Exists(dbLocation))
+			if (File.Exists(dbLocation) && deleteIfExists)
 			{
 				File.Delete(dbLocation);
 			}

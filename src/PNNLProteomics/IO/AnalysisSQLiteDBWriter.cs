@@ -87,7 +87,7 @@ namespace PNNLProteomics.IO
         {
 
             // Set DB Location
-            NHibernateUtil.SetDbLocationForWrite(dbPath);
+            NHibernateUtil.SetDbLocationForWrite(dbPath, true);
 
             // Setup DAOHibernates
 			FactorDAOHibernate factorDAOHibernate = new FactorDAOHibernate();
@@ -202,7 +202,7 @@ namespace PNNLProteomics.IO
                 }
             }
 
-			foreach (classSMARTFdrResult fdrResult in analysis.SMARTResults.GetSummaries())
+			foreach (classSMARTFdrResult fdrResult in analysis.STACTResults.GetSummaries())
 			{
 				stacFDRResultsList.Add(new StacFDR(fdrResult));
 			}

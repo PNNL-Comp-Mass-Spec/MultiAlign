@@ -941,7 +941,7 @@ namespace MultiAlignWin
                 }
                 else
                 {
-                    AddSMARTFDRTableToSummaryView(mobjAnalysis.SMARTResults);
+                    AddSMARTFDRTableToSummaryView(mobjAnalysis.STACTResults);
                 }
             }
 
