@@ -10,7 +10,7 @@ using MultiAlignEngine.Alignment;
 using MultiAlignEngine.Clustering;
 using MultiAlignEngine.PeakMatching;
 
-using PNNLProteomics.Data.Analysis;
+using PNNLProteomics.Data;
 
 namespace PNNLProteomics.IO
 {
@@ -124,7 +124,7 @@ namespace PNNLProteomics.IO
         {            
             Dictionary<string, string> map  = ProcessSubSectionData(GLOBAL_TAG);
             analysis.UseMassTagDBAsBaseline = Convert.ToBoolean(map["Use Mass Tag DB As Baseline"]);
-            analysis.UseSMART               = Convert.ToBoolean(map["Use STAC"]);            
+            analysis.UseSTAC               = Convert.ToBoolean(map["Use STAC"]);            
         }
         /// <summary>
         /// Load the parameters from the object
@@ -186,17 +186,13 @@ namespace PNNLProteomics.IO
             ExtractGroups(lines);
 
             // Load options.
-            clsAlignmentOptions alignmentOptions = analysis.DefaultAlignmentOptions;
-            LoadParameterOptions(ProcessSubSectionData(ALIGNMENT_TAG), alignmentOptions);
-            analysis.DefaultAlignmentOptions     = alignmentOptions;
-
+            clsAlignmentOptions alignmentOptions = analysis.AlignmentOptions[0];
+            LoadParameterOptions(ProcessSubSectionData(ALIGNMENT_TAG), alignmentOptions);            
             LoadParameterOptions(ProcessSubSectionData(FEATURE_FINDING_TAG),     analysis.UMCFindingOptions);
             LoadParameterOptions(ProcessSubSectionData(PEAK_MATCH_TAG),          analysis.PeakMatchingOptions);
             LoadParameterOptions(ProcessSubSectionData(MASS_TAG_DATABASE_TAG),   analysis.MassTagDBOptions);
             LoadParameterOptions(ProcessSubSectionData(CLUSTER_TAG),             analysis.ClusterOptions);
-
-            LoadGlobalOptions(ref analysis);
-                 
+            LoadGlobalOptions(ref analysis);                 
         }
     }
 }

@@ -1,62 +1,52 @@
 using System;
-using System.Drawing;
-using System.Collections;
-using System.Collections.Generic;
-using System.Windows.Forms;
 using System.ComponentModel;
-
+using System.Diagnostics;
+using System.IO;
+using System.Windows.Forms;
 using PNNLControls;
-using PNNLProteomics.EventModel;
+using PNNLProteomics.Data;
+using PNNLProteomics.MultiAlign;
 using MultiAlign.Charting;
+using MultiAlign.Drawing;
 
 namespace MultiAlignWin
 {
-	public class ctlPerformAnalysisWizardPage : Wizard.UI.InternalWizardPage
+    public class ctlPerformAnalysisWizardPage : UserControl, MultiAlignWin.Forms.Wizard.IWizardControl<PNNLProteomics.Data.MultiAlignAnalysis>
     {
-        private delegate void MethodInvokerString(string message);
+        /// <summary>
+        /// 
+        /// </summary>
+        private MultiAlignAnalysisProcessor m_processor;
 
-        #region Members        
-        private Label ProgressBarLabel;
-        private Label label1;
-        private ProgressBar mprogressBar_current;
-        private TabControl mtabs_messages;
-        private TabPage tabPgMessages;
-        private TreeView mtreeview_statusMessages;
-        private IContainer components = null;
-        #endregion        
-        private ExternalControls.controlStepOverview mcontrol_steps;
-        private ctlScatterChart mctlScatterChartFeatures;
-        private ctlAlignmentHeatMap mcontrol_heatMap;
-        private PictureBox mpicture_alignment;
+        #region Members
 
-        public delegate void DelegateControlLoaded();
-        public event DelegateControlLoaded ReadyForAnalysis;
-        private bool mbool_hackLoaded = false;
+        private Label               label1;
+        private ProgressBar         mprogressBar_current;
+        private IContainer          components = null;        
+        private ctlScatterChart     mctlScatterChartFeatures;        
+        private PictureBox          mpicture_alignment;
+        private MultiAlignAnalysis  m_analysis;
+        private ListBox             m_statusMessages;
+        private Panel               panel1;
+        private Panel               m_plotPanel;
+        private Splitter m_splitter;
+        private string              m_logPath;
+        private Splitter splitter1;
+        private PictureBox m_heatmapPicture;
+        private PictureBox m_netHistogramPicture;
+        private PictureBox m_featuresPlot;
+        private Label label4;
+        private Label label3;
+        private Label label2;
+        private PictureBox m_massHistogramPicture;
+        #endregion
 
-                
         /// <summary>
         /// Default constructor for a MA perform analysis wizard page.
         /// </summary>
-        public ctlPerformAnalysisWizardPage( )
+        public ctlPerformAnalysisWizardPage()
         {
-            InitializeComponent();
-            
-            SetActive                   += new System.ComponentModel.CancelEventHandler(ctlPerformAnalysisWizardPage_SetActive);
-            TabPage current               = mtabs_messages.SelectedTab;
-            mtabs_messages.SelectedTab    = current;                                 
-        }
-
-        protected override void OnPaint(PaintEventArgs e)
-        {
-            base.OnPaint(e);
-
-
-            if (mbool_hackLoaded == false)
-            {
-                mbool_hackLoaded = true;
-                if (ReadyForAnalysis != null)
-                    ReadyForAnalysis();
-            }
+            InitializeComponent();            
         }
 
         #region Windows Designer and Dispose Interface Implementation
@@ -81,42 +71,33 @@ namespace MultiAlignWin
 		/// </summary>
 		private void InitializeComponent()
 		{
-            PNNLControls.PenProvider penProvider1 = new PNNLControls.PenProvider();
-            PNNLControls.PenProvider penProvider2 = new PNNLControls.PenProvider();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ctlPerformAnalysisWizardPage));
-            this.ProgressBarLabel = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.mprogressBar_current = new System.Windows.Forms.ProgressBar();
-            this.mtabs_messages = new System.Windows.Forms.TabControl();
-            this.tabPgMessages = new System.Windows.Forms.TabPage();
             this.mpicture_alignment = new System.Windows.Forms.PictureBox();
-            this.mctlScatterChartFeatures = new PNNLControls.ctlScatterChart();
-            this.mtreeview_statusMessages = new System.Windows.Forms.TreeView();
-            this.mcontrol_steps = new ExternalControls.controlStepOverview();
-            this.mcontrol_heatMap = new ctlAlignmentHeatMap();
-            this.mtabs_messages.SuspendLayout();
-            this.tabPgMessages.SuspendLayout();
+            this.m_statusMessages = new System.Windows.Forms.ListBox();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.m_plotPanel = new System.Windows.Forms.Panel();
+            this.m_massHistogramPicture = new System.Windows.Forms.PictureBox();
+            this.m_netHistogramPicture = new System.Windows.Forms.PictureBox();
+            this.m_heatmapPicture = new System.Windows.Forms.PictureBox();
+            this.m_splitter = new System.Windows.Forms.Splitter();
+            this.splitter1 = new System.Windows.Forms.Splitter();
+            this.m_featuresPlot = new System.Windows.Forms.PictureBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.mpicture_alignment)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.mctlScatterChartFeatures)).BeginInit();
+            this.panel1.SuspendLayout();
+            this.m_plotPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.m_massHistogramPicture)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.m_netHistogramPicture)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.m_heatmapPicture)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.m_featuresPlot)).BeginInit();
             this.SuspendLayout();
-            // 
-            // Banner
-            // 
-            this.Banner.Size = new System.Drawing.Size(879, 64);
-            this.Banner.Subtitle = "Create UMCs, Cluster, and Save";
-            this.Banner.Title = "Step5. Performing MultiAlign Analysis";
-            // 
-            // ProgressBarLabel
-            // 
-            this.ProgressBarLabel.Location = new System.Drawing.Point(140, 67);
-            this.ProgressBarLabel.Name = "ProgressBarLabel";
-            this.ProgressBarLabel.Size = new System.Drawing.Size(87, 19);
-            this.ProgressBarLabel.TabIndex = 5;
-            this.ProgressBarLabel.Text = "Overall Progress:";
             // 
             // label1
             // 
-            this.label1.Location = new System.Drawing.Point(140, 139);
+            this.label1.Location = new System.Drawing.Point(6, 9);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(56, 16);
             this.label1.TabIndex = 5;
@@ -124,40 +105,13 @@ namespace MultiAlignWin
             // 
             // mprogressBar_current
             // 
-            this.mprogressBar_current.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.mprogressBar_current.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.mprogressBar_current.ForeColor = System.Drawing.Color.Lime;
-            this.mprogressBar_current.Location = new System.Drawing.Point(232, 139);
+            this.mprogressBar_current.Location = new System.Drawing.Point(71, 7);
             this.mprogressBar_current.Name = "mprogressBar_current";
-            this.mprogressBar_current.Size = new System.Drawing.Size(761, 16);
+            this.mprogressBar_current.Size = new System.Drawing.Size(922, 18);
             this.mprogressBar_current.TabIndex = 4;
-            this.mprogressBar_current.Click += new System.EventHandler(this.mprogressBar_current_Click);
-            // 
-            // mtabs_messages
-            // 
-            this.mtabs_messages.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.mtabs_messages.Controls.Add(this.tabPgMessages);
-            this.mtabs_messages.Location = new System.Drawing.Point(143, 170);
-            this.mtabs_messages.Name = "mtabs_messages";
-            this.mtabs_messages.SelectedIndex = 0;
-            this.mtabs_messages.Size = new System.Drawing.Size(870, 606);
-            this.mtabs_messages.TabIndex = 7;
-            // 
-            // tabPgMessages
-            // 
-            this.tabPgMessages.Controls.Add(this.mpicture_alignment);
-            this.tabPgMessages.Controls.Add(this.mctlScatterChartFeatures);
-            this.tabPgMessages.Controls.Add(this.mtreeview_statusMessages);
-            this.tabPgMessages.Controls.Add(this.mcontrol_heatMap);
-            this.tabPgMessages.Location = new System.Drawing.Point(4, 22);
-            this.tabPgMessages.Name = "tabPgMessages";
-            this.tabPgMessages.Padding = new System.Windows.Forms.Padding(10);
-            this.tabPgMessages.Size = new System.Drawing.Size(862, 580);
-            this.tabPgMessages.TabIndex = 0;
-            this.tabPgMessages.Text = "Messages";
-            this.tabPgMessages.UseVisualStyleBackColor = true;
             // 
             // mpicture_alignment
             // 
@@ -170,469 +124,421 @@ namespace MultiAlignWin
             this.mpicture_alignment.TabIndex = 10;
             this.mpicture_alignment.TabStop = false;
             // 
-            // mctlScatterChartFeatures
+            // m_statusMessages
             // 
-            this.mctlScatterChartFeatures.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.mctlScatterChartFeatures.AutoViewPortXBase = 0F;
-            this.mctlScatterChartFeatures.AutoViewPortYBase = 0F;
-            this.mctlScatterChartFeatures.AxisAndLabelFont = new System.Drawing.Font("Microsoft Sans Serif", 8F);
-            this.mctlScatterChartFeatures.AxisAndLabelMaxFontSize = 15;
-            this.mctlScatterChartFeatures.AxisAndLabelMinFontSize = 8;
-            this.mctlScatterChartFeatures.AxisVisible = true;
-            this.mctlScatterChartFeatures.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.mctlScatterChartFeatures.ChartBackgroundColor = System.Drawing.Color.White;
-            this.mctlScatterChartFeatures.ChartLayout.LegendFraction = 0.2F;
-            this.mctlScatterChartFeatures.ChartLayout.LegendLocation = PNNLControls.ChartLegendLocation.Right;
-            this.mctlScatterChartFeatures.ChartLayout.MaxLegendHeight = 150;
-            this.mctlScatterChartFeatures.ChartLayout.MaxLegendWidth = 250;
-            this.mctlScatterChartFeatures.ChartLayout.MaxTitleHeight = 50;
-            this.mctlScatterChartFeatures.ChartLayout.MinLegendHeight = 50;
-            this.mctlScatterChartFeatures.ChartLayout.MinLegendWidth = 75;
-            this.mctlScatterChartFeatures.ChartLayout.MinTitleHeight = 15;
-            this.mctlScatterChartFeatures.ChartLayout.TitleFraction = 0.1F;
-            this.mctlScatterChartFeatures.DefaultZoomHandler.Active = true;
-            this.mctlScatterChartFeatures.DefaultZoomHandler.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(119)))), ((int)(((byte)(136)))), ((int)(((byte)(153)))));
-            this.mctlScatterChartFeatures.DefaultZoomHandler.LineColor = System.Drawing.Color.Black;
-            this.mctlScatterChartFeatures.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            penProvider1.Color = System.Drawing.Color.FromArgb(((int)(((byte)(211)))), ((int)(((byte)(211)))), ((int)(((byte)(211)))));
-            penProvider1.Width = 1F;
-            this.mctlScatterChartFeatures.GridLinePen = penProvider1;
-            this.mctlScatterChartFeatures.HasLegend = false;
-            this.mctlScatterChartFeatures.HilightColor = System.Drawing.Color.Magenta;
-            this.mctlScatterChartFeatures.Legend.BackColor = System.Drawing.Color.Transparent;
-            penProvider2.Color = System.Drawing.Color.Black;
-            penProvider2.Width = 1F;
-            this.mctlScatterChartFeatures.Legend.BorderPen = penProvider2;
-            this.mctlScatterChartFeatures.Legend.Bounds = new System.Drawing.Rectangle(0, 0, 0, 0);
-            this.mctlScatterChartFeatures.Legend.ColumnWidth = 125;
-            this.mctlScatterChartFeatures.Legend.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.mctlScatterChartFeatures.Legend.MaxFontSize = 12F;
-            this.mctlScatterChartFeatures.Legend.MinFontSize = 6F;
-            this.mctlScatterChartFeatures.LegendVisible = false;
-            this.mctlScatterChartFeatures.Location = new System.Drawing.Point(549, 10);
-            this.mctlScatterChartFeatures.Margins.BottomMarginFraction = 0.1F;
-            this.mctlScatterChartFeatures.Margins.BottomMarginMax = 72;
-            this.mctlScatterChartFeatures.Margins.BottomMarginMin = 30;
-            this.mctlScatterChartFeatures.Margins.DefaultMarginFraction = 0.05F;
-            this.mctlScatterChartFeatures.Margins.DefaultMarginMax = 15;
-            this.mctlScatterChartFeatures.Margins.DefaultMarginMin = 5;
-            this.mctlScatterChartFeatures.Margins.LeftMarginFraction = 0.2F;
-            this.mctlScatterChartFeatures.Margins.LeftMarginMax = 150;
-            this.mctlScatterChartFeatures.Margins.LeftMarginMin = 72;
-            this.mctlScatterChartFeatures.Name = "mctlScatterChartFeatures";
-            this.mctlScatterChartFeatures.PadViewPortX = 0F;
-            this.mctlScatterChartFeatures.PadViewPortY = 0F;
-            this.mctlScatterChartFeatures.Size = new System.Drawing.Size(295, 250);
-            this.mctlScatterChartFeatures.TabIndex = 8;
-            this.mctlScatterChartFeatures.Title = "Input Data";
-            this.mctlScatterChartFeatures.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 8F);
-            this.mctlScatterChartFeatures.TitleMaxFontSize = 8F;
-            this.mctlScatterChartFeatures.TitleMinFontSize = 8F;
-            this.mctlScatterChartFeatures.TitleVisible = true;
-            this.mctlScatterChartFeatures.VerticalExpansion = 1F;
-            this.mctlScatterChartFeatures.ViewPort = ((System.Drawing.RectangleF)(resources.GetObject("mctlScatterChartFeatures.ViewPort")));
-            this.mctlScatterChartFeatures.XAxisLabel = "scan #";
-            this.mctlScatterChartFeatures.YAxisLabel = "monoisotopic mass";
+            this.m_statusMessages.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.m_statusMessages.FormattingEnabled = true;
+            this.m_statusMessages.Location = new System.Drawing.Point(5, 35);
+            this.m_statusMessages.Name = "m_statusMessages";
+            this.m_statusMessages.Size = new System.Drawing.Size(1005, 531);
+            this.m_statusMessages.TabIndex = 6;
             // 
-            // mtreeview_statusMessages
+            // panel1
             // 
-            this.mtreeview_statusMessages.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.mtreeview_statusMessages.Location = new System.Drawing.Point(10, 10);
-            this.mtreeview_statusMessages.Name = "mtreeview_statusMessages";
-            this.mtreeview_statusMessages.Size = new System.Drawing.Size(514, 567);
-            this.mtreeview_statusMessages.TabIndex = 7;
+            this.panel1.BackColor = System.Drawing.Color.White;
+            this.panel1.Controls.Add(this.mprogressBar_current);
+            this.panel1.Controls.Add(this.label1);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel1.Location = new System.Drawing.Point(3, 3);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(1007, 32);
+            this.panel1.TabIndex = 7;
             // 
-            // mcontrol_steps
+            // m_plotPanel
             // 
-            this.mcontrol_steps.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.mcontrol_steps.Location = new System.Drawing.Point(144, 83);
-            this.mcontrol_steps.Name = "mcontrol_steps";
-            this.mcontrol_steps.Size = new System.Drawing.Size(862, 41);
-            this.mcontrol_steps.TabIndex = 8;
+            this.m_plotPanel.BackColor = System.Drawing.Color.White;
+            this.m_plotPanel.Controls.Add(this.label4);
+            this.m_plotPanel.Controls.Add(this.label3);
+            this.m_plotPanel.Controls.Add(this.label2);
+            this.m_plotPanel.Controls.Add(this.m_featuresPlot);
+            this.m_plotPanel.Controls.Add(this.m_massHistogramPicture);
+            this.m_plotPanel.Controls.Add(this.m_netHistogramPicture);
+            this.m_plotPanel.Controls.Add(this.m_heatmapPicture);
+            this.m_plotPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.m_plotPanel.Location = new System.Drawing.Point(5, 569);
+            this.m_plotPanel.Name = "m_plotPanel";
+            this.m_plotPanel.Padding = new System.Windows.Forms.Padding(5);
+            this.m_plotPanel.Size = new System.Drawing.Size(1005, 207);
+            this.m_plotPanel.TabIndex = 8;
             // 
-            // mcontrol_heatMap
+            // m_massHistogramPicture
             // 
-            this.mcontrol_heatMap.AlignmentFunction = null;
-            this.mcontrol_heatMap.Data = null;
-            this.mcontrol_heatMap.DrawDemaractionLines = false;
-            this.mcontrol_heatMap.Location = new System.Drawing.Point(65, 113);
-            this.mcontrol_heatMap.Name = "mcontrol_heatMap";
-            this.mcontrol_heatMap.OverrideResize = false;
-            this.mcontrol_heatMap.ProgBarPercent = 0;
-            this.mcontrol_heatMap.ShowProgBar = false;
-            this.mcontrol_heatMap.ShowStatBar = true;
-            this.mcontrol_heatMap.Size = new System.Drawing.Size(478, 437);
-            this.mcontrol_heatMap.TabIndex = 9;
-            this.mcontrol_heatMap.UpdateComplete = true;
-            this.mcontrol_heatMap.Visible = false;
+            this.m_massHistogramPicture.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.m_massHistogramPicture.Location = new System.Drawing.Point(427, 23);
+            this.m_massHistogramPicture.Name = "m_massHistogramPicture";
+            this.m_massHistogramPicture.Size = new System.Drawing.Size(189, 180);
+            this.m_massHistogramPicture.TabIndex = 2;
+            this.m_massHistogramPicture.TabStop = false;
+            // 
+            // m_netHistogramPicture
+            // 
+            this.m_netHistogramPicture.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.m_netHistogramPicture.Location = new System.Drawing.Point(218, 23);
+            this.m_netHistogramPicture.Name = "m_netHistogramPicture";
+            this.m_netHistogramPicture.Size = new System.Drawing.Size(203, 179);
+            this.m_netHistogramPicture.TabIndex = 1;
+            this.m_netHistogramPicture.TabStop = false;
+            // 
+            // m_heatmapPicture
+            // 
+            this.m_heatmapPicture.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.m_heatmapPicture.Location = new System.Drawing.Point(5, 23);
+            this.m_heatmapPicture.Name = "m_heatmapPicture";
+            this.m_heatmapPicture.Size = new System.Drawing.Size(207, 179);
+            this.m_heatmapPicture.TabIndex = 0;
+            this.m_heatmapPicture.TabStop = false;
+            // 
+            // m_splitter
+            // 
+            this.m_splitter.BackColor = System.Drawing.Color.Silver;
+            this.m_splitter.Location = new System.Drawing.Point(3, 35);
+            this.m_splitter.Name = "m_splitter";
+            this.m_splitter.Size = new System.Drawing.Size(2, 741);
+            this.m_splitter.TabIndex = 9;
+            this.m_splitter.TabStop = false;
+            // 
+            // splitter1
+            // 
+            this.splitter1.BackColor = System.Drawing.Color.Gray;
+            this.splitter1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.splitter1.Location = new System.Drawing.Point(5, 566);
+            this.splitter1.Name = "splitter1";
+            this.splitter1.Size = new System.Drawing.Size(1005, 3);
+            this.splitter1.TabIndex = 10;
+            this.splitter1.TabStop = false;
+            // 
+            // m_featuresPlot
+            // 
+            this.m_featuresPlot.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.m_featuresPlot.Location = new System.Drawing.Point(622, 23);
+            this.m_featuresPlot.Name = "m_featuresPlot";
+            this.m_featuresPlot.Size = new System.Drawing.Size(177, 180);
+            this.m_featuresPlot.TabIndex = 3;
+            this.m_featuresPlot.TabStop = false;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(56, 7);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(103, 13);
+            this.label2.TabIndex = 4;
+            this.label2.Text = "Alignment Heat Map";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(268, 7);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(104, 13);
+            this.label3.TabIndex = 5;
+            this.label3.Text = "NET Error Histogram";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(465, 7);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(107, 13);
+            this.label4.TabIndex = 6;
+            this.label4.Text = "Mass Error Histogram";
             // 
             // ctlPerformAnalysisWizardPage
             // 
             this.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.Controls.Add(this.mcontrol_steps);
-            this.Controls.Add(this.mtabs_messages);
-            this.Controls.Add(this.mprogressBar_current);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.ProgressBarLabel);
+            this.Controls.Add(this.m_statusMessages);
+            this.Controls.Add(this.splitter1);
+            this.Controls.Add(this.m_plotPanel);
+            this.Controls.Add(this.m_splitter);
+            this.Controls.Add(this.panel1);
             this.Name = "ctlPerformAnalysisWizardPage";
+            this.Padding = new System.Windows.Forms.Padding(3);
             this.Size = new System.Drawing.Size(1013, 779);
-            this.Controls.SetChildIndex(this.Banner, 0);
-            this.Controls.SetChildIndex(this.ProgressBarLabel, 0);
-            this.Controls.SetChildIndex(this.label1, 0);
-            this.Controls.SetChildIndex(this.mprogressBar_current, 0);
-            this.Controls.SetChildIndex(this.mtabs_messages, 0);
-            this.Controls.SetChildIndex(this.mcontrol_steps, 0);
-            this.mtabs_messages.ResumeLayout(false);
-            this.tabPgMessages.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.mpicture_alignment)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.mctlScatterChartFeatures)).EndInit();
+            this.panel1.ResumeLayout(false);
+            this.m_plotPanel.ResumeLayout(false);
+            this.m_plotPanel.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.m_massHistogramPicture)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.m_netHistogramPicture)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.m_heatmapPicture)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.m_featuresPlot)).EndInit();
             this.ResumeLayout(false);
 
 		}
 		#endregion
         #endregion
-        
+
         /// <summary>
-        /// Handles when the page is loaded and active.
+        /// 
+        /// </summary>
+        public string Title
+        {
+            get { return "Performing Analysis"; }
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        public PNNLProteomics.Data.MultiAlignAnalysis Data
+        {
+            get
+            {
+                return m_analysis;
+            }
+            set
+            {
+                m_analysis = value;
+            }
+        }
+        /// <summary>
+        /// Gets or sets the analysis object.
+        /// </summary>
+        public MultiAlignAnalysisProcessor Processor
+        {
+            get
+            {
+                return m_processor;
+            }
+            set
+            {
+                m_processor = value;    
+            
+                if (m_processor != null)
+                {
+                    RegisterAnalysis();
+                }
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private void RegisterAnalysis()
+        {            
+            m_processor.FeaturesAligned     += new EventHandler<FeaturesAlignedEventArgs>(m_processor_FeaturesAligned);
+            m_processor.FeaturesClustered   += new EventHandler<FeaturesClusteredEventArgs>(m_processor_FeaturesClustered);
+            m_processor.FeaturesLoaded      += new EventHandler<FeaturesLoadedEventArgs>(m_processor_FeaturesLoaded);
+            m_processor.FeaturesPeakMatched += new EventHandler<FeaturesPeakMatchedEventArgs>(m_processor_FeaturesPeakMatched);
+            m_processor.Status              += new EventHandler<AnalysisStatusEventArgs>(m_processor_Status);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="message"></param>
+        private void StatusUpdate(string message)
+        {
+            string logMessage = BuildLogString(message);
+            m_statusMessages.Items.Add(" " + logMessage);
+            Log(logMessage);
+        }
+        /// <summary>
+        /// 
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ctlPerformAnalysisWizardPage_SetActive(object sender, System.ComponentModel.CancelEventArgs e)
-		{
-			mtabs_messages.SelectedTab = mtabs_messages.TabPages[0] ;
-
-            mprogressBar_current.Value = 0;
-            mtreeview_statusMessages.Nodes.Clear();
+        private void StatusUpdate(object sender, AnalysisStatusEventArgs e)
+        {
+            StatusUpdate(e.StatusMessage);            
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void StatusUpdate(object sender, FeaturesAlignedEventArgs e)
+        {
+            string logMessage = string.Format("Aligned features {0} to {1}",
+                                                            e.AligneeDatasetInformation.DatasetName,
+                                                            e.BaselineDatasetInformation.DatasetName);
+            StatusUpdate(logMessage);
             
-			SetWizardButtons(Wizard.UI.WizardButtons.Back | Wizard.UI.WizardButtons.Next);
-            NextButtonText = "Stop";                                    
-		}
-
-        public void ResetAnalysisReady()
-        {
-            mbool_hackLoaded = false;
+            PNNLProteomics.Data.Alignment.classAlignmentData data = e.AlignmentData;
+            System.Drawing.Image heatImage =  RenderDatasetInfo.AlignmentHeatmap_Thumbnail(data, 
+                                                                                    m_heatmapPicture.Width,
+                                                                                    m_heatmapPicture.Height);            
+            heatImage.RotateFlip(System.Drawing.RotateFlipType.RotateNoneFlipY);
+            m_heatmapPicture.Image       = heatImage;
+            
+            ChartDisplayOptions options  = new ChartDisplayOptions();
+            options.DisplayAxis          = true;
+            options.DisplayGridLines     = false;
+            options.DisplayTitle         = false;
+            options.Height               = m_massHistogramPicture.Height;
+            options.Width                = m_massHistogramPicture.Width;
+            m_netHistogramPicture.Image  = RenderDatasetInfo.ErrorHistogram_Thumbnail(data.netErrorHistogram, options);
+            m_massHistogramPicture.Image = RenderDatasetInfo.ErrorHistogram_Thumbnail(data.massErrorHistogram, options);
         }
-
-        private void InvokeAddStatusMessage(int statusLevel, string message)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void StatusUpdate(object sender, FeaturesClusteredEventArgs e)
         {
-            TreeNode insertNode = new TreeNode();
-            insertNode.Text     = message;
-            int lastNode        = mtreeview_statusMessages.Nodes.Count - 1;
-
-            if (statusLevel > 0)
+            string logMessage = "Features clustered.";                                                            
+            StatusUpdate(logMessage);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void StatusUpdate(object sender, FeaturesPeakMatchedEventArgs e)
+        {
+            string logMessage = "Features Peak Matched.";
+            StatusUpdate(logMessage);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void StatusUpdate(object sender, FeaturesLoadedEventArgs e)
+        {
+            string logMessage = "Loaded " + e.Features.Count + " LC-MS features.";
+            StatusUpdate(logMessage);            
+        } 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void m_processor_Status(object sender, AnalysisStatusEventArgs e)
+        {
+            if (InvokeRequired)
             {
-                mtreeview_statusMessages.Nodes[lastNode].Nodes.Add(insertNode);
+                Invoke(new EventHandler<AnalysisStatusEventArgs>(StatusUpdate), new object[] { sender, e });
             }
             else
-            {                
-                mtreeview_statusMessages.Nodes.Add(insertNode);                                
+            {
+                StatusUpdate(sender, e);
             }
-            mtreeview_statusMessages.SelectedNode = insertNode;
-            mtreeview_statusMessages.ExpandAll();            
-        }        
-		public void AddStatusMessage(int statusLevel, string message)
-		{
-            if (InvokeRequired == true)
-                BeginInvoke(new DelegateSetStatusMessage(InvokeAddStatusMessage), statusLevel, message);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void m_processor_FeaturesPeakMatched(object sender, FeaturesPeakMatchedEventArgs e)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new EventHandler<FeaturesPeakMatchedEventArgs>(StatusUpdate), new object[] { sender, e });
+            }
             else
-                InvokeAddStatusMessage(statusLevel, message);
-		}
-		public void ClearListBox()
-		{
-            mtreeview_statusMessages.Nodes.Clear();
-		}
-        
-        /// <summary>
-        /// Displays the list of steps that will be performed.
-        /// </summary>
-        /// <param name="steps"></param>
-        public void DisplayListOfSteps(List<string> steps)
-        {
-            mcontrol_steps.DisplayListOfSteps(steps);
+            {
+                StatusUpdate(sender, e);
+            }
         }
         /// <summary>
-        /// Displays the current step.
+        /// 
         /// </summary>
-        /// <param name="index"></param>
-        /// <param name="stepName"></param>
-        public void SetStep(int index, string stepName)
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void m_processor_FeaturesLoaded(object sender, FeaturesLoadedEventArgs e)
         {
-            mcontrol_steps.SetStep(index, stepName);
+            if (InvokeRequired)
+            {
+                Invoke(new EventHandler<FeaturesLoadedEventArgs>(StatusUpdate), new object[] { sender, e });
+            }
+            else
+            {
+                StatusUpdate(sender, e);
+            }
         }
-
-		public void IncreaseProgressBar(int increaseBy)
-		{
-			if (increaseBy < 100 && increaseBy > 0)
-			{
-				this.mprogressBar_current.Step = increaseBy;
-				this.mprogressBar_current.PerformStep();
-				this.mprogressBar_current.Refresh();
-			}
-		}
-		public void SetProgressBar(int percentComplete)
-		{
-            percentComplete = Math.Max(Convert.ToInt32(mprogressBar_current.Minimum), Math.Min(Convert.ToInt32(mprogressBar_current.Maximum), percentComplete));
-
-			this.mprogressBar_current.Value = percentComplete;
-			this.mprogressBar_current.Refresh();
-		}		
-		private void AddPeaksToChart(ref float []scans, ref float []masses, int ptSize, Color clr, string name)
-		{
-			PNNLControls.clsShape shape = new PNNLControls.DiamondShape(ptSize, false) ;  ; 
-			PNNLControls.clsPlotParams plt_params = new PNNLControls.clsPlotParams(shape, clr) ; 
-			plt_params.Name = name ; 
-			mctlScatterChartFeatures.ViewPortHistory.Clear(); 
-			mctlScatterChartFeatures.AutoViewPortOnAddition = true ; 
-			PNNLControls.clsSeries series = new PNNLControls.clsSeries(ref scans, ref masses, plt_params) ; 
-			mctlScatterChartFeatures.AddSeries(series) ;
-        }
-        public void DisplayUMCS(string fileName, MultiAlignEngine.Features.clsUMC[] umcs)
-        {
-            mctlScatterChartFeatures.BeginUpdate();
-            mctlScatterChartFeatures.SeriesCollection.Clear();
-            int numIsotopePeaks = umcs.Length;
-            mctlScatterChartFeatures.Title = fileName;
-
-            // Get data for charge 1. 
-            // how many charge 1 points are there ? 
-            int numCharge1 = 0;
-            for (int isoNum = 0; isoNum < numIsotopePeaks; isoNum++)
-            {
-                if (umcs[isoNum].ChargeRepresentative == 1)
-                    numCharge1++;
-            }
-            float[] massCharge1 = new float[numCharge1];
-            float[] scanCharge1 = new float[numCharge1];
-            int numCharge1SoFar = 0;
-            for (int isoNum = 0; isoNum < numIsotopePeaks; isoNum++)
-            {
-                if (umcs[isoNum].ChargeRepresentative == 1)
-                {
-                    massCharge1[numCharge1SoFar] = Convert.ToSingle(umcs[isoNum].mdouble_mono_mass);
-                    scanCharge1[numCharge1SoFar] = Convert.ToSingle(umcs[isoNum].mint_scan);
-                    numCharge1SoFar++;
-                }
-            }
-            AddPeaksToChart(ref scanCharge1, ref massCharge1, 1, System.Drawing.Color.Blue, "1");
-
-            // Get data for charge 2. 
-            // how many charge 2 points are there ? 
-            int numCharge2 = 0;
-            for (int isoNum = 0; isoNum < numIsotopePeaks; isoNum++)
-            {
-                if (umcs[isoNum].ChargeRepresentative == 2)
-                    numCharge2++;
-            }
-            float[] massCharge2 = new float[numCharge2];
-            float[] scanCharge2 = new float[numCharge2];
-            int numCharge2SoFar = 0;
-            for (int isoNum = 0; isoNum < numIsotopePeaks; isoNum++)
-            {
-                if (umcs[isoNum].ChargeRepresentative == 2)
-                {
-                    massCharge2[numCharge2SoFar] = Convert.ToSingle(umcs[isoNum].mdouble_mono_mass);
-                    scanCharge2[numCharge2SoFar] = Convert.ToSingle(umcs[isoNum].mint_scan);
-                    numCharge2SoFar++;
-                }
-            }
-            AddPeaksToChart(ref scanCharge2, ref massCharge2, 1, System.Drawing.Color.Red, "2");
-
-            // Get data for charge 3. 
-            // how many charge 3 points are there ? 
-            int numCharge3 = 0;
-            for (int isoNum = 0; isoNum < numIsotopePeaks; isoNum++)
-            {
-                if (umcs[isoNum].ChargeRepresentative == 3)
-                    numCharge3++;
-            }
-            float[] massCharge3 = new float[numCharge3];
-            float[] scanCharge3 = new float[numCharge3];
-            int numCharge3SoFar = 0;
-            for (int isoNum = 0; isoNum < numIsotopePeaks; isoNum++)
-            {
-                if (umcs[isoNum].ChargeRepresentative == 3)
-                {
-                    massCharge3[numCharge3SoFar] = Convert.ToSingle(umcs[isoNum].mdouble_mono_mass);
-                    scanCharge3[numCharge3SoFar] = Convert.ToSingle(umcs[isoNum].mint_scan);
-                    numCharge3SoFar++;
-                }
-            }
-            AddPeaksToChart(ref scanCharge3, ref massCharge3, 1, System.Drawing.Color.Green, "3");
-
-            // Get data for charge 4. 
-            // how many charge 4 points are there ? 
-            int numCharge4 = 0;
-            for (int isoNum = 0; isoNum < numIsotopePeaks; isoNum++)
-            {
-                if (umcs[isoNum].ChargeRepresentative >= 4)
-                    numCharge4++;
-            }
-            float[] massCharge4 = new float[numCharge4];
-            float[] scanCharge4 = new float[numCharge4];
-            int numCharge4SoFar = 0;
-            for (int isoNum = 0; isoNum < numIsotopePeaks; isoNum++)
-            {
-                if (umcs[isoNum].ChargeRepresentative >= 4)
-                {
-                    massCharge4[numCharge4SoFar] = Convert.ToSingle(umcs[isoNum].mdouble_mono_mass);
-                    scanCharge4[numCharge4SoFar] = Convert.ToSingle(umcs[isoNum].mint_scan);
-                    numCharge4SoFar++;
-                }
-            }
-            AddPeaksToChart(ref scanCharge4, ref massCharge4, 1, System.Drawing.Color.Yellow, ">=4");
-            mctlScatterChartFeatures.EndUpdate();
-        }
-	    public void DisplayIsotopePeaks(string fileName, MultiAlignEngine.Features.clsIsotopePeak []isotopePeaks)
-		{
-			mctlScatterChartFeatures.BeginUpdate() ; 
-			mctlScatterChartFeatures.SeriesCollection.Clear() ; 
-			int numIsotopePeaks = isotopePeaks.Length ; 
-			mctlScatterChartFeatures.Title = fileName ;
-
-			// Get data for charge 1. 
-			// how many charge 1 points are there ? 
-			int numCharge1 = 0 ; 
-			for (int isoNum = 0 ; isoNum < numIsotopePeaks ; isoNum++)
-			{
-				if (isotopePeaks[isoNum].mshort_charge == 1)
-					numCharge1++ ; 
-			}
-			float [] massCharge1 = new float [numCharge1] ; 
-			float [] scanCharge1 = new float [numCharge1] ; 
-			int numCharge1SoFar = 0 ; 
-			for (int isoNum = 0 ; isoNum < numIsotopePeaks ; isoNum++)
-			{
-				if (isotopePeaks[isoNum].mshort_charge == 1)
-				{
-					massCharge1[numCharge1SoFar] = Convert.ToSingle(isotopePeaks[isoNum].mdouble_mono_mass) ; 
-					scanCharge1[numCharge1SoFar] = Convert.ToSingle(isotopePeaks[isoNum].mint_scan) ; 
-					numCharge1SoFar++ ; 
-				}
-			}
-			AddPeaksToChart(ref scanCharge1, ref massCharge1, 1, System.Drawing.Color.Blue, "1") ; 
-
-			// Get data for charge 2. 
-			// how many charge 2 points are there ? 
-			int numCharge2 = 0 ; 
-			for (int isoNum = 0 ; isoNum < numIsotopePeaks ; isoNum++)
-			{
-				if (isotopePeaks[isoNum].mshort_charge == 2)
-					numCharge2++ ; 
-			}
-			float [] massCharge2 = new float [numCharge2] ; 
-			float [] scanCharge2 = new float [numCharge2] ; 
-			int numCharge2SoFar = 0 ; 
-			for (int isoNum = 0 ; isoNum < numIsotopePeaks ; isoNum++)
-			{
-				if (isotopePeaks[isoNum].mshort_charge == 2)
-				{
-					massCharge2[numCharge2SoFar] = Convert.ToSingle(isotopePeaks[isoNum].mdouble_mono_mass) ; 
-					scanCharge2[numCharge2SoFar] = Convert.ToSingle(isotopePeaks[isoNum].mint_scan) ; 
-					numCharge2SoFar++ ; 
-				}
-			}
-			AddPeaksToChart(ref scanCharge2, ref massCharge2, 1, System.Drawing.Color.Red, "2") ; 
-
-			// Get data for charge 3. 
-			// how many charge 3 points are there ? 
-			int numCharge3 = 0 ; 
-			for (int isoNum = 0 ; isoNum < numIsotopePeaks ; isoNum++)
-			{
-				if (isotopePeaks[isoNum].mshort_charge == 3)
-					numCharge3++ ; 
-			}
-			float [] massCharge3 = new float [numCharge3] ; 
-			float [] scanCharge3 = new float [numCharge3] ; 
-			int numCharge3SoFar = 0 ; 
-			for (int isoNum = 0 ; isoNum < numIsotopePeaks ; isoNum++)
-			{
-				if (isotopePeaks[isoNum].mshort_charge == 3)
-				{
-					massCharge3[numCharge3SoFar] = Convert.ToSingle(isotopePeaks[isoNum].mdouble_mono_mass) ; 
-					scanCharge3[numCharge3SoFar] = Convert.ToSingle(isotopePeaks[isoNum].mint_scan) ; 
-					numCharge3SoFar++ ; 
-				}
-			}
-			AddPeaksToChart(ref scanCharge3, ref massCharge3, 1, System.Drawing.Color.Green, "3") ; 
-
-			// Get data for charge 4. 
-			// how many charge 4 points are there ? 
-			int numCharge4 = 0 ; 
-			for (int isoNum = 0 ; isoNum < numIsotopePeaks ; isoNum++)
-			{
-				if (isotopePeaks[isoNum].mshort_charge >= 4)
-					numCharge4++ ; 
-			}
-			float [] massCharge4 = new float [numCharge4] ; 
-			float [] scanCharge4 = new float [numCharge4] ; 
-			int numCharge4SoFar = 0 ; 
-			for (int isoNum = 0 ; isoNum < numIsotopePeaks ; isoNum++)
-			{
-				if (isotopePeaks[isoNum].mshort_charge >= 4)
-				{
-					massCharge4[numCharge4SoFar] = Convert.ToSingle(isotopePeaks[isoNum].mdouble_mono_mass) ; 
-					scanCharge4[numCharge4SoFar] = Convert.ToSingle(isotopePeaks[isoNum].mint_scan) ; 
-					numCharge4SoFar++ ; 
-				}
-			}
-			AddPeaksToChart(ref scanCharge4, ref massCharge4, 1, System.Drawing.Color.Orange, ">=4") ; 
-			mctlScatterChartFeatures.EndUpdate() ; 
-		}
         /// <summary>
-        /// Displays the alignment heat map for this dataset.
+        /// 
         /// </summary>
-        /// <param name="alignmentFnc"></param>
-        /// <param name="title"></param>
-        /// <param name="mScores"></param>
-        /// <param name="minAligneeScan"></param>
-        /// <param name="maxAligneeScan"></param>
-        /// <param name="minBaselineScan"></param>
-        /// <param name="maxBaselineScan"></param>
-		public void SetAlignmentHeatMap(MultiAlignEngine.Alignment.clsAlignmentFunction alignmentFnc, string title, 
-			                            float [,] mScores, 
-                                        float minAligneeScan, 
-                                        float maxAligneeScan, 
-                                        float minBaselineScan, 
-			                            float maxBaselineScan,
-                                        int   part)
-		{
-			try
-			{
-				// first zscore the data on the level of the x axis.
-				int numRows = mScores.GetUpperBound(0) - mScores.GetLowerBound(0) ; 
-				int numColumns = mScores.GetUpperBound(1) - mScores.GetLowerBound(1) ; 
-				for (int colNum = 0 ; colNum < numColumns ; colNum++)
-				{
-					for (int rowNum = 0 ; rowNum < numRows/2 ; rowNum++)
-					{
-						float tmp                           = mScores[rowNum, colNum] ; 
-						mScores[rowNum, colNum]             = mScores[numRows-rowNum-1, colNum] ;
-						mScores[numRows-rowNum-1, colNum]   = tmp ;  
-					}
-				}
-
-                //mcontrol_heatMap.AlignmentFunction = alignmentFnc;
-                //mcontrol_heatMap.Legend.UseZScore = true;
-		    	mcontrol_heatMap.SetData(mScores,
-                                            new PNNLControls.ctlHierarchalLabel.AxisRangeF(minAligneeScan, maxAligneeScan), 
-				                            new PNNLControls.ctlHierarchalLabel.AxisRangeF(minBaselineScan, maxBaselineScan)) ;
-                mpicture_alignment.Image            = mcontrol_heatMap.GetThumbnail(mpicture_alignment.Size);
-
-			}
-			catch (Exception ex)
-			{
-				Console.WriteLine(ex.Message + ex.StackTrace) ; 
-			}
-		}
-
-        private void mprogressBar_current_Click(object sender, EventArgs e)
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void m_processor_FeaturesClustered(object sender, FeaturesClusteredEventArgs e)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new EventHandler<FeaturesClusteredEventArgs>(StatusUpdate), new object[] { sender, e });
+            }
+            else
+            {
+                StatusUpdate(sender, e);
+            }
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void m_processor_FeaturesAligned(object sender, FeaturesAlignedEventArgs e)
         {
 
+            if (InvokeRequired)
+            {
+                Invoke(new EventHandler<FeaturesAlignedEventArgs>(StatusUpdate), new object[] { sender, e });
+            }
+            else
+            {
+                StatusUpdate(sender, e);
+            }
         }
 
-	}
+        /// <summary>
+        /// Starts a MultiAlign Analysis.
+        /// </summary>
+        private void StartAnalysis()
+        {
+            m_statusMessages.Items.Clear();
+
+            string analysisName     = m_analysis.AnalysisName;     
+            string parameterPath    = AnalysisPathUtils.BuildParameterPath(m_analysis.AnalysisPath, m_analysis.AnalysisName, ".xml");
+            m_logPath               = AnalysisPathUtils.BuildLogPath(m_analysis.AnalysisPath, m_analysis.AnalysisName);
+       
+            m_analysis.SaveParametersToFile(parameterPath);
+            m_processor.StartAnalysis(m_analysis);
+        }
+        public void SetAsActivePage()
+        {
+            StartAnalysis();
+        }
+        public bool IsComplete()
+        {
+            return true;
+        }
+
+        /// <summary>
+        /// Calculates the current usage of current processes memory.
+        /// </summary>
+        /// <returns>Memory usage of current process.</returns>
+        static long GetMemory()
+        {
+            Process process = Process.GetCurrentProcess();
+            long memory = process.WorkingSet64;
+            memory /= 1024;
+            memory /= 1024;
+            process.Dispose();
+
+            return memory;
+        }
+        string BuildLogString(string message)
+        {
+            return DateTime.Now.ToString() + " - " + GetMemory().ToString() + " MB - " + message;
+        }
+        /// <summary>
+        /// Logs the data to the stored text file path.
+        /// </summary>
+        /// <param name="message"></param>
+        void Log(string message)
+        {
+            try
+            {
+                File.AppendAllText(m_logPath, message + Environment.NewLine);
+            }
+            catch
+            {
+                //TODO: Handle this exception?
+            }
+        }
+    }
 }
 

@@ -1,11 +1,8 @@
 using System;
 using System.Collections;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
 using System.Windows.Forms;
 
-using ExternalControls;
 using IDLTools;
 
 namespace PNNLControls

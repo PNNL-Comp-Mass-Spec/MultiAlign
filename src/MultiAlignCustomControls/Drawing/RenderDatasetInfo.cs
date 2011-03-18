@@ -15,9 +15,8 @@ using MultiAlignEngine.Clustering;
 using MultiAlignEngine.PeakMatching;
 
 using PNNLProteomics.SMART;
-using PNNLProteomics.Data.Analysis;
+using PNNLProteomics.Data;
 using PNNLProteomics.Data.Alignment;
-
 using PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate;
 using MultiAlign.Charting;
 
@@ -816,24 +815,25 @@ namespace MultiAlign.Drawing
             if (analysis.AlignmentData[datasetNum] == null)
                 return null;
 
-            /// 
-            /// Set the data for the chart.          
-            /// 
-            classAlignmentResidualData residual = analysis.AlignmentData[datasetNum].ResidualData;
-            chart                           = new ctlScatterChart();
-            chart.XAxisLabel                = "Scan #";
-            chart.YAxisLabel                = "NET Residual";
-            chart.Title                     = "NET Residuals " + analysis.UMCData.DatasetName[datasetNum];
-            chart.PadViewPortX = .1F;
-            chart.PadViewPortY = .1F;
+            //TODO: Add back in.
+            ///// 
+            ///// Set the data for the chart.          
+            ///// 
+            //classAlignmentResidualData residual = analysis.AlignmentData[datasetNum].ResidualData;
+            //chart                           = new ctlScatterChart();
+            //chart.XAxisLabel                = "Scan #";
+            //chart.YAxisLabel                = "NET Residual";
+            //chart.Title                     = "NET Residuals " + analysis.UMCData.DatasetName[datasetNum];
+            //chart.PadViewPortX = .1F;
+            //chart.PadViewPortY = .1F;
 
-            clsShape alignedShape           = new BubbleShape(CONST_POST_POINT_SIZE, false);
-            clsPlotParams plt_paramsAligned = new clsPlotParams(alignedShape, Color.Red);
-            plt_paramsAligned.Name          = "Net Error";
-            chart.AutoViewPortOnAddition    = true;
-            clsSeries seriesAligned         = new clsSeries(ref residual.scans, ref residual.customNet, plt_paramsAligned);
-            chart.AddSeries(seriesAligned);            
-            chart.ViewPortHistory.Clear();
+            //clsShape alignedShape           = new BubbleShape(CONST_POST_POINT_SIZE, false);
+            //clsPlotParams plt_paramsAligned = new clsPlotParams(alignedShape, Color.Red);
+            //plt_paramsAligned.Name          = "Net Error";
+            //chart.AutoViewPortOnAddition    = true;
+            //clsSeries seriesAligned         = new clsSeries(ref residual.scans, ref residual.customNet, plt_paramsAligned);
+            //chart.AddSeries(seriesAligned);            
+            //chart.ViewPortHistory.Clear();
 
             return chart;
         }
@@ -883,29 +883,30 @@ namespace MultiAlign.Drawing
         {
             ctlScatterChart chart = null;
 
-            if (analysis.AlignmentData.Count < datasetNum)
-                return null;
-            if (analysis.AlignmentData[datasetNum] == null) 
-                return null;
+            //TODO: Add back in
+            //if (analysis.AlignmentData.Count < datasetNum)
+            //    return null;
+            //if (analysis.AlignmentData[datasetNum] == null) 
+            //    return null;
 
-            /// 
-            /// Set the data for the chart.          
-            /// 
-            classAlignmentResidualData residual = analysis.AlignmentData[datasetNum].ResidualData;
-            chart               = new ctlScatterChart();
-            chart.YAxisLabel    = "Mass Residuals (PPM)";
-            chart.XAxisLabel    = "NET Residuals (%)";
-            chart.Title = "Mass and NET Residuals Plot" + analysis.UMCData.DatasetName[datasetNum];
-            chart.PadViewPortX = .1F;
-            chart.PadViewPortY = .1F;
+            ///// 
+            ///// Set the data for the chart.          
+            ///// 
+            //classAlignmentResidualData residual = analysis.AlignmentData[datasetNum].ResidualData;
+            //chart               = new ctlScatterChart();
+            //chart.YAxisLabel    = "Mass Residuals (PPM)";
+            //chart.XAxisLabel    = "NET Residuals (%)";
+            //chart.Title = "Mass and NET Residuals Plot" + analysis.UMCData.DatasetName[datasetNum];
+            //chart.PadViewPortX = .1F;
+            //chart.PadViewPortY = .1F;
 
-            clsShape alignedShape           = new BubbleShape(CONST_PRE_POINT_SIZE, false);
-            clsPlotParams plt_paramsAligned = new clsPlotParams(alignedShape, Color.Red);
-            plt_paramsAligned.Name          = "Feature Match";
-            chart.AutoViewPortOnAddition    = true;
-            clsSeries seriesAligned         = new clsSeries(ref residual.customNet, ref residual.massError, plt_paramsAligned);
-            chart.AddSeries(seriesAligned);
-            chart.ViewPortHistory.Clear();
+            //clsShape alignedShape           = new BubbleShape(CONST_PRE_POINT_SIZE, false);
+            //clsPlotParams plt_paramsAligned = new clsPlotParams(alignedShape, Color.Red);
+            //plt_paramsAligned.Name          = "Feature Match";
+            //chart.AutoViewPortOnAddition    = true;
+            //clsSeries seriesAligned         = new clsSeries(ref residual.customNet, ref residual.massError, plt_paramsAligned);
+            //chart.AddSeries(seriesAligned);
+            //chart.ViewPortHistory.Clear();
 
             return chart;
         }
@@ -1255,43 +1256,43 @@ namespace MultiAlign.Drawing
         #endregion
 
         #region Mass NET error Histogram
-        /// <summary>
-        /// Renders the scan versus the cluster net to the provided bitmap.
-        /// </summary>
-        public static Image ScanVsClusterNet_Thumbnail(MultiAlignAnalysis analysis,
-                                                    int datasetNum,
-                                                    int width,
-                                                    int height,
-                                                            bool displayLegend,
-                                                            bool displayAxis,
-                                                            bool displayTitle)
-        {
+        ///// <summary>
+        ///// Renders the scan versus the cluster net to the provided bitmap.
+        ///// </summary>
+        //public static Image ScanVsClusterNet_Thumbnail(MultiAlignAnalysis analysis,
+        //                                            int datasetNum,
+        //                                            int width,
+        //                                            int height,
+        //                                                    bool displayLegend,
+        //                                                    bool displayAxis,
+        //                                                    bool displayTitle)
+        //{
 
-            Image image = null;
-            try
-            {
-                ctlScatterChart chart = RenderDatasetInfo.ScanVsClusterNet_Chart(analysis, datasetNum);
+        //    Image image = null;
+        //    try
+        //    {
+        //        ctlScatterChart chart = RenderDatasetInfo.ScanVsClusterNet_Chart(analysis, datasetNum);
 
-                if (chart != null)
-                {
-                    chart.Margins.LeftMarginMin = 1;
-                    chart.Margins.LeftMarginMax = 1;
-                    chart.Margins.BottomMarginMax = 1;
-                    chart.Margins.BottomMarginMin = 1;
-                    chart.LegendVisible = displayLegend;
-                    chart.AxisVisible = displayAxis;
-                    chart.TitleVisible = displayTitle;
-                    chart.XAxisGridLines = false;
-                    chart.YAxisGridLines = false;
-                    image = chart.ToBitmap(width, height);
-                    chart.Dispose();
-                }
-            }
-            catch
-            {
-            }
-            return image;
-        }
+        //        if (chart != null)
+        //        {
+        //            chart.Margins.LeftMarginMin = 1;
+        //            chart.Margins.LeftMarginMax = 1;
+        //            chart.Margins.BottomMarginMax = 1;
+        //            chart.Margins.BottomMarginMin = 1;
+        //            chart.LegendVisible = displayLegend;
+        //            chart.AxisVisible = displayAxis;
+        //            chart.TitleVisible = displayTitle;
+        //            chart.XAxisGridLines = false;
+        //            chart.YAxisGridLines = false;
+        //            image = chart.ToBitmap(width, height);
+        //            chart.Dispose();
+        //        }
+        //    }
+        //    catch
+        //    {
+        //    }
+        //    return image;
+        //}
         /// <summary>
         /// Renders the scan versus the cluster net to the provided bitmap.
         /// </summary>
@@ -1305,81 +1306,71 @@ namespace MultiAlign.Drawing
    #endregion
 
         #region Scan vs Net
-        /// <summary>
-        /// Renders the scan versus the cluster net to the provided bitmap.
-        /// </summary>
-        public static ctlScatterChart ScanVsClusterNet_Chart(MultiAlignAnalysis analysis,
-                                                    int datasetNum)
-        {
-            ctlScatterChart chart = null;
+        ///// <summary>
+        ///// Renders the scan versus the cluster net to the provided bitmap.
+        ///// </summary>
+        //public static ctlScatterChart ScanVsClusterNet_Chart(MultiAlignAnalysis analysis,
+        //                                            int datasetNum)
+        //{
+        //    ctlScatterChart chart = null;
     
-            /// 
-            /// Set the data for the chart. 
-            /// Go through each cluster that this dataset was seen in
-            /// and plot scan vs net of cluster. 
-            /// 
-            int numClusters = analysis.UMCData.mobjClusterData.NumClusters;
-            int numDatasets = analysis.UMCData.NumDatasets;
+        //    //TODO: Add back in.
+        //    ///// 
+        //    ///// Set the data for the chart. 
+        //    ///// Go through each cluster that this dataset was seen in
+        //    ///// and plot scan vs net of cluster. 
+        //    ///// 
+        //    //int numClusters = analysis.UMCData.mobjClusterData.NumClusters;
+        //    //int numDatasets = analysis.UMCData.NumDatasets;
             
             
-            ArrayList clusterIndices = new ArrayList();
-            for (int clusterNum = 0; clusterNum < numClusters; clusterNum++)
-            {
-                int umcIndex = analysis.UMCData.mobjClusterData.marrClusterMainMemberIndex[clusterNum * numDatasets + datasetNum];
-                if (umcIndex != -1)
-                {
-                    clusterIndices.Add(clusterNum);
-                }
-            }
+        //    //ArrayList clusterIndices = new ArrayList();
+        //    //for (int clusterNum = 0; clusterNum < numClusters; clusterNum++)
+        //    //{
+        //    //    int umcIndex = analysis.UMCData.mobjClusterData.marrClusterMainMemberIndex[clusterNum * numDatasets + datasetNum];
+        //    //    if (umcIndex != -1)
+        //    //    {
+        //    //        clusterIndices.Add(clusterNum);
+        //    //    }
+        //    //}
 
-            if (clusterIndices.Count != 0)
-            {
-                int numPoints = clusterIndices.Count;
-                float[] scanNums = new float[numPoints];
-                float[] nets = new float[numPoints];
-                for (int index = 0; index < numPoints; index++)
-                {
-                    int clusterIndex = (int)clusterIndices[index];
-                    int umcIndex = analysis.UMCData.mobjClusterData.marrClusterMainMemberIndex[clusterIndex * numDatasets + datasetNum];
-                    scanNums[index] = analysis.UMCData.marr_umcs[umcIndex].mint_scan;
-                    nets[index] = (float)analysis.UMCData.mobjClusterData.GetCluster(clusterIndex).mdouble_net;
-                }
-                /// 
-                /// Add data points to the chart.
-                /// 
-                chart = new ctlScatterChart();
-                chart.XAxisLabel = "Scan #";
-                chart.YAxisLabel = "NET";
+        //    //if (clusterIndices.Count != 0)
+        //    //{
+        //    //    int numPoints = clusterIndices.Count;
+        //    //    float[] scanNums = new float[numPoints];
+        //    //    float[] nets = new float[numPoints];
+        //    //    for (int index = 0; index < numPoints; index++)
+        //    //    {
+        //    //        int clusterIndex = (int)clusterIndices[index];
+        //    //        int umcIndex = analysis.UMCData.mobjClusterData.marrClusterMainMemberIndex[clusterIndex * numDatasets + datasetNum];
+        //    //        scanNums[index] = analysis.UMCData.marr_umcs[umcIndex].mint_scan;
+        //    //        nets[index] = (float)analysis.UMCData.mobjClusterData.GetCluster(clusterIndex).mdouble_net;
+        //    //    }
+        //    //    /// 
+        //    //    /// Add data points to the chart.
+        //    //    /// 
+        //    //    chart = new ctlScatterChart();
+        //    //    chart.XAxisLabel = "Scan #";
+        //    //    chart.YAxisLabel = "NET";
 
-                int ptSize = 1;
-                Color clr = Color.Red;
-                clsShape shape = new BubbleShape(ptSize, false); ;
-                clsPlotParams plt_params = new clsPlotParams(shape, clr);
-                plt_params.Name = analysis.UMCData.DatasetName[datasetNum];
-                chart.AutoViewPortOnAddition = true;
+        //    //    int ptSize = 1;
+        //    //    Color clr = Color.Red;
+        //    //    clsShape shape = new BubbleShape(ptSize, false); ;
+        //    //    clsPlotParams plt_params = new clsPlotParams(shape, clr);
+        //    //    plt_params.Name = analysis.UMCData.DatasetName[datasetNum];
+        //    //    chart.AutoViewPortOnAddition = true;
 
-                clsSeries series = new clsSeries(ref scanNums, ref nets, plt_params);
-                chart.AddSeries(series);
-                chart.ViewPortHistory.Clear();               
-            }
-            return chart;
-        }
+        //    //    clsSeries series = new clsSeries(ref scanNums, ref nets, plt_params);
+        //    //    chart.AddSeries(series);
+        //    //    chart.ViewPortHistory.Clear();               
+        //    //}
+        //    return chart;
+        //}
         #endregion
 
         #region Heatmap
         /// <summary>
         /// Renders the alignment heatmap
-        /// </summary>
-        public static Image AlignmentHeatmap_Thumbnail(MultiAlignAnalysis analysis,
-                                                    int datasetNum,
-                                                    int width,
-                                                    int height)
-        {
-            classAlignmentData data = analysis.AlignmentData[datasetNum];
-            return AlignmentHeatmap_Thumbnail(data, width, height);
-        }
-        /// <summary>
-        /// 
         /// </summary>
         /// <param name="data"></param>
         /// <param name="width"></param>
@@ -1459,23 +1450,36 @@ namespace MultiAlign.Drawing
         #endregion
 
         #region Cluster Chart
-        public static Image ClusterChart_Thumbnail(MultiAlignAnalysis analysis,
-                                                   int datasetNum,
-                                                   int width,
-                                                   int height,
-                                                   bool aligned,
-                                                   int chargeStates,
-                                                            bool displayLegend,
-                                                            bool displayAxis,
-                                                            bool displayTitle)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="features"></param>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        /// <param name="aligned"></param>
+        /// <param name="chargeStates"></param>
+        /// <param name="displayLegend"></param>
+        /// <param name="displayAxis"></param>
+        /// <param name="displayTitle"></param>
+        /// <returns></returns>
+        public static Image FeatureChart_Thumbnail( DatasetInformation info,
+                                                    List<clsUMC> features,
+                                                    int width,
+                                                    int height,
+                                                    bool aligned,
+                                                    int chargeStates,
+                                                    bool displayLegend,
+                                                    bool displayAxis,
+                                                    bool displayTitle)
         {
             Image image = null;
             try
             {
-                ctlScatterChart chart = RenderDatasetInfo.ClusterChart_Chart(analysis,
-                                                                                    datasetNum,
-                                                                                    aligned,
-                                                                                    chargeStates);
+                ctlScatterChart chart = RenderDatasetInfo.FeatureChart_Chart(info, 
+                                                                            features,
+                                                                            aligned,
+                                                                            chargeStates);
                 /// 
                 /// If a chart exists then modify it so we can make a smooth bitmap
                 /// 
@@ -1500,12 +1504,20 @@ namespace MultiAlign.Drawing
             }
             return image;
         }
-        public static ctlScatterChart ClusterChart_Chart(   MultiAlignAnalysis analysis,
-                                                            int datasetNum,
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="features"></param>
+        /// <param name="aligned"></param>
+        /// <param name="chargeStates"></param>
+        /// <returns></returns>
+        public static ctlScatterChart FeatureChart_Chart(   DatasetInformation info,
+                                                            List<clsUMC> features,
                                                             bool aligned,
                                                             int chargeStates)
         {
-            ctlClusterChart chart = new ctlClusterChart(analysis, datasetNum);            
+            ctlClusterChart chart = new ctlClusterChart(info, features);            
             return chart;
         }
         #endregion
@@ -2096,7 +2108,9 @@ namespace MultiAlign.Drawing
             Image image = null;
             try
             {
-                controlHistogram chart = RenderDatasetInfo.ClusterScoreHistogram_Chart(analysis.UMCData.mobjClusterData);
+                controlHistogram chart = null;
+                //TODO: Add back in
+                //RenderDatasetInfo.ClusterScoreHistogram_Chart(analysis.UMCData.mobjClusterData);
 
                 if (chart != null)
                 {
@@ -2226,8 +2240,10 @@ namespace MultiAlign.Drawing
 
             Image image = null;
             try
-            {                
-                ctlScatterChart chart = RenderDatasetInfo.ClusterScoreVsClusterSize_Chart(analysis.UMCData.mobjClusterData);
+            {
+                ctlScatterChart chart = null;
+                //TODO: Add back in.
+                    //RenderDatasetInfo.ClusterScoreVsClusterSize_Chart(analysis.UMCData.mobjClusterData);
 
                 if (chart != null)
                 {
@@ -2676,7 +2692,9 @@ namespace MultiAlign.Drawing
             Image image = null;
             try
             {
-                ctlScatterChart chart = RenderDatasetInfo.PeakMatchMassNET_Chart(analysis);
+                ctlScatterChart chart = null;
+                //TODO: Add back in
+                //RenderDatasetInfo.PeakMatchMassNET_Chart(analysis);
 
                 if (chart != null)
                 {
@@ -2700,84 +2718,84 @@ namespace MultiAlign.Drawing
             }
             return image;
         }
-        public static ctlScatterChart PeakMatchMassNET_Chart(MultiAlignAnalysis analysis)
-        {
-            clsPeakMatchingResults results = analysis.PeakMatchingResults;                                              
-            if (results == null)
-                return null;
+        //public static ctlScatterChart PeakMatchMassNET_Chart(MultiAlignAnalysis analysis)
+        //{
+        //    clsPeakMatchingResults results = analysis.PeakMatchingResults;                                              
+        //    if (results == null)
+        //        return null;
 
-            clsPeakMatchingResults.clsPeakMatchingTriplet[] arrPeakMatchingTriplets = null;
-            clsProtein[] arrPeakMatchingProteins = null;
-            clsMassTag[] arrPeakMatchingMassTags = null;
+        //    clsPeakMatchingResults.clsPeakMatchingTriplet[] arrPeakMatchingTriplets = null;
+        //    clsProtein[] arrPeakMatchingProteins = null;
+        //    clsMassTag[] arrPeakMatchingMassTags = null;
 
-            arrPeakMatchingTriplets = analysis.PeakMatchingResults.marrPeakMatchingTriplet;
-            arrPeakMatchingProteins = analysis.PeakMatchingResults.marrProteins;
-            arrPeakMatchingMassTags = analysis.PeakMatchingResults.marrMasstags;
+        //    arrPeakMatchingTriplets = analysis.PeakMatchingResults.marrPeakMatchingTriplet;
+        //    arrPeakMatchingProteins = analysis.PeakMatchingResults.marrProteins;
+        //    arrPeakMatchingMassTags = analysis.PeakMatchingResults.marrMasstags;
             
-            int lastClusterNumber = -1;
+        //    int lastClusterNumber = -1;
 
-            /// ////////////////////////////////////////////////////////////////////////////// 
-            /// Now we add the data 
-            ///     We dont make this clustering writing into a separate method because 
-            ///     we have to account for clusters matching to more than one tag.
-            /// ////////////////////////////////////////////////////////////////////////////// 
-            /// 
-            List<float> massResidual   = new List<float>();
-            List<float> netResidual    = new List<float>();
-            int clusterNum              = 0;
-            int num_clusters            = analysis.UMCData.mobjClusterData.NumClusters;
-            int currentPeakMatchNum     = 0;
+        //    /// ////////////////////////////////////////////////////////////////////////////// 
+        //    /// Now we add the data 
+        //    ///     We dont make this clustering writing into a separate method because 
+        //    ///     we have to account for clusters matching to more than one tag.
+        //    /// ////////////////////////////////////////////////////////////////////////////// 
+        //    /// 
+        //    List<float> massResidual   = new List<float>();
+        //    List<float> netResidual    = new List<float>();
+        //    int clusterNum              = 0;
+        //    int num_clusters            = analysis.UMCData.mobjClusterData.NumClusters;
+        //    int currentPeakMatchNum     = 0;
 
-            while (clusterNum < num_clusters)
-            {
-                bool clusterDidNotPeakMatch = false;
-                clsCluster cluster          = analysis.UMCData.mobjClusterData.GetCluster(clusterNum);
-                clsUMC[] arrUMCs            = analysis.UMCData.marr_umcs;
+        //    while (clusterNum < num_clusters)
+        //    {
+        //        bool clusterDidNotPeakMatch = false;
+        //        clsCluster cluster          = analysis.UMCData.mobjClusterData.GetCluster(clusterNum);
+        //        clsUMC[] arrUMCs            = analysis.UMCData.marr_umcs;
 
-                if (arrPeakMatchingTriplets != null &&
-                    currentPeakMatchNum < arrPeakMatchingTriplets.Length &&
-                    arrPeakMatchingTriplets[currentPeakMatchNum].mintFeatureIndex == clusterNum)
-                {
-                    ///
-                    /// So this peakmatchtriplet corresponds to the current cluster.                     
-                    ///                     
-                    clsPeakMatchingResults.clsPeakMatchingTriplet triplet = arrPeakMatchingTriplets[currentPeakMatchNum];
-                    clsMassTag massTag = arrPeakMatchingMassTags[triplet.mintMassTagIndex];
+        //        if (arrPeakMatchingTriplets != null &&
+        //            currentPeakMatchNum < arrPeakMatchingTriplets.Length &&
+        //            arrPeakMatchingTriplets[currentPeakMatchNum].mintFeatureIndex == clusterNum)
+        //        {
+        //            ///
+        //            /// So this peakmatchtriplet corresponds to the current cluster.                     
+        //            ///                     
+        //            clsPeakMatchingResults.clsPeakMatchingTriplet triplet = arrPeakMatchingTriplets[currentPeakMatchNum];
+        //            clsMassTag massTag = arrPeakMatchingMassTags[triplet.mintMassTagIndex];
 
-                    massResidual.Add(Convert.ToSingle(cluster.MassCalibrated - massTag.mdblMonoMass));
-                    netResidual.Add(Convert.ToSingle(cluster.NetAligned      - massTag.mdblAvgGANET)); 
+        //            massResidual.Add(Convert.ToSingle(cluster.MassCalibrated - massTag.mdblMonoMass));
+        //            netResidual.Add(Convert.ToSingle(cluster.NetAligned      - massTag.mdblAvgGANET)); 
 
-                    lastClusterNumber   = clusterNum;
-                    currentPeakMatchNum++; 
-                }
-                else
-                {                                     
-                    clusterNum++;                 
-                }
-            }
+        //            lastClusterNumber   = clusterNum;
+        //            currentPeakMatchNum++; 
+        //        }
+        //        else
+        //        {                                     
+        //            clusterNum++;                 
+        //        }
+        //    }
 
-            float[] massResidualPoints = new float[massResidual.Count];
-            float[] netResidualPoints = new float[netResidual.Count];
+        //    float[] massResidualPoints = new float[massResidual.Count];
+        //    float[] netResidualPoints = new float[netResidual.Count];
 
-            massResidual.CopyTo(massResidualPoints);
-            netResidual.CopyTo(netResidualPoints);
+        //    massResidual.CopyTo(massResidualPoints);
+        //    netResidual.CopyTo(netResidualPoints);
 
-            ctlScatterChart chart            = new ctlScatterChart();
+        //    ctlScatterChart chart            = new ctlScatterChart();
 
-            clsPlotParams parameters         = new clsPlotParams(new BubbleShape(1, false), Color.Red);
-            parameters.Name                  = "Feature Cluster Match";
-            clsSeries series                 = new clsSeries(ref netResidualPoints, ref massResidualPoints, parameters);
-            chart.AutoViewPortOnSeriesChange = true;
-            chart.AutoViewPortOnAddition     = true;
-            chart.AddSeries(series);
-            chart.PadViewPortX = .5F;
-            chart.PadViewPortY = .5F;
-            chart.Title = "Peak Matching Residuals";
-            chart.XAxisLabel = "NET Residuals (%)";
-            chart.YAxisLabel = "Mass Residuals (PPM)";
+        //    clsPlotParams parameters         = new clsPlotParams(new BubbleShape(1, false), Color.Red);
+        //    parameters.Name                  = "Feature Cluster Match";
+        //    clsSeries series                 = new clsSeries(ref netResidualPoints, ref massResidualPoints, parameters);
+        //    chart.AutoViewPortOnSeriesChange = true;
+        //    chart.AutoViewPortOnAddition     = true;
+        //    chart.AddSeries(series);
+        //    chart.PadViewPortX = .5F;
+        //    chart.PadViewPortY = .5F;
+        //    chart.Title = "Peak Matching Residuals";
+        //    chart.XAxisLabel = "NET Residuals (%)";
+        //    chart.YAxisLabel = "Mass Residuals (PPM)";
 
-            return chart;
-        }
+        //    return chart;
+        //}
 
         
         /// <summary>
@@ -2789,7 +2807,9 @@ namespace MultiAlign.Drawing
             Image image = null;
             try
             {
-                controlHistogram chart = RenderDatasetInfo.SMARTScoreHistogram_Chart(analysis);
+                controlHistogram chart = null;//
+                //TODO: Add back in 
+                //RenderDatasetInfo.SMARTScoreHistogram_Chart(analysis);
 
                 if (chart != null)
                 {
@@ -2813,7 +2833,7 @@ namespace MultiAlign.Drawing
             }
             return image;
         }
-        public static controlHistogram SMARTScoreHistogram_Chart(MultiAlignAnalysis analysis)
+        /*public static controlHistogram SMARTScoreHistogram_Chart(MultiAlignAnalysis analysis)
         {
             
             clsPeakMatchingResults results = analysis.PeakMatchingResults;                                              
@@ -3345,6 +3365,7 @@ namespace MultiAlign.Drawing
             return chart;
 
         }
+         */
         #endregion
     }
 

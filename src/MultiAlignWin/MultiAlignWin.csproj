@@ -1,4 +1,5 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\x64\Debug\</OutputPath>
@@ -62,6 +63,24 @@
     </FileUpgradeFlags>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>bin\Debug\</OutputPath>
@@ -109,6 +128,7 @@
     <DebugType>none</DebugType>
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
+  <PropertyGroup />
   <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <Reference Include="System.Data.SQLite, Version=1.0.66.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=x86">
       <SpecificVersion>True</SpecificVersion>
@@ -161,6 +181,10 @@
     <Reference Include="Microsoft.VisualC">
       <Name>Microsoft.VisualC</Name>
     </Reference>
+    <Reference Include="MultiAlignEngine, Version=1.0.4084.24787, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\x64\MultiAlignEngine.dll</HintPath>
+    </Reference>
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
@@ -183,17 +207,9 @@
     <Reference Include="System.Xml">
       <Name>System.XML</Name>
     </Reference>
-    <ProjectReference Include="..\ExternalControls\ExternalControls.csproj">
-      <Project>{46C6D9CE-672F-4491-BF67-AA3F8DC811B7}</Project>
-      <Name>ExternalControls</Name>
-    </ProjectReference>
     <ProjectReference Include="..\MultiAlignCustomControls\MultiAlignCustomControls.csproj">
       <Project>{EE7596B2-FCD3-471A-856F-1270713DD5B1}</Project>
       <Name>MultiAlignCustomControls</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MultiAlign\MultiAlign.vcproj">
-      <Project>{5A7E3D3C-03F3-4586-8A2C-BAE1EBA4623E}</Project>
-      <Name>MultiAlignEngine</Name>
     </ProjectReference>
     <ProjectReference Include="..\PNNLControls\PNNLControls.csproj">
       <Project>{9409DE9B-F3F0-41AA-95F5-8BFD525F5669}</Project>
@@ -205,9 +221,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Drawing\frmIntensityDiff.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="Data\AnalysisDefaultOptionsFactory.cs" />
+    <Compile Include="Data\ProteinMapExtractor.cs" />
     <Compile Include="Forms\Charts\Heatmap.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -226,29 +241,11 @@
     <Compile Include="Forms\controlDatasetInformation.Designer.cs">
       <DependentUpon>controlDatasetInformation.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\controlUMCData.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Forms\controlUMCData.Designer.cs">
-      <DependentUpon>controlUMCData.cs</DependentUpon>
-    </Compile>
     <Compile Include="Forms\DMSDatasetSearchOptionsForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\DMSDatasetSearchOptionsForm.Designer.cs">
       <DependentUpon>DMSDatasetSearchOptionsForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FactorFilterControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Forms\FactorFilterControl.Designer.cs">
-      <DependentUpon>FactorFilterControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FactorValueFilterControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Forms\FactorValueFilterControl.Designer.cs">
-      <DependentUpon>FactorValueFilterControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\frmDefineFactors.cs">
       <SubType>Form</SubType>
@@ -259,12 +256,7 @@
     <Compile Include="Forms\DataFilters.Designer.cs">
       <DependentUpon>DataFilters.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\formUMCData.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\formUMCData.Designer.cs">
-      <DependentUpon>formUMCData.cs</DependentUpon>
-    </Compile>
+    <Compile Include="Forms\Wizard\IWizardControl.cs" />
     <Compile Include="Forms\Parameters\frmPeakMatchingParameters.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -289,9 +281,6 @@
     <Compile Include="Forms\Parameters\frmClusterParameters.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\frmSelectOneDataset.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="Diagnostics\clsLogging.cs" />
     <Compile Include="Forms\frmException.cs">
       <SubType>Form</SubType>
@@ -300,9 +289,6 @@
       <DependentUpon>frmException.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\frmTracWebBugReport.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Charts\frmScatterPlot.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\frmAbout.cs">
@@ -344,6 +330,7 @@
     <Compile Include="Forms\frmSaveFactors.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Forms\Wizard\WizardController.cs" />
     <Compile Include="Network\clsDMSConnectionTester.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -356,11 +343,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="ProteinMapExtractor.cs" />
     <Compile Include="Settings.cs" />
-    <Compile Include="Wizard\CompletedWizardPage.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
     <Compile Include="Wizard\DefineFactorsWizardPage.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -379,16 +362,9 @@
     <Compile Include="Wizard\ctlSelectParametersWizardPage.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Wizard\WelcomeWizardPage.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
     <Compile Include="Forms\frmAnalysisWizard.cs">
       <SubType>Form</SubType>
     </Compile>
-    <EmbeddedResource Include="Drawing\frmIntensityDiff.resx">
-      <DependentUpon>frmIntensityDiff.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="Forms\controlClusterInformation.resx">
       <SubType>Designer</SubType>
       <DependentUpon>controlClusterInformation.cs</DependentUpon>
@@ -397,21 +373,12 @@
       <SubType>Designer</SubType>
       <DependentUpon>controlDatasetInformation.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\controlUMCData.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>controlUMCData.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Forms\DMSDatasetSearchOptionsForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>DMSDatasetSearchOptionsForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FactorFilterControl.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>FactorFilterControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FactorValueFilterControl.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>FactorValueFilterControl.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\frmAnalysisWizard.resx">
+      <DependentUpon>frmAnalysisWizard.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmDefineFactors.resx">
       <DependentUpon>frmDefineFactors.cs</DependentUpon>
@@ -420,10 +387,6 @@
     <EmbeddedResource Include="Forms\DataFilters.resx">
       <SubType>Designer</SubType>
       <DependentUpon>DataFilters.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\formUMCData.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>formUMCData.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\DataView.resx">
       <DependentUpon>DataView.cs</DependentUpon>
@@ -457,20 +420,12 @@
       <DependentUpon>frmClusterParameters.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\frmSelectOneDataset.resx">
-      <DependentUpon>frmSelectOneDataset.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmException.resx">
       <SubType>Designer</SubType>
       <DependentUpon>frmException.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmTracWebBugReport.resx">
       <DependentUpon>frmTracWebBugReport.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Charts\frmScatterPlot.resx">
-      <DependentUpon>frmScatterPlot.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmAbout.resx">
@@ -514,9 +469,8 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Wizard\CompletedWizardPage.resx">
-      <DependentUpon>CompletedWizardPage.cs</DependentUpon>
-      <SubType>Designer</SubType>
+    <EmbeddedResource Include="Wizard\ctlSelectParametersWizardPage.resx">
+      <DependentUpon>ctlSelectParametersWizardPage.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Wizard\DefineFactorsWizardPage.resx">
       <DependentUpon>DefineFactorsWizardPage.cs</DependentUpon>
@@ -534,14 +488,6 @@
       <DependentUpon>ctlSelectOutputNameWizardPage.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Wizard\ctlSelectParametersWizardPage.resx">
-      <DependentUpon>ctlSelectParametersWizardPage.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Wizard\WelcomeWizardPage.resx">
-      <DependentUpon>WelcomeWizardPage.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -551,20 +497,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Bitmaps\malign1.jpg" />
-    <Content Include="Bitmaps\App.ico" />
-    <Content Include="Bitmaps\hat.gif" />
-    <Content Include="Bitmaps\malign.ico" />
-    <Content Include="Bitmaps\malign.jpg" />
-    <Content Include="Bitmaps\malign16.ico" />
-    <Content Include="Bitmaps\malign32.ico" />
-    <Content Include="Bitmaps\MultiAlign.ico" />
-    <Content Include="Bitmaps\MultiAlignLogo.jpg" />
-    <Content Include="Bitmaps\multialignT.ico" />
-    <Content Include="Bitmaps\perform.png" />
-    <Content Include="Bitmaps\wizard.gif" />
     <Content Include="MultiAlign.ico" />
-    <None Include="Resources\asdfasdfas.txt" />
     <None Include="Resources\smart.png" />
     <None Include="Resources\scoring.png" />
     <None Include="Resources\intensityFilterHighBad.png" />
@@ -581,8 +514,21 @@
     <None Include="Resources\ExampleSidebar.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Forms\Summary\" />
-    <Folder Include="Update\" />
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

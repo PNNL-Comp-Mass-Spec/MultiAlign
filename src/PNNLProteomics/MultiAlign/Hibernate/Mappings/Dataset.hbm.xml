@@ -11,7 +11,7 @@
 		<property name="DatasetName" column="File_Name" type="string" not-null="false" />
 		<property name="ParameterFileName" column="Parameter_File" type="string" not-null="false" />
 		<!--property name="JobDateTime" column="Job_DateTime" type="string" not-null="false" /-->
-		<property name="ArchivePath" column="Directory_Path" type="string" not-null="false" />
+		<property name="Path" column="Directory_Path" type="string" not-null="false" />
 		<!--property name="JobType" column="Job_Type" type="string" not-null="false" /-->
 		<bag name="FactorList" inverse="true">
 			<key column="Factor_ID" />

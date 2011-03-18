@@ -1,28 +1,17 @@
 using System;
-using System.IO ; 
-using System.Data ; 
-using System.Drawing;
-using System.Collections;
-using System.Windows.Forms;
-using System.ComponentModel;
-using System.Data.SqlClient;
 using System.Collections.Generic;
-
-using Wizard.UI;
-using MultiAlignEngine;
-using PNNLControls;
-using ExternalControls;
-
+using System.ComponentModel;
+using System.Drawing;
+using System.Windows.Forms;
+using MultiAlignWin.Forms.Factors;
 using PNNLProteomics.Data;
 using PNNLProteomics.Data.Factors;
 
-using MultiAlignWin.Forms.Factors;
 
 namespace MultiAlignWin
 {
-	public class DefineFactorsWizardPage : Wizard.UI.InternalWizardPage
-	{
-		//public enum enmToolID {ICR2LS=2, QTOFPek=7, MLynxPek=10, AgilentTOFPek=11, LTQ_FTPek=12, Decon2LS=16, Decon2LS_Agilent=18} ; 
+	public class DefineFactorsWizardPage : UserControl, MultiAlignWin.Forms.Wizard.IWizardControl<PNNLProteomics.Data.MultiAlignAnalysis>
+	{		
 	    private const int CONST_NUM_COLUMNS = 8;
 
         #region Members
@@ -51,11 +40,6 @@ namespace MultiAlignWin
         private int X = 0;
         private int Y = 0;
         private int mint_subItemSelected = 0; 
-
-        /// <summary>
-        /// Reference to the list of dataset information.
-        /// </summary>
-        private List<DatasetInformation> marray_datasetInfo;
         /// <summary>
         /// Factors and Values: array of factor information.
         /// </summary>
@@ -63,8 +47,13 @@ namespace MultiAlignWin
         /// <summary>
         /// Reference to the (factor-factor value) definitions for the entire dataset.
         /// </summary>
-        private FactorCollection mobj_factors;        
+        private FactorCollection mobj_factors;
+        /// <summary>
+        /// MA Analysis object.
+        /// </summary>
+        private MultiAlignAnalysis m_analysis;
         #endregion
+
 
         /// <summary>
         /// Default constructor.
@@ -74,14 +63,7 @@ namespace MultiAlignWin
             InitializeComponent();		
 			mobj_listViewItemComparer             = new ListViewItemComparer();
 			mlistview_datasets.ListViewItemSorter = mobj_listViewItemComparer;
-            SetActive                             += new System.ComponentModel.CancelEventHandler(this.ctlSelectFilesFromDBFilterWizardPage_SetActive) ;
 
-            /// 
-            /// Create the factor definition, dataset information, and factor data arrays.
-            /// 
-            mobj_factors        = null;
-            marray_datasetInfo  = new List<DatasetInformation>();
-            mlist_factorData    = new List<FactorInformation>();
         } 
 
         #region Windows Forms
@@ -111,14 +93,14 @@ namespace MultiAlignWin
             this.mbutton_factors = new System.Windows.Forms.Button();
             this.cmbBox = new System.Windows.Forms.ComboBox();
             this.mlistview_datasets = new System.Windows.Forms.ListView();
-            this.datasetID = new System.Windows.Forms.ColumnHeader();
-            this.jobnum = new System.Windows.Forms.ColumnHeader();
-            this.fileName = new System.Windows.Forms.ColumnHeader();
-            this.alias = new System.Windows.Forms.ColumnHeader();
-            this.block = new System.Windows.Forms.ColumnHeader();
-            this.runOrder = new System.Windows.Forms.ColumnHeader();
-            this.lcColumnID = new System.Windows.Forms.ColumnHeader();
-            this.batchID = new System.Windows.Forms.ColumnHeader();
+            this.datasetID = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.jobnum = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.fileName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.alias = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.block = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.runOrder = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.lcColumnID = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.batchID = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.contextMenuFactors = new System.Windows.Forms.ContextMenu();
             this.menuItemFillBelow = new System.Windows.Forms.MenuItem();
             this.menuItemFillNBelow = new System.Windows.Forms.MenuItem();
@@ -126,13 +108,6 @@ namespace MultiAlignWin
             this.menuItemFillRand = new System.Windows.Forms.MenuItem();
             this.panelFileNames.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // Banner
-            // 
-            this.Banner.BackColor = System.Drawing.Color.White;
-            this.Banner.Size = new System.Drawing.Size(754, 64);
-            this.Banner.Subtitle = "Define factors and edit aliases";
-            this.Banner.Title = "Step 2. Edit Factors and Aliases";
             // 
             // panelFileNames
             // 
@@ -142,10 +117,10 @@ namespace MultiAlignWin
             this.panelFileNames.Controls.Add(this.cmbBox);
             this.panelFileNames.Controls.Add(this.mlistview_datasets);
             this.panelFileNames.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelFileNames.Location = new System.Drawing.Point(134, 64);
+            this.panelFileNames.Location = new System.Drawing.Point(0, 0);
             this.panelFileNames.Name = "panelFileNames";
             this.panelFileNames.Padding = new System.Windows.Forms.Padding(5);
-            this.panelFileNames.Size = new System.Drawing.Size(754, 740);
+            this.panelFileNames.Size = new System.Drawing.Size(888, 804);
             this.panelFileNames.TabIndex = 3;
             // 
             // editBox
@@ -163,7 +138,7 @@ namespace MultiAlignWin
             this.mbutton_factors.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.mbutton_factors.BackColor = System.Drawing.SystemColors.Control;
             this.mbutton_factors.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.mbutton_factors.Location = new System.Drawing.Point(486, 689);
+            this.mbutton_factors.Location = new System.Drawing.Point(620, 753);
             this.mbutton_factors.Name = "mbutton_factors";
             this.mbutton_factors.Size = new System.Drawing.Size(260, 43);
             this.mbutton_factors.TabIndex = 1;
@@ -180,15 +155,15 @@ namespace MultiAlignWin
             this.cmbBox.TabIndex = 1;
             this.cmbBox.Text = "comboBox1";
             this.cmbBox.Visible = false;
-            this.cmbBox.LostFocus += new System.EventHandler(this.cmbBoxFocusOver);
             this.cmbBox.SelectedIndexChanged += new System.EventHandler(this.cmbBoxSelectedIndexChanged);
             this.cmbBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.cmbBoxKeyPress);
+            this.cmbBox.LostFocus += new System.EventHandler(this.cmbBoxFocusOver);
             // 
             // mlistview_datasets
             // 
-            this.mlistview_datasets.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.mlistview_datasets.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.mlistview_datasets.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.datasetID,
             this.jobnum,
@@ -202,13 +177,13 @@ namespace MultiAlignWin
             this.mlistview_datasets.GridLines = true;
             this.mlistview_datasets.Location = new System.Drawing.Point(8, 8);
             this.mlistview_datasets.Name = "mlistview_datasets";
-            this.mlistview_datasets.Size = new System.Drawing.Size(738, 675);
+            this.mlistview_datasets.Size = new System.Drawing.Size(872, 739);
             this.mlistview_datasets.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.mlistview_datasets.TabIndex = 0;
             this.mlistview_datasets.UseCompatibleStateImageBehavior = false;
             this.mlistview_datasets.View = System.Windows.Forms.View.Details;
-            this.mlistview_datasets.DoubleClick += new System.EventHandler(this.doubleClick_event);
             this.mlistview_datasets.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.joblistView_ColumnClick);
+            this.mlistview_datasets.DoubleClick += new System.EventHandler(this.doubleClick_event);
             this.mlistview_datasets.MouseDown += new System.Windows.Forms.MouseEventHandler(this.mouseDown_event);
             // 
             // datasetID
@@ -285,8 +260,6 @@ namespace MultiAlignWin
             this.Controls.Add(this.panelFileNames);
             this.Name = "DefineFactorsWizardPage";
             this.Size = new System.Drawing.Size(888, 804);
-            this.Controls.SetChildIndex(this.Banner, 0);
-            this.Controls.SetChildIndex(this.panelFileNames, 0);
             this.panelFileNames.ResumeLayout(false);
             this.panelFileNames.PerformLayout();
             this.ResumeLayout(false);
@@ -295,39 +268,12 @@ namespace MultiAlignWin
 		#endregion
         #endregion
        
-        #region Properties
-        public List<DatasetInformation> DatasetInfo
-        {
-            get
-            {
-                return marray_datasetInfo;
-            }
-            set
-            {
-                marray_datasetInfo = value;
-            }
-        }
-        #endregion
-
         #region Wizard Events
         private void ctlSelectFilesFromDBFilterWizardPage_SetActive(object sender, CancelEventArgs e)
 		{
-            /// 
-            /// Make this page the active one, clear the dataset information 
-            /// 
-			SetWizardButtons(Wizard.UI.WizardButtons.Back | Wizard.UI.WizardButtons.Next);
-			mlistview_datasets.Items.Clear();
-            InitializeDatasetFactors();
-            UpdateListViewFactorColumns();
-            /// 
-            /// Fill the list view with our datasets, and display any pertinent help messages.
-            /// 
-			FillListView() ;
-
         }
         #endregion
         
-
         #region Event Handlers
         /// <summary>
         /// Sorts the data in the columns.
@@ -369,23 +315,24 @@ namespace MultiAlignWin
 		}
 		private void cmbBoxSelectedIndexChanged(object sender, System.EventArgs e)
 		{
-			int sel = cmbBox.SelectedIndex;
-			if (sel >= 0)
-			{
-				string factorValue = cmbBox.Items[sel].ToString();
-				mobj_selectedItem.SubItems[mint_subItemSelected].Text = factorValue;
+            MessageBox.Show("Removed temporarily.");
+            //int sel = cmbBox.SelectedIndex;
+            //if (sel >= 0)
+            //{
+            //    string factorValue = cmbBox.Items[sel].ToString();
+            //    mobj_selectedItem.SubItems[mint_subItemSelected].Text = factorValue;
 
-				DatasetInformation dataset = marray_datasetInfo[mobj_selectedItem.Index];
-				//string datasetIdString = datasetID.ListView.Items[mobj_selectedItem.Index].Text;
-				string factorName = mlistview_datasets.Columns[mint_subItemSelected].Text;
+            //    DatasetInformation dataset = marray_datasetInfo[mobj_selectedItem.Index];
+            //    //string datasetIdString = datasetID.ListView.Items[mobj_selectedItem.Index].Text;
+            //    string factorName = mlistview_datasets.Columns[mint_subItemSelected].Text;
 
-				UpdateDatasetFactorInfo(dataset, factorName, factorValue);
+            //    UpdateDatasetFactorInfo(dataset, factorName, factorValue);
 
-                /// 
-                /// Update the column length
-                /// 
-                mlistview_datasets.AutoResizeColumn(mint_subItemSelected, ColumnHeaderAutoResizeStyle.ColumnContent);
-			}
+            //    /// 
+            //    /// Update the column length
+            //    /// 
+            //    mlistview_datasets.AutoResizeColumn(mint_subItemSelected, ColumnHeaderAutoResizeStyle.ColumnContent);
+            //}
 		}
 		private void doubleClick_event(object sender, System.EventArgs e)
 		{
@@ -515,27 +462,27 @@ namespace MultiAlignWin
 		}
 		private void menuItemFillBelow_Click(object sender, System.EventArgs e)
 		{
-			int idx = 0;
-			foreach (ListViewItem item in mlistview_datasets.Items)
-			{
-				if (item.Tag.Equals(mobj_selectedItem.Tag))
-				{
-					break;
-				}
-				else
-				{
-					idx++;
-				}
-			}
-			string factorValue = mobj_selectedItem.SubItems[mint_subItemSelected].Text;
-			for (int num = idx; num < mlistview_datasets.Items.Count; num++)
-			{
-				DatasetInformation dataset = marray_datasetInfo[num];
-				string factorName = mlistview_datasets.Columns[mint_subItemSelected].Text;
+            //int idx = 0;
+            //foreach (ListViewItem item in mlistview_datasets.Items)
+            //{
+            //    if (item.Tag.Equals(mobj_selectedItem.Tag))
+            //    {
+            //        break;
+            //    }
+            //    else
+            //    {
+            //        idx++;
+            //    }
+            //}
+            //string factorValue = mobj_selectedItem.SubItems[mint_subItemSelected].Text;
+            //for (int num = idx; num < mlistview_datasets.Items.Count; num++)
+            //{
+            //    DatasetInformation dataset = marray_datasetInfo[num];
+            //    string factorName = mlistview_datasets.Columns[mint_subItemSelected].Text;
 
-				UpdateDatasetFactorInfo(dataset, factorName, factorValue);
-			}
-		
+            //    UpdateDatasetFactorInfo(dataset, factorName, factorValue);
+            //}		
+            MessageBox.Show("Testing.");
 		}
 
         /// <summary>
@@ -546,19 +493,22 @@ namespace MultiAlignWin
         /// <param name="factorValue">Value to fill with.</param>
         private void FillBlock(int idx, int nBlock, string factorValue)
         {
-            /// 
-            /// Now for the block of samples fill in the data.
-            /// 
-            for (int num = idx; num < idx + nBlock; num++)
-            {
-                if (num < mlistview_datasets.Items.Count)
-                {
-					DatasetInformation dataset = marray_datasetInfo[num];
-					string factorName = mlistview_datasets.Columns[mint_subItemSelected].Text;
+        
+            //    /// 
+        //    /// Now for the block of samples fill in the data.
+        //    /// 
+        //    for (int num = idx; num < idx + nBlock; num++)
+        //    {
+        //        if (num < mlistview_datasets.Items.Count)
+        //        {
+        //            DatasetInformation dataset = marray_datasetInfo[num];
+        //            string factorName = mlistview_datasets.Columns[mint_subItemSelected].Text;
 
-					UpdateDatasetFactorInfo(dataset, factorName, factorValue);
-                }
-            }
+        //            UpdateDatasetFactorInfo(dataset, factorName, factorValue);
+        //        }
+        //    }
+
+            MessageBox.Show("Testing.");
         }
         /// <summary>
         /// Finds the selected starting index of the list view item given it could be sorted.
@@ -639,40 +589,39 @@ namespace MultiAlignWin
         /// Initializes the datasets with factor value information.
         /// </summary>
         private void InitializeDatasetFactors()
-        {
+        {            
+            ///// 
+            ///// For every dataset item, assign it's factor value.
+            ///// 
+            //foreach (DatasetInformation info in marray_datasetInfo)
+            //{
+            //    /// 
+            //    /// Clear the assignment for this dataset information.
+            //    /// 
+            //    info.Factors.Clear();
             
-            /// 
-            /// For every dataset item, assign it's factor value.
-            /// 
-            foreach (DatasetInformation info in marray_datasetInfo)
-            {
-                /// 
-                /// Clear the assignment for this dataset information.
-                /// 
-                info.Factors.Clear();
-            
-                // Continue, dont exit.  We are clearing the factor information.                
-                if (mobj_factors == null)
-                    continue;
+            //    // Continue, dont exit.  We are clearing the factor information.                
+            //    if (mobj_factors == null)
+            //        continue;
 
-                /// 
-                /// After we cleared the factors, then we want to add
-                /// in factor information for each dataset, and 
-                /// assign one of the values.                
-                ///                                 
-                foreach (FactorInformation factorInfo in mobj_factors.Factors.Values)
-                {                                        
-                    /// 
-                    /// Here we assign value 
-                    ///                     
-                    string factorValue = factorInfo.FactorValues[0];
+            //    /// 
+            //    /// After we cleared the factors, then we want to add
+            //    /// in factor information for each dataset, and 
+            //    /// assign one of the values.                
+            //    ///                                 
+            //    foreach (FactorInformation factorInfo in mobj_factors.Factors.Values)
+            //    {                                        
+            //        /// 
+            //        /// Here we assign value 
+            //        ///                     
+            //        string factorValue = factorInfo.FactorValues[0];
 
-                    /// 
-                    /// Here we add to our factor list for this dataset.
-                    /// 
-                    info.Factors.Add(factorInfo, factorValue);
-                }
-            }
+            //        /// 
+            //        /// Here we add to our factor list for this dataset.
+            //        /// 
+            //        info.Factors.Add(factorInfo, factorValue);
+            //    }
+            //}
         }
 		private void UpdateDatasetFactorInfo(DatasetInformation dataset, String factorName, String factorValue)
         {
@@ -688,234 +637,235 @@ namespace MultiAlignWin
         }
         private void UpdateAliases()
         {
-            int numEntries = mlistview_datasets.Items.Count;
-            for (int row = 0; row < numEntries; row++)
-            {
-                ((DatasetInformation)marray_datasetInfo[row]).mstrAlias =
-                    mlistview_datasets.Items[row].SubItems[3].Text;
-            }
+        //    int numEntries = mlistview_datasets.Items.Count;
+        //    for (int row = 0; row < numEntries; row++)
+        //    {
+        //        ((DatasetInformation)marray_datasetInfo[row]).mstrAlias =
+        //            mlistview_datasets.Items[row].SubItems[3].Text;
+        //    }
         }
-        #endregion
+        #endregion        
 
         #region Factor Value Filling (Cycle, Random, Block)   
         private void FillNCycles()
         {
-            int start = 0;
-            int cycle = 0;
-            int nBlock = 1;
+            //int start = 0;
+            //int cycle = 0;
+            //int nBlock = 1;
 
-            /// 
-            /// Get the user input on how many blocks to use
-            /// 
-            frmInputBlockSize mfrmInputBlockSize = new frmInputBlockSize();
-            if (mfrmInputBlockSize.ShowDialog() == DialogResult.Cancel)
-                return;
+            ///// 
+            ///// Get the user input on how many blocks to use
+            ///// 
+            //frmInputBlockSize mfrmInputBlockSize = new frmInputBlockSize();
+            //if (mfrmInputBlockSize.ShowDialog() == DialogResult.Cancel)
+            //    return;
 
-            /// 
-            /// Find the listview index
-            /// 
-            nBlock = mfrmInputBlockSize.blockSize;
-            start = FindItemStartingIndex(mobj_selectedItem);
+            ///// 
+            ///// Find the listview index
+            ///// 
+            //nBlock = mfrmInputBlockSize.blockSize;
+            //start = FindItemStartingIndex(mobj_selectedItem);
 
-            /// 
-            /// Get the used factor value here
-            /// 
-            string factorValue = mobj_selectedItem.SubItems[mint_subItemSelected].Text; // get it's factor value
+            ///// 
+            ///// Get the used factor value here
+            ///// 
+            //string factorValue = mobj_selectedItem.SubItems[mint_subItemSelected].Text; // get it's factor value
 
-            /// 
-            /// Get the factor data strings
-            /// 
-            string key = mlistview_datasets.Columns[mint_subItemSelected].Text;
-            int numVals = mobj_factors.Factors[key].FactorValues.Count;    //number of values in this factor            
-            List<string> fvals = mobj_factors.Factors[key].FactorValues;
-            int startIdxVal = fvals.IndexOf(factorValue);
+            ///// 
+            ///// Get the factor data strings
+            ///// 
+            //string key = mlistview_datasets.Columns[mint_subItemSelected].Text;
+            //int numVals = mobj_factors.Factors[key].FactorValues.Count;    //number of values in this factor            
+            //List<string> fvals = mobj_factors.Factors[key].FactorValues;
+            //int startIdxVal = fvals.IndexOf(factorValue);
 
-            /// 
-            /// Look from the start index of the dataset, down to all the rest.                        
-            /// 
-            while (start < mlistview_datasets.Items.Count)
-            {
-                /// 
-                /// For each block, start at start, then go until we have start + N of items to iterate                
-                /// 
-                for (int num = start; num < (start + nBlock); num++)
-                {
-                    if (num < mlistview_datasets.Items.Count)
-                    {
-                        /// Use the factor value defined from start Index (the index of the selected factor value in our array + the cycle)
-                        /// 
-                        factorValue = fvals[(startIdxVal + cycle) % numVals];
-                        /// 
-                        /// Set the factor value in the list view
-                        /// 
-                        mlistview_datasets.Items[num].SubItems[mint_subItemSelected].Text = factorValue;
-                        /// 
-                        /// Update the raw data array too!
-                        /// 
-						DatasetInformation dataset = marray_datasetInfo[num];
-						string factorName = mlistview_datasets.Columns[mint_subItemSelected].Text;
-						UpdateDatasetFactorInfo(dataset, factorName, factorValue);
-                    }
-                    else
-                        break;
-                }
-                /// 
-                /// Skip over a block
-                /// 
-                start = start + nBlock;
-                cycle++;                //i.e. the next cycle
-            }
+            ///// 
+            ///// Look from the start index of the dataset, down to all the rest.                        
+            ///// 
+            //while (start < mlistview_datasets.Items.Count)
+            //{
+            //    /// 
+            //    /// For each block, start at start, then go until we have start + N of items to iterate                
+            //    /// 
+            //    for (int num = start; num < (start + nBlock); num++)
+            //    {
+            //        if (num < mlistview_datasets.Items.Count)
+            //        {
+            //            /// Use the factor value defined from start Index (the index of the selected factor value in our array + the cycle)
+            //            /// 
+            //            factorValue = fvals[(startIdxVal + cycle) % numVals];
+            //            /// 
+            //            /// Set the factor value in the list view
+            //            /// 
+            //            mlistview_datasets.Items[num].SubItems[mint_subItemSelected].Text = factorValue;
+            //            /// 
+            //            /// Update the raw data array too!
+            //            /// 
+            //            DatasetInformation dataset = marray_datasetInfo[num];
+            //            string factorName = mlistview_datasets.Columns[mint_subItemSelected].Text;
+            //            UpdateDatasetFactorInfo(dataset, factorName, factorValue);
+            //        }
+            //        else
+            //            break;
+            //    }
+            //    /// 
+            //    /// Skip over a block
+            //    /// 
+            //    start = start + nBlock;
+            //    cycle++;                //i.e. the next cycle
+            //}
+
         }
         /// <summary>
         /// Updates the list view with factor information using one column for each factor.
         /// </summary>	
         private void UpdateListViewFactorColumns()
         {
-			int lastColumn = mlistview_datasets.Columns.Count - 1;
+            //int lastColumn = mlistview_datasets.Columns.Count - 1;
 
-            /// 
-            /// We have a list of columns that are static, then we have a list of columns that are 
-            /// factor definitions.
-            /// 
-            while (mlistview_datasets.Columns.Count > CONST_NUM_COLUMNS)//First remove all existing ones
-            {
-                lastColumn = mlistview_datasets.Columns.Count - 1;
-                /// 
-                /// Remove Subitems because removing a column will not remove the subitems.                 
-                /// 					
-                for (int rows = 0; rows < mlistview_datasets.Items.Count; rows++)
-                    mlistview_datasets.Items[rows].SubItems.RemoveAt(lastColumn);
+            ///// 
+            ///// We have a list of columns that are static, then we have a list of columns that are 
+            ///// factor definitions.
+            ///// 
+            //while (mlistview_datasets.Columns.Count > CONST_NUM_COLUMNS)//First remove all existing ones
+            //{
+            //    lastColumn = mlistview_datasets.Columns.Count - 1;
+            //    /// 
+            //    /// Remove Subitems because removing a column will not remove the subitems.                 
+            //    /// 					
+            //    for (int rows = 0; rows < mlistview_datasets.Items.Count; rows++)
+            //        mlistview_datasets.Items[rows].SubItems.RemoveAt(lastColumn);
 
-                /// 
-                /// Remove the column header.
-                /// 
-                ColumnHeader header = mlistview_datasets.Columns[lastColumn];
-                mlistview_datasets.Columns.Remove(header);
-            }
+            //    /// 
+            //    /// Remove the column header.
+            //    /// 
+            //    ColumnHeader header = mlistview_datasets.Columns[lastColumn];
+            //    mlistview_datasets.Columns.Remove(header);
+            //}
 
-            /// 
-            /// Now all of the headers and subitems are deleted, Add new column headers based 
-            /// on our factor information.            
-            /// 
-            ListViewItem currentItem;
-            ListViewItem.ListViewSubItem currentSubItem;
+            ///// 
+            ///// Now all of the headers and subitems are deleted, Add new column headers based 
+            ///// on our factor information.            
+            ///// 
+            //ListViewItem currentItem;
+            //ListViewItem.ListViewSubItem currentSubItem;
 
-            /// 
-            /// If factors were in fact defined, add the dataset info to the new columns.
-            /// 
-            if (mobj_factors != null)
-            {
+            ///// 
+            ///// If factors were in fact defined, add the dataset info to the new columns.
+            ///// 
+            //if (mobj_factors != null)
+            //{
 
-				mlistview_datasets.BeginUpdate();
+            //    mlistview_datasets.BeginUpdate();
 
-				// First Create all the columns
-				DatasetInformation firstDataset = marray_datasetInfo[0];
-				foreach (FactorInformation factorInformation in firstDataset.Factors.Keys)
-				{
-					String factorName = factorInformation.FactorName;
-					ColumnHeader column = new ColumnHeader();
-					column.Text = factorName;
-					mlistview_datasets.Columns.Add(column);
-					mlistview_datasets.AutoResizeColumn(column.DisplayIndex, ColumnHeaderAutoResizeStyle.ColumnContent);
-				}
+            //    // First Create all the columns
+            //    DatasetInformation firstDataset = marray_datasetInfo[0];
+            //    foreach (FactorInformation factorInformation in firstDataset.Factors.Keys)
+            //    {
+            //        String factorName = factorInformation.FactorName;
+            //        ColumnHeader column = new ColumnHeader();
+            //        column.Text = factorName;
+            //        mlistview_datasets.Columns.Add(column);
+            //        mlistview_datasets.AutoResizeColumn(column.DisplayIndex, ColumnHeaderAutoResizeStyle.ColumnContent);
+            //    }
 
-				// Now fill in the appropriate factor values into the row, column Cell
-				for (int row = 0; row < mlistview_datasets.Items.Count; row++)
-				{
-					DatasetInformation dataset = marray_datasetInfo[row];
-					if (dataset != null)
-					{
-						foreach (String factorValue in dataset.Factors.Values)
-						{
-							currentItem = mlistview_datasets.Items[row];
-							currentSubItem = new ListViewItem.ListViewSubItem(currentItem, factorValue);
-							mlistview_datasets.Items[row].SubItems.Add(currentSubItem);
-						}
-					}
-				}
+            //    // Now fill in the appropriate factor values into the row, column Cell
+            //    for (int row = 0; row < mlistview_datasets.Items.Count; row++)
+            //    {
+            //        DatasetInformation dataset = marray_datasetInfo[row];
+            //        if (dataset != null)
+            //        {
+            //            foreach (String factorValue in dataset.Factors.Values)
+            //            {
+            //                currentItem = mlistview_datasets.Items[row];
+            //                currentSubItem = new ListViewItem.ListViewSubItem(currentItem, factorValue);
+            //                mlistview_datasets.Items[row].SubItems.Add(currentSubItem);
+            //            }
+            //        }
+            //    }
 
-                /// 
-                /// Resize the last data column, do this after the others have been added so that it allows everything
-                /// to be visible, fitting to header size will make last column stretch to edge of window.                
-                /// Also resize the last guy to fit the windows.
-                /// 
-                mlistview_datasets.AutoResizeColumn(lastColumn, ColumnHeaderAutoResizeStyle.HeaderSize);
-                mlistview_datasets.AutoResizeColumn(mlistview_datasets.Columns.Count - 1, ColumnHeaderAutoResizeStyle.HeaderSize);   
-                mlistview_datasets.EndUpdate();              
-            }            
+            //    /// 
+            //    /// Resize the last data column, do this after the others have been added so that it allows everything
+            //    /// to be visible, fitting to header size will make last column stretch to edge of window.                
+            //    /// Also resize the last guy to fit the windows.
+            //    /// 
+            //    mlistview_datasets.AutoResizeColumn(lastColumn, ColumnHeaderAutoResizeStyle.HeaderSize);
+            //    mlistview_datasets.AutoResizeColumn(mlistview_datasets.Columns.Count - 1, ColumnHeaderAutoResizeStyle.HeaderSize);   
+            //    mlistview_datasets.EndUpdate();              
+            //}            
         }
         /// <summary>
         /// Updates the listview with the data set information.
         /// </summary>
         private void FillListView()
         {
-            mlistview_datasets.BeginUpdate();
-            string[] datasetID = new string[marray_datasetInfo.Count];
-            int i = 0;
-            foreach (DatasetInformation datasetInfo in marray_datasetInfo)
-            {
-                /// 
-                /// Create the first listview item
-                /// 
-                ListViewItem dataItem = new ListViewItem(datasetInfo.mstrDatasetId);
+            //mlistview_datasets.BeginUpdate();
+            //string[] datasetID = new string[marray_datasetInfo.Count];
+            //int i = 0;
+            //foreach (DatasetInformation datasetInfo in marray_datasetInfo)
+            //{
+            //    /// 
+            //    /// Create the first listview item
+            //    /// 
+            //    ListViewItem dataItem = new ListViewItem(datasetInfo.mstrDatasetId);
 
-                /// 
-                /// Then the following subitems 
-                ///     Analysis Job ID
-                ///     Dataset Name
-                ///     Alias                
-                /// 
-                dataItem.SubItems.Add(datasetInfo.mstrAnalysisJobId);
-                dataItem.SubItems.Add(datasetInfo.DatasetName);
-                dataItem.SubItems.Add(datasetInfo.mstrAlias);
+            //    /// 
+            //    /// Then the following subitems 
+            //    ///     Analysis Job ID
+            //    ///     Dataset Name
+            //    ///     Alias                
+            //    /// 
+            //    dataItem.SubItems.Add(datasetInfo.mstrAnalysisJobId);
+            //    dataItem.SubItems.Add(datasetInfo.DatasetName);
+            //    dataItem.SubItems.Add(datasetInfo.mstrAlias);
 
-                /// 
-                /// This is to query the factor information
-                /// 
-                datasetID[i++] = datasetInfo.mstrDatasetId;
+            //    /// 
+            //    /// This is to query the factor information
+            //    /// 
+            //    datasetID[i++] = datasetInfo.mstrDatasetId;
 
-                /// 
-                /// Tag the listview item with the info reference
-                /// 
-                dataItem.Tag = datasetInfo;
+            //    /// 
+            //    /// Tag the listview item with the info reference
+            //    /// 
+            //    dataItem.Tag = datasetInfo;
 
-                /// 
-                /// Handle telling the user if the item is not sufficient.
-                /// 
-                if (datasetInfo.mintBlockID == 0)
-                    dataItem.SubItems.Add("NA");
-                else
-                    dataItem.SubItems.Add(datasetInfo.mintBlockID.ToString());
+            //    /// 
+            //    /// Handle telling the user if the item is not sufficient.
+            //    /// 
+            //    if (datasetInfo.mintBlockID == 0)
+            //        dataItem.SubItems.Add("NA");
+            //    else
+            //        dataItem.SubItems.Add(datasetInfo.mintBlockID.ToString());
 
-                if (datasetInfo.mintRunOrder == 0)
-                    dataItem.SubItems.Add("NA");
-                else
-                    dataItem.SubItems.Add(Convert.ToString(datasetInfo.mintRunOrder));
+            //    if (datasetInfo.mintRunOrder == 0)
+            //        dataItem.SubItems.Add("NA");
+            //    else
+            //        dataItem.SubItems.Add(Convert.ToString(datasetInfo.mintRunOrder));
 
-                if (datasetInfo.mintColumnID == 0)
-                    dataItem.SubItems.Add("NA");
-                else
-                    dataItem.SubItems.Add(Convert.ToString(datasetInfo.mintColumnID));
+            //    if (datasetInfo.mintColumnID == 0)
+            //        dataItem.SubItems.Add("NA");
+            //    else
+            //        dataItem.SubItems.Add(Convert.ToString(datasetInfo.mintColumnID));
 
-                if (datasetInfo.mintBatchID == 0)
-                    dataItem.SubItems.Add("NA");
-                else
-                    dataItem.SubItems.Add(Convert.ToString(datasetInfo.mintBatchID));
+            //    if (datasetInfo.mintBatchID == 0)
+            //        dataItem.SubItems.Add("NA");
+            //    else
+            //        dataItem.SubItems.Add(Convert.ToString(datasetInfo.mintBatchID));
 
 
-                foreach (string factor in datasetInfo.Factors.Values)
-                {
-                    dataItem.SubItems.Add(factor);
-                }
-                /// 
-                /// Then add it to the listview
-                /// 
-                mlistview_datasets.Items.Add(dataItem);
-            }
+            //    foreach (string factor in datasetInfo.Factors.Values)
+            //    {
+            //        dataItem.SubItems.Add(factor);
+            //    }
+            //    /// 
+            //    /// Then add it to the listview
+            //    /// 
+            //    mlistview_datasets.Items.Add(dataItem);
+            //}
 
-            mlistview_datasets.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
-            mlistview_datasets.AutoResizeColumn(2, ColumnHeaderAutoResizeStyle.ColumnContent);
-            mlistview_datasets.EndUpdate();
+            //mlistview_datasets.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+            //mlistview_datasets.AutoResizeColumn(2, ColumnHeaderAutoResizeStyle.ColumnContent);
+            //mlistview_datasets.EndUpdate();
 
 
             /// 
@@ -943,29 +893,29 @@ namespace MultiAlignWin
         /// <param name="column">Column to randomly fill with values.</param>
         private void FillValuesRandomly(int itemIndex)
         {
-            Random randomNumberGenerator    = new Random();
-            int column                      = itemIndex - CONST_NUM_COLUMNS;
+        //    Random randomNumberGenerator    = new Random();
+        //    int column                      = itemIndex - CONST_NUM_COLUMNS;
                        
-            /// 
-            /// Get the factor data strings
-            /// 
-            string factorName   = mlistview_datasets.Columns[mint_subItemSelected].Text;
-            int numVals         = mobj_factors.Factors[factorName].FactorValues.Count;    //number of values in this factor            
-            List<string> fvals  = mobj_factors.Factors[factorName].FactorValues;
+        //    /// 
+        //    /// Get the factor data strings
+        //    /// 
+        //    string factorName   = mlistview_datasets.Columns[mint_subItemSelected].Text;
+        //    int numVals         = mobj_factors.Factors[factorName].FactorValues.Count;    //number of values in this factor            
+        //    List<string> fvals  = mobj_factors.Factors[factorName].FactorValues;
             
-            for (int i = 0; i < marray_datasetInfo.Count; i++)
-            {
-                /// 
-                /// Generate the new value index
-                /// 
-                int randomIndex                      = randomNumberGenerator.Next(numVals);
-                DatasetInformation dataset           = marray_datasetInfo[i];
+        //    for (int i = 0; i < marray_datasetInfo.Count; i++)
+        //    {
+        //        /// 
+        //        /// Generate the new value index
+        //        /// 
+        //        int randomIndex                      = randomNumberGenerator.Next(numVals);
+        //        DatasetInformation dataset           = marray_datasetInfo[i];
 
-                ListViewItem.ListViewSubItem subItem = mlistview_datasets.Items[i].SubItems[itemIndex];
-                string factorValue                   = fvals[randomIndex];
-                subItem.Text                         = factorValue;
-				UpdateDatasetFactorInfo(dataset, factorName, factorValue);
-            }
+        //        ListViewItem.ListViewSubItem subItem = mlistview_datasets.Items[i].SubItems[itemIndex];
+        //        string factorValue                   = fvals[randomIndex];
+        //        subItem.Text                         = factorValue;
+        //        UpdateDatasetFactorInfo(dataset, factorName, factorValue);
+        //    }
         }
         #endregion
 
@@ -1024,5 +974,56 @@ namespace MultiAlignWin
             }
         }
         #endregion
-	}
+
+        public void SetAsActivePage()
+        {
+            mobj_factors = null;
+            mlist_factorData = new List<FactorInformation>();
+
+            mlistview_datasets.Items.Clear();
+            InitializeDatasetFactors();
+            UpdateListViewFactorColumns();
+
+            FillListView();           
+        }
+
+        #region IWizardControl<MultiAlignAnalysis> Members
+        /// <summary>
+        /// Gets the title of the page.
+        /// </summary>
+        public string Title
+        {
+            get 
+            { 
+                return "Define Factors";
+            }
+        }
+        /// <summary>
+        /// Gets or sets the analyis object used.
+        /// </summary>
+        public MultiAlignAnalysis Data
+        {
+            get
+            {
+                return m_analysis;
+            }
+            set
+            {
+                if (value != null)
+                {
+                    m_analysis = value;                                        
+                }
+            }
+        }
+        /// <summary>
+        /// Allows the wizard to proceed.
+        /// </summary>
+        /// <returns></returns>
+        public bool IsComplete()
+        {
+            return true;
+        }
+
+        #endregion
+    }
 }

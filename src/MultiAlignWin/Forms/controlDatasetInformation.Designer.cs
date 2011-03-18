@@ -21,12 +21,10 @@ namespace MultiAlignWin.Forms
                 CloseAllOpenCharts();
 
                 mpicture_alignmentHeatmap.Image.Dispose();
-                mpicture_preview.Image.Dispose();
+                mpicture_scanvsNet.Image.Dispose();
                 mpicture_rawData.Image.Dispose();
 
                 components.Dispose();
-
-                this.mobj_analysis = null;
             }
             base.Dispose(disposing);
         }
@@ -45,7 +43,7 @@ namespace MultiAlignWin.Forms
             this.mlabel_alignment = new System.Windows.Forms.Label();
             this.mlabel_datasetIDDescription = new System.Windows.Forms.Label();
             this.mlabel_datasetID = new System.Windows.Forms.Label();
-            this.mpicture_preview = new System.Windows.Forms.PictureBox();
+            this.mpicture_scanvsNet = new System.Windows.Forms.PictureBox();
             this.mpicture_alignmentHeatmap = new System.Windows.Forms.PictureBox();
             this.mlabel_baselineDescription = new System.Windows.Forms.Label();
             this.mbutton_baseline = new System.Windows.Forms.LinkLabel();
@@ -67,7 +65,7 @@ namespace MultiAlignWin.Forms
             this.mlabel_stdevNET = new System.Windows.Forms.Label();
             this.mpictureBox_massNetResiduals = new System.Windows.Forms.PictureBox();
             this.label3 = new System.Windows.Forms.Label();
-            ((System.ComponentModel.ISupportInitialize)(this.mpicture_preview)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.mpicture_scanvsNet)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.mpicture_alignmentHeatmap)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.mpicture_rawData)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.mpictureBox_massErrorHistogram)).BeginInit();
@@ -80,8 +78,8 @@ namespace MultiAlignWin.Forms
             // 
             // mbutton_datasetName
             // 
-            this.mbutton_datasetName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.mbutton_datasetName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.mbutton_datasetName.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.mbutton_datasetName.Location = new System.Drawing.Point(96, 14);
             this.mbutton_datasetName.Name = "mbutton_datasetName";
@@ -143,16 +141,16 @@ namespace MultiAlignWin.Forms
             this.mlabel_datasetID.Text = "0";
             this.mlabel_datasetID.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // mpicture_preview
+            // mpicture_scanvsNet
             // 
-            this.mpicture_preview.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.mpicture_preview.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.mpicture_preview.Location = new System.Drawing.Point(280, 83);
-            this.mpicture_preview.Name = "mpicture_preview";
-            this.mpicture_preview.Size = new System.Drawing.Size(84, 69);
-            this.mpicture_preview.TabIndex = 4;
-            this.mpicture_preview.TabStop = false;
-            this.mpicture_preview.Click += new System.EventHandler(this.mpicture_preview_Click);
+            this.mpicture_scanvsNet.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.mpicture_scanvsNet.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.mpicture_scanvsNet.Location = new System.Drawing.Point(280, 83);
+            this.mpicture_scanvsNet.Name = "mpicture_scanvsNet";
+            this.mpicture_scanvsNet.Size = new System.Drawing.Size(84, 69);
+            this.mpicture_scanvsNet.TabIndex = 4;
+            this.mpicture_scanvsNet.TabStop = false;
+            this.mpicture_scanvsNet.Click += new System.EventHandler(this.mpicture_preview_Click);
             // 
             // mpicture_alignmentHeatmap
             // 
@@ -178,8 +176,8 @@ namespace MultiAlignWin.Forms
             // 
             // mbutton_baseline
             // 
-            this.mbutton_baseline.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.mbutton_baseline.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.mbutton_baseline.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.mbutton_baseline.Location = new System.Drawing.Point(8, 56);
             this.mbutton_baseline.Name = "mbutton_baseline";
@@ -414,12 +412,12 @@ namespace MultiAlignWin.Forms
             this.Controls.Add(this.mlabel_datasetIDDescription);
             this.Controls.Add(this.mlabel_alignment);
             this.Controls.Add(this.mlabel_preview);
-            this.Controls.Add(this.mpicture_preview);
+            this.Controls.Add(this.mpicture_scanvsNet);
             this.Controls.Add(this.mpicture_alignmentHeatmap);
             this.Controls.Add(this.mlabel_datasetNameDescription);
             this.Name = "controlDatasetInformation";
             this.Size = new System.Drawing.Size(977, 235);
-            ((System.ComponentModel.ISupportInitialize)(this.mpicture_preview)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.mpicture_scanvsNet)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.mpicture_alignmentHeatmap)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.mpicture_rawData)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.mpictureBox_massErrorHistogram)).EndInit();
@@ -438,7 +436,7 @@ namespace MultiAlignWin.Forms
         private System.Windows.Forms.LinkLabel mbutton_datasetName;
         private System.Windows.Forms.Label mlabel_datasetNameDescription;
         private System.Windows.Forms.PictureBox mpicture_alignmentHeatmap;
-        private System.Windows.Forms.PictureBox mpicture_preview;
+        private System.Windows.Forms.PictureBox mpicture_scanvsNet;
         private System.Windows.Forms.Label mlabel_preview;
         private System.Windows.Forms.Label mlabel_alignment;
         private System.Windows.Forms.Label mlabel_datasetIDDescription;

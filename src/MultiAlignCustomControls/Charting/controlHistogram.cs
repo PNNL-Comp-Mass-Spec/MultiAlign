@@ -6,9 +6,10 @@ using System.ComponentModel;
 using System.Collections.Generic;
 
 using PNNLControls;
-using PNNLProteomics.Data.Analysis;
+using PNNLProteomics.Data;
 using PNNLControls.Drawing.Plotting;
 using PNNLControls.Drawing.Charting;
+
 
 namespace MultiAlign.Charting
 {

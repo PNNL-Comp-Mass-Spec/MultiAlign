@@ -1,4 +1,5 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -9,6 +10,28 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>PNNLProteomics</RootNamespace>
     <AssemblyName>PNNLProteomics</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <TargetFrameworkProfile />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -72,10 +95,6 @@
     <Reference Include="MammothLibrary, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\x86\MammothLibrary.dll</HintPath>
-    </Reference>
-    <Reference Include="PNNLOmics, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\x86\PNNLOmics.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
@@ -152,6 +171,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\log4net.dll</HintPath>
     </Reference>
+    <Reference Include="MultiAlignEngine, Version=1.0.4084.24787, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\x64\MultiAlignEngine.dll</HintPath>
+    </Reference>
     <Reference Include="NHibernate, Version=2.1.1.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\NHibernate.dll</HintPath>
@@ -189,9 +212,9 @@
     <Compile Include="IO\AnalysisLogWriter.cs" />
     <Compile Include="IO\AnalysisSQLiteDBWriter.cs" />
     <Compile Include="IO\AnalysisTableWriter.cs" />
+    <Compile Include="IO\DataAccessFactory.cs" />
     <Compile Include="IO\DatabaseDatasetIDLoader.cs" />
     <Compile Include="IO\DatabaseDatasetLoader.cs" />
-    <Compile Include="IO\DatasetDownloader.cs" />
     <Compile Include="IO\DelegatesLoading.cs" />
     <Compile Include="IO\DiskDatasetLoader.cs" />
     <Compile Include="IO\DMSDatasetSearchOptions.cs" />
@@ -216,7 +239,6 @@
     <Compile Include="MultiAlign\Hibernate\Domain\MassTagConformation.cs" />
     <Compile Include="MultiAlign\Hibernate\Domain\StacFDR.cs" />
     <Compile Include="MultiAlign\MultiAlignAnalysis.cs" />
-    <Compile Include="Analysis\clsNormalize.cs" />
     <Compile Include="Analysis\clsTTest.cs" />
     <Compile Include="Analysis\clsTTestVals.cs" />
     <Compile Include="Data\Alignment\classAlignmentData.cs" />
@@ -273,13 +295,24 @@
     <EmbeddedResource Include="MultiAlign\Hibernate\Mappings\MSFeature.hbm.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MultiAlign\MultiAlign.vcproj">
-      <Project>{5A7E3D3C-03F3-4586-8A2C-BAE1EBA4623E}</Project>
-      <Name>MultiAlignEngine</Name>
-    </ProjectReference>
+    <Folder Include="Algorithms\FeatureFinding\" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Algorithms\FeatureFinding\" />
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

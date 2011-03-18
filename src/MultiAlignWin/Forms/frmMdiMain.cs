@@ -27,7 +27,7 @@ using System.Collections.Generic;
 
 using PNNLProteomics.IO;
 using MultiAlignWin.Diagnostics;
-using PNNLProteomics.Data.Analysis;
+using PNNLProteomics.Data;
 
 namespace MultiAlignWin.UI
 {
@@ -87,33 +87,35 @@ namespace MultiAlignWin.UI
         /// <param name="e"></param>
         private void PerformAnalysis(object sender, EventArgs e)
         {            
-            frmAnalysisWizard analysisWizard    = new frmAnalysisWizard();
-            try
+            frmAnalysisWizard analysisWizard     = new frmAnalysisWizard();
+            analysisWizard.Icon                  = Icon;            
+            analysisWizard.StartPosition         = FormStartPosition.CenterParent;
+            analysisWizard.AnalysisComplete     += new EventHandler<PNNLProteomics.MultiAlign.AnalysisCompleteEventArgs>(analysisWizard_AnalysisComplete);
+            analysisWizard.AnalysisError        += new EventHandler<PNNLProteomics.MultiAlign.AnalysisErrorEventArgs>(analysisWizard_AnalysisError);
+            analysisWizard.Show(this);            
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void analysisWizard_AnalysisError(object sender, PNNLProteomics.MultiAlign.AnalysisErrorEventArgs e)
+        {
+            MessageBox.Show("There was an error during the analysis. " + e.ErrorMessage + ". " + e.Exception.Message);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void analysisWizard_AnalysisComplete(object sender, PNNLProteomics.MultiAlign.AnalysisCompleteEventArgs e)
+        {
+            AddAnalysis(e.Analysis);
+         
+            Form f = sender as Form;
+            if (sender != null)
             {
-                if (analysisWizard.ShowDialog(this) == DialogResult.OK)
-                {
-                    DataView dataView       = new DataView();
-                    dataView.Analysis       = analysisWizard.MultiAlignAnalysis;
-                    dataView.Text           = "Data View for: " + analysisWizard.MultiAlignAnalysis.AnalysisName;
-                    dataView.MdiParent      = this;
-
-                    dataView.FormClosed += new FormClosedEventHandler(dataView_FormClosed);
-                    m_dataViews.Add(dataView);
-
-                    dataView.Show();
-                }
-            }
-            catch (System.OutOfMemoryException ex)
-            {
-                MessageBox.Show("The analysis could not complete because not enough memory was available."); 
-            }
-            catch (System.Exception ex)
-            {
-                MessageBox.Show("There was an error during the analysis. " + ex.Message);
-            }
-            finally
-            {
-                analysisWizard.Dispose();
+                f.Dispose();
             }
         }
         /// <summary>
@@ -128,20 +130,25 @@ namespace MultiAlignWin.UI
         /// </summary>
         private void AddAnalysis(MultiAlignAnalysis analysis)
         {
-            if (analysis != null)
+            try
             {
-                /// 
-                /// Force a cleanup of managed objects.  This should help reduce 
-                /// any extraneous garbage.
-                /// 
-                GC.Collect();
+                if (analysis != null)
+                {
+                    DataView dataView = new DataView();
+                    dataView.Text = "Data View for: " + analysis.AnalysisName;
+                    dataView.Analysis = analysis;
+                    dataView.Icon = Icon;
+                    dataView.MdiParent = this;
+                    dataView.FormClosed += new FormClosedEventHandler(dataView_FormClosed);
+                    dataView.Show();
 
-                DataView dataView        = new DataView();
-                dataView.Text               = "Data View for: " + analysis.AnalysisName;
-                dataView.CurrentFileName    = m_currentAnalysisFileName;
-                dataView.Analysis           = analysis;
-                dataView.MdiParent          = this;
-                dataView.Show();
+
+                    m_dataViews.Add(dataView);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Could not load the analysis. " + ex.Message);                
             }
         }
         #endregion
@@ -176,9 +183,9 @@ namespace MultiAlignWin.UI
                 if (analysisOpenFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     clsLogging.Trace(DebugLevel.MAJOR, "Loading analysis.");
-                    m_currentAnalysisFileName = analysisOpenFileDialog.FileName;
-                    ThreadStart tStart = new ThreadStart(LoadMLNFile);
-                    Thread loadThread = new System.Threading.Thread(tStart);
+                    m_currentAnalysisFileName   = analysisOpenFileDialog.FileName;
+                    ThreadStart tStart          = new ThreadStart(LoadMLNFile);
+                    Thread loadThread           = new System.Threading.Thread(tStart);
                     loadThread.Start();
 
                     if (m_statusForm.ShowDialog() == DialogResult.Cancel)
@@ -208,9 +215,9 @@ namespace MultiAlignWin.UI
 
             try
             {
-                AnalysisBinaryReader reader = new AnalysisBinaryReader();
-                reader.Progress += new EventHandler<IOProgressEventArgs>(reader_Progress);
-                 analysis     = reader.ReadAnalysis(m_currentAnalysisFileName);
+                AnalysisBinaryReader reader     = new AnalysisBinaryReader();
+                reader.Progress                 += new EventHandler<IOProgressEventArgs>(reader_Progress);
+                analysis                        = reader.ReadAnalysis(m_currentAnalysisFileName);
                 fileLoaded                      = true;
             }
             catch (System.Runtime.Serialization.SerializationException ex)
@@ -238,7 +245,6 @@ namespace MultiAlignWin.UI
                 }
             }
         }
-
         /// <summary>
         /// Handles progress events from the MultiAlign binary file reader.
         /// </summary>
@@ -251,27 +257,6 @@ namespace MultiAlignWin.UI
 
             if (m_statusForm.mevntStatusMessage != null)
                 m_statusForm.mevntStatusMessage(0, e.Message);
-        }
-        /// <summary>
-        /// Handles when the user clicks to create a new analysis parameter file.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void CreateAnalysisParameterFile(object sender, EventArgs e)
-        {
-            frmAnalysisWizard analysisWizard = new frmAnalysisWizard(enmAnalysisType.CREATE_PARAMETER_FILE);
-            if (analysisWizard.ShowDialog(this) == DialogResult.OK)
-            {
-                /// Create the parameter file here!	
-                SaveFileDialog dialog = new SaveFileDialog();
-                dialog.Title = "Save Parameter File";
-                dialog.Filter = "*.xml files (*.xml)|*.xml";
-                dialog.FilterIndex = 1;
-                if (dialog.ShowDialog() == DialogResult.OK)
-                {
-                    analysisWizard.MultiAlignAnalysis.SaveParametersToFile(dialog.FileName);
-                }
-            }
         }
         #endregion
 

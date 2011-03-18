@@ -3,7 +3,7 @@ using System.IO;
 using System.Collections.Generic;
 
 using PNNLProteomics.IO;
-using PNNLProteomics.Data.Analysis;
+using PNNLProteomics.Data;
 using PNNLProteomics.Data.Alignment;
 
 namespace PNNLProteomics.IO
@@ -20,7 +20,7 @@ namespace PNNLProteomics.IO
                 for(int i = 0; i < analysis.AlignmentData.Count; i++)
                 {
                     classAlignmentData data = analysis.AlignmentData[i];
-                    writer.Write("{0},", Path.GetFileNameWithoutExtension(analysis.Datasets[i].mstrLocalPath));
+                    writer.Write("{0},", Path.GetFileNameWithoutExtension(analysis.Datasets[i].Path));
                     if (data == null)
                     {
                         writer.WriteLine("Baseline dataset");

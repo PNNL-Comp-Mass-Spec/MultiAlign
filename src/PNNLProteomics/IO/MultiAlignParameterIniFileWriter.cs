@@ -3,7 +3,7 @@ using System.IO;
 using System.Reflection;
 
 using MultiAlignEngine;
-using PNNLProteomics.Data.Analysis;
+using PNNLProteomics.Data;
 
 namespace PNNLProteomics.IO
 {
@@ -93,14 +93,13 @@ namespace PNNLProteomics.IO
 		{            
             using (TextWriter writer = File.CreateText(filename))
             {
-                WriteOptionGroup(writer, FEATURE_FINDING_TAG,   analysis.UMCFindingOptions);
-                WriteOptionGroup(writer, ALIGNMENT_TAG,         analysis.DefaultAlignmentOptions);
+                WriteOptionGroup(writer, FEATURE_FINDING_TAG,   analysis.UMCFindingOptions);                
                 WriteOptionGroup(writer, MASS_TAG_DATABASE_TAG, analysis.MassTagDBOptions);
                 WriteOptionGroup(writer, CLUSTER_TAG,           analysis.ClusterOptions);
                 WriteOptionGroup(writer, PEAK_MATCH_TAG,        analysis.PeakMatchingOptions);
 
                 writer.WriteLine("[" + GLOBAL_TAG + "]" );
-                WriteOption(writer, GLOBAL_OPTION_USE_STAC,             analysis.UseSMART);
+                WriteOption(writer, GLOBAL_OPTION_USE_STAC,             analysis.UseSTAC);
                 WriteOption(writer, GLOBAL_OPTION_USE_MTDB_AS_BASELINE, analysis.UseMassTagDBAsBaseline);
                 writer.WriteLine();
             }

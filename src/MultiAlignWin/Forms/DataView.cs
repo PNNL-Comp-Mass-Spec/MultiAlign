@@ -21,7 +21,11 @@ using MultiAlignEngine.Alignment;
 using MultiAlignEngine.Clustering;
 
 using PNNLProteomics.SMART;
+using PNNLProteomics.MultiAlign;
 using PNNLProteomics.Data.Analysis;
+
+using MultiAlignWin.Data;
+using PNNLProteomics.Data.Alignment;
 
 namespace MultiAlignWin
 {
@@ -29,13 +33,26 @@ namespace MultiAlignWin
 	/// Form that displays all data related to an analysis.
 	/// </summary>
 	public class DataView : Form
-    {        
+    {
+
+        /// <summary>
+        /// Preview rendering thread.
+        /// </summary>
+        private Thread mobj_datasetRenderThread;
+        private Thread mobj_clusterRenderThread;
+        private string mstrCurrentFileName;
+        private MultiAlignAnalysis m_analysis;
+
+
+        /// <summary>
+        /// List of datasets information controls to render.
+        /// </summary>
+        private List<controlDatasetInformation> m_datasetsDisplayControls;
+
         #region Members
         private Splitter splitter1;
         private Panel panelCharts;
-		private ctlClusterChart mobjClusterChart ;
-        private MultiAlignAnalysis mobjAnalysis;		
-        private string mstrCurrentFileName;
+		private ctlClusterChart mobjClusterChart ;	
         private MenuStrip menuStrip;
         private ToolStripMenuItem fileToolStripMenuItem;
         private ToolStripMenuItem saveToolStripMenuItem;
@@ -75,21 +92,14 @@ namespace MultiAlignWin
         /// </summary>
         private TableWriterColumnOptions m_columnOutputOptions;
         private controlClusterInformation mcontrol_clusterInformation;
-        /// <summary>
-        /// List of datasets information controls to render.
-        /// </summary>
-        private List<controlDatasetInformation> mlist_datasets;
         private ToolStripMenuItem filtersToolStripMenuItem;
         private ToolStripMenuItem featuresToolStripMenuItem;
         private ToolStripMenuItem clustersToolStripMenuItem;
         private Panel panel1;
-        private Button mbutton_reCluster;
-        /// <summary>
-        /// Preview rendering thread.
-        /// </summary>
-        private Thread mobj_datasetRenderThread;
         private ToolStripSeparator toolStripSeparator1;
-        private Thread mobj_clusterRenderThread;
+
+        private PNNLProteomics.Filters.UMCFilters m_umcFilters = new PNNLProteomics.Filters.UMCFilters();
+        private PNNLProteomics.Filters.UMCClusterFilters m_clusterFilters = new PNNLProteomics.Filters.UMCClusterFilters();
         #endregion 
 
 
@@ -141,7 +151,7 @@ namespace MultiAlignWin
         /// <param name="proteins"></param>
         private void  DisplayProteinMaps(Dictionary<string,List<string>> proteins)
         {
-            if (mobjAnalysis.PeakMatchedToMassTagDB == false)
+            if (m_analysis.PeakMatchedToMassTagDB == false)
             {
                 mtabcontrol_data.TabPages.Remove(mtabPage_proteinMaps);
                 return; 
@@ -191,7 +201,6 @@ namespace MultiAlignWin
             mtreeView_proteinViewer.EndUpdate();
         }
         
-        #region Properties  
         /// <summary>
         /// Sets the analysis object.
         /// </summary>
@@ -199,46 +208,17 @@ namespace MultiAlignWin
 		{
 			set
 			{
-                /// 
-                /// Build factor trees and tables...
-                /// 
-				mobjAnalysis              = value ; 
-				mobjClusterChart.Analysis = mobjAnalysis ;
-				//mobjAnalysis.BuildFactorTree();
-
-                /// 
-                /// Display the protein maps if any matched
-                /// 
+				m_analysis              = value ; 
+				
                 ProteinMapExtractor extractor = new ProteinMapExtractor();
-                Dictionary<string, List<string>> proteins = extractor.ExtractProteinMaps(mobjAnalysis);
+                Dictionary<string, List<string>> proteins = extractor.ExtractProteinMaps(m_analysis);
                 DisplayProteinMaps(proteins);
 
-                /// 
-                /// Create Cluster data 
-                /// 
                 CreateClusterPlots();
-
-                /// 
-                /// Finally update all the list views...
-                /// 
                 UpdateListViews();
+                UpdateDatasetSummary();
             }
 		}
-        /// <summary>
-        /// Gets or sets the current filename associated with the data view.
-        /// </summary>
-		public string CurrentFileName
-		{
-			get
-			{
-				return mstrCurrentFileName ; 
-			}
-			set
-			{
-				mstrCurrentFileName = value ; 
-			}
-        }
-        #endregion
 
         /// <summary>
         /// Clean up any resources being used.
@@ -255,13 +235,11 @@ namespace MultiAlignWin
                     components.Dispose();
                 }
                 mobjClusterChart.Dispose();
-                mobjAnalysis.Dispose();
+                m_analysis.Dispose();
 
             }
-            mlist_datasets.Clear();             
-
-            base.Dispose(disposing);
-            
+            m_datasetsDisplayControls.Clear();          
+            base.Dispose(disposing);            
         }
 
         #region Windows Form Designer generated code
@@ -290,7 +268,6 @@ namespace MultiAlignWin
             this.mtabPage_dataSummary = new System.Windows.Forms.TabPage();
             this.mcontrol_resultSummaryPages = new MultiAlignWin.ctlSummaryPages();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.mbutton_reCluster = new System.Windows.Forms.Button();
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -487,24 +464,11 @@ namespace MultiAlignWin
             // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.mbutton_reCluster);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panel1.Location = new System.Drawing.Point(0, 490);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(1046, 35);
             this.panel1.TabIndex = 3;
-            // 
-            // mbutton_reCluster
-            // 
-            this.mbutton_reCluster.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.mbutton_reCluster.Location = new System.Drawing.Point(12, 3);
-            this.mbutton_reCluster.Name = "mbutton_reCluster";
-            this.mbutton_reCluster.Size = new System.Drawing.Size(85, 28);
-            this.mbutton_reCluster.TabIndex = 4;
-            this.mbutton_reCluster.Text = "Cluster";
-            this.mbutton_reCluster.UseVisualStyleBackColor = true;
-            this.mbutton_reCluster.Visible = false;
-            this.mbutton_reCluster.Click += new System.EventHandler(this.mbutton_reCluster_Click);
             // 
             // menuStrip
             // 
@@ -767,40 +731,42 @@ namespace MultiAlignWin
         /// </summary>
         private void UpdateDatasetSummary()
         {
-            if (mobjAnalysis == null) 
+
+            if (m_analysis == null) 
                 return;
-            if (mlist_datasets == null)
+
+            if (m_datasetsDisplayControls == null)
             {
-                mlist_datasets = new List<controlDatasetInformation>();
+                m_datasetsDisplayControls = new List<controlDatasetInformation>();
             }
             else
             {
-                mlist_datasets.Clear();
+                m_datasetsDisplayControls.Clear();
             }
-            /// 
-            /// Clear the controls that exist so we dont duplicate
-            /// 
-            mpanel_dataControls.Controls.Clear();
-            string[] names = mobjAnalysis.UMCData.DatasetName;
             
-            GC.Collect();
+            // Clear the controls that exist so we dont duplicate
+            mpanel_dataControls.Controls.Clear();           
 
-            for (int datasetIndex = 0; datasetIndex < names.Length; datasetIndex++)
+            for (int i = 0; i < m_analysis.Datasets.Count; i++)
             {
-                controlDatasetInformation datasetControl = new controlDatasetInformation(mobjAnalysis, datasetIndex%names.Length);
+                DatasetInformation  info                = m_analysis.Datasets[i];
+                classAlignmentData  alignmentData       = m_analysis.AlignmentData[i];
+                clsAlignmentOptions alignmentOptions    = m_analysis.AlignmentOptions[i];
+               
+                //TODO: BLL add feature cache here....
+
+                controlDatasetInformation datasetControl = new controlDatasetInformation(info,
+                                                                                        alignmentData,
+                                                                                        alignmentOptions,
+                                                                                        m_analysis.DataProviders.FeatureCache);
+
                 datasetControl.Dock = DockStyle.Top;
                 mpanel_dataControls.Controls.Add(datasetControl);
-                mlist_datasets.Add(datasetControl);
-            }
+                m_datasetsDisplayControls.Add(datasetControl);
+            }            
+            m_datasetsDisplayControls.Reverse();
 
-            /// 
-            /// Reverse the list so that the top objects are rendered first for previews
-            /// 
-            mlist_datasets.Reverse();
-
-            /// 
-            /// Start the preview rendering
-            /// 
+             
             if (mobj_datasetRenderThread != null)
                 AbortDatasetRenderThread();
 
@@ -821,7 +787,7 @@ namespace MultiAlignWin
         /// </summary>
         private void DatasetPreviewThreadStart()
         {
-            foreach (controlDatasetInformation info in mlist_datasets)
+            foreach (controlDatasetInformation info in m_datasetsDisplayControls)
             {
                 info.RenderPreviews();
             }
@@ -905,102 +871,54 @@ namespace MultiAlignWin
         /// </summary>
         private void UpdateListViews()
         {
-            mcontrol_resultSummaryPages.CreateSummary("Global Summary", mobjAnalysis);            
-            mcontrol_resultSummaryPages.CreateSummary("Feature Data", mobjAnalysis.UMCData);
-            mcontrol_resultSummaryPages.CreateSummary("Cluster Data", mobjAnalysis.UMCData.mobjClusterData);
+            mcontrol_resultSummaryPages.CreateSummary("Global Summary", m_analysis);            
+            //mcontrol_resultSummaryPages.CreateSummary("Feature Data", mobjAnalysis.UMCData);
+            //mcontrol_resultSummaryPages.CreateSummary("Cluster Data", mobjAnalysis.UMCData.mobjClusterData);
             
 
-            mcontrol_analysisInformation.CreateSummary("Feature Finding Options", mobjAnalysis.UMCFindingOptions);
-            mcontrol_analysisInformation.CreateSummary("Alignment Options", mobjAnalysis.DefaultAlignmentOptions);
-            mcontrol_analysisInformation.CreateSummary("Mass Tag Database Options (MTDB)", mobjAnalysis.MassTagDBOptions);
-            mcontrol_analysisInformation.CreateSummary("Cluster Options", mobjAnalysis.ClusterOptions); 
+            mcontrol_analysisInformation.CreateSummary("Feature Finding Options", m_analysis.UMCFindingOptions);
+            mcontrol_analysisInformation.CreateSummary("Alignment Options", m_analysis.DefaultAlignmentOptions);
+            mcontrol_analysisInformation.CreateSummary("Mass Tag Database Options (MTDB)", m_analysis.MassTagDBOptions);
+            mcontrol_analysisInformation.CreateSummary("Cluster Options", m_analysis.ClusterOptions); 
 
             /// 
             /// If the datasets were peak matched, then display this control page.
             /// 
-            if (mobjAnalysis.PeakMatchingResults != null)
+            if (m_analysis.PeakMatchingResults != null)
             {
                 string peakMatchingResult = "Peak Matching Results";
 
-                mcontrol_resultSummaryPages.CreateSummary("Peak Matching Results", mobjAnalysis.PeakMatchingResults);
-                if (mobjAnalysis.UseSMART == false)
+                mcontrol_resultSummaryPages.CreateSummary("Peak Matching Results", m_analysis.PeakMatchingResults);
+                if (m_analysis.UseSTAC == false)
                 {
                     mcontrol_resultSummaryPages.AddData(peakMatchingResult, "11-Da Shifted Number of Mass Tags Matched",
-                        mobjAnalysis.PeakMatchingResultsShifted.NumMassTagsMatched.ToString());
+                        m_analysis.PeakMatchingResultsShifted.NumMassTagsMatched.ToString());
                     mcontrol_resultSummaryPages.AddData(peakMatchingResult, "11-Da Shifted Number of Proteins Matched",
-                        mobjAnalysis.PeakMatchingResultsShifted.NumProteinsMatched.ToString());
+                        m_analysis.PeakMatchingResultsShifted.NumProteinsMatched.ToString());
                     mcontrol_resultSummaryPages.AddData(peakMatchingResult, "11-Da Shifted Number of Matches",
-                        mobjAnalysis.PeakMatchingResultsShifted.NumMatches.ToString());
+                        m_analysis.PeakMatchingResultsShifted.NumMatches.ToString());
 
                     mcontrol_resultSummaryPages.AddData("Peak Matching Results",
                                                     "FDR (11-da shift) Upper Bound",
-                                                    string.Format("{0:0.00}", mobjAnalysis.FDRUpperBound));
+                                                    string.Format("{0:0.00}", m_analysis.FDRUpperBound));
                     mcontrol_resultSummaryPages.AddData("Peak Matching Results",
                                                     "FDR (11-da shift) Lower Bound",
-                                                    string.Format("{0:0.00}", mobjAnalysis.FDRLowerBound));
+                                                    string.Format("{0:0.00}", m_analysis.FDRLowerBound));
                 }
                 else
                 {
-                    AddSMARTFDRTableToSummaryView(mobjAnalysis.STACTResults);
+                    AddSMARTFDRTableToSummaryView(m_analysis.STACTResults);
                 }
-            }
-
-            UpdateDatasetSummary();
-
+            }            
             mcontrol_resultSummaryPages.UpdateColumnWidths();
         }
         #endregion
         
-        #region Cluster Grid Event HAndlers
-        private void ExpressionPlotOpenClicked()
-        {
-            frmIntensityDiff intensityDiffForm = new frmIntensityDiff(mobjAnalysis);
-            intensityDiffForm.ShowDialog(this);
-        }
-        #endregion
-
         #region Form Event Handlers
-        //private void ScatterPlotOpenClicked()
-        //{
-        //    //frmScatterPlot scatterForm = new frmScatterPlot();
-        //    //scatterForm.SetAnalysis(mobjAnalysis);
-        //    //scatterForm.ShowDialog(this);
-        //}
-        /// <summary>
-        /// Handles the key 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void PreviewChartKeyUp(object sender, KeyEventArgs e)
-        {
-            if (e.KeyData == Keys.Escape)
-            {
-                PNNLControls.ctlScatterChart chart = sender as PNNLControls.ctlScatterChart;
-                Form f = chart.Parent as Form;
-                if (f != null)
-                    f.Close();
-            }
-        }
-        /// <summary>
-        /// Handles when the user lets go of a keyboard key.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void PreviewFormKeyUp(object sender, KeyEventArgs e)
-        {
-            if (e.KeyData == Keys.Escape)
-            {
-                Form f = sender as Form;
-                if (f != null)
-                    f.Close();
-            }
-        }
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
             AnalysisBinaryWriter writer = new AnalysisBinaryWriter();
-            writer.WriteAnalysis(
-                System.IO.Path.Combine(mobjAnalysis.PathName, mobjAnalysis.AnalysisName + ".mln"),
-                mobjAnalysis);             
+            writer.WriteAnalysis(AnalysisPathUtils.BuildAnalysisName(m_analysis.AnalysisPath , m_analysis.AnalysisName + ".mln"), m_analysis);
         }
         private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -1016,12 +934,9 @@ namespace MultiAlignWin
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 AnalysisBinaryWriter writer = new AnalysisBinaryWriter();
-                writer.WriteAnalysis(dialog.FileName, mobjAnalysis);
+                writer.WriteAnalysis(dialog.FileName, m_analysis);
             }
             dialog.Dispose();
-        }
-        private void exportParametersToolStripMenuItem_Click(object sender, EventArgs e)
-        {
         }
         private void frmDataView_Load(object sender, EventArgs e)
         {
@@ -1033,89 +948,84 @@ namespace MultiAlignWin
         #endregion
 
         #region Data Saving Menu Strip Item Handlers 
-
-        private PNNLProteomics.Filters.UMCFilters m_umcFilters            = new PNNLProteomics.Filters.UMCFilters();
-        private PNNLProteomics.Filters.UMCClusterFilters m_clusterFilters = new PNNLProteomics.Filters.UMCClusterFilters();
-
-
         private void Export()
         {
-            SaveFileDialog dialog = new SaveFileDialog();
-            dialog.Title = "Save Analysis As";
-            dialog.AddExtension = true;
-            dialog.CheckPathExists = true;
-            dialog.DefaultExt = "*.csv";
-            dialog.DereferenceLinks = true;
-            dialog.ValidateNames = true;
-            dialog.Filter = "Comma Delimited (*.csv)|*.csv|Tab Delimited (*.txt)|*.txt|Dataset UMC's (*.umc)|*.umc|SQLite Database File (*.db3)|*.db3|All Files (*.*)|*.*";
-            dialog.FilterIndex = 1;
+            //SaveFileDialog dialog = new SaveFileDialog();
+            //dialog.Title = "Save Analysis As";
+            //dialog.AddExtension = true;
+            //dialog.CheckPathExists = true;
+            //dialog.DefaultExt = "*.csv";
+            //dialog.DereferenceLinks = true;
+            //dialog.ValidateNames = true;
+            //dialog.Filter = "Comma Delimited (*.csv)|*.csv|Tab Delimited (*.txt)|*.txt|Dataset UMC's (*.umc)|*.umc|SQLite Database File (*.db3)|*.db3|All Files (*.*)|*.*";
+            //dialog.FilterIndex = 1;
 
-            if (dialog.ShowDialog() == DialogResult.OK)
-            {
-                IAnalysisWriter writer = null;
+            //if (dialog.ShowDialog() == DialogResult.OK)
+            //{
+            //    IAnalysisWriter writer = null;
 
-                string filename = dialog.FileNames[0];
-                string extension = System.IO.Path.GetExtension(filename);
-                AnalysisTableWriter tableWriter = null;
+            //    string filename = dialog.FileNames[0];
+            //    string extension = System.IO.Path.GetExtension(filename);
+            //    AnalysisTableWriter tableWriter = null;
 
-                TableWriterColumnOptionsForm optionsForm = new TableWriterColumnOptionsForm();
-                optionsForm.Options                      = m_columnOutputOptions;                
-                optionsForm.Icon                         = this.ParentForm.Icon;
-                optionsForm.StartPosition                = FormStartPosition.CenterParent;
+            //    TableWriterColumnOptionsForm optionsForm = new TableWriterColumnOptionsForm();
+            //    optionsForm.Options                      = m_columnOutputOptions;                
+            //    optionsForm.Icon                         = this.ParentForm.Icon;
+            //    optionsForm.StartPosition                = FormStartPosition.CenterParent;
 
-                MultiAlignWin.Forms.Filters.DataFilters filters = new MultiAlignWin.Forms.Filters.DataFilters(m_umcFilters, m_clusterFilters);
-                if (filters.ShowDialog() != DialogResult.OK)
-                    return;
+            //    MultiAlignWin.Forms.Filters.DataFilters filters = new MultiAlignWin.Forms.Filters.DataFilters(m_umcFilters, m_clusterFilters);
+            //    if (filters.ShowDialog() != DialogResult.OK)
+            //        return;
 
-                switch (extension)
-                {
-                    case ".csv":
-                        optionsForm.ShowDialog();
-                        m_columnOutputOptions = optionsForm.Options;
-                        tableWriter = new AnalysisTableWriter(m_columnOutputOptions);
+            //    switch (extension)
+            //    {
+            //        case ".csv":
+            //            optionsForm.ShowDialog();
+            //            m_columnOutputOptions = optionsForm.Options;
+            //            tableWriter = new AnalysisTableWriter(m_columnOutputOptions);
 
-                        tableWriter.Delimeter = ",";
-                        writer = tableWriter;
-                        break;
-                    case ".txt":
-                        optionsForm.ShowDialog();
-                        m_columnOutputOptions = optionsForm.Options;
-                        tableWriter = new AnalysisTableWriter(m_columnOutputOptions);
+            //            tableWriter.Delimeter = ",";
+            //            writer = tableWriter;
+            //            break;
+            //        case ".txt":
+            //            optionsForm.ShowDialog();
+            //            m_columnOutputOptions = optionsForm.Options;
+            //            tableWriter = new AnalysisTableWriter(m_columnOutputOptions);
 
-                        tableWriter.Delimeter = "\t";
-                        writer = tableWriter;
-                        break;
-                    case ".db3":
-                        writer = new AnalysisSQLiteDBWriter();
-                        break;
-                    case ".umc":
-                        writer = new AnalysisDatasetUMCWriter();
-                        break;
-                    default:
-                        optionsForm.ShowDialog();
-                        m_columnOutputOptions = optionsForm.Options;
-                        tableWriter = new AnalysisTableWriter(m_columnOutputOptions);
+            //            tableWriter.Delimeter = "\t";
+            //            writer = tableWriter;
+            //            break;
+            //        case ".db3":
+            //            writer = new AnalysisSQLiteDBWriter();
+            //            break;
+            //        case ".umc":
+            //            writer = new AnalysisDatasetUMCWriter();
+            //            break;
+            //        default:
+            //            optionsForm.ShowDialog();
+            //            m_columnOutputOptions = optionsForm.Options;
+            //            tableWriter = new AnalysisTableWriter(m_columnOutputOptions);
 
-                        tableWriter.Delimeter = ",";
-                        writer = tableWriter;
-                        break;
-                }
+            //            tableWriter.Delimeter = ",";
+            //            writer = tableWriter;
+            //            break;
+            //    }
 
-                writer.WriteAnalysis(filename,
-                                    mobjAnalysis, 
-                                    m_umcFilters.GetFilterList(),
-                                    m_clusterFilters.GetFilterList());
-            }
-            dialog.Dispose();
+            //    writer.WriteAnalysis(filename,
+            //                        m_analysis, 
+            //                        m_umcFilters.GetFilterList(),
+            //                        m_clusterFilters.GetFilterList());
+            //}
+            //dialog.Dispose();
         }
         private void ExportParameters()
         {
-            if (mobjAnalysis != null)
+            if (m_analysis != null)
             {
                 SaveFileDialog dialog = new SaveFileDialog();
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
-                    mobjAnalysis.SaveParametersToFile(dialog.FileName);
+                    m_analysis.SaveParametersToFile(dialog.FileName);
                 }
             }
         }
@@ -1134,41 +1044,10 @@ namespace MultiAlignWin
         /// </summary>
         private void CreateClusterPlots()
         {
-            controlClusterInformation clusterInformation = new controlClusterInformation(mobjAnalysis);
+            controlClusterInformation clusterInformation = new controlClusterInformation(m_analysis);
             mtabPage_clusterPlots.Controls.Add(clusterInformation);
             clusterInformation.Dock = DockStyle.Fill;
             mcontrol_clusterInformation = clusterInformation;
-        }
-
-        private void mbutton_reCluster_Click(object sender, EventArgs e)
-        {
-            frmClusterParameters parameters = new frmClusterParameters();
-            parameters.ClusterOptions = mobjAnalysis.ClusterOptions;
-
-            // Ask the user if they want to really re-cluster the data.            
-            if (parameters.ShowDialog() == DialogResult.OK)
-            {
-                mobjAnalysis.ClusterOptions = parameters.ClusterOptions;                
-                mobjAnalysis.PerformClustering();
-
-
-                // Render the preview afterwards.
-                if (mobj_clusterRenderThread != null)
-                    AbortClusterRenderThread();
-
-                ThreadStart startCluster = new ThreadStart(ClusterPreviewThreadStart);
-                mobj_clusterRenderThread = new Thread(startCluster);
-                mobj_clusterRenderThread.Start();
-            }                        
-        }
-
-        private void clusterFiltersButton_Click(object sender, EventArgs e)
-        {
-            MultiAlignWin.Forms.Filters.DataFilters filters = new MultiAlignWin.Forms.Filters.DataFilters(m_umcFilters, m_clusterFilters);
-            if (filters.ShowDialog() == DialogResult.OK)
-            {
-                //TODO: something here? references should have already been updated.
-            }
         }
     }
 }

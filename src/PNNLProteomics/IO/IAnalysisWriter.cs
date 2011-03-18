@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using MultiAlignEngine.Features;
 
 using PNNLProteomics.Filters;
-using PNNLProteomics.Data.Analysis;
+using PNNLProteomics.Data;
 
 namespace PNNLProteomics.IO
 {    

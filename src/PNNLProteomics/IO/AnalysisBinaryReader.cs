@@ -5,7 +5,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 using PNNLProteomics.IO;
 using PNNLProteomics.Data.Alignment;
-using PNNLProteomics.Data.Analysis;
+using PNNLProteomics.Data;
 
 namespace PNNLProteomics.IO
 {
@@ -60,7 +60,7 @@ namespace PNNLProteomics.IO
             {
                 if (analysis.AnalysisName == null)
                     analysis.AnalysisName = string.Empty;
-                analysis.PathName = path;
+                analysis.AnalysisPath = path;
 
                 if (analysis.AlignmentData == null)
                     analysis.AlignmentData = new List<classAlignmentData>();

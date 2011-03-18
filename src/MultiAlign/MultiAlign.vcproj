@@ -177,7 +177,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine=""
+				CommandLine="dir $(TargetDir)$(TargetName)*&#x0D;&#x0A;dir ..\..\&#x0D;&#x0A;dir ..\..\lib\$(PlatformName)&#x0D;&#x0A;copy $(TargetDir)$(TargetName)* ..\..\lib\$(PlatformName)&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -253,7 +253,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine=""
+				CommandLine="copy $(OutDir)\$(TargetName)* ..\..\lib\x86"
 			/>
 		</Configuration>
 		<Configuration
@@ -331,9 +331,9 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine=""
+				CommandLine="copy $(OutDir)\$(TargetName)* ..\..\lib\$(PlatformName)"
 			/>
-		</Configuration>						
+		</Configuration>
 	</Configurations>
 	<References>
 		<AssemblyReference
@@ -783,7 +783,7 @@
 								Name="VCCLCompilerTool"
 								ObjectFile="$(IntDir)/$(InputName)1.obj"
 							/>
-						</FileConfiguration>						
+						</FileConfiguration>
 					</File>
 					<File
 						RelativePath=".\LCMSWarp\NaturalCubicSplineRegression.cpp"

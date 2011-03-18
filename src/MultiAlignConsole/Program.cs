@@ -1,26 +1,19 @@
 using System;
-using System.IO;
-using System.Threading;
-using System.Drawing;
-using System.Diagnostics;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
+using System.IO;
 using System.Runtime.InteropServices;
-
+using System.Threading;
 using MultiAlign.Drawing;
 using MultiAlignEngine.Features;
-
-using PNNLProteomics.IO;
-using MultiAlignEngine.Alignment;
-using MultiAlignEngine.Clustering;
-
-using PNNLProteomics.Data;
-using PNNLProteomics.EventModel;
-using PNNLProteomics.MultiAlign;
-using PNNLProteomics.Data.Analysis;
-using PNNLProteomics.Algorithms.Clustering;
-using PNNLProteomics.MultiAlign.Hibernate.Domain.DAO;
 using PNNLProteomics.Algorithms;
+using PNNLProteomics.Algorithms.Clustering;
+using PNNLProteomics.Data;
+using PNNLProteomics.IO;
+using PNNLProteomics.MultiAlign;
 using PNNLProteomics.MultiAlign.Hibernate;
+using PNNLProteomics.MultiAlign.Hibernate.Domain.DAO;
 using PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate;
 
 
@@ -79,11 +72,7 @@ namespace MultiAlignConsole
         /// </summary>
         private static int m_widthHTML;
         #endregion
-
-        private static void DisplayPercentComplete(int percent)
-        {
-        }
-
+        
         #region Methods
         static void SaveImage(Image image, string name)
         {
@@ -625,7 +614,7 @@ namespace MultiAlignConsole
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        static void processor_AnalysisComplete(object sender, EventArgs e)
+        static void processor_AnalysisComplete(object sender, AnalysisCompleteEventArgs e)
         {
 
             Log("Saving dataset information to database.");
@@ -794,8 +783,7 @@ namespace MultiAlignConsole
         static void StartMultiAlign(string [] args)
         {
             // Builds the list of algorithm providers.
-            AlgorithmBuilder builder = new AlgorithmBuilder();
-                       
+            AlgorithmBuilder builder = new AlgorithmBuilder();                       
             
             m_width         = PLOT_WIDTH;
             m_height        = PLOT_HEIGHT;
@@ -826,19 +814,8 @@ namespace MultiAlignConsole
 
 
                     // Set the log path.
-                    DateTime now = DateTime.Now;
-                    m_logPath = string.Format("log_{1}-{0}-{2}-{3}-{4}-{5}.txt",
-                                                now.Day,
-                                                now.Month,
-                                                now.Year,
-                                                now.Hour,
-                                                now.Minute,
-                                                now.Second);
-                    m_logPath = Path.Combine(m_analysisPath, m_logPath);
-
-                    m_plotSavePath = args[1];
-                    m_plotSavePath = Path.GetDirectoryName(args[1]);
-                    m_plotSavePath = Path.Combine(m_plotSavePath, "Plots");
+                    m_logPath      = AnalysisPathUtils.BuildLogPath(m_analysisPath, m_analysisName);                    
+                    m_plotSavePath = AnalysisPathUtils.BuildPlotPath(Path.GetDirectoryName(args[1]));
 
                     PushHeader();
                     CreateFinalAnalysisPlots();
@@ -857,19 +834,9 @@ namespace MultiAlignConsole
                     m_analysisName = Path.GetFileNameWithoutExtension(args[1]);
                     m_analysisPath = Path.GetDirectoryName(args[1]);
 
-                    // Set the log path.
-                    DateTime now = DateTime.Now;
-                    m_logPath    = string.Format("log_{1}-{0}-{2}-{3}-{4}-{5}.txt",
-                                                now.Day,
-                                                now.Month,
-                                                now.Year,
-                                                now.Hour,
-                                                now.Minute,
-                                                now.Second);
-                    m_logPath       = Path.Combine(m_analysisPath, m_logPath);
-                    m_plotSavePath  = args[1];
-                    m_plotSavePath  = Path.GetDirectoryName(args[1]);
-                    m_plotSavePath  = Path.Combine(m_plotSavePath, "Plots");
+
+                    m_logPath       = AnalysisPathUtils.BuildLogPath(m_analysisPath, m_analysisName);
+                    m_plotSavePath  = AnalysisPathUtils.BuildPlotPath(Path.GetDirectoryName(args[1]));
                     VerifyClusters(Convert.ToDouble(args[2]));
                     return;
                 }
@@ -894,16 +861,8 @@ namespace MultiAlignConsole
                     }
                 }
 
-                // Set the log path.
-                DateTime now = DateTime.Now;
-                m_logPath = string.Format("log_{1}-{0}-{2}-{3}-{4}-{5}.txt",
-                                            now.Day,
-                                            now.Month,
-                                            now.Year,
-                                            now.Hour,
-                                            now.Minute,
-                                            now.Second);
-                m_logPath = Path.Combine(m_analysisPath, m_logPath);        
+                m_logPath       = AnalysisPathUtils.BuildLogPath(m_analysisPath, m_analysisName);
+                m_plotSavePath  = AnalysisPathUtils.BuildPlotPath(Path.GetDirectoryName(args[1]));       
             }
             else
             {
@@ -955,16 +914,11 @@ namespace MultiAlignConsole
                 
             }
 
-            // Construct an analysis object.
-            DelegateSetPercentComplete complete     = new DelegateSetPercentComplete(DisplayPercentComplete);
-            DelegateSetStatusMessage status         = new DelegateSetStatusMessage(DisplayStatus);
-            DelegateSetStatusMessage title          = new DelegateSetStatusMessage(DisplayTitle);
-
             Log("Creating Analysis.");
-            MultiAlignAnalysis analysis             = new MultiAlignAnalysis(complete, status, title);
-            analysis.PathName                       = m_analysisPath;
+            MultiAlignAnalysis analysis             = new MultiAlignAnalysis();
+            analysis.AnalysisPath                   = m_analysisPath;
             analysis.AnalysisName                   = m_analysisName;
-            analysis.BaselineDataset                = baseline;
+            analysis.BaselineDatasetName                = baseline;
             m_analysis                              = analysis;
             MultiAlignAnalysisProcessor processor   = new MultiAlignAnalysisProcessor();
 
@@ -1000,13 +954,12 @@ namespace MultiAlignConsole
             foreach (string filename in filenames)
             {
                 DatasetInformation info = new DatasetInformation();
-                info.ArchivePath = filename;
+                info.Path = filename;
                 info.DatasetId = (i.ToString());
                 i++;
 
                 info.DatasetName = Path.GetFileName(filename);
                 info.JobId = "";
-                info.mstrLocalPath = filename;
                 info.mstrResultsFolder = Path.GetDirectoryName(filename);
                 info.ParameterFileName = "";
                 info.Selected = true;
@@ -1018,15 +971,11 @@ namespace MultiAlignConsole
             // Load alignment data.
             if (baseline != null)
             {
-                for (i = 0; i < analysis.Datasets.Count; i++)
-                {
-                    analysis.AlignmentOptions.Add(analysis.DefaultAlignmentOptions);
-                }
-                analysis.BaselineDataset = baseline;
+                analysis.BaselineDatasetName = baseline;
             }
             else
             {
-                Log("No Baseline selected.  Please select a baseline dataset or MTDB.");
+                Log("No Baseline selected.  Please select a baseline dataset.");
                 analysis.Dispose();
                 return;
             }       
@@ -1034,12 +983,12 @@ namespace MultiAlignConsole
             processor.FeaturesLoaded        += new EventHandler<FeaturesLoadedEventArgs>(processor_FeaturesLoaded);
             processor.FeaturesClustered     += new EventHandler<FeaturesClusteredEventArgs>(processor_FeaturesClustered);
             processor.FeaturesPeakMatched   += new EventHandler<FeaturesPeakMatchedEventArgs>(processor_FeaturesPeakMatched);
-            processor.AnalysisComplete      += new EventHandler(processor_AnalysisComplete);
+            processor.AnalysisComplete      += new EventHandler<AnalysisCompleteEventArgs>(processor_AnalysisComplete);
             processor.Status                += new EventHandler<AnalysisStatusEventArgs>(processor_Status);
 
             Log("Setting up data providers for caching and storage.");
             FeatureDataAccessProviders providers = SetupDataProviders();
-            processor.DataProviders     = providers;
+            analysis.DataProviders      = providers;
             processor.AlgorithmProvders = builder.GetAlgorithmProvider();
 
             Log("Analysis Started.");    

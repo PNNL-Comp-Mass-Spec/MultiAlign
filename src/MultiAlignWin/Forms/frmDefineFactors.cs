@@ -28,7 +28,6 @@ namespace MultiAlignWin.Forms.Factors
         private Button mbutton_ok;
         private Button mbutton_cancel;
         private TreeView mtreeView_factorList;
-        private ExternalControls.NiceLine mline;
         private StatusStrip mstatusStrip;
         private ToolStripStatusLabel mlabel_status;
         #endregion
@@ -123,7 +122,6 @@ namespace MultiAlignWin.Forms.Factors
             this.mbutton_ok = new System.Windows.Forms.Button();
             this.mbutton_cancel = new System.Windows.Forms.Button();
             this.mtreeView_factorList = new System.Windows.Forms.TreeView();
-            this.mline = new ExternalControls.NiceLine();
             this.mstatusStrip = new System.Windows.Forms.StatusStrip();
             this.mlabel_status = new System.Windows.Forms.ToolStripStatusLabel();
             this.mlabel_hints = new System.Windows.Forms.Label();
@@ -258,15 +256,6 @@ namespace MultiAlignWin.Forms.Factors
             this.mtreeView_factorList.TabIndex = 4;
             this.mtreeView_factorList.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.mtreeView_factorList_KeyPress);
             // 
-            // mline
-            // 
-            this.mline.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.mline.Location = new System.Drawing.Point(6, 530);
-            this.mline.Name = "mline";
-            this.mline.Size = new System.Drawing.Size(370, 15);
-            this.mline.TabIndex = 16;
-            // 
             // mstatusStrip
             // 
             this.mstatusStrip.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
@@ -302,7 +291,6 @@ namespace MultiAlignWin.Forms.Factors
             this.Controls.Add(this.mstatusStrip);
             this.Controls.Add(this.mtreeView_factorList);
             this.Controls.Add(this.mbutton_addFactor);
-            this.Controls.Add(this.mline);
             this.Controls.Add(this.mbutton_ok);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);

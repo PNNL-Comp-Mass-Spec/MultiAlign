@@ -128,16 +128,7 @@ namespace MultiAlignWin.UI
             // 
             this.toolStripSeparator3.MergeIndex = 2;
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(246, 6);
-            // 
-            // createAnalysisParameterFileToolStripMenuItem
-            // 
-            this.createAnalysisParameterFileToolStripMenuItem.MergeAction = System.Windows.Forms.MergeAction.Insert;
-            this.createAnalysisParameterFileToolStripMenuItem.MergeIndex = 9;
-            this.createAnalysisParameterFileToolStripMenuItem.Name = "createAnalysisParameterFileToolStripMenuItem";
-            this.createAnalysisParameterFileToolStripMenuItem.Size = new System.Drawing.Size(249, 22);
-            this.createAnalysisParameterFileToolStripMenuItem.Text = "Create Analysis Parameter File";
-            this.createAnalysisParameterFileToolStripMenuItem.Click += new System.EventHandler(this.CreateAnalysisParameterFile);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(246, 6);            
             // 
             // toolStripSeparator1
             // 

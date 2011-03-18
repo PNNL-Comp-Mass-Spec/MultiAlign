@@ -11,12 +11,13 @@ using PNNLControls.Forms;
 
 namespace MultiAlignWin
 {
-	partial class ctlLoadDatasetWizardPage
+    partial class ctlLoadDatasetWizardPage : UserControl, MultiAlignWin.Forms.Wizard.IWizardControl<PNNLProteomics.Data.MultiAlignAnalysis>
 	{
 		/// <summary> 
 		/// Required designer variable.
 		/// </summary>
 		private System.ComponentModel.IContainer components = null;
+
 
 		/// <summary> 
 		/// Clean up any resources being used.
@@ -116,7 +117,6 @@ namespace MultiAlignWin
             this.mbutton_databaseDatasetSearch = new System.Windows.Forms.Button();
             this.mlabel_datasetAnalysisIDNumbers = new System.Windows.Forms.Label();
             this.mbutton_extractDatasets = new System.Windows.Forms.Button();
-            this.mline = new ExternalControls.NiceLine();
             this.mbutton_uncheckAll = new System.Windows.Forms.Button();
             this.mbutton_clearAll = new System.Windows.Forms.Button();
             this.mbutton_toggleAll = new System.Windows.Forms.Button();
@@ -125,13 +125,6 @@ namespace MultiAlignWin
             this.panelOptions.SuspendLayout();
             this.mgroupBox_selectData.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // Banner
-            // 
-            this.Banner.BackColor = System.Drawing.Color.White;
-            this.Banner.Size = new System.Drawing.Size(1113, 50);
-            this.Banner.Subtitle = "Choose from different options of getting files.";
-            this.Banner.Title = "Step 1. Select Data";
             // 
             // btnEnableDatabase
             // 
@@ -480,7 +473,6 @@ namespace MultiAlignWin
             this.mgroupBox_selectData.Controls.Add(this.mbutton_databaseDatasetSearch);
             this.mgroupBox_selectData.Controls.Add(this.mlabel_datasetAnalysisIDNumbers);
             this.mgroupBox_selectData.Controls.Add(this.mbutton_extractDatasets);
-            this.mgroupBox_selectData.Controls.Add(this.mline);
             this.mgroupBox_selectData.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.mgroupBox_selectData.Location = new System.Drawing.Point(6, 56);
             this.mgroupBox_selectData.Name = "mgroupBox_selectData";
@@ -670,15 +662,6 @@ namespace MultiAlignWin
             this.mbutton_extractDatasets.Text = "...";
             this.mbutton_extractDatasets.UseVisualStyleBackColor = false;
             // 
-            // mline
-            // 
-            this.mline.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.mline.Location = new System.Drawing.Point(49, 110);
-            this.mline.Name = "mline";
-            this.mline.Size = new System.Drawing.Size(1040, 17);
-            this.mline.TabIndex = 55;
-            // 
             // mbutton_uncheckAll
             // 
             this.mbutton_uncheckAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -731,7 +714,7 @@ namespace MultiAlignWin
             this.Name = "ctlLoadDatasetWizardPage";
             this.Size = new System.Drawing.Size(1247, 786);
             this.Controls.SetChildIndex(this.panelOptions, 0);
-            this.Controls.SetChildIndex(this.Banner, 0);
+            
             this.mcontextMenu_dataset.ResumeLayout(false);
             this.mpanel_loading.ResumeLayout(false);
             this.mpanel_loading.PerformLayout();
@@ -796,7 +779,6 @@ namespace MultiAlignWin
 		private ToolStripMenuItem sortByCheckedToolStripMenuItem;
 		private ToolStripSeparator toolStripSeparator3;
 		private LinkLabel mlinkLabel_testConnection;
-		private ExternalControls.NiceLine mline;
 		private Label mlabel_similarNamesFound;
         private ColumnHeader m_instrumentColumn;
         private Button m_showDMSSearchOptionsButton;

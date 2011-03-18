@@ -15,7 +15,7 @@ using MultiAlignEngine.Clustering;
 
 using PNNLControls;
 using MultiAlignWin.Drawing;
-using PNNLProteomics.Data.Analysis;
+using PNNLProteomics.Data;
 
 using MultiAlign.Charting;
 using MultiAlign.Drawing;
@@ -38,11 +38,7 @@ namespace MultiAlignWin.Forms
         /// </summary>
         /// <param name="sender">Dataset that was rendered.</param>
         /// <param name="previews">Preview images</param>
-        private delegate void DelegateUpdatePreview(Image[] previews);        
-        /// <summary>
-        /// Options defining the alignment for this dataset.
-        /// </summary>
-        private clsAlignmentOptions mobj_alignment;
+        private delegate void DelegateUpdatePreview(Image[] previews);                
         /// <summary>
         /// Options used to cluster this dataset.
         /// </summary>
@@ -53,13 +49,10 @@ namespace MultiAlignWin.Forms
         private MultiAlignAnalysis mobj_analysis;        
         #endregion
 
-
-
         public controlClusterInformation(MultiAlignAnalysis analysis)
         {
             InitializeComponent();
             
-            mobj_alignment      = analysis.AlignmentOptions[0] as clsAlignmentOptions;            
             mobj_cluster        = analysis.ClusterOptions;
             mobj_analysis       = analysis;
 
@@ -73,7 +66,7 @@ namespace MultiAlignWin.Forms
         /// </summary>
         private void UpdateUserInterface()
         {
-            if (mobj_alignment == null || mobj_cluster == null)
+            if (mobj_cluster == null)
                 return;
 
             SuspendLayout();
@@ -104,7 +97,7 @@ namespace MultiAlignWin.Forms
                 m_alignmentPanel.BringToFront();
             }
 
-            if (!mobj_analysis.UseSMART)
+            if (!mobj_analysis.UseSTAC)
             {
                 mpictureBox_SMARTScoreHistogram.Visible = false;
                 mpictureBox_SMARTScoreHistogram.Enabled = false;
@@ -333,89 +326,87 @@ namespace MultiAlignWin.Forms
 
 
 
-            if (mobj_analysis.UMCData.mobjClusterData != null)
-            {
-                Image scoreHistogram = RenderDatasetInfo.ClusterScoreHistogram_Thumbnail(mobj_analysis,
-                                                                                              mpictureBox_scoreHistograms.Width,
-                                                                                              mpictureBox_scoreHistograms.Height,
-                                                                                              false,
-                                                                                              false,
-                                                                                              false);
+            //if (mobj_analysis.UMCData.mobjClusterData != null)
+            //{
+            //    Image scoreHistogram = RenderDatasetInfo.ClusterScoreHistogram_Thumbnail(mobj_analysis,
+            //                                                                                  mpictureBox_scoreHistograms.Width,
+            //                                                                                  mpictureBox_scoreHistograms.Height,
+            //                                                                                  false,
+            //                                                                                  false,
+            //                                                                                  false);
 
-                Image chargeStateHistogram = RenderDatasetInfo.ChargeStateHistogram_Thumbnail(mobj_analysis.GetAllUMCS(),
-                                                                                              mpictureBox_scoreHistograms.Width,
-                                                                                              mpictureBox_scoreHistograms.Height,
-                                                                                              new ChartDisplayOptions(false, false, false, false));
+            //    Image chargeStateHistogram = RenderDatasetInfo.ChargeStateHistogram_Thumbnail(mobj_analysis.GetAllUMCS(),
+            //                                                                                  mpictureBox_scoreHistograms.Width,
+            //                                                                                  mpictureBox_scoreHistograms.Height,
+            //                                                                                  new ChartDisplayOptions(false, false, false, false));
 
-                Image clusterSizeHistogram = RenderDatasetInfo.ClusterSizeHistogram_Thumbnail(mobj_analysis.GetClusters(),
-                                                                                              mpictureBox_scoreHistograms.Width,
-                                                                                              mpictureBox_scoreHistograms.Height,
-                                                                                              new ChartDisplayOptions(false, false, false, false));
-                Image scoreSize = RenderDatasetInfo.ClusterScoreVsClusterSize_Thumbnail(mobj_analysis,
-                                                                                              mpictureBox_clusterSizeHistogram.Width,
-                                                                                              mpictureBox_clusterSizeHistogram.Height,
-                                                                                              false,
-                                                                                              false,
-                                                                                              false);
+            //    Image clusterSizeHistogram = RenderDatasetInfo.ClusterSizeHistogram_Thumbnail(mobj_analysis.GetClusters(),
+            //                                                                                  mpictureBox_scoreHistograms.Width,
+            //                                                                                  mpictureBox_scoreHistograms.Height,
+            //                                                                                  new ChartDisplayOptions(false, false, false, false));
+            //    Image scoreSize = RenderDatasetInfo.ClusterScoreVsClusterSize_Thumbnail(mobj_analysis,
+            //                                                                                  mpictureBox_clusterSizeHistogram.Width,
+            //                                                                                  mpictureBox_clusterSizeHistogram.Height,
+            //                                                                                  false,
+            //                                                                                  false,
+            //                                                                                  false);
 
 
-                Image[] images = new Image[4] {scoreHistogram, scoreSize, clusterSizeHistogram, chargeStateHistogram};
-                if (InvokeRequired == true)
-                {
-                    BeginInvoke(new DelegateUpdatePreview(ClusterPreviewHandler), new object[] { images });
-                }
-                else
-                {
-                    ClusterPreviewHandler(images);
-                }
-            }
+            //    Image[] images = new Image[4] {scoreHistogram, scoreSize, clusterSizeHistogram, chargeStateHistogram};
+            //    if (InvokeRequired == true)
+            //    {
+            //        BeginInvoke(new DelegateUpdatePreview(ClusterPreviewHandler), new object[] { images });
+            //    }
+            //    else
+            //    {
+            //        ClusterPreviewHandler(images);
+            //    }
+            //}
 
             if (mobj_analysis.PeakMatchedToMassTagDB)
             {
-                Image peakMatchPlot = RenderDatasetInfo.PeakMatchMassNET_Thumbnail(mobj_analysis,
-                                                                                              mpictureBox_scoreHistograms.Width,
-                                                                                              mpictureBox_scoreHistograms.Height,
-                                                                                              false,
-                                                                                              false,
-                                                                                              false);
+                //Image peakMatchPlot = RenderDatasetInfo.PeakMatchMassNET_Thumbnail(mobj_analysis,
+                //                                                                              mpictureBox_scoreHistograms.Width,
+                //                                                                              mpictureBox_scoreHistograms.Height,
+                //                                                                              false,
+                //                                                                              false,
+                //                                                                              false);
 
-                Image unidentified = RenderDatasetInfo.UnidentifiedFeatures_Thumbnail(mobj_analysis,
-                                                                                                mpictureBox_unidentifiedScatterPlot.Width,
-                                                                                                mpictureBox_unidentifiedScatterPlot.Height,
-                                                                                                false,
-                                                                                                false,
-                                                                                                false,
-                                                                                                .7);
+                //Image unidentified = RenderDatasetInfo.UnidentifiedFeatures_Thumbnail(mobj_analysis,
+                //                                                                                mpictureBox_unidentifiedScatterPlot.Width,
+                //                                                                                mpictureBox_unidentifiedScatterPlot.Height,
+                //                                                                                false,
+                //                                                                                false,
+                //                                                                                false,
+                //                                                                                .7);
 
-                Image identified = RenderDatasetInfo.IdentifiedFeatures_Thumbnail(mobj_analysis,
-                                                                                                mpictureBox_identifiedFeatures.Width,
-                                                                                                mpictureBox_identifiedFeatures.Height,
-                                                                                                false,
-                                                                                                false,
-                                                                                                false,
-                                                                                                .7);
-
-
-                Image smartHistogram = RenderDatasetInfo.SMARTScoreHistogram_Thumbnail(mobj_analysis,
-                                                                                                mpictureBox_unidentifiedScatterPlot.Width,
-                                                                                                mpictureBox_unidentifiedScatterPlot.Height,
-                                                                                                false,
-                                                                                                false,
-                                                                                                false);
+                //Image identified = RenderDatasetInfo.IdentifiedFeatures_Thumbnail(mobj_analysis,
+                //                                                                                mpictureBox_identifiedFeatures.Width,
+                //                                                                                mpictureBox_identifiedFeatures.Height,
+                //                                                                                false,
+                //                                                                                false,
+                //                                                                                false,
+                //                                                                                .7);
 
 
-                Image[] images = new Image[4] { peakMatchPlot, unidentified, smartHistogram, identified};
-                if (InvokeRequired == true)
-                {
-                    BeginInvoke(new DelegateUpdatePreview(PeakMatchPreviewHandler), new object[] { images });
-                }
-                else
-                {
-                    PeakMatchPreviewHandler(images);
-                }
+                //Image smartHistogram = RenderDatasetInfo.SMARTScoreHistogram_Thumbnail(mobj_analysis,
+                //                                                                                mpictureBox_unidentifiedScatterPlot.Width,
+                //                                                                                mpictureBox_unidentifiedScatterPlot.Height,
+                //                                                                                false,
+                //                                                                                false,
+                //                                                                                false);
+
+
+                //Image[] images = new Image[4] { peakMatchPlot, unidentified, smartHistogram, identified};
+                //if (InvokeRequired == true)
+                //{
+                //    BeginInvoke(new DelegateUpdatePreview(PeakMatchPreviewHandler), new object[] { images });
+                //}
+                //else
+                //{
+                //    PeakMatchPreviewHandler(images);
+                //}
             }
-
-            GC.Collect();
         }
         /// <summary>
         /// Closes all of the forms that are currenty displayed.
@@ -574,8 +565,8 @@ namespace MultiAlignWin.Forms
 
             if (displayForm == null)
             {
-                controlHistogram chart = RenderDatasetInfo.ClusterScoreHistogram_Chart(mobj_analysis.UMCData.mobjClusterData);
-                displayForm = RegisterChart(name, chart);
+                //controlHistogram chart = RenderDatasetInfo.ClusterScoreHistogram_Chart(mobj_analysis.UMCData.mobjClusterData);
+                //displayForm = RegisterChart(name, chart);
             }
             if (displayForm != null)
             {
@@ -587,134 +578,135 @@ namespace MultiAlignWin.Forms
         private void mpictureBox_scoreVsClusterSize_Click(object sender, EventArgs e)
         {
 
-            string name = "Cluster Score Vs. Cluster Size";
-            Form displayForm = RetrieveForm(name);
+            //string name = "Cluster Score Vs. Cluster Size";
+            //Form displayForm = RetrieveForm(name);
 
-            if (displayForm == null)
-            {
-                ctlScatterChart chart = RenderDatasetInfo.ClusterScoreVsClusterSize_Chart(mobj_analysis.UMCData.mobjClusterData);
-                displayForm = RegisterChart(name, chart);
-            }
-            if (displayForm != null)
-            {
-                displayForm.Show();
-                displayForm.BringToFront();
-            }
+            //if (displayForm == null)
+            //{
+            //    ctlScatterChart chart = RenderDatasetInfo.ClusterScoreVsClusterSize_Chart(mobj_analysis.UMCData.mobjClusterData);
+            //    displayForm = RegisterChart(name, chart);
+            //}
+            //if (displayForm != null)
+            //{
+            //    displayForm.Show();
+            //    displayForm.BringToFront();
+            //}
         }
 
         private void mpictureBox_clusterSizeHistogram_Click(object sender, EventArgs e)
         {
 
-            string name = "Cluster Size Histogram";
-            Form displayForm = RetrieveForm(name);
+            //string name = "Cluster Size Histogram";
+            //Form displayForm = RetrieveForm(name);
 
-            if (displayForm == null)
-            {
-                ChartDisplayOptions options = new ChartDisplayOptions();
-                options.Title = "Cluster Size Histogram";
-                options.YAxisLabel = "Count";
-                options.XAxisLabel = "Cluster Size";
-                controlHistogram chart = RenderDatasetInfo.ClusterSizeHistogram_Chart(mobj_analysis.GetClusters(), options);
-                displayForm = RegisterChart(name, chart);
-            }
-            if (displayForm != null)
-            {
-                displayForm.Show();
-                displayForm.BringToFront();
-            } 
+            //if (displayForm == null)
+            //{
+            //    ChartDisplayOptions options = new ChartDisplayOptions();
+            //    options.Title = "Cluster Size Histogram";
+            //    options.YAxisLabel = "Count";
+            //    options.XAxisLabel = "Cluster Size";
+            //    controlHistogram chart = RenderDatasetInfo.ClusterSizeHistogram_Chart(mobj_analysis.GetClusters(), options);
+            //    displayForm = RegisterChart(name, chart);
+            //}
+            //if (displayForm != null)
+            //{
+            //    displayForm.Show();
+            //    displayForm.BringToFront();
+            //} 
         }
 
         private void mpictureBox_peakMatchingResiduals_Click(object sender, EventArgs e)
         {
 
-            string name = "Peak Matching Residuals";
-            Form displayForm = RetrieveForm(name);
+            //string name = "Peak Matching Residuals";
+            //Form displayForm = RetrieveForm(name);
 
-            if (displayForm == null)
-            {
-                ctlScatterChart chart = RenderDatasetInfo.PeakMatchMassNET_Chart(mobj_analysis); 
-                displayForm = RegisterChart(name, chart);
-            }
-            if (displayForm != null)
-            {
-                displayForm.Show();
-                displayForm.BringToFront();
-            }
+            //if (displayForm == null)
+            //{
+            //    ctlScatterChart chart = RenderDatasetInfo.PeakMatchMassNET_Chart(mobj_analysis); 
+            //    displayForm = RegisterChart(name, chart);
+            //}
+            //if (displayForm != null)
+            //{
+            //    displayForm.Show();
+            //    displayForm.BringToFront();
+            //}
         }
 
         private void mpictureBox_SMARTScoreHistogram_Click(object sender, EventArgs e)
         {
             
-            string name = "STAC Score Histogram";
-            Form displayForm = RetrieveForm(name);
+            //string name = "STAC Score Histogram";
+            //Form displayForm = RetrieveForm(name);
 
-            if (displayForm == null)
-            {
-                controlHistogram chart = RenderDatasetInfo.SMARTScoreHistogram_Chart(mobj_analysis);
-                displayForm = RegisterChart(name, chart);
-            }
-            if (displayForm != null)
-            {
-                displayForm.Show();
-                displayForm.BringToFront();
-            }
+            //if (displayForm == null)
+            //{
+            //    controlHistogram chart = RenderDatasetInfo.SMARTScoreHistogram_Chart(mobj_analysis);
+            //    displayForm = RegisterChart(name, chart);
+            //}
+            //if (displayForm != null)
+            //{
+            //    displayForm.Show();
+            //    displayForm.BringToFront();
+            //}
              
         }
 
         private void mpictureBox_SMARTScoreSpatialPlot_Click(object sender, EventArgs e)
         {
 
-            string name = "STAC Score Sptial Plot";
-            Form displayForm = RetrieveForm(name);
+            //string name = "STAC Score Sptial Plot";
+            //Form displayForm = RetrieveForm(name);
 
-            if (displayForm == null)
-            {
-                ctlScatterChart chart = RenderDatasetInfo.UnidentifiedFeatures_Chart(mobj_analysis, .5);
-                displayForm = RegisterChart(name, chart);
-            }
-            if (displayForm != null)
-            {
-                displayForm.Show();
-                displayForm.BringToFront();
-            }              
+            //if (displayForm == null)
+            //{
+            //    ctlScatterChart chart = RenderDatasetInfo.UnidentifiedFeatures_Chart(mobj_analysis, .5);
+            //    displayForm = RegisterChart(name, chart);
+            //}
+            //if (displayForm != null)
+            //{
+            //    displayForm.Show();
+            //    displayForm.BringToFront();
+            //}              
         }
 
         private void mpictureBox_chargeStateHistogram_Click(object sender, EventArgs e)
-        {            
-            string name = "Charge State Histogram"; 
-            Form displayForm = RetrieveForm(name);
+        {
+        //{            
+        //    string name = "Charge State Histogram"; 
+        //    Form displayForm = RetrieveForm(name);
 
-            if (displayForm == null)
-            {
-                List<clsUMC> umcs = mobj_analysis.GetAllUMCS();
-                controlHistogram chart = RenderDatasetInfo.ChargeStateHistogram_Chart(umcs);
-                displayForm = RegisterChart(name, chart);
-            }
+        //    if (displayForm == null)
+        //    {
+        //        List<clsUMC> umcs = mobj_analysis.GetAllUMCS();
+        //        controlHistogram chart = RenderDatasetInfo.ChargeStateHistogram_Chart(umcs);
+        //        displayForm = RegisterChart(name, chart);
+        //    }
 
-            if (displayForm != null)
-            {
-                displayForm.Show();
-                displayForm.BringToFront();
-            }
+        //    if (displayForm != null)
+        //    {
+        //        displayForm.Show();
+        //        displayForm.BringToFront();
+        //    }
 
         }
         private void mpictureBox_identifiedFeatures_Click(object sender, EventArgs e)
         {
 
-            string name = "Identified Clusters";
-            Form displayForm = RetrieveForm(name);
+            //string name = "Identified Clusters";
+            //Form displayForm = RetrieveForm(name);
 
-            if (displayForm == null)
-            {
-                ctlScatterChart chart = RenderDatasetInfo.IdentifiedFeatures_Chart(mobj_analysis, .7);
-                displayForm = RegisterChart(name, chart);
-            }
+            //if (displayForm == null)
+            //{
+            //    ctlScatterChart chart = RenderDatasetInfo.IdentifiedFeatures_Chart(mobj_analysis, .7);
+            //    displayForm = RegisterChart(name, chart);
+            //}
 
-            if (displayForm != null)
-            {
-                displayForm.Show();
-                displayForm.BringToFront();
-            }
+            //if (displayForm != null)
+            //{
+            //    displayForm.Show();
+            //    displayForm.BringToFront();
+            //}
         }
         /// <summary>
         /// Retrieves the form if a form exists

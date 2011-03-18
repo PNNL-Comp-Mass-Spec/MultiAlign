@@ -27,7 +27,6 @@ namespace MultiAlignWin
 
         private DatasetInformation mobj_dataInfo;
         private clsAlignmentOptions mobj_alignment;
-        private clsClusterOptions   mobj_cluster;
 
         /// <summary>
         /// Constructor that displays the dataset information for a given dataset.
@@ -36,13 +35,11 @@ namespace MultiAlignWin
         /// <param name="alignment"></param>
         /// <param name="cluster"></param>
         public DatasetSummary(DatasetInformation data,
-                                 clsAlignmentOptions alignment,
-                                 clsClusterOptions cluster)
+                                 clsAlignmentOptions alignment)
 		{
 			InitializeComponent();
             mobj_dataInfo    = data;
             mobj_alignment   = alignment;
-            mobj_cluster     = cluster;
 
             UpdateDisplay();
 		}
@@ -56,9 +53,7 @@ namespace MultiAlignWin
 			if (mobj_dataInfo != null)                							
 			    ctlSummaryPages.CreateSummary("Dataset Info",      mobj_dataInfo);
             if (mobj_alignment != null)
-                ctlSummaryPages.CreateSummary("Alignment Options", mobj_alignment);
-            if (mobj_cluster != null)
-			    ctlSummaryPages.CreateSummary("Cluster Options",   mobj_cluster);									
+                ctlSummaryPages.CreateSummary("Alignment Options", mobj_alignment);								
 		}		
 
 		/// <summary>

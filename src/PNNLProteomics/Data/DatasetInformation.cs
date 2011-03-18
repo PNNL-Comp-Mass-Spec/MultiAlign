@@ -34,10 +34,8 @@ namespace PNNLProteomics.Data
 		[clsDataSummaryAttribute("Dataset Name")]
 		private string mstrDatasetName;
 		[clsDataSummaryAttribute("Analysis Job ID")]
-		public string mstrAnalysisJobId;
-		[clsDataSummaryAttribute("Local Path")]
-		public string mstrLocalPath;
-		private string m_archivePath;
+		public string mstrAnalysisJobId;	
+		private string m_path;
 		[clsDataSummaryAttribute("Alias")]
 		public string mstrAlias;
 		[clsDataSummaryAttribute("Column ID")]
@@ -108,7 +106,7 @@ namespace PNNLProteomics.Data
 			m_factorInformation = new Dictionary<FactorInformation, string>();
 			m_factorList = new List<Factor>();
 			m_parameterFileName = "";
-			m_archivePath = "";
+			m_path = "";
 		}
 
 		#region Properties
@@ -142,16 +140,16 @@ namespace PNNLProteomics.Data
 		/// <summary>
 		/// Gets or sets the archive path.
 		/// </summary>
-		[clsDataSummaryAttribute("Archive Path")]
-		public string ArchivePath
+		[clsDataSummaryAttribute("Path")]
+		public string Path
 		{
 			get
 			{
-				return m_archivePath;
+				return m_path;
 			}
 			set
 			{
-				m_archivePath = value;
+				m_path = value;
 			}
 		}
 		/// <summary>

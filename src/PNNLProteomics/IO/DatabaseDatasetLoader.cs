@@ -497,7 +497,7 @@ namespace PNNLProteomics.IO
                             info.mstrResultsFolder      = datasetInfo.mstrResultsFolder;
                             info.mstrVolume             = datasetInfo.mstrVolume;
                             info.Selected               = datasetInfo.Selected;                            
-                            info.ArchivePath            = Path.Combine(pekFilePath, fileName);
+                            info.Path                   = Path.Combine(pekFilePath, fileName);
                             info.ParameterFileName      = datasetInfo.ParameterFileName;
                             info.DatasetName            = fileName;
 

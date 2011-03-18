@@ -5,7 +5,7 @@ using MultiAlignEngine.Features;
 using MultiAlignEngine.Alignment;
 
 using PNNLProteomics.Data;
-using PNNLProteomics.Data.Analysis;
+using PNNLProteomics.Data;
 using PNNLProteomics.Data.Alignment;
 
 namespace PNNLProteomics.MultiAlign
@@ -68,6 +68,52 @@ namespace PNNLProteomics.MultiAlign
             {
                 return m_alignmentData;
             }
+        }
+    }
+
+    public class AnalysisErrorEventArgs : EventArgs
+    {
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="analysis"></param>
+        public AnalysisErrorEventArgs(string error, Exception ex)
+        {
+            Exception    = ex;
+            ErrorMessage = error;   
+        }
+
+        public string ErrorMessage
+        {
+            get;
+            private set;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        public Exception Exception
+        {
+            get;
+            private set;
+        }
+    }
+    public class AnalysisCompleteEventArgs : EventArgs
+    {
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="analysis"></param>
+        public AnalysisCompleteEventArgs(MultiAlignAnalysis analysis)
+        {
+            Analysis = analysis;
+        }
+        /// <summary>
+        /// Gets or sets the analysis.
+        /// </summary>
+        public MultiAlignAnalysis Analysis
+        { 
+            get; 
+            private set;
         }
     }
     public class FeaturesLoadedEventArgs : EventArgs

@@ -1,30 +1,25 @@
 using System;
-using System.IO;
-using System.Data;
-using System.Text;
-using System.Drawing;
 using System.Collections;
-using System.Windows.Forms;
-using System.ComponentModel;
 using System.Collections.Generic;
-
-using MultiAlignEngine;
-using PNNLControls;
-using PNNLProteomics.IO;
-using PNNLProteomics.Data;
-
+using System.ComponentModel;
+using System.Drawing;
+using System.IO;
+using System.Windows.Forms;
 using MultiAlignWin.Forms;
 using MultiAlignWin.Network;
+using PNNLControls;
+using PNNLProteomics.Data;
+using PNNLProteomics.IO;
 
-
-
+using MultiAlignWin.Forms.Wizard;
+using PNNLProteomics.Data;
 
 namespace MultiAlignWin
 {
     /// <summary>
     /// Class that determines how to load a dataset from the wizard page.
     /// </summary>
-    public partial class ctlLoadDatasetWizardPage : Wizard.UI.InternalWizardPage
+    public partial class ctlLoadDatasetWizardPage : UserControl, IWizardControl<MultiAlignAnalysis>
     {        
         #region Members
         /// <summary>
@@ -80,22 +75,19 @@ namespace MultiAlignWin
         /// </summary>
         private DMSDatasetSearchOptions m_searchOptions;
         #endregion
-        
+
+        /// <summary>
+        /// MA analysis object.
+        /// </summary>
+        private MultiAlignAnalysis m_analysis;
+
         /// <summary>
         /// Default constructor for the loading of the datasets wizard page.
         /// </summary>
         public ctlLoadDatasetWizardPage( )
         {
             m_searchOptions = new DMSDatasetSearchOptions();
-
-            clsDMSServerInformation info = new clsDMSServerInformation();
-            info = new clsDMSServerInformation();
-            info.ServerName = Properties.Settings.Default.DMSServerName;
-            info.DatabaseName = Properties.Settings.Default.DMSDatabaseName;
-            info.Username = "dmswebuser";
-            info.Password = "icr4fun";
-            info.ConnectionTimeout = Properties.Settings.Default.DMSConnectionTimeout;
-            Init(info);            
+            Init(null);            
         }
         /// <summary>
         /// Constructor that uses server information to load the datasets from.
@@ -103,16 +95,7 @@ namespace MultiAlignWin
         /// <param name="info"></param>
         public ctlLoadDatasetWizardPage(clsDMSServerInformation info)
         {
-
-            if (info == null)
-            {
-                info = new clsDMSServerInformation();
-                info.ServerName        = Properties.Settings.Default.DMSServerName;
-                info.DatabaseName      = Properties.Settings.Default.DMSDatabaseName;
-                info.ConnectionTimeout = Properties.Settings.Default.DMSConnectionTimeout;
-                info.Username = "dmswebuser";
-                info.Password = "icr4fun";
-            }
+            m_searchOptions = new DMSDatasetSearchOptions();
             Init(info);            
         }
 
@@ -126,15 +109,12 @@ namespace MultiAlignWin
             SetStyle(ControlStyles.AllPaintingInWmPaint, true);
             InitializeComponent();
 
-
             mobj_serverInformation = information;
-
             mobj_openFileDialog         = new OpenFileDialog();
             mobj_openJobIDDialog        = new OpenFileDialog();
             mobj_dmsLoader              = new DatabaseDatasetLoader();
             mobj_diskLoader             = new DiskDatasetLoader();
             mobj_dataJobLoader          = new DatabaseDatasetIDLoader();
-            mobj_connectionTester       = new clsDMSConnectionTester(information.ConnectionExists, information);
             mobj_listViewItemComparer   = new ListViewItemComparer();
 
             mobj_openFileDialog.Multiselect			= true;
@@ -163,8 +143,6 @@ namespace MultiAlignWin
             mobj_dataJobLoader.LoadingProgress      += new DelegateUpdateLoadingPercentLoaded(LoadingProgress);
             mobj_dataJobLoader.DatasetsFound        += new DelegateTotalDatasetsFound(DatasetsFound);
                         
-            mobj_connectionTester.ConnectionPercent += new DelegateConnectionToDMSMadePercent(mobj_connectionTester_ConnectionPercent);
-            mobj_connectionTester.ConnectionStatus  += new DelegateConnectionToDMS(mobj_connectionTester_ConnectionStatus);
 
             mlistView_datasets.ListViewItemSorter    = mobj_listViewItemComparer;
             mlistView_datasets.ColumnClick          += new ColumnClickEventHandler(mlistView_datasets_ColumnClick);
@@ -173,9 +151,20 @@ namespace MultiAlignWin
             mlistView_datasets.DragDrop             += new DragEventHandler(mlistView_datasets_DragDrop);
             
             mobj_dmsLoader.ServerInformation         = information;
-            mobj_connectionTester.ServerInformation  = information;
             mobj_dataJobLoader.ServerInformation     = information;
 
+
+            if (information != null)
+            {
+                mobj_connectionTester = new clsDMSConnectionTester(information.ConnectionExists, information);
+            }
+            else
+            {
+                mobj_connectionTester = new clsDMSConnectionTester();
+            }
+            mobj_connectionTester.ConnectionPercent += new DelegateConnectionToDMSMadePercent(mobj_connectionTester_ConnectionPercent);
+            mobj_connectionTester.ConnectionStatus  += new DelegateConnectionToDMS(mobj_connectionTester_ConnectionStatus);
+            
             /// 
             /// Load the dataset name used last by the user
             /// 
@@ -185,9 +174,7 @@ namespace MultiAlignWin
             /// Update how much data is available
             /// 
             mint_numberCheckedItems  = 0;
-            SetActive               += new System.ComponentModel.CancelEventHandler(this.ctlSelectDataSourceWizardPage_SetActive);
 
-            QueryCancel += new CancelEventHandler(ctlLoadDatasetWizardPage_QueryCancel);
         }
 
         void ctlLoadDatasetWizardPage_QueryCancel(object sender, CancelEventArgs e)
@@ -310,19 +297,6 @@ namespace MultiAlignWin
         }
         #endregion
 
-        #region Wizard Actions
-        /// <summary>
-        /// Handles when this becomes the active wizard page.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ctlSelectDataSourceWizardPage_SetActive(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            SetWizardButtons(Wizard.UI.WizardButtons.Back | Wizard.UI.WizardButtons.Next);
-            UpdateTotalChecked(mint_numberCheckedItems);
-            TestNetworkConnection();            
-        }
-        #endregion
         
         #region Data Loading Event Updates 
         /// <summary>
@@ -434,26 +408,27 @@ namespace MultiAlignWin
                 mbutton_selectFilesFromDisk.Enabled = enableButtons;
                 mlabel_downloadingImage.Visible = isLoading;
 
-                /// 
-                /// Only enable if we arent loading and if we have checked items.
-                /// 
-                if (isLoading == false)
-                {
-                    if (mint_numberCheckedItems > 0)
-                    {
-                        NextButtonEnabled = true;
-                    }
-                    else
-                    {
-                        NextButtonEnabled = false;
-                    }
-                }
-                else
-                {
-                    NextButtonEnabled = false;
-                }
+                //TODO: BLL refactor
+                ///// 
+                ///// Only enable if we arent loading and if we have checked items.
+                ///// 
+                //if (isLoading == false)
+                //{
+                //    if (mint_numberCheckedItems > 0)
+                //    {
+                //        NextButtonEnabled = true;
+                //    }
+                //    else
+                //    {
+                //        NextButtonEnabled = false;
+                //    }
+                //}
+                //else
+                //{
+                //    NextButtonEnabled = false;
+                //}
 
-                BackButtonEnabled = enableButtons;
+                //BackButtonEnabled = enableButtons;
 
             }catch
             {
@@ -570,7 +545,7 @@ namespace MultiAlignWin
 
 
             dataItem.SubItems.Add(datasetInfo.mdateAcquisitionStart.ToShortDateString());
-            dataItem.SubItems.Add(System.IO.Path.GetExtension(datasetInfo.mstrLocalPath));                
+            dataItem.SubItems.Add(System.IO.Path.GetExtension(datasetInfo.Path));                
             dataItem.SubItems.Add(datasetInfo.menmDeisotopingTool.ToString());
             /// 
             /// the list control is stupid, so we have to make sure that 
@@ -634,24 +609,6 @@ namespace MultiAlignWin
             }
             mint_numberCheckedItems = numberChecked;
 
-            /// 
-            /// Enable only if we are not loading, and we have items that are checked.
-            /// 
-            if (mbool_isLoading == false)
-            {
-                if (mint_numberCheckedItems > 0)
-                {
-                    NextButtonEnabled = true;
-                }
-                else
-                {
-                   NextButtonEnabled = false;
-                }
-            }
-            else 
-            {
-                NextButtonEnabled = false;
-            }
         }       
         #endregion
 
@@ -659,20 +616,18 @@ namespace MultiAlignWin
         /// <summary>
         /// Updates what items are checked in the internal array.
         /// </summary>
-        private List<DatasetInformation> SelectCheckedItems()
+        private void SelectCheckedItems()
         {
-            List<DatasetInformation> list = new List<DatasetInformation>();
+            m_analysis.Datasets.Clear();            
             foreach (ListViewItem item in mlistView_datasets.CheckedItems)
             {
                 DatasetInformation info = item.Tag as DatasetInformation;
                 if (info != null)
                 {
-                    list.Add(info);
+                    m_analysis.Datasets.Add(info);
                 }
             }
-            return list;
-        }
-        
+        }        
         /// <summary>
         /// Deselects all the datasets.
         /// </summary>
@@ -769,6 +724,11 @@ namespace MultiAlignWin
             mlistView_datasets.EndUpdate();
             UpdateTotalChecked(totalChecked);
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void sortByCheckedToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SortByChecked();
@@ -962,16 +922,6 @@ namespace MultiAlignWin
                 mobj_serverInformation = value;
             }
         }
-        /// <summary>
-        /// Gets a list of available datasets.
-        /// </summary>
-        public List<DatasetInformation> Datasets
-        {
-            get
-            {
-                return SelectCheckedItems();
-            }
-        }
         #endregion
 
         #region Context Menu Event Handlers
@@ -1019,6 +969,48 @@ namespace MultiAlignWin
                 mtextbox_databaseFilterName.Text = m_searchOptions.DatasetName;
             }
         }
+
+        #region IWizardControl<MultiAlignAnalysis> Members
+        /// <summary>
+        /// Gets the name of this wizard sheet.
+        /// </summary>
+        public string Title
+        {
+            get { return "Load Data"; }
+        }
+        /// <summary>
+        /// Initializes any connections to DMS etc.
+        /// </summary>
+        public void SetAsActivePage()
+        {
+            UpdateTotalChecked(mint_numberCheckedItems);
+            TestNetworkConnection();            
+        }
+        /// <summary>
+        /// Gets or sets the analysis object.
+        /// </summary>
+        public PNNLProteomics.Data.MultiAlignAnalysis Data
+        {
+            get
+            {
+                SelectCheckedItems();
+                return m_analysis;
+            }
+            set
+            {
+                m_analysis = value;
+            }
+        }
+        /// <summary>
+        /// Determines if all data is complete on this page.
+        /// </summary>
+        /// <returns></returns>
+        public bool IsComplete()
+        {
+            return mint_numberCheckedItems > 0;
+        }
+
+        #endregion
     }
 
     #region Class that Implements the manual sorting of items by columns.

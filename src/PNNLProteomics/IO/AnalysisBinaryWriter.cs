@@ -5,7 +5,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 
 using PNNLProteomics.IO;
-using PNNLProteomics.Data.Analysis;
+using PNNLProteomics.Data;
 
 namespace PNNLProteomics.IO
 {

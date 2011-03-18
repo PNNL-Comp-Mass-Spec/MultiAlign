@@ -281,7 +281,7 @@ namespace Wizard.UI
             WizardPage page = (WizardPage)_pages[pageIndex];
             SetActivePage(page);
         }
-        private void  SetActivePage(string newPageName)
+        public void  SetActivePage(string newPageName)
 		{
 			WizardPage newPage = FindPage(newPageName);
 
@@ -627,62 +627,6 @@ namespace Wizard.UI
             }
         }
         #endregion
-
-
-        //#region Next Button
-        //internal void EnableNextButton(bool enableNextButton)
-        //{
-        //    nextButton.Enabled = enableNextButton;
-        //}
-        //public string SetNextButtonString
-        //{
-        //    set
-        //    {
-        //        this.nextButton.Text = value;
-        //    }
-        //}				
-        //#endregion
-
-        //#region Finish Button
-        //internal bool FinishButtonVisible
-        //{
-        //    set
-        //    {
-        //        finishButton.Visible = value;
-        //    }
-        //}
-        //#endregion
-
-        //#region Cancel Button
-        //internal void EnableCancelButton(bool enableCancelButton)
-        //{
-        //    cancelButton.Enabled = enableCancelButton;
-        //}
-        //#endregion
-
-        //#region Extra Button
-        //public bool ShowExtraButton
-        //{
-        //    set
-        //    {
-        //        this.extraButton.Visible = value;
-        //    }
-        //}
-        //public string SetExtraButtonString
-        //{
-        //    set
-        //    {
-        //        this.extraButton.Text = value;
-        //    }
-        //}
-        //internal void EnableExtraButton(bool enableExtraButton) //Ashoka
-        //{
-        //    extraButton.Enabled = enableExtraButton;
-        //}
-       
-        //#endregion
-
-
     }
 
 	[Flags]

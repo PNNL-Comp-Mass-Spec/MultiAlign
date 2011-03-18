@@ -1,15 +1,13 @@
 using System;
-using System.Data;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
-
-using PNNLControls;
 using MultiAlignEngine.Features;
 using MultiAlignEngine.MassTags;
-using PNNLProteomics.Data.Analysis;
+using PNNLControls;
+using PNNLProteomics.Data;
+
+using PNNLProteomics.MultiAlign.Hibernate.Domain.DAO;
 
 namespace MultiAlign.Charting
 {
@@ -19,8 +17,7 @@ namespace MultiAlign.Charting
 	public class ctlClusterChart : ctlScatterChart
     {
         #region Members
-        private System.ComponentModel.IContainer components = null;
-		private MultiAlignAnalysis mobjAnalysis ; 
+        private System.ComponentModel.IContainer components = null;		
 		private clsColorIterator miter_color = new  clsColorIterator() ; 
 		private int mint_pt_size = 1 ; 
 		/// <summary>
@@ -32,8 +29,10 @@ namespace MultiAlign.Charting
         private ComboBox mcomboBox_chargeStates;
         private CheckBox mcheckBox_displayMZ;
         private Label label1;
-        private int mint_dataset;
         private const int MAX_CHARGE_STATE = 10;
+        private List<clsUMC>        m_features;
+        private List<clsCluster>    m_clusters;
+        private DatasetInformation  m_info;
         #endregion
 
         #region Constructors
@@ -45,93 +44,76 @@ namespace MultiAlign.Charting
             for (int i = 1; i < MAX_CHARGE_STATE; i++)
                 mcomboBox_chargeStates.Items.Add(i.ToString());
             mcomboBox_chargeStates.SelectedIndex = 0;
+            
+            mcomboBox_chargeStates.SelectedIndexChanged += new System.EventHandler(this.mcomboBox_chargeStates_SelectedIndexChanged);
 
-            mint_dataset = -1;
-
-            this.mcomboBox_chargeStates.SelectedIndexChanged += new System.EventHandler(this.mcomboBox_chargeStates_SelectedIndexChanged);
+            m_clusters  = null;
+            m_features  = null;
+            m_info      = null;
         }
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="analysis"></param>
-		public ctlClusterChart(MultiAlignAnalysis analysis)
-		{
-            InitializeComponent();
-
-
-            mcomboBox_chargeStates.Items.Add("All");
-            for (int i = 1; i < MAX_CHARGE_STATE; i++)
-                mcomboBox_chargeStates.Items.Add(i.ToString());
-            mcomboBox_chargeStates.SelectedIndex = 0;
-
-            this.mcomboBox_chargeStates.SelectedIndexChanged += new System.EventHandler(this.mcomboBox_chargeStates_SelectedIndexChanged);
-
-            mint_dataset = -1;
-        	Analysis     = analysis ;
-		}
         /// <summary>
         /// Constructor.
         /// </summary>
         /// <param name="analysis"></param>
         /// <param name="dataset"></param>
-        public ctlClusterChart(MultiAlignAnalysis analysis, int dataset)
+        public ctlClusterChart(DatasetInformation info, List<clsUMC> features) :
+            this()
         {
-            InitializeComponent();
-
-
-            mcomboBox_chargeStates.Items.Add("All");
-            for (int i = 1; i < MAX_CHARGE_STATE; i++)
-                mcomboBox_chargeStates.Items.Add(i.ToString());
-            mcomboBox_chargeStates.SelectedIndex = 0;
-
-            this.mcomboBox_chargeStates.SelectedIndexChanged += new System.EventHandler(this.mcomboBox_chargeStates_SelectedIndexChanged);
-
-            mint_dataset = dataset;
-            Analysis     = analysis;
+            AddFeatures(info, features);
+        }
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="analysis"></param>
+        /// <param name="dataset"></param>
+        public ctlClusterChart(List<clsCluster> clusters) :
+            this()
+        {
+            AddClusters(clusters);
         }
         #endregion
 
-        #region Properties
+        #region Data Addition Methods
+        /// <summary>
+        /// Clears the data currently on the plot.
+        /// </summary>
+        public void ClearData()
+        {
+            m_features  = null;
+            m_clusters  = null;
+            m_info      = null;
+            ViewPortHistory.Clear();
+            SeriesCollection.Clear();
+        }
         /// <summary>
         /// Sets the analysis object and extracts data for display.
         /// </summary>
-		public MultiAlignAnalysis Analysis
-		{
-			set
-			{
-                mobjAnalysis = value;
-
-                ViewPortHistory.Clear();
-                this.SeriesCollection.Clear();
+		public void AddFeatures(DatasetInformation info, List<clsUMC> features)
+		{			
                 
-                AutoViewPortOnAddition = true;
-                
-                if (mint_dataset < 0)
-                {
-                    Title = mobjAnalysis.AnalysisName + " Clusters"; 
-                    
-                    if (mobjAnalysis == null)
-                        return;
+            AutoViewPortOnAddition          = true;
+            Title = "Features";
+            if (info != null)
+            {
+                Title = info.DatasetName + " ";
+            }
+            mcheckBox_displayMZ.Visible     = true;
+            mcheckBox_showAligned.Visible   = true;                     
+            AddDatasetToOverlapChart(features, mcheckBox_showAligned.Checked, MAX_CHARGE_STATE);                
+            AutoViewPortOnAddition          = false;		
+        }
+        /// <summary>
+        /// Sets the analysis object and extracts data for display.
+        /// </summary>
+        public void AddClusters(List<clsCluster> clusters)
+        {
+            AutoViewPortOnAddition = true;
+            Title = "Clusters";
+            mcheckBox_displayMZ.Visible     = true;
+            mcheckBox_showAligned.Visible   = true;
 
-                    if (mobjAnalysis.UMCData.mobjClusterData != null)
-                    {
-                        int charge = mcomboBox_chargeStates.SelectedIndex;
-                        AddClusterDataToChart(mobjAnalysis.UMCData.mobjClusterData, charge);
-                    }
-
-                    mcheckBox_displayMZ.Visible   = false;
-                    mcheckBox_showAligned.Visible = mobjAnalysis.ClusterOptions.AlignClusters; 
-                }
-                else
-                {
-                    Title = mobjAnalysis.Datasets[mint_dataset].DatasetName + " Features";
-                    mcheckBox_displayMZ.Visible   = true;
-                    mcheckBox_showAligned.Visible = true;                     
-                    AddDatasetToOverlapChart(mobjAnalysis, mint_dataset, mcheckBox_showAligned.Checked, MAX_CHARGE_STATE);
-                }
-
-                AutoViewPortOnAddition = false;
-			}
+            AddClusterDataToChart(clusters, mcheckBox_showAligned.Checked, MAX_CHARGE_STATE);
+            AutoViewPortOnAddition          = false;
         }
         #endregion
 
@@ -143,43 +125,41 @@ namespace MultiAlign.Charting
         /// <param name="analysis">Analysis object to use</param>
         /// <param name="datasetNum">Dataset index</param>
         /// <param name="aligned">whether the data has been aligned or not.</param>
-        private void AddChargeStateToOverlapChart(int chargeState, MultiAlignAnalysis analysis, int datasetNum, bool aligned)
-        {
-
+        private void AddChargeStateToOverlapChart(List<clsUMC> features, int chargeState, bool showAligned)
+        {            
             List<float> x = new List<float>();
             List<float> xa = new List<float>();
             List<float> y = new List<float>();
             List<float> ya = new List<float>();
-            clsUMC[] umcs = mobjAnalysis.UMCData.GetUMCS(datasetNum);
-
+            
             bool useNet = mcheckBox_showNET.Checked;
-            bool useMZ  = mcheckBox_displayMZ.Checked;
-            foreach (clsUMC umc in umcs)
+            bool useMZ = mcheckBox_displayMZ.Checked;
+            foreach (clsUMC feature in features)
             {
                 // Make sure charges match.
-                if (umc.ChargeRepresentative == chargeState)
-                {    
+                if (feature.ChargeRepresentative == chargeState)
+                {
                     // X value 
                     if (useNet)
                     {
-                        x.Add((float)umc.Net);
-                        xa.Add((float)umc.Net);
+                        x.Add((float)feature.Net);
+                        xa.Add((float)feature.Net);
                     }
                     else
                     {
-                        x.Add((float)umc.ScanAligned);
-                        xa.Add((float)umc.Scan);
+                        x.Add((float)feature.ScanAligned);
+                        xa.Add((float)feature.Scan);
                     }
 
                     // Y value
                     if (useMZ)
                     {
-                        y.Add((float)umc.MZForCharge);
+                        y.Add((float)feature.MZForCharge);
                     }
                     else
-                    {                        
-                        y.Add((float)umc.Mass);
-                        ya.Add((float)umc.MassCalibrated);
+                    {
+                        y.Add((float)feature.Mass);
+                        ya.Add((float)feature.MassCalibrated);
                     }
                 }
             }
@@ -196,7 +176,7 @@ namespace MultiAlign.Charting
             float[] masses = new float[y.Count];
             float[] scans  = new float[x.Count];
 
-            if (aligned)
+            if (showAligned)
             {
                 ya.CopyTo(masses, 0);
                 xa.CopyTo(scans, 0);
@@ -215,14 +195,13 @@ namespace MultiAlign.Charting
         /// </summary>
         /// <param name="datasetNum"></param>
         /// <param name="aligned"></param>
-        public void AddDatasetToOverlapChart(MultiAlignAnalysis analysis,
-                                             int datasetNum,
-                                             bool aligned,
-                                             int numChargeStates)
+        private void AddDatasetToOverlapChart(List<clsUMC>   features,                                             
+                                             bool           showAligned,
+                                             int            numChargeStates)
         {
             for (int i = 1; i <= numChargeStates; i++)
             {
-                AddChargeStateToOverlapChart(i, analysis, datasetNum, aligned);
+                AddChargeStateToOverlapChart(features, i, showAligned);
             }
         }        
         #endregion
@@ -233,14 +212,10 @@ namespace MultiAlign.Charting
         /// </summary>
         /// <param name="clusters"></param>
         /// <param name="specificCharge"></param>
-        private void AddClusterDataToChart(clsClusterData clusters, int specificCharge)
-        {
-            /// We dont have M/z data.
+        private void AddClusterDataToChart(List<clsCluster> clusters, bool showAligned, int specificCharge)
+        {            
             if (mcheckBox_displayMZ.Checked == true)
                 return;
-
-            int i = 0;
-            int numberOfClusters = clusters.NumClusters;
 
             clsColorIterator colors = new clsColorIterator();
             float maxY = 500;
@@ -261,17 +236,16 @@ namespace MultiAlign.Charting
                 Color color              = colors.GetColor(charge);
                 clsShape shape           = new BubbleShape(mint_pt_size, false);
                 clsPlotParams plotParams = new clsPlotParams(shape, color);
-                i = 0;
+                
                 int clustersAdded = 0;
-                while (i < numberOfClusters)
+                foreach(clsCluster cluster in clusters)
                 {
                     float x = 0;
                     float y = 0;
-
-                    clsCluster cluster = clusters.GetCluster(i);                    
+                                      
                     if (cluster.Charge == charge)
                     {
-                        if (mcheckBox_showAligned.Checked == true)
+                        if (showAligned == true)
                         {
                             y = Convert.ToSingle(cluster.mdouble_mass_calibrated);
                         }
@@ -282,19 +256,8 @@ namespace MultiAlign.Charting
                         massList.Add(y);
 
                         if (mcheckBox_showNET.Checked == true)
-                        {
-
-                            /// 
-                            /// the clusters will not be aligned if they are not peak matched 
-                            /// 
-                            if (mcheckBox_showAligned.Checked == true && mobjAnalysis.AlignmentOptions[0].IsAlignmentBaselineAMasstagDB)
-                            {
-                                x = Convert.ToSingle(cluster.mdouble_aligned_net);
-                            }
-                            else
-                            {
-                                x = Convert.ToSingle(cluster.mdouble_net);
-                            }
+                        {                            
+                            x = Convert.ToSingle(cluster.mdouble_net);                            
                         }
                         else
                         {
@@ -309,7 +272,6 @@ namespace MultiAlign.Charting
                         maxY = Math.Max(y, maxY);
                         clustersAdded++;
                     }
-                    i++;
                 }
                 if (clustersAdded > 0)
                 {
@@ -375,7 +337,6 @@ namespace MultiAlign.Charting
                 {
                     components.Dispose();
                 }
-                mobjAnalysis = null;
             }
             base.Dispose(disposing);
         }
@@ -506,9 +467,7 @@ namespace MultiAlign.Charting
         }
         private void mcheckBox_showNET_CheckedChanged(object sender, EventArgs e)
         {
-            //AutoViewPortOnAddition = true;
             UpdateDisplay();
-            //AutoViewPortOnAddition = false;
             AutoViewPort();
         }
         private void mcomboBox_chargeStates_SelectedIndexChanged(object sender, EventArgs e)
@@ -550,27 +509,7 @@ namespace MultiAlign.Charting
                 YAxisLabel = "Monoisotopic Mass";
             }
 
-            if (mint_dataset < 0)
-            {
-                if (mobjAnalysis == null)
-                    return;
-                if (mobjAnalysis.UMCData.mobjClusterData != null)
-                {
-                    int charge = mcomboBox_chargeStates.SelectedIndex;
-                    AddClusterDataToChart(mobjAnalysis.UMCData.mobjClusterData, charge);
-                } 
-            }
-            else
-            {
-                if (mcomboBox_chargeStates.SelectedIndex < 1)
-                {
-                    AddDatasetToOverlapChart(mobjAnalysis, mint_dataset, mcheckBox_showAligned.Checked, 5);
-                }
-                else
-                {
-                    AddChargeStateToOverlapChart(mcomboBox_chargeStates.SelectedIndex, mobjAnalysis, mint_dataset, mcheckBox_showAligned.Checked); 
-                }
-            }
+            //TODO: Something here.
         }
         #endregion
     }

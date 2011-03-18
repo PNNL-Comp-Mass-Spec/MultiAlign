@@ -9,6 +9,6 @@ namespace MultiAlignEngine
 	}
 
 	clsUtilities::~clsUtilities(void)
-	{
-	}
+	{    
+	} 
 }

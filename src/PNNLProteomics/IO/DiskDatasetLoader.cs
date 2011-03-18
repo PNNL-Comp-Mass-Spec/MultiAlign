@@ -183,8 +183,8 @@ namespace PNNLProteomics.IO
                 datasetInfo.mstrAnalysisJobId   = "NA";
                 datasetInfo.mintBlockID         = 0;
                 datasetInfo.mintRunOrder        = 0;
-                datasetInfo.ArchivePath         = filePath;
-                datasetInfo.mstrLocalPath       = filePath;
+                datasetInfo.Path         = filePath;
+                
 
 				m_numDiskDatasetsLoaded++;
                 numLoaded++;

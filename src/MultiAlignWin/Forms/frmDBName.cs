@@ -115,13 +115,11 @@ namespace MultiAlignWin
         /// Network connection tester.
         /// </summary>
         private clsDMSConnectionTester mobj_connectionTester;
-        private ExternalControls.NiceLine mline;
-        private ExternalControls.NiceLine niceLine1;
         private ListBox mlistbox_recentdatabases;
         private Label label2;
         private Label label7;
         private GroupBox mgroupBox_pmtQualityScore;
-        private Wizard.UI.EtchedLine mline_pmtQualityScore;
+        
         private NumericUpDown mnum_pmtQualityScore;
         private Label mlabel_pmtQualityScoreDescription;
         private TextBox mtextBox_experimentNameFilter;
@@ -484,11 +482,9 @@ namespace MultiAlignWin
             this.mlabel_networkConnectionTest = new System.Windows.Forms.Label();
             this.mprogressBar_connectionTest = new System.Windows.Forms.ProgressBar();
             this.mlinkLabel_testConnection = new System.Windows.Forms.LinkLabel();
-            this.mline = new ExternalControls.NiceLine();
-            this.niceLine1 = new ExternalControls.NiceLine();
             this.mgroupBox_pmtQualityScore = new System.Windows.Forms.GroupBox();
             this.mlabel_pmtQualityScoreDescription = new System.Windows.Forms.Label();
-            this.mline_pmtQualityScore = new Wizard.UI.EtchedLine();
+            
             this.mnum_pmtQualityScore = new System.Windows.Forms.NumericUpDown();
             this.mtextBox_experimentExclusionFilter = new System.Windows.Forms.TextBox();
             this.tipExclusionFilter = new System.Windows.Forms.ToolTip(this.components);
@@ -945,24 +941,6 @@ namespace MultiAlignWin
             this.mlinkLabel_testConnection.TabStop = true;
             this.mlinkLabel_testConnection.Text = "(Re-test connection)";
             // 
-            // mline
-            // 
-            this.mline.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.mline.Location = new System.Drawing.Point(28, 62);
-            this.mline.Name = "mline";
-            this.mline.Size = new System.Drawing.Size(673, 15);
-            this.mline.TabIndex = 59;
-            // 
-            // niceLine1
-            // 
-            this.niceLine1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.niceLine1.Location = new System.Drawing.Point(12, 791);
-            this.niceLine1.Name = "niceLine1";
-            this.niceLine1.Size = new System.Drawing.Size(701, 15);
-            this.niceLine1.TabIndex = 60;
-            // 
             // mgroupBox_pmtQualityScore
             // 
             this.mgroupBox_pmtQualityScore.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
@@ -983,17 +961,7 @@ namespace MultiAlignWin
             this.mlabel_pmtQualityScoreDescription.Location = new System.Drawing.Point(9, 18);
             this.mlabel_pmtQualityScoreDescription.Name = "mlabel_pmtQualityScoreDescription";
             this.mlabel_pmtQualityScoreDescription.Size = new System.Drawing.Size(360, 80);
-            this.mlabel_pmtQualityScoreDescription.TabIndex = 0;
-            // 
-            // mline_pmtQualityScore
-            // 
-            this.mline_pmtQualityScore.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.mline_pmtQualityScore.Edge = Wizard.UI.EtchEdge.Top;
-            this.mline_pmtQualityScore.Location = new System.Drawing.Point(236, 601);
-            this.mline_pmtQualityScore.Name = "mline_pmtQualityScore";
-            this.mline_pmtQualityScore.Size = new System.Drawing.Size(115, 15);
-            this.mline_pmtQualityScore.TabIndex = 62;
+            this.mlabel_pmtQualityScoreDescription.TabIndex = 0;            
             // 
             // mnum_pmtQualityScore
             // 
@@ -1053,9 +1021,8 @@ namespace MultiAlignWin
             this.Controls.Add(this.label1);
             this.Controls.Add(this.mnum_pmtQualityScore);
             this.Controls.Add(this.mtxtMinXCorr);
-            this.Controls.Add(this.mgroupBox_pmtQualityScore);
-            this.Controls.Add(this.mline_pmtQualityScore);
-            this.Controls.Add(this.niceLine1);
+            this.Controls.Add(this.mgroupBox_pmtQualityScore);            
+            
             this.Controls.Add(this.mlinkLabel_testConnection);
             this.Controls.Add(this.mlink_showPNNLProperties);
             this.Controls.Add(this.mlabel_networkConnectionTest);
@@ -1073,8 +1040,7 @@ namespace MultiAlignWin
             this.Controls.Add(this.mbtnDefaults);
             this.Controls.Add(this.groupRemoteDatabase);
             this.Controls.Add(this.mbtn_cancel);
-            this.Controls.Add(this.mbtn_ok);
-            this.Controls.Add(this.mline);
+            this.Controls.Add(this.mbtn_ok);            
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
@@ -1600,8 +1566,7 @@ namespace MultiAlignWin
 			groupLocalDatabase.Enabled = false;
 
 
-            mlabel_pmtQualityScoreDescription.Enabled   = true;
-            mline.Enabled                               = true;
+            mlabel_pmtQualityScoreDescription.Enabled   = true;            
             mnum_pmtQualityScore.Enabled                = true;
 
 			//int index = marrMTDBInfo.Count - mlstBoxDBNames.SelectedIndex - 1;
@@ -1684,10 +1649,7 @@ namespace MultiAlignWin
 			groupLocalDatabase.Enabled  = true;
 
             mlabel_pmtQualityScoreDescription.Enabled = false;
-            mline.Enabled = false;
-
-            //mnum_pmtQualityScore.Enabled = false;
-
+            
 
 			if (System.IO.File.Exists(txtDataBasePath.Text) == false)
 			{					

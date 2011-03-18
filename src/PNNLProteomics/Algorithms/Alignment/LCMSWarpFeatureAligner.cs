@@ -193,9 +193,9 @@ namespace PNNLProteomics.Algorithms.Alignment
                 alignmentData.Add(data);                
             }
 
-            classAlignmentData mergedData = new classAlignmentData();
-            clsAlignmentFunction mergedAlignmentFunction = new clsAlignmentFunction(enmCalibrationType.HYBRID_CALIB, enmAlignmentType.NET_MASS_WARP);
-            float[,] mergedHeatScores = new float[1, 1];
+            classAlignmentData mergedData                = new classAlignmentData();
+            clsAlignmentFunction mergedAlignmentFunction = alignmentFunctions[alignmentFunctions.Count - 1];
+            float[,] mergedHeatScores                    = new float[1, 1];
 
             /// ////////////////////////////////////////////////////////////
             /// Merge the mass error histogram data.
@@ -283,11 +283,11 @@ namespace PNNLProteomics.Algorithms.Alignment
             mergedData.heatScores           = alignmentData[alignmentData.Count - 1].heatScores;
             mergedData.massErrorHistogram   = massErrorHistogramData;
             mergedData.netErrorHistogram    = netErrorHistogramData;
+            mergedData.alignmentFunction    = mergedAlignmentFunction;
 
             alignmentProcessor.Dispose();
 
             return mergedData;
-
         }
         /// <summary>
         /// Merges the histogram data leaving the result in old.

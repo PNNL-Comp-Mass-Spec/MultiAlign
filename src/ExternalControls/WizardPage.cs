@@ -1,82 +1,43 @@
-using System;
-using System.Collections;
+﻿using System;
 using System.ComponentModel;
-using System.Drawing;
-using System.Data;
 using System.Windows.Forms;
 
 namespace Wizard.UI
-{    
-	[DefaultEvent("SetActive")]
-	public class WizardPage : System.Windows.Forms.UserControl
-	{
-		private System.ComponentModel.Container components = null;
-
-        /// <summary>
-        /// Default constructor for a Wizard page control.
-        /// </summary>
-		public WizardPage()
-		{
-			InitializeComponent();
+{
+    public partial class WizardPage : UserControl
+    {
+        public WizardPage()
+        {
+            InitializeComponent();
         }
 
-        #region Windows Generated
-        protected override void Dispose( bool disposing )
-		{
-			if( disposing )
-			{
-				if(components != null)
-				{
-					components.Dispose();
-				}
-			}
-			base.Dispose( disposing );
-		}
-		#region Component Designer generated code
-		/// <summary> 
-		/// Required method for Designer support - do not modify 
-		/// the contents of this method with the code editor.
-		/// </summary>
-		private void InitializeComponent()
-		{
-            this.SuspendLayout();
-            // 
-            // WizardPage
-            // 
-            this.DoubleBuffered = true;
-            this.Name = "WizardPage";
-            this.ResumeLayout(false);
-
-		}
-		#endregion
-        #endregion
 
         #region Wizard Buttons
         protected WizardSheet GetWizard()
-		{
-			return ParentForm as WizardSheet;			
-		}
-		protected void SetWizardButtons(WizardButtons buttons)
-		{
-			GetWizard().SetWizardButtons(buttons);
-		}		
-		protected void PressButton(WizardButtons buttons)
-		{
-			GetWizard().PressButton(buttons);
+        {
+            return ParentForm as WizardSheet;
+        }
+        protected void SetWizardButtons(WizardButtons buttons)
+        {
+            GetWizard().SetWizardButtons(buttons);
+        }
+        protected void PressButton(WizardButtons buttons)
+        {
+            GetWizard().PressButton(buttons);
         }
 
         #region Back Button
         public bool BackButtonEnabled
         {
             get
-            {                
+            {
                 WizardSheet sheet = GetWizard();
                 if (sheet == null)
                 {
                     return false;
                 }
 
-                return GetWizard().BackButtonEnabled; 
+                return GetWizard().BackButtonEnabled;
             }
             set
             {
@@ -178,7 +139,7 @@ namespace Wizard.UI
             }
             set
             {
-                
+
                 WizardSheet sheet = GetWizard();
                 if (sheet != null)
                 {
@@ -246,7 +207,7 @@ namespace Wizard.UI
             }
             set
             {
-                
+
                 WizardSheet sheet = GetWizard();
                 if (sheet != null)
                 {
@@ -255,7 +216,7 @@ namespace Wizard.UI
             }
         }
         #endregion
-        
+
         #region Extra Button
         public bool ExtraButtonEnabled
         {
@@ -271,7 +232,7 @@ namespace Wizard.UI
             }
             set
             {
-                
+
                 WizardSheet sheet = GetWizard();
                 if (sheet != null)
                 {
@@ -315,7 +276,7 @@ namespace Wizard.UI
             }
             set
             {
-                
+
                 WizardSheet sheet = GetWizard();
                 if (sheet != null)
                 {
@@ -340,7 +301,7 @@ namespace Wizard.UI
             }
             set
             {
-                
+
                 WizardSheet sheet = GetWizard();
                 if (sheet != null)
                 {
@@ -363,7 +324,7 @@ namespace Wizard.UI
             }
             set
             {
-                
+
                 WizardSheet sheet = GetWizard();
                 if (sheet != null)
                 {
@@ -385,7 +346,7 @@ namespace Wizard.UI
             }
             set
             {
-                
+
                 WizardSheet sheet = GetWizard();
                 if (sheet != null)
                 {
@@ -394,50 +355,50 @@ namespace Wizard.UI
             }
         }
         #endregion
-       
+
         #endregion
 
         [Category("Wizard")]
-		public event CancelEventHandler SetActive;
-		public virtual void OnSetActive(CancelEventArgs e)
-		{
-			if (SetActive != null)
-				SetActive(this, e);
-		}
-		[Category("Wizard")]
-		public event WizardPageEventHandler WizardNext;
-		public virtual void OnWizardNext(WizardPageEventArgs e)
-		{
-			if (WizardNext != null)
-				WizardNext(this, e);
-		}
-		[Category("Wizard")]
-		public event WizardPageEventHandler WizardBack;
-		public virtual void OnWizardBack(WizardPageEventArgs e)
-		{
-			if (WizardBack != null)
-				WizardBack(this, e);
-		}
-		[Category("Wizard")]
-		public event CancelEventHandler WizardFinish;
-		public virtual void OnWizardFinish(CancelEventArgs e)
-		{
-			if (WizardFinish != null)
-				WizardFinish(this, e);
-		}
-		[Category("Wizard")]
-		public event CancelEventHandler QueryCancel;
-		public virtual void OnQueryCancel(CancelEventArgs e)
-		{
-			if (QueryCancel != null)
-				QueryCancel(this, e);
-		}
-		[Category("Wizard")]
-		public event System.EventHandler WizardExtra;
-		public virtual void OnWizardExtra(EventArgs e)
-		{
-			if (WizardExtra != null)
-				WizardExtra(this, e);
-		}
-	}
+        public event CancelEventHandler SetActive;
+        public virtual void OnSetActive(CancelEventArgs e)
+        {
+            if (SetActive != null)
+                SetActive(this, e);
+        }
+        [Category("Wizard")]
+        public event WizardPageEventHandler WizardNext;
+        public virtual void OnWizardNext(WizardPageEventArgs e)
+        {
+            if (WizardNext != null)
+                WizardNext(this, e);
+        }
+        [Category("Wizard")]
+        public event WizardPageEventHandler WizardBack;
+        public virtual void OnWizardBack(WizardPageEventArgs e)
+        {
+            if (WizardBack != null)
+                WizardBack(this, e);
+        }
+        [Category("Wizard")]
+        public event CancelEventHandler WizardFinish;
+        public virtual void OnWizardFinish(CancelEventArgs e)
+        {
+            if (WizardFinish != null)
+                WizardFinish(this, e);
+        }
+        [Category("Wizard")]
+        public event CancelEventHandler QueryCancel;
+        public virtual void OnQueryCancel(CancelEventArgs e)
+        {
+            if (QueryCancel != null)
+                QueryCancel(this, e);
+        }
+        [Category("Wizard")]
+        public event System.EventHandler WizardExtra;
+        public virtual void OnWizardExtra(EventArgs e)
+        {
+            if (WizardExtra != null)
+                WizardExtra(this, e);
+        }
+    }
 }

@@ -1,26 +1,18 @@
 using System;
-using System.IO;
-using System.Data;
-using System.Text;
-using System.Drawing;
-using System.ComponentModel;
 using System.Collections.Generic;
-
+using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
-
-using MultiAlignEngine;
-using MultiAlignEngine.Features;
-using MultiAlignEngine.Alignment;
-using MultiAlignEngine.Clustering;
-
-using PNNLControls;
-using MultiAlignWin.Drawing;
-
-using PNNLProteomics.Data;
-using PNNLProteomics.Data.Analysis;
-
-using MultiAlign.Drawing;
 using MultiAlign.Charting;
+using MultiAlign.Drawing;
+using MultiAlignEngine.Alignment;
+using PNNLControls;
+using PNNLProteomics.Data;
+using PNNLProteomics.Data.Alignment;
+
+using PNNLProteomics.MultiAlign.Hibernate.Domain.DAO;
+
+using MultiAlignEngine.Features;
 
 namespace MultiAlignWin.Forms
 {
@@ -37,7 +29,7 @@ namespace MultiAlignWin.Forms
         /// <summary>
         /// Number of charge states to visually display in cluster chart.
         /// </summary>
-        private const int CONST_NUM_CHARGE_STATES = 5;
+        private const int NUM_CHARGE_STATES = 10;
         /// <summary>
         /// Delegate when the preview is finished rendering.
         /// </summary>
@@ -47,51 +39,47 @@ namespace MultiAlignWin.Forms
         /// <summary>
         /// Dataset to probe.
         /// </summary>
-        private DatasetInformation mobj_dataset;
+        private DatasetInformation m_dataset;
         /// <summary>
         /// Options defining the alignment for this dataset.
         /// </summary>
-        private clsAlignmentOptions mobj_alignment;
-        /// <summary>
-        /// Options used to cluster this dataset.
-        /// </summary>
-        private clsClusterOptions mobj_cluster;
-        /// <summary>
-        /// Object that holds all of the analysis data.
-        /// </summary>
-        private MultiAlignAnalysis mobj_analysis;
-        /// <summary>
-        /// Index of this dataset in the analysis.
-        /// </summary>
-        private int mint_datasetIndex;
+        private clsAlignmentOptions m_alignmentOptions;        
         /// <summary>
         /// Number of charge states to display on cluster chart.
         /// </summary>
-        private int mint_chargeStates;
+        private int m_chargeStates;
         /// <summary>
         /// Alignment data.
         /// </summary>
-        private PNNLProteomics.Data.Alignment.classAlignmentData mobj_alignmentData;
+        private PNNLProteomics.Data.Alignment.classAlignmentData m_alignmentData;
+        /// <summary>
+        /// Determines how to load features from the feature cache.
+        /// </summary>
+        private IUmcDAO m_featureCache;
+        /// <summary>
+        /// Used to determine what features we can load from the feature cache.
+        /// </summary>
+        private int m_datasetIndex;
         #endregion
 
         /// <summary>
         /// Default constructor for a dataset class.
         /// </summary>
-        public controlDatasetInformation(MultiAlignAnalysis analysis, int datasetIndex)
+        public controlDatasetInformation(DatasetInformation     info,
+                                         classAlignmentData     alignmentData,
+                                         clsAlignmentOptions    alignmentOptions,
+                                         IUmcDAO                featureCache)            
         {
             InitializeComponent();
 
-            mobj_dataset        = analysis.Datasets[datasetIndex] as DatasetInformation;
-            mobj_alignment      = analysis.AlignmentOptions[datasetIndex] as clsAlignmentOptions;
-            mobj_alignmentData  = analysis.AlignmentData[datasetIndex]; 
-            mobj_cluster        = analysis.ClusterOptions;
-            mobj_analysis       = analysis;
-            mint_datasetIndex   = datasetIndex;
-            mint_chargeStates   = CONST_NUM_CHARGE_STATES;
-
+            AllowTopLevelForms  = false;
+            m_dataset           = info;
+            m_alignmentOptions  = alignmentOptions;
+            m_alignmentData     = alignmentData;            
+            m_chargeStates      = NUM_CHARGE_STATES;
+            m_featureCache      = featureCache;
             UpdateUserInterface();            
         }
-
 
         #region Button Link Event Handlers
         
@@ -102,7 +90,7 @@ namespace MultiAlignWin.Forms
         /// <param name="e"></param>
         private void mbutton_datasetName_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            DatasetSummary summary = new DatasetSummary(mobj_dataset, mobj_alignment, mobj_cluster);
+            DatasetSummary summary = new DatasetSummary(m_dataset, m_alignmentOptions);
             summary.ShowDialog();
         }
         /// <summary>
@@ -122,23 +110,20 @@ namespace MultiAlignWin.Forms
         /// </summary>
         private void UpdateUserInterface()
         {
-            if (mobj_alignment == null || mobj_dataset == null || mobj_cluster == null)
+            if (m_alignmentOptions == null || m_dataset == null)
                 return;
 
             /// 
             /// Dataset information pane
             /// 
-            mlabel_datasetID.Text    = string.Format("{0}", mobj_dataset.mstrDatasetId);
-            mbutton_datasetName.Text = string.Format("{0}", mobj_dataset.DatasetName);
-            mbutton_baseline.Text    = Path.GetFileName(mobj_alignment.AlignmentBaselineName);
-
-            clsUMC [] umcs = mobj_analysis.UMCData.GetUMCS(mint_datasetIndex);
-            mlabel_umcs.Text = string.Format("{0}", umcs.Length);
-
-            if (mobj_alignmentData != null)
+            mlabel_datasetID.Text    = string.Format("{0}", m_dataset.mstrDatasetId);
+            mbutton_datasetName.Text = string.Format("{0}", m_dataset.DatasetName);
+            mbutton_baseline.Text    = Path.GetFileName(m_alignmentOptions.AlignmentBaselineName);
+           
+            if (m_alignmentData != null)
             {
-                mlabel_stdevMass.Text = string.Format("Stdev. Mass = {0:0.000}", mobj_alignmentData.MassStandardDeviation);
-                mlabel_stdevNET.Text  = string.Format("Stdev. NET = {0:0.000}", mobj_alignmentData.NETStandardDeviation);
+                mlabel_stdevMass.Text = string.Format("Stdev. Mass = {0:0.000}", m_alignmentData.MassStandardDeviation);
+                mlabel_stdevNET.Text  = string.Format("Stdev. NET = {0:0.000}", m_alignmentData.NETStandardDeviation);
             }
             PerformLayout();
         }
@@ -168,7 +153,7 @@ namespace MultiAlignWin.Forms
             /// 
             /// If the dataset is the baseline display that.
             /// 
-            if (mobj_dataset.DatasetName == Path.GetFileName(mobj_alignment.AlignmentBaselineName))
+            if (m_alignmentOptions == null)
             {
                 if (mpicture_alignmentHeatmap.Image != null)
                     mpicture_alignmentHeatmap.Image.Dispose();
@@ -188,35 +173,38 @@ namespace MultiAlignWin.Forms
                             format);
                 g.RotateTransform(45.0F);
 
-                mpicture_preview.Image               = image;
-                mpicture_alignmentHeatmap.Image      = image;
+                mpicture_scanvsNet.Image = image;
+                mpicture_alignmentHeatmap.Image = image;
                 mpictureBox_massErrorHistogram.Image = image;
-                mpictureBox_netErrorHistogram.Image  = image;
-                mpicture_massResiduals.Image         = image;
-                mpictureBox_massNetResiduals.Image   = image;
-                mpictureBox_mzMassResidual.Image     = image;
-                mpicture_netResiduals.Image          = image;
-                mpicture_alignmentHeatmap.Visible    = true;
-                mlabel_alignment.Visible             = true;
+                mpictureBox_netErrorHistogram.Image = image;
+                mpicture_massResiduals.Image = image;
+                mpictureBox_massNetResiduals.Image = image;
+                mpictureBox_mzMassResidual.Image = image;
+                mpicture_netResiduals.Image = image;
+                mpicture_alignmentHeatmap.Visible = true;
+                mlabel_alignment.Visible = true;
+            }
+            else
+            {
+
+                if (scanNet != null)
+                    mpicture_scanvsNet.Image = scanNet;
+                if (net != null)
+                    mpictureBox_netErrorHistogram.Image = net;
+                if (massError != null)
+                    mpictureBox_massErrorHistogram.Image = massError;
+                if (alignedNetResidual != null)
+                    mpicture_netResiduals.Image = alignedNetResidual;
+                if (massResidual != null)
+                    mpicture_massResiduals.Image = massResidual;
+                if (mzMassResidual != null)
+                    mpictureBox_mzMassResidual.Image = mzMassResidual;
+                if (massNetResidual != null)
+                    mpictureBox_massNetResiduals.Image = massNetResidual;
             }
 
-            if (scanNet != null)
-                mpicture_preview.Image = scanNet;
             if (rawData != null)
                 mpicture_rawData.Image = rawData;
-            if (net != null)
-                mpictureBox_netErrorHistogram.Image = net;
-            if (massError != null)
-                mpictureBox_massErrorHistogram.Image = massError;
-            if (alignedNetResidual != null)
-                mpicture_netResiduals.Image = alignedNetResidual;
-            if (massResidual != null)
-                mpicture_massResiduals.Image = massResidual;
-            if (mzMassResidual != null)
-                mpictureBox_mzMassResidual.Image = mzMassResidual;
-            if (massNetResidual != null)
-                mpictureBox_massNetResiduals.Image = massNetResidual;
-
         }
         /// <summary>
         /// Handles rendering images when the control is finished rendering.
@@ -262,27 +250,29 @@ namespace MultiAlignWin.Forms
             options.MarginMax        = 2;
             options.MarginMin        = 1;
 
+            List<clsUMC> features = m_featureCache.FindByDatasetId(m_datasetIndex);
+
             /// 
             /// Previews
             /// 
-            Image previewScanClusterNet = RenderDatasetInfo.ScanVsClusterNet_Thumbnail(    mobj_analysis,
-                                                                                                mint_datasetIndex,
-                                                                                                mpicture_preview.Width,
-                                                                                                mpicture_preview.Height,
-                                                                                                false, false, false);                                                                                                
+            Image previewScanClusterNet = null;
+                //RenderDatasetInfo.ScanVsClusterNet_Thumbnail(    mobj_analysis,
+                //                                                                                m_datasetIndex,
+                //                                                                                mpicture_preview.Width,
+                //                                                                                mpicture_preview.Height,
+                //                                                                                false, false, false);                                                                                                
                         
-            Image previewClusterChart = RenderDatasetInfo.ClusterChart_Thumbnail(mobj_analysis,
-                                                                                                mint_datasetIndex,
-                                                                                                width,
-                                                                                                height,
-                                                                                                true,
-                                                                                                mint_chargeStates, false, false, false);
+            Image previewClusterChart = RenderDatasetInfo.FeatureChart_Thumbnail(   m_dataset,
+                                                                                    features,
+                                                                                    width,
+                                                                                    height,
+                                                                                    true,
+                                                                                    NUM_CHARGE_STATES, false, false, false);
 
             /// ------------------------------------------------------------------------------------
             /// Alignment
             /// ------------------------------------------------------------------------------------            
-            Image alignmentPreview = RenderDatasetInfo.AlignmentHeatmap_Thumbnail(mobj_analysis,
-                                                                                  mint_datasetIndex, 
+            Image alignmentPreview = RenderDatasetInfo.AlignmentHeatmap_Thumbnail(m_alignmentData, 
                                                                                   width,
                                                                                   height);                        
             Image massErrorHistogram = null;
@@ -292,19 +282,19 @@ namespace MultiAlignWin.Forms
             Image mzMassResidual     = null;
             Image massNetResidual    = null;
 
-            if (mobj_alignmentData != null)
+            if (m_alignmentData != null)
             {
 
-                massErrorHistogram = RenderDatasetInfo.ErrorHistogram_Thumbnail(mobj_alignmentData.massErrorHistogram, options);
-                netErrorHistogram = RenderDatasetInfo.ErrorHistogram_Thumbnail(mobj_alignmentData.netErrorHistogram, options);
+                massErrorHistogram = RenderDatasetInfo.ErrorHistogram_Thumbnail(m_alignmentData.massErrorHistogram, options);
+                netErrorHistogram = RenderDatasetInfo.ErrorHistogram_Thumbnail(m_alignmentData.netErrorHistogram, options);
 
-                if (mobj_alignmentData.ResidualData != null)
+                if (m_alignmentData.ResidualData != null)
                 {
-                    classAlignmentResidualData data = mobj_alignmentData.ResidualData;         
-                    alignedNetResidual = RenderDatasetInfo.Residual_Thumbnail(data.scans, data.customNet, null, false, options);
-                    massResidual = RenderDatasetInfo.Residual_Thumbnail(data.scans, data.massError, data.massErrorCorrected, false, options);
-                    mzMassResidual = RenderDatasetInfo.Residual_Thumbnail(data.mz, data.mzMassError, data.mzMassErrorCorrected, true, options);
-                    massNetResidual = RenderDatasetInfo.Residual_Thumbnail(data.customNet, data.massError, null, false, options);                    
+                    classAlignmentResidualData data = m_alignmentData.ResidualData;         
+                    alignedNetResidual  = RenderDatasetInfo.Residual_Thumbnail(data.scans, data.customNet, null, false, options);
+                    massResidual        = RenderDatasetInfo.Residual_Thumbnail(data.scans, data.massError, data.massErrorCorrected, false, options);
+                    mzMassResidual      = RenderDatasetInfo.Residual_Thumbnail(data.mz, data.mzMassError, data.mzMassErrorCorrected, true, options);
+                    massNetResidual     = RenderDatasetInfo.Residual_Thumbnail(data.customNet, data.massError, null, false, options);                    
                 }
             }
            
@@ -332,17 +322,25 @@ namespace MultiAlignWin.Forms
 
         #region Properties
         /// <summary>
+        /// Determines if forms can be created as top level objects or if the images are just static.
+        /// </summary>
+        public bool AllowTopLevelForms
+        {
+            get;
+            set;
+        }
+        /// <summary>
         /// Gets or sets the dataset information.
         /// </summary>
         public DatasetInformation Dataset
         {
             get
             {
-                return mobj_dataset;
+                return m_dataset;
             }
             set
             {
-                mobj_dataset = value;
+                m_dataset = value;
                 if (value != null)
                 {
                     UpdateUserInterface();
@@ -356,11 +354,11 @@ namespace MultiAlignWin.Forms
         {
             get
             {
-                return mobj_alignment;
+                return m_alignmentOptions;
             }
             set
             {
-                mobj_alignment = value;
+                m_alignmentOptions = value;
                 if (value != null)
                 {
                     UpdateUserInterface();
@@ -377,19 +375,24 @@ namespace MultiAlignWin.Forms
         /// <param name="e"></param>
         private void mpicture_preview_Click(object sender, EventArgs e)
         {
-            string name = "Scan Vs. Cluster NET";
-            Form displayForm = RetrieveForm(name);
+            if (!AllowTopLevelForms)
+            {
+                return;
+            }
 
-            if (displayForm == null)
-            {
-                ctlScatterChart chart = RenderDatasetInfo.ScanVsClusterNet_Chart(mobj_analysis, mint_datasetIndex);
-                displayForm = RegisterChart(name, chart);
-            }
-            if (displayForm != null)
-            {
-                displayForm.Show();
-                displayForm.BringToFront();
-            }
+            //string name = "Scan Vs. Cluster NET";
+            //Form displayForm = RetrieveForm(name);
+
+            //if (displayForm == null)
+            //{
+            //    ctlScatterChart chart = RenderDatasetInfo.ScanVsClusterNet_Chart(_analysis, mint_datasetIndex);
+            //    displayForm = RegisterChart(name, chart);
+            //}
+            //if (displayForm != null)
+            //{
+            //    displayForm.Show();
+            //    displayForm.BringToFront();
+            //}
         }
         /// <summary>
         /// Displays the raw data chart.
@@ -397,13 +400,19 @@ namespace MultiAlignWin.Forms
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void mpicture_rawData_Click(object sender, EventArgs e)
-        {            
+        {
+            if (!AllowTopLevelForms)
+            {
+                return;
+            }
+      
             string name = "Cluster Chart";
             Form displayForm = RetrieveForm(name);
 
             if (displayForm == null)
             {
-                ctlScatterChart chart = RenderDatasetInfo.ClusterChart_Chart(mobj_analysis, mint_datasetIndex, false, mint_chargeStates);
+                List<clsUMC> features = m_featureCache.FindByDatasetId(m_datasetIndex);
+                ctlScatterChart chart = RenderDatasetInfo.FeatureChart_Chart(m_dataset, features, false, NUM_CHARGE_STATES);
                 displayForm = RegisterChart(name, chart);
             }
             if (displayForm != null)
@@ -418,7 +427,12 @@ namespace MultiAlignWin.Forms
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void mpictureBox_massErrorHistogram_Click(object sender, EventArgs e)
-        {                        
+        {
+            if (!AllowTopLevelForms)
+            {
+                return;
+            }
+                  
             string name = "Mass Error Histogram";
             Form displayForm = RetrieveForm(name);
 
@@ -431,7 +445,7 @@ namespace MultiAlignWin.Forms
                 options.XAxisLabel = "Mass Error (PPM)";
                 options.YAxisLabel = "Count";
                                 
-                controlHistogram chart = RenderDatasetInfo.ErrorHistogram_Chart(mobj_alignmentData.massErrorHistogram, options);
+                controlHistogram chart = RenderDatasetInfo.ErrorHistogram_Chart(m_alignmentData.massErrorHistogram, options);
                 if (chart == null)
                     return; 
 
@@ -452,22 +466,24 @@ namespace MultiAlignWin.Forms
         /// <param name="e"></param>
         private void mpictureBox_netErrorHistogram_Click(object sender, EventArgs e)
         {
+            if (!AllowTopLevelForms)
+            {
+                return;
+            }
+
             string name = "NET Error Histogram";
             Form displayForm = RetrieveForm(name);
 
             if (displayForm == null)
-            {
-                double[,] data = mobj_analysis.AlignmentData[mint_datasetIndex].netErrorHistogram;
-
-                
+            {                
                 ChartDisplayOptions options = new ChartDisplayOptions(true, true, true, true);
-                options.MarginMin = 100;
-                options.MarginMin = 0;
-                options.Title = "";
-                options.XAxisLabel = "NET Error (%)";
-                options.YAxisLabel = "Count";
+                options.MarginMin   = 100;
+                options.MarginMin   = 0;
+                options.Title       = "";
+                options.XAxisLabel  = "NET Error (%)";
+                options.YAxisLabel  = "Count";
 
-                controlHistogram chart = RenderDatasetInfo.ErrorHistogram_Chart(mobj_alignmentData.netErrorHistogram, options);
+                controlHistogram chart = RenderDatasetInfo.ErrorHistogram_Chart(m_alignmentData.netErrorHistogram, options);
                 if (chart == null)
                     return;
 
@@ -488,19 +504,24 @@ namespace MultiAlignWin.Forms
         /// <param name="e"></param>
         private void mpicture_massResiduals_Click(object sender, EventArgs e)
         {
-            string name = "Mass vs Scan Residuals";
-            Form displayForm = RetrieveForm(name);
+            if (!AllowTopLevelForms)
+            {
+                return;
+            }
 
-            if (displayForm == null)
-            {
-                ctlScatterChart chart = RenderDatasetInfo.MassVsScanResiduals_Chart(mobj_analysis, mint_datasetIndex);
-                displayForm = RegisterChart(name, chart);
-            }
-            if (displayForm != null)
-            {
-                displayForm.Show();
-                displayForm.BringToFront();
-            }
+            //string name = "Mass vs Scan Residuals";
+            //Form displayForm = RetrieveForm(name);
+
+            //if (displayForm == null)
+            //{
+            //    ctlScatterChart chart = RenderDatasetInfo.MassVsScanResiduals_Chart(mobj_analysis, mint_datasetIndex);
+            //    displayForm = RegisterChart(name, chart);
+            //}
+            //if (displayForm != null)
+            //{
+            //    displayForm.Show();
+            //    displayForm.BringToFront();
+            //}
         }
         /// <summary>
         /// Displays the NET residual chart.
@@ -509,19 +530,24 @@ namespace MultiAlignWin.Forms
         /// <param name="e"></param>
         private void mpicture_netResiduals_Click(object sender, EventArgs e)
         {
-            string name = "NET Residuals";
-            Form displayForm = RetrieveForm(name);
+            if (!AllowTopLevelForms)
+            {
+                return;
+            }
 
-            if (displayForm == null)
-            {
-                ctlScatterChart chart = RenderDatasetInfo.NETResiduals_Chart(mobj_analysis, mint_datasetIndex);
-                displayForm = RegisterChart(name, chart);
-            }
-            if (displayForm != null)
-            {
-                displayForm.Show();
-                displayForm.BringToFront();
-            }
+            //string name = "NET Residuals";
+            //Form displayForm = RetrieveForm(name);
+
+            //if (displayForm == null)
+            //{
+            //    ctlScatterChart chart = RenderDatasetInfo.NETResiduals_Chart(mobj_analysis, mint_datasetIndex);
+            //    displayForm = RegisterChart(name, chart);
+            //}
+            //if (displayForm != null)
+            //{
+            //    displayForm.Show();
+            //    displayForm.BringToFront();
+            //}
         }
         /// <summary>
         /// Displays the Mass vs M/Z Residual plots.
@@ -530,6 +556,11 @@ namespace MultiAlignWin.Forms
         /// <param name="e"></param>
         private void mpictureBox_mzMassResidual_Click(object sender, EventArgs e)
         {
+            if (!AllowTopLevelForms)
+            {
+                return;
+            }
+
             //string name = "Mass Vs. M/Z Residuals";
             //Form displayForm = RetrieveForm(name);
 
@@ -546,7 +577,12 @@ namespace MultiAlignWin.Forms
         }
         private void mpicture_alignmentHeatmap_Click(object sender, EventArgs e)
         {
-            ctlAlignmentHeatMap chart = RenderDatasetInfo.AlignmentHeatMap_Chart(mobj_analysis, mint_datasetIndex);            
+            if (!AllowTopLevelForms)
+            {
+                return;
+            }
+
+            ctlAlignmentHeatMap chart = RenderDatasetInfo.AlignmentHeatMap_Chart(m_alignmentData);            
             if (chart != null)
             {
                 Form displayform = new Form();
@@ -562,19 +598,24 @@ namespace MultiAlignWin.Forms
 
         private void mpictureBox_massNetResiduals_Click(object sender, EventArgs e)
         {
-            string name = "Mass and NET Residuals";
-            Form displayForm = RetrieveForm(name);
-
-            if (displayForm == null)
+            if (!AllowTopLevelForms)
             {
-                ctlScatterChart chart = RenderDatasetInfo.MassNETResiduals_Chart(mobj_analysis, mint_datasetIndex);
-                displayForm = RegisterChart(name, chart);
+                return;
             }
-            if (displayForm != null)
-            {
-                displayForm.Show();
-                displayForm.BringToFront();
-            }                            
+
+            //string name = "Mass and NET Residuals";
+            //Form displayForm = RetrieveForm(name);
+
+            //if (displayForm == null)
+            //{
+            //    ctlScatterChart chart = RenderDatasetInfo.MassNETResiduals_Chart(mobj_analysis, mint_datasetIndex);
+            //    displayForm = RegisterChart(name, chart);
+            //}
+            //if (displayForm != null)
+            //{
+            //    displayForm.Show();
+            //    displayForm.BringToFront();
+            //}                            
         }
         /// <summary>
         /// Retrieves the form if a form exists

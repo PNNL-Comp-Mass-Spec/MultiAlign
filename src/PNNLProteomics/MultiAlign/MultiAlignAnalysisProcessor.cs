@@ -31,7 +31,6 @@ using PNNLProteomics.MultiAlign;
 using PNNLProteomics.MultiAlign.Hibernate;
 using PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate;
 using PNNLProteomics.Data;
-using PNNLProteomics.Data.Analysis;
 using PNNLProteomics.Algorithms.PeakMatching;
 using PNNLProteomics.Algorithms.Alignment;
 using PNNLProteomics.Algorithms;
@@ -63,11 +62,15 @@ namespace PNNLProteomics.MultiAlign
         /// <summary>
         /// Fired when features are peak matched.
         /// </summary>
-        public event EventHandler<FeaturesPeakMatchedEventArgs> FeaturesPeakMatched;        
+        public event EventHandler<FeaturesPeakMatchedEventArgs> FeaturesPeakMatched;
+        /// <summary>
+        /// Fired when a catastrophic error occurs.
+        /// </summary>
+        public event EventHandler<AnalysisErrorEventArgs> AnalysisError;
         /// <summary>
         /// Fired when the analysis is complete.
         /// </summary>
-        public event EventHandler AnalysisComplete;
+        public event EventHandler<AnalysisCompleteEventArgs> AnalysisComplete;
         /// <summary>
         /// Fired when a status update is ready.
         /// </summary>
@@ -79,10 +82,6 @@ namespace PNNLProteomics.MultiAlign
         /// Algorithms used in processing.
         /// </summary>
         private AlgorithmProvider m_algorithms;
-        /// <summary>
-        /// 
-        /// </summary>
-        private FeatureDataAccessProviders m_providers;
         /// <summary>
         /// Holds all information about how to perform the analysis and how to store results.
         /// </summary>
@@ -99,27 +98,12 @@ namespace PNNLProteomics.MultiAlign
         /// </summary>
         public MultiAlignAnalysisProcessor()
         {
-            m_providers  = null;
             m_analysis   = null;
             m_algorithms = null;
         }
         #endregion
 
         #region Properties
-        /// <summary>
-        /// Gets or sets the data providers to the underlying data cache.
-        /// </summary>
-        public FeatureDataAccessProviders DataProviders
-        {
-            get
-            {
-                return m_providers;
-            }
-            set
-            {
-                m_providers = value;
-            }
-        }
         /// <summary>
         /// Gets or sets the object that provides the algorithms for clustering, aligning, etc.
         /// </summary>
@@ -191,14 +175,17 @@ namespace PNNLProteomics.MultiAlign
                              clsUMCFindingOptions     options,
                              string                   analysisPath)
         {            
-            IUmcDAO featureCache = m_providers.FeatureCache;
+            IUmcDAO featureCache = m_analysis.DataProviders.FeatureCache;
             foreach (DatasetInformation dataset in datasets)
             {
+                UpdateStatus("Loading dataset " + dataset.DatasetName + ".");
                 List<clsUMC> features = UMCLoaderFactory.LoadData(  dataset,
                                                                     featureCache,
                                                                     options);
-                                
-                featureCache.AddAll(features);                  
+
+                UpdateStatus("Loaded dataset " + dataset.DatasetName + ". Adding to cache.");
+
+                featureCache.AddAll(features);
                 if (FeaturesLoaded != null)
                 {
                     FeaturesLoadedEventArgs args = new FeaturesLoadedEventArgs(dataset, features);
@@ -243,7 +230,7 @@ namespace PNNLProteomics.MultiAlign
                 UpdateStatus("Using Mammoth clustering framework without partitions.  Clustering will run with all data loaded into memory.");
             }
 
-            string databaseName = Path.Combine(m_analysis.PathName, m_analysis.AnalysisName);
+            string databaseName = Path.Combine(m_analysis.AnalysisPath, m_analysis.AnalysisName);
             int maxChargeState = 15;
             int minChargeState = 1;
 
@@ -295,19 +282,21 @@ namespace PNNLProteomics.MultiAlign
         public void AlignDatasets(MultiAlignAnalysis analysis)
         {
             // Connect to database of features.                
-            IUmcDAO featureCache = m_providers.FeatureCache;
+            IUmcDAO featureCache = m_analysis.DataProviders.FeatureCache;
             
             // Load the baseline data.
             List<clsUMC> baselineFeatures   = null;
-            int baselineDatasetID             = -1;
+            int baselineDatasetID           = -1;
             DatasetInformation baselineInfo = null;
 
-            if (!analysis.DefaultAlignmentOptions.IsAlignmentBaselineAMasstagDB)
+            UpdateStatus("Confirming baseline.");
+            if (!analysis.UseMassTagDBAsBaseline)
             {
                 int i = 0;
                 foreach(DatasetInformation info in analysis.Datasets)
                 {
-                    if (info.mstrLocalPath == analysis.BaselineDataset)
+                    //TODO: Check the path of the dataset as the dataset name!
+                    if (info.DatasetName == analysis.BaselineDatasetName)
                     {
                         baselineDatasetID = i;
                         break;
@@ -315,6 +304,8 @@ namespace PNNLProteomics.MultiAlign
                     i++;
                 }
                 baselineInfo        = analysis.Datasets[baselineDatasetID];
+
+                UpdateStatus("Loading baseline features from " + baselineInfo.DatasetName + " for alignment.");
                 baselineFeatures    = featureCache.FindByDatasetId(baselineDatasetID);
             }
             else
@@ -327,14 +318,19 @@ namespace PNNLProteomics.MultiAlign
             
             // Align pairwise and cache results intermediately.
             IFeatureAligner aligner = m_algorithms.Aligner;
-            
+
+            m_analysis.AlignmentOptions.Clear();
+
             for (int datasetNum = 0; datasetNum < m_analysis.Datasets.Count; datasetNum++)
             {
                 if (datasetNum != baselineDatasetID)
-                {                        
-                    DatasetInformation  datasetInfo      = m_analysis.Datasets[datasetNum];
-                    List<clsUMC>        features         = featureCache.FindByDatasetId(datasetNum);
-                    classAlignmentData  alignmentData    = null;
+                {
+
+                    DatasetInformation datasetInfo = m_analysis.Datasets[datasetNum];
+
+                    UpdateStatus("Retrieving data from " + datasetInfo.DatasetName + " for alignment.");
+                    List<clsUMC> features = featureCache.FindByDatasetId(datasetNum);
+                    classAlignmentData alignmentData = null;
 
                     //// We dont track the UMC Index...this was used previously by the UMC Data object :(
                     //// Here we are applying a temp fix to iterate through the features and assign its unique ID.                    
@@ -344,24 +340,33 @@ namespace PNNLProteomics.MultiAlign
                         feature.mint_umc_index = featureIDIndex++;
                     }
 
+
+                    m_analysis.AlignmentOptions.Add(m_analysis.DefaultAlignmentOptions);
+
+
                     if (baselineInfo != null)
                     {
+                        UpdateStatus("Aligning " + datasetInfo.DatasetName + " to baseline.");
                         alignmentData = aligner.AlignFeatures(baselineFeatures,
                                                             features,
                                                             analysis.AlignmentOptions[datasetNum]);
                     }
                     else
                     {
+                        UpdateStatus("Aligning " + datasetInfo.DatasetName + " to mass tag database.");
                         alignmentData = aligner.AlignFeatures(analysis.MassTagDatabase,
                                                             features,
                                                             analysis.AlignmentOptions[datasetNum]);
                     }
-                    alignmentData.aligneeDataset       = datasetInfo.DatasetName;
+                    alignmentData.aligneeDataset = datasetInfo.DatasetName;                    
                     analysis.AlignmentData.Add(alignmentData);
 
-                    featureCache.UpdateAll(features);                    
+
+                    UpdateStatus("Updating cache with aligned features.");
+                    featureCache.UpdateAll(features);
+
                     if (FeaturesAligned != null)
-                    {                            
+                    {
                         FeaturesAlignedEventArgs args = new FeaturesAlignedEventArgs(baselineInfo,
                                                                                      datasetInfo,
                                                                                      alignmentData);
@@ -369,6 +374,11 @@ namespace PNNLProteomics.MultiAlign
                     }
                     features.Clear();
                     features = null;
+                }
+                else
+                {
+                    m_analysis.AlignmentData.Add(null);
+                    m_analysis.AlignmentOptions.Add(null);
                 }
             }
         }
@@ -381,11 +391,11 @@ namespace PNNLProteomics.MultiAlign
             if (shouldPeakMatch)
             {
                 if (m_analysis.MassTagDatabase != null)
-                {                    
-                    List<clsCluster> clusters = m_providers.ClusterCache.FindAll();
+                {
+                    List<clsCluster> clusters = m_analysis.DataProviders.ClusterCache.FindAll();
                     IPeakMatcher peakMatcher  = m_algorithms.PeakMatcher;
 
-                    if (m_analysis.UseSMART)
+                    if (m_analysis.UseSTAC)
                     {
                         UpdateStatus("Peak matching with SMART");
                         m_analysis.STACTResults = peakMatcher.PerformSTAC(clusters,
@@ -423,14 +433,15 @@ namespace PNNLProteomics.MultiAlign
                 throw new NullReferenceException("The algorithms have not been set for this analysis.");
             }
 
-            if (m_providers == null)
-            {
-                throw new NullReferenceException("The data cache providers have not been set for this analysis.");
-            }
 
             if (analysis == null)
             {
                 throw new NullReferenceException("The analysis data storage cannot be null.");
+            }
+
+            if (analysis.DataProviders == null)
+            {
+                throw new NullReferenceException("The data cache providers have not been set for this analysis.");
             }
 
             // Make sure we start with a fresh analysis.
@@ -454,43 +465,66 @@ namespace PNNLProteomics.MultiAlign
         /// </summary>
         private void PerformAnalysis()
         {
-            clsMassTagDB database        = null;
+            try
+            {
+                clsMassTagDB database = null;
 
-            UpdateStatus("Setting up parameters");
-            
-            // Load the mass tag database if we are aligning, or if we are 
-            // peak matching (but aligning to a reference dataset.
-            if (m_analysis.UseMassTagDBAsBaseline)
-            {
-                database = MTDBLoaderFactory.LoadMassTagDB(m_analysis.MassTagDBOptions);
-            }
-            else
-            {
-                if (m_analysis.MassTagDBOptions.menm_databaseType != MassTagDatabaseType.None)
+                UpdateStatus("Setting up parameters");
+
+                // Load the mass tag database if we are aligning, or if we are 
+                // peak matching (but aligning to a reference dataset.
+                if (m_analysis.UseMassTagDBAsBaseline)
                 {
                     database = MTDBLoaderFactory.LoadMassTagDB(m_analysis.MassTagDBOptions);
                 }
+                else
+                {
+                    if (m_analysis.MassTagDBOptions.menm_databaseType != MassTagDatabaseType.None)
+                    {
+                        database = MTDBLoaderFactory.LoadMassTagDB(m_analysis.MassTagDBOptions);
+                    }
+                }
+                m_analysis.MassTagDatabase = database;
+
+                UpdateStatus("Loading data");
+                LoadDatasetData(m_analysis.Datasets,
+                                m_analysis.UMCFindingOptions,
+                                Path.Combine(m_analysis.AnalysisPath, m_analysis.AnalysisName));
+
+                UpdateStatus("Aligning datasets.");
+                AlignDatasets(m_analysis);
+
+                UpdateStatus("Performing clustering.");
+                PerformClustering(m_analysis, m_algorithms.Clusterer);
+
+
+                // Performs peak matching if deemed to.
+                PerformPeakMatching();
+
+                UpdateStatus(string.Format("Analysis {0} Completed.", m_analysis.AnalysisName));
             }
-            m_analysis.MassTagDatabase   = database;
+            catch (OutOfMemoryException ex)
+            {
+                if (AnalysisError != null)
+                {
+                    AnalysisError(this, new AnalysisErrorEventArgs("Out of memory.", ex));
+                }
+                return;
+            }
+            catch (Exception ex)
+            {
+                if (AnalysisError != null)
+                {
+                    AnalysisError(this, new AnalysisErrorEventArgs("Handled Error. ", ex));
+                }
+                return;
+            }
+           
 
-            UpdateStatus("Loading data");
-            LoadDatasetData(m_analysis.Datasets, 
-                            m_analysis.UMCFindingOptions, 
-                            Path.Combine(m_analysis.PathName, m_analysis.AnalysisName));
-
-            UpdateStatus("Aligning datasets.");
-            AlignDatasets(m_analysis);
-
-            UpdateStatus("Performing clustering.");
-            PerformClustering(m_analysis, m_algorithms.Clusterer);
-
-
-            // Performs peak matching if deemed to.
-            PerformPeakMatching();
-
-            UpdateStatus(string.Format("Analysis {0} Completed.", m_analysis.AnalysisName));
             if (AnalysisComplete != null)
-                AnalysisComplete(this, null);            
+            {
+                AnalysisComplete(this, new AnalysisCompleteEventArgs(m_analysis));
+            }            
         }
         #endregion     
     }

@@ -38,12 +38,12 @@ namespace PNNLProteomics.IO.UMC
             umcFinder.UMCFindingOptions = options;
             int umcIndex = 0;
 
-            string extension = Path.GetExtension(dataset.mstrLocalPath).ToUpper();
+            string extension = Path.GetExtension(dataset.Path).ToUpper();
             switch (extension)
             {
                 case ".TXT":
                     // LCMS Features File                         
-                    UmcReader umcReader = new UmcReader(dataset.mstrLocalPath);
+                    UmcReader umcReader = new UmcReader(dataset.Path);
                     loadedFeatures = umcReader.GetUmcList().ToArray();
                     int minScan = int.MaxValue;
                     int maxScan = int.MinValue;
@@ -85,7 +85,7 @@ namespace PNNLProteomics.IO.UMC
                     }
                     break;
                 case ".SQLITE":
-                    NHibernateUtil.SetDbLocationForRead(dataset.mstrLocalPath);
+                    NHibernateUtil.SetDbLocationForRead(dataset.Path);
                     try
                     {
                         UmcDAOHibernate umcDAOHibernate = new UmcDAOHibernate();
@@ -109,13 +109,13 @@ namespace PNNLProteomics.IO.UMC
                     break;
                 case ".PEK":
                     // Else we are using a PEK or CSV file
-                    umcFinder.FileName = dataset.mstrLocalPath;
+                    umcFinder.FileName = dataset.Path;
                     umcFinder.LoadUMCs(true);
                     umcFinder.FindUMCs();
                     loadedFeatures = umcFinder.GetUMCs();
                     break;
                 case ".CSV":
-                    umcFinder.FileName = dataset.mstrLocalPath;
+                    umcFinder.FileName = dataset.Path;                    
                     umcFinder.LoadUMCs(false);
                     umcFinder.FindUMCs();
                     loadedFeatures = umcFinder.GetUMCs();
