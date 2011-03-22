@@ -141,7 +141,7 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>copy ..\..\..\..\..\lib\$(PlatformName)\System.Data.SQLite.dll $(TargetDir)System.Data.SQLite.dll</PostBuildEvent>
+    <PostBuildEvent>copy ..\..\..\..\..\lib\$(PlatformName)\System.Data.SQLite.dll "$(TargetDir)System.Data.SQLite.dll"</PostBuildEvent>
     <PreBuildEvent>REM files.txt MultiAlignAnalysis_parameters.xml SYN_DATA02 SINGLE
 REM -plots  SYN_DATA02\SINGLE</PreBuildEvent>
   </PropertyGroup>
