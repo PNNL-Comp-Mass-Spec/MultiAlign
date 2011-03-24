@@ -730,14 +730,21 @@ namespace PNNLProteomics.Data
 		/// <param name="filename">Parameter file to load parameters</param>
 		public void LoadParametersFromFile(string filename)
 		{
-			MetaData metaData = new MetaData("PNNLProteomics");
+
+            MetaData metaData = new MetaData("PNNLProteomics");
 			metaData.ReadFile(filename);
-			
-            LoadParameterOptions(DefaultAlignmentOptions,  metaData.OpenChild("AlignmentOptions"));
-            LoadParameterOptions(ClusterOptions,           metaData.OpenChild("ClusterOptions"));
-            LoadParameterOptions(PeakMatchingOptions,      metaData.OpenChild("PeakMatchingOptions"));            
-			LoadParameterOptions(MassTagDBOptions,         metaData.OpenChild("MassTagDBOptions"));
-			LoadParameterOptions(UMCFindingOptions,        metaData.OpenChild("UMCFindingOptions"));
+
+			//ReflectParameterOptions(AlignmentOptions[0], metaData.OpenChild("AlignmentOptions"));
+            LoadParameterOptions(AlignmentOptions, metaData.OpenChild("AlignmentOptions"));
+            LoadParameterOptions(ClusterOptions, metaData.OpenChild("ClusterOptions"));
+            LoadParameterOptions(PeakMatchingOptions, metaData.OpenChild("PeakMatchingOptions"));
+            
+            List<classAlignmentMZBoundary> boundaries = DefaultAlignmentOptions.MZBoundaries;
+			LoadParameterOptions(DefaultAlignmentOptions, metaData.OpenChild("DefaultAlignmentOptions"));
+            DefaultAlignmentOptions.MZBoundaries = boundaries;
+
+			LoadParameterOptions(MassTagDBOptions, metaData.OpenChild("MassTagDBOptions"));
+			LoadParameterOptions(UMCFindingOptions, metaData.OpenChild("UMCFindingOptions"));
         }
         #endregion        
     }
