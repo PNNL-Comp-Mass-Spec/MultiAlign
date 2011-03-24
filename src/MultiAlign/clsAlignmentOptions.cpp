@@ -34,8 +34,8 @@ namespace MultiAlignEngine
 			mlist_mzBoundaries				= new List<classAlignmentMZBoundary*>();
 
 			/// Construct the m/z boundary object.			
-			mlist_mzBoundaries->Add(new classAlignmentMZBoundary(0.0, 505.7));
-			mlist_mzBoundaries->Add(new classAlignmentMZBoundary(505.7, 999999999.0));
+			mlist_mzBoundaries->Add(new classAlignmentMZBoundary(0.0, 5000.1));
+			mlist_mzBoundaries->Add(new classAlignmentMZBoundary(5000.1,999999999.0));
 		}
 
 		clsAlignmentOptions::~clsAlignmentOptions(void)
