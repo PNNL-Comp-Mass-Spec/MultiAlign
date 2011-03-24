@@ -88,7 +88,7 @@ namespace MultiAlignWin.UI
         private void PerformAnalysis(object sender, EventArgs e)
         {            
             frmAnalysisWizard analysisWizard     = new frmAnalysisWizard();
-            analysisWizard.Icon                  = Icon;            
+            analysisWizard.Icon                  = Icon;
             analysisWizard.StartPosition         = FormStartPosition.CenterParent;
             analysisWizard.AnalysisComplete     += new EventHandler<PNNLProteomics.MultiAlign.AnalysisCompleteEventArgs>(analysisWizard_AnalysisComplete);
             analysisWizard.AnalysisError        += new EventHandler<PNNLProteomics.MultiAlign.AnalysisErrorEventArgs>(analysisWizard_AnalysisError);
@@ -136,7 +136,7 @@ namespace MultiAlignWin.UI
                 {
                     DataView dataView = new DataView();
                     dataView.Text = "Data View for: " + analysis.AnalysisName;
-                    dataView.Analysis = analysis;
+                    dataView.SetAnalysis(analysis);
                     dataView.Icon = Icon;
                     dataView.MdiParent = this;
                     dataView.FormClosed += new FormClosedEventHandler(dataView_FormClosed);

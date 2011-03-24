@@ -164,8 +164,11 @@ namespace MultiAlignWin
                     components.Dispose();
                 }
             }
-            m_loadDatasetPage.Dispose();           
-            m_processor.Dispose();
+            m_loadDatasetPage.Dispose();
+            if (m_processor != null)
+            {
+                m_processor.Dispose();
+            }
 
             base.Dispose(disposing);
         }
@@ -308,39 +311,26 @@ namespace MultiAlignWin
             /// Only allow the user to cancel closing if the close reason is by clicking on the close button.
             /// 
             if (e.CloseReason == CloseReason.UserClosing)
-            {
-
-                /// 
-                /// Make sure the user wants to stop the analysis
-                /// 
+            {                
+                // Make sure the user wants to stop the analysis
                 if (m_processor != null)
                 {
                     bool stop = StopAnalysis();
                     if (stop == false)
                     {
-                        /// 
-                        /// Let the analysis go on...
-                        /// 
                         e.Cancel = true;
                         return;
                     }
                     else
                     {
-                        /// 
-                        /// Cancel the analysis
-                        /// 
                         e.Cancel = false;
                         return;
                     }
                 }
                 else
                 {
-                    /// 
-                    /// Make sure the user does in fact want to close and stop the process at hand.
-                    /// 
-                    CancelEventArgs cancelArgs = new CancelEventArgs(false);
-                    //OnQueryCancel(cancelArgs);
-
+                    // Make sure the user does in fact want to close and stop the process at hand.                    
+                    CancelEventArgs cancelArgs = new CancelEventArgs(false);                    
                     if (cancelArgs.Cancel == true)
                     {
                         e.Cancel = true;

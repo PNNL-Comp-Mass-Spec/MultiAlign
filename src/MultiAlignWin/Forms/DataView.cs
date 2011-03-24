@@ -38,9 +38,8 @@ namespace MultiAlignWin
         /// <summary>
         /// Preview rendering thread.
         /// </summary>
-        private Thread mobj_datasetRenderThread;
-        private Thread mobj_clusterRenderThread;
-        private string mstrCurrentFileName;
+        private Thread m_datasetRenderThread;
+        private Thread m_clusterRenderThread;        
         private MultiAlignAnalysis m_analysis;
 
 
@@ -67,31 +66,31 @@ namespace MultiAlignWin
         private ToolStripSeparator toolStripSeparator2;
         private ImageList mimageList_tabImages;
         private StatusStrip statusStrip1;
-        private ToolStripStatusLabel mlabel_rows;
+        private ToolStripStatusLabel m_rows;
         private ToolStripStatusLabel toolStripStatusLabel1;
         private TabControl mtabcontrol_data;
         private TabPage tabPageOverlayPlot;
-        private TabPage mtabPage_dataSummary;
-        private ctlSummaryPages mcontrol_resultSummaryPages;
-        private TabPage mtabPage_analysisInformation;
-        private ctlSummaryPages mcontrol_analysisInformation;
-        private TabPage mtabPage_datasetSummary;
-        private Panel mpanel_dataControls;
-        private TabPage mtabPage_proteinMaps;
-        private ListView mlistView_proteinPeptideTable;
+        private TabPage m_dataSummary;
+        private ctlSummaryPages m_resultSummaryPages;
+        private TabPage m_analysisInformationPage;
+        private ctlSummaryPages m_analysisInformation;
+        private TabPage m_datasetSummary;
+        private Panel m_dataControls;
+        private TabPage m_proteinMaps;
+        private ListView m_proteinPeptideTable;
         private ColumnHeader columnHeader1;
         private ColumnHeader columnHeader2;
-        private TreeView mtreeView_proteinViewer;
+        private TreeView m_proteinViewer;
         private ToolStripSeparator toolStripSeparator4;
         private IContainer components;
         private ToolStripMenuItem dataToolStripMenuItem;
         private ToolStripMenuItem parametersToolStripMenuItem;
-        private TabPage mtabPage_clusterPlots;
+        private TabPage m_clusterPlots;
         /// <summary>
         /// Options for writing columns to table output files.
         /// </summary>
         private TableWriterColumnOptions m_columnOutputOptions;
-        private controlClusterInformation mcontrol_clusterInformation;
+        private controlClusterInformation m_clusterInformation;
         private ToolStripMenuItem filtersToolStripMenuItem;
         private ToolStripMenuItem featuresToolStripMenuItem;
         private ToolStripMenuItem clustersToolStripMenuItem;
@@ -111,12 +110,12 @@ namespace MultiAlignWin
 		{
 			InitializeComponent();
 
-            mobjClusterChart = new ctlClusterChart();
-            mobjClusterChart.LegendVisible = true;
-            mobjClusterChart.Dock = DockStyle.Fill;
+            mobjClusterChart                = new ctlClusterChart();
+            mobjClusterChart.LegendVisible  = true;
+            mobjClusterChart.Dock           = DockStyle.Fill;
             
-            mtreeView_proteinViewer.Nodes.Add("Global Proteins Identified");
-            mlistView_proteinPeptideTable.SelectedIndexChanged += new EventHandler(mlistView_proteinPeptideTable_SelectedIndexChanged);
+            m_proteinViewer.Nodes.Add("Global Proteins Identified");
+            m_proteinPeptideTable.SelectedIndexChanged += new EventHandler(m_proteinPeptideTable_SelectedIndexChanged);
             tabPageOverlayPlot.Controls.Add(mobjClusterChart);                   
 
             /// 
@@ -126,17 +125,16 @@ namespace MultiAlignWin
         }        
         #endregion
 
-        void mlistView_proteinPeptideTable_SelectedIndexChanged(object sender, EventArgs e)
+        void m_proteinPeptideTable_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (mlistView_proteinPeptideTable.SelectedItems.Count < 1)
+            if (m_proteinPeptideTable.SelectedItems.Count < 1)
                 return;
-
             
             try
             {
-                string key = mlistView_proteinPeptideTable.SelectedItems[0].Text;
-                TreeNode node = mtreeView_proteinViewer.Nodes[0].Nodes[key];
-                mtreeView_proteinViewer.SelectedNode = node;
+                string key      = m_proteinPeptideTable.SelectedItems[0].Text;
+                TreeNode node   = m_proteinViewer.Nodes[0].Nodes[key];
+                m_proteinViewer.SelectedNode = node;
             }
             catch
             {
@@ -153,30 +151,25 @@ namespace MultiAlignWin
         {
             if (m_analysis.PeakMatchedToMassTagDB == false)
             {
-                mtabcontrol_data.TabPages.Remove(mtabPage_proteinMaps);
+                mtabcontrol_data.TabPages.Remove(m_proteinMaps);
                 return; 
             }
             
-            mlistView_proteinPeptideTable.BeginUpdate();
-            mtreeView_proteinViewer.BeginUpdate();
-            mtreeView_proteinViewer.Nodes[0].Nodes.Clear();
-            TreeNode rootNode = mtreeView_proteinViewer.Nodes[0];
+            m_proteinPeptideTable.BeginUpdate();
+            m_proteinViewer.BeginUpdate();
+            m_proteinViewer.Nodes[0].Nodes.Clear();
+            TreeNode rootNode = m_proteinViewer.Nodes[0];
             
-            /// 
-            /// Iterate through the number of proteins to map out their peptides.
-            /// 
+            // Iterate through the number of proteins to map out their peptides.
             foreach (string proteinName in proteins.Keys)
-            {
-
-                /// 
-                /// Make the table entry for how many peptides roll-up to the given protein.
-                /// 
+            {                
+                // Make the table entry for how many peptides roll-up to the given protein.                
                 ListViewItem proteinListItem = new ListViewItem();
                 proteinListItem.Text = proteinName;
                 ListViewItem.ListViewSubItem numPeptidesItem = new ListViewItem.ListViewSubItem();
                 numPeptidesItem.Text = proteins[proteinName].Count.ToString();
                 proteinListItem.SubItems.Add(numPeptidesItem);
-                mlistView_proteinPeptideTable.Items.Add(proteinListItem);
+                m_proteinPeptideTable.Items.Add(proteinListItem);
 
                 /// 
                 /// Display map from protein to peptide
@@ -194,30 +187,27 @@ namespace MultiAlignWin
                 rootNode.Nodes.Add(proteinNode);
             }
             rootNode.ExpandAll();
-            mtreeView_proteinViewer.Sort();
-            mlistView_proteinPeptideTable.Columns[0].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
-            mlistView_proteinPeptideTable.Columns[1].AutoResize(ColumnHeaderAutoResizeStyle.HeaderSize);
-            mlistView_proteinPeptideTable.EndUpdate();
-            mtreeView_proteinViewer.EndUpdate();
+            m_proteinViewer.Sort();
+            m_proteinPeptideTable.Columns[0].AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
+            m_proteinPeptideTable.Columns[1].AutoResize(ColumnHeaderAutoResizeStyle.HeaderSize);
+            m_proteinPeptideTable.EndUpdate();
+            m_proteinViewer.EndUpdate();
         }
         
         /// <summary>
         /// Sets the analysis object.
         /// </summary>
-		public MultiAlignAnalysis Analysis
-		{
-			set
-			{
-				m_analysis              = value ; 
+		public void SetAnalysis(MultiAlignAnalysis analysis)
+		{			
+			m_analysis = analysis; 
 				
-                ProteinMapExtractor extractor = new ProteinMapExtractor();
-                Dictionary<string, List<string>> proteins = extractor.ExtractProteinMaps(m_analysis);
-                DisplayProteinMaps(proteins);
+            ProteinMapExtractor extractor = new ProteinMapExtractor();
+            Dictionary<string, List<string>> proteins = extractor.ExtractProteinMaps(m_analysis);
+            DisplayProteinMaps(proteins);
 
-                CreateClusterPlots();
-                UpdateListViews();
-                UpdateDatasetSummary();
-            }
+            CreateClusterPlots();
+            UpdateListViews();
+            UpdateDatasetSummary();            
 		}
 
         /// <summary>
@@ -255,18 +245,18 @@ namespace MultiAlignWin
             this.panelCharts = new System.Windows.Forms.Panel();
             this.mtabcontrol_data = new System.Windows.Forms.TabControl();
             this.tabPageOverlayPlot = new System.Windows.Forms.TabPage();
-            this.mtabPage_analysisInformation = new System.Windows.Forms.TabPage();
-            this.mcontrol_analysisInformation = new MultiAlignWin.ctlSummaryPages();
-            this.mtabPage_clusterPlots = new System.Windows.Forms.TabPage();
-            this.mtabPage_datasetSummary = new System.Windows.Forms.TabPage();
-            this.mpanel_dataControls = new System.Windows.Forms.Panel();
-            this.mtabPage_proteinMaps = new System.Windows.Forms.TabPage();
-            this.mlistView_proteinPeptideTable = new System.Windows.Forms.ListView();
+            this.m_analysisInformationPage = new System.Windows.Forms.TabPage();
+            this.m_analysisInformation = new MultiAlignWin.ctlSummaryPages();
+            this.m_clusterPlots = new System.Windows.Forms.TabPage();
+            this.m_datasetSummary = new System.Windows.Forms.TabPage();
+            this.m_dataControls = new System.Windows.Forms.Panel();
+            this.m_proteinMaps = new System.Windows.Forms.TabPage();
+            this.m_proteinPeptideTable = new System.Windows.Forms.ListView();
             this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
             this.columnHeader2 = new System.Windows.Forms.ColumnHeader();
-            this.mtreeView_proteinViewer = new System.Windows.Forms.TreeView();
-            this.mtabPage_dataSummary = new System.Windows.Forms.TabPage();
-            this.mcontrol_resultSummaryPages = new MultiAlignWin.ctlSummaryPages();
+            this.m_proteinViewer = new System.Windows.Forms.TreeView();
+            this.m_dataSummary = new System.Windows.Forms.TabPage();
+            this.m_resultSummaryPages = new MultiAlignWin.ctlSummaryPages();
             this.panel1 = new System.Windows.Forms.Panel();
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -288,15 +278,15 @@ namespace MultiAlignWin
             this.clustersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mimageList_tabImages = new System.Windows.Forms.ImageList(this.components);
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.mlabel_rows = new System.Windows.Forms.ToolStripStatusLabel();
+            this.m_rows = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.panelCharts.SuspendLayout();
             this.mtabcontrol_data.SuspendLayout();
-            this.mtabPage_analysisInformation.SuspendLayout();
-            this.mtabPage_datasetSummary.SuspendLayout();
-            this.mtabPage_proteinMaps.SuspendLayout();
-            this.mtabPage_dataSummary.SuspendLayout();
+            this.m_analysisInformationPage.SuspendLayout();
+            this.m_datasetSummary.SuspendLayout();
+            this.m_proteinMaps.SuspendLayout();
+            this.m_dataSummary.SuspendLayout();
             this.panel1.SuspendLayout();
             this.menuStrip.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -324,11 +314,11 @@ namespace MultiAlignWin
             // mtabcontrol_data
             // 
             this.mtabcontrol_data.Controls.Add(this.tabPageOverlayPlot);
-            this.mtabcontrol_data.Controls.Add(this.mtabPage_analysisInformation);
-            this.mtabcontrol_data.Controls.Add(this.mtabPage_clusterPlots);
-            this.mtabcontrol_data.Controls.Add(this.mtabPage_datasetSummary);
-            this.mtabcontrol_data.Controls.Add(this.mtabPage_proteinMaps);
-            this.mtabcontrol_data.Controls.Add(this.mtabPage_dataSummary);
+            this.mtabcontrol_data.Controls.Add(this.m_analysisInformationPage);
+            this.mtabcontrol_data.Controls.Add(this.m_clusterPlots);
+            this.mtabcontrol_data.Controls.Add(this.m_datasetSummary);
+            this.mtabcontrol_data.Controls.Add(this.m_proteinMaps);
+            this.mtabcontrol_data.Controls.Add(this.m_dataSummary);
             this.mtabcontrol_data.Dock = System.Windows.Forms.DockStyle.Fill;
             this.mtabcontrol_data.Location = new System.Drawing.Point(0, 0);
             this.mtabcontrol_data.Name = "mtabcontrol_data";
@@ -345,85 +335,85 @@ namespace MultiAlignWin
             this.tabPageOverlayPlot.Text = "Feature Cluster Plot";
             this.tabPageOverlayPlot.UseVisualStyleBackColor = true;
             // 
-            // mtabPage_analysisInformation
+            // m_analysisInformation
             // 
-            this.mtabPage_analysisInformation.Controls.Add(this.mcontrol_analysisInformation);
-            this.mtabPage_analysisInformation.Location = new System.Drawing.Point(4, 22);
-            this.mtabPage_analysisInformation.Name = "mtabPage_analysisInformation";
-            this.mtabPage_analysisInformation.Padding = new System.Windows.Forms.Padding(3);
-            this.mtabPage_analysisInformation.Size = new System.Drawing.Size(1038, 464);
-            this.mtabPage_analysisInformation.TabIndex = 2;
-            this.mtabPage_analysisInformation.Text = "Options";
-            this.mtabPage_analysisInformation.UseVisualStyleBackColor = true;
+            this.m_analysisInformationPage.Controls.Add(this.m_analysisInformation);
+            this.m_analysisInformationPage.Location = new System.Drawing.Point(4, 22);
+            this.m_analysisInformationPage.Name = "m_analysisInformationPage";
+            this.m_analysisInformationPage.Padding = new System.Windows.Forms.Padding(3);
+            this.m_analysisInformationPage.Size = new System.Drawing.Size(1038, 464);
+            this.m_analysisInformationPage.TabIndex = 2;
+            this.m_analysisInformationPage.Text = "Options";
+            this.m_analysisInformationPage.UseVisualStyleBackColor = true;
             // 
-            // mcontrol_analysisInformation
+            // m_analysisInformation
             // 
-            this.mcontrol_analysisInformation.BackColor = System.Drawing.SystemColors.Control;
-            this.mcontrol_analysisInformation.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.mcontrol_analysisInformation.Location = new System.Drawing.Point(3, 3);
-            this.mcontrol_analysisInformation.Name = "mcontrol_analysisInformation";
-            this.mcontrol_analysisInformation.Size = new System.Drawing.Size(1032, 458);
-            this.mcontrol_analysisInformation.TabIndex = 2;
+            this.m_analysisInformation.BackColor = System.Drawing.SystemColors.Control;
+            this.m_analysisInformation.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.m_analysisInformation.Location = new System.Drawing.Point(3, 3);
+            this.m_analysisInformation.Name = "m_analysisInformation";
+            this.m_analysisInformation.Size = new System.Drawing.Size(1032, 458);
+            this.m_analysisInformation.TabIndex = 2;
             // 
-            // mtabPage_clusterPlots
+            // m_clusterPlots
             // 
-            this.mtabPage_clusterPlots.Location = new System.Drawing.Point(4, 22);
-            this.mtabPage_clusterPlots.Name = "mtabPage_clusterPlots";
-            this.mtabPage_clusterPlots.Padding = new System.Windows.Forms.Padding(3);
-            this.mtabPage_clusterPlots.Size = new System.Drawing.Size(1038, 464);
-            this.mtabPage_clusterPlots.TabIndex = 8;
-            this.mtabPage_clusterPlots.Text = "Analysis Plots";
-            this.mtabPage_clusterPlots.UseVisualStyleBackColor = true;
+            this.m_clusterPlots.Location = new System.Drawing.Point(4, 22);
+            this.m_clusterPlots.Name = "m_clusterPlots";
+            this.m_clusterPlots.Padding = new System.Windows.Forms.Padding(3);
+            this.m_clusterPlots.Size = new System.Drawing.Size(1038, 464);
+            this.m_clusterPlots.TabIndex = 8;
+            this.m_clusterPlots.Text = "Analysis Plots";
+            this.m_clusterPlots.UseVisualStyleBackColor = true;
             // 
-            // mtabPage_datasetSummary
+            // m_datasetSummary
             // 
-            this.mtabPage_datasetSummary.AutoScroll = true;
-            this.mtabPage_datasetSummary.Controls.Add(this.mpanel_dataControls);
-            this.mtabPage_datasetSummary.Location = new System.Drawing.Point(4, 22);
-            this.mtabPage_datasetSummary.Name = "mtabPage_datasetSummary";
-            this.mtabPage_datasetSummary.Padding = new System.Windows.Forms.Padding(3);
-            this.mtabPage_datasetSummary.Size = new System.Drawing.Size(1038, 464);
-            this.mtabPage_datasetSummary.TabIndex = 3;
-            this.mtabPage_datasetSummary.Text = "Dataset Plots";
-            this.mtabPage_datasetSummary.UseVisualStyleBackColor = true;
+            this.m_datasetSummary.AutoScroll = true;
+            this.m_datasetSummary.Controls.Add(this.m_dataControls);
+            this.m_datasetSummary.Location = new System.Drawing.Point(4, 22);
+            this.m_datasetSummary.Name = "m_datasetSummary";
+            this.m_datasetSummary.Padding = new System.Windows.Forms.Padding(3);
+            this.m_datasetSummary.Size = new System.Drawing.Size(1038, 464);
+            this.m_datasetSummary.TabIndex = 3;
+            this.m_datasetSummary.Text = "Dataset Plots";
+            this.m_datasetSummary.UseVisualStyleBackColor = true;
             // 
-            // mpanel_dataControls
+            // m_dataControls
             // 
-            this.mpanel_dataControls.AutoScroll = true;
-            this.mpanel_dataControls.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.mpanel_dataControls.Location = new System.Drawing.Point(3, 3);
-            this.mpanel_dataControls.Name = "mpanel_dataControls";
-            this.mpanel_dataControls.Size = new System.Drawing.Size(1032, 458);
-            this.mpanel_dataControls.TabIndex = 0;
+            this.m_dataControls.AutoScroll = true;
+            this.m_dataControls.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.m_dataControls.Location = new System.Drawing.Point(3, 3);
+            this.m_dataControls.Name = "m_dataControls";
+            this.m_dataControls.Size = new System.Drawing.Size(1032, 458);
+            this.m_dataControls.TabIndex = 0;
             // 
-            // mtabPage_proteinMaps
+            // m_proteinMaps
             // 
-            this.mtabPage_proteinMaps.Controls.Add(this.mlistView_proteinPeptideTable);
-            this.mtabPage_proteinMaps.Controls.Add(this.mtreeView_proteinViewer);
-            this.mtabPage_proteinMaps.Location = new System.Drawing.Point(4, 22);
-            this.mtabPage_proteinMaps.Name = "mtabPage_proteinMaps";
-            this.mtabPage_proteinMaps.Padding = new System.Windows.Forms.Padding(3);
-            this.mtabPage_proteinMaps.Size = new System.Drawing.Size(1038, 464);
-            this.mtabPage_proteinMaps.TabIndex = 5;
-            this.mtabPage_proteinMaps.Text = "Protein Information";
-            this.mtabPage_proteinMaps.UseVisualStyleBackColor = true;
+            this.m_proteinMaps.Controls.Add(this.m_proteinPeptideTable);
+            this.m_proteinMaps.Controls.Add(this.m_proteinViewer);
+            this.m_proteinMaps.Location = new System.Drawing.Point(4, 22);
+            this.m_proteinMaps.Name = "m_proteinMaps";
+            this.m_proteinMaps.Padding = new System.Windows.Forms.Padding(3);
+            this.m_proteinMaps.Size = new System.Drawing.Size(1038, 464);
+            this.m_proteinMaps.TabIndex = 5;
+            this.m_proteinMaps.Text = "Protein Information";
+            this.m_proteinMaps.UseVisualStyleBackColor = true;
             // 
-            // mlistView_proteinPeptideTable
+            // m_proteinPeptideTable
             // 
-            this.mlistView_proteinPeptideTable.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            this.m_proteinPeptideTable.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.mlistView_proteinPeptideTable.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.m_proteinPeptideTable.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
             this.columnHeader2});
-            this.mlistView_proteinPeptideTable.GridLines = true;
-            this.mlistView_proteinPeptideTable.Location = new System.Drawing.Point(484, 9);
-            this.mlistView_proteinPeptideTable.Name = "mlistView_proteinPeptideTable";
-            this.mlistView_proteinPeptideTable.Size = new System.Drawing.Size(627, 510);
-            this.mlistView_proteinPeptideTable.Sorting = System.Windows.Forms.SortOrder.Ascending;
-            this.mlistView_proteinPeptideTable.TabIndex = 1;
-            this.mlistView_proteinPeptideTable.UseCompatibleStateImageBehavior = false;
-            this.mlistView_proteinPeptideTable.View = System.Windows.Forms.View.Details;
+            this.m_proteinPeptideTable.GridLines = true;
+            this.m_proteinPeptideTable.Location = new System.Drawing.Point(484, 9);
+            this.m_proteinPeptideTable.Name = "m_proteinPeptideTable";
+            this.m_proteinPeptideTable.Size = new System.Drawing.Size(627, 510);
+            this.m_proteinPeptideTable.Sorting = System.Windows.Forms.SortOrder.Ascending;
+            this.m_proteinPeptideTable.TabIndex = 1;
+            this.m_proteinPeptideTable.UseCompatibleStateImageBehavior = false;
+            this.m_proteinPeptideTable.View = System.Windows.Forms.View.Details;
             // 
             // columnHeader1
             // 
@@ -433,34 +423,34 @@ namespace MultiAlignWin
             // 
             this.columnHeader2.Text = "Number of Peptides";
             // 
-            // mtreeView_proteinViewer
+            // m_proteinViewer
             // 
-            this.mtreeView_proteinViewer.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            this.m_proteinViewer.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)));
-            this.mtreeView_proteinViewer.Location = new System.Drawing.Point(8, 6);
-            this.mtreeView_proteinViewer.Name = "mtreeView_proteinViewer";
-            this.mtreeView_proteinViewer.Size = new System.Drawing.Size(466, 513);
-            this.mtreeView_proteinViewer.TabIndex = 0;
+            this.m_proteinViewer.Location = new System.Drawing.Point(8, 6);
+            this.m_proteinViewer.Name = "m_proteinViewer";
+            this.m_proteinViewer.Size = new System.Drawing.Size(466, 513);
+            this.m_proteinViewer.TabIndex = 0;
             // 
-            // mtabPage_dataSummary
+            // m_dataSummary
             // 
-            this.mtabPage_dataSummary.Controls.Add(this.mcontrol_resultSummaryPages);
-            this.mtabPage_dataSummary.Location = new System.Drawing.Point(4, 22);
-            this.mtabPage_dataSummary.Name = "mtabPage_dataSummary";
-            this.mtabPage_dataSummary.Padding = new System.Windows.Forms.Padding(3);
-            this.mtabPage_dataSummary.Size = new System.Drawing.Size(1038, 464);
-            this.mtabPage_dataSummary.TabIndex = 1;
-            this.mtabPage_dataSummary.Text = "Results Summary";
-            this.mtabPage_dataSummary.UseVisualStyleBackColor = true;
+            this.m_dataSummary.Controls.Add(this.m_resultSummaryPages);
+            this.m_dataSummary.Location = new System.Drawing.Point(4, 22);
+            this.m_dataSummary.Name = "m_dataSummary";
+            this.m_dataSummary.Padding = new System.Windows.Forms.Padding(3);
+            this.m_dataSummary.Size = new System.Drawing.Size(1038, 464);
+            this.m_dataSummary.TabIndex = 1;
+            this.m_dataSummary.Text = "Results Summary";
+            this.m_dataSummary.UseVisualStyleBackColor = true;
             // 
-            // mcontrol_resultSummaryPages
+            // m_resultSummaryPages
             // 
-            this.mcontrol_resultSummaryPages.BackColor = System.Drawing.SystemColors.Control;
-            this.mcontrol_resultSummaryPages.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.mcontrol_resultSummaryPages.Location = new System.Drawing.Point(3, 3);
-            this.mcontrol_resultSummaryPages.Name = "mcontrol_resultSummaryPages";
-            this.mcontrol_resultSummaryPages.Size = new System.Drawing.Size(1032, 458);
-            this.mcontrol_resultSummaryPages.TabIndex = 1;
+            this.m_resultSummaryPages.BackColor = System.Drawing.SystemColors.Control;
+            this.m_resultSummaryPages.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.m_resultSummaryPages.Location = new System.Drawing.Point(3, 3);
+            this.m_resultSummaryPages.Name = "m_resultSummaryPages";
+            this.m_resultSummaryPages.Size = new System.Drawing.Size(1032, 458);
+            this.m_resultSummaryPages.TabIndex = 1;
             // 
             // panel1
             // 
@@ -632,7 +622,7 @@ namespace MultiAlignWin
             // statusStrip1
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mlabel_rows,
+            this.m_rows,
             this.toolStripStatusLabel1});
             this.statusStrip1.Location = new System.Drawing.Point(0, 553);
             this.statusStrip1.Name = "statusStrip1";
@@ -640,10 +630,10 @@ namespace MultiAlignWin
             this.statusStrip1.TabIndex = 5;
             this.statusStrip1.Text = "statusStrip1";
             // 
-            // mlabel_rows
+            // m_rows
             // 
-            this.mlabel_rows.Name = "mlabel_rows";
-            this.mlabel_rows.Size = new System.Drawing.Size(0, 17);
+            this.m_rows.Name = "m_rows";
+            this.m_rows.Size = new System.Drawing.Size(0, 17);
             // 
             // toolStripStatusLabel1
             // 
@@ -669,10 +659,10 @@ namespace MultiAlignWin
             this.Load += new System.EventHandler(this.frmDataView_Load);
             this.panelCharts.ResumeLayout(false);
             this.mtabcontrol_data.ResumeLayout(false);
-            this.mtabPage_analysisInformation.ResumeLayout(false);
-            this.mtabPage_datasetSummary.ResumeLayout(false);
-            this.mtabPage_proteinMaps.ResumeLayout(false);
-            this.mtabPage_dataSummary.ResumeLayout(false);
+            this.m_analysisInformationPage.ResumeLayout(false);
+            this.m_datasetSummary.ResumeLayout(false);
+            this.m_proteinMaps.ResumeLayout(false);
+            this.m_dataSummary.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
@@ -685,25 +675,24 @@ namespace MultiAlignWin
 		#endregion
 
         #region Previews and Dataset Information Display
-
         /// <summary>
         /// Kills the rendering thread.
         /// </summary>
         private void AbortDatasetRenderThread()
         {
-            if (mobj_datasetRenderThread == null)
+            if (m_datasetRenderThread == null)
                 return;
 
             try
             {
-                mobj_datasetRenderThread.Abort();
+                m_datasetRenderThread.Abort();
             }
             catch
             {
             }
             finally
             {
-                mobj_datasetRenderThread = null;
+                m_datasetRenderThread = null;
             }
         }
         /// <summary>
@@ -711,19 +700,19 @@ namespace MultiAlignWin
         /// </summary>
         private void AbortClusterRenderThread()
         {
-            if (mobj_clusterRenderThread == null)
+            if (m_clusterRenderThread == null)
                 return;
 
             try
             {
-                mobj_clusterRenderThread.Abort();
+                m_clusterRenderThread.Abort();
             }
             catch
             {
             }
             finally
             {
-                mobj_clusterRenderThread = null;
+                m_clusterRenderThread = null;
             }
         }
         /// <summary>
@@ -731,7 +720,6 @@ namespace MultiAlignWin
         /// </summary>
         private void UpdateDatasetSummary()
         {
-
             if (m_analysis == null) 
                 return;
 
@@ -743,44 +731,40 @@ namespace MultiAlignWin
             {
                 m_datasetsDisplayControls.Clear();
             }
-            
-            // Clear the controls that exist so we dont duplicate
-            mpanel_dataControls.Controls.Clear();           
-
+                        
+            m_dataControls.Controls.Clear();           
             for (int i = 0; i < m_analysis.Datasets.Count; i++)
             {
                 DatasetInformation  info                = m_analysis.Datasets[i];
                 classAlignmentData  alignmentData       = m_analysis.AlignmentData[i];
-                clsAlignmentOptions alignmentOptions    = m_analysis.AlignmentOptions[i];
-               
-                //TODO: BLL add feature cache here....
-
+                clsAlignmentOptions alignmentOptions    = m_analysis.AlignmentOptions[i];                               
                 controlDatasetInformation datasetControl = new controlDatasetInformation(info,
                                                                                         alignmentData,
                                                                                         alignmentOptions,
                                                                                         m_analysis.DataProviders.FeatureCache);
 
                 datasetControl.Dock = DockStyle.Top;
-                mpanel_dataControls.Controls.Add(datasetControl);
+                m_dataControls.Controls.Add(datasetControl);
                 m_datasetsDisplayControls.Add(datasetControl);
             }            
             m_datasetsDisplayControls.Reverse();
-
              
-            if (mobj_datasetRenderThread != null)
+            if (m_datasetRenderThread != null)
                 AbortDatasetRenderThread();
 
-            if (mobj_clusterRenderThread != null)
+            if (m_clusterRenderThread != null)
                 AbortClusterRenderThread();
 
-            ThreadStart start = new ThreadStart(DatasetPreviewThreadStart);
-            mobj_datasetRenderThread = new Thread(start);
-            mobj_datasetRenderThread.Start();
+            List<clsCluster> clusters = m_analysis.DataProviders.ClusterCache.FindAll();
+            mobjClusterChart.AddClusters(clusters);
 
+            ThreadStart start = new ThreadStart(DatasetPreviewThreadStart);
+            m_datasetRenderThread = new Thread(start);
+            m_datasetRenderThread.Start();
 
             ThreadStart startCluster = new ThreadStart(ClusterPreviewThreadStart);
-            mobj_clusterRenderThread = new Thread(startCluster);
-            mobj_clusterRenderThread.Start();
+            m_clusterRenderThread = new Thread(startCluster);
+            m_clusterRenderThread.Start();
         }
         /// <summary>
         /// Starts rendering the preview icons.
@@ -796,18 +780,20 @@ namespace MultiAlignWin
         /// Starts rendering the preview icons.
         /// </summary>
         private void ClusterPreviewThreadStart()
-        {            
-            if (mcontrol_clusterInformation != null)
-                mcontrol_clusterInformation.RenderPreviews();
+        {
+            if (m_clusterInformation != null)
+            {
+                m_clusterInformation.RenderPreviews();
+            }
         }
         #endregion
 
         #region Utility
         /// <summary>
-        /// Adds the SMART FDR Table to the summary view.
+        /// Adds the STAC FDR Table to the summary view.
         /// </summary>
         /// <param name="STACResults">SMART Results.</param>
-        private void AddSMARTFDRTableToSummaryView(classSMARTResults smartResults)
+        private void AddStacFdrTableToSummaryView(classSMARTResults smartResults)
         {
             if (smartResults == null)
                 return;
@@ -815,19 +801,17 @@ namespace MultiAlignWin
             /// 
             /// Construct a list view programmatically to add it to the tab pages.
             /// 
-            ListView smartView = new ListView();
-            smartView.Dock = DockStyle.Fill;
-            smartView.View = View.Details;
+            ListView smartView  = new ListView();
+            smartView.Dock      = DockStyle.Fill;
+            smartView.View      = View.Details;
             smartView.GridLines = true;
 
             smartView.BeginUpdate();
-
             smartView.Columns.Add("Cutoff");
             smartView.Columns.Add("Matches");
             smartView.Columns.Add("Error");
             smartView.Columns.Add("FDR");
             
-
             /// 
             /// Pull out the summary table from the analysis object to dump into the listview.
             /// 
@@ -835,9 +819,7 @@ namespace MultiAlignWin
             ColumnHeaderAutoResizeStyle resizeStyle = ColumnHeaderAutoResizeStyle.HeaderSize;
             if (summaries != null)
             {
-                /// 
-                /// Iterate to add the FDR results to the results summary table 
-                /// 
+                // Load FDR Table
                 foreach (classSMARTFdrResult fdr in summaries)
                 {
                     ListViewItem item   = new ListViewItem();                    
@@ -848,22 +830,17 @@ namespace MultiAlignWin
                     item.SubItems.Add(new ListViewItem.ListViewSubItem(item, string.Format("{0:0.00}",  fdr.FDR)));
                     
                     smartView.Items.Add(item);
-                }
-                /// 
-                /// Since we have added data, we want the size of the columns to be of the data itself.
-                /// 
+                }                
                 resizeStyle = ColumnHeaderAutoResizeStyle.ColumnContent;
             }
-            /// 
-            /// Resize the column content data.
-            /// 
+            
             foreach (ColumnHeader header in smartView.Columns) 
             {
                 header.AutoResize(resizeStyle);            
             }            
             smartView.EndUpdate();
 
-            mcontrol_resultSummaryPages.AddCustomSummary("STAC Summary Table", smartView);
+            m_resultSummaryPages.AddCustomSummary("STAC Summary Table", smartView);
         }
 
         /// <summary>
@@ -871,15 +848,14 @@ namespace MultiAlignWin
         /// </summary>
         private void UpdateListViews()
         {
-            mcontrol_resultSummaryPages.CreateSummary("Global Summary", m_analysis);            
-            //mcontrol_resultSummaryPages.CreateSummary("Feature Data", mobjAnalysis.UMCData);
-            //mcontrol_resultSummaryPages.CreateSummary("Cluster Data", mobjAnalysis.UMCData.mobjClusterData);
+            m_resultSummaryPages.CreateSummary("Global Summary", m_analysis);            
+            //m_resultSummaryPages.CreateSummary("Feature Data", mobjAnalysis.UMCData);
+            //m_resultSummaryPages.CreateSummary("Cluster Data", mobjAnalysis.UMCData.mobjClusterData);
             
-
-            mcontrol_analysisInformation.CreateSummary("Feature Finding Options", m_analysis.UMCFindingOptions);
-            mcontrol_analysisInformation.CreateSummary("Alignment Options", m_analysis.DefaultAlignmentOptions);
-            mcontrol_analysisInformation.CreateSummary("Mass Tag Database Options (MTDB)", m_analysis.MassTagDBOptions);
-            mcontrol_analysisInformation.CreateSummary("Cluster Options", m_analysis.ClusterOptions); 
+            m_analysisInformation.CreateSummary("Feature Finding Options", m_analysis.UMCFindingOptions);
+            m_analysisInformation.CreateSummary("Alignment Options", m_analysis.DefaultAlignmentOptions);
+            m_analysisInformation.CreateSummary("Mass Tag Database Options (MTDB)", m_analysis.MassTagDBOptions);
+            m_analysisInformation.CreateSummary("Cluster Options", m_analysis.ClusterOptions); 
 
             /// 
             /// If the datasets were peak matched, then display this control page.
@@ -888,29 +864,29 @@ namespace MultiAlignWin
             {
                 string peakMatchingResult = "Peak Matching Results";
 
-                mcontrol_resultSummaryPages.CreateSummary("Peak Matching Results", m_analysis.PeakMatchingResults);
+                m_resultSummaryPages.CreateSummary("Peak Matching Results", m_analysis.PeakMatchingResults);
                 if (m_analysis.UseSTAC == false)
                 {
-                    mcontrol_resultSummaryPages.AddData(peakMatchingResult, "11-Da Shifted Number of Mass Tags Matched",
+                    m_resultSummaryPages.AddData(peakMatchingResult, "11-Da Shifted Number of Mass Tags Matched",
                         m_analysis.PeakMatchingResultsShifted.NumMassTagsMatched.ToString());
-                    mcontrol_resultSummaryPages.AddData(peakMatchingResult, "11-Da Shifted Number of Proteins Matched",
+                    m_resultSummaryPages.AddData(peakMatchingResult, "11-Da Shifted Number of Proteins Matched",
                         m_analysis.PeakMatchingResultsShifted.NumProteinsMatched.ToString());
-                    mcontrol_resultSummaryPages.AddData(peakMatchingResult, "11-Da Shifted Number of Matches",
+                    m_resultSummaryPages.AddData(peakMatchingResult, "11-Da Shifted Number of Matches",
                         m_analysis.PeakMatchingResultsShifted.NumMatches.ToString());
 
-                    mcontrol_resultSummaryPages.AddData("Peak Matching Results",
+                    m_resultSummaryPages.AddData("Peak Matching Results",
                                                     "FDR (11-da shift) Upper Bound",
                                                     string.Format("{0:0.00}", m_analysis.FDRUpperBound));
-                    mcontrol_resultSummaryPages.AddData("Peak Matching Results",
+                    m_resultSummaryPages.AddData("Peak Matching Results",
                                                     "FDR (11-da shift) Lower Bound",
                                                     string.Format("{0:0.00}", m_analysis.FDRLowerBound));
                 }
                 else
                 {
-                    AddSMARTFDRTableToSummaryView(m_analysis.STACTResults);
+                    AddStacFdrTableToSummaryView(m_analysis.STACTResults);
                 }
             }            
-            mcontrol_resultSummaryPages.UpdateColumnWidths();
+            m_resultSummaryPages.UpdateColumnWidths();
         }
         #endregion
         
@@ -1045,9 +1021,10 @@ namespace MultiAlignWin
         private void CreateClusterPlots()
         {
             controlClusterInformation clusterInformation = new controlClusterInformation(m_analysis);
-            mtabPage_clusterPlots.Controls.Add(clusterInformation);
-            clusterInformation.Dock = DockStyle.Fill;
-            mcontrol_clusterInformation = clusterInformation;
+            m_clusterPlots.Controls.Add(clusterInformation);
+
+            clusterInformation.Dock     = DockStyle.Fill;
+            m_clusterInformation = clusterInformation;
         }
     }
 }
