@@ -206,6 +206,7 @@
     <Compile Include="IO\IAnalysisWriter.cs" />
     <Compile Include="IO\IMultiAlignAnalysisReader.cs" />
     <Compile Include="IO\IMultiAlignAnalysisWriter.cs" />
+    <Compile Include="IO\InputAnalysisInfo.cs" />
     <Compile Include="IO\IOProgressEventArgs.cs" />
     <Compile Include="IO\MTDB\MTDBLoaderFactory.cs" />
     <Compile Include="IO\MultiAlignParameterIniFileReader.cs" />

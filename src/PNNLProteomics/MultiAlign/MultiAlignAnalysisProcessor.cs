@@ -308,13 +308,6 @@ namespace PNNLProteomics.MultiAlign
                 UpdateStatus("Loading baseline features from " + baselineInfo.DatasetName + " for alignment.");
                 baselineFeatures    = featureCache.FindByDatasetId(baselineDatasetID);
             }
-            else
-            {
-                if (analysis.MassTagDatabase == null)
-                {
-                    analysis.MassTagDatabase = MTDBLoaderFactory.LoadMassTagDB(analysis.MassTagDBOptions);
-                }
-            }
             
             // Align pairwise and cache results intermediately.
             IFeatureAligner aligner = m_algorithms.Aligner;
@@ -475,15 +468,24 @@ namespace PNNLProteomics.MultiAlign
                 // peak matching (but aligning to a reference dataset.
                 if (m_analysis.UseMassTagDBAsBaseline)
                 {
+                    UpdateStatus("Loading Mass Tag database from database:  " + m_analysis.MassTagDBOptions.mstrDatabase);
                     database = MTDBLoaderFactory.LoadMassTagDB(m_analysis.MassTagDBOptions);
                 }
                 else
                 {
                     if (m_analysis.MassTagDBOptions.menm_databaseType != MassTagDatabaseType.None)
                     {
+                        UpdateStatus("Loading Mass Tag database from database:  " + m_analysis.MassTagDBOptions.mstrDatabase);
                         database = MTDBLoaderFactory.LoadMassTagDB(m_analysis.MassTagDBOptions);
                     }
                 }
+
+                if (database != null)
+                {
+                    int totalMassTags = database.GetMassTagCount();
+                    UpdateStatus("Loaded " + totalMassTags.ToString() + " mass tags.");
+                }
+
                 m_analysis.MassTagDatabase = database;
 
                 UpdateStatus("Loading data");
@@ -497,8 +499,7 @@ namespace PNNLProteomics.MultiAlign
                 UpdateStatus("Performing clustering.");
                 PerformClustering(m_analysis, m_algorithms.Clusterer);
 
-
-                // Performs peak matching if deemed to.
+                UpdateStatus("Performing Peak Matching.");                
                 PerformPeakMatching();
 
                 UpdateStatus(string.Format("Analysis {0} Completed.", m_analysis.AnalysisName));

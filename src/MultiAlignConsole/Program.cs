@@ -19,6 +19,7 @@ using PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate;
 
 namespace MultiAlignConsole
 {
+
     /// <summary>
     /// Main application.
     /// </summary>
@@ -776,6 +777,66 @@ namespace MultiAlignConsole
         }
         #endregion
 
+        private static InputAnalysisInfo ReadInputFile(string path)
+        {
+            InputAnalysisInfo info = new InputAnalysisInfo();
+
+            string[] lines = File.ReadAllLines(path);
+
+            int readType        = -1;
+            int baselineIndex   = 0;
+            foreach (string line in lines)
+            {
+                string fixedLine = line.ToLower();
+                fixedLine = fixedLine.Replace(" ","");
+
+                if (fixedLine == "[files]")
+                {
+                    readType = 0;
+                }
+                else if (fixedLine == "[database]")
+                {
+                    readType = 1;
+                }
+                else
+                {
+                    switch (readType)
+                    {
+                        case 0:
+                            string[] baselineCheck = fixedLine.Split('*');
+                            if (baselineCheck.Length == 2 && !string.IsNullOrEmpty(baselineCheck[0]))
+                            {
+                                info.FilePaths.Add(baselineCheck[0]);
+                                info.BaselineFileIndex = baselineIndex;                                
+                            }
+                            else
+                            {
+                                info.FilePaths.Add(fixedLine);
+                            }
+                            baselineIndex++;
+                            break;
+                        case 1:
+                            string[] keys = fixedLine.Split('=');
+                            if (keys.Length > 1)
+                            {
+                                switch (keys[0].ToLower())
+                                {
+                                    case "database":
+                                        info.MassTagDatabase        = keys[1];
+                                        break;
+                                    case "server":
+                                        info.MassTagDatabaseServer  = keys[1];
+                                        break;
+                                }
+                            }
+                            break;
+                    }
+                }
+            }
+
+            return info;
+        }
+
         /// <summary>
         /// Processes the MA analysis data.
         /// </summary>
@@ -802,6 +863,9 @@ namespace MultiAlignConsole
             // Determine options.
             string fileInputList = null;
             string parameterFile = null;
+
+            MultiAlignEngine.MassTags.clsMassTagDatabaseOptions options = null;
+
             if (args.Length == 2)
             {
                 if (args[0].ToLower() == "-plots")
@@ -859,6 +923,21 @@ namespace MultiAlignConsole
                     {
                         builder.BuildClusterer(ClusteringAlgorithmType.SingleLinkage);
                     }
+                    else if (algorithmType.ToLower() == "hack")
+                    {
+                        options = new MultiAlignEngine.MassTags.clsMassTagDatabaseOptions();
+                        options.mfltMinXCorr                  = 0;
+                        options.mintMinObservationCountFilter = 0;
+                        options.mdecimalMinPMTScore           = 1;
+                        options.mbyteNETValType               = 0;
+                        options.mdblMinDiscriminant           = 0;
+                        options.mdblPeptideProphetVal         = 0;
+                        options.menm_databaseType             = MultiAlignEngine.MassTags.MassTagDatabaseType.SQL;
+                        options.mstrDatabase                  = "MT_Human_Sarcopenia_P676";
+                        options.mstrServer                    = "elmer";
+                        options.mstrExperimentExclusionFilter = "";
+                        options.mstrExperimentFilter          = "";
+                    }
                 }
 
                 m_logPath       = AnalysisPathUtils.BuildLogPath(m_analysisPath, m_analysisName);
@@ -893,32 +972,33 @@ namespace MultiAlignConsole
                 return;
             }
 
-            Log("Parsing Filenames.");
-            string [] files         = File.ReadAllLines(fileInputList);
-            List<string> filenames  = new List<string>();
-            string baseline         = null;
-            foreach(string filename in files)
-            {
-                string [] baselineCheck = filename.Split('*');
-
-                if (baselineCheck.Length == 2 && baselineCheck[1] == "")
+            Log("Parsing Input Filenames and Databases.");            
+            InputAnalysisInfo info = ReadInputFile(fileInputList);
+            Log("Found " + info.FilePaths.Count.ToString() + " files.");
+            
+            // Validate the mass tag database settings.            
+            if (info.MassTagDatabase != null || info.MassTagDatabaseServer != null)
+            {                
+                if (info.MassTagDatabase == null)
                 {
-                    baseline = baselineCheck[0];
-                    filenames.Add(baseline);
-                    Log(string.Format("Baseline dataset selected: {0}", baseline));
+                    Log("No mass tag database supplied.");
+                    return;
+                }                                            
+                if (info.MassTagDatabaseServer == null)
+                {
+                    Log("No Mass Tag Database Server Supplied.");                    
+                    return;
                 }
-                else
-                {                    
-                    filenames.Add(filename);
-                }
-                
+                Log(string.Format("Using Mass Tag Database {0} on Server {1} ", info.MassTagDatabase, info.MassTagDatabaseServer)); 
             }
+            
 
-            Log("Creating Analysis.");
+            Log("Creating Analysis Objects.");
             MultiAlignAnalysis analysis             = new MultiAlignAnalysis();
             analysis.AnalysisPath                   = m_analysisPath;
             analysis.AnalysisName                   = m_analysisName;
-            analysis.BaselineDatasetName                = baseline;
+            analysis.UseMassTagDBAsBaseline         = true;
+            
             m_analysis                              = analysis;
             MultiAlignAnalysisProcessor processor   = new MultiAlignAnalysisProcessor();
 
@@ -939,46 +1019,69 @@ namespace MultiAlignConsole
             Log("Loading parameters.");
             analysis.LoadParametersFromFile(parameterFile);
 
+            // Update the mass tag database if needed.
+            if (info.MassTagDatabase != null)
+            {
+                m_analysis.MassTagDBOptions.mstrDatabase = info.MassTagDatabase;
+                m_analysis.MassTagDBOptions.mstrServer   = info.MassTagDatabaseServer;
+                m_analysis.MassTagDBOptions.menm_databaseType = MultiAlignEngine.MassTags.MassTagDatabaseType.SQL;
+                
+                // Validate the baseline
+                if (info.BaselineFileIndex < 0)
+                {
+                    m_analysis.UseMassTagDBAsBaseline = true;
+                    Log(string.Format("Using mass tag database {0} as the alignment baseline.", info.MassTagDatabase));
+                }
+                else
+                {
+                    m_analysis.UseMassTagDBAsBaseline   = false;                    
+                    string baselineDataset              = Path.GetFileName(info.FilePaths[info.BaselineFileIndex]);
+                    m_analysis.BaselineDatasetName      = baselineDataset;
+                    Log(string.Format("Using dataset {0} as the alignment baseline.", baselineDataset));
+                }
+            }
+            else
+            {
+                // Validate the baseline
+                if (info.BaselineFileIndex < 0)
+                {
+                    Log("No baseline dataset or database was selected.");
+                    return;
+                }
+            }
+
+            // Output the settings to INI for viewing.
             MultiAlignParameterIniFileWriter writer = new MultiAlignParameterIniFileWriter();            
             string outParamName = Path.GetFileNameWithoutExtension(parameterFile);
             string outParamPath = Path.Combine(Path.GetDirectoryName(parameterFile), outParamName + ".ini");
             if (outParamPath != parameterFile)
             {
                 writer.WriteParametersToFile(outParamPath, analysis);
-            }            
+            }
+            
 
             // Create dataset information.
             int i = 0;
             Log("Creating dataset information.");
 
-            foreach (string filename in filenames)
+            foreach (string filename in info.FilePaths)
             {
-                DatasetInformation info = new DatasetInformation();
-                info.Path = filename;
-                info.DatasetId = (i.ToString());
+                DatasetInformation datasetInfo = new DatasetInformation();
+                datasetInfo.Path = filename;
+                datasetInfo.DatasetId = (i.ToString());
                 i++;
 
-                info.DatasetName = Path.GetFileName(filename);
-                info.JobId = "";
-                info.mstrResultsFolder = Path.GetDirectoryName(filename);
-                info.ParameterFileName = "";
-                info.Selected = true;
+                datasetInfo.DatasetName = Path.GetFileName(filename);
+                datasetInfo.JobId = "";
+                datasetInfo.mstrResultsFolder = Path.GetDirectoryName(filename);
+                datasetInfo.ParameterFileName = "";
+                datasetInfo.Selected = true;
 
-                Log("\tCreated dataset information for " + filename);
-                analysis.Datasets.Add(info);
+                Log("Created dataset information for " + filename);
+                analysis.Datasets.Add(datasetInfo);
             }
 
-            // Load alignment data.
-            if (baseline != null)
-            {
-                analysis.BaselineDatasetName = baseline;
-            }
-            else
-            {
-                Log("No Baseline selected.  Please select a baseline dataset.");
-                analysis.Dispose();
-                return;
-            }       
+            processor.AnalysisError         += new EventHandler<AnalysisErrorEventArgs>(processor_AnalysisError);
             processor.FeaturesAligned       += new EventHandler<FeaturesAlignedEventArgs>(processor_FeaturesAligned);
             processor.FeaturesLoaded        += new EventHandler<FeaturesLoadedEventArgs>(processor_FeaturesLoaded);
             processor.FeaturesClustered     += new EventHandler<FeaturesClusteredEventArgs>(processor_FeaturesClustered);
@@ -1002,6 +1105,12 @@ namespace MultiAlignConsole
             processor.Dispose();
             CleanupDataProviders();
             Log("Analysis Complete.");                        
+        }
+
+        static void processor_AnalysisError(object sender, AnalysisErrorEventArgs e)
+        {
+            Log(string.Format("There was an error while performing the analysis.  {0} : {1}", e.ErrorMessage, e.Exception.Message));
+            m_triggerEvent.Set();
         }
 
         [DllImport("kernel32.dll")]
