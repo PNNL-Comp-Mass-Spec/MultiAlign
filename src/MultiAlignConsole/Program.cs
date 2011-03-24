@@ -1042,12 +1042,18 @@ namespace MultiAlignConsole
             }
             else
             {
+                m_analysis.MassTagDBOptions.menm_databaseType = MultiAlignEngine.MassTags.MassTagDatabaseType.None;
+                m_analysis.UseMassTagDBAsBaseline = false;
                 // Validate the baseline
                 if (info.BaselineFileIndex < 0)
                 {
                     Log("No baseline dataset or database was selected.");
                     return;
                 }
+
+                string baselineDataset = Path.GetFileName(info.FilePaths[info.BaselineFileIndex]);
+                m_analysis.BaselineDatasetName = baselineDataset;
+                Log(string.Format("Using dataset {0} as the alignment baseline.", baselineDataset));
             }
 
             // Output the settings to INI for viewing.
