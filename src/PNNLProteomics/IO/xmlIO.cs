@@ -197,6 +197,7 @@ namespace PNNLProteomics.IO
                 /// 
                 try
                 {
+                    type = GetType(id, index);
                     Type t = System.Type.GetType(type);
                     if (t.IsEnum)
                     {
@@ -312,9 +313,13 @@ namespace PNNLProteomics.IO
 		{
 			try
 			{
-				StreamWriter sw = File.CreateText (fName);
-				sw.Write(doc.InnerXml);
-				sw.Close();
+                
+                XmlTextWriter writer = new XmlTextWriter(File.CreateText(fName));
+				//StreamWriter sw = File.CreateText (fName);
+                //sw.Write(doc.InnerXml);
+				//sw.Close();
+                writer.Formatting = Formatting.Indented;
+                doc.Save(writer);
 			}
 			catch{}
 		}
