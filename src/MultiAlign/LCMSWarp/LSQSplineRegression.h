@@ -22,7 +22,7 @@ namespace MultiAlignEngine
 			double mdouble_min_x; 
 			double mdouble_max_x; 
 			double marr_coeffs[512]; 
-			LSQSplineRegression(void): mint_num_knots(0), mint_order(1){};
+			LSQSplineRegression(void): mint_num_knots(0), mint_order(2){};
 			~LSQSplineRegression(void) {};
 			void SetOptions(int num_knots) { mint_num_knots = num_knots; }; 
 			bool CalculateLSQRegressionCoefficients(int order, vector<Regression::RegressionPts> &vect_pts);
