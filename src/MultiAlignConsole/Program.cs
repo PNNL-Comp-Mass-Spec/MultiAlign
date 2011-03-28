@@ -1024,7 +1024,7 @@ namespace MultiAlignConsole
             {
                 m_analysis.MassTagDBOptions.mstrDatabase = info.MassTagDatabase;
                 m_analysis.MassTagDBOptions.mstrServer   = info.MassTagDatabaseServer;
-                m_analysis.MassTagDBOptions.menm_databaseType = MultiAlignEngine.MassTags.MassTagDatabaseType.SQL;
+                m_analysis.MassTagDBOptions.menm_databaseType = MultiAlignEngine.MassTags.MassTagDatabaseType.SQL; 
                 
                 // Validate the baseline
                 if (info.BaselineFileIndex < 0)
@@ -1063,6 +1063,7 @@ namespace MultiAlignConsole
             if (outParamPath != parameterFile)
             {
                 writer.WriteParametersToFile(outParamPath, analysis);
+                analysis.SaveParametersToFile(outParamPath.Replace(".ini", "") + ".xml");
             }
             
 

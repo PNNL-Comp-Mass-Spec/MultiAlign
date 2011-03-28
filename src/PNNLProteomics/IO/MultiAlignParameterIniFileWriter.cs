@@ -93,6 +93,8 @@ namespace PNNLProteomics.IO
 		{            
             using (TextWriter writer = File.CreateText(filename))
             {
+
+                WriteOptionGroup(writer, ALIGNMENT_TAG,         analysis.DefaultAlignmentOptions); 
                 WriteOptionGroup(writer, FEATURE_FINDING_TAG,   analysis.UMCFindingOptions);                
                 WriteOptionGroup(writer, MASS_TAG_DATABASE_TAG, analysis.MassTagDBOptions);
                 WriteOptionGroup(writer, CLUSTER_TAG,           analysis.ClusterOptions);

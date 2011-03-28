@@ -735,7 +735,7 @@ namespace PNNLProteomics.Data
 			metaData.ReadFile(filename);
 
 			//ReflectParameterOptions(AlignmentOptions[0], metaData.OpenChild("AlignmentOptions"));
-            LoadParameterOptions(AlignmentOptions, metaData.OpenChild("AlignmentOptions"));
+            LoadParameterOptions(AlignmentOptions, metaData.OpenChild("DefaultAlignmentOptions"));
             LoadParameterOptions(ClusterOptions, metaData.OpenChild("ClusterOptions"));
             LoadParameterOptions(PeakMatchingOptions, metaData.OpenChild("PeakMatchingOptions"));
             
