@@ -1001,7 +1001,8 @@ namespace MultiAlignWin
                 SaveFileDialog dialog = new SaveFileDialog();
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
-                    m_analysis.SaveParametersToFile(dialog.FileName);
+                    XMLParameterFileWriter writer = new XMLParameterFileWriter();                    
+                    writer.WriteParameterFile(dialog.FileName, m_analysis);
                 }
             }
         }

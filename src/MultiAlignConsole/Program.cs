@@ -1017,7 +1017,8 @@ namespace MultiAlignConsole
 
             // Setup the parameters.
             Log("Loading parameters.");
-            analysis.LoadParametersFromFile(parameterFile);
+            PNNLProteomics.IO.XMLParamterFileReader reader = new PNNLProteomics.IO.XMLParamterFileReader();
+            reader.ReadParameterFile(parameterFile, ref m_analysis);            
 
             // Update the mass tag database if needed.
             if (info.MassTagDatabase != null)
@@ -1057,15 +1058,15 @@ namespace MultiAlignConsole
             }
 
             // Output the settings to INI for viewing.
-            MultiAlignParameterIniFileWriter writer = new MultiAlignParameterIniFileWriter();            
             string outParamName = Path.GetFileNameWithoutExtension(parameterFile);
             string outParamPath = Path.Combine(Path.GetDirectoryName(parameterFile), outParamName + ".ini");
             if (outParamPath != parameterFile)
             {
-                writer.WriteParametersToFile(outParamPath, analysis);
-                analysis.SaveParametersToFile(outParamPath.Replace(".ini", "") + ".xml");
-            }
-            
+                MultiAlignParameterIniFileWriter iniWriter  = new MultiAlignParameterIniFileWriter();
+                XMLParameterFileWriter xmlWriter            = new XMLParameterFileWriter();            
+                iniWriter.WriteParametersToFile(outParamPath, analysis);
+                xmlWriter.WriteParameterFile(outParamPath.Replace(".ini", "") + ".xml", m_analysis);
+            }            
 
             // Create dataset information.
             int i = 0;

@@ -493,8 +493,10 @@ namespace MultiAlignWin
             string analysisName     = m_analysis.AnalysisName;     
             string parameterPath    = AnalysisPathUtils.BuildParameterPath(m_analysis.AnalysisPath, m_analysis.AnalysisName, ".xml");
             m_logPath               = AnalysisPathUtils.BuildLogPath(m_analysis.AnalysisPath, m_analysis.AnalysisName);
-       
-            m_analysis.SaveParametersToFile(parameterPath);
+
+            PNNLProteomics.IO.XMLParameterFileWriter writer = new PNNLProteomics.IO.XMLParameterFileWriter();
+            writer.WriteParameterFile(parameterPath, m_analysis);
+            
             m_processor.StartAnalysis(m_analysis);
         }
         public void SetAsActivePage()

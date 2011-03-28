@@ -195,6 +195,10 @@
     <Compile Include="IO\AnalysisLogWriter.cs" />
     <Compile Include="IO\AnalysisSQLiteDBWriter.cs" />
     <Compile Include="IO\AnalysisTableWriter.cs" />
+    <Compile Include="IO\IParameterFileReader.cs" />
+    <Compile Include="IO\IParameterFileWriter.cs" />
+    <Compile Include="IO\XMLParameterFileReader.cs" />
+    <Compile Include="IO\XMLParameterFileWriter.cs" />
     <Compile Include="IO\DataAccessFactory.cs" />
     <Compile Include="IO\DatabaseDatasetIDLoader.cs" />
     <Compile Include="IO\DatabaseDatasetLoader.cs" />
