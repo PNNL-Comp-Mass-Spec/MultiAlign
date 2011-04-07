@@ -158,7 +158,6 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Data\SelectionRangeCollection.cs" />
-    <Compile Include="Diagnostics\HiPerfTimer.cs" />
     <Compile Include="Drawing\Axes\AxisType.cs" />
     <Compile Include="Drawing\Axes\ctlSingleAxis.cs">
       <SubType>Component</SubType>
@@ -304,16 +303,12 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Drawing\Viewport\ViewPortHistory.cs" />
-    <Compile Include="Drawing\WinGDI.cs" />
     <Compile Include="Forms\CategorizedForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\ColumnSequenceChangedEventArgs.cs" />
     <Compile Include="Forms\ColumnSequenceChangingEventArgs.cs" />
     <Compile Include="Forms\ColumnStartDragEventArgs.cs" />
-    <Compile Include="Forms\ctlDataGridColumnReorder.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
     <Compile Include="Forms\ctlFileView.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -337,9 +332,6 @@
     </Compile>
     <Compile Include="Forms\ctlTextEditor.cs">
       <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Forms\DataGridEx.cs">
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Forms\ExpandPanel.cs">
       <SubType>Component</SubType>
@@ -550,10 +542,6 @@
       <DependentUpon>frmViewPortEditor.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\ctlDataGridColumnReorder.resx">
-      <DependentUpon>ctlDataGridColumnReorder.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="Forms\ctlFileView.resx">
       <DependentUpon>ctlFileView.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -580,10 +568,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ctlTextEditor.resx">
       <DependentUpon>ctlTextEditor.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\DataGridEx.resx">
-      <DependentUpon>DataGridEx.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ExpandPanel.resx">

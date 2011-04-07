@@ -10,9 +10,6 @@ using System.ComponentModel;
 using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
 
-
-using PNNLControls.Diagnostics;
-
 namespace PNNLControls
 {
 	public enum LinearParameters{SLOPE = 0, INTERCEPT = 1, RSQUARED = 2};
@@ -680,11 +677,9 @@ namespace PNNLControls
 			 *  Paint the data points for each series
 			 *		i,j -> grid
 			/*/////////////////////////////////////////////////////////////////////	
-			HiPerfTimer timer = new HiPerfTimer();
 			int numberDrawn   = 0; 
 			int numberOfPlots = Math.Abs(m_displayBounds.StartColumn - m_displayBounds.EndColumn)*Math.Abs(m_displayBounds.StartRow - m_displayBounds.EndRow);
 			
-			timer.Start();
 			if ( Math.Abs(m_displayBounds.StartColumn - m_displayBounds.EndColumn) == Math.Abs(m_displayBounds.StartRow - m_displayBounds.EndRow) && m_displayBounds.StartRow == m_displayBounds.StartColumn)
 			{
 				for(int col = m_displayBounds.StartColumn; col <= m_displayBounds.EndColumn; col++)
@@ -701,16 +696,6 @@ namespace PNNLControls
 							DrawSubPlot(col, row, false);
 							numberDrawn	+=	2;
 						}
-						if (timer.Duration >= .5)
-						{
-							timer.Stop();
-							double percentDrawn = Convert.ToDouble(numberDrawn)/Convert.ToDouble(numberOfPlots);
-							percentDrawn		= Math.Max(0,Math.Min(percentDrawn,1.0))*100.0;
-							UnLock();
-							UpdatePercentDrawn(Convert.ToInt32(percentDrawn));			
-							Lock();			
-							timer.Start();
-						}			
 					}																																			 																																											
 				}	
 			}					
@@ -722,16 +707,6 @@ namespace PNNLControls
 					{										
 						DrawSubPlot(row,col, false);						
 						numberDrawn++;
-						if (timer.Duration >= .5)
-						{
-							timer.Stop();
-							double percentDrawn = Convert.ToDouble(numberDrawn)/Convert.ToDouble(numberOfPlots);
-							percentDrawn		= Math.Max(0,Math.Min(percentDrawn,1.0))*100.0;
-							UnLock();
-							UpdatePercentDrawn(Convert.ToInt32(percentDrawn));			
-							Lock();	
-							timer.Start();					
-						}			
 					}																																			 																																											
 				}	
 			}
