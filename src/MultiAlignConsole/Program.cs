@@ -740,7 +740,7 @@ namespace MultiAlignConsole
         static void CreatePlotReport()
         {
             Log("Creating Report.");
-            using (TextWriter htmlWriter = File.CreateText(Path.Combine(m_analysisPath, m_analysisName + "_plots.html")))
+            using (TextWriter htmlWriter = File.CreateText(Path.Combine(m_analysisPath, "index.html")))
             {
                 foreach (string tag in m_htmlPage)
                 {
