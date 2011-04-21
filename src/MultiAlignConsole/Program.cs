@@ -809,7 +809,7 @@ namespace MultiAlignConsole
                                 info.FilePaths.Add(baselineCheck[0]);
                                 info.BaselineFileIndex = baselineIndex;                                
                             }
-                            else
+                            else if (!string.IsNullOrEmpty(baselineCheck[0]))
                             {
                                 info.FilePaths.Add(fixedLine);
                             }
@@ -922,21 +922,6 @@ namespace MultiAlignConsole
                     else if (algorithmType.ToLower() == "singlelinkage") 
                     {
                         builder.BuildClusterer(ClusteringAlgorithmType.SingleLinkage);
-                    }
-                    else if (algorithmType.ToLower() == "hack")
-                    {
-                        options = new MultiAlignEngine.MassTags.clsMassTagDatabaseOptions();
-                        options.mfltMinXCorr                  = 0;
-                        options.mintMinObservationCountFilter = 0;
-                        options.mdecimalMinPMTScore           = 1;
-                        options.mbyteNETValType               = 0;
-                        options.mdblMinDiscriminant           = 0;
-                        options.mdblPeptideProphetVal         = 0;
-                        options.menm_databaseType             = MultiAlignEngine.MassTags.MassTagDatabaseType.SQL;
-                        options.mstrDatabase                  = "MT_Human_Sarcopenia_P676";
-                        options.mstrServer                    = "elmer";
-                        options.mstrExperimentExclusionFilter = "";
-                        options.mstrExperimentFilter          = "";
                     }
                 }
 
