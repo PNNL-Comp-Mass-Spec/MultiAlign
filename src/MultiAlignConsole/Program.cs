@@ -16,6 +16,8 @@ using PNNLProteomics.MultiAlign.Hibernate;
 using PNNLProteomics.MultiAlign.Hibernate.Domain.DAO;
 using PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate;
 
+using System.Reflection;
+
 
 namespace MultiAlignConsole
 {
@@ -75,6 +77,11 @@ namespace MultiAlignConsole
         #endregion
         
         #region Methods
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="image"></param>
+        /// <param name="name"></param>
         static void SaveImage(Image image, string name)
         {
             if (image != null)
@@ -511,6 +518,36 @@ namespace MultiAlignConsole
             PrintMessage("   - -plots            = Command line directive indicating plot creation.");            
             
         }
+        /// <summary>
+        /// Prints the version of MA to the log file.
+        /// </summary>
+        public static void PrintVersion() 
+        {
+
+            PrintMessage("[VersionInfo]");
+            // get the version object for this assembly
+            Assembly assembly   = Assembly.GetExecutingAssembly();
+            AssemblyName name   = assembly.GetName();
+            Version version     = name.Version;
+            PrintMessage(string.Format("{0} - version {1}", name, version));
+
+            AppDomain MyDomain = AppDomain.CurrentDomain;
+            Assembly[] AssembliesLoaded = MyDomain.GetAssemblies();
+
+            PrintMessage("Loaded Assemblies");
+            foreach (Assembly subAssembly in AssembliesLoaded)
+            {
+                    AssemblyName subName = subAssembly.GetName();
+                    if (!subName.Equals(name))
+                    {
+                        PrintMessage(string.Format("\t{0} - version {1}",                            
+                                                                        subName,
+                                                                        subName.Version));
+                    }
+            }             
+            PrintMessage("");
+            PrintMessage("[LogStart]");
+        }
         #endregion
 
         #region Event Handlers
@@ -779,8 +816,7 @@ namespace MultiAlignConsole
 
         private static InputAnalysisInfo ReadInputFile(string path)
         {
-            InputAnalysisInfo info = new InputAnalysisInfo();
-
+            InputAnalysisInfo info = new InputAnalysisInfo();            
             string[] lines = File.ReadAllLines(path);
 
             int readType        = -1;
@@ -836,7 +872,24 @@ namespace MultiAlignConsole
 
             return info;
         }
+        /// <summary>
+        /// Creates the plots 
+        /// </summary>
+        static void CreatePlots(string directoryPath)
+        {
+            NHibernateUtil.SetDbLocationForRead(directoryPath);
+            m_analysisName  = Path.GetFileNameWithoutExtension(directoryPath);
+            m_analysisPath  = Path.GetDirectoryName(directoryPath);
 
+            // Set the log path.
+            m_logPath       = AnalysisPathUtils.BuildLogPath(m_analysisPath, m_analysisName);
+            m_plotSavePath  = AnalysisPathUtils.BuildPlotPath(Path.GetDirectoryName(directoryPath));
+
+            PushHeader();
+            CreateFinalAnalysisPlots();
+            PushEndHeader();
+            CreatePlotReport();
+        }
         /// <summary>
         /// Processes the MA analysis data.
         /// </summary>
@@ -844,8 +897,9 @@ namespace MultiAlignConsole
         static void StartMultiAlign(string [] args)
         {
             // Builds the list of algorithm providers.
-            AlgorithmBuilder builder = new AlgorithmBuilder();                       
-            
+            AlgorithmBuilder builder = new AlgorithmBuilder();
+            bool writeINI   = false;    // This will export the parameters to an INI file.
+
             m_width         = PLOT_WIDTH;
             m_height        = PLOT_HEIGHT;
             m_widthHTML     = PLOT_WIDTH_HTML;
@@ -858,35 +912,18 @@ namespace MultiAlignConsole
                 return;
             }
 
+            // HTML Page stack.
             m_htmlPage = new List<string>();
 
             // Determine options.
             string fileInputList = null;
             string parameterFile = null;
-
-            MultiAlignEngine.MassTags.clsMassTagDatabaseOptions options = null;
-
+            
             if (args.Length == 2)
             {
                 if (args[0].ToLower() == "-plots")
                 {
-
-                    NHibernateUtil.SetDbLocationForRead(args[1]);
-
-                    m_analysisName = Path.GetFileNameWithoutExtension(args[1]);
-                    m_analysisPath = Path.GetDirectoryName(args[1]);
-
-
-                    // Set the log path.
-                    m_logPath      = AnalysisPathUtils.BuildLogPath(m_analysisPath, m_analysisName);                    
-                    m_plotSavePath = AnalysisPathUtils.BuildPlotPath(Path.GetDirectoryName(args[1]));
-
-                    PushHeader();
-                    CreateFinalAnalysisPlots();
-                    PushEndHeader();
-
-                    CreatePlotReport();
-
+                    CreatePlots(args[1]);
                     return;
                 }
             }
@@ -894,39 +931,41 @@ namespace MultiAlignConsole
             {
                 if (args[0].ToLower() == "-verify")
                 {
-                    NHibernateUtil.SetDbLocationForRead(args[1]);
-                    m_analysisName = Path.GetFileNameWithoutExtension(args[1]);
-                    m_analysisPath = Path.GetDirectoryName(args[1]);
-
-
-                    m_logPath       = AnalysisPathUtils.BuildLogPath(m_analysisPath, m_analysisName);
-                    m_plotSavePath  = AnalysisPathUtils.BuildPlotPath(Path.GetDirectoryName(args[1]));
-                    VerifyClusters(Convert.ToDouble(args[2]));
+                    VerifyDatabase(args);
                     return;
                 }
             }
             else if (args.Length >= 4)
             {
-                fileInputList  = args[0];
-                parameterFile  = args[1];
-                m_analysisPath = args[2];
-                m_analysisName = args[3];
+                fileInputList   = args[0];
+                parameterFile   = args[1];
+                m_analysisPath  = args[2];
+                m_analysisName  = args[3];
+
+                m_logPath       = AnalysisPathUtils.BuildLogPath(m_analysisPath, m_analysisName);
+                m_plotSavePath  = AnalysisPathUtils.BuildPlotPath(Path.GetDirectoryName(args[1]));
+
+                PrintVersion();
 
                 if (args.Length > 4)
                 {
                     string algorithmType = args[4];                    
                     if (algorithmType.ToLower() == "centroid")
                     {
+                        PrintMessage("Building centroid clusterer");
                         builder.BuildClusterer(ClusteringAlgorithmType.Centroid);
                     }
-                    else if (algorithmType.ToLower() == "singlelinkage") 
+                    else if (algorithmType.ToLower() == "singlelinkage")
                     {
+                        PrintMessage("Building single linkage clusterer");
                         builder.BuildClusterer(ClusteringAlgorithmType.SingleLinkage);
                     }
+                    else
+                    {
+                        PrintMessage("Built average linkage clusterer.");
+                    }
                 }
-
-                m_logPath       = AnalysisPathUtils.BuildLogPath(m_analysisPath, m_analysisName);
-                m_plotSavePath  = AnalysisPathUtils.BuildPlotPath(Path.GetDirectoryName(args[1]));       
+      
             }
             else
             {
@@ -1045,7 +1084,7 @@ namespace MultiAlignConsole
             // Output the settings to INI for viewing.
             string outParamName = Path.GetFileNameWithoutExtension(parameterFile);
             string outParamPath = Path.Combine(Path.GetDirectoryName(parameterFile), outParamName + ".ini");
-            if (outParamPath != parameterFile)
+            if (outParamPath != parameterFile && writeINI)
             {
                 MultiAlignParameterIniFileWriter iniWriter  = new MultiAlignParameterIniFileWriter();
                 XMLParameterFileWriter xmlWriter            = new XMLParameterFileWriter();            
@@ -1098,6 +1137,18 @@ namespace MultiAlignConsole
             processor.Dispose();
             CleanupDataProviders();
             Log("Analysis Complete.");                        
+        }
+
+        private static void VerifyDatabase(string[] args)
+        {
+            NHibernateUtil.SetDbLocationForRead(args[1]);
+            m_analysisName = Path.GetFileNameWithoutExtension(args[1]);
+            m_analysisPath = Path.GetDirectoryName(args[1]);
+
+
+            m_logPath = AnalysisPathUtils.BuildLogPath(m_analysisPath, m_analysisName);
+            m_plotSavePath = AnalysisPathUtils.BuildPlotPath(Path.GetDirectoryName(args[1]));
+            VerifyClusters(Convert.ToDouble(args[2]));
         }
 
         static void processor_AnalysisError(object sender, AnalysisErrorEventArgs e)
