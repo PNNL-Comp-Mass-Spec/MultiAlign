@@ -173,9 +173,9 @@ namespace MultiAlignWin
             // 
             // mtabControlOptions
             // 
-            this.mtabControlOptions.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.mtabControlOptions.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.mtabControlOptions.Controls.Add(this.mtabPageNetOptions);
             this.mtabControlOptions.Controls.Add(this.mtabPageMassOptions);
             this.mtabControlOptions.Controls.Add(this.mtabPageTolerances);
@@ -314,8 +314,8 @@ namespace MultiAlignWin
             // 
             // groupBox3
             // 
-            this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox3.Controls.Add(this.mtextBox_lsq_outlier_zscore);
             this.groupBox3.Controls.Add(this.label11);
             this.groupBox3.Controls.Add(this.mtextBox_num_knots);
@@ -463,8 +463,8 @@ namespace MultiAlignWin
             // 
             // groupBox5
             // 
-            this.groupBox5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox5.Controls.Add(this.mnum_NETBinSize);
             this.groupBox5.Controls.Add(this.mnum_massBinSize);
             this.groupBox5.Controls.Add(this.label15);
@@ -478,8 +478,8 @@ namespace MultiAlignWin
             // 
             // mnum_NETBinSize
             // 
-            this.mnum_NETBinSize.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.mnum_NETBinSize.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.mnum_NETBinSize.DecimalPlaces = 5;
             this.mnum_NETBinSize.Location = new System.Drawing.Point(146, 39);
             this.mnum_NETBinSize.Maximum = new decimal(new int[] {
@@ -503,8 +503,8 @@ namespace MultiAlignWin
             // 
             // mnum_massBinSize
             // 
-            this.mnum_massBinSize.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.mnum_massBinSize.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.mnum_massBinSize.DecimalPlaces = 2;
             this.mnum_massBinSize.Location = new System.Drawing.Point(146, 16);
             this.mnum_massBinSize.Maximum = new decimal(new int[] {
@@ -612,9 +612,9 @@ namespace MultiAlignWin
             // 
             // groupBox2
             // 
-            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox2.Controls.Add(this.mradioButton_hybrid);
             this.groupBox2.Controls.Add(this.mradioButton_net);
             this.groupBox2.Controls.Add(this.mradioButton_mz);
@@ -680,7 +680,7 @@ namespace MultiAlignWin
             this.mnum_splitAlignment.Enabled = false;
             this.mnum_splitAlignment.Location = new System.Drawing.Point(121, 38);
             this.mnum_splitAlignment.Maximum = new decimal(new int[] {
-            3000,
+            5001,
             0,
             0,
             0});
