@@ -795,7 +795,13 @@ namespace MultiAlignConsole
         /// <returns></returns>
         private static FeatureDataAccessProviders SetupDataProviders()
         {
-            string path = AnalysisPathUtils.BuildAnalysisName(m_analysisPath, m_analysisName);
+            string nameWithExtension = m_analysisName;
+            bool containsExtensionDB3 = nameWithExtension.EndsWith(".db3");
+            if (!containsExtensionDB3)
+            {
+                nameWithExtension += ".db3";
+            }
+            string path = AnalysisPathUtils.BuildAnalysisName(m_analysisPath, nameWithExtension);
 
             NHibernateUtil.SetDbLocationForWrite(path, true);
             NHibernateUtil.SetDbLocationForRead(path);
@@ -945,7 +951,6 @@ namespace MultiAlignConsole
                 m_logPath       = AnalysisPathUtils.BuildLogPath(m_analysisPath, m_analysisName);
                 m_plotSavePath  = AnalysisPathUtils.BuildPlotPath(Path.GetDirectoryName(args[1]));
 
-                PrintVersion();
 
                 if (args.Length > 4)
                 {
@@ -977,6 +982,8 @@ namespace MultiAlignConsole
             {
                 Directory.CreateDirectory(m_analysisPath);
             }
+
+            PrintVersion();
 
             Log("Starting MultiAlign Console Application.");
             Log("Creating analysis: "   + m_analysisName);
