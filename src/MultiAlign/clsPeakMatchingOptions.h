@@ -21,12 +21,25 @@ namespace MultiAlignEngine
 			/// Drift-Time Tolerance for peak matching.
 			/// </summary>
 			double mdblDriftTimeTolerance;
+			/// flag to use stack.
+			bool m_performSTAC;
 		public:
 
 			
 		public: 
 			clsPeakMatchingOptions(void);
 			~clsPeakMatchingOptions(void);
+		
+			[clsDataSummaryAttribute("Perform STAC")]			
+			[clsParameterFileAttribute("PerformStac", "PeakMatchingOptions")]
+			__property bool get_UseSTAC()
+			{
+				return m_performSTAC; 
+			}
+			__property void set_UseSTAC(bool perform)
+			{
+				m_performSTAC = perform; 
+			}
 
 			[clsDataSummaryAttribute("Mass Tolerance")]			
 			[clsParameterFileAttribute("MassTolerance", "PeakMatchingOptions")]

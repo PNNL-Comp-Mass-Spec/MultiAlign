@@ -682,7 +682,7 @@ namespace MultiAlignWin
         }
         private void mradioButton_useSMART_CheckedChanged(object sender, EventArgs e)
         {
-            m_analysis.UseSTAC = mradioButton_useSMART.Checked;            
+            m_analysis.PeakMatchingOptions.UseSTAC = mradioButton_useSMART.Checked;            
         }
 
         private void mbtnSavePara_Click(object sender, EventArgs e)

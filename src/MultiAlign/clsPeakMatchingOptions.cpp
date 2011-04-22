@@ -7,9 +7,10 @@ namespace MultiAlignEngine
 	{
 		clsPeakMatchingOptions::clsPeakMatchingOptions(void)
 		{
-			mdblMassTolerance		 = 6.0; 
-			mdblNETTolerance		 = 0.03; 
-			mdblDriftTimeTolerance   = 50.0;			
+			mdblMassTolerance			= 6.0; 
+			mdblNETTolerance			= 0.03; 
+			mdblDriftTimeTolerance		= 50.0;	
+			m_performSTAC				= false;
 		}
 
 		clsPeakMatchingOptions::~clsPeakMatchingOptions(void)

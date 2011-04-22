@@ -101,7 +101,6 @@ namespace PNNLProteomics.IO
                 WriteOptionGroup(writer, PEAK_MATCH_TAG,        analysis.PeakMatchingOptions);
 
                 writer.WriteLine("[" + GLOBAL_TAG + "]" );
-                WriteOption(writer, GLOBAL_OPTION_USE_STAC,             analysis.UseSTAC);
                 WriteOption(writer, GLOBAL_OPTION_USE_MTDB_AS_BASELINE, analysis.UseMassTagDBAsBaseline);
                 writer.WriteLine();
             }

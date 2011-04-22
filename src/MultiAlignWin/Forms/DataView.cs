@@ -865,7 +865,7 @@ namespace MultiAlignWin
                 string peakMatchingResult = "Peak Matching Results";
 
                 m_resultSummaryPages.CreateSummary("Peak Matching Results", m_analysis.PeakMatchingResults);
-                if (m_analysis.UseSTAC == false)
+                if (m_analysis.PeakMatchingOptions.UseSTAC == false)
                 {
                     m_resultSummaryPages.AddData(peakMatchingResult, "11-Da Shifted Number of Mass Tags Matched",
                         m_analysis.PeakMatchingResultsShifted.NumMassTagsMatched.ToString());

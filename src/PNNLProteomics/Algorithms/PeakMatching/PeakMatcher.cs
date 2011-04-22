@@ -21,10 +21,11 @@ namespace PNNLProteomics.Algorithms.PeakMatching
                                                           double daltonShift)
         {
             clsPeakMatchingProcessor peakMatcher = new clsPeakMatchingProcessor();
-            peakMatcher.MassTolerance = options.MassTolerance;
-            peakMatcher.NETTolerance = options.NETTolerance;
-            peakMatcher.DriftTimeTolerance = options.DriftTimeTolerance;
+            peakMatcher.MassTolerance            = options.MassTolerance;
+            peakMatcher.NETTolerance             = options.NETTolerance;
+            peakMatcher.DriftTimeTolerance       = options.DriftTimeTolerance;
 
+                        
             clsPeakMatchingResults peakMatchingResults = peakMatcher.PerformPeakMatching(clusters,
                                                                                            massTagDatabase,
                                                                                            daltonShift);
@@ -64,8 +65,9 @@ namespace PNNLProteomics.Algorithms.PeakMatching
             {
                 clsCluster cluster = clusters[i];
                 classSMARTUMC feature = new classSMARTUMC();
-                feature.mdouble_NET = cluster.NetAligned;
-                feature.mdouble_monoMass = cluster.MassCalibrated;
+                //TODO: BLL Change to aligned feature data
+                feature.mdouble_NET = cluster.Net;
+                feature.mdouble_monoMass = cluster.Mass;
                 feature.mint_id = i;
                 smartFeatures.Add(feature);
             }

@@ -794,14 +794,9 @@ namespace MultiAlignConsole
         /// <param name="analysisPath"></param>
         /// <returns></returns>
         private static FeatureDataAccessProviders SetupDataProviders()
-        {
-            string nameWithExtension = m_analysisName;
-            bool containsExtensionDB3 = nameWithExtension.EndsWith(".db3");
-            if (!containsExtensionDB3)
-            {
-                nameWithExtension += ".db3";
-            }
-            string path = AnalysisPathUtils.BuildAnalysisName(m_analysisPath, nameWithExtension);
+        {            
+            
+            string path = AnalysisPathUtils.BuildAnalysisName(m_analysisPath, m_analysisName);
 
             NHibernateUtil.SetDbLocationForWrite(path, true);
             NHibernateUtil.SetDbLocationForRead(path);
@@ -948,6 +943,12 @@ namespace MultiAlignConsole
                 m_analysisPath  = args[2];
                 m_analysisName  = args[3];
 
+                bool containsExtensionDB3 = m_analysisName.EndsWith(".db3");
+                if (!containsExtensionDB3)
+                {
+                    m_analysisName += ".db3";
+                }
+
                 m_logPath       = AnalysisPathUtils.BuildLogPath(m_analysisPath, m_analysisName);
                 m_plotSavePath  = AnalysisPathUtils.BuildPlotPath(Path.GetDirectoryName(args[1]));
 
@@ -1093,11 +1094,17 @@ namespace MultiAlignConsole
             string outParamPath = Path.Combine(Path.GetDirectoryName(parameterFile), outParamName + ".ini");
             if (outParamPath != parameterFile && writeINI)
             {
-                MultiAlignParameterIniFileWriter iniWriter  = new MultiAlignParameterIniFileWriter();
-                XMLParameterFileWriter xmlWriter            = new XMLParameterFileWriter();            
+                MultiAlignParameterIniFileWriter iniWriter = new MultiAlignParameterIniFileWriter();
+                XMLParameterFileWriter xmlWriter = new XMLParameterFileWriter();
                 iniWriter.WriteParametersToFile(outParamPath, analysis);
                 xmlWriter.WriteParameterFile(outParamPath.Replace(".ini", "") + ".xml", m_analysis);
-            }            
+            }
+            else
+            {
+                XMLParameterFileWriter xmlWriter = new XMLParameterFileWriter();                
+                xmlWriter.WriteParameterFile(outParamPath.Replace(".ini", "") + ".xml", m_analysis);
+            }
+
 
             // Create dataset information.
             int i = 0;

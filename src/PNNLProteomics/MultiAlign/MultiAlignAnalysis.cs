@@ -382,22 +382,7 @@ namespace PNNLProteomics.Data
 			{
 				mstring_baselineDataset = value ; 
 			}
-		}		
-        /// <summary>
-        /// Gets or sets whether to use SMART Scores or not.
-        /// </summary>
-        [clsDataSummaryAttribute("Calculate STAC Scores")]
-        public bool UseSTAC
-        {
-            get
-            {
-                return mbool_calculateSTACScores;
-            }
-            set
-            {
-                mbool_calculateSTACScores = value;
-            }
-        }
+		}	
         /// <summary>
         /// Gets or sets the Alignment Options.
         /// </summary>

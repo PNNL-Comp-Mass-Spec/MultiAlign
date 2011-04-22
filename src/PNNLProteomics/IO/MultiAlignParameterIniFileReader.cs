@@ -123,8 +123,7 @@ namespace PNNLProteomics.IO
         private void LoadGlobalOptions(ref MultiAlignAnalysis analysis)
         {            
             Dictionary<string, string> map  = ProcessSubSectionData(GLOBAL_TAG);
-            analysis.UseMassTagDBAsBaseline = Convert.ToBoolean(map["Use Mass Tag DB As Baseline"]);
-            analysis.UseSTAC               = Convert.ToBoolean(map["Use STAC"]);            
+            analysis.UseMassTagDBAsBaseline = Convert.ToBoolean(map["Use Mass Tag DB As Baseline"]);            
         }
         /// <summary>
         /// Load the parameters from the object

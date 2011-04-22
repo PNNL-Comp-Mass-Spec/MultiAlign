@@ -1,42 +1,25 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
-using System.Reflection;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Runtime.Serialization.Formatters.Binary;
-
-using System.Xml;
-using MultiAlignEngine;
-using MultiAlignEngine.MassTags;
-using MultiAlignEngine.Features;
-using MultiAlignEngine.Alignment;
+using Mammoth.Data;
 using MultiAlignEngine.Clustering;
+using MultiAlignEngine.Features;
+using MultiAlignEngine.MassTags;
 using MultiAlignEngine.PeakMatching;
-
-using PNNLOmics.Data.Features;
 using PNNLOmics.Algorithms;
 using PNNLOmics.Algorithms.FeatureClustering;
-
-
-using PNNLProteomics.IO;
-using PNNLProteomics.IO.UMC;
-using PNNLProteomics.IO.MTDB;
-using PNNLProteomics.SMART;
-using PNNLProteomics.EventModel;
-using PNNLProteomics.Data.Factors;
-using PNNLProteomics.Data.Alignment;
-using PNNLProteomics.MultiAlign;
-using PNNLProteomics.MultiAlign.Hibernate;
-using PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate;
-using PNNLProteomics.Data;
-using PNNLProteomics.Algorithms.PeakMatching;
-using PNNLProteomics.Algorithms.Alignment;
+using PNNLOmics.Data.Features;
 using PNNLProteomics.Algorithms;
+using PNNLProteomics.Algorithms.PeakMatching;
+using PNNLProteomics.Data;
+using PNNLProteomics.Data.Alignment;
+using PNNLProteomics.IO.MTDB;
+using PNNLProteomics.IO.UMC;
+using PNNLProteomics.MultiAlign.Hibernate.Domain;
 using PNNLProteomics.MultiAlign.Hibernate.Domain.DAO;
 
-using Mammoth.Data;
+using PNNLProteomics.SMART;
 
 namespace PNNLProteomics.MultiAlign
 {        
@@ -227,7 +210,7 @@ namespace PNNLProteomics.MultiAlign
             }
             else
             {
-                UpdateStatus("Using Mammoth clustering framework without partitions.  Clustering will run with all data loaded into memory.");
+                UpdateStatus("Using Mammoth clustering framework without partitions.  Clustering will run with all features loaded into memory.");
             }
 
             string databaseName = Path.Combine(m_analysis.AnalysisPath, m_analysis.AnalysisName);
@@ -243,8 +226,7 @@ namespace PNNLProteomics.MultiAlign
                                                                                 -1.5,
                                                                                 1.5,
                                                                                 0,
-                                                                                70,
-                                                                                false);
+                                                                                70);
                 List<int> chargeStatesToCluster = new List<int>();
                 if (analysis.ClusterOptions.IgnoreCharge)
                 {
@@ -388,9 +370,24 @@ namespace PNNLProteomics.MultiAlign
                     List<clsCluster> clusters = m_analysis.DataProviders.ClusterCache.FindAll();
                     IPeakMatcher peakMatcher  = m_algorithms.PeakMatcher;
 
-                    if (m_analysis.UseSTAC)
+
+                    if (!m_analysis.ClusterOptions.AlignClusters)
                     {
-                        UpdateStatus("Peak matching with SMART");
+                        UpdateStatus("Adjusting masses and NETs for clusters for peak matching.");
+
+                        // If the clusters are not aligned, then the 
+                        // peak matching jobs may fail as they require the data structure to have 
+                        // calibrated data.  Talk about coupling!
+                        foreach (clsCluster cluster in clusters)
+                        {
+                            cluster.MassCalibrated = cluster.Mass;
+                            cluster.NetAligned      = cluster.Net;
+                        }
+                    }
+                    
+                    if (m_analysis.PeakMatchingOptions.UseSTAC)
+                    {
+                        UpdateStatus("Peak matching with STAC");
                         m_analysis.STACTResults = peakMatcher.PerformSTAC(clusters,
                                                                 m_analysis.MassTagDatabase,
                                                                 m_analysis.SMARTOptions);
@@ -398,6 +395,8 @@ namespace PNNLProteomics.MultiAlign
                         m_analysis.PeakMatchingResults = peakMatcher.ConvertSTACResultsToPeakResults(m_analysis.STACTResults,
                                                                                           m_analysis.MassTagDatabase,
                                                                                           clusters);
+
+                        
                     }
                     else
                     {
@@ -410,6 +409,77 @@ namespace PNNLProteomics.MultiAlign
                         m_analysis.PeakMatchingResultsShifted = peakMatcher.PerformPeakMatching(clusters,
                                                                 m_analysis.MassTagDatabase, m_analysis.PeakMatchingOptions, 11.0);
                     }
+
+                    clsMassTag[] massTagArray = null; // analysis.PeakMatchingResults.marrMasstags;
+                    clsProtein[] proteinArray = null; // analysis.PeakMatchingResults.marrProteins;            
+                   
+                    massTagArray = m_analysis.PeakMatchingResults.marrMasstags;
+                    proteinArray = m_analysis.PeakMatchingResults.marrProteins;
+
+                    UpdateStatus("Updating database with peak matched results.");
+
+                    //TODO: Fix this with the providers.
+                    IMassTagDAO massTagDAOHibernate = new PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate.MassTagDAOHibernate();
+                    IProteinDAO proteinDAOHibernate = new PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate.ProteinDAOHibernate();
+                    PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate.GenericDAOHibernate<ClusterToMassTagMap> clusterToMassTagMapDAOHibernate =
+                        new PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate.GenericDAOHibernate<ClusterToMassTagMap>();
+
+                    PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate.GenericDAOHibernate<MassTagToProteinMap> massTagToProteinMapDAOHibernate =
+                        new Hibernate.Domain.DAOHibernate.GenericDAOHibernate<MassTagToProteinMap>();
+
+                    PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate.GenericDAOHibernate<StacFDR> stacFDRDAOHibernate = 
+                        new Hibernate.Domain.DAOHibernate.GenericDAOHibernate<StacFDR>();
+
+                    List<clsMassTag> massTagList                      = new List<clsMassTag>();
+                    List<clsProtein> proteinList                      = new List<clsProtein>();
+                    List<ClusterToMassTagMap> clusterToMassTagMapList = new List<ClusterToMassTagMap>();
+                    List<MassTagToProteinMap> massTagToProteinMapList = new List<MassTagToProteinMap>();
+                    List<StacFDR> stacFDRResultsList                  = new List<StacFDR>();
+
+                    foreach (clsPeakMatchingResults.clsPeakMatchingTriplet triplet in m_analysis.PeakMatchingResults.marrPeakMatchingTriplet)
+                    {
+                        clsMassTag massTag = massTagArray[triplet.mintMassTagIndex];
+                        clsProtein protein = proteinArray[triplet.mintProteinIndex];
+
+                        ClusterToMassTagMap clusterToMassTagMap = new ClusterToMassTagMap(triplet.mintFeatureIndex, massTag.Id);
+                        MassTagToProteinMap massTagToProteinMap = new MassTagToProteinMap(massTag.Id, protein.Id);
+
+                        if (!clusterToMassTagMapList.Contains(clusterToMassTagMap))
+                        {
+                            clusterToMassTagMapList.Add(clusterToMassTagMap);
+                        }
+
+                        if (!massTagToProteinMapList.Contains(massTagToProteinMap))
+                        {
+                            massTagToProteinMapList.Add(massTagToProteinMap);
+                        }
+
+                        if (!massTagList.Contains(massTag))
+                        {
+                            massTagList.Add(massTag);
+                        }
+
+                        if (!proteinList.Contains(protein))
+                        {
+                            proteinList.Add(protein);
+                        }
+                    }
+
+                    foreach (classSMARTFdrResult fdrResult in m_analysis.STACTResults.GetSummaries())
+                    {
+                        stacFDRResultsList.Add(new StacFDR(fdrResult));
+                    }
+
+                    
+                    UpdateStatus(string.Format("Found {0} mass tag matches. Matching to {1} potential proteins.", 
+                                                                                                massTagList.Count, 
+                                                                                                proteinList.Count));
+
+                    massTagDAOHibernate.AddAll(massTagList);
+                    proteinDAOHibernate.AddAll(proteinList);
+                    clusterToMassTagMapDAOHibernate.AddAll(clusterToMassTagMapList);
+                    massTagToProteinMapDAOHibernate.AddAll(massTagToProteinMapList);
+                    stacFDRDAOHibernate.AddAll(stacFDRResultsList);
                 }
             }
         }
