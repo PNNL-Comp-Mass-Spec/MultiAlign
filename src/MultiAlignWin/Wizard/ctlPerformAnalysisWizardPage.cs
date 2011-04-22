@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -482,7 +483,34 @@ namespace MultiAlignWin
                 StatusUpdate(sender, e);
             }
         }
+        private void LogVersion()
+        {
 
+            Log("[VersionInfo]");
+            // get the version object for this assembly
+            Assembly assembly   = Assembly.GetExecutingAssembly();
+            AssemblyName name   = assembly.GetName();
+            Version version     = name.Version;
+            Log(string.Format("{0} - version {1}", name, version));
+
+            AppDomain MyDomain  = AppDomain.CurrentDomain;
+            Assembly[] AssembliesLoaded = MyDomain.GetAssemblies();
+
+            Log("Loaded Assemblies");
+            foreach (Assembly subAssembly in AssembliesLoaded)
+            {
+                AssemblyName subName = subAssembly.GetName();
+                if (!subName.Equals(name))
+                {
+                    Log(string.Format("\t{0} - version {1}",
+                                                                    subName,
+                                                                    subName.Version));
+                }
+            }
+
+            Log("");
+            Log("[LogStart]");
+        }
         /// <summary>
         /// Starts a MultiAlign Analysis.
         /// </summary>
@@ -496,7 +524,8 @@ namespace MultiAlignWin
 
             PNNLProteomics.IO.XMLParameterFileWriter writer = new PNNLProteomics.IO.XMLParameterFileWriter();
             writer.WriteParameterFile(parameterPath, m_analysis);
-            
+
+            LogVersion();
             m_processor.StartAnalysis(m_analysis);
         }
         public void SetAsActivePage()
