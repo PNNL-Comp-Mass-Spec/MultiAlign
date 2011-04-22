@@ -447,10 +447,44 @@ namespace PNNLProteomics.MultiAlign
                         if (!clusterToMassTagMapList.Contains(clusterToMassTagMap))
                         {
                             clusterToMassTagMapList.Add(clusterToMassTagMap);
+
+
+
+                            if (m_analysis.PeakMatchingOptions.UseSTAC)
+                            {
+                                /// 
+                                /// See if a SMART score exists
+                                /// 
+                                List<PNNLProteomics.SMART.classSMARTProbabilityResult> smartScores = null;
+                                smartScores = m_analysis.STACTResults.GetResultFromUMCIndex(triplet.mintFeatureIndex);
+
+                                if (smartScores != null)
+                                {
+                                    /// 
+                                    /// Then pull out the SMART score that matches for this triplet Mass Tag
+                                    /// 
+                                    PNNLProteomics.SMART.classSMARTProbabilityResult finalResult = null;
+                                    foreach (PNNLProteomics.SMART.classSMARTProbabilityResult score in smartScores)
+                                    {
+                                        if (score.MassTagID == massTag.Id)
+                                        {
+                                            finalResult = score;
+                                            break;
+                                        }
+                                    }
+
+                                    if (finalResult != null)
+                                    {
+                                        clusterToMassTagMap.StacScore   = finalResult.Score;
+                                        clusterToMassTagMap.StacUP      = finalResult.Specificity;
+                                    }                                   
+                                }
+                            }
+
                         }
 
                         if (!massTagToProteinMapList.Contains(massTagToProteinMap))
-                        {
+                        {                            
                             massTagToProteinMapList.Add(massTagToProteinMap);
                         }
 

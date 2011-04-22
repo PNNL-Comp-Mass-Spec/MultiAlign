@@ -97,7 +97,7 @@ namespace MultiAlignWin.Forms
                 m_alignmentPanel.BringToFront();
             }
 
-            if (!mobj_analysis.UseSTAC)
+            if (!mobj_analysis.PeakMatchingOptions.UseSTAC)
             {
                 mpictureBox_SMARTScoreHistogram.Visible = false;
                 mpictureBox_SMARTScoreHistogram.Enabled = false;

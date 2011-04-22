@@ -794,20 +794,27 @@ namespace MultiAlignConsole
         /// <param name="analysisPath"></param>
         /// <returns></returns>
         private static FeatureDataAccessProviders SetupDataProviders()
-        {            
-            
-            string path = AnalysisPathUtils.BuildAnalysisName(m_analysisPath, m_analysisName);
+        {
+            try
+            {
+                string path = AnalysisPathUtils.BuildAnalysisName(m_analysisPath, m_analysisName);
 
-            NHibernateUtil.SetDbLocationForWrite(path, true);
-            NHibernateUtil.SetDbLocationForRead(path);
+                NHibernateUtil.SetDbLocationForWrite(path, true);
+                NHibernateUtil.SetDbLocationForRead(path);
 
-            IUmcDAO featureCache        = new UmcDAOHibernate();
-            IUmcClusterDAO clusterCache = new UmcClusterDAOHibernate();
+                IUmcDAO featureCache = new UmcDAOHibernate();
+                IUmcClusterDAO clusterCache = new UmcClusterDAOHibernate();
 
-            FeatureDataAccessProviders providers =
-                new FeatureDataAccessProviders(featureCache, clusterCache);
+                FeatureDataAccessProviders providers =
+                    new FeatureDataAccessProviders(featureCache, clusterCache);
 
-            return providers;
+                return providers;
+            }
+            catch(System.IO.IOException ex)
+            {
+                Log("Could not access the database.  Is it opened somewhere else?");
+                throw ex;
+            }
         }
         private static void CleanupDataProviders()
         {            
@@ -1136,7 +1143,17 @@ namespace MultiAlignConsole
             processor.Status                += new EventHandler<AnalysisStatusEventArgs>(processor_Status);
 
             Log("Setting up data providers for caching and storage.");
-            FeatureDataAccessProviders providers = SetupDataProviders();
+            FeatureDataAccessProviders providers = null;
+
+            try
+            {
+                providers = SetupDataProviders();
+            }
+            catch(System.IO.IOException)
+            {
+                return;
+            }
+
             analysis.DataProviders      = providers;
             processor.AlgorithmProvders = builder.GetAlgorithmProvider();
 
