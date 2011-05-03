@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExternalControls", "Externa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiAlignConsole", "MultiAlignConsole\MultiAlignConsole.csproj", "{7F3869CC-8606-476A-8A9B-0BBA15C57C60}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FunctionalRedundancy", "FunctionalRedundancy\FunctionalRedundancy.csproj", "{3A236236-32C6-4985-8CD3-CC075A36E54D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -60,7 +62,6 @@ Global
 		{CCA1A959-1232-4FA6-87C3-5E0077ADCAF6}.Debug|x86.Build.0 = Debug
 		{CCA1A959-1232-4FA6-87C3-5E0077ADCAF6}.Release|x64.ActiveCfg = Release
 		{CCA1A959-1232-4FA6-87C3-5E0077ADCAF6}.Release|x86.ActiveCfg = Release
-		{CCA1A959-1232-4FA6-87C3-5E0077ADCAF6}.Release|x86.Build.0 = Release
 		{46C6D9CE-672F-4491-BF67-AA3F8DC811B7}.Debug|x64.ActiveCfg = Debug|x64
 		{46C6D9CE-672F-4491-BF67-AA3F8DC811B7}.Debug|x64.Build.0 = Debug|x64
 		{46C6D9CE-672F-4491-BF67-AA3F8DC811B7}.Debug|x86.ActiveCfg = Debug|x86
@@ -77,6 +78,13 @@ Global
 		{7F3869CC-8606-476A-8A9B-0BBA15C57C60}.Release|x64.Build.0 = Release|x64
 		{7F3869CC-8606-476A-8A9B-0BBA15C57C60}.Release|x86.ActiveCfg = Release|x86
 		{7F3869CC-8606-476A-8A9B-0BBA15C57C60}.Release|x86.Build.0 = Release|x86
+		{3A236236-32C6-4985-8CD3-CC075A36E54D}.Debug|x64.ActiveCfg = Debug|x86
+		{3A236236-32C6-4985-8CD3-CC075A36E54D}.Debug|x86.ActiveCfg = Debug|x86
+		{3A236236-32C6-4985-8CD3-CC075A36E54D}.Debug|x86.Build.0 = Debug|x86
+		{3A236236-32C6-4985-8CD3-CC075A36E54D}.Release|x64.ActiveCfg = Release|x64
+		{3A236236-32C6-4985-8CD3-CC075A36E54D}.Release|x64.Build.0 = Release|x64
+		{3A236236-32C6-4985-8CD3-CC075A36E54D}.Release|x86.ActiveCfg = Release|x86
+		{3A236236-32C6-4985-8CD3-CC075A36E54D}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
