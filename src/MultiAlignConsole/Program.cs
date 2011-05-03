@@ -21,24 +21,48 @@ using System.Reflection;
 
 namespace MultiAlignConsole
 {
-
     /// <summary>
     /// Main application.
     /// </summary>
     class Program
     {
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="hConsoleHandle"></param>
+        /// <param name="dwMode"></param>
+        /// <returns></returns>
+        [DllImport("kernel32.dll")]
+        public static extern bool SetConsoleMode(IntPtr hConsoleHandle, uint dwMode);
+
         #region Constants 
+		private const uint ENABLE_EXTENDED_FLAGS    = 0x0080;
+		private const int LC_DATA                   = 0;
+		private const int IMS_DATA                  = 1;
         /// <summary>
         /// Default path for plots.
         /// </summary>
-        private const string THUMBNAIL_PATH = "Plots";        
-        private const int PLOT_WIDTH        = 800; 
-        private const int PLOT_HEIGHT       = 800;
-        private const int PLOT_WIDTH_HTML   = 256; 
-        private const int PLOT_HEIGHT_HTML   = 256;            
+        private const string THUMBNAIL_PATH         = "Plots";        
+        private const int PLOT_WIDTH                = 800; 
+        private const int PLOT_HEIGHT               = 800;
+        private const int PLOT_WIDTH_HTML           = 256; 
+        private const int PLOT_HEIGHT_HTML          = 256;            
         #endregion
 
         #region Members
+        /// <summary>
+        /// Path to the file that specifies input data paths.
+        /// </summary>
+        private static string m_inputPaths;
+        /// <summary>
+        /// Path to parameter file.
+        /// </summary>
+        private static string m_parameterFile;
+        /// <summary>
+        /// Name of the HTML webpage.
+        /// </summary>
+        private static string m_htmlPathName;
         /// <summary>
         /// Holds a list of HTML tags for displaying plot results.
         /// </summary>
@@ -74,8 +98,33 @@ namespace MultiAlignConsole
         /// Width of the thumbnail plots.
         /// </summary>
         private static int m_widthHTML;
+        /// <summary>
+        /// Flag to show help or not.
+        /// </summary>
+        private static bool m_showHelp;
+        /// <summary>
+        /// Options from command line argument
+        /// </summary>
+        private static IDictionary<string, List<string>> m_options;
         #endregion
         
+        
+        static Program()
+        {            
+            m_width             = PLOT_WIDTH;
+            m_height            = PLOT_HEIGHT;
+            m_widthHTML         = PLOT_WIDTH_HTML;
+            m_heightHTML        = PLOT_HEIGHT_HTML;
+            m_logPath           = null;
+            m_inputPaths        = null;
+            m_parameterFile     = null;
+            m_htmlPathName      = "index.html";
+            m_showHelp          = false;
+            m_htmlPage          = new List<string>();
+            m_analysisPath      = null;
+            m_analysisName      = null; 
+        }
+
         #region Methods
         /// <summary>
         /// 
@@ -493,37 +542,35 @@ namespace MultiAlignConsole
         static void PrintHelp()
         {
             PrintMessage(" ");
-            PrintMessage("usage: MultiAlignConsole fileInputList paramterFile.xml analysisPath analysisName [AverageLinkage]");
-            PrintMessage("   [For baseline datasets]");
-            PrintMessage("   - fileInputList      = ASCII Text file with input file names.");
-            PrintMessage("      In list of files use asterik to indicate the baseline choice, e.g. 'dataset *'");
-            PrintMessage("   - parameterFile.xml  = XML file defining MultiAlign parameters.");
-            PrintMessage("   - analysisPath       = file directory of where to put MultiAlign output.");
-            PrintMessage("   - averagelinkage     = to use the average linkage algorithm or not.");
+            PrintMessage("usage: MultiAlignConsole [options]");
             PrintMessage(" ");
-            PrintMessage("usage: MultiAlignConsole paramterFile.xml analysisPath");
-            PrintMessage("   [For Mass Tag Databases]");
-            PrintMessage("   - parameterFile.xml = XML file defining MultiAlign parameters.");
-            PrintMessage("   - analysisPath      = file directory of where to put MultiAlign output.");
+            PrintMessage("[Options]");
             PrintMessage(" ");
-            PrintMessage("usage: MultiAlignConsole -verify databasePath netTolerance");
-            PrintMessage("   [For Mass Tag Databases]");
-            PrintMessage("   - databasePath      = Path of database created from a previous MA analysis run..");
-            PrintMessage("   - -verify           = Command line directive to verify a mass tag database.");
-            PrintMessage("   - netTolerance      = A double indicating the NET tolerance used in analysis.");
-            PrintMessage(" ");
-            PrintMessage("usage: MultiAlignConsole -plots databasePath");
-            PrintMessage("   [To create cluster diagnostic plots on existing MA database]");
-            PrintMessage("   - databasePath      = Path of database created from a previous MA analysis run..");
-            PrintMessage("   - -plots            = Command line directive indicating plot creation.");            
-            
+            PrintMessage("   -files  inputFile.txt ");
+            PrintMessage("          ASCII Text file with input file names.");
+            PrintMessage("          In list of files use asterik to indicate the baseline choice, e.g. 'dataset *'");
+            PrintMessage("   -name analysisName  ");
+            PrintMessage("          Name to give analysis.");
+            PrintMessage("   -log logPath.txt");
+            PrintMessage("          Path to provide for log files.");
+            PrintMessage("   -h");
+            PrintMessage("          Prints this help message.");
+            PrintMessage("   -help");
+            PrintMessage("          Prints this help message.");
+            PrintMessage("   -html htmlPathName.html");
+            PrintMessage("          Name to give output HTML plot file.");           
+            PrintMessage("   -params parameterFile.xml  ");
+            PrintMessage("          XML file defining MultiAlign parameters.");
+            PrintMessage("   -path  AnalysisPath      ");
+            PrintMessage("          File directory of where to put MultiAlign output.  Can be relative or absolute.");
+            PrintMessage("   -centroid      ");
+            PrintMessage("          To use centroid distance as clustering algorithm.");                                                
         }
         /// <summary>
         /// Prints the version of MA to the log file.
         /// </summary>
         public static void PrintVersion() 
         {
-
             PrintMessage("[VersionInfo]");
             // get the version object for this assembly
             Assembly assembly   = Assembly.GetExecutingAssembly();
@@ -547,6 +594,156 @@ namespace MultiAlignConsole
             }             
             PrintMessage("");
             PrintMessage("[LogStart]");
+        }
+        /// <summary>
+        /// Validates the input options to make sure everything is set.
+        /// </summary>
+        /// <returns></returns>
+        private static bool ValidateSetup()
+        {
+            bool validated = true;
+            if (m_inputPaths == null)
+            {
+                PrintMessage("No input file provided.");
+                validated = false;
+            }
+            if (m_parameterFile == null)
+            {
+                PrintMessage("No parameter file specified.");
+                validated = false;
+            }
+            if (m_analysisName == null)
+            {
+                PrintMessage("No analysis name provided.");
+                validated = false;
+            }
+            if (m_analysisPath == null)
+            {
+                PrintMessage("No analysis path provided.");
+                validated = false;
+            }
+            return validated;
+        }
+        /// <summary>
+        /// Reads the input paths file 
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        private static InputAnalysisInfo ReadInputFile(string path)
+        {
+            InputAnalysisInfo info = new InputAnalysisInfo();
+            string[] lines = File.ReadAllLines(path);
+
+            int readType = -1;
+            int baselineIndex = 0;
+            foreach (string line in lines)
+            {
+                string fixedLine = line.ToLower();
+                fixedLine = fixedLine.Replace(" ", "");
+
+                if (fixedLine == "[files]")
+                {
+                    readType = 0;
+                }
+                else if (fixedLine == "[database]")
+                {
+                    readType = 1;
+                }
+                else
+                {
+                    switch (readType)
+                    {
+                        case 0:
+                            string[] baselineCheck = fixedLine.Split('*');
+                            if (baselineCheck.Length == 2 && !string.IsNullOrEmpty(baselineCheck[0]))
+                            {
+                                info.FilePaths.Add(baselineCheck[0]);
+                                info.BaselineFileIndex = baselineIndex;
+                            }
+                            else if (!string.IsNullOrEmpty(baselineCheck[0]))
+                            {
+                                info.FilePaths.Add(fixedLine);
+                            }
+                            baselineIndex++;
+                            break;
+                        case 1:
+                            string[] keys = fixedLine.Split('=');
+                            if (keys.Length > 1)
+                            {
+                                switch (keys[0].ToLower())
+                                {
+                                    case "database":
+                                        info.MassTagDatabase = keys[1];
+                                        break;
+                                    case "server":
+                                        info.MassTagDatabaseServer = keys[1];
+                                        break;
+                                }
+                            }
+                            break;
+                    }
+                }
+            }
+
+            return info;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        static void processor_AnalysisError(object sender, AnalysisErrorEventArgs e)
+        {
+            Log(string.Format("There was an error while performing the analysis.  {0} : {1}", e.ErrorMessage, e.Exception.Message));
+            m_triggerEvent.Set();
+        }
+        /// <summary>
+        /// Processes the command line arguments.
+        /// </summary>
+        /// <param name="args"></param>
+        static void ProcessCommandLineArguments(string[] args)
+        {
+            m_options = CommandLineParser.ProcessArgs(args, 0);
+            foreach (string option in m_options.Keys)
+            {                
+                try
+                {
+                    List<string> values = m_options[option];
+                    switch (option)
+                    {
+                        case "-path":
+                            m_analysisPath  = values[0];
+                            break;
+                        case "-files":
+                            m_inputPaths    = values[0];
+                            break;
+                        case "-params":
+                            m_parameterFile = values[0];
+                            break;
+                        case "-name":
+                            m_analysisName  = values[0];                            
+                            break;
+                        case "-log":
+                            m_logPath       = values[0];
+                            break;
+                        case "-html":
+                            m_htmlPathName  = values[0];
+                            break;
+                        case "-h":
+                            m_showHelp      = true;
+                            break;
+                        case "-help":
+                            m_showHelp      = true;
+                            break;
+                    }
+                }
+                catch (ArgumentOutOfRangeException)
+                {
+                    PrintMessage(string.Format("You did not provide enough information for the option {0}", option));
+                    return;
+                }
+                
+            }
         }
         #endregion
 
@@ -777,7 +974,11 @@ namespace MultiAlignConsole
         static void CreatePlotReport()
         {
             Log("Creating Report.");
-            using (TextWriter htmlWriter = File.CreateText(Path.Combine(m_analysisPath, "index.html")))
+            if (!m_htmlPathName.EndsWith(".html"))
+            {
+                m_htmlPathName = m_htmlPathName + ".html";
+            }
+            using (TextWriter htmlWriter = File.CreateText(Path.Combine(m_analysisPath, m_htmlPathName)))
             {
                 foreach (string tag in m_htmlPage)
                 {
@@ -821,198 +1022,92 @@ namespace MultiAlignConsole
             NHibernateUtil.Dispose();
         }
         #endregion
-
-        private static InputAnalysisInfo ReadInputFile(string path)
-        {
-            InputAnalysisInfo info = new InputAnalysisInfo();            
-            string[] lines = File.ReadAllLines(path);
-
-            int readType        = -1;
-            int baselineIndex   = 0;
-            foreach (string line in lines)
-            {
-                string fixedLine = line.ToLower();
-                fixedLine = fixedLine.Replace(" ","");
-
-                if (fixedLine == "[files]")
-                {
-                    readType = 0;
-                }
-                else if (fixedLine == "[database]")
-                {
-                    readType = 1;
-                }
-                else
-                {
-                    switch (readType)
-                    {
-                        case 0:
-                            string[] baselineCheck = fixedLine.Split('*');
-                            if (baselineCheck.Length == 2 && !string.IsNullOrEmpty(baselineCheck[0]))
-                            {
-                                info.FilePaths.Add(baselineCheck[0]);
-                                info.BaselineFileIndex = baselineIndex;                                
-                            }
-                            else if (!string.IsNullOrEmpty(baselineCheck[0]))
-                            {
-                                info.FilePaths.Add(fixedLine);
-                            }
-                            baselineIndex++;
-                            break;
-                        case 1:
-                            string[] keys = fixedLine.Split('=');
-                            if (keys.Length > 1)
-                            {
-                                switch (keys[0].ToLower())
-                                {
-                                    case "database":
-                                        info.MassTagDatabase        = keys[1];
-                                        break;
-                                    case "server":
-                                        info.MassTagDatabaseServer  = keys[1];
-                                        break;
-                                }
-                            }
-                            break;
-                    }
-                }
-            }
-
-            return info;
-        }
-        /// <summary>
-        /// Creates the plots 
-        /// </summary>
-        static void CreatePlots(string directoryPath)
-        {
-            NHibernateUtil.SetDbLocationForRead(directoryPath);
-            m_analysisName  = Path.GetFileNameWithoutExtension(directoryPath);
-            m_analysisPath  = Path.GetDirectoryName(directoryPath);
-
-            // Set the log path.
-            m_logPath       = AnalysisPathUtils.BuildLogPath(m_analysisPath, m_analysisName);
-            m_plotSavePath  = AnalysisPathUtils.BuildPlotPath(Path.GetDirectoryName(directoryPath));
-
-            PushHeader();
-            CreateFinalAnalysisPlots();
-            PushEndHeader();
-            CreatePlotReport();
-        }
+        
         /// <summary>
         /// Processes the MA analysis data.
         /// </summary>
         /// <param name="args"></param>
-        static void StartMultiAlign(string [] args)
+        /// 
+        static void StartMultiAlign()
         {
             // Builds the list of algorithm providers.
-            AlgorithmBuilder builder = new AlgorithmBuilder();
-            bool writeINI   = false;    // This will export the parameters to an INI file.
-
-            m_width         = PLOT_WIDTH;
-            m_height        = PLOT_HEIGHT;
-            m_widthHTML     = PLOT_WIDTH_HTML;
-            m_heightHTML    = PLOT_HEIGHT_HTML;
-            m_logPath       = null;
-
-            if (args.Length < 1 || args[0] == "-h" || args[0] == "-help")
+            AlgorithmBuilder builder = new AlgorithmBuilder();                       
+            
+            // See if the user wants help
+            if (m_showHelp)
             {
                 PrintHelp();
                 return;
             }
 
-            // HTML Page stack.
-            m_htmlPage = new List<string>();
-
-            // Determine options.
-            string fileInputList = null;
-            string parameterFile = null;
-            
-            if (args.Length == 2)
+            // Then validate the input.
+            bool validated  = ValidateSetup();
+            if (!validated)
             {
-                if (args[0].ToLower() == "-plots")
-                {
-                    CreatePlots(args[1]);
-                    return;
-                }
+                PrintHelp();
+                return;
             }
-            else if (args.Length == 3)
+
+            //Create the analysis directory.
+            if (!Directory.Exists(m_analysisPath))
             {
-                if (args[0].ToLower() == "-verify")
-                {
-                    VerifyDatabase(args);
-                    return;
-                }
-            }
-            else if (args.Length >= 4)
-            {
-                fileInputList   = args[0];
-                parameterFile   = args[1];
-                m_analysisPath  = args[2];
-                m_analysisName  = args[3];
-
-                bool containsExtensionDB3 = m_analysisName.EndsWith(".db3");
-                if (!containsExtensionDB3)
-                {
-                    m_analysisName += ".db3";
-                }
-
-                m_logPath       = AnalysisPathUtils.BuildLogPath(m_analysisPath, m_analysisName);
-                m_plotSavePath  = AnalysisPathUtils.BuildPlotPath(Path.GetDirectoryName(args[1]));
-
-
-                if (args.Length > 4)
-                {
-                    string algorithmType = args[4];                    
-                    if (algorithmType.ToLower() == "centroid")
-                    {
-                        PrintMessage("Building centroid clusterer");
-                        builder.BuildClusterer(ClusteringAlgorithmType.Centroid);
-                    }
-                    else if (algorithmType.ToLower() == "singlelinkage")
-                    {
-                        PrintMessage("Building single linkage clusterer");
-                        builder.BuildClusterer(ClusteringAlgorithmType.SingleLinkage);
-                    }
-                    else
-                    {
-                        PrintMessage("Built average linkage clusterer.");
-                    }
-                }
-      
+                PrintMessage("Creating analysis path " + m_analysisPath);
+                Directory.CreateDirectory(m_analysisPath);
             }
             else
             {
-                PrintHelp();
-                return;
+                PrintMessage("Analysis path " + m_analysisPath + " already exists.");
+            }
+            
+            if (m_logPath == null)  m_logPath = AnalysisPathUtils.BuildLogPath(m_analysisPath, m_analysisName);            
+            else                    m_logPath = Path.Combine(m_analysisPath, m_logPath);
+
+            
+            m_plotSavePath  = AnalysisPathUtils.BuildPlotPath(m_analysisPath);
+                                                            
+            bool containsExtensionDB3 = m_analysisName.EndsWith(".db3");
+            if (!containsExtensionDB3)
+            {
+                m_analysisName += ".db3";
             }
 
-            if (!Directory.Exists(m_analysisPath))
+            if (m_options.ContainsKey("-centroid"))
             {
-                Directory.CreateDirectory(m_analysisPath);
+                PrintMessage("Building centroid clusterer");
+                builder.BuildClusterer(ClusteringAlgorithmType.Centroid);
+            }
+            else if(m_options.ContainsKey("-singlelinkage"))
+            {
+            
+                PrintMessage("Building single linkage clusterer");
+                builder.BuildClusterer(ClusteringAlgorithmType.SingleLinkage);
+            }
+            else
+            {
+                PrintMessage("Built average linkage clusterer.");                
             }
 
             PrintVersion();
-
             Log("Starting MultiAlign Console Application.");
             Log("Creating analysis: "   + m_analysisName);
             Log("Storing analysis: "    + Path.GetFullPath(m_analysisPath));
-            Log("Using Files:  "        + Path.GetFullPath(fileInputList));
-            Log("Using Parameters: "    + Path.GetFullPath(parameterFile));            
+            Log("Using Files:  "        + Path.GetFullPath(m_inputPaths));
+            Log("Using Parameters: "    + Path.GetFullPath(m_parameterFile));            
             // Read the input datasets.
-            if (!File.Exists(fileInputList))
+            if (!File.Exists(m_inputPaths))
             {
-                Log(string.Format("The input file {0} does not exist.", fileInputList));
+                Log(string.Format("The input file {0} does not exist.", m_inputPaths));
                 return;
             }
             // Make sure we have parameters!
-            if (!File.Exists(parameterFile))
+            if (!File.Exists(m_parameterFile))
             {
                 Log("The parameter file does not exist.");
                 return;
             }
 
-            Log("Parsing Input Filenames and Databases.");            
-            InputAnalysisInfo info = ReadInputFile(fileInputList);
+            Log("Parsing Input Filenames and Databases.");
+            InputAnalysisInfo info = ReadInputFile(m_inputPaths);
             Log("Found " + info.FilePaths.Count.ToString() + " files.");
             
             // Validate the mass tag database settings.            
@@ -1057,14 +1152,14 @@ namespace MultiAlignConsole
             // Setup the parameters.
             Log("Loading parameters.");
             PNNLProteomics.IO.XMLParamterFileReader reader = new PNNLProteomics.IO.XMLParamterFileReader();
-            reader.ReadParameterFile(parameterFile, ref m_analysis);            
+            reader.ReadParameterFile(m_parameterFile, ref m_analysis);            
 
             // Update the mass tag database if needed.
             if (info.MassTagDatabase != null)
             {
-                m_analysis.MassTagDBOptions.mstrDatabase = info.MassTagDatabase;
-                m_analysis.MassTagDBOptions.mstrServer   = info.MassTagDatabaseServer;
-                m_analysis.MassTagDBOptions.menm_databaseType = MultiAlignEngine.MassTags.MassTagDatabaseType.SQL; 
+                m_analysis.MassTagDBOptions.mstrDatabase        = info.MassTagDatabase;
+                m_analysis.MassTagDBOptions.mstrServer          = info.MassTagDatabaseServer;
+                m_analysis.MassTagDBOptions.menm_databaseType   = MultiAlignEngine.MassTags.MassTagDatabaseType.SQL; 
                 
                 // Validate the baseline
                 if (info.BaselineFileIndex < 0)
@@ -1097,20 +1192,11 @@ namespace MultiAlignConsole
             }
 
             // Output the settings to INI for viewing.
-            string outParamName = Path.GetFileNameWithoutExtension(parameterFile);
-            string outParamPath = Path.Combine(Path.GetDirectoryName(parameterFile), outParamName + ".ini");
-            if (outParamPath != parameterFile && writeINI)
-            {
-                MultiAlignParameterIniFileWriter iniWriter = new MultiAlignParameterIniFileWriter();
-                XMLParameterFileWriter xmlWriter = new XMLParameterFileWriter();
-                iniWriter.WriteParametersToFile(outParamPath, analysis);
-                xmlWriter.WriteParameterFile(outParamPath.Replace(".ini", "") + ".xml", m_analysis);
-            }
-            else
-            {
-                XMLParameterFileWriter xmlWriter = new XMLParameterFileWriter();                
-                xmlWriter.WriteParameterFile(outParamPath.Replace(".ini", "") + ".xml", m_analysis);
-            }
+            string outParamName              = Path.GetFileNameWithoutExtension(m_parameterFile);
+            string outParamPath              = Path.Combine(Path.GetDirectoryName(m_parameterFile), outParamName);            
+            XMLParameterFileWriter xmlWriter = new XMLParameterFileWriter();                
+            xmlWriter.WriteParameterFile(outParamPath + ".xml", m_analysis);
+            
 
 
             // Create dataset information.
@@ -1124,11 +1210,11 @@ namespace MultiAlignConsole
                 datasetInfo.DatasetId = (i.ToString());
                 i++;
 
-                datasetInfo.DatasetName = Path.GetFileName(filename);
-                datasetInfo.JobId = "";
-                datasetInfo.mstrResultsFolder = Path.GetDirectoryName(filename);
-                datasetInfo.ParameterFileName = "";
-                datasetInfo.Selected = true;
+                datasetInfo.DatasetName         = Path.GetFileName(filename);
+                datasetInfo.JobId               = "";
+                datasetInfo.mstrResultsFolder   = Path.GetDirectoryName(filename);
+                datasetInfo.ParameterFileName   = "";
+                datasetInfo.Selected            = true;
 
                 Log("Created dataset information for " + filename);
                 analysis.Datasets.Add(datasetInfo);
@@ -1169,37 +1255,18 @@ namespace MultiAlignConsole
             CleanupDataProviders();
             Log("Analysis Complete.");                        
         }
-
-        private static void VerifyDatabase(string[] args)
-        {
-            NHibernateUtil.SetDbLocationForRead(args[1]);
-            m_analysisName = Path.GetFileNameWithoutExtension(args[1]);
-            m_analysisPath = Path.GetDirectoryName(args[1]);
-
-
-            m_logPath = AnalysisPathUtils.BuildLogPath(m_analysisPath, m_analysisName);
-            m_plotSavePath = AnalysisPathUtils.BuildPlotPath(Path.GetDirectoryName(args[1]));
-            VerifyClusters(Convert.ToDouble(args[2]));
-        }
-
-        static void processor_AnalysisError(object sender, AnalysisErrorEventArgs e)
-        {
-            Log(string.Format("There was an error while performing the analysis.  {0} : {1}", e.ErrorMessage, e.Exception.Message));
-            m_triggerEvent.Set();
-        }
-
-        [DllImport("kernel32.dll")]
-		public static extern bool SetConsoleMode(IntPtr hConsoleHandle, uint dwMode);
-		private const uint ENABLE_EXTENDED_FLAGS = 0x0080;
-		private const int LC_DATA = 0;
-		private const int IMS_DATA = 1;
-
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="args"></param>
 		static void Main(string[] args)
 		{
 			IntPtr handle = Process.GetCurrentProcess().MainWindowHandle;
 			SetConsoleMode(handle, ENABLE_EXTENDED_FLAGS);
 
-            StartMultiAlign(args);
+            ProcessCommandLineArguments(args);
+            StartMultiAlign();
         }
     }
 }
