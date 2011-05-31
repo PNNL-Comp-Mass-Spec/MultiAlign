@@ -277,17 +277,19 @@ namespace MultiAlignWin.Forms
                 /// ------------------------------------------------------------------------------------
                 /// Mass Residual histogram
                 /// ------------------------------------------------------------------------------------   
-                Image massResidual = RenderDatasetInfo.ClusterMassVsScanResiduals_Thumbnail(mobj_analysis,
-                                                                                                 width, height,
-                                                                                                 false, false, false);
+                Image massResidual = null;
+                //RenderDatasetInfo.ClusterMassVsScanResiduals_Thumbnail(mobj_analysis,
+                //                                                                                 width, height,
+                //                                                                                 false, false, false);
 
                 /// ------------------------------------------------------------------------------------
                 /// M/Z Residual
                 /// ------------------------------------------------------------------------------------                            
-                Image mzMassResidual = RenderDatasetInfo.ClusterMassVsMZResidual_Thumbnail(mobj_analysis,
-                                                                                                mpictureBox_mzMassResidual.Width,
-                                                                                                mpictureBox_mzMassResidual.Height,
-                                                                                                    false, false, false);
+                Image mzMassResidual = null; 
+                //RenderDatasetInfo.ClusterMassVsMZResidual_Thumbnail(mobj_analysis.AlignmentData[,
+                //                                                                                mpictureBox_mzMassResidual.Width,
+                //                                                                                mpictureBox_mzMassResidual.Height,
+                //                                                                                    false, false, false);
 
 
                 Image massNetResidual = RenderDatasetInfo.ClusterMassNETResiduals_Thumbnail(mobj_analysis,
@@ -483,19 +485,19 @@ namespace MultiAlignWin.Forms
         /// <param name="e"></param>
         private void mpicture_massResiduals_Click(object sender, EventArgs e)
         {
-            string name = "Mass vs Scan Residuals";
-            Form displayForm = RetrieveForm(name);
+        //    string name = "Mass vs Scan Residuals";
+        //    Form displayForm = RetrieveForm(name);
 
-            if (displayForm == null)
-            {
-                ctlScatterChart chart = RenderDatasetInfo.ClusterMassVsScanResiduals_Chart(mobj_analysis);
-                displayForm = RegisterChart(name, chart);
-            }
-            if (displayForm != null)
-            {
-                displayForm.Show();
-                displayForm.BringToFront();
-            }
+        //    if (displayForm == null)
+        //    {
+        //        ctlScatterChart chart = RenderDatasetInfo.ClusterMassVsScanResiduals_Chart(m_);
+        //        displayForm = RegisterChart(name, chart);
+        //    }
+        //    if (displayForm != null)
+        //    {
+        //        displayForm.Show();
+        //        displayForm.BringToFront();
+        //    }
         }
         private void mpicture_alignmentHeatmap_Click(object sender, EventArgs e)
         {
@@ -509,19 +511,19 @@ namespace MultiAlignWin.Forms
         /// <param name="e"></param>
         private void mpictureBox_mzMassResidual_Click(object sender, EventArgs e)
         {
-            string name = "Mass Vs. M/Z Residuals";
-            Form displayForm = RetrieveForm(name);
+        //    string name = "Mass Vs. M/Z Residuals";
+        //    Form displayForm = RetrieveForm(name);
 
-            if (displayForm == null)
-            {
-                ctlScatterChart chart = RenderDatasetInfo.ClusterMassVsMZResidual_Chart(mobj_analysis);
-                displayForm = RegisterChart(name, chart);
-            }
-            if (displayForm != null)
-            {
-                displayForm.Show();
-                displayForm.BringToFront();
-            }
+        //    if (displayForm == null)
+        //    {
+        //        ctlScatterChart chart = RenderDatasetInfo.ClusterMassVsMZResidual_Chart(mobj_analysis);
+        //        displayForm = RegisterChart(name, chart);
+        //    }
+        //    if (displayForm != null)
+        //    {
+        //        displayForm.Show();
+        //        displayForm.BringToFront();
+            //}
         }
 
         private void mpicture_preview_Click(object sender, EventArgs e)

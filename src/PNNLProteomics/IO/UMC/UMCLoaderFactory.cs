@@ -85,7 +85,7 @@ namespace PNNLProteomics.IO.UMC
                     }
                     break;
                 case ".SQLITE":
-                    NHibernateUtil.SetDbLocationForRead(dataset.Path);
+                    NHibernateUtil.ConnectToDatabase(dataset.Path, false);
                     try
                     {
                         UmcDAOHibernate umcDAOHibernate = new UmcDAOHibernate();

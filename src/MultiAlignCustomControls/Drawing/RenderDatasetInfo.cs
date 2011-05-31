@@ -60,33 +60,29 @@ namespace MultiAlign.Drawing
         /// <summary>
         /// Renders the scan versus the cluster net to the provided bitmap.
         /// </summary>
-        public static Image NETResiduals_Thumbnail( MultiAlignAnalysis analysis,
-                                                    int datasetNum,
-                                                    int width,
-                                                    int height,
-                                                            bool displayLegend,
-                                                            bool displayAxis,
-                                                            bool displayTitle)
+        public static Image NETResiduals_Thumbnail(classAlignmentResidualData residual, ChartDisplayOptions options)
         {
 
             Image image = null;
             try
             {
-                ctlScatterChart chart = RenderDatasetInfo.NETResiduals_Chart(analysis, datasetNum);
+                ctlScatterChart chart = RenderDatasetInfo.NETResiduals_Chart(residual);
 
                 if (chart != null)
                 {
-                    chart.Margins.LeftMarginMin = 1;
-                    chart.Margins.LeftMarginMax = 1;
-                    chart.Margins.BottomMarginMax = 1;
-                    chart.Margins.BottomMarginMin = 1;
+                    chart.Margins.LeftMarginMin = options.MarginMin;
+                    chart.Margins.LeftMarginMax = options.MarginMax;
+                    chart.Margins.BottomMarginMax = options.MarginMax;
+                    chart.Margins.BottomMarginMin = options.MarginMin;
 
-                    chart.LegendVisible = displayLegend;
-                    chart.AxisVisible = displayAxis;
-                    chart.TitleVisible = displayTitle;
-                    chart.XAxisGridLines = false;
-                    chart.YAxisGridLines = false;
-                    image = chart.ToBitmap(width, height);
+
+                    chart.Title = options.Title;
+                    chart.LegendVisible = options.DisplayLegend;
+                    chart.AxisVisible = options.DisplayAxis;
+                    chart.TitleVisible = options.DisplayTitle;
+                    chart.XAxisGridLines = options.DisplayGridLines;
+                    chart.YAxisGridLines = options.DisplayGridLines;
+                    image = chart.ToBitmap(options.Width, options.Height);
                     chart.Dispose();
                 }
             }
@@ -154,11 +150,11 @@ namespace MultiAlign.Drawing
 
             return chart;
         }
-        public static Image ClusterScoreVsMass_Thumbnail(List<clsCluster> clusters, ChartDisplayOptions options)
+        public static Image ClusterScatterPlot_Thumbnail(List<clsCluster> clusters, ChartDisplayOptions options)
         {
             Image image = null;
 
-            using (ctlChartBase chart = ClusterScoreVsMass_Chart(clusters, options))
+            using (ctlChartBase chart = ClusterScatterPlot_Chart(clusters, options))
             {
                 if (chart == null)
                     return null;
@@ -171,7 +167,7 @@ namespace MultiAlign.Drawing
         /// </summary>
         /// <param name="clusters"></param>
         /// <returns></returns>
-        public static ctlScatterChart ClusterScoreVsMass_Chart(List<clsCluster> clusters, ChartDisplayOptions options)
+        public static ctlScatterChart ClusterScatterPlot_Chart(List<clsCluster> clusters, ChartDisplayOptions options)
         {
             if (clusters == null)
                 return null;
@@ -201,16 +197,106 @@ namespace MultiAlign.Drawing
             int i = 0;
             foreach (clsCluster cluster in clusters)
             {
-                y[i] = Convert.ToSingle(cluster.MeanScore);
-                x[i] = Convert.ToSingle(cluster.Mass);
+                y[i] = Convert.ToSingle(cluster.Mass);
+                x[i] = Convert.ToSingle(cluster.Net);
                 i++;
             }
             clsPlotParams parameters = new clsPlotParams(new BubbleShape(1, false), Color.Black);
-            clsSeries series = new clsSeries(ref y, ref x, parameters);
+            clsSeries series = new clsSeries(ref x, ref y, parameters);
 
             chart.AddSeries(series);
             chart.AutoViewPort();
 
+            return chart;
+        }
+        public static Image FeaturesScatterPlot_Thumbnail(List<clsUMC> features, ChartDisplayOptions options)
+        {
+            Image image = null;
+
+            using (ctlChartBase chart = FeaturesScatterPlot_Chart(features, options))
+            {
+                if (chart == null)
+                    return null;
+                image = CreateThumbnailFromChart(chart, options);
+            }
+            return image;
+        }
+        /// <summary>
+        /// Creates a scan width chart for a set of clusters.
+        /// </summary>
+        /// <param name="clusters"></param>
+        /// <returns></returns>
+        public static ctlScatterChart FeaturesScatterPlot_Chart(List<clsUMC> features, ChartDisplayOptions options)
+        {
+            if (features == null)
+                return null;
+
+            if (features.Count < 1)
+                return null;
+
+            ctlScatterChart chart = new ctlScatterChart();
+            chart.XAxisLabel = options.XAxisLabel;
+            chart.YAxisLabel = options.YAxisLabel;
+            chart.Title = options.Title;
+
+            chart.Margins.LeftMarginMin = options.MarginMin;
+            chart.Margins.LeftMarginMax = options.MarginMax;
+            chart.Margins.BottomMarginMax = options.MarginMax;
+            chart.Margins.BottomMarginMin = options.MarginMin;
+
+            chart.LegendVisible = options.DisplayLegend;
+            chart.AxisVisible = options.DisplayAxis;
+            chart.TitleVisible = options.DisplayTitle;
+            chart.XAxisGridLines = options.DisplayGridLines;
+            chart.YAxisGridLines = options.DisplayGridLines;
+
+
+            int i = 0;
+            Dictionary<int, List<clsUMC>> chargeMaps = new Dictionary<int, List<clsUMC>>();
+            for (i = 0; i < 8; i++)
+            {
+                chargeMaps.Add(i, new List<clsUMC>());
+            }
+            chargeMaps.Add(8, new List<clsUMC>());
+
+            foreach (clsUMC feature in features)
+            {
+                int charge = feature.ChargeRepresentative;
+                if (charge >= 8)
+                {
+                    chargeMaps[8].Add(feature);
+                }
+                else
+                {
+                    chargeMaps[charge].Add(feature);
+                }
+            }
+
+            clsColorIterator colors = new clsColorIterator();
+
+            foreach(int charge in chargeMaps.Keys)
+            {
+                List<clsUMC> charges = chargeMaps[charge];
+
+                float[] x = new float[charges.Count];
+                float[] y = new float[charges.Count];
+                for(i = 0; i < charges.Count; i++)
+                {
+                    clsUMC feature = charges[i];
+                    y[i] = Convert.ToSingle(feature.Mass);
+                    x[i] = Convert.ToSingle(feature.Scan);                    
+                }
+                clsPlotParams parameters = new clsPlotParams(new BubbleShape(1, false), colors.GetColor(charge));                
+                parameters.Name          = "Charge " + charge.ToString();
+                if (charge == 8)
+                {
+                    parameters.Name += "+";
+                }
+                clsSeries series         = new clsSeries(ref x, ref y, parameters);
+                chart.AddSeries(series);
+            }
+            
+            chart.AutoViewPort();
             return chart;
         }
         /// <summary>
@@ -733,11 +819,11 @@ namespace MultiAlign.Drawing
             chart.Margins.BottomMarginMax = options.MarginMax;
             chart.Margins.BottomMarginMin = options.MarginMin;
 
-            chart.LegendVisible = options.DisplayLegend;
-            chart.AxisVisible = options.DisplayAxis;
-            chart.TitleVisible = options.DisplayTitle;
-            chart.XAxisGridLines = options.DisplayGridLines;
-            chart.YAxisGridLines = options.DisplayGridLines;
+            chart.LegendVisible     = options.DisplayLegend;
+            chart.AxisVisible       = options.DisplayAxis;
+            chart.TitleVisible      = options.DisplayTitle;
+            chart.XAxisGridLines    = options.DisplayGridLines;
+            chart.YAxisGridLines    = options.DisplayGridLines;
 
             float[] x = new float[scores.Count];
             float[] y = new float[scores.Count];
@@ -806,34 +892,24 @@ namespace MultiAlign.Drawing
         /// <summary>
         /// Renders the scan versus the cluster net to the provided bitmap.
         /// </summary>
-        public static ctlScatterChart NETResiduals_Chart(MultiAlignAnalysis analysis, int datasetNum)
+        public static ctlScatterChart NETResiduals_Chart(classAlignmentResidualData residual)
         {
             ctlScatterChart chart = null;
 
-            if (analysis.AlignmentData.Count < datasetNum)
-                return null;
-            if (analysis.AlignmentData[datasetNum] == null)
-                return null;
+            // Set the data for the chart.          
+            chart                           = new ctlScatterChart();
+            chart.XAxisLabel                = "Scan #";
+            chart.YAxisLabel                = "NET Residual";
+            chart.PadViewPortX = .1F;
+            chart.PadViewPortY = .1F;
 
-            //TODO: Add back in.
-            ///// 
-            ///// Set the data for the chart.          
-            ///// 
-            //classAlignmentResidualData residual = analysis.AlignmentData[datasetNum].ResidualData;
-            //chart                           = new ctlScatterChart();
-            //chart.XAxisLabel                = "Scan #";
-            //chart.YAxisLabel                = "NET Residual";
-            //chart.Title                     = "NET Residuals " + analysis.UMCData.DatasetName[datasetNum];
-            //chart.PadViewPortX = .1F;
-            //chart.PadViewPortY = .1F;
-
-            //clsShape alignedShape           = new BubbleShape(CONST_POST_POINT_SIZE, false);
-            //clsPlotParams plt_paramsAligned = new clsPlotParams(alignedShape, Color.Red);
-            //plt_paramsAligned.Name          = "Net Error";
-            //chart.AutoViewPortOnAddition    = true;
-            //clsSeries seriesAligned         = new clsSeries(ref residual.scans, ref residual.customNet, plt_paramsAligned);
-            //chart.AddSeries(seriesAligned);            
-            //chart.ViewPortHistory.Clear();
+            clsShape alignedShape           = new BubbleShape(CONST_POST_POINT_SIZE, false);
+            clsPlotParams plt_paramsAligned = new clsPlotParams(alignedShape, Color.Red);
+            plt_paramsAligned.Name          = "Net Error";
+            chart.AutoViewPortOnAddition    = true;
+            clsSeries seriesAligned         = new clsSeries(ref residual.scans, ref residual.customNet, plt_paramsAligned);
+            chart.AddSeries(seriesAligned);            
+            chart.ViewPortHistory.Clear();
 
             return chart;
         }
@@ -843,34 +919,29 @@ namespace MultiAlign.Drawing
         /// <summary>
         /// Renders the scan versus the cluster net to the provided bitmap.
         /// </summary>
-        public static Image MassNETResiduals_Thumbnail(MultiAlignAnalysis analysis,
-                                                    int datasetNum,
-                                                    int width,
-                                                    int height,
-                                                    bool displayLegend,
-                                                    bool displayAxis,
-                                                    bool displayTitle)
+        public static Image MassNETResiduals_Thumbnail(classAlignmentResidualData residual, ChartDisplayOptions options)
         {
 
             Image image = null;
             try
             {
-                ctlScatterChart chart = RenderDatasetInfo.MassNETResiduals_Chart(analysis, datasetNum);
+                ctlScatterChart chart = RenderDatasetInfo.MassNETResiduals_Chart(residual);
 
                 if (chart != null)
                 {
-                    chart.Margins.LeftMarginMin   = 1;
-                    chart.Margins.LeftMarginMax   = 1;
-                    chart.Margins.BottomMarginMax = 1;
-                    chart.Margins.BottomMarginMin = 1;
+                    chart.Margins.LeftMarginMin = options.MarginMin;
+                    chart.Margins.LeftMarginMax = options.MarginMax;
+                    chart.Margins.BottomMarginMax = options.MarginMax;
+                    chart.Margins.BottomMarginMin = options.MarginMin;
 
-                    chart.LegendVisible = displayLegend;
-                    chart.AxisVisible   = displayAxis;
-                    chart.TitleVisible = displayTitle;
-                    chart.XAxisGridLines = false;
-                    chart.YAxisGridLines = false;
 
-                    image               = chart.ToBitmap(width, height);
+                    chart.Title = options.Title;
+                    chart.LegendVisible     = options.DisplayLegend;
+                    chart.AxisVisible       = options.DisplayAxis;
+                    chart.TitleVisible      = options.DisplayTitle;
+                    chart.XAxisGridLines    = options.DisplayGridLines;
+                    chart.YAxisGridLines    = options.DisplayGridLines;
+                    image               = chart.ToBitmap(options.Width, options.Height);
                     chart.Dispose();
                 }
             }
@@ -879,34 +950,22 @@ namespace MultiAlign.Drawing
             }
             return image;
         }
-        public static ctlScatterChart MassNETResiduals_Chart(MultiAlignAnalysis analysis, int datasetNum)
+        public static ctlScatterChart MassNETResiduals_Chart(classAlignmentResidualData residual)
         {
             ctlScatterChart chart = null;
+            chart               = new ctlScatterChart();
+            chart.YAxisLabel    = "Mass Residuals (PPM)";
+            chart.XAxisLabel    = "NET Residuals (%)";
+            chart.PadViewPortX  = .1F;
+            chart.PadViewPortY  = .1F;
 
-            //TODO: Add back in
-            //if (analysis.AlignmentData.Count < datasetNum)
-            //    return null;
-            //if (analysis.AlignmentData[datasetNum] == null) 
-            //    return null;
-
-            ///// 
-            ///// Set the data for the chart.          
-            ///// 
-            //classAlignmentResidualData residual = analysis.AlignmentData[datasetNum].ResidualData;
-            //chart               = new ctlScatterChart();
-            //chart.YAxisLabel    = "Mass Residuals (PPM)";
-            //chart.XAxisLabel    = "NET Residuals (%)";
-            //chart.Title = "Mass and NET Residuals Plot" + analysis.UMCData.DatasetName[datasetNum];
-            //chart.PadViewPortX = .1F;
-            //chart.PadViewPortY = .1F;
-
-            //clsShape alignedShape           = new BubbleShape(CONST_PRE_POINT_SIZE, false);
-            //clsPlotParams plt_paramsAligned = new clsPlotParams(alignedShape, Color.Red);
-            //plt_paramsAligned.Name          = "Feature Match";
-            //chart.AutoViewPortOnAddition    = true;
-            //clsSeries seriesAligned         = new clsSeries(ref residual.customNet, ref residual.massError, plt_paramsAligned);
-            //chart.AddSeries(seriesAligned);
-            //chart.ViewPortHistory.Clear();
+            clsShape alignedShape               = new BubbleShape(CONST_PRE_POINT_SIZE, false);
+            clsPlotParams plt_paramsAligned     = new clsPlotParams(alignedShape, Color.Red);
+            plt_paramsAligned.Name              = "Feature Match";
+            chart.AutoViewPortOnAddition        = true;
+            clsSeries seriesAligned             = new clsSeries(ref residual.customNet, ref residual.massError, plt_paramsAligned);
+            chart.AddSeries(seriesAligned);
+            chart.ViewPortHistory.Clear();
 
             return chart;
         }
@@ -916,30 +975,18 @@ namespace MultiAlign.Drawing
         /// <summary>
         /// Renders the scan versus the cluster net to the provided bitmap.
         /// </summary>
-        public static ctlScatterChart MassVsScanResiduals_Chart(MultiAlignAnalysis analysis, int datasetNum)
+        public static ctlScatterChart MassVsScanResiduals_Chart(classAlignmentResidualData residual)
         {
             ctlScatterChart chart = null;
-
-            if (analysis.AlignmentData.Count < datasetNum)
-                return null;
-
-            if (analysis.AlignmentData[datasetNum] == null)
-                return null;
-
-            string name = analysis.Datasets[datasetNum].DatasetName;
-            if (name == null)
-                name = "";
-
+            
             /// 
             /// Set the data for the chart. 
             /// Go through each cluster that this dataset was seen in
             /// and plot scan vs net of cluster. 
             /// 
-            classAlignmentResidualData residual = analysis.AlignmentData[datasetNum].ResidualData;
             chart               = new ctlScatterChart();
             chart.XAxisLabel    = "Scan #";
             chart.YAxisLabel    = "Mass Residual (PPM)";
-            chart.Title         = name + "Mass (PPM) vs Scan Residual";
             chart.PadViewPortX  = .1F;
             chart.PadViewPortY  = .1F;
             int ptSize          = CONST_PRE_POINT_SIZE;
@@ -973,38 +1020,32 @@ namespace MultiAlign.Drawing
 
             return chart;
         }
-
         /// <summary>
         /// Renders the scan versus the cluster net to the provided bitmap.
         /// </summary>
-        public static Image MassVsScanResiduals_Thumbnail(MultiAlignAnalysis analysis,
-                                                        int datasetNum,
-                                                        int width,
-                                                        int height,
-                                                            bool displayLegend,
-                                                            bool displayAxis,
-                                                            bool displayTitle)
+        public static Image MassVsScanResiduals_Thumbnail(classAlignmentResidualData residual, ChartDisplayOptions options)                                                        
         {
 
             Image image = null;
             try
             {
-                ctlScatterChart chart = RenderDatasetInfo.MassVsScanResiduals_Chart(analysis, datasetNum);
+                ctlScatterChart chart = RenderDatasetInfo.MassVsScanResiduals_Chart(residual);
 
                 if (chart != null)
                 {
-                    chart.Margins.LeftMarginMin     = 1;
-                    chart.Margins.LeftMarginMax     = 1;
-                    chart.Margins.BottomMarginMax   = 1;
-                    chart.Margins.BottomMarginMin   = 1;
+                    chart.Margins.LeftMarginMin = options.MarginMin;
+                    chart.Margins.LeftMarginMax = options.MarginMax;
+                    chart.Margins.BottomMarginMax = options.MarginMax;
+                    chart.Margins.BottomMarginMin = options.MarginMin;
 
-                    chart.LegendVisible = displayLegend;
-                    chart.AxisVisible   = displayAxis;
-                    chart.TitleVisible = displayTitle;
-                    chart.XAxisGridLines = false;
-                    chart.YAxisGridLines = false;
+                    chart.Title = options.Title;
+                    chart.LegendVisible     = options.DisplayLegend;
+                    chart.AxisVisible       = options.DisplayAxis;
+                    chart.TitleVisible      = options.DisplayTitle;
+                    chart.XAxisGridLines    = options.DisplayGridLines;
+                    chart.YAxisGridLines    = options.DisplayGridLines;
 
-                    image = chart.ToBitmap(width, height);
+                    image = chart.ToBitmap(options.Width, options.Height);
                     chart.Dispose();
                 }
             }
@@ -1014,80 +1055,8 @@ namespace MultiAlign.Drawing
             return image;
         }
         #endregion
-
-        #region Mass Vs Mz Residual Plots
-        ///// <summary>
-        ///// Renders the scan versus the cluster net to the provided bitmap.
-        ///// </summary>
-        //public static ctlScatterChart MassVsMZResidual_Chart(MultiAlignAnalysis analysis,
-
-        //                                            int datasetNum)
-        //{
-        //    ctlScatterChart chart = null;
-
-        //    if (analysis.AlignmentData.Count < datasetNum)
-        //        return null;
-
-        //    if (analysis.AlignmentData[datasetNum] == null)
-        //        return null;
-
-        //    /// 
-        //    /// Set the data for the chart. 
-        //    /// Go through each cluster that this dataset was seen in
-        //    /// and plot scan vs net of cluster. 
-        //    /// 
-        //    classAlignmentResidualData residual = analysis.AlignmentData[datasetNum].ResidualData;
-        //    chart = new ctlScatterChart();
-        //    chart.XAxisLabel = "m/z";
-        //    chart.YAxisLabel = "Mass Residual (PPM)";
-        //    chart.Title = analysis.UMCData.DatasetName[datasetNum] + " Mass Residual (PPM) vs. m/z";
-        //    chart.PadViewPortX = .1F;
-        //    chart.PadViewPortY = .1F;
-        //    int ptSize = CONST_PRE_POINT_SIZE;
-        //    Color clr = Color.FromArgb(255, Color.Blue);
-        //    clsShape shape = new BubbleShape(ptSize, false);
-
-        //    /// 
-        //    /// Residual Plots of mass vs mz error pre-corrected
-        //    /// 
-        //    clsPlotParams plt_params = new clsPlotParams(shape, Color.Blue);
-        //    plt_params.Name = "Post-Alignment";
-        //    chart.AutoViewPortOnAddition = true;
-        //    clsSeries series = new clsSeries(ref residual.mz, ref residual.mzMassError, plt_params);
-
-
-        //    /// 
-        //    /// Residual Plots of mass vs mz error post-correcteds
-        //    /// 
-        //    clsShape alignedShape = new BubbleShape(CONST_POST_POINT_SIZE, false);
-        //    clsPlotParams plt_paramsAligned = new clsPlotParams(alignedShape, Color.Red);
-        //    plt_paramsAligned.Name = "Pre-Alignment";
-        //    chart.AutoViewPortOnAddition = true;
-
-        //    float[] data = new float[residual.mzMassErrorCorrected.Length];
-        //    for (int kk = 0; kk < data.Length; kk++)
-        //        data[kk] = residual.mzMassErrorCorrected[kk] * -1;
-
-        //    clsSeries seriesCorrected = new clsSeries(ref residual.mz, ref data, plt_paramsAligned); //ref residual.mzMassErrorCorrected, plt_paramsAligned);
-
-
-        //    chart.AddSeries(seriesCorrected);
-        //    chart.AddSeries(series);
-        //    chart.ViewPortHistory.Clear();
-
-        //    return chart;
-        //}
-         //classAlignmentResidualData residual = analysis.AlignmentData[datasetNum].ResidualData;
-         //   chart = new ctlScatterChart();
-         //   chart.XAxisLabel = "m/z";
-         //   chart.YAxisLabel = "Mass Residual (PPM)";
-         //   chart.Title = analysis.UMCData.DatasetName[datasetNum] + " Mass Residual (PPM) vs. m/z";
-         //   chart.PadViewPortX = .1F;
-         //   chart.PadViewPortY = .1F;
-         //   int ptSize = CONST_PRE_POINT_SIZE;
-         //   Color clr = Color.FromArgb(255, Color.Blue);
-         //   clsShape shape = new BubbleShape(ptSize, false);
-
+        
+        #region Residual Plots
         /// <summary>
         /// Renders the scan versus the cluster net to the provided bitmap.
         /// </summary>
@@ -1675,33 +1644,27 @@ namespace MultiAlign.Drawing
         /// <summary>
         /// Renders the scan versus the cluster net to the provided bitmap.
         /// </summary>
-        public static Image ClusterMassVsScanResiduals_Thumbnail(MultiAlignAnalysis analysis,                                                        
-                                                        int width,
-                                                        int height,
-                                                            bool displayLegend,
-                                                            bool displayAxis,
-                                                            bool displayTitle)
+        public static Image ClusterMassVsScanResiduals_Thumbnail(classAlignmentResidualData residual, ChartDisplayOptions options)
         {
-
             Image image = null;
             try
             {
-                ctlScatterChart chart = RenderDatasetInfo.ClusterMassVsScanResiduals_Chart(analysis);
+                ctlScatterChart chart = RenderDatasetInfo.ClusterMassVsScanResiduals_Chart(residual);
 
                 if (chart != null)
                 {
-                    chart.Margins.LeftMarginMin = 1;
-                    chart.Margins.LeftMarginMax = 1;
-                    chart.Margins.BottomMarginMax = 1;
-                    chart.Margins.BottomMarginMin = 1;
+                    //chart.Margins.LeftMarginMin = options.MarginMin;
+                    //chart.Margins.LeftMarginMax = options.MarginMax;
+                    //chart.Margins.BottomMarginMax = options.MarginMax;
+                    //chart.Margins.BottomMarginMin = options.MarginMin;
 
-                    chart.LegendVisible = displayLegend;
-                    chart.AxisVisible = displayAxis;
-                    chart.TitleVisible = displayTitle;
-                    chart.XAxisGridLines = false;
-                    chart.YAxisGridLines = false;
+                    chart.LegendVisible     = options.DisplayLegend;
+                    chart.AxisVisible       = options.DisplayAxis;
+                    chart.TitleVisible      = options.DisplayTitle;
+                    chart.XAxisGridLines    = false;
+                    chart.YAxisGridLines    = false;
 
-                    image = chart.ToBitmap(width, height);
+                    image = chart.ToBitmap(options.Width, options.Height);
                     chart.Dispose();
                 }
             }
@@ -1713,19 +1676,15 @@ namespace MultiAlign.Drawing
         /// <summary>
         /// Renders the scan versus the cluster net to the provided bitmap.
         /// </summary>
-        public static ctlScatterChart ClusterMassVsScanResiduals_Chart(MultiAlignAnalysis analysis)
+        public static ctlScatterChart ClusterMassVsScanResiduals_Chart(classAlignmentResidualData residual)
         {
             ctlScatterChart chart = null;
-
-            if (analysis.ClusterAlignmentData == null)
-                return null;
 
             /// 
             /// Set the data for the chart. 
             /// Go through each cluster that this dataset was seen in
             /// and plot scan vs net of cluster. 
             /// 
-            classAlignmentResidualData residual = analysis.ClusterAlignmentData.ResidualData;
             chart = new ctlScatterChart();
             chart.XAxisLabel = "Scan #";
             chart.YAxisLabel = "Mass Residual (PPM)";
@@ -1768,24 +1727,18 @@ namespace MultiAlign.Drawing
         /// <summary>
         /// Renders the scan versus the cluster net to the provided bitmap.
         /// </summary>
-        public static ctlScatterChart ClusterMassVsMZResidual_Chart(MultiAlignAnalysis analysis)
+        public static ctlScatterChart ClusterMassVsMZResidual_Chart(classAlignmentResidualData residual)
         {
             ctlScatterChart chart = null;
-
-
-            if (analysis.ClusterAlignmentData == null)
-                return null;
-
+            
             /// 
             /// Set the data for the chart. 
             /// Go through each cluster that this dataset was seen in
             /// and plot scan vs net of cluster. 
             /// 
-            classAlignmentResidualData residual = analysis.ClusterAlignmentData.ResidualData;
             chart = new ctlScatterChart();
             chart.XAxisLabel = "m/z";
             chart.YAxisLabel = "Mass Residual (PPM)";
-            chart.Title = " Mass Residual (PPM) vs. m/z";
             chart.PadViewPortX = .1F;
             chart.PadViewPortY = .1F;
             int ptSize = CONST_PRE_POINT_SIZE;
@@ -1820,31 +1773,31 @@ namespace MultiAlign.Drawing
         /// <summary>
         /// Renders the scan versus the cluster net to the provided bitmap.
         /// </summary>
-        public static Image ClusterMassVsMZResidual_Thumbnail(MultiAlignAnalysis analysis,                                                    
-                                                    int width,
-                                                    int height,
-                                                            bool displayLegend,
-                                                            bool displayAxis,
-                                                            bool displayTitle)
+        public static Image ClusterMassVsMZResidual_Thumbnail(classAlignmentResidualData residuals, ChartDisplayOptions options)            
         {
 
             Image image = null;
             try
             {
-                ctlScatterChart chart = RenderDatasetInfo.ClusterMassVsMZResidual_Chart(analysis);
+                ctlScatterChart chart = RenderDatasetInfo.ClusterMassVsMZResidual_Chart(residuals);
 
                 if (chart != null)
                 {
-                    chart.Margins.LeftMarginMin = 1;
-                    chart.Margins.LeftMarginMax = 1;
-                    chart.Margins.BottomMarginMax = 1;
-                    chart.Margins.BottomMarginMin = 1;
-                    chart.LegendVisible = displayLegend;
-                    chart.AxisVisible = displayAxis;
-                    chart.TitleVisible = displayTitle;
-                    chart.XAxisGridLines = false;
-                    chart.YAxisGridLines = false;
-                    image = chart.ToBitmap(width, height);
+                    chart.Margins.LeftMarginMin = options.MarginMin;
+                    chart.Margins.LeftMarginMax = options.MarginMax;
+                    chart.Margins.BottomMarginMax = options.MarginMax;
+                    chart.Margins.BottomMarginMin = options.MarginMin;
+
+
+                    chart.Title = options.Title;
+                    chart.LegendVisible     = options.DisplayLegend;
+                    chart.AxisVisible       = options.DisplayAxis;
+                    chart.TitleVisible      = options.DisplayTitle;
+                    chart.XAxisGridLines    = false;
+                    chart.YAxisGridLines    = false;
+
+                    image = chart.ToBitmap(options.Width, options.Height);
+
                     chart.Dispose();
                 }
             }
@@ -2463,8 +2416,8 @@ namespace MultiAlign.Drawing
             }
             
             controlHistogram histogram  = new controlHistogram();
-            histogram.BinSize           = 1.0F;
             histogram.AddData(bins, freqs, "Cluster Sizes");
+            histogram.BinSize           = 1.0F;
             histogram.XAxisLabel        = options.YAxisLabel;
             histogram.YAxisLabel        = options.XAxisLabel;
             histogram.Title             = options.Title;
@@ -2473,15 +2426,15 @@ namespace MultiAlign.Drawing
             return histogram;                                    
         }
         /// <summary>
-        /// 
+        /// Creates a cluster size histogram for dataset members.
         /// </summary>
-        /// <param name="analysis"></param>
+        /// <param name="clusters"></param>
         /// <returns></returns>
-        public static controlHistogram ClusterDatasetMemberSizeHistogram_Chart(List<clsCluster> clusters, ChartDisplayOptions options)
+        public static float[] GetClusterMemberSizes(List<clsCluster> clusters)
         {
+            //TODO: Move this method to a new class.
             if (clusters.Count < 1)
                 return null;
-
 
             Dictionary<int, int> clusterMaps = new Dictionary<int, int>();
             // Bin all data.
@@ -2510,8 +2463,7 @@ namespace MultiAlign.Drawing
 
             int i = 0;
             for (i = 0; i < maxClusters; i++)
-            {
-                bins[i] = Convert.ToSingle(i);
+            {                
                 if (clusterMaps.ContainsKey(i))
                 {
                     freqs[i] = clusterMaps[i];
@@ -2522,76 +2474,39 @@ namespace MultiAlign.Drawing
                 }
             }
 
-            controlHistogram histogram = new controlHistogram();
-            histogram.BinSize = 1.0F;
-            histogram.AddData(bins, freqs, "Cluster Sizes");
-            histogram.XAxisLabel = options.YAxisLabel;
-            histogram.YAxisLabel = options.XAxisLabel;
-            histogram.Title = options.Title;
-            histogram.AutoViewPort();
-            histogram.Refresh();
-            return histogram;
+            return freqs;
         }
         /// <summary>
         /// 
         /// </summary>
         /// <param name="analysis"></param>
         /// <returns></returns>
-        //public static controlHistogram ClusterSizeHistogramWithUniqueDatasets_Chart(ChartDisplayOptions options)
-        //{
-        //    if (clusters.Count < 1)
-        //        return null;
+        public static controlHistogram ClusterDatasetMemberSizeHistogram_Chart(List<clsCluster> clusters, ChartDisplayOptions options)
+        {
 
+            float[] freqs = GetClusterMemberSizes(clusters);
 
-        //    Dictionary<int, int> clusterMaps = new Dictionary<int, int>();
-        //    // Bin all data.
-        //    foreach (clsCluster cluster in clusters)
-        //    {
-        //        int members = cluster.mshort_num_dataset_members;
-        //        if (!clusterMaps.ContainsKey(members))
-        //        {
-        //            clusterMaps.Add(members, 0);
-        //        }
-        //        clusterMaps[members] = clusterMaps[members] + 1;
-        //    }
+            if (freqs == null)
+                return null;
+            
+            int maxClusters = freqs.Length;
+            float[] bins    = new float[maxClusters];
+            
+            for (int i = 0; i < maxClusters; i++)
+            {
+                bins[i] = Convert.ToSingle(i);            
+            }
 
-        //    // Find the maximum cluster size.
-        //    List<int> sizes = new List<int>();
-        //    foreach (int key in clusterMaps.Keys)
-        //    {
-        //        sizes.Add(key);
-        //    }
-        //    sizes.Sort();
-        //    int maxClusters = sizes[sizes.Count - 1] + 3;
-
-        //    // Create the histogram.
-        //    float[] bins = new float[maxClusters];
-        //    float[] freqs = new float[maxClusters];
-
-        //    int i = 0;
-        //    for (i = 0; i < maxClusters; i++)
-        //    {
-        //        bins[i] = Convert.ToSingle(i);
-        //        if (clusterMaps.ContainsKey(i))
-        //        {
-        //            freqs[i] = clusterMaps[i];
-        //        }
-        //        else
-        //        {
-        //            freqs[i] = 0;
-        //        }
-        //    }
-
-        //    controlHistogram histogram = new controlHistogram();
-        //    histogram.BinSize = 1.0F;
-        //    histogram.AddData(bins, freqs, "Cluster Sizes");
-        //    histogram.XAxisLabel = options.YAxisLabel;
-        //    histogram.YAxisLabel = options.XAxisLabel;
-        //    histogram.Title = options.Title;
-        //    histogram.AutoViewPort();
-        //    histogram.Refresh();
-        //    return histogram;
-        //}
+            controlHistogram histogram  = new controlHistogram();
+            histogram.AddData(bins, freqs, "Cluster Sizes");
+            histogram.BinSize           = 1.0F;
+            histogram.XAxisLabel        = options.YAxisLabel;
+            histogram.YAxisLabel        = options.XAxisLabel;
+            histogram.Title             = options.Title;
+            histogram.AutoViewPort();
+            histogram.Refresh();
+            return histogram;
+        }
         /// <summary>
         /// Renders the scan versus the cluster net to the provided bitmap.
         /// </summary>
@@ -2609,18 +2524,16 @@ namespace MultiAlign.Drawing
 
                 if (chart != null)
                 {
-                    chart.Margins.LeftMarginMin = options.MarginMin;
-                    chart.Margins.LeftMarginMax = options.MarginMax;
-                    chart.Margins.BottomMarginMax = options.MarginMax;
-                    chart.Margins.BottomMarginMin = options.MarginMin;
-
-                    chart.LegendVisible = options.DisplayLegend;
-                    chart.AxisVisible = options.DisplayAxis;
-                    chart.TitleVisible = options.DisplayTitle;
-                    chart.XAxisGridLines = options.DisplayGridLines;
-                    chart.YAxisGridLines = options.DisplayGridLines;
-
-                    image = chart.ToBitmap(width, height);
+                    chart.Margins.LeftMarginMin     = options.MarginMin;
+                    chart.Margins.LeftMarginMax     = options.MarginMax;
+                    chart.Margins.BottomMarginMax   = options.MarginMax;
+                    chart.Margins.BottomMarginMin   = options.MarginMin;
+                    chart.LegendVisible             = options.DisplayLegend;
+                    chart.AxisVisible               = options.DisplayAxis;
+                    chart.TitleVisible              = options.DisplayTitle;
+                    chart.XAxisGridLines            = options.DisplayGridLines;
+                    chart.YAxisGridLines            = options.DisplayGridLines;
+                    image                           = chart.ToBitmap(width, height);
                     chart.Dispose();
                 }
             }
@@ -2655,7 +2568,7 @@ namespace MultiAlign.Drawing
                 maxCharge = Math.Max(maxCharge, j);
                 if (j < 1)
                     j = 1;
-                charges[j]++;
+                charges[j - 1]++;
             }            
 
             /// 
@@ -2678,6 +2591,7 @@ namespace MultiAlign.Drawing
             chart.AddData(bins, freqs, "Charge States");
             chart.XAxisLabel = "Charge States";
             chart.YAxisLabel = "Count";
+            //chart.ViewPort   = new RectangleF(0.5F, 0.0F, Convert.ToSingle(maxCharge), chart.ViewPort.Height);
             return chart;
         }        
         #endregion

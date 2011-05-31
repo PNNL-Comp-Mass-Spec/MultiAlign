@@ -196,13 +196,15 @@ namespace PNNLProteomics.MultiAlign
             tolerances.Mass                         = analysis.ClusterOptions.MassTolerance;
             tolerances.RetentionTime                = analysis.ClusterOptions.NETTolerance;
             parameters.CentroidRepresentation       = PNNLOmics.Data.Features.ClusterCentroidRepresentation.Mean;
-            parameters.Tolerances                   = tolerances;
+            parameters.Tolerances                   = tolerances;            
             parameters.OnlyClusterSameChargeStates  = (analysis.ClusterOptions.IgnoreCharge == false);
             if (analysis.ClusterOptions.ClusterRepresentativeType == enmClusterRepresentativeType.MEDIAN)
             {
                 parameters.CentroidRepresentation = ClusterCentroidRepresentation.Median;
             }
 
+            clusterer.Parameters = parameters;            
+            
             // This just tells us whether we are using mammoth memory partitions or not.
             if (analysis.ClusterOptions.RecursionLevels > 0)
             {
@@ -216,6 +218,8 @@ namespace PNNLProteomics.MultiAlign
             string databaseName = Path.Combine(m_analysis.AnalysisPath, m_analysis.AnalysisName);
             int maxChargeState = 15;
             int minChargeState = 1;
+
+            
 
             // Connect to the database.
             using (MammothDatabase database = new MammothDatabase(databaseName))

@@ -1679,7 +1679,7 @@ namespace MultiAlignEngine
 						ppmShift = GetPPMShift(feature.mdouble_mz, scanNumber);
 					}
 					/// Mass Residuals
-					vectMZ.push_back(feature.mdouble_mz);					
+					vectMZ.push_back(feature.mdouble_mz);						vectMZ.push_back(feature.mdouble_mz - (*iter).m
 					vectMassError.push_back(massError);
 					
 					vectMassErrorCorrected.push_back(massError - ppmShift);

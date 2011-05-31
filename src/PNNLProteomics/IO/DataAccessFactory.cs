@@ -1,4 +1,4 @@
-﻿
+﻿using System.IO;
 using PNNLProteomics.Data;
 using PNNLProteomics.MultiAlign;
 using PNNLProteomics.MultiAlign.Hibernate;
@@ -14,9 +14,12 @@ namespace PNNLProteomics.IO
         {
             string path = AnalysisPathUtils.BuildAnalysisName(analysis.AnalysisPath, analysis.AnalysisName);
 
-            NHibernateUtil.SetDbLocationForWrite(path, true);
-            NHibernateUtil.SetDbLocationForRead(path);
-
+            bool exists = File.Exists(path);
+            if (exists)
+            {
+                File.Delete(path);
+            }
+            NHibernateUtil.ConnectToDatabase(path, true);
             IUmcDAO featureCache        = new UmcDAOHibernate();
             IUmcClusterDAO clusterCache = new UmcClusterDAOHibernate();
 

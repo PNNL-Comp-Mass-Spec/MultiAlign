@@ -26,7 +26,6 @@ namespace MultiAlignConsole
     /// </summary>
     class Program
     {
-
         /// <summary>
         /// 
         /// </summary>
@@ -106,8 +105,18 @@ namespace MultiAlignConsole
         /// Options from command line argument
         /// </summary>
         private static IDictionary<string, List<string>> m_options;
+        /// <summary>
+        /// Creates plots on an existing database.
+        /// </summary>
+        private static bool m_createPlots;
+        /// <summary>
+        /// Path to database to create plots from.
+        /// </summary>
+        private static string   m_databaseName;
+        private static FeatureDataAccessProviders m_dataProviders;
         #endregion
-        
+
+        static bool m_createdBaselinePlots;
         
         static Program()
         {            
@@ -120,9 +129,12 @@ namespace MultiAlignConsole
             m_parameterFile     = null;
             m_htmlPathName      = "index.html";
             m_showHelp          = false;
+            m_createdBaselinePlots = false;
             m_htmlPage          = new List<string>();
             m_analysisPath      = null;
-            m_analysisName      = null; 
+            m_analysisName      = null;
+            m_databaseName      = null;
+            m_createPlots       = false;
         }
 
         #region Methods
@@ -140,7 +152,7 @@ namespace MultiAlignConsole
             }
             else
             {
-                Log(string.Format("Could not create {0} plot.", name));
+                PrintMessage(string.Format("Could not create {0} plot.", name));
             }
         }
         /// <summary>
@@ -159,18 +171,29 @@ namespace MultiAlignConsole
             }            
         }
         /// <summary>
-        /// Creates the final analysis plots.
+        /// Creates the final analysis plots
         /// </summary>
+        /// <param name="cache"></param>
+        /// <param name="clusterCache"></param>
         static void CreateFinalAnalysisPlots()
         {
-            Log("Creating Final Plots");
-            PushTextHeader("Feature Plots "); 
+            UmcDAOHibernate cache               = new UmcDAOHibernate();
+            UmcClusterDAOHibernate clusterCache = new UmcClusterDAOHibernate();
+
+            CreateFinalAnalysisPlots(cache, clusterCache);
+        }
+        /// <summary>
+        /// Creates the final analysis plots.
+        /// </summary>
+        static void CreateFinalAnalysisPlots(IUmcDAO cache, IUmcClusterDAO clusterCache)
+        {
+            PrintMessage("Creating Final Plots");
+            PushTextHeader("Analysis Info "); 
             PushStartTable();
             PushStartTableRow();
 
             // Create the heatmap
-            UmcDAOHibernate cache = new UmcDAOHibernate();
-            List<clsUMC> umcs = cache.FindAll();
+            List<clsUMC> umcs           = cache.FindAll();
             ChartDisplayOptions options = new ChartDisplayOptions(true, true, true, true,
                                                 1, 100,
                                                 "Charge State Histogram", "Charge State", "Count", m_width, m_height);
@@ -182,290 +205,106 @@ namespace MultiAlignConsole
             PushEndTableRow();
             PushEndTable();
 
-            PushTextHeader("Cluster Plots "); 
+            PushTextHeader("Cluster Data"); 
             PushStartTable();
             PushStartTableRow();
 
-            UmcClusterDAOHibernate  clusterCache = new UmcClusterDAOHibernate();
-            List<clsCluster>        clusters     = clusterCache.FindAll();
-
-            // Then render the cluster size image.
-            options.Title   = "Cluster Member Size Histogram ( Total Clusters = " + clusters.Count.ToString() + ")";
-            image           = RenderDatasetInfo.ClusterSizeHistogram_Thumbnail(clusters, m_width, m_height, options);
+            List<clsCluster> clusters   = clusterCache.FindAll();            
+            options.Title               = "Cluster Member Size Histogram ( Total Clusters = " + clusters.Count.ToString() + ")";
+            options.DisplayLegend       = false;
+            image                       = RenderDatasetInfo.ClusterSizeHistogram_Thumbnail(clusters, m_width, m_height, options);
             SaveImage(image, "ClusterMemberSizes.png");
             PushImageColumn(Path.Combine("Plots", "ClusterMemberSizes.png"));
-
-            // Then render the cluster size image.
-            options.Title = "Cluster Dataset Member Size Histogram ( Total Clusters = " + clusters.Count.ToString() + ")";
-            image = RenderDatasetInfo.ClusterDatasetMemberSizeHistogram_Thumbnail(clusters, m_width, m_height, options);
+            
+            options.Title               = "Cluster Dataset Member Size Histogram ( Total Clusters = " + clusters.Count.ToString() + ")";
+            image                       = RenderDatasetInfo.ClusterDatasetMemberSizeHistogram_Thumbnail(clusters, m_width, m_height, options);
             SaveImage(image, "ClusterDatasetMemberSizes.png");
             PushImageColumn(Path.Combine("Plots", "ClusterDatasetMemberSizes.png"));
 
-            PushEndTableRow();
-            PushEndTable();
-
-            PushTextHeader("Cluster Score Plots ");
-            PushTextHeader("Mass");
-
-            PushStartTable();
-            PushStartTableRow();
- 
-            options.DisplayLegend = false;
-
-            // Mass vs. Member Count  
-            options.Title       = "Cluster Monoisotopic Mass Vs. Cluster Member Count";
-            options.YAxisLabel  = "Cluster Monoisotopic Mass";
-            options.XAxisLabel  = "Member Count";
-            image = RenderDatasetInfo.ClusterMemberVsMass_Thumbnail(clusters, options);
-            SaveImage(image, "MassVsMemberCount.png");
-            PushImageColumn(Path.Combine("Plots", "MassVsMemberCount.png"));
-
-            // Mass Vs. Average Cluster Score.
-            options.Title = "Mono Mass vs. Average Cluster Score";
-            options.YAxisLabel = "Cluster Monoisotopic Mass";
-            options.XAxisLabel = "Average Cluster Score";
-            image = RenderDatasetInfo.ClusterScoreVsMassLine_Thumbnail(clusters, options);
-            SaveImage(image, "MassVsAverageClusterScore.png");
-            PushImageColumn(Path.Combine("Plots", "MassVsAverageClusterScore.png"));
-
             // Mass vs. Cluster score 
-            options.Title = "Monoisotopic Mass vs. Cluster Score";
-            options.YAxisLabel = "Cluster Monoisotopic Mass";
-            options.XAxisLabel = "Cluster Score";
-            image = RenderDatasetInfo.ClusterScoreVsMass_Thumbnail(clusters, options);
-            SaveImage(image, "ClusterScoreVsMass.png");
-            PushImageColumn(Path.Combine("Plots", "ClusterScoreVsMass.png"));
+            options.Title               = "Clusters";
+            options.YAxisLabel          = "Cluster Monoisotopic Mass";
+            options.XAxisLabel          = "Cluster NET";
+            image                       = RenderDatasetInfo.ClusterScatterPlot_Thumbnail(clusters, options);
+            SaveImage(image, "ClusterScatterPlot.png");
+            PushImageColumn(Path.Combine(THUMBNAIL_PATH, "ClusterScatterPlot.png"));
             PushEndTableRow();
-            PushEndTable();
-
-            PushTextHeader("NET");
-            PushStartTable();
             PushStartTableRow();
-            
-            // Cluster size vs. NET
-            options.Title       = "Cluster Member Count vs. NET";
-            options.XAxisLabel  = "Cluster NET";
-            options.YAxisLabel  = "Member Count";
-            image                    = RenderDatasetInfo.ClusterMemberVsNET_Thumbnail(clusters, options);
-            SaveImage(image, "MemberCountVsNET.png");
-            PushImageColumn(Path.Combine("Plots", "MemberCountVsNET.png"));
-
-            // average Cluster score vs. NET
-            options.Title = "Average Cluster Score vs. NET";
-            options.XAxisLabel = "Cluster NET";
-            options.YAxisLabel = "Average Cluster Score";
-            image = RenderDatasetInfo.ClusterScoreVsNetLine_Thumbnail(clusters, options);
-            SaveImage(image, "AverageClusterScoreVsNET.png");
-            PushImageColumn(Path.Combine("Plots", "AverageClusterScoreVsNET.png"));
-            
-            // Cluster score vs. NET
-            options.Title = "Cluster Score vs. NET";
-            options.XAxisLabel = "Cluster NET";
-            options.YAxisLabel = "Cluster Score";
-            image = RenderDatasetInfo.ClusterScoreVsNET_Thumbnail(clusters, options);
-            SaveImage(image, "ClusterScoreVsNET.png");
-            PushImageColumn(Path.Combine("Plots", "ClusterScoreVsNET.png" ));
-
-            PushEndTableRow();
             PushEndTable();
 
-            PushTextHeader("Cluster Filter Scatter Plots");
-            PushStartTable();
-            // Cluster score vs. NET
-            int nPlots      = 20;
-            int nCols       = 5;
-            double maxScore = 1.0;
-            double dScore   = maxScore / Convert.ToDouble(nPlots);
-            double score    = dScore;
-            int cols = 0;
-            for (int i = 0; i < nPlots; i++ )
+
+            PushStartTable(true);
+            PushStartTableRow();
+            PushStartTableColumn();
+            PushData("Dataset Members");
+            PushEndTableColumn();
+
+            PushStartTableColumn();
+            PushData("Count");
+            PushEndTableColumn();
+            PushEndTableRow();
+
+            float[] histogram = RenderDatasetInfo.GetClusterMemberSizes(clusters);
+            if (histogram != null)
             {
-                if (cols == 0)
+                for (int i = 0; i < histogram.Length; i++)
                 {
                     PushStartTableRow();
-                }                
-                options.Title       = "Cluster Score Monoisotopic Mass vs. NET (score = " + score.ToString() + " )";
-                options.XAxisLabel  = "Cluster NET";
-                options.YAxisLabel  = "Cluster Monoisotopic Mass";
-                image               = RenderDatasetInfo.ClustersPassingScoreScatterPlot_Thumbnail(clusters, score, options);
-                if (image != null)
-                {
-                    string scoreID = string.Format("ClusterScoreScatterPlot-{0:0.00}.png", score);
-                    SaveImage(image, scoreID);
-                    PushImageColumn(Path.Combine("Plots", scoreID));
-                }
+                    PushStartTableColumn();
+                    PushData(i.ToString());
+                    PushEndTableColumn();
 
-                cols++;
-                if (cols == nCols)
-                {
-                    PushEndTableRow();
-                    cols = 0;
-                }
-                score += dScore;
-            }
-            // Make sure the tag is closed.
-            if (cols != nCols)
-            {
-                PushEndTableRow();             
-            }
-            PushStartTableRow();
-            score               = double.PositiveInfinity;
-            options.Title       = "Cluster Score Monoisotopic Mass vs. NET (score = " + score.ToString() + " )";
-            options.XAxisLabel  = "Cluster NET";
-            options.YAxisLabel  = "Cluster Monoisotopic Mass";
-            image = RenderDatasetInfo.ClustersPassingScoreScatterPlot_Thumbnail(clusters, score, options);
-            if (image != null)
-            {
-                string scoreID = string.Format("ClusterScoreScatterPlot-{0:0.00}.png", score);
-                SaveImage(image, scoreID);
-                PushImageColumn(Path.Combine("Plots", scoreID));
-            }
-            options.Title       = string.Format("Cluster Count vs. Cluster Score (Total Clusters = {0})", clusters.Count); 
-            options.XAxisLabel  = "Cluster Score";
-            options.YAxisLabel  = "Cluster Count";
-            image = RenderDatasetInfo.ClustersCountPassingScoreFilter_Thumbnail(clusters, dScore, dScore, maxScore, options);
-            if (image != null)
-            {
-                string scoreID = "ClusterScoreVsCount.png";
-                SaveImage(image, scoreID);
-                PushImageColumn(Path.Combine("Plots", scoreID));
-            }
-            
-            PushEndTableRow();
-            PushStartTableRow();
-            Log("Creating Scan Width Plots");
-
-            List<double> scoresX = new List<double>();
-            List<double> rangesX = new List<double>();
-            Dictionary<int, List<double>> ranges = CreateScanWidths(clusters, ref rangesX, ref scoresX);
-
-
-            options.Title = string.Format("Cluster NET Range vs. Cluster Score (Total Clusters = {0})", clusters.Count);
-            options.XAxisLabel = "Cluster NET Range";
-            options.YAxisLabel = "Cluster Score";
-            image = RenderDatasetInfo.ClusterNetRangeVsScore_Thumbnail( rangesX, scoresX, options);
-            if (image != null)
-            {
-                string scoreID = "ClusterNETRangeVsScore.png";
-                SaveImage(image, scoreID);
-                PushImageColumn(Path.Combine("Plots", scoreID));
-            }
-
-            PushEndTableRow();
-            PushEndTable();
-
-            PushTextHeader("Cluster NET Range Histograms");
-            PushStartTable();
-
-            options.XAxisLabel = "NET Range";
-            options.YAxisLabel = "Count";
-
-            List<int> sizes = new List<int>();
-            foreach (int size in ranges.Keys)
-            {
-                sizes.Add(size);
-            }
-            sizes.Sort();
-
-            cols = 0;            
-            foreach (int clusterSize in sizes)
-            {
-                if (clusterSize < 2)
-                    continue;
-
-                if (cols == 0)
-                {
-                    PushStartTableRow();
-                }
-                List<double> range = ranges[clusterSize];
-                options.Title = "Cluster Dataset Member Size vs. Clusters NET Range Histogram (cluster size = " + clusterSize.ToString() + " total clusters = " + range.Count.ToString() + " )";                
-                MultiAlign.Charting.controlHistogram chart = RenderDatasetInfo.ClusterSizeNETRange_Chart(clusterSize, range, options);
-                if (chart != null)
-                {
-                    image = chart.ToBitmap(m_width, m_height);
-                    SaveImage(image, string.Format("ClusterDatasetMemberSizeNETRange_{0}.png", clusterSize));
-                    PushImageColumn(Path.Combine("Plots", string.Format("ClusterDatasetMemberSizeNETRange_{0}.png", clusterSize)));
-                }
-                cols++;
-                if (cols == nCols)
-                {
-                    cols = 0;
+                    PushStartTableColumn();                    
+                    PushData(histogram[i].ToString());
+                    PushEndTableColumn();
                     PushEndTableRow();
                 }
             }
-
             PushEndTable();
         }
         /// <summary>
-        /// Creates images for detecting chaining phenomena with clusters.
+        /// Creates the plots post analysis.
         /// </summary>
-        /// <param name="clusters"></param>
-        static Dictionary<int, List<double>> CreateScanWidths(List<clsCluster> clusters, ref List<double> ranges, ref List<double> scores)
+        /// <param name="providers"></param>
+        static void CreatePlotsOffline(FeatureDataAccessProviders providers)
         {
-            int count  = clusters.Count;
-            int buffer = 100;
-            int i = 0;
-            UmcDAOHibernate featureCache = new UmcDAOHibernate();
-            //TODO: Fix to make this a dictionary cluster id to object.
-            Dictionary<int, List<double>> scanRanges = new Dictionary<int, List<double>>();
-            Dictionary<int, clsCluster> scoreRanges = new Dictionary<int, clsCluster>();
-            
-            //TODO: THIS IS SOME GARBAGE CODE HERE!
-
-            //TODO: Fix this to return an object about cluster statistics.
-            while(i < count)
+            PrintMessage("Connecting to existing database: " + m_databaseName);
+            try
             {
-                Dictionary<int, int> clusterToMemberCount = new Dictionary<int,int>();
-
-                // Get a list of clusters 
-                List<int> ids = new List<int>();
-                for (int j = i; j < i + buffer && j < count; j++)
+                bool exists = File.Exists(m_databaseName);
+                if (!exists)
                 {
-                    clsCluster cluster = clusters[j];
-                    if (cluster.MemberCount < 1)
-                        continue;
-
-                    scoreRanges.Add(cluster.Id, cluster);
-                    clusterToMemberCount.Add(cluster.Id, cluster.DatasetMemberCount);
-                    ids.Add(cluster.Id);
+                    PrintMessage("The database you specified does not exist.");
+                    return;
                 }
 
-                // Get their scan ranges
-                List<clsUMC> umcs = featureCache.FindByClusterID(ids);
-                Dictionary<int, List<double>> scans = new Dictionary<int, List<double>>();
-                foreach (clsUMC umc in umcs)
-                {
-                    if (!scans.ContainsKey(umc.ClusterId))
-                    {
-                        scans.Add(umc.ClusterId, new List<double>());
-                    }
-                    scans[umc.ClusterId].Add(umc.Net);
-                }
-                foreach (int clusterID in scans.Keys)
-                {
-                    List<double> clusterScans = scans[clusterID];
-                    clusterScans.Sort();
-
-                    
-                    double max   = clusterScans[clusterScans.Count - 1];
-                    double min   = clusterScans[0];
-                    double range = max - min;
-
-                    ranges.Add(range);
-                    scores.Add(scoreRanges[clusterID].MeanScore);
-
-
-                    int memberCount = clusterToMemberCount[clusterID];
-                    if (!scanRanges.ContainsKey(memberCount))
-                    {
-                        scanRanges.Add(memberCount, new List<double>());
-                    }
-                    scanRanges[memberCount].Add(range);
-                }
-                i += buffer;
+                providers = SetupDataProviders(m_databaseName, false);
+            }
+            catch (System.IO.IOException ex)
+            {
+                PrintMessage("Could not connect to database: " + ex.Message);
+                return;
             }
 
-            return scanRanges;
+            PrintMessage("Creating Plot Thumbnail Path");
+            // set the plot save path.
+            string directoryName = Path.GetDirectoryName(m_databaseName);
+
+            m_htmlPathName = Path.Combine(directoryName, m_htmlPathName);
+            m_plotSavePath = Path.Combine(directoryName, THUMBNAIL_PATH);
+
+            // Find out where it's located.
+            if (!Directory.Exists(m_plotSavePath))
+            {
+                Directory.CreateDirectory(m_plotSavePath);
+            }
+
+            // We have to create a header for the HTML file.
+            PushHeader();
+            CreateFinalAnalysisPlots(providers.FeatureCache, providers.ClusterCache);
+            PushEndHeader();
+            CreatePlotReport();
+            return;
         }
         /// <summary>
         /// Creates alignment plots.
@@ -473,128 +312,140 @@ namespace MultiAlignConsole
         static void CreateAlignmentPlots(FeaturesAlignedEventArgs e)
         {
             string name = e.AligneeDatasetInformation.DatasetName;
-            Log("Features Aligned - " + name);
+            PrintMessage("Features Aligned - " + name);
+                
+            // Hack so that the baseline plot is made first.
+            if (!m_createdBaselinePlots)
+            {                
+                m_createdBaselinePlots  = true;
+
+                // This may not be necessary...
+                int baselineIndex       = -1;
+                int index               = 0;
+                foreach (DatasetInformation info in m_analysis.Datasets)
+                {
+                    if (info.DatasetName == m_analysis.BaselineDatasetName)
+                    {
+                        baselineIndex = index;
+                        break;
+                    }
+                    else
+                    {
+                        index++;
+                    }
+                }
+                if (baselineIndex >= 0)
+                {
+                    PushTextHeader("Baseline Dataset for " + m_analysis.BaselineDatasetName);
+                    PushStartTable();
+                    PushStartTableRow();
+
+                    DatasetInformation baselineInfo     = m_analysis.Datasets[baselineIndex];
+                    ChartDisplayOptions baselineOptions = new ChartDisplayOptions(false, true, true, true);
+                    baselineOptions.MarginMin       = 1;
+                    baselineOptions.MarginMax       = 100;
+                    baselineOptions.Title           = "Feature Plot " + baselineInfo.DatasetName;
+                    baselineOptions.XAxisLabel      = "Scan";
+                    baselineOptions.YAxisLabel      = "Monoisotopic Mass";
+                    baselineOptions.Width           = m_width;
+                    baselineOptions.Height          = m_height;
+                    baselineOptions.DisplayLegend   = true;
+                    List<clsUMC> baselineUmcs       = m_dataProviders.FeatureCache.FindByDatasetId(Convert.ToInt32(baselineInfo.DatasetId));
+                    Image baselineImage             = RenderDatasetInfo.FeaturesScatterPlot_Thumbnail(baselineUmcs, baselineOptions);
+                    string baselineLabelName        = Path.GetFileNameWithoutExtension(baselineInfo.DatasetName) + "_featurePlot.png";
+                    string baselinePath             = Path.Combine(m_plotSavePath, baselineLabelName);
+                    baselineImage.Save(baselinePath, System.Drawing.Imaging.ImageFormat.Png);
+                    PushImageColumn(Path.Combine("Plots", baselineLabelName));
+                    PushEndTableRow();
+                    PushEndTable();
+                }
+            }
 
             PushTextHeader("Alignment Plots for " + e.AligneeDatasetInformation.DatasetName);
             PushStartTable();
-
+            PushStartTableRow();
             ChartDisplayOptions options = new ChartDisplayOptions(false, true, true, true);
 
-            options.MarginMin = 1;
-            options.MarginMax = 100;
-            options.Title = "NET Error Histogram " + name;
-            options.XAxisLabel = "NET Error (%)";
-            options.YAxisLabel = "Count";
-            options.Width = m_width;
-            options.Height = m_height;
+            options.MarginMin       = 1;
+            options.MarginMax       = 100;
+            options.Title           = "Feature Plot " + name;
+            options.XAxisLabel      = "Scan";
+            options.YAxisLabel      = "Monoisotopic Mass";
+            options.Width           = m_width;
+            options.Height          = m_height;
+            options.DisplayLegend   = true;
+            
+            List<clsUMC> umcs       = m_dataProviders.FeatureCache.FindByDatasetId(Convert.ToInt32(e.AligneeDatasetInformation.DatasetId));
+            Image image             = RenderDatasetInfo.FeaturesScatterPlot_Thumbnail(umcs, options);
+            string labelName        = Path.GetFileNameWithoutExtension(name) + "_featurePlot.png";
+            string path             = Path.Combine(m_plotSavePath, labelName);
+            image.Save(path, System.Drawing.Imaging.ImageFormat.Png);
+            PushImageColumn(Path.Combine("Plots", labelName));
 
-            // Create the heatmap
-            Image image = RenderDatasetInfo.AlignmentHeatmap_Thumbnail(e.AlignmentData, m_width, m_height);
+            options.MarginMin       = 1;
+            options.MarginMax       = 100;
+            options.Title           = "Alignment Heatmap " + name;
+            options.XAxisLabel      = "Baseline";
+            options.YAxisLabel      = "Alignee";
+            options.Width           = m_width;
+            options.Height          = m_height;
+            
+            image                   = RenderDatasetInfo.AlignmentHeatmap_Thumbnail(e.AlignmentData, m_width, m_height);
             image.RotateFlip(RotateFlipType.RotateNoneFlipY);
-
-            string labelName = Path.GetFileNameWithoutExtension(name) + "_heatmap.png";
-            string path = Path.Combine(m_plotSavePath, labelName);
-            PushStartTableRow();
+            labelName               = Path.GetFileNameWithoutExtension(name) + "_heatmap.png";
+            path                    = Path.Combine(m_plotSavePath, labelName);
             image.Save(path, System.Drawing.Imaging.ImageFormat.Png);
             PushImageColumn(Path.Combine("Plots", labelName));
 
-            image = RenderDatasetInfo.ErrorHistogram_Thumbnail(e.AlignmentData.netErrorHistogram, options);
-            labelName = Path.GetFileNameWithoutExtension(name) + "_netErrorHistogram.png";
-            path = Path.Combine(m_plotSavePath, labelName);
+            options.DisplayLegend   = false;
+            options.Title           = "NET Error Histogram " + name;
+            options.XAxisLabel      = "NET Error (%)";
+            options.YAxisLabel      = "Count";
+            image                   = RenderDatasetInfo.ErrorHistogram_Thumbnail(e.AlignmentData.netErrorHistogram, options);
+            labelName               = Path.GetFileNameWithoutExtension(name) + "_netErrorHistogram.png";
+            path                    = Path.Combine(m_plotSavePath, labelName);
             image.Save(path, System.Drawing.Imaging.ImageFormat.Png);
             PushImageColumn(Path.Combine("Plots", labelName));
 
-            options.Title = "Mass Error Histogram " + name;
-            options.XAxisLabel = "Mass Error (PPM)";
-            image = RenderDatasetInfo.ErrorHistogram_Thumbnail(e.AlignmentData.massErrorHistogram, options);
-            labelName = Path.GetFileNameWithoutExtension(name) + "_massErrorHistogram.png";
-            path = Path.Combine(m_plotSavePath, labelName);
+            options.Title           = "Mass Error Histogram " + name;
+            options.XAxisLabel      = "Mass Error (PPM)";
+            image                   = RenderDatasetInfo.ErrorHistogram_Thumbnail(e.AlignmentData.massErrorHistogram, options);
+            labelName               = Path.GetFileNameWithoutExtension(name) + "_massErrorHistogram.png";
+            path                    = Path.Combine(m_plotSavePath, labelName);
             image.Save(path, System.Drawing.Imaging.ImageFormat.Png);
             PushImageColumn(Path.Combine("Plots", labelName));
+
+            options.DisplayGridLines= true;
+            options.DisplayLegend   = false;
+            options.Title           = "Net vs. Scan Residuals" + name;
+            image                   = RenderDatasetInfo.NETResiduals_Thumbnail(e.AlignmentData.ResidualData, options);
+            labelName               = Path.GetFileNameWithoutExtension(name) + "_netResiduals.png";
+            path                    = Path.Combine(m_plotSavePath, labelName);
+            image.Save(path, System.Drawing.Imaging.ImageFormat.Png);
+            PushImageColumn(Path.Combine("Plots", labelName));
+
+            options.DisplayLegend   = true;
+            options.Title           = "Mass vs. Scan Residuals" + name;
+            image                   = RenderDatasetInfo.MassVsScanResiduals_Thumbnail(e.AlignmentData.ResidualData, options);
+            labelName               = Path.GetFileNameWithoutExtension(name) + "_massScanResiduals.png";
+            path                    = Path.Combine(m_plotSavePath, labelName);
+            image.Save(path, System.Drawing.Imaging.ImageFormat.Png);
+            PushImageColumn(Path.Combine("Plots", labelName));
+
+            options.DisplayLegend   = true;
+            options.Title           = "Mass vs. m/z Residuals" + name;
+            image                   = RenderDatasetInfo.ClusterMassVsMZResidual_Thumbnail(e.AlignmentData.ResidualData, options);
+            labelName               = Path.GetFileNameWithoutExtension(name) + "_massMZResiduals.png";
+            path                    = Path.Combine(m_plotSavePath, labelName);
+            image.Save(path, System.Drawing.Imaging.ImageFormat.Png);
+            PushImageColumn(Path.Combine("Plots", labelName));
+
             PushEndTableRow();
             PushEndTable();
         }
-        /// <summary>
-        /// Logs the data to the stored text file path.
-        /// </summary>
-        /// <param name="message"></param>
-        static void Log(string message)
-        {
-            string newMessage = DateTime.Now.ToString() + " - " + GetMemory().ToString() + " MB - " + message;
-            File.AppendAllText(m_logPath, newMessage + Environment.NewLine);
-            Console.WriteLine(newMessage);
-        }
-        /// <summary>
-        /// Prints a message to the console and log file.
-        /// </summary>
-        /// <param name="message"></param>
-        static void PrintMessage(string message)
-        {
-            if (m_logPath != null)
-            {
-                File.AppendAllText(m_logPath, message + Environment.NewLine);
-            }
-            Console.WriteLine(message);
-        }
-        /// <summary>
-        /// Prints the help message.
-        /// </summary>
-        static void PrintHelp()
-        {
-            PrintMessage(" ");
-            PrintMessage("usage: MultiAlignConsole [options]");
-            PrintMessage(" ");
-            PrintMessage("[Options]");
-            PrintMessage(" ");
-            PrintMessage("   -files  inputFile.txt ");
-            PrintMessage("          ASCII Text file with input file names.");
-            PrintMessage("          In list of files use asterik to indicate the baseline choice, e.g. 'dataset *'");
-            PrintMessage("   -name analysisName  ");
-            PrintMessage("          Name to give analysis.");
-            PrintMessage("   -log logPath.txt");
-            PrintMessage("          Path to provide for log files.");
-            PrintMessage("   -h");
-            PrintMessage("          Prints this help message.");
-            PrintMessage("   -help");
-            PrintMessage("          Prints this help message.");
-            PrintMessage("   -html htmlPathName.html");
-            PrintMessage("          Name to give output HTML plot file.");           
-            PrintMessage("   -params parameterFile.xml  ");
-            PrintMessage("          XML file defining MultiAlign parameters.");
-            PrintMessage("   -path  AnalysisPath      ");
-            PrintMessage("          File directory of where to put MultiAlign output.  Can be relative or absolute.");
-            PrintMessage("   -centroid      ");
-            PrintMessage("          To use centroid distance as clustering algorithm.");                                                
-        }
-        /// <summary>
-        /// Prints the version of MA to the log file.
-        /// </summary>
-        public static void PrintVersion() 
-        {
-            PrintMessage("[VersionInfo]");
-            // get the version object for this assembly
-            Assembly assembly   = Assembly.GetExecutingAssembly();
-            AssemblyName name   = assembly.GetName();
-            Version version     = name.Version;
-            PrintMessage(string.Format("{0} - version {1}", name, version));
 
-            AppDomain MyDomain = AppDomain.CurrentDomain;
-            Assembly[] AssembliesLoaded = MyDomain.GetAssemblies();
 
-            PrintMessage("Loaded Assemblies");
-            foreach (Assembly subAssembly in AssembliesLoaded)
-            {
-                    AssemblyName subName = subAssembly.GetName();
-                    if (!subName.Equals(name))
-                    {
-                        PrintMessage(string.Format("\t{0} - version {1}",                            
-                                                                        subName,
-                                                                        subName.Version));
-                    }
-            }             
-            PrintMessage("");
-            PrintMessage("[LogStart]");
-        }
+
         /// <summary>
         /// Validates the input options to make sure everything is set.
         /// </summary>
@@ -688,16 +539,6 @@ namespace MultiAlignConsole
             return info;
         }
         /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        static void processor_AnalysisError(object sender, AnalysisErrorEventArgs e)
-        {
-            Log(string.Format("There was an error while performing the analysis.  {0} : {1}", e.ErrorMessage, e.Exception.Message));
-            m_triggerEvent.Set();
-        }
-        /// <summary>
         /// Processes the command line arguments.
         /// </summary>
         /// <param name="args"></param>
@@ -735,6 +576,17 @@ namespace MultiAlignConsole
                         case "-help":
                             m_showHelp      = true;
                             break;
+                        case "-plots":
+                            m_createPlots   = true;
+                            if (values.Count > 0)
+                            {
+                                m_databaseName = values[0];
+                            }
+                            else
+                            {
+                                m_databaseName = null;
+                            }
+                            break;
                     }
                 }
                 catch (ArgumentOutOfRangeException)
@@ -747,6 +599,108 @@ namespace MultiAlignConsole
         }
         #endregion
 
+        #region Processor Events
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        static void processor_AnalysisError(object sender, AnalysisErrorEventArgs e)
+        {
+            PrintMessage(string.Format("There was an error while performing the analysis.  {0} : {1}", e.ErrorMessage, e.Exception.Message));
+            m_triggerEvent.Set();
+        }
+        #endregion
+
+        #region Printing
+        /// <summary>
+        /// Prints a message to the console and log file.
+        /// </summary>
+        /// <param name="message"></param>
+        static void PrintMessage(string message)
+        {
+            PrintMessage(message, true);
+        }
+        /// <summary>
+        /// Prints a message to the console and log file.
+        /// </summary>
+        /// <param name="message"></param>
+        static void PrintMessage(string message, bool useMemory)
+        {
+            string newMessage = message;
+            if (useMemory)
+            {
+                newMessage = DateTime.Now.ToString() + " - " + GetMemory().ToString() + " MB - " + newMessage;
+            }
+            if (m_logPath != null)
+            {
+                File.AppendAllText(m_logPath, newMessage + Environment.NewLine);
+            }
+            Console.WriteLine(newMessage);
+        }
+        /// <summary>
+        /// Prints the help message.
+        /// </summary>
+        static void PrintHelp()
+        {
+            PrintMessage(" ", false);
+            PrintMessage("usage: MultiAlignConsole [options]", false);
+            PrintMessage(" ", false);
+            PrintMessage("[Options]", false);
+            PrintMessage(" ", false);
+            PrintMessage("   -files  inputFile.txt ", false);
+            PrintMessage("          ASCII Text file with input file names.", false);
+            PrintMessage("          In list of files use asterik to indicate the baseline choice, e.g. 'dataset *'", false);
+            PrintMessage("   -name analysisName  ", false);
+            PrintMessage("          Name to give analysis.", false);
+            PrintMessage("   -log logPath.txt", false);
+            PrintMessage("          Path to provide for log files.", false);
+            PrintMessage("   -h", false);
+            PrintMessage("          Prints this help message.", false);
+            PrintMessage("   -help", false);
+            PrintMessage("          Prints this help message.", false);
+            PrintMessage("   -html htmlPathName.html", false);
+            PrintMessage("          Name to give output HTML plot file.", false);
+            PrintMessage("   -params parameterFile.xml  ", false);
+            PrintMessage("          XML file defining MultiAlign parameters.", false);
+            PrintMessage("   -path  AnalysisPath      ", false);
+            PrintMessage("          File directory of where to put MultiAlign output.  Can be relative or absolute.", false);
+            PrintMessage("   -centroid      ", false);
+            PrintMessage("          To use centroid distance as clustering algorithm.", false);
+            PrintMessage("   -plots   [databaseName]  ", false);
+            PrintMessage("          Creates plots for final analysis.  If [databaseName] specified when not running analysis, this will create plots post-analysis.", false);
+        }
+        /// <summary>
+        /// Prints the version of MA to the log file.
+        /// </summary>
+        public static void PrintVersion()
+        {
+            PrintMessage("[VersionInfo]");
+            // get the version object for this assembly
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            AssemblyName name = assembly.GetName();
+            Version version = name.Version;
+            PrintMessage(string.Format("{0} - version {1}", name, version));
+
+            AppDomain MyDomain = AppDomain.CurrentDomain;
+            Assembly[] AssembliesLoaded = MyDomain.GetAssemblies();
+
+            PrintMessage("Loaded Assemblies");
+            foreach (Assembly subAssembly in AssembliesLoaded)
+            {
+                AssemblyName subName = subAssembly.GetName();
+                if (!subName.Equals(name))
+                {
+                    PrintMessage(string.Format("\t{0} - version {1}",
+                                                                    subName,
+                                                                    subName.Version));
+                }
+            }
+            PrintMessage("");
+            PrintMessage("[LogStart]");
+        }
+        #endregion 
+
         #region Event Handlers
         /// <summary>
         /// Displays the status message when the analysis completes.
@@ -754,7 +708,7 @@ namespace MultiAlignConsole
         /// <param name="status"></param>
         static void DisplayStatus(int level, string status)
         {
-            Log(status);            
+            PrintMessage(status);            
         }
         /// <summary>
         /// Displays the title.
@@ -763,14 +717,14 @@ namespace MultiAlignConsole
         /// <param name="title"></param>
         static void DisplayTitle(int data, string title)
         {
-            Log(title);
+            PrintMessage(title);
         }
         static void VerifyClusters(double netTolerance)
         {
-            Log("Validating Database.");
-            Log("Loading clusters.");
+            PrintMessage("Validating Database.");
+            PrintMessage("Loading clusters.");
             UmcClusterDAOHibernate clusterCache = new UmcClusterDAOHibernate();
-            Log("Loading features.");
+            PrintMessage("Loading features.");
             UmcDAOHibernate umcCache = new UmcDAOHibernate();
 
             List<clsUMC> umcs = umcCache.FindAll();
@@ -779,7 +733,7 @@ namespace MultiAlignConsole
             Dictionary<int, List<clsUMC>> map = new Dictionary<int, List<clsUMC>>();
 
 
-            Log("Mapping features to clusters.");
+            PrintMessage("Mapping features to clusters.");
             foreach (clsUMC umc in umcs)
             {
                 int key = umc.ClusterId;
@@ -792,21 +746,21 @@ namespace MultiAlignConsole
             }
 
 
-            Log("Validating all features clustered.");
+            PrintMessage("Validating all features clustered.");
             if (map.ContainsKey(-1))
             {
-                Log("Invalid cluster.  Cluster ID was -1.");
+                PrintMessage("Invalid cluster.  Cluster ID was -1.");
                 NHibernateUtil.Dispose();
                 throw new Exception("Invalid cluster.  The ID = -1. ");                
             }
 
-            Log("Validating cluster IDs and NETs.");
+            PrintMessage("Validating cluster IDs and NETs.");
             foreach (clsCluster cluster in clusters)
             {
                 bool contains = map.ContainsKey(cluster.Id);
                 if (!contains)
                 {
-                    Log("Validation Failed.");
+                    PrintMessage("Validation Failed.");
                     NHibernateUtil.Dispose();
                     throw new Exception("Invalid cluster ID not matching to some features.");
                 }
@@ -814,7 +768,7 @@ namespace MultiAlignConsole
                 List<clsUMC> features = map[cluster.Id];
                 if (features.Count != cluster.MemberCount)
                 {
-                    Log("Validation Failed.");
+                    PrintMessage("Validation Failed.");
                     NHibernateUtil.Dispose();
                     throw new Exception("The ID's match for a cluster, but the member count does not.");
                 }
@@ -825,9 +779,9 @@ namespace MultiAlignConsole
 
                     if (feature.ClusterId != cluster.Id)
                     {
-                        Log("Validation Failed.");
+                        PrintMessage("Validation Failed.");
                         NHibernateUtil.Dispose();
-                        Log(string.Format("Cluster (ID = {0}) does not match the cluster ID stored in feature id {1}.", cluster.Id, feature.Id));
+                        PrintMessage(string.Format("Cluster (ID = {0}) does not match the cluster ID stored in feature id {1}.", cluster.Id, feature.Id));
                     }
                 }
 
@@ -838,11 +792,11 @@ namespace MultiAlignConsole
                     double range = nets[i + 1] - nets[i];
                     if (range > netTolerance)
                     {
-                        Log(string.Format("Cluster's (ID = {0}) NET range is out of tolerance {1} > {2}.", cluster.Id, range, netTolerance));
+                        PrintMessage(string.Format("Cluster's (ID = {0}) NET range is out of tolerance {1} > {2}.", cluster.Id, range, netTolerance));
                     }
                 }
             }
-            Log("Cluster Validation Passed.");
+            PrintMessage("Cluster Validation Passed.");
         }
         /// <summary>
         /// Terminates the application when the analysis is complete.
@@ -852,12 +806,10 @@ namespace MultiAlignConsole
         static void processor_AnalysisComplete(object sender, AnalysisCompleteEventArgs e)
         {
 
-            Log("Saving dataset information to database.");
+            PrintMessage("Saving dataset information to database.");
             DatasetDAOHibernate datasetDAOHibernate = new DatasetDAOHibernate();
             List<DatasetInformation> datasetList    = m_analysis.Datasets;
-            datasetDAOHibernate.AddAll(datasetList);
-
-            //CreateFinalAnalysisPlots();
+            datasetDAOHibernate.AddAll(datasetList);            
             PushEndHeader();
             m_triggerEvent.Set();
         }
@@ -877,7 +829,7 @@ namespace MultiAlignConsole
         /// <param name="e"></param>
         static void processor_FeaturesClustered(object sender, FeaturesClusteredEventArgs e)
         {
-            Log("Features Clustered.");            
+            PrintMessage("Features Clustered.");            
         }
         /// <summary>
         /// Logs when features are peak matched.
@@ -886,7 +838,7 @@ namespace MultiAlignConsole
         /// <param name="e"></param>
         static void processor_FeaturesPeakMatched(object sender, FeaturesPeakMatchedEventArgs e)
         {
-            Log("Features are peak matched.");
+            PrintMessage("Features are peak matched.");
         }
         /// <summary>
         /// Logs when features are loaded.
@@ -895,7 +847,7 @@ namespace MultiAlignConsole
         /// <param name="e"></param>
         static void processor_FeaturesLoaded(object sender, FeaturesLoadedEventArgs e)
         {
-            Log(string.Format("Loaded {0} features from {1}", e.Features.Count, e.DatasetInformation.DatasetName));
+            PrintMessage(string.Format("Loaded {0} features from {1}", e.Features.Count, e.DatasetInformation.DatasetName));
         }
         /// <summary>
         /// Logs status messages.
@@ -904,7 +856,7 @@ namespace MultiAlignConsole
         /// <param name="e"></param>
         static void processor_Status(object sender, AnalysisStatusEventArgs e)
         {
-            Log(e.StatusMessage);
+            PrintMessage(e.StatusMessage);
         }
         /// <summary>
         /// Calculates the current usage of current processes memory.
@@ -931,15 +883,33 @@ namespace MultiAlignConsole
         }
         static void PushTextHeader(string data)
         {
-            m_htmlPage.Add("<H2>" + data + "</H2>");
+            m_htmlPage.Add("<a href=\"#top\"><H2>" + data + "</H2></a>");
         }
         static void PushData(string tag)
         {
             m_htmlPage.Add(tag);
         }
+        /// <summary>
+        /// Starts a table.
+        /// </summary>
         static void PushStartTable()
         {
-            m_htmlPage.Add("<table>");
+            PushStartTable(false);
+        }
+        /// <summary>
+        /// Starts a table with/without border.
+        /// </summary>
+        /// <param name="border">True for a border.  False for not.</param>
+        static void PushStartTable(bool border)
+        {
+            if (border)
+            {
+                m_htmlPage.Add("<table border = 1>");
+            }
+            else
+            {
+                m_htmlPage.Add("<table>");
+            }
         }
         static void PushEndTable()
         {
@@ -964,21 +934,35 @@ namespace MultiAlignConsole
         static void PushHeader()
         {
             m_htmlPage.Add("<html>");
-            m_htmlPage.Add("<title>Analysis Name: " + m_analysisName + "</title>");
-            m_htmlPage.Add("<h1>Analysis Name: " + m_analysisName + "</h1>"); 
+            if (m_analysisName != null)
+            {
+                m_htmlPage.Add("<title>Analysis Name: " + m_analysisName + "</title>");
+                m_htmlPage.Add("<h1>Analysis Name: " + m_analysisName + "</h1>"); 
+            }            
         }
         static void PushEndHeader()
         {
             m_htmlPage.Add("</html>");
         }
+        /// <summary>
+        /// Creates the HTML output file.
+        /// </summary>
         static void CreatePlotReport()
         {
-            Log("Creating Report.");
+
+            m_htmlPage.Insert(0, "<a name=\"top\">MultiAlign Analysis Report</a>" + DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss"));
+
+            PrintMessage("Creating Report.");
             if (!m_htmlPathName.EndsWith(".html"))
             {
                 m_htmlPathName = m_htmlPathName + ".html";
             }
-            using (TextWriter htmlWriter = File.CreateText(Path.Combine(m_analysisPath, m_htmlPathName)))
+            string htmlPath = m_htmlPathName;
+            if (m_analysisPath != null)
+            {
+                htmlPath = Path.Combine(m_analysisPath, m_htmlPathName);
+            }
+            using (TextWriter htmlWriter = File.CreateText(htmlPath))
             {
                 foreach (string tag in m_htmlPage)
                 {
@@ -987,23 +971,25 @@ namespace MultiAlignConsole
             }
         }
         #endregion
-
+        
         #region Data Provider Setup
         /// <summary>
         /// Sets up the NHibernate caches for storing and retrieving data.
         /// </summary>
         /// <param name="analysisPath"></param>
         /// <returns></returns>
-        private static FeatureDataAccessProviders SetupDataProviders()
+        private static FeatureDataAccessProviders SetupDataProviders(string path, bool createNew)
         {
             try
             {
-                string path = AnalysisPathUtils.BuildAnalysisName(m_analysisPath, m_analysisName);
+                bool exists = File.Exists(path);
+                if (exists && createNew)
+                {
+                    File.Delete(path);
+                }
 
-                NHibernateUtil.SetDbLocationForWrite(path, true);
-                NHibernateUtil.SetDbLocationForRead(path);
-
-                IUmcDAO featureCache = new UmcDAOHibernate();
+                NHibernateUtil.ConnectToDatabase(path, createNew);
+                IUmcDAO featureCache        = new UmcDAOHibernate();
                 IUmcClusterDAO clusterCache = new UmcClusterDAOHibernate();
 
                 FeatureDataAccessProviders providers =
@@ -1011,11 +997,20 @@ namespace MultiAlignConsole
 
                 return providers;
             }
-            catch(System.IO.IOException ex)
+            catch (System.IO.IOException ex)
             {
-                Log("Could not access the database.  Is it opened somewhere else?");
+                PrintMessage("Could not access the database.  Is it opened somewhere else?");
                 throw ex;
             }
+        }
+        /// <summary>
+        /// Creates data providers to the database of the analysis name and path provided.
+        /// </summary>
+        /// <returns></returns>
+        private static FeatureDataAccessProviders SetupDataProviders()
+        {
+            string path = AnalysisPathUtils.BuildAnalysisName(m_analysisPath, m_analysisName);
+            return SetupDataProviders(path, true);
         }
         private static void CleanupDataProviders()
         {            
@@ -1031,7 +1026,8 @@ namespace MultiAlignConsole
         static void StartMultiAlign()
         {
             // Builds the list of algorithm providers.
-            AlgorithmBuilder builder = new AlgorithmBuilder();                       
+            AlgorithmBuilder builder                = new AlgorithmBuilder();
+            FeatureDataAccessProviders providers    = null;                   
             
             // See if the user wants help
             if (m_showHelp)
@@ -1044,7 +1040,15 @@ namespace MultiAlignConsole
             bool validated  = ValidateSetup();
             if (!validated)
             {
-                PrintHelp();
+                if (m_createPlots && m_databaseName != null)
+                {
+                    PrintVersion();
+                    CreatePlotsOffline(providers);
+                }
+                else
+                {
+                    PrintHelp();
+                }
                 return;
             }
 
@@ -1059,10 +1063,12 @@ namespace MultiAlignConsole
                 PrintMessage("Analysis path " + m_analysisPath + " already exists.");
             }
             
+            // Create the LOG FILE.
             if (m_logPath == null)  m_logPath = AnalysisPathUtils.BuildLogPath(m_analysisPath, m_analysisName);            
             else                    m_logPath = Path.Combine(m_analysisPath, m_logPath);
 
-            
+
+            PrintVersion();
             m_plotSavePath  = AnalysisPathUtils.BuildPlotPath(m_analysisPath);
                                                             
             bool containsExtensionDB3 = m_analysisName.EndsWith(".db3");
@@ -1071,6 +1077,7 @@ namespace MultiAlignConsole
                 m_analysisName += ".db3";
             }
 
+            // Setup algorithm providers.
             if (m_options.ContainsKey("-centroid"))
             {
                 PrintMessage("Building centroid clusterer");
@@ -1087,47 +1094,47 @@ namespace MultiAlignConsole
                 PrintMessage("Built average linkage clusterer.");                
             }
 
-            PrintVersion();
-            Log("Starting MultiAlign Console Application.");
-            Log("Creating analysis: "   + m_analysisName);
-            Log("Storing analysis: "    + Path.GetFullPath(m_analysisPath));
-            Log("Using Files:  "        + Path.GetFullPath(m_inputPaths));
-            Log("Using Parameters: "    + Path.GetFullPath(m_parameterFile));            
+            // create application and analysis.
+            PrintMessage("Starting MultiAlign Console Application.");
+            PrintMessage("Creating analysis: " + m_analysisName);
+            PrintMessage("Storing analysis: " + Path.GetFullPath(m_analysisPath));
+            PrintMessage("Using Files:  " + Path.GetFullPath(m_inputPaths));
+            PrintMessage("Using Parameters: " + Path.GetFullPath(m_parameterFile));            
             // Read the input datasets.
             if (!File.Exists(m_inputPaths))
             {
-                Log(string.Format("The input file {0} does not exist.", m_inputPaths));
+                PrintMessage(string.Format("The input file {0} does not exist.", m_inputPaths));
                 return;
             }
             // Make sure we have parameters!
             if (!File.Exists(m_parameterFile))
             {
-                Log("The parameter file does not exist.");
+                PrintMessage("The parameter file does not exist.");
                 return;
             }
 
-            Log("Parsing Input Filenames and Databases.");
+            PrintMessage("Parsing Input Filenames and Databases.");
             InputAnalysisInfo info = ReadInputFile(m_inputPaths);
-            Log("Found " + info.FilePaths.Count.ToString() + " files.");
+            PrintMessage("Found " + info.FilePaths.Count.ToString() + " files.");
             
             // Validate the mass tag database settings.            
             if (info.MassTagDatabase != null || info.MassTagDatabaseServer != null)
             {                
                 if (info.MassTagDatabase == null)
                 {
-                    Log("No mass tag database supplied.");
+                    PrintMessage("No mass tag database supplied.");
                     return;
                 }                                            
                 if (info.MassTagDatabaseServer == null)
                 {
-                    Log("No Mass Tag Database Server Supplied.");                    
+                    PrintMessage("No Mass Tag Database Server Supplied.");                    
                     return;
                 }
-                Log(string.Format("Using Mass Tag Database {0} on Server {1} ", info.MassTagDatabase, info.MassTagDatabaseServer)); 
+                PrintMessage(string.Format("Using Mass Tag Database {0} on Server {1} ", info.MassTagDatabase, info.MassTagDatabaseServer)); 
             }
-            
 
-            Log("Creating Analysis Objects.");
+
+            PrintMessage("Creating Analysis Objects.");
             MultiAlignAnalysis analysis             = new MultiAlignAnalysis();
             analysis.AnalysisPath                   = m_analysisPath;
             analysis.AnalysisName                   = m_analysisName;
@@ -1136,7 +1143,7 @@ namespace MultiAlignConsole
             m_analysis                              = analysis;
             MultiAlignAnalysisProcessor processor   = new MultiAlignAnalysisProcessor();
 
-            Log("Creating Plot Thumbnail Path");
+            PrintMessage("Creating Plot Thumbnail Path");
             // set the plot save path.
             m_plotSavePath = Path.Combine(m_analysisPath, THUMBNAIL_PATH);
 
@@ -1150,7 +1157,7 @@ namespace MultiAlignConsole
             m_triggerEvent = new ManualResetEvent(false);
 
             // Setup the parameters.
-            Log("Loading parameters.");
+            PrintMessage("Loading parameters.");
             PNNLProteomics.IO.XMLParamterFileReader reader = new PNNLProteomics.IO.XMLParamterFileReader();
             reader.ReadParameterFile(m_parameterFile, ref m_analysis);            
 
@@ -1165,14 +1172,14 @@ namespace MultiAlignConsole
                 if (info.BaselineFileIndex < 0)
                 {
                     m_analysis.UseMassTagDBAsBaseline = true;
-                    Log(string.Format("Using mass tag database {0} as the alignment baseline.", info.MassTagDatabase));
+                    PrintMessage(string.Format("Using mass tag database {0} as the alignment baseline.", info.MassTagDatabase));
                 }
                 else
                 {
                     m_analysis.UseMassTagDBAsBaseline   = false;                    
                     string baselineDataset              = Path.GetFileName(info.FilePaths[info.BaselineFileIndex]);
                     m_analysis.BaselineDatasetName      = baselineDataset;
-                    Log(string.Format("Using dataset {0} as the alignment baseline.", baselineDataset));
+                    PrintMessage(string.Format("Using dataset {0} as the alignment baseline.", baselineDataset));
                 }
             }
             else
@@ -1182,13 +1189,13 @@ namespace MultiAlignConsole
                 // Validate the baseline
                 if (info.BaselineFileIndex < 0)
                 {
-                    Log("No baseline dataset or database was selected.");
+                    PrintMessage("No baseline dataset or database was selected.");
                     return;
                 }
 
                 string baselineDataset = Path.GetFileName(info.FilePaths[info.BaselineFileIndex]);
                 m_analysis.BaselineDatasetName = baselineDataset;
-                Log(string.Format("Using dataset {0} as the alignment baseline.", baselineDataset));
+                PrintMessage(string.Format("Using dataset {0} as the alignment baseline.", baselineDataset));
             }
 
             // Output the settings to INI for viewing.
@@ -1201,7 +1208,7 @@ namespace MultiAlignConsole
 
             // Create dataset information.
             int i = 0;
-            Log("Creating dataset information.");
+            PrintMessage("Creating dataset information.");
 
             foreach (string filename in info.FilePaths)
             {
@@ -1216,7 +1223,7 @@ namespace MultiAlignConsole
                 datasetInfo.ParameterFileName   = "";
                 datasetInfo.Selected            = true;
 
-                Log("Created dataset information for " + filename);
+                PrintMessage("Created dataset information for " + filename);
                 analysis.Datasets.Add(datasetInfo);
             }
 
@@ -1228,9 +1235,7 @@ namespace MultiAlignConsole
             processor.AnalysisComplete      += new EventHandler<AnalysisCompleteEventArgs>(processor_AnalysisComplete);
             processor.Status                += new EventHandler<AnalysisStatusEventArgs>(processor_Status);
 
-            Log("Setting up data providers for caching and storage.");
-            FeatureDataAccessProviders providers = null;
-
+            PrintMessage("Setting up data providers for caching and storage.");            
             try
             {
                 providers = SetupDataProviders();
@@ -1241,19 +1246,22 @@ namespace MultiAlignConsole
             }
 
             analysis.DataProviders      = providers;
+            m_dataProviders             = providers;
             processor.AlgorithmProvders = builder.GetAlgorithmProvider();
 
-            Log("Analysis Started.");    
+            PrintMessage("Analysis Started.");    
             processor.StartAnalysis(analysis);
-
             // Wait for the analysis to complete.
             WaitHandle.WaitAll(new WaitHandle[] { m_triggerEvent });
+
+            
+            CreateFinalAnalysisPlots(providers.FeatureCache, providers.ClusterCache);            
             CreatePlotReport();
 
             analysis.Dispose();
             processor.Dispose();
             CleanupDataProviders();
-            Log("Analysis Complete.");                        
+            PrintMessage("Analysis Complete.");                        
         }
         
         /// <summary>

@@ -65,54 +65,36 @@ namespace PNNLProteomics.MultiAlign.Hibernate
 				schemaExport.Execute(false, true, false, false, conn, null);
 			}
 		}
-
-		/// <summary>
-		/// Sets the location of the database file that the Hibernate Session should be attached to. If a Session already existed,
-		/// it will be killed so that a new Session can be created that points to the new database location.
-		/// The given database should already exist. If it does not, an exception is thrown.
-		/// </summary>
-		/// <param name="dbLocation">The file location of the database file</param>
-		public static void SetDbLocationForRead(string dbLocation)
+        /// <summary>
+        /// Sets the location of the database file that the Hibernate Session should be attached to. If a Session already existed,
+        /// it will be killed so that a new Session can be created that points to the new database location.
+        /// </summary>
+        /// <param name="dbLocation">The file location of the database file.</param>
+        /// <param name="ignoreIfMissing">Flag indicating whether or not to ignore if the file exists or not.</param>
+		public static void ConnectToDatabase(string databaseLocation, bool createIfMissing)
 		{
-			if (m_dbLocation == null || (m_dbLocation != null && !m_dbLocation.Equals(dbLocation)))
-			{
-				m_dbLocation = dbLocation;
+			m_dbLocation = databaseLocation;
 
-				if (m_sessionFactory != null)
-				{
-					m_sessionFactory.Close();
-					m_sessionFactory = null;
-				}
+            // If the database does not exist, and we are trying to connect to it (not create)
+            // then we have a problem.
+            bool exists = File.Exists(databaseLocation);
+            if (!exists && !createIfMissing)
+            {
+                throw new FileNotFoundException("The file does not exist.");
+            }
 
-				if (!File.Exists(dbLocation))
-				{
-					throw new Exception("Database cannot be read because it does not exist.");
-				}
-			}
-		}
+            // Otherwise, make sure we have a clossed session.
+            if (m_sessionFactory != null)
+            {
+                m_sessionFactory.Close();
+                m_sessionFactory = null;
+            }
 
-		/// <summary>
-		/// Sets the location of the database file that the Hibernate Session should be attached to. If a Session already existed,
-		/// it will be killed so that a new Session can be created that points to the new database location.
-		/// The given database should not already exist and it will be created for you. Hurray!
-		/// </summary>
-		/// <param name="dbLocation">The file location of the database file</param>
-		public static void SetDbLocationForWrite(string dbLocation, bool deleteIfExists)
-		{
-			m_dbLocation = dbLocation;
-
-			if (m_sessionFactory != null)
-			{
-				m_sessionFactory.Close();
-				m_sessionFactory = null;
-			}
-
-			if (File.Exists(dbLocation) && deleteIfExists)
-			{
-				File.Delete(dbLocation);
-			}
-
-			CreateDatabase(dbLocation);
+            // If the database is missing, open it.
+            if (createIfMissing)
+            {
+                CreateDatabase(databaseLocation);
+            }
 		}
 
 		/// <summary>
