@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using Mammoth.Data;
 using MultiAlignEngine.Clustering;
@@ -8,6 +9,7 @@ using MultiAlignEngine.Features;
 using MultiAlignEngine.MassTags;
 using MultiAlignEngine.PeakMatching;
 using PNNLOmics.Algorithms;
+using PNNLOmics.Algorithms.Alignment;
 using PNNLOmics.Algorithms.FeatureClustering;
 using PNNLOmics.Data.Features;
 using PNNLProteomics.Algorithms;
@@ -18,8 +20,9 @@ using PNNLProteomics.IO.MTDB;
 using PNNLProteomics.IO.UMC;
 using PNNLProteomics.MultiAlign.Hibernate.Domain;
 using PNNLProteomics.MultiAlign.Hibernate.Domain.DAO;
-
 using PNNLProteomics.SMART;
+using PNNLProteomics.Algorithms.Alignment;
+using PNNLOmics.Algorithms.Alignment;
 
 namespace PNNLProteomics.MultiAlign
 {        
@@ -265,7 +268,7 @@ namespace PNNLProteomics.MultiAlign
         /// <summary>
         /// Aligns all of the datasets.
         /// </summary>
-        public void AlignDatasets(MultiAlignAnalysis analysis)
+        public void PerformAlignment(MultiAlignAnalysis analysis)
         {
             // Connect to database of features.                
             IUmcDAO featureCache = m_analysis.DataProviders.FeatureCache;
@@ -308,8 +311,8 @@ namespace PNNLProteomics.MultiAlign
                     DatasetInformation datasetInfo = m_analysis.Datasets[datasetNum];
 
                     UpdateStatus("Retrieving data from " + datasetInfo.DatasetName + " for alignment.");
-                    List<clsUMC> features = featureCache.FindByDatasetId(datasetNum);
-                    classAlignmentData alignmentData = null;
+                    List<clsUMC> features               = featureCache.FindByDatasetId(datasetNum);
+                    classAlignmentData alignmentData    = null;
 
                     //// We dont track the UMC Index...this was used previously by the UMC Data object :(
                     //// Here we are applying a temp fix to iterate through the features and assign its unique ID.                    
@@ -322,6 +325,9 @@ namespace PNNLProteomics.MultiAlign
 
                     m_analysis.AlignmentOptions.Add(m_analysis.DefaultAlignmentOptions);
 
+                    KeyValuePair<DriftTimeAlignmentResults<UMC, UMC>, DriftTimeAlignmentResults<UMC, UMC>> pair
+                        = new KeyValuePair<DriftTimeAlignmentResults<UMC, UMC>, DriftTimeAlignmentResults<UMC, UMC>>();
+
 
                     if (baselineInfo != null)
                     {
@@ -329,6 +335,12 @@ namespace PNNLProteomics.MultiAlign
                         alignmentData = aligner.AlignFeatures(baselineFeatures,
                                                             features,
                                                             analysis.AlignmentOptions[datasetNum]);
+
+
+                        if (analysis.DriftTimeAlignmentOptions.ShouldAlignDriftTimes )
+                        {
+                            pair = AlignDriftTimes(features, baselineFeatures, analysis.DriftTimeAlignmentOptions);
+                        }
                     }
                     else
                     {
@@ -346,9 +358,20 @@ namespace PNNLProteomics.MultiAlign
 
                     if (FeaturesAligned != null)
                     {
+
+                        DriftTimeAlignmentResults<UMC, UMC> alignedResults = null;
+                        DriftTimeAlignmentResults<UMC, UMC> offsetResults  = null;
+                        if (analysis.DriftTimeAlignmentOptions.ShouldAlignDriftTimes )
+                        {
+                            alignedResults = pair.Key;                            
+                            offsetResults  = pair.Value;
+                        }
+
                         FeaturesAlignedEventArgs args = new FeaturesAlignedEventArgs(baselineInfo,
                                                                                      datasetInfo,
-                                                                                     alignmentData);
+                                                                                     alignmentData,
+                                                                                     alignedResults, 
+                                                                                     offsetResults);
                         FeaturesAligned(this, args);
                     }
                     features.Clear();
@@ -360,6 +383,92 @@ namespace PNNLProteomics.MultiAlign
                     m_analysis.AlignmentOptions.Add(null);
                 }
             }
+        }
+        /// <summary>
+        /// Correct for the drift times.
+        /// </summary>
+        /// <param name="features"></param>
+        /// <param name="baselineFeatures"></param>
+        /// <param name="options"></param>
+        private KeyValuePair<DriftTimeAlignmentResults<UMC, UMC>, DriftTimeAlignmentResults<UMC, UMC>> AlignDriftTimes(List<clsUMC> features, List<clsUMC> baselineFeatures, DriftTimeAlignmentOptions options)
+        {
+            UpdateStatus("Correcting drift times.");
+            List<UMC> baselineUMCs  = new List<UMC>();
+            List<UMC> aligneeUMCs   = new List<UMC>();
+
+            UpdateStatus("Mapping data structures.");
+            Dictionary<int, clsUMC> featureIDMap = new Dictionary<int, clsUMC>();
+            // TODO: Convert the clsUmc's to umcs...
+            foreach (clsUMC feature in features)
+            {
+                UMC umc                     = new UMC();
+                umc.MassMonoisotopicAligned = feature.MassCalibrated;
+                umc.NETAligned              = feature.Net;
+                umc.DriftTime               = Convert.ToSingle(feature.DriftTime);                
+                umc.ID                      = feature.Id;
+                umc.ChargeState             = feature.ChargeRepresentative;
+                aligneeUMCs.Add(umc);
+                featureIDMap.Add(feature.Id, feature);
+            }
+            
+            foreach (clsUMC feature in baselineFeatures)
+            {
+                UMC umc                     = new UMC();
+                umc.MassMonoisotopicAligned = feature.MassCalibrated;
+                umc.NETAligned              = feature.Net;
+                umc.ChargeState             = feature.ChargeRepresentative;                
+                umc.DriftTime               = Convert.ToSingle(feature.DriftTime);
+                baselineUMCs.Add(umc);
+            }
+
+            // filter based on charge state.                  
+            int chargeMax = options.MaxChargeState;
+            int chargeMin = options.MinChargeState;
+
+            UpdateStatus(string.Format("Filtering Features Min Charge: {0} <= charge <= Max Charge {1}",chargeMin, chargeMax));
+            var filteredQuery       =       from   feature in aligneeUMCs
+                                            where  feature.ChargeState <= chargeMax && feature.ChargeState >= chargeMin
+                                            select feature;
+            List<UMC> filteredUMCs  = filteredQuery.ToList();
+
+            UpdateStatus("Finding Aligned Matches and correcting drift times.");
+            DriftTimeAlignmentResults<UMC, UMC> alignedResults = 
+                            DriftTimeAlignment<UMC, UMC>.AlignObservedEnumerable(aligneeUMCs, 
+                                                                                filteredUMCs, 
+                                                                                baselineUMCs, 
+                                                                                options.MassPPMTolerance,
+                                                                                options.NETTolerance);
+
+
+            DriftTimeAlignmentResults<UMC, UMC> offsetResults = null;
+            if (options.ShouldPerformOffset)
+            {
+                UpdateStatus("Adjusting drift time offsets.");
+                List<UMC> aligneeData = aligneeUMCs;
+                if (!options.ShouldUseAllObservationsForOffsetCalculation)
+                {
+                    UpdateStatus("Using only filtered matches for offset correction.");
+                    aligneeData = filteredUMCs;
+                }
+                else
+                {
+                    UpdateStatus("Using all feature matches for offset correction.");
+                }
+                offsetResults = DriftTimeAlignment<UMC, UMC>.CorrectForOffset(aligneeData, baselineUMCs, options.MassPPMTolerance, options.NETTolerance, options.DriftTimeTolerance);
+            }
+
+
+            UpdateStatus("Remapping data structures for persistence to database.");
+            //TODO: Then repopulate the drift times post...
+            foreach(UMC umc in aligneeUMCs)
+            {
+                featureIDMap[umc.ID].DriftTime = umc.DriftTimeAligned;
+            }
+
+            KeyValuePair<DriftTimeAlignmentResults<UMC, UMC>, DriftTimeAlignmentResults<UMC, UMC>> pair =
+                            new KeyValuePair<DriftTimeAlignmentResults<UMC, UMC>, DriftTimeAlignmentResults<UMC, UMC>>(alignedResults,
+                                                                                                                       offsetResults);
+            return pair;
         }
         /// <summary>
         /// Performs peak matching with loaded clusters. 
@@ -602,7 +711,7 @@ namespace PNNLProteomics.MultiAlign
                                 Path.Combine(m_analysis.AnalysisPath, m_analysis.AnalysisName));
 
                 UpdateStatus("Aligning datasets.");
-                AlignDatasets(m_analysis);
+                PerformAlignment(m_analysis);
 
                 UpdateStatus("Performing clustering.");
                 PerformClustering(m_analysis, m_algorithms.Clusterer);

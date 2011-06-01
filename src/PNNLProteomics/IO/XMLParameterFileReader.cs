@@ -1,9 +1,8 @@
-using System.Reflection;
+using System;
 using System.Collections.Generic;
-
+using System.Reflection;
 using MultiAlignEngine;
 using MultiAlignEngine.Alignment;
-
 using PNNLProteomics.Data;
 
 namespace PNNLProteomics.IO
@@ -86,6 +85,13 @@ namespace PNNLProteomics.IO
             LoadParameterOptions(analysis.DefaultAlignmentOptions,  metaData.OpenChild("DefaultAlignmentOptions"));            
             LoadParameterOptions(analysis.MassTagDBOptions,         metaData.OpenChild("MassTagDBOptions"));
             LoadParameterOptions(analysis.UMCFindingOptions,        metaData.OpenChild("UMCFindingOptions"));
+
+            
+            MetaNode node = metaData.OpenChild("DriftTimeAlignmentOptions", false);
+            if (node != null)
+            {
+                LoadParameterOptions(analysis.DriftTimeAlignmentOptions, node);
+            }            
             analysis.DefaultAlignmentOptions.MZBoundaries   = boundaries;
         }
     }

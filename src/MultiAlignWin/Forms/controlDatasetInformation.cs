@@ -1,4 +1,5 @@
 using System;
+using MultiAlignCustomControls.Charting;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -291,10 +292,10 @@ namespace MultiAlignWin.Forms
                 if (m_alignmentData.ResidualData != null)
                 {
                     classAlignmentResidualData data = m_alignmentData.ResidualData;         
-                    alignedNetResidual  = RenderDatasetInfo.Residual_Thumbnail(data.scans, data.customNet, null, false, options);
-                    massResidual        = RenderDatasetInfo.Residual_Thumbnail(data.scans, data.massError, data.massErrorCorrected, false, options);
-                    mzMassResidual      = RenderDatasetInfo.Residual_Thumbnail(data.mz, data.mzMassError, data.mzMassErrorCorrected, true, options);
-                    massNetResidual     = RenderDatasetInfo.Residual_Thumbnail(data.customNet, data.massError, null, false, options);                    
+                    alignedNetResidual  = GenericPlotFactory.Residual_Thumbnail(data.scans, data.customNet, null, false, options);
+                    massResidual        = GenericPlotFactory.Residual_Thumbnail(data.scans, data.massError, data.massErrorCorrected, false, options);
+                    mzMassResidual      = GenericPlotFactory.Residual_Thumbnail(data.mz, data.mzMassError, data.mzMassErrorCorrected, true, options);
+                    massNetResidual     = GenericPlotFactory.Residual_Thumbnail(data.customNet, data.massError, null, false, options);                    
                 }
             }
            

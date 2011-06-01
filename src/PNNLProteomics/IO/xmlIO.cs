@@ -26,7 +26,7 @@ namespace PNNLProteomics.IO
 			doc = d;
 		}
 
-		protected XmlNode OpenXmlNode(string id, string type, int index, bool isNode)
+		protected XmlNode OpenXmlNode(string id, string type, int index, bool isNode, bool createNewIfMissing)
 		{
 			for (int i=0; i<root.ChildNodes.Count; i++)
 			{
@@ -43,6 +43,9 @@ namespace PNNLProteomics.IO
 						return (root.ChildNodes[i]);
 				}
 			}
+
+            if (!createNewIfMissing)
+                return null;
 
 			XmlNode newNode = doc.CreateNode(XmlNodeType.Element, id, "");
 			root.AppendChild (newNode);
@@ -96,24 +99,32 @@ namespace PNNLProteomics.IO
 
 		public MetaNode OpenChild(string id, string childType, int index)
 		{
-			XmlNode node = OpenXmlNode(id, childType, index, true);
+			XmlNode node = OpenXmlNode(id, childType, index, true, true);
 
 			MetaNode retNode = new MetaNode(node, doc);
 			return (retNode);
 		}
 
-		public MetaNode OpenChild(string id, int index)
+		public MetaNode OpenChild(string id, int index, bool createIfMissing)
 		{
-			XmlNode node = OpenXmlNode(id, "node", index, true);
+            XmlNode node = OpenXmlNode(id, "node", index, true, createIfMissing);
+
+            if (node == null)
+                return null;
 
 			MetaNode retNode = new MetaNode(node, doc);
 			return (retNode);
 		}
 
-		public MetaNode OpenChild(string id)
-		{
-			return (OpenChild(id, -1));
-		}
+        public MetaNode OpenChild(string id)
+        {
+            return (OpenChild(id, -1, true));
+        }
+
+        public MetaNode OpenChild(string id, bool createIfMissing)
+        {
+            return (OpenChild(id, -1, createIfMissing));
+        }
 
 		
 
@@ -121,7 +132,7 @@ namespace PNNLProteomics.IO
 		{
 			try
 			{
-				XmlNode node = OpenXmlNode(id, type, index, false);
+                XmlNode node = OpenXmlNode(id, type, index, false, true);
 				node.InnerText = val;
 			}
 			catch{}
@@ -251,7 +262,7 @@ namespace PNNLProteomics.IO
 
 		public string GetType(string id, int index)
 		{
-			XmlNode node = OpenXmlNode(id, "", index, false);
+            XmlNode node = OpenXmlNode(id, "", index, false, true);
 
 			if (node == null)
 				return ("");
@@ -265,7 +276,7 @@ namespace PNNLProteomics.IO
 
 		private string GetString(string id, int index)
 		{
-			XmlNode node = OpenXmlNode(id, "", index, false);
+            XmlNode node = OpenXmlNode(id, "", index, false, true);
 
 			if (node == null)
 				return ("");
@@ -304,7 +315,7 @@ namespace PNNLProteomics.IO
 				sr.Close();
 
 				root = doc;
-				root = OpenXmlNode(m_name, "root",-1, true);//doc.LastChild;
+                root = OpenXmlNode(m_name, "root", -1, true, true);//doc.LastChild;
 			}
 			catch{}
 		}

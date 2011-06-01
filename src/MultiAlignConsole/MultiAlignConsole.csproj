@@ -78,6 +78,10 @@
       <HintPath>..\..\lib\x86\System.Data.SQLite.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="PNNLOmics, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\x86\PNNLOmics.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
     <Reference Include="MultiAlignEngine, Version=1.0.4129.21423, Culture=neutral, processorArchitecture=AMD64">
@@ -89,6 +93,10 @@
       <SpecificVersion>True</SpecificVersion>
       <HintPath>..\..\lib\x64\System.Data.SQLite.dll</HintPath>
       <Private>True</Private>
+    </Reference>
+    <Reference Include="PNNLOmics, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\x64\PNNLOmics.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
@@ -102,6 +110,10 @@
       <HintPath>..\..\lib\x86\System.Data.SQLite.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="PNNLOmics, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\x86\PNNLOmics.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
     <Reference Include="MultiAlignEngine, Version=1.0.4129.21423, Culture=neutral, processorArchitecture=AMD64">
@@ -113,6 +125,10 @@
       <SpecificVersion>True</SpecificVersion>
       <HintPath>..\..\lib\x64\System.Data.SQLite.dll</HintPath>
       <Private>True</Private>
+    </Reference>
+    <Reference Include="PNNLOmics, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\x64\PNNLOmics.dll</HintPath>
     </Reference>
   </ItemGroup>
   

@@ -148,9 +148,10 @@ namespace PNNLProteomics.Data
             /// 
             /// Smart options for SMART Scoring and a collection to store the results.
             /// 
-            mobj_stacOptions               = new classSMARTOptions();
-            mobj_stacResults               = new classSMARTResults();
+            mobj_stacOptions                = new classSMARTOptions();
+            mobj_stacResults                = new classSMARTResults();
             m_datasetInformation            = new List<DatasetInformation>();
+            DriftTimeAlignmentOptions       = new Algorithms.Alignment.DriftTimeAlignmentOptions();
             /// 
             /// This only matters if peptide peak matching was performed
             /// 
@@ -253,6 +254,7 @@ namespace PNNLProteomics.Data
 				marrDatasetAlignmentOptions.Add(alignmentOptions) ;
 			}
 		}
+
         #region Properties
         /// <summary>
         /// Gets or sets the cluster alignment data.
@@ -518,7 +520,6 @@ namespace PNNLProteomics.Data
                 mobjMassTagDB = value;
             }
         }
-
         [clsDataSummaryAttribute("Default Alignment Options")]
         public MultiAlignEngine.Alignment.clsAlignmentOptions DefaultAlignmentOptions
         {
@@ -531,9 +532,12 @@ namespace PNNLProteomics.Data
                 mobjAlignmentOptions = value;
             }
         }
-		#endregion
-
-        #region Analysis File 
+        [clsDataSummaryAttribute("Drift Time Options")]
+        public PNNLProteomics.Algorithms.Alignment.DriftTimeAlignmentOptions DriftTimeAlignmentOptions
+        {
+            get;
+            set;
+        }
         /// <summary>
         /// Gets or sets the name of the analysis.
         /// </summary>
@@ -563,10 +567,7 @@ namespace PNNLProteomics.Data
             {
                 mstring_pathname = value;
             }
-        }
+        }        
         #endregion
-
-        #region Parameter Files Options Reflection
-        #endregion        
-    }
+    }    
 }

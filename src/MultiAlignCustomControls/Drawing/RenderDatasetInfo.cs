@@ -1,24 +1,13 @@
 using System;
-using System.Text;
-using System.Drawing;
-using System.Collections;
 using System.Collections.Generic;
-
-using PNNLControls;
-
-using MultiAlignEngine;
-
-using MultiAlignEngine.Features;
-using MultiAlignEngine.MassTags;
+using System.Drawing;
+using MultiAlign.Charting;
+using MultiAlignCustomControls.Charting;
 using MultiAlignEngine.Alignment;
-using MultiAlignEngine.Clustering;
-using MultiAlignEngine.PeakMatching;
-
-using PNNLProteomics.SMART;
+using MultiAlignEngine.Features;
+using PNNLControls;
 using PNNLProteomics.Data;
 using PNNLProteomics.Data.Alignment;
-using PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate;
-using MultiAlign.Charting;
 
 namespace MultiAlign.Drawing
 {
@@ -1046,95 +1035,6 @@ namespace MultiAlign.Drawing
                     chart.YAxisGridLines    = options.DisplayGridLines;
 
                     image = chart.ToBitmap(options.Width, options.Height);
-                    chart.Dispose();
-                }
-            }
-            catch
-            {
-            }
-            return image;
-        }
-        #endregion
-        
-        #region Residual Plots
-        /// <summary>
-        /// Renders the scan versus the cluster net to the provided bitmap.
-        /// </summary>
-        public static ctlScatterChart Residual_Chart(   float [] x, 
-                                                        float [] error,
-                                                        float [] corrected,
-                                                        bool invert,
-                                                        ChartDisplayOptions options)
-        {
-            ctlScatterChart chart = null;
-            
-            // Set the data for the chart. Go through each cluster that this dataset was seen in
-            // and plot scan vs net of cluster. 
-            chart               = new ctlScatterChart();
-            chart.XAxisLabel    = options.XAxisLabel;
-            chart.YAxisLabel    = options.YAxisLabel;
-            chart.Title         = options.Title;
-            chart.PadViewPortX  = .1F;
-            chart.PadViewPortY  = .1F;
-
-            int ptSize          = CONST_PRE_POINT_SIZE;
-            Color clr = Color.FromArgb(255, Color.Blue);
-            clsShape shape = new BubbleShape(ptSize, false);
-
-            // Residual Plots of mass vs mz error pre-corrected
-            clsPlotParams plt_params     = new clsPlotParams(shape, Color.Blue);
-            plt_params.Name              = "Post-Alignment";
-            chart.AutoViewPortOnAddition = true;            
-            clsSeries series             = new clsSeries(ref x, ref error, plt_params);
-
-            if (corrected != null)
-            {
-                // Residual Plots of mass vs mz error post-correcteds             
-                clsShape alignedShape = new BubbleShape(CONST_POST_POINT_SIZE, false);
-                clsPlotParams plt_paramsAligned = new clsPlotParams(alignedShape, Color.Red);
-                plt_paramsAligned.Name = "Pre-Alignment";
-                chart.AutoViewPortOnAddition = true;
-
-                float[] data = corrected;
-                if (invert)
-                {
-                    data = new float[corrected.Length];
-                    for (int kk = 0; kk < data.Length; kk++)
-                        data[kk] = corrected[kk] * -1;
-                }
-
-                clsSeries seriesCorrected = new clsSeries(ref x, ref corrected, plt_paramsAligned);
-                chart.AddSeries(seriesCorrected);
-            }
-            chart.AddSeries(series);
-            chart.ViewPortHistory.Clear();
-            return chart;
-        }
-        /// <summary>
-        /// Renders the scan versus the cluster net to the provided bitmap.
-        /// </summary>
-        public static Image Residual_Thumbnail(float[] x,
-                                                       float[] error,
-                                                       float[] corrected,
-                                                       bool invert,
-                                                       ChartDisplayOptions options)
-        {
-
-            Image image = null;
-            try
-            {
-                ctlScatterChart chart = RenderDatasetInfo.Residual_Chart(x, error, corrected, invert, options);
-
-                if (chart != null)
-                {
-                    chart.Margins.LeftMarginMin     = 1;
-                    chart.Margins.LeftMarginMax     = 1;
-                    chart.Margins.BottomMarginMax   = 1;
-                    chart.Margins.BottomMarginMin   = 1;
-                    chart.LegendVisible = options.DisplayLegend;
-                    chart.AxisVisible   = options.DisplayAxis;
-                    chart.TitleVisible  = options.DisplayTitle;
-                    image               = chart.ToBitmap(options.Width, options.Height);
                     chart.Dispose();
                 }
             }
@@ -2533,6 +2433,7 @@ namespace MultiAlign.Drawing
                     chart.TitleVisible              = options.DisplayTitle;
                     chart.XAxisGridLines            = options.DisplayGridLines;
                     chart.YAxisGridLines            = options.DisplayGridLines;
+                    chart.Title                     = options.Title;
                     image                           = chart.ToBitmap(width, height);
                     chart.Dispose();
                 }
@@ -3283,259 +3184,238 @@ namespace MultiAlign.Drawing
         #endregion
     }
 
+
     /// <summary>
-    /// Encapsulates options for displaying chart monikers for thumbnail views of analysis plots.
+    /// Class that has generic dataset plot tools.
     /// </summary>
-    public class ChartDisplayOptions
+    public class GenericPlotFactory
     {
-        private bool m_displayLegend;
-        private bool m_displayAxis;
-        private bool m_displayTitle;
-        private bool m_displayGridlines;
-        private int m_marginMin;
-        private int m_marginMax;
-        private string m_xAxisLabel;
-        private string m_yAxisLabel;
-        private string m_title;
-        private int m_width;
-        private int m_height;
+        private const int CONST_PRE_POINT_SIZE  = 1;
+        private const int CONST_POST_POINT_SIZE = 1;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public ChartDisplayOptions()
+        #region Scatter Plots
+        public static controlHistogram ResidualHistogram_Chart(float[] x,
+                                                              float[] y,
+                                                              ChartDisplayOptions options)
         {
-            DisplayLegend       = false;
-            DisplayTitle        = false;
-            DisplayGridLines    = false;
-            DisplayAxis         = false;
-            MarginMax           = 1;
-            MarginMin           = 1;
-            XAxisLabel          = "";
-            YAxisLabel          = "";
-            Title               = "";
-            Height = 64;
-            Width  = 64;
+            controlHistogram chart = new controlHistogram();
+
+            float maxDiff       = float.MinValue;
+            float minDiff       = float.MaxValue;
+            List<float> diffs   = new List<float>();
+            for (int i = 0; i < x.Length; i++)
+            {
+                float diff  = x[i] - y[i];
+                minDiff     = Math.Min(minDiff, diff);
+                maxDiff     = Math.Max(maxDiff, diff);
+                diffs.Add(diff);
+            }
+
+            minDiff = -10;
+            maxDiff = 10;
+
+            int N           = 100;
+            float[] bins    = new float[N];
+            float[] freqs   = new float[N];
+            float dx        = (maxDiff - minDiff) / Convert.ToSingle(N);            
+
+            for(int i = 0; i < N; i++)
+            {
+                bins[i]  = minDiff + (i * dx);
+                freqs[i] = 0;
+            }
+
+            foreach (float diff in diffs)
+            {
+                int index       = Convert.ToInt32((diff - minDiff) / dx);
+                index           = Math.Max(0, Math.Min(N - 1, index));
+                freqs[index]++;
+            }
+
+            int ptSize                   = CONST_PRE_POINT_SIZE;
+            clsShape shape               = new BubbleShape(ptSize, false);
+            clsPlotParams plt_params     = new clsPlotParams(shape, Color.Red);
+            chart.AutoViewPortOnAddition = true;
+            clsSeries series             = new clsSeries(ref bins, ref freqs, plt_params);
+            chart.BinSize                = dx;
+            chart.AddSeries(series);
+            chart.ViewPortHistory.Clear();
+            return chart;
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="displayLegend"></param>
-        /// <param name="displayAxis"></param>
-        /// <param name="displayTitle"></param>
-        /// <param name="displayGridlines"></param>
-        public ChartDisplayOptions(bool displayLegend,
-                                       bool displayAxis,
-                                       bool displayTitle,
-                                       bool displayGridlines)
+        public static Image ResidualHistogram_Thumbnail(float[] x,
+                                                        float[] y,
+                                                        ChartDisplayOptions options)
         {
+
+            Image image = null;
+            try
+            {
+                controlHistogram chart = GenericPlotFactory.ResidualHistogram_Chart(x, y, options);
+
+                if (chart != null)
+                {
+                    chart.Margins.LeftMarginMin     = options.MarginMin;
+                    chart.Margins.LeftMarginMax     = options.MarginMax;
+                    chart.Margins.BottomMarginMax   = options.MarginMax;
+                    chart.Margins.BottomMarginMin   = options.MarginMin;
+                    chart.LegendVisible             = options.DisplayLegend;
+                    chart.AxisVisible               = options.DisplayAxis;
+                    chart.TitleVisible              = options.DisplayTitle;
+                    chart.XAxisLabel                = options.XAxisLabel;
+                    chart.YAxisLabel                = options.YAxisLabel;
+                    chart.Title                     = options.Title;
+                    image                           = chart.ToBitmap(options.Width, options.Height);
+                    chart.Dispose();
+                }
+            }
+            catch
+            {
+            }
+            return image;
+        }
+        #endregion
+
+        #region Scatter Plots
+        public static ctlScatterChart ScatterPlot_Chart(float[] x,
+                                                        float[] y,
+                                                        ChartDisplayOptions options)
+        {
+            ctlScatterChart chart   = null;
+            chart                   = new ctlScatterChart();
             
-            DisplayLegend       =  displayLegend;
-            DisplayTitle        =  displayAxis;
-            DisplayGridLines    =  displayTitle;
-            DisplayAxis         = displayGridlines;
-            MarginMax           = 1;
-            MarginMin           = 1;
-            XAxisLabel          = "";
-            YAxisLabel          = "";
-            Title  = "";
-            Height = 64;
-            Width  = 64;
+                
+            int ptSize                      = CONST_PRE_POINT_SIZE;
+            Color clr                       = Color.FromArgb(255, Color.Black);
+            clsShape shape                  = new BubbleShape(ptSize, false);
+
+            clsPlotParams plt_params        = new clsPlotParams(shape, Color.Blue);
+            chart.AutoViewPortOnAddition    = true;
+            clsSeries series                = new clsSeries(ref x, ref y, plt_params);       
+    
+            chart.AddSeries(series);
+            chart.ViewPortHistory.Clear();
+            return chart;
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="displayLegend"></param>
-        /// <param name="displayAxis"></param>
-        /// <param name="displayTitle"></param>
-        /// <param name="displayGridlines"></param>
-        /// <param name="marginMin"></param>
-        /// <param name="marginMax"></param>
-        /// <param name="title"></param>
-        /// <param name="xAxisLabel"></param>
-        /// <param name="yAxisLabel"></param>
-        public ChartDisplayOptions( bool displayLegend,
-                                        bool displayAxis,
-                                        bool displayTitle,
-                                        bool displayGridlines,
-                                        int marginMin,
-                                        int marginMax,
-                                        string title,
-                                        string xAxisLabel,
-                                        string yAxisLabel,
-                                        int width,
-                                        int height)
+        public static Image ScatterPlot_Thumbnail(float[] x,
+                                                  float[] y,
+                                                  ChartDisplayOptions options)
         {
+
+            Image image = null;
+            try
+            {
+                ctlScatterChart chart = GenericPlotFactory.ScatterPlot_Chart(x, y, options);
+
+                if (chart != null)
+                {
+                    chart.Margins.LeftMarginMin     = options.MarginMin;
+                    chart.Margins.LeftMarginMax     = options.MarginMax;
+                    chart.Margins.BottomMarginMax   = options.MarginMax;
+                    chart.Margins.BottomMarginMin   = options.MarginMin;
+                    chart.LegendVisible             = options.DisplayLegend;
+                    chart.AxisVisible               = options.DisplayAxis;
+                    chart.TitleVisible              = options.DisplayTitle;
+                    chart.XAxisLabel                = options.XAxisLabel;
+                    chart.YAxisLabel                = options.YAxisLabel;
+                    chart.Title                     = options.Title;
+                    image = chart.ToBitmap(options.Width, options.Height);
+                    chart.Dispose();
+                }
+            }
+            catch
+            {
+            }
+            return image;
+        }
+        #endregion
+
+        #region Residual Plots
+        /// <summary>
+        /// Renders the scan versus the cluster net to the provided bitmap.
+        /// </summary>
+        public static ctlScatterChart Residual_Chart(   float [] x, 
+                                                        float [] error,
+                                                        float [] corrected,
+                                                        bool invert,
+                                                        ChartDisplayOptions options)
+        {
+            ctlScatterChart chart = null;
             
-            DisplayLegend       =  displayLegend;
-            DisplayTitle        =  displayAxis;
-            DisplayGridLines    =  displayTitle;
-            DisplayAxis         = displayGridlines;
-            MarginMax           = marginMax;
-            MarginMin           = marginMin;
+            // Set the data for the chart. Go through each cluster that this dataset was seen in
+            // and plot scan vs net of cluster. 
+            chart               = new ctlScatterChart();
+            chart.XAxisLabel    = options.XAxisLabel;
+            chart.YAxisLabel    = options.YAxisLabel;
+            chart.Title         = options.Title;
+            chart.PadViewPortX  = .1F;
+            chart.PadViewPortY  = .1F;
 
-            XAxisLabel = "";
-            YAxisLabel = "";
-            Title = "";
-            Height = height;
-            Width  = width;
-        }
-        #region Properties
-        /// <summary>
-        /// 
-        /// </summary>
-        public int MarginMin
-        {
-            get
-            {
-                return m_marginMin;
-            }
-            set
-            {
-                m_marginMin = value;
-            }
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        public int MarginMax
-        {
-            get
-            {
-                return m_marginMax;
-            }
-            set
-            {
-                m_marginMax = value;
-            }
-        }
-        /// <summary>
-        /// 
-        /// </summary>     
-        public bool DisplayLegend
-        {
-            get
-            {
-                return m_displayLegend;
-            }
-            set
-            {
-                m_displayLegend = value;
-            }
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        public bool DisplayAxis
-        {
-            get
-            {
-                return m_displayAxis;
-            }
-            set
-            {
-                m_displayAxis = value;
-            }
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        public bool DisplayTitle
-        {
-            get
-            {
-                return m_displayTitle;
-            }
-            set
-            {
-                m_displayTitle = value;
-            }
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        public bool DisplayGridLines
-        {
-            get
-            {
-                return m_displayGridlines;
-            }
-            set
-            {
-                m_displayGridlines = value;
-            }
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        public string Title
-        {
-            get
-            {
-                return m_title;
-            }
-            set
-            {
-                m_title = value;
-            }
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        public string XAxisLabel
-        {
-            get
-            {
-                return m_xAxisLabel;
-            }
-            set
-            {
-                m_xAxisLabel = value;
-            } 
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        public string YAxisLabel
-        {
-            get
-            {
-                return m_yAxisLabel;
-            }
-            set
-            {
-                m_yAxisLabel = value;
-            }
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        public int Width
-        {
-            get
-            {
-                return m_width;
-            }
-            set
-            {
-                m_width = value;
-            }
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        public int Height
-        {
-            get
-            {
-                return m_height;
-            }
-            set
-            {
-                m_height = value;
-            }
-        }
+            int ptSize          = CONST_PRE_POINT_SIZE;
+            Color clr           = Color.FromArgb(255, Color.Blue);
+            clsShape shape      = new BubbleShape(ptSize, false);
 
+            // Residual Plots of mass vs mz error pre-corrected
+            clsPlotParams plt_params     = new clsPlotParams(shape, Color.Blue);
+            plt_params.Name              = "Post-Alignment";
+            chart.AutoViewPortOnAddition = true;            
+            clsSeries series             = new clsSeries(ref x, ref error, plt_params);
+
+            if (corrected != null)
+            {
+                // Residual Plots of mass vs mz error post-correcteds             
+                clsShape alignedShape = new BubbleShape(CONST_POST_POINT_SIZE, false);
+                clsPlotParams plt_paramsAligned = new clsPlotParams(alignedShape, Color.Red);
+                plt_paramsAligned.Name = "Pre-Alignment";
+                chart.AutoViewPortOnAddition = true;
+
+                float[] data = corrected;
+                if (invert)
+                {
+                    data = new float[corrected.Length];
+                    for (int kk = 0; kk < data.Length; kk++)
+                        data[kk] = corrected[kk] * -1;
+                }
+
+                clsSeries seriesCorrected = new clsSeries(ref x, ref corrected, plt_paramsAligned);
+                chart.AddSeries(seriesCorrected);
+            }
+            chart.AddSeries(series);
+            chart.ViewPortHistory.Clear();
+            return chart;
+        }
+        /// <summary>
+        /// Renders the scan versus the cluster net to the provided bitmap.
+        /// </summary>
+        public static Image Residual_Thumbnail(float[] x,
+                                                       float[] error,
+                                                       float[] corrected,
+                                                       bool invert,
+                                                       ChartDisplayOptions options)
+        {
+
+            Image image = null;
+            try
+            {
+                ctlScatterChart chart = GenericPlotFactory.Residual_Chart(x, error, corrected, invert, options);
+
+                if (chart != null)
+                {
+                    chart.Margins.LeftMarginMin     = 1;
+                    chart.Margins.LeftMarginMax     = 1;
+                    chart.Margins.BottomMarginMax   = 1;
+                    chart.Margins.BottomMarginMin   = 1;
+                    chart.LegendVisible = options.DisplayLegend;
+                    chart.AxisVisible   = options.DisplayAxis;
+                    chart.TitleVisible  = options.DisplayTitle;
+                    image               = chart.ToBitmap(options.Width, options.Height);
+                    chart.Dispose();
+                }
+            }
+            catch
+            {
+            }
+            return image;
+        }
         #endregion
     }
 }

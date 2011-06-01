@@ -90,7 +90,8 @@ namespace PNNLProteomics.IO
             ReflectParameterOptions(analysis.DefaultAlignmentOptions,   metaData.OpenChild("DefaultAlignmentOptions"));
             ReflectParameterOptions(analysis.MassTagDBOptions,          metaData.OpenChild("MassTagDBOptions"));
             ReflectParameterOptions(analysis.ClusterOptions,            metaData.OpenChild("ClusterOptions"));
-            ReflectParameterOptions(analysis.PeakMatchingOptions,       metaData.OpenChild("PeakMatchingOptions"));            
+            ReflectParameterOptions(analysis.PeakMatchingOptions,       metaData.OpenChild("PeakMatchingOptions"));
+            ReflectParameterOptions(analysis.DriftTimeAlignmentOptions, metaData.OpenChild("DriftTimeAlignmentOptions"));
             metaData.WriteFile(parameterFilePath);
         }        
     }

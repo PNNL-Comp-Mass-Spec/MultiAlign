@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
-
 using MultiAlignEngine.Features;
-using MultiAlignEngine.Alignment;
-
-using PNNLProteomics.Data;
+using PNNLOmics.Algorithms.Alignment;
+using PNNLOmics.Data.Features;
 using PNNLProteomics.Data;
 using PNNLProteomics.Data.Alignment;
 
@@ -30,13 +28,18 @@ namespace PNNLProteomics.MultiAlign
         /// <param name="minY">Min. Y - scan alignee</param>
         /// <param name="maxY">Max. Y - scan alignee</param>
         /// <param name="part">If > -1, The alignment was split over a given m/z range., if -1, then alignment was performed over full m/z range.</param>
-        public FeaturesAlignedEventArgs(DatasetInformation baselineDatasetInfo,
-                                        DatasetInformation datasetInfo,
-                                        classAlignmentData alignmentData)
+        public FeaturesAlignedEventArgs(DatasetInformation                  baselineDatasetInfo,
+                                        DatasetInformation                  datasetInfo,
+                                        classAlignmentData                  alignmentData,
+                                        DriftTimeAlignmentResults<UMC, UMC> driftAlignmentData,
+                                        DriftTimeAlignmentResults<UMC, UMC> offsetDriftAlignmentData)
+            
         {
             m_datasetInformation        = datasetInfo;
             m_baselinDatasetInformation = datasetInfo;
             m_alignmentData             = alignmentData;
+            DriftTimeAlignmentData      = driftAlignmentData;
+            OffsetDriftAlignmentData    = offsetDriftAlignmentData;
         }
 
         /// <summary>
@@ -69,8 +72,27 @@ namespace PNNLProteomics.MultiAlign
                 return m_alignmentData;
             }
         }
+        /// <summary>
+        /// Gets the drift time alignment data.
+        /// </summary>
+        public DriftTimeAlignmentResults<UMC, UMC> DriftTimeAlignmentData
+        {
+            get;
+            private set;
+        }
+        /// <summary>
+        /// Gets the drift time alignment data.
+        /// </summary>
+        public DriftTimeAlignmentResults<UMC, UMC> OffsetDriftAlignmentData
+        {
+            get;
+            private set;
+        }
     }
 
+    /// <summary>
+    /// Error class for alignment.
+    /// </summary>
     public class AnalysisErrorEventArgs : EventArgs
     {
         /// <summary>

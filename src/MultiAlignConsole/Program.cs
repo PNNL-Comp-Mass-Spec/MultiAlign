@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
 using MultiAlign.Drawing;
+using MultiAlignCustomControls.Charting;
 using MultiAlignEngine.Features;
 using PNNLProteomics.Algorithms;
 using PNNLProteomics.Algorithms.Clustering;
@@ -15,9 +17,8 @@ using PNNLProteomics.MultiAlign;
 using PNNLProteomics.MultiAlign.Hibernate;
 using PNNLProteomics.MultiAlign.Hibernate.Domain.DAO;
 using PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate;
-
-using System.Reflection;
-
+using PNNLOmics.Data.Features;
+using PNNLProteomics.IO.Reports;
 
 namespace MultiAlignConsole
 {
@@ -113,10 +114,19 @@ namespace MultiAlignConsole
         /// Path to database to create plots from.
         /// </summary>
         private static string   m_databaseName;
+        /// <summary>
+        /// Objects that access data from the databases.
+        /// </summary>
         private static FeatureDataAccessProviders m_dataProviders;
-        #endregion
-
+        /// <summary>
+        /// Flag that indicates whether a plot for the baseline features has been made.
+        /// </summary>
         static bool m_createdBaselinePlots;
+        /// <summary>
+        /// Object that can generate an HTML report.
+        /// </summary>
+        private static AnalysisHTMLReport m_report;
+        #endregion
         
         static Program()
         {            
@@ -135,9 +145,10 @@ namespace MultiAlignConsole
             m_analysisName      = null;
             m_databaseName      = null;
             m_createPlots       = false;
+            m_report            = new AnalysisHTMLReport();
         }
 
-        #region Methods
+        #region Plot Methods
         /// <summary>
         /// 
         /// </summary>
@@ -197,8 +208,8 @@ namespace MultiAlignConsole
             ChartDisplayOptions options = new ChartDisplayOptions(true, true, true, true,
                                                 1, 100,
                                                 "Charge State Histogram", "Charge State", "Count", m_width, m_height);
-
-            Image image = RenderDatasetInfo.ChargeStateHistogram_Thumbnail(umcs, m_width, m_height, options);
+            options.DisplayLegend   = false;
+            Image image             = RenderDatasetInfo.ChargeStateHistogram_Thumbnail(umcs, m_width, m_height, options);
             SaveImage(image, "ChargeStates.png");
             PushImageColumn(Path.Combine("Plots", "ChargeStates.png"));
 
@@ -414,7 +425,9 @@ namespace MultiAlignConsole
             path                    = Path.Combine(m_plotSavePath, labelName);
             image.Save(path, System.Drawing.Imaging.ImageFormat.Png);
             PushImageColumn(Path.Combine("Plots", labelName));
+            PushEndTableRow();
 
+            PushStartTableRow();
             options.DisplayGridLines= true;
             options.DisplayLegend   = false;
             options.Title           = "Net vs. Scan Residuals" + name;
@@ -439,13 +452,68 @@ namespace MultiAlignConsole
             path                    = Path.Combine(m_plotSavePath, labelName);
             image.Save(path, System.Drawing.Imaging.ImageFormat.Png);
             PushImageColumn(Path.Combine("Plots", labelName));
-
             PushEndTableRow();
+
+            if (e.DriftTimeAlignmentData != null)
+            {
+                PushStartTableRow();
+                options.DisplayLegend   = false;
+                options.Title           = "Drift Time Plot";
+                options.XAxisLabel      = "Baseline Drift Times (ms)";
+                options.YAxisLabel      = "Alignee Drift Times (ms)";
+
+                List<FeatureMatch<UMC, UMC>> matches = e.DriftTimeAlignmentData.Matches;
+                int totalMatches                     = matches.Count;
+                float[] x                            = new float[totalMatches];
+                float[] yC                           = new float[totalMatches];
+                float[] y                            = new float[totalMatches];
+
+                int i = 0;
+                foreach (FeatureMatch<UMC, UMC> match in matches)
+                {
+                    y[i]    = Convert.ToSingle(match.ObservedFeature.DriftTime);
+                    yC[i]   = Convert.ToSingle(match.ObservedFeature.DriftTimeAligned);
+                    x[i]    = Convert.ToSingle(match.TargetFeature.DriftTime);
+                    i++;
+                }
+                labelName   = Path.GetFileNameWithoutExtension(name) + "_driftTimes.png";
+                path        = Path.Combine(m_plotSavePath, labelName);
+                image       = GenericPlotFactory.ScatterPlot_Thumbnail(x, y, options);
+                image.Save(path, System.Drawing.Imaging.ImageFormat.Png);
+                PushImageColumn(Path.Combine("Plots", labelName));
+
+
+                options.Title   = "Aligned Drift Time Plot";
+                labelName       = Path.GetFileNameWithoutExtension(name) + "_driftTimesAligned.png";
+                path            = Path.Combine(m_plotSavePath, labelName);
+                image           = GenericPlotFactory.ScatterPlot_Thumbnail(x, yC, options);
+                image.Save(path, System.Drawing.Imaging.ImageFormat.Png);
+                PushImageColumn(Path.Combine("Plots", labelName));
+                PushEndTableRow();
+
+                
+                options.Title   = "Drift Time Error Distributions";
+                labelName       = Path.GetFileNameWithoutExtension(name) + "_driftTimesErrorHistogram.png";
+                path            = Path.Combine(m_plotSavePath, labelName);
+                image           = GenericPlotFactory.ResidualHistogram_Thumbnail(x, y, options);
+                image.Save(path, System.Drawing.Imaging.ImageFormat.Png);
+                PushImageColumn(Path.Combine("Plots", labelName));
+                PushEndTableRow();
+
+                options.Title   = "Aligned Drift Time Error Distributions";
+                labelName       = Path.GetFileNameWithoutExtension(name) + "_driftTimesErrorHistogramAligned.png";
+                path            = Path.Combine(m_plotSavePath, labelName);
+                image           = GenericPlotFactory.ResidualHistogram_Thumbnail(x, yC, options);
+                image.Save(path, System.Drawing.Imaging.ImageFormat.Png);
+                PushImageColumn(Path.Combine("Plots", labelName));
+                PushEndTableRow();
+            }
+
             PushEndTable();
         }
+        #endregion
 
-
-
+        #region Methods
         /// <summary>
         /// Validates the input options to make sure everything is set.
         /// </summary>
@@ -874,7 +942,7 @@ namespace MultiAlignConsole
         }
         #endregion
 
-        #region HTML 
+        #region HTML
         static void PushImageColumn(string data)
         {
             PushStartTableColumn();

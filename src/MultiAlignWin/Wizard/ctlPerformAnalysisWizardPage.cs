@@ -1,4 +1,5 @@
 using System;
+using MultiAlignCustomControls.Charting;
 using System.Reflection;
 using System.ComponentModel;
 using System.Diagnostics;

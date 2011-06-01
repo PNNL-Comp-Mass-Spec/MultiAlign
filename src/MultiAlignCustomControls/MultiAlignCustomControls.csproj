@@ -81,6 +81,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Charting\ChartDisplayOptions.cs" />
     <Compile Include="Charting\controlHistogram.cs">
       <SubType>UserControl</SubType>
     </Compile>
