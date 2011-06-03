@@ -35,6 +35,7 @@ namespace MultiAlignEngine
 		double mdblDriftTime;		/// Calculated drift time (IMS).
 		int    mintID; 
 		bool   mblnMSMS; 
+		int  ChargeState;
 		clsMassTimeTag():mdblMass(0), mdblNET(0), mintID(-1), mblnMSMS(false), mdblDriftTime(0) {}
 		clsMassTimeTag(double mass, double net, double driftTime):mdblMass(mass), mdblNET(net), mdblDriftTime(driftTime), mintID(-1), mblnMSMS(false){} 
 		clsMassTimeTag(double mass, double net, double driftTime, int id):mdblMass(mass), mdblNET(net), mdblDriftTime(driftTime), mintID(id), mblnMSMS(false) {} 

@@ -91,14 +91,6 @@ namespace MultiAlignConsole
         /// </summary>
         private static int m_width;
         /// <summary>
-        /// Height of the thumbnail plots.
-        /// </summary>
-        private static int m_heightHTML;
-        /// <summary>
-        /// Width of the thumbnail plots.
-        /// </summary>
-        private static int m_widthHTML;
-        /// <summary>
         /// Flag to show help or not.
         /// </summary>
         private static bool m_showHelp;
@@ -128,12 +120,13 @@ namespace MultiAlignConsole
         private static AnalysisHTMLReport m_report;
         #endregion
         
+        /// <summary>
+        /// Default constructor.
+        /// </summary>
         static Program()
         {            
             m_width             = PLOT_WIDTH;
             m_height            = PLOT_HEIGHT;
-            m_widthHTML         = PLOT_WIDTH_HTML;
-            m_heightHTML        = PLOT_HEIGHT_HTML;
             m_logPath           = null;
             m_inputPaths        = null;
             m_parameterFile     = null;
@@ -145,7 +138,9 @@ namespace MultiAlignConsole
             m_analysisName      = null;
             m_databaseName      = null;
             m_createPlots       = false;
-            m_report            = new AnalysisHTMLReport();
+            m_report                = new AnalysisHTMLReport();
+            m_report.ImageWidth     = PLOT_WIDTH_HTML;
+            m_report.ImageHeight    = PLOT_HEIGHT_HTML;
         }
 
         #region Plot Methods
@@ -199,9 +194,9 @@ namespace MultiAlignConsole
         static void CreateFinalAnalysisPlots(IUmcDAO cache, IUmcClusterDAO clusterCache)
         {
             PrintMessage("Creating Final Plots");
-            PushTextHeader("Analysis Info "); 
-            PushStartTable();
-            PushStartTableRow();
+            m_report.PushTextHeader("Analysis Info ");
+            m_report.PushStartTable();
+            m_report.PushStartTableRow();
 
             // Create the heatmap
             List<clsUMC> umcs           = cache.FindAll();
@@ -211,26 +206,26 @@ namespace MultiAlignConsole
             options.DisplayLegend   = false;
             Image image             = RenderDatasetInfo.ChargeStateHistogram_Thumbnail(umcs, m_width, m_height, options);
             SaveImage(image, "ChargeStates.png");
-            PushImageColumn(Path.Combine("Plots", "ChargeStates.png"));
+            m_report.PushImageColumn(Path.Combine("Plots", "ChargeStates.png"));
 
-            PushEndTableRow();
-            PushEndTable();
+            m_report.PushEndTableRow();
+            m_report.PushEndTable();
 
-            PushTextHeader("Cluster Data"); 
-            PushStartTable();
-            PushStartTableRow();
+            m_report.PushTextHeader("Cluster Data");
+            m_report.PushStartTable();
+            m_report.PushStartTableRow();
 
             List<clsCluster> clusters   = clusterCache.FindAll();            
             options.Title               = "Cluster Member Size Histogram ( Total Clusters = " + clusters.Count.ToString() + ")";
             options.DisplayLegend       = false;
             image                       = RenderDatasetInfo.ClusterSizeHistogram_Thumbnail(clusters, m_width, m_height, options);
             SaveImage(image, "ClusterMemberSizes.png");
-            PushImageColumn(Path.Combine("Plots", "ClusterMemberSizes.png"));
+            m_report.PushImageColumn(Path.Combine("Plots", "ClusterMemberSizes.png"));
             
             options.Title               = "Cluster Dataset Member Size Histogram ( Total Clusters = " + clusters.Count.ToString() + ")";
             image                       = RenderDatasetInfo.ClusterDatasetMemberSizeHistogram_Thumbnail(clusters, m_width, m_height, options);
             SaveImage(image, "ClusterDatasetMemberSizes.png");
-            PushImageColumn(Path.Combine("Plots", "ClusterDatasetMemberSizes.png"));
+            m_report.PushImageColumn(Path.Combine("Plots", "ClusterDatasetMemberSizes.png"));
 
             // Mass vs. Cluster score 
             options.Title               = "Clusters";
@@ -238,40 +233,40 @@ namespace MultiAlignConsole
             options.XAxisLabel          = "Cluster NET";
             image                       = RenderDatasetInfo.ClusterScatterPlot_Thumbnail(clusters, options);
             SaveImage(image, "ClusterScatterPlot.png");
-            PushImageColumn(Path.Combine(THUMBNAIL_PATH, "ClusterScatterPlot.png"));
-            PushEndTableRow();
-            PushStartTableRow();
-            PushEndTable();
+            m_report.PushImageColumn(Path.Combine(THUMBNAIL_PATH, "ClusterScatterPlot.png"));
+            m_report.PushEndTableRow();
+            m_report.PushStartTableRow();
+            m_report.PushEndTable();
 
 
-            PushStartTable(true);
-            PushStartTableRow();
-            PushStartTableColumn();
-            PushData("Dataset Members");
-            PushEndTableColumn();
+            m_report.PushStartTable(true);
+            m_report.PushStartTableRow();
+            m_report.PushStartTableColumn();
+            m_report.PushData("Dataset Members");
+            m_report.PushEndTableColumn();
 
-            PushStartTableColumn();
-            PushData("Count");
-            PushEndTableColumn();
-            PushEndTableRow();
+            m_report.PushStartTableColumn();
+            m_report.PushData("Count");
+            m_report.PushEndTableColumn();
+            m_report.PushEndTableRow();
 
             float[] histogram = RenderDatasetInfo.GetClusterMemberSizes(clusters);
             if (histogram != null)
             {
                 for (int i = 0; i < histogram.Length; i++)
                 {
-                    PushStartTableRow();
-                    PushStartTableColumn();
-                    PushData(i.ToString());
-                    PushEndTableColumn();
+                    m_report.PushStartTableRow();
+                    m_report.PushStartTableColumn();
+                    m_report.PushData(i.ToString());
+                    m_report.PushEndTableColumn();
 
-                    PushStartTableColumn();                    
-                    PushData(histogram[i].ToString());
-                    PushEndTableColumn();
-                    PushEndTableRow();
+                    m_report.PushStartTableColumn();
+                    m_report.PushData(histogram[i].ToString());
+                    m_report.PushEndTableColumn();
+                    m_report.PushEndTableRow();
                 }
             }
-            PushEndTable();
+            m_report.PushEndTable();
         }
         /// <summary>
         /// Creates the plots post analysis.
@@ -311,9 +306,9 @@ namespace MultiAlignConsole
             }
 
             // We have to create a header for the HTML file.
-            PushHeader();
+            m_report.PushHeader();
             CreateFinalAnalysisPlots(providers.FeatureCache, providers.ClusterCache);
-            PushEndHeader();
+            m_report.PushEndHeader();
             CreatePlotReport();
             return;
         }
@@ -347,9 +342,9 @@ namespace MultiAlignConsole
                 }
                 if (baselineIndex >= 0)
                 {
-                    PushTextHeader("Baseline Dataset for " + m_analysis.BaselineDatasetName);
-                    PushStartTable();
-                    PushStartTableRow();
+                    m_report.PushTextHeader("Baseline Dataset for " + m_analysis.BaselineDatasetName);
+                    m_report.PushStartTable();
+                    m_report.PushStartTableRow();
 
                     DatasetInformation baselineInfo     = m_analysis.Datasets[baselineIndex];
                     ChartDisplayOptions baselineOptions = new ChartDisplayOptions(false, true, true, true);
@@ -366,15 +361,15 @@ namespace MultiAlignConsole
                     string baselineLabelName        = Path.GetFileNameWithoutExtension(baselineInfo.DatasetName) + "_featurePlot.png";
                     string baselinePath             = Path.Combine(m_plotSavePath, baselineLabelName);
                     baselineImage.Save(baselinePath, System.Drawing.Imaging.ImageFormat.Png);
-                    PushImageColumn(Path.Combine("Plots", baselineLabelName));
-                    PushEndTableRow();
-                    PushEndTable();
+                    m_report.PushImageColumn(Path.Combine("Plots", baselineLabelName));
+                    m_report.PushEndTableRow();
+                    m_report.PushEndTable();
                 }
             }
 
-            PushTextHeader("Alignment Plots for " + e.AligneeDatasetInformation.DatasetName);
-            PushStartTable();
-            PushStartTableRow();
+            m_report.PushTextHeader("Alignment Plots for " + e.AligneeDatasetInformation.DatasetName);
+            m_report.PushStartTable();
+            m_report.PushStartTableRow();
             ChartDisplayOptions options = new ChartDisplayOptions(false, true, true, true);
 
             options.MarginMin       = 1;
@@ -391,7 +386,7 @@ namespace MultiAlignConsole
             string labelName        = Path.GetFileNameWithoutExtension(name) + "_featurePlot.png";
             string path             = Path.Combine(m_plotSavePath, labelName);
             image.Save(path, System.Drawing.Imaging.ImageFormat.Png);
-            PushImageColumn(Path.Combine("Plots", labelName));
+            m_report.PushImageColumn(Path.Combine("Plots", labelName));
 
             options.MarginMin       = 1;
             options.MarginMax       = 100;
@@ -406,8 +401,9 @@ namespace MultiAlignConsole
             labelName               = Path.GetFileNameWithoutExtension(name) + "_heatmap.png";
             path                    = Path.Combine(m_plotSavePath, labelName);
             image.Save(path, System.Drawing.Imaging.ImageFormat.Png);
-            PushImageColumn(Path.Combine("Plots", labelName));
+            m_report.PushImageColumn(Path.Combine("Plots", labelName));
 
+            m_report.PushStartTableRow();
             options.DisplayLegend   = false;
             options.Title           = "NET Error Histogram " + name;
             options.XAxisLabel      = "NET Error (%)";
@@ -416,26 +412,24 @@ namespace MultiAlignConsole
             labelName               = Path.GetFileNameWithoutExtension(name) + "_netErrorHistogram.png";
             path                    = Path.Combine(m_plotSavePath, labelName);
             image.Save(path, System.Drawing.Imaging.ImageFormat.Png);
-            PushImageColumn(Path.Combine("Plots", labelName));
+            m_report.PushImageColumn(Path.Combine("Plots", labelName));
 
+            options.DisplayGridLines = true;
+            options.DisplayLegend = false;
+            options.Title = "Net vs. Scan Residuals" + name;
+            image = RenderDatasetInfo.NETResiduals_Thumbnail(e.AlignmentData.ResidualData, options);
+            labelName = Path.GetFileNameWithoutExtension(name) + "_netResiduals.png";
+            path = Path.Combine(m_plotSavePath, labelName);
+            image.Save(path, System.Drawing.Imaging.ImageFormat.Png);
+            m_report.PushImageColumn(Path.Combine("Plots", labelName));
+            
             options.Title           = "Mass Error Histogram " + name;
             options.XAxisLabel      = "Mass Error (PPM)";
             image                   = RenderDatasetInfo.ErrorHistogram_Thumbnail(e.AlignmentData.massErrorHistogram, options);
             labelName               = Path.GetFileNameWithoutExtension(name) + "_massErrorHistogram.png";
             path                    = Path.Combine(m_plotSavePath, labelName);
             image.Save(path, System.Drawing.Imaging.ImageFormat.Png);
-            PushImageColumn(Path.Combine("Plots", labelName));
-            PushEndTableRow();
-
-            PushStartTableRow();
-            options.DisplayGridLines= true;
-            options.DisplayLegend   = false;
-            options.Title           = "Net vs. Scan Residuals" + name;
-            image                   = RenderDatasetInfo.NETResiduals_Thumbnail(e.AlignmentData.ResidualData, options);
-            labelName               = Path.GetFileNameWithoutExtension(name) + "_netResiduals.png";
-            path                    = Path.Combine(m_plotSavePath, labelName);
-            image.Save(path, System.Drawing.Imaging.ImageFormat.Png);
-            PushImageColumn(Path.Combine("Plots", labelName));
+            m_report.PushImageColumn(Path.Combine("Plots", labelName));
 
             options.DisplayLegend   = true;
             options.Title           = "Mass vs. Scan Residuals" + name;
@@ -443,7 +437,7 @@ namespace MultiAlignConsole
             labelName               = Path.GetFileNameWithoutExtension(name) + "_massScanResiduals.png";
             path                    = Path.Combine(m_plotSavePath, labelName);
             image.Save(path, System.Drawing.Imaging.ImageFormat.Png);
-            PushImageColumn(Path.Combine("Plots", labelName));
+            m_report.PushImageColumn(Path.Combine("Plots", labelName));
 
             options.DisplayLegend   = true;
             options.Title           = "Mass vs. m/z Residuals" + name;
@@ -451,12 +445,12 @@ namespace MultiAlignConsole
             labelName               = Path.GetFileNameWithoutExtension(name) + "_massMZResiduals.png";
             path                    = Path.Combine(m_plotSavePath, labelName);
             image.Save(path, System.Drawing.Imaging.ImageFormat.Png);
-            PushImageColumn(Path.Combine("Plots", labelName));
-            PushEndTableRow();
+            m_report.PushImageColumn(Path.Combine("Plots", labelName));
+            m_report.PushEndTableRow();
 
             if (e.DriftTimeAlignmentData != null)
             {
-                PushStartTableRow();
+                
                 options.DisplayLegend   = false;
                 options.Title           = "Drift Time Plot";
                 options.XAxisLabel      = "Baseline Drift Times (ms)";
@@ -480,36 +474,32 @@ namespace MultiAlignConsole
                 path        = Path.Combine(m_plotSavePath, labelName);
                 image       = GenericPlotFactory.ScatterPlot_Thumbnail(x, y, options);
                 image.Save(path, System.Drawing.Imaging.ImageFormat.Png);
-                PushImageColumn(Path.Combine("Plots", labelName));
-
-
+                m_report.PushImageColumn(Path.Combine("Plots", labelName));
+                
                 options.Title   = "Aligned Drift Time Plot";
                 labelName       = Path.GetFileNameWithoutExtension(name) + "_driftTimesAligned.png";
                 path            = Path.Combine(m_plotSavePath, labelName);
                 image           = GenericPlotFactory.ScatterPlot_Thumbnail(x, yC, options);
                 image.Save(path, System.Drawing.Imaging.ImageFormat.Png);
-                PushImageColumn(Path.Combine("Plots", labelName));
-                PushEndTableRow();
-
+                m_report.PushImageColumn(Path.Combine("Plots", labelName));
                 
                 options.Title   = "Drift Time Error Distributions";
                 labelName       = Path.GetFileNameWithoutExtension(name) + "_driftTimesErrorHistogram.png";
                 path            = Path.Combine(m_plotSavePath, labelName);
                 image           = GenericPlotFactory.ResidualHistogram_Thumbnail(x, y, options);
                 image.Save(path, System.Drawing.Imaging.ImageFormat.Png);
-                PushImageColumn(Path.Combine("Plots", labelName));
-                PushEndTableRow();
+                m_report.PushImageColumn(Path.Combine("Plots", labelName));
 
                 options.Title   = "Aligned Drift Time Error Distributions";
                 labelName       = Path.GetFileNameWithoutExtension(name) + "_driftTimesErrorHistogramAligned.png";
                 path            = Path.Combine(m_plotSavePath, labelName);
                 image           = GenericPlotFactory.ResidualHistogram_Thumbnail(x, yC, options);
                 image.Save(path, System.Drawing.Imaging.ImageFormat.Png);
-                PushImageColumn(Path.Combine("Plots", labelName));
-                PushEndTableRow();
+                m_report.PushImageColumn(Path.Combine("Plots", labelName));
+                m_report.PushEndTableRow();
             }
 
-            PushEndTable();
+            m_report.PushEndTable();
         }
         #endregion
 
@@ -877,8 +867,8 @@ namespace MultiAlignConsole
             PrintMessage("Saving dataset information to database.");
             DatasetDAOHibernate datasetDAOHibernate = new DatasetDAOHibernate();
             List<DatasetInformation> datasetList    = m_analysis.Datasets;
-            datasetDAOHibernate.AddAll(datasetList);            
-            PushEndHeader();
+            datasetDAOHibernate.AddAll(datasetList);
+            m_report.PushEndHeader();
             m_triggerEvent.Set();
         }
         /// <summary>
@@ -942,103 +932,21 @@ namespace MultiAlignConsole
         }
         #endregion
 
-        #region HTML
-        static void PushImageColumn(string data)
-        {
-            PushStartTableColumn();
-            PushData(string.Format("<a href={0}><img src={0} width={1} height={2} alt={0}/></a>", data, m_widthHTML, m_heightHTML));
-            PushEndTableColumn();
-        }
-        static void PushTextHeader(string data)
-        {
-            m_htmlPage.Add("<a href=\"#top\"><H2>" + data + "</H2></a>");
-        }
-        static void PushData(string tag)
-        {
-            m_htmlPage.Add(tag);
-        }
-        /// <summary>
-        /// Starts a table.
-        /// </summary>
-        static void PushStartTable()
-        {
-            PushStartTable(false);
-        }
-        /// <summary>
-        /// Starts a table with/without border.
-        /// </summary>
-        /// <param name="border">True for a border.  False for not.</param>
-        static void PushStartTable(bool border)
-        {
-            if (border)
-            {
-                m_htmlPage.Add("<table border = 1>");
-            }
-            else
-            {
-                m_htmlPage.Add("<table>");
-            }
-        }
-        static void PushEndTable()
-        {
-            m_htmlPage.Add("</table>");
-        }
-        static void PushStartTableRow()
-        {
-            m_htmlPage.Add("<tr>");
-        }
-        static void PushEndTableRow()
-        {
-            m_htmlPage.Add("</tr>");
-        }
-        static void PushStartTableColumn()
-        {
-            m_htmlPage.Add("<td>");
-        }
-        static void PushEndTableColumn()
-        {
-            m_htmlPage.Add("</td>");
-        }
-        static void PushHeader()
-        {
-            m_htmlPage.Add("<html>");
-            if (m_analysisName != null)
-            {
-                m_htmlPage.Add("<title>Analysis Name: " + m_analysisName + "</title>");
-                m_htmlPage.Add("<h1>Analysis Name: " + m_analysisName + "</h1>"); 
-            }            
-        }
-        static void PushEndHeader()
-        {
-            m_htmlPage.Add("</html>");
-        }
+
         /// <summary>
         /// Creates the HTML output file.
         /// </summary>
         static void CreatePlotReport()
         {
-
-            m_htmlPage.Insert(0, "<a name=\"top\">MultiAlign Analysis Report</a>" + DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss"));
-
-            PrintMessage("Creating Report.");
-            if (!m_htmlPathName.EndsWith(".html"))
-            {
-                m_htmlPathName = m_htmlPathName + ".html";
-            }
+            PrintMessage("Creating Report.");            
             string htmlPath = m_htmlPathName;
             if (m_analysisPath != null)
             {
                 htmlPath = Path.Combine(m_analysisPath, m_htmlPathName);
             }
-            using (TextWriter htmlWriter = File.CreateText(htmlPath))
-            {
-                foreach (string tag in m_htmlPage)
-                {
-                    htmlWriter.WriteLine(tag);
-                }
-            }
-        }
-        #endregion
+            m_report.AnalysisName = m_analysisName;
+            m_report.CreateReport(htmlPath);
+        }        
         
         #region Data Provider Setup
         /// <summary>
@@ -1268,7 +1176,7 @@ namespace MultiAlignConsole
 
             // Output the settings to INI for viewing.
             string outParamName              = Path.GetFileNameWithoutExtension(m_parameterFile);
-            string outParamPath              = Path.Combine(Path.GetDirectoryName(m_parameterFile), outParamName);            
+            string outParamPath              = Path.Combine(m_analysisPath, outParamName);            
             XMLParameterFileWriter xmlWriter = new XMLParameterFileWriter();                
             xmlWriter.WriteParameterFile(outParamPath + ".xml", m_analysis);
             
@@ -1340,6 +1248,7 @@ namespace MultiAlignConsole
 		{
 			IntPtr handle = Process.GetCurrentProcess().MainWindowHandle;
 			SetConsoleMode(handle, ENABLE_EXTENDED_FLAGS);
+
 
             ProcessCommandLineArguments(args);
             StartMultiAlign();

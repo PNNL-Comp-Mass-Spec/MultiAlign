@@ -18,7 +18,8 @@ namespace MultiAlignEngine
 			mfltAvgFCS2(-100), 
 			mfltAvgFCS3(-100), 
 			mshortCleavageState(2),
-			mdblDriftTime(0)
+			mdblDriftTime(0),
+			mintChargeState(0)
 		{
 		}
 		MassTag::~MassTag()

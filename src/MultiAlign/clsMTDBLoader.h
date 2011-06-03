@@ -28,7 +28,8 @@ namespace MultiAlignEngine
 			14398279	GAGAK	402.2226605	-6.73E-02	6.24E-02	1.6525	0	9.91E-02	0	0	0	14398279	1	0	0	0.111803	-100	-100	0	-100	-100	0	-100	-100
 			*/
 
-			static System::String* mstrStoredProcedureMassTagsPlusPeptideProphet = S"GetMassTagsPlusPepProphetStats"; 
+			//static System::String* mstrStoredProcedureMassTagsPlusPeptideProphet = S"GetMassTagsPlusPepProphetStats"; 
+			static System::String* mstrStoredProcedureMassTagsPlusPeptideProphet = S"GetMassTagsPlusConformers"; 
 
 			/* Sample output from GetMassTagToProteinNameMap
 			 Protein_ID : different proteins with same sequence have the same id. 

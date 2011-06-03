@@ -379,7 +379,7 @@ namespace MultiAlignEngine
 
 
 		void clsMTDBLoader::LoadMassTags(clsMassTagDB *mtDB)
-		{
+		{			
 			System::Data::SqlClient::SqlDataReader *rdr  = 0;
 			int allocated = 1000; 
 			clsMassTag *arrMassTags __gc[] = new clsMassTag* __gc [allocated];
@@ -524,49 +524,60 @@ namespace MultiAlignEngine
 						// PepProphet_FScore_Avg_CS2	
 						// PepProphet_FScore_Avg_CS3	
 						float favg_cs1 = -100;
-						if (rdr->Item[S"PepProphet_FScore_Avg_CS1"] != System::DBNull::Value) 
+						/*if (rdr->Item[S"PepProphet_FScore_Avg_CS1"] != System::DBNull::Value) 
 						{
 							favg_cs1 = System::Convert::ToSingle(rdr->Item[S"PepProphet_FScore_Avg_CS1"]);
-						}
+						}*/ 
 						float favg_cs2 = -100;
-						if (rdr->Item[S"PepProphet_FScore_Avg_CS2"] != System::DBNull::Value) 
+						/*if (rdr->Item[S"PepProphet_FScore_Avg_CS2"] != System::DBNull::Value) 
 						{
 							favg_cs2 = System::Convert::ToSingle(rdr->Item[S"PepProphet_FScore_Avg_CS2"]);
-						}
+						}*/
 						float favg_cs3 = -100;
-						if (rdr->Item[S"PepProphet_FScore_Avg_CS3"] != System::DBNull::Value) 
+						/*if (rdr->Item[S"PepProphet_FScore_Avg_CS3"] != System::DBNull::Value) 
 						{
 							favg_cs3 = System::Convert::ToSingle(rdr->Item[S"PepProphet_FScore_Avg_CS3"]);
-						}
+						}*/
 						short cleaveage_state = 2; 
 						if (rdr->Item[S"Cleavage_State"] != System::DBNull::Value) 
 						{
 							cleaveage_state = System::Convert::ToInt16(rdr->Item[S"Cleavage_State"]);
 						}
 
-						mass_tag->mintMassTagId = id; 
-						mass_tag->mstrPeptide = peptide;
-						mass_tag->mdblAvgGANET = ganet; 
-						mass_tag->mdblHighXCorr = xcorr_max; 
-						mass_tag->mdblMaxDiscriminant = high_discriminant;
-						mass_tag->mdblMonoMass = mono_mass; 
-						mass_tag->mstrModification = modification_str; 
-						mass_tag->mshortModCount = mod_count; 
+						double driftTime = 0;
+						if (rdr->Item[S"Drift_Time_Avg"] != System::DBNull::Value)
+						{
+							driftTime = System::Convert::ToSingle(rdr->Item[S"Drift_Time_Avg"]);														
+						}
+						int charge = 0;
+						if (rdr->Item[S"Conformer_Charge"] != System::DBNull::Value)
+						{
+							charge = System::Convert::ToSingle(rdr->Item[S"Conformer_Charge"]);														
+						}
 
-						mass_tag->mdblStdGANET = std_net;
-						mass_tag->mintNumObsPassingFilter = num_obs; 
-						mass_tag->mfltAvgFCS1 = favg_cs1; 
-						mass_tag->mfltAvgFCS2 = favg_cs2; 
-						mass_tag->mfltAvgFCS3 = favg_cs3; 
-						mass_tag->mshortCleavageState = cleaveage_state; 
+						mass_tag->mintMassTagId					= id; 
+						mass_tag->mstrPeptide					= peptide;
+						mass_tag->mdblAvgGANET					= ganet; 
+						mass_tag->mdblHighXCorr					= xcorr_max; 
+						mass_tag->mdblMaxDiscriminant			= high_discriminant;
+						mass_tag->mdblMonoMass					= mono_mass; 
+						mass_tag->mstrModification				= modification_str; 
+						mass_tag->mshortModCount				= mod_count; 
+						mass_tag->mintChargeState				= charge;
+						mass_tag->mdblStdGANET					= std_net;
+						mass_tag->mintNumObsPassingFilter		= num_obs; 
+						mass_tag->mfltAvgFCS1					= favg_cs1; 
+						mass_tag->mfltAvgFCS2					= favg_cs2; 
+						mass_tag->mfltAvgFCS3					= favg_cs3; 
+						mass_tag->DriftTime						= driftTime;						
+						mass_tag->mshortCleavageState			= cleaveage_state; 
 						mass_tag->HighPeptideProphetProbability = highPeptideProphetProbability;
-
 						if (mass_tag->mdblAvgGANET != -1 && num_obs >= mobjMassTagDBOptions->mintMinObservationCountFilter)
 						{
 							if (currentlyLoaded == allocated)
 							{
 								currentlyLoaded = 0;
-								mtDB->AddMassTags(arrMassTags); 
+								mtDB->AddMassTags(arrMassTags);
 							}
 							arrMassTags[currentlyLoaded++] = mass_tag; 
 							mint_num_loaded++; 

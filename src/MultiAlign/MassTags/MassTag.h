@@ -25,6 +25,7 @@ namespace MultiAlignEngine
 			float mfltAvgFCS3; 
 			short mshortCleavageState;
 			float HighPeptideProphetProbability;
+			int mintChargeState;
 			MassTag(); 
 			~MassTag(); 
 		};

@@ -9,6 +9,10 @@ namespace PNNLProteomics.IO.Reports
     /// </summary>
     public class AnalysisHTMLReport
     {
+        public AnalysisHTMLReport()
+        {
+            ContentTags = new List<string>();
+        }
         #region HTML
         /// <summary>
         /// 
@@ -24,9 +28,17 @@ namespace PNNLProteomics.IO.Reports
         /// 
         /// </summary>
         /// <param name="data"></param>
-        public  void PushTextHeader(string data)
+        public void PushTextHeader(string data)
         {
             ContentTags.Add("<a href=\"#top\"><H2>" + data + "</H2></a>");
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="data"></param>
+        public void PushLargeText(string data)
+        {
+            ContentTags.Add("<H2>" + data + "</H2>");
         }
         /// <summary>
         /// 
@@ -98,41 +110,49 @@ namespace PNNLProteomics.IO.Reports
         /// </summary>
         public  void PushHeader()
         {
-            ContentTags.Add("<html>");
+            /*ContentTags.Add("<html>");
             if (AnalysisName != null)
             {
                 ContentTags.Add("<title>Analysis Name: " + AnalysisName + "</title>");
                 ContentTags.Add("<h1>Analysis Name: " + AnalysisName + "</h1>");
-            }
+            }*/
         }
         /// <summary>
         /// 
         /// </summary>
         public  void PushEndHeader()
         {
-            ContentTags.Add("</html>");
+            //ContentTags.Add("</html>");
         }
         #endregion
-
 
         /// <summary>
         /// Creates the HTML output file.
         /// </summary>
         public void CreateReport(string path)
         {
-
-            ContentTags.Insert(0, "<a name=\"top\">MultiAlign Analysis Report</a>" + DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss"));
-
             if (!path.EndsWith(".html"))
             {
                 path = path + ".html";
             }
             using (TextWriter htmlWriter = File.CreateText(path))
             {
+                string headerTag = "<html>\n<body>\n<table width=\"500\" border=\"0\">\n<tr>\n<td colspan=\"2\" style=\"background-color:#005500;color=#FFFFFF\">";
+                headerTag += "<a name=\"top\"><h1 style=\"color:#FFFFFF\">MultiAlign Analysis Report</h1></a>";
+                headerTag += string.Format("<h3 style=\"color:#FFFFFF\">{0} {1}</h3>", AnalysisName, DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss"));
+                headerTag += "</td>\n</tr>\n<tr valign=\"top\">\n";
+                headerTag += "<td style=\"background-color:#FFFFFFF;height:200px;width:400px;text-align:top;\">";
+
+                htmlWriter.WriteLine(headerTag);
+
                 foreach (string tag in ContentTags)
                 {
                     htmlWriter.WriteLine(tag);
-                }
+                }      ;
+                string bottomTag = "</tr>\n<tr>\n<td colspan=\"2\" style=\"background-color:#005500;text-align:center;\">\n</td>\n</tr>\n</table>\n</body>";
+                bottomTag += "</html>";
+
+                htmlWriter.WriteLine(bottomTag);
             }
         }
 

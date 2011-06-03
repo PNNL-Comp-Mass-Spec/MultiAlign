@@ -51,6 +51,7 @@ namespace MultiAlignEngine
 			{
 				MultiAlignEngine::MassTags::MassTag mt = mobjMasstagDB->GetMassTagFromIndex(mtTagNum); 
 				MultiAlignEngine::clsMassTimeTag *mtTag = new MultiAlignEngine::clsMassTimeTag(mt.mdblMonoMass + shiftDaltons, mt.mdblAvgGANET, mt.mdblDriftTime, mt.mintMassTagId, true); 
+				mtTag->ChargeState = mt.mintChargeState;
 				arrMTTags->Add(mtTag); 
 			}
 			return arrMTTags; 

@@ -3210,10 +3210,7 @@ namespace MultiAlign.Drawing
                 maxDiff     = Math.Max(maxDiff, diff);
                 diffs.Add(diff);
             }
-
-            minDiff = -10;
-            maxDiff = 10;
-
+            
             int N           = 100;
             float[] bins    = new float[N];
             float[] freqs   = new float[N];
