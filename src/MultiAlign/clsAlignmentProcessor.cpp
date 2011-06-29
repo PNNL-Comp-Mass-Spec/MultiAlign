@@ -84,6 +84,35 @@ namespace MultiAlignEngine
 															vectClusterAlignedNETs,
 															vectClusterAlignedDriftTimes); 
 		}
+		
+		void clsAlignmentProcessor::ApplyNETMassFunctionToAligneeDatasetFeatures(List<clsCluster*>* &clusterData)
+		{
+			mintPercentDone = 0; 
+			std::vector<int>	vectClusterIndices; 
+			std::vector<double> vectClusterCalibratedMasses; 
+			std::vector<double> vectClusterAlignedNETs; 
+			std::vector<int>	vectClusterAlignedScans; 
+			std::vector<double>	vectClusterAlignedDriftTimes; 
+
+			mobjLCMSWarp->GetFeatureCalibratedMassesAndAlignedNETs( vectClusterIndices,
+																	vectClusterCalibratedMasses, 
+																	vectClusterAlignedNETs,
+																	vectClusterAlignedDriftTimes); 
+
+			int numClusters = clusterData->Count;
+			for (int clusterNum = 0; clusterNum < numClusters; clusterNum++)
+			{
+				int clusterIndex					= vectClusterIndices[clusterNum]; 
+				double calibratedMass				= vectClusterCalibratedMasses[clusterNum]; 
+				double alignedNET					= vectClusterAlignedNETs[clusterNum]; 
+				double driftTime 					= vectClusterAlignedDriftTimes[clusterNum];
+
+				clsCluster *clustA					= dynamic_cast<clsCluster*>(clusterData->Item[clusterIndex]); 
+				clustA->mdouble_mass_calibrated		= calibratedMass;
+				clustA->mdouble_aligned_net			= alignedNET;
+				clustA->mdouble_driftTime			= driftTime;
+			}
+		}
 
 		void clsAlignmentProcessor::ApplyNETMassFunctionToAligneeDatasetFeatures(MultiAlignEngine::Features::clsUMCData* &umcData)
 		{
@@ -353,6 +382,57 @@ namespace MultiAlignEngine
 			{
 				mintPercentDone									= (clusterIndex *100)/numClusters; 
 				MultiAlignEngine::Features::clsCluster *cluster = clusterData->GetCluster(clusterIndex); 
+				
+				// for clusters use the calibrated mass as the mono mass to calibrate with. 
+				// as this is the mass used in the clustering process.
+				ms_feature.mdouble_mono_mass			= cluster->mdouble_mass_calibrated; 
+				ms_feature.mdouble_mono_mass_calibrated = cluster->mdouble_mass_calibrated; 
+				ms_feature.mdouble_mono_mass_original	= cluster->mdouble_mass; 
+				
+				// for clusters the time value to use is the net value. because clustering is performed on a 
+				// net level. 
+				ms_feature.mdouble_net	= (double) cluster->mdouble_net; 
+				ms_feature.mdouble_mz	= cluster->mdouble_mass_calibrated/cluster->mshort_charge + 1.00782; 
+				ms_feature.mint_id		= clusterIndex; 
+				
+
+				vectMassTimeFeatures.push_back(ms_feature); 
+
+				if (cluster->mint_scan > mintMaxAligneeDatasetScan)
+					mintMaxAligneeDatasetScan = cluster->mint_scan; 
+				if (cluster->mint_scan < mintMinAligneeDatasetScan)
+					mintMinAligneeDatasetScan = cluster->mint_scan; 
+				if (ms_feature.mdouble_mz > mdblMaxAligneeDatasetMZ)
+					mdblMaxAligneeDatasetMZ = ms_feature.mdouble_mz; 
+				if (ms_feature.mdouble_mz < mdblMinAligneeDatasetMZ)
+					mdblMinAligneeDatasetMZ = ms_feature.mdouble_mz; 
+			}
+			mobjLCMSWarp->SetFeatures(vectMassTimeFeatures); 
+		}
+		/*////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			Function: Set Alignee Features 
+			Description:
+				For a given dataset of UMC's.  Set the alignee (who we are warping to the baseline) features.
+				Above boundary will determine if we should allow features above the m/z range or below if the 
+				splitMZBoundary flag is set in the alignment options to true				
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+		void clsAlignmentProcessor::SetAligneeDatasetFeatures(	List<clsCluster*>*			clusterData,																
+																classAlignmentMZBoundary*	boundary)
+		{
+			mblnClusterAlignee	= true;
+			int numClusters		= clusterData->Count; 
+			std::vector<MultiAlignEngine::Alignment::MassTimeFeature> vectMassTimeFeatures;
+			vectMassTimeFeatures.reserve(numClusters); 
+
+			mintMinAligneeDatasetScan	= INT_MAX; 
+			mintMaxAligneeDatasetScan	= INT_MIN; 
+			mdblMinAligneeDatasetMZ		= DBL_MAX; 
+			mdblMaxAligneeDatasetMZ		= -1 * DBL_MAX; 
+			
+			MultiAlignEngine::Alignment::MassTimeFeature ms_feature; 
+			for (int clusterIndex = 0; clusterIndex < numClusters; clusterIndex++)
+			{
+				MultiAlignEngine::Features::clsCluster *cluster = clusterData->Item[clusterIndex]; 
 				
 				// for clusters use the calibrated mass as the mono mass to calibrate with. 
 				// as this is the mass used in the clustering process.

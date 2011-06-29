@@ -86,6 +86,11 @@ namespace MultiAlignEngine
 											int datasetIndex,																
 											classAlignmentMZBoundary* boundary);
 			
+			void SetAligneeDatasetFeatures(	List<clsCluster*>*			clusterData,																
+											classAlignmentMZBoundary*	boundary);
+			
+			void ApplyNETMassFunctionToAligneeDatasetFeatures(List<clsCluster*>* &clusterData);
+
 			//TODO: Remove!
 			void SetAligneeDatasetFeatures(	MultiAlignEngine::Features::clsClusterData *clusterData,																
 											classAlignmentMZBoundary* boundary); 
