@@ -9,16 +9,16 @@ using System.Threading;
 using MultiAlign.Drawing;
 using MultiAlignCustomControls.Charting;
 using MultiAlignEngine.Features;
+using PNNLOmics.Data.Features;
 using PNNLProteomics.Algorithms;
 using PNNLProteomics.Algorithms.Clustering;
 using PNNLProteomics.Data;
 using PNNLProteomics.IO;
+using PNNLProteomics.IO.Reports;
 using PNNLProteomics.MultiAlign;
 using PNNLProteomics.MultiAlign.Hibernate;
 using PNNLProteomics.MultiAlign.Hibernate.Domain.DAO;
 using PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate;
-using PNNLOmics.Data.Features;
-using PNNLProteomics.IO.Reports;
 
 namespace MultiAlignConsole
 {
@@ -67,8 +67,21 @@ namespace MultiAlignConsole
         /// Holds a list of HTML tags for displaying plot results.
         /// </summary>
         private static List<string> m_htmlPage;
+        /// <summary>
+        /// Event that is triggered when an analysis is completed.
+        /// </summary>
         private static ManualResetEvent     m_triggerEvent;
+        /// <summary>
+        /// Path of log file.
+        /// </summary>
         private static string               m_logPath;
+        /// <summary>
+        /// ID of the job to use.
+        /// </summary>
+        private static int                  m_jobID;
+        /// <summary>
+        /// Reference to the analysis that is running.
+        /// </summary>
         private static MultiAlignAnalysis   m_analysis;
         /// <summary>
         /// Where the data and plots needs to go.
@@ -125,19 +138,19 @@ namespace MultiAlignConsole
         /// </summary>
         static Program()
         {            
-            m_width             = PLOT_WIDTH;
-            m_height            = PLOT_HEIGHT;
-            m_logPath           = null;
-            m_inputPaths        = null;
-            m_parameterFile     = null;
-            m_htmlPathName      = "index.html";
-            m_showHelp          = false;
-            m_createdBaselinePlots = false;
-            m_htmlPage          = new List<string>();
-            m_analysisPath      = null;
-            m_analysisName      = null;
-            m_databaseName      = null;
-            m_createPlots       = false;
+            m_width                 = PLOT_WIDTH;
+            m_height                = PLOT_HEIGHT;
+            m_logPath               = null;
+            m_inputPaths            = null;
+            m_parameterFile         = null;
+            m_htmlPathName          = "index.html";
+            m_showHelp              = false;
+            m_createdBaselinePlots  = false;
+            m_htmlPage              = new List<string>();
+            m_analysisPath          = null;
+            m_analysisName          = null;
+            m_databaseName          = null;
+            m_createPlots           = false;
             m_report                = new AnalysisHTMLReport();
             m_report.ImageWidth     = PLOT_WIDTH_HTML;
             m_report.ImageHeight    = PLOT_HEIGHT_HTML;
@@ -328,7 +341,7 @@ namespace MultiAlignConsole
                 // This may not be necessary...
                 int baselineIndex       = -1;
                 int index               = 0;
-                foreach (DatasetInformation info in m_analysis.Datasets)
+                foreach (DatasetInformation info in m_analysis.MetaData.Datasets)
                 {
                     if (info.DatasetName == m_analysis.BaselineDatasetName)
                     {
@@ -346,7 +359,7 @@ namespace MultiAlignConsole
                     m_report.PushStartTable();
                     m_report.PushStartTableRow();
 
-                    DatasetInformation baselineInfo     = m_analysis.Datasets[baselineIndex];
+                    DatasetInformation baselineInfo     = m_analysis.MetaData.Datasets[baselineIndex];
                     ChartDisplayOptions baselineOptions = new ChartDisplayOptions(false, true, true, true);
                     baselineOptions.MarginMin       = 1;
                     baselineOptions.MarginMax       = 100;
@@ -540,11 +553,11 @@ namespace MultiAlignConsole
         /// <returns></returns>
         private static InputAnalysisInfo ReadInputFile(string path)
         {
-            InputAnalysisInfo info = new InputAnalysisInfo();
-            string[] lines = File.ReadAllLines(path);
+            InputAnalysisInfo info  = new InputAnalysisInfo();
+            string[] lines          = File.ReadAllLines(path);
 
-            int readType = -1;
-            int baselineIndex = 0;
+            int readType        = -1;
+            int baselineIndex   = 0;
             foreach (string line in lines)
             {
                 string fixedLine = line.ToLower();
@@ -602,7 +615,9 @@ namespace MultiAlignConsole
         /// <param name="args"></param>
         static void ProcessCommandLineArguments(string[] args)
         {
-            m_options = CommandLineParser.ProcessArgs(args, 0);
+            int jobID   = -1;
+            bool worked = false;
+            m_options   = CommandLineParser.ProcessArgs(args, 0);
             foreach (string option in m_options.Keys)
             {                
                 try
@@ -610,6 +625,19 @@ namespace MultiAlignConsole
                     List<string> values = m_options[option];
                     switch (option)
                     {
+                        case "-job":
+                            worked = int.TryParse(values[0], out jobID);
+                            if (worked)
+                            {
+                                m_jobID = jobID;
+                            }
+                            else
+                            {
+                                PrintMessage(string.Format("The Job ID {0} specified could not be understood.",
+                                                            values[0]),
+                                                            true);
+                            }
+                            break;
                         case "-path":
                             m_analysisPath  = values[0];
                             break;
@@ -866,7 +894,7 @@ namespace MultiAlignConsole
 
             PrintMessage("Saving dataset information to database.");
             DatasetDAOHibernate datasetDAOHibernate = new DatasetDAOHibernate();
-            List<DatasetInformation> datasetList    = m_analysis.Datasets;
+            List<DatasetInformation> datasetList    = m_analysis.MetaData.Datasets;
             datasetDAOHibernate.AddAll(datasetList);
             m_report.PushEndHeader();
             m_triggerEvent.Set();
@@ -931,7 +959,6 @@ namespace MultiAlignConsole
             return memory;            
         }
         #endregion
-
 
         /// <summary>
         /// Creates the HTML output file.
@@ -1072,10 +1099,10 @@ namespace MultiAlignConsole
 
             // create application and analysis.
             PrintMessage("Starting MultiAlign Console Application.");
-            PrintMessage("Creating analysis: " + m_analysisName);
-            PrintMessage("Storing analysis: " + Path.GetFullPath(m_analysisPath));
-            PrintMessage("Using Files:  " + Path.GetFullPath(m_inputPaths));
-            PrintMessage("Using Parameters: " + Path.GetFullPath(m_parameterFile));            
+            PrintMessage("Creating analysis: "  + m_analysisName);
+            PrintMessage("Storing analysis: "   + Path.GetFullPath(m_analysisPath));
+            PrintMessage("Using Files:  "       + Path.GetFullPath(m_inputPaths));
+            PrintMessage("Using Parameters: "   + Path.GetFullPath(m_parameterFile));            
             // Read the input datasets.
             if (!File.Exists(m_inputPaths))
             {
@@ -1090,32 +1117,33 @@ namespace MultiAlignConsole
             }
 
             PrintMessage("Parsing Input Filenames and Databases.");
-            InputAnalysisInfo info = ReadInputFile(m_inputPaths);
-            PrintMessage("Found " + info.FilePaths.Count.ToString() + " files.");
+            InputAnalysisInfo analysisSetupInformation = ReadInputFile(m_inputPaths);
+            PrintMessage("Found " + analysisSetupInformation.FilePaths.Count.ToString() + " files.");
             
             // Validate the mass tag database settings.            
-            if (info.MassTagDatabase != null || info.MassTagDatabaseServer != null)
+            if (analysisSetupInformation.MassTagDatabase != null || analysisSetupInformation.MassTagDatabaseServer != null)
             {                
-                if (info.MassTagDatabase == null)
+                if (analysisSetupInformation.MassTagDatabase == null)
                 {
                     PrintMessage("No mass tag database supplied.");
                     return;
                 }                                            
-                if (info.MassTagDatabaseServer == null)
+                if (analysisSetupInformation.MassTagDatabaseServer == null)
                 {
                     PrintMessage("No Mass Tag Database Server Supplied.");                    
                     return;
                 }
-                PrintMessage(string.Format("Using Mass Tag Database {0} on Server {1} ", info.MassTagDatabase, info.MassTagDatabaseServer)); 
+                PrintMessage(string.Format("Using Mass Tag Database {0} on Server {1} ", analysisSetupInformation.MassTagDatabase, analysisSetupInformation.MassTagDatabaseServer)); 
             }
 
 
             PrintMessage("Creating Analysis Objects.");
             MultiAlignAnalysis analysis             = new MultiAlignAnalysis();
-            analysis.AnalysisPath                   = m_analysisPath;
-            analysis.AnalysisName                   = m_analysisName;
+            analysis.MetaData.AnalysisPath          = m_analysisPath;
+            analysis.MetaData.AnalysisName          = m_analysisName;
             analysis.UseMassTagDBAsBaseline         = true;
-            
+            analysis.MetaData.ParameterFile         = m_parameterFile;
+            analysis.MetaData.InputFile             = m_inputPaths;            
             m_analysis                              = analysis;
             MultiAlignAnalysisProcessor processor   = new MultiAlignAnalysisProcessor();
 
@@ -1138,22 +1166,22 @@ namespace MultiAlignConsole
             reader.ReadParameterFile(m_parameterFile, ref m_analysis);            
 
             // Update the mass tag database if needed.
-            if (info.MassTagDatabase != null)
+            if (analysisSetupInformation.MassTagDatabase != null)
             {
-                m_analysis.MassTagDBOptions.mstrDatabase        = info.MassTagDatabase;
-                m_analysis.MassTagDBOptions.mstrServer          = info.MassTagDatabaseServer;
+                m_analysis.MassTagDBOptions.mstrDatabase        = analysisSetupInformation.MassTagDatabase;
+                m_analysis.MassTagDBOptions.mstrServer          = analysisSetupInformation.MassTagDatabaseServer;
                 m_analysis.MassTagDBOptions.menm_databaseType   = MultiAlignEngine.MassTags.MassTagDatabaseType.SQL; 
                 
                 // Validate the baseline
-                if (info.BaselineFileIndex < 0)
+                if (analysisSetupInformation.BaselineFileIndex < 0)
                 {
                     m_analysis.UseMassTagDBAsBaseline = true;
-                    PrintMessage(string.Format("Using mass tag database {0} as the alignment baseline.", info.MassTagDatabase));
+                    PrintMessage(string.Format("Using mass tag database {0} as the alignment baseline.", analysisSetupInformation.MassTagDatabase));
                 }
                 else
                 {
                     m_analysis.UseMassTagDBAsBaseline   = false;                    
-                    string baselineDataset              = Path.GetFileName(info.FilePaths[info.BaselineFileIndex]);
+                    string baselineDataset              = Path.GetFileName(analysisSetupInformation.FilePaths[analysisSetupInformation.BaselineFileIndex]);
                     m_analysis.BaselineDatasetName      = baselineDataset;
                     PrintMessage(string.Format("Using dataset {0} as the alignment baseline.", baselineDataset));
                 }
@@ -1163,33 +1191,31 @@ namespace MultiAlignConsole
                 m_analysis.MassTagDBOptions.menm_databaseType = MultiAlignEngine.MassTags.MassTagDatabaseType.None;
                 m_analysis.UseMassTagDBAsBaseline = false;
                 // Validate the baseline
-                if (info.BaselineFileIndex < 0)
+                if (analysisSetupInformation.BaselineFileIndex < 0)
                 {
                     PrintMessage("No baseline dataset or database was selected.");
                     return;
                 }
 
-                string baselineDataset = Path.GetFileName(info.FilePaths[info.BaselineFileIndex]);
+                string baselineDataset = Path.GetFileName(analysisSetupInformation.FilePaths[analysisSetupInformation.BaselineFileIndex]);
                 m_analysis.BaselineDatasetName = baselineDataset;
                 PrintMessage(string.Format("Using dataset {0} as the alignment baseline.", baselineDataset));
             }
 
             // Output the settings to INI for viewing.
-            string outParamName              = Path.GetFileNameWithoutExtension(m_parameterFile);
-            string outParamPath              = Path.Combine(m_analysisPath, outParamName);            
-            XMLParameterFileWriter xmlWriter = new XMLParameterFileWriter();                
-            xmlWriter.WriteParameterFile(outParamPath + ".xml", m_analysis);
-            
-
+            string outParamName                 = Path.GetFileNameWithoutExtension(m_parameterFile);
+            string outParamPath                 = Path.Combine(m_analysisPath, outParamName);            
+            XMLParameterFileWriter xmlWriter    = new XMLParameterFileWriter();                
+            xmlWriter.WriteParameterFile(outParamPath + ".xml", m_analysis);     
 
             // Create dataset information.
             int i = 0;
             PrintMessage("Creating dataset information.");
 
-            foreach (string filename in info.FilePaths)
+            foreach (string filename in analysisSetupInformation.FilePaths)
             {
-                DatasetInformation datasetInfo = new DatasetInformation();
-                datasetInfo.Path = filename;
+                DatasetInformation datasetInfo  = new DatasetInformation();
+                datasetInfo.Path                = filename;
                 datasetInfo.DatasetId = (i.ToString());
                 i++;
 
@@ -1200,7 +1226,7 @@ namespace MultiAlignConsole
                 datasetInfo.Selected            = true;
 
                 PrintMessage("Created dataset information for " + filename);
-                analysis.Datasets.Add(datasetInfo);
+                analysis.MetaData.Datasets.Add(datasetInfo);
             }
 
             processor.AnalysisError         += new EventHandler<AnalysisErrorEventArgs>(processor_AnalysisError);

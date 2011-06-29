@@ -618,13 +618,13 @@ namespace MultiAlignWin
         /// </summary>
         private void SelectCheckedItems()
         {
-            m_analysis.Datasets.Clear();            
+            m_analysis.MetaData.Datasets.Clear();            
             foreach (ListViewItem item in mlistView_datasets.CheckedItems)
             {
                 DatasetInformation info = item.Tag as DatasetInformation;
                 if (info != null)
                 {
-                    m_analysis.Datasets.Add(info);
+                    m_analysis.MetaData.Datasets.Add(info);
                 }
             }
         }        

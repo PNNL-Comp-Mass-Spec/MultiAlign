@@ -11,8 +11,8 @@ namespace PNNLProteomics.Algorithms
 {
     public interface IFeatureAligner
     {
-        classAlignmentData AlignFeatures(clsMassTagDB database, List<clsUMC> features, clsAlignmentOptions options);
-        classAlignmentData AlignFeatures(List<clsUMC> baseline,  List<clsUMC> features, clsAlignmentOptions options);
-        classAlignmentData AlignFeatures(clsMassTagDB massTagDatabase, clsClusterData clusters, clsAlignmentOptions options);
+        classAlignmentData AlignFeatures(clsMassTagDB database,         List<clsUMC> features,      clsAlignmentOptions options);
+        classAlignmentData AlignFeatures(List<clsUMC> baseline,         List<clsUMC> features,      clsAlignmentOptions options);        
+        classAlignmentData AlignFeatures(clsMassTagDB massTagDatabase,  List<clsCluster> clusters,  clsAlignmentOptions options);        
     }
 }

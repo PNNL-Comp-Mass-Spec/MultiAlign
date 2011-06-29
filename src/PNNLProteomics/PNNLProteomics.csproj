@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -200,6 +200,7 @@
     <Compile Include="Data\DeisotopingTool.cs" />
     <Compile Include="Data\Factors\FactorInformation.cs" />
     <Compile Include="Data\LabelingType.cs" />
+    <Compile Include="Data\ProjectMetaData.cs" />
     <Compile Include="Filters\FilterUtil.cs" />
     <Compile Include="Filters\IFilter.cs" />
     <Compile Include="Filters\UMCClusterFilters.cs" />
@@ -216,6 +217,9 @@
     <Compile Include="IO\CommandLineParser.cs" />
     <Compile Include="IO\IParameterFileReader.cs" />
     <Compile Include="IO\IParameterFileWriter.cs" />
+    <Compile Include="IO\MTDB\MTSPeakMatchResultsWriter.cs" />
+    <Compile Include="IO\MTDB\MTSSqlServerPeakMatchResultWriter.cs" />
+    <Compile Include="IO\PeakMatchResultsWriter.cs" />
     <Compile Include="IO\Reports\AnalysisHTMLReport.cs" />
     <Compile Include="IO\XMLParameterFileReader.cs" />
     <Compile Include="IO\XMLParameterFileWriter.cs" />

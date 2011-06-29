@@ -58,13 +58,13 @@ namespace MultiAlignWin
         {
             if (m_analysis!= null)
             {
-                if (!string.IsNullOrWhiteSpace(m_analysis.AnalysisName))
+                if (!string.IsNullOrWhiteSpace(m_analysis.MetaData.AnalysisName))
                 {
-                    textBoxProjectName.Text = m_analysis.AnalysisName;
+                    textBoxProjectName.Text = m_analysis.MetaData.AnalysisName;
                 }
-                if (!string.IsNullOrWhiteSpace(m_analysis.AnalysisPath))
+                if (!string.IsNullOrWhiteSpace(m_analysis.MetaData.AnalysisPath))
                 {
-                    textBoxFolder.Text = m_analysis.AnalysisPath;
+                    textBoxFolder.Text = m_analysis.MetaData.AnalysisPath;
                 }
             }
         }
@@ -267,8 +267,8 @@ namespace MultiAlignWin
                 }
             }
 
-            m_analysis.AnalysisPath = PNNLProteomics.MultiAlign.AnalysisPathUtils.BuildAnalysisName(textBoxFolder.Text, textBoxProjectName.Text);
-            m_analysis.AnalysisName = textBoxProjectName.Text;
+            m_analysis.MetaData.AnalysisPath = PNNLProteomics.MultiAlign.AnalysisPathUtils.BuildAnalysisName(textBoxFolder.Text, textBoxProjectName.Text);
+            m_analysis.MetaData.AnalysisName = textBoxProjectName.Text;
 
             Properties.Settings.Default.UserOutputPath = textBoxFolder.Text;
             Properties.Settings.Default.Save();

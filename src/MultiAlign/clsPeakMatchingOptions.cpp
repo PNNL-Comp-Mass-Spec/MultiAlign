@@ -11,6 +11,7 @@ namespace MultiAlignEngine
 			mdblNETTolerance			= 0.03; 
 			mdblDriftTimeTolerance		= 50.0;	
 			m_performSTAC				= false;
+			m_writeResultsToSystem		= false;
 		}
 
 		clsPeakMatchingOptions::~clsPeakMatchingOptions(void)

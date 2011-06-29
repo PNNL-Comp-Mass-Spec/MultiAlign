@@ -58,9 +58,9 @@ namespace PNNLProteomics.IO
 
             if (analysis != null)
             {
-                if (analysis.AnalysisName == null)
-                    analysis.AnalysisName = string.Empty;
-                analysis.AnalysisPath = path;
+                if (analysis.MetaData.AnalysisName == null)
+                    analysis.MetaData.AnalysisName = string.Empty;
+                analysis.MetaData.AnalysisPath = path;
 
                 if (analysis.AlignmentData == null)
                     analysis.AlignmentData = new List<classAlignmentData>();

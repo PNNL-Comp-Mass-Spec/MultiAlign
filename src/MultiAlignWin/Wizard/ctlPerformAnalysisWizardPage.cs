@@ -519,9 +519,12 @@ namespace MultiAlignWin
         {
             m_statusMessages.Items.Clear();
 
-            string analysisName     = m_analysis.AnalysisName;     
-            string parameterPath    = AnalysisPathUtils.BuildParameterPath(m_analysis.AnalysisPath, m_analysis.AnalysisName, ".xml");
-            m_logPath               = AnalysisPathUtils.BuildLogPath(m_analysis.AnalysisPath, m_analysis.AnalysisName);
+            string analysisName     = m_analysis.MetaData.AnalysisName;
+            string parameterPath = AnalysisPathUtils.BuildParameterPath(m_analysis.MetaData.AnalysisPath, 
+                                                                        m_analysis.MetaData.AnalysisName, 
+                                                                        ".xml");
+            m_logPath               = AnalysisPathUtils.BuildLogPath(   m_analysis.MetaData.AnalysisPath, 
+                                                                        m_analysis.MetaData.AnalysisName);
 
             PNNLProteomics.IO.XMLParameterFileWriter writer = new PNNLProteomics.IO.XMLParameterFileWriter();
             writer.WriteParameterFile(parameterPath, m_analysis);

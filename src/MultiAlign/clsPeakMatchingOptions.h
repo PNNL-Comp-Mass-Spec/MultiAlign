@@ -23,13 +23,24 @@ namespace MultiAlignEngine
 			double mdblDriftTimeTolerance;
 			/// flag to use stack.
 			bool m_performSTAC;
-		public:
-
+			// Flag indicating if PM results should be written back to system.
+			bool m_writeResultsToSystem;
 			
 		public: 
 			clsPeakMatchingOptions(void);
-			~clsPeakMatchingOptions(void);
-		
+			~clsPeakMatchingOptions(void);		
+			
+			[clsDataSummaryAttribute("Results written to Mass Tag System")]			
+			[clsParameterFileAttribute("WriteResultsBackToMTS", "PeakMatchingOptions")]
+			__property bool get_WriteResultsBackToMTS()
+			{
+				return m_writeResultsToSystem; 
+			}
+			__property void set_WriteResultsBackToMTS(bool write)
+			{
+				m_writeResultsToSystem = write; 
+			}
+
 			[clsDataSummaryAttribute("Perform STAC")]			
 			[clsParameterFileAttribute("PerformStac", "PeakMatchingOptions")]
 			__property bool get_UseSTAC()

@@ -90,7 +90,7 @@ namespace MultiAlignWin
             m_analysis.PeakMatchingOptions      = MultiAlignWin.Data.AnalysisDefaultOptionsFactory.LoadPeakMatchingOptions();
             m_analysis.UMCFindingOptions        = MultiAlignWin.Data.AnalysisDefaultOptionsFactory.LoadFeatureFindingOptions();
             m_analysis.MassTagDBOptions         = MultiAlignWin.Data.AnalysisDefaultOptionsFactory.LoadDBOptions();
-            m_analysis.SMARTOptions             = MultiAlignWin.Data.AnalysisDefaultOptionsFactory.LoadSMARTOptions();
+            m_analysis.STACOptions             = MultiAlignWin.Data.AnalysisDefaultOptionsFactory.LoadSMARTOptions();
 
             // Create the control pages
             InitializeWizardPages();   
@@ -377,9 +377,9 @@ namespace MultiAlignWin
         /// <param name="e"></param>
         private void StartAnalysis()
         {
-            if (!Directory.Exists(m_analysis.AnalysisPath))
+            if (!Directory.Exists(m_analysis.MetaData.AnalysisPath))
             {
-                Directory.CreateDirectory(m_analysis.AnalysisPath);
+                Directory.CreateDirectory(m_analysis.MetaData.AnalysisPath);
             }     
 
             AlgorithmBuilder builder            = new AlgorithmBuilder();                     

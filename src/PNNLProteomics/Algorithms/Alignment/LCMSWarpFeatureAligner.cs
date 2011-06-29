@@ -337,8 +337,8 @@ namespace PNNLProteomics.Algorithms.Alignment
         /// <param name="options">Alignment options.</param>
         /// <returns>Alignment data for the clusters to mass tag database.</returns>
         public classAlignmentData AlignFeatures( clsMassTagDB          massTagDatabase,
-                                                            clsClusterData        clusters,
-                                                            clsAlignmentOptions   options)
+                                                List<clsCluster>       clusters,
+                                                clsAlignmentOptions    options)
         {            
             clsAlignmentProcessor alignmentProcessor = new clsAlignmentProcessor();
             alignmentProcessor.SetReferenceDatasetFeatures(massTagDatabase);
@@ -354,9 +354,7 @@ namespace PNNLProteomics.Algorithms.Alignment
             float[] yIntervals  = new float[1];
             alignmentProcessor.GetAlignmentHeatMap(ref heatScores, ref xIntervals, ref yIntervals);
 
-            // Ranges
-            float minClusterNET = 0.0F, maxClusterNET = 1.0F;
-            clusters.GetMinMaxNET(ref minClusterNET, ref maxClusterNET);
+
             float minMTDBNET    = 0.0F, maxMTDBNET = 1.0F;
             alignmentProcessor.GetReferenceNETRange(ref minMTDBNET, ref maxMTDBNET);
 

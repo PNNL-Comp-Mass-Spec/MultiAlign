@@ -496,10 +496,10 @@ namespace MultiAlignWin
         private void mbutton_scoring_Click(object sender, EventArgs e)
         {
             formPeptideIDScoring scoreForm  = new formPeptideIDScoring();                        
-            scoreForm.Options               = m_analysis.SMARTOptions;
+            scoreForm.Options               = m_analysis.STACOptions;
             if (scoreForm.ShowDialog() == DialogResult.OK)
             {
-                m_analysis.SMARTOptions = scoreForm.Options;
+                m_analysis.STACOptions = scoreForm.Options;
             }   
         }
         #endregion
@@ -510,7 +510,7 @@ namespace MultiAlignWin
             m_updatingRadioButtons = true;
 
             // We can only align to a DB.
-            if (m_analysis.Datasets.Count < 2)
+            if (m_analysis.MetaData.Datasets.Count < 2)
             {
                 mradio_alignToFile.Enabled  = false;
                 mradio_alignToMTDB.Enabled  = true;
@@ -601,7 +601,7 @@ namespace MultiAlignWin
                 if (m_analysis != null)
                 {
                     mcomboBox_baseline.Items.Clear();
-                    if (m_analysis.Datasets.Count < 2)
+                    if (m_analysis.MetaData.Datasets.Count < 2)
                     {
                         mcomboBox_baseline.Enabled = false;
                         mcomboBox_baseline.Items.Add("Select Mass Tag Database (MTDB)");
@@ -610,7 +610,7 @@ namespace MultiAlignWin
                     else
                     {
                         mcomboBox_baseline.Enabled = true;
-                        foreach (DatasetInformation info in m_analysis.Datasets)
+                        foreach (DatasetInformation info in m_analysis.MetaData.Datasets)
                         {
                             mcomboBox_baseline.Items.Add(info.DatasetName);
                         }
@@ -662,7 +662,7 @@ namespace MultiAlignWin
         public void SetAsActivePage()
         {
             bool usePredefinedFeaturesOnly = true;
-            foreach (DatasetInformation info in m_analysis.Datasets)
+            foreach (DatasetInformation info in m_analysis.MetaData.Datasets)
             {
                 bool containsFeatures = info.DatasetName.Contains("_LCMSFeatures");
                 if (!containsFeatures)

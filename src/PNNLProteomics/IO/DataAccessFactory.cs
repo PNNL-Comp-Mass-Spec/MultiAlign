@@ -12,7 +12,7 @@ namespace PNNLProteomics.IO
 
         public static FeatureDataAccessProviders CreateDataAccessProviders(MultiAlignAnalysis analysis)
         {
-            string path = AnalysisPathUtils.BuildAnalysisName(analysis.AnalysisPath, analysis.AnalysisName);
+            string path = AnalysisPathUtils.BuildAnalysisName(analysis.MetaData.AnalysisPath, analysis.MetaData.AnalysisName);
 
             bool exists = File.Exists(path);
             if (exists)

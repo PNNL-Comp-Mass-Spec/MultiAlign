@@ -135,7 +135,7 @@ namespace MultiAlignWin.UI
                 if (analysis != null)
                 {
                     DataView dataView = new DataView();
-                    dataView.Text = "Data View for: " + analysis.AnalysisName;
+                    dataView.Text = "Data View for: " + analysis.MetaData.AnalysisName;
                     dataView.SetAnalysis(analysis);
                     dataView.Icon = Icon;
                     dataView.MdiParent = this;

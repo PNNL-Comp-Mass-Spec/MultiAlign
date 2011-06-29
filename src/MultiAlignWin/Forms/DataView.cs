@@ -732,10 +732,10 @@ namespace MultiAlignWin
                 m_datasetsDisplayControls.Clear();
             }
                         
-            m_dataControls.Controls.Clear();           
-            for (int i = 0; i < m_analysis.Datasets.Count; i++)
+            m_dataControls.Controls.Clear();
+            for (int i = 0; i < m_analysis.MetaData.Datasets.Count; i++)
             {
-                DatasetInformation  info                = m_analysis.Datasets[i];
+                DatasetInformation  info                = m_analysis.MetaData.Datasets[i];
                 classAlignmentData  alignmentData       = m_analysis.AlignmentData[i];
                 clsAlignmentOptions alignmentOptions    = m_analysis.AlignmentOptions[i];                               
                 controlDatasetInformation datasetControl = new controlDatasetInformation(info,
@@ -883,7 +883,7 @@ namespace MultiAlignWin
                 }
                 else
                 {
-                    AddStacFdrTableToSummaryView(m_analysis.STACTResults);
+                    AddStacFdrTableToSummaryView(m_analysis.STACResults);
                 }
             }            
             m_resultSummaryPages.UpdateColumnWidths();
@@ -894,7 +894,7 @@ namespace MultiAlignWin
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
             AnalysisBinaryWriter writer = new AnalysisBinaryWriter();
-            writer.WriteAnalysis(AnalysisPathUtils.BuildAnalysisName(m_analysis.AnalysisPath , m_analysis.AnalysisName + ".mln"), m_analysis);
+            writer.WriteAnalysis(AnalysisPathUtils.BuildAnalysisName(m_analysis.MetaData.AnalysisPath, m_analysis.MetaData.AnalysisName + ".mln"), m_analysis);
         }
         private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
         {

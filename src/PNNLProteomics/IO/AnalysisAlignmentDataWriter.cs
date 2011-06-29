@@ -20,7 +20,7 @@ namespace PNNLProteomics.IO
                 for(int i = 0; i < analysis.AlignmentData.Count; i++)
                 {
                     classAlignmentData data = analysis.AlignmentData[i];
-                    writer.Write("{0},", Path.GetFileNameWithoutExtension(analysis.Datasets[i].Path));
+                    writer.Write("{0},", Path.GetFileNameWithoutExtension(analysis.MetaData.Datasets[i].Path));
                     if (data == null)
                     {
                         writer.WriteLine("Baseline dataset");
