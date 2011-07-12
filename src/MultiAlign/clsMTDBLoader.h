@@ -87,7 +87,7 @@ namespace MultiAlignEngine
 				}
 				else
 				{		
-					mstrOleConnectionStr	=  System::String::Concat(S"Provider=Microsoft.Jet.OLEDB.4.0;Data Source=",options->mstr_databaseFilePath);
+					//mstrOleConnectionStr	=  System::String::Concat(S"Provider=Microsoft.Jet.OLEDB.4.0;Data Source=",options->mstr_databaseFilePath);
 					mstrOleConnectionStr	=  System::String::Concat(S"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=",options->mstr_databaseFilePath);
 					mOleconnection			= new System::Data::OleDb::OleDbConnection(mstrOleConnectionStr);
 				}

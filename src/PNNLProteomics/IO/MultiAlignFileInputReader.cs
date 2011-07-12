@@ -117,10 +117,13 @@ namespace PNNLProteomics.IO
                                 switch (keys[0].ToLower())
                                 {
                                     case "database":
-                                        info.MassTagDatabase        = keys[1];
+                                        info.Database.DatabaseName      = keys[1];
                                         break;
                                     case "server":
-                                        info.MassTagDatabaseServer  = keys[1];
+                                        info.Database.DatabaseServer    = keys[1];
+                                        break;
+                                    case "accesspath":
+                                        info.Database.LocalPath         = keys[1];
                                         break;
                                 }
                             }

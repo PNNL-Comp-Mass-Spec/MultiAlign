@@ -1070,19 +1070,15 @@ namespace MultiAlignConsole
             PrintMessage("Found " + analysisSetupInformation.Files.Count.ToString() + " files.");
             
             // Validate the mass tag database settings.            
-            if (analysisSetupInformation.MassTagDatabase != null || analysisSetupInformation.MassTagDatabaseServer != null)
-            {                
-                if (analysisSetupInformation.MassTagDatabase == null)
-                {
-                    PrintMessage("No mass tag database supplied.");
-                    return;
-                }                                            
-                if (analysisSetupInformation.MassTagDatabaseServer == null)
-                {
-                    PrintMessage("No Mass Tag Database Server Supplied.");                    
-                    return;
-                }
-                PrintMessage(string.Format("Using Mass Tag Database {0} on Server {1} ", analysisSetupInformation.MassTagDatabase, analysisSetupInformation.MassTagDatabaseServer)); 
+            bool useMTDB = false;
+            try
+            {
+                useMTDB = analysisSetupInformation.Database.ValidateDatabaseType();
+            }
+            catch (AnalysisMTDBSetupException ex)
+            {
+                PrintMessage("There was a problem with the mass tag database specification.  " + ex.Message);
+                return;
             }
 
 
@@ -1113,19 +1109,36 @@ namespace MultiAlignConsole
             PrintMessage("Loading parameters.");
             PNNLProteomics.IO.XMLParamterFileReader reader = new PNNLProteomics.IO.XMLParamterFileReader();
             reader.ReadParameterFile(m_parameterFile, ref m_analysis);            
-
-            // Update the mass tag database if needed.
-            if (analysisSetupInformation.MassTagDatabase != null)
+            
+            if (useMTDB)
             {
-                m_analysis.MassTagDBOptions.mstrDatabase        = analysisSetupInformation.MassTagDatabase;
-                m_analysis.MassTagDBOptions.mstrServer          = analysisSetupInformation.MassTagDatabaseServer;
-                m_analysis.MassTagDBOptions.menm_databaseType   = MultiAlignEngine.MassTags.MassTagDatabaseType.SQL; 
-                
+                switch (analysisSetupInformation.Database.DatabaseFormat)
+                {
+                    case PNNLProteomics.Data.MassTags.MassTagDatabaseFormat.Access:
+                        PrintMessage(string.Format("Using local Mass Tag Database at location: {0}",
+                                                    analysisSetupInformation.Database.LocalPath));
+
+                        m_analysis.MassTagDBOptions.mstr_databaseFilePath   = analysisSetupInformation.Database.LocalPath;
+                        m_analysis.MassTagDBOptions.mstrServer              = analysisSetupInformation.Database.DatabaseServer;
+                        m_analysis.MassTagDBOptions.menm_databaseType       = MultiAlignEngine.MassTags.MassTagDatabaseType.ACCESS;
+
+                        break;
+                    case PNNLProteomics.Data.MassTags.MassTagDatabaseFormat.SQL:
+                        PrintMessage(string.Format("Using Mass Tag Database {0} on server: {1} ",
+                                                    analysisSetupInformation.Database.DatabaseName,
+                                                    analysisSetupInformation.Database.DatabaseServer));
+                        m_analysis.MassTagDBOptions.mstrDatabase        = analysisSetupInformation.Database.DatabaseName;
+                        m_analysis.MassTagDBOptions.mstrServer          = analysisSetupInformation.Database.DatabaseServer;
+                        m_analysis.MassTagDBOptions.menm_databaseType   = MultiAlignEngine.MassTags.MassTagDatabaseType.SQL;
+
+                        break;
+                }
+                                            
                 // Validate the baseline
                 if (analysisSetupInformation.BaselineFile == null)
                 {
                     m_analysis.UseMassTagDBAsBaseline = true;
-                    PrintMessage(string.Format("Using mass tag database {0} as the alignment baseline.", analysisSetupInformation.MassTagDatabase));
+                    PrintMessage(string.Format("Using mass tag database {0} as the alignment baseline.", analysisSetupInformation.Database.DatabaseName));
                 }
                 else
                 {

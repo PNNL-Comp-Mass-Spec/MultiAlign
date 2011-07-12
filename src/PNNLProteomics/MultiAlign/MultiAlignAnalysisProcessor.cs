@@ -684,14 +684,14 @@ namespace PNNLProteomics.MultiAlign
                 if (m_analysis.UseMassTagDBAsBaseline)
                 {
                     UpdateStatus("Loading Mass Tag database from database:  " + m_analysis.MassTagDBOptions.mstrDatabase);
-                    database = MTDBLoaderFactory.LoadMassTagDB(m_analysis.MassTagDBOptions);
+                    database = MTDBLoaderFactory.LoadMassTagDB(m_analysis.MassTagDBOptions, "");
                 }
                 else
                 {
                     if (m_analysis.MassTagDBOptions.menm_databaseType != MassTagDatabaseType.None)
                     {
                         UpdateStatus("Loading Mass Tag database from database:  " + m_analysis.MassTagDBOptions.mstrDatabase);
-                        database = MTDBLoaderFactory.LoadMassTagDB(m_analysis.MassTagDBOptions);
+                        database = MTDBLoaderFactory.LoadMassTagDB(m_analysis.MassTagDBOptions, "");
                     }
                 }
 

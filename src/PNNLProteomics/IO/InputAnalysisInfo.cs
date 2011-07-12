@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using PNNLProteomics.Data.MetaData;
 
 namespace PNNLProteomics.IO
@@ -11,13 +8,17 @@ namespace PNNLProteomics.IO
     /// </summary>
     public class InputAnalysisInfo
     {
+        /// <summary>
+        /// Constructor.
+        /// </summary>
         public InputAnalysisInfo()
         {
-            Files                   = new List<InputFile>();
-            BaselineFile            = null;
-            MassTagDatabaseServer   = null;
-            MassTagDatabase         = null;
+            Files           = new List<InputFile>();
+            BaselineFile    = null;
+            Database        = new InputDatabase();
         }
+
+        #region Properties
         /// <summary>
         /// Gets or sets the list of file paths.
         /// </summary>
@@ -35,20 +36,13 @@ namespace PNNLProteomics.IO
             set;
         }
         /// <summary>
-        /// Gets or sets the database.
+        /// Get or sets the input database type.
         /// </summary>
-        public string MassTagDatabase
+        public InputDatabase Database
         {
             get;
             set;
         }
-        /// <summary>
-        /// Gets or sets the server.
-        /// </summary>
-        public string MassTagDatabaseServer
-        {
-            get;
-            set;
-        }
+        #endregion        
     }
 }

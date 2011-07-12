@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -78,6 +78,10 @@
     <Reference Include="PNNLOmics, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\x86\PNNLOmics.dll</HintPath>
+    </Reference>
+    <Reference Include="MultiAlignEngine, Version=1.0.4084.24787, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\x86\MultiAlignEngine.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
@@ -184,8 +188,11 @@
     <Compile Include="Data\DeisotopingTool.cs" />
     <Compile Include="Data\Factors\FactorInformation.cs" />
     <Compile Include="Data\LabelingType.cs" />
-    <Compile Include="Data\MetaData\InputFile.cs" />
-    <Compile Include="Data\MetaData\InputFileType.cs" />
+    <Compile Include="Data\MassTags\MassTagDatabaseFormat.cs" />
+    <Compile Include="IO\AnalysisMTDBSetupException.cs" />
+    <Compile Include="IO\InputDatabase.cs" />
+    <Compile Include="IO\InputFile.cs" />
+    <Compile Include="IO\InputFileType.cs" />
     <Compile Include="Data\ProjectMetaData.cs" />
     <Compile Include="Filters\FilterUtil.cs" />
     <Compile Include="Filters\IFilter.cs" />
@@ -208,8 +215,14 @@
     <Compile Include="IO\Mammoth\MammothDatabase.cs" />
     <Compile Include="IO\Mammoth\MammothDatabaseRange.cs" />
     <Compile Include="IO\Mammoth\MammothDatabaseStateException.cs" />
+    <Compile Include="IO\MTDB\AccessMassTagDatabaseLoader.cs" />
+    <Compile Include="IO\MTDB\IMTDBLoader.cs" />
+    <Compile Include="IO\MTDB\MassTagDatabaseLoader.cs" />
+    <Compile Include="IO\MTDB\MassTagDatabaseOptions.cs" />
+    <Compile Include="IO\MTDB\MTSMassTagDatabaseLoader.cs" />
     <Compile Include="IO\MTDB\MTSPeakMatchResultsWriter.cs" />
     <Compile Include="IO\MTDB\MTSSqlServerPeakMatchResultWriter.cs" />
+    <Compile Include="IO\MTDB\SqliteMassTagDatabaseLoader.cs" />
     <Compile Include="IO\MultiAlignFileInputReader.cs" />
     <Compile Include="IO\PeakMatchResultsWriter.cs" />
     <Compile Include="IO\Reports\AnalysisHTMLReport.cs" />
