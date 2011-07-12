@@ -1,5 +1,5 @@
 using System;
-using Mammoth.Data;
+
 using PNNLOmics.Algorithms;
 using PNNLOmics.Algorithms.FeatureClustering;
 using PNNLOmics.Data.Features;
@@ -19,7 +19,7 @@ namespace PNNLProteomics.Algorithms
         /// <summary>
         /// Clusters features into feature clusters.
         /// </summary>
-        private IClusterer<UMCLight, MammothCluster> m_clusterer;
+        private IClusterer<UMCLight, UMCClusterLight> m_clusterer;
         /// <summary>
         /// Aligns features to features or MTDB's
         /// </summary>
@@ -42,7 +42,7 @@ namespace PNNLProteomics.Algorithms
         /// <summary>
         /// Gets or sets the clustering algorithm used.
         /// </summary>
-        public IClusterer<UMCLight, MammothCluster> Clusterer
+        public IClusterer<UMCLight, UMCClusterLight> Clusterer
         {
             get
             {

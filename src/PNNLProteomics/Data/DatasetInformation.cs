@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
-
 using MultiAlignEngine;
 using PNNLProteomics.Data.Factors;
 using PNNLProteomics.MultiAlign.Hibernate.Domain;
-using Iesi.Collections.Generic;
 
 namespace PNNLProteomics.Data
 {
@@ -20,9 +18,7 @@ namespace PNNLProteomics.Data
 		/// <summary>
 		/// Dictionary that maps a factor object to it's factor value.
 		/// </summary>
-		private Dictionary<FactorInformation, string> m_factorInformation;
-
-		//TODO: Encapsulate this data
+		private Dictionary<FactorInformation, string> m_factorInformation;		
 		[clsDataSummaryAttribute("Dataset ID")]
 		public string mstrDatasetId;
 		[clsDataSummaryAttribute("Volume")]

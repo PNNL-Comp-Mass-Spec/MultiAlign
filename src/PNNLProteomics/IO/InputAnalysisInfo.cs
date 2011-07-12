@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using PNNLProteomics.Data.MetaData;
 
 namespace PNNLProteomics.IO
 {    
@@ -12,23 +13,23 @@ namespace PNNLProteomics.IO
     {
         public InputAnalysisInfo()
         {
-            FilePaths               = new List<string>();
-            BaselineFileIndex       = -1;
+            Files                   = new List<InputFile>();
+            BaselineFile            = null;
             MassTagDatabaseServer   = null;
             MassTagDatabase         = null;
         }
         /// <summary>
         /// Gets or sets the list of file paths.
         /// </summary>
-        public List<string> FilePaths
+        public List<InputFile> Files
         {
             get;
             set;
         }
         /// <summary>
-        /// Gets or sets what file index is the baseline.
+        /// Gets or sets the baseline file..
         /// </summary>
-        public int BaselineFileIndex
+        public InputFile BaselineFile
         {
             get;
             set;

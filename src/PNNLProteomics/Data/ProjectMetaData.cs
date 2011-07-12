@@ -1,4 +1,5 @@
 ﻿using System;
+using PNNLProteomics.Data.MetaData;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,10 +18,11 @@ namespace PNNLProteomics.Data
         /// </summary>
         public AnalysisMetaData()
         {
-            Datasets        = new List<DatasetInformation>();
-            InputFile       = null;
-            ParameterFile   = null;
-            FactorTreeNode  = null;
+            Datasets            = new List<DatasetInformation>();
+            InputFileDefinition = null;
+            ParameterFile       = null;
+            FactorTreeNode      = null;
+            OtherFiles          = new List<InputFile>();
         }
 
         /// <summary>
@@ -34,8 +36,8 @@ namespace PNNLProteomics.Data
         /// <summary>
         /// Gets or sets the input file used.
         /// </summary>
-		[clsDataSummaryAttribute("Input File Name")]
-        public string InputFile
+		[clsDataSummaryAttribute("Input File Definition Name")]
+        public string InputFileDefinition
         {
             get;
             set;
@@ -85,6 +87,15 @@ namespace PNNLProteomics.Data
         {
             get;
             set;
-        } 
+        }
+
+        /// <summary>
+        /// Get or sets the list of other files that may be used for tracking data.
+        /// </summary>
+        public List<InputFile> OtherFiles
+        {
+            get;
+            set;
+        }
     }
 }

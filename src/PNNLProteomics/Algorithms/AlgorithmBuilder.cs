@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 
-using Mammoth.Data;
 using PNNLOmics.Algorithms;
 using PNNLOmics.Algorithms.FeatureClustering;
 using PNNLOmics.Data.Features;
@@ -37,18 +36,18 @@ namespace PNNLProteomics.Algorithms
         /// <returns></returns>
         public void BuildClusterer(ClusteringAlgorithmType clusterType)
         {
-            IClusterer<UMCLight, MammothCluster> clusterer = null;
+            IClusterer<UMCLight, UMCClusterLight> clusterer = null;
             switch (clusterType)
             {
                     
                 case ClusteringAlgorithmType.AverageLinkage:
-                    clusterer = new UMCAverageLinkageClusterer<MammothCluster>();
+                    clusterer = new UMCAverageLinkageClusterer<UMCLight, UMCClusterLight>();
                     break;
                 case ClusteringAlgorithmType.Centroid:
-                    clusterer = new UMCCentroidClusterer<MammothCluster>();
+                    clusterer = new UMCCentroidClusterer<UMCLight, UMCClusterLight>();
                     break;
                 case ClusteringAlgorithmType.SingleLinkage:
-                    clusterer = new UMCSingleLinkageClusterer<MammothCluster>();
+                    clusterer = new UMCSingleLinkageClusterer<UMCLight, UMCClusterLight>();
                     break;
             }
 

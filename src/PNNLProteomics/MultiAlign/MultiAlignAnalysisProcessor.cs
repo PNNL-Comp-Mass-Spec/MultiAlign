@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using Mammoth.Data;
 using MultiAlignEngine;
 using MultiAlignEngine.Clustering;
 using MultiAlignEngine.Features;
@@ -11,13 +10,17 @@ using MultiAlignEngine.MassTags;
 using PNNLOmics.Algorithms;
 using PNNLOmics.Algorithms.Alignment;
 using PNNLOmics.Algorithms.FeatureClustering;
+using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
+using PNNLOmics.IO.FileReaders;
 using PNNLProteomics.Algorithms;
 using PNNLProteomics.Algorithms.Alignment;
 using PNNLProteomics.Algorithms.PeakMatching;
 using PNNLProteomics.Data;
 using PNNLProteomics.Data.Alignment;
+using PNNLProteomics.Data.MetaData;
 using PNNLProteomics.IO;
+using PNNLProteomics.IO.Mammoth;
 using PNNLProteomics.IO.MTDB;
 using PNNLProteomics.IO.UMC;
 using PNNLProteomics.MultiAlign.Hibernate.Domain.DAO;
@@ -149,6 +152,33 @@ namespace PNNLProteomics.MultiAlign
         #endregion
 
         #region Analysis Methods
+
+        private void LoadOtherData( List<InputFile> otherFiles,                                    
+                                    string analysisPath)
+        {
+            //IUmcDAO featureCache = m_analysis.DataProviders.FeatureCache;
+
+
+            foreach (InputFile file in otherFiles)
+            {
+                string path = file.Path;
+                if (path == null)
+                    continue;
+
+                UpdateStatus("Loading other file " + Path.GetFileName(path) + ".");                
+                switch(file.FileType)
+                {
+                    case InputFileType.Scans:
+                        ScansFileReader reader      = new ScansFileReader();
+                        List<ScanSummary> spectra   = reader.ReadFile(path).ToList();
+                        UpdateStatus("Scans file acknowledged but not used at this time.");
+                        break;
+                    case InputFileType.Raw:
+                        UpdateStatus("Raw input not supported yet.  But the raw data MSn data will be mapped to the analysis database.");
+                        break;
+                }                                
+            }
+        }          
         /// <summary>
         /// Load the data from the dataset information objects to the cache at the analysis Path
         /// </summary>
@@ -156,8 +186,8 @@ namespace PNNLProteomics.MultiAlign
         /// <param name="options">Options to use for UMC finding if required.</param>
         /// <param name="analysisPath">Path to save data to.</param>
         private void LoadDatasetData(List<DatasetInformation> datasets,
-                             clsUMCFindingOptions     options,
-                             string                   analysisPath)
+                                     clsUMCFindingOptions     options,
+                                     string analysisPath)
         {            
             IUmcDAO featureCache = m_analysis.DataProviders.FeatureCache;
             foreach (DatasetInformation dataset in datasets)
@@ -185,36 +215,28 @@ namespace PNNLProteomics.MultiAlign
         /// <param name="analysis"></param>
         /// <param name="clusterer"></param>
         /// <returns></returns>
-        public void PerformClustering(MultiAlignAnalysis analysis,
-                                      IClusterer<UMCLight, Mammoth.Data.MammothCluster> clusterer)
+        public void PerformClustering(MultiAlignAnalysis                    analysis,
+                                      IClusterer<UMCLight, UMCClusterLight> clusterer)
         {
             UpdateStatus("Using Cluster Algorithm: " + clusterer.ToString());
 
             // Tolerances
-            FeatureTolerances tolerances            = new FeatureTolerances();
-            FeatureClusterParameters parameters     = new FeatureClusterParameters();
-            tolerances.DriftTime                    = analysis.ClusterOptions.DriftTimeTolerance;
-            tolerances.Mass                         = analysis.ClusterOptions.MassTolerance;
-            tolerances.RetentionTime                = analysis.ClusterOptions.NETTolerance;
-            parameters.CentroidRepresentation       = PNNLOmics.Data.Features.ClusterCentroidRepresentation.Mean;
-            parameters.Tolerances                   = tolerances;            
-            parameters.OnlyClusterSameChargeStates  = (analysis.ClusterOptions.IgnoreCharge == false);
+            FeatureTolerances tolerances                        = new FeatureTolerances();
+            FeatureClusterParameters<UMCLight> parameters       = new FeatureClusterParameters<UMCLight>();
+            tolerances.DriftTime                                = analysis.ClusterOptions.DriftTimeTolerance;
+            tolerances.Mass                                     = analysis.ClusterOptions.MassTolerance;
+            tolerances.RetentionTime                            = analysis.ClusterOptions.NETTolerance;
+            parameters.CentroidRepresentation                   = PNNLOmics.Data.Features.ClusterCentroidRepresentation.Mean;
+            parameters.Tolerances                               = tolerances;            
+            parameters.OnlyClusterSameChargeStates              = (analysis.ClusterOptions.IgnoreCharge == false);
             if (analysis.ClusterOptions.ClusterRepresentativeType == enmClusterRepresentativeType.MEDIAN)
             {
                 parameters.CentroidRepresentation = ClusterCentroidRepresentation.Median;
             }
 
-            clusterer.Parameters = parameters;            
-            
-            // This just tells us whether we are using mammoth memory partitions or not.
-            if (analysis.ClusterOptions.RecursionLevels > 0)
-            {
-                UpdateStatus(string.Format("Using Mammoth clustering framework with {0} recursive memory partitions.", analysis.ClusterOptions.RecursionLevels));
-            }
-            else
-            {
-                UpdateStatus("Using Mammoth clustering framework without partitions.  Clustering will run with all features loaded into memory.");
-            }
+            clusterer.Parameters = parameters;                        
+            // This just tells us whether we are using mammoth memory partitions or not.            
+            UpdateStatus("Clustering will run with all features loaded into memory. <recursion levels now ignored>");            
 
             string databaseName = Path.Combine(m_analysis.MetaData.AnalysisPath, m_analysis.MetaData.AnalysisName);
             int maxChargeState = 15;
@@ -226,12 +248,12 @@ namespace PNNLProteomics.MultiAlign
             using (MammothDatabase database = new MammothDatabase(databaseName))
             {
                 database.Connect();
-                MammothDatabaseRange range = new Mammoth.Data.MammothDatabaseRange(-1,
-                                                                                30000,
-                                                                                -1.5,
-                                                                                1.5,
-                                                                                0,
-                                                                                70);
+                MammothDatabaseRange range = new MammothDatabaseRange(  -9000,
+                                                                        90000,
+                                                                        -10,
+                                                                        10,
+                                                                        -100,
+                                                                        7000);
                 List<int> chargeStatesToCluster = new List<int>();
                 if (analysis.ClusterOptions.IgnoreCharge)
                 {
@@ -245,20 +267,44 @@ namespace PNNLProteomics.MultiAlign
                     }
                 }
 
-                Mammoth.Algorithms.MammothClusterer processor = new Mammoth.Algorithms.MammothClusterer();
+                int clusterCountID = 0;
                 foreach (int chargeState in chargeStatesToCluster)
                 {
+                    UpdateStatus("Retrieving features for clustering from cache.");
+
+                    range.SingleChargeState         = chargeState;
+                    List<UMCLight> features         = database.GetNonClusteredFeatures(range);
+
+                    // Determine the number of features to cluster.
+                    int featureCount = 0;
+                    if (features != null)
+                    {
+                        featureCount = features.Count;
+                    }
 
                     if (chargeState < 0)
                     {
-                        UpdateStatus(string.Format("Clustering all charge states."));
+                        UpdateStatus(string.Format("Clustering all charge states.  Total Features = {0}.", featureCount));
                     }
                     else
                     {
-                        UpdateStatus(string.Format("Clustering Charge State = {0}.", chargeState));
+                        UpdateStatus(string.Format("Clustering Charge State = {0}.  Total features = {1}", 
+                                                    chargeState, 
+                                                    featureCount));
                     }
-                    range.SingleChargeState = chargeState;
-                    processor.ClusterDatabase(database, analysis.ClusterOptions.RecursionLevels, parameters, range, parameters.Tolerances, clusterer);
+
+                    List<UMCClusterLight> clusters  = new List<UMCClusterLight>();
+                    clusters                        = clusterer.Cluster(features, clusters);
+
+                    UpdateStatus("Updating cluster id numbers.");
+                    foreach (UMCClusterLight cluster in clusters)
+                    {
+                        cluster.ID = clusterCountID++;
+                    }
+
+                    UpdateStatus("Updating feature cache with cluster id's.");
+                    database.UpdateFeaturesAndClusters(features);
+
                     UpdateStatus("Finished clustering charge state.");
                 }
             }
@@ -656,8 +702,8 @@ namespace PNNLProteomics.MultiAlign
                 }
 
                 m_analysis.MassTagDatabase = database;
-
-                UpdateStatus("Loading data");
+                
+                UpdateStatus("Loading other data.");
                 LoadDatasetData(m_analysis.MetaData.Datasets,
                                 m_analysis.UMCFindingOptions,
                                 Path.Combine(m_analysis.MetaData.AnalysisPath, m_analysis.MetaData.AnalysisName));
@@ -668,7 +714,7 @@ namespace PNNLProteomics.MultiAlign
                 UpdateStatus("Performing clustering.");
                 PerformClustering(m_analysis, m_algorithms.Clusterer);
 
-                UpdateStatus("Performing Peak Matching.");                
+                UpdateStatus("Performing Peak Matching.");
                 PerformPeakMatching();
 
                 UpdateStatus(string.Format("Analysis {0} Completed.", m_analysis.MetaData.AnalysisName));

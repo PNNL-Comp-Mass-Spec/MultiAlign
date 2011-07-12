@@ -68,7 +68,7 @@ namespace PNNLProteomics.IO.UMC
                     {                        
                         loadedFeatures = featureCache.FindAll().ToArray();
                     }
-                    catch (NHibernate.ADOException adoException)
+                    catch (NHibernate.ADOException)
                     {
                         loadedFeatures = new clsUMC[0];
                     }

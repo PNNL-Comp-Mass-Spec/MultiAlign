@@ -75,10 +75,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\x86\SMARTWrapper.dll</HintPath>
     </Reference>
-    <Reference Include="MammothLibrary, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\x86\MammothLibrary.dll</HintPath>
-    </Reference>
     <Reference Include="PNNLOmics, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\x86\PNNLOmics.dll</HintPath>
@@ -93,10 +89,6 @@
     <Reference Include="SMARTWrapper, Version=1.0.3699.24788, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\x86\SMARTWrapper.dll</HintPath>
-    </Reference>
-    <Reference Include="MammothLibrary, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\x86\MammothLibrary.dll</HintPath>
     </Reference>
     <Reference Include="PNNLOmics, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
@@ -117,10 +109,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\x64\SMARTWrapper.dll</HintPath>
     </Reference>
-    <Reference Include="MammothLibrary, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\x64\MammothLibrary.dll</HintPath>
-    </Reference>
     <Reference Include="PNNLOmics, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\x64\PNNLOmics.dll</HintPath>
@@ -139,10 +127,6 @@
     <Reference Include="SMARTWrapper, Version=1.0.3923.14706, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\x64\SMARTWrapper.dll</HintPath>
-    </Reference>
-    <Reference Include="MammothLibrary, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\x64\MammothLibrary.dll</HintPath>
     </Reference>
     <Reference Include="PNNLOmics, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
@@ -200,6 +184,8 @@
     <Compile Include="Data\DeisotopingTool.cs" />
     <Compile Include="Data\Factors\FactorInformation.cs" />
     <Compile Include="Data\LabelingType.cs" />
+    <Compile Include="Data\MetaData\InputFile.cs" />
+    <Compile Include="Data\MetaData\InputFileType.cs" />
     <Compile Include="Data\ProjectMetaData.cs" />
     <Compile Include="Filters\FilterUtil.cs" />
     <Compile Include="Filters\IFilter.cs" />
@@ -215,10 +201,16 @@
     <Compile Include="IO\AnalysisSQLiteDBWriter.cs" />
     <Compile Include="IO\AnalysisTableWriter.cs" />
     <Compile Include="IO\CommandLineParser.cs" />
+    <Compile Include="IO\InputFileReadMode.cs" />
     <Compile Include="IO\IParameterFileReader.cs" />
     <Compile Include="IO\IParameterFileWriter.cs" />
+    <Compile Include="IO\Mammoth\IFeatureDatabase.cs" />
+    <Compile Include="IO\Mammoth\MammothDatabase.cs" />
+    <Compile Include="IO\Mammoth\MammothDatabaseRange.cs" />
+    <Compile Include="IO\Mammoth\MammothDatabaseStateException.cs" />
     <Compile Include="IO\MTDB\MTSPeakMatchResultsWriter.cs" />
     <Compile Include="IO\MTDB\MTSSqlServerPeakMatchResultWriter.cs" />
+    <Compile Include="IO\MultiAlignFileInputReader.cs" />
     <Compile Include="IO\PeakMatchResultsWriter.cs" />
     <Compile Include="IO\Reports\AnalysisHTMLReport.cs" />
     <Compile Include="IO\XMLParameterFileReader.cs" />
