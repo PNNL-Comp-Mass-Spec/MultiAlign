@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
-using MultiAlignEngine.MassTags;
-
+using PNNLOmics.Data;
 namespace PNNLProteomics.MultiAlign.Hibernate.Domain.DAO
 {
-	public interface IProteinDAO : IGenericDAO<clsProtein>
+	public interface IProteinDAO : IGenericDAO<Protein>
     {
-		ICollection<clsProtein> FindByProteinString(string proteinString);
+		ICollection<Protein> FindByProteinString(string proteinString);
     }
 }

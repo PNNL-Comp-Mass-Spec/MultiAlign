@@ -26,6 +26,7 @@ namespace MultiAlignEngine
 			short mshortCleavageState;
 			float HighPeptideProphetProbability;
 			int mintChargeState;
+			int mintConformerID;
 			MassTag(); 
 			~MassTag(); 
 		};

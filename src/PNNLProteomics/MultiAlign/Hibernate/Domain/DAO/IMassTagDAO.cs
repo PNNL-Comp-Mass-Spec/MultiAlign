@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using MultiAlignEngine.MassTags;
+using PNNLOmics.Data;   
 
 namespace PNNLProteomics.MultiAlign.Hibernate.Domain.DAO
 {
-	public interface IMassTagDAO : IGenericDAO<clsMassTag>
+	public interface IMassTagDAO : IGenericDAO<MassTag>
     {
     }
 }

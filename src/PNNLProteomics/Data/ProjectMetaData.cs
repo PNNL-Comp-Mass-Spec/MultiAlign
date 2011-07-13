@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using MultiAlignEngine;
 using PNNLProteomics.Data.Factors;
+using PNNLProteomics.IO;
 
 namespace PNNLProteomics.Data
 {
@@ -93,6 +94,14 @@ namespace PNNLProteomics.Data
         /// Get or sets the list of other files that may be used for tracking data.
         /// </summary>
         public List<InputFile> OtherFiles
+        {
+            get;
+            set;
+        }
+        /// <summary>
+        /// Gets or sets the initial analysis setup information.
+        /// </summary>
+        public InputAnalysisInfo AnalysisSetupInfo
         {
             get;
             set;

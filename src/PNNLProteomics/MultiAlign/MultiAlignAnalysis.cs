@@ -11,10 +11,13 @@ using PNNLProteomics.Data.Alignment;
 using PNNLProteomics.Data.Factors;
 using PNNLProteomics.IO;
 using PNNLProteomics.SMART;
-
+using PNNLProteomics.Data.MassTags;
 using PNNLProteomics.MultiAlign.Hibernate.Domain.DAO;
 using MultiAlignEngine.PeakMatching;
 using PNNLProteomics.Algorithms.Alignment;
+using PNNLOmics.Data;
+using PNNLOmics.Data.MassTags;
+using PNNLOmics.Data.Features;
 
 namespace PNNLProteomics.Data
 {
@@ -131,7 +134,7 @@ namespace PNNLProteomics.Data
             MetaData.Datasets.Clear();
         }
 
-        #region Properties              
+        #region Properties    
         /// <summary>
         /// Gets or sets the data providers to the underlying data cache.
         /// </summary>
@@ -147,43 +150,7 @@ namespace PNNLProteomics.Data
         {
             get;
             set;
-        }
-        /// <summary>
-        /// Gets the lower bound false discovery rate calculated by 11 Dalton Shift.
-        /// </summary>
-        public double FDRLowerBound
-        {
-            get
-            {
-                if (PeakMatchingResults == null)
-                    return double.NaN;
-                if (PeakMatchingResultsShifted == null)
-                    return double.NaN;
-
-                double matches      = Convert.ToDouble(PeakMatchingResults.NumMassTagsMatched);
-                double shiftMatches = Convert.ToDouble(PeakMatchingResultsShifted.NumMassTagsMatched);
-
-                return shiftMatches / (matches + shiftMatches);
-            }
-        }
-        /// <summary>
-        /// Gets the upper bound false discovery rate calculated by 11 Dalton Shift.
-        /// </summary>
-        public double FDRUpperBound
-        {
-            get
-            {
-                if (PeakMatchingResults == null)
-                    return double.NaN;
-                if (PeakMatchingResultsShifted == null)
-                    return double.NaN;
-
-                double matches      = Convert.ToDouble(PeakMatchingResults.NumMassTagsMatched);
-                double shiftMatches = Convert.ToDouble(PeakMatchingResultsShifted.NumMassTagsMatched);
-
-                return (2*shiftMatches) / (matches + shiftMatches);
-            }
-        }
+        }        
         /// <summary>
         /// Gets or sets the SMART results calculated.
         /// </summary>
@@ -274,10 +241,26 @@ namespace PNNLProteomics.Data
             get;
             set;
         }
+        ///// <summary>
+        ///// Gets the peak matching results 
+        ///// </summary>
+        //public clsPeakMatchingResults PeakMatchingResults
+        //{
+        //    get;
+        //    set;
+        //}
+        ///// <summary>
+        ///// Gets the peak matching results from the 11 Da shift.
+        ///// </summary>
+        //public clsPeakMatchingResults PeakMatchingResultsShifted
+        //{
+        //    get;
+        //    set;
+        //}	
         /// <summary>
         /// Gets the peak matching results 
         /// </summary>
-        public clsPeakMatchingResults PeakMatchingResults
+        public List<MassTagFeatureMatch<UMCClusterLight>> PeakMatchingResults
         {
             get;
             set;
@@ -285,11 +268,11 @@ namespace PNNLProteomics.Data
         /// <summary>
         /// Gets the peak matching results from the 11 Da shift.
         /// </summary>
-        public clsPeakMatchingResults PeakMatchingResultsShifted
+        public List<MassTagFeatureMatch<UMCClusterLight>> ShiftedPeakMatchingResults
         {
             get;
             set;
-        }	
+        }
         /// <summary>
         /// Gets the flag whether the results were peaked matched against the Mass Tag Database.
         /// </summary>
@@ -299,7 +282,10 @@ namespace PNNLProteomics.Data
             get;
             private set;
         }
-        public clsMassTagDB MassTagDatabase
+        /// <summary>
+        /// Gets or sets the mass tag database.
+        /// </summary>
+        public MassTagDatabase MassTagDatabase
         {
             get;
             set;

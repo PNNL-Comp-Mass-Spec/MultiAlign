@@ -5,6 +5,10 @@ using PNNLProteomics.MultiAlign.Hibernate.Domain;
 using PNNLProteomics.MultiAlign.Hibernate.Domain.DAO;
 using PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate;
 using PNNLProteomics.SMART;
+using PNNLOmics.Data.MassTags;
+using PNNLOmics.Data;
+using PNNLOmics.Data.Features;
+using PNNLOmics.Data.MassTags;
 using MultiAlignEngine.PeakMatching;
 
 namespace PNNLProteomics.IO
@@ -20,91 +24,81 @@ namespace PNNLProteomics.IO
         /// <param name="analysis"></param>
         public void WritePeakMatchResults(MultiAlignAnalysis analysis, out int matchedMassTags, out int matchedProteins)
         {
-            clsMassTag[] massTagArray = null; // analysis.PeakMatchingResults.marrMasstags;
-            clsProtein[] proteinArray = null; // analysis.PeakMatchingResults.marrProteins;            
-
-            massTagArray = analysis.PeakMatchingResults.marrMasstags;
-            proteinArray = analysis.PeakMatchingResults.marrProteins;
-
+            List<MassTag> massTagArray = analysis.MassTagDatabase.MassTags;           
 
             //TODO: Fix this with the providers.
-            IMassTagDAO massTagDAOHibernate = new MassTagDAOHibernate();
-            IProteinDAO proteinDAOHibernate = new ProteinDAOHibernate();
+            IMassTagDAO massTagDAOHibernate = new MassTagDAO();
+            IProteinDAO proteinDAOHibernate = new ProteinDAO();
+
             GenericDAOHibernate<ClusterToMassTagMap> clusterToMassTagMapDAOHibernate =
                                 new GenericDAOHibernate<ClusterToMassTagMap>();
-
             GenericDAOHibernate<MassTagToProteinMap> massTagToProteinMapDAOHibernate =
                                 new GenericDAOHibernate<MassTagToProteinMap>();
 
-            GenericDAOHibernate<StacFDR> stacFDRDAOHibernate =
-                                new GenericDAOHibernate<StacFDR>();
+            GenericDAOHibernate<StacFDR> stacFDRDAOHibernate    = new GenericDAOHibernate<StacFDR>();
+            List<MassTag> massTagList                           = new List<MassTag>();
+            List<Protein> proteinList                           = new List<Protein>();
+            List<ClusterToMassTagMap> clusterToMassTagMapList   = new List<ClusterToMassTagMap>();
+            List<MassTagToProteinMap> massTagToProteinMapList   = new List<MassTagToProteinMap>();
+            List<StacFDR> stacFDRResultsList                    = new List<StacFDR>();
 
-            List<clsMassTag> massTagList = new List<clsMassTag>();
-            List<clsProtein> proteinList = new List<clsProtein>();
-            List<ClusterToMassTagMap> clusterToMassTagMapList = new List<ClusterToMassTagMap>();
-            List<MassTagToProteinMap> massTagToProteinMapList = new List<MassTagToProteinMap>();
-            List<StacFDR> stacFDRResultsList = new List<StacFDR>();
-
-            foreach (clsPeakMatchingResults.clsPeakMatchingTriplet triplet in analysis.PeakMatchingResults.marrPeakMatchingTriplet)
+            foreach (MassTagFeatureMatch<UMCClusterLight> match in analysis.PeakMatchingResults)
             {
-                clsMassTag massTag = massTagArray[triplet.mintMassTagIndex];
-                clsProtein protein = proteinArray[triplet.mintProteinIndex];
+                MassTag         tag                     = match.Tag;
+                UMCClusterLight feature                 = match.Feature;
+                ClusterToMassTagMap clusterToMassTagMap = new ClusterToMassTagMap(feature.ID, tag.ID);
+                List<Protein> proteins                  = analysis.MassTagDatabase.Proteins[tag.ID];
 
-                ClusterToMassTagMap clusterToMassTagMap = new ClusterToMassTagMap(triplet.mintFeatureIndex, massTag.Id);
-                MassTagToProteinMap massTagToProteinMap = new MassTagToProteinMap(massTag.Id, protein.Id);
-
-                if (!clusterToMassTagMapList.Contains(clusterToMassTagMap))
+                foreach (Protein protein in proteins)
                 {
-                    clusterToMassTagMapList.Add(clusterToMassTagMap);
-
-
-
-                    if (analysis.PeakMatchingOptions.UseSTAC)
+                    MassTagToProteinMap massTagToProteinMap = new MassTagToProteinMap(tag.ID, protein.RefID);
+                    if (!clusterToMassTagMapList.Contains(clusterToMassTagMap))
                     {
-                        /// 
-                        /// See if a SMART score exists
-                        /// 
-                        List<PNNLProteomics.SMART.classSMARTProbabilityResult> smartScores = null;
-                        smartScores = analysis.STACResults.GetResultFromUMCIndex(triplet.mintFeatureIndex);
+                        clusterToMassTagMapList.Add(clusterToMassTagMap);
 
-                        if (smartScores != null)
-                        {
-                            /// 
-                            /// Then pull out the SMART score that matches for this triplet Mass Tag
-                            /// 
-                            PNNLProteomics.SMART.classSMARTProbabilityResult finalResult = null;
-                            foreach (PNNLProteomics.SMART.classSMARTProbabilityResult score in smartScores)
+                        if (analysis.PeakMatchingOptions.UseSTAC)
+                        {                            
+                            // See if a STAC score exists                            
+                            List<PNNLProteomics.SMART.classSMARTProbabilityResult> smartScores = null;
+                            smartScores = analysis.STACResults.GetResultFromUMCIndex(feature.ID);
+
+                            if (smartScores != null)
                             {
-                                if (score.MassTagID == massTag.Id)
+                                // Then pull out the STAC score that matches for this triplet Mass Tag
+                                PNNLProteomics.SMART.classSMARTProbabilityResult finalResult = null;
+                                foreach (PNNLProteomics.SMART.classSMARTProbabilityResult score in smartScores)
                                 {
-                                    finalResult = score;
-                                    break;
+                                    if (score.MassTagID == tag.ID)
+                                    {
+                                        finalResult = score;
+                                        break;
+                                    }
+                                }
+
+                                if (finalResult != null)
+                                {
+                                    clusterToMassTagMap.StacScore = finalResult.Score;
+                                    clusterToMassTagMap.StacUP = finalResult.Specificity;
                                 }
                             }
-
-                            if (finalResult != null)
-                            {
-                                clusterToMassTagMap.StacScore = finalResult.Score;
-                                clusterToMassTagMap.StacUP = finalResult.Specificity;
-                            }
                         }
+
                     }
 
-                }
+                    if (!massTagToProteinMapList.Contains(massTagToProteinMap))
+                    {
+                        massTagToProteinMapList.Add(massTagToProteinMap);
+                    }
 
-                if (!massTagToProteinMapList.Contains(massTagToProteinMap))
-                {
-                    massTagToProteinMapList.Add(massTagToProteinMap);
-                }
+                    if (!massTagList.Contains(tag))
+                    {
+                        massTagList.Add(tag);
+                    }
 
-                if (!massTagList.Contains(massTag))
-                {
-                    massTagList.Add(massTag);
-                }
-
-                if (!proteinList.Contains(protein))
-                {
-                    proteinList.Add(protein);
+                    if (!proteinList.Contains(protein))
+                    {
+                        proteinList.Add(protein);
+                    }
                 }
             }
 

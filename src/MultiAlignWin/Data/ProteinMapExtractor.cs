@@ -57,43 +57,45 @@ namespace MultiAlignWin.Data
         /// </summary>
         /// <param name="analysis"></param>
         /// <returns></returns>
+        [Obsolete]
         public Dictionary<string, List<string>> ExtractProteinMaps(MultiAlignAnalysis analysis)
         {           
             Dictionary<string, List<string>> proteins = new Dictionary<string,List<string>>();
            
-            if (analysis.PeakMatchedToMassTagDB == false)
-            {
-                return proteins;
-            }                      
+            //TODO: Deprecated
+            //if (analysis.PeakMatchedToMassTagDB == false)
+            //{
+            //    return proteins;
+            //}                      
 
-            /// 
-            /// Peak matching mapping arrays 
-            /// 
-            clsPeakMatchingResults.clsPeakMatchingTriplet[] arrPeakMatchingTriplets = null;
-            clsProtein[] arrPeakMatchingProteins = null;
-            clsMassTag[] arrPeakMatchingMassTags = null;
+            ///// 
+            ///// Peak matching mapping arrays 
+            ///// 
+            //clsPeakMatchingResults.clsPeakMatchingTriplet[] arrPeakMatchingTriplets = null;
+            //clsProtein[] arrPeakMatchingProteins = null;
+            //clsMassTag[] arrPeakMatchingMassTags = null;
 
-            if (analysis.PeakMatchingResults != null)
-            {
-                arrPeakMatchingTriplets = analysis.PeakMatchingResults.marrPeakMatchingTriplet;
-                arrPeakMatchingProteins = analysis.PeakMatchingResults.marrProteins;
-                arrPeakMatchingMassTags = analysis.PeakMatchingResults.marrMasstags;
-            }
+            //if (analysis.PeakMatchingResults != null)
+            //{
+            //    arrPeakMatchingTriplets = analysis.PeakMatchingResults.marrPeakMatchingTriplet;
+            //    arrPeakMatchingProteins = analysis.PeakMatchingResults.marrProteins;
+            //    arrPeakMatchingMassTags = analysis.PeakMatchingResults.marrMasstags;
+            //}
 
-            for (int i = 0; i < arrPeakMatchingTriplets.Length; i++)
-            {
-                ///
-                /// So this peakmatchtriplet corresponds to the current cluster.                     
-                ///                     
-                clsPeakMatchingResults.clsPeakMatchingTriplet triplet = arrPeakMatchingTriplets[i];
-                clsMassTag massTag = arrPeakMatchingMassTags[triplet.mintMassTagIndex];
-                clsProtein protein = arrPeakMatchingProteins[triplet.mintProteinIndex];
+            //for (int i = 0; i < analysis.PeakMatchingResults; i++)
+            //{
+            //    ///
+            //    /// So this peakmatchtriplet corresponds to the current cluster.                     
+            //    ///                     
+            //    clsPeakMatchingResults.clsPeakMatchingTriplet triplet = arrPeakMatchingTriplets[i];
+            //    clsMassTag massTag = arrPeakMatchingMassTags[triplet.mintMassTagIndex];
+            //    clsProtein protein = arrPeakMatchingProteins[triplet.mintProteinIndex];
                 
-                if (proteins.ContainsKey(protein.mstrProteinName) == false)
-                    proteins.Add(protein.mstrProteinName, new List<string>());
+            //    if (proteins.ContainsKey(protein.mstrProteinName) == false)
+            //        proteins.Add(protein.mstrProteinName, new List<string>());
 
-                proteins[protein.mstrProteinName].Add(massTag.mstrPeptide);
-            }
+            //    proteins[protein.mstrProteinName].Add(massTag.mstrPeptide);
+            //}
 
             return proteins;     
         }

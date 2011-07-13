@@ -6,6 +6,9 @@ using MultiAlignEngine.Features;
 using MultiAlignEngine.MassTags;
 using PNNLProteomics.Data.Alignment;
 
+using PNNLProteomics.Data.MassTags;
+using PNNLOmics.Data;
+
 namespace PNNLProteomics.Algorithms.Alignment
 {
     public class LCMSWarpFeatureAligner: IFeatureAligner
@@ -27,14 +30,26 @@ namespace PNNLProteomics.Algorithms.Alignment
         /// <param name="alignmentOptions"></param>
         /// <param name="boundaries"></param>
         /// <returns></returns>
-        public classAlignmentData AlignFeatures(clsMassTagDB                    massTagDatabase,
+        public classAlignmentData AlignFeatures(MassTagDatabase                massTagDatabase,
                                                List<clsUMC>                    features,
                                                clsAlignmentOptions             alignmentOptions)
         {                        
             clsAlignmentProcessor alignmentProcessor    = new clsAlignmentProcessor();
             alignmentProcessor.AlignmentOptions         = alignmentOptions;
-            alignmentProcessor.SetReferenceDatasetFeatures(massTagDatabase); 
+            List<clsMassTag> tags                       = new List<clsMassTag>();
 
+            foreach (MassTag tag in massTagDatabase.MassTags)
+            {
+                // mixed mode tag
+                clsMassTag mmTag        = new clsMassTag();
+                mmTag.mintMassTagId     = tag.ID;
+                mmTag.mintConformerID   = tag.ConformationID;
+                mmTag.mdblAvgGANET      = tag.NETAverage;
+                mmTag.mdblMonoMass      = tag.MassMonoisotopic;
+                tags.Add(mmTag);
+            }
+
+            alignmentProcessor.SetReferenceDatasetFeatures(tags, true);
             classAlignmentData data =  AlignFeatures(alignmentProcessor,
                                                      features,   
                                                      alignmentOptions);
@@ -50,7 +65,7 @@ namespace PNNLProteomics.Algorithms.Alignment
         /// <param name="alignmentOptions"></param>
         /// <param name="boundaries"></param>
         /// <returns></returns>
-        public classAlignmentData AlignFeatures( List<clsUMC>                    baselineFeatures, 
+        public classAlignmentData AlignFeatures(List<clsUMC>                    baselineFeatures, 
                                                 List<clsUMC>                    features,
                                                 clsAlignmentOptions             alignmentOptions)
         {
@@ -336,14 +351,26 @@ namespace PNNLProteomics.Algorithms.Alignment
         /// <param name="clusters">Clusters to align.</param>
         /// <param name="options">Alignment options.</param>
         /// <returns>Alignment data for the clusters to mass tag database.</returns>
-        public classAlignmentData AlignFeatures( clsMassTagDB          massTagDatabase,
-                                                List<clsCluster>       clusters,
-                                                clsAlignmentOptions    options)
+        public classAlignmentData AlignFeatures(MassTagDatabase         massTagDatabase,
+                                                List<clsCluster>        clusters,
+                                                clsAlignmentOptions     options)
         {            
             clsAlignmentProcessor alignmentProcessor = new clsAlignmentProcessor();
-            alignmentProcessor.SetReferenceDatasetFeatures(massTagDatabase);
-            alignmentProcessor.SetAligneeDatasetFeatures(clusters, options.MZBoundaries[0]);
+            List<clsMassTag> tags                    = new List<clsMassTag>();
 
+            foreach (MassTag tag in massTagDatabase.MassTags)
+            {
+                // mixed mode tag
+                clsMassTag mmTag        = new clsMassTag();
+                mmTag.mintMassTagId     = tag.ID;
+                mmTag.mintConformerID   = tag.ConformationID;
+                mmTag.mdblAvgGANET      = tag.NETAverage;
+                mmTag.mdblMonoMass      = tag.MassMonoisotopic;
+                tags.Add(mmTag);
+            }
+
+            alignmentProcessor.SetReferenceDatasetFeatures(tags, true);
+            alignmentProcessor.SetAligneeDatasetFeatures(clusters, options.MZBoundaries[0]);
             alignmentProcessor.PerformAlignmentToMassTagDatabase();
             alignmentProcessor.ApplyNETMassFunctionToAligneeDatasetFeatures(ref clusters); 
             clsAlignmentFunction alignmentFunction = alignmentProcessor.GetAlignmentFunction();

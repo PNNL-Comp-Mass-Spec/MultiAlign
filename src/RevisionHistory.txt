@@ -1,5 +1,6 @@
 MutliaAlign Revision History
-
+Version 3.4.0 July 12, 2011
+	- Added MTDB loading from access files for drift times.  Only works with x86 (32-bit) platforms because of limitations of Windows.
 Version 2.7.4 December 1, 2010
 	- Changed parameter file format to ini.  
 	- Created a console version of the application that caches features between each analysis step to allow for larger analysis.

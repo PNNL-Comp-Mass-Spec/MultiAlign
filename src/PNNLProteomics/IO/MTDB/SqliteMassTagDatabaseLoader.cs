@@ -24,8 +24,7 @@ namespace PNNLProteomics.IO.MTDB
             set;
         }
 
-
-        #region Methods
+        #region Abstract Method Implementations.
         /// <summary>
         /// 
         /// </summary>
@@ -36,13 +35,24 @@ namespace PNNLProteomics.IO.MTDB
             return new SQLiteConnection(connectionString);
         }
         /// <summary>
-        /// 
+        /// Creates a new connection string.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>String to use for connecting to local databases.</returns>
         protected override string CreateConnectionString()
         {
             return string.Format("DataSource={0}", DatabasePath);
         }
+        /// <summary>
+        /// Creates a new Sqlite data paramter for use in queries.
+        /// </summary>
+        /// <param name="name">Name of parameter.</param>
+        /// <param name="value">Value of parameter.</param>
+        /// <returns>New parameter.</returns>
+        protected override IDbDataParameter CreateParameter(string name, object value)
+        {
+            return new SQLiteParameter(name, value);
+        }
         #endregion
+
     }
 }

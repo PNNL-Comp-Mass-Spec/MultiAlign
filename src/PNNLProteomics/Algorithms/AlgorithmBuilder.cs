@@ -65,7 +65,7 @@ namespace PNNLProteomics.Algorithms
         /// </summary>
         public void BuildPeakMatcher()
         {
-            m_provider.PeakMatcher = new PeakMatcher();
+            m_provider.PeakMatcher = new PeakMatcher<UMCClusterLight>();
         }
 
         /// <summary>

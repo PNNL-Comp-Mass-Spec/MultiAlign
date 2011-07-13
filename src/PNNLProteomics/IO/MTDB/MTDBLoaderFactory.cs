@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
+using PNNLProteomics.Data.MassTags;
 using MultiAlignEngine.MassTags;
 
 namespace PNNLProteomics.IO.MTDB
@@ -16,22 +17,31 @@ namespace PNNLProteomics.IO.MTDB
         /// </summary>
         /// <param name="options">Loading options.</param>
         /// <returns>The mass tag database.</returns>
-        public static clsMassTagDB LoadMassTagDB(clsMassTagDatabaseOptions options, string databaseType)            
+        public static MassTagDatabase LoadMassTagDB(clsMassTagDatabaseOptions options, MassTagDatabaseFormat format)            
         {
-            clsMassTagDB database = null;
+            MassTagDatabase database = null;
+            IMtdbLoader loader       = null;
 
             //TODO: Finish setting up the mass tag database to load from a strategy based pattern.
-            switch (databaseType)
+            switch (format)
             {
-                default:
+                case MassTagDatabaseFormat.SQL:
+                    loader = new MTSMassTagDatabaseLoader(options.mstrDatabase, options.mstrServer);
+                    break;
+                case MassTagDatabaseFormat.Access:
+                    loader = new AccessMassTagDatabaseLoader(options.mstr_databaseFilePath);                    
+                    break;
+                default:                    
                     break;
             }
 
-            //TODO: Make this load based on ACCESS, SQL, or TXT.  We are currently loading in a single object.  
-            // This is a good example of HIGH coupling :(
-            clsMTDBLoader loader = new clsMTDBLoader(options);
-            database             = loader.LoadMassTagDatabase();
+            if (loader == null)
+            {
+                throw new NullReferenceException("The type of mass tag database format is not supported: "  + format.ToString());
+            }
 
+            loader.Options  = options;
+            database        = loader.LoadDatabase();            
             return database;
         }
     }

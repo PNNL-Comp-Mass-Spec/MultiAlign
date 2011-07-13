@@ -16,6 +16,7 @@ namespace MultiAlignEngine
 			double	mdouble_aligned_net; 
 			double  mdouble_driftTime;
 			int		mint_id; 
+			int		mint_conformerID;
 
 			MassTimeFeature(void);
 			MassTimeFeature(const MassTimeFeature &cpy)
@@ -29,6 +30,7 @@ namespace MultiAlignEngine
 				mdouble_mono_mass_original		= cpy.mdouble_mono_mass_original;
 				mdouble_mz						= cpy.mdouble_mz; 
 				mdouble_driftTime				= cpy.mdouble_driftTime;
+				mint_conformerID				= cpy.mint_conformerID;
 			}
 
 			MassTimeFeature& operator=(const MassTimeFeature &cpy)
@@ -42,6 +44,7 @@ namespace MultiAlignEngine
 				mdouble_mono_mass_original	 = cpy.mdouble_mono_mass_original;
 				mdouble_mz					 = cpy.mdouble_mz;
 				mdouble_driftTime			 = cpy.mdouble_driftTime; 
+				mint_conformerID		  	 = cpy.mint_conformerID;
 				return *this; 
 			}
 			~MassTimeFeature(void);

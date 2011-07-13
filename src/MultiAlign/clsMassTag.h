@@ -46,6 +46,7 @@ namespace MultiAlignEngine
 			int mintChargeState;
 			float mfltHighPeptideProphetProbability;	// Used in smart to use priors
 			short mshortCleavageState; 
+			int	  mintConformerID;
 			clsMassTag(); 
 			~clsMassTag(); 
 
@@ -56,6 +57,15 @@ namespace MultiAlignEngine
 
 			__property void set_Id(int value){
 				mintMassTagId = value;
+			}
+			
+			__property int get_ConformerId()
+			{
+				return mintConformerID;
+			}
+
+			__property void set_ConformerId(int value){
+				mintConformerID = value;
 			}
 			
 			__property int get_ChargeState()

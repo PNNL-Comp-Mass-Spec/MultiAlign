@@ -1088,7 +1088,8 @@ namespace MultiAlignConsole
             analysis.MetaData.AnalysisName          = m_analysisName;
             analysis.UseMassTagDBAsBaseline         = true;
             analysis.MetaData.ParameterFile         = m_parameterFile;
-            analysis.MetaData.InputFileDefinition   = m_inputPaths;            
+            analysis.MetaData.InputFileDefinition   = m_inputPaths;        
+            analysis.MetaData.AnalysisSetupInfo     = analysisSetupInformation;
             m_analysis                              = analysis;
             MultiAlignAnalysisProcessor processor   = new MultiAlignAnalysisProcessor();
 

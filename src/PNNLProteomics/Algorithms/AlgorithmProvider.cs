@@ -27,7 +27,7 @@ namespace PNNLProteomics.Algorithms
         /// <summary>
         /// Peak matches features to a database.
         /// </summary>
-        private IPeakMatcher m_peakMatcher;
+        private IPeakMatcher<UMCClusterLight> m_peakMatcher;
 
         /// <summary>
         /// Default constructor.
@@ -70,7 +70,7 @@ namespace PNNLProteomics.Algorithms
         /// <summary>
         /// Gets or sets the peak matcher object.
         /// </summary>
-        public IPeakMatcher PeakMatcher
+        public IPeakMatcher<UMCClusterLight> PeakMatcher
         {
             get
             {

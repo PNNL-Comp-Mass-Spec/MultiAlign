@@ -100,8 +100,9 @@ namespace MultiAlignEngine
 
 			void SetReferenceDatasetFeatures(	MultiAlignEngine::Features::clsUMCData *umcData, 
 												int referenceDatasetIndex); 
-			void SetReferenceDatasetFeatures(MultiAlignEngine::MassTags::clsMassTagDB *massTagDB); 
-			void clsAlignmentProcessor::SetReferenceDatasetFeatures(List<clsUMC*>* features);
+			void SetReferenceDatasetFeatures(MultiAlignEngine::MassTags::clsMassTagDB *massTagDB);
+			void SetReferenceDatasetFeatures(List<MultiAlignEngine::MassTags::clsMassTag*>* masstags, bool isDatabase);
+			void SetReferenceDatasetFeatures(List<clsUMC*>* features);
 
 
 			/*////////////////////////////////////////////////////////////////////////////////

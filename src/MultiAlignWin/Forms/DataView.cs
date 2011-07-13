@@ -201,9 +201,9 @@ namespace MultiAlignWin
 		{			
 			m_analysis = analysis; 
 				
-            ProteinMapExtractor extractor = new ProteinMapExtractor();
-            Dictionary<string, List<string>> proteins = extractor.ExtractProteinMaps(m_analysis);
-            DisplayProteinMaps(proteins);
+            //ProteinMapExtractor extractor               = new ProteinMapExtractor();
+            //Dictionary<string, List<string>> proteins   = extractor.ExtractProteinMaps(m_analysis);
+            //DisplayProteinMaps(proteins);
 
             CreateClusterPlots();
             UpdateListViews();
@@ -860,32 +860,32 @@ namespace MultiAlignWin
             /// 
             /// If the datasets were peak matched, then display this control page.
             /// 
-            if (m_analysis.PeakMatchingResults != null)
-            {
-                string peakMatchingResult = "Peak Matching Results";
+            //if (m_analysis.PeakMatchingResults != null)
+            //{
+            //    string peakMatchingResult = "Peak Matching Results";
 
-                m_resultSummaryPages.CreateSummary("Peak Matching Results", m_analysis.PeakMatchingResults);
-                if (m_analysis.PeakMatchingOptions.UseSTAC == false)
-                {
-                    m_resultSummaryPages.AddData(peakMatchingResult, "11-Da Shifted Number of Mass Tags Matched",
-                        m_analysis.PeakMatchingResultsShifted.NumMassTagsMatched.ToString());
-                    m_resultSummaryPages.AddData(peakMatchingResult, "11-Da Shifted Number of Proteins Matched",
-                        m_analysis.PeakMatchingResultsShifted.NumProteinsMatched.ToString());
-                    m_resultSummaryPages.AddData(peakMatchingResult, "11-Da Shifted Number of Matches",
-                        m_analysis.PeakMatchingResultsShifted.NumMatches.ToString());
+            //    m_resultSummaryPages.CreateSummary("Peak Matching Results", m_analysis.PeakMatchingResults);
+            //    if (m_analysis.PeakMatchingOptions.UseSTAC == false)
+            //    {
+            //        m_resultSummaryPages.AddData(peakMatchingResult, "11-Da Shifted Number of Mass Tags Matched",
+            //            m_analysis.PeakMatchingResultsShifted.NumMassTagsMatched.ToString());
+            //        m_resultSummaryPages.AddData(peakMatchingResult, "11-Da Shifted Number of Proteins Matched",
+            //            m_analysis.PeakMatchingResultsShifted.NumProteinsMatched.ToString());
+            //        m_resultSummaryPages.AddData(peakMatchingResult, "11-Da Shifted Number of Matches",
+            //            m_analysis.PeakMatchingResultsShifted.NumMatches.ToString());
 
-                    m_resultSummaryPages.AddData("Peak Matching Results",
-                                                    "FDR (11-da shift) Upper Bound",
-                                                    string.Format("{0:0.00}", m_analysis.FDRUpperBound));
-                    m_resultSummaryPages.AddData("Peak Matching Results",
-                                                    "FDR (11-da shift) Lower Bound",
-                                                    string.Format("{0:0.00}", m_analysis.FDRLowerBound));
-                }
-                else
-                {
-                    AddStacFdrTableToSummaryView(m_analysis.STACResults);
-                }
-            }            
+            //        m_resultSummaryPages.AddData("Peak Matching Results",
+            //                                        "FDR (11-da shift) Upper Bound",
+            //                                        string.Format("{0:0.00}", m_analysis.FDRUpperBound));
+            //        m_resultSummaryPages.AddData("Peak Matching Results",
+            //                                        "FDR (11-da shift) Lower Bound",
+            //                                        string.Format("{0:0.00}", m_analysis.FDRLowerBound));
+            //    }
+            //    else
+            //    {
+            //        AddStacFdrTableToSummaryView(m_analysis.STACResults);
+            //    }
+            //}            
             m_resultSummaryPages.UpdateColumnWidths();
         }
         #endregion

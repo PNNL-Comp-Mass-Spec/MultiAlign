@@ -1,4 +1,5 @@
-﻿using System.Data.SqlClient;
+﻿using System.Data;
+using System.Data.SqlClient;
 
 namespace PNNLProteomics.IO.MTDB
 {
@@ -16,10 +17,25 @@ namespace PNNLProteomics.IO.MTDB
         /// </summary>
         private const string DEFAULT_USERNAME = "mtuser";
 
+        /// <summary>
+        /// Constructor.
+        /// </summary>
         public MTSMassTagDatabaseLoader()
         {
-            UserName = DEFAULT_USERNAME;
-            Password = DEFAULT_PASSWORD;
+            UserName        = DEFAULT_USERNAME;
+            Password        = DEFAULT_PASSWORD;
+        }
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="databaseName">Database name.</param>
+        /// <param name="server">Server the database is hosted on.</param>
+        public MTSMassTagDatabaseLoader(string databaseName, string server)
+        {
+            UserName        = DEFAULT_USERNAME;
+            Password        = DEFAULT_PASSWORD;
+            DatabaseName    = databaseName;
+            ServerName      = server; 
         }
 
         #region Properties
@@ -77,7 +93,16 @@ namespace PNNLProteomics.IO.MTDB
                                     DatabaseName,
                                     UserName,
                                     Password);
-
+        }
+        /// <summary>
+        /// Creates a new sql data parameter for stored proc queries.
+        /// </summary>
+        /// <param name="name">Name of parameter.</param>
+        /// <param name="value">Value of parameter to query with.</param>
+        /// <returns>A new parameter</returns>
+        protected override IDbDataParameter CreateParameter(string name, object value)
+        {
+            return new SqlParameter(name, value);
         }
     }
 }

@@ -29,20 +29,13 @@ namespace MultiAlignEngine
 
 		clsPeakMatchingResults* clsPeakMatchingProcessor::PerformPeakMatching(	Features::clsUMCData	*umcData, 
 																				int						datasetIndex,
-																				MassTags::clsMassTagDB  *masstagDB, 
-																				double					shiftDaltons)
+																				List<clsMassTag*>*		arrMassTags)
 		{
 			/*////////////////////////////////////////////////////////////////////////////////////////////////
 				Here we get a list of all the clusters which are groups of UMC's.  We are 
 				going to match the to the database.
 			////////////////////////////////////////////////////////////////////////////////////////////////*/
-			System::Collections::ArrayList *arrMSFeatures = umcData->GetMassAndTimeTags(datasetIndex); 
-										
-			/*////////////////////////////////////////////////////////////////////////////////////////////////
-				Here we are copying the database of AMT's.  We apply the shift of 0 to the db here.
-				Later we'll apply the dalton shift if applicable.
-			////////////////////////////////////////////////////////////////////////////////////////////////*/	
-			System::Collections::ArrayList *arrMassTags = masstagDB->GetMassAndTimeTags(shiftDaltons); 
+			System::Collections::ArrayList *arrMSFeatures = umcData->GetMassAndTimeTags(datasetIndex); 	
 
 			/*////////////////////////////////////////////////////////////////////////////////////////////////
 				We merge the range of mass tag features found in the AMT-DB into the list of UMC Features.			
@@ -77,11 +70,11 @@ namespace MultiAlignEngine
 				clsMassTimeTag *mtTag = dynamic_cast<clsMassTimeTag *>(arrMSFeatures->Item[elemNum]); 
 				if (!mtTag->mblnMSMS)
 				{
-					double lowerNET		= mtTag->mdblNET - mdblNETTolerance; 
-					double higherNET	= mtTag->mdblNET + mdblNETTolerance; 
+					double lowerNET				= mtTag->mdblNET - mdblNETTolerance; 
+					double higherNET			= mtTag->mdblNET + mdblNETTolerance; 
 
-					double lowerDritfTime  = mtTag->mdblDriftTime - mdblDriftTimeTolerance;
-					double higherDriftTime = mtTag->mdblDriftTime + mdblDriftTimeTolerance;
+					double lowerDritfTime		= mtTag->mdblDriftTime - mdblDriftTimeTolerance;
+					double higherDriftTime		= mtTag->mdblDriftTime + mdblDriftTimeTolerance;
 
 					double currentMassTolerance = mtTag->mdblMass * mdblMassTolerance / 1000000.0;
 					double lowerMass			= mtTag->mdblMass - currentMassTolerance;  

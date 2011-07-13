@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Data;
-using System.Data.SqlClient;
+using System.Data.OleDb;
 
 namespace PNNLProteomics.IO.MTDB
 {
@@ -33,6 +33,15 @@ namespace PNNLProteomics.IO.MTDB
             DatabasePath    = path;
             Provider        = provider;
         }
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="path">Path to database file.</param>
+        public AccessMassTagDatabaseLoader(string path)
+        {
+            DatabasePath    = path;
+            Provider        = DEFAULT_PROVIDER;
+        }
         #endregion
 
         #region Properties
@@ -62,7 +71,7 @@ namespace PNNLProteomics.IO.MTDB
         /// <returns></returns>
         protected override IDbConnection CreateConnection(string connectionString)
         {
-            return new SqlConnection(connectionString);
+            return new OleDbConnection(connectionString);
         }
         /// <summary>
         /// Creates a connection string for use.
@@ -76,6 +85,16 @@ namespace PNNLProteomics.IO.MTDB
             return string.Format("Data Source={0}; Provider={1}",
                                     DatabasePath,
                                     Provider);
+        }
+        /// <summary>
+        /// Creates a new Sqlite data paramter for use in queries.
+        /// </summary>
+        /// <param name="name">Name of parameter.</param>
+        /// <param name="value">Value of parameter.</param>
+        /// <returns>New parameter.</returns>
+        protected override IDbDataParameter CreateParameter(string name, object value)
+        {
+            return new OleDbParameter(name, value);
         }
         #endregion
     }    

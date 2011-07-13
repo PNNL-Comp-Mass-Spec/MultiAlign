@@ -545,9 +545,38 @@ namespace MultiAlignEngine
 			mobjLCMSWarp->SetReferenceFeatures(vectMassTimeFeatures); 
 		}
 
+
+		
+		void clsAlignmentProcessor::SetReferenceDatasetFeatures(List<MultiAlignEngine::MassTags::clsMassTag*>* massTags, bool isDatabase)
+		{
+			mintPercentDone			= 0; 
+			mblnAligningToMassTagDB = true; 
+			std::vector<MultiAlignEngine::Alignment::MassTimeFeature> vectMassTimeFeatures;			 
+			int numMassTags			= massTags->Count; 			
+			vectMassTimeFeatures.reserve(numMassTags);
+
+			MultiAlignEngine::Alignment::MassTimeFeature mtFeature; 
+			for (int massTagNum = 0; massTagNum < numMassTags; massTagNum++)
+			{
+				MultiAlignEngine::MassTags::clsMassTag* massTag	= massTags->Item[massTagNum]; 
+				mtFeature.mdouble_aligned_net					= massTag->mdblAvgGANET; 
+				mtFeature.mdouble_mono_mass						= massTag->mdblMonoMass; 
+				mtFeature.mdouble_mono_mass_calibrated			= massTag->mdblMonoMass; 
+				mtFeature.mdouble_mono_mass_original			= massTag->mdblMonoMass; 
+				mtFeature.mdouble_mz							= massTag->mdblMonoMass/2 + 1.00782; // assume a charge of 2. Not used anyways.
+				mtFeature.mdouble_net							= massTag->mdblAvgGANET; 
+				mtFeature.mint_id								= massTag->mintMassTagId; 
+				mtFeature.mint_conformerID						= massTag->mintConformerID;
+				vectMassTimeFeatures.push_back(mtFeature); 
+			}
+
+			mobjLCMSWarp->SetReferenceFeatures(vectMassTimeFeatures); 
+			mblnMassTagDBLoaded = true; 
+		}
+
 		void clsAlignmentProcessor::SetReferenceDatasetFeatures(MultiAlignEngine::MassTags::clsMassTagDB *massTagDB)
 		{
-			mintPercentDone = 0; 
+			mintPercentDone			= 0; 
 			mblnAligningToMassTagDB = true; 
 
 			std::vector<MultiAlignEngine::Alignment::MassTimeFeature> vectMassTimeFeatures;

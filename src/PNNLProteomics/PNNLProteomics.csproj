@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -188,6 +188,7 @@
     <Compile Include="Data\DeisotopingTool.cs" />
     <Compile Include="Data\Factors\FactorInformation.cs" />
     <Compile Include="Data\LabelingType.cs" />
+    <Compile Include="Data\MassTags\MassTagDatabase.cs" />
     <Compile Include="Data\MassTags\MassTagDatabaseFormat.cs" />
     <Compile Include="IO\AnalysisMTDBSetupException.cs" />
     <Compile Include="IO\InputDatabase.cs" />
@@ -248,8 +249,10 @@
     <Compile Include="IO\UMC\UMCLoaderFactory.cs" />
     <Compile Include="IO\XAMTReader.cs" />
     <Compile Include="MultiAlign\AnalysisUtils.cs" />
+    <Compile Include="MultiAlign\Hibernate\Domain\DAOHibernate\ProteinDAO.cs" />
     <Compile Include="MultiAlign\Hibernate\Domain\DAOHibernate\FactorDAOHibernate.cs" />
     <Compile Include="MultiAlign\Hibernate\Domain\DAOHibernate\DatasetDAOHibernate.cs" />
+    <Compile Include="MultiAlign\Hibernate\Domain\DAOHibernate\MassTagDAO.cs" />
     <Compile Include="MultiAlign\Hibernate\Domain\DAO\IFactorDAO.cs" />
     <Compile Include="MultiAlign\Hibernate\Domain\DAO\IDatasetDAO.cs" />
     <Compile Include="MultiAlign\Hibernate\Domain\Factor.cs" />
@@ -282,8 +285,6 @@
     <Compile Include="MultiAlign\Hibernate\Domain\DAO\IMassTagDAO.cs" />
     <Compile Include="MultiAlign\Hibernate\Domain\DAO\IUmcClusterDAO.cs" />
     <Compile Include="MultiAlign\Hibernate\Domain\DAOHibernate\GenericDAOHibernate.cs" />
-    <Compile Include="MultiAlign\Hibernate\Domain\DAOHibernate\ProteinDAOHibernate.cs" />
-    <Compile Include="MultiAlign\Hibernate\Domain\DAOHibernate\MassTagDAOHibernate.cs" />
     <Compile Include="MultiAlign\Hibernate\Domain\DAOHibernate\UmcClusterDAOHibernate.cs" />
     <Compile Include="MultiAlign\Hibernate\Domain\DAO\IUmcDAO.cs" />
     <Compile Include="MultiAlign\Hibernate\Domain\DAOHibernate\UmcDAOHibernate.cs" />
@@ -313,6 +314,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Algorithms\FeatureFinding\" />
+    <Folder Include="IO\Hibernate\Mappings\" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
