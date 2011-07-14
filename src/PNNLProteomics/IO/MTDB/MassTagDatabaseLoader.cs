@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Data;
 using PNNLOmics.Data;
+using PNNLOmics.Data.MassTags;
 using MultiAlignEngine.MassTags;
 using PNNLProteomics.Data.MassTags;
-
+using PNNLProteomics.Data.MassTags;
 namespace PNNLProteomics.IO.MTDB
 {
     /// <summary>
@@ -83,10 +84,9 @@ namespace PNNLProteomics.IO.MTDB
         /// Downloads the mass tags
         /// </summary>
         /// <returns></returns>
-        protected virtual List<MassTag> LoadMassTags()
+        protected virtual List<MassTagLight> LoadMassTags()
         {
-            List<MassTag> massTags = new List<MassTag>();
-
+            List<MassTagLight> massTags     = new List<MassTagLight>();
             using (IDbConnection connection = CreateConnection(CreateConnectionString()))
             {
                 connection.Open();
@@ -107,7 +107,7 @@ namespace PNNLProteomics.IO.MTDB
                     {
                         while(reader.Read())
                         {
-					        MassTag massTag = new MassTag();
+                            MassTagLight massTag            = new MassTagLight();
 					        if (reader["Mass_Tag_ID"] != System.DBNull.Value)
 					        {
 						        int     id                  = System.Convert.ToInt32(reader["Mass_Tag_ID"]); 
@@ -133,7 +133,7 @@ namespace PNNLProteomics.IO.MTDB
 						        if (reader["High_Normalized_Score"] != System.DBNull.Value)                 xcorr_max                       = Convert.ToSingle(reader["High_Normalized_Score"]);						
 						        if (reader["StD_GANET"] != System.DBNull.Value) 							stdNet                          = Convert.ToSingle(reader["StD_GANET"]); 
 						        if (reader["Monoisotopic_Mass"] != System.DBNull.Value)                     monoMass                        = Convert.ToDouble(reader["Monoisotopic_Mass"]);
-						        if (reader["Min_MSGF_SpecProb"] != System.DBNull.Value)                     monoMass                        = Convert.ToDouble(reader["Min_MSGF_SpecProb"]); 						
+						        if (reader["Min_MSGF_SpecProb"] != System.DBNull.Value)                     msgf                            = Convert.ToDouble(reader["Min_MSGF_SpecProb"]); 						
 						        if (reader["Peptide_Obs_Count_Passing_Filter"] != System.DBNull.Value)      numObservations                 = Convert.ToInt32(reader["Peptide_Obs_Count_Passing_Filter"]);						
 						        if (reader["Mod_Count"] != System.DBNull.Value)         					modCount                        = Convert.ToInt32(reader["Mod_Count"]);						
 						        if (reader["Mod_Description"] != System.DBNull.Value)                       modification                    = reader["Mod_Description"].ToString();						
@@ -149,10 +149,11 @@ namespace PNNLProteomics.IO.MTDB
                                 {
                                     Molecule molecule   = new Molecule();
                                     molecule.Name       = peptide;
-                                    molecule.MassTag    = massTag; 
+                                    //molecule.MassTag    = massTag; 
             
 							        massTag.ID					    = id;                            
 							        massTag.Molecule                = molecule;
+                                    massTag.NET                     = ganet;
 							        massTag.NETAverage			    = ganet; 
 							        massTag.XCorr				    = xcorr_max; 
 							        massTag.DiscriminantMax		    = highDiscriminant;
@@ -249,7 +250,7 @@ namespace PNNLProteomics.IO.MTDB
         public virtual MassTagDatabase LoadDatabase()
         {
             MassTagDatabase database                  = new MassTagDatabase();
-            List<MassTag> tags                        = LoadMassTags();
+            List<MassTagLight> tags                   = LoadMassTags();
             Dictionary<int, List<Protein>> proteinMap = LoadProteins();
 
             database.AddMassTagsAndProteins(tags, proteinMap);            

@@ -24,7 +24,7 @@ namespace PNNLProteomics.IO
         /// <param name="analysis"></param>
         public void WritePeakMatchResults(MultiAlignAnalysis analysis, out int matchedMassTags, out int matchedProteins)
         {
-            List<MassTag> massTagArray = analysis.MassTagDatabase.MassTags;           
+            List<MassTagLight> massTagArray = analysis.MassTagDatabase.MassTags;           
 
             //TODO: Fix this with the providers.
             IMassTagDAO massTagDAOHibernate = new MassTagDAO();
@@ -36,16 +36,16 @@ namespace PNNLProteomics.IO
                                 new GenericDAOHibernate<MassTagToProteinMap>();
 
             GenericDAOHibernate<StacFDR> stacFDRDAOHibernate    = new GenericDAOHibernate<StacFDR>();
-            List<MassTag> massTagList                           = new List<MassTag>();
+            List<MassTagLight> massTagList                      = new List<MassTagLight>();
             List<Protein> proteinList                           = new List<Protein>();
             List<ClusterToMassTagMap> clusterToMassTagMapList   = new List<ClusterToMassTagMap>();
             List<MassTagToProteinMap> massTagToProteinMapList   = new List<MassTagToProteinMap>();
             List<StacFDR> stacFDRResultsList                    = new List<StacFDR>();
 
-            foreach (MassTagFeatureMatch<UMCClusterLight> match in analysis.PeakMatchingResults)
+            foreach (FeatureMatchLight<UMCClusterLight, MassTagLight> match in analysis.PeakMatchingResults)
             {
-                MassTag         tag                     = match.Tag;
-                UMCClusterLight feature                 = match.Feature;
+                MassTagLight         tag                = match.Target;
+                UMCClusterLight feature                 = match.Observed;
                 ClusterToMassTagMap clusterToMassTagMap = new ClusterToMassTagMap(feature.ID, tag.ID);
                 List<Protein> proteins                  = analysis.MassTagDatabase.Proteins[tag.ID];
 

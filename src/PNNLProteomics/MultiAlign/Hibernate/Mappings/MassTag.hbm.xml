@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" 
                    assembly="PNNLOmics" 
-                   namespace="PNNLOmics.Data">
+                   namespace="PNNLOmics.Data.MassTags">
 
-	<class name="MassTag" table="T_Mass_Tags" lazy="false">
+	<class name="MassTagLight" table="T_Mass_Tags" lazy="false">
 		<id name="ID" column="Mass_Tag_ID" type="integer">
 			<generator class="assigned" />
 		</id>

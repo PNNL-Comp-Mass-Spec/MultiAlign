@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using PNNLOmics.Data;   
+using PNNLOmics.Data.MassTags;
+using PNNLOmics.Data;
 
 namespace PNNLProteomics.Data.MassTags
 {
@@ -11,17 +12,13 @@ namespace PNNLProteomics.Data.MassTags
     /// </summary>
     public class MassTagDatabase
     {
-        /// <summary>
-        /// Map between proteins and mass tags.
-        /// </summary>
-        private Dictionary<int, List<Protein>> m_proteinMassTagMap;
-
+        
         /// <summary>
         /// Constructor.
         /// </summary>
         public MassTagDatabase()
         {
-            MassTags    = new List<MassTag>();
+            MassTags    = new List<MassTagLight>();
             AllProteins = new List<Protein>();
             Proteins    = new Dictionary<int, List<Protein>>();
         }
@@ -30,7 +27,7 @@ namespace PNNLProteomics.Data.MassTags
         /// <summary>
         /// Gets the list of available mass tags.
         /// </summary>
-        public List<MassTag> MassTags
+        public List<MassTagLight> MassTags
         {
             get;
             private set;
@@ -57,7 +54,7 @@ namespace PNNLProteomics.Data.MassTags
         /// Loads the mass tags.
         /// </summary>
         /// <param name="massTags"></param>
-        public void AddMassTagsAndProteins( List<MassTag>                   massTags,
+        public void AddMassTagsAndProteins(List<MassTagLight>               massTags,
                                             Dictionary<int, List<Protein>>  massTagToProteinMap)
         {            
             MassTags.AddRange(massTags);            
@@ -66,7 +63,7 @@ namespace PNNLProteomics.Data.MassTags
                 List<Protein> proteins = massTagToProteinMap[key];
                 AllProteins.AddRange(proteins);                
             }
-            m_proteinMassTagMap = massTagToProteinMap;
+            Proteins = massTagToProteinMap;
         }
     }
 }

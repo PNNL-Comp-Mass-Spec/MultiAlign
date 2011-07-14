@@ -260,7 +260,7 @@ namespace PNNLProteomics.Data
         /// <summary>
         /// Gets the peak matching results 
         /// </summary>
-        public List<MassTagFeatureMatch<UMCClusterLight>> PeakMatchingResults
+        public List<FeatureMatchLight<UMCClusterLight, MassTagLight>> PeakMatchingResults
         {
             get;
             set;
@@ -268,7 +268,7 @@ namespace PNNLProteomics.Data
         /// <summary>
         /// Gets the peak matching results from the 11 Da shift.
         /// </summary>
-        public List<MassTagFeatureMatch<UMCClusterLight>> ShiftedPeakMatchingResults
+        public List<FeatureMatchLight<UMCClusterLight, MassTagLight>> ShiftedPeakMatchingResults
         {
             get;
             set;

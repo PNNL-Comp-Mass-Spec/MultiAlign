@@ -349,7 +349,7 @@ namespace PNNLProteomics.MultiAlign
             {
                 baselineFeatures = new List<clsUMC>();
                 // Convert the mass tags to features.                
-                foreach (MassTag tag in analysis.MassTagDatabase.MassTags)
+                foreach (MassTagLight tag in analysis.MassTagDatabase.MassTags)
                 {                    
                     clsUMC umc               = new clsUMC();
                     umc.ChargeRepresentative = 0;
@@ -629,7 +629,7 @@ namespace PNNLProteomics.MultiAlign
                                                                             m_analysis.MassTagDatabase,
                                                                             m_analysis.STACOptions);
 
-                        List<MassTagFeatureMatch<UMCClusterLight>> matches = peakMatcher.ConvertSTACResultsToPeakResults( m_analysis.STACResults,
+                        List<FeatureMatchLight<UMCClusterLight, MassTagLight>> matches = peakMatcher.ConvertSTACResultsToPeakResults( m_analysis.STACResults,
                                                                                                                           m_analysis.MassTagDatabase,
                                                                                                                           clusters);   
                      
@@ -637,14 +637,14 @@ namespace PNNLProteomics.MultiAlign
                     }
                     else
                     {
-                        UpdateStatus("Traditional Peak matching.");                        
-                        List<MassTagFeatureMatch<UMCClusterLight>> matches = peakMatcher.PerformPeakMatching(clusters, 
+                        UpdateStatus("Traditional Peak matching.");
+                        List<FeatureMatchLight<UMCClusterLight, MassTagLight>> matches = peakMatcher.PerformPeakMatching(clusters, 
                                                                                                 m_analysis.MassTagDatabase, 
                                                                                                 m_analysis.PeakMatchingOptions,
                                                                                                 0.0);
 
                         UpdateStatus("Traditional Peak matching with 11-dalton shift.");
-                        List<MassTagFeatureMatch<UMCClusterLight>> shiftedMatches = peakMatcher.PerformPeakMatching(clusters,
+                        List<FeatureMatchLight<UMCClusterLight, MassTagLight>> shiftedMatches = peakMatcher.PerformPeakMatching(clusters,
                                                                                                 m_analysis.MassTagDatabase,
                                                                                                 m_analysis.PeakMatchingOptions, 
                                                                                                 11.0);

@@ -21,22 +21,22 @@ namespace PNNLProteomics.Algorithms.PeakMatching
         /// <summary>
         /// Performs the peak matching of UMC's to the MTDB and inherent scoring.
         /// </summary>
-        public List<MassTagFeatureMatch<T>> PerformPeakMatching(List<T>     clusters,
+        public List<FeatureMatchLight<T, MassTagLight>> PerformPeakMatching(List<T>     clusters,
                                                                               MassTagDatabase           massTagDatabase,
                                                                               clsPeakMatchingOptions    options,
                                                                               double                    daltonShift)
         {
 
-            AMTPeakMatcher<T> peakMatcher               = new AMTPeakMatcher<T>();
+            FeatureMatcherLight<T, MassTagLight> peakMatcher         = new FeatureMatcherLight<T,MassTagLight>();
 
-            AMTPeakMatchingOptions matchingOptions      = new AMTPeakMatchingOptions();
+            FeatureMatcherLightOptions matchingOptions  = new FeatureMatcherLightOptions();
             matchingOptions.Tolerances.Mass             = options.MassTolerance;
             matchingOptions.Tolerances.RetentionTime    = options.NETTolerance;
             matchingOptions.Tolerances.DriftTime        = options.DriftTimeTolerance;
             matchingOptions.DaltonShift                 = daltonShift;
-            List<MassTagFeatureMatch<T>> matches        = peakMatcher.MatchFeatures(clusters,
-                                                                                   massTagDatabase.MassTags,
-                                                                                   matchingOptions);
+            List<FeatureMatchLight<T, MassTagLight>> matches        = peakMatcher.MatchFeatures(clusters,
+                                                                                                   massTagDatabase.MassTags,
+                                                                                                   matchingOptions);
             return matches;
         }
         /// <summary>
@@ -53,7 +53,7 @@ namespace PNNLProteomics.Algorithms.PeakMatching
             List<classSMARTMassTag> massTags = new List<classSMARTMassTag>();
             int totalTags = massTagDatabase.MassTags.Count;
 
-            foreach(MassTag tag in massTagDatabase.MassTags)
+            foreach(MassTagLight tag in massTagDatabase.MassTags)
             {                
                 classSMARTMassTag msFeature     = new classSMARTMassTag();
                 msFeature.mdouble_monoMass      = tag.MassMonoisotopic;
@@ -87,20 +87,20 @@ namespace PNNLProteomics.Algorithms.PeakMatching
         /// </summary>
         /// <param name="smart">Results computed using SMART.</param>
         /// <returns>Peak matching results.</returns>
-        public List<MassTagFeatureMatch<T>> ConvertSTACResultsToPeakResults(classSMARTResults smart,
+        public List<FeatureMatchLight<T, MassTagLight>> ConvertSTACResultsToPeakResults(classSMARTResults smart,
                                                                            MassTagDatabase  massTagDatabase,
                                                                            List<T> clusters)
         {
-            
-            List<MassTagFeatureMatch<T>> matches    = new List<MassTagFeatureMatch<T>>();
-            Dictionary<int, MassTag> tagMap         = new Dictionary<int,MassTag>();
-            Dictionary<int, T> featureMap           = new Dictionary<int,T>();
+
+            List<FeatureMatchLight<T, MassTagLight>> matches = new List<FeatureMatchLight<T, MassTagLight>>();
+            Dictionary<int, MassTagLight> tagMap             = new Dictionary<int,MassTagLight>();
+            Dictionary<int, T> featureMap                    = new Dictionary<int,T>();
 
             foreach(T feature in clusters)
             {
                 featureMap.Add(feature.ID, feature);
             }
-            foreach(MassTag tag in massTagDatabase.MassTags)
+            foreach(MassTagLight tag in massTagDatabase.MassTags)
             {
                 tagMap.Add(tag.ID, tag);
             }
@@ -134,9 +134,9 @@ namespace PNNLProteomics.Algorithms.PeakMatching
                         bool containsTag = tagMap.ContainsKey(probability.MassTagID);
                         if (containsTag)
                         {
-                            MassTagFeatureMatch<T> match = new MassTagFeatureMatch<T>();
-                            match.Tag                    = tagMap[probability.MassTagID];
-                            match.Feature                = feature;
+                            FeatureMatchLight<T, MassTagLight> match = new FeatureMatchLight<T, MassTagLight>();
+                            match.Target                             = tagMap[probability.MassTagID];
+                            match.Observed                           = feature;
                             matches.Add(match);
                         }
                     }

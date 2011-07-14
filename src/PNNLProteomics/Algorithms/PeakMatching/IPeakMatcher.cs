@@ -22,10 +22,10 @@ namespace PNNLProteomics.Algorithms.PeakMatching
         /// <summary>
         /// Performs the peak matching of UMC's to the MTDB and inherent scoring.
         /// </summary>
-        List<MassTagFeatureMatch<T>> PerformPeakMatching(List<T>                clusters,
-                                                        MassTagDatabase         massTagDatabase,
-                                                        clsPeakMatchingOptions  options,
-                                                        double                  daltonShift);
+        List<FeatureMatchLight<T, MassTagLight>> PerformPeakMatching(List<T>                clusters,
+                                                                    MassTagDatabase         massTagDatabase,
+                                                                    clsPeakMatchingOptions  options,
+                                                                    double                  daltonShift);
         /// <summary>
         /// Calculates the SMART Scores if matched to a AMTDB 
         /// for peptide identification.
@@ -39,8 +39,8 @@ namespace PNNLProteomics.Algorithms.PeakMatching
         /// </summary>
         /// <param name="smart">Results computed using SMART.</param>
         /// <returns>Peak matching results.</returns>
-        List<MassTagFeatureMatch<T>> ConvertSTACResultsToPeakResults(classSMARTResults  smart,
-                                                                    MassTagDatabase     massTagDatabase,
-                                                                    List<T>             clusters);             
+        List<FeatureMatchLight<T, MassTagLight>> ConvertSTACResultsToPeakResults(classSMARTResults  smart,
+                                                                                MassTagDatabase     massTagDatabase,
+                                                                                List<T>             clusters);             
     }
 }

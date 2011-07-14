@@ -7,7 +7,7 @@ using MultiAlignEngine.MassTags;
 using PNNLProteomics.Data.Alignment;
 
 using PNNLProteomics.Data.MassTags;
-using PNNLOmics.Data;
+using PNNLOmics.Data.MassTags;
 
 namespace PNNLProteomics.Algorithms.Alignment
 {
@@ -38,7 +38,7 @@ namespace PNNLProteomics.Algorithms.Alignment
             alignmentProcessor.AlignmentOptions         = alignmentOptions;
             List<clsMassTag> tags                       = new List<clsMassTag>();
 
-            foreach (MassTag tag in massTagDatabase.MassTags)
+            foreach (MassTagLight tag in massTagDatabase.MassTags)
             {
                 // mixed mode tag
                 clsMassTag mmTag        = new clsMassTag();
@@ -358,7 +358,7 @@ namespace PNNLProteomics.Algorithms.Alignment
             clsAlignmentProcessor alignmentProcessor = new clsAlignmentProcessor();
             List<clsMassTag> tags                    = new List<clsMassTag>();
 
-            foreach (MassTag tag in massTagDatabase.MassTags)
+            foreach (MassTagLight tag in massTagDatabase.MassTags)
             {
                 // mixed mode tag
                 clsMassTag mmTag        = new clsMassTag();
