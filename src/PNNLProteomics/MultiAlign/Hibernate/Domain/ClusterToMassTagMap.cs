@@ -52,6 +52,7 @@ namespace PNNLProteomics.MultiAlign.Hibernate.Domain
 
 			hash = hash * 23 + m_clusterId.GetHashCode();
 			hash = hash * 23 + m_massTagId.GetHashCode();
+            hash = hash * 23 + ConformerId.GetHashCode();
 
 			return hash;
 		}
@@ -67,6 +68,11 @@ namespace PNNLProteomics.MultiAlign.Hibernate.Domain
 			get { return m_massTagId; }
 			set { m_massTagId = value; }
 		}
+        public int ConformerId
+        {
+            get;
+            set;
+        }
 
 		public double StacScore
 		{

@@ -37,7 +37,7 @@ namespace PNNLProteomics.IO
 
             GenericDAOHibernate<StacFDR> stacFDRDAOHibernate    = new GenericDAOHibernate<StacFDR>();
             List<MassTagLight> massTagList                      = new List<MassTagLight>();
-            List<Protein> proteinList                           = new List<Protein>();
+            Dictionary<int, Protein> proteinList                = new Dictionary<int,Protein>();
             List<ClusterToMassTagMap> clusterToMassTagMapList   = new List<ClusterToMassTagMap>();
             List<MassTagToProteinMap> massTagToProteinMapList   = new List<MassTagToProteinMap>();
             List<StacFDR> stacFDRResultsList                    = new List<StacFDR>();
@@ -47,6 +47,7 @@ namespace PNNLProteomics.IO
                 MassTagLight         tag                = match.Target;
                 UMCClusterLight feature                 = match.Observed;
                 ClusterToMassTagMap clusterToMassTagMap = new ClusterToMassTagMap(feature.ID, tag.ID);
+                clusterToMassTagMap.ConformerId         = tag.ConformationID;
                 List<Protein> proteins                  = analysis.MassTagDatabase.Proteins[tag.ID];
 
                 foreach (Protein protein in proteins)
@@ -95,9 +96,9 @@ namespace PNNLProteomics.IO
                         massTagList.Add(tag);
                     }
 
-                    if (!proteinList.Contains(protein))
+                    if (!proteinList.ContainsKey(protein.RefID))
                     {
-                        proteinList.Add(protein);
+                        proteinList.Add(protein.RefID, protein);
                     }
                 }
             }
@@ -107,12 +108,18 @@ namespace PNNLProteomics.IO
                 stacFDRResultsList.Add(new StacFDR(fdrResult));
             }
 
+            List<Protein> uniqueProteins = new List<Protein>();
+            foreach (Protein protein in proteinList.Values)
+            {
+                uniqueProteins.Add(protein);
+            }
+
             matchedMassTags = massTagList.Count;
-            matchedProteins = proteinList.Count;
+            matchedProteins = uniqueProteins.Count;
 
 
             massTagDAOHibernate.AddAll(massTagList);
-            proteinDAOHibernate.AddAll(proteinList);
+            proteinDAOHibernate.AddAll(uniqueProteins);
             clusterToMassTagMapDAOHibernate.AddAll(clusterToMassTagMapList);
             massTagToProteinMapDAOHibernate.AddAll(massTagToProteinMapList);
             stacFDRDAOHibernate.AddAll(stacFDRResultsList);            

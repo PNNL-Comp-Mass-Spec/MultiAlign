@@ -4,9 +4,11 @@
                    namespace="PNNLOmics.Data.MassTags">
 
 	<class name="MassTagLight" table="T_Mass_Tags" lazy="false">
-		<id name="ID" column="Mass_Tag_ID" type="integer">
-			<generator class="assigned" />
-		</id>
+
+    <composite-id>
+      <key-property name="ID" column="Mass_Tag_ID" type="int" />
+      <key-property name="ConformationID" column="Conformer_ID" type="int" />
+    </composite-id>
 		<property name="MassMonoisotopic"     column="Mass"                 type="double" not-null="false" />
 		<property name="NETAverage"           column="NET_Average"          type="double" not-null="false" />
 		<property name="NETPredicted"         column="NET_Predicted"        type="double" not-null="false" />

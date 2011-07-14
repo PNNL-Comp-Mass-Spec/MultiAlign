@@ -536,35 +536,7 @@ namespace PNNLProteomics.MultiAlign
                             new KeyValuePair<DriftTimeAlignmentResults<UMC, UMC>, DriftTimeAlignmentResults<UMC, UMC>>(alignedResults,
                                                                                                                        offsetResults);
             return pair;
-        }
-        ///// <summary>
-        ///// Copies the peak matching results to peak matching results object.
-        ///// </summary>
-        ///// <param name="matches"></param>
-        ///// <param name="database"></param>
-        ///// <returns></returns>
-        //private clsPeakMatchingResults CopyMatchesToPeakMatchingResults(List<MassTagFeatureMatch<UMCClusterLight>> matches, MassTagDatabase database)
-        //{
-        //    clsPeakMatchingResults results = new clsPeakMatchingResults();
-        //    foreach (MassTagFeatureMatch<UMCClusterLight> match in matches)
-        //    {
-        //        UMCClusterLight cluster     = match.Feature;
-        //        MassTag tag                 = match.Tag;
-                                
-        //        List<Protein> proteins      = database.Proteins[tag.ID];
-        //        foreach (Protein protein in proteins)
-        //        {
-        //            clsPeakMatchingResults.clsPeakMatchingTriplet triplet = new clsPeakMatchingResults.clsPeakMatchingTriplet();
-        //            triplet.mintFeatureIndex = cluster.ID;
-        //            triplet.mintMassTagIndex = tag.ID;
-        //            triplet.mintProteinIndex = protein.RefID;
-
-                    
-        //        }
-        //    }
-
-        //    return results;
-        //}
+        }        
         /// <summary>
         /// Performs peak matching with loaded clusters. 
         /// </summary>

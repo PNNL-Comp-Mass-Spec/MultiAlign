@@ -1,16 +1,14 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
-
-
 using MultiAlignEngine;
 using MultiAlignEngine.MassTags;
 using MultiAlignEngine.Features;
 using MultiAlignEngine.Alignment;
 using MultiAlignEngine.Clustering;
 using MultiAlignEngine.PeakMatching;
-
 using PNNLProteomics.Data;
+using PNNLProteomics.Algorithms.FeatureFinding;
 using PNNLProteomics.IO;
 using PNNLProteomics.SMART;
 using PNNLProteomics.EventModel;
@@ -19,8 +17,8 @@ using PNNLProteomics.Data.Alignment;
 using PNNLProteomics.MultiAlign;
 using PNNLProteomics.MultiAlign.Hibernate;
 using PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate;
-
 using PNNLProteomics.MultiAlign.Hibernate.Domain.DAO;
+using PNNLOmics.Data.Features;
 
 namespace PNNLProteomics.IO.UMC
 {
@@ -33,26 +31,28 @@ namespace PNNLProteomics.IO.UMC
                                             IUmcDAO              featureCache,
                                             clsUMCFindingOptions options)
         {
-            clsUMC[] loadedFeatures = null;
-            clsUMCCreator umcFinder = new clsUMCCreator();
-            umcFinder.UMCFindingOptions = options;
-            int umcIndex = 0;
+            clsUMC[]        loadedFeatures  = null;
+            IFeatureFinder  featureFinder   = new UMCFeatureFinder();
+            int             umcIndex        = 0;
+            clsUMCCreator   umcFinder       = new clsUMCCreator();
+            umcFinder.UMCFindingOptions     = options; 
+            string extension                = Path.GetExtension(dataset.Path).ToUpper();
+            List<UMCLight> newFeatures      = null;
 
-            string extension = Path.GetExtension(dataset.Path).ToUpper();
             switch (extension)
             {
                 case ".TXT":
                     // LCMS Features File                         
                     UmcReader umcReader = new UmcReader(dataset.Path);
-                    loadedFeatures = umcReader.GetUmcList().ToArray();
-                    int minScan = int.MaxValue;
-                    int maxScan = int.MinValue;
+                    loadedFeatures      = umcReader.GetUmcList().ToArray();
+                    int minScan         = int.MaxValue;
+                    int maxScan         = int.MinValue;
 
                     // Find scan extrema to calculate a NET value.
                     foreach (clsUMC umc in loadedFeatures)
                     {
-                        minScan = Math.Min(umc.mint_start_scan, minScan);
-                        maxScan = Math.Max(umc.mint_end_scan, maxScan);
+                        minScan         = Math.Min(umc.mint_start_scan, minScan);
+                        maxScan         = Math.Max(umc.mint_end_scan, maxScan);
                     }
 
                     // Scale for the NET
@@ -77,7 +77,7 @@ namespace PNNLProteomics.IO.UMC
                     if (loadedFeatures.Length < 1)
                     {
                         MSFeatureDAOHibernate msFeatureDAOHibernate = new MSFeatureDAOHibernate();
-                        clsIsotopePeak[] msFeatureArray = msFeatureDAOHibernate.FindAll().ToArray();
+                        clsIsotopePeak[] msFeatureArray             = msFeatureDAOHibernate.FindAll().ToArray();
 
                         umcFinder.SetIsotopePeaks(ref msFeatureArray);
                         umcFinder.FindUMCs();
@@ -115,13 +115,21 @@ namespace PNNLProteomics.IO.UMC
                     loadedFeatures = umcFinder.GetUMCs();
                     break;
                 case ".CSV":
-                    umcFinder.FileName = dataset.Path;                    
-                    umcFinder.LoadUMCs(false);
-                    umcFinder.FindUMCs();
-                    loadedFeatures = umcFinder.GetUMCs();
+                    //umcFinder.FileName = dataset.Path;                    
+                    //umcFinder.LoadUMCs(false);
+                    //umcFinder.FindUMCs();
+                    //loadedFeatures = umcFinder.GetUMCs();
+                    //umcFinder.FindUMCs();
+                    //List<UMCLight> newFeatures = featureFinder.FindFeatures(dataset.Path);
+                    newFeatures = featureFinder.FindFeatures(dataset.Path, options);                    
                     break;
                 default:
                     throw new ArgumentException("Incorrect extension for file. Please use pek, csv, LCMSFeatures.txt, SQLite or DB3 files as inputs.");
+            }
+
+            if (newFeatures != null)
+            {
+                //TODO: Copy the found features.
             }
 
             List<clsUMC> features = new List<clsUMC>();
