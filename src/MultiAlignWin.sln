@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PNNLControls", "PNNLControls\PNNLControls.csproj", "{9409DE9B-F3F0-41AA-95F5-8BFD525F5669}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiAlignCore", "PNNLProteomics\MultiAlignCore.csproj", "{BDFA22C4-5822-4AA5-996E-6FDE57F7118B}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiAlignCustomControls", "MultiAlignCustomControls\MultiAlignCustomControls.csproj", "{EE7596B2-FCD3-471A-856F-1270713DD5B1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiAlignWin", "MultiAlignWin\MultiAlignWin.csproj", "{74B1D21D-3B38-4605-A617-4CA55683311C}"
@@ -18,6 +16,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FunctionalRedundancy", "FunctionalRedundancy\FunctionalRedundancy.csproj", "{3A236236-32C6-4985-8CD3-CC075A36E54D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiAlignTestSuite", "MultiAlignTestSuite\MultiAlignTestSuite.csproj", "{C98A3968-F62C-47EB-9E03-93862C747D33}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiAlignCore", "MultiAlignCore\MultiAlignCore.csproj", "{BDFA22C4-5822-4AA5-996E-6FDE57F7118B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,14 +35,6 @@ Global
 		{9409DE9B-F3F0-41AA-95F5-8BFD525F5669}.Release|x64.Build.0 = Release|x64
 		{9409DE9B-F3F0-41AA-95F5-8BFD525F5669}.Release|x86.ActiveCfg = Release|x86
 		{9409DE9B-F3F0-41AA-95F5-8BFD525F5669}.Release|x86.Build.0 = Release|x86
-		{BDFA22C4-5822-4AA5-996E-6FDE57F7118B}.Debug|x64.ActiveCfg = Debug|x64
-		{BDFA22C4-5822-4AA5-996E-6FDE57F7118B}.Debug|x64.Build.0 = Debug|x64
-		{BDFA22C4-5822-4AA5-996E-6FDE57F7118B}.Debug|x86.ActiveCfg = Debug|x86
-		{BDFA22C4-5822-4AA5-996E-6FDE57F7118B}.Debug|x86.Build.0 = Debug|x86
-		{BDFA22C4-5822-4AA5-996E-6FDE57F7118B}.Release|x64.ActiveCfg = Release|x64
-		{BDFA22C4-5822-4AA5-996E-6FDE57F7118B}.Release|x64.Build.0 = Release|x64
-		{BDFA22C4-5822-4AA5-996E-6FDE57F7118B}.Release|x86.ActiveCfg = Release|x86
-		{BDFA22C4-5822-4AA5-996E-6FDE57F7118B}.Release|x86.Build.0 = Release|x86
 		{EE7596B2-FCD3-471A-856F-1270713DD5B1}.Debug|x64.ActiveCfg = Debug|x64
 		{EE7596B2-FCD3-471A-856F-1270713DD5B1}.Debug|x64.Build.0 = Debug|x64
 		{EE7596B2-FCD3-471A-856F-1270713DD5B1}.Debug|x86.ActiveCfg = Debug|x86
@@ -89,6 +81,14 @@ Global
 		{C98A3968-F62C-47EB-9E03-93862C747D33}.Debug|x86.Build.0 = Debug|x86
 		{C98A3968-F62C-47EB-9E03-93862C747D33}.Release|x64.ActiveCfg = Release|Any CPU
 		{C98A3968-F62C-47EB-9E03-93862C747D33}.Release|x86.ActiveCfg = Release|Any CPU
+		{BDFA22C4-5822-4AA5-996E-6FDE57F7118B}.Debug|x64.ActiveCfg = Debug|x64
+		{BDFA22C4-5822-4AA5-996E-6FDE57F7118B}.Debug|x64.Build.0 = Debug|x64
+		{BDFA22C4-5822-4AA5-996E-6FDE57F7118B}.Debug|x86.ActiveCfg = Debug|x86
+		{BDFA22C4-5822-4AA5-996E-6FDE57F7118B}.Debug|x86.Build.0 = Debug|x86
+		{BDFA22C4-5822-4AA5-996E-6FDE57F7118B}.Release|x64.ActiveCfg = Release|x64
+		{BDFA22C4-5822-4AA5-996E-6FDE57F7118B}.Release|x64.Build.0 = Release|x64
+		{BDFA22C4-5822-4AA5-996E-6FDE57F7118B}.Release|x86.ActiveCfg = Release|x86
+		{BDFA22C4-5822-4AA5-996E-6FDE57F7118B}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

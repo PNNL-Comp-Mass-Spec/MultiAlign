@@ -90,6 +90,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MultiAlignCore\MultiAlignCore.csproj">
+      <Project>{BDFA22C4-5822-4AA5-996E-6FDE57F7118B}</Project>
+      <Name>MultiAlignCore</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MultiAlignCustomControls\MultiAlignCustomControls.csproj">
       <Project>{EE7596B2-FCD3-471A-856F-1270713DD5B1}</Project>
       <Name>MultiAlignCustomControls</Name>
@@ -97,10 +101,6 @@
     <ProjectReference Include="..\PNNLControls\PNNLControls.csproj">
       <Project>{9409DE9B-F3F0-41AA-95F5-8BFD525F5669}</Project>
       <Name>PNNLControls</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\PNNLProteomics\MultiAlignCore.csproj">
-      <Project>{BDFA22C4-5822-4AA5-996E-6FDE57F7118B}</Project>
-      <Name>MultiAlignCore</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
