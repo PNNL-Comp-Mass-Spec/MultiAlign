@@ -1,7 +1,7 @@
 ﻿using System.Data;
 using System.Data.SQLite;
 
-namespace PNNLProteomics.IO.MTDB
+namespace MultiAlignCore.IO.MTDB
 {
     /// <summary>
     /// Stub class.

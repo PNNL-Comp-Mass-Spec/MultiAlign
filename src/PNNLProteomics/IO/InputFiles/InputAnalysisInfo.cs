@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using PNNLProteomics.Data.MetaData;
 
-namespace PNNLProteomics.IO
+namespace MultiAlignCore.IO.InputFiles
 {    
     /// <summary>
     /// Input data for the console application.

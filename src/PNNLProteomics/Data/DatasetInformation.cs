@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
+using MultiAlignCore.Data.Factors;
 using MultiAlignEngine;
-using PNNLProteomics.Data.Factors;
-using PNNLProteomics.MultiAlign.Hibernate.Domain;
 
-namespace PNNLProteomics.Data
+namespace MultiAlignCore.Data
 {
 	/// <summary>
 	/// Contains information about a dataset used for analysis.r

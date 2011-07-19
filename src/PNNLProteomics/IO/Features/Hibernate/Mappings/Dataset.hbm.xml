@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" 
-                   assembly="PNNLProteomics" 
-                   namespace="PNNLProteomics.Data">
+                   assembly="MultiAlignCore" 
+                   namespace="MultiAlignCore.Data">
 
 	<class name="DatasetInformation" table="T_Datasets" lazy="false">
 		<composite-id>
@@ -15,7 +15,7 @@
 		<!--property name="JobType" column="Job_Type" type="string" not-null="false" /-->
 		<bag name="FactorList" inverse="true">
 			<key column="Factor_ID" />
-			<one-to-many class="PNNLProteomics.MultiAlign.Hibernate.Domain.Factor" />
+			<one-to-many class="MultiAlignCore.Data.Factors.Factor" />
 		</bag>
 	</class>
 

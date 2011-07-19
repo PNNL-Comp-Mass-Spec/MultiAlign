@@ -1,10 +1,8 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Runtime.Serialization;
 using PNNLProteomics.SMART;
 
-namespace PNNLProteomics.MultiAlign.Hibernate.Domain
+namespace MultiAlignCore.Data
 {
 	public class StacFDR : ISerializable
 	{

@@ -16,9 +16,9 @@
  *////////////////////////////////////////////////////////////////////////
 using MultiAlignEngine;
 
-using PNNLProteomics.Data;
+using MultiAlignCore.Data;
 
-namespace PNNLProteomics.IO
+namespace MultiAlignCore.IO.InputFiles
 {
     #region Delegate Definitions
     /// <summary>

@@ -20,7 +20,7 @@ using System.Threading;
 using System.Data.SqlClient;
 using System.Collections.Generic;
 
-using PNNLProteomics.Data;
+using MultiAlignCore.Data;
 
 namespace MultiAlignWin.Network
 {

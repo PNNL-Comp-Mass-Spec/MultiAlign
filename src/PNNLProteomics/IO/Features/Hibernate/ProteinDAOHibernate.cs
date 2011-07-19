@@ -1,15 +1,11 @@
-using System;
 using System.Collections.Generic;
-using System.Text;
-using PNNLProteomics.MultiAlign.Hibernate.Domain.DAO;
-using NHibernate;
 using NHibernate.Criterion;
-using MultiAlignEngine.MassTags;
+using PNNLOmics.Data;
 
-namespace PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate
+namespace MultiAlignCore.IO.Features.Hibernate
 {
 
-	public class ProteinDAOHibernate : GenericDAOHibernate<clsProtein>, IProteinDAO
+	public class ProteinDAOHibernate : GenericDAOHibernate<Protein>, IProteinDAO
     {
 
         /// <summary>
@@ -17,10 +13,10 @@ namespace PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate
         /// </summary>
         /// <param name="proteinString">Protein String to be searched for</param>
         /// <returns>List of Protein Objects</returns>
-		public ICollection<clsProtein> FindByProteinString(string proteinString)
+		public ICollection<Protein> FindByProteinString(string proteinString)
         {
-            ICriterion criterion = Expression.Eq("ProteinString", proteinString);
-            List<ICriterion> criterionList = new List<ICriterion>();
+            ICriterion criterion            = Expression.Eq("ProteinString", proteinString);
+            List<ICriterion> criterionList  = new List<ICriterion>();
             criterionList.Add(criterion);
             return FindByCriteria(criterionList);
         }

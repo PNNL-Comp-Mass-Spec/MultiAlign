@@ -3,7 +3,7 @@ using System.IO;
 using System.Xml;
 using System.Collections;
 
-namespace PNNLProteomics.IO
+namespace MultiAlignCore.IO.Parameters
 {
 
 	/// <summary>

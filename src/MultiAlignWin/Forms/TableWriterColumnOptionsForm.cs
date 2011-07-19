@@ -1,7 +1,7 @@
 using System;
 using System.Windows.Forms;
 
-using PNNLProteomics.IO;
+using MultiAlignCore.IO;
 
 namespace MultiAlignWin.Forms
 {

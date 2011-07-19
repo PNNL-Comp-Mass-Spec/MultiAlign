@@ -9,7 +9,7 @@ using MultiAlignEngine;
 using MultiAlignEngine.Alignment;
 using MultiAlignEngine.Clustering;
 
-using PNNLProteomics.Data;
+using MultiAlignCore.Data;
 using PNNLControls;
 
 namespace MultiAlignWin

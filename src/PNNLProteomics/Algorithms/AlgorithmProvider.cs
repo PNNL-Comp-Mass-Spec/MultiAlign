@@ -1,14 +1,9 @@
-using System;
-
-using PNNLOmics.Algorithms;
+using MultiAlignCore.Algorithms.PeakMatching;
 using PNNLOmics.Algorithms.FeatureClustering;
+using MultiAlignCore.Algorithms.Alignment;
 using PNNLOmics.Data.Features;
 
-using PNNLProteomics.Algorithms.Alignment;
-using PNNLProteomics.Algorithms.Clustering;
-using PNNLProteomics.Algorithms.PeakMatching;
-
-namespace PNNLProteomics.Algorithms
+namespace MultiAlignCore.Algorithms
 {
 
     /// <summary>

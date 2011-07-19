@@ -1,6 +1,6 @@
 using System;
 
-namespace PNNLProteomics.EventModel
+namespace MultiAlignCore.EventModel
 {
 	public delegate void DelegateSetStatusMessage(int statusLevel, string status) ; 
 	public delegate void DelegateSetPercentComplete(int percentDone) ; 

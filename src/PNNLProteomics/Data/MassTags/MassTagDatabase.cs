@@ -5,7 +5,7 @@ using System.Text;
 using PNNLOmics.Data.MassTags;
 using PNNLOmics.Data;
 
-namespace PNNLProteomics.Data.MassTags
+namespace MultiAlignCore.Data.MassTags
 {
     /// <summary>
     /// Contains all the information for mass tag databases.

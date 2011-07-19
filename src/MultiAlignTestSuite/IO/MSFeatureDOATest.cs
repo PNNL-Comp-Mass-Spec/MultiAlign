@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
-using PNNLOmics.Data.MassTags;
+using MultiAlignCore.IO.Features;
 using PNNLOmics.Data.Features;
-using PNNLProteomics.MultiAlign.Hibernate.Domain.DAO;
-using PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate;
-
+using MultiAlignCore.IO.Features.Hibernate;
 
 namespace MultiAlignTestSuite
 {

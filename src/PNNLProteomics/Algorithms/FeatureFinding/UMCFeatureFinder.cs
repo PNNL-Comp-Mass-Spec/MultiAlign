@@ -8,7 +8,7 @@ using PNNLOmics.Algorithms.FeatureClustering;
 using PNNLOmics.IO.FileReaders;
 using MultiAlignEngine.Features;
 
-namespace PNNLProteomics.Algorithms.FeatureFinding
+namespace MultiAlignCore.Algorithms.FeatureFinding
 {
     /// <summary>
     /// Finds features using the PNNL Omics feature finding algorithms

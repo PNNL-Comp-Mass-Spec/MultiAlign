@@ -1,5 +1,5 @@
 ﻿
-namespace PNNLProteomics.Data.MassTags
+namespace MultiAlignCore.Data.MassTags
 {
     /// <summary>
     /// Format of the database.

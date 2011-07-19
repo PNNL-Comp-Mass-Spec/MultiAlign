@@ -1,6 +1,6 @@
 using System;
 
-namespace PNNLProteomics.Data.Factors
+namespace MultiAlignCore.Data.Factors
 {
 	/// <summary>
 	/// Summary description for clsTreeNodeConverter.

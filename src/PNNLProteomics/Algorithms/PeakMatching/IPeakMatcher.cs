@@ -1,17 +1,17 @@
 using System;
 using System.Collections.Generic;
 
-using PNNLProteomics.Data;
+using MultiAlignCore.Data;
 using MultiAlignEngine.Features;
 using MultiAlignEngine.MassTags;
 using MultiAlignEngine.PeakMatching;
 
 using PNNLProteomics.SMART;
-using PNNLProteomics.Data.MassTags;
+using MultiAlignCore.Data.MassTags;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Data.MassTags;
 
-namespace PNNLProteomics.Algorithms.PeakMatching
+namespace MultiAlignCore.Algorithms.PeakMatching
 {
     /// <summary>
     /// Interface for peak matching features and databases.

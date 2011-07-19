@@ -29,12 +29,10 @@ using System.ComponentModel;
 using System.IO;
 using System.Threading;
 using System.Windows.Forms;
-using PNNLProteomics.Data;
-using PNNLProteomics.MultiAlign;
-
+using MultiAlignCore.Algorithms;
+using MultiAlignCore.Data;
+using MultiAlignCore.IO.Features;
 using MultiAlignWin.Forms.Wizard;
-using PNNLProteomics.IO;
-using PNNLProteomics.Algorithms;
 
 
 namespace MultiAlignWin
@@ -44,8 +42,8 @@ namespace MultiAlignWin
     /// </summary>
 	public class frmAnalysisWizard: Form
     {
-        public event EventHandler<PNNLProteomics.MultiAlign.AnalysisCompleteEventArgs>  AnalysisComplete;
-        public event EventHandler<PNNLProteomics.MultiAlign.AnalysisErrorEventArgs>     AnalysisError;
+        public event EventHandler<AnalysisCompleteEventArgs>  AnalysisComplete;
+        public event EventHandler<AnalysisErrorEventArgs>     AnalysisError;
         ctlLoadDatasetWizardPage            m_loadDatasetPage;
         DefineFactorsWizardPage             m_defineFactorsPage;
         ctlSelectParametersWizardPage       m_selectParametersPage;

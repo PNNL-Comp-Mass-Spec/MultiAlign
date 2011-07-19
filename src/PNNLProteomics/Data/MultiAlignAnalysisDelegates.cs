@@ -1,12 +1,11 @@
 using System;
 using System.Collections.Generic;
+using MultiAlignCore.Data.Alignment;
 using MultiAlignEngine.Features;
 using PNNLOmics.Algorithms.Alignment;
 using PNNLOmics.Data.Features;
-using PNNLProteomics.Data;
-using PNNLProteomics.Data.Alignment;
 
-namespace PNNLProteomics.MultiAlign
+namespace MultiAlignCore.Data
 {
     /// <summary>
     /// Event arguments when two datasets are aligned.

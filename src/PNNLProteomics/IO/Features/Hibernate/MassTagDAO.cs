@@ -1,8 +1,6 @@
-﻿using PNNLOmics.Data;
-using PNNLOmics.Data.MassTags;
-using PNNLProteomics.MultiAlign.Hibernate.Domain.DAO;
+﻿using PNNLOmics.Data.MassTags;
 
-namespace PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate
+namespace MultiAlignCore.IO.Features.Hibernate
 {
     public class MassTagDAO : GenericDAOHibernate<MassTagLight>, IMassTagDAO
     {

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using MultiAlignEngine.Features;
 
-namespace PNNLProteomics.Filters
+namespace MultiAlignCore.Filters
 {
     public class UMCClusterFilters
     {

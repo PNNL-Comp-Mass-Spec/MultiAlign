@@ -4,7 +4,7 @@ using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
 
-using PNNLProteomics.EventModel;
+using MultiAlignCore.EventModel;
 
 namespace MultiAlignWin
 {

@@ -8,17 +8,17 @@
 
 //using MultiAlignEngine.Features;
 //using MultiAlignEngine.MassTags;
-//using PNNLProteomics.Data;
+//using MultiAlignCore.Data;
 //using MultiAlignEngine.PeakMatching;
 
-//using PNNLProteomics.Filters;
-//using PNNLProteomics.MultiAlign.Hibernate;
-//using PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate;
-//using PNNLProteomics.MultiAlign.Hibernate.Domain;
-//using PNNLProteomics.Data;
+//using MultiAlignCore.Filters;
+//using MultiAlignCore.MultiAlign.Hibernate;
+//using MultiAlignCore.IO.Features.Hibernate;
+//using MultiAlignCore.MultiAlign.Hibernate.Domain;
+//using MultiAlignCore.Data;
 //using PNNLProteomics.SMART;
 
-//namespace PNNLProteomics.IO
+//namespace MultiAlignCore.IO
 //{
 //    public class AnalysisSQLiteDBWriter: IAnalysisWriter
 //    {

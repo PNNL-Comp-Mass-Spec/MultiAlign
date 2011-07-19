@@ -6,10 +6,10 @@ using System.Collections;
 using System.Collections.Generic;
 
 using MultiAlignEngine;
-using PNNLProteomics.IO;
-using PNNLProteomics.Data;
+using MultiAlignCore.IO;
+using MultiAlignCore.Data;
 
-namespace PNNLProteomics.IO
+namespace MultiAlignCore.IO.InputFiles
 {
     public class DatabaseDatasetIDLoader
     {

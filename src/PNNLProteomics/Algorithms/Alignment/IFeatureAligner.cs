@@ -5,10 +5,10 @@ using System.Text;
 using MultiAlignEngine.Alignment;
 using MultiAlignEngine.Features;
 using MultiAlignEngine.MassTags;
-using PNNLProteomics.Data.Alignment;
-using PNNLProteomics.Data.MassTags;
+using MultiAlignCore.Data.Alignment;
+using MultiAlignCore.Data.MassTags;
 
-namespace PNNLProteomics.Algorithms
+namespace MultiAlignCore.Algorithms.Alignment
 {
     /// <summary>
     /// Defines interface for alignment algorithms.

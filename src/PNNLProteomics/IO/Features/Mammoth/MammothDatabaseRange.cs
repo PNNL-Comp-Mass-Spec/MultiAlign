@@ -2,7 +2,7 @@
 
 using PNNLOmics.Algorithms;
 
-namespace PNNLProteomics.IO.Mammoth
+namespace MultiAlignCore.IO.Mammoth
 {
     /// <summary>
     /// Options for searching a UMC database.

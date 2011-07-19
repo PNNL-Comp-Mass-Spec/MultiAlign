@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace PNNLProteomics.IO.Mammoth
+namespace MultiAlignCore.IO.Mammoth
 {
     /// <summary>
     /// Exception thrown when something bad happens with a database's state. 

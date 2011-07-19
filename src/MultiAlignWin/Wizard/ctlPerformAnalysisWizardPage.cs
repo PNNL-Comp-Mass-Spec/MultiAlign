@@ -1,19 +1,20 @@
 using System;
-using MultiAlignCustomControls.Charting;
-using System.Reflection;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Windows.Forms;
+using MultiAlignCustomControls.Drawing;
+using MultiAlignCore.Algorithms;
+using MultiAlignCore.Data;
+using MultiAlignCore.Data.Alignment;
+using MultiAlignCore.IO.Parameters;
+using MultiAlignCustomControls.Charting;
 using PNNLControls;
-using PNNLProteomics.Data;
-using PNNLProteomics.MultiAlign;
-using MultiAlign.Charting;
-using MultiAlign.Drawing;
 
 namespace MultiAlignWin
 {
-    public class ctlPerformAnalysisWizardPage : UserControl, MultiAlignWin.Forms.Wizard.IWizardControl<PNNLProteomics.Data.MultiAlignAnalysis>
+    public class ctlPerformAnalysisWizardPage : UserControl, MultiAlignWin.Forms.Wizard.IWizardControl<MultiAlignAnalysis>
     {
         /// <summary>
         /// 
@@ -284,7 +285,7 @@ namespace MultiAlignWin
         /// <summary>
         /// 
         /// </summary>
-        public PNNLProteomics.Data.MultiAlignAnalysis Data
+        public MultiAlignAnalysis Data
         {
             get
             {
@@ -357,8 +358,8 @@ namespace MultiAlignWin
                                                             e.BaselineDatasetInformation.DatasetName);
             StatusUpdate(logMessage);
             
-            PNNLProteomics.Data.Alignment.classAlignmentData data = e.AlignmentData;
-            System.Drawing.Image heatImage =  RenderDatasetInfo.AlignmentHeatmap_Thumbnail(data, 
+            classAlignmentData data         = e.AlignmentData;
+            System.Drawing.Image heatImage  =  RenderDatasetInfo.AlignmentHeatmap_Thumbnail(data, 
                                                                                     m_heatmapPicture.Width,
                                                                                     m_heatmapPicture.Height);            
             heatImage.RotateFlip(System.Drawing.RotateFlipType.RotateNoneFlipY);
@@ -526,7 +527,7 @@ namespace MultiAlignWin
             m_logPath               = AnalysisPathUtils.BuildLogPath(   m_analysis.MetaData.AnalysisPath, 
                                                                         m_analysis.MetaData.AnalysisName);
 
-            PNNLProteomics.IO.XMLParameterFileWriter writer = new PNNLProteomics.IO.XMLParameterFileWriter();
+            XMLParameterFileWriter writer = new XMLParameterFileWriter();
             writer.WriteParameterFile(parameterPath, m_analysis);
 
             LogVersion();

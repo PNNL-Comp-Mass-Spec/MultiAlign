@@ -1,19 +1,19 @@
 using System;
 using System.Collections.Generic;
 
-using PNNLProteomics.Data;
+using MultiAlignCore.Data;
 using MultiAlignEngine.Features;
 using MultiAlignEngine.MassTags;
 using MultiAlignEngine.PeakMatching;
 using PNNLProteomics.SMART;
-using PNNLProteomics.Data.MassTags;
+using MultiAlignCore.Data.MassTags;
 
 using PNNLOmics.Data;
 using PNNLOmics.Data.MassTags;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Algorithms.FeatureMatcher;
 
-namespace PNNLProteomics.Algorithms.PeakMatching
+namespace MultiAlignCore.Algorithms.PeakMatching
 {
 
     public class PeakMatcher<T>  : IPeakMatcher<T> where T: UMCClusterLight

@@ -3,10 +3,10 @@ using System.Collections.Generic;
 
 using MultiAlignEngine.Features;
 
-using PNNLProteomics.Filters;
-using PNNLProteomics.Data;
+using MultiAlignCore.Filters;
+using MultiAlignCore.Data;
 
-namespace PNNLProteomics.IO
+namespace MultiAlignCore.IO
 {    
     public interface IAnalysisWriter
     {

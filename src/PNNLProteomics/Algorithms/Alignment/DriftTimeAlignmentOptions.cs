@@ -1,7 +1,7 @@
 ﻿using System;
 using MultiAlignEngine;
 
-namespace PNNLProteomics.Algorithms.Alignment
+namespace MultiAlignCore.Algorithms.Alignment
 {
     /// <summary>
     /// Tolerances and options for drift time alignment algorithm.

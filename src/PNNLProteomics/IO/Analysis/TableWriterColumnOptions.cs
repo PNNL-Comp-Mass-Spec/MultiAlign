@@ -1,6 +1,6 @@
 using System;
 
-namespace PNNLProteomics.IO
+namespace MultiAlignCore.IO
 {
     /// <summary>
     /// Holds flags indicating whether certain columns of data should be exported.

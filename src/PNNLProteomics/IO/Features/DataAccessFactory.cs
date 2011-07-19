@@ -1,11 +1,8 @@
 ﻿using System.IO;
-using PNNLProteomics.Data;
-using PNNLProteomics.MultiAlign;
-using PNNLProteomics.MultiAlign.Hibernate;
-using PNNLProteomics.MultiAlign.Hibernate.Domain.DAO;
-using PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate;
+using MultiAlignCore.Data;
+using MultiAlignCore.IO.Features.Hibernate;
 
-namespace PNNLProteomics.IO
+namespace MultiAlignCore.IO.Features
 {
     public class DataAccessFactory
     {

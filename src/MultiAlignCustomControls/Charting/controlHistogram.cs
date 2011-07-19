@@ -6,12 +6,12 @@ using System.ComponentModel;
 using System.Collections.Generic;
 
 using PNNLControls;
-using PNNLProteomics.Data;
+using MultiAlignCore.Data;
 using PNNLControls.Drawing.Plotting;
 using PNNLControls.Drawing.Charting;
 
 
-namespace MultiAlign.Charting
+namespace MultiAlignCustomControls.Charting
 {
     public partial class controlHistogram : ctlHistogram
     {

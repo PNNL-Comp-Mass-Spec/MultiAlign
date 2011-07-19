@@ -1,19 +1,16 @@
 using System;
-using MultiAlignCustomControls.Charting;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
-using MultiAlign.Charting;
-using MultiAlign.Drawing;
+using MultiAlignCore.Data;
+using MultiAlignCore.Data.Alignment;
+using MultiAlignCore.IO.Features;
+using MultiAlignCustomControls.Charting;
+using MultiAlignCustomControls.Drawing;
 using MultiAlignEngine.Alignment;
-using PNNLControls;
-using PNNLProteomics.Data;
-using PNNLProteomics.Data.Alignment;
-
-using PNNLProteomics.MultiAlign.Hibernate.Domain.DAO;
-
 using MultiAlignEngine.Features;
+using PNNLControls;
 
 namespace MultiAlignWin.Forms
 {
@@ -52,7 +49,7 @@ namespace MultiAlignWin.Forms
         /// <summary>
         /// Alignment data.
         /// </summary>
-        private PNNLProteomics.Data.Alignment.classAlignmentData m_alignmentData;
+        private classAlignmentData m_alignmentData;
         /// <summary>
         /// Determines how to load features from the feature cache.
         /// </summary>

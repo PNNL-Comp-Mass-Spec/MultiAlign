@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace PNNLProteomics.IO.Reports
+namespace MultiAlignCore.IO.Reports
 {
     /// <summary>
     /// Class that holds HTML tags and generates an analysis report in HTML format.

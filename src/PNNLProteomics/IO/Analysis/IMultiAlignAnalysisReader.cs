@@ -1,7 +1,7 @@
 using System;
-using PNNLProteomics.Data;
+using MultiAlignCore.Data;
 
-namespace PNNLProteomics.IO
+namespace MultiAlignCore.IO
 {    
     /// <summary>
     /// 

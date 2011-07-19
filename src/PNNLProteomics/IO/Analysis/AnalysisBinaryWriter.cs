@@ -4,10 +4,10 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 
 
-using PNNLProteomics.IO;
-using PNNLProteomics.Data;
+using MultiAlignCore.IO;
+using MultiAlignCore.Data;
 
-namespace PNNLProteomics.IO
+namespace MultiAlignCore.IO
 {
     public class AnalysisBinaryWriter: IMultiAlignAnalysisWriter
     {

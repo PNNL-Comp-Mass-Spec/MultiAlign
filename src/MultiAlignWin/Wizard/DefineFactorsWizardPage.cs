@@ -4,13 +4,13 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 using MultiAlignWin.Forms.Factors;
-using PNNLProteomics.Data;
-using PNNLProteomics.Data.Factors;
+using MultiAlignCore.Data;
+using MultiAlignCore.Data.Factors;
 
 
 namespace MultiAlignWin
 {
-	public class DefineFactorsWizardPage : UserControl, MultiAlignWin.Forms.Wizard.IWizardControl<PNNLProteomics.Data.MultiAlignAnalysis>
+	public class DefineFactorsWizardPage : UserControl, MultiAlignWin.Forms.Wizard.IWizardControl<MultiAlignAnalysis>
 	{		
 	    private const int CONST_NUM_COLUMNS = 8;
 
@@ -884,7 +884,7 @@ namespace MultiAlignWin
             //Dictionary<string, List<KeyValuePair<string, string>>> factorAssignments = new Dictionary<string, List<KeyValuePair<string, string>>>();
             //Dictionary<string, List<string>> factorTable = new Dictionary<string, List<string>>();
 
-            //PNNLProteomics.Data.Loaders.FactorLoader factorloader   = new PNNLProteomics.Data.Loaders.FactorLoader(info);
+            //FactorLoader factorloader   = new FactorLoader(info);
             //factorloader.LoadFactors(datasetID, out factorAssignments, out factorTable);            
         }
         /// <summary>

@@ -1,15 +1,10 @@
-using System;
-using System.Collections.Generic;
-
-using PNNLOmics.Algorithms;
+using MultiAlignCore.Algorithms.Alignment;
+using MultiAlignCore.Algorithms.Clustering;
+using MultiAlignCore.Algorithms.PeakMatching;
 using PNNLOmics.Algorithms.FeatureClustering;
 using PNNLOmics.Data.Features;
 
-using PNNLProteomics.Algorithms.Alignment;
-using PNNLProteomics.Algorithms.Clustering;
-using PNNLProteomics.Algorithms.PeakMatching;
-
-namespace PNNLProteomics.Algorithms
+namespace MultiAlignCore.Algorithms
 {
     /// <summary>
     /// Builds the set of algorithms using the builder design pattern.

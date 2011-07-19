@@ -1,10 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-using PNNLProteomics.MultiAlign.Hibernate.Domain.DAO;
-
-namespace PNNLProteomics.IO
+namespace MultiAlignCore.IO.Features
 {
     /// <summary>
     /// Holds all feature access providers required by a MA analysis.

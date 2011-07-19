@@ -10,9 +10,9 @@ using MultiAlignEngine.Alignment;
 using MultiAlignEngine.Clustering;
 using MultiAlignEngine.PeakMatching;
 
-using PNNLProteomics.Data;
+using MultiAlignCore.Data;
 
-namespace PNNLProteomics.IO
+namespace MultiAlignCore.IO.Parameters
 {
 
     /// <summary>

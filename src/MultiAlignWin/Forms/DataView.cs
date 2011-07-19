@@ -1,31 +1,17 @@
 using System;
-using System.Drawing;
-using System.Threading;
-using System.Collections;
-using System.Windows.Forms;
-using System.ComponentModel;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-
-using MultiAlignEngine;
-using PNNLControls;
-using PNNLProteomics.Data;
-
-using PNNLProteomics.IO;
-
-using MultiAlign.Charting;
-
-using MultiAlignWin.Forms;
-using MultiAlignEngine.Features;
+using System.ComponentModel;
+using System.Threading;
+using System.Windows.Forms;
+using MultiAlignCore.Data;
+using MultiAlignCore.Data.Alignment;
+using MultiAlignCore.IO;
+using MultiAlignCore.IO.Parameters;
+using MultiAlignCustomControls.Charting;
 using MultiAlignEngine.Alignment;
-using MultiAlignEngine.Clustering;
-
+using MultiAlignEngine.Features;
+using MultiAlignWin.Forms;
 using PNNLProteomics.SMART;
-using PNNLProteomics.MultiAlign;
-using PNNLProteomics.Data.Analysis;
-
-using MultiAlignWin.Data;
-using PNNLProteomics.Data.Alignment;
 
 namespace MultiAlignWin
 {
@@ -97,8 +83,8 @@ namespace MultiAlignWin
         private Panel panel1;
         private ToolStripSeparator toolStripSeparator1;
 
-        private PNNLProteomics.Filters.UMCFilters m_umcFilters = new PNNLProteomics.Filters.UMCFilters();
-        private PNNLProteomics.Filters.UMCClusterFilters m_clusterFilters = new PNNLProteomics.Filters.UMCClusterFilters();
+        private MultiAlignCore.Filters.UMCFilters m_umcFilters = new MultiAlignCore.Filters.UMCFilters();
+        private MultiAlignCore.Filters.UMCClusterFilters m_clusterFilters = new MultiAlignCore.Filters.UMCClusterFilters();
         #endregion 
 
 

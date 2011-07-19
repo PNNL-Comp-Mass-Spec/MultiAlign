@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 
-namespace PNNLProteomics.Data.Factors
+namespace MultiAlignCore.Data.Factors
 {
 	public class classTreeNode
 	{

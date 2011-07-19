@@ -1,13 +1,11 @@
-using PNNLProteomics.MultiAlign.Hibernate.Domain;
+using System;
+using System.Data.SQLite;
+using System.IO;
 using NHibernate;
 using NHibernate.Cfg;
-using System.Data.SQLite;
-using System;
 using NHibernate.Tool.hbm2ddl;
-using System.IO;
-using System.Reflection;
 
-namespace PNNLProteomics.MultiAlign.Hibernate
+namespace MultiAlignCore.IO.Features.Hibernate
 {
 
     /// <summary>

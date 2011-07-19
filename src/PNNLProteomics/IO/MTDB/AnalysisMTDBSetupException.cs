@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace PNNLProteomics.IO
+namespace MultiAlignCore.IO.MTDB
 {
     /// <summary>
     /// Class thrown when there is a problem loading or specifying a mass tag database.

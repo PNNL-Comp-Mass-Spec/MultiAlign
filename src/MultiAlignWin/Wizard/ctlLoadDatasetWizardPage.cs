@@ -5,14 +5,12 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using MultiAlignCore.Data;
+using MultiAlignCore.IO.InputFiles;
 using MultiAlignWin.Forms;
+using MultiAlignWin.Forms.Wizard;
 using MultiAlignWin.Network;
 using PNNLControls;
-using PNNLProteomics.Data;
-using PNNLProteomics.IO;
-
-using MultiAlignWin.Forms.Wizard;
-using PNNLProteomics.Data;
 
 namespace MultiAlignWin
 {
@@ -989,7 +987,7 @@ namespace MultiAlignWin
         /// <summary>
         /// Gets or sets the analysis object.
         /// </summary>
-        public PNNLProteomics.Data.MultiAlignAnalysis Data
+        public MultiAlignAnalysis Data
         {
             get
             {

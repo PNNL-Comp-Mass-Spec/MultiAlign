@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using MultiAlignCore.Data.MassTags;
+using MultiAlignEngine.MassTags;
 using PNNLOmics.Data;
 using PNNLOmics.Data.MassTags;
-using MultiAlignEngine.MassTags;
-using PNNLProteomics.Data.MassTags;
-using PNNLProteomics.Data.MassTags;
-namespace PNNLProteomics.IO.MTDB
+namespace MultiAlignCore.IO.MTDB
 {
     /// <summary>
     /// Mass tag database loader class.

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 
 
-namespace PNNLProteomics.Data.Factors
+namespace MultiAlignCore.Data.Factors
 {
 	[Serializable]
 	public class FactorInformation

@@ -1,11 +1,10 @@
-using System;
 using System.Collections.Generic;
 using System.Reflection;
+using MultiAlignCore.Data;
 using MultiAlignEngine;
 using MultiAlignEngine.Alignment;
-using PNNLProteomics.Data;
 
-namespace PNNLProteomics.IO
+namespace MultiAlignCore.IO.Parameters
 {
 
     /// <summary>

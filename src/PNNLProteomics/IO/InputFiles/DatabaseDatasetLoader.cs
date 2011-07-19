@@ -27,9 +27,9 @@ using System.ComponentModel;
 using System.Data.SqlClient;
 
 using MultiAlignEngine;
-using PNNLProteomics.Data;
+using MultiAlignCore.Data;
 
-namespace PNNLProteomics.IO
+namespace MultiAlignCore.IO.InputFiles
 {                           
         /// <summary>
         /// Class for loading a dataset from a database.

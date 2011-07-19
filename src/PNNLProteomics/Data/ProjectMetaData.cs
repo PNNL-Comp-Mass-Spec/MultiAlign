@@ -1,13 +1,9 @@
-﻿using System;
-using PNNLProteomics.Data.MetaData;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
+using MultiAlignCore.Data.Factors;
+using MultiAlignCore.IO.InputFiles;
 using MultiAlignEngine;
-using PNNLProteomics.Data.Factors;
-using PNNLProteomics.IO;
 
-namespace PNNLProteomics.Data
+namespace MultiAlignCore.Data
 {
     /// <summary>
     /// Class that holds meta-data information about the analysis.

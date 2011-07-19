@@ -1,11 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-using PNNLProteomics.MultiAlign.Hibernate.Domain.DAO;
-using NHibernate;
-using PNNLProteomics.Data;
+using MultiAlignCore.Data;
 
-namespace PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate
+namespace MultiAlignCore.IO.Features.Hibernate
 {
 
 	public class DatasetDAOHibernate : GenericDAOHibernate<DatasetInformation>, IDatasetDAO

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
     <DebugSymbols>true</DebugSymbols>
@@ -66,7 +66,6 @@
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
-  
   <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <Reference Include="System.Data.SQLite, Version=1.0.66.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=x86">
       <SpecificVersion>True</SpecificVersion>
@@ -82,23 +81,21 @@
       <HintPath>..\..\lib\x86\MultiAlignEngine.dll</HintPath>
     </Reference>
   </ItemGroup>
-  
-    <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-      <Reference Include="System.Data.SQLite, Version=1.0.66.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=x86">
-        <SpecificVersion>True</SpecificVersion>
-        <HintPath>..\..\lib\x86\System.Data.SQLite.dll</HintPath>
-        <Private>True</Private>
-      </Reference>
-      <Reference Include="PNNLOmics, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
-        <SpecificVersion>False</SpecificVersion>
-        <HintPath>..\..\lib\x86\PNNLOmics.dll</HintPath>
-      </Reference>
-      <Reference Include="MultiAlignEngine, Version=1.0.4084.24787, Culture=neutral, processorArchitecture=x86">
-        <SpecificVersion>False</SpecificVersion>
-        <HintPath>..\..\lib\x86\MultiAlignEngine.dll</HintPath>
-      </Reference>
+  <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <Reference Include="System.Data.SQLite, Version=1.0.66.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=x86">
+      <SpecificVersion>True</SpecificVersion>
+      <HintPath>..\..\lib\x86\System.Data.SQLite.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="PNNLOmics, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\x86\PNNLOmics.dll</HintPath>
+    </Reference>
+    <Reference Include="MultiAlignEngine, Version=1.0.4084.24787, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\x86\MultiAlignEngine.dll</HintPath>
+    </Reference>
   </ItemGroup>
-  
   <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
     <Reference Include="System.Data.SQLite, Version=1.0.66.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=AMD64">
       <SpecificVersion>True</SpecificVersion>
@@ -114,8 +111,6 @@
       <HintPath>..\..\lib\x64\MultiAlignEngine.dll</HintPath>
     </Reference>
   </ItemGroup>
-  
-  
   <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
     <Reference Include="System.Data.SQLite, Version=1.0.66.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=AMD64">
       <SpecificVersion>True</SpecificVersion>
@@ -131,8 +126,6 @@
       <HintPath>..\..\lib\x64\MultiAlignEngine.dll</HintPath>
     </Reference>
   </ItemGroup>
-  
-  
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -153,9 +146,9 @@
       <Project>{9409DE9B-F3F0-41AA-95F5-8BFD525F5669}</Project>
       <Name>PNNLControls</Name>
     </ProjectReference>
-    <ProjectReference Include="..\PNNLProteomics\PNNLProteomics.csproj">
+    <ProjectReference Include="..\PNNLProteomics\MultiAlignCore.csproj">
       <Project>{BDFA22C4-5822-4AA5-996E-6FDE57F7118B}</Project>
-      <Name>PNNLProteomics</Name>
+      <Name>MultiAlignCore</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -4,17 +4,17 @@
 
 //using MultiAlignEngine.Features;
 //using MultiAlignEngine.MassTags;
-//using PNNLProteomics.Data;
+//using MultiAlignCore.Data;
 //using MultiAlignEngine.PeakMatching;
 
 
 //using PNNLProteomics.SMART;
-//using PNNLProteomics.Filters;
-//using PNNLProteomics.MultiAlign.Hibernate;
-//using PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate;
-//using PNNLProteomics.MultiAlign.Hibernate.Domain;
+//using MultiAlignCore.Filters;
+//using MultiAlignCore.MultiAlign.Hibernate;
+//using MultiAlignCore.IO.Features.Hibernate;
+//using MultiAlignCore.MultiAlign.Hibernate.Domain;
 
-//namespace PNNLProteomics.IO
+//namespace MultiAlignCore.IO
 //{   
 //    /// <summary>
 //    /// Class that writes the MA analysis data to a delimited text file.
@@ -345,8 +345,8 @@
 //                                        /// 
 //                                        /// Then pull out the SMART score that matches for this triplet Mass Tag
 //                                        /// 
-//                                        PNNLProteomics.SMART.classSMARTProbabilityResult finalResult = null;
-//                                        foreach (PNNLProteomics.SMART.classSMARTProbabilityResult score in smartScores)
+//                                        classSMARTProbabilityResult finalResult = null;
+//                                        foreach (classSMARTProbabilityResult score in smartScores)
 //                                        {
 //                                            if (score.MassTagID == massTag.Id)
 //                                            {

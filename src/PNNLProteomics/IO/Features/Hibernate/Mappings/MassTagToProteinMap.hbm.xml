@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" 
-                   assembly="PNNLProteomics" 
-                   namespace="PNNLProteomics.MultiAlign.Hibernate.Domain">
+                   assembly="MultiAlignCore" 
+                   namespace="MultiAlignCore.Data">
 
 	<class name="MassTagToProteinMap" table="T_Mass_Tag_To_Protein_Map" lazy="false">
 		<composite-id>

@@ -1,10 +1,8 @@
 using System.Collections.Generic;
-using MultiAlignEngine.MassTags;
 using NHibernate.Criterion;
 using PNNLOmics.Data;
-using PNNLProteomics.MultiAlign.Hibernate.Domain.DAO;
 
-namespace PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate
+namespace MultiAlignCore.IO.Features.Hibernate
 {
 
 	public class ProteinDAO : GenericDAOHibernate<Protein>, IProteinDAO

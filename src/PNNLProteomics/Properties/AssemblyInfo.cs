@@ -2,11 +2,11 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("PNNLProteomics")]
-[assembly: AssemblyDescription("Class Library Assembly for PNNL Proteomics Development Suite")]
+[assembly: AssemblyTitle("MultiAlignCore")]
+[assembly: AssemblyDescription("Class Library Assembly for MultAlign tools")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Battelle PNNL")]
-[assembly: AssemblyProduct("PNNLProteomics")]
+[assembly: AssemblyProduct("MultAlignCore")]
 [assembly: AssemblyCopyright("Copyright © Battelle PNNL 2009")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

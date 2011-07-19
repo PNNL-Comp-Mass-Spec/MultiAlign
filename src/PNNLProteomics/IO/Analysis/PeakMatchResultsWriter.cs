@@ -1,17 +1,13 @@
 ﻿using System.Collections.Generic;
-using MultiAlignEngine.MassTags;
-using PNNLProteomics.Data;
-using PNNLProteomics.MultiAlign.Hibernate.Domain;
-using PNNLProteomics.MultiAlign.Hibernate.Domain.DAO;
-using PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate;
-using PNNLProteomics.SMART;
-using PNNLOmics.Data.MassTags;
+using MultiAlignCore.Data;
+using MultiAlignCore.IO.Features;
+using MultiAlignCore.IO.Features.Hibernate;
 using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Data.MassTags;
-using MultiAlignEngine.PeakMatching;
+using PNNLProteomics.SMART;
 
-namespace PNNLProteomics.IO
+namespace MultiAlignCore.IO
 {
     /// <summary>
     /// Writes peak match results to the local database.
@@ -60,14 +56,14 @@ namespace PNNLProteomics.IO
                         if (analysis.PeakMatchingOptions.UseSTAC)
                         {                            
                             // See if a STAC score exists                            
-                            List<PNNLProteomics.SMART.classSMARTProbabilityResult> smartScores = null;
+                            List<classSMARTProbabilityResult> smartScores = null;
                             smartScores = analysis.STACResults.GetResultFromUMCIndex(feature.ID);
 
                             if (smartScores != null)
                             {
                                 // Then pull out the STAC score that matches for this triplet Mass Tag
-                                PNNLProteomics.SMART.classSMARTProbabilityResult finalResult = null;
-                                foreach (PNNLProteomics.SMART.classSMARTProbabilityResult score in smartScores)
+                                classSMARTProbabilityResult finalResult = null;
+                                foreach (classSMARTProbabilityResult score in smartScores)
                                 {
                                     if (score.MassTagID == tag.ID)
                                     {

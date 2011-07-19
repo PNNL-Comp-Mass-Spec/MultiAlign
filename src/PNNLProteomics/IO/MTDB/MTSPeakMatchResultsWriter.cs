@@ -1,17 +1,9 @@
 ﻿using System.Collections.Generic;
-using System;
 using System.Data;
+using MultiAlignCore.Data;
 using MultiAlignEngine.Features;
-using MultiAlignEngine.MassTags;
-using MultiAlignEngine.PeakMatching;
-using PNNLProteomics.MultiAlign.Hibernate.Domain;
-using PNNLProteomics.MultiAlign.Hibernate.Domain.DAO;
-using PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate;
-using PNNLProteomics.SMART;
-using PNNLProteomics.Data;
-using System.Data.SqlClient;
 
-namespace PNNLProteomics.IO.MTDB
+namespace MultiAlignCore.IO.MTDB
 {
     /// <summary>
     /// Class that writes the Peak Matching results back to the Mass Tag System (MTS).

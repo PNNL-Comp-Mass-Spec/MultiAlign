@@ -22,7 +22,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 
 
-namespace PNNLProteomics.Data
+namespace MultiAlignCore.Data
 {
     /// <summary>
     /// Class that tests a connection to DMS on the PNNL domain.

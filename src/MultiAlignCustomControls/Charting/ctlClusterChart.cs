@@ -2,14 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using MultiAlignCore.Data;
 using MultiAlignEngine.Features;
 using MultiAlignEngine.MassTags;
 using PNNLControls;
-using PNNLProteomics.Data;
 
-using PNNLProteomics.MultiAlign.Hibernate.Domain.DAO;
-
-namespace MultiAlign.Charting
+namespace MultiAlignCustomControls.Charting
 {
     /// <summary>
     /// Renders UMC Clusters and UMC Features as a scatter plot.

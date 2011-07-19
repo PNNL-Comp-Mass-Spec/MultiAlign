@@ -3,11 +3,11 @@ using System.IO;
 using System.Collections.Generic;
 using System.Runtime.Serialization.Formatters.Binary;
 
-using PNNLProteomics.IO;
-using PNNLProteomics.Data.Alignment;
-using PNNLProteomics.Data;
+using MultiAlignCore.IO;
+using MultiAlignCore.Data.Alignment;
+using MultiAlignCore.Data;
 
-namespace PNNLProteomics.IO
+namespace MultiAlignCore.IO
 {
     public class AnalysisBinaryReader: IMultiAlignAnalysisReader
     {

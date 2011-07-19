@@ -1,6 +1,6 @@
-﻿using PNNLProteomics.Data;
+﻿using MultiAlignCore.Data;
 
-namespace PNNLProteomics.IO
+namespace MultiAlignCore.IO.Parameters
 {
     public interface IParameterFileReader
     {

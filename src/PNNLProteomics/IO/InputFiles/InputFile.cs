@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace PNNLProteomics.Data.MetaData
+﻿namespace MultiAlignCore.IO.InputFiles
 {
     /// <summary>
     /// Holds information about input files. 

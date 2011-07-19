@@ -1,15 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using MultiAlign.Charting;
+using MultiAlignCore.Data;
+using MultiAlignCore.Data.Alignment;
 using MultiAlignCustomControls.Charting;
 using MultiAlignEngine.Alignment;
 using MultiAlignEngine.Features;
 using PNNLControls;
-using PNNLProteomics.Data;
-using PNNLProteomics.Data.Alignment;
 
-namespace MultiAlign.Drawing
+namespace MultiAlignCustomControls.Drawing
 {
     /// <summary>
     /// Factory class for rendering information about a dataset info class.
@@ -2708,8 +2707,8 @@ namespace MultiAlign.Drawing
                         /// 
                         /// Then pull out the SMART score that matches for this triplet Mass Tag
                         /// 
-                        PNNLProteomics.SMART.classSMARTProbabilityResult finalResult = null;
-                        foreach (PNNLProteomics.SMART.classSMARTProbabilityResult score in smartScores)
+                        classSMARTProbabilityResult finalResult = null;
+                        foreach (classSMARTProbabilityResult score in smartScores)
                         {
                             if (score.MassTagID == massTag.Id)
                             {
@@ -2873,8 +2872,8 @@ namespace MultiAlign.Drawing
                             /// 
                             /// Then pull out the SMART score that matches for this triplet Mass Tag
                             /// 
-                            PNNLProteomics.SMART.classSMARTProbabilityResult finalResult = null;
-                            foreach (PNNLProteomics.SMART.classSMARTProbabilityResult score in smartScores)
+                            classSMARTProbabilityResult finalResult = null;
+                            foreach (classSMARTProbabilityResult score in smartScores)
                             {
                                 if (score.MassTagID == massTag.Id)
                                 {
@@ -3098,8 +3097,8 @@ namespace MultiAlign.Drawing
                             /// 
                             /// Then pull out the SMART score that matches for this triplet Mass Tag
                             /// 
-                            PNNLProteomics.SMART.classSMARTProbabilityResult finalResult = null;
-                            foreach (PNNLProteomics.SMART.classSMARTProbabilityResult score in smartScores)
+                            classSMARTProbabilityResult finalResult = null;
+                            foreach (classSMARTProbabilityResult score in smartScores)
                             {
                                 if (score.MassTagID == massTag.Id)
                                 {

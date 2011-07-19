@@ -8,13 +8,12 @@ using System.ComponentModel;
 using System.Data.SqlClient;
 using System.Collections.Specialized;
 using System.Collections.Generic;
-
-
 using PNNLControls;
-using PNNLProteomics.IO;
-using PNNLProteomics.Data;
+using MultiAlignCore.IO;
+using MultiAlignCore.Data;
 using MultiAlignEngine.MassTags;
 using MultiAlignWin.Network;
+using MultiAlignCore.IO.InputFiles;
 
 namespace MultiAlignWin
 {

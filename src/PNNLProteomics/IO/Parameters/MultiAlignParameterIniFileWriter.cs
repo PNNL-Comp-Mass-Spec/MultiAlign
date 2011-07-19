@@ -3,9 +3,9 @@ using System.IO;
 using System.Reflection;
 
 using MultiAlignEngine;
-using PNNLProteomics.Data;
+using MultiAlignCore.Data;
 
-namespace PNNLProteomics.IO
+namespace MultiAlignCore.IO.Parameters
 {
     /// <summary>
     /// Writes an analysis' parameters to file in the INI format.

@@ -1,8 +1,7 @@
 ﻿using System;
 using System.IO;
-using PNNLProteomics.Data.MetaData;
 
-namespace PNNLProteomics.IO
+namespace MultiAlignCore.IO.InputFiles
 {    
     /// <summary>
     /// Reads a multi-align input file.

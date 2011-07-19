@@ -5,7 +5,7 @@ using PNNLOmics.Data.Features;
 using System.Text;
 using MultiAlignEngine.Features;
 
-namespace PNNLProteomics.Algorithms.FeatureFinding
+namespace MultiAlignCore.Algorithms.FeatureFinding
 {
     /// <summary>
     /// Creates UMC's based on MS Features.

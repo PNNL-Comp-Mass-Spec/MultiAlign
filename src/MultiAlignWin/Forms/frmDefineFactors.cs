@@ -6,8 +6,8 @@ using System.ComponentModel;
 using System.Collections.Generic;
 
 
-using PNNLProteomics.Data;
-using PNNLProteomics.Data.Factors;
+using MultiAlignCore.Data;
+using MultiAlignCore.Data.Factors;
 
 namespace MultiAlignWin.Forms.Factors
 {

@@ -1,24 +1,12 @@
 using System;
-using System.IO;
-using System.Data;
-using System.Text;
-using System.Drawing;
-using System.ComponentModel;
 using System.Collections.Generic;
-
+using System.Drawing;
 using System.Windows.Forms;
-
-using MultiAlignEngine;
-using MultiAlignEngine.Features;
-using MultiAlignEngine.Alignment;
+using MultiAlignCore.Data;
+using MultiAlignCustomControls.Charting;
+using MultiAlignCustomControls.Drawing;
 using MultiAlignEngine.Clustering;
-
 using PNNLControls;
-using MultiAlignWin.Drawing;
-using PNNLProteomics.Data;
-
-using MultiAlign.Charting;
-using MultiAlign.Drawing;
 
 namespace MultiAlignWin.Forms
 {

@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using PNNLProteomics.Data;
+using MultiAlignCore.Data;
 
-namespace PNNLProteomics.MultiAlign.Hibernate.Domain.DAO
+namespace MultiAlignCore.IO.Features
 {
 	public interface IDatasetDAO : IGenericDAO<DatasetInformation>
     {

@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Data;
 using System.Data.SqlClient;
-using System.Data;
 
-namespace PNNLProteomics.IO.MTDB
+namespace MultiAlignCore.IO.MTDB
 {
     public class MTSSqlServerPeakMatchResultWriter: MTSPeakMatchResultsWriter
     {

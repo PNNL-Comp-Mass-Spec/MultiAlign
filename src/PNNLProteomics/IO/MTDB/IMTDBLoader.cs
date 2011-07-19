@@ -1,9 +1,7 @@
-﻿using System.Collections.Generic;
-using PNNLOmics.Data;
-using PNNLProteomics.Data.MassTags;
-
+﻿using MultiAlignCore.Data.MassTags;
 using MultiAlignEngine.MassTags;
-namespace PNNLProteomics.IO.MTDB
+
+namespace MultiAlignCore.IO.MTDB
 {
     /// <summary>
     /// Interface for loading mass tag databases.

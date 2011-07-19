@@ -1,13 +1,8 @@
-using System;
 using System.Collections.Generic;
-using System.Text;
-using PNNLProteomics.MultiAlign.Hibernate.Domain.DAO;
-using NHibernate;
-using Iesi.Collections.Generic;
-using NHibernate.Criterion;
 using MultiAlignEngine.Features;
+using NHibernate.Criterion;
 
-namespace PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate
+namespace MultiAlignCore.IO.Features.Hibernate
 {
 
     public class UmcClusterDAOHibernate : GenericDAOHibernate<clsCluster>, IUmcClusterDAO

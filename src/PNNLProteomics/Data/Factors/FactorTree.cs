@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 
-namespace PNNLProteomics.Data.Factors
+namespace MultiAlignCore.Data.Factors
 {
 	/// <summary>
 	/// Manages a group of tree nodes and sorting methods.

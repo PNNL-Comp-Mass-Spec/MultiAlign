@@ -1,11 +1,13 @@
 using System;
 using System.IO;
 using System.Windows.Forms;
-using PNNLProteomics.Data;
+using MultiAlignCore.Data;
+
+
 
 namespace MultiAlignWin
 {
-    public class ctlSelectOutputNameWizardPage : UserControl, MultiAlignWin.Forms.Wizard.IWizardControl<PNNLProteomics.Data.MultiAlignAnalysis>
+    public class ctlSelectOutputNameWizardPage : UserControl, MultiAlignWin.Forms.Wizard.IWizardControl<MultiAlignAnalysis>
 	{
         private System.Windows.Forms.Label labelSelect;
 		private System.Windows.Forms.Label labelAnalysisPath;
@@ -267,7 +269,7 @@ namespace MultiAlignWin
                 }
             }
 
-            m_analysis.MetaData.AnalysisPath = PNNLProteomics.MultiAlign.AnalysisPathUtils.BuildAnalysisName(textBoxFolder.Text, textBoxProjectName.Text);
+            m_analysis.MetaData.AnalysisPath = AnalysisPathUtils.BuildAnalysisName(textBoxFolder.Text, textBoxProjectName.Text);
             m_analysis.MetaData.AnalysisName = textBoxProjectName.Text;
 
             Properties.Settings.Default.UserOutputPath = textBoxFolder.Text;

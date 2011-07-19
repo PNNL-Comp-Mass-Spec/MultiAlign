@@ -1,5 +1,4 @@
 using System;
-using PNNLProteomics.Data.MetaData;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -7,19 +6,20 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
-using MultiAlign.Drawing;
+using MultiAlignCore.Algorithms;
+using MultiAlignCore.Algorithms.Clustering;
+using MultiAlignCore.Data;
+using MultiAlignCore.Data.MassTags;
+using MultiAlignCore.IO.Features;
+using MultiAlignCore.IO.Features.Hibernate;
+using MultiAlignCore.IO.InputFiles;
+using MultiAlignCore.IO.MTDB;
+using MultiAlignCore.IO.Parameters;
+using MultiAlignCore.IO.Reports;
 using MultiAlignCustomControls.Charting;
+using MultiAlignCustomControls.Drawing;
 using MultiAlignEngine.Features;
 using PNNLOmics.Data.Features;
-using PNNLProteomics.Algorithms;
-using PNNLProteomics.Algorithms.Clustering;
-using PNNLProteomics.Data;
-using PNNLProteomics.IO;
-using PNNLProteomics.IO.Reports;
-using PNNLProteomics.MultiAlign;
-using PNNLProteomics.MultiAlign.Hibernate;
-using PNNLProteomics.MultiAlign.Hibernate.Domain.DAO;
-using PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate;
 
 namespace MultiAlignConsole
 {
@@ -1111,14 +1111,14 @@ namespace MultiAlignConsole
 
             // Setup the parameters.
             PrintMessage("Loading parameters.");
-            PNNLProteomics.IO.XMLParamterFileReader reader = new PNNLProteomics.IO.XMLParamterFileReader();
+            XMLParamterFileReader reader = new XMLParamterFileReader();
             reader.ReadParameterFile(m_parameterFile, ref m_analysis);            
             
             if (useMTDB)
             {
                 switch (analysisSetupInformation.Database.DatabaseFormat)
                 {
-                    case PNNLProteomics.Data.MassTags.MassTagDatabaseFormat.Access:
+                    case MassTagDatabaseFormat.Access:
                         PrintMessage(string.Format("Using local Mass Tag Database at location: {0}",
                                                     analysisSetupInformation.Database.LocalPath));
 
@@ -1127,7 +1127,7 @@ namespace MultiAlignConsole
                         m_analysis.MassTagDBOptions.menm_databaseType       = MultiAlignEngine.MassTags.MassTagDatabaseType.ACCESS;
 
                         break;
-                    case PNNLProteomics.Data.MassTags.MassTagDatabaseFormat.SQL:
+                    case MassTagDatabaseFormat.SQL:
                         PrintMessage(string.Format("Using Mass Tag Database {0} on server: {1} ",
                                                     analysisSetupInformation.Database.DatabaseName,
                                                     analysisSetupInformation.Database.DatabaseServer));

@@ -7,7 +7,7 @@ using System.Text;
 using System.Windows.Forms;
 
 using MultiAlignEngine.Features;
-using PNNLProteomics.Filters;
+using MultiAlignCore.Filters;
 
 namespace MultiAlignWin.Forms.Filters
 {

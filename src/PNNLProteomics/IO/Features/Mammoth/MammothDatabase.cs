@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 using PNNLOmics.Data.Features;
 
-namespace PNNLProteomics.IO.Mammoth
+namespace MultiAlignCore.IO.Mammoth
 {
 
     /// <summary>

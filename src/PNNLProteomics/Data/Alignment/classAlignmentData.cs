@@ -1,7 +1,7 @@
 using System;
 using MultiAlignEngine.Alignment;
 
-namespace PNNLProteomics.Data.Alignment
+namespace MultiAlignCore.Data.Alignment
 {
     [Serializable()]
     public class classAlignmentData

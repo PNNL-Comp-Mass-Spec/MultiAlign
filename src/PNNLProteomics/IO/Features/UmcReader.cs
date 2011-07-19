@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.IO;
-using PNNLProteomics.MultiAlign.Hibernate.Domain;
-using PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate;
-using Iesi.Collections.Generic;
-using MultiAlignEngine.Features;
-using PNNLProteomics.MultiAlign.Hibernate;
 using System.Globalization;
+using System.IO;
+using MultiAlignCore.IO.Features.Hibernate;
+using MultiAlignEngine.Features;
 
-namespace PNNLProteomics.MultiAlign
+namespace MultiAlignCore.MultiAlign
 {
 	public class UmcReader
 	{

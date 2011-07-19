@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 
-namespace PNNLProteomics.IO
+namespace MultiAlignCore.IO
 {
 	/// <summary>
 	/// Summary description for clsContainerStream.

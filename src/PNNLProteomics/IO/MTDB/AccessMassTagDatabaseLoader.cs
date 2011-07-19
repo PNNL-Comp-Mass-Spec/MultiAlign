@@ -2,7 +2,7 @@
 using System.Data;
 using System.Data.OleDb;
 
-namespace PNNLProteomics.IO.MTDB
+namespace MultiAlignCore.IO.MTDB
 {
     /// <summary>
     /// Access mass tag information from a Microsoft Access formatted MTDB.

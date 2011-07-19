@@ -2,12 +2,12 @@ using System;
 using System.ComponentModel;
 using System.Windows.Forms;
 using MultiAlignWin.Forms.Parameters;
-using PNNLProteomics.Data;
+using MultiAlignCore.Data;
 
 
 namespace MultiAlignWin
 {
-    public class ctlSelectParametersWizardPage : UserControl,  MultiAlignWin.Forms.Wizard.IWizardControl<PNNLProteomics.Data.MultiAlignAnalysis>
+    public class ctlSelectParametersWizardPage : UserControl,  MultiAlignWin.Forms.Wizard.IWizardControl<MultiAlignAnalysis>
     {
         #region Members
         private Button      m_peakPickingParametersButton;

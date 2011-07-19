@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace PNNLProteomics.IO.MTDB
+﻿
+namespace MultiAlignCore.IO.MTDB
 {
     /// <summary>
     /// Class in progress.  Options for loading data to and from the MTDB.

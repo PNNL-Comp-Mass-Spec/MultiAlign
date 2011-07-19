@@ -24,10 +24,10 @@ using System.Threading;
 using System.Windows.Forms;
 using System.ComponentModel;
 using System.Collections.Generic;
-
-using PNNLProteomics.IO;
+using MultiAlignCore.MultiAlign;
+using MultiAlignCore.IO;
 using MultiAlignWin.Diagnostics;
-using PNNLProteomics.Data;
+using MultiAlignCore.Data;
 
 namespace MultiAlignWin.UI
 {
@@ -90,8 +90,8 @@ namespace MultiAlignWin.UI
             frmAnalysisWizard analysisWizard     = new frmAnalysisWizard();
             analysisWizard.Icon                  = Icon;
             analysisWizard.StartPosition         = FormStartPosition.CenterParent;
-            analysisWizard.AnalysisComplete     += new EventHandler<PNNLProteomics.MultiAlign.AnalysisCompleteEventArgs>(analysisWizard_AnalysisComplete);
-            analysisWizard.AnalysisError        += new EventHandler<PNNLProteomics.MultiAlign.AnalysisErrorEventArgs>(analysisWizard_AnalysisError);
+            analysisWizard.AnalysisComplete     += new EventHandler<AnalysisCompleteEventArgs>(analysisWizard_AnalysisComplete);
+            analysisWizard.AnalysisError        += new EventHandler<AnalysisErrorEventArgs>(analysisWizard_AnalysisError);
             analysisWizard.Show(this);            
         }
         /// <summary>
@@ -99,7 +99,7 @@ namespace MultiAlignWin.UI
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void analysisWizard_AnalysisError(object sender, PNNLProteomics.MultiAlign.AnalysisErrorEventArgs e)
+        void analysisWizard_AnalysisError(object sender, AnalysisErrorEventArgs e)
         {
             MessageBox.Show("There was an error during the analysis. " + e.ErrorMessage + ". " + e.Exception.Message);
         }
@@ -108,7 +108,7 @@ namespace MultiAlignWin.UI
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void analysisWizard_AnalysisComplete(object sender, PNNLProteomics.MultiAlign.AnalysisCompleteEventArgs e)
+        void analysisWizard_AnalysisComplete(object sender, AnalysisCompleteEventArgs e)
         {
             AddAnalysis(e.Analysis);
          

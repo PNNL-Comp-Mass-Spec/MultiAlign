@@ -1,6 +1,6 @@
 using System;
 
-namespace PNNLProteomics
+namespace MultiAlignCore
 {
     public interface ICloneable<T>
     {

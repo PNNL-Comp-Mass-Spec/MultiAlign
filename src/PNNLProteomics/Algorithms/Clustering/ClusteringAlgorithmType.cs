@@ -1,6 +1,6 @@
 using System;
 
-namespace PNNLProteomics.Algorithms.Clustering
+namespace MultiAlignCore.Algorithms.Clustering
 {    
     public enum ClusteringAlgorithmType
     {

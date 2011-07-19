@@ -1,26 +1,14 @@
 using System;
-using System.IO;
 using System.Collections.Generic;
-using MultiAlignEngine;
-using MultiAlignEngine.MassTags;
+using System.IO;
+using MultiAlignCore.Algorithms.FeatureFinding;
+using MultiAlignCore.Data;
+using MultiAlignCore.MultiAlign;
 using MultiAlignEngine.Features;
-using MultiAlignEngine.Alignment;
-using MultiAlignEngine.Clustering;
-using MultiAlignEngine.PeakMatching;
-using PNNLProteomics.Data;
-using PNNLProteomics.Algorithms.FeatureFinding;
-using PNNLProteomics.IO;
-using PNNLProteomics.SMART;
-using PNNLProteomics.Data.Factors;
-using PNNLProteomics.Data.Alignment;
-using PNNLProteomics.MultiAlign;
-using PNNLProteomics.MultiAlign.Hibernate;
-using PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate;
-using PNNLProteomics.MultiAlign.Hibernate.Domain.DAO;
 using PNNLOmics.Data.Features;
 using PNNLOmics.IO.FileReaders;
 
-namespace PNNLProteomics.IO.UMC
+namespace MultiAlignCore.IO.Features
 {
     /// <summary>
     /// Loads UMC's from the given sources.

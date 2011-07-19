@@ -1,16 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-using PNNLProteomics.MultiAlign.Hibernate.Domain.DAO;
-using NHibernate;
-using MultiAlignEngine.MassTags;
+using PNNLOmics.Data.MassTags;
 
-namespace PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate
+namespace MultiAlignCore.IO.Features.Hibernate
 {
-
-	public class MassTagDAOHibernate : GenericDAOHibernate<clsMassTag>, IMassTagDAO
+    /// <summary>
+    /// Accesses mass tags from the underlying database.
+    /// </summary>
+	public class MassTagDAOHibernate : GenericDAOHibernate<MassTagLight>, IMassTagDAO
     {
 
     }
-
 }

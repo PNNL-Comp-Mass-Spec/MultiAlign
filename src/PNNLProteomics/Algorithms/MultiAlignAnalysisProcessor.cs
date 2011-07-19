@@ -3,7 +3,16 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using MultiAlignEngine;
+using MultiAlignCore.Algorithms.Alignment;
+using MultiAlignCore.Algorithms.PeakMatching;
+using MultiAlignCore.Data;
+using MultiAlignCore.Data.Alignment;
+using MultiAlignCore.Data.MassTags;
+using MultiAlignCore.IO;
+using MultiAlignCore.IO.Features;
+using MultiAlignCore.IO.InputFiles;
+using MultiAlignCore.IO.Mammoth;
+using MultiAlignCore.IO.MTDB;
 using MultiAlignEngine.Clustering;
 using MultiAlignEngine.Features;
 using MultiAlignEngine.MassTags;
@@ -14,21 +23,8 @@ using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Data.MassTags;
 using PNNLOmics.IO.FileReaders;
-using PNNLProteomics.Algorithms;
-using PNNLProteomics.Algorithms.Alignment;
-using PNNLProteomics.Algorithms.PeakMatching;
-using PNNLProteomics.Data;
-using PNNLProteomics.Data.Alignment;
-using PNNLProteomics.Data.MetaData;
-using PNNLProteomics.IO;
-using PNNLProteomics.IO.Mammoth;
-using PNNLProteomics.IO.MTDB;
-using PNNLProteomics.Data.MassTags;
-using PNNLProteomics.IO.UMC;
-using MultiAlignEngine.PeakMatching;
-using PNNLProteomics.MultiAlign.Hibernate.Domain.DAO;
 
-namespace PNNLProteomics.MultiAlign
+namespace MultiAlignCore.Algorithms
 {        
     /// <summary>
     /// Transition class to remove the excess from the data storage object.

@@ -4,12 +4,12 @@ using System.Collections.Generic;
 using MultiAlignEngine.Alignment;
 using MultiAlignEngine.Features;
 using MultiAlignEngine.MassTags;
-using PNNLProteomics.Data.Alignment;
+using MultiAlignCore.Data.Alignment;
 
-using PNNLProteomics.Data.MassTags;
+using MultiAlignCore.Data.MassTags;
 using PNNLOmics.Data.MassTags;
 
-namespace PNNLProteomics.Algorithms.Alignment
+namespace MultiAlignCore.Algorithms.Alignment
 {
     public class LCMSWarpFeatureAligner: IFeatureAligner
     {

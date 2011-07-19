@@ -1,8 +1,6 @@
-using System;
-using System.Collections.Generic;
-using PNNLProteomics.Data;
+using MultiAlignCore.Data.Factors;
 
-namespace PNNLProteomics.MultiAlign.Hibernate.Domain.DAO
+namespace MultiAlignCore.IO.Features
 {
 	public interface IFactorDAO : IGenericDAO<Factor>
     {

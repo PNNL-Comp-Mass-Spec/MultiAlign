@@ -24,9 +24,9 @@ using System.Collections;
 using System.Collections.Generic;
 
 using MultiAlignEngine;
-using PNNLProteomics.Data;
+using MultiAlignCore.Data;
 
-namespace PNNLProteomics.IO
+namespace MultiAlignCore.IO.InputFiles
 {
     public class DiskDatasetLoader: IDisposable
     {

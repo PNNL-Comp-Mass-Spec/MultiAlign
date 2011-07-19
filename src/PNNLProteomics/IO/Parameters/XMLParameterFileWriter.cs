@@ -1,9 +1,9 @@
 using System;
 using System.Reflection;
 using MultiAlignEngine;
-using PNNLProteomics.Data;
+using MultiAlignCore.Data;
 
-namespace PNNLProteomics.IO
+namespace MultiAlignCore.IO.Parameters
 {
     /// <summary>
     /// Writes a MultiAlign XML Parameter File.

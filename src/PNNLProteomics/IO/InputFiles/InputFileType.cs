@@ -1,5 +1,5 @@
 ﻿
-namespace PNNLProteomics.Data.MetaData
+namespace MultiAlignCore.IO.InputFiles
 {
     /// <summary>
     /// Input file type.

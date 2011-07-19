@@ -1,12 +1,6 @@
 using System;
 using System.Collections.Generic;
-
-
-using MultiAlignEngine.Features;
-using MultiAlignEngine.MassTags;
-using PNNLProteomics.Data.Analysis;
-using MultiAlignEngine.PeakMatching;
-using PNNLProteomics.Data;
+using MultiAlignCore.Data;
 
 namespace MultiAlignWin.Data
 {

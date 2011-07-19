@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" 
-                   assembly="PNNLProteomics" 
-                   namespace="PNNLProteomics.MultiAlign.Hibernate.Domain">
+                   assembly="MultiAlignCore" 
+                   namespace="MultiAlignCore.Data">
 
 	<class name="Factor" table="T_Factors" lazy="false">
 		<id name="FactorId" column="Factor_ID" type="integer">
 			<generator class="increment" />
 		</id>
-		<many-to-one name="Dataset" class="PNNLProteomics.Data.DatasetInformation">
+		<many-to-one name="Dataset" class="MultAlignCore.Data.DatasetInformation">
 			<column name="Dataset_ID" not-null="true" />
 		</many-to-one>
 		<property name="FactorName" column="Factor_Name" type="string" not-null="false" />

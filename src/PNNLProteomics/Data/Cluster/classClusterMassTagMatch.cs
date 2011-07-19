@@ -1,6 +1,6 @@
 using System;
 
-namespace PNNLProteomics.Data.Cluster
+namespace MultiAlignCore.Data.Cluster
 {
 	/// <summary>
 	/// Summary description for clsClusterMassTagMatch.

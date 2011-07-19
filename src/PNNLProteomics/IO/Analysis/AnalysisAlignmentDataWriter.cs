@@ -2,11 +2,11 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 
-using PNNLProteomics.IO;
-using PNNLProteomics.Data;
-using PNNLProteomics.Data.Alignment;
+using MultiAlignCore.IO;
+using MultiAlignCore.Data;
+using MultiAlignCore.Data.Alignment;
 
-namespace PNNLProteomics.IO
+namespace MultiAlignCore.IO
 {
     public class AnalysisAlignmentDataWriter: IMultiAlignAnalysisWriter
     {

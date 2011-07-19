@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using MultiAlignEngine.Features;
 using PNNLOmics.Data.Features;
 
-namespace PNNLProteomics.MultiAlign.Hibernate.Domain.DAO
+namespace MultiAlignCore.IO.Features
 {
     public interface IMSFeatureDAO : IGenericDAO<MSFeatureLight>
 	{

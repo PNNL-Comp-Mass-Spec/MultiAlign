@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Iesi.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace PNNLProteomics.MultiAlign.Hibernate.Domain.DAO
+namespace MultiAlignCore.IO.Features
 {
     public interface IGenericDAO<T>
     {

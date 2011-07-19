@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using PNNLOmics.Data.Features;
 
-namespace PNNLProteomics.IO.Mammoth
+namespace MultiAlignCore.IO.Mammoth
 {
     public interface IFeatureDatabase<T, U>
     {

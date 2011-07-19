@@ -1,10 +1,7 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Runtime.Serialization;
-using PNNLProteomics.Data;
 
-namespace PNNLProteomics.MultiAlign.Hibernate.Domain
+namespace MultiAlignCore.Data.Factors
 {
 	public class Factor : ISerializable
 	{

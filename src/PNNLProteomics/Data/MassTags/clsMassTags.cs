@@ -1,6 +1,6 @@
 using System;
 
-namespace PNNLProteomics.Data
+namespace MultiAlignCore.Data
 {
 	/// <summary>
 	/// Summary description for clsMassTags.

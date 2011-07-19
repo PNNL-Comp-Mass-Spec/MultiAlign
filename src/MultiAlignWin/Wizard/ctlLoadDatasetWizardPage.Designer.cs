@@ -1,17 +1,11 @@
-using System;
-using System.Data;
-using System.Text;
-using System.Drawing;
-using System.Collections;
 using System.Windows.Forms;
-using System.ComponentModel;
-using System.Collections.Generic;
+using MultiAlignCore.Data;
 
 using PNNLControls.Forms;
 
 namespace MultiAlignWin
 {
-    partial class ctlLoadDatasetWizardPage : UserControl, MultiAlignWin.Forms.Wizard.IWizardControl<PNNLProteomics.Data.MultiAlignAnalysis>
+    partial class ctlLoadDatasetWizardPage : UserControl, MultiAlignWin.Forms.Wizard.IWizardControl<MultiAlignAnalysis>
 	{
 		/// <summary> 
 		/// Required designer variable.

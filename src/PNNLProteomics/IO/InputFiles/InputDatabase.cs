@@ -1,6 +1,7 @@
-﻿using PNNLProteomics.Data.MassTags;
+﻿using MultiAlignCore.Data.MassTags;
+using MultiAlignCore.IO.MTDB;
 
-namespace PNNLProteomics.IO
+namespace MultiAlignCore.IO.InputFiles
 {
     /// <summary>
     /// Encapsulates the type of database to load.

@@ -1,5 +1,5 @@
 ﻿
-namespace PNNLProteomics.IO
+namespace MultiAlignCore.IO.InputFiles
 {
     /// <summary>
     /// Determines the mode of what input files MA will read.

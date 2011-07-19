@@ -1,25 +1,20 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection;
+using MultiAlignCore.Algorithms.Alignment;
+using MultiAlignCore.Data.Alignment;
+using MultiAlignCore.Data.MassTags;
+using MultiAlignCore.IO.Features;
 using MultiAlignEngine;
 using MultiAlignEngine.Alignment;
 using MultiAlignEngine.Clustering;
 using MultiAlignEngine.Features;
-using MultiAlignEngine.MassTags;
 using MultiAlignEngine.PeakMatching;
-using PNNLProteomics.Data.Alignment;
-using PNNLProteomics.Data.Factors;
-using PNNLProteomics.IO;
-using PNNLProteomics.SMART;
-using PNNLProteomics.Data.MassTags;
-using PNNLProteomics.MultiAlign.Hibernate.Domain.DAO;
-using MultiAlignEngine.PeakMatching;
-using PNNLProteomics.Algorithms.Alignment;
-using PNNLOmics.Data;
-using PNNLOmics.Data.MassTags;
 using PNNLOmics.Data.Features;
+using PNNLOmics.Data.MassTags;
+using PNNLProteomics.SMART;
 
-namespace PNNLProteomics.Data
+
+namespace MultiAlignCore.Data
 {
 	[Serializable()]
 	public class MultiAlignAnalysis : IDisposable
@@ -291,13 +286,13 @@ namespace PNNLProteomics.Data
             set;
         }
         [clsDataSummaryAttribute("Default Alignment Options")]
-        public MultiAlignEngine.Alignment.clsAlignmentOptions DefaultAlignmentOptions
+        public clsAlignmentOptions DefaultAlignmentOptions
         {
             get;
             set;
         }
         [clsDataSummaryAttribute("Drift Time Options")]
-        public PNNLProteomics.Algorithms.Alignment.DriftTimeAlignmentOptions DriftTimeAlignmentOptions
+        public DriftTimeAlignmentOptions DriftTimeAlignmentOptions
         {
             get;
             set;
