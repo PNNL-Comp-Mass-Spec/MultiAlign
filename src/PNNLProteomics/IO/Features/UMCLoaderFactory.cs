@@ -11,7 +11,6 @@ using PNNLProteomics.Data;
 using PNNLProteomics.Algorithms.FeatureFinding;
 using PNNLProteomics.IO;
 using PNNLProteomics.SMART;
-using PNNLProteomics.EventModel;
 using PNNLProteomics.Data.Factors;
 using PNNLProteomics.Data.Alignment;
 using PNNLProteomics.MultiAlign;

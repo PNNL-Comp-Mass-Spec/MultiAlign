@@ -185,10 +185,18 @@
     <Compile Include="Cephes\clsMathUtilities.cs" />
     <Compile Include="Data\DatasetInformation.cs" />
     <Compile Include="Data\DeisotopingTool.cs" />
+    <Compile Include="Data\Factors\Factor.cs" />
     <Compile Include="Data\Factors\FactorInformation.cs" />
+    <Compile Include="Data\Factors\FactorTree.cs" />
+    <Compile Include="Data\Factors\TreeNode.cs" />
+    <Compile Include="Data\Factors\TreeNodeConverter.cs" />
     <Compile Include="Data\LabelingType.cs" />
     <Compile Include="Data\MassTags\MassTagDatabase.cs" />
     <Compile Include="Data\MassTags\MassTagDatabaseFormat.cs" />
+    <Compile Include="Data\MassTagToProteinMap.cs" />
+    <Compile Include="Data\MultiAlignAnalysis.cs" />
+    <Compile Include="Data\MultiAlignAnalysisDelegates.cs" />
+    <Compile Include="Data\StacFDR.cs" />
     <Compile Include="IO\Analysis\AnalysisAbundanceTableWriter.cs" />
     <Compile Include="IO\Analysis\AnalysisAlignmentDataWriter.cs" />
     <Compile Include="IO\Analysis\AnalysisBinaryReader.cs" />
@@ -265,9 +273,6 @@
     <Compile Include="Data\Cluster\classClusterDataSummaryAttr.cs" />
     <Compile Include="Data\Cluster\classClusterMassTagMatch.cs" />
     <Compile Include="Data\Factors\FactorDefinitions.cs" />
-    <Compile Include="Data\Factors\classFactorTree.cs" />
-    <Compile Include="Data\Factors\classTreeNode.cs" />
-    <Compile Include="Data\Factors\classTreeNodeConverter.cs" />
     <Compile Include="Data\MassTags\clsMassTags.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
