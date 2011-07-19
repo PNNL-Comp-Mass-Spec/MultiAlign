@@ -192,12 +192,15 @@ namespace PNNLProteomics.MultiAlign
                                      clsUMCFindingOptions     options,
                                      string analysisPath)
         {            
-            IUmcDAO featureCache = m_analysis.DataProviders.FeatureCache;
+            IUmcDAO featureCache            = m_analysis.DataProviders.FeatureCache;
+            IMSFeatureDAO msFeatureCache    = m_analysis.DataProviders.MSFeatureCache;
+
             foreach (DatasetInformation dataset in datasets)
             {
                 UpdateStatus("Loading dataset " + dataset.DatasetName + ".");
                 List<clsUMC> features = UMCLoaderFactory.LoadData(  dataset,
                                                                     featureCache,
+                                                                    msFeatureCache,
                                                                     options);
 
                 UpdateStatus("Loaded dataset " + dataset.DatasetName + ". Adding to cache.");

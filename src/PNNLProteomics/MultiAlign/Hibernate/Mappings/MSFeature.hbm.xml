@@ -1,21 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" 
-                   assembly="MultiAlignEngine" 
-                   namespace="MultiAlignEngine.Features">
+                   assembly="PNNLOmics" 
+                   namespace="PNNLOmics.Data.Features">
 
-	<class name="clsIsotopePeak" table="T_MSFeatures" lazy="false">
-		<id name="Id" column="FEATURE_ID" type="integer">
-			<generator class="assigned" />
-		</id>
-		<property name="Fit" column="FIT" type="float" not-null="false" />
-		<property name="Scan" column="SCAN_NUM" type="int" not-null="false" />
-		<property name="Charge" column="CHARGE" type="short" not-null="false" />
-		<property name="Abundance" column="ABUNDANCE" type="double" not-null="false" />
-		<property name="MZ" column="MZ" type="double" not-null="false" />
-		<property name="MassAverage" column="AVERAGE_MW" type="double" not-null="false" />
-		<property name="MassMonoisotopic" column="MONOISOTOPIC_MW" type="double" not-null="false" />
-		<property name="MassMostAbundant" column="MOSTABUNDANT_MW" type="double" not-null="false" />
-		<property name="AbundancePlus2" column="MONO_PLUS2_ABUNDANCE" type="double" not-null="false" />
+	<class name="MSFeatureLight" table="T_MSFeatures" lazy="false">		
+    <composite-id>
+      <key-property name="ID"                 column="FEATURE_ID" type="integer" />
+      <key-property name="GroupID"            column="DATASET_ID" type="integer" />
+    </composite-id>
+    <property name="Score"                    column="FIT"              type="float"  not-null="false" />
+		<property name="Scan"                     column="SCAN_NUM"         type="int"    not-null="false" />
+		<property name="ChargeState"              column="CHARGE"           type="short"  not-null="false" />
+		<property name="Abundance"                column="ABUNDANCE"        type="double" not-null="false" />
+		<property name="Mz"                       column="MZ"               type="double" not-null="false" />
+		<property name="MassMonoisotopicAverage"  column="AVERAGE_MW"       type="double" not-null="false" />
+		<property name="MassMonoisotopic"         column="MONOISOTOPIC_MW"  type="double" not-null="false" />
 	</class>
-
 </hibernate-mapping>

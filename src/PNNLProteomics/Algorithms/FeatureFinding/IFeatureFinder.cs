@@ -17,6 +17,6 @@ namespace PNNLProteomics.Algorithms.FeatureFinding
         /// </summary>
         /// <param name="path">Path containing MS Features.</param>
         /// <returns>List of UMC's.</returns>
-        List<UMCLight> FindFeatures(string path, clsUMCFindingOptions options);
+        List<UMCLight> FindFeatures(List<MSFeatureLight> features, clsUMCFindingOptions options);
     }
 }

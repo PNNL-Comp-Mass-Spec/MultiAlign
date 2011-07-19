@@ -179,7 +179,6 @@
     <Compile Include="Algorithms\AlgorithmBuilder.cs" />
     <Compile Include="Algorithms\Clustering\ClusteringAlgorithmType.cs" />
     <Compile Include="Algorithms\FeatureFinding\IFeatureFinder.cs" />
-    <Compile Include="Algorithms\FeatureFinding\OMICSFeatureFinder.cs" />
     <Compile Include="Algorithms\FeatureFinding\UMCFeatureFinder.cs" />
     <Compile Include="Algorithms\PeakMatching\IPeakMatcher.cs" />
     <Compile Include="Algorithms\PeakMatching\PeakMatcher.cs" />
@@ -316,6 +315,7 @@
     <EmbeddedResource Include="MultiAlign\Hibernate\Mappings\MSFeature.hbm.xml" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="IO\Features\" />
     <Folder Include="IO\Hibernate\Mappings\" />
   </ItemGroup>
   <ItemGroup>

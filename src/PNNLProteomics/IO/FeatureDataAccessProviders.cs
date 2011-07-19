@@ -11,37 +11,39 @@ namespace PNNLProteomics.IO
     /// </summary>
     public sealed class FeatureDataAccessProviders
     {
-        private IUmcDAO         m_featureCache;
-        private IUmcClusterDAO  m_clusterCache;
 
-        public FeatureDataAccessProviders(IUmcDAO        featureCache,
-                                          IUmcClusterDAO clusterCache)
+        public FeatureDataAccessProviders(  IUmcDAO         featureCache,
+                                            IUmcClusterDAO  clusterCache,
+                                            IMSFeatureDAO   msFeatureCache)
         {
-            m_clusterCache = clusterCache;
-            m_featureCache = featureCache;
+            ClusterCache    = clusterCache;
+            FeatureCache    = featureCache;
+            MSFeatureCache  = msFeatureCache;
         }
-
+        /// <summary>
+        /// Gets or sets the data acces object to LCMS features
+        /// </summary>
         public IUmcDAO FeatureCache
         {
-            get
-            {
-                return m_featureCache;
-            }
-            set
-            {
-                m_featureCache = value;
-            }
+            get;
+            set;
         }
+        /// <summary>
+        /// Gets or sets the data access object to clusters.
+        /// </summary>
         public IUmcClusterDAO ClusterCache
         {
-            get
-            {
-                return m_clusterCache;
-            }
-            set
-            {
-               m_clusterCache = value;
-            }
+            get;
+            set;
         }
+        /// <summary>
+        /// Gets or sets the data acces object to MS features.
+        /// </summary>
+        public IMSFeatureDAO MSFeatureCache
+        {
+            get;
+            set;
+        }
+
     }
 }

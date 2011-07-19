@@ -28,15 +28,17 @@ namespace MultiAlignTestSuite
                 }
 
                 NHibernateUtil.ConnectToDatabase(path, createNew);
-                IUmcDAO featureCache        = new UmcDAOHibernate();
-                IUmcClusterDAO clusterCache = new UmcClusterDAOHibernate();
+                IUmcDAO featureCache            = new UmcDAOHibernate();
+                IUmcClusterDAO clusterCache     = new UmcClusterDAOHibernate();
+                IMSFeatureDAO msFeatureCache    = new MSFeatureDAOHibernate();
 
-                FeatureDataAccessProviders providers =
-                    new FeatureDataAccessProviders(featureCache, clusterCache);
-
+                FeatureDataAccessProviders providers = new FeatureDataAccessProviders(  featureCache, 
+                                                                                        clusterCache, 
+                                                                                        msFeatureCache);
+                
                 return providers;
             }
-            catch (System.IO.IOException ex)
+            catch (IOException ex)
             {                
                 throw ex;
             }
@@ -62,8 +64,12 @@ namespace MultiAlignTestSuite
 		static void Main(string[] args)
 		{
             SetupDataProviders();
-            MassTagDOATest test = new MassTagDOATest();
-            test.SaveMassTags();
+            MassTagDOATest   massTagTest    = new MassTagDOATest();
+            MSFeatureDOATest msFeatureTest  = new MSFeatureDOATest();
+            massTagTest.SaveMassTags();
+            msFeatureTest.SaveMSFeatures();
+
+            NHibernateUtil.CloseSession();
         }
     }
 }

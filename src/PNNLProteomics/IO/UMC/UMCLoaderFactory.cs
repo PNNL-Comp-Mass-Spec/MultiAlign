@@ -19,6 +19,7 @@ using PNNLProteomics.MultiAlign.Hibernate;
 using PNNLProteomics.MultiAlign.Hibernate.Domain.DAOHibernate;
 using PNNLProteomics.MultiAlign.Hibernate.Domain.DAO;
 using PNNLOmics.Data.Features;
+using PNNLOmics.IO.FileReaders;
 
 namespace PNNLProteomics.IO.UMC
 {
@@ -27,9 +28,18 @@ namespace PNNLProteomics.IO.UMC
     /// </summary>
     public static class UMCLoaderFactory
     {
-        public static List<clsUMC> LoadData(DatasetInformation   dataset,
-                                            IUmcDAO              featureCache,
-                                            clsUMCFindingOptions options)
+        /// <summary>
+        /// Loads data files into memory.
+        /// </summary>
+        /// <param name="dataset"></param>
+        /// <param name="featureCache"></param>
+        /// <param name="msFeatureCache"></param>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        public static List<clsUMC> LoadData(DatasetInformation      dataset,
+                                            IUmcDAO                 featureCache,
+                                            IMSFeatureDAO           msFeatureCache,
+                                            clsUMCFindingOptions    options)
         {
             clsUMC[]        loadedFeatures  = null;
             IFeatureFinder  featureFinder   = new UMCFeatureFinder();
@@ -39,9 +49,8 @@ namespace PNNLProteomics.IO.UMC
             string extension                = Path.GetExtension(dataset.Path).ToUpper();
             List<UMCLight> newFeatures      = null;
 
-            switch (extension)
+            if (extension == ".TXT")
             {
-                case ".TXT":
                     // LCMS Features File                         
                     UmcReader umcReader = new UmcReader(dataset.Path);
                     loadedFeatures      = umcReader.GetUmcList().ToArray();
@@ -61,79 +70,124 @@ namespace PNNLProteomics.IO.UMC
                     {
                         umc.Net = Convert.ToDouble(umc.mint_scan - minScan) / Convert.ToDouble(maxScan - minScan);
                         umc.mint_umc_index = umcIndex++;
-                    }
-                    break;
-                case ".DB3":                    
-                    try
-                    {                        
-                        loadedFeatures = featureCache.FindAll().ToArray();
-                    }
-                    catch (NHibernate.ADOException)
-                    {
-                        loadedFeatures = new clsUMC[0];
-                    }
-
-                    // If no UMCs were loaded from the SQLite DB, then we need to create UMCs using MSFeature data from the DB
-                    if (loadedFeatures.Length < 1)
-                    {
-                        MSFeatureDAOHibernate msFeatureDAOHibernate = new MSFeatureDAOHibernate();
-                        clsIsotopePeak[] msFeatureArray             = msFeatureDAOHibernate.FindAll().ToArray();
-
-                        umcFinder.SetIsotopePeaks(ref msFeatureArray);
-                        umcFinder.FindUMCs();
-                        loadedFeatures = umcFinder.GetUMCs();
-                    }
-                    break;
-                case ".SQLITE":
-                    NHibernateUtil.ConnectToDatabase(dataset.Path, false);
-                    try
-                    {
-                        UmcDAOHibernate umcDAOHibernate = new UmcDAOHibernate();
-                        loadedFeatures = umcDAOHibernate.FindAll().ToArray();
-                    }
-                    catch (NHibernate.ADOException)
-                    {
-                        loadedFeatures = new clsUMC[0];
-                    }
-
-                    // If no UMCs were loaded from the SQLite DB, then we need to create UMCs using MSFeature data from the DB
-                    if (loadedFeatures.Length < 1)
-                    {
-                        MSFeatureDAOHibernate msFeatureDAOHibernate = new MSFeatureDAOHibernate();
-                        clsIsotopePeak[] msFeatureArray = msFeatureDAOHibernate.FindAll().ToArray();
-
-                        umcFinder.SetIsotopePeaks(ref msFeatureArray);
-                        umcFinder.FindUMCs();
-                        loadedFeatures = umcFinder.GetUMCs();
-                    }
-                    break;
-                case ".PEK":
-                    // Else we are using a PEK or CSV file
-                    umcFinder.FileName = dataset.Path;
-                    umcFinder.LoadUMCs(true);
-                    umcFinder.FindUMCs();
-                    loadedFeatures = umcFinder.GetUMCs();
-                    break;
-                case ".CSV":
-                    //umcFinder.FileName = dataset.Path;                    
-                    //umcFinder.LoadUMCs(false);
-                    //umcFinder.FindUMCs();
-                    //loadedFeatures = umcFinder.GetUMCs();
-                    //umcFinder.FindUMCs();
-                    //List<UMCLight> newFeatures = featureFinder.FindFeatures(dataset.Path);
-                    newFeatures = featureFinder.FindFeatures(dataset.Path, options);                    
-                    break;
-                default:
-                    throw new ArgumentException("Incorrect extension for file. Please use pek, csv, LCMSFeatures.txt, SQLite or DB3 files as inputs.");
+                    }                    
             }
+            else
+            {
+                bool foundNewFeatures           = false;
+                List<MSFeatureLight> msFeatures = new List<MSFeatureLight>();
 
+                switch (extension)
+                {
+                    case ".DB3":                    
+                        try
+                        {                        
+                            loadedFeatures = featureCache.FindAll().ToArray();
+                        }
+                        catch (NHibernate.ADOException)
+                        {
+                            loadedFeatures = new clsUMC[0];
+                        }
+
+                        // If no UMCs were loaded from the SQLite DB,
+                        // then we need to create UMCs using MSFeature data from the DB
+                        if (loadedFeatures.Length < 1)
+                        {
+                            msFeatures = msFeatureCache.FindAll();
+                        }
+                        break;
+                    case ".SQLITE":                        
+                        try
+                        {                            
+                            loadedFeatures                  = featureCache.FindAll().ToArray();
+                        }
+                        catch (NHibernate.ADOException)
+                        {
+                            loadedFeatures = new clsUMC[0];
+                        }
+
+                        // If no UMCs were loaded from the SQLite DB,
+                        // then we need to create UMCs using MSFeature data from the DB
+                        if (loadedFeatures.Length < 1)
+                        {
+                            msFeatures = msFeatureCache.FindAll();
+                        }
+                        break;
+                    case ".CSV":                    
+                        MSFeatureLightFileReader reader             = new MSFeatureLightFileReader();
+                        reader.Delimeter                            = ",";
+                        IEnumerable<MSFeatureLight> newMsFeatures   = reader.ReadFile(dataset.Path);                        
+                        msFeatures.AddRange(newMsFeatures);
+                        foundNewFeatures                            = true;
+                        break;
+                    default:
+                        throw new ArgumentException("Incorrect extension for file. Please use pek, csv, LCMSFeatures.txt, SQLite or DB3 files as inputs.");
+                }
+
+                // We have UMC's to find!
+                if (msFeatures.Count > 0)
+                {
+                    newFeatures = new List<UMCLight>();
+                    foreach (MSFeatureLight msFeature in msFeatures)
+                    {
+                        msFeature.GroupID = Convert.ToInt32(dataset.DatasetId);
+                    }
+                    if (foundNewFeatures)
+                    {
+                        msFeatureCache.AddAll(msFeatures);
+                    }
+                    newFeatures = featureFinder.FindFeatures(msFeatures, options);
+                }
+            }
+                                                                       
+            List<clsUMC> features = new List<clsUMC>();
             if (newFeatures != null)
             {
-                //TODO: Copy the found features.
-            }
+                // Copy the data from the MS features to the old
+                // data structures.
+                // This should get deprecated on the next part of the refactor.
+                foreach (UMCLight feature in newFeatures)
+                {
+                    clsUMC umc                  = new clsUMC();
+                    umc.AbundanceMax            = feature.Abundance;
+                    umc.AbundanceSum            = feature.AbundanceSum;
+                    umc.AverageDeconFitScore    = feature.Score;
+                    umc.ChargeRepresentative    = Convert.ToInt16(feature.ChargeState);                    
+                    umc.DatasetId               = Convert.ToInt32(dataset.DatasetId);                    
+                    umc.ScanEnd                 = feature.ScanEnd;
+                    umc.ScanStart               = feature.ScanStart;
+                    int maxCharge               = feature.ChargeState;
+                    long maxAbundance           = long.MinValue;
+                    int scan                    = feature.ScanStart;
+                    float mz                    = 0;
+                    foreach(MSFeatureLight  msFeature in feature.MSFeatures)
+                    {
+                        maxCharge       = Math.Max(msFeature.ChargeState, maxCharge);
+                        if (msFeature.Abundance > maxAbundance)
+                        {
+                            scan         = msFeature.Scan;
+                            maxAbundance = msFeature.Abundance;
+                            mz           = msFeature.Mz;
+                            
+                        }                        
+                    }
+                    umc.ChargeMax               = Convert.ToInt16(maxCharge);
+                    umc.Scan                    = scan;
+                    umc.MZForCharge             = mz;
+                    umc.Net                     = feature.RetentionTime;
+                    umc.DriftTime               = feature.DriftTime;
+                    umc.Id                      = feature.ID;
+                    umc.Mass                    = feature.MassMonoisotopic;
+                    umc.ChargeRepresentative    = Convert.ToInt16(feature.ChargeState);                    
+                    umc.ConformationId  = 0;
 
-            List<clsUMC> features = new List<clsUMC>();
-            features.AddRange(loadedFeatures);
+                    features.Add(umc);
+                }
+            }
+            else
+            {
+                features.AddRange(loadedFeatures);
+            }
             // Set the Dataset ID number for each UMC
             foreach (clsUMC umc in features)
             {

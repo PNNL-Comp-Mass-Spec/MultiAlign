@@ -931,11 +931,14 @@ namespace MultiAlignConsole
                 }
 
                 NHibernateUtil.ConnectToDatabase(path, createNew);
-                IUmcDAO featureCache        = new UmcDAOHibernate();
-                IUmcClusterDAO clusterCache = new UmcClusterDAOHibernate();
+                IUmcDAO featureCache         = new UmcDAOHibernate();
+                IUmcClusterDAO clusterCache  = new UmcClusterDAOHibernate();
+                IMSFeatureDAO msFeatureCache = new MSFeatureDAOHibernate();
 
                 FeatureDataAccessProviders providers =
-                    new FeatureDataAccessProviders(featureCache, clusterCache);
+                    new FeatureDataAccessProviders( featureCache, 
+                                                    clusterCache,
+                                                    msFeatureCache);
 
                 return providers;
             }

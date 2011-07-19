@@ -20,11 +20,14 @@ namespace PNNLProteomics.IO
                 File.Delete(path);
             }
             NHibernateUtil.ConnectToDatabase(path, true);
-            IUmcDAO featureCache        = new UmcDAOHibernate();
-            IUmcClusterDAO clusterCache = new UmcClusterDAOHibernate();
+            IUmcDAO featureCache            = new UmcDAOHibernate();
+            IUmcClusterDAO clusterCache     = new UmcClusterDAOHibernate();
+            IMSFeatureDAO msFeatureCache    = new MSFeatureDAOHibernate();
 
             FeatureDataAccessProviders providers =
-                new FeatureDataAccessProviders(featureCache, clusterCache);
+                new FeatureDataAccessProviders( featureCache, 
+                                                clusterCache,
+                                                msFeatureCache);
 
             return providers;
         }
