@@ -182,6 +182,8 @@ namespace PNNLProteomics.IO.UMC
                     umc.ConformationId  = 0;
 
                     features.Add(umc);
+
+
                 }
             }
             else
