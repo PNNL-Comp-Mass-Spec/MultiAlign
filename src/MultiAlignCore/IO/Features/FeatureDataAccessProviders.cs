@@ -1,3 +1,4 @@
+using MultiAlignCore.Data;
 
 namespace MultiAlignCore.IO.Features
 {
@@ -9,11 +10,22 @@ namespace MultiAlignCore.IO.Features
 
         public FeatureDataAccessProviders(  IUmcDAO         featureCache,
                                             IUmcClusterDAO  clusterCache,
-                                            IMSFeatureDAO   msFeatureCache)
+                                            IMSFeatureDAO   msFeatureCache,
+                                            IGenericDAO<MSFeatureToLCMSFeatureMap> msFeatureMap
+                                         )
         {
-            ClusterCache    = clusterCache;
-            FeatureCache    = featureCache;
-            MSFeatureCache  = msFeatureCache;
+            ClusterCache                = clusterCache;
+            FeatureCache                = featureCache;
+            MSFeatureCache              = msFeatureCache;
+            MSFeatureToLCMSFeatureCache = msFeatureMap;
+        }
+        /// <summary>
+        /// Gets or sets the interface to teh MS Feature to LCMS Feature map.
+        /// </summary>
+        public IGenericDAO<MSFeatureToLCMSFeatureMap> MSFeatureToLCMSFeatureCache
+        {
+            get;
+            set;
         }
         /// <summary>
         /// Gets or sets the data acces object to LCMS features

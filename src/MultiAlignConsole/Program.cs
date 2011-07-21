@@ -923,24 +923,8 @@ namespace MultiAlignConsole
         private static FeatureDataAccessProviders SetupDataProviders(string path, bool createNew)
         {
             try
-            {
-                bool exists = File.Exists(path);
-                if (exists && createNew)
-                {
-                    File.Delete(path);
-                }
-
-                NHibernateUtil.ConnectToDatabase(path, createNew);
-                IUmcDAO featureCache         = new UmcDAOHibernate();
-                IUmcClusterDAO clusterCache  = new UmcClusterDAOHibernate();
-                IMSFeatureDAO msFeatureCache = new MSFeatureDAOHibernate();
-
-                FeatureDataAccessProviders providers =
-                    new FeatureDataAccessProviders( featureCache, 
-                                                    clusterCache,
-                                                    msFeatureCache);
-
-                return providers;
+            {                
+                return DataAccessFactory.CreateDataAccessProviders(path, createNew);
             }
             catch (System.IO.IOException ex)
             {

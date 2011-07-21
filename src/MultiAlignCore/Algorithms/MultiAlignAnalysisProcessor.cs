@@ -190,6 +190,7 @@ namespace MultiAlignCore.Algorithms
         {            
             IUmcDAO featureCache            = m_analysis.DataProviders.FeatureCache;
             IMSFeatureDAO msFeatureCache    = m_analysis.DataProviders.MSFeatureCache;
+            IGenericDAO<MSFeatureToLCMSFeatureMap> map = m_analysis.DataProviders.MSFeatureToLCMSFeatureCache;
 
             foreach (DatasetInformation dataset in datasets)
             {
@@ -197,6 +198,7 @@ namespace MultiAlignCore.Algorithms
                 List<clsUMC> features = UMCLoaderFactory.LoadData(  dataset,
                                                                     featureCache,
                                                                     msFeatureCache,
+                                                                    map,
                                                                     options);
 
                 UpdateStatus("Loaded dataset " + dataset.DatasetName + ". Adding to cache.");

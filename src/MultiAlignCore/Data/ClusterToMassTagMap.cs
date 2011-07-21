@@ -1,11 +1,8 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Runtime.Serialization;
 
 namespace MultiAlignCore.Data
 {
-	public class ClusterToMassTagMap : ISerializable
+	public class ClusterToMassTagMap 
 	{
 		private int m_clusterId;
 		private int m_massTagId;
@@ -16,18 +13,12 @@ namespace MultiAlignCore.Data
 		{
 
 		}
-
 		public ClusterToMassTagMap(int clusterId, int massTagId)
 		{
 			m_clusterId = clusterId;
 			m_massTagId = massTagId;
 		}
-
-		public void GetObjectData(SerializationInfo info, StreamingContext context)
-		{
-			throw new Exception("The method or operation is not implemented.");
-		}
-
+        
 		public override bool Equals(object obj)
 		{
 			ClusterToMassTagMap clusterToMassTagMap = (ClusterToMassTagMap)obj;

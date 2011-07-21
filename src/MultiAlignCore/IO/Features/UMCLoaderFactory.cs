@@ -26,6 +26,7 @@ namespace MultiAlignCore.IO.Features
         public static List<clsUMC> LoadData(DatasetInformation      dataset,
                                             IUmcDAO                 featureCache,
                                             IMSFeatureDAO           msFeatureCache,
+                                            IGenericDAO<MSFeatureToLCMSFeatureMap> msFeatureMapCache,
                                             clsUMCFindingOptions    options)
         {
             clsUMC[]        loadedFeatures  = null;
@@ -130,6 +131,10 @@ namespace MultiAlignCore.IO.Features
             List<clsUMC> features = new List<clsUMC>();
             if (newFeatures != null)
             {
+                
+                // Map between MS features and LCMS Features.
+                List<MSFeatureToLCMSFeatureMap> msFeatureMapList = new List<MSFeatureToLCMSFeatureMap>();
+
                 // Copy the data from the MS features to the old
                 // data structures.
                 // This should get deprecated on the next part of the refactor.
@@ -154,9 +159,13 @@ namespace MultiAlignCore.IO.Features
                         {
                             scan         = msFeature.Scan;
                             maxAbundance = msFeature.Abundance;
-                            mz           = msFeature.Mz;
-                            
-                        }                        
+                            mz           = msFeature.Mz;                            
+                        }                                                
+                        MSFeatureToLCMSFeatureMap map   = new MSFeatureToLCMSFeatureMap();
+                        map.DatasetID                   = umc.DatasetId;
+                        map.LCMSFeatureID               = feature.GroupID;
+                        map.MSFeatureID                 = msFeature.ID;
+                        msFeatureMapList.Add(map);
                     }
                     umc.ChargeMax               = Convert.ToInt16(maxCharge);
                     umc.Scan                    = scan;
@@ -166,12 +175,11 @@ namespace MultiAlignCore.IO.Features
                     umc.Id                      = feature.ID;
                     umc.Mass                    = feature.MassMonoisotopic;
                     umc.ChargeRepresentative    = Convert.ToInt16(feature.ChargeState);                    
-                    umc.ConformationId  = 0;
+                    umc.ConformationId          = 0;
 
-                    features.Add(umc);
-
-
+                    features.Add(umc);                    
                 }
+                msFeatureMapCache.AddAll(msFeatureMapList);                
             }
             else
             {

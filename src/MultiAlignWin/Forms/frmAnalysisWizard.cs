@@ -384,7 +384,7 @@ namespace MultiAlignWin
             m_processor                         = new MultiAlignAnalysisProcessor();
             m_processor.AnalysisComplete        += new EventHandler<AnalysisCompleteEventArgs>(m_processor_AnalysisComplete);
             m_processor.AnalysisError           += new EventHandler<AnalysisErrorEventArgs>(m_processor_AnalysisError);
-            m_analysis.DataProviders            = DataAccessFactory.CreateDataAccessProviders(m_analysis);
+            m_analysis.DataProviders            = DataAccessFactory.CreateDataAccessProviders(m_analysis, true);
             m_processor.AlgorithmProvders       = builder.GetAlgorithmProvider();
             m_performAnalysisPage.Processor     = m_processor;
         }
