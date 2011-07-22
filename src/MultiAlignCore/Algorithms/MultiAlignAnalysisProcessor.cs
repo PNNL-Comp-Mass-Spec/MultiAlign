@@ -23,6 +23,7 @@ using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Data.MassTags;
 using PNNLOmics.IO.FileReaders;
+using MultiAlignCore.IO.Features;
 
 namespace MultiAlignCore.Algorithms
 {        
@@ -152,11 +153,14 @@ namespace MultiAlignCore.Algorithms
 
         #region Analysis Methods
 
-        private void LoadOtherData( List<InputFile> otherFiles,                                    
-                                    string analysisPath)
+        private void LoadOtherData( List<InputFile>             otherFiles,                                    
+                                    string                      analysisPath,
+                                    FeatureDataAccessProviders  dataProviders)
         {
-            //IUmcDAO featureCache = m_analysis.DataProviders.FeatureCache;
 
+            IRawDataFileReader  rawReader   = null;
+            ScansFileReader     scansReader = new ScansFileReader();
+            IMSnFeatureDAO      msnCache    = dataProviders.MSnFeatureCache;
 
             foreach (InputFile file in otherFiles)
             {
@@ -167,12 +171,14 @@ namespace MultiAlignCore.Algorithms
                 UpdateStatus("Loading other file " + Path.GetFileName(path) + ".");                
                 switch(file.FileType)
                 {
-                    case InputFileType.Scans:
-                        ScansFileReader reader      = new ScansFileReader();
-                        List<ScanSummary> spectra   = reader.ReadFile(path).ToList();
+                    case InputFileType.Scans:                            
+                        List<ScanSummary> scans     = scansReader.ReadFile(path).ToList();
                         UpdateStatus("Scans file acknowledged but not used at this time.");
                         break;
                     case InputFileType.Raw:
+                        rawReader                   = RawLoaderFactory.CreateFileReader(path);
+                        List<MSSpectra> msnSpectra  = rawReader.ReadMSMSSpectra(path);
+                        msnCache.AddAll(msnSpectra);
                         UpdateStatus("Raw input not supported yet.  But the raw data MSn data will be mapped to the analysis database.");
                         break;
                 }                                
@@ -727,11 +733,17 @@ namespace MultiAlignCore.Algorithms
                 }
 
                 m_analysis.MassTagDatabase = database;
-                
+
                 UpdateStatus("Loading other data.");
+                LoadOtherData(m_analysis.MetaData.OtherFiles,
+                                Path.Combine(m_analysis.MetaData.AnalysisPath, m_analysis.MetaData.AnalysisName),
+                                m_analysis.DataProviders);
+
+                UpdateStatus("Loading dataset data.");
                 LoadDatasetData(m_analysis.MetaData.Datasets,
                                 m_analysis.UMCFindingOptions,
                                 Path.Combine(m_analysis.MetaData.AnalysisPath, m_analysis.MetaData.AnalysisName));
+
 
                 UpdateStatus("Aligning datasets.");
                 PerformAlignment(m_analysis);

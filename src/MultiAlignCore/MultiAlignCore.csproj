@@ -40,6 +40,9 @@
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <Optimize>false</Optimize>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>bin\x86\Release\</OutputPath>
@@ -157,6 +160,11 @@
       <HintPath>..\..\lib\Iesi.Collections.dll</HintPath>
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
+    <Reference Include="Interop.XRAWFILE2Lib, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\..\..\..\..\ThermoRawFileReaderDLL\obj\Debug\Interop.XRAWFILE2Lib.dll</HintPath>
+    </Reference>
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\log4net.dll</HintPath>
@@ -170,6 +178,9 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
+    <Reference Include="ThermoRawFileReaderDLL">
+      <HintPath>..\..\..\..\..\ThermoRawFileReaderDLL\bin\Debug\ThermoRawFileReaderDLL.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Algorithms\AlgorithmProvider.cs" />
@@ -199,6 +210,7 @@
     <Compile Include="Data\MassTags\MassTagDatabaseFormat.cs" />
     <Compile Include="Data\MassTagToProteinMap.cs" />
     <Compile Include="Data\MSFeatureToLCMSFeatureMap.cs" />
+    <Compile Include="Data\MSFeatureToMSnFeatureMap.cs" />
     <Compile Include="Data\MultiAlignAnalysis.cs" />
     <Compile Include="Data\MultiAlignAnalysisDelegates.cs" />
     <Compile Include="Data\StacFDR.cs" />
@@ -217,6 +229,7 @@
     <Compile Include="IO\Analysis\PeakMatchResultsWriter.cs" />
     <Compile Include="IO\Analysis\ReadProgressStream.cs" />
     <Compile Include="IO\Analysis\TableWriterColumnOptions.cs" />
+    <Compile Include="IO\Features\IMSnFeatureDAO.cs" />
     <Compile Include="IO\Features\DataAccessFactory.cs" />
     <Compile Include="IO\Features\FeatureDataAccessProviders.cs" />
     <Compile Include="IO\Features\Hibernate\DatasetDAOHibernate.cs" />
@@ -227,6 +240,7 @@
     <Compile Include="IO\Features\Hibernate\MassTagDAO.cs" />
     <Compile Include="IO\Features\Hibernate\MassTagDAOHibernate.cs" />
     <Compile Include="IO\Features\Hibernate\MSFeatureDAOHibernate.cs" />
+    <Compile Include="IO\Features\Hibernate\MSnFeatureDAOHibernate.cs" />
     <Compile Include="IO\Features\Hibernate\NHibernateUtil.cs" />
     <Compile Include="IO\Features\Hibernate\ProteinDAO.cs" />
     <Compile Include="IO\Features\Hibernate\ProteinDAOHibernate.cs" />
@@ -238,12 +252,15 @@
     <Compile Include="IO\Features\IMassTagDAO.cs" />
     <Compile Include="IO\Features\IMSFeatureDAO.cs" />
     <Compile Include="IO\Features\IProteinDAO.cs" />
+    <Compile Include="IO\Features\IRawDataFileReader.cs" />
     <Compile Include="IO\Features\IUmcClusterDAO.cs" />
     <Compile Include="IO\Features\IUmcDAO.cs" />
     <Compile Include="IO\Features\Mammoth\IFeatureDatabase.cs" />
     <Compile Include="IO\Features\Mammoth\MammothDatabase.cs" />
     <Compile Include="IO\Features\Mammoth\MammothDatabaseRange.cs" />
     <Compile Include="IO\Features\Mammoth\MammothDatabaseStateException.cs" />
+    <Compile Include="IO\Features\RawLoaderFactory.cs" />
+    <Compile Include="IO\Features\ThermoRawDataFileReader.cs" />
     <Compile Include="IO\Features\UMCLoaderFactory.cs" />
     <Compile Include="IO\Features\UmcReader.cs" />
     <Compile Include="IO\InputFiles\CommandLineParser.cs" />
@@ -296,6 +313,8 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="IO\Features\Hibernate\Mappings\ClusterToMassTagMap.hbm.xml" />
+    <Content Include="IO\Features\Hibernate\Mappings\MSMSFeature.hbm.xml" />
+    <Content Include="IO\Features\Hibernate\Mappings\MSFeatureToMSnFeatureMap.hbm.xml" />
     <Content Include="IO\Features\Hibernate\Mappings\MSFeatureToLCMSFeatureMap.hbm.xml" />
     <Content Include="IO\Features\Hibernate\Mappings\Dataset.hbm.xml" />
     <Content Include="IO\Features\Hibernate\Mappings\Factor.hbm.xml" />
@@ -307,8 +326,22 @@
     <Content Include="IO\Features\Hibernate\Mappings\StacFDR.hbm.xml" />
     <Content Include="IO\Features\Hibernate\Mappings\Umc.hbm.xml" />
     <Content Include="IO\Features\Hibernate\Mappings\UmcCluster.hbm.xml" />
+    <Content Include="MSDBLibrary.dll" />
+    <Content Include="xerces-c_2_7.dll" />
+    <Content Include="xerces-c_2_7D.dll" />
+    <Content Include="xrawfile2.dll" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <COMReference Include="MSFileReaderLib">
+      <Guid>{F0C5F3E3-4F2A-443E-A74D-0AABE3237494}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
       <Visible>False</Visible>

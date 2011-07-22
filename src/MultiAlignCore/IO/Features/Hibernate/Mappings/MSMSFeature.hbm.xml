@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" 
+                   assembly="PNNLOmics" 
+                   namespace="PNNLOmics.Data">
+
+	<class name="MSSpectra" table="T_MSN_FEATURES" lazy="false">		
+    <composite-id>
+      <key-property name="ID"                 column="SPECTRA_ID" type="integer" />
+      <key-property name="GroupID"            column="DATASET_ID" type="integer" />
+    </composite-id>
+    <property name="MSLevel"                  column="MS_LEVEL"           type="int"    not-null="false" />
+		<property name="RetentionTime"            column="RETENTION_TIME"     type="double" not-null="false" />
+		<property name="Scan"                     column="SCAN"               type="int"    not-null="false" />
+		<property name="PrecursorMZ"              column="PRECURSOR_MZ"       type="double" not-null="false" />
+		<property name="TotalIonCurrent"          column="TOTAL_ION_CURRENT"  type="double" not-null="false" />
+		<property name="CollisionType"            column="COLLISION_TYPE"     type="PNNLOmics.Data.CollisionType" not-null="false" />
+		<property name="ChargeState"              column="CHARGE_STATE"       type="double" not-null="false" />
+	</class>
+</hibernate-mapping>

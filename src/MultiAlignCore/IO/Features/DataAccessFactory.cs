@@ -32,16 +32,20 @@ namespace MultiAlignCore.IO.Features
             {
                 throw ex;
             }
-            IUmcDAO featureCache            = new UmcDAOHibernate();
-            IUmcClusterDAO clusterCache     = new UmcClusterDAOHibernate();
-            IMSFeatureDAO msFeatureCache    = new MSFeatureDAOHibernate();
+            IUmcDAO featureCache                                = new UmcDAOHibernate();
+            IUmcClusterDAO clusterCache                         = new UmcClusterDAOHibernate();
+            IMSFeatureDAO msFeatureCache                        = new MSFeatureDAOHibernate();
+            IMSnFeatureDAO msnFeatureCache                      = new MSnFeatureDAOHibernate();
             IGenericDAO<MSFeatureToLCMSFeatureMap> msFeatureMap = new GenericDAOHibernate<MSFeatureToLCMSFeatureMap>();
+            IGenericDAO<MSFeatureToMSnFeatureMap> msnFeatureMap = new GenericDAOHibernate<MSFeatureToMSnFeatureMap>();
 
             FeatureDataAccessProviders providers =
-                new FeatureDataAccessProviders( featureCache, 
-                                                clusterCache,
-                                                msFeatureCache,
-                                                msFeatureMap);
+                                            new FeatureDataAccessProviders( featureCache, 
+                                                                            clusterCache,
+                                                                            msFeatureCache,
+                                                                            msnFeatureCache,
+                                                                            msFeatureMap,
+                                                                            msnFeatureMap);
 
             return providers;
         }
