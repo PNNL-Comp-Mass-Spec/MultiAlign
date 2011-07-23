@@ -179,7 +179,7 @@ namespace MultiAlignCore.IO.InputFiles
 
                 datasetInfo.DatasetName			= fileName;
                 datasetInfo.mstrAlias           = fileNameAlias;
-				datasetInfo.mstrDatasetId		= m_numDiskDatasetsLoaded.ToString();
+				datasetInfo.DatasetId   		= m_numDiskDatasetsLoaded;
                 datasetInfo.mstrAnalysisJobId   = "NA";
                 datasetInfo.mintBlockID         = 0;
                 datasetInfo.mintRunOrder        = 0;

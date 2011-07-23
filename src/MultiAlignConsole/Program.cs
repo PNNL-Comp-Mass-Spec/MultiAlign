@@ -1169,8 +1169,7 @@ namespace MultiAlignConsole
                     case InputFileType.Features:
                         DatasetInformation datasetInfo  = new DatasetInformation();
                         datasetInfo.Path                = file.Path;
-                        datasetInfo.DatasetId           = (i.ToString());
-                        i++;
+                        datasetInfo.DatasetId           = i++;                        
                         datasetInfo.DatasetName         = Path.GetFileName(file.Path);
                         datasetInfo.JobId               = "";
                         datasetInfo.mstrResultsFolder   = Path.GetDirectoryName(file.Path);

@@ -43,5 +43,44 @@ namespace MultiAlignCore.Data
             get;
             set;
         }
+
+
+        public override bool Equals(object obj)
+        {
+            MSFeatureToMSnFeatureMap other = (MSFeatureToMSnFeatureMap)obj;
+
+            if (other == null)
+            {
+                return false;
+            }
+            else if (!this.RawDatasetID.Equals(other.RawDatasetID))
+            {
+                return false;
+            }
+            else if (!this.MSFeatureID.Equals(other.MSFeatureID))
+            {
+                return false;
+            }
+            else if (!this.MSMSFeatureID.Equals(other.MSMSFeatureID))
+            {
+                return false;
+            }
+            else
+            {
+                return this.MSDatasetID.Equals(other.MSDatasetID);
+            }
+        }
+
+        public override int GetHashCode()
+        {
+            int hash = 17;
+
+            hash = hash * 23 + MSFeatureID.GetHashCode();
+            hash = hash * 23 + MSMSFeatureID.GetHashCode();
+            hash = hash * 23 + MSDatasetID.GetHashCode();
+            hash = hash * 23 + RawDatasetID.GetHashCode();
+
+            return hash;
+        }
     }
 }

@@ -114,7 +114,7 @@ namespace MultiAlignWin.Forms
             /// 
             /// Dataset information pane
             /// 
-            mlabel_datasetID.Text    = string.Format("{0}", m_dataset.mstrDatasetId);
+            mlabel_datasetID.Text    = string.Format("{0}", m_dataset.DatasetId);
             mbutton_datasetName.Text = string.Format("{0}", m_dataset.DatasetName);
             mbutton_baseline.Text    = Path.GetFileName(m_alignmentOptions.AlignmentBaselineName);
            

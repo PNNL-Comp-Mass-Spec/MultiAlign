@@ -341,8 +341,8 @@ namespace MultiAlignCore.IO.InputFiles
                 {
                     string alias;
                     DatasetInformation datasetInfo          = new DatasetInformation();
-                    datasetInfo.mstrDatasetId               = Convert.ToString(row[0]);
-                    alias                                   = datasetInfo.mstrDatasetId;      /// This was set by default to be the same thing as the dataset id.
+                    datasetInfo.DatasetId                   = Convert.ToInt32(row[0]);
+                    alias                                   = datasetInfo.DatasetId.ToString();      /// This was set by default to be the same thing as the dataset id.
                     datasetInfo.mstrVolume                  = Convert.ToString(row[1]);
                     datasetInfo.mstrInstrumentFolder        = Convert.ToString(row[2]);
                     datasetInfo.DatasetName                 = Convert.ToString(row[3]);
@@ -489,7 +489,7 @@ namespace MultiAlignCore.IO.InputFiles
                             info.mstrAnalysisJobId      = datasetInfo.mstrAnalysisJobId;
                             info.mstrBlockingFactor     = datasetInfo.mstrBlockingFactor;
                             info.mstrComment            = datasetInfo.mstrComment;
-                            info.mstrDatasetId          = datasetInfo.mstrDatasetId;
+                            info.DatasetId              = datasetInfo.DatasetId;
                             info.mstrInstrment          = datasetInfo.mstrInstrment;
                             info.mstrInstrumentFolder   = datasetInfo.mstrInstrumentFolder;
                             info.mstrOperator           = datasetInfo.mstrOperator;

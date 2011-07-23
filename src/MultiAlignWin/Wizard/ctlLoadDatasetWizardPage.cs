@@ -515,7 +515,7 @@ namespace MultiAlignWin
         {
             mlistView_datasets.BeginUpdate();
             
-            ListViewItem dataItem = new ListViewItem(datasetInfo.mstrDatasetId);
+            ListViewItem dataItem = new ListViewItem(datasetInfo.DatasetId.ToString());
             dataItem.UseItemStyleForSubItems = false;
             dataItem.SubItems.Add(datasetInfo.mstrAnalysisJobId);
             dataItem.SubItems.Add(datasetInfo.DatasetName);            

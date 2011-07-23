@@ -23,7 +23,7 @@ using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Data.MassTags;
 using PNNLOmics.IO.FileReaders;
-using MultiAlignCore.IO.Features;
+using PNNLOmics.Algorithms.FeatureMatcher.MSnLinker;
 
 namespace MultiAlignCore.Algorithms
 {        
@@ -152,34 +152,111 @@ namespace MultiAlignCore.Algorithms
         #endregion
 
         #region Analysis Methods
+        /// <summary>
+        /// Links MSMS data to MS Features.
+        /// </summary>
+        /// <param name="providers"></param>
+        private void LinkMSFeaturesToMSMS(FeatureDataAccessProviders providers, List<DatasetInformation> information)
+        {
+            foreach (DatasetInformation info in information)
+            {
+                int id                          = Convert.ToInt32(info.DatasetId);
+                List<MSSpectra> spectra         = providers.MSnFeatureCache.FindByDatasetId(id);
+                List<MSFeatureLight> features   = providers.MSFeatureCache.FindByDatasetId(id);
+                IMSnLinker linker               = MSnLinkerFactory.CreateLinker(MSnLinkerType.BoxMethod);
 
+                List<MSFeatureToMSnFeatureMap> matches = new List<MSFeatureToMSnFeatureMap>();
+                foreach (MSFeatureLight feature in features)
+                {
+                    if (feature.MSnSpectra.Count > 0)
+                    {
+                        foreach(MSSpectra spectrum in feature.MSnSpectra)
+                        {
+                            MSFeatureToMSnFeatureMap match  = new MSFeatureToMSnFeatureMap();
+                            match.RawDatasetID  = id;
+                            match.MSDatasetID   = id;
+                            match.MSFeatureID   = feature.ID;
+                            match.MSMSFeatureID = spectrum.ID;
+                            matches.Add(match);
+                        }
+                    }
+                }
+                try
+                {
+                    providers.MSFeatureToMSnFeatureCache.AddAll(matches);
+                }
+                catch(Exception ex)
+                {
+                    throw ex;
+                }
+            }
+        }
+        /// <summary>
+        /// Loads raw file data.
+        /// </summary>
+        /// <param name="otherFiles"></param>
+        /// <param name="analysisPath"></param>
+        /// <param name="dataProviders"></param>
         private void LoadOtherData( List<InputFile>             otherFiles,                                    
                                     string                      analysisPath,
                                     FeatureDataAccessProviders  dataProviders)
         {
+            Dictionary<string, int> datasetMap  = new Dictionary<string, int>();
+            Dictionary<int, int> datasetIDMap   = new Dictionary<int, int>();
+            IRawDataFileReader  rawReader       = null;
+            ScansFileReader     scansReader     = new ScansFileReader();
+            IMSnFeatureDAO      msnCache        = dataProviders.MSnFeatureCache;
 
-            IRawDataFileReader  rawReader   = null;
-            ScansFileReader     scansReader = new ScansFileReader();
-            IMSnFeatureDAO      msnCache    = dataProviders.MSnFeatureCache;
+            // Map the dataset ids
+            foreach(DatasetInformation information in m_analysis.MetaData.Datasets)
+            {
+                datasetMap.Add(information.DatasetName, Convert.ToInt32(information.DatasetId));
+                datasetIDMap.Add(Convert.ToInt32(information.DatasetId), 0);
+            }
 
+            int datasetID = 0;
             foreach (InputFile file in otherFiles)
             {
                 string path = file.Path;
                 if (path == null)
                     continue;
 
-                UpdateStatus("Loading other file " + Path.GetFileName(path) + ".");                
+                string datasetName  = path.Replace("_isos.csv", "");
+                datasetName         = datasetName.Replace(".scans", "");
+                datasetName         = datasetName.Replace("LCMSFeatures.txt", "");
+                datasetName         = Path.GetFileNameWithoutExtension(datasetName);                
+                bool containsKey = datasetMap.ContainsKey(datasetName);
+                if (containsKey)
+                {
+                    datasetID = datasetMap[datasetName];
+                }
+                else
+                {
+                    bool hasID = true;
+                    datasetID  = 0;
+                    while(hasID)
+                    {
+                        datasetID++;
+                        hasID = datasetIDMap.ContainsKey(datasetID);
+                    }
+                }
+
+                UpdateStatus("Loading auxillary file " + Path.GetFileName(path) + ".");                
                 switch(file.FileType)
                 {
                     case InputFileType.Scans:                            
                         List<ScanSummary> scans     = scansReader.ReadFile(path).ToList();
-                        UpdateStatus("Scans file acknowledged but not used at this time.");
                         break;
                     case InputFileType.Raw:
                         rawReader                   = RawLoaderFactory.CreateFileReader(path);
                         List<MSSpectra> msnSpectra  = rawReader.ReadMSMSSpectra(path);
-                        msnCache.AddAll(msnSpectra);
-                        UpdateStatus("Raw input not supported yet.  But the raw data MSn data will be mapped to the analysis database.");
+                        int id                      = 0;
+                        foreach (MSSpectra spectra in msnSpectra)
+                        {
+                            spectra.ID      = id++;
+                            spectra.GroupID = datasetID;
+                        }
+                        msnCache.AddAll(msnSpectra);                        
                         break;
                 }                                
             }
@@ -734,16 +811,17 @@ namespace MultiAlignCore.Algorithms
 
                 m_analysis.MassTagDatabase = database;
 
-                UpdateStatus("Loading other data.");
+                UpdateStatus("Loading auxillary data files.");
                 LoadOtherData(m_analysis.MetaData.OtherFiles,
                                 Path.Combine(m_analysis.MetaData.AnalysisPath, m_analysis.MetaData.AnalysisName),
                                 m_analysis.DataProviders);
 
-                UpdateStatus("Loading dataset data.");
+                UpdateStatus("Loading dataset data files.");
                 LoadDatasetData(m_analysis.MetaData.Datasets,
                                 m_analysis.UMCFindingOptions,
                                 Path.Combine(m_analysis.MetaData.AnalysisPath, m_analysis.MetaData.AnalysisName));
-
+                
+                LinkMSFeaturesToMSMS(m_analysis.DataProviders, m_analysis.MetaData.Datasets);
 
                 UpdateStatus("Aligning datasets.");
                 PerformAlignment(m_analysis);

@@ -12,8 +12,6 @@
 		<property name="RetentionTime"            column="RETENTION_TIME"     type="double" not-null="false" />
 		<property name="Scan"                     column="SCAN"               type="int"    not-null="false" />
 		<property name="PrecursorMZ"              column="PRECURSOR_MZ"       type="double" not-null="false" />
-		<property name="TotalIonCurrent"          column="TOTAL_ION_CURRENT"  type="double" not-null="false" />
-		<property name="CollisionType"            column="COLLISION_TYPE"     type="PNNLOmics.Data.CollisionType" not-null="false" />
-		<property name="ChargeState"              column="CHARGE_STATE"       type="double" not-null="false" />
+		<property name="TotalIonCurrent"          column="TOTAL_ION_CURRENT"  type="double" not-null="false" />		
 	</class>
 </hibernate-mapping>

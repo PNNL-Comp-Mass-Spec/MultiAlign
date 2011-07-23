@@ -17,9 +17,7 @@ namespace MultiAlignCore.Data
 		/// <summary>
 		/// Dictionary that maps a factor object to it's factor value.
 		/// </summary>
-		private Dictionary<FactorInformation, string> m_factorInformation;		
-		[clsDataSummaryAttribute("Dataset ID")]
-		public string mstrDatasetId;
+		private Dictionary<FactorInformation, string> m_factorInformation;				
 		[clsDataSummaryAttribute("Volume")]
 		public string mstrVolume;
 		[clsDataSummaryAttribute("Instrument Folder")]
@@ -108,12 +106,12 @@ namespace MultiAlignCore.Data
 		/// <summary>
 		/// Gets or sets the ID of the dataset
 		/// </summary>
-		[clsDataSummaryAttribute("Dataset ID")]
-		public string DatasetId
-		{
-			get { return mstrDatasetId; }
-			set { mstrDatasetId = value; }
-		}
+        [clsDataSummaryAttribute("Dataset ID")]
+        public int DatasetId
+        {
+            get;
+            set;
+        }
 		/// <summary>
 		/// Gets or sets the ID of the Analysis Job
 		/// </summary>
@@ -245,7 +243,7 @@ namespace MultiAlignCore.Data
 		{
 			int hash = 17;
 
-			hash = hash * 23 + mstrDatasetId.GetHashCode();
+			hash = hash * 23 + DatasetId.GetHashCode();
 			hash = hash * 23 + mstrAnalysisJobId.GetHashCode();
 
 			return hash;
