@@ -17,7 +17,7 @@ namespace MultiAlignCore.Algorithms
             switch (create)
             {
                 case MSnLinkerType.BoxMethod:
-                    linker = new MSnLinker();
+                    linker = new BoxMSnLinker();
                     break;
             }
 

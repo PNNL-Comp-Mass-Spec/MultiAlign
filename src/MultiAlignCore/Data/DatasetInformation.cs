@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using MultiAlignCore.Data.Factors;
 using MultiAlignEngine;
+using System.IO;
 
 namespace MultiAlignCore.Data
 {
@@ -255,5 +256,18 @@ namespace MultiAlignCore.Data
 			return mstrAnalysisJobId.CompareTo(other.mstrAnalysisJobId);
 		}
 		#endregion
+
+        /// <summary>
+        /// Cleans dataset names of extensions in case the data as not loaded from DMS, but manually.
+        /// </summary>
+        /// <returns></returns>
+        public static string CleanNameDatasetNameOfExtensions(string path)
+        {
+            string datasetName  = path.Replace("_isos.csv", "");
+            datasetName         = datasetName.Replace(".scans", "");
+            datasetName         = datasetName.Replace("LCMSFeatures.txt", "");
+            datasetName         = System.IO.Path.GetFileNameWithoutExtension(datasetName);
+            return datasetName;                
+        }
 	}
 }

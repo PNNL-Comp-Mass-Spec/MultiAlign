@@ -191,8 +191,9 @@
     <Compile Include="Algorithms\Clustering\ClusteringAlgorithmType.cs" />
     <Compile Include="Algorithms\FeatureFinding\IFeatureFinder.cs" />
     <Compile Include="Algorithms\FeatureFinding\UMCFeatureFinder.cs" />
-    <Compile Include="Algorithms\MSLinkerType.cs" />
-    <Compile Include="Algorithms\MSnLinkerFactory.cs" />
+    <Compile Include="Algorithms\MSLinker\MSLinkerOptions.cs" />
+    <Compile Include="Algorithms\MSLinker\MSLinkerType.cs" />
+    <Compile Include="Algorithms\MSLinker\MSnLinkerFactory.cs" />
     <Compile Include="Algorithms\MultiAlignAnalysisProcessor.cs" />
     <Compile Include="Algorithms\PeakMatching\IPeakMatcher.cs" />
     <Compile Include="Algorithms\PeakMatching\PeakMatcher.cs" />
@@ -315,7 +316,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <EmbeddedResource Include="IO\Features\Hibernate\Mappings\ClusterToMassTagMap.hbm.xml" />
-    <EmbeddedResource Include="IO\Features\Hibernate\Mappings\MSMSFeature.hbm.xml" />
+    <EmbeddedResource Include="IO\Features\Hibernate\Mappings\MSMSFeature.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="IO\Features\Hibernate\Mappings\MSFeatureToMSnFeatureMap.hbm.xml" />
     <EmbeddedResource Include="IO\Features\Hibernate\Mappings\MSFeatureToLCMSFeatureMap.hbm.xml" />
     <EmbeddedResource Include="IO\Features\Hibernate\Mappings\Dataset.hbm.xml" />

@@ -85,7 +85,12 @@ namespace MultiAlignCore.IO.Parameters
             LoadParameterOptions(analysis.MassTagDBOptions,         metaData.OpenChild("MassTagDBOptions"));
             LoadParameterOptions(analysis.UMCFindingOptions,        metaData.OpenChild("UMCFindingOptions"));
 
-            
+            MetaNode msOptions = metaData.OpenChild("MSnLinkerOptions");
+            if (msOptions != null)
+            {
+                LoadParameterOptions(analysis.MSLinkerOptions, msOptions);
+            }
+
             MetaNode node = metaData.OpenChild("DriftTimeAlignmentOptions", false);
             if (node != null)
             {

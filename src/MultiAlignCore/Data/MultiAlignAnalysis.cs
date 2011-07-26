@@ -53,6 +53,7 @@ namespace MultiAlignCore.Data
             // STAC Options and results
             STACOptions                     = new classSMARTOptions();
             STACResults                     = new classSMARTResults();
+            MSLinkerOptions                 = new Algorithms.MSLinker.MSLinkerOptions();
         }
         #endregion
 
@@ -196,6 +197,14 @@ namespace MultiAlignCore.Data
             set;
 		}
         /// <summary>
+        /// Gets or sets the options for linking MS features to MSMS Spectra.
+        /// </summary>
+        public MultiAlignCore.Algorithms.MSLinker.MSLinkerOptions MSLinkerOptions
+        {
+            get;
+            set;
+        }
+        /// <summary>
         /// Gets or sets the mass tag database options.
         /// </summary>
         public MultiAlignEngine.MassTags.clsMassTagDatabaseOptions MassTagDBOptions
@@ -236,22 +245,6 @@ namespace MultiAlignCore.Data
             get;
             set;
         }
-        ///// <summary>
-        ///// Gets the peak matching results 
-        ///// </summary>
-        //public clsPeakMatchingResults PeakMatchingResults
-        //{
-        //    get;
-        //    set;
-        //}
-        ///// <summary>
-        ///// Gets the peak matching results from the 11 Da shift.
-        ///// </summary>
-        //public clsPeakMatchingResults PeakMatchingResultsShifted
-        //{
-        //    get;
-        //    set;
-        //}	
         /// <summary>
         /// Gets the peak matching results 
         /// </summary>
@@ -277,6 +270,7 @@ namespace MultiAlignCore.Data
             get;
             private set;
         }
+        
         /// <summary>
         /// Gets or sets the mass tag database.
         /// </summary>

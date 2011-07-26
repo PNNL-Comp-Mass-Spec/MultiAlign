@@ -92,6 +92,7 @@ namespace MultiAlignCore.IO.Parameters
             ReflectParameterOptions(analysis.ClusterOptions,            metaData.OpenChild("ClusterOptions"));
             ReflectParameterOptions(analysis.PeakMatchingOptions,       metaData.OpenChild("PeakMatchingOptions"));
             ReflectParameterOptions(analysis.DriftTimeAlignmentOptions, metaData.OpenChild("DriftTimeAlignmentOptions"));
+            ReflectParameterOptions(analysis.MSLinkerOptions,           metaData.OpenChild("MSnLinkerOptions"));
             metaData.WriteFile(parameterFilePath);
         }        
     }

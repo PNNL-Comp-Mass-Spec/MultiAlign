@@ -16,7 +16,7 @@ namespace MultiAlignCore.IO.Features.Hibernate
         /// <returns>List of Umc Objects</returns>
         public List<MSSpectra> FindByDatasetId(int datasetId)
         {
-            ICriterion criterion = Expression.Eq("DatasetId", datasetId);
+            ICriterion criterion = Expression.Eq("GroupID", datasetId);
             List<ICriterion> criterionList = new List<ICriterion>();
             criterionList.Add(criterion);
             return FindByCriteria(criterionList);

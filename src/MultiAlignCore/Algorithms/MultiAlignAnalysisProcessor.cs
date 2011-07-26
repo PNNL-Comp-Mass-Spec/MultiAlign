@@ -159,15 +159,24 @@ namespace MultiAlignCore.Algorithms
         private void LinkMSFeaturesToMSMS(FeatureDataAccessProviders providers, List<DatasetInformation> information)
         {
             foreach (DatasetInformation info in information)
-            {
+            {                                    
                 int id                          = Convert.ToInt32(info.DatasetId);
                 List<MSSpectra> spectra         = providers.MSnFeatureCache.FindByDatasetId(id);
                 List<MSFeatureLight> features   = providers.MSFeatureCache.FindByDatasetId(id);
+                
+                UpdateStatus(string.Format("Linking {0} MS features to {1} MSMS features for dataset {0}",
+                                        features.Count,                        
+                                        spectra.Count,
+                                        info.DatasetName
+                                        ));
                 IMSnLinker linker               = MSnLinkerFactory.CreateLinker(MSnLinkerType.BoxMethod);
+                linker.Tolerances               = new FeatureTolerances();
+                linker.Tolerances.Mass          = m_analysis.MSLinkerOptions.MzTolerance;
+                linker.LinkMSFeaturesToMSn(features, spectra);
 
                 List<MSFeatureToMSnFeatureMap> matches = new List<MSFeatureToMSnFeatureMap>();
                 foreach (MSFeatureLight feature in features)
-                {
+                {                    
                     if (feature.MSnSpectra.Count > 0)
                     {
                         foreach(MSSpectra spectrum in feature.MSnSpectra)
@@ -181,14 +190,9 @@ namespace MultiAlignCore.Algorithms
                         }
                     }
                 }
-                try
-                {
-                    providers.MSFeatureToMSnFeatureCache.AddAll(matches);
-                }
-                catch(Exception ex)
-                {
-                    throw ex;
-                }
+                
+                UpdateStatus(string.Format("Found {0} matching MS-MSn features", matches.Count));
+                providers.MSFeatureToMSnFeatureCache.AddAll(matches);                
             }
         }
         /// <summary>
@@ -210,7 +214,8 @@ namespace MultiAlignCore.Algorithms
             // Map the dataset ids
             foreach(DatasetInformation information in m_analysis.MetaData.Datasets)
             {
-                datasetMap.Add(information.DatasetName, Convert.ToInt32(information.DatasetId));
+                string datasetName = DatasetInformation.CleanNameDatasetNameOfExtensions(information.DatasetName);
+                datasetMap.Add(datasetName, Convert.ToInt32(information.DatasetId));
                 datasetIDMap.Add(Convert.ToInt32(information.DatasetId), 0);
             }
 
@@ -221,11 +226,9 @@ namespace MultiAlignCore.Algorithms
                 if (path == null)
                     continue;
 
-                string datasetName  = path.Replace("_isos.csv", "");
-                datasetName         = datasetName.Replace(".scans", "");
-                datasetName         = datasetName.Replace("LCMSFeatures.txt", "");
+                string datasetName  = DatasetInformation.CleanNameDatasetNameOfExtensions(path);
                 datasetName         = Path.GetFileNameWithoutExtension(datasetName);                
-                bool containsKey = datasetMap.ContainsKey(datasetName);
+                bool containsKey    = datasetMap.ContainsKey(datasetName);
                 if (containsKey)
                 {
                     datasetID = datasetMap[datasetName];
@@ -239,6 +242,8 @@ namespace MultiAlignCore.Algorithms
                         datasetID++;
                         hasID = datasetIDMap.ContainsKey(datasetID);
                     }
+                    datasetMap.Add(datasetName, datasetID);
+                    datasetIDMap.Add(datasetID, 0);
                 }
 
                 UpdateStatus("Loading auxillary file " + Path.GetFileName(path) + ".");                
@@ -256,7 +261,15 @@ namespace MultiAlignCore.Algorithms
                             spectra.ID      = id++;
                             spectra.GroupID = datasetID;
                         }
-                        msnCache.AddAll(msnSpectra);                        
+                        try
+                        {
+                            msnCache.AddAll(msnSpectra);
+                        }
+                        catch(Exception ex)
+                        {
+                            throw ex;
+
+                        }
                         break;
                 }                                
             }
@@ -820,7 +833,8 @@ namespace MultiAlignCore.Algorithms
                 LoadDatasetData(m_analysis.MetaData.Datasets,
                                 m_analysis.UMCFindingOptions,
                                 Path.Combine(m_analysis.MetaData.AnalysisPath, m_analysis.MetaData.AnalysisName));
-                
+
+                UpdateStatus("Linking MS Features to MSn Features.");
                 LinkMSFeaturesToMSMS(m_analysis.DataProviders, m_analysis.MetaData.Datasets);
 
                 UpdateStatus("Aligning datasets.");
