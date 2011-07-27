@@ -164,15 +164,15 @@ namespace MultiAlignCore.Algorithms
                 List<MSSpectra> spectra         = providers.MSnFeatureCache.FindByDatasetId(id);
                 List<MSFeatureLight> features   = providers.MSFeatureCache.FindByDatasetId(id);
                 
-                UpdateStatus(string.Format("Linking {0} MS features to {1} MSMS features for dataset {0}",
+                UpdateStatus(string.Format("Linking {0} MS features to {1} MSMS features for dataset {2}",
                                         features.Count,                        
                                         spectra.Count,
                                         info.DatasetName
                                         ));
-                IMSnLinker linker               = MSnLinkerFactory.CreateLinker(MSnLinkerType.BoxMethod);
-                linker.Tolerances               = new FeatureTolerances();
-                linker.Tolerances.Mass          = m_analysis.MSLinkerOptions.MzTolerance;
-                linker.LinkMSFeaturesToMSn(features, spectra);
+                IMSnLinker linker                   = MSnLinkerFactory.CreateLinker(MSnLinkerType.BoxMethod);
+                linker.Tolerances                   = new FeatureTolerances();
+                linker.Tolerances.Mass              = m_analysis.MSLinkerOptions.MzTolerance;
+                Dictionary<int, int> spectraMaps    = linker.LinkMSFeaturesToMSn(features, spectra);
 
                 List<MSFeatureToMSnFeatureMap> matches = new List<MSFeatureToMSnFeatureMap>();
                 foreach (MSFeatureLight feature in features)
@@ -191,7 +191,7 @@ namespace MultiAlignCore.Algorithms
                     }
                 }
                 
-                UpdateStatus(string.Format("Found {0} matching MS-MSn features", matches.Count));
+                UpdateStatus(string.Format("Found {0} matching MS-MSn features.  {1} total spectra were matched.", matches.Count, spectraMaps.Keys.Count));
                 providers.MSFeatureToMSnFeatureCache.AddAll(matches);                
             }
         }

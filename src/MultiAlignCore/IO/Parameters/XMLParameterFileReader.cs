@@ -85,7 +85,7 @@ namespace MultiAlignCore.IO.Parameters
             LoadParameterOptions(analysis.MassTagDBOptions,         metaData.OpenChild("MassTagDBOptions"));
             LoadParameterOptions(analysis.UMCFindingOptions,        metaData.OpenChild("UMCFindingOptions"));
 
-            MetaNode msOptions = metaData.OpenChild("MSnLinkerOptions");
+            MetaNode msOptions = metaData.OpenChild("MSnLinkerOptions", false);
             if (msOptions != null)
             {
                 LoadParameterOptions(analysis.MSLinkerOptions, msOptions);

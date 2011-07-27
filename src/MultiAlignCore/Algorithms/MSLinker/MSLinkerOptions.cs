@@ -6,9 +6,11 @@ namespace MultiAlignCore.Algorithms.MSLinker
     /// </summary>
     public class MSLinkerOptions
     {
+        private double m_mzTolerance;
+
         public MSLinkerOptions()
         {
-            MzTolerance = .15;
+            m_mzTolerance = .15;
         }
 
         /// <summary>
@@ -17,8 +19,14 @@ namespace MultiAlignCore.Algorithms.MSLinker
         [MultiAlignEngine.clsParameterFile("MZTolerance", "MSnLinker")]
         public double MzTolerance
         {
-            get;
-            set;
+            get
+            {
+                return m_mzTolerance;
+            }
+            set
+            {
+                m_mzTolerance = value;
+            }
         }
     }
 }
