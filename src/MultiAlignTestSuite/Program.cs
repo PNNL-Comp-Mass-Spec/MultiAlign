@@ -1,4 +1,7 @@
+using System;
+using System.Globalization;
 using System.IO;
+using MultiAlignTestSuite.IO;
 using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.Features.Hibernate;
 
@@ -46,6 +49,19 @@ namespace MultiAlignTestSuite
         /// <param name="args"></param>
 		static void Main(string[] args)
 		{
+
+            try
+            {                
+                string data = "-2147483648";
+                long abu    = Int64.Parse(data);
+
+                UMCReaderFailure failTest = new UMCReaderFailure();
+                failTest.Test();
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
             SetupDataProviders();
             MassTagDOATest   massTagTest    = new MassTagDOATest();
             MSFeatureDOATest msFeatureTest  = new MSFeatureDOATest();

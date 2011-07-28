@@ -92,6 +92,7 @@
   <ItemGroup>
     <Compile Include="IO\MSFeatureDOATest.cs" />
     <Compile Include="IO\MassTagDOATest.cs" />
+    <Compile Include="IO\UMCReaderFailure.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

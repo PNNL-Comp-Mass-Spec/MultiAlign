@@ -5,7 +5,7 @@ using System.IO;
 using MultiAlignCore.IO.Features.Hibernate;
 using MultiAlignEngine.Features;
 
-namespace MultiAlignCore.MultiAlign
+namespace MultiAlignCore.IO.Features
 {
 	public class UmcReader
 	{
@@ -228,7 +228,24 @@ namespace MultiAlignCore.MultiAlign
 					if (m_columnMap.ContainsKey("Umc.MassCalibrated"))			umc.MassCalibrated = Double.Parse(columns[m_columnMap["Umc.MassCalibrated"]]);
                     if (m_columnMap.ContainsKey("Umc.AbundanceSum"))
                     {
-                        umc.AbundanceSum = Int64.Parse(columns[m_columnMap["Umc.AbundanceSum"]], NumberStyles.AllowDecimalPoint);
+                        try
+                        {
+                            // To handle bugs from Feature Finder.
+                            string data = columns[m_columnMap["Umc.AbundanceSum"]];                            
+                            if (data.StartsWith("-"))
+                            {
+                                umc.AbundanceSum = 0;
+                            }
+                            else
+                            {
+                                umc.AbundanceSum = long.Parse(data, NumberStyles.AllowDecimalPoint);
+                            }
+                        }
+                        catch(Exception ex)
+                        {
+                            throw ex;
+                        }
+
                     }
                     if (m_columnMap.ContainsKey("Umc.AbundanceMax"))
                     {

@@ -24,7 +24,6 @@ using System.Threading;
 using System.Windows.Forms;
 using System.ComponentModel;
 using System.Collections.Generic;
-using MultiAlignCore.MultiAlign;
 using MultiAlignCore.IO;
 using MultiAlignWin.Diagnostics;
 using MultiAlignCore.Data;

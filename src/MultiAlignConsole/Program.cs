@@ -633,6 +633,10 @@ namespace MultiAlignConsole
         static void processor_AnalysisError(object sender, AnalysisErrorEventArgs e)
         {
             PrintMessage(string.Format("There was an error while performing the analysis.  {0} : {1}", e.ErrorMessage, e.Exception.Message));
+            if (e.Exception.StackTrace != null)
+            {
+                PrintMessage(string.Format("\n{0}", e.Exception.StackTrace));
+            }
             m_triggerEvent.Set();
         }
         #endregion

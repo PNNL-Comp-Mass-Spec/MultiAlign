@@ -169,6 +169,12 @@ namespace MultiAlignCore.Algorithms
                                         spectra.Count,
                                         info.DatasetName
                                         ));
+                if (features.Count <= 0 || spectra.Count <= 0)
+                {
+                    UpdateStatus(string.Format("Not enough data exists to perform MS/MS linking.  You may not have MS/MS data."));
+                    continue;
+                }
+
                 IMSnLinker linker                   = MSnLinkerFactory.CreateLinker(MSnLinkerType.BoxMethod);
                 linker.Tolerances                   = new FeatureTolerances();
                 linker.Tolerances.Mass              = m_analysis.MSLinkerOptions.MzTolerance;

@@ -8,11 +8,11 @@
       <key-property name="ID"                     column="FEATURE_ID" type="integer" />
       <key-property name="GroupID"                column="DATASET_ID" type="integer" />
     </composite-id>
-    <property name="Score"                        column="FIT"                        type="float"    not-null="false" />
+    <property name="Score"                        column="FIT"                        type="double"   not-null="false" />
 		<property name="Scan"                         column="SCAN_NUM"                   type="integer"  not-null="false" />
 		<property name="ChargeState"                  column="CHARGE"                     type="int"      not-null="false" />
 		<property name="Abundance"                    column="ABUNDANCE"                  type="long"     not-null="false" />
-		<property name="Mz"                           column="MZ"                         type="float"    not-null="false" />
+		<property name="Mz"                           column="MZ"                         type="double"   not-null="false" />
 		<property name="MassMonoisotopicAverage"      column="AVERAGE_MW"                 type="double"   not-null="false" />
 		<property name="MassMonoisotopic"             column="MONOISOTOPIC_MW"            type="double"   not-null="false" />
     <property name="MassMonoisotopicMostAbundant" column="MONOISOTOPIC_MW_ABUNDANT"   type="double"   not-null="false" />

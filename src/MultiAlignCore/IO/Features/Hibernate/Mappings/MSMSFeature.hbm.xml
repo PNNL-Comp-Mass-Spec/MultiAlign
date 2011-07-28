@@ -3,7 +3,7 @@
                    assembly="PNNLOmics" 
                    namespace="PNNLOmics.Data">
 
-	<class name="MSSpectra" table="T_MSN_FEATURES" lazy="false">		
+	<class name="MSSpectra" table="T_Msn_Features" lazy="false">		
     <composite-id>
       <key-property name="ID"                 column="SPECTRA_ID" type="integer" />
       <key-property name="GroupID"            column="DATASET_ID" type="integer" />

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using MultiAlignCore.Algorithms.FeatureFinding;
 using MultiAlignCore.Data;
-using MultiAlignCore.MultiAlign;
 using MultiAlignEngine.Features;
 using PNNLOmics.Data.Features;
 using PNNLOmics.IO.FileReaders;
@@ -120,11 +119,12 @@ namespace MultiAlignCore.IO.Features
                     {
                         msFeature.GroupID = Convert.ToInt32(dataset.DatasetId);
                     }
+                    newFeatures = featureFinder.FindFeatures(msFeatures, options);
+
                     if (foundNewFeatures)
                     {
                         msFeatureCache.AddAll(msFeatures);
                     }
-                    newFeatures = featureFinder.FindFeatures(msFeatures, options);
                 }
             }
                                                                        
@@ -159,11 +159,11 @@ namespace MultiAlignCore.IO.Features
                         {
                             scan         = msFeature.Scan;
                             maxAbundance = msFeature.Abundance;
-                            mz           = msFeature.Mz;                            
+                            mz           = Convert.ToSingle(msFeature.Mz);                            
                         }                                                
                         MSFeatureToLCMSFeatureMap map   = new MSFeatureToLCMSFeatureMap();
                         map.DatasetID                   = umc.DatasetId;
-                        map.LCMSFeatureID               = feature.GroupID;
+                        map.LCMSFeatureID               = feature.ID;
                         map.MSFeatureID                 = msFeature.ID;
                         msFeatureMapList.Add(map);
                     }
