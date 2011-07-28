@@ -114,17 +114,20 @@ namespace MultiAlignCore.IO.Features
                 // We have UMC's to find!
                 if (msFeatures.Count > 0)
                 {
+
+
                     newFeatures = new List<UMCLight>();
                     foreach (MSFeatureLight msFeature in msFeatures)
                     {
                         msFeature.GroupID = Convert.ToInt32(dataset.DatasetId);
                     }
-                    newFeatures = featureFinder.FindFeatures(msFeatures, options);
-
                     if (foundNewFeatures)
                     {
                         msFeatureCache.AddAll(msFeatures);
                     }
+
+                    newFeatures = featureFinder.FindFeatures(msFeatures, options);
+
                 }
             }
                                                                        
@@ -143,9 +146,9 @@ namespace MultiAlignCore.IO.Features
                     clsUMC umc                  = new clsUMC();
                     umc.AbundanceMax            = feature.Abundance;
                     umc.AbundanceSum            = feature.AbundanceSum;
-                    umc.AverageDeconFitScore    = feature.Score;
+                    umc.AverageDeconFitScore    = -1;
                     umc.ChargeRepresentative    = Convert.ToInt16(feature.ChargeState);                    
-                    umc.DatasetId               = Convert.ToInt32(dataset.DatasetId);                    
+                    umc.DatasetId               = dataset.DatasetId;                    
                     umc.ScanEnd                 = feature.ScanEnd;
                     umc.ScanStart               = feature.ScanStart;
                     int maxCharge               = feature.ChargeState;

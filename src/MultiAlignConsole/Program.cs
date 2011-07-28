@@ -73,6 +73,14 @@ namespace MultiAlignConsole
         /// </summary>
         private static ManualResetEvent     m_triggerEvent;
         /// <summary>
+        /// Event that is triggered when an analysis is completed.
+        /// </summary>
+        private static ManualResetEvent     m_errorEvent;
+        /// <summary>
+        /// Exception thrown by the analysis engine.
+        /// </summary>
+        private static Exception m_errorException;
+        /// <summary>
         /// Path of log file.
         /// </summary>
         private static string               m_logPath;
@@ -637,7 +645,8 @@ namespace MultiAlignConsole
             {
                 PrintMessage(string.Format("\n{0}", e.Exception.StackTrace));
             }
-            m_triggerEvent.Set();
+            m_errorException = e.Exception;
+            m_errorEvent.Set();            
         }
         #endregion
 
@@ -956,7 +965,7 @@ namespace MultiAlignConsole
         /// </summary>
         /// <param name="args"></param>
         /// 
-        static void StartMultiAlign()
+        static int StartMultiAlign()
         {
             // Builds the list of algorithm providers.
             AlgorithmBuilder builder                = new AlgorithmBuilder();
@@ -966,7 +975,7 @@ namespace MultiAlignConsole
             if (m_showHelp)
             {
                 PrintHelp();
-                return;
+                return 0;
             }
 
             // Then validate the input.
@@ -982,7 +991,7 @@ namespace MultiAlignConsole
                 {
                     PrintHelp();
                 }
-                return;
+                return 0;
             }
 
             //Create the analysis directory.
@@ -1037,13 +1046,13 @@ namespace MultiAlignConsole
             if (!File.Exists(m_inputPaths))
             {
                 PrintMessage(string.Format("The input file {0} does not exist.", m_inputPaths));
-                return;
+                return 1;
             }
             // Make sure we have parameters!
             if (!File.Exists(m_parameterFile))
             {
                 PrintMessage("The parameter file does not exist.");
-                return;
+                return 1;
             }
 
             PrintMessage("Parsing Input Filenames and Databases.");
@@ -1056,7 +1065,7 @@ namespace MultiAlignConsole
             catch(Exception ex)
             {
                 PrintMessage("The input file had some bad lines in it.  " + ex.Message);
-                return;
+                return 1;
             }
             PrintMessage("Found " + analysisSetupInformation.Files.Count.ToString() + " files.");
             
@@ -1069,7 +1078,7 @@ namespace MultiAlignConsole
             catch (AnalysisMTDBSetupException ex)
             {
                 PrintMessage("There was a problem with the mass tag database specification.  " + ex.Message);
-                return;
+                return 1;
             }
 
 
@@ -1095,7 +1104,9 @@ namespace MultiAlignConsole
             }
 
             // Use this to signal when the analysis is done.  We are using a asnychronous call here.
-            m_triggerEvent = new ManualResetEvent(false);
+            m_triggerEvent   = new ManualResetEvent(false);
+            m_errorEvent     = new ManualResetEvent(false);
+            m_errorException = null;
 
             // Setup the parameters.
             PrintMessage("Loading parameters.");
@@ -1148,7 +1159,7 @@ namespace MultiAlignConsole
                 if (analysisSetupInformation.BaselineFile == null)
                 {
                     PrintMessage("No baseline dataset or database was selected.");
-                    return;
+                    return 1;
                 }
 
                 string baselineDataset = Path.GetFileName(analysisSetupInformation.BaselineFile.Path);
@@ -1206,9 +1217,11 @@ namespace MultiAlignConsole
             {
                 providers = SetupDataProviders();
             }
-            catch(System.IO.IOException)
+            catch(System.IO.IOException ex)
             {
-                return;
+                PrintMessage(ex.Message);
+                PrintMessage(ex.StackTrace);
+                return 1;
             }
 
             analysis.DataProviders      = providers;
@@ -1218,28 +1231,44 @@ namespace MultiAlignConsole
             PrintMessage("Analysis Started.");    
             processor.StartAnalysis(analysis);
             // Wait for the analysis to complete.
-            WaitHandle.WaitAll(new WaitHandle[] { m_triggerEvent });
+            int handleID = WaitHandle.WaitAny(new WaitHandle[] { m_triggerEvent , m_errorEvent});
 
-            
-            CreateFinalAnalysisPlots(providers.FeatureCache, providers.ClusterCache);            
-            CreatePlotReport();
+            if (handleID == 1)
+            {
+                PrintMessage("There was an error during processing.");
+                return 1;
+            }
+
+            try
+            {
+                CreateFinalAnalysisPlots(providers.FeatureCache, providers.ClusterCache);
+                CreatePlotReport();
+            }
+            catch(Exception ex)
+            {
+                PrintMessage("There was an error when trying to create the final analysis plots, however, the data analysis is complete.");
+                PrintMessage(ex.Message);
+                PrintMessage(ex.StackTrace);
+            }
 
             analysis.Dispose();
             processor.Dispose();
             CleanupDataProviders();
-            PrintMessage("Analysis Complete.");                        
+
+            PrintMessage("Analysis Complete.");
+            return 0;  
         }
         
         /// <summary>
         /// 
         /// </summary>
         /// <param name="args"></param>
-		static void Main(string[] args)
+		static int Main(string[] args)
 		{
 			IntPtr handle = Process.GetCurrentProcess().MainWindowHandle;
 			SetConsoleMode(handle, ENABLE_EXTENDED_FLAGS);
             ProcessCommandLineArguments(args);
-            StartMultiAlign();
+            return StartMultiAlign();
         }
     }
 }

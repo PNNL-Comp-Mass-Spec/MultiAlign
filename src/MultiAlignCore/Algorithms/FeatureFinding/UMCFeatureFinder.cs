@@ -40,8 +40,7 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
             foreach (MSFeatureLight feature in rawMsFeatures)
             {
                 m_minScan = Math.Min(feature.Scan, m_minScan);
-                m_maxScan = Math.Max(feature.Scan, m_maxScan);
-                feature.ID = -1;
+                m_maxScan = Math.Max(feature.Scan, m_maxScan);                
             }
 
             MSFeatureSingleLinkageClustering<MSFeatureLight, UMCLight> finder   = new MSFeatureSingleLinkageClustering<MSFeatureLight, UMCLight>();            
