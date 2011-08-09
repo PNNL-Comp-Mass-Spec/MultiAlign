@@ -425,7 +425,6 @@ namespace MultiAlignConsole
             image.Save(path, System.Drawing.Imaging.ImageFormat.Png);
             m_report.PushImageColumn(Path.Combine("Plots", labelName));
 
-            m_report.PushStartTableRow();
             options.DisplayLegend   = false;
             options.Title           = "NET Error Histogram " + name;
             options.XAxisLabel      = "NET Error (%)";

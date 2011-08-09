@@ -170,6 +170,9 @@
       <HintPath>..\..\lib\log4net.dll</HintPath>
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
+    <Reference Include="MSDataFileReader">
+      <HintPath>..\..\lib\MSDataFileReader.dll</HintPath>
+    </Reference>
     <Reference Include="NHibernate, Version=2.1.1.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\NHibernate.dll</HintPath>
@@ -262,6 +265,7 @@
     <Compile Include="IO\Features\Mammoth\MammothDatabase.cs" />
     <Compile Include="IO\Features\Mammoth\MammothDatabaseRange.cs" />
     <Compile Include="IO\Features\Mammoth\MammothDatabaseStateException.cs" />
+    <Compile Include="IO\Features\MzXMLReader.cs" />
     <Compile Include="IO\Features\RawLoaderFactory.cs" />
     <Compile Include="IO\Features\ThermoRawDataFileReader.cs" />
     <Compile Include="IO\Features\UMCLoaderFactory.cs" />
@@ -335,17 +339,6 @@
     <Content Include="xerces-c_2_7.dll" />
     <Content Include="xerces-c_2_7D.dll" />
     <Content Include="xrawfile2.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <COMReference Include="MSFileReaderLib">
-      <Guid>{F0C5F3E3-4F2A-443E-A74D-0AABE3237494}</Guid>
-      <VersionMajor>1</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>tlbimp</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

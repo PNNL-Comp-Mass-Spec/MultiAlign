@@ -215,7 +215,7 @@ namespace MultiAlignCore.IO.Mammoth
                                       " FNet >= :NetLow      AND FNet < :NetHigh AND " +
                                       " (FCharge = :Charge) AND " +
                                       " FDrift >= :DriftLow  AND FDrift < :DriftHigh";                                      
-            m_featureQueryStatementCommand.Prepare();
+            m_featureChargeQueryStatementCommand.Prepare();
 
             
             m_featureQueryNoClusterStatementCommand = m_connection.CreateCommand();
@@ -435,8 +435,8 @@ namespace MultiAlignCore.IO.Mammoth
             invalid      = invalid || IsValueMinimumOrMaximum(options.DriftTimeMaximum);
             invalid      = invalid || IsValueMinimumOrMaximum(options.DriftTimeMinimum);
 
-            if (invalid)
-                throw new InvalidDataException("One of the mammoth database search options was invalid.");
+           // if (invalid)
+           //     throw new InvalidDataException("One of the mammoth database search options was invalid.");
                         
             if (m_connection == null)
                 throw new NullReferenceException("The database connection has not been established.");

@@ -11,6 +11,11 @@ namespace MultiAlignCore.IO.Features
     /// </summary>
     public class RawLoaderFactory
     {
+        /// <summary>
+        /// Constructs a raw data file reader for reading the instrument (or equivalent) mass spectra.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public static IRawDataFileReader CreateFileReader(string name)
         {
             IRawDataFileReader reader   = null;
@@ -19,6 +24,9 @@ namespace MultiAlignCore.IO.Features
             {
                 case ".raw":
                     reader = new ThermoRawDataFileReader();
+                    break;
+                case ".mzxml":
+                    reader = new MzXMLReader();
                     break;
             }
             return reader;

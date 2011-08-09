@@ -148,7 +148,7 @@ namespace MultiAlignCore.IO.Reports
                 foreach (string tag in ContentTags)
                 {
                     htmlWriter.WriteLine(tag);
-                }      ;
+                }      
                 string bottomTag = "</tr>\n<tr>\n<td colspan=\"2\" style=\"background-color:#005500;text-align:center;\">\n</td>\n</tr>\n</table>\n</body>";
                 bottomTag += "</html>";
 

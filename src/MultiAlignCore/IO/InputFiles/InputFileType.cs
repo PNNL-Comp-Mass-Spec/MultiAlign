@@ -7,7 +7,7 @@ namespace MultiAlignCore.IO.InputFiles
     public enum InputFileType
     {
         /// <summary>
-        /// Raw data, only used to read the 
+        /// Raw data
         /// </summary>
         Raw,
         /// <summary>

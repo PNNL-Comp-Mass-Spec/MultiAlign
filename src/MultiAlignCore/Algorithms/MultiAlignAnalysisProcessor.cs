@@ -274,9 +274,9 @@ namespace MultiAlignCore.Algorithms
                         catch(Exception ex)
                         {
                             throw ex;
-
                         }
                         break;
+
                 }                                
             }
         }          
@@ -354,12 +354,12 @@ namespace MultiAlignCore.Algorithms
             using (MammothDatabase database = new MammothDatabase(databaseName))
             {
                 database.Connect();
-                MammothDatabaseRange range = new MammothDatabaseRange(  -9000,
-                                                                        90000,
-                                                                        -10,
-                                                                        10,
-                                                                        -100,
-                                                                        7000);
+                MammothDatabaseRange range = new MammothDatabaseRange(  double.MinValue,
+                                                                        double.MaxValue,
+                                                                        double.MinValue,
+                                                                        double.MaxValue,
+                                                                        double.MinValue,
+                                                                        double.MaxValue);
                 List<int> chargeStatesToCluster = new List<int>();
                 if (analysis.ClusterOptions.IgnoreCharge)
                 {
@@ -402,6 +402,7 @@ namespace MultiAlignCore.Algorithms
                     List<UMCClusterLight> clusters  = new List<UMCClusterLight>();
                     clusters                        = clusterer.Cluster(features, clusters);
 
+                    UpdateStatus(string.Format("Found {0} clusters.", clusters.Count)); 
                     UpdateStatus("Updating cluster id numbers.");
                     foreach (UMCClusterLight cluster in clusters)
                     {

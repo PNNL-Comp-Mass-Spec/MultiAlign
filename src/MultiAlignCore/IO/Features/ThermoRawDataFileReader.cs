@@ -11,11 +11,13 @@ namespace MultiAlignCore.IO.Features
     public class ThermoRawDataFileReader: IRawDataFileReader
     {
         #region IRawDataFileReader Members
-
+        /// <summary>
+        /// Reads a list of MSMS Spectra header data from the mzXML file.
+        /// </summary>
+        /// <param name="file">file to read.</param>
+        /// <returns>List of MSMS spectra data</returns>
         public List<MSSpectra> ReadMSMSSpectra(string file)
         {
-
-
             List<MSSpectra> spectra = new List<MSSpectra>();
                         
             XRawFileIO rawReader    = new XRawFileIO();
@@ -48,6 +50,8 @@ namespace MultiAlignCore.IO.Features
                     spectra.Add(spectrum);
                 }
             }
+            rawReader.CloseRawFile();
+
             return spectra;
         }
         #endregion
