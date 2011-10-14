@@ -11,7 +11,7 @@ namespace MultiAlignEngine
 {
 	namespace PeakMatching
 	{
-		[System::Serializable]
+		/*[System::Serializable]
 		public __gc class clsPeakMatchingProcessor
 		{
 		public:
@@ -107,6 +107,6 @@ namespace MultiAlignEngine
 			{
 				return mintPercentDone; 
 			}
-		};
+		};*/
 	}
 }

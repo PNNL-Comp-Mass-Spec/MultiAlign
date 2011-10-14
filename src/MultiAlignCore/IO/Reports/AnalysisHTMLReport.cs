@@ -13,6 +13,7 @@ namespace MultiAlignCore.IO.Reports
         {
             ContentTags = new List<string>();
         }
+
         #region HTML
         /// <summary>
         /// 

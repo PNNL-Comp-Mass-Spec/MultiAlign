@@ -12,7 +12,9 @@ using MultiAlignEngine.PeakMatching;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Data.MassTags;
 using PNNLProteomics.SMART;
-
+using MultiAlignCore.Algorithms.PeakMatching;
+using MultiAlignCore.Data.Features;
+using MultiAlignCore.Algorithms.FeatureFinding;
 
 namespace MultiAlignCore.Data
 {
@@ -33,7 +35,7 @@ namespace MultiAlignCore.Data
             MetaData.AnalysisName           = string.Empty;
 
             // UMC Finding options
-			UMCFindingOptions               = new MultiAlignEngine.Features.clsUMCFindingOptions() ; 
+			UMCFindingOptions               = new UMCFeatureFinderOptions();
             
             // Alignment options and data.
             AlignmentData                   = new List<classAlignmentData>();
@@ -51,9 +53,10 @@ namespace MultiAlignCore.Data
 			PeakMatchedToMassTagDB          = false; 
             
             // STAC Options and results
-            STACOptions                     = new classSMARTOptions();
+            STACOptions                     = new STACOptions();
             STACResults                     = new classSMARTResults();
             MSLinkerOptions                 = new Algorithms.MSLinker.MSLinkerOptions();
+            FeatureFilterOptions            = new FeatureFilterOptions();
         }
         #endregion
 
@@ -130,7 +133,15 @@ namespace MultiAlignCore.Data
             MetaData.Datasets.Clear();
         }
 
-        #region Properties    
+        #region Properties   
+        /// <summary>
+        /// Gets or sets the filter criteria for loading features.
+        /// </summary>
+        public FeatureFilterOptions FeatureFilterOptions
+        {
+            get;
+            set;
+        }
         /// <summary>
         /// Gets or sets the data providers to the underlying data cache.
         /// </summary>
@@ -158,7 +169,7 @@ namespace MultiAlignCore.Data
         /// <summary>
         /// Gets or sets the SMART Options to use.
         /// </summary>
-        public classSMARTOptions STACOptions
+        public STACOptions STACOptions
         {
             get;
             set;
@@ -224,7 +235,7 @@ namespace MultiAlignCore.Data
         /// <summary>
         /// Gets or sets the UMC Finding Options.
         /// </summary>
-        public clsUMCFindingOptions UMCFindingOptions
+        public UMCFeatureFinderOptions UMCFindingOptions
         {
             get;
             set;

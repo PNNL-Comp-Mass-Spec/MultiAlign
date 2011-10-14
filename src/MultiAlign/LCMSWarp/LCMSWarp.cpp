@@ -1038,32 +1038,39 @@ namespace MultiAlignEngine
 			}
 			CalculateNETSlopeAndIntercept(); 
 		}
-		void LCMSWarp::GetErrorHistograms(double mass_bin,
-												 double net_bin, 
-												 vector<double> &mass_error_bin,
-												 vector<int> &mass_error_frequency,
-												 vector<double> &net_error_bin,
-												 vector<int> &net_error_frequency)
+		void LCMSWarp::GetErrorHistograms(		double mass_bin,
+												double net_bin, 
+												double drift_bin, 
+												vector<double> &mass_error_bin,
+												vector<int> &mass_error_frequency,
+												vector<double> &net_error_bin,
+												vector<int> &net_error_frequency,
+												vector<double> &drift_error_bin,
+												vector<int> &drift_error_frequency)
 		{	
 			vector<FeatureMatch>::iterator iter = mvect_feature_matches.begin();
 
 			vector<double>	mass_errors; 
-			vector<double>	net_errors; 		
+			vector<double>	net_errors; 	
+			vector<double>	drift_errors; 		
 
 			/// Reserve the memory so we dont constantly allocate during this process.
 			int num_matches = mvect_feature_matches.size();			
 			mass_errors.reserve(num_matches);
 			net_errors.reserve(num_matches);
+			drift_errors.reserve(num_matches);
 
 			while(iter != mvect_feature_matches.end())
 			{
 				mass_errors.push_back((*iter).mdouble_ppmMassError);
 				net_errors.push_back((*iter).mdouble_netError);
+				drift_errors.push_back((*iter).mdouble_driftError);
 				iter++;
 			}
 					
 			Utilities::CreateHistogram<double>(mass_errors, mass_error_bin, mass_error_frequency, mass_bin) ; 
 			Utilities::CreateHistogram<double>(net_errors,  net_error_bin, net_error_frequency, net_bin) ; 
+			Utilities::CreateHistogram<double>(drift_errors,  drift_error_bin, drift_error_frequency, drift_bin) ; 
 			
 		}
 		void LCMSWarp::GetStatistics(double *massStd, double *netStd, double *massMu, double *netMu)
@@ -1117,8 +1124,10 @@ namespace MultiAlignEngine
 						///
 						/// Calculate the mass and net errors 
 						///
-						double net_diff  = (mvect_baseline_features[baseline_feature_index].mdouble_net - feature.mdouble_aligned_net); 
-						double mass_diff = (mvect_baseline_features[baseline_feature_index].mdouble_mono_mass - feature.mdouble_mono_mass) * 1000000.0/feature.mdouble_mono_mass; 
+						double net_diff			= (mvect_baseline_features[baseline_feature_index].mdouble_net - feature.mdouble_aligned_net); 
+						double baselineDrift	= mvect_baseline_features[baseline_feature_index].mdouble_driftTime;
+						double drift_diff		= (baselineDrift - feature.mdouble_driftTime); 
+						double mass_diff		= (mvect_baseline_features[baseline_feature_index].mdouble_mono_mass - feature.mdouble_mono_mass) * 1000000.0/feature.mdouble_mono_mass; 
 
 						///
 						/// Calculte the match score						
@@ -1138,6 +1147,7 @@ namespace MultiAlignEngine
 							feature_match.mdouble_net			= feature.mdouble_net; 
 							feature_match.mdouble_netError		= net_diff;
 							feature_match.mdouble_ppmMassError	= mass_diff;
+							feature_match.mdouble_driftError	= drift_diff;
 							feature_match.mdouble_net_2			= mvect_baseline_features[baseline_feature_index].mdouble_net; 
 						}
 					}

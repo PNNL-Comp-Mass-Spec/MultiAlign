@@ -10,6 +10,7 @@ namespace MultiAlignCore.Data
     /// </summary>
     public static class AnalysisPathUtils
     {
+        private static string m_dateSuffix = null;
         /// <summary>
         /// Builds an analysis name from the path and name provided.
         /// </summary>
@@ -28,16 +29,45 @@ namespace MultiAlignCore.Data
         /// <returns></returns>
         public static string BuildLogPath(string path, string name)
         {
-            DateTime now = DateTime.Now;
-            string logPath = string.Format("{6}-log_{1}-{0}-{2}-{3}-{4}-{5}.txt",
-                                        now.Day,
-                                        now.Month,
-                                        now.Year,
-                                        now.Hour,
-                                        now.Minute,
-                                        now.Second,
+            
+            string dateSuffix = BuildDateSuffix();
+            string logPath    = string.Format("{1}-log_{0}.txt",
+                                        dateSuffix,
                                         name);
             return Path.Combine(path, logPath);
+        }
+        /// <summary>
+        /// Builds the log path for the given analysis.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static string BuildLogPath(string path, string name, string dateSuffix)
+        {            
+            string logPath    = string.Format("{1}-log_{0}.txt",
+                                        dateSuffix,
+                                        name);
+            return Path.Combine(path, logPath);
+        }
+        /// <summary>
+        /// Builds the date suffix string for logs and path locations.  A single 
+        /// date suffix is built for the entire application lifecycle.
+        /// </summary>
+        /// <returns></returns>
+        public static string BuildDateSuffix()
+        {                        
+            if (m_dateSuffix == null)
+            {
+                DateTime now = DateTime.Now;
+                m_dateSuffix = string.Format("{1:00}-{0:00}-{2:0000}-{3}-{4}-{5}",
+                                            now.Day,
+                                            now.Month,
+                                            now.Year,
+                                            now.Hour,
+                                            now.Minute,
+                                            now.Second);
+            }
+            return m_dateSuffix;
         }
         /// <summary>
         /// Builds the plot path for the given analysis.

@@ -24,7 +24,7 @@ namespace MultiAlignCore.IO.Features
             bool opened             = rawReader.OpenRawFile(file);
 
             if (!opened)
-            {
+            {                
                 throw new IOException("Could not open the Thermo raw file " + file);
             }
 

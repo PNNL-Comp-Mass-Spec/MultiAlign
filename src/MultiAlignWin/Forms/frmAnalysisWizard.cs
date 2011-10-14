@@ -88,7 +88,7 @@ namespace MultiAlignWin
             m_analysis.PeakMatchingOptions      = MultiAlignWin.Data.AnalysisDefaultOptionsFactory.LoadPeakMatchingOptions();
             m_analysis.UMCFindingOptions        = MultiAlignWin.Data.AnalysisDefaultOptionsFactory.LoadFeatureFindingOptions();
             m_analysis.MassTagDBOptions         = MultiAlignWin.Data.AnalysisDefaultOptionsFactory.LoadDBOptions();
-            m_analysis.STACOptions             = MultiAlignWin.Data.AnalysisDefaultOptionsFactory.LoadSMARTOptions();
+            //m_analysis.STACOptions             = MultiAlignWin.Data.AnalysisDefaultOptionsFactory.LoadSMARTOptions();
 
             // Create the control pages
             InitializeWizardPages();   

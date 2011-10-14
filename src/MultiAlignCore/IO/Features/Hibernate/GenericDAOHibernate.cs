@@ -40,7 +40,7 @@ namespace MultiAlignCore.IO.Features.Hibernate
             if (m_session == null || !m_session.IsOpen)
             {
 				m_session = NHibernateUtil.OpenSession();
-            }            
+            }                        
             return m_session;
         }
 
@@ -200,15 +200,21 @@ namespace MultiAlignCore.IO.Features.Hibernate
         /// <returns>A List of T Objects</returns>
         protected List<T> FindByCriteria(List<ICriterion> criterionList)
         {
-            ICriteria crit = GetSession().CreateCriteria(GetPersistentType());
-            if (criterionList != null)
+            List<T> list = null;
+            using (ISession session = GetSession())
             {
-                foreach (ICriterion c in criterionList)
+
+                ICriteria crit = session.CreateCriteria(GetPersistentType());
+                if (criterionList != null)
                 {
-                    crit.Add(c);
+                    foreach (ICriterion c in criterionList)
+                    {
+                        crit.Add(c);
+                    }
                 }
+                list = (List<T>)crit.List<T>();              
             }
-            return (List<T>)crit.List<T>();
+            return list;
         }
 
         #endregion

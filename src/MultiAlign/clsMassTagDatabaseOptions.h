@@ -45,11 +45,9 @@ namespace MultiAlignEngine
 				double mdblPeptideProphetVal; 
 				
 				[clsDataSummaryAttribute("Database Name")]
-				[clsParameterFileAttribute("mstrDatabase","MassTagDBOptions")]
 				System::String *mstrDatabase; 
 				
 				[clsDataSummaryAttribute("Server Name")]
-				[clsParameterFileAttribute("mstrServer","MassTagDBOptions")]
 				System::String *mstrServer; 
 				
 				[clsDataSummaryAttribute("Experiment Filter")]
@@ -65,7 +63,6 @@ namespace MultiAlignEngine
 				MassTagDatabaseType menm_databaseType;
 				
 				[clsDataSummaryAttribute("Database File Path")]
-				[clsParameterFileAttribute("mstr_databaseFilePath","DatabaseFilePath")]
 				System::String *mstr_databaseFilePath;
 				
 				System::String *mstrUserID; 

@@ -78,6 +78,8 @@ namespace MultiAlignEngine
 			double mdblMassTolerance; 
 			/// Histogram binning option for net values.
 			double mdouble_massBinSize;
+			/// Histogram binning option for net values.
+			double mdouble_driftTimeBinSize;
 			/// <summary>
 			/// NET tolerance to be used for aligments
 			/// </summary>
@@ -132,7 +134,6 @@ namespace MultiAlignEngine
 			
 			/// Gets if to run the alignment by first splitting in M/Z space.			
 			[clsDataSummaryAttribute("Split Alignment M/Z Boundary")]
-			[clsParameterFileAttribute("SplitAlignmentMZBoundary","AlignmentOptions")]
 			__property List<classAlignmentMZBoundary*>* get_MZBoundaries()
 			{
 				return mlist_mzBoundaries;
@@ -330,6 +331,17 @@ namespace MultiAlignEngine
 			__property void set_NETBinSize(double value)
 			{
 				mdouble_netBinSize = value; 
+			}
+			
+			[clsDataSummaryAttribute("Histogram Drift Time Bin Size")]
+			[clsParameterFileAttribute("HistogramDriftTimeBinSize","AlignmentOptions")]
+			__property double get_DriftTimeBinSize()
+			{
+				return mdouble_driftTimeBinSize;
+			}
+			__property void set_DriftTimeBinSize(double value)
+			{
+				mdouble_driftTimeBinSize  = value; 
 			}
 			
 			[clsDataSummaryAttribute("Apply Mass Recalibration")]

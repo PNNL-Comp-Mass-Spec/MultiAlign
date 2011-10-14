@@ -49,6 +49,7 @@ namespace MultiAlignEngine
 				mtFeature.mdouble_mono_mass_original = massTag.mdblMonoMass; 
 				mtFeature.mdouble_mz = massTag.mdblMonoMass/2 + 1.00782; // assume a charge of 2. Not used anyways.
 				mtFeature.mdouble_net = massTag.mdblAvgGANET; 
+				mtFeature.mdouble_driftTime	= massTag.mdblDriftTime;
 				mtFeature.mint_id = massTag.mintMassTagId; 
 				vectFeatures.push_back(mtFeature); 
 			}

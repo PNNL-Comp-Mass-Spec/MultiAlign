@@ -195,7 +195,7 @@ namespace MultiAlignCore.IO.Mammoth
             m_featureQueryStatementCommand = m_connection.CreateCommand();
             m_featureQueryStatementCommand.CommandText = " SELECT     F.Feature_ID as Fid, F.Mass_Calibrated as FMass, F.NET as FNet, " +
                                       " F.Drift_Time as FDrift, F.Dataset_ID as FDid, " +
-                                      " F.cluster_ID as FCid, F.charge as FCharge, F.Abundance_Max " +
+                                      " F.cluster_ID as FCid, F.charge as FCharge, F.Abundance_Max, F.Scan_LC_Start, F.Scan_LC_End, F.Scan_LC  " +
                                       " FROM       T_LCMS_FEATURES F" +
                                       " WHERE " +
                                       " FCid < 0    AND " +
@@ -207,7 +207,7 @@ namespace MultiAlignCore.IO.Mammoth
             m_featureChargeQueryStatementCommand = m_connection.CreateCommand();
             m_featureChargeQueryStatementCommand.CommandText = " SELECT     F.Feature_ID as Fid, F.Mass_Calibrated as FMass, F.NET as FNet, " +
                                       " F.Drift_Time as FDrift, F.Dataset_ID as FDid, " +
-                                      " F.cluster_ID as FCid, F.charge as FCharge, F.Abundance_Max  " +
+                                      " F.cluster_ID as FCid, F.charge as FCharge, F.Abundance_Max, F.Scan_LC_Start, F.Scan_LC_End, F.Scan_LC   " +
                                       " FROM       T_LCMS_FEATURES F" +
                                       " WHERE " +
                                       " FCid < 0    AND " +
@@ -223,7 +223,7 @@ namespace MultiAlignCore.IO.Mammoth
                                     " SELECT " +
                                     " F.Feature_ID, F.Mass_Calibrated as FMass, F.NET as FNet, F.Drift_Time as FDrift, " +
                                     " F.dataset_id, F.cluster_ID AS FClusterID,  " +
-                                    " C.mass AS ClusterMass, C.net AS ClusterNet, C.Drift_time AS ClusterDrift, F.Charge as FeatureCharge, C.Charge as ClusterCharge, F.Abundance_Max " +
+                                    " C.mass AS ClusterMass, C.net AS ClusterNet, C.Drift_time AS ClusterDrift, F.Charge as FeatureCharge, C.Charge as ClusterCharge, F.Abundance_Max, F.Scan_LC_Start, F.Scan_LC_End, F.Scan_LC  " +
                                     " FROM  T_LCMS_FEATURES F INNER JOIN " +
                                     "           T_CLUSTERS C ON " +
                                     "               FClusterID > -1   AND " +
@@ -240,7 +240,7 @@ namespace MultiAlignCore.IO.Mammoth
                                     " SELECT " +
                                     " F.Feature_ID, F.Mass_Calibrated as FMass, F.NET as FNet, F.Drift_Time as FDrift, " +
                                     " F.dataset_id, F.cluster_ID AS FClusterID,  " +
-                                    " C.mass AS ClusterMass, C.net AS ClusterNet, C.Drift_time AS ClusterDrift, F.Charge as FeatureCharge, C.Charge as ClusterCharge, F.Abundance_Max " +
+                                    " C.mass AS ClusterMass, C.net AS ClusterNet, C.Drift_time AS ClusterDrift, F.Charge as FeatureCharge, C.Charge as ClusterCharge, F.Abundance_Max, F.Scan_LC_Start, F.Scan_LC_End, F.Scan_LC " +
                                     " FROM  T_LCMS_FEATURES F INNER JOIN " +
                                     "           T_CLUSTERS C ON " +
                                     "               FClusterID > -1   AND " +
@@ -495,11 +495,15 @@ namespace MultiAlignCore.IO.Mammoth
                         umc.ID                  = Convert.ToInt32(values[CONST_UMC_ID]);
                         umc.MassMonoisotopic    = Convert.ToDouble(values[CONST_UMC_MONOISOTOPIC_MASS]);
                         umc.NET                 = Convert.ToDouble(values[CONST_UMC_NET]);
+                        umc.RetentionTime       = umc.NET;
                         umc.DriftTime           = Convert.ToSingle(values[CONST_UMC_DRIFT_TIME]);
                         umc.GroupID             = Convert.ToInt32(values[CONST_UMC_GROUP_ID]);
                         umc.ChargeState         = Convert.ToInt32(values[CONST_UMC_CHARGE]);
                         int clusterID           = Convert.ToInt32(values[CONST_UMC_CLUSTER_ID]);
                         umc.Abundance           = Convert.ToInt32(values[CONST_TOTAL_FEATURE_NO_CLUSTER_QUERY_SIZE - 1]);
+                        umc.ScanStart           = Convert.ToInt32(values[CONST_TOTAL_FEATURE_NO_CLUSTER_QUERY_SIZE]);
+                        umc.ScanEnd             = Convert.ToInt32(values[CONST_TOTAL_FEATURE_NO_CLUSTER_QUERY_SIZE + 1]);
+                        umc.Scan                = Convert.ToInt32(values[CONST_TOTAL_FEATURE_NO_CLUSTER_QUERY_SIZE + 2]);
                         if (!clusters.ContainsKey(clusterID))
                         {
                             // No cluster exists in the map, so we need to create a new one.
@@ -573,6 +577,9 @@ namespace MultiAlignCore.IO.Mammoth
                     umc.ChargeState             = Convert.ToInt32(values[CONST_UMC_CHARGE_FEATURE]);
                     umc.UMCCluster              = null;
                     umc.Abundance               = Convert.ToInt32(values[7]);
+                    umc.ScanStart               = Convert.ToInt32(values[8]);
+                    umc.ScanEnd                 = Convert.ToInt32(values[9]);
+                    umc.Scan                    = Convert.ToInt32(values[10]);
                     m_features.Add(umc);
                 }
             }            

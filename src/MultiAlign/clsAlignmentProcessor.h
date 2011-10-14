@@ -174,7 +174,12 @@ namespace MultiAlignEngine
 				Arguments:  N/A
 				Returns:	void
 			////////////////////////////////////////////////////////////////////////////////*/
-			void GetErrorHistograms(double  massBin, double  netBin, double (&massErrorHistogram) __gc[,], double (&netErrorHistogram)  __gc[,]);			
+			void GetErrorHistograms(double  massBin,
+									double  netBin,
+									double  driftBin,
+									double (&massErrorHistogram) __gc[,],
+									double (&netErrorHistogram)  __gc[,],
+									double (&driftErrorHistogram)  __gc[,]);
 			/*////////////////////////////////////////////////////////////////////////////////
 				Function:	GetAlignmentHeatMap
 				Note:		Calculates the alignment heat scores.

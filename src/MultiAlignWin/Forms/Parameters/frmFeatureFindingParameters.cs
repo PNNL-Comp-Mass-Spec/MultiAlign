@@ -900,11 +900,11 @@ namespace MultiAlignWin
         /// <summary>
         /// Gets or sets the UMC Finding object that contains all settings contained herein.
         /// </summary>
-		public MultiAlignEngine.Features.clsUMCFindingOptions UMCFindingOptions
+        public MultiAlignCore.Algorithms.FeatureFinding.UMCFeatureFinderOptions UMCFindingOptions
 		{
 			get
 			{
-				MultiAlignEngine.Features.clsUMCFindingOptions options = new MultiAlignEngine.Features.clsUMCFindingOptions() ;
+                MultiAlignCore.Algorithms.FeatureFinding.UMCFeatureFinderOptions options = new MultiAlignCore.Algorithms.FeatureFinding.UMCFeatureFinderOptions();
 				options.MonoMassWeight      = MonoMassWeight ;
 				options.AveMassWeight       = AveMassWeight ;
 				options.LogAbundanceWeight  = LogAbundanceWeight ;
@@ -928,7 +928,7 @@ namespace MultiAlignWin
 			}
 			set
 			{
-				MultiAlignEngine.Features.clsUMCFindingOptions options = value ;
+                MultiAlignCore.Algorithms.FeatureFinding.UMCFeatureFinderOptions options = value;
 				MonoMassWeight      = options.MonoMassWeight ;
 				AveMassWeight       = options.AveMassWeight ;
 				LogAbundanceWeight  = options.LogAbundanceWeight ;
@@ -980,7 +980,8 @@ namespace MultiAlignWin
 
         private void mbtnDefaults_Click(object sender, System.EventArgs e)
         {
-            MultiAlignEngine.Features.clsUMCFindingOptions defaults = new MultiAlignEngine.Features.clsUMCFindingOptions();
+            MultiAlignCore.Algorithms.FeatureFinding.UMCFeatureFinderOptions defaults =
+                new MultiAlignCore.Algorithms.FeatureFinding.UMCFeatureFinderOptions();
             UMCFindingOptions = defaults;
         }
         private void mcheckBox_isotopicFitFilter_CheckedChanged(object sender, EventArgs e)

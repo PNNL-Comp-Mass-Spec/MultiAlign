@@ -176,9 +176,6 @@ namespace MultiAlignCore.Data
     public class FeaturesPeakMatchedEventArgs : EventArgs
     {
     }
-    public class FeaturesClusteredEventArgs : EventArgs
-    {
-    }
 
     public class AnalysisStatusEventArgs : EventArgs
     {

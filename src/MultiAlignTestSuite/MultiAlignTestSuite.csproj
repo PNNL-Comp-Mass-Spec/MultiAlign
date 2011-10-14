@@ -74,6 +74,9 @@
     <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MultiAlignEngine">
+      <HintPath>..\..\lib\x64\MultiAlignEngine.dll</HintPath>
+    </Reference>
     <Reference Include="PNNLOmics">
       <HintPath>..\..\lib\x64\PNNLOmics.dll</HintPath>
     </Reference>
@@ -90,6 +93,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Algorithms\UMCFeatureFinding.cs" />
     <Compile Include="IO\MSFeatureDOATest.cs" />
     <Compile Include="IO\MassTagDOATest.cs" />
     <Compile Include="IO\UMCReaderFailure.cs" />

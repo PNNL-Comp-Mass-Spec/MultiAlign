@@ -17,6 +17,7 @@ namespace MultiAlignCore.Data.Alignment
         public float        maxMTDBNET;
         public double[,]    massErrorHistogram;
         public double[,]    netErrorHistogram;
+        public double[,]    driftErrorHistogram;
         public double       NETRsquared;
         public double       NETSlope;
         public double       NETIntercept;

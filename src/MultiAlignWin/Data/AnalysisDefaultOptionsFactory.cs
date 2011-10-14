@@ -8,6 +8,7 @@ using MultiAlignEngine.Features;
 using MultiAlignEngine.Clustering;
 using MultiAlignEngine.Alignment;
 using PNNLProteomics.SMART;
+using MultiAlignCore.Algorithms.FeatureFinding;
 
 namespace MultiAlignWin.Data
 {
@@ -19,9 +20,9 @@ namespace MultiAlignWin.Data
         /// <summary>
         /// Loads the default feature finding options from the settings file.
         /// </summary>
-        public static clsUMCFindingOptions LoadFeatureFindingOptions()
+        public static UMCFeatureFinderOptions LoadFeatureFindingOptions()
         {
-            clsUMCFindingOptions options = new clsUMCFindingOptions();
+            UMCFeatureFinderOptions options = new UMCFeatureFinderOptions();
             options.MonoMassWeight       = Convert.ToSingle(Properties.Settings.Default.UserPeakPickingMonoMass);
             options.AveMassWeight        = Convert.ToSingle(Properties.Settings.Default.UserPeakPickingAverageMass);
             options.LogAbundanceWeight   = Convert.ToSingle(Properties.Settings.Default.UserPeakPickingLogAbundance);

@@ -24,6 +24,8 @@ using PNNLOmics.Data.Features;
 using PNNLOmics.Data.MassTags;
 using PNNLOmics.IO.FileReaders;
 using PNNLOmics.Algorithms.FeatureMatcher.MSnLinker;
+using MultiAlignCore.Algorithms.MSLinker;
+using MultiAlignCore.Algorithms.FeatureFinding;
 
 namespace MultiAlignCore.Algorithms
 {        
@@ -51,6 +53,10 @@ namespace MultiAlignCore.Algorithms
         /// </summary>
         public event EventHandler<FeaturesPeakMatchedEventArgs> FeaturesPeakMatched;
         /// <summary>
+        /// Fired when features are extracted from datasets.
+        /// </summary>
+        public event EventHandler<FeaturesExtractedEventArgs> FeaturesExtracted;
+        /// <summary>
         /// Fired when a catastrophic error occurs.
         /// </summary>
         public event EventHandler<AnalysisErrorEventArgs> AnalysisError;
@@ -61,7 +67,7 @@ namespace MultiAlignCore.Algorithms
         /// <summary>
         /// Fired when a status update is ready.
         /// </summary>
-        public event EventHandler<AnalysisStatusEventArgs> Status;
+        public event EventHandler<AnalysisStatusEventArgs> Status;        
         #endregion
 
         #region Members
@@ -161,17 +167,27 @@ namespace MultiAlignCore.Algorithms
             foreach (DatasetInformation info in information)
             {                                    
                 int id                          = Convert.ToInt32(info.DatasetId);
-                List<MSSpectra> spectra         = providers.MSnFeatureCache.FindByDatasetId(id);
-                List<MSFeatureLight> features   = providers.MSFeatureCache.FindByDatasetId(id);
+
+                List<MSSpectra> spectra = providers.MSnFeatureCache.FindByDatasetId(id);
+                if (spectra.Count <= 0)
+                {
+                    UpdateStatus("No MS/MS data exists.");
+                    continue;
+                }
+
+                List<MSFeatureLight> features   = null;
                 
+                UpdateStatus(string.Format("Loading dataset MS feature list id: {0}", id));
+                features = providers.MSFeatureCache.FindByDatasetId(id);
+                                    
                 UpdateStatus(string.Format("Linking {0} MS features to {1} MSMS features for dataset {2}",
                                         features.Count,                        
                                         spectra.Count,
                                         info.DatasetName
                                         ));
-                if (features.Count <= 0 || spectra.Count <= 0)
+                if (features.Count <= 0)
                 {
-                    UpdateStatus(string.Format("Not enough data exists to perform MS/MS linking.  You may not have MS/MS data."));
+                    UpdateStatus(string.Format("Not enough features exists to link to your raw data to MS/MS data.")); 
                     continue;
                 }
 
@@ -198,7 +214,9 @@ namespace MultiAlignCore.Algorithms
                 }
                 
                 UpdateStatus(string.Format("Found {0} matching MS-MSn features.  {1} total spectra were matched.", matches.Count, spectraMaps.Keys.Count));
-                providers.MSFeatureToMSnFeatureCache.AddAll(matches);                
+                
+                    providers.MSFeatureToMSnFeatureCache.AddAll(matches);
+                
             }
         }
         /// <summary>
@@ -210,7 +228,8 @@ namespace MultiAlignCore.Algorithms
         private void LoadOtherData( List<InputFile>             otherFiles,                                    
                                     string                      analysisPath,
                                     FeatureDataAccessProviders  dataProviders)
-        {
+        {           
+
             Dictionary<string, int> datasetMap  = new Dictionary<string, int>();
             Dictionary<int, int> datasetIDMap   = new Dictionary<int, int>();
             IRawDataFileReader  rawReader       = null;
@@ -287,7 +306,7 @@ namespace MultiAlignCore.Algorithms
         /// <param name="options">Options to use for UMC finding if required.</param>
         /// <param name="analysisPath">Path to save data to.</param>
         private void LoadDatasetData(List<DatasetInformation> datasets,
-                                     clsUMCFindingOptions     options,
+                                     UMCFeatureFinderOptions  options,
                                      string analysisPath)
         {            
             IUmcDAO featureCache            = m_analysis.DataProviders.FeatureCache;
@@ -303,8 +322,11 @@ namespace MultiAlignCore.Algorithms
                                                                     map,
                                                                     options);
 
-                UpdateStatus("Loaded dataset " + dataset.DatasetName + ". Adding to cache.");
-
+                UpdateStatus(string.Format("Filtering {0} features found.", features.Count));
+                int preFiltered = features.Count;
+                features = MultiAlignCore.Data.Features.LCMSFeatureFilters.FilterFeatures(features, m_analysis.FeatureFilterOptions);
+                UpdateStatus(string.Format("Filtered features from: {0} to {1}.", preFiltered, features.Count));
+                UpdateStatus("Adding features to cache database.");
                 featureCache.AddAll(features);
                 if (FeaturesLoaded != null)
                 {
@@ -412,6 +434,11 @@ namespace MultiAlignCore.Algorithms
                     UpdateStatus("Updating feature cache with cluster id's.");
                     database.UpdateFeaturesAndClusters(features);
 
+                    if (FeaturesClustered != null)
+                    {
+                        FeaturesClustered(this, new FeaturesClusteredEventArgs(clusters));
+                    }
+
                     UpdateStatus("Finished clustering charge state.");
                 }
             }
@@ -429,9 +456,9 @@ namespace MultiAlignCore.Algorithms
             int baselineDatasetID           = -1;
             DatasetInformation baselineInfo = null;
 
-            UpdateStatus("Confirming baseline.");
             if (!analysis.UseMassTagDBAsBaseline)
             {
+                UpdateStatus("Confirming baseline dataset and features.");
                 int i = 0;
                 foreach(DatasetInformation info in analysis.MetaData.Datasets)
                 {
@@ -449,8 +476,10 @@ namespace MultiAlignCore.Algorithms
                 baselineFeatures    = featureCache.FindByDatasetId(baselineDatasetID);
             }
 
+            // This says that the user 
             if (baselineInfo == null && m_analysis.DriftTimeAlignmentOptions.ShouldAlignDriftTimes)
             {
+                UpdateStatus("Setting baseline features for post drift time alignment.");
                 baselineFeatures = new List<clsUMC>();
                 // Convert the mass tags to features.                
                 foreach (MassTagLight tag in analysis.MassTagDatabase.MassTags)
@@ -468,16 +497,13 @@ namespace MultiAlignCore.Algorithms
             
             // Align pairwise and cache results intermediately.
             IFeatureAligner aligner = m_algorithms.Aligner;
-
             m_analysis.AlignmentOptions.Clear();
 
             for (int datasetNum = 0; datasetNum < m_analysis.MetaData.Datasets.Count; datasetNum++)
             {
                 if (datasetNum != baselineDatasetID)
                 {
-
-                    DatasetInformation datasetInfo = m_analysis.MetaData.Datasets[datasetNum];
-
+                    DatasetInformation datasetInfo      = m_analysis.MetaData.Datasets[datasetNum];
                     UpdateStatus("Retrieving data from " + datasetInfo.DatasetName + " for alignment.");
                     List<clsUMC> features               = featureCache.FindByDatasetId(datasetNum);
                     classAlignmentData alignmentData    = null;
@@ -510,7 +536,8 @@ namespace MultiAlignCore.Algorithms
                         UpdateStatus("Aligning " + datasetInfo.DatasetName + " to mass tag database.");
                         alignmentData = aligner.AlignFeatures(analysis.MassTagDatabase,
                                                             features,
-                                                            analysis.AlignmentOptions[datasetNum]);
+                                                            analysis.AlignmentOptions[datasetNum],
+                                                            false);
                     }
 
                     // Drift time alignment.
@@ -701,15 +728,22 @@ namespace MultiAlignCore.Algorithms
                     {
                         
                         UpdateStatus("Peak matching with STAC");
+                        PNNLProteomics.SMART.classSMARTOptions smartOptions = new PNNLProteomics.SMART.classSMARTOptions();
+                        smartOptions.IsDataPaired           = m_analysis.STACOptions.IsDataPaired;
+                        smartOptions.MassTolerancePPM       = m_analysis.STACOptions.MassTolerancePPM;
+                        smartOptions.NETTolerance           = m_analysis.STACOptions.NETTolerance;
+                        smartOptions.PairedMass             = m_analysis.STACOptions.PairedMass;
+                        smartOptions.UsePriorProbabilities  = m_analysis.STACOptions.UsePriorProbabilities;                        
+
                         m_analysis.STACResults = peakMatcher.PerformSTAC(clusters,
                                                                             m_analysis.MassTagDatabase,
-                                                                            m_analysis.STACOptions);
+                                                                            smartOptions);
 
                         List<FeatureMatchLight<UMCClusterLight, MassTagLight>> matches = peakMatcher.ConvertSTACResultsToPeakResults( m_analysis.STACResults,
                                                                                                                           m_analysis.MassTagDatabase,
-                                                                                                                          clusters);   
-                     
+                                                                                                                          clusters);
 
+                        m_analysis.PeakMatchingResults = matches;
                     }
                     else
                     {
@@ -754,6 +788,143 @@ namespace MultiAlignCore.Algorithms
                     }
                 }
             }
+        }
+        #endregion
+
+        #region Feature Extraction
+        /// <summary>
+        /// Extracts the clusters with MS/MS spectra and reports them.
+        /// </summary
+        /// <param name="providers"></param>
+        /// <param name="datasets"></param>
+        public void ExtractMSMS(FeatureDataAccessProviders providers,
+                                List<DatasetInformation> datasets)
+        {
+            UpdateStatus("Producing feature traceback data structures.");
+            UpdateStatus("Extracting Clusters from database.");            
+            List<clsCluster> clusters               = providers.ClusterCache.FindAll();
+            Dictionary<int, clsCluster> clusterMap  = new Dictionary<int, clsCluster>();
+            Dictionary<int, List<FeatureExtractionMap>> clusterFeatureMap = new Dictionary<int,List<FeatureExtractionMap>>();
+            foreach (clsCluster cluster in clusters)
+            {                
+                clusterMap.Add(cluster.Id, cluster);
+                clusterFeatureMap.Add(cluster.Id, new List<FeatureExtractionMap>());
+            }
+
+            UpdateStatus("Mapping any matched mass tags to clusters.");
+            Dictionary<int, List<ClusterToMassTagMap>> clusterMatches = new Dictionary<int, List<ClusterToMassTagMap>>();
+            Dictionary<int, MassTagLight> massTagsMap                    = new Dictionary<int, MassTagLight>();
+
+            List<ClusterToMassTagMap> matches = providers.MassTagMatches.FindAll();
+            foreach (ClusterToMassTagMap map in matches)
+            {
+                if (!clusterMatches.ContainsKey(map.ClusterId))
+                {
+                    clusterMatches.Add(map.ClusterId, new List<ClusterToMassTagMap>());
+                }
+                clusterMatches[map.ClusterId].Add(map);                
+            }
+
+            UpdateStatus("Finding all mass tags used in analysis.");
+            List<MassTagLight> tags = providers.MassTags.FindAll();
+            foreach (MassTagLight tag in tags)
+            {
+                massTagsMap.Add(tag.ID, tag);
+            }
+
+            UpdateStatus("Extracting data from each dataset.");
+            foreach (DatasetInformation dataset in datasets)
+            {
+                int datasetID = dataset.DatasetId;
+
+                UpdateStatus(string.Format("Mapping data from dataset {0} with id {1}", dataset.DatasetName, dataset.DatasetId));
+
+                UpdateStatus("Exctracting LC-MS to MS Feature Map");
+                Dictionary<int, int> msFeatureIDToLCMSFeatureID = new Dictionary<int, int>();
+
+                List<MSFeatureToLCMSFeatureMap> msToLcmsFeatureMaps = providers.MSFeatureToLCMSFeatureCache.FindByDatasetId(datasetID);
+                foreach (MSFeatureToLCMSFeatureMap map in msToLcmsFeatureMaps)
+                {
+                    msFeatureIDToLCMSFeatureID.Add(map.MSFeatureID, map.LCMSFeatureID);
+                }
+
+                UpdateStatus("Extracting MS to MSn Feature Map");
+                List<MSFeatureToMSnFeatureMap> msnToMSFeatureMaps = providers.MSFeatureToMSnFeatureCache.FindByDatasetId(datasetID);
+                Dictionary<int, int> msFeatureIDToMsMsFeatureID = new Dictionary<int, int>();
+                foreach (MSFeatureToMSnFeatureMap map in msnToMSFeatureMaps)
+                {
+                    msFeatureIDToMsMsFeatureID.Add(map.MSFeatureID, map.MSMSFeatureID);
+                }
+
+                UpdateStatus("Extracting MSn Features");
+                Dictionary<int, MSSpectra> msMsFeatureIDToSpectrum = new Dictionary<int, MSSpectra>();
+                List<MSSpectra> msnSpectra               = providers.MSnFeatureCache.FindByDatasetId(datasetID);
+                foreach (MSSpectra spectrum in msnSpectra)
+                {
+                    msMsFeatureIDToSpectrum.Add(spectrum.ID, spectrum);
+                }
+
+                UpdateStatus("Extracting LC-MS Features");
+                List<clsUMC> lcmsFeatures = providers.FeatureCache.FindByDatasetId(datasetID);
+                Dictionary<int, clsUMC> lcmsFeatureIDToFeature = new Dictionary<int, clsUMC>();
+                foreach (clsUMC umc in lcmsFeatures)
+                {
+                    lcmsFeatureIDToFeature.Add(umc.Id, umc);
+                }
+
+                UpdateStatus("Extracting MS Features");
+                List<MSFeatureLight> msFeatures = providers.MSFeatureCache.FindByDatasetId(datasetID);
+                foreach (MSFeatureLight feature in msFeatures)
+                {
+                    /// only map things that have clusters.
+                    if (!msFeatureIDToMsMsFeatureID.ContainsKey(feature.ID))
+                        continue;
+
+                    if (!msFeatureIDToLCMSFeatureID.ContainsKey(feature.ID))
+                        continue;
+                        
+                    int msnID           = msFeatureIDToMsMsFeatureID[feature.ID];
+                    MSSpectra spectrum  = msMsFeatureIDToSpectrum[msnID];
+                    int featureID       = msFeatureIDToLCMSFeatureID[feature.ID];
+
+                    clsUMC umc          = lcmsFeatureIDToFeature[featureID];
+                    int clusterID       = umc.ClusterId;
+
+                    FeatureExtractionMap fex = new FeatureExtractionMap();
+
+                    fex.DatasetID           = datasetID;
+
+                    fex.MSnScan             = spectrum.Scan;
+                    fex.MSnRetentionTime    = spectrum.RetentionTime;
+                    fex.MSnPrecursorMz      = spectrum.PrecursorMZ;
+                    fex.MSnFeatureId        = spectrum.ID;
+                    fex.MSnDatasetID        = spectrum.GroupID;
+
+                    fex.MSCharge            = feature.ChargeState;
+                    fex.MSIntensity         = feature.Abundance;
+                    fex.MSFeatureId         = feature.ID;
+                    fex.MSMz                = feature.Mz;
+                    fex.MSScan              = feature.Scan;
+
+                    fex.LCMSAbundance = umc.AbundanceMax;
+                    fex.LCMSFeatureID = umc.Id;
+                    fex.LCMSMass = umc.MassCalibrated;
+                    fex.LCMSNet = umc.Net;
+                    fex.LCMSScan = umc.Scan;
+                                        
+                    clusterFeatureMap[clusterID].Add(fex);                    
+                }
+            }
+
+            if (FeaturesExtracted != null)
+            {
+                FeaturesExtractedEventArgs args = new FeaturesExtractedEventArgs(   clusterFeatureMap,
+                                                                                    clusterMap,
+                                                                                    massTagsMap,
+                                                                                    clusterMatches);
+
+                FeaturesExtracted(this, args);
+            }           
         }
         #endregion
 

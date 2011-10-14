@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Reflection;
@@ -19,6 +18,12 @@ using MultiAlignCore.IO.Reports;
 using MultiAlignCustomControls.Charting;
 using MultiAlignCustomControls.Drawing;
 using MultiAlignEngine.Features;
+using PNNLOmics.Data.Features;
+using MultiAlignCore.IO.Parameters;
+using MultiAlignCore;
+using MultiAlignCore.IO.Features;
+
+using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
 
 namespace MultiAlignConsole
@@ -140,6 +145,26 @@ namespace MultiAlignConsole
         /// Object that can generate an HTML report.
         /// </summary>
         private static AnalysisHTMLReport m_report;
+        /// <summary>
+        /// Cluster Exporters for writing cluster data.
+        /// </summary>
+        private static List<IFeatureClusterWriter> m_clusterExporters;
+        /// <summary>
+        /// Extract MSMS
+        /// </summary>
+        private static bool m_shouldExtractMSMS;
+        /// <summary>
+        /// Determines if we should export clusters or not.
+        /// </summary>
+        private static bool m_shouldExportClusters;
+        /// <summary>
+        /// Export Name
+        /// </summary>
+        private static string m_exportName;
+        /// <summary>
+        /// Path to the extraction map.
+        /// </summary>
+        private static string m_extractionPath;
         #endregion
         
         /// <summary>
@@ -163,6 +188,10 @@ namespace MultiAlignConsole
             m_report                = new AnalysisHTMLReport();
             m_report.ImageWidth     = PLOT_WIDTH_HTML;
             m_report.ImageHeight    = PLOT_HEIGHT_HTML;
+            m_shouldExtractMSMS     = false;
+            m_shouldExportClusters  = false;
+            m_exportName            = null;
+            m_clusterExporters      = new List<IFeatureClusterWriter>();
         }
 
         #region Plot Methods
@@ -182,21 +211,6 @@ namespace MultiAlignConsole
             {
                 PrintMessage(string.Format("Could not create {0} plot.", name));
             }
-        }
-        /// <summary>
-        /// Creates a cluster size histogram for unique datasets.
-        /// </summary>
-        static private void CreateClusterSizeHistogram(UmcDAOHibernate featureCache, int datasets)
-        {
-            //Dictionary<int, 
-            for (int i = 0; i < datasets; i++)
-            {
-                List<clsUMC> features = featureCache.FindByDatasetId(i);
-                foreach (clsUMC feature in features)
-                {
-
-                }
-            }            
         }
         /// <summary>
         /// Creates the final analysis plots
@@ -452,6 +466,22 @@ namespace MultiAlignConsole
             image.Save(path, System.Drawing.Imaging.ImageFormat.Png);
             m_report.PushImageColumn(Path.Combine("Plots", labelName));
 
+            
+            
+            if (e.AlignmentData.driftErrorHistogram != null)
+            {
+                options.Title           = "Drift Time Error Histogram " + name;
+                options.XAxisLabel      = "Drift Time Error (ms)";
+                image                   = RenderDatasetInfo.ErrorHistogram_Thumbnail(e.AlignmentData.driftErrorHistogram, options);
+                if (image != null)
+                {
+                    labelName   = Path.GetFileNameWithoutExtension(name) + "_driftTimeErrorHistogram.png";
+                    path        = Path.Combine(m_plotSavePath, labelName);
+                    image.Save(path, System.Drawing.Imaging.ImageFormat.Png);
+                    m_report.PushImageColumn(Path.Combine("Plots", labelName));
+                }
+            }
+
             options.DisplayLegend   = true;
             options.Title           = "Mass vs. Scan Residuals" + name;
             image                   = RenderDatasetInfo.MassVsScanResiduals_Thumbnail(e.AlignmentData.ResidualData, options);
@@ -531,13 +561,14 @@ namespace MultiAlignConsole
         /// <returns></returns>
         private static bool ValidateSetup()
         {
-            bool validated = true;
-            if (m_inputPaths == null)
+            
+            bool validated              = true;
+            if (m_inputPaths == null && !m_shouldExtractMSMS)
             {
                 PrintMessage("No input file provided.");
                 validated = false;
             }
-            if (m_parameterFile == null)
+            if (m_parameterFile == null && !m_shouldExtractMSMS)
             {
                 PrintMessage("No parameter file specified.");
                 validated = false;
@@ -608,6 +639,14 @@ namespace MultiAlignConsole
                         case "-help":
                             m_showHelp      = true;
                             break;
+                        case "-extractmsms":
+                            m_shouldExtractMSMS = true;
+                            m_extractionPath    = values[0];
+                            break;
+                        case "-exportClusters":
+                            m_shouldExportClusters  = true;
+                            m_exportName            = values[0];
+                            break;
                         case "-plots":
                             m_createPlots   = true;
                             if (values.Count > 0)
@@ -625,8 +664,7 @@ namespace MultiAlignConsole
                 {
                     PrintMessage(string.Format("You did not provide enough information for the option {0}", option));
                     return;
-                }
-                
+                }                
             }
         }
         #endregion
@@ -662,12 +700,25 @@ namespace MultiAlignConsole
         /// Prints a message to the console and log file.
         /// </summary>
         /// <param name="message"></param>
+        static void PrintSpacer()
+        {
+            System.Text.StringBuilder builder = new System.Text.StringBuilder();            
+            for(int i = 0; i < 80; i++)
+            {
+                builder.Append("-");
+            }
+            PrintMessage(builder.ToString(), false);
+        }
+        /// <summary>
+        /// Prints a message to the console and log file.
+        /// </summary>
+        /// <param name="message"></param>
         static void PrintMessage(string message, bool useMemory)
         {
             string newMessage = message;
             if (useMemory)
             {
-                newMessage = DateTime.Now.ToString() + " - " + GetMemory().ToString() + " MB - " + newMessage;
+                newMessage = DateTime.Now.ToString() + " - " + ApplicationUtility.GetMemory().ToString() + " MB - " + newMessage;
             }
             if (m_logPath != null)
             {
@@ -683,11 +734,48 @@ namespace MultiAlignConsole
             PrintMessage(" ", false);
             PrintMessage("usage: MultiAlignConsole [options]", false);
             PrintMessage(" ", false);
+            PrintMessage(" Input File Format Notes: ", false);
+            PrintMessage("    MS Feature Input Files -  MultiAlign needs a separate file to determine what deisotoped MS features or LCMS Features", false);
+            PrintMessage("                              to load.", false);
+            PrintMessage("                              You can use these file types:", false);
+            PrintMessage("                                  *LCMSFeatures.txt", false);
+            PrintMessage("                                  *_isos.csv", false);
+            PrintMessage("                      Single Dataset - (You must specify a database to align to and peak match with.)", false);
+            PrintMessage("                              [Files]", false);
+            PrintMessage("                              pathOfFile_isos.csv", false);
+            PrintMessage("                      Multiple Dataset - (If you don't specify a baseline database, you must specify a database to align to.)", false);
+            PrintMessage("                              [Files]", false);
+            PrintMessage("                              pathOfFile1_isos.csv", false);
+            PrintMessage("                              pathOfFile2_isos.csv", false);
+            PrintMessage("                      Specifying a baseline - This is done by placing an asterisk after one of the dataset names.", false);
+            PrintMessage("                      (NOTE: If you do not specify a baseline, a database must be used for alignment)", false);
+            PrintMessage("                              [Files]", false);
+            PrintMessage("                              pathOfFile1_isos.csv", false);
+            PrintMessage("                              pathOfFile2_isos.csv*", false);
+            PrintMessage("                      Specifying a baseline - This is done by placing an asterisk after one of the dataset names.", false);
+            PrintMessage("                              [Files]", false);
+            PrintMessage("                              pathOfFile1_isos.csv", false);
+            PrintMessage("                              pathOfFile2_isos.csv*", false);
+            PrintMessage("    MS/MS Data Linking - linking MS Features to MS/MS spectra can be done by specifying the RAW dataset files.", false);
+            PrintMessage("                         This currently only works for 32-bit (x86) versions and with Thermo Finnigan data files.", false);
+            PrintMessage("                         To use this feature, you must have matching dataset (MS Feature Input Files) file ", false);
+            PrintMessage("                         names (extension excluded).", false);
+            PrintMessage("                              [Raw]", false);
+            PrintMessage("                              pathOfFile1.Raw", false);
+            PrintMessage("    Peak Matching -   To perform peak matching to an Accurate Mass and Time Tag Database (AMT DB) you need to specify", false);
+            PrintMessage("                      the name of the database in the input file. ", false);
+            PrintMessage("                      To do this with a local Microsoft Access database use: ", false);
+            PrintMessage("                              [Database]", false);
+            PrintMessage("                              accessPath = pathOfDatabase.mdb", false);
+            PrintMessage("                      To use one of the Mass Tag System's (MTS) databases use: ", false);
+            PrintMessage("                              [Database]", false);
+            PrintMessage("                              database = nameOfDatabase", false);
+            PrintMessage("                              server   = serverDatabaseLivesOn", false);
             PrintMessage("[Options]", false);
             PrintMessage(" ", false);
             PrintMessage("   -files  inputFile.txt ", false);
             PrintMessage("          ASCII Text file with input file names.", false);
-            PrintMessage("          In list of files use asterik to indicate the baseline choice, e.g. 'dataset *'", false);
+            PrintMessage("          In list of files use asterik to indicate the baseline choice, e.g. 'dataset *'", false);            
             PrintMessage("   -name analysisName  ", false);
             PrintMessage("          Name to give analysis.", false);
             PrintMessage("   -log logPath.txt", false);
@@ -704,37 +792,90 @@ namespace MultiAlignConsole
             PrintMessage("          File directory of where to put MultiAlign output.  Can be relative or absolute.", false);
             PrintMessage("   -centroid      ", false);
             PrintMessage("          To use centroid distance as clustering algorithm.", false);
+            PrintMessage("   -exportClusters clusterFileName     ", false);
+            PrintMessage("          Exports clusters and their LC-MS features to the file name specified.  This file will be sent to the analysis path folder you specified.", false);
+            PrintMessage("   -extractMSMS      ", false);
+            PrintMessage("          Exctracts information about clusters that have tandem mass spectra.  Does not execute any further analysis.", false);
             PrintMessage("   -plots   [databaseName]  ", false);
-            PrintMessage("          Creates plots for final analysis.  If [databaseName] specified when not running analysis, this will create plots post-analysis.", false);
+            PrintMessage("          Creates plots for final analysis.  If [databaseName] specified when not running analysis, this will create plots post-analysis.", false);            
         }
         /// <summary>
         /// Prints the version of MA to the log file.
         /// </summary>
         public static void PrintVersion()
         {
-            PrintMessage("[VersionInfo]");
-            // get the version object for this assembly
-            Assembly assembly = Assembly.GetExecutingAssembly();
-            AssemblyName name = assembly.GetName();
-            Version version = name.Version;
-            PrintMessage(string.Format("{0} - version {1}", name, version));
+            PrintMessage("[Version Info]");
+            string assemblyData = ApplicationUtility.GetAssemblyData();
+            PrintMessage("\t" + assemblyData);
 
             AppDomain MyDomain = AppDomain.CurrentDomain;
             Assembly[] AssembliesLoaded = MyDomain.GetAssemblies();
 
-            PrintMessage("Loaded Assemblies");
+            PrintMessage("\tLoaded Assemblies");
             foreach (Assembly subAssembly in AssembliesLoaded)
             {
-                AssemblyName subName = subAssembly.GetName();
-                if (!subName.Equals(name))
-                {
-                    PrintMessage(string.Format("\t{0} - version {1}",
-                                                                    subName,
-                                                                    subName.Version));
-                }
+                AssemblyName subName = subAssembly.GetName();                
+                PrintMessage(string.Format("\t\t{0} - version {1}",
+                                                                subName,
+                                                                subName.Version));                
             }
-            PrintMessage("");
+
+            PrintMessage("[System Information]");
+            string systemData = ApplicationUtility.GetSystemData();
+            PrintMessage("\t" + systemData);            
             PrintMessage("[LogStart]");
+        }
+        /// <summary>
+        /// Writes the parameters to the log file and database.
+        /// </summary>
+        /// <param name="analysis"></param>
+        static void PrintParameters(MultiAlignAnalysis analysis)
+        {
+            PrintMessage("Parameters Loaded");
+            Dictionary<string, object> options = new Dictionary<string, object>();
+            options.Add("MS Linker Options", analysis.MSLinkerOptions);
+            options.Add("UMC Finding Options", analysis.UMCFindingOptions);
+            options.Add("Feature Filtering Options", analysis.FeatureFilterOptions);
+            options.Add("Mass Tag Database Options", analysis.MassTagDBOptions);
+            options.Add("Alignment Options", analysis.DefaultAlignmentOptions);
+            options.Add("Drift Time Alignment Options", analysis.DriftTimeAlignmentOptions);
+            options.Add("Cluster Options", analysis.ClusterOptions);
+            options.Add("Peak Matching Options", analysis.PeakMatchingOptions);
+            options.Add("STAC Options", analysis.STACOptions);
+
+            List<ParameterHibernateMapping> allmappings = new List<MultiAlignCore.IO.Parameters.ParameterHibernateMapping>();
+            foreach (string key in options.Keys)
+            {
+                object o = options[key];
+                PrintMessage(key, true);
+                List<string> parameters = ParameterUtility.ConvertParameterObjectToStrings(o);
+                foreach (string parameter in parameters)
+                {
+                    PrintMessage("\t" + parameter, true);
+                }
+
+                List<ParameterHibernateMapping> mappings = ParameterUtility.ExtractParameterMapObjects(o, key);
+                allmappings.AddRange(mappings);
+            }
+
+
+            ParameterHibernateMapping assemblyMap   = new ParameterHibernateMapping();
+            string assemblyData                     = ApplicationUtility.GetAssemblyData();
+            assemblyMap.OptionGroup                 = "Assembly Info";
+            assemblyMap.Parameter                   = "Version";
+            assemblyMap.Value                       = assemblyData;
+            allmappings.Add(assemblyMap);
+          
+            ParameterHibernateMapping systemMap = new ParameterHibernateMapping();
+            string systemData                   = ApplicationUtility.GetSystemData();
+            systemMap.OptionGroup               = "Assembly Info";
+            systemMap.Parameter                 = "System Info";
+            systemMap.Value                     = systemData;
+            allmappings.Add(systemMap);
+
+            PrintMessage("Writing parameters to the analysis database.");
+            GenericDAOHibernate<ParameterHibernateMapping> parameterCache = new GenericDAOHibernate<MultiAlignCore.IO.Parameters.ParameterHibernateMapping>();
+            parameterCache.AddAll(allmappings);
         }
         #endregion 
 
@@ -756,85 +897,6 @@ namespace MultiAlignConsole
         {
             PrintMessage(title);
         }
-        static void VerifyClusters(double netTolerance)
-        {
-            PrintMessage("Validating Database.");
-            PrintMessage("Loading clusters.");
-            UmcClusterDAOHibernate clusterCache = new UmcClusterDAOHibernate();
-            PrintMessage("Loading features.");
-            UmcDAOHibernate umcCache = new UmcDAOHibernate();
-
-            List<clsUMC> umcs = umcCache.FindAll();
-            List<clsCluster> clusters = clusterCache.FindAll();
-
-            Dictionary<int, List<clsUMC>> map = new Dictionary<int, List<clsUMC>>();
-
-
-            PrintMessage("Mapping features to clusters.");
-            foreach (clsUMC umc in umcs)
-            {
-                int key = umc.ClusterId;
-                bool contains = map.ContainsKey(key);
-                if (!contains)
-                {
-                    map.Add(key, new List<clsUMC>());
-                }
-                map[key].Add(umc);
-            }
-
-
-            PrintMessage("Validating all features clustered.");
-            if (map.ContainsKey(-1))
-            {
-                PrintMessage("Invalid cluster.  Cluster ID was -1.");
-                NHibernateUtil.Dispose();
-                throw new Exception("Invalid cluster.  The ID = -1. ");                
-            }
-
-            PrintMessage("Validating cluster IDs and NETs.");
-            foreach (clsCluster cluster in clusters)
-            {
-                bool contains = map.ContainsKey(cluster.Id);
-                if (!contains)
-                {
-                    PrintMessage("Validation Failed.");
-                    NHibernateUtil.Dispose();
-                    throw new Exception("Invalid cluster ID not matching to some features.");
-                }
-
-                List<clsUMC> features = map[cluster.Id];
-                if (features.Count != cluster.MemberCount)
-                {
-                    PrintMessage("Validation Failed.");
-                    NHibernateUtil.Dispose();
-                    throw new Exception("The ID's match for a cluster, but the member count does not.");
-                }
-                List<double> nets = new List<double>();
-                foreach (clsUMC feature in features)
-                {
-                    nets.Add(feature.Net);
-
-                    if (feature.ClusterId != cluster.Id)
-                    {
-                        PrintMessage("Validation Failed.");
-                        NHibernateUtil.Dispose();
-                        PrintMessage(string.Format("Cluster (ID = {0}) does not match the cluster ID stored in feature id {1}.", cluster.Id, feature.Id));
-                    }
-                }
-
-                // Find garbage NETS
-                nets.Sort();
-                for (int i = 0; i < nets.Count - 1; i++)
-                {
-                    double range = nets[i + 1] - nets[i];
-                    if (range > netTolerance)
-                    {
-                        PrintMessage(string.Format("Cluster's (ID = {0}) NET range is out of tolerance {1} > {2}.", cluster.Id, range, netTolerance));
-                    }
-                }
-            }
-            PrintMessage("Cluster Validation Passed.");
-        }
         /// <summary>
         /// Terminates the application when the analysis is complete.
         /// </summary>
@@ -842,11 +904,23 @@ namespace MultiAlignConsole
         /// <param name="e"></param>
         static void processor_AnalysisComplete(object sender, AnalysisCompleteEventArgs e)
         {
-
             PrintMessage("Saving dataset information to database.");
             DatasetDAOHibernate datasetDAOHibernate = new DatasetDAOHibernate();
             List<DatasetInformation> datasetList    = m_analysis.MetaData.Datasets;
             datasetDAOHibernate.AddAll(datasetList);
+
+
+            if (m_analysis.MassTagDatabase != null)
+            {
+                m_report.PushLargeText("Mass Tag Database Stats");                
+                m_report.PushStartTable();
+                m_report.PushStartTableRow();
+                string databaseTags = string.Format("Number Of Mass Tags Loaded {0}", m_analysis.MassTagDatabase.MassTags.Count);
+                m_report.PushData(databaseTags);
+                m_report.PushEndTableRow();
+                m_report.PushEndTable();
+            }
+
             m_report.PushEndHeader();
             m_triggerEvent.Set();
         }
@@ -866,6 +940,10 @@ namespace MultiAlignConsole
         /// <param name="e"></param>
         static void processor_FeaturesClustered(object sender, FeaturesClusteredEventArgs e)
         {
+            foreach (IFeatureClusterWriter writer in m_clusterExporters)
+            {
+                writer.WriteClusters(e.Clusters);
+            }
             PrintMessage("Features Clustered.");            
         }
         /// <summary>
@@ -894,21 +972,7 @@ namespace MultiAlignConsole
         static void processor_Status(object sender, AnalysisStatusEventArgs e)
         {
             PrintMessage(e.StatusMessage);
-        }
-        /// <summary>
-        /// Calculates the current usage of current processes memory.
-        /// </summary>
-        /// <returns>Memory usage of current process.</returns>
-        static long GetMemory()
-        {
-            Process process = Process.GetCurrentProcess();
-            long memory = process.WorkingSet64;
-            memory /= 1024;
-            memory /= 1024;
-            process.Dispose();
-
-            return memory;            
-        }
+        }        
         #endregion
 
         /// <summary>
@@ -948,51 +1012,159 @@ namespace MultiAlignConsole
         /// Creates data providers to the database of the analysis name and path provided.
         /// </summary>
         /// <returns></returns>
-        private static FeatureDataAccessProviders SetupDataProviders()
+        private static FeatureDataAccessProviders SetupDataProviders(bool createNewDatabase)
         {
-            string path = AnalysisPathUtils.BuildAnalysisName(m_analysisPath, m_analysisName);
-            return SetupDataProviders(path, true);
+            FeatureDataAccessProviders providers = null;
+            PrintMessage("Setting up data providers for caching and storage.");
+            try
+            {
+                string path = AnalysisPathUtils.BuildAnalysisName(m_analysisPath, m_analysisName);
+                providers   = SetupDataProviders(path, createNewDatabase);                   
+            }
+            catch (System.IO.IOException ex)
+            {
+                PrintMessage(ex.Message);
+                PrintMessage(ex.StackTrace);
+            }
+            return providers;
         }
+        /// <summary>
+        /// Cleans up the old database providers.
+        /// </summary>
         private static void CleanupDataProviders()
         {            
             NHibernateUtil.Dispose();
         }
         #endregion
         
-        /// <summary>
-        /// Processes the MA analysis data.
-        /// </summary>
-        /// <param name="args"></param>
-        /// 
-        static int StartMultiAlign()
+        #region Construction
+        private static void ConstructPlotPath()
         {
-            // Builds the list of algorithm providers.
-            AlgorithmBuilder builder                = new AlgorithmBuilder();
-            FeatureDataAccessProviders providers    = null;                   
-            
-            // See if the user wants help
-            if (m_showHelp)
+            PrintMessage("Creating Plot Thumbnail Path");
+            // set the plot save path.
+            m_plotSavePath = Path.Combine(m_analysisPath, THUMBNAIL_PATH);
+
+            // Find out where it's located.
+            if (!Directory.Exists(m_plotSavePath))
             {
-                PrintHelp();
-                return 0;
+                Directory.CreateDirectory(m_plotSavePath);
+            }
+        }        
+        /// <summary>
+        /// Creates the analysis processor and synchronizs the events.
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <param name="providers"></param>
+        /// <returns></returns>
+        private static MultiAlignAnalysisProcessor ConstructAnalysisProcessor(AlgorithmBuilder builder, FeatureDataAccessProviders providers)
+        {
+            MultiAlignAnalysisProcessor processor = new MultiAlignAnalysisProcessor();
+            processor.AnalysisError         += new EventHandler<AnalysisErrorEventArgs>(processor_AnalysisError);
+            processor.FeaturesAligned       += new EventHandler<FeaturesAlignedEventArgs>(processor_FeaturesAligned);
+            processor.FeaturesLoaded        += new EventHandler<FeaturesLoadedEventArgs>(processor_FeaturesLoaded);
+            processor.FeaturesClustered     += new EventHandler<FeaturesClusteredEventArgs>(processor_FeaturesClustered);
+            processor.FeaturesPeakMatched   += new EventHandler<FeaturesPeakMatchedEventArgs>(processor_FeaturesPeakMatched);
+            processor.AnalysisComplete      += new EventHandler<AnalysisCompleteEventArgs>(processor_AnalysisComplete);
+            processor.Status                += new EventHandler<AnalysisStatusEventArgs>(processor_Status);
+            processor.FeaturesExtracted     += new EventHandler<MultiAlignCore.Algorithms.MSLinker.FeaturesExtractedEventArgs>(processor_FeaturesExtracted);
+            m_dataProviders                 = providers;
+            processor.AlgorithmProvders     = builder.GetAlgorithmProvider();
+
+            return processor;
+        }
+
+        static void processor_FeaturesExtracted(object sender, MultiAlignCore.Algorithms.MSLinker.FeaturesExtractedEventArgs e)
+        {
+            m_extractionPath = Path.Combine(m_analysisPath, m_extractionPath);
+
+            FeatureExtractionTableWriter writer = new MultiAlignCore.IO.Features.FeatureExtractionTableWriter();
+            writer.WriteData(m_extractionPath, e);
+        }
+        /// <summary>
+        /// Sets up the analysis essentials including analysis path, log path, and prints the version and parameter information
+        /// to the log.
+        /// </summary>
+        private static void SetupAnalysisEssentials()
+        {
+            // Create the analysis path and log file paths.
+            ConstructAnalysisPath();
+            string dateSuffix = ConstructLogPath();
+
+            // Log the version information to the log.
+            PrintVersion();
+            PrintSpacer();
+
+            // Build Plot Path
+            m_plotSavePath = AnalysisPathUtils.BuildPlotPath(m_analysisPath);
+
+            // Build analysis name                  
+            bool containsExtensionDB3 = m_analysisName.EndsWith(".db3");
+            if (!containsExtensionDB3)
+            {
+                m_analysisName += ".db3";
             }
 
-            // Then validate the input.
-            bool validated  = ValidateSetup();
-            if (!validated)
+            // create application and analysis.
+            PrintMessage("Starting MultiAlign Console Application.");
+            PrintMessage("Creating analysis: ");
+            PrintMessage("\t" + m_analysisName);
+            PrintMessage("Storing analysis: ");
+            PrintMessage("\t" + Path.GetFullPath(m_analysisPath));
+            if (m_inputPaths != null && m_inputPaths.Length > 0)
             {
-                if (m_createPlots && m_databaseName != null)
-                {
-                    PrintVersion();
-                    CreatePlotsOffline(providers);
-                }
-                else
-                {
-                    PrintHelp();
-                }
-                return 0;
+                PrintMessage("Using Files:  ");
+                PrintMessage("\tFull Path: " + Path.GetFullPath(m_inputPaths));
+                PrintMessage("\tFile Name" + Path.GetFileName(m_inputPaths));
+            }
+            else
+            {
+                PrintMessage("No input files specified.");
             }
 
+            if (m_parameterFile != null)
+            {
+                PrintMessage("Using Parameters: ");
+                PrintMessage("\tFull Path: " + Path.GetFullPath(m_parameterFile));
+                PrintMessage("\tFile Name: " + Path.GetFileName(m_parameterFile));
+            }
+            else
+            {
+                PrintMessage("No parameter file specified.");
+            }
+        }
+        private static void ReadParameterFile()
+        {
+            // Setup the parameters.
+            PrintMessage("Loading parameters.");
+            // Make sure we have parameters!
+            if (!File.Exists(m_parameterFile))
+            {
+                PrintMessage("The parameter file does not exist.");
+                //return 1;
+            }
+            XMLParamterFileReader reader = new XMLParamterFileReader();
+            reader.ReadParameterFile(m_parameterFile, ref m_analysis);
+        }
+        private static string ConstructLogPath()
+        {
+            // Create the LOG FILE.
+            string dateSuffix = AnalysisPathUtils.BuildDateSuffix();
+            if (m_logPath == null)
+            {
+                m_logPath = AnalysisPathUtils.BuildLogPath(m_analysisPath,
+                                                            m_analysisName,
+                                                            dateSuffix);
+            }
+            else
+            {
+                m_logPath = Path.Combine(m_analysisPath,
+                                         m_logPath,
+                                         dateSuffix);
+            }
+            return dateSuffix;
+        }
+        private static void ConstructAnalysisPath()
+        {
             //Create the analysis directory.
             if (!Directory.Exists(m_analysisPath))
             {
@@ -1003,73 +1175,58 @@ namespace MultiAlignConsole
             {
                 PrintMessage("Analysis path " + m_analysisPath + " already exists.");
             }
-            
-            // Create the LOG FILE.
-            if (m_logPath == null)  m_logPath = AnalysisPathUtils.BuildLogPath(m_analysisPath, m_analysisName);            
-            else                    m_logPath = Path.Combine(m_analysisPath, m_logPath);
-
-
-            PrintVersion();
-            m_plotSavePath  = AnalysisPathUtils.BuildPlotPath(m_analysisPath);
-                                                            
-            bool containsExtensionDB3 = m_analysisName.EndsWith(".db3");
-            if (!containsExtensionDB3)
-            {
-                m_analysisName += ".db3";
-            }
-
-            // Setup algorithm providers.
-            if (m_options.ContainsKey("-centroid"))
-            {
-                PrintMessage("Building centroid clusterer");
-                builder.BuildClusterer(ClusteringAlgorithmType.Centroid);
-            }
-            else if(m_options.ContainsKey("-singlelinkage"))
-            {
-            
-                PrintMessage("Building single linkage clusterer");
-                builder.BuildClusterer(ClusteringAlgorithmType.SingleLinkage);
-            }
-            else
-            {
-                PrintMessage("Built average linkage clusterer.");                
-            }
-
-            // create application and analysis.
-            PrintMessage("Starting MultiAlign Console Application.");
-            PrintMessage("Creating analysis: "  + m_analysisName);
-            PrintMessage("Storing analysis: "   + Path.GetFullPath(m_analysisPath));
-            PrintMessage("Using Files:  "       + Path.GetFullPath(m_inputPaths));
-            PrintMessage("Using Parameters: "   + Path.GetFullPath(m_parameterFile));            
+        }
+        private static MultiAlignAnalysis ConstructAnalysisObject(InputAnalysisInfo analysisSetupInformation)
+        {
+            PrintMessage("Creating Analysis Objects.");
+            MultiAlignAnalysis analysis = new MultiAlignAnalysis();
+            analysis.MetaData.AnalysisPath = m_analysisPath;
+            analysis.MetaData.AnalysisName = m_analysisName;
+            analysis.UseMassTagDBAsBaseline = true;
+            analysis.MetaData.ParameterFile = m_parameterFile;
+            analysis.MetaData.InputFileDefinition = m_inputPaths;
+            analysis.MetaData.AnalysisSetupInfo = analysisSetupInformation;
+            return analysis;
+        }
+        private static bool ReadInputDefinitionFile(out InputAnalysisInfo analysisSetupInformation, out bool useMTDB)
+        {
             // Read the input datasets.
             if (!File.Exists(m_inputPaths))
             {
                 PrintMessage(string.Format("The input file {0} does not exist.", m_inputPaths));
-                return 1;
+                //return 1;
             }
-            // Make sure we have parameters!
-            if (!File.Exists(m_parameterFile))
+            else
             {
-                PrintMessage("The parameter file does not exist.");
-                return 1;
+                PrintMessage("Copying input file to output directory.");
+                try
+                {
+                    string dateSuffix   = AnalysisPathUtils.BuildDateSuffix();
+                    string newPath      = Path.GetFileNameWithoutExtension(m_inputPaths);
+                    newPath             = newPath + "_" + dateSuffix + ".txt";
+                    File.Copy(m_inputPaths, Path.Combine(m_analysisPath, newPath));
+                }
+                catch (Exception ex)
+                {
+                    PrintMessage("Could not copy the input file to the output directory.  " + ex.Message);
+                }
             }
 
             PrintMessage("Parsing Input Filenames and Databases.");
-            InputAnalysisInfo analysisSetupInformation = null;
-
+            useMTDB = false;
+            analysisSetupInformation = null;
             try
             {
                 analysisSetupInformation = MultiAlignFileInputReader.ReadInputFile(m_inputPaths);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 PrintMessage("The input file had some bad lines in it.  " + ex.Message);
-                return 1;
+                return false;
             }
             PrintMessage("Found " + analysisSetupInformation.Files.Count.ToString() + " files.");
-            
-            // Validate the mass tag database settings.            
-            bool useMTDB = false;
+
+            // Validate the mass tag database settings.
             try
             {
                 useMTDB = analysisSetupInformation.Database.ValidateDatabaseType();
@@ -1077,65 +1234,49 @@ namespace MultiAlignConsole
             catch (AnalysisMTDBSetupException ex)
             {
                 PrintMessage("There was a problem with the mass tag database specification.  " + ex.Message);
-                return 1;
+                return false;
             }
-
-
-            PrintMessage("Creating Analysis Objects.");
-            MultiAlignAnalysis analysis             = new MultiAlignAnalysis();
-            analysis.MetaData.AnalysisPath          = m_analysisPath;
-            analysis.MetaData.AnalysisName          = m_analysisName;
-            analysis.UseMassTagDBAsBaseline         = true;
-            analysis.MetaData.ParameterFile         = m_parameterFile;
-            analysis.MetaData.InputFileDefinition   = m_inputPaths;        
-            analysis.MetaData.AnalysisSetupInfo     = analysisSetupInformation;
-            m_analysis                              = analysis;
-            MultiAlignAnalysisProcessor processor   = new MultiAlignAnalysisProcessor();
-
-            PrintMessage("Creating Plot Thumbnail Path");
-            // set the plot save path.
-            m_plotSavePath = Path.Combine(m_analysisPath, THUMBNAIL_PATH);
-
-            // Find out where it's located.
-            if (!Directory.Exists(m_plotSavePath))
-            {
-                Directory.CreateDirectory(m_plotSavePath);
-            }
-
-            // Use this to signal when the analysis is done.  We are using a asnychronous call here.
-            m_triggerEvent   = new ManualResetEvent(false);
-            m_errorEvent     = new ManualResetEvent(false);
-            m_errorException = null;
-
-            // Setup the parameters.
-            PrintMessage("Loading parameters.");
-            XMLParamterFileReader reader = new XMLParamterFileReader();
-            reader.ReadParameterFile(m_parameterFile, ref m_analysis);            
-            
+            return true;
+        }
+        private static void ExportParameterFile()
+        {
+            // Output the settings to INI for viewing.
+            string outParamName = Path.GetFileNameWithoutExtension(m_parameterFile);
+            string outParamPath = Path.Combine(m_analysisPath, outParamName);
+            XMLParameterFileWriter xmlWriter = new XMLParameterFileWriter();
+            xmlWriter.WriteParameterFile(outParamPath + ".xml", m_analysis);
+        }
+        /// <summary>
+        /// Constructs the baseline databases.
+        /// </summary>
+        /// <param name="analysisSetupInformation"></param>
+        /// <param name="useMTDB"></param>
+        private static bool ConstructBaselines(InputAnalysisInfo analysisSetupInformation, bool useMTDB)
+        {
             if (useMTDB)
             {
                 switch (analysisSetupInformation.Database.DatabaseFormat)
                 {
                     case MassTagDatabaseFormat.Access:
-                        PrintMessage(string.Format("Using local Mass Tag Database at location: {0}",
-                                                    analysisSetupInformation.Database.LocalPath));
+                        PrintMessage("Using local Mass Tag Database at location: ");
+                        PrintMessage(string.Format("\tFull Path: {0}", analysisSetupInformation.Database.LocalPath));
+                        PrintMessage(string.Format("\tDatabase Name: {0}", Path.GetFileName(analysisSetupInformation.Database.LocalPath)));
 
-                        m_analysis.MassTagDBOptions.mstr_databaseFilePath   = analysisSetupInformation.Database.LocalPath;
-                        m_analysis.MassTagDBOptions.mstrServer              = analysisSetupInformation.Database.DatabaseServer;
-                        m_analysis.MassTagDBOptions.menm_databaseType       = MultiAlignEngine.MassTags.MassTagDatabaseType.ACCESS;
-
+                        m_analysis.MassTagDBOptions.mstr_databaseFilePath = analysisSetupInformation.Database.LocalPath;
+                        m_analysis.MassTagDBOptions.mstrServer = analysisSetupInformation.Database.DatabaseServer;
+                        m_analysis.MassTagDBOptions.menm_databaseType = MultiAlignEngine.MassTags.MassTagDatabaseType.ACCESS;
                         break;
-                    case MassTagDatabaseFormat.SQL:
-                        PrintMessage(string.Format("Using Mass Tag Database {0} on server: {1} ",
-                                                    analysisSetupInformation.Database.DatabaseName,
-                                                    analysisSetupInformation.Database.DatabaseServer));
-                        m_analysis.MassTagDBOptions.mstrDatabase        = analysisSetupInformation.Database.DatabaseName;
-                        m_analysis.MassTagDBOptions.mstrServer          = analysisSetupInformation.Database.DatabaseServer;
-                        m_analysis.MassTagDBOptions.menm_databaseType   = MultiAlignEngine.MassTags.MassTagDatabaseType.SQL;
 
+                    case MassTagDatabaseFormat.SQL:
+                        PrintMessage("Using Mass Tag Database:");
+                        PrintMessage(string.Format("\tServer:        {0}", analysisSetupInformation.Database.DatabaseServer));
+                        PrintMessage(string.Format("\tDatabase Name: {0}", analysisSetupInformation.Database.DatabaseName));
+                        m_analysis.MassTagDBOptions.mstrDatabase = analysisSetupInformation.Database.DatabaseName;
+                        m_analysis.MassTagDBOptions.mstrServer = analysisSetupInformation.Database.DatabaseServer;
+                        m_analysis.MassTagDBOptions.menm_databaseType = MultiAlignEngine.MassTags.MassTagDatabaseType.SQL;
                         break;
                 }
-                                            
+
                 // Validate the baseline
                 if (analysisSetupInformation.BaselineFile == null)
                 {
@@ -1144,9 +1285,9 @@ namespace MultiAlignConsole
                 }
                 else
                 {
-                    m_analysis.UseMassTagDBAsBaseline   = false;                    
-                    string baselineDataset              = Path.GetFileName(analysisSetupInformation.BaselineFile.Path);
-                    m_analysis.BaselineDatasetName      = baselineDataset;
+                    m_analysis.UseMassTagDBAsBaseline = false;
+                    string baselineDataset = Path.GetFileName(analysisSetupInformation.BaselineFile.Path);
+                    m_analysis.BaselineDatasetName = baselineDataset;
                     PrintMessage(string.Format("Using dataset {0} as the alignment baseline.", baselineDataset));
                 }
             }
@@ -1158,78 +1299,247 @@ namespace MultiAlignConsole
                 if (analysisSetupInformation.BaselineFile == null)
                 {
                     PrintMessage("No baseline dataset or database was selected.");
-                    return 1;
+                    return false;
                 }
-
-                string baselineDataset = Path.GetFileName(analysisSetupInformation.BaselineFile.Path);
-                m_analysis.BaselineDatasetName = baselineDataset;
-                PrintMessage(string.Format("Using dataset {0} as the alignment baseline.", baselineDataset));
+                else
+                {
+                    string baselineDataset = Path.GetFileName(analysisSetupInformation.BaselineFile.Path);
+                    m_analysis.BaselineDatasetName = baselineDataset;
+                    PrintMessage(string.Format("Using dataset {0} as the alignment baseline.", baselineDataset));
+                }
             }
-
-            // Output the settings to INI for viewing.
-            string outParamName                 = Path.GetFileNameWithoutExtension(m_parameterFile);
-            string outParamPath                 = Path.Combine(m_analysisPath, outParamName);            
-            XMLParameterFileWriter xmlWriter    = new XMLParameterFileWriter();                
-            xmlWriter.WriteParameterFile(outParamPath + ".xml", m_analysis);     
-
+            return true;
+        }
+        private static void ConstructDatasetInformation(InputAnalysisInfo analysisSetupInformation, MultiAlignAnalysis analysis)
+        {
             // Create dataset information.
             int i = 0;
             PrintMessage("Creating dataset and other input information.");
-
             foreach (InputFile file in analysisSetupInformation.Files)
             {
-                switch(file.FileType)
+                switch (file.FileType)
                 {
                     case InputFileType.Features:
-                        DatasetInformation datasetInfo  = new DatasetInformation();
-                        datasetInfo.Path                = file.Path;
-                        datasetInfo.DatasetId           = i++;                        
-                        datasetInfo.DatasetName         = Path.GetFileName(file.Path);
-                        datasetInfo.JobId               = "";
-                        datasetInfo.mstrResultsFolder   = Path.GetDirectoryName(file.Path);
-                        datasetInfo.ParameterFileName   = "";
-                        datasetInfo.Selected            = true;
-                        PrintMessage("Created dataset information for " + file.Path);
+                        DatasetInformation datasetInfo = new DatasetInformation();
+                        datasetInfo.Path = file.Path;
+                        datasetInfo.DatasetId = i++;
+                        datasetInfo.DatasetName = Path.GetFileName(file.Path);
+                        datasetInfo.JobId = "";
+                        datasetInfo.mstrResultsFolder = Path.GetDirectoryName(file.Path);
+                        datasetInfo.ParameterFileName = "";
+                        datasetInfo.Selected = true;
+                        PrintMessage("\tDataset Information:   " + file.Path);
                         analysis.MetaData.Datasets.Add(datasetInfo);
                         break;
-                    case InputFileType.Scans:                        
+                    case InputFileType.Scans:
                         analysis.MetaData.OtherFiles.Add(file);
-                        PrintMessage("Created scan level information for " + file.Path);
+                        PrintMessage("\tScan File Information: " + file.Path);
                         break;
                     case InputFileType.Raw:
                         analysis.MetaData.OtherFiles.Add(file);
-                        PrintMessage("Created raw level information for " + file.Path);
+                        PrintMessage("\tRaw Data Information:  " + file.Path);
                         break;
-                }               
+                }
+            }
+        }
+        /// <summary>
+        /// Determine what exporting features need to be had.
+        /// </summary>
+        private static void ConstructExporting()
+        {
+            if (m_shouldExportClusters)
+            {                
+                if (m_exportName != null)
+                {                    
+                    m_clusterExporters.Add(new UMCClusterScanWriter(Path.Combine(m_analysisPath, m_exportName)));
+                }
+                else
+                {
+                    PrintMessage("The cluster export file path was not specified");
+                }
+            }
+        }
+        /// <summary>
+        /// Create the clustering algorithms.
+        /// </summary>
+        /// <param name="builder"></param>
+        private static void ConstructClustering(AlgorithmBuilder builder)
+        {
+            // Setup algorithm providers.
+            if (m_options.ContainsKey("-centroid"))
+            {
+                PrintMessage("Building centroid clusterer");
+                builder.BuildClusterer(ClusteringAlgorithmType.Centroid);
+            }
+            else if (m_options.ContainsKey("-singlelinkage"))
+            {
+
+                PrintMessage("Building single linkage clusterer");
+                builder.BuildClusterer(ClusteringAlgorithmType.SingleLinkage);
+            }
+            else
+            {
+                PrintMessage("Built average linkage clusterer.");
+            }
+        }
+        #endregion
+
+        /// <summary>
+        /// Processes the MA analysis data.
+        /// </summary>
+        /// <param name="args"></param>
+        /// 
+        static int StartMultiAlign()
+        {
+            /// /////////////////////////////////////////////////////////////
+            /// Setup essential objects
+            /// /////////////////////////////////////////////////////////////
+            // Builds the list of algorithm providers.
+            AlgorithmBuilder builder                = new AlgorithmBuilder();
+            FeatureDataAccessProviders providers    = null;
+            MultiAlignAnalysisProcessor processor   = null;            
+
+            // Use this to signal when the analysis is done.              
+            m_triggerEvent                          = new ManualResetEvent(false);
+            m_errorEvent                            = new ManualResetEvent(false);
+            m_errorException                        = null;
+
+            /// /////////////////////////////////////////////////////////////
+            /// Print Help
+            /// /////////////////////////////////////////////////////////////
+            // See if the user wants help
+            if (m_showHelp)
+            {
+                PrintHelp();
+                m_errorEvent.Dispose();
+                m_triggerEvent.Dispose();
+                return 0;
             }
 
-            processor.AnalysisError         += new EventHandler<AnalysisErrorEventArgs>(processor_AnalysisError);
-            processor.FeaturesAligned       += new EventHandler<FeaturesAlignedEventArgs>(processor_FeaturesAligned);
-            processor.FeaturesLoaded        += new EventHandler<FeaturesLoadedEventArgs>(processor_FeaturesLoaded);
-            processor.FeaturesClustered     += new EventHandler<FeaturesClusteredEventArgs>(processor_FeaturesClustered);
-            processor.FeaturesPeakMatched   += new EventHandler<FeaturesPeakMatchedEventArgs>(processor_FeaturesPeakMatched);
-            processor.AnalysisComplete      += new EventHandler<AnalysisCompleteEventArgs>(processor_AnalysisComplete);
-            processor.Status                += new EventHandler<AnalysisStatusEventArgs>(processor_Status);
-
-            PrintMessage("Setting up data providers for caching and storage.");            
-            try
+            /// /////////////////////////////////////////////////////////////
+            /// Validate the command line
+            /// /////////////////////////////////////////////////////////////            
+            bool validated  = ValidateSetup();
+            if (!validated)
             {
-                providers = SetupDataProviders();
+                if (m_createPlots && m_databaseName != null)
+                {
+                    PrintVersion();
+                    PrintSpacer();
+                    CreatePlotsOffline(providers);
+                }
+                else
+                {
+                    PrintHelp();
+                }
+                return 0;
             }
-            catch(System.IO.IOException ex)
+            
+            /// /////////////////////////////////////////////////////////////
+            /// Setup log path, analysis path, and print version to log file.            
+            /// /////////////////////////////////////////////////////////////                        
+            SetupAnalysisEssentials();                                           
+            InputAnalysisInfo analysisSetupInformation  = null;
+            
+            
+            /// /////////////////////////////////////////////////////////////
+            /// Determine if we have specified a valid database to extract
+            /// data from or to re-start an analysis.
+            /// /////////////////////////////////////////////////////////////    
+            bool shouldCreateNewDatabase = true;
+            if (m_shouldExtractMSMS)
             {
-                PrintMessage(ex.Message);
-                PrintMessage(ex.StackTrace);
+                bool databaseExists = File.Exists(Path.Combine(m_analysisPath, m_analysisName));
+                if (!databaseExists && m_shouldExtractMSMS)
+                {
+                    PrintMessage("The database you specified to extract data from does not exist.");
+                    return 1;
+                }
+                shouldCreateNewDatabase = false;
+            }
+                
+            /// /////////////////////////////////////////////////////////////
+            /// Setup the data providers to the cache
+            /// /////////////////////////////////////////////////////////////                        
+            providers = SetupDataProviders(shouldCreateNewDatabase);
+            if (providers == null)
+            {
                 return 1;
             }
 
-            analysis.DataProviders      = providers;
-            m_dataProviders             = providers;
-            processor.AlgorithmProvders = builder.GetAlgorithmProvider();
+            if (m_shouldExtractMSMS)
+            {                                
+                if (providers != null)
+                {
+                    // Find all the datasets 
+                    List<DatasetInformation> datasets = providers.DatasetCache.FindAll();
+                    if (datasets == null || datasets.Count == 0)
+                    {
+                        PrintMessage("There are no datasets present in the current database.");
+                        CleanupDataProviders();
+                        return 1;
+                    }
 
+                    // Then extract the data.
+                    processor = ConstructAnalysisProcessor(builder, providers);
+                    if (processor != null)
+                    {                        
+                        processor.ExtractMSMS(providers, datasets);
+                    }
+                }
+                CleanupDataProviders();
+                return 0;
+            }
+            
+            /// /////////////////////////////////////////////////////////////            
+            /// Read the input files.
+            /// /////////////////////////////////////////////////////////////                                    
+            bool useMTDB                                = false;            
+            bool isInputFileOk = ReadInputDefinitionFile(out analysisSetupInformation, out useMTDB);
+            if (!isInputFileOk)
+                return 1;
+
+            /// /////////////////////////////////////////////////////////////
+            /// Create the clustering, analysis, and plotting paths.
+            /// /////////////////////////////////////////////////////////////                                    
+            ConstructClustering(builder);
+            ConstructExporting();
+            m_analysis  = ConstructAnalysisObject(analysisSetupInformation);
+            ConstructPlotPath();
+
+            /// /////////////////////////////////////////////////////////////
+            /// Read the parameter files.
+            /// /////////////////////////////////////////////////////////////            
+            // Parameter files and baseline setup 
+            ReadParameterFile();
+            bool isBaselineSpecified = ConstructBaselines(analysisSetupInformation, useMTDB);
+            if (!isBaselineSpecified)
+            {
+                return 1;
+            }
+            ExportParameterFile();
+
+            /// /////////////////////////////////////////////////////////////
+            /// Construct Dataset information
+            /// /////////////////////////////////////////////////////////////            
+            // Construct the dataset information for export.
+            ConstructDatasetInformation(analysisSetupInformation, m_analysis);
+            
+            PrintSpacer();
+            PrintParameters(m_analysis);
+            PrintSpacer();
+
+            /// /////////////////////////////////////////////////////////////
+            /// Setup the processor.
+            /// /////////////////////////////////////////////////////////////            
+            processor                = ConstructAnalysisProcessor(builder, providers);
+            m_analysis.DataProviders = providers;
+
+            /// /////////////////////////////////////////////////////////////
+            /// Start the analysis
+            /// /////////////////////////////////////////////////////////////            
             PrintMessage("Analysis Started.");    
-            processor.StartAnalysis(analysis);
-            // Wait for the analysis to complete.
+            processor.StartAnalysis(m_analysis);            
             int handleID = WaitHandle.WaitAny(new WaitHandle[] { m_triggerEvent , m_errorEvent});
 
             if (handleID == 1)
@@ -1238,6 +1548,10 @@ namespace MultiAlignConsole
                 return 1;
             }
 
+
+            /// /////////////////////////////////////////////////////////////
+            /// Finalize the analysis plots etc.
+            /// /////////////////////////////////////////////////////////////
             try
             {
                 CreateFinalAnalysisPlots(providers.FeatureCache, providers.ClusterCache);
@@ -1250,21 +1564,22 @@ namespace MultiAlignConsole
                 PrintMessage(ex.StackTrace);
             }
 
-            analysis.Dispose();
+            m_analysis.Dispose();
+            m_triggerEvent.Dispose();
+            m_errorEvent.Dispose();
             processor.Dispose();
             CleanupDataProviders();
-
             PrintMessage("Analysis Complete.");
             return 0;  
         }
-        
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="args"></param>
 		static int Main(string[] args)
 		{
-			IntPtr handle = Process.GetCurrentProcess().MainWindowHandle;
+			IntPtr handle = System.Diagnostics.Process.GetCurrentProcess().MainWindowHandle;
 			SetConsoleMode(handle, ENABLE_EXTENDED_FLAGS);
             ProcessCommandLineArguments(args);
             return StartMultiAlign();

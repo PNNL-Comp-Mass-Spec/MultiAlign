@@ -81,7 +81,13 @@ namespace MultiAlignCore.IO.Parameters
             LoadParameterOptions(analysis.AlignmentOptions,         metaData.OpenChild("DefaultAlignmentOptions"));
             LoadParameterOptions(analysis.ClusterOptions,           metaData.OpenChild("ClusterOptions"));
             LoadParameterOptions(analysis.PeakMatchingOptions,      metaData.OpenChild("PeakMatchingOptions"));
-            LoadParameterOptions(analysis.DefaultAlignmentOptions,  metaData.OpenChild("DefaultAlignmentOptions"));            
+            LoadParameterOptions(analysis.DefaultAlignmentOptions,  metaData.OpenChild("DefaultAlignmentOptions"));
+
+            if (analysis.DefaultAlignmentOptions.DriftTimeBinSize <= 0)
+            {
+                analysis.DefaultAlignmentOptions.DriftTimeBinSize = 1;
+            }
+
             LoadParameterOptions(analysis.MassTagDBOptions,         metaData.OpenChild("MassTagDBOptions"));
             LoadParameterOptions(analysis.UMCFindingOptions,        metaData.OpenChild("UMCFindingOptions"));
 
@@ -91,12 +97,25 @@ namespace MultiAlignCore.IO.Parameters
                 LoadParameterOptions(analysis.MSLinkerOptions, msOptions);
             }
 
+            msOptions = metaData.OpenChild("FeatureFilters", false);
+            if (msOptions != null)
+            {
+                LoadParameterOptions(analysis.FeatureFilterOptions, msOptions);
+            }
+
             MetaNode node = metaData.OpenChild("DriftTimeAlignmentOptions", false);
             if (node != null)
             {
                 LoadParameterOptions(analysis.DriftTimeAlignmentOptions, node);
             }            
             analysis.DefaultAlignmentOptions.MZBoundaries   = boundaries;
+
+
+            MetaNode stacNode = metaData.OpenChild("STACOptions", false);
+            if (stacNode != null)
+            {
+                LoadParameterOptions(analysis.STACOptions, stacNode);
+            }
         }
     }
 }

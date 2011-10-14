@@ -22,7 +22,7 @@ namespace MultiAlignCore.Algorithms.Alignment
         /// <param name="features">Features to align.</param>
         /// <param name="options">Options to use.</param>
         /// <returns>Synopsis of alignment information</returns>
-        classAlignmentData AlignFeatures(MassTagDatabase    database,           List<clsUMC> features,      clsAlignmentOptions options);
+        classAlignmentData AlignFeatures(MassTagDatabase    database,           List<clsUMC> features,      clsAlignmentOptions options, bool alignDriftTimes);
         /// <summary>
         /// Aligns a set of features to another set of features.
         /// </summary>

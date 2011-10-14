@@ -26,13 +26,13 @@ namespace MultiAlignCore.IO.Features
                                             IUmcDAO                 featureCache,
                                             IMSFeatureDAO           msFeatureCache,
                                             IGenericDAO<MSFeatureToLCMSFeatureMap> msFeatureMapCache,
-                                            clsUMCFindingOptions    options)
+                                            UMCFeatureFinderOptions options)
         {
             clsUMC[]        loadedFeatures  = null;
             IFeatureFinder  featureFinder   = new UMCFeatureFinder();
             int             umcIndex        = 0;
-            clsUMCCreator   umcFinder       = new clsUMCCreator();
-            umcFinder.UMCFindingOptions     = options; 
+            //clsUMCCreator   umcFinder       = new clsUMCCreator();
+            //umcFinder.UMCFindingOptions     = options; 
             string extension                = Path.GetExtension(dataset.Path).ToUpper();
             List<UMCLight> newFeatures      = null;
 
@@ -100,7 +100,7 @@ namespace MultiAlignCore.IO.Features
                             msFeatures = msFeatureCache.FindAll();
                         }
                         break;
-                    case ".CSV":                    
+                    case ".CSV":                  
                         MSFeatureLightFileReader reader             = new MSFeatureLightFileReader();
                         reader.Delimeter                            = ",";
                         IEnumerable<MSFeatureLight> newMsFeatures   = reader.ReadFile(dataset.Path);                        
@@ -117,18 +117,69 @@ namespace MultiAlignCore.IO.Features
 
 
                     newFeatures = new List<UMCLight>();
+
+                    // Needs a refactor.
+                    List<MSFeatureLight> filteredMSFeatures = new List<MSFeatureLight>();
+                    bool exclude = false;
                     foreach (MSFeatureLight msFeature in msFeatures)
                     {
+                        exclude = false;
+                        if (options.UseIsotopicFitFilter == true)
+                        {
+                            if (!options.IsIsotopicFitFilterInverted && msFeature.Score > options.IsotopicFitFilter)
+                            {
+                                exclude = true;
+                            }
+                            else if (options.IsIsotopicFitFilterInverted && msFeature.Score < options.IsotopicFitFilter)
+                            {
+                                exclude = true;
+                            }
+                        }
+
+                        if (options.UseIsotopicIntensityFilter)
+                        {
+                            if (msFeature.Abundance < options.IsotopicIntensityFilter)
+                            {
+                                exclude = true;
+                            }
+                        }
+
                         msFeature.GroupID = Convert.ToInt32(dataset.DatasetId);
+                        if (!exclude)
+                        {
+                            filteredMSFeatures.Add(msFeature);
+                        }
                     }
                     if (foundNewFeatures)
                     {
-                        msFeatureCache.AddAll(msFeatures);
+                        msFeatureCache.AddAll(filteredMSFeatures);
                     }
 
-                    newFeatures = featureFinder.FindFeatures(msFeatures, options);
+                    newFeatures = featureFinder.FindFeatures(filteredMSFeatures, options);
 
                 }
+
+                //clsUMCCreator   umcFinder       = new clsUMCCreator();
+                //umcFinder.UMCFindingOptions.AveMassWeight = options.AveMassWeight;
+                //umcFinder.UMCFindingOptions.ConstraintAveMass = options.ConstraintAveMass;
+                //umcFinder.UMCFindingOptions.ConstraintMonoMass = options.ConstraintMonoMass;
+                //umcFinder.UMCFindingOptions.FitWeight = options.FitWeight;
+                //umcFinder.UMCFindingOptions.IsIsotopicFitFilterInverted = options.IsIsotopicFitFilterInverted;
+                //umcFinder.UMCFindingOptions.IsotopicFitFilter = options.IsotopicFitFilter;
+                //umcFinder.UMCFindingOptions.IsotopicIntensityFilter = options.IsotopicIntensityFilter;
+                //umcFinder.UMCFindingOptions.MaxDistance = options.MaxDistance;
+                //umcFinder.UMCFindingOptions.MinUMCLength = options.MinUMCLength;
+                //umcFinder.UMCFindingOptions.MonoMassWeight = options.MonoMassWeight;
+                //umcFinder.UMCFindingOptions.NETWeight = options.NETWeight;
+                //umcFinder.UMCFindingOptions.ScanWeight = options.ScanWeight;
+                //umcFinder.UMCFindingOptions.UMCAbundanceReportingType = options.UMCAbundanceReportingType;
+                //umcFinder.UMCFindingOptions.UseIsotopicFitFilter = options.UseIsotopicFitFilter;
+                //umcFinder.UMCFindingOptions.UseIsotopicIntensityFilter = options.UseIsotopicIntensityFilter;
+                //umcFinder.UMCFindingOptions.UseNET = options.UseNET;
+
+                //umcFinder.FileName  = dataset.Path;
+                //umcFinder.LoadFindUMCsCSV();                                
+                //loadedFeatures      = umcFinder.GetUMCs();                
             }
                                                                        
             List<clsUMC> features = new List<clsUMC>();
@@ -143,6 +194,7 @@ namespace MultiAlignCore.IO.Features
                 // This should get deprecated on the next part of the refactor.
                 foreach (UMCLight feature in newFeatures)
                 {
+                   
                     clsUMC umc                  = new clsUMC();
                     umc.AbundanceMax            = feature.Abundance;
                     umc.AbundanceSum            = feature.AbundanceSum;
@@ -177,6 +229,7 @@ namespace MultiAlignCore.IO.Features
                     umc.DriftTime               = feature.DriftTime;
                     umc.Id                      = feature.ID;
                     umc.Mass                    = feature.MassMonoisotopic;
+                    umc.MassCalibrated          = feature.MassMonoisotopic;
                     umc.ChargeRepresentative    = Convert.ToInt16(feature.ChargeState);                    
                     umc.ConformationId          = 0;
 

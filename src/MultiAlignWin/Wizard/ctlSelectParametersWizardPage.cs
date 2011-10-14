@@ -496,10 +496,10 @@ namespace MultiAlignWin
         private void mbutton_scoring_Click(object sender, EventArgs e)
         {
             formPeptideIDScoring scoreForm  = new formPeptideIDScoring();                        
-            scoreForm.Options               = m_analysis.STACOptions;
+            //scoreForm.Options               = m_analysis.STACOptions;
             if (scoreForm.ShowDialog() == DialogResult.OK)
             {
-                m_analysis.STACOptions = scoreForm.Options;
+            //    m_analysis.STACOptions = scoreForm.Options;
             }   
         }
         #endregion

@@ -19,9 +19,10 @@ C:\development\Proteomics\MultiAlign\development\trunk\src\MultiAlignTestSuite\b
 C:\development\Proteomics\MultiAlign\development\trunk\src\MultiAlignTestSuite\obj\x64\Debug\MultiAlignTestSuite.exe
 C:\development\Proteomics\MultiAlign\development\trunk\src\MultiAlignTestSuite\obj\x64\Debug\MultiAlignTestSuite.pdb
 C:\development\Proteomics\MultiAlign\development\trunk\src\MultiAlignTestSuite\bin\x64\Debug\MultiAlignTestSuite.exe.config
-C:\development\Proteomics\MultiAlign\development\trunk\src\MultiAlignTestSuite\bin\x64\Debug\IO\Features\Hibernate\GenericDAOHibernate.cs
 C:\development\Proteomics\MultiAlign\development\trunk\src\MultiAlignTestSuite\bin\x64\Debug\MultiAlignCore.dll
 C:\development\Proteomics\MultiAlign\development\trunk\src\MultiAlignTestSuite\bin\x64\Debug\ThermoRawFileReaderDLL.dll
 C:\development\Proteomics\MultiAlign\development\trunk\src\MultiAlignTestSuite\bin\x64\Debug\MultiAlignCore.pdb
 C:\development\Proteomics\MultiAlign\development\trunk\src\MultiAlignTestSuite\bin\x64\Debug\ThermoRawFileReaderDLL.pdb
 C:\development\Proteomics\MultiAlign\development\trunk\src\MultiAlignTestSuite\bin\x64\Debug\ThermoRawFileReaderDLL.xml
+C:\development\Proteomics\MultiAlign\development\trunk\src\MultiAlignTestSuite\bin\x64\Debug\MSDataFileReader.dll
+C:\development\Proteomics\MultiAlign\development\trunk\src\MultiAlignTestSuite\bin\x64\Debug\MSDataFileReader.xml

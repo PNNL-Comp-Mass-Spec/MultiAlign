@@ -139,8 +139,8 @@ namespace MultiAlignEngine
 				double  mdouble_max_abundance; 
 				__int64	mlong_sum_abundance;
 				int		mint_spectral_count;
-				float	mfloat_drift_time;
-				float	mfloat_drift_time_uncorrected;
+				double	mfloat_drift_time;
+				double	mfloat_drift_time_uncorrected;
 				double	mdouble_averageInterferenceScore;
 				double	mdouble_averageDeconFitScore;
 				double	mdouble_conformationFitScore;

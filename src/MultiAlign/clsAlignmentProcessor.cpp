@@ -563,8 +563,9 @@ namespace MultiAlignEngine
 				mtFeature.mdouble_mono_mass						= massTag->mdblMonoMass; 
 				mtFeature.mdouble_mono_mass_calibrated			= massTag->mdblMonoMass; 
 				mtFeature.mdouble_mono_mass_original			= massTag->mdblMonoMass; 
-				mtFeature.mdouble_mz							= massTag->mdblMonoMass/2 + 1.00782; // assume a charge of 2. Not used anyways.
+				mtFeature.mdouble_mz							= massTag->mdblMonoMass/2 + 1.00782; // assume a` charge of 2. Not used anyways.
 				mtFeature.mdouble_net							= massTag->mdblAvgGANET; 
+				mtFeature.mdouble_driftTime						= massTag->DriftTime;
 				mtFeature.mint_id								= massTag->mintMassTagId; 
 				mtFeature.mint_conformerID						= massTag->mintConformerID;
 				vectMassTimeFeatures.push_back(mtFeature); 
@@ -859,23 +860,29 @@ namespace MultiAlignEngine
 			Arguments:  N/A
 			Returns:	void
 		////////////////////////////////////////////////////////////////////////////////*/
-		void clsAlignmentProcessor::GetErrorHistograms( double  massBin,
-														double  netBin, 
-														double (&massErrorHistogram) __gc[,], 
-														double (&netErrorHistogram) __gc[,])
+		void clsAlignmentProcessor::GetErrorHistograms(	double  massBin,
+														double  netBin,
+														double  driftBin,
+														double (&massErrorHistogram) __gc[,],
+														double (&netErrorHistogram)  __gc[,],
+														double (&driftErrorHistogram)  __gc[,])
 		{
-			std::vector<double> massErrorBin,  netErrorBin;
-			std::vector<int>	massErrorFreq, netErrorFreq;
+			std::vector<double> massErrorBin,  netErrorBin,   driftErrorBin;
+			std::vector<int>	massErrorFreq, netErrorFreq,  driftErrorFreq;
 
 			mobjLCMSWarp->GetErrorHistograms(		massBin,
 													netBin,
+													driftBin,
 													massErrorBin,
 													massErrorFreq,
 													netErrorBin,
-													netErrorFreq);
+													netErrorFreq,
+													driftErrorBin,
+													driftErrorFreq);
 
 			massErrorHistogram = new double __gc[massErrorBin.size(), 2]; 
 			netErrorHistogram  = new double __gc[netErrorBin.size(),  2]; 
+			driftErrorHistogram  = new double __gc[driftErrorBin.size(),  2]; 
 
 			for(std::vector<double>::size_type i = 0; i < massErrorBin.size(); i++)
 			{
@@ -887,6 +894,12 @@ namespace MultiAlignEngine
 			{
 				netErrorHistogram[i,0] = netErrorBin[i];
 				netErrorHistogram[i,1] = netErrorFreq[i];
+			}
+			
+			for(std::vector<double>::size_type i = 0; i < driftErrorBin.size(); i++)
+			{
+				driftErrorHistogram[i,0] = driftErrorBin[i];
+				driftErrorHistogram[i,1] = driftErrorFreq[i];
 			}
 		}
 		double clsAlignmentProcessor::GetMassStandardDeviation()

@@ -15,7 +15,7 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
     /// </summary>
     public class UMCFeatureFinder: IFeatureFinder
     {
-        private clsUMCFindingOptions    m_options;
+        private UMCFeatureFinderOptions m_options;
         private int                     m_minScan;
         private int                     m_maxScan;
         /// <summary>
@@ -29,7 +29,8 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
         /// <param name="msFeatures"></param>
         /// <param name="options"></param>
         /// <returns></returns>
-        public List<UMCLight> FindFeatures(List<MSFeatureLight> rawMsFeatures, clsUMCFindingOptions options)
+        public List<UMCLight> FindFeatures( List<MSFeatureLight>    rawMsFeatures, 
+                                            UMCFeatureFinderOptions options)
         {
             ClusterCentroidRepresentation centroidType  = ClusterCentroidRepresentation.Mean;                           
             List<UMCLight>       features               = null;           
@@ -54,7 +55,102 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
             features                                                            = finder.Cluster(rawMsFeatures);            
             
             // Remove the short UMC's.
-            features.RemoveAll(x => x.MSFeatures.Count < options.MinUMCLength);
+            features.RemoveAll(x => (x.ScanEnd - x.ScanStart + 1) < options.MinUMCLength);
+
+            bool split = false;
+
+            if (split)
+            {
+                Dictionary<UMCLight, List<UMCLight>> replacementFeatures = new Dictionary<UMCLight, List<UMCLight>>();
+
+                foreach (UMCLight feature in features)
+                {
+                    // Sort first by scan, so we can look at consecutive MS feature distances.
+                    feature.MSFeatures.Sort(
+                            delegate(MSFeatureLight x, MSFeatureLight y)
+                            {
+                                return (x.Scan.CompareTo(y.Scan));
+                            }
+                        );
+
+                    // Then calculate their respective deltas.
+                    List<double> deltas = new List<double>();
+                    for (int i = 1; i < feature.MSFeatures.Count; i++)
+                    {
+                        double delta = Convert.ToDouble(feature.MSFeatures[i].Scan - feature.MSFeatures[i - 1].Scan);
+                        deltas.Add(delta);
+                    }
+
+                    double average = deltas.Average(d => d);
+                    double sum = deltas.Sum(d => Math.Pow(d - average, 2));
+
+                    // Use Bessels' correction for the stdev by using sample pop's N - 1 divisor. 
+                    double std = Math.Sqrt(sum / (feature.MSFeatures.Count - 1));
+
+
+                    List<int> divisions = new List<int>();
+                    // Then we break up any features that are ill-behaived.
+                    // We use the rule of one stdev from the sample population, s.t. that std !~ to the mean.                
+                    if (std > average * 2)
+                    {
+                        for (int i = 0; i < deltas.Count; i++)
+                        {
+                            if (deltas[i] > std * 2)
+                            {
+                                divisions.Add(i + 1);
+                            }
+                        }
+
+                        // Divide the features up and move them.
+                        int j = 0;
+                        int N = feature.MSFeatures.Count;
+                        foreach (int i in divisions)
+                        {
+                            MSFeatureLight[] tempFeatures = new MSFeatureLight[i - j];
+                            feature.MSFeatures.CopyTo(j, tempFeatures, 0, i - j);
+                            j = i;
+
+                            UMCLight newFeature = new UMCLight();
+                            for (int k = 0; k < tempFeatures.Length; k++)
+                            {
+                                newFeature.AddChildFeature(tempFeatures[k]);
+                            }
+                            newFeature.CalculateStatistics(ClusterCentroidRepresentation.Mean);
+                            if (!replacementFeatures.ContainsKey(feature))
+                            {
+                                replacementFeatures.Add(feature, new List<UMCLight>());
+                            }
+                            replacementFeatures[feature].Add(newFeature);
+                        }
+                        if (N != j)
+                        {
+                            MSFeatureLight[] tempFeatures = new MSFeatureLight[N - j];
+                            feature.MSFeatures.CopyTo(j, tempFeatures, 0, N - j);
+
+                            UMCLight newFeature = new UMCLight();
+                            for (int k = 0; k < tempFeatures.Length; k++)
+                            {
+                                newFeature.AddChildFeature(tempFeatures[k]);
+                            }
+                            newFeature.CalculateStatistics(ClusterCentroidRepresentation.Mean);
+                            if (!replacementFeatures.ContainsKey(feature))
+                            {
+                                replacementFeatures.Add(feature, new List<UMCLight>());
+                            }
+                            replacementFeatures[feature].Add(newFeature);
+                        }
+                    }
+                }
+
+                // add the new features
+                foreach (UMCLight feature in replacementFeatures.Keys)
+                {
+                    features.Remove(feature);
+                    feature.MSFeatures.Clear();
+                    features.AddRange(replacementFeatures[feature]);
+                }
+            }
+
             int id = 0;
             foreach (UMCLight feature in features)
             {
@@ -74,6 +170,15 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
         protected bool WithinRange(MSFeatureLight x, MSFeatureLight  y)
         {
             double distance = WeightedNETDistanceFunction(x, y);
+
+            if (Math.Abs(x.Scan - y.Scan) > 6000)
+            {
+                if (distance < m_maxDistance)
+                {
+                    int xx = 0;
+                    xx++;
+                }
+            }
             return (distance < m_maxDistance);
         }
         /// <summary>
@@ -82,7 +187,7 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        protected double WeightedNETDistanceFunction(MSFeatureLight a, MSFeatureLight b)
+        public double WeightedNETDistanceFunction(MSFeatureLight a, MSFeatureLight b)
         {           
             if ((a.MassMonoisotopic - b.MassMonoisotopic) * m_options.MonoMassWeight > m_options.ConstraintMonoMass
                 || (a.MassMonoisotopicAverage - b.MassMonoisotopicAverage) * m_options.AveMassWeight > m_options.ConstraintAveMass)

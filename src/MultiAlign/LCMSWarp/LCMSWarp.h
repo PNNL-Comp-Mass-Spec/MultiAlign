@@ -282,12 +282,15 @@ namespace MultiAlignEngine
 
 			void CalculateAlignmentMatches();
 			/// Returns an array of mass and net error histogram values.
-			void GetErrorHistograms(double mass_bin,
-												 double net_bin, 
-												 vector<double> &mass_error_bin,
-												 vector<int> &mass_error_frequency,
-												 vector<double> &net_error_bin,
-												 vector<int> &net_error_frequency);
+			void GetErrorHistograms(			double mass_bin,
+												double net_bin, 
+												double drift_bin, 
+												vector<double> &mass_error_bin,
+												vector<int> &mass_error_frequency,
+												vector<double> &net_error_bin,
+												vector<int> &net_error_frequency,
+												vector<double> &drift_error_bin,
+												vector<int> &drift_error_frequency);
 
 			void SetFeatures(std::vector<MassTimeFeature> &vectFeatures)
 			{

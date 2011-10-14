@@ -36,16 +36,21 @@ namespace MultiAlignCore.IO.Features
             IUmcClusterDAO clusterCache                         = new UmcClusterDAOHibernate();
             IMSFeatureDAO msFeatureCache                        = new MSFeatureDAOHibernate();
             IMSnFeatureDAO msnFeatureCache                      = new MSnFeatureDAOHibernate();
-            IGenericDAO<MSFeatureToLCMSFeatureMap> msFeatureMap = new GenericDAOHibernate<MSFeatureToLCMSFeatureMap>();
-            IGenericDAO<MSFeatureToMSnFeatureMap> msnFeatureMap = new GenericDAOHibernate<MSFeatureToMSnFeatureMap>();
-
+            IMSFeatureToLCMSFeatureDAO  msFeatureMap            = new MSFeatureToLCMSFeatureDAO(); 
+            IMsnFeatureToMSFeatureDAO   msnFeatureMap           = new MSnFeatureToMSFeatureDAOHibernate(); 
+            IDatasetDAO                 datasetCache            = new DatasetDAOHibernate();
+            IMassTagDAO                 massTagCache            = new MassTagDAOHibernate();
+            IGenericDAO<ClusterToMassTagMap> massTagMatchCache  = new GenericDAOHibernate<ClusterToMassTagMap>();
             FeatureDataAccessProviders providers =
                                             new FeatureDataAccessProviders( featureCache, 
                                                                             clusterCache,
                                                                             msFeatureCache,
                                                                             msnFeatureCache,
                                                                             msFeatureMap,
-                                                                            msnFeatureMap);
+                                                                            msnFeatureMap,
+                                                                            datasetCache,
+                                                                            massTagMatchCache,
+                                                                            massTagCache);
 
             return providers;
         }

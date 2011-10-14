@@ -16,12 +16,15 @@ namespace MultiAlignCore.IO.Features
         /// <param name="msnFeatureCache">MS/MS Features</param>
         /// <param name="msFeatureMap">MS To LCMS Feature map</param>
         /// <param name="msnFeatureMap">MS to MSn Feature map</param>
-        public FeatureDataAccessProviders(  IUmcDAO         featureCache,
-                                            IUmcClusterDAO  clusterCache,
-                                            IMSFeatureDAO   msFeatureCache,
-                                            IMSnFeatureDAO  msnFeatureCache,
-                                            IGenericDAO<MSFeatureToLCMSFeatureMap> msFeatureMap,
-                                            IGenericDAO<MSFeatureToMSnFeatureMap>  msnFeatureMap
+        public FeatureDataAccessProviders(  IUmcDAO                     featureCache,
+                                            IUmcClusterDAO              clusterCache,
+                                            IMSFeatureDAO               msFeatureCache,
+                                            IMSnFeatureDAO              msnFeatureCache,
+                                            IMSFeatureToLCMSFeatureDAO  msFeatureMap,
+                                            IMsnFeatureToMSFeatureDAO   msnFeatureMap,
+                                            IDatasetDAO                 datasetCache,
+                                            IGenericDAO<ClusterToMassTagMap>    massTagMatches,
+                                            IMassTagDAO                         massTags
                                          )
         {
             ClusterCache                = clusterCache;
@@ -30,11 +33,30 @@ namespace MultiAlignCore.IO.Features
             MSnFeatureCache             = msnFeatureCache;
             MSFeatureToLCMSFeatureCache = msFeatureMap;
             MSFeatureToMSnFeatureCache  = msnFeatureMap;
+            DatasetCache                = datasetCache;
+            MassTagMatches              = massTagMatches;
+            MassTags                    = massTags;
         }
         /// <summary>
-        /// Gets or sets the interface to teh MS Feature to LCMS Feature map.
+        /// Gets or sets the mass tags loaded.
         /// </summary>
-        public IGenericDAO<MSFeatureToLCMSFeatureMap> MSFeatureToLCMSFeatureCache
+        public IMassTagDAO MassTags
+        {
+            get;
+            set;
+        }
+        /// <summary>
+        /// Gets or sets the cluster to mass tag matches.
+        /// </summary>
+        public IGenericDAO<ClusterToMassTagMap> MassTagMatches
+        {
+            get;
+            set;
+        }
+        /// <summary>
+        /// Gets or sets the cache where the datasets information are stored.
+        /// </summary>
+        public IDatasetDAO DatasetCache
         {
             get;
             set;
@@ -42,7 +64,15 @@ namespace MultiAlignCore.IO.Features
         /// <summary>
         /// Gets or sets the interface to teh MS Feature to LCMS Feature map.
         /// </summary>
-        public IGenericDAO<MSFeatureToMSnFeatureMap> MSFeatureToMSnFeatureCache
+        public IMSFeatureToLCMSFeatureDAO MSFeatureToLCMSFeatureCache
+        {
+            get;
+            set;
+        }
+        /// <summary>
+        /// Gets or sets the interface to teh MS Feature to LCMS Feature map.
+        /// </summary>
+        public IMsnFeatureToMSFeatureDAO MSFeatureToMSnFeatureCache
         {
             get;
             set;

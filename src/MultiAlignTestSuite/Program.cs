@@ -4,6 +4,7 @@ using System.IO;
 using MultiAlignTestSuite.IO;
 using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.Features.Hibernate;
+using MultiAlignTestSuite.Algorithms;
 
 namespace MultiAlignTestSuite
 {
@@ -49,6 +50,11 @@ namespace MultiAlignTestSuite
         /// <param name="args"></param>
 		static void Main(string[] args)
 		{
+            UMCFeatureFinding finding = new UMCFeatureFinding();
+            finding.Test();
+
+
+            return;
 
             try
             {                

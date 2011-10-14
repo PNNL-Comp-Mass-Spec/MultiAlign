@@ -89,7 +89,7 @@ namespace MultiAlignCore.IO.Features.Hibernate
             }
 
             // If the database is missing, open it.
-            if (createIfMissing)
+            if (createIfMissing && !exists)
             {
                 CreateDatabase(databaseLocation);
             }

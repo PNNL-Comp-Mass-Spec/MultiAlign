@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using System.IO;
 using System.Xml;
 using System.Collections;
@@ -208,23 +209,42 @@ namespace MultiAlignCore.IO.Parameters
                 /// 
                 try
                 {
+                    //type        = "MultiAlignEngine.Alignment.enmAlignmentType";
                     type = GetType(id, index);
                     Type t = System.Type.GetType(type);
-                    if (t.IsEnum)
+                    if (t != null && t.IsEnum)
                     {
                         return Enum.Parse(t, xmlValue.Trim());
                     }
+                    else if (t != null)
+                    {
+                        // It's not null, it was found, but is not a type we support.
+                        return null;
+                    }
+                    else
+                    {
+                        // Slow but works, we need the fully qualified name for this to work.
+                        foreach (AssemblyName name in System.Reflection.Assembly.GetExecutingAssembly().GetReferencedAssemblies())
+                        {
+                            string aname = name.FullName;
+
+                            Type xt = Type.GetType(type + "," + aname, false);
+                            if (xt != null)
+                            {
+                                if (xt.IsEnum)
+                                {
+                                    return Enum.Parse(xt, xmlValue.Trim());
+                                }
+                            }
+                        }
+                        throw new Exception("Could not parse the Parameter file: " + type);
+                    }                    
                 }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Trace.WriteLine("Message " + ex.Message);
-                    /// 
-                    /// Dont care if we dont catch it here...Let the null return indicate to user 
-                    /// that it was a bad type conversion.
-                    /// 
+                    throw ex;                    
                 }
 				return null;
-
 			} 
 			catch (Exception e)
 			{
@@ -241,7 +261,8 @@ namespace MultiAlignCore.IO.Parameters
 
 		public void SetValue(string id, Object obj, int index)
 		{
-			string typeName = obj.GetType().AssemblyQualifiedName; //.Replace ("System.", "");
+			//string typeName = obj.GetType().AssemblyQualifiedName; //.Replace ("System.", "");
+            string typeName = obj.GetType().FullName.Replace ("System.", "");
 
 			if(obj.GetType()==typeof(ArrayList))
 			{
@@ -309,15 +330,20 @@ namespace MultiAlignCore.IO.Parameters
 		{
 			try
 			{
-				StreamReader sr = File.OpenText(fName);
-				String xStr = sr.ReadToEnd();
-				doc.LoadXml (xStr);
-				sr.Close();
+                using (StreamReader sr = File.OpenText(fName))
+                {
+                    String xStr = sr.ReadToEnd();
+                    doc.LoadXml(xStr);
+                    sr.Close();
+                }
 
 				root = doc;
                 root = OpenXmlNode(m_name, "root", -1, true, true);//doc.LastChild;
 			}
-			catch{}
+			catch (Exception ex)
+            {
+                throw ex;
+            }
 		}
 
 		public void WriteFile(string fName)

@@ -30,13 +30,25 @@ namespace MultiAlignCore.Algorithms.Alignment
         /// <param name="alignmentOptions"></param>
         /// <param name="boundaries"></param>
         /// <returns></returns>
-        public classAlignmentData AlignFeatures(MassTagDatabase                massTagDatabase,
-                                               List<clsUMC>                    features,
-                                               clsAlignmentOptions             alignmentOptions)
+        public classAlignmentData AlignFeatures(MassTagDatabase                 massTagDatabase,
+                                                List<clsUMC>                    features,
+                                                clsAlignmentOptions             alignmentOptions,
+                                                bool                            alignDriftTimes)
         {                        
             clsAlignmentProcessor alignmentProcessor    = new clsAlignmentProcessor();
             alignmentProcessor.AlignmentOptions         = alignmentOptions;
             List<clsMassTag> tags                       = new List<clsMassTag>();
+
+            clsUMC featureTest = features.Find(delegate(clsUMC x)
+            {
+                return x.DriftTime > 0;
+            });
+
+            bool shouldDiscardTagsWithNoDriftTime = false;
+            if (featureTest != null)
+            {
+                shouldDiscardTagsWithNoDriftTime  = true;
+            }
 
             foreach (MassTagLight tag in massTagDatabase.MassTags)
             {
@@ -46,7 +58,19 @@ namespace MultiAlignCore.Algorithms.Alignment
                 mmTag.mintConformerID   = tag.ConformationID;
                 mmTag.mdblAvgGANET      = tag.NETAverage;
                 mmTag.mdblMonoMass      = tag.MassMonoisotopic;
-                tags.Add(mmTag);
+                mmTag.DriftTime         = tag.DriftTime;
+
+                if (shouldDiscardTagsWithNoDriftTime)
+                {
+                    if (mmTag.DriftTime > 0)
+                    {
+                        tags.Add(mmTag);
+                    }
+                }
+                else
+                {
+                    tags.Add(mmTag);
+                }
             }
 
             alignmentProcessor.SetReferenceDatasetFeatures(tags, true);
@@ -103,6 +127,7 @@ namespace MultiAlignCore.Algorithms.Alignment
             List<clsAlignmentFunction> alignmentFunctions   = new List<clsAlignmentFunction>();
             List<double[,]> netErrorHistograms              = new List<double[,]>();
             List<double[,]> massErrorHistograms             = new List<double[,]>();
+            List<double[,]> driftErrorHistograms             = new List<double[,]>();
             List<classAlignmentData> alignmentData          = new List<classAlignmentData>();
             List<float[,]> heatScores                       = new List<float[,]>();
             List<float[]> xIntervals                        = new List<float[]>();
@@ -162,13 +187,17 @@ namespace MultiAlignCore.Algorithms.Alignment
                 // Mass and net error histograms!  
                 double[,] massErrorHistogram = new double[1, 1];
                 double[,] netErrorHistogram = new double[1, 1];
+                double[,] driftErrorHistogram = new double[1, 1];
 
                 alignmentProcessor.GetErrorHistograms(alignmentOptions.MassBinSize,
                                                             alignmentOptions.NETBinSize,
+                                                            alignmentOptions.DriftTimeBinSize,
                                                             ref massErrorHistogram,
-                                                            ref netErrorHistogram);
+                                                            ref netErrorHistogram,
+                                                            ref driftErrorHistogram);
                 massErrorHistograms.Add(massErrorHistogram);
                 netErrorHistograms.Add(netErrorHistogram);
+                driftErrorHistograms.Add(driftErrorHistogram);
 
                 // Get the residual data from the warp.
                 float[,] linearNet              = new float[1, 1];
@@ -183,6 +212,7 @@ namespace MultiAlignCore.Algorithms.Alignment
                 // Set all of the data now 
                 classAlignmentData data     = new classAlignmentData();
                 data.massErrorHistogram     = massErrorHistogram;
+                data.driftErrorHistogram    = driftErrorHistogram;
                 data.netErrorHistogram      = netErrorHistogram;                
                 data.alignmentFunction      = alignmentFunction;
                 data.heatScores             = heatScore;
@@ -217,10 +247,12 @@ namespace MultiAlignCore.Algorithms.Alignment
             /// ////////////////////////////////////////////////////////////
             int maxMassHistogramLength = 0;
             int maxNetHistogramLength = 0;
+            int maxDriftHistogramLength = 0;
             for (int i = 0; i < alignmentData.Count; i++)
             {
                 maxMassHistogramLength = Math.Max(maxMassHistogramLength, alignmentData[0].massErrorHistogram.GetLength(0));
                 maxNetHistogramLength = Math.Max(maxNetHistogramLength, alignmentData[0].netErrorHistogram.GetLength(0));
+                maxDriftHistogramLength = Math.Max(maxDriftHistogramLength, alignmentData[0].driftErrorHistogram.GetLength(0));
             }
 
             double[,] massErrorHistogramData = new double[maxMassHistogramLength, 2];
@@ -298,6 +330,8 @@ namespace MultiAlignCore.Algorithms.Alignment
             mergedData.heatScores           = alignmentData[alignmentData.Count - 1].heatScores;
             mergedData.massErrorHistogram   = massErrorHistogramData;
             mergedData.netErrorHistogram    = netErrorHistogramData;
+            
+            mergedData.driftErrorHistogram  = driftErrorHistograms[0];
             mergedData.alignmentFunction    = mergedAlignmentFunction;
 
             alignmentProcessor.Dispose();
@@ -364,6 +398,7 @@ namespace MultiAlignCore.Algorithms.Alignment
                 clsMassTag mmTag        = new clsMassTag();
                 mmTag.mintMassTagId     = tag.ID;
                 mmTag.mintConformerID   = tag.ConformationID;
+                mmTag.DriftTime         = tag.DriftTime;
                 mmTag.mdblAvgGANET      = tag.NETAverage;
                 mmTag.mdblMonoMass      = tag.MassMonoisotopic;
                 tags.Add(mmTag);
@@ -397,18 +432,22 @@ namespace MultiAlignCore.Algorithms.Alignment
             classAlignmentResidualData residualData = alignmentProcessor.GetResidualData();
 
             // Get error histograms 
-            double[,] netErrorHistogram  =  new double[1, 1];
-            double[,] massErrorHistogram = new double[1, 1];
+            double[,] netErrorHistogram     = new double[1, 1];
+            double[,] massErrorHistogram    = new double[1, 1];
+            double[,] driftErrorHistogram   = new double[1, 1];
             alignmentProcessor.GetErrorHistograms(options.MassBinSize,
                                                   options.NETBinSize,
+                                                  options.DriftTimeBinSize,
                                                   ref massErrorHistogram,
-                                                  ref netErrorHistogram);
+                                                  ref netErrorHistogram,
+                                                  ref driftErrorHistogram);
 
             classAlignmentData  clusterAlignmentData    = new classAlignmentData();
             clusterAlignmentData.alignmentFunction      = alignmentFunction;
             clusterAlignmentData.heatScores             = heatScores;
             clusterAlignmentData.massErrorHistogram     = massErrorHistogram;
             clusterAlignmentData.netErrorHistogram      = netErrorHistogram;
+            clusterAlignmentData.driftErrorHistogram    = driftErrorHistogram;
             clusterAlignmentData.NETIntercept           = alignmentProcessor.NETIntercept;
             clusterAlignmentData.NETRsquared            = alignmentProcessor.NETLinearRSquared;
             clusterAlignmentData.NETSlope               = alignmentProcessor.NETSlope;
@@ -419,6 +458,6 @@ namespace MultiAlignCore.Algorithms.Alignment
             clusterAlignmentData.NETStandardDeviation   = alignmentProcessor.GetNETStandardDeviation();
 
             return clusterAlignmentData;
-        }                
+        }
     }
 }

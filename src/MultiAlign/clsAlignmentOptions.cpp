@@ -28,7 +28,8 @@ namespace MultiAlignEngine
 			mblnAlignToMassTagDatabase		= false; 
 			mstrAlignmentBaselineName		= 0; 
 			mdouble_massBinSize				= .2;
-			mdouble_massBinSize				= .001;
+			mdouble_netBinSize				= .001;
+			mdouble_driftTimeBinSize		= .03;
 
 			mbool_alignSplitMZs				= false;
 			mlist_mzBoundaries				= new List<classAlignmentMZBoundary*>();

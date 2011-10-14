@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" 
+                   assembly="MultiAlignCore" 
+                   namespace="MultiAlignCore.IO.Parameters">
+
+	<class name="ParameterHibernateMapping" table="T_Analysis_Info" lazy="false">		
+    <composite-id>
+      <key-property name="OptionGroup"          column="Option"      type="string" />
+      <key-property name="Parameter"            column="Parameter"         type="string" />
+    </composite-id>
+		<property name="Value"                      column="Value"             type="string"    not-null="false" />		
+	</class>
+</hibernate-mapping>
