@@ -94,7 +94,7 @@ namespace MultiAlignCore.Data
 		/// </summary>
 		public DatasetInformation()
 		{
-			mintBatchID = 0;
+			mintBatchID  = 0;
 			mintRunOrder = 0;
 
 			m_factorInformation = new Dictionary<FactorInformation, string>();
@@ -104,6 +104,14 @@ namespace MultiAlignCore.Data
 		}
 
 		#region Properties
+        /// <summary>
+        /// Gets or sets the key used for access to the db.
+        /// </summary>
+        public int DMSDatasetID
+        {
+            get;
+            set;
+        }
 		/// <summary>
 		/// Gets or sets the ID of the dataset
 		/// </summary>
@@ -182,10 +190,10 @@ namespace MultiAlignCore.Data
 		{
 			get
 			{
-				IList<Factor> factorList = new List<Factor>();
+                IList<Factor> factorList = new List<Factor>();
 				foreach(KeyValuePair<FactorInformation, string> kvp in m_factorInformation)
 				{
-					Factor factor = new Factor();
+                    Factor factor = new Factor();
 					factor.Dataset = this;
 					factor.FactorName = kvp.Key.FactorName;
 					factor.FactorValue = kvp.Value;

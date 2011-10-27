@@ -24,8 +24,9 @@ namespace MultiAlignCore.IO.Features
                                             IMsnFeatureToMSFeatureDAO   msnFeatureMap,
                                             IDatasetDAO                 datasetCache,
                                             IGenericDAO<ClusterToMassTagMap>    massTagMatches,
-                                            IMassTagDAO                         massTags
-                                         )
+                                            IMassTagDAO                         massTags,
+                                            IFactorDAO                          factorCache,
+                                            IDatasetToFactorMapDAO              factorAssignmentCache)
         {
             ClusterCache                = clusterCache;
             FeatureCache                = featureCache;
@@ -36,6 +37,18 @@ namespace MultiAlignCore.IO.Features
             DatasetCache                = datasetCache;
             MassTagMatches              = massTagMatches;
             MassTags                    = massTags;
+            FactorAssignmentCache       = factorAssignmentCache;
+            FactorCache                 = factorCache;
+        }
+        public IFactorDAO FactorCache
+        {
+            get;
+            set;
+        }
+        public IDatasetToFactorMapDAO FactorAssignmentCache
+        {
+            get;
+            set;
         }
         /// <summary>
         /// Gets or sets the mass tags loaded.

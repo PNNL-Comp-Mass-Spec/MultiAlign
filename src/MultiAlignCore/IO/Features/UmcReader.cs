@@ -73,6 +73,9 @@ namespace MultiAlignCore.IO.Features
 			{
 				switch (columnTitles[i].Trim())
 				{
+                    case "Saturated_Member_Count":
+                        columnMap.Add("Umc.SaturatedCount", i);
+                        break;
 					case "UMCIndex":
 						columnMap.Add("Umc.Id", i);
 						break;
@@ -268,6 +271,7 @@ namespace MultiAlignCore.IO.Features
 					if (m_columnMap.ContainsKey("Umc.AverageInterferenceScore"))	umc.AverageInterferenceScore = Double.Parse(columns[m_columnMap["Umc.AverageInterferenceScore"]]);
 					if (m_columnMap.ContainsKey("Umc.ConformationFitScore"))		umc.ConformationFitScore = Double.Parse(columns[m_columnMap["Umc.ConformationFitScore"]]);
 					if (m_columnMap.ContainsKey("Umc.AverageDeconFitScore"))		umc.AverageDeconFitScore = Double.Parse(columns[m_columnMap["Umc.AverageDeconFitScore"]]);
+                    if (m_columnMap.ContainsKey("Umc.SaturatedCount"))              umc.SaturatedMemberCount = int.Parse(columns[m_columnMap["Umc.SaturatedCount"]]);
 					//if (m_columnMap.ContainsKey("Umc.MembersPercentageScore"))	umc.MembersPercentageScore = Double.Parse(columns[m_columnMap["Umc.MembersPercentageScore"]]);
 					//if (m_columnMap.ContainsKey("Umc.CombinedScore"))				umc.CombinedScore = Double.Parse(columns[m_columnMap["Umc.CombinedScore"]]);
 					umcList.Add(umc);

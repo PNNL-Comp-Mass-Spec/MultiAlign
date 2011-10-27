@@ -7,16 +7,12 @@
 		<composite-id>
 			<key-property name="DatasetId" column="Dataset_ID" type="int" />
 		</composite-id>
+    <property name="DMSDatasetID" column="DMS_Dataset_ID" type="int" />
 		<property name="JobId" column="Job" type="string" not-null="false" />
 		<property name="DatasetName" column="File_Name" type="string" not-null="false" />
 		<property name="ParameterFileName" column="Parameter_File" type="string" not-null="false" />
 		<!--property name="JobDateTime" column="Job_DateTime" type="string" not-null="false" /-->
 		<property name="Path" column="Directory_Path" type="string" not-null="false" />
-		<!--property name="JobType" column="Job_Type" type="string" not-null="false" /-->
-		<bag name="FactorList" inverse="true">
-			<key column="Factor_ID" />
-			<one-to-many class="MultiAlignCore.Data.Factors.Factor" />
-		</bag>
+		<!--property name="JobType" column="Job_Type" type="string" not-null="false" /-->		
 	</class>
-
 </hibernate-mapping>

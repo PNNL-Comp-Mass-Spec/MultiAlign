@@ -487,7 +487,7 @@ namespace MultiAlignCore.IO.Mammoth
                     // Read the results and keep them if they have a valid cluster ID.
                     while (reader.Read())
                     {
-                        object[] values = new object[CONST_TOTAL_FEATURE_NO_CLUSTER_QUERY_SIZE];
+                        object[] values = new object[CONST_TOTAL_FEATURE_NO_CLUSTER_QUERY_SIZE + 3];
                         reader.GetValues(values);
 
                         // Extract all of the UMC data. 

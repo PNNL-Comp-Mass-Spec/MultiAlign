@@ -96,9 +96,9 @@ namespace MultiAlignCore.IO.InputFiles
                             if (baselineCheck.Length == 2 && !string.IsNullOrEmpty(baselineCheck[0]))
                             {
                                 InputFile newFile   = new InputFile();
-                                newFile.Path        = baselineCheck[0];
+                                newFile.DatasetName = baselineCheck[0];
                                 newFile.FileType    = InputFileType.Features;
-                                info.BaselineFile   = newFile;
+                                info.BaselineFile   = newFile;                                
                                 info.Files.Add(newFile);
                             }
                             else if (!string.IsNullOrEmpty(baselineCheck[0]))
@@ -113,6 +113,8 @@ namespace MultiAlignCore.IO.InputFiles
                             string[] keys = fixedLine.Split('=');
                             if (keys.Length > 1)
                             {
+                                keys[0] = keys[0].Replace('\t', ' ').Trim();
+
                                 switch (keys[0].ToLower())
                                 {
                                     case "database":

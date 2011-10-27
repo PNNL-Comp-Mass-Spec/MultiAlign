@@ -15,6 +15,7 @@ namespace MultiAlignCore.IO.InputFiles
             Files           = new List<InputFile>();
             BaselineFile    = null;
             Database        = new InputDatabase();
+            FactorFile      = null;
         }
 
         #region Properties
@@ -38,6 +39,14 @@ namespace MultiAlignCore.IO.InputFiles
         /// Get or sets the input database type.
         /// </summary>
         public InputDatabase Database
+        {
+            get;
+            set;
+        }
+        /// <summary>
+        /// Gets or sets the file the factors are stored in.
+        /// </summary>
+        public string FactorFile
         {
             get;
             set;

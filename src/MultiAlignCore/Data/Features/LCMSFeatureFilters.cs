@@ -29,7 +29,7 @@ namespace MultiAlignCore.Data.Features
             });
 
 
-
+            
             features = features.FindAll(delegate(clsUMC x)
             {
                 return x.AverageDeconFitScore <= options.IsotopicFit;

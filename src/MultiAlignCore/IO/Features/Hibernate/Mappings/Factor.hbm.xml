@@ -3,15 +3,12 @@
                    assembly="MultiAlignCore" 
                    namespace="MultiAlignCore.Data.Factors">
 
-	<class name="Factor" table="T_Factors" lazy="false">
-		<id name="FactorId" column="Factor_ID" type="integer">
-			<generator class="increment" />
-		</id>
-		<!--<many-to-one name="Dataset" class="MultAlignCore.Data.DatasetInformation">
-			<column name="Dataset_ID" not-null="true" />
-		</many-to-one>-->
-		<property name="FactorName" column="Factor_Name" type="string" not-null="false" />
-		<property name="FactorValue" column="Factor_Value" type="string" not-null="false" />
+	<class name="ExperimentalFactor" table="T_Factors" lazy="false">		
+    <composite-id>
+      <key-property name="FactorID" column="Factor_ID" type="int" />
+    </composite-id>
+		<property name="Name" column="Factor_Name" type="string" not-null="false" />
+		<property name="Value" column="Factor_Value" type="string" not-null="false" />
 	</class>
 
 </hibernate-mapping>

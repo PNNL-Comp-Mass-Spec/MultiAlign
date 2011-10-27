@@ -50,7 +50,9 @@ namespace MultiAlignCore.IO.Features
                                                                             msnFeatureMap,
                                                                             datasetCache,
                                                                             massTagMatchCache,
-                                                                            massTagCache);
+                                                                            massTagCache,
+                                                                            new FactorDAOHibernate(),
+                                                                            new DatasetToFactorDAOHibernate());
 
             return providers;
         }

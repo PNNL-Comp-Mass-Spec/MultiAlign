@@ -146,6 +146,7 @@ namespace MultiAlignEngine
 				double	mdouble_conformationFitScore;
 				double	mdouble_membersPercentageScore;
 				double	mdouble_combinedScore;
+				int		m_saturated_member_count;
 				//clsCluster *umcCluster;
 
 				bool Equals(System::Object *obj)
@@ -189,6 +190,15 @@ namespace MultiAlignEngine
 
 				__property void set_Id(int value){
 					mint_umc_id = value;
+				}
+				
+				__property int get_SaturatedMemberCount()
+				{
+					return m_saturated_member_count;
+				}
+
+				__property void set_SaturatedMemberCount(int value){
+					m_saturated_member_count = value;
 				}
 
 				__property int get_DatasetId()

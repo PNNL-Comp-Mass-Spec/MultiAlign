@@ -22,6 +22,7 @@ namespace MultiAlignEngine
 			mint_end_scan					= -1; 
 			mdouble_net						= 0; 
 			mint_scan_aligned				= -1; 						
+			m_saturated_member_count		= 0;
 		}
 
 		clsUMC::~clsUMC(void)

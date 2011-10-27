@@ -170,6 +170,9 @@
       <HintPath>..\..\lib\log4net.dll</HintPath>
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
+    <Reference Include="Mage">
+      <HintPath>..\..\lib\Mage.dll</HintPath>
+    </Reference>
     <Reference Include="MSDataFileReader">
       <HintPath>..\..\lib\MSDataFileReader.dll</HintPath>
     </Reference>
@@ -196,6 +199,7 @@
     <Compile Include="Algorithms\FeatureFinding\IFeatureFinder.cs" />
     <Compile Include="Algorithms\FeatureFinding\UMCFeatureFinder.cs" />
     <Compile Include="Algorithms\FeaturesClusteredEventArgs.cs" />
+    <Compile Include="Algorithms\Features\UMCConsolidator.cs" />
     <Compile Include="Algorithms\MSLinker\FeaturesExtractedEventArgs.cs" />
     <Compile Include="Algorithms\MSLinker\MSLinkerOptions.cs" />
     <Compile Include="Algorithms\MSLinker\MSLinkerType.cs" />
@@ -206,6 +210,8 @@
     <Compile Include="Algorithms\PeakMatching\STACOptions.cs" />
     <Compile Include="ApplicationUtility.cs" />
     <Compile Include="Data\AnalysisUtils.cs" />
+    <Compile Include="Data\Factors\DatasetToExperimentalFactorMap.cs" />
+    <Compile Include="Data\Factors\ExperimentalFactor.cs" />
     <Compile Include="Data\FeatureExtractionMap.cs" />
     <Compile Include="Data\ClusterToMassTagMap.cs" />
     <Compile Include="Data\DatasetInformation.cs" />
@@ -243,6 +249,11 @@
     <Compile Include="IO\Analysis\PeakMatchResultsWriter.cs" />
     <Compile Include="IO\Analysis\ReadProgressStream.cs" />
     <Compile Include="IO\Analysis\TableWriterColumnOptions.cs" />
+    <Compile Include="IO\Factors\FactorFileReader.cs" />
+    <Compile Include="IO\Factors\MultiAlignFactorSink.cs" />
+    <Compile Include="IO\Features\Hibernate\DatasetToFactorMap.cs" />
+    <Compile Include="IO\Features\IDatasetToFactorMapDAO.cs" />
+    <Compile Include="IO\Features\UMCClusterAbundanceCrossTabWriter.cs" />
     <Compile Include="IO\Features\FeatureExtractionTableWriter.cs" />
     <Compile Include="IO\Features\IMSnFeatureToMSFeatureDAO.cs" />
     <Compile Include="IO\Features\IMSFeatureToLCMSFeatureDAO.cs" />
@@ -280,6 +291,7 @@
     <Compile Include="IO\Features\MzXMLReader.cs" />
     <Compile Include="IO\Features\RawLoaderFactory.cs" />
     <Compile Include="IO\Features\ThermoRawDataFileReader.cs" />
+    <Compile Include="IO\Features\UMCClusterCrossTabWriter.cs" />
     <Compile Include="IO\Features\UMCClusterScanWriter.cs" />
     <Compile Include="IO\Features\UMCLoaderFactory.cs" />
     <Compile Include="IO\Features\UmcReader.cs" />
@@ -301,6 +313,7 @@
     <Compile Include="Filters\UMCFilters.cs" />
     <Compile Include="ICloneable.cs" />
     <Compile Include="IO\InputFiles\MultiAlignFileInputReader.cs" />
+    <Compile Include="IO\Factors\MAGEFactorAdaptor.cs" />
     <Compile Include="IO\MTDB\AccessMassTagDatabaseLoader.cs" />
     <Compile Include="IO\MTDB\AnalysisMTDBSetupException.cs" />
     <Compile Include="IO\MTDB\IMTDBLoader.cs" />
@@ -353,6 +366,7 @@
     <EmbeddedResource Include="IO\Parameters\Hibernate\ParameterHibernateMapping.hbm.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="IO\Features\Hibernate\Mappings\DatasetToFactor.hbm.xml" />
     <Content Include="MSDBLibrary.dll" />
     <Content Include="xerces-c_2_7.dll" />
     <Content Include="xerces-c_2_7D.dll" />

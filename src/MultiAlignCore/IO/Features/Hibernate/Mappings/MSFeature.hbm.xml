@@ -8,6 +8,7 @@
       <key-property name="ID"                     column="FEATURE_ID" type="integer" />
       <key-property name="GroupID"                column="DATASET_ID" type="integer" />
     </composite-id>
+    <property name="DriftTime"                    column="DriftTime"                  type="double"   not-null="false" />
     <property name="Score"                        column="FIT"                        type="double"   not-null="false" />
 		<property name="Scan"                         column="SCAN_NUM"                   type="integer"  not-null="false" />
 		<property name="ChargeState"                  column="CHARGE"                     type="int"      not-null="false" />

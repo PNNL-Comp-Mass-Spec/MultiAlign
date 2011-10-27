@@ -3,6 +3,7 @@ using System.IO;
 using System.Text;  
 using System.Collections.Generic;
 using PNNLOmics.Data.Features;
+using MultiAlignCore.Data;
 
 namespace MultiAlignCore.IO.Features
 {
@@ -31,7 +32,7 @@ namespace MultiAlignCore.IO.Features
         /// 
         /// </summary>
         /// <param name="clusters"></param>
-        public void WriteClusters(List<UMCClusterLight> clusters)
+        public void WriteClusters(List<UMCClusterLight> clusters, List<DatasetInformation> datasets)
         {
             using (TextWriter writer = File.CreateText(Path))
             {
