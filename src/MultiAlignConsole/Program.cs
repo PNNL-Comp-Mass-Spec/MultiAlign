@@ -858,12 +858,12 @@ namespace MultiAlignConsole
             options.Add("MS Linker Options", analysis.Options.MSLinkerOptions);
             options.Add("UMC Finding Options", analysis.Options.UMCFindingOptions);
             options.Add("Feature Filtering Options", analysis.Options.FeatureFilterOptions);
-            options.Add("Mass Tag Database Options", analysis.Options.MassTagDBOptions);
+            options.Add("Mass Tag Database Options", analysis.Options.MassTagDatabaseOptions);
             options.Add("Alignment Options", analysis.Options.DefaultAlignmentOptions);
             options.Add("Drift Time Alignment Options", analysis.Options.DriftTimeAlignmentOptions);
             options.Add("Cluster Options", analysis.Options.ClusterOptions);
             options.Add("Peak Matching Options", analysis.Options.PeakMatchingOptions);
-            options.Add("STAC Options", analysis.Options.STACOptions);
+            options.Add("STAC Options", analysis.Options.STACAdapterOptions);
 
             List<ParameterHibernateMapping> allmappings = new List<MultiAlignCore.IO.Parameters.ParameterHibernateMapping>();
             foreach (string key in options.Keys)
@@ -1090,6 +1090,7 @@ namespace MultiAlignConsole
             processor.Status                += new EventHandler<AnalysisStatusEventArgs>(processor_Status);
             processor.FeaturesExtracted     += new EventHandler<MultiAlignCore.Algorithms.MSLinker.FeaturesExtractedEventArgs>(processor_FeaturesExtracted);
             m_dataProviders                 = providers;
+
             processor.AlgorithmProvders     = builder.GetAlgorithmProvider(m_analysis.Options);
 
             return processor;
@@ -1201,13 +1202,14 @@ namespace MultiAlignConsole
         private static MultiAlignAnalysis ConstructAnalysisObject(InputAnalysisInfo analysisSetupInformation)
         {
             PrintMessage("Creating Analysis Objects.");
-            MultiAlignAnalysis analysis = new MultiAlignAnalysis();
-            analysis.MetaData.AnalysisPath = m_analysisPath;
-            analysis.MetaData.AnalysisName = m_analysisName;
+            MultiAlignAnalysis analysis             = new MultiAlignAnalysis();
+            analysis.MetaData.AnalysisPath          = m_analysisPath;
+            analysis.MetaData.AnalysisName          = m_analysisName;
             analysis.Options.UseMassTagDBAsBaseline = true;
-            analysis.MetaData.ParameterFile = m_parameterFile;
-            analysis.MetaData.InputFileDefinition = m_inputPaths;
-            analysis.MetaData.AnalysisSetupInfo = analysisSetupInformation;
+
+            analysis.MetaData.ParameterFile         = m_parameterFile;
+            analysis.MetaData.InputFileDefinition   = m_inputPaths;
+            analysis.MetaData.AnalysisSetupInfo     = analysisSetupInformation;
             return analysis;
         }
         private static bool ReadInputDefinitionFile(out InputAnalysisInfo analysisSetupInformation, out bool useMTDB)
@@ -1284,18 +1286,18 @@ namespace MultiAlignConsole
                         PrintMessage(string.Format("\tFull Path: {0}", analysisSetupInformation.Database.LocalPath));
                         PrintMessage(string.Format("\tDatabase Name: {0}", Path.GetFileName(analysisSetupInformation.Database.LocalPath)));
 
-                        m_analysis.Options.MassTagDBOptions.mstr_databaseFilePath = analysisSetupInformation.Database.LocalPath;
-                        m_analysis.Options.MassTagDBOptions.mstrServer = analysisSetupInformation.Database.DatabaseServer;
-                        m_analysis.Options.MassTagDBOptions.menm_databaseType = MultiAlignEngine.MassTags.MassTagDatabaseType.ACCESS;
+                        m_analysis.Options.MassTagDatabaseOptions.mstr_databaseFilePath = analysisSetupInformation.Database.LocalPath;
+                        m_analysis.Options.MassTagDatabaseOptions.mstrServer = analysisSetupInformation.Database.DatabaseServer;
+                        m_analysis.Options.MassTagDatabaseOptions.menm_databaseType = MultiAlignEngine.MassTags.MassTagDatabaseType.ACCESS;
                         break;
 
                     case MassTagDatabaseFormat.SQL:
                         PrintMessage("Using Mass Tag Database:");
                         PrintMessage(string.Format("\tServer:        {0}", analysisSetupInformation.Database.DatabaseServer));
                         PrintMessage(string.Format("\tDatabase Name: {0}", analysisSetupInformation.Database.DatabaseName));
-                        m_analysis.Options.MassTagDBOptions.mstrDatabase = analysisSetupInformation.Database.DatabaseName;
-                        m_analysis.Options.MassTagDBOptions.mstrServer = analysisSetupInformation.Database.DatabaseServer;
-                        m_analysis.Options.MassTagDBOptions.menm_databaseType = MultiAlignEngine.MassTags.MassTagDatabaseType.SQL;
+                        m_analysis.Options.MassTagDatabaseOptions.mstrDatabase = analysisSetupInformation.Database.DatabaseName;
+                        m_analysis.Options.MassTagDatabaseOptions.mstrServer = analysisSetupInformation.Database.DatabaseServer;
+                        m_analysis.Options.MassTagDatabaseOptions.menm_databaseType = MultiAlignEngine.MassTags.MassTagDatabaseType.SQL;
                         break;
                 }
 
@@ -1315,7 +1317,7 @@ namespace MultiAlignConsole
             }
             else
             {
-                m_analysis.Options.MassTagDBOptions.menm_databaseType = MultiAlignEngine.MassTags.MassTagDatabaseType.None;
+                m_analysis.Options.MassTagDatabaseOptions.menm_databaseType = MultiAlignEngine.MassTags.MassTagDatabaseType.None;
                 m_analysis.Options.UseMassTagDBAsBaseline = false;
                 // Validate the baseline
                 if (analysisSetupInformation.BaselineFile == null)

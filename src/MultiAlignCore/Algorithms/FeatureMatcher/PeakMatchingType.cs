@@ -8,7 +8,6 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
     public enum PeakMatchingType
     {
         Traditional,
-        SMART,
         STAC
     }
 }

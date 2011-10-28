@@ -11,7 +11,6 @@ using MultiAlignEngine.Features;
 using MultiAlignEngine.PeakMatching;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Data.MassTags;
-using PNNLProteomics.SMART;
 using MultiAlignCore.Algorithms.PeakMatching;
 using MultiAlignCore.Data.Features;
 using MultiAlignCore.Algorithms.FeatureFinding;
@@ -36,12 +35,8 @@ namespace MultiAlignCore.Data
             Options                         = new AnalysisOptions();
             
             // Alignment options and data.
-            AlignmentData                   = new List<classAlignmentData>();
-           
-			PeakMatchedToMassTagDB          = false; 
-            
-            // STAC Options and results
-            SMARTResults                     = new classSMARTResults();
+            AlignmentData                   = new List<classAlignmentData>();           
+			PeakMatchedToMassTagDB          = false;             
         }
         #endregion
 
@@ -138,15 +133,7 @@ namespace MultiAlignCore.Data
         {
             get;
             set;
-        }        
-        /// <summary>
-        /// Gets or sets the SMART results calculated.
-        /// </summary>
-        public classSMARTResults SMARTResults
-        {
-            get;
-            set;
-        }
+        }   
         /// <summary>
         /// Gets or sets the alignment data.
         /// </summary>

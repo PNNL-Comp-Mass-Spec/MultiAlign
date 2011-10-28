@@ -1,15 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" 
-                   assembly="MultiAlignCore" 
-                   namespace="MultiAlignCore.Data">
+                   assembly="PNNLOmics" 
+                   namespace="PNNLOmics.Algorithms.FeatureMatcher.Data">
 
-	<class name="StacFDR" table="T_STAC_FDR" lazy="false">
-		<id name="StacCutoff" column="STAC_Cutoff" type="double">
+	<class name="STACFDR" table="T_STAC_FDR" lazy="false">
+		<id name="Cutoff" column="STAC_Cutoff" type="double">
 			<generator class="assigned" />
 		</id>
-		<property name="NumMatches" column="Num_Matches" type="int" not-null="false" />
-		<property name="Errors" column="Errors" type="double" not-null="false" />
-		<property name="FDR" column="FDR" type="double" not-null="false" />
+    <property name="FDR" column="FDR" type="int" not-null="false" />
+    <property name="AMTMatches" column="Num_AMT_Matches" type="int" not-null="false" />
+    <property name="ConformationMatches" column="Conformation_Matches" type="int" not-null="false" />
+    <property name="FalseMatches" column="False_Matches" type="int" not-null="false" />
+    <property name="Label" column="Label" type="int" not-null="false" />    
 	</class>
 
 </hibernate-mapping>

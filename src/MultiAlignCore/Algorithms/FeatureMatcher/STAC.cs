@@ -5,7 +5,6 @@ using MultiAlignCore.Data;
 using MultiAlignEngine.Features;
 using MultiAlignEngine.MassTags;
 using MultiAlignEngine.PeakMatching;
-using PNNLProteomics.SMART;
 using MultiAlignCore.Data.MassTags;
 
 using PNNLOmics.Data;
@@ -23,6 +22,10 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
     /// </summary>
     public class STACAdapter<T>: IPeakMatcher<T> where T: UMCClusterLight
     {
+        public STACAdapter()
+        {
+            Options = new FeatureMatcherParameters();
+        }
         /// <summary>
         /// Gets the peak matching object.
         /// </summary>
@@ -52,9 +55,9 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
         /// <param name="massTags"></param>
         public List<FeatureMatchLight<T, MassTagLight>> PerformPeakMatching(List<T> clusters, MassTagDatabase database)
         {
-            List<FeatureMatchLight<T, MassTagLight>> matches    = new List<FeatureMatchLight<T, MassTagLight>>();
-            Dictionary<int, T> clusterMap                       = new Dictionary<int,T>();
-            Dictionary<int, MassTagLight> tagMap                = new Dictionary<int,MassTagLight>();
+            List<FeatureMatchLight<T, MassTagLight>> matches        = new List<FeatureMatchLight<T, MassTagLight>>();
+            Dictionary<int, T> clusterMap                           = new Dictionary<int,T>();
+            Dictionary<int, Dictionary<int, MassTagLight>> tagMap   = new Dictionary<int, Dictionary<int, MassTagLight>>();
 
             List<MassTag> massTags = new List<MassTag>();
             foreach(MassTagLight tag in database.MassTags)
@@ -86,7 +89,11 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
                 mt.XCorr                         = tag.XCorr;
 
                 massTags.Add(mt);
-                tagMap.Add(tag.ID, tag);                
+                if (!tagMap.ContainsKey(tag.ID))
+                {
+                    tagMap.Add(tag.ID, new Dictionary<int, MassTagLight>());
+                }
+                tagMap[tag.ID].Add(tag.ConformationID, tag);                
             }
 
             // convert data needed by the algorithm.
@@ -120,7 +127,7 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
             {
                 FeatureMatchLight<UMCClusterLight, MassTagLight> matched = new FeatureMatchLight<UMCClusterLight, MassTagLight>();
                 matched.Observed                                         = clusterMap[match.ObservedFeature.ID];
-                matched.Target                                           = tagMap[match.TargetFeature.ID];
+                matched.Target                                           = tagMap[match.TargetFeature.ID][match.TargetFeature.ConformationID];
             }
 
 

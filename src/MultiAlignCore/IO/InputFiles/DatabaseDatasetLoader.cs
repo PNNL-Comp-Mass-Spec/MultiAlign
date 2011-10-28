@@ -324,8 +324,6 @@ namespace MultiAlignCore.IO.InputFiles
             {
                 string pekFilePath;               
 
-                Type labelType = typeof(LabelingType);
-                LabelingType[] labelTypes = (LabelingType[])Enum.GetValues(labelType);
 
                 int     numberLoaded  = 0;
                 double  percentLoaded = 0;
@@ -362,17 +360,8 @@ namespace MultiAlignCore.IO.InputFiles
                     labelMedia.Replace("_", "");
                     labelMedia.Replace(" ", "");
                     labelMedia.Replace("/", "");
-                    labelMedia.Replace("-", "");
-
-                    foreach (LabelingType type in labelTypes)
-                    {
-                        if (type.ToString() == labelMedia)
-                        {
-                            datasetInfo.menmLabelingType = type;
-                            break;
-                        }
-                    }
-
+                    labelMedia.Replace("-", "");                    
+                    datasetInfo.LabelingType = labelMedia;                    
                     datasetInfo.mstrInstrment = Convert.ToString(row[10]);
                     int toolId = Convert.ToInt32(row[11]);
                     
@@ -479,7 +468,7 @@ namespace MultiAlignCore.IO.InputFiles
                             
                             string extension            = System.IO.Path.GetExtension(fileName);
                             info.menmDeisotopingTool    = datasetInfo.menmDeisotopingTool;
-                            info.menmLabelingType       = datasetInfo.menmLabelingType;
+                            info.LabelingType           = datasetInfo.LabelingType;
                             info.mintBatchID            = datasetInfo.mintBatchID;
                             info.mintBlockID            = datasetInfo.mintBlockID;
                             info.mintColumnID           = datasetInfo.mintColumnID;

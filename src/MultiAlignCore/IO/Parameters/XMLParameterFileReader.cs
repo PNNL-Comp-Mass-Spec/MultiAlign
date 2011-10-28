@@ -87,7 +87,7 @@ namespace MultiAlignCore.IO.Parameters
                 analysis.Options.DefaultAlignmentOptions.DriftTimeBinSize = 1;
             }
 
-            LoadParameterOptions(analysis.Options.MassTagDBOptions, metaData.OpenChild("MassTagDBOptions"));
+            LoadParameterOptions(analysis.Options.MassTagDatabaseOptions, metaData.OpenChild("MassTagDBOptions"));
             LoadParameterOptions(analysis.Options.UMCFindingOptions, metaData.OpenChild("UMCFindingOptions"));
 
             MetaNode msOptions = metaData.OpenChild("MSnLinkerOptions", false);
@@ -113,7 +113,7 @@ namespace MultiAlignCore.IO.Parameters
             MetaNode stacNode = metaData.OpenChild("STACOptions", false);
             if (stacNode != null)
             {
-                LoadParameterOptions(analysis.Options.STACOptions, stacNode);
+                LoadParameterOptions(analysis.Options.STACAdapterOptions, stacNode);
             }
         }
     }

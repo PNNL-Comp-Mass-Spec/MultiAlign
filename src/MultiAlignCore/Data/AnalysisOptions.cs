@@ -22,16 +22,17 @@ namespace MultiAlignCore.Data
 			DriftTimeAlignmentOptions       = new DriftTimeAlignmentOptions();
             UseMassTagDBAsBaseline          = false;
             UMCFindingOptions               = new UMCFeatureFinderOptions();
-            SMARTOptions                    = new Algorithms.PeakMatching.SMARTOptions();
 			ClusterOptions                  = new MultiAlignEngine.Clustering.clsClusterOptions() ;
             MSLinkerOptions                 = new Algorithms.MSLinker.MSLinkerOptions();
-            FeatureFilterOptions            = new FeatureFilterOptions();            
+            FeatureFilterOptions            = new FeatureFilterOptions();
+            STACAdapterOptions              = new FeatureMatcherParameters();                     
             PeakMatchingOptions             = new clsPeakMatchingOptions();
+            MassTagDatabaseOptions          = new MultiAlignEngine.MassTags.clsMassTagDatabaseOptions();
         }
         /// <summary>
         /// Stac Options
         /// </summary>
-        public FeatureMatcherParameters STACOptions
+        public FeatureMatcherParameters STACAdapterOptions
         {
             get;
             set;
@@ -40,14 +41,6 @@ namespace MultiAlignCore.Data
         /// Gets or sets the cluster options.
         /// </summary>
         public clsPeakMatchingOptions PeakMatchingOptions
-        {
-            get;
-            set;
-        }
-        /// <summary>
-        /// Gets or sets the SMART Options to use.
-        /// </summary>
-        public SMARTOptions SMARTOptions
         {
             get;
             set;
@@ -63,7 +56,7 @@ namespace MultiAlignCore.Data
         /// <summary>
         /// Gets or sets the mass tag database options.
         /// </summary>
-        public MultiAlignEngine.MassTags.clsMassTagDatabaseOptions MassTagDBOptions
+        public MultiAlignEngine.MassTags.clsMassTagDatabaseOptions MassTagDatabaseOptions
         {
             get;
             set;

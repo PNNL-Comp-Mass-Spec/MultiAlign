@@ -74,10 +74,6 @@
       <HintPath>..\..\lib\x86\System.Data.SQLite.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="SMARTWrapper, Version=1.0.3699.24788, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\x86\SMARTWrapper.dll</HintPath>
-    </Reference>
     <Reference Include="PNNLOmics, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\x86\PNNLOmics.dll</HintPath>
@@ -92,10 +88,6 @@
       <SpecificVersion>True</SpecificVersion>
       <HintPath>..\..\lib\x86\System.Data.SQLite.dll</HintPath>
       <Private>True</Private>
-    </Reference>
-    <Reference Include="SMARTWrapper, Version=1.0.3699.24788, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\x86\SMARTWrapper.dll</HintPath>
     </Reference>
     <Reference Include="PNNLOmics, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
@@ -112,10 +104,6 @@
       <HintPath>..\..\lib\x64\System.Data.SQLite.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="SMARTWrapper, Version=1.0.3923.14706, Culture=neutral, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\x64\SMARTWrapper.dll</HintPath>
-    </Reference>
     <Reference Include="PNNLOmics, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\x64\PNNLOmics.dll</HintPath>
@@ -130,10 +118,6 @@
       <SpecificVersion>True</SpecificVersion>
       <HintPath>..\..\lib\x64\System.Data.SQLite.dll</HintPath>
       <Private>True</Private>
-    </Reference>
-    <Reference Include="SMARTWrapper, Version=1.0.3923.14706, Culture=neutral, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\x64\SMARTWrapper.dll</HintPath>
     </Reference>
     <Reference Include="PNNLOmics, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
@@ -200,7 +184,6 @@
     <Compile Include="Algorithms\FeatureFinding\UMCFeatureFinder.cs" />
     <Compile Include="Algorithms\FeatureMatcher\STACOptions.cs" />
     <Compile Include="Algorithms\FeatureMatcher\PeakMatchingType.cs" />
-    <Compile Include="Algorithms\FeatureMatcher\SMART.cs" />
     <Compile Include="Algorithms\FeatureMatcher\STAC.cs" />
     <Compile Include="Algorithms\FeaturesClusteredEventArgs.cs" />
     <Compile Include="Algorithms\Features\UMCConsolidator.cs" />
@@ -211,7 +194,6 @@
     <Compile Include="Algorithms\MultiAlignAnalysisProcessor.cs" />
     <Compile Include="Algorithms\FeatureMatcher\IPeakMatcher.cs" />
     <Compile Include="Algorithms\FeatureMatcher\TraditionalPeakMatcher.cs" />
-    <Compile Include="Algorithms\FeatureMatcher\SMARTOptions.cs" />
     <Compile Include="ApplicationUtility.cs" />
     <Compile Include="Data\AnalysisOptions.cs" />
     <Compile Include="Data\AnalysisUtils.cs" />
@@ -229,7 +211,6 @@
     <Compile Include="Data\Factors\TreeNodeConverter.cs" />
     <Compile Include="Data\Features\FeatureFilterOptions.cs" />
     <Compile Include="Data\Features\LCMSFeatureFilters.cs" />
-    <Compile Include="Data\LabelingType.cs" />
     <Compile Include="Data\MassTags\MassTagConformation.cs" />
     <Compile Include="Data\MassTags\MassTagDatabase.cs" />
     <Compile Include="Data\MassTags\MassTagDatabaseFormat.cs" />
@@ -238,7 +219,6 @@
     <Compile Include="Data\MSFeatureToMSnFeatureMap.cs" />
     <Compile Include="Data\MultiAlignAnalysis.cs" />
     <Compile Include="Data\MultiAlignAnalysisDelegates.cs" />
-    <Compile Include="Data\SmartFDR.cs" />
     <Compile Include="IO\Analysis\AnalysisAbundanceTableWriter.cs" />
     <Compile Include="IO\Analysis\AnalysisAlignmentDataWriter.cs" />
     <Compile Include="IO\Analysis\AnalysisBinaryReader.cs" />
@@ -342,7 +322,6 @@
     <Compile Include="Data\Alignment\classAlignmentData.cs" />
     <Compile Include="Data\clsDMSServerInformation.cs" />
     <Compile Include="Data\Cluster\classClusterDataSummaryAttr.cs" />
-    <Compile Include="Data\Cluster\classClusterMassTagMatch.cs" />
     <Compile Include="Data\Factors\FactorDefinitions.cs" />
     <Compile Include="Data\MassTags\clsMassTags.cs" />
     <Compile Include="IStatusProvider.cs" />

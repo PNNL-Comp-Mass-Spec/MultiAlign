@@ -376,9 +376,8 @@ namespace MultiAlignCore.Algorithms
             }
 
             clusterer.Parameters = parameters;                        
-            // This just tells us whether we are using mammoth memory partitions or not.            
-            UpdateStatus("Clustering will run with all features loaded into memory. <recursion levels now ignored>");            
 
+            // This just tells us whether we are using mammoth memory partitions or not.          
             string databaseName = Path.Combine(m_analysis.MetaData.AnalysisPath, m_analysis.MetaData.AnalysisName);
             int maxChargeState = 15;
             int minChargeState = 1;
@@ -1001,16 +1000,16 @@ namespace MultiAlignCore.Algorithms
                 // peak matching (but aligning to a reference dataset.
                 if (m_analysis.Options.UseMassTagDBAsBaseline)
                 {
-                    UpdateStatus("Loading Mass Tag database from database:  " + m_analysis.Options.MassTagDBOptions.mstrDatabase);
+                    UpdateStatus("Loading Mass Tag database from database:  " + m_analysis.Options.MassTagDatabaseOptions.mstrDatabase);
 
-                    database = MTDBLoaderFactory.LoadMassTagDB(m_analysis.Options.MassTagDBOptions, m_analysis.MetaData.AnalysisSetupInfo.Database.DatabaseFormat);
+                    database = MTDBLoaderFactory.LoadMassTagDB(m_analysis.Options.MassTagDatabaseOptions, m_analysis.MetaData.AnalysisSetupInfo.Database.DatabaseFormat);
                 }
                 else
                 {
-                    if (m_analysis.Options.MassTagDBOptions.menm_databaseType != MassTagDatabaseType.None)
+                    if (m_analysis.Options.MassTagDatabaseOptions.menm_databaseType != MassTagDatabaseType.None)
                     {
-                        UpdateStatus("Loading Mass Tag database from database:  " + m_analysis.Options.MassTagDBOptions.mstrDatabase);
-                        database = MTDBLoaderFactory.LoadMassTagDB(m_analysis.Options.MassTagDBOptions, m_analysis.MetaData.AnalysisSetupInfo.Database.DatabaseFormat);
+                        UpdateStatus("Loading Mass Tag database from database:  " + m_analysis.Options.MassTagDatabaseOptions.mstrDatabase);
+                        database = MTDBLoaderFactory.LoadMassTagDB(m_analysis.Options.MassTagDatabaseOptions, m_analysis.MetaData.AnalysisSetupInfo.Database.DatabaseFormat);
                     }
                 }
 

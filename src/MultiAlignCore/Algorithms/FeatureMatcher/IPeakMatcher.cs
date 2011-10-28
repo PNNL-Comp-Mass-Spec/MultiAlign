@@ -6,7 +6,6 @@ using MultiAlignEngine.Features;
 using MultiAlignEngine.MassTags;
 using MultiAlignEngine.PeakMatching;
 
-using PNNLProteomics.SMART;
 using MultiAlignCore.Data.MassTags;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Data.MassTags;

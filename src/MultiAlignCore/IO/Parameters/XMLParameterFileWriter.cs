@@ -89,13 +89,12 @@ namespace MultiAlignCore.IO.Parameters
             ReflectParameterOptions(analysis.Options.MSLinkerOptions, metaData.OpenChild("MSnLinkerOptions"));
             ReflectParameterOptions(analysis.Options.UMCFindingOptions, metaData.OpenChild("UMCFindingOptions"));
             ReflectParameterOptions(analysis.Options.FeatureFilterOptions, metaData.OpenChild("FeatureFilters"));
-            ReflectParameterOptions(analysis.Options.MassTagDBOptions, metaData.OpenChild("MassTagDBOptions"));
+            ReflectParameterOptions(analysis.Options.MassTagDatabaseOptions, metaData.OpenChild("MassTagDBOptions"));
             ReflectParameterOptions(analysis.Options.DefaultAlignmentOptions, metaData.OpenChild("DefaultAlignmentOptions"));
             ReflectParameterOptions(analysis.Options.DriftTimeAlignmentOptions, metaData.OpenChild("DriftTimeAlignmentOptions"));
             ReflectParameterOptions(analysis.Options.ClusterOptions, metaData.OpenChild("ClusterOptions"));
             ReflectParameterOptions(analysis.Options.PeakMatchingOptions, metaData.OpenChild("PeakMatchingOptions"));
-            ReflectParameterOptions(analysis.Options.SMARTOptions, metaData.OpenChild("SMARTOptions"));
-            ReflectParameterOptions(analysis.Options.STACOptions, metaData.OpenChild("STACOptions"));
+            ReflectParameterOptions(analysis.Options.STACAdapterOptions, metaData.OpenChild("STACOptions"));
             metaData.WriteFile(parameterFilePath);
         }        
     }

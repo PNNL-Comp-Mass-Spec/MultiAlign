@@ -189,7 +189,7 @@ namespace MultiAlignCore.IO.Parameters
             LoadParameterOptions(ProcessSubSectionData(ALIGNMENT_TAG), alignmentOptions);            
             LoadParameterOptions(ProcessSubSectionData(FEATURE_FINDING_TAG),     analysis.Options.UMCFindingOptions);
             LoadParameterOptions(ProcessSubSectionData(PEAK_MATCH_TAG),          analysis.Options.PeakMatchingOptions);
-            LoadParameterOptions(ProcessSubSectionData(MASS_TAG_DATABASE_TAG),   analysis.Options.MassTagDBOptions);
+            LoadParameterOptions(ProcessSubSectionData(MASS_TAG_DATABASE_TAG),   analysis.Options.MassTagDatabaseOptions);
             LoadParameterOptions(ProcessSubSectionData(CLUSTER_TAG),             analysis.Options.ClusterOptions);
             LoadGlobalOptions(ref analysis);                 
         }

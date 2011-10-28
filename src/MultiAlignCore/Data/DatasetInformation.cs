@@ -38,8 +38,12 @@ namespace MultiAlignCore.Data
 		public DateTime mdateAcquisitionStart;
 		[clsDataSummaryAttribute("Instrument")]
 		public string mstrInstrment;
-		[clsDataSummaryAttribute("Labeling Type")]
-		public LabelingType menmLabelingType;
+        [clsDataSummaryAttribute("Labeling Type")]
+        public string LabelingType
+        {
+            get;
+            set;
+        }
 		[clsDataSummaryAttribute("Deisotoping Tool")]
 		public DeisotopingTool menmDeisotopingTool;
 		[clsDataSummaryAttribute("Comment")]
