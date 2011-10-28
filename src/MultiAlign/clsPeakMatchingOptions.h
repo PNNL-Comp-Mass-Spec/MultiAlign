@@ -21,8 +21,11 @@ namespace MultiAlignEngine
 			/// Drift-Time Tolerance for peak matching.
 			/// </summary>
 			double mdblDriftTimeTolerance;
+			double m_daltonShift;
 			/// flag to use stack.
 			bool m_performSTAC;
+			/// flag to use stack.
+			bool m_performSMART;
 			// Flag indicating if PM results should be written back to system.
 			bool m_writeResultsToSystem;
 			
@@ -50,6 +53,28 @@ namespace MultiAlignEngine
 			__property void set_UseSTAC(bool perform)
 			{
 				m_performSTAC = perform; 
+			}
+			
+			[clsDataSummaryAttribute("Dalton Shift")]			
+			[clsParameterFileAttribute("DaltonShift", "PeakMatchingOptions")]
+			__property double get_DaltonShift()
+			{
+				return m_daltonShift; 
+			}
+			__property void set_DaltonShift(double shift)
+			{
+				m_daltonShift = shift; 
+			}
+
+			[clsDataSummaryAttribute("Perform SMART")]			
+			[clsParameterFileAttribute("PerformSmart", "PeakMatchingOptions")]
+			__property bool get_UseSMART()
+			{
+				return m_performSMART; 
+			}
+			__property void set_UseSMART(bool perform)
+			{
+				m_performSMART = perform; 
 			}
 
 			[clsDataSummaryAttribute("Mass Tolerance")]			

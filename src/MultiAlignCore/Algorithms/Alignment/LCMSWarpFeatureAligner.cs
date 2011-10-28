@@ -8,11 +8,18 @@ using MultiAlignCore.Data.Alignment;
 
 using MultiAlignCore.Data.MassTags;
 using PNNLOmics.Data.MassTags;
+using PNNLOmics.Utilities;
 
 namespace MultiAlignCore.Algorithms.Alignment
 {
     public class LCMSWarpFeatureAligner: IFeatureAligner
     {
+
+        /// <summary>
+        /// Fired when new status is available.
+        /// </summary>
+        public event MessageEventHandler Status;
+
         clsAlignmentProcessor m_processor = new clsAlignmentProcessor();
 
         /// <summary>
@@ -21,7 +28,14 @@ namespace MultiAlignCore.Algorithms.Alignment
         public LCMSWarpFeatureAligner()
         {
         }
-        
+
+        private void OnStatus(string message)
+        {
+            if (Status != null)
+            {
+                Status(this, new MessageEventArgs(message));
+            }
+        }
         /// <summary>
         /// Aligns a dataset to a mass tag database.
         /// </summary>
@@ -47,9 +61,12 @@ namespace MultiAlignCore.Algorithms.Alignment
             bool shouldDiscardTagsWithNoDriftTime = false;
             if (featureTest != null)
             {
+
+                OnStatus("No drift times set. Discarding drift time information.");
                 shouldDiscardTagsWithNoDriftTime  = true;
             }
 
+            OnStatus("Configuring features as mass tags.");
             foreach (MassTagLight tag in massTagDatabase.MassTags)
             {
                 // mixed mode tag
@@ -73,6 +90,7 @@ namespace MultiAlignCore.Algorithms.Alignment
                 }
             }
 
+            OnStatus("Setting reference features using mass tags.");
             alignmentProcessor.SetReferenceDatasetFeatures(tags, true);
             classAlignmentData data =  AlignFeatures(alignmentProcessor,
                                                      features,   
@@ -95,7 +113,9 @@ namespace MultiAlignCore.Algorithms.Alignment
         {
             clsAlignmentProcessor alignmentProcessor    = new clsAlignmentProcessor();
             alignmentProcessor.AlignmentOptions         = alignmentOptions;
-            
+
+
+            OnStatus("Setting features from baseline dataset.");
             alignmentProcessor.SetReferenceDatasetFeatures(baselineFeatures);
             classAlignmentData alignmentData            = AlignFeatures( alignmentProcessor,
                                                                         features,
@@ -122,8 +142,9 @@ namespace MultiAlignCore.Algorithms.Alignment
         private classAlignmentData AlignFeatures(clsAlignmentProcessor                 alignmentProcessor,            
                                                 List<clsUMC>                          features,
                                                 clsAlignmentOptions                   alignmentOptions)
-        {    
-            
+        {
+
+            OnStatus("Starting alignment of features.");
             List<clsAlignmentFunction> alignmentFunctions   = new List<clsAlignmentFunction>();
             List<double[,]> netErrorHistograms              = new List<double[,]>();
             List<double[,]> massErrorHistograms             = new List<double[,]>();
@@ -148,11 +169,14 @@ namespace MultiAlignCore.Algorithms.Alignment
             }
 
             for (int i = 0; i < totalBoundaries; i++)
-            {                
+            {
                 // Set features                
+                OnStatus("Setting alignee features.");
                 alignmentProcessor.SetAligneeDatasetFeatures(features, alignmentOptions.MZBoundaries[i]);                
 
                 // Find alignment 
+
+                OnStatus("Performing alignment warping.");
                 alignmentProcessor.PerformAlignmentToMSFeatures();
 
                 // Extract alignment function
@@ -160,6 +184,7 @@ namespace MultiAlignCore.Algorithms.Alignment
                 alignmentFunctions.Add(alignmentFunction);
 
                 // Correct the features
+                OnStatus("Applying alignment function to all features.");
                 alignmentProcessor.ApplyNETMassFunctionToAligneeDatasetFeatures(ref features);
                 
                 // Find min/max scan for meta-data
@@ -178,6 +203,8 @@ namespace MultiAlignCore.Algorithms.Alignment
                 float[,] heatScore = new float[1, 1];
                 float[] xInterval = new float[1];
                 float[] yInterval = new float[1];
+
+                OnStatus("Retrieving alignment data.");
                 alignmentProcessor.GetAlignmentHeatMap(ref heatScore, ref xInterval, ref yInterval);
 
                 xIntervals.Add(xInterval);
@@ -238,6 +265,8 @@ namespace MultiAlignCore.Algorithms.Alignment
                 alignmentData.Add(data);                
             }
 
+
+            OnStatus("Combining alignment residual and mass / net error data for split analysis.");
             classAlignmentData mergedData                = new classAlignmentData();
             clsAlignmentFunction mergedAlignmentFunction = alignmentFunctions[alignmentFunctions.Count - 1];
             float[,] mergedHeatScores                    = new float[1, 1];
@@ -388,7 +417,9 @@ namespace MultiAlignCore.Algorithms.Alignment
         public classAlignmentData AlignFeatures(MassTagDatabase         massTagDatabase,
                                                 List<clsCluster>        clusters,
                                                 clsAlignmentOptions     options)
-        {            
+        {
+
+            OnStatus("Starting alignment of clusters.");
             clsAlignmentProcessor alignmentProcessor = new clsAlignmentProcessor();
             List<clsMassTag> tags                    = new List<clsMassTag>();
 
@@ -405,11 +436,19 @@ namespace MultiAlignCore.Algorithms.Alignment
             }
 
             alignmentProcessor.SetReferenceDatasetFeatures(tags, true);
+
+            OnStatus("Setting alignee clusters.");
             alignmentProcessor.SetAligneeDatasetFeatures(clusters, options.MZBoundaries[0]);
+
+            OnStatus("Performing alignment warping.");
             alignmentProcessor.PerformAlignmentToMassTagDatabase();
+
+            OnStatus("Applying alignment function to all features.");
             alignmentProcessor.ApplyNETMassFunctionToAligneeDatasetFeatures(ref clusters); 
             clsAlignmentFunction alignmentFunction = alignmentProcessor.GetAlignmentFunction();
 
+
+            OnStatus("Retrieving alignment data.");
             // Heat maps
             float[,] heatScores = new float[1, 1];
             float[] xIntervals  = new float[1];

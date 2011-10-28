@@ -18,7 +18,10 @@ namespace MultiAlignCore.IO
         /// Writes the peak matching results to the local peak matching database.
         /// </summary>
         /// <param name="analysis"></param>
-        public void WritePeakMatchResults(MultiAlignAnalysis analysis, out int matchedMassTags, out int matchedProteins)
+        public void WritePeakMatchResults(  MultiAlignAnalysis analysis, 
+                                            List<PNNLOmics.Algorithms.FeatureMatcher.Data.STACFDR> fdrTable,
+                                            out int matchedMassTags, 
+                                            out int matchedProteins)
         {
             List<MassTagLight> massTagArray = analysis.MassTagDatabase.MassTags;           
 
@@ -31,12 +34,12 @@ namespace MultiAlignCore.IO
             GenericDAOHibernate<MassTagToProteinMap> massTagToProteinMapDAOHibernate =
                                 new GenericDAOHibernate<MassTagToProteinMap>();
 
-            GenericDAOHibernate<StacFDR> stacFDRDAOHibernate    = new GenericDAOHibernate<StacFDR>();
+            GenericDAOHibernate<SmartFDR> stacFDRDAOHibernate    = new GenericDAOHibernate<SmartFDR>();
             List<MassTagLight> massTagList                      = new List<MassTagLight>();
             Dictionary<int, Protein> proteinList                = new Dictionary<int,Protein>();
             List<ClusterToMassTagMap> clusterToMassTagMapList   = new List<ClusterToMassTagMap>();
             List<MassTagToProteinMap> massTagToProteinMapList   = new List<MassTagToProteinMap>();
-            List<StacFDR> stacFDRResultsList                    = new List<StacFDR>();
+            List<SmartFDR> stacFDRResultsList                    = new List<SmartFDR>();
 
             foreach (FeatureMatchLight<UMCClusterLight, MassTagLight> match in analysis.PeakMatchingResults)
             {
@@ -51,35 +54,9 @@ namespace MultiAlignCore.IO
                     MassTagToProteinMap massTagToProteinMap = new MassTagToProteinMap(tag.ID, protein.RefID);
                     if (!clusterToMassTagMapList.Contains(clusterToMassTagMap))
                     {
-                        clusterToMassTagMapList.Add(clusterToMassTagMap);
-
-                        if (analysis.PeakMatchingOptions.UseSTAC)
-                        {                            
-                            // See if a STAC score exists                            
-                            List<classSMARTProbabilityResult> smartScores = null;
-                            smartScores = analysis.STACResults.GetResultFromUMCIndex(feature.ID);
-
-                            if (smartScores != null)
-                            {
-                                // Then pull out the STAC score that matches for this triplet Mass Tag
-                                classSMARTProbabilityResult finalResult = null;
-                                foreach (classSMARTProbabilityResult score in smartScores)
-                                {
-                                    if (score.MassTagID == tag.ID)
-                                    {
-                                        finalResult = score;
-                                        break;
-                                    }
-                                }
-
-                                if (finalResult != null)
-                                {
-                                    clusterToMassTagMap.StacScore = finalResult.Score;
-                                    clusterToMassTagMap.StacUP = finalResult.Specificity;
-                                }
-                            }
-                        }
-
+                        clusterToMassTagMapList.Add(clusterToMassTagMap);                        
+                        clusterToMassTagMap.StacScore   = match.Confidence;
+                        clusterToMassTagMap.StacUP      = match.Uniqueness;                        
                     }
 
                     if (!massTagToProteinMapList.Contains(massTagToProteinMap))
@@ -99,9 +76,18 @@ namespace MultiAlignCore.IO
                 }
             }
 
-            foreach (classSMARTFdrResult fdrResult in analysis.STACResults.GetSummaries())
+            /*foreach (classSMARTFdrResult fdrResult in analysis.SMARTResults.GetSummaries())
             {
-                stacFDRResultsList.Add(new StacFDR(fdrResult));
+                stacFDRResultsList.Add(new SmartFDR(fdrResult));
+            }*/
+            foreach (PNNLOmics.Algorithms.FeatureMatcher.Data.STACFDR fdr in fdrTable)
+            {
+                classSMARTFdrResult result  = new classSMARTFdrResult();
+                result.Cutoff               = fdr.Cutoff;
+                result.Error                = 0;
+                result.FDR                  = fdr.FDR;
+                result.NumMatches           = fdr.AMTMatches;
+                
             }
 
             List<Protein> uniqueProteins = new List<Protein>();
@@ -112,7 +98,6 @@ namespace MultiAlignCore.IO
 
             matchedMassTags = massTagList.Count;
             matchedProteins = uniqueProteins.Count;
-
 
             massTagDAOHibernate.AddAll(massTagList);
             proteinDAOHibernate.AddAll(uniqueProteins);

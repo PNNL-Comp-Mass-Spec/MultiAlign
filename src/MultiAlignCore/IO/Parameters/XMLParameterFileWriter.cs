@@ -86,15 +86,16 @@ namespace MultiAlignCore.IO.Parameters
         public void WriteParameterFile(string parameterFilePath, MultiAlignAnalysis analysis)
         {            				
 			MetaData metaData = new MetaData("PNNLProteomics");
-            ReflectParameterOptions(analysis.UMCFindingOptions,         metaData.OpenChild("UMCFindingOptions"));
-            ReflectParameterOptions(analysis.DefaultAlignmentOptions,   metaData.OpenChild("DefaultAlignmentOptions"));
-            ReflectParameterOptions(analysis.MassTagDBOptions,          metaData.OpenChild("MassTagDBOptions"));
-            ReflectParameterOptions(analysis.ClusterOptions,            metaData.OpenChild("ClusterOptions"));
-            ReflectParameterOptions(analysis.PeakMatchingOptions,       metaData.OpenChild("PeakMatchingOptions"));
-            ReflectParameterOptions(analysis.DriftTimeAlignmentOptions, metaData.OpenChild("DriftTimeAlignmentOptions"));
-            ReflectParameterOptions(analysis.MSLinkerOptions,           metaData.OpenChild("MSnLinkerOptions"));
-            ReflectParameterOptions(analysis.STACOptions,               metaData.OpenChild("STACOptions"));
-            ReflectParameterOptions(analysis.FeatureFilterOptions,      metaData.OpenChild("FeatureFilters"));
+            ReflectParameterOptions(analysis.Options.MSLinkerOptions, metaData.OpenChild("MSnLinkerOptions"));
+            ReflectParameterOptions(analysis.Options.UMCFindingOptions, metaData.OpenChild("UMCFindingOptions"));
+            ReflectParameterOptions(analysis.Options.FeatureFilterOptions, metaData.OpenChild("FeatureFilters"));
+            ReflectParameterOptions(analysis.Options.MassTagDBOptions, metaData.OpenChild("MassTagDBOptions"));
+            ReflectParameterOptions(analysis.Options.DefaultAlignmentOptions, metaData.OpenChild("DefaultAlignmentOptions"));
+            ReflectParameterOptions(analysis.Options.DriftTimeAlignmentOptions, metaData.OpenChild("DriftTimeAlignmentOptions"));
+            ReflectParameterOptions(analysis.Options.ClusterOptions, metaData.OpenChild("ClusterOptions"));
+            ReflectParameterOptions(analysis.Options.PeakMatchingOptions, metaData.OpenChild("PeakMatchingOptions"));
+            ReflectParameterOptions(analysis.Options.SMARTOptions, metaData.OpenChild("SMARTOptions"));
+            ReflectParameterOptions(analysis.Options.STACOptions, metaData.OpenChild("STACOptions"));
             metaData.WriteFile(parameterFilePath);
         }        
     }

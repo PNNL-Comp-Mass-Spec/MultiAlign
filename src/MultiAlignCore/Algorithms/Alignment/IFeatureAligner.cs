@@ -7,13 +7,14 @@ using MultiAlignEngine.Features;
 using MultiAlignEngine.MassTags;
 using MultiAlignCore.Data.Alignment;
 using MultiAlignCore.Data.MassTags;
+using PNNLOmics.Utilities;
 
 namespace MultiAlignCore.Algorithms.Alignment
 {
     /// <summary>
     /// Defines interface for alignment algorithms.
     /// </summary>
-    public interface IFeatureAligner
+    public interface IFeatureAligner : IStatusProvider
     {
         /// <summary>
         /// Aligns a set of features (from a dataset) to a mass tag database.

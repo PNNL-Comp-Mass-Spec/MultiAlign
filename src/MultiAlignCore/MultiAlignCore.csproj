@@ -198,6 +198,10 @@
     <Compile Include="Algorithms\FeatureFinding\UMCFeatureFinderOptions.cs" />
     <Compile Include="Algorithms\FeatureFinding\IFeatureFinder.cs" />
     <Compile Include="Algorithms\FeatureFinding\UMCFeatureFinder.cs" />
+    <Compile Include="Algorithms\FeatureMatcher\STACOptions.cs" />
+    <Compile Include="Algorithms\FeatureMatcher\PeakMatchingType.cs" />
+    <Compile Include="Algorithms\FeatureMatcher\SMART.cs" />
+    <Compile Include="Algorithms\FeatureMatcher\STAC.cs" />
     <Compile Include="Algorithms\FeaturesClusteredEventArgs.cs" />
     <Compile Include="Algorithms\Features\UMCConsolidator.cs" />
     <Compile Include="Algorithms\MSLinker\FeaturesExtractedEventArgs.cs" />
@@ -205,10 +209,11 @@
     <Compile Include="Algorithms\MSLinker\MSLinkerType.cs" />
     <Compile Include="Algorithms\MSLinker\MSnLinkerFactory.cs" />
     <Compile Include="Algorithms\MultiAlignAnalysisProcessor.cs" />
-    <Compile Include="Algorithms\PeakMatching\IPeakMatcher.cs" />
-    <Compile Include="Algorithms\PeakMatching\PeakMatcher.cs" />
-    <Compile Include="Algorithms\PeakMatching\STACOptions.cs" />
+    <Compile Include="Algorithms\FeatureMatcher\IPeakMatcher.cs" />
+    <Compile Include="Algorithms\FeatureMatcher\TraditionalPeakMatcher.cs" />
+    <Compile Include="Algorithms\FeatureMatcher\SMARTOptions.cs" />
     <Compile Include="ApplicationUtility.cs" />
+    <Compile Include="Data\AnalysisOptions.cs" />
     <Compile Include="Data\AnalysisUtils.cs" />
     <Compile Include="Data\Factors\DatasetToExperimentalFactorMap.cs" />
     <Compile Include="Data\Factors\ExperimentalFactor.cs" />
@@ -233,7 +238,7 @@
     <Compile Include="Data\MSFeatureToMSnFeatureMap.cs" />
     <Compile Include="Data\MultiAlignAnalysis.cs" />
     <Compile Include="Data\MultiAlignAnalysisDelegates.cs" />
-    <Compile Include="Data\StacFDR.cs" />
+    <Compile Include="Data\SmartFDR.cs" />
     <Compile Include="IO\Analysis\AnalysisAbundanceTableWriter.cs" />
     <Compile Include="IO\Analysis\AnalysisAlignmentDataWriter.cs" />
     <Compile Include="IO\Analysis\AnalysisBinaryReader.cs" />
@@ -340,6 +345,7 @@
     <Compile Include="Data\Cluster\classClusterMassTagMatch.cs" />
     <Compile Include="Data\Factors\FactorDefinitions.cs" />
     <Compile Include="Data\MassTags\clsMassTags.cs" />
+    <Compile Include="IStatusProvider.cs" />
     <Compile Include="Math\MathUtilities.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

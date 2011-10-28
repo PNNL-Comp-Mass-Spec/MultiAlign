@@ -94,14 +94,14 @@ namespace MultiAlignCore.IO.Parameters
             using (TextWriter writer = File.CreateText(filename))
             {
 
-                WriteOptionGroup(writer, ALIGNMENT_TAG,         analysis.DefaultAlignmentOptions); 
-                WriteOptionGroup(writer, FEATURE_FINDING_TAG,   analysis.UMCFindingOptions);                
-                WriteOptionGroup(writer, MASS_TAG_DATABASE_TAG, analysis.MassTagDBOptions);
-                WriteOptionGroup(writer, CLUSTER_TAG,           analysis.ClusterOptions);
-                WriteOptionGroup(writer, PEAK_MATCH_TAG,        analysis.PeakMatchingOptions);
+                WriteOptionGroup(writer, ALIGNMENT_TAG,         analysis.Options.DefaultAlignmentOptions);
+                WriteOptionGroup(writer, FEATURE_FINDING_TAG,   analysis.Options.UMCFindingOptions);
+                WriteOptionGroup(writer, MASS_TAG_DATABASE_TAG, analysis.Options.MassTagDBOptions);
+                WriteOptionGroup(writer, CLUSTER_TAG,           analysis.Options.ClusterOptions);
+                WriteOptionGroup(writer, PEAK_MATCH_TAG,        analysis.Options.PeakMatchingOptions);
 
                 writer.WriteLine("[" + GLOBAL_TAG + "]" );
-                WriteOption(writer, GLOBAL_OPTION_USE_MTDB_AS_BASELINE, analysis.UseMassTagDBAsBaseline);
+                WriteOption(writer, GLOBAL_OPTION_USE_MTDB_AS_BASELINE, analysis.Options.UseMassTagDBAsBaseline);
                 writer.WriteLine();
             }
 		} 

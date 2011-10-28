@@ -723,7 +723,7 @@ namespace MultiAlignWin
             {
                 DatasetInformation  info                = m_analysis.MetaData.Datasets[i];
                 classAlignmentData  alignmentData       = m_analysis.AlignmentData[i];
-                clsAlignmentOptions alignmentOptions    = m_analysis.AlignmentOptions[i];                               
+                clsAlignmentOptions alignmentOptions    = m_analysis.Options.DefaultAlignmentOptions;                               
                 controlDatasetInformation datasetControl = new controlDatasetInformation(info,
                                                                                         alignmentData,
                                                                                         alignmentOptions,
@@ -837,11 +837,11 @@ namespace MultiAlignWin
             m_resultSummaryPages.CreateSummary("Global Summary", m_analysis);            
             //m_resultSummaryPages.CreateSummary("Feature Data", mobjAnalysis.UMCData);
             //m_resultSummaryPages.CreateSummary("Cluster Data", mobjAnalysis.UMCData.mobjClusterData);
-            
-            m_analysisInformation.CreateSummary("Feature Finding Options", m_analysis.UMCFindingOptions);
-            m_analysisInformation.CreateSummary("Alignment Options", m_analysis.DefaultAlignmentOptions);
-            m_analysisInformation.CreateSummary("Mass Tag Database Options (MTDB)", m_analysis.MassTagDBOptions);
-            m_analysisInformation.CreateSummary("Cluster Options", m_analysis.ClusterOptions); 
+
+            m_analysisInformation.CreateSummary("Feature Finding Options", m_analysis.Options.UMCFindingOptions);
+            m_analysisInformation.CreateSummary("Alignment Options", m_analysis.Options.DefaultAlignmentOptions);
+            m_analysisInformation.CreateSummary("Mass Tag Database Options (MTDB)", m_analysis.Options.MassTagDBOptions);
+            m_analysisInformation.CreateSummary("Cluster Options", m_analysis.Options.ClusterOptions); 
 
             /// 
             /// If the datasets were peak matched, then display this control page.

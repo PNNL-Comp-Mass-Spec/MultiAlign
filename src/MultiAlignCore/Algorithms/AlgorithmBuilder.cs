@@ -1,8 +1,10 @@
 using MultiAlignCore.Algorithms.Alignment;
 using MultiAlignCore.Algorithms.Clustering;
-using MultiAlignCore.Algorithms.PeakMatching;
+using MultiAlignCore.Algorithms.FeatureMatcher;
 using PNNLOmics.Algorithms.FeatureClustering;
 using PNNLOmics.Data.Features;
+using MultiAlignCore.Data;
+using PNNLOmics.Algorithms.FeatureMatcher;
 
 namespace MultiAlignCore.Algorithms
 {
@@ -58,16 +60,59 @@ namespace MultiAlignCore.Algorithms
         /// <summary>
         /// Builds a peak matcher object.
         /// </summary>
-        public void BuildPeakMatcher()
+        public void BuildPeakMatcher(AnalysisOptions options)
         {
-            m_provider.PeakMatcher = new PeakMatcher<UMCClusterLight>();
+            PeakMatchingType type = PeakMatchingType.Traditional;
+            if (options.PeakMatchingOptions.UseSMART)
+            {
+                type = PeakMatchingType.SMART;
+            }
+            if (options.PeakMatchingOptions.UseSTAC)
+            {
+                type = PeakMatchingType.STAC;
+            }
+
+            switch(type)
+            {
+                case PeakMatchingType.Traditional:
+
+                    TraditionalPeakMatcher<UMCClusterLight> matcher     = new TraditionalPeakMatcher<UMCClusterLight>();
+                    matcher.Options                                     = options.PeakMatchingOptions;
+                    m_provider.PeakMatcher                              = new TraditionalPeakMatcher<UMCClusterLight>();
+                    break;
+                case PeakMatchingType.SMART:
+                    SMART<UMCClusterLight> smartMatcher                 = new SMART<UMCClusterLight>();
+                    smartMatcher.Options.IsDataPaired                   = options.SMARTOptions.IsDataPaired;
+                    smartMatcher.Options.MassTolerancePPM               = options.SMARTOptions.MassTolerancePPM;
+                    smartMatcher.Options.NETTolerance                   = options.SMARTOptions.NETTolerance;
+                    smartMatcher.Options.PairedMass                     = options.SMARTOptions.PairedMass;
+                    smartMatcher.Options.UsePriorProbabilities          = options.SMARTOptions.UsePriorProbabilities;
+                    m_provider.PeakMatcher                              = smartMatcher;
+                    break;
+                case PeakMatchingType.STAC:
+                default:
+                    STACAdapter<UMCClusterLight> stanleyMatcher         = new STACAdapter<UMCClusterLight>();
+                    stanleyMatcher.Options.HistogramBinWidth            = options.STACOptions.HistogramBinWidth;
+                    stanleyMatcher.Options.HistogramMultiplier          = options.STACOptions.HistogramMultiplier;
+                    stanleyMatcher.Options.ShiftAmount                  = options.STACOptions.ShiftAmount;
+                    stanleyMatcher.Options.ShouldCalculateHistogramFDR  = options.STACOptions.ShouldCalculateHistogramFDR;
+                    stanleyMatcher.Options.ShouldCalculateShiftFDR      = options.STACOptions.ShouldCalculateShiftFDR;
+                    stanleyMatcher.Options.ShouldCalculateSLiC          = options.STACOptions.ShouldCalculateSLiC;
+                    stanleyMatcher.Options.ShouldCalculateSTAC          = options.STACOptions.ShouldCalculateSTAC;
+                    stanleyMatcher.Options.UseDriftTime                 = options.STACOptions.UseDriftTime;
+                    stanleyMatcher.Options.UseEllipsoid                 = options.STACOptions.UseEllipsoid;
+                    stanleyMatcher.Options.UsePriors                    = options.STACOptions.UsePriors;
+                    stanleyMatcher.Options.UserTolerances               = options.STACOptions.UserTolerances;                    
+                    m_provider.PeakMatcher                              = stanleyMatcher;
+                    break;
+            }
         }
 
         /// <summary>
         /// Returns the list of algorithms post build.
         /// </summary>
         /// <returns></returns>
-        public AlgorithmProvider GetAlgorithmProvider()
+        public AlgorithmProvider GetAlgorithmProvider(AnalysisOptions options)
         {
             if (m_provider.Clusterer == null)
             {
@@ -79,7 +124,7 @@ namespace MultiAlignCore.Algorithms
             }
             if (m_provider.PeakMatcher == null)
             {
-                BuildPeakMatcher();
+                BuildPeakMatcher(options);
             }
             return m_provider;
         }

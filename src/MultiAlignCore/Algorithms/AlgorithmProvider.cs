@@ -2,6 +2,8 @@ using MultiAlignCore.Algorithms.PeakMatching;
 using PNNLOmics.Algorithms.FeatureClustering;
 using MultiAlignCore.Algorithms.Alignment;
 using PNNLOmics.Data.Features;
+using PNNLOmics.Utilities;
+using MultiAlignCore.Algorithms.FeatureMatcher;
 
 namespace MultiAlignCore.Algorithms
 {
@@ -11,6 +13,11 @@ namespace MultiAlignCore.Algorithms
     /// </summary>
     public class AlgorithmProvider
     {
+        /// <summary>
+        /// Fired when a status message needs to be logged.
+        /// </summary>
+        public event MessageEventHandler Status;
+
         /// <summary>
         /// Clusters features into feature clusters.
         /// </summary>
@@ -76,5 +83,36 @@ namespace MultiAlignCore.Algorithms
                 m_peakMatcher = value;
             }
         }
+        
+        /// <summary>
+        /// Registers events for algorithms.
+        /// </summary>
+        public void RegisterEvents()
+        {
+            RegisterEvents(PeakMatcher, Aligner);
+        }
+        /// <summary>
+        /// Registers status event handlers for each algorithm type.
+        /// </summary>
+        /// <param name="providers"></param>
+        private void RegisterEvents(params IStatusProvider [] providers)
+        {
+            foreach (IStatusProvider provider in providers)
+            {
+                provider.Status += new MessageEventHandler(StatusHandler);
+            }
+        }
+        /// <summary>
+        /// Propogates the messages to the main listener/observer.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void StatusHandler(object sender, MessageEventArgs e)
+        {
+            if (Status != null)
+            {
+                Status(sender, e);
+            }
+        }        
     }
 }

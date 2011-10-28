@@ -33,30 +33,15 @@ namespace MultiAlignCore.Data
             // Meta Data Information about the analysis and datasets.
             MetaData                        = new AnalysisMetaData();
             MetaData.AnalysisName           = string.Empty;
-
-            // UMC Finding options
-			UMCFindingOptions               = new UMCFeatureFinderOptions();
+            Options                         = new AnalysisOptions();
             
             // Alignment options and data.
             AlignmentData                   = new List<classAlignmentData>();
-            AlignmentOptions                = new List<clsAlignmentOptions>(); 
-			DefaultAlignmentOptions         = new MultiAlignEngine.Alignment.clsAlignmentOptions() ; 
-			DriftTimeAlignmentOptions       = new DriftTimeAlignmentOptions();
-            UseMassTagDBAsBaseline          = false; 
-
-            // Clustering Options
-			ClusterOptions                  = new MultiAlignEngine.Clustering.clsClusterOptions() ;
-
-            // Peak Matching and MTDB
-            PeakMatchingOptions             = new clsPeakMatchingOptions();
-			MassTagDBOptions                = new MultiAlignEngine.MassTags.clsMassTagDatabaseOptions() ; 
+           
 			PeakMatchedToMassTagDB          = false; 
             
             // STAC Options and results
-            STACOptions                     = new STACOptions();
-            STACResults                     = new classSMARTResults();
-            MSLinkerOptions                 = new Algorithms.MSLinker.MSLinkerOptions();
-            FeatureFilterOptions            = new FeatureFilterOptions();
+            SMARTResults                     = new classSMARTResults();
         }
         #endregion
 
@@ -129,15 +114,11 @@ namespace MultiAlignCore.Data
         /// </summary>
         public void Dispose()
         {
-            AlignmentOptions.Clear();
             MetaData.Datasets.Clear();
         }
 
-        #region Properties   
-        /// <summary>
-        /// Gets or sets the filter criteria for loading features.
-        /// </summary>
-        public FeatureFilterOptions FeatureFilterOptions
+        #region Properties
+        public AnalysisOptions Options
         {
             get;
             set;
@@ -161,15 +142,7 @@ namespace MultiAlignCore.Data
         /// <summary>
         /// Gets or sets the SMART results calculated.
         /// </summary>
-        public classSMARTResults STACResults
-        {
-            get;
-            set;
-        }
-        /// <summary>
-        /// Gets or sets the SMART Options to use.
-        /// </summary>
-        public STACOptions STACOptions
+        public classSMARTResults SMARTResults
         {
             get;
             set;
@@ -195,63 +168,6 @@ namespace MultiAlignCore.Data
         /// </summary>
         [clsDataSummaryAttribute("Baseline Dataset")]
         public string BaselineDatasetName
-        {
-            get;
-            set;
-        }	
-        /// <summary>
-        /// Gets or sets the Alignment Options.
-        /// </summary>
-		public List<clsAlignmentOptions> AlignmentOptions
-		{
-			get;
-            set;
-		}
-        /// <summary>
-        /// Gets or sets the options for linking MS features to MSMS Spectra.
-        /// </summary>
-        public MultiAlignCore.Algorithms.MSLinker.MSLinkerOptions MSLinkerOptions
-        {
-            get;
-            set;
-        }
-        /// <summary>
-        /// Gets or sets the mass tag database options.
-        /// </summary>
-        public MultiAlignEngine.MassTags.clsMassTagDatabaseOptions MassTagDBOptions
-        {
-            get;
-            set;
-        }
-        /// <summary>
-        /// Gets or sets whether to use the mass tag database as the baseline dataset.
-        /// </summary>
-        [clsDataSummaryAttribute("Use MTDB As Baseline")]
-        public bool UseMassTagDBAsBaseline
-        {
-            get;
-            set;
-        }
-        /// <summary>
-        /// Gets or sets the UMC Finding Options.
-        /// </summary>
-        public UMCFeatureFinderOptions UMCFindingOptions
-        {
-            get;
-            set;
-        }
-        /// <summary>
-        /// Gets or sets the cluster options.
-        /// </summary>
-        public clsClusterOptions ClusterOptions
-        {
-            get;
-            set;
-        }
-        /// <summary>
-        /// Gets or sets the cluster options.
-        /// </summary>
-        public clsPeakMatchingOptions PeakMatchingOptions
         {
             get;
             set;
@@ -289,19 +205,7 @@ namespace MultiAlignCore.Data
         {
             get;
             set;
-        }
-        [clsDataSummaryAttribute("Default Alignment Options")]
-        public clsAlignmentOptions DefaultAlignmentOptions
-        {
-            get;
-            set;
-        }
-        [clsDataSummaryAttribute("Drift Time Options")]
-        public DriftTimeAlignmentOptions DriftTimeAlignmentOptions
-        {
-            get;
-            set;
-        }       
+        }    
         #endregion
     }    
 }

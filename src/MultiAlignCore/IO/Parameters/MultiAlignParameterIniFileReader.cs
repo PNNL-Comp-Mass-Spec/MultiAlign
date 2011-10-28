@@ -123,7 +123,7 @@ namespace MultiAlignCore.IO.Parameters
         private void LoadGlobalOptions(ref MultiAlignAnalysis analysis)
         {            
             Dictionary<string, string> map  = ProcessSubSectionData(GLOBAL_TAG);
-            analysis.UseMassTagDBAsBaseline = Convert.ToBoolean(map["Use Mass Tag DB As Baseline"]);            
+            analysis.Options.UseMassTagDBAsBaseline = Convert.ToBoolean(map["Use Mass Tag DB As Baseline"]);            
         }
         /// <summary>
         /// Load the parameters from the object
@@ -185,12 +185,12 @@ namespace MultiAlignCore.IO.Parameters
             ExtractGroups(lines);
 
             // Load options.
-            clsAlignmentOptions alignmentOptions = analysis.AlignmentOptions[0];
+            clsAlignmentOptions alignmentOptions            = analysis.Options.DefaultAlignmentOptions;
             LoadParameterOptions(ProcessSubSectionData(ALIGNMENT_TAG), alignmentOptions);            
-            LoadParameterOptions(ProcessSubSectionData(FEATURE_FINDING_TAG),     analysis.UMCFindingOptions);
-            LoadParameterOptions(ProcessSubSectionData(PEAK_MATCH_TAG),          analysis.PeakMatchingOptions);
-            LoadParameterOptions(ProcessSubSectionData(MASS_TAG_DATABASE_TAG),   analysis.MassTagDBOptions);
-            LoadParameterOptions(ProcessSubSectionData(CLUSTER_TAG),             analysis.ClusterOptions);
+            LoadParameterOptions(ProcessSubSectionData(FEATURE_FINDING_TAG),     analysis.Options.UMCFindingOptions);
+            LoadParameterOptions(ProcessSubSectionData(PEAK_MATCH_TAG),          analysis.Options.PeakMatchingOptions);
+            LoadParameterOptions(ProcessSubSectionData(MASS_TAG_DATABASE_TAG),   analysis.Options.MassTagDBOptions);
+            LoadParameterOptions(ProcessSubSectionData(CLUSTER_TAG),             analysis.Options.ClusterOptions);
             LoadGlobalOptions(ref analysis);                 
         }
     }
