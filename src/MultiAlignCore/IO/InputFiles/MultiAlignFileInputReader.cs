@@ -97,6 +97,7 @@ namespace MultiAlignCore.IO.InputFiles
                             {
                                 InputFile newFile   = new InputFile();
                                 newFile.DatasetName = baselineCheck[0];
+                                newFile.Path        = baselineCheck[0];
                                 newFile.FileType    = InputFileType.Features;
                                 info.BaselineFile   = newFile;                                
                                 info.Files.Add(newFile);
@@ -105,6 +106,7 @@ namespace MultiAlignCore.IO.InputFiles
                             {
                                 InputFile newFile   = new InputFile();
                                 newFile.Path        = baselineCheck[0];
+                                newFile.DatasetName = baselineCheck[0];
                                 newFile.FileType    = InputFileType.Features;                                
                                 info.Files.Add(newFile);
                             }                            

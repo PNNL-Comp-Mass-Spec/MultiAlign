@@ -35,8 +35,8 @@ namespace MultiAlignCore.Data
             Options                         = new AnalysisOptions();
             
             // Alignment options and data.
-            AlignmentData                   = new List<classAlignmentData>();           
-			PeakMatchedToMassTagDB          = false;             
+            AlignmentData                   = new List<classAlignmentData>();
+            MatchResults                    = null;
         }
         #endregion
 
@@ -151,40 +151,13 @@ namespace MultiAlignCore.Data
             set;
         }
         /// <summary>
-        /// Gets or sets the name of the baseline dataset.
-        /// </summary>
-        [clsDataSummaryAttribute("Baseline Dataset")]
-        public string BaselineDatasetName
-        {
-            get;
-            set;
-        }
-        /// <summary>
         /// Gets the peak matching results 
         /// </summary>
-        public List<FeatureMatchLight<UMCClusterLight, MassTagLight>> PeakMatchingResults
+        public PeakMatchingResults<UMCClusterLight, MassTagLight> MatchResults
         {
             get;
             set;
-        }
-        /// <summary>
-        /// Gets the peak matching results from the 11 Da shift.
-        /// </summary>
-        public List<FeatureMatchLight<UMCClusterLight, MassTagLight>> ShiftedPeakMatchingResults
-        {
-            get;
-            set;
-        }
-        /// <summary>
-        /// Gets the flag whether the results were peaked matched against the Mass Tag Database.
-        /// </summary>
-        [clsDataSummaryAttribute("Peaks Matched to MTDB")]
-        public bool PeakMatchedToMassTagDB
-        {
-            get;
-            private set;
-        }
-        
+        }        
         /// <summary>
         /// Gets or sets the mass tag database.
         /// </summary>

@@ -358,42 +358,26 @@ namespace MultiAlignConsole
             if (!m_createdBaselinePlots)
             {                
                 m_createdBaselinePlots  = true;
-
-                // This may not be necessary...
-                int baselineIndex       = -1;
-                int index               = 0;
-                foreach (DatasetInformation info in m_analysis.MetaData.Datasets)
+                if (m_analysis.MetaData.BaselineDataset != null)
                 {
-                    if (info.DatasetName == m_analysis.BaselineDatasetName)
-                    {
-                        baselineIndex = index;
-                        break;
-                    }
-                    else
-                    {
-                        index++;
-                    }
-                }
-                if (baselineIndex >= 0)
-                {
-                    m_report.PushTextHeader("Baseline Dataset for " + m_analysis.BaselineDatasetName);
+                    m_report.PushTextHeader("Baseline Dataset for " + m_analysis.MetaData.BaselineDataset.DatasetName);
                     m_report.PushStartTable();
                     m_report.PushStartTableRow();
 
-                    DatasetInformation baselineInfo     = m_analysis.MetaData.Datasets[baselineIndex];
+                    DatasetInformation baselineInfo     = m_analysis.MetaData.BaselineDataset;
                     ChartDisplayOptions baselineOptions = new ChartDisplayOptions(false, true, true, true);
-                    baselineOptions.MarginMin       = 1;
-                    baselineOptions.MarginMax       = 100;
-                    baselineOptions.Title           = "Feature Plot " + baselineInfo.DatasetName;
-                    baselineOptions.XAxisLabel      = "Scan";
-                    baselineOptions.YAxisLabel      = "Monoisotopic Mass";
-                    baselineOptions.Width           = m_width;
-                    baselineOptions.Height          = m_height;
-                    baselineOptions.DisplayLegend   = true;
-                    List<clsUMC> baselineUmcs       = m_dataProviders.FeatureCache.FindByDatasetId(Convert.ToInt32(baselineInfo.DatasetId));
-                    Image baselineImage             = RenderDatasetInfo.FeaturesScatterPlot_Thumbnail(baselineUmcs, baselineOptions);
-                    string baselineLabelName        = Path.GetFileNameWithoutExtension(baselineInfo.DatasetName) + "_featurePlot.png";
-                    string baselinePath             = Path.Combine(m_plotSavePath, baselineLabelName);
+                    baselineOptions.MarginMin           = 1;
+                    baselineOptions.MarginMax           = 100;
+                    baselineOptions.Title               = "Feature Plot " + baselineInfo.DatasetName;
+                    baselineOptions.XAxisLabel          = "Scan";
+                    baselineOptions.YAxisLabel          = "Monoisotopic Mass";
+                    baselineOptions.Width               = m_width;
+                    baselineOptions.Height              = m_height;
+                    baselineOptions.DisplayLegend       = true;
+                    List<clsUMC> baselineUmcs           = m_dataProviders.FeatureCache.FindByDatasetId(Convert.ToInt32(baselineInfo.DatasetId));
+                    Image baselineImage                 = RenderDatasetInfo.FeaturesScatterPlot_Thumbnail(baselineUmcs, baselineOptions);
+                    string baselineLabelName            = Path.GetFileNameWithoutExtension(baselineInfo.DatasetName) + "_featurePlot.png";
+                    string baselinePath                 = Path.Combine(m_plotSavePath, baselineLabelName);
                     baselineImage.Save(baselinePath, System.Drawing.Imaging.ImageFormat.Png);
                     m_report.PushImageColumn(Path.Combine("Plots", baselineLabelName));
                     m_report.PushEndTableRow();
@@ -939,13 +923,7 @@ namespace MultiAlignConsole
         /// <param name="sender"></param>
         /// <param name="e"></param>
         static void processor_AnalysisComplete(object sender, AnalysisCompleteEventArgs e)
-        {
-            PrintMessage("Saving dataset information to database.");
-            DatasetDAOHibernate datasetDAOHibernate = new DatasetDAOHibernate();
-            List<DatasetInformation> datasetList    = m_analysis.MetaData.Datasets;
-            datasetDAOHibernate.AddAll(datasetList);
-
-
+        {            
             if (m_analysis.MassTagDatabase != null)
             {
                 m_report.PushLargeText("Mass Tag Database Stats");                
@@ -1010,6 +988,18 @@ namespace MultiAlignConsole
         {
             PrintMessage(e.StatusMessage);
         }        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        static void processor_FeaturesExtracted(object sender, MultiAlignCore.Algorithms.MSLinker.FeaturesExtractedEventArgs e)
+        {
+            string extractionPath = Path.Combine(m_analysisPath, m_exporterNames.ClusterMSMSPath);
+
+            FeatureExtractionTableWriter writer = new MultiAlignCore.IO.Features.FeatureExtractionTableWriter();
+            writer.WriteData(extractionPath, e);
+        }
         #endregion
                
         #region Data Provider Setup
@@ -1094,15 +1084,7 @@ namespace MultiAlignConsole
             processor.AlgorithmProvders     = builder.GetAlgorithmProvider(m_analysis.Options);
 
             return processor;
-        }
-
-        static void processor_FeaturesExtracted(object sender, MultiAlignCore.Algorithms.MSLinker.FeaturesExtractedEventArgs e)
-        {
-            string extractionPath = Path.Combine(m_analysisPath, m_exporterNames.ClusterMSMSPath);
-
-            FeatureExtractionTableWriter writer = new MultiAlignCore.IO.Features.FeatureExtractionTableWriter();
-            writer.WriteData(extractionPath, e);
-        }
+        }        
         /// <summary>
         /// Sets up the analysis essentials including analysis path, log path, and prints the version and parameter information
         /// to the log.
@@ -1275,8 +1257,9 @@ namespace MultiAlignConsole
         /// </summary>
         /// <param name="analysisSetupInformation"></param>
         /// <param name="useMTDB"></param>
-        private static bool ConstructBaselines(InputAnalysisInfo analysisSetupInformation, bool useMTDB)
+        private static bool ConstructBaselines(InputAnalysisInfo analysisSetupInformation, AnalysisMetaData analysisMetaData,  bool useMTDB)
         {
+            PrintMessage("Confirming baseline selections.");
             if (useMTDB)
             {
                 switch (analysisSetupInformation.Database.DatabaseFormat)
@@ -1309,10 +1292,16 @@ namespace MultiAlignConsole
                 }
                 else
                 {
-                    m_analysis.Options.UseMassTagDBAsBaseline = false;
-                    string baselineDataset = Path.GetFileName(analysisSetupInformation.BaselineFile.Path);
-                    m_analysis.BaselineDatasetName = baselineDataset;
-                    PrintMessage(string.Format("Using dataset {0} as the alignment baseline.", baselineDataset));
+                    m_analysis.Options.UseMassTagDBAsBaseline   = false;                                     
+                    m_analysis.MetaData.BaselineDataset         = null;
+                    foreach (DatasetInformation info in analysisMetaData.Datasets)
+                    {
+                        if (info.Path == analysisSetupInformation.BaselineFile.Path)
+                        {                            
+                            m_analysis.MetaData.BaselineDataset = info;
+                        }
+                    }                    
+                    PrintMessage(string.Format("Using dataset {0} as the alignment baseline.", m_analysis.MetaData.BaselineDataset));
                 }
             }
             else
@@ -1326,10 +1315,16 @@ namespace MultiAlignConsole
                     return false;
                 }
                 else
-                {
-                    string baselineDataset = Path.GetFileName(analysisSetupInformation.BaselineFile.Path);
-                    m_analysis.BaselineDatasetName = baselineDataset;
-                    PrintMessage(string.Format("Using dataset {0} as the alignment baseline.", baselineDataset));
+                {                    
+                    m_analysis.MetaData.BaselineDataset         = null;
+                    foreach (DatasetInformation info in analysisMetaData.Datasets)
+                    {
+                        if (info.Path == analysisSetupInformation.BaselineFile.Path)
+                        {                            
+                            m_analysis.MetaData.BaselineDataset = info;
+                        }
+                    }                    
+                    PrintMessage(string.Format("Using dataset {0} as the alignment baseline.", m_analysis.MetaData.BaselineDataset));
                 }
             }
             return true;
@@ -1605,18 +1600,7 @@ namespace MultiAlignConsole
                     /// /////////////////////////////////////////////////////////////
                     /// Read the parameter files.
                     /// /////////////////////////////////////////////////////////////            
-                    // Parameter files and baseline setup 
                     ReadParameterFile();
-                    bool isBaselineSpecified = ConstructBaselines(analysisSetupInformation, useMTDB);
-                    if (!isBaselineSpecified)
-                    {
-                        return 1;
-                    }
-                    ExportParameterFile();
-                    
-                    PrintSpacer();
-                    PrintParameters(m_analysis);
-                    PrintSpacer();
 
                     /// /////////////////////////////////////////////////////////////
                     /// Construct Dataset information
@@ -1624,7 +1608,17 @@ namespace MultiAlignConsole
                     // Construct the dataset information for export.
                     ConstructDatasetInformation(analysisSetupInformation, m_analysis);
                     ConstructFactorInformation(analysisSetupInformation,  m_analysis.MetaData.Datasets);
-            
+
+                    bool isBaselineSpecified = ConstructBaselines(analysisSetupInformation, m_analysis.MetaData, useMTDB);
+                    if (!isBaselineSpecified)
+                    {
+                        return 1;
+                    }
+                    
+                    ExportParameterFile();
+                    PrintSpacer();
+                    PrintParameters(m_analysis);
+                    PrintSpacer();
 
                     /// /////////////////////////////////////////////////////////////
                     /// Setup the processor.
@@ -1678,8 +1672,17 @@ namespace MultiAlignConsole
 		{
 			IntPtr handle = System.Diagnostics.Process.GetCurrentProcess().MainWindowHandle;
 			SetConsoleMode(handle, ENABLE_EXTENDED_FLAGS);
-            ProcessCommandLineArguments(args);
-            return StartMultiAlign();
+
+            try
+            {
+                ProcessCommandLineArguments(args);
+                return StartMultiAlign();
+            }
+            catch(Exception ex)
+            {
+                PrintMessage("Unhandled Error: " + ex.Message);
+                return 1;
+            }
         }
     }       
 }

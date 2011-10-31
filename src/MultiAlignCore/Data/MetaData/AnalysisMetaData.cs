@@ -31,6 +31,15 @@ namespace MultiAlignCore.Data
             set;
         }
         /// <summary>
+        /// Gets or sets the name of the baseline dataset.
+        /// </summary>
+        [clsDataSummaryAttribute("Baseline Dataset")]
+        public DatasetInformation BaselineDataset
+        {
+            get;
+            set;
+        }
+        /// <summary>
         /// Gets or sets the input file used.
         /// </summary>
 		[clsDataSummaryAttribute("Input File Definition Name")]
@@ -56,8 +65,7 @@ namespace MultiAlignCore.Data
         {
             get;
             set;
-        }
-        
+        }        
 		/// <summary>
 		/// Get/Set the analysis as a hiearchy of datasets with related factor information for grouping.
 		/// </summary>
@@ -65,8 +73,7 @@ namespace MultiAlignCore.Data
 		{
 			get;
             set;
-		}
-        
+		}        
         /// <summary>
         /// Gets or sets the name of the analysis.
         /// </summary>

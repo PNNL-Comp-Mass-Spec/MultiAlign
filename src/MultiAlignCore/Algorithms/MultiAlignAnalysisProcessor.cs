@@ -170,6 +170,127 @@ namespace MultiAlignCore.Algorithms
         }
         #endregion
 
+        #region Data Loading Methods
+        /// <summary>
+        /// Loads raw file data.
+        /// </summary>
+        /// <param name="otherFiles"></param>
+        /// <param name="analysisPath"></param>
+        /// <param name="dataProviders"></param>
+        private void LoadOtherData(List<InputFile> otherFiles,
+                                    string analysisPath,
+                                    FeatureDataAccessProviders dataProviders)
+        {
+
+            Dictionary<string, int> datasetMap = new Dictionary<string, int>();
+            Dictionary<int, int> datasetIDMap = new Dictionary<int, int>();
+            IRawDataFileReader rawReader = null;
+            ScansFileReader scansReader = new ScansFileReader();
+            IMSnFeatureDAO msnCache = dataProviders.MSnFeatureCache;
+
+            // Map the dataset ids
+            foreach (DatasetInformation information in m_analysis.MetaData.Datasets)
+            {
+                string datasetName = DatasetInformation.CleanNameDatasetNameOfExtensions(information.DatasetName);
+                datasetMap.Add(datasetName, Convert.ToInt32(information.DatasetId));
+                datasetIDMap.Add(Convert.ToInt32(information.DatasetId), 0);
+            }
+
+            int datasetID = 0;
+            foreach (InputFile file in otherFiles)
+            {
+                string path = file.Path;
+                if (path == null)
+                    continue;
+
+                string datasetName = DatasetInformation.CleanNameDatasetNameOfExtensions(path);
+                datasetName = Path.GetFileNameWithoutExtension(datasetName);
+                bool containsKey = datasetMap.ContainsKey(datasetName);
+                if (containsKey)
+                {
+                    datasetID = datasetMap[datasetName];
+                }
+                else
+                {
+                    bool hasID = true;
+                    datasetID = 0;
+                    while (hasID)
+                    {
+                        datasetID++;
+                        hasID = datasetIDMap.ContainsKey(datasetID);
+                    }
+                    datasetMap.Add(datasetName, datasetID);
+                    datasetIDMap.Add(datasetID, 0);
+                }
+
+                UpdateStatus("Loading auxillary file " + Path.GetFileName(path) + ".");
+                switch (file.FileType)
+                {
+                    case InputFileType.Scans:
+                        List<ScanSummary> scans = scansReader.ReadFile(path).ToList();
+                        break;
+                    case InputFileType.Raw:
+                        rawReader = RawLoaderFactory.CreateFileReader(path);
+                        List<MSSpectra> msnSpectra = rawReader.ReadMSMSSpectra(path);
+                        int id = 0;
+                        foreach (MSSpectra spectra in msnSpectra)
+                        {
+                            spectra.ID = id++;
+                            spectra.GroupID = datasetID;
+                        }
+                        try
+                        {
+                            msnCache.AddAll(msnSpectra);
+                        }
+                        catch (Exception ex)
+                        {
+                            throw ex;
+                        }
+                        break;
+
+                }
+            }
+        }
+        /// <summary>
+        /// Load the data from the dataset information objects to the cache at the analysis Path
+        /// </summary>
+        /// <param name="datasets">Datasets to load.</param>
+        /// <param name="options">Options to use for UMC finding if required.</param>
+        /// <param name="analysisPath">Path to save data to.</param>
+        private void LoadDatasetData(List<DatasetInformation> datasets,
+                                     UMCFeatureFinderOptions options,
+                                     string analysisPath)
+        {
+            IUmcDAO featureCache = m_analysis.DataProviders.FeatureCache;
+            IMSFeatureDAO msFeatureCache = m_analysis.DataProviders.MSFeatureCache;
+            IGenericDAO<MSFeatureToLCMSFeatureMap> map = m_analysis.DataProviders.MSFeatureToLCMSFeatureCache;
+
+            foreach (DatasetInformation dataset in datasets)
+            {
+                UpdateStatus("Loading dataset " + dataset.DatasetName + ".");
+                List<clsUMC> features = UMCLoaderFactory.LoadData(dataset,
+                                                                    featureCache,
+                                                                    msFeatureCache,
+                                                                    map,
+                                                                    options);
+
+                UpdateStatus(string.Format("Filtering {0} features found.", features.Count));
+                int preFiltered = features.Count;
+                features = MultiAlignCore.Data.Features.LCMSFeatureFilters.FilterFeatures(features, m_analysis.Options.FeatureFilterOptions);
+                UpdateStatus(string.Format("Filtered features from: {0} to {1}.", preFiltered, features.Count));
+                UpdateStatus("Adding features to cache database.");
+                featureCache.AddAll(features);
+                if (FeaturesLoaded != null)
+                {
+                    FeaturesLoadedEventArgs args = new FeaturesLoadedEventArgs(dataset, features);
+                    FeaturesLoaded(this, args);
+                }
+                features.Clear();
+                features = null;
+            }
+        }          
+        #endregion
+
         #region Analysis Methods
         /// <summary>
         /// Links MSMS data to MS Features.
@@ -231,125 +352,7 @@ namespace MultiAlignCore.Algorithms
                     providers.MSFeatureToMSnFeatureCache.AddAll(matches);
                 
             }
-        }
-        /// <summary>
-        /// Loads raw file data.
-        /// </summary>
-        /// <param name="otherFiles"></param>
-        /// <param name="analysisPath"></param>
-        /// <param name="dataProviders"></param>
-        private void LoadOtherData( List<InputFile>             otherFiles,                                    
-                                    string                      analysisPath,
-                                    FeatureDataAccessProviders  dataProviders)
-        {           
-
-            Dictionary<string, int> datasetMap  = new Dictionary<string, int>();
-            Dictionary<int, int> datasetIDMap   = new Dictionary<int, int>();
-            IRawDataFileReader  rawReader       = null;
-            ScansFileReader     scansReader     = new ScansFileReader();
-            IMSnFeatureDAO      msnCache        = dataProviders.MSnFeatureCache;
-
-            // Map the dataset ids
-            foreach(DatasetInformation information in m_analysis.MetaData.Datasets)
-            {
-                string datasetName = DatasetInformation.CleanNameDatasetNameOfExtensions(information.DatasetName);
-                datasetMap.Add(datasetName, Convert.ToInt32(information.DatasetId));
-                datasetIDMap.Add(Convert.ToInt32(information.DatasetId), 0);
-            }
-
-            int datasetID = 0;
-            foreach (InputFile file in otherFiles)
-            {
-                string path = file.Path;
-                if (path == null)
-                    continue;
-
-                string datasetName  = DatasetInformation.CleanNameDatasetNameOfExtensions(path);
-                datasetName         = Path.GetFileNameWithoutExtension(datasetName);                
-                bool containsKey    = datasetMap.ContainsKey(datasetName);
-                if (containsKey)
-                {
-                    datasetID = datasetMap[datasetName];
-                }
-                else
-                {
-                    bool hasID = true;
-                    datasetID  = 0;
-                    while(hasID)
-                    {
-                        datasetID++;
-                        hasID = datasetIDMap.ContainsKey(datasetID);
-                    }
-                    datasetMap.Add(datasetName, datasetID);
-                    datasetIDMap.Add(datasetID, 0);
-                }
-
-                UpdateStatus("Loading auxillary file " + Path.GetFileName(path) + ".");                
-                switch(file.FileType)
-                {
-                    case InputFileType.Scans:                            
-                        List<ScanSummary> scans     = scansReader.ReadFile(path).ToList();
-                        break;
-                    case InputFileType.Raw:
-                        rawReader                   = RawLoaderFactory.CreateFileReader(path);
-                        List<MSSpectra> msnSpectra  = rawReader.ReadMSMSSpectra(path);
-                        int id                      = 0;
-                        foreach (MSSpectra spectra in msnSpectra)
-                        {
-                            spectra.ID      = id++;
-                            spectra.GroupID = datasetID;
-                        }
-                        try
-                        {
-                            msnCache.AddAll(msnSpectra);
-                        }
-                        catch(Exception ex)
-                        {
-                            throw ex;
-                        }
-                        break;
-
-                }                                
-            }
-        }          
-        /// <summary>
-        /// Load the data from the dataset information objects to the cache at the analysis Path
-        /// </summary>
-        /// <param name="datasets">Datasets to load.</param>
-        /// <param name="options">Options to use for UMC finding if required.</param>
-        /// <param name="analysisPath">Path to save data to.</param>
-        private void LoadDatasetData(List<DatasetInformation> datasets,
-                                     UMCFeatureFinderOptions  options,
-                                     string analysisPath)
-        {            
-            IUmcDAO featureCache            = m_analysis.DataProviders.FeatureCache;
-            IMSFeatureDAO msFeatureCache    = m_analysis.DataProviders.MSFeatureCache;
-            IGenericDAO<MSFeatureToLCMSFeatureMap> map = m_analysis.DataProviders.MSFeatureToLCMSFeatureCache;
-
-            foreach (DatasetInformation dataset in datasets)
-            {
-                UpdateStatus("Loading dataset " + dataset.DatasetName + ".");
-                List<clsUMC> features = UMCLoaderFactory.LoadData(  dataset,
-                                                                    featureCache,
-                                                                    msFeatureCache,
-                                                                    map,
-                                                                    options);
-
-                UpdateStatus(string.Format("Filtering {0} features found.", features.Count));
-                int preFiltered = features.Count;
-                features = MultiAlignCore.Data.Features.LCMSFeatureFilters.FilterFeatures(features, m_analysis.Options.FeatureFilterOptions);
-                UpdateStatus(string.Format("Filtered features from: {0} to {1}.", preFiltered, features.Count));
-                UpdateStatus("Adding features to cache database.");
-                featureCache.AddAll(features);
-                if (FeaturesLoaded != null)
-                {
-                    FeaturesLoadedEventArgs args = new FeaturesLoadedEventArgs(dataset, features);
-                    FeaturesLoaded(this, args);
-                }
-                features.Clear();
-                features = null;
-            }
-        }          
+        }        
         /// <summary>
         /// Performs clustering using the mammoth framework.
         /// </summary>
@@ -466,26 +469,16 @@ namespace MultiAlignCore.Algorithms
             // Load the baseline data.
             List<clsUMC> baselineFeatures   = null;
             int baselineDatasetID           = -1;
-            DatasetInformation baselineInfo = null;
+            DatasetInformation baselineInfo = analysis.MetaData.BaselineDataset;
 
             if (!analysis.Options.UseMassTagDBAsBaseline)
             {
-                UpdateStatus("Confirming baseline dataset and features.");
-                int i = 0;
-                foreach(DatasetInformation info in analysis.MetaData.Datasets)
+                if (baselineInfo == null)
                 {
-                    //TODO: Check the path of the dataset as the dataset name!
-                    if (info.DatasetName == analysis.BaselineDatasetName)
-                    {
-                        baselineDatasetID = i;
-                        break;
-                    }
-                    i++;
+                    throw new Exception("The baseline dataset was never set.");
                 }
-                baselineInfo        = analysis.MetaData.Datasets[baselineDatasetID];
-
                 UpdateStatus("Loading baseline features from " + baselineInfo.DatasetName + " for alignment.");
-                baselineFeatures    = featureCache.FindByDatasetId(baselineDatasetID);
+                baselineFeatures    = featureCache.FindByDatasetId(baselineInfo.DatasetId);
             }
 
             // This says that the user 
@@ -771,23 +764,26 @@ namespace MultiAlignCore.Algorithms
                     //    m_analysis.ShiftedPeakMatchingResults   = matches;
                     //}
                     UpdateStatus("Performing Peak Matching");
-                    List<FeatureMatchLight<UMCClusterLight, MassTagLight>> matches = peakMatcher.PerformPeakMatching(clusters, m_analysis.MassTagDatabase);
+                    PeakMatchingResults<UMCClusterLight, MassTagLight> matchResults = new PeakMatchingResults<UMCClusterLight, MassTagLight>();
+                    matchResults.Matches = peakMatcher.PerformPeakMatching(clusters, m_analysis.MassTagDatabase);
 
-                    STACAdapter<UMCClusterLight> adapter = peakMatcher as STACAdapter<UMCClusterLight>;
-                    List<PNNLOmics.Algorithms.FeatureMatcher.Data.STACFDR> fdrTable = new List<PNNLOmics.Algorithms.FeatureMatcher.Data.STACFDR>();
+                    // Was STAC performed?
+                    STACAdapter<UMCClusterLight> adapter = peakMatcher as STACAdapter<UMCClusterLight>;                    
                     if (adapter != null)
                     {
-                        fdrTable = adapter.Matcher.STACFDRTable;
+                        matchResults.FdrTable = adapter.Matcher.STACFDRTable;
                     }
+                    m_analysis.MatchResults = matchResults;
+
 
                     UpdateStatus("Updating database with peak matched results.");
                     PeakMatchResultsWriter writer   = new PeakMatchResultsWriter();
                     int matchedMassTags             = 0;
                     int matchedProteins             = 0;
-                    writer.WritePeakMatchResults(m_analysis, 
-                                                fdrTable,
-                                                out matchedMassTags, 
-                                                out matchedProteins);
+                    writer.WritePeakMatchResults(matchResults,
+                                                 m_analysis.MassTagDatabase,
+                                                 out matchedMassTags, 
+                                                 out matchedProteins);
 
                     UpdateStatus(string.Format("Found {0} mass tag matches. Matching to {1} potential proteins.",
                                                                                                 matchedMassTags,

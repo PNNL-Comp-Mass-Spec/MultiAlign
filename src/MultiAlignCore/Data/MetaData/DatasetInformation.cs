@@ -174,41 +174,6 @@ namespace MultiAlignCore.Data
 			}
 		}
 		/// <summary>
-		/// Gets or sets the list of factors for this dataset.
-		/// </summary>
-		public Dictionary<FactorInformation, string> Factors
-		{
-			get
-			{
-				return m_factorInformation;
-			}
-			set
-			{
-				m_factorInformation = value;
-			}
-		}
-		/// <summary>
-		/// Gets or sets the list of Factor objects for this dataset.
-		/// </summary>
-		public IList<Factor> FactorList
-		{
-			get
-			{
-                IList<Factor> factorList = new List<Factor>();
-				foreach(KeyValuePair<FactorInformation, string> kvp in m_factorInformation)
-				{
-                    Factor factor = new Factor();
-					factor.Dataset = this;
-					factor.FactorName = kvp.Key.FactorName;
-					factor.FactorValue = kvp.Value;
-					factorList.Add(factor);
-				}
-
-				return factorList;
-			}
-			set { m_factorList = value; }
-		}
-		/// <summary>
 		/// Gets whether this sample was part of a block.
 		/// </summary>
 		public bool Blocked

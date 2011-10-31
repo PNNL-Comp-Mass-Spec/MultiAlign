@@ -55,7 +55,7 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
         /// <param name="massTags"></param>
         public List<FeatureMatchLight<T, MassTagLight>> PerformPeakMatching(List<T> clusters, MassTagDatabase database)
         {
-            List<FeatureMatchLight<T, MassTagLight>> matches        = new List<FeatureMatchLight<T, MassTagLight>>();
+            
             Dictionary<int, T> clusterMap                           = new Dictionary<int,T>();
             Dictionary<int, Dictionary<int, MassTagLight>> tagMap   = new Dictionary<int, Dictionary<int, MassTagLight>>();
 
@@ -123,13 +123,15 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
             matcher.MatchFeatures();
             Matcher = matcher;
 
+            List<FeatureMatchLight<T, MassTagLight>> matches = new List<FeatureMatchLight<T, MassTagLight>>();
             foreach (FeatureMatch<UMCCluster, MassTag> match in matcher.MatchList)
             {
-                FeatureMatchLight<UMCClusterLight, MassTagLight> matched = new FeatureMatchLight<UMCClusterLight, MassTagLight>();
-                matched.Observed                                         = clusterMap[match.ObservedFeature.ID];
-                matched.Target                                           = tagMap[match.TargetFeature.ID][match.TargetFeature.ConformationID];
-            }
+                FeatureMatchLight<T, MassTagLight> matched  = new FeatureMatchLight<T, MassTagLight>();
+                matched.Observed                            = clusterMap[match.ObservedFeature.ID];
+                matched.Target                              = tagMap[match.TargetFeature.ID][match.TargetFeature.ConformationID];
 
+                matches.Add(matched);
+            }
 
             matcher.MessageEvent            -= StatusHandler;
             matcher.ProcessingCompleteEvent -= StatusHandler;
