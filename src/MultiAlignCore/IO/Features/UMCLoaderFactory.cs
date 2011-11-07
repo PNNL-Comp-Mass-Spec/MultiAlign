@@ -156,7 +156,6 @@ namespace MultiAlignCore.IO.Features
                     }
 
                     newFeatures = featureFinder.FindFeatures(filteredMSFeatures, options);
-
                 }
 
                 //clsUMCCreator   umcFinder       = new clsUMCCreator();

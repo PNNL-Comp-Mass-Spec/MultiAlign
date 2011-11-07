@@ -15,6 +15,8 @@ namespace MultiAlignCore.Data.Features
             MinimumScanLength   = 2;
             MinimumChargeState  = 1;
             MaximumChargeState  = 30;
+            MinimumMonoIsotopicMass = 0;
+            MaximumMonoIsotopicMass = 100000;
         }
         [clsParameterFile("MinimumAbundance", "FeatureFilters")]
         [clsDataSummaryAttribute("Is Data Paired")]
@@ -47,6 +49,21 @@ namespace MultiAlignCore.Data.Features
         [clsParameterFile("MinimumChargeState", "FeatureFilters")]
         [clsDataSummaryAttribute("Minimum Charge State")]
         public int MinimumChargeState
+        {
+            get;
+            set;
+        }
+
+        [clsParameterFile("MaximumMonoisotopicMass", "FeatureFilters")]
+        [clsDataSummaryAttribute("Maximum Monoisotopic Mass")]
+        public double MaximumMonoIsotopicMass
+        {
+            get;
+            set;
+        }
+        [clsParameterFile("MinimumMonoisotopicMass", "FeatureFilters")]
+        [clsDataSummaryAttribute("Minimum Monoisotopic mass")]
+        public double MinimumMonoIsotopicMass
         {
             get;
             set;

@@ -57,7 +57,7 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
             // Remove the short UMC's.
             features.RemoveAll(x => (x.ScanEnd - x.ScanStart + 1) < options.MinUMCLength);
 
-            bool split = false;
+            bool split = options.Split;
 
             if (split)
             {

@@ -49,6 +49,7 @@ namespace MultiAlignCore.IO.InputFiles
             {
                 string fixedLine            = line.ToLower();
                 fixedLine                   = fixedLine.Replace(" ", "");
+                fixedLine                   = fixedLine.Trim();
                 bool containsHeaderOpen     = fixedLine.Contains("[");
                 bool containsHeaderClose    = fixedLine.Contains("]");
 

@@ -479,6 +479,7 @@ namespace MultiAlignCore.Algorithms
                 }
                 UpdateStatus("Loading baseline features from " + baselineInfo.DatasetName + " for alignment.");
                 baselineFeatures    = featureCache.FindByDatasetId(baselineInfo.DatasetId);
+                baselineDatasetID   = baselineInfo.DatasetId;
             }
 
             // This says that the user 
