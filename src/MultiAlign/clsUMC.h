@@ -33,6 +33,7 @@ namespace MultiAlignEngine
 					mint_original_index = value;
 				}
 
+
 				__property int get_Scan()
 				{
 					return mint_scan;
@@ -119,6 +120,7 @@ namespace MultiAlignEngine
 		public __gc class clsUMC
 		{
 			public:
+				int		m_numberOfMembers;
 				int		mint_dataset_index; 
 				int		mint_dataset_id;
 				int		mint_cluster_index; 
@@ -175,6 +177,16 @@ namespace MultiAlignEngine
 
 				clsUMC(void);
 				~clsUMC(void);
+
+				
+				__property int get_Members()
+				{
+					return m_numberOfMembers;
+				}
+				__property void set_Members(int value)
+				{
+					m_numberOfMembers = value;
+				}
 
 				__property int get_Id()
 				{

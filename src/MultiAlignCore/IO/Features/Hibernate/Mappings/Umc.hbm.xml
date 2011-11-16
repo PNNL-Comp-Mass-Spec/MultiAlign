@@ -24,6 +24,7 @@
 		<property name="DriftTime"                column="Drift_Time" type="double" not-null="false" />
 		<property name="AverageInterferenceScore" column="Average_Interference_Score" type="double" not-null="false" />
     <property name="AverageDeconFitScore"     column="Average_Decon_Fit_Score" type="double" not-null="false" />
+    <property name="SpectralCount"            column="UMC_Member_Count" type="int" not-null="false" />
     <property name="SaturatedMemberCount"     column="Saturated_Member_Count" type="int" not-null="false" />
   </class>
 
