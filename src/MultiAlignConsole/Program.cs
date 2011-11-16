@@ -165,6 +165,10 @@ namespace MultiAlignConsole
         /// Tracks the names of the files to export.
         /// </summary>
         private static ClusterExporterComposite m_exporterNames;
+        /// <summary>
+        /// Determines if we need to use factors.
+        /// </summary>
+        private static bool m_useFactors;
         #endregion
         
         /// <summary>
@@ -190,6 +194,7 @@ namespace MultiAlignConsole
             m_report.ImageHeight    = PLOT_HEIGHT_HTML;            
             m_exporterNames         = new ClusterExporterComposite();            
             m_clusterExporters      = new List<IFeatureClusterWriter>();
+            m_useFactors            = false;
         }
 
         #region Plot Methods
@@ -658,6 +663,9 @@ namespace MultiAlignConsole
                                 m_databaseName = null;
                             }
                             break;
+                        case "-usefactors":
+                            m_useFactors = true;
+                            break;
                     }
                 }
                 catch (ArgumentOutOfRangeException)
@@ -803,7 +811,9 @@ namespace MultiAlignConsole
             PrintMessage("   -extractMSMS      ", false);
             PrintMessage("          Exctracts information about clusters that have tandem mass spectra.  Does not execute any further analysis.", false);
             PrintMessage("   -plots   [databaseName]  ", false);
-            PrintMessage("          Creates plots for final analysis.  If [databaseName] specified when not running analysis, this will create plots post-analysis.", false);            
+            PrintMessage("          Creates plots for final analysis.  If [databaseName] specified when not running analysis, this will create plots post-analysis.", false);
+            PrintMessage("   -useFactors ", false);
+            PrintMessage("          Flags MultiAlign to use factors.  If no factor file is provided, then MultiAlign will attempt to contact DMS -- PNNL Network only.", false);
         }
         /// <summary>
         /// Prints the version of MA to the log file.
@@ -1349,10 +1359,12 @@ namespace MultiAlignConsole
 
             if (analysisSetupInformation.FactorFile == null)
             {
+                PrintMessage("Loading Factor Information from DMS");
                 mage.LoadFactorsFromDMS(datasets, m_analysis.DataProviders);
             }
             else
             {
+                PrintMessage("Loading Factor Information from file: " + analysisSetupInformation.FactorFile);
                 mage.LoadFactorsFromFile(analysisSetupInformation.FactorFile, datasets, m_analysis.DataProviders);
             }
         }
@@ -1407,19 +1419,17 @@ namespace MultiAlignConsole
             {
                 m_clusterExporters.Add(new UMCClusterScanWriter(Path.Combine(m_analysisPath, m_exporterNames.ClusterScanPath)));
             }
-
             if (m_exporterNames.CrossTabPath != null)
             {
                 UMCClusterCrossTabWriter writer = new UMCClusterCrossTabWriter(Path.Combine(m_analysisPath, m_exporterNames.CrossTabPath));
-                writer.Consolidator = new MultiAlignCore.Algorithms.Features.UMCAbundanceConsolidator();
+                writer.Consolidator             = MultiAlignCore.Algorithms.Features.FeatureConsolidatorFactory.CreateConsolidator(enmAbundanceReportingType.PeakArea);
                 m_clusterExporters.Add(writer);
             }
-
             if (m_exporterNames.CrossTabAbundance != null)
             {
                 UMCClusterAbundanceCrossTabWriter writer = new UMCClusterAbundanceCrossTabWriter(Path.Combine(m_analysisPath,
                                                                                                  m_exporterNames.CrossTabAbundance));
-                writer.Consolidator = new MultiAlignCore.Algorithms.Features.UMCAbundanceConsolidator();
+                writer.Consolidator                      = MultiAlignCore.Algorithms.Features.FeatureConsolidatorFactory.CreateConsolidator(enmAbundanceReportingType.PeakArea);
                 m_clusterExporters.Add(writer);
             }
         }
@@ -1562,10 +1572,47 @@ namespace MultiAlignConsole
                             return 1;
                         }
 
+                        PrintMessage("Checking for mass tag matches");
+                        List<ClusterToMassTagMap> clusterMatches            = providers.MassTagMatches.FindAll();
 
+                        PrintMessage("Checking for mass tags");
+                        List<PNNLOmics.Data.MassTags.MassTagLight> massTags = providers.MassTags.FindAll();
+
+
+                        Dictionary<int, List<ClusterToMassTagMap>> clusterMap = new Dictionary<int, List<ClusterToMassTagMap>>();
+                        if (clusterMatches.Count > 0)
+                        {
+                            foreach (ClusterToMassTagMap map in clusterMatches)
+                            {
+                                if (!clusterMap.ContainsKey(map.ClusterId))
+                                {
+                                    clusterMap.Add(map.ClusterId, new List<ClusterToMassTagMap>());
+                                }
+                                clusterMap[map.ClusterId].Add(map);
+                            }
+                        }
+
+                        Dictionary<string, PNNLOmics.Data.MassTags.MassTagLight> tags = new Dictionary<string,PNNLOmics.Data.MassTags.MassTagLight>();
+                        if (massTags.Count > 0)
+                        {
+                            foreach (PNNLOmics.Data.MassTags.MassTagLight tag in massTags)
+                            {
+                                string key = tag.ConformationID + "-" + tag.ID;
+                                if (!tags.ContainsKey(key))
+                                {
+                                    tags.Add(key, tag);
+                                }
+                            }
+                        }
+
+                        PrintMessage("Exporting Data");
                         foreach (IFeatureClusterWriter writer in m_clusterExporters)
                         {
-                            writer.WriteClusters(clusters, datasets);
+                            PrintMessage("Exporting in " + writer.ToString() + " format to " + m_analysisPath);
+                            writer.WriteClusters(clusters,
+                                                 clusterMap,
+                                                 datasets,
+                                                 tags);
                         }
                     }
                     CleanupDataProviders();                    
@@ -1616,15 +1663,17 @@ namespace MultiAlignConsole
                     /// /////////////////////////////////////////////////////////////            
                     // Construct the dataset information for export.
                     ConstructDatasetInformation(analysisSetupInformation, m_analysis);
-                    ConstructFactorInformation(analysisSetupInformation,  m_analysis.MetaData.Datasets);
+                                        
+                    if (m_useFactors)
+                    {
+                        ConstructFactorInformation(analysisSetupInformation, m_analysis.MetaData.Datasets);
+                    }
 
                     bool isBaselineSpecified = ConstructBaselines(analysisSetupInformation, m_analysis.MetaData, useMTDB);
                     if (!isBaselineSpecified)
                     {                    
                         return 1;
                     }
-
-
                     
                     ExportParameterFile();
                     PrintSpacer();

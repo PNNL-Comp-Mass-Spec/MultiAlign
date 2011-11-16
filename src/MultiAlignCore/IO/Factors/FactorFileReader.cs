@@ -79,5 +79,12 @@ namespace MultiAlignCore.IO.Factors
             
         }
         #endregion
+
+        #region IBaseModule Members
+
+
+        public event EventHandler<MageStatusEventArgs> WarningMessageUpdated;
+
+        #endregion
     }    
 }

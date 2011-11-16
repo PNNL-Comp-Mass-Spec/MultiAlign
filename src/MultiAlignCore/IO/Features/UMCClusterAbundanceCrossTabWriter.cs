@@ -21,7 +21,7 @@ namespace MultiAlignCore.IO.Features
         /// <param name="path"></param>
         public UMCClusterAbundanceCrossTabWriter(string path)
         {
-            Path = path;
+            Path = path + "_abundance.csv"; ;
         }
         /// <summary>
         /// Gets or sets the path to the file to output.
@@ -44,14 +44,14 @@ namespace MultiAlignCore.IO.Features
         public void WriteClusters(List<UMCClusterLight> clusters,
                                     List<DatasetInformation> datasets)
         {
-            WriteClusters(clusters, new Dictionary<int, ClusterToMassTagMap>(), datasets, new Dictionary<string, MassTagLight>());
+            WriteClusters(clusters, new Dictionary<int, List<ClusterToMassTagMap>>(), datasets, new Dictionary<string, MassTagLight>());        
         }
         /// <summary>
         /// 
         /// </summary>
         /// <param name="clusters"></param>
-        public void WriteClusters(  List<UMCClusterLight>                clusters,
-                                    Dictionary<int, ClusterToMassTagMap> clusterMap,
+        public void WriteClusters(List<UMCClusterLight> clusters,
+                                    Dictionary<int, List<ClusterToMassTagMap>> clusterMap,
                                     List<DatasetInformation>             datasets,
                                     Dictionary<string, MassTagLight>     tags)
         {
@@ -112,21 +112,38 @@ namespace MultiAlignCore.IO.Features
                     {
                         if (clusterMap.ContainsKey(cluster.ID))
                         {
-                            ClusterToMassTagMap map = clusterMap[cluster.ID];
-                            string key              = map.ConformerId + "-" + map.MassTagId;
-                            MassTagLight tag        = tags[key];
-                            builder.Append(string.Format(",{0},{1},{2},{3},{4}", tag.ID,
-                                                                                 tag.ConformationID,
-                                                                                 tag.PeptideSequence,
-                                                                                 map.MassTagId,
-                                                                                 map.ConformerId));
+
+                            foreach (ClusterToMassTagMap map in clusterMap[cluster.ID])
+                            {
+
+                                string clusterString = builder.ToString();
+                                string key = map.ConformerId + "-" + map.MassTagId;
+                                MassTagLight tag = tags[key];
+                                clusterString += string.Format(",{0},{1},{2},{3},{4}", tag.ID,
+                                                                                     tag.ConformationID,
+                                                                                     tag.PeptideSequence,
+                                                                                     map.StacScore,
+                                                                                     map.StacUP);
+                                writer.WriteLine(clusterString + umcBuilder.ToString());
+                            }
+                        }
+                        else
+                        {
+                            writer.WriteLine(builder.Append(",,,,," + umcBuilder.ToString()));
                         }
                     }
-
-                    writer.WriteLine(builder.Append(umcBuilder.ToString()));
+                    else
+                    {
+                        writer.WriteLine(builder.Append(umcBuilder.ToString()));
+                    }
                 }
             }
         }
         #endregion
+
+        public override string ToString()
+        {
+            return "Abundance Cross Tab";
+        }
     }
 }

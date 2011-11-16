@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -81,6 +81,9 @@
     <Reference Include="MultiAlignEngine, Version=1.0.4084.24787, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\x86\MultiAlignEngine.dll</HintPath>
+    </Reference>   
+    <Reference Include="Mage">
+    	<HintPath>..\..\lib\x86\Mage.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
@@ -96,6 +99,9 @@
     <Reference Include="MultiAlignEngine, Version=1.0.4084.24787, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\x86\MultiAlignEngine.dll</HintPath>
+    </Reference>   
+    <Reference Include="Mage">
+    	<HintPath>..\..\lib\x86\Mage.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
@@ -111,6 +117,9 @@
     <Reference Include="MultiAlignEngine, Version=1.0.4084.24787, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\x64\MultiAlignEngine.dll</HintPath>
+    </Reference>   
+    <Reference Include="Mage">
+    	<HintPath>..\..\lib\x64\Mage.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
@@ -126,6 +135,9 @@
     <Reference Include="MultiAlignEngine, Version=1.0.4084.24787, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\x64\MultiAlignEngine.dll</HintPath>
+    </Reference>    
+    <Reference Include="Mage">
+    	<HintPath>..\..\lib\x64\Mage.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -153,9 +165,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\log4net.dll</HintPath>
       <EmbedInteropTypes>False</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="Mage">
-      <HintPath>..\..\lib\Mage.dll</HintPath>
     </Reference>
     <Reference Include="MSDataFileReader">
       <HintPath>..\..\lib\MSDataFileReader.dll</HintPath>
@@ -186,7 +195,10 @@
     <Compile Include="Algorithms\FeatureMatcher\PeakMatchingType.cs" />
     <Compile Include="Algorithms\FeatureMatcher\STAC.cs" />
     <Compile Include="Algorithms\FeaturesClusteredEventArgs.cs" />
-    <Compile Include="Algorithms\Features\UMCConsolidator.cs" />
+    <Compile Include="Algorithms\Features\FeatureConsolidatorFactory.cs" />
+    <Compile Include="Algorithms\Features\LCMSFeatureConsolidator.cs" />
+    <Compile Include="Algorithms\Features\UMCAbundanceSumConsolidator.cs" />
+    <Compile Include="Algorithms\Features\UMCAbundanceConsolidator.cs" />
     <Compile Include="Algorithms\MSLinker\FeaturesExtractedEventArgs.cs" />
     <Compile Include="Algorithms\MSLinker\MSLinkerOptions.cs" />
     <Compile Include="Algorithms\MSLinker\MSLinkerType.cs" />

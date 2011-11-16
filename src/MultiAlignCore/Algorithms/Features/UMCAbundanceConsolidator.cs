@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+﻿using System.Collections.Generic;
 using PNNLOmics.Data.Features;
 
 namespace MultiAlignCore.Algorithms.Features
@@ -40,20 +36,5 @@ namespace MultiAlignCore.Algorithms.Features
             }
             return umcs;
         }
-    }
-
-    /// <summary>
-    /// Consolidates an LCMS Feature List into a single list where members from one group are 
-    /// condensed into a single list of features.
-    /// </summary>
-    public abstract class LCMSFeatureConsolidator
-    {
-        /// <summary>
-        /// Takes a list of UMC's (LCMS Features) and turns them into a dictionary
-        /// based on some group index.
-        /// </summary>
-        /// <param name="features"></param>
-        /// <returns></returns>
-        public abstract Dictionary<int, UMCLight> ConsolidateUMCs(List<UMCLight> features);
     }
 }

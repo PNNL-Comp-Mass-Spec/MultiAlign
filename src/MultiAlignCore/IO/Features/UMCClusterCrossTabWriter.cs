@@ -1,10 +1,10 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using System.Collections.Generic;
-using PNNLOmics.Data.Features;
-using MultiAlignCore.Data;
 using MultiAlignCore.Algorithms.Features;
+using MultiAlignCore.Data;
+using PNNLOmics.Data.Features;
+using PNNLOmics.Data.MassTags;
 
 namespace MultiAlignCore.IO.Features
 {
@@ -20,7 +20,7 @@ namespace MultiAlignCore.IO.Features
         /// <param name="path"></param>
         public UMCClusterCrossTabWriter(string path)
         {
-            Path = path;
+            Path = path + "_crosstab.csv";
         }
         /// <summary>
         /// Gets or sets the path to the file to output.
@@ -46,11 +46,22 @@ namespace MultiAlignCore.IO.Features
         /// <param name="clusters"></param>
         public void WriteClusters(List<UMCClusterLight> clusters, List<DatasetInformation> datasets)
         {
+            WriteClusters(clusters, new Dictionary<int, List<ClusterToMassTagMap>>(), datasets, new Dictionary<string, MassTagLight>());
+        }
+        #endregion
+
+        #region IFeatureClusterWriter Members
+        public void WriteClusters(  List<UMCClusterLight>                                       clusters,
+                                    Dictionary<int, List<ClusterToMassTagMap>>                  clusterMap,
+                                    List<DatasetInformation>                                    datasets, 
+                                    Dictionary<string, PNNLOmics.Data.MassTags.MassTagLight>    tags)
+        {
+
             using (TextWriter writer = File.CreateText(Path))
             {
                 // Build the header.
-                string mainHeader   = "Cluster ID, Mono Mass, Net, Members";                
-                
+                string mainHeader = "Cluster ID, Mono Mass, Net, Members";
+
 
                 // Make blank columns for clusters that dont have enough dta.
                 string blankColumns = ",,,,,,,,";
@@ -63,22 +74,30 @@ namespace MultiAlignCore.IO.Features
                 }
                 datasetIds.Sort();
 
+                if (clusterMap.Count > 0)
+                {
+                    mainHeader  += ", MassTag ID, Conformation ID, Peptide Sequence, STAC, STAC-UP";                    
+                }
+
                 string header = mainHeader;
+
+               
+
                 for (int i = 0; i < datasetIds.Count; i++)
                 {
-                    header += string.Format(", ID.{0}, DatasetID.{0}, MonoMass.{0}, Net.{0}, Abundance.{0}, Scan.{0}, ScanStart.{0}, ScanEnd.{0}", i);
+                    header += string.Format(", ID.{0}, DatasetID.{0}, MonoMass.{0}, Net.{0}, Abundance.{0}, Scan.{0}, ScanStart.{0}, ScanEnd.{0}", datasets[i].DatasetName);
                 }
                 writer.WriteLine(header);
 
                 // Parse each cluster - cluster per line.
                 foreach (UMCClusterLight cluster in clusters)
-                {                    
+                {
                     Dictionary<int, UMCLight> features = Consolidator.ConsolidateUMCs(cluster.UMCList);
-                    
+
                     // Build the output sets.
                     StringBuilder umcBuilder = new StringBuilder();
                     foreach (int id in datasetIds)
-                    {                        
+                    {
                         bool containsUMC = features.ContainsKey(id);
                         if (containsUMC)
                         {
@@ -88,23 +107,48 @@ namespace MultiAlignCore.IO.Features
                         else
                         {
                             umcBuilder.Append(blankColumns);
-                        }                        
+                        }
                     }
 
+                    // We may have multiple matches to a single cluster.
                     StringBuilder builder = new StringBuilder();
                     builder.Append(string.Format("{0},{1},{2},{3}", cluster.ID, cluster.MassMonoisotopic, cluster.RetentionTime, features.Keys.Count));
+                    if (clusterMap.Count > 0)
+                    {
+                        if (clusterMap.ContainsKey(cluster.ID))
+                        {
 
-                    writer.WriteLine(builder.Append(umcBuilder.ToString()));
+                            foreach (ClusterToMassTagMap map in clusterMap[cluster.ID])
+                            {
+
+                                string clusterString = builder.ToString();
+                                string key           = map.ConformerId + "-" + map.MassTagId;
+                                MassTagLight tag     = tags[key];                                
+                                clusterString       += string.Format(",{0},{1},{2},{3},{4}", tag.ID,
+                                                                                     tag.ConformationID,
+                                                                                     tag.PeptideSequence,
+                                                                                     map.StacScore,
+                                                                                     map.StacUP);
+                                writer.WriteLine(clusterString  + umcBuilder.ToString());
+                            }
+                        }
+                        else
+                        {                            
+                            writer.WriteLine(builder.Append(",,,,," + umcBuilder.ToString()));
+                        }
+                    }
+                    else
+                    {
+                        writer.WriteLine(builder.Append(umcBuilder.ToString()));
+                    }
                 }
             }
         }
         #endregion
 
-        #region IFeatureClusterWriter Members
-        public void WriteClusters(List<UMCClusterLight> clusters, Dictionary<int, ClusterToMassTagMap> clusterMap, List<DatasetInformation> datasets, Dictionary<string, PNNLOmics.Data.MassTags.MassTagLight> tags)
+        public override string ToString()
         {
-            WriteClusters(clusters, datasets);
+            return "Cluster Cross Tab";
         }
-        #endregion
     }
 }

@@ -19,7 +19,7 @@ namespace MultiAlignCore.IO.Features
         /// <param name="path"></param>
         public UMCClusterScanWriter(string path)
         {
-            Path = path;
+            Path = path + "_scans.csv";
         }
 
         public string Path
@@ -29,10 +29,10 @@ namespace MultiAlignCore.IO.Features
         }
 
         #region IFeatureClusterWriter Members
-        void WriteClusters(List<UMCClusterLight> clusters,
-                                    Dictionary<int, ClusterToMassTagMap> clusterMap,
+        public void WriteClusters(List<UMCClusterLight> clusters,
+                                    Dictionary<int, List<ClusterToMassTagMap>> clusterMap,
                                     List<DatasetInformation> datasets,
-                                    Dictionary<string, MassTagLight> tags)
+                                    Dictionary<string, PNNLOmics.Data.MassTags.MassTagLight> tags)
         {
             WriteClusters(clusters, datasets);
         }
@@ -68,15 +68,10 @@ namespace MultiAlignCore.IO.Features
             }
         }
         #endregion
-
-        #region IFeatureClusterWriter Members
-
-
-        void IFeatureClusterWriter.WriteClusters(List<UMCClusterLight> clusters, Dictionary<int, ClusterToMassTagMap> clusterMap, List<DatasetInformation> datasets, Dictionary<string, MassTagLight> tags)
+        
+        public override string ToString()
         {
-            WriteClusters(clusters, datasets);
+            return "Cluster Scans";
         }
-
-        #endregion
     }
 }

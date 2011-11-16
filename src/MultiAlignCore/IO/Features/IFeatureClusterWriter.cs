@@ -19,8 +19,8 @@ namespace MultiAlignCore.IO.Features
         /// <param name="datasets"></param>
         void WriteClusters(List<UMCClusterLight> clusters, List<DatasetInformation> datasets);
         void WriteClusters(List<UMCClusterLight> clusters,
-                                    Dictionary<int, ClusterToMassTagMap> clusterMap,
-                                    List<DatasetInformation> datasets,
-                                    Dictionary<string, MassTagLight> tags);              
+                            Dictionary<int, List<ClusterToMassTagMap>> clusterMap,
+                            List<DatasetInformation> datasets,
+                            Dictionary<string, PNNLOmics.Data.MassTags.MassTagLight> tags);         
     }
 }
