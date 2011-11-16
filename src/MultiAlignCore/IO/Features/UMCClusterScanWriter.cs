@@ -3,6 +3,7 @@ using System.IO;
 using System.Text;  
 using System.Collections.Generic;
 using PNNLOmics.Data.Features;
+using PNNLOmics.Data.MassTags;
 using MultiAlignCore.Data;
 
 namespace MultiAlignCore.IO.Features
@@ -28,6 +29,13 @@ namespace MultiAlignCore.IO.Features
         }
 
         #region IFeatureClusterWriter Members
+        void WriteClusters(List<UMCClusterLight> clusters,
+                                    Dictionary<int, ClusterToMassTagMap> clusterMap,
+                                    List<DatasetInformation> datasets,
+                                    Dictionary<string, MassTagLight> tags)
+        {
+            WriteClusters(clusters, datasets);
+        }
         /// <summary>
         /// 
         /// </summary>
@@ -59,6 +67,16 @@ namespace MultiAlignCore.IO.Features
                 }
             }
         }
+        #endregion
+
+        #region IFeatureClusterWriter Members
+
+
+        void IFeatureClusterWriter.WriteClusters(List<UMCClusterLight> clusters, Dictionary<int, ClusterToMassTagMap> clusterMap, List<DatasetInformation> datasets, Dictionary<string, MassTagLight> tags)
+        {
+            WriteClusters(clusters, datasets);
+        }
+
         #endregion
     }
 }

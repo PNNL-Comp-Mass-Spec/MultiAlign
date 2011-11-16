@@ -4,6 +4,7 @@ using System.Text;
 using System.Collections.Generic;
 using PNNLOmics.Data.Features;
 using MultiAlignCore.Data;
+using PNNLOmics.Data.MassTags;
 using MultiAlignCore.Algorithms.Features;
 
 namespace MultiAlignCore.IO.Features
@@ -40,18 +41,25 @@ namespace MultiAlignCore.IO.Features
         }
         
         #region IFeatureClusterWriter Members
+        public void WriteClusters(List<UMCClusterLight> clusters,
+                                    List<DatasetInformation> datasets)
+        {
+            WriteClusters(clusters, new Dictionary<int, ClusterToMassTagMap>(), datasets, new Dictionary<string, MassTagLight>());
+        }
         /// <summary>
         /// 
         /// </summary>
         /// <param name="clusters"></param>
-        public void WriteClusters(List<UMCClusterLight> clusters, List<DatasetInformation> datasets)
+        public void WriteClusters(  List<UMCClusterLight>                clusters,
+                                    Dictionary<int, ClusterToMassTagMap> clusterMap,
+                                    List<DatasetInformation>             datasets,
+                                    Dictionary<string, MassTagLight>     tags)
         {
             using (TextWriter writer = File.CreateText(Path))
             {
                 // Build the header.
                 string mainHeader   = "Cluster ID";                
                 
-
                 // Make blank columns for clusters that dont have enough dta.
                 string blankColumns = ",";
 
@@ -59,14 +67,19 @@ namespace MultiAlignCore.IO.Features
                 List<int> datasetIds = new List<int>();
                 foreach (DatasetInformation info in datasets)
                 {
-                    datasetIds.Add(info.DatasetId);
+                    datasetIds.Add(info.DatasetId);                    
                 }
                 datasetIds.Sort();
+
+                if (clusterMap.Count > 0)
+                {
+                    mainHeader += ", MassTag ID, Conformation ID, Peptide Sequence, STAC, STAC-UP";
+                }
 
                 string header = mainHeader;
                 for (int i = 0; i < datasetIds.Count; i++)
                 {
-                    header += string.Format(", Abundance.{0}", i);
+                    header += string.Format(", Abundance-{0}", datasetIds[i]);
                 }
                 writer.WriteLine(header);
 
@@ -93,6 +106,22 @@ namespace MultiAlignCore.IO.Features
 
                     StringBuilder builder = new StringBuilder();
                     builder.Append(string.Format("{0}", cluster.ID));
+
+
+                    if (clusterMap.Count > 0)
+                    {
+                        if (clusterMap.ContainsKey(cluster.ID))
+                        {
+                            ClusterToMassTagMap map = clusterMap[cluster.ID];
+                            string key              = map.ConformerId + "-" + map.MassTagId;
+                            MassTagLight tag        = tags[key];
+                            builder.Append(string.Format(",{0},{1},{2},{3},{4}", tag.ID,
+                                                                                 tag.ConformationID,
+                                                                                 tag.PeptideSequence,
+                                                                                 map.MassTagId,
+                                                                                 map.ConformerId));
+                        }
+                    }
 
                     writer.WriteLine(builder.Append(umcBuilder.ToString()));
                 }

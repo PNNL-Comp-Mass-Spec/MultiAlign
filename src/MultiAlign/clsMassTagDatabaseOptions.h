@@ -11,7 +11,8 @@ namespace MultiAlignEngine
 		{
 			None,
 			SQL,
-			ACCESS
+			ACCESS,
+			SQLite
 		};
 
 		[System::Serializable]

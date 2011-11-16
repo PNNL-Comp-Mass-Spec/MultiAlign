@@ -18,7 +18,7 @@ namespace MultiAlignCore.IO.InputFiles
             FactorFile      = null;
         }
 
-        #region Properties
+        #region Properties        
         /// <summary>
         /// Gets or sets the list of file paths.
         /// </summary>

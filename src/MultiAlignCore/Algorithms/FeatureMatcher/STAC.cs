@@ -60,6 +60,7 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
             Dictionary<int, Dictionary<int, MassTagLight>> tagMap   = new Dictionary<int, Dictionary<int, MassTagLight>>();
 
             List<MassTag> massTags = new List<MassTag>();
+            int i = 0 ;
             foreach(MassTagLight tag in database.MassTags)
             {
                 MassTag mt = new MassTag();
@@ -87,7 +88,7 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
                 mt.PriorProbability              = tag.PriorProbability;
                 mt.QualityScore                  = tag.QualityScore;
                 mt.XCorr                         = tag.XCorr;
-
+                mt.Index                         = i++;
                 massTags.Add(mt);
                 if (!tagMap.ContainsKey(tag.ID))
                 {
@@ -100,15 +101,15 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
             List<UMCCluster> features = new List<UMCCluster>();
             foreach (T cluster in clusters)
             {
-                UMCCluster feature = new UMCCluster();
-                feature.ID = cluster.ID;
+                UMCCluster feature              = new UMCCluster();
+                feature.ID                      = cluster.ID;
                 feature.MassMonoisotopicAligned = cluster.MassMonoisotopic;
-                feature.MassMonoisotopic = cluster.MassMonoisotopic;
-                feature.NET = cluster.NET;
-                feature.NETAligned = cluster.NET;
-                feature.ChargeState = cluster.ChargeState;
-                feature.DriftTime = Convert.ToSingle(cluster.DriftTime);
-                feature.DriftTimeAligned = Convert.ToDouble(cluster.DriftTime);
+                feature.MassMonoisotopic        = cluster.MassMonoisotopic;
+                feature.NET                     = cluster.NET;
+                feature.NETAligned              = cluster.NET;
+                feature.ChargeState             = cluster.ChargeState;
+                feature.DriftTime               = Convert.ToSingle(cluster.DriftTime);
+                feature.DriftTimeAligned        = Convert.ToDouble(cluster.DriftTime);
                 features.Add(feature);
 
                 clusterMap.Add(cluster.ID, cluster);
@@ -123,15 +124,20 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
             matcher.MatchFeatures();
             Matcher = matcher;
 
+
+            Matcher.PopulateSTACFDRTable(matcher.MatchList);
+
             List<FeatureMatchLight<T, MassTagLight>> matches = new List<FeatureMatchLight<T, MassTagLight>>();
             foreach (FeatureMatch<UMCCluster, MassTag> match in matcher.MatchList)
             {
                 FeatureMatchLight<T, MassTagLight> matched  = new FeatureMatchLight<T, MassTagLight>();
                 matched.Observed                            = clusterMap[match.ObservedFeature.ID];
                 matched.Target                              = tagMap[match.TargetFeature.ID][match.TargetFeature.ConformationID];
-
+                matched.Confidence                          = match.STACScore;
+                matched.Uniqueness                          = match.STACSpecificity;
                 matches.Add(matched);
             }
+
 
             matcher.MessageEvent            -= StatusHandler;
             matcher.ProcessingCompleteEvent -= StatusHandler;

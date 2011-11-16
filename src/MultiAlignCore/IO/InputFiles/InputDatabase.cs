@@ -61,40 +61,36 @@ namespace MultiAlignCore.IO.InputFiles
         {
             // By default we use a MTS enabled MTDB.
             bool useMTDB    = true;
-            DatabaseFormat  = MassTagDatabaseFormat.SQL;
-
-            if (DatabaseName == null && DatabaseServer != null)
+            
+            
+            if (DatabaseFormat == MassTagDatabaseFormat.SQL)
             {
-                throw new AnalysisMTDBSetupException("The server was specified but the database was not.");
-            }
-
-            if (DatabaseServer == null && DatabaseName != null)
-            {
-                throw new AnalysisMTDBSetupException("The database name was specified but the server was not.");
-            }
-
-            if (DatabaseName == null && DatabaseServer == null)
-            {
-                if (LocalPath != null)
+                if (DatabaseName == null && DatabaseServer != null)
                 {
-                    DatabaseFormat = MassTagDatabaseFormat.Access;
-                    useMTDB = true;
+                    throw new AnalysisMTDBSetupException("The server was specified but the database was not.");
                 }
-                else
+
+                if (DatabaseServer == null && DatabaseName != null)
                 {
-                    // No, we do not have a MTDB to use.
-                    DatabaseFormat  = MassTagDatabaseFormat.None;
-                    useMTDB         = false;
+                    throw new AnalysisMTDBSetupException("The database name was specified but the server was not.");
                 }
             }
             else
             {
-                if (DatabaseName != null && DatabaseServer != null && LocalPath != null)
+                if (DatabaseName == null && DatabaseServer == null)
                 {
-                    throw new AnalysisMTDBSetupException("A database server and name were provided in addition to a local database path.  You can only specify one database.");
-                }
+                    if (LocalPath == null)
+                    {
+                        // No, we do not have a MTDB to use.
+                        DatabaseFormat = MassTagDatabaseFormat.None;
+                        useMTDB = false;
+                    }
+                }                
             }
-
+            if (DatabaseName != null && DatabaseServer != null && LocalPath != null)
+            {
+                throw new AnalysisMTDBSetupException("A database server and name were provided in addition to a local database path.  You can only specify one database.");
+            }                
             return useMTDB;
         }
         #endregion

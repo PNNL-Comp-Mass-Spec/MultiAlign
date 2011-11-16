@@ -220,13 +220,11 @@
     <Compile Include="Data\MultiAlignAnalysis.cs" />
     <Compile Include="Data\MultiAlignAnalysisDelegates.cs" />
     <Compile Include="Data\PeakMatchingResults.cs" />
-    <Compile Include="IO\Analysis\AnalysisAbundanceTableWriter.cs" />
     <Compile Include="IO\Analysis\AnalysisAlignmentDataWriter.cs" />
     <Compile Include="IO\Analysis\AnalysisBinaryReader.cs" />
     <Compile Include="IO\Analysis\AnalysisBinaryWriter.cs" />
     <Compile Include="IO\Analysis\AnalysisDatasetUMCWriter.cs" />
     <Compile Include="IO\Analysis\AnalysisSQLiteDBWriter.cs" />
-    <Compile Include="IO\Analysis\AnalysisTableWriter.cs" />
     <Compile Include="IO\Analysis\ContainerStream.cs" />
     <Compile Include="IO\Analysis\IAnalysisWriter.cs" />
     <Compile Include="IO\Analysis\IMultiAlignAnalysisReader.cs" />

@@ -19,7 +19,7 @@ namespace MultiAlignCore.Data.MassTags
         /// </summary>
         None,
         /// <summary>
-        /// Not used, but future local database format.
+        /// Local database format.
         /// </summary>
         Sqlite
     }

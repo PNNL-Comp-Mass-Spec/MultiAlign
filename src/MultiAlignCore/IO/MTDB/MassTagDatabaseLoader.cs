@@ -80,6 +80,37 @@ namespace MultiAlignCore.IO.MTDB
 
         #region Loading Methods
         /// <summary>
+        /// Sets up the mass tag command.
+        /// </summary>
+        /// <param name="command"></param>
+        protected virtual void SetupMassTagCommand(IDbCommand command)
+        {
+            command.CommandType = CommandType.StoredProcedure;
+            command.CommandTimeout = 180;
+            command.CommandText = m_massTagsPlusPeptideProphetStats_sp;
+
+            command.Parameters.Add(CreateParameter("@ConfirmedOnly", Options.mbyteConfirmedTags));
+            command.Parameters.Add(CreateParameter("@MinimumHighNormalizedScore", Options.mfltMinXCorr));
+            command.Parameters.Add(CreateParameter("@MinimumPMTQualityScore", Options.mdecimalMinPMTScore));
+            command.Parameters.Add(CreateParameter("@MinimumHighDiscriminantScore", Options.mdblMinDiscriminant));
+            command.Parameters.Add(CreateParameter("@MinimumPeptideProphetProbability", Options.mdblPeptideProphetVal));
+        }
+        /// <summary>
+        /// Sets up the protein mass tag command for execution. 
+        /// </summary>
+        protected virtual void SetupProteinMassTagCommand(IDbCommand command)
+        {
+            command.CommandType = CommandType.StoredProcedure;
+            command.CommandTimeout = 180;
+            command.CommandText = m_protein2MassTags_sp;
+
+            command.Parameters.Add(CreateParameter("@ConfirmedOnly", Options.mbyteConfirmedTags));
+            command.Parameters.Add(CreateParameter("@MinimumHighNormalizedScore", Options.mfltMinXCorr));
+            command.Parameters.Add(CreateParameter("@MinimumPMTQualityScore", Options.mdecimalMinPMTScore));
+            command.Parameters.Add(CreateParameter("@MinimumHighDiscriminantScore", Options.mdblMinDiscriminant));
+            command.Parameters.Add(CreateParameter("@MinimumPeptideProphetProbability", Options.mdblPeptideProphetVal));
+        }
+        /// <summary>
         /// Downloads the mass tags
         /// </summary>
         /// <returns></returns>
@@ -92,15 +123,7 @@ namespace MultiAlignCore.IO.MTDB
                 
                 using (IDbCommand command = connection.CreateCommand())
                 {
-                    command.CommandType     = CommandType.StoredProcedure;
-                    command.CommandTimeout  = 180;
-                    command.CommandText     = m_massTagsPlusPeptideProphetStats_sp;    
-						    				
-				    command.Parameters.Add(CreateParameter("@ConfirmedOnly",                    Options.mbyteConfirmedTags));
-				    command.Parameters.Add(CreateParameter("@MinimumHighNormalizedScore",       Options.mfltMinXCorr));
-				    command.Parameters.Add(CreateParameter("@MinimumPMTQualityScore",           Options.mdecimalMinPMTScore));
-				    command.Parameters.Add(CreateParameter("@MinimumHighDiscriminantScore",     Options.mdblMinDiscriminant));
-				    command.Parameters.Add(CreateParameter("@MinimumPeptideProphetProbability", Options.mdblPeptideProphetVal));
+                    SetupMassTagCommand(command);
 
                     try
                     {
@@ -179,9 +202,9 @@ namespace MultiAlignCore.IO.MTDB
                             reader.Close();
                         }
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
-                        throw ex;
+                        throw;
                     }
                 }
                 connection.Close();
@@ -193,24 +216,14 @@ namespace MultiAlignCore.IO.MTDB
         /// </summary>
         protected virtual Dictionary<int, List<Protein>> LoadProteins()
 		{
-			Dictionary<int, List<Protein>> massTagToProtein = new Dictionary<int,List<Protein>>();
-									
+			Dictionary<int, List<Protein>> massTagToProtein = new Dictionary<int,List<Protein>>();									
             using (IDbConnection connection = CreateConnection(CreateConnectionString()))
             {
-                connection.Open();
-                
+                connection.Open();                
                 using (IDbCommand command = connection.CreateCommand())
                 {
-                    command.CommandType     = CommandType.StoredProcedure;
-                    command.CommandTimeout  = 180;
-                    command.CommandText     = m_protein2MassTags_sp;    
-						    				
-				    command.Parameters.Add(CreateParameter("@ConfirmedOnly",                    Options.mbyteConfirmedTags));
-				    command.Parameters.Add(CreateParameter("@MinimumHighNormalizedScore",       Options.mfltMinXCorr));
-				    command.Parameters.Add(CreateParameter("@MinimumPMTQualityScore",           Options.mdecimalMinPMTScore));
-				    command.Parameters.Add(CreateParameter("@MinimumHighDiscriminantScore",     Options.mdblMinDiscriminant));
-				    command.Parameters.Add(CreateParameter("@MinimumPeptideProphetProbability", Options.mdblPeptideProphetVal));	
-								
+                    SetupProteinMassTagCommand(command);
+
 				    using(IDataReader reader = command.ExecuteReader())
                     {
                         while(reader.Read())

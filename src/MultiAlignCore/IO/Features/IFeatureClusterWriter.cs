@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 using MultiAlignCore.Data;
 using PNNLOmics.Data.Features;
+using PNNLOmics.Data.MassTags;
 
 namespace MultiAlignCore.IO.Features
 {
@@ -16,6 +17,10 @@ namespace MultiAlignCore.IO.Features
         /// </summary>
         /// <param name="clusters"></param>
         /// <param name="datasets"></param>
-        void WriteClusters(List<UMCClusterLight> clusters, List<DatasetInformation> datasets);        
+        void WriteClusters(List<UMCClusterLight> clusters, List<DatasetInformation> datasets);
+        void WriteClusters(List<UMCClusterLight> clusters,
+                                    Dictionary<int, ClusterToMassTagMap> clusterMap,
+                                    List<DatasetInformation> datasets,
+                                    Dictionary<string, MassTagLight> tags);              
     }
 }

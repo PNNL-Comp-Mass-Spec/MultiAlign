@@ -1,5 +1,6 @@
 ﻿using System.Data;
 using System.Data.SQLite;
+using MultiAlignCore.Data.MassTags;
 
 namespace MultiAlignCore.IO.MTDB
 {
@@ -11,8 +12,9 @@ namespace MultiAlignCore.IO.MTDB
         /// <summary>
         /// Sqlite database loader constructor.
         /// </summary>
-        public SQLiteMassTagDatabaseLoader()
+        public SQLiteMassTagDatabaseLoader(string databasePath)
         {
+            DatabasePath = databasePath; 
         }
 
         /// <summary>
@@ -25,6 +27,33 @@ namespace MultiAlignCore.IO.MTDB
         }
 
         #region Abstract Method Implementations.
+        /// <summary>
+        /// Sets up the command for execution.
+        /// </summary>
+        /// <param name="command"></param>
+        protected override void SetupProteinMassTagCommand(IDbCommand command)
+        {
+            command.CommandText     = "";
+            command.CommandTimeout  = 180;
+            command.CommandType     = CommandType.Text;
+            string commandString    = "SELECT * FROM T_Mass_Tag_To_Protein_Name_Map ";
+            command.CommandText     = commandString;
+        }
+        /// <summary>
+        /// Sets up the mass tag command.
+        /// </summary>
+        /// <param name="command"></param>
+        protected override void SetupMassTagCommand(IDbCommand command)
+        {
+            command.CommandText     = "";
+            command.CommandTimeout  = 180;
+            command.CommandType     = CommandType.Text;
+            string commandString    = "SELECT * FROM T_Mass_Tags_plus_Conformers ";
+            commandString           += string.Format(" WHERE (High_Normalized_Score >= {0})", Options.mfltMinXCorr);
+            commandString           += string.Format(" AND (High_Discriminant_Score >= {0})", Options.mdblMinDiscriminant);
+            commandString           += string.Format(" AND (High_Peptide_Prophet_Probability >= {0})", Options.mdblPeptideProphetVal);
+            command.CommandText     = commandString;
+        }
         /// <summary>
         /// 
         /// </summary>
@@ -40,7 +69,12 @@ namespace MultiAlignCore.IO.MTDB
         /// <returns>String to use for connecting to local databases.</returns>
         protected override string CreateConnectionString()
         {
-            return string.Format("DataSource={0}", DatabasePath);
+            string newPath = DatabasePath;
+            if (DatabasePath.Contains(" "))
+            {
+                newPath = "\"" + DatabasePath.Trim() + "\"";
+            }
+            return string.Format("Data Source={0}", newPath);
         }
         /// <summary>
         /// Creates a new Sqlite data paramter for use in queries.
@@ -53,6 +87,5 @@ namespace MultiAlignCore.IO.MTDB
             return new SQLiteParameter(name, value);
         }
         #endregion
-
     }
 }

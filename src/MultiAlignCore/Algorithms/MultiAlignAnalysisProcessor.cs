@@ -772,6 +772,7 @@ namespace MultiAlignCore.Algorithms
                     STACAdapter<UMCClusterLight> adapter = peakMatcher as STACAdapter<UMCClusterLight>;                    
                     if (adapter != null)
                     {
+                        
                         matchResults.FdrTable = adapter.Matcher.STACFDRTable;
                     }
                     m_analysis.MatchResults = matchResults;

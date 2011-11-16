@@ -48,10 +48,14 @@ namespace MultiAlignCore.IO.InputFiles
             foreach (string line in lines)
             {
                 string fixedLine            = line.ToLower();
-                fixedLine                   = fixedLine.Replace(" ", "");
                 fixedLine                   = fixedLine.Trim();
                 bool containsHeaderOpen     = fixedLine.Contains("[");
                 bool containsHeaderClose    = fixedLine.Contains("]");
+
+                if (containsHeaderClose && containsHeaderOpen)
+                {
+                    fixedLine = fixedLine.Replace(" ", "");
+                }
 
                 // If wasModeChanged = true, then the current 
                 // line is not data, but a tag to say change how read the next section.
@@ -121,12 +125,19 @@ namespace MultiAlignCore.IO.InputFiles
                                 switch (keys[0].ToLower())
                                 {
                                     case "database":
+                                        info.Database.DatabaseFormat    = Data.MassTags.MassTagDatabaseFormat.SQL;
                                         info.Database.DatabaseName      = keys[1];
                                         break;
                                     case "server":
+                                        info.Database.DatabaseFormat    = Data.MassTags.MassTagDatabaseFormat.SQL;
                                         info.Database.DatabaseServer    = keys[1];
                                         break;
                                     case "accesspath":
+                                        info.Database.DatabaseFormat    = Data.MassTags.MassTagDatabaseFormat.Access;
+                                        info.Database.LocalPath         = keys[1];
+                                        break;
+                                    case "sqlite":
+                                        info.Database.DatabaseFormat    = Data.MassTags.MassTagDatabaseFormat.Sqlite;
                                         info.Database.LocalPath         = keys[1];
                                         break;
                                 }

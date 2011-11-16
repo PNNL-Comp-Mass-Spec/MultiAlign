@@ -20,7 +20,6 @@ namespace MultiAlignCore.IO.MTDB
             MassTagDatabase database = null;
             IMtdbLoader loader       = null;
 
-            //TODO: Finish setting up the mass tag database to load from a strategy based pattern.
             switch (format)
             {
                 case MassTagDatabaseFormat.SQL:
@@ -28,6 +27,9 @@ namespace MultiAlignCore.IO.MTDB
                     break;
                 case MassTagDatabaseFormat.Access:
                     loader = new AccessMassTagDatabaseLoader(options.mstr_databaseFilePath);                    
+                    break;
+                case MassTagDatabaseFormat.Sqlite:
+                    loader = new SQLiteMassTagDatabaseLoader(options.mstr_databaseFilePath);
                     break;
                 default:                    
                     break;

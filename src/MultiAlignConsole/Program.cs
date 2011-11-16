@@ -1265,7 +1265,7 @@ namespace MultiAlignConsole
                 switch (analysisSetupInformation.Database.DatabaseFormat)
                 {
                     case MassTagDatabaseFormat.Access:
-                        PrintMessage("Using local Mass Tag Database at location: ");
+                        PrintMessage("Using local Access Mass Tag Database at location: ");
                         PrintMessage(string.Format("\tFull Path: {0}", analysisSetupInformation.Database.LocalPath));
                         PrintMessage(string.Format("\tDatabase Name: {0}", Path.GetFileName(analysisSetupInformation.Database.LocalPath)));
 
@@ -1281,6 +1281,15 @@ namespace MultiAlignConsole
                         m_analysis.Options.MassTagDatabaseOptions.mstrDatabase = analysisSetupInformation.Database.DatabaseName;
                         m_analysis.Options.MassTagDatabaseOptions.mstrServer = analysisSetupInformation.Database.DatabaseServer;
                         m_analysis.Options.MassTagDatabaseOptions.menm_databaseType = MultiAlignEngine.MassTags.MassTagDatabaseType.SQL;
+                        break;
+                    case MassTagDatabaseFormat.Sqlite:
+                        PrintMessage("Using local Sqlite Mass Tag Database at location: ");
+                        PrintMessage(string.Format("\tFull Path: {0}", analysisSetupInformation.Database.LocalPath));
+                        PrintMessage(string.Format("\tDatabase Name: {0}", Path.GetFileName(analysisSetupInformation.Database.LocalPath)));
+
+                        m_analysis.Options.MassTagDatabaseOptions.mstr_databaseFilePath = analysisSetupInformation.Database.LocalPath;
+                        m_analysis.Options.MassTagDatabaseOptions.mstrServer            = analysisSetupInformation.Database.DatabaseServer;
+                        m_analysis.Options.MassTagDatabaseOptions.menm_databaseType     = MultiAlignEngine.MassTags.MassTagDatabaseType.SQLite;                        
                         break;
                 }
 
@@ -1409,7 +1418,7 @@ namespace MultiAlignConsole
             if (m_exporterNames.CrossTabAbundance != null)
             {
                 UMCClusterAbundanceCrossTabWriter writer = new UMCClusterAbundanceCrossTabWriter(Path.Combine(m_analysisPath,
-                                                                m_exporterNames.CrossTabAbundance));
+                                                                                                 m_exporterNames.CrossTabAbundance));
                 writer.Consolidator = new MultiAlignCore.Algorithms.Features.UMCAbundanceConsolidator();
                 m_clusterExporters.Add(writer);
             }
@@ -1611,9 +1620,11 @@ namespace MultiAlignConsole
 
                     bool isBaselineSpecified = ConstructBaselines(analysisSetupInformation, m_analysis.MetaData, useMTDB);
                     if (!isBaselineSpecified)
-                    {
+                    {                    
                         return 1;
                     }
+
+
                     
                     ExportParameterFile();
                     PrintSpacer();

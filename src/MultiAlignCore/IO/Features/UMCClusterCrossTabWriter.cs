@@ -99,5 +99,12 @@ namespace MultiAlignCore.IO.Features
             }
         }
         #endregion
+
+        #region IFeatureClusterWriter Members
+        public void WriteClusters(List<UMCClusterLight> clusters, Dictionary<int, ClusterToMassTagMap> clusterMap, List<DatasetInformation> datasets, Dictionary<string, PNNLOmics.Data.MassTags.MassTagLight> tags)
+        {
+            WriteClusters(clusters, datasets);
+        }
+        #endregion
     }
 }
