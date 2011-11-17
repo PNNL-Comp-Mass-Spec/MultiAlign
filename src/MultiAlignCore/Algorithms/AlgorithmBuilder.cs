@@ -74,7 +74,7 @@ namespace MultiAlignCore.Algorithms
 
                     TraditionalPeakMatcher<UMCClusterLight> matcher     = new TraditionalPeakMatcher<UMCClusterLight>();
                     matcher.Options                                     = options.PeakMatchingOptions;
-                    m_provider.PeakMatcher                              = new TraditionalPeakMatcher<UMCClusterLight>();
+                    m_provider.PeakMatcher                              = matcher;
                     break;
                 
                 case PeakMatchingType.STAC:

@@ -909,6 +909,74 @@ namespace MultiAlignConsole
         } 
         #endregion 
 
+        #region Exporting 
+        static int ExportData(  FeatureDataAccessProviders providers, 
+                                string databasePath,
+                                List<DatasetInformation> datasets)
+        {
+            if (m_clusterExporters.Count > 0)
+            {
+                List<UMCClusterLight> clusters = null;
+                using (MultiAlignCore.IO.Mammoth.MammothDatabase database = new MultiAlignCore.IO.Mammoth.MammothDatabase(databasePath))
+                {
+                    database.Connect();
+                    clusters = database.GetClusters(
+                                new MultiAlignCore.IO.Mammoth.MammothDatabaseRange(-1, 10000000, -1, 2, -1, 200));
+                    database.Close();
+                }
+                if (clusters.Count < 1)
+                {
+                    PrintMessage("No clusters present in the database.");
+                    return 1;
+                }
+                
+                PrintMessage("Checking for mass tag matches");
+                List<ClusterToMassTagMap> clusterMatches = providers.MassTagMatches.FindAll();
+
+                PrintMessage("Checking for mass tags");
+                List<PNNLOmics.Data.MassTags.MassTagLight> massTags = providers.MassTags.FindAll();
+
+
+                Dictionary<int, List<ClusterToMassTagMap>> clusterMap = new Dictionary<int, List<ClusterToMassTagMap>>();
+                if (clusterMatches.Count > 0)
+                {
+                    foreach (ClusterToMassTagMap map in clusterMatches)
+                    {
+                        if (!clusterMap.ContainsKey(map.ClusterId))
+                        {
+                            clusterMap.Add(map.ClusterId, new List<ClusterToMassTagMap>());
+                        }
+                        clusterMap[map.ClusterId].Add(map);
+                    }
+                }
+
+                Dictionary<string, PNNLOmics.Data.MassTags.MassTagLight> tags = new Dictionary<string, PNNLOmics.Data.MassTags.MassTagLight>();
+                if (massTags.Count > 0)
+                {
+                    foreach (PNNLOmics.Data.MassTags.MassTagLight tag in massTags)
+                    {
+                        string key = tag.ConformationID + "-" + tag.ID;
+                        if (!tags.ContainsKey(key))
+                        {
+                            tags.Add(key, tag);
+                        }
+                    }
+                }
+
+                PrintMessage("Exporting Data");
+                foreach (IFeatureClusterWriter writer in m_clusterExporters)
+                {
+                    PrintMessage("Exporting in " + writer.ToString() + " format to " + m_analysisPath);
+                    writer.WriteClusters(clusters,
+                                         clusterMap,
+                                         datasets,
+                                         tags);
+                }
+            }
+            return 0;
+        }
+        #endregion
+
         #region Event Handlers
         /// <summary>
         /// Displays the status message when the analysis completes.
@@ -946,6 +1014,9 @@ namespace MultiAlignConsole
             }
 
             m_report.PushEndHeader();
+
+            ExportData(m_analysis.DataProviders, AnalysisPathUtils.BuildAnalysisName(m_analysisPath, m_analysisName),  m_analysis.MetaData.Datasets);
+
             m_triggerEvent.Set();
         }
         /// <summary>
@@ -963,12 +1034,7 @@ namespace MultiAlignConsole
         /// <param name="sender"></param>
         /// <param name="e"></param>
         static void processor_FeaturesClustered(object sender, FeaturesClusteredEventArgs e)
-        {
-            List<DatasetInformation> information = m_dataProviders.DatasetCache.FindAll();
-            foreach (IFeatureClusterWriter writer in m_clusterExporters)
-            {
-                writer.WriteClusters(e.Clusters, information);
-            }
+        {            
             PrintMessage("Features Clustered.");            
         }
         /// <summary>
@@ -1556,65 +1622,7 @@ namespace MultiAlignConsole
                     }
 
                     ConstructExporting();
-                    if (m_clusterExporters.Count > 0)
-                    {
-                        List<UMCClusterLight> clusters = null;
-                        using (MultiAlignCore.IO.Mammoth.MammothDatabase database = new MultiAlignCore.IO.Mammoth.MammothDatabase(databasePath))
-                        {
-                            database.Connect();
-                            clusters = database.GetClusters(
-                                        new MultiAlignCore.IO.Mammoth.MammothDatabaseRange(-1, 10000000, -1, 2, -1, 200));
-                            database.Close();
-                        }
-                        if (clusters.Count < 1)
-                        {
-                            PrintMessage("No clusters present in the database.");
-                            return 1;
-                        }
-
-                        PrintMessage("Checking for mass tag matches");
-                        List<ClusterToMassTagMap> clusterMatches            = providers.MassTagMatches.FindAll();
-
-                        PrintMessage("Checking for mass tags");
-                        List<PNNLOmics.Data.MassTags.MassTagLight> massTags = providers.MassTags.FindAll();
-
-
-                        Dictionary<int, List<ClusterToMassTagMap>> clusterMap = new Dictionary<int, List<ClusterToMassTagMap>>();
-                        if (clusterMatches.Count > 0)
-                        {
-                            foreach (ClusterToMassTagMap map in clusterMatches)
-                            {
-                                if (!clusterMap.ContainsKey(map.ClusterId))
-                                {
-                                    clusterMap.Add(map.ClusterId, new List<ClusterToMassTagMap>());
-                                }
-                                clusterMap[map.ClusterId].Add(map);
-                            }
-                        }
-
-                        Dictionary<string, PNNLOmics.Data.MassTags.MassTagLight> tags = new Dictionary<string,PNNLOmics.Data.MassTags.MassTagLight>();
-                        if (massTags.Count > 0)
-                        {
-                            foreach (PNNLOmics.Data.MassTags.MassTagLight tag in massTags)
-                            {
-                                string key = tag.ConformationID + "-" + tag.ID;
-                                if (!tags.ContainsKey(key))
-                                {
-                                    tags.Add(key, tag);
-                                }
-                            }
-                        }
-
-                        PrintMessage("Exporting Data");
-                        foreach (IFeatureClusterWriter writer in m_clusterExporters)
-                        {
-                            PrintMessage("Exporting in " + writer.ToString() + " format to " + m_analysisPath);
-                            writer.WriteClusters(clusters,
-                                                 clusterMap,
-                                                 datasets,
-                                                 tags);
-                        }
-                    }
+                    ExportData(providers, databasePath, datasets);
                     CleanupDataProviders();                    
                     break;
                 case AnalysisType.Full:
@@ -1646,6 +1654,16 @@ namespace MultiAlignConsole
                     /// Create the clustering, analysis, and plotting paths.
                     /// /////////////////////////////////////////////////////////////                                    
                     ConstructClustering(builder);
+
+                    // By default create exporting tools.
+                    if (m_exporterNames.CrossTabPath == null)
+                    {
+                        m_exporterNames.CrossTabPath = Path.Combine(m_analysisPath, m_analysisName.Replace(".db3", ""));
+                    }
+                    if (m_exporterNames.CrossTabAbundance == null)
+                    {
+                        m_exporterNames.CrossTabAbundance = Path.Combine(m_analysisPath, m_analysisName.Replace(".db3", ""));
+                    }
                     ConstructExporting();
 
                     m_analysis               = ConstructAnalysisObject(analysisSetupInformation);
