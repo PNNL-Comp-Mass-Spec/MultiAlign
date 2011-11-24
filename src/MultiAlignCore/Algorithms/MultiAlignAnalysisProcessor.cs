@@ -774,11 +774,330 @@ namespace MultiAlignCore.Algorithms
 
         #region MSMS Alignment
         /// <summary>
+        /// Extracts the features from the database that have MS/MS
+        /// </summary>
+        public Dictionary<int, List<UMCLight>> ExtractUMCWithMSMS(MultiAlignAnalysis analysis)
+        {
+            UpdateStatus("Producing feature traceback data structures.");
+
+            UpdateStatus("Extracting data from each dataset.");
+            FeatureDataAccessProviders providers = analysis.DataProviders;
+            Dictionary<int, List<UMCLight>> features = new Dictionary<int, List<UMCLight>>();
+
+            foreach (DatasetInformation dataset in analysis.MetaData.Datasets)
+            {
+                features.Add(dataset.DatasetId, new List<UMCLight>());
+
+                int datasetID = dataset.DatasetId;
+                UpdateStatus(string.Format("Mapping data from dataset {0} with id {1}", dataset.DatasetName, dataset.DatasetId));
+
+                UpdateStatus("Extracting LC-MS to MS Feature Map");
+                Dictionary<int, int> msFeatureIDToLCMSFeatureID = new Dictionary<int, int>();
+                List<MSFeatureToLCMSFeatureMap> msToLcmsFeatureMaps = providers.MSFeatureToLCMSFeatureCache.FindByDatasetId(datasetID);
+                foreach (MSFeatureToLCMSFeatureMap map in msToLcmsFeatureMaps)
+                {
+                    msFeatureIDToLCMSFeatureID.Add(map.MSFeatureID, map.LCMSFeatureID);
+                }
+
+                UpdateStatus("Extracting MS to MSn Feature Map");
+                List<MSFeatureToMSnFeatureMap> msnToMSFeatureMaps = providers.MSFeatureToMSnFeatureCache.FindByDatasetId(datasetID);
+                Dictionary<int, int> msFeatureIDToMsMsFeatureID = new Dictionary<int, int>();
+                foreach (MSFeatureToMSnFeatureMap map in msnToMSFeatureMaps)
+                {
+                    msFeatureIDToMsMsFeatureID.Add(map.MSFeatureID, map.MSMSFeatureID);
+                }
+
+                UpdateStatus("Extracting MSn Features");
+                Dictionary<int, MSSpectra> msMsFeatureIDToSpectrum = new Dictionary<int, MSSpectra>();
+                List<MSSpectra> msnSpectra = providers.MSnFeatureCache.FindByDatasetId(datasetID);
+                foreach (MSSpectra spectrum in msnSpectra)
+                {
+                    msMsFeatureIDToSpectrum.Add(spectrum.ID, spectrum);
+                }
+
+                UpdateStatus("Extracting LC-MS Features");
+                List<clsUMC> lcmsFeatures = providers.FeatureCache.FindByDatasetId(datasetID);
+                Dictionary<int, UMCLight> lcmsFeatureIDToFeature = new Dictionary<int, UMCLight>();
+                foreach (clsUMC umc in lcmsFeatures)
+                {
+                    UMCLight umcFeature = new UMCLight();
+                    umcFeature.Abundance = Convert.ToInt64(umc.AbundanceMax);
+                    umcFeature.ID = umc.Id;
+                    umcFeature.MassMonoisotopic = umc.MassCalibrated;
+                    umcFeature.RetentionTime = umc.Net;
+                    umcFeature.Scan = umc.Scan;
+                    umcFeature.GroupID = datasetID;
+                    lcmsFeatureIDToFeature.Add(umc.Id, umcFeature);
+                }
+
+                UpdateStatus("Extracting MS Features");
+                List<MSFeatureLight> msFeatures = providers.MSFeatureCache.FindByDatasetId(datasetID);
+
+                // Tracks that the UMC was found already.
+                Dictionary<int, UMCLight> foundUMC = new Dictionary<int, UMCLight>();
+
+                UpdateStatus("Mapping data.");
+                foreach (MSFeatureLight feature in msFeatures)
+                {
+                    if (!msFeatureIDToMsMsFeatureID.ContainsKey(feature.ID))
+                        continue;
+
+                    if (!msFeatureIDToLCMSFeatureID.ContainsKey(feature.ID))
+                        continue;
+
+                    // Map the MS/MS feature.
+                    int msnID           = msFeatureIDToMsMsFeatureID[feature.ID];
+                    MSSpectra spectrum  = msMsFeatureIDToSpectrum[msnID];
+                    spectrum.GroupID    = datasetID;
+                    int featureID       = msFeatureIDToLCMSFeatureID[feature.ID];
+
+                    // This would mean the feature was filtered out.
+                    if (!lcmsFeatureIDToFeature.ContainsKey(featureID))
+                    {
+                        continue;
+                    }
+
+                    feature.MSnSpectra.Add(spectrum);
+
+                    // Map to the UMC 
+                    UMCLight umc = null;
+                    umc = lcmsFeatureIDToFeature[featureID];
+
+                    feature.GroupID = datasetID;
+                    umc.AddChildFeature(feature);
+
+                    // Only add if we found the feature once before.
+                    if (!foundUMC.ContainsKey(umc.ID))
+                    {
+                        features[datasetID].Add(umc);
+                        foundUMC.Add(umc.ID, umc);
+                    }
+                }
+            }            
+            return features;
+        }
+        /// <summary>
+        /// Extracts umc's with MSMS and determines whether to include all MS features or just the ones
+        /// with related MSMS.
+        /// </summary>
+        /// <param name="full"></param>
+        private Dictionary<int, List<UMCLight>> MapRemainingMSFeaturesToUMCs(Dictionary<int, List<UMCLight>>    features,
+                                                                             ThermoRawDataFileReader            reader,
+                                                                             IMSFeatureToLCMSFeatureDAO         msToLCMSFeatureCache,
+                                                                             IMSFeatureDAO                      msFeatureCache)
+        {            
+            // for each dataset
+            foreach (int key in features.Keys)
+            {
+                List<MSFeatureToLCMSFeatureMap> map = msToLCMSFeatureCache.FindByDatasetId(key);
+                List<MSFeatureLight> allFeatures    = msFeatureCache.FindByDatasetId(key);
+
+                Dictionary<int, MSFeatureLight> featureMap = new Dictionary<int, MSFeatureLight>();
+                foreach(MSFeatureLight msFeature in allFeatures)
+                {
+                    featureMap.Add(msFeature.ID, msFeature);
+                }
+                Dictionary<int, List<MSFeatureToLCMSFeatureMap>> msFeatureMap = new Dictionary<int, List<MSFeatureToLCMSFeatureMap>>();
+                foreach (MSFeatureToLCMSFeatureMap keyMap in map)
+                {
+                    if (!msFeatureMap.ContainsKey(keyMap.LCMSFeatureID))
+                    {
+                        msFeatureMap.Add(keyMap.LCMSFeatureID, new List<MSFeatureToLCMSFeatureMap>());
+                    }
+                    msFeatureMap[keyMap.LCMSFeatureID].Add(keyMap);
+                }
+
+                // Look at each feature.                   
+                foreach (UMCLight feature in features[key])
+                {
+                    foreach (MSFeatureToLCMSFeatureMap lcMap in msFeatureMap[feature.ID])
+                    {
+                        MSFeatureLight xMap = featureMap[lcMap.MSFeatureID];
+
+                        int index = feature.MSFeatures.FindIndex(delegate(MSFeatureLight x)
+                                                            {
+                                                                return x.ID == xMap.ID;
+                                                            });
+                        if (index < 0)
+                        {
+                            feature.MSFeatures.Add(xMap);
+                        }
+                    }
+                        
+                    feature.MSFeatures.Sort(delegate(MSFeatureLight x, MSFeatureLight y)
+                    {
+                        return x.Scan.CompareTo(y.Scan);
+                    }
+                    );                        
+                }
+            }            
+            return features;
+        }
+        /// <summary>
+        /// Extracts UMC SIC's for all of the features.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="analysis"></param>
+        public void ExtractUMCSICs(string path, MultiAlignAnalysis analysis)
+        {
+            UpdateStatus("Extracting MSMS data");
+            Dictionary<int, List<UMCLight>> features = ExtractUMCWithMSMS(analysis);
+
+            // Create the object that knows how to read the RAW files we are analyzing.
+            ThermoRawDataFileReader reader = null;
+
+            if (analysis.MetaData.OtherFiles.Count <= 0)
+            {
+                UpdateStatus("Raw files specified.");
+                reader = new ThermoRawDataFileReader();
+                for (int i = 0; i < analysis.MetaData.Datasets.Count; i++)
+                {
+                    DatasetInformation datasetInformation = analysis.MetaData.Datasets[i];
+                    InputFile rawInformation = analysis.MetaData.OtherFiles[i];
+
+                    reader.AddDataFile(rawInformation.Path, datasetInformation.DatasetId);
+                }
+            }
+
+            UpdateStatus("Completing mapping to rest of the features");
+            features = MapRemainingMSFeaturesToUMCs(features, 
+                                         reader, 
+                                         analysis.DataProviders.MSFeatureToLCMSFeatureCache, 
+                                         analysis.DataProviders.MSFeatureCache);
+
+            string sicTitle     = "SIC";
+            string sicXLabel    = "Scan";
+            string sicYLabel    = "Intensity";
+            
+            // Look at each dataset.
+            foreach (int datasetID in features.Keys)
+            {
+                // Look at each feature
+                foreach (UMCLight feature in features[datasetID])
+                {
+                    int totalFeatures   = feature.MSFeatures.Count;
+                    double[] scans      = new double[totalFeatures];
+                    double[] intensity  = new double[totalFeatures];
+                    string baseName     = string.Format("-{0}-{1}", datasetID, feature.ID);
+                    int i               = 0;
+
+                    double maxI = 0;
+                    // Separate the MS features into charge state maps so we only look at one m/z
+                    foreach (MSFeatureLight msFeature in feature.MSFeatures)
+                    {
+                        
+                        // Build the SIC arrays for plotting
+                        scans[i]     = msFeature.Scan;
+                        intensity[i] = Math.Log(msFeature.Abundance, 2);
+                        maxI         = Math.Max(intensity[i], maxI);
+                        i++;
+                    }
+                    
+                    System.Drawing.RectangleF rect  = new System.Drawing.RectangleF(0, 0, 400, 400);
+                    ZedGraph.GraphPane pane         = new ZedGraph.GraphPane(rect, sicTitle + string.Format(" {0:0.000}" , feature.MassMonoisotopic), sicXLabel, sicYLabel);
+                    pane.LineType                   = ZedGraph.LineType.Normal;                  
+                    //pane.AddCurve("", scans, intensity, System.Drawing.Color.LightGray, ZedGraph.SymbolType.Default);
+
+                    Dictionary<int, List<MSFeatureLight>> chargeMap = MultiAlignCore.Data.Features.LCMSFeatureChargeMapBuilder.BuildChargeMap(feature);
+
+                    System.Drawing.Color[] colors = new System.Drawing.Color[] {System.Drawing.Color.Green,
+                                                                                 System.Drawing.Color.Yellow,
+                                                                                 System.Drawing.Color.Blue,
+                                                                                 System.Drawing.Color.Orange,
+                                                                                 System.Drawing.Color.Purple};
+                    foreach (int charge in chargeMap.Keys)
+                    {
+                        
+                        double [] fScans        = new double[chargeMap[charge].Count];
+                        double [] fIntensities  = new double[chargeMap[charge].Count];
+                        
+                        i = 0;
+                        foreach (MSFeatureLight msFeature in chargeMap[charge])
+                        {
+                            fScans[i]       = msFeature.Scan;
+                            fIntensities[i] = Math.Log(msFeature.Abundance, 2);
+                            i++;
+                        }
+                        
+                        pane.AddCurve("",
+                                        fScans,
+                                        fIntensities,
+                                        colors[(charge - 1) % colors.Length],
+                                        ZedGraph.SymbolType.Square);                        
+                    }
+
+                    using (System.Drawing.SolidBrush brush = new System.Drawing.SolidBrush(System.Drawing.Color.Red))
+                    {
+                        pane.Fill.Brush = brush;
+                        foreach (MSFeatureLight msFeature in feature.MSFeatures)
+                        {
+                            foreach (MSSpectra spectrum in msFeature.MSnSpectra)
+                            {
+                                pane.AddStick("",
+                                                new double[] { msFeature.Scan, msFeature.Scan },
+                                                new double[] { Math.Log(msFeature.Abundance, 2), maxI },
+                                                System.Drawing.Color.Red);
+                            }
+                        }
+                    }                    
+                    pane.AxisChange();
+                    string fullPath = Path.Combine(path, "SIC" + baseName + ".png");
+                    pane.GetImage().Save(fullPath);
+                                        
+                    /*Dictionary<int, List<MSFeatureLight>> chargeMap = MultiAlignCore.Data.Features.LCMSFeatureChargeMapBuilder.BuildChargeMap(feature);
+                    foreach (int charge in chargeMap.Keys)
+                    {
+                        string baseName     = string.Format("{0}-{1}", feature.ID, charge);
+                        int totalFeatures   = chargeMap[charge].Count;
+                        double[] scans      = new double[totalFeatures];
+                        double[] intensity  = new double[totalFeatures];
+
+                        // Build the SIC arrays for plotting
+                        int i = 0;
+                        foreach (MSFeatureLight msFeature in chargeMap[charge])
+                        {
+                            scans[i]        = msFeature.Scan;
+                            intensity[i]    = msFeature.Abundance;
+                            i++;
+                        }
+                        System.Drawing.RectangleF rect  = new System.Drawing.RectangleF(0, 0, 400, 400);
+                        ZedGraph.GraphPane pane         = new ZedGraph.GraphPane(rect, sicTitle, sicXLabel, sicYLabel);
+
+                        pane.AddCurve("", scans, intensity, System.Drawing.Color.Black, ZedGraph.SymbolType.Circle);
+
+                        foreach (MSFeatureLight msFeature in chargeMap[charge])
+                        {
+                            foreach (MSSpectra spectrum in msFeature.MSnSpectra)
+                            {
+                                pane.AddCurve("",
+                                                new double[] { spectrum.Scan },
+                                                new double[] { spectrum.TotalIonCurrent },
+                                                System.Drawing.Color.Red,
+                                                ZedGraph.SymbolType.Square);
+                            }
+                            i++;
+                        }
+
+                        pane.AxisChange();
+
+                        string fullPath = Path.Combine(path, "SIC" + baseName + ".png");
+                        pane.GetImage().Save(fullPath);
+                    }*/
+
+                }
+            }
+        }
+        /// <summary>
         /// Performs MS/MS alignment.
         /// </summary>
         /// <param name="analysis"></param>
         public void PerformMSMSAlignment(MultiAlignAnalysis analysis)
         {
+            if (analysis.MetaData.OtherFiles.Count <= 0)
+            {
+                throw new Exception("No RAW files were specified.  Cannot continue with the analysis.");
+            }
+
             Dictionary<int, List<UMCLight>> features  = ExtractUMCWithMSMS(analysis);
 
             // Create the object that knows how to read the RAW files we are analyzing.
@@ -849,116 +1168,6 @@ namespace MultiAlignCore.Algorithms
         void msCluster_Progress(object sender, ProgressNotifierArgs e)
         {
             UpdateStatus(e.Message);
-        }
-        /// <summary>
-        /// Extracts the features from the database that have MS/MS
-        /// </summary>
-        public Dictionary<int, List<UMCLight>> ExtractUMCWithMSMS(MultiAlignAnalysis analysis)
-        {
-            UpdateStatus("Producing feature traceback data structures.");
-                        
-            UpdateStatus("Extracting data from each dataset.");
-            FeatureDataAccessProviders providers    = analysis.DataProviders;
-            Dictionary<int, List<UMCLight>> features = new Dictionary<int, List<UMCLight>>();
-
-            foreach (DatasetInformation dataset in analysis.MetaData.Datasets)
-            {
-                features.Add(dataset.DatasetId, new List<UMCLight>());
-
-                int datasetID = dataset.DatasetId;
-                UpdateStatus(string.Format("Mapping data from dataset {0} with id {1}", dataset.DatasetName, dataset.DatasetId));
-
-                UpdateStatus("Extracting LC-MS to MS Feature Map");
-                Dictionary<int, int> msFeatureIDToLCMSFeatureID = new Dictionary<int, int>();
-                List<MSFeatureToLCMSFeatureMap> msToLcmsFeatureMaps = providers.MSFeatureToLCMSFeatureCache.FindByDatasetId(datasetID);
-                foreach (MSFeatureToLCMSFeatureMap map in msToLcmsFeatureMaps)
-                {
-                    msFeatureIDToLCMSFeatureID.Add(map.MSFeatureID, map.LCMSFeatureID);
-                }
-
-                UpdateStatus("Extracting MS to MSn Feature Map");
-                List<MSFeatureToMSnFeatureMap> msnToMSFeatureMaps   = providers.MSFeatureToMSnFeatureCache.FindByDatasetId(datasetID);
-                Dictionary<int, int> msFeatureIDToMsMsFeatureID     = new Dictionary<int, int>();
-                foreach (MSFeatureToMSnFeatureMap map in msnToMSFeatureMaps)
-                {
-                    msFeatureIDToMsMsFeatureID.Add(map.MSFeatureID, map.MSMSFeatureID);
-                }
-
-                UpdateStatus("Extracting MSn Features");
-                Dictionary<int, MSSpectra> msMsFeatureIDToSpectrum  = new Dictionary<int, MSSpectra>();
-                List<MSSpectra> msnSpectra                          = providers.MSnFeatureCache.FindByDatasetId(datasetID);
-                foreach (MSSpectra spectrum in msnSpectra)
-                {
-                    msMsFeatureIDToSpectrum.Add(spectrum.ID, spectrum);
-                }
-
-                UpdateStatus("Extracting LC-MS Features");
-                List<clsUMC> lcmsFeatures                        = providers.FeatureCache.FindByDatasetId(datasetID);
-                Dictionary<int, UMCLight> lcmsFeatureIDToFeature = new Dictionary<int, UMCLight>();
-                foreach (clsUMC umc in lcmsFeatures)
-                {
-                    UMCLight umcFeature         = new UMCLight();
-                    umcFeature.Abundance        = Convert.ToInt64(umc.AbundanceMax);
-                    umcFeature.ID               = umc.Id;
-                    umcFeature.MassMonoisotopic = umc.MassCalibrated;
-                    umcFeature.RetentionTime    = umc.Net;
-                    umcFeature.Scan             = umc.Scan;
-                    umcFeature.GroupID          = datasetID;
-                    lcmsFeatureIDToFeature.Add(umc.Id, umcFeature);
-                }
-
-                UpdateStatus("Extracting MS Features");
-                List<MSFeatureLight> msFeatures = providers.MSFeatureCache.FindByDatasetId(datasetID);
-
-                // Tracks that the UMC was found already.
-                Dictionary<int, UMCLight> foundUMC = new Dictionary<int, UMCLight>();
-
-                UpdateStatus("Mapping data.");
-                foreach (MSFeatureLight feature in msFeatures)
-                {                    
-                    if (!msFeatureIDToMsMsFeatureID.ContainsKey(feature.ID))
-                        continue;
-
-                    if (!msFeatureIDToLCMSFeatureID.ContainsKey(feature.ID))
-                        continue;
-
-
-                    // Map the MS/MS feature.
-                    int msnID           = msFeatureIDToMsMsFeatureID[feature.ID];
-                    MSSpectra spectrum  = msMsFeatureIDToSpectrum[msnID];
-                    spectrum.GroupID    = datasetID;
-                    int featureID       = msFeatureIDToLCMSFeatureID[feature.ID];
-
-                    // This would mean the feature was filtered out.
-                    if (!lcmsFeatureIDToFeature.ContainsKey(featureID))
-                    {
-                        continue;
-                    }
-                    
-                    feature.MSnSpectra.Add(spectrum);
-
-                    // Map to the UMC 
-                    UMCLight umc        = null;
-                    try
-                    {
-                        umc = lcmsFeatureIDToFeature[featureID];
-                    }
-                    catch (Exception)
-                    {
-                        throw;
-                    }
-                    feature.GroupID = datasetID;
-                    umc.AddChildFeature(feature);
-
-                    // Only add if we found the feature once before.
-                    if (!foundUMC.ContainsKey(umc.ID))
-                    {
-                        features[datasetID].Add(umc);
-                        foundUMC.Add(umc.ID, umc);
-                    }
-                }
-            }
-            return features;
         }
         #endregion
 
@@ -1160,6 +1369,14 @@ namespace MultiAlignCore.Algorithms
             set;
         }
         /// <summary>
+        /// Gets or sets the path to store the SIC's
+        /// </summary>
+        public string AnalaysisPath
+        {
+            get;
+            set;
+        }
+        /// <summary>
         /// Starts the main analysis.
         /// </summary>
         private void PerformAnalysis()
@@ -1213,6 +1430,11 @@ namespace MultiAlignCore.Algorithms
 
                 switch (m_analysis.AnalysisType)
                 {
+                    case AnalysisType.ExtractSICs:
+                        UpdateStatus("Building SIC's");
+                        this.ExtractUMCSICs(this.AnalaysisPath, m_analysis);
+                        UpdateStatus(string.Format("Analysis {0} Completed.", m_analysis.MetaData.AnalysisName));
+                        break;
                     case AnalysisType.MSMSAlignment:
                         UpdateStatus("Creating Anchor Points And Clustering for Ms-Ms alignment.");
                         PerformMSMSAlignment(m_analysis);
@@ -1267,6 +1489,7 @@ namespace MultiAlignCore.Algorithms
     /// </summary>
     public enum AnalysisType
     {
+        ExtractSICs,
         FactorImporting,
         MSMSAlignment,
         Full,

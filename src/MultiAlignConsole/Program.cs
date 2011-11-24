@@ -162,6 +162,10 @@ namespace MultiAlignConsole
         /// Performs only the msms alignment.
         /// </summary>
         private static bool m_alignMSMS;
+        /// <summary>
+        /// Extract the SIC's for each umc.
+        /// </summary>
+        private static bool m_extractSICs;
         #endregion
         
         /// <summary>
@@ -189,6 +193,7 @@ namespace MultiAlignConsole
             m_clusterExporters      = new List<IFeatureClusterWriter>();
             m_useFactors            = false;
             m_alignMSMS             = false;
+            m_extractSICs           = false;
         }
 
         #region Plot Methods
@@ -585,11 +590,20 @@ namespace MultiAlignConsole
             }
 
             // We want to perform the alignment of MSMS data only.
-            if (!isExporting && analysisType == AnalysisType.Full && m_alignMSMS)
+            if (!isExporting && analysisType == AnalysisType.Full)
             {
-                PrintMessage("Aligning MSMS data only.");
-                analysisType = AnalysisType.MSMSAlignment;
+                if (m_alignMSMS)
+                {
+                    PrintMessage("Aligning MSMS data only.");
+                    analysisType = AnalysisType.MSMSAlignment;
+                }
+                else if (m_extractSICs)
+                {
+                    PrintMessage("Extract SIC's");
+                    analysisType = AnalysisType.ExtractSICs;
+                }
             }
+
 
             return analysisType;
         }       
@@ -657,6 +671,9 @@ namespace MultiAlignConsole
                             break;
                         case "-exportabundances":
                             m_exporterNames.CrossTabAbundance = values[0];
+                            break;
+                        case "-extractsics":
+                            m_extractSICs = true;
                             break;
                         case "-msmsalign":
                             m_alignMSMS = true;
@@ -882,7 +899,6 @@ namespace MultiAlignConsole
                 List<ParameterHibernateMapping> mappings = ParameterUtility.ExtractParameterMapObjects(o, key);
                 allmappings.AddRange(mappings);
             }
-
 
             ParameterHibernateMapping assemblyMap   = new ParameterHibernateMapping();
             string assemblyData                     = ApplicationUtility.GetAssemblyData();
@@ -1602,13 +1618,14 @@ namespace MultiAlignConsole
             string  databasePath    = Path.Combine(m_analysisPath, m_analysisName); 
             bool    databaseExists  = File.Exists(databasePath);
             bool    createDatabase  = true;
-            if (validated == AnalysisType.MSMSAlignment)
+            if (validated == AnalysisType.MSMSAlignment || validated == AnalysisType.ExtractSICs)
             {
                 if (databaseExists)
                 {
                     createDatabase = false;
                 }
             }
+
             switch (validated)
             {                   
                 case AnalysisType.FactorImporting:
@@ -1686,6 +1703,7 @@ namespace MultiAlignConsole
                     ExportData(providers, databasePath, datasets);
                     CleanupDataProviders();                    
                     break;
+                case AnalysisType.ExtractSICs:
                 case AnalysisType.MSMSAlignment:
                 case AnalysisType.Full:
                     PrintMessage("Performing analysis.");
@@ -1768,6 +1786,17 @@ namespace MultiAlignConsole
 
                     // Tell the processor whether to load data or not.
                     processor.LoadData = createDatabase;
+
+
+                    // Give the processor somewhere to put the SIC images.
+                    if (validated == AnalysisType.ExtractSICs)
+                    {
+                        processor.AnalaysisPath = Path.Combine(m_analysisPath, "SICs");
+                        if (!Directory.Exists(processor.AnalaysisPath))
+                        {
+                            Directory.CreateDirectory(processor.AnalaysisPath);
+                        }
+                    }
 
                     /// /////////////////////////////////////////////////////////////
                     /// Start the analysis

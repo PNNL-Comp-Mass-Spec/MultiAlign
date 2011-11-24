@@ -73,29 +73,25 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
                             }
                         );
 
-                    // Then calculate their respective deltas.
-                    List<double> deltas = new List<double>();
+
+
+                    // Then calculate their respective scan deltas.
+                    List<int> deltas = new List<int>();
                     for (int i = 1; i < feature.MSFeatures.Count; i++)
                     {
-                        double delta = Convert.ToDouble(feature.MSFeatures[i].Scan - feature.MSFeatures[i - 1].Scan);
+                        int delta = feature.MSFeatures[i].Scan - feature.MSFeatures[i - 1].Scan;
                         deltas.Add(delta);
                     }
 
-                    double average = deltas.Average(d => d);
-                    double sum = deltas.Sum(d => Math.Pow(d - average, 2));
-
-                    // Use Bessels' correction for the stdev by using sample pop's N - 1 divisor. 
-                    double std = Math.Sqrt(sum / (feature.MSFeatures.Count - 1));
-
-
+                    int median          = deltas.Median(); 
                     List<int> divisions = new List<int>();
+
                     // Then we break up any features that are ill-behaived.
                     // We use the rule of one stdev from the sample population, s.t. that std !~ to the mean.                
-                    if (std > average * 2)
-                    {
+                    
                         for (int i = 0; i < deltas.Count; i++)
                         {
-                            if (deltas[i] > std * 2)
+                            if (deltas[i] > median)
                             {
                                 divisions.Add(i + 1);
                             }
@@ -144,8 +140,7 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
                                 replacementFeatures.Add(feature, new List<UMCLight>());
                             }
                             replacementFeatures[feature].Add(newFeature);
-                        }
-                    }
+                        }                    
                 }
 
                 // add the new features
@@ -225,6 +220,34 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
                 sqrDist += (a.Score - b.Score) * (a.Score - b.Score) * m_options.FitWeight * m_options.FitWeight; 
 				return Math.Sqrt(sqrDist); 
 			}            
+        }
+    }
+
+    public static class EnumerableExtensions
+    {
+        public static int Median(this IEnumerable<int> list)
+        {
+            // Create a copy of the input, and sort the copy
+            int[] temp = list.ToArray();
+            Array.Sort(temp);
+
+            int count = temp.Length;
+            if (count == 0)
+            {
+                throw new InvalidOperationException("Empty collection");
+            }
+            else if (count % 2 == 0)
+            {
+                // count is even, average two middle elements
+                int a = temp[count / 2 - 1];
+                int b = temp[count / 2];
+                return (a + b) / 2;
+            }
+            else
+            {
+                // count is odd, return the middle element
+                return temp[count / 2];
+            }
         }
     }
 }

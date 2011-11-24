@@ -175,10 +175,14 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="ThermoRawFileReaderDLL">
       <HintPath>..\..\..\..\..\ThermoRawFileReaderDLL\bin\Debug\ThermoRawFileReaderDLL.dll</HintPath>
+    </Reference>
+    <Reference Include="ZedGraph">
+      <HintPath>..\..\lib\ZedGraph.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -209,6 +213,7 @@
     <Compile Include="ApplicationUtility.cs" />
     <Compile Include="Data\AnalysisOptions.cs" />
     <Compile Include="Data\AnalysisUtils.cs" />
+    <Compile Include="Data\Features\LCMSFeatureChargeMapBuilder.cs" />
     <Compile Include="Data\MSMSClusterMap.cs" />
     <Compile Include="Data\Factors\DatasetToExperimentalFactorMap.cs" />
     <Compile Include="Data\Factors\ExperimentalFactor.cs" />
