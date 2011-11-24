@@ -26,18 +26,7 @@ using MultiAlignCore.Data.Factors;
 
 namespace MultiAlignConsole
 {
-    /// <summary>
-    /// Analysis Steps
-    /// </summary>
-    internal enum AnalysisType
-    {
-        Full,
-        Alignment,
-        Clustering,
-        PeakMatching,
-        ExportDataOnly,
-        InvalidParameters
-    }
+    
     
 
     /// <summary>
@@ -169,6 +158,10 @@ namespace MultiAlignConsole
         /// Determines if we need to use factors.
         /// </summary>
         private static bool m_useFactors;
+        /// <summary>
+        /// Performs only the msms alignment.
+        /// </summary>
+        private static bool m_alignMSMS;
         #endregion
         
         /// <summary>
@@ -195,6 +188,7 @@ namespace MultiAlignConsole
             m_exporterNames         = new ClusterExporterComposite();            
             m_clusterExporters      = new List<IFeatureClusterWriter>();
             m_useFactors            = false;
+            m_alignMSMS             = false;
         }
 
         #region Plot Methods
@@ -579,10 +573,22 @@ namespace MultiAlignConsole
                 analysisType = AnalysisType.InvalidParameters;
             }
 
-            if (!isExporting && analysisType == AnalysisType.ExportDataOnly)
+            if (m_useFactors && analysisType == AnalysisType.ExportDataOnly)
+            {
+                PrintMessage("Exporting factors only");
+                analysisType = AnalysisType.FactorImporting;
+            }
+            else if (!isExporting && analysisType == AnalysisType.ExportDataOnly)
             {
                 PrintMessage("No export file names provided.");
                 analysisType = AnalysisType.InvalidParameters;
+            }
+
+            // We want to perform the alignment of MSMS data only.
+            if (!isExporting && analysisType == AnalysisType.Full && m_alignMSMS)
+            {
+                PrintMessage("Aligning MSMS data only.");
+                analysisType = AnalysisType.MSMSAlignment;
             }
 
             return analysisType;
@@ -651,6 +657,9 @@ namespace MultiAlignConsole
                             break;
                         case "-exportabundances":
                             m_exporterNames.CrossTabAbundance = values[0];
+                            break;
+                        case "-msmsalign":
+                            m_alignMSMS = true;
                             break;
                         case "-plots":
                             m_createPlots   = true;
@@ -845,7 +854,7 @@ namespace MultiAlignConsole
         /// Writes the parameters to the log file and database.
         /// </summary>
         /// <param name="analysis"></param>
-        static void PrintParameters(MultiAlignAnalysis analysis)
+        static void PrintParameters(MultiAlignAnalysis analysis, bool insertIntoDatabase)
         {
             PrintMessage("Parameters Loaded");
             Dictionary<string, object> options = new Dictionary<string, object>();
@@ -889,9 +898,12 @@ namespace MultiAlignConsole
             systemMap.Value                     = systemData;
             allmappings.Add(systemMap);
 
-            PrintMessage("Writing parameters to the analysis database.");
-            GenericDAOHibernate<ParameterHibernateMapping> parameterCache = new GenericDAOHibernate<MultiAlignCore.IO.Parameters.ParameterHibernateMapping>();
-            parameterCache.AddAll(allmappings);
+            if (insertIntoDatabase)
+            {
+                PrintMessage("Writing parameters to the analysis database.");
+                GenericDAOHibernate<ParameterHibernateMapping> parameterCache = new GenericDAOHibernate<MultiAlignCore.IO.Parameters.ParameterHibernateMapping>();
+                parameterCache.AddAll(allmappings);
+            }
         }
         /// <summary>
         /// Creates the HTML output file.
@@ -1419,19 +1431,19 @@ namespace MultiAlignConsole
         /// </summary>
         /// <param name="analysisSetupInformation"></param>
         /// <param name="datasets"></param>
-        private static void ConstructFactorInformation(InputAnalysisInfo analysisSetupInformation, List<DatasetInformation> datasets)
+        private static void ConstructFactorInformation(InputAnalysisInfo analysisSetupInformation, List<DatasetInformation> datasets, FeatureDataAccessProviders providers)
         {
             MultiAlignCore.IO.Factors.MAGEFactorAdapter mage = new MultiAlignCore.IO.Factors.MAGEFactorAdapter();
 
             if (analysisSetupInformation.FactorFile == null)
             {
                 PrintMessage("Loading Factor Information from DMS");
-                mage.LoadFactorsFromDMS(datasets, m_analysis.DataProviders);
+                mage.LoadFactorsFromDMS(datasets, providers);
             }
             else
             {
                 PrintMessage("Loading Factor Information from file: " + analysisSetupInformation.FactorFile);
-                mage.LoadFactorsFromFile(analysisSetupInformation.FactorFile, datasets, m_analysis.DataProviders);
+                mage.LoadFactorsFromFile(analysisSetupInformation.FactorFile, datasets, providers);
             }
         }
         /// <summary>
@@ -1439,7 +1451,7 @@ namespace MultiAlignConsole
         /// </summary>
         /// <param name="analysisSetupInformation"></param>
         /// <param name="analysis"></param>
-        private static void ConstructDatasetInformation(InputAnalysisInfo analysisSetupInformation, MultiAlignAnalysis analysis)
+        private static void ConstructDatasetInformation(InputAnalysisInfo analysisSetupInformation, MultiAlignAnalysis analysis, bool insertIntoDatabase)
         {
             // Create dataset information.
             int i = 0;
@@ -1473,8 +1485,10 @@ namespace MultiAlignConsole
                         break;
                 }
             }
-
-            m_analysis.DataProviders.DatasetCache.AddAll(analysis.MetaData.Datasets);
+            if (insertIntoDatabase)
+            {
+                m_analysis.DataProviders.DatasetCache.AddAll(analysis.MetaData.Datasets);
+            }
         }
         /// <summary>
         /// Determine what exporting features need to be had.
@@ -1587,9 +1601,52 @@ namespace MultiAlignConsole
             /// /////////////////////////////////////////////////////////////    
             string  databasePath    = Path.Combine(m_analysisPath, m_analysisName); 
             bool    databaseExists  = File.Exists(databasePath);
-                        
-            switch (validated)
+            bool    createDatabase  = true;
+            if (validated == AnalysisType.MSMSAlignment)
             {
+                if (databaseExists)
+                {
+                    createDatabase = false;
+                }
+            }
+            switch (validated)
+            {                   
+                case AnalysisType.FactorImporting:
+                    PrintMessage("Updating factors");
+                    if (!databaseExists)
+                    {
+                        PrintMessage("The database you specified to extract data from does not exist.");
+                        return 1;
+                    }
+
+                    // Create access to data.
+                    providers = SetupDataProviders(false);
+                    if (providers == null)
+                    {
+                        PrintMessage("Could not create connection to database.");
+                        return 1;
+                    }
+
+                    // Find all the datasets 
+                    List<DatasetInformation> datasetsFactors = providers.DatasetCache.FindAll();
+                    if (datasetsFactors == null || datasetsFactors.Count == 0)
+                    {
+                        PrintMessage("There are no datasets present in the current database.");
+                        CleanupDataProviders();
+                        return 1;
+                    }
+
+                    InputAnalysisInfo info = new InputAnalysisInfo();
+                    
+                    if (m_options.ContainsKey("-factors"))
+                    {
+                        PrintMessage("Factor file specified.");
+                        string factorFile   = m_options["-factors"][0];
+                        info.FactorFile     = factorFile;
+                    }
+                    ConstructFactorInformation(info, datasetsFactors, providers);
+                    CleanupDataProviders();
+                    break;
                 case  AnalysisType.ExportDataOnly:
                     PrintMessage("Exporting data only selected.");
                     if (!databaseExists)
@@ -1617,6 +1674,10 @@ namespace MultiAlignConsole
 
                     if (m_exporterNames.ClusterMSMSPath != null)
                     {
+                        // Create an analysis object so the analysis processor doesnt freak.
+                        InputAnalysisInfo infoExport  = new InputAnalysisInfo();
+                        m_analysis              = ConstructAnalysisObject(infoExport);
+
                         processor = ConstructAnalysisProcessor(builder, providers);
                         processor.ExtractMSMS(providers, datasets);             
                     }
@@ -1625,8 +1686,9 @@ namespace MultiAlignConsole
                     ExportData(providers, databasePath, datasets);
                     CleanupDataProviders();                    
                     break;
+                case AnalysisType.MSMSAlignment:
                 case AnalysisType.Full:
-                    PrintMessage("Performing full analysis.");
+                    PrintMessage("Performing analysis.");
 
                     /// /////////////////////////////////////////////////////////////            
                     /// Read the input files.
@@ -1649,7 +1711,8 @@ namespace MultiAlignConsole
                     /// /////////////////////////////////////////////////////////////            
                     /// Creates or connects to the underlying analysis database.
                     /// ///////////////////////////////////////////////////////////// 
-                    providers                = SetupDataProviders(true);
+                    providers                = SetupDataProviders(createDatabase);
+
                     /// /////////////////////////////////////////////////////////////
                     /// Create the clustering, analysis, and plotting paths.
                     /// /////////////////////////////////////////////////////////////                                    
@@ -1668,7 +1731,7 @@ namespace MultiAlignConsole
 
                     m_analysis               = ConstructAnalysisObject(analysisSetupInformation);
                     m_analysis.DataProviders = providers;
-
+                    m_analysis.AnalysisType  = validated;
                     ConstructPlotPath();
 
                     /// /////////////////////////////////////////////////////////////
@@ -1680,11 +1743,11 @@ namespace MultiAlignConsole
                     /// Construct Dataset information
                     /// /////////////////////////////////////////////////////////////            
                     // Construct the dataset information for export.
-                    ConstructDatasetInformation(analysisSetupInformation, m_analysis);
+                    ConstructDatasetInformation(analysisSetupInformation, m_analysis, createDatabase);
                                         
                     if (m_useFactors)
                     {
-                        ConstructFactorInformation(analysisSetupInformation, m_analysis.MetaData.Datasets);
+                        ConstructFactorInformation(analysisSetupInformation, m_analysis.MetaData.Datasets, m_analysis.DataProviders);
                     }
 
                     bool isBaselineSpecified = ConstructBaselines(analysisSetupInformation, m_analysis.MetaData, useMTDB);
@@ -1695,13 +1758,16 @@ namespace MultiAlignConsole
                     
                     ExportParameterFile();
                     PrintSpacer();
-                    PrintParameters(m_analysis);
+                    PrintParameters(m_analysis, createDatabase);
                     PrintSpacer();
 
                     /// /////////////////////////////////////////////////////////////
                     /// Setup the processor.
                     /// /////////////////////////////////////////////////////////////            
-                    processor                = ConstructAnalysisProcessor(builder, providers);
+                    processor          = ConstructAnalysisProcessor(builder, providers);
+
+                    // Tell the processor whether to load data or not.
+                    processor.LoadData = createDatabase;
 
                     /// /////////////////////////////////////////////////////////////
                     /// Start the analysis
@@ -1759,6 +1825,13 @@ namespace MultiAlignConsole
             catch(Exception ex)
             {
                 PrintMessage("Unhandled Error: " + ex.Message);
+                Exception innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    PrintMessage("Inner Exception: " + innerEx.Message);
+                    innerEx = innerEx.InnerException;
+                }
+                PrintMessage("Stack: " + ex.StackTrace);
                 return 1;
             }
         }

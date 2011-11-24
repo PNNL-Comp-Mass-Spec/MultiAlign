@@ -4,7 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using MultiAlignCore.Algorithms.Alignment;
+using MultiAlignCore.Algorithms.FeatureFinding;
 using MultiAlignCore.Algorithms.FeatureMatcher;
+using MultiAlignCore.Algorithms.MSLinker;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.Alignment;
 using MultiAlignCore.Data.MassTags;
@@ -19,13 +21,12 @@ using MultiAlignEngine.MassTags;
 using PNNLOmics.Algorithms;
 using PNNLOmics.Algorithms.Alignment;
 using PNNLOmics.Algorithms.FeatureClustering;
+using PNNLOmics.Algorithms.FeatureMatcher.MSnLinker;
+using PNNLOmics.Algorithms.SpectralComparisons;
 using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Data.MassTags;
 using PNNLOmics.IO.FileReaders;
-using PNNLOmics.Algorithms.FeatureMatcher.MSnLinker;
-using MultiAlignCore.Algorithms.MSLinker;
-using MultiAlignCore.Algorithms.FeatureFinding;
 
 namespace MultiAlignCore.Algorithms
 {        
@@ -276,6 +277,7 @@ namespace MultiAlignCore.Algorithms
 
                 UpdateStatus(string.Format("Filtering {0} features found.", features.Count));
                 int preFiltered = features.Count;
+                // refactor to inside of loader factory.
                 features = MultiAlignCore.Data.Features.LCMSFeatureFilters.FilterFeatures(features, m_analysis.Options.FeatureFilterOptions);
                 UpdateStatus(string.Format("Filtered features from: {0} to {1}.", preFiltered, features.Count));
                 UpdateStatus("Adding features to cache database.");
@@ -725,45 +727,7 @@ namespace MultiAlignCore.Algorithms
                         cluster.DriftTime           = oldCluster.DriftTime;
                         clusters.Add(cluster);
                     }
-
-                    //if (m_analysis.PeakMatchingOptions.UseSTAC)
-                    //{
-                        
-                    //    UpdateStatus("Peak matching with STAC");
-                    //    PNNLProteomics.SMART.classSMARTOptions smartOptions = new PNNLProteomics.SMART.classSMARTOptions();
-                    //    smartOptions.IsDataPaired           = m_analysis.STACOptions.IsDataPaired;
-                    //    smartOptions.MassTolerancePPM       = m_analysis.STACOptions.MassTolerancePPM;
-                    //    smartOptions.NETTolerance           = m_analysis.STACOptions.NETTolerance;
-                    //    smartOptions.PairedMass             = m_analysis.STACOptions.PairedMass;
-                    //    smartOptions.UsePriorProbabilities  = m_analysis.STACOptions.UsePriorProbabilities;                        
-                        
-                    //    m_analysis.STACResults = peakMatcher.PerformSTAC(clusters,
-                    //                                                        m_analysis.MassTagDatabase,
-                    //                                                        smartOptions);
-
-                    //    List<FeatureMatchLight<UMCClusterLight, MassTagLight>> matches = peakMatcher.ConvertSTACResultsToPeakResults( m_analysis.STACResults,
-                    //                                                                                                      m_analysis.MassTagDatabase,
-                    //                                                                                                      clusters);
-
-                    //    m_analysis.PeakMatchingResults = matches;
-                    //}
-                    //else
-                    //{
-                    //    UpdateStatus("Traditional Peak matching.");
-                    //    List<FeatureMatchLight<UMCClusterLight, MassTagLight>> matches = peakMatcher.PerformPeakMatching(clusters, 
-                    //                                                                            m_analysis.MassTagDatabase, 
-                    //                                                                            m_analysis.PeakMatchingOptions,
-                    //                                                                            0.0);
-
-                    //    UpdateStatus("Traditional Peak matching with 11-dalton shift.");
-                    //    List<FeatureMatchLight<UMCClusterLight, MassTagLight>> shiftedMatches = peakMatcher.PerformPeakMatching(clusters,
-                    //                                                                            m_analysis.MassTagDatabase,
-                    //                                                                            m_analysis.PeakMatchingOptions, 
-                    //                                                                            11.0);
-
-                    //    m_analysis.PeakMatchingResults          = matches;
-                    //    m_analysis.ShiftedPeakMatchingResults   = matches;
-                    //}
+                   
                     UpdateStatus("Performing Peak Matching");
                     PeakMatchingResults<UMCClusterLight, MassTagLight> matchResults = new PeakMatchingResults<UMCClusterLight, MassTagLight>();
                     matchResults.Matches = peakMatcher.PerformPeakMatching(clusters, m_analysis.MassTagDatabase);
@@ -805,6 +769,196 @@ namespace MultiAlignCore.Algorithms
                     }
                 }
             }
+        }
+        #endregion
+
+        #region MSMS Alignment
+        /// <summary>
+        /// Performs MS/MS alignment.
+        /// </summary>
+        /// <param name="analysis"></param>
+        public void PerformMSMSAlignment(MultiAlignAnalysis analysis)
+        {
+            Dictionary<int, List<UMCLight>> features  = ExtractUMCWithMSMS(analysis);
+
+            // Create the object that knows how to read the RAW files we are analyzing.
+            ThermoRawDataFileReader reader      = new ThermoRawDataFileReader();
+            for(int i = 0; i < analysis.MetaData.Datasets.Count; i++)
+            {
+                DatasetInformation datasetInformation   = analysis.MetaData.Datasets[i];
+                InputFile rawInformation                = analysis.MetaData.OtherFiles[i];
+
+                reader.AddDataFile(rawInformation.Path, datasetInformation.DatasetId);
+            }
+
+            UpdateStatus("Starting MS/MS clustering.");
+            // Create the object o align.
+            SpectralNormalizedDotProductComparer comparer = new SpectralNormalizedDotProductComparer();
+            MSMSClusterer msCluster         = new MSMSClusterer();
+            msCluster.SimilarityTolerance   = .5;
+            msCluster.ScanRange             = 2000;
+            msCluster.SpectralComparer      = comparer;
+            msCluster.Progress              += new EventHandler<ProgressNotifierArgs>(msCluster_Progress);
+            List<MSMSCluster> clusters      = msCluster.Cluster(features, reader);            
+            List<MSMSClusterMap> maps       = new List<MSMSClusterMap>();
+            int id                          = 0;
+
+            using (TextWriter writer = File.CreateText(@"C:\development\clusters.csv"))
+            {
+                foreach (MSMSCluster cluster in clusters)
+                {
+                    cluster.ID  = id++;
+                    string line = string.Format("{0},", cluster.ID);
+
+                    // Organize the spectra so they are sorted by dataset.
+                    cluster.Features.Sort(delegate(MSFeatureLight x, MSFeatureLight y)
+                    {
+                        // Sort by scan if they are the same feature.
+                        if (x.GroupID == y.GroupID)
+                        {
+                            return x.Scan.CompareTo(y.Scan);
+                        }
+                        // Otherwise we want to sort by what dataset they came from.
+                        return x.GroupID.CompareTo(y.GroupID);
+                    });
+
+                    foreach (MSFeatureLight feature in cluster.Features)
+                    {
+                        MSMSClusterMap newMap = new MSMSClusterMap();
+                        newMap.ClusterID      = cluster.ID;
+                        newMap.MSMSID         = feature.MSnSpectra[0].ID;
+                        newMap.GroupID        = feature.GroupID;
+                        line +=  string.Format("{0},{1},{2},{3},{4},{5},{6},{7},",                                
+                                                                                    feature.GroupID,
+                                                                                    feature.MSnSpectra[0].ID,
+                                                                                    feature.Abundance,
+                                                                                    feature.Scan,
+                                                                                    feature.Mz,
+                                                                                    feature.MassMonoisotopicMostAbundant,
+                                                                                    feature.MSnSpectra[0].Scan,
+                                                                                    feature.MSnSpectra[0].PrecursorMZ);
+                        maps.Add(newMap);
+                    }
+                    writer.WriteLine(line);
+                }
+            }
+            analysis.DataProviders.MSMSClusterCache.AddAll(maps);
+            reader.Dispose();
+        }
+
+        void msCluster_Progress(object sender, ProgressNotifierArgs e)
+        {
+            UpdateStatus(e.Message);
+        }
+        /// <summary>
+        /// Extracts the features from the database that have MS/MS
+        /// </summary>
+        public Dictionary<int, List<UMCLight>> ExtractUMCWithMSMS(MultiAlignAnalysis analysis)
+        {
+            UpdateStatus("Producing feature traceback data structures.");
+                        
+            UpdateStatus("Extracting data from each dataset.");
+            FeatureDataAccessProviders providers    = analysis.DataProviders;
+            Dictionary<int, List<UMCLight>> features = new Dictionary<int, List<UMCLight>>();
+
+            foreach (DatasetInformation dataset in analysis.MetaData.Datasets)
+            {
+                features.Add(dataset.DatasetId, new List<UMCLight>());
+
+                int datasetID = dataset.DatasetId;
+                UpdateStatus(string.Format("Mapping data from dataset {0} with id {1}", dataset.DatasetName, dataset.DatasetId));
+
+                UpdateStatus("Extracting LC-MS to MS Feature Map");
+                Dictionary<int, int> msFeatureIDToLCMSFeatureID = new Dictionary<int, int>();
+                List<MSFeatureToLCMSFeatureMap> msToLcmsFeatureMaps = providers.MSFeatureToLCMSFeatureCache.FindByDatasetId(datasetID);
+                foreach (MSFeatureToLCMSFeatureMap map in msToLcmsFeatureMaps)
+                {
+                    msFeatureIDToLCMSFeatureID.Add(map.MSFeatureID, map.LCMSFeatureID);
+                }
+
+                UpdateStatus("Extracting MS to MSn Feature Map");
+                List<MSFeatureToMSnFeatureMap> msnToMSFeatureMaps   = providers.MSFeatureToMSnFeatureCache.FindByDatasetId(datasetID);
+                Dictionary<int, int> msFeatureIDToMsMsFeatureID     = new Dictionary<int, int>();
+                foreach (MSFeatureToMSnFeatureMap map in msnToMSFeatureMaps)
+                {
+                    msFeatureIDToMsMsFeatureID.Add(map.MSFeatureID, map.MSMSFeatureID);
+                }
+
+                UpdateStatus("Extracting MSn Features");
+                Dictionary<int, MSSpectra> msMsFeatureIDToSpectrum  = new Dictionary<int, MSSpectra>();
+                List<MSSpectra> msnSpectra                          = providers.MSnFeatureCache.FindByDatasetId(datasetID);
+                foreach (MSSpectra spectrum in msnSpectra)
+                {
+                    msMsFeatureIDToSpectrum.Add(spectrum.ID, spectrum);
+                }
+
+                UpdateStatus("Extracting LC-MS Features");
+                List<clsUMC> lcmsFeatures                        = providers.FeatureCache.FindByDatasetId(datasetID);
+                Dictionary<int, UMCLight> lcmsFeatureIDToFeature = new Dictionary<int, UMCLight>();
+                foreach (clsUMC umc in lcmsFeatures)
+                {
+                    UMCLight umcFeature         = new UMCLight();
+                    umcFeature.Abundance        = Convert.ToInt64(umc.AbundanceMax);
+                    umcFeature.ID               = umc.Id;
+                    umcFeature.MassMonoisotopic = umc.MassCalibrated;
+                    umcFeature.RetentionTime    = umc.Net;
+                    umcFeature.Scan             = umc.Scan;
+                    umcFeature.GroupID          = datasetID;
+                    lcmsFeatureIDToFeature.Add(umc.Id, umcFeature);
+                }
+
+                UpdateStatus("Extracting MS Features");
+                List<MSFeatureLight> msFeatures = providers.MSFeatureCache.FindByDatasetId(datasetID);
+
+                // Tracks that the UMC was found already.
+                Dictionary<int, UMCLight> foundUMC = new Dictionary<int, UMCLight>();
+
+                UpdateStatus("Mapping data.");
+                foreach (MSFeatureLight feature in msFeatures)
+                {                    
+                    if (!msFeatureIDToMsMsFeatureID.ContainsKey(feature.ID))
+                        continue;
+
+                    if (!msFeatureIDToLCMSFeatureID.ContainsKey(feature.ID))
+                        continue;
+
+
+                    // Map the MS/MS feature.
+                    int msnID           = msFeatureIDToMsMsFeatureID[feature.ID];
+                    MSSpectra spectrum  = msMsFeatureIDToSpectrum[msnID];
+                    spectrum.GroupID    = datasetID;
+                    int featureID       = msFeatureIDToLCMSFeatureID[feature.ID];
+
+                    // This would mean the feature was filtered out.
+                    if (!lcmsFeatureIDToFeature.ContainsKey(featureID))
+                    {
+                        continue;
+                    }
+                    
+                    feature.MSnSpectra.Add(spectrum);
+
+                    // Map to the UMC 
+                    UMCLight umc        = null;
+                    try
+                    {
+                        umc = lcmsFeatureIDToFeature[featureID];
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
+                    feature.GroupID = datasetID;
+                    umc.AddChildFeature(feature);
+
+                    // Only add if we found the feature once before.
+                    if (!foundUMC.ContainsKey(umc.ID))
+                    {
+                        features[datasetID].Add(umc);
+                        foundUMC.Add(umc.ID, umc);
+                    }
+                }
+            }
+            return features;
         }
         #endregion
 
@@ -904,7 +1058,21 @@ namespace MultiAlignCore.Algorithms
                     MSSpectra spectrum  = msMsFeatureIDToSpectrum[msnID];
                     int featureID       = msFeatureIDToLCMSFeatureID[feature.ID];
 
-                    clsUMC umc          = lcmsFeatureIDToFeature[featureID];
+                    // This would mean the feature was filtered out.
+                    if (!lcmsFeatureIDToFeature.ContainsKey(featureID))
+                    {
+                        continue;
+                    }
+
+                    clsUMC umc = null;
+                    try
+                    {
+                        umc = lcmsFeatureIDToFeature[featureID];
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
                     int clusterID       = umc.ClusterId;
 
                     FeatureExtractionMap fex = new FeatureExtractionMap();
@@ -984,6 +1152,14 @@ namespace MultiAlignCore.Algorithms
             AbortAnalysisThread(m_analysisThread);
         }
         /// <summary>
+        /// Gets or sets whether to load data.
+        /// </summary>
+        public bool LoadData
+        {
+            get;
+            set;
+        }
+        /// <summary>
         /// Starts the main analysis.
         /// </summary>
         private void PerformAnalysis()
@@ -992,56 +1168,73 @@ namespace MultiAlignCore.Algorithms
             {
                 MassTagDatabase database = null;
 
-                UpdateStatus("Setting up parameters");
-
-                // Load the mass tag database if we are aligning, or if we are 
-                // peak matching (but aligning to a reference dataset.
-                if (m_analysis.Options.UseMassTagDBAsBaseline)
+                if (LoadData)
                 {
-                    UpdateStatus("Loading Mass Tag database from database:  " + m_analysis.Options.MassTagDatabaseOptions.mstrDatabase);
+                    UpdateStatus("Setting up parameters");
 
-                    database = MTDBLoaderFactory.LoadMassTagDB(m_analysis.Options.MassTagDatabaseOptions, m_analysis.MetaData.AnalysisSetupInfo.Database.DatabaseFormat);
-                }
-                else
-                {
-                    if (m_analysis.Options.MassTagDatabaseOptions.menm_databaseType != MassTagDatabaseType.None)
+                    // Load the mass tag database if we are aligning, or if we are 
+                    // peak matching (but aligning to a reference dataset.
+                    if (m_analysis.Options.UseMassTagDBAsBaseline)
                     {
                         UpdateStatus("Loading Mass Tag database from database:  " + m_analysis.Options.MassTagDatabaseOptions.mstrDatabase);
+
                         database = MTDBLoaderFactory.LoadMassTagDB(m_analysis.Options.MassTagDatabaseOptions, m_analysis.MetaData.AnalysisSetupInfo.Database.DatabaseFormat);
                     }
+                    else
+                    {
+                        if (m_analysis.Options.MassTagDatabaseOptions.menm_databaseType != MassTagDatabaseType.None)
+                        {
+                            UpdateStatus("Loading Mass Tag database from database:  " + m_analysis.Options.MassTagDatabaseOptions.mstrDatabase);
+                            database = MTDBLoaderFactory.LoadMassTagDB(m_analysis.Options.MassTagDatabaseOptions, m_analysis.MetaData.AnalysisSetupInfo.Database.DatabaseFormat);
+                        }
+                    }
+
+                    if (database != null)
+                    {
+                        int totalMassTags = database.MassTags.Count;
+                        UpdateStatus("Loaded " + totalMassTags.ToString() + " mass tags.");
+                    }
+
+                    m_analysis.MassTagDatabase = database;
+
+                    UpdateStatus("Loading auxillary data files.");
+                    LoadOtherData(m_analysis.MetaData.OtherFiles,
+                                    Path.Combine(m_analysis.MetaData.AnalysisPath, m_analysis.MetaData.AnalysisName),
+                                    m_analysis.DataProviders);
+
+                    UpdateStatus("Loading dataset data files.");
+                    LoadDatasetData(m_analysis.MetaData.Datasets,
+                                    m_analysis.Options.UMCFindingOptions,
+                                    Path.Combine(m_analysis.MetaData.AnalysisPath, m_analysis.MetaData.AnalysisName));
+
+                    UpdateStatus("Linking MS Features to MSn Features.");
+                    LinkMSFeaturesToMSMS(m_analysis.DataProviders, m_analysis.MetaData.Datasets);
                 }
 
-                if (database != null)
+                switch (m_analysis.AnalysisType)
                 {
-                    int totalMassTags = database.MassTags.Count;
-                    UpdateStatus("Loaded " + totalMassTags.ToString() + " mass tags.");
+                    case AnalysisType.MSMSAlignment:
+                        UpdateStatus("Creating Anchor Points And Clustering for Ms-Ms alignment.");
+                        PerformMSMSAlignment(m_analysis);
+
+                        
+                        UpdateStatus(string.Format("Analysis {0} Completed.", m_analysis.MetaData.AnalysisName));
+                        break;
+                    case AnalysisType.Full:
+                        
+
+                        UpdateStatus("Aligning datasets.");
+                        PerformAlignment(m_analysis);
+
+                        UpdateStatus("Performing clustering.");
+                        PerformClustering(m_analysis, m_algorithms.Clusterer);
+
+                        UpdateStatus("Performing Peak Matching.");
+                        PerformPeakMatching();
+
+                        UpdateStatus(string.Format("Analysis {0} Completed.", m_analysis.MetaData.AnalysisName));
+                        break;
                 }
-
-                m_analysis.MassTagDatabase = database;
-
-                UpdateStatus("Loading auxillary data files.");
-                LoadOtherData(m_analysis.MetaData.OtherFiles,
-                                Path.Combine(m_analysis.MetaData.AnalysisPath, m_analysis.MetaData.AnalysisName),
-                                m_analysis.DataProviders);
-
-                UpdateStatus("Loading dataset data files.");
-                LoadDatasetData(m_analysis.MetaData.Datasets,
-                                m_analysis.Options.UMCFindingOptions,
-                                Path.Combine(m_analysis.MetaData.AnalysisPath, m_analysis.MetaData.AnalysisName));
-
-                UpdateStatus("Linking MS Features to MSn Features.");
-                LinkMSFeaturesToMSMS(m_analysis.DataProviders, m_analysis.MetaData.Datasets);
-
-                UpdateStatus("Aligning datasets.");
-                PerformAlignment(m_analysis);
-
-                UpdateStatus("Performing clustering.");
-                PerformClustering(m_analysis, m_algorithms.Clusterer);
-
-                UpdateStatus("Performing Peak Matching.");
-                PerformPeakMatching();
-
-                UpdateStatus(string.Format("Analysis {0} Completed.", m_analysis.MetaData.AnalysisName));
             }
             catch (OutOfMemoryException ex)
             {
@@ -1067,5 +1260,20 @@ namespace MultiAlignCore.Algorithms
             }            
         }
         #endregion     
+    }
+
+    /// <summary>
+    /// Analysis Steps
+    /// </summary>
+    public enum AnalysisType
+    {
+        FactorImporting,
+        MSMSAlignment,
+        Full,
+        Alignment,
+        Clustering,
+        PeakMatching,
+        ExportDataOnly,
+        InvalidParameters
     }
 }

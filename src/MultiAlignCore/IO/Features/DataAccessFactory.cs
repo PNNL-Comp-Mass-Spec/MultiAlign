@@ -52,7 +52,8 @@ namespace MultiAlignCore.IO.Features
                                                                             massTagMatchCache,
                                                                             massTagCache,
                                                                             new FactorDAOHibernate(),
-                                                                            new DatasetToFactorDAOHibernate());
+                                                                            new DatasetToFactorDAOHibernate(),
+                                                                            new MSMSClusterMapClusterDAOHibernate());
 
             return providers;
         }

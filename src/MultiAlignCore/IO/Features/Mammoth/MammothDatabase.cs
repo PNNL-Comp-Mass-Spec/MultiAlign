@@ -179,8 +179,8 @@ namespace MultiAlignCore.IO.Mammoth
             // Cluster Inserts
             m_clusterInsertStatementCommand = m_connection.CreateCommand();
             m_clusterInsertStatementCommand.CommandText =
-                                                "INSERT INTO T_CLUSTERS  (Cluster_ID, Mass, NET, Drift_Time, Charge, Score, Dataset_Member_Count, Member_Count) " +
-                                                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                                                "INSERT INTO T_CLUSTERS  (Cluster_ID, Mass, NET, Drift_Time, Charge, Score, Ambiguity_Score, Dataset_Member_Count, Member_Count) " +
+                                                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
             m_clusterInsertStatementCommand.Prepare();
 
             // Feature updates
@@ -223,7 +223,7 @@ namespace MultiAlignCore.IO.Mammoth
                                     " SELECT " +
                                     " F.Feature_ID, F.Mass_Calibrated as FMass, F.NET as FNet, F.Drift_Time as FDrift, " +
                                     " F.dataset_id, F.cluster_ID AS FClusterID,  " +
-                                    " C.mass AS ClusterMass, C.net AS ClusterNet, C.Drift_time AS ClusterDrift, F.Charge as FeatureCharge, C.Charge as ClusterCharge, F.Abundance_Max, F.Scan_LC_Start, F.Scan_LC_End, F.Scan_LC  " +
+                                    " C.mass AS ClusterMass, C.net AS ClusterNet, C.Drift_time AS ClusterDrift, F.Charge as FeatureCharge, C.Charge as ClusterCharge, F.Abundance_Max, F.Scan_LC_Start, F.Scan_LC_End, F.Scan_LC, C.Ambiguity_Score  " +
                                     " FROM  T_LCMS_FEATURES F INNER JOIN " +
                                     "           T_CLUSTERS C ON " +
                                     "               FClusterID > -1   AND " +
@@ -240,7 +240,7 @@ namespace MultiAlignCore.IO.Mammoth
                                     " SELECT " +
                                     " F.Feature_ID, F.Mass_Calibrated as FMass, F.NET as FNet, F.Drift_Time as FDrift, " +
                                     " F.dataset_id, F.cluster_ID AS FClusterID,  " +
-                                    " C.mass AS ClusterMass, C.net AS ClusterNet, C.Drift_time AS ClusterDrift, F.Charge as FeatureCharge, C.Charge as ClusterCharge, F.Abundance_Max, F.Scan_LC_Start, F.Scan_LC_End, F.Scan_LC " +
+                                    " C.mass AS ClusterMass, C.net AS ClusterNet, C.Drift_time AS ClusterDrift, F.Charge as FeatureCharge, C.Charge as ClusterCharge, F.Abundance_Max, F.Scan_LC_Start, F.Scan_LC_End, F.Scan_LC, C.Ambiguity_Score " +
                                     " FROM  T_LCMS_FEATURES F INNER JOIN " +
                                     "           T_CLUSTERS C ON " +
                                     "               FClusterID > -1   AND " +
@@ -515,6 +515,7 @@ namespace MultiAlignCore.IO.Mammoth
                             cluster.RetentionTime       = cluster.NET;
                             cluster.DriftTime           = Convert.ToSingle(values[CONST_UMC_DRIFT_TIME]);                                                        
                             cluster.ChargeState         = Convert.ToInt32(values[CONST_CLUSTER_CHARGE]);
+                            cluster.AmbiguityScore      = Convert.ToDouble(values[values.Length - 1]);
 
                             umc.UMCCluster = cluster;
                             clusters.Add(clusterID, cluster);
@@ -717,6 +718,7 @@ namespace MultiAlignCore.IO.Mammoth
                             m_clusterInsertStatementCommand.Parameters.Add(new SQLiteParameter("drift_time", cluster.DriftTime));
                             m_clusterInsertStatementCommand.Parameters.Add(new SQLiteParameter("charge", cluster.ChargeState));
                             m_clusterInsertStatementCommand.Parameters.Add(new SQLiteParameter("score", cluster.Score));
+                            m_clusterInsertStatementCommand.Parameters.Add(new SQLiteParameter("Ambiguity_Score", cluster.AmbiguityScore));
                             m_clusterInsertStatementCommand.Parameters.Add(new SQLiteParameter("dataset_member_count", map.Keys.Count));
                             m_clusterInsertStatementCommand.Parameters.Add(new SQLiteParameter("member_count", membercount));
                             m_clusterInsertStatementCommand.ExecuteNonQuery();

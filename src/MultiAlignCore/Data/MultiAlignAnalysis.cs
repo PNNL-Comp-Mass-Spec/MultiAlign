@@ -113,6 +113,17 @@ namespace MultiAlignCore.Data
         }
 
         #region Properties
+        /// <summary>
+        /// Gets or sets what kind of analysis to do.  
+        /// </summary>
+        public MultiAlignCore.Algorithms.AnalysisType AnalysisType
+        {
+            get;
+            set;
+        }
+        /// <summary>
+        /// Gets or est the analysis options.
+        /// </summary>
         public AnalysisOptions Options
         {
             get;

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -81,9 +81,9 @@
     <Reference Include="MultiAlignEngine, Version=1.0.4084.24787, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\x86\MultiAlignEngine.dll</HintPath>
-    </Reference>   
+    </Reference>
     <Reference Include="Mage">
-    	<HintPath>..\..\lib\x86\Mage.dll</HintPath>
+      <HintPath>..\..\lib\x86\Mage.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
@@ -99,9 +99,9 @@
     <Reference Include="MultiAlignEngine, Version=1.0.4084.24787, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\x86\MultiAlignEngine.dll</HintPath>
-    </Reference>   
+    </Reference>
     <Reference Include="Mage">
-    	<HintPath>..\..\lib\x86\Mage.dll</HintPath>
+      <HintPath>..\..\lib\x86\Mage.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
@@ -117,9 +117,9 @@
     <Reference Include="MultiAlignEngine, Version=1.0.4084.24787, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\x64\MultiAlignEngine.dll</HintPath>
-    </Reference>   
+    </Reference>
     <Reference Include="Mage">
-    	<HintPath>..\..\lib\x64\Mage.dll</HintPath>
+      <HintPath>..\..\lib\x64\Mage.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
@@ -135,9 +135,9 @@
     <Reference Include="MultiAlignEngine, Version=1.0.4084.24787, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\x64\MultiAlignEngine.dll</HintPath>
-    </Reference>    
+    </Reference>
     <Reference Include="Mage">
-    	<HintPath>..\..\lib\x64\Mage.dll</HintPath>
+      <HintPath>..\..\lib\x64\Mage.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -209,6 +209,7 @@
     <Compile Include="ApplicationUtility.cs" />
     <Compile Include="Data\AnalysisOptions.cs" />
     <Compile Include="Data\AnalysisUtils.cs" />
+    <Compile Include="Data\MSMSClusterMap.cs" />
     <Compile Include="Data\Factors\DatasetToExperimentalFactorMap.cs" />
     <Compile Include="Data\Factors\ExperimentalFactor.cs" />
     <Compile Include="Data\FeatureExtractionMap.cs" />
@@ -247,6 +248,8 @@
     <Compile Include="IO\Analysis\TableWriterColumnOptions.cs" />
     <Compile Include="IO\Factors\FactorFileReader.cs" />
     <Compile Include="IO\Factors\MultiAlignFactorSink.cs" />
+    <Compile Include="IO\Features\IMSMSClusterMapDAO.cs" />
+    <Compile Include="IO\Features\Hibernate\MSMSClusterMapDAOHibernate.cs" />
     <Compile Include="IO\Features\Hibernate\DatasetToFactorMap.cs" />
     <Compile Include="IO\Features\IDatasetToFactorMapDAO.cs" />
     <Compile Include="IO\Features\UMCClusterAbundanceCrossTabWriter.cs" />
@@ -365,6 +368,7 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="IO\Features\Hibernate\Mappings\DatasetToFactor.hbm.xml" />
+    <EmbeddedResource Include="IO\Features\Hibernate\Mappings\MSMSClusterMap.hbm.xml" />
     <Content Include="MSDBLibrary.dll" />
     <Content Include="xerces-c_2_7.dll" />
     <Content Include="xerces-c_2_7D.dll" />

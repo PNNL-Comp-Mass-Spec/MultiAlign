@@ -104,15 +104,19 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
                         // Divide the features up and move them.
                         int j = 0;
                         int N = feature.MSFeatures.Count;
+                        // This is the first set of partitions
                         foreach (int i in divisions)
                         {
+                            // copy the jth to the ith feature
                             MSFeatureLight[] tempFeatures = new MSFeatureLight[i - j];
                             feature.MSFeatures.CopyTo(j, tempFeatures, 0, i - j);
                             j = i;
 
+                            // Then set the parent feature and child features.
                             UMCLight newFeature = new UMCLight();
                             for (int k = 0; k < tempFeatures.Length; k++)
                             {
+                                tempFeatures[k].SetParentFeature(newFeature);
                                 newFeature.AddChildFeature(tempFeatures[k]);
                             }
                             newFeature.CalculateStatistics(ClusterCentroidRepresentation.Mean);
@@ -122,6 +126,7 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
                             }
                             replacementFeatures[feature].Add(newFeature);
                         }
+                        // Here we cleanup the last half of the feature.
                         if (N != j)
                         {
                             MSFeatureLight[] tempFeatures = new MSFeatureLight[N - j];
@@ -130,6 +135,7 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
                             UMCLight newFeature = new UMCLight();
                             for (int k = 0; k < tempFeatures.Length; k++)
                             {
+                                tempFeatures[k].SetParentFeature(newFeature);
                                 newFeature.AddChildFeature(tempFeatures[k]);
                             }
                             newFeature.CalculateStatistics(ClusterCentroidRepresentation.Mean);
@@ -148,6 +154,7 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
                     features.Remove(feature);
                     feature.MSFeatures.Clear();
                     features.AddRange(replacementFeatures[feature]);
+                    
                 }
             }
 

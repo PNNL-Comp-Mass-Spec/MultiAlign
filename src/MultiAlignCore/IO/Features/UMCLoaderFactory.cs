@@ -114,8 +114,6 @@ namespace MultiAlignCore.IO.Features
                 // We have UMC's to find!
                 if (msFeatures.Count > 0)
                 {
-
-
                     newFeatures = new List<UMCLight>();
 
                     // Needs a refactor.
@@ -150,12 +148,22 @@ namespace MultiAlignCore.IO.Features
                             filteredMSFeatures.Add(msFeature);
                         }
                     }
+                    
+                    newFeatures = featureFinder.FindFeatures(filteredMSFeatures, options);
+
+                    // Make sure we only add back to the database what features u
+                    List<MSFeatureLight> msFeaturesUsed = new List<MSFeatureLight>();
+                    foreach (UMCLight feature in newFeatures)
+                    {
+                        foreach (MSFeatureLight featureLight in feature.MSFeatures)
+                        {
+                            msFeaturesUsed.Add(featureLight);
+                        }
+                    }
                     if (foundNewFeatures)
                     {
-                        msFeatureCache.AddAll(filteredMSFeatures);
+                        msFeatureCache.AddAll(msFeaturesUsed);
                     }
-
-                    newFeatures = featureFinder.FindFeatures(filteredMSFeatures, options);
                 }
 
                 //clsUMCCreator   umcFinder       = new clsUMCCreator();

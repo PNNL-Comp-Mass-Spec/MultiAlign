@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   assembly="MultiAlignCore"
+                   namespace="MultiAlignCore.Data">
+
+	<class name="MSMSClusterMap" table="T_MSn_Clusters" lazy="false">
+		<composite-id>
+      <key-property name="ClusterID"  column="Cluster_ID"  type="int" />
+      <key-property name="MSMSID"      column="MSn_ID"  type="int" />
+      <key-property name="GroupID"      column="Dataset_ID"  type="int" />
+    </composite-id>
+	</class>
+</hibernate-mapping>

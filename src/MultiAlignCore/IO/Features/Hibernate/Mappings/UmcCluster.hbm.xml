@@ -15,6 +15,7 @@
 		<property name="Charge" column="Charge" type="int" not-null="false" />
 		<property name="DriftTime" column="Drift_Time" type="double" not-null="false" />
     <property name="MeanScore" column="Score" type="double" not-null="false" />
+    <property name="Ambiguity" column="Ambiguity_Score" type="double" not-null="false" />
     <property name="MemberCount" column="Member_Count" type="int" not-null="false" />
     <property name="DatasetMemberCount" column="Dataset_Member_Count" type="int" not-null="false" />
 		<!--set name="UmcSet" inverse="true">

@@ -23,6 +23,7 @@ namespace MultiAlignEngine
 			double mdouble_driftError;
 			double mdouble_medianScoreValue;
 			double mdouble_meanScoreValue;
+			double m_ambiguityScore;
 			
 			clsCluster(void);
 			~clsCluster(void);
@@ -53,6 +54,15 @@ namespace MultiAlignEngine
 				mdouble_medianScoreValue = value;
 			}
 
+			__property double get_Ambiguity()
+			{
+				return m_ambiguityScore;
+			}
+
+			__property void set_Ambiguity(double value){
+				m_ambiguityScore = value;
+			}
+			
 			__property double get_Mass()
 			{
 				return mdouble_mass;
