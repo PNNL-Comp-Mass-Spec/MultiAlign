@@ -151,6 +151,9 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
                     features.AddRange(replacementFeatures[feature]);
                     
                 }
+                // Remove the short UMC's.
+                features.RemoveAll(x => (x.ScanEnd - x.ScanStart + 1) < options.MinUMCLength);
+                features.RemoveAll(x => (x.MSFeatures.Count) < options.MinUMCLength);
             }
 
             int id = 0;
