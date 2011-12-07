@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -68,23 +68,63 @@
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="alglibnet2">
-      <HintPath>..\..\lib\alglibnet2.dll</HintPath>
+  <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <Reference Include="System.Data.SQLite, Version=1.0.66.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=x86">
+      <SpecificVersion>True</SpecificVersion>
+      <HintPath>..\..\lib\x86\System.Data.SQLite.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MultiAlignEngine, Version=1.0.4084.24787, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\x86\MultiAlignEngine.dll</HintPath>
     </Reference>
     <Reference Include="Mage">
-      <HintPath>..\..\lib\$(Platform)\Mage.dll</HintPath>
+      <HintPath>..\..\lib\x86\Mage.dll</HintPath>
     </Reference>
-    <Reference Include="MultiAlignEngine">
-      <HintPath>..\..\lib\$(Platform)\MultiAlignEngine.dll</HintPath>
+  </ItemGroup>
+  <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <Reference Include="System.Data.SQLite, Version=1.0.66.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=x86">
+      <SpecificVersion>True</SpecificVersion>
+      <HintPath>..\..\lib\x86\System.Data.SQLite.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="PNNLOmics, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="MultiAlignEngine, Version=1.0.4084.24787, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\PNNLOmics.dll</HintPath>
+      <HintPath>..\..\lib\x86\MultiAlignEngine.dll</HintPath>
     </Reference>
-    <Reference Include="System.Data.SQLite">
-      <HintPath>..\..\lib\$(Platform)\System.Data.SQLite.dll</HintPath>
+    <Reference Include="Mage">
+      <HintPath>..\..\lib\x86\Mage.dll</HintPath>
     </Reference>
+  </ItemGroup>
+  <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+    <Reference Include="System.Data.SQLite, Version=1.0.66.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=AMD64">
+      <SpecificVersion>True</SpecificVersion>
+      <HintPath>..\..\lib\x64\System.Data.SQLite.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MultiAlignEngine, Version=1.0.4084.24787, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\x64\MultiAlignEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="Mage">
+      <HintPath>..\..\lib\x64\Mage.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+    <Reference Include="System.Data.SQLite, Version=1.0.66.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=AMD64">
+      <SpecificVersion>True</SpecificVersion>
+      <HintPath>..\..\lib\x64\System.Data.SQLite.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MultiAlignEngine, Version=1.0.4084.24787, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\x64\MultiAlignEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="Mage">
+      <HintPath>..\..\lib\x64\Mage.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
     <Reference Include="Castle.Core, Version=1.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\Castle.Core.dll</HintPath>
@@ -100,6 +140,11 @@
       <HintPath>..\..\lib\Iesi.Collections.dll</HintPath>
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
+    <Reference Include="Interop.XRAWFILE2Lib, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\..\..\..\..\ThermoRawFileReaderDLL\obj\Debug\Interop.XRAWFILE2Lib.dll</HintPath>
+    </Reference>
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\log4net.dll</HintPath>
@@ -111,6 +156,9 @@
     <Reference Include="NHibernate, Version=2.1.1.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\NHibernate.dll</HintPath>
+    </Reference>
+    <Reference Include="PNNLOmics">      
+      <HintPath>..\..\lib\PNNLOmics.dll</HintPath>
     </Reference>
     <Reference Include="PNNLOmicsIO">
       <HintPath>..\..\lib\PNNLOmicsIO.dll</HintPath>
@@ -129,12 +177,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Algorithms\AlgorithmProvider.cs" />
-    <Compile Include="Algorithms\Alignment\AnchorPointAlignment.cs" />
     <Compile Include="Algorithms\Alignment\DriftTimeAlignmentOptions.cs" />
     <Compile Include="Algorithms\Alignment\LCMSWarpFeatureAligner.cs" />
     <Compile Include="Algorithms\Alignment\IFeatureAligner.cs" />
     <Compile Include="Algorithms\AlgorithmBuilder.cs" />
-    <Compile Include="Algorithms\Clustering\MsnClusterer.cs" />
     <Compile Include="Algorithms\Clustering\ClusteringAlgorithmType.cs" />
     <Compile Include="Algorithms\FeatureFinding\UMCFeatureFinderOptions.cs" />
     <Compile Include="Algorithms\FeatureFinding\IFeatureFinder.cs" />
@@ -147,7 +193,6 @@
     <Compile Include="Algorithms\Features\LCMSFeatureConsolidator.cs" />
     <Compile Include="Algorithms\Features\UMCAbundanceSumConsolidator.cs" />
     <Compile Include="Algorithms\Features\UMCAbundanceConsolidator.cs" />
-    <Compile Include="Algorithms\FunctionalRedundancy.cs" />
     <Compile Include="Algorithms\MSLinker\FeaturesExtractedEventArgs.cs" />
     <Compile Include="Algorithms\MSLinker\MSLinkerOptions.cs" />
     <Compile Include="Algorithms\MSLinker\MSLinkerType.cs" />

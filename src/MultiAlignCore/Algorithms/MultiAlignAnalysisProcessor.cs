@@ -26,7 +26,7 @@ using PNNLOmics.Algorithms.SpectralComparisons;
 using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Data.MassTags;
-using PNNLOmics.IO.FileReaders;
+using PNNLOmicsIO.IO;
 
 namespace MultiAlignCore.Algorithms
 {        
@@ -1114,7 +1114,7 @@ namespace MultiAlignCore.Algorithms
             // Create the object o align.
             SpectralNormalizedDotProductComparer comparer = new SpectralNormalizedDotProductComparer();
             MSMSClusterer msCluster         = new MSMSClusterer();
-            msCluster.SimilarityTolerance   = .5;
+            msCluster.SimilarityTolerance   = .75;
             msCluster.ScanRange             = 2000;
             msCluster.SpectralComparer      = comparer;
             msCluster.Progress              += new EventHandler<ProgressNotifierArgs>(msCluster_Progress);
@@ -1122,53 +1122,109 @@ namespace MultiAlignCore.Algorithms
             List<MSMSClusterMap> maps       = new List<MSMSClusterMap>();
             int id                          = 0;
 
-            using (TextWriter writer = File.CreateText(@"C:\development\clusters.csv"))
+           
+                
+            List<double> xValues = new List<double>();
+            List<double> yValues = new List<double>();
+
+            foreach (MSMSCluster cluster in clusters)
             {
-                foreach (MSMSCluster cluster in clusters)
+                cluster.ID  = id++;
+                string line = string.Format("{0},", cluster.ID);
+
+                // Organize the spectra so they are sorted by dataset.
+                cluster.Features.Sort(delegate(MSFeatureLight x, MSFeatureLight y)
                 {
-                    cluster.ID  = id++;
-                    string line = string.Format("{0},", cluster.ID);
-
-                    // Organize the spectra so they are sorted by dataset.
-                    cluster.Features.Sort(delegate(MSFeatureLight x, MSFeatureLight y)
+                    // Sort by scan if they are the same feature.
+                    if (x.GroupID == y.GroupID)
                     {
-                        // Sort by scan if they are the same feature.
-                        if (x.GroupID == y.GroupID)
-                        {
-                            return x.Scan.CompareTo(y.Scan);
-                        }
-                        // Otherwise we want to sort by what dataset they came from.
-                        return x.GroupID.CompareTo(y.GroupID);
-                    });
-
-                    foreach (MSFeatureLight feature in cluster.Features)
-                    {
-                        MSMSClusterMap newMap = new MSMSClusterMap();
-                        newMap.ClusterID      = cluster.ID;
-                        newMap.MSMSID         = feature.MSnSpectra[0].ID;
-                        newMap.GroupID        = feature.GroupID;
-                        line +=  string.Format("{0},{1},{2},{3},{4},{5},{6},{7},",                                
-                                                                                    feature.GroupID,
-                                                                                    feature.MSnSpectra[0].ID,
-                                                                                    feature.Abundance,
-                                                                                    feature.Scan,
-                                                                                    feature.Mz,
-                                                                                    feature.MassMonoisotopicMostAbundant,
-                                                                                    feature.MSnSpectra[0].Scan,
-                                                                                    feature.MSnSpectra[0].PrecursorMZ);
-                        maps.Add(newMap);
+                        return x.Scan.CompareTo(y.Scan);
                     }
-                    writer.WriteLine(line);
+                    // Otherwise we want to sort by what dataset they came from.
+                    return x.GroupID.CompareTo(y.GroupID);
+                });
+
+                xValues.Add(Convert.ToDouble(cluster.Features[0].Scan));
+                yValues.Add(Convert.ToDouble(cluster.Features[1].Scan));
+
+                foreach (MSFeatureLight feature in cluster.Features)
+                {
+                    MSMSClusterMap newMap = new MSMSClusterMap();
+                    newMap.ClusterID      = cluster.ID;
+                    newMap.MSMSID         = feature.MSnSpectra[0].ID;
+                    newMap.GroupID        = feature.GroupID;
+                    maps.Add(newMap);                        
                 }
             }
-            analysis.DataProviders.MSMSClusterCache.AddAll(maps);
+
+            List<KeyValuePair<double, double>> values = new List<KeyValuePair<double, double>>();
+            for (int i = 0; i < xValues.Count(); i++)                
+            {
+                KeyValuePair<double, double> value = new KeyValuePair<double, double>(xValues.ElementAt(i), yValues.ElementAt(i)); 
+                values.Add(value);
+            }
+            values  = values.OrderBy(i => i.Key).ToList();                                
+            xValues = values.Select(i => i.Key).ToList();
+            yValues = values.Select(i => i.Value).ToList();
+                
+             
+            List<double> tX = xValues.ToList();
+            List<double> tY = yValues.ToList();
+
+
+            PNNLOmics.Algorithms.Solvers.LevenburgMarquadt warp = new PNNLOmics.Algorithms.Solvers.LevenburgMarquadt();
+            warp.BasisFunction = ChebyShev;
+
+            double[] coeffs = new double[] { 1.0, 0.5, 1.0, 2.0};
+            bool passed         = warp.Solve(tX, tY, ref coeffs);
+
+            if (passed)
+            {
+                using (TextWriter xwriter = File.CreateText(@"c:\development\matches.csv"))
+                {
+                    double [] x     = new double[1];                     
+                    double value    = 0;
+                    for (int i = 0; i < tX.Count; i++)
+                    {
+                        x[0]            = tY[i];
+                        ChebyShev(coeffs, x, ref value, null);
+                        xwriter.WriteLine("{0}, {1}, {2}, {3}", tX[i], tY[i], tX[i], value, tX[i] - tY[i], tX[i] - value,( tX[i] - tY[i]) - (tX[i] - value));
+                    }
+                }
+            }             
+
+            //analysis.DataProviders.MSMSClusterCache.AddAll(maps);
             reader.Dispose();
+        }
+
+        public void ChebyShev(double[] c, double[] x, ref double func, object obj)
+        {
+            double sum  = 0;
+            int j       = 0;
+            double x2   = x[0] * x[0];
+            double x3   = x[0] * x2;
+
+            List<double> ts = new List<double>(4);
+            double t0       = 1;
+            double t1       = x[0];
+            double t2       = 2 * x2 - 1;
+            double t3       = 4 * x3 - 3 * x[0];
+            ts.Add(t0);
+            ts.Add(t1);
+            ts.Add(t2);
+            ts.Add(t3);
+
+            for (int i = 0; i < 4; i++)
+            {
+                sum +=  ts[i] * c[i];                
+            }
+            func = sum;
         }
 
         void msCluster_Progress(object sender, ProgressNotifierArgs e)
         {
             UpdateStatus(e.Message);
-        }
+        };
         #endregion
 
         #region Feature Extraction

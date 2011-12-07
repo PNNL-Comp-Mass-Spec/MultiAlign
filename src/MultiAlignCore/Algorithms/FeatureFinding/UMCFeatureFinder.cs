@@ -5,8 +5,8 @@ using System.Text;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Algorithms;
 using PNNLOmics.Algorithms.FeatureClustering;
-using PNNLOmics.IO.FileReaders;
 using MultiAlignEngine.Features;
+using PNNLOmicsIO.IO;
 
 namespace MultiAlignCore.Algorithms.FeatureFinding
 {

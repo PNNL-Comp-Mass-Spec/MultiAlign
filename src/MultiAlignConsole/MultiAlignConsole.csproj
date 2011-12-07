@@ -72,10 +72,6 @@
       <HintPath>..\..\lib\x86\System.Data.SQLite.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="PNNLOmics, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\x86\PNNLOmics.dll</HintPath>
-    </Reference>
     <Reference Include="MultiAlignEngine, Version=1.0.4084.24787, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\x86\MultiAlignEngine.dll</HintPath>
@@ -86,10 +82,6 @@
       <SpecificVersion>True</SpecificVersion>
       <HintPath>..\..\lib\x86\System.Data.SQLite.dll</HintPath>
       <Private>True</Private>
-    </Reference>
-    <Reference Include="PNNLOmics, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\x86\PNNLOmics.dll</HintPath>
     </Reference>
     <Reference Include="MultiAlignEngine, Version=1.0.4084.24787, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
@@ -102,10 +94,6 @@
       <HintPath>..\..\lib\x64\System.Data.SQLite.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="PNNLOmics, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\x64\PNNLOmics.dll</HintPath>
-    </Reference>
     <Reference Include="MultiAlignEngine, Version=1.0.4084.24787, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\x64\MultiAlignEngine.dll</HintPath>
@@ -117,10 +105,6 @@
       <HintPath>..\..\lib\x64\System.Data.SQLite.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="PNNLOmics, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\x64\PNNLOmics.dll</HintPath>
-    </Reference>
     <Reference Include="MultiAlignEngine, Version=1.0.4084.24787, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\x64\MultiAlignEngine.dll</HintPath>
@@ -130,6 +114,9 @@
     <Reference Include="MSDataFileReader, Version=1.3.4227.22485, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\MSDataFileReader.dll</HintPath>
+    </Reference>
+    <Reference Include="PNNLOmics">
+      <HintPath>..\..\lib\PNNLOmics.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />

@@ -5,7 +5,7 @@ using MultiAlignCore.Algorithms.FeatureFinding;
 using MultiAlignCore.Data;
 using MultiAlignEngine.Features;
 using PNNLOmics.Data.Features;
-using PNNLOmics.IO.FileReaders;
+using PNNLOmicsIO.IO;
 
 namespace MultiAlignCore.IO.Features
 {
@@ -35,7 +35,7 @@ namespace MultiAlignCore.IO.Features
             //umcFinder.UMCFindingOptions     = options; 
             string extension                = Path.GetExtension(dataset.Path).ToUpper();
             List<UMCLight> newFeatures      = null;
-
+            
             if (extension == ".TXT")
             {
                     // LCMS Features File                         
@@ -107,6 +107,7 @@ namespace MultiAlignCore.IO.Features
                         msFeatures.AddRange(newMsFeatures);
                         foundNewFeatures                            = true;
                         break;
+                     
                     default:
                         throw new ArgumentException("Incorrect extension for file. Please use pek, csv, LCMSFeatures.txt, SQLite or DB3 files as inputs.");
                 }
@@ -164,35 +165,12 @@ namespace MultiAlignCore.IO.Features
                     {
                         msFeatureCache.AddAll(msFeaturesUsed);
                     }
-                }
-
-                //clsUMCCreator   umcFinder       = new clsUMCCreator();
-                //umcFinder.UMCFindingOptions.AveMassWeight = options.AveMassWeight;
-                //umcFinder.UMCFindingOptions.ConstraintAveMass = options.ConstraintAveMass;
-                //umcFinder.UMCFindingOptions.ConstraintMonoMass = options.ConstraintMonoMass;
-                //umcFinder.UMCFindingOptions.FitWeight = options.FitWeight;
-                //umcFinder.UMCFindingOptions.IsIsotopicFitFilterInverted = options.IsIsotopicFitFilterInverted;
-                //umcFinder.UMCFindingOptions.IsotopicFitFilter = options.IsotopicFitFilter;
-                //umcFinder.UMCFindingOptions.IsotopicIntensityFilter = options.IsotopicIntensityFilter;
-                //umcFinder.UMCFindingOptions.MaxDistance = options.MaxDistance;
-                //umcFinder.UMCFindingOptions.MinUMCLength = options.MinUMCLength;
-                //umcFinder.UMCFindingOptions.MonoMassWeight = options.MonoMassWeight;
-                //umcFinder.UMCFindingOptions.NETWeight = options.NETWeight;
-                //umcFinder.UMCFindingOptions.ScanWeight = options.ScanWeight;
-                //umcFinder.UMCFindingOptions.UMCAbundanceReportingType = options.UMCAbundanceReportingType;
-                //umcFinder.UMCFindingOptions.UseIsotopicFitFilter = options.UseIsotopicFitFilter;
-                //umcFinder.UMCFindingOptions.UseIsotopicIntensityFilter = options.UseIsotopicIntensityFilter;
-                //umcFinder.UMCFindingOptions.UseNET = options.UseNET;
-
-                //umcFinder.FileName  = dataset.Path;
-                //umcFinder.LoadFindUMCsCSV();                                
-                //loadedFeatures      = umcFinder.GetUMCs();                
+                }                            
             }
                                                                        
             List<clsUMC> features = new List<clsUMC>();
             if (newFeatures != null)
-            {
-                
+            {                
                 // Map between MS features and LCMS Features.
                 List<MSFeatureToLCMSFeatureMap> msFeatureMapList = new List<MSFeatureToLCMSFeatureMap>();
 
