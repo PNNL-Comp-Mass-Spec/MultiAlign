@@ -171,30 +171,42 @@ namespace MultiAlignCore.IO.MTDB
                                     /// Make sure the mass tag has been seen enough times
                                     if (numObservations >= Options.MinimumObservationCountFilter)
                                     {
-                                        Molecule molecule = new Molecule();
-                                        molecule.Name = peptide;
-                                        //molecule.MassTag    = massTag; 
-
-                                        massTag.ID = id;
-                                        massTag.Molecule = molecule;
-                                        massTag.NET = ganet;
-                                        massTag.NETAverage = ganet;
-                                        massTag.XCorr = xcorr_max;
-                                        massTag.DiscriminantMax = highDiscriminant;
-                                        massTag.MassMonoisotopic = monoMass;
-                                        massTag.ConformationID = conformerID;
+                                        Molecule molecule           = new Molecule();
+                                        molecule.Name               = peptide;
+                                        massTag.ID                  = id;
+                                        massTag.Molecule            = molecule;
+                                        massTag.NET                 = ganet;
+                                        massTag.NETAverage          = ganet;
+                                        massTag.XCorr               = xcorr_max;
+                                        massTag.DiscriminantMax     = highDiscriminant;
+                                        massTag.MassMonoisotopic    = monoMass;
+                                        massTag.ConformationID       = conformerID;
                                         massTag.NETStandardDeviation = stdNet;
-                                        massTag.ObservationCount = numObservations;
-                                        massTag.DriftTime = driftTime;
-                                        massTag.PriorProbability = highPeptideProphetProbability;
-                                        massTag.CleavageState = cleaveageState;
-                                        massTag.ModificationCount = modCount;
-                                        massTag.MSGFSpecProbMax = msgf;
-                                        massTag.PeptideSequence = peptide;
+                                        massTag.ObservationCount     = numObservations;
+                                        massTag.DriftTime            = driftTime;
+                                        massTag.PriorProbability     = highPeptideProphetProbability;
+                                        massTag.CleavageState        = cleaveageState;
+                                        massTag.ModificationCount    = modCount;
+                                        massTag.MSGFSpecProbMax      = msgf;
+                                        massTag.PeptideSequence      = peptide;
 
                                         if (massTag.NETAverage != -1)
                                         {
-                                            massTags.Add(massTag);
+                                            bool shouldAdd = true;
+                                            // If we are using drift time, then we should only 
+                                            // use mass tags that have drift time.
+                                            if (Options.UseDriftTime)
+                                            {
+                                                if (driftTime > 0)
+                                                {
+                                                    shouldAdd = true;
+                                                }
+                                            }
+
+                                            if (shouldAdd)
+                                            {
+                                                massTags.Add(massTag);
+                                            }
                                         }
                                     }
                                 }
