@@ -15,7 +15,7 @@ namespace MultiAlignCore.IO.MTDB
         /// </summary>
         /// <param name="options">Loading options.</param>
         /// <returns>The mass tag database.</returns>
-        public static MassTagDatabase LoadMassTagDB(clsMassTagDatabaseOptions options, MassTagDatabaseFormat format)            
+        public static MassTagDatabase LoadMassTagDB(MassTagDatabaseOptions options, MassTagDatabaseFormat format)            
         {
             MassTagDatabase database = null;
             IMtdbLoader loader       = null;
@@ -23,13 +23,13 @@ namespace MultiAlignCore.IO.MTDB
             switch (format)
             {
                 case MassTagDatabaseFormat.SQL:
-                    loader = new MTSMassTagDatabaseLoader(options.mstrDatabase, options.mstrServer);
+                    loader = new MTSMassTagDatabaseLoader(options.DatabaseName, options.Server);
                     break;
                 case MassTagDatabaseFormat.Access:
-                    loader = new AccessMassTagDatabaseLoader(options.mstr_databaseFilePath);                    
+                    loader = new AccessMassTagDatabaseLoader(options.DatabaseFilePath);                    
                     break;
                 case MassTagDatabaseFormat.Sqlite:
-                    loader = new SQLiteMassTagDatabaseLoader(options.mstr_databaseFilePath);
+                    loader = new SQLiteMassTagDatabaseLoader(options.DatabaseFilePath);
                     break;
                 default:                    
                     break;

@@ -8,13 +8,14 @@ using MultiAlignEngine.MassTags;
 using MultiAlignCore.Data.Alignment;
 using MultiAlignCore.Data.MassTags;
 using PNNLOmics.Utilities;
+using PNNLOmics.Algorithms;
 
 namespace MultiAlignCore.Algorithms.Alignment
 {
     /// <summary>
     /// Defines interface for alignment algorithms.
     /// </summary>
-    public interface IFeatureAligner : IStatusProvider
+    public interface IFeatureAligner : IProgressNotifer
     {
         /// <summary>
         /// Aligns a set of features (from a dataset) to a mass tag database.
@@ -23,7 +24,7 @@ namespace MultiAlignCore.Algorithms.Alignment
         /// <param name="features">Features to align.</param>
         /// <param name="options">Options to use.</param>
         /// <returns>Synopsis of alignment information</returns>
-        classAlignmentData AlignFeatures(MassTagDatabase    database,           List<clsUMC> features,      clsAlignmentOptions options, bool alignDriftTimes);
+        classAlignmentData AlignFeatures(MassTagDatabase    database,           List<clsUMC> features,      AlignmentOptions options, bool alignDriftTimes);
         /// <summary>
         /// Aligns a set of features to another set of features.
         /// </summary>
@@ -31,7 +32,7 @@ namespace MultiAlignCore.Algorithms.Alignment
         /// <param name="features">Features to align.  (alignee)</param>
         /// <param name="options">Options to use.</param>
         /// <returns>Synopsis of alignment information</returns>
-        classAlignmentData AlignFeatures(List<clsUMC>       baseline,           List<clsUMC> features,      clsAlignmentOptions options);
+        classAlignmentData AlignFeatures(List<clsUMC>       baseline,           List<clsUMC> features,      AlignmentOptions options);
         /// <summary>
         /// Aligns clusters to a mass tag database.
         /// </summary>
@@ -39,6 +40,6 @@ namespace MultiAlignCore.Algorithms.Alignment
         /// <param name="clusters">Clusters to align.</param>
         /// <param name="options">Options to use.</param>
         /// <returns>Synopsis of alignment information</returns>
-        classAlignmentData AlignFeatures(MassTagDatabase    massTagDatabase,    List<clsCluster> clusters,  clsAlignmentOptions options);        
+        classAlignmentData AlignFeatures(MassTagDatabase    massTagDatabase,    List<clsCluster> clusters,  AlignmentOptions options);        
     }
 }

@@ -9,16 +9,13 @@ using MultiAlignCore.Data.Alignment;
 using MultiAlignCore.Data.MassTags;
 using PNNLOmics.Data.MassTags;
 using PNNLOmics.Utilities;
+using PNNLOmics.Algorithms;
 
 namespace MultiAlignCore.Algorithms.Alignment
 {
-    public class LCMSWarpFeatureAligner: IFeatureAligner
+    public class LCMSWarpFeatureAligner: IFeatureAligner, IProgressNotifer
     {
-
-        /// <summary>
-        /// Fired when new status is available.
-        /// </summary>
-        public event MessageEventHandler Status;
+        public event EventHandler<ProgressNotifierArgs> Progress;
 
         clsAlignmentProcessor m_processor = new clsAlignmentProcessor();
 
@@ -31,9 +28,9 @@ namespace MultiAlignCore.Algorithms.Alignment
 
         private void OnStatus(string message)
         {
-            if (Status != null)
+            if (Progress != null)
             {
-                Status(this, new MessageEventArgs(message));
+                Progress(this, new ProgressNotifierArgs(message));
             }
         }
         /// <summary>
@@ -46,24 +43,21 @@ namespace MultiAlignCore.Algorithms.Alignment
         /// <returns></returns>
         public classAlignmentData AlignFeatures(MassTagDatabase                 massTagDatabase,
                                                 List<clsUMC>                    features,
-                                                clsAlignmentOptions             alignmentOptions,
+                                                AlignmentOptions                alignmentOptions,
                                                 bool                            alignDriftTimes)
         {                        
             clsAlignmentProcessor alignmentProcessor    = new clsAlignmentProcessor();
-            alignmentProcessor.AlignmentOptions         = alignmentOptions;
+            alignmentProcessor.AlignmentOptions         = AlignmentOptions.ConvertNewToOld(alignmentOptions);
             List<clsMassTag> tags                       = new List<clsMassTag>();
 
             clsUMC featureTest = features.Find(delegate(clsUMC x)
             {
                 return x.DriftTime > 0;
             });
-
-            bool shouldDiscardTagsWithNoDriftTime = false;
-            if (featureTest != null)
+            
+            if (featureTest != null && !massTagDatabase.DoesContainDriftTime)
             {
-
-                OnStatus("No drift times set. Discarding drift time information.");
-                shouldDiscardTagsWithNoDriftTime  = true;
+                OnStatus("Warning! Data contains drift time information and the database does not.");                
             }
 
             OnStatus("Configuring features as mass tags.");
@@ -75,19 +69,8 @@ namespace MultiAlignCore.Algorithms.Alignment
                 mmTag.mintConformerID   = tag.ConformationID;
                 mmTag.mdblAvgGANET      = tag.NETAverage;
                 mmTag.mdblMonoMass      = tag.MassMonoisotopic;
-                mmTag.DriftTime         = tag.DriftTime;
-
-                if (shouldDiscardTagsWithNoDriftTime)
-                {
-                    if (mmTag.DriftTime > 0)
-                    {
-                        tags.Add(mmTag);
-                    }
-                }
-                else
-                {
-                    tags.Add(mmTag);
-                }
+                mmTag.DriftTime         = tag.DriftTime;                                 
+                tags.Add(mmTag);               
             }
 
             OnStatus("Setting reference features using mass tags.");
@@ -109,10 +92,10 @@ namespace MultiAlignCore.Algorithms.Alignment
         /// <returns></returns>
         public classAlignmentData AlignFeatures(List<clsUMC>                    baselineFeatures, 
                                                 List<clsUMC>                    features,
-                                                clsAlignmentOptions             alignmentOptions)
+                                                AlignmentOptions                alignmentOptions)
         {
             clsAlignmentProcessor alignmentProcessor    = new clsAlignmentProcessor();
-            alignmentProcessor.AlignmentOptions         = alignmentOptions;
+            alignmentProcessor.AlignmentOptions         = AlignmentOptions.ConvertNewToOld(alignmentOptions);
 
 
             OnStatus("Setting features from baseline dataset.");
@@ -139,9 +122,9 @@ namespace MultiAlignCore.Algorithms.Alignment
         /// <summary>
         /// Aligns the dataset to the data stored in the alignment processor.
         /// </summary>
-        private classAlignmentData AlignFeatures(clsAlignmentProcessor                 alignmentProcessor,            
-                                                List<clsUMC>                          features,
-                                                clsAlignmentOptions                   alignmentOptions)
+        private classAlignmentData AlignFeatures(clsAlignmentProcessor             alignmentProcessor,            
+                                                List<clsUMC>                       features,
+                                                AlignmentOptions                   alignmentOptions)
         {
 
             OnStatus("Starting alignment of features.");
@@ -416,7 +399,7 @@ namespace MultiAlignCore.Algorithms.Alignment
         /// <returns>Alignment data for the clusters to mass tag database.</returns>
         public classAlignmentData AlignFeatures(MassTagDatabase         massTagDatabase,
                                                 List<clsCluster>        clusters,
-                                                clsAlignmentOptions     options)
+                                                AlignmentOptions     options)
         {
 
             OnStatus("Starting alignment of clusters.");
@@ -498,5 +481,6 @@ namespace MultiAlignCore.Algorithms.Alignment
 
             return clusterAlignmentData;
         }
+
     }
 }

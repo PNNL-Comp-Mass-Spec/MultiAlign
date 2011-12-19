@@ -9,6 +9,7 @@ using MultiAlignEngine.MassTags;
 using MultiAlignEngine.Alignment;
 using MultiAlignEngine.Clustering;
 using MultiAlignEngine.PeakMatching;
+using MultiAlignCore.Algorithms.Alignment;
 
 using MultiAlignCore.Data;
 
@@ -136,15 +137,15 @@ namespace MultiAlignCore.IO.Parameters
             {
                 if (prop.CanWrite)
                 {
-                    object[] customAttributes = prop.GetCustomAttributes(typeof(clsParameterFileAttribute), true);
+                    object[] customAttributes = prop.GetCustomAttributes(typeof(ParameterFileAttribute), true);
                     for (int i = 0; i < customAttributes.Length; i++)
                     {
-                        clsParameterFileAttribute attribute = customAttributes[i] as clsParameterFileAttribute;
+                        ParameterFileAttribute attribute = customAttributes[i] as ParameterFileAttribute;
                         if (attribute != null)
                         {
-                            if (map.ContainsKey(attribute.Description))
+                            if (map.ContainsKey(attribute.Name))
                             {
-                                object value = map[attribute.Description];
+                                object value = map[attribute.Name];
                                 prop.SetValue(o, value, BindingFlags.SetProperty, null, null, null);
                             }
                         }
@@ -153,15 +154,15 @@ namespace MultiAlignCore.IO.Parameters
             }
             foreach (FieldInfo field in o.GetType().GetFields())
             {
-                object[] customAttributes = field.GetCustomAttributes(typeof(clsParameterFileAttribute), true);
+                object[] customAttributes = field.GetCustomAttributes(typeof(ParameterFileAttribute), true);
                 for (int i = 0; i < customAttributes.Length; i++)
                 {
-                    clsParameterFileAttribute attribute = customAttributes[i] as clsParameterFileAttribute;
+                    ParameterFileAttribute attribute = customAttributes[i] as ParameterFileAttribute;
                     if (attribute != null)
                     {
-                        if (map.ContainsKey(attribute.Description))
+                        if (map.ContainsKey(attribute.Name))
                         {
-                            object value = map[attribute.Description];
+                            object value = map[attribute.Name];
                             field.SetValue(o, value);
                         }                                                    
                     }
@@ -183,12 +184,9 @@ namespace MultiAlignCore.IO.Parameters
             // Parse the data.
             string[] lines = File.ReadAllLines(parameterFilePath);
             ExtractGroups(lines);
-
-            // Load options.
-            clsAlignmentOptions alignmentOptions            = analysis.Options.DefaultAlignmentOptions;
-            LoadParameterOptions(ProcessSubSectionData(ALIGNMENT_TAG), alignmentOptions);            
+                        
+            LoadParameterOptions(ProcessSubSectionData(ALIGNMENT_TAG),           analysis.Options.AlignmentOptions);            
             LoadParameterOptions(ProcessSubSectionData(FEATURE_FINDING_TAG),     analysis.Options.UMCFindingOptions);
-            LoadParameterOptions(ProcessSubSectionData(PEAK_MATCH_TAG),          analysis.Options.PeakMatchingOptions);
             LoadParameterOptions(ProcessSubSectionData(MASS_TAG_DATABASE_TAG),   analysis.Options.MassTagDatabaseOptions);
             LoadParameterOptions(ProcessSubSectionData(CLUSTER_TAG),             analysis.Options.ClusterOptions);
             LoadGlobalOptions(ref analysis);                 

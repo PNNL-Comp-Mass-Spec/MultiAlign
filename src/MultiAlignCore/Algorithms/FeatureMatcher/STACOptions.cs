@@ -1,4 +1,8 @@
 ﻿using MultiAlignEngine;
+using PNNLOmics.Algorithms.FeatureMatcher;
+using MultiAlignCore.IO.Parameters;
+using MultiAlignCore.Data;
+
 
 namespace MultiAlignCore.Algorithms.PeakMatching
 {
@@ -9,82 +13,96 @@ namespace MultiAlignCore.Algorithms.PeakMatching
         /// </summary>
         public STACOptions()
         {
-
+            MassTolerancePPM        = 6.0;
+            NETTolerance            = 0.03;
+            DriftTimeTolerance      = 50.0;
+            WriteResultsBackToMTS   = false;            
+            ShiftAmount             = 11;
+            UsePriors               = false;
+            UseEllipsoid            = false;
+            UseDriftTime            = false;
         }
         
-        [clsParameterFile("UsePriorProbabilities", "STACOptions")]
-        [clsDataSummaryAttribute("Uses the prior probabilities")]
+        [ParameterFileAttribute("UsePriorProbabilities", "STACOptions")]
+        [DataSummaryAttribute("Uses the prior probabilities")]
         public double HistogramBinWidth 
         {
             get;
             set;
         }
-        [clsParameterFile("HistogramMultiplier", "STACOptions")]
-        [clsDataSummaryAttribute("Uses the prior probabilities")]
+        [ParameterFileAttribute("HistogramMultiplier", "STACOptions")]
+        [DataSummaryAttribute("Uses the prior probabilities")]
         public double HistogramMultiplier  
         {
             get;
             set;
         }
-        [clsParameterFile("ShiftAmount", "STACOptions")]
-        [clsDataSummaryAttribute("Uses the prior probabilities")]
+        [ParameterFileAttribute("ShiftAmount", "STACOptions")]
+        [DataSummaryAttribute("Uses the prior probabilities")]
         public double  ShiftAmount  
         {
             get;
             set;
         }
-        [clsParameterFile("ShouldCalculateHistogramFDR", "STACOptions")]
-        [clsDataSummaryAttribute("Uses the prior probabilities")]
+        [ParameterFileAttribute("ShouldCalculateHistogramFDR", "STACOptions")]
+        [DataSummaryAttribute("Uses the prior probabilities")]
         public bool ShouldCalculateHistogramFDR  
         {
             get;
             set;
         }
-        [clsParameterFile("ShouldCalculateShiftFDR", "STACOptions")]
-        [clsDataSummaryAttribute("Uses the prior probabilities")]
+        [ParameterFileAttribute("ShouldCalculateShiftFDR", "STACOptions")]
+        [DataSummaryAttribute("Uses the prior probabilities")]
         public bool ShouldCalculateShiftFDR  
         {
             get;
             set;
         }
-        [clsParameterFile("ShouldCalculateSLiC", "STACOptions")]
-        [clsDataSummaryAttribute("Uses the prior probabilities")]
+        [ParameterFileAttribute("ShouldCalculateSLiC", "STACOptions")]
+        [DataSummaryAttribute("Uses the prior probabilities")]
         public bool ShouldCalculateSLiC  
         {
             get;
             set;
         }
-        [clsParameterFile("ShouldCalculateSTAC", "STACOptions")]
-        [clsDataSummaryAttribute("Uses the prior probabilities")]
+        [ParameterFileAttribute("ShouldCalculateSTAC", "STACOptions")]
+        [DataSummaryAttribute("Uses the prior probabilities")]
         public bool ShouldCalculateSTAC  
         {
             get;
             set;
         }
-        [clsParameterFile("UseDriftTime", "STACOptions")]
-        [clsDataSummaryAttribute("Uses the prior probabilities")]
+        [ParameterFileAttribute("UseDriftTime", "STACOptions")]
+        [DataSummaryAttribute("Uses the prior probabilities")]
         public bool UseDriftTime  
         {
             get;
             set;
         }
-        [clsParameterFile("UseEllipsoid", "STACOptions")]
-        [clsDataSummaryAttribute("Uses the prior probabilities")]
+        [ParameterFileAttribute("UseEllipsoid", "STACOptions")]
+        [DataSummaryAttribute("Uses the prior probabilities")]
         public bool UseEllipsoid  
         {
             get;
             set;
         }
-        [clsParameterFile("UsePriors", "STACOptions")]
-        [clsDataSummaryAttribute("Uses the prior probabilities")]
+        [ParameterFileAttribute("UsePriors", "STACOptions")]
+        [DataSummaryAttribute("Uses the prior probabilities")]
         public bool UsePriors  
         {
             get;
             set;
         }
-        [clsParameterFile("UserTolerances", "STACOptions")]
-        [clsDataSummaryAttribute("Uses the prior probabilities")]
-        public bool UserTolerances  
+        [ParameterFileAttribute("DriftTimeTolerance", "STACOptions")]
+        public double DriftTimeTolerance { get; set; }
+        [ParameterFileAttribute("MassTolerancePPM", "STACOptions")]
+        public double MassTolerancePPM { get; set; }
+        [ParameterFileAttribute("NETTolerance", "STACOptions")]
+        public double NETTolerance { get; set; }
+        [ParameterFileAttribute("Refined", "STACOptions")]
+        public bool Refined { get; set; }
+        [ParameterFileAttribute("WriteResultsBackToMTS", "STACOptions")]
+        public bool WriteResultsBackToMTS
         {
             get;
             set;

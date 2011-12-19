@@ -78,7 +78,7 @@ namespace MultiAlignEngine
 			{
 				mobjMassTagDBOptions = options; 
 				
-				if (options->menm_databaseType == MassTagDatabaseType::SQL)
+				if (options->menm_databaseType == MassTagDatabaseType2::SQL)
 				{
 					mstrConnectionStr = System::String::Concat(S"Server=", mobjMassTagDBOptions->mstrServer, S";Database=",
 					mobjMassTagDBOptions->mstrDatabase, S";Integrated Security=no; User ID=", mobjMassTagDBOptions->mstrUserID, 

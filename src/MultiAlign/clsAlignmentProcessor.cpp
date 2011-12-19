@@ -637,8 +637,8 @@ namespace MultiAlignEngine
 			if (mobjAlignmentOptions == 0)
 				throw new System::NullReferenceException(S"Alignment Options were not set in clsAlignmentProcessor"); 
 
-			menmState = ALIGNING_TO_MS; 
-			if(!mobjAlignmentOptions->get_ApplyMassRecalibration())
+			menmState = ALIGNING_TO_MS;  
+			if(! (mobjAlignmentOptions->AlignmentType == NET_MASS_WARP) ) //mobjAlignmentOptions->get_ApplyMassRecalibration())
 			{
 				PerformNetWarp(); 
 			}

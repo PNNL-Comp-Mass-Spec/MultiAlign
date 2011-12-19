@@ -129,6 +129,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Algorithms\AlgorithmProvider.cs" />
+    <Compile Include="Algorithms\Alignment\AlignmentOptions.cs" />
     <Compile Include="Algorithms\Alignment\AnchorPointAlignment.cs" />
     <Compile Include="Algorithms\Alignment\DriftTimeAlignmentOptions.cs" />
     <Compile Include="Algorithms\Alignment\LCMSWarpFeatureAligner.cs" />
@@ -158,6 +159,7 @@
     <Compile Include="ApplicationUtility.cs" />
     <Compile Include="Data\AnalysisOptions.cs" />
     <Compile Include="Data\AnalysisUtils.cs" />
+    <Compile Include="Data\DataSummaryAttribute.cs" />
     <Compile Include="Data\Features\LCMSFeatureChargeMapBuilder.cs" />
     <Compile Include="Data\MSMSClusterMap.cs" />
     <Compile Include="Data\Factors\DatasetToExperimentalFactorMap.cs" />
@@ -202,6 +204,8 @@
     <Compile Include="IO\Features\Hibernate\MSMSClusterMapDAOHibernate.cs" />
     <Compile Include="IO\Features\Hibernate\DatasetToFactorMap.cs" />
     <Compile Include="IO\Features\IDatasetToFactorMapDAO.cs" />
+    <Compile Include="IO\Features\MSMSFeatureExtractor.cs" />
+    <Compile Include="IO\Features\SICExtractor.cs" />
     <Compile Include="IO\Features\UMCClusterAbundanceCrossTabWriter.cs" />
     <Compile Include="IO\Features\FeatureExtractionTableWriter.cs" />
     <Compile Include="IO\Features\IMSnFeatureToMSFeatureDAO.cs" />
@@ -269,6 +273,7 @@
     <Compile Include="IO\MTDB\IMTDBLoader.cs" />
     <Compile Include="IO\MTDB\MassTagDatabaseLoader.cs" />
     <Compile Include="IO\MTDB\MassTagDatabaseOptions.cs" />
+    <Compile Include="IO\MTDB\MassTagDatabaseType.cs" />
     <Compile Include="IO\MTDB\MTSMassTagDatabaseLoader.cs" />
     <Compile Include="IO\MTDB\MTSPeakMatchResultsWriter.cs" />
     <Compile Include="IO\MTDB\MTSSqlServerPeakMatchResultWriter.cs" />
@@ -277,6 +282,7 @@
     <Compile Include="IO\Parameters\IParameterFileWriter.cs" />
     <Compile Include="IO\Parameters\MultiAlignParameterIniFileReader.cs" />
     <Compile Include="IO\Parameters\MultiAlignParameterIniFileWriter.cs" />
+    <Compile Include="IO\Parameters\ParameterFileAttribute.cs" />
     <Compile Include="IO\Parameters\ParameterHibernateMapping.cs" />
     <Compile Include="IO\Parameters\ParameterUtility.cs" />
     <Compile Include="IO\Parameters\xmlIO.cs" />

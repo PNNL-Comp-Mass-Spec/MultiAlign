@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MultiAlignEngine;
 using System.Text;
+using MultiAlignCore.IO.Parameters;
 
 namespace MultiAlignCore.Data.Features
 {
@@ -18,51 +19,51 @@ namespace MultiAlignCore.Data.Features
             MinimumMonoIsotopicMass = 0;
             MaximumMonoIsotopicMass = 100000;
         }
-        [clsParameterFile("MinimumAbundance", "FeatureFilters")]
-        [clsDataSummaryAttribute("Is Data Paired")]
+        [ParameterFileAttribute("MinimumAbundance", "FeatureFilters")]
+        [DataSummaryAttribute("Is Data Paired")]
         public double MinimumAbundance
         {
             get;
             set;
         }
-        [clsParameterFile("MinimumIsotopicFit", "FeatureFilters")]
-        [clsDataSummaryAttribute("Minimum Isotopic Fit")]
+        [ParameterFileAttribute("MinimumIsotopicFit", "FeatureFilters")]
+        [DataSummaryAttribute("Minimum Isotopic Fit")]
         public double IsotopicFit
         {
             get;
             set;
         }
-        [clsParameterFile("MinimumScanLength", "FeatureFilters")]
-        [clsDataSummaryAttribute("Minimum Scan Length")]
+        [ParameterFileAttribute("MinimumScanLength", "FeatureFilters")]
+        [DataSummaryAttribute("Minimum Scan Length")]
         public int MinimumScanLength
         {
             get;
             set;
         }
-        [clsParameterFile("MaximumChargeState", "FeatureFilters")]
-        [clsDataSummaryAttribute("Maximum Charge State")]
+        [ParameterFileAttribute("MaximumChargeState", "FeatureFilters")]
+        [DataSummaryAttribute("Maximum Charge State")]
         public int MaximumChargeState
         {
             get;
             set;
         }
-        [clsParameterFile("MinimumChargeState", "FeatureFilters")]
-        [clsDataSummaryAttribute("Minimum Charge State")]
+        [ParameterFileAttribute("MinimumChargeState", "FeatureFilters")]
+        [DataSummaryAttribute("Minimum Charge State")]
         public int MinimumChargeState
         {
             get;
             set;
         }
 
-        [clsParameterFile("MaximumMonoisotopicMass", "FeatureFilters")]
-        [clsDataSummaryAttribute("Maximum Monoisotopic Mass")]
+        [ParameterFileAttribute("MaximumMonoisotopicMass", "FeatureFilters")]
+        [DataSummaryAttribute("Maximum Monoisotopic Mass")]
         public double MaximumMonoIsotopicMass
         {
             get;
             set;
         }
-        [clsParameterFile("MinimumMonoisotopicMass", "FeatureFilters")]
-        [clsDataSummaryAttribute("Minimum Monoisotopic mass")]
+        [ParameterFileAttribute("MinimumMonoisotopicMass", "FeatureFilters")]
+        [DataSummaryAttribute("Minimum Monoisotopic mass")]
         public double MinimumMonoIsotopicMass
         {
             get;

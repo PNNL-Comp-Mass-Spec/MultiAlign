@@ -755,7 +755,7 @@ namespace MultiAlignEngine
 		{
 			clsMassTagDB *mtDB = new clsMassTagDB(); 
 			
-			if (mobjMassTagDBOptions->menm_databaseType == MassTagDatabaseType::SQL)
+			if (mobjMassTagDBOptions->menm_databaseType == MassTagDatabaseType2::SQL)
 			{
 				mstrMessage = System::String::Concat(S"Loading Mass Tag database: ", mobjMassTagDBOptions->mstrDatabase); 
 				LoadMassTags(mtDB); 

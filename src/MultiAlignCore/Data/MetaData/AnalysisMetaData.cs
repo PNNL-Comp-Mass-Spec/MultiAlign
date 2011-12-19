@@ -33,7 +33,7 @@ namespace MultiAlignCore.Data
         /// <summary>
         /// Gets or sets the name of the baseline dataset.
         /// </summary>
-        [clsDataSummaryAttribute("Baseline Dataset")]
+        [DataSummaryAttribute("Baseline Dataset")]
         public DatasetInformation BaselineDataset
         {
             get;
@@ -42,7 +42,7 @@ namespace MultiAlignCore.Data
         /// <summary>
         /// Gets or sets the input file used.
         /// </summary>
-		[clsDataSummaryAttribute("Input File Definition Name")]
+		[DataSummaryAttribute("Input File Definition Name")]
         public string InputFileDefinition
         {
             get;
@@ -51,7 +51,7 @@ namespace MultiAlignCore.Data
         /// <summary>
         /// Gets or sets the parameter file used.
         /// </summary>
-        [clsDataSummaryAttribute("Parameter File")]
+        [DataSummaryAttribute("Parameter File")]
         public string ParameterFile
         {
             get;
@@ -60,7 +60,7 @@ namespace MultiAlignCore.Data
         /// <summary>
         /// Gets or sets the job id for this analysis.
         /// </summary>
-        [clsDataSummaryAttribute("Job ID")]
+        [DataSummaryAttribute("Job ID")]
         public int JobID
         {
             get;
@@ -77,7 +77,7 @@ namespace MultiAlignCore.Data
         /// <summary>
         /// Gets or sets the name of the analysis.
         /// </summary>
-        [clsDataSummaryAttribute("Analysis Name")]
+        [DataSummaryAttribute("Analysis Name")]
         public string AnalysisName
         {
             get;
@@ -86,7 +86,7 @@ namespace MultiAlignCore.Data
         /// <summary>
         /// Gets or sets the pathname associated with the analysis.
         /// </summary>
-        [clsDataSummaryAttribute("Analysis Path")]
+        [DataSummaryAttribute("Analysis Path")]
         public string AnalysisPath
         {
             get;

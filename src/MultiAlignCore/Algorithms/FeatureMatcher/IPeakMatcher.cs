@@ -9,6 +9,7 @@ using MultiAlignEngine.PeakMatching;
 using MultiAlignCore.Data.MassTags;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Data.MassTags;
+using PNNLOmics.Algorithms;
 
 namespace MultiAlignCore.Algorithms.FeatureMatcher
 {
@@ -16,7 +17,7 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
     /// Interface for peak matching features and databases.
     /// </summary>
     public interface IPeakMatcher<T> 
-        : IStatusProvider 
+        : IProgressNotifer 
         where T: FeatureLight                 
     {
         /// <summary>

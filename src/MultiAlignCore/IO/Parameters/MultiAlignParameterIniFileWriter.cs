@@ -47,7 +47,7 @@ namespace MultiAlignCore.IO.Parameters
 			{					
 				if (prop.CanRead)
 				{																						
-					object[] customAttributes   = prop.GetCustomAttributes(typeof(clsParameterFileAttribute),true);
+					object[] customAttributes   = prop.GetCustomAttributes(typeof(ParameterFileAttribute),true);
 					object data                 = null;
 					if (customAttributes.Length > 0)
                     {
@@ -55,17 +55,17 @@ namespace MultiAlignCore.IO.Parameters
                     }
 					for (int i = 0; i < customAttributes.Length; i++)
 					{                        
-						clsParameterFileAttribute attr = customAttributes[i] as clsParameterFileAttribute;                        
-						if (data != null && attr != null && attr.Description != "")
+						ParameterFileAttribute attr = customAttributes[i] as ParameterFileAttribute;                        
+						if (data != null && attr != null && attr.Name != "")
 						{
-                            WriteOption(writer, attr.Description, data);
+                            WriteOption(writer, attr.Name, data);
 						}
 					}						
 				}
 			}								
 			foreach(FieldInfo field in o.GetType().GetFields())
 			{
-                object[] customAttributes	= field.GetCustomAttributes(typeof(clsParameterFileAttribute),true);
+                object[] customAttributes	= field.GetCustomAttributes(typeof(ParameterFileAttribute),true);
 				object data                 = null;
 				if (customAttributes.Length > 0)
                 {
@@ -73,10 +73,10 @@ namespace MultiAlignCore.IO.Parameters
                 }
 				for (int i = 0; i < customAttributes.Length; i++)
 				{
-					clsParameterFileAttribute attr = customAttributes[i] as clsParameterFileAttribute ;
-                    if (data != null && attr != null && attr.Description != "")
+					ParameterFileAttribute attr = customAttributes[i] as ParameterFileAttribute ;
+                    if (data != null && attr != null && attr.Name != "")
                     {
-                        WriteOption(writer, attr.Description, data);
+                        WriteOption(writer, attr.Name, data);
                     }
 				}					
 			}
@@ -94,11 +94,10 @@ namespace MultiAlignCore.IO.Parameters
             using (TextWriter writer = File.CreateText(filename))
             {
 
-                WriteOptionGroup(writer, ALIGNMENT_TAG,         analysis.Options.DefaultAlignmentOptions);
+                WriteOptionGroup(writer, ALIGNMENT_TAG,         analysis.Options.AlignmentOptions);
                 WriteOptionGroup(writer, FEATURE_FINDING_TAG,   analysis.Options.UMCFindingOptions);
                 WriteOptionGroup(writer, MASS_TAG_DATABASE_TAG, analysis.Options.MassTagDatabaseOptions);
                 WriteOptionGroup(writer, CLUSTER_TAG,           analysis.Options.ClusterOptions);
-                WriteOptionGroup(writer, PEAK_MATCH_TAG,        analysis.Options.PeakMatchingOptions);
 
                 writer.WriteLine("[" + GLOBAL_TAG + "]" );
                 WriteOption(writer, GLOBAL_OPTION_USE_MTDB_AS_BASELINE, analysis.Options.UseMassTagDBAsBaseline);

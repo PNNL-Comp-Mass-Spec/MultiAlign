@@ -12,6 +12,8 @@ using PNNLOmics.Data.MassTags;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Algorithms.FeatureMatcher;
 using PNNLOmics.Utilities;
+using PNNLOmics.Algorithms;
+using MultiAlignCore.Algorithms.PeakMatching;
 
 namespace MultiAlignCore.Algorithms.FeatureMatcher
 {
@@ -19,17 +21,14 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
     /// Performs traditional peak matching.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class TraditionalPeakMatcher<T>  : IStatusProvider, IPeakMatcher<T> where T: UMCClusterLight
+    public class TraditionalPeakMatcher<T>  : IProgressNotifer, IPeakMatcher<T> where T: UMCClusterLight
     {
-        /// <summary>
-        /// Fired when new status is available.
-        /// </summary>
-        public event MessageEventHandler Status;
+        
 
         /// <summary>
         /// Gets or sets the peak matching options.
         /// </summary>
-        public clsPeakMatchingOptions Options
+        public STACOptions Options
         {
             get;
             set;
@@ -48,10 +47,10 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
             OnStatus("Performing traditional peak matching.");
             PeakMatcher<UMCCluster, MassTag> peakMatcher            = new PeakMatcher<UMCCluster, MassTag>();
             PeakMatcherOptions matchingOptions                      = new PeakMatcherOptions();
-            matchingOptions.Tolerances.Mass                         = Options.MassTolerance;
+            matchingOptions.Tolerances.Mass                         = Options.MassTolerancePPM;
             matchingOptions.Tolerances.RetentionTime                = Options.NETTolerance;
             matchingOptions.Tolerances.DriftTime                    = Options.DriftTimeTolerance;
-            matchingOptions.DaltonShift                             = Options.DaltonShift;
+            matchingOptions.DaltonShift                             = Options.ShiftAmount;
 
 
             List<FeatureMatchLight<T, MassTagLight>> matches    = new List<FeatureMatchLight<T, MassTagLight>>();
@@ -132,10 +131,16 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
         /// <param name="message"></param>
         private void OnStatus(string message)
         {
-            if (Status != null)
+            if (Progress != null)
             {
-                Status(this, new MessageEventArgs(message));
+                Progress(this, new ProgressNotifierArgs(message));
             }
         }
+
+        #region IProgressNotifer Members
+
+        public event EventHandler<ProgressNotifierArgs> Progress;
+
+        #endregion
     }
 }

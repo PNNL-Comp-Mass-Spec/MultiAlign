@@ -27,7 +27,7 @@ namespace MultiAlignCore.IO.Parameters
 					// Recurse to get parameters.
 					if (prop.CanRead)
 					{																						
-						object[] customAttributes = prop.GetCustomAttributes(typeof(clsParameterFileAttribute),true);
+						object[] customAttributes = prop.GetCustomAttributes(typeof(ParameterFileAttribute),true);
 						object potential = null;
 						if (customAttributes.Length > 0)
 							potential = prop.GetValue(o,
@@ -38,14 +38,14 @@ namespace MultiAlignCore.IO.Parameters
 						for (int i = 0; i < customAttributes.Length; i++)
 						{
                             
-							clsParameterFileAttribute attr = customAttributes[i] as clsParameterFileAttribute;
+							ParameterFileAttribute attr = customAttributes[i] as ParameterFileAttribute;
                             
-							if (potential != null && attr != null && attr.Description != "")
+							if (potential != null && attr != null && attr.Name != "")
 							{										
 								try
 								{
                                     
-									node.SetValue(attr.Description, potential);
+									node.SetValue(attr.Name, potential);
 								}
 								catch(Exception ex)
 								{
@@ -61,18 +61,18 @@ namespace MultiAlignCore.IO.Parameters
 				/// 
 				foreach(FieldInfo field in o.GetType().GetFields())
 				{					
-					object[] customAttributes	= field.GetCustomAttributes(typeof(clsParameterFileAttribute),true);
+					object[] customAttributes	= field.GetCustomAttributes(typeof(ParameterFileAttribute),true);
 					object objectValue = null;
 					if (customAttributes.Length > 0)
 						objectValue	   = field.GetValue(o);											
 					for (int i = 0; i < customAttributes.Length; i++)
 					{
-						clsParameterFileAttribute attr = customAttributes[i] as clsParameterFileAttribute ;
+						ParameterFileAttribute attr = customAttributes[i] as ParameterFileAttribute ;
 						if (objectValue != null && attr != null)
 						{		
 							try
 							{
-								node.SetValue(attr.Description, objectValue);
+								node.SetValue(attr.Name, objectValue);
 							}
 							catch
 							{
@@ -90,10 +90,9 @@ namespace MultiAlignCore.IO.Parameters
             ReflectParameterOptions(analysis.Options.UMCFindingOptions, metaData.OpenChild("UMCFindingOptions"));
             ReflectParameterOptions(analysis.Options.FeatureFilterOptions, metaData.OpenChild("FeatureFilters"));
             ReflectParameterOptions(analysis.Options.MassTagDatabaseOptions, metaData.OpenChild("MassTagDBOptions"));
-            ReflectParameterOptions(analysis.Options.DefaultAlignmentOptions, metaData.OpenChild("DefaultAlignmentOptions"));
+            ReflectParameterOptions(analysis.Options.AlignmentOptions, metaData.OpenChild("AlignmentOptions"));
             ReflectParameterOptions(analysis.Options.DriftTimeAlignmentOptions, metaData.OpenChild("DriftTimeAlignmentOptions"));
             ReflectParameterOptions(analysis.Options.ClusterOptions, metaData.OpenChild("ClusterOptions"));
-            ReflectParameterOptions(analysis.Options.PeakMatchingOptions, metaData.OpenChild("PeakMatchingOptions"));
             ReflectParameterOptions(analysis.Options.STACAdapterOptions, metaData.OpenChild("STACOptions"));
             metaData.WriteFile(parameterFilePath);
         }        

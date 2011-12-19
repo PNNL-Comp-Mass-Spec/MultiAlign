@@ -4,7 +4,7 @@ using MultiAlignCore.Algorithms.FeatureMatcher;
 using PNNLOmics.Algorithms.FeatureClustering;
 using PNNLOmics.Data.Features;
 using MultiAlignCore.Data;
-using PNNLOmics.Algorithms.FeatureMatcher;
+using PNNLOmics.Algorithms.FeatureMatcher.Data;
 
 namespace MultiAlignCore.Algorithms
 {
@@ -62,18 +62,16 @@ namespace MultiAlignCore.Algorithms
         /// </summary>
         public void BuildPeakMatcher(AnalysisOptions options)
         {
-            PeakMatchingType type = PeakMatchingType.Traditional;            
-            if (options.PeakMatchingOptions.UseSTAC)
-            {
-                type = PeakMatchingType.STAC;
-            }
+            PeakMatchingType type = PeakMatchingType.STAC;                        
+
+            FeatureMatcherTolerances tolerances = new FeatureMatcherTolerances();
 
             switch(type)
             {
                 case PeakMatchingType.Traditional:
 
                     TraditionalPeakMatcher<UMCClusterLight> matcher     = new TraditionalPeakMatcher<UMCClusterLight>();
-                    matcher.Options                                     = options.PeakMatchingOptions;
+                    matcher.Options                                     = options.STACAdapterOptions;
                     m_provider.PeakMatcher                              = matcher;
                     break;
                 
@@ -90,7 +88,11 @@ namespace MultiAlignCore.Algorithms
                     stanleyMatcher.Options.UseDriftTime                 = options.STACAdapterOptions.UseDriftTime;
                     stanleyMatcher.Options.UseEllipsoid                 = options.STACAdapterOptions.UseEllipsoid;
                     stanleyMatcher.Options.UsePriors                    = options.STACAdapterOptions.UsePriors;
-                    stanleyMatcher.Options.UserTolerances               = options.STACAdapterOptions.UserTolerances;                    
+                    tolerances.DriftTimeTolerance                       = System.Convert.ToSingle(options.STACAdapterOptions.DriftTimeTolerance);
+                    tolerances.MassTolerancePPM                         = options.STACAdapterOptions.MassTolerancePPM;
+                    tolerances.NETTolerance                             = options.STACAdapterOptions.NETTolerance;
+                    tolerances.Refined                                  = options.STACAdapterOptions.Refined;
+                    stanleyMatcher.Options.UserTolerances               = tolerances;                    
                     m_provider.PeakMatcher                              = stanleyMatcher;
                     break;
             }

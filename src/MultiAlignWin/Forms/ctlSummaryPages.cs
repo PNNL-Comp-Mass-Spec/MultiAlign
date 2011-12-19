@@ -6,6 +6,7 @@ using System.Data;
 using System.Windows.Forms;
 using System.Reflection;
 
+using MultiAlignCore.Data;
 using MultiAlignEngine;
 
 namespace MultiAlignWin
@@ -44,15 +45,15 @@ namespace MultiAlignWin
 				{
 					try
 					{
-						object[] customAttributes = prop.GetCustomAttributes(typeof(MultiAlignEngine.clsDataSummaryAttribute),true);
+						object[] customAttributes = prop.GetCustomAttributes(typeof(DataSummaryAttribute),true);
 						if (customAttributes.Length > 0 && prop.CanRead)
 						{
-							MultiAlignEngine.clsDataSummaryAttribute attr = customAttributes[0] as MultiAlignEngine.clsDataSummaryAttribute ;						
+							DataSummaryAttribute attr = customAttributes[0] as DataSummaryAttribute ;						
 							object objectValue = prop.GetValue(o,System.Reflection.BindingFlags.GetProperty,
 								null,null,null);
 							if (objectValue != null && attr != null)
 							{
-								AddToList(list, attr.Description, objectValue.ToString(), Color.Black, Color.White);
+								AddToList(list, attr.Name, objectValue.ToString(), Color.Black, Color.White);
 							}
 						}
 					}
@@ -65,14 +66,14 @@ namespace MultiAlignWin
 				{
 					try
 					{
-						object[] customAttributes = field.GetCustomAttributes(typeof(MultiAlignEngine.clsDataSummaryAttribute),true);
+						object[] customAttributes = field.GetCustomAttributes(typeof(DataSummaryAttribute),true);
 						if (customAttributes.Length > 0)
 						{
-							MultiAlignEngine.clsDataSummaryAttribute attr = customAttributes[0] as MultiAlignEngine.clsDataSummaryAttribute ;						
+							DataSummaryAttribute attr = customAttributes[0] as DataSummaryAttribute ;						
 							object objectValue = field.GetValue(o);
 							if (objectValue != null && attr != null)
 							{
-								AddToList(list, attr.Description, objectValue.ToString(), Color.Black, Color.White);
+								AddToList(list, attr.Name, objectValue.ToString(), Color.Black, Color.White);
 							}
 						}
 					}

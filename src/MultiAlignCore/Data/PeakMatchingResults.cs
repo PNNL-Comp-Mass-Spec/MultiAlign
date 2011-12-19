@@ -53,7 +53,7 @@ namespace MultiAlignCore.Data
         /// <summary>
         /// Gets the flag whether the results were peaked matched against the Mass Tag Database.
         /// </summary>
-        [clsDataSummaryAttribute("Peaks Matched to MTDB")]
+        [DataSummaryAttribute("Peaks Matched to MTDB")]
         public bool PeakMatchedToMassTagDB
         {
             get;

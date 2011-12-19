@@ -11,7 +11,7 @@ namespace MultiAlignCore.Data.MassTags
     /// Contains all the information for mass tag databases.
     /// </summary>
     public class MassTagDatabase
-    {
+    {        
         
         /// <summary>
         /// Constructor.
@@ -48,6 +48,28 @@ namespace MultiAlignCore.Data.MassTags
             get;
             private set;
         }
+        /// <summary>
+        /// Gets whether the database contains drift time or not.
+        /// </summary>
+        public bool DoesContainDriftTime
+        {
+            get;
+            private set;
+        }
+
+        private void DetermineIfContainsDriftTime(List<MassTagLight> masstags)
+        {
+            DoesContainDriftTime = false;
+            MassTagLight featureTest = masstags.Find(delegate(MassTagLight x)
+            {
+                return x.DriftTime > 0;
+            });
+
+            if (featureTest != null)
+            {
+                DoesContainDriftTime = true;
+            }            
+        }
         #endregion
 
         /// <summary>
@@ -64,6 +86,8 @@ namespace MultiAlignCore.Data.MassTags
                 AllProteins.AddRange(proteins);                
             }
             Proteins = massTagToProteinMap;
+
+            DetermineIfContainsDriftTime(massTags);
         }
     }
 }

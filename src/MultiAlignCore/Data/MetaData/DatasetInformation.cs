@@ -19,66 +19,66 @@ namespace MultiAlignCore.Data
 		/// Dictionary that maps a factor object to it's factor value.
 		/// </summary>
 		private Dictionary<FactorInformation, string> m_factorInformation;				
-		[clsDataSummaryAttribute("Volume")]
+		[DataSummaryAttribute("Volume")]
 		public string mstrVolume;
-		[clsDataSummaryAttribute("Instrument Folder")]
+		[DataSummaryAttribute("Instrument Folder")]
 		public string mstrInstrumentFolder;
-		[clsDataSummaryAttribute("Results Folder")]
+		[DataSummaryAttribute("Results Folder")]
 		public string mstrResultsFolder;
-		[clsDataSummaryAttribute("Dataset Name")]
+		[DataSummaryAttribute("Dataset Name")]
 		private string mstrDatasetName;
-		[clsDataSummaryAttribute("Analysis Job ID")]
+		[DataSummaryAttribute("Analysis Job ID")]
 		public string mstrAnalysisJobId;	
 		private string m_path;
-		[clsDataSummaryAttribute("Alias")]
+		[DataSummaryAttribute("Alias")]
 		public string mstrAlias;
-		[clsDataSummaryAttribute("Column ID")]
+		[DataSummaryAttribute("Column ID")]
 		public int mintColumnID;
-		[clsDataSummaryAttribute("Acquisition Start")]
+		[DataSummaryAttribute("Acquisition Start")]
 		public DateTime mdateAcquisitionStart;
-		[clsDataSummaryAttribute("Instrument")]
+		[DataSummaryAttribute("Instrument")]
 		public string mstrInstrment;
-        [clsDataSummaryAttribute("Labeling Type")]
+        [DataSummaryAttribute("Labeling Type")]
         public string LabelingType
         {
             get;
             set;
         }
-		[clsDataSummaryAttribute("Deisotoping Tool")]
+		[DataSummaryAttribute("Deisotoping Tool")]
 		public DeisotopingTool menmDeisotopingTool;
-		[clsDataSummaryAttribute("Comment")]
+		[DataSummaryAttribute("Comment")]
 		public string mstrComment;
-		[clsDataSummaryAttribute("Operator")]
+		[DataSummaryAttribute("Operator")]
 		public string mstrOperator;
 		/// <summary>
 		/// batch in which things were run.
 		/// </summary>
-		[clsDataSummaryAttribute("Batch ID")]
+		[DataSummaryAttribute("Batch ID")]
 		public int mintBatchID;
 		/// <summary>
 		/// block inside the batch in which 
 		/// </summary>
-		[clsDataSummaryAttribute("Block ID")]
+		[DataSummaryAttribute("Block ID")]
 		public int mintBlockID;
 		/// <summary>
 		/// Experiment from which this sample is generated. 
 		/// </summary>
-		[clsDataSummaryAttribute("Experiment ID")]
+		[DataSummaryAttribute("Experiment ID")]
 		public int mintExperimentID;
 		/// <summary>
 		/// Alternative name for the experiment concatenated with a _[replicate num].
 		/// </summary>
-		[clsDataSummaryAttribute("Replicate Name")]
+		[DataSummaryAttribute("Replicate Name")]
 		public string mstrReplicateName;
 		/// <summary>
 		/// order in which things were run in a block.
 		/// </summary>
-		[clsDataSummaryAttribute("Run Order")]
+		[DataSummaryAttribute("Run Order")]
 		public int mintRunOrder;
 		/// <summary>
 		/// Name for blocking factor. Its a one to one mapping with mintBlockID for datasets in a batch
 		/// </summary>
-		[clsDataSummaryAttribute("Blocking Factor")]
+		[DataSummaryAttribute("Blocking Factor")]
 		public string mstrBlockingFactor;
 		/// <summary>
 		/// Name of the parameter file used.
@@ -119,7 +119,7 @@ namespace MultiAlignCore.Data
 		/// <summary>
 		/// Gets or sets the ID of the dataset
 		/// </summary>
-        [clsDataSummaryAttribute("Dataset ID")]
+        [DataSummaryAttribute("Dataset ID")]
         public int DatasetId
         {
             get;
@@ -128,7 +128,7 @@ namespace MultiAlignCore.Data
 		/// <summary>
 		/// Gets or sets the ID of the Analysis Job
 		/// </summary>
-		[clsDataSummaryAttribute("Analysis Job ID")]
+		[DataSummaryAttribute("Analysis Job ID")]
 		public string JobId
 		{
 			get { return mstrAnalysisJobId; }
@@ -137,7 +137,7 @@ namespace MultiAlignCore.Data
 		/// <summary>
 		/// Gets or sets the name of the dataset
 		/// </summary>
-		[clsDataSummaryAttribute("Dataset Name")]
+		[DataSummaryAttribute("Dataset Name")]
 		public string DatasetName
 		{
 			get { return mstrDatasetName; }
@@ -146,7 +146,7 @@ namespace MultiAlignCore.Data
 		/// <summary>
 		/// Gets or sets the archive path.
 		/// </summary>
-		[clsDataSummaryAttribute("Path")]
+		[DataSummaryAttribute("Path")]
 		public string Path
 		{
 			get
@@ -161,7 +161,7 @@ namespace MultiAlignCore.Data
 		/// <summary>
 		/// Gets or sets the name of the parameter file used to peak pick the data.
 		/// </summary>
-		[clsDataSummaryAttribute("Parameter File Path")]
+		[DataSummaryAttribute("Parameter File Path")]
 		public string ParameterFileName
 		{
 			get

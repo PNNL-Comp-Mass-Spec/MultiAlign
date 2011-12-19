@@ -4,6 +4,7 @@ using MultiAlignCore.Algorithms.Alignment;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Utilities;
 using MultiAlignCore.Algorithms.FeatureMatcher;
+using PNNLOmics.Algorithms;
 
 namespace MultiAlignCore.Algorithms
 {
@@ -11,12 +12,13 @@ namespace MultiAlignCore.Algorithms
     /// <summary>
     /// Class that holds the algorithms to use.
     /// </summary>
-    public class AlgorithmProvider
+    public class AlgorithmProvider: IProgressNotifer
     {
         /// <summary>
         /// Fired when a status message needs to be logged.
-        /// </summary>
-        public event MessageEventHandler Status;
+        /// </summary> 
+        public event System.EventHandler<ProgressNotifierArgs> Progress;
+
 
         /// <summary>
         /// Clusters features into feature clusters.
@@ -95,24 +97,20 @@ namespace MultiAlignCore.Algorithms
         /// Registers status event handlers for each algorithm type.
         /// </summary>
         /// <param name="providers"></param>
-        private void RegisterEvents(params IStatusProvider [] providers)
+        private void RegisterEvents(params IProgressNotifer [] providers)
         {
-            foreach (IStatusProvider provider in providers)
+            foreach (IProgressNotifer provider in providers)
             {
-                provider.Status += new MessageEventHandler(StatusHandler);
+                provider.Progress += new System.EventHandler<ProgressNotifierArgs>(provider_Progress); 
             }
         }
-        /// <summary>
-        /// Propogates the messages to the main listener/observer.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void StatusHandler(object sender, MessageEventArgs e)
+
+        void provider_Progress(object sender, ProgressNotifierArgs e)
         {
-            if (Status != null)
+            if (Progress != null)
             {
-                Status(sender, e);
+                Progress(sender, e);
             }
-        }        
+        }                
     }
 }

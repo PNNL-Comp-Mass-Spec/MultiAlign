@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-
-using MultiAlignEngine;
+﻿using MultiAlignCore.Data;
+using MultiAlignCore.IO.Parameters;
 using MultiAlignEngine.Features;
-using System;
 
 namespace MultiAlignCore.Algorithms.FeatureFinding
 {
@@ -37,59 +34,59 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
                 this.Split                          = false;
         }
 
-        [clsDataSummary("Splits features based on scan lengths.")]
-        [clsParameterFile("SplitFeatures", "UMCFindingOptions")]
+        [DataSummaryAttribute("Splits features based on scan lengths.")]
+        [ParameterFileAttribute("SplitFeatures", "UMCFindingOptions")]
         public bool Split { get; set; }
-        [clsDataSummary("Average Mass Weight")]
-        [clsParameterFile("AveMassWeight", "UMCFindingOptions")]
+        [DataSummaryAttribute("Average Mass Weight")]
+        [ParameterFileAttribute("AveMassWeight", "UMCFindingOptions")]
         public float AveMassWeight { get; set; }
-        [clsDataSummary("Constraint Average Mass (PPM)")]
-        [clsParameterFile("ConstraintAveMass", "UMCFindingOptions")]
+        [DataSummaryAttribute("Constraint Average Mass (PPM)")]
+        [ParameterFileAttribute("ConstraintAveMass", "UMCFindingOptions")]
         public float ConstraintAveMass { get; set; }
-        [clsParameterFile("ConstraintMonoMass", "UMCFindingOptions")]
-        [clsDataSummary("Constraint Mono Mass (PPM)")]
+        [ParameterFileAttribute("ConstraintMonoMass", "UMCFindingOptions")]
+        [DataSummaryAttribute("Constraint Mono Mass (PPM)")]
         public float ConstraintMonoMass { get; set; }
-        [clsParameterFile("FitWeight", "UMCFindingOptions")]
-        [clsDataSummary("Fit Weight")]
+        [ParameterFileAttribute("FitWeight", "UMCFindingOptions")]
+        [DataSummaryAttribute("Fit Weight")]
         public float FitWeight { get; set; }
-        [clsDataSummary("Is Isotopic Peak Fit Filter Inverted")]
-        [clsParameterFile("IsIsotopicPeakFitFilterInverted", "UMCFindingOptions")]
+        [DataSummaryAttribute("Is Isotopic Peak Fit Filter Inverted")]
+        [ParameterFileAttribute("IsIsotopicPeakFitFilterInverted", "UMCFindingOptions")]
         public bool IsIsotopicFitFilterInverted { get; set; }
-        [clsParameterFile("IsotopicFitFilter", "UMCFindingOptions")]
-        [clsDataSummary("Isotopic Peak Intensity Filter")]
+        [ParameterFileAttribute("IsotopicFitFilter", "UMCFindingOptions")]
+        [DataSummaryAttribute("Isotopic Peak Intensity Filter")]
         public double IsotopicFitFilter { get; set; }
-        [clsDataSummary("Isotopic Intensity Filter")]
-        [clsParameterFile("IsotopicIntensityFilter", "UMCFindingOptions")]
+        [DataSummaryAttribute("Isotopic Intensity Filter")]
+        [ParameterFileAttribute("IsotopicIntensityFilter", "UMCFindingOptions")]
         public int IsotopicIntensityFilter { get; set; }
-        [clsDataSummary("Log Abundance Weight")]
-        [clsParameterFile("LogAbundanceWeight", "UMCFindingOptions")]
+        [DataSummaryAttribute("Log Abundance Weight")]
+        [ParameterFileAttribute("LogAbundanceWeight", "UMCFindingOptions")]
         public float LogAbundanceWeight { get; set; }
-        [clsDataSummary("Max Distance")]
-        [clsParameterFile("MaxDistance", "UMCFindingOptions")]
+        [DataSummaryAttribute("Max Distance")]
+        [ParameterFileAttribute("MaxDistance", "UMCFindingOptions")]
         public double MaxDistance { get; set; }
-        [clsDataSummary("Min UMC Length")]
-        [clsParameterFile("MinUMCLength", "UMCFindingOptions")]
+        [DataSummaryAttribute("Min UMC Length")]
+        [ParameterFileAttribute("MinUMCLength", "UMCFindingOptions")]
         public int MinUMCLength { get; set; }
-        [clsDataSummary("Mono Mass Weight")]
-        [clsParameterFile("MonoMassWeight", "UMCFindingOptions")]
+        [DataSummaryAttribute("Mono Mass Weight")]
+        [ParameterFileAttribute("MonoMassWeight", "UMCFindingOptions")]
         public float MonoMassWeight { get; set; }
-        [clsParameterFile("NetWeight", "UMCFindingOptions")]
-        [clsDataSummary("NET Weight")]
+        [ParameterFileAttribute("NetWeight", "UMCFindingOptions")]
+        [DataSummaryAttribute("NET Weight")]
         public float NETWeight { get; set; }
-        [clsParameterFile("ScanWeight", "UMCFindingOptions")]
-        [clsDataSummary("Scan Weight")]
+        [ParameterFileAttribute("ScanWeight", "UMCFindingOptions")]
+        [DataSummaryAttribute("Scan Weight")]
         public float ScanWeight { get; set; }
-        [clsDataSummary("UMC Abundance Reporting Type")]
-        [clsParameterFile("UMCAbundanceReportingType", "UMCFindingOptions")]
+        [DataSummaryAttribute("UMC Abundance Reporting Type")]
+        [ParameterFileAttribute("UMCAbundanceReportingType", "UMCFindingOptions")]
         public enmAbundanceReportingType UMCAbundanceReportingType { get; set; }
-        [clsDataSummary("Use Isotopic Peak Fit Filter")]
-        [clsParameterFile("UseIsotopicPeakFitFilter", "UMCFindingOptions")]
+        [DataSummaryAttribute("Use Isotopic Peak Fit Filter")]
+        [ParameterFileAttribute("UseIsotopicPeakFitFilter", "UMCFindingOptions")]
         public bool UseIsotopicFitFilter { get; set; }
-        [clsDataSummary("Use Isotopic Peak Intensity Filter")]
-        [clsParameterFile("UseIsotopicPeakIntensityFilter", "UMCFindingOptions")]
+        [DataSummaryAttribute("Use Isotopic Peak Intensity Filter")]
+        [ParameterFileAttribute("UseIsotopicPeakIntensityFilter", "UMCFindingOptions")]
         public bool UseIsotopicIntensityFilter { get; set; }
-        [clsDataSummary("Use NET")]
-        [clsParameterFile("UseNET", "UMCFindingOptions")]
+        [DataSummaryAttribute("Use NET")]
+        [ParameterFileAttribute("UseNET", "UMCFindingOptions")]
         public bool UseNET { get; set; }
     }
 }

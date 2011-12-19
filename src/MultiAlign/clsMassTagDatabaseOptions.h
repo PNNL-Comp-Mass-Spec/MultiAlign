@@ -7,7 +7,7 @@ namespace MultiAlignEngine
 	namespace MassTags
 	{
 		
-		public __value enum MassTagDatabaseType
+		public __value enum MassTagDatabaseType2
 		{
 			None,
 			SQL,
@@ -61,7 +61,7 @@ namespace MultiAlignEngine
 								
 				[clsDataSummaryAttribute("Database Type")]
 				[clsParameterFileAttribute("menm_databaseType","DatabaseType")]
-				MassTagDatabaseType menm_databaseType;
+				MassTagDatabaseType2 menm_databaseType;
 				
 				[clsDataSummaryAttribute("Database File Path")]
 				System::String *mstr_databaseFilePath;

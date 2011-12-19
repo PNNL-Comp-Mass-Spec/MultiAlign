@@ -50,7 +50,7 @@ namespace MultiAlignCore.IO.MTDB
         /// <summary>
         /// Gets or sets the default mass tag database options.
         /// </summary>
-        public clsMassTagDatabaseOptions Options
+        public MassTagDatabaseOptions Options
         {
             get;
             set;
@@ -89,11 +89,11 @@ namespace MultiAlignCore.IO.MTDB
             command.CommandTimeout = 180;
             command.CommandText = m_massTagsPlusPeptideProphetStats_sp;
 
-            command.Parameters.Add(CreateParameter("@ConfirmedOnly", Options.mbyteConfirmedTags));
-            command.Parameters.Add(CreateParameter("@MinimumHighNormalizedScore", Options.mfltMinXCorr));
-            command.Parameters.Add(CreateParameter("@MinimumPMTQualityScore", Options.mdecimalMinPMTScore));
-            command.Parameters.Add(CreateParameter("@MinimumHighDiscriminantScore", Options.mdblMinDiscriminant));
-            command.Parameters.Add(CreateParameter("@MinimumPeptideProphetProbability", Options.mdblPeptideProphetVal));
+            command.Parameters.Add(CreateParameter("@ConfirmedOnly",                    Options.ConfirmedTags));
+            command.Parameters.Add(CreateParameter("@MinimumHighNormalizedScore",       Options.MinimumXCorr));
+            command.Parameters.Add(CreateParameter("@MinimumPMTQualityScore",           Options.MinimumPMTScore));
+            command.Parameters.Add(CreateParameter("@MinimumHighDiscriminantScore",     Options.MinimumDiscriminant));
+            command.Parameters.Add(CreateParameter("@MinimumPeptideProphetProbability", Options.PeptideProphetVal));
         }
         /// <summary>
         /// Sets up the protein mass tag command for execution. 
@@ -103,12 +103,12 @@ namespace MultiAlignCore.IO.MTDB
             command.CommandType = CommandType.StoredProcedure;
             command.CommandTimeout = 180;
             command.CommandText = m_protein2MassTags_sp;
-
-            command.Parameters.Add(CreateParameter("@ConfirmedOnly", Options.mbyteConfirmedTags));
-            command.Parameters.Add(CreateParameter("@MinimumHighNormalizedScore", Options.mfltMinXCorr));
-            command.Parameters.Add(CreateParameter("@MinimumPMTQualityScore", Options.mdecimalMinPMTScore));
-            command.Parameters.Add(CreateParameter("@MinimumHighDiscriminantScore", Options.mdblMinDiscriminant));
-            command.Parameters.Add(CreateParameter("@MinimumPeptideProphetProbability", Options.mdblPeptideProphetVal));
+            
+            command.Parameters.Add(CreateParameter("@ConfirmedOnly",                    Options.ConfirmedTags));
+            command.Parameters.Add(CreateParameter("@MinimumHighNormalizedScore",       Options.MinimumXCorr));
+            command.Parameters.Add(CreateParameter("@MinimumPMTQualityScore",           Options.MinimumPMTScore));
+            command.Parameters.Add(CreateParameter("@MinimumHighDiscriminantScore",     Options.MinimumDiscriminant));
+            command.Parameters.Add(CreateParameter("@MinimumPeptideProphetProbability", Options.PeptideProphetVal));
         }
         /// <summary>
         /// Downloads the mass tags
@@ -169,7 +169,7 @@ namespace MultiAlignCore.IO.MTDB
                                     if (reader["Mod_Description"] != System.DBNull.Value) modification = reader["Mod_Description"].ToString();
 
                                     /// Make sure the mass tag has been seen enough times
-                                    if (numObservations >= Options.mintMinObservationCountFilter)
+                                    if (numObservations >= Options.MinimumObservationCountFilter)
                                     {
                                         Molecule molecule = new Molecule();
                                         molecule.Name = peptide;

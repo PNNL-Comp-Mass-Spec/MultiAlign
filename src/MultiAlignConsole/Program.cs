@@ -879,10 +879,9 @@ namespace MultiAlignConsole
             options.Add("UMC Finding Options", analysis.Options.UMCFindingOptions);
             options.Add("Feature Filtering Options", analysis.Options.FeatureFilterOptions);
             options.Add("Mass Tag Database Options", analysis.Options.MassTagDatabaseOptions);
-            options.Add("Alignment Options", analysis.Options.DefaultAlignmentOptions);
+            options.Add("Alignment Options", analysis.Options.AlignmentOptions);
             options.Add("Drift Time Alignment Options", analysis.Options.DriftTimeAlignmentOptions);
             options.Add("Cluster Options", analysis.Options.ClusterOptions);
-            options.Add("Peak Matching Options", analysis.Options.PeakMatchingOptions);
             options.Add("STAC Options", analysis.Options.STACAdapterOptions);
 
             List<ParameterHibernateMapping> allmappings = new List<MultiAlignCore.IO.Parameters.ParameterHibernateMapping>();
@@ -1373,27 +1372,27 @@ namespace MultiAlignConsole
                         PrintMessage(string.Format("\tFull Path: {0}", analysisSetupInformation.Database.LocalPath));
                         PrintMessage(string.Format("\tDatabase Name: {0}", Path.GetFileName(analysisSetupInformation.Database.LocalPath)));
 
-                        m_analysis.Options.MassTagDatabaseOptions.mstr_databaseFilePath = analysisSetupInformation.Database.LocalPath;
-                        m_analysis.Options.MassTagDatabaseOptions.mstrServer = analysisSetupInformation.Database.DatabaseServer;
-                        m_analysis.Options.MassTagDatabaseOptions.menm_databaseType = MultiAlignEngine.MassTags.MassTagDatabaseType.ACCESS;
+                        m_analysis.Options.MassTagDatabaseOptions.DatabaseFilePath  = analysisSetupInformation.Database.LocalPath;
+                        m_analysis.Options.MassTagDatabaseOptions.Server            = analysisSetupInformation.Database.DatabaseServer;
+                        m_analysis.Options.MassTagDatabaseOptions.DatabaseType      = MassTagDatabaseType.ACCESS;
                         break;
 
                     case MassTagDatabaseFormat.SQL:
                         PrintMessage("Using Mass Tag Database:");
                         PrintMessage(string.Format("\tServer:        {0}", analysisSetupInformation.Database.DatabaseServer));
                         PrintMessage(string.Format("\tDatabase Name: {0}", analysisSetupInformation.Database.DatabaseName));
-                        m_analysis.Options.MassTagDatabaseOptions.mstrDatabase = analysisSetupInformation.Database.DatabaseName;
-                        m_analysis.Options.MassTagDatabaseOptions.mstrServer = analysisSetupInformation.Database.DatabaseServer;
-                        m_analysis.Options.MassTagDatabaseOptions.menm_databaseType = MultiAlignEngine.MassTags.MassTagDatabaseType.SQL;
+                        m_analysis.Options.MassTagDatabaseOptions.DatabaseName  = analysisSetupInformation.Database.DatabaseName;
+                        m_analysis.Options.MassTagDatabaseOptions.Server        = analysisSetupInformation.Database.DatabaseServer;
+                        m_analysis.Options.MassTagDatabaseOptions.DatabaseType  = MassTagDatabaseType.SQL;
                         break;
                     case MassTagDatabaseFormat.Sqlite:
                         PrintMessage("Using local Sqlite Mass Tag Database at location: ");
                         PrintMessage(string.Format("\tFull Path: {0}", analysisSetupInformation.Database.LocalPath));
                         PrintMessage(string.Format("\tDatabase Name: {0}", Path.GetFileName(analysisSetupInformation.Database.LocalPath)));
 
-                        m_analysis.Options.MassTagDatabaseOptions.mstr_databaseFilePath = analysisSetupInformation.Database.LocalPath;
-                        m_analysis.Options.MassTagDatabaseOptions.mstrServer            = analysisSetupInformation.Database.DatabaseServer;
-                        m_analysis.Options.MassTagDatabaseOptions.menm_databaseType     = MultiAlignEngine.MassTags.MassTagDatabaseType.SQLite;                        
+                        m_analysis.Options.MassTagDatabaseOptions.DatabaseFilePath = analysisSetupInformation.Database.LocalPath;
+                        m_analysis.Options.MassTagDatabaseOptions.Server           = analysisSetupInformation.Database.DatabaseServer;
+                        m_analysis.Options.MassTagDatabaseOptions.DatabaseType     = MassTagDatabaseType.SQLite;                        
                         break;
                 }
 
@@ -1419,9 +1418,8 @@ namespace MultiAlignConsole
             }
             else
             {
-                m_analysis.Options.MassTagDatabaseOptions.menm_databaseType = MultiAlignEngine.MassTags.MassTagDatabaseType.None;
-                m_analysis.Options.UseMassTagDBAsBaseline = false;
-                // Validate the baseline
+                m_analysis.Options.MassTagDatabaseOptions.DatabaseType = MassTagDatabaseType.None;
+                m_analysis.Options.UseMassTagDBAsBaseline = false;                
                 if (analysisSetupInformation.BaselineFile == null)
                 {
                     PrintMessage("No baseline dataset or database was selected.");
@@ -1561,9 +1559,6 @@ namespace MultiAlignConsole
         /// 
         static int StartMultiAlign()
         {
-            /// /////////////////////////////////////////////////////////////
-            /// Setup essential objects
-            /// /////////////////////////////////////////////////////////////
             // Builds the list of algorithm providers.
             AlgorithmBuilder builder                = new AlgorithmBuilder();
             FeatureDataAccessProviders providers    = null;
@@ -1739,11 +1734,11 @@ namespace MultiAlignConsole
                     // By default create exporting tools.
                     if (m_exporterNames.CrossTabPath == null)
                     {
-                        m_exporterNames.CrossTabPath = Path.Combine(m_analysisPath, m_analysisName.Replace(".db3", ""));
+                        m_exporterNames.CrossTabPath = m_analysisName.Replace(".db3", "");
                     }
                     if (m_exporterNames.CrossTabAbundance == null)
                     {
-                        m_exporterNames.CrossTabAbundance = Path.Combine(m_analysisPath, m_analysisName.Replace(".db3", ""));
+                        m_exporterNames.CrossTabAbundance = m_analysisName.Replace(".db3", "");
                     }
                     ConstructExporting();
 
@@ -1754,7 +1749,8 @@ namespace MultiAlignConsole
 
                     /// /////////////////////////////////////////////////////////////
                     /// Read the parameter files.
-                    /// /////////////////////////////////////////////////////////////            
+                    /// /////////////////////////////////////////////////////////////        
+                    
                     ReadParameterFile();
 
                     /// /////////////////////////////////////////////////////////////

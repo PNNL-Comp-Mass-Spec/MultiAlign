@@ -14,14 +14,18 @@ using PNNLOmics.Algorithms.FeatureMatcher;
 using PNNLOmics.Utilities;
 using PNNLOmics.Algorithms.FeatureMatcher.Data;
 using MultiAlignCore.Algorithms.PeakMatching;   
+using PNNLOmics.Algorithms;
 
 namespace MultiAlignCore.Algorithms.FeatureMatcher
 {
     /// <summary>
     /// Adapts the STAC computation code from PNNL OMICS into the MultiAlign workflow.
     /// </summary>
-    public class STACAdapter<T>: IPeakMatcher<T> where T: UMCClusterLight
+    public class STACAdapter<T>: IProgressNotifer, IPeakMatcher<T> where T: UMCClusterLight
     {
+        public event EventHandler<ProgressNotifierArgs> Progress;
+        
+
         public STACAdapter()
         {
             Options = new FeatureMatcherParameters();
@@ -34,10 +38,7 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
             get;
             private set;
         }
-        /// <summary>
-        /// Fired when new status messages are available.
-        /// </summary>
-        public event PNNLOmics.Utilities.MessageEventHandler Status;
+
 
         /// <summary>
         /// Gets or sets the feature matching parameters.
@@ -151,11 +152,11 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void StatusHandler(object sender, PNNLOmics.Utilities.MessageEventArgs e)
+        void StatusHandler(object sender, MessageEventArgs e)
         {
-            if (Status != null)
+            if (Progress != null)
             {
-                Status(this, e);
+                Progress(this, new ProgressNotifierArgs(e.Message));
             }
         }
     }

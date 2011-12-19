@@ -21,16 +21,16 @@ namespace MultiAlignCore.IO.Parameters
                     // Recurse to get parameters.
                     if (prop.CanWrite)
                     {
-                        object[] customAttributes = prop.GetCustomAttributes(typeof(clsParameterFileAttribute), true);
+                        object[] customAttributes = prop.GetCustomAttributes(typeof(ParameterFileAttribute), true);
                         for (int i = 0; i < customAttributes.Length; i++)
                         {
-                            clsParameterFileAttribute attr = customAttributes[i] as clsParameterFileAttribute;
-                            if (attr != null && attr.Description != "")
+                            ParameterFileAttribute attr = customAttributes[i] as ParameterFileAttribute;
+                            if (attr != null && attr.Name != "")
                             {
                                 try
                                 {
                                     object val;
-                                    val = node.GetValue(attr.Description);
+                                    val = node.GetValue(attr.Name);
                                     prop.SetValue(o, val, BindingFlags.SetProperty, null, null, null);
                                 }
                                 catch
@@ -43,15 +43,15 @@ namespace MultiAlignCore.IO.Parameters
                 }
                 foreach (FieldInfo field in o.GetType().GetFields())
                 {
-                    object[] customAttributes = field.GetCustomAttributes(typeof(clsParameterFileAttribute), true);
+                    object[] customAttributes = field.GetCustomAttributes(typeof(ParameterFileAttribute), true);
                     for (int i = 0; i < customAttributes.Length; i++)
                     {
-                        clsParameterFileAttribute attr = customAttributes[i] as clsParameterFileAttribute;
+                        ParameterFileAttribute attr = customAttributes[i] as ParameterFileAttribute;
                         if (attr != null)
                         {
                             try
                             {
-                                object val = node.GetValue(attr.Description);
+                                object val = node.GetValue(attr.Name);
                                 if (val != null)
                                 {
                                     field.SetValue(o, val);
@@ -77,14 +77,12 @@ namespace MultiAlignCore.IO.Parameters
             MetaData metaData = new MetaData("PNNLProteomics");
             metaData.ReadFile(parameterFilePath);
 
-            List<classAlignmentMZBoundary> boundaries                       = analysis.Options.DefaultAlignmentOptions.MZBoundaries;                        
-            LoadParameterOptions(analysis.Options.ClusterOptions,           metaData.OpenChild("ClusterOptions"));
-            LoadParameterOptions(analysis.Options.PeakMatchingOptions,      metaData.OpenChild("PeakMatchingOptions"));
-            LoadParameterOptions(analysis.Options.DefaultAlignmentOptions,  metaData.OpenChild("DefaultAlignmentOptions"));
-
-            if (analysis.Options.DefaultAlignmentOptions.DriftTimeBinSize <= 0)
+            List<classAlignmentMZBoundary> boundaries                       = analysis.Options.AlignmentOptions.MZBoundaries;                        
+            LoadParameterOptions(analysis.Options.ClusterOptions,           metaData.OpenChild("ClusterOptions"));            
+            LoadParameterOptions(analysis.Options.AlignmentOptions, metaData.OpenChild("DefaultAlignmentOptions"));
+            if (analysis.Options.AlignmentOptions.DriftTimeBinSize <= 0)
             {
-                analysis.Options.DefaultAlignmentOptions.DriftTimeBinSize = 1;
+                analysis.Options.AlignmentOptions.DriftTimeBinSize = 1;
             }
 
             LoadParameterOptions(analysis.Options.MassTagDatabaseOptions, metaData.OpenChild("MassTagDBOptions"));
@@ -107,7 +105,8 @@ namespace MultiAlignCore.IO.Parameters
             {
                 LoadParameterOptions(analysis.Options.DriftTimeAlignmentOptions, node);
             }
-            analysis.Options.DefaultAlignmentOptions.MZBoundaries = boundaries;
+
+            analysis.Options.AlignmentOptions.MZBoundaries = boundaries;
 
 
             MetaNode stacNode = metaData.OpenChild("STACOptions", false);

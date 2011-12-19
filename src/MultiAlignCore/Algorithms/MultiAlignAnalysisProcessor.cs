@@ -112,7 +112,7 @@ namespace MultiAlignCore.Algorithms
                 m_algorithms = value;
                 if (value != null)
                 {
-                    m_algorithms.Status += new PNNLOmics.Utilities.MessageEventHandler(m_algorithms_Status);
+                    m_algorithms.Progress += new EventHandler<ProgressNotifierArgs>(m_algorithms_Progress);
                 }
             }
         }
@@ -121,10 +121,10 @@ namespace MultiAlignCore.Algorithms
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void m_algorithms_Status(object sender, PNNLOmics.Utilities.MessageEventArgs e)
+        void m_algorithms_Progress(object sender, ProgressNotifierArgs e)
         {
-            
-        }
+            UpdateStatus(e.Message);   
+        }       
         #endregion
 
         #region Cleanup
@@ -183,11 +183,11 @@ namespace MultiAlignCore.Algorithms
                                     FeatureDataAccessProviders dataProviders)
         {
 
-            Dictionary<string, int> datasetMap = new Dictionary<string, int>();
-            Dictionary<int, int> datasetIDMap = new Dictionary<int, int>();
-            IRawDataFileReader rawReader = null;
-            ScansFileReader scansReader = new ScansFileReader();
-            IMSnFeatureDAO msnCache = dataProviders.MSnFeatureCache;
+            Dictionary<string, int> datasetMap  = new Dictionary<string, int>();
+            Dictionary<int, int> datasetIDMap   = new Dictionary<int, int>();
+            IRawDataFileReader rawReader        = null;
+            ScansFileReader scansReader         = new ScansFileReader();
+            IMSnFeatureDAO msnCache             = dataProviders.MSnFeatureCache;
 
             // Map the dataset ids
             foreach (DatasetInformation information in m_analysis.MetaData.Datasets)
@@ -524,15 +524,13 @@ namespace MultiAlignCore.Algorithms
                     }
 
                     // LCMSWarp alignment.
-                    KeyValuePair<DriftTimeAlignmentResults<UMC, UMC>, DriftTimeAlignmentResults<UMC, UMC>> pair
-                        = new KeyValuePair<DriftTimeAlignmentResults<UMC, UMC>, DriftTimeAlignmentResults<UMC, UMC>>();
                     
                     if (baselineInfo != null)
                     {
                         UpdateStatus("Aligning " + datasetInfo.DatasetName + " to baseline.");
                         alignmentData = aligner.AlignFeatures(baselineFeatures,
                                                             features,
-                                                            analysis.Options.DefaultAlignmentOptions);
+                                                            analysis.Options.AlignmentOptions);
 
 
                     }
@@ -541,14 +539,36 @@ namespace MultiAlignCore.Algorithms
                         UpdateStatus("Aligning " + datasetInfo.DatasetName + " to mass tag database.");
                         alignmentData = aligner.AlignFeatures(analysis.MassTagDatabase,
                                                             features,
-                                                            analysis.Options.DefaultAlignmentOptions,
+                                                            analysis.Options.AlignmentOptions,
                                                             false);
                     }
 
                     // Drift time alignment.
+
+                    KeyValuePair<DriftTimeAlignmentResults<UMC, UMC>, DriftTimeAlignmentResults<UMC, UMC>> pair
+                        = new KeyValuePair<DriftTimeAlignmentResults<UMC, UMC>, DriftTimeAlignmentResults<UMC, UMC>>();
                     if (analysis.Options.DriftTimeAlignmentOptions.ShouldAlignDriftTimes)
                     {
-                        pair = AlignDriftTimes(features, baselineFeatures, analysis.Options.DriftTimeAlignmentOptions);
+                        // Make sure that if the database does not have drift time, that we don't
+                        // perform drift time alignment.
+                        if (analysis.Options.AlignmentOptions.IsAlignmentBaselineAMasstagDB)
+                        {
+                            // Make sure that we have drift time to align to.
+                            if (analysis.MassTagDatabase.DoesContainDriftTime)
+                            {
+                                UpdateStatus("Aligning Drift Time to database.");
+                                pair = AlignDriftTimes(features, baselineFeatures, analysis.Options.DriftTimeAlignmentOptions);
+                            }
+                            else
+                            {
+                                UpdateStatus("Skipping drift time alignment since the database does not contain drift time.");
+                            }
+                        }
+                        else
+                        {
+                            UpdateStatus("Aligning Drift Time to baseline.");
+                            pair = AlignDriftTimes(features, baselineFeatures, analysis.Options.DriftTimeAlignmentOptions);
+                        }
                     }
 
                     alignmentData.aligneeDataset = datasetInfo.DatasetName;                    
@@ -711,7 +731,7 @@ namespace MultiAlignCore.Algorithms
                             cluster.MassCalibrated  = cluster.Mass;
                             cluster.NetAligned      = cluster.Net;
                         }
-                        m_algorithms.Aligner.AlignFeatures(m_analysis.MassTagDatabase, oldClusters, m_analysis.Options.DefaultAlignmentOptions);
+                        m_algorithms.Aligner.AlignFeatures(m_analysis.MassTagDatabase, oldClusters, m_analysis.Options.AlignmentOptions);
                         m_analysis.DataProviders.ClusterCache.UpdateAll(oldClusters);
                     }
                     
@@ -727,13 +747,33 @@ namespace MultiAlignCore.Algorithms
                         cluster.DriftTime           = oldCluster.DriftTime;
                         clusters.Add(cluster);
                     }
+                    // Was STAC performed?
+                    STACAdapter<UMCClusterLight> adapter = peakMatcher as STACAdapter<UMCClusterLight>;
+                    if (adapter != null && !m_analysis.MassTagDatabase.DoesContainDriftTime)
+                    {
+                        if (adapter.Options.UseDriftTime)
+                        {
+                            UpdateStatus("The database does not contain drift time.  Disabling the use of drift time.");
+                        }
+                        adapter.Options.UseDriftTime = false;
+                    }
+                    else
+                    {
+                        TraditionalPeakMatcher<UMCClusterLight> traditional = peakMatcher as TraditionalPeakMatcher<UMCClusterLight>;
+                        if (traditional != null && !m_analysis.MassTagDatabase.DoesContainDriftTime)
+                        {
+                            if (!m_analysis.MassTagDatabase.DoesContainDriftTime)
+                            {
+                                UpdateStatus("The database does not contain drift time.  Ensuring drift time tolerances are disabled.");
+                                traditional.Options.DriftTimeTolerance = 1000;
+                            }
+                        }
+                    }
                    
                     UpdateStatus("Performing Peak Matching");
                     PeakMatchingResults<UMCClusterLight, MassTagLight> matchResults = new PeakMatchingResults<UMCClusterLight, MassTagLight>();
                     matchResults.Matches = peakMatcher.PerformPeakMatching(clusters, m_analysis.MassTagDatabase);
-
-                    // Was STAC performed?
-                    STACAdapter<UMCClusterLight> adapter = peakMatcher as STACAdapter<UMCClusterLight>;                    
+                   
                     if (adapter != null)
                     {
                         
@@ -755,7 +795,7 @@ namespace MultiAlignCore.Algorithms
                                                                                                 matchedMassTags,
                                                                                                 matchedProteins));
 
-                    if (m_analysis.Options.PeakMatchingOptions.WriteResultsBackToMTS && m_analysis.MetaData.JobID != -1)
+                    if (m_analysis.Options.STACAdapterOptions.WriteResultsBackToMTS && m_analysis.MetaData.JobID != -1)
                     {
                         //string databasePath                 = "";
                         MTSPeakMatchResultsWriter mtsWriter = new MTSSqlServerPeakMatchResultWriter();
@@ -763,7 +803,7 @@ namespace MultiAlignCore.Algorithms
                         //                        clusters,
                         //                        databasePath);
                     }
-                    else if (m_analysis.Options.PeakMatchingOptions.WriteResultsBackToMTS)
+                    else if (m_analysis.Options.STACAdapterOptions.WriteResultsBackToMTS)
                     {
                         UpdateStatus("Cannot write mass tag results back to database.  The Job ID was not specified for this analysis.");
                     }
@@ -774,457 +814,13 @@ namespace MultiAlignCore.Algorithms
 
         #region MSMS Alignment
         /// <summary>
-        /// Extracts the features from the database that have MS/MS
-        /// </summary>
-        public Dictionary<int, List<UMCLight>> ExtractUMCWithMSMS(MultiAlignAnalysis analysis)
-        {
-            UpdateStatus("Producing feature traceback data structures.");
-
-            UpdateStatus("Extracting data from each dataset.");
-            FeatureDataAccessProviders providers = analysis.DataProviders;
-            Dictionary<int, List<UMCLight>> features = new Dictionary<int, List<UMCLight>>();
-
-            foreach (DatasetInformation dataset in analysis.MetaData.Datasets)
-            {
-                features.Add(dataset.DatasetId, new List<UMCLight>());
-
-                int datasetID = dataset.DatasetId;
-                UpdateStatus(string.Format("Mapping data from dataset {0} with id {1}", dataset.DatasetName, dataset.DatasetId));
-
-                UpdateStatus("Extracting LC-MS to MS Feature Map");
-                Dictionary<int, int> msFeatureIDToLCMSFeatureID = new Dictionary<int, int>();
-                List<MSFeatureToLCMSFeatureMap> msToLcmsFeatureMaps = providers.MSFeatureToLCMSFeatureCache.FindByDatasetId(datasetID);
-                foreach (MSFeatureToLCMSFeatureMap map in msToLcmsFeatureMaps)
-                {
-                    msFeatureIDToLCMSFeatureID.Add(map.MSFeatureID, map.LCMSFeatureID);
-                }
-
-                UpdateStatus("Extracting MS to MSn Feature Map");
-                List<MSFeatureToMSnFeatureMap> msnToMSFeatureMaps = providers.MSFeatureToMSnFeatureCache.FindByDatasetId(datasetID);
-                Dictionary<int, int> msFeatureIDToMsMsFeatureID = new Dictionary<int, int>();
-                foreach (MSFeatureToMSnFeatureMap map in msnToMSFeatureMaps)
-                {
-                    msFeatureIDToMsMsFeatureID.Add(map.MSFeatureID, map.MSMSFeatureID);
-                }
-
-                UpdateStatus("Extracting MSn Features");
-                Dictionary<int, MSSpectra> msMsFeatureIDToSpectrum = new Dictionary<int, MSSpectra>();
-                List<MSSpectra> msnSpectra = providers.MSnFeatureCache.FindByDatasetId(datasetID);
-                foreach (MSSpectra spectrum in msnSpectra)
-                {
-                    msMsFeatureIDToSpectrum.Add(spectrum.ID, spectrum);
-                }
-
-                UpdateStatus("Extracting LC-MS Features");
-                List<clsUMC> lcmsFeatures = providers.FeatureCache.FindByDatasetId(datasetID);
-                Dictionary<int, UMCLight> lcmsFeatureIDToFeature = new Dictionary<int, UMCLight>();
-                foreach (clsUMC umc in lcmsFeatures)
-                {
-                    UMCLight umcFeature = new UMCLight();
-                    umcFeature.Abundance = Convert.ToInt64(umc.AbundanceMax);
-                    umcFeature.ID = umc.Id;
-                    umcFeature.MassMonoisotopic = umc.MassCalibrated;
-                    umcFeature.RetentionTime = umc.Net;
-                    umcFeature.Scan = umc.Scan;
-                    umcFeature.GroupID = datasetID;
-                    lcmsFeatureIDToFeature.Add(umc.Id, umcFeature);
-                }
-
-                UpdateStatus("Extracting MS Features");
-                List<MSFeatureLight> msFeatures = providers.MSFeatureCache.FindByDatasetId(datasetID);
-
-                // Tracks that the UMC was found already.
-                Dictionary<int, UMCLight> foundUMC = new Dictionary<int, UMCLight>();
-
-                UpdateStatus("Mapping data.");
-                foreach (MSFeatureLight feature in msFeatures)
-                {
-                    if (!msFeatureIDToMsMsFeatureID.ContainsKey(feature.ID))
-                        continue;
-
-                    if (!msFeatureIDToLCMSFeatureID.ContainsKey(feature.ID))
-                        continue;
-
-                    // Map the MS/MS feature.
-                    int msnID           = msFeatureIDToMsMsFeatureID[feature.ID];
-                    MSSpectra spectrum  = msMsFeatureIDToSpectrum[msnID];
-                    spectrum.GroupID    = datasetID;
-                    int featureID       = msFeatureIDToLCMSFeatureID[feature.ID];
-
-                    // This would mean the feature was filtered out.
-                    if (!lcmsFeatureIDToFeature.ContainsKey(featureID))
-                    {
-                        continue;
-                    }
-
-                    feature.MSnSpectra.Add(spectrum);
-
-                    // Map to the UMC 
-                    UMCLight umc = null;
-                    umc = lcmsFeatureIDToFeature[featureID];
-
-                    feature.GroupID = datasetID;
-                    umc.AddChildFeature(feature);
-
-                    // Only add if we found the feature once before.
-                    if (!foundUMC.ContainsKey(umc.ID))
-                    {
-                        features[datasetID].Add(umc);
-                        foundUMC.Add(umc.ID, umc);
-                    }
-                }
-            }            
-            return features;
-        }
-        /// <summary>
-        /// Extracts umc's with MSMS and determines whether to include all MS features or just the ones
-        /// with related MSMS.
-        /// </summary>
-        /// <param name="full"></param>
-        private Dictionary<int, List<UMCLight>> MapRemainingMSFeaturesToUMCs(Dictionary<int, List<UMCLight>>    features,
-                                                                             ThermoRawDataFileReader            reader,
-                                                                             IMSFeatureToLCMSFeatureDAO         msToLCMSFeatureCache,
-                                                                             IMSFeatureDAO                      msFeatureCache)
-        {            
-            // for each dataset
-            foreach (int key in features.Keys)
-            {
-                List<MSFeatureToLCMSFeatureMap> map = msToLCMSFeatureCache.FindByDatasetId(key);
-                List<MSFeatureLight> allFeatures    = msFeatureCache.FindByDatasetId(key);
-
-                Dictionary<int, MSFeatureLight> featureMap = new Dictionary<int, MSFeatureLight>();
-                foreach(MSFeatureLight msFeature in allFeatures)
-                {
-                    featureMap.Add(msFeature.ID, msFeature);
-                }
-                Dictionary<int, List<MSFeatureToLCMSFeatureMap>> msFeatureMap = new Dictionary<int, List<MSFeatureToLCMSFeatureMap>>();
-                foreach (MSFeatureToLCMSFeatureMap keyMap in map)
-                {
-                    if (!msFeatureMap.ContainsKey(keyMap.LCMSFeatureID))
-                    {
-                        msFeatureMap.Add(keyMap.LCMSFeatureID, new List<MSFeatureToLCMSFeatureMap>());
-                    }
-                    msFeatureMap[keyMap.LCMSFeatureID].Add(keyMap);
-                }
-
-                // Look at each feature.                   
-                foreach (UMCLight feature in features[key])
-                {
-                    foreach (MSFeatureToLCMSFeatureMap lcMap in msFeatureMap[feature.ID])
-                    {
-                        MSFeatureLight xMap = featureMap[lcMap.MSFeatureID];
-
-                        int index = feature.MSFeatures.FindIndex(delegate(MSFeatureLight x)
-                                                            {
-                                                                return x.ID == xMap.ID;
-                                                            });
-                        if (index < 0)
-                        {
-                            feature.MSFeatures.Add(xMap);
-                        }
-                    }
-                        
-                    feature.MSFeatures.Sort(delegate(MSFeatureLight x, MSFeatureLight y)
-                    {
-                        return x.Scan.CompareTo(y.Scan);
-                    }
-                    );                        
-                }
-            }            
-            return features;
-        }
-        /// <summary>
-        /// Extracts UMC SIC's for all of the features.
-        /// </summary>
-        /// <param name="path"></param>
-        /// <param name="analysis"></param>
-        public void ExtractUMCSICs(string path, MultiAlignAnalysis analysis)
-        {
-            UpdateStatus("Extracting MSMS data");
-            Dictionary<int, List<UMCLight>> features = ExtractUMCWithMSMS(analysis);
-
-            // Create the object that knows how to read the RAW files we are analyzing.
-            ThermoRawDataFileReader reader = null;
-
-            if (analysis.MetaData.OtherFiles.Count <= 0)
-            {
-                UpdateStatus("Raw files specified.");
-                reader = new ThermoRawDataFileReader();
-                for (int i = 0; i < analysis.MetaData.Datasets.Count; i++)
-                {
-                    DatasetInformation datasetInformation = analysis.MetaData.Datasets[i];
-                    InputFile rawInformation = analysis.MetaData.OtherFiles[i];
-
-                    reader.AddDataFile(rawInformation.Path, datasetInformation.DatasetId);
-                }
-            }
-
-            UpdateStatus("Completing mapping to rest of the features");
-            features = MapRemainingMSFeaturesToUMCs(features, 
-                                         reader, 
-                                         analysis.DataProviders.MSFeatureToLCMSFeatureCache, 
-                                         analysis.DataProviders.MSFeatureCache);
-
-            string sicTitle     = "SIC";
-            string sicXLabel    = "Scan";
-            string sicYLabel    = "Intensity";
-            
-            // Look at each dataset.
-            foreach (int datasetID in features.Keys)
-            {
-                // Look at each feature
-                foreach (UMCLight feature in features[datasetID])
-                {
-                    int totalFeatures   = feature.MSFeatures.Count;
-                    double[] scans      = new double[totalFeatures];
-                    double[] intensity  = new double[totalFeatures];
-                    string baseName     = string.Format("-{0}-{1}", datasetID, feature.ID);
-                    int i               = 0;
-
-                    double maxI = 0;
-                    // Separate the MS features into charge state maps so we only look at one m/z
-                    foreach (MSFeatureLight msFeature in feature.MSFeatures)
-                    {
-                        
-                        // Build the SIC arrays for plotting
-                        scans[i]     = msFeature.Scan;
-                        intensity[i] = Math.Log(msFeature.Abundance, 2);
-                        maxI         = Math.Max(intensity[i], maxI);
-                        i++;
-                    }
-                    
-                    System.Drawing.RectangleF rect  = new System.Drawing.RectangleF(0, 0, 400, 400);
-                    ZedGraph.GraphPane pane         = new ZedGraph.GraphPane(rect, sicTitle + string.Format(" {0:0.000}" , feature.MassMonoisotopic), sicXLabel, sicYLabel);
-                    pane.LineType                   = ZedGraph.LineType.Normal;                  
-                    //pane.AddCurve("", scans, intensity, System.Drawing.Color.LightGray, ZedGraph.SymbolType.Default);
-
-                    Dictionary<int, List<MSFeatureLight>> chargeMap = MultiAlignCore.Data.Features.LCMSFeatureChargeMapBuilder.BuildChargeMap(feature);
-
-                    System.Drawing.Color[] colors = new System.Drawing.Color[] {System.Drawing.Color.Green,
-                                                                                 System.Drawing.Color.Yellow,
-                                                                                 System.Drawing.Color.Blue,
-                                                                                 System.Drawing.Color.Orange,
-                                                                                 System.Drawing.Color.Purple};
-                    foreach (int charge in chargeMap.Keys)
-                    {
-                        
-                        double [] fScans        = new double[chargeMap[charge].Count];
-                        double [] fIntensities  = new double[chargeMap[charge].Count];
-                        
-                        i = 0;
-                        foreach (MSFeatureLight msFeature in chargeMap[charge])
-                        {
-                            fScans[i]       = msFeature.Scan;
-                            fIntensities[i] = Math.Log(msFeature.Abundance, 2);
-                            i++;
-                        }
-                        
-                        pane.AddCurve("",
-                                        fScans,
-                                        fIntensities,
-                                        colors[(charge - 1) % colors.Length],
-                                        ZedGraph.SymbolType.Square);                        
-                    }
-
-                    using (System.Drawing.SolidBrush brush = new System.Drawing.SolidBrush(System.Drawing.Color.Red))
-                    {
-                        pane.Fill.Brush = brush;
-                        foreach (MSFeatureLight msFeature in feature.MSFeatures)
-                        {
-                            foreach (MSSpectra spectrum in msFeature.MSnSpectra)
-                            {
-                                pane.AddStick("",
-                                                new double[] { msFeature.Scan, msFeature.Scan },
-                                                new double[] { Math.Log(msFeature.Abundance, 2), maxI },
-                                                System.Drawing.Color.Red);
-                            }
-                        }
-                    }                    
-                    pane.AxisChange();
-                    string fullPath = Path.Combine(path, "SIC" + baseName + ".png");
-                    pane.GetImage().Save(fullPath);
-                                        
-                    /*Dictionary<int, List<MSFeatureLight>> chargeMap = MultiAlignCore.Data.Features.LCMSFeatureChargeMapBuilder.BuildChargeMap(feature);
-                    foreach (int charge in chargeMap.Keys)
-                    {
-                        string baseName     = string.Format("{0}-{1}", feature.ID, charge);
-                        int totalFeatures   = chargeMap[charge].Count;
-                        double[] scans      = new double[totalFeatures];
-                        double[] intensity  = new double[totalFeatures];
-
-                        // Build the SIC arrays for plotting
-                        int i = 0;
-                        foreach (MSFeatureLight msFeature in chargeMap[charge])
-                        {
-                            scans[i]        = msFeature.Scan;
-                            intensity[i]    = msFeature.Abundance;
-                            i++;
-                        }
-                        System.Drawing.RectangleF rect  = new System.Drawing.RectangleF(0, 0, 400, 400);
-                        ZedGraph.GraphPane pane         = new ZedGraph.GraphPane(rect, sicTitle, sicXLabel, sicYLabel);
-
-                        pane.AddCurve("", scans, intensity, System.Drawing.Color.Black, ZedGraph.SymbolType.Circle);
-
-                        foreach (MSFeatureLight msFeature in chargeMap[charge])
-                        {
-                            foreach (MSSpectra spectrum in msFeature.MSnSpectra)
-                            {
-                                pane.AddCurve("",
-                                                new double[] { spectrum.Scan },
-                                                new double[] { spectrum.TotalIonCurrent },
-                                                System.Drawing.Color.Red,
-                                                ZedGraph.SymbolType.Square);
-                            }
-                            i++;
-                        }
-
-                        pane.AxisChange();
-
-                        string fullPath = Path.Combine(path, "SIC" + baseName + ".png");
-                        pane.GetImage().Save(fullPath);
-                    }*/
-
-                }
-            }
-        }
-        /// <summary>
         /// Performs MS/MS alignment.
         /// </summary>
         /// <param name="analysis"></param>
         public void PerformMSMSAlignment(MultiAlignAnalysis analysis)
         {
-            if (analysis.MetaData.OtherFiles.Count <= 0)
-            {
-                throw new Exception("No RAW files were specified.  Cannot continue with the analysis.");
-            }
-
-            Dictionary<int, List<UMCLight>> features  = ExtractUMCWithMSMS(analysis);
-
-            // Create the object that knows how to read the RAW files we are analyzing.
-            ThermoRawDataFileReader reader      = new ThermoRawDataFileReader();
-            for(int i = 0; i < analysis.MetaData.Datasets.Count; i++)
-            {
-                DatasetInformation datasetInformation   = analysis.MetaData.Datasets[i];
-                InputFile rawInformation                = analysis.MetaData.OtherFiles[i];
-
-                reader.AddDataFile(rawInformation.Path, datasetInformation.DatasetId);
-            }
-
-            UpdateStatus("Starting MS/MS clustering.");
-            // Create the object o align.
-            SpectralNormalizedDotProductComparer comparer = new SpectralNormalizedDotProductComparer();
-            MSMSClusterer msCluster         = new MSMSClusterer();
-            msCluster.SimilarityTolerance   = .75;
-            msCluster.ScanRange             = 2000;
-            msCluster.SpectralComparer      = comparer;
-            msCluster.Progress              += new EventHandler<ProgressNotifierArgs>(msCluster_Progress);
-            List<MSMSCluster> clusters      = msCluster.Cluster(features, reader);            
-            List<MSMSClusterMap> maps       = new List<MSMSClusterMap>();
-            int id                          = 0;
-
-           
-                
-            List<double> xValues = new List<double>();
-            List<double> yValues = new List<double>();
-
-            foreach (MSMSCluster cluster in clusters)
-            {
-                cluster.ID  = id++;
-                string line = string.Format("{0},", cluster.ID);
-
-                // Organize the spectra so they are sorted by dataset.
-                cluster.Features.Sort(delegate(MSFeatureLight x, MSFeatureLight y)
-                {
-                    // Sort by scan if they are the same feature.
-                    if (x.GroupID == y.GroupID)
-                    {
-                        return x.Scan.CompareTo(y.Scan);
-                    }
-                    // Otherwise we want to sort by what dataset they came from.
-                    return x.GroupID.CompareTo(y.GroupID);
-                });
-
-                xValues.Add(Convert.ToDouble(cluster.Features[0].Scan));
-                yValues.Add(Convert.ToDouble(cluster.Features[1].Scan));
-
-                foreach (MSFeatureLight feature in cluster.Features)
-                {
-                    MSMSClusterMap newMap = new MSMSClusterMap();
-                    newMap.ClusterID      = cluster.ID;
-                    newMap.MSMSID         = feature.MSnSpectra[0].ID;
-                    newMap.GroupID        = feature.GroupID;
-                    maps.Add(newMap);                        
-                }
-            }
-
-            List<KeyValuePair<double, double>> values = new List<KeyValuePair<double, double>>();
-            for (int i = 0; i < xValues.Count(); i++)                
-            {
-                KeyValuePair<double, double> value = new KeyValuePair<double, double>(xValues.ElementAt(i), yValues.ElementAt(i)); 
-                values.Add(value);
-            }
-            values  = values.OrderBy(i => i.Key).ToList();                                
-            xValues = values.Select(i => i.Key).ToList();
-            yValues = values.Select(i => i.Value).ToList();
-                
-             
-            List<double> tX = xValues.ToList();
-            List<double> tY = yValues.ToList();
-
-
-            PNNLOmics.Algorithms.Solvers.LevenburgMarquadt warp = new PNNLOmics.Algorithms.Solvers.LevenburgMarquadt();
-            warp.BasisFunction = ChebyShev;
-
-            double[] coeffs = new double[] { 1.0, 0.5, 1.0, 2.0};
-            bool passed         = warp.Solve(tX, tY, ref coeffs);
-
-            if (passed)
-            {
-                using (TextWriter xwriter = File.CreateText(@"c:\development\matches.csv"))
-                {
-                    double [] x     = new double[1];                     
-                    double value    = 0;
-                    for (int i = 0; i < tX.Count; i++)
-                    {
-                        x[0]            = tY[i];
-                        ChebyShev(coeffs, x, ref value, null);
-                        xwriter.WriteLine("{0}, {1}, {2}, {3}", tX[i], tY[i], tX[i], value, tX[i] - tY[i], tX[i] - value,( tX[i] - tY[i]) - (tX[i] - value));
-                    }
-                }
-            }             
-
-            //analysis.DataProviders.MSMSClusterCache.AddAll(maps);
-            reader.Dispose();
+            
         }
-
-        public void ChebyShev(double[] c, double[] x, ref double func, object obj)
-        {
-            double sum  = 0;
-            int j       = 0;
-            double x2   = x[0] * x[0];
-            double x3   = x[0] * x2;
-
-            List<double> ts = new List<double>(4);
-            double t0       = 1;
-            double t1       = x[0];
-            double t2       = 2 * x2 - 1;
-            double t3       = 4 * x3 - 3 * x[0];
-            ts.Add(t0);
-            ts.Add(t1);
-            ts.Add(t2);
-            ts.Add(t3);
-
-            for (int i = 0; i < 4; i++)
-            {
-                sum +=  ts[i] * c[i];                
-            }
-            func = sum;
-        }
-
-        void msCluster_Progress(object sender, ProgressNotifierArgs e)
-        {
-            UpdateStatus(e.Message);
-        };
         #endregion
 
         #region Feature Extraction
@@ -1449,23 +1045,27 @@ namespace MultiAlignCore.Algorithms
                     // peak matching (but aligning to a reference dataset.
                     if (m_analysis.Options.UseMassTagDBAsBaseline)
                     {
-                        UpdateStatus("Loading Mass Tag database from database:  " + m_analysis.Options.MassTagDatabaseOptions.mstrDatabase);
+                        UpdateStatus("Loading Mass Tag database from database:  " + m_analysis.Options.MassTagDatabaseOptions.DatabaseName);
 
-                        database = MTDBLoaderFactory.LoadMassTagDB(m_analysis.Options.MassTagDatabaseOptions, m_analysis.MetaData.AnalysisSetupInfo.Database.DatabaseFormat);
+                        database = MTDBLoaderFactory.LoadMassTagDB( m_analysis.Options.MassTagDatabaseOptions, 
+                                                                    m_analysis.MetaData.AnalysisSetupInfo.Database.DatabaseFormat);
                     }
-                    else
+                    else if (m_analysis.Options.MassTagDatabaseOptions.DatabaseType != MassTagDatabaseType.None)
                     {
-                        if (m_analysis.Options.MassTagDatabaseOptions.menm_databaseType != MassTagDatabaseType.None)
-                        {
-                            UpdateStatus("Loading Mass Tag database from database:  " + m_analysis.Options.MassTagDatabaseOptions.mstrDatabase);
-                            database = MTDBLoaderFactory.LoadMassTagDB(m_analysis.Options.MassTagDatabaseOptions, m_analysis.MetaData.AnalysisSetupInfo.Database.DatabaseFormat);
-                        }
+                            UpdateStatus("Loading Mass Tag database from database:  " + m_analysis.Options.MassTagDatabaseOptions.DatabaseName);
+                            database = MTDBLoaderFactory.LoadMassTagDB( m_analysis.Options.MassTagDatabaseOptions, 
+                                                                        m_analysis.MetaData.AnalysisSetupInfo.Database.DatabaseFormat);                    
                     }
 
                     if (database != null)
                     {
                         int totalMassTags = database.MassTags.Count;
                         UpdateStatus("Loaded " + totalMassTags.ToString() + " mass tags.");
+
+                        if (m_analysis.Options.STACAdapterOptions.UseDriftTime)
+                        {
+                            
+                        }
                     }
 
                     m_analysis.MassTagDatabase = database;
@@ -1487,8 +1087,9 @@ namespace MultiAlignCore.Algorithms
                 switch (m_analysis.AnalysisType)
                 {
                     case AnalysisType.ExtractSICs:
+                        SICExtractor extractor = new SICExtractor();
                         UpdateStatus("Building SIC's");
-                        this.ExtractUMCSICs(this.AnalaysisPath, m_analysis);
+                        extractor.ExtractUMCSICs(this.AnalaysisPath, m_analysis);
                         UpdateStatus(string.Format("Analysis {0} Completed.", m_analysis.MetaData.AnalysisName));
                         break;
                     case AnalysisType.MSMSAlignment:

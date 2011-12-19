@@ -22,7 +22,7 @@ namespace MultiAlignCore.IO.Parameters
                     // Recurse to get parameters.
                     if (prop.CanRead)
                     {
-                        object[] customAttributes = prop.GetCustomAttributes(typeof(clsParameterFileAttribute), true);
+                        object[] customAttributes = prop.GetCustomAttributes(typeof(ParameterFileAttribute), true);
                         object potential = null;
                         if (customAttributes.Length > 0)
                             potential = prop.GetValue(o,
@@ -33,13 +33,13 @@ namespace MultiAlignCore.IO.Parameters
                         for (int i = 0; i < customAttributes.Length; i++)
                         {
 
-                            clsParameterFileAttribute attr = customAttributes[i] as clsParameterFileAttribute;
+                            ParameterFileAttribute attr = customAttributes[i] as ParameterFileAttribute;
 
-                            if (potential != null && attr != null && attr.Description != "")
+                            if (potential != null && attr != null && attr.Name != "")
                             {                                
                                 ParameterHibernateMapping map = new ParameterHibernateMapping();
                                 map.OptionGroup = optionGroup;
-                                map.Parameter   = attr.Description;
+                                map.Parameter   = attr.Name;
                                 map.Value       = potential.ToString();
                                 values.Add(map);
                             }
@@ -48,18 +48,18 @@ namespace MultiAlignCore.IO.Parameters
                 }
                 foreach (FieldInfo field in o.GetType().GetFields())
                 {
-                    object[] customAttributes = field.GetCustomAttributes(typeof(clsParameterFileAttribute), true);
+                    object[] customAttributes = field.GetCustomAttributes(typeof(ParameterFileAttribute), true);
                     object objectValue = null;
                     if (customAttributes.Length > 0)
                         objectValue = field.GetValue(o);
                     for (int i = 0; i < customAttributes.Length; i++)
                     {
-                        clsParameterFileAttribute attr = customAttributes[i] as clsParameterFileAttribute;
+                        ParameterFileAttribute attr = customAttributes[i] as ParameterFileAttribute;
                         if (objectValue != null && attr != null)
                         {
                             ParameterHibernateMapping map = new ParameterHibernateMapping();
                             map.OptionGroup = optionGroup;
-                            map.Parameter   = attr.Description;
+                            map.Parameter   = attr.Name;
                             map.Value       = objectValue.ToString();
                             values.Add(map);                            
                         }
@@ -83,7 +83,7 @@ namespace MultiAlignCore.IO.Parameters
                     // Recurse to get parameters.
                     if (prop.CanRead)
                     {
-                        object[] customAttributes = prop.GetCustomAttributes(typeof(clsParameterFileAttribute), true);
+                        object[] customAttributes = prop.GetCustomAttributes(typeof(ParameterFileAttribute), true);
                         object potential = null;
                         if (customAttributes.Length > 0)
                             potential = prop.GetValue(o,
@@ -94,13 +94,13 @@ namespace MultiAlignCore.IO.Parameters
                         for (int i = 0; i < customAttributes.Length; i++)
                         {
 
-                            clsParameterFileAttribute attr = customAttributes[i] as clsParameterFileAttribute;
+                            ParameterFileAttribute attr = customAttributes[i] as ParameterFileAttribute;
 
-                            if (potential != null && attr != null && attr.Description != "")
+                            if (potential != null && attr != null && attr.Name != "")
                             {
                                 try
                                 {
-                                    string value = string.Format("{0} = {1}", attr.Description, potential);
+                                    string value = string.Format("{0} = {1}", attr.Name, potential);
                                     values.Add(value);
                                 }
                                 catch (Exception ex)
@@ -112,18 +112,18 @@ namespace MultiAlignCore.IO.Parameters
                 }
                 foreach (FieldInfo field in o.GetType().GetFields())
                 {
-                    object[] customAttributes = field.GetCustomAttributes(typeof(clsParameterFileAttribute), true);
+                    object[] customAttributes = field.GetCustomAttributes(typeof(ParameterFileAttribute), true);
                     object objectValue = null;
                     if (customAttributes.Length > 0)
                         objectValue = field.GetValue(o);
                     for (int i = 0; i < customAttributes.Length; i++)
                     {
-                        clsParameterFileAttribute attr = customAttributes[i] as clsParameterFileAttribute;
+                        ParameterFileAttribute attr = customAttributes[i] as ParameterFileAttribute;
                         if (objectValue != null && attr != null)
                         {
                             try
                             {
-                                string value = string.Format("{0} = {1}", attr.Description, objectValue);
+                                string value = string.Format("{0} = {1}", attr.Name, objectValue);
                                 values.Add(value);
                             }
                             catch

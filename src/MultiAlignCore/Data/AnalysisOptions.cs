@@ -8,6 +8,7 @@ using MultiAlignEngine.Alignment;
 using MultiAlignEngine.Clustering;
 using MultiAlignEngine.PeakMatching;
 using PNNLOmics.Algorithms.FeatureMatcher.Data;
+using MultiAlignCore.IO.MTDB;
 
 namespace MultiAlignCore.Data
 {
@@ -18,33 +19,25 @@ namespace MultiAlignCore.Data
     {
         public AnalysisOptions()
         {
-			DefaultAlignmentOptions         = new MultiAlignEngine.Alignment.clsAlignmentOptions() ; 
+			AlignmentOptions                = new AlignmentOptions() ; 
 			DriftTimeAlignmentOptions       = new DriftTimeAlignmentOptions();
             UseMassTagDBAsBaseline          = false;
             UMCFindingOptions               = new UMCFeatureFinderOptions();
 			ClusterOptions                  = new MultiAlignEngine.Clustering.clsClusterOptions() ;
             MSLinkerOptions                 = new Algorithms.MSLinker.MSLinkerOptions();
             FeatureFilterOptions            = new FeatureFilterOptions();
-            STACAdapterOptions              = new FeatureMatcherParameters();                     
-            PeakMatchingOptions             = new clsPeakMatchingOptions();
-            MassTagDatabaseOptions          = new MultiAlignEngine.MassTags.clsMassTagDatabaseOptions();
+            STACAdapterOptions              = new STACOptions();            
+            MassTagDatabaseOptions          = new MassTagDatabaseOptions();
         }
         /// <summary>
         /// Stac Options
         /// </summary>
-        public FeatureMatcherParameters STACAdapterOptions
+        public STACOptions STACAdapterOptions
         {
             get;
             set;
         }
-        /// <summary>
-        /// Gets or sets the cluster options.
-        /// </summary>
-        public clsPeakMatchingOptions PeakMatchingOptions
-        {
-            get;
-            set;
-        }
+
         /// <summary>
         /// Gets or sets the options for linking MS features to MSMS Spectra.
         /// </summary>
@@ -56,7 +49,7 @@ namespace MultiAlignCore.Data
         /// <summary>
         /// Gets or sets the mass tag database options.
         /// </summary>
-        public MultiAlignEngine.MassTags.clsMassTagDatabaseOptions MassTagDatabaseOptions
+        public MassTagDatabaseOptions MassTagDatabaseOptions
         {
             get;
             set;
@@ -80,19 +73,19 @@ namespace MultiAlignCore.Data
         /// <summary>
         /// Gets or sets whether to use the mass tag database as the baseline dataset.
         /// </summary>
-        [clsDataSummaryAttribute("Use MTDB As Baseline")]
+        [DataSummaryAttribute("Use MTDB As Baseline")]
         public bool UseMassTagDBAsBaseline
         {
             get;
             set;
         }
-        [clsDataSummaryAttribute("Default Alignment Options")]
-        public clsAlignmentOptions DefaultAlignmentOptions
+        [DataSummaryAttribute("Alignment Options")]
+        public AlignmentOptions AlignmentOptions
         {
             get;
             set;
         }
-        [clsDataSummaryAttribute("Drift Time Options")]
+        [DataSummaryAttribute("Drift Time Options")]
         public DriftTimeAlignmentOptions DriftTimeAlignmentOptions
         {
             get;

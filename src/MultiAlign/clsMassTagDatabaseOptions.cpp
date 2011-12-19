@@ -22,7 +22,7 @@ namespace MultiAlignEngine
 
 				mstrExperimentExclusionFilter	= S""; 
 				mstrExperimentFilter			= S"";
-				menm_databaseType				= MassTagDatabaseType::None;
+				menm_databaseType				= MassTagDatabaseType2::None;
 		}
 
 		clsMassTagDatabaseOptions::~clsMassTagDatabaseOptions(void)

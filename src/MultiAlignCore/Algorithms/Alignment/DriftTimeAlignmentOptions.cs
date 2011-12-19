@@ -1,5 +1,7 @@
 ﻿using System;
 using MultiAlignEngine;
+using MultiAlignCore.IO.Parameters;
+using MultiAlignCore.Data;
 
 namespace MultiAlignCore.Algorithms.Alignment
 {
@@ -27,8 +29,8 @@ namespace MultiAlignCore.Algorithms.Alignment
         /// <summary>
         /// Gets or sets the drift time tolerance to use.
         /// </summary>
-        [clsParameterFile("DriftTimeTolerance", "DriftTime")]
-        [clsDataSummaryAttribute("Drift Time Tolerance")]
+        [ParameterFileAttribute("DriftTimeTolerance", "DriftTime")]
+        [DataSummaryAttribute("Drift Time Tolerance")]
         public double DriftTimeTolerance
         {
             get;
@@ -37,8 +39,8 @@ namespace MultiAlignCore.Algorithms.Alignment
         /// <summary>
         /// Gets or sets the Mass PPM Tolerance (monoisotopic).
         /// </summary>
-        [clsParameterFile("MassTolerance", "DriftTime")]
-        [clsDataSummaryAttribute("Mass Tolerance")]
+        [ParameterFileAttribute("MassTolerance", "DriftTime")]
+        [DataSummaryAttribute("Mass Tolerance")]
         public double MassPPMTolerance
         {
             get;
@@ -47,8 +49,8 @@ namespace MultiAlignCore.Algorithms.Alignment
         /// <summary>
         /// Gets or sets the NET tolerance.
         /// </summary>
-        [clsParameterFile("NETTolerance", "DriftTime")]
-        [clsDataSummaryAttribute("NET Tolerance")]
+        [ParameterFileAttribute("NETTolerance", "DriftTime")]
+        [DataSummaryAttribute("NET Tolerance")]
         public double NETTolerance
         {
             get;
@@ -57,8 +59,8 @@ namespace MultiAlignCore.Algorithms.Alignment
         /// <summary>
         /// Gets or sets teh maximum charge state to allow.
         /// </summary>
-        [clsParameterFile("MaxChargeState", "DriftTime")]
-        [clsDataSummaryAttribute("Maximum Charge State")]
+        [ParameterFileAttribute("MaxChargeState", "DriftTime")]
+        [DataSummaryAttribute("Maximum Charge State")]
         public int MaxChargeState
         {
             get;
@@ -67,8 +69,8 @@ namespace MultiAlignCore.Algorithms.Alignment
         /// <summary>
         /// Gets or sets the minimum charge state to allow.
         /// </summary>
-        [clsParameterFile("MinChargeState", "DriftTime")]
-        [clsDataSummaryAttribute("Minimum Charge State")]
+        [ParameterFileAttribute("MinChargeState", "DriftTime")]
+        [DataSummaryAttribute("Minimum Charge State")]
         public int MinChargeState
         {
             get;
@@ -77,8 +79,8 @@ namespace MultiAlignCore.Algorithms.Alignment
         /// <summary>
         /// Gets or sets whether to perform the offset for drift time calculation.
         /// </summary>
-        [clsParameterFile("ShouldPerformOffset", "DriftTime")]
-        [clsDataSummaryAttribute("Perform offset calculation")]
+        [ParameterFileAttribute("ShouldPerformOffset", "DriftTime")]
+        [DataSummaryAttribute("Perform offset calculation")]
         public bool ShouldPerformOffset
         {
             get;
@@ -87,8 +89,8 @@ namespace MultiAlignCore.Algorithms.Alignment
         /// <summary>
         /// Gets or sets whether to use all observations for the drift time offset calculation.
         /// </summary>
-        [clsParameterFile("UseAllObservationsForOffset", "DriftTime")]
-        [clsDataSummaryAttribute("Uses all observatiosn for the offset calculation")]
+        [ParameterFileAttribute("UseAllObservationsForOffset", "DriftTime")]
+        [DataSummaryAttribute("Uses all observatiosn for the offset calculation")]
         public bool ShouldUseAllObservationsForOffsetCalculation
         {
             get;
@@ -97,8 +99,8 @@ namespace MultiAlignCore.Algorithms.Alignment
         /// <summary>
         /// Gets or sets whether to use all observations for the drift time offset calculation.
         /// </summary>
-        [clsParameterFile("ShouldAlignDriftTimes", "DriftTime")]
-        [clsDataSummaryAttribute("Aligned Drift Times")]
+        [ParameterFileAttribute("ShouldAlignDriftTimes", "DriftTime")]
+        [DataSummaryAttribute("Aligned Drift Times")]
         public bool ShouldAlignDriftTimes
         {
             get;

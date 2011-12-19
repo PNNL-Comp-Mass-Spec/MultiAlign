@@ -17,7 +17,7 @@ namespace MultiAlignCore.IO.MTDB
         /// <summary>
         /// Gets or sets the database options.
         /// </summary>
-        clsMassTagDatabaseOptions Options
+        MassTagDatabaseOptions Options
         {
             get;
             set;
