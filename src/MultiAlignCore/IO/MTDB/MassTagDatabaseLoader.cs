@@ -192,15 +192,19 @@ namespace MultiAlignCore.IO.MTDB
 
                                         if (massTag.NETAverage != -1)
                                         {
-                                            bool shouldAdd = true;
+                                            bool shouldAdd = false;
                                             // If we are using drift time, then we should only 
                                             // use mass tags that have drift time.
-                                            if (Options.UseDriftTime)
+                                            if (Options.OnlyLoadTagsWithDriftTime)
                                             {
                                                 if (driftTime > 0)
                                                 {
                                                     shouldAdd = true;
                                                 }
+                                            }
+                                            else
+                                            {
+                                                shouldAdd = true;
                                             }
 
                                             if (shouldAdd)

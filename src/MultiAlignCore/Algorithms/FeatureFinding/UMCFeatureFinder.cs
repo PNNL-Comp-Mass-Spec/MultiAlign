@@ -15,7 +15,7 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
     /// </summary>
     public class UMCFeatureFinder: IFeatureFinder
     {
-        private UMCFeatureFinderOptions m_options;
+        private LCMSFeatureFindingOptions m_options;
         private int                     m_minScan;
         private int                     m_maxScan;
         /// <summary>
@@ -30,7 +30,7 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
         /// <param name="options"></param>
         /// <returns></returns>
         public List<UMCLight> FindFeatures( List<MSFeatureLight>    rawMsFeatures, 
-                                            UMCFeatureFinderOptions options)
+                                            LCMSFeatureFindingOptions options)
         {
             ClusterCentroidRepresentation centroidType  = ClusterCentroidRepresentation.Mean;                           
             List<UMCLight>       features               = null;           

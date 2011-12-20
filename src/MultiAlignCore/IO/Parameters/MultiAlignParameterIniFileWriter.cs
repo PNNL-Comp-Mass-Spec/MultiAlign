@@ -95,7 +95,7 @@ namespace MultiAlignCore.IO.Parameters
             {
 
                 WriteOptionGroup(writer, ALIGNMENT_TAG,         analysis.Options.AlignmentOptions);
-                WriteOptionGroup(writer, FEATURE_FINDING_TAG,   analysis.Options.UMCFindingOptions);
+                WriteOptionGroup(writer, FEATURE_FINDING_TAG,   analysis.Options.FeatureFindingOptions);
                 WriteOptionGroup(writer, MASS_TAG_DATABASE_TAG, analysis.Options.MassTagDatabaseOptions);
                 WriteOptionGroup(writer, CLUSTER_TAG,           analysis.Options.ClusterOptions);
 

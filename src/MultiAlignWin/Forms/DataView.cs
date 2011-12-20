@@ -838,7 +838,7 @@ namespace MultiAlignWin
             //m_resultSummaryPages.CreateSummary("Feature Data", mobjAnalysis.UMCData);
             //m_resultSummaryPages.CreateSummary("Cluster Data", mobjAnalysis.UMCData.mobjClusterData);
 
-            m_analysisInformation.CreateSummary("Feature Finding Options", m_analysis.Options.UMCFindingOptions);
+            m_analysisInformation.CreateSummary("Feature Finding Options", m_analysis.Options.FeatureFindingOptions);
             m_analysisInformation.CreateSummary("Alignment Options", m_analysis.Options.DefaultAlignmentOptions);
             m_analysisInformation.CreateSummary("Mass Tag Database Options (MTDB)", m_analysis.Options.MassTagDatabaseOptions);
             m_analysisInformation.CreateSummary("Cluster Options", m_analysis.Options.ClusterOptions); 

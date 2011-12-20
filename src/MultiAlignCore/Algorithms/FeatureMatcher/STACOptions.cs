@@ -4,7 +4,7 @@ using MultiAlignCore.IO.Parameters;
 using MultiAlignCore.Data;
 
 
-namespace MultiAlignCore.Algorithms.PeakMatching
+namespace MultiAlignCore.Algorithms.FeatureMatcher
 {
     public class STACOptions
     {
@@ -20,88 +20,88 @@ namespace MultiAlignCore.Algorithms.PeakMatching
             ShiftAmount             = 11;
             UsePriors               = false;
             UseEllipsoid            = false;
-            UseDriftTime            = false;
+            UseDriftTime            = false;            
         }
         
-        [ParameterFileAttribute("UsePriorProbabilities", "STACOptions")]
+        [ParameterFileAttribute("UsePriorProbabilities", "STAC")]
         [DataSummaryAttribute("Uses the prior probabilities")]
         public double HistogramBinWidth 
         {
             get;
             set;
         }
-        [ParameterFileAttribute("HistogramMultiplier", "STACOptions")]
+        [ParameterFileAttribute("HistogramMultiplier", "STAC")]
         [DataSummaryAttribute("Uses the prior probabilities")]
         public double HistogramMultiplier  
         {
             get;
             set;
         }
-        [ParameterFileAttribute("ShiftAmount", "STACOptions")]
+        [ParameterFileAttribute("ShiftAmount", "STAC")]
         [DataSummaryAttribute("Uses the prior probabilities")]
         public double  ShiftAmount  
         {
             get;
             set;
         }
-        [ParameterFileAttribute("ShouldCalculateHistogramFDR", "STACOptions")]
+        [ParameterFileAttribute("ShouldCalculateHistogramFDR", "STAC")]
         [DataSummaryAttribute("Uses the prior probabilities")]
         public bool ShouldCalculateHistogramFDR  
         {
             get;
             set;
         }
-        [ParameterFileAttribute("ShouldCalculateShiftFDR", "STACOptions")]
+        [ParameterFileAttribute("ShouldCalculateShiftFDR", "STAC")]
         [DataSummaryAttribute("Uses the prior probabilities")]
         public bool ShouldCalculateShiftFDR  
         {
             get;
             set;
         }
-        [ParameterFileAttribute("ShouldCalculateSLiC", "STACOptions")]
+        [ParameterFileAttribute("ShouldCalculateSLiC", "STAC")]
         [DataSummaryAttribute("Uses the prior probabilities")]
         public bool ShouldCalculateSLiC  
         {
             get;
             set;
         }
-        [ParameterFileAttribute("ShouldCalculateSTAC", "STACOptions")]
+        [ParameterFileAttribute("ShouldCalculateSTAC", "STAC")]
         [DataSummaryAttribute("Uses the prior probabilities")]
         public bool ShouldCalculateSTAC  
         {
             get;
             set;
         }
-        [ParameterFileAttribute("UseDriftTime", "STACOptions")]
+        [ParameterFileAttribute("UseDriftTime", "STAC")]
         [DataSummaryAttribute("Uses the prior probabilities")]
         public bool UseDriftTime  
         {
             get;
             set;
         }
-        [ParameterFileAttribute("UseEllipsoid", "STACOptions")]
+        [ParameterFileAttribute("UseEllipsoid", "STAC")]
         [DataSummaryAttribute("Uses the prior probabilities")]
         public bool UseEllipsoid  
         {
             get;
             set;
         }
-        [ParameterFileAttribute("UsePriors", "STACOptions")]
+        [ParameterFileAttribute("UsePriors", "STAC")]
         [DataSummaryAttribute("Uses the prior probabilities")]
         public bool UsePriors  
         {
             get;
             set;
         }
-        [ParameterFileAttribute("DriftTimeTolerance", "STACOptions")]
+        [ParameterFileAttribute("DriftTimeTolerance", "STAC")]
         public double DriftTimeTolerance { get; set; }
-        [ParameterFileAttribute("MassTolerancePPM", "STACOptions")]
+        [ParameterFileAttribute("MassTolerancePPM", "STAC")]
         public double MassTolerancePPM { get; set; }
-        [ParameterFileAttribute("NETTolerance", "STACOptions")]
+        [ParameterFileAttribute("NETTolerance", "STAC")]
         public double NETTolerance { get; set; }
-        [ParameterFileAttribute("Refined", "STACOptions")]
+        [ParameterFileAttribute("Refined", "STAC")]
         public bool Refined { get; set; }
-        [ParameterFileAttribute("WriteResultsBackToMTS", "STACOptions")]
+        [ParameterFileAttribute("WriteResultsBackToMTS", "STAC")]
         public bool WriteResultsBackToMTS
         {
             get;

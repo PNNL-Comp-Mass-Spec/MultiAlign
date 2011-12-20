@@ -350,13 +350,17 @@ namespace MultiAlignCore.IO.Parameters
 		{
 			try
 			{
-                
-                XmlTextWriter writer = new XmlTextWriter(File.CreateText(fName));
-				//StreamWriter sw = File.CreateText (fName);
-                //sw.Write(doc.InnerXml);
-				//sw.Close();
-                writer.Formatting = Formatting.Indented;
-                doc.Save(writer);
+
+                using (XmlTextWriter writer = new XmlTextWriter(File.CreateText(fName)))
+                {
+
+                    //StreamWriter sw = File.CreateText (fName);
+                    //sw.Write(doc.InnerXml);
+                    //sw.Close();
+                    writer.Formatting = Formatting.Indented;
+                    doc.Save(writer);
+                    writer.Close();
+                }
 			}
 			catch{}
 		}

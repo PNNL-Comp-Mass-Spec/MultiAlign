@@ -20,9 +20,9 @@ namespace MultiAlignWin.Data
         /// <summary>
         /// Loads the default feature finding options from the settings file.
         /// </summary>
-        public static UMCFeatureFinderOptions LoadFeatureFindingOptions()
+        public static LCMSFeatureFindingOptions LoadFeatureFindingOptions()
         {
-            UMCFeatureFinderOptions options = new UMCFeatureFinderOptions();
+            LCMSFeatureFindingOptions options = new LCMSFeatureFindingOptions();
             options.MonoMassWeight       = Convert.ToSingle(Properties.Settings.Default.UserPeakPickingMonoMass);
             options.AveMassWeight        = Convert.ToSingle(Properties.Settings.Default.UserPeakPickingAverageMass);
             options.LogAbundanceWeight   = Convert.ToSingle(Properties.Settings.Default.UserPeakPickingLogAbundance);

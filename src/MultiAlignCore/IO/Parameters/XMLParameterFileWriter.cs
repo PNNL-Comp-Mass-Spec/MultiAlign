@@ -86,14 +86,14 @@ namespace MultiAlignCore.IO.Parameters
         public void WriteParameterFile(string parameterFilePath, MultiAlignAnalysis analysis)
         {            				
 			MetaData metaData = new MetaData("PNNLProteomics");
-            ReflectParameterOptions(analysis.Options.MSLinkerOptions, metaData.OpenChild("MSnLinkerOptions"));
-            ReflectParameterOptions(analysis.Options.UMCFindingOptions, metaData.OpenChild("UMCFindingOptions"));
-            ReflectParameterOptions(analysis.Options.FeatureFilterOptions, metaData.OpenChild("FeatureFilters"));
-            ReflectParameterOptions(analysis.Options.MassTagDatabaseOptions, metaData.OpenChild("MassTagDBOptions"));
-            ReflectParameterOptions(analysis.Options.AlignmentOptions, metaData.OpenChild("AlignmentOptions"));
-            ReflectParameterOptions(analysis.Options.DriftTimeAlignmentOptions, metaData.OpenChild("DriftTimeAlignmentOptions"));
-            ReflectParameterOptions(analysis.Options.ClusterOptions, metaData.OpenChild("ClusterOptions"));
-            ReflectParameterOptions(analysis.Options.STACAdapterOptions, metaData.OpenChild("STACOptions"));
+            ReflectParameterOptions(analysis.Options.MSLinkerOptions,           metaData.OpenChild("MSnLinker"));
+            ReflectParameterOptions(analysis.Options.FeatureFindingOptions,     metaData.OpenChild("LCMSFeatureFinding"));
+            ReflectParameterOptions(analysis.Options.FeatureFilterOptions,      metaData.OpenChild("LCMSFeatureFilters"));
+            ReflectParameterOptions(analysis.Options.MassTagDatabaseOptions,    metaData.OpenChild("MassTagDatabase"));
+            ReflectParameterOptions(analysis.Options.AlignmentOptions,          metaData.OpenChild("Alignment"));
+            ReflectParameterOptions(analysis.Options.DriftTimeAlignmentOptions, metaData.OpenChild("DriftTimeAlignment"));
+            ReflectParameterOptions(analysis.Options.ClusterOptions,            metaData.OpenChild("LCMSFeatureClustering"));
+            ReflectParameterOptions(analysis.Options.STACOptions,               metaData.OpenChild("STAC"));
             metaData.WriteFile(parameterFilePath);
         }        
     }

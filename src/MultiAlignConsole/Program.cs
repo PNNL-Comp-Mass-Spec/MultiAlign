@@ -876,13 +876,13 @@ namespace MultiAlignConsole
             PrintMessage("Parameters Loaded");
             Dictionary<string, object> options = new Dictionary<string, object>();
             options.Add("MS Linker Options", analysis.Options.MSLinkerOptions);
-            options.Add("UMC Finding Options", analysis.Options.UMCFindingOptions);
+            options.Add("UMC Finding Options", analysis.Options.FeatureFindingOptions);
             options.Add("Feature Filtering Options", analysis.Options.FeatureFilterOptions);
             options.Add("Mass Tag Database Options", analysis.Options.MassTagDatabaseOptions);
             options.Add("Alignment Options", analysis.Options.AlignmentOptions);
             options.Add("Drift Time Alignment Options", analysis.Options.DriftTimeAlignmentOptions);
             options.Add("Cluster Options", analysis.Options.ClusterOptions);
-            options.Add("STAC Options", analysis.Options.STACAdapterOptions);
+            options.Add("STAC Options", analysis.Options.STACOptions);
 
             List<ParameterHibernateMapping> allmappings = new List<MultiAlignCore.IO.Parameters.ParameterHibernateMapping>();
             foreach (string key in options.Keys)

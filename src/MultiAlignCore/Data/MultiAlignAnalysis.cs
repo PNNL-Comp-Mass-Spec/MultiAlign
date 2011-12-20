@@ -11,7 +11,7 @@ using MultiAlignEngine.Features;
 using MultiAlignEngine.PeakMatching;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Data.MassTags;
-using MultiAlignCore.Algorithms.PeakMatching;
+using MultiAlignCore.Algorithms.FeatureMatcher;
 using MultiAlignCore.Data.Features;
 using MultiAlignCore.Algorithms.FeatureFinding;
 

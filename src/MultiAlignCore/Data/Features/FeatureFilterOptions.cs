@@ -19,35 +19,35 @@ namespace MultiAlignCore.Data.Features
             MinimumMonoIsotopicMass = 0;
             MaximumMonoIsotopicMass = 100000;
         }
-        [ParameterFileAttribute("MinimumAbundance", "FeatureFilters")]
+        [ParameterFileAttribute("MinimumAbundance", "LCMSFeatureFilters")]
         [DataSummaryAttribute("Is Data Paired")]
         public double MinimumAbundance
         {
             get;
             set;
         }
-        [ParameterFileAttribute("MinimumIsotopicFit", "FeatureFilters")]
+        [ParameterFileAttribute("MinimumIsotopicFit", "LCMSFeatureFilters")]
         [DataSummaryAttribute("Minimum Isotopic Fit")]
         public double IsotopicFit
         {
             get;
             set;
         }
-        [ParameterFileAttribute("MinimumScanLength", "FeatureFilters")]
+        [ParameterFileAttribute("MinimumScanLength", "LCMSFeatureFilters")]
         [DataSummaryAttribute("Minimum Scan Length")]
         public int MinimumScanLength
         {
             get;
             set;
         }
-        [ParameterFileAttribute("MaximumChargeState", "FeatureFilters")]
+        [ParameterFileAttribute("MaximumChargeState", "LCMSFeatureFilters")]
         [DataSummaryAttribute("Maximum Charge State")]
         public int MaximumChargeState
         {
             get;
             set;
         }
-        [ParameterFileAttribute("MinimumChargeState", "FeatureFilters")]
+        [ParameterFileAttribute("MinimumChargeState", "LCMSFeatureFilters")]
         [DataSummaryAttribute("Minimum Charge State")]
         public int MinimumChargeState
         {
@@ -55,14 +55,14 @@ namespace MultiAlignCore.Data.Features
             set;
         }
 
-        [ParameterFileAttribute("MaximumMonoisotopicMass", "FeatureFilters")]
+        [ParameterFileAttribute("MaximumMonoisotopicMass", "LCMSFeatureFilters")]
         [DataSummaryAttribute("Maximum Monoisotopic Mass")]
         public double MaximumMonoIsotopicMass
         {
             get;
             set;
         }
-        [ParameterFileAttribute("MinimumMonoisotopicMass", "FeatureFilters")]
+        [ParameterFileAttribute("MinimumMonoisotopicMass", "LCMSFeatureFilters")]
         [DataSummaryAttribute("Minimum Monoisotopic mass")]
         public double MinimumMonoIsotopicMass
         {

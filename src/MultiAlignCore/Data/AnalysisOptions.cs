@@ -1,14 +1,10 @@
-﻿using System.Collections.Generic;
-using MultiAlignCore.Algorithms.Alignment;
+﻿using MultiAlignCore.Algorithms.Alignment;
+using MultiAlignCore.Algorithms.Clustering;
 using MultiAlignCore.Algorithms.FeatureFinding;
-using MultiAlignCore.Algorithms.PeakMatching;
+using MultiAlignCore.Algorithms.FeatureMatcher;
 using MultiAlignCore.Data.Features;
-using MultiAlignEngine;
-using MultiAlignEngine.Alignment;
-using MultiAlignEngine.Clustering;
-using MultiAlignEngine.PeakMatching;
-using PNNLOmics.Algorithms.FeatureMatcher.Data;
 using MultiAlignCore.IO.MTDB;
+using MultiAlignCore.Algorithms.MSLinker;
 
 namespace MultiAlignCore.Data
 {
@@ -22,17 +18,17 @@ namespace MultiAlignCore.Data
 			AlignmentOptions                = new AlignmentOptions() ; 
 			DriftTimeAlignmentOptions       = new DriftTimeAlignmentOptions();
             UseMassTagDBAsBaseline          = false;
-            UMCFindingOptions               = new UMCFeatureFinderOptions();
-			ClusterOptions                  = new MultiAlignEngine.Clustering.clsClusterOptions() ;
-            MSLinkerOptions                 = new Algorithms.MSLinker.MSLinkerOptions();
+            FeatureFindingOptions           = new LCMSFeatureFindingOptions();
+			ClusterOptions                  = new LCMSFeatureClusteringOptions() ;
+            MSLinkerOptions                 = new MSLinkerOptions();
             FeatureFilterOptions            = new FeatureFilterOptions();
-            STACAdapterOptions              = new STACOptions();            
+            STACOptions                     = new STACOptions();            
             MassTagDatabaseOptions          = new MassTagDatabaseOptions();
         }
         /// <summary>
         /// Stac Options
         /// </summary>
-        public STACOptions STACAdapterOptions
+        public STACOptions STACOptions
         {
             get;
             set;
@@ -41,7 +37,7 @@ namespace MultiAlignCore.Data
         /// <summary>
         /// Gets or sets the options for linking MS features to MSMS Spectra.
         /// </summary>
-        public MultiAlignCore.Algorithms.MSLinker.MSLinkerOptions MSLinkerOptions
+        public MSLinkerOptions MSLinkerOptions
         {
             get;
             set;
@@ -57,7 +53,7 @@ namespace MultiAlignCore.Data
         /// <summary>
         /// Gets or sets the UMC Finding Options.
         /// </summary>
-        public UMCFeatureFinderOptions UMCFindingOptions
+        public LCMSFeatureFindingOptions FeatureFindingOptions
         {
             get;
             set;
@@ -65,7 +61,7 @@ namespace MultiAlignCore.Data
         /// <summary>
         /// Gets or sets the cluster options.
         /// </summary>
-        public clsClusterOptions ClusterOptions
+        public LCMSFeatureClusteringOptions ClusterOptions
         {
             get;
             set;

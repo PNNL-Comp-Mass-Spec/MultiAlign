@@ -259,7 +259,7 @@ namespace MultiAlignCore.Algorithms
         /// <param name="options">Options to use for UMC finding if required.</param>
         /// <param name="analysisPath">Path to save data to.</param>
         private void LoadDatasetData(List<DatasetInformation> datasets,
-                                     UMCFeatureFinderOptions options,
+                                     LCMSFeatureFindingOptions options,
                                      string analysisPath)
         {
             IUmcDAO featureCache = m_analysis.DataProviders.FeatureCache;
@@ -361,34 +361,21 @@ namespace MultiAlignCore.Algorithms
         /// <param name="analysis"></param>
         /// <param name="clusterer"></param>
         /// <returns></returns>
-        public void PerformClustering(MultiAlignAnalysis                    analysis,
-                                      IClusterer<UMCLight, UMCClusterLight> clusterer)
+        public void PerformLCMSFeatureClustering(MultiAlignAnalysis                    analysis,
+                                                IClusterer<UMCLight, UMCClusterLight> clusterer)
         {
             UpdateStatus("Using Cluster Algorithm: " + clusterer.ToString());
 
             // Tolerances
             FeatureTolerances tolerances                        = new FeatureTolerances();
-            FeatureClusterParameters<UMCLight> parameters       = new FeatureClusterParameters<UMCLight>();
-            tolerances.DriftTime                                = analysis.Options.ClusterOptions.DriftTimeTolerance;
-            tolerances.Mass                                     = analysis.Options.ClusterOptions.MassTolerance;
-            tolerances.RetentionTime                            = analysis.Options.ClusterOptions.NETTolerance;
-            parameters.CentroidRepresentation                   = PNNLOmics.Data.Features.ClusterCentroidRepresentation.Mean;
-            parameters.Tolerances                               = tolerances;            
-            parameters.OnlyClusterSameChargeStates              = (analysis.Options.ClusterOptions.IgnoreCharge == false);
-            if (analysis.Options.ClusterOptions.ClusterRepresentativeType == enmClusterRepresentativeType.MEDIAN)
-            {
-                parameters.CentroidRepresentation = ClusterCentroidRepresentation.Median;
-            }
-
-            clusterer.Parameters = parameters;                        
+            FeatureClusterParameters<UMCLight> parameters       = new FeatureClusterParameters<UMCLight>();            
+            clusterer.Parameters                                = Clustering.LCMSFeatureClusteringOptions.ConvertToOmics(analysis.Options.ClusterOptions);                       
 
             // This just tells us whether we are using mammoth memory partitions or not.          
             string databaseName = Path.Combine(m_analysis.MetaData.AnalysisPath, m_analysis.MetaData.AnalysisName);
             int maxChargeState = 15;
             int minChargeState = 1;
-
             
-
             // Connect to the database.
             using (MammothDatabase database = new MammothDatabase(databaseName))
             {
@@ -795,7 +782,7 @@ namespace MultiAlignCore.Algorithms
                                                                                                 matchedMassTags,
                                                                                                 matchedProteins));
 
-                    if (m_analysis.Options.STACAdapterOptions.WriteResultsBackToMTS && m_analysis.MetaData.JobID != -1)
+                    if (m_analysis.Options.STACOptions.WriteResultsBackToMTS && m_analysis.MetaData.JobID != -1)
                     {
                         //string databasePath                 = "";
                         MTSPeakMatchResultsWriter mtsWriter = new MTSSqlServerPeakMatchResultWriter();
@@ -803,7 +790,7 @@ namespace MultiAlignCore.Algorithms
                         //                        clusters,
                         //                        databasePath);
                     }
-                    else if (m_analysis.Options.STACAdapterOptions.WriteResultsBackToMTS)
+                    else if (m_analysis.Options.STACOptions.WriteResultsBackToMTS)
                     {
                         UpdateStatus("Cannot write mass tag results back to database.  The Job ID was not specified for this analysis.");
                     }
@@ -1062,7 +1049,7 @@ namespace MultiAlignCore.Algorithms
                         int totalMassTags = database.MassTags.Count;
                         UpdateStatus("Loaded " + totalMassTags.ToString() + " mass tags.");
 
-                        if (m_analysis.Options.STACAdapterOptions.UseDriftTime)
+                        if (m_analysis.Options.STACOptions.UseDriftTime)
                         {
                             
                         }
@@ -1077,7 +1064,7 @@ namespace MultiAlignCore.Algorithms
 
                     UpdateStatus("Loading dataset data files.");
                     LoadDatasetData(m_analysis.MetaData.Datasets,
-                                    m_analysis.Options.UMCFindingOptions,
+                                    m_analysis.Options.FeatureFindingOptions,
                                     Path.Combine(m_analysis.MetaData.AnalysisPath, m_analysis.MetaData.AnalysisName));
 
                     UpdateStatus("Linking MS Features to MSn Features.");
@@ -1106,7 +1093,7 @@ namespace MultiAlignCore.Algorithms
                         PerformAlignment(m_analysis);
 
                         UpdateStatus("Performing clustering.");
-                        PerformClustering(m_analysis, m_algorithms.Clusterer);
+                        PerformLCMSFeatureClustering(m_analysis, m_algorithms.Clusterer);
 
                         UpdateStatus("Performing Peak Matching.");
                         PerformPeakMatching();

@@ -50,99 +50,99 @@ namespace MultiAlignCore.Algorithms.Alignment
 
         [DataSummaryAttribute("Alignment Baseline Name")]
         public string AlignmentBaselineName { get; set; }
-        [ParameterFileAttribute("AlignmentType", "AlignmentOptions")]
+        [ParameterFileAttribute("AlignmentType", "Alignment")]
         [DataSummaryAttribute("Alignment Type")]
         public enmAlignmentType AlignmentType { get; set; }
         [DataSummaryAttribute("Apply Mass Recalibration")]
-        //[ParameterFileAttribute("ApplyMassRecalibration", "AlignmentOptions")]
+        //[ParameterFileAttribute("ApplyMassRecalibration", "Alignment")]
         //public bool ApplyMassRecalibration { get; set; }
         [DataSummaryAttribute("Contraction Factor")]
-        [ParameterFileAttribute("ContractionFactor", "AlignmentOptions")]
-        public short ContractionFactor { get; set; }
-        [ParameterFileAttribute("HistogramDriftTimeBinSize", "AlignmentOptions")]
+        [ParameterFileAttribute("ContractionFactor", "Alignment")]
+        public int ContractionFactor { get; set; }
+        [ParameterFileAttribute("HistogramDriftTimeBinSize", "Alignment")]
         [DataSummaryAttribute("Histogram Drift Time Bin Size")]
         public double DriftTimeBinSize { get; set; }
         [DataSummaryAttribute("Is Aligned to Mass Tag Database")]
         public bool IsAlignmentBaselineAMasstagDB { get; set; }
-        [ParameterFileAttribute("HistogramMassBinSize", "AlignmentOptions")]
+        [ParameterFileAttribute("HistogramMassBinSize", "Alignment")]
         [DataSummaryAttribute("Histogram Mass Bin Size")]
         public double MassBinSize { get; set; }
-        [ParameterFileAttribute("MassCalibrationLSQNumKnots", "AlignmentOptions")]
+        [ParameterFileAttribute("MassCalibrationLSQNumKnots", "Alignment")]
         [DataSummaryAttribute("Mass Calibration LSQ Number Knots")]
-        public short MassCalibrationLSQNumKnots { get; set; }
-        [ParameterFileAttribute("MassCalibrationLSQZScore", "AlignmentOptions")]
+        public int MassCalibrationLSQNumKnots { get; set; }
+        [ParameterFileAttribute("MassCalibrationLSQZScore", "Alignment")]
         [DataSummaryAttribute("Mass Calibration LSQZScore")]
         public double MassCalibrationLSQZScore { get; set; }
         [DataSummaryAttribute("Mass Calibration Max Jump")]
-        [ParameterFileAttribute("MassCalibrationMaxJump", "AlignmentOptions")]
-        public short MassCalibrationMaxJump { get; set; }
-        [ParameterFileAttribute("MassCalibrationMaxZScore", "AlignmentOptions")]
+        [ParameterFileAttribute("MassCalibrationMaxJump", "Alignment")]
+        public int MassCalibrationMaxJump { get; set; }
+        [ParameterFileAttribute("MassCalibrationMaxZScore", "Alignment")]
         [DataSummaryAttribute("Max Z-Score")]
         public double MassCalibrationMaxZScore { get; set; }
-        [ParameterFileAttribute("MassCalibrationNumMassDeltaBins", "AlignmentOptions")]
+        [ParameterFileAttribute("MassCalibrationNumMassDeltaBins", "Alignment")]
         [DataSummaryAttribute("Mass Calibration Number of Mass Delta Bins")]
-        public short MassCalibrationNumMassDeltaBins { get; set; }
-        [ParameterFileAttribute("MassCalibrationNumXSlices", "AlignmentOptions")]
+        public int MassCalibrationNumMassDeltaBins { get; set; }
+        [ParameterFileAttribute("MassCalibrationNumXSlices", "Alignment")]
         [DataSummaryAttribute("Mass Calibration Number of X Slices")]
-        public short MassCalibrationNumXSlices { get; set; }
+        public int MassCalibrationNumXSlices { get; set; }
         [DataSummaryAttribute("Mass Calibration Use LSQ")]
-        [ParameterFileAttribute("MassCalibrationUseLSQ", "AlignmentOptions")]
+        [ParameterFileAttribute("MassCalibrationUseLSQ", "Alignment")]
         public bool MassCalibrationUseLSQ { get; set; }
         [DataSummaryAttribute("Mass Calibration Window")]
-        [ParameterFileAttribute("MassCalibrationWindow", "AlignmentOptions")]
+        [ParameterFileAttribute("MassCalibrationWindow", "Alignment")]
         public double MassCalibrationWindow { get; set; }
-        [ParameterFileAttribute("MassTolerance", "AlignmentOptions")]
+        [ParameterFileAttribute("MassTolerance", "Alignment")]
         [DataSummaryAttribute("Mass Tolerance")]
         public double MassTolerance { get; set; }
-        [ParameterFileAttribute("MaxPromiscuity", "AlignmentOptions")]
+        [ParameterFileAttribute("MaxPromiscuity", "Alignment")]
         [DataSummaryAttribute("Max Promiscuity")]
-        public short MaxPromiscuity { get; set; }
-        [ParameterFileAttribute("MaxTimeJump", "AlignmentOptions")]
+        public int MaxPromiscuity { get; set; }
+        [ParameterFileAttribute("MaxTimeJump", "Alignment")]
         [DataSummaryAttribute("Max Time Jump")]
-        public short MaxTimeJump { get; set; }
+        public int MaxTimeJump { get; set; }
         [DataSummaryAttribute("Split Alignment M/Z Boundary")]
         public List<classAlignmentMZBoundary> MZBoundaries { get; set; }
-        [ParameterFileAttribute("HistogramNETBinSize", "AlignmentOptions")]
+        [ParameterFileAttribute("HistogramNETBinSize", "Alignment")]
         [DataSummaryAttribute("Histogram NET Bin Size")]
         public double NETBinSize { get; set; }
         [DataSummaryAttribute("Net Tolerance")]
-        [ParameterFileAttribute("NETTolerance", "AlignmentOptions")]
+        [ParameterFileAttribute("NETTolerance", "Alignment")]
         public double NETTolerance { get; set; }
         [DataSummaryAttribute("Number of Time Sections")]
-        [ParameterFileAttribute("NumTimeSections", "AlignmentOptions")]
+        [ParameterFileAttribute("NumTimeSections", "Alignment")]
         public int NumTimeSections { get; set; }
-        [ParameterFileAttribute("RecalibrationType", "AlignmentOptions")]
+        [ParameterFileAttribute("RecalibrationType", "Alignment")]
         [DataSummaryAttribute("Recalibration Type")]
         public enmCalibrationType RecalibrationType { get; set; }
-        [ParameterFileAttribute("SplitAlignmentMZ", "AlignmentOptions")]
+        [ParameterFileAttribute("SplitAlignmentMZ", "Alignment")]
         [DataSummaryAttribute("Split Alignment by M/Z")]
         public bool SplitAlignmentInMZ { get; set; }
-        [ParameterFileAttribute("UsePromiscuousPoints", "AlignmentOptions")]
+        [ParameterFileAttribute("UsePromiscuousPoints", "Alignment")]
         [DataSummaryAttribute("Use Promiscuous Points")]
         public bool UsePromiscuousPoints { get; set; }
 
 
-        public static clsAlignmentOptions ConvertNewToOld(AlignmentOptions newOptions)
+        public static clsAlignmentOptions ConvertToEngine(AlignmentOptions newOptions)
         {
             clsAlignmentOptions options             = new clsAlignmentOptions();
             options.AlignmentBaselineName           = newOptions.AlignmentBaselineName;
             options.AlignmentType                   = newOptions.AlignmentType;
            
-            options.ContractionFactor               = newOptions.ContractionFactor;
+            options.ContractionFactor               = System.Convert.ToInt16(newOptions.ContractionFactor);
             options.DriftTimeBinSize                = newOptions.DriftTimeBinSize;
             options.IsAlignmentBaselineAMasstagDB   = newOptions.IsAlignmentBaselineAMasstagDB;
             options.MassBinSize                     = newOptions.MassBinSize;
-            options.MassCalibrationLSQNumKnots      = newOptions.MassCalibrationLSQNumKnots;
+            options.MassCalibrationLSQNumKnots      = System.Convert.ToInt16(newOptions.MassCalibrationLSQNumKnots);
             options.MassCalibrationLSQZScore        = newOptions.MassCalibrationLSQZScore;
-            options.MassCalibrationMaxJump          = newOptions.MassCalibrationMaxJump;
+            options.MassCalibrationMaxJump          = System.Convert.ToInt16(newOptions.MassCalibrationMaxJump);
             options.MassCalibrationMaxZScore        = newOptions.MassCalibrationMaxZScore;
-            options.MassCalibrationNumMassDeltaBins = newOptions.MassCalibrationNumMassDeltaBins;
-            options.MassCalibrationNumXSlices       = newOptions.MassCalibrationNumXSlices;
+            options.MassCalibrationNumMassDeltaBins = System.Convert.ToInt16(newOptions.MassCalibrationNumMassDeltaBins);
+            options.MassCalibrationNumXSlices       = System.Convert.ToInt16(newOptions.MassCalibrationNumXSlices);
             options.MassCalibrationUseLSQ           = newOptions.MassCalibrationUseLSQ;
             options.MassCalibrationWindow           = newOptions.MassCalibrationWindow;
             options.MassTolerance                   = newOptions.MassTolerance;
-            options.MaxPromiscuity                  = newOptions.MaxPromiscuity; 
-            options.MaxTimeJump                     = newOptions.MaxTimeJump;
+            options.MaxPromiscuity                  = System.Convert.ToInt16(newOptions.MaxPromiscuity); 
+            options.MaxTimeJump                     = System.Convert.ToInt16(newOptions.MaxTimeJump);
             options.MZBoundaries                    = newOptions.MZBoundaries;
             options.NETBinSize                      = newOptions.NETBinSize;
             options.NETTolerance                    = newOptions.NETTolerance;

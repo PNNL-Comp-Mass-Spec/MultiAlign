@@ -17,6 +17,6 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
         /// </summary>
         /// <param name="path">Path containing MS Features.</param>
         /// <returns>List of UMC's.</returns>
-        List<UMCLight> FindFeatures(List<MSFeatureLight> features, UMCFeatureFinderOptions options);
+        List<UMCLight> FindFeatures(List<MSFeatureLight> features, LCMSFeatureFindingOptions options);
     }
 }

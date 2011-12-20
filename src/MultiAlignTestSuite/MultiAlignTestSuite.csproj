@@ -6,7 +6,7 @@
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{C98A3968-F62C-47EB-9E03-93862C747D33}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MultiAlignTestSuite</RootNamespace>
     <AssemblyName>MultiAlignTestSuite</AssemblyName>
@@ -74,11 +74,13 @@
     <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MultiAlignEngine">
-      <HintPath>..\..\lib\x64\MultiAlignEngine.dll</HintPath>
+    <Reference Include="MultiAlignEngine, Version=1.0.4370.23337, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\x86\MultiAlignEngine.dll</HintPath>
     </Reference>
+    <Reference Include="nunit.framework, Version=2.5.10.11092, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL" />
     <Reference Include="PNNLOmics">
-      <HintPath>..\..\lib\x64\PNNLOmics.dll</HintPath>
+      <HintPath>..\..\lib\PNNLOmics.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -96,6 +98,8 @@
     <Compile Include="Algorithms\UMCFeatureFinding.cs" />
     <Compile Include="IO\MSFeatureDOATest.cs" />
     <Compile Include="IO\MassTagDOATest.cs" />
+    <Compile Include="IO\MTDB\MTDBLoaderTests.cs" />
+    <Compile Include="IO\Parameters\XMLParameterFileTests.cs" />
     <Compile Include="IO\UMCReaderFailure.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

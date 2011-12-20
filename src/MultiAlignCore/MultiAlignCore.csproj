@@ -135,6 +135,7 @@
     <Compile Include="Algorithms\Alignment\LCMSWarpFeatureAligner.cs" />
     <Compile Include="Algorithms\Alignment\IFeatureAligner.cs" />
     <Compile Include="Algorithms\AlgorithmBuilder.cs" />
+    <Compile Include="Algorithms\Clustering\ClusteringOptions.cs" />
     <Compile Include="Algorithms\Clustering\MsnClusterer.cs" />
     <Compile Include="Algorithms\Clustering\ClusteringAlgorithmType.cs" />
     <Compile Include="Algorithms\FeatureFinding\UMCFeatureFinderOptions.cs" />

@@ -13,7 +13,7 @@ using PNNLOmics.Data.Features;
 using PNNLOmics.Algorithms.FeatureMatcher;
 using PNNLOmics.Utilities;
 using PNNLOmics.Algorithms;
-using MultiAlignCore.Algorithms.PeakMatching;
+using MultiAlignCore.Algorithms.FeatureMatcher;
 
 namespace MultiAlignCore.Algorithms.FeatureMatcher
 {

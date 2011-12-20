@@ -26,7 +26,7 @@ namespace MultiAlignCore.IO.Features
                                             IUmcDAO                 featureCache,
                                             IMSFeatureDAO           msFeatureCache,
                                             IGenericDAO<MSFeatureToLCMSFeatureMap> msFeatureMapCache,
-                                            UMCFeatureFinderOptions options)
+                                            LCMSFeatureFindingOptions options)
         {
             clsUMC[]        loadedFeatures  = null;
             IFeatureFinder  featureFinder   = new UMCFeatureFinder();

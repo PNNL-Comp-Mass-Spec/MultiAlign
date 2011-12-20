@@ -47,7 +47,7 @@ namespace MultiAlignCore.Algorithms.Alignment
                                                 bool                            alignDriftTimes)
         {                        
             clsAlignmentProcessor alignmentProcessor    = new clsAlignmentProcessor();
-            alignmentProcessor.AlignmentOptions         = AlignmentOptions.ConvertNewToOld(alignmentOptions);
+            alignmentProcessor.AlignmentOptions         = AlignmentOptions.ConvertToEngine(alignmentOptions);
             List<clsMassTag> tags                       = new List<clsMassTag>();
 
             clsUMC featureTest = features.Find(delegate(clsUMC x)
@@ -95,7 +95,7 @@ namespace MultiAlignCore.Algorithms.Alignment
                                                 AlignmentOptions                alignmentOptions)
         {
             clsAlignmentProcessor alignmentProcessor    = new clsAlignmentProcessor();
-            alignmentProcessor.AlignmentOptions         = AlignmentOptions.ConvertNewToOld(alignmentOptions);
+            alignmentProcessor.AlignmentOptions         = AlignmentOptions.ConvertToEngine(alignmentOptions);
 
 
             OnStatus("Setting features from baseline dataset.");

@@ -186,7 +186,7 @@ namespace MultiAlignCore.IO.Parameters
             ExtractGroups(lines);
                         
             LoadParameterOptions(ProcessSubSectionData(ALIGNMENT_TAG),           analysis.Options.AlignmentOptions);            
-            LoadParameterOptions(ProcessSubSectionData(FEATURE_FINDING_TAG),     analysis.Options.UMCFindingOptions);
+            LoadParameterOptions(ProcessSubSectionData(FEATURE_FINDING_TAG),     analysis.Options.FeatureFindingOptions);
             LoadParameterOptions(ProcessSubSectionData(MASS_TAG_DATABASE_TAG),   analysis.Options.MassTagDatabaseOptions);
             LoadParameterOptions(ProcessSubSectionData(CLUSTER_TAG),             analysis.Options.ClusterOptions);
             LoadGlobalOptions(ref analysis);                 

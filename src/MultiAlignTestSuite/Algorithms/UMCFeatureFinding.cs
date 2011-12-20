@@ -43,7 +43,7 @@ namespace MultiAlignTestSuite.Algorithms
             }
 
             UMCFeatureFinder finder             = new UMCFeatureFinder();
-            UMCFeatureFinderOptions options     = new UMCFeatureFinderOptions();
+            LCMSFeatureFindingOptions options   = new LCMSFeatureFindingOptions();
             options.AveMassWeight               = .01f;
             options.ConstraintAveMass           = 6;
             options.ConstraintMonoMass          = 6;
@@ -57,7 +57,7 @@ namespace MultiAlignTestSuite.Algorithms
             options.MonoMassWeight              = .01f;
             options.NETWeight                   = .1f;
             options.ScanWeight                  = .01f;
-            options.UMCAbundanceReportingType   = enmAbundanceReportingType.PeakMax;
+            options.UMCAbundanceReportingType   = AbundanceReportingType.Max;
             options.UseIsotopicFitFilter        = true;
             options.UseIsotopicIntensityFilter  = false;
             options.UseNET                      = true; 

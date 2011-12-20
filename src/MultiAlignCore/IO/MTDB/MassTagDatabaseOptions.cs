@@ -15,7 +15,7 @@ namespace MultiAlignCore.IO.MTDB
         {            
 				MinimumObservationCountFilter   = 0;
 				ConfirmedTags		            = false;
-                UseDriftTime                    = false;
+                OnlyLoadTagsWithDriftTime       = false;
 				MinimumXCorr			        = 0.0F; 
 				MinimumPMTScore		            = 1; 
 				NETValType			            = 0; //-- 0 to use GANET values, 1 to use PNET values
@@ -31,12 +31,12 @@ namespace MultiAlignCore.IO.MTDB
 				DatabaseType				    = MassTagDatabaseType.None;
         }
 
-        [ParameterFileAttribute("ConfirmedTags", "MassTagDBOptions")]
+        [ParameterFileAttribute("ConfirmedTags", "MassTagDatabase")]
         public bool ConfirmedTags { get; set; }
-        [ParameterFileAttribute("UseDriftTime", "MassTagDBOptions")]
-        public bool UseDriftTime { get; set; }        
+        [ParameterFileAttribute("OnlyLoadTagsWithDriftTime", "MassTagDatabase")]
+        public bool OnlyLoadTagsWithDriftTime { get; set; }        
         [DataSummaryAttribute("Minimum X-Correlation")]
-        [ParameterFileAttribute("MinimumXCorr","MassTagDBOptions")]
+        [ParameterFileAttribute("MinimumXCorr","MassTagDatabase")]
         public double MinimumXCorr
         {
             get;
@@ -44,7 +44,7 @@ namespace MultiAlignCore.IO.MTDB
         }
 
         [DataSummaryAttribute("Minimum MS-MS Observations")]
-        [ParameterFileAttribute("MinimumObservationCountFilter","MassTagDBOptions")]
+        [ParameterFileAttribute("MinimumObservationCountFilter","MassTagDatabase")]
         public int MinimumObservationCountFilter
         {
             get;
@@ -52,7 +52,7 @@ namespace MultiAlignCore.IO.MTDB
         }
 				
         [DataSummaryAttribute("Minimum PMT Score")]
-        [ParameterFileAttribute("MinimumPMTScore","MassTagDBOptions")]
+        [ParameterFileAttribute("MinimumPMTScore","MassTagDatabase")]
         public double MinimumPMTScore 
         {
             get;
@@ -63,7 +63,7 @@ namespace MultiAlignCore.IO.MTDB
         ///  0 to use GANET values, 1 to use PNET values    
         /// </summary>
         [DataSummaryAttribute("NET Value Type")]
-        [ParameterFileAttribute("NETValType","MassTagDBOptions")]
+        [ParameterFileAttribute("NETValType","MassTagDatabase")]
         public int NETValType 
         {
             get;
@@ -71,7 +71,7 @@ namespace MultiAlignCore.IO.MTDB
         }
 				
         [DataSummaryAttribute("Minimum Discriminant")]				
-        [ParameterFileAttribute("MinimumDiscriminant","MassTagDBOptions")]
+        [ParameterFileAttribute("MinimumDiscriminant","MassTagDatabase")]
         public double MinimumDiscriminant
         {
             get;
@@ -79,7 +79,7 @@ namespace MultiAlignCore.IO.MTDB
         }
 				
         [DataSummaryAttribute("Prophet Value")]
-        [ParameterFileAttribute("PeptideProphetVal","MassTagDBOptions")]
+        [ParameterFileAttribute("PeptideProphetVal","MassTagDatabase")]
         public double PeptideProphetVal
         {
             get;
@@ -88,7 +88,7 @@ namespace MultiAlignCore.IO.MTDB
 			
 				
         [DataSummaryAttribute("Experiment Filter")]
-        [ParameterFileAttribute("ExperimentFilter","MassTagDBOptions")]
+        [ParameterFileAttribute("ExperimentFilter","MassTagDatabase")]
         public string ExperimentFilter
         {
             get;
@@ -96,7 +96,7 @@ namespace MultiAlignCore.IO.MTDB
         }
 
         [DataSummaryAttribute("Experiment Exlusion Filter")]
-        [ParameterFileAttribute("ExperimentExclusionFilter","MassTagDBOptions")]
+        [ParameterFileAttribute("ExperimentExclusionFilter","MassTagDatabase")]
         public string ExperimentExclusionFilter
         {
             get;
@@ -104,7 +104,6 @@ namespace MultiAlignCore.IO.MTDB
         }
 								
         [DataSummaryAttribute("Database Type")]
-        [ParameterFileAttribute("DatabaseType","DatabaseType")]
         public MassTagDatabaseType DatabaseType
         {
             get;

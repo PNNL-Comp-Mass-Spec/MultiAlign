@@ -1,10 +1,8 @@
-using MultiAlignCore.Algorithms.PeakMatching;
-using PNNLOmics.Algorithms.FeatureClustering;
 using MultiAlignCore.Algorithms.Alignment;
-using PNNLOmics.Data.Features;
-using PNNLOmics.Utilities;
 using MultiAlignCore.Algorithms.FeatureMatcher;
 using PNNLOmics.Algorithms;
+using PNNLOmics.Algorithms.FeatureClustering;
+using PNNLOmics.Data.Features;
 
 namespace MultiAlignCore.Algorithms
 {

@@ -71,27 +71,27 @@ namespace MultiAlignCore.Algorithms
                 case PeakMatchingType.Traditional:
 
                     TraditionalPeakMatcher<UMCClusterLight> matcher     = new TraditionalPeakMatcher<UMCClusterLight>();
-                    matcher.Options                                     = options.STACAdapterOptions;
+                    matcher.Options                                     = options.STACOptions;
                     m_provider.PeakMatcher                              = matcher;
                     break;
                 
                 case PeakMatchingType.STAC:
                 default:
                     STACAdapter<UMCClusterLight> stanleyMatcher         = new STACAdapter<UMCClusterLight>();
-                    stanleyMatcher.Options.HistogramBinWidth            = options.STACAdapterOptions.HistogramBinWidth;
-                    stanleyMatcher.Options.HistogramMultiplier          = options.STACAdapterOptions.HistogramMultiplier;
-                    stanleyMatcher.Options.ShiftAmount                  = options.STACAdapterOptions.ShiftAmount;
-                    stanleyMatcher.Options.ShouldCalculateHistogramFDR  = options.STACAdapterOptions.ShouldCalculateHistogramFDR;
-                    stanleyMatcher.Options.ShouldCalculateShiftFDR      = options.STACAdapterOptions.ShouldCalculateShiftFDR;
-                    stanleyMatcher.Options.ShouldCalculateSLiC          = options.STACAdapterOptions.ShouldCalculateSLiC;
-                    stanleyMatcher.Options.ShouldCalculateSTAC          = options.STACAdapterOptions.ShouldCalculateSTAC;
-                    stanleyMatcher.Options.UseDriftTime                 = options.STACAdapterOptions.UseDriftTime;
-                    stanleyMatcher.Options.UseEllipsoid                 = options.STACAdapterOptions.UseEllipsoid;
-                    stanleyMatcher.Options.UsePriors                    = options.STACAdapterOptions.UsePriors;
-                    tolerances.DriftTimeTolerance                       = System.Convert.ToSingle(options.STACAdapterOptions.DriftTimeTolerance);
-                    tolerances.MassTolerancePPM                         = options.STACAdapterOptions.MassTolerancePPM;
-                    tolerances.NETTolerance                             = options.STACAdapterOptions.NETTolerance;
-                    tolerances.Refined                                  = options.STACAdapterOptions.Refined;
+                    stanleyMatcher.Options.HistogramBinWidth            = options.STACOptions.HistogramBinWidth;
+                    stanleyMatcher.Options.HistogramMultiplier          = options.STACOptions.HistogramMultiplier;
+                    stanleyMatcher.Options.ShiftAmount                  = options.STACOptions.ShiftAmount;
+                    stanleyMatcher.Options.ShouldCalculateHistogramFDR  = options.STACOptions.ShouldCalculateHistogramFDR;
+                    stanleyMatcher.Options.ShouldCalculateShiftFDR      = options.STACOptions.ShouldCalculateShiftFDR;
+                    stanleyMatcher.Options.ShouldCalculateSLiC          = options.STACOptions.ShouldCalculateSLiC;
+                    stanleyMatcher.Options.ShouldCalculateSTAC          = options.STACOptions.ShouldCalculateSTAC;
+                    stanleyMatcher.Options.UseDriftTime                 = options.STACOptions.UseDriftTime;
+                    stanleyMatcher.Options.UseEllipsoid                 = options.STACOptions.UseEllipsoid;
+                    stanleyMatcher.Options.UsePriors                    = options.STACOptions.UsePriors;
+                    tolerances.DriftTimeTolerance                       = System.Convert.ToSingle(options.STACOptions.DriftTimeTolerance);
+                    tolerances.MassTolerancePPM                         = options.STACOptions.MassTolerancePPM;
+                    tolerances.NETTolerance                             = options.STACOptions.NETTolerance;
+                    tolerances.Refined                                  = options.STACOptions.Refined;
                     stanleyMatcher.Options.UserTolerances               = tolerances;                    
                     m_provider.PeakMatcher                              = stanleyMatcher;
                     break;
