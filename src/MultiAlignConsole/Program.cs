@@ -5,9 +5,11 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
+using MultiAlignConsole.IO;
 using MultiAlignCore;
 using MultiAlignCore.Algorithms;
 using MultiAlignCore.Algorithms.Clustering;
+using MultiAlignCore.Algorithms.Features;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.MassTags;
 using MultiAlignCore.IO.Features;
@@ -20,9 +22,7 @@ using MultiAlignCustomControls.Charting;
 using MultiAlignCustomControls.Drawing;
 using MultiAlignEngine.Features;
 using PNNLOmics.Data.Features;
-using MultiAlignConsole.IO;
 
-using MultiAlignCore.Data.Factors;
 
 namespace MultiAlignConsole
 {
@@ -1516,14 +1516,16 @@ namespace MultiAlignConsole
             if (m_exporterNames.CrossTabPath != null)
             {
                 UMCClusterCrossTabWriter writer = new UMCClusterCrossTabWriter(Path.Combine(m_analysisPath, m_exporterNames.CrossTabPath));
-                writer.Consolidator             = MultiAlignCore.Algorithms.Features.FeatureConsolidatorFactory.CreateConsolidator(enmAbundanceReportingType.PeakArea);
+                writer.Consolidator             = FeatureConsolidatorFactory.CreateConsolidator(m_analysis.Options.ConsolidationOptions.AbundanceType,
+                                                                                                m_analysis.Options.FeatureFindingOptions.UMCAbundanceReportingType);
                 m_clusterExporters.Add(writer);
             }
             if (m_exporterNames.CrossTabAbundance != null)
             {
                 UMCClusterAbundanceCrossTabWriter writer = new UMCClusterAbundanceCrossTabWriter(Path.Combine(m_analysisPath,
                                                                                                  m_exporterNames.CrossTabAbundance));
-                writer.Consolidator                      = MultiAlignCore.Algorithms.Features.FeatureConsolidatorFactory.CreateConsolidator(enmAbundanceReportingType.PeakArea);
+                writer.Consolidator                      = FeatureConsolidatorFactory.CreateConsolidator(m_analysis.Options.ConsolidationOptions.AbundanceType,
+                                                                                                         m_analysis.Options.FeatureFindingOptions.UMCAbundanceReportingType);
                 m_clusterExporters.Add(writer);
             }
         }
@@ -1731,16 +1733,7 @@ namespace MultiAlignConsole
                     /// /////////////////////////////////////////////////////////////                                    
                     ConstructClustering(builder);
 
-                    // By default create exporting tools.
-                    if (m_exporterNames.CrossTabPath == null)
-                    {
-                        m_exporterNames.CrossTabPath = m_analysisName.Replace(".db3", "");
-                    }
-                    if (m_exporterNames.CrossTabAbundance == null)
-                    {
-                        m_exporterNames.CrossTabAbundance = m_analysisName.Replace(".db3", "");
-                    }
-                    ConstructExporting();
+                    
 
                     m_analysis               = ConstructAnalysisObject(analysisSetupInformation);
                     m_analysis.DataProviders = providers;
@@ -1794,6 +1787,17 @@ namespace MultiAlignConsole
                         }
                     }
 
+                    PrintMessage("Creating exporter options.");                    
+                    if (m_exporterNames.CrossTabPath == null)
+                    {
+                        m_exporterNames.CrossTabPath = m_analysisName.Replace(".db3", "");
+                    }
+                    if (m_exporterNames.CrossTabAbundance == null)
+                    {
+                        m_exporterNames.CrossTabAbundance = m_analysisName.Replace(".db3", "");
+                    }
+                    ConstructExporting();
+
                     /// /////////////////////////////////////////////////////////////
                     /// Start the analysis
                     /// /////////////////////////////////////////////////////////////            
@@ -1845,7 +1849,18 @@ namespace MultiAlignConsole
             try
             {
                 ProcessCommandLineArguments(args);
-                return StartMultiAlign();
+                int result = StartMultiAlign();
+                if (result != 0)
+                {
+                    PrintMessage("");
+                    PrintMessage("ANALYSIS FAILED");
+                }
+                else
+                {
+                    PrintMessage("");
+                    PrintMessage("ANALYSIS SUCCESS");
+                }
+                return result;
             }
             catch(Exception ex)
             {
@@ -1857,6 +1872,8 @@ namespace MultiAlignConsole
                     innerEx = innerEx.InnerException;
                 }
                 PrintMessage("Stack: " + ex.StackTrace);
+                PrintMessage("");
+                PrintMessage("ANALYSIS FAILED");
                 return 1;
             }
         }

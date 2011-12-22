@@ -107,6 +107,12 @@ namespace MultiAlignCore.IO.Parameters
             {
                 LoadParameterOptions(analysis.Options.STACOptions, stacNode);
             }
+
+            MetaNode consolidatorNode = metaData.OpenChild("FeatureConsolidator", false);
+            if (consolidatorNode != null)
+            {
+                LoadParameterOptions(analysis.Options.ConsolidationOptions, consolidatorNode);
+            }
         }
     }
 }

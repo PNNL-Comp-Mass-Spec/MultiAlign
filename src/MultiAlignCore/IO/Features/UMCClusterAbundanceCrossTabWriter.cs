@@ -58,10 +58,10 @@ namespace MultiAlignCore.IO.Features
             using (TextWriter writer = File.CreateText(Path))
             {
                 // Build the header.
-                string mainHeader   = "Cluster ID";                
+                string mainHeader = "Cluster ID, Total Members, Dataset Members,  Tightness, Ambiguity";              
                 
                 // Make blank columns for clusters that dont have enough dta.
-                string blankColumns = ",";
+                string blankColumns = ",,";
 
                 // Map the dataset ID's to a list of numbers sorted from lowest to highest.
                 List<int> datasetIds = new List<int>();
@@ -79,7 +79,7 @@ namespace MultiAlignCore.IO.Features
                 string header = mainHeader;
                 for (int i = 0; i < datasetIds.Count; i++)
                 {
-                    header += string.Format(", Abundance-{0}", datasetIds[i]);
+                    header += string.Format(", AbundanceMax-{0}, AbundanceSum-{0}", datasetIds[i]);
                 }
                 writer.WriteLine(header);
 
@@ -96,7 +96,7 @@ namespace MultiAlignCore.IO.Features
                         if (containsUMC)
                         {
                             UMCLight umc = features[id];
-                            umcBuilder.Append(string.Format(",{0}", umc.Abundance));
+                            umcBuilder.Append(string.Format(",{0},{1}", umc.Abundance, umc.AbundanceSum));
                         }
                         else
                         {
@@ -105,7 +105,7 @@ namespace MultiAlignCore.IO.Features
                     }
 
                     StringBuilder builder = new StringBuilder();
-                    builder.Append(string.Format("{0}", cluster.ID));
+                    builder.Append(string.Format("{0},{1},{2},{3},{4}", cluster.ID, cluster.UMCList.Count, features.Keys.Count, cluster.Score, cluster.AmbiguityScore));
 
 
                     if (clusterMap.Count > 0)

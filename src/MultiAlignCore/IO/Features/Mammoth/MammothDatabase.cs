@@ -179,7 +179,7 @@ namespace MultiAlignCore.IO.Mammoth
             // Cluster Inserts
             m_clusterInsertStatementCommand = m_connection.CreateCommand();
             m_clusterInsertStatementCommand.CommandText =
-                                                "INSERT INTO T_CLUSTERS  (Cluster_ID, Mass, NET, Drift_Time, Charge, Score, Ambiguity_Score, Dataset_Member_Count, Member_Count) " +
+                                                "INSERT INTO T_CLUSTERS  (Cluster_ID, Mass, NET, Drift_Time, Charge, Tightness_Score, Ambiguity_Score, Dataset_Member_Count, Member_Count) " +
                                                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
             m_clusterInsertStatementCommand.Prepare();
 
@@ -195,7 +195,7 @@ namespace MultiAlignCore.IO.Mammoth
             m_featureQueryStatementCommand = m_connection.CreateCommand();
             m_featureQueryStatementCommand.CommandText = " SELECT     F.Feature_ID as Fid, F.Mass_Calibrated as FMass, F.NET as FNet, " +
                                       " F.Drift_Time as FDrift, F.Dataset_ID as FDid, " +
-                                      " F.cluster_ID as FCid, F.charge as FCharge, F.Abundance_Max, F.Scan_LC_Start, F.Scan_LC_End, F.Scan_LC  " +
+                                      " F.cluster_ID as FCid, F.charge as FCharge, F.Abundance_Max, F.Scan_LC_Start, F.Scan_LC_End, F.Scan_LC , F.Abundance_Sum  " +
                                       " FROM       T_LCMS_FEATURES F" +
                                       " WHERE " +
                                       " FCid < 0    AND " +
@@ -207,7 +207,7 @@ namespace MultiAlignCore.IO.Mammoth
             m_featureChargeQueryStatementCommand = m_connection.CreateCommand();
             m_featureChargeQueryStatementCommand.CommandText = " SELECT     F.Feature_ID as Fid, F.Mass_Calibrated as FMass, F.NET as FNet, " +
                                       " F.Drift_Time as FDrift, F.Dataset_ID as FDid, " +
-                                      " F.cluster_ID as FCid, F.charge as FCharge, F.Abundance_Max, F.Scan_LC_Start, F.Scan_LC_End, F.Scan_LC   " +
+                                      " F.cluster_ID as FCid, F.charge as FCharge, F.Abundance_Max, F.Scan_LC_Start, F.Scan_LC_End, F.Scan_LC , F.Abundance_Sum  " +
                                       " FROM       T_LCMS_FEATURES F" +
                                       " WHERE " +
                                       " FCid < 0    AND " +
@@ -223,7 +223,7 @@ namespace MultiAlignCore.IO.Mammoth
                                     " SELECT " +
                                     " F.Feature_ID, F.Mass_Calibrated as FMass, F.NET as FNet, F.Drift_Time as FDrift, " +
                                     " F.dataset_id, F.cluster_ID AS FClusterID,  " +
-                                    " C.mass AS ClusterMass, C.net AS ClusterNet, C.Drift_time AS ClusterDrift, F.Charge as FeatureCharge, C.Charge as ClusterCharge, F.Abundance_Max, F.Scan_LC_Start, F.Scan_LC_End, F.Scan_LC, C.Ambiguity_Score  " +
+                                    " C.mass AS ClusterMass, C.net AS ClusterNet, C.Drift_time AS ClusterDrift, F.Charge as FeatureCharge, C.Charge as ClusterCharge, F.Abundance_Max, F.Scan_LC_Start, F.Scan_LC_End, F.Scan_LC, C.Ambiguity_Score , F.Abundance_Sum, C.Tightness_Score" +
                                     " FROM  T_LCMS_FEATURES F INNER JOIN " +
                                     "           T_CLUSTERS C ON " +
                                     "               FClusterID > -1   AND " +
@@ -240,7 +240,7 @@ namespace MultiAlignCore.IO.Mammoth
                                     " SELECT " +
                                     " F.Feature_ID, F.Mass_Calibrated as FMass, F.NET as FNet, F.Drift_Time as FDrift, " +
                                     " F.dataset_id, F.cluster_ID AS FClusterID,  " +
-                                    " C.mass AS ClusterMass, C.net AS ClusterNet, C.Drift_time AS ClusterDrift, F.Charge as FeatureCharge, C.Charge as ClusterCharge, F.Abundance_Max, F.Scan_LC_Start, F.Scan_LC_End, F.Scan_LC, C.Ambiguity_Score " +
+                                    " C.mass AS ClusterMass, C.net AS ClusterNet, C.Drift_time AS ClusterDrift, F.Charge as FeatureCharge, C.Charge as ClusterCharge, F.Abundance_Max, F.Scan_LC_Start, F.Scan_LC_End, F.Scan_LC, C.Ambiguity_Score, F.Abundance_Sum, C.Tightness_Score" +
                                     " FROM  T_LCMS_FEATURES F INNER JOIN " +
                                     "           T_CLUSTERS C ON " +
                                     "               FClusterID > -1   AND " +
@@ -487,7 +487,7 @@ namespace MultiAlignCore.IO.Mammoth
                     // Read the results and keep them if they have a valid cluster ID.
                     while (reader.Read())
                     {
-                        object[] values = new object[CONST_TOTAL_FEATURE_NO_CLUSTER_QUERY_SIZE + 3];
+                        object[] values = new object[CONST_TOTAL_FEATURE_NO_CLUSTER_QUERY_SIZE + 6];
                         reader.GetValues(values);
 
                         // Extract all of the UMC data. 
@@ -504,6 +504,7 @@ namespace MultiAlignCore.IO.Mammoth
                         umc.ScanStart           = Convert.ToInt32(values[CONST_TOTAL_FEATURE_NO_CLUSTER_QUERY_SIZE]);
                         umc.ScanEnd             = Convert.ToInt32(values[CONST_TOTAL_FEATURE_NO_CLUSTER_QUERY_SIZE + 1]);
                         umc.Scan                = Convert.ToInt32(values[CONST_TOTAL_FEATURE_NO_CLUSTER_QUERY_SIZE + 2]);
+                        umc.AbundanceSum        = Convert.ToInt32(values[16]);
                         if (!clusters.ContainsKey(clusterID))
                         {
                             // No cluster exists in the map, so we need to create a new one.
@@ -515,8 +516,8 @@ namespace MultiAlignCore.IO.Mammoth
                             cluster.RetentionTime       = cluster.NET;
                             cluster.DriftTime           = Convert.ToSingle(values[CONST_UMC_DRIFT_TIME]);                                                        
                             cluster.ChargeState         = Convert.ToInt32(values[CONST_CLUSTER_CHARGE]);
-                            cluster.AmbiguityScore      = Convert.ToDouble(values[values.Length - 1]);
-
+                            cluster.AmbiguityScore      = Convert.ToDouble(values[15]);
+                            cluster.Score               = Convert.ToDouble(values[17]);                            
                             umc.UMCCluster = cluster;
                             clusters.Add(clusterID, cluster);
                         }
@@ -565,7 +566,7 @@ namespace MultiAlignCore.IO.Mammoth
                 // Read the results and keep them if they have a valid cluster ID.
                 while (reader.Read())
                 {
-                    object[] values             = new object[11];
+                    object[] values             = new object[12];
                     reader.GetValues(values);
                      
                     UMCLight umc                     = new UMCLight();
@@ -581,6 +582,7 @@ namespace MultiAlignCore.IO.Mammoth
                     umc.ScanStart               = Convert.ToInt32(values[8]);
                     umc.ScanEnd                 = Convert.ToInt32(values[9]);
                     umc.Scan                    = Convert.ToInt32(values[10]);
+                    umc.AbundanceSum            = Convert.ToInt32(values[11]);
                     m_features.Add(umc);
                 }
             }            

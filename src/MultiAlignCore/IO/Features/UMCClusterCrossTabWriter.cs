@@ -60,11 +60,11 @@ namespace MultiAlignCore.IO.Features
             using (TextWriter writer = File.CreateText(Path))
             {
                 // Build the header.
-                string mainHeader = "Cluster ID, Mono Mass, Net, Members";
+                string mainHeader = "Cluster ID, Mono Mass, Net, Total Members, Dataset Members,  Tightness, Ambiguity";
 
 
                 // Make blank columns for clusters that dont have enough dta.
-                string blankColumns = ",,,,,,,,";
+                string blankColumns = ",,,,,,,,,";
 
                 // Map the dataset ID's to a list of numbers sorted from lowest to highest.
                 List<int> datasetIds = new List<int>();
@@ -85,7 +85,7 @@ namespace MultiAlignCore.IO.Features
 
                 for (int i = 0; i < datasetIds.Count; i++)
                 {
-                    header += string.Format(", ID.{0}, DatasetID.{0}, MonoMass.{0}, Net.{0}, Abundance.{0}, Scan.{0}, ScanStart.{0}, ScanEnd.{0}", datasets[i].DatasetName);
+                    header += string.Format(", ID.{0}, DatasetID.{0}, MonoMass.{0}, Net.{0}, AbundanceMax.{0}, AbundanceSum.{0}, Scan.{0}, ScanStart.{0}, ScanEnd.{0}", datasets[i].DatasetName);
                 }
                 writer.WriteLine(header);
 
@@ -102,7 +102,7 @@ namespace MultiAlignCore.IO.Features
                         if (containsUMC)
                         {
                             UMCLight umc = features[id];
-                            umcBuilder.Append(string.Format(",{0},{1},{2},{3},{4},{5},{6},{7}", umc.ID, umc.GroupID, umc.MassMonoisotopic, umc.NET, umc.Abundance, umc.Scan, umc.ScanStart, umc.ScanEnd));
+                            umcBuilder.Append(string.Format(",{0},{1},{2},{3},{4},{5},{6},{7},{8}", umc.ID, umc.GroupID, umc.MassMonoisotopic, umc.NET, umc.Abundance, umc.AbundanceSum, umc.Scan, umc.ScanStart, umc.ScanEnd));                            
                         }
                         else
                         {
@@ -112,7 +112,7 @@ namespace MultiAlignCore.IO.Features
 
                     // We may have multiple matches to a single cluster.
                     StringBuilder builder = new StringBuilder();
-                    builder.Append(string.Format("{0},{1},{2},{3}", cluster.ID, cluster.MassMonoisotopic, cluster.RetentionTime, features.Keys.Count));
+                    builder.Append(string.Format("{0},{1},{2},{3},{4},{5},{6}", cluster.ID, cluster.MassMonoisotopic, cluster.RetentionTime, cluster.UMCList.Count, features.Keys.Count, cluster.Score, cluster.AmbiguityScore));
                     if (clusterMap.Count > 0)
                     {
                         if (clusterMap.ContainsKey(cluster.ID))

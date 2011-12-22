@@ -138,6 +138,7 @@
     <Compile Include="Algorithms\Clustering\ClusteringOptions.cs" />
     <Compile Include="Algorithms\Clustering\MsnClusterer.cs" />
     <Compile Include="Algorithms\Clustering\ClusteringAlgorithmType.cs" />
+    <Compile Include="Algorithms\FeatureFinding\AbundanceReportingType.cs" />
     <Compile Include="Algorithms\FeatureFinding\UMCFeatureFinderOptions.cs" />
     <Compile Include="Algorithms\FeatureFinding\IFeatureFinder.cs" />
     <Compile Include="Algorithms\FeatureFinding\UMCFeatureFinder.cs" />
@@ -146,6 +147,7 @@
     <Compile Include="Algorithms\FeatureMatcher\STAC.cs" />
     <Compile Include="Algorithms\FeaturesClusteredEventArgs.cs" />
     <Compile Include="Algorithms\Features\FeatureConsolidatorFactory.cs" />
+    <Compile Include="Algorithms\Features\FeatureConsolidatorOptions.cs" />
     <Compile Include="Algorithms\Features\LCMSFeatureConsolidator.cs" />
     <Compile Include="Algorithms\Features\UMCAbundanceSumConsolidator.cs" />
     <Compile Include="Algorithms\Features\UMCAbundanceConsolidator.cs" />
@@ -284,6 +286,7 @@
     <Compile Include="IO\Parameters\MultiAlignParameterIniFileReader.cs" />
     <Compile Include="IO\Parameters\MultiAlignParameterIniFileWriter.cs" />
     <Compile Include="IO\Parameters\ParameterFileAttribute.cs" />
+    <Compile Include="IO\Parameters\ParameterFileGroupAttribute.cs" />
     <Compile Include="IO\Parameters\ParameterHibernateMapping.cs" />
     <Compile Include="IO\Parameters\ParameterUtility.cs" />
     <Compile Include="IO\Parameters\xmlIO.cs" />

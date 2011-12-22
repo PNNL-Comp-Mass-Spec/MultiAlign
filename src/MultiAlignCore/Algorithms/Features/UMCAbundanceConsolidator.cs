@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using PNNLOmics.Data.Features;
+using MultiAlignCore.Algorithms.FeatureFinding;
 
 namespace MultiAlignCore.Algorithms.Features
 {
@@ -9,6 +10,10 @@ namespace MultiAlignCore.Algorithms.Features
     /// </summary>
     public class UMCAbundanceConsolidator: LCMSFeatureConsolidator
     {
+        public UMCAbundanceConsolidator()
+        {
+            AbundanceType = AbundanceReportingType.Max;
+        }
         /// <summary>
         /// Organizes a list of UMC's into a dataset represented group.
         /// </summary>
@@ -27,14 +32,30 @@ namespace MultiAlignCore.Algorithms.Features
                 }
                 else
                 {
-                    // choose the max abundance...
-                    if (umc.Abundance > umcs[group].Abundance)
+                    switch(AbundanceType)
                     {
-                        umcs[group] = umc;
+                        case AbundanceReportingType.Max:
+                            if (umc.Abundance > umcs[group].Abundance)
+                            {
+                                umcs[group] = umc;
+                            }
+                            break;
+                        case AbundanceReportingType.Sum:
+                            if (umc.AbundanceSum > umcs[group].AbundanceSum)
+                            {
+                                umcs[group] = umc;
+                            }
+                            break;
                     }
                 }
             }
             return umcs;
+        }
+
+        public AbundanceReportingType AbundanceType
+        {
+            get;
+            set;
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using MultiAlignCore.IO.Parameters;
+using System.ComponentModel;
 
 namespace MultiAlignCore.Algorithms.MSLinker
 {
@@ -18,6 +19,8 @@ namespace MultiAlignCore.Algorithms.MSLinker
         /// Gets or sets the m/z tolerance window width for the MS Linker algorithm.
         /// </summary>
         [ParameterFileAttribute("MZTolerance", "MSnLinker")]
+        [Category("Tolerances")]
+        [Description("The m/z tolerance window to match an MS feature to an MS/MS spectra based on its precursor mass")]
         public double MzTolerance
         {
             get

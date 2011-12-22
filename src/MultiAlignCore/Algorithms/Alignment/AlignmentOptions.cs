@@ -3,7 +3,7 @@ using MultiAlignCore.IO.Parameters;
 using MultiAlignEngine;
 using MultiAlignEngine.Alignment;
 using MultiAlignCore.Data;
-
+using System.ComponentModel;
 
 namespace MultiAlignCore.Algorithms.Alignment
 {
@@ -42,86 +42,118 @@ namespace MultiAlignCore.Algorithms.Alignment
 			MZBoundaries.Add(new classAlignmentMZBoundary(505.7, 999999999.0));
         }
 
+        [Browsable(false)]
         public bool AlignToMassTagDatabase
         {
             get;
             set;
         }
-
-        [DataSummaryAttribute("Alignment Baseline Name")]
-        public string AlignmentBaselineName { get; set; }
-        [ParameterFileAttribute("AlignmentType", "Alignment")]
-        [DataSummaryAttribute("Alignment Type")]
-        public enmAlignmentType AlignmentType { get; set; }
-        [DataSummaryAttribute("Apply Mass Recalibration")]
-        //[ParameterFileAttribute("ApplyMassRecalibration", "Alignment")]
-        //public bool ApplyMassRecalibration { get; set; }
-        [DataSummaryAttribute("Contraction Factor")]
-        [ParameterFileAttribute("ContractionFactor", "Alignment")]
-        public int ContractionFactor { get; set; }
-        [ParameterFileAttribute("HistogramDriftTimeBinSize", "Alignment")]
-        [DataSummaryAttribute("Histogram Drift Time Bin Size")]
-        public double DriftTimeBinSize { get; set; }
-        [DataSummaryAttribute("Is Aligned to Mass Tag Database")]
+        [Browsable(false)]
         public bool IsAlignmentBaselineAMasstagDB { get; set; }
-        [ParameterFileAttribute("HistogramMassBinSize", "Alignment")]
-        [DataSummaryAttribute("Histogram Mass Bin Size")]
-        public double MassBinSize { get; set; }
+        [Browsable(false)]
+        public string AlignmentBaselineName { get; set; }
+
+
         [ParameterFileAttribute("MassCalibrationLSQNumKnots", "Alignment")]
-        [DataSummaryAttribute("Mass Calibration LSQ Number Knots")]
+        [Category("Alignment Function")]
+        [Description("Determines how many least square knots should be used.")]
         public int MassCalibrationLSQNumKnots { get; set; }
-        [ParameterFileAttribute("MassCalibrationLSQZScore", "Alignment")]
-        [DataSummaryAttribute("Mass Calibration LSQZScore")]
-        public double MassCalibrationLSQZScore { get; set; }
-        [DataSummaryAttribute("Mass Calibration Max Jump")]
-        [ParameterFileAttribute("MassCalibrationMaxJump", "Alignment")]
-        public int MassCalibrationMaxJump { get; set; }
-        [ParameterFileAttribute("MassCalibrationMaxZScore", "Alignment")]
-        [DataSummaryAttribute("Max Z-Score")]
-        public double MassCalibrationMaxZScore { get; set; }
-        [ParameterFileAttribute("MassCalibrationNumMassDeltaBins", "Alignment")]
-        [DataSummaryAttribute("Mass Calibration Number of Mass Delta Bins")]
-        public int MassCalibrationNumMassDeltaBins { get; set; }
-        [ParameterFileAttribute("MassCalibrationNumXSlices", "Alignment")]
-        [DataSummaryAttribute("Mass Calibration Number of X Slices")]
-        public int MassCalibrationNumXSlices { get; set; }
-        [DataSummaryAttribute("Mass Calibration Use LSQ")]
-        [ParameterFileAttribute("MassCalibrationUseLSQ", "Alignment")]
-        public bool MassCalibrationUseLSQ { get; set; }
-        [DataSummaryAttribute("Mass Calibration Window")]
-        [ParameterFileAttribute("MassCalibrationWindow", "Alignment")]
-        public double MassCalibrationWindow { get; set; }
-        [ParameterFileAttribute("MassTolerance", "Alignment")]
-        [DataSummaryAttribute("Mass Tolerance")]
-        public double MassTolerance { get; set; }
-        [ParameterFileAttribute("MaxPromiscuity", "Alignment")]
-        [DataSummaryAttribute("Max Promiscuity")]
-        public int MaxPromiscuity { get; set; }
-        [ParameterFileAttribute("MaxTimeJump", "Alignment")]
-        [DataSummaryAttribute("Max Time Jump")]
-        public int MaxTimeJump { get; set; }
-        [DataSummaryAttribute("Split Alignment M/Z Boundary")]
-        public List<classAlignmentMZBoundary> MZBoundaries { get; set; }
+
+        [ParameterFileAttribute("HistogramDriftTimeBinSize", "Alignment")]
+        [Category("Binning")]
+        [Description("Histogram size of alignment (ms)")]
+        public double DriftTimeBinSize { get; set; }
         [ParameterFileAttribute("HistogramNETBinSize", "Alignment")]
-        [DataSummaryAttribute("Histogram NET Bin Size")]
+        [Category("Binning")]
+        [Description("Bin size for NET error histograms.")]
         public double NETBinSize { get; set; }
-        [DataSummaryAttribute("Net Tolerance")]
-        [ParameterFileAttribute("NETTolerance", "Alignment")]
-        public double NETTolerance { get; set; }
-        [DataSummaryAttribute("Number of Time Sections")]
-        [ParameterFileAttribute("NumTimeSections", "Alignment")]
-        public int NumTimeSections { get; set; }
+        [ParameterFileAttribute("HistogramMassBinSize", "Alignment")]
+        [Category("Binning")]
+        [Description("Histogram size of alignment in parts per million (PPM)")]
+        public double MassBinSize { get; set; }
+
+        [ParameterFileAttribute("AlignmentType", "Alignment")]
+        [Category("General Calibration")]
+        [Description("Determines if NET only, or Mass and NET alignment should be performed.")]
+        public enmAlignmentType AlignmentType { get; set; }
         [ParameterFileAttribute("RecalibrationType", "Alignment")]
-        [DataSummaryAttribute("Recalibration Type")]
+        [Category("General Calibration")]
+        [Description("Type of recalibration to perform, NET only, or NET and Mass")]
         public enmCalibrationType RecalibrationType { get; set; }
         [ParameterFileAttribute("SplitAlignmentMZ", "Alignment")]
-        [DataSummaryAttribute("Split Alignment by M/Z")]
+        [Category("General Calibration")]
+        [Description("Determines whether the m/z boundaries should be used for analysis.  False if recommended.")]
         public bool SplitAlignmentInMZ { get; set; }
+        [Category("General Calibration")]
+        [Description("m/z calibration ranges if the detector is not calibrated.  Not normal mode of operation")]
+        public List<classAlignmentMZBoundary> MZBoundaries { get; set; }
+
+        [ParameterFileAttribute("MassCalibrationLSQZScore", "Alignment")]
+        [Category("Mass Calibration")]
+        [Description("Determines the z-score cutoff for mass calibration")]
+        public double MassCalibrationLSQZScore { get; set; }
+        [ParameterFileAttribute("MassCalibrationMaxJump", "Alignment")]
+        [Category("Mass Calibration")]
+        [Description("")]
+        public int MassCalibrationMaxJump { get; set; }
+        [ParameterFileAttribute("MassCalibrationMaxZScore", "Alignment")]
+        [Category("Mass Calibration")]
+        [Description("")]
+        public double MassCalibrationMaxZScore { get; set; }
+        [ParameterFileAttribute("MassCalibrationNumMassDeltaBins", "Alignment")]
+        [Category("Mass Calibration")]
+        [Description("Number of divisions to make in the mass dimension.")]
+        public int MassCalibrationNumMassDeltaBins { get; set; }
+        [ParameterFileAttribute("MassCalibrationNumXSlices", "Alignment")]
+        [Category("Mass Calibration")]
+        [Description("Number of divisions to make in NET.")]
+        public int MassCalibrationNumXSlices { get; set; }
+        [ParameterFileAttribute("MassCalibrationUseLSQ", "Alignment")]
+        [Category("Mass Calibration")]
+        [Description("Determines whether least squares is used for the fit.")]
+        public bool MassCalibrationUseLSQ { get; set; }
+        [ParameterFileAttribute("MassCalibrationWindow", "Alignment")]
+        [Category("Mass Calibration")]
+        [Description("Mass Calibration window to use in parts per million (PPM)")]
+        public double MassCalibrationWindow { get; set; }
+
+        [ParameterFileAttribute("MaxPromiscuity", "Alignment")]
+        [Category("Matching")]
+        [Description("Total number of candidate matches that can be allowed for a single LC-MS Features before being discarded.")]
+        public int MaxPromiscuity { get; set; }
         [ParameterFileAttribute("UsePromiscuousPoints", "Alignment")]
-        [DataSummaryAttribute("Use Promiscuous Points")]
-        public bool UsePromiscuousPoints { get; set; }
+        [Category("Matching")]
+        [Description("Determines whether features can match to multiple features or whether they are considered ambiguous.")]
+        public bool UsePromiscuousPoints { get; set; }       
+
+        [ParameterFileAttribute("MassTolerance", "Alignment")]
+        [Category("Tolerances")]
+        [Description("Mass tolerance in parts per million (PPM)")]
+        public double MassTolerance { get; set; }
+        [ParameterFileAttribute("MaxTimeJump", "Alignment")]
+        [Category("Tolerances")]
+        [Description("Largest scan range allowed for a feature match.")]
+        public int MaxTimeJump { get; set; }
+        [ParameterFileAttribute("NETTolerance", "Alignment")]
+        [Category("Tolerances")]
+        [Description("NET tolerance for allowable feature matches.")]
+        public double NETTolerance { get; set; }
+        [ParameterFileAttribute("NumTimeSections", "Alignment")]
+        [Category("Tolerances")]
+        [Description("Number of divisions to make in NET.")]
+        public int NumTimeSections { get; set; }
 
 
+        [ParameterFileAttribute("ContractionFactor", "Alignment")]
+        [Category("Weights")]
+        [Description("Determines how far away a baseline scan can be compared to alignee scans.")]
+        public int ContractionFactor { get; set; }
+
+        /// <summary>
+        /// Converts the current options into the older engine based ones.
+        /// </summary>
+        /// <param name="newOptions"></param>
+        /// <returns></returns>
         public static clsAlignmentOptions ConvertToEngine(AlignmentOptions newOptions)
         {
             clsAlignmentOptions options             = new clsAlignmentOptions();

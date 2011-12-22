@@ -94,6 +94,7 @@ namespace MultiAlignCore.IO.Parameters
             ReflectParameterOptions(analysis.Options.DriftTimeAlignmentOptions, metaData.OpenChild("DriftTimeAlignment"));
             ReflectParameterOptions(analysis.Options.ClusterOptions,            metaData.OpenChild("LCMSFeatureClustering"));
             ReflectParameterOptions(analysis.Options.STACOptions,               metaData.OpenChild("STAC"));
+            ReflectParameterOptions(analysis.Options.ConsolidationOptions,      metaData.OpenChild("FeatureConsolidator"));
             metaData.WriteFile(parameterFilePath);
         }        
     }

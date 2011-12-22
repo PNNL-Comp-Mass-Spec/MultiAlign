@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiAlignTestSuite", "Mult
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiAlignCore", "MultiAlignCore\MultiAlignCore.csproj", "{BDFA22C4-5822-4AA5-996E-6FDE57F7118B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiAlignParameterFileEditor", "MultiAlignParameterFileEditor\MultiAlignParameterFileEditor.csproj", "{A853D633-C2DE-4B9F-9EE8-AF97329E2BF8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -81,6 +83,12 @@ Global
 		{BDFA22C4-5822-4AA5-996E-6FDE57F7118B}.Release|x64.Build.0 = Release|x64
 		{BDFA22C4-5822-4AA5-996E-6FDE57F7118B}.Release|x86.ActiveCfg = Release|x86
 		{BDFA22C4-5822-4AA5-996E-6FDE57F7118B}.Release|x86.Build.0 = Release|x86
+		{A853D633-C2DE-4B9F-9EE8-AF97329E2BF8}.Debug|x64.ActiveCfg = Debug|x86
+		{A853D633-C2DE-4B9F-9EE8-AF97329E2BF8}.Debug|x86.ActiveCfg = Debug|x86
+		{A853D633-C2DE-4B9F-9EE8-AF97329E2BF8}.Debug|x86.Build.0 = Debug|x86
+		{A853D633-C2DE-4B9F-9EE8-AF97329E2BF8}.Release|x64.ActiveCfg = Release|x86
+		{A853D633-C2DE-4B9F-9EE8-AF97329E2BF8}.Release|x86.ActiveCfg = Release|x86
+		{A853D633-C2DE-4B9F-9EE8-AF97329E2BF8}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
