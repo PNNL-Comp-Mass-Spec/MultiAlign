@@ -21,6 +21,10 @@ namespace MultiAlignCore.IO.InputFiles
         /// <summary>
         /// The input File format could not be recognized.
         /// </summary>
-        NotRecognized
+        NotRecognized,
+        /// <summary>
+        /// Database search results.
+        /// </summary>
+        Sequence
     }
 }

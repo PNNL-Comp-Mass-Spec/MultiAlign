@@ -2,6 +2,7 @@
 using System.IO;
 using MultiAlignCore.Data;
 using MultiAlignCore.IO.Features.Hibernate;
+using MultiAlignCore.IO.SequenceData;
 
 namespace MultiAlignCore.IO.Features
 {
@@ -53,7 +54,8 @@ namespace MultiAlignCore.IO.Features
                                                                             massTagCache,
                                                                             new FactorDAOHibernate(),
                                                                             new DatasetToFactorDAOHibernate(),
-                                                                            new MSMSClusterMapClusterDAOHibernate());
+                                                                            new MSMSClusterMapClusterDAOHibernate(),
+                                                                            new DatabaseSearchSequenceDAOHiberate());
 
             return providers;
         }

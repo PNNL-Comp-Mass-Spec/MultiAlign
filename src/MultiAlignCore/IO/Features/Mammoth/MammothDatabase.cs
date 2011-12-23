@@ -504,7 +504,7 @@ namespace MultiAlignCore.IO.Mammoth
                         umc.ScanStart           = Convert.ToInt32(values[CONST_TOTAL_FEATURE_NO_CLUSTER_QUERY_SIZE]);
                         umc.ScanEnd             = Convert.ToInt32(values[CONST_TOTAL_FEATURE_NO_CLUSTER_QUERY_SIZE + 1]);
                         umc.Scan                = Convert.ToInt32(values[CONST_TOTAL_FEATURE_NO_CLUSTER_QUERY_SIZE + 2]);
-                        umc.AbundanceSum        = Convert.ToInt32(values[16]);
+                        umc.AbundanceSum        = Convert.ToInt64(values[16]);
                         if (!clusters.ContainsKey(clusterID))
                         {
                             // No cluster exists in the map, so we need to create a new one.
@@ -578,11 +578,11 @@ namespace MultiAlignCore.IO.Mammoth
                     umc.GroupID                 = Convert.ToInt32(values[CONST_UMC_GROUP_ID]);
                     umc.ChargeState             = Convert.ToInt32(values[CONST_UMC_CHARGE_FEATURE]);
                     umc.UMCCluster              = null;
-                    umc.Abundance               = Convert.ToInt32(values[7]);
+                    umc.Abundance               = Convert.ToInt64(values[7]);
                     umc.ScanStart               = Convert.ToInt32(values[8]);
                     umc.ScanEnd                 = Convert.ToInt32(values[9]);
                     umc.Scan                    = Convert.ToInt32(values[10]);
-                    umc.AbundanceSum            = Convert.ToInt32(values[11]);
+                    umc.AbundanceSum            = Convert.ToInt64(values[11]);
                     m_features.Add(umc);
                 }
             }            

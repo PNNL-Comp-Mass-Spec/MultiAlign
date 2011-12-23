@@ -1,4 +1,5 @@
 ﻿using System;
+using MultiAlignCore.Data.SequenceData;
 using System.Collections.Generic;
 using System.Linq;
 using MultiAlignCore.Data;
@@ -61,17 +62,46 @@ namespace MultiAlignCore.Algorithms.Alignment
             }
 
             MSMSFeatureExtractor extractor           = new MSMSFeatureExtractor();
+            extractor.Progress += new EventHandler<ProgressNotifierArgs>(extractor_Progress);
             Dictionary<int, List<UMCLight>> features = extractor.ExtractUMCWithMSMS(analysis.DataProviders, 
                                                                                     analysis.MetaData.Datasets);
 
+            
+            Dictionary<int, Dictionary<int, DatabaseSearchSequence>> sequenceMap = new Dictionary<int, Dictionary<int, DatabaseSearchSequence>>();
+            
             // Create the object that knows how to read the RAW files we are analyzing.
             ThermoRawDataFileReader reader = new ThermoRawDataFileReader();
             for (int i = 0; i < analysis.MetaData.Datasets.Count; i++)
             {
-                DatasetInformation datasetInformation = analysis.MetaData.Datasets[i];
-                InputFile rawInformation = analysis.MetaData.OtherFiles[i];
+                DatasetInformation datasetInformation   = analysis.MetaData.Datasets[i];
 
-                reader.AddDataFile(rawInformation.Path, datasetInformation.DatasetId);
+                for (int j = 0; j < analysis.MetaData.OtherFiles.Count; j++)
+                {
+                    InputFile rawInformation = analysis.MetaData.OtherFiles[j];
+
+                    string rawName = DatasetInformation.CleanNameDatasetNameOfExtensions(rawInformation.Path);
+                    if (datasetInformation.DatasetName != rawName)
+                    {
+                        continue;
+                    }
+
+                    switch (rawInformation.FileType)
+                    {
+                        case InputFileType.Raw:
+                            reader.AddDataFile(rawInformation.Path, datasetInformation.DatasetId);
+                            break;
+                        
+                        case InputFileType.Sequence:                        
+                            List<DatabaseSearchSequence> sequences = analysis.DataProviders.DatabaseSequenceCache.FindByDatasetId(datasetInformation.DatasetId);
+                            Dictionary<int, DatabaseSearchSequence> map = new Dictionary<int, DatabaseSearchSequence>();
+                            foreach (DatabaseSearchSequence sequence in sequences)
+                            {
+                                map.Add(sequence.ID, sequence);
+                            }
+                            sequenceMap.Add(datasetInformation.DatasetId, map);
+                            break;
+                    }
+                }
             }
 
             UpdateStatus("Starting MS/MS clustering.");
@@ -83,6 +113,7 @@ namespace MultiAlignCore.Algorithms.Alignment
             {
                 // Create the object o align.
                 SpectralNormalizedDotProductComparer comparer = new SpectralNormalizedDotProductComparer();
+                comparer.TopPercent = .8;
                 MSMSClusterer msCluster = new MSMSClusterer();
                 msCluster.SimilarityTolerance = similarity;
                 msCluster.ScanRange = 2000;
@@ -92,17 +123,19 @@ namespace MultiAlignCore.Algorithms.Alignment
                 List<MSMSClusterMap> maps = new List<MSMSClusterMap>();
                 int id = 0;
 
-
-
                 List<double> xValues = new List<double>();
                 List<double> yValues = new List<double>();
 
+                List<int> groupIDS = new List<int>() {0, 0};
                 using (TextWriter xwriter = File.CreateText(System.IO.Path.Combine(path, string.Format("clusters-{0}.csv", similarity))))
                 {
                     foreach (MSMSCluster cluster in clusters)
                     {
                         cluster.ID = id++;
                         string line = string.Format("{0},", cluster.ID);
+
+                        // This is temporary.  So that we only export clusters with two features.
+                        if (cluster.Features.Count > 2) continue;
 
                         // Organize the spectra so they are sorted by dataset.
                         cluster.Features.Sort(delegate(MSFeatureLight x, MSFeatureLight y)
@@ -115,6 +148,9 @@ namespace MultiAlignCore.Algorithms.Alignment
                             // Otherwise we want to sort by what dataset they came from.
                             return x.GroupID.CompareTo(y.GroupID);
                         });
+
+                        groupIDS[0] = cluster.Features[0].GroupID;
+                        groupIDS[1] = cluster.Features[1].GroupID;
 
                         xValues.Add(Convert.ToDouble(cluster.Features[0].Scan));
                         yValues.Add(Convert.ToDouble(cluster.Features[1].Scan));
@@ -148,14 +184,13 @@ namespace MultiAlignCore.Algorithms.Alignment
                 List<double> tX = xValues.ToList();
                 List<double> tY = yValues.ToList();
 
-
                 PNNLOmics.Algorithms.Solvers.LevenburgMarquadt warp = new PNNLOmics.Algorithms.Solvers.LevenburgMarquadt();
                 warp.BasisFunction = ChebyShev;
 
                 double[] coeffs = new double[20];
                 coeffs[1] = 1;
                 bool passed = warp.Solve(tX, tY, ref coeffs);
-
+                
                 if (passed)
                 {
                     using (TextWriter xwriter = File.CreateText(System.IO.Path.Combine(path, string.Format("matches-{0}.csv", similarity))))
@@ -166,19 +201,81 @@ namespace MultiAlignCore.Algorithms.Alignment
                         {
                             x[0] = tX[i];
                             ChebyShev(coeffs, x, ref value, null);
+                                                     
+
                             xwriter.WriteLine("{0}, {1}, {2}, {3}, {4}, {5}, {6}", tX[i],
-                                                                                    tY[i],
-                                                                                    value,
-                                                                                    tY[i],
-                                                                                    tX[i] - tY[i],
-                                                                                    tY[i] - value,
-                                                                                    (tX[i] - tY[i]) - (tY[i] - value));
+                                                                                            tY[i],
+                                                                                            value,
+                                                                                            tY[i],
+                                                                                            tX[i] - tY[i],
+                                                                                            tY[i] - value,
+                                                                                            (tX[i] - tY[i]) - (tY[i] - value)
+                                                                                            );
+
+                            
                         }
+                    }                    
+                }
+                if (passed)
+                {
+                    using (TextWriter xwriter = File.CreateText(System.IO.Path.Combine(path, string.Format("match-sequences-{0}.csv", similarity))))
+                    {
+                        foreach (MSMSCluster cluster in clusters)
+                        {
+                            cluster.ID = id++;
+                            string line = string.Format("{0},{1},", cluster.ID, cluster.MeanScore);
+
+                            // This is temporary.  So that we only export clusters with two features.
+                            if (cluster.Features.Count > 2) continue;
+
+                            // Organize the spectra so they are sorted by dataset.
+                            cluster.Features.Sort(delegate(MSFeatureLight x, MSFeatureLight y)
+                            {
+                                // Sort by scan if they are the same feature.
+                                if (x.GroupID == y.GroupID)
+                                {
+                                    return x.Scan.CompareTo(y.Scan);
+                                }
+                                // Otherwise we want to sort by what dataset they came from.
+                                return x.GroupID.CompareTo(y.GroupID);
+                            });
+                            
+                            foreach (MSFeatureLight feature in cluster.Features)
+                            {
+                                int findScan    = feature.MSnSpectra[0].Scan;
+                                string sequence = sequenceMap[feature.GroupID][findScan].Sequence;
+                                double score = sequenceMap[feature.GroupID][findScan].Score;
+                                double mass = sequenceMap[feature.GroupID][findScan].Mass;
+                                int charge = sequenceMap[feature.GroupID][findScan].Charge;
+
+                                line += string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},",
+                                                            feature.GroupID, 
+                                                            
+                                                            feature.Scan, 
+                                                            feature.Mz, 
+                                                            feature.ChargeState, 
+                                                            feature.MassMonoisotopicMostAbundant, 
+
+                                                            sequence,
+                                                            score, 
+                                                            mass, 
+                                                            charge);
+                            }
+                            xwriter.WriteLine(line);
+                        }
+
                     }
                 }
             }
+
+
             //analysis.DataProviders.MSMSClusterCache.AddAll(maps);
             reader.Dispose();
+        }
+
+        void extractor_Progress(object sender, ProgressNotifierArgs e)
+        {
+            UpdateStatus(e.Message);
         }
 
         #region IProgressNotifer Members

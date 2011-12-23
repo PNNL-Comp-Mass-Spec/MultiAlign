@@ -242,6 +242,7 @@ namespace MultiAlignCore.Data
         {
             string datasetName  = path.Replace("_isos.csv", "");
             datasetName         = datasetName.Replace(".scans", "");
+            datasetName         = datasetName.Replace("_fht", "");
             datasetName         = datasetName.Replace("LCMSFeatures.txt", "");
             datasetName         = System.IO.Path.GetFileNameWithoutExtension(datasetName);
             return datasetName;                

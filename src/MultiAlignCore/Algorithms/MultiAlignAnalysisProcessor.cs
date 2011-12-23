@@ -248,7 +248,10 @@ namespace MultiAlignCore.Algorithms
                             throw ex;
                         }
                         break;
-
+                    case InputFileType.Sequence:
+                        MultiAlignCore.IO.SequenceData.MAGEDatabaseSearchAdaptor adapter = new IO.SequenceData.MAGEDatabaseSearchAdaptor();
+                        adapter.LoadSequenceData(file, datasetID, m_analysis.DataProviders);
+                        break;
                 }
             }
         }
@@ -806,7 +809,14 @@ namespace MultiAlignCore.Algorithms
         /// <param name="analysis"></param>
         public void PerformMSMSAlignment(MultiAlignAnalysis analysis)
         {
-            
+            AnchorPointAlignment processor = new AnchorPointAlignment();
+            processor.Progress += new EventHandler<ProgressNotifierArgs>(processor_Progress);
+            processor.Align(analysis);
+        }
+
+        void processor_Progress(object sender, ProgressNotifierArgs e)
+        {
+            UpdateStatus(e.Message);
         }
         #endregion
 
@@ -1086,9 +1096,7 @@ namespace MultiAlignCore.Algorithms
                         
                         UpdateStatus(string.Format("Analysis {0} Completed.", m_analysis.MetaData.AnalysisName));
                         break;
-                    case AnalysisType.Full:
-                        
-
+                    case AnalysisType.Full:                       
                         UpdateStatus("Aligning datasets.");
                         PerformAlignment(m_analysis);
 

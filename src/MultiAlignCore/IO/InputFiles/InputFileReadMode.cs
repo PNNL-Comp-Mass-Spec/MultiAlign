@@ -7,6 +7,10 @@ namespace MultiAlignCore.IO.InputFiles
     public enum FileReadMode
     {
         /// <summary>
+        /// Sequence database search output.
+        /// </summary>
+        Sequence,
+        /// <summary>
         /// Reads isos or LCMS Feature files information.
         /// </summary>
         Files,

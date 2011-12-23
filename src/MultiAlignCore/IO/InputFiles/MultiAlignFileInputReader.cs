@@ -23,6 +23,10 @@ namespace MultiAlignCore.IO.InputFiles
         /// </summary>
         private const string SCANS_HEADER = "[scans]";
         /// <summary>
+        /// Header for sequence related data.
+        /// </summary>
+        private const string SEQUENCE_HEADER = "[sequence]";
+        /// <summary>
         /// Indicates the start of the raw files.
         /// </summary>
         private const string RAW_HEADER = "[raw]";
@@ -77,6 +81,10 @@ namespace MultiAlignCore.IO.InputFiles
                     case SCANS_HEADER:
                         wasModeChanged      = true;
                         readType            = FileReadMode.ScanFiles;
+                        break;
+                    case SEQUENCE_HEADER:
+                        wasModeChanged      = true;
+                        readType            = FileReadMode.Sequence;
                         break;
                     default:
                         if (containsHeaderClose && containsHeaderOpen)
@@ -157,6 +165,12 @@ namespace MultiAlignCore.IO.InputFiles
                             break;
                         case FileReadMode.Unknown:
                             // do nothing!
+                            break;
+                        case FileReadMode.Sequence:
+                            InputFile sequenceFile  = new InputFile();
+                            sequenceFile.Path       = fixedLine;
+                            sequenceFile.FileType   = InputFileType.Sequence;
+                            info.Files.Add(sequenceFile);
                             break;
                         default:
                             break;

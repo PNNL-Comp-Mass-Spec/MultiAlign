@@ -17,7 +17,7 @@ namespace MultiAlignCore.IO.Factors
         private List<ExperimentalFactor>                                 m_factors;
         private List<DatasetToExperimentalFactorMap>                     m_factorAssignments;
         private Dictionary<string, DatasetInformation>                   m_datasets;
-        private Dictionary<string, Dictionary<string, int>>             m_factorMaps;
+        private Dictionary<string, Dictionary<string, int>>              m_factorMaps;
         
         private IDatasetDAO             m_datasetProvider;
         private IFactorDAO              m_factorProvider;

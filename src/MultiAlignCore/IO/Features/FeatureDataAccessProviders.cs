@@ -1,4 +1,5 @@
 using MultiAlignCore.Data;
+using MultiAlignCore.IO.SequenceData;
 
 namespace MultiAlignCore.IO.Features
 {
@@ -27,7 +28,8 @@ namespace MultiAlignCore.IO.Features
                                             IMassTagDAO                         massTags,
                                             IFactorDAO                          factorCache,
                                             IDatasetToFactorMapDAO              factorAssignmentCache,
-                                            IMSMSClusterMapDAO msmsClusterCache)
+                                            IMSMSClusterMapDAO msmsClusterCache,
+                                            IDatabaseSearchSequenceDAO sequenceCache)
         {
             ClusterCache                = clusterCache;
             FeatureCache                = featureCache;
@@ -41,6 +43,15 @@ namespace MultiAlignCore.IO.Features
             FactorAssignmentCache       = factorAssignmentCache;
             FactorCache                 = factorCache;
             MSMSClusterCache            = msmsClusterCache;
+            this.DatabaseSequenceCache = sequenceCache;
+        }
+        /// <summary>
+        /// Gets or sets the data provider for storing MS/MS Clusters.
+        /// </summary>
+        public IDatabaseSearchSequenceDAO DatabaseSequenceCache
+        {
+            get;
+            set;
         }
         /// <summary>
         /// Gets or sets the data provider for storing MS/MS Clusters.

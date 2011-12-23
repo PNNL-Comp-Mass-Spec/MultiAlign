@@ -104,7 +104,7 @@ namespace MultiAlignCore.IO.Features
         {
             if (!m_dataFiles.ContainsKey(group))
             {
-                throw new System.Exception("The group provided was not found.");
+                throw new System.Exception("The group-dataset ID provided was not found.");
             }
             // If we dont have a reader, then create one for this group 
             // next time, it will be available and we won't have to waste time

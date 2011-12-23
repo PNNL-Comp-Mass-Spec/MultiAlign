@@ -1497,6 +1497,10 @@ namespace MultiAlignConsole
                         analysis.MetaData.OtherFiles.Add(file);
                         PrintMessage("\tRaw Data Information:  " + file.Path);
                         break;
+                    case InputFileType.Sequence:
+                        analysis.MetaData.OtherFiles.Add(file);
+                        PrintMessage("\tDatabase Search Results Sequence Data Information:  " + file.Path);
+                        break;
                 }
             }
             if (insertIntoDatabase)
