@@ -61,13 +61,9 @@ namespace MultiAlignCore.Algorithms.Alignment
                 throw new Exception("No RAW files were specified.  Cannot continue with the analysis.");
             }
 
-            MSMSFeatureExtractor extractor           = new MSMSFeatureExtractor();
-            extractor.Progress += new EventHandler<ProgressNotifierArgs>(extractor_Progress);
-            Dictionary<int, List<UMCLight>> features = extractor.ExtractUMCWithMSMS(analysis.DataProviders, 
-                                                                                    analysis.MetaData.Datasets);
 
-            
-            Dictionary<int, Dictionary<int, DatabaseSearchSequence>> sequenceMap = new Dictionary<int, Dictionary<int, DatabaseSearchSequence>>();
+
+            Dictionary<int, Dictionary<int, Dictionary<int, DatabaseSearchSequence>>> sequenceMap = new Dictionary<int, Dictionary<int, Dictionary<int, DatabaseSearchSequence>>>();
             
             // Create the object that knows how to read the RAW files we are analyzing.
             ThermoRawDataFileReader reader = new ThermoRawDataFileReader();
@@ -93,16 +89,38 @@ namespace MultiAlignCore.Algorithms.Alignment
                         
                         case InputFileType.Sequence:                        
                             List<DatabaseSearchSequence> sequences = analysis.DataProviders.DatabaseSequenceCache.FindByDatasetId(datasetInformation.DatasetId);
-                            Dictionary<int, DatabaseSearchSequence> map = new Dictionary<int, DatabaseSearchSequence>();
+                            Dictionary<int, Dictionary<int, DatabaseSearchSequence>> map = new Dictionary<int, Dictionary<int, DatabaseSearchSequence>>();
                             foreach (DatabaseSearchSequence sequence in sequences)
                             {
-                                map.Add(sequence.ID, sequence);
-                            }
+
+                                if (sequence.TrypticEnds > -1)
+                                {
+                                    try
+                                    {
+                                        Dictionary<int, DatabaseSearchSequence> chargeMap = new Dictionary<int, DatabaseSearchSequence>();
+                                        if (!map.ContainsKey(sequence.Scan))
+                                        {
+                                            map.Add(sequence.Scan, chargeMap);
+                                        }
+                                        map[sequence.Scan].Add(sequence.Charge, sequence);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        throw;
+                                    }
+                                }
+                            }                            
                             sequenceMap.Add(datasetInformation.DatasetId, map);
                             break;
                     }
                 }
             }
+
+
+            MSMSFeatureExtractor extractor = new MSMSFeatureExtractor();
+            extractor.Progress += new EventHandler<ProgressNotifierArgs>(extractor_Progress);
+            Dictionary<int, List<UMCLight>> features = extractor.ExtractUMCWithMSMS(analysis.DataProviders,
+                                                                                    analysis.MetaData.Datasets);
 
             UpdateStatus("Starting MS/MS clustering.");
 
@@ -157,13 +175,11 @@ namespace MultiAlignCore.Algorithms.Alignment
 
                         foreach (MSFeatureLight feature in cluster.Features)
                         {
-                            MSMSClusterMap newMap = new MSMSClusterMap();
-                            newMap.ClusterID = cluster.ID;
-                            newMap.MSMSID = feature.MSnSpectra[0].ID;
-                            newMap.GroupID = feature.GroupID;
+                            MSMSClusterMap newMap   = new MSMSClusterMap();
+                            newMap.ClusterID        = cluster.ID;
+                            newMap.MSMSID           = feature.MSnSpectra[0].ID;
+                            newMap.GroupID          = feature.GroupID;
                             maps.Add(newMap);
-
-
                             line += string.Format("{2},{0},{1},", feature.Scan, feature.Mz, feature.GroupID);
                         }
                         xwriter.WriteLine(line);
@@ -220,6 +236,8 @@ namespace MultiAlignCore.Algorithms.Alignment
                 {
                     using (TextWriter xwriter = File.CreateText(System.IO.Path.Combine(path, string.Format("match-sequences-{0}.csv", similarity))))
                     {
+                        xwriter.WriteLine("cluster id, cluster mean score, dataset id, scan, mz, charge, mass most abundant, find scan, pep seq, score, mass, charge, tryptic ends");
+                            
                         foreach (MSMSCluster cluster in clusters)
                         {
                             cluster.ID = id++;
@@ -243,23 +261,49 @@ namespace MultiAlignCore.Algorithms.Alignment
                             foreach (MSFeatureLight feature in cluster.Features)
                             {
                                 int findScan    = feature.MSnSpectra[0].Scan;
-                                string sequence = sequenceMap[feature.GroupID][findScan].Sequence;
-                                double score = sequenceMap[feature.GroupID][findScan].Score;
-                                double mass = sequenceMap[feature.GroupID][findScan].Mass;
-                                int charge = sequenceMap[feature.GroupID][findScan].Charge;
+                                
+                                    DatabaseSearchSequence sequence = null;
+                                    if (!sequenceMap[feature.GroupID].ContainsKey(findScan))
+                                    {
+                                        line += string.Format("{0},{1},,,,,,,,,", feature.GroupID, feature.Scan);
+                                        continue;
+                                    }
 
-                                line += string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},",
-                                                            feature.GroupID, 
-                                                            
-                                                            feature.Scan, 
-                                                            feature.Mz, 
-                                                            feature.ChargeState, 
-                                                            feature.MassMonoisotopicMostAbundant, 
+                                    try
+                                    {
+                                        sequence = sequenceMap[feature.GroupID][findScan][feature.ChargeState];
+                                    }
+                                    catch
+                                    {
+                                    }
+                                    string pepsequence  = "";
+                                    double score        = 0;
+                                    double mass         = 0;
+                                    int charge          = 0;
+                                    int ends            = 0;
 
-                                                            sequence,
-                                                            score, 
-                                                            mass, 
-                                                            charge);
+                                    if (sequence != null)
+                                    {
+                                        pepsequence  = sequence.Sequence;
+                                        score        = sequence.Score;
+                                        mass         = sequence.Mass;
+                                        charge       = sequence.Charge;
+                                        ends         = sequence.TrypticEnds;
+                                    }
+
+                                    line += string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},",
+                                                                feature.GroupID,
+
+                                                                feature.Scan,
+                                                                feature.Mz,
+                                                                feature.ChargeState,
+                                                                feature.MassMonoisotopicMostAbundant,
+                                                                findScan,
+                                                                pepsequence,
+                                                                score,
+                                                                mass,
+                                                                charge,
+                                                                ends);                                
                             }
                             xwriter.WriteLine(line);
                         }
