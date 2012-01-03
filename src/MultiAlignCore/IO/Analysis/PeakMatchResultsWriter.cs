@@ -49,31 +49,34 @@ namespace MultiAlignCore.IO
                 UMCClusterLight feature                 = match.Observed;
                 ClusterToMassTagMap clusterToMassTagMap = new ClusterToMassTagMap(feature.ID, tag.ID);
                 clusterToMassTagMap.ConformerId         = tag.ConformationID;
-                List<Protein> proteins                  = database.Proteins[tag.ID];
 
-                foreach (Protein protein in proteins)
+                if (!clusterToMassTagMapList.Contains(clusterToMassTagMap))
                 {
-                    MassTagToProteinMap massTagToProteinMap = new MassTagToProteinMap(tag.ID, protein.RefID);
-                    if (!clusterToMassTagMapList.Contains(clusterToMassTagMap))
-                    {
-                        clusterToMassTagMapList.Add(clusterToMassTagMap);                        
-                        clusterToMassTagMap.StacScore   = match.Confidence;
-                        clusterToMassTagMap.StacUP      = match.Uniqueness;                        
-                    }
+                    clusterToMassTagMapList.Add(clusterToMassTagMap);                        
+                    clusterToMassTagMap.StacScore   = match.Confidence;
+                    clusterToMassTagMap.StacUP      = match.Uniqueness;                        
+                }
 
-                    if (!massTagToProteinMapList.Contains(massTagToProteinMap))
-                    {
-                        massTagToProteinMapList.Add(massTagToProteinMap);
-                    }
+                if (!massTagList.Contains(tag))
+                {
+                    massTagList.Add(tag);
+                }
 
-                    if (!massTagList.Contains(tag))
+                bool databaseContainsProtein = database.Proteins.ContainsKey(tag.ID);
+                if (databaseContainsProtein)
+                {
+                    List<Protein> proteins = database.Proteins[tag.ID];
+                    foreach (Protein protein in proteins)
                     {
-                        massTagList.Add(tag);
-                    }
-
-                    if (!proteinList.ContainsKey(protein.RefID))
-                    {
-                        proteinList.Add(protein.RefID, protein);
+                        MassTagToProteinMap massTagToProteinMap = new MassTagToProteinMap(tag.ID, protein.RefID);
+                        if (!massTagToProteinMapList.Contains(massTagToProteinMap))
+                        {
+                            massTagToProteinMapList.Add(massTagToProteinMap);
+                        }
+                        if (!proteinList.ContainsKey(protein.RefID))
+                        {
+                            proteinList.Add(protein.RefID, protein);
+                        }
                     }
                 }
             }            
@@ -86,6 +89,7 @@ namespace MultiAlignCore.IO
 
             matchedMassTags = massTagList.Count;
             matchedProteins = uniqueProteins.Count;
+
             massTagDAOHibernate.AddAll(massTagList);
             proteinDAOHibernate.AddAll(uniqueProteins);
             clusterToMassTagMapDAOHibernate.AddAll(clusterToMassTagMapList);

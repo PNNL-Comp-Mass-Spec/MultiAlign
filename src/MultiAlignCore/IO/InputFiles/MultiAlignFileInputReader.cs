@@ -148,6 +148,10 @@ namespace MultiAlignCore.IO.InputFiles
                                         info.Database.DatabaseFormat    = Data.MassTags.MassTagDatabaseFormat.Sqlite;
                                         info.Database.LocalPath         = keys[1];
                                         break;
+                                    case "metasample":
+                                        info.Database.DatabaseFormat    = Data.MassTags.MassTagDatabaseFormat.MetaSample;
+                                        info.Database.LocalPath         = keys[1];
+                                        break;
                                 }
                             }
                             break;

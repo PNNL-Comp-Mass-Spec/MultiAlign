@@ -45,13 +45,15 @@ namespace MultiAlignCore.IO.SequenceData
                     UpdateStatus("File type is not supported for this kind of sequence data. ");
                     return;
                 }
-                DelimitedFileReader reader  = new DelimitedFileReader();
-                reader.Delimiter            = "\t";
-                reader.FilePath             = dataset.Path;
-                   
-                ProcessingPipeline pipeline = ProcessingPipeline.Assemble("PlainFactors", reader, sink);
-                pipeline.RunRoot(null);
-                sink.CommitChanges();                   
+                using (DelimitedFileReader reader = new DelimitedFileReader())
+                {
+                    reader.Delimiter = "\t";
+                    reader.FilePath = dataset.Path;
+
+                    ProcessingPipeline pipeline = ProcessingPipeline.Assemble("PlainFactors", reader, sink);
+                    pipeline.RunRoot(null);
+                    sink.CommitChanges();
+                }
             }     
                      
         }

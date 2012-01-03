@@ -10,6 +10,7 @@ namespace MultiAlignCore.IO.MTDB
         None,
         SQL,
         ACCESS,
-        SQLite
+        SQLite,
+        MetaSample
     }
 }

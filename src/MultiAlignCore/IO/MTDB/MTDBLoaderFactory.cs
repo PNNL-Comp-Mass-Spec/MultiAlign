@@ -31,6 +31,9 @@ namespace MultiAlignCore.IO.MTDB
                 case MassTagDatabaseFormat.Sqlite:
                     loader = new SQLiteMassTagDatabaseLoader(options.DatabaseFilePath);
                     break;
+                case MassTagDatabaseFormat.MetaSample:
+                    loader = new MetaSampleDatbaseLoader(options.DatabaseFilePath);
+                    break;
                 default:                    
                     break;
             }

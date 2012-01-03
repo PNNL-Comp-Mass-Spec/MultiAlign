@@ -43,6 +43,11 @@ namespace MultiAlignConsole
         [DllImport("kernel32.dll")]
         public static extern bool SetConsoleMode(IntPtr hConsoleHandle, uint dwMode);
 
+        /// <summary>
+        /// Flag indicating whether to extract the MSMS data.
+        /// </summary>
+        private static bool m_makeMSMSExtractor;
+
         #region Constants
         private const uint ENABLE_EXTENDED_FLAGS    = 0x0080;
 		private const int LC_DATA                   = 0;
@@ -172,7 +177,9 @@ namespace MultiAlignConsole
         /// Default constructor.
         /// </summary>
         static Program()
-        {            
+        {
+            m_makeMSMSExtractor     = false;
+
             m_width                 = PLOT_WIDTH;
             m_height                = PLOT_HEIGHT;
             m_logPath               = null;
@@ -678,6 +685,9 @@ namespace MultiAlignConsole
                         case "-msmsalign":
                             m_alignMSMS = true;
                             break;
+                        case "-metasample":
+                            m_makeMSMSExtractor = true;
+                            break;
                         case "-plots":
                             m_createPlots   = true;
                             if (values.Count > 0)
@@ -798,13 +808,16 @@ namespace MultiAlignConsole
             PrintMessage("                              pathOfFile1.Raw", false);
             PrintMessage("    Peak Matching -   To perform peak matching to an Accurate Mass and Time Tag Database (AMT DB) you need to specify", false);
             PrintMessage("                      the name of the database in the input file. ", false);
-            PrintMessage("                      To do this with a local Microsoft Access database use: ", false);
+            PrintMessage("                      To do this with a local SQLite database use: ", false);
             PrintMessage("                              [Database]", false);
-            PrintMessage("                              accessPath = pathOfDatabase.mdb", false);
-            PrintMessage("                      To use one of the Mass Tag System's (MTS) databases use: ", false);
+            PrintMessage("                              sqlite = pathOfDatabase.mdb", false);
+            PrintMessage("                      To use a meta-sample text file (comma separated): ", false);
+            PrintMessage("                              [Database]", false);
+            PrintMessage("                              metasample = path to meta sample file", false);
+            PrintMessage("                      To use one of the Mass Tag System's (MTS) databases use - PNNL Only: ", false);
             PrintMessage("                              [Database]", false);
             PrintMessage("                              database = nameOfDatabase", false);
-            PrintMessage("                              server   = serverDatabaseLivesOn", false);
+            PrintMessage("                              server   = serverDatabaseLivesOn", false);            
             PrintMessage("[Options]", false);
             PrintMessage(" ", false);
             PrintMessage("   -files  inputFile.txt ", false);
@@ -1044,7 +1057,23 @@ namespace MultiAlignConsole
 
             ExportData(m_analysis.DataProviders, AnalysisPathUtils.BuildAnalysisName(m_analysisPath, m_analysisName),  m_analysis.MetaData.Datasets);
 
+
+            if (m_makeMSMSExtractor)
+            {
+                MsmsExtractor extractor = new MsmsExtractor();
+                extractor.Progress += new EventHandler<PNNLOmics.Algorithms.ProgressNotifierArgs>(extractor_Progress);
+                MultiAlignCore.Algorithms.MSLinker.FeaturesExtractedEventArgs args = extractor.ExtractMSMS(m_analysis.DataProviders, m_analysis.MetaData.Datasets);
+
+                MultiAlignCore.IO.Features.UMCClusterMsmsWriter writer = new UMCClusterMsmsWriter(AnalysisPathUtils.BuildAnalysisName(m_analysisPath, m_analysisName));
+                writer.WriteClusters(args);
+            }
+
             m_triggerEvent.Set();
+        }
+
+        static void extractor_Progress(object sender, PNNLOmics.Algorithms.ProgressNotifierArgs e)
+        {
+            PrintMessage(e.Message, true);
         }
         /// <summary>
         /// Logs when features are aligned.
@@ -1392,7 +1421,16 @@ namespace MultiAlignConsole
 
                         m_analysis.Options.MassTagDatabaseOptions.DatabaseFilePath = analysisSetupInformation.Database.LocalPath;
                         m_analysis.Options.MassTagDatabaseOptions.Server           = analysisSetupInformation.Database.DatabaseServer;
-                        m_analysis.Options.MassTagDatabaseOptions.DatabaseType     = MassTagDatabaseType.SQLite;                        
+                        m_analysis.Options.MassTagDatabaseOptions.DatabaseType     = MassTagDatabaseType.SQLite;
+                        break;
+                    case MassTagDatabaseFormat.MetaSample:
+                        PrintMessage("Using local MetaSample Mass Tag Database at location: ");
+                        PrintMessage(string.Format("\tFull Path: {0}", analysisSetupInformation.Database.LocalPath));
+                        PrintMessage(string.Format("\tDatabase Name: {0}", Path.GetFileName(analysisSetupInformation.Database.LocalPath)));
+
+                        m_analysis.Options.MassTagDatabaseOptions.DatabaseFilePath  = analysisSetupInformation.Database.LocalPath;
+                        m_analysis.Options.MassTagDatabaseOptions.Server            = analysisSetupInformation.Database.DatabaseServer;
+                        m_analysis.Options.MassTagDatabaseOptions.DatabaseType      = MassTagDatabaseType.MetaSample;
                         break;
                 }
 

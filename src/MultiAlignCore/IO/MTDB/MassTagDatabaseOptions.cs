@@ -1,6 +1,7 @@
 ﻿using MultiAlignEngine;
 using MultiAlignCore.IO.Parameters;
 using System.ComponentModel;
+using System;
 using MultiAlignCore.Data;
 
 namespace MultiAlignCore.IO.MTDB
@@ -121,6 +122,7 @@ namespace MultiAlignCore.IO.MTDB
 
         [Description("Database Type")]
         [Browsable(false)]
+        [Obsolete]
         public MassTagDatabaseType DatabaseType
         {
             get;

@@ -21,6 +21,10 @@ namespace MultiAlignCore.Data.MassTags
         /// <summary>
         /// Local database format.
         /// </summary>
-        Sqlite
+        Sqlite,
+        /// <summary>
+        /// Database built from a collection of samples using clusters.
+        /// </summary>
+        MetaSample
     }
 }
