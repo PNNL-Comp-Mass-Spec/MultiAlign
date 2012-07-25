@@ -60,7 +60,7 @@ namespace MultiAlignCore.IO.Features
             using (TextWriter writer = File.CreateText(Path))
             {
                 // Build the header.
-                string mainHeader = "Cluster ID, Mono Mass, Net, Total Members, Dataset Members,  Tightness, Ambiguity";
+                string mainHeader = "Cluster ID, Mono Mass, Net, Drift Time Total Members, Dataset Members,  Tightness, Ambiguity";
 
 
                 // Make blank columns for clusters that dont have enough dta.
@@ -76,7 +76,7 @@ namespace MultiAlignCore.IO.Features
 
                 if (clusterMap.Count > 0)
                 {
-                    mainHeader  += ", MassTag ID, Conformation ID, Peptide Sequence, STAC, STAC-UP";                    
+                    mainHeader  += ", MassTag ID, Conformation ID, Peptide Sequence, Mass, Net, Drift Time, STAC, STAC-UP";                    
                 }
 
                 string header = mainHeader;
@@ -85,7 +85,7 @@ namespace MultiAlignCore.IO.Features
 
                 for (int i = 0; i < datasetIds.Count; i++)
                 {
-                    header += string.Format(", ID.{0}, DatasetID.{0}, MonoMass.{0}, Net.{0}, AbundanceMax.{0}, AbundanceSum.{0}, Scan.{0}, ScanStart.{0}, ScanEnd.{0}", datasets[i].DatasetName);
+                    header += string.Format(", ID.{0}, DatasetID.{0}, MonoMass.{0}, Net.{0}, DriftTime.{0}, AbundanceMax.{0}, AbundanceSum.{0}, Scan.{0}, ScanStart.{0}, ScanEnd.{0}", datasets[i].DatasetName);
                 }
                 writer.WriteLine(header);
 
@@ -102,7 +102,7 @@ namespace MultiAlignCore.IO.Features
                         if (containsUMC)
                         {
                             UMCLight umc = features[id];
-                            umcBuilder.Append(string.Format(",{0},{1},{2},{3},{4},{5},{6},{7},{8}", umc.ID, umc.GroupID, umc.MassMonoisotopic, umc.NET, umc.Abundance, umc.AbundanceSum, umc.Scan, umc.ScanStart, umc.ScanEnd));                            
+                            umcBuilder.Append(string.Format(",{0},{1},{2},{3},{4},{5},{6},{7},{8},{9}", umc.ID, umc.GroupID, umc.MassMonoisotopic, umc.NET, umc.DriftTime, umc.Abundance, umc.AbundanceSum, umc.Scan, umc.ScanStart, umc.ScanEnd));                            
                         }
                         else
                         {
@@ -112,7 +112,7 @@ namespace MultiAlignCore.IO.Features
 
                     // We may have multiple matches to a single cluster.
                     StringBuilder builder = new StringBuilder();
-                    builder.Append(string.Format("{0},{1},{2},{3},{4},{5},{6}", cluster.ID, cluster.MassMonoisotopic, cluster.RetentionTime, cluster.UMCList.Count, features.Keys.Count, cluster.Score, cluster.AmbiguityScore));
+                    builder.Append(string.Format("{0},{1},{2},{3},{4},{5},{6},{7}", cluster.ID, cluster.MassMonoisotopic, cluster.RetentionTime, cluster.DriftTime, cluster.UMCList.Count, features.Keys.Count, cluster.Score, cluster.AmbiguityScore));
                     if (clusterMap.Count > 0)
                     {
                         if (clusterMap.ContainsKey(cluster.ID))
@@ -124,9 +124,12 @@ namespace MultiAlignCore.IO.Features
                                 string clusterString = builder.ToString();
                                 string key           = map.ConformerId + "-" + map.MassTagId;
                                 MassTagLight tag     = tags[key];                                
-                                clusterString       += string.Format(",{0},{1},{2},{3},{4}", tag.ID,
+                                clusterString       += string.Format(",{0},{1},{2},{3},{4},{5},{6},{7}", tag.ID,
                                                                                      tag.ConformationID,
                                                                                      tag.PeptideSequence,
+                                                                                     tag.MassMonoisotopic,
+                                                                                     tag.NETAverage,
+                                                                                     tag.DriftTime,
                                                                                      map.StacScore,
                                                                                      map.StacUP);
                                 writer.WriteLine(clusterString  + umcBuilder.ToString());

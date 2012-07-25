@@ -268,7 +268,19 @@ namespace MultiAlignCore.IO.Features
 					if (m_columnMap.ContainsKey("Umc.MZForCharge"))					umc.MZForCharge = Double.Parse(columns[m_columnMap["Umc.MZForCharge"]]);
 					if (m_columnMap.ContainsKey("Umc.DriftTime"))					umc.DriftTime = double.Parse(columns[m_columnMap["Umc.DriftTime"]]);
 					if (m_columnMap.ContainsKey("Umc.DriftTimeUncorrected"))		umc.DriftTimeUncorrected = double.Parse(columns[m_columnMap["Umc.DriftTimeUncorrected"]]);
-					if (m_columnMap.ContainsKey("Umc.AverageInterferenceScore"))	umc.AverageInterferenceScore = Double.Parse(columns[m_columnMap["Umc.AverageInterferenceScore"]]);
+                    if (m_columnMap.ContainsKey("Umc.AverageInterferenceScore"))
+                    {
+                        double d = Double.Parse(columns[m_columnMap["Umc.AverageInterferenceScore"]]);
+                        if (double.IsNegativeInfinity(d))
+                        {
+                            d = Convert.ToDouble(Decimal.MinValue/100);
+                        }
+                        else if (double.IsPositiveInfinity(d))
+                        {
+                            d = Convert.ToDouble(double.MaxValue/100);
+                        }
+                        umc.AverageInterferenceScore = d;
+                    }
 					if (m_columnMap.ContainsKey("Umc.ConformationFitScore"))		umc.ConformationFitScore = Double.Parse(columns[m_columnMap["Umc.ConformationFitScore"]]);
 					if (m_columnMap.ContainsKey("Umc.AverageDeconFitScore"))		umc.AverageDeconFitScore = Double.Parse(columns[m_columnMap["Umc.AverageDeconFitScore"]]);
                     if (m_columnMap.ContainsKey("Umc.SaturatedCount"))              umc.SaturatedMemberCount = int.Parse(columns[m_columnMap["Umc.SaturatedCount"]]);

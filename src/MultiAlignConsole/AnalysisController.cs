@@ -134,7 +134,8 @@ namespace MultiAlignConsole
         /// <param name="e"></param>
         private void processor_FeaturesAligned(object sender, FeaturesAlignedEventArgs e)
         {
-
+            Logger.PrintMessage("Features Aligned.");
+            m_reportCreator.CreateAlignmentPlots(e);
         }
         /// <summary>
         /// Logs when features are clustered.
@@ -143,7 +144,7 @@ namespace MultiAlignConsole
         /// <param name="e"></param>
         private void processor_FeaturesClustered(object sender, FeaturesClusteredEventArgs e)
         {
-            Logger.PrintMessage("Features Clustered.");
+            Logger.PrintMessage("Features Clustered.");            
         }
         /// <summary>
         /// Logs when features are peak matched.
@@ -152,7 +153,7 @@ namespace MultiAlignConsole
         /// <param name="e"></param>
         private void processor_FeaturesPeakMatched(object sender, FeaturesPeakMatchedEventArgs e)
         {
-            Logger.PrintMessage("Features are peak matched.");
+            Logger.PrintMessage("Features are peak matched.");            
         }
         /// <summary>
         /// Logs when features are loaded.
@@ -162,6 +163,7 @@ namespace MultiAlignConsole
         private void processor_FeaturesLoaded(object sender, FeaturesLoadedEventArgs e)
         {
             Logger.PrintMessage(string.Format("Loaded {0} features from {1}", e.Features.Count, e.DatasetInformation.DatasetName));
+            
         }
         /// <summary>
         /// Logs status messages.
@@ -457,7 +459,7 @@ namespace MultiAlignConsole
             // Create the analysis path and log file paths.
             ConstructAnalysisPath();
             string dateSuffix = ConstructLogPath();
-
+            
             // Log the version information to the log.
             Logger.PrintVersion();
             Logger.PrintSpacer();
@@ -522,14 +524,15 @@ namespace MultiAlignConsole
             {
                 m_config.logPath = AnalysisPathUtils.BuildLogPath(m_config.AnalysisPath,
                                                             m_config.AnalysisName,
-                                                            dateSuffix);
+                                                            dateSuffix);                
             }
             else
-            {
+            {                
                 m_config.logPath = Path.Combine(m_config.AnalysisPath,
                                          m_config.logPath,
-                                         dateSuffix);
+                                         dateSuffix);                
             }
+            Logger.LogPath = m_config.logPath;
             return dateSuffix;
         }
         private  void ConstructAnalysisPath()

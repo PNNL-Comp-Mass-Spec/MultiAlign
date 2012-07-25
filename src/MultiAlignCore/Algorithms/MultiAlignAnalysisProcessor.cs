@@ -905,13 +905,20 @@ namespace MultiAlignCore.Algorithms
         #endregion
 
         private void PerformSpectralClustering(AnalysisConfig config)
-        {
-            UpdateStatus("Creating Spectral Cluster Mini-Database.");           
-            MSMSSpectralClusterer processor = new MSMSSpectralClusterer();
-            processor.Progress += new EventHandler<ProgressNotifierArgs>(processor_Progress);
-            processor.ClusterMSMSSpectra(config.Analysis);
-            processor.Progress -= processor_Progress;
-            UpdateStatus(string.Format("Analysis {0} Completed.", m_config.Analysis.MetaData.AnalysisName));
+        {       
+            if (config.Analysis.MetaData.OtherFiles.Count <= 0)
+            {
+                UpdateStatus("No raw files were specifiied.  Skipping MS/MS spectral clustering");
+            }
+            else
+            {
+                UpdateStatus("Creating Spectral Cluster Mini-Database.");    
+                MSMSSpectralClusterer processor = new MSMSSpectralClusterer();
+                processor.Progress += new EventHandler<ProgressNotifierArgs>(processor_Progress);
+                processor.ClusterMSMSSpectra(config.Analysis);
+                processor.Progress -= processor_Progress;
+                UpdateStatus(string.Format("Analysis {0} Completed.", m_config.Analysis.MetaData.AnalysisName));
+            }            
         }
         private void ExtractSICS(AnalysisConfig config)
         {
