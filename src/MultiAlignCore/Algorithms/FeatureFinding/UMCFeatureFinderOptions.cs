@@ -20,21 +20,28 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
             this.FitWeight = 0.10F;
             this.NETWeight = 0.10F;
 
-            this.ConstraintMonoMass = 6.0F; // in ppm 
-            this.ConstraintAveMass = 6.0F; // in ppm; 
+            this.ConstraintMonoMass      = 6.0F; // in ppm 
+            this.ConstraintAveMass       = 6.0F; // in ppm; 
 
-            this.MaxDistance = 0.1;
-            this.UseNET = true;
-            this.MinUMCLength = 3;
+            this.MaxDistance             = 0.1;
+            this.UseNET                  = true;
+            this.MinUMCLength            = 3;
             this.IsotopicIntensityFilter = 0;
 
-            this.IsIsotopicFitFilterInverted = false;
-            this.UseIsotopicIntensityFilter = false;
-            this.IsotopicFitFilter = .15;
-            this.IsotopicIntensityFilter = 0;
-            this.UMCAbundanceReportingType = AbundanceReportingType.Max;
-            this.Split = false;
+            this.StoreMSFeatureResults          = true;
+            this.IsIsotopicFitFilterInverted    = false;
+            this.UseIsotopicIntensityFilter     = false;
+            this.IsotopicFitFilter              = .15;
+            this.IsotopicIntensityFilter        = 0;
+            this.UMCAbundanceReportingType      = AbundanceReportingType.Max;
+            this.Split                          = false;
         }
+
+        [DataSummaryAttribute("Store MS Feature Results")]
+        [ParameterFileAttribute("StoreMSFeatureResults", "LCMSFeatureFinding")]
+        [Category("Persistence")]
+        [Description("Flag indicating whether MS Feature results should be saved to the database.")]
+        public bool StoreMSFeatureResults { get; set; }
         [DataSummaryAttribute("Is Isotopic Peak Fit Filter Inverted")]
         [ParameterFileAttribute("IsIsotopicPeakFitFilterInverted", "LCMSFeatureFinding")]
         [Category("Filtering")]

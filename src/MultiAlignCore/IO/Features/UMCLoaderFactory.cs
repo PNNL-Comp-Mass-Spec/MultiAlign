@@ -9,11 +9,33 @@ using PNNLOmicsIO.IO;
 
 namespace MultiAlignCore.IO.Features
 {
+    public class UMCLoadingEventArgs: EventArgs 
+    {
+        public UMCLoadingEventArgs(string message)
+        {
+            Message = message;
+        }
+        public string Message
+        {
+            get;
+            private set;
+        }
+    }
     /// <summary>
     /// Loads UMC's from the given sources.
     /// </summary>
     public static class UMCLoaderFactory
     {
+        public static event EventHandler<UMCLoadingEventArgs> Status;
+
+        private static void UpdateStatus(string message)
+        {
+            if (Status != null)
+            {
+                Status(null, new UMCLoadingEventArgs(message));
+            }
+        }
+
         /// <summary>
         /// Loads data files into memory.
         /// </summary>
@@ -82,6 +104,7 @@ namespace MultiAlignCore.IO.Features
                         {
                             msFeatures = msFeatureCache.FindAll();
                         }
+                        UpdateStatus("Loaded features from the database.");
                         break;
                     case ".SQLITE":                        
                         try
@@ -99,6 +122,7 @@ namespace MultiAlignCore.IO.Features
                         {
                             msFeatures = msFeatureCache.FindAll();
                         }
+                        UpdateStatus("Loaded features from the database.");
                         break;
                     case ".CSV":                  
                         MSFeatureLightFileReader reader             = new MSFeatureLightFileReader();
@@ -106,6 +130,7 @@ namespace MultiAlignCore.IO.Features
                         IEnumerable<MSFeatureLight> newMsFeatures   = reader.ReadFile(dataset.Path);                        
                         msFeatures.AddRange(newMsFeatures);
                         foundNewFeatures                            = true;
+                        UpdateStatus("Loaded features from the CSV files.");
                         break;
                      
                     default:
@@ -115,6 +140,8 @@ namespace MultiAlignCore.IO.Features
                 // We have UMC's to find!
                 if (msFeatures.Count > 0)
                 {
+
+                    UpdateStatus("Filtering MS Features.");
                     newFeatures = new List<UMCLight>();
 
                     // Needs a refactor.
@@ -150,8 +177,9 @@ namespace MultiAlignCore.IO.Features
                         }
                     }
                     
+                    UpdateStatus("Creating LC-MS features.");
                     newFeatures = featureFinder.FindFeatures(filteredMSFeatures, options);
-
+                                        
                     // Make sure we only add back to the database what features u
                     List<MSFeatureLight> msFeaturesUsed = new List<MSFeatureLight>();
                     foreach (UMCLight feature in newFeatures)
@@ -161,8 +189,10 @@ namespace MultiAlignCore.IO.Features
                             msFeaturesUsed.Add(featureLight);
                         }
                     }
-                    if (foundNewFeatures)
-                    {
+
+                    if (foundNewFeatures && options.StoreMSFeatureResults)
+                    {                        
+                        UpdateStatus(string.Format("Adding {0} MS features to the database.", msFeaturesUsed.Count));                    
                         msFeatureCache.AddAll(msFeaturesUsed);
                     }
                 }                            
@@ -220,7 +250,12 @@ namespace MultiAlignCore.IO.Features
 
                     features.Add(umc);                    
                 }
-                msFeatureMapCache.AddAll(msFeatureMapList);                
+
+                if (options.StoreMSFeatureResults)
+                {
+                    UpdateStatus(string.Format("Mapping {0} MS features to LC-MS features for the database.", msFeatureMapList.Count));
+                    msFeatureMapCache.AddAll(msFeatureMapList);
+                }
             }
             else
             {
@@ -232,6 +267,7 @@ namespace MultiAlignCore.IO.Features
                 umc.DatasetId = Convert.ToInt32(dataset.DatasetId);
             }
 
+            UpdateStatus("Feature finding complete.");
             return features;
         }
     }

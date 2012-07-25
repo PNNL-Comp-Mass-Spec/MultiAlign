@@ -9,10 +9,12 @@ namespace MultiAlignCore.Algorithms.MSLinker
     public class MSLinkerOptions
     {
         private double m_mzTolerance;
+        private double m_msnMzTolerance;
 
         public MSLinkerOptions()
         {
-            m_mzTolerance = .15;
+            m_mzTolerance    = .15;
+            m_msnMzTolerance = .15;
         }
 
         /// <summary>
@@ -32,5 +34,23 @@ namespace MultiAlignCore.Algorithms.MSLinker
                 m_mzTolerance = value;
             }
         }
+
+        ///// <summary>
+        ///// Gets or sets the m/z tolerance window width for the MS Linker algorithm.
+        ///// </summary>
+        //[ParameterFileAttribute("MsnMzTolerance", "MSnLinker")]
+        //[Category("Tolerances")]
+        //[Description("The m/z tolerance window to bin an ion in MS/MS spectra")]
+        //public double MSnMzTolerance
+        //{
+        //    get
+        //    {
+        //        return m_msnMzTolerance;
+        //    }
+        //    set
+        //    {
+        //        m_msnMzTolerance = value;
+        //    }
+        //}
     }
 }

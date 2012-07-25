@@ -328,11 +328,19 @@ namespace MultiAlignCore.Algorithms.Alignment
                 copyNETBlocks += alignmentData[i].ResidualData.scans.Length;
                 copyMassBlocks += alignmentData[i].ResidualData.mz.Length;
 
-                mergedData.NETMean = alignmentData[i].NETMean;
-                mergedData.MassMean = alignmentData[i].MassMean;
-                mergedData.MassStandardDeviation = alignmentData[i].MassStandardDeviation;
+                mergedData.MassMean                 = alignmentData[i].MassMean;
+                mergedData.MassStandardDeviation    = alignmentData[i].MassStandardDeviation; 
+                
+                mergedData.NETIntercept         = alignmentData[i].MassStandardDeviation;
+                mergedData.NETMean              = alignmentData[i].NETMean;
                 mergedData.NETStandardDeviation = alignmentData[i].NETStandardDeviation;
-
+                mergedData.NETRsquared          = alignmentData[i].NETRsquared;
+                mergedData.NETSlope             = alignmentData[i].NETSlope;
+                
+                
+                
+                
+                
                 if (i > 0)
                     MergeHistogramData(netErrorHistogramData, alignmentData[i].netErrorHistogram, true);
             }

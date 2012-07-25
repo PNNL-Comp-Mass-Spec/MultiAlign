@@ -34,9 +34,19 @@ namespace MultiAlignCore.IO.Features.Hibernate
 		/// </summary>
 		/// <returns>ISession object for the current hibernate session</returns>
 		public static ISession OpenSession()
-		{
+		{            
 			return SessionFactory.OpenSession();
 		}
+
+        // <summary>
+        /// Returns a session that is created from the SessionFactory. If a session already existed, it will return the existing Session, not create a new one.
+        /// </summary>
+        /// <returns>ISession object for the current hibernate session</returns>
+        public static IStatelessSession OpenStatelessSession()
+        {
+            return SessionFactory.OpenStatelessSession();            
+        }
+
 
         /// <summary>
         /// Closes a session.
@@ -61,6 +71,19 @@ namespace MultiAlignCore.IO.Features.Hibernate
 				conn.Open();
 				SchemaExport schemaExport = new SchemaExport(configuration);
 				schemaExport.Execute(false, true, false, false, conn, null);
+
+                string[] optimizationCommands = new string[] {  "PRAGMA journal_mode = OFF",
+                                                                "PRAGMA synchronous = OFF",
+                                                                "PRAGMA page_size = 65536"
+                                                            };
+                foreach (string commandText in optimizationCommands)
+                {
+                    using (SQLiteCommand command = conn.CreateCommand())
+                    {
+                        command.CommandText = commandText;
+                        command.ExecuteNonQuery();
+                    }
+                }
 			}
 		}
         /// <summary>
@@ -133,7 +156,13 @@ namespace MultiAlignCore.IO.Features.Hibernate
 			configuration.SetProperty("connection.connection_string", "Data Source=" + dbLocation + ";Version=3;New=True");
 		}
 
-
+        public static string Connection
+        {
+            get
+            {
+                return m_dbLocation;
+            }
+        }
         #region IDisposable Members
 
         public static void Dispose()

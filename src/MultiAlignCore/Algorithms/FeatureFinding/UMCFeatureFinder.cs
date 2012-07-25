@@ -83,15 +83,14 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
                         deltas.Add(delta);
                     }
 
-                    int median          = deltas.Median(); 
+                    int min          = deltas.Min(); 
                     List<int> divisions = new List<int>();
 
-                    // Then we break up any features that are ill-behaived.
-                    // We use the rule of one stdev from the sample population, s.t. that std !~ to the mean.                
+                    // Then we break up any features that are ill-behaived.               
                     
                         for (int i = 0; i < deltas.Count; i++)
                         {
-                            if (deltas[i] > median)
+                            if (deltas[i] > 3*min)
                             {
                                 divisions.Add(i + 1);
                             }

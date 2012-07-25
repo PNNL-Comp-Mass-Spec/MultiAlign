@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" 
+                   assembly="MultiAlignCore" 
+                   namespace="MultiAlignCore.Data.Alignment">
+
+	<class name="classAlignmentData" table="T_AlignmentData" lazy="false">
+		<composite-id>
+			<key-property name="DatasetID" column="Dataset_ID" type="int" />      
+		</composite-id>
+		<property name="NETRsquared"              column="Net_R_Squared"  type="double" not-null="false" />
+    <property name="NETSlope"                 column="Net_Slope"      type="double" not-null="false" />
+    <property name="NETIntercept"             column="Net_Intercept"  type="double" not-null="false" />
+    <property name="NETMean"                  column="Net_Mean"       type="double" not-null="false" />
+    <property name="NETStandardDeviation"     column="Net_Stdev"      type="double" not-null="false" />
+    <property name="MassMean"                 column="Mass_Mean"      type="double" not-null="false" />
+    <property name="MassStandardDeviation"    column="Mass_Stdev"     type="double" not-null="false" />
+	</class>
+</hibernate-mapping>

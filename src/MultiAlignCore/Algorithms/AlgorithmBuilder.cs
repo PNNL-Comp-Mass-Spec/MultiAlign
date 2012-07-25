@@ -23,7 +23,7 @@ namespace MultiAlignCore.Algorithms
         /// </summary>
         public AlgorithmBuilder()
         {
-            m_provider = new AlgorithmProvider();
+            m_provider = new AlgorithmProvider();            
         }
 
         /// <summary>

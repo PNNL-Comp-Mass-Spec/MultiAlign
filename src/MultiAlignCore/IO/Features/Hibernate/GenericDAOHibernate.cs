@@ -25,6 +25,7 @@ namespace MultiAlignCore.IO.Features.Hibernate
         public GenericDAOHibernate()
         {
             m_persistentType = typeof(T);
+            SessionBatchSize = 2;
         }
 
         #endregion
@@ -39,9 +40,17 @@ namespace MultiAlignCore.IO.Features.Hibernate
         {
             if (m_session == null || !m_session.IsOpen)
             {
-				m_session = NHibernateUtil.OpenSession();
-            }                        
+                m_session = NHibernateUtil.OpenSession();
+            }
             return m_session;
+        }
+        /// <summary>
+        /// Uses NHibernateUtil to create and open a Hibernate Session if one does not already exist.
+        /// </summary>
+        /// <returns>A configured Hibernate ISession</returns>
+        protected IStatelessSession GetStatelessSession()
+        {
+            return NHibernateUtil.OpenStatelessSession();            
         }
 
         /// <summary>
@@ -65,7 +74,7 @@ namespace MultiAlignCore.IO.Features.Hibernate
         /// </summary>
         /// <param name="t">Object to be added</param>
         public void Add(T t)
-        {
+        {                        
             using (ISession session = GetSession())
             {
                 using (ITransaction transaction = session.BeginTransaction())
@@ -75,20 +84,24 @@ namespace MultiAlignCore.IO.Features.Hibernate
                 }
             }
         }
-
+        public int SessionBatchSize
+        {
+            get;
+            set;
+        }
         /// <summary>
         /// Adds a Collection of Objects to the Database.
         /// </summary>
 		/// <param name="tCollection">Collection of Objects to be added</param>
 		public void AddAll(ICollection<T> tCollection)
         {
-            using (ISession session = GetSession())
-            {
+            using (IStatelessSession session = GetStatelessSession())
+            {                
                 using (ITransaction transaction = session.BeginTransaction())
                 {
                     foreach (T t in tCollection)
-                    {
-                        session.Save(t);
+                    {                                                
+                        session.Insert(t);
                     }
                     transaction.Commit();
                 }
@@ -117,13 +130,13 @@ namespace MultiAlignCore.IO.Features.Hibernate
 		/// <param name="tCollection">Collection of Objects to be updated</param>
 		public void UpdateAll(ICollection<T> tCollection)
         {
-            using (ISession session = GetSession())
-            {
+            using (IStatelessSession session = GetStatelessSession())
+            {                
                 using (ITransaction transaction = session.BeginTransaction())
                 {
                     foreach (T t in tCollection)
                     {
-                        session.Update(t);
+                        session.Update(t);                         
                     }
                     transaction.Commit();
                 }
@@ -152,13 +165,13 @@ namespace MultiAlignCore.IO.Features.Hibernate
 		/// <param name="tCollection">Collection of Objects to be deleted</param>
 		public void DeleteAll(ICollection<T> tCollection)
         {
-            using (ISession session = GetSession())
+            using (IStatelessSession session = GetStatelessSession())
             {
                 using (ITransaction transaction = session.BeginTransaction())
                 {
                     foreach (T t in tCollection)
                     {
-                        session.Delete(t);
+                        session.Delete(t);                        
                     }
                     transaction.Commit();
                 }

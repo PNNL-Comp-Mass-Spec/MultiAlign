@@ -10,7 +10,7 @@ namespace MultiAlignCore.IO.Features
     /// <summary>
     /// Adapter for the Thermo Finnigan file format reader made by Matt Monroe.
     /// </summary>
-    public class ThermoRawDataFileReader: IRawDataFileReader, ISpectraProvider , IDisposable
+    public class ThermoRawDataFileReader: ISpectraProvider, IDisposable
     {
         /// <summary>
         /// Readers for each dataset.
@@ -23,19 +23,8 @@ namespace MultiAlignCore.IO.Features
         {
             m_dataFiles = new Dictionary<int, string>();
             m_readers   = new Dictionary<int,XRawFileIO>();
-            BinSize     = .5; 
         }
        
-        /// <summary>
-        /// Gets or sets the bin size for mass spectra
-        /// </summary>
-        public double BinSize
-        {
-            get;
-            set;
-        }
-
-
         /// <summary>
         /// Adds a dataset file to the reader map so when in use the application
         /// knows where to get raw data from.
@@ -53,19 +42,25 @@ namespace MultiAlignCore.IO.Features
         /// </summary>
         /// <param name="file">file to read.</param>
         /// <returns>List of MSMS spectra data</returns>
-        public List<MSSpectra> ReadMSMSSpectra(string file)
+        public List<MSSpectra> GetMSMSSpectra(int group)
         {
             List<MSSpectra> spectra = new List<MSSpectra>();
 
+            if (!m_readers.ContainsKey(group))
+            {
+                string path         = m_dataFiles[group];
+                XRawFileIO reader   = new XRawFileIO();
+                m_readers.Add(group, reader);
+                bool opened         = reader.OpenRawFile(path);
 
-            XRawFileIO rawReader = new XRawFileIO();
-            bool opened          = rawReader.OpenRawFile(file);
-
-            if (!opened)
-            {                
-                throw new IOException("Could not open the Thermo raw file " + file);
+                if (!opened)
+                {
+                    throw new IOException("Could not open the Thermo raw file " + m_dataFiles[group]);
+                }
             }
-
+            
+            XRawFileIO rawReader = m_readers[group];                        
+            
             int numberOfScans = rawReader.GetNumScans();
             for (int i = 0; i < numberOfScans; i++)
             {
@@ -99,8 +94,17 @@ namespace MultiAlignCore.IO.Features
         /// Gets the raw data from the data file.
         /// </summary>
         /// <param name="scan"></param>
-        /// <returns></returns>
+        /// <returns></returns>        
         public List<XYData> GetRawSpectra(int scan, int group)
+        {
+            return GetRawSpectra(scan, group, -1);
+        }
+        /// <summary>
+        /// Gets the raw data from the data file.
+        /// </summary>
+        /// <param name="scan"></param>
+        /// <returns></returns>
+        public List<XYData> GetRawSpectra(int scan, int group, int msLevel)
         {
             if (!m_dataFiles.ContainsKey(group))
             {
@@ -123,46 +127,59 @@ namespace MultiAlignCore.IO.Features
             }
 
             List<MSSpectra> spectra = new List<MSSpectra>();
-            XRawFileIO rawReader    = m_readers[group];
-            
+            XRawFileIO rawReader = m_readers[group];
+
             FinniganFileReaderBaseClass.udtScanHeaderInfoType header = new FinniganFileReaderBaseClass.udtScanHeaderInfoType();
-            
+
             rawReader.GetScanInfo(scan, ref header);
-            int N                   = header.NumPeaks;            
-            
-            double [] mz            = new double[N];
-            double [] intensities   = new double[N];
 
-            double minMass  = 0;    //header.LowMass;
-            double maxMass  = 2000; //header.HighMass;
-            int total       = System.Convert.ToInt32((maxMass - minMass) / BinSize);
+            if (header.MSLevel != msLevel && msLevel != -1)
+                return null;
 
-            rawReader.GetScanData(scan, ref mz, ref intensities, ref header);                   
+            int N                   = header.NumPeaks;
+
+            double[] mz             = new double[N];
+            double[] intensities    = new double[N];            
+            rawReader.GetScanData(scan, ref mz, ref intensities, ref header);
 
             // construct the array.
-            List<XYData> data = new List<XYData>(total);                        
-            for (int i = 0; i < total; i++)
-            {
-                double mass  = (BinSize * i) + minMass;
-                XYData datum = new XYData(mass, 0);
-                data.Add(datum);
-            }
-
-            
+            List<XYData> data = new List<XYData>(mz.Length);            
             for (int i = 0; i < mz.Length; i++)
             {
-                double  intensity    = intensities[i];
-                int     bin          = Math.Min(total - 1, System.Convert.ToInt32((mz[i] - minMass) / BinSize));
-                try
-                {
-                    data[bin].Y += intensity;
-                }
-                catch (Exception ex)
-                {
-                    throw ex;
-                }
+                double intensity = intensities[i];
+                data.Add(new XYData(mz[i], intensity));                
             }
             return data;
+        }
+        /// <summary>
+        /// Determines if the scan is a precursor scan or not.
+        /// </summary>
+        /// <param name="scan"></param>
+        /// <param name="group"></param>
+        /// <returns></returns>
+        public bool IsPrecursorScan(int scan, int group)
+        {
+            // If we dont have a reader, then create one for this group 
+            // next time, it will be available and we won't have to waste time
+            // opening the file.
+            if (!m_readers.ContainsKey(group))
+            {
+                string path         = m_dataFiles[group];
+                XRawFileIO reader   = new XRawFileIO();
+                m_readers.Add(group, reader);
+
+                bool opened = reader.OpenRawFile(path);
+                if (!opened)
+                {
+                    throw new IOException("Could not open the Thermo raw file " + m_dataFiles[group]);
+                }
+            }
+            
+            XRawFileIO rawReader                                     = m_readers[group];
+            FinniganFileReaderBaseClass.udtScanHeaderInfoType header = new FinniganFileReaderBaseClass.udtScanHeaderInfoType();
+            rawReader.GetScanInfo(scan, ref header);
+
+            return header.MSLevel == 1;
         }
         #endregion
 

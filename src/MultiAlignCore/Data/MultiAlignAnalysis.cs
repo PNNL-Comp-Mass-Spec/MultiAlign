@@ -38,71 +38,7 @@ namespace MultiAlignCore.Data
             AlignmentData                   = new List<classAlignmentData>();
             MatchResults                    = null;
         }
-        #endregion
-
-        #region Loading mass tag database
-        /// <summary>
-        /// Monitors the loading of the mass tag database for status messages.
-        /// </summary>
-        //private void MonitorMassTagDBLoading()
-        //{
-        //    try
-        //    {
-        //        // we only want to call the status message when a new message arrives, otherwise
-        //        // there will be updates with the SAME message. So lets track last message sent.
-        //        string lastMessage = "";
-        //        while (menmState == enmState.LOADING_MASSTAGS)
-        //        {
-        //            string currentMessage = mobjMassTagDBLoader.StatusMessage;
-        //            if (currentMessage == null)
-        //                currentMessage = "";
-        //            if (StatusMessage != null && currentMessage != lastMessage)
-        //            {
-        //                lastMessage = currentMessage;
-        //                StatusMessage(0, currentMessage);
-        //            }
-
-        //            if (PercentComplete != null)
-        //                PercentComplete((int)mobjMassTagDBLoader.PercentComplete);
-
-        //            System.Threading.Thread.Sleep(200);
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine(ex.Message + ex.StackTrace);
-        //    }
-        //}
-        ///// <summary>
-        ///// Loads the mass tag database.
-        ///// </summary>
-        //public void LoadMassTagDB()
-        //{
-        //    menmState = enmState.LOADING_MASSTAGS;            
-        //    /// 
-        //    /// Make sure the path is not to an XAMT database
-        //    /// 
-        //    if (mobjMassTagDBOptions.menm_databaseType == MassTagDatabaseType.ACCESS &&
-        //                System.IO.Path.GetExtension(mobjMassTagDBOptions.mstr_databaseFilePath) == ".txt")
-        //    {
-        //        XAMTReader reader = new XAMTReader();
-        //        mobjMassTagDB = reader.ReadXAMTDatabase(mobjMassTagDBOptions.mstr_databaseFilePath);
-        //    }
-        //    else
-        //    {
-        //        Thread procThread = new Thread(new ThreadStart(MonitorMassTagDBLoading));
-        //        mthread_currentStatus = procThread;
-        //        procThread.Name = "Loading Mass Tag Database Thread Monitor";
-
-        //        mobjMassTagDBLoader = new MultiAlignEngine.MassTags.clsMTDBLoader(mobjMassTagDBOptions);
-        //        procThread.Start();
-
-        //        mobjMassTagDB = mobjMassTagDBLoader.LoadMassTagDatabase();
-        //        StatusMessage(0, mobjMassTagDBLoader.StatusMessage);
-        //    }            
-        //    menmState = enmState.LOADING_MASSTAGS_COMPLETE;
-        //}
-        #endregion
+        #endregion       
 	                      
         /// <summary>
         /// Dispose method that will kill the analysis thread.

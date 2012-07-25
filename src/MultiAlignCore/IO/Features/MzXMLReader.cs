@@ -8,9 +8,33 @@ namespace MultiAlignCore.IO.Features
     /// <summary>
     /// Adapter for reading mzXML files from a reader by Matt Monroe.
     /// </summary>
-    public class MzXMLReader: IRawDataFileReader
+    public class MzXMLReader : ISpectraProvider
     {
-        #region IRawDataFileReader Members
+        
+        /// <summary>
+        /// Readers for each dataset.
+        /// </summary>
+        private Dictionary<int, clsMzXMLFileReader> m_readers;
+
+        private Dictionary<int, string> m_dataFiles;
+
+        public MzXMLReader()
+        {
+            m_dataFiles = new Dictionary<int, string>();
+            m_readers   = new Dictionary<int,clsMzXMLFileReader>();
+            BinSize     = .5; 
+        }
+       
+        /// <summary>
+        /// Gets or sets the bin size for mass spectra
+        /// </summary>
+        public double BinSize
+        {
+            get;
+            set;
+        }
+
+        #region ISpectraProvider Members
         /// <summary>
         /// Reads a list of MSMS Spectra header data from the mzXML file.
         /// </summary>
@@ -53,6 +77,65 @@ namespace MultiAlignCore.IO.Features
             return spectra;
         }
 
+        public List<XYData> GetRawSpectra(int scan, int group)
+        {
+            List<XYData> spectrum = null;
+
+            if (!m_dataFiles.ContainsKey(group))
+            {
+                throw new System.Exception("The group-dataset ID provided was not found.");
+            }
+            // If we dont have a reader, then create one for this group 
+            // next time, it will be available and we won't have to waste time
+            // opening the file.
+            if (!m_readers.ContainsKey(group))
+            {
+                string path                 = m_dataFiles[group];
+                clsMzXMLFileReader reader   = new clsMzXMLFileReader();
+                reader.SkipBinaryData       = true;
+                m_readers.Add(group, reader);
+
+                bool opened = reader.OpenFile(path);
+                if (!opened)
+                {
+                    throw new IOException("Could not open the mzXML file " + path);
+                }
+            }
+            clsMzXMLFileReader rawReader = m_readers[group];
+
+            int totalScans = rawReader.ScanCount;            
+            clsSpectrumInfo info = new clsSpectrumInfo();
+            rawReader.GetSpectrumByScanNumber(scan, ref info);
+            if (info.MSLevel > 1)
+            {
+
+                spectrum = new List<XYData>();
+                for (int j = 0; j < info.MZList.Length; j++)
+                {
+                    spectrum.Add(new XYData(info.MZList[j], info.IntensityList[j]));
+                }
+            }
+            
+            return spectrum;
+        }
+        #endregion
+
+        #region ISpectraProvider Members
+        public void AddDataFile(string path, int groupID)
+        {
+            
+        }
+        public List<MSSpectra> GetMSMSSpectra(int group)
+        {
+            return null;
+        }
+        #endregion
+
+        #region IDisposable Members
+        public void Dispose()
+        {
+            
+        }
         #endregion
     }
 }

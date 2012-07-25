@@ -8,6 +8,7 @@ namespace MultiAlignCore.Data.Alignment
     {
         private classAlignmentResidualData mobj_residualData;
 
+        public int          DatasetID {get;set;}
         public clsAlignmentFunction alignmentFunction;
         public string       aligneeDataset;
         public float[,]     heatScores;
@@ -18,15 +19,17 @@ namespace MultiAlignCore.Data.Alignment
         public double[,]    massErrorHistogram;
         public double[,]    netErrorHistogram;
         public double[,]    driftErrorHistogram;
-        public double       NETRsquared;
-        public double       NETSlope;
-        public double       NETIntercept;
-        public double       MassMean;
-        public double       NETMean;
-        public double       MassStandardDeviation;
-        public double       NETStandardDeviation;
+        public double       NETRsquared {get;set;}
+        public double       NETSlope {get;set;}
+        public double       NETIntercept {get;set;}
+        public double       MassMean {get;set;}
+        public double       NETMean {get;set;}
+        public double       MassStandardDeviation {get;set;}
+        public double       NETStandardDeviation {get;set;}
 
         
+        
+
         /// <summary>
         /// Gets or sets the residual alignment data.
         /// </summary>        
@@ -55,6 +58,32 @@ namespace MultiAlignCore.Data.Alignment
             {
                 return Math.Pow(NETMean, 4) / Math.Pow(NETStandardDeviation, 4);
             }
+        }
+
+
+
+        public override bool Equals(object obj)
+        {
+            classAlignmentData factor = (classAlignmentData)obj;
+
+            if (factor == null)
+            {
+                return false;
+            }
+            else if (!this.DatasetID.Equals(factor.DatasetID))
+            {
+                return false;
+            }            
+            return true;
+        }
+
+        public override int GetHashCode()
+        {
+            int hash = 17;
+
+            hash = hash * 23 + DatasetID.GetHashCode();            
+
+            return hash;
         }
     }
 }

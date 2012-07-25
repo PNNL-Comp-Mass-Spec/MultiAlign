@@ -125,7 +125,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AnalysisController.cs" />
+    <Compile Include="AnalysisPlotConstructors.cs" />
     <Compile Include="IO\ClusterExporterComposite.cs" />
+    <Compile Include="IO\CommandLineProcessor.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.IO;    
+using System.IO;
+using PNNLOmics.Data;
 
 namespace MultiAlignCore.IO.Features
 {
@@ -16,9 +17,9 @@ namespace MultiAlignCore.IO.Features
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public static IRawDataFileReader CreateFileReader(string name)
+        public static ISpectraProvider CreateFileReader(string name)
         {
-            IRawDataFileReader reader   = null;
+            ISpectraProvider reader   = null;
             string extension            = Path.GetExtension(name);
             switch (extension.ToLower())
             {

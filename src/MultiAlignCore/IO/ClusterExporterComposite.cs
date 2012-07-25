@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace MultiAlignConsole.IO
+namespace MultiAlignCore.IO
 {
     /// <summary>
     /// class used to aggregate clusters.

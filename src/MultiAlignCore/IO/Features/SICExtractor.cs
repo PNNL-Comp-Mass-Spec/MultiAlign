@@ -12,6 +12,8 @@ using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
 using MultiAlignEngine.Features;
 
+using PNNLOmics.Extensions;
+
 namespace MultiAlignCore.IO.Features
 {
     public class SICExtractor: IProgressNotifer
@@ -98,20 +100,21 @@ namespace MultiAlignCore.IO.Features
         {
             UpdateStatus("Extracting MSMS data");
             MSMSFeatureExtractor extractor = new MSMSFeatureExtractor();
+            extractor.Progress += new EventHandler<ProgressNotifierArgs>(extractor_Progress);
             Dictionary<int, List<UMCLight>> features = extractor.ExtractUMCWithMSMS(analysis.DataProviders,
                                                                                     analysis.MetaData.Datasets);
 
             // Create the object that knows how to read the RAW files we are analyzing.
             ThermoRawDataFileReader reader = null;
 
-            if (analysis.MetaData.OtherFiles.Count <= 0)
+            if (analysis.MetaData.OtherFiles.Count > 0)
             {
                 UpdateStatus("Raw files specified.");
                 reader = new ThermoRawDataFileReader();
                 for (int i = 0; i < analysis.MetaData.Datasets.Count; i++)
                 {
-                    DatasetInformation datasetInformation = analysis.MetaData.Datasets[i];
-                    InputFile rawInformation = analysis.MetaData.OtherFiles[i];
+                    DatasetInformation datasetInformation   = analysis.MetaData.Datasets[i];
+                    InputFile rawInformation                = analysis.MetaData.OtherFiles[i];
 
                     reader.AddDataFile(rawInformation.Path, datasetInformation.DatasetId);
                 }
@@ -123,37 +126,74 @@ namespace MultiAlignCore.IO.Features
                                          analysis.DataProviders.MSFeatureToLCMSFeatureCache,
                                          analysis.DataProviders.MSFeatureCache);
 
-            string sicTitle = "SIC";
+            UpdateStatus("Exporting SIC's");
+
+            string sicTitle  = "SIC";
             string sicXLabel = "Scan";
-            string sicYLabel = "Intensity";
+            string sicYLabel = "Log_2(Intensity)";
 
             // Look at each dataset.
             foreach (int datasetID in features.Keys)
             {
                 // Look at each feature
+
+
                 foreach (UMCLight feature in features[datasetID])
                 {
-                    int totalFeatures = feature.MSFeatures.Count;
-                    double[] scans = new double[totalFeatures];
-                    double[] intensity = new double[totalFeatures];
-                    string baseName = string.Format("-{0}-{1}", datasetID, feature.ID);
-                    int i = 0;
 
+                    int min = int.MaxValue;
+                    int max = int.MinValue;
+                    int range = 0;
+                    int extendedMin = int.MaxValue;
+                    int extendedMax = int.MinValue;
+
+                    int totalFeatures   = feature.MSFeatures.Count;
+                    double[] scans      = new double[totalFeatures];
+                    double[] intensity  = new double[totalFeatures];
+                    string baseName     = string.Format("-{0}-{1}", datasetID, feature.ID);
+                    int i               = 0;
+
+
+                    // Reconstruct the SIC profile for each feature using the RAW data.
+                    feature.MSFeatures.Sort(delegate(MSFeatureLight x, MSFeatureLight y)
+                    {
+                        return x.Scan.CompareTo(y.Scan);
+                    });
+
+                    min = Math.Min(feature.MSFeatures.MinScan(), min);
+                    max = Math.Max(feature.MSFeatures.MaxScan(), max);
+
+                    
+                    int minDelta = int.MaxValue;
+                    for(i = 0; i < feature.MSFeatures.Count - 1; i++)
+                    {
+                        int tempMin = Math.Min(minDelta, Math.Abs(feature.MSFeatures[i].Scan - feature.MSFeatures[i + 1].Scan));
+                        if (tempMin > 0)
+                        {
+                            minDelta = tempMin;
+                        }
+                    }
+                    range = minDelta * 5;
+                    extendedMin = min - range;
+                    extendedMax = max + range;
+
+                    i = 0;
                     double maxI = 0;
+
                     // Separate the MS features into charge state maps so we only look at one m/z
                     foreach (MSFeatureLight msFeature in feature.MSFeatures)
                     {
 
                         // Build the SIC arrays for plotting
-                        scans[i] = msFeature.Scan;
-                        intensity[i] = Math.Log(msFeature.Abundance, 2);
-                        maxI = Math.Max(intensity[i], maxI);
+                        scans[i]        = msFeature.Scan;
+                        intensity[i]    = Math.Log(msFeature.Abundance, 2);
+                        maxI            = Math.Max(intensity[i], maxI);
                         i++;
                     }
 
-                    System.Drawing.RectangleF rect = new System.Drawing.RectangleF(0, 0, 400, 400);
-                    ZedGraph.GraphPane pane = new ZedGraph.GraphPane(rect, sicTitle + string.Format(" {0:0.000}", feature.MassMonoisotopic), sicXLabel, sicYLabel);
-                    pane.LineType = ZedGraph.LineType.Normal;
+                    System.Drawing.RectangleF rect  = new System.Drawing.RectangleF(0, 0, 400, 400);
+                    ZedGraph.GraphPane pane         = new ZedGraph.GraphPane(rect, sicTitle + string.Format(" {0:0.000}", feature.MassMonoisotopic), sicXLabel, sicYLabel);
+                    pane.LineType                   = ZedGraph.LineType.Normal;
                     //pane.AddCurve("", scans, intensity, System.Drawing.Color.LightGray, ZedGraph.SymbolType.Default);
 
                     Dictionary<int, List<MSFeatureLight>> chargeMap = MultiAlignCore.Data.Features.LCMSFeatureChargeMapBuilder.BuildChargeMap(feature);
@@ -163,19 +203,98 @@ namespace MultiAlignCore.IO.Features
                                                                                  System.Drawing.Color.Blue,
                                                                                  System.Drawing.Color.Orange,
                                                                                  System.Drawing.Color.Purple};
+
+
+
                     foreach (int charge in chargeMap.Keys)
                     {
-
-                        double[] fScans = new double[chargeMap[charge].Count];
-                        double[] fIntensities = new double[chargeMap[charge].Count];
+                        List<double> featureScans       = new List<double>();
+                        List<double> featureIntensities = new List<double>();
 
                         i = 0;
-                        foreach (MSFeatureLight msFeature in chargeMap[charge])
+                        using (TextWriter chargeWriter = File.CreateText(Path.Combine(path, string.Format("sic-{0}-{1}-{2}.csv",
+                                                                                                        datasetID,
+                                                                                                        feature.ID,
+                                                                                                        charge))))
                         {
-                            fScans[i] = msFeature.Scan;
-                            fIntensities[i] = Math.Log(msFeature.Abundance, 2);
-                            i++;
+                            chargeWriter.WriteLine("charge={0}", charge);                            
+                            chargeWriter.WriteLine("[data]");
+                            chargeWriter.WriteLine("mz,scan,intensity");
+
+                            List<MSFeatureLight> msFeatures = chargeMap[charge];
+
+                            Dictionary<int, MSFeatureLight> map = new Dictionary<int, MSFeatureLight>();
+
+                            // Reconstruct the SIC profile for each feature using the RAW data.
+                            msFeatures.Sort(delegate(MSFeatureLight x, MSFeatureLight y)
+                            {                                
+                                return x.Scan.CompareTo(y.Scan);
+                            });
+
+                            // Map the scans.
+                            foreach (MSFeatureLight x in msFeatures)
+                            {
+                                map.Add(x.Scan, x);
+                            }
+                            double lastMz        = msFeatures[0].Mz;
+                            double lastIntensity = msFeatures[0].Abundance;
+                            for (int scan = extendedMin; scan < msFeatures[0].Scan; scan++)
+                            {
+                                List<XYData> spectra = reader.GetRawSpectra(scan, datasetID, 1);
+                                if (spectra == null) continue;
+
+                                XYData bestIntensity = spectra.FindByMZ(lastMz);
+
+                                featureScans.Add(scan);
+                                featureIntensities.Add(Math.Log(bestIntensity.Y, 2));
+                                chargeWriter.WriteLine("{0},{1},{2}", lastMz, scan, bestIntensity.Y);
+
+
+                                lastIntensity = bestIntensity.Y;
+                            }
+
+                            lastMz = msFeatures[0].Mz;
+                            for (int scan = msFeatures[0].Scan; scan <= msFeatures[msFeatures.Count - 1].Scan; scan++)
+                            {
+                                List<XYData> spectra = reader.GetRawSpectra(scan, datasetID, 1);
+                                if (spectra == null) continue;
+
+                                if (map.ContainsKey(scan))
+                                {
+                                    lastMz = map[scan].Mz;
+                                }
+
+                                XYData bestIntensity = spectra.FindByMZ(lastMz);
+
+                                featureScans.Add(scan);
+                                featureIntensities.Add(Math.Log(bestIntensity.Y, 2));
+                                chargeWriter.WriteLine("{0},{1},{2}", lastMz, scan, bestIntensity.Y);
+
+                                lastIntensity = bestIntensity.Y;
+                            }                            
+                            for (int scan = msFeatures[msFeatures.Count - 1].Scan + 1; scan < extendedMax; scan++)
+                            {
+                                List<XYData> spectra = reader.GetRawSpectra(scan, datasetID, 1);
+                                if (spectra == null) continue;
+
+                                
+                                XYData bestIntensity = spectra.FindByMZ(lastMz);
+
+                                featureScans.Add(scan);
+                                featureIntensities.Add(Math.Log(bestIntensity.Y, 2));
+                                chargeWriter.WriteLine("{0},{1},{2}", lastMz, scan, bestIntensity.Y);
+
+
+
+                                lastIntensity = bestIntensity.Y;
+                            }                          
                         }
+
+
+                        double[] fScans         = new double[featureScans.Count];
+                        double[] fIntensities   = new double[featureIntensities.Count];
+                        featureScans.CopyTo(fScans);
+                        featureIntensities.CopyTo(fIntensities);
 
                         pane.AddCurve("",
                                         fScans,
@@ -197,53 +316,27 @@ namespace MultiAlignCore.IO.Features
                                                 System.Drawing.Color.Red);
                             }
                         }
+
+                        pane.AddStick("Start",
+                                        new double[] { feature.MSFeatures[0].Scan, feature.MSFeatures[0].Scan },
+                                        new double[] { Math.Log(feature.MSFeatures[0].Abundance, 2), maxI },
+                                        System.Drawing.Color.Black);
+
+                        pane.AddStick("End",
+                                        new double[] { feature.MSFeatures[feature.MSFeatures.Count - 1].Scan, feature.MSFeatures[feature.MSFeatures.Count - 1].Scan },
+                                        new double[] { Math.Log(feature.MSFeatures[feature.MSFeatures.Count - 1].Abundance, 2), maxI },
+                                        System.Drawing.Color.Blue);
                     }
                     pane.AxisChange();
                     string fullPath = Path.Combine(path, "SIC" + baseName + ".png");
                     pane.GetImage().Save(fullPath);
-
-                    /*Dictionary<int, List<MSFeatureLight>> chargeMap = MultiAlignCore.Data.Features.LCMSFeatureChargeMapBuilder.BuildChargeMap(feature);
-                    foreach (int charge in chargeMap.Keys)
-                    {
-                        string baseName     = string.Format("{0}-{1}", feature.ID, charge);
-                        int totalFeatures   = chargeMap[charge].Count;
-                        double[] scans      = new double[totalFeatures];
-                        double[] intensity  = new double[totalFeatures];
-
-                        // Build the SIC arrays for plotting
-                        int i = 0;
-                        foreach (MSFeatureLight msFeature in chargeMap[charge])
-                        {
-                            scans[i]        = msFeature.Scan;
-                            intensity[i]    = msFeature.Abundance;
-                            i++;
-                        }
-                        System.Drawing.RectangleF rect  = new System.Drawing.RectangleF(0, 0, 400, 400);
-                        ZedGraph.GraphPane pane         = new ZedGraph.GraphPane(rect, sicTitle, sicXLabel, sicYLabel);
-
-                        pane.AddCurve("", scans, intensity, System.Drawing.Color.Black, ZedGraph.SymbolType.Circle);
-
-                        foreach (MSFeatureLight msFeature in chargeMap[charge])
-                        {
-                            foreach (MSSpectra spectrum in msFeature.MSnSpectra)
-                            {
-                                pane.AddCurve("",
-                                                new double[] { spectrum.Scan },
-                                                new double[] { spectrum.TotalIonCurrent },
-                                                System.Drawing.Color.Red,
-                                                ZedGraph.SymbolType.Square);
-                            }
-                            i++;
-                        }
-
-                        pane.AxisChange();
-
-                        string fullPath = Path.Combine(path, "SIC" + baseName + ".png");
-                        pane.GetImage().Save(fullPath);
-                    }*/
-
                 }
             }
+        }
+
+        void extractor_Progress(object sender, ProgressNotifierArgs e)
+        {
+            UpdateStatus(e.Message);
         }
 
         #region IProgressNotifer Members
@@ -253,3 +346,6 @@ namespace MultiAlignCore.IO.Features
         #endregion
     }
 }
+
+
+
