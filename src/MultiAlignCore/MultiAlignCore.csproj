@@ -138,6 +138,7 @@
     <Compile Include="Algorithms\Alignment\IFeatureAligner.cs" />
     <Compile Include="Algorithms\AlgorithmBuilder.cs" />
     <Compile Include="Algorithms\AnalysisGraph.cs" />
+    <Compile Include="Algorithms\AnalysisGraphBuilder.cs" />
     <Compile Include="Algorithms\AnalysisStep.cs" />
     <Compile Include="Algorithms\AnalysisType.cs" />
     <Compile Include="Algorithms\AnalysisValidator.cs" />
@@ -212,6 +213,8 @@
     <Compile Include="IO\ClusterExporterComposite.cs" />
     <Compile Include="IO\Factors\FactorFileReader.cs" />
     <Compile Include="IO\Factors\MultiAlignFactorSink.cs" />
+    <Compile Include="IO\Features\Hibernate\MassTagMatchDAO.cs" />
+    <Compile Include="IO\Features\IMassTagMatchDAO.cs" />
     <Compile Include="IO\Features\MSMSClusterWriter.cs" />
     <Compile Include="IO\Features\IAlignmentDAO.cs" />
     <Compile Include="IO\Features\Hibernate\AlignmentDAOHibernate.cs" />
@@ -247,7 +250,6 @@
     <Compile Include="IO\Features\Hibernate\MSnFeatureDAOHibernate.cs" />
     <Compile Include="IO\Features\Hibernate\NHibernateUtil.cs" />
     <Compile Include="IO\Features\Hibernate\ProteinDAO.cs" />
-    <Compile Include="IO\Features\Hibernate\ProteinDAOHibernate.cs" />
     <Compile Include="IO\Features\Hibernate\UmcClusterDAOHibernate.cs" />
     <Compile Include="IO\Features\Hibernate\UmcDAOHibernate.cs" />
     <Compile Include="IO\Features\IDatasetDAO.cs" />
@@ -379,6 +381,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Extensions\" />
+    <Folder Include="IO\RawData\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

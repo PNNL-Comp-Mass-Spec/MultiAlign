@@ -7,8 +7,8 @@
 		<id name="RefID" column="Protein_ID" type="integer">
 			<generator class="assigned" />
 		</id>
-		<property name="Sequence" column="Protein" type="string" not-null="false" />
-		<property name="ProteinDescription" column="Protein_Description" type="string" not-null="false" />		
+    <property name="Sequence"           column="Protein"              type="string"   not-null="false" />
+		<property name="ProteinDescription" column="Protein_Description"  type="string"   not-null="false" />		
 	</class>
 
 </hibernate-mapping>

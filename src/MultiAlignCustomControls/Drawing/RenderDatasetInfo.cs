@@ -45,6 +45,73 @@ namespace MultiAlignCustomControls.Drawing
             return chart.ToBitmap(options.Width, options.Height);
         }
 
+        #region Generic
+        private static clsSeries CreateSeries(List<PointF> points, Color color, clsShape shape, string title)
+        {
+            clsPlotParams parameters = new clsPlotParams(shape, color);
+            parameters.Name = title;
+
+            float[] x = new float[points.Count];
+            float[] y = new float[points.Count];
+            int i = 0;
+
+            foreach (PointF feature in points)
+            {
+                x[i] = feature.X;
+                y[i] = feature.Y;
+                i++;
+            }
+            clsSeries series = new clsSeries(ref x, ref y, parameters);
+            return series;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="dotFeatures"></param>
+        /// <param name="xFeatuers"></param>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        public static Image GenericScatterPlot_Thumbnail(List<SeriesOptions> series, ChartDisplayOptions options)
+        {
+            // This is gross...but this whole class should be divided out.
+            Image image = null;
+
+            using (ctlChartBase chart = GenericScatterPlot_Chart(series, options))
+            {
+                if (chart == null)
+                    return null;
+                image = CreateThumbnailFromChart(chart, options);
+            }
+            return image;
+        }
+        public static ctlScatterChart GenericScatterPlot_Chart(List<SeriesOptions> series, ChartDisplayOptions options)
+        {            
+            ctlScatterChart chart   = new ctlScatterChart();
+            chart.XAxisLabel        = options.XAxisLabel;
+            chart.YAxisLabel        = options.YAxisLabel;
+            chart.Title             = options.Title;
+
+            chart.Margins.LeftMarginMin     = options.MarginMin;
+            chart.Margins.LeftMarginMax     = options.MarginMax;
+            chart.Margins.BottomMarginMax   = options.MarginMax;
+            chart.Margins.BottomMarginMin   = options.MarginMin;
+
+            chart.LegendVisible     = options.DisplayLegend;
+            chart.AxisVisible       = options.DisplayAxis;
+            chart.TitleVisible      = options.DisplayTitle;
+            chart.XAxisGridLines    = options.DisplayGridLines;
+            chart.YAxisGridLines    = options.DisplayGridLines;
+
+            foreach (SeriesOptions ser in series)
+            {
+                clsSeries data = CreateSeries(ser.Points, ser.Color, ser.Shape, ser.Label);
+                chart.AddSeries(data);   
+            }
+            chart.AutoViewPort();
+            return chart;
+        }
+        #endregion
+
         #region NET Residual Plots
         /// <summary>
         /// Renders the scan versus the cluster net to the provided bitmap.

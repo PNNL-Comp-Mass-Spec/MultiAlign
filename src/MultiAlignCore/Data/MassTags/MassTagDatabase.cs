@@ -79,11 +79,20 @@ namespace MultiAlignCore.Data.MassTags
         public void AddMassTagsAndProteins(List<MassTagLight>               massTags,
                                             Dictionary<int, List<Protein>>  massTagToProteinMap)
         {            
-            MassTags.AddRange(massTags);            
+            MassTags.AddRange(massTags);
+            Dictionary<int, Protein> proteinMap = new Dictionary<int, Protein>();
             foreach (int key in massTagToProteinMap.Keys)
             {
                 List<Protein> proteins = massTagToProteinMap[key];
-                AllProteins.AddRange(proteins);                
+
+                foreach (Protein p in proteins)
+                {
+                    if (!proteinMap.ContainsKey(p.RefID))
+                    {
+                        proteinMap.Add(p.RefID, p);
+                        AllProteins.Add(p);
+                    }
+                }
             }
             Proteins = massTagToProteinMap;
 

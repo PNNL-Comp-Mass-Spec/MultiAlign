@@ -24,12 +24,12 @@ namespace MultiAlignCore.IO.Features
                                             IMSFeatureToLCMSFeatureDAO  msFeatureMap,
                                             IMsnFeatureToMSFeatureDAO   msnFeatureMap,
                                             IDatasetDAO                 datasetCache,
-                                            IGenericDAO<ClusterToMassTagMap>    massTagMatches,
-                                            IMassTagDAO                         massTags,
-                                            IFactorDAO                          factorCache,
-                                            IDatasetToFactorMapDAO              factorAssignmentCache,
-                                            IMSMSClusterMapDAO msmsClusterCache,
-                                            IDatabaseSearchSequenceDAO sequenceCache)
+                                            IMassTagMatchDAO            massTagMatches,
+                                            IMassTagDAO                 massTags,
+                                            IFactorDAO                  factorCache,
+                                            IDatasetToFactorMapDAO      factorAssignmentCache,
+                                            IMSMSClusterMapDAO          msmsClusterCache,
+                                            IDatabaseSearchSequenceDAO  sequenceCache)
         {
             ClusterCache                = clusterCache;
             FeatureCache                = featureCache;
@@ -43,7 +43,7 @@ namespace MultiAlignCore.IO.Features
             FactorAssignmentCache       = factorAssignmentCache;
             FactorCache                 = factorCache;
             MSMSClusterCache            = msmsClusterCache;
-            this.DatabaseSequenceCache = sequenceCache;
+            this.DatabaseSequenceCache  = sequenceCache;
         }
         /// <summary>
         /// Gets or sets the data provider for storing MS/MS Clusters.
@@ -82,7 +82,7 @@ namespace MultiAlignCore.IO.Features
         /// <summary>
         /// Gets or sets the cluster to mass tag matches.
         /// </summary>
-        public IGenericDAO<ClusterToMassTagMap> MassTagMatches
+        public IMassTagMatchDAO MassTagMatches
         {
             get;
             set;

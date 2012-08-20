@@ -75,7 +75,7 @@ namespace MultiAlignCore.Algorithms
                 }
                 else if (config.ShouldExportMSMS)
                 {
-                    Logger.PrintMessage("Exporting SIC's only");
+                    Logger.PrintMessage("Exporting MS/MS only");
                     analysisType = AnalysisType.ExportMSMS;
                 }
             }

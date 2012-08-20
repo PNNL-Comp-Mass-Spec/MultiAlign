@@ -209,6 +209,7 @@ namespace MultiAlignCore.IO.Features
                 // This should get deprecated on the next part of the refactor.
                 foreach (UMCLight feature in newFeatures)
                 {
+                    
                    
                     clsUMC umc                  = new clsUMC();
                     umc.AbundanceMax            = feature.Abundance;

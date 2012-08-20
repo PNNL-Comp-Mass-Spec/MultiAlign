@@ -61,6 +61,11 @@ namespace MultiAlignCore.IO.InputFiles
                     fixedLine = fixedLine.Replace(" ", "");
                 }
 
+                if (string.IsNullOrEmpty(fixedLine) || string.IsNullOrWhiteSpace(fixedLine))
+                {
+                    continue;
+                }
+
                 // If wasModeChanged = true, then the current 
                 // line is not data, but a tag to say change how read the next section.
                 bool wasModeChanged = false;

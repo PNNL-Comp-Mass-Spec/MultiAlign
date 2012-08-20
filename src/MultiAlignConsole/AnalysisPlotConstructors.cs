@@ -6,10 +6,11 @@ using MultiAlignCore.Data;
 using MultiAlignCore.IO;
 using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.Features.Hibernate;
-using MultiAlignEngine.Features;
-using PNNLOmics.Data.Features;
 using MultiAlignCustomControls.Charting;
 using MultiAlignCustomControls.Drawing;
+using MultiAlignEngine.Features;
+using PNNLOmics.Data.Features;
+using PNNLOmics.Data.MassTags;
 
 namespace MultiAlignConsole.Drawing
 {
@@ -159,6 +160,182 @@ namespace MultiAlignConsole.Drawing
             }
             Config.Report.AnalysisName = Config.AnalysisName;
             Config.Report.CreateReport(htmlPath);
+        }
+        public void CreateMassTagPlot(MassTagsLoadedEventArgs e)
+        {            
+            Logger.PrintMessage("Creating Mass Tag Plot.");
+            
+            Config.Report.PushTextHeader("Mass Tag Plot ");
+            Config.Report.PushStartTable();
+            Config.Report.PushStartTableRow();
+            ChartDisplayOptions options = new ChartDisplayOptions(false, true, true, true);
+
+            options.MarginMin = 1;
+            options.MarginMax = 100;
+            options.Title = "Mass Tags ";
+            options.XAxisLabel = "GA NET";
+            options.YAxisLabel = "Monoisotopic Mass";
+            options.Width           = Config.width;
+            options.Height          = Config.height;
+            options.DisplayLegend   = true;
+
+            List<PNNLOmics.Data.MassTags.MassTagLight> tags = e.MassTags;
+            List<PointF> points = new List<PointF>();
+            foreach (PNNLOmics.Data.MassTags.MassTagLight tagLight in tags)
+            {
+                PointF point = new PointF(Convert.ToSingle(tagLight.NETAverage), Convert.ToSingle(tagLight.MassMonoisotopic));
+                points.Add(point);
+            }
+
+            SeriesOptions series = new SeriesOptions();
+            series.Points        = points;
+            series.Label         = "Mass Tags";
+            series.Color         = Color.Red;
+            series.Shape         = new PNNLControls.BubbleShape(1, false);
+
+            Image image      = RenderDatasetInfo.GenericScatterPlot_Thumbnail(new List<SeriesOptions>() {series}, options);
+            string labelName = "massTags_plot.png";
+            string path      = Path.Combine(Config.plotSavePath, labelName);
+            image.Save(path, System.Drawing.Imaging.ImageFormat.Png);
+            Config.Report.PushImageColumn(Path.Combine("Plots", labelName));
+
+            Config.Report.PushEndTableRow();
+            Config.Report.PushEndTable();
+        }
+        public void CreatePeakMatchedPlots(FeaturesPeakMatchedEventArgs e)
+        {
+            Config.Report.PushTextHeader("Clusters to Mass Tag Matches");
+            Config.Report.PushStartTable();
+            Config.Report.PushStartTableRow();
+            ChartDisplayOptions options = new ChartDisplayOptions(false, true, true, true);
+
+            options.MarginMin       = 1;
+            options.MarginMax       = 100;
+            options.Title           = "Cluster matches with Mass Tags ";
+            options.XAxisLabel      = "NET";
+            options.YAxisLabel      = "Monoisotopic Mass";
+            options.Width           = Config.width;
+            options.Height          = Config.height;
+            options.DisplayLegend   = true;
+
+            /// Get all of the matches first.
+            List<FeatureMatchLight<UMCClusterLight, MassTagLight>> matches = e.Matches;
+            List<PointF> matchPoints   = new List<PointF>();
+            List<PointF> clusterPoints = new List<PointF>();
+
+            Dictionary<int, UMCClusterLight> clusterMap = new Dictionary<int, UMCClusterLight>();
+            foreach (UMCClusterLight cluster in e.Clusters)
+            {
+                clusterMap.Add(cluster.ID, cluster);
+            }
+
+            double confidence   = 0;
+            double step         = .1;
+            int columnIndex     =  0;
+
+            Image  image     = null; 
+            string labelName = ""; 
+            string path      = "";  
+            SeriesOptions clusterSeries = null;
+
+            while (confidence <= .9)
+            {
+                matchPoints.Clear();
+                clusterPoints.Clear();
+
+                options.Title = "Cluster Matches at STAC = " + string.Format("{0:.00}", confidence);
+ 
+                // Matches Series ----------------------------------------------------
+                foreach (FeatureMatchLight<UMCClusterLight, MassTagLight> match in matches)
+                {
+                    if (clusterMap.ContainsKey(match.Observed.ID))
+                    {
+                        clusterMap.Remove(match.Observed.ID);
+                    }
+
+                    if (match.Confidence < confidence)
+                        continue;
+
+                    PointF matchPoint = new PointF(Convert.ToSingle(match.Target.NET), Convert.ToSingle(match.Target.MassMonoisotopic));
+                    matchPoints.Add(matchPoint);
+
+
+
+                    PointF clusterPoint = new PointF(Convert.ToSingle(match.Observed.NET), Convert.ToSingle(match.Observed.MassMonoisotopic));
+                    clusterPoints.Add(clusterPoint);
+                }
+
+                SeriesOptions tagsSeries =
+                    new SeriesOptions()
+                    {
+                        Shape = new PNNLControls.SquareShape(2, true),
+                        Label = "Matched Tags",
+                        Color = Color.Red,
+                        Points = matchPoints
+                    };
+
+                clusterSeries = new SeriesOptions()
+                   {
+                       Shape = new PNNLControls.BubbleShape(2, false),
+                       Label = "Matched Clusters",
+                       Color = Color.Black,
+                       Points = clusterPoints
+                   };
+
+                image       = RenderDatasetInfo.GenericScatterPlot_Thumbnail(new List<SeriesOptions>() { clusterSeries, tagsSeries }, options);
+                labelName   = string.Format("matches-STAC-{0}", confidence - step);
+                path        = Path.Combine(Config.plotSavePath, labelName  + ".png");
+                image.Save(path, System.Drawing.Imaging.ImageFormat.Png);
+                Config.Report.PushData(labelName);
+                Config.Report.PushImageColumn(Path.Combine("Plots", labelName + ".png"));
+
+                confidence += step;
+                columnIndex++;
+
+                if (columnIndex > 3)
+                {
+                    columnIndex = 0;
+                    Config.Report.PushEndTableRow();
+                    Config.Report.PushStartTableRow();
+                }
+            }
+
+            // Unattributed Series ----------------------------------------------------
+            List<PointF> unattributedPoints = new List<PointF>();
+            foreach (int key in clusterMap.Keys)
+            {
+                UMCClusterLight cluster = clusterMap[key];
+                PointF clusterPoint = new PointF(Convert.ToSingle(cluster.NET), Convert.ToSingle(cluster.MassMonoisotopic));
+                unattributedPoints.Add(clusterPoint);                    
+            }
+
+            SeriesOptions unattributedSeries = new SeriesOptions()
+            {
+                Shape  = new PNNLControls.PlusShape(3, false),
+                Label  = "Unattributed Clusters",
+                Points = unattributedPoints,
+                Color  = Color.Green                
+            };
+
+            options.Title   = "Unattributed clusters";
+            image           = RenderDatasetInfo.GenericScatterPlot_Thumbnail(new List<SeriesOptions>() {unattributedSeries}, options);
+            labelName       = "unattributedClusters.png";
+            path            = Path.Combine(Config.plotSavePath, labelName);
+            image.Save(path, System.Drawing.Imaging.ImageFormat.Png);
+            Config.Report.PushImageColumn(Path.Combine("Plots", labelName));
+
+            // All Series ----------------------------------------------------
+            options.Title       = string.Format("Clusters (STAC = {0:.00}) and Unattributed Clusters", confidence);
+            clusterSeries.Label = "Matched Clusters";
+            image               = RenderDatasetInfo.GenericScatterPlot_Thumbnail(new List<SeriesOptions>() {unattributedSeries, clusterSeries}, options);
+            labelName           = "clustersAndUnattributedClusters.png";
+            path                = Path.Combine(Config.plotSavePath, labelName);
+            image.Save(path, System.Drawing.Imaging.ImageFormat.Png);
+            Config.Report.PushImageColumn(Path.Combine("Plots", labelName));
+
+            Config.Report.PushEndTableRow();
+            Config.Report.PushEndTable();
+
         }
         /// <summary>
         /// Creates alignment plots.

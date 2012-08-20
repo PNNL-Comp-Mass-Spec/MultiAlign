@@ -336,17 +336,14 @@ namespace MultiAlignCore.Algorithms.Alignment
                 mergedData.NETStandardDeviation = alignmentData[i].NETStandardDeviation;
                 mergedData.NETRsquared          = alignmentData[i].NETRsquared;
                 mergedData.NETSlope             = alignmentData[i].NETSlope;
-                
-                
-                
-                
-                
-                if (i > 0)
-                    MergeHistogramData(netErrorHistogramData, alignmentData[i].netErrorHistogram, true);
-            }
 
-            /// 
-            /// Grab the heat scores!
+                if (i > 0)
+                {
+                    MergeHistogramData(netErrorHistogramData, alignmentData[i].netErrorHistogram, true);
+                }
+            }
+            
+            // Grab the heat scores!
             mergedData.heatScores           = alignmentData[alignmentData.Count - 1].heatScores;
             mergedData.massErrorHistogram   = massErrorHistogramData;
             mergedData.netErrorHistogram    = netErrorHistogramData;

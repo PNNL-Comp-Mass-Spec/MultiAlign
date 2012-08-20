@@ -4,6 +4,7 @@ using MultiAlignCore.Data.Alignment;
 using MultiAlignEngine.Features;
 using PNNLOmics.Algorithms.Alignment;
 using PNNLOmics.Data.Features;
+using PNNLOmics.Data.MassTags;
 
 namespace MultiAlignCore.Data
 {
@@ -137,6 +138,28 @@ namespace MultiAlignCore.Data
             private set;
         }
     }
+    public class MassTagsLoadedEventArgs : EventArgs
+    {
+        private DatasetInformation m_datasetInformation;
+        private List<clsUMC> m_features;
+
+        /// <summary>
+        /// Arguments that hold dataset information when features are loaded.
+        /// </summary>        
+        /// <param name="info">Dataset information object</param>        
+        public MassTagsLoadedEventArgs(List<MassTagLight> tags)
+        {
+            MassTags = tags;
+        }
+        /// <summary>
+        /// Gets the dataset information.
+        /// </summary>
+        public List<MassTagLight> MassTags
+        {
+            get;
+            private set;
+        }
+    }
     public class FeaturesLoadedEventArgs : EventArgs
     {
         private DatasetInformation   m_datasetInformation;
@@ -173,10 +196,30 @@ namespace MultiAlignCore.Data
             }
         }
     }
+    /// <summary>
+    /// Holds match information for others to use.
+    /// </summary>
     public class FeaturesPeakMatchedEventArgs : EventArgs
     {
+        public FeaturesPeakMatchedEventArgs(List<UMCClusterLight> clusters, List<FeatureMatchLight<UMCClusterLight, MassTagLight>> matches)
+        {
+            Matches  = matches;
+            Clusters = clusters;
+        }
+        public List<UMCClusterLight> Clusters
+        {
+            get;
+            private set;
+        }
+        /// <summary>
+        /// Gets or sets the list of matches.
+        /// </summary>
+        public List<FeatureMatchLight<UMCClusterLight, MassTagLight>> Matches
+        {
+            private set;
+            get;
+        }
     }
-
     public class AnalysisStatusEventArgs : EventArgs
     {
         private string m_message;

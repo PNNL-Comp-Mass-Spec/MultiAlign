@@ -121,8 +121,7 @@ namespace MultiAlignCore.IO.MTDB
 
 
         [Description("Database Type")]
-        [Browsable(false)]
-        [Obsolete]
+        [Browsable(false)]        
         public MassTagDatabaseType DatabaseType
         {
             get;

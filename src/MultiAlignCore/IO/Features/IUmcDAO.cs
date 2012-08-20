@@ -40,5 +40,10 @@ namespace MultiAlignCore.IO.Features
         /// <param name="mass">Dataset value to be searched for</param>
         /// <returns>List of Umc Objects</returns>
         List<clsUMC> FindByDatasetId(int datasetId);
+
+        /// <summary>
+        /// Clears old alignment data from all of the features.
+        /// </summary>
+        void ClearAlignmentData();
     }
 }

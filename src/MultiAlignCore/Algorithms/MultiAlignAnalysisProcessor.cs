@@ -39,6 +39,10 @@ namespace MultiAlignCore.Algorithms
         /// </summary>
         public event EventHandler<FeaturesLoadedEventArgs>      FeaturesLoaded;
         /// <summary>
+        /// Fired when mass tags are loaded.
+        /// </summary>
+        public event EventHandler<MassTagsLoadedEventArgs>      MassTagsLoaded;
+        /// <summary>
         /// Fired when features are aligned.
         /// </summary>
         public event EventHandler<FeaturesAlignedEventArgs>     FeaturesAligned;
@@ -53,7 +57,7 @@ namespace MultiAlignCore.Algorithms
         /// <summary>
         /// Fired when features are extracted from datasets.
         /// </summary>
-        public event EventHandler<FeaturesExtractedEventArgs> FeaturesExtracted;
+        public event EventHandler<FeaturesExtractedEventArgs>   FeaturesExtracted;
         /// <summary>
         /// Fired when a catastrophic error occurs.
         /// </summary>
@@ -80,7 +84,7 @@ namespace MultiAlignCore.Algorithms
         /// <summary>
         /// Thread in charge of performing the analysis.
         /// </summary>
-        private Thread m_analysisThread;
+        private Thread m_analysisThread; 
         Dictionary<AnalysisStep, DelegateAnalysisMethod> m_methodMap;
         #endregion
 
@@ -94,18 +98,6 @@ namespace MultiAlignCore.Algorithms
             AnalysisStartStep = Algorithms.AnalysisStep.Alignment;
 
             CreateAnalysisMethodMap();            
-        }
-
-        private void CreateAnalysisMethodMap()
-        {
-            m_methodMap = new Dictionary<AnalysisStep, DelegateAnalysisMethod>();
-            m_methodMap.Add(AnalysisStep.FindFeatures, new DelegateAnalysisMethod(LoadDatasetData));
-            m_methodMap.Add(AnalysisStep.LoadMSMSScanData, new DelegateAnalysisMethod(LoadOtherData));
-            m_methodMap.Add(AnalysisStep.Traceback, new DelegateAnalysisMethod(PerformTraceback));
-            m_methodMap.Add(AnalysisStep.SpectralClustering, new DelegateAnalysisMethod(PerformSpectralClustering));
-            m_methodMap.Add(AnalysisStep.Alignment, new DelegateAnalysisMethod(PerformAlignment));
-            m_methodMap.Add(AnalysisStep.Clustering, new DelegateAnalysisMethod(PerformLCMSFeatureClustering));
-            m_methodMap.Add(AnalysisStep.PeakMatching, new DelegateAnalysisMethod(PerformPeakMatching));
         }
         #endregion
 
@@ -205,9 +197,124 @@ namespace MultiAlignCore.Algorithms
                 Status(this, new AnalysisStatusEventArgs(message, 0));
             }
         }
+        private void RegisterProgressNotifier(IProgressNotifer notifier)
+        {
+            if (notifier != null)
+            {
+                notifier.Progress += new EventHandler<ProgressNotifierArgs>(notifier_Progress);
+            }
+        }
+        private void DeRegisterProgressNotifier(IProgressNotifer notifier)
+        {
+            if (notifier != null)
+            {
+                notifier.Progress -= notifier_Progress;
+            }
+        }
+        void notifier_Progress(object sender, ProgressNotifierArgs e)
+        {
+            UpdateStatus(e.Message);
+        }
         #endregion
 
-        #region Data Loading Methods
+        #region Analysis Graph Construction
+        private void CreateAnalysisMethodMap()
+        {            
+            m_methodMap = new Dictionary<AnalysisStep, DelegateAnalysisMethod>();
+            m_methodMap.Add(AnalysisStep.FindFeatures,       new DelegateAnalysisMethod(LoadDatasetData));
+            m_methodMap.Add(AnalysisStep.LoadMSMSScanData, new DelegateAnalysisMethod(LoadOtherData));
+            m_methodMap.Add(AnalysisStep.Traceback, new DelegateAnalysisMethod(PerformTraceback));
+           // m_methodMap.Add(AnalysisStep.SpectralClustering, new DelegateAnalysisMethod(PerformSpectralClustering));
+            m_methodMap.Add(AnalysisStep.Alignment, new DelegateAnalysisMethod(PerformAlignment));
+            m_methodMap.Add(AnalysisStep.Clustering, new DelegateAnalysisMethod(PerformLCMSFeatureClustering));
+            m_methodMap.Add(AnalysisStep.PeakMatching, new DelegateAnalysisMethod(PerformPeakMatching));            
+        }
+        
+        private AnalysisGraphNode CreateNode(AnalysisStep step)
+        {
+            AnalysisGraphNode node  = new AnalysisGraphNode();
+            node.CurrentStep        = step;
+            node.Method             = m_methodMap[step];
+            return node;
+        }
+            
+        public void BuildAnalysisGraph(AnalysisConfig config)
+        {            
+            AnalysisGraph graph  = new AnalysisGraph();
+            bool storeMSfeatures = config.Analysis.Options.FeatureFindingOptions.StoreMSFeatureResults;
+
+            /// Create a feature database
+            if (config.ShouldCreateFeatureDatabaseOnly)
+            {                
+                graph.AddNode(CreateNode(AnalysisStep.FindFeatures));
+                if (storeMSfeatures)
+                {
+                    graph.AddNode(CreateNode(AnalysisStep.LoadMSMSScanData));
+                    graph.AddNode(CreateNode(AnalysisStep.Traceback));
+                    graph.AddNode(CreateNode(AnalysisStep.SpectralClustering));
+                }
+            }
+            else if (config.ShouldTraceback)
+            {
+                config.Analysis.Options.FeatureFindingOptions.StoreMSFeatureResults = true;
+                if (!config.ShouldUseExistingDatabase)
+                {
+                    graph.AddNode(CreateNode(AnalysisStep.FindFeatures));
+                }
+                graph.AddNode(CreateNode(AnalysisStep.LoadMSMSScanData));
+                graph.AddNode(CreateNode(AnalysisStep.Traceback));
+            }
+            else if (config.ShouldClusterSpectra)
+            {
+                if (!config.ShouldUseExistingDatabase)
+                {
+                    graph.AddNode(CreateNode(AnalysisStep.FindFeatures));
+                }
+                graph.AddNode(CreateNode(AnalysisStep.LoadMSMSScanData));
+                graph.AddNode(CreateNode(AnalysisStep.Traceback));
+                graph.AddNode(CreateNode(AnalysisStep.SpectralClustering));
+            }
+            else
+            {
+                if (config.ShouldLoadMTDB)
+                {
+                    AnalysisGraphNode node = new AnalysisGraphNode();
+                    node.CurrentStep = AnalysisStep.LoadMTDB;
+
+                    if (config.InitialStep == AnalysisStep.FindFeatures)
+                    {
+                        node.Method = new DelegateAnalysisMethod(CreateMTDB);
+                    }
+                    else
+                    {
+                        node.Method = new DelegateAnalysisMethod(LoadMTDB);
+                    }
+                    graph.AddNode(node);                    
+                }
+                
+
+                List<AnalysisStep> steps    = m_methodMap.Keys.ToList();
+                steps.Sort();
+
+                foreach (AnalysisStep step in steps)
+                {
+                    if (step >= config.InitialStep)
+                    {
+                        graph.AddNode(CreateNode(step));
+                    }
+                }
+                graph.Nodes.Sort(delegate(AnalysisGraphNode x, AnalysisGraphNode y)
+                {
+                    return x.CurrentStep.CompareTo(y.CurrentStep);
+                });
+            }
+
+            config.AnalysisGraph = graph;
+        }
+        #endregion
+
+        
+        #region Feature Finding
         /// <summary>
         /// Loads raw file data.
         /// </summary>
@@ -216,14 +323,16 @@ namespace MultiAlignCore.Algorithms
         /// <param name="dataProviders"></param>
         private void LoadOtherData(AnalysisConfig config)
         {
+
+            UpdateStatus("Loading Other Feature Data." );
             List<InputFile> otherFiles                  = config.Analysis.MetaData.OtherFiles;
             string analysisPath                         = config.AnalysisPath;
             FeatureDataAccessProviders dataProviders    = config.Analysis.DataProviders;
             Dictionary<string, int> datasetMap          = new Dictionary<string, int>();
             Dictionary<int, int> datasetIDMap           = new Dictionary<int, int>();
-            ISpectraProvider rawReader                = null;
-            ScansFileReader  scansReader                 = new ScansFileReader();
-            IMSnFeatureDAO   msnCache                     = dataProviders.MSnFeatureCache;
+            ISpectraProvider rawReader                  = null;
+            ScansFileReader  scansReader                = new ScansFileReader();
+            IMSnFeatureDAO   msnCache                   = dataProviders.MSnFeatureCache;
 
             // Map the dataset ids
             foreach (DatasetInformation information in m_config.Analysis.MetaData.Datasets)
@@ -240,9 +349,9 @@ namespace MultiAlignCore.Algorithms
                 if (path == null)
                     continue;
 
-                string datasetName = DatasetInformation.CleanNameDatasetNameOfExtensions(path);
-                datasetName = Path.GetFileNameWithoutExtension(datasetName);
-                bool containsKey = datasetMap.ContainsKey(datasetName);
+                string datasetName  = DatasetInformation.CleanNameDatasetNameOfExtensions(path);
+                datasetName         = Path.GetFileNameWithoutExtension(datasetName);
+                bool containsKey    = datasetMap.ContainsKey(datasetName);
                 if (containsKey)
                 {
                     datasetID = datasetMap[datasetName];
@@ -310,6 +419,7 @@ namespace MultiAlignCore.Algorithms
             IUmcDAO featureCache                        = m_config.Analysis.DataProviders.FeatureCache;
             IMSFeatureDAO msFeatureCache                = m_config.Analysis.DataProviders.MSFeatureCache;
             IGenericDAO<MSFeatureToLCMSFeatureMap> map  = m_config.Analysis.DataProviders.MSFeatureToLCMSFeatureCache;
+            UMCLoaderFactory.Status                     += new EventHandler<UMCLoadingEventArgs>(UMCLoaderFactory_Status);
 
             foreach (DatasetInformation dataset in datasets)
             {
@@ -322,6 +432,7 @@ namespace MultiAlignCore.Algorithms
 
                 UpdateStatus(string.Format("Filtering {0} features found.", features.Count));
                 int preFiltered = features.Count;
+
                 // refactor to inside of loader factory.
                 features = MultiAlignCore.Data.Features.LCMSFeatureFilters.FilterFeatures(features, m_config.Analysis.Options.FeatureFilterOptions);
                 UpdateStatus(string.Format("Filtered features from: {0} to {1}.", preFiltered, features.Count));
@@ -336,19 +447,44 @@ namespace MultiAlignCore.Algorithms
                 features = null;
             }
         }          
-        #endregion
+        /// <summary>
+        /// Loads all new feature data.
+        /// </summary>
+        /// <param name="config"></param>
+        private void LoadNewFeatureData(AnalysisConfig config)
+        {
+            UMCLoaderFactory.Status += new EventHandler<UMCLoadingEventArgs>(UMCLoaderFactory_Status);
+            UpdateStatus("Setting up parameters");
+            
+            //UpdateStatus("Loading auxillary data files.");
+            LoadOtherData(config);
 
-        #region Feature Finding
+            UpdateStatus("Loading dataset data files.");
+            LoadDatasetData(config);
+
+            UMCLoaderFactory.Status -= UMCLoaderFactory_Status;
+        }
+        void UMCLoaderFactory_Status(object sender, UMCLoadingEventArgs e)
+        {
+            UpdateStatus(e.Message);
+        }
         #endregion
 
         #region Traceback
+        private void PerformTraceback(AnalysisConfig config)
+        {
+            UpdateStatus("Performing trace back.");
+            UpdateStatus("Linking MS Features to MSn Features.");
+            LinkMSFeaturesToMSMS(m_config.Analysis.DataProviders, config.Analysis.MetaData.Datasets);
+            UpdateStatus(string.Format("Analysis {0} Completed.", config.Analysis.MetaData.AnalysisName));
+        }
         public void ExtractMSMS(FeatureDataAccessProviders providers,
                                 List<DatasetInformation> datasets)
         {
             MsmsExtractor extractor = new MsmsExtractor();
             extractor.Progress += new EventHandler<ProgressNotifierArgs>(extractor_Progress);
             FeaturesExtractedEventArgs args = extractor.ExtractMSMS(providers, datasets);
-
+            
             if (FeaturesExtracted != null)
             {
                 FeaturesExtracted(this, args);
@@ -431,6 +567,22 @@ namespace MultiAlignCore.Algorithms
         #endregion
 
         #region Spectral Clustering
+        private void PerformSpectralClustering(AnalysisConfig config)
+        {
+            if (config.Analysis.MetaData.OtherFiles.Count <= 0)
+            {
+                UpdateStatus("No raw files were specifiied.  Skipping MS/MS spectral clustering");
+            }
+            else
+            {
+                UpdateStatus("Creating Spectral Cluster Mini-Database.");
+                MSMSSpectralClusterer processor = new MSMSSpectralClusterer();
+                processor.Progress += new EventHandler<ProgressNotifierArgs>(processor_Progress);
+                processor.ClusterMSMSSpectra(config.Analysis);
+                processor.Progress -= processor_Progress;
+                UpdateStatus("Spectral Cluster Mini-Database completed.");
+            }
+        }
         #endregion
 
         #region Alignment
@@ -483,6 +635,7 @@ namespace MultiAlignCore.Algorithms
 
             // Align pairwise and cache results intermediately.
             IFeatureAligner aligner = m_algorithms.Aligner;
+            RegisterProgressNotifier(aligner as IProgressNotifer);
 
             for (int datasetNum = 0; datasetNum < config.Analysis.MetaData.Datasets.Count; datasetNum++)
             {
@@ -586,6 +739,7 @@ namespace MultiAlignCore.Algorithms
                     config.Analysis.AlignmentData.Add(null);
                 }
             }
+            DeRegisterProgressNotifier(aligner as IProgressNotifer);
         }
         /// <summary>
         /// Correct for the drift times.
@@ -822,14 +976,14 @@ namespace MultiAlignCore.Algorithms
                     List<UMCClusterLight> clusters = new List<UMCClusterLight>();
                     foreach (clsCluster oldCluster in oldClusters)
                     {
-                        UMCClusterLight cluster = new UMCClusterLight();
-                        cluster.ID = oldCluster.Id;
+                        UMCClusterLight cluster  = new UMCClusterLight();
+                        cluster.ID               = oldCluster.Id;
                         cluster.MassMonoisotopic = oldCluster.MassCalibrated;
-                        cluster.NET = oldCluster.NetAligned;
-                        cluster.DriftTime = oldCluster.DriftTime;
+                        cluster.NET              = oldCluster.NetAligned;
+                        cluster.DriftTime        = oldCluster.DriftTime;
                         clusters.Add(cluster);
                     }
-                    // Was STAC performed?
+                    
                     STACAdapter<UMCClusterLight> adapter = peakMatcher as STACAdapter<UMCClusterLight>;
                     if (adapter != null)
                     {
@@ -866,6 +1020,10 @@ namespace MultiAlignCore.Algorithms
                     }
                     m_config.Analysis.MatchResults = matchResults;
 
+                    if (FeaturesPeakMatched != null)
+                    {
+                        FeaturesPeakMatched(this, new FeaturesPeakMatchedEventArgs(clusters, matchResults.Matches));
+                    }
 
                     UpdateStatus("Updating database with peak matched results.");
                     PeakMatchResultsWriter writer = new PeakMatchResultsWriter();
@@ -897,29 +1055,13 @@ namespace MultiAlignCore.Algorithms
         }
         #endregion
 
-        #region MSMS Alignment        
+        #region MSMS Alignment
         void processor_Progress(object sender, ProgressNotifierArgs e)
         {
             UpdateStatus(e.Message);
         }
         #endregion
 
-        private void PerformSpectralClustering(AnalysisConfig config)
-        {       
-            if (config.Analysis.MetaData.OtherFiles.Count <= 0)
-            {
-                UpdateStatus("No raw files were specifiied.  Skipping MS/MS spectral clustering");
-            }
-            else
-            {
-                UpdateStatus("Creating Spectral Cluster Mini-Database.");    
-                MSMSSpectralClusterer processor = new MSMSSpectralClusterer();
-                processor.Progress += new EventHandler<ProgressNotifierArgs>(processor_Progress);
-                processor.ClusterMSMSSpectra(config.Analysis);
-                processor.Progress -= processor_Progress;
-                UpdateStatus(string.Format("Analysis {0} Completed.", m_config.Analysis.MetaData.AnalysisName));
-            }            
-        }
         private void ExtractSICS(AnalysisConfig config)
         {
             SICExtractor extractor = new SICExtractor();
@@ -927,13 +1069,6 @@ namespace MultiAlignCore.Algorithms
             extractor.Progress += new EventHandler<ProgressNotifierArgs>(extractor_Progress);
             extractor.ExtractUMCSICs(this.AnalaysisPath, m_config.Analysis);
             UpdateStatus(string.Format("Analysis {0} Completed.", m_config.Analysis.MetaData.AnalysisName));
-        }
-        private void PerformTraceback(AnalysisConfig config)
-        {
-            UpdateStatus("Performing trace back.");
-            UpdateStatus("Linking MS Features to MSn Features.");
-            LinkMSFeaturesToMSMS(m_config.Analysis.DataProviders, config.Analysis.MetaData.Datasets);
-            UpdateStatus(string.Format("Analysis {0} Completed.", config.Analysis.MetaData.AnalysisName));
         }
         
         #region Analysis Start/Stop
@@ -976,6 +1111,75 @@ namespace MultiAlignCore.Algorithms
         }
         private void LoadMTDB(AnalysisConfig config)
         {
+            UpdateStatus("Loading the database from the SQLite result database.");
+
+            MassTagDatabase database = new MassTagDatabase();
+
+            UpdateStatus("Loading all of the mass tags.");
+            // Get all of the mass tags
+            List<MassTagLight> massTags = config.Analysis.DataProviders.MassTags.FindAll();
+
+
+            UpdateStatus("Loading all of the tag to protein references.");
+            // Then get all of the mass tag to protein maps
+            IGenericDAO<MassTagToProteinMap> tagToProteinMapCache = new MultiAlignCore.IO.Features.Hibernate.GenericDAOHibernate<MassTagToProteinMap>();
+            List<MassTagToProteinMap> maps =  tagToProteinMapCache.FindAll();
+
+            // Then get all of the proteins
+            UpdateStatus("Loading all of the protein data.");
+            IProteinDAO proteinCache = new MultiAlignCore.IO.Features.Hibernate.ProteinDAO();
+            List<Protein> proteins = proteinCache.FindAll();
+
+            UpdateStatus("Indexing the protein data for faster assembly.");
+            Dictionary<int, Protein> proteinMap = new Dictionary<int, Protein>();
+            foreach (Protein p in proteins)
+            {
+                if (!proteinMap.ContainsKey(p.ProteinID))
+                {
+                    proteinMap.Add(p.ProteinID, p);
+                }
+            }
+
+            UpdateStatus("Re-mapping the proteins to the mass tags.");
+            Dictionary<int, List<Protein>> massTagProteinMap = new Dictionary<int, List<Protein>>();
+
+            // Then map them.
+            foreach (MassTagLight tag in massTags)
+            {
+                int id = tag.ID;
+                if (!massTagProteinMap.ContainsKey(id))
+                {
+                    massTagProteinMap.Add(id, new List<Protein>());
+                }
+
+                List<MassTagToProteinMap> matchedMaps = maps.FindAll(delegate (MassTagToProteinMap map)
+                {
+                    return map.MassTagId == id;
+                });
+
+                List<Protein> newProteins = new List<Protein>();
+                foreach (MassTagToProteinMap mtMap in matchedMaps)
+                {
+                    newProteins.Add(proteinMap[mtMap.ProteinId]);
+                }
+                massTagProteinMap[id].AddRange(newProteins);
+            }
+
+            UpdateStatus("Building the in memory mass tag database.");
+            database.AddMassTagsAndProteins(massTags, massTagProteinMap);
+
+            
+            int totalMassTags = database.MassTags.Count;
+            UpdateStatus("Loaded " + totalMassTags.ToString() + " mass tags.");            
+            config.Analysis.MassTagDatabase = database;
+            
+            if (MassTagsLoaded != null)
+            {
+                MassTagsLoaded(this, new MassTagsLoadedEventArgs(massTags));
+            }
+        }
+        private void CreateMTDB(AnalysisConfig config)
+        {
             MassTagDatabase database = null;
 
             // Load the mass tag database if we are aligning, or if we are 
@@ -993,6 +1197,7 @@ namespace MultiAlignCore.Algorithms
                 database = MTDBLoaderFactory.LoadMassTagDB(m_config.Analysis.Options.MassTagDatabaseOptions,
                                                             m_config.Analysis.MetaData.AnalysisSetupInfo.Database.DatabaseFormat);
             }
+            
 
             if (database != null)
             {
@@ -1001,6 +1206,32 @@ namespace MultiAlignCore.Algorithms
             }
 
             config.Analysis.MassTagDatabase = database;
+
+            //TODO: Re-add the protein maps too.
+            config.Analysis.DataProviders.MassTags.AddAll(database.MassTags);
+
+            IProteinDAO proteinCache = new MultiAlignCore.IO.Features.Hibernate.ProteinDAO();          
+            proteinCache.AddAll(database.AllProteins);
+
+            List<MassTagToProteinMap> map = new List<MassTagToProteinMap>();
+            foreach (int massTagID in database.Proteins.Keys)
+            {
+                foreach(Protein p in database.Proteins[massTagID])
+                {
+                    
+                    MassTagToProteinMap tempMap = new MassTagToProteinMap();
+                    tempMap.ProteinId = p.RefID;
+                    tempMap.MassTagId = massTagID;
+                    map.Add(tempMap);
+                }
+            }
+            IGenericDAO<MassTagToProteinMap> tempCache = new MultiAlignCore.IO.Features.Hibernate.GenericDAOHibernate<MassTagToProteinMap>();
+            tempCache.AddAll(map);
+
+            if (MassTagsLoaded != null)
+            {
+                MassTagsLoaded(this, new MassTagsLoadedEventArgs(database.MassTags));
+            }
         }
         
         /// <summary>
@@ -1043,96 +1274,9 @@ namespace MultiAlignCore.Algorithms
                 AnalysisComplete(this, new AnalysisCompleteEventArgs(m_config.Analysis));
             }            
         }
-
-        private void LoadNewFeatureData(AnalysisConfig config)
-        {
-            UMCLoaderFactory.Status += new EventHandler<UMCLoadingEventArgs>(UMCLoaderFactory_Status);
-            UpdateStatus("Setting up parameters");
-
-            // Load mass tag database.
-            UpdateStatus("Loading auxillary data files.");
-            LoadOtherData(config);
-
-            UpdateStatus("Loading dataset data files.");
-            LoadDatasetData(config);
-
-            UMCLoaderFactory.Status -= UMCLoaderFactory_Status;
-        }
-        void UMCLoaderFactory_Status(object sender, UMCLoadingEventArgs e)
-        {
-            UpdateStatus(e.Message);
-        }
         #endregion    
 
-        #region Analysis Graph and workflow Building
-        private AnalysisGraphNode CreateNode(AnalysisStep step)
-        {
-            AnalysisGraphNode node  = new AnalysisGraphNode();
-            node.CurrentStep        = step;
-            node.Method             = m_methodMap[step];
-            return node;
-        }
-        /// <summary>
-        /// Builds the analysis graph so that we can easily customize new workflows.
-        /// </summary>
-        /// <param name="config"></param>
-        public void BuildAnalysisGraph(AnalysisConfig config)
-        {            
-            AnalysisGraph graph = new AnalysisGraph();
+        
 
-            /// Create a feature database
-            if (config.ShouldCreateFeatureDatabaseOnly)
-            {
-                graph.AddNode(CreateNode(AnalysisStep.LoadMSMSScanData));
-                graph.AddNode(CreateNode(AnalysisStep.FindFeatures));
-                graph.AddNode(CreateNode(AnalysisStep.Traceback));
-                graph.AddNode(CreateNode(AnalysisStep.SpectralClustering));
-            }
-            else if (config.ShouldTraceback)
-            {
-                if (!config.ShouldUseExistingDatabase)
-                {
-                    graph.AddNode(CreateNode(AnalysisStep.FindFeatures));                    
-                }
-                graph.AddNode(CreateNode(AnalysisStep.Traceback));
-            }
-            else if (config.ShouldClusterSpectra)
-            {
-                if (!config.ShouldUseExistingDatabase)
-                {
-                    graph.AddNode(CreateNode(AnalysisStep.FindFeatures));
-                }
-                graph.AddNode(CreateNode(AnalysisStep.Traceback));
-                graph.AddNode(CreateNode(AnalysisStep.SpectralClustering));
-            }
-            else
-            {
-                if (config.ShouldLoadMTDB)
-                {
-                    AnalysisGraphNode node  = new AnalysisGraphNode();
-                    node.CurrentStep        = AnalysisStep.LoadMTDB;
-                    node.Method             = new DelegateAnalysisMethod(LoadMTDB);
-                    graph.AddNode(node);
-                }
-
-                List<AnalysisStep> steps = m_methodMap.Keys.ToList();
-                steps.Sort();
-
-                foreach (AnalysisStep step in steps)
-                {
-                    if (step >= config.InitialStep)
-                    {
-                        graph.AddNode(CreateNode(step));
-                    }
-                }
-                graph.Nodes.Sort(delegate(AnalysisGraphNode x, AnalysisGraphNode y)
-                {
-                    return x.CurrentStep.CompareTo(y.CurrentStep);
-                });
-            }
-
-            m_config.AnalysisGraph = graph;
-        }
-        #endregion
     }
 }

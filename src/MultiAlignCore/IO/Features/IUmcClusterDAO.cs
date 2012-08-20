@@ -7,5 +7,6 @@ namespace MultiAlignCore.IO.Features
     public interface IUmcClusterDAO : IGenericDAO<clsCluster>
     {
         ICollection<clsCluster> FindByMass(double mass);
+        void ClearAllClusters();
     }
 }

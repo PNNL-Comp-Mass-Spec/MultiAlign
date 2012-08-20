@@ -229,9 +229,6 @@ namespace MultiAlignCore.IO.Features.Hibernate
             }
             return list;
         }
-
         #endregion
-
     }
-
 }

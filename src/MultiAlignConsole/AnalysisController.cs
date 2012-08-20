@@ -70,6 +70,7 @@ namespace MultiAlignConsole
             {
                 Logger.PrintMessage(ex.Message);
                 Logger.PrintMessage(ex.StackTrace);
+                throw ex;
             }
             return providers;
         }
@@ -134,7 +135,7 @@ namespace MultiAlignConsole
         /// <param name="e"></param>
         private void processor_FeaturesAligned(object sender, FeaturesAlignedEventArgs e)
         {
-            Logger.PrintMessage("Features Aligned.");
+            Logger.PrintMessage("Creating feature alignment plots.");
             m_reportCreator.CreateAlignmentPlots(e);
         }
         /// <summary>
@@ -153,7 +154,8 @@ namespace MultiAlignConsole
         /// <param name="e"></param>
         private void processor_FeaturesPeakMatched(object sender, FeaturesPeakMatchedEventArgs e)
         {
-            Logger.PrintMessage("Features are peak matched.");            
+            Logger.PrintMessage("Creating peak match plots");
+            m_reportCreator.CreatePeakMatchedPlots(e);
         }
         /// <summary>
         /// Logs when features are loaded.
@@ -164,6 +166,10 @@ namespace MultiAlignConsole
         {
             Logger.PrintMessage(string.Format("Loaded {0} features from {1}", e.Features.Count, e.DatasetInformation.DatasetName));
             
+        }
+        void processor_MassTagsLoaded(object sender, MassTagsLoadedEventArgs e)
+        {
+            m_reportCreator.CreateMassTagPlot(e);
         }
         /// <summary>
         /// Logs status messages.
@@ -285,7 +291,9 @@ namespace MultiAlignConsole
             Logger.PrintMessage("   -exportAbundances  crossTabFileName     ", false);
             Logger.PrintMessage("          Exports cluster ids and the abundances of their LC-MS features in cross tab fashion.  Each row is a cluster.  No mass tags are exported.  This file will be sent to the analysis path folder you specified.", false);
             Logger.PrintMessage("   -extractMSMS      ", false);
-            Logger.PrintMessage("          Exctracts information about clusters that have tandem mass spectra.  Does not execute any further analysis.", false);
+            Logger.PrintMessage("          Extracts information about clusters that have tandem mass spectra.  Does not execute any further analysis.", false);
+            Logger.PrintMessage("   -exportDTA      ", false);
+            Logger.PrintMessage("          Exports all MS/MS spectra in the DTA format.", false);
             Logger.PrintMessage("   -plots   [databaseName]  ", false);
             Logger.PrintMessage("          Creates plots for final analysis.  If [databaseName] specified when not running analysis, this will create plots post-analysis.", false);
             Logger.PrintMessage("   -useFactors ", false);
@@ -439,6 +447,7 @@ namespace MultiAlignConsole
             processor.AnalysisError += new EventHandler<AnalysisErrorEventArgs>(processor_AnalysisError);
             processor.FeaturesAligned += new EventHandler<FeaturesAlignedEventArgs>(processor_FeaturesAligned);
             processor.FeaturesLoaded += new EventHandler<FeaturesLoadedEventArgs>(processor_FeaturesLoaded);
+            processor.MassTagsLoaded += new EventHandler<MassTagsLoadedEventArgs>(processor_MassTagsLoaded);
             processor.FeaturesClustered += new EventHandler<FeaturesClusteredEventArgs>(processor_FeaturesClustered);
             processor.FeaturesPeakMatched += new EventHandler<FeaturesPeakMatchedEventArgs>(processor_FeaturesPeakMatched);
             processor.AnalysisComplete += new EventHandler<AnalysisCompleteEventArgs>(processor_AnalysisComplete);
@@ -450,6 +459,7 @@ namespace MultiAlignConsole
 
             return processor;
         }
+
         /// <summary>
         /// Sets up the analysis essentials including analysis path, log path, and prints the version and parameter information
         /// to the log.
@@ -831,6 +841,44 @@ namespace MultiAlignConsole
         }
         #endregion
 
+        #region Cleanup 
+        public void CleanupOldAnalysisBranches(AnalysisConfig config)
+        {
+
+            switch (config.InitialStep)
+            {
+                case AnalysisStep.None:
+                    break;
+                case AnalysisStep.LoadMTDB:
+                    break;
+                case AnalysisStep.FindFeatures:
+                    break;
+                case AnalysisStep.LoadMSMSScanData:
+                    break;
+                case AnalysisStep.Traceback:
+                    break;
+                case AnalysisStep.SpectralClustering:
+                    break;
+                case AnalysisStep.Alignment:
+                    config.Analysis.DataProviders.FeatureCache.ClearAlignmentData();
+                    config.Analysis.DataProviders.ClusterCache.ClearAllClusters();
+                    config.Analysis.DataProviders.MassTagMatches.ClearAllMatches();  
+                    break;
+                case AnalysisStep.Clustering:
+                    config.Analysis.DataProviders.ClusterCache.ClearAllClusters();
+                    config.Analysis.DataProviders.MassTagMatches.ClearAllMatches();  
+                    break;
+                case AnalysisStep.ClusterQC:
+                    break;
+                case AnalysisStep.PeakMatching:
+                    config.Analysis.DataProviders.MassTagMatches.ClearAllMatches();                        
+                    break;
+                default:
+                    break;
+            }
+        }
+        #endregion
+
         /// <summary>
         /// Processes the MA analysis data.
         /// </summary>
@@ -887,6 +935,12 @@ namespace MultiAlignConsole
 
             createDatabase = ShouldCreateDatabase(validated, databaseExists);
 
+            // make sure that we were not told to skip to a new part of the analysis.
+            if (config.InitialStep >= AnalysisStep.Alignment)
+            {
+                createDatabase = false;
+            }
+
             switch (validated)
             {
                 case AnalysisType.FactorImporting:
@@ -922,6 +976,7 @@ namespace MultiAlignConsole
                     createDatabase = false;
                 }
             }
+
             return createDatabase;
         }
 
@@ -1034,6 +1089,10 @@ namespace MultiAlignConsole
                 config.ExporterNames.CrossTabAbundance = config.AnalysisName.Replace(".db3", "");
             }
             ConstructExporting();
+
+            Logger.PrintMessage("Cleaning up old analysis branches.");
+            CleanupOldAnalysisBranches(config);
+
 
             /// /////////////////////////////////////////////////////////////
             /// Start the analysis

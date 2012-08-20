@@ -29,6 +29,11 @@ namespace MultiAlignCore.IO.Features.Hibernate
 			configuration.AddAssembly(typeof(NHibernateUtil).Assembly);
 		}
 
+        public static string Path
+        {
+            get { return m_dbLocation;  }        
+        }
+
 		/// <summary>
 		/// Returns a session that is created from the SessionFactory. If a session already existed, it will return the existing Session, not create a new one.
 		/// </summary>

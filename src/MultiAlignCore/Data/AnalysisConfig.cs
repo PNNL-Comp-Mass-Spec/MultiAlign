@@ -47,13 +47,13 @@ namespace MultiAlignCore.Data
             ClusterExporters        = new List<IFeatureClusterWriter>();
 
             // Processing
-            InitialStep = AnalysisStep.FindFeatures;
+            InitialStep                     = AnalysisStep.FindFeatures;
             ShouldLoadMTDB                  = true;
             ShouldCreateFeatureDatabaseOnly = false;
             useFactors                      = false;
             ShouldExportSICs                = false;
             ShouldExportMSMS                = true;
-            ShouldUseExistingDatabase             = false;
+            ShouldUseExistingDatabase       = false;
         }
         #region Properties 
         public AnalysisStep InitialStep { get; set; }

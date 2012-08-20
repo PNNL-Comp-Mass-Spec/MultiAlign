@@ -16,13 +16,13 @@ namespace MultiAlignCore.Algorithms
         None = -1,
         LoadMTDB = 0,
         /// <summary>
-        /// Loads the MSMS scan data into the database.
-        /// </summary>
-        LoadMSMSScanData,
-        /// <summary>
         /// Indicates that feature data should be loaded.
         /// </summary>
         FindFeatures,
+        /// <summary>
+        /// Loads the MSMS scan data into the database.
+        /// </summary>
+        LoadMSMSScanData,
         /// <summary>
         /// Features must exist in the database.
         /// </summary>

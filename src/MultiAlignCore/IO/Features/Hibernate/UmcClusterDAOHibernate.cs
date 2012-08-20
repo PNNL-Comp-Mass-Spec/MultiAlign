@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using MultiAlignEngine.Features;
 using NHibernate.Criterion;
+using System.Data.SQLite;
 
 namespace MultiAlignCore.IO.Features.Hibernate
 {
@@ -20,7 +21,27 @@ namespace MultiAlignCore.IO.Features.Hibernate
             criterionList.Add(criterion);
             return FindByCriteria(criterionList);
         }
-		
+
+        public void ClearAllClusters()
+        {
+            using (SQLiteConnection connection = new SQLiteConnection("Data Source=" + NHibernateUtil.Path))
+            {
+                connection.Open();
+                using (SQLiteCommand command = connection.CreateCommand())
+                {
+                    command.CommandType = System.Data.CommandType.Text;
+                    command.CommandText = "DELETE FROM T_Clusters";
+                    command.ExecuteNonQuery();
+                }
+                using (SQLiteCommand command = connection.CreateCommand())
+                {
+                    command.CommandType = System.Data.CommandType.Text;
+                    command.CommandText = "UPDATE T_LCMS_Features  SET Cluster_ID = -1";
+                    command.ExecuteNonQuery();
+                }
+                connection.Close();
+            }
+        }
     }
 
 }

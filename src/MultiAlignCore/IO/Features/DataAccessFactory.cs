@@ -41,7 +41,7 @@ namespace MultiAlignCore.IO.Features
             IMsnFeatureToMSFeatureDAO   msnFeatureMap           = new MSnFeatureToMSFeatureDAOHibernate(); 
             IDatasetDAO                 datasetCache            = new DatasetDAOHibernate();
             IMassTagDAO                 massTagCache            = new MassTagDAOHibernate();
-            IGenericDAO<ClusterToMassTagMap> massTagMatchCache  = new GenericDAOHibernate<ClusterToMassTagMap>();
+            IMassTagMatchDAO            massTagMatchCache       = new MassTagMatchDAO();
             FeatureDataAccessProviders providers =
                                             new FeatureDataAccessProviders( featureCache, 
                                                                             clusterCache,
