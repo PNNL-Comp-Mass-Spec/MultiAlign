@@ -163,14 +163,14 @@ namespace MultiAlignCore.Data
     public class FeaturesLoadedEventArgs : EventArgs
     {
         private DatasetInformation   m_datasetInformation;
-        private List<clsUMC>         m_features;
+        private List<UMCLight> m_features;
         
         /// <summary>
         /// Arguments that hold dataset information when features are loaded.
         /// </summary>        
         /// <param name="info">Dataset information object</param>        
         public FeaturesLoadedEventArgs( DatasetInformation      info,
-                                        List<clsUMC>            features)                                       
+                                        List<UMCLight>            features)                                       
         {            
             m_datasetInformation    = info;
             m_features              = features;
@@ -188,7 +188,7 @@ namespace MultiAlignCore.Data
         /// <summary>
         /// Gets the list of features found.
         /// </summary>
-        public List<clsUMC> Features
+        public List<UMCLight> Features
         {
             get
             {

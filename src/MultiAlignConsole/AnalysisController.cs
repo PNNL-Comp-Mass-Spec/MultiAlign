@@ -453,7 +453,7 @@ namespace MultiAlignConsole
             processor.AnalysisComplete += new EventHandler<AnalysisCompleteEventArgs>(processor_AnalysisComplete);
             processor.Status += new EventHandler<AnalysisStatusEventArgs>(processor_Status);
             processor.FeaturesExtracted += new EventHandler<MultiAlignCore.Algorithms.MSLinker.FeaturesExtractedEventArgs>(processor_FeaturesExtracted);
-            m_config.dataProviders = providers;
+            m_config.DataProviders = providers;
 
             processor.AlgorithmProvders = builder.GetAlgorithmProvider(m_config.Analysis.Options);
 
@@ -691,7 +691,7 @@ namespace MultiAlignConsole
                     m_config.Analysis.MetaData.BaselineDataset = null;
                     foreach (DatasetInformation info in analysisMetaData.Datasets)
                     {
-                        if (info.Path == analysisSetupInformation.BaselineFile.Path)
+                        if (info.Features.Path == analysisSetupInformation.BaselineFile.Path)
                         {
                             m_config.Analysis.MetaData.BaselineDataset = info;
                         }
@@ -713,7 +713,7 @@ namespace MultiAlignConsole
                     m_config.Analysis.MetaData.BaselineDataset = null;
                     foreach (DatasetInformation info in analysisMetaData.Datasets)
                     {
-                        if (info.Path == analysisSetupInformation.BaselineFile.Path)
+                        if (info.Features.Path == analysisSetupInformation.BaselineFile.Path)
                         {
                             m_config.Analysis.MetaData.BaselineDataset = info;
                         }
@@ -751,40 +751,57 @@ namespace MultiAlignConsole
         private  void ConstructDatasetInformation(InputAnalysisInfo analysisSetupInformation, MultiAlignAnalysis analysis, bool insertIntoDatabase)
         {
             // Create dataset information.
-            int i = 0;
             Logger.PrintMessage("Creating dataset and other input information.");
+
+            Dictionary<string, List<InputFile>> datasetMap = new Dictionary<string, List<InputFile>>();
+
             foreach (InputFile file in analysisSetupInformation.Files)
             {
-                switch (file.FileType)
+                string name = Path.GetFileName(file.Path);  
+                string datasetName = DatasetInformation.ExtractDatasetName(name);
+
+                bool isEntryMade = datasetMap.ContainsKey(datasetName);
+                if (!isEntryMade)
                 {
-                    case InputFileType.Features:
-                        DatasetInformation datasetInfo = new DatasetInformation();
-                        datasetInfo.Path = file.Path;
-                        datasetInfo.DatasetId = i++;
-                        datasetInfo.DatasetName = Path.GetFileName(file.Path);
-                        datasetInfo.DatasetName = datasetInfo.DatasetName.Replace("_isos.csv", "");
-                        datasetInfo.DatasetName = datasetInfo.DatasetName.Replace(".pek", "");
-                        datasetInfo.DatasetName = datasetInfo.DatasetName.Replace("_lcmsfeatures.txt", "");
-                        datasetInfo.JobId = "";
-                        datasetInfo.mstrResultsFolder = Path.GetDirectoryName(file.Path);
-                        datasetInfo.ParameterFileName = "";
-                        datasetInfo.Selected = true;
-                        Logger.PrintMessage("\tDataset Information:   " + file.Path);
-                        analysis.MetaData.Datasets.Add(datasetInfo);
-                        break;
-                    case InputFileType.Scans:
-                        analysis.MetaData.OtherFiles.Add(file);
-                        Logger.PrintMessage("\tScan File Information: " + file.Path);
-                        break;
-                    case InputFileType.Raw:
-                        analysis.MetaData.OtherFiles.Add(file);
-                        Logger.PrintMessage("\tRaw Data Information:  " + file.Path);
-                        break;
-                    case InputFileType.Sequence:
-                        analysis.MetaData.OtherFiles.Add(file);
-                        Logger.PrintMessage("\tDatabase Search Results Sequence Data Information:  " + file.Path);
-                        break;
+                    datasetMap.Add(datasetName, new List<InputFile>());
                 }
+
+                datasetMap[datasetName].Add(file);
+            }
+
+
+            int i = 0;                
+            foreach (string datasetName in datasetMap.Keys)
+            {
+                List<InputFile> files                   = datasetMap[datasetName];                
+                DatasetInformation datasetInformation   = new DatasetInformation();
+                datasetInformation.DatasetId            = i++;
+                datasetInformation.DatasetName          = datasetName;
+                                            
+                foreach(InputFile file in files)                
+                {
+                    switch (file.FileType)
+                    {
+                        case InputFileType.Features:
+                            datasetInformation.Features = file;
+                            datasetInformation.Path     = file.Path;
+                            Logger.PrintMessage("\tDataset Information:   " + file.Path);                            
+                            break;
+                        case InputFileType.Scans:
+                            Logger.PrintMessage("\tDatabase Search Results Sequence Data Information:  " + file.Path);
+                            datasetInformation.Scans = file;
+                            break;
+                        case InputFileType.Raw:
+                            Logger.PrintMessage("\tRaw Data Information:  " + file.Path);
+                            datasetInformation.Raw   = file;
+                            break;
+                        case InputFileType.Sequence:
+                            Logger.PrintMessage("\tDatabase Search Results Sequence Data Information:  " + file.Path);
+                            datasetInformation.Sequence = file;
+                            break;
+                    }                    
+                }
+                analysis.MetaData.Datasets.Add(datasetInformation);
             }
             if (insertIntoDatabase)
             {
@@ -1066,7 +1083,7 @@ namespace MultiAlignConsole
             processor = ConstructAnalysisProcessor(builder, providers);
 
             // Tell the processor whether to load data or not.
-            processor.LoadData = createDatabase;
+            processor.ShouldLoadData = createDatabase;
 
 
             // Give the processor somewhere to put the SIC images.

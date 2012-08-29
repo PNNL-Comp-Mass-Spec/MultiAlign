@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using MultiAlignEngine.Features;
-
+using PNNLOmics.Data.Features;
 
 namespace MultiAlignCore.Data.Cluster
 {
@@ -11,15 +11,14 @@ namespace MultiAlignCore.Data.Cluster
         /// </summary>
         /// <param name="clusters"></param>
         /// <returns></returns>
-        public static float[] GetClusterMemberSizes(List<clsCluster> clusters)
-        {
-            //TODO: Move this method to a new class.
+        public static float[] GetClusterMemberSizes(List<UMCClusterLight> clusters)
+        {            
             if (clusters.Count < 1)
                 return null;
 
             Dictionary<int, int> clusterMaps = new Dictionary<int, int>();
             // Bin all data.
-            foreach (clsCluster cluster in clusters)
+            foreach (UMCClusterLight cluster in clusters)
             {
                 int members = cluster.DatasetMemberCount;
                 if (!clusterMaps.ContainsKey(members))

@@ -66,7 +66,11 @@ namespace MultiAlignCore.IO.Features
             {
 
                 FinniganFileReaderBaseClass.udtScanHeaderInfoType header = new FinniganFileReaderBaseClass.udtScanHeaderInfoType();
+                DateTime start = DateTime.Now;
                 rawReader.GetScanInfo(i, ref header);
+                DateTime end = DateTime.Now;
+
+                TimeSpan span = start.Subtract(end);
 
                 if (header.MSLevel > 1)
                 {

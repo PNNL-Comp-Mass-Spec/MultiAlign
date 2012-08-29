@@ -147,45 +147,11 @@ namespace MultiAlignCore.IO.InputFiles
 				string fileNameLowerCase        = fileName.ToLower();
                 string fileNameAlias            = null;
                 DatasetInformation datasetInfo      = new DatasetInformation();
-                datasetInfo.menmDeisotopingTool = DeisotopingTool.NA;
-
-				if (fileNameLowerCase.Contains(".pek"))
-                {
-                    datasetInfo.menmDeisotopingTool = DeisotopingTool.ICR2ls;
-					fileNameAlias = fileName.Substring(0, fileNameLowerCase.LastIndexOf(".pek"));
-				}
-				else if (fileNameLowerCase.Contains("_isos.csv"))
-                {
-                    datasetInfo.menmDeisotopingTool = DeisotopingTool.Decon2ls;
-					fileNameAlias = fileName.Substring(0, fileNameLowerCase.LastIndexOf("_isos.csv"));
-				}
-				else if (fileNameLowerCase.Contains("_lcmsfeatures.txt"))
-                {
-                    datasetInfo.menmDeisotopingTool = DeisotopingTool.LCMSFeatureFinder;
-					fileNameAlias = fileName.Substring(0, fileNameLowerCase.LastIndexOf("_lcmsfeatures.txt"));
-				}
-				else if (fileNameLowerCase.Contains(".db3"))
-				{
-					fileNameAlias = fileName.Substring(0, fileNameLowerCase.LastIndexOf(".db3"));
-				}
-				else if (fileNameLowerCase.Contains(".sqlite"))
-				{
-					fileNameAlias = fileName.Substring(0, fileNameLowerCase.LastIndexOf(".sqlite"));
-				}
-				else
-				{
-					fileNameAlias = fileName;
-				}
-
+                				
                 datasetInfo.DatasetName			= fileName;
-                datasetInfo.mstrAlias           = fileNameAlias;
-				datasetInfo.DatasetId   		= m_numDiskDatasetsLoaded;
-                datasetInfo.mstrAnalysisJobId   = "NA";
-                datasetInfo.mintBlockID         = 0;
-                datasetInfo.mintRunOrder        = 0;
-                datasetInfo.Path         = filePath;
+                datasetInfo.DatasetId   		= m_numDiskDatasetsLoaded;
+                //TODO: Add dataset information here.
                 
-
 				m_numDiskDatasetsLoaded++;
                 numLoaded++;
                 percentLoaded = 100.0 * (Convert.ToDouble(numLoaded) / Convert.ToDouble(marr_fileNames.Length));

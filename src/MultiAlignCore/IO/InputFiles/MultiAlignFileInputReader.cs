@@ -113,8 +113,7 @@ namespace MultiAlignCore.IO.InputFiles
                             string[] baselineCheck  = fixedLine.Split(BASELINE_INDICATOR);
                             if (baselineCheck.Length == 2 && !string.IsNullOrEmpty(baselineCheck[0]))
                             {
-                                InputFile newFile   = new InputFile();
-                                newFile.DatasetName = baselineCheck[0];
+                                InputFile newFile   = new InputFile();                                
                                 newFile.Path        = baselineCheck[0];
                                 newFile.FileType    = InputFileType.Features;
                                 info.BaselineFile   = newFile;                                
@@ -123,8 +122,7 @@ namespace MultiAlignCore.IO.InputFiles
                             else if (!string.IsNullOrEmpty(baselineCheck[0]))
                             {
                                 InputFile newFile   = new InputFile();
-                                newFile.Path        = baselineCheck[0];
-                                newFile.DatasetName = baselineCheck[0];
+                                newFile.Path        = baselineCheck[0];                                
                                 newFile.FileType    = InputFileType.Features;                                
                                 info.Files.Add(newFile);
                             }                            

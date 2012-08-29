@@ -177,9 +177,7 @@ namespace MultiAlignCore.IO.InputFiles
                 foreach (DatasetInformation info in list)
                 {
                     if (info != null)
-                    {
-                        info.mstrAlias = alias;
-                                                
+                    {                                                                        
                         if (LoadedDataset != null)
                             LoadedDataset(info);
                      }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using MultiAlignCore.Data;
+using MultiAlignCore.Data.Features;
 using MultiAlignCore.IO;
 using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.Features.Hibernate;
@@ -78,11 +79,13 @@ namespace MultiAlignConsole.Drawing
             Config.Report.PushStartTableRow();
 
             // Create the heatmap
-            List<clsUMC> umcs = cache.FindAll();
+            List<UMCLight> features = cache.FindAll();
             ChartDisplayOptions options = new ChartDisplayOptions(true, true, true, true,
                                                 1, 100,
                                                 "Charge State Histogram", "Charge State", "Count", Config.width, Config.height);
-            options.DisplayLegend = false;
+            options.DisplayLegend   = false;
+            List<clsUMC> umcs       = FeatureDataConverters.ConvertToUMC(features);
+
             Image image = RenderDatasetInfo.ChargeStateHistogram_Thumbnail(umcs, Config.width, Config.height, options);
             SaveImage(image, "ChargeStates.png");
             Config.Report.PushImageColumn(Path.Combine("Plots", "ChargeStates.png"));
@@ -94,7 +97,7 @@ namespace MultiAlignConsole.Drawing
             Config.Report.PushStartTable();
             Config.Report.PushStartTableRow();
 
-            List<clsCluster> clusters = clusterCache.FindAll();
+            List<UMCClusterLight> clusters = clusterCache.FindAll();
             options.Title = "Cluster Member Size Histogram ( Total Clusters = " + clusters.Count.ToString() + ")";
             options.DisplayLegend = false;
             image = RenderDatasetInfo.ClusterSizeHistogram_Thumbnail(clusters, Config.width, Config.height, options);
@@ -355,20 +358,21 @@ namespace MultiAlignConsole.Drawing
                     Config.Report.PushStartTable();
                     Config.Report.PushStartTableRow();
 
-                    DatasetInformation baselineInfo = Config.Analysis.MetaData.BaselineDataset;
+                    DatasetInformation baselineInfo     = Config.Analysis.MetaData.BaselineDataset;
                     ChartDisplayOptions baselineOptions = new ChartDisplayOptions(false, true, true, true);
-                    baselineOptions.MarginMin = 1;
-                    baselineOptions.MarginMax = 100;
-                    baselineOptions.Title = "Feature Plot " + baselineInfo.DatasetName;
-                    baselineOptions.XAxisLabel = "Scan";
-                    baselineOptions.YAxisLabel = "Monoisotopic Mass";
-                    baselineOptions.Width = Config.width;
-                    baselineOptions.Height = Config.height;
-                    baselineOptions.DisplayLegend = true;
-                    List<clsUMC> baselineUmcs = Config.dataProviders.FeatureCache.FindByDatasetId(Convert.ToInt32(baselineInfo.DatasetId));
-                    Image baselineImage = RenderDatasetInfo.FeaturesScatterPlot_Thumbnail(baselineUmcs, baselineOptions);
-                    string baselineLabelName = Path.GetFileNameWithoutExtension(baselineInfo.DatasetName) + "_featurePlot.png";
-                    string baselinePath = Path.Combine(Config.plotSavePath, baselineLabelName);
+                    baselineOptions.MarginMin           = 1;
+                    baselineOptions.MarginMax           = 100;
+                    baselineOptions.Title               = "Feature Plot " + baselineInfo.DatasetName;
+                    baselineOptions.XAxisLabel          = "Scan";
+                    baselineOptions.YAxisLabel          = "Monoisotopic Mass";
+                    baselineOptions.Width               = Config.width;
+                    baselineOptions.Height              = Config.height;
+                    baselineOptions.DisplayLegend       = true;
+                    List<UMCLight> baselineFeatures     = Config.DataProviders.FeatureCache.FindByDatasetId(Convert.ToInt32(baselineInfo.DatasetId));
+                    List<clsUMC> baselineUmcs           = FeatureDataConverters.ConvertToUMC(baselineFeatures);  
+                    Image baselineImage                 = RenderDatasetInfo.FeaturesScatterPlot_Thumbnail(baselineUmcs, baselineOptions);
+                    string baselineLabelName            = Path.GetFileNameWithoutExtension(baselineInfo.DatasetName) + "_featurePlot.png";
+                    string baselinePath                 = Path.Combine(Config.plotSavePath, baselineLabelName);
                     baselineImage.Save(baselinePath, System.Drawing.Imaging.ImageFormat.Png);
                     Config.Report.PushImageColumn(Path.Combine("Plots", baselineLabelName));
                     Config.Report.PushEndTableRow();
@@ -390,7 +394,9 @@ namespace MultiAlignConsole.Drawing
             options.Height = Config.height;
             options.DisplayLegend = true;
 
-            List<clsUMC> umcs = Config.dataProviders.FeatureCache.FindByDatasetId(Convert.ToInt32(e.AligneeDatasetInformation.DatasetId));
+            List<UMCLight> features = Config.DataProviders.FeatureCache.FindByDatasetId(Convert.ToInt32(e.AligneeDatasetInformation.DatasetId));
+            List<clsUMC> umcs = FeatureDataConverters.ConvertToUMC(features);  
+
             Image image = RenderDatasetInfo.FeaturesScatterPlot_Thumbnail(umcs, options);
             string labelName = Path.GetFileNameWithoutExtension(name) + "_featurePlot.png";
             string path = Path.Combine(Config.plotSavePath, labelName);

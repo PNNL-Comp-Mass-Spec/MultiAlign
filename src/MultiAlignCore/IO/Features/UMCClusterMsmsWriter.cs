@@ -58,13 +58,13 @@ namespace MultiAlignCore.IO.Features
 
                 // Parse each cluster - cluster per line.
                 foreach (int clusterID in clusters.Clusters.Keys)
-                {    
-                    clsCluster cluster      = clusters.Clusters[clusterID];                    
+                {
+                    UMCClusterLight cluster = clusters.Clusters[clusterID];                    
                     StringBuilder builder   = new StringBuilder();
-                    builder.AppendFormat("{0},{1},{2},{3},{4}", cluster.Id, 
-                                                                cluster.Net, 
-                                                                cluster.Mass, 
-                                                                cluster.MeanScore, 
+                    builder.AppendFormat("{0},{1},{2},{3},{4}", cluster.ID, 
+                                                                cluster.NET, 
+                                                                cluster.MassMonoisotopic, 
+                                                                cluster.Tightness, 
                                                                 cluster.Ambiguity);
                                     
                     bool hasMatches = clusters.MassTagMatches.ContainsKey(clusterID);

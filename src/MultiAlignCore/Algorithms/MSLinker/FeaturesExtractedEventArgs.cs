@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using MultiAlignCore.Data;
 using MultiAlignEngine.Features;
+using PNNLOmics.Data.Features;
 using PNNLOmics.Data.MassTags;
 
 namespace MultiAlignCore.Algorithms.MSLinker
@@ -21,7 +22,7 @@ namespace MultiAlignCore.Algorithms.MSLinker
         /// <param name="MassTags"></param>
         /// <param name="MassTagMatches"></param>
         public FeaturesExtractedEventArgs(  Dictionary<int, List<FeatureExtractionMap>> mappedFeatures,
-                                            Dictionary<int, clsCluster> clusters,
+                                            Dictionary<int, UMCClusterLight> clusters,
                                             Dictionary<int, MassTagLight> massTags,
                                             Dictionary<int, List<ClusterToMassTagMap>> massTagMatches)
         {
@@ -41,7 +42,7 @@ namespace MultiAlignCore.Algorithms.MSLinker
         /// <summary>
         /// Gets or sets the clusters from the database.
         /// </summary>
-        public Dictionary<int, clsCluster> Clusters
+        public Dictionary<int, UMCClusterLight> Clusters
         {
             get;
             private set;

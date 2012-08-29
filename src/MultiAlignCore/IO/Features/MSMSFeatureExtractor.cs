@@ -56,18 +56,11 @@ namespace MultiAlignCore.IO.Features
                 }
 
                 UpdateStatus("Extracting LC-MS Features");
-                List<clsUMC> lcmsFeatures = providers.FeatureCache.FindByDatasetId(datasetID);
+                List<UMCLight> lcmsFeatures = providers.FeatureCache.FindByDatasetId(datasetID);
                 Dictionary<int, UMCLight> lcmsFeatureIDToFeature = new Dictionary<int, UMCLight>();
-                foreach (clsUMC umc in lcmsFeatures)
-                {
-                    UMCLight umcFeature = new UMCLight();
-                    umcFeature.Abundance = Convert.ToInt64(umc.AbundanceMax);
-                    umcFeature.ID = umc.Id;
-                    umcFeature.MassMonoisotopic = umc.MassCalibrated;
-                    umcFeature.RetentionTime = umc.Net;
-                    umcFeature.Scan = umc.Scan;
-                    umcFeature.GroupID = datasetID;
-                    lcmsFeatureIDToFeature.Add(umc.Id, umcFeature);
+                foreach (UMCLight umc in lcmsFeatures)
+                {                    
+                    lcmsFeatureIDToFeature.Add(umc.ID, umc);
                 }
 
                 UpdateStatus("Extracting MS Features");

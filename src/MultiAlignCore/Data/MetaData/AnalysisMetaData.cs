@@ -19,7 +19,6 @@ namespace MultiAlignCore.Data
             InputFileDefinition = null;
             ParameterFile       = null;
             FactorTreeNode      = null;
-            OtherFiles          = new List<InputFile>();
         }
 
         /// <summary>
@@ -93,14 +92,6 @@ namespace MultiAlignCore.Data
             set;
         }
 
-        /// <summary>
-        /// Get or sets the list of other files that may be used for tracking data.
-        /// </summary>
-        public List<InputFile> OtherFiles
-        {
-            get;
-            set;
-        }
         /// <summary>
         /// Gets or sets the initial analysis setup information.
         /// </summary>

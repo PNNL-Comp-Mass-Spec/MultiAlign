@@ -11,21 +11,12 @@
         public InputFile()
         {
             Path        = null;
-            FileType    = InputFileType.NotRecognized;
-            DatasetName = null; 
+            FileType    = InputFileType.NotRecognized;         
         }
         /// <summary>
         /// Gets or sets the path to the input file.
         /// </summary>
         public string Path
-        {
-            get;
-            set;
-        }
-        /// <summary>
-        /// Gets or sets the dataset name.
-        /// </summary>
-        public string DatasetName
         {
             get;
             set;

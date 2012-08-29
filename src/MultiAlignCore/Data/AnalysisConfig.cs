@@ -37,7 +37,7 @@ namespace MultiAlignCore.Data
             HtmlPage                = new List<string>();
             AnalysisPath            = null;
             AnalysisName            = null;
-            databaseName            = null;
+            DatabaseName            = null;
 
             Report                  = new AnalysisHTMLReport();
             Report.ImageWidth       = PLOT_WIDTH_HTML;
@@ -136,11 +136,11 @@ namespace MultiAlignCore.Data
         /// <summary>
         /// Path to database to create plots from.
         /// </summary>
-        public string databaseName { get; set; }
+        public string DatabaseName { get; set; }
         /// <summary>
         /// Objects that access data from the databases.
         /// </summary>
-        public FeatureDataAccessProviders dataProviders { get; set; }
+        public FeatureDataAccessProviders DataProviders { get; set; }
         /// <summary>
         /// Flag that indicates whether a plot for the baseline features has been made.
         /// </summary>

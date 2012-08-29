@@ -7,10 +7,10 @@
 		<id name="Id" column="Cluster_ID" type="int">
 			<generator class="assigned" />
 		</id>
-		<property name="Mass" column="Mass" type="double" not-null="false" />
+		<property name="Mass"           column="Mass" type="double" not-null="false" />
 		<property name="MassCalibrated" column="Mass_Calibrated" type="double" not-null="false" />
-		<property name="Net" column="NET" type="double" not-null="false" />
-		<property name="NetAligned" column="NET_Aligned" type="double" not-null="false" />
+		<property name="Net"            column="NET" type="double" not-null="false" />
+		<property name="NetAligned"     column="NET_Aligned" type="double" not-null="false" />
 		<property name="Scan" column="Scan_LC" type="int" not-null="false" />
 		<property name="Charge" column="Charge" type="int" not-null="false" />
 		<property name="DriftTime" column="Drift_Time" type="double" not-null="false" />

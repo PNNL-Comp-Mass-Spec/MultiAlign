@@ -12,7 +12,7 @@ using PNNLOmics.Algorithms.SpectralComparisons;
 using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
 using MultiAlignEngine.Features;
-
+using MultiAlignCore.Data.MassTags;
 
 namespace MultiAlignCore.Algorithms.Alignment
 {
@@ -20,17 +20,17 @@ namespace MultiAlignCore.Algorithms.Alignment
     {
         #region IFeatureAligner Members
 
-        public Data.Alignment.classAlignmentData AlignFeatures(Data.MassTags.MassTagDatabase database, List<MultiAlignEngine.Features.clsUMC> features, AlignmentOptions options, bool alignDriftTimes)
+        public Data.Alignment.classAlignmentData AlignFeatures(MassTagDatabase database, List<UMCLight> features, AlignmentOptions options, bool alignDriftTimes)
         {
             throw new NotImplementedException();
         }
 
-        public Data.Alignment.classAlignmentData AlignFeatures(List<MultiAlignEngine.Features.clsUMC> baseline, List<MultiAlignEngine.Features.clsUMC> features, AlignmentOptions options)
+        public Data.Alignment.classAlignmentData AlignFeatures(List<UMCLight> baseline, List<UMCLight> features, AlignmentOptions options)
         {
             throw new NotImplementedException();
         }
 
-        public Data.Alignment.classAlignmentData AlignFeatures(Data.MassTags.MassTagDatabase massTagDatabase, List<MultiAlignEngine.Features.clsCluster> clusters, AlignmentOptions options)
+        public Data.Alignment.classAlignmentData AlignFeatures(MassTagDatabase massTagDatabase, List<clsCluster> clusters, AlignmentOptions options)
         {
             throw new NotImplementedException();
         }
@@ -39,7 +39,7 @@ namespace MultiAlignCore.Algorithms.Alignment
 
         #region IProgressNotifer Members
 
-        public event EventHandler<PNNLOmics.Algorithms.ProgressNotifierArgs> Progress;
+        public event EventHandler<ProgressNotifierArgs> Progress;
 
         #endregion
 

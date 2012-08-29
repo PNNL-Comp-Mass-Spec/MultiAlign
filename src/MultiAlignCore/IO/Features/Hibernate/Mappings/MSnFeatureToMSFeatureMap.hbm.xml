@@ -5,10 +5,11 @@
 
 	<class name="MSFeatureToMSnFeatureMap" table="T_MSnFeature_To_MSFeature_Map" lazy="false">
 		<composite-id>
-			<key-property name="RawDatasetID"      column="Raw_Dataset_ID"       type="int" />
-      <key-property name="MSDatasetID"  column="MS_Dataset_ID"  type="int" />
-      <key-property name="MSFeatureID"    column="MS_Feature_ID"    type="int" />
-      <key-property name="MSMSFeatureID"    column="MSn_Feature_ID"    type="int" />
+			<key-property name="RawDatasetID"     column="Raw_Dataset_ID"     type="int" />
+      <key-property name="MSDatasetID"      column="MS_Dataset_ID"      type="int" />
+      <key-property name="MSFeatureID"      column="MS_Feature_ID"      type="int" />
+      <key-property name="MSMSFeatureID"    column="MSn_Feature_ID"     type="int" />
+      <key-property name="LCMSFeatureID"    column="LCMS_Feature_ID"    type="int" />
 		</composite-id>
 	</class>
 </hibernate-mapping>

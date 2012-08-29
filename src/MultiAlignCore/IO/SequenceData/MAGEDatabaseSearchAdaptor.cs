@@ -23,39 +23,33 @@ namespace MultiAlignCore.IO.SequenceData
             }
         }
 
-        public void LoadSequenceData(InputFile                   dataset,
+        public void LoadSequenceData(string                      path,
                                      int                         datasetID,
-                                     FeatureDataAccessProviders  providers)
-        {
-
-            if (dataset.FileType == InputFileType.Sequence)
+                                     IDatabaseSearchSequenceDAO  databaseSequenceCache)
+        {            
+            IMageSink sink = null;                
+            if (path.ToLower().EndsWith("fht.txt"))
             {
+                UpdateStatus("First Hit File MAGE Sink created. ");
 
-                IMageSink sink = null;                
-                if (dataset.Path.ToLower().EndsWith("fht.txt"))
-                {
-                    UpdateStatus("First Hit File MAGE Sink created. ");
+                SequestFirstHitSink sequest = new SequestFirstHitSink(databaseSequenceCache);
+                sequest.DatasetID           = datasetID;
+                sink                        = sequest;                
+            }
+            else
+            {
+                UpdateStatus("File type is not supported for this kind of sequence data. ");
+                return;
+            }
+            using (DelimitedFileReader reader = new DelimitedFileReader())
+            {
+                reader.Delimiter = "\t";
+                reader.FilePath  = path;
 
-                    SequestFirstHitSink sequest = new SequestFirstHitSink(providers.DatabaseSequenceCache);
-                    sequest.DatasetID           = datasetID;
-                    sink                        = sequest;
-                }
-                else
-                {
-                    UpdateStatus("File type is not supported for this kind of sequence data. ");
-                    return;
-                }
-                using (DelimitedFileReader reader = new DelimitedFileReader())
-                {
-                    reader.Delimiter = "\t";
-                    reader.FilePath = dataset.Path;
-
-                    ProcessingPipeline pipeline = ProcessingPipeline.Assemble("PlainFactors", reader, sink);
-                    pipeline.RunRoot(null);
-                    sink.CommitChanges();
-                }
-            }     
-                     
+                ProcessingPipeline pipeline = ProcessingPipeline.Assemble("PlainFactors", reader, sink);
+                pipeline.RunRoot(null);
+                sink.CommitChanges();
+            }                                     
         }
 
         #region IProgressNotifer Members

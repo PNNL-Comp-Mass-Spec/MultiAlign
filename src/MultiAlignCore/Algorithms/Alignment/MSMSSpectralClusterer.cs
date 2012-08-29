@@ -62,41 +62,18 @@ namespace MultiAlignCore.Algorithms.Alignment
         private void DeRegisterNotifier(IProgressNotifer notifier)
         {
         }
-
+        /// <summary>
+        /// Clusters a set of MS/MS spectra together.
+        /// </summary>
+        /// <param name="analysis"></param>
         public void ClusterMSMSSpectra(MultiAlignAnalysis analysis)
-        {
-            if (analysis.MetaData.OtherFiles.Count <= 0)
-            {
-                throw new Exception("No RAW files were specified.  Cannot continue with the analysis.");
-            }
-
+        {           
             Dictionary<int, Dictionary<int, Dictionary<int, DatabaseSearchSequence>>> sequenceMap =
                 new Dictionary<int, Dictionary<int, Dictionary<int, DatabaseSearchSequence>>>();
             
             // Create the object that knows how to read the RAW files we are analyzing.
             using (ThermoRawDataFileReader reader = new ThermoRawDataFileReader())
             {
-                for (int i = 0; i < analysis.MetaData.Datasets.Count; i++)
-                {
-                    DatasetInformation datasetInformation = analysis.MetaData.Datasets[i];
-                    for (int j = 0; j < analysis.MetaData.OtherFiles.Count; j++)
-                    {
-                        InputFile rawInformation = analysis.MetaData.OtherFiles[j];
-                        string rawName           = DatasetInformation.CleanNameDatasetNameOfExtensions(rawInformation.Path);
-                        if (datasetInformation.DatasetName != rawName)
-                        {
-                            continue;
-                        }
-
-                        switch (rawInformation.FileType)
-                        {
-                            case InputFileType.Raw:
-                                reader.AddDataFile(rawInformation.Path, datasetInformation.DatasetId);
-                                break;                            
-                        }
-                    }
-                }
-
                 //TODO: Drop msms cluster table if msms cluster table exists....
                 MSMSFeatureExtractor extractor = new MSMSFeatureExtractor();
                 extractor.Progress            += new EventHandler<ProgressNotifierArgs>(extractor_Progress);

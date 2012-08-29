@@ -64,13 +64,13 @@ namespace MultiAlignCore.IO.Features
         {
             UpdateStatus("Producing feature traceback data structures.");
             UpdateStatus("Extracting Clusters from database.");
-            List<clsCluster> clusters = providers.ClusterCache.FindAll();
-            Dictionary<int, clsCluster> clusterMap = new Dictionary<int, clsCluster>();
+            List<UMCClusterLight> clusters              = providers.ClusterCache.FindAll();
+            Dictionary<int, UMCClusterLight> clusterMap = new Dictionary<int, UMCClusterLight>();
             Dictionary<int, List<FeatureExtractionMap>> clusterFeatureMap = new Dictionary<int, List<FeatureExtractionMap>>();
-            foreach (clsCluster cluster in clusters)
+            foreach (UMCClusterLight cluster in clusters)
             {
-                clusterMap.Add(cluster.Id, cluster);
-                clusterFeatureMap.Add(cluster.Id, new List<FeatureExtractionMap>());
+                clusterMap.Add(cluster.ID, cluster);
+                clusterFeatureMap.Add(cluster.ID, new List<FeatureExtractionMap>());
             }
 
             UpdateStatus("Mapping any matched mass tags to clusters.");
@@ -127,11 +127,11 @@ namespace MultiAlignCore.IO.Features
                 }
 
                 UpdateStatus("Extracting LC-MS Features");
-                List<clsUMC> lcmsFeatures = providers.FeatureCache.FindByDatasetId(datasetID);
-                Dictionary<int, clsUMC> lcmsFeatureIDToFeature = new Dictionary<int, clsUMC>();
-                foreach (clsUMC umc in lcmsFeatures)
+                List<UMCLight> lcmsFeatures = providers.FeatureCache.FindByDatasetId(datasetID);
+                Dictionary<int, UMCLight> lcmsFeatureIDToFeature = new Dictionary<int, UMCLight>();
+                foreach (UMCLight umc in lcmsFeatures)
                 {
-                    lcmsFeatureIDToFeature.Add(umc.Id, umc);
+                    lcmsFeatureIDToFeature.Add(umc.ID, umc);
                 }
 
                 UpdateStatus("Extracting MS Features");
@@ -155,7 +155,7 @@ namespace MultiAlignCore.IO.Features
                         continue;
                     }
 
-                    clsUMC umc = null;
+                    UMCLight umc = null;
                     try
                     {
                         umc = lcmsFeatureIDToFeature[featureID];
@@ -164,29 +164,28 @@ namespace MultiAlignCore.IO.Features
                     {
                         throw;
                     }
-                    int clusterID = umc.ClusterId;
+                    int clusterID = umc.ClusterID;
 
                     FeatureExtractionMap fex = new FeatureExtractionMap();
 
-                    fex.DatasetID = datasetID;
+                    fex.DatasetID           = datasetID;
+                    fex.MSnScan             = spectrum.Scan;
+                    fex.MSnRetentionTime    = spectrum.RetentionTime;
+                    fex.MSnPrecursorMz      = spectrum.PrecursorMZ;
+                    fex.MSnFeatureId        = spectrum.ID;
+                    fex.MSnDatasetID        = spectrum.GroupID;
 
-                    fex.MSnScan = spectrum.Scan;
-                    fex.MSnRetentionTime = spectrum.RetentionTime;
-                    fex.MSnPrecursorMz = spectrum.PrecursorMZ;
-                    fex.MSnFeatureId = spectrum.ID;
-                    fex.MSnDatasetID = spectrum.GroupID;
+                    fex.MSCharge            = feature.ChargeState;
+                    fex.MSIntensity         = feature.Abundance;
+                    fex.MSFeatureId         = feature.ID;
+                    fex.MSMz                = feature.Mz;
+                    fex.MSScan              = feature.Scan;
 
-                    fex.MSCharge = feature.ChargeState;
-                    fex.MSIntensity = feature.Abundance;
-                    fex.MSFeatureId = feature.ID;
-                    fex.MSMz = feature.Mz;
-                    fex.MSScan = feature.Scan;
-
-                    fex.LCMSAbundance = umc.AbundanceMax;
-                    fex.LCMSFeatureID = umc.Id;
-                    fex.LCMSMass = umc.MassCalibrated;
-                    fex.LCMSNet = umc.Net;
-                    fex.LCMSScan = umc.Scan;
+                    fex.LCMSAbundance       = umc.Abundance;
+                    fex.LCMSFeatureID       = umc.ID;
+                    fex.LCMSMass            = umc.MassMonoisotopicAligned;
+                    fex.LCMSNet             = umc.NET;
+                    fex.LCMSScan            = umc.Scan;
 
                     clusterFeatureMap[clusterID].Add(fex);
                 }

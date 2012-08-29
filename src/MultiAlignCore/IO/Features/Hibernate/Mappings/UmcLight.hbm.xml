@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" 
+                   assembly="PNNLOmics" 
+                   namespace="PNNLOmics.Data.Features">
+
+	<class name="UMCLight" table="T_LCMS_Features" lazy="false">
+		<composite-id>
+			<key-property name="ID"                   column="Feature_ID" type="integer" />
+			<key-property name="GroupID"              column="Dataset_ID" type="integer" />
+		</composite-id>		
+		<property name="ClusterID"                  column="Cluster_ID"                 type="int" not-null="false" index="idx_LCMSFeatures_Cluster" />
+		<property name="ConformationID"             column="Conformation_ID"            type="int" not-null="false" />
+		<property name="MassMonoisotopic"           column="Mass"                       type="double" not-null="false" />
+		<property name="MassMonoisotopicAligned"    column="Mass_Calibrated"            type="double" not-null="false" />
+		<property name="NET"                        column="NET"                        type="double" not-null="false" />
+		<property name="Mz"                         column="MZ"                         type="double" not-null="false" />
+		<property name="Scan"                       column="Scan_LC"                    type="int" not-null="false" />
+		<property name="ScanStart"                  column="Scan_LC_Start"              type="int" not-null="false" />
+		<property name="ScanEnd"                    column="Scan_LC_End"                type="int" not-null="false" />
+		<property name="ScanAligned"                column="Scan_Aligned"               type="int" not-null="false" />
+		<property name="ChargeState"                column="Charge"                     type="int" not-null="false" />
+		<property name="Abundance"                  column="Abundance_Max"              type="double" not-null="false" />
+		<property name="AbundanceSum"               column="Abundance_Sum"              type="long" not-null="false" />
+		<property name="DriftTime"                  column="Drift_Time"                 type="double" not-null="false" />
+		<property name="AverageInterferenceScore"   column="Average_Interference_Score" type="double" not-null="false" />
+    <property name="AverageDeconFitScore"       column="Average_Decon_Fit_Score"    type="double" not-null="false" />
+    <property name="SpectralCount"              column="UMC_Member_Count"           type="int" not-null="false" />
+    <property name="SaturatedMemberCount"       column="Saturated_Member_Count"     type="int" not-null="false" />
+  </class>
+
+</hibernate-mapping> 

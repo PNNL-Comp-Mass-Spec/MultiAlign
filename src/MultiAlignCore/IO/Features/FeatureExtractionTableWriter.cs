@@ -6,6 +6,7 @@ using System.IO;
 using MultiAlignCore.IO.Features;
 using MultiAlignEngine.Features;
 using MultiAlignCore.Data;
+using PNNLOmics.Data.Features;
 using PNNLOmics.Data.MassTags;
 using MultiAlignCore.Algorithms.MSLinker;
 
@@ -23,16 +24,16 @@ namespace MultiAlignCore.IO.Features
                 foreach (int clusterIndex in data.MappedFeatures.Keys)
                 {
                     bool hasData = false;
-                    clsCluster cluster = data.Clusters[clusterIndex];
+                    UMCClusterLight cluster = data.Clusters[clusterIndex];
                     foreach (FeatureExtractionMap fex in data.MappedFeatures[clusterIndex])
                     {
                         hasData       = true;
                         string values = string.Format(header,
                                                     clusterIndex,
-                                                    cluster.Mass,
-                                                    cluster.Net,
-                                                    cluster.mshort_num_dataset_members,
-                                                    cluster.mint_member_count,
+                                                    cluster.MassMonoisotopic,
+                                                    cluster.NET,
+                                                    cluster.DatasetMemberCount,
+                                                    cluster.MemberCount,
 
                                                     fex.DatasetID,
                             //6  ^
@@ -57,10 +58,10 @@ namespace MultiAlignCore.IO.Features
                                                     fex.MSnRetentionTime);
 
 
-                        if (data.MassTagMatches.ContainsKey(cluster.Id))
+                        if (data.MassTagMatches.ContainsKey(cluster.ID))
                         {
 
-                            List<ClusterToMassTagMap> matches = data.MassTagMatches[cluster.Id];
+                            List<ClusterToMassTagMap> matches = data.MassTagMatches[cluster.ID];
                             foreach (ClusterToMassTagMap match in matches)
                             {
                                 MassTagLight massTag    = data.MassTags[match.MassTagId];
@@ -88,15 +89,15 @@ namespace MultiAlignCore.IO.Features
                     if (!hasData)
                     {
                         string values = string.Format("No-MSn,{0},{1},{2},{3},{4}", 
-                                                        cluster.Id, 
-                                                        cluster.Mass, 
-                                                        cluster.Net, 
-                                                        cluster.mshort_num_dataset_members, 
-                                                        cluster.mint_member_count);
+                                                        cluster.ID, 
+                                                        cluster.MassMonoisotopic, 
+                                                        cluster.NET, 
+                                                        cluster.DatasetMemberCount, 
+                                                        cluster.MemberCount);
 
-                        if (data.MassTagMatches.ContainsKey(cluster.Id))
+                        if (data.MassTagMatches.ContainsKey(cluster.ID))
                         {
-                            List<ClusterToMassTagMap> matches = data.MassTagMatches[cluster.Id];
+                            List<ClusterToMassTagMap> matches = data.MassTagMatches[cluster.ID];
                             foreach (ClusterToMassTagMap match in matches)
                             {
                                 MassTagLight massTag = data.MassTags[match.MassTagId];

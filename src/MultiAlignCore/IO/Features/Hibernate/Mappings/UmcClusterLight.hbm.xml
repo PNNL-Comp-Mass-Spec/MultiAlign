@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   assembly="PNNLOmics"
+                   namespace="PNNLOmics.Data.Features">
+	<class name="UMCClusterLight" table="T_Clusters" lazy="false">
+		<id name="ID" column="Cluster_ID" type="int">
+			<generator class="assigned" />
+		</id>
+		<property name="MassMonoisotopic"         column="Mass"                 type="double" not-null="false" />
+		<property name="NET"                      column="NET"                  type="double" not-null="false" />				
+		<property name="DriftTime"                column="Drift_Time"           type="double" not-null="false" />
+    <property name="Tightness"                column="Tightness_Score"      type="double" not-null="false" />
+    <property name="Ambiguity"                column="Ambiguity_Score"      type="double" not-null="false" />
+    <property name="MemberCount"              column="Member_Count"         type="int"    not-null="false" />
+    <property name="DatasetMemberCount"       column="Dataset_Member_Count" type="int"    not-null="false" />		
+	</class>
+</hibernate-mapping>

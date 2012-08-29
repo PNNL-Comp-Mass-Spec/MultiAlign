@@ -43,7 +43,14 @@ namespace MultiAlignCore.Data
             get;
             set;
         }
-
+        /// <summary>
+        /// Gets or sets the ID of the parent feature to the MS feature. 
+        /// </summary>
+        public int LCMSFeatureID
+        {
+            get;
+            set;
+        }
 
         public override bool Equals(object obj)
         {

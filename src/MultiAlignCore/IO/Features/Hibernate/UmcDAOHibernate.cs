@@ -1,13 +1,13 @@
 using System.Collections.Generic;
 using MultiAlignEngine.Features;
 using NHibernate.Criterion;
-
+using PNNLOmics.Data.Features;
 using System.Data.SQLite;
 
 namespace MultiAlignCore.IO.Features.Hibernate
 {
 
-    public class UmcDAOHibernate : GenericDAOHibernate<clsUMC>, IUmcDAO
+    public class UmcDAOHibernate : GenericDAOHibernate<UMCLight>, IUmcDAO
     {
 		
         /// <summary>
@@ -15,7 +15,7 @@ namespace MultiAlignCore.IO.Features.Hibernate
         /// </summary>
         /// <param name="mass">Mass value to be searched for</param>
         /// <returns>List of Umc Objects</returns>
-		public List<clsUMC> FindByMass(double mass)
+        public List<UMCLight> FindByMass(double mass)
         {
             ICriterion criterion = Expression.Eq("Mass", mass);
             List<ICriterion> criterionList = new List<ICriterion>();
@@ -31,7 +31,7 @@ namespace MultiAlignCore.IO.Features.Hibernate
         /// <param name="mass1">Lower mass value</param>
         /// <param name="mass2">Upper mass value</param>
         /// <returns>List of Umc Objects</returns>
-		public List<clsUMC> FindByMassRange(double mass1, double mass2)
+        public List<UMCLight> FindByMassRange(double mass1, double mass2)
         {
             ICriterion criterion;
 
@@ -53,12 +53,12 @@ namespace MultiAlignCore.IO.Features.Hibernate
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public clsUMC FindByFeatureID(int id)
+        public UMCLight FindByFeatureID(int id)
         {
             ICriterion criterion = Expression.Eq("Id", id);
             List<ICriterion> criterionList = new List<ICriterion>();
             criterionList.Add(criterion);
-            List<clsUMC> umcs = FindByCriteria(criterionList);
+            List<UMCLight> umcs = FindByCriteria(criterionList);
             if (umcs.Count < 1)
                 return null;
 
@@ -69,12 +69,12 @@ namespace MultiAlignCore.IO.Features.Hibernate
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public List<clsUMC> FindByFeatureID(List<int> id)
+        public List<UMCLight> FindByFeatureID(List<int> id)
         {
             ICriterion criterion = Expression.In("Id", id);
             List<ICriterion> criterionList = new List<ICriterion>();
             criterionList.Add(criterion);
-            List<clsUMC> umcs = FindByCriteria(criterionList);
+            List<UMCLight> umcs = FindByCriteria(criterionList);
             if (umcs.Count < 1)
                 return null;
 
@@ -85,12 +85,12 @@ namespace MultiAlignCore.IO.Features.Hibernate
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public List<clsUMC> FindByClusterID(int id)
+        public List<UMCLight> FindByClusterID(int id)
         {
             ICriterion criterion = Expression.Eq("ClusterId", id);
             List<ICriterion> criterionList = new List<ICriterion>();
             criterionList.Add(criterion);
-            List<clsUMC> umcs = FindByCriteria(criterionList);
+            List<UMCLight> umcs = FindByCriteria(criterionList);
             if (umcs.Count < 1)
                 return null;
 
@@ -101,12 +101,12 @@ namespace MultiAlignCore.IO.Features.Hibernate
 		/// </summary>
 		/// <param name="id"></param>
 		/// <returns></returns>
-		public List<clsUMC> FindByClusterID(List<int> idList)
+        public List<UMCLight> FindByClusterID(List<int> idList)
 		{
 			ICriterion criterion = Expression.In("ClusterId", idList);
 			List<ICriterion> criterionList = new List<ICriterion>();
 			criterionList.Add(criterion);
-			List<clsUMC> umcs = FindByCriteria(criterionList);
+            List<UMCLight> umcs = FindByCriteria(criterionList);
 			if (umcs.Count < 1)
 			{
 				return null;
@@ -119,7 +119,7 @@ namespace MultiAlignCore.IO.Features.Hibernate
 		/// </summary>
 		/// <param name="mass">Dataset value to be searched for</param>
 		/// <returns>List of Umc Objects</returns>
-		public List<clsUMC> FindByDatasetId(int datasetId)
+        public List<UMCLight> FindByDatasetId(int datasetId)
 		{
 			ICriterion criterion = Expression.Eq("DatasetId", datasetId);
 			List<ICriterion> criterionList = new List<ICriterion>();

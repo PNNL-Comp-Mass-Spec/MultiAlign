@@ -7,7 +7,7 @@ using MultiAlignCustomControls.Charting;
 using MultiAlignEngine.Alignment;
 using MultiAlignEngine.Features;
 using PNNLControls;
-
+using PNNLOmics.Data.Features;
 
 namespace MultiAlignCustomControls.Drawing
 {
@@ -206,7 +206,7 @@ namespace MultiAlignCustomControls.Drawing
 
             return chart;
         }
-        public static Image ClusterScatterPlot_Thumbnail(List<clsCluster> clusters, ChartDisplayOptions options)
+        public static Image ClusterScatterPlot_Thumbnail(List<UMCClusterLight> clusters, ChartDisplayOptions options)
         {
             Image image = null;
 
@@ -223,7 +223,7 @@ namespace MultiAlignCustomControls.Drawing
         /// </summary>
         /// <param name="clusters"></param>
         /// <returns></returns>
-        public static ctlScatterChart ClusterScatterPlot_Chart(List<clsCluster> clusters, ChartDisplayOptions options)
+        public static ctlScatterChart ClusterScatterPlot_Chart(List<UMCClusterLight> clusters, ChartDisplayOptions options)
         {
             if (clusters == null)
                 return null;
@@ -251,10 +251,10 @@ namespace MultiAlignCustomControls.Drawing
             float[] y = new float[clusters.Count];
 
             int i = 0;
-            foreach (clsCluster cluster in clusters)
+            foreach (UMCClusterLight cluster in clusters)
             {
-                y[i] = Convert.ToSingle(cluster.Mass);
-                x[i] = Convert.ToSingle(cluster.Net);
+                y[i] = Convert.ToSingle(cluster.MassMonoisotopic);
+                x[i] = Convert.ToSingle(cluster.NET);
                 i++;
             }
             clsPlotParams parameters = new clsPlotParams(new BubbleShape(1, false), Color.Black);
@@ -2260,7 +2260,7 @@ namespace MultiAlignCustomControls.Drawing
         /// <summary>
         /// Renders the scan versus the cluster net to the provided bitmap.
         /// </summary>
-        public static Image ClusterSizeHistogram_Thumbnail(List<clsCluster> clusters,
+        public static Image ClusterSizeHistogram_Thumbnail(List<UMCClusterLight> clusters,
                                                             int width,
                                                             int height,
                                                             ChartDisplayOptions options
@@ -2298,7 +2298,7 @@ namespace MultiAlignCustomControls.Drawing
         /// <summary>
         /// Renders the scan versus the cluster net to the provided bitmap.
         /// </summary>
-        public static Image ClusterDatasetMemberSizeHistogram_Thumbnail(List<clsCluster> clusters,
+        public static Image ClusterDatasetMemberSizeHistogram_Thumbnail(List<UMCClusterLight> clusters,
                                                             int width,
                                                             int height,
                                                             ChartDisplayOptions options
@@ -2337,7 +2337,7 @@ namespace MultiAlignCustomControls.Drawing
         /// </summary>
         /// <param name="analysis"></param>
         /// <returns></returns>
-        public static controlHistogram  ClusterSizeHistogram_Chart(List<clsCluster> clusters, ChartDisplayOptions options)
+        public static controlHistogram ClusterSizeHistogram_Chart(List<UMCClusterLight> clusters, ChartDisplayOptions options)
         {
             if (clusters.Count < 1)
                 return null;
@@ -2345,7 +2345,7 @@ namespace MultiAlignCustomControls.Drawing
             
             Dictionary<int, int> clusterMaps = new Dictionary<int, int>();
             // Bin all data.
-            foreach (clsCluster cluster in clusters)
+            foreach (UMCClusterLight cluster in clusters)
             {
                 int members = cluster.MemberCount;
                 if (!clusterMaps.ContainsKey(members))
@@ -2398,7 +2398,7 @@ namespace MultiAlignCustomControls.Drawing
         /// </summary>
         /// <param name="analysis"></param>
         /// <returns></returns>
-        public static controlHistogram ClusterDatasetMemberSizeHistogram_Chart(List<clsCluster> clusters, ChartDisplayOptions options)
+        public static controlHistogram ClusterDatasetMemberSizeHistogram_Chart(List<UMCClusterLight> clusters, ChartDisplayOptions options)
         {
 
             float[] freqs = MultiAlignCore.Data.Cluster.ClusterStats.GetClusterMemberSizes(clusters);

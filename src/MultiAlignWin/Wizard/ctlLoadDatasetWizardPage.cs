@@ -517,40 +517,9 @@ namespace MultiAlignWin
             
             ListViewItem dataItem = new ListViewItem(datasetInfo.DatasetId.ToString());
             dataItem.UseItemStyleForSubItems = false;
-            dataItem.SubItems.Add(datasetInfo.mstrAnalysisJobId);
-            dataItem.SubItems.Add(datasetInfo.DatasetName);            
-            dataItem.SubItems.Add(datasetInfo.mstrAlias);
-
-            if (datasetInfo.mintBatchID == 0)
-                dataItem.SubItems.Add("NA");
-            else
-                dataItem.SubItems.Add(Convert.ToString(datasetInfo.mintBatchID));
-
-            if (datasetInfo.mintBlockID == 0)
-                dataItem.SubItems.Add("NA");
-            else
-                dataItem.SubItems.Add(datasetInfo.mintBlockID.ToString());
-
-            if (datasetInfo.mintRunOrder == 0)
-                dataItem.SubItems.Add("NA");
-            else
-                dataItem.SubItems.Add(Convert.ToString(datasetInfo.mintRunOrder));
-
-            if (datasetInfo.mintColumnID == 0)
-                dataItem.SubItems.Add("NA");
-            else
-                dataItem.SubItems.Add(Convert.ToString(datasetInfo.mintColumnID));
-
-
-            dataItem.SubItems.Add(datasetInfo.mdateAcquisitionStart.ToShortDateString());
-            dataItem.SubItems.Add(System.IO.Path.GetExtension(datasetInfo.Path));                
-            dataItem.SubItems.Add(datasetInfo.menmDeisotopingTool.ToString());
-            /// 
-            /// the list control is stupid, so we have to make sure that 
-            /// it doesnt eff up our count for a new item.
-            /// 
-            dataItem.Checked = datasetInfo.Selected;
-
+            dataItem.SubItems.Add(datasetInfo.DatasetName);                        
+            dataItem.SubItems.Add(System.IO.Path.GetExtension(datasetInfo.DatasetPath));                
+            
             if (dataItem.Checked == true)
                 dataItem.BackColor = Color.LightGray;
             else
@@ -560,10 +529,7 @@ namespace MultiAlignWin
             if (dataItem.Checked == true)
             {
                 mint_numberCheckedItems++;
-            }
-            dataItem.SubItems.Add(datasetInfo.mstrInstrment);
-            dataItem.SubItems.Add(System.IO.Path.GetFileNameWithoutExtension(datasetInfo.ParameterFileName));
-
+            }            
             dataItem.Name = datasetInfo.DatasetName; 
             dataItem.Tag  = datasetInfo;
 

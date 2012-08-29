@@ -1,15 +1,14 @@
 using System;
 using System.Collections.Generic;
-
+using MultiAlignCore.Data.Alignment;
+using MultiAlignCore.Data.Features;
+using MultiAlignCore.Data.MassTags;
 using MultiAlignEngine.Alignment;
 using MultiAlignEngine.Features;
 using MultiAlignEngine.MassTags;
-using MultiAlignCore.Data.Alignment;
-
-using MultiAlignCore.Data.MassTags;
-using PNNLOmics.Data.MassTags;
-using PNNLOmics.Utilities;
 using PNNLOmics.Algorithms;
+using PNNLOmics.Data.Features;
+using PNNLOmics.Data.MassTags;
 
 namespace MultiAlignCore.Algorithms.Alignment
 {
@@ -42,15 +41,15 @@ namespace MultiAlignCore.Algorithms.Alignment
         /// <param name="boundaries"></param>
         /// <returns></returns>
         public classAlignmentData AlignFeatures(MassTagDatabase                 massTagDatabase,
-                                                List<clsUMC>                    features,
+                                                List<UMCLight>                  features,
                                                 AlignmentOptions                alignmentOptions,
                                                 bool                            alignDriftTimes)
         {                        
             clsAlignmentProcessor alignmentProcessor    = new clsAlignmentProcessor();
             alignmentProcessor.AlignmentOptions         = AlignmentOptions.ConvertToEngine(alignmentOptions);
-            List<clsMassTag> tags                       = new List<clsMassTag>();
+            
 
-            clsUMC featureTest = features.Find(delegate(clsUMC x)
+            UMCLight featureTest = features.Find(delegate(UMCLight x)
             {
                 return x.DriftTime > 0;
             });
@@ -60,18 +59,8 @@ namespace MultiAlignCore.Algorithms.Alignment
                 OnStatus("Warning! Data contains drift time information and the database does not.");                
             }
 
-            OnStatus("Configuring features as mass tags.");
-            foreach (MassTagLight tag in massTagDatabase.MassTags)
-            {
-                // mixed mode tag
-                clsMassTag mmTag        = new clsMassTag();
-                mmTag.mintMassTagId     = tag.ID;
-                mmTag.mintConformerID   = tag.ConformationID;
-                mmTag.mdblAvgGANET      = tag.NETAverage;
-                mmTag.mdblMonoMass      = tag.MassMonoisotopic;
-                mmTag.DriftTime         = tag.DriftTime;                                 
-                tags.Add(mmTag);               
-            }
+            OnStatus("Configuring features as mass tags.");            
+            List<clsMassTag> tags = FeatureDataConverters.ConvertToMassTag(massTagDatabase.MassTags);
 
             OnStatus("Setting reference features using mass tags.");
             alignmentProcessor.SetReferenceDatasetFeatures(tags, true);
@@ -90,8 +79,8 @@ namespace MultiAlignCore.Algorithms.Alignment
         /// <param name="alignmentOptions"></param>
         /// <param name="boundaries"></param>
         /// <returns></returns>
-        public classAlignmentData AlignFeatures(List<clsUMC>                    baselineFeatures, 
-                                                List<clsUMC>                    features,
+        public classAlignmentData AlignFeatures(List<UMCLight>                  baselineFeatures,
+                                                List<UMCLight>                  features,
                                                 AlignmentOptions                alignmentOptions)
         {
             clsAlignmentProcessor alignmentProcessor    = new clsAlignmentProcessor();
@@ -99,14 +88,15 @@ namespace MultiAlignCore.Algorithms.Alignment
 
 
             OnStatus("Setting features from baseline dataset.");
-            alignmentProcessor.SetReferenceDatasetFeatures(baselineFeatures);
+            List<clsUMC> convertedBaseLineFeatures = FeatureDataConverters.ConvertToUMC(baselineFeatures);
+            alignmentProcessor.SetReferenceDatasetFeatures(convertedBaseLineFeatures);
             classAlignmentData alignmentData            = AlignFeatures( alignmentProcessor,
                                                                         features,
                                                                         alignmentOptions);
 
             int minScanReference = int.MaxValue;
             int maxScanReference = int.MinValue;
-            foreach(clsUMC feature in baselineFeatures)
+            foreach (UMCLight feature in baselineFeatures)
             {
                 minScanReference = Math.Min(minScanReference, feature.Scan);
                 maxScanReference = Math.Max(maxScanReference, feature.Scan);
@@ -122,9 +112,9 @@ namespace MultiAlignCore.Algorithms.Alignment
         /// <summary>
         /// Aligns the dataset to the data stored in the alignment processor.
         /// </summary>
-        private classAlignmentData AlignFeatures(clsAlignmentProcessor             alignmentProcessor,            
-                                                List<clsUMC>                       features,
-                                                AlignmentOptions                   alignmentOptions)
+        private classAlignmentData AlignFeatures(clsAlignmentProcessor              alignmentProcessor,
+                                                List<UMCLight>                      features,
+                                                AlignmentOptions                    alignmentOptions)
         {
 
             OnStatus("Starting alignment of features.");
@@ -151,11 +141,15 @@ namespace MultiAlignCore.Algorithms.Alignment
                 totalBoundaries = 2;
             }
 
+            // Conver the features, and make a map, so that we can re-adjust the aligned values later.
+            List<clsUMC> oldFeatures        = FeatureDataConverters.ConvertToUMC(features);
+            Dictionary<int, UMCLight> map   = FeatureDataConverters.MapFeature<UMCLight>(features);
+
             for (int i = 0; i < totalBoundaries; i++)
             {
                 // Set features                
                 OnStatus("Setting alignee features.");
-                alignmentProcessor.SetAligneeDatasetFeatures(features, alignmentOptions.MZBoundaries[i]);                
+                alignmentProcessor.SetAligneeDatasetFeatures(oldFeatures, alignmentOptions.MZBoundaries[i]);                
 
                 // Find alignment 
 
@@ -168,17 +162,24 @@ namespace MultiAlignCore.Algorithms.Alignment
 
                 // Correct the features
                 OnStatus("Applying alignment function to all features.");
-                alignmentProcessor.ApplyNETMassFunctionToAligneeDatasetFeatures(ref features);
+                alignmentProcessor.ApplyNETMassFunctionToAligneeDatasetFeatures(ref oldFeatures);
                 
                 // Find min/max scan for meta-data
                 int tempMinScanBaseline = int.MaxValue;
                 int tempMaxScanBaseline = int.MinValue;
-                foreach (clsUMC feature in features)
+                foreach (clsUMC feature in oldFeatures)
                 {
                     tempMaxScanBaseline     = Math.Max(tempMaxScanBaseline, feature.Scan);
                     tempMinScanBaseline     = Math.Min(tempMinScanBaseline, feature.Scan);
-                }
-                
+                    int featureID           = feature.Id;
+                    bool isInMap            = map.ContainsKey(featureID);
+                    if (isInMap)
+                    {
+                        map[featureID].MassMonoisotopicAligned = feature.MassCalibrated;
+                        map[featureID].NET                     = feature.Net;
+                        map[featureID].RetentionTime           = feature.Net;                                               
+                    }
+                }                
                 minScanBaseline = Math.Min(minScanBaseline, tempMinScanBaseline);
                 maxScanBaseline = Math.Max(maxScanBaseline, tempMaxScanBaseline);
 

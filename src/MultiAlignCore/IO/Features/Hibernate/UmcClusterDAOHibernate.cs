@@ -2,11 +2,12 @@ using System.Collections.Generic;
 using MultiAlignEngine.Features;
 using NHibernate.Criterion;
 using System.Data.SQLite;
+using PNNLOmics.Data.Features;
 
 namespace MultiAlignCore.IO.Features.Hibernate
 {
 
-    public class UmcClusterDAOHibernate : GenericDAOHibernate<clsCluster>, IUmcClusterDAO
+    public class UmcClusterDAOHibernate : GenericDAOHibernate<UMCClusterLight>, IUmcClusterDAO
     {
 		
         /// <summary>
@@ -14,7 +15,7 @@ namespace MultiAlignCore.IO.Features.Hibernate
         /// </summary>
         /// <param name="mass">Mass value to be searched for</param>
         /// <returns>List of UmcCluster Objects</returns>
-		public ICollection<clsCluster> FindByMass(double mass)
+        public ICollection<UMCClusterLight> FindByMass(double mass)
         {
             ICriterion criterion = Expression.Eq("Mass", mass);
             List<ICriterion> criterionList = new List<ICriterion>();
