@@ -402,13 +402,24 @@ namespace MultiAlignCore.IO.Features
         /// <returns></returns>
         public static List<MSSpectra> LoadRawData(DatasetInformation dataset, ISpectraProvider rawReader)
         {
+            return LoadRawData(dataset, rawReader, new Dictionary<int, int>());
+        }
+        /// <summary>
+        /// Loads MS Spectra from a raw data file.
+        /// </summary>
+        /// <param name="rawReader"></param>
+        /// <param name="msnCache"></param>
+        /// <param name="dataset"></param>
+        /// <returns></returns>
+        public static List<MSSpectra> LoadRawData(DatasetInformation dataset, ISpectraProvider rawReader, Dictionary<int, int> excludeMap)
+        {
             int datasetID = dataset.DatasetId;
             string rawPath = dataset.Raw.Path;
             List<MSSpectra> msnSpectra = new List<MSSpectra>();
             using (rawReader = RawLoaderFactory.CreateFileReader(rawPath))
             {
                 rawReader.AddDataFile(rawPath, 0);
-                msnSpectra = rawReader.GetMSMSSpectra(0);
+                msnSpectra = rawReader.GetMSMSSpectra(0, excludeMap);
             }
 
             int id = 0;

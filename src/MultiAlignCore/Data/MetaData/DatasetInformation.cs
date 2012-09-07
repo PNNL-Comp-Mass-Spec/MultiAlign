@@ -17,18 +17,27 @@ namespace MultiAlignCore.Data
 		/// </summary>
 		public DatasetInformation()
 		{
-			MetaData = new Dictionary<string,string>();
+			MetaData            = new Dictionary<string,string>();
 
 			FactorInformation   = new Dictionary<FactorInformation, string>();
 			Factors             = new List<Factor>();
 
-            Scans           = null;
-            Raw             = null;
-            Sequence        = null;
-            Features        = null;
+            Scans               = null;
+            Raw                 = null;
+            Sequence            = null;
+            Features            = null;
+            IsBaseline          = false;
 		}
 
         #region Properties
+        /// <summary>
+        /// Gets or sets whether this dataset is a baseline or not.
+        /// </summary>
+        public bool IsBaseline
+        {
+            get;
+            set;
+        }
         /// <summary>
         /// Gets or sets 
         /// </summary>

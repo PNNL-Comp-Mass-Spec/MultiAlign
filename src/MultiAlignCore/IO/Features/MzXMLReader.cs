@@ -129,6 +129,10 @@ namespace MultiAlignCore.IO.Features
         {
             return null;
         }
+        public List<MSSpectra> GetMSMSSpectra(int group, Dictionary<int, int> excludeMap)
+        {
+            return null;
+        }
         #endregion
 
         #region IDisposable Members

@@ -18,11 +18,13 @@ namespace MultiAlignCore.IO.Features
         private Dictionary<int, XRawFileIO> m_readers;
 
         private Dictionary<int, string> m_dataFiles;
+        private Dictionary<int, bool> m_opened;
 
         public ThermoRawDataFileReader()
         {
             m_dataFiles = new Dictionary<int, string>();
             m_readers   = new Dictionary<int,XRawFileIO>();
+            m_opened    = new Dictionary<int,bool>();
         }
        
         /// <summary>
@@ -34,9 +36,82 @@ namespace MultiAlignCore.IO.Features
         public void AddDataFile(string path, int groupID)
         {
             m_dataFiles.Add(groupID, path);
+            m_opened.Add(groupID, false);
         }
 
         #region IRawDataFileReader Members
+
+        /// <summary>
+        /// Reads a list of MSMS Spectra header data from the mzXML file.
+        /// </summary>
+        /// <param name="file">file to read.</param>
+        /// <param name="excludeMap">Dictionary indicating which scans and related feature ID's to ignore.</param>
+        /// <returns>List of MSMS spectra data</returns>        
+        public List<MSSpectra> GetMSMSSpectra(int group, Dictionary<int, int> excludeMap)
+        {
+            List<MSSpectra> spectra = new List<MSSpectra>();
+
+            if (!m_readers.ContainsKey(group))
+            {
+                string path = m_dataFiles[group];
+                XRawFileIO reader = new XRawFileIO();
+                m_readers.Add(group, reader);
+                
+            }
+
+
+            XRawFileIO rawReader = m_readers[group];
+
+
+            if (!m_opened[group])
+            {
+                bool opened = rawReader.OpenRawFile(m_dataFiles[group]);
+                if (!opened)
+                {
+                    throw new IOException("Could not open the Thermo raw file " + m_dataFiles[group]);
+                }
+            }
+
+
+            int numberOfScans = rawReader.GetNumScans(); 
+            for (int i = 0; i < numberOfScans; i++)
+            {
+                // This scan is not to be used.
+                bool isInExcludeMap = excludeMap.ContainsKey(i);
+                if (isInExcludeMap)
+                    continue;
+
+                FinniganFileReaderBaseClass.udtScanHeaderInfoType header = new FinniganFileReaderBaseClass.udtScanHeaderInfoType();
+                rawReader.GetScanInfo(i, ref header);
+                
+                if (header.MSLevel > 1)
+                {
+                    MSSpectra spectrum       = new MSSpectra();
+                    spectrum.MSLevel         = header.MSLevel;
+                    spectrum.RetentionTime   = header.RetentionTime;
+                    spectrum.Scan            = i;
+                    spectrum.PrecursorMZ     = header.ParentIonMZ;                    
+                    spectrum.TotalIonCurrent = header.TotalIonCurrent;
+                    spectrum.CollisionType   = CollisionType.Other;
+
+                    switch(header.CollisionMode)
+                    {
+                        case "cid":
+                            spectrum.CollisionType = CollisionType.CID;
+                            break;
+                        default:
+                            break;
+                    }
+
+                    // Need to make this a standard type of collision based off of the data.
+                    
+                    spectra.Add(spectrum);
+                }
+            }
+            rawReader.CloseRawFile();
+
+            return spectra;
+        }
         /// <summary>
         /// Reads a list of MSMS Spectra header data from the mzXML file.
         /// </summary>
@@ -44,52 +119,7 @@ namespace MultiAlignCore.IO.Features
         /// <returns>List of MSMS spectra data</returns>
         public List<MSSpectra> GetMSMSSpectra(int group)
         {
-            List<MSSpectra> spectra = new List<MSSpectra>();
-
-            if (!m_readers.ContainsKey(group))
-            {
-                string path         = m_dataFiles[group];
-                XRawFileIO reader   = new XRawFileIO();
-                m_readers.Add(group, reader);
-                bool opened         = reader.OpenRawFile(path);
-
-                if (!opened)
-                {
-                    throw new IOException("Could not open the Thermo raw file " + m_dataFiles[group]);
-                }
-            }
-            
-            XRawFileIO rawReader = m_readers[group];                        
-            
-            int numberOfScans = rawReader.GetNumScans();
-            for (int i = 0; i < numberOfScans; i++)
-            {
-
-                FinniganFileReaderBaseClass.udtScanHeaderInfoType header = new FinniganFileReaderBaseClass.udtScanHeaderInfoType();
-                DateTime start = DateTime.Now;
-                rawReader.GetScanInfo(i, ref header);
-                DateTime end = DateTime.Now;
-
-                TimeSpan span = start.Subtract(end);
-
-                if (header.MSLevel > 1)
-                {
-                    MSSpectra spectrum          = new MSSpectra();
-                    spectrum.MSLevel            = header.MSLevel;
-                    spectrum.RetentionTime      = header.RetentionTime;
-                    spectrum.Scan               = i;
-                    spectrum.PrecursorMZ        = header.ParentIonMZ;
-                    spectrum.TotalIonCurrent    = header.TotalIonCurrent;
-
-                    // Need to make this a standard type of collision based off of the data.
-                    spectrum.CollisionType      = CollisionType.Other;
-
-                    spectra.Add(spectrum);
-                }
-            }
-            rawReader.CloseRawFile();
-
-            return spectra;
+            return GetMSMSSpectra(group, new Dictionary<int, int>());
         }
         #endregion
 

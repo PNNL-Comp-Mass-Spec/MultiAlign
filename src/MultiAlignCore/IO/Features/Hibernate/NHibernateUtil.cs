@@ -29,6 +29,9 @@ namespace MultiAlignCore.IO.Features.Hibernate
 			configuration.AddAssembly(typeof(NHibernateUtil).Assembly);
 		}
 
+        /// <summary>
+        /// Gets the path of the database location.
+        /// </summary>
         public static string Path
         {
             get { return m_dbLocation;  }        

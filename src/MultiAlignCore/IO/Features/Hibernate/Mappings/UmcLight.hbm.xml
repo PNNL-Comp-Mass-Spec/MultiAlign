@@ -19,7 +19,7 @@
 		<property name="ScanEnd"                    column="Scan_LC_End"                type="int" not-null="false" />
 		<property name="ScanAligned"                column="Scan_Aligned"               type="int" not-null="false" />
 		<property name="ChargeState"                column="Charge"                     type="int" not-null="false" />
-		<property name="Abundance"                  column="Abundance_Max"              type="double" not-null="false" />
+		<property name="Abundance"                  column="Abundance_Max"              type="long" not-null="false" />
 		<property name="AbundanceSum"               column="Abundance_Sum"              type="long" not-null="false" />
 		<property name="DriftTime"                  column="Drift_Time"                 type="double" not-null="false" />
 		<property name="AverageInterferenceScore"   column="Average_Interference_Score" type="double" not-null="false" />

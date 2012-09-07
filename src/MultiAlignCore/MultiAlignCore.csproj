@@ -120,8 +120,9 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="ThermoRawFileReaderDLL">
-      <HintPath>..\..\..\..\..\ThermoRawFileReaderDLL\bin\Debug\ThermoRawFileReaderDLL.dll</HintPath>
+    <Reference Include="ThermoRawFileReaderDLL, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\ThermoRawFileReaderDLL\bin\Release\ThermoRawFileReaderDLL.dll</HintPath>
     </Reference>
     <Reference Include="ZedGraph">
       <HintPath>..\..\lib\ZedGraph.dll</HintPath>

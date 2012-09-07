@@ -327,154 +327,230 @@ namespace MultiAlignCore.Algorithms
 
             UpdateStatus("Loading data files.");            
             List<DatasetInformation> datasets           = config.Analysis.MetaData.Datasets; 
-            LCMSFeatureFindingOptions options           = config.Analysis.Options.FeatureFindingOptions;
-            string analysisPath                         = "";
+            LCMSFeatureFindingOptions options           = config.Analysis.Options.FeatureFindingOptions;            
             IUmcDAO featureCache                        = config.Analysis.DataProviders.FeatureCache;
             IMSFeatureDAO msFeatureCache                = config.Analysis.DataProviders.MSFeatureCache;            
             ISpectraProvider rawReader                  = null;
             IMSnFeatureDAO   msnCache                   = config.Analysis.DataProviders.MSnFeatureCache;
+            IMsnFeatureToMSFeatureDAO  msnToMsCache     = config.DataProviders.MSFeatureToMSnFeatureCache;
             FeatureFilterOptions filterOptions          = config.Analysis.Options.FeatureFilterOptions;
+            string analysisPath                         = Path.Combine(config.Analysis.MetaData.AnalysisPath,
+                                                                            config.Analysis.MetaData.AnalysisName);
 
-            analysisPath = Path.Combine(m_config.Analysis.MetaData.AnalysisPath, m_config.Analysis.MetaData.AnalysisName);
+            DatasetInformation baselineDataset = config.Analysis.MetaData.BaselineDataset;
 
             foreach (DatasetInformation dataset in datasets)
             {
-                int datasetID                           = dataset.DatasetId;
-
-                UpdateStatus("Loading dataset " + dataset.DatasetName + ".");
-                List<UMCLight> features                 = UMCLoaderFactory.LoadUmcFeatureData(dataset,
-                                                                                        featureCache);
-
-                List<MSFeatureLight> msFeatures         = UMCLoaderFactory.LoadMsFeatureData(dataset,
-                                                                                     msFeatureCache);
                 
-                List<ScanSummary> scans                 = UMCLoaderFactory.LoadScansData(dataset);
+                LoadDataset(
+                            dataset,
+                            options, 
+                            filterOptions,
+                            featureCache, 
+                            msFeatureCache, 
+                            rawReader, 
+                            msnCache,
+                            msnToMsCache);    
+                                         
+            }
+            UMCLoaderFactory.Status -= UMCLoaderFactory_Status;
+        }
+        /// <summary>
+        /// Load a single dataset from the provider.
+        /// </summary>
+        /// <param name="dataset"></param>
+        /// <param name="options"></param>
+        /// <param name="filterOptions"></param>
+        /// <param name="featureCache"></param>
+        /// <param name="msFeatureCache"></param>
+        /// <param name="rawReader"></param>
+        /// <param name="msnCache"></param>
+        /// <param name="msnToMsCache"></param>
+        /// <returns></returns>
+        private List<UMCLight> LoadDataset(   
+                                    DatasetInformation          dataset,
+                                    LCMSFeatureFindingOptions   options,
+                                    FeatureFilterOptions        filterOptions,
+                                    IUmcDAO                     featureCache, 
+                                    IMSFeatureDAO               msFeatureCache, 
+                                    ISpectraProvider            rawReader,
+                                    IMSnFeatureDAO              msnCache,
+                                    IMsnFeatureToMSFeatureDAO   msnToMsCache)
+        {
+            
+            UpdateStatus("Loading dataset " + dataset.DatasetName + ".");
+            int datasetID           = dataset.DatasetId;
+            List<UMCLight> features = UMCLoaderFactory.LoadUmcFeatureData(dataset,
+                                                                                    featureCache);
 
-                List<MSSpectra> msnSpectra              = UMCLoaderFactory.LoadMsnSpectra(dataset,
-                                                                                            msnCache);
-                
-                // If we don't have any features, then we have to create some from the MS features
-                // provided to us.
-                if (features.Count < 1)
+            List<MSFeatureLight> msFeatures = UMCLoaderFactory.LoadMsFeatureData(dataset,
+                                                                                 msFeatureCache);
+
+            List<ScanSummary> scans = UMCLoaderFactory.LoadScansData(dataset);
+
+            List<MSSpectra> msnSpectra = UMCLoaderFactory.LoadMsnSpectra(dataset,
+                                                                                        msnCache);
+
+            // If we don't have any features, then we have to create some from the MS features
+            // provided to us.
+            if (features.Count < 1)
+            {
+                features = CreateLCMSFeatures(msFeatures,
+                                                msFeatureCache,
+                                                options,
+                                                filterOptions);
+
+
+                double maxScan = Convert.ToDouble(features.Max(delegate(UMCLight feature)
                 {
-                    features = CreateLCMSFeatures(  msFeatures, 
-                                                    msFeatureCache, 
-                                                    options, 
-                                                    filterOptions);
-
-                     UpdateStatus("Adding features to cache database.");
-                     featureCache.AddAll(features);
-
-                     // Stores the MS Feature Results
-                     if (options.StoreMSFeatureResults)
-                     {
-                         // Discard older features.  We only want the ones we are interested in.
-                         msFeatures.Clear();
-
-                         // Store any MS Features that we need to 
-                         msFeatures = new List<MSFeatureLight>();
-                         foreach (UMCLight feature in features)
-                             foreach (MSFeatureLight msFeature in feature.MSFeatures)
-                                 if (msFeature != null)
-                                     msFeatures.Add(msFeature);
-
-                         if (msFeatures.Count > 0)
-                         {
-                             UpdateStatus(string.Format("Storing {0} MS Features used for feature definition", msFeatures.Count));
-                             msFeatureCache.AddAll(msFeatures);
-                         }
-                     }
-                }                    
-                else
+                    return feature.Scan;
+                }
+                ));
+                double minScan = Convert.ToDouble(features.Min(delegate(UMCLight feature)
                 {
-                    // Otherwise, we need to map the MS features to the LCMS Features provided.
-                    // This would mean that we extracted data from an existing database.
-                    if (msFeatures.Count > 0)
-                    {
-                        // Here we just map the feature to its parent.
-                        Dictionary<int, UMCLight> map = FeatureDataConverters.MapFeature<UMCLight>(features);
-                        foreach (MSFeatureLight feature in msFeatures)
-                        {
-                            bool doesFeatureExists = map.ContainsKey(feature.UMCID);
-                            if (doesFeatureExists)                         
-                            {
-                                map[feature.UMCID].AddChildFeature(feature);
-                            }
-                        }                        
-                    }
+                    return feature.Scan;
+                }
+                )); 
+
+                UpdateStatus("Adding features to cache database.");
+
+                foreach (UMCLight feature in features)
+                {
+                    feature.GroupID         = datasetID;
+                    feature.RetentionTime   = (Convert.ToDouble(feature.Scan) - minScan)/(maxScan - minScan);  
                 }
 
-                // Map the MS/MS spectra if we can.
-                if (msFeatures.Count > 0)
-                {                    
-                    List<MSSpectra> spectra = UMCLoaderFactory.LoadMsnSpectra(dataset,
-                                                                                config.DataProviders.MSnFeatureCache);
+                featureCache.AddAll(features);
 
-                    // Load the raw data.
-                    Dictionary<int, int> mapped = new Dictionary<int,int>();
-                    if (spectra.Count < 1)
+                // Stores the MS Feature Results
+                if (options.StoreMSFeatureResults)
+                {
+                    // Discard older features.  We only want the ones we are interested in.
+                    msFeatures.Clear();
+
+                    // Store any MS Features that we need to 
+                    msFeatures = new List<MSFeatureLight>();
+                    foreach (UMCLight feature in features)
+                        foreach (MSFeatureLight msFeature in feature.MSFeatures)
+                            if (msFeature != null)
+                            {
+                                msFeature.GroupID = datasetID;
+                                msFeatures.Add(msFeature);
+                            }
+
+                    if (msFeatures.Count > 0)
                     {
-                        spectra = UMCLoaderFactory.LoadRawData(dataset,
-                                                                rawReader);
-
-                        if (spectra.Count > 1)
+                        UpdateStatus(string.Format("Storing {0} MS Features used for feature definition", msFeatures.Count));
+                        msFeatureCache.AddAll(msFeatures);
+                    }
+                }
+            }
+            else
+            {
+                // Otherwise, we need to map the MS features to the LCMS Features provided.
+                // This would mean that we extracted data from an existing database.
+                if (msFeatures.Count > 0)
+                {
+                    // Here we just map the feature to its parent.
+                    Dictionary<int, UMCLight> map = FeatureDataConverters.MapFeature<UMCLight>(features);
+                    foreach (MSFeatureLight feature in msFeatures)
+                    {
+                        bool doesFeatureExists = map.ContainsKey(feature.UMCID);
+                        if (doesFeatureExists)
                         {
-                             
-                            LinkMSFeaturesToMSMS(msFeatures, spectra);                            
+                            map[feature.UMCID].AddChildFeature(feature);
+                        }
+                    }
+                }
+            }
+
+            // Map the MS/MS spectra if we can.
+            if (msFeatures.Count > 0)
+            {
+                List<MSSpectra> spectra = UMCLoaderFactory.LoadMsnSpectra(dataset,
+                                                                          msnCache);
+
+                // Load the raw data.
+                Dictionary<int, int> mapped = new Dictionary<int, int>();
+                if (spectra.Count < 1)
+                {
+                    // this is to help us only load MSn spectra, because we already know
+                    // that the MS features are MS1 scans.  So we dont want to load the scan info.
+                    // it's probably a slight increase in resolving power, but warranted.
+                    Dictionary<int, int> excludeMap = new Dictionary<int, int>();
+                    foreach (MSFeatureLight feature in msFeatures)
+                    {
+                        bool containsScan = excludeMap.ContainsKey(feature.Scan);
+                        if (!containsScan)
+                        {
+                            excludeMap.Add(feature.Scan, feature.ID);
                         }
                     }
 
-                    if (spectra.Count > 0)
-                    {
-                        List<MSFeatureToMSnFeatureMap> matches = new List<MSFeatureToMSnFeatureMap>();
-                        int totalMSFeatures  = 0;
-                        int totalUMCFeatures = 0;
+                    UpdateStatus(string.Format("Loading MS/MS Raw data from {0}", dataset.DatasetName));
+                    spectra = UMCLoaderFactory.LoadRawData(dataset,
+                                                            rawReader,
+                                                            excludeMap);
 
-                        // Next we may want to map our MSn features to our parents.  This would allow us to do traceback...
-                        foreach(UMCLight feature in features)
+                    if (spectra.Count > 1)
+                    {
+
+                        UpdateStatus("Linking MS/MS data to MS Features");
+                        mapped = LinkMSFeaturesToMSMS(msFeatures, spectra);
+                    }
+                }
+
+                if (spectra.Count > 0)
+                {
+                    List<MSFeatureToMSnFeatureMap> matches = new List<MSFeatureToMSnFeatureMap>();
+                    int totalMSFeatures = 0;
+                    int totalUMCFeatures = 0;
+
+                    // Next we may want to map our MSn features to our parents.  This would allow us to do traceback...
+                    foreach (UMCLight feature in features)
+                    {
+                        totalUMCFeatures++;
+                        foreach (MSFeatureLight msFeature in feature.MSFeatures)
                         {
-                            totalUMCFeatures++;
-                            foreach (MSFeatureLight msFeature in feature.MSFeatures)
+                            if (msFeature.MSnSpectra.Count > 0)
                             {
-                                if (msFeature.MSnSpectra.Count > 0)
+                                totalMSFeatures++;
+                                foreach (MSSpectra spectrum in msFeature.MSnSpectra)
                                 {
-                                    totalMSFeatures++;
-                                    foreach (MSSpectra spectrum in msFeature.MSnSpectra)
-                                    {
-                                        MSFeatureToMSnFeatureMap match = new MSFeatureToMSnFeatureMap();
-                                        match.RawDatasetID  = datasetID;
-                                        match.MSDatasetID   = datasetID;
-                                        match.MSFeatureID   = feature.ID;
-                                        match.MSMSFeatureID = spectrum.ID;
-                                        match.LCMSFeatureID = feature.ID;
-                                        matches.Add(match);
-                                    }
+                                    MSFeatureToMSnFeatureMap match = new MSFeatureToMSnFeatureMap();
+                                    match.RawDatasetID = datasetID;
+                                    match.MSDatasetID = datasetID;
+                                    match.MSFeatureID = msFeature.ID;
+                                    match.MSMSFeatureID = spectrum.ID;
+                                    match.LCMSFeatureID = feature.ID;
+                                    matches.Add(match);
                                 }
                             }
                         }
-
-                        if (matches.Count > 0)
-                        {
-                            UpdateStatus(
-                                string.Format("Mapped {0} MSn spectra to {1} MS features and {2} LC-MS features", 
-                                                mapped.Keys.Count, 
-                                                totalMSFeatures,
-                                                totalUMCFeatures
-                                                ));
-                            config.DataProviders.MSFeatureToMSnFeatureCache.AddAll(matches);
-                        }
                     }
 
+                    if (matches.Count > 0)
+                    {
+                        UpdateStatus(
+                            string.Format("Mapped {0} MSn spectra to {1} MS features and {2} LC-MS features",
+                                            mapped.Keys.Count,
+                                            totalMSFeatures,
+                                            totalUMCFeatures
+                                            ));
+                        msnToMsCache.AddAll(matches);
+                    }
                 }
 
-                // This dataset is done!                               
-                if (FeaturesLoaded != null)
-                {
-                    FeaturesLoadedEventArgs args = new FeaturesLoadedEventArgs(dataset, features);
-                    FeaturesLoaded(this, args);
-                }                                              
             }
-            UMCLoaderFactory.Status -= UMCLoaderFactory_Status;
+
+            // This dataset is done!                               
+            if (FeaturesLoaded != null)
+            {
+                FeaturesLoadedEventArgs args = new FeaturesLoadedEventArgs(dataset, features);
+                FeaturesLoaded(this, args);
+            }
+
+            return features;
         }
         /// <summary>
         /// Creates LCMS Features from the MS feature data provided.
@@ -506,8 +582,7 @@ namespace MultiAlignCore.Algorithms
             IFeatureFinder finder   = FeatureFinderFactory.CreateFeatureFinder(FeatureFinderType.DeconToolsCSV);
             features                = finder.FindFeatures(filteredMsFeatures, options);
 
-            UpdateStatus("Filtering features.");
-            // Refactor to inside of loader factory.
+            UpdateStatus("Filtering features.");            
             filteredFeatures = LCMSFeatureFilters.FilterFeatures(features,
                                                                  filterOptions);
 
@@ -520,7 +595,7 @@ namespace MultiAlignCore.Algorithms
             }
 
             UpdateStatus(string.Format("Filtered features from: {0} to {1}.", features.Count, filteredFeatures.Count));            
-            return features;
+            return filteredFeatures;
         }
 
             
@@ -609,48 +684,9 @@ namespace MultiAlignCore.Algorithms
             IUmcDAO featureCache = config.Analysis.DataProviders.FeatureCache;
 
             // Load the baseline data.
-            List<UMCLight> baselineFeatures = null;
-            int baselineDatasetID           = -1;
-            DatasetInformation baselineInfo = config.Analysis.MetaData.BaselineDataset;
-
-            if (!config.Analysis.Options.UseMassTagDBAsBaseline)
-            {
-                if (baselineInfo == null)
-                {
-                    throw new Exception("The baseline dataset was never set.");
-                }
-                UpdateStatus("Loading baseline features from " + baselineInfo.DatasetName + " for alignment.");
-                baselineFeatures    = featureCache.FindByDatasetId(baselineInfo.DatasetId);
-                baselineDatasetID   = baselineInfo.DatasetId;
-            }
-
-            // This says that the user 
-            if (baselineInfo == null && config.Analysis.Options.DriftTimeAlignmentOptions.ShouldAlignDriftTimes)
-            {
-                UpdateStatus("Setting baseline features for post drift time alignment.");
-                baselineFeatures = new List<UMCLight>();
-                // Convert the mass tags to features.                
-                foreach (MassTagLight tag in config.Analysis.MassTagDatabase.MassTags)
-                {
-                    //UMCLight umc = new UMCLight();
-                    //umc.ChargeRepresentative = 0;
-                    //umc.Net = tag.NET;
-                    //umc.MassCalibrated = tag.MassMonoisotopic;
-                    //umc.DriftTime = tag.DriftTime;
-                    //umc.Id = tag.ID;
-                    //umc.ChargeRepresentative = Convert.ToInt16(tag.ChargeState);
-                    //baselineFeatures.Add(umc);
-
-                    UMCLight umc                = new UMCLight();
-                    umc.ChargeState             = 0;
-                    umc.NET                     = tag.NET;
-                    umc.MassMonoisotopicAligned = tag.MassMonoisotopic;
-                    umc.DriftTime               = tag.DriftTime;
-                    umc.ID                      = tag.ID;
-                    umc.ChargeState             = tag.ChargeState;
-                    baselineFeatures.Add(umc);
-                }
-            }
+            List<UMCLight> baselineFeatures = null;            
+            DatasetInformation baselineInfo;
+            baselineFeatures                = LoadBaselineData(config, featureCache, baselineFeatures, out baselineInfo);
 
             // Create the alignment cache and clear it.
             MultiAlignCore.IO.Features.Hibernate.AlignmentDAOHibernate alignmentCache = new IO.Features.Hibernate.AlignmentDAOHibernate();
@@ -660,13 +696,12 @@ namespace MultiAlignCore.Algorithms
             IFeatureAligner aligner = m_algorithms.Aligner;
             RegisterProgressNotifier(aligner as IProgressNotifer);
 
-            for (int datasetNum = 0; datasetNum < config.Analysis.MetaData.Datasets.Count; datasetNum++)
+            foreach(DatasetInformation datasetInfo in config.Analysis.MetaData.Datasets)
             {
-                if (datasetNum != baselineDatasetID)
+                if (!datasetInfo.IsBaseline)
                 {
-                    DatasetInformation datasetInfo      = config.Analysis.MetaData.Datasets[datasetNum];
                     UpdateStatus("Retrieving data from " + datasetInfo.DatasetName + " for alignment.");
-                    List<UMCLight> features             = featureCache.FindByDatasetId(datasetNum);
+                    List<UMCLight> features             = featureCache.FindByDatasetId(datasetInfo.DatasetId);
                     classAlignmentData alignmentData    = null;
                     
                     if (baselineInfo != null)
@@ -687,48 +722,22 @@ namespace MultiAlignCore.Algorithms
                                                             false);
                     }
 
-                    // Drift time alignment.
-                    DriftTimeAligner driftTimeAligner = new DriftTimeAligner();
-                    RegisterProgressNotifier(driftTimeAligner);
-
                     KeyValuePair<DriftTimeAlignmentResults<UMC, UMC>, DriftTimeAlignmentResults<UMC, UMC>> pair
                         = new KeyValuePair<DriftTimeAlignmentResults<UMC, UMC>, DriftTimeAlignmentResults<UMC, UMC>>();
                     if (config.Analysis.Options.DriftTimeAlignmentOptions.ShouldAlignDriftTimes)
                     {
-                        // Make sure that if the database does not have drift time, that we don't
-                        // perform drift time alignment.
-                        if (config.Analysis.Options.AlignmentOptions.IsAlignmentBaselineAMasstagDB)
-                        {
-                            // Make sure that we have drift time to align to.
-                            if (config.Analysis.MassTagDatabase.DoesContainDriftTime)
-                            {
-                                UpdateStatus("Aligning Drift Time to database.");
-                                pair = driftTimeAligner.AlignDriftTimes(features, 
-                                                                        baselineFeatures, 
-                                                                        config.Analysis.Options.DriftTimeAlignmentOptions);
-                            }
-                            else
-                            {
-                                UpdateStatus("Skipping drift time alignment since the database does not contain drift time.");
-                            }
-                        }
-                        else
-                        {
-                            UpdateStatus("Aligning Drift Time to baseline.");
-                            pair = driftTimeAligner.AlignDriftTimes(features,
-                                                                    baselineFeatures, 
-                                                                    config.Analysis.Options.DriftTimeAlignmentOptions);
-                        }
+                        // Drift time alignment.
+
+                        DriftTimeAligner driftTimeAligner = new DriftTimeAligner();
+                        RegisterProgressNotifier(driftTimeAligner);
+                        pair = CorrectDriftTimes(config, baselineFeatures, features, driftTimeAligner, pair);
+                        DeRegisterProgressNotifier(driftTimeAligner);
                     }
-                    DeRegisterProgressNotifier(driftTimeAligner);
 
-                    alignmentData.aligneeDataset    = datasetInfo.DatasetName;
-                    config.Analysis.AlignmentData.Add(alignmentData);
+                    alignmentData.aligneeDataset    = datasetInfo.DatasetName;                    
                     alignmentData.DatasetID         = datasetInfo.DatasetId;
-
+                    config.Analysis.AlignmentData.Add(alignmentData);
                     alignmentCache.Add(alignmentData);
-
-
 
                     UpdateStatus("Updating cache with aligned features.");
                     featureCache.UpdateAll(features);
@@ -745,10 +754,10 @@ namespace MultiAlignCore.Algorithms
                         }
 
                         FeaturesAlignedEventArgs args = new FeaturesAlignedEventArgs(baselineInfo,
-                                                                                     datasetInfo,
-                                                                                     alignmentData,
-                                                                                     alignedResults,
-                                                                                     offsetResults);
+                                                                                        datasetInfo,
+                                                                                        alignmentData,
+                                                                                        alignedResults,
+                                                                                        offsetResults);
                         FeaturesAligned(this, args);
                     }
                     features.Clear();
@@ -760,6 +769,89 @@ namespace MultiAlignCore.Algorithms
                 }
             }
             DeRegisterProgressNotifier(aligner as IProgressNotifer);
+        }
+
+        private KeyValuePair<DriftTimeAlignmentResults<UMC, UMC>, DriftTimeAlignmentResults<UMC, UMC>> CorrectDriftTimes(AnalysisConfig config, List<UMCLight> baselineFeatures, List<UMCLight> features, DriftTimeAligner driftTimeAligner, KeyValuePair<DriftTimeAlignmentResults<UMC, UMC>, DriftTimeAlignmentResults<UMC, UMC>> pair)
+        {
+            // Make sure that if the database does not have drift time, that we don't
+            // perform drift time alignment.
+            if (config.Analysis.Options.AlignmentOptions.IsAlignmentBaselineAMasstagDB)
+            {
+                // Make sure that we have drift time to align to.
+                if (config.Analysis.MassTagDatabase.DoesContainDriftTime)
+                {
+                    UpdateStatus("Aligning Drift Time to database.");
+                    pair = driftTimeAligner.AlignDriftTimes(features,
+                                                            baselineFeatures,
+                                                            config.Analysis.Options.DriftTimeAlignmentOptions);
+                }
+                else
+                {
+                    UpdateStatus("Skipping drift time alignment since the database does not contain drift time.");
+                }
+            }
+            else
+            {
+                UpdateStatus("Aligning Drift Time to baseline.");
+                pair = driftTimeAligner.AlignDriftTimes(features,
+                                                        baselineFeatures,
+                                                        config.Analysis.Options.DriftTimeAlignmentOptions);
+            }
+            return pair;
+        }
+        /// <summary>
+        /// Loads baseline data for alignment.
+        /// </summary>
+        /// <param name="config"></param>
+        /// <param name="featureCache"></param>
+        /// <param name="baselineFeatures"></param>
+        /// <param name="baselineDatasetID"></param>
+        /// <param name="baselineInfo"></param>
+        /// <returns></returns>
+        private List<UMCLight> LoadBaselineData(AnalysisConfig config, IUmcDAO featureCache, List<UMCLight> baselineFeatures, out int baselineDatasetID, out DatasetInformation baselineInfo)
+        {
+            baselineDatasetID = -1;
+            baselineInfo = config.Analysis.MetaData.BaselineDataset;
+
+            if (!config.Analysis.Options.UseMassTagDBAsBaseline)
+            {
+                if (baselineInfo == null)
+                {
+                    throw new Exception("The baseline dataset was never set.");
+                }
+                UpdateStatus("Loading baseline features from " + baselineInfo.DatasetName + " for alignment.");
+                baselineFeatures = featureCache.FindByDatasetId(baselineInfo.DatasetId);
+                baselineDatasetID = baselineInfo.DatasetId;
+            }
+
+            // This says that the user 
+            if (baselineInfo == null && config.Analysis.Options.DriftTimeAlignmentOptions.ShouldAlignDriftTimes)
+            {
+                UpdateStatus("Setting baseline features for post drift time alignment.");
+                baselineFeatures = new List<UMCLight>();
+                // Convert the mass tags to features.                
+                foreach (MassTagLight tag in config.Analysis.MassTagDatabase.MassTags)
+                {
+                    //UMCLight umc = new UMCLight();
+                    //umc.ChargeRepresentative = 0;
+                    //umc.Net = tag.NET;
+                    //umc.MassCalibrated = tag.MassMonoisotopic;
+                    //umc.DriftTime = tag.DriftTime;
+                    //umc.Id = tag.ID;
+                    //umc.ChargeRepresentative = Convert.ToInt16(tag.ChargeState);
+                    //baselineFeatures.Add(umc);
+
+                    UMCLight umc = new UMCLight();
+                    umc.ChargeState = 0;
+                    umc.NET = tag.NET;
+                    umc.MassMonoisotopicAligned = tag.MassMonoisotopic;
+                    umc.DriftTime = tag.DriftTime;
+                    umc.ID = tag.ID;
+                    umc.ChargeState = tag.ChargeState;
+                    baselineFeatures.Add(umc);
+                }
+            }
+            return baselineFeatures;
         }
         #endregion
 

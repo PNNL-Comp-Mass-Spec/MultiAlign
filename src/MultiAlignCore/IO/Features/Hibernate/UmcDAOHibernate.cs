@@ -87,7 +87,7 @@ namespace MultiAlignCore.IO.Features.Hibernate
         /// <returns></returns>
         public List<UMCLight> FindByClusterID(int id)
         {
-            ICriterion criterion = Expression.Eq("ClusterId", id);
+            ICriterion criterion = Expression.Eq("ClusterID", id);
             List<ICriterion> criterionList = new List<ICriterion>();
             criterionList.Add(criterion);
             List<UMCLight> umcs = FindByCriteria(criterionList);
@@ -103,7 +103,7 @@ namespace MultiAlignCore.IO.Features.Hibernate
 		/// <returns></returns>
         public List<UMCLight> FindByClusterID(List<int> idList)
 		{
-			ICriterion criterion = Expression.In("ClusterId", idList);
+			ICriterion criterion = Expression.In("ClusterID", idList);
 			List<ICriterion> criterionList = new List<ICriterion>();
 			criterionList.Add(criterion);
             List<UMCLight> umcs = FindByCriteria(criterionList);
@@ -121,7 +121,7 @@ namespace MultiAlignCore.IO.Features.Hibernate
 		/// <returns>List of Umc Objects</returns>
         public List<UMCLight> FindByDatasetId(int datasetId)
 		{
-			ICriterion criterion = Expression.Eq("DatasetId", datasetId);
+			ICriterion criterion = Expression.Eq("GroupID", datasetId);
 			List<ICriterion> criterionList = new List<ICriterion>();
 			criterionList.Add(criterion);
 			return FindByCriteria(criterionList);
