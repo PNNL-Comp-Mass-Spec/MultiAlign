@@ -65,6 +65,18 @@ namespace MultiAlignCore.IO.Features.Hibernate
             return umcs[0];
         }
         /// <summary>
+        /// Finds a feature based on a charge state.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public List<UMCLight> FindByCharge(int charge)
+        {
+            ICriterion criterion = Expression.Eq("ChargeState", charge);
+            List<ICriterion> criterionList = new List<ICriterion>();
+            criterionList.Add(criterion);
+            return FindByCriteria(criterionList);                        
+        }
+        /// <summary>
         /// Finds a feature based on a feature id.
         /// </summary>
         /// <param name="id"></param>
@@ -127,6 +139,23 @@ namespace MultiAlignCore.IO.Features.Hibernate
 			return FindByCriteria(criterionList);
 		}
 
+        /// <summary>
+        /// Finds all features that are clustered.
+        /// </summary>
+        /// <returns></returns>
+
+        /// <summary>
+        /// Searches for and returns a List of Umc Objects in the Database that have the exact Dataset Id given.
+        /// </summary>
+        /// <param name="mass">Dataset value to be searched for</param>
+        /// <returns>List of Umc Objects</returns>
+        public List<UMCLight> FindAllClustered()
+        {
+            ICriterion criterion = Expression.Gt("ClusterID", -1);
+            List<ICriterion> criterionList = new List<ICriterion>();
+            criterionList.Add(criterion);
+            return FindByCriteria(criterionList);
+        }        
         public void ClearAlignmentData()
         {
             using (SQLiteConnection connection = new SQLiteConnection("Data Source=" + NHibernateUtil.Path))

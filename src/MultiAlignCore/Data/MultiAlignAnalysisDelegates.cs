@@ -28,18 +28,39 @@ namespace MultiAlignCore.Data
         /// <param name="minY">Min. Y - scan alignee</param>
         /// <param name="maxY">Max. Y - scan alignee</param>
         /// <param name="part">If > -1, The alignment was split over a given m/z range., if -1, then alignment was performed over full m/z range.</param>
-        public FeaturesAlignedEventArgs(DatasetInformation                  baselineDatasetInfo,
-                                        DatasetInformation                  datasetInfo,
-                                        classAlignmentData                  alignmentData,
+        public FeaturesAlignedEventArgs(DatasetInformation baselineDatasetInfo,
+                                        DatasetInformation datasetInfo,
+                                        classAlignmentData alignmentData,
                                         DriftTimeAlignmentResults<UMC, UMC> driftAlignmentData,
                                         DriftTimeAlignmentResults<UMC, UMC> offsetDriftAlignmentData)
-            
         {
-            m_datasetInformation        = datasetInfo;
+            m_datasetInformation = datasetInfo;
             m_baselinDatasetInformation = datasetInfo;
-            m_alignmentData             = alignmentData;
-            DriftTimeAlignmentData      = driftAlignmentData;
-            OffsetDriftAlignmentData    = offsetDriftAlignmentData;
+            m_alignmentData = alignmentData;
+            DriftTimeAlignmentData = driftAlignmentData;
+            OffsetDriftAlignmentData = offsetDriftAlignmentData;
+        }
+
+        /// <summary>
+        /// Arguments that hold alignment information when a dataset is aligned.
+        /// </summary>
+        /// <param name="function">Alignment function for this part of the alignment.</param>
+        /// <param name="info">Dataset information object</param>
+        /// <param name="mScores">Heat scores</param>
+        /// <param name="minX">Min. X - scan baseline</param>
+        /// <param name="maxX">Max. X - scan baseline</param>
+        /// <param name="minY">Min. Y - scan alignee</param>
+        /// <param name="maxY">Max. Y - scan alignee</param>
+        /// <param name="part">If > -1, The alignment was split over a given m/z range., if -1, then alignment was performed over full m/z range.</param>
+        public FeaturesAlignedEventArgs(DatasetInformation baselineDatasetInfo,
+                                        DatasetInformation datasetInfo,
+                                        classAlignmentData alignmentData)
+        {
+            m_datasetInformation = datasetInfo;
+            m_baselinDatasetInformation = datasetInfo;
+            m_alignmentData = alignmentData;
+            DriftTimeAlignmentData = null;
+            OffsetDriftAlignmentData = null;
         }
 
         /// <summary>
@@ -78,7 +99,7 @@ namespace MultiAlignCore.Data
         public DriftTimeAlignmentResults<UMC, UMC> DriftTimeAlignmentData
         {
             get;
-            private set;
+            set;
         }
         /// <summary>
         /// Gets the drift time alignment data.
@@ -86,7 +107,7 @@ namespace MultiAlignCore.Data
         public DriftTimeAlignmentResults<UMC, UMC> OffsetDriftAlignmentData
         {
             get;
-            private set;
+            set;
         }
     }
 

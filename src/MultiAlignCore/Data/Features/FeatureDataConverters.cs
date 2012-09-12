@@ -62,6 +62,8 @@ namespace MultiAlignCore.Data.Features
             umc.Net                     = feature.RetentionTime;
             umc.DriftTime               = feature.DriftTime;
             umc.Id                      = feature.ID;
+            umc.mint_umc_id             = feature.ID;
+            umc.mint_umc_index          = feature.ID;
             umc.Mass                    = feature.MassMonoisotopic;
             umc.MassCalibrated          = feature.MassMonoisotopic;
             umc.ChargeRepresentative    = Convert.ToInt16(feature.ChargeState);

@@ -7,11 +7,12 @@
 			<generator class="assigned" />
 		</id>
 		<property name="MassMonoisotopic"         column="Mass"                 type="double" not-null="false" />
-		<property name="NET"                      column="NET"                  type="double" not-null="false" />				
+		<property name="RetentionTime"            column="NET"                  type="double" not-null="false" />				
 		<property name="DriftTime"                column="Drift_Time"           type="double" not-null="false" />
     <property name="Tightness"                column="Tightness_Score"      type="double" not-null="false" />
     <property name="Ambiguity"                column="Ambiguity_Score"      type="double" not-null="false" />
     <property name="MemberCount"              column="Member_Count"         type="int"    not-null="false" />
-    <property name="DatasetMemberCount"       column="Dataset_Member_Count" type="int"    not-null="false" />		
-	</class>
+    <property name="DatasetMemberCount"       column="Dataset_Member_Count" type="int"    not-null="false" />
+    <property name="ChargeState"              column="Charge"               type="int"    not-null="false" />
+  </class>
 </hibernate-mapping>

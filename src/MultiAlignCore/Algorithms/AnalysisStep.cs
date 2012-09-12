@@ -11,26 +11,17 @@ namespace MultiAlignCore.Algorithms
     public enum AnalysisStep
     {
         /// <summary>
+        /// Initial state.
+        /// </summary>
+        None,
+        /// <summary>
         /// Invalid, initial, or final state.
         /// </summary>
-        None = -1,
-        LoadMTDB = 0,
+        LoadMTDB,
         /// <summary>
         /// Indicates that feature data should be loaded.
         /// </summary>
         FindFeatures,
-        /// <summary>
-        /// Loads the MSMS scan data into the database.
-        /// </summary>
-        LoadMSMSScanData,
-        /// <summary>
-        /// Features must exist in the database.
-        /// </summary>
-        Traceback,
-        /// <summary>
-        /// MS/MS spectra must already be tied to features.  
-        /// </summary>
-        SpectralClustering,
         /// <summary>
         /// Features must already be found.
         /// </summary>

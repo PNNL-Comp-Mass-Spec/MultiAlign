@@ -117,14 +117,6 @@ namespace MultiAlignConsole.IO
                                 default:
                                     MultiAlignCore.IO.Logger.PrintMessage("Did not understand the analysis step to skip to.");
                                     break;
-                                case "traceback":
-                                    config.ShouldUseExistingDatabase = true;
-                                    config.InitialStep               = AnalysisStep.Traceback; 
-                                    break;
-                                case "spectralclustering":
-                                    config.ShouldUseExistingDatabase = true;
-                                    config.InitialStep               = AnalysisStep.SpectralClustering;
-                                    break;
                                 case "alignment":
                                     config.ShouldUseExistingDatabase = true;
                                     config.InitialStep               = AnalysisStep.Alignment;

@@ -400,9 +400,9 @@ namespace MultiAlignCore.IO.Features
         /// <param name="msnCache"></param>
         /// <param name="dataset"></param>
         /// <returns></returns>
-        public static List<MSSpectra> LoadRawData(DatasetInformation dataset, ISpectraProvider rawReader)
+        public static List<MSSpectra> LoadRawData(DatasetInformation dataset)
         {
-            return LoadRawData(dataset, rawReader, new Dictionary<int, int>());
+            return LoadRawData(dataset, new Dictionary<int, int>());
         }
         /// <summary>
         /// Loads MS Spectra from a raw data file.
@@ -411,12 +411,12 @@ namespace MultiAlignCore.IO.Features
         /// <param name="msnCache"></param>
         /// <param name="dataset"></param>
         /// <returns></returns>
-        public static List<MSSpectra> LoadRawData(DatasetInformation dataset, ISpectraProvider rawReader, Dictionary<int, int> excludeMap)
+        public static List<MSSpectra> LoadRawData(DatasetInformation dataset, Dictionary<int, int> excludeMap)
         {
-            int datasetID = dataset.DatasetId;
-            string rawPath = dataset.Raw.Path;
-            List<MSSpectra> msnSpectra = new List<MSSpectra>();
-            using (rawReader = RawLoaderFactory.CreateFileReader(rawPath))
+            int datasetID                       = dataset.DatasetId;
+            string rawPath                      = dataset.Raw.Path;
+            List<MSSpectra> msnSpectra          = new List<MSSpectra>();
+            using (ISpectraProvider rawReader   = RawLoaderFactory.CreateFileReader(rawPath))
             {
                 rawReader.AddDataFile(rawPath, 0);
                 msnSpectra = rawReader.GetMSMSSpectra(0, excludeMap);

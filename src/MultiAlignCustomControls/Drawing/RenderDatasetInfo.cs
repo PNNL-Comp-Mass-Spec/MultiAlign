@@ -254,7 +254,7 @@ namespace MultiAlignCustomControls.Drawing
             foreach (UMCClusterLight cluster in clusters)
             {
                 y[i] = Convert.ToSingle(cluster.MassMonoisotopic);
-                x[i] = Convert.ToSingle(cluster.NET);
+                x[i] = Convert.ToSingle(cluster.RetentionTime);
                 i++;
             }
             clsPlotParams parameters = new clsPlotParams(new BubbleShape(1, false), Color.Black);

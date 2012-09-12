@@ -60,8 +60,8 @@ namespace MultiAlignCore.Algorithms
         public AnalysisGraphNode()
         {
             CurrentStep = AnalysisStep.None;
-            Next = null;
-            Method = null;
+            Next    = null;
+            Method  = null;
         }
         /// <summary>
         /// Gets or sets the current step type.

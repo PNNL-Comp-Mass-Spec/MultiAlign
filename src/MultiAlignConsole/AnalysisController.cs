@@ -164,8 +164,7 @@ namespace MultiAlignConsole
         /// <param name="e"></param>
         private void processor_FeaturesLoaded(object sender, FeaturesLoadedEventArgs e)
         {
-            Logger.PrintMessage(string.Format("Loaded {0} features from {1}", e.Features.Count, e.DatasetInformation.DatasetName));
-            
+            Logger.PrintMessage(string.Format("Loaded {0} features from {1}", e.Features.Count, e.DatasetInformation.DatasetName));           
         }
         void processor_MassTagsLoaded(object sender, MassTagsLoadedEventArgs e)
         {
@@ -361,18 +360,22 @@ namespace MultiAlignConsole
         {
             if (m_config.ClusterExporters.Count > 0)
             {
-                List<UMCClusterLight> clusters = null;
-                using (MultiAlignCore.IO.Mammoth.MammothDatabase database = new MultiAlignCore.IO.Mammoth.MammothDatabase(databasePath))
-                {
-                    database.Connect();
-                    clusters = database.GetClusters(
-                                new MultiAlignCore.IO.Mammoth.MammothDatabaseRange(-1, 10000000, -1, 2, -1, 200));
-                    database.Close();
-                }
+                List<UMCClusterLight> clusters = providers.ClusterCache.FindAll();                                                        
                 if (clusters.Count < 1)
                 {
                     Logger.PrintMessage("No clusters present in the database.");
                     return 1;
+                }
+                List<UMCLight> features = providers.FeatureCache.FindAllClustered();
+
+                Dictionary<int, UMCClusterLight> clusterFeatureMap = new Dictionary<int, UMCClusterLight>();
+                foreach (UMCClusterLight cluster in clusters)
+                {
+                    clusterFeatureMap[cluster.ID] = cluster;
+                }
+                foreach (UMCLight umc in features)
+                {
+                    clusterFeatureMap[umc.ClusterID].AddChildFeature(umc);
                 }
 
                 Logger.PrintMessage("Checking for mass tag matches");
@@ -380,7 +383,6 @@ namespace MultiAlignConsole
 
                 Logger.PrintMessage("Checking for mass tags");
                 List<PNNLOmics.Data.MassTags.MassTagLight> massTags = providers.MassTags.FindAll();
-
 
                 Dictionary<int, List<ClusterToMassTagMap>> clusterMap = new Dictionary<int, List<ClusterToMassTagMap>>();
                 if (clusterMatches.Count > 0)
@@ -693,7 +695,8 @@ namespace MultiAlignConsole
                     {
                         if (info.Features.Path == analysisSetupInformation.BaselineFile.Path)
                         {
-                            m_config.Analysis.MetaData.BaselineDataset = info;
+                            m_config.Analysis.MetaData.BaselineDataset  = info;
+                            info.IsBaseline                             = true;
                         }
                     }
                     Logger.PrintMessage(string.Format("Using dataset {0} as the alignment baseline.", m_config.Analysis.MetaData.BaselineDataset));
@@ -715,7 +718,8 @@ namespace MultiAlignConsole
                     {
                         if (info.Features.Path == analysisSetupInformation.BaselineFile.Path)
                         {
-                            m_config.Analysis.MetaData.BaselineDataset = info;
+                            info.IsBaseline = true;
+                            m_config.Analysis.MetaData.BaselineDataset = info;                            
                         }
                     }
                     Logger.PrintMessage(string.Format("Using dataset {0} as the alignment baseline.", m_config.Analysis.MetaData.BaselineDataset));
@@ -861,7 +865,6 @@ namespace MultiAlignConsole
         #region Cleanup 
         public void CleanupOldAnalysisBranches(AnalysisConfig config)
         {
-
             switch (config.InitialStep)
             {
                 case AnalysisStep.None:
@@ -869,12 +872,6 @@ namespace MultiAlignConsole
                 case AnalysisStep.LoadMTDB:
                     break;
                 case AnalysisStep.FindFeatures:
-                    break;
-                case AnalysisStep.LoadMSMSScanData:
-                    break;
-                case AnalysisStep.Traceback:
-                    break;
-                case AnalysisStep.SpectralClustering:
                     break;
                 case AnalysisStep.Alignment:
                     config.Analysis.DataProviders.FeatureCache.ClearAlignmentData();
