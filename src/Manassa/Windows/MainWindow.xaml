@@ -1,0 +1,24 @@
+﻿<Window x:Class="Manassa.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:manassa="clr-namespace:Manassa.Windows"
+        Title="MultiAlign" Height="350" Width="525">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <!-- Selection Window -->
+        <StackPanel  Grid.Column="0">
+            <Button Content="Analyze"/>
+            <Button Content="Clusters"          IsEnabled="False"/>
+            <Button Content="Identifications"   IsEnabled="False"/>
+            <Button Content="Statistics"        IsEnabled="False"/>
+            <Button Content="Analyze"           IsEnabled="False"/>
+        </StackPanel>
+        <manassa:AllClustersControl
+            x:Name="m_mainControl"
+            Grid.Column="1">            
+        </manassa:AllClustersControl>
+    </Grid>
+</Window>
