@@ -49,6 +49,11 @@ namespace MultiAlignCore.Data
         }
 
         #region Properties
+        public List<UMCClusterLight> Clusters
+        {
+            get;
+            set;
+        }
         /// <summary>
         /// Gets or sets what kind of analysis to do.  
         /// </summary>
@@ -65,14 +70,14 @@ namespace MultiAlignCore.Data
             get;
             set;
         }
-        /// <summary>
-        /// Gets or sets the data providers to the underlying data cache.
-        /// </summary>
-        public FeatureDataAccessProviders DataProviders
-        {
-            get;
-            set;
-        }
+        ///// <summary>
+        ///// Gets or sets the data providers to the underlying data cache.
+        ///// </summary>
+        //public FeatureDataAccessProviders DataProviders
+        //{
+        //    get;
+        //    set;
+        //}
         /// <summary>
         /// Gets or sets the cluster alignment data.
         /// </summary>

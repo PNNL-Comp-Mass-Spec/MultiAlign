@@ -83,10 +83,8 @@ namespace MultiAlignConsole.Drawing
             ChartDisplayOptions options = new ChartDisplayOptions(true, true, true, true,
                                                 1, 100,
                                                 "Charge State Histogram", "Charge State", "Count", Config.width, Config.height);
-            options.DisplayLegend   = false;
-            List<clsUMC> umcs       = FeatureDataConverters.ConvertToUMC(features);
-
-            Image image = RenderDatasetInfo.ChargeStateHistogram_Thumbnail(umcs, Config.width, Config.height, options);
+            options.DisplayLegend   = false;            
+            Image image = RenderDatasetInfo.ChargeStateHistogram_Thumbnail(features, Config.width, Config.height, options);
             SaveImage(image, "ChargeStates.png");
             Config.Report.PushImageColumn(Path.Combine("Plots", "ChargeStates.png"));
 
@@ -369,9 +367,8 @@ namespace MultiAlignConsole.Drawing
                 baselineOptions.DisplayLegend       = true;
                 
                 // Image creation and saving
-                List<UMCLight> baselineFeatures     = e.Features;
-                List<clsUMC> baselineUmcs           = FeatureDataConverters.ConvertToUMC(baselineFeatures);
-                Image baselineImage                 = RenderDatasetInfo.FeaturesScatterPlot_Thumbnail(baselineUmcs, baselineOptions);
+                List<UMCLight> baselineFeatures     = e.Features;                
+                Image baselineImage                 = RenderDatasetInfo.FeaturesScatterPlot_Thumbnail(baselineFeatures, baselineOptions);
                 string baselineLabelName            = Path.GetFileNameWithoutExtension(baselineInfo.DatasetName) + "_featurePlot.png";
                 string baselinePath                 = Path.Combine(Config.plotSavePath, baselineLabelName);
                 baselineImage.Save(baselinePath, System.Drawing.Imaging.ImageFormat.Png);
@@ -409,10 +406,8 @@ namespace MultiAlignConsole.Drawing
             options.DisplayLegend = true;
 
 
-            List<UMCLight> features = e.AlignedFeatures;
-            List<clsUMC> umcs       = FeatureDataConverters.ConvertToUMC(features);  
-
-            Image image      = RenderDatasetInfo.FeaturesScatterPlot_Thumbnail(umcs, options);
+            List<UMCLight> features = e.AlignedFeatures;            
+            Image image      = RenderDatasetInfo.FeaturesScatterPlot_Thumbnail(features, options);
             string labelName = Path.GetFileNameWithoutExtension(name) + "_featurePlot.png";
             string path      = Path.Combine(Config.plotSavePath, labelName);
             image.Save(path, System.Drawing.Imaging.ImageFormat.Png);

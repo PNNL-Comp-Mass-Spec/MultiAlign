@@ -98,7 +98,7 @@ namespace MultiAlignConsole
 
             m_config.Report.PushEndHeader();
 
-            ExportData(e.Analysis.DataProviders, AnalysisPathUtils.BuildAnalysisName(m_config.AnalysisPath, m_config.AnalysisName), e.Analysis.MetaData.Datasets);
+            ExportData(m_config.DataProviders, AnalysisPathUtils.BuildAnalysisName(m_config.AnalysisPath, m_config.AnalysisName), e.Analysis.MetaData.Datasets);
             
             m_config.triggerEvent.Set();
         }
@@ -802,7 +802,7 @@ namespace MultiAlignConsole
             }
             if (insertIntoDatabase)
             {
-                m_config.Analysis.DataProviders.DatasetCache.AddAll(analysis.MetaData.Datasets);
+                m_config.DataProviders.DatasetCache.AddAll(analysis.MetaData.Datasets);
             }
         }
         /// <summary>
@@ -884,18 +884,18 @@ namespace MultiAlignConsole
                 case AnalysisStep.FindFeatures:
                     break;
                 case AnalysisStep.Alignment:
-                    config.Analysis.DataProviders.FeatureCache.ClearAlignmentData();
-                    config.Analysis.DataProviders.ClusterCache.ClearAllClusters();
-                    config.Analysis.DataProviders.MassTagMatches.ClearAllMatches();  
+                    config.DataProviders.FeatureCache.ClearAlignmentData();
+                    config.DataProviders.ClusterCache.ClearAllClusters();
+                    config.DataProviders.MassTagMatches.ClearAllMatches();  
                     break;
                 case AnalysisStep.Clustering:
-                    config.Analysis.DataProviders.ClusterCache.ClearAllClusters();
-                    config.Analysis.DataProviders.MassTagMatches.ClearAllMatches();  
+                    config.DataProviders.ClusterCache.ClearAllClusters();
+                    config.DataProviders.MassTagMatches.ClearAllMatches();  
                     break;
                 case AnalysisStep.ClusterQC:
                     break;
                 case AnalysisStep.PeakMatching:
-                    config.Analysis.DataProviders.MassTagMatches.ClearAllMatches();                        
+                    config.DataProviders.MassTagMatches.ClearAllMatches();                        
                     break;
                 default:
                     break;
@@ -1053,7 +1053,7 @@ namespace MultiAlignConsole
             ConstructClustering(builder);
 
             config.Analysis                 = ConstructAnalysisObject(analysisSetupInformation);
-            config.Analysis.DataProviders   = providers;
+            config.DataProviders   = providers;
             config.Analysis.AnalysisType    = validated;
             ConstructPlotPath();
 
@@ -1070,7 +1070,7 @@ namespace MultiAlignConsole
 
             if (config.ShouldUseFactors)
             {
-                ConstructFactorInformation(analysisSetupInformation, config.Analysis.MetaData.Datasets, config.Analysis.DataProviders);
+                ConstructFactorInformation(analysisSetupInformation, config.Analysis.MetaData.Datasets, config.DataProviders);
             }
 
             bool isBaselineSpecified = ConstructBaselines(analysisSetupInformation, config.Analysis.MetaData, useMTDB);

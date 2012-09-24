@@ -22,10 +22,7 @@ namespace MultiAlignCustomControls.Charting
 		/// <summary>
 		/// Are the shapes of the points hollow
 		/// </summary>
-        private bool mbln_hollow = false;
-        private const int MAX_CHARGE_STATE = 10;
-        private List<clsUMC>        m_features;
-        private List<clsCluster>    m_clusters;
+        private bool mbln_hollow = false;                
         private DatasetInformation  m_info;
         #endregion
 
@@ -34,8 +31,6 @@ namespace MultiAlignCustomControls.Charting
 	    {			
 			InitializeComponent();
 
-            m_clusters  = null;
-            m_features  = null;
             m_info      = null;
         }
         /// <summary>
@@ -43,17 +38,7 @@ namespace MultiAlignCustomControls.Charting
         /// </summary>
         /// <param name="analysis"></param>
         /// <param name="dataset"></param>
-        public ctlClusterChart(DatasetInformation info, List<clsUMC> features) :
-            this()
-        {
-            AddFeatures(info, features);
-        }
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="analysis"></param>
-        /// <param name="dataset"></param>
-        public ctlClusterChart(List<clsCluster> clusters) :
+        public ctlClusterChart(List<UMCClusterLight> clusters) :
             this()
         {
             AddClusters(clusters);
@@ -66,8 +51,6 @@ namespace MultiAlignCustomControls.Charting
         /// </summary>
         public void ClearData()
         {
-            m_features  = null;
-            m_clusters  = null;
             m_info      = null;
             ViewPortHistory.Clear();
             SeriesCollection.Clear();
@@ -75,103 +58,14 @@ namespace MultiAlignCustomControls.Charting
         /// <summary>
         /// Sets the analysis object and extracts data for display.
         /// </summary>
-		public void AddFeatures(DatasetInformation info, List<clsUMC> features)
-		{			
-                
-            AutoViewPortOnAddition          = true;
-            Title = "Features";
-            if (info != null)
-            {
-                Title = info.DatasetName + " ";
-            }              
-            AutoViewPortOnAddition          = false;		
-        }
-        /// <summary>
-        /// Sets the analysis object and extracts data for display.
-        /// </summary>
-        public void AddClusters(List<clsCluster> clusters)
+        public void AddClusters(List<UMCClusterLight> clusters)
         {
-            AutoViewPortOnAddition = true;
+            AutoViewPortOnAddition          = true;
             Title = "Clusters";
-
             AutoViewPortOnAddition          = false;
         }
         #endregion
-
-        #region Dataset Rendering.
-        /// <summary>
-        /// Renders data with charge state information.
-        /// </summary>
-        /// <param name="chargeState">Charge state to render.</param>
-        /// <param name="analysis">Analysis object to use</param>
-        /// <param name="datasetNum">Dataset index</param>
-        /// <param name="aligned">whether the data has been aligned or not.</param>
-        private void AddChargeStateToOverlapChart(List<clsUMC> features, int chargeState, bool showAligned)
-        {            
-            List<float> x = new List<float>();
-            List<float> xa = new List<float>();
-            List<float> y = new List<float>();
-            List<float> ya = new List<float>();
-            
-            foreach (clsUMC feature in features)
-            {
-                // Make sure charges match.
-                if (feature.ChargeRepresentative == chargeState)
-                {
-                    
-                        x.Add((float)feature.Net);
-                        xa.Add((float)feature.Net);
-                    
-
-                   
-                        y.Add((float)feature.Mass);
-                        ya.Add((float)feature.MassCalibrated);
-                    }
-                }
-            }
-
-            
-            Color clr                = miter_color.GetColor(chargeState - 1);
-            clsShape shape           = new DiamondShape(mint_pt_size, mbln_hollow); 
-            clsPlotParams plt_params = new clsPlotParams(shape, clr);
-
-            plt_params.Name = "Charge State " + chargeState.ToString(); 
-            ViewPortHistory.Clear();
-            AutoViewPortOnAddition = true;
-
-            float[] masses = new float[y.Count];
-            float[] scans  = new float[x.Count];
-
-            if (showAligned)
-            {
-                ya.CopyTo(masses, 0);
-                xa.CopyTo(scans, 0);
-            }
-            else
-            {
-                y.CopyTo(masses, 0);
-                x.CopyTo(scans, 0);
-            }
-                        
-            clsSeries series = new clsSeries(ref scans, ref masses, plt_params);
-            AddSeries(series);            
-        }
-        /// <summary>
-        /// Adds a dataset to the cluster chart.
-        /// </summary>
-        /// <param name="datasetNum"></param>
-        /// <param name="aligned"></param>
-        private void AddDatasetToOverlapChart(List<clsUMC>   features,                                             
-                                             bool           showAligned,
-                                             int            numChargeStates)
-        {
-            for (int i = 1; i <= numChargeStates; i++)
-            {
-                AddChargeStateToOverlapChart(features, i, showAligned);
-            }
-        }        
-        #endregion
-
+        
         #region Cluster Rendering
         /// <summary>
         /// Adds all cluster data to the plot.

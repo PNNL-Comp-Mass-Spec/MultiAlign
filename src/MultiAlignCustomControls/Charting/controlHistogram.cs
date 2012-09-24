@@ -1,13 +1,5 @@
-using System;
-using System.Data;
 using System.Drawing;
-using System.Windows.Forms;
-using System.ComponentModel;
-using System.Collections.Generic;
-
 using PNNLControls;
-using MultiAlignCore.Data;
-using PNNLControls.Drawing.Plotting;
 using PNNLControls.Drawing.Charting;
 
 

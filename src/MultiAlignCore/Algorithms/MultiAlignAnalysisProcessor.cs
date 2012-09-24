@@ -775,7 +775,7 @@ namespace MultiAlignCore.Algorithms
             UpdateStatus("Performing Alignment");
 
             // Connect to database of features.                
-            IUmcDAO featureCache = config.Analysis.DataProviders.FeatureCache;
+            IUmcDAO featureCache = config.DataProviders.FeatureCache;
 
             // Load the baseline data.
             List<UMCLight> baselineFeatures = null;
@@ -1066,7 +1066,7 @@ namespace MultiAlignCore.Algorithms
                 {
 
 
-                    List<UMCClusterLight> clusters              = m_config.Analysis.DataProviders.ClusterCache.FindAll();
+                    List<UMCClusterLight> clusters              = m_config.DataProviders.ClusterCache.FindAll();
                     IPeakMatcher<UMCClusterLight> peakMatcher   = m_algorithms.PeakMatcher;
 
                     UpdateStatus("Performing Peak Matching");                          
@@ -1177,7 +1177,7 @@ namespace MultiAlignCore.Algorithms
                 throw new NullReferenceException("The analysis data storage cannot be null.");
             }
 
-            if (config.Analysis.DataProviders == null)
+            if (config.DataProviders == null)
             {
                 throw new NullReferenceException("The data cache providers have not been set for this analysis.");
             }
@@ -1206,7 +1206,7 @@ namespace MultiAlignCore.Algorithms
 
             UpdateStatus("Loading all of the mass tags.");
             // Get all of the mass tags
-            List<MassTagLight> massTags = config.Analysis.DataProviders.MassTags.FindAll();
+            List<MassTagLight> massTags = config.DataProviders.MassTags.FindAll();
 
 
             UpdateStatus("Loading all of the tag to protein references.");
@@ -1306,7 +1306,7 @@ namespace MultiAlignCore.Algorithms
             config.Analysis.MassTagDatabase = database;
 
             
-            config.Analysis.DataProviders.MassTags.AddAll(database.MassTags);
+            config.DataProviders.MassTags.AddAll(database.MassTags);
 
             IProteinDAO proteinCache = new MultiAlignCore.IO.Features.Hibernate.ProteinDAO();          
             proteinCache.AddAll(database.AllProteins);

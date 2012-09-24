@@ -5,10 +5,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PNNLControls", "PNNLControl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiAlignCustomControls", "MultiAlignCustomControls\MultiAlignCustomControls.csproj", "{EE7596B2-FCD3-471A-856F-1270713DD5B1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiAlignWin", "MultiAlignWin\MultiAlignWin.csproj", "{74B1D21D-3B38-4605-A617-4CA55683311C}"
-EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "MultiAlignDeploy", "MultiAlignDeploy\MultiAlignDeploy.vdproj", "{CCA1A959-1232-4FA6-87C3-5E0077ADCAF6}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExternalControls", "ExternalControls\ExternalControls.csproj", "{46C6D9CE-672F-4491-BF67-AA3F8DC811B7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiAlignConsole", "MultiAlignConsole\MultiAlignConsole.csproj", "{7F3869CC-8606-476A-8A9B-0BBA15C57C60}"
@@ -45,15 +41,6 @@ Global
 		{EE7596B2-FCD3-471A-856F-1270713DD5B1}.Release|x64.Build.0 = Release|x64
 		{EE7596B2-FCD3-471A-856F-1270713DD5B1}.Release|x86.ActiveCfg = Release|x86
 		{EE7596B2-FCD3-471A-856F-1270713DD5B1}.Release|x86.Build.0 = Release|x86
-		{74B1D21D-3B38-4605-A617-4CA55683311C}.Debug|x64.ActiveCfg = Debug|x64
-		{74B1D21D-3B38-4605-A617-4CA55683311C}.Debug|x64.Build.0 = Debug|x64
-		{74B1D21D-3B38-4605-A617-4CA55683311C}.Debug|x86.ActiveCfg = Debug|x86
-		{74B1D21D-3B38-4605-A617-4CA55683311C}.Release|x64.ActiveCfg = Release|x64
-		{74B1D21D-3B38-4605-A617-4CA55683311C}.Release|x86.ActiveCfg = Release|x86
-		{CCA1A959-1232-4FA6-87C3-5E0077ADCAF6}.Debug|x64.ActiveCfg = Debug
-		{CCA1A959-1232-4FA6-87C3-5E0077ADCAF6}.Debug|x86.ActiveCfg = Debug
-		{CCA1A959-1232-4FA6-87C3-5E0077ADCAF6}.Release|x64.ActiveCfg = Release
-		{CCA1A959-1232-4FA6-87C3-5E0077ADCAF6}.Release|x86.ActiveCfg = Release
 		{46C6D9CE-672F-4491-BF67-AA3F8DC811B7}.Debug|x64.ActiveCfg = Debug|x64
 		{46C6D9CE-672F-4491-BF67-AA3F8DC811B7}.Debug|x64.Build.0 = Debug|x64
 		{46C6D9CE-672F-4491-BF67-AA3F8DC811B7}.Debug|x86.ActiveCfg = Debug|x86
