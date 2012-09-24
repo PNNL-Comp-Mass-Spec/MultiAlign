@@ -6,6 +6,7 @@ using MultiAlignCore.Data;
 using MultiAlignEngine.Features;
 using MultiAlignEngine.MassTags;
 using PNNLControls;
+using PNNLOmics.Data.Features;
 
 namespace MultiAlignCustomControls.Charting
 {
@@ -21,12 +22,7 @@ namespace MultiAlignCustomControls.Charting
 		/// <summary>
 		/// Are the shapes of the points hollow
 		/// </summary>
-		private bool mbln_hollow = false ;
-        private CheckBox mcheckBox_showAligned;
-        private CheckBox mcheckBox_showNET;
-        private ComboBox mcomboBox_chargeStates;
-        private CheckBox mcheckBox_displayMZ;
-        private Label label1;
+        private bool mbln_hollow = false;
         private const int MAX_CHARGE_STATE = 10;
         private List<clsUMC>        m_features;
         private List<clsCluster>    m_clusters;
@@ -37,13 +33,6 @@ namespace MultiAlignCustomControls.Charting
         public ctlClusterChart()
 	    {			
 			InitializeComponent();
-
-            mcomboBox_chargeStates.Items.Add("All");
-            for (int i = 1; i < MAX_CHARGE_STATE; i++)
-                mcomboBox_chargeStates.Items.Add(i.ToString());
-            mcomboBox_chargeStates.SelectedIndex = 0;
-            
-            mcomboBox_chargeStates.SelectedIndexChanged += new System.EventHandler(this.mcomboBox_chargeStates_SelectedIndexChanged);
 
             m_clusters  = null;
             m_features  = null;
@@ -94,10 +83,7 @@ namespace MultiAlignCustomControls.Charting
             if (info != null)
             {
                 Title = info.DatasetName + " ";
-            }
-            mcheckBox_displayMZ.Visible     = true;
-            mcheckBox_showAligned.Visible   = true;                     
-            AddDatasetToOverlapChart(features, mcheckBox_showAligned.Checked, MAX_CHARGE_STATE);                
+            }              
             AutoViewPortOnAddition          = false;		
         }
         /// <summary>
@@ -107,10 +93,7 @@ namespace MultiAlignCustomControls.Charting
         {
             AutoViewPortOnAddition = true;
             Title = "Clusters";
-            mcheckBox_displayMZ.Visible     = true;
-            mcheckBox_showAligned.Visible   = true;
 
-            AddClusterDataToChart(clusters, mcheckBox_showAligned.Checked, MAX_CHARGE_STATE);
             AutoViewPortOnAddition          = false;
         }
         #endregion
@@ -130,32 +113,17 @@ namespace MultiAlignCustomControls.Charting
             List<float> y = new List<float>();
             List<float> ya = new List<float>();
             
-            bool useNet = mcheckBox_showNET.Checked;
-            bool useMZ = mcheckBox_displayMZ.Checked;
             foreach (clsUMC feature in features)
             {
                 // Make sure charges match.
                 if (feature.ChargeRepresentative == chargeState)
                 {
-                    // X value 
-                    if (useNet)
-                    {
+                    
                         x.Add((float)feature.Net);
                         xa.Add((float)feature.Net);
-                    }
-                    else
-                    {
-                        x.Add((float)feature.ScanAligned);
-                        xa.Add((float)feature.Scan);
-                    }
+                    
 
-                    // Y value
-                    if (useMZ)
-                    {
-                        y.Add((float)feature.MZForCharge);
-                    }
-                    else
-                    {
+                   
                         y.Add((float)feature.Mass);
                         ya.Add((float)feature.MassCalibrated);
                     }
@@ -210,80 +178,52 @@ namespace MultiAlignCustomControls.Charting
         /// </summary>
         /// <param name="clusters"></param>
         /// <param name="specificCharge"></param>
-        private void AddClusterDataToChart(List<clsCluster> clusters, bool showAligned, int specificCharge)
+        private void AddClusterDataToChart(List<UMCClusterLight> clusters, bool showAligned, int specificCharge)
         {            
-            if (mcheckBox_displayMZ.Checked == true)
-                return;
 
             clsColorIterator colors = new clsColorIterator();
             float maxY = 500;
             float minY = 0;
             float maxX = 500;
             float minX = 0;
-
-            int chargeMax   = specificCharge + 1;
-            if (specificCharge < 1)
-            {
-                chargeMax = MAX_CHARGE_STATE;
-            }
-
-            for (int charge = specificCharge; charge < chargeMax; charge++)
-            {
-                List<float> massList = new List<float>();
-                List<float> scanList = new List<float>();
-                Color color              = colors.GetColor(charge);
-                clsShape shape           = new BubbleShape(mint_pt_size, false);
-                clsPlotParams plotParams = new clsPlotParams(shape, color);
+                        
+            List<float> massList = new List<float>();
+            List<float> scanList = new List<float>();
+            Color color              = colors.GetColor(0);
+            clsShape shape           = new BubbleShape(mint_pt_size, false);
+            clsPlotParams plotParams = new clsPlotParams(shape, color);
                 
-                int clustersAdded = 0;
-                foreach(clsCluster cluster in clusters)
-                {
-                    float x = 0;
-                    float y = 0;
+            int clustersAdded = 0;
+            foreach(UMCClusterLight cluster in clusters)
+            {
+                float x = 0;
+                float y = 0;
                                       
-                    if (cluster.Charge == charge)
-                    {
-                        if (showAligned == true)
-                        {
-                            y = Convert.ToSingle(cluster.mdouble_mass_calibrated);
-                        }
-                        else
-                        {
-                            y = Convert.ToSingle(cluster.mdouble_mass);
-                        }
-                        massList.Add(y);
+                                            
+                y = Convert.ToSingle(cluster.MassMonoisotopic);                                                                          
+                x = Convert.ToSingle(cluster.NET);                            
+                        
+                massList.Add(y);
+                scanList.Add(x);
 
-                        if (mcheckBox_showNET.Checked == true)
-                        {                            
-                            x = Convert.ToSingle(cluster.mdouble_net);                            
-                        }
-                        else
-                        {
-                            x = Convert.ToSingle(cluster.mint_scan);
-                        }
-                        scanList.Add(x);
+                minX = Math.Min(x, minX);
+                maxX = Math.Max(x, maxX);
 
-                        minX = Math.Min(x, minX);
-                        maxX = Math.Max(x, maxX);
-
-                        minY = Math.Min(y, minY);
-                        maxY = Math.Max(y, maxY);
-                        clustersAdded++;
-                    }
-                }
-                if (clustersAdded > 0)
-                {
-                    float[] masses = new float[massList.Count];
-                    float[] scans = new float[scanList.Count];
-
-                    massList.CopyTo(masses);
-                    scanList.CopyTo(scans);
-                    plotParams.Name = "Clusters with charge " + charge.ToString();
-                    clsSeries series = new clsSeries(ref scans, ref masses, plotParams);
-                    base.AddSeries(series);
-                }
+                minY = Math.Min(y, minY);
+                maxY = Math.Max(y, maxY);
+                clustersAdded++;                    
             }
 
+            if (clustersAdded > 0)
+            {
+                float[] masses = new float[massList.Count];
+                float[] scans = new float[scanList.Count];
+
+                massList.CopyTo(masses);
+                scanList.CopyTo(scans);
+                clsSeries series = new clsSeries(ref scans, ref masses, plotParams);
+                base.AddSeries(series);
+            }            
         }
         #endregion
 
@@ -345,65 +285,8 @@ namespace MultiAlignCustomControls.Charting
 		private void InitializeComponent()
 		{
             PNNLControls.PenProvider penProvider1 = new PNNLControls.PenProvider();
-            this.mcheckBox_showAligned = new System.Windows.Forms.CheckBox();
-            this.mcheckBox_showNET = new System.Windows.Forms.CheckBox();
-            this.mcomboBox_chargeStates = new System.Windows.Forms.ComboBox();
-            this.mcheckBox_displayMZ = new System.Windows.Forms.CheckBox();
-            this.label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
             this.SuspendLayout();
-            // 
-            // mcheckBox_showAligned
-            // 
-            this.mcheckBox_showAligned.AutoSize = true;
-            this.mcheckBox_showAligned.Location = new System.Drawing.Point(83, 3);
-            this.mcheckBox_showAligned.Name = "mcheckBox_showAligned";
-            this.mcheckBox_showAligned.Size = new System.Drawing.Size(91, 17);
-            this.mcheckBox_showAligned.TabIndex = 0;
-            this.mcheckBox_showAligned.Text = "Show Aligned";
-            this.mcheckBox_showAligned.UseVisualStyleBackColor = true;
-            this.mcheckBox_showAligned.CheckedChanged += new System.EventHandler(this.mcheckBox_showAligned_CheckedChanged);
-            // 
-            // mcheckBox_showNET
-            // 
-            this.mcheckBox_showNET.AutoSize = true;
-            this.mcheckBox_showNET.Location = new System.Drawing.Point(3, 3);
-            this.mcheckBox_showNET.Name = "mcheckBox_showNET";
-            this.mcheckBox_showNET.Size = new System.Drawing.Size(78, 17);
-            this.mcheckBox_showNET.TabIndex = 1;
-            this.mcheckBox_showNET.Text = "Show NET";
-            this.mcheckBox_showNET.UseVisualStyleBackColor = true;
-            this.mcheckBox_showNET.CheckedChanged += new System.EventHandler(this.mcheckBox_showNET_CheckedChanged);
-            // 
-            // mcomboBox_chargeStates
-            // 
-            this.mcomboBox_chargeStates.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.mcomboBox_chargeStates.FormattingEnabled = true;
-            this.mcomboBox_chargeStates.Location = new System.Drawing.Point(352, 3);
-            this.mcomboBox_chargeStates.Name = "mcomboBox_chargeStates";
-            this.mcomboBox_chargeStates.Size = new System.Drawing.Size(53, 21);
-            this.mcomboBox_chargeStates.TabIndex = 2;
-            // 
-            // mcheckBox_displayMZ
-            // 
-            this.mcheckBox_displayMZ.AutoSize = true;
-            this.mcheckBox_displayMZ.Location = new System.Drawing.Point(174, 3);
-            this.mcheckBox_displayMZ.Name = "mcheckBox_displayMZ";
-            this.mcheckBox_displayMZ.Size = new System.Drawing.Size(87, 17);
-            this.mcheckBox_displayMZ.TabIndex = 3;
-            this.mcheckBox_displayMZ.Text = "Display M/Z ";
-            this.mcheckBox_displayMZ.UseVisualStyleBackColor = true;
-            this.mcheckBox_displayMZ.CheckedChanged += new System.EventHandler(this.mcheckBox_displayMZ_CheckedChanged);
-            // 
-            // label1
-            // 
-            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(277, 7);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(69, 13);
-            this.label1.TabIndex = 4;
-            this.label1.Text = "Charge State";
             // 
             // ctlClusterChart
             // 
@@ -417,11 +300,6 @@ namespace MultiAlignCustomControls.Charting
             this.ChartLayout.MinLegendWidth = 75;
             this.ChartLayout.MinTitleHeight = 15;
             this.ChartLayout.TitleFraction = 0.1F;
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.mcheckBox_displayMZ);
-            this.Controls.Add(this.mcomboBox_chargeStates);
-            this.Controls.Add(this.mcheckBox_showNET);
-            this.Controls.Add(this.mcheckBox_showAligned);
             this.DefaultZoomHandler.Active = true;
             this.DefaultZoomHandler.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(119)))), ((int)(((byte)(136)))), ((int)(((byte)(153)))));
             this.DefaultZoomHandler.LineColor = System.Drawing.Color.Black;
@@ -453,7 +331,6 @@ namespace MultiAlignCustomControls.Charting
             this.YAxisLabel = "Monoisotopic Mass";
             ((System.ComponentModel.ISupportInitialize)(this)).EndInit();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
 		}
 		#endregion
@@ -468,10 +345,6 @@ namespace MultiAlignCustomControls.Charting
             UpdateDisplay();
             AutoViewPort();
         }
-        private void mcomboBox_chargeStates_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            UpdateDisplay();
-        }
         private void mcheckBox_displayMZ_CheckedChanged(object sender, EventArgs e)
         {
             UpdateDisplay();
@@ -479,35 +352,9 @@ namespace MultiAlignCustomControls.Charting
         public void UpdateDisplay()
         {
             AutoViewPortOnAddition = false;
-            this.SeriesCollection.Clear();
-
-            if (mcheckBox_showNET.Checked)
-            {
-                XAxisLabel = "NET";
-                if (mcheckBox_showAligned.Checked)
-                {
-                    XAxisLabel = "Aligned NET";
-                }
-            }
-            else
-            {
-                XAxisLabel = "Scan #";
-                if (mcheckBox_showAligned.Checked)
-                {
-                    XAxisLabel = "Aligned Scan #";
-                }
-            }
-
-            if (mcheckBox_displayMZ.Checked)
-            {
-                YAxisLabel = "M/Z";
-            }
-            else
-            {
-                YAxisLabel = "Monoisotopic Mass";
-            }
-
-            //TODO: Something here.
+            this.SeriesCollection.Clear();            
+            XAxisLabel = "NET";              
+            YAxisLabel = "Monoisotopic Mass";            
         }
         #endregion
     }

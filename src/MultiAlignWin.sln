@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiAlignCore", "MultiAlig
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiAlignParameterFileEditor", "MultiAlignParameterFileEditor\MultiAlignParameterFileEditor.csproj", "{A853D633-C2DE-4B9F-9EE8-AF97329E2BF8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Manassa", "Manassa\Manassa.csproj", "{6EC23CCC-4F36-47BF-B997-F0A5727822A5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -89,6 +91,12 @@ Global
 		{A853D633-C2DE-4B9F-9EE8-AF97329E2BF8}.Release|x64.ActiveCfg = Release|x86
 		{A853D633-C2DE-4B9F-9EE8-AF97329E2BF8}.Release|x86.ActiveCfg = Release|x86
 		{A853D633-C2DE-4B9F-9EE8-AF97329E2BF8}.Release|x86.Build.0 = Release|x86
+		{6EC23CCC-4F36-47BF-B997-F0A5727822A5}.Debug|x64.ActiveCfg = Debug|x86
+		{6EC23CCC-4F36-47BF-B997-F0A5727822A5}.Debug|x86.ActiveCfg = Debug|x86
+		{6EC23CCC-4F36-47BF-B997-F0A5727822A5}.Debug|x86.Build.0 = Debug|x86
+		{6EC23CCC-4F36-47BF-B997-F0A5727822A5}.Release|x64.ActiveCfg = Release|x86
+		{6EC23CCC-4F36-47BF-B997-F0A5727822A5}.Release|x86.ActiveCfg = Release|x86
+		{6EC23CCC-4F36-47BF-B997-F0A5727822A5}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

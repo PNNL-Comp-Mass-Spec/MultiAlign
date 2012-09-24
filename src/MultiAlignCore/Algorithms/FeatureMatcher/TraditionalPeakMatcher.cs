@@ -100,8 +100,8 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
             {
                 UMCCluster feature = new UMCCluster();
                 feature.ID = cluster.ID;
-                feature.MassMonoisotopicAligned = cluster.MassMonoisotopic;
-                feature.MassMonoisotopic = cluster.MassMonoisotopic;
+                feature.MassMonoisotopicAligned  = cluster.MassMonoisotopicAligned;
+                feature.MassMonoisotopic         = cluster.MassMonoisotopic;
                 feature.NET = cluster.NET;
                 feature.NETAligned = cluster.NET;
                 feature.ChargeState = cluster.ChargeState;

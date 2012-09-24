@@ -29,7 +29,7 @@ namespace MultiAlignTestSuite.IO
         public void CreateMsnTest()
         {
             MSnFeatureToMSFeatureDAOHibernate msnFeatures = new MSnFeatureToMSFeatureDAOHibernate();
-
+            
             MSFeatureToMSnFeatureMap map = new MSFeatureToMSnFeatureMap();
             map.LCMSFeatureID   = 0;
             map.MSDatasetID     = 0;

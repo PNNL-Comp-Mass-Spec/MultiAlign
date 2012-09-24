@@ -4,11 +4,12 @@
                    namespace="PNNLOmics.Data">
 
 	<class name="Protein" table="T_Proteins" lazy="false">
-		<id name="RefID" column="Protein_ID" type="integer">
-			<generator class="assigned" />
+		<id name="RefID" column="Ref_Id" type="integer">
+			<generator class="assigned" />      
 		</id>
-    <property name="Sequence"           column="Protein"              type="string"   not-null="false" />
-		<property name="ProteinDescription" column="Protein_Description"  type="string"   not-null="false" />		
-	</class>
+    <property name="Sequence"            column="Protein"              type="string"   not-null="false" />
+    <property name="ProteinDescription"  column="Protein_Description"  type="string"   not-null="false" />
+    <property name="ProteinID"           column="Protein_ID"           type="int"      not-null="false" />
+  </class>
 
 </hibernate-mapping>

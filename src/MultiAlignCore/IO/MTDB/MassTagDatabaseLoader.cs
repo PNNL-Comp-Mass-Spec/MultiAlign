@@ -189,6 +189,7 @@ namespace MultiAlignCore.IO.MTDB
                                         massTag.ModificationCount    = modCount;
                                         massTag.MSGFSpecProbMax      = msgf;
                                         massTag.PeptideSequence      = peptide;
+                                        massTag.ChargeState          = charge;
 
                                         if (massTag.NETAverage != -1)
                                         {
@@ -248,7 +249,7 @@ namespace MultiAlignCore.IO.MTDB
 					        {
 						        int     id          = Convert.ToInt32(reader["Mass_Tag_ID"]); 
 						        string  refName     = "";                                
-						        long    proteinId   = -1; 				
+						        int     proteinId   = -1; 				
 		                        int     refID       = -1;
 
 						        if (reader["Ref_ID"] != System.DBNull.Value)        refID       = Convert.ToInt32(reader["Ref_ID"]);
@@ -258,6 +259,7 @@ namespace MultiAlignCore.IO.MTDB
                                 Protein protein     = new Protein();
                                 protein.Sequence    = refName;
                                 protein.RefID       = refID;
+                                protein.ProteinID   = proteinId;
                                 
                                 // Link to the Mass tags.
                                 bool hasMassTagID   = massTagToProtein.ContainsKey(id);

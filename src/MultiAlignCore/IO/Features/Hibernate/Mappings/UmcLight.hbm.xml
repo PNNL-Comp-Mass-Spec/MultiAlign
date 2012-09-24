@@ -12,7 +12,7 @@
 		<property name="ConformationID"             column="Conformation_ID"            type="int" not-null="false" />
 		<property name="MassMonoisotopic"           column="Mass"                       type="double" not-null="false" />
 		<property name="MassMonoisotopicAligned"    column="Mass_Calibrated"            type="double" not-null="false" />
-		<property name="RetentionTime"              column="NET"                        type="double" not-null="false" />
+		<property name="RetentionTime"                        column="NET"                        type="double" not-null="false" />
 		<property name="Mz"                         column="MZ"                         type="double" not-null="false" />
 		<property name="Scan"                       column="Scan_LC"                    type="int" not-null="false" />
 		<property name="ScanStart"                  column="Scan_LC_Start"              type="int" not-null="false" />

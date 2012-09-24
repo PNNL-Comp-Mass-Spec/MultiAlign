@@ -25,19 +25,21 @@ namespace MultiAlignCore.IO
                                             out int         matchedMassTags, 
                                             out int         matchedProteins)
         {
-            List<MassTagLight> massTagArray = database.MassTags;           
+            List<MassTagLight> massTagArray = database.MassTags;
 
-            GenericDAOHibernate<ClusterToMassTagMap> clusterToMassTagMapDAOHibernate =
-                                new GenericDAOHibernate<ClusterToMassTagMap>();
+            ClusterToMassTagMapDAOHibernate clusterToMassTagMapDAOHibernate = new ClusterToMassTagMapDAOHibernate();
             GenericDAOHibernate<MassTagToProteinMap> massTagToProteinMapDAOHibernate =
                                 new GenericDAOHibernate<MassTagToProteinMap>();
 
-            GenericDAOHibernate<STACFDR> stacFDRDAOHibernate = new GenericDAOHibernate<STACFDR>();
+            STACDAOHibernate stacFDRDAOHibernate                = new STACDAOHibernate();
             List<MassTagLight> massTagList                      = new List<MassTagLight>();
             Dictionary<int, Protein> proteinList                = new Dictionary<int,Protein>();
             List<ClusterToMassTagMap> clusterToMassTagMapList   = new List<ClusterToMassTagMap>();
             List<STACFDR> stacFDRResultsList                    = new List<STACFDR>();
 
+            clusterToMassTagMapDAOHibernate.ClearAll();
+            stacFDRDAOHibernate.ClearAll();
+            
             foreach (FeatureMatchLight<UMCClusterLight, MassTagLight> match in results.Matches)
             {
                 MassTagLight         tag                = match.Target;
@@ -63,11 +65,11 @@ namespace MultiAlignCore.IO
                     List<Protein> proteins = database.Proteins[tag.ID];
                     foreach (Protein protein in proteins)
                     {
-                        MassTagToProteinMap massTagToProteinMap = new MassTagToProteinMap(tag.ID, protein.RefID);
+                        MassTagToProteinMap massTagToProteinMap = new MassTagToProteinMap(tag.ID, protein.ProteinID, protein.RefID);
                         
-                        if (!proteinList.ContainsKey(protein.RefID))
+                        if (!proteinList.ContainsKey(protein.ProteinID))
                         {
-                            proteinList.Add(protein.RefID, protein);
+                            proteinList.Add(protein.ProteinID, protein);
                         }
                     }
                 }

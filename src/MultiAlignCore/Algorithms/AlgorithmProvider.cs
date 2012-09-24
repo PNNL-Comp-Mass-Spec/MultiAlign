@@ -25,7 +25,7 @@ namespace MultiAlignCore.Algorithms
         /// <summary>
         /// Aligns features to features or MTDB's
         /// </summary>
-        private IFeatureAligner m_aligner;
+        private IFeatureAligner m_aligner;        
         /// <summary>
         /// Peak matches features to a database.
         /// </summary>
@@ -39,6 +39,7 @@ namespace MultiAlignCore.Algorithms
             m_clusterer     = null;
             m_aligner       = null;
             m_peakMatcher   = null;
+            LcScanAdjuster  = null;
         }
 
         /// <summary>
@@ -83,13 +84,21 @@ namespace MultiAlignCore.Algorithms
                 m_peakMatcher = value;
             }
         }
+        /// <summary>
+        /// Gets or sets the scan adjuster
+        /// </summary>
+        public ILcScanAdjuster LcScanAdjuster
+        {
+            get;
+            set;
+        }
         
         /// <summary>
         /// Registers events for algorithms.
         /// </summary>
         public void RegisterEvents()
         {
-            RegisterEvents(PeakMatcher, Aligner);
+            RegisterEvents(PeakMatcher, Aligner, LcScanAdjuster);
         }
         /// <summary>
         /// Registers status event handlers for each algorithm type.
@@ -99,7 +108,10 @@ namespace MultiAlignCore.Algorithms
         {
             foreach (IProgressNotifer provider in providers)
             {
-                provider.Progress += new System.EventHandler<ProgressNotifierArgs>(provider_Progress); 
+                if (provider != null)
+                {
+                    provider.Progress += new System.EventHandler<ProgressNotifierArgs>(provider_Progress);
+                }
             }
         }
 

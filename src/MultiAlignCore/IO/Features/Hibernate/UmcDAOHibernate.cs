@@ -3,6 +3,7 @@ using MultiAlignEngine.Features;
 using NHibernate.Criterion;
 using PNNLOmics.Data.Features;
 using System.Data.SQLite;
+using System;
 
 namespace MultiAlignCore.IO.Features.Hibernate
 {
@@ -91,6 +92,13 @@ namespace MultiAlignCore.IO.Features.Hibernate
                 return null;
 
             return umcs;
+        }
+        public int FindMaxCharge()
+        {
+            object data = GetSession().CreateCriteria(typeof(UMCLight))
+                            .SetProjection(Projections.Max("ChargeState"))
+                                .UniqueResult();
+            return Convert.ToInt32(data);
         }
         /// <summary>
         /// Finds a feature based on a cluster id.

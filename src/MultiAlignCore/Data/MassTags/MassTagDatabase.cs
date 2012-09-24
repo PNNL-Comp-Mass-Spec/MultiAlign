@@ -21,9 +21,19 @@ namespace MultiAlignCore.Data.MassTags
             MassTags    = new List<MassTagLight>();
             AllProteins = new List<Protein>();
             Proteins    = new Dictionary<int, List<Protein>>();
+            Name        = "Unknown";
         }
 
+
         #region Properties
+        /// <summary>
+        /// Set the name of the mass tag database.
+        /// </summary>
+        public string Name
+        {
+            get;
+            set;
+        }
         /// <summary>
         /// Gets the list of available mass tags.
         /// </summary>

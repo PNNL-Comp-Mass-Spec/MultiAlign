@@ -20,7 +20,9 @@
 		<property name="PeptideSequence"      column="Peptide"              type="string" not-null="false" />
 		<property name="PeptideSequenceEx"    column="Peptide_Ex"           type="string" not-null="false" />
 		<property name="ObservationCount"     column="MS_MS_Observed"       type="int"    not-null="false" />
-		<property name="ModificationCount"    column="Mod_Count"            type="int"    not-null="false" />		
-	</class>
+		<property name="ModificationCount"    column="Mod_Count"            type="int"    not-null="false" />
+    <property name="ChargeState"          column="Charge" type="int" />
+    <property name="DriftTime"            column="Drift_Time" type="double" />
+  </class>
 
 </hibernate-mapping>

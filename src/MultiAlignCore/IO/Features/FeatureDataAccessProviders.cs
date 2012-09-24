@@ -20,8 +20,7 @@ namespace MultiAlignCore.IO.Features
         public FeatureDataAccessProviders(  IUmcDAO                     featureCache,
                                             IUmcClusterDAO              clusterCache,
                                             IMSFeatureDAO               msFeatureCache,
-                                            IMSnFeatureDAO              msnFeatureCache,
-                                            IMSFeatureToLCMSFeatureDAO  msFeatureMap,
+                                            IMSnFeatureDAO              msnFeatureCache,                                            
                                             IMsnFeatureToMSFeatureDAO   msnFeatureMap,
                                             IDatasetDAO                 datasetCache,
                                             IMassTagMatchDAO            massTagMatches,
@@ -34,8 +33,7 @@ namespace MultiAlignCore.IO.Features
             ClusterCache                = clusterCache;
             FeatureCache                = featureCache;
             MSFeatureCache              = msFeatureCache;
-            MSnFeatureCache             = msnFeatureCache;
-            MSFeatureToLCMSFeatureCache = msFeatureMap;
+            MSnFeatureCache             = msnFeatureCache;            
             MSFeatureToMSnFeatureCache  = msnFeatureMap;
             DatasetCache                = datasetCache;
             MassTagMatches              = massTagMatches;
@@ -91,14 +89,6 @@ namespace MultiAlignCore.IO.Features
         /// Gets or sets the cache where the datasets information are stored.
         /// </summary>
         public IDatasetDAO DatasetCache
-        {
-            get;
-            set;
-        }
-        /// <summary>
-        /// Gets or sets the interface to teh MS Feature to LCMS Feature map.
-        /// </summary>
-        public IMSFeatureToLCMSFeatureDAO MSFeatureToLCMSFeatureCache
         {
             get;
             set;

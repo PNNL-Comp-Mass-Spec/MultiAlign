@@ -133,6 +133,9 @@
     <Compile Include="Algorithms\Alignment\AlignmentOptions.cs" />
     <Compile Include="Algorithms\Alignment\ChebyshevAligner.cs" />
     <Compile Include="Algorithms\Alignment\DriftTimeAligner.cs" />
+    <Compile Include="Algorithms\Alignment\AsymmetricGaussianScanAdjuster.cs" />
+    <Compile Include="Algorithms\Alignment\ILcScanAdjuster.cs" />
+    <Compile Include="Algorithms\Alignment\LcScanAdjustment.cs" />
     <Compile Include="Algorithms\Alignment\MSMSAlignmentDatabaseBuilder.cs" />
     <Compile Include="Algorithms\Alignment\MSMSSpectralClusterer.cs" />
     <Compile Include="Algorithms\Alignment\DriftTimeAlignmentOptions.cs" />
@@ -192,16 +195,15 @@
     <Compile Include="Data\Factors\TreeNodeConverter.cs" />
     <Compile Include="Data\Features\FeatureFilterOptions.cs" />
     <Compile Include="Data\Features\LCMSFeatureFilters.cs" />
-    <Compile Include="Data\MassTags\MassTagConformation.cs" />
     <Compile Include="Data\MassTags\MassTagDatabase.cs" />
     <Compile Include="Data\MassTags\MassTagDatabaseFormat.cs" />
     <Compile Include="Data\MassTagToProteinMap.cs" />
-    <Compile Include="Data\MSFeatureToLCMSFeatureMap.cs" />
     <Compile Include="Data\MSFeatureToMSnFeatureMap.cs" />
     <Compile Include="Data\MultiAlignAnalysis.cs" />
     <Compile Include="Data\MultiAlignAnalysisDelegates.cs" />
     <Compile Include="Data\PeakMatchingResults.cs" />
     <Compile Include="Data\SequenceData\DatabaseSearchSequence.cs" />
+    <Compile Include="Extensions\FeatureExtensions.cs" />
     <Compile Include="IO\Analysis\AnalysisAlignmentDataWriter.cs" />
     <Compile Include="IO\Analysis\AnalysisBinaryReader.cs" />
     <Compile Include="IO\Analysis\AnalysisBinaryWriter.cs" />
@@ -218,6 +220,9 @@
     <Compile Include="IO\ClusterExporterComposite.cs" />
     <Compile Include="IO\Factors\FactorFileReader.cs" />
     <Compile Include="IO\Factors\MultiAlignFactorSink.cs" />
+    <Compile Include="IO\Features\FeatureAdjusterWriter.cs" />
+    <Compile Include="IO\Features\Hibernate\ClusterToMassTagMap.cs" />
+    <Compile Include="IO\Features\Hibernate\STACDAOHibernate.cs" />
     <Compile Include="IO\Features\LCMSFeatureFileReader.cs" />
     <Compile Include="IO\Features\Hibernate\MassTagMatchDAO.cs" />
     <Compile Include="IO\Features\IMassTagMatchDAO.cs" />
@@ -240,8 +245,6 @@
     <Compile Include="IO\Features\UMCClusterAbundanceCrossTabWriter.cs" />
     <Compile Include="IO\Features\FeatureExtractionTableWriter.cs" />
     <Compile Include="IO\Features\IMSnFeatureToMSFeatureDAO.cs" />
-    <Compile Include="IO\Features\IMSFeatureToLCMSFeatureDAO.cs" />
-    <Compile Include="IO\Features\Hibernate\MSFeatureToLCMSFeatureDAO.cs" />
     <Compile Include="IO\Features\Hibernate\MSnFeatureToMSFeatureDAOHibernate.cs" />
     <Compile Include="IO\Features\IFeatureClusterWriter.cs" />
     <Compile Include="IO\Features\IMSnFeatureDAO.cs" />
@@ -250,7 +253,6 @@
     <Compile Include="IO\Features\Hibernate\DatasetDAOHibernate.cs" />
     <Compile Include="IO\Features\Hibernate\FactorDAOHibernate.cs" />
     <Compile Include="IO\Features\Hibernate\GenericDAOHibernate.cs" />
-    <Compile Include="IO\Features\Hibernate\MassTagDAO.cs" />
     <Compile Include="IO\Features\Hibernate\MassTagDAOHibernate.cs" />
     <Compile Include="IO\Features\Hibernate\MSFeatureDAOHibernate.cs" />
     <Compile Include="IO\Features\Hibernate\MSnFeatureDAOHibernate.cs" />
@@ -267,10 +269,6 @@
     <Compile Include="IO\Features\IRawDataFileReader.cs" />
     <Compile Include="IO\Features\IUmcClusterDAO.cs" />
     <Compile Include="IO\Features\IUmcDAO.cs" />
-    <Compile Include="IO\Features\Mammoth\IFeatureDatabase.cs" />
-    <Compile Include="IO\Features\Mammoth\MammothDatabase.cs" />
-    <Compile Include="IO\Features\Mammoth\MammothDatabaseRange.cs" />
-    <Compile Include="IO\Features\Mammoth\MammothDatabaseStateException.cs" />
     <Compile Include="IO\Features\MzXMLReader.cs" />
     <Compile Include="IO\Features\RawLoaderFactory.cs" />
     <Compile Include="IO\Features\ThermoRawDataFileReader.cs" />
@@ -343,19 +341,15 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="IO\Features\Hibernate\Mappings\MSnFeatureToMSFeatureMap.hbm.xml" />
-    <EmbeddedResource Include="IO\Features\Hibernate\Mappings\MSFeatureToLCMSFeatureMap.hbm.xml" />
     <EmbeddedResource Include="IO\Features\Hibernate\Mappings\Dataset.hbm.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="IO\Features\Hibernate\Mappings\Factor.hbm.xml" />
     <EmbeddedResource Include="IO\Features\Hibernate\Mappings\MassTag.hbm.xml" />
-    <EmbeddedResource Include="IO\Features\Hibernate\Mappings\MassTagConformations.hbm.xml" />
     <EmbeddedResource Include="IO\Features\Hibernate\Mappings\MassTagToProteinMap.hbm.xml" />
     <EmbeddedResource Include="IO\Features\Hibernate\Mappings\MSFeature.hbm.xml" />
     <EmbeddedResource Include="IO\Features\Hibernate\Mappings\Protein.hbm.xml" />
     <EmbeddedResource Include="IO\Features\Hibernate\Mappings\StacFDR.hbm.xml" />
-    <EmbeddedResource Include="IO\Features\Hibernate\Mappings\Umc.hbm.xml" />
-    <EmbeddedResource Include="IO\Features\Hibernate\Mappings\UmcCluster.hbm.xml" />
     <EmbeddedResource Include="IO\Parameters\Hibernate\ParameterHibernateMapping.hbm.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -363,7 +357,9 @@
     <EmbeddedResource Include="IO\Features\Hibernate\Mappings\MSMSClusterMap.hbm.xml" />
     <EmbeddedResource Include="IO\SequenceData\Mappings\DatabaseSearchSequence.hbm.xml" />
     <EmbeddedResource Include="IO\Features\Hibernate\Mappings\AlignmentData.hbm.xml" />
-    <EmbeddedResource Include="IO\Features\Hibernate\Mappings\UmcLight.hbm.xml" />
+    <EmbeddedResource Include="IO\Features\Hibernate\Mappings\UmcLight.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="IO\Features\Hibernate\Mappings\UmcClusterLight.hbm.xml" />
     <Content Include="MSDBLibrary.dll" />
     <Content Include="xerces-c_2_7.dll" />
@@ -388,7 +384,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Extensions\" />
     <Folder Include="IO\RawData\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

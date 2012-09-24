@@ -93,30 +93,13 @@ namespace MultiAlignConsole
         {
             if (e.Analysis.MassTagDatabase != null)
             {
-                m_config.Report.PushLargeText("Mass Tag Database Stats");
-                m_config.Report.PushStartTable();
-                m_config.Report.PushStartTableRow();
-                string databaseTags = string.Format("Number Of Mass Tags Loaded {0}", e.Analysis.MassTagDatabase.MassTags.Count);
-                m_config.Report.PushData(databaseTags);
-                m_config.Report.PushEndTableRow();
-                m_config.Report.PushEndTable();
+                
             }
 
             m_config.Report.PushEndHeader();
 
             ExportData(e.Analysis.DataProviders, AnalysisPathUtils.BuildAnalysisName(m_config.AnalysisPath, m_config.AnalysisName), e.Analysis.MetaData.Datasets);
-
-
-            if (m_config.makeMSMSExtractor)
-            {
-                MsmsExtractor extractor = new MsmsExtractor();
-                extractor.Progress += new EventHandler<PNNLOmics.Algorithms.ProgressNotifierArgs>(extractor_Progress);
-                MultiAlignCore.Algorithms.MSLinker.FeaturesExtractedEventArgs args = extractor.ExtractMSMS(e.Analysis.DataProviders, e.Analysis.MetaData.Datasets);
-
-                MultiAlignCore.IO.Features.UMCClusterMsmsWriter writer = new UMCClusterMsmsWriter(AnalysisPathUtils.BuildAnalysisName(m_config.AnalysisPath, m_config.AnalysisName));
-                writer.WriteClusters(args);
-            }
-
+            
             m_config.triggerEvent.Set();
         }
         /// <summary>
@@ -144,8 +127,7 @@ namespace MultiAlignConsole
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void processor_FeaturesClustered(object sender, FeaturesClusteredEventArgs e)
-        {
-            Logger.PrintMessage("Features Clustered.");            
+        {            
         }
         /// <summary>
         /// Logs when features are peak matched.
@@ -168,7 +150,7 @@ namespace MultiAlignConsole
         }
         void processor_MassTagsLoaded(object sender, MassTagsLoadedEventArgs e)
         {
-            m_reportCreator.CreateMassTagPlot(e);
+            m_reportCreator.CreateMassTagPlot(e);            
         }
         /// <summary>
         /// Logs status messages.
@@ -289,8 +271,6 @@ namespace MultiAlignConsole
             Logger.PrintMessage("          Exports clusters and their LC-MS features in cross tab fashion.  Each row is a cluster.  No mass tags are exported.  This file will be sent to the analysis path folder you specified.", false);
             Logger.PrintMessage("   -exportAbundances  crossTabFileName     ", false);
             Logger.PrintMessage("          Exports cluster ids and the abundances of their LC-MS features in cross tab fashion.  Each row is a cluster.  No mass tags are exported.  This file will be sent to the analysis path folder you specified.", false);
-            Logger.PrintMessage("   -extractMSMS      ", false);
-            Logger.PrintMessage("          Extracts information about clusters that have tandem mass spectra.  Does not execute any further analysis.", false);
             Logger.PrintMessage("   -exportDTA      ", false);
             Logger.PrintMessage("          Exports all MS/MS spectra in the DTA format.", false);
             Logger.PrintMessage("   -plots   [databaseName]  ", false);
@@ -446,20 +426,33 @@ namespace MultiAlignConsole
         private  MultiAlignAnalysisProcessor ConstructAnalysisProcessor(AlgorithmBuilder builder, FeatureDataAccessProviders providers)
         {
             MultiAlignAnalysisProcessor processor = new MultiAlignAnalysisProcessor();
-            processor.AnalysisError += new EventHandler<AnalysisErrorEventArgs>(processor_AnalysisError);
-            processor.FeaturesAligned += new EventHandler<FeaturesAlignedEventArgs>(processor_FeaturesAligned);
-            processor.FeaturesLoaded += new EventHandler<FeaturesLoadedEventArgs>(processor_FeaturesLoaded);
-            processor.MassTagsLoaded += new EventHandler<MassTagsLoadedEventArgs>(processor_MassTagsLoaded);
-            processor.FeaturesClustered += new EventHandler<FeaturesClusteredEventArgs>(processor_FeaturesClustered);
-            processor.FeaturesPeakMatched += new EventHandler<FeaturesPeakMatchedEventArgs>(processor_FeaturesPeakMatched);
-            processor.AnalysisComplete += new EventHandler<AnalysisCompleteEventArgs>(processor_AnalysisComplete);
-            processor.Status += new EventHandler<AnalysisStatusEventArgs>(processor_Status);
-            processor.FeaturesExtracted += new EventHandler<MultiAlignCore.Algorithms.MSLinker.FeaturesExtractedEventArgs>(processor_FeaturesExtracted);
+            processor.AnalysisError         += new EventHandler<AnalysisErrorEventArgs>(processor_AnalysisError);
+            processor.FeaturesAligned       += new EventHandler<FeaturesAlignedEventArgs>(processor_FeaturesAligned);
+            processor.FeaturesLoaded        += new EventHandler<FeaturesLoadedEventArgs>(processor_FeaturesLoaded);
+            processor.MassTagsLoaded        += new EventHandler<MassTagsLoadedEventArgs>(processor_MassTagsLoaded);
+            processor.FeaturesClustered     += new EventHandler<FeaturesClusteredEventArgs>(processor_FeaturesClustered);
+            processor.FeaturesPeakMatched   += new EventHandler<FeaturesPeakMatchedEventArgs>(processor_FeaturesPeakMatched);
+            processor.AnalysisComplete      += new EventHandler<AnalysisCompleteEventArgs>(processor_AnalysisComplete);
+            processor.Status                += new EventHandler<AnalysisStatusEventArgs>(processor_Status);
+            processor.FeaturesAdjusted += new EventHandler<FeaturesAdjustedEventArgs>(processor_FeaturesAdjusted);
+            processor.BaselineFeaturesLoaded += new EventHandler<BaselineFeaturesLoadedEventArgs>(processor_BaselineFeaturesLoaded);
+            processor.FeaturesExtracted     += new EventHandler<MultiAlignCore.Algorithms.MSLinker.FeaturesExtractedEventArgs>(processor_FeaturesExtracted);
             m_config.DataProviders = providers;
 
             processor.AlgorithmProvders = builder.GetAlgorithmProvider(m_config.Analysis.Options);
 
             return processor;
+        }
+
+        void processor_FeaturesAdjusted(object sender, FeaturesAdjustedEventArgs e)
+        {
+            FeatureAdjusterWriter writer = new FeatureAdjusterWriter();
+            writer.WriteFeatures(Path.Combine(m_config.AnalysisPath, e.DatasetInformation.DatasetName + "_adjustedScans.csv"), e.Features, e.AdjustedFeatures);
+        }
+
+        void processor_BaselineFeaturesLoaded(object sender, BaselineFeaturesLoadedEventArgs e)
+        {
+            m_reportCreator.CreateBaselinePlots(e);
         }
 
         /// <summary>
@@ -824,16 +817,33 @@ namespace MultiAlignConsole
             if (m_config.ExporterNames.CrossTabPath != null)
             {
                 UMCClusterCrossTabWriter writer = new UMCClusterCrossTabWriter(Path.Combine(m_config.AnalysisPath, m_config.ExporterNames.CrossTabPath));
-                writer.Consolidator = FeatureConsolidatorFactory.CreateConsolidator(m_config.Analysis.Options.ConsolidationOptions.AbundanceType,
-                                                                                                m_config.Analysis.Options.FeatureFindingOptions.UMCAbundanceReportingType);
+           
+                MultiAlignCore.Algorithms.FeatureFinding.AbundanceReportingType reporting    = MultiAlignCore.Algorithms.FeatureFinding.AbundanceReportingType.Sum;
+                MultiAlignCore.Algorithms.FeatureFinding.AbundanceReportingType umcAbundance = MultiAlignCore.Algorithms.FeatureFinding.AbundanceReportingType.Sum;
+                if (m_config.Analysis != null)
+                {                    
+                    reporting    = m_config.Analysis.Options.ConsolidationOptions.AbundanceType;
+                    umcAbundance = m_config.Analysis.Options.FeatureFindingOptions.UMCAbundanceReportingType;
+                }
+                writer.Consolidator = FeatureConsolidatorFactory.CreateConsolidator(reporting,
+                                                                                    umcAbundance);
                 m_config.ClusterExporters.Add(writer);
             }
             if (m_config.ExporterNames.CrossTabAbundance != null)
             {
                 UMCClusterAbundanceCrossTabWriter writer = new UMCClusterAbundanceCrossTabWriter(Path.Combine(m_config.AnalysisPath,
                                                                                                  m_config.ExporterNames.CrossTabAbundance));
-                writer.Consolidator = FeatureConsolidatorFactory.CreateConsolidator(m_config.Analysis.Options.ConsolidationOptions.AbundanceType,
-                                                                                                         m_config.Analysis.Options.FeatureFindingOptions.UMCAbundanceReportingType);
+
+                MultiAlignCore.Algorithms.FeatureFinding.AbundanceReportingType reporting = MultiAlignCore.Algorithms.FeatureFinding.AbundanceReportingType.Sum;
+                MultiAlignCore.Algorithms.FeatureFinding.AbundanceReportingType umcAbundance = MultiAlignCore.Algorithms.FeatureFinding.AbundanceReportingType.Sum;
+                if (m_config.Analysis != null)
+                {
+                    reporting = m_config.Analysis.Options.ConsolidationOptions.AbundanceType;
+                    umcAbundance = m_config.Analysis.Options.FeatureFindingOptions.UMCAbundanceReportingType;
+                }
+                writer.Consolidator = FeatureConsolidatorFactory.CreateConsolidator(reporting,
+                                                                                    umcAbundance);
+
                 m_config.ClusterExporters.Add(writer);
             }
         }
@@ -1058,7 +1068,7 @@ namespace MultiAlignConsole
             // Construct the dataset information for export.
             ConstructDatasetInformation(analysisSetupInformation, config.Analysis, createDatabase);
 
-            if (config.useFactors)
+            if (config.ShouldUseFactors)
             {
                 ConstructFactorInformation(analysisSetupInformation, config.Analysis.MetaData.Datasets, config.Analysis.DataProviders);
             }
@@ -1172,16 +1182,6 @@ namespace MultiAlignConsole
                 Logger.PrintMessage("There are no datasets present in the current database.");
                 CleanupDataProviders();
                 return 1;
-            }
-
-            if (config.ExporterNames.ClusterMSMSPath != null)
-            {
-                // Create an analysis object so the analysis processor doesnt freak.
-                InputAnalysisInfo infoExport = new InputAnalysisInfo();
-                config.Analysis = ConstructAnalysisObject(infoExport);
-
-                processor = ConstructAnalysisProcessor(builder, providers);
-                processor.ExtractMSMS(providers, datasets);
             }
 
             ConstructExporting();

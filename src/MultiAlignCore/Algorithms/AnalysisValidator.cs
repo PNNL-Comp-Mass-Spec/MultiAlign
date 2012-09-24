@@ -57,7 +57,7 @@ namespace MultiAlignCore.Algorithms
                 // --------------------------------------------------------------------------------
                 // Imports the factors into the database.
                 // --------------------------------------------------------------------------------            
-                if (config.useFactors)
+                if (config.ShouldUseFactors)
                 {
                     Logger.PrintMessage("Importing factors only");
                     analysisType = AnalysisType.FactorImporting;

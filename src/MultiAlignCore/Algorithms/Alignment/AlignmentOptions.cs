@@ -33,15 +33,36 @@ namespace MultiAlignCore.Algorithms.Alignment
 			MassBinSize				    = .2;
 			NETBinSize				    = .001;
 			DriftTimeBinSize		    = .03;
-
-            SplitAlignmentInMZ          = false;
-			MZBoundaries				= new List<classAlignmentMZBoundary>();
+            ShouldStoreAlignmentFunction  = false;
+            SplitAlignmentInMZ            = false;
+			MZBoundaries				  = new List<classAlignmentMZBoundary>();
+            UseSicScanCorrection          = false;
 
 			/// Construct the m/z boundary object.			
 			MZBoundaries.Add(new classAlignmentMZBoundary(0.0, 505.7));
 			MZBoundaries.Add(new classAlignmentMZBoundary(505.7, 999999999.0));
         }
-
+        /// <summary>
+        /// Gets or sets whether to store alignment data.
+        /// </summary>
+        [ParameterFileAttribute("UseSicScanCorrection", "Alignment")]
+        [Category("Experimental")]
+        [Description("Corrects for the LC-scan time based on the peak of the Lc-elution profile (SIC)")]
+        public bool UseSicScanCorrection
+        {
+            get;
+            set;
+        }
+        /// <summary>
+        /// Gets or sets whether to store alignment data.
+        /// </summary>
+        [ParameterFileAttribute("ShouldStoreAlignmentFunction", "Alignment")]
+        [Description("Stores the alignment function per dataset.  Optional only.  Set to false if processing a large amount of data.")]
+        public bool ShouldStoreAlignmentFunction
+        {
+            get;
+            set;
+        }
         [Browsable(false)]
         public bool AlignToMassTagDatabase
         {

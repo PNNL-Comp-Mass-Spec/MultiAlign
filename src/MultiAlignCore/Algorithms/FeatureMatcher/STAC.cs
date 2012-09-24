@@ -79,7 +79,7 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
                 mt.Modifications                 = tag.Modifications;
                 mt.Molecule                      = tag.Molecule;
                 mt.MSGFSpecProbMax               = tag.MSGFSpecProbMax;
-                mt.NET                           = tag.NET;
+                mt.NET                           = tag.NETAverage;
                 mt.NETAverage                    = tag.NETAverage;
                 mt.NETPredicted                  = tag.NETPredicted;
                 mt.NETStandardDeviation          = tag.NETStandardDeviation;

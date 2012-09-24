@@ -191,6 +191,9 @@ namespace MultiAlignCore.IO.Features
 			int             currentId   = -99;
 			int             idIndex     = 0;
 
+            int minScan = int.MaxValue;
+            int maxScan = int.MinValue;
+
 			// Read the rest of the Stream, 1 line at a time, and save the appropriate data into new Objects
 			while ((line = m_umcFileReader.ReadLine()) != null)
 			{
@@ -267,9 +270,22 @@ namespace MultiAlignCore.IO.Features
 					if (m_columnMap.ContainsKey("Umc.AverageDeconFitScore"))		umc.AverageDeconFitScore = Double.Parse(columns[m_columnMap["Umc.AverageDeconFitScore"]]);
                     if (m_columnMap.ContainsKey("Umc.SaturatedCount"))              umc.SaturatedMemberCount = int.Parse(columns[m_columnMap["Umc.SaturatedCount"]]);
 					umcList.Add(umc);
+
+                    minScan = Math.Min(umc.Scan, minScan);
+                    maxScan = Math.Max(umc.Scan, maxScan);
+
 					previousId = currentId;
 				}
 			}
+            
+            foreach(UMCLight x in umcList)
+            {
+                x.MassMonoisotopicAligned   = x.MassMonoisotopic;
+                x.ScanAligned               = x.Scan;
+                x.NET                       = (Convert.ToDouble(x.Scan - minScan) / Convert.ToDouble(maxScan - minScan));
+                x.NETAligned                = x.NET;
+                x.RetentionTime             = (Convert.ToDouble(x.Scan - minScan) / Convert.ToDouble(maxScan - minScan));
+            }            
 			return umcList;
 		}
 		#endregion

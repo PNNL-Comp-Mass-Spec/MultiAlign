@@ -52,6 +52,7 @@ namespace MultiAlignCore.IO.Features
         /// </summary>
         /// <returns></returns>
         List<UMCLight> FindAllClustered();
+        int FindMaxCharge();
         /// <summary>
         /// Clears old alignment data from all of the features.
         /// </summary>

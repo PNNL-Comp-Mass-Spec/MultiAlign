@@ -7,8 +7,9 @@ namespace MultiAlignCore.Data
 {
 	public class MassTagToProteinMap : ISerializable
 	{
-		private int m_massTagId;
-		private int m_proteinId;
+        private int m_massTagId;
+        private int m_proteinId;
+        private int m_refId;        
 		private int m_cleavageState;
 		private int m_terminusState;
 
@@ -17,10 +18,11 @@ namespace MultiAlignCore.Data
 
 		}
 
-		public MassTagToProteinMap(int massTagId, int proteinId)
+		public MassTagToProteinMap(int massTagId, int proteinId, int refId)
 		{
 			m_massTagId = massTagId;
 			m_proteinId = proteinId;
+            m_refId     = refId;
 		}
 
 		public void GetObjectData(SerializationInfo info, StreamingContext context)
@@ -50,8 +52,9 @@ namespace MultiAlignCore.Data
 		{
 			int hash = 17;
 
-			hash = hash * 23 + m_massTagId.GetHashCode();
-			hash = hash * 23 + m_proteinId.GetHashCode();
+            hash = hash * 23 + m_massTagId.GetHashCode();
+            hash = hash * 23 + m_proteinId.GetHashCode();
+            hash = hash * 23 + m_refId.GetHashCode();
 
 			return hash;
 		}
@@ -79,5 +82,16 @@ namespace MultiAlignCore.Data
 			get { return m_terminusState; }
 			set { m_terminusState = value; }
 		}
+        public int RefId
+        {
+            get
+            {
+                return m_refId;
+            }
+            set
+            {
+                m_refId = value;
+            }
+        }
 	}
 }

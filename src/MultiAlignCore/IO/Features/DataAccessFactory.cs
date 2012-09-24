@@ -36,19 +36,17 @@ namespace MultiAlignCore.IO.Features
             IUmcDAO featureCache                                = new UmcDAOHibernate();
             IUmcClusterDAO clusterCache                         = new UmcClusterDAOHibernate();
             IMSFeatureDAO msFeatureCache                        = new MSFeatureDAOHibernate();
-            IMSnFeatureDAO msnFeatureCache                      = new MSnFeatureDAOHibernate();
-            IMSFeatureToLCMSFeatureDAO  msFeatureMap            = new MSFeatureToLCMSFeatureDAO(); 
-            IMsnFeatureToMSFeatureDAO   msnFeatureMap           = new MSnFeatureToMSFeatureDAOHibernate(); 
+            IMSnFeatureDAO msnFeatureCache                      = new MSnFeatureDAOHibernate();            
+            IMsnFeatureToMSFeatureDAO   msnMSCache              = new MSnFeatureToMSFeatureDAOHibernate();
             IDatasetDAO                 datasetCache            = new DatasetDAOHibernate();
             IMassTagDAO                 massTagCache            = new MassTagDAOHibernate();
             IMassTagMatchDAO            massTagMatchCache       = new MassTagMatchDAO();
             FeatureDataAccessProviders providers =
-                                            new FeatureDataAccessProviders( featureCache, 
+                                            new FeatureDataAccessProviders(featureCache, 
                                                                             clusterCache,
                                                                             msFeatureCache,
                                                                             msnFeatureCache,
-                                                                            msFeatureMap,
-                                                                            msnFeatureMap,
+                                                                            msnMSCache,
                                                                             datasetCache,
                                                                             massTagMatchCache,
                                                                             massTagCache,

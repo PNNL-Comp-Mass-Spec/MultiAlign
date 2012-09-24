@@ -105,7 +105,7 @@ namespace MultiAlignCore.IO.Features
                     }
 
                     StringBuilder builder = new StringBuilder();
-                    builder.Append(string.Format("{0},{1},{2},{3},{4}", cluster.ID, cluster.UMCList.Count, features.Keys.Count, cluster.Score, cluster.AmbiguityScore));
+                    builder.Append(string.Format("{0},{1},{2},{3},{4}", cluster.ID, cluster.UMCList.Count, features.Keys.Count, cluster.Tightness, cluster.AmbiguityScore));
 
 
                     if (clusterMap.Count > 0)

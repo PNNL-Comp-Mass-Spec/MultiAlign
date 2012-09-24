@@ -65,7 +65,7 @@ namespace MultiAlignCore.IO.Features
                                                                 cluster.NET, 
                                                                 cluster.MassMonoisotopic, 
                                                                 cluster.Tightness, 
-                                                                cluster.Ambiguity);
+                                                                cluster.AmbiguityScore);
                                     
                     bool hasMatches = clusters.MassTagMatches.ContainsKey(clusterID);
                     if (hasMatches)

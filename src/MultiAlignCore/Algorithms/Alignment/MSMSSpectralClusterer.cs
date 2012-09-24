@@ -66,7 +66,7 @@ namespace MultiAlignCore.Algorithms.Alignment
         /// Clusters a set of MS/MS spectra together.
         /// </summary>
         /// <param name="analysis"></param>
-        public void ClusterMSMSSpectra(MultiAlignAnalysis analysis)
+       /* public void ClusterMSMSSpectra(MultiAlignAnalysis analysis)
         {           
             Dictionary<int, Dictionary<int, Dictionary<int, DatabaseSearchSequence>>> sequenceMap =
                 new Dictionary<int, Dictionary<int, Dictionary<int, DatabaseSearchSequence>>>();
@@ -116,7 +116,7 @@ namespace MultiAlignCore.Algorithms.Alignment
                 analysis.DataProviders.MSMSClusterCache.AddAll(maps);
             }
         }
-
+        */
         void extractor_Progress(object sender, ProgressNotifierArgs e)
         {
             UpdateStatus(e.Message);

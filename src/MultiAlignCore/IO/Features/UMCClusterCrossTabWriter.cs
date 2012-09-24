@@ -114,7 +114,7 @@ namespace MultiAlignCore.IO.Features
 
                     // We may have multiple matches to a single cluster.
                     StringBuilder builder = new StringBuilder();
-                    builder.Append(string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8}", cluster.ID, cluster.MassMonoisotopic, cluster.RetentionTime, cluster.DriftTime, cluster.ChargeState, cluster.UMCList.Count, features.Keys.Count, cluster.Score, cluster.AmbiguityScore));
+                    builder.Append(string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8}", cluster.ID, cluster.MassMonoisotopic, cluster.RetentionTime, cluster.DriftTime, cluster.ChargeState, cluster.UMCList.Count, features.Keys.Count, cluster.Tightness, cluster.AmbiguityScore));
                     if (clusterMap.Count > 0)
                     {
                         if (clusterMap.ContainsKey(cluster.ID))

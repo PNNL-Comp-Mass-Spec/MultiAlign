@@ -1,35 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using MultiAlignCore.Algorithms.Alignment;
-using MultiAlignCore.Algorithms.FeatureFinding;
-using MultiAlignCore.Algorithms.FeatureMatcher;
 using MultiAlignCore.Algorithms.MSLinker;
 using MultiAlignCore.Data;
-using MultiAlignCore.Data.Alignment;
-using MultiAlignCore.Data.MassTags;
-using MultiAlignCore.IO;
-using MultiAlignCore.IO.Features;
-using MultiAlignCore.IO.InputFiles;
-using MultiAlignCore.IO.Mammoth;
-using MultiAlignCore.IO.MTDB;
-using MultiAlignEngine.Clustering;
-using MultiAlignEngine.Features;
-using MultiAlignEngine.MassTags;
 using PNNLOmics.Algorithms;
-using PNNLOmics.Algorithms.Alignment;
-using PNNLOmics.Algorithms.FeatureClustering;
-using PNNLOmics.Algorithms.FeatureMatcher.MSnLinker;
-using PNNLOmics.Algorithms.SpectralComparisons;
 using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Data.MassTags;
-using PNNLOmicsIO.IO;
 
 namespace MultiAlignCore.IO.Features
 {
+    /*
     /// <summary>
     /// Pulls MS/MS data from the database 
     /// </summary>
@@ -198,4 +178,5 @@ namespace MultiAlignCore.IO.Features
             return args;
         }
     }
+     */
 }

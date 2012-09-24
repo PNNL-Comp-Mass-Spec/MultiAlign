@@ -5,6 +5,7 @@ using MultiAlignEngine.Features;
 using PNNLOmics.Algorithms.Alignment;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Data.MassTags;
+using MultiAlignCore.Data.MassTags;
 
 namespace MultiAlignCore.Data
 {
@@ -59,7 +60,7 @@ namespace MultiAlignCore.Data
             m_datasetInformation = datasetInfo;
             m_baselinDatasetInformation = datasetInfo;
             m_alignmentData = alignmentData;
-            DriftTimeAlignmentData = null;
+            DriftTimeAlignmentData   = null;
             OffsetDriftAlignmentData = null;
         }
 
@@ -105,6 +106,14 @@ namespace MultiAlignCore.Data
         /// Gets the drift time alignment data.
         /// </summary>
         public DriftTimeAlignmentResults<UMC, UMC> OffsetDriftAlignmentData
+        {
+            get;
+            set;
+        }
+        /// <summary>
+        /// Features that were aligned.
+        /// </summary>
+        public List<UMCLight> AlignedFeatures
         {
             get;
             set;
@@ -176,6 +185,66 @@ namespace MultiAlignCore.Data
         /// Gets the dataset information.
         /// </summary>
         public List<MassTagLight> MassTags
+        {
+            get;
+            private set;
+        }
+    }
+    /// <summary>
+    /// Class for baselined loaded features.
+    /// </summary>
+    public class BaselineFeaturesLoadedEventArgs : FeaturesLoadedEventArgs
+    {
+        public BaselineFeaturesLoadedEventArgs(DatasetInformation info, List<UMCLight> features, MassTagDatabase database) :
+            base(info, features)
+        {
+            Database = database;
+        }
+        public BaselineFeaturesLoadedEventArgs(DatasetInformation info, List<UMCLight> features) :
+            base(info, features)
+        {
+            Database = null;
+        }
+        public MassTagDatabase Database
+        {
+            get;
+            set;
+        }
+    }
+    public class FeaturesAdjustedEventArgs : EventArgs
+    {
+        /// <summary>
+        /// Arguments that hold dataset information when features are loaded.
+        /// </summary>        
+        /// <param name="info">Dataset information object</param>        
+        public FeaturesAdjustedEventArgs(DatasetInformation       info,
+                                        List<UMCLight>            features,
+                                        List<UMCLight>            adjustedFeatures)                                       
+        {            
+            DatasetInformation      = info;
+            Features                = features;
+            AdjustedFeatures        = adjustedFeatures;
+        }
+        /// <summary>
+        /// Gets the dataset information.
+        /// </summary>
+        public DatasetInformation DatasetInformation
+        {
+            get;
+            private set;
+        }
+        /// <summary>
+        /// Gets the list of features found.
+        /// </summary>
+        public List<UMCLight> Features
+        {
+            get;
+            private set;
+        }
+        /// <summary>
+        /// Gets the list of features found.
+        /// </summary>
+        public List<UMCLight> AdjustedFeatures
         {
             get;
             private set;

@@ -204,6 +204,14 @@ namespace MultiAlignConsole.Drawing
 
             Config.Report.PushEndTableRow();
             Config.Report.PushEndTable();
+
+            Config.Report.PushLargeText("Mass Tag Database Stats");
+            Config.Report.PushStartTable();
+            Config.Report.PushStartTableRow();
+            string databaseTags = string.Format("Number Of Mass Tags Loaded {0}", e.MassTags.Count);
+            Config.Report.PushData(databaseTags);
+            Config.Report.PushEndTableRow();
+            Config.Report.PushEndTable();
         }
         public void CreatePeakMatchedPlots(FeaturesPeakMatchedEventArgs e)
         {
@@ -340,6 +348,44 @@ namespace MultiAlignConsole.Drawing
             Config.Report.PushEndTable();
 
         }
+        public void CreateBaselinePlots(BaselineFeaturesLoadedEventArgs e)
+        {
+            DatasetInformation baselineInfo = e.DatasetInformation;
+            if (baselineInfo != null)
+            {
+                Config.Report.PushTextHeader("Baseline Dataset: " + baselineInfo.DatasetName);
+                Config.Report.PushStartTable();
+                Config.Report.PushStartTableRow();
+
+                // chart setup
+                ChartDisplayOptions baselineOptions = new ChartDisplayOptions(false, true, true, true);
+                baselineOptions.MarginMin           = 1;
+                baselineOptions.MarginMax           = 100;
+                baselineOptions.Title               = "Feature Plot " + baselineInfo.DatasetName;
+                baselineOptions.XAxisLabel          = "Scan";
+                baselineOptions.YAxisLabel          = "Monoisotopic Mass";
+                baselineOptions.Width               = Config.width;
+                baselineOptions.Height              = Config.height;
+                baselineOptions.DisplayLegend       = true;
+                
+                // Image creation and saving
+                List<UMCLight> baselineFeatures     = e.Features;
+                List<clsUMC> baselineUmcs           = FeatureDataConverters.ConvertToUMC(baselineFeatures);
+                Image baselineImage                 = RenderDatasetInfo.FeaturesScatterPlot_Thumbnail(baselineUmcs, baselineOptions);
+                string baselineLabelName            = Path.GetFileNameWithoutExtension(baselineInfo.DatasetName) + "_featurePlot.png";
+                string baselinePath                 = Path.Combine(Config.plotSavePath, baselineLabelName);
+                baselineImage.Save(baselinePath, System.Drawing.Imaging.ImageFormat.Png);
+
+                // Report setup.
+                Config.Report.PushImageColumn(Path.Combine("Plots", baselineLabelName));
+                Config.Report.PushEndTableRow();
+                Config.Report.PushEndTable();   
+            }           
+            else
+            {
+                //TODO: Load information about the mass tag database.  
+            }
+        }
         /// <summary>
         /// Creates alignment plots.
         /// </summary>
@@ -347,39 +393,7 @@ namespace MultiAlignConsole.Drawing
         {
             string name = e.AligneeDatasetInformation.DatasetName;
             Logger.PrintMessage("Features Aligned - " + name);
-
-            // Hack so that the baseline plot is made first.
-            if (!Config.createdBaselinePlots)
-            {
-                Config.createdBaselinePlots = true;
-                if (Config.Analysis.MetaData.BaselineDataset != null)
-                {
-                    Config.Report.PushTextHeader("Baseline Dataset for " + Config.Analysis.MetaData.BaselineDataset.DatasetName);
-                    Config.Report.PushStartTable();
-                    Config.Report.PushStartTableRow();
-
-                    DatasetInformation baselineInfo     = Config.Analysis.MetaData.BaselineDataset;
-                    ChartDisplayOptions baselineOptions = new ChartDisplayOptions(false, true, true, true);
-                    baselineOptions.MarginMin           = 1;
-                    baselineOptions.MarginMax           = 100;
-                    baselineOptions.Title               = "Feature Plot " + baselineInfo.DatasetName;
-                    baselineOptions.XAxisLabel          = "Scan";
-                    baselineOptions.YAxisLabel          = "Monoisotopic Mass";
-                    baselineOptions.Width               = Config.width;
-                    baselineOptions.Height              = Config.height;
-                    baselineOptions.DisplayLegend       = true;
-                    List<UMCLight> baselineFeatures     = Config.DataProviders.FeatureCache.FindByDatasetId(Convert.ToInt32(baselineInfo.DatasetId));
-                    List<clsUMC> baselineUmcs           = FeatureDataConverters.ConvertToUMC(baselineFeatures);  
-                    Image baselineImage                 = RenderDatasetInfo.FeaturesScatterPlot_Thumbnail(baselineUmcs, baselineOptions);
-                    string baselineLabelName            = Path.GetFileNameWithoutExtension(baselineInfo.DatasetName) + "_featurePlot.png";
-                    string baselinePath                 = Path.Combine(Config.plotSavePath, baselineLabelName);
-                    baselineImage.Save(baselinePath, System.Drawing.Imaging.ImageFormat.Png);
-                    Config.Report.PushImageColumn(Path.Combine("Plots", baselineLabelName));
-                    Config.Report.PushEndTableRow();
-                    Config.Report.PushEndTable();
-                }
-            }
-
+            
             Config.Report.PushTextHeader("Alignment Plots for " + e.AligneeDatasetInformation.DatasetName);
             Config.Report.PushStartTable();
             Config.Report.PushStartTableRow();
@@ -394,12 +408,13 @@ namespace MultiAlignConsole.Drawing
             options.Height = Config.height;
             options.DisplayLegend = true;
 
-            List<UMCLight> features = Config.DataProviders.FeatureCache.FindByDatasetId(Convert.ToInt32(e.AligneeDatasetInformation.DatasetId));
-            List<clsUMC> umcs = FeatureDataConverters.ConvertToUMC(features);  
 
-            Image image = RenderDatasetInfo.FeaturesScatterPlot_Thumbnail(umcs, options);
+            List<UMCLight> features = e.AlignedFeatures;
+            List<clsUMC> umcs       = FeatureDataConverters.ConvertToUMC(features);  
+
+            Image image      = RenderDatasetInfo.FeaturesScatterPlot_Thumbnail(umcs, options);
             string labelName = Path.GetFileNameWithoutExtension(name) + "_featurePlot.png";
-            string path = Path.Combine(Config.plotSavePath, labelName);
+            string path      = Path.Combine(Config.plotSavePath, labelName);
             image.Save(path, System.Drawing.Imaging.ImageFormat.Png);
             Config.Report.PushImageColumn(Path.Combine("Plots", labelName));
 

@@ -27,13 +27,11 @@ namespace MultiAlignCore.Data
         {            
             ParameterFile           = null;
             HtmlPathName            = "index.html";
-            makeMSMSExtractor       = false;
             width                   = PLOT_WIDTH;
             height                  = PLOT_HEIGHT;
             logPath                 = null;
             InputPaths              = null;
-            showHelp                = false;
-            createdBaselinePlots    = false;
+            showHelp                = false;            
             HtmlPage                = new List<string>();
             AnalysisPath            = null;
             AnalysisName            = null;
@@ -50,9 +48,9 @@ namespace MultiAlignCore.Data
             InitialStep                     = AnalysisStep.FindFeatures;
             ShouldLoadMTDB                  = true;
             ShouldCreateFeatureDatabaseOnly = false;
-            useFactors                      = false;
+            ShouldUseFactors                = false;
             ShouldExportSICs                = false;
-            ShouldExportMSMS                = true;
+            ShouldExportMSMS                = false;
             ShouldUseExistingDatabase       = false;
         }
         #region Properties 
@@ -140,11 +138,7 @@ namespace MultiAlignCore.Data
         /// <summary>
         /// Objects that access data from the databases.
         /// </summary>
-        public FeatureDataAccessProviders DataProviders { get; set; }
-        /// <summary>
-        /// Flag that indicates whether a plot for the baseline features has been made.
-        /// </summary>
-        public bool createdBaselinePlots { get; set; }
+        public FeatureDataAccessProviders DataProviders { get; set; }        
         /// <summary>
         /// Object that can generate an HTML report.
         /// </summary>
@@ -160,7 +154,7 @@ namespace MultiAlignCore.Data
         /// <summary>
         /// Determines if we need to use factors.
         /// </summary>
-        public bool useFactors { get; set; }
+        public bool ShouldUseFactors { get; set; }
         /// <summary>
         /// Gets or sets whether to cluster spectra to find links between datasets.
         /// </summary>
@@ -168,7 +162,7 @@ namespace MultiAlignCore.Data
         /// <summary>
         /// Extract the SIC's for each umc.
         /// </summary>
-        public bool ShouldExportSICs { get; set; }
+        public bool ShouldExportSICs { get; set; }        
         /// <summary>
         /// Flag indicating whether export the MS/MS spectra or not.
         /// </summary>
@@ -177,10 +171,6 @@ namespace MultiAlignCore.Data
         /// Gets or sets whetehr to use an existing database.
         /// </summary>
         public bool ShouldUseExistingDatabase { get; set; }
-        /// <summary>
-        /// Flag indicating whether to extract the MSMS data.
-        /// </summary>
-        public bool makeMSMSExtractor { get; set; }
         /// <summary>
         /// Flag indicating whether to create the database only.
         /// </summary>

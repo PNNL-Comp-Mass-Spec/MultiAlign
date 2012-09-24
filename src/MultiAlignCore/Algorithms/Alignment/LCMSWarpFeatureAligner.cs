@@ -177,7 +177,8 @@ namespace MultiAlignCore.Algorithms.Alignment
                     {
                         map[featureID].MassMonoisotopicAligned = feature.MassCalibrated;
                         map[featureID].NET                     = feature.Net;
-                        map[featureID].RetentionTime           = feature.Net;                                               
+                        map[featureID].RetentionTime           = feature.Net;     
+                        map[featureID].ScanAligned             = feature.ScanAligned;                  
                     }
                 }                
                 minScanBaseline = Math.Min(minScanBaseline, tempMinScanBaseline);

@@ -56,7 +56,7 @@ namespace MultiAlignConsole.IO
                             config.ParameterFile = values[0];
                             break;
                         case "-usefactors":
-                            config.useFactors    = true;
+                            config.ShouldUseFactors    = true;
                             break;
                         //--------------------------------------------------------------------
                         //  Log, HTML names
@@ -94,6 +94,12 @@ namespace MultiAlignConsole.IO
                             break;
                         case "-exportsics":
                             config.ShouldExportSICs                 = true;                            
+                            break;
+                        case "-exportcrosstab":
+                            config.ExporterNames.CrossTabPath       = values[0];                            
+                            break;
+                        case "-exportabundances":
+                            config.ExporterNames.CrossTabAbundance = values[0];                            
                             break;
                         //--------------------------------------------------------------------                        
                         // Exporting 

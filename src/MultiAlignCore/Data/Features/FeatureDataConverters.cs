@@ -45,7 +45,7 @@ namespace MultiAlignCore.Data.Features
             int maxCharge            = feature.ChargeState;
             long maxAbundance        = long.MinValue;
             int scan                 = feature.ScanStart;
-            float mz                 = 0;
+            float mz                 = Convert.ToSingle(feature.Mz);
             foreach (MSFeatureLight msFeature in feature.MSFeatures)
             {
                 maxCharge = Math.Max(msFeature.ChargeState, maxCharge);
@@ -97,6 +97,29 @@ namespace MultiAlignCore.Data.Features
                 tags.Add(mmTag);
             }
             return tags;
+        }
+        /// <summary>
+        /// Converts mass tags to UMC's.
+        /// </summary>
+        /// <param name="massTags"></param>
+        /// <returns></returns>
+        public static List<UMCLight> ConvertToUMC(List<MassTagLight> massTags)
+        {
+            List<UMCLight> baselineFeatures = new List<UMCLight>();                    
+            // Convert the mass tags to features.                
+            foreach (MassTagLight tag in massTags)
+            {
+                UMCLight umc                = new UMCLight();
+                umc.ChargeState             = 0;
+                umc.NET                     = tag.NET;
+                umc.MassMonoisotopicAligned = tag.MassMonoisotopic;
+                umc.DriftTime               = tag.DriftTime;
+                umc.ID                      = tag.ID;
+                umc.ChargeState             = tag.ChargeState;
+                umc.GroupID                 = -1;
+                baselineFeatures.Add(umc);
+            }
+            return baselineFeatures;
         }
     }
 }
