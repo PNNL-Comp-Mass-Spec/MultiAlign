@@ -1,13 +1,11 @@
 ﻿using System.Collections.Generic;
 using MultiAlignCore.Data;
-using MultiAlignCore.IO.Features;
+using MultiAlignCore.Data.MassTags;
 using MultiAlignCore.IO.Features.Hibernate;
+using PNNLOmics.Algorithms.FeatureMatcher.Data;
 using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Data.MassTags;
-using PNNLOmics.Algorithms.FeatureMatcher.Data;
-using  MultiAlignCore.Data;
-using MultiAlignCore.Data.MassTags;
 
 namespace MultiAlignCore.IO
 {

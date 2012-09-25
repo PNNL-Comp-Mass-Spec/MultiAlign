@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
-using MultiAlignConsole.Drawing;
 using MultiAlignConsole.IO;
 using MultiAlignCore;
 using MultiAlignCore.Algorithms;
@@ -17,6 +16,7 @@ using MultiAlignCore.IO.InputFiles;
 using MultiAlignCore.IO.MTDB;
 using MultiAlignCore.IO.Parameters;
 using PNNLOmics.Data.Features;
+using MultiAlignCustomControls.Drawing;
 
 namespace MultiAlignConsole
 {
@@ -39,7 +39,7 @@ namespace MultiAlignConsole
         [DllImport("kernel32.dll")]
         public static extern bool SetConsoleMode(IntPtr hConsoleHandle, uint dwMode);
 
-        private static AnalysisReportGenerator  m_reportCreator; 
+        private static IAnalysisReportGenerator  m_reportCreator; 
         private static AnalysisConfig           m_config;
 
         /// <summary>
@@ -66,7 +66,6 @@ namespace MultiAlignConsole
                 CommandLineProcessor.ProcessCommandLineArguments(args, m_config);
 
                 AnalysisController controller = new AnalysisController();
-
                 int result = controller.StartMultiAlign(m_config, m_reportCreator);
                 if (result != 0)
                 {

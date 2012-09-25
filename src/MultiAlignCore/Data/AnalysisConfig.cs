@@ -98,7 +98,7 @@ namespace MultiAlignCore.Data
         /// <summary>
         /// ID of the job to use.
         /// </summary>
-        public int jobID { get; set; }
+        public int JobID { get; set; }
         /// <summary>
         /// Reference to the analysis that is running.
         /// </summary>
@@ -134,11 +134,7 @@ namespace MultiAlignCore.Data
         /// <summary>
         /// Path to database to create plots from.
         /// </summary>
-        public string DatabaseName { get; set; }
-        /// <summary>
-        /// Objects that access data from the databases.
-        /// </summary>
-        public FeatureDataAccessProviders DataProviders { get; set; }        
+        public string DatabaseName { get; set; }     
         /// <summary>
         /// Object that can generate an HTML report.
         /// </summary>

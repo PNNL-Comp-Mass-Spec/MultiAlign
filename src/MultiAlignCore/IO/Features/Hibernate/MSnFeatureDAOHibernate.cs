@@ -21,5 +21,13 @@ namespace MultiAlignCore.IO.Features.Hibernate
             criterionList.Add(criterion);
             return FindByCriteria(criterionList);
         }
+
+        public List<MSSpectra> FindBySpectraId(List<int> spectraId)
+        {            
+            ICriterion criterion = Expression.In("ID", spectraId);
+            List<ICriterion> criterionList = new List<ICriterion>();
+            criterionList.Add(criterion);
+            return FindByCriteria(criterionList);
+        }
     }
 }

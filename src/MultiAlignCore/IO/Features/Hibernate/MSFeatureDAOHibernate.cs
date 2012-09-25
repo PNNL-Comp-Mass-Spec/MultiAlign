@@ -7,8 +7,6 @@ namespace MultiAlignCore.IO.Features.Hibernate
 
 	public class MSFeatureDAOHibernate : GenericDAOHibernate<MSFeatureLight>, IMSFeatureDAO
 	{
-
-
         /// <summary>
         /// Searches for and returns a List of MS feature Objects in the Database that have the exact Dataset Id given.
         /// </summary>
@@ -19,6 +17,18 @@ namespace MultiAlignCore.IO.Features.Hibernate
             ICriterion criterion = Expression.Eq("GroupID", datasetId);
             List<ICriterion> criterionList = new List<ICriterion>();
             criterionList.Add(criterion);
+            return FindByCriteria(criterionList);
+        }
+
+        public List<MSFeatureLight> FindByFeatureId(int datasetId, int featureId)
+        {
+            ICriterion criterion                = Expression.Eq("GroupID",      datasetId);
+            ICriterion featureCriterion         = Expression.Eq("ID",           featureId);
+            List<ICriterion> criterionList      = new List<ICriterion>();
+
+            criterionList.Add(featureCriterion);
+            criterionList.Add(criterion);
+
             return FindByCriteria(criterionList);
         }
 	}

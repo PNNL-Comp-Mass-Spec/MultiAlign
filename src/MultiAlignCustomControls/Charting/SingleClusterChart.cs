@@ -7,37 +7,44 @@ using MultiAlignEngine.Features;
 using MultiAlignEngine.MassTags;
 using PNNLControls;
 using PNNLOmics.Data.Features;
+using PNNLOmics.Data.MassTags;
 
 namespace MultiAlignCustomControls.Charting
 {
     /// <summary>
     /// Renders UMC Clusters and UMC Features as a scatter plot.
     /// </summary>
-	public class ctlClusterChart : ctlScatterChart
+	public class SingleClusterChart : ctlScatterChart
     {
         #region Members
+        private int mint_pt_size = 3;
         private System.ComponentModel.IContainer components = null;		
-		private clsColorIterator miter_color = new  clsColorIterator() ; 
-		private int mint_pt_size = 2 ; 		
-        private List<UMCClusterLight> m_clusters;
+		private clsColorIterator miter_color = new  clsColorIterator() ; 				           
+        private DatasetInformation  m_info;
+        private List<UMCClusterLight> m_additionalClusters;
+        private List<MassTagLight> m_massTags;
+        private UMCClusterLight m_mainCluster;
         #endregion
 
         #region Constructors
-        public ctlClusterChart()
+        public SingleClusterChart()
 	    {			
 			InitializeComponent();
 
-            m_clusters  = new List<UMCClusterLight>();            
+            m_additionalClusters    = new List<UMCClusterLight>();
+            m_massTags              = new List<MassTagLight>();
+            m_mainCluster           = null;
+            m_info                  = null;
         }
         /// <summary>
         /// Constructor.
         /// </summary>
         /// <param name="analysis"></param>
         /// <param name="dataset"></param>
-        public ctlClusterChart(List<UMCClusterLight> clusters) :
+        public SingleClusterChart(UMCClusterLight cluster, List<UMCClusterLight> clusters) :
             this()
         {
-            AddClusters(clusters);
+            AddAdditionalClusters(clusters);
         }
         #endregion
 
@@ -46,79 +53,154 @@ namespace MultiAlignCustomControls.Charting
         /// Clears the data currently on the plot.
         /// </summary>
         public void ClearData()
-        {            
+        {
+            m_info      = null;
             ViewPortHistory.Clear();
             SeriesCollection.Clear();
-            m_clusters.Clear();
+            m_additionalClusters.Clear();
+            m_massTags.Clear();
         }
         /// <summary>
         /// Sets the analysis object and extracts data for display.
         /// </summary>
-        public void AddClusters(List<UMCClusterLight> clusters)
+        public void AddAdditionalClusters(List<UMCClusterLight> clusters)
         {
-            m_clusters.AddRange(clusters);
+            m_additionalClusters.AddRange(clusters);
+            UpdateCharts();
+        }
+        public void AddAdditionalClusters(UMCClusterLight cluster)
+        {                        
+            m_additionalClusters.Add(cluster);
+            UpdateCharts();
+        }
+        public void AddMassTags(List<MassTagLight> tags)
+        {            
+            m_massTags.AddRange(tags);
+            UpdateCharts();
+        }
+
+        private void UpdateCharts()
+        {
             SeriesCollection.Clear();
-            AddClusterDataToChart(m_clusters);
+            AddMassTagsToChart(m_massTags);
+            AddClusterDataToChart(m_additionalClusters, true);
+            AddClusterDataToChart(m_mainCluster, false);
             AutoViewPort();
-            Refresh();            
+            
         }
-        public void AddClusters(UMCClusterLight cluster)
+        public void AddMassTags(MassTagLight tag)
         {
-            m_clusters.Add(cluster);
-            AddClusterDataToChart(m_clusters);
-            AutoViewPort();
-            Refresh();
-        }
-        public void SetClusters(List<UMCClusterLight> clusters)
-        {
-            m_clusters.Clear();
-            m_clusters.AddRange(clusters);
             SeriesCollection.Clear();
-            AddClusterDataToChart(m_clusters);
-            AutoViewPort(); 
-            Refresh();
+            m_massTags.Add(tag);
+            AutoViewPort();            
         }
-        public void SetClusters(UMCClusterLight cluster)
+        public UMCClusterLight MainCluster
         {
-            m_clusters.Clear();
-            m_clusters.Add(cluster);
-            SeriesCollection.Clear();            
-            AddClusterDataToChart(m_clusters);
-            AutoViewPort();
-            Refresh();
+            get
+            {
+                return m_mainCluster;
+            }
+            set
+            {
+                m_additionalClusters.Clear();                
+                m_mainCluster = value;
+                if (value != null)
+                {                    
+                    AddClusterDataToChart(m_mainCluster, false);
+                    UpdateCharts();
+                }
+            }
         }
         #endregion
         
         #region Cluster Rendering
-        /// <summary>
-        /// Adds all cluster data to the plot.
-        /// </summary>
-        /// <param name="clusters"></param>
-        /// <param name="specificCharge"></param>
-        private void AddClusterDataToChart(List<UMCClusterLight> clusters)
-        {            
 
+        private void AddMassTagsToChart(List<MassTagLight> tags)
+        {
             clsColorIterator colors = new clsColorIterator();
             float maxY = 500;
             float minY = 0;
             float maxX = 500;
             float minX = 0;
-            
+
+            List<float> massList = new List<float>();
+            List<float> scanList = new List<float>();
+            Color color = Color.Gray;
+            clsShape shape  = new CrossShape(3, false); 
+
+            clsPlotParams plotParams = new clsPlotParams(shape, color);
+
+            int clustersAdded = 0;
+            foreach (MassTagLight tag in tags)
+            {
+                float x = 0;
+                float y = 0;
+
+                y = Convert.ToSingle(tag.MassMonoisotopic);
+                x = Convert.ToSingle(tag.NETAverage);
+
+                massList.Add(y);
+                scanList.Add(x);
+
+                minX = Math.Min(x, minX);
+                maxX = Math.Max(x, maxX);
+
+                minY = Math.Min(y, minY);
+                maxY = Math.Max(y, maxY);
+                clustersAdded++;
+            }
+
+            if (clustersAdded > 0)
+            {
+                float[] masses = new float[massList.Count];
+                float[] scans = new float[scanList.Count];
+
+                massList.CopyTo(masses);
+                scanList.CopyTo(scans);
+                clsSeries series = new clsSeries(ref scans, ref masses, plotParams);
+                base.AddSeries(series);
+            }
+        }
+        /// <summary>
+        /// Adds all cluster data to the plot.
+        /// </summary>
+        /// <param name="clusters"></param>
+        /// <param name="specificCharge"></param>
+        private void AddClusterDataToChart(List<UMCClusterLight> clusters, bool isAlternate)
+        {
+            foreach (UMCClusterLight cluster in clusters)
+            {
+                AddClusterDataToChart(cluster, isAlternate);
+            }
+        }
+        private void AddClusterDataToChart(UMCClusterLight cluster, bool isAlternate)
+        { 
+            clsColorIterator colors = new clsColorIterator();
+            float maxY = 500;
+            float minY = 0;
+            float maxX = 500;
+            float minX = 0;
+                        
             List<float> massList = new List<float>();
             List<float> scanList = new List<float>();
             Color color              = colors.GetColor(0);
             clsShape shape           = new BubbleShape(mint_pt_size, false);
+            if (isAlternate)
+            {
+                shape = new BubbleShape(mint_pt_size, true);
+                color = Color.LightGray;
+            }
+
             clsPlotParams plotParams = new clsPlotParams(shape, color);
                 
             int clustersAdded = 0;
-            foreach(UMCClusterLight cluster in clusters)
+            foreach(UMCLight feature in cluster.Features)
             {
                 float x = 0;
                 float y = 0;
-                                      
-                                            
-                y = Convert.ToSingle(cluster.MassMonoisotopic);                                                                          
-                x = Convert.ToSingle(cluster.RetentionTime);                            
+
+                y = Convert.ToSingle(feature.MassMonoisotopicAligned);
+                x = Convert.ToSingle(feature.RetentionTime);                            
                         
                 massList.Add(y);
                 scanList.Add(x);
@@ -247,13 +329,36 @@ namespace MultiAlignCustomControls.Charting
             this.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 6F);
             this.TitleMaxFontSize = 15F;
             this.TitleVisible = false;
-            this.XAxisLabel = "NET";
+            this.XAxisLabel = "Scan #";
             this.YAxisLabel = "Monoisotopic Mass";
             ((System.ComponentModel.ISupportInitialize)(this)).EndInit();
             this.ResumeLayout(false);
 
 		}
 		#endregion
+
+        #region Display Event Handlers
+        private void mcheckBox_showAligned_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateDisplay();
+        }
+        private void mcheckBox_showNET_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateDisplay();
+            AutoViewPort();
+        }
+        private void mcheckBox_displayMZ_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateDisplay();
+        }
+        public void UpdateDisplay()
+        {
+            AutoViewPortOnAddition = false;
+            this.SeriesCollection.Clear();            
+            XAxisLabel = "NET";              
+            YAxisLabel = "Monoisotopic Mass";            
+        }
+        #endregion
     }
 }
 

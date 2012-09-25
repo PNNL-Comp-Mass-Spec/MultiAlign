@@ -12,6 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using MultiAlignCore.Data;
+using System.ComponentModel;
 using PNNLOmics.Data.Features;
 
 namespace Manassa.Windows
@@ -19,17 +20,52 @@ namespace Manassa.Windows
     /// <summary>
     /// Interaction logic for ClusterGrid.xaml
     /// </summary>
-    public partial class ClusterGrid : UserControl
+    public partial class ClusterGrid : UserControl, INotifyPropertyChanged
     {
+        private BindingList<UMCClusterLight> m_clusters;
+        public event PropertyChangedEventHandler  PropertyChanged;
+
         public ClusterGrid()
         {
             InitializeComponent();
+            Clusters = new BindingList<UMCClusterLight>();
         }
 
-        public List<UMCClusterLight> Clusters
+        /// <summary>
+        /// Gets or sets the clusters used in the analysis.
+        /// </summary>
+        public BindingList<UMCClusterLight> Clusters
         {
-            get;
-            set;
-        }
+            get
+            {
+                return m_clusters;
+            }
+            set
+            {
+                m_clusters = value;
+                if (value != null)
+                {
+                    m_dataGrid.ItemsSource = value;
+                }
+            }
+        }        
+
+        public UMCClusterLight SelectedCluster
+        {
+            get { return (UMCClusterLight)GetValue(SelectedClusterProperty); }
+            set { SetValue(SelectedClusterProperty, value); }
+        }        
+        public static readonly DependencyProperty SelectedClusterProperty =
+            DependencyProperty.Register("SelectedCluster", typeof(UMCClusterLight), typeof(ClusterGrid)); 
+
+       
+        private void m_dataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (SelectedCluster != null)
+            {
+                SelectedCluster.Features.Clear();
+            }            
+            SelectedCluster = m_dataGrid.SelectedItem as UMCClusterLight;
+        }    
     }
 }

@@ -28,13 +28,19 @@ namespace MultiAlignCore.IO.Features
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        UMCLight FindByFeatureID(int id);            
+        UMCLight FindByFeatureID(int id);         
         /// <summary>
         /// Finds a feature based on a List of cluster IDs.
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
         List<UMCLight> FindByClusterID(List<int> idList);
+        /// <summary>
+        /// Find a set of features based on a cluster ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        List<UMCLight> FindByClusterID(int id);
         /// <summary>
         /// Searches for and returns a List of Umc Objects in the Database that have the exact Dataset Id given.
         /// </summary>

@@ -7,6 +7,7 @@ namespace MultiAlignCore.IO.Features
 {
     public interface IMassTagDAO : IGenericDAO<MassTagLight>
     {
+        List<MassTagLight> FindMassTags(List<int> ids);
     }
 
 }

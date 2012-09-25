@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using PNNLOmics.Data.MassTags;
-using MultiAlignCore.Data;
+﻿using System.Collections.Generic;
 using System.Data.SQLite;
+using MultiAlignCore.Data;
+using NHibernate.Criterion;
 
 namespace MultiAlignCore.IO.Features.Hibernate
 {
@@ -22,6 +21,16 @@ namespace MultiAlignCore.IO.Features.Hibernate
                 }
                 connection.Close();
             }
+        }
+
+        public List<ClusterToMassTagMap> FindByClusterId(int id)
+        {
+            ICriterion criterion = Expression.Eq("ClusterId", id);
+            List<ICriterion> criterionList = new List<ICriterion>();
+            criterionList.Add(criterion);
+            
+            return FindByCriteria(criterionList);
+        
         }
     }
 }

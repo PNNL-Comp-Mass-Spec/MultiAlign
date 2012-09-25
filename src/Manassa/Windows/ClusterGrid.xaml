@@ -12,15 +12,16 @@
     <Grid>
         <DataGrid
                 Name="m_dataGrid" 
-                ItemsSource="{Binding Clusters}" 
+                ItemsSource="{Binding}" 
                 HorizontalContentAlignment="Center"            
                 AlternatingRowBackground="WhiteSmoke"
                 AlternationCount="1"
-                AutoGenerateColumns="True"
                 CanUserAddRows="False"
+                AutoGenerateColumns="False"
                 Grid.ColumnSpan="6"
                 IsTextSearchEnabled="True"
                 RowDetailsVisibilityMode="{Binding IsChecked, ElementName=m_detailsChecked, Converter={StaticResource boolConverter}}"
+                SelectionChanged="m_dataGrid_SelectionChanged"
             >
             <DataGrid.CellStyle>
                 <Style TargetType="DataGridCell">
@@ -42,6 +43,18 @@
                     </Style.Triggers>
                 </Style>
             </DataGrid.RowStyle>
+
+            <DataGrid.Columns >
+                <!--Dataset Information-->
+                <DataGridTextColumn         Header="ID"                     Binding="{Binding ID}" IsReadOnly="True"/>
+                <DataGridTextColumn         Header="Monoisotopic Mass"      Binding="{Binding MassMonoisotopic}" IsReadOnly="True"/>
+                <DataGridTextColumn         Header="NET"                    Binding="{Binding RetentionTime}" IsReadOnly="True"/>
+                <DataGridTextColumn         Header="Drift Time"             Binding="{Binding DriftTime}" IsReadOnly="True"/>
+                <DataGridTextColumn         Header="Dataset Members"        Binding="{Binding DatasetMemberCount}" IsReadOnly="True"/>
+                <DataGridTextColumn         Header="Total Members"          Binding="{Binding MemberCount}" IsReadOnly="True"/>
+                <DataGridTextColumn         Header="Tightness"              Binding="{Binding Tightness}" IsReadOnly="True"/>
+                <DataGridTextColumn         Header="Ambiguity"              Binding="{Binding AmbiguityScore}" IsReadOnly="True"/>
+            </DataGrid.Columns>
         </DataGrid>
     </Grid>
 </UserControl>

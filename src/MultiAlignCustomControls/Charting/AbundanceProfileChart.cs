@@ -182,7 +182,7 @@ namespace MultiAlignCustomControls.Charting
             ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
             this.SuspendLayout();
             // 
-            // ctlClusterChart
+            // AbundanceProfileChart
             // 
             this.AxisAndLabelMinFontSize = 10;
             this.ChartLayout.LegendFraction = 0.2F;
@@ -198,15 +198,17 @@ namespace MultiAlignCustomControls.Charting
             this.DefaultZoomHandler.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(119)))), ((int)(((byte)(136)))), ((int)(((byte)(153)))));
             this.DefaultZoomHandler.LineColor = System.Drawing.Color.Black;
             this.DoubleBuffered = true;
+            this.HasLegend = false;
             this.Legend.BackColor = System.Drawing.Color.Transparent;
             penProvider1.Color = System.Drawing.Color.Black;
             penProvider1.Width = 1F;
             this.Legend.BorderPen = penProvider1;
-            this.Legend.Bounds = new System.Drawing.Rectangle(327, 80, 76, 271);
+            this.Legend.Bounds = new System.Drawing.Rectangle(0, 0, 0, 0);
             this.Legend.ColumnWidth = 125;
             this.Legend.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
             this.Legend.MaxFontSize = 11F;
             this.Legend.MinFontSize = 6F;
+            this.LegendVisible = false;
             this.Margins.BottomMarginFraction = 0.1F;
             this.Margins.BottomMarginMax = 72;
             this.Margins.BottomMarginMin = 30;
@@ -216,13 +218,14 @@ namespace MultiAlignCustomControls.Charting
             this.Margins.LeftMarginFraction = 0.2F;
             this.Margins.LeftMarginMax = 150;
             this.Margins.LeftMarginMin = 72;
-            this.Name = "ctlClusterChart";
+            this.Name = "AbundanceProfileChart";
             this.Size = new System.Drawing.Size(408, 382);
-            this.Title = "Cluster Chart";
-            this.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 20F);
-            this.TitleMaxFontSize = 20F;
-            this.XAxisLabel = "Scan #";
-            this.YAxisLabel = "Monoisotopic Mass";
+            this.Title = "Abundance Profile";
+            this.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 6F);
+            this.TitleMaxFontSize = 15F;
+            this.TitleVisible = false;
+            this.XAxisLabel = "Dataset ID";
+            this.YAxisLabel = "Intensity";
             ((System.ComponentModel.ISupportInitialize)(this)).EndInit();
             this.ResumeLayout(false);
 

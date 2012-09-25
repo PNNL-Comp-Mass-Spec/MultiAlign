@@ -13,5 +13,6 @@ namespace MultiAlignCore.IO.Features
         /// <param name="datasetId"></param>
         /// <returns></returns>
         List<MSSpectra> FindByDatasetId(int datasetId);
+        List<MSSpectra> FindBySpectraId(List<int> spectraId);
 	}
 }

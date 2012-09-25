@@ -1,24 +1,150 @@
 ﻿<Window x:Class="Manassa.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+        xmlns:ribbon="clr-namespace:Microsoft.Windows.Controls.Ribbon;assembly=RibbonControlsLibrary"
         xmlns:manassa="clr-namespace:Manassa.Windows"
-        Title="MultiAlign" Height="350" Width="525">
-    <Grid>
+        Title="MultiAlign" Height="771" Width="1257">
+
+    <Window.Resources>
+        <BitmapImage x:Key="MannassaImage" UriSource="MainIcon" />
+    </Window.Resources>
+    
+    <Grid
+        Margin="4"
+        >
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <!-- Selection Window -->
-        <StackPanel  Grid.Column="0">
-            <Button Content="Analyze"/>
-            <Button Content="Clusters"          IsEnabled="False"/>
-            <Button Content="Identifications"   IsEnabled="False"/>
-            <Button Content="Statistics"        IsEnabled="False"/>
-            <Button Content="Analyze"           IsEnabled="False"/>
-        </StackPanel>
-        <manassa:AllClustersControl
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <ribbon:Ribbon 
+            Grid.Column="0"
+            Grid.ColumnSpan="2"
+            x:Name="Ribbon">
+            <ribbon:Ribbon.HelpPaneContent>
+                <ribbon:RibbonButton  />
+            </ribbon:Ribbon.HelpPaneContent>
+            <ribbon:Ribbon.ApplicationMenu>
+                <ribbon:RibbonApplicationMenu 
+                    LargeImageSource="{StaticResource ResourceKey=MannassaImage}"
+                    SmallImageSource="{StaticResource ResourceKey=MannassaImage}"
+                    >
+
+                    <ribbon:RibbonApplicationMenuItem Header="_New"  
+                                                      IsEnabled="False"
+                                                      x:Name="NewAnalysisMenuButton"                                                      
+                                                      />
+                    <ribbon:RibbonSeparator/>
+                    <ribbon:RibbonApplicationMenuItem Header="_Open"
+                                                      x:Name="LoadAnalysisMenuButton"
+                                                      Click="LoadAnalysisMenuButton_Click"  
+                                                      />
+                    <ribbon:RibbonSeparator/>
+                    <ribbon:RibbonApplicationMenuItem Header="_Close"
+                                                      IsEnabled="False"
+                                                      x:Name="CloseMenuButton"/>
+                    <ribbon:RibbonSeparator/>
+                    <ribbon:RibbonApplicationMenuItem Header="_Exit"
+                                                      IsEnabled="False"
+                                                      x:Name="ExitMenuButton"/>
+                </ribbon:RibbonApplicationMenu>
+            </ribbon:Ribbon.ApplicationMenu>
+            <ribbon:RibbonTab x:Name="AnalysisTab" 
+                              Header="Analysis">
+                <ribbon:RibbonGroup x:Name="GeneralAnalysisGroup"                                     
+                                    Header="General">
+                    <ribbon:RibbonButton x:Name="NewAnalysisButton"
+                                         IsEnabled="False"
+                                         Label="New" />
+                    <ribbon:RibbonButton x:Name="AnalysisOptionsButton"
+                                         IsEnabled="False"
+                                         Label="Options" />
+                    <ribbon:RibbonButton x:Name="LoadOptionsButton"
+                                         Label="Open"
+                                         Click="LoadAnalysisMenuButton_Click"/>
+                </ribbon:RibbonGroup>
+                <ribbon:RibbonGroup x:Name="LCMSFeatureFindingGroup" 
+                                    IsEnabled="False"
+                                    Header="Find Features">
+                    <ribbon:RibbonButton x:Name="FeatureFindingOptions"
+                                         Label="Options" />                    
+                </ribbon:RibbonGroup>
+                <ribbon:RibbonGroup x:Name="AlignmentAnalysisGroup" 
+                                    IsEnabled="False"
+                                    Header="Alignment">
+                    <ribbon:RibbonButton x:Name="Button1"
+                                         Label="Select Baseline" />
+                    <ribbon:RibbonButton x:Name="Button2"
+                                         Label="Options" />
+                </ribbon:RibbonGroup>
+                <ribbon:RibbonGroup x:Name="ClustersAnalysisbGroup" 
+                                    IsEnabled="False"
+                                    Header="Cluster">
+                    <ribbon:RibbonComboBox x:Name="ClusterDropDown"
+                                         Label="Select Algorithm"/>
+                    <ribbon:RibbonButton x:Name="ClusterOptionsButton"
+                                         Label="Options" />
+                </ribbon:RibbonGroup>
+                <ribbon:RibbonGroup x:Name="IdentifyAnalysisTab" 
+                                    Header="Identify" IsEnabled="false">
+                    <ribbon:RibbonButton x:Name="stacButton"
+                                         Label="STAC / AMT" />
+                    <ribbon:RibbonButton x:Name="deNovoButton"
+                                         Label="de novo" />
+                    <ribbon:RibbonComboBox Label="Search databases"/>
+
+                </ribbon:RibbonGroup>
+            </ribbon:RibbonTab>
+            <ribbon:RibbonTab x:Name="DatasetTab" 
+                              Header="Datasets">
+                <ribbon:RibbonGroup x:Name="GeneralDatasetsGroup" 
+                                    Header="General">                    
+                </ribbon:RibbonGroup>
+            </ribbon:RibbonTab>
+            <ribbon:RibbonTab x:Name="MsMsTab" 
+                              Header="MS/MS">
+                <ribbon:RibbonGroup x:Name="MsMsGroup" 
+                                    Header="Networks" IsEnabled="false">
+                </ribbon:RibbonGroup>
+            </ribbon:RibbonTab>
+            <ribbon:RibbonTab x:Name="FeaturesTab" 
+                              Header="LC-MS Features">
+                <ribbon:RibbonGroup x:Name="FeaturesGroup" 
+                                    Header="Normalization" IsEnabled="false">
+                    <ribbon:RibbonButton x:Name="noramlizeFeatureAbundanceButton"
+                                         Label="Normalize Abundances" />
+                </ribbon:RibbonGroup>
+            </ribbon:RibbonTab>
+            <ribbon:RibbonTab x:Name="ClustersTab" 
+                              Header="LC-MS Clusters">
+                <ribbon:RibbonGroup x:Name="ClustersGroup" 
+                                    Header="Clusters" IsEnabled="false">
+                </ribbon:RibbonGroup>
+            </ribbon:RibbonTab>
+            <ribbon:RibbonTab x:Name="StatisticsTab" 
+                              Header="Statistics">
+                <ribbon:RibbonGroup x:Name="StatisticsAbundanceGroup" 
+                                    Header="Abundance" IsEnabled="false">
+                </ribbon:RibbonGroup>
+            </ribbon:RibbonTab>
+            <ribbon:RibbonTab x:Name="IdentificationsTab" 
+                              Header="Identifications">
+                <ribbon:RibbonGroup x:Name="AmtGroup" 
+                                    Header="AMT" IsEnabled="false">
+                </ribbon:RibbonGroup>
+            </ribbon:RibbonTab>
+        </ribbon:Ribbon>        
+        
+        <!-- Selection Window -->        
+        <manassa:AllClustersControl 
             x:Name="m_mainControl"
-            Grid.Column="1">            
+            Grid.Column="1"      
+            IsEnabled="False"
+            Grid.Row="1">            
         </manassa:AllClustersControl>
     </Grid>
 </Window>

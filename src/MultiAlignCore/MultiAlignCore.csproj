@@ -142,6 +142,7 @@
     <Compile Include="Algorithms\Alignment\LCMSWarpFeatureAligner.cs" />
     <Compile Include="Algorithms\Alignment\IFeatureAligner.cs" />
     <Compile Include="Algorithms\AlgorithmBuilder.cs" />
+    <Compile Include="Algorithms\AnalysisController.cs" />
     <Compile Include="Algorithms\AnalysisGraph.cs" />
     <Compile Include="Algorithms\AnalysisGraphBuilder.cs" />
     <Compile Include="Algorithms\AnalysisStep.cs" />
@@ -204,19 +205,7 @@
     <Compile Include="Data\PeakMatchingResults.cs" />
     <Compile Include="Data\SequenceData\DatabaseSearchSequence.cs" />
     <Compile Include="Extensions\FeatureExtensions.cs" />
-    <Compile Include="IO\Analysis\AnalysisAlignmentDataWriter.cs" />
-    <Compile Include="IO\Analysis\AnalysisBinaryReader.cs" />
-    <Compile Include="IO\Analysis\AnalysisBinaryWriter.cs" />
-    <Compile Include="IO\Analysis\AnalysisDatasetUMCWriter.cs" />
-    <Compile Include="IO\Analysis\AnalysisSQLiteDBWriter.cs" />
-    <Compile Include="IO\Analysis\ContainerStream.cs" />
-    <Compile Include="IO\Analysis\IAnalysisWriter.cs" />
-    <Compile Include="IO\Analysis\IMultiAlignAnalysisReader.cs" />
-    <Compile Include="IO\Analysis\IMultiAlignAnalysisWriter.cs" />
-    <Compile Include="IO\Analysis\IOProgressEventArgs.cs" />
     <Compile Include="IO\Analysis\PeakMatchResultsWriter.cs" />
-    <Compile Include="IO\Analysis\ReadProgressStream.cs" />
-    <Compile Include="IO\Analysis\TableWriterColumnOptions.cs" />
     <Compile Include="IO\ClusterExporterComposite.cs" />
     <Compile Include="IO\Factors\FactorFileReader.cs" />
     <Compile Include="IO\Factors\MultiAlignFactorSink.cs" />
@@ -231,9 +220,9 @@
     <Compile Include="IO\Features\Hibernate\AlignmentDAOHibernate.cs" />
     <Compile Include="IO\Features\UMCClusterMsmsWriter.cs" />
     <Compile Include="IO\Features\MsmsExtractor.cs" />
+    <Compile Include="IO\Reports\IAnalysisReportGenerator.cs" />
     <Compile Include="IO\MTDB\MAGEMetaSampleDatabaseSink.cs" />
     <Compile Include="IO\MTDB\MetaSampleDatbaseLoader.cs" />
-    <Compile Include="IO\ProgressNotifierMediator.cs" />
     <Compile Include="IO\SequenceData\DatabaseSearchSequenceDAOHibernate.cs" />
     <Compile Include="IO\SequenceData\IDatabaseSearchSequenceDAO.cs" />
     <Compile Include="IO\Features\IMSMSClusterMapDAO.cs" />
@@ -327,7 +316,6 @@
     <Compile Include="Data\MassTags\clsMassTags.cs" />
     <Compile Include="IO\SequenceData\MAGEDatabaseSearchAdaptor.cs" />
     <Compile Include="IO\SequenceData\SequestFirstHitSink.cs" />
-    <Compile Include="IStatusProvider.cs" />
     <Compile Include="Data\Cluster\ClusterStats.cs" />
     <Compile Include="Math\MathUtilities.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -385,6 +373,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="IO\RawData\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

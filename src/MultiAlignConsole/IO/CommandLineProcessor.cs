@@ -29,7 +29,7 @@ namespace MultiAlignConsole.IO
                             worked = int.TryParse(values[0], out jobID);
                             if (worked)
                             {
-                                config.jobID = jobID;
+                                config.JobID = jobID;
                             }
                             else
                             {

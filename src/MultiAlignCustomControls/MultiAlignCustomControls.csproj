@@ -85,37 +85,43 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Charting\ChartDisplayOptions.cs" />
-    <Compile Include="Charting\controlHistogram.cs">
+    <Compile Include="Charting\AlignmentHeatMap.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Charting\controlHistogram.Designer.cs">
-      <DependentUpon>controlHistogram.cs</DependentUpon>
-    </Compile>
+    <Compile Include="Charting\ChartDisplayOptions.cs" />
     <Compile Include="Charting\AbundanceProfileChart.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Charting\ctlAlignmentHeatMap.cs">
+    <Compile Include="Charting\ClusterChart.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Charting\ctlClusterChart.cs">
+    <Compile Include="Charting\SingleClusterChart.cs">
       <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Charting\Histogram.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Charting\Histogram.designer.cs">
+      <DependentUpon>Histogram.cs</DependentUpon>
     </Compile>
     <Compile Include="Charting\SeriesOptions.cs" />
+    <Compile Include="Drawing\AnalysisReportGenerator.cs" />
     <Compile Include="Drawing\RenderDatasetInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Charting\controlHistogram.resx">
-      <DependentUpon>controlHistogram.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="Charting\AbundanceProfileChart.resx">
       <DependentUpon>AbundanceProfileChart.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Charting\ctlClusterChart.resx">
-      <DependentUpon>ctlClusterChart.cs</DependentUpon>
+    <EmbeddedResource Include="Charting\ClusterChart.resx">
+      <DependentUpon>ClusterChart.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Charting\SingleClusterChart.resx">
+      <DependentUpon>SingleClusterChart.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Charting\Histogram.resx">
+      <DependentUpon>Histogram.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

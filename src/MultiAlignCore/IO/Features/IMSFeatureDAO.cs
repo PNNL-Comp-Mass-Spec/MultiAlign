@@ -13,5 +13,12 @@ namespace MultiAlignCore.IO.Features
         /// <param name="datasetId"></param>
         /// <returns></returns>
         List<MSFeatureLight> FindByDatasetId(int datasetId);
+        /// <summary>
+        /// Finds a feature based on its dataset id and feature id.
+        /// </summary>
+        /// <param name="datasetId"></param>
+        /// <param name="featureId"></param>
+        /// <returns></returns>
+        List<MSFeatureLight> FindByFeatureId(int datasetId, int featureId);
 	}
 }

@@ -135,7 +135,7 @@ namespace MultiAlignCore.Algorithms
         /// <summary>
         /// Gets or sets the object that provides the algorithms for clustering, aligning, etc.
         /// </summary>
-        public AlgorithmProvider AlgorithmProvders
+        public AlgorithmProvider AlgorithmProviders
         {
             get
             {
@@ -319,11 +319,11 @@ namespace MultiAlignCore.Algorithms
             List<UMCLight> baselineFeatures     = LoadBaselineData(baselineDataset,
                                                                    options,
                                                                    filterOptions,
-                                                                   config.DataProviders,
+                                                                   config.Analysis.DataProviders,
                                                                    config.Analysis.MassTagDatabase,
                                                                    config.Analysis.Options.UseMassTagDBAsBaseline,
                                                                    config.Analysis.Options.DriftTimeAlignmentOptions.ShouldAlignDriftTimes);
-            ILcScanAdjuster scanAdjuster        = AlgorithmProvders.LcScanAdjuster;
+            ILcScanAdjuster scanAdjuster        = AlgorithmProviders.LcScanAdjuster;
             IFeatureAligner aligner             = m_algorithms.Aligner;
             AlignmentDAOHibernate alignmentData = new AlignmentDAOHibernate();
             alignmentData.ClearAll();
@@ -331,7 +331,7 @@ namespace MultiAlignCore.Algorithms
             RegisterProgressNotifier(aligner);
 
 
-            FeatureDataAccessProviders providers = config.DataProviders;
+            FeatureDataAccessProviders providers = config.Analysis.DataProviders;
 
             foreach (DatasetInformation dataset in datasets)
             {
@@ -685,9 +685,9 @@ namespace MultiAlignCore.Algorithms
                                                 dataProviders,
                                                 false);
 
-                if (AlgorithmProvders.LcScanAdjuster != null)
+                if (AlgorithmProviders.LcScanAdjuster != null)
                 {
-                    List<UMCLight> oldFeatures = AlgorithmProvders.LcScanAdjuster.AdjustScans(baselineFeatures);
+                    List<UMCLight> oldFeatures = AlgorithmProviders.LcScanAdjuster.AdjustScans(baselineFeatures);
                     
                     if (FeaturesAdjusted != null)
                     {
@@ -775,7 +775,7 @@ namespace MultiAlignCore.Algorithms
             UpdateStatus("Performing Alignment");
 
             // Connect to database of features.                
-            IUmcDAO featureCache = config.DataProviders.FeatureCache;
+            IUmcDAO featureCache = config.Analysis.DataProviders.FeatureCache;
 
             // Load the baseline data.
             List<UMCLight> baselineFeatures = null;
@@ -783,7 +783,7 @@ namespace MultiAlignCore.Algorithms
             baselineFeatures = LoadBaselineData(config.Analysis.MetaData.BaselineDataset,
                                                 config.Analysis.Options.FeatureFindingOptions,
                                                 config.Analysis.Options.FeatureFilterOptions,                                                                   
-                                                config.DataProviders,
+                                                config.Analysis.DataProviders,
                                                 config.Analysis.MassTagDatabase,
                                                 config.Analysis.Options.UseMassTagDBAsBaseline,
                                                 config.Analysis.Options.DriftTimeAlignmentOptions.ShouldAlignDriftTimes);
@@ -982,7 +982,7 @@ namespace MultiAlignCore.Algorithms
             // This just tells us whether we are using mammoth memory partitions or not.          
             string databaseName = Path.Combine(analysis.MetaData.AnalysisPath, analysis.MetaData.AnalysisName);
             
-            IUmcDAO featureCache            = config.DataProviders.FeatureCache;            
+            IUmcDAO featureCache            = config.Analysis.DataProviders.FeatureCache;            
             int clusterCount                = 0;
             
             if (analysis.Options.ClusterOptions.IgnoreCharge)
@@ -1001,8 +1001,8 @@ namespace MultiAlignCore.Algorithms
                     cluster.ID = clusterCount++;
                     cluster.UMCList.ForEach(x => x.ClusterID = cluster.ID);
                 }
-                config.DataProviders.ClusterCache.AddAll(clusters);
-                config.DataProviders.FeatureCache.UpdateAll(features);
+                config.Analysis.DataProviders.ClusterCache.AddAll(clusters);
+                config.Analysis.DataProviders.FeatureCache.UpdateAll(features);
 
                 UpdateStatus( string.Format("Found {0} clusters.", clusters.Count));
 
@@ -1038,8 +1038,8 @@ namespace MultiAlignCore.Algorithms
                         cluster.ID = clusterCount++;
                         cluster.UMCList.ForEach(x => x.ClusterID = cluster.ID);                        
                     }
-                    config.DataProviders.ClusterCache.AddAll(clusters);
-                    config.DataProviders.FeatureCache.UpdateAll(features);
+                    config.Analysis.DataProviders.ClusterCache.AddAll(clusters);
+                    config.Analysis.DataProviders.FeatureCache.UpdateAll(features);
                     UpdateStatus( string.Format("Found {0} clusters.", clusters.Count));
 
                     if (FeaturesClustered != null)
@@ -1066,7 +1066,7 @@ namespace MultiAlignCore.Algorithms
                 {
 
 
-                    List<UMCClusterLight> clusters              = m_config.DataProviders.ClusterCache.FindAll();
+                    List<UMCClusterLight> clusters              = m_config.Analysis.DataProviders.ClusterCache.FindAll();
                     IPeakMatcher<UMCClusterLight> peakMatcher   = m_algorithms.PeakMatcher;
 
                     UpdateStatus("Performing Peak Matching");                          
@@ -1177,7 +1177,7 @@ namespace MultiAlignCore.Algorithms
                 throw new NullReferenceException("The analysis data storage cannot be null.");
             }
 
-            if (config.DataProviders == null)
+            if (config.Analysis.DataProviders == null)
             {
                 throw new NullReferenceException("The data cache providers have not been set for this analysis.");
             }
@@ -1206,7 +1206,7 @@ namespace MultiAlignCore.Algorithms
 
             UpdateStatus("Loading all of the mass tags.");
             // Get all of the mass tags
-            List<MassTagLight> massTags = config.DataProviders.MassTags.FindAll();
+            List<MassTagLight> massTags = config.Analysis.DataProviders.MassTags.FindAll();
 
 
             UpdateStatus("Loading all of the tag to protein references.");
@@ -1306,7 +1306,7 @@ namespace MultiAlignCore.Algorithms
             config.Analysis.MassTagDatabase = database;
 
             
-            config.DataProviders.MassTags.AddAll(database.MassTags);
+            config.Analysis.DataProviders.MassTags.AddAll(database.MassTags);
 
             IProteinDAO proteinCache = new MultiAlignCore.IO.Features.Hibernate.ProteinDAO();          
             proteinCache.AddAll(database.AllProteins);

@@ -8,36 +8,52 @@
              xmlns:maCharts="clr-namespace:MultiAlignCustomControls.Charting;assembly=MultiAlignCustomControls"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
+    <Grid 
+        Margin="4">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="50*"/>
+            <ColumnDefinition Width="50*"/>
         </Grid.ColumnDefinitions>
 
 
         <!-- Cluster Plot -->
-        <WindowsFormsHost
-            Grid.Column="0">            
-            <maCharts:ctlClusterChart>
-                
-            </maCharts:ctlClusterChart>
-        </WindowsFormsHost>
 
         <!-- Abundances -->
-        <WindowsFormsHost
-            Grid.Column="1">
-            <maCharts:AbundanceProfileChart>
-
-            </maCharts:AbundanceProfileChart>
-        </WindowsFormsHost>
-
-
-        <!-- Features Grid -->
-        <DataGrid
-            Grid.Column="2"
-            >
-            
-        </DataGrid>
+        <TabControl
+            Grid.Column="0"
+            Grid.ColumnSpan="2">
+            <TabItem Header="Features">
+                <WindowsFormsHost>
+                    <maCharts:SingleClusterChart
+                x:Name="m_clusterChart"
+                Title=""
+                LegendVisible="False"
+                />
+                </WindowsFormsHost>
+            </TabItem>
+            <TabItem Header="Abundance Profile">
+                <WindowsFormsHost>
+                    <maCharts:AbundanceProfileChart
+                    x:Name="m_profileChart"
+                    Title=""
+                    LegendVisible="False"                
+                    />
+                </WindowsFormsHost>
+            </TabItem>
+            <TabItem Header="Data">
+                <!-- Features Grid -->
+                <DataGrid/>
+            </TabItem>
+            <TabItem Header="SIC"
+                     IsEnabled="False">
+                <!-- Features Grid -->
+                <DataGrid/>
+            </TabItem>
+            <TabItem Header="MS/MS"
+                     IsEnabled="False">
+                <!-- Features Grid -->
+                <DataGrid/>
+            </TabItem>
+        </TabControl>
     </Grid>
 </UserControl>
