@@ -3,10 +3,19 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
         xmlns:ribbon="clr-namespace:Microsoft.Windows.Controls.Ribbon;assembly=RibbonControlsLibrary"
         xmlns:manassa="clr-namespace:Manassa.Windows"
-        Title="MultiAlign" Height="771" Width="1257">
+        Title="MultiAlign"         
+        Height="989" 
+        Width="999"
+        Icon="/Manassa;component/Resources/logo.png">
 
-    <Window.Resources>
-        <BitmapImage x:Key="MannassaImage" UriSource="MainIcon" />
+    <Window.Resources>        
+        <BitmapImage x:Key="MannassaImage" UriSource="pack://application:,,,/Resources/MainIcon.png" />
+        <BitmapImage x:Key="AlignmentIcon" UriSource="pack://application:,,,/Resources/AlignmentIcon.png" />
+        <BitmapImage x:Key="FolderIcon" UriSource="pack://application:,,,/Resources/folder_default.png" />
+        <BitmapImage x:Key="NewIcon" UriSource="pack://application:,,,/Resources/text_x_generic.png" />
+        <BitmapImage x:Key="MenuIcon" UriSource="pack://application:,,,/Resources/manassaMain.png" />
+        <BitmapImage x:Key="Molecule" UriSource="pack://application:,,,/Resources/molecule.png" />
+        <BitmapImage x:Key="Unknown" UriSource="pack://application:,,,/Resources/unknown.png" />
     </Window.Resources>
     
     <Grid
@@ -25,24 +34,22 @@
             Grid.Column="0"
             Grid.ColumnSpan="2"
             x:Name="Ribbon">
-            <ribbon:Ribbon.HelpPaneContent>
-                <ribbon:RibbonButton  />
-            </ribbon:Ribbon.HelpPaneContent>
             <ribbon:Ribbon.ApplicationMenu>
-                <ribbon:RibbonApplicationMenu 
-                    LargeImageSource="{StaticResource ResourceKey=MannassaImage}"
-                    SmallImageSource="{StaticResource ResourceKey=MannassaImage}"
-                    >
-
+                <ribbon:RibbonApplicationMenu                     
+                    SmallImageSource="{StaticResource ResourceKey=MenuIcon}"
+                    LargeImageSource="{StaticResource ResourceKey=MenuIcon}"
+                    >                    
                     <ribbon:RibbonApplicationMenuItem Header="_New"  
-                                                      IsEnabled="False"
-                                                      x:Name="NewAnalysisMenuButton"                                                      
-                                                      />
+                                                      IsEnabled="False"        
+                                                      ImageSource="{StaticResource ResourceKey=NewIcon}"
+                                                      x:Name="NewAnalysisMenuButton">                        
+                    </ribbon:RibbonApplicationMenuItem>
                     <ribbon:RibbonSeparator/>
-                    <ribbon:RibbonApplicationMenuItem Header="_Open"
-                                                      x:Name="LoadAnalysisMenuButton"
-                                                      Click="LoadAnalysisMenuButton_Click"  
-                                                      />
+                    <ribbon:RibbonApplicationMenuItem Header="_Open"                                                      
+                                                      x:Name="LoadAnalysisMenuButton"        
+                                                      ImageSource="{StaticResource ResourceKey=FolderIcon}"                                              
+                                                      Click="LoadAnalysisMenuButton_Click">                        
+                    </ribbon:RibbonApplicationMenuItem>
                     <ribbon:RibbonSeparator/>
                     <ribbon:RibbonApplicationMenuItem Header="_Close"
                                                       IsEnabled="False"
@@ -59,13 +66,15 @@
                                     Header="General">
                     <ribbon:RibbonButton x:Name="NewAnalysisButton"
                                          IsEnabled="False"
+                                         LargeImageSource="{StaticResource ResourceKey=NewIcon}"
                                          Label="New" />
+                    <ribbon:RibbonButton x:Name="LoadOptionsButton"
+                                         Label="Open"
+                                         LargeImageSource="{StaticResource ResourceKey=FolderIcon}"
+                                         Click="LoadAnalysisMenuButton_Click"/>                    
                     <ribbon:RibbonButton x:Name="AnalysisOptionsButton"
                                          IsEnabled="False"
                                          Label="Options" />
-                    <ribbon:RibbonButton x:Name="LoadOptionsButton"
-                                         Label="Open"
-                                         Click="LoadAnalysisMenuButton_Click"/>
                 </ribbon:RibbonGroup>
                 <ribbon:RibbonGroup x:Name="LCMSFeatureFindingGroup" 
                                     IsEnabled="False"
@@ -77,7 +86,8 @@
                                     IsEnabled="False"
                                     Header="Alignment">
                     <ribbon:RibbonButton x:Name="Button1"
-                                         Label="Select Baseline" />
+                                         Label="Select Baseline"
+                                         LargeImageSource="{StaticResource ResourceKey=AlignmentIcon}"/>
                     <ribbon:RibbonButton x:Name="Button2"
                                          Label="Options" />
                 </ribbon:RibbonGroup>
@@ -122,7 +132,16 @@
             <ribbon:RibbonTab x:Name="ClustersTab" 
                               Header="LC-MS Clusters">
                 <ribbon:RibbonGroup x:Name="ClustersGroup" 
-                                    Header="Clusters" IsEnabled="false">
+                                    Header="Clusters" IsEnabled="True">
+
+                    <ribbon:RibbonToggleButton x:Name="ShowAttributedClusters"
+                                               LargeImageSource="{StaticResource ResourceKey=Molecule}"
+                                         Label="Attributed"/>
+                    <ribbon:RibbonToggleButton x:Name="ShowUnAttributedClusters"
+                                               LargeImageSource="{StaticResource ResourceKey=Unknown}"
+                                         Label="Unattributed"/>
+                    <ribbon:RibbonToggleButton x:Name="ShowMsMsClusters"
+                                         Label="Have MS/MS"/>
                 </ribbon:RibbonGroup>
             </ribbon:RibbonTab>
             <ribbon:RibbonTab x:Name="StatisticsTab" 

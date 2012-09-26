@@ -17,5 +17,6 @@
 		<property name="MassMonoisotopicAverage"      column="AVERAGE_MW"                 type="double"   not-null="false" />
 		<property name="MassMonoisotopic"             column="MONOISOTOPIC_MW"            type="double"   not-null="false" />
     <property name="MassMonoisotopicMostAbundant" column="MONOISOTOPIC_MW_ABUNDANT"   type="double"   not-null="false" />
+    <property name="UMCID"                        column="LCMS_FEATURE_ID"   type="int"   not-null="false" />
 	</class>
 </hibernate-mapping>

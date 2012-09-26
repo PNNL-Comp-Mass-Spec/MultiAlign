@@ -71,7 +71,23 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Converters\BooleanToDataGridVisibilityModeConverter.cs" />
+    <Compile Include="Converters\HasMSMSConverter.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="Windows\DatasetInformationView.xaml.cs">
+      <DependentUpon>DatasetInformationView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\DatasetsGrid.xaml.cs">
+      <DependentUpon>DatasetsGrid.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\MsMsGrid.xaml.cs">
+      <DependentUpon>MsMsGrid.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\FeatureGrid.xaml.cs">
+      <DependentUpon>FeatureGrid.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\MassTagGrid.xaml.cs">
+      <DependentUpon>MassTagGrid.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\MassTagControl.xaml.cs">
       <DependentUpon>MassTagControl.xaml</DependentUpon>
     </Compile>
@@ -86,6 +102,26 @@
     <Page Include="Windows\ClusterGrid.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\DatasetInformationView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\DatasetsGrid.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\MsMsGrid.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\FeatureGrid.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\MassTagGrid.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Windows\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -154,6 +190,30 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\MainIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\AlignmentIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Licenses.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\folder_default.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\text_x_generic.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\manassaMain.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\molecule.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\unknown.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\logo.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

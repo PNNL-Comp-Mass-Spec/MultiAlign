@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Manassa.Windows.ClusterGrid"
+﻿<UserControl x:Class="Manassa.Windows.MassTagGrid"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -17,10 +17,6 @@
                 AlternatingRowBackground="WhiteSmoke"
                 AlternationCount="1"
                 CanUserAddRows="False"
-                CanUserDeleteRows="False"
-                CanUserReorderColumns="True"
-                CanUserSortColumns="True"
-            
                 AutoGenerateColumns="False"
                 Grid.ColumnSpan="6"
                 IsTextSearchEnabled="True"
@@ -50,15 +46,12 @@
 
             <DataGrid.Columns >
                 <!--Dataset Information-->
-                <DataGridTextColumn         Header="ID"                 CanUserSort="True"     Binding="{Binding ID}"                   IsReadOnly="True"/>
-                <DataGridTextColumn         Header="Monoisotopic Mass"  CanUserSort="True"     Binding="{Binding MassMonoisotopic}"     IsReadOnly="True"/>
-                <DataGridTextColumn         Header="NET"                CanUserSort="True"     Binding="{Binding RetentionTime}"        IsReadOnly="True"/>
-                <DataGridTextColumn         Header="Drift Time"         CanUserSort="True"     Binding="{Binding DriftTime}"            IsReadOnly="True"/>
-                <DataGridTextColumn         Header="Charge"             CanUserSort="True"     Binding="{Binding ChargeState}"          IsReadOnly="True"/>
-                <DataGridTextColumn         Header="Dataset Members"    CanUserSort="True"     Binding="{Binding DatasetMemberCount}"   IsReadOnly="True"/>
-                <DataGridTextColumn         Header="Total Members"      CanUserSort="True"     Binding="{Binding MemberCount}"          IsReadOnly="True"/>
-                <DataGridTextColumn         Header="Ambiguity"          CanUserSort="True"     Binding="{Binding AmbiguityScore}"       IsReadOnly="True"/>
-                <DataGridTextColumn         Header="Tightness"          CanUserSort="True"     Binding="{Binding Tightness}"            IsReadOnly="True"/>
+                <DataGridTextColumn         Header="Peptide Sequence"  CanUserSort="True"      Binding="{Binding PeptideSequence}"  IsReadOnly="True"/>
+                <DataGridTextColumn         Header="Monoisotopic Mass" CanUserSort="True"      Binding="{Binding MassMonoisotopic}" IsReadOnly="True"/>
+                <DataGridTextColumn         Header="NET"               CanUserSort="True"      Binding="{Binding RetentionTime}"    IsReadOnly="True"/>
+                <DataGridTextColumn         Header="Drift Time"        CanUserSort="True"      Binding="{Binding DriftTime}"        IsReadOnly="True"/>
+                <DataGridTextColumn         Header="ID"                CanUserSort="True"      Binding="{Binding ID}"               IsReadOnly="True"/>
+                <DataGridTextColumn         Header="Conformation ID"   CanUserSort="True"      Binding="{Binding ConformationID}"   IsReadOnly="True"/>            
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

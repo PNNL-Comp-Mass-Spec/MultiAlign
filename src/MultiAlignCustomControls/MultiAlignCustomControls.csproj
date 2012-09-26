@@ -95,6 +95,18 @@
     <Compile Include="Charting\ClusterChart.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Charting\ChargeStateHistogram.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Charting\ChargeStateHistogram.designer.cs">
+      <DependentUpon>ChargeStateHistogram.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Charting\SingleUMCChart.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Charting\SICChart.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Charting\SingleClusterChart.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -107,6 +119,7 @@
     <Compile Include="Charting\SeriesOptions.cs" />
     <Compile Include="Drawing\AnalysisReportGenerator.cs" />
     <Compile Include="Drawing\RenderDatasetInfo.cs" />
+    <Compile Include="Extensions\ChartExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
   </ItemGroup>
@@ -116,6 +129,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Charting\ClusterChart.resx">
       <DependentUpon>ClusterChart.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Charting\ChargeStateHistogram.resx">
+      <DependentUpon>ChargeStateHistogram.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Charting\SingleUMCChart.resx">
+      <DependentUpon>SingleUMCChart.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Charting\SICChart.resx">
+      <DependentUpon>SICChart.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Charting\SingleClusterChart.resx">
       <DependentUpon>SingleClusterChart.cs</DependentUpon>

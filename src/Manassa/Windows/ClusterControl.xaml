@@ -6,8 +6,11 @@
              xmlns:wf="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
              xmlns:pnnlCharts="clr-namespace:PNNLControls.Drawing.Charting;assembly=PNNLControls"
              xmlns:maCharts="clr-namespace:MultiAlignCustomControls.Charting;assembly=MultiAlignCustomControls"
-             mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             xmlns:maWindows="clr-namespace:Manassa.Windows"
+             mc:Ignorable="d"          
+             x:Name="myControl"
+             d:DesignHeight="382" d:DesignWidth="838">
+                 
     <Grid 
         Margin="4">
         <Grid.ColumnDefinitions>
@@ -15,45 +18,148 @@
             <ColumnDefinition Width="50*"/>
         </Grid.ColumnDefinitions>
 
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-        <!-- Cluster Plot -->
+        <Label 
+            Content="Cluster" 
+            Grid.Row="0"
+            Grid.Column="0"
+            x:Name="m_clusterName">            
+        </Label>
 
         <!-- Abundances -->
         <TabControl
             Grid.Column="0"
+            Grid.Row="1"
             Grid.ColumnSpan="2">
-            <TabItem Header="Features">
-                <WindowsFormsHost>
-                    <maCharts:SingleClusterChart
-                x:Name="m_clusterChart"
-                Title=""
-                LegendVisible="False"
-                />
-                </WindowsFormsHost>
+            <TabItem Header="Tags and Clusters">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="33*"/>
+                        <ColumnDefinition Width="33*"/>
+                        <ColumnDefinition Width="33*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>                            
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <WindowsFormsHost
+                        Margin="1,1,1,1"
+                        Grid.Row="0"
+                        Grid.Column="0">
+                        <maCharts:SingleClusterChart
+                                x:Name="m_clusterChart"
+                                Title=""
+                                XAxisLabel="NET"
+                                LegendVisible="False"
+                                />
+                    </WindowsFormsHost>
+                    <WindowsFormsHost
+                        Margin="1,1,1,1"
+                        Grid.Row="0"
+                        Grid.Column="1">
+                        <maCharts:SingleClusterChart
+                                x:Name="m_driftChart"
+                                Title=""
+                                IsDriftTimeXAxis="True"
+                                XAxisLabel="Drift Time"
+                                LegendVisible="False"
+                                />
+                    </WindowsFormsHost>
+                    
+                    <TabControl
+                        Grid.Row="0"
+                        Grid.Column="2"   >
+                        <TabItem
+                            Header="Matching Mass Tags"
+                            Margin="1,1,1,1">
+                            <maWindows:MassTagGrid
+                                x:Name="m_masstagGrid" />
+                        </TabItem>
+                        <TabItem
+                            Header="Nearby Clusters"
+                            Margin="1,1,1,1">
+                            <maWindows:ClusterGrid
+                                x:Name="m_clusterGrid" />
+                        </TabItem>
+                    </TabControl>
+                    
+                    <WrapPanel
+                        Grid.Row="1"
+                        Margin="3,3,3,3"
+                        Grid.ColumnSpan="3">
+                        <Button 
+                                Content="Save Feature Plots"
+                                x:Name="m_saveFeaturePlotButton" 
+                                Click="m_saveFeaturePlotButton_Click" />
+                    </WrapPanel>
+                </Grid>
             </TabItem>
-            <TabItem Header="Abundance Profile">
+            <TabItem Header="Features">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="60*" />
+                        <ColumnDefinition Width="40*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="50*"/>
+                        <RowDefinition Height="50*"/>
+                    </Grid.RowDefinitions>
+                    
+                    <!-- Features Grid -->
+                    <maWindows:FeatureGrid
+                        Grid.Column="0"
+                        Grid.RowSpan="2"
+                        SelectedFeature="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorLevel=1, AncestorType={x:Type maWindows:ClusterControl}}, Path=UMCFeature}"
+                        x:Name="m_featureGrid"
+                        />
+
+                    <!-- Plots based on feature selection -->                    
+                    <WindowsFormsHost
+                        Grid.Column="1"
+                        Grid.Row="1"
+                        >
+                        <maCharts:SICChart
+                                x:Name="m_sicChart"
+                                Title=""
+                                TitleVisible="False"
+                                LegendVisible="False"                
+                                />
+                    </WindowsFormsHost>
+
+                    <WindowsFormsHost
+                        Grid.Column="1"
+                        Grid.Row="0"
+                        >
+                        <maCharts:SingleUMCChart
+                                x:Name="m_msFeaturePlot"
+                                Title=""
+                                LegendVisible="False"                
+                                />
+                    </WindowsFormsHost>
+                </Grid>
+            </TabItem>
+            <TabItem 
+                Header="Abundance Profile"
+                >
                 <WindowsFormsHost>
                     <maCharts:AbundanceProfileChart
-                    x:Name="m_profileChart"
-                    Title=""
-                    LegendVisible="False"                
-                    />
+                                        x:Name="m_profileChart"
+                                        Title=""
+                                        LegendVisible="False"                
+                                        />
                 </WindowsFormsHost>
             </TabItem>
-            <TabItem Header="Data">
-                <!-- Features Grid -->
-                <DataGrid/>
-            </TabItem>
-            <TabItem Header="SIC"
-                     IsEnabled="False">
-                <!-- Features Grid -->
-                <DataGrid/>
-            </TabItem>
-            <TabItem Header="MS/MS"
-                     IsEnabled="False">
-                <!-- Features Grid -->
-                <DataGrid/>
+            <TabItem Header="MS/MS">                
+                <maWindows:MsMsGrid
+                    x:Name="m_msmsGrid"/>
             </TabItem>
         </TabControl>
     </Grid>
+    
 </UserControl>

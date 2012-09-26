@@ -181,6 +181,7 @@
     <Compile Include="Data\Features\FeatureLoadingData.cs" />
     <Compile Include="Data\Features\LCMSFeatureChargeMapBuilder.cs" />
     <Compile Include="Data\Features\FeatureDataConverters.cs" />
+    <Compile Include="Data\Features\MSFeatureMsMs.cs" />
     <Compile Include="Data\MSMSClusterMap.cs" />
     <Compile Include="Data\Factors\DatasetToExperimentalFactorMap.cs" />
     <Compile Include="Data\Factors\ExperimentalFactor.cs" />

@@ -11,6 +11,19 @@ namespace MultiAlignCore.Extensions
 {
     public static class FeatureExtensions
     {
+        public static Dictionary<int, int> CreateChargeMap<T>(this List<T> features) where T : FeatureLight
+        {
+            Dictionary<int, int> map = new Dictionary<int, int>();
+            foreach (T feature in features)
+            {
+                if (!map.ContainsKey(feature.ChargeState))
+                {
+                    map.Add(feature.ChargeState, 0);
+                }
+                map[feature.ChargeState]++;             
+            }
+            return map;
+        }
         /// <summary>
         /// Creates a charge map for a given ms feature list.
         /// </summary>
@@ -52,39 +65,84 @@ namespace MultiAlignCore.Extensions
             }
             return sicMap;
         }
-
-
+        /// <summary>
+        /// Gets a cluster and it's subsequent data structures.
+        /// </summary>
+        /// <param name="cluster"></param>
+        /// <param name="providers"></param>
         public static void ReconstructUMCCluster(this UMCClusterLight cluster, FeatureDataAccessProviders providers)
         {
+            cluster.ReconstructUMCCluster(providers, true, true);            
+        }
+        /// <summary>
+        /// Determines if MS/MS should also be discovered.
+        /// </summary>
+        /// <param name="cluster"></param>
+        /// <param name="providers"></param>
+        /// <param name="getMsMS"></param>
+        public static void ReconstructUMCCluster(this UMCClusterLight cluster, FeatureDataAccessProviders providers, bool getMsFeature, bool getMsMs)
+        {
             List<UMCLight> features = providers.FeatureCache.FindByClusterID(cluster.ID);
-            foreach(UMCLight feature in features)
+            foreach (UMCLight feature in features)
             {
-                    cluster.AddChildFeature(feature);
-                    feature.ReconstructUMC(providers);
+                cluster.AddChildFeature(feature);
+
+                if (getMsFeature)
+                {
+                    feature.ReconstructUMC(providers, getMsMs);
+                }
             }
         }
-        public static void ReconstructUMC(this UMCLight feature, FeatureDataAccessProviders providers)
+        /// <summary>
+        /// Reconstructions a UMC
+        /// </summary>
+        /// <param name="feature"></param>
+        /// <param name="providers"></param>
+        public static void ReconstructUMC(this UMCLight feature, FeatureDataAccessProviders providers, bool getMsMs)
         {
             // This is easy to grab all ms features for this feature.
             List<MSFeatureLight> msFeatures = providers.MSFeatureCache.FindByFeatureId(feature.GroupID, feature.ID);
 
+
+            foreach (MSFeatureLight msFeature in msFeatures)
+            {
+                feature.AddChildFeature(msFeature);
+            }
+
+            if (getMsMs)
+            {
+                feature.ReconstructMSFeature(providers, getMsMs);
+            }
+        }
+        /// <summary>
+        /// Reconstructs a MS Feature by loading the MS/MS data
+        /// </summary>
+        /// <param name="feature"></param>
+        /// <param name="providers"></param>
+        public static void ReconstructMSFeature(this MSFeatureLight msFeature, FeatureDataAccessProviders providers)
+        {
             // We are reconstruction the objects here.  But 
             // I want to reduce the number of transactions to make.
             // So I go back through the database and pull out all msms spectra first
             // then sort it out in memory.
 
             // Get the map
-            List<MSFeatureToMSnFeatureMap> msmsFeatures = 
-                providers.MSFeatureToMSnFeatureCache.FindByUMCFeatureId(feature.GroupID,
-                                                                        feature.ID);
+            List<MSFeatureToMSnFeatureMap> msmsFeatures = new List<MSFeatureToMSnFeatureMap>();
 
-            // Then grab the spectra id list
-            List<int> ids = msmsFeatures.ConvertAll<int> (x => x.MSMSFeatureID);
-            
+            // Maps the id's of the MS/MS spectra
+            List<int> ids = new List<int>();
+
             // Make a map, from the dataset, then the spectra to the ms feature Id.
-            Dictionary<int, Dictionary<int, MSFeatureToMSnFeatureMap>> map 
+            Dictionary<int, Dictionary<int, MSFeatureToMSnFeatureMap>> map
                             = new Dictionary<int, Dictionary<int, MSFeatureToMSnFeatureMap>>();
 
+            
+            msmsFeatures =  providers.MSFeatureToMSnFeatureCache.FindByUMCFeatureId(msFeature.GroupID,
+                                                                                        msFeature.ID);
+            // Then grab the spectra id list
+            ids = msmsFeatures.ConvertAll<int>(x => x.MSMSFeatureID);
+            
+                        
             // construct that map here.
             foreach (MSFeatureToMSnFeatureMap subFeature in msmsFeatures)
             {
@@ -110,11 +168,75 @@ namespace MultiAlignCore.Extensions
                 }
                 spectraMap[spectrum.GroupID].Add(spectrum.ID, spectrum);
             }
-            
-            foreach (MSFeatureLight msFeature in msFeatures)
+                                        
+            // Here we check the dataset.
+            if (map.ContainsKey(msFeature.GroupID))
             {
-                feature.AddChildFeature(msFeature);
+                // then check the ms/ms spectra
+                if (map[msFeature.GroupID].ContainsKey(msFeature.ID))
+                {
+                    // ok, we are sure that the spectra is present now!
+                    MSFeatureToMSnFeatureMap singleMap = map[msFeature.GroupID][msFeature.ID];
+                    MSSpectra spectrum = spectraMap[singleMap.MSDatasetID][singleMap.MSMSFeatureID];
+                    msFeature.MSnSpectra.Add(spectrum);
+                }
+            }                              
+        }
+        public static void ReconstructMSFeature(this UMCLight feature, FeatureDataAccessProviders providers, bool getMsMs)
+        {
+            // We are reconstruction the objects here.  But 
+            // I want to reduce the number of transactions to make.
+            // So I go back through the database and pull out all msms spectra first
+            // then sort it out in memory.
 
+            // Get the map
+            List<MSFeatureToMSnFeatureMap> msmsFeatures = new List<MSFeatureToMSnFeatureMap>();
+
+            // Maps the id's of the MS/MS spectra
+            List<int> ids = new List<int>();
+
+            // Make a map, from the dataset, then the spectra to the ms feature Id.
+            Dictionary<int, Dictionary<int, MSFeatureToMSnFeatureMap>> map
+                            = new Dictionary<int, Dictionary<int, MSFeatureToMSnFeatureMap>>();
+
+
+            if (getMsMs)
+            {
+                msmsFeatures = providers.MSFeatureToMSnFeatureCache.FindByUMCFeatureId(feature.GroupID,
+                                                                                        feature.ID);
+            }
+            // Then grab the spectra id list
+            ids = msmsFeatures.ConvertAll<int>(x => x.MSMSFeatureID);
+            
+            
+            
+            // construct that map here.
+            foreach (MSFeatureToMSnFeatureMap subFeature in msmsFeatures)
+            {
+                // first map the dataset id
+                if (!map.ContainsKey(subFeature.MSDatasetID))
+                {
+                    map.Add(subFeature.MSDatasetID, new Dictionary<int,MSFeatureToMSnFeatureMap>());
+                }
+
+                // Then map its msms spectra id
+                map[subFeature.MSDatasetID].Add(subFeature.MSFeatureID, subFeature);
+            }
+            
+            // Now we get all the spectra, map to the UMC, then the ms/ms spectra. 
+            List<MSSpectra> spectra                                 = providers.MSnFeatureCache.FindBySpectraId(ids);                              
+            Dictionary<int, Dictionary<int, MSSpectra>> spectraMap  = new Dictionary<int,Dictionary<int,MSSpectra>>();
+            foreach(MSSpectra spectrum in spectra)
+            {
+                if (!spectraMap.ContainsKey(spectrum.GroupID))
+                {
+                    spectraMap.Add(spectrum.GroupID, new Dictionary<int,MSSpectra>());
+                }
+                spectraMap[spectrum.GroupID].Add(spectrum.ID, spectrum);
+            }            
+            
+            foreach(MSFeatureLight msFeature in feature.MSFeatures)
+            {
                 // Here we check the dataset.
                 if (map.ContainsKey(msFeature.GroupID))
                 {
@@ -128,6 +250,45 @@ namespace MultiAlignCore.Extensions
                     }
                 }
             }                        
-        }     
+        }
+        /// <summary>
+        /// Finds the ranges of a given feature for all of its dimensions.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="features"></param>
+        /// <param name="minMass"></param>
+        /// <param name="maxMass"></param>
+        /// <param name="minNet"></param>
+        /// <param name="maxNet"></param>
+        /// <param name="minDrift"></param>
+        /// <param name="maxDrift"></param>
+        public static void FindRanges<T>(this List<T> features, 
+            out double minMass, 
+            out double maxMass,
+            out double minNet, 
+            out double maxNet,
+            out double minDrift, 
+            out double maxDrift) where T: FeatureLight
+        {
+            minMass = double.MaxValue;
+            maxMass   = double.MinValue;
+            minNet   = double.MaxValue;
+            maxNet   = double.MinValue;
+            minDrift = double.MaxValue;
+            maxDrift = double.MinValue;
+
+            // Find the mins
+            foreach (T feature in features)
+            {
+                minMass  = Math.Min(minMass,  feature.MassMonoisotopicAligned);
+                maxMass  = Math.Max(maxMass,  feature.MassMonoisotopicAligned);
+
+                minNet   = Math.Min(minNet,   feature.RetentionTime);
+                maxNet   = Math.Max(maxNet,   feature.RetentionTime);
+
+                minDrift = Math.Min(minDrift, feature.DriftTime);
+                maxDrift = Math.Max(maxDrift, feature.DriftTime);                
+            }
+        }
     }
 }

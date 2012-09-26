@@ -1,26 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.ComponentModel;
-using System.Windows;
+﻿using System.Collections.Generic;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-
 using MultiAlignCore.Data;
+using MultiAlignCore.Extensions;
 using PNNLOmics.Data.Features;
-using MultiAlignCore.IO;
-
-using MultiAlignCore.Algorithms;
-using MultiAlignCore.IO;
-using MultiAlignCustomControls.Drawing;
-using MultiAlignCore.IO.Features;
 
 namespace Manassa.Windows
 {
@@ -29,10 +11,8 @@ namespace Manassa.Windows
     /// </summary>
     public partial class AllClustersControl : UserControl
     {
-        public event PropertyChangedEventHandler PropertyChanged;
         private MultiAlignAnalysis m_analysis;
         
-
         public AllClustersControl()
         {
             InitializeComponent();
@@ -53,10 +33,15 @@ namespace Manassa.Windows
             {
                 m_analysis = value;
                 if (value != null)
-                {                    
-                    m_clusterGrid.Clusters = new BindingList<UMCClusterLight>(value.Clusters);                    
+                {
+                    m_datasetsName.Datasets     = value.MetaData.Datasets;
+                    m_clusterGrid.Clusters      = value.Clusters;                   
                     m_clusterPlot.SetClusters(value.Clusters);
-                    m_clusterControl.Providers = m_analysis.DataProviders;
+                    m_clusterControl.Providers  = m_analysis.DataProviders;
+                    Dictionary<int, int> map    = value.Clusters.CreateChargeMap<UMCClusterLight>();
+
+                    m_chargeStates.ConstructHistogram(map);
+                    m_chargeStates.AutoViewPort();
                 }
             }
         }

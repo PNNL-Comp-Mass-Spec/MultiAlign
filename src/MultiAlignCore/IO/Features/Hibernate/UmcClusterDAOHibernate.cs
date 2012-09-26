@@ -15,11 +15,31 @@ namespace MultiAlignCore.IO.Features.Hibernate
         /// </summary>
         /// <param name="mass">Mass value to be searched for</param>
         /// <returns>List of UmcCluster Objects</returns>
-        public ICollection<UMCClusterLight> FindByMass(double mass)
+        public List<UMCClusterLight> FindByMass(double mass)
         {
-            ICriterion criterion = Expression.Eq("Mass", mass);
+            ICriterion criterion = Expression.Eq("MassMonoisotopic", mass);
             List<ICriterion> criterionList = new List<ICriterion>();
             criterionList.Add(criterion);
+            return FindByCriteria(criterionList);
+        }
+        /// <summary>
+        /// Finds nearby clusters.
+        /// </summary>
+        /// <param name="massMin"></param>
+        /// <param name="massMax"></param>
+        /// <param name="netMin"></param>
+        /// <param name="netMax"></param>
+        /// <returns></returns>
+        public List<UMCClusterLight> FindNearby(double massMin, double massMax, double netMin, double netMax, int id)
+        {
+            List<ICriterion> criterionList  = new List<ICriterion>();
+            ICriterion criterionMass        = Expression.Between("MassMonoisotopic", massMin, massMax);
+            ICriterion criterionNet         = Expression.Between("RetentionTime",  netMin, netMax);
+
+            criterionList.Add(criterionMass);
+            criterionList.Add(criterionNet);
+            criterionList.Add(Expression.Not(Expression.In("ID", new object[] { id })));
+            
             return FindByCriteria(criterionList);
         }
 

@@ -20,51 +20,47 @@ namespace Manassa.Windows
     /// <summary>
     /// Interaction logic for ClusterGrid.xaml
     /// </summary>
-    public partial class ClusterGrid : UserControl
+    public partial class FeatureGrid : UserControl
     {
-        private List<UMCClusterLight> m_clusters;
+        private List<UMCLight> m_features;
 
-        public ClusterGrid()
+        public FeatureGrid()
         {
             InitializeComponent();
-            Clusters = new List<UMCClusterLight>();
+            Features = new List<UMCLight>();
         }
 
         /// <summary>
         /// Gets or sets the clusters used in the analysis.
         /// </summary>
-        public List<UMCClusterLight> Clusters
+        public List<UMCLight> Features
         {
             get
             {
-                return m_clusters;
+                return m_features;
             }
             set
             {
-                m_clusters = value;
+                m_features = value;
                 if (value != null)
                 {
                     m_dataGrid.ItemsSource = value;
                 }
             }
-        }        
+        }
 
-        public UMCClusterLight SelectedCluster
+
+        public UMCLight SelectedFeature
         {
-            get { return (UMCClusterLight)GetValue(SelectedClusterProperty); }
+            get { return (UMCLight)GetValue(SelectedClusterProperty); }
             set { SetValue(SelectedClusterProperty, value); }
         }        
         public static readonly DependencyProperty SelectedClusterProperty =
-            DependencyProperty.Register("SelectedCluster", typeof(UMCClusterLight), typeof(ClusterGrid)); 
-
+            DependencyProperty.Register("SelectedFeature", typeof(UMCLight), typeof(FeatureGrid)); 
        
         private void m_dataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (SelectedCluster != null)
-            {
-                SelectedCluster.Features.Clear();
-            }            
-            SelectedCluster = m_dataGrid.SelectedItem as UMCClusterLight;
+            SelectedFeature = m_dataGrid.SelectedItem as UMCLight;
         }    
     }
 }

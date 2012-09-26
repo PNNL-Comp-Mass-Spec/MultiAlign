@@ -14,57 +14,57 @@ using System.Windows.Shapes;
 using MultiAlignCore.Data;
 using System.ComponentModel;
 using PNNLOmics.Data.Features;
+using PNNLOmics.Data.MassTags;
 
 namespace Manassa.Windows
 {
     /// <summary>
     /// Interaction logic for ClusterGrid.xaml
     /// </summary>
-    public partial class ClusterGrid : UserControl
+    public partial class MassTagGrid : UserControl
     {
-        private List<UMCClusterLight> m_clusters;
+        private BindingList<MassTagLight> m_massTags;
 
-        public ClusterGrid()
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        public MassTagGrid()
         {
             InitializeComponent();
-            Clusters = new List<UMCClusterLight>();
+            MassTags = new BindingList<MassTagLight>();
         }
 
         /// <summary>
         /// Gets or sets the clusters used in the analysis.
         /// </summary>
-        public List<UMCClusterLight> Clusters
+        public BindingList<MassTagLight> MassTags
         {
             get
             {
-                return m_clusters;
+                return m_massTags;
             }
             set
             {
-                m_clusters = value;
+                m_massTags = value;
                 if (value != null)
                 {
                     m_dataGrid.ItemsSource = value;
                 }
             }
-        }        
+        }
 
-        public UMCClusterLight SelectedCluster
+        public MassTagLight SelectedTag
         {
-            get { return (UMCClusterLight)GetValue(SelectedClusterProperty); }
-            set { SetValue(SelectedClusterProperty, value); }
+            get { return (MassTagLight)GetValue(SelectedMassTagProperty); }
+            set { SetValue(SelectedMassTagProperty, value); }
         }        
-        public static readonly DependencyProperty SelectedClusterProperty =
-            DependencyProperty.Register("SelectedCluster", typeof(UMCClusterLight), typeof(ClusterGrid)); 
+        public static readonly DependencyProperty SelectedMassTagProperty =
+            DependencyProperty.Register("SelectedTag", typeof(MassTagLight), typeof(MassTagGrid)); 
 
        
         private void m_dataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (SelectedCluster != null)
-            {
-                SelectedCluster.Features.Clear();
-            }            
-            SelectedCluster = m_dataGrid.SelectedItem as UMCClusterLight;
+            SelectedTag = m_dataGrid.SelectedItem as MassTagLight;
         }    
     }
 }

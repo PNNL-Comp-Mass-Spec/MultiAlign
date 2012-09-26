@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using MultiAlignCore.Data;
 using MultiAlignEngine.Features;
 using MultiAlignEngine.MassTags;
+using PNNLOmics.Data;
 using PNNLControls;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Data.MassTags;
@@ -18,46 +19,41 @@ namespace MultiAlignCustomControls.Charting
     /// <summary>
     /// Renders UMC Clusters and UMC Features as a scatter plot.
     /// </summary>
-	public class SingleClusterChart : ctlScatterChart
+	public class SingleUMCChart : ctlScatterChart
     {
         #region Members
         private int mint_pt_size = 3;
         private System.ComponentModel.IContainer components = null;		
 		private clsColorIterator miter_color = new  clsColorIterator() ; 				           
-        private DatasetInformation  m_info;
-        private List<UMCClusterLight> m_additionalClusters;
-        private List<MassTagLight> m_massTags;
-        private UMCClusterLight m_mainCluster;
+        private DatasetInformation  m_info;                
+        private UMCLight m_mainFeature;
         #endregion
 
         #region Constructors
-        public SingleClusterChart()
+        public SingleUMCChart()
 	    {			
 			InitializeComponent();
-
-            m_additionalClusters    = new List<UMCClusterLight>();
-            m_massTags              = new List<MassTagLight>();
-            m_mainCluster           = null;
-            m_info                  = null;
-            AlternateColor          = Color.Black;
-            IsDriftTimeXAxis        = false;
-
+                        
+            m_mainFeature           = null;
+            m_info                  = null;            
 
             AddPostProcessor(new ChartPostRenderingProcessor(RenderDifferences), PostProcessPriority.MidHigh);
         }
+        #endregion
 
         private void RenderDifferences(ctlChartBase chart, PostRenderEventArgs args)
         {
-            if (m_mainCluster == null)
+            if (m_mainFeature == null)
                 return;
 
-            Process(m_mainCluster.Features, chart, args);
+            Process(m_mainFeature, chart, args);
         }
-        private void Process(List<UMCLight> features, ctlChartBase chart, PostRenderEventArgs args)
+        private void Process(UMCLight feature, ctlChartBase chart, PostRenderEventArgs args)
         {
-            double minMass, maxMass, minNet, maxNet, minDrift, maxDrift; 
+            if (feature == null) return;
 
-            m_mainCluster.Features.FindRanges(  out minMass, 
+            double minMass, maxMass, minNet, maxNet, minDrift, maxDrift; 
+            feature.MSFeatures.FindRanges(  out minMass, 
                                                 out maxMass, 
                                                 out minNet, 
                                                 out maxNet, 
@@ -69,16 +65,8 @@ namespace MultiAlignCustomControls.Charting
             double netDifference    = Math.Abs(maxNet - minNet);
             double driftDifference  = Math.Abs(maxDrift - minDrift);
 
-            string xAddString   = "NET";
-            Graphics graphics   = args.Graphics;                        
-            if (IsDriftTimeXAxis)
-            {
-                minNet          = minDrift;
-                maxNet          = maxDrift;
-                netDifference   = driftDifference;
-                xAddString      = "dt"; 
-            }
-            
+            string xAddString   = "Scan";
+            Graphics graphics   = args.Graphics;                                                
 
             float netLineRight  = this.mobj_axis_plotter.XScreenPixel(Convert.ToSingle(maxNet));
             float netLineLeft   = this.mobj_axis_plotter.XScreenPixel(Convert.ToSingle(minNet));
@@ -92,35 +80,57 @@ namespace MultiAlignCustomControls.Charting
             {
                 using (Pen pen = new Pen(brush))
                 {
+                    // Draw the spread of the cluster.
                     graphics.DrawLine(pen, netLineRight  + 10 , massLineTop, netLineRight + 10, massLineBot);
                     graphics.DrawLine(pen, netLineLeft, massLineTop - 10, netLineRight, massLineTop - 10);
                     graphics.DrawString(string.Format("{0:.0} PPM", massDifference), Font, brush, netLineRight   + 20, massString);
-                    graphics.DrawString(string.Format("{0:.000} {1}", netDifference, xAddString), Font, brush, netString, massLineTop - 40);
+
+                    pen.Color = Color.Red;
+                    
+                    // Draw the line between the aligned and regular scan
+                    float scanAligned   = this.mobj_axis_plotter.XScreenPixel(Convert.ToSingle(feature.ScanAligned));
+                    float scan          = this.mobj_axis_plotter.XScreenPixel(Convert.ToSingle(feature.Scan));
+                    float mass          = this.mobj_axis_plotter.YScreenPixel(Convert.ToSingle(feature.MassMonoisotopicAligned));
+                    float minValue      = Math.Min(scan, scanAligned);                    
+                    float scanDiff      = minValue + Math.Abs(scanAligned - scan) / 2;
+
+                    graphics.DrawLine(pen, scan, mass, scanAligned, mass);
+                    graphics.DrawString(string.Format("{0:.0} centroid scan difference", Math.Abs(feature.ScanAligned - feature.Scan)), Font, brush, scanDiff, mass - 20);
+
+                    // Then draw the MS/MS values
+
+                    float offset    = Convert.ToSingle(MaxChartAreaXPixel) * .1F;
+                    float width     = Convert.ToSingle(MaxChartAreaXPixel);
+                    float direction = offset;
+
+                    foreach (MSFeatureLight msFeature in feature.MSFeatures)
+                    {
+                        foreach (MSSpectra spectrum in msFeature.MSnSpectra)
+                        {
+                            float msMassScan = mobj_axis_plotter.YScreenPixel(Convert.ToSingle(msFeature.MassMonoisotopicAligned)) ;
+                            float msScan     = mobj_axis_plotter.XScreenPixel(Convert.ToSingle(msFeature.Scan)) ;
+
+                            // Draw the precursor strings.
+                            string precursorString = string.Format("({0}, @{1:.00} m/z)", spectrum.Scan, spectrum.PrecursorMZ);
+                            SizeF sizeOfPrecursor =  graphics.MeasureString(precursorString, Font);
+
+                            float xPositionPrecursorString = msScan + offset + 2;
+                            if (xPositionPrecursorString + sizeOfPrecursor.Width >= width)
+                            {
+                                xPositionPrecursorString = width - sizeOfPrecursor.Width - 2;
+                            }
+                            
+                            graphics.DrawLine(pen, msScan, msMassScan, xPositionPrecursorString - 2, msMassScan + direction);
+                            graphics.DrawString(precursorString, Font, brush, xPositionPrecursorString , msMassScan + direction );
+
+                            // Alternate the direction of the MSMS precursor label
+                            direction *= -1;
+                        }
+                    }
                 }
+
+                
             }
-        }
-
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="analysis"></param>
-        /// <param name="dataset"></param>
-        public SingleClusterChart(UMCClusterLight cluster, List<UMCClusterLight> clusters) :
-            this()
-        {
-            AddAdditionalClusters(clusters);
-        }
-        #endregion
-
-        public Color AlternateColor
-        {
-            get;
-            set;
-        }
-        public bool IsDriftTimeXAxis
-        {
-            get;
-            set;
         }
 
         #region Data Addition Methods
@@ -132,161 +142,104 @@ namespace MultiAlignCustomControls.Charting
             m_info      = null;
             ViewPortHistory.Clear();
             SeriesCollection.Clear();
-            m_additionalClusters.Clear();
-            m_massTags.Clear();
         }
-        /// <summary>
-        /// Sets the analysis object and extracts data for display.
-        /// </summary>
-        public void AddAdditionalClusters(List<UMCClusterLight> clusters)
-        {
-            m_additionalClusters.AddRange(clusters);            
-        }
-        public void AddAdditionalClusters(UMCClusterLight cluster)
-        {                        
-            m_additionalClusters.Add(cluster);            
-        }
-        public void AddMassTags(List<MassTagLight> tags)
-        {            
-            m_massTags.AddRange(tags);            
-        }
-        public void AddMassTags(MassTagLight tag)
-        {
-            m_massTags.Add(tag);
-        }
-
         public void UpdateCharts(bool shouldAutoViewport)
         {
             SeriesCollection.Clear();
-            AddClusterDataToChart(m_additionalClusters, true);
-            AddClusterDataToChart(m_mainCluster, false);
-            AddMassTagsToChart(m_massTags);
-
+            PlotData();
             if (shouldAutoViewport)
             {
                 AutoViewPort();
             }
         }
-        public UMCClusterLight MainCluster
+        public UMCLight MainFeature
         {
             get
             {
-                return m_mainCluster;
+                return m_mainFeature;
             }
             set
             {                
-                m_mainCluster = value;
+                m_mainFeature = value;                
             }
         }
         #endregion
         
-        #region Cluster Rendering
-        /// <summary>
-        /// Adds the mass tags to the data chart.
-        /// </summary>
-        /// <param name="tags"></param>
-        private void AddMassTagsToChart(List<MassTagLight> tags)
-        {
-            if (tags.Count < 1)
-                return;
-
-            clsColorIterator colors     = new clsColorIterator();            
-            List<float> massList        = new List<float>();
-            List<float> scanList        = new List<float>();
-            Color color                 = Color.Black;
-            clsShape shape              = new CrossShape(4, false); 
-            clsPlotParams plotParams    = new clsPlotParams(shape, color);
-
-            tags.ForEach(x => massList.Add(Convert.ToSingle(x.MassMonoisotopic)));
-            
-            if (IsDriftTimeXAxis)
-            {
-                tags.ForEach(x => massList.Add(Convert.ToSingle(x.DriftTime)));
-            }
-            else
-            {
-                tags.ForEach(x => massList.Add(Convert.ToSingle(x.NETAverage)));
-            }            
-            float[] masses = new float[massList.Count];
-            float[] scans = new float[scanList.Count];
-
-            massList.CopyTo(masses);
-            scanList.CopyTo(scans);
-            clsSeries series = new clsSeries(ref scans, ref masses, plotParams);
-            base.AddSeries(series);            
-        }
-        /// <summary>
-        /// Adds all cluster data to the plot.
-        /// </summary>
-        /// <param name="clusters"></param>
-        /// <param name="specificCharge"></param>
-        private void AddClusterDataToChart(List<UMCClusterLight> clusters, bool isAlternate)
-        {
-            foreach (UMCClusterLight cluster in clusters)
-            {
-                AddClusterDataToChart(cluster, isAlternate);
-            }
-        }
+        #region Feature Rendering
+        
         /// <summary>
         /// Adds cluster data to the chart.
         /// </summary>
         /// <param name="cluster"></param>
         /// <param name="isAlternate"></param>
-        private void AddClusterDataToChart(UMCClusterLight cluster, bool isAlternate)
-        {             
+        private void PlotData()
+        {
+            if (m_mainFeature == null)
+                return;
+
             clsColorIterator colors = new clsColorIterator();            
-            if (cluster.Features.Count > 0)
+            if (m_mainFeature.MSFeatures.Count > 0)
             {
                 List<float> massList = new List<float>();
                 List<float> scanList = new List<float>();
                 Color color = colors.GetColor(0);
-                clsShape shape = new BubbleShape(mint_pt_size, false);
-                if (isAlternate)
+
+                foreach (MSFeatureLight msFeature in m_mainFeature.MSFeatures)
                 {
-                    shape = new SquareShape(mint_pt_size, true);
-                    color = AlternateColor;
+                    if (msFeature.MSnSpectra.Count > 0)
+                    {
+                        massList.Add(Convert.ToSingle(msFeature.MassMonoisotopicAligned));
+                        scanList.Add(Convert.ToSingle(msFeature.Scan));
+                    }
+                }
+                float[] masses = null;
+                float[] scans  = null;
+                if (massList.Count > 0)
+                {
+                    // Add the series for MS/MS features
+                    masses  = new float[massList.Count];
+                    scans   = new float[scanList.Count];
+                    massList.CopyTo(masses);
+                    scanList.CopyTo(scans);
+
+                    clsShape shape              = new BubbleShape(mint_pt_size * 2, true);
+                    clsPlotParams plotParams    = new clsPlotParams(shape, Color.Red);
+                    clsSeries series            = new clsSeries(ref scans, ref masses, plotParams);
+                    base.AddSeries(series);
+                    massList.Clear();
+                    scanList.Clear();
                 }
 
-                clsPlotParams plotParams = new clsPlotParams(shape, color);
-                cluster.Features.ForEach(x => massList.Add(Convert.ToSingle(x.MassMonoisotopicAligned)));
-                if (IsDriftTimeXAxis)
-                {
-                    cluster.Features.ForEach(x => scanList.Add(Convert.ToSingle(x.DriftTime)));
-                }
-                else
-                {
-                    cluster.Features.ForEach(x => scanList.Add(Convert.ToSingle(x.RetentionTime)));
-                }
-           
-                float[] masses = new float[massList.Count];
-                float[] scans  = new float[scanList.Count];
+                // Now add the rest of the features into the plot
+                m_mainFeature.MSFeatures.ForEach(x => scanList.Add(Convert.ToSingle(x.Scan)));
+                m_mainFeature.MSFeatures.ForEach(x => massList.Add(Convert.ToSingle(x.MassMonoisotopicAligned)));
+                masses = new float[massList.Count];
+                scans  = new float[scanList.Count];     
                 massList.CopyTo(masses);
                 scanList.CopyTo(scans);
 
-                clsSeries series = new clsSeries(ref scans, ref masses, plotParams);
-                base.AddSeries(series);                
+                clsShape msFeatureShape         = new BubbleShape(mint_pt_size, false);
+                clsPlotParams msFeatureParams   = new clsPlotParams(msFeatureShape, color);
+                clsSeries msFeaturesseries      = new clsSeries(ref scans, ref masses, msFeatureParams);
+                base.AddSeries(msFeaturesseries);
+
+                massList.Clear();
+                scanList.Clear();
             }
 
-            float[] clusterMass = new float[1];
-            float[] clusterScan = new float[1];
+            float[] clusterMass = new float[2];
+            float[] clusterScan = new float[2];
             Color clusterColor = Color.Red;
-            bool isHollow = isAlternate;
-            if (isAlternate)
-            {
-                clusterColor = AlternateColor;
-            }
+            
+            // Scan Aligned.
+            clusterMass[0] = Convert.ToSingle(m_mainFeature.MassMonoisotopicAligned);            
+            clusterScan[0] = Convert.ToSingle(m_mainFeature.ScanAligned);
 
-            clusterMass[0] = Convert.ToSingle(cluster.MassMonoisotopic);
-            if (IsDriftTimeXAxis)
-            {
-                clusterScan[0] = Convert.ToSingle(cluster.DriftTime);
-            }
-            else
-            {
-                clusterScan[0] = Convert.ToSingle(cluster.RetentionTime);
-            }
-
-            clsPlotParams plotParamsCluster = new clsPlotParams(new TriangleShape(mint_pt_size, isHollow), clusterColor);
+            // Original Scan
+            clusterMass[1] = Convert.ToSingle(m_mainFeature.MassMonoisotopicAligned);
+            clusterScan[1] = Convert.ToSingle(m_mainFeature.Scan);
+            
+            clsPlotParams plotParamsCluster = new clsPlotParams(new TriangleShape(mint_pt_size, false), clusterColor);
             clsSeries clusterSeries = new clsSeries(ref clusterScan, ref clusterMass, plotParamsCluster);
             base.AddSeries(clusterSeries);
 
@@ -404,6 +357,16 @@ namespace MultiAlignCustomControls.Charting
 		}
 		#endregion
 
+        #region Display Event Handlers
+       
+        public void UpdateDisplay()
+        {
+            AutoViewPortOnAddition = false;
+            this.SeriesCollection.Clear();            
+            XAxisLabel = "NET";              
+            YAxisLabel = "Monoisotopic Mass";            
+        }
+        #endregion
     }
 }
 

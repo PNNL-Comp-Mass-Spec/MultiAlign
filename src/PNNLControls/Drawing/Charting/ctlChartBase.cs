@@ -130,8 +130,8 @@ namespace PNNLControls
         /// Temporary rendering bitmap.
         /// </summary>
         private Bitmap mTempBitmap = null;
-        float mfloat_autoViewportPaddingX = 0.0F;
-        float mfloat_autoViewportPaddingY = 0.0F;
+        float mfloat_autoViewportPaddingX = 0.01F;
+        float mfloat_autoViewportPaddingY = 0.01F;
         private Point mMouseBegin;
         private ChartClickState mChartClickState = ChartClickState.Normal;
         private Point mLegendTopLeft;
@@ -255,6 +255,7 @@ namespace PNNLControls
 
             this.ResumeLayout();
         }
+
 
         #region Properties
         public bool ShouldCenterXAxisUnits
@@ -1298,7 +1299,7 @@ namespace PNNLControls
 		/// <summary>
 		/// Automatically set the viewport so that all data is displayed.
 		/// </summary>
-		public void AutoViewPort() 
+		public virtual void AutoViewPort() 
 		{
 			float xMin = float.MaxValue;
 			float xMax = float.MinValue;
@@ -1322,17 +1323,33 @@ namespace PNNLControls
 					}
 				}
 			}
-
-            /// 
-            /// Give in a little on autoviewport , allow for .1 on either side
-            /// 
+            
             float xdif = (xMax - xMin) * mfloat_autoViewportPaddingX;
             float ydif = (yMax - yMin) * mfloat_autoViewportPaddingY;
 
-            xMin = xMin - xdif;
-            xMax = xMax + xdif;
-            yMin = yMin - ydif;
-            yMax = yMax + ydif;
+            // If there is a single point it would not display it!  BS
+            if (xMin == xMax)
+            {
+                xMin -= (xMin * mfloat_autoViewportPaddingX);
+                xMax += (xMin * mfloat_autoViewportPaddingX);
+            }
+            else
+            {
+                xMin = xMin - xdif;
+                xMax = xMax + xdif;
+            }
+
+            if (yMin == yMax)
+            {
+                yMin -= (yMin * mfloat_autoViewportPaddingY);
+                yMax += (yMin * mfloat_autoViewportPaddingY);
+            }
+            else
+            {                
+                yMin = yMin - ydif;
+                yMax = yMax + ydif;
+            }
+
 
 			if (xMin == xMax || yMin == yMax || xMin == float.MaxValue || xMax == float.MinValue 
 				|| yMin == float.MaxValue || yMax == float.MinValue) 
@@ -1342,8 +1359,7 @@ namespace PNNLControls
 			else 
 			{
 				this.ViewPort = new RectangleF(xMin, yMin, xMax - xMin, yMax - yMin);
-			}
-			//Console.WriteLine("Auto Viewport {0} {1} {2} {3}", xMin, xMax, yMin, yMax);
+			}			
 		}
 
 		#endregion

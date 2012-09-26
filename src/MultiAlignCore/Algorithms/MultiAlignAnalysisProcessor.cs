@@ -309,10 +309,10 @@ namespace MultiAlignCore.Algorithms
             UMCLoaderFactory.Status += new EventHandler<UMCLoadingEventArgs>(UMCLoaderFactory_Status);
 
             UpdateStatus("Loading data.");            
-            List<DatasetInformation> datasets           = config.Analysis.MetaData.Datasets; 
-            LCMSFeatureFindingOptions options           = config.Analysis.Options.FeatureFindingOptions;            
-            FeatureFilterOptions filterOptions          = config.Analysis.Options.FeatureFilterOptions;
-            string analysisPath                         = Path.Combine(config.Analysis.MetaData.AnalysisPath,
+            List<DatasetInformation> datasets   = config.Analysis.MetaData.Datasets; 
+            LCMSFeatureFindingOptions options   = config.Analysis.Options.FeatureFindingOptions;            
+            FeatureFilterOptions filterOptions  = config.Analysis.Options.FeatureFilterOptions;
+            string analysisPath                 = Path.Combine(config.Analysis.MetaData.AnalysisPath,
                                                                             config.Analysis.MetaData.AnalysisName);
 
             DatasetInformation baselineDataset  = config.Analysis.MetaData.BaselineDataset;
@@ -550,8 +550,14 @@ namespace MultiAlignCore.Algorithms
 
                 if (spectra.Count > 0)
                 {
+                    // Makes sure that we only record a MS spectra once, before we cache
+                    // this keeps us from trying to put duplicate entries into the MS/MS data 
+                    // table/container.
+                    Dictionary<int, MSSpectra> spectraTracker = new Dictionary<int, MSSpectra>();
+
                     int totalMSFeatures = 0;
                     int totalUMCFeatures = 0;
+                    List<MSSpectra> msmsFeatures = new List<MSSpectra>();
 
                     // Next we may want to map our MSn features to our parents.  This would allow us to do traceback...
                     foreach (UMCLight feature in features)
@@ -570,7 +576,14 @@ namespace MultiAlignCore.Algorithms
                                     match.MSFeatureID = msFeature.ID;
                                     match.MSMSFeatureID = spectrum.ID;
                                     match.LCMSFeatureID = feature.ID;
+                                    spectrum.GroupID = feature.GroupID;
                                     matches.Add(match);
+
+                                    if (!spectraTracker.ContainsKey(spectrum.ID))
+                                    {
+                                        msmsFeatures.Add(spectrum);
+                                        spectraTracker.Add(spectrum.ID, spectrum);
+                                    }
                                 }
                             }
                         }
@@ -584,6 +597,11 @@ namespace MultiAlignCore.Algorithms
                                             totalMSFeatures,
                                             totalUMCFeatures
                                             ));
+
+                        if (msmsFeatures.Count > 0)
+                        {
+                            msnCache.AddAll(msmsFeatures);
+                        }
 
                         if (msnToMsCache != null)
                         {

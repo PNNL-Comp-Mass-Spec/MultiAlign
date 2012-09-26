@@ -23,7 +23,7 @@ namespace MultiAlignCore.IO.Features.Hibernate
         public List<MSFeatureLight> FindByFeatureId(int datasetId, int featureId)
         {
             ICriterion criterion                = Expression.Eq("GroupID",      datasetId);
-            ICriterion featureCriterion         = Expression.Eq("ID",           featureId);
+            ICriterion featureCriterion         = Expression.Eq("UMCID",           featureId);
             List<ICriterion> criterionList      = new List<ICriterion>();
 
             criterionList.Add(featureCriterion);
