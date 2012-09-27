@@ -27,10 +27,21 @@ namespace MultiAlignCore.IO.Features.Hibernate
         }
         #region IMsnFeatureToMSFeatureDAO Members
 
-
+        
         public List<MSFeatureToMSnFeatureMap> FindByUMCFeatureId(int datasetId, int featureId)
         {
             ICriterion criterion            = Expression.Eq("LCMSFeatureID", featureId);
+            ICriterion datasetCriterion     = Expression.Eq("MSDatasetID", datasetId);
+            List<ICriterion> criterionList  = new List<ICriterion>();
+
+            criterionList.Add(criterion);
+            criterionList.Add(datasetCriterion);
+
+            return FindByCriteria(criterionList);
+        }
+        public List<MSFeatureToMSnFeatureMap> FindByMsFeatureId(int datasetId, int featureId)
+        {
+            ICriterion criterion            = Expression.Eq("MSFeatureID", featureId);
             ICriterion datasetCriterion     = Expression.Eq("MSDatasetID", datasetId);
             List<ICriterion> criterionList  = new List<ICriterion>();
 

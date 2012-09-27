@@ -53,10 +53,14 @@
                 <DataGridTextColumn         Header="ID"                 CanUserSort="True"     Binding="{Binding Feature.ID}"                           IsReadOnly="True"/>
                 <DataGridTextColumn         Header="Dataset ID"         CanUserSort="True"     Binding="{Binding Feature.GroupID}"                      IsReadOnly="True"/>
                 <DataGridTextColumn         Header="Precursor m/z"      CanUserSort="True"     Binding="{Binding Spectra.PrecursorMZ}"                  IsReadOnly="True"/>
+                <DataGridTextColumn         Header="Feature m/z"        CanUserSort="True"     Binding="{Binding Feature.Mz}"                           IsReadOnly="True"/>
                 <DataGridTextColumn         Header="MS/MS Scan"         CanUserSort="True"     Binding="{Binding Spectra.Scan}"                         IsReadOnly="True"/>
-                <DataGridTextColumn         Header="MS Scan"            CanUserSort="True"     Binding="{Binding Feature.Scab}"                         IsReadOnly="True"/>
+                <DataGridTextColumn         Header="MS Scan"            CanUserSort="True"     Binding="{Binding Feature.Scan}"                         IsReadOnly="True"/>
                 <DataGridTextColumn         Header="Monoisotopic Mass"  CanUserSort="True"     Binding="{Binding Feature.MassMonoisotopicAligned}"      IsReadOnly="True"/>
-                <DataGridTextColumn         Header="Charge"             CanUserSort="True"     Binding="{Binding Feature.ChargeState}"                  IsReadOnly="True"/>                
+                <DataGridTextColumn         Header="Charge"             CanUserSort="True"     Binding="{Binding Feature.ChargeState}"                  IsReadOnly="True"/>
+                <DataGridTextColumn         Header="LC-MS Cluster ID"   CanUserSort="True"     Binding="{Binding ClusterId}"                            IsReadOnly="True"/>
+                <DataGridTextColumn         Header="Matched AMT"        CanUserSort="True"     Binding="{Binding MassTag.Sequence}"              IsReadOnly="True"/>
+                <DataGridTextColumn         Header="Database Result"    CanUserSort="True"     Binding="{Binding Peptide.PeptideSequence}"              IsReadOnly="True"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

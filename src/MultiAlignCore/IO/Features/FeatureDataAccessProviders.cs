@@ -8,6 +8,19 @@ namespace MultiAlignCore.IO.Features
     /// </summary>
     public sealed class FeatureDataAccessProviders
     {
+        public FeatureDataAccessProviders()
+        {
+            Synch = new object();
+            
+        }
+        /// <summary>
+        /// Gets the object to synch on for concurrent access.
+        /// </summary>
+        public object Synch
+        {
+            get;
+            private set;
+        }
         /// <summary>
         /// Constructor.
         /// </summary>
@@ -28,7 +41,8 @@ namespace MultiAlignCore.IO.Features
                                             IFactorDAO                  factorCache,
                                             IDatasetToFactorMapDAO      factorAssignmentCache,
                                             IMSMSClusterMapDAO          msmsClusterCache,
-                                            IDatabaseSearchSequenceDAO  sequenceCache)
+                                            IDatabaseSearchSequenceDAO  sequenceCache):
+            this()
         {
             ClusterCache                = clusterCache;
             FeatureCache                = featureCache;

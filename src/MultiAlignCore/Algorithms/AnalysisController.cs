@@ -616,6 +616,7 @@ namespace MultiAlignCore.Algorithms
             analysis.MetaData.AnalysisSetupInfo     = null;
             analysis.DataProviders                  = providers;
             analysis.Clusters                       = providers.ClusterCache.FindAll();
+            analysis.MetaData.Datasets              = providers.DatasetCache.FindAll();
             return analysis;
         }
         private  bool ReadInputDefinitionFile(out InputAnalysisInfo analysisSetupInformation, out bool useMTDB)

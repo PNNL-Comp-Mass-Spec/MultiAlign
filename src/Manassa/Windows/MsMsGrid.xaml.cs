@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
-using PNNLOmics.Data;
 using MultiAlignCore.Data.Features;
 
 namespace Manassa.Windows
@@ -11,18 +11,18 @@ namespace Manassa.Windows
     /// </summary>
     public partial class MsMsGrid : UserControl
     {
-        private List<MSFeatureMsMs> m_clusters;
+        private ObservableCollection<MSFeatureMsMs> m_clusters;
 
         public MsMsGrid()
         {
             InitializeComponent();
-            Clusters = new List<MSFeatureMsMs>();
+            MsMsSpectra = new ObservableCollection<MSFeatureMsMs>();
         }
 
         /// <summary>
         /// Gets or sets the clusters used in the analysis.
         /// </summary>
-        public List<MSFeatureMsMs> Clusters
+        public ObservableCollection<MSFeatureMsMs> MsMsSpectra
         {
             get
             {
@@ -40,10 +40,10 @@ namespace Manassa.Windows
 
         public MSFeatureMsMs SelectedSpectra
         {
-            get { return (MSFeatureMsMs)GetValue(SelectedClusterProperty); }
-            set { SetValue(SelectedClusterProperty, value); }
+            get { return (MSFeatureMsMs)GetValue(SelectedSpectraProperty); }
+            set { SetValue(SelectedSpectraProperty, value); }
         }        
-        public static readonly DependencyProperty SelectedClusterProperty =
+        public static readonly DependencyProperty SelectedSpectraProperty =
             DependencyProperty.Register("SelectedSpectra", typeof(MSFeatureMsMs), typeof(MsMsGrid)); 
 
        

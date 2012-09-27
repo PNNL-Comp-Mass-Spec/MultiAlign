@@ -35,9 +35,27 @@ namespace MultiAlignCore.IO.Features
         /// <param name="groupID"></param>
         public void AddDataFile(string path, int groupID)
         {
+            if (m_opened.ContainsKey(groupID))
+            {
+                try
+                {
+                    if (m_readers.ContainsKey(groupID))
+                    {
+                        m_readers[groupID].CloseRawFile();
+                    }
+                }
+                catch
+                {
+                }
+
+                m_opened[groupID]    = false;
+                m_dataFiles[groupID] = path;
+
+                return;
+            }
             m_dataFiles.Add(groupID, path);
             m_opened.Add(groupID, false);
-        }
+        }        
 
         #region IRawDataFileReader Members
 
@@ -53,16 +71,13 @@ namespace MultiAlignCore.IO.Features
 
             if (!m_readers.ContainsKey(group))
             {
-                string path = m_dataFiles[group];
+                string path       = m_dataFiles[group];
                 XRawFileIO reader = new XRawFileIO();
                 m_readers.Add(group, reader);
                 
             }
 
-
             XRawFileIO rawReader = m_readers[group];
-
-
             if (!m_opened[group])
             {
                 bool opened = rawReader.OpenRawFile(m_dataFiles[group]);
@@ -149,10 +164,11 @@ namespace MultiAlignCore.IO.Features
             // opening the file.
             if (!m_readers.ContainsKey(group))
             {
-                string path = m_dataFiles[group];
-                XRawFileIO reader = new XRawFileIO();
+                string path         = m_dataFiles[group];
+                XRawFileIO reader   = new XRawFileIO();
+
                 m_readers.Add(group, reader);
-                bool opened = reader.OpenRawFile(path);
+                bool opened         = reader.OpenRawFile(path);
 
                 if (!opened)
                 {
@@ -160,9 +176,9 @@ namespace MultiAlignCore.IO.Features
                 }
             }
 
-            List<MSSpectra> spectra = new List<MSSpectra>();
-            XRawFileIO rawReader = m_readers[group];
-
+            List<MSSpectra> spectra  = new List<MSSpectra>();
+            XRawFileIO rawReader     = m_readers[group];
+            
             FinniganFileReaderBaseClass.udtScanHeaderInfoType header = new FinniganFileReaderBaseClass.udtScanHeaderInfoType();
 
             rawReader.GetScanInfo(scan, ref header);

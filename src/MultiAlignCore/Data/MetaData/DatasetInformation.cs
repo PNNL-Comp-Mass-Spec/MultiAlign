@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using MultiAlignCore.Data.Factors;
 using MultiAlignEngine;
 using System.IO;
+using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO.InputFiles;
 
 namespace MultiAlignCore.Data
@@ -27,6 +28,8 @@ namespace MultiAlignCore.Data
             Sequence            = null;
             Features            = null;
             IsBaseline          = false;
+
+            PlotData = new DatasetPlotInformation();
 		}
 
         #region Properties
@@ -86,10 +89,61 @@ namespace MultiAlignCore.Data
             get;
             set;
         }
+        /// <summary>
+        /// Gets or sets the path to the features file.
+        /// </summary>
         public string Path
         {
             get;
             set;
+        }
+        /// <summary>
+        /// Gets or sets the path to the raw file.
+        /// </summary>
+        public string RawPath
+        {
+            get
+            {
+                string path = "";
+                if (Raw != null)
+                {
+                    path = Raw.Path;
+                }
+                return path;
+            }
+            set
+            {
+                if (Raw == null)
+                {
+                    Raw          = new InputFile();
+                    Raw.FileType = InputFileType.Raw;
+                }
+                Raw.Path = value;      
+            }
+        }
+        /// <summary>
+        /// Gets or sets the path to the sequence path.
+        /// </summary>
+        public string SequencePath
+        {
+            get
+            {
+                string path = "";
+                if (Sequence != null)
+                {
+                    path = Sequence.Path;
+                }
+                return path;
+            }
+            set
+            {
+                if (Sequence == null)
+                {
+                    Sequence = new InputFile();
+                    Sequence.FileType = InputFileType.Sequence;
+                }
+                Sequence.Path = value; 
+            }
         }
         /// <summary>
         /// Gets or sets the parameter file 
@@ -135,6 +189,11 @@ namespace MultiAlignCore.Data
         /// Path to the Raw data file.
         /// </summary>
         public InputFile Sequence
+        {
+            get;
+            set;
+        }
+        public DatasetPlotInformation PlotData
         {
             get;
             set;

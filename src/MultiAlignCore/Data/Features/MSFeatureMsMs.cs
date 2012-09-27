@@ -14,14 +14,22 @@ namespace MultiAlignCore.Data.Features
             get;
             set;
         }
-
         public MSFeatureLight Feature
         {
             get;
             set;
         }
-
         public Peptide Peptide
+        {
+            get;
+            set;
+        }
+        public MassTag MassTag
+        {
+            get;
+            set;
+        }
+        public int ClusterId
         {
             get;
             set;

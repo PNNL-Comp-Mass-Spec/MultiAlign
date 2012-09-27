@@ -67,6 +67,7 @@ namespace Manassa
             // Create a new controller
             m_controller = new AnalysisController();                                    
             m_controller.LoadExistingAnalysis(filename, m_reporter);
+            m_controller.Config.Analysis.MetaData.AnalysisPath = filename;
 
             m_mainControl.IsEnabled = true;
             m_mainControl.Analysis  = m_controller.Config.Analysis;            

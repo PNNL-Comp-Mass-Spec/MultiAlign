@@ -144,6 +144,10 @@
                     </WindowsFormsHost>
                 </Grid>
             </TabItem>
+            <TabItem Header="MS/MS">
+                <maWindows:MsMsGrid
+                    x:Name="m_msmsGrid"/>
+            </TabItem>
             <TabItem 
                 Header="Abundance Profile"
                 >
@@ -154,10 +158,6 @@
                                         LegendVisible="False"                
                                         />
                 </WindowsFormsHost>
-            </TabItem>
-            <TabItem Header="MS/MS">                
-                <maWindows:MsMsGrid
-                    x:Name="m_msmsGrid"/>
             </TabItem>
         </TabControl>
     </Grid>

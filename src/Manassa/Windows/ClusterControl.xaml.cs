@@ -121,8 +121,11 @@ namespace Manassa.Windows
                 thisSender.m_adjustingFeaturePlots = true;
 
                 // Grab the data from the cache
-                UMCClusterLight cluster                 = (UMCClusterLight) e.NewValue;                
-                cluster.ReconstructUMCCluster(thisSender.Providers);
+                UMCClusterLight cluster                 = (UMCClusterLight) e.NewValue;
+                lock (thisSender.Providers.Synch)
+                {
+                    cluster.ReconstructUMCCluster(thisSender.Providers);
+                }
                 thisSender.UpdatePlotsWithClusterData(cluster);
 
 
@@ -136,6 +139,9 @@ namespace Manassa.Windows
         }
         #endregion
 
+        /// <summary>
+        /// Dependency Property
+        /// </summary>
         public UMCClusterLight Cluster
         {
             get 
@@ -240,7 +246,7 @@ namespace Manassa.Windows
                 }
             }
 
-            m_msmsGrid.Clusters = msmsFeatures;
+            m_msmsGrid.MsMsSpectra = new System.Collections.ObjectModel.ObservableCollection<MSFeatureMsMs>(msmsFeatures);
 
             // Update the data grid with nearby clusters.
             m_clusterGrid.Clusters = otherClusters;            
