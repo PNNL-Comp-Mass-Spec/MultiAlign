@@ -87,6 +87,9 @@ namespace Manassa.Windows
                     // Setup the histogram data.
                     m_chargeStates.ConstructHistogram(map);
                     m_chargeStates.AutoViewPort();
+
+                    // Setup cluster histogram data.
+
                 }
             }
         }

@@ -44,6 +44,44 @@ namespace MultiAlignCore.Extensions
             return chargeMap;
         }
         /// <summary>
+        /// Creates a charge map for a given ms feature list.
+        /// </summary>
+        /// <param name="feature"></param>
+        /// <returns></returns>
+        public static Dictionary<int, int> CreateClusterSizeHistogram(this List<UMCClusterLight> clusters)
+        {
+            Dictionary<int, int> map = new Dictionary<int, int>();
+            foreach (UMCClusterLight cluster in clusters)
+            {
+                if (!map.ContainsKey(cluster.MemberCount))
+                {
+                    map.Add(cluster.MemberCount, 0);
+                }
+                map[cluster.MemberCount]++;
+            }
+
+            return map;
+        }
+        /// <summary>
+        /// Creates a charge map for a given ms feature list.
+        /// </summary>
+        /// <param name="feature"></param>
+        /// <returns></returns>
+        public static Dictionary<int, int> CreateClusterDatasetMemeberSizeHistogram(this List<UMCClusterLight> clusters)
+        {
+            Dictionary<int, int> map = new Dictionary<int, int>();
+            foreach (UMCClusterLight cluster in clusters)
+            {
+                if (!map.ContainsKey(cluster.DatasetMemberCount))
+                {
+                    map.Add(cluster.DatasetMemberCount, 0);
+                }
+                map[cluster.DatasetMemberCount]++;
+            }
+
+            return map;
+        }
+        /// <summary>
         /// Creates SIC's mapped by charge state for the MS Features in the feature.
         /// </summary>
         /// <param name="feature"></param>

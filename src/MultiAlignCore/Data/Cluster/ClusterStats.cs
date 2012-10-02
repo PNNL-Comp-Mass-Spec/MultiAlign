@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using MultiAlignEngine.Features;
 using PNNLOmics.Data.Features;
+using MultiAlignCore.Extensions;
 
 namespace MultiAlignCore.Data.Cluster
 {
@@ -16,18 +17,8 @@ namespace MultiAlignCore.Data.Cluster
             if (clusters.Count < 1)
                 return null;
 
-            Dictionary<int, int> clusterMaps = new Dictionary<int, int>();
-            // Bin all data.
-            foreach (UMCClusterLight cluster in clusters)
-            {
-                int members = cluster.DatasetMemberCount;
-                if (!clusterMaps.ContainsKey(members))
-                {
-                    clusterMaps.Add(members, 0);
-                }
-                clusterMaps[members] = clusterMaps[members] + 1;
-            }
-
+            Dictionary<int, int> clusterMaps = clusters.CreateClusterDatasetMemeberSizeHistogram();
+                        
             // Find the maximum cluster size.
             List<int> sizes = new List<int>();
             foreach (int key in clusterMaps.Keys)
@@ -38,7 +29,7 @@ namespace MultiAlignCore.Data.Cluster
             int maxClusters = sizes[sizes.Count - 1] + 3;
 
             // Create the histogram.
-            float[] bins = new float[maxClusters];
+            float[] bins  = new float[maxClusters];
             float[] freqs = new float[maxClusters];
 
             int i = 0;

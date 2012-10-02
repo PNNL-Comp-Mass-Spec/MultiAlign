@@ -6,10 +6,10 @@ using PNNLControls.Drawing.Charting;
 
 namespace MultiAlignCustomControls.Charting
 {
-    public partial class ChargeStateHistogram: ctlHistogram        
+    public partial class GenericHistogram: ctlHistogram        
     {
 
-        public ChargeStateHistogram()
+        public GenericHistogram()
         {
             InitializeComponent();
         }
@@ -41,8 +41,7 @@ namespace MultiAlignCustomControls.Charting
                 bins[charge - 1] = charge;
                 freq[charge - 1] = features[charge];
             }
-
-            this.ViewPortHistory.Clear();
+            
             this.AddSeries(new clsSeries(ref bins, ref freq, plotParams));
         }
     }

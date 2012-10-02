@@ -81,12 +81,6 @@
                     />
             </TabItem>
             <TabItem
-                Header="Datasets"                
-                >                                            
-                <windows:DatasetGrid
-                    x:Name="m_datasetsName"/>                
-            </TabItem>
-            <TabItem
                 Header="MS/MS"
                 >
                 <windows:MsMsViewer
@@ -97,7 +91,6 @@
             <TabItem
                 Header="Statistics Plots"
                 >
-
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
@@ -113,9 +106,9 @@
                     
                     <WindowsFormsHost                 
                         Margin="5,5,5,5"
-                        Grid.Row="0"
+                        Grid.Row="1"
                         Grid.Column="0">
-                        <maCharts:ChargeStateHistogram
+                        <maCharts:GenericHistogram
                             Title="Charge States"
                             XAxisLabel="Charge State"
                             YAxisLabel="Count"
@@ -125,7 +118,58 @@
                             x:Name="m_chargeStates"
                             TitleVisible="True" />
                     </WindowsFormsHost>
+
+                    <WindowsFormsHost                 
+                        Margin="5,5,5,5"
+                        Grid.Row="0"
+                        Grid.Column="0">
+                        <maCharts:GenericHistogram
+                            Title="Dataset Size Histogram"
+                            XAxisLabel="Dataset members"
+                            YAxisLabel="Count"
+                            YAxisGridLines="True"
+                            XAxisGridLines="True"
+                            LegendVisible="False"
+                            x:Name="m_datsaetSizeHistogram"
+                            TitleVisible="True" />
+                    </WindowsFormsHost>
+
+                    <WindowsFormsHost                 
+                        Margin="5,5,5,5"
+                        Grid.Row="0"
+                        Grid.Column="1">
+                        <maCharts:GenericHistogram
+                            Title="Cluster Size Histogram"
+                            XAxisLabel="Dataset members"
+                            YAxisLabel="Count"
+                            YAxisGridLines="True"
+                            XAxisGridLines="True"
+                            LegendVisible="False"
+                            x:Name="m_clusterSizeHistogram"
+                            TitleVisible="True" />
+                    </WindowsFormsHost>
+
+                    <WindowsFormsHost                 
+                        Margin="5,5,5,5"
+                        Grid.Row="0"
+                        Grid.Column="2">
+                        <maCharts:ClusterMemberSizeScatterPlot
+                            Title="Cluster Size Ratio"
+                            XAxisLabel="Dataset members"
+                            YAxisLabel="Count"
+                            YAxisGridLines="True"
+                            XAxisGridLines="True"
+                            LegendVisible="False"
+                            x:Name="m_clusterRatioHistogram"
+                            TitleVisible="True" />
+                    </WindowsFormsHost>
                 </Grid>
+            </TabItem>
+            <TabItem
+                Header="Datasets"                
+                >
+                <windows:DatasetGrid
+                    x:Name="m_datasetsName"/>
             </TabItem>
         </TabControl>
     </Grid>

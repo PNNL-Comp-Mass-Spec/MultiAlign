@@ -1,6 +1,6 @@
 namespace MultiAlignCustomControls.Charting
 {
-    partial class ChargeStateHistogram
+    partial class GenericHistogram
     {
         /// <summary> 
         /// Required designer variable.
