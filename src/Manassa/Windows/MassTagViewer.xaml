@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Manassa.Windows.MsMsViewer"
+﻿<UserControl x:Class="Manassa.Windows.MassTagViewer"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -7,21 +7,20 @@
              xmlns:maCharts="clr-namespace:MultiAlignCustomControls.Charting;assembly=MultiAlignCustomControls"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-       
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
 
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="*"/>                
-        </Grid.ColumnDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
 
-        <GridSplitter
+            <GridSplitter
                     Grid.Row="1"
                     Grid.Column="0"
                     Grid.ColumnSpan="3"
@@ -30,36 +29,31 @@
                     Height="3"
                     />
 
-        <GridSplitter
+            <GridSplitter
                     Grid.Row="0"
                     Grid.Column="1"
                     Width="3"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"                                
                     />
-        <maWindows:MsMsGrid
-                Grid.Row="0"   
+            <maWindows:MassTagGrid
+                Grid.Row="2"   
                 Grid.Column="0"
-                Grid.RowSpan="3"
-                x:Name="m_msmsGrid"            
+                Grid.ColumnSpan="3"
+                x:Name="m_massTagGrid"            
                 />
-        
-            <WindowsFormsHost 
-                Grid.Row="2"
-                Grid.Column="2"
-                >
-                <maCharts:SpectraChart
-                    x:Name="m_spectraChart"
-                    TitleVisible="True"
-                    Title="MS/MS"
+
+            <maWindows:ProteinGrid
+                    Grid.Row="0"   
+                    Grid.Column="2"
+                    x:Name="m_proteinGrid"            
                     />
-            </WindowsFormsHost>
             <WindowsFormsHost
-                Grid.Row="0"
-                Grid.Column="2">
-                <maCharts:MsMsChart
-                    LegendVisible="True"
-                    x:Name="m_msmsScatterPlot"/>
-            </WindowsFormsHost>
-        </Grid>    
+                    Grid.Row="0"
+                    Grid.Column="0">
+                    <maCharts:MassTagPlot
+                        LegendVisible="True"
+                        x:Name="m_massTagPlot"/>
+                </WindowsFormsHost>
+        </Grid>
 </UserControl>

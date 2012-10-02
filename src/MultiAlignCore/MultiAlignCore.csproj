@@ -222,6 +222,7 @@
     <Compile Include="IO\Features\Hibernate\AlignmentDAOHibernate.cs" />
     <Compile Include="IO\Features\UMCClusterMsmsWriter.cs" />
     <Compile Include="IO\Features\MsmsExtractor.cs" />
+    <Compile Include="IO\MTDB\MassTagDatabaseLoaderCache.cs" />
     <Compile Include="IO\Reports\IAnalysisReportGenerator.cs" />
     <Compile Include="IO\MTDB\MAGEMetaSampleDatabaseSink.cs" />
     <Compile Include="IO\MTDB\MetaSampleDatbaseLoader.cs" />

@@ -65,6 +65,14 @@ namespace PNNLControls
 
             mform_filterSettings = new formLinearPointFilter(filterx, filtery, double.MinValue, double.MaxValue, double.MinValue, double.MaxValue);
             mform_filterSettings.UpdatedFilters += new EventHandler(mform_filterSettings_UpdatedFilters);
+
+
+            DefaultZoomHandler.AddDrawingDelegate(new DrawingZoomRegion(DrawZoomValues));
+        }
+
+        protected virtual void DrawZoomValues(ctlChartBase chart, RectangleF rect, RectangleF bounds, Graphics graphics)
+        {
+            // do nothing.
         }
 
         void mform_filterSettings_UpdatedFilters(object sender, EventArgs e)

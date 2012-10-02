@@ -9,7 +9,11 @@
     <UserControl.Resources>
         <converters:BooleanToDataGridVisibilityModeConverter x:Key="boolConverter"/>
     </UserControl.Resources>
-    <Grid>
+    <StackPanel>
+        <Label
+            Content="Mass Tags"
+            HorizontalAlignment="Center"
+            />
         <DataGrid
                 Name="m_dataGrid" 
                 ItemsSource="{Binding}" 
@@ -22,7 +26,6 @@
                 CanUserSortColumns="True"
             
                 AutoGenerateColumns="False"
-                Grid.ColumnSpan="6"
                 IsTextSearchEnabled="True"
                 RowDetailsVisibilityMode="{Binding IsChecked, ElementName=m_detailsChecked, Converter={StaticResource boolConverter}}"
                 SelectionChanged="m_dataGrid_SelectionChanged"
@@ -63,5 +66,5 @@
                 <DataGridTextColumn         Header="Database Result"    CanUserSort="True"     Binding="{Binding Peptide.PeptideSequence}"              IsReadOnly="True"/>
             </DataGrid.Columns>
         </DataGrid>
-    </Grid>
+    </StackPanel>
 </UserControl>

@@ -15,37 +15,38 @@ using MultiAlignCore.Data;
 using System.ComponentModel;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Data.MassTags;
+using PNNLOmics.Data;
 
 namespace Manassa.Windows
 {
     /// <summary>
     /// Interaction logic for ClusterGrid.xaml
     /// </summary>
-    public partial class MassTagGrid : UserControl
+    public partial class ProteinGrid : UserControl
     {
-        private List<MassTagLight> m_massTags;
+        private List<Protein> m_proteins;
 
         /// <summary>
         /// Constructor.
         /// </summary>
-        public MassTagGrid()
+        public ProteinGrid()
         {
             InitializeComponent();
-            MassTags = new List<MassTagLight>();
+            Proteins = new List<Protein>();
         }
 
         /// <summary>
         /// Gets or sets the clusters used in the analysis.
         /// </summary>
-        public List<MassTagLight> MassTags
+        public List<Protein> Proteins
         {
             get
             {
-                return m_massTags;
+                return m_proteins;
             }
             set
             {
-                m_massTags = value;
+                m_proteins = value;
                 if (value != null)
                 {
                     m_dataGrid.ItemsSource = value;
@@ -53,18 +54,18 @@ namespace Manassa.Windows
             }
         }
 
-        public MassTagLight SelectedTag
+        public Protein SelectedProtein
         {
-            get { return (MassTagLight)GetValue(SelectedMassTagProperty); }
+            get { return (Protein)GetValue(SelectedMassTagProperty); }
             set { SetValue(SelectedMassTagProperty, value); }
         }        
         public static readonly DependencyProperty SelectedMassTagProperty =
-            DependencyProperty.Register("SelectedTag", typeof(MassTagLight), typeof(MassTagGrid)); 
+            DependencyProperty.Register("SelectedProtein", typeof(Protein), typeof(ProteinGrid)); 
 
        
         private void m_dataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            SelectedTag = m_dataGrid.SelectedItem as MassTagLight;
+            SelectedProtein = m_dataGrid.SelectedItem as Protein;
         }    
     }
 }

@@ -43,7 +43,7 @@ namespace Manassa.Windows
         {
             InitializeComponent();
             m_providers = null;
-
+            
             Binding binding         = new Binding("SelectedSpectra");
             binding.Source          = m_msmsGrid;
             SetBinding(SelectedSpectraProperty, binding);
@@ -81,6 +81,17 @@ namespace Manassa.Windows
             m_background.ProgressChanged    += new ProgressChangedEventHandler(m_background_ProgressChanged);
             m_background.RunWorkerAsync();
         }
+        public void SetMsMsFeatureSpectra(List<MSFeatureMsMs> features)
+        {
+            m_msmsScatterPlot.ClearData();
+            m_msmsGrid.MsMsSpectra.Clear();
+
+            foreach (MSFeatureMsMs feature in features)
+            {
+                m_msmsGrid.MsMsSpectra.Add(feature);
+            }
+            m_msmsScatterPlot.AddFeatures(features);
+        }
 
         void m_background_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
@@ -93,9 +104,10 @@ namespace Manassa.Windows
                 {
                     m_msmsGrid.MsMsSpectra.Add(feature);
                 }
+                m_msmsScatterPlot.AddFeatures(features);
             };
 
-            m_msmsGrid.Dispatcher.BeginInvoke(workAction, System.Windows.Threading.DispatcherPriority.Normal);            
+            m_msmsGrid.Dispatcher.BeginInvoke(workAction, System.Windows.Threading.DispatcherPriority.Normal);                       
         }
 
         void m_background_DoWork(object sender, DoWorkEventArgs e)

@@ -17,7 +17,7 @@ namespace MultiAlignCore.IO.Features
         /// <param name="netMax"></param>
         /// <param name="id"></param>
         /// <returns></returns>
-        List<UMCClusterLight> FindNearby(double massMin, double massMax, double netMin, double netMax, int id);
+        List<UMCClusterLight> FindNearby(double massMin, double massMax, double netMin, double netMax);
         void ClearAllClusters();
     }
 }

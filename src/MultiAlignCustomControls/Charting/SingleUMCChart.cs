@@ -307,7 +307,7 @@ namespace MultiAlignCustomControls.Charting
             ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
             this.SuspendLayout();
             // 
-            // ctlClusterChart
+            // SingleUMCChart
             // 
             this.AxisAndLabelFont = new System.Drawing.Font("Microsoft Sans Serif", 8F);
             this.ChartLayout.LegendFraction = 0.2F;
@@ -343,13 +343,13 @@ namespace MultiAlignCustomControls.Charting
             this.Margins.LeftMarginFraction = 0.2F;
             this.Margins.LeftMarginMax = 150;
             this.Margins.LeftMarginMin = 72;
-            this.Name = "ctlClusterChart";
+            this.Name = "SingleUMCChart";
             this.Size = new System.Drawing.Size(408, 382);
             this.Title = "Cluster Chart";
             this.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 6F);
             this.TitleMaxFontSize = 15F;
             this.TitleVisible = false;
-            this.XAxisLabel = "Scan #";
+            this.XAxisLabel = "MS Scan";
             this.YAxisLabel = "Monoisotopic Mass";
             ((System.ComponentModel.ISupportInitialize)(this)).EndInit();
             this.ResumeLayout(false);

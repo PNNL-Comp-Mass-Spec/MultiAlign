@@ -159,11 +159,10 @@
         </ribbon:Ribbon>        
         
         <!-- Selection Window -->        
-        <manassa:AllClustersControl 
+        <manassa:AnalysisView 
             x:Name="m_mainControl"
             Grid.Column="1"      
             IsEnabled="False"
-            Grid.Row="1">            
-        </manassa:AllClustersControl>
+            Grid.Row="1"/>
     </Grid>
 </Window>

@@ -7,14 +7,14 @@ using MultiAlignEngine.Features;
 using MultiAlignEngine.MassTags;
 using PNNLControls;
 using PNNLOmics.Data.Features;
-using MultiAlignCustomControls.Extensions;
+using PNNLOmics.Data.MassTags;
 
 namespace MultiAlignCustomControls.Charting
 {
     /// <summary>
     /// Renders UMC Clusters and UMC Features as a scatter plot.
     /// </summary>
-	public class ctlClusterChart : FeatureScatterPlot
+	public class MassTagPlot : ctlScatterChart
     {
         #region Members
 
@@ -22,18 +22,75 @@ namespace MultiAlignCustomControls.Charting
         private System.ComponentModel.IContainer components = null;		
 		private clsColorIterator miter_color = new  clsColorIterator() ; 
 		private int mint_pt_size = 2 ; 		
-        private List<UMCClusterLight> m_clusters;
+        private List<MassTagLight> m_massTags;
         #endregion
 
         #region Constructors
-        public ctlClusterChart()
+        public MassTagPlot()
 	    {			
 			InitializeComponent();
 
-            m_clusters  = new List<UMCClusterLight>();
+            m_massTags = new List<MassTagLight>();
             AddPostProcessor(this.DrawViewportBox, PostProcessPriority.Mid);
+
+            DefaultZoomHandler.AddDrawingDelegate(new DrawingZoomRegion(DrawZoomValues));
+        }
+
+        private float FixBounds(float max, float v, float size)
+        {
+            if (v + size >  max)
+            {
+                return max - size;
+            }
+            return v;
         }
         
+        private void DrawZoomValues(ctlChartBase chart, RectangleF rect, RectangleF bounds, Graphics graphics)
+        {
+            if (graphics != null)
+            {
+
+                float x  = rect.X + rect.Width;
+                float y  = rect.Y + rect.Height;
+                float mx = rect.X + (rect.Width  / 2);
+                float my = rect.Y + (rect.Height / 2);
+
+                double ppmDiff = Feature.ComputeMassPPMDifference(bounds.Top, bounds.Bottom);
+                double netDiff = Convert.ToDouble(bounds.Width);
+
+                string ppmString = string.Format("{0:.00} ppm", ppmDiff);
+                string netString = string.Format("{0:.00} net", netDiff );
+                SizeF ppmSize    = graphics.MeasureString(ppmString, Font);
+                SizeF netSize    = graphics.MeasureString(netString, Font);
+
+                float netX       = rect.X + (.5F * (Math.Abs(rect.Width - netSize.Width)));
+                float netY       = y + 10;
+                float ppmX       = x + 10;
+                float ppmY       = my;
+
+                using (Brush fillBrush = new SolidBrush(Color.FromArgb(216, chart.BackColor)))
+                {
+                    graphics.FillRectangle(fillBrush,
+                                            ppmX - 2,
+                                            ppmY - 2,
+                                            ppmSize.Width  + 2,
+                                            ppmSize.Height + 2);
+
+                    graphics.FillRectangle(fillBrush,
+                                            netX - 2,
+                                            netY - 2,
+                                            netSize.Width  + 2,
+                                            netSize.Height + 2);
+                }
+
+                using (Brush brush = new SolidBrush(Color.Gray))
+                {
+                    graphics.DrawString(netString, Font, brush, netX, netY);
+                    graphics.DrawString(ppmString, Font, brush, ppmX, ppmY);
+                }                
+            }
+        }
+
         void DrawViewportBox(ctlChartBase chart, PostRenderEventArgs args)
         {
             if (m_viewportBox.X < 0 && m_viewportBox.Y < 0)
@@ -63,23 +120,15 @@ namespace MultiAlignCustomControls.Charting
                         height = 10;
                     }
                     
+
                     args.Graphics.DrawRectangle(pen,
                                                 x,
                                                 y - height,
                                                 width,
                                                 height);
+                    
                 }
             }
-        }
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="analysis"></param>
-        /// <param name="dataset"></param>
-        public ctlClusterChart(List<UMCClusterLight> clusters) :
-            this()
-        {
-            AddClusters(clusters);
         }
         #endregion
 
@@ -96,53 +145,28 @@ namespace MultiAlignCustomControls.Charting
         {            
             ViewPortHistory.Clear();
             SeriesCollection.Clear();
-            m_clusters.Clear();
+            m_massTags.Clear();
         }
         /// <summary>
         /// Sets the analysis object and extracts data for display.
         /// </summary>
-        public void AddClusters(List<UMCClusterLight> clusters)
+        public void AddMassTags(List<MassTagLight> clusters)
         {
-            m_clusters.AddRange(clusters);
+            m_massTags.AddRange(clusters);
             SeriesCollection.Clear();
-            AddClusterDataToChart(m_clusters);
+            AddTagDataToChart(m_massTags);
             AutoViewPort();
             Refresh();            
-        }
-        public void AddClusters(UMCClusterLight cluster)
-        {
-            m_clusters.Add(cluster);
-            AddClusterDataToChart(m_clusters);
-            AutoViewPort();
-            Refresh();
-        }
-        public void SetClusters(List<UMCClusterLight> clusters)
-        {
-            m_clusters.Clear();
-            m_clusters.AddRange(clusters);
-            SeriesCollection.Clear();
-            AddClusterDataToChart(m_clusters);
-            AutoViewPort(); 
-            Refresh();
-        }
-        public void SetClusters(UMCClusterLight cluster)
-        {
-            m_clusters.Clear();
-            m_clusters.Add(cluster);
-            SeriesCollection.Clear();            
-            AddClusterDataToChart(m_clusters);
-            AutoViewPort();
-            Refresh();
-        }
+        }        
         #endregion
         
-        #region Cluster Rendering
+        #region Tag Rendering
         /// <summary>
         /// Adds all cluster data to the plot.
         /// </summary>
         /// <param name="clusters"></param>
         /// <param name="specificCharge"></param>
-        private void AddClusterDataToChart(List<UMCClusterLight> clusters)
+        private void AddTagDataToChart(List<MassTagLight> tags)
         {            
 
             clsColorIterator colors = new clsColorIterator();
@@ -158,14 +182,14 @@ namespace MultiAlignCustomControls.Charting
             clsPlotParams plotParams = new clsPlotParams(shape, color);
                 
             int clustersAdded = 0;
-            foreach(UMCClusterLight cluster in clusters)
+            foreach (MassTagLight cluster in tags)
             {
                 float x = 0;
                 float y = 0;
                                       
                                             
                 y = Convert.ToSingle(cluster.MassMonoisotopic);                                                                          
-                x = Convert.ToSingle(cluster.RetentionTime);                            
+                x = Convert.ToSingle(cluster.NETAverage);                            
                         
                 massList.Add(y);
                 scanList.Add(x);
@@ -190,7 +214,6 @@ namespace MultiAlignCustomControls.Charting
             }            
         }
         #endregion
-
 
         #region Designer generated code
         /// <summary>
@@ -268,4 +291,3 @@ namespace MultiAlignCustomControls.Charting
 		#endregion
     }
 }
-

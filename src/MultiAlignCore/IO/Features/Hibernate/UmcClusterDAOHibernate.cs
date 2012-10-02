@@ -30,7 +30,7 @@ namespace MultiAlignCore.IO.Features.Hibernate
         /// <param name="netMin"></param>
         /// <param name="netMax"></param>
         /// <returns></returns>
-        public List<UMCClusterLight> FindNearby(double massMin, double massMax, double netMin, double netMax, int id)
+        public List<UMCClusterLight> FindNearby(double massMin, double massMax, double netMin, double netMax)
         {
             List<ICriterion> criterionList  = new List<ICriterion>();
             ICriterion criterionMass        = Expression.Between("MassMonoisotopic", massMin, massMax);
@@ -38,7 +38,6 @@ namespace MultiAlignCore.IO.Features.Hibernate
 
             criterionList.Add(criterionMass);
             criterionList.Add(criterionNet);
-            criterionList.Add(Expression.Not(Expression.In("ID", new object[] { id })));
             
             return FindByCriteria(criterionList);
         }

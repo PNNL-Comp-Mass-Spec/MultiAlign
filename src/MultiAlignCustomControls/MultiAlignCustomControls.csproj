@@ -101,6 +101,21 @@
     <Compile Include="Charting\ChargeStateHistogram.designer.cs">
       <DependentUpon>ChargeStateHistogram.cs</DependentUpon>
     </Compile>
+    <Compile Include="Charting\ClusterErrorScatterPlot.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Charting\FeatureScatterPlot.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Charting\MassTagPlot.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Charting\MsMsChart.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Charting\SpectraChart.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Charting\SingleUMCChart.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -119,6 +134,7 @@
     <Compile Include="Charting\SeriesOptions.cs" />
     <Compile Include="Drawing\AnalysisReportGenerator.cs" />
     <Compile Include="Drawing\RenderDatasetInfo.cs" />
+    <Compile Include="Drawing\ShapeIterator.cs" />
     <Compile Include="Extensions\ChartExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
@@ -132,6 +148,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Charting\ChargeStateHistogram.resx">
       <DependentUpon>ChargeStateHistogram.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Charting\ClusterErrorScatterPlot.resx">
+      <DependentUpon>ClusterErrorScatterPlot.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Charting\MassTagPlot.resx">
+      <DependentUpon>MassTagPlot.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Charting\MsMsChart.resx">
+      <DependentUpon>MsMsChart.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Charting\SpectraChart.resx">
+      <DependentUpon>SpectraChart.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Charting\SingleUMCChart.resx">
       <DependentUpon>SingleUMCChart.cs</DependentUpon>

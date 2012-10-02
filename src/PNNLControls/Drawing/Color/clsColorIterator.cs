@@ -49,4 +49,5 @@ namespace PNNLControls
             colors.CopyTo(marr_clr, 0);
         }
     }
+
 }

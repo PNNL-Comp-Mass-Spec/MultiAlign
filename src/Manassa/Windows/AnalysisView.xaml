@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Manassa.Windows.AllClustersControl"
+﻿<UserControl x:Class="Manassa.Windows.AnalysisView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -49,6 +49,8 @@
                         <maCharts:ctlClusterChart
                             Title=""
                             LegendVisible="false"
+                            YAxisShortHand="ppm"
+                            XAxisShortHand="NET"
                             x:Name="m_clusterPlot"
                             />
                     </WindowsFormsHost> 
@@ -70,6 +72,13 @@
                         Grid.ColumnSpan="3"
                         Cluster="{Binding Mode=OneWay, ElementName=m_clusterGrid, Path=SelectedCluster}"/>
                 </Grid>
+            </TabItem>
+            <TabItem
+                Header="Mass Tags / Proteins / Peptides"
+                >
+                <windows:MassTagViewer
+                    x:Name="m_massTagViewer"
+                    />
             </TabItem>
             <TabItem
                 Header="Datasets"                

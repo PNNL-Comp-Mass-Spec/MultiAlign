@@ -3,7 +3,7 @@ using System.Windows.Forms;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Collections;
-
+using System.Collections.Generic;
 
 namespace PNNLControls
 {
@@ -52,7 +52,7 @@ namespace PNNLControls
 		/// Current state of zooming
 		/// </summary>
 		private ChartZoomHandlerState state;
-
+        
 		/// <summary>
 		/// Handlers for mouse events and chart rendering
 		/// </summary>
@@ -91,7 +91,7 @@ namespace PNNLControls
 		/// Whether this handler is enabled
 		/// </summary>
 		private bool active = true;
-
+        private List<DrawingZoomRegion> m_zoomDelegates;
 		private DateTime lastActionTime = DateTime.Now;
 
 		public ChartZoomHandler()
@@ -109,11 +109,13 @@ namespace PNNLControls
 			this.LineColor = LineColor;
 			this.FillColor = FillColor;
 			this.ModifierKeys = Keys.None;
+            m_zoomDelegates = new List<DrawingZoomRegion>();
 		}
 
 		public ChartZoomHandler(ctlChartBase chart)  : this()
 		{
-			this.Attach(chart);
+            this.Attach(chart);
+            m_zoomDelegates = new List<DrawingZoomRegion>();
 		}
 
 		#region "Attachment/Detachment"
@@ -168,7 +170,7 @@ namespace PNNLControls
 		#endregion
 
 		#region "Properties"
-
+        
 		[System.ComponentModel.DefaultValue(Keys.None)]
 		[System.ComponentModel.TypeConverter(typeof(System.ComponentModel.ExpandableObjectConverter))]
 		public System.Windows.Forms.Keys ModifierKeys 
@@ -253,6 +255,11 @@ namespace PNNLControls
 		}
 		#endregion
 
+        public void AddDrawingDelegate(DrawingZoomRegion drawingDelegate)
+        {
+            m_zoomDelegates.Add(drawingDelegate);
+        }
+
 		#region "Event Handlers"
 
 		private void PaintTimerTick(Object sender, EventArgs args) 
@@ -280,6 +287,18 @@ namespace PNNLControls
 				float y1 = sender.GetScreenPixelY(chartBounds.Top);
 				float y2 = sender.GetScreenPixelY(chartBounds.Bottom);
 				Rectangle toDraw = ShrinkRectToDrawInChartArea(sender, x1, x2, y1, y2);
+
+                foreach (DrawingZoomRegion deleg in m_zoomDelegates)
+                {
+                    try
+                    {
+                        deleg(sender, toDraw, chartBounds, args.Graphics);
+                    }
+                    catch
+                    {
+                    }
+                }
+
 				args.Graphics.FillRectangle(this.internalBrush, toDraw);
 				args.Graphics.DrawRectangle(this.basePen, toDraw);
 			}
@@ -287,17 +306,30 @@ namespace PNNLControls
 
 		private void ChartMouseDown(Object sender, MouseEventArgs args) 
 		{
-			if (args.Button == MouseButtons.Left && 
-				System.Windows.Forms.ContainerControl.ModifierKeys == this.ModifierKeys) 
+			if (args.Button == MouseButtons.Left)
 			{
-				// set initial point and move to new state
-				start = new Point(args.X, args.Y);
-				state = state.GetBeginZoomState((ctlChartBase)sender, start);
-				activeChart = (ctlChartBase) sender;
-				if (state.DrawSelectionRectangle()) 
-				{
-					this.paintTimer.Enabled = true;
-				}
+                if (System.Windows.Forms.ContainerControl.ModifierKeys == this.ModifierKeys)
+                {
+                    // set initial point and move to new state
+                    start = new Point(args.X, args.Y);
+                    state = state.GetBeginZoomState((ctlChartBase)sender, start);
+                    activeChart = (ctlChartBase)sender;
+                    if (state.DrawSelectionRectangle())
+                    {
+                        this.paintTimer.Enabled = true;
+                    }
+                }
+                else if (ContainerControl.ModifierKeys == Keys.Shift)
+                {
+                    // set initial point and move to new state
+                    start = new Point(args.X, args.Y);
+                    state = state.GetBeginZoomState((ctlChartBase)sender, start);
+                    activeChart = (ctlChartBase)sender;
+                    if (state.DrawSelectionRectangle())
+                    {
+                        this.paintTimer.Enabled = true;
+                    }
+                }
 			}
 		}
 		
@@ -338,32 +370,45 @@ namespace PNNLControls
 			if (sender.Equals(activeChart) && args.Button == MouseButtons.Left) 
 			{
 				end = new Point(args.X, args.Y);
+
 				// If state recognizes this as a valid zoom, actually do the zoom
-				if (state.ShouldZoom((ctlChartBase) activeChart, start, end)) 
-				{
-					// First raise a selection event
-					RectangleF viewPort = state.GetZoomSelection(activeChart, start, end);
-					SelectionEventArgs selectArgs = new SelectionEventArgs(viewPort);
-					OnSelectionMade(selectArgs);
-					// If not handled, do the zoom.
-					if (!selectArgs.Handled) 
-					{
-						foreach (ctlChartBase chart in charts) 
-						{
-							try 
-							{
-								chart.ViewPort = viewPort;
-								chart.Invalidate();
-							}
-							catch (Exception e) 
-							{
-								// ignore - can happen when the user failed to select a rectangle 
-								// with any content, i.e. 0 width X or Y selection.
-								Console.WriteLine(e.StackTrace + " " + e.Message)  ;
-							}
-						}
-					}
-				}
+                if (state.ShouldZoom((ctlChartBase)activeChart, start, end) && ContainerControl.ModifierKeys != Keys.Shift)
+                {
+                    // First raise a selection event
+                    RectangleF viewPort = state.GetZoomSelection(activeChart, start, end);
+                    SelectionEventArgs selectArgs = new SelectionEventArgs(viewPort);
+                    OnSelectionMade(selectArgs);
+                    // If not handled, do the zoom.
+                    if (!selectArgs.Handled)
+                    {
+                        foreach (ctlChartBase chart in charts)
+                        {
+                            try
+                            {
+                                chart.ViewPort = viewPort;
+                                chart.Invalidate();
+                            }
+                            catch (Exception e)
+                            {
+                                // ignore - can happen when the user failed to select a rectangle 
+                                // with any content, i.e. 0 width X or Y selection.
+                            }
+                        }
+                    }
+                }
+                else                
+                {
+                    foreach (ctlChartBase chart in charts)
+                    {
+                        try
+                        {
+                            chart.Invalidate();
+                        }
+                        catch (Exception e)
+                        {
+                        }
+                    }                
+                }
 
 				// Get the new zoom state.
 				state = state.GetEndZoomState((ctlChartBase) sender, start, end);
@@ -683,4 +728,12 @@ namespace PNNLControls
 	}
 
 	#endregion
+
+    /// <summary>
+    /// Drawing arguments when drawing a zoom window.
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="region"></param>
+    /// <param name="bounds"></param>
+    public delegate void DrawingZoomRegion(ctlChartBase sender, RectangleF region, RectangleF bounds, Graphics graphics);
 }

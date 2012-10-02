@@ -50,9 +50,46 @@ namespace Manassa.Windows
 
             m_sicChart.ViewPortChanged      += new PNNLControls.ViewPortChangedHandler(m_sicChart_ViewPortChanged);
             m_msFeaturePlot.ViewPortChanged += new PNNLControls.ViewPortChangedHandler(m_msFeaturePlot_ViewPortChanged);
+
+            m_clusterChart.ViewPortChanged  += new PNNLControls.ViewPortChangedHandler(m_clusterChart_ViewPortChanged);
+            m_driftChart.ViewPortChanged    += new PNNLControls.ViewPortChangedHandler(m_driftChart_ViewPortChanged);
         }
 
+        
         #region Viewport synching
+        void m_driftChart_ViewPortChanged(PNNLControls.ctlChartBase chart, PNNLControls.ViewPortChangedEventArgs args)
+        {
+            if (m_adjustingFeaturePlots) return;
+
+            
+            m_adjustingFeaturePlots     = true;
+            RectangleF otherView        = args.ViewPort;
+            RectangleF newViewport      = new RectangleF(   m_clusterChart.ViewPort.X,
+                                                            otherView.Y,
+                                                            m_clusterChart.ViewPort.Width,                                                            
+                                                            otherView.Height);
+            m_clusterChart.ViewPort     = newViewport;
+            m_adjustingFeaturePlots     = false;
+
+            Viewport = m_clusterChart.ViewPort;
+        }
+        void m_clusterChart_ViewPortChanged(PNNLControls.ctlChartBase chart, PNNLControls.ViewPortChangedEventArgs args)
+        {
+
+            if (m_adjustingFeaturePlots) return;
+            
+            m_adjustingFeaturePlots     = true;
+            RectangleF otherView        = args.ViewPort;
+            
+            RectangleF newViewport      = new RectangleF(   m_driftChart.ViewPort.X,
+                                                            otherView.Y,
+                                                            m_driftChart.ViewPort.Width,                                                            
+                                                            otherView.Height);
+            m_driftChart.ViewPort       = newViewport;
+            m_adjustingFeaturePlots     = false;
+
+            Viewport = m_clusterChart.ViewPort;
+        }        
         void m_msFeaturePlot_ViewPortChanged(PNNLControls.ctlChartBase chart, PNNLControls.ViewPortChangedEventArgs args)
         {
             if (m_adjustingFeaturePlots) return;
@@ -77,7 +114,7 @@ namespace Manassa.Windows
                                                             otherView.Width, 
                                                             m_msFeaturePlot.ViewPort.Height);
             m_msFeaturePlot.ViewPort    = newViewport;
-            m_adjustingFeaturePlots     = false;
+            m_adjustingFeaturePlots     = false;            
         }
         #endregion
 
@@ -162,6 +199,22 @@ namespace Manassa.Windows
                                         new FrameworkPropertyMetadata(new PropertyChangedCallback(ClusterSet)));
 
 
+
+        public RectangleF Viewport
+        {
+            get { return (RectangleF)GetValue(ViewportProperty); }
+            set { SetValue(ViewportProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Viewport.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ViewportProperty =
+            DependencyProperty.Register("Viewport", typeof(RectangleF), typeof(ClusterControl));
+
+        
+
+        /// <summary>
+        /// Gets or sets the UMC feature that was selected to view in the feature viewer
+        /// </summary>
         public UMCLight UMCFeature
         {
             get
@@ -191,6 +244,8 @@ namespace Manassa.Windows
             // Clear the charta
             m_clusterChart.ClearData();
             m_driftChart.ClearData();
+            m_errorScatterplot.ClearData();
+            m_driftErrorScatterplot.ClearData();
 
             // Then start populating the charts with data.
             m_mainCluster                   = cluster;
@@ -204,7 +259,7 @@ namespace Manassa.Windows
             List<int> tagIds                = maps.ConvertAll<int>(x => x.MassTagId);
             List<MassTagLight> tags         = Providers.MassTags.FindMassTags(tagIds);
 
-            m_masstagGrid.MassTags = new BindingList<MassTagLight>(tags);
+            m_masstagGrid.MassTags = tags;
             m_clusterChart.AddMassTags(tags);
             m_driftChart.AddMassTags(tags);
 
@@ -217,7 +272,18 @@ namespace Manassa.Windows
             double maxNet   = cluster.RetentionTime + net;
 
             List<UMCClusterLight> otherClusters
-                = Providers.ClusterCache.FindNearby(minMass, maxMass, minNet, maxNet, cluster.ID);
+                = Providers.ClusterCache.FindNearby(minMass, maxMass, minNet, maxNet);
+
+            // Remove self from the list
+            int index = otherClusters.FindIndex(delegate(UMCClusterLight x)
+            {
+                return x.ID == cluster.ID;
+            });
+
+            if (index > -1)
+            {
+                otherClusters.RemoveAt(index);
+            }
 
             // Make sure that we don't get the specified cluster.                
             otherClusters.ForEach(x => x.ReconstructUMCCluster(Providers, false, false));
@@ -229,6 +295,8 @@ namespace Manassa.Windows
 
             m_clusterChart.AdjustViewPortWithTolerances(ClusterTolerances,  false);
             m_driftChart.AdjustViewPortWithTolerances(ClusterTolerances,    true);
+
+            Viewport = m_clusterChart.ViewPort;
 
             // Map out the MS/MS spectra.
             List<MSFeatureMsMs> msmsFeatures = new List<MSFeatureMsMs>();
@@ -246,10 +314,20 @@ namespace Manassa.Windows
                 }
             }
 
-            m_msmsGrid.MsMsSpectra = new System.Collections.ObjectModel.ObservableCollection<MSFeatureMsMs>(msmsFeatures);
+            m_msmsGrid.SetMsMsFeatureSpectra(msmsFeatures);
 
             // Update the data grid with nearby clusters.
-            m_clusterGrid.Clusters = otherClusters;            
+            m_clusterGrid.Clusters = otherClusters;
+
+            m_errorScatterplot.MainCluster = cluster;
+            m_errorScatterplot.AddAdditionalClusters(otherClusters);
+            m_errorScatterplot.UpdateCharts(true);
+            m_errorScatterplot.AdjustViewPortWithTolerances(ClusterTolerances, false);
+
+            m_driftErrorScatterplot.MainCluster = cluster;
+            m_driftErrorScatterplot.AddAdditionalClusters(otherClusters);
+            m_driftErrorScatterplot.UpdateCharts(true);
+            m_driftErrorScatterplot.AdjustViewPortWithTolerances(ClusterTolerances, true);
         }
         #endregion
 

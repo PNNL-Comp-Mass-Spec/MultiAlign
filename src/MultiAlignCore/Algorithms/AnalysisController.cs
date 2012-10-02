@@ -617,6 +617,11 @@ namespace MultiAlignCore.Algorithms
             analysis.DataProviders                  = providers;
             analysis.Clusters                       = providers.ClusterCache.FindAll();
             analysis.MetaData.Datasets              = providers.DatasetCache.FindAll();
+
+            MassTagDatabaseLoaderCache provider     = new MassTagDatabaseLoaderCache();
+            provider.Provider                       = analysis.DataProviders.MassTags;
+            analysis.MassTagDatabase                = provider.LoadDatabase();
+
             return analysis;
         }
         private  bool ReadInputDefinitionFile(out InputAnalysisInfo analysisSetupInformation, out bool useMTDB)
@@ -743,6 +748,7 @@ namespace MultiAlignCore.Algorithms
                         {
                             m_config.Analysis.MetaData.BaselineDataset  = info;
                             info.IsBaseline                             = true;
+                            m_config.Analysis.DataProviders.DatasetCache.Update(info);
                         }
                     }
                     Logger.PrintMessage(string.Format("Using dataset {0} as the alignment baseline.", m_config.Analysis.MetaData.BaselineDataset));
@@ -765,7 +771,8 @@ namespace MultiAlignCore.Algorithms
                         if (info.Features.Path == analysisSetupInformation.BaselineFile.Path)
                         {
                             info.IsBaseline = true;
-                            m_config.Analysis.MetaData.BaselineDataset = info;                            
+                            m_config.Analysis.MetaData.BaselineDataset = info;
+                            m_config.Analysis.DataProviders.DatasetCache.Update(info);
                         }
                     }
                     Logger.PrintMessage(string.Format("Using dataset {0} as the alignment baseline.", m_config.Analysis.MetaData.BaselineDataset));

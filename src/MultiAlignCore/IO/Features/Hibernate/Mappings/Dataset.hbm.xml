@@ -14,7 +14,7 @@
     <property name="Path"               column="Directory_Path" type="string" not-null="false" />
     <property name="RawPath"            column="Raw_Path"       type="string" not-null="false" />
     <property name="SequencePath"       column="Sequence_Path"  type="string" not-null="false" />
-    <property name="IsBaseline"         column="Is_Baseline"    type="bool"   not-null="false" />
+    <property name="IsBaseline"         column="Is_Baseline"    type="Boolean"   not-null="false" />
 
   </class>
 </hibernate-mapping>

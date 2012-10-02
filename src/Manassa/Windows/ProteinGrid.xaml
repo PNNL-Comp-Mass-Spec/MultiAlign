@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Manassa.Windows.MassTagGrid"
+﻿<UserControl x:Class="Manassa.Windows.ProteinGrid"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -46,12 +46,9 @@
 
             <DataGrid.Columns >
                 <!--Dataset Information-->
-                <DataGridTextColumn         Header="Peptide Sequence"  CanUserSort="True"      Binding="{Binding PeptideSequence}"  IsReadOnly="True"/>
-                <DataGridTextColumn         Header="Monoisotopic Mass" CanUserSort="True"      Binding="{Binding MassMonoisotopic}" IsReadOnly="True"/>
-                <DataGridTextColumn         Header="NET"               CanUserSort="True"      Binding="{Binding NETAverage}"       IsReadOnly="True"/>
-                <DataGridTextColumn         Header="Drift Time"        CanUserSort="True"      Binding="{Binding DriftTime}"        IsReadOnly="True"/>
-                <DataGridTextColumn         Header="ID"                CanUserSort="True"      Binding="{Binding ID}"               IsReadOnly="True"/>
-                <DataGridTextColumn         Header="Conformation ID"   CanUserSort="True"      Binding="{Binding ConformationID}"   IsReadOnly="True"/>            
+                <DataGridTextColumn         Header="Protein ID"  CanUserSort="True"      Binding="{Binding ProteinID}"  IsReadOnly="True"/>
+                <DataGridTextColumn         Header="Ref ID" CanUserSort="True"      Binding="{Binding RefID}" IsReadOnly="True"/>
+                <DataGridTextColumn         Header="Sequence"               CanUserSort="True"      Binding="{Binding Sequence}"       IsReadOnly="True"/>                
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

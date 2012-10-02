@@ -56,6 +56,8 @@
                                 Title=""
                                 XAxisLabel="NET"
                                 LegendVisible="False"
+                            YAxisShortHand="ppm"
+                            XAxisShortHand="NET"
                                 />
                     </WindowsFormsHost>
                     <WindowsFormsHost
@@ -67,6 +69,8 @@
                                 Title=""
                                 IsDriftTimeXAxis="True"
                                 XAxisLabel="Drift Time"
+                            YAxisShortHand="ppm"
+                            XAxisShortHand="dt"
                                 LegendVisible="False"
                                 />
                     </WindowsFormsHost>
@@ -75,16 +79,16 @@
                         Grid.Row="0"
                         Grid.Column="2"   >
                         <TabItem
-                            Header="Matching Mass Tags"
-                            Margin="1,1,1,1">
-                            <maWindows:MassTagGrid
-                                x:Name="m_masstagGrid" />
-                        </TabItem>
-                        <TabItem
                             Header="Nearby Clusters"
                             Margin="1,1,1,1">
                             <maWindows:ClusterGrid
                                 x:Name="m_clusterGrid" />
+                        </TabItem>
+                        <TabItem
+                            Header="Matching Mass Tags"
+                            Margin="1,1,1,1">
+                            <maWindows:MassTagGrid
+                                x:Name="m_masstagGrid" />
                         </TabItem>
                     </TabControl>
                     
@@ -97,6 +101,43 @@
                                 x:Name="m_saveFeaturePlotButton" 
                                 Click="m_saveFeaturePlotButton_Click" />
                     </WrapPanel>
+                </Grid>
+            </TabItem>
+
+            <TabItem
+                Header="Nearby Cluster Stats"
+                >
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <WindowsFormsHost
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        >
+                        <maCharts:ClusterErrorScatterPlot
+                            Title="Mass vs. NET Cluster Error"
+                            TitleVisible="True"
+                            XAxisLabel="NET Error"
+                            YAxisLabel="Monoisotopic Mass Error"
+                            x:Name="m_errorScatterplot"/>
+                    </WindowsFormsHost>
+                    <WindowsFormsHost
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        >
+                        <maCharts:ClusterErrorScatterPlot
+                            IsDriftTimeXAxis="True"
+                            Title="Mass vs. Drift Time Cluster Error"
+                            TitleVisible="True"
+                            XAxisLabel="Drift Error"
+                            YAxisLabel="Monoisotopic Mass Error"
+                            x:Name="m_driftErrorScatterplot"/>
+                    </WindowsFormsHost>
                 </Grid>
             </TabItem>
             <TabItem Header="Features">
@@ -145,7 +186,7 @@
                 </Grid>
             </TabItem>
             <TabItem Header="MS/MS">
-                <maWindows:MsMsGrid
+                <maWindows:MsMsViewer
                     x:Name="m_msmsGrid"/>
             </TabItem>
             <TabItem 
