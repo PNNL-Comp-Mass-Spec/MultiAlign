@@ -77,6 +77,12 @@
     <Compile Include="Data\DatasetPlotLoader.cs" />
     <Compile Include="Data\RectangleFDependency.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="Windows\ClusterToMassTagGrid.xaml.cs">
+      <DependentUpon>ClusterToMassTagGrid.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\MassTagControl.xaml.cs">
+      <DependentUpon>MassTagControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\ProteinGrid.xaml.cs">
       <DependentUpon>ProteinGrid.xaml</DependentUpon>
     </Compile>
@@ -112,6 +118,14 @@
     <Page Include="Windows\ClusterGrid.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\ClusterToMassTagGrid.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\MassTagControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Windows\ProteinGrid.xaml">
       <Generator>MSBuild:Compile</Generator>

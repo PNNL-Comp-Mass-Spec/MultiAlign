@@ -35,6 +35,23 @@ namespace MultiAlignCustomControls.Extensions
             chart.ViewPortHistory.Clear();
             chart.ViewPort = newViewport;
         }
+
+        /// <summary>
+        /// Adjusts a charts viewport based on the data and extends the view based on mass/net tolerances.
+        /// </summary>
+        /// <param name="chart"></param>
+        /// <param name="tolerances"></param>
+        /// <param name="useDriftTolerance"></param>
+        public static void AdjustViewPortWithTolerances(this ctlLineChart chart, double tolerance)
+        {            
+            // And make sure we re-adjust the viewport for the NET plot
+            RectangleF viewport     = chart.ViewPort;
+            float net               = Convert.ToSingle(tolerance);            
+            float xview             = Math.Max(Math.Abs(viewport.X), Math.Abs(viewport.Right)) + net;
+            RectangleF newViewport  = new RectangleF(-xview, viewport.Y, xview  * 2, viewport.Height);
+            chart.ViewPortHistory.Clear();
+            chart.ViewPort = newViewport;
+        }
         
         /// <summary>
         /// Adjusts a charts viewport based on the data and extends the view based on mass/net tolerances.

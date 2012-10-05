@@ -33,6 +33,27 @@ namespace MultiAlignCustomControls.Charting
             m_clusters  = new List<UMCClusterLight>();
             AddPostProcessor(this.DrawViewportBox, PostProcessPriority.Mid);
         }
+
+        protected override void DrawZoomValues(ctlChartBase chart, RectangleF rect, RectangleF bounds, Graphics graphics)
+        {
+
+            double ppmDiff = Math.Abs(Feature.ComputeMassPPMDifference(bounds.Top, bounds.Bottom));
+            double netDiff = Convert.ToDouble(bounds.Width);
+
+            string yString = string.Format("{0:.00} {1}", ppmDiff, YAxisShortHand);
+            if (ppmDiff > 1000)
+            {
+                yString = string.Format("{0:.00} da", Math.Abs(bounds.Top - bounds.Bottom));
+            }
+            string xString = string.Format("{0:.00} {1}", netDiff, XAxisShortHand);
+
+            base.DrawZoomValues(chart,
+                            rect,
+                            bounds,
+                            xString,
+                            yString,
+                            graphics);            
+        }
         
         void DrawViewportBox(ctlChartBase chart, PostRenderEventArgs args)
         {

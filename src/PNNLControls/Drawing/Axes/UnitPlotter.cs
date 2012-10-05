@@ -346,6 +346,7 @@ namespace PNNLControls
             if (this.mflt_max_val == this.mflt_min_val)
                 return;
 
+
             Int32 log_unit_width = Convert.ToInt32(Math.Floor(Math.Log10(mflt_max_val - mflt_min_val)));
             float unit_size = Convert.ToSingle(Math.Pow(10.0, Convert.ToDouble(log_unit_width)));
             Int32 num_grades = Convert.ToInt32(Math.Floor((mflt_max_val - mflt_min_val) / unit_size));

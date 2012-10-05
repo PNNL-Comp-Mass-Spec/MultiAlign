@@ -61,6 +61,12 @@ namespace MultiAlignCustomControls.Charting
             }
         }
         #endregion
+
+        public bool DisplayRatio
+        {
+            get;
+            set;
+        }
         
         #region Cluster Rendering        
         /// <summary>
@@ -76,12 +82,18 @@ namespace MultiAlignCustomControls.Charting
             int i = 0;
             foreach(UMCClusterLight cluster in clusters)
             {
-                float ratio = Convert.ToSingle(cluster.DatasetMemberCount) / Convert.ToSingle(cluster.MemberCount);
-                ratioList.Add(ratio);
-                indexList.Add(i++);
+                if (DisplayRatio)
+                {
+                    double ratio = Convert.ToDouble(cluster.MemberCount) / Convert.ToDouble(cluster.DatasetMemberCount);
+                    ratioList.Add(Convert.ToSingle(ratio));
+                }
+                else
+                {
+                    ratioList.Add(Convert.ToSingle(cluster.MemberCount));
+                }
+                indexList.Add(Convert.ToSingle(cluster.DatasetMemberCount));
             }
-            ratioList.Sort();
-                
+                            
             clsShape shape              = new BubbleShape(mint_pt_size, false);
             clsPlotParams plotParams    = new clsPlotParams(shape, Color.Black);
 

@@ -12,6 +12,13 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using MultiAlignCore.Data.MassTags;
+using MultiAlignCore.Data;
+using MultiAlignCustomControls.Charting;
+using MultiAlignCore.Data.Features;
+using MultiAlignCore.Extensions;
+using PNNLOmics.Data.MassTags;
+using PNNLOmics.Data.Features;
+using MultiAlignCore.IO.Features;
 
 namespace Manassa.Windows
 {
@@ -21,6 +28,7 @@ namespace Manassa.Windows
     public partial class MassTagViewer : UserControl
     {
         private MassTagDatabase m_database;
+        private List<MassTagToCluster> m_tags;
 
         public MassTagViewer()
         {
@@ -38,13 +46,47 @@ namespace Manassa.Windows
                 m_database = value;
 
                 if (value != null)
-                {
-                    m_massTagGrid.MassTags = value.MassTags;
+                {                    
                     m_proteinGrid.Proteins = value.AllProteins;
-
                     m_massTagPlot.AddMassTags(value.MassTags);
-                    m_massTagPlot.AutoViewPort();                    
+                    m_massTagPlot.AutoViewPort(); 
+                    
                 }                
+            }
+        }
+
+        public List<MassTagToCluster> MatchedTags
+        {
+            get
+            {
+                return m_tags;
+            }
+            set
+            {
+                m_tags = value;
+                if (value != null)
+                {
+                    m_massTagGrid.MassTags = m_tags;
+
+                    Dictionary<int, int> massTagMap = m_tags.CreateMassTagMatchedClusterSizeHistogram();
+                    m_massTagHistogram.ConstructHistogram(massTagMap);
+                    m_massTagHistogram.AutoViewPort();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the feature data access providers for retrieving extra data for display.
+        /// </summary>
+        public FeatureDataAccessProviders Providers
+        {
+            get
+            {
+                return m_massTagDisplay.Providers;
+            }
+            set
+            {
+                m_massTagDisplay.Providers = value;
             }
         }
     }

@@ -56,8 +56,8 @@
                                 Title=""
                                 XAxisLabel="NET"
                                 LegendVisible="False"
-                            YAxisShortHand="ppm"
-                            XAxisShortHand="NET"
+                                YAxisShortHand="ppm"
+                                XAxisShortHand="NET"
                                 />
                     </WindowsFormsHost>
                     <WindowsFormsHost
@@ -66,11 +66,11 @@
                         Grid.Column="1">
                         <maCharts:SingleClusterChart
                                 x:Name="m_driftChart"
-                                Title=""
+                                Title=""                                
                                 IsDriftTimeXAxis="True"
-                                XAxisLabel="Drift Time"
+                                XAxisLabel="Drift Time (ms)"
                             YAxisShortHand="ppm"
-                            XAxisShortHand="dt"
+                            XAxisShortHand="ms"
                                 LegendVisible="False"
                                 />
                     </WindowsFormsHost>
@@ -87,7 +87,7 @@
                         <TabItem
                             Header="Matching Mass Tags"
                             Margin="1,1,1,1">
-                            <maWindows:MassTagGrid
+                            <maWindows:ClusterToMassTagGrid
                                 x:Name="m_masstagGrid" />
                         </TabItem>
                     </TabControl>
@@ -111,8 +111,10 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <WindowsFormsHost
@@ -124,20 +126,113 @@
                             TitleVisible="True"
                             XAxisLabel="NET Error"
                             YAxisLabel="Monoisotopic Mass Error"
+                            XAxisShortHand="NET"
+                            YAxisShortHand="PPM"
                             x:Name="m_errorScatterplot"/>
                     </WindowsFormsHost>
-                    <WindowsFormsHost
+
+                    <TabControl                            
                         Grid.Row="0"
-                        Grid.Column="1"
-                        >
+                        Grid.Column="2">
+                        <TabItem
+                            Header="Mass CDF">
+                            <WindowsFormsHost>
+                                <maCharts:ClusterErrorHistogram
+                                    Title="Mass Error"
+                                    TitleVisible="True"
+                                    XAxisLabel="Mass Error (ppm)"
+                                    YAxisLabel="Count"
+                                    DifferenceType="0"
+                                    x:Name="m_massErrorHistogram"/>
+                            </WindowsFormsHost>
+                        </TabItem>
+                        <TabItem
+                            Header="Mass Distances">
+                            <WindowsFormsHost>
+                                <maCharts:ClusterErrorDistancePlot
+                                    Title="Mass Error"
+                                    TitleVisible="True"
+                                    XAxisLabel="Mass Error (ppm)"
+                                    YAxisLabel="Count"
+                                    DifferenceType="0"
+                                    x:Name="m_massDistances"/>
+                            </WindowsFormsHost>
+                        </TabItem>
+                    </TabControl>
+
+                    <TabControl                            
+                        Grid.Row="1"
+                        Grid.Column="0">
+                        <TabItem
+                            Header="NET CDF"
+                            >
+                            <WindowsFormsHost
+                                >
+                                <maCharts:ClusterErrorHistogram
+                                    Title="NET Error"
+                                    TitleVisible="True"
+                                    XAxisLabel="NET Error"
+                                    YAxisLabel="Count"
+                                    DifferenceType="1"
+                                    x:Name="m_netErrorHistogram"/>
+                            </WindowsFormsHost>
+                        </TabItem>
+                        <TabItem
+                            Header="NET Distances"
+                            >
+                            <WindowsFormsHost
+                                >
+                                <maCharts:ClusterErrorDistancePlot
+                                    Title="NET Distances"
+                                    TitleVisible="True"
+                                    XAxisLabel="NET Delta"
+                                    YAxisLabel="Count"
+                                    DifferenceType="1"
+                                    x:Name="m_netDistances"/>
+                            </WindowsFormsHost>
+                        </TabItem>
+                    </TabControl>
+                    <WindowsFormsHost                        
+                        Grid.Row="0"
+                        Grid.Column="1">
                         <maCharts:ClusterErrorScatterPlot
-                            IsDriftTimeXAxis="True"
-                            Title="Mass vs. Drift Time Cluster Error"
-                            TitleVisible="True"
-                            XAxisLabel="Drift Error"
-                            YAxisLabel="Monoisotopic Mass Error"
-                            x:Name="m_driftErrorScatterplot"/>
+                                    IsDriftTimeXAxis="True"
+                                    Title="Mass vs. Drift Time Cluster Error"
+                                    TitleVisible="True"
+                                    XAxisLabel="Drift Error"                            
+                                    YAxisLabel="Monoisotopic Mass Error"
+                                    XAxisShortHand="ms"
+                                    YAxisShortHand="PPM"
+                                    x:Name="m_driftErrorScatterplot"/>
                     </WindowsFormsHost>
+                    <TabControl                            
+                        Grid.Row="1"
+                        Grid.Column="1">
+                        <TabItem
+                            Header="Drift CDF">
+                            <WindowsFormsHost>
+                                <maCharts:ClusterErrorHistogram
+                                    Title="Drift Time Error"
+                                    TitleVisible="True"
+                                    XAxisLabel="Drift Error (ms)"
+                                    YAxisLabel="Count"
+                                    DifferenceType="2"
+                                    x:Name="m_driftErrorHistogram"/>
+                            </WindowsFormsHost>
+                        </TabItem>
+                        <TabItem
+                            Header="Drift Distances">
+                            <WindowsFormsHost>
+                                <maCharts:ClusterErrorDistancePlot
+                                    Title="Drift Time Error"
+                                    TitleVisible="True"
+                                    XAxisLabel="Drift Error (ms)"
+                                    YAxisLabel="Count"
+                                    DifferenceType="2"
+                                    x:Name="m_driftErrorDistances"/>
+                            </WindowsFormsHost>
+                        </TabItem>
+                    </TabControl>
                 </Grid>
             </TabItem>
             <TabItem Header="Features">
@@ -156,9 +251,9 @@
                     <maWindows:FeatureGrid
                         Grid.Column="0"
                         Grid.RowSpan="2"
-                        SelectedFeature="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorLevel=1, AncestorType={x:Type maWindows:ClusterControl}}, Path=UMCFeature}"
                         x:Name="m_featureGrid"
                         />
+                    <!--SelectedFeature="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorLevel=1, AncestorType={x:Type maWindows:ClusterControl}}, Path=UMCFeature}"-->
 
                     <!-- Plots based on feature selection -->                    
                     <WindowsFormsHost

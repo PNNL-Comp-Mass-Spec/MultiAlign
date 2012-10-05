@@ -1,20 +1,19 @@
-﻿using System;
-using MultiAlignCore.Data.Features;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using MultiAlignCore.Data;
+using MultiAlignCore.Data.Features;
 using MultiAlignCore.Extensions;
 using MultiAlignCore.IO.Features;
-using PNNLOmics.Algorithms;
-using PNNLOmics.Data.Features;
-using PNNLOmics.Data.MassTags;
+using MultiAlignCustomControls.Charting;
 using MultiAlignCustomControls.Extensions;
+using PNNLControls;
+using PNNLOmics.Algorithms;
 using PNNLOmics.Data;
+using PNNLOmics.Data.Features;
 
 namespace Manassa.Windows
 {
@@ -26,6 +25,7 @@ namespace Manassa.Windows
         private System.Windows.Forms.SaveFileDialog  m_featureImageSaveDialog;
         private UMCClusterLight m_mainCluster;
         private bool m_adjustingFeaturePlots = false;
+        private Dictionary<ctlChartBase, List<ChartSynchData>> m_chartSynchMap;
 
         /// <summary>
         /// Constructor.
@@ -33,6 +33,9 @@ namespace Manassa.Windows
         public ClusterControl()
         {
             InitializeComponent();
+
+            m_chartSynchMap = new Dictionary<ctlChartBase, List<ChartSynchData>>();
+
             FeatureFindingTolerances                = new FeatureTolerances();
             FeatureFindingTolerances.Mass           = 10;
             FeatureFindingTolerances.DriftTime      = 3;
@@ -43,6 +46,7 @@ namespace Manassa.Windows
             ClusterTolerances.Mass          = 10;
             ClusterTolerances.DriftTime     = 3;
             ClusterTolerances.RetentionTime = .03;
+
             m_featureImageSaveDialog        = new System.Windows.Forms.SaveFileDialog();
             Binding binding                 = new Binding("SelectedFeature");
             binding.Source                  = m_featureGrid;
@@ -53,11 +57,96 @@ namespace Manassa.Windows
 
             m_clusterChart.ViewPortChanged  += new PNNLControls.ViewPortChangedHandler(m_clusterChart_ViewPortChanged);
             m_driftChart.ViewPortChanged    += new PNNLControls.ViewPortChangedHandler(m_driftChart_ViewPortChanged);
+            
+            SynchViewports(m_driftErrorScatterplot, ChartSynchType.XAxis,       m_driftErrorHistogram);
+            SynchViewports(m_driftErrorScatterplot, ChartSynchType.XAxis,       m_driftErrorDistances);
+            SynchViewports(m_driftErrorScatterplot, ChartSynchType.YToXAxis,    m_massErrorHistogram);
+            SynchViewports(m_driftErrorScatterplot, ChartSynchType.YAxis,       m_errorScatterplot);
+            
+            SynchViewports(m_driftErrorHistogram,   ChartSynchType.XAxis,       m_driftErrorScatterplot);
+            SynchViewports(m_netErrorHistogram,     ChartSynchType.XAxis,       m_errorScatterplot);
+            SynchViewports(m_massErrorHistogram,    ChartSynchType.XToYAxis,    m_errorScatterplot);
+            
+            SynchViewports(m_errorScatterplot,      ChartSynchType.XAxis,       m_netErrorHistogram); 
+            SynchViewports(m_errorScatterplot,      ChartSynchType.XAxis,       m_netDistances);                        
+            SynchViewports(m_errorScatterplot,      ChartSynchType.YAxis,       m_driftErrorScatterplot);
+            SynchViewports(m_errorScatterplot,      ChartSynchType.YToXAxis,    m_massErrorHistogram);
+            SynchViewports(m_errorScatterplot,      ChartSynchType.YToXAxis,    m_massDistances);
+
+        }
+
+        private void SynchViewports(ctlChartBase sender, ChartSynchType synchType, params ctlChartBase[] targets)
+        {
+            sender.ViewPortChanged += new ViewPortChangedHandler(sender_ViewPortChanged);
+            List<ChartSynchData> synchs = new List<ChartSynchData>();
+            foreach (ctlChartBase target in targets)
+            {
+                ChartSynchData data = new ChartSynchData();
+                data.SynchType = synchType;
+                data.Target = target;
+                synchs.Add(data);
+            }
+            if (!m_chartSynchMap.ContainsKey(sender))
+            {
+                m_chartSynchMap.Add(sender, new List<ChartSynchData>());
+            }
+            m_chartSynchMap[sender].AddRange(synchs);
+        }
+        void sender_ViewPortChanged(ctlChartBase chart, ViewPortChangedEventArgs args)
+        {
+            if (m_adjustingFeaturePlots) return;
+            m_adjustingFeaturePlots = true;
+
+            if (!m_chartSynchMap.ContainsKey(chart))
+                return;
+
+            foreach (ChartSynchData data in m_chartSynchMap[chart]) 
+            {
+                RectangleF senderView   = args.ViewPort;                
+                ctlChartBase target     = data.Target; 
+                RectangleF targetView   = target.ViewPort;            
+                switch (data.SynchType)
+                {
+                    case ChartSynchType.XAxis:
+                        target.ViewPort = new RectangleF(senderView.X,
+                                                     targetView.Y,
+                                                     senderView.Width,
+                                                     targetView.Height);
+                        break;
+                    case ChartSynchType.YAxis:
+                        target.ViewPort = new RectangleF(targetView.X,
+                                                     senderView.Y,
+                                                     targetView.Width,
+                                                     senderView.Height);
+                        break;
+                    case ChartSynchType.YToXAxis:
+                        target.ViewPort = new RectangleF(senderView.Y,
+                                                     targetView.Y,
+                                                     senderView.Height,
+                                                     targetView.Height);
+                        break;
+                    case ChartSynchType.XToYAxis:
+                        target.ViewPort = new RectangleF(targetView.X,
+                                                     senderView.X,
+                                                     targetView.Width,
+                                                     senderView.Width);
+                        break;
+                    case ChartSynchType.Both:
+                        target.ViewPort = new RectangleF(senderView.X,
+                                                     senderView.Y,
+                                                     senderView.Width,
+                                                     senderView.Height);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            m_adjustingFeaturePlots = false;
         }
 
         
         #region Viewport synching
-        void m_driftChart_ViewPortChanged(PNNLControls.ctlChartBase chart, PNNLControls.ViewPortChangedEventArgs args)
+        void m_driftChart_ViewPortChanged(ctlChartBase chart, PNNLControls.ViewPortChangedEventArgs args)
         {
             if (m_adjustingFeaturePlots) return;
 
@@ -158,18 +247,18 @@ namespace Manassa.Windows
                 thisSender.m_adjustingFeaturePlots = true;
 
                 // Grab the data from the cache
-                UMCClusterLight cluster                 = (UMCClusterLight) e.NewValue;
+                UMCClusterLightMatched matchedCluster = (UMCClusterLightMatched)e.NewValue;
                 lock (thisSender.Providers.Synch)
                 {
-                    cluster.ReconstructUMCCluster(thisSender.Providers);
+                    matchedCluster.Cluster.ReconstructUMCCluster(thisSender.Providers);
                 }
-                thisSender.UpdatePlotsWithClusterData(cluster);
+                thisSender.UpdatePlotsWithClusterData(matchedCluster);
 
 
                 // Make sure that if a new feature is selected that we update the feature list.
-                if (cluster.Features.Count > 0)
+                if (matchedCluster.Cluster.Features.Count > 0)
                 {
-                    thisSender.m_featureGrid.SelectedFeature = cluster.Features[0];
+                    thisSender.m_featureGrid.SelectedFeature = matchedCluster.Cluster.Features[0];
                 }
                 thisSender.m_adjustingFeaturePlots = false;
             }
@@ -179,11 +268,11 @@ namespace Manassa.Windows
         /// <summary>
         /// Dependency Property
         /// </summary>
-        public UMCClusterLight Cluster
+        public UMCClusterLightMatched Cluster
         {
             get 
-            { 
-                return (UMCClusterLight)GetValue(ClusterProperty);
+            {
+                return (UMCClusterLightMatched)GetValue(ClusterProperty);
             }
             set 
             { 
@@ -194,7 +283,7 @@ namespace Manassa.Windows
         // Using a DependencyProperty as the backing store for Cluster.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ClusterProperty =            
             DependencyProperty.Register("Cluster",
-                                        typeof(UMCClusterLight), 
+                                        typeof(UMCClusterLightMatched), 
                                         typeof(ClusterControl),
                                         new FrameworkPropertyMetadata(new PropertyChangedCallback(ClusterSet)));
 
@@ -239,29 +328,32 @@ namespace Manassa.Windows
         /// </summary>
         /// <param name="providers"></param>
         /// <param name="cluster"></param>
-        private void UpdatePlotsWithClusterData(UMCClusterLight cluster)
+        private void UpdatePlotsWithClusterData(UMCClusterLightMatched matchedCluster)
         {
             // Clear the charta
             m_clusterChart.ClearData();
             m_driftChart.ClearData();
             m_errorScatterplot.ClearData();
             m_driftErrorScatterplot.ClearData();
+            m_driftErrorHistogram.ClearData();
+            m_massErrorHistogram.ClearData();
+            m_netErrorHistogram.ClearData();
+            m_massDistances.ClearData();
+            m_netDistances.ClearData();
+            m_driftErrorDistances.ClearData();
+
+            UMCClusterLight cluster = matchedCluster.Cluster;
 
             // Then start populating the charts with data.
             m_mainCluster                   = cluster;
-            m_clusterChart.MainCluster      = cluster;
-            m_driftChart.MainCluster        = cluster;
+            m_clusterChart.MainCluster      = matchedCluster;
+            m_driftChart.MainCluster        = matchedCluster;
             m_clusterName.Content           = string.Format("Cluster: {0}", cluster.ID);
             m_featureGrid.Features          = cluster.Features;
 
-            // Then find all matching mass mass tags 
-            List<ClusterToMassTagMap> maps  = Providers.MassTagMatches.FindByClusterId(cluster.ID);
-            List<int> tagIds                = maps.ConvertAll<int>(x => x.MassTagId);
-            List<MassTagLight> tags         = Providers.MassTags.FindMassTags(tagIds);
-
-            m_masstagGrid.MassTags = tags;
-            m_clusterChart.AddMassTags(tags);
-            m_driftChart.AddMassTags(tags);
+            // Load the matching data.
+            List<ClusterToMassTagMap> tagMatches       = matchedCluster.ClusterMatches;            
+            m_masstagGrid.MassTags = tagMatches;
 
             // Then we find all the nearby clusters
             double massPpm  = ClusterTolerances.Mass;
@@ -285,17 +377,24 @@ namespace Manassa.Windows
                 otherClusters.RemoveAt(index);
             }
 
-            // Make sure that we don't get the specified cluster.                
-            otherClusters.ForEach(x => x.ReconstructUMCCluster(Providers, false, false));
+            // Then find the matching clusters and map them back to previously matched (to mass tag data)
+            List<UMCClusterLightMatched> otherClusterMatches = new List<UMCClusterLightMatched>();            
+            otherClusters.ForEach(x => otherClusterMatches.Add(UMCClusterLightCacheManager.FindById(x.ID)));
 
-            m_clusterChart.AddAdditionalClusters(otherClusters);
-            m_driftChart.AddAdditionalClusters(otherClusters);
+            foreach (UMCClusterLightMatched matchedOtherCluster in otherClusterMatches)
+            {
+                matchedOtherCluster.Cluster.Features.Clear();
+                matchedOtherCluster.Cluster.ReconstructUMCCluster(Providers, false, false);
+            }            
+            m_clusterGrid.Clusters = otherClusterMatches;
+
+
+            m_clusterChart.AddAdditionalClusters(otherClusterMatches);
+            m_driftChart.AddAdditionalClusters(otherClusterMatches);
             m_clusterChart.UpdateCharts(true);
             m_driftChart.UpdateCharts(true);
-
             m_clusterChart.AdjustViewPortWithTolerances(ClusterTolerances,  false);
             m_driftChart.AdjustViewPortWithTolerances(ClusterTolerances,    true);
-
             Viewport = m_clusterChart.ViewPort;
 
             // Map out the MS/MS spectra.
@@ -316,18 +415,45 @@ namespace Manassa.Windows
 
             m_msmsGrid.SetMsMsFeatureSpectra(msmsFeatures);
 
-            // Update the data grid with nearby clusters.
-            m_clusterGrid.Clusters = otherClusters;
-
-            m_errorScatterplot.MainCluster = cluster;
-            m_errorScatterplot.AddAdditionalClusters(otherClusters);
+            m_errorScatterplot.MainCluster = matchedCluster;
+            m_errorScatterplot.AddAdditionalClusters(otherClusterMatches);
             m_errorScatterplot.UpdateCharts(true);
             m_errorScatterplot.AdjustViewPortWithTolerances(ClusterTolerances, false);
 
-            m_driftErrorScatterplot.MainCluster = cluster;
-            m_driftErrorScatterplot.AddAdditionalClusters(otherClusters);
+            m_driftErrorScatterplot.MainCluster = matchedCluster;
+            m_driftErrorScatterplot.AddAdditionalClusters(otherClusterMatches);
             m_driftErrorScatterplot.UpdateCharts(true);
             m_driftErrorScatterplot.AdjustViewPortWithTolerances(ClusterTolerances, true);
+
+            m_massErrorHistogram.MainCluster = matchedCluster;
+            m_massErrorHistogram.AddAdditionalClusters(otherClusterMatches);
+            m_massErrorHistogram.UpdateCharts(true);
+            m_massErrorHistogram.AdjustViewPortWithTolerances(ClusterTolerances.Mass);
+
+            m_netErrorHistogram.MainCluster = matchedCluster;
+            m_netErrorHistogram.AddAdditionalClusters(otherClusterMatches);
+            m_netErrorHistogram.UpdateCharts(true);
+            m_netErrorHistogram.AdjustViewPortWithTolerances(ClusterTolerances.RetentionTime);
+
+            m_driftErrorHistogram.MainCluster = matchedCluster;
+            m_driftErrorHistogram.AddAdditionalClusters(otherClusterMatches);
+            m_driftErrorHistogram.UpdateCharts(true);
+            m_driftErrorHistogram.AdjustViewPortWithTolerances(ClusterTolerances.DriftTime);
+
+            m_driftErrorDistances.MainCluster = matchedCluster;
+            m_driftErrorDistances.AddAdditionalClusters(otherClusterMatches);
+            m_driftErrorDistances.UpdateCharts(true);
+            m_driftErrorDistances.AdjustViewPortWithTolerances(ClusterTolerances.DriftTime);
+
+            m_massDistances.MainCluster = matchedCluster;
+            m_massDistances.AddAdditionalClusters(otherClusterMatches);
+            m_massDistances.UpdateCharts(true);
+            m_massDistances.AdjustViewPortWithTolerances(ClusterTolerances.Mass);
+
+            m_netDistances.MainCluster = matchedCluster;
+            m_netDistances.AddAdditionalClusters(otherClusterMatches);
+            m_netDistances.UpdateCharts(true);
+            m_netDistances.AdjustViewPortWithTolerances(ClusterTolerances.RetentionTime);
         }
         #endregion
 

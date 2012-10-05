@@ -23,7 +23,10 @@ namespace MultiAlignCustomControls.Charting
             if (features.Count < 1)
                 return;
 
-            int maxCharge               = int.MinValue;            
+            SeriesCollection.Clear();
+
+            int maxCharge               = int.MinValue;       
+            int minCharge               = int.MaxValue;
             Color color                 = Color.Red;
             clsShape shape              = new PNNLControls.DiamondShape(1, false); ;
             clsPlotParams plotParams    = new PNNLControls.clsPlotParams(shape, color);
@@ -31,15 +34,18 @@ namespace MultiAlignCustomControls.Charting
             foreach (int charge in features.Keys)
             {
                 maxCharge = Math.Max(charge, maxCharge);
+                minCharge = Math.Min(charge, minCharge);
             }
-
-            float[] bins = new float[maxCharge];
-            float[] freq = new float[maxCharge];
+            
+            float[] bins = new float[maxCharge - minCharge + 1];
+            float[] freq = new float[maxCharge - minCharge + 1];
             
             foreach (int charge in features.Keys)
             {
-                bins[charge - 1] = charge;
-                freq[charge - 1] = features[charge];
+                
+                
+                bins[charge - minCharge] = charge;
+                freq[charge - minCharge] = features[charge];
             }
             
             this.AddSeries(new clsSeries(ref bins, ref freq, plotParams));

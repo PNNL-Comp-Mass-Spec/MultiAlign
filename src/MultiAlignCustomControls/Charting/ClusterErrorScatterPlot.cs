@@ -7,6 +7,7 @@ using MultiAlignEngine.MassTags;
 using PNNLControls;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Data.MassTags;
+using MultiAlignCore.Data.Features;
 
 namespace MultiAlignCustomControls.Charting
 {
@@ -21,10 +22,10 @@ namespace MultiAlignCustomControls.Charting
         #region Members
         private int mint_pt_size = 3;
         private System.ComponentModel.IContainer components = null;		
-		private clsColorIterator miter_color = new  clsColorIterator() ; 				                   
-        private List<UMCClusterLight> m_additionalClusters;
-        private List<MassTagLight> m_massTags;
-        private UMCClusterLight m_mainCluster;
+		private clsColorIterator miter_color = new  clsColorIterator() ;
+        private List<UMCClusterLightMatched>     m_additionalClusters;
+        private List<MassTagLight>          m_massTags;
+        private UMCClusterLightMatched           m_mainCluster;
         /// <summary>
         /// Shapes for other clusters
         /// </summary>
@@ -45,7 +46,7 @@ namespace MultiAlignCustomControls.Charting
 	    {			
 			InitializeComponent();
 
-            m_additionalClusters    = new List<UMCClusterLight>();
+            m_additionalClusters    = new List<UMCClusterLightMatched>();
             m_massTags              = new List<MassTagLight>();
             m_mainCluster           = null;
             AlternateColor          = Color.Black;
@@ -65,11 +66,14 @@ namespace MultiAlignCustomControls.Charting
             double ppmDiff = Math.Abs(bounds.Top - bounds.Bottom);
             double netDiff = Convert.ToDouble(bounds.Width);
 
+            string yString = string.Format("{0:.00} {1}", ppmDiff, YAxisShortHand);
+            string xString = string.Format("{0:.00} {1}", netDiff, XAxisShortHand);
+
             base.DrawZoomValues(chart,
                             rect,
                             bounds,
-                            netDiff,
-                            ppmDiff,
+                            xString,
+                            yString,
                             graphics);
         }
 
@@ -83,7 +87,7 @@ namespace MultiAlignCustomControls.Charting
         {
             double minMass, maxMass, minNet, maxNet, minDrift, maxDrift;
 
-            m_mainCluster.Features.FindRanges(out minMass,
+            m_mainCluster.Cluster.Features.FindRanges(out minMass,
                                                 out maxMass,
                                                 out minNet,
                                                 out maxNet,
@@ -131,7 +135,7 @@ namespace MultiAlignCustomControls.Charting
             if (m_mainCluster == null)
                 return;
 
-            DisplayDifferences(m_mainCluster.Features, chart, args);
+            DisplayDifferences(m_mainCluster.Cluster.Features, chart, args);
         }
 
         public Color AlternateColor
@@ -159,11 +163,11 @@ namespace MultiAlignCustomControls.Charting
         /// <summary>
         /// Sets the analysis object and extracts data for display.
         /// </summary>
-        public void AddAdditionalClusters(List<UMCClusterLight> clusters)
+        public void AddAdditionalClusters(List<UMCClusterLightMatched> clusters)
         {
             m_additionalClusters.AddRange(clusters);            
         }
-        public void AddAdditionalClusters(UMCClusterLight cluster)
+        public void AddAdditionalClusters(UMCClusterLightMatched cluster)
         {                        
             m_additionalClusters.Add(cluster);            
         }
@@ -188,7 +192,7 @@ namespace MultiAlignCustomControls.Charting
                 AutoViewPort();
             }
         }
-        public UMCClusterLight MainCluster
+        public UMCClusterLightMatched MainCluster
         {
             get
             {
@@ -241,9 +245,9 @@ namespace MultiAlignCustomControls.Charting
         /// </summary>
         /// <param name="clusters"></param>
         /// <param name="specificCharge"></param>
-        private void AddClusterDataToChart(List<UMCClusterLight> clusters, bool isAlternate)
+        private void AddClusterDataToChart(List<UMCClusterLightMatched> clusters, bool isAlternate)
         {
-            foreach (UMCClusterLight cluster in clusters)
+            foreach (UMCClusterLightMatched cluster in clusters)
             {
                 AddClusterDataToChart(cluster, isAlternate);
             }
@@ -253,8 +257,10 @@ namespace MultiAlignCustomControls.Charting
         /// </summary>
         /// <param name="cluster"></param>
         /// <param name="isAlternate"></param>
-        private void AddClusterDataToChart(UMCClusterLight cluster, bool isAlternate)
-        {             
+        private void AddClusterDataToChart(UMCClusterLightMatched matchedCluster, bool isAlternate)
+        {
+            UMCClusterLight cluster = matchedCluster.Cluster;
+
             clsColorIterator colors = new clsColorIterator();            
             if (cluster.Features.Count > 0)
             {
@@ -276,10 +282,10 @@ namespace MultiAlignCustomControls.Charting
                     shape = m_mainShapes[charge];
                 }
 
-                double clusterX = m_mainCluster.RetentionTime; 
-                double clusterY = m_mainCluster.MassMonoisotopic;                
+                double clusterX = m_mainCluster.Cluster.RetentionTime; 
+                double clusterY = m_mainCluster.Cluster.MassMonoisotopic;                
                 if (IsDriftTimeXAxis)
-                    clusterX = m_mainCluster.DriftTime;
+                    clusterX = m_mainCluster.Cluster.DriftTime;
 
                 clsPlotParams plotParams = new clsPlotParams(shape, color);
                 cluster.Features.ForEach(x => massList.Add(Convert.ToSingle(Feature.ComputeMassPPMDifference(clusterY, x.MassMonoisotopicAligned))));

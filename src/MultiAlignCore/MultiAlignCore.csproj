@@ -177,11 +177,15 @@
     <Compile Include="Data\AnalysisConfig.cs" />
     <Compile Include="Data\AnalysisOptions.cs" />
     <Compile Include="Data\AnalysisUtils.cs" />
+    <Compile Include="Data\UMCClusterLightCacheManager.cs" />
     <Compile Include="Data\DataSummaryAttribute.cs" />
     <Compile Include="Data\Features\FeatureLoadingData.cs" />
     <Compile Include="Data\Features\LCMSFeatureChargeMapBuilder.cs" />
     <Compile Include="Data\Features\FeatureDataConverters.cs" />
     <Compile Include="Data\Features\MSFeatureMsMs.cs" />
+    <Compile Include="Data\Features\FeatureAnnotation.cs" />
+    <Compile Include="Data\Features\UMCClusterMatched.cs" />
+    <Compile Include="Data\MassTagToMatch.cs" />
     <Compile Include="Data\MetaData\DatasetPlotInformation.cs" />
     <Compile Include="Data\MSMSClusterMap.cs" />
     <Compile Include="Data\Factors\DatasetToExperimentalFactorMap.cs" />
@@ -206,6 +210,8 @@
     <Compile Include="Data\MultiAlignAnalysisDelegates.cs" />
     <Compile Include="Data\PeakMatchingResults.cs" />
     <Compile Include="Data\SequenceData\DatabaseSearchSequence.cs" />
+    <Compile Include="Extensions\ClusterExtensions.cs" />
+    <Compile Include="Extensions\MassTagExtensions.cs" />
     <Compile Include="Extensions\FeatureExtensions.cs" />
     <Compile Include="IO\Analysis\PeakMatchResultsWriter.cs" />
     <Compile Include="IO\ClusterExporterComposite.cs" />

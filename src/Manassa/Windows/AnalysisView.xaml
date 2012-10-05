@@ -74,7 +74,7 @@
                 </Grid>
             </TabItem>
             <TabItem
-                Header="Mass Tags / Proteins / Peptides"
+                Header="Identifications"
                 >
                 <windows:MassTagViewer
                     x:Name="m_massTagViewer"
@@ -101,12 +101,11 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                     
                     <WindowsFormsHost                 
                         Margin="5,5,5,5"
-                        Grid.Row="1"
+                        Grid.Row="2"
                         Grid.Column="0">
                         <maCharts:GenericHistogram
                             Title="Charge States"
@@ -130,7 +129,7 @@
                             YAxisGridLines="True"
                             XAxisGridLines="True"
                             LegendVisible="False"
-                            x:Name="m_datsaetSizeHistogram"
+                            x:Name="m_datasetSizeHistogram"
                             TitleVisible="True" />
                     </WindowsFormsHost>
 
@@ -151,16 +150,45 @@
 
                     <WindowsFormsHost                 
                         Margin="5,5,5,5"
-                        Grid.Row="0"
-                        Grid.Column="2">
+                        Grid.Row="1"
+                        Grid.Column="0">
                         <maCharts:ClusterMemberSizeScatterPlot
                             Title="Cluster Size Ratio"
-                            XAxisLabel="Dataset members"
+                            XAxisLabel="Dataset Member Count"
+                            YAxisLabel="Member Count"
+                            YAxisGridLines="True"
+                            XAxisGridLines="True"
+                            LegendVisible="False"
+                            x:Name="m_clusterRatioRawPlot"
+                            TitleVisible="True" />
+                    </WindowsFormsHost>
+                    <WindowsFormsHost                 
+                        Margin="5,5,5,5"
+                        Grid.Row="1"
+                        Grid.Column="1">
+                        <maCharts:ClusterMemberSizeScatterPlot
+                            Title="Cluster Size Ratio"
+                            XAxisLabel="Dataset Member Count"
+                            YAxisLabel="Ratio"
+                            YAxisGridLines="True"
+                            XAxisGridLines="True"
+                            LegendVisible="False"
+                            DisplayRatio="True"
+                            x:Name="m_clusterRatioPlot"
+                            TitleVisible="True" />
+                    </WindowsFormsHost>
+                    <WindowsFormsHost                 
+                        Margin="5,5,5,5"
+                        Grid.Row="2"
+                        Grid.Column="1">
+                        <maCharts:GenericHistogram
+                            Title="Mass Tag Clusters"
+                            XAxisLabel="Features"
                             YAxisLabel="Count"
                             YAxisGridLines="True"
                             XAxisGridLines="True"
                             LegendVisible="False"
-                            x:Name="m_clusterRatioHistogram"
+                            x:Name="m_massTagHistogram"
                             TitleVisible="True" />
                     </WindowsFormsHost>
                 </Grid>

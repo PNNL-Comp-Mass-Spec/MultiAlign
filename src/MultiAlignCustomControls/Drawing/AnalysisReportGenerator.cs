@@ -53,49 +53,20 @@ namespace MultiAlignCustomControls.Drawing
                 Logger.PrintMessage(string.Format("Could not create {0} plot.", name));
             }
         }
-        /// <summary>
-        /// Creates the final analysis plots
-        /// </summary>
-        /// <param name="cache"></param>
-        /// <param name="clusterCache"></param>
-        public void CreateFinalAnalysisPlots()
+        public void CreateClusterPlots(List<UMCClusterLight> clusters)
         {
-            UmcDAOHibernate cache               = new UmcDAOHibernate();
-            UmcClusterDAOHibernate clusterCache = new UmcClusterDAOHibernate();
-
-            CreateFinalAnalysisPlots(cache, clusterCache);
-        }
-        /// <summary>
-        /// Creates the final analysis plots.
-        /// </summary>
-        public void CreateFinalAnalysisPlots(IUmcDAO cache, IUmcClusterDAO clusterCache)
-        {
-            Logger.PrintMessage("Creating Final Plots");
-            Config.Report.PushTextHeader("Analysis Info ");
-            Config.Report.PushStartTable();
-            Config.Report.PushStartTableRow();
-
-            // Create the heatmap
-            List<UMCLight> features = cache.FindAll();
             ChartDisplayOptions options = new ChartDisplayOptions(true, true, true, true,
                                                 1, 100,
                                                 "Charge State Histogram", "Charge State", "Count", Config.width, Config.height);
-            options.DisplayLegend   = false;            
-            Image image = RenderDatasetInfo.ChargeStateHistogram_Thumbnail(features, Config.width, Config.height, options);
-            SaveImage(image, "ChargeStates.png");
-            Config.Report.PushImageColumn(Path.Combine("Plots", "ChargeStates.png"));
-
-            Config.Report.PushEndTableRow();
-            Config.Report.PushEndTable();
+            options.DisplayLegend = false;
 
             Config.Report.PushTextHeader("Cluster Data");
             Config.Report.PushStartTable();
             Config.Report.PushStartTableRow();
-
-            List<UMCClusterLight> clusters = clusterCache.FindAll();
+            
             options.Title = "Cluster Member Size Histogram ( Total Clusters = " + clusters.Count.ToString() + ")";
             options.DisplayLegend = false;
-            image = RenderDatasetInfo.ClusterSizeHistogram_Thumbnail(clusters, Config.width, Config.height, options);
+            Image image = RenderDatasetInfo.ClusterSizeHistogram_Thumbnail(clusters, Config.width, Config.height, options);
             SaveImage(image, "ClusterMemberSizes.png");
             Config.Report.PushImageColumn(Path.Combine("Plots", "ClusterMemberSizes.png"));
 
@@ -114,7 +85,6 @@ namespace MultiAlignCustomControls.Drawing
             Config.Report.PushEndTableRow();
             Config.Report.PushStartTableRow();
             Config.Report.PushEndTable();
-
 
             Config.Report.PushStartTable(true);
             Config.Report.PushStartTableRow();
@@ -144,6 +114,28 @@ namespace MultiAlignCustomControls.Drawing
                 }
             }
             Config.Report.PushEndTable();
+        }
+        /// <summary>
+        /// Creates the final analysis plots.
+        /// </summary>
+        public void CreateChargePlots(Dictionary<int, int> chargeMap)
+        {
+            Logger.PrintMessage("Creating Charge State Plots");
+            Config.Report.PushTextHeader("Analysis Info ");
+            Config.Report.PushStartTable();
+            Config.Report.PushStartTableRow();
+
+            // Create the heatmap            
+            ChartDisplayOptions options = new ChartDisplayOptions(true, true, true, true,
+                                                1, 100,
+                                                "Charge State Histogram", "Charge State", "Count", Config.width, Config.height);
+            options.DisplayLegend   = false;            
+            Image image = RenderDatasetInfo.CreateHistogram_Thumbnail(chargeMap, Config.width, Config.height, options);
+            SaveImage(image, "ChargeStates.png");
+            Config.Report.PushImageColumn(Path.Combine("Plots", "ChargeStates.png"));
+
+            Config.Report.PushEndTableRow();
+            Config.Report.PushEndTable();            
         }
         /// <summary>
         /// Creates the HTML output file.

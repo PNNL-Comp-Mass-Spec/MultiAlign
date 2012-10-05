@@ -1,4 +1,7 @@
 using System;
+using PNNLOmics.Data.Features;
+using PNNLOmics.Data.MassTags;
+
 
 namespace MultiAlignCore.Data
 {
@@ -18,6 +21,12 @@ namespace MultiAlignCore.Data
 			m_clusterId = clusterId;
 			m_massTagId = massTagId;
 		}
+
+        public MassTagToCluster MassTag
+        {
+            get;
+            set;
+        }
         
 		public override bool Equals(object obj)
 		{

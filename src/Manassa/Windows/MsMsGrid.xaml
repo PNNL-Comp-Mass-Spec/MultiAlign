@@ -10,10 +10,6 @@
         <converters:BooleanToDataGridVisibilityModeConverter x:Key="boolConverter"/>
     </UserControl.Resources>
     <StackPanel>
-        <Label
-            Content="Mass Tags"
-            HorizontalAlignment="Center"
-            />
         <DataGrid
                 Name="m_dataGrid" 
                 ItemsSource="{Binding}" 

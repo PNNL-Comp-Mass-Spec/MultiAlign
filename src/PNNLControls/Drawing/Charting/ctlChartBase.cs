@@ -11,12 +11,16 @@ using System.Drawing.Imaging;
 
 namespace PNNLControls 
 {
+    
+
 	/// <summary>
 	/// Summary description for ctlChartBase.
 	/// </summary>
 	public abstract class ctlChartBase : System.Windows.Forms.UserControl, System.ComponentModel.ISupportInitialize
     {
-        #region Members
+        public event EventHandler<SelectedPointEventArgs> DataPointSelected;
+
+        #region Members        
         protected clsSeriesCollection mobj_series_collection;		
 		protected clsMargins mobj_margins = new clsMargins();
 		protected clsPlotRange mobj_range = new clsPlotRange();
@@ -2744,6 +2748,12 @@ namespace PNNLControls
 					}
 
                     SeriesSelectedAtPoint(ChartVisibilityBitmapConstants.SeriesIndexFromInt(val), e.X, e.Y);
+
+
+                    float xChart = mobj_axis_plotter.XChartCoordinate(e.X);
+                    float yChart = mobj_axis_plotter.YChartCoordinate(e.Y);
+                    
+                    OnDataPointSelected(xChart, yChart, 0);
 				}
 			} 
 
@@ -2788,6 +2798,13 @@ namespace PNNLControls
 				}
 			}
 		}
+        protected virtual void OnDataPointSelected(float x, float y, int series)
+        {
+            if (this.DataPointSelected != null)
+            {
+                DataPointSelected(this, new SelectedPointEventArgs(x, y, series));
+            }
+        }
 		private void menuLegendFloating_Click(object sender, System.EventArgs e)
 		{
 			this.ChartLayout.LegendLocation = ChartLegendLocation.Floating;
@@ -3322,4 +3339,23 @@ namespace PNNLControls
 			return val & mask;
 		}
 	}
+
+    public class SelectedPointEventArgs : EventArgs
+    {
+        public SelectedPointEventArgs(float x, float y, int series)
+        {
+            SelectedPoint   = new PointF(x, y);
+            Series          = series;
+        }
+        public PointF SelectedPoint
+        {
+            get;
+            private set;
+        }
+        public int Series
+        {
+            get;
+            private set;
+        }
+    }
 }

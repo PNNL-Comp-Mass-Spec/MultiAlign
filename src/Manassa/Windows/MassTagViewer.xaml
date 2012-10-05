@@ -6,7 +6,7 @@
              xmlns:maWindows="clr-namespace:Manassa.Windows"
              xmlns:maCharts="clr-namespace:MultiAlignCustomControls.Charting;assembly=MultiAlignCustomControls"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="598" d:DesignWidth="920">
     <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
@@ -36,24 +36,54 @@
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"                                
                     />
-            <maWindows:MassTagGrid
-                Grid.Row="2"   
+            <TabControl
+                    Grid.Row="0"   
+                    Grid.Column="2">
+                <TabItem
+                    Header="All Mass Tags">
+                    <maWindows:MassTagGrid
+                        x:Name="m_massTagGrid"            
+                        />
+                </TabItem>
+                <TabItem
+                    Header="All Proteins">
+                    <maWindows:ProteinGrid
+                        x:Name="m_proteinGrid"            
+                        />
+                </TabItem>
+            </TabControl>
+            <TabControl
+                    Grid.Row="0"   
+                        Grid.Column="0">    
+                <TabItem
+                    Header="Mass Tags">
+                    <WindowsFormsHost>
+                            <maCharts:MassTagPlot
+                                LegendVisible="True"
+                                x:Name="m_massTagPlot"/>
+                    </WindowsFormsHost>
+            </TabItem>
+            <TabItem
+                    Header="Mass Tags Clusters">
+                <WindowsFormsHost>                
+                        <maCharts:GenericHistogram
+                            Title="Mass Tag Clusters"
+                            XAxisLabel="Features"
+                            YAxisLabel="Count"
+                            YAxisGridLines="True"
+                            XAxisGridLines="True"
+                            LegendVisible="False"
+                            x:Name="m_massTagHistogram"
+                            TitleVisible="True" />                    
+                </WindowsFormsHost>
+            </TabItem>
+        </TabControl>
+
+            <maWindows:MassTagControl
+                Grid.Row="2"
                 Grid.Column="0"
                 Grid.ColumnSpan="3"
-                x:Name="m_massTagGrid"            
-                />
-
-            <maWindows:ProteinGrid
-                    Grid.Row="0"   
-                    Grid.Column="2"
-                    x:Name="m_proteinGrid"            
-                    />
-            <WindowsFormsHost
-                    Grid.Row="0"
-                    Grid.Column="0">
-                    <maCharts:MassTagPlot
-                        LegendVisible="True"
-                        x:Name="m_massTagPlot"/>
-                </WindowsFormsHost>
-        </Grid>
+                x:Name="m_massTagDisplay"
+                MassTag="{Binding Mode=OneWay, ElementName=m_massTagGrid, Path=SelectedTag}"/>                                        
+    </Grid>
 </UserControl>

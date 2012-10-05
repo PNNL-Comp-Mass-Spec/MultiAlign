@@ -8,6 +8,7 @@ using MultiAlignEngine.Alignment;
 using MultiAlignEngine.Features;
 using PNNLControls;
 using PNNLOmics.Data.Features;
+using MultiAlignCore.Extensions;
 
 namespace MultiAlignCustomControls.Drawing
 {
@@ -1441,7 +1442,7 @@ namespace MultiAlignCustomControls.Drawing
             Image image = null;
             try
             {
-                controlHistogram chart = RenderDatasetInfo.ClusterSizeHistogram_Chart(clusters, options);
+                GenericHistogram chart = RenderDatasetInfo.ClusterSizeHistogram_Chart(clusters, options);
 
                 if (chart != null)
                 {
@@ -1479,7 +1480,7 @@ namespace MultiAlignCustomControls.Drawing
             Image image = null;
             try
             {
-                controlHistogram chart = RenderDatasetInfo.ClusterDatasetMemberSizeHistogram_Chart(clusters, options);
+                GenericHistogram chart = RenderDatasetInfo.ClusterDatasetMemberSizeHistogram_Chart(clusters, options);
 
                 if (chart != null)
                 {
@@ -1508,60 +1509,18 @@ namespace MultiAlignCustomControls.Drawing
         /// </summary>
         /// <param name="analysis"></param>
         /// <returns></returns>
-        public static controlHistogram ClusterSizeHistogram_Chart(List<UMCClusterLight> clusters, ChartDisplayOptions options)
+        public static GenericHistogram ClusterSizeHistogram_Chart(List<UMCClusterLight> clusters, ChartDisplayOptions options)
         {
-            if (clusters.Count < 1)
-                return null;
-
-            
-            Dictionary<int, int> clusterMaps = new Dictionary<int, int>();
-            // Bin all data.
-            foreach (UMCClusterLight cluster in clusters)
-            {
-                int members = cluster.MemberCount;
-                if (!clusterMaps.ContainsKey(members))
-                {
-                    clusterMaps.Add(members, 0);
-                }
-                clusterMaps[members] = clusterMaps[members] + 1;                    
-            }
-
-            // Find the maximum cluster size.
-            List<int> sizes = new List<int>();
-            foreach (int key in clusterMaps.Keys)
-            {
-                sizes.Add(key);
-            }
-            sizes.Sort();
-            int maxClusters = sizes[sizes.Count - 1] + 3;
-                   
-            // Create the histogram.
-            float[] bins  = new float[maxClusters];
-            float[] freqs = new float[maxClusters];
-
-            int i = 0;
-            for (i = 0; i < maxClusters; i++)
-            {
-                bins[i] = Convert.ToSingle(i );
-                if (clusterMaps.ContainsKey(i))
-                {                                
-                    freqs[i] = clusterMaps[i];
-                }
-                else
-                {
-                    freqs[i] = 0;
-                }
-            }
-            
-            controlHistogram histogram  = new controlHistogram();
-            histogram.AddData(bins, freqs, "Cluster Sizes");
+            Dictionary<int, int> map    = clusters.CreateClusterSizeHistogram();            
+            GenericHistogram histogram  = new GenericHistogram();            
             histogram.BinSize           = 1.0F;
             histogram.XAxisLabel        = options.YAxisLabel;
             histogram.YAxisLabel        = options.XAxisLabel;
             histogram.Title             = options.Title;
+            histogram.ConstructHistogram(map);
             histogram.AutoViewPort();
             histogram.Refresh();
-            return histogram;                                    
+            return histogram;                          
         }
         
         /// <summary>
@@ -1569,28 +1528,66 @@ namespace MultiAlignCustomControls.Drawing
         /// </summary>
         /// <param name="analysis"></param>
         /// <returns></returns>
-        public static controlHistogram ClusterDatasetMemberSizeHistogram_Chart(List<UMCClusterLight> clusters, ChartDisplayOptions options)
+        public static GenericHistogram ClusterDatasetMemberSizeHistogram_Chart(List<UMCClusterLight> clusters, ChartDisplayOptions options)
         {
-
-            float[] freqs = MultiAlignCore.Data.Cluster.ClusterStats.GetClusterMemberSizes(clusters);
-
-            if (freqs == null)
-                return null;
-            
-            int maxClusters = freqs.Length;
-            float[] bins    = new float[maxClusters];
-            
-            for (int i = 0; i < maxClusters; i++)
-            {
-                bins[i] = Convert.ToSingle(i);            
-            }
-
-            controlHistogram histogram  = new controlHistogram();
-            histogram.AddData(bins, freqs, "Cluster Sizes");
+            Dictionary<int, int> map = clusters.CreateClusterDatasetMemeberSizeHistogram();            
+            GenericHistogram histogram  = new GenericHistogram();            
             histogram.BinSize           = 1.0F;
             histogram.XAxisLabel        = options.YAxisLabel;
             histogram.YAxisLabel        = options.XAxisLabel;
             histogram.Title             = options.Title;
+            histogram.ConstructHistogram(map);
+            histogram.AutoViewPort();
+            histogram.Refresh();
+            return histogram;
+        }
+        
+        /// <summary>
+        /// Renders the scan versus the cluster net to the provided bitmap.
+        /// </summary>
+        public static Image CreateHistogram_Thumbnail(Dictionary<int, int> map ,
+                                                            int width,
+                                                            int height,
+                                                            ChartDisplayOptions options
+                                                            )
+        {
+            Image image = null;
+            try
+            {
+                GenericHistogram chart = RenderDatasetInfo.CreateHistogram_Chart(map, options);
+
+                if (chart != null)
+                {
+                    chart.Margins.LeftMarginMin = options.MarginMin;
+                    chart.Margins.LeftMarginMax = options.MarginMax;
+                    chart.Margins.BottomMarginMax = options.MarginMax;
+                    chart.Margins.BottomMarginMin = options.MarginMin;
+
+                    chart.LegendVisible = options.DisplayLegend;
+                    chart.AxisVisible = options.DisplayAxis;
+                    chart.TitleVisible = options.DisplayTitle;
+                    chart.XAxisGridLines = options.DisplayGridLines;
+                    chart.YAxisGridLines = options.DisplayGridLines;
+
+                    image = chart.ToBitmap(width, height);
+                    chart.Dispose();
+                }
+            }
+            catch
+            {
+            }
+            return image;
+
+        }
+        public static GenericHistogram CreateHistogram_Chart(Dictionary<int, int> map,
+                                                                                                    ChartDisplayOptions options)
+        {                      
+            GenericHistogram histogram  = new GenericHistogram();            
+            histogram.BinSize           = 1.0F;
+            histogram.XAxisLabel        = options.YAxisLabel;
+            histogram.YAxisLabel        = options.XAxisLabel;
+            histogram.Title             = options.Title;
+            histogram.ConstructHistogram(map);
             histogram.AutoViewPort();
             histogram.Refresh();
             return histogram;

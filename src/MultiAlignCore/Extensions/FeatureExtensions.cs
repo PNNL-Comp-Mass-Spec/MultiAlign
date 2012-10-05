@@ -1,11 +1,13 @@
 ﻿using System;
+using PNNLOmics.Data.MassTags;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using PNNLOmics.Data.Features;
+using MultiAlignCore.Data;
+using MultiAlignCore.Data.Features;
+using MultiAlignCore.Data.MassTags;
+using MultiAlignCore.IO.Features;
 using PNNLOmics.Data;
 using MultiAlignCore.Data;
-using MultiAlignCore.IO.Features;
+using PNNLOmics.Data.Features;
 
 namespace MultiAlignCore.Extensions
 {
@@ -44,44 +46,6 @@ namespace MultiAlignCore.Extensions
             return chargeMap;
         }
         /// <summary>
-        /// Creates a charge map for a given ms feature list.
-        /// </summary>
-        /// <param name="feature"></param>
-        /// <returns></returns>
-        public static Dictionary<int, int> CreateClusterSizeHistogram(this List<UMCClusterLight> clusters)
-        {
-            Dictionary<int, int> map = new Dictionary<int, int>();
-            foreach (UMCClusterLight cluster in clusters)
-            {
-                if (!map.ContainsKey(cluster.MemberCount))
-                {
-                    map.Add(cluster.MemberCount, 0);
-                }
-                map[cluster.MemberCount]++;
-            }
-
-            return map;
-        }
-        /// <summary>
-        /// Creates a charge map for a given ms feature list.
-        /// </summary>
-        /// <param name="feature"></param>
-        /// <returns></returns>
-        public static Dictionary<int, int> CreateClusterDatasetMemeberSizeHistogram(this List<UMCClusterLight> clusters)
-        {
-            Dictionary<int, int> map = new Dictionary<int, int>();
-            foreach (UMCClusterLight cluster in clusters)
-            {
-                if (!map.ContainsKey(cluster.DatasetMemberCount))
-                {
-                    map.Add(cluster.DatasetMemberCount, 0);
-                }
-                map[cluster.DatasetMemberCount]++;
-            }
-
-            return map;
-        }
-        /// <summary>
         /// Creates SIC's mapped by charge state for the MS Features in the feature.
         /// </summary>
         /// <param name="feature"></param>
@@ -102,35 +66,7 @@ namespace MultiAlignCore.Extensions
                 sicMap.Add(charge, data);
             }
             return sicMap;
-        }
-        /// <summary>
-        /// Gets a cluster and it's subsequent data structures.
-        /// </summary>
-        /// <param name="cluster"></param>
-        /// <param name="providers"></param>
-        public static void ReconstructUMCCluster(this UMCClusterLight cluster, FeatureDataAccessProviders providers)
-        {
-            cluster.ReconstructUMCCluster(providers, true, true);            
-        }
-        /// <summary>
-        /// Determines if MS/MS should also be discovered.
-        /// </summary>
-        /// <param name="cluster"></param>
-        /// <param name="providers"></param>
-        /// <param name="getMsMS"></param>
-        public static void ReconstructUMCCluster(this UMCClusterLight cluster, FeatureDataAccessProviders providers, bool getMsFeature, bool getMsMs)
-        {
-            List<UMCLight> features = providers.FeatureCache.FindByClusterID(cluster.ID);
-            foreach (UMCLight feature in features)
-            {
-                cluster.AddChildFeature(feature);
-
-                if (getMsFeature)
-                {
-                    feature.ReconstructUMC(providers, getMsMs);
-                }
-            }
-        }
+        }        
         /// <summary>
         /// Reconstructions a UMC
         /// </summary>
@@ -327,6 +263,22 @@ namespace MultiAlignCore.Extensions
                 minDrift = Math.Min(minDrift, feature.DriftTime);
                 maxDrift = Math.Max(maxDrift, feature.DriftTime);                
             }
+        }
+
+        public static bool HasMsMs(this UMCLight feature)
+        {
+            foreach (MSFeature msFeature in feature.MSFeatures)
+            {
+                bool hasMsMs = msFeature.HasMsMs();
+
+                if (hasMsMs)
+                    return true;
+            }
+            return false;
+        }
+        public static bool HasMsMs(this MSFeatureLight msFeature)
+        {
+            return msFeature.MSnSpectra.Count > 0;
         }
     }
 }

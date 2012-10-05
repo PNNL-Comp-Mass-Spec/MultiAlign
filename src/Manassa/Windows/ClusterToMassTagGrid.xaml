@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Manassa.Windows.ClusterGrid"
+﻿<UserControl x:Class="Manassa.Windows.ClusterToMassTagGrid"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -17,10 +17,6 @@
                 AlternatingRowBackground="WhiteSmoke"
                 AlternationCount="1"
                 CanUserAddRows="False"
-                CanUserDeleteRows="False"
-                CanUserReorderColumns="True"
-                CanUserSortColumns="True"
-            
                 AutoGenerateColumns="False"
                 Grid.ColumnSpan="6"
                 IsTextSearchEnabled="True"
@@ -50,16 +46,15 @@
 
             <DataGrid.Columns >
                 <!--Dataset Information-->
-                <DataGridTextColumn         Header="ID"                 CanUserSort="True"     Binding="{Binding Cluster.ID}"                   IsReadOnly="True"/>
-                <DataGridTextColumn         Header="Monoisotopic Mass"  CanUserSort="True"     Binding="{Binding Cluster.MassMonoisotopic}"     IsReadOnly="True"/>
-                <DataGridTextColumn         Header="NET"                CanUserSort="True"     Binding="{Binding Cluster.RetentionTime}"        IsReadOnly="True"/>
-                <DataGridTextColumn         Header="Drift Time"         CanUserSort="True"     Binding="{Binding Cluster.DriftTime}"            IsReadOnly="True"/>
-                <DataGridTextColumn         Header="Charge"             CanUserSort="True"     Binding="{Binding Cluster.ChargeState}"          IsReadOnly="True"/>
-                <DataGridTextColumn         Header="Dataset Members"    CanUserSort="True"     Binding="{Binding Cluster.DatasetMemberCount}"   IsReadOnly="True"/>
-                <DataGridTextColumn         Header="Total Members"      CanUserSort="True"     Binding="{Binding Cluster.MemberCount}"          IsReadOnly="True"/>
-                <DataGridTextColumn         Header="Ambiguity"          CanUserSort="True"     Binding="{Binding Cluster.AmbiguityScore}"       IsReadOnly="True"/>
-                <DataGridTextColumn         Header="Tightness"          CanUserSort="True"     Binding="{Binding Cluster.Tightness}"            IsReadOnly="True"/>
-                <DataGridTextColumn         Header="AMT Matches"        CanUserSort="True"     Binding="{Binding ClusterMatches.Count}"            IsReadOnly="True"/>
+                <DataGridTextColumn         Header="Peptide Sequence"       CanUserSort="True"      Binding="{Binding MassTag.MassTag.PeptideSequence}"     IsReadOnly="True"/>
+                <DataGridTextColumn         Header="Monoisotopic Mass"      CanUserSort="True"      Binding="{Binding MassTag.MassTag.MassMonoisotopic}"    IsReadOnly="True"/>
+                <DataGridTextColumn         Header="NET"                    CanUserSort="True"      Binding="{Binding MassTag.MassTag.NETAverage}"          IsReadOnly="True"/>
+                <DataGridTextColumn         Header="Drift Time"             CanUserSort="True"      Binding="{Binding MassTag.MassTag.DriftTime}"           IsReadOnly="True"/>
+                <DataGridTextColumn         Header="ID"                     CanUserSort="True"      Binding="{Binding MassTag.MassTag.ID}"                  IsReadOnly="True"/>
+                <DataGridTextColumn         Header="Conformation ID"        CanUserSort="True"      Binding="{Binding MassTag.MassTag.ConformationID}"      IsReadOnly="True"/>
+                <DataGridTextColumn         Header="STAC"                   CanUserSort="True"      Binding="{Binding StacScore}"                   IsReadOnly="True"/>
+                <DataGridTextColumn         Header="STAC-UP"                CanUserSort="True"      Binding="{Binding StacUP}"                      IsReadOnly="True"/>
+                <DataGridTextColumn         Header="# Clusters Matched"     CanUserSort="True"      Binding="{Binding MassTag.Matches.Count}"                      IsReadOnly="True"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

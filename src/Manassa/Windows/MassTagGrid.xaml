@@ -46,12 +46,13 @@
 
             <DataGrid.Columns >
                 <!--Dataset Information-->
-                <DataGridTextColumn         Header="Peptide Sequence"  CanUserSort="True"      Binding="{Binding PeptideSequence}"  IsReadOnly="True"/>
-                <DataGridTextColumn         Header="Monoisotopic Mass" CanUserSort="True"      Binding="{Binding MassMonoisotopic}" IsReadOnly="True"/>
-                <DataGridTextColumn         Header="NET"               CanUserSort="True"      Binding="{Binding NETAverage}"       IsReadOnly="True"/>
-                <DataGridTextColumn         Header="Drift Time"        CanUserSort="True"      Binding="{Binding DriftTime}"        IsReadOnly="True"/>
-                <DataGridTextColumn         Header="ID"                CanUserSort="True"      Binding="{Binding ID}"               IsReadOnly="True"/>
-                <DataGridTextColumn         Header="Conformation ID"   CanUserSort="True"      Binding="{Binding ConformationID}"   IsReadOnly="True"/>            
+                <DataGridTextColumn         Header="Peptide Sequence"  CanUserSort="True"      Binding="{Binding MassTag.PeptideSequence}"  IsReadOnly="True"/>
+                <DataGridTextColumn         Header="Monoisotopic Mass" CanUserSort="True"      Binding="{Binding MassTag.MassMonoisotopic}" IsReadOnly="True"/>
+                <DataGridTextColumn         Header="NET"               CanUserSort="True"      Binding="{Binding MassTag.NETAverage}"       IsReadOnly="True"/>
+                <DataGridTextColumn         Header="Drift Time"        CanUserSort="True"      Binding="{Binding MassTag.DriftTime}"        IsReadOnly="True"/>
+                <DataGridTextColumn         Header="ID"                CanUserSort="True"      Binding="{Binding MassTag.ID}"               IsReadOnly="True"/>
+                <DataGridTextColumn         Header="Conformation ID"   CanUserSort="True"      Binding="{Binding MassTag.ConformationID}"   IsReadOnly="True"/>
+                <DataGridTextColumn         Header="# Matching Clusters"   CanUserSort="True"      Binding="{Binding Matches.Count}"   IsReadOnly="True"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

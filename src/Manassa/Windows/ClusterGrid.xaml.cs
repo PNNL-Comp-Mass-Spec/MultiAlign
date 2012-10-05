@@ -13,6 +13,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using MultiAlignCore.Data;
 using System.ComponentModel;
+using MultiAlignCore.Data.Features;
 using PNNLOmics.Data.Features;
 
 namespace Manassa.Windows
@@ -22,18 +23,18 @@ namespace Manassa.Windows
     /// </summary>
     public partial class ClusterGrid : UserControl
     {
-        private List<UMCClusterLight> m_clusters;
+        private List<UMCClusterLightMatched> m_clusters;
 
         public ClusterGrid()
         {
             InitializeComponent();
-            Clusters = new List<UMCClusterLight>();
+            Clusters = new List<UMCClusterLightMatched>();
         }
 
         /// <summary>
         /// Gets or sets the clusters used in the analysis.
         /// </summary>
-        public List<UMCClusterLight> Clusters
+        public List<UMCClusterLightMatched> Clusters
         {
             get
             {
@@ -47,24 +48,37 @@ namespace Manassa.Windows
                     m_dataGrid.ItemsSource = value;
                 }
             }
-        }        
+        }
 
-        public UMCClusterLight SelectedCluster
+        public void SelectByClusterID(int id)
         {
-            get { return (UMCClusterLight)GetValue(SelectedClusterProperty); }
+            UMCClusterLightMatched clusterFound = m_clusters.Find(delegate(UMCClusterLightMatched cluster)
+            {
+                return cluster.Cluster.ID == id;
+            });
+
+            if (clusterFound != null)
+            {
+                m_dataGrid.SelectedItem = clusterFound;
+            }
+        }
+
+        public UMCClusterLightMatched SelectedCluster
+        {
+            get { return (UMCClusterLightMatched)GetValue(SelectedClusterProperty); }
             set { SetValue(SelectedClusterProperty, value); }
         }        
         public static readonly DependencyProperty SelectedClusterProperty =
-            DependencyProperty.Register("SelectedCluster", typeof(UMCClusterLight), typeof(ClusterGrid)); 
+            DependencyProperty.Register("SelectedCluster", typeof(UMCClusterLightMatched), typeof(ClusterGrid)); 
 
        
         private void m_dataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (SelectedCluster != null)
             {
-                SelectedCluster.Features.Clear();
-            }            
-            SelectedCluster = m_dataGrid.SelectedItem as UMCClusterLight;
-        }    
+                SelectedCluster.Cluster.Features.Clear();
+            }
+            SelectedCluster = m_dataGrid.SelectedItem as UMCClusterLightMatched;
+        }            
     }
 }

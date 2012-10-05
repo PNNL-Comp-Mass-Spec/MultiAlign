@@ -45,8 +45,8 @@ namespace MultiAlignCustomControls.Charting
             DrawZoomValues(chart,
                             rect,
                             bounds,
-                            netDiff,
-                            ppmDiff,
+                            string.Format("{0:.00} {1}", netDiff, XAxisShortHand),
+                            string.Format("{0:.00} {1}", ppmDiff, YAxisShortHand),
                             graphics);
         }
         /// <summary>
@@ -59,8 +59,8 @@ namespace MultiAlignCustomControls.Charting
         protected void DrawZoomValues( ctlChartBase chart, 
                                                 RectangleF rect,
                                                 RectangleF bounds,
-                                                double xDiff,
-                                                double yDiff,
+                                                string xString,
+                                                string yString,
                                                 Graphics graphics)
         {    
             if (graphics != null)
@@ -70,11 +70,8 @@ namespace MultiAlignCustomControls.Charting
                 float mx = rect.X + (rect.Width / 2);
                 float my = rect.Y + (rect.Height / 2);
 
-                string yAxis        = YAxisShortHand;
-                string ppmString    = string.Format("{0:.00} {1}", yDiff, yAxis);
-                string netString    = string.Format("{0:.00} {1}", xDiff, XAxisShortHand);                
-                SizeF ppmSize       = graphics.MeasureString(ppmString, Font);
-                SizeF netSize       = graphics.MeasureString(netString, Font);
+                SizeF ppmSize       = graphics.MeasureString(yString, Font);
+                SizeF netSize       = graphics.MeasureString(xString, Font);
                 float ppmX          = rect.X + rect.Width + 10;
                 float ppmY          = my;
                 float netX          = rect.X + (Math.Abs(rect.Width - netSize.Width) / 2);
@@ -97,8 +94,8 @@ namespace MultiAlignCustomControls.Charting
 
                 using (Brush brush = new SolidBrush(Color.Gray))
                 {
-                    graphics.DrawString(netString, Font, brush, netX, netY);
-                    graphics.DrawString(ppmString, Font, brush, ppmX, ppmY);
+                    graphics.DrawString(xString, Font, brush, netX, netY);
+                    graphics.DrawString(yString, Font, brush, ppmX, ppmY);
                 }
             }
         }

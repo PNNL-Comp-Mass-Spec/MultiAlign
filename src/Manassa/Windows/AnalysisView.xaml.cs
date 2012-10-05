@@ -1,14 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
-using System.ComponentModel;
+using System.IO;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using MultiAlignCore.Data;
+using MultiAlignCore.Data.Features;
 using MultiAlignCore.Extensions;
 using PNNLOmics.Data.Features;
-using MultiAlignCore.Data.MetaData;
-using System.IO;
-using System.Windows.Data;
-using System.Windows;
 
 namespace Manassa.Windows
 {
@@ -28,9 +28,9 @@ namespace Manassa.Windows
 
             Binding binding = new Binding("Viewport");
             binding.Source = m_clusterControl;
-            SetBinding(ViewportProperty, binding);            
-        }
+            SetBinding(ViewportProperty, binding);
 
+        }     
         /// <summary>
         /// Gets or sets the Analysis
         /// </summary>
@@ -44,15 +44,26 @@ namespace Manassa.Windows
             {
                 m_analysis = value;
                 if (value != null)
-                {
-                    /// 
-                    /// replace this with bindings!!!!
-                    /// 
-                    m_clusterGrid.Clusters      = value.Clusters;                   
+                {                                        
+                    //TODO: replace this with bindings!!!!
+                    
+                    List<ClusterToMassTagMap> matches = m_analysis.DataProviders.MassTagMatches.FindAll();
+                    Tuple<List<UMCClusterLightMatched>, List<MassTagToCluster>> clusters = 
+                        value.Clusters.MapMassTagsToClusters(matches, m_analysis.MassTagDatabase);
+
+                    m_clusterGrid.Clusters = clusters.Item1;                   
                     m_clusterPlot.SetClusters(value.Clusters);
+                    m_massTagViewer.MatchedTags = clusters.Item2;
+
+                    /// 
+                    /// Cache the clusters so that they can be readily accessible later on.
+                    /// This will help speed up performance, so that we dont have to hit the database
+                    /// when we want to find matching mass tags, and dont have to map clusters to tags multiple times.
+                    /// 
+                    UMCClusterLightCacheManager.SetClusters(clusters.Item1);
 
                     m_clusterControl.Providers  = m_analysis.DataProviders;
-                    Dictionary<int, int> map    = value.Clusters.CreateChargeMap<UMCClusterLight>();
+                    m_massTagViewer.Providers   = m_analysis.DataProviders;
 
                     if (value.MassTagDatabase != null)
                     {
@@ -85,11 +96,26 @@ namespace Manassa.Windows
                     m_datasetsName.Datasets = value.MetaData.Datasets;
 
                     // Setup the histogram data.
+                    Dictionary<int, int> map    = value.Clusters.CreateChargeMap<UMCClusterLight>();
                     m_chargeStates.ConstructHistogram(map);
                     m_chargeStates.AutoViewPort();
 
-                    // Setup cluster histogram data.
+                    Dictionary<int, int> datasetMap = value.Clusters.CreateClusterDatasetMemeberSizeHistogram();
+                    m_datasetSizeHistogram.ConstructHistogram(datasetMap);
+                    m_datasetSizeHistogram.AutoViewPort();
 
+                    Dictionary<int, int> sizeMap = value.Clusters.CreateClusterSizeHistogram();
+                    m_clusterSizeHistogram.ConstructHistogram(sizeMap);
+                    m_clusterSizeHistogram.AutoViewPort();
+
+                    Dictionary<int, int> massTagMap = clusters.Item2.CreateMassTagClusterSizeHistogram();
+                    m_massTagHistogram.ConstructHistogram(massTagMap);
+                    m_massTagHistogram.AutoViewPort();
+
+                    m_clusterRatioPlot.AddClusters(value.Clusters);
+                    m_clusterRatioPlot.UpdateCharts(true);
+                    m_clusterRatioRawPlot.AddClusters(value.Clusters);
+                    m_clusterRatioRawPlot.UpdateCharts(true);
                 }
             }
         }

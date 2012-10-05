@@ -17,6 +17,7 @@ using System.Threading;
 using MultiAlignCore.IO.Parameters;
 using PNNLOmics.Data.Features;
 
+
 namespace MultiAlignCore.Algorithms
 {
     /// <summary>
@@ -26,13 +27,15 @@ namespace MultiAlignCore.Algorithms
     {
         #region Analysis Config and Reporting     
         private IAnalysisReportGenerator        m_reportCreator;
-        private AnalysisConfig                  m_config;        
+        private AnalysisConfig                  m_config;
+        Dictionary<int, int> m_chargeMap;
         #endregion
 
         public AnalysisController()
         {
             m_config        = null;
             m_reportCreator = null;
+            m_chargeMap     = new Dictionary<int, int>();   
         }
 
         #region Properties
@@ -67,8 +70,8 @@ namespace MultiAlignCore.Algorithms
             FeatureDataAccessProviders providers = SetupDataProviders(path, false);
 
             // Create an analysis configuration
-            m_config        = new AnalysisConfig();
-            m_reportCreator = reporter;
+            m_config            = new AnalysisConfig();
+            m_reportCreator     = reporter;
 
             // Create an analysis processor.            
             m_config.Analysis   = ConstructAnalysisObject(providers);            
@@ -164,7 +167,9 @@ namespace MultiAlignCore.Algorithms
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void processor_FeaturesClustered(object sender, FeaturesClusteredEventArgs e)
-        {            
+        {
+            m_reportCreator.CreateClusterPlots(e.Clusters);
+            m_reportCreator.CreateChargePlots(m_chargeMap);
         }
         /// <summary>
         /// Logs when features are peak matched.
@@ -183,7 +188,16 @@ namespace MultiAlignCore.Algorithms
         /// <param name="e"></param>
         private void processor_FeaturesLoaded(object sender, FeaturesLoadedEventArgs e)
         {
-            Logger.PrintMessage(string.Format("Loaded {0} features from {1}", e.Features.Count, e.DatasetInformation.DatasetName));           
+            Logger.PrintMessage(string.Format("Loaded {0} features from {1}", e.Features.Count, e.DatasetInformation.DatasetName));
+            foreach (UMCLight feature in e.Features)
+            {
+                int charge = feature.ChargeState;
+                if (!m_chargeMap.ContainsKey(charge))
+                {
+                    m_chargeMap.Add(charge, 0);
+                }
+                m_chargeMap[charge]++;
+            }
         }
         void processor_MassTagsLoaded(object sender, MassTagsLoadedEventArgs e)
         {
@@ -621,7 +635,7 @@ namespace MultiAlignCore.Algorithms
             MassTagDatabaseLoaderCache provider     = new MassTagDatabaseLoaderCache();
             provider.Provider                       = analysis.DataProviders.MassTags;
             analysis.MassTagDatabase                = provider.LoadDatabase();
-
+            
             return analysis;
         }
         private  bool ReadInputDefinitionFile(out InputAnalysisInfo analysisSetupInformation, out bool useMTDB)
@@ -1196,7 +1210,7 @@ namespace MultiAlignCore.Algorithms
             /// /////////////////////////////////////////////////////////////
             try
             {
-                m_reportCreator.CreateFinalAnalysisPlots(providers.FeatureCache, providers.ClusterCache);
+                //m_reportCreator.CreateFinalAnalysisPlots(providers.FeatureCache, providers.ClusterCache);
                 m_reportCreator.CreatePlotReport();
             }
             catch (Exception ex)

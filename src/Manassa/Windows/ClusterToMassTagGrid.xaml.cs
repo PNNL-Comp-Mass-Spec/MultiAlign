@@ -16,29 +16,30 @@ using System.ComponentModel;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Data.MassTags;
 using MultiAlignCore.Data.Features;
+using MultiAlignCore.Data;
 
 namespace Manassa.Windows
 {
     /// <summary>
     /// Interaction logic for ClusterGrid.xaml
     /// </summary>
-    public partial class MassTagGrid : UserControl
+    public partial class ClusterToMassTagGrid : UserControl
     {
-        private List<MassTagToCluster> m_massTags;
+        private List<ClusterToMassTagMap> m_massTags;
 
         /// <summary>
         /// Constructor.
         /// </summary>
-        public MassTagGrid()
+        public ClusterToMassTagGrid()
         {
             InitializeComponent();
-            MassTags = new List<MassTagToCluster>();
+            MassTags = new List<ClusterToMassTagMap>();
         }
 
         /// <summary>
         /// Gets or sets the clusters used in the analysis.
         /// </summary>
-        public List<MassTagToCluster> MassTags
+        public List<ClusterToMassTagMap> MassTags
         {
             get
             {
@@ -54,18 +55,18 @@ namespace Manassa.Windows
             }
         }
 
-        public MassTagToCluster SelectedTag
+        public ClusterToMassTagMap SelectedTag
         {
-            get { return (MassTagToCluster)GetValue(SelectedMassTagProperty); }
+            get { return (ClusterToMassTagMap)GetValue(SelectedMassTagProperty); }
             set { SetValue(SelectedMassTagProperty, value); }
         }        
         public static readonly DependencyProperty SelectedMassTagProperty =
-            DependencyProperty.Register("SelectedTag", typeof(MassTagToCluster), typeof(MassTagGrid)); 
+            DependencyProperty.Register("SelectedTag", typeof(ClusterToMassTagMap), typeof(ClusterToMassTagGrid)); 
 
        
         private void m_dataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            MassTagToCluster tag = m_dataGrid.SelectedItem as MassTagToCluster;
+            ClusterToMassTagMap tag = m_dataGrid.SelectedItem as ClusterToMassTagMap;
             SelectedTag = tag;
         }    
     }
