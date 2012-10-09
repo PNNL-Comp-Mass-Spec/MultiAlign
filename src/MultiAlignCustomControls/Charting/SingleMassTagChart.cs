@@ -21,10 +21,14 @@ namespace MultiAlignCustomControls.Charting
 	public class SingleMassTagChart : FeatureScatterPlot
     {
         #region Members
-        private int mint_pt_size = 3;
+        private int mint_pt_size = 2;
         private System.ComponentModel.IContainer components = null;		
 		private clsColorIterator miter_color = new  clsColorIterator() ;           
         private MassTagToCluster m_mainTag;
+        /// <summary>
+        /// List of other tags to render.
+        /// </summary>
+        private List<MassTagToCluster> m_otherTags;
         /// <summary>
         /// Shapes for other clusters
         /// </summary>
@@ -45,6 +49,7 @@ namespace MultiAlignCustomControls.Charting
 	    {			
 			InitializeComponent();
 
+            m_otherTags             = new List<MassTagToCluster>();
             m_mainTag               = null;
             AlternateColor          = Color.Black;
             IsDriftTimeXAxis        = false;
@@ -68,7 +73,7 @@ namespace MultiAlignCustomControls.Charting
             set;
         }
 
-        #region Data Addition Methods
+        #region Data Addition/Deletion Methods
         /// <summary>
         /// Clears the data currently on the plot.
         /// </summary>
@@ -76,23 +81,12 @@ namespace MultiAlignCustomControls.Charting
         {            
             ViewPortHistory.Clear();
             SeriesCollection.Clear();
-        }
-        
-
-        public void UpdateCharts(bool shouldAutoViewport)
-        {
-            if (m_mainTag == null)
-                return;
-
-            SeriesCollection.Clear();            
-            AddClusterDataToChart(m_mainTag.Matches, true);            
-            AddMassTagToChart(m_mainTag);
-
-            if (shouldAutoViewport)
-            {
-                AutoViewPort();
-            }
-        }
+            m_otherTags = new List<MassTagToCluster>();
+            m_mainTag   = null;
+        }        
+        /// <summary>
+        /// Gets or sets the tag to render.
+        /// </summary>
         public MassTagToCluster MassTag
         {
             get
@@ -104,14 +98,48 @@ namespace MultiAlignCustomControls.Charting
                 m_mainTag = value;                
             }
         }
+        /// <summary>
+        /// Add other tags to render.
+        /// </summary>
+        /// <param name="otherTags"></param>
+        public void AddAdditionalMassTags(List<MassTagToCluster> otherTags)
+        {
+            m_otherTags.AddRange(otherTags);
+        }
         #endregion
         
         #region Cluster Rendering
         /// <summary>
+        /// Updates the charts with new data.
+        /// </summary>
+        /// <param name="shouldAutoViewport"></param>
+        public void UpdateCharts(bool shouldAutoViewport)
+        {
+            if (m_mainTag == null)
+                return;
+
+            SeriesCollection.Clear();
+
+            // Add other data into the mix.
+            foreach (MassTagToCluster massTag in m_otherTags)
+            {
+                //AddClusterDataToChart(massTag.Matches, true);
+                AddMassTagToChart(massTag, true);
+            }
+
+            AddClusterDataToChart(m_mainTag.Matches, false);
+            AddMassTagToChart(m_mainTag, false);
+
+            if (shouldAutoViewport)
+            {
+                AutoViewPort();
+            }
+        }
+        /// <summary>
         /// Adds the mass tags to the data chart.
         /// </summary>
         /// <param name="tags"></param>
-        private void AddMassTagToChart(MassTagToCluster matchedTag)
+        private void AddMassTagToChart(MassTagToCluster matchedTag, bool isAlternative)
         {
             MassTagLight tag = matchedTag.MassTag;
 
@@ -120,7 +148,13 @@ namespace MultiAlignCustomControls.Charting
             List<float> massList        = new List<float>();
             List<float> scanList        = new List<float>();
             Color color                 = Color.Orange;
-            clsShape shape              = new DiamondShape(mint_pt_size + 4, false); 
+            int size                    = mint_pt_size*3;
+            if (isAlternative)
+            {
+                color = Color.Black;
+                size += 2;
+            }
+            clsShape shape              = new DiamondShape(size, isAlternative); 
             clsPlotParams plotParams    = new clsPlotParams(shape, color);
 
              massList.Add(Convert.ToSingle(tag.MassMonoisotopic));            
@@ -153,6 +187,9 @@ namespace MultiAlignCustomControls.Charting
                 AddClusterDataToChart(cluster, isAlternate);
             }
         }
+        /// <summary>
+        /// Draws the features along with the main centroids/mass tags.
+        /// </summary>
         public bool DrawFeatures
         {
             get;

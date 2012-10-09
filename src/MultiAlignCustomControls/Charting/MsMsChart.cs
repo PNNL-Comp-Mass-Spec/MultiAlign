@@ -78,8 +78,8 @@ namespace MultiAlignCustomControls.Charting
 
             foreach (MSFeatureMsMs feature in features)
             {                               
-                massList.Add(Convert.ToSingle(feature.Feature.MassMonoisotopicAligned));
-                scanList.Add(Convert.ToSingle(feature.Spectra.Scan));                
+                massList.Add(Convert.ToSingle(feature.MassMonoisotopicAligned));
+                scanList.Add(Convert.ToSingle(feature.MsMsScan));                
             }
             float[] masses = null;
             float[] scans  = null;
@@ -91,7 +91,7 @@ namespace MultiAlignCustomControls.Charting
                 massList.CopyTo(masses);
                 scanList.CopyTo(scans);
 
-                int feature = features[0].Feature.GroupID;
+                int feature = features[0].FeatureGroupID;
                 clsShape shape              = new BubbleShape(mint_pt_size, false);
                 clsPlotParams plotParams    = new clsPlotParams(shape, miter_color.GetColor(feature));
                 plotParams.Name             = feature.ToString();

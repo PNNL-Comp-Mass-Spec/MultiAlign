@@ -8,10 +8,24 @@ namespace MultiAlignCustomControls.Charting
 {
     public partial class GenericHistogram: ctlHistogram        
     {
+        private Dictionary<int, int> m_histogram;
 
         public GenericHistogram()
         {
             InitializeComponent();
+            IsClipboardCopyEnabled  = true;
+            m_histogram             = new Dictionary<int, int>();
+        }
+
+        public override void CopyDataToClipboard()
+        {
+            ApplicationClipboard.ClearApplicationClipboard();
+            string data = "Bin\tCount\n";
+            foreach (int key in m_histogram.Keys)
+            {
+                data += string.Format("{0}\t{1}\n", key, m_histogram[key]);
+            }
+            ApplicationClipboard.SetData(data);
         }
 
         /// <summary>
@@ -22,6 +36,8 @@ namespace MultiAlignCustomControls.Charting
         {
             if (features.Count < 1)
                 return;
+
+            m_histogram = features;
 
             SeriesCollection.Clear();
 
@@ -41,9 +57,7 @@ namespace MultiAlignCustomControls.Charting
             float[] freq = new float[maxCharge - minCharge + 1];
             
             foreach (int charge in features.Keys)
-            {
-                
-                
+            {                              
                 bins[charge - minCharge] = charge;
                 freq[charge - minCharge] = features[charge];
             }

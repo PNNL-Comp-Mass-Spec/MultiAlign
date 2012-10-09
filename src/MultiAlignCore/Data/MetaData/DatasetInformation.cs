@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using MultiAlignCore.Data.Factors;
 using MultiAlignEngine;
 using System.IO;
@@ -8,6 +9,33 @@ using MultiAlignCore.IO.InputFiles;
 
 namespace MultiAlignCore.Data
 {
+    public class DatasetCollection : ObservableCollection<DatasetInformation>
+    {
+        string test;
+        public string Directory
+        {
+            get
+            {
+                return test;
+            }
+            set
+            {
+                test = value;
+                Update();
+            }
+        }
+        
+        private void Update()
+        {
+            this.Clear();
+            for (int i = 0; i < 10; i++)
+            {
+                DatasetInformation info = new DatasetInformation();
+                info.DatasetName = "test-" + i.ToString();
+                this.Add(info);
+            }
+        }
+    }
 	/// <summary>
 	/// Contains information about a dataset used for analysis.r
 	/// </summary>	

@@ -11,7 +11,7 @@ namespace MultiAlignCore.Data.Features
     /// <summary>
     /// Holds the link from a cluster matched to a set of mass tags.
     /// </summary>
-    public class UMCClusterLightMatched
+    public class UMCClusterLightMatched: IFeatureMap
     {
         /// <summary>
         /// Default constructor.
@@ -36,6 +36,18 @@ namespace MultiAlignCore.Data.Features
         {
             get;
             set;
+        }
+
+
+        /// <summary>
+        /// Gets the ID of the underlying feature.
+        /// </summary>
+        public object Id
+        {
+            get
+            {
+                return Cluster.ID;
+            }
         }
     }
 }

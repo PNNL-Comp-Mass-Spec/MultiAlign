@@ -83,14 +83,14 @@ namespace Manassa.Windows
         }
         public void SetMsMsFeatureSpectra(List<MSFeatureMsMs> features)
         {
-            m_msmsScatterPlot.ClearData();
+            //m_msmsScatterPlot.ClearData();
             m_msmsGrid.MsMsSpectra.Clear();
 
             foreach (MSFeatureMsMs feature in features)
             {
                 m_msmsGrid.MsMsSpectra.Add(feature);
             }
-            m_msmsScatterPlot.AddFeatures(features);
+            //m_msmsScatterPlot.AddFeatures(features);
         }
 
         void m_background_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -104,7 +104,7 @@ namespace Manassa.Windows
                 {
                     m_msmsGrid.MsMsSpectra.Add(feature);
                 }
-                m_msmsScatterPlot.AddFeatures(features);
+                //m_msmsScatterPlot.AddFeatures(features);
             };
 
             m_msmsGrid.Dispatcher.BeginInvoke(workAction, System.Windows.Threading.DispatcherPriority.Normal);                       
@@ -140,9 +140,11 @@ namespace Manassa.Windows
                 List<MSSpectra> spectra                  = new List<MSSpectra>();
                 lock (m_providers.Synch)
                 {
+                    DateTime start = DateTime.Now;
                     // Grab all of the ms features
                     msFeatures = m_providers.MSFeatureCache.FindByDatasetId(dataset);
-
+                    DateTime end = DateTime.Now;
+                    TimeSpan span = end.Subtract(start);
                     // Then grab all of the ms/ms spectra
                     spectra = m_providers.MSnFeatureCache.FindByDatasetId(dataset);
                 }
@@ -158,11 +160,20 @@ namespace Manassa.Windows
                 List<MSFeatureMsMs> msFeatureStructures = new List<MSFeatureMsMs>();
                 foreach (MSFeatureToMSnFeatureMap map in singleMap)
                 {
-                    MSFeatureMsMs msms = new MSFeatureMsMs();
-                    msms.Peptide = new Peptide();
-                    msms.Spectra = spectraMap[map.MSMSFeatureID];
-                    msms.Feature = msFeatureMap[map.MSFeatureID];
-                    msms.MassTag = new MassTag();
+                    MSFeatureMsMs msms = new MSFeatureMsMs();                    
+                    MSSpectra spectrum          = spectraMap[map.MSMSFeatureID];
+                    MSFeatureLight msFeature    = msFeatureMap[map.MSFeatureID];
+                                        
+                    msms.FeatureID               = msFeature.ID;
+                    msms.FeatureGroupID          = msFeature.GroupID;
+                    msms.Mz                      = msFeature.Mz;
+                    msms.PrecursorMZ             = spectrum.PrecursorMZ;                     
+                    msms.FeatureScan             = msFeature.Scan;
+                    msms.MsMsScan                = spectrum.Scan;
+                    msms.MassMonoisotopicAligned = msFeature.MassMonoisotopicAligned;
+                    msms.ChargeState             = msFeature.ChargeState;
+                    msms.Sequence                = "";
+                    msms.PeptideSequence         = "";
 
                     msFeatureStructures.Add(msms);
                 }
@@ -186,7 +197,7 @@ namespace Manassa.Windows
                 DatasetInformation info = null;
                 foreach(DatasetInformation datasetInfo in thisSender.Analysis.MetaData.Datasets)
                 {
-                    if (datasetInfo.DatasetId == item.Feature.GroupID)
+                    if (datasetInfo.DatasetId == item.FeatureGroupID)
                     {
                         info = datasetInfo;
                         break;
@@ -208,14 +219,13 @@ namespace Manassa.Windows
                         return;
 
                     ISpectraProvider reader = MultiAlignCore.IO.Features.RawLoaderFactory.CreateFileReader(path);
-                    reader.AddDataFile(path, item.Feature.GroupID);
-                    List<XYData> data = reader.GetRawSpectra(item.Spectra.Scan, item.Spectra.GroupID);
+                    reader.AddDataFile(path, item.FeatureGroupID);
+                    List<XYData> data = reader.GetRawSpectra(item.MsMsScan, item.FeatureGroupID);
 
-                    thisSender.m_spectraChart.Title = string.Format("Scan {0}  Precursor m/z {1} Precursor Charge {2} {3}",
-                        item.Spectra.Scan,
-                        item.Spectra.PrecursorMZ, 
-                        item.Feature.ChargeState, 
-                        item.Spectra.CollisionType);
+                    thisSender.m_spectraChart.Title = string.Format("Scan {0}  Precursor m/z {1} Precursor Charge {2}",
+                        item.MsMsScan,
+                        item.PrecursorMZ, 
+                        item.ChargeState);
                     thisSender.m_spectraChart.SetSpectra(data);
                     thisSender.m_spectraChart.AutoViewPort();
                 }

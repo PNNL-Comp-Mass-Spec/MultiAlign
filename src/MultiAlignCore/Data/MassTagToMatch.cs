@@ -12,7 +12,7 @@ namespace MultiAlignCore.Data
     /// Holds a link from the mass tag to the clusters that it matched to.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class MassTagToCluster
+    public class MassTagToCluster: IFeatureMap
     {
         public MassTagToCluster()
         {
@@ -30,6 +30,17 @@ namespace MultiAlignCore.Data
         {
             get;
             set;
+        }
+
+        /// <summary>
+        /// Gets the ID of the underlying feature.
+        /// </summary>
+        public object Id
+        {
+            get
+            {
+                return string.Format("{0}-{1}", MassTag.ID, MassTag.ConformationID);
+            }
         }
     }
 }

@@ -72,6 +72,7 @@
     </ApplicationDefinition>
     <Compile Include="Converters\BooleanToDataGridVisibilityModeConverter.cs" />
     <Compile Include="Converters\BoolVisibilityConverter.cs" />
+    <Compile Include="Converters\BoolListSizeConverter.cs" />
     <Compile Include="Converters\HasMSMSConverter.cs" />
     <Compile Include="Converters\UriToBitmapConverter.cs" />
     <Compile Include="Data\DatasetPlotLoader.cs" />
@@ -79,6 +80,9 @@
     <Compile Include="Program.cs" />
     <Compile Include="Windows\ClusterToMassTagGrid.xaml.cs">
       <DependentUpon>ClusterToMassTagGrid.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\DatasetListBox.xaml.cs">
+      <DependentUpon>DatasetListBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\MassTagControl.xaml.cs">
       <DependentUpon>MassTagControl.xaml</DependentUpon>
@@ -122,6 +126,10 @@
     <Page Include="Windows\ClusterToMassTagGrid.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\DatasetListBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\MassTagControl.xaml">
       <Generator>MSBuild:Compile</Generator>

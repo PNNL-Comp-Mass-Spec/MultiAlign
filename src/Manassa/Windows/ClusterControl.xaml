@@ -50,7 +50,7 @@
                     <WindowsFormsHost
                         Margin="1,1,1,1"
                         Grid.Row="0"
-                        Grid.Column="0">
+                        Grid.Column="1">
                         <maCharts:SingleClusterChart
                                 x:Name="m_clusterChart"
                                 Title=""
@@ -63,7 +63,7 @@
                     <WindowsFormsHost
                         Margin="1,1,1,1"
                         Grid.Row="0"
-                        Grid.Column="1">
+                        Grid.Column="2">
                         <maCharts:SingleClusterChart
                                 x:Name="m_driftChart"
                                 Title=""                                
@@ -77,7 +77,7 @@
                     
                     <TabControl
                         Grid.Row="0"
-                        Grid.Column="2"   >
+                        Grid.Column="0"   >
                         <TabItem
                             Header="Nearby Clusters"
                             Margin="1,1,1,1">

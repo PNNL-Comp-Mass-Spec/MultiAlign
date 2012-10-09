@@ -41,13 +41,13 @@ namespace MultiAlignCustomControls.Charting
         private List<clsShape> m_clusterShapes;
         #endregion
 
-
         #region Constructors
         public SingleClusterChart()
 	    {			
 			InitializeComponent();
 
-            m_additionalClusters = new List<UMCClusterLightMatched>();
+            IsClipboardCopyEnabled  = true;
+            m_additionalClusters    = new List<UMCClusterLightMatched>();
             m_massTags              = new List<MassTagLight>();
             m_mainCluster           = null;
             AlternateColor          = Color.Black;
@@ -116,6 +116,7 @@ namespace MultiAlignCustomControls.Charting
 
         #endregion
 
+        #region Properties
         public Color AlternateColor
         {
             get;
@@ -126,6 +127,63 @@ namespace MultiAlignCustomControls.Charting
             get;
             set;
         }
+        #endregion
+
+        #region Copying to System Clipboard
+        public override void  CopyDataToClipboard()
+        {
+ 	        string clusterData = "";
+            string featureData = "";
+
+
+            clusterData += string.Format("{0}\t{1}\t{2}\t{3}\t{4}\n",
+                                                            m_mainCluster.Cluster.ID,                                                             
+                                                            m_mainCluster.Cluster.MassMonoisotopicAligned, 
+                                                            m_mainCluster.Cluster.RetentionTime,
+                                                            m_mainCluster.Cluster.DriftTime,
+                                                            m_mainCluster.Cluster.ChargeState
+                                                            );
+
+            foreach (UMCClusterLightMatched matched in m_additionalClusters)
+            {
+                
+                UMCClusterLight cluster = matched.Cluster;
+                clusterData += string.Format("{0}\t{1}\t{2}\t{3}\t{4}\n", cluster.ID, 
+                    cluster.MassMonoisotopicAligned,
+                    cluster.RetentionTime,
+                    cluster.DriftTime,
+                    cluster.ChargeState);
+
+                foreach (UMCLight feature in m_mainCluster.Cluster.Features)
+                {
+                    featureData += string.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\n",
+                        feature.ClusterID,
+                        feature.GroupID,
+                        feature.ID,
+                        feature.MassMonoisotopicAligned,
+                        feature.RetentionTime,
+                        feature.DriftTime,
+                        feature.ChargeState);
+                }
+            }
+
+            foreach (UMCLight feature in m_mainCluster.Cluster.Features)
+            {
+                featureData += string.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\n",
+                    feature.ClusterID,
+                    feature.GroupID,
+                    feature.ID,
+                    feature.MassMonoisotopicAligned, 
+                    feature.RetentionTime,
+                    feature.DriftTime,
+                        feature.ChargeState);
+            }
+
+            clusterData = "Cluster Id\tMono Mass\tNET\tDrift Time\tCharge\n" + clusterData;
+            clusterData += "Cluster Id\tDataset Id\tFeature Id\tMono Mass\tNET\tDrift Time\tcharge\n" + featureData;
+            ApplicationClipboard.SetData(clusterData);
+        }
+        #endregion
 
         #region Data Addition Methods
         /// <summary>
@@ -397,7 +455,7 @@ namespace MultiAlignCustomControls.Charting
 
 		}
 		#endregion
-
+        
     }
 }
 

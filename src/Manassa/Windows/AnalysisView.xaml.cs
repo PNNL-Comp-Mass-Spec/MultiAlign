@@ -53,14 +53,15 @@ namespace Manassa.Windows
 
                     m_clusterGrid.Clusters = clusters.Item1;                   
                     m_clusterPlot.SetClusters(value.Clusters);
-                    m_massTagViewer.MatchedTags = clusters.Item2;
+                    m_massTagViewer.MatchedTags = new System.Collections.ObjectModel.ObservableCollection<MassTagToCluster>(clusters.Item2);
 
                     /// 
                     /// Cache the clusters so that they can be readily accessible later on.
                     /// This will help speed up performance, so that we dont have to hit the database
                     /// when we want to find matching mass tags, and dont have to map clusters to tags multiple times.
-                    /// 
-                    UMCClusterLightCacheManager.SetClusters(clusters.Item1);
+                    ///                     
+                    FeatureCacheManager<UMCClusterLightMatched>.SetFeatures(clusters.Item1);
+                    FeatureCacheManager<MassTagToCluster>.SetFeatures(clusters.Item2);
 
                     m_clusterControl.Providers  = m_analysis.DataProviders;
                     m_massTagViewer.Providers   = m_analysis.DataProviders;
@@ -70,7 +71,10 @@ namespace Manassa.Windows
                         m_massTagViewer.Database = value.MassTagDatabase;
                     }
                     m_msmsViewer.Analysis       = value;
-                    m_msmsViewer.ExtractMsMsData(m_analysis.DataProviders);
+                    m_clusterControl.Analysis   = value;
+                    m_datasetBox.ItemsSource    = new System.Collections.ObjectModel.ObservableCollection<DatasetInformation>(value.MetaData.Datasets);
+
+                    //m_msmsViewer.ExtractMsMsData(m_analysis.DataProviders);
 
                     // Make the dataset plots.
                     string directoryPath        = Path.GetDirectoryName(value.MetaData.AnalysisPath);

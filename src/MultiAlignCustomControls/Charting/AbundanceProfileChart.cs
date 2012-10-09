@@ -7,6 +7,7 @@ using MultiAlignEngine.Features;
 using MultiAlignEngine.MassTags;
 using PNNLControls;
 using PNNLOmics.Data.Features;
+using MultiAlignCore.Data.Features;
 
 namespace MultiAlignCustomControls.Charting
 {
@@ -17,32 +18,26 @@ namespace MultiAlignCustomControls.Charting
     {
         #region Members
         private System.ComponentModel.IContainer components = null;		
-		private clsColorIterator miter_color = new  clsColorIterator() ; 
-		private int mint_pt_size = 1 ; 
-		/// <summary>
-		/// Are the shapes of the points hollow
-		/// </summary>
-        private bool mbln_hollow = false;                
-        private DatasetInformation  m_info;
+		private int mint_pt_size = 5 ; 
+        private UMCClusterLightMatched m_mainCluster;
+        /// <summary>
+        /// Flag indicating whether to use log transformed data or not.
+        /// </summary>
+        private bool m_useLogTransform;
         #endregion
 
         #region Constructors
         public AbundanceProfileChart()
 	    {			
-			InitializeComponent();
-
-            m_info      = null;
-        }
-        /// <summary>
-        /// Constructor.
-        /// </summary>
-        /// <param name="analysis"></param>
-        /// <param name="dataset"></param>
-        public AbundanceProfileChart(List<UMCClusterLight> clusters) :
-            this()
-        {
-            AddClusters(clusters);
-        }
+			InitializeComponent();       
+            m_mainCluster = null;
+            
+            MenuItem logTransform   = new MenuItem();
+            logTransform.Text       = "Use Log_2 Transform";
+            logTransform.Checked    = true;
+            logTransform.Click      += new EventHandler(logTransform_Click);            
+            base.ContextMenu.MenuItems.Add(logTransform); 
+        }        
         #endregion
 
         #region Data Addition Methods
@@ -50,112 +45,138 @@ namespace MultiAlignCustomControls.Charting
         /// Clears the data currently on the plot.
         /// </summary>
         public void ClearData()
-        {
-            m_info      = null;
+        {            
             ViewPortHistory.Clear();
             SeriesCollection.Clear();
+           
+        }
+
+        void logTransform_Click(object sender, EventArgs e)
+        {
+            MenuItem item = sender as MenuItem;
+            if (item == null)
+            {
+                return;
+            }
+
+            item.Checked = (item.Checked == false);
+            ShouldDisplayLogTransformed = item.Checked;
+        }
+        public bool ShouldDisplayLogTransformed
+        {
+            get
+            {
+                return m_useLogTransform;
+            }
+            set
+            {
+                m_useLogTransform = value;
+                UpdateCharts(true);
+            }
         }
         /// <summary>
         /// Sets the analysis object and extracts data for display.
         /// </summary>
-        public void AddClusters(List<UMCClusterLight> clusters)
+        public UMCClusterLightMatched MainCluster 
         {
-            AutoViewPortOnAddition          = true;
-            Title = "Clusters";
-            AutoViewPortOnAddition          = false;
+            get
+            {
+                return m_mainCluster;
+            }
+            set
+            {
+                m_mainCluster = value;
+            }
         }
         #endregion
         
         #region Cluster Rendering
+        public void UpdateCharts(bool shouldAutoViewport)
+        {
+            SeriesCollection.Clear();
+            AddDataToChart(m_mainCluster);
+
+            if (shouldAutoViewport)
+            {
+                AutoViewPort();
+            }
+        }
         /// <summary>
         /// Adds all cluster data to the plot.
         /// </summary>
         /// <param name="clusters"></param>
         /// <param name="specificCharge"></param>
-        private void AddClusterDataToChart(List<UMCClusterLight> clusters, bool showAligned, int specificCharge)
-        {            
-
-            clsColorIterator colors = new clsColorIterator();
-            float maxY = 500;
-            float minY = 0;
-            float maxX = 500;
-            float minX = 0;
-                        
-            List<float> massList = new List<float>();
-            List<float> scanList = new List<float>();
-            Color color              = colors.GetColor(0);
-            clsShape shape           = new BubbleShape(mint_pt_size, false);
-            clsPlotParams plotParams = new clsPlotParams(shape, color);
-                
-            int clustersAdded = 0;
-            foreach(UMCClusterLight cluster in clusters)
-            {
-                float x = 0;
-                float y = 0;
-                                      
-                                            
-                y = Convert.ToSingle(cluster.MassMonoisotopic);                                                                          
-                x = Convert.ToSingle(cluster.NET);                            
-                        
-                massList.Add(y);
-                scanList.Add(x);
-
-                minX = Math.Min(x, minX);
-                maxX = Math.Max(x, maxX);
-
-                minY = Math.Min(y, minY);
-                maxY = Math.Max(y, maxY);
-                clustersAdded++;                    
-            }
-
-            if (clustersAdded > 0)
-            {
-                float[] masses = new float[massList.Count];
-                float[] scans = new float[scanList.Count];
-
-                massList.CopyTo(masses);
-                scanList.CopyTo(scans);
-                clsSeries series = new clsSeries(ref scans, ref masses, plotParams);
-                base.AddSeries(series);
-            }            
-        }
-        #endregion
-
-        #region Mass Tag Display
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="database"></param>
-        private void AddMassTagDatabasePointsToChart(clsMassTagDB database) 
+        private void AddDataToChart(UMCClusterLightMatched cluster)
         {
+            if (cluster == null)
+                return;
+            if (cluster.Cluster == null)
+                return;
+            if (cluster.Cluster.Features.Count < 1)
+                return;
 
-            int i = 0;
-            int numberOfTags = database.GetMassTagCount(); 
+            clsColorIterator iterator = new clsColorIterator();
 
-            float[] masses = new float[numberOfTags];
-            float[] scans = new float[numberOfTags];
-            float[] charges = new float[numberOfTags];
+            Dictionary<int, List<UMCLight>> datasetMap = new Dictionary<int, List<UMCLight>>();
+            List<UMCLight> features = new List<UMCLight>();
+            cluster.Cluster.Features.ForEach(x => features.Add(x));
+            features.Sort(delegate(UMCLight x, UMCLight y)
+            {
+                return x.GroupID.CompareTo(y.GroupID);
+            });
 
-            List<float> massList = new List<float>();
-            List<float> scanList = new List<float>();
-
-            clsShape shape = new CrossShape(mint_pt_size + 3, true);
-            clsPlotParams plotParams = new clsPlotParams(shape, Color.FromArgb(64, Color.DarkOrange));
+            foreach (UMCLight feature in features)
+            {
+                if (!datasetMap.ContainsKey(feature.GroupID))
+                {
+                    datasetMap.Add(feature.GroupID, new List<UMCLight>());
+                }
+                datasetMap[feature.GroupID].Add(feature);
+            }
 
             
-            while (i < numberOfTags)
+            bool shouldTransform = ShouldDisplayLogTransformed;
+            foreach (int key in datasetMap.Keys)
             {
-                clsMassTag tag = database.GetMassTagFromIndex(i++);
-                massList.Add(Convert.ToSingle(tag.mdblMonoMass));
-                scanList.Add(Convert.ToSingle(tag.mdblAvgGANET));                
+
+                List<float> datasetList = new List<float>();
+                List<float> abundanceList = new List<float>();
+
+
+                Color color                 = iterator.GetColor(key);
+                clsShape shape              = new BubbleShape(mint_pt_size, false);
+                clsPlotParams plotParams    = new clsPlotParams(shape, color);
+
+
+                float x = Convert.ToSingle(key);
+                float y = 0;
+                foreach (UMCLight feature in datasetMap[key])
+                {
+
+                    if (shouldTransform)
+                    {
+                        y += Convert.ToSingle(Math.Log(Convert.ToDouble(feature.AbundanceSum), 2));
+                    }
+                    else
+                    {
+                        y += Convert.ToSingle(feature.AbundanceSum);
+                    }
+
+                }
+                datasetList.Add(x);
+                abundanceList.Add(y);
+
+                float[] xs = new float[datasetList.Count];
+                float[] ys = new float[abundanceList.Count];
+
+                datasetList.CopyTo(xs);
+                abundanceList.CopyTo(ys);
+
+                clsSeries series = new clsSeries(ref xs, ref ys, plotParams);
+                base.AddSeries(series);
             }
-            massList.CopyTo(masses);
-            scanList.CopyTo(scans);
-            plotParams.Name = "Mass Tags";
-            clsSeries series = new clsSeries(ref scans, ref masses, plotParams);
-            AddSeries(series);
         }
-        #endregion
+        #endregion        
 
         #region Designer generated code
         /// <summary>
@@ -231,29 +252,6 @@ namespace MultiAlignCustomControls.Charting
 
 		}
 		#endregion
-
-        #region Display Event Handlers
-        private void mcheckBox_showAligned_CheckedChanged(object sender, EventArgs e)
-        {
-            UpdateDisplay();
-        }
-        private void mcheckBox_showNET_CheckedChanged(object sender, EventArgs e)
-        {
-            UpdateDisplay();
-            AutoViewPort();
-        }
-        private void mcheckBox_displayMZ_CheckedChanged(object sender, EventArgs e)
-        {
-            UpdateDisplay();
-        }
-        public void UpdateDisplay()
-        {
-            AutoViewPortOnAddition = false;
-            this.SeriesCollection.Clear();            
-            XAxisLabel = "NET";              
-            YAxisLabel = "Monoisotopic Mass";            
-        }
-        #endregion
     }
 }
 

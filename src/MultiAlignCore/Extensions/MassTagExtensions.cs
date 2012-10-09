@@ -12,7 +12,16 @@ using PNNLOmics.Data.Features;
 namespace MultiAlignCore.Extensions
 {
     public static class MassTagExtesnsions
-    {        
+    {
+        /// <summary>
+        /// Builds an ID for mapping and caching features
+        /// </summary>
+        /// <param name="tag"></param>
+        /// <returns></returns>
+        public static object BuildId(this MassTagLight tag)
+        {
+            return string.Format("{0}-{1}", tag.ID, tag.ConformationID);
+        }
         /// <summary>
         /// Creates a charge map for a given ms feature list.
         /// </summary>

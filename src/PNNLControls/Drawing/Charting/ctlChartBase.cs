@@ -179,6 +179,7 @@ namespace PNNLControls
 		private bool mblnUpdateInProgress = false ; 
 		// The plot parameter
         private clsPlotParams m_plotParams;
+        private MenuItem m_copyDataToClipboardMenuItem;
         private PlotParamsChangedHandler m_plotParamsHandler;
         #endregion
 
@@ -1305,6 +1306,9 @@ namespace PNNLControls
 		/// </summary>
 		public virtual void AutoViewPort() 
 		{
+            if (mobj_series_collection.Count < 1)
+                return;
+
 			float xMin = float.MaxValue;
 			float xMax = float.MinValue;
 			float yMin = float.MaxValue;
@@ -2217,6 +2221,7 @@ namespace PNNLControls
 		{
             this.mContextMenu = new System.Windows.Forms.ContextMenu();
             this.menuShowAllData = new System.Windows.Forms.MenuItem();
+            this.m_copyDataToClipboardMenuItem = new System.Windows.Forms.MenuItem();
             this.menuItem1 = new System.Windows.Forms.MenuItem();
             this.menuLegend = new System.Windows.Forms.MenuItem();
             this.menuLegendShow = new System.Windows.Forms.MenuItem();
@@ -2234,8 +2239,10 @@ namespace PNNLControls
             this.menuItemCopy = new System.Windows.Forms.MenuItem();
             this.menuItemPaste = new System.Windows.Forms.MenuItem();
             this.menuItemPasteByReference = new System.Windows.Forms.MenuItem();
+            this.menuItem2 = new System.Windows.Forms.MenuItem();
             this.menuItemCopyImage = new System.Windows.Forms.MenuItem();
             this.menuItemSaveImage = new System.Windows.Forms.MenuItem();
+            this.menuItem3 = new System.Windows.Forms.MenuItem();
             this.menuItemSelectAllSeries = new System.Windows.Forms.MenuItem();
             this.menuItemSelectedSeries = new System.Windows.Forms.MenuItem();
             this.menuItemDelete = new System.Windows.Forms.MenuItem();
@@ -2244,14 +2251,13 @@ namespace PNNLControls
             this.menuItemBringToFront = new System.Windows.Forms.MenuItem();
             this.menuItemBringToBack = new System.Windows.Forms.MenuItem();
             this.menuItemSeriesSpecific = new System.Windows.Forms.MenuItem();
-            this.menuItem2 = new System.Windows.Forms.MenuItem();
-            this.menuItem3 = new System.Windows.Forms.MenuItem();
             this.SuspendLayout();
             // 
             // mContextMenu
             // 
             this.mContextMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.menuShowAllData,
+            this.m_copyDataToClipboardMenuItem,
             this.menuItem1,
             this.menuLegend,
             this.menuPropertyGrid,
@@ -2275,14 +2281,21 @@ namespace PNNLControls
             this.menuShowAllData.Text = "Show All Data";
             this.menuShowAllData.Click += new System.EventHandler(this.menuShowAllData_Click);
             // 
+            // m_copyDataToClipboardMenuItem
+            // 
+            this.m_copyDataToClipboardMenuItem.Enabled = false;
+            this.m_copyDataToClipboardMenuItem.Index = 1;
+            this.m_copyDataToClipboardMenuItem.Text = "Copy All Data";
+            this.m_copyDataToClipboardMenuItem.Click += new System.EventHandler(this.menuItem4_Click);
+            // 
             // menuItem1
             // 
-            this.menuItem1.Index = 1;
+            this.menuItem1.Index = 2;
             this.menuItem1.Text = "-";
             // 
             // menuLegend
             // 
-            this.menuLegend.Index = 2;
+            this.menuLegend.Index = 3;
             this.menuLegend.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.menuLegendShow,
             this.menuLegendDivider,
@@ -2338,14 +2351,14 @@ namespace PNNLControls
             // 
             // menuPropertyGrid
             // 
-            this.menuPropertyGrid.Index = 3;
+            this.menuPropertyGrid.Index = 4;
             this.menuPropertyGrid.MergeOrder = 10;
             this.menuPropertyGrid.Text = "Properties";
             this.menuPropertyGrid.Click += new System.EventHandler(this.menuPropertyGrid_Click);
             // 
             // menuViewPort
             // 
-            this.menuViewPort.Index = 4;
+            this.menuViewPort.Index = 5;
             this.menuViewPort.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.menuEditViewPort,
             this.menuClearViewPortHistory});
@@ -2366,13 +2379,13 @@ namespace PNNLControls
             // 
             // menuItemSeperator1
             // 
-            this.menuItemSeperator1.Index = 5;
+            this.menuItemSeperator1.Index = 6;
             this.menuItemSeperator1.MergeOrder = 10;
             this.menuItemSeperator1.Text = "-";
             // 
             // menuItemCopy
             // 
-            this.menuItemCopy.Index = 6;
+            this.menuItemCopy.Index = 7;
             this.menuItemCopy.MergeOrder = 10;
             this.menuItemCopy.Shortcut = System.Windows.Forms.Shortcut.CtrlC;
             this.menuItemCopy.Text = "Copy";
@@ -2380,7 +2393,7 @@ namespace PNNLControls
             // 
             // menuItemPaste
             // 
-            this.menuItemPaste.Index = 7;
+            this.menuItemPaste.Index = 8;
             this.menuItemPaste.MergeOrder = 10;
             this.menuItemPaste.Shortcut = System.Windows.Forms.Shortcut.CtrlV;
             this.menuItemPaste.Text = "Paste";
@@ -2388,29 +2401,39 @@ namespace PNNLControls
             // 
             // menuItemPasteByReference
             // 
-            this.menuItemPasteByReference.Index = 8;
+            this.menuItemPasteByReference.Index = 9;
             this.menuItemPasteByReference.MergeOrder = 10;
             this.menuItemPasteByReference.Shortcut = System.Windows.Forms.Shortcut.CtrlShiftV;
             this.menuItemPasteByReference.Text = "Paste by Reference";
             this.menuItemPasteByReference.Click += new System.EventHandler(this.menuItemPasteByReference_Click);
             // 
+            // menuItem2
+            // 
+            this.menuItem2.Index = 10;
+            this.menuItem2.Text = "-";
+            // 
             // menuItemCopyImage
             // 
-            this.menuItemCopyImage.Index = 10;
+            this.menuItemCopyImage.Index = 11;
             this.menuItemCopyImage.MergeOrder = 10;
             this.menuItemCopyImage.Text = "Copy Image";
             this.menuItemCopyImage.Click += new System.EventHandler(this.menuItemCopyImage_Click);
             // 
             // menuItemSaveImage
             // 
-            this.menuItemSaveImage.Index = 11;
+            this.menuItemSaveImage.Index = 12;
             this.menuItemSaveImage.MergeOrder = 10;
             this.menuItemSaveImage.Text = "Save Image";
             this.menuItemSaveImage.Click += new System.EventHandler(this.menuItemSaveImage_Click);
             // 
+            // menuItem3
+            // 
+            this.menuItem3.Index = 13;
+            this.menuItem3.Text = "-";
+            // 
             // menuItemSelectAllSeries
             // 
-            this.menuItemSelectAllSeries.Index = 13;
+            this.menuItemSelectAllSeries.Index = 14;
             this.menuItemSelectAllSeries.MergeOrder = 10;
             this.menuItemSelectAllSeries.Shortcut = System.Windows.Forms.Shortcut.CtrlA;
             this.menuItemSelectAllSeries.Text = "Select All Series";
@@ -2418,7 +2441,7 @@ namespace PNNLControls
             // 
             // menuItemSelectedSeries
             // 
-            this.menuItemSelectedSeries.Index = 14;
+            this.menuItemSelectedSeries.Index = 15;
             this.menuItemSelectedSeries.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.menuItemDelete,
             this.menuItemDisplayOptions,
@@ -2462,27 +2485,17 @@ namespace PNNLControls
             // 
             // menuItemSeriesSpecific
             // 
-            this.menuItemSeriesSpecific.Index = 15;
+            this.menuItemSeriesSpecific.Index = 16;
             this.menuItemSeriesSpecific.MergeOrder = 10;
             this.menuItemSeriesSpecific.Text = "Series Specific";
-            // 
-            // menuItem2
-            // 
-            this.menuItem2.Index = 9;
-            this.menuItem2.Text = "-";
-            // 
-            // menuItem3
-            // 
-            this.menuItem3.Index = 12;
-            this.menuItem3.Text = "-";
             // 
             // ctlChartBase
             // 
             this.ContextMenu = this.mContextMenu;
             this.Name = "ctlChartBase";
             this.Size = new System.Drawing.Size(236, 212);
-            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.ctlChartBase_MouseMove);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ctlChartBase_MouseDown);
+            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.ctlChartBase_MouseMove);
             this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.ctlChartBase_MouseUp);
             this.ResumeLayout(false);
 
@@ -3296,6 +3309,30 @@ namespace PNNLControls
 			}
 		}
 		#endregion
+
+        private void menuItem4_Click(object sender, EventArgs e)
+        {
+            CopyDataToClipboard();
+        }
+
+        public virtual void CopyDataToClipboard()
+        {
+
+        }
+        /// <summary>
+        /// Gets or sets whether clipboard copying is enabled or not.
+        /// </summary>
+        public bool IsClipboardCopyEnabled
+        {
+            get
+            {
+                return m_copyDataToClipboardMenuItem.Enabled;
+            }
+            set
+            {
+                m_copyDataToClipboardMenuItem.Enabled = value;
+            }
+        }
 	}
 	
 	/// <summary>

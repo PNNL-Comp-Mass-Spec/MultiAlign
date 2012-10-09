@@ -4,10 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"              
              xmlns:windows="clr-namespace:Manassa.Windows"
+             xmlns:converters="clr-namespace:Manassa.Converters"
              xmlns:maCharts="clr-namespace:MultiAlignCustomControls.Charting;assembly=MultiAlignCustomControls"
              mc:Ignorable="d" 
              d:DesignHeight="616" d:DesignWidth="872">    
-    
+    <UserControl.Resources>
+        <converters:BoolListSizeConverter x:Key="ListSizeConverter"/>
+    </UserControl.Resources>
     <Grid>
         <TabControl>
             <TabItem
@@ -45,7 +48,7 @@
                     <WindowsFormsHost                
                         Margin="5,5,5,5"
                         Grid.Row="0"
-                        Grid.Column="0">                        
+                        Grid.Column="2">                        
                         <maCharts:ctlClusterChart
                             Title=""
                             LegendVisible="false"
@@ -58,7 +61,7 @@
                     <!-- Cluster Grid Data -->
                     <windows:ClusterGrid
                         Margin="5,5,5,5"
-                        Grid.Column="2"
+                        Grid.Column="0"
                         Grid.Row="0"
                         x:Name="m_clusterGrid"                
                         />
@@ -74,8 +77,9 @@
                 </Grid>
             </TabItem>
             <TabItem
-                Header="Identifications"
-                >
+                Header="AMT Identifications"                
+                IsEnabled="{Binding  Mode=OneWay, ElementName=m_massTagViewer, Path=MatchedTags, Converter={StaticResource ListSizeConverter}}"
+                >                                  
                 <windows:MassTagViewer
                     x:Name="m_massTagViewer"
                     />
@@ -83,10 +87,21 @@
             <TabItem
                 Header="MS/MS"
                 >
-                <windows:MsMsViewer
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <ListBox
+                        ItemsSource="{Binding}"
+                        x:Name="m_datasetBox"/>                        
+                    <windows:MsMsViewer                        
+                        Grid.Row="0"
+                        Grid.Column="1"
                     x:Name="m_msmsViewer">
 
-                </windows:MsMsViewer>
+                    </windows:MsMsViewer>
+                </Grid>
             </TabItem>
             <TabItem
                 Header="Statistics Plots"

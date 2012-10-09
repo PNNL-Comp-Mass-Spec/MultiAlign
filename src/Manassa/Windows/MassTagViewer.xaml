@@ -38,7 +38,7 @@
                     />
             <TabControl
                     Grid.Row="0"   
-                    Grid.Column="2">
+                    Grid.Column="0">
                 <TabItem
                     Header="All Mass Tags">
                     <maWindows:MassTagGrid
@@ -54,12 +54,13 @@
             </TabControl>
             <TabControl
                     Grid.Row="0"   
-                        Grid.Column="0">    
+                        Grid.Column="2">    
                 <TabItem
                     Header="Mass Tags">
                     <WindowsFormsHost>
                             <maCharts:MassTagPlot
-                                LegendVisible="True"
+                                
+                                LegendVisible="False"
                                 x:Name="m_massTagPlot"/>
                     </WindowsFormsHost>
             </TabItem>

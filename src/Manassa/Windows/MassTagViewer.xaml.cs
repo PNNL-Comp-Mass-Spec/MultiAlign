@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -28,11 +29,13 @@ namespace Manassa.Windows
     public partial class MassTagViewer : UserControl
     {
         private MassTagDatabase m_database;
-        private List<MassTagToCluster> m_tags;
+        private ObservableCollection<MassTagToCluster> m_tags;
+        private bool m_areTagsMatched;
 
         public MassTagViewer()
         {
             InitializeComponent();
+            m_areTagsMatched = false;
         }
 
         public MassTagDatabase Database
@@ -54,8 +57,18 @@ namespace Manassa.Windows
                 }                
             }
         }
-
-        public List<MassTagToCluster> MatchedTags
+        public bool AreTagsMatched
+        {
+            get
+            {
+                return m_areTagsMatched;
+            }
+            set
+            {
+                m_areTagsMatched = value;
+            }
+        }
+        public ObservableCollection<MassTagToCluster> MatchedTags
         {
             get
             {
@@ -66,9 +79,9 @@ namespace Manassa.Windows
                 m_tags = value;
                 if (value != null)
                 {
-                    m_massTagGrid.MassTags = m_tags;
+                    m_massTagGrid.MassTags = m_tags.ToList();
 
-                    Dictionary<int, int> massTagMap = m_tags.CreateMassTagMatchedClusterSizeHistogram();
+                    Dictionary<int, int> massTagMap = m_tags.ToList().CreateMassTagMatchedClusterSizeHistogram();
                     m_massTagHistogram.ConstructHistogram(massTagMap);
                     m_massTagHistogram.AutoViewPort();
                 }

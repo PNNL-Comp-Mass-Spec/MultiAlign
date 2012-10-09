@@ -92,16 +92,35 @@
     <Compile Include="Charting\AbundanceProfileChart.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Charting\ChartSynchData.cs" />
     <Compile Include="Charting\ClusterChart.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Charting\ChargeStateHistogram.cs">
+    <Compile Include="Charting\ClusterErrorHistogram.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Charting\ChargeStateHistogram.designer.cs">
-      <DependentUpon>ChargeStateHistogram.cs</DependentUpon>
+    <Compile Include="Charting\ClusterErrorDistancePlot.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Charting\GenericCDF.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Charting\GenericCDF.designer.cs">
+      <DependentUpon>GenericCDF.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Charting\SingleMassTagChart.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Charting\GenericHistogram.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Charting\GenericHistogram.designer.cs">
+      <DependentUpon>GenericHistogram.cs</DependentUpon>
     </Compile>
     <Compile Include="Charting\ClusterErrorScatterPlot.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Charting\ClusterMemberSizeScatterPlot.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Charting\FeatureScatterPlot.cs">
@@ -146,11 +165,29 @@
     <EmbeddedResource Include="Charting\ClusterChart.resx">
       <DependentUpon>ClusterChart.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Charting\ChargeStateHistogram.resx">
-      <DependentUpon>ChargeStateHistogram.cs</DependentUpon>
+    <EmbeddedResource Include="Charting\ClusterErrorHistogram.resx">
+      <DependentUpon>ClusterErrorHistogram.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Charting\ClusterErrorDistancePlot.resx">
+      <DependentUpon>ClusterErrorDistancePlot.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Charting\GenericCDF.resx">
+      <DependentUpon>GenericCDF.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Charting\FeatureScatterPlot.resx">
+      <DependentUpon>FeatureScatterPlot.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Charting\SingleMassTagChart.resx">
+      <DependentUpon>SingleMassTagChart.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Charting\GenericHistogram.resx">
+      <DependentUpon>GenericHistogram.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Charting\ClusterErrorScatterPlot.resx">
       <DependentUpon>ClusterErrorScatterPlot.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Charting\ClusterMemberSizeScatterPlot.resx">
+      <DependentUpon>ClusterMemberSizeScatterPlot.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Charting\MassTagPlot.resx">
       <DependentUpon>MassTagPlot.cs</DependentUpon>

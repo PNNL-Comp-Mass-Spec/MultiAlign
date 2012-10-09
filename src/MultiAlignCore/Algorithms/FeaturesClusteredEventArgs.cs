@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using MultiAlignCore.Data.Cluster;
+using MultiAlignCore.Data.Features;
 using PNNLOmics.Data.Features;
 
 namespace MultiAlignCore.Algorithms

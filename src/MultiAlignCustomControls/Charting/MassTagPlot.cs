@@ -177,8 +177,8 @@ namespace MultiAlignCustomControls.Charting
             
             List<float> massList = new List<float>();
             List<float> scanList = new List<float>();
-            Color color              = colors.GetColor(0);
-            clsShape shape           = new BubbleShape(mint_pt_size, false);
+            Color color              = Color.Orange;
+            clsShape shape           = new DiamondShape(mint_pt_size, false);
             clsPlotParams plotParams = new clsPlotParams(shape, color);
                 
             int clustersAdded = 0;

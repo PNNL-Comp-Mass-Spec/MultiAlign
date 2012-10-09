@@ -41,6 +41,27 @@ namespace MultiAlignCore.IO.Features.Hibernate
             
             return FindByCriteria(criterionList);
         }
+        /// <summary>
+        /// Finds nearby mass tags.
+        /// </summary>
+        /// <param name="massMin"></param>
+        /// <param name="massMax"></param>
+        /// <param name="netMin"></param>
+        /// <param name="netMax"></param>
+        /// <returns></returns>
+        public List<UMCClusterLight> FindNearby(double massMin, double massMax, double netMin, double netMax, double driftMin, double driftMax)
+        {
+            List<ICriterion> criterionList  = new List<ICriterion>();
+            ICriterion criterionMass        = Expression.Between("MassMonoisotopic", massMin, massMax);
+            ICriterion criterionNet         = Expression.Between("RetentionTime", netMin, netMax);
+            ICriterion criterionDriftTime   = Expression.Between("DriftTime", driftMin, driftMax);
+
+            criterionList.Add(criterionMass);
+            criterionList.Add(criterionNet);
+            criterionList.Add(criterionDriftTime);
+
+            return FindByCriteria(criterionList);
+        }
 
         public void ClearAllClusters()
         {

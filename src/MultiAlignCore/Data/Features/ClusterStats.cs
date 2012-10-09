@@ -3,7 +3,7 @@ using MultiAlignEngine.Features;
 using PNNLOmics.Data.Features;
 using MultiAlignCore.Extensions;
 
-namespace MultiAlignCore.Data.Cluster
+namespace MultiAlignCore.Data.Features
 {
     public static class ClusterStats
     {

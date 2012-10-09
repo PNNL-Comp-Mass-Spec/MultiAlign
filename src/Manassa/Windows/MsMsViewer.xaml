@@ -21,50 +21,33 @@
             <ColumnDefinition Width="*"/>                
         </Grid.ColumnDefinitions>
 
-        <GridSplitter
+            <GridSplitter
                     Grid.Row="1"
                     Grid.Column="0"
-                    Grid.ColumnSpan="3"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Stretch"            
-                    Height="3"
-                    />
-
-            <GridSplitter
-                    Grid.Row="0"
-                    Grid.Column="1"
-                    Width="3"
+                Grid.ColumnSpan="3"
+                Height="3"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"                                
                     />
-        <TabControl
-                Grid.Row="0"   
-                Grid.Column="2"
-                >
-            <TabItem
-                Header="MS/MS">
+        
                 <maWindows:MsMsGrid
+                    
+                Grid.Row="0"   
+                Grid.Column="0"
+                    Grid.ColumnSpan="3"
                             x:Name="m_msmsGrid"/>
-            </TabItem>
-        </TabControl>
+
 
         <WindowsFormsHost 
-                Grid.Row="2"
+                Grid.Row="2"   
                 Grid.Column="0"
-                Grid.ColumnSpan="3"
+                    Grid.ColumnSpan="3"
                 >
                 <maCharts:SpectraChart
                     x:Name="m_spectraChart"
                     TitleVisible="True"
                     Title="MS/MS"
                     />
-            </WindowsFormsHost>
-            <WindowsFormsHost
-                Grid.Row="0"
-                Grid.Column="0">
-                <maCharts:MsMsChart
-                    LegendVisible="True"
-                    x:Name="m_msmsScatterPlot"/>
-            </WindowsFormsHost>
+            </WindowsFormsHost>            
         </Grid>    
 </UserControl>

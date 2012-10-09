@@ -85,5 +85,6 @@ namespace MultiAlignCore.Data
 			get { return m_stacUP; }
 			set { m_stacUP = value; }
 		}
+
 	}
 }

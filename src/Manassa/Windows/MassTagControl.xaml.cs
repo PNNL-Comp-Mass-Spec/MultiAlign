@@ -225,7 +225,7 @@ namespace Manassa.Windows
             MassTagLight massTag    = matchedTag.MassTag;
             
 
-            m_clusterGrid.Clusters  = matchedTag.Matches;     
+             m_clusterGrid.Clusters  = matchedTag.Matches;     
                                     
             // Then we find all the nearby clusters
             double massPpm  = ClusterTolerances.Mass;
@@ -235,11 +235,31 @@ namespace Manassa.Windows
             double minNet   = massTag.NETAverage - net;
             double maxNet   = massTag.NETAverage + net;
 
+            List<MassTagLight> otherTags = Providers.MassTags.FindNearby(minMass, maxMass, minNet, maxNet);
+
+            // Remove self from the list
+            int index = otherTags.FindIndex(delegate(MassTagLight x)
+            {
+                return (x.ID == massTag.ID) && (x.ConformationID == massTag.ConformationID);
+            });
+            if (index > -1)
+            {
+                otherTags.RemoveAt(index);
+            }
+
+            List<MassTagToCluster> matchedOtherTags = new List<MassTagToCluster>();
+            otherTags.ForEach(x => matchedOtherTags.Add(FeatureCacheManager<MassTagToCluster>.FindById(x.BuildId())));
+
             m_massTagChart.MassTag = matchedTag;
+            m_massTagChart.AddAdditionalMassTags(matchedOtherTags);
             m_massTagChart.UpdateCharts(true);
             m_massTagChart.AdjustViewPortWithTolerances(ClusterTolerances, false);
 
+            /// Add the other matched tags to this list.
+            m_masstagGrid.MassTags = matchedOtherTags;
+
             m_driftChart.MassTag = matchedTag;
+            m_driftChart.AddAdditionalMassTags(matchedOtherTags);
             m_driftChart.UpdateCharts(true);
             m_driftChart.AdjustViewPortWithTolerances(ClusterTolerances,   true);
         }

@@ -348,6 +348,9 @@ namespace Manassa.Windows
             m_mainCluster                   = cluster;
             m_clusterChart.MainCluster      = matchedCluster;
             m_driftChart.MainCluster        = matchedCluster;
+            m_profileChart.MainCluster      = matchedCluster;
+            m_profileChart.UpdateCharts(true);
+
             m_clusterName.Content           = string.Format("Cluster: {0}", cluster.ID);
             m_featureGrid.Features          = cluster.Features;
 
@@ -379,7 +382,7 @@ namespace Manassa.Windows
 
             // Then find the matching clusters and map them back to previously matched (to mass tag data)
             List<UMCClusterLightMatched> otherClusterMatches = new List<UMCClusterLightMatched>();            
-            otherClusters.ForEach(x => otherClusterMatches.Add(UMCClusterLightCacheManager.FindById(x.ID)));
+            otherClusters.ForEach(x => otherClusterMatches.Add(FeatureCacheManager<UMCClusterLightMatched>.FindById(x.ID)));
 
             foreach (UMCClusterLightMatched matchedOtherCluster in otherClusterMatches)
             {
@@ -387,6 +390,8 @@ namespace Manassa.Windows
                 matchedOtherCluster.Cluster.ReconstructUMCCluster(Providers, false, false);
             }            
             m_clusterGrid.Clusters = otherClusterMatches;
+
+
 
 
             m_clusterChart.AddAdditionalClusters(otherClusterMatches);
@@ -405,16 +410,28 @@ namespace Manassa.Windows
                 {
                     foreach (MSSpectra spectrum in msFeature.MSnSpectra)
                     {
-                        MSFeatureMsMs map   = new MSFeatureMsMs();
-                        map.Spectra         = spectrum;                        
-                        map.Feature         = msFeature;
+                        MSFeatureMsMs map           = new MSFeatureMsMs();
+                        map.FeatureID               = msFeature.ID;
+                        map.FeatureGroupID          = msFeature.GroupID;
+                        map.Mz                      = msFeature.Mz;
+                        map.PrecursorMZ             = spectrum.PrecursorMZ;                     
+                        map.FeatureScan             = msFeature.Scan;
+                        map.MsMsScan                = spectrum.Scan;
+                        map.MassMonoisotopicAligned = msFeature.MassMonoisotopicAligned;
+                        map.ChargeState             = msFeature.ChargeState;
+                        map.Sequence                = "";
+                        map.PeptideSequence         = "";
                         msmsFeatures.Add(map);
                     }
                 }
             }
-
             m_msmsGrid.SetMsMsFeatureSpectra(msmsFeatures);
 
+            float count = 0;
+            List<KeyValuePair<float, float>> distances = new List<KeyValuePair<float, float>>();
+            List<UMCLight> features = new List<UMCLight>();
+            features.AddRange(matchedCluster.Cluster.Features);
+            
             m_errorScatterplot.MainCluster = matchedCluster;
             m_errorScatterplot.AddAdditionalClusters(otherClusterMatches);
             m_errorScatterplot.UpdateCharts(true);
@@ -481,6 +498,20 @@ namespace Manassa.Windows
         {
             get;
             set;
+        } 
+        /// <summary>
+        /// Gets or sets the analysis used.
+        /// </summary>
+        public MultiAlignAnalysis Analysis
+        {
+            get
+            {
+                return m_msmsGrid.Analysis;
+            }
+            set
+            {
+                m_msmsGrid.Analysis = value;
+            }
         }
         #endregion
 

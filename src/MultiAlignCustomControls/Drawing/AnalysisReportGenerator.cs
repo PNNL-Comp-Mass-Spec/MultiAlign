@@ -97,7 +97,7 @@ namespace MultiAlignCustomControls.Drawing
             Config.Report.PushEndTableColumn();
             Config.Report.PushEndTableRow();
 
-            float[] histogram = MultiAlignCore.Data.Cluster.ClusterStats.GetClusterMemberSizes(clusters);
+            float[] histogram = MultiAlignCore.Data.Features.ClusterStats.GetClusterMemberSizes(clusters);
             if (histogram != null)
             {
                 for (int i = 0; i < histogram.Length; i++)
