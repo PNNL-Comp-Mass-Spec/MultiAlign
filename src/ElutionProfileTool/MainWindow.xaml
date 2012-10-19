@@ -1,0 +1,114 @@
+﻿<Window x:Class="ElutionProfileTool.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow"
+        xmlns:ma="clr-namespace:PNNLControls;assembly=PNNLControls"
+        Height="901" 
+        Width="1110"
+        >
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" ></RowDefinition>
+            <RowDefinition Height="*" ></RowDefinition>
+            <RowDefinition Height="*" ></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <TextBox 
+            Grid.Row="0"
+            Grid.Column="0"
+            Margin="5,5,5,5"
+            Name="textBox1" FontStretch="Normal" FontSize="28" Text="C:\development\Proteomics\MultiAlign\development\trunk\src\MultiAlignConsole\bin\x86\Release\sic\sic-features2.csv" />
+
+        <Button 
+            Grid.Row="0"
+            Grid.Column="1"
+                Height="64"
+                Width="256"
+            Content=" View "
+            Margin="5,5,5,5"
+            Click="button_Click"
+            Name="button" FontSize="28" />
+        <WindowsFormsHost
+            Grid.Row="1"
+            Grid.Column="0"
+            >
+            <ma:ctlLineChart 
+                Title="Elution Profile"  
+                LegendVisible="False"
+                XAxisLabel="Scan"
+                YAxisLabel="Intensity"
+                x:Name="m_plot"/>
+
+        </WindowsFormsHost>
+        <WindowsFormsHost
+            Grid.Row="2"
+            Grid.Column="0"
+            >
+            <ma:ctlScatterChart 
+                Title="Elution Profile"  
+                LegendVisible="False"
+                XAxisLabel="Scan"
+                YAxisLabel="Intensity"
+                x:Name="m_plot2"/>
+
+        </WindowsFormsHost>
+        <StackPanel            
+            Margin="5,5,5,5"
+            Grid.Row="1"
+            Grid.RowSpan="2"
+            Grid.Column="1">
+
+            <Button
+                Content="Ideal - 0"
+                HorizontalAlignment="Stretch"
+                Height="128"
+                Width="256"
+                Click="ideaButton_Click"     
+                Name="ideaButton" FontSize="28" />
+            <Button
+                Content="Good - 1"
+                HorizontalAlignment="Stretch"
+                Height="128"
+                Width="256"
+                Click="goodOneButton_Click" 
+                Name="goodOneButton" FontSize="28" />
+            <Button
+                Margin="5,5,5,5"
+                Content="Ok - 2"
+                Height="128"
+                Width="256"
+                Click="okButton_Click"  
+                HorizontalAlignment="Stretch"
+                Name="okButton" FontSize="28" />
+            <Button
+                Margin="5,5,5,5"
+                Content="Poor- 3"
+                Height="128"
+                Width="256"
+                Click="badButton_Click" 
+                HorizontalAlignment="Stretch"
+                Name="badButton" FontSize="28" />
+            <Button
+                Margin="5,5,5,5"
+                Content="Bad - 4"
+                Height="128"
+                Width="256"
+                Click="failedButton_Click"  
+                HorizontalAlignment="Stretch"
+                Name="failedButton" FontSize="28"></Button>
+            <Button
+                Margin="5,5,5,5"
+                Content="Double"
+                Height="128"
+                Width="256"
+                HorizontalAlignment="Stretch"
+                Click="doubleButton_Click"
+                Name="doubleButton" FontSize="28" />
+            
+
+        </StackPanel>
+    </Grid>
+</Window>
