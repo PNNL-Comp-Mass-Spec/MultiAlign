@@ -141,5 +141,15 @@ namespace MultiAlignCore.IO.Features
             
         }
         #endregion
+
+        #region ISpectraProvider Members
+
+
+        public List<XYData> GetRawSpectra(int scan, int group, int scanLevel)
+        {
+            return GetRawSpectra(scan, group);
+        }
+
+        #endregion
     }
 }

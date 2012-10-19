@@ -100,7 +100,7 @@ namespace MultiAlignCore.Algorithms.Alignment
         /// Adjusts the scans for the set of features.
         /// </summary>
         /// <param name="features"></param>
-        public List<UMCLight> AdjustScans(List<UMCLight> features)
+        public List<UMCLight> AdjustScans(List<UMCLight> features, ISpectraProvider rawProvider)
         {
             if (string.IsNullOrEmpty(DirectoryPath))
                 throw new Exception("The SIC path was not provided.");
@@ -116,14 +116,25 @@ namespace MultiAlignCore.Algorithms.Alignment
 
             //features.Clear();
             string featureFile = Path.Combine(DirectoryPath, "sic-features2.csv");
-            
+
+            if (File.Exists(featureFile))
+            {
+                try
+                {
+                    File.Delete(featureFile);
+                }
+                catch
+                {
+                }
+            }
+
             using (TextWriter writer = File.CreateText(featureFile))
             {
                 foreach (UMCLight feature in features)
                 {
                     featureToScanPath.Add(feature.ID, new List<string>());
 
-                    Dictionary<int, List<XYZData>> sicMap = feature.CreateChargeSIC();
+                    Dictionary<int, List<XYZData>> sicMap = feature.CreateChargeSIC(rawProvider);
                     foreach (int chargeState in sicMap.Keys)
                     {
                         string subPath = BuildPath(feature.GroupID, feature.ID, chargeState);
@@ -131,19 +142,19 @@ namespace MultiAlignCore.Algorithms.Alignment
                         {
                             writer.WriteLine("feature,{0}", subPath);
                             writer.WriteLine("mz,scan,intensity");                            
-                            chargeMap.ForEach(x => writer.WriteLine("{0},{1},{2}", x.Z, x.X, Math.Log(x.Y)));
+                            chargeMap.ForEach(x => writer.WriteLine("{0},{1},{2}", x.Z, x.X, x.Y));
                         }
-                        featureToScanPath[feature.ID].Add(subPath);
+                        featureToScanPath[feature.ID].Add(subPath.Replace(".csv", ""));
                     }
                 }
             }
             // Now run the scripts
-            string arguments = string.Format("{1} -d {0} -f {0}\\fits.csv", Path.GetFullPath( DirectoryPath), Path.GetFullPath( PythonPath));
+            string arguments = string.Format("{1} -f {0}\\fits.csv -d {0}", Path.GetFullPath( DirectoryPath), Path.GetFullPath( PythonPath));
             using (Process python       = new Process())
             {
                 python.StartInfo.UseShellExecute        = false;
                 python.StartInfo.FileName               = "python.exe";
-                python.StartInfo.Arguments              = arguments;                                
+                python.StartInfo.Arguments              = arguments;                        
                 bool started = python.Start();                
                 if (!started)
                 {
@@ -202,6 +213,8 @@ namespace MultiAlignCore.Algorithms.Alignment
                 {
                     UMCLight newFeature = new UMCLight(feature);
                     feature.Scan        = Convert.ToInt32(bestFit.Scan);
+                    feature.HPositive.Add(bestFit.ChargeState, bestFit.HPositive);
+                    feature.HNegative.Add(bestFit.ChargeState, bestFit.HNegative);
                     newFeatures.Add(newFeature);
                 }
                 else
@@ -220,6 +233,11 @@ namespace MultiAlignCore.Algorithms.Alignment
     /// </summary>
     public class SicFitData
     {
+        public int ChargeState
+        {
+            get;
+            set;
+        }
         public string Source
         {
             get;
@@ -300,6 +318,16 @@ namespace MultiAlignCore.Algorithms.Alignment
 
                 SicFitData fit      = new SicFitData();
                 fit.Source          = lineData[0];
+                fit.Source          = fit.Source.Replace(".csv", "");
+                string[] chargeName = fit.Source.Split('-');
+                int charge          = 1;
+                if (chargeName.Length > 3)
+                {
+                    bool worked = int.TryParse(chargeName[3], out charge);
+                    if (worked)
+                        fit.ChargeState = charge;
+                }
+                fit.ChargeState     = charge;
                 fit.NumberOfScans   = Convert.ToInt32(lineData[1]);
                 fit.ScanMin         = Convert.ToInt32(lineData[2]);
                 fit.ScanMax         = Convert.ToInt32(lineData[3]);
@@ -316,7 +344,20 @@ namespace MultiAlignCore.Algorithms.Alignment
                 fit.HPositive       = Convert.ToDouble(lineData[9]);
                 fit.Rms             = Convert.ToDouble(lineData[10]);
 
-                fits.Add(fit.Source, fit);
+                if (fits.ContainsKey(fit.Source))
+                {
+                    int x = 99;
+                    x += 2;
+                    if (x > 100)
+                    {
+                        int xx = x - 10;
+                        xx++;
+                    }
+                }
+                else
+                {
+                    fits.Add(fit.Source, fit);
+                }
             }
             return fits;
         }

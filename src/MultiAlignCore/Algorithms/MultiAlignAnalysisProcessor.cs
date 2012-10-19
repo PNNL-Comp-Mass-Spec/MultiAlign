@@ -348,7 +348,16 @@ namespace MultiAlignCore.Algorithms
                     
                     if (scanAdjuster != null)
                     {
-                        List<UMCLight> oldFeatures = scanAdjuster.AdjustScans(features);
+                        ISpectraProvider rawReader = null;
+
+                        if (dataset.Raw != null)
+                        {
+                            string rawPath  = dataset.Raw.Path;
+                            rawReader       = RawLoaderFactory.CreateFileReader(rawPath);                            
+                        }
+
+                        
+                        List<UMCLight> oldFeatures = scanAdjuster.AdjustScans(features, rawReader);
                         if (FeaturesAdjusted != null)
                         {
                             FeaturesAdjusted(this, new FeaturesAdjustedEventArgs(dataset, oldFeatures, features));
@@ -705,7 +714,7 @@ namespace MultiAlignCore.Algorithms
 
                 if (AlgorithmProviders.LcScanAdjuster != null)
                 {
-                    List<UMCLight> oldFeatures = AlgorithmProviders.LcScanAdjuster.AdjustScans(baselineFeatures);
+                    List<UMCLight> oldFeatures = AlgorithmProviders.LcScanAdjuster.AdjustScans(baselineFeatures, null);
                     
                     if (FeaturesAdjusted != null)
                     {

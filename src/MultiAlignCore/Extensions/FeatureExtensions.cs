@@ -49,6 +49,84 @@ namespace MultiAlignCore.Extensions
         /// Creates SIC's mapped by charge state for the MS Features in the feature.
         /// </summary>
         /// <param name="feature"></param>
+        /// <param name="provider">Object that can read data from a raw file or data source.</param>
+        /// <returns></returns>
+        public static Dictionary<int, List<XYZData>> CreateChargeSIC(this UMCLight feature, ISpectraProvider provider)
+        {            
+            Dictionary<int, List<MSFeatureLight>> chargeMap = feature.CreateChargeMap();
+            Dictionary<int, List<XYZData>> sicMap = new Dictionary<int, List<XYZData>>();
+
+            foreach (int charge in chargeMap.Keys)
+            {
+                chargeMap[charge].Sort(delegate(MSFeatureLight x, MSFeatureLight y)
+                {
+                    return x.Scan.CompareTo(y.Scan);
+                }
+                );
+                List<XYZData> data = chargeMap[charge].ConvertAll<XYZData>(x => new XYZData(x.Scan, x.Abundance, x.Mz));
+                sicMap.Add(charge, data);
+            }
+
+            if (provider != null)
+            {
+                // Creates an SIC map for a given charge state of the feature.
+                foreach (int charge in sicMap.Keys)
+                {
+                    List<XYZData> data = sicMap[charge];
+
+                    // The data is alread sorted.
+                    int minScan = int.MaxValue;
+                    int maxScan = int.MinValue;
+                    List<double> mzValues = new List<double>();
+                    foreach (XYZData x in data)
+                    {
+                        mzValues.Add(x.Z);
+                        minScan = Math.Min(minScan, Convert.ToInt32(x.X));
+                        maxScan = Math.Max(maxScan, Convert.ToInt32(x.X));
+                    }
+                    mzValues.Sort();
+                    double mz = 0;
+                    int mid = Convert.ToInt32(mzValues.Count / 2);
+                    mz = mzValues[mid];
+                    minScan -= 20;
+                    maxScan += 20;
+
+                    // Build the SIC
+                    List<XYZData> intensities = new List<XYZData>();
+                    for (int scan = minScan; scan < maxScan; scan++)
+                    {
+                        List<XYData> spectrum = provider.GetRawSpectra(scan, feature.GroupID, 1);
+                        double intensity = 0;
+                        double minDistance = double.MaxValue;
+                        int index = -1;
+                        for (int i = 0; i < spectrum.Count; i++)
+                        {
+                            double distance = spectrum[i].X - mz;
+                            if (distance < minDistance)
+                            {
+                                index = i;
+                                minDistance = distance;
+                            }
+                        }
+
+                        if (index >= 0)
+                        {
+                            intensity = spectrum[index].Y;
+                        }
+                        XYZData newPoint = new XYZData(scan, intensity, mz);
+                        intensities.Add(newPoint);
+                    }
+
+                    sicMap[charge] = intensities;
+                }
+            }
+
+            return sicMap;
+        }        
+        /// <summary>
+        /// Creates SIC's mapped by charge state for the MS Features in the feature.
+        /// </summary>
+        /// <param name="feature"></param>
         /// <returns></returns>
         public static Dictionary<int, List<XYZData>> CreateChargeSIC(this UMCLight feature)
         {
@@ -267,7 +345,7 @@ namespace MultiAlignCore.Extensions
 
         public static bool HasMsMs(this UMCLight feature)
         {
-            foreach (MSFeature msFeature in feature.MSFeatures)
+            foreach (MSFeatureLight msFeature in feature.MSFeatures)
             {
                 bool hasMsMs = msFeature.HasMsMs();
 

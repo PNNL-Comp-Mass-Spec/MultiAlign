@@ -177,6 +177,8 @@
     <Compile Include="Data\AnalysisConfig.cs" />
     <Compile Include="Data\AnalysisOptions.cs" />
     <Compile Include="Data\AnalysisUtils.cs" />
+    <Compile Include="Data\IFeatureMap.cs" />
+    <Compile Include="Data\MassTagLightCacheManager.cs" />
     <Compile Include="Data\UMCClusterLightCacheManager.cs" />
     <Compile Include="Data\DataSummaryAttribute.cs" />
     <Compile Include="Data\Features\FeatureLoadingData.cs" />
@@ -320,12 +322,11 @@
     <Compile Include="IO\MTDB\MTDBLoaderFactory.cs" />
     <Compile Include="Data\Alignment\classAlignmentData.cs" />
     <Compile Include="Data\MetaData\clsDMSServerInformation.cs" />
-    <Compile Include="Data\Cluster\classClusterDataSummaryAttr.cs" />
     <Compile Include="Data\Factors\FactorDefinitions.cs" />
     <Compile Include="Data\MassTags\clsMassTags.cs" />
     <Compile Include="IO\SequenceData\MAGEDatabaseSearchAdaptor.cs" />
     <Compile Include="IO\SequenceData\SequestFirstHitSink.cs" />
-    <Compile Include="Data\Cluster\ClusterStats.cs" />
+    <Compile Include="Data\Features\ClusterStats.cs" />
     <Compile Include="Math\MathUtilities.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -148,6 +148,7 @@ namespace MultiAlignCore.IO.Features
         {
             return GetRawSpectra(scan, group, -1);
         }
+        
         /// <summary>
         /// Gets the raw data from the data file.
         /// </summary>

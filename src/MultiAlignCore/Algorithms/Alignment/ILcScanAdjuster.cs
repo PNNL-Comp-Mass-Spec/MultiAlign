@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using PNNLOmics.Algorithms;
 using PNNLOmics.Data.Features;
+using MultiAlignCore.IO;
+using PNNLOmics.Data;
 
 namespace MultiAlignCore.Algorithms.Alignment
 {
@@ -9,6 +11,6 @@ namespace MultiAlignCore.Algorithms.Alignment
     /// </summary>
     public interface ILcScanAdjuster : IProgressNotifer
     {
-        List<UMCLight> AdjustScans(List<UMCLight> features);
+        List<UMCLight> AdjustScans(List<UMCLight> features, ISpectraProvider provider);
     }
 }

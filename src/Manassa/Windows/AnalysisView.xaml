@@ -78,8 +78,9 @@
             </TabItem>
             <TabItem
                 Header="AMT Identifications"                
-                IsEnabled="{Binding  Mode=OneWay, ElementName=m_massTagViewer, Path=MatchedTags, Converter={StaticResource ListSizeConverter}}"
-                >                                  
+                >
+                <!--IsEnabled="{Binding  Mode=OneWay, ElementName=m_massTagViewer, Path=MatchedTags, Converter={StaticResource ListSizeConverter}}"-->
+
                 <windows:MassTagViewer
                     x:Name="m_massTagViewer"
                     />
