@@ -20,7 +20,7 @@
             Grid.Row="0"
             Grid.Column="0"
             Margin="5,5,5,5"
-            Name="textBox1" FontStretch="Normal" FontSize="28" Text="C:\development\Proteomics\MultiAlign\development\trunk\src\MultiAlignConsole\bin\x86\Release\sic\sic-features2.csv" />
+            Name="textBox1" FontStretch="Normal" FontSize="28" Text="C:\development\lamarche-phd\PHD\trunk\lib\results\sics\CuratedSIC\biorument2012_Jan.csv" />
 
         <Button 
             Grid.Row="0"

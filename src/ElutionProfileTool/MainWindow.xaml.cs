@@ -39,8 +39,13 @@ namespace ElutionProfileTool
             m_state = FitEnum.NotSet;
             m_saved = "fitScores.txt";
 
-            File.AppendAllText(m_saved, "-------------------\n");
-
+            try
+            {
+                File.Delete(m_saved);
+            }
+            catch
+            {
+            }
 
             m_indexList     = new List<int>();
             m_random        = new Random();
@@ -52,6 +57,10 @@ namespace ElutionProfileTool
                 return new List<FitData>();
             }
             List<FitData> fits = new List<FitData>();
+
+            string dirPath  = Path.GetDirectoryName(file);
+            string fileName = Path.GetFileNameWithoutExtension(file);
+            m_saved = Path.Combine(dirPath, fileName + "_fitScores.txt");
 
             try
             {
