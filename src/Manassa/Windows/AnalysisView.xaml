@@ -112,6 +112,7 @@
                         <RowDefinition Height="*" />
                         <RowDefinition Height="*" />
                         <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
 
                     <Grid.ColumnDefinitions>
@@ -207,6 +208,12 @@
                             x:Name="m_massTagHistogram"
                             TitleVisible="True" />
                     </WindowsFormsHost>
+                    <WindowsFormsHost 
+                        Grid.Row="3"
+                        Grid.Column="3"
+                        >
+                        
+                        </WindowsFormsHost>
                 </Grid>
             </TabItem>
             <TabItem

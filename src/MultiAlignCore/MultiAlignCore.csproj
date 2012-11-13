@@ -160,6 +160,7 @@
     <Compile Include="Algorithms\FeatureMatcher\PeakMatchingType.cs" />
     <Compile Include="Algorithms\FeatureMatcher\STAC.cs" />
     <Compile Include="Algorithms\FeaturesClusteredEventArgs.cs" />
+    <Compile Include="Algorithms\Features\ClusterErrorHistograms.cs" />
     <Compile Include="Algorithms\Features\FeatureConsolidatorFactory.cs" />
     <Compile Include="Algorithms\Features\FeatureConsolidatorOptions.cs" />
     <Compile Include="Algorithms\Features\LCMSFeatureConsolidator.cs" />

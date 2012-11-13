@@ -1,4 +1,5 @@
 ﻿using System;
+using PNNLOmics.Algorithms;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -9,6 +10,7 @@ using MultiAlignCore.Data;
 using MultiAlignCore.Data.Features;
 using MultiAlignCore.Extensions;
 using PNNLOmics.Data.Features;
+using MultiAlignCore.Algorithms.Features;
 
 namespace Manassa.Windows
 {
@@ -120,9 +122,65 @@ namespace Manassa.Windows
                     m_clusterRatioPlot.UpdateCharts(true);
                     m_clusterRatioRawPlot.AddClusters(value.Clusters);
                     m_clusterRatioRawPlot.UpdateCharts(true);
+
+
+                   // string path = @"m:\data\proteomics\metz\lipids\errors-net-.03.txt";
+                   // if (File.Exists(path))
+                   // {
+                   //     File.Delete(path);
+                   // }
+
+                   // ClusterErrorHistograms histograms = new ClusterErrorHistograms();
+                   // PNNLOmics.Algorithms.FeatureTolerances tolerances = new PNNLOmics.Algorithms.FeatureTolerances();
+                   // tolerances.Mass = 500;
+                   // tolerances.RetentionTime = .03;
+
+                   //// WriteData(value, path, histograms, tolerances);
+
+                   // tolerances.Mass = 6;
+                   // tolerances.RetentionTime = 100;
+                   // WriteData(value, path, histograms, tolerances);                    
                 }
             }
         }
+
+        private static void WriteData(MultiAlignAnalysis value, string path, ClusterErrorHistograms histograms, FeatureTolerances tolerances)
+        {
+            List<double> mass20ppm          = new List<double>();
+            List<double> featureCounts20ppm = new List<double>();
+            List<double> net20ppm           = new List<double>();
+            
+            Dictionary<int, List<double>> ranges = new Dictionary<int,List<double>>();
+
+            histograms.CalculateClusterErrorHistogramsSingle(value.DataProviders, 0, mass20ppm, net20ppm, featureCounts20ppm, tolerances);
+            ErrorHistogramWriter.WriteData(path, string.Format("[Single A {0:0.00} ppm]", tolerances.Mass), mass20ppm, net20ppm);
+
+            histograms.CalculateClusterErrorHistogramsSingle(value.DataProviders, 1, mass20ppm, net20ppm, featureCounts20ppm, tolerances);
+            ErrorHistogramWriter.WriteData(path, string.Format("[Single B {0:0.00} ppm]", tolerances.Mass), mass20ppm, net20ppm);
+
+            histograms.CalculateClusterErrorHistograms(value.Clusters,
+                                                        mass20ppm,
+                                                        net20ppm,
+                                                        featureCounts20ppm, 
+                                                        tolerances,
+                                                        ranges);
+
+            ErrorHistogramWriter.WriteData(path, string.Format("[Clusters {0:0.00} ppm]", tolerances.Mass), mass20ppm, net20ppm);
+
+            mass20ppm.Clear();
+            net20ppm.Clear();
+            featureCounts20ppm.Clear();
+            histograms.CalculateClusterErrorHistograms(value.DataProviders, mass20ppm, net20ppm, featureCounts20ppm, tolerances);
+            ErrorHistogramWriter.WriteData(path, string.Format("[Features Mass {0:0.00} ppm]", tolerances.Mass), mass20ppm, net20ppm);
+
+            ErrorHistogramWriter.WriteRanges(path,
+                                    ranges);
+
+            ErrorHistogramWriter.WriteCDFData(path,
+                                                string.Format("[Counts Per Cluster CDF {0:0.00} ppm .25 NET]", tolerances.Mass),
+                                                featureCounts20ppm);
+        }
+
 
         private static void SynchronizeViewport(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {

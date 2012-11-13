@@ -73,6 +73,8 @@
     <Compile Include="Converters\BooleanToDataGridVisibilityModeConverter.cs" />
     <Compile Include="Converters\BoolVisibilityConverter.cs" />
     <Compile Include="Converters\BoolListSizeConverter.cs" />
+    <Compile Include="Converters\DatasetSelectedConverter.cs" />
+    <Compile Include="Converters\DatasetCountConverter.cs" />
     <Compile Include="Converters\HasMSMSConverter.cs" />
     <Compile Include="Converters\UriToBitmapConverter.cs" />
     <Compile Include="Data\DatasetPlotLoader.cs" />
@@ -81,8 +83,17 @@
     <Compile Include="Windows\ClusterToMassTagGrid.xaml.cs">
       <DependentUpon>ClusterToMassTagGrid.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Windows\DatasetFileAssociation.xaml.cs">
+      <DependentUpon>DatasetFileAssociation.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\DatasetListBox.xaml.cs">
       <DependentUpon>DatasetListBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\DatasetSelection.xaml.cs">
+      <DependentUpon>DatasetSelection.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\InputFileType.xaml.cs">
+      <DependentUpon>InputFileType.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\MassTagControl.xaml.cs">
       <DependentUpon>MassTagControl.xaml</DependentUpon>
@@ -130,7 +141,19 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Windows\DatasetFileAssociation.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\DatasetListBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\DatasetSelection.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\InputFileType.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

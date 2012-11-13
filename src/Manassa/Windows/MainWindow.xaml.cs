@@ -12,6 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+using Manassa.Windows;
 using MultiAlignCore.Algorithms;
 using MultiAlignCore.IO;
 using MultiAlignCustomControls.Drawing;
@@ -71,6 +72,12 @@ namespace Manassa
 
             m_mainControl.IsEnabled = true;
             m_mainControl.Analysis  = m_controller.Config.Analysis;            
+        }
+
+        private void NewAnalysisMenuButton_Click(object sender, RoutedEventArgs e)
+        {
+            PerformAnalysisWindow window = new PerformAnalysisWindow();
+            window.ShowDialog();
         }
     }
 }

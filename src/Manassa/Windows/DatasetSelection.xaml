@@ -1,0 +1,163 @@
+﻿<UserControl x:Class="Manassa.Windows.DatasetSelection"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="468" d:DesignWidth="774">
+    <Grid
+        Margin="2,2,2,2"
+        >
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <TabControl 
+            Grid.Row="0">
+            <TabItem Header="Local Files">
+                
+                <Grid Margin="2,2,2,2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="33*"/>
+                        <ColumnDefinition Width="66*"/>
+                        <ColumnDefinition Width="128"/>
+                        <ColumnDefinition Width="128"/>
+                    </Grid.ColumnDefinitions>
+                    <Label 
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        >Add Folder Path</Label>
+                    <TextBox Grid.Column="1" Grid.Row="0" x:Name="InputFolderTextBox" Margin="10,5,10,5"/>
+                    <Button Grid.Column="2" Grid.Row="0" Width="100" Margin="10,5,10,5" x:Name="BrowseForFolderButton" Click="BrowseForFolderButton_Click">Browse</Button>
+                    <Button Grid.Column="3" Grid.Row="0" Width="100" Margin="10,5,10,5" x:Name="AddFolderButton" Click="AddFolderButton_Click">Add</Button>
+
+                    <Label 
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        Grid.Row="1"
+                        Grid.Column="0">
+                        Add  Input File
+                    </Label>
+                    <TextBox Grid.Column="1" Grid.Row="1" x:Name="InputFileTextBox" Margin="10,5,10,5"/>
+                    <Button Grid.Column="2" Grid.Row="1" Width="100" Margin="10,5,10,5" x:Name="BrowseForInputFileButton" Click="BrowseForInputFileButton_Click">Browse</Button>
+                    <Button Grid.Column="3" Grid.Row="1" Width="100" Margin="10,5,10,5" x:Name="AddInputFileButton" Click="AddInputFileButton_Click">Add</Button>
+
+                    <Label 
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        Grid.Row="2"
+                        Grid.Column="0">
+                        Add  Single File
+                    </Label>
+                    <TextBox Grid.Column="1"  Grid.Row="2" x:Name="SingleFileTextBox" Margin="10,5,10,5"/>
+                    <Button Grid.Column="2"   Grid.Row="2" Width="100" Margin="10,5,10,5" x:Name="BrowseSingleFile" Click="BrowseSingleFile_Click">Browse</Button>
+                    <Button Grid.Column="3"   Grid.Row="2" Width="100" Margin="10,5,10,5" x:Name="InputSingleFile" Click="InputSingleFile_Click">Add</Button>
+                </Grid>
+            </TabItem>
+            <TabItem Header="DMS" IsEnabled="False">
+                <Grid Margin="2,2,2,2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="32"/>
+                        <RowDefinition Height="32"/>
+                        <RowDefinition Height="*"/>                        
+                        <RowDefinition Height="32"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="33*"/>
+                        <ColumnDefinition Width="66*"/>
+                        <ColumnDefinition Width="128"/>
+                        <ColumnDefinition Width="128"/>
+                    </Grid.ColumnDefinitions>
+                    <Label 
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        >Dataset Names</Label>
+                    <TextBox Grid.Column="1" Grid.Row="0" x:Name="DatasetNames" Margin="10,5,10,5"/>
+                    <Button Grid.Column="3" Grid.Row="0" Width="100" Margin="10,5,10,5" x:Name="DatasetFindButton">Find</Button>
+
+                    <Label 
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        Grid.Row="1"
+                        Grid.Column="0">
+                        Job IDs
+                    </Label>
+                    <TextBox Grid.Column="1" Grid.Row="1" x:Name="JobInputName" Margin="10,5,10,5"/>
+                    <Button Grid.Column="3" Grid.Row="1" Width="100" Margin="10,5,10,5" x:Name="JobFindButton">Find</Button>
+
+                    <DataGrid
+                    Margin="2,2,2,2"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="4"
+                    Grid.Row="2"
+                    HorizontalContentAlignment="Center"            
+                    AlternatingRowBackground="WhiteSmoke"
+                    AlternationCount="1" 
+                    AutoGenerateColumns="False"
+                    CanUserReorderColumns="True"               
+                    CanUserAddRows="False"
+                    CanUserSortColumns="True">
+                        <DataGrid.Columns >
+                            <DataGridCheckBoxColumn     Header="Is Baseline"     CanUserSort="True"     Binding="{Binding Cluster.Tightness}"           IsReadOnly="False"/>
+                            <DataGridTextColumn         Header="Dataset Name"    CanUserSort="True"     Binding="{Binding Cluster.ID}"                  IsReadOnly="True"/>
+                            <DataGridTextColumn         Header="Dataset Type"    CanUserSort="True"     Binding="{Binding Cluster.DatasetMemberCount}"  IsReadOnly="True"/>
+                            <DataGridTextColumn         Header="Instrument"      CanUserSort="True"     Binding="{Binding Cluster.MemberCount}"         IsReadOnly="True"/>
+                            <DataGridTextColumn         Header="File Size"       CanUserSort="True"     Binding="{Binding Cluster.AmbiguityScore}"      IsReadOnly="True"/>
+                            <DataGridTextColumn         Header="Parent Folder"   CanUserSort="True"     Binding="{Binding Cluster.Tightness}"           IsReadOnly="True"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <Button Grid.Column="3"   Grid.Row="4" Width="100"  Margin="10,5,10,5" x:Name="AddSelectedDatasets">Add Selected</Button>
+                </Grid>
+            </TabItem>
+        </TabControl>
+        <GridSplitter Grid.Row="1"
+                      Grid.Column="0"
+                      Background="Black"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Stretch"
+                      />
+        <DataGrid
+            x:Name="MainDatasetGrid"
+            Margin="2,2,2,2"
+            Grid.Row="3"
+            HorizontalContentAlignment="Center"            
+            AlternatingRowBackground="WhiteSmoke"
+            AlternationCount="1" 
+            AutoGenerateColumns="False"
+            CanUserReorderColumns="True"               
+            CanUserAddRows="False"
+            RowDetailsVisibilityMode="Visible"                
+            CanUserSortColumns="True">            
+            <DataGrid.Columns >
+                <DataGridCheckBoxColumn     Header="Is Baseline"     CanUserSort="True"     Binding="{Binding Name}"                IsReadOnly="False"/>
+                <DataGridTextColumn         Header="Dataset Name"    CanUserSort="True"     Binding="{Binding ID}"                  IsReadOnly="True"/>
+                <DataGridTextColumn         Header="Dataset Type"    CanUserSort="True"     Binding="{Binding DatasetMemberCount}"  IsReadOnly="True"/>
+                <DataGridTextColumn         Header="Instrument"      CanUserSort="True"     Binding="{Binding MemberCount}"         IsReadOnly="True"/>
+                <DataGridTextColumn         Header="File Size"       CanUserSort="True"     Binding="{Binding AmbiguityScore}"      IsReadOnly="True"/>
+                <DataGridTextColumn         Header="Parent Folder"   CanUserSort="True"     Binding="{Binding Tightness}"           IsReadOnly="True"/>
+            </DataGrid.Columns>
+        </DataGrid>                
+        <Button
+            Margin="5,5,5,5"
+            Grid.Column="0"
+            Grid.Row="2"
+            Width="100"
+            HorizontalAlignment="Left"
+            x:Name="RemoveSelectedButton" Click="RemoveSelectedButton_Click">
+            Remove Selected
+        </Button>                        
+        
+    </Grid>
+</UserControl>
