@@ -3,10 +3,19 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:ui="clr-namespace:Manassa.Windows"
+             xmlns:converters="clr-namespace:Manassa.Converters"
              mc:Ignorable="d" 
-             d:DesignHeight="468" d:DesignWidth="774">
+             >
+    <UserControl.Resources>
+        <converters:SearchOptionConverter x:Key="SearchOptionConverter"></converters:SearchOptionConverter>
+        <converters:DatasetPathConverter x:Key="DatasetPathConverter"></converters:DatasetPathConverter>
+
+        
+    </UserControl.Resources>
     <Grid
-        Margin="2,2,2,2"
+        Background="White"
+        Margin="5"
         >
         <Grid.RowDefinitions>
             <RowDefinition/>
@@ -19,54 +28,101 @@
         </Grid.ColumnDefinitions>
         <TabControl 
             Grid.Row="0">
-            <TabItem Header="Local Files">
+            <TabItem 
+                Style="{DynamicResource ResourceKey=SimpleTabItem}" Header="Local Files">
                 
                 <Grid Margin="2,2,2,2">
                     <Grid.RowDefinitions>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="33*"/>
-                        <ColumnDefinition Width="66*"/>
-                        <ColumnDefinition Width="128"/>
-                        <ColumnDefinition Width="128"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
+                    <Button
+                            x:Name="LoadFromPreviousButton"
+                            Style="{DynamicResource ResourceKey=SimpleBrowseButtonStyle}"                            
+                            Grid.Row="4"
+                            Grid.Column="2"
+                            Grid.ColumnSpan="2"                            
+                            Width="212"
+                            Margin="5,5,5,5"
+                            IsEnabled="False"
+                            HorizontalAlignment="Right"
+                            Content="Load Datasets From Previous Analysis"  
+                            Click="LoadFromPreviousButton_Click"
+                            />
+                    
                     <Label 
-                        HorizontalContentAlignment="Center"
+                        HorizontalContentAlignment="Left"
                         VerticalContentAlignment="Center"
                         >Add Folder Path</Label>
-                    <TextBox Grid.Column="1" Grid.Row="0" x:Name="InputFolderTextBox" Margin="10,5,10,5"/>
-                    <Button Grid.Column="2" Grid.Row="0" Width="100" Margin="10,5,10,5" x:Name="BrowseForFolderButton" Click="BrowseForFolderButton_Click">Browse</Button>
-                    <Button Grid.Column="3" Grid.Row="0" Width="100" Margin="10,5,10,5" x:Name="AddFolderButton" Click="AddFolderButton_Click">Add</Button>
+                    <TextBox Grid.Column="1" 
+                             Grid.Row="0" 
+                             Text="{Binding Path=FolderPath}"
+                             x:Name="InputFolderTextBox" 
+                             Margin="10,5,10,5"/>
+                    <CheckBox Grid.Row="1" Grid.Column="1"
+                              Content="Include sub-directories"
+                              IsChecked="{Binding Path=ShouldSearchSubDirectories, Converter={StaticResource ResourceKey=SearchOptionConverter}}"
+                              HorizontalAlignment="Right"></CheckBox>
+                    <Button Grid.Column="2" Grid.Row="0" 
+                          
+                            HorizontalAlignment="Right" 
+                        Style="{DynamicResource ResourceKey=SimpleBrowseButtonStyle}"
+                        Width="100" Margin="10,5,10,5" x:Name="BrowseForFolderButton" Click="BrowseForFolderButton_Click">Browse</Button>
+                    <Button Grid.Column="3" Grid.Row="0"      
+                            HorizontalAlignment="Right"                       
+                            Style="{DynamicResource ResourceKey=SimpleBrowseButtonStyle}"
+                            Width="100" Margin="10,5,10,5" x:Name="AddFolderButton" Click="AddFolderButton_Click">Add</Button>
 
                     <Label 
-                        HorizontalContentAlignment="Center"
-                        VerticalContentAlignment="Center"
-                        Grid.Row="1"
-                        Grid.Column="0">
-                        Add  Input File
-                    </Label>
-                    <TextBox Grid.Column="1" Grid.Row="1" x:Name="InputFileTextBox" Margin="10,5,10,5"/>
-                    <Button Grid.Column="2" Grid.Row="1" Width="100" Margin="10,5,10,5" x:Name="BrowseForInputFileButton" Click="BrowseForInputFileButton_Click">Browse</Button>
-                    <Button Grid.Column="3" Grid.Row="1" Width="100" Margin="10,5,10,5" x:Name="AddInputFileButton" Click="AddInputFileButton_Click">Add</Button>
-
-                    <Label 
-                        HorizontalContentAlignment="Center"
+                        HorizontalContentAlignment="Left"
                         VerticalContentAlignment="Center"
                         Grid.Row="2"
                         Grid.Column="0">
+                        Add  Input File
+                    </Label>
+                    <TextBox Grid.Column="1" 
+                             Grid.Row="2"                              
+                             Text="{Binding Path=InputFilePath}"
+                             x:Name="InputFileTextBox" Margin="10,5,10,5"/>
+                    <Button Grid.Column="2" Grid.Row="2" 
+                            HorizontalAlignment="Right"
+                            Style="{DynamicResource ResourceKey=SimpleBrowseButtonStyle}"
+                            Width="100" Margin="10,5,10,5" x:Name="BrowseForInputFileButton" Click="BrowseForInputFileButton_Click">Browse</Button>
+                    <Button Grid.Column="3"
+                            HorizontalAlignment="Right"
+                            Grid.Row="2" Style="{DynamicResource ResourceKey=SimpleBrowseButtonStyle}"
+                            Width="100" Margin="10,5,10,5" x:Name="AddInputFileButton" Click="AddInputFileButton_Click">Add</Button>
+                    <Label 
+                        HorizontalContentAlignment="Left"
+                        VerticalContentAlignment="Center"
+                        Grid.Row="3"
+                        Grid.Column="0">
                         Add  Single File
                     </Label>
-                    <TextBox Grid.Column="1"  Grid.Row="2" x:Name="SingleFileTextBox" Margin="10,5,10,5"/>
-                    <Button Grid.Column="2"   Grid.Row="2" Width="100" Margin="10,5,10,5" x:Name="BrowseSingleFile" Click="BrowseSingleFile_Click">Browse</Button>
-                    <Button Grid.Column="3"   Grid.Row="2" Width="100" Margin="10,5,10,5" x:Name="InputSingleFile" Click="InputSingleFile_Click">Add</Button>
+                    <TextBox Grid.Column="1"  Grid.Row="3"                             
+                             Text="{Binding Path=SingleFilePath}"
+                             x:Name="SingleFileTextBox" Margin="10,5,10,5"/>
+                    <Button Grid.Column="2"   Grid.Row="3" 
+                            HorizontalAlignment="Right"
+                            Style="{DynamicResource ResourceKey=SimpleBrowseButtonStyle}"
+                            Width="100" Margin="10,5,10,5" x:Name="BrowseSingleFile" Click="BrowseSingleFile_Click">Browse</Button>
+                    <Button Grid.Column="3"   Grid.Row="3" 
+                            HorizontalAlignment="Right"
+                            Style="{DynamicResource ResourceKey=SimpleBrowseButtonStyle}"
+                            Width="100" Margin="10,5,10,5" x:Name="InputSingleFile" Click="InputSingleFile_Click">Add</Button>
                 </Grid>
             </TabItem>
-            <TabItem Header="DMS" IsEnabled="False">
+            <TabItem 
+                Style="{DynamicResource ResourceKey=SimpleTabItem}" Header="DMS" IsEnabled="False">
                 <Grid Margin="2,2,2,2">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="32"/>
@@ -132,32 +188,63 @@
             x:Name="MainDatasetGrid"
             Margin="2,2,2,2"
             Grid.Row="3"
+            ItemsSource="{Binding Path=Datasets}"
             HorizontalContentAlignment="Center"            
             AlternatingRowBackground="WhiteSmoke"
             AlternationCount="1" 
             AutoGenerateColumns="False"
             CanUserReorderColumns="True"               
-            CanUserAddRows="False"
-            RowDetailsVisibilityMode="Visible"                
+            CanUserAddRows="False"                           
             CanUserSortColumns="True">            
             <DataGrid.Columns >
-                <DataGridCheckBoxColumn     Header="Is Baseline"     CanUserSort="True"     Binding="{Binding Name}"                IsReadOnly="False"/>
-                <DataGridTextColumn         Header="Dataset Name"    CanUserSort="True"     Binding="{Binding ID}"                  IsReadOnly="True"/>
-                <DataGridTextColumn         Header="Dataset Type"    CanUserSort="True"     Binding="{Binding DatasetMemberCount}"  IsReadOnly="True"/>
-                <DataGridTextColumn         Header="Instrument"      CanUserSort="True"     Binding="{Binding MemberCount}"         IsReadOnly="True"/>
-                <DataGridTextColumn         Header="File Size"       CanUserSort="True"     Binding="{Binding AmbiguityScore}"      IsReadOnly="True"/>
-                <DataGridTextColumn         Header="Parent Folder"   CanUserSort="True"     Binding="{Binding Tightness}"           IsReadOnly="True"/>
-            </DataGrid.Columns>
-        </DataGrid>                
-        <Button
-            Margin="5,5,5,5"
+                <DataGridTextColumn         Header="Dataset ID"      CanUserSort="True"     Binding="{Binding Path=DMSDatasetID}"   IsReadOnly="True"/>
+                <DataGridTextColumn         Header="Dataset Name"    CanUserSort="True"     Binding="{Binding Path=Features.Path,   Converter={StaticResource ResourceKey=DatasetPathConverter}}"           IsReadOnly="True"/>
+                <DataGridHyperlinkColumn    Header="Instrument File" CanUserSort="True"     Binding="{Binding Raw.Path,             Converter={StaticResource ResourceKey=DatasetPathConverter}}"            IsReadOnly="True"/>
+                <DataGridHyperlinkColumn    Header="Sequence File"   CanUserSort="True"     Binding="{Binding Sequence.Path,        Converter={StaticResource ResourceKey=DatasetPathConverter}}"       IsReadOnly="True"
+                                            >
+                </DataGridHyperlinkColumn>                
+                <DataGridTextColumn         Header="Parent Folder"   CanUserSort="True"     Binding="{Binding Path=Features.Path}"  IsReadOnly="True"/>
+            </DataGrid.Columns>            
+        </DataGrid>   
+        <WrapPanel
             Grid.Column="0"
             Grid.Row="2"
-            Width="100"
-            HorizontalAlignment="Left"
-            x:Name="RemoveSelectedButton" Click="RemoveSelectedButton_Click">
-            Remove Selected
-        </Button>                        
-        
+            >
+            <Button
+                Margin="5,5,5,5"                
+                Style="{DynamicResource ResourceKey=SimpleButtonStyle}"
+                Width="100"
+                HorizontalAlignment="Left"
+                x:Name="RemoveSelectedButton" Click="RemoveSelectedButton_Click">
+                Remove Selected
+            </Button>
+            <Label
+                Grid.Column="1"
+                Grid.Row="2"
+                FontWeight="Bold"
+                >Select:</Label>
+            <Button
+                Margin="5,5,5,5"
+                Style="{DynamicResource ResourceKey=SimpleButtonStyle}"
+                Grid.Column="2"
+                Grid.Row="2"
+                Width="100"
+                HorizontalAlignment="Left"
+                x:Name="SelectAllButton"
+                Click="SelectAllButton_Click">
+                All
+            </Button>
+            <Button
+                Margin="5,5,5,5"
+                Style="{DynamicResource ResourceKey=SimpleButtonStyle}"
+                Grid.Column="3"
+                Grid.Row="2"
+                Width="100"
+                HorizontalAlignment="Left"
+                x:Name="SelectNoneButton"
+                Click="SelectNoneButton_Click">
+                None
+            </Button>
+        </WrapPanel>
     </Grid>
 </UserControl>

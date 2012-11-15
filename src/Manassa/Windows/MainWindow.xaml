@@ -3,10 +3,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
         xmlns:ribbon="clr-namespace:Microsoft.Windows.Controls.Ribbon;assembly=RibbonControlsLibrary"
         xmlns:manassa="clr-namespace:Manassa.Windows"
+        xmlns:maConverters="clr-namespace:Manassa.Converters"
         Title="MultiAlign"         
-        Height="1243" 
-        Width="1209"
-        Icon="/Manassa;component/Resources/logo.png">
+        Height="800" 
+        Width="1200"
+        Icon="/Manassa;component/Resources/logo.png" 
+        WindowStartupLocation="CenterScreen">
 
     <Window.Resources>        
         <BitmapImage x:Key="MannassaImage" UriSource="pack://application:,,,/Resources/MainIcon.png" />
@@ -16,23 +18,35 @@
         <BitmapImage x:Key="MenuIcon" UriSource="pack://application:,,,/Resources/manassaMain.png" />
         <BitmapImage x:Key="Molecule" UriSource="pack://application:,,,/Resources/molecule.png" />
         <BitmapImage x:Key="Unknown" UriSource="pack://application:,,,/Resources/unknown.png" />
+
+        <maConverters:ApplicationStateVisibilityConverter  x:Key="IdleState"                ApplicationState="Idle"/>
+        <maConverters:ApplicationStateVisibilityConverter  x:Key="SetupAnalysisState"       ApplicationState="SetupAnalysis"/>
+        <maConverters:ApplicationStateVisibilityConverter  x:Key="RunningAnalysisState"     ApplicationState="RunningAnalysis"/>
+        <maConverters:ApplicationStateVisibilityConverter  x:Key="OpenedState"              ApplicationState="Opened"/>
+
+        <maConverters:ApplicationStateIsSelectedConverter  x:Key="IdleStateSelected"                ApplicationState="Idle"/>
+        <maConverters:ApplicationStateIsSelectedConverter  x:Key="SetupAnalysisStateSelected"       ApplicationState="SetupAnalysis"/>
+        <maConverters:ApplicationStateIsSelectedConverter  x:Key="RunningAnalysisStateSelected"     ApplicationState="RunningAnalysis"/>
+        <maConverters:ApplicationStateIsSelectedConverter  x:Key="OpenedStateSelected"              ApplicationState="Opened"/>
     </Window.Resources>
     
         <Grid
             DockPanel.Dock="Top"
             Margin="4"
             >
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
+            <ColumnDefinition Width="75*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!--
             <ribbon:Ribbon 
                 Grid.Column="0"
+                Height="64"
                 x:Name="Ribbon">
                 <ribbon:Ribbon.ApplicationMenu>
                     <ribbon:RibbonApplicationMenu                     
@@ -157,42 +171,121 @@
                                         Header="AMT" IsEnabled="false">
                     </ribbon:RibbonGroup>
                 </ribbon:RibbonTab>
-            </ribbon:Ribbon>        
-        
-            <!-- Selection Window -->        
-            <manassa:AnalysisView 
-                x:Name="m_mainControl"
-                Grid.Column="0"      
-                IsEnabled="False"
-                Grid.Row="1"/>
+            </ribbon:Ribbon>
+-->       
+                <StackPanel 
+                    Grid.Column="0"
+                    Grid.Row="0"
+                    Background="#FF414141"            
+                >
 
-            <StatusBar 
-                Grid.Row="2"
-                Grid.Column="0"
-                Height="32">
-                <StatusBar.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="*"/>
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="4*"/>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                        </Grid>
-                    </ItemsPanelTemplate>
-                </StatusBar.ItemsPanel>
-                <StatusBarItem>
-                    <TextBlock>Ready</TextBlock>
-                </StatusBarItem>
-                <StatusBarItem Grid.Column="1">
-                    <Separator></Separator>
-                </StatusBarItem>
-                <StatusBarItem Grid.Column="1">
-                    <ProgressBar Value="0" Width="80" Height="18" IsEnabled="False"/>
-                </StatusBarItem>
-            </StatusBar>
+                    <Label
+                        FontSize="24"
+                        Foreground="WhiteSmoke"
+                        Margin="5,5,5,5">
+                        MultiAlign
+                    </Label>
+                    <Label Grid.Row="1"
+                            Foreground="White"
+                            FontSize="18"
+                        Margin="5,5,5,5">
+                        Start
+                    </Label>
+                    <Button 
+                        x:Name="NewButton"
+                        FontSize="16"
+                        Style="{DynamicResource ResourceKey=HyperLinkButtonStyle}"
+                        Margin="5,5,5,5"
+                        HorizontalContentAlignment="Right"
+                        Width="128" Click="NewButton_Click">New Analysis</Button>
+                    <Button 
+                        x:Name="Open"
+                        FontSize="16"
+                        HorizontalContentAlignment="Right"
+                        Style="{DynamicResource ResourceKey=HyperLinkButtonStyle}"
+                        Margin="5,5,5,5"
+                        Width="128" Click="Open_Click">Open Analysis</Button>
+                    <Label Grid.Row="1"
+                                    Foreground="White"
+                                    FontSize="18"
+                                Margin="5,5,5,5">
+                        Recent
+                    </Label>
+                    <ItemsControl x:Name="m_recentStackPanel" Grid.Column="0">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button                                     
+                                    Style="{DynamicResource ResourceKey=HyperLinkButtonStyle}"
+                                    Content="{Binding Name}"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+        </StackPanel>
+        <TabControl            
+            Grid.Row="0"
+            Grid.Column="1">
+            <TabItem
+                Style="{DynamicResource ResourceKey=HidenTabItem}"   >
+                
+            </TabItem>
+            <TabItem         
+                Style="{DynamicResource ResourceKey=HidenTabItem}"       
+                Header="New Analysis"
+                IsSelected="{Binding Path=AnalysisState, Converter={StaticResource ResourceKey=SetupAnalysisStateSelected}}"
+                >
+                <manassa:PerformAnalysisControl
+                    x:Name="m_performAnalysisControl"                    
+                    Visibility="{Binding Path=AnalysisState, Converter={StaticResource ResourceKey=SetupAnalysisState}}"
+                    >
+
+                </manassa:PerformAnalysisControl>
+            </TabItem>
+            <TabItem
+                Style="{DynamicResource ResourceKey=HidenTabItem}"
+                Header="Analysis"
+                IsSelected="{Binding Path=AnalysisState, Converter={StaticResource ResourceKey=OpenedStateSelected}}"
+                >
+                <manassa:AnalysisView
+                    x:Name="m_mainControl"                           
+                    IsEnabled="False"/>
+            </TabItem>
+            <TabItem
+                Header="Main"
+                Visibility="Hidden"
+                >                
+            </TabItem>
+        </TabControl>
+        <StatusBar 
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Height="32">
+                    <StatusBar.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="4*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                            </Grid>
+                        </ItemsPanelTemplate>
+                    </StatusBar.ItemsPanel>
+                    <StatusBarItem>
+                        <TextBlock>Ready</TextBlock>
+                    </StatusBarItem>
+                    <StatusBarItem Grid.Column="1">
+                        <Separator></Separator>
+                    </StatusBarItem>
+                    <StatusBarItem Grid.Column="1"></StatusBarItem>
+                </StatusBar>
         </Grid>        
 </Window>

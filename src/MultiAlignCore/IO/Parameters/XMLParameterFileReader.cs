@@ -74,44 +74,50 @@ namespace MultiAlignCore.IO.Parameters
         /// <returns></returns>
         public void ReadParameterFile(string parameterFilePath, ref MultiAlignAnalysis analysis)
         {
+            AnalysisOptions options = analysis.Options;
+            ReadParameterFile(parameterFilePath, ref options);
+        }
+
+        public void ReadParameterFile(string parameterFilePath, ref AnalysisOptions options)
+        {            
             MetaData metaData = new MetaData("PNNLProteomics");
             metaData.ReadFile(parameterFilePath);
 
             MetaNode msOptions = metaData.OpenChild("MSnLinker", false);
             if (msOptions != null)
             {
-                LoadParameterOptions(analysis.Options.MSLinkerOptions, msOptions);
+                LoadParameterOptions(options.MSLinkerOptions, msOptions);
             }
-            LoadParameterOptions(analysis.Options.MassTagDatabaseOptions, metaData.OpenChild("MassTagDatabase"));
-            LoadParameterOptions(analysis.Options.FeatureFindingOptions, metaData.OpenChild("LCMSFeatureFinding"));
+            LoadParameterOptions(options.MassTagDatabaseOptions, metaData.OpenChild("MassTagDatabase"));
+            LoadParameterOptions(options.FeatureFindingOptions, metaData.OpenChild("LCMSFeatureFinding"));
             msOptions = metaData.OpenChild("LCMSFeatureFilters", false);
             if (msOptions != null)
             {
-                LoadParameterOptions(analysis.Options.FeatureFilterOptions, msOptions);
+                LoadParameterOptions(options.FeatureFilterOptions, msOptions);
             }
-            List<classAlignmentMZBoundary> boundaries                       = analysis.Options.AlignmentOptions.MZBoundaries;     
-            LoadParameterOptions(analysis.Options.AlignmentOptions, metaData.OpenChild("Alignment"));
-            if (analysis.Options.AlignmentOptions.DriftTimeBinSize <= 0)
+            List<classAlignmentMZBoundary> boundaries                       = options.AlignmentOptions.MZBoundaries;     
+            LoadParameterOptions(options.AlignmentOptions, metaData.OpenChild("Alignment"));
+            if (options.AlignmentOptions.DriftTimeBinSize <= 0)
             {
-                analysis.Options.AlignmentOptions.DriftTimeBinSize = 1;
+                options.AlignmentOptions.DriftTimeBinSize = 1;
             }
-            analysis.Options.AlignmentOptions.MZBoundaries                  = boundaries;
+            options.AlignmentOptions.MZBoundaries                  = boundaries;
             MetaNode node = metaData.OpenChild("DriftTimeAlignment", false);
             if (node != null)
             {
-                LoadParameterOptions(analysis.Options.DriftTimeAlignmentOptions, node);
+                LoadParameterOptions(options.DriftTimeAlignmentOptions, node);
             }
-            LoadParameterOptions(analysis.Options.ClusterOptions, metaData.OpenChild("LCMSFeatureClustering"));       
+            LoadParameterOptions(options.ClusterOptions, metaData.OpenChild("LCMSFeatureClustering"));       
             MetaNode stacNode = metaData.OpenChild("STAC", false);
             if (stacNode != null)
             {
-                LoadParameterOptions(analysis.Options.STACOptions, stacNode);
+                LoadParameterOptions(options.STACOptions, stacNode);
             }
 
             MetaNode consolidatorNode = metaData.OpenChild("FeatureConsolidator", false);
             if (consolidatorNode != null)
             {
-                LoadParameterOptions(analysis.Options.ConsolidationOptions, consolidatorNode);
+                LoadParameterOptions(options.ConsolidationOptions, consolidatorNode);
             }
         }
     }

@@ -35,12 +35,12 @@
             this.optionDescription = new System.Windows.Forms.Label();
             this.closeButton = new System.Windows.Forms.Button();
             this.informationPanel = new System.Windows.Forms.Panel();
+            this.exportHTML = new System.Windows.Forms.Button();
             this.presetLabel = new System.Windows.Forms.Label();
             this.presetList = new System.Windows.Forms.ComboBox();
             this.saveAsButton = new System.Windows.Forms.Button();
             this.saveButton = new System.Windows.Forms.Button();
             this.pathLabel = new System.Windows.Forms.Label();
-            this.exportHTML = new System.Windows.Forms.Button();
             this.editorPanel.SuspendLayout();
             this.panel1.SuspendLayout();
             this.informationPanel.SuspendLayout();
@@ -122,6 +122,16 @@
             this.informationPanel.Size = new System.Drawing.Size(812, 64);
             this.informationPanel.TabIndex = 4;
             // 
+            // exportHTML
+            // 
+            this.exportHTML.Location = new System.Drawing.Point(14, 6);
+            this.exportHTML.Name = "exportHTML";
+            this.exportHTML.Size = new System.Drawing.Size(161, 27);
+            this.exportHTML.TabIndex = 7;
+            this.exportHTML.Text = "Export Parameters to HTML";
+            this.exportHTML.UseVisualStyleBackColor = true;
+            this.exportHTML.Click += new System.EventHandler(this.exportHTML_Click);
+            // 
             // presetLabel
             // 
             this.presetLabel.AutoSize = true;
@@ -130,6 +140,7 @@
             this.presetLabel.Size = new System.Drawing.Size(94, 13);
             this.presetLabel.TabIndex = 6;
             this.presetLabel.Text = "Instrument Presets";
+            this.presetLabel.Visible = false;
             // 
             // presetList
             // 
@@ -139,6 +150,7 @@
             this.presetList.Name = "presetList";
             this.presetList.Size = new System.Drawing.Size(223, 21);
             this.presetList.TabIndex = 5;
+            this.presetList.Visible = false;
             // 
             // saveAsButton
             // 
@@ -169,16 +181,6 @@
             this.pathLabel.Name = "pathLabel";
             this.pathLabel.Size = new System.Drawing.Size(0, 13);
             this.pathLabel.TabIndex = 1;
-            // 
-            // exportHTML
-            // 
-            this.exportHTML.Location = new System.Drawing.Point(14, 6);
-            this.exportHTML.Name = "exportHTML";
-            this.exportHTML.Size = new System.Drawing.Size(161, 27);
-            this.exportHTML.TabIndex = 7;
-            this.exportHTML.Text = "Export Parameters to HTML";
-            this.exportHTML.UseVisualStyleBackColor = true;
-            this.exportHTML.Click += new System.EventHandler(this.exportHTML_Click);
             // 
             // ParameterFileEditor
             // 

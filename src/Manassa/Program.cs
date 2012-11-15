@@ -13,8 +13,6 @@ namespace Manassa
         [STAThread]
         static void Main()
         {
-            MainWindow mainWindow = new MainWindow();
-            mainWindow.ShowDialog();
         }
     }
 }

@@ -59,6 +59,8 @@ namespace MultiAlignParameterFileEditor
                     MultiAlignCore.Data.MultiAlignAnalysis analysis = new MultiAlignCore.Data.MultiAlignAnalysis();
                     reader.ReadParameterFile(m_dialog.FileName, ref analysis);
 
+                    Options = analysis.Options;
+
                     string path = System.IO.Path.GetFileNameWithoutExtension(m_dialog.FileName);
 
                     AddPage(new ParameterFileEditor(analysis.Options, m_dialog.FileName), path);
@@ -75,6 +77,12 @@ namespace MultiAlignParameterFileEditor
             }
         }
         #endregion
+
+        public MultiAlignCore.Data.AnalysisOptions Options
+        {
+            get;
+            set;
+        }
 
         #region Editor Event Handlers
         /// <summary>

@@ -40,12 +40,16 @@
                     Grid.Row="0"   
                     Grid.Column="0">
                 <TabItem
+                    
+                Style="{DynamicResource ResourceKey=SimpleTabItem}"
                     Header="All Mass Tags">
                     <maWindows:MassTagGrid
                         x:Name="m_massTagGrid"            
                         />
                 </TabItem>
                 <TabItem
+                    
+                    Style="{DynamicResource ResourceKey=SimpleTabItem}"
                     Header="All Proteins">
                     <maWindows:ProteinGrid
                         x:Name="m_proteinGrid"            
@@ -53,9 +57,12 @@
                 </TabItem>
             </TabControl>
             <TabControl
+                
                     Grid.Row="0"   
                         Grid.Column="2">    
                 <TabItem
+                    
+                    Style="{DynamicResource ResourceKey=SimpleTabItem}"
                     Header="Mass Tags">
                     <WindowsFormsHost>
                             <maCharts:MassTagPlot
@@ -65,6 +72,8 @@
                     </WindowsFormsHost>
             </TabItem>
             <TabItem
+                
+                    Style="{DynamicResource ResourceKey=SimpleTabItem}"
                     Header="Mass Tags Clusters">
                 <WindowsFormsHost>                
                         <maCharts:GenericHistogram

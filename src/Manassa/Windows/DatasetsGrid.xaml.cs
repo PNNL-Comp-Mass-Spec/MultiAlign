@@ -51,5 +51,26 @@ namespace Manassa.Windows
         {
             SelectedDataset = m_dataGrid.SelectedItem as DatasetInformation;
         }
+
+        private void ShowDetailsButton_Click(object sender, RoutedEventArgs e)
+        {
+
+            ShowDetails = true;
+        }
+
+        private void HideDetailsButton_Click(object sender, RoutedEventArgs e)
+        {
+            ShowDetails = false;
+        }
+
+        public bool ShowDetails
+        {
+            get { return (bool)GetValue(ShowDetailsProperty); }
+            set { SetValue(ShowDetailsProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for ShowDetails.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ShowDetailsProperty =
+            DependencyProperty.Register("ShowDetails", typeof(bool), typeof(DatasetGrid));        
     }
 }

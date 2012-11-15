@@ -87,6 +87,10 @@ namespace MultiAlignParameterFileEditor
         {
             InitializeComponent();
 
+            SetOptions(options, path);
+        }
+        public void SetOptions(AnalysisOptions options, string path)
+        {
             m_options            = options;
             m_path               = path;
             m_parameterMap       = new Dictionary<ParameterFileGroupAttribute, object>();
@@ -104,6 +108,15 @@ namespace MultiAlignParameterFileEditor
                                             });
 
             LoadOptions();
+        }
+
+        public void HideCloseButton()
+        {
+            closeButton.Visible = false;
+        }
+        public void ShowCloseButton()
+        {
+            closeButton.Visible = true;
         }
 
         #region Properties

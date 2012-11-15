@@ -270,5 +270,55 @@ namespace MultiAlignCore.Data
             datasetName         = System.IO.Path.GetFileNameWithoutExtension(datasetName);
             return datasetName;                
         }
+        public static List<DatasetInformation> CreateDatasetsFromInputFile(List<InputFile> inputFiles)
+        {
+            List<DatasetInformation> datasets = new List<DatasetInformation>();
+
+            Dictionary<string, List<InputFile>> datasetMap = new Dictionary<string, List<InputFile>>();
+
+            foreach (InputFile file in inputFiles)
+            {
+                string name         = System.IO.Path.GetFileName(file.Path);
+                string datasetName  = DatasetInformation.ExtractDatasetName(name);
+                bool isEntryMade    = datasetMap.ContainsKey(datasetName);
+                if (!isEntryMade)
+                {
+                    datasetMap.Add(datasetName, new List<InputFile>());
+                }
+
+                datasetMap[datasetName].Add(file);
+            }
+
+            int i = 0;
+            foreach (string datasetName in datasetMap.Keys)
+            {
+                List<InputFile> files = datasetMap[datasetName];
+                DatasetInformation datasetInformation = new DatasetInformation();
+                datasetInformation.DatasetId = i++;
+                datasetInformation.DatasetName = datasetName;
+
+                foreach (InputFile file in files)
+                {
+                    switch (file.FileType)
+                    {
+                        case InputFileType.Features:
+                            datasetInformation.Features = file;
+                            datasetInformation.Path     = file.Path;
+                            break;
+                        case InputFileType.Scans:
+                            datasetInformation.Scans = file;
+                            break;
+                        case InputFileType.Raw:
+                            datasetInformation.Raw = file;
+                            break;
+                        case InputFileType.Sequence:
+                            datasetInformation.Sequence = file;
+                            break;
+                    }
+                }
+                datasets.Add(datasetInformation);
+            }
+            return datasets;
+        }
 	}
 }

@@ -35,7 +35,11 @@
             Grid.Column="0"
             Grid.Row="1"
             Grid.ColumnSpan="2">
-            <TabItem Header="Tags and Clusters">
+
+            <TabItem 
+                
+                Style="{DynamicResource ResourceKey=SimpleTabItem}"
+                Header="Tags and Clusters">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="33*"/>
@@ -104,7 +108,9 @@
                 </Grid>
             </TabItem>
 
-            <TabItem Header="Mass Tag Details">
+            <TabItem 
+                Style="{DynamicResource ResourceKey=SimpleTabItem}"
+                Header="Mass Tag Details">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="60*" />
@@ -120,7 +126,8 @@
                     <!-- Plots based on feature selection -->
                 </Grid>
             </TabItem>
-            <TabItem Header="Proteins">
+            <TabItem 
+                Style="{DynamicResource ResourceKey=SimpleTabItem}" Header="Proteins">
             </TabItem>           
         </TabControl>
     </Grid>

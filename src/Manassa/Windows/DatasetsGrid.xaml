@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:converters="clr-namespace:Manaassa.Converters"
+             xmlns:converters="clr-namespace:Manassa.Converters"
              xmlns:maWindows="clr-namespace:Manassa.Windows"
              mc:Ignorable="d" 
              d:DesignHeight="317" d:DesignWidth="669">
@@ -12,7 +12,7 @@
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="132" />
+            <ColumnDefinition Width="146" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -20,25 +20,29 @@
             <RowDefinition Height="*"/>                
         </Grid.RowDefinitions>
 
-        <ToggleButton 
-                x:Name="m_detailsChecked"                
-                IsChecked="True"
+        <Button 
+                x:Name="ShowDetailsButton"  
+                Style="{DynamicResource ResourceKey=SimpleBrowseButtonStyle}"                
                 Width="128"
                 Grid.Column="0"
                 Background="GhostWhite"    
                 Margin="10,10,10,10"
-                HorizontalAlignment="Stretch">
-            <ToggleButton.Style>
-                <Style TargetType="{x:Type ToggleButton}">
-                    <Setter Property="Content" Value="Show Details"/>
-                    <Style.Triggers>
-                        <Trigger Property="IsChecked" Value="True">
-                            <Setter Property="Content" Value="Hide Details"/>
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </ToggleButton.Style>
-        </ToggleButton>
+                Content="Show Details"       
+            Click="ShowDetailsButton_Click"
+                HorizontalAlignment="Left">            
+        </Button>
+
+        <Button 
+                x:Name="HideDetailsButton"  
+                Style="{DynamicResource ResourceKey=SimpleBrowseButtonStyle}"                
+                Width="128"
+                Grid.Column="1"
+                Background="GhostWhite"    
+                Margin="10,10,10,10"
+                Content="Hide Details" 
+            Click="HideDetailsButton_Click" 
+                HorizontalAlignment="Left">
+        </Button>
         
         <DataGrid
                 Name="m_dataGrid" 
@@ -55,7 +59,7 @@
                 CanUserSortColumns="True"            
                 AutoGenerateColumns="False"                
                 IsTextSearchEnabled="True"
-                RowDetailsVisibilityMode="{Binding IsChecked, ElementName=m_detailsChecked, Converter={StaticResource boolConverter}}"
+                RowDetailsVisibilityMode="{Binding ShowDetails, Converter={StaticResource boolConverter}}"
                 SelectionChanged="m_dataGrid_SelectionChanged">
             <DataGrid.CellStyle>
                 <Style TargetType="DataGridCell">

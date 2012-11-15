@@ -35,7 +35,10 @@
             Grid.Column="0"
             Grid.Row="1"
             Grid.ColumnSpan="2">
-            <TabItem Header="Tags and Clusters">
+            <TabItem 
+                
+                Style="{DynamicResource ResourceKey=SimpleTabItem}"
+                Header="Tags and Clusters">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="33*"/>
@@ -79,12 +82,15 @@
                         Grid.Row="0"
                         Grid.Column="0"   >
                         <TabItem
+                Style="{DynamicResource ResourceKey=SimpleTabItem}"
                             Header="Nearby Clusters"
                             Margin="1,1,1,1">
                             <maWindows:ClusterGrid
                                 x:Name="m_clusterGrid" />
                         </TabItem>
                         <TabItem
+                            
+                Style="{DynamicResource ResourceKey=SimpleTabItem}"
                             Header="Matching Mass Tags"
                             Margin="1,1,1,1">
                             <maWindows:ClusterToMassTagGrid
@@ -97,6 +103,8 @@
                         Margin="3,3,3,3"
                         Grid.ColumnSpan="3">
                         <Button 
+                                Width="120"
+                                Style="{DynamicResource ResourceKey=SimpleButtonStyle}"
                                 Content="Save Feature Plots"
                                 x:Name="m_saveFeaturePlotButton" 
                                 Click="m_saveFeaturePlotButton_Click" />
@@ -105,6 +113,7 @@
             </TabItem>
 
             <TabItem
+                Style="{DynamicResource ResourceKey=SimpleTabItem}"
                 Header="Nearby Cluster Stats"
                 >
                 <Grid>
@@ -235,7 +244,9 @@
                     </TabControl>
                 </Grid>
             </TabItem>
-            <TabItem Header="Features">
+            <TabItem 
+                Style="{DynamicResource ResourceKey=SimpleTabItem}"
+                Header="Features">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="60*" />
@@ -280,11 +291,14 @@
                     </WindowsFormsHost>
                 </Grid>
             </TabItem>
-            <TabItem Header="MS/MS">
+            <TabItem 
+                Style="{DynamicResource ResourceKey=SimpleTabItem}"
+                Header="MS/MS">
                 <maWindows:MsMsViewer
                     x:Name="m_msmsGrid"/>
             </TabItem>
             <TabItem 
+                Style="{DynamicResource ResourceKey=SimpleTabItem}"
                 Header="Abundance Profile"
                 >
                 <WindowsFormsHost>

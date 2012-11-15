@@ -10,10 +10,20 @@
              d:DesignHeight="616" d:DesignWidth="872">    
     <UserControl.Resources>
         <converters:BoolListSizeConverter x:Key="ListSizeConverter"/>
+        
     </UserControl.Resources>
     <Grid>
-        <TabControl>
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition Height="32"></RowDefinition>
+        </Grid.RowDefinitions>
+        <TabControl 
+            Grid.RowSpan="2"
+            >
             <TabItem
+                
+                IsSelected="True"
+                Style="{DynamicResource ResourceKey=SimpleTabItem}"
                 Header="Clusters">
                 <Grid>        
                     <Grid.ColumnDefinitions>
@@ -76,7 +86,8 @@
                         Cluster="{Binding Mode=OneWay, ElementName=m_clusterGrid, Path=SelectedCluster}"/>
                 </Grid>
             </TabItem>
-            <TabItem
+            <TabItem                
+                Style="{DynamicResource ResourceKey=SimpleTabItem}"
                 Header="AMT Identifications"                
                 >
                 <!--IsEnabled="{Binding  Mode=OneWay, ElementName=m_massTagViewer, Path=MatchedTags, Converter={StaticResource ListSizeConverter}}"-->
@@ -86,6 +97,7 @@
                     />
             </TabItem>
             <TabItem
+                Style="{DynamicResource ResourceKey=SimpleTabItem}"
                 Header="MS/MS"
                 >
                 <Grid>
@@ -105,6 +117,7 @@
                 </Grid>
             </TabItem>
             <TabItem
+                Style="{DynamicResource ResourceKey=SimpleTabItem}"
                 Header="Statistics Plots"
                 >
                 <Grid>
@@ -217,6 +230,8 @@
                 </Grid>
             </TabItem>
             <TabItem
+                
+                Style="{DynamicResource ResourceKey=SimpleTabItem}"
                 Header="Datasets"                
                 >
                 <windows:DatasetGrid

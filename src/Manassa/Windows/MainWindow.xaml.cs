@@ -1,22 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.ObjectModel;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-
+using Manassa.Data;
 using Manassa.Windows;
 using MultiAlignCore.Algorithms;
+using MultiAlignCore.Data;
 using MultiAlignCore.IO;
 using MultiAlignCustomControls.Drawing;
-using MultiAlignCore.IO.Features;
 
 namespace Manassa
 {
@@ -35,23 +24,24 @@ namespace Manassa
         public MainWindow()
         {
             InitializeComponent();
-
+            DataContext     = this;
+            AnalysisState   = ApplicationAnalysisState.Idle;            
+            RecentAnalysisObjects = new ObservableCollection<RecentAnalysis>();
+            m_recentStackPanel.DataContext = RecentAnalysisObjects;
             m_analysisLoadDialog = new System.Windows.Forms.OpenFileDialog();
-
             m_controller    = new AnalysisController();
             m_reporter      = new AnalysisReportGenerator();
+
+            m_performAnalysisControl.AnalysisQuit += new System.EventHandler(m_performAnalysisControl_AnalysisQuit);
         }
 
-        private void LoadAnalysisMenuButton_Click(object sender, RoutedEventArgs e)
-        {            
-            System.Windows.Forms.DialogResult result = m_analysisLoadDialog.ShowDialog();
-
-            if (result == System.Windows.Forms.DialogResult.OK)
-            {
-                LoadMultiAlignFile(m_analysisLoadDialog.FileName);
-            }
+        void m_performAnalysisControl_AnalysisQuit(object sender, System.EventArgs e)
+        {
+            if (LastApplicationState == ApplicationAnalysisState.Opened)
+                AnalysisState = LastApplicationState;
+            else
+                AnalysisState = ApplicationAnalysisState.Idle;
         }
-
 
         private void CleanupMultiAlignController()
         {
@@ -74,10 +64,78 @@ namespace Manassa
             m_mainControl.Analysis  = m_controller.Config.Analysis;            
         }
 
-        private void NewAnalysisMenuButton_Click(object sender, RoutedEventArgs e)
+        private void Open_Click(object sender, RoutedEventArgs e)
         {
-            PerformAnalysisWindow window = new PerformAnalysisWindow();
-            window.ShowDialog();
+            System.Windows.Forms.DialogResult result = m_analysisLoadDialog.ShowDialog();
+
+            if (result == System.Windows.Forms.DialogResult.OK)
+            {
+                LoadMultiAlignFile(m_analysisLoadDialog.FileName);
+
+                AnalysisState        = ApplicationAnalysisState.Opened;
+                LastApplicationState = AnalysisState;
+
+                RecentAnalysis newAnalysis  = new RecentAnalysis();
+                newAnalysis.Name            = System.IO.Path.GetFileNameWithoutExtension(m_analysisLoadDialog.FileName);
+                newAnalysis.Path            = m_analysisLoadDialog.FileName;
+
+                if (RecentAnalysisObjects.Count > 10)
+                {
+                    RecentAnalysisObjects.RemoveAt(0);
+                }
+                RecentAnalysisObjects.Add(newAnalysis);
+            }
         }
+
+        private void NewButton_Click(object sender, RoutedEventArgs e)
+        {            
+            AnalysisConfig config                           = new AnalysisConfig();
+            m_performAnalysisControl.AnalysisConfiguration  = config;
+            m_performAnalysisControl.CurrentStep            = AnalysisSetupStep.DatasetSelection;
+            AnalysisState                                   = ApplicationAnalysisState.SetupAnalysis;                    
+        }
+
+        public ObservableCollection<RecentAnalysis> RecentAnalysisObjects
+        {
+            get { return (ObservableCollection<RecentAnalysis>)GetValue(RecentAnalysisProperty); }
+            set { SetValue(RecentAnalysisProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for RecentAnalysis.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty RecentAnalysisProperty =
+            DependencyProperty.Register("RecentAnalysisObjects", typeof(ObservableCollection<RecentAnalysis>), typeof(MainWindow));
+
+
+        public ApplicationAnalysisState  AnalysisState
+        {
+            get { return (ApplicationAnalysisState )GetValue(AnalysisStateProperty); }
+            set { SetValue(AnalysisStateProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for AnalysisState.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty AnalysisStateProperty =
+            DependencyProperty.Register("AnalysisState", typeof(ApplicationAnalysisState ), typeof(MainWindow));
+
+
+
+        public ApplicationAnalysisState LastApplicationState
+        {
+            get { return (ApplicationAnalysisState)GetValue(LastApplicationStateProperty); }
+            set { SetValue(LastApplicationStateProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for LastApplicationState.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty LastApplicationStateProperty =
+            DependencyProperty.Register("LastApplicationState", typeof(ApplicationAnalysisState), typeof(MainWindow));
+
+
+    }
+
+    public enum ApplicationAnalysisState
+    {
+        Idle,
+        RunningAnalysis,
+        SetupAnalysis,
+        Opened
     }
 }

@@ -37,7 +37,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>Manassa.Program</StartupObject>
+    <StartupObject>Manassa.App</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="PNNLOmics, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -73,18 +73,31 @@
     <Compile Include="Converters\BooleanToDataGridVisibilityModeConverter.cs" />
     <Compile Include="Converters\BoolVisibilityConverter.cs" />
     <Compile Include="Converters\BoolListSizeConverter.cs" />
+    <Compile Include="Converters\AnalysisStepVisibilityConverter.cs" />
+    <Compile Include="Converters\ApplicationStateVisibilityConverter.cs" />
+    <Compile Include="Converters\ApplicationStateIsSelectedConverter.cs" />
+    <Compile Include="Converters\DatasetPathConverter.cs" />
+    <Compile Include="Converters\SearchOptionConverter.cs" />
     <Compile Include="Converters\DatasetSelectedConverter.cs" />
     <Compile Include="Converters\DatasetCountConverter.cs" />
     <Compile Include="Converters\HasMSMSConverter.cs" />
     <Compile Include="Converters\UriToBitmapConverter.cs" />
+    <Compile Include="Data\DatasetFilterFactory.cs" />
     <Compile Include="Data\DatasetPlotLoader.cs" />
+    <Compile Include="Data\DatasetWrapperModel.cs" />
+    <Compile Include="Data\RecentAnalysis.cs" />
     <Compile Include="Data\RectangleFDependency.cs" />
+    <Compile Include="IO\DatasetSearcher.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="Settings.cs" />
+    <Compile Include="Windows\AnalysisNaming.xaml.cs">
+      <DependentUpon>AnalysisNaming.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\AnalysisOptionsView.xaml.cs">
+      <DependentUpon>AnalysisOptionsView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\ClusterToMassTagGrid.xaml.cs">
       <DependentUpon>ClusterToMassTagGrid.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\DatasetFileAssociation.xaml.cs">
-      <DependentUpon>DatasetFileAssociation.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\DatasetListBox.xaml.cs">
       <DependentUpon>DatasetListBox.xaml</DependentUpon>
@@ -92,14 +105,11 @@
     <Compile Include="Windows\DatasetSelection.xaml.cs">
       <DependentUpon>DatasetSelection.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\InputFileType.xaml.cs">
-      <DependentUpon>InputFileType.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Windows\MassTagControl.xaml.cs">
       <DependentUpon>MassTagControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\PerformAnalysisWindow.xaml.cs">
-      <DependentUpon>PerformAnalysisWindow.xaml</DependentUpon>
+    <Compile Include="Windows\PerformAnalysisControl.xaml.cs">
+      <DependentUpon>PerformAnalysisControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\ProteinGrid.xaml.cs">
       <DependentUpon>ProteinGrid.xaml</DependentUpon>
@@ -125,6 +135,20 @@
     <Compile Include="Windows\MsMsViewer.xaml.cs">
       <DependentUpon>MsMsViewer.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Windows\SelectBaselinesAndOptions.xaml.cs">
+      <DependentUpon>SelectBaselinesAndOptions.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\StartWindow.xaml.cs">
+      <DependentUpon>StartWindow.xaml</DependentUpon>
+    </Compile>
+    <Page Include="Windows\AnalysisNaming.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\AnalysisOptionsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\AnalysisView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -141,10 +165,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\DatasetFileAssociation.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Windows\DatasetListBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -153,15 +173,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Windows\InputFileType.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Windows\MassTagControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\PerformAnalysisWindow.xaml">
+    <Page Include="Windows\PerformAnalysisControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -218,6 +234,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Windows\SelectBaselinesAndOptions.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\StartWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -253,6 +277,10 @@
       <Project>{EE7596B2-FCD3-471A-856F-1270713DD5B1}</Project>
       <Name>MultiAlignCustomControls</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MultiAlignParameterFileEditor\MultiAlignParameterFileEditor.csproj">
+      <Project>{A853D633-C2DE-4B9F-9EE8-AF97329E2BF8}</Project>
+      <Name>MultiAlignParameterFileEditor</Name>
+    </ProjectReference>
     <ProjectReference Include="..\PNNLControls\PNNLControls.csproj">
       <Project>{9409DE9B-F3F0-41AA-95F5-8BFD525F5669}</Project>
       <Name>PNNLControls</Name>
@@ -284,6 +312,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\back.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

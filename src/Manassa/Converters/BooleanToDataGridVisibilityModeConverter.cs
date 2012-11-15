@@ -6,7 +6,7 @@ using System.Windows.Data;
 using System.IO;
 using System.Windows.Controls;
 
-namespace Manaassa.Converters
+namespace Manassa.Converters
 {
     public class BooleanToDataGridVisibilityModeConverter: IValueConverter
     {       

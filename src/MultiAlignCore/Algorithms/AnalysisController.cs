@@ -824,61 +824,16 @@ namespace MultiAlignCore.Algorithms
             // Create dataset information.
             Logger.PrintMessage("Creating dataset and other input information.");
 
-            Dictionary<string, List<InputFile>> datasetMap = new Dictionary<string, List<InputFile>>();
+            List<DatasetInformation> datasets = DatasetInformation.CreateDatasetsFromInputFile(analysisSetupInformation.Files);
+            analysis.MetaData.Datasets.AddRange(datasets); 
 
-            foreach (InputFile file in analysisSetupInformation.Files)
-            {
-                string name = Path.GetFileName(file.Path);  
-                string datasetName = DatasetInformation.ExtractDatasetName(name);
-
-                bool isEntryMade = datasetMap.ContainsKey(datasetName);
-                if (!isEntryMade)
-                {
-                    datasetMap.Add(datasetName, new List<InputFile>());
-                }
-
-                datasetMap[datasetName].Add(file);
-            }
-
-
-            int i = 0;                
-            foreach (string datasetName in datasetMap.Keys)
-            {
-                List<InputFile> files                   = datasetMap[datasetName];                
-                DatasetInformation datasetInformation   = new DatasetInformation();
-                datasetInformation.DatasetId            = i++;
-                datasetInformation.DatasetName          = datasetName;
-                                            
-                foreach(InputFile file in files)                
-                {
-                    switch (file.FileType)
-                    {
-                        case InputFileType.Features:
-                            datasetInformation.Features = file;
-                            datasetInformation.Path     = file.Path;
-                            Logger.PrintMessage("\tDataset Information:   " + file.Path);                            
-                            break;
-                        case InputFileType.Scans:
-                            Logger.PrintMessage("\tDatabase Search Results Sequence Data Information:  " + file.Path);
-                            datasetInformation.Scans = file;
-                            break;
-                        case InputFileType.Raw:
-                            Logger.PrintMessage("\tRaw Data Information:  " + file.Path);
-                            datasetInformation.Raw   = file;
-                            break;
-                        case InputFileType.Sequence:
-                            Logger.PrintMessage("\tDatabase Search Results Sequence Data Information:  " + file.Path);
-                            datasetInformation.Sequence = file;
-                            break;
-                    }                    
-                }
-                analysis.MetaData.Datasets.Add(datasetInformation);
-            }
             if (insertIntoDatabase)
             {
                 m_config.Analysis.DataProviders.DatasetCache.AddAll(analysis.MetaData.Datasets);
             }
         }
+
+        
         /// <summary>
         /// Determine what exporting features need to be had.
         /// </summary>

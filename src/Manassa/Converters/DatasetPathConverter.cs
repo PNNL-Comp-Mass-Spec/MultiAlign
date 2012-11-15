@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Data;
+using MultiAlignCore.Data;
 
 namespace Manassa.Converters
 {
-    
-    public class DatasetSelectedConverter : IValueConverter
+
+    public class DatasetPathConverter : IValueConverter
     {
 
         #region IValueConverter Members
@@ -16,21 +17,8 @@ namespace Manassa.Converters
                 return false;
             }
 
-            //BLL Make sure that we validate it's working.
-            bool isEnabled = true;
-            try
-            {
-                int datasets = (int)value;
-                if (datasets > 0)
-                {
-                    isEnabled = true;
-                }
-            }
-            catch
-            {
-
-            }
-            return isEnabled;
+            string data = value.ToString();
+            return DatasetInformation.ExtractDatasetName(data);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

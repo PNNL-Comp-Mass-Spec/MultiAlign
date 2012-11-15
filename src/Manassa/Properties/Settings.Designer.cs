@@ -22,5 +22,52 @@ namespace Manassa.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Collections.Specialized.StringCollection Recent {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["Recent"]));
+            }
+            set {
+                this["Recent"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("m:\\data\\proteomics\\MAPaper\\data\\")]
+        public string DatasetFolderPath {
+            get {
+                return ((string)(this["DatasetFolderPath"]));
+            }
+            set {
+                this["DatasetFolderPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string SingleDatasetPath {
+            get {
+                return ((string)(this["SingleDatasetPath"]));
+            }
+            set {
+                this["SingleDatasetPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string InputFilePath {
+            get {
+                return ((string)(this["InputFilePath"]));
+            }
+            set {
+                this["InputFilePath"] = value;
+            }
+        }
     }
 }
