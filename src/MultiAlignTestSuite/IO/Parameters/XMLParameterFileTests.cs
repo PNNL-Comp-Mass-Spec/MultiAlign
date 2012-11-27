@@ -512,7 +512,7 @@ namespace MultiAlignTestSuite.IO.Parameters
                 XMLParameterFileWriter writer           = new XMLParameterFileWriter();
                 XMLParamterFileReader reader            = new XMLParamterFileReader();
                 MultiAlignAnalysis analysis             = new MultiAlignAnalysis();
-                analysis.Options.UseMassTagDBAsBaseline = true;
+                analysis.Options.AlignmentOptions.IsAlignmentBaselineAMasstagDB = true;
 
                 analysis.Options.FeatureFindingOptions  = ChangeObjectValues(analysis.Options.FeatureFindingOptions) as MultiAlignCore.Algorithms.FeatureFinding.LCMSFeatureFindingOptions;                
                 writer.WriteParameterFile(path, analysis);

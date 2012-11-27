@@ -11,6 +11,7 @@ using MultiAlignCore.Data.Features;
 using MultiAlignCore.Extensions;
 using PNNLOmics.Data.Features;
 using MultiAlignCore.Algorithms.Features;
+using System.Collections.ObjectModel;
 
 namespace Manassa.Windows
 {
@@ -71,13 +72,11 @@ namespace Manassa.Windows
                     if (value.MassTagDatabase != null)
                     {
                         m_massTagViewer.Database = value.MassTagDatabase;
-                    }
+                    }                    
                     m_msmsViewer.Analysis       = value;
                     m_clusterControl.Analysis   = value;
-                    m_datasetBox.ItemsSource    = new System.Collections.ObjectModel.ObservableCollection<DatasetInformation>(value.MetaData.Datasets);
-
-                    //m_msmsViewer.ExtractMsMsData(m_analysis.DataProviders);
-
+                    m_datasetBox.Datasets       = new ObservableCollection<DatasetInformation>(value.MetaData.Datasets);                    
+                    
                     // Make the dataset plots.
                     string directoryPath        = Path.GetDirectoryName(value.MetaData.AnalysisPath);
                     string plotPath             = Path.Combine(directoryPath, "plots");

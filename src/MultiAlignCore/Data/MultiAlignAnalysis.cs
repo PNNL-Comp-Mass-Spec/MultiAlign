@@ -14,11 +14,12 @@ using PNNLOmics.Data.MassTags;
 using MultiAlignCore.Algorithms.FeatureMatcher;
 using MultiAlignCore.Data.Features;
 using MultiAlignCore.Algorithms.FeatureFinding;
+using System.Windows;
 
 namespace MultiAlignCore.Data
 {
 	[Serializable()]
-	public class MultiAlignAnalysis : IDisposable
+	public class MultiAlignAnalysis : DependencyObject, IDisposable
     {                             
         #region Constructor
         /// <summary>

@@ -124,6 +124,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\ThermoRawFileReaderDLL\bin\Release\ThermoRawFileReaderDLL.dll</HintPath>
     </Reference>
+    <Reference Include="WindowsBase" />
     <Reference Include="ZedGraph">
       <HintPath>..\..\lib\ZedGraph.dll</HintPath>
     </Reference>

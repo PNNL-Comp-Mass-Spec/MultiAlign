@@ -124,7 +124,7 @@ namespace MultiAlignCore.IO.Parameters
         private void LoadGlobalOptions(ref MultiAlignAnalysis analysis)
         {            
             Dictionary<string, string> map  = ProcessSubSectionData(GLOBAL_TAG);
-            analysis.Options.UseMassTagDBAsBaseline = Convert.ToBoolean(map["Use Mass Tag DB As Baseline"]);            
+            analysis.Options.AlignmentOptions.IsAlignmentBaselineAMasstagDB = Convert.ToBoolean(map["Use Mass Tag DB As Baseline"]);            
         }
         /// <summary>
         /// Load the parameters from the object

@@ -22,7 +22,7 @@ namespace MultiAlignCore.Data
         {
 			AlignmentOptions                = new AlignmentOptions() ; 
 			DriftTimeAlignmentOptions       = new DriftTimeAlignmentOptions();
-            UseMassTagDBAsBaseline          = false;
+            //UseMassTagDBAsBaseline          = false;
             FeatureFindingOptions           = new LCMSFeatureFindingOptions();
 			ClusterOptions                  = new LCMSFeatureClusteringOptions() ;
             MSLinkerOptions                 = new MSLinkerOptions();
@@ -117,14 +117,14 @@ namespace MultiAlignCore.Data
         }
 
 
-        /// <summary>
-        /// Gets or sets whether to use the mass tag database as the baseline dataset.
-        /// </summary>
-        [DataSummaryAttribute("Use MTDB As Baseline")]
-        public bool UseMassTagDBAsBaseline
-        {
-            get;
-            set;
-        }
+        ///// <summary>
+        ///// Gets or sets whether to use the mass tag database as the baseline dataset.
+        ///// </summary>
+        //[DataSummaryAttribute("Use MTDB As Baseline")]
+        //public bool UseMassTagDBAsBaseline
+        //{
+        //    get;
+        //    set;
+        //}
     }
 }

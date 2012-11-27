@@ -25,13 +25,25 @@
                 Style="{DynamicResource ResourceKey=HidenTabItem}"
                 Header="Dataset Selection"
                 IsSelected="{Binding Path=CurrentStep, Converter={StaticResource ResourceKey=DatasetSelection}}">
-                <ui:DatasetSelection/>
+                <ui:DatasetSelection
+                    x:Name="DatasetSelectionControl"
+                    Analysis="{Binding  
+                                Path=AnalysisConfiguration.Analysis,
+                                RelativeSource={RelativeSource AncestorType={x:Type UserControl}},
+                                UpdateSourceTrigger=PropertyChanged}"
+                    />
             </TabItem>
             <TabItem 
                 Style="{DynamicResource ResourceKey=HidenTabItem}"
                 Header="Baseline Selection"
                 IsSelected="{Binding Path=CurrentStep, Converter={StaticResource ResourceKey=BaselineStep}}">
-                <ui:SelectBaselinesAndOptions/>
+                <ui:SelectBaselinesAndOptions
+                    Datasets="{Binding ElementName=DatasetSelectionControl, Path=Datasets}"
+                    Analysis="{Binding  
+                                Path=AnalysisConfiguration.Analysis,
+                                RelativeSource={RelativeSource AncestorType={x:Type UserControl}},
+                                UpdateSourceTrigger=PropertyChanged}"
+                    />
             </TabItem>
             <TabItem
                 Style="{DynamicResource ResourceKey=HidenTabItem}"
@@ -44,7 +56,11 @@
                 Header="Name"
                 IsSelected="{Binding Path=CurrentStep, Converter={StaticResource ResourceKey=Naming}}">
                 <ui:AnalysisNaming
-                    Analysis="{Binding Path=AnalysisConfiguration.Analysis}"/>
+                    AnalysisConfiguration="{Binding  
+                                Path=AnalysisConfiguration,
+                                RelativeSource={RelativeSource AncestorType={x:Type UserControl}},
+                                UpdateSourceTrigger=PropertyChanged}"
+                    ></ui:AnalysisNaming>
             </TabItem>
         </TabControl>
 
@@ -52,9 +68,7 @@
         Grid.Row="1"
         >
         <Grid.RowDefinitions>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -65,10 +79,11 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
+            
         <Button
             x:Name="CancelButton"
             Style="{DynamicResource ResourceKey=SimpleBrowseButtonStyle}"                                        
-            Grid.Row="3"
+            Grid.Row="1"
             Grid.Column="0"
             Height="32"
             Width="128"
@@ -80,7 +95,7 @@
             x:Name="BackButton"
             Style="{DynamicResource ResourceKey=SimpleButtonStyle}"
                             
-            Grid.Row="3"
+            Grid.Row="1"
             Grid.Column="4"
             Height="32"
             Width="128"
@@ -89,7 +104,7 @@
         <Button
             x:Name="NextButton"
             Style="{DynamicResource ResourceKey=SimpleButtonStyle}"                            
-            Grid.Row="3"
+            Grid.Row="1"
             Grid.Column="5"
             Height="32"
             Width="128"

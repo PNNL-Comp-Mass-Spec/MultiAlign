@@ -30,14 +30,12 @@ namespace Manassa.Windows
         /// Worker for loading MS/MS data
         /// </summary>
         private BackgroundWorker m_background;
+        private int m_datasetIdToLoad = 0;
+
         /// <summary>
         /// providers to use
         /// </summary>
         private FeatureDataAccessProviders m_providers;
-        /// <summary>
-        /// Features to display and review.
-        /// </summary>
-        private List<MSFeatureMsMs> m_features;
 
         public MsMsViewer()
         {
@@ -50,9 +48,38 @@ namespace Manassa.Windows
 
         }
 
+        public DatasetInformation SelectedDataset
+        {
+            get { return (DatasetInformation)GetValue(SelectedDatasetProperty); }
+            set { SetValue(SelectedDatasetProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for SelectedDataset.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty SelectedDatasetProperty =
+            DependencyProperty.Register("SelectedDataset", typeof(DatasetInformation), typeof(MsMsViewer),
+            new PropertyMetadata(delegate (DependencyObject sender, DependencyPropertyChangedEventArgs e)
+                {
+                    var x = sender as MsMsViewer;
+                    if (x == null)
+                        return;
+
+                    if (x.SelectedDataset == null)
+                    {
+                        return;
+                    }
+
+                    x.m_datasetIdToLoad = x.SelectedDataset.DatasetId;
+                    x.m_providers       = x.Analysis.DataProviders;
+                    x.StartLoadingData();
+                })
+            );
+
+
+
         public void ExtractMsMsData(FeatureDataAccessProviders providers)
         {
-            m_providers = providers;
+            m_providers         = providers;
+            m_datasetIdToLoad   = -1;
             StartLoadingData();
         }
 
@@ -62,7 +89,12 @@ namespace Manassa.Windows
             {
                 try
                 {
-                    m_background.CancelAsync();
+                    // Make sure that we are not doing an operation yet...so we get deadlocked
+                    // when we try to report progress and we are 
+                    lock (m_providers.Synch)
+                    {
+                        m_background.CancelAsync();
+                    }
                 }
                 catch (InvalidOperationException)
                 {
@@ -75,8 +107,9 @@ namespace Manassa.Windows
                 }
             }
 
-            m_background                     = new BackgroundWorker();
-            m_background.WorkerReportsProgress = true;
+            m_msmsGrid.MsMsSpectra.Clear();
+            m_background                        = new BackgroundWorker();
+            m_background.WorkerReportsProgress  = true;
             m_background.DoWork             += new DoWorkEventHandler(m_background_DoWork);
             m_background.ProgressChanged    += new ProgressChangedEventHandler(m_background_ProgressChanged);
             m_background.RunWorkerAsync();
@@ -117,7 +150,14 @@ namespace Manassa.Windows
             lock(m_providers.Synch)
             {
                 // Get all of the maps for all spectra
-                maps = m_providers.MSFeatureToMSnFeatureCache.FindAll();
+                if (m_datasetIdToLoad < 0)
+                {
+                    maps = m_providers.MSFeatureToMSnFeatureCache.FindAll();
+                }
+                else
+                {
+                    maps = m_providers.MSFeatureToMSnFeatureCache.FindByDatasetId(m_datasetIdToLoad);
+                }
             }            
 
             // Then we map to each dataset, so that we can load one dataset at a time.

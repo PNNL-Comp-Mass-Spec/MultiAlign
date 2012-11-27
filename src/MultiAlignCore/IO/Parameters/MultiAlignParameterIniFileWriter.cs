@@ -100,7 +100,7 @@ namespace MultiAlignCore.IO.Parameters
                 WriteOptionGroup(writer, CLUSTER_TAG,           analysis.Options.ClusterOptions);
 
                 writer.WriteLine("[" + GLOBAL_TAG + "]" );
-                WriteOption(writer, GLOBAL_OPTION_USE_MTDB_AS_BASELINE, analysis.Options.UseMassTagDBAsBaseline);
+                WriteOption(writer, GLOBAL_OPTION_USE_MTDB_AS_BASELINE, analysis.Options.AlignmentOptions.IsAlignmentBaselineAMasstagDB);
                 writer.WriteLine();
             }
 		} 

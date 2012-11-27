@@ -12,6 +12,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using MultiAlignCore.Data;
 
+using System.IO;
+
 namespace Manassa.Windows
 {
     /// <summary>
@@ -19,26 +21,39 @@ namespace Manassa.Windows
     /// </summary>
     public partial class AnalysisNaming : UserControl
     {
+        System.Windows.Forms.FolderBrowserDialog m_folderBrowser;
+
         public AnalysisNaming()
         {
             InitializeComponent();
 
-            DataContext = this;
+            DataContext     = this;
+            m_folderBrowser = new System.Windows.Forms.FolderBrowserDialog();
         }
 
-        public MultiAlignAnalysis Analysis
+        public AnalysisConfig AnalysisConfiguration
         {
-            get { return (MultiAlignAnalysis)GetValue(AnalysisProperty); }
+            get { return (AnalysisConfig)GetValue(AnalysisProperty); }
             set { SetValue(AnalysisProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for Analysis.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty AnalysisProperty =
-            DependencyProperty.Register("Analysis", typeof(MultiAlignAnalysis), typeof(AnalysisNaming));
+            DependencyProperty.Register("AnalysisConfiguration", typeof(AnalysisConfig), typeof(AnalysisNaming));
 
         private void BrowseButton_Click(object sender, RoutedEventArgs e)
         {
+            string path = AnalysisConfiguration.AnalysisPath;
+            if (Directory.Exists(path))
+            {
+                m_folderBrowser.SelectedPath = path;
+            }
 
+            System.Windows.Forms.DialogResult result = m_folderBrowser.ShowDialog();
+            if (result == System.Windows.Forms.DialogResult.OK)
+            {
+                AnalysisConfiguration.AnalysisPath = m_folderBrowser.SelectedPath;
+            }
         }        
     }
 }

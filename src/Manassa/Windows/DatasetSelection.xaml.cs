@@ -18,14 +18,17 @@ using Manassa.Data;
 using Manassa.IO;
 using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.Data;
+using System.ComponentModel;
 
 namespace Manassa.Windows
 {
     /// <summary>
     /// Interaction logic for DatasetSelection.xaml
     /// </summary>
-    public partial class DatasetSelection : System.Windows.Controls.UserControl
+    public partial class DatasetSelection : System.Windows.Controls.UserControl, INotifyPropertyChanged
     {
+        public event EventHandler<StatusEventArgs> Status;
+
         private FolderBrowserDialog m_folderBrowser;
         private OpenFileDialog m_openFileDialog;
         private Dictionary<InputFileType, string> m_filterMap = new Dictionary<InputFileType, string>();
@@ -47,8 +50,6 @@ namespace Manassa.Windows
             DataContext                  = this;
             ShouldSearchSubDirectories   = false;
         }
-
-
 
         public InputAnalysisInfo AnalysisInputInformation
         {
@@ -110,6 +111,15 @@ namespace Manassa.Windows
             DependencyProperty.Register("ShouldSearchSubDirectories", typeof(bool), typeof(DatasetSelection));
 
 
+        public MultiAlignAnalysis Analysis
+        {
+            get { return (MultiAlignAnalysis)GetValue(AnalysisProperty); }
+            set { SetValue(AnalysisProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Analysis.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty AnalysisProperty =
+            DependencyProperty.Register("Analysis", typeof(MultiAlignAnalysis), typeof(DatasetSelection));
 
 
         public ObservableCollection<DatasetInformation> Datasets
@@ -126,22 +136,35 @@ namespace Manassa.Windows
 
         private void AddInputFileButton_Click(object sender, RoutedEventArgs e)
         {
-            bool fileExists = System.IO.File.Exists(SingleFilePath);
+            bool fileExists = System.IO.File.Exists(InputFilePath);
             if (fileExists)
             {
                 // Read input files
-                InputAnalysisInfo info              = MultiAlignFileInputReader.ReadInputFile(SingleFilePath); 
-                List<DatasetInformation> datasets   = DatasetInformation.CreateDatasetsFromInputFile(info.Files);
-                foreach (DatasetInformation dataset in datasets)
+                try
                 {
-                    Datasets.Add(dataset);
+                    InputAnalysisInfo info = MultiAlignFileInputReader.ReadInputFile(InputFilePath);
+                    List<DatasetInformation> datasets = DatasetInformation.CreateDatasetsFromInputFile(info.Files);
+                    foreach (DatasetInformation dataset in datasets)
+                    {
+                        Datasets.Add(dataset);
+                        Analysis.MetaData.Datasets.Add(dataset);
+                    }
                 }
+                catch
+                {
+                    ApplicationStatusMediator.SetStatus("Could not read the input file.  Check the file format.");
+                }
+            }
+            else
+            {
+                ApplicationStatusMediator.SetStatus("The input file does not exist.");
             }
         }
 
         private void BrowseForInputFileButton_Click(object sender, RoutedEventArgs e)
         {
             m_openFileDialog.Filter = m_inputFileFilter;
+            m_openFileDialog.FileName = InputFilePath;
             DialogResult result     = m_openFileDialog.ShowDialog();
             if (result == DialogResult.OK)
             {
@@ -160,16 +183,18 @@ namespace Manassa.Windows
 
                 if (type == InputFileType.NotRecognized)
                 {
+                    ApplicationStatusMediator.SetStatus("The input file was not recognized.");
                     return;
                 }
                 if (type == InputFileType.Scans)
                 {
+                    ApplicationStatusMediator.SetStatus("The input file was not recognized.");
                     return;
                 }
 
-                InputFile file  = new InputFile();
-                file.Path       = SingleFilePath;
-                file.FileType   = type;
+                InputFile file = new InputFile();
+                file.Path = SingleFilePath;
+                file.FileType = type;
 
                 List<InputFile> inputs = new List<InputFile>();
                 inputs.Add(file);
@@ -178,13 +203,20 @@ namespace Manassa.Windows
                 foreach (DatasetInformation dataset in info)
                 {
                     Datasets.Add(dataset);
+                    Analysis.MetaData.Datasets.Add(dataset);
                 }
+            }
+            else
+            {
+
+                ApplicationStatusMediator.SetStatus("The input file does not exist.");
             }
         }
 
         private void BrowseSingleFile_Click(object sender, RoutedEventArgs e)
         {
-            m_openFileDialog.Filter = m_featureFileFilter;
+            m_openFileDialog.Filter     = m_featureFileFilter;
+            m_openFileDialog.FileName = SingleFilePath;
             DialogResult result = m_openFileDialog.ShowDialog();
             if (result == DialogResult.OK)
             {
@@ -197,8 +229,7 @@ namespace Manassa.Windows
             DialogResult result =  m_folderBrowser.ShowDialog();
             if (result == DialogResult.OK)
             {
-                FolderPath = m_folderBrowser.SelectedPath;
-                // Find datasets
+                FolderPath = m_folderBrowser.SelectedPath;                
             }
         }
 
@@ -214,24 +245,42 @@ namespace Manassa.Windows
                 option = System.IO.SearchOption.AllDirectories;
             }
 
-            List<InputFile> files = DatasetSearcher.FindDatasets(m_folderBrowser.SelectedPath,
+            if (FolderPath == null)
+            {
+                ApplicationStatusMediator.SetStatus("The directory specified does not exist.");                
+                return;
+            }
+
+            if (!System.IO.Directory.Exists(FolderPath))
+            {
+                ApplicationStatusMediator.SetStatus("The directory specified does not exist.");
+                return;
+            }
+
+            List<InputFile> files = DatasetSearcher.FindDatasets(FolderPath,
                                         extensions,
                                         option);
 
             List<DatasetInformation> datasets = DatasetInformation.CreateDatasetsFromInputFile(files);
             foreach (DatasetInformation dataset in datasets)
             {
+                Analysis.MetaData.Datasets.Add(dataset);
                 Datasets.Add(dataset);
             }
         }
 
         private void RemoveSelectedButton_Click(object sender, RoutedEventArgs e)
         {
+            List<DatasetInformation> datasets = new List<DatasetInformation>();
+            
             foreach (object o in MainDatasetGrid.SelectedItems)
             {
                 DatasetInformation info = o as DatasetInformation;
-                Datasets.Remove(info);
+                datasets.Add(info);                
             }            
+
+            datasets.ForEach(x => Datasets.Remove(x));
+            datasets.ForEach(x => Analysis.MetaData.Datasets.Remove(x));
         }
 
         private void SelectAllButton_Click(object sender, RoutedEventArgs e)
@@ -247,9 +296,22 @@ namespace Manassa.Windows
         private void LoadFromPreviousButton_Click(object sender, RoutedEventArgs e)
         {
 
-        }                
+        }
 
 
+        private void OnNotify(string property)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(property));
+            }
+        }
+
+        #region INotifyPropertyChanged Members
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        #endregion
     }
 
     /// <summary>
@@ -266,6 +328,20 @@ namespace Manassa.Windows
         {
             get;
             set;
+        }
+    }
+
+    public class StatusEventArgs: EventArgs
+    {
+        public StatusEventArgs(string message)
+        {
+            Message = message;
+        }
+
+        public string Message
+        {
+            get;
+            private set;
         }
     }
 }

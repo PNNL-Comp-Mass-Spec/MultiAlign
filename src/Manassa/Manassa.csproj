@@ -71,22 +71,29 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Converters\BooleanToDataGridVisibilityModeConverter.cs" />
+    <Compile Include="Converters\BoolInverter.cs" />
     <Compile Include="Converters\BoolVisibilityConverter.cs" />
     <Compile Include="Converters\BoolListSizeConverter.cs" />
     <Compile Include="Converters\AnalysisStepVisibilityConverter.cs" />
     <Compile Include="Converters\ApplicationStateVisibilityConverter.cs" />
     <Compile Include="Converters\ApplicationStateIsSelectedConverter.cs" />
+    <Compile Include="Converters\DatasetColorConverter.cs" />
+    <Compile Include="Converters\DatasetFolderPathConverter.cs" />
     <Compile Include="Converters\DatasetPathConverter.cs" />
     <Compile Include="Converters\SearchOptionConverter.cs" />
     <Compile Include="Converters\DatasetSelectedConverter.cs" />
     <Compile Include="Converters\DatasetCountConverter.cs" />
     <Compile Include="Converters\HasMSMSConverter.cs" />
     <Compile Include="Converters\UriToBitmapConverter.cs" />
+    <Compile Include="Data\AnalysisSetupState.cs" />
+    <Compile Include="Data\ApplicationStatusMediator.cs" />
     <Compile Include="Data\DatasetFilterFactory.cs" />
     <Compile Include="Data\DatasetPlotLoader.cs" />
     <Compile Include="Data\DatasetWrapperModel.cs" />
+    <Compile Include="Data\MultiAlignAnalysisValidator.cs" />
     <Compile Include="Data\RecentAnalysis.cs" />
     <Compile Include="Data\RectangleFDependency.cs" />
+    <Compile Include="Data\StatusMessageWrapper.cs" />
     <Compile Include="IO\DatasetSearcher.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Settings.cs" />
@@ -98,6 +105,9 @@
     </Compile>
     <Compile Include="Windows\ClusterToMassTagGrid.xaml.cs">
       <DependentUpon>ClusterToMassTagGrid.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\AnalysisRunningControl.xaml.cs">
+      <DependentUpon>AnalysisRunningControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\DatasetListBox.xaml.cs">
       <DependentUpon>DatasetListBox.xaml</DependentUpon>
@@ -162,6 +172,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\ClusterToMassTagGrid.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\AnalysisRunningControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

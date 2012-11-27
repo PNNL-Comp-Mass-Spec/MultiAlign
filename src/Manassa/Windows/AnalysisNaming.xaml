@@ -14,18 +14,18 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="48"/>
+            <RowDefinition Height="48"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Label
             Grid.Column="0">
-            Path
+            Select the path for the data
         </Label>
         <TextBox
-            Text="{Binding Path=Analysis.Path}"
+            Text="{Binding Path=AnalysisConfiguration.AnalysisPath}"
             Margin="5"          
             Grid.Column="1"             
-            HorizontalContentAlignment="Stretch"
-            HorizontalAlignment="Left"  />
+            HorizontalContentAlignment="Stretch" />
         <Button
             x:Name="BrowseButton"
             Margin="5,5,5,5"
@@ -36,5 +36,16 @@
             HorizontalAlignment="Left"
             Content="Browse" 
             Click="BrowseButton_Click" />
+        <Label             
+            Grid.Row="1"
+            Grid.Column="0">
+            Give your analysis a name
+        </Label>
+        <TextBox
+            Text="{Binding Path=AnalysisConfiguration.AnalysisName}"
+            Margin="5"   
+            Grid.Row="1"
+            Grid.Column="1"             
+            HorizontalContentAlignment="Stretch" />
     </Grid>
 </UserControl>

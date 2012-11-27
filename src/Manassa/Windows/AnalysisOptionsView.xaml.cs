@@ -31,6 +31,7 @@ namespace Manassa.Windows
         {
             InitializeComponent();
             m_editor.HideCloseButton();
+            m_editor.HideSaveButton();
 
             m_dialog = new System.Windows.Forms.OpenFileDialog();
             m_dialog.Filter = "MultiAlign Parameters (*.xml)| *.xml|All Files (*.*)|*.*";

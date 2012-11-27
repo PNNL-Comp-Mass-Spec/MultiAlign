@@ -18,11 +18,11 @@ namespace Manassa.Windows
     /// <summary>
     /// Interaction logic for PerformAnalysisWindow.xaml
     /// </summary>
-    public partial class PerformAnalysisControl : UserControl
+    public partial class AnalysisRunningControl : UserControl
     {
         public event EventHandler AnalysisQuit;
 
-        public PerformAnalysisControl()
+        public AnalysisRunningControl()
         {
             InitializeComponent();
 
@@ -74,6 +74,19 @@ namespace Manassa.Windows
         // Using a DependencyProperty as the backing store for ParameterFileName.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ParameterFileNameProperty =
             DependencyProperty.Register("ParameterFileName", typeof(string), typeof(PerformAnalysisControl));
+
+
+
+
+        public string Status
+        {
+            get { return (string)GetValue(StatusProperty); }
+            set { SetValue(StatusProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Status.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty StatusProperty =
+            DependencyProperty.Register("Status", typeof(string), typeof(PerformAnalysisControl));
 
 
         
@@ -139,10 +152,10 @@ namespace Manassa.Windows
             // Then display the error if exists...
             if (!isValid)
             {
-                ApplicationStatusMediator.SetStatus(errorMessage);                
+                Status = errorMessage;
                 return;
             }
-            ApplicationStatusMediator.SetStatus(errorMessage);
+            Status = "";
 
             // Then move the UI.
             switch (CurrentStep)

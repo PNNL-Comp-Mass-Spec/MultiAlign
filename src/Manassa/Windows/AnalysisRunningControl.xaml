@@ -1,0 +1,57 @@
+﻿<UserControl x:Class="Manassa.Windows.AnalysisRunningControl"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:maConverters="clr-namespace:Manassa.Converters"
+        xmlns:ui="clr-namespace:Manassa.Windows" mc:Ignorable="d" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" d:DesignHeight="330" d:DesignWidth="615">
+    <UserControl.Resources>
+        <maConverters:DatasetCountConverter     x:Key="DatasetCountConverter" />
+        <maConverters:DatasetSelectedConverter  x:Key="DatasetSelectedConverter" />
+        <maConverters:AnalysisStepVisibilityConverter  x:Key="BaselineStep"         VisibleStep="BaselineSelection" />
+        <maConverters:AnalysisStepVisibilityConverter  x:Key="DatasetSelection"     VisibleStep="DatasetSelection" />
+        <maConverters:AnalysisStepVisibilityConverter  x:Key="Naming"               VisibleStep="Naming" />
+        <maConverters:AnalysisStepVisibilityConverter  x:Key="OptionsSelection"     VisibleStep="OptionsSelection" />
+        <maConverters:AnalysisStepVisibilityConverter  x:Key="Started"              VisibleStep="Started" />
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        
+        <Label
+            Grid.Row="0"
+            Grid.Column="0"
+            >
+            MultiAlign Analysis
+        </Label>
+        
+        <WrapPanel
+            Grid.Row="1"
+            Grid.RowSpan="2"
+            Grid.Column="0"
+            Grid.ColumnSpan="2"
+            Margin="5"
+            Background="LightGray">             
+        </WrapPanel>
+                               
+        <Button
+            x:Name="NextButton"
+            Style="{DynamicResource ResourceKey=SimpleButtonStyle}"                            
+            Grid.Row="3"
+            Grid.Column="5"
+            Height="32"
+            Width="128"
+            Margin="5,5,5,5"
+            HorizontalAlignment="Right"
+            Content="Next"
+            IsEnabled="{Binding DatasetCount, Converter={StaticResource ResourceKey=DatasetSelectedConverter}}" Click="NextButton_Click" />                
+    </Grid>
+</UserControl>

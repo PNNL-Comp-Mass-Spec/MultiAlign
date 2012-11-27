@@ -609,7 +609,7 @@ namespace MultiAlignCore.Algorithms
             MultiAlignAnalysis analysis             = new MultiAlignAnalysis();
             analysis.MetaData.AnalysisPath          = m_config.AnalysisPath;
             analysis.MetaData.AnalysisName          = m_config.AnalysisName;
-            analysis.Options.UseMassTagDBAsBaseline = true;
+            analysis.Options.AlignmentOptions.IsAlignmentBaselineAMasstagDB = true;
 
             analysis.MetaData.ParameterFile         = m_config.ParameterFile;
             analysis.MetaData.InputFileDefinition   = m_config.InputPaths;
@@ -624,7 +624,7 @@ namespace MultiAlignCore.Algorithms
             // Need to extract from the database.
             analysis.MetaData.AnalysisPath          = m_config.AnalysisPath;
             analysis.MetaData.AnalysisName          = m_config.AnalysisName;
-            analysis.Options.UseMassTagDBAsBaseline = true;            
+            analysis.Options.AlignmentOptions.IsAlignmentBaselineAMasstagDB = true;            
             analysis.MetaData.ParameterFile         = m_config.ParameterFile;
             analysis.MetaData.InputFileDefinition   = m_config.InputPaths;                        
             analysis.MetaData.AnalysisSetupInfo     = null;
@@ -749,12 +749,12 @@ namespace MultiAlignCore.Algorithms
                 // Validate the baseline
                 if (analysisSetupInformation.BaselineFile == null)
                 {
-                    m_config.Analysis.Options.UseMassTagDBAsBaseline = true;
+                    m_config.Analysis.Options.AlignmentOptions.IsAlignmentBaselineAMasstagDB = true;
                     Logger.PrintMessage(string.Format("Using mass tag database {0} as the alignment baseline.", analysisSetupInformation.Database.DatabaseName));
                 }
                 else
                 {
-                    m_config.Analysis.Options.UseMassTagDBAsBaseline = false;
+                    m_config.Analysis.Options.AlignmentOptions.IsAlignmentBaselineAMasstagDB = false;
                     m_config.Analysis.MetaData.BaselineDataset = null;
                     foreach (DatasetInformation info in analysisMetaData.Datasets)
                     {
@@ -771,7 +771,7 @@ namespace MultiAlignCore.Algorithms
             else
             {
                 m_config.Analysis.Options.MassTagDatabaseOptions.DatabaseType = MassTagDatabaseType.None;
-                m_config.Analysis.Options.UseMassTagDBAsBaseline = false;
+                m_config.Analysis.Options.AlignmentOptions.IsAlignmentBaselineAMasstagDB = false;
                 if (analysisSetupInformation.BaselineFile == null)
                 {
                     Logger.PrintMessage("No baseline dataset or database was selected.");

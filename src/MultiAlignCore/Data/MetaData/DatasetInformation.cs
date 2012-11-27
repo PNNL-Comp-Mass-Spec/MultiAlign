@@ -9,33 +9,6 @@ using MultiAlignCore.IO.InputFiles;
 
 namespace MultiAlignCore.Data
 {
-    public class DatasetCollection : ObservableCollection<DatasetInformation>
-    {
-        string test;
-        public string Directory
-        {
-            get
-            {
-                return test;
-            }
-            set
-            {
-                test = value;
-                Update();
-            }
-        }
-        
-        private void Update()
-        {
-            this.Clear();
-            for (int i = 0; i < 10; i++)
-            {
-                DatasetInformation info = new DatasetInformation();
-                info.DatasetName = "test-" + i.ToString();
-                this.Add(info);
-            }
-        }
-    }
 	/// <summary>
 	/// Contains information about a dataset used for analysis.r
 	/// </summary>	
@@ -263,10 +236,10 @@ namespace MultiAlignCore.Data
         /// <returns></returns>
         public static string ExtractDatasetName(string path)
         {
-            string datasetName  = path.Replace("_isos.csv", "");
+            string datasetName  = path.Replace("_isos.csv", "").ToLower();
             datasetName         = datasetName.Replace(".scans", "");
-            datasetName         = datasetName.Replace("_fht", "");
-            datasetName         = datasetName.Replace("LCMSFeatures.txt", "");
+            datasetName         = datasetName.Replace("_fht", "");            
+            datasetName         = datasetName.Replace("lcmsfeatures.txt", "");
             datasetName         = System.IO.Path.GetFileNameWithoutExtension(datasetName);
             return datasetName;                
         }

@@ -43,143 +43,16 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!--
-            <ribbon:Ribbon 
-                Grid.Column="0"
-                Height="64"
-                x:Name="Ribbon">
-                <ribbon:Ribbon.ApplicationMenu>
-                    <ribbon:RibbonApplicationMenu                     
-                        SmallImageSource="{StaticResource ResourceKey=MenuIcon}"
-                        LargeImageSource="{StaticResource ResourceKey=MenuIcon}"
-                        >                    
-                        <ribbon:RibbonApplicationMenuItem Header="_New"  
-                                                          IsEnabled="True"        
-                                                          ImageSource="{StaticResource ResourceKey=NewIcon}"
-                                                          x:Name="NewAnalysisMenuButton"
-                                                          Click="NewAnalysisMenuButton_Click">                        
-                        </ribbon:RibbonApplicationMenuItem>
-                        <ribbon:RibbonSeparator/>
-                        <ribbon:RibbonApplicationMenuItem Header="_Open"                                                      
-                                                          x:Name="LoadAnalysisMenuButton"        
-                                                          ImageSource="{StaticResource ResourceKey=FolderIcon}"                                              
-                                                          Click="LoadAnalysisMenuButton_Click">                        
-                        </ribbon:RibbonApplicationMenuItem>
-                        <ribbon:RibbonSeparator/>
-                        <ribbon:RibbonApplicationMenuItem Header="_Close"
-                                                          IsEnabled="False"
-                                                          x:Name="CloseMenuButton"/>
-                        <ribbon:RibbonSeparator/>
-                        <ribbon:RibbonApplicationMenuItem Header="_Exit"
-                                                          IsEnabled="False"
-                                                          x:Name="ExitMenuButton"/>
-                    </ribbon:RibbonApplicationMenu>
-                </ribbon:Ribbon.ApplicationMenu>
-                <ribbon:RibbonTab x:Name="AnalysisTab" 
-                                  Header="Analysis">
-                    <ribbon:RibbonGroup x:Name="GeneralAnalysisGroup"                                     
-                                        Header="General">
-                        <ribbon:RibbonButton x:Name="NewAnalysisButton"
-                                             IsEnabled="True"
-                                             LargeImageSource="{StaticResource ResourceKey=NewIcon}"
-                                             Label="New" />
-                        <ribbon:RibbonButton x:Name="LoadOptionsButton"
-                                             Label="Open"
-                                             LargeImageSource="{StaticResource ResourceKey=FolderIcon}"
-                                             Click="LoadAnalysisMenuButton_Click"/>                    
-                        <ribbon:RibbonButton x:Name="AnalysisOptionsButton"
-                                             IsEnabled="False"
-                                             Label="Options" />
-                    </ribbon:RibbonGroup>
-                    <ribbon:RibbonGroup x:Name="LCMSFeatureFindingGroup" 
-                                        IsEnabled="False"
-                                        Header="Find Features">
-                        <ribbon:RibbonButton x:Name="FeatureFindingOptions"
-                                             Label="Options" />                    
-                    </ribbon:RibbonGroup>
-                    <ribbon:RibbonGroup x:Name="AlignmentAnalysisGroup" 
-                                        IsEnabled="False"
-                                        Header="Alignment">
-                        <ribbon:RibbonButton x:Name="Button1"
-                                             Label="Select Baseline"
-                                             LargeImageSource="{StaticResource ResourceKey=AlignmentIcon}"/>
-                        <ribbon:RibbonButton x:Name="Button2"
-                                             Label="Options" />
-                    </ribbon:RibbonGroup>
-                    <ribbon:RibbonGroup x:Name="ClustersAnalysisbGroup" 
-                                        IsEnabled="False"
-                                        Header="Cluster">
-                        <ribbon:RibbonComboBox x:Name="ClusterDropDown"
-                                             Label="Select Algorithm"/>
-                        <ribbon:RibbonButton x:Name="ClusterOptionsButton"
-                                             Label="Options" />
-                    </ribbon:RibbonGroup>
-                    <ribbon:RibbonGroup x:Name="IdentifyAnalysisTab" 
-                                        Header="Identify" IsEnabled="false">
-                        <ribbon:RibbonButton x:Name="stacButton"
-                                             Label="STAC / AMT" />
-                        <ribbon:RibbonButton x:Name="deNovoButton"
-                                             Label="de novo" />
-                        <ribbon:RibbonComboBox Label="Search databases"/>
-
-                    </ribbon:RibbonGroup>
-                </ribbon:RibbonTab>
-                <ribbon:RibbonTab x:Name="DatasetTab" 
-                                  Header="Datasets">
-                    <ribbon:RibbonGroup x:Name="GeneralDatasetsGroup" 
-                                        Header="General">                    
-                    </ribbon:RibbonGroup>
-                </ribbon:RibbonTab>
-                <ribbon:RibbonTab x:Name="MsMsTab" 
-                                  Header="MS/MS">
-                    <ribbon:RibbonGroup x:Name="MsMsGroup" 
-                                        Header="Networks" IsEnabled="false">
-                    </ribbon:RibbonGroup>
-                </ribbon:RibbonTab>
-                <ribbon:RibbonTab x:Name="FeaturesTab" 
-                                  Header="LC-MS Features">
-                    <ribbon:RibbonGroup x:Name="FeaturesGroup" 
-                                        Header="Normalization" IsEnabled="false">
-                        <ribbon:RibbonButton x:Name="noramlizeFeatureAbundanceButton"
-                                             Label="Normalize Abundances" />
-                    </ribbon:RibbonGroup>
-                </ribbon:RibbonTab>
-                <ribbon:RibbonTab x:Name="ClustersTab" 
-                                  Header="LC-MS Clusters">
-                    <ribbon:RibbonGroup x:Name="ClustersGroup" 
-                                        Header="Clusters" IsEnabled="True">
-
-                        <ribbon:RibbonToggleButton x:Name="ShowAttributedClusters"
-                                                   LargeImageSource="{StaticResource ResourceKey=Molecule}"
-                                             Label="Attributed"/>
-                        <ribbon:RibbonToggleButton x:Name="ShowUnAttributedClusters"
-                                                   LargeImageSource="{StaticResource ResourceKey=Unknown}"
-                                             Label="Unattributed"/>
-                        <ribbon:RibbonToggleButton x:Name="ShowMsMsClusters"
-                                             Label="Have MS/MS"/>
-                    </ribbon:RibbonGroup>
-                </ribbon:RibbonTab>
-                <ribbon:RibbonTab x:Name="StatisticsTab" 
-                                  Header="Statistics">
-                    <ribbon:RibbonGroup x:Name="StatisticsAbundanceGroup" 
-                                        Header="Abundance" IsEnabled="false">
-                    </ribbon:RibbonGroup>
-                </ribbon:RibbonTab>
-                <ribbon:RibbonTab x:Name="IdentificationsTab" 
-                                  Header="Identifications">
-                    <ribbon:RibbonGroup x:Name="AmtGroup" 
-                                        Header="AMT" IsEnabled="false">
-                    </ribbon:RibbonGroup>
-                </ribbon:RibbonTab>
-            </ribbon:Ribbon>
--->       
+       
                 <StackPanel 
                     Grid.Column="0"
                     Grid.Row="0"
                     Background="#FF414141"            
                 >
+                    <!--53682B-->
 
-                    <Label
+
+            <Label
                         FontSize="24"
                         Foreground="WhiteSmoke"
                         Margin="5,5,5,5">
@@ -280,8 +153,10 @@
                         </ItemsPanelTemplate>
                     </StatusBar.ItemsPanel>
                     <StatusBarItem>
-                        <TextBlock>Ready</TextBlock>
-                    </StatusBarItem>
+                <TextBlock
+                            Text="{Binding Path=Status}"
+                            />
+            </StatusBarItem>
                     <StatusBarItem Grid.Column="1">
                         <Separator></Separator>
                     </StatusBarItem>

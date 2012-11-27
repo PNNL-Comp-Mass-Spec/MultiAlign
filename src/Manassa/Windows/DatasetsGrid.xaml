@@ -43,6 +43,7 @@
             Click="HideDetailsButton_Click" 
                 HorizontalAlignment="Left">
         </Button>
+
         
         <DataGrid
                 Name="m_dataGrid" 
@@ -91,8 +92,7 @@
             <DataGrid.Columns >                  
                 <DataGridTextColumn         Header="ID"                 CanUserSort="True"     Binding="{Binding DatasetId}"                    IsReadOnly="True"/>
                 <DataGridTextColumn         Header="DMS ID"             CanUserSort="True"     Binding="{Binding DMSDatasetID}"                 IsReadOnly="True"/>
-                <DataGridTextColumn         Header="Name"               CanUserSort="True"     Binding="{Binding DatasetName}"                  IsReadOnly="True"/>
-                <DataGridTextColumn         Header="Parameter File"     CanUserSort="True"     Binding="{Binding ParameterFile}"                IsReadOnly="True"/>
+                <DataGridTextColumn         Header="Name"               CanUserSort="True"     Binding="{Binding DatasetName}"                  IsReadOnly="True"/>                
                 <DataGridTextColumn         Header="Features Path"      CanUserSort="True"     Binding="{Binding Features.Path}"                IsReadOnly="True"/>
                 <DataGridTextColumn         Header="Raw Path"           CanUserSort="True"     Binding="{Binding Raw.Path}"                     IsReadOnly="True"/>
                 <DataGridTextColumn         Header="Database File Path" CanUserSort="True"     Binding="{Binding Sequence.Path}"                IsReadOnly="True"/>                

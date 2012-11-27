@@ -2,12 +2,13 @@
 using MultiAlignCore.IO.Parameters;
 using MultiAlignEngine;
 using MultiAlignEngine.Alignment;
+using System.Windows;
 using MultiAlignCore.Data;
 using System.ComponentModel;
 
 namespace MultiAlignCore.Algorithms.Alignment
 {
-    public class AlignmentOptions
+    public class AlignmentOptions: DependencyObject, INotifyPropertyChanged
     {
         public AlignmentOptions()
         {
@@ -28,7 +29,7 @@ namespace MultiAlignCore.Algorithms.Alignment
 			NETTolerance				= 0.03; 
 			AlignmentType				= enmAlignmentType.NET_MASS_WARP; 
 			RecalibrationType       	= enmCalibrationType.HYBRID_CALIB;
-			AlignToMassTagDatabase		= false; 
+            IsAlignmentBaselineAMasstagDB = true; 
 			AlignmentBaselineName		= ""; 
 			MassBinSize				    = .2;
 			NETBinSize				    = .001;
@@ -63,17 +64,23 @@ namespace MultiAlignCore.Algorithms.Alignment
             get;
             set;
         }
+
+
         [Browsable(false)]
-        public bool AlignToMassTagDatabase
+        public bool IsAlignmentBaselineAMasstagDB
         {
-            get;
-            set;
+            get { return (bool)GetValue(IsAlignmentBaselineAMassTagDBProperty); }
+            set { SetValue(IsAlignmentBaselineAMassTagDBProperty, value); }
         }
-        [Browsable(false)]
-        public bool IsAlignmentBaselineAMasstagDB { get; set; }
+
+        // Using a DependencyProperty as the backing store for IsAlignmentBaselineAMassTagDB.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty IsAlignmentBaselineAMassTagDBProperty =
+            DependencyProperty.Register("IsAlignmentBaselineAMasstagDB", typeof(bool), typeof(AlignmentOptions)
+                );
+
+        
         [Browsable(false)]
         public string AlignmentBaselineName { get; set; }
-
 
         [ParameterFileAttribute("MassCalibrationLSQNumKnots", "Alignment")]
         [Category("Alignment Function")]
@@ -206,5 +213,11 @@ namespace MultiAlignCore.Algorithms.Alignment
 
             return options;
         }
-    }
+    
+#region INotifyPropertyChanged Members
+
+public event PropertyChangedEventHandler  PropertyChanged;
+
+#endregion
+}
 }

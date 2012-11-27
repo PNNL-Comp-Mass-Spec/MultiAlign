@@ -321,7 +321,7 @@ namespace MultiAlignCore.Algorithms
                                                                    filterOptions,
                                                                    config.Analysis.DataProviders,
                                                                    config.Analysis.MassTagDatabase,
-                                                                   config.Analysis.Options.UseMassTagDBAsBaseline,
+                                                                   config.Analysis.Options.AlignmentOptions.IsAlignmentBaselineAMasstagDB,
                                                                    config.Analysis.Options.DriftTimeAlignmentOptions.ShouldAlignDriftTimes);
             ILcScanAdjuster scanAdjuster        = AlgorithmProviders.LcScanAdjuster;
             IFeatureAligner aligner             = m_algorithms.Aligner;
@@ -812,7 +812,7 @@ namespace MultiAlignCore.Algorithms
                                                 config.Analysis.Options.FeatureFilterOptions,                                                                   
                                                 config.Analysis.DataProviders,
                                                 config.Analysis.MassTagDatabase,
-                                                config.Analysis.Options.UseMassTagDBAsBaseline,
+                                                config.Analysis.Options.AlignmentOptions.IsAlignmentBaselineAMasstagDB,
                                                 config.Analysis.Options.DriftTimeAlignmentOptions.ShouldAlignDriftTimes);
 
             // Create the alignment cache and clear it.
@@ -938,6 +938,11 @@ namespace MultiAlignCore.Algorithms
             
             return alignmentData;
         }
+
+
+        
+        
+
         /// <summary>
         /// Corrects for drift time.
         /// </summary>
@@ -955,7 +960,7 @@ namespace MultiAlignCore.Algorithms
                                                                                         DriftTimeAlignmentOptions driftTimeAlignmentOptions,
                                                                                         MassTagDatabase     database,
                                                                                         DriftTimeAligner    driftTimeAligner)
-        {
+        {            
             KeyValuePair<DriftTimeAlignmentResults<UMC, UMC>, 
                                 DriftTimeAlignmentResults<UMC, UMC>> pair = new KeyValuePair<DriftTimeAlignmentResults<UMC,UMC>,DriftTimeAlignmentResults<UMC,UMC>>();
 
@@ -1251,7 +1256,7 @@ namespace MultiAlignCore.Algorithms
 
             // Load the mass tag database if we are aligning, or if we are 
             // peak matching (but aligning to a reference dataset.
-            if (m_config.Analysis.Options.UseMassTagDBAsBaseline)
+            if (m_config.Analysis.Options.AlignmentOptions.IsAlignmentBaselineAMasstagDB)
             {
                 UpdateStatus("Loading Mass Tag database from database:  " + m_config.Analysis.Options.MassTagDatabaseOptions.DatabaseName);
 

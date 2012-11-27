@@ -103,14 +103,25 @@
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <ListBox
-                        ItemsSource="{Binding}"
-                        x:Name="m_datasetBox"/>                        
-                    <windows:MsMsViewer                        
+                    <windows:DatasetListBox                        
+                        x:Name="m_datasetBox"/>   
+                    <GridSplitter
                         Grid.Row="0"
                         Grid.Column="1"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        Width="5"
+                        Background="DarkGray"
+                        >
+                        
+                    </GridSplitter>
+                    <windows:MsMsViewer                        
+                        Grid.Row="0"
+                        Grid.Column="2"
+                        SelectedDataset="{Binding Path=SelectedDataset, ElementName=m_datasetBox}"
                     x:Name="m_msmsViewer">
 
                     </windows:MsMsViewer>

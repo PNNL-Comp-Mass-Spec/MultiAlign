@@ -10,6 +10,7 @@
     <UserControl.Resources>
         <converters:SearchOptionConverter x:Key="SearchOptionConverter"></converters:SearchOptionConverter>
         <converters:DatasetPathConverter x:Key="DatasetPathConverter"></converters:DatasetPathConverter>
+<converters:DatasetFolderPathConverter x:Key="DatasetFolderPathConverter"></converters:DatasetFolderPathConverter>
 
         
     </UserControl.Resources>
@@ -202,13 +203,19 @@
                 <DataGridHyperlinkColumn    Header="Instrument File" CanUserSort="True"     Binding="{Binding Raw.Path,             Converter={StaticResource ResourceKey=DatasetPathConverter}}"            IsReadOnly="True"/>
                 <DataGridHyperlinkColumn    Header="Sequence File"   CanUserSort="True"     Binding="{Binding Sequence.Path,        Converter={StaticResource ResourceKey=DatasetPathConverter}}"       IsReadOnly="True"
                                             >
-                </DataGridHyperlinkColumn>                
-                <DataGridTextColumn         Header="Parent Folder"   CanUserSort="True"     Binding="{Binding Path=Features.Path}"  IsReadOnly="True"/>
+                </DataGridHyperlinkColumn>
+                <DataGridTextColumn         Header="Parent Folder"   CanUserSort="True"     Binding="{Binding Path=Features.Path, Converter={StaticResource ResourceKey=DatasetFolderPathConverter}}"  IsReadOnly="True"/>
             </DataGrid.Columns>            
-        </DataGrid>   
-        <WrapPanel
+        </DataGrid>
+        <Grid
             Grid.Column="0"
-            Grid.Row="2"
+            Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+       <WrapPanel
             >
             <Button
                 Margin="5,5,5,5"                
@@ -244,7 +251,20 @@
                 x:Name="SelectNoneButton"
                 Click="SelectNoneButton_Click">
                 None
-            </Button>
-        </WrapPanel>
+                </Button>
+            </WrapPanel>
+            <Label
+                Grid.Column="1"
+                Content="{Binding Path=Datasets.Count}"
+                    VerticalContentAlignment="Center"
+                >
+            </Label>
+            <Label
+                Grid.Column="2"
+                Content="Datasets"
+                    VerticalContentAlignment="Center"
+                >
+            </Label>
+        </Grid>
     </Grid>
 </UserControl>

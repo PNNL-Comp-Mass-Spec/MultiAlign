@@ -6,18 +6,30 @@
              xmlns:g ="clr-namespace:MultiAlignCore.Data;assembly=MultiAlignCore"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    
+    <UserControl.Resources>
+        <DataTemplate x:Key="DatasetItemTemplate">
+            <Border CornerRadius="2" BorderThickness="1" HorizontalAlignment="Stretch" Padding="3" Margin="3" BorderBrush="#FFCCCCCC">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Width="Auto">
+                    <TextBlock 
+                        FontSize="20"
+                        HorizontalAlignment="Stretch">
+                        <TextBlock.Text>                        
+                            <Binding Path="DatasetName" />                    
+                        </TextBlock.Text>
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+        </DataTemplate>
+    </UserControl.Resources>
     <DockPanel>
         <ListBox 
                  DockPanel.Dock="Left"
-                 ItemsSource="{Binding Source=Datasets}"
-                 BorderThickness="0"             
-                 Background="Transparent">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <Label Content="{Binding Path=.}"/>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
+                 ItemsSource="{Binding Path=Datasets}"
+                 BorderThickness="0"  
+                 HorizontalContentAlignment="Stretch"
+                 ItemTemplate="{StaticResource DatasetItemTemplate}"
+                SelectedItem="{Binding Path=SelectedDataset, Mode=TwoWay}"
+                 Background="Transparent">            
         </ListBox>
     </DockPanel>
 </UserControl>

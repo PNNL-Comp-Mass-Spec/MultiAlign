@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.ComponentModel;
 using System.Collections.ObjectModel;
 using MultiAlignCore.Data;
 
@@ -21,37 +22,40 @@ namespace Manassa.Windows
     /// <summary>
     /// Interaction logic for SelectBaselinesAndOptions.xaml
     /// </summary>
-    public partial class SelectBaselinesAndOptions : UserControl
+    public partial class SelectBaselinesAndOptions : UserControl, INotifyPropertyChanged
     {
-        private AnalysisConfig m_config;
+        private System.Windows.Forms.OpenFileDialog m_openFileDialog;        
         public SelectBaselinesAndOptions()
         {
             InitializeComponent();
-        }
 
-        private void SelectAnalysisOptionsButton_Click(object sender, RoutedEventArgs e)
-        {
-            Main parameterOptions = new Main();
-            System.Windows.Forms.DialogResult result = parameterOptions.ShowDialog();
-            if (result == System.Windows.Forms.DialogResult.OK)
-            {
-                m_config.Analysis.Options = parameterOptions.Options;
-            }
+            m_openFileDialog        = new System.Windows.Forms.OpenFileDialog();
+            m_openFileDialog.Filter = "Mass Tag Database (.db3)|*.db3|All Files (*.*)|*.*";
+            DataContext             = this;            
         }
 
         private void BrowseForFolderButton_Click(object sender, RoutedEventArgs e)
         {
-
+            System.Windows.Forms.DialogResult result =  m_openFileDialog.ShowDialog();
+            if (result == System.Windows.Forms.DialogResult.OK)
+            {
+                Analysis.Options.MassTagDatabaseOptions.DatabaseType     = MultiAlignCore.IO.MTDB.MassTagDatabaseType.SQLite;
+                Analysis.Options.MassTagDatabaseOptions.DatabaseFilePath = m_openFileDialog.FileName;
+            }
         }
-
-        private void SelectMtsMtdbButton_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-
         
+        public MultiAlignAnalysis Analysis
+        {
+            get { return (MultiAlignAnalysis)GetValue(AnalysisProperty); }
+            set { SetValue(AnalysisProperty, value); }
+        }
 
+        // Using a DependencyProperty as the backing store for Analysis.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty AnalysisProperty =
+            DependencyProperty.Register("Analysis", typeof(MultiAlignAnalysis), 
+            typeof(SelectBaselinesAndOptions));
+            
+                
         public ObservableCollection<DatasetInformation> Datasets
         {
             get { return (ObservableCollection<DatasetInformation>)GetValue(DatasetsProperty); }
@@ -60,12 +64,51 @@ namespace Manassa.Windows
 
         // Using a DependencyProperty as the backing store for Datasets.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty DatasetsProperty =
-            DependencyProperty.Register("Datasets", typeof(ObservableCollection<DatasetInformation>), typeof(SelectBaselinesAndOptions));
+            DependencyProperty.Register("Datasets",
+            typeof(ObservableCollection<DatasetInformation>), 
+            typeof(SelectBaselinesAndOptions));
 
-
-        public void SetAnalysisConfig(AnalysisConfig config)
+        public DatasetInformation  BaselineDataset
         {
-            m_config = config;            
+            get { return (DatasetInformation )GetValue(BaselineDatasetProperty); }
+            set { SetValue(BaselineDatasetProperty, value); }
         }
+
+        // Using a DependencyProperty as the backing store for BaselineDataset.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty BaselineDatasetProperty =
+            DependencyProperty.Register("BaselineDataset",
+            typeof(DatasetInformation ), 
+            typeof(SelectBaselinesAndOptions));
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {               
+            Analysis.Options.AlignmentOptions.IsAlignmentBaselineAMasstagDB = false;
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            Analysis.Options.AlignmentOptions.IsAlignmentBaselineAMasstagDB = true;
+            Analysis.MetaData.BaselineDataset = null;
+        }
+
+        private void ToggleButton_Checked(object sender, RoutedEventArgs e)
+        {                        
+            Analysis.Options.MassTagDatabaseOptions.DatabaseType = MultiAlignCore.IO.MTDB.MassTagDatabaseType.SQLite;
+        }
+
+        #region INotifyPropertyChanged Members
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void OnNotifyPropertyChanged(string name)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(name));
+            }
+        }
+
+        #endregion
+
     }
 }

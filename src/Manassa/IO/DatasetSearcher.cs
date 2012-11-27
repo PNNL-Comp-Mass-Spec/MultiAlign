@@ -18,7 +18,7 @@ namespace Manassa.IO
         /// <param name="folderPath"></param>
         /// <returns></returns>
         public static List<InputFile> FindDatasets(string folderPath, List<string> extensions, SearchOption options)
-        {
+        {            
             List<InputFile> datasetList = new List<InputFile>();
             List<string> candidates = new List<string>();
 

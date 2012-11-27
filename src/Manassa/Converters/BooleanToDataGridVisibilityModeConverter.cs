@@ -13,10 +13,12 @@ namespace Manassa.Converters
         #region IValueConverter Members
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
+            if (value == null)
+                return DataGridRowDetailsVisibilityMode.Collapsed;
 
             bool boolValue = System.Convert.ToBoolean(value);
 
-            return (boolValue) ? DataGridRowDetailsVisibilityMode.Visible: DataGridRowDetailsVisibilityMode.Collapsed;
+            return (boolValue) ? DataGridRowDetailsVisibilityMode.Visible: DataGridRowDetailsVisibilityMode.VisibleWhenSelected;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

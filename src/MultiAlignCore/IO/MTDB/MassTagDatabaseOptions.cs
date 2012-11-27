@@ -2,6 +2,7 @@
 using MultiAlignCore.IO.Parameters;
 using System.ComponentModel;
 using System;
+using System.Windows;
 using MultiAlignCore.Data;
 
 namespace MultiAlignCore.IO.MTDB
@@ -9,7 +10,7 @@ namespace MultiAlignCore.IO.MTDB
     /// <summary>
     /// Class in progress.  Options for loading data to and from the MTDB.
     /// </summary>
-    public class MassTagDatabaseOptions
+    public class MassTagDatabaseOptions: DependencyObject
     {
 
         public MassTagDatabaseOptions()
@@ -30,6 +31,7 @@ namespace MultiAlignCore.IO.MTDB
 				ExperimentExclusionFilter	    = ""; 
 				ExperimentFilter			    = "";
 				DatabaseType				    = MassTagDatabaseType.None;
+            
         }
 
 
@@ -127,14 +129,20 @@ namespace MultiAlignCore.IO.MTDB
             get;
             set;
         }
-
+        
         [Description("Database File Path")]
         [Browsable(false)]
         public string DatabaseFilePath
         {
-            get;
-            set;
+            get { return (string)GetValue(DatabaseFilePathProperty); }
+            set { SetValue(DatabaseFilePathProperty, value); }
         }
+
+        // Using a DependencyProperty as the backing store for DatabaseFilePath.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty DatabaseFilePathProperty =
+            DependencyProperty.Register("DatabaseFilePath", typeof(string), typeof(MassTagDatabaseOptions));
+
+
 
         [Description("Database Name")]
         [Browsable(false)]

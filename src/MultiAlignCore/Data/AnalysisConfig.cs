@@ -5,6 +5,7 @@ using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.Reports;
 using MultiAlignCore.IO;
 using MultiAlignCore.Algorithms;
+using System.Windows;
 
 namespace MultiAlignCore.Data
 {
@@ -12,7 +13,7 @@ namespace MultiAlignCore.Data
     /// <summary>
     /// Class that holds all information for setting up a job.
     /// </summary>
-    public class AnalysisConfig
+    public class AnalysisConfig : DependencyObject
     {
         #region Constants
         private const int LC_DATA = 0;
@@ -99,18 +100,35 @@ namespace MultiAlignCore.Data
         /// ID of the job to use.
         /// </summary>
         public int JobID { get; set; }
-        /// <summary>
-        /// Reference to the analysis that is running.
-        /// </summary>
-        public MultiAlignAnalysis Analysis { get; set; }
-        /// <summary>
-        /// Where the data and plots needs to go.
-        /// </summary>
-        public string AnalysisPath { get; set; }
-        /// <summary>
-        /// The name of the analysis.
-        /// </summary>
-        public string AnalysisName { get; set; }
+
+        public MultiAlignAnalysis Analysis
+        {
+            get { return (MultiAlignAnalysis)GetValue(AnalysisProperty); }
+            set { SetValue(AnalysisProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Analysis.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty AnalysisProperty =
+            DependencyProperty.Register("Analysis", typeof(MultiAlignAnalysis), typeof(AnalysisConfig));
+
+        public string AnalysisPath
+        {
+            get { return (string)GetValue(AnalysisPathProperty); }
+            set { SetValue(AnalysisPathProperty, value); }
+        }
+        public static readonly DependencyProperty AnalysisPathProperty =
+            DependencyProperty.Register("AnalysisPath", typeof(string), typeof(AnalysisConfig));
+
+        public string AnalysisName
+        {
+            get { return (string)GetValue(AnalysisNameProperty); }
+            set { SetValue(AnalysisNameProperty, value); }
+        }
+        public static readonly DependencyProperty AnalysisNameProperty =
+            DependencyProperty.Register("AnalysisName", typeof(string), typeof(AnalysisConfig));
+
+
+
         /// <summary>
         /// Path to save the plots.
         /// </summary>

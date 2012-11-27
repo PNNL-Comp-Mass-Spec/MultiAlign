@@ -118,6 +118,14 @@ namespace MultiAlignParameterFileEditor
         {
             closeButton.Visible = true;
         }
+        public void HideSaveButton()
+        {
+            saveButton.Visible = false;
+        }
+        public void ShowSaveButton()
+        {
+            saveButton.Visible = true;
+        }
 
         #region Properties
         /// <summary>

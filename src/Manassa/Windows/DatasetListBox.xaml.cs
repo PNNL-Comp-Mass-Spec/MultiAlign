@@ -24,12 +24,32 @@ namespace Manassa.Windows
         public DatasetListBox()
         {
             InitializeComponent();
+
+            DataContext = this;
         }
+
+
 
         public ObservableCollection<DatasetInformation> Datasets
         {
-            get;
-            set;
+            get { return (ObservableCollection<DatasetInformation>)GetValue(DatasetsProperty); }
+            set { SetValue(DatasetsProperty, value); }
         }
+
+        // Using a DependencyProperty as the backing store for Datasets.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty DatasetsProperty =
+            DependencyProperty.Register("Datasets", typeof(ObservableCollection<DatasetInformation>), typeof(DatasetListBox));
+
+
+
+        public DatasetInformation SelectedDataset
+        {
+            get { return (DatasetInformation)GetValue(SelectedDatasetProperty); }
+            set { SetValue(SelectedDatasetProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for SelectedDataset.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty SelectedDatasetProperty =
+            DependencyProperty.Register("SelectedDataset", typeof(DatasetInformation), typeof(DatasetListBox));
     }
 }

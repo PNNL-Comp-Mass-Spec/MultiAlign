@@ -17,6 +17,7 @@ namespace Manassa.Windows
         {
             InitializeComponent();
             Datasets = new List<DatasetInformation>();
+            DataContext = this;
         }
 
         /// <summary>
@@ -53,8 +54,7 @@ namespace Manassa.Windows
         }
 
         private void ShowDetailsButton_Click(object sender, RoutedEventArgs e)
-        {
-
+        {            
             ShowDetails = true;
         }
 

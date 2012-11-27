@@ -6,6 +6,7 @@ using MultiAlignCore.Algorithms;
 using MultiAlignCore.Data;
 using MultiAlignCore.IO;
 using MultiAlignCustomControls.Drawing;
+using System.Windows.Data;
 
 namespace Manassa
 {
@@ -24,15 +25,19 @@ namespace Manassa
         public MainWindow()
         {
             InitializeComponent();
-            DataContext     = this;
-            AnalysisState   = ApplicationAnalysisState.Idle;            
-            RecentAnalysisObjects = new ObservableCollection<RecentAnalysis>();
-            m_recentStackPanel.DataContext = RecentAnalysisObjects;
-            m_analysisLoadDialog = new System.Windows.Forms.OpenFileDialog();
-            m_controller    = new AnalysisController();
-            m_reporter      = new AnalysisReportGenerator();
-
+            DataContext                     = this;
+            AnalysisState                   = ApplicationAnalysisState.Idle;            
+            RecentAnalysisObjects           = new ObservableCollection<RecentAnalysis>();
+            m_recentStackPanel.DataContext  = RecentAnalysisObjects;
+            m_analysisLoadDialog            = new System.Windows.Forms.OpenFileDialog();
+            m_controller                    = new AnalysisController();
+            m_reporter                      = new AnalysisReportGenerator();
+            
             m_performAnalysisControl.AnalysisQuit += new System.EventHandler(m_performAnalysisControl_AnalysisQuit);
+
+            Binding binding = new Binding("Status");
+            binding.Source  = ApplicationStatusMediator.Mediator;
+            SetBinding(StatusProperty, binding);            
         }
 
         void m_performAnalysisControl_AnalysisQuit(object sender, System.EventArgs e)
@@ -42,6 +47,16 @@ namespace Manassa
             else
                 AnalysisState = ApplicationAnalysisState.Idle;
         }
+
+        public string Status
+        {
+            get { return (string)GetValue(StatusProperty); }
+            set { SetValue(StatusProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Status.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty StatusProperty =
+            DependencyProperty.Register("Status", typeof(string), typeof(MainWindow));
 
         private void CleanupMultiAlignController()
         {
@@ -88,8 +103,13 @@ namespace Manassa
         }
 
         private void NewButton_Click(object sender, RoutedEventArgs e)
-        {            
+        {
+            ApplicationStatusMediator.SetStatus("Creating new analysis.");
+
             AnalysisConfig config                           = new AnalysisConfig();
+            config.Analysis                                 = new MultiAlignAnalysis();
+            config.Analysis.AnalysisType                    = AnalysisType.Full;
+            config.Analysis.Options.AlignmentOptions.IsAlignmentBaselineAMasstagDB = false;
             m_performAnalysisControl.AnalysisConfiguration  = config;
             m_performAnalysisControl.CurrentStep            = AnalysisSetupStep.DatasetSelection;
             AnalysisState                                   = ApplicationAnalysisState.SetupAnalysis;                    
