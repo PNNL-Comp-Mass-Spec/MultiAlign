@@ -27,43 +27,57 @@ namespace MultiAlignCore.IO.Parameters
 			doc = d;
 		}
 
-		protected XmlNode OpenXmlNode(string id, string type, int index, bool isNode, bool createNewIfMissing)
-		{
-			for (int i=0; i<root.ChildNodes.Count; i++)
-			{
-				string name = root.ChildNodes[i].Name;
-				if(root.ChildNodes[i].Name == id)
-				{
-					if (index >= 0)
-					{
-						string strIndex = root.ChildNodes [i].Attributes["index"].Value;
-						if (strIndex.Equals (index.ToString()))
-							return (root.ChildNodes[i]);
-					}
-					else
-						return (root.ChildNodes[i]);
-				}
-			}
+        protected XmlNode OpenXmlNode(string id, string type, int index, bool isNode, bool createNewIfMissing)
+        {
+            for (int i = 0; i < root.ChildNodes.Count; i++)
+            {
+                string name = root.ChildNodes[i].Name;
+                if (root.ChildNodes[i].Name == id)
+                {
+                    if (index >= 0)
+                    {
+                        string strIndex = root.ChildNodes[i].Attributes["index"].Value;
+                        if (strIndex.Equals(index.ToString()))
+                            return (root.ChildNodes[i]);
+                    }
+                    else
+                        return (root.ChildNodes[i]);
+                }
+            }
 
             if (!createNewIfMissing)
                 return null;
 
-			XmlNode newNode = doc.CreateNode(XmlNodeType.Element, id, "");
-			root.AppendChild (newNode);
-			if (!isNode)
-				newNode.InnerText = "0";
-			XmlNode attr = doc.CreateNode(XmlNodeType.Attribute, "type", "");
-			attr.Value = type;
-			newNode.Attributes.SetNamedItem(attr);
+            XmlNode newNode = doc.CreateNode(XmlNodeType.Element, id, "");
+            root.AppendChild(newNode);
+            if (!isNode)
+                newNode.InnerText = "0";
+            XmlNode attr = doc.CreateNode(XmlNodeType.Attribute, "type", "");
+            attr.Value = type;
+            newNode.Attributes.SetNamedItem(attr);
 
-			if (index >= 0)
+            if (index >= 0)
+            {
+                attr = doc.CreateNode(XmlNodeType.Attribute, "index", "");
+                attr.Value = index.ToString();
+                newNode.Attributes.SetNamedItem(attr);
+            }
+
+            return (newNode);
+        }
+
+		protected XmlNode OpenXmlNodeFromArray(string id, int index)
+		{
+			for (int i=0; i<root.ChildNodes.Count; i++)
 			{
-				attr = doc.CreateNode(XmlNodeType.Attribute, "index", "");
-				attr.Value = index.ToString();
-				newNode.Attributes.SetNamedItem(attr);
+				string name = root.ChildNodes[i].Name;
+				if(root.ChildNodes[i].Name == id && i == index)
+				{					
+					return (root.ChildNodes[i]);										
+				}
 			}
 
-			return (newNode);
+            return null;
 		}
 
 		protected void RemoveChild(string id, int index)
@@ -98,6 +112,13 @@ namespace MultiAlignCore.IO.Parameters
 			return(root.ChildNodes.Count);
 		}
 
+        public MetaNode OpenChildFromArray(string id, int index)
+        {
+            XmlNode node = OpenXmlNodeFromArray(id, index);
+
+            MetaNode retNode = new MetaNode(node, doc);
+            return (retNode);
+        }
 		public MetaNode OpenChild(string id, string childType, int index)
 		{
 			XmlNode node = OpenXmlNode(id, childType, index, true, true);

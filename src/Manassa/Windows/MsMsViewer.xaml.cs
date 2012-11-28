@@ -18,6 +18,7 @@ using MultiAlignCore.Data;
 using MultiAlignCore.Data.Features;
 using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
+using Manassa.Data;
 
 namespace Manassa.Windows
 {
@@ -48,6 +49,20 @@ namespace Manassa.Windows
 
         }
 
+
+
+        public Orientation Orientation
+        {
+            get { return (Orientation)GetValue(OrientationProperty); }
+            set { SetValue(OrientationProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Orientation.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty OrientationProperty =
+            DependencyProperty.Register("Orientation", typeof(Orientation), typeof(MsMsViewer), new UIPropertyMetadata(Orientation.Vertical));
+
+
+
         public DatasetInformation SelectedDataset
         {
             get { return (DatasetInformation)GetValue(SelectedDatasetProperty); }
@@ -68,6 +83,7 @@ namespace Manassa.Windows
                         return;
                     }
 
+                    ApplicationStatusMediator.SetStatus(string.Format("Loading MS/MS spectra for {0}", x.SelectedDataset.DatasetName));
                     x.m_datasetIdToLoad = x.SelectedDataset.DatasetId;
                     x.m_providers       = x.Analysis.DataProviders;
                     x.StartLoadingData();

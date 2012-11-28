@@ -11,10 +11,12 @@
             <Border CornerRadius="2" BorderThickness="1" HorizontalAlignment="Stretch" Padding="3" Margin="3" BorderBrush="#FFCCCCCC">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Width="Auto">
                     <TextBlock 
-                        FontSize="20"
+                        FontSize="20"                        
+                        TextTrimming="WordEllipsis"                                       
+                        ToolTip="{Binding DatasetName}"
                         HorizontalAlignment="Stretch">
-                        <TextBlock.Text>                        
-                            <Binding Path="DatasetName" />                    
+                        <TextBlock.Text>                                                            
+                                <Binding Path="DatasetName" />                    
                         </TextBlock.Text>
                     </TextBlock>
                 </StackPanel>

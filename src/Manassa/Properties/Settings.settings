@@ -14,5 +14,8 @@
     <Setting Name="InputFilePath" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="WorkspaceFile" Type="System.String" Scope="User">
+      <Value Profile="(Default)">manassaworkspace.xml</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

@@ -14,44 +14,58 @@
     </UserControl.Resources>
 
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
+        <Grid.RowDefinitions>            
             <RowDefinition/>
-            <RowDefinition/>
+            <RowDefinition Height="40"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
-            <ColumnDefinition />
-            <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-        
-        <Label
-            Grid.Row="0"
-            Grid.Column="0"
+
+        <TabControl
+            Grid.Row="0"            
             >
-            MultiAlign Analysis
-        </Label>
-        
-        <WrapPanel
+            <TabItem
+                Header="Gallery"
+                Style="{DynamicResource ResourceKey=SimpleTabItem}">
+                <WrapPanel                    
+                    Margin="5"                    
+                    Background="LightGray"                    
+                    >
+                </WrapPanel>
+            </TabItem>
+
+            <TabItem
+                Header="Messages"
+                Style="{DynamicResource ResourceKey=SimpleTabItem}">
+                <ScrollViewer
+                    VerticalAlignment="Stretch"
+                    VerticalContentAlignment="Stretch"
+                    >
+                    <ListBox
+                        ItemsSource="{Binding Path=Messages}"
+                        >
+                    
+                    </ListBox>
+                </ScrollViewer>
+            </TabItem>
+        </TabControl>        
+
+        <Label                         
             Grid.Row="1"
-            Grid.RowSpan="2"
             Grid.Column="0"
-            Grid.ColumnSpan="2"
-            Margin="5"
-            Background="LightGray">             
-        </WrapPanel>
-                               
-        <Button
-            x:Name="NextButton"
+            Grid.ColumnSpan="4"
+            Content="{Binding Path=CurrentStatusMessage}" />            
+        <Button            
             Style="{DynamicResource ResourceKey=SimpleButtonStyle}"                            
-            Grid.Row="3"
-            Grid.Column="5"
+            Grid.Row="2"
+            Grid.Column="0"
             Height="32"
             Width="128"
             Margin="5,5,5,5"
-            HorizontalAlignment="Right"
-            Content="Next"
-            IsEnabled="{Binding DatasetCount, Converter={StaticResource ResourceKey=DatasetSelectedConverter}}" Click="NextButton_Click" />                
+            HorizontalAlignment="Left"
+            Content="Cancel"            
+            IsEnabled="False"/>                
     </Grid>
 </UserControl>

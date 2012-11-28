@@ -13,4 +13,10 @@ namespace Manassa.Data
         Naming,
         Started
     }
+    public enum AnalysisRuningState
+    {
+        Running,
+        Quit,
+        Completed
+    }
 }

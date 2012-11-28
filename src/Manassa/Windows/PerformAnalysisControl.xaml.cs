@@ -21,6 +21,7 @@ namespace Manassa.Windows
     public partial class PerformAnalysisControl : UserControl
     {
         public event EventHandler AnalysisQuit;
+        public event EventHandler AnalysisStart;
 
         public PerformAnalysisControl()
         {
@@ -29,8 +30,7 @@ namespace Manassa.Windows
             DataContext         = this;
             DatasetCount        = 0;
             ParameterFileName   = "No Parameter File Chosen";
-            CurrentStep         = AnalysisSetupStep.DatasetSelection;          
-              
+            CurrentStep         = AnalysisSetupStep.DatasetSelection;                        
         }
 
         public AnalysisConfig AnalysisConfiguration
@@ -158,6 +158,10 @@ namespace Manassa.Windows
                     break;
                 case AnalysisSetupStep.Naming:
                     CurrentStep = AnalysisSetupStep.Started;
+                    if (AnalysisStart != null)
+                    {
+                        AnalysisStart(this, null);
+                    }
                     break;
                 case AnalysisSetupStep.Started:
                     break;

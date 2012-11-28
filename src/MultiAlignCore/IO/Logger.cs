@@ -7,11 +7,25 @@ using System.Reflection;
 
 namespace MultiAlignCore.IO
 {
+    public class StatusEventArgs: EventArgs
+    {
+        public StatusEventArgs(string message)
+        {
+            Message = message;
+        }
+        public string Message
+        {
+            get;
+            private set;
+        }
+    }
     /// <summary>
     /// Class that handles logging messages to the console and log files.
     /// </summary>
     public static class Logger
     {
+        public static event EventHandler<StatusEventArgs> Status;        
+
         /// <summary>
         /// File to log information to.
         /// </summary>
@@ -20,7 +34,6 @@ namespace MultiAlignCore.IO
             get;
             set;
         }
-
         /// <summary>
         /// Prints a message to the console and log file.
         /// </summary>
@@ -28,6 +41,13 @@ namespace MultiAlignCore.IO
         public static void PrintMessage(string message)
         {
             PrintMessage(message, true);
+        }
+        private static void OnMessage(string message)
+        {
+            if (Status != null)
+            {
+                Status(null, new StatusEventArgs(message));
+            }
         }
         /// <summary>
         /// Prints a message to the console and log file.
@@ -57,6 +77,7 @@ namespace MultiAlignCore.IO
             {
                 File.AppendAllText(Logger.LogPath, newMessage + Environment.NewLine);
             }
+            OnMessage(newMessage);
             Console.WriteLine(newMessage);
         }
         /// <summary>

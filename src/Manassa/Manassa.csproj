@@ -9,7 +9,7 @@
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Manassa</RootNamespace>
-    <AssemblyName>Manassa</AssemblyName>
+    <AssemblyName>MultiAlign</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
@@ -44,10 +44,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\PNNLOmics.dll</HintPath>
     </Reference>
-    <Reference Include="RibbonControlsLibrary, Version=4.0.0.11019, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Microsoft Ribbon for WPF\V4.0\RibbonControlsLibrary.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -77,6 +73,7 @@
     <Compile Include="Converters\AnalysisStepVisibilityConverter.cs" />
     <Compile Include="Converters\ApplicationStateVisibilityConverter.cs" />
     <Compile Include="Converters\ApplicationStateIsSelectedConverter.cs" />
+    <Compile Include="Converters\OrientationMsMsConverter.cs" />
     <Compile Include="Converters\DatasetColorConverter.cs" />
     <Compile Include="Converters\DatasetFolderPathConverter.cs" />
     <Compile Include="Converters\DatasetPathConverter.cs" />
@@ -86,6 +83,7 @@
     <Compile Include="Converters\HasMSMSConverter.cs" />
     <Compile Include="Converters\UriToBitmapConverter.cs" />
     <Compile Include="Data\AnalysisSetupState.cs" />
+    <Compile Include="Data\ApplicationAnalysisState.cs" />
     <Compile Include="Data\ApplicationStatusMediator.cs" />
     <Compile Include="Data\DatasetFilterFactory.cs" />
     <Compile Include="Data\DatasetPlotLoader.cs" />
@@ -94,7 +92,10 @@
     <Compile Include="Data\RecentAnalysis.cs" />
     <Compile Include="Data\RectangleFDependency.cs" />
     <Compile Include="Data\StatusMessageWrapper.cs" />
+    <Compile Include="IO\ManassaWorkspaceWriter.cs" />
     <Compile Include="IO\DatasetSearcher.cs" />
+    <Compile Include="IO\ManassaWorkspaceReader.cs" />
+    <Compile Include="Workspace\Workspace.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Windows\AnalysisNaming.xaml.cs">

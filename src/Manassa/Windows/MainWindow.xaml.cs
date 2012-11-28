@@ -1,12 +1,13 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows;
+using System.Windows.Data;
 using Manassa.Data;
-using Manassa.Windows;
+using Manassa.IO;
+using Manassa.Workspace;
 using MultiAlignCore.Algorithms;
 using MultiAlignCore.Data;
-using MultiAlignCore.IO;
 using MultiAlignCustomControls.Drawing;
-using System.Windows.Data;
+using MultiAlignCore.IO;
 
 namespace Manassa
 {
@@ -15,39 +16,94 @@ namespace Manassa
     /// </summary>
     public partial class MainWindow : Window
     {
-        private System.Windows.Forms.OpenFileDialog m_analysisLoadDialog;
-        /// <summary>
-        /// Object that controls the setup of an analysis and processing.
-        /// </summary>
-        private AnalysisController      m_controller;
-        private AnalysisReportGenerator m_reporter;
-
+        private System.Windows.Forms.OpenFileDialog m_analysisLoadDialog;        
+        
         public MainWindow()
         {
             InitializeComponent();
-            DataContext                     = this;
-            AnalysisState                   = ApplicationAnalysisState.Idle;            
-            RecentAnalysisObjects           = new ObservableCollection<RecentAnalysis>();
-            m_recentStackPanel.DataContext  = RecentAnalysisObjects;
-            m_analysisLoadDialog            = new System.Windows.Forms.OpenFileDialog();
-            m_controller                    = new AnalysisController();
-            m_reporter                      = new AnalysisReportGenerator();
-            
-            m_performAnalysisControl.AnalysisQuit += new System.EventHandler(m_performAnalysisControl_AnalysisQuit);
+            DataContext = this;
 
+            // Controllers etc for running analysis.
+            AnalysisState                   = ApplicationAnalysisState.Idle;
+            CurrentWorkspace                = new ManassaWorkspace();                       
+            m_analysisLoadDialog            = new System.Windows.Forms.OpenFileDialog();
+            Controller                      = new AnalysisController();
+            Reporter                        = new AnalysisReportGenerator();        
+    
+            m_performAnalysisControl.AnalysisQuit  += new System.EventHandler(m_performAnalysisControl_AnalysisQuit);
+            m_performAnalysisControl.AnalysisStart += new System.EventHandler(m_performAnalysisControl_AnalysisStart);
+
+            // Bind the status to the status mediators.
             Binding binding = new Binding("Status");
             binding.Source  = ApplicationStatusMediator.Mediator;
-            SetBinding(StatusProperty, binding);            
+            SetBinding(StatusProperty, binding);
+
+            // Update the titles.
+            string version  = MultiAlignCore.ApplicationUtility.GetEntryAssemblyData();
+            Title           = version;
+
+            Closing += new System.ComponentModel.CancelEventHandler(MainWindow_Closing);
+
+            LoadWorkspace(Properties.Settings.Default.WorkspaceFile);
+
+            ApplicationStatusMediator.SetStatus("Ready.");
         }
 
-        void m_performAnalysisControl_AnalysisQuit(object sender, System.EventArgs e)
+        /// <summary>
+        /// Loads teh current workspace.
+        /// </summary>
+        private void LoadWorkspace(string path)
+        {            
+            if (System.IO.File.Exists(path))
+            {
+                ApplicationStatusMediator.SetStatus("Loading workspace");
+                ManassaWorkspaceReader reader = new ManassaWorkspaceReader();
+                try
+                {
+                    CurrentWorkspace = reader.Read(path);
+                }
+                catch
+                {
+                    ApplicationStatusMediator.SetStatus(string.Format("Could not load the default workspace: {0}"));
+                }
+            }
+        }
+
+        void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (LastApplicationState == ApplicationAnalysisState.Opened)
-                AnalysisState = LastApplicationState;
-            else
-                AnalysisState = ApplicationAnalysisState.Idle;
+            ManassaWorkspaceWriter writer = new ManassaWorkspaceWriter();
+            writer.Write(Properties.Settings.Default.WorkspaceFile, CurrentWorkspace);
+
         }
 
+        #region Dependency Properties
+        public IAnalysisReportGenerator Reporter
+        {
+            get { return (IAnalysisReportGenerator)GetValue(ReporterProperty); }
+            set { SetValue(ReporterProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Reporter.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ReporterProperty =
+            DependencyProperty.Register("Reporter", typeof(IAnalysisReportGenerator), typeof(MainWindow));
+
+        
+
+        /// <summary>
+        /// Gets or sets the current work space item
+        /// </summary>        
+        public ManassaWorkspace CurrentWorkspace
+        {
+            get { return (ManassaWorkspace)GetValue(CurrentWorkSpaceProperty); }
+            set { SetValue(CurrentWorkSpaceProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for CurrentWorkSpace.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty CurrentWorkSpaceProperty =
+            DependencyProperty.Register("CurrentWorkspace", typeof(ManassaWorkspace), typeof(MainWindow));
+        /// <summary>
+        /// Gets or sets the status message to display.
+        /// </summary>
         public string Status
         {
             get { return (string)GetValue(StatusProperty); }
@@ -57,51 +113,153 @@ namespace Manassa
         // Using a DependencyProperty as the backing store for Status.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty StatusProperty =
             DependencyProperty.Register("Status", typeof(string), typeof(MainWindow));
+        
+        public ApplicationAnalysisState AnalysisState
+        {
+            get { return (ApplicationAnalysisState)GetValue(AnalysisStateProperty); }
+            set { SetValue(AnalysisStateProperty, value); }
+        }
 
+        // Using a DependencyProperty as the backing store for AnalysisState.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty AnalysisStateProperty =
+            DependencyProperty.Register("AnalysisState", typeof(ApplicationAnalysisState), typeof(MainWindow));
+
+        public ApplicationAnalysisState LastApplicationState
+        {
+            get { return (ApplicationAnalysisState)GetValue(LastApplicationStateProperty); }
+            set { SetValue(LastApplicationStateProperty, value); }
+        }
+
+        public AnalysisController Controller
+        {
+            get { return (AnalysisController)GetValue(ControllerProperty); }
+            set { SetValue(ControllerProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Controller.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ControllerProperty =
+            DependencyProperty.Register("Controller", typeof(AnalysisController), typeof(MainWindow));
+
+        
+
+        // Using a DependencyProperty as the backing store for LastApplicationState.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty LastApplicationStateProperty =
+            DependencyProperty.Register("LastApplicationState", typeof(ApplicationAnalysisState), typeof(MainWindow));
+        #endregion
+
+        #region Loading and Running Analysis 
+        /// <summary>
+        /// Starts a new analysis.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void m_performAnalysisControl_AnalysisStart(object sender, System.EventArgs e)
+        {
+            AnalysisState = ApplicationAnalysisState.RunningAnalysis;
+           // runningAnalysisControl.CurrentState = AnalysisState;
+        }
+        /// <summary>
+        /// Quits an analysis that is running or is being started new.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void m_performAnalysisControl_AnalysisQuit(object sender, System.EventArgs e)
+        {
+            switch (AnalysisState)
+            {
+                case ApplicationAnalysisState.Idle:
+                    break;
+                case ApplicationAnalysisState.RunningAnalysis:                    
+                    StopCurrentAnalysis();
+                    break;
+                case ApplicationAnalysisState.SetupAnalysis:
+                    break;
+                case ApplicationAnalysisState.Opened:
+                    break;
+                default:
+                    break;
+            }
+
+            switch (LastApplicationState)
+            {
+                case ApplicationAnalysisState.Idle:
+                    AnalysisState = ApplicationAnalysisState.Idle;
+                    break;
+                case ApplicationAnalysisState.RunningAnalysis:
+                    AnalysisState = ApplicationAnalysisState.Idle;
+                    break;
+                case ApplicationAnalysisState.SetupAnalysis:
+                    AnalysisState = ApplicationAnalysisState.Idle;
+                    break;
+                case ApplicationAnalysisState.Opened:
+                    AnalysisState = LastApplicationState;
+                    break;
+                default:
+                    break;
+            }
+        }
+        /// <summary>
+        /// Clean up the application state.
+        /// </summary>
         private void CleanupMultiAlignController()
         {
-            if (m_controller != null)
+            if (Controller != null)
             {
-                m_controller = null;
+                Controller = null;
             }
+        }
+        /// <summary>
+        /// Clean up the application state.
+        /// </summary>
+        private void StopCurrentAnalysis()
+        {
+            //TODO: Do stuff!
+            CleanupMultiAlignController();
+        }
+        private void LoadMultiAlignFile(RecentAnalysis analysis)
+        {
+            LoadMultiAlignFile(analysis.Path);
+
+            string version = MultiAlignCore.ApplicationUtility.GetEntryAssemblyData();
+            Title = string.Format("{0} - {1}", version, analysis.Name);
         }
         private void LoadMultiAlignFile(string filename)
         {
+            ApplicationStatusMediator.SetStatus(string.Format("Loading analysis...{0}", filename));
             // Cleanup old ties if necessary.
             CleanupMultiAlignController();
             
             // Create a new controller
-            m_controller = new AnalysisController();                                    
-            m_controller.LoadExistingAnalysis(filename, m_reporter);
-            m_controller.Config.Analysis.MetaData.AnalysisPath = filename;
+            Controller = new AnalysisController();
+            Controller.LoadExistingAnalysis(filename, Reporter);
+            Controller.Config.Analysis.MetaData.AnalysisPath = filename;
 
             m_mainControl.IsEnabled = true;
-            m_mainControl.Analysis  = m_controller.Config.Analysis;            
-        }
 
+            ApplicationStatusMediator.SetStatus("Analysis loaded.  Creating plots.");
+            m_mainControl.Analysis  = Controller.Config.Analysis;
+            AnalysisState           = ApplicationAnalysisState.Opened;
+            LastApplicationState    = AnalysisState;
+        }
+        #endregion
+
+        #region Event Handlers
         private void Open_Click(object sender, RoutedEventArgs e)
         {
             System.Windows.Forms.DialogResult result = m_analysisLoadDialog.ShowDialog();
 
             if (result == System.Windows.Forms.DialogResult.OK)
             {
-                LoadMultiAlignFile(m_analysisLoadDialog.FileName);
+                RecentAnalysis newAnalysis = new RecentAnalysis();
+                newAnalysis.Name = System.IO.Path.GetFileNameWithoutExtension(m_analysisLoadDialog.FileName);
+                newAnalysis.Path = m_analysisLoadDialog.FileName;
 
-                AnalysisState        = ApplicationAnalysisState.Opened;
-                LastApplicationState = AnalysisState;
+                LoadMultiAlignFile(newAnalysis);
 
-                RecentAnalysis newAnalysis  = new RecentAnalysis();
-                newAnalysis.Name            = System.IO.Path.GetFileNameWithoutExtension(m_analysisLoadDialog.FileName);
-                newAnalysis.Path            = m_analysisLoadDialog.FileName;
 
-                if (RecentAnalysisObjects.Count > 10)
-                {
-                    RecentAnalysisObjects.RemoveAt(0);
-                }
-                RecentAnalysisObjects.Add(newAnalysis);
+                CurrentWorkspace.AddAnalysis(newAnalysis);
             }
         }
-
         private void NewButton_Click(object sender, RoutedEventArgs e)
         {
             ApplicationStatusMediator.SetStatus("Creating new analysis.");
@@ -112,50 +270,20 @@ namespace Manassa
             config.Analysis.Options.AlignmentOptions.IsAlignmentBaselineAMasstagDB = false;
             m_performAnalysisControl.AnalysisConfiguration  = config;
             m_performAnalysisControl.CurrentStep            = AnalysisSetupStep.DatasetSelection;
-            AnalysisState                                   = ApplicationAnalysisState.SetupAnalysis;                    
-        }
-
-        public ObservableCollection<RecentAnalysis> RecentAnalysisObjects
+            AnalysisState                                   = ApplicationAnalysisState.SetupAnalysis;                         
+        }        
+        private void CommandBinding_Executed(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
         {
-            get { return (ObservableCollection<RecentAnalysis>)GetValue(RecentAnalysisProperty); }
-            set { SetValue(RecentAnalysisProperty, value); }
+            RecentAnalysis analysis = e.Parameter as RecentAnalysis;
+            if (analysis == null)
+            {
+                return;
+            }
+
+            LoadMultiAlignFile(analysis);
+            CurrentWorkspace.AddAnalysis(analysis);
         }
-
-        // Using a DependencyProperty as the backing store for RecentAnalysis.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty RecentAnalysisProperty =
-            DependencyProperty.Register("RecentAnalysisObjects", typeof(ObservableCollection<RecentAnalysis>), typeof(MainWindow));
-
-
-        public ApplicationAnalysisState  AnalysisState
-        {
-            get { return (ApplicationAnalysisState )GetValue(AnalysisStateProperty); }
-            set { SetValue(AnalysisStateProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for AnalysisState.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty AnalysisStateProperty =
-            DependencyProperty.Register("AnalysisState", typeof(ApplicationAnalysisState ), typeof(MainWindow));
-
-
-
-        public ApplicationAnalysisState LastApplicationState
-        {
-            get { return (ApplicationAnalysisState)GetValue(LastApplicationStateProperty); }
-            set { SetValue(LastApplicationStateProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for LastApplicationState.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty LastApplicationStateProperty =
-            DependencyProperty.Register("LastApplicationState", typeof(ApplicationAnalysisState), typeof(MainWindow));
-
-
+        #endregion
     }
 
-    public enum ApplicationAnalysisState
-    {
-        Idle,
-        RunningAnalysis,
-        SetupAnalysis,
-        Opened
-    }
 }

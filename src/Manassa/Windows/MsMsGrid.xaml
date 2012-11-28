@@ -10,6 +10,8 @@
         <converters:BooleanToDataGridVisibilityModeConverter x:Key="boolConverter"/>
     </UserControl.Resources>
     <StackPanel>
+        
+        <ScrollViewer>                    
         <DataGrid
                 Name="m_dataGrid" 
                 ItemsSource="{Binding}" 
@@ -61,5 +63,6 @@
                 <DataGridTextColumn         Header="Database Result"    CanUserSort="True"     Binding="{Binding PeptideSequence}"              IsReadOnly="True"/>
             </DataGrid.Columns>
         </DataGrid>
+        </ScrollViewer>
     </StackPanel>
 </UserControl>

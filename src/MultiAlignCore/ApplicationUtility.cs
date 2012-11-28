@@ -31,18 +31,42 @@ namespace MultiAlignCore
         public static string GetAssemblyData()
         {
             // get the version object for this assembly
-            Assembly assembly   = Assembly.GetExecutingAssembly();
-            AssemblyName name   = assembly.GetName();
-            Version version     = name.Version;
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            AssemblyName name = assembly.GetName();
+            Version version = name.Version;
 
             string versionType = "32-bit";
             if (System.Environment.Is64BitProcess)
             {
                 versionType = "64-bit";
             }
-            
-            string data = string.Format("{0} - version: {1} process type: {2}", 
-                                            name, 
+
+            string data = string.Format("{0} - version: {1} process type: {2}",
+                                            name,
+                                            version,
+                                            versionType);
+
+            return data;
+        }
+        /// <summary>
+        /// Retrieves the assembly information.
+        /// </summary>
+        /// <returns></returns>
+        public static string GetEntryAssemblyData()
+        {
+            // get the version object for this assembly
+            Assembly assembly = Assembly.GetEntryAssembly();
+            AssemblyName name = assembly.GetName();
+            Version version = name.Version;
+
+            string versionType = "32-bit";
+            if (System.Environment.Is64BitProcess)
+            {
+                versionType = "64-bit";
+            }
+
+            string data = string.Format("{0} - v{1} - {2}",
+                                            name.Name,
                                             version,
                                             versionType);
 

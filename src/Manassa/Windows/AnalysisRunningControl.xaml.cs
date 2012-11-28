@@ -12,27 +12,68 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using MultiAlignCore.Data;
 using Manassa.Data;
+using System.Collections.ObjectModel;
+using MultiAlignCore.Algorithms;
+using MultiAlignCore.IO;
 
 namespace Manassa.Windows
 {
     /// <summary>
-    /// Interaction logic for PerformAnalysisWindow.xaml
+    /// ViewModel for running an analysis, display results, etc.
     /// </summary>
-    public partial class AnalysisRunningControl : UserControl
-    {
-        public event EventHandler AnalysisQuit;
-
+    public partial class AnalysisRunningControl : UserControl, IAnalysisReportGenerator 
+    {        
         public AnalysisRunningControl()
         {
             InitializeComponent();
-
+            CurrentState        = ApplicationAnalysisState.Idle;
             DataContext         = this;
-            DatasetCount        = 0;
-            ParameterFileName   = "No Parameter File Chosen";
-            CurrentStep         = AnalysisSetupStep.DatasetSelection;          
-              
+            Messages = new ObservableCollection<string>();
+            
         }
 
+        private void DerouteMessages()
+        {
+            Logger.Status -= Logger_Status;
+        }
+        private void RouteMessages()
+        {
+            Logger.Status += new EventHandler<MultiAlignCore.IO.StatusEventArgs>(Logger_Status);         
+        }
+
+        void Logger_Status(object sender, MultiAlignCore.IO.StatusEventArgs e)
+        {
+            CurrentStatusMessage = e.Message;
+            Messages.Add(e.Message);
+        }
+        public void Start()
+        {
+            Messages.Clear();
+            CurrentStatusMessage = "Starting Analysis.";
+            RouteMessages();
+            Controller.StartMultiAlign(AnalysisConfiguration, this);            
+        }
+
+        public AnalysisController Controller
+        {
+            get { return (AnalysisController)GetValue(ControllerProperty); }
+            set { SetValue(ControllerProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Controller.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ControllerProperty =
+            DependencyProperty.Register("Controller", typeof(AnalysisController), typeof(AnalysisRunningControl));
+
+        public IAnalysisReportGenerator Reporter
+        {
+            get { return (IAnalysisReportGenerator)GetValue(StaticReporterProperty); }
+            set { SetValue(StaticReporterProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for StaticReporter.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty StaticReporterProperty =
+            DependencyProperty.Register("Reporter", typeof(IAnalysisReportGenerator), typeof(AnalysisRunningControl)); 
+        
         public AnalysisConfig AnalysisConfiguration
         {
             get { return (AnalysisConfig)GetValue(AnalysisConfigurationProperty); }
@@ -41,144 +82,113 @@ namespace Manassa.Windows
 
         // Using a DependencyProperty as the backing store for AnalysisConfiguration.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty AnalysisConfigurationProperty =
-            DependencyProperty.Register("AnalysisConfiguration", typeof(AnalysisConfig), typeof(PerformAnalysisControl));
-                
+            DependencyProperty.Register("AnalysisConfiguration", typeof(AnalysisConfig), typeof(AnalysisRunningControl));
 
-        public AnalysisSetupStep CurrentStep
+        public string CurrentStatusMessage
         {
-            get { return (AnalysisSetupStep)GetValue(CurrentStepProperty); }
-            set { SetValue(CurrentStepProperty, value); }
+            get { return (string)GetValue(CurrentStatusProperty); }
+            set { SetValue(CurrentStatusProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for CurrentStep.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty CurrentStepProperty =
-            DependencyProperty.Register("CurrentStep", typeof(AnalysisSetupStep), typeof(PerformAnalysisControl));
+        // Using a DependencyProperty as the backing store for CurrentStatus.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty CurrentStatusProperty =
+            DependencyProperty.Register("CurrentStatusMessage", typeof(string), typeof(AnalysisRunningControl), new UIPropertyMetadata("Ready"));
 
 
-        public int DatasetCount
+        public ObservableCollection<string> Messages
         {
-            get { return (int)GetValue(DatasetCountProperty); }
-            set { SetValue(DatasetCountProperty, value); }
+            get { return (ObservableCollection<string>)GetValue(MessagesProperty); }
+            set { SetValue(MessagesProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for DatasetCount.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty DatasetCountProperty =
-            DependencyProperty.Register("DatasetCount", typeof(int), typeof(PerformAnalysisControl), new UIPropertyMetadata(0));
+        // Using a DependencyProperty as the backing store for Messages.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty MessagesProperty =
+            DependencyProperty.Register("Messages", typeof(ObservableCollection<string>), typeof(AnalysisRunningControl));
 
-        public string ParameterFileName
+
+        /// <summary>
+        /// Determines the current state of the analysis.
+        /// </summary>
+        public ApplicationAnalysisState CurrentState
         {
-            get { return (string)GetValue(ParameterFileNameProperty); }
-            set { SetValue(ParameterFileNameProperty, value); }
+            get { return (ApplicationAnalysisState)GetValue(CurrentStateProperty); }
+            set { SetValue(CurrentStateProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for ParameterFileName.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty ParameterFileNameProperty =
-            DependencyProperty.Register("ParameterFileName", typeof(string), typeof(PerformAnalysisControl));
+        // Using a DependencyProperty as the backing store for CurrentState.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty CurrentStateProperty =
+            DependencyProperty.Register("CurrentState", 
+                                        typeof(ApplicationAnalysisState), 
+                                        typeof(AnalysisRunningControl),            
+                                        new PropertyMetadata(
+                                                delegate(DependencyObject sender, DependencyPropertyChangedEventArgs args)
+                                                {
+                                                    var x = sender as AnalysisRunningControl;
+                                                    if (x == null)
+                                                        return;
 
+                                                    if (x.CurrentState == ApplicationAnalysisState.RunningAnalysis)
+                                                    {
+                                                        x.Start();
+                                                    }
+                                                })
+                                            );
 
-
-
-        public string Status
+        #region IAnalysisReportGenerator Members
+        public AnalysisConfig Config
         {
-            get { return (string)GetValue(StatusProperty); }
-            set { SetValue(StatusProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for Status.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty StatusProperty =
-            DependencyProperty.Register("Status", typeof(string), typeof(PerformAnalysisControl));
-
-
-        
-        #region Event Handlers
-        private void CancelButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (this.AnalysisQuit != null)
+            get
             {
-                AnalysisQuit(this, null);
+                return AnalysisConfiguration;
+            }
+            set
+            {
+                //DO nothing?
             }
         }
-        private void StartButton_Click(object sender, RoutedEventArgs e)
+        public void CreateAlignmentPlots(FeaturesAlignedEventArgs e)
         {
-
+            Reporter.CreateAlignmentPlots(e);
         }
-        private void Button_Click(object sender, RoutedEventArgs e)
+        public void CreateBaselinePlots(BaselineFeaturesLoadedEventArgs e)
         {
-
+            Reporter.CreateBaselinePlots(e);
         }
-        private void LoadFromPreviousButton_Click(object sender, RoutedEventArgs e)
+        public void CreateMassTagPlot(MassTagsLoadedEventArgs e)
         {
-
+            Reporter.CreateMassTagPlot(e);            
         }
-        #endregion
-
-        private void NextButton_Click(object sender, RoutedEventArgs e)
+        public void CreatePeakMatchedPlots(FeaturesPeakMatchedEventArgs e)
         {
-            MoveNext();
+            Reporter.CreatePeakMatchedPlots(e);
         }
-        private void BackButton_Click(object sender, RoutedEventArgs e)
+        public void CreatePlotReport()
         {
-            MoveBack();
+            Reporter.CreatePlotReport();
         }
-
-        #region Analysis Advancement         
-        private void MoveBack()
+        public string PlotPath
         {
-            switch (CurrentStep)
+            get
             {
-                case AnalysisSetupStep.DatasetSelection:
-                    break;
-                case AnalysisSetupStep.BaselineSelection:
-                    CurrentStep = AnalysisSetupStep.DatasetSelection;
-                    break;
-                case AnalysisSetupStep.OptionsSelection:
-                    CurrentStep = AnalysisSetupStep.BaselineSelection;
-                    break;
-                case AnalysisSetupStep.Naming:
-                    CurrentStep = AnalysisSetupStep.OptionsSelection;
-                    break;
-                case AnalysisSetupStep.Started:
-                    break;
-                default:
-                    break;
+                return Reporter.PlotPath;
+            }
+            set
+            {
+                Reporter.PlotPath = value;
             }
         }
-        private void MoveNext()
+        public void SaveImage(System.Drawing.Image image, string name)
         {
-            // Validate the move
-            string errorMessage = "";
-            bool isValid = MultiAlignAnalysisValidator.IsStepValid(AnalysisConfiguration, CurrentStep, ref errorMessage);
-
-            // Then display the error if exists...
-            if (!isValid)
-            {
-                Status = errorMessage;
-                return;
-            }
-            Status = "";
-
-            // Then move the UI.
-            switch (CurrentStep)
-            {
-                case AnalysisSetupStep.DatasetSelection:
-                    CurrentStep = AnalysisSetupStep.BaselineSelection;
-                    break;
-                case AnalysisSetupStep.BaselineSelection:
-                    CurrentStep = AnalysisSetupStep.OptionsSelection;
-                    break;
-                case AnalysisSetupStep.OptionsSelection:
-                    CurrentStep = AnalysisSetupStep.Naming;
-                    break;
-                case AnalysisSetupStep.Naming:
-                    CurrentStep = AnalysisSetupStep.Started;
-                    break;
-                case AnalysisSetupStep.Started:
-                    break;
-                default:
-                    break;
-            }
+            Reporter.SaveImage(image, name);
+        }
+        public void CreateClusterPlots(List<PNNLOmics.Data.Features.UMCClusterLight> clusters)
+        {
+            Reporter.CreateClusterPlots(clusters);
+        }
+        public void CreateChargePlots(Dictionary<int, int> chargeMap)
+        {
+            Reporter.CreateChargePlots(chargeMap);   
         }
         #endregion
     }
-
 }

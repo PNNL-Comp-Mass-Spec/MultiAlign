@@ -80,6 +80,7 @@
                     <windows:ClusterControl
                         Margin="5,5,5,5"
                         x:Name="m_clusterControl"
+                        
                         Grid.Row="2"                    
                         Grid.Column="0"
                         Grid.ColumnSpan="3"
@@ -102,11 +103,12 @@
                 >
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <windows:DatasetListBox                        
+                    <windows:DatasetListBox  
+                        Width="160"
                         x:Name="m_datasetBox"/>   
                     <GridSplitter
                         Grid.Row="0"
