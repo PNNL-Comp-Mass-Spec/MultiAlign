@@ -1,19 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using MultiAlignCore.Data;
+using System.Windows.Threading;
 using Manassa.Data;
-using System.Collections.ObjectModel;
 using MultiAlignCore.Algorithms;
+using MultiAlignCore.Data;
 using MultiAlignCore.IO;
 
 namespace Manassa.Windows
@@ -32,28 +25,75 @@ namespace Manassa.Windows
             
         }
 
+        #region Logging Handlers 
+        /// <summary>
+        /// Stops the routing of the logger messages for the UI.
+        /// </summary>
         private void DerouteMessages()
         {
             Logger.Status -= Logger_Status;
         }
+        /// <summary>
+        /// Starts the routing of the logger messages for the UI.
+        /// </summary>
         private void RouteMessages()
         {
             Logger.Status += new EventHandler<MultiAlignCore.IO.StatusEventArgs>(Logger_Status);         
         }
-
+        /// <summary>
+        /// Updates the current messages windows.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         void Logger_Status(object sender, MultiAlignCore.IO.StatusEventArgs e)
-        {
-            CurrentStatusMessage = e.Message;
-            Messages.Add(e.Message);
+        {            
+            Action workAction = delegate
+            {                
+                CurrentStatusMessage = e.Message;
+                Messages.Add(e.Message);
+                messagesBox.ScrollIntoView(e.Message);                
+            };
+
+            Dispatcher.Invoke(workAction, DispatcherPriority.Normal);            
         }
+        #endregion
+
         public void Start()
         {
+            // Set the messages
             Messages.Clear();
             CurrentStatusMessage = "Starting Analysis.";
+
+            // route the logger messages
             RouteMessages();
-            Controller.StartMultiAlign(AnalysisConfiguration, this);            
+
+            IsAnalysisRunning = true;
+
+            Controller.AnalysisComplete += new EventHandler(Controller_AnalysisComplete);
+            // Start the analysis.
+            Controller.StartMultiAlignGUI(AnalysisConfiguration, this);                        
         }
 
+        void Controller_AnalysisComplete(object sender, EventArgs e)
+        {
+            Action workAction = delegate
+            {
+                IsAnalysisRunning = false;
+                Controller.AnalysisComplete -= Controller_AnalysisComplete;
+            };
+            Dispatcher.Invoke(workAction, DispatcherPriority.Normal);
+        }
+
+        public bool IsAnalysisRunning
+        {
+            get { return (bool)GetValue(IsAnalysisRunningProperty); }
+            set { SetValue(IsAnalysisRunningProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for IsAnalysisRunning.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty IsAnalysisRunningProperty =
+            DependencyProperty.Register("IsAnalysisRunning", typeof(bool), typeof(AnalysisRunningControl), new UIPropertyMetadata(false));
+        
         public AnalysisController Controller
         {
             get { return (AnalysisController)GetValue(ControllerProperty); }
@@ -127,6 +167,9 @@ namespace Manassa.Windows
                                                     if (x == null)
                                                         return;
 
+                                                    if (x.IsAnalysisRunning)
+                                                        return;
+
                                                     if (x.CurrentState == ApplicationAnalysisState.RunningAnalysis)
                                                     {
                                                         x.Start();
@@ -148,46 +191,90 @@ namespace Manassa.Windows
         }
         public void CreateAlignmentPlots(FeaturesAlignedEventArgs e)
         {
-            Reporter.CreateAlignmentPlots(e);
+            Action workAction = delegate
+            {
+                Reporter.CreateAlignmentPlots(e);
+            };
+            Dispatcher.Invoke(workAction, DispatcherPriority.Normal);
         }
         public void CreateBaselinePlots(BaselineFeaturesLoadedEventArgs e)
         {
-            Reporter.CreateBaselinePlots(e);
+            Action workAction = delegate
+            {
+                Reporter.CreateBaselinePlots(e);
+            };
+            Dispatcher.Invoke(workAction, DispatcherPriority.Normal);
         }
         public void CreateMassTagPlot(MassTagsLoadedEventArgs e)
         {
-            Reporter.CreateMassTagPlot(e);            
+            Action workAction = delegate
+            {
+                Reporter.CreateMassTagPlot(e);
+            };
+            Dispatcher.Invoke(workAction, DispatcherPriority.Normal);        
         }
         public void CreatePeakMatchedPlots(FeaturesPeakMatchedEventArgs e)
         {
-            Reporter.CreatePeakMatchedPlots(e);
+            Action workAction = delegate
+            {
+                Reporter.CreatePeakMatchedPlots(e);
+            };
+            Dispatcher.Invoke(workAction, DispatcherPriority.Normal);
         }
         public void CreatePlotReport()
         {
-            Reporter.CreatePlotReport();
+            Action workAction = delegate
+            {
+                Reporter.CreatePlotReport();
+            };
+            Dispatcher.Invoke(workAction, DispatcherPriority.Normal);
         }
         public string PlotPath
         {
             get
             {
-                return Reporter.PlotPath;
+                string plotPath = "";
+
+                Action workAtion = delegate
+                {
+                    plotPath = Reporter.PlotPath;
+                };
+               
+                Dispatcher.Invoke(workAtion, DispatcherPriority.Normal);                    
+                return plotPath;
             }
             set
             {
-                Reporter.PlotPath = value;
+                Action workAction = delegate
+                {
+                    Reporter.PlotPath = value;
+                };
+                Dispatcher.Invoke(workAction, DispatcherPriority.Normal);
             }
         }
         public void SaveImage(System.Drawing.Image image, string name)
         {
-            Reporter.SaveImage(image, name);
+            Action workAction = delegate
+            {
+                Reporter.SaveImage(image, name);
+            };
+            Dispatcher.Invoke(workAction, DispatcherPriority.Normal);
         }
         public void CreateClusterPlots(List<PNNLOmics.Data.Features.UMCClusterLight> clusters)
         {
-            Reporter.CreateClusterPlots(clusters);
+            Action workAction = delegate
+            {
+                Reporter.CreateClusterPlots(clusters);
+            };
+            Dispatcher.Invoke(workAction, DispatcherPriority.Normal);
         }
         public void CreateChargePlots(Dictionary<int, int> chargeMap)
         {
-            Reporter.CreateChargePlots(chargeMap);   
+            Action workAction = delegate
+            {
+                Reporter.CreateChargePlots(chargeMap);
+            };
+            Dispatcher.Invoke(workAction, DispatcherPriority.Normal); 
         }
         #endregion
     }

@@ -16,6 +16,7 @@ using MultiAlignCore.IO.MTDB;
 using System.Threading;
 using MultiAlignCore.IO.Parameters;
 using PNNLOmics.Data.Features;
+using System.ComponentModel;
 
 
 namespace MultiAlignCore.Algorithms
@@ -25,6 +26,8 @@ namespace MultiAlignCore.Algorithms
     /// </summary>
     public class AnalysisController
     {
+        public event EventHandler AnalysisComplete;
+
         #region Analysis Config and Reporting     
         private IAnalysisReportGenerator        m_reportCreator;
         private AnalysisConfig                  m_config;
@@ -931,6 +934,87 @@ namespace MultiAlignCore.Algorithms
             }
         }
         #endregion
+        private BackgroundWorker m_worker = new BackgroundWorker();
+
+        /// <summary>
+        /// This is horrible.  A common ground of feature / functionality should be made here.
+        /// </summary>
+        /// <param name="config"></param>
+        /// <param name="reporter"></param>
+        /// <returns></returns>
+        public void StartMultiAlignGUI(AnalysisConfig config, IAnalysisReportGenerator reporter)
+        {   m_worker         = new BackgroundWorker();
+            m_worker.DoWork += new DoWorkEventHandler(m_worker_DoWork);
+
+
+            m_reportCreator = reporter;
+            m_config        = config;
+
+            m_worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(m_worker_RunWorkerCompleted);
+            m_worker.RunWorkerAsync();            
+        }
+
+        void m_worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            
+        }
+
+        void m_worker_DoWork(object sender, DoWorkEventArgs e)
+        {
+
+            // Builds the list of algorithm providers.
+            AlgorithmBuilder builder = new AlgorithmBuilder();
+
+            // Use this to signal when the analysis is done.              
+            m_config.triggerEvent = new ManualResetEvent(false);
+            m_config.errorEvent = new ManualResetEvent(false);
+            m_config.errorException = null;
+
+
+
+            /// /////////////////////////////////////////////////////////////
+            /// Setup log path, analysis path, and print version to log file.            
+            /// /////////////////////////////////////////////////////////////                        
+            SetupAnalysisEssentials();
+
+            /// /////////////////////////////////////////////////////////////
+            /// Determine if we have specified a valid database to extract
+            /// data from or to re-start an analysis.
+            /// /////////////////////////////////////////////////////////////    
+            string databasePath = Path.Combine(m_config.AnalysisPath, m_config.AnalysisName);
+            bool databaseExists = File.Exists(databasePath);
+            bool createDatabase = true;
+
+            createDatabase = ShouldCreateDatabase(m_config.Analysis.AnalysisType, databaseExists);
+
+            // make sure that we were not told to skip to a new part of the analysis.
+            if (m_config.InitialStep >= AnalysisStep.Alignment)
+            {
+                createDatabase = false;
+            }
+
+
+            AnalysisType validated = m_config.Analysis.AnalysisType;
+            AnalysisConfig config  = m_config;
+
+            switch (m_config.Analysis.AnalysisType)
+            {
+                case AnalysisType.FactorImporting:
+                    ImportFactors(config, databaseExists);
+                    break;
+                case AnalysisType.Full:
+                    PerformAnalysisGUI(config, builder, validated, createDatabase);
+                    break;
+                case AnalysisType.ExportDataOnly:
+                    ExportData(config, builder, databasePath, databaseExists);
+                    break;
+                case AnalysisType.ExportSICs:
+                    PerformAnalysisGUI(config, builder, validated, createDatabase);
+                    break;
+            }
+        }
+
+        
 
         /// <summary>
         /// Processes the MA analysis data.
@@ -1034,6 +1118,114 @@ namespace MultiAlignCore.Algorithms
         }
 
         #region Processing 
+        /// <summary>
+        /// Performs the analysis.
+        /// </summary>
+        /// <param name="config"></param>
+        /// <param name="builder"></param>
+        /// <param name="providers"></param>
+        /// <param name="processor"></param>
+        /// <param name="validated"></param>
+        /// <param name="analysisSetupInformation"></param>
+        /// <param name="createDatabase"></param>
+        /// <returns></returns>
+        private void PerformAnalysisGUI(AnalysisConfig config, AlgorithmBuilder builder, AnalysisType validated, bool createDatabase)
+        {            
+            InputAnalysisInfo analysisSetupInformation  = null;
+            FeatureDataAccessProviders providers        = null;
+            MultiAlignAnalysisProcessor processor       = null;
+
+            Logger.PrintMessage("Performing analysis.");
+         
+            /// /////////////////////////////////////////////////////////////            
+            /// Creates or connects to the underlying analysis database.
+            /// ///////////////////////////////////////////////////////////// 
+            providers = SetupDataProviders(createDatabase);
+
+            /// /////////////////////////////////////////////////////////////
+            /// Create the clustering, analysis, and plotting paths.
+            /// /////////////////////////////////////////////////////////////                                    
+            builder.BuildClusterer(config.Analysis.Options.ClusterOptions.ClusteringAlgorithm);
+
+            config.Analysis                 = ConstructAnalysisObject(analysisSetupInformation);
+            config.Analysis.DataProviders   = providers;
+            config.Analysis.AnalysisType    = validated;
+            ConstructPlotPath();
+
+            ExportParameterFile();
+            Logger.PrintSpacer();
+            PrintParameters(config.Analysis, createDatabase);
+            Logger.PrintSpacer();
+
+            /// /////////////////////////////////////////////////////////////
+            /// Setup the processor.
+            /// /////////////////////////////////////////////////////////////            
+            processor = ConstructAnalysisProcessor(builder, providers);
+
+            // Tell the processor whether to load data or not.
+            processor.ShouldLoadData = createDatabase;
+
+            // Give the processor somewhere to put the SIC images.
+            if (validated == AnalysisType.ExportSICs)
+            {
+                processor.AnalaysisPath = Path.Combine(config.AnalysisPath, "SICs");
+                if (!Directory.Exists(processor.AnalaysisPath))
+                {
+                    Directory.CreateDirectory(processor.AnalaysisPath);
+                }
+            }
+
+            Logger.PrintMessage("Creating exporter options.");
+            if (config.ExporterNames.CrossTabPath == null)
+            {
+                config.ExporterNames.CrossTabPath = config.AnalysisName.Replace(".db3", "");
+            }
+            if (config.ExporterNames.CrossTabAbundance == null)
+            {
+                config.ExporterNames.CrossTabAbundance = config.AnalysisName.Replace(".db3", "");
+            }
+            ConstructExporting();
+
+            Logger.PrintMessage("Cleaning up old analysis branches.");
+            CleanupOldAnalysisBranches(config);
+
+            Logger.PrintMessage("Analysis Started.");
+            processor.StartAnalysis(config);
+
+            int handleID = WaitHandle.WaitAny(new WaitHandle[] { config.triggerEvent, config.errorEvent });
+
+            if (handleID == 1)
+            {
+                Logger.PrintMessage("There was an error during processing.");
+                return;
+            }
+
+            /// /////////////////////////////////////////////////////////////
+            /// Finalize the analysis plots etc.
+            /// /////////////////////////////////////////////////////////////
+            try
+            {
+                //m_reportCreator.CreateFinalAnalysisPlots(providers.FeatureCache, providers.ClusterCache);
+                m_reportCreator.CreatePlotReport();
+            }
+            catch (Exception ex)
+            {
+                Logger.PrintMessage("There was an error when trying to create the final analysis plots, however, the data analysis is complete.");
+                Logger.PrintMessage(ex.Message);
+                Logger.PrintMessage(ex.StackTrace);
+            }
+
+            config.Analysis.Dispose();
+            config.triggerEvent.Dispose();
+            config.errorEvent.Dispose();
+            processor.Dispose();
+            Logger.PrintMessage("Analysis Complete.");
+
+            if (AnalysisComplete != null)
+            {
+                AnalysisComplete(this, null);
+            }
+        }
         /// <summary>
         /// Performs the analysis.
         /// </summary>

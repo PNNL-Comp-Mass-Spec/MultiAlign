@@ -15,11 +15,12 @@ using MultiAlignCore.Algorithms.FeatureMatcher;
 using MultiAlignCore.Data.Features;
 using MultiAlignCore.Algorithms.FeatureFinding;
 using System.Windows;
+using System.ComponentModel;
 
 namespace MultiAlignCore.Data
 {
 	[Serializable()]
-	public class MultiAlignAnalysis : DependencyObject, IDisposable
+	public class MultiAlignAnalysis :  IDisposable
     {                             
         #region Constructor
         /// <summary>

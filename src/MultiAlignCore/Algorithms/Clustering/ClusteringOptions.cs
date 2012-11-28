@@ -21,9 +21,21 @@ namespace MultiAlignCore.Algorithms.Clustering
 			MassTolerance		    = 6.0; 
 			NETTolerance		    = 0.03; 
 			DriftTimeTolerance      = 50.0;			
+            ClusteringAlgorithm     = ClusteringAlgorithmType.AverageLinkage;
 			ClusterCentroid         = ClusterCentroidRepresentation.Median;
 			IgnoreCharge		    = true;			
             AlignClusters	        = false;			
+        }
+
+
+        [ParameterFileAttribute("ClusteringAlgorithm", "LCMSFeatureClustering")]
+        [DataSummaryAttribute("Align clusters to database")]
+        [Category("Algorithm")]
+        [Description("Determines the type of clustering algorithm to use.")]
+        public ClusteringAlgorithmType ClusteringAlgorithm
+        {
+            get;
+            set;
         }
 
         [ParameterFileAttribute("AlignClusters", "LCMSFeatureClustering")]

@@ -6,6 +6,7 @@ using MultiAlignCore.IO.Reports;
 using MultiAlignCore.IO;
 using MultiAlignCore.Algorithms;
 using System.Windows;
+using System.ComponentModel;
 
 namespace MultiAlignCore.Data
 {
@@ -13,7 +14,7 @@ namespace MultiAlignCore.Data
     /// <summary>
     /// Class that holds all information for setting up a job.
     /// </summary>
-    public class AnalysisConfig : DependencyObject
+    public class AnalysisConfig : INotifyPropertyChanged
     {
         #region Constants
         private const int LC_DATA = 0;
@@ -101,33 +102,56 @@ namespace MultiAlignCore.Data
         /// </summary>
         public int JobID { get; set; }
 
+        private void OnNotify(string name)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(name));
+            }
+        }
+
+        private MultiAlignAnalysis m_analysis;
         public MultiAlignAnalysis Analysis
         {
-            get { return (MultiAlignAnalysis)GetValue(AnalysisProperty); }
-            set { SetValue(AnalysisProperty, value); }
+            get { return m_analysis; }
+            set 
+            {
+                if (value != m_analysis)
+                {
+                    m_analysis = value;
+                    OnNotify("Analysis");
+                }
+            }
         }
 
-        // Using a DependencyProperty as the backing store for Analysis.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty AnalysisProperty =
-            DependencyProperty.Register("Analysis", typeof(MultiAlignAnalysis), typeof(AnalysisConfig));
 
+        private string m_analysisPath;
         public string AnalysisPath
         {
-            get { return (string)GetValue(AnalysisPathProperty); }
-            set { SetValue(AnalysisPathProperty, value); }
+            get { return m_analysisPath; }
+            set
+            {
+                if (value != m_analysisPath)
+                {
+                    m_analysisPath = value;
+                    OnNotify("AnalysisPath");
+                }
+            }
         }
-        public static readonly DependencyProperty AnalysisPathProperty =
-            DependencyProperty.Register("AnalysisPath", typeof(string), typeof(AnalysisConfig));
 
+        private string m_analysisName;
         public string AnalysisName
         {
-            get { return (string)GetValue(AnalysisNameProperty); }
-            set { SetValue(AnalysisNameProperty, value); }
+            get { return m_analysisName; }
+            set
+            {
+                if (value != m_analysisName)
+                {
+                    m_analysisName = value;
+                    OnNotify("AnalysisName");
+                }
+            }
         }
-        public static readonly DependencyProperty AnalysisNameProperty =
-            DependencyProperty.Register("AnalysisName", typeof(string), typeof(AnalysisConfig));
-
-
 
         /// <summary>
         /// Path to save the plots.
@@ -193,6 +217,12 @@ namespace MultiAlignCore.Data
         /// Gets or sets the flag on whether to perform traceback.
         /// </summary>
         public bool ShouldTraceback { get; set; }       
+        #endregion
+
+        #region INotifyPropertyChanged Members
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
         #endregion
     }    
 }

@@ -1,0 +1,128 @@
+﻿<UserControl x:Class="Manassa.Windows.GettingStarted"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:maWindows="clr-namespace:Manassa.Windows"
+             xmlns:maConverters="clr-namespace:Manassa.Converters"
+             mc:Ignorable="d" 
+             d:DesignHeight="243"
+             d:DesignWidth="804">
+
+    <UserControl.CommandBindings>
+        <CommandBinding Command="Open" Executed="CommandBinding_Executed"></CommandBinding>
+    </UserControl.CommandBindings>
+    <UserControl.Resources>
+        <DataTemplate x:Key="RecentAnalysisItemTemplate">
+            <Border CornerRadius="2" BorderThickness="1" HorizontalAlignment="Stretch" Padding="3" Margin="3" >
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Width="Auto">
+                    <Button                         
+                        FontSize="14"
+                        Style="{DynamicResource ResourceKey=HyperLinkButtonStyle}"
+                        Margin="5,5,5,5"
+                        HorizontalContentAlignment="Left"
+                        Command="Open"
+                        CommandParameter="{Binding}"
+                        Width="128">
+                        <Button.Content>
+                            <TextBlock TextTrimming="WordEllipsis"                                       
+                                       ToolTip="{Binding Name}" >
+                                        <TextBlock.Text>
+                                            <Binding Path="Name" />
+                                        </TextBlock.Text>
+                            </TextBlock>
+                        </Button.Content>
+                    </Button>
+                </StackPanel>
+            </Border>
+        </DataTemplate>
+    </UserControl.Resources>       
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        
+        <Grid
+            Grid.Row="1"
+            >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+           
+                <StackPanel
+                    Background="#FF414141"
+                    >
+                    <Image Source="/MultiAlign;component/Resources/gettingStartedImage.png"  />
+                    <Label 
+                        FontSize="24pt"
+                        Foreground="WhiteSmoke"
+                        Margin="5,5,5,5">
+                        MultiAlign
+                    </Label>
+
+                    <Label 
+                        FontSize="14pt"
+                        Foreground="WhiteSmoke"
+                        Margin="5,5,5,5">
+                        Start
+                    </Label>
+                    <Button 
+                        x:Name="NewButton"
+                        FontSize="16"
+                        Style="{DynamicResource ResourceKey=HyperLinkButtonStyle}"
+                        Margin="5,5,5,5"
+                        HorizontalContentAlignment="Right"
+                        Command="New"
+                        Width="128">New Analysis</Button>
+                    <Button 
+                        x:Name="Open"
+                        FontSize="16"
+                        HorizontalContentAlignment="Right"
+                        Style="{DynamicResource ResourceKey=HyperLinkButtonStyle}"
+                        Margin="5,5,5,5"
+                        Command="Open"
+                    
+                        Width="128">
+                            Open Analysis
+                    </Button>
+
+                    <Label 
+                        FontSize="14pt"
+                        Foreground="WhiteSmoke"
+                        Margin="5,5,5,5">
+                        Recent Analysis
+                    </Label>
+                    <ListBox 
+                        DockPanel.Dock="Left"
+                        ItemsSource="{Binding Path=CurrentWorkspace.RecentAnalysis}"
+                        BorderThickness="0"  
+                        HorizontalContentAlignment="Stretch"
+                        ItemTemplate="{StaticResource RecentAnalysisItemTemplate}"                
+                        Background="Transparent">
+                    </ListBox>
+                </StackPanel>
+            <TabControl
+                Margin="15,40,20,15"
+                Grid.Column="1"
+                >
+                <TabItem
+                    Style="{DynamicResource ResourceKey=SimpleTabItem}"
+                    Header="Guidance"
+                    >
+                    <ScrollViewer>
+
+                    </ScrollViewer>
+                </TabItem>
+                <TabItem                    
+                    Style="{DynamicResource ResourceKey=SimpleTabItem}"
+                    Header="Latest"
+                    >
+                    <ScrollViewer>
+
+                    </ScrollViewer>
+                </TabItem>
+            </TabControl>
+        </Grid>
+    </Grid>
+</UserControl>

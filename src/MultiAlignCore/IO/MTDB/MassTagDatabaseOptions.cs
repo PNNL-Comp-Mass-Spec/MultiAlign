@@ -10,7 +10,7 @@ namespace MultiAlignCore.IO.MTDB
     /// <summary>
     /// Class in progress.  Options for loading data to and from the MTDB.
     /// </summary>
-    public class MassTagDatabaseOptions: DependencyObject
+    public class MassTagDatabaseOptions: INotifyPropertyChanged
     {
 
         public MassTagDatabaseOptions()
@@ -129,20 +129,22 @@ namespace MultiAlignCore.IO.MTDB
             get;
             set;
         }
-        
+
+        private string m_databaseFilePath;
         [Description("Database File Path")]
         [Browsable(false)]
         public string DatabaseFilePath
         {
-            get { return (string)GetValue(DatabaseFilePathProperty); }
-            set { SetValue(DatabaseFilePathProperty, value); }
+            get { return m_databaseFilePath; }
+            set 
+            {
+                if (m_databaseFilePath != value)
+                {
+                    m_databaseFilePath = value;
+                    OnNotify("DatabaseFilePath");
+                }
+            }
         }
-
-        // Using a DependencyProperty as the backing store for DatabaseFilePath.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty DatabaseFilePathProperty =
-            DependencyProperty.Register("DatabaseFilePath", typeof(string), typeof(MassTagDatabaseOptions));
-
-
 
         [Description("Database Name")]
         [Browsable(false)]
@@ -172,5 +174,20 @@ namespace MultiAlignCore.IO.MTDB
             get;
             set;
         }
+
+
+        private void OnNotify(string name)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(name));
+            }
+        }
+
+        #region INotifyPropertyChanged Members
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        #endregion
     }    
 }

@@ -8,9 +8,13 @@
         Width="1200"
         Icon="/MultiAlign;component/Resources/logo.png" 
         WindowStartupLocation="CenterScreen">
-
     <Window.CommandBindings>
+        <CommandBinding Command="BrowseHome" Executed="ShowGettingStarted"></CommandBinding>
+        <CommandBinding Command="New" Executed="New_Executed"></CommandBinding>
         <CommandBinding Command="Open" Executed="CommandBinding_Executed"></CommandBinding>
+        <CommandBinding Command="FirstPage" Executed="CurrentAnalysis"></CommandBinding>
+        <CommandBinding Command="BrowseBack" Executed="MoveToLastApplicationState"></CommandBinding>
+                        
     </Window.CommandBindings>
     <Window.Resources>        
         <BitmapImage x:Key="MannassaImage" UriSource="pack://application:,,,/Resources/MainIcon.png" />
@@ -20,6 +24,7 @@
         <BitmapImage x:Key="MenuIcon" UriSource="pack://application:,,,/Resources/manassaMain.png" />
         <BitmapImage x:Key="Molecule" UriSource="pack://application:,,,/Resources/molecule.png" />
         <BitmapImage x:Key="Unknown" UriSource="pack://application:,,,/Resources/unknown.png" />
+        <BitmapImage x:Key="Home" UriSource="pack://application:,,,/Resources/home.png" />
 
         <maConverters:ApplicationStateVisibilityConverter  x:Key="IdleState"                ApplicationState="Idle"/>
         <maConverters:ApplicationStateVisibilityConverter  x:Key="SetupAnalysisState"       ApplicationState="SetupAnalysis"/>
@@ -61,68 +66,25 @@
             Margin="4"
             >
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"></ColumnDefinition>
-            <ColumnDefinition Width="75*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
-
-       
-        <StackPanel 
-            Grid.Column="0"
-            Grid.Row="0"
-            Background="#FF414141"                        
-            MaxWidth="200"
-        >                   
-            <Label
-                FontSize="24"
-                Foreground="WhiteSmoke"
-                Margin="5,5,5,5">
-                MultiAlign
-            </Label>
-            <Label Grid.Row="1"
-                    Foreground="White"
-                    FontSize="18"
-                Margin="5,5,5,5">
-                Start
-            </Label>
-            <Button 
-                x:Name="NewButton"
-                FontSize="16"
-                Style="{DynamicResource ResourceKey=HyperLinkButtonStyle}"
-                Margin="5,5,5,5"
-                HorizontalContentAlignment="Right"
-                Width="128" Click="NewButton_Click">New Analysis</Button>
-            <Button 
-                x:Name="Open"
-                FontSize="16"
-                HorizontalContentAlignment="Right"
-                Style="{DynamicResource ResourceKey=HyperLinkButtonStyle}"
-                Margin="5,5,5,5"
-                Width="128" Click="Open_Click">Open Analysis</Button>
-            <Label Grid.Row="1"
-                            Foreground="White"
-                            FontSize="18"
-                        Margin="5,5,5,5">
-                Recent
-            </Label>            
-            <ListBox 
-                DockPanel.Dock="Left"
-                ItemsSource="{Binding Path=CurrentWorkspace.RecentAnalysis}"
-                BorderThickness="0"  
-                HorizontalContentAlignment="Stretch"
-                ItemTemplate="{StaticResource RecentAnalysisItemTemplate}"                
-                Background="Transparent">
-            </ListBox>
-        </StackPanel>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>                           
         <TabControl            
             Grid.Row="0"
-            Grid.Column="1">
+            Grid.Column="0">
             <TabItem
+                IsSelected="{Binding Path=AnalysisState, Converter={StaticResource ResourceKey=IdleStateSelected}}"
                 Style="{DynamicResource ResourceKey=HidenTabItem}"   >
-                
+                <manassa:GettingStarted  
+                    x:Name="m_gettingStarted"
+                    Visibility="{Binding Path=AnalysisState, Converter={StaticResource ResourceKey=IdleState}}"
+                    CurrentWorkspace="{Binding Path=CurrentWorkspace,                     
+                                            RelativeSource={RelativeSource AncestorType={x:Type Window}}}">
+                    
+                </manassa:GettingStarted>
             </TabItem>
             <TabItem         
                 Style="{DynamicResource ResourceKey=HidenTabItem}"       
@@ -170,34 +132,41 @@
                 Visibility="Hidden"
                 >                
             </TabItem>
-        </TabControl>
+        </TabControl>            
         <StatusBar 
-                    Grid.Row="1"
-                    Grid.Column="0"
-                    Height="32">
-                    <StatusBar.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*"/>
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="4*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                            </Grid>
-                        </ItemsPanelTemplate>
-                    </StatusBar.ItemsPanel>
-                    <StatusBarItem>
-                <TextBlock
-                            Text="{Binding Path=Status}"
-                            />
-            </StatusBarItem>
-                    <StatusBarItem Grid.Column="1">
-                        <Separator></Separator>
-                    </StatusBarItem>
-                    <StatusBarItem Grid.Column="1"></StatusBarItem>
-                </StatusBar>
-        </Grid>        
+                Grid.Row="2"
+                Grid.Column="0"
+                Grid.ColumnSpan="2"
+                Height="40">
+            <StatusBarItem>
+                <WrapPanel                     
+                >
+                    <Button
+                            Background="Transparent"
+                            Command="BrowseHome"
+                            ToolTip="Go Home"
+                            Margin="5,0,5,0">
+                        <Image Source="/MultiAlign;component/Resources/home.png"/>
+                    </Button>
+                    <!--<Button
+                            Margin="5,0,5,0"
+                            Background="Transparent"
+                            Command="BrowseBack"
+                            ToolTip="Go Back" OpacityMask="#FFFEFEFE">
+                        <Image Source="/MultiAlign;component/Resources/back.png"/>
+                    </Button>-->
+                    <Button
+                            Margin="5,0,5,0"
+                            Background="Transparent"
+                            Command="FirstPage"
+                            ToolTip="Current Analysis" OpacityMask="#FFFEFEFE">
+                        <Image Source="/MultiAlign;component/Resources/MainIcon.png"/>
+                    </Button>
+                </WrapPanel>
+            </StatusBarItem>            
+            <StatusBarItem>
+                    <TextBlock  Text="{Binding Path=Status}" />
+             </StatusBarItem>            
+        </StatusBar>
+     </Grid>        
 </Window>

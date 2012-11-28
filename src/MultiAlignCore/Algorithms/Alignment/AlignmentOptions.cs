@@ -8,7 +8,7 @@ using System.ComponentModel;
 
 namespace MultiAlignCore.Algorithms.Alignment
 {
-    public class AlignmentOptions: DependencyObject, INotifyPropertyChanged
+    public class AlignmentOptions: INotifyPropertyChanged
     {
         public AlignmentOptions()
         {
@@ -43,6 +43,8 @@ namespace MultiAlignCore.Algorithms.Alignment
 			MZBoundaries.Add(new classAlignmentMZBoundary(0.0, 505.7));
 			MZBoundaries.Add(new classAlignmentMZBoundary(505.7, 999999999.0));
         }
+
+
         /// <summary>
         /// Gets or sets whether to store alignment data.
         /// </summary>
@@ -65,18 +67,30 @@ namespace MultiAlignCore.Algorithms.Alignment
             set;
         }
 
+        private void OnNotify(string name)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(name));
+            }
+        }
+        private bool m_isAlignmentBaselineAMasstagDB;
 
         [Browsable(false)]
         public bool IsAlignmentBaselineAMasstagDB
         {
-            get { return (bool)GetValue(IsAlignmentBaselineAMassTagDBProperty); }
-            set { SetValue(IsAlignmentBaselineAMassTagDBProperty, value); }
+            get { return m_isAlignmentBaselineAMasstagDB; }
+            set {
+
+                if (value != m_isAlignmentBaselineAMasstagDB)
+                {
+                    m_isAlignmentBaselineAMasstagDB = value;
+                    OnNotify("IsAlignmentBaselineAMasstagDB");
+                }
+                
+            }
         }
 
-        // Using a DependencyProperty as the backing store for IsAlignmentBaselineAMassTagDB.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty IsAlignmentBaselineAMassTagDBProperty =
-            DependencyProperty.Register("IsAlignmentBaselineAMasstagDB", typeof(bool), typeof(AlignmentOptions)
-                );
 
         
         [Browsable(false)]

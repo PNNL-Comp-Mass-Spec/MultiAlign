@@ -32,7 +32,7 @@ namespace Manassa
     
             m_performAnalysisControl.AnalysisQuit  += new System.EventHandler(m_performAnalysisControl_AnalysisQuit);
             m_performAnalysisControl.AnalysisStart += new System.EventHandler(m_performAnalysisControl_AnalysisStart);
-
+            m_gettingStarted.RecentAnalysisSelected += new System.EventHandler<Windows.OpenAnalysisArgs>(m_gettingStarted_RecentAnalysisSelected);
             // Bind the status to the status mediators.
             Binding binding = new Binding("Status");
             binding.Source  = ApplicationStatusMediator.Mediator;
@@ -47,6 +47,12 @@ namespace Manassa
             LoadWorkspace(Properties.Settings.Default.WorkspaceFile);
 
             ApplicationStatusMediator.SetStatus("Ready.");
+        }
+
+        void m_gettingStarted_RecentAnalysisSelected(object sender, Windows.OpenAnalysisArgs e)
+        {
+            LoadMultiAlignFile(e.AnalysisData);
+            CurrentWorkspace.AddAnalysis(e.AnalysisData);
         }
 
         /// <summary>
@@ -246,6 +252,10 @@ namespace Manassa
         #region Event Handlers
         private void Open_Click(object sender, RoutedEventArgs e)
         {
+            OpenExistingAnalysis();
+        }
+        private void OpenExistingAnalysis()
+        {
             System.Windows.Forms.DialogResult result = m_analysisLoadDialog.ShowDialog();
 
             if (result == System.Windows.Forms.DialogResult.OK)
@@ -262,6 +272,10 @@ namespace Manassa
         }
         private void NewButton_Click(object sender, RoutedEventArgs e)
         {
+            StartNewAnalysis();
+        }
+        private void StartNewAnalysis()
+        {
             ApplicationStatusMediator.SetStatus("Creating new analysis.");
 
             AnalysisConfig config                           = new AnalysisConfig();
@@ -272,18 +286,34 @@ namespace Manassa
             m_performAnalysisControl.CurrentStep            = AnalysisSetupStep.DatasetSelection;
             AnalysisState                                   = ApplicationAnalysisState.SetupAnalysis;                         
         }        
+        #endregion
+
+        private void ShowGettingStarted(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
+        {
+            AnalysisState = ApplicationAnalysisState.Idle;
+        }
+
+        private void New_Executed(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
+        {
+            StartNewAnalysis();
+        }
+
         private void CommandBinding_Executed(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
         {
-            RecentAnalysis analysis = e.Parameter as RecentAnalysis;
-            if (analysis == null)
-            {
-                return;
-            }
-
-            LoadMultiAlignFile(analysis);
-            CurrentWorkspace.AddAnalysis(analysis);
+            OpenExistingAnalysis();
         }
-        #endregion
-    }
 
+        private void CurrentAnalysis(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
+        {
+            if (m_mainControl.Analysis != null)
+            {
+                AnalysisState = ApplicationAnalysisState.Opened;
+            }
+        }
+
+        private void MoveToLastApplicationState(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
+        {
+            AnalysisState = LastApplicationState;
+        }
+    }
 }

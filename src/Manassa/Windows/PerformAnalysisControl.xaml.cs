@@ -160,6 +160,7 @@ namespace Manassa.Windows
                     CurrentStep = AnalysisSetupStep.Started;
                     if (AnalysisStart != null)
                     {
+                        AnalysisConfiguration.ParameterFile = AnalysisConfiguration.AnalysisName + ".xml";
                         AnalysisStart(this, null);
                     }
                     break;
