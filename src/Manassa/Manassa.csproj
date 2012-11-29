@@ -40,6 +40,10 @@
     <StartupObject>Manassa.App</StartupObject>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MultiAlignEngine, Version=1.0.4637.24271, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\x86\MultiAlignEngine.dll</HintPath>
+    </Reference>
     <Reference Include="PNNLOmics, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\PNNLOmics.dll</HintPath>
@@ -87,7 +91,7 @@
     <Compile Include="Data\ApplicationStatusMediator.cs" />
     <Compile Include="Data\DatasetFilterFactory.cs" />
     <Compile Include="Data\DatasetPlotLoader.cs" />
-    <Compile Include="Data\DatasetWrapperModel.cs" />
+    <Compile Include="Data\ImageConverter.cs" />
     <Compile Include="Data\MultiAlignAnalysisValidator.cs" />
     <Compile Include="Data\RecentAnalysis.cs" />
     <Compile Include="Data\RectangleFDependency.cs" />
@@ -95,6 +99,12 @@
     <Compile Include="IO\ManassaWorkspaceWriter.cs" />
     <Compile Include="IO\DatasetSearcher.cs" />
     <Compile Include="IO\ManassaWorkspaceReader.cs" />
+    <Compile Include="Windows\AlignmentPlotView.xaml.cs">
+      <DependentUpon>AlignmentPlotView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\FeaturePlotView.xaml.cs">
+      <DependentUpon>FeaturePlotView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\GettingStarted.xaml.cs">
       <DependentUpon>GettingStarted.xaml</DependentUpon>
     </Compile>
@@ -155,6 +165,10 @@
     <Compile Include="Windows\StartWindow.xaml.cs">
       <DependentUpon>StartWindow.xaml</DependentUpon>
     </Compile>
+    <Page Include="Windows\AlignmentPlotView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\AnalysisNaming.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -188,6 +202,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\DatasetSelection.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\FeaturePlotView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

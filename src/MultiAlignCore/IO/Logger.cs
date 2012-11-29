@@ -9,11 +9,17 @@ namespace MultiAlignCore.IO
 {
     public class StatusEventArgs: EventArgs
     {
-        public StatusEventArgs(string message)
+        public StatusEventArgs(string message, int size)
         {
             Message = message;
+            Size    = size;
         }
         public string Message
+        {
+            get;
+            private set;
+        }
+        public int Size
         {
             get;
             private set;
@@ -38,15 +44,23 @@ namespace MultiAlignCore.IO
         /// Prints a message to the console and log file.
         /// </summary>
         /// <param name="message"></param>
+        public static void PrintMessage(string message, int size)
+        {
+            PrintMessage(message, size, true);
+        }
+        /// <summary>
+        /// Prints a message to the console and log file.
+        /// </summary>
+        /// <param name="message"></param>
         public static void PrintMessage(string message)
         {
-            PrintMessage(message, true);
+            PrintMessage(message, 12, true);
         }
-        private static void OnMessage(string message)
+        private static void OnMessage(string message, int size)
         {
             if (Status != null)
             {
-                Status(null, new StatusEventArgs(message));
+                Status(null, new StatusEventArgs(message, size));
             }
         }
         /// <summary>
@@ -60,13 +74,17 @@ namespace MultiAlignCore.IO
             {
                 builder.Append("-");
             }
-            PrintMessage(builder.ToString(), false);
+            PrintMessage(builder.ToString(), 12, false);
         }
         /// <summary>
         /// Prints a message to the console and log file.
         /// </summary>
         /// <param name="message"></param>
         public static void PrintMessage(string message, bool useMemory)
+        {
+            PrintMessage(message, 12, useMemory);
+        }
+        public static void PrintMessage(string message, int size, bool useMemory)
         {
             string newMessage = message;
             if (useMemory)
@@ -77,7 +95,7 @@ namespace MultiAlignCore.IO
             {
                 File.AppendAllText(Logger.LogPath, newMessage + Environment.NewLine);
             }
-            OnMessage(newMessage);
+            OnMessage(newMessage, size);
             Console.WriteLine(newMessage);
         }
         /// <summary>

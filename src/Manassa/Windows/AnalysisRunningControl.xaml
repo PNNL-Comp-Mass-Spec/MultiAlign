@@ -14,59 +14,50 @@
     </UserControl.Resources>
 
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
+        <Grid.RowDefinitions>            
             <RowDefinition Height="38"/>
-            <RowDefinition/>
             <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-        </Grid.ColumnDefinitions>
-        <Label
-            FontSize="20"
-            >
-            Running Analysis...
-        </Label>
-            <TabControl
-            Grid.Row="2"            
-            >
-            <TabItem
-                Header="Messages"
-                Style="{DynamicResource ResourceKey=SimpleTabItem}">
-                <ScrollViewer
-                    VerticalAlignment="Stretch"
-                    VerticalContentAlignment="Stretch"
-                    >
-                    <ListBox
-                        x:Name="messagesBox"
-                        ItemsSource="{Binding Path=Messages}"
-                        >
-
-                    </ListBox>
-                </ScrollViewer>
-            </TabItem>
-            <TabItem
-                Header="Gallery"
-                Style="{DynamicResource ResourceKey=SimpleTabItem}">
-                <WrapPanel                    
-                    Margin="5"                    
-                    Background="LightGray"                    
-                    >
-                </WrapPanel>
-            </TabItem>
-
-            
-        </TabControl>        
-
+            <RowDefinition />
+            <RowDefinition Height="Auto"/>
+            <RowDefinition />
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>     
         <Label                         
-            Grid.Row="1"
+            Grid.Row="0"
             Grid.Column="0"
-            Grid.ColumnSpan="4"
-            Content="{Binding Path=CurrentStatusMessage}" />            
+            Content="{Binding Path=CurrentStatusMessage}" />
+
+        <Label
+            Grid.Row="1">
+            Messages
+        </Label>
+        <ScrollViewer
+            Grid.Row="2"
+            VerticalAlignment="Stretch"
+            VerticalContentAlignment="Stretch"
+            >
+            <ListBox
+                x:Name="messagesBox"
+                ItemsSource="{Binding Path=Messages}">
+            </ListBox>
+        </ScrollViewer>
+        <GridSplitter
+            Height="4"
+            Background="Gray"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"           
+            Grid.Row="3"
+            >            
+        </GridSplitter>
+        <ListBox 
+                Grid.Column="0"
+                Grid.Row="4"
+                ItemsSource="{Binding Path=GalleryImages}">            
+        </ListBox>
         <Button            
             Style="{DynamicResource ResourceKey=SimpleButtonStyle}"                            
-            Grid.Row="3"
+            Grid.Row="5"
+            Grid.ColumnSpan="2"
             Grid.Column="0"
             Height="32"
             Width="128"

@@ -27,6 +27,8 @@ namespace MultiAlignCore.Algorithms
     public class AnalysisController
     {
         public event EventHandler AnalysisComplete;
+        public event EventHandler AnalysisError;
+        public event EventHandler AnalysisCancelled;
 
         #region Analysis Config and Reporting     
         private IAnalysisReportGenerator        m_reportCreator;
@@ -971,6 +973,8 @@ namespace MultiAlignCore.Algorithms
             m_config.errorException = null;
 
 
+            m_config.Analysis.MetaData.AnalysisPath = m_config.AnalysisPath;
+            m_config.Analysis.MetaData.AnalysisName = m_config.AnalysisName;
 
             /// /////////////////////////////////////////////////////////////
             /// Setup log path, analysis path, and print version to log file.            
@@ -1117,6 +1121,29 @@ namespace MultiAlignCore.Algorithms
             return createDatabase;
         }
 
+        /// <summary>
+        /// Cancels the analysis.
+        /// </summary>
+        public void CancelAnalysis()
+        {
+            if (m_worker != null)
+            {
+                try
+                {                    
+                    m_worker.CancelAsync();
+                }
+                catch
+                {
+                }
+            }
+
+            if (this.AnalysisCancelled != null)
+            {
+                AnalysisCancelled(this, null);
+            }
+        }
+
+
         #region Processing 
         /// <summary>
         /// Performs the analysis.
@@ -1130,8 +1157,7 @@ namespace MultiAlignCore.Algorithms
         /// <param name="createDatabase"></param>
         /// <returns></returns>
         private void PerformAnalysisGUI(AnalysisConfig config, AlgorithmBuilder builder, AnalysisType validated, bool createDatabase)
-        {            
-            InputAnalysisInfo analysisSetupInformation  = null;
+        {                        
             FeatureDataAccessProviders providers        = null;
             MultiAlignAnalysisProcessor processor       = null;
 
@@ -1146,8 +1172,6 @@ namespace MultiAlignCore.Algorithms
             /// Create the clustering, analysis, and plotting paths.
             /// /////////////////////////////////////////////////////////////                                    
             builder.BuildClusterer(config.Analysis.Options.ClusterOptions.ClusteringAlgorithm);
-
-            config.Analysis                 = ConstructAnalysisObject(analysisSetupInformation);
             config.Analysis.DataProviders   = providers;
             config.Analysis.AnalysisType    = validated;
             ConstructPlotPath();
@@ -1197,6 +1221,14 @@ namespace MultiAlignCore.Algorithms
             if (handleID == 1)
             {
                 Logger.PrintMessage("There was an error during processing.");
+                config.triggerEvent.Dispose();
+                config.errorEvent.Dispose();
+                processor.Dispose();
+
+                if (AnalysisError != null)
+                {
+                    AnalysisError(this, null);
+                }
                 return;
             }
 
@@ -1215,7 +1247,7 @@ namespace MultiAlignCore.Algorithms
                 Logger.PrintMessage(ex.StackTrace);
             }
 
-            config.Analysis.Dispose();
+            
             config.triggerEvent.Dispose();
             config.errorEvent.Dispose();
             processor.Dispose();

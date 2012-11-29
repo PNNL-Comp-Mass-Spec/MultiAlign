@@ -198,8 +198,8 @@
             CanUserAddRows="False"                           
             CanUserSortColumns="True">            
             <DataGrid.Columns >
-                <DataGridTextColumn         Header="Dataset ID"      CanUserSort="True"     Binding="{Binding Path=DMSDatasetID}"   IsReadOnly="True"/>
-                <DataGridTextColumn         Header="Dataset Name"    CanUserSort="True"     Binding="{Binding Path=Features.Path,   Converter={StaticResource ResourceKey=DatasetPathConverter}}"           IsReadOnly="True"/>
+                <DataGridTextColumn         Header="Dataset ID"      CanUserSort="True"     Binding="{Binding Path=DatasetId}"   IsReadOnly="True"/>
+                <DataGridTextColumn         Header="Dataset Name"    CanUserSort="True"     Binding="{Binding Path=DatasetName,   Converter={StaticResource ResourceKey=DatasetPathConverter}}"           IsReadOnly="True"/>
                 <DataGridHyperlinkColumn    Header="Instrument File" CanUserSort="True"     Binding="{Binding Raw.Path,             Converter={StaticResource ResourceKey=DatasetPathConverter}}"            IsReadOnly="True"/>
                 <DataGridHyperlinkColumn    Header="Sequence File"   CanUserSort="True"     Binding="{Binding Sequence.Path,        Converter={StaticResource ResourceKey=DatasetPathConverter}}"       IsReadOnly="True"
                                             >

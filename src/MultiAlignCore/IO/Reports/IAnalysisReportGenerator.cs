@@ -13,7 +13,7 @@ namespace MultiAlignCore.IO
         void CreatePeakMatchedPlots(MultiAlignCore.Data.FeaturesPeakMatchedEventArgs e);
         void CreatePlotReport();
         string PlotPath { get; set; }
-        void SaveImage(System.Drawing.Image image, string name);
+        //void SaveImage(System.Drawing.Image image, string name, string description);
         void CreateClusterPlots(List<UMCClusterLight> clusters);
         void CreateChargePlots(Dictionary<int, int> chargeMap);
     }

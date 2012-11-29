@@ -1,0 +1,38 @@
+﻿<UserControl x:Class="Manassa.Windows.FeaturePlotView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="170" d:DesignWidth="145">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition  Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel
+            Grid.Row="0"
+            Grid.Column="0">
+            <Label         
+                HorizontalContentAlignment="Center"        
+                Height="32">
+                Feature plots
+            </Label>
+            <Border
+                Margin="5"
+                Height="128"
+                Width="128"
+                BorderBrush="LightGray"
+                BorderThickness="4"
+                CornerRadius="3">
+                <Button Grid.Column="0" 
+                        Grid.RowSpan="2"
+                        Background="Transparent">
+                    <Image Source="{Binding Path=Image}"/>
+                </Button>
+            </Border>
+        </StackPanel>        
+    </Grid>
+</UserControl>

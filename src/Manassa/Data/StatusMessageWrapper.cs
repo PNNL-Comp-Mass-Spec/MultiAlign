@@ -1,17 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 
 namespace Manassa.Data
 {
     public class StatusMessageWrapper: DependencyObject
     {
-        
 
-        public string Message
+        public string Description
+        {
+            get { return (string)GetValue(DescriptionProperty); }
+            set { SetValue(DescriptionProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Description.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty DescriptionProperty =
+            DependencyProperty.Register("Description", typeof(string), typeof(StatusMessageWrapper));
+
+        public string Name
         {
             get { return (string)GetValue(MessageProperty); }
             set { SetValue(MessageProperty, value); }
@@ -19,7 +24,7 @@ namespace Manassa.Data
 
         // Using a DependencyProperty as the backing store for Message.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty MessageProperty =
-            DependencyProperty.Register("Message", typeof(string), typeof(StatusMessageWrapper));
+            DependencyProperty.Register("Name", typeof(string), typeof(StatusMessageWrapper));
 
         public Image Image
         {

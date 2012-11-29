@@ -410,7 +410,7 @@ namespace MultiAlignCore.Algorithms
             msnToMsCache    = providers.MSFeatureToMSnFeatureCache;
             
 
-            UpdateStatus("Loading dataset " + dataset.DatasetName + ".");
+            UpdateStatus(string.Format("Loading dataset [{0}] - {1}.", dataset.DatasetId, dataset.DatasetName));
             int datasetID           = dataset.DatasetId;
             List<UMCLight> features = UMCLoaderFactory.LoadUmcFeatureData(dataset,
                                                                           featureCache);

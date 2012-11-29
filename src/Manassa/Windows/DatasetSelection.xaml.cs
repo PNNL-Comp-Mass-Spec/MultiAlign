@@ -19,6 +19,7 @@ using Manassa.IO;
 using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.Data;
 using System.ComponentModel;
+using System.IO;
 
 namespace Manassa.Windows
 {
@@ -48,7 +49,7 @@ namespace Manassa.Windows
             m_openFileDialog             = new OpenFileDialog();
             m_openFileDialog.Filter      = m_inputFileFilter;
             DataContext                  = this;
-            ShouldSearchSubDirectories   = false;
+            ShouldSearchSubDirectories   = SearchOption.TopDirectoryOnly;;
         }
 
         public InputAnalysisInfo AnalysisInputInformation
@@ -100,15 +101,15 @@ namespace Manassa.Windows
 
 
 
-        public bool ShouldSearchSubDirectories
+        public SearchOption ShouldSearchSubDirectories
         {
-            get { return (bool)GetValue(ShouldSearchSubDirectoriesProperty); }
+            get { return (SearchOption)GetValue(ShouldSearchSubDirectoriesProperty); }
             set { SetValue(ShouldSearchSubDirectoriesProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for ShouldSearchSubDirectories.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ShouldSearchSubDirectoriesProperty =
-            DependencyProperty.Register("ShouldSearchSubDirectories", typeof(bool), typeof(DatasetSelection));
+            DependencyProperty.Register("ShouldSearchSubDirectories", typeof(SearchOption), typeof(DatasetSelection));
 
 
         public MultiAlignAnalysis Analysis
@@ -142,13 +143,8 @@ namespace Manassa.Windows
                 // Read input files
                 try
                 {
-                    InputAnalysisInfo info = MultiAlignFileInputReader.ReadInputFile(InputFilePath);
-                    List<DatasetInformation> datasets = DatasetInformation.CreateDatasetsFromInputFile(info.Files);
-                    foreach (DatasetInformation dataset in datasets)
-                    {
-                        Datasets.Add(dataset);
-                        Analysis.MetaData.Datasets.Add(dataset);
-                    }
+                    InputAnalysisInfo info = MultiAlignFileInputReader.ReadInputFile(InputFilePath);                    
+                    UpdateDatasets(info.Files);
                 }
                 catch
                 {
@@ -199,17 +195,21 @@ namespace Manassa.Windows
                 List<InputFile> inputs = new List<InputFile>();
                 inputs.Add(file);
 
-                List<DatasetInformation> info = DatasetInformation.CreateDatasetsFromInputFile(inputs);
-                foreach (DatasetInformation dataset in info)
-                {
-                    Datasets.Add(dataset);
-                    Analysis.MetaData.Datasets.Add(dataset);
-                }
+                UpdateDatasets(inputs);
             }
             else
             {
 
                 ApplicationStatusMediator.SetStatus("The input file does not exist.");
+            }
+        }
+
+        private void UpdateDatasets(List<InputFile> info)
+        {
+            List<DatasetInformation> added = Analysis.MetaData.AddInputFiles(info);            
+            foreach (DatasetInformation dataset in added)
+            {               
+                Datasets.Add(dataset);
             }
         }
 
@@ -238,13 +238,9 @@ namespace Manassa.Windows
 
             List<string> extensions = new List<string>() { "*_isos.csv", "*LCMSFeatures.txt", "*.syn", "*.raw", "*.mzxml" };
 
-            System.IO.SearchOption option = System.IO.SearchOption.TopDirectoryOnly;
+            System.IO.SearchOption option = ShouldSearchSubDirectories;
 
-            if (ShouldSearchSubDirectories)
-            {
-                option = System.IO.SearchOption.AllDirectories;
-            }
-
+            
             if (FolderPath == null)
             {
                 ApplicationStatusMediator.SetStatus("The directory specified does not exist.");                
@@ -259,14 +255,8 @@ namespace Manassa.Windows
 
             List<InputFile> files = DatasetSearcher.FindDatasets(FolderPath,
                                         extensions,
-                                        option);
-
-            List<DatasetInformation> datasets = DatasetInformation.CreateDatasetsFromInputFile(files);
-            foreach (DatasetInformation dataset in datasets)
-            {
-                Analysis.MetaData.Datasets.Add(dataset);
-                Datasets.Add(dataset);
-            }
+                                        option);            
+            UpdateDatasets(files);
         }
 
         private void RemoveSelectedButton_Click(object sender, RoutedEventArgs e)
@@ -281,16 +271,29 @@ namespace Manassa.Windows
 
             datasets.ForEach(x => Datasets.Remove(x));
             datasets.ForEach(x => Analysis.MetaData.Datasets.Remove(x));
+
+            int id = 0;
+            Analysis.MetaData.Datasets.ForEach(x => x.DatasetId = id++);
         }
 
         private void SelectAllButton_Click(object sender, RoutedEventArgs e)
         {
+
+            
             MainDatasetGrid.SelectAll();
         }
 
         private void SelectNoneButton_Click(object sender, RoutedEventArgs e)
         {
             MainDatasetGrid.SelectedIndex = -1;
+        }
+
+        private void ToggleSelection()
+        {
+            foreach (DataGridRow row in MainDatasetGrid.Items)
+            {
+                row.IsSelected = !row.IsSelected;
+            }
         }
 
         private void LoadFromPreviousButton_Click(object sender, RoutedEventArgs e)
@@ -312,6 +315,11 @@ namespace Manassa.Windows
         public event PropertyChangedEventHandler PropertyChanged;
 
         #endregion
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            ToggleSelection();
+        }
     }
 
     /// <summary>

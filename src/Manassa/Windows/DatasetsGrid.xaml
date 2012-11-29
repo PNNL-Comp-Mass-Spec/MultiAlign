@@ -91,7 +91,6 @@
 
             <DataGrid.Columns >                  
                 <DataGridTextColumn         Header="ID"                 CanUserSort="True"     Binding="{Binding DatasetId}"                    IsReadOnly="True"/>
-                <DataGridTextColumn         Header="DMS ID"             CanUserSort="True"     Binding="{Binding DMSDatasetID}"                 IsReadOnly="True"/>
                 <DataGridTextColumn         Header="Name"               CanUserSort="True"     Binding="{Binding DatasetName}"                  IsReadOnly="True"/>                
                 <DataGridTextColumn         Header="Features Path"      CanUserSort="True"     Binding="{Binding Features.Path}"                IsReadOnly="True"/>
                 <DataGridTextColumn         Header="Raw Path"           CanUserSort="True"     Binding="{Binding Raw.Path}"                     IsReadOnly="True"/>

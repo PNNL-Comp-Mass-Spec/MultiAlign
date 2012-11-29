@@ -8,6 +8,7 @@ using Manassa.Data;
 using MultiAlignCore.Algorithms;
 using MultiAlignCore.Data;
 using MultiAlignCore.IO;
+using System.IO;
 
 namespace Manassa.Windows
 {
@@ -22,6 +23,8 @@ namespace Manassa.Windows
             CurrentState        = ApplicationAnalysisState.Idle;
             DataContext         = this;
             Messages = new ObservableCollection<string>();
+
+            GalleryImages = new ObservableCollection<UserControl>();
             
         }
 
@@ -69,20 +72,56 @@ namespace Manassa.Windows
 
             IsAnalysisRunning = true;
 
+            Reporter.Config = AnalysisConfiguration;
+
             Controller.AnalysisComplete += new EventHandler(Controller_AnalysisComplete);
+            Controller.AnalysisError    += new EventHandler(Controller_AnalysisError);
+            Controller.AnalysisCancelled += new EventHandler(Controller_AnalysisCancelled);
+
             // Start the analysis.
             Controller.StartMultiAlignGUI(AnalysisConfiguration, this);                        
         }
 
-        void Controller_AnalysisComplete(object sender, EventArgs e)
+
+        private void AnalysisEnded(string reason)
         {
             Action workAction = delegate
             {
                 IsAnalysisRunning = false;
+                ApplicationStatusMediator.SetStatus(reason);
+
                 Controller.AnalysisComplete -= Controller_AnalysisComplete;
+                Controller.AnalysisError -= Controller_AnalysisError;
+                Controller.AnalysisCancelled -= Controller_AnalysisCancelled;
             };
             Dispatcher.Invoke(workAction, DispatcherPriority.Normal);
         }
+        void Controller_AnalysisCancelled(object sender, EventArgs e)
+        {
+            AnalysisEnded("The analysis was cancelled.");
+        }
+        void Controller_AnalysisError(object sender, EventArgs e)
+        {
+            AnalysisEnded("There was an error with the analysis.");            
+        }
+        void Controller_AnalysisComplete(object sender, EventArgs e)
+        {
+            AnalysisEnded("The analysis is complete.");    
+        }
+
+
+
+        public ObservableCollection<UserControl> GalleryImages
+        {
+            get { return (ObservableCollection<UserControl>)GetValue(GalleryImagesProperty); }
+            set { SetValue(GalleryImagesProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for GalleryImages.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty GalleryImagesProperty =
+            DependencyProperty.Register("GalleryImages",
+                        typeof(ObservableCollection<UserControl>), 
+                        typeof(AnalysisRunningControl));
 
         public bool IsAnalysisRunning
         {
@@ -145,7 +184,6 @@ namespace Manassa.Windows
         public static readonly DependencyProperty MessagesProperty =
             DependencyProperty.Register("Messages", typeof(ObservableCollection<string>), typeof(AnalysisRunningControl));
 
-
         /// <summary>
         /// Determines the current state of the analysis.
         /// </summary>
@@ -189,10 +227,17 @@ namespace Manassa.Windows
                 //DO nothing?
             }
         }
+        private void BuildAlignmentPlotView(FeaturesAlignedEventArgs e)
+        {
+            AlignmentPlotView view = new AlignmentPlotView();
+            view.AlignmentData = e;
+            GalleryImages.Add(view);
+        }
         public void CreateAlignmentPlots(FeaturesAlignedEventArgs e)
         {
             Action workAction = delegate
             {
+                BuildAlignmentPlotView(e);
                 Reporter.CreateAlignmentPlots(e);
             };
             Dispatcher.Invoke(workAction, DispatcherPriority.Normal);
@@ -234,7 +279,6 @@ namespace Manassa.Windows
             get
             {
                 string plotPath = "";
-
                 Action workAtion = delegate
                 {
                     plotPath = Reporter.PlotPath;
@@ -251,19 +295,11 @@ namespace Manassa.Windows
                 };
                 Dispatcher.Invoke(workAction, DispatcherPriority.Normal);
             }
-        }
-        public void SaveImage(System.Drawing.Image image, string name)
-        {
-            Action workAction = delegate
-            {
-                Reporter.SaveImage(image, name);
-            };
-            Dispatcher.Invoke(workAction, DispatcherPriority.Normal);
-        }
+        }        
         public void CreateClusterPlots(List<PNNLOmics.Data.Features.UMCClusterLight> clusters)
         {
             Action workAction = delegate
-            {
+            {                
                 Reporter.CreateClusterPlots(clusters);
             };
             Dispatcher.Invoke(workAction, DispatcherPriority.Normal);

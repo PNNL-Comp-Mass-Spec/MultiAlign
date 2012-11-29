@@ -41,10 +41,11 @@ namespace MultiAlignCustomControls.Drawing
         /// </summary>
         /// <param name="image"></param>
         /// <param name="name"></param>
-        public void SaveImage(Image image, string name)
+        public void SaveImage(Image image, string name, string description)
         {
             if (image != null)
             {
+
                 string path = Path.Combine(Config.plotSavePath, name);
                 image.Save(path, System.Drawing.Imaging.ImageFormat.Png);
             }
@@ -67,12 +68,12 @@ namespace MultiAlignCustomControls.Drawing
             options.Title = "Cluster Member Size Histogram ( Total Clusters = " + clusters.Count.ToString() + ")";
             options.DisplayLegend = false;
             Image image = RenderDatasetInfo.ClusterSizeHistogram_Thumbnail(clusters, Config.width, Config.height, options);
-            SaveImage(image, "ClusterMemberSizes.png");
+            SaveImage(image, "ClusterMemberSizes.png", "Cluster Member Sizes");
             Config.Report.PushImageColumn(Path.Combine("Plots", "ClusterMemberSizes.png"));
 
             options.Title = "Cluster Dataset Member Size Histogram ( Total Clusters = " + clusters.Count.ToString() + ")";
             image = RenderDatasetInfo.ClusterDatasetMemberSizeHistogram_Thumbnail(clusters, Config.width, Config.height, options);
-            SaveImage(image, "ClusterDatasetMemberSizes.png");
+            SaveImage(image, "ClusterDatasetMemberSizes.png", "Cluster Dataset Member Sizes");
             Config.Report.PushImageColumn(Path.Combine("Plots", "ClusterDatasetMemberSizes.png"));
 
             // Mass vs. Cluster score 
@@ -80,7 +81,7 @@ namespace MultiAlignCustomControls.Drawing
             options.YAxisLabel = "Cluster Monoisotopic Mass";
             options.XAxisLabel = "Cluster NET";
             image = RenderDatasetInfo.ClusterScatterPlot_Thumbnail(clusters, options);
-            SaveImage(image, "ClusterScatterPlot.png");
+            SaveImage(image, "ClusterScatterPlot.png", "Clusters");
             Config.Report.PushImageColumn(Path.Combine(PlotPath, "ClusterScatterPlot.png"));
             Config.Report.PushEndTableRow();
             Config.Report.PushStartTableRow();
@@ -131,7 +132,7 @@ namespace MultiAlignCustomControls.Drawing
                                                 "Charge State Histogram", "Charge State", "Count", Config.width, Config.height);
             options.DisplayLegend   = false;            
             Image image = RenderDatasetInfo.CreateHistogram_Thumbnail(chargeMap, Config.width, Config.height, options);
-            SaveImage(image, "ChargeStates.png");
+            SaveImage(image, "ChargeStates.png", "Charge State Histogram");
             Config.Report.PushImageColumn(Path.Combine("Plots", "ChargeStates.png"));
 
             Config.Report.PushEndTableRow();
@@ -184,9 +185,8 @@ namespace MultiAlignCustomControls.Drawing
             series.Shape         = new PNNLControls.BubbleShape(1, false);
 
             Image image      = RenderDatasetInfo.GenericScatterPlot_Thumbnail(new List<SeriesOptions>() {series}, options);
-            string labelName = "massTags_plot.png";
-            string path      = Path.Combine(Config.plotSavePath, labelName);
-            image.Save(path, System.Drawing.Imaging.ImageFormat.Png);
+            string labelName = "massTags_plot.png";            
+            SaveImage(image, labelName, "Mass Tag Plots");
             Config.Report.PushImageColumn(Path.Combine("Plots", labelName));
 
             Config.Report.PushEndTableRow();
@@ -233,7 +233,7 @@ namespace MultiAlignCustomControls.Drawing
 
             Image  image     = null; 
             string labelName = ""; 
-            string path      = "";  
+            //string path      = "";  
             SeriesOptions clusterSeries = null;
 
             while (confidence <= .9)
@@ -281,9 +281,8 @@ namespace MultiAlignCustomControls.Drawing
                    };
 
                 image       = RenderDatasetInfo.GenericScatterPlot_Thumbnail(new List<SeriesOptions>() { clusterSeries, tagsSeries }, options);
-                labelName   = string.Format("matches-STAC-{0}", confidence - step);
-                path        = Path.Combine(Config.plotSavePath, labelName  + ".png");
-                image.Save(path, System.Drawing.Imaging.ImageFormat.Png);
+                labelName   = string.Format("matches-STAC-{0}", confidence - step);                
+                SaveImage(image, labelName, "STAC Matches");
                 Config.Report.PushData(labelName);
                 Config.Report.PushImageColumn(Path.Combine("Plots", labelName + ".png"));
 
@@ -317,18 +316,16 @@ namespace MultiAlignCustomControls.Drawing
 
             options.Title   = "Unattributed clusters";
             image           = RenderDatasetInfo.GenericScatterPlot_Thumbnail(new List<SeriesOptions>() {unattributedSeries}, options);
-            labelName       = "unattributedClusters.png";
-            path            = Path.Combine(Config.plotSavePath, labelName);
-            image.Save(path, System.Drawing.Imaging.ImageFormat.Png);
+            labelName       = "unattributedClusters.png";            
+            SaveImage(image, labelName, "Unattributed Clusters");
             Config.Report.PushImageColumn(Path.Combine("Plots", labelName));
 
             // All Series ----------------------------------------------------
             options.Title       = string.Format("Clusters (STAC = {0:.00}) and Unattributed Clusters", confidence);
             clusterSeries.Label = "Matched Clusters";
             image               = RenderDatasetInfo.GenericScatterPlot_Thumbnail(new List<SeriesOptions>() {unattributedSeries, clusterSeries}, options);
-            labelName           = "clustersAndUnattributedClusters.png";
-            path                = Path.Combine(Config.plotSavePath, labelName);
-            image.Save(path, System.Drawing.Imaging.ImageFormat.Png);
+            labelName           = "clustersAndUnattributedClusters.png";            
+            SaveImage(image, labelName, "Clusters and Unattributed Clusters");
             Config.Report.PushImageColumn(Path.Combine("Plots", labelName));
 
             Config.Report.PushEndTableRow();
@@ -359,8 +356,8 @@ namespace MultiAlignCustomControls.Drawing
                 List<UMCLight> baselineFeatures     = e.Features;                
                 Image baselineImage                 = RenderDatasetInfo.FeaturesScatterPlot_Thumbnail(baselineFeatures, baselineOptions);
                 string baselineLabelName            = Path.GetFileNameWithoutExtension(baselineInfo.DatasetName) + "_featurePlot.png";
-                string baselinePath                 = Path.Combine(Config.plotSavePath, baselineLabelName);
-                baselineImage.Save(baselinePath, System.Drawing.Imaging.ImageFormat.Png);
+                string baselinePath                 = Path.Combine(Config.plotSavePath, baselineLabelName);                
+                SaveImage(baselineImage, baselineLabelName, "Baseline feature plot ");
 
                 // Report setup.
                 Config.Report.PushImageColumn(Path.Combine("Plots", baselineLabelName));
@@ -397,9 +394,8 @@ namespace MultiAlignCustomControls.Drawing
 
             List<UMCLight> features = e.AlignedFeatures;            
             Image image      = RenderDatasetInfo.FeaturesScatterPlot_Thumbnail(features, options);
-            string labelName = Path.GetFileNameWithoutExtension(name) + "_featurePlot.png";
-            string path      = Path.Combine(Config.plotSavePath, labelName);
-            image.Save(path, System.Drawing.Imaging.ImageFormat.Png);
+            string labelName = Path.GetFileNameWithoutExtension(name) + "_featurePlot.png";            
+            SaveImage(image, labelName, "Features " + name);
             Config.Report.PushImageColumn(Path.Combine("Plots", labelName));
 
             options.MarginMin = 1;
@@ -412,9 +408,8 @@ namespace MultiAlignCustomControls.Drawing
 
             image = RenderDatasetInfo.AlignmentHeatmap_Thumbnail(e.AlignmentData, Config.width, Config.height);
             image.RotateFlip(RotateFlipType.RotateNoneFlipY);
-            labelName = Path.GetFileNameWithoutExtension(name) + "_heatmap.png";
-            path = Path.Combine(Config.plotSavePath, labelName);
-            image.Save(path, System.Drawing.Imaging.ImageFormat.Png);
+            labelName = Path.GetFileNameWithoutExtension(name) + "_heatmap.png";            
+            SaveImage(image, labelName, "Alignment heat map " + name);
             Config.Report.PushImageColumn(Path.Combine("Plots", labelName));
 
             options.DisplayLegend = false;
@@ -423,8 +418,7 @@ namespace MultiAlignCustomControls.Drawing
             options.YAxisLabel = "Count";
             image = RenderDatasetInfo.ErrorHistogram_Thumbnail(e.AlignmentData.netErrorHistogram, options);
             labelName = Path.GetFileNameWithoutExtension(name) + "_netErrorHistogram.png";
-            path = Path.Combine(Config.plotSavePath, labelName);
-            image.Save(path, System.Drawing.Imaging.ImageFormat.Png);
+            SaveImage(image, labelName, "NET error histogram " + name);
             Config.Report.PushImageColumn(Path.Combine("Plots", labelName));
 
             options.DisplayGridLines = true;
@@ -432,16 +426,14 @@ namespace MultiAlignCustomControls.Drawing
             options.Title = "Net vs. Scan Residuals" + name;
             image = RenderDatasetInfo.NETResiduals_Thumbnail(e.AlignmentData.ResidualData, options);
             labelName = Path.GetFileNameWithoutExtension(name) + "_netResiduals.png";
-            path = Path.Combine(Config.plotSavePath, labelName);
-            image.Save(path, System.Drawing.Imaging.ImageFormat.Png);
+            SaveImage(image, labelName, "NET vs. scan residuals " + name);
             Config.Report.PushImageColumn(Path.Combine("Plots", labelName));
 
             options.Title = "Mass Error Histogram " + name;
             options.XAxisLabel = "Mass Error (PPM)";
             image = RenderDatasetInfo.ErrorHistogram_Thumbnail(e.AlignmentData.massErrorHistogram, options);
             labelName = Path.GetFileNameWithoutExtension(name) + "_massErrorHistogram.png";
-            path = Path.Combine(Config.plotSavePath, labelName);
-            image.Save(path, System.Drawing.Imaging.ImageFormat.Png);
+            SaveImage(image, labelName, "Mass error histogram (ppm) " + name );
             Config.Report.PushImageColumn(Path.Combine("Plots", labelName));
 
 
@@ -454,29 +446,26 @@ namespace MultiAlignCustomControls.Drawing
                 if (image != null)
                 {
                     labelName = Path.GetFileNameWithoutExtension(name) + "_driftTimeErrorHistogram.png";
-                    path = Path.Combine(Config.plotSavePath, labelName);
-                    image.Save(path, System.Drawing.Imaging.ImageFormat.Png);
+                    SaveImage(image, labelName, "Drift time error histogram " + name);
                     Config.Report.PushImageColumn(Path.Combine("Plots", labelName));
                 }
             }
 
             options.DisplayLegend = true;
-            options.Title = "Mass vs. Scan Residuals" + name;
-            image = RenderDatasetInfo.MassVsScanResiduals_Thumbnail(e.AlignmentData.ResidualData, options);
-            labelName = Path.GetFileNameWithoutExtension(name) + "_massScanResiduals.png";
-            path = Path.Combine(Config.plotSavePath, labelName);
-            image.Save(path, System.Drawing.Imaging.ImageFormat.Png);
+            options.Title   = "Mass vs. Scan Residuals" + name;
+            image           = RenderDatasetInfo.MassVsScanResiduals_Thumbnail(e.AlignmentData.ResidualData, options);
+            labelName       = Path.GetFileNameWithoutExtension(name) + "_massScanResiduals.png";           
+            SaveImage(image, labelName, "Mass vs Scan Residuals");
             Config.Report.PushImageColumn(Path.Combine("Plots", labelName));
 
             options.DisplayLegend = true;
             options.Title = "Mass vs. m/z Residuals" + name;
             image = RenderDatasetInfo.ClusterMassVsMZResidual_Thumbnail(e.AlignmentData.ResidualData, options);
-            labelName = Path.GetFileNameWithoutExtension(name) + "_massMZResiduals.png";
-            path = Path.Combine(Config.plotSavePath, labelName);
-            image.Save(path, System.Drawing.Imaging.ImageFormat.Png);
+            labelName = Path.GetFileNameWithoutExtension(name) + "_massMZResiduals.png";            
+            SaveImage(image, labelName, "Mass vs m/z Residuals");
             Config.Report.PushImageColumn(Path.Combine("Plots", labelName));
             Config.Report.PushEndTableRow();
-
+            
             if (e.DriftTimeAlignmentData != null)
             {
 
@@ -499,31 +488,27 @@ namespace MultiAlignCustomControls.Drawing
                     x[i] = Convert.ToSingle(match.TargetFeature.DriftTime);
                     i++;
                 }
-                labelName = Path.GetFileNameWithoutExtension(name) + "_driftTimes.png";
-                path = Path.Combine(Config.plotSavePath, labelName);
+                labelName = Path.GetFileNameWithoutExtension(name) + "_driftTimes.png";                
                 image = GenericPlotFactory.ScatterPlot_Thumbnail(x, y, options);
-                image.Save(path, System.Drawing.Imaging.ImageFormat.Png);
+                SaveImage(image, labelName, "Drift Times " + name);
                 Config.Report.PushImageColumn(Path.Combine("Plots", labelName));
 
                 options.Title = "Aligned Drift Time Plot";
-                labelName = Path.GetFileNameWithoutExtension(name) + "_driftTimesAligned.png";
-                path = Path.Combine(Config.plotSavePath, labelName);
+                labelName = Path.GetFileNameWithoutExtension(name) + "_driftTimesAligned.png";                
                 image = GenericPlotFactory.ScatterPlot_Thumbnail(x, yC, options);
-                image.Save(path, System.Drawing.Imaging.ImageFormat.Png);
+                SaveImage(image, labelName, "Aligned Drift Times " + name);
                 Config.Report.PushImageColumn(Path.Combine("Plots", labelName));
 
                 options.Title = "Drift Time Error Distributions";
                 labelName = Path.GetFileNameWithoutExtension(name) + "_driftTimesErrorHistogram.png";
-                path = Path.Combine(Config.plotSavePath, labelName);
                 image = GenericPlotFactory.ResidualHistogram_Thumbnail(x, y, options);
-                image.Save(path, System.Drawing.Imaging.ImageFormat.Png);
+                SaveImage(image, labelName, "Drift Time Error Distributions " + name);
                 Config.Report.PushImageColumn(Path.Combine("Plots", labelName));
 
                 options.Title = "Aligned Drift Time Error Distributions";
-                labelName = Path.GetFileNameWithoutExtension(name) + "_driftTimesErrorHistogramAligned.png";
-                path = Path.Combine(Config.plotSavePath, labelName);
+                labelName = Path.GetFileNameWithoutExtension(name) + "_driftTimesErrorHistogramAligned.png";                
                 image = GenericPlotFactory.ResidualHistogram_Thumbnail(x, yC, options);
-                image.Save(path, System.Drawing.Imaging.ImageFormat.Png);
+                SaveImage(image, labelName, "Aligned Drift Time Error Distributions");
                 Config.Report.PushImageColumn(Path.Combine("Plots", labelName));
                 Config.Report.PushEndTableRow();
             }
