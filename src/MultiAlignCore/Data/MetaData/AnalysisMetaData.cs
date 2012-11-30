@@ -2,13 +2,14 @@
 using MultiAlignCore.Data.Factors;
 using MultiAlignCore.IO.InputFiles;
 using MultiAlignEngine;
+using System.ComponentModel;
 
 namespace MultiAlignCore.Data
 {
     /// <summary>
     /// Class that holds meta-data information about the analysis.
     /// </summary>
-    public class AnalysisMetaData
+    public class AnalysisMetaData: INotifyPropertyChanged
     {
         /// <summary>
         /// Constructor.
@@ -29,14 +30,53 @@ namespace MultiAlignCore.Data
             get;
             set;
         }
+        private DatasetInformation m_baseline;
         /// <summary>
         /// Gets or sets the name of the baseline dataset.
         /// </summary>
         [DataSummaryAttribute("Baseline Dataset")]
         public DatasetInformation BaselineDataset
         {
-            get;
-            set;
+            get
+            {
+                return m_baseline;
+            }
+            set
+            {
+                /// Here we say, is the baseline the same?
+                /// If not then let's update it.
+                if (m_baseline != value)
+                {
+                    // Since it's not the same, then it could be 
+                    // an older dataset, in which case we want to change
+                    // the old one to no longer be tagged as the baseline.
+                    if (m_baseline != null)
+                    {
+                        m_baseline.IsBaseline = false;
+                    }                    
+                    // Then update
+                    m_baseline = value;
+
+                    // Then update the new
+                    if (m_baseline != null)
+                    {
+                        m_baseline.IsBaseline = true;
+                    }
+                    
+                    OnNotify("BaselineDataset");
+                }                
+            }
+        }
+        /// <summary>
+        /// Notify the listener that our internal data has changed.
+        /// </summary>
+        /// <param name="name"></param>
+        private void OnNotify(string name)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(name));
+            }
         }
         /// <summary>
         /// Gets or sets the input file used.
@@ -177,5 +217,11 @@ namespace MultiAlignCore.Data
             Datasets.ForEach(x => x.DatasetId = id++);          
             return addedSets;
         }
+
+        #region INotifyPropertyChanged Members
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        #endregion
     }
 }

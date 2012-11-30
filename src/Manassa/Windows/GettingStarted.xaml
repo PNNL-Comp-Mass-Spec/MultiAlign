@@ -9,9 +9,6 @@
              d:DesignHeight="243"
              d:DesignWidth="804">
 
-    <UserControl.CommandBindings>
-        <CommandBinding Command="Open" Executed="CommandBinding_Executed"></CommandBinding>
-    </UserControl.CommandBindings>
     <UserControl.Resources>
         <DataTemplate x:Key="RecentAnalysisItemTemplate">
             <Border CornerRadius="2" BorderThickness="1" HorizontalAlignment="Stretch" Padding="3" Margin="3" >
