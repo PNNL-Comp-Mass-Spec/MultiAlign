@@ -156,6 +156,10 @@
     <Compile Include="Drawing\RenderDatasetInfo.cs" />
     <Compile Include="Drawing\ShapeIterator.cs" />
     <Compile Include="Extensions\ChartExtensions.cs" />
+    <Compile Include="Imaging\AlignmentImageData.cs" />
+    <Compile Include="Imaging\AnalysisImageCreator.cs" />
+    <Compile Include="Imaging\ClustersImageData.cs" />
+    <Compile Include="Imaging\FeatureImageData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
   </ItemGroup>

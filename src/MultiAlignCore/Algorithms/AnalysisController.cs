@@ -136,15 +136,8 @@ namespace MultiAlignCore.Algorithms
         /// <param name="e"></param>
         private  void processor_AnalysisComplete(object sender, AnalysisCompleteEventArgs e)
         {
-            if (e.Analysis.MassTagDatabase != null)
-            {
-                
-            }
-
             m_config.Report.PushEndHeader();
-
-            ExportData(m_config.Analysis.DataProviders, AnalysisPathUtils.BuildAnalysisName(m_config.AnalysisPath, m_config.AnalysisName), e.Analysis.MetaData.Datasets);
-            
+            ExportData(m_config.Analysis.DataProviders, AnalysisPathUtils.BuildAnalysisName(m_config.AnalysisPath, m_config.AnalysisName), e.Analysis.MetaData.Datasets);            
             m_config.triggerEvent.Set();
         }
         /// <summary>

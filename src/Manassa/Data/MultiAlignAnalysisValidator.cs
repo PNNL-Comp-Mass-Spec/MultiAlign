@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using MultiAlignCore.IO.MTDB;
 using MultiAlignCore.Data;
+using System.IO;
 
 namespace Manassa.Data
 {
@@ -35,7 +36,7 @@ namespace Manassa.Data
                 case AnalysisSetupStep.OptionsSelection:
                     break;
                 case AnalysisSetupStep.Naming:
-                    ValidateNames(config, ref errorMessage);
+                    isStepValid = ValidateNames(config, ref errorMessage);
                     break;
                 case AnalysisSetupStep.Started:
                     if (analysis.AnalysisType != MultiAlignCore.Algorithms.AnalysisType.Full)
@@ -60,12 +61,25 @@ namespace Manassa.Data
             }
             else
             {
-                if (!System.IO.Directory.Exists(config.AnalysisPath))
+                char [] chars = Path.GetInvalidPathChars();
+                string name   = config.AnalysisPath; 
+                foreach (char c in chars)
                 {
-                    errorMessage = "The root folder you specified does not exist or is invalid.";
-                    isStepValid = false;
+                    if (name.Contains(c))
+                    {
+                        isStepValid  = false;
+                        errorMessage = "The path you provided has invalid characters.";
+                        return isStepValid;
+                    }
                 }
-                else if (config.AnalysisName == null)
+                
+
+                //if (!System.IO.Directory.Exists(config.AnalysisPath))
+                //{
+                //    errorMessage = "The root folder you specified does not exist or is invalid.";
+                //    isStepValid = false;
+                //}
+                if (config.AnalysisName == null)
                 {
                     errorMessage = "An analysis name needs to be supplied.";
                     isStepValid = false;

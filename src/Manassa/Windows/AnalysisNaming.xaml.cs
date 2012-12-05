@@ -27,7 +27,7 @@ namespace Manassa.Windows
         {
             InitializeComponent();
 
-            DataContext     = this;
+            DataContext = this;
             m_folderBrowser = new System.Windows.Forms.FolderBrowserDialog();
         }
 
@@ -54,6 +54,6 @@ namespace Manassa.Windows
             {
                 AnalysisConfiguration.AnalysisPath = m_folderBrowser.SelectedPath;
             }
-        }        
+        }
     }
 }

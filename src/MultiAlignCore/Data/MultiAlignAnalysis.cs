@@ -35,6 +35,7 @@ namespace MultiAlignCore.Data
             MetaData                        = new AnalysisMetaData();
             MetaData.AnalysisName           = string.Empty;
             Options                         = new AnalysisOptions();
+            MassTagDatabase                 = new MassTagDatabase();
             
             // Alignment options and data.
             AlignmentData                   = new List<classAlignmentData>();

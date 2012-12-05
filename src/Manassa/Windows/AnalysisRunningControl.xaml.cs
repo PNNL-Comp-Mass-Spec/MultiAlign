@@ -9,6 +9,7 @@ using MultiAlignCore.Algorithms;
 using MultiAlignCore.Data;
 using MultiAlignCore.IO;
 using System.IO;
+using PNNLOmics.Data.Features;
 
 namespace Manassa.Windows
 {
@@ -16,16 +17,19 @@ namespace Manassa.Windows
     /// ViewModel for running an analysis, display results, etc.
     /// </summary>
     public partial class AnalysisRunningControl : UserControl, IAnalysisReportGenerator 
-    {        
+    {
+        /// <summary>
+        /// The analysis is completed.
+        /// </summary>
+        public event EventHandler AnalysisComplete;
+        public event EventHandler AnalysisCancelled;
+
         public AnalysisRunningControl()
         {
-            InitializeComponent();
-            CurrentState        = ApplicationAnalysisState.Idle;
-            DataContext         = this;
-            Messages = new ObservableCollection<string>();
-
-            GalleryImages = new ObservableCollection<UserControl>();
-            
+            InitializeComponent();            
+            DataContext   = this;
+            Messages      = new ObservableCollection<string>();
+            GalleryImages = new ObservableCollection<UserControl>();            
         }
 
         #region Logging Handlers 
@@ -70,9 +74,8 @@ namespace Manassa.Windows
             // route the logger messages
             RouteMessages();
 
-            IsAnalysisRunning = true;
-
-            Reporter.Config = AnalysisConfiguration;
+            IsAnalysisRunning   = true;
+            Reporter.Config     = AnalysisConfiguration;
 
             Controller.AnalysisComplete += new EventHandler(Controller_AnalysisComplete);
             Controller.AnalysisError    += new EventHandler(Controller_AnalysisError);
@@ -93,6 +96,12 @@ namespace Manassa.Windows
                 Controller.AnalysisComplete -= Controller_AnalysisComplete;
                 Controller.AnalysisError -= Controller_AnalysisError;
                 Controller.AnalysisCancelled -= Controller_AnalysisCancelled;
+
+
+                if (AnalysisComplete != null)
+                {
+                    AnalysisComplete(this, null);
+                }
             };
             Dispatcher.Invoke(workAction, DispatcherPriority.Normal);
         }
@@ -106,10 +115,8 @@ namespace Manassa.Windows
         }
         void Controller_AnalysisComplete(object sender, EventArgs e)
         {
-            AnalysisEnded("The analysis is complete.");    
+            AnalysisEnded("The analysis is complete.");
         }
-
-
 
         public ObservableCollection<UserControl> GalleryImages
         {
@@ -183,37 +190,43 @@ namespace Manassa.Windows
         // Using a DependencyProperty as the backing store for Messages.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty MessagesProperty =
             DependencyProperty.Register("Messages", typeof(ObservableCollection<string>), typeof(AnalysisRunningControl));
-
+        
+        #region Building Plots
         /// <summary>
-        /// Determines the current state of the analysis.
+        /// Builds the alignment plot views.
         /// </summary>
-        public ApplicationAnalysisState CurrentState
+        /// <param name="e"></param>
+        private void BuildAlignmentPlotView(FeaturesAlignedEventArgs e)
         {
-            get { return (ApplicationAnalysisState)GetValue(CurrentStateProperty); }
-            set { SetValue(CurrentStateProperty, value); }
+            AlignmentPlotView view = new AlignmentPlotView();
+            view.AlignmentData = e;
+            GalleryImages.Add(view);
+            GalleryScroll.ScrollToEnd();
         }
+        /// <summary>
+        /// Builds the alignment plot views.
+        /// </summary>
+        /// <param name="e"></param>
+        private void BuildBaselineView(BaselineFeaturesLoadedEventArgs e)
+        {
+            FeaturePlotView view = new FeaturePlotView();
+            view.BaselineData    = e;
+            GalleryImages.Add(view);
+            GalleryScroll.ScrollToEnd();
+        }
+        /// <summary>
+        /// Builds the alignment plot views.
+        /// </summary>
+        /// <param name="e"></param>
+        private void BuildClusterPlots(List<UMCClusterLight> clusters)
+        {
+            ClustersPlotView view = new ClustersPlotView();
+            view.Clusters         = clusters;
 
-        // Using a DependencyProperty as the backing store for CurrentState.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty CurrentStateProperty =
-            DependencyProperty.Register("CurrentState", 
-                                        typeof(ApplicationAnalysisState), 
-                                        typeof(AnalysisRunningControl),            
-                                        new PropertyMetadata(
-                                                delegate(DependencyObject sender, DependencyPropertyChangedEventArgs args)
-                                                {
-                                                    var x = sender as AnalysisRunningControl;
-                                                    if (x == null)
-                                                        return;
-
-                                                    if (x.IsAnalysisRunning)
-                                                        return;
-
-                                                    if (x.CurrentState == ApplicationAnalysisState.RunningAnalysis)
-                                                    {
-                                                        x.Start();
-                                                    }
-                                                })
-                                            );
+            GalleryImages.Add(view);
+            GalleryScroll.ScrollToEnd();
+        }
+        #endregion
 
         #region IAnalysisReportGenerator Members
         public AnalysisConfig Config
@@ -223,16 +236,31 @@ namespace Manassa.Windows
                 return AnalysisConfiguration;
             }
             set
-            {
-                //DO nothing?
+            {                
             }
         }
-        private void BuildAlignmentPlotView(FeaturesAlignedEventArgs e)
+        public string PlotPath
         {
-            AlignmentPlotView view = new AlignmentPlotView();
-            view.AlignmentData = e;
-            GalleryImages.Add(view);
-        }
+            get
+            {
+                string plotPath = "";
+                Action workAtion = delegate
+                {
+                    plotPath = Reporter.PlotPath;
+                };
+
+                Dispatcher.Invoke(workAtion, DispatcherPriority.Normal);
+                return plotPath;
+            }
+            set
+            {
+                Action workAction = delegate
+                {
+                    Reporter.PlotPath = value;
+                };
+                Dispatcher.Invoke(workAction, DispatcherPriority.Normal);
+            }
+        }        
         public void CreateAlignmentPlots(FeaturesAlignedEventArgs e)
         {
             Action workAction = delegate
@@ -246,6 +274,7 @@ namespace Manassa.Windows
         {
             Action workAction = delegate
             {
+                BuildBaselineView(e);
                 Reporter.CreateBaselinePlots(e);
             };
             Dispatcher.Invoke(workAction, DispatcherPriority.Normal);
@@ -266,40 +295,11 @@ namespace Manassa.Windows
             };
             Dispatcher.Invoke(workAction, DispatcherPriority.Normal);
         }
-        public void CreatePlotReport()
+        public void CreateClusterPlots(List<UMCClusterLight> clusters)
         {
             Action workAction = delegate
             {
-                Reporter.CreatePlotReport();
-            };
-            Dispatcher.Invoke(workAction, DispatcherPriority.Normal);
-        }
-        public string PlotPath
-        {
-            get
-            {
-                string plotPath = "";
-                Action workAtion = delegate
-                {
-                    plotPath = Reporter.PlotPath;
-                };
-               
-                Dispatcher.Invoke(workAtion, DispatcherPriority.Normal);                    
-                return plotPath;
-            }
-            set
-            {
-                Action workAction = delegate
-                {
-                    Reporter.PlotPath = value;
-                };
-                Dispatcher.Invoke(workAction, DispatcherPriority.Normal);
-            }
-        }        
-        public void CreateClusterPlots(List<PNNLOmics.Data.Features.UMCClusterLight> clusters)
-        {
-            Action workAction = delegate
-            {                
+                BuildClusterPlots(clusters);
                 Reporter.CreateClusterPlots(clusters);
             };
             Dispatcher.Invoke(workAction, DispatcherPriority.Normal);
@@ -312,6 +312,23 @@ namespace Manassa.Windows
             };
             Dispatcher.Invoke(workAction, DispatcherPriority.Normal); 
         }
+        public void CreatePlotReport()
+        {
+            Action workAction = delegate
+            {
+                Reporter.CreatePlotReport();
+            };
+            Dispatcher.Invoke(workAction, DispatcherPriority.Normal);
+        }
         #endregion
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            if (AnalysisCancelled != null)
+            {
+                Controller.CancelAnalysis();
+                AnalysisCancelled(this, e);
+            }
+        }
     }
 }

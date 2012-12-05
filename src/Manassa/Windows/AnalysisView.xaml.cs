@@ -26,8 +26,8 @@ namespace Manassa.Windows
         {
             InitializeComponent();
 
-            m_analysis = null;
-
+            m_analysis  = null;
+            DataContext = this;
 
             Binding binding = new Binding("Viewport");
             binding.Source = m_clusterControl;
@@ -48,16 +48,21 @@ namespace Manassa.Windows
                 m_analysis = value;
                 if (value != null)
                 {                                        
-                    //TODO: replace this with bindings!!!!
-                    
+                    //TODO: replace this with bindings!!!!                                        
                     List<ClusterToMassTagMap> matches = m_analysis.DataProviders.MassTagMatches.FindAll();
                     Tuple<List<UMCClusterLightMatched>, List<MassTagToCluster>> clusters = 
                         value.Clusters.MapMassTagsToClusters(matches, m_analysis.MassTagDatabase);
+                                        
+                    m_massTagViewer.MatchedTags = new System.Collections.ObjectModel.ObservableCollection<MassTagToCluster>(clusters.Item2);
+
+                    int count = m_analysis.DataProviders.MSnFeatureCache.GetMsMsCount();
+                    HasMsMs   = (count > 0);
+
+                    HasIdentifications = (m_massTagViewer.MatchedTags.Count > 0);
 
                     m_clusterGrid.Clusters = clusters.Item1;                   
                     m_clusterPlot.SetClusters(value.Clusters);
-                    m_massTagViewer.MatchedTags = new System.Collections.ObjectModel.ObservableCollection<MassTagToCluster>(clusters.Item2);
-
+                    
                     /// 
                     /// Cache the clusters so that they can be readily accessible later on.
                     /// This will help speed up performance, so that we dont have to hit the database
@@ -121,65 +126,10 @@ namespace Manassa.Windows
                     m_clusterRatioPlot.UpdateCharts(true);
                     m_clusterRatioRawPlot.AddClusters(value.Clusters);
                     m_clusterRatioRawPlot.UpdateCharts(true);
-
-
-                   // string path = @"m:\data\proteomics\metz\lipids\errors-net-.03.txt";
-                   // if (File.Exists(path))
-                   // {
-                   //     File.Delete(path);
-                   // }
-
-                   // ClusterErrorHistograms histograms = new ClusterErrorHistograms();
-                   // PNNLOmics.Algorithms.FeatureTolerances tolerances = new PNNLOmics.Algorithms.FeatureTolerances();
-                   // tolerances.Mass = 500;
-                   // tolerances.RetentionTime = .03;
-
-                   //// WriteData(value, path, histograms, tolerances);
-
-                   // tolerances.Mass = 6;
-                   // tolerances.RetentionTime = 100;
-                   // WriteData(value, path, histograms, tolerances);                    
+                  
                 }
             }
         }
-
-        private static void WriteData(MultiAlignAnalysis value, string path, ClusterErrorHistograms histograms, FeatureTolerances tolerances)
-        {
-            List<double> mass20ppm          = new List<double>();
-            List<double> featureCounts20ppm = new List<double>();
-            List<double> net20ppm           = new List<double>();
-            
-            Dictionary<int, List<double>> ranges = new Dictionary<int,List<double>>();
-
-            histograms.CalculateClusterErrorHistogramsSingle(value.DataProviders, 0, mass20ppm, net20ppm, featureCounts20ppm, tolerances);
-            ErrorHistogramWriter.WriteData(path, string.Format("[Single A {0:0.00} ppm]", tolerances.Mass), mass20ppm, net20ppm);
-
-            histograms.CalculateClusterErrorHistogramsSingle(value.DataProviders, 1, mass20ppm, net20ppm, featureCounts20ppm, tolerances);
-            ErrorHistogramWriter.WriteData(path, string.Format("[Single B {0:0.00} ppm]", tolerances.Mass), mass20ppm, net20ppm);
-
-            histograms.CalculateClusterErrorHistograms(value.Clusters,
-                                                        mass20ppm,
-                                                        net20ppm,
-                                                        featureCounts20ppm, 
-                                                        tolerances,
-                                                        ranges);
-
-            ErrorHistogramWriter.WriteData(path, string.Format("[Clusters {0:0.00} ppm]", tolerances.Mass), mass20ppm, net20ppm);
-
-            mass20ppm.Clear();
-            net20ppm.Clear();
-            featureCounts20ppm.Clear();
-            histograms.CalculateClusterErrorHistograms(value.DataProviders, mass20ppm, net20ppm, featureCounts20ppm, tolerances);
-            ErrorHistogramWriter.WriteData(path, string.Format("[Features Mass {0:0.00} ppm]", tolerances.Mass), mass20ppm, net20ppm);
-
-            ErrorHistogramWriter.WriteRanges(path,
-                                    ranges);
-
-            ErrorHistogramWriter.WriteCDFData(path,
-                                                string.Format("[Counts Per Cluster CDF {0:0.00} ppm .25 NET]", tolerances.Mass),
-                                                featureCounts20ppm);
-        }
-
 
         private static void SynchronizeViewport(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
@@ -191,6 +141,34 @@ namespace Manassa.Windows
                 thisSender.m_clusterPlot.UpdateHighlightArea(viewport);                
             }
         }
+
+
+
+        public bool HasMsMs
+        {
+            get { return (bool)GetValue(HasMsMsProperty); }
+            set { SetValue(HasMsMsProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for HasMsMs.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty HasMsMsProperty =
+            DependencyProperty.Register("HasMsMs", typeof(bool), typeof(AnalysisView), new UIPropertyMetadata(false));
+
+
+
+
+        public bool HasIdentifications
+        {
+            get { return (bool)GetValue(HasIdentificationsProperty); }
+            set { SetValue(HasIdentificationsProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for HasIdentifications.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty HasIdentificationsProperty =
+            DependencyProperty.Register("HasIdentifications", typeof(bool), typeof(AnalysisView), new UIPropertyMetadata(false));
+
+
+
 
         public RectangleF Viewport
         {

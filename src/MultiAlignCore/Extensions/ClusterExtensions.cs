@@ -92,7 +92,7 @@ namespace MultiAlignCore.Extensions
                                                                     MassTagDatabase             database)
         {
 
-            List<UMCClusterLightMatched> matchedClusters                     = new List<UMCClusterLightMatched>();
+            List<UMCClusterLightMatched> matchedClusters = new List<UMCClusterLightMatched>();
             List<MassTagToCluster> matchedTags           = new List<Data.MassTagToCluster>();
 
             // Maps a cluster ID to a cluster that was matched (or not in which case it will have zero matches).
@@ -113,20 +113,23 @@ namespace MultiAlignCore.Extensions
                 }
             }
 
-            // Index the mass tags.
-            foreach (MassTagLight tag in database.MassTags)
+            if (database != null)
             {
-                if (!massTagMap.ContainsKey(tag.ID))
+                // Index the mass tags.
+                foreach (MassTagLight tag in database.MassTags)
                 {
-                    massTagMap.Add(tag.ID, new Dictionary<int, MassTagToCluster>());
-                }
-                if (!massTagMap[tag.ID].ContainsKey(tag.ConformationID))
-                {
-                    MassTagToCluster matchedTag = new Data.MassTagToCluster();
-                    matchedTag.MassTag = tag;
+                    if (!massTagMap.ContainsKey(tag.ID))
+                    {
+                        massTagMap.Add(tag.ID, new Dictionary<int, MassTagToCluster>());
+                    }
+                    if (!massTagMap[tag.ID].ContainsKey(tag.ConformationID))
+                    {
+                        MassTagToCluster matchedTag = new Data.MassTagToCluster();
+                        matchedTag.MassTag = tag;
 
-                    massTagMap[tag.ID].Add(tag.ConformationID, matchedTag);
-                }                
+                        massTagMap[tag.ID].Add(tag.ConformationID, matchedTag);
+                    }
+                }
             }
             
             // Index and align matches

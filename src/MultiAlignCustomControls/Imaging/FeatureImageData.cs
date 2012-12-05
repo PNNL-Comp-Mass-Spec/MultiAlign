@@ -4,13 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Drawing;
-using System.ComponentModel;
 
-namespace Manassa.Data
+namespace MultiAlignCore.Data.Imaging
 {
-    public class RectangleFDependency: DependencyObject
+    public class FeatureImageData 
     {
-        public RectangleF Rectangle
+        public Image FeatureImage
         {
             get;
             set;

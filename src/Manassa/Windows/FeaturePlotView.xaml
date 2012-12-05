@@ -4,16 +4,30 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="170" d:DesignWidth="145">
+             d:DesignHeight="200" d:DesignWidth="145">
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition  Height="Auto"/>
             <RowDefinition  Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-        <StackPanel
+        <Label
+            
+            FontSize="14pt"
+            Height="24pt"
+            HorizontalContentAlignment="Center"
+            Grid.ColumnSpan="7"
             Grid.Row="0"
+            >
+            <Label.Content>
+                <Binding Path="PlotName"></Binding>
+            </Label.Content>            
+        </Label>
+        <StackPanel
+            Grid.Row="1"
             Grid.Column="0">
             <Label         
                 HorizontalContentAlignment="Center"        
@@ -22,15 +36,15 @@
             </Label>
             <Border
                 Margin="5"
-                Height="128"
-                Width="128"
+                Height="256"
+                Width="256"
                 BorderBrush="LightGray"
                 BorderThickness="4"
                 CornerRadius="3">
                 <Button Grid.Column="0" 
                         Grid.RowSpan="2"
                         Background="Transparent">
-                    <Image Source="{Binding Path=Image}"/>
+                    <Image Source="{Binding Path=FeaturesImage}"/>
                 </Button>
             </Border>
         </StackPanel>        

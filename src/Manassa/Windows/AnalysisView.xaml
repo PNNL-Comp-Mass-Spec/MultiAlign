@@ -7,10 +7,12 @@
              xmlns:converters="clr-namespace:Manassa.Converters"
              xmlns:maCharts="clr-namespace:MultiAlignCustomControls.Charting;assembly=MultiAlignCustomControls"
              mc:Ignorable="d" 
-             d:DesignHeight="616" d:DesignWidth="872">    
+             d:DesignHeight="616" d:DesignWidth="872">
     <UserControl.Resources>
         <converters:BoolListSizeConverter x:Key="ListSizeConverter"/>
-        
+        <converters:IntVisibilityConverter x:Key="IntVisibilityConverter"/>
+        <converters:BoolVisibilityConverter x:Key="BoolVisibilityConverter"/>
+
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -89,10 +91,14 @@
             </TabItem>
             <TabItem                
                 Style="{DynamicResource ResourceKey=SimpleTabItem}"
-                Header="AMT Identifications"                
-                >
-                <!--IsEnabled="{Binding  Mode=OneWay, ElementName=m_massTagViewer, Path=MatchedTags, Converter={StaticResource ListSizeConverter}}"-->
-
+                Header="AMT Identifications" 
+                Width="{Binding Path=HasIdentifications,
+                                Converter={StaticResource ResourceKey=IntVisibilityConverter}}"               
+                
+                
+                Visibility="{Binding Path=HasIdentifications,
+                                Converter={StaticResource ResourceKey=BoolVisibilityConverter}}"
+                >                
                 <windows:MassTagViewer
                     x:Name="m_massTagViewer"
                     />
@@ -100,6 +106,10 @@
             <TabItem
                 Style="{DynamicResource ResourceKey=SimpleTabItem}"
                 Header="MS/MS"
+                Width="{Binding Path=HasMsMs,
+                                Converter={StaticResource ResourceKey=IntVisibilityConverter}}"
+                Visibility="{Binding Path=HasMsMs,
+                                Converter={StaticResource ResourceKey=BoolVisibilityConverter}}"
                 >
                 <Grid>
                     <Grid.ColumnDefinitions>

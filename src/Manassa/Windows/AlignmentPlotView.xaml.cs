@@ -15,6 +15,7 @@ using MultiAlignCore.Data;
 using MultiAlignCustomControls.Drawing;
 using MultiAlignCustomControls.Charting;
 using Manassa.Data;
+using MultiAlignCore.Data.Imaging;
 
 namespace Manassa.Windows
 {
@@ -36,30 +37,6 @@ namespace Manassa.Windows
             set { SetValue(AlignmentDataProperty, value); }
         }
 
-
-
-        public int PlotWidth
-        {
-            get { return (int)GetValue(WidthProperty); }
-            set { SetValue(WidthProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for Width.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty WidthProperty =
-            DependencyProperty.Register("PlotWidth", typeof(int), typeof(AlignmentPlotView), new UIPropertyMetadata(128));
-
-
-        public int PlotHeight
-        {
-            get { return (int)GetValue(HeightProperty); }
-            set { SetValue(HeightProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for Width.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty HeightProperty =
-            DependencyProperty.Register("PlotHeight", typeof(int), typeof(AlignmentPlotView), new UIPropertyMetadata(128));
-
-
         // Using a DependencyProperty as the backing store for AlignmentData.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty AlignmentDataProperty =
             DependencyProperty.Register("AlignmentData",
@@ -70,8 +47,41 @@ namespace Manassa.Windows
         private static void SetData(DependencyObject sender, DependencyPropertyChangedEventArgs args)
         {
             var x = sender as AlignmentPlotView;
-            x.CreatePlots();            
+            x.CreatePlots();
         }
+
+
+        public int PlotWidth
+        {
+            get { return (int)GetValue(PlotWidthProperty); }
+            set { SetValue(PlotWidthProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Width.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty PlotWidthProperty =
+            DependencyProperty.Register("PlotWidth", typeof(int), typeof(AlignmentPlotView), new UIPropertyMetadata(256));
+
+
+        public int PlotHeight
+        {
+            get { return (int)GetValue(PlotHeightProperty); }
+            set { SetValue(PlotHeightProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Width.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty PlotHeightProperty =
+            DependencyProperty.Register("PlotHeight", typeof(int), typeof(AlignmentPlotView), new UIPropertyMetadata(256));
+
+
+        public BitmapImage FeaturePlotImage
+        {
+            get { return (BitmapImage)GetValue(FeaturePlotImageProperty); }
+            set { SetValue(FeaturePlotImageProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for FeaturePlotImage.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty FeaturePlotImageProperty =
+            DependencyProperty.Register("FeaturePlotImage", typeof(BitmapImage), typeof(AlignmentPlotView));
 
         public BitmapImage HeatmapImage
         {
@@ -105,21 +115,16 @@ namespace Manassa.Windows
         public static readonly DependencyProperty NetHistogramProperty =
             DependencyProperty.Register("NetHistogram", typeof(BitmapImage), typeof(AlignmentPlotView));
 
-
-
-
-        public string Name
+        public string PlotName
         {
-            get { return (string)GetValue(NameProperty); }
-            set { SetValue(NameProperty, value); }
+            get { return (string)GetValue(PlotNameProperty); }
+            set { SetValue(PlotNameProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for Name.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty NameProperty =
-            DependencyProperty.Register("Name", typeof(string), typeof(AlignmentPlotView));
-
-        
-
+        public static readonly DependencyProperty PlotNameProperty =
+            DependencyProperty.Register("PlotName", typeof(string), typeof(AlignmentPlotView));
+       
         public BitmapImage NetScanImage
         {
             get { return (BitmapImage)GetValue(NetScanImageProperty); }
@@ -154,46 +159,16 @@ namespace Manassa.Windows
         private void CreatePlots()
         {
             FeaturesAlignedEventArgs data   = AlignmentData;
-            string name                     = data.AligneeDatasetInformation.DatasetName;
-            Name                            = name;
-            ChartDisplayOptions options     = new ChartDisplayOptions(false, true, true, true);
-            options.DisplayTitle            = false;
-            options.DisplayLegend           = false;
+            PlotName                        = data.AligneeDatasetInformation.DatasetName;
+            AlignmentImageData imageData    = AnalysisImageCreator.CreateAlignmentPlots(data, PlotWidth, PlotHeight, false); 
 
-            options.MarginMin               = 1;
-            options.MarginMax               = 100;
-            options.Title                   = "Alignment Heatmap ";
-            options.XAxisLabel              = "Baseline";
-            options.YAxisLabel              = "Alignee";            
-            options.Width                   = PlotWidth;
-            options.Height                  = PlotHeight;
-            System.Drawing.Image heatmapImage = RenderDatasetInfo.AlignmentHeatmap_Thumbnail(data.AlignmentData, PlotWidth, PlotHeight);
-            heatmapImage.RotateFlip(System.Drawing.RotateFlipType.RotateNoneFlipY);
-
-            options.Title                   = "NET Error Histogram " + name;
-            options.XAxisLabel              = "NET Error (%)";
-            options.YAxisLabel              = "Count";
-            System.Drawing.Image netHistogramImage = RenderDatasetInfo.ErrorHistogram_Thumbnail(data.AlignmentData.netErrorHistogram, options);
-            
-            options.Title                   = "Net vs. Scan Residuals" + name;
-            System.Drawing.Image netResidualsHistogramImage = RenderDatasetInfo.NETResiduals_Thumbnail(data.AlignmentData.ResidualData, options);
-            
-            options.Title                   = "Mass Error Histogram " + name;
-            options.XAxisLabel              = "Mass Error (PPM)";
-            System.Drawing.Image massHistogramImage = RenderDatasetInfo.ErrorHistogram_Thumbnail(data.AlignmentData.massErrorHistogram, options);
-            
-            options.Title = "Mass vs. Scan Residuals" + name;
-            System.Drawing.Image massScanImage = RenderDatasetInfo.MassVsScanResiduals_Thumbnail(data.AlignmentData.ResidualData, options);
-            
-            options.Title = "Mass vs. m/z Residuals" + name;            
-            System.Drawing.Image massMzImage = RenderDatasetInfo.ClusterMassVsMZResidual_Thumbnail(data.AlignmentData.ResidualData, options);            
-
-            NetScanImage  = ImageConverter.ConvertImage(netResidualsHistogramImage);
-            MassHistogram = ImageConverter.ConvertImage(massHistogramImage);
-            NetHistogram  = ImageConverter.ConvertImage(netHistogramImage);
-            HeatmapImage  = ImageConverter.ConvertImage(heatmapImage);
-            MassMzImage   = ImageConverter.ConvertImage(massMzImage);
-            MassScanImage = ImageConverter.ConvertImage(massScanImage);            
+            NetScanImage    = ImageConverter.ConvertImage(imageData.NetResidualsHistogramImage);
+            MassHistogram   = ImageConverter.ConvertImage(imageData.MassHistogramImage);
+            NetHistogram    = ImageConverter.ConvertImage(imageData.NetHistogramImage);
+            HeatmapImage    = ImageConverter.ConvertImage(imageData.HeatmapImage);
+            MassMzImage     = ImageConverter.ConvertImage(imageData.MassMzImage);
+            MassScanImage   = ImageConverter.ConvertImage(imageData.MassScanImage);
+            FeaturePlotImage = ImageConverter.ConvertImage(imageData.FeaturePlotImage);
         }
     }
 }

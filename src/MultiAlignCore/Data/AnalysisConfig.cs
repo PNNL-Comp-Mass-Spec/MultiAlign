@@ -54,8 +54,13 @@ namespace MultiAlignCore.Data
             ShouldExportSICs                = false;
             ShouldExportMSMS                = false;
             ShouldUseExistingDatabase       = false;
+            ShouldPeakMatch                 = true;
         }
         #region Properties 
+        /// <summary>
+        /// Gets or sets whether the analysis should peak match features to another feature set.
+        /// </summary>
+        public bool ShouldPeakMatch { get; set; }
         public AnalysisStep InitialStep { get; set; }
         /// <summary>
         /// Gets or sets the analysis graph used by the processor to execute an analysis.

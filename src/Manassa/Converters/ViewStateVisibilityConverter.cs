@@ -9,32 +9,32 @@ using Manassa;
 namespace Manassa.Converters
 {
 
-    public class ApplicationStateIsSelectedConverter : DependencyObject, IValueConverter
+    public class ViewStateVisibilityConverter : DependencyObject, IValueConverter
     {
-        public ApplicationAnalysisState ApplicationState
+        public ViewState ViewState
         {
-            get { return (ApplicationAnalysisState)GetValue(VisibleStepProperty); }
+            get { return (ViewState)GetValue(VisibleStepProperty); }
             set { SetValue(VisibleStepProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for VisibleStep.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty VisibleStepProperty =
-            DependencyProperty.Register("ApplicationState", typeof(ApplicationAnalysisState), typeof(ApplicationStateIsSelectedConverter));
+            DependencyProperty.Register("ViewState", typeof(ViewState), typeof(ViewStateVisibilityConverter));
 
         #region IValueConverter Members
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             if (value == null)
             {
-                return false;
+                return Visibility.Hidden;
             }
 
-            ApplicationAnalysisState step   = (ApplicationAnalysisState)value;
-            bool? vis = false;
+            ViewState step = (ViewState)value;
+            Visibility vis                  = Visibility.Hidden;
 
-            if (step == ApplicationState)
+            if (step == ViewState)
             {
-                vis = true;
+                vis = Visibility.Visible;
             }
             return vis;
         }

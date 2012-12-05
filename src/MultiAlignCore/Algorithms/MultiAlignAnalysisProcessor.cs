@@ -1035,7 +1035,8 @@ namespace MultiAlignCore.Algorithms
                 }
                 config.Analysis.DataProviders.ClusterCache.AddAll(clusters);
                 config.Analysis.DataProviders.FeatureCache.UpdateAll(features);
-
+                config.Analysis.Clusters = clusters;
+                    
                 UpdateStatus( string.Format("Found {0} clusters.", clusters.Count));
 
                 if (FeaturesClustered != null)
@@ -1072,6 +1073,8 @@ namespace MultiAlignCore.Algorithms
                     }
                     config.Analysis.DataProviders.ClusterCache.AddAll(clusters);
                     config.Analysis.DataProviders.FeatureCache.UpdateAll(features);
+                    config.Analysis.Clusters = clusters;
+                    
                     UpdateStatus( string.Format("Found {0} clusters.", clusters.Count));
 
                     if (FeaturesClustered != null)
@@ -1089,15 +1092,15 @@ namespace MultiAlignCore.Algorithms
         /// Performs peak matching with loaded clusters. 
         /// </summary>
         public void PerformPeakMatching(AnalysisConfig config)
-        {
-            bool shouldPeakMatch = true;
-            if (shouldPeakMatch)
+        {            
+            if (config.ShouldPeakMatch)
             {
-
-                if (m_config.Analysis.MassTagDatabase != null)
+                if (m_config.Analysis.MassTagDatabase == null)
                 {
-
-
+                    UpdateStatus("Could not peak match.  The database was not set.");
+                }
+                else
+                {                   
                     List<UMCClusterLight> clusters              = m_config.Analysis.DataProviders.ClusterCache.FindAll();
                     IPeakMatcher<UMCClusterLight> peakMatcher   = m_algorithms.PeakMatcher;
 
@@ -1272,13 +1275,15 @@ namespace MultiAlignCore.Algorithms
             else
             {
                 config.Analysis.MassTagDatabase = null;
+                config.ShouldPeakMatch          = false;
                 return;
             }
             
 
             if (database != null)
             {
-                int totalMassTags = database.MassTags.Count;
+                config.ShouldPeakMatch  = true;
+                int totalMassTags       = database.MassTags.Count;
                 UpdateStatus("Loaded " + totalMassTags.ToString() + " mass tags.");
             }
 

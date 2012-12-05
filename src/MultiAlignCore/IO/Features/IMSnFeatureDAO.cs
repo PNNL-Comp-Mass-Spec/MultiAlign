@@ -14,5 +14,10 @@ namespace MultiAlignCore.IO.Features
         /// <returns></returns>
         List<MSSpectra> FindByDatasetId(int datasetId);
         List<MSSpectra> FindBySpectraId(List<int> spectraId);
+        /// <summary>
+        /// Gets the number of MS/MS spectra found in the experiment.
+        /// </summary>
+        /// <returns></returns>
+        int GetMsMsCount();
 	}
 }

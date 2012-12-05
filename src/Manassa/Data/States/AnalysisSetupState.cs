@@ -12,11 +12,5 @@ namespace Manassa.Data
         OptionsSelection,
         Naming,
         Started
-    }
-    public enum AnalysisRuningState
-    {
-        Running,
-        Quit,
-        Completed
-    }
+    }    
 }
