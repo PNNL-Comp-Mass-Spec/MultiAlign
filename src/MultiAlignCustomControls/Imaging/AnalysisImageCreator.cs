@@ -114,8 +114,7 @@ namespace MultiAlignCore.Data.Imaging
             private static void SetupDisplayOptions(bool shouldDisplayText, ChartDisplayOptions options)
             {
                 options.DisplayTitle        = shouldDisplayText;
-                options.DisplayLegend       = shouldDisplayText;
-                options.DisplayAxis         = shouldDisplayText;
+                options.DisplayLegend       = shouldDisplayText;                
                 options.DisplayGridLines    = shouldDisplayText;
             }
 

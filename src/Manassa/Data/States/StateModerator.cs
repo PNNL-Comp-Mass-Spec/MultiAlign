@@ -17,20 +17,9 @@ namespace Manassa.Data
     /// </summary>
     public class StateModerator : DependencyObject
     {
-        /// <summary>
-        /// Rules that dictate if a view change can be made from one to another.
-        /// </summary>        
-        private Dictionary<AnalysisState, Dictionary<ViewState, Action>> m_analRules;
 
         public StateModerator()
         {
-            m_analRules = new Dictionary<AnalysisState, Dictionary<ViewState, Action>>();
-
-            m_analRules.Add(AnalysisState.Idle, new Dictionary<ViewState, Action>());
-            m_analRules.Add(AnalysisState.Running, new Dictionary<ViewState, Action>());
-            m_analRules.Add(AnalysisState.Setup, new Dictionary<ViewState, Action>());
-            m_analRules.Add(AnalysisState.Viewing, new Dictionary<ViewState, Action>());
-            
         }
         
         #region Dependency Properties for View and Analysis States
@@ -78,45 +67,78 @@ namespace Manassa.Data
         #endregion
 
         /// <summary>
-        /// Add a transition such that, if we move from one state to another based on a command, that the appropiate
-        /// action is executed.
+        /// Determines if the UI can open an analysis or not.
         /// </summary>
-        /// <param name="state"></param>
-        /// <param name="view"></param>
-        /// <param name="a"></param>
-        public void AddTransition(AnalysisState state, ViewState view, Action a)
+        /// <returns></returns>
+        public bool CanOpenAnalysis(ref string message)
         {
-            bool isAnalOk = m_analRules.ContainsKey(state);
-
-            if (!isAnalOk)
+            bool canHappen  = true;
+            message         = "";
+            switch (CurrentAnalysisState)
             {
-                m_analRules.Add(state, new Dictionary<ViewState, Action>());
+                case AnalysisState.Idle:
+                    break;
+                case AnalysisState.Viewing:
+                    break;
+                case AnalysisState.Loading:
+                    break;
+                case AnalysisState.Running:                    
+                    message = "Cannot open an analysis while one is running.";
+                    canHappen = false;
+                    break;
+                case AnalysisState.Setup:
+                    break;
+                default:
+                    break;
             }
-            
-            bool isViewOk = m_analRules[state].ContainsKey(view);
-
-            if (!isViewOk)
-            {
-                m_analRules[state].Add(view, a);
-            }
-            else
-            {
-                throw new Exception("The action is already set for this view");
-            }
+            return canHappen;
         }
 
-        /// <summary>
-        /// Takes the action specified.
-        /// </summary>
-        /// <param name="view"></param>
-        public void TakeAction(ViewState view)
+        public bool CanPerformNewAnalysis(ref string message)
         {
-            if (m_analRules[CurrentAnalysisState].ContainsKey(view))
+            bool canHappen = true;
+            message = "";
+            switch (CurrentAnalysisState)
             {
-                PreviousViewState = CurrentViewState;
-                CurrentViewState  = view;
-                m_analRules[CurrentAnalysisState][view].Invoke();
+                case AnalysisState.Idle:
+                    break;
+                case AnalysisState.Viewing:
+                    break;
+                case AnalysisState.Loading:
+                    break;
+                case AnalysisState.Running:
+                    message = "Cannot start a new analysis while one is running.";
+                    canHappen = false;
+                    break;
+                case AnalysisState.Setup:
+                    break;
+                default:
+                    break;
             }
-        }                
+            return canHappen;
+        }
+
+        public bool IsAnalysisRunning(ref string message)
+        {
+            bool canHappen  = false;
+            message         = "";
+            switch (CurrentAnalysisState)
+            {
+                case AnalysisState.Idle:
+                    break;
+                case AnalysisState.Viewing:
+                    break;
+                case AnalysisState.Loading:
+                    break;
+                case AnalysisState.Running:
+                    canHappen   = true;
+                    break;
+                case AnalysisState.Setup:
+                    break;
+                default:
+                    break;
+            }
+            return canHappen;
+        }    
     }   
 }

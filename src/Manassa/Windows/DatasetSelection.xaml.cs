@@ -42,8 +42,7 @@ namespace Manassa.Windows
 
             m_folderBrowser              = new FolderBrowserDialog();
             m_folderBrowser.SelectedPath = Environment.SpecialFolder.Desktop.ToString();
-
-            Datasets                     = new ObservableCollection<DatasetInformation>();
+            
             m_inputFileFilter            = "Input Files (*.txt)| *.txt| All Files (*.*)|*.*";
             m_featureFileFilter          = DatasetFilterFactory.BuildFileFilters(MultiAlignCore.IO.InputFiles.InputFileType.Features);
             m_openFileDialog             = new OpenFileDialog();
@@ -122,19 +121,7 @@ namespace Manassa.Windows
         public static readonly DependencyProperty AnalysisProperty =
             DependencyProperty.Register("Analysis", typeof(MultiAlignAnalysis), typeof(DatasetSelection));
 
-
-        public ObservableCollection<DatasetInformation> Datasets
-        {
-            get { return (ObservableCollection<DatasetInformation>)GetValue(InputFilesProperty); }
-            set { SetValue(InputFilesProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for InputFiles.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty InputFilesProperty =
-            DependencyProperty.Register("Datasets", typeof(ObservableCollection<DatasetInformation>), typeof(DatasetSelection));
-
-
-
+        
         private void AddInputFileButton_Click(object sender, RoutedEventArgs e)
         {
             bool fileExists = System.IO.File.Exists(InputFilePath);
@@ -207,17 +194,14 @@ namespace Manassa.Windows
         private void UpdateDatasets(List<InputFile> info)
         {
             List<DatasetInformation> added = Analysis.MetaData.AddInputFiles(info);            
-            foreach (DatasetInformation dataset in added)
-            {               
-                Datasets.Add(dataset);
-            }
+            
         }
 
         private void BrowseSingleFile_Click(object sender, RoutedEventArgs e)
         {
             m_openFileDialog.Filter     = m_featureFileFilter;
-            m_openFileDialog.FileName = SingleFilePath;
-            DialogResult result = m_openFileDialog.ShowDialog();
+            m_openFileDialog.FileName   = SingleFilePath;
+            DialogResult result         = m_openFileDialog.ShowDialog();
             if (result == DialogResult.OK)
             {
                 SingleFilePath = m_openFileDialog.FileName;
@@ -268,12 +252,14 @@ namespace Manassa.Windows
                 DatasetInformation info = o as DatasetInformation;
                 datasets.Add(info);                
             }            
-
-            datasets.ForEach(x => Datasets.Remove(x));
+            
             datasets.ForEach(x => Analysis.MetaData.Datasets.Remove(x));
 
             int id = 0;
-            Analysis.MetaData.Datasets.ForEach(x => x.DatasetId = id++);
+            foreach (DatasetInformation info in Analysis.MetaData.Datasets)
+            {
+                info.DatasetId = id++;
+            }
         }
 
         private void SelectAllButton_Click(object sender, RoutedEventArgs e)

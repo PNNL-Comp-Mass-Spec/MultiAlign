@@ -88,11 +88,13 @@ namespace Manassa.Windows
                     if (Directory.Exists(plotPath))
                     {
                         Manassa.Data.DatasetPlotLoader loader = new Data.DatasetPlotLoader();                      
-                        loader.LoadDatasetPlots(plotPath, value.MetaData.Datasets);
+                        loader.LoadDatasetPlots(plotPath, value.MetaData.Datasets.ToList());
                     }
 
+                    List<DatasetInformation> datasets = value.MetaData.Datasets.ToList();
+
                     // Sort the datasets for the view...
-                    value.MetaData.Datasets.Sort(delegate(DatasetInformation x, DatasetInformation y)
+                    datasets.Sort(delegate(DatasetInformation x, DatasetInformation y)
                     {
                         if (x.DatasetId == y.DatasetId)
                             return 0;
@@ -103,7 +105,7 @@ namespace Manassa.Windows
                         return x.DatasetName.CompareTo(y.DatasetName);
                     });
 
-                    m_datasetsName.Datasets = value.MetaData.Datasets;
+                    m_datasetsName.Datasets = datasets;
 
                     // Setup the histogram data.
                     Dictionary<int, int> map    = value.Clusters.CreateChargeMap<UMCClusterLight>();

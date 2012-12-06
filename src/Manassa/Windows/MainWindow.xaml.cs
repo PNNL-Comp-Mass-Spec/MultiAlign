@@ -40,6 +40,7 @@ namespace Manassa
             // Bind the status to the status mediators.
             Binding binding = new Binding("Status");
             binding.Source  = ApplicationStatusMediator.Mediator;
+            binding.Mode    = BindingMode.TwoWay;
             SetBinding(StatusProperty, binding);
 
             // Update the titles.
@@ -63,88 +64,7 @@ namespace Manassa
             StateModerator.CurrentAnalysisState     = AnalysisState.Idle;
             StateModerator.CurrentViewState         = ViewState.HomeView;
             StateModerator.PreviousAnalysisState    = AnalysisState.Idle;
-            StateModerator.PreviousViewState        = ViewState.HomeView;
-
-            // If you are idle, then you you can open to 
-            Action openExistingAction = delegate
-            {
-                OpenExistingAnalysis();
-            };
-
-            Action performNewAction = delegate
-            {
-                ShowNewAnalysisSetup();
-            };
-            // This transition allows us to go from loading the analysis file, to viewing it.
-            Action showExisting = delegate
-            {
-                ShowLoadedAnalysis();
-            };
-            
-                       
-            Action cancelAnalysisSetup = delegate
-            {
-                CancelAnalysisSetup();
-            };
-            Action runAnalysis = delegate
-            {
-                StartRunningAnalysis();
-            };
-            
-
-            Action cancelConfirmOpenAnalysisRunning = delegate
-            {
-                bool confirmed = ConfirmCancel();
-
-                if (confirmed)
-                {
-                    CancelAnalysis();
-                    OpenExistingAnalysis();
-                }
-            };
-            Action cancelConfirmNewAnalysisRunning = delegate
-            {
-                bool confirmed = ConfirmCancel();
-
-                if (confirmed)
-                {
-                    CancelAnalysis();
-                    ShowNewAnalysisSetup();
-                }
-            };
-            Action viewHomeScreen = delegate
-            {
-                // Set view to home screen.
-                ShowHomeScreen();
-            };
-            Action cancelConfirmAnalysisRunning = delegate
-            {
-                bool confirmed = ConfirmCancel();
-
-                if (confirmed)
-                {
-                    CancelAnalysis();
-                }
-            };
-
-            // 1. You can cancel the analysis when you want to go to the home screen.
-            // 2. You can go to a loaded analysis
-            // 3. You can open an existing analysis, but it will cancel 
-            StateModerator.AddTransition(AnalysisState.Idle,    ViewState.SetupAnalysisView,    performNewAction);
-            StateModerator.AddTransition(AnalysisState.Idle,    ViewState.OpenView,             openExistingAction);
-            StateModerator.AddTransition(AnalysisState.Idle,    ViewState.AnalysisView,         showExisting);    
-            StateModerator.AddTransition(AnalysisState.Viewing, ViewState.HomeView,             viewHomeScreen);
-            StateModerator.AddTransition(AnalysisState.Viewing, ViewState.AnalysisView,         showExisting);
-            StateModerator.AddTransition(AnalysisState.Viewing, ViewState.SetupAnalysisView,    performNewAction);
-            StateModerator.AddTransition(AnalysisState.Viewing, ViewState.OpenView,             openExistingAction);
-            StateModerator.AddTransition(AnalysisState.Loading, ViewState.AnalysisView,         showExisting);
-            StateModerator.AddTransition(AnalysisState.Setup,   ViewState.HomeView,             cancelAnalysisSetup);
-            StateModerator.AddTransition(AnalysisState.Setup,   ViewState.AnalysisView,         cancelAnalysisSetup);
-            StateModerator.AddTransition(AnalysisState.Setup,   ViewState.RunningAnalysisView,  runAnalysis);
-            StateModerator.AddTransition(AnalysisState.Running, ViewState.HomeView,             viewHomeScreen);
-            StateModerator.AddTransition(AnalysisState.Running, ViewState.AnalysisView,         cancelConfirmAnalysisRunning);
-            StateModerator.AddTransition(AnalysisState.Running, ViewState.OpenView,             cancelConfirmOpenAnalysisRunning);
-            StateModerator.AddTransition(AnalysisState.Running, ViewState.SetupAnalysisView,    cancelConfirmNewAnalysisRunning);
+            StateModerator.PreviousViewState        = ViewState.HomeView;            
         }
         /// <summary>
         /// Loads teh current workspace.
@@ -223,13 +143,14 @@ namespace Manassa
         /// <summary>
         /// Cancesl the current running analysis.
         /// </summary>
-        private void CancelAnalysis()
+        private bool CancelAnalysis()
         {
             if (Controller != null)
             {
                 Controller.CancelAnalysis();
                 Controller = null;
             }
+            return true;
         }
         private bool ConfirmCancel()
         {
@@ -259,62 +180,80 @@ namespace Manassa
         /// Opens an existing analysis 
         /// </summary>
         private void OpenExistingAnalysis()
-        {            
+        {
+            string message      = "";
+            bool canStart       = StateModerator.CanOpenAnalysis(ref message);
+            Status              = message;
+            if (!canStart)
+            {
+                // Display a message saying whether we want to cancel or not.                
+                return;
+            }
+
             System.Windows.Forms.DialogResult result = m_analysisLoadDialog.ShowDialog();
 
             if (result == System.Windows.Forms.DialogResult.OK)
             {
+                StateModerator.CurrentViewState     = ViewState.OpenView;
                 StateModerator.CurrentAnalysisState = AnalysisState.Loading;
-
+                
                 RecentAnalysis newAnalysis  = new RecentAnalysis();
                 newAnalysis.Name            = System.IO.Path.GetFileNameWithoutExtension(m_analysisLoadDialog.FileName);
                 newAnalysis.Path            = m_analysisLoadDialog.FileName;
                 LoadMultiAlignFile(newAnalysis);
 
-                StateModerator.TakeAction(ViewState.AnalysisView);
-                CurrentWorkspace.AddAnalysis(newAnalysis);
-            }
-            else
-            {
-                StateModerator.CurrentAnalysisState = StateModerator.PreviousAnalysisState;
-                StateModerator.CurrentViewState     = StateModerator.PreviousViewState; 
+
+                StateModerator.CurrentViewState     = ViewState.AnalysisView;
+                StateModerator.CurrentAnalysisState = AnalysisState.Viewing;
+                CurrentWorkspace.AddAnalysis(newAnalysis);                                
             }
         }
         private void ShowNewAnalysisSetup()
         {
+            string message = "";
+            bool canStart  = StateModerator.CanPerformNewAnalysis(ref message);
+            Status         = message;
+            if (!canStart)
+            {
+                // Display a message saying whether we want to cancel or not.                
+                return ;
+            }
+
             ApplicationStatusMediator.SetStatus("Creating new analysis.");
 
+            StateModerator.CurrentViewState                 = ViewState.SetupAnalysisView;
             StateModerator.CurrentAnalysisState             = AnalysisState.Setup;
-
+            
             AnalysisConfig config                           = new AnalysisConfig();
             config.Analysis                                 = new MultiAlignAnalysis();
             config.Analysis.AnalysisType                    = AnalysisType.Full;
             config.Analysis.Options.AlignmentOptions.IsAlignmentBaselineAMasstagDB = false;
 
             PerformAnalysisControl.AnalysisConfiguration    = config;
-            PerformAnalysisControl.CurrentStep              = AnalysisSetupStep.DatasetSelection;
+            PerformAnalysisControl.CurrentStep              = AnalysisSetupStep.DatasetSelection;            
         }
         private void ShowLoadedAnalysis()
         {
+            string message = "";
+            bool isRunning = StateModerator.IsAnalysisRunning(ref message);
 
-            if (Controller.Config != null && Controller.Config.Analysis != null)
+            if (isRunning)
             {
-                StateModerator.CurrentAnalysisState = AnalysisState.Viewing;
-                m_mainControl.Analysis              = Controller.Config.Analysis;
+                StateModerator.CurrentViewState = ViewState.RunningAnalysisView;
             }
-        }
-        /// <summary>
-        /// Starts a new analysis.
-        /// </summary>
-        private void StartRunningAnalysis()
-        {
-            StateModerator.CurrentAnalysisState = AnalysisState.Running;
-            RunningAnalysisControl.Start();
+            else
+            {
+                if (m_mainControl.Analysis != null)
+                {
+                    StateModerator.CurrentAnalysisState = AnalysisState.Viewing;
+                    StateModerator.CurrentViewState     = ViewState.AnalysisView;                    
+                }
+            }
         }
         /// <summary>
         /// Cancels the analysis setup
         /// </summary>
-        private void CancelAnalysisSetup()
+        private bool CancelAnalysisSetup()
         {
             // If we were looking at an analysis before, then go back to it.
             if (StateModerator.PreviousViewState == ViewState.AnalysisView)
@@ -327,24 +266,36 @@ namespace Manassa
                 StateModerator.CurrentViewState     = ViewState.HomeView;
                 StateModerator.CurrentAnalysisState = AnalysisState.Idle;
             }
+            return true;
         }
         /// <summary>
         /// Shows the home screen.
         /// </summary>
-        private void ShowHomeScreen()
+        private bool ShowHomeScreen()
         {
             StateModerator.CurrentViewState = ViewState.HomeView;
+            return true;
         }
         #endregion
 
         #region Window And User Control Event Handlers
         void runningAnalysisControl_AnalysisComplete(object sender, System.EventArgs e)
         {
-            StateModerator.TakeAction(ViewState.AnalysisView);
+            RecentAnalysis analysis = new RecentAnalysis();
+            analysis.Path = Controller.Config.AnalysisPath;
+            analysis.Name = Controller.Config.AnalysisName;
+
+            m_mainControl.Analysis = Controller.Config.Analysis;
+
+            StateModerator.CurrentViewState     = ViewState.AnalysisView;
+            StateModerator.CurrentAnalysisState = AnalysisState.Viewing;
+                            
+            CurrentWorkspace.AddAnalysis(analysis);   
         }
         void runningAnalysisControl_AnalysisCancelled(object sender, System.EventArgs e)
         {
-            StateModerator.TakeAction(ViewState.AnalysisView);
+            StateModerator.CurrentAnalysisState = AnalysisState.Idle;
+            StateModerator.CurrentViewState     = ViewState.HomeView;            
         }
         void m_gettingStarted_RecentAnalysisSelected(object sender, Windows.OpenAnalysisArgs e)
         {
@@ -358,7 +309,12 @@ namespace Manassa
         /// <param name="e"></param>
         void m_performAnalysisControl_AnalysisStart(object sender, System.EventArgs e)
         {
-            StateModerator.TakeAction(ViewState.RunningAnalysisView);
+            StateModerator.CurrentAnalysisState = AnalysisState.Running;
+            StateModerator.CurrentViewState     = ViewState.RunningAnalysisView;
+            Controller.Config                   = PerformAnalysisControl.AnalysisConfiguration;
+            
+            RunningAnalysisControl.Controller   = Controller;
+            RunningAnalysisControl.Start(PerformAnalysisControl.AnalysisConfiguration);
         }
         /// <summary>
         /// Quits an analysis that is running or is being started new.
@@ -366,8 +322,9 @@ namespace Manassa
         /// <param name="sender"></param>
         /// <param name="e"></param>
         void m_performAnalysisControl_AnalysisQuit(object sender, System.EventArgs e)
-        {
-            StateModerator.TakeAction(ViewState.AnalysisView);
+        {            
+            StateModerator.CurrentAnalysisState = AnalysisState.Idle;
+            StateModerator.CurrentViewState = ViewState.HomeView;            
         }
         /// <summary>
         /// Handles when the main window closes.
@@ -392,20 +349,19 @@ namespace Manassa
         #region UI Command Bindings
         private void ShowGettingStarted_Executed(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
         {
-            StateModerator.TakeAction(ViewState.HomeView);
+            ShowHomeScreen();
         }
         private void CurrentAnalysis_Executed(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
         {
-            StateModerator.TakeAction(ViewState.AnalysisView);
+            ShowLoadedAnalysis();
         }
         private void NewAnalysis_Executed(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
         {
-
-            StateModerator.TakeAction(ViewState.SetupAnalysisView);         
+            ShowNewAnalysisSetup();
         }
         private void OpenExisting_Executed(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
         {
-            StateModerator.TakeAction(ViewState.OpenView);    
+            OpenExistingAnalysis();
         }
         #endregion        
     }

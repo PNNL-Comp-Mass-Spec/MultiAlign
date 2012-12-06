@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using MultiAlignCore.IO.MTDB;
 
 namespace MultiAlignCore.IO.InputFiles
 {    
@@ -136,23 +137,27 @@ namespace MultiAlignCore.IO.InputFiles
                                 switch (keys[0].ToLower())
                                 {
                                     case "database":
-                                        info.Database.DatabaseFormat    = Data.MassTags.MassTagDatabaseFormat.SQL;
+                                        info.Database.DatabaseFormat    = MassTagDatabaseType.SQL;
                                         info.Database.DatabaseName      = keys[1];
                                         break;
                                     case "server":
-                                        info.Database.DatabaseFormat    = Data.MassTags.MassTagDatabaseFormat.SQL;
+                                        info.Database.DatabaseFormat    = MassTagDatabaseType.SQL;
                                         info.Database.DatabaseServer    = keys[1];
                                         break;
                                     case "accesspath":
-                                        info.Database.DatabaseFormat    = Data.MassTags.MassTagDatabaseFormat.Access;
+                                        info.Database.DatabaseFormat    = MassTagDatabaseType.ACCESS;
                                         info.Database.LocalPath         = keys[1];
                                         break;
                                     case "sqlite":
-                                        info.Database.DatabaseFormat    = Data.MassTags.MassTagDatabaseFormat.Sqlite;
+                                        info.Database.DatabaseFormat    = MassTagDatabaseType.SQLite;
                                         info.Database.LocalPath         = keys[1];
                                         break;
                                     case "metasample":
-                                        info.Database.DatabaseFormat    = Data.MassTags.MassTagDatabaseFormat.MetaSample;
+                                        info.Database.DatabaseFormat    = MassTagDatabaseType.MetaSample;
+                                        info.Database.LocalPath         = keys[1];
+                                        break;
+                                    case "ape":
+                                        info.Database.DatabaseFormat    = MassTagDatabaseType.APE;
                                         info.Database.LocalPath         = keys[1];
                                         break;
                                 }

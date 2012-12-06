@@ -30,7 +30,7 @@ namespace Manassa.Windows
             InitializeComponent();
 
             m_openFileDialog        = new System.Windows.Forms.OpenFileDialog();
-            m_openFileDialog.Filter = "Mass Tag Database (.db3)|*.db3|All Files (*.*)|*.*";
+            m_openFileDialog.Filter = "Mass Tag Database (.db3)|*.db3|APE Cache Database (.ape)|*.ape|All Files (*.*)|*.*";
             DataContext             = this;            
         }
 
@@ -39,8 +39,19 @@ namespace Manassa.Windows
             System.Windows.Forms.DialogResult result =  m_openFileDialog.ShowDialog();
             if (result == System.Windows.Forms.DialogResult.OK)
             {
-                Analysis.Options.MassTagDatabaseOptions.DatabaseType     = MultiAlignCore.IO.MTDB.MassTagDatabaseType.SQLite;
-                Analysis.Options.MassTagDatabaseOptions.DatabaseFilePath = m_openFileDialog.FileName;
+                string extension = System.IO.Path.GetExtension(m_openFileDialog.FileName).ToLower();
+
+                switch(extension)
+                {
+                    case ".ape":                        
+                        Analysis.Options.MassTagDatabaseOptions.DatabaseType     = MultiAlignCore.IO.MTDB.MassTagDatabaseType.APE;
+                        Analysis.Options.MassTagDatabaseOptions.DatabaseFilePath = m_openFileDialog.FileName;
+                        break;
+                    case ".db3":                        
+                        Analysis.Options.MassTagDatabaseOptions.DatabaseType     = MultiAlignCore.IO.MTDB.MassTagDatabaseType.SQLite;
+                        Analysis.Options.MassTagDatabaseOptions.DatabaseFilePath = m_openFileDialog.FileName;
+                        break;
+                }
             }
         }
         
@@ -56,29 +67,6 @@ namespace Manassa.Windows
             typeof(SelectBaselinesAndOptions));
             
                 
-        public ObservableCollection<DatasetInformation> Datasets
-        {
-            get { return (ObservableCollection<DatasetInformation>)GetValue(DatasetsProperty); }
-            set { SetValue(DatasetsProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for Datasets.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty DatasetsProperty =
-            DependencyProperty.Register("Datasets",
-            typeof(ObservableCollection<DatasetInformation>), 
-            typeof(SelectBaselinesAndOptions));
-
-        public DatasetInformation  BaselineDataset
-        {
-            get { return (DatasetInformation )GetValue(BaselineDatasetProperty); }
-            set { SetValue(BaselineDatasetProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for BaselineDataset.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty BaselineDatasetProperty =
-            DependencyProperty.Register("BaselineDataset",
-            typeof(DatasetInformation ), 
-            typeof(SelectBaselinesAndOptions));
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {               
@@ -93,7 +81,7 @@ namespace Manassa.Windows
 
         private void ToggleButton_Checked(object sender, RoutedEventArgs e)
         {                        
-            Analysis.Options.MassTagDatabaseOptions.DatabaseType = MultiAlignCore.IO.MTDB.MassTagDatabaseType.SQLite;
+            //Analysis.Options.MassTagDatabaseOptions.DatabaseType = MultiAlignCore.IO.MTDB.MassTagDatabaseType.SQLite;
         }
 
         #region INotifyPropertyChanged Members

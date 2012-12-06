@@ -93,7 +93,7 @@ namespace MultiAlignCore.IO.Features.Hibernate
         /// Adds a Collection of Objects to the Database.
         /// </summary>
 		/// <param name="tCollection">Collection of Objects to be added</param>
-		public void AddAll(ICollection<T> tCollection)
+		public virtual void AddAll(ICollection<T> tCollection)
         {
             using (IStatelessSession session = GetStatelessSession())
             {                

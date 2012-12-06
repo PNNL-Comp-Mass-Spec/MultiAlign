@@ -157,8 +157,9 @@
                     </Button>
                 </WrapPanel>
             </StatusBarItem>            
-            <StatusBarItem>
-                    <TextBlock  Text="{Binding Path=Status}" />
+            <StatusBarItem >
+                <TextBlock Text="{Binding Path=Status, 
+                                            RelativeSource={RelativeSource AncestorType={x:Type Window}}}" />
              </StatusBarItem>            
         </StatusBar>
      </Grid>        

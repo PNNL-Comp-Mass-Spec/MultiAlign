@@ -3,6 +3,7 @@ using MultiAlignCore.Data.Factors;
 using MultiAlignCore.IO.InputFiles;
 using MultiAlignEngine;
 using System.ComponentModel;
+using System.Collections.ObjectModel;
 
 namespace MultiAlignCore.Data
 {
@@ -16,7 +17,7 @@ namespace MultiAlignCore.Data
         /// </summary>
         public AnalysisMetaData()
         {
-            Datasets            = new List<DatasetInformation>();
+            Datasets            = new ObservableCollection<DatasetInformation>(); //new List<DatasetInformation>();
             InputFileDefinition = null;
             ParameterFile       = null;
             FactorTreeNode      = null;
@@ -25,7 +26,7 @@ namespace MultiAlignCore.Data
         /// <summary>
         /// Gets or sets the list of dataset information.
         /// </summary>
-        public List<DatasetInformation> Datasets
+        public ObservableCollection<DatasetInformation> Datasets
         {
             get;
             set;
@@ -150,8 +151,11 @@ namespace MultiAlignCore.Data
         {
             List<DatasetInformation> addedSets = new List<DatasetInformation>();
             Dictionary<string, DatasetInformation> datasetMap = new Dictionary<string, DatasetInformation>();
-            Datasets.ForEach(x => datasetMap.Add(x.DatasetName, x));
 
+            foreach (DatasetInformation x in Datasets)
+            {
+                datasetMap.Add(x.DatasetName, x);
+            }
 
             Dictionary<string, List<InputFile>> inputMap = new Dictionary<string, List<InputFile>>();
 
@@ -214,7 +218,12 @@ namespace MultiAlignCore.Data
 
             // Reformat their Id's
             int id = 0;
-            Datasets.ForEach(x => x.DatasetId = id++);          
+
+            foreach (DatasetInformation x in Datasets)
+            {
+                x.DatasetId = id++;
+            }
+
             return addedSets;
         }
 

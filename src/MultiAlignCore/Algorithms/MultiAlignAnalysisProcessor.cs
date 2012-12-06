@@ -21,6 +21,7 @@ using PNNLOmics.Algorithms.FeatureClustering;
 using PNNLOmics.Algorithms.FeatureMatcher.MSnLinker;
 using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
+using MultiAlignCore.Extensions;
 using PNNLOmics.Data.MassTags;
 
 namespace MultiAlignCore.Algorithms
@@ -308,8 +309,8 @@ namespace MultiAlignCore.Algorithms
         {
             UMCLoaderFactory.Status += new EventHandler<UMCLoadingEventArgs>(UMCLoaderFactory_Status);
 
-            UpdateStatus("Loading data.");            
-            List<DatasetInformation> datasets   = config.Analysis.MetaData.Datasets; 
+            UpdateStatus("Loading data.");
+            List<DatasetInformation> datasets   = config.Analysis.MetaData.Datasets.ToList(); 
             LCMSFeatureFindingOptions options   = config.Analysis.Options.FeatureFindingOptions;            
             FeatureFilterOptions filterOptions  = config.Analysis.Options.FeatureFilterOptions;
             string analysisPath                 = Path.Combine(config.Analysis.MetaData.AnalysisPath,
@@ -1262,15 +1263,13 @@ namespace MultiAlignCore.Algorithms
             if (m_config.Analysis.Options.AlignmentOptions.IsAlignmentBaselineAMasstagDB)
             {
                 UpdateStatus("Loading Mass Tag database from database:  " + m_config.Analysis.Options.MassTagDatabaseOptions.DatabaseName);
-
-                database = MTDBLoaderFactory.LoadMassTagDB(m_config.Analysis.Options.MassTagDatabaseOptions,
-                                                            m_config.Analysis.MetaData.AnalysisSetupInfo.Database.DatabaseFormat);
+                               
+                database = MTDBLoaderFactory.LoadMassTagDB(m_config.Analysis.Options.MassTagDatabaseOptions);
             }
             else if (m_config.Analysis.Options.MassTagDatabaseOptions.DatabaseType != MassTagDatabaseType.None)
-            {
+            {                
                 UpdateStatus("Loading Mass Tag database from database:  " + m_config.Analysis.Options.MassTagDatabaseOptions.DatabaseName);
-                database = MTDBLoaderFactory.LoadMassTagDB(m_config.Analysis.Options.MassTagDatabaseOptions,
-                                                            m_config.Analysis.MetaData.AnalysisSetupInfo.Database.DatabaseFormat);
+                database = MTDBLoaderFactory.LoadMassTagDB(m_config.Analysis.Options.MassTagDatabaseOptions);
             }
             else
             {

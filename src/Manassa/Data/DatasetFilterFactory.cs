@@ -16,7 +16,7 @@ namespace Manassa.Data
         {
             return string.Format("{0}|{1}", CreateFilterName(extension, description), baseName);
         }
-        private static string CreateFilterName(string extension, string description)
+        private static string CreateFilterName(string description, string extension)
         {
             return string.Format("{0} ({1})|*{1}", description, extension);
         }

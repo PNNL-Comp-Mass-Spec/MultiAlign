@@ -4,6 +4,7 @@ using Mage;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.Factors;
 using MultiAlignCore.IO.Features;
+using System.Collections.ObjectModel;
 
 namespace MultiAlignCore.IO.Factors
 {
@@ -31,7 +32,7 @@ namespace MultiAlignCore.IO.Factors
         /// Constructor.
         /// </summary>
         /// <param name="datasets">Datasets to store data about.</param>
-        public MultiAlignFactorSink(List<DatasetInformation> datasets, 
+        public MultiAlignFactorSink(ObservableCollection<DatasetInformation> datasets, 
                                     IDatasetDAO datasetProvider, 
                                     IFactorDAO factorProvider,
                                     IDatasetToFactorMapDAO datasetToFactorMapProvider)

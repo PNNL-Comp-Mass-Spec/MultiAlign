@@ -95,6 +95,11 @@ namespace MultiAlignCore.Data
         /// </summary>
         public ManualResetEvent errorEvent { get; set; }
         /// <summary>
+        /// Gets or sets the event that is fired when the analysis is externally stopped.
+        /// </summary>
+        public ManualResetEvent stopEvent {get;set;}
+
+        /// <summary>
         /// Exception thrown by the analysis engine.
         /// </summary>
         public Exception errorException { get; set; }

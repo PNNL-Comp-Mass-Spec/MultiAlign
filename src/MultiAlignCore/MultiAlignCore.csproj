@@ -215,6 +215,7 @@
     <Compile Include="Data\PeakMatchingResults.cs" />
     <Compile Include="Data\SequenceData\DatabaseSearchSequence.cs" />
     <Compile Include="Extensions\ClusterExtensions.cs" />
+    <Compile Include="Extensions\DatasetInformationCollection.cs" />
     <Compile Include="Extensions\MassTagExtensions.cs" />
     <Compile Include="Extensions\FeatureExtensions.cs" />
     <Compile Include="IO\Analysis\PeakMatchResultsWriter.cs" />
@@ -232,6 +233,7 @@
     <Compile Include="IO\Features\Hibernate\AlignmentDAOHibernate.cs" />
     <Compile Include="IO\Features\UMCClusterMsmsWriter.cs" />
     <Compile Include="IO\Features\MsmsExtractor.cs" />
+    <Compile Include="IO\MTDB\APEMassTagDatabaseLoader.cs" />
     <Compile Include="IO\MTDB\MassTagDatabaseLoaderCache.cs" />
     <Compile Include="IO\Reports\IAnalysisReportGenerator.cs" />
     <Compile Include="IO\MTDB\MAGEMetaSampleDatabaseSink.cs" />

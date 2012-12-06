@@ -11,6 +11,8 @@ namespace MultiAlignCore.IO.MTDB
         SQL,
         ACCESS,
         SQLite,
+        APE,
         MetaSample
     }
+
 }

@@ -16,7 +16,7 @@ namespace MultiAlignCore.IO.InputFiles
             DatabaseServer      = null;
             DatabaseName        = null;
             LocalPath           = null;
-            DatabaseFormat      = MassTagDatabaseFormat.None;
+            DatabaseFormat      = MassTagDatabaseType.None;
         }
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace MultiAlignCore.IO.InputFiles
         /// <summary>
         /// Gets or sets the database format.
         /// </summary>
-        public MassTagDatabaseFormat DatabaseFormat
+        public MassTagDatabaseType DatabaseFormat
         {
             get;
             set;
@@ -61,9 +61,9 @@ namespace MultiAlignCore.IO.InputFiles
         {
             // By default we use a MTS enabled MTDB.
             bool useMTDB    = true;
-            
-            
-            if (DatabaseFormat == MassTagDatabaseFormat.SQL)
+
+
+            if (DatabaseFormat == MassTagDatabaseType.SQL)
             {
                 if (DatabaseName == null && DatabaseServer != null)
                 {
@@ -82,7 +82,7 @@ namespace MultiAlignCore.IO.InputFiles
                     if (LocalPath == null)
                     {
                         // No, we do not have a MTDB to use.
-                        DatabaseFormat = MassTagDatabaseFormat.None;
+                        DatabaseFormat = MassTagDatabaseType.None;
                         useMTDB = false;
                     }
                 }                

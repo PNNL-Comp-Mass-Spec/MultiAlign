@@ -6,6 +6,7 @@ using Mage;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.Factors;
 using MultiAlignCore.IO.Features;
+using System.Collections.ObjectModel;
 
 namespace MultiAlignCore.IO.Factors
 {
@@ -47,7 +48,7 @@ namespace MultiAlignCore.IO.Factors
             set;
         }
         
-        public void LoadFactorsFromDMS(List<DatasetInformation> datasets, FeatureDataAccessProviders providers)
+        public void LoadFactorsFromDMS(ObservableCollection<DatasetInformation> datasets, FeatureDataAccessProviders providers)
         {
             if (datasets.Count < 1)
             { 
@@ -71,7 +72,7 @@ namespace MultiAlignCore.IO.Factors
             }
             sink.CommitChanges();
         }   
-        public void LoadFactorsFromFile(string path, List<DatasetInformation> datasets, FeatureDataAccessProviders providers)
+        public void LoadFactorsFromFile(string path, ObservableCollection<DatasetInformation> datasets, FeatureDataAccessProviders providers)
         {
             if (datasets.Count < 1)
             { 

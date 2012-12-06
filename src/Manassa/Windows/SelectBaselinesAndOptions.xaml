@@ -79,7 +79,7 @@
                     Margin="5"
                     Height="32"
                     DisplayMemberPath="DatasetName"
-                    ItemsSource="{Binding Path=Datasets}"
+                    ItemsSource="{Binding Path=Analysis.MetaData.Datasets}"
                     SelectedItem="{Binding Path=Analysis.MetaData.BaselineDataset, Mode=TwoWay}">
                 </ComboBox>
                 <Canvas

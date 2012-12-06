@@ -38,7 +38,6 @@
                 Header="Baseline Selection"
                 IsSelected="{Binding Path=CurrentStep, Converter={StaticResource ResourceKey=BaselineStep}}">
                 <ui:SelectBaselinesAndOptions
-                    Datasets="{Binding ElementName=DatasetSelectionControl, Path=Datasets}"
                     Analysis="{Binding  
                                 Path=AnalysisConfiguration.Analysis,
                                 RelativeSource={RelativeSource AncestorType={x:Type UserControl}},

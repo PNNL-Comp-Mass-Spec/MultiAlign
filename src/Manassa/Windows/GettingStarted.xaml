@@ -50,16 +50,15 @@
                 <StackPanel
                     Background="#FF414141"
                     >
-                    <Image Source="/MultiAlign;component/Resources/gettingStartedImage.png"  />
+                    <!--<Image Source="/MultiAlign;component/Resources/gettingStartedImage.png"  />-->
                     <Label 
-                        FontSize="24pt"
-                        Foreground="WhiteSmoke"
-                        Margin="5,5,5,5">
+                        FontSize="31pt"
+                        Foreground="WhiteSmoke">
                         MultiAlign
                     </Label>
 
                     <Label 
-                        FontSize="14pt"
+                        FontSize="20pt"
                         Foreground="WhiteSmoke"
                         Margin="5,5,5,5">
                         Start
@@ -85,7 +84,7 @@
                     </Button>
 
                     <Label 
-                        FontSize="14pt"
+                        FontSize="12pt"
                         Foreground="WhiteSmoke"
                         Margin="5,5,5,5">
                         Recent Analysis

@@ -15,23 +15,27 @@ namespace MultiAlignCore.IO.MTDB
         /// </summary>
         /// <param name="options">Loading options.</param>
         /// <returns>The mass tag database.</returns>
-        public static MassTagDatabase LoadMassTagDB(MassTagDatabaseOptions options, MassTagDatabaseFormat format)            
+        public static MassTagDatabase LoadMassTagDB(MassTagDatabaseOptions options)            
         {
             MassTagDatabase database = null;
             IMtdbLoader loader       = null;
 
-            switch (format)
+            
+            switch (options.DatabaseType)
             {
-                case MassTagDatabaseFormat.SQL:
+                case MassTagDatabaseType.APE:
+                    loader = new ApeMassTagDatabaseLoader(options.DatabaseFilePath);
+                    break;
+                case MassTagDatabaseType.SQL:
                     loader = new MTSMassTagDatabaseLoader(options.DatabaseName, options.Server);
                     break;
-                case MassTagDatabaseFormat.Access:
+                case MassTagDatabaseType.ACCESS:
                     loader = new AccessMassTagDatabaseLoader(options.DatabaseFilePath);                    
                     break;
-                case MassTagDatabaseFormat.Sqlite:
+                case MassTagDatabaseType.SQLite:
                     loader = new SQLiteMassTagDatabaseLoader(options.DatabaseFilePath);
                     break;
-                case MassTagDatabaseFormat.MetaSample:
+                case MassTagDatabaseType.MetaSample:
                     loader = new MetaSampleDatbaseLoader(options.DatabaseFilePath);
                     break;
                 default:                    
@@ -40,7 +44,7 @@ namespace MultiAlignCore.IO.MTDB
 
             if (loader == null)
             {
-                throw new NullReferenceException("The type of mass tag database format is not supported: "  + format.ToString());
+                throw new NullReferenceException("The type of mass tag database format is not supported: "  + options.DatabaseType.ToString());
             }
 
             loader.Options  = options;

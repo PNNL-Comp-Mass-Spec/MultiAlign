@@ -46,19 +46,6 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <Button
-                            x:Name="LoadFromPreviousButton"
-                            Style="{DynamicResource ResourceKey=SimpleBrowseButtonStyle}"                            
-                            Grid.Row="4"
-                            Grid.Column="2"
-                            Grid.ColumnSpan="2"                            
-                            Width="212"
-                            Margin="5,5,5,5"
-                            IsEnabled="False"
-                            HorizontalAlignment="Right"
-                            Content="Load Datasets From Previous Analysis"  
-                            Click="LoadFromPreviousButton_Click"
-                            />
                     
                     <Label 
                         HorizontalContentAlignment="Left"
@@ -189,7 +176,7 @@
             x:Name="MainDatasetGrid"
             Margin="2,2,2,2"
             Grid.Row="3"
-            ItemsSource="{Binding Path=Datasets}"
+            ItemsSource="{Binding Path=Analysis.MetaData.Datasets}"
             HorizontalContentAlignment="Center"            
             AlternatingRowBackground="WhiteSmoke"
             AlternationCount="1" 
@@ -220,7 +207,7 @@
             <Button
                 Margin="5,5,5,5"                
                 Style="{DynamicResource ResourceKey=SimpleButtonStyle}"
-                Width="100"
+                Width="128"
                 HorizontalAlignment="Left"
                 x:Name="RemoveSelectedButton" Click="RemoveSelectedButton_Click">
                 Remove Selected

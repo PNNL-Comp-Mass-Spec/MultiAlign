@@ -65,7 +65,7 @@ namespace Manassa.Windows
         }
         #endregion
 
-        public void Start()
+        public void Start(AnalysisConfig config)
         {
             // Set the messages
             Messages.Clear();
@@ -75,18 +75,18 @@ namespace Manassa.Windows
             RouteMessages();
 
             IsAnalysisRunning   = true;
-            Reporter.Config     = AnalysisConfiguration;
+            Reporter.Config = config;
 
             Controller.AnalysisComplete += new EventHandler(Controller_AnalysisComplete);
             Controller.AnalysisError    += new EventHandler(Controller_AnalysisError);
             Controller.AnalysisCancelled += new EventHandler(Controller_AnalysisCancelled);
 
             // Start the analysis.
-            Controller.StartMultiAlignGUI(AnalysisConfiguration, this);                        
+            Controller.StartMultiAlignGUI(config, this);                        
         }
 
 
-        private void AnalysisEnded(string reason)
+        private void AnalysisEnded(string reason, bool isCancelled)
         {
             Action workAction = delegate
             {
@@ -98,24 +98,34 @@ namespace Manassa.Windows
                 Controller.AnalysisCancelled -= Controller_AnalysisCancelled;
 
 
-                if (AnalysisComplete != null)
+                if (!isCancelled)
                 {
-                    AnalysisComplete(this, null);
+                    if (AnalysisComplete != null)
+                    {
+                        AnalysisComplete(this, null);
+                    }
+                }
+                else
+                {
+                    if (AnalysisCancelled != null)
+                    {
+                        AnalysisCancelled(this, null);
+                    }
                 }
             };
             Dispatcher.Invoke(workAction, DispatcherPriority.Normal);
         }
         void Controller_AnalysisCancelled(object sender, EventArgs e)
         {
-            AnalysisEnded("The analysis was cancelled.");
+            AnalysisEnded("The analysis was cancelled.", true);
         }
         void Controller_AnalysisError(object sender, EventArgs e)
         {
-            AnalysisEnded("There was an error with the analysis.");            
+            AnalysisEnded("There was an error with the analysis.", true);            
         }
         void Controller_AnalysisComplete(object sender, EventArgs e)
         {
-            AnalysisEnded("The analysis is complete.");
+            AnalysisEnded("The analysis is complete.", true);
         }
 
         public ObservableCollection<UserControl> GalleryImages
@@ -324,9 +334,9 @@ namespace Manassa.Windows
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            Controller.CancelAnalysis();
             if (AnalysisCancelled != null)
             {
-                Controller.CancelAnalysis();
                 AnalysisCancelled(this, e);
             }
         }

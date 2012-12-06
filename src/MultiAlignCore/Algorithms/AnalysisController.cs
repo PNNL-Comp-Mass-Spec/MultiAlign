@@ -17,6 +17,8 @@ using System.Threading;
 using MultiAlignCore.IO.Parameters;
 using PNNLOmics.Data.Features;
 using System.ComponentModel;
+using MultiAlignCore.Extensions;
+using System.Collections.ObjectModel;
 
 
 namespace MultiAlignCore.Algorithms
@@ -137,7 +139,7 @@ namespace MultiAlignCore.Algorithms
         private  void processor_AnalysisComplete(object sender, AnalysisCompleteEventArgs e)
         {
             m_config.Report.PushEndHeader();
-            ExportData(m_config.Analysis.DataProviders, AnalysisPathUtils.BuildAnalysisName(m_config.AnalysisPath, m_config.AnalysisName), e.Analysis.MetaData.Datasets);            
+            ExportData(m_config.Analysis.DataProviders, AnalysisPathUtils.BuildAnalysisName(m_config.AnalysisPath, m_config.AnalysisName), e.Analysis.MetaData.Datasets.ToList());            
             m_config.triggerEvent.Set();
         }
         /// <summary>
@@ -238,7 +240,13 @@ namespace MultiAlignCore.Algorithms
                 Logger.PrintMessage(string.Format("\n{0}", e.Exception.StackTrace));
             }
             m_config.errorException = e.Exception;
-            m_config.errorEvent.Set();
+
+            try
+            {
+                m_config.errorEvent.Set();
+            }
+            catch
+            { }
         }
         #endregion
 
@@ -628,7 +636,7 @@ namespace MultiAlignCore.Algorithms
             analysis.MetaData.AnalysisSetupInfo     = null;
             analysis.DataProviders                  = providers;
             analysis.Clusters                       = providers.ClusterCache.FindAll();
-            analysis.MetaData.Datasets              = providers.DatasetCache.FindAll();
+            analysis.MetaData.Datasets              = providers.DatasetCache.FindAll().ToObservableCollection();
 
             MassTagDatabaseLoaderCache provider     = new MassTagDatabaseLoaderCache();
             provider.Provider                       = analysis.DataProviders.MassTags;
@@ -706,7 +714,16 @@ namespace MultiAlignCore.Algorithms
             {
                 switch (analysisSetupInformation.Database.DatabaseFormat)
                 {
-                    case MassTagDatabaseFormat.Access:
+                    case MassTagDatabaseType.APE:
+                        Logger.PrintMessage("Using local APE Cache Mass Tag Database at location: ");
+                        Logger.PrintMessage(string.Format("\tFull Path: {0}", analysisSetupInformation.Database.LocalPath));
+                        Logger.PrintMessage(string.Format("\tDatabase Name: {0}", Path.GetFileName(analysisSetupInformation.Database.LocalPath)));
+
+                        m_config.Analysis.Options.MassTagDatabaseOptions.DatabaseFilePath   = analysisSetupInformation.Database.LocalPath;
+                        m_config.Analysis.Options.MassTagDatabaseOptions.Server             = analysisSetupInformation.Database.DatabaseServer;
+                        m_config.Analysis.Options.MassTagDatabaseOptions.DatabaseType       = MassTagDatabaseType.APE;
+                        break;   
+                    case MassTagDatabaseType.ACCESS:
                         Logger.PrintMessage("Using local Access Mass Tag Database at location: ");
                         Logger.PrintMessage(string.Format("\tFull Path: {0}", analysisSetupInformation.Database.LocalPath));
                         Logger.PrintMessage(string.Format("\tDatabase Name: {0}", Path.GetFileName(analysisSetupInformation.Database.LocalPath)));
@@ -715,8 +732,8 @@ namespace MultiAlignCore.Algorithms
                         m_config.Analysis.Options.MassTagDatabaseOptions.Server = analysisSetupInformation.Database.DatabaseServer;
                         m_config.Analysis.Options.MassTagDatabaseOptions.DatabaseType = MassTagDatabaseType.ACCESS;
                         break;
-
-                    case MassTagDatabaseFormat.SQL:
+                        
+                    case MassTagDatabaseType.SQL:
                         Logger.PrintMessage("Using Mass Tag Database:");
                         Logger.PrintMessage(string.Format("\tServer:        {0}", analysisSetupInformation.Database.DatabaseServer));
                         Logger.PrintMessage(string.Format("\tDatabase Name: {0}", analysisSetupInformation.Database.DatabaseName));
@@ -724,7 +741,7 @@ namespace MultiAlignCore.Algorithms
                         m_config.Analysis.Options.MassTagDatabaseOptions.Server = analysisSetupInformation.Database.DatabaseServer;
                         m_config.Analysis.Options.MassTagDatabaseOptions.DatabaseType = MassTagDatabaseType.SQL;
                         break;
-                    case MassTagDatabaseFormat.Sqlite:
+                    case MassTagDatabaseType.SQLite:
                         Logger.PrintMessage("Using local Sqlite Mass Tag Database at location: ");
                         Logger.PrintMessage(string.Format("\tFull Path: {0}", analysisSetupInformation.Database.LocalPath));
                         Logger.PrintMessage(string.Format("\tDatabase Name: {0}", Path.GetFileName(analysisSetupInformation.Database.LocalPath)));
@@ -733,7 +750,7 @@ namespace MultiAlignCore.Algorithms
                         m_config.Analysis.Options.MassTagDatabaseOptions.Server = analysisSetupInformation.Database.DatabaseServer;
                         m_config.Analysis.Options.MassTagDatabaseOptions.DatabaseType = MassTagDatabaseType.SQLite;
                         break;
-                    case MassTagDatabaseFormat.MetaSample:
+                    case MassTagDatabaseType.MetaSample:
                         Logger.PrintMessage("Using local MetaSample Mass Tag Database at location: ");
                         Logger.PrintMessage(string.Format("\tFull Path: {0}", analysisSetupInformation.Database.LocalPath));
                         Logger.PrintMessage(string.Format("\tDatabase Name: {0}", Path.GetFileName(analysisSetupInformation.Database.LocalPath)));
@@ -797,7 +814,7 @@ namespace MultiAlignCore.Algorithms
         /// </summary>
         /// <param name="analysisSetupInformation"></param>
         /// <param name="datasets"></param>
-        private  void ConstructFactorInformation(InputAnalysisInfo analysisSetupInformation, List<DatasetInformation> datasets, FeatureDataAccessProviders providers)
+        private  void ConstructFactorInformation(InputAnalysisInfo analysisSetupInformation, ObservableCollection<DatasetInformation> datasets, FeatureDataAccessProviders providers)
         {
             MultiAlignCore.IO.Factors.MAGEFactorAdapter mage = new MultiAlignCore.IO.Factors.MAGEFactorAdapter();
 
@@ -823,11 +840,11 @@ namespace MultiAlignCore.Algorithms
             Logger.PrintMessage("Creating dataset and other input information.");
 
             List<DatasetInformation> datasets = DatasetInformation.CreateDatasetsFromInputFile(analysisSetupInformation.Files);
-            analysis.MetaData.Datasets.AddRange(datasets); 
-
+            analysis.MetaData.Datasets.AddRange(datasets);
+            
             if (insertIntoDatabase)
-            {
-                m_config.Analysis.DataProviders.DatasetCache.AddAll(analysis.MetaData.Datasets);
+            {                                
+                m_config.Analysis.DataProviders.DatasetCache.AddAll(datasets);
             }
         }
 
@@ -938,22 +955,33 @@ namespace MultiAlignCore.Algorithms
         /// <param name="reporter"></param>
         /// <returns></returns>
         public void StartMultiAlignGUI(AnalysisConfig config, IAnalysisReportGenerator reporter)
-        {   m_worker         = new BackgroundWorker();
+        { 
+            m_worker         = new BackgroundWorker();
             m_worker.DoWork += new DoWorkEventHandler(m_worker_DoWork);
 
+            m_workerManager = new WorkerObject(m_worker);
 
             m_reportCreator = reporter;
             m_config        = config;
 
+            m_worker.WorkerSupportsCancellation = true;            
             m_worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(m_worker_RunWorkerCompleted);
             m_worker.RunWorkerAsync();            
         }
-
+        /// <summary>
+        /// Fired when the analysis stops
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         void m_worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             
         }
-
+        /// <summary>
+        /// Main bulk for processing setup for the GUI version
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         void m_worker_DoWork(object sender, DoWorkEventArgs e)
         {
 
@@ -963,6 +991,7 @@ namespace MultiAlignCore.Algorithms
             // Use this to signal when the analysis is done.              
             m_config.triggerEvent = new ManualResetEvent(false);
             m_config.errorEvent = new ManualResetEvent(false);
+            m_config.stopEvent = new ManualResetEvent(false);
             m_config.errorException = null;
 
 
@@ -1000,13 +1029,13 @@ namespace MultiAlignCore.Algorithms
                     ImportFactors(config, databaseExists);
                     break;
                 case AnalysisType.Full:
-                    PerformAnalysisGUI(config, builder, validated, createDatabase);
+                    PerformAnalysisGUI(config, builder, validated, createDatabase, m_workerManager);
                     break;
                 case AnalysisType.ExportDataOnly:
                     ExportData(config, builder, databasePath, databaseExists);
                     break;
                 case AnalysisType.ExportSICs:
-                    PerformAnalysisGUI(config, builder, validated, createDatabase);
+                    PerformAnalysisGUI(config, builder, validated, createDatabase, m_workerManager);
                     break;
             }
         }
@@ -1029,6 +1058,7 @@ namespace MultiAlignCore.Algorithms
             // Use this to signal when the analysis is done.              
             config.triggerEvent     = new ManualResetEvent(false);
             config.errorEvent       = new ManualResetEvent(false);
+            m_config.stopEvent      = new ManualResetEvent(false);
             config.errorException   = null;
 
             /// /////////////////////////////////////////////////////////////
@@ -1122,11 +1152,29 @@ namespace MultiAlignCore.Algorithms
             if (m_worker != null)
             {
                 try
-                {                    
-                    m_worker.CancelAsync();
-                }
-                catch
                 {
+                    // Let's kill the processing threads...
+                    m_config.stopEvent.Set();
+
+                    Logger.PrintMessage("Cancelling Analysis.");
+
+                    WaitHandle[] handles = new WaitHandle[] { m_workerManager.SynchEvent };
+                    bool waited = System.Threading.WaitHandle.WaitAll(handles, 1000);
+                                    
+                    // Then the background worker threads.  
+                    // Processing thread does all of the post-analysis report generation and is based on the Console
+                    // Application way of running and waiting for the analysis to complete.  It's a bit of overhead
+                    // threadwise to do it this way from teh GUI perspective but remains in tact to not change
+                    // the way processing happens between GUI and Console.
+
+                    // Here we just let the background worker go
+                    m_worker = null;
+                }
+                catch(Exception ex)
+                {
+                    int xx = 0;
+                    xx++;
+
                 }
             }
 
@@ -1136,7 +1184,8 @@ namespace MultiAlignCore.Algorithms
             }
         }
 
-
+        WorkerObject m_workerManager;
+        
         #region Processing 
         /// <summary>
         /// Performs the analysis.
@@ -1149,11 +1198,11 @@ namespace MultiAlignCore.Algorithms
         /// <param name="analysisSetupInformation"></param>
         /// <param name="createDatabase"></param>
         /// <returns></returns>
-        private void PerformAnalysisGUI(AnalysisConfig config, AlgorithmBuilder builder, AnalysisType validated, bool createDatabase)
+        private void PerformAnalysisGUI(AnalysisConfig config, AlgorithmBuilder builder, AnalysisType validated, bool createDatabase, WorkerObject worker)
         {                        
             FeatureDataAccessProviders providers        = null;
             MultiAlignAnalysisProcessor processor       = null;
-
+            
             Logger.PrintMessage("Performing analysis.");
          
             /// /////////////////////////////////////////////////////////////            
@@ -1209,7 +1258,7 @@ namespace MultiAlignCore.Algorithms
             Logger.PrintMessage("Analysis Started.");
             processor.StartAnalysis(config);
 
-            int handleID = WaitHandle.WaitAny(new WaitHandle[] { config.triggerEvent, config.errorEvent });
+            int handleID = WaitHandle.WaitAny(new WaitHandle[] { config.triggerEvent, config.errorEvent, config.stopEvent });
 
             if (handleID == 1)
             {
@@ -1224,28 +1273,51 @@ namespace MultiAlignCore.Algorithms
                 }
                 return;
             }
-
-            /// /////////////////////////////////////////////////////////////
-            /// Finalize the analysis plots etc.
-            /// /////////////////////////////////////////////////////////////
-            try
+            else if (handleID == 2)
             {
-                //m_reportCreator.CreateFinalAnalysisPlots(providers.FeatureCache, providers.ClusterCache);
-                m_reportCreator.CreatePlotReport();
-            }
-            catch (Exception ex)
-            {
-                Logger.PrintMessage("There was an error when trying to create the final analysis plots, however, the data analysis is complete.");
-                Logger.PrintMessage(ex.Message);
-                Logger.PrintMessage(ex.StackTrace);
-            }
+                Logger.PrintMessage("Stopping the analysis.");
+                processor.StopAnalysis();
 
+                try
+                {
+                    // We use this guy to tell the GUI thread that killed us that it's ok to finish cleaning up.
+                    worker.SynchEvent.Set();
+                    System.Threading.Thread.Sleep(50);
+                }
+                catch
+                {
+                }
+
+                config.triggerEvent.Dispose();
+                config.errorEvent.Dispose();
+                processor.Dispose();
+
+                if (AnalysisCancelled != null)
+                {
+                    AnalysisCancelled(this, null);
+                }
+                return;
+            }
+            else
+            {
+                try
+                {
+                    m_reportCreator.CreatePlotReport();
+                }
+                catch (Exception ex)
+                {
+                    Logger.PrintMessage("There was an error when trying to create the final analysis plots, however, the data analysis is complete.");
+                    Logger.PrintMessage(ex.Message);
+                    Logger.PrintMessage(ex.StackTrace);                    
+                }
+            }
+            
             
             config.triggerEvent.Dispose();
             config.errorEvent.Dispose();
             processor.Dispose();
-            Logger.PrintMessage("Analysis Complete.");
-
+            Logger.PrintMessage("Analysis Complete");
+                                    
             if (AnalysisComplete != null)
             {
                 AnalysisComplete(this, null);
@@ -1473,10 +1545,35 @@ namespace MultiAlignCore.Algorithms
                 string factorFile = config.options["-factors"][0];
                 info.FactorFile = factorFile;
             }
-            ConstructFactorInformation(info, datasetsFactors, providers);
+            ConstructFactorInformation(info, datasetsFactors.ToObservableCollection(), providers);
             CleanupDataProviders();
             return 0;
         }
         #endregion
+    }
+
+    /// <summary>
+    /// Class that combines the worker object with a manual reset event used for snychronization.  This 
+    /// happens because some processing elements take a long time to perform.  We want to let them finish but dont watn the user interface to freeze.
+    /// So instead we create an object that allows us to let the objects go into the deep so that when the processing elements complete, they will manage themselves.
+    /// </summary>
+    public class WorkerObject
+    {
+        public WorkerObject(BackgroundWorker worker)
+        {
+            Worker = worker;
+            SynchEvent = new ManualResetEvent(false);
+        }
+        public BackgroundWorker Worker
+        {
+            get;
+            set;
+        }
+
+        public ManualResetEvent SynchEvent
+        {
+            get;
+            set;
+        }
     }
 }
