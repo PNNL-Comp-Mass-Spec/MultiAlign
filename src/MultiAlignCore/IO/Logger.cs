@@ -84,7 +84,24 @@ namespace MultiAlignCore.IO
         {
             PrintMessage(message, 12, useMemory);
         }
+        public static void PrintMessageWorker(string message, int size, bool useMemory)
+        {
+            lock (synched)
+            {
+                SynchMessaged(message, size, useMemory);
+            }
+        }
         public static void PrintMessage(string message, int size, bool useMemory)
+        {
+            lock (synched)
+            {
+                SynchMessaged(message, size, useMemory);
+            }
+        }
+
+        private static object synched = new object();
+
+        private static void SynchMessaged(string message, int size, bool useMemory)
         {
             string newMessage = message;
             if (useMemory)

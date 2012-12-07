@@ -39,13 +39,23 @@
             <TabControl
                     Grid.Row="0"   
                     Grid.Column="0">
-                <TabItem
-                    
-                Style="{DynamicResource ResourceKey=SimpleTabItem}"
-                    Header="All Mass Tags">
-                    <maWindows:MassTagGrid
-                        x:Name="m_massTagGrid"            
-                        />
+                <TabItem                    
+                        Style="{DynamicResource ResourceKey=SimpleTabItem}"
+                        Header="All Mass Tags">                
+                    <DockPanel>
+                        <WrapPanel
+                            HorizontalAlignment="Right"
+                            DockPanel.Dock="Top">
+                            <Label  Foreground="Gray">Number of Mass Tags: </Label>
+                            <Label
+                                Content="{Binding Path=MatchedTags}">                            
+                            </Label>
+                        </WrapPanel>
+                        <maWindows:MassTagGrid
+                            x:Name="m_massTagGrid"            
+                            />
+                    </DockPanel>
+                
                 </TabItem>
                 <TabItem
                     
@@ -55,18 +65,24 @@
                         x:Name="m_proteinGrid"            
                         />
                 </TabItem>
-            </TabControl>
-            <TabControl
-                
-                    Grid.Row="0"   
-                        Grid.Column="2">    
                 <TabItem
                     
+                    Style="{DynamicResource ResourceKey=SimpleTabItem}"
+                    Header="Matched Proteins">
+                    <maWindows:ProteinGrid
+                        x:Name="m_matchedProteins"            
+                        />
+                </TabItem>
+            </TabControl>
+            <TabControl                
+                    Grid.Row="0"   
+                    Grid.Column="2">    
+                <TabItem                    
                     Style="{DynamicResource ResourceKey=SimpleTabItem}"
                     Header="Mass Tags">
                     <WindowsFormsHost>
                             <maCharts:MassTagPlot
-                                
+                                Title="All Mass Tags"
                                 LegendVisible="False"
                                 x:Name="m_massTagPlot"/>
                     </WindowsFormsHost>
@@ -75,6 +91,14 @@
                 
                     Style="{DynamicResource ResourceKey=SimpleTabItem}"
                     Header="Mass Tags Clusters">
+                <DockPanel>
+                    <Label 
+                            Foreground="Gray"
+                            DockPanel.Dock="Top"
+                            HorizontalContentAlignment="Center">
+                        Histogram of mass tags that were matched by multiple clusters.                        
+                    </Label>
+                
                 <WindowsFormsHost>                
                         <maCharts:GenericHistogram
                             Title="Mass Tag Clusters"
@@ -86,6 +110,7 @@
                             x:Name="m_massTagHistogram"
                             TitleVisible="True" />                    
                 </WindowsFormsHost>
+                </DockPanel>
             </TabItem>
         </TabControl>
 

@@ -75,6 +75,25 @@ namespace Manassa.Windows
             DependencyProperty.Register("FeaturesImage", typeof(BitmapImage), typeof(FeaturePlotView));
 
 
+
+        public MassTagsLoadedEventArgs MassTagsData
+        {
+            get { return (MassTagsLoadedEventArgs)GetValue(MassTagsDataProperty); }
+            set { SetValue(MassTagsDataProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for MassTagsData.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty MassTagsDataProperty =
+            DependencyProperty.Register("MassTagsData", typeof(MassTagsLoadedEventArgs), typeof(FeaturePlotView),
+            new PropertyMetadata(new PropertyChangedCallback(SetMassTagData)));
+
+
+        private static void SetMassTagData(DependencyObject sender, DependencyPropertyChangedEventArgs args)
+        {
+            var x = sender as FeaturePlotView;
+            x.CreateMassTagPlots();
+        }
+
         public BaselineFeaturesLoadedEventArgs BaselineData
         {
             get { return (BaselineFeaturesLoadedEventArgs)GetValue(BaselineDataProperty); }
@@ -93,15 +112,34 @@ namespace Manassa.Windows
             var x = sender as FeaturePlotView;
             x.CreatePlots();
         }
-
+        ///
         private void CreatePlots()
         {
-            BaselineFeaturesLoadedEventArgs  data = BaselineData;
+            BaselineFeaturesLoadedEventArgs data = BaselineData;
+            string name = "";
+            if (data.DatasetInformation == null)
+            {
+                if (data.Database != null)
+                {
+                    name = data.Database.Name;
+                }
+            }
+            else
+            {
+                name = data.DatasetInformation.DatasetName;
+            }
 
-            string name                 = data.DatasetInformation.DatasetName;
-            PlotName                    = string.Format("Baseline: {0}", name);
-            FeatureImageData imageData  = AnalysisImageCreator.CreateBaselinePlots(data, PlotWidth, PlotHeight, false);
-            FeaturesImage = ImageConverter.ConvertImage(imageData.FeatureImage);            
+            PlotName = string.Format("Baseline: {0}", name);
+            FeatureImageData imageData = AnalysisImageCreator.CreateBaselinePlots(data, PlotWidth, PlotHeight, false);
+            FeaturesImage = ImageConverter.ConvertImage(imageData.FeatureImage);
+        }
+        ///
+        private void CreateMassTagPlots()
+        {
+            MassTagsLoadedEventArgs data    = MassTagsData;            
+            PlotName = string.Format("Mass Tag Database");
+            FeatureImageData imageData = AnalysisImageCreator.CreateMassTagPlots(data.Database, PlotWidth, PlotHeight, false);
+            FeaturesImage = ImageConverter.ConvertImage(imageData.FeatureImage);
         }
     }
 }

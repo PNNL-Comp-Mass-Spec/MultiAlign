@@ -29,7 +29,6 @@ namespace Manassa.Windows
     public partial class MassTagViewer : UserControl
     {
         private MassTagDatabase m_database;
-        private ObservableCollection<MassTagToCluster> m_tags;
         private bool m_areTagsMatched;
 
         public MassTagViewer()
@@ -50,10 +49,10 @@ namespace Manassa.Windows
 
                 if (value != null)
                 {                    
-                    m_proteinGrid.Proteins = value.AllProteins;
+                    m_proteinGrid.Proteins      = value.AllProteins;
+                    m_matchedProteins.Proteins  = value.MatchedProteins;                    
                     m_massTagPlot.AddMassTags(value.MassTags);
-                    m_massTagPlot.AutoViewPort(); 
-                    
+                    m_massTagPlot.AutoViewPort();
                 }                
             }
         }
@@ -68,26 +67,40 @@ namespace Manassa.Windows
                 m_areTagsMatched = value;
             }
         }
+
+
+
         public ObservableCollection<MassTagToCluster> MatchedTags
         {
-            get
-            {
-                return m_tags;
-            }
-            set
-            {
-                m_tags = value;
-                if (value != null)
-                {
-                    m_massTagGrid.MassTags = m_tags.ToList();
-
-                    Dictionary<int, int> massTagMap = m_tags.ToList().CreateMassTagMatchedClusterSizeHistogram();
-                    m_massTagHistogram.ConstructHistogram(massTagMap);
-                    m_massTagHistogram.AutoViewPort();
-                }
-            }
+            get { return (ObservableCollection<MassTagToCluster>)GetValue(MatchedTagsProperty); }
+            set { SetValue(MatchedTagsProperty, value); }
         }
 
+        // Using a DependencyProperty as the backing store for MatchedTags.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty MatchedTagsProperty =
+            DependencyProperty.Register("MatchedTags", typeof(ObservableCollection<MassTagToCluster>), typeof(MassTagViewer),
+            new PropertyMetadata(delegate(DependencyObject sender, DependencyPropertyChangedEventArgs args)
+                {
+                    MassTagViewer viewer = sender as MassTagViewer;
+                    if (viewer != null)
+                    {
+                        viewer.SetTags();
+                    }                    
+                }));
+
+
+        private void SetTags()
+        {
+            if (MatchedTags != null || MatchedTags.Count < 1)
+            {
+                m_massTagGrid.MassTags          = MatchedTags.ToList();
+                Dictionary<int, int> massTagMap = MatchedTags.ToList().CreateMassTagMatchedClusterSizeHistogram();
+
+                m_massTagHistogram.ConstructHistogram(massTagMap);
+                m_massTagHistogram.AutoViewPort();
+            }
+        }
+        
         /// <summary>
         /// Gets or sets the feature data access providers for retrieving extra data for display.
         /// </summary>

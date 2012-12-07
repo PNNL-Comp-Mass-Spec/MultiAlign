@@ -94,8 +94,8 @@ namespace MultiAlignCustomControls.Charting
                     float minValue      = Math.Min(scan, scanAligned);                    
                     float scanDiff      = minValue + Math.Abs(scanAligned - scan) / 2;
 
-                    graphics.DrawLine(pen, scan, mass, scanAligned, mass);
-                    graphics.DrawString(string.Format("{0:.0} centroid scan difference", Math.Abs(feature.ScanAligned - feature.Scan)), Font, brush, scanDiff, mass - 20);
+                    //graphics.DrawLine(pen, scan, mass, scanAligned, mass);
+                    //graphics.DrawString(string.Format("{0:.0} centroid scan difference", Math.Abs(feature.ScanAligned - feature.Scan)), Font, brush, scanDiff, mass - 20);
 
                     // Then draw the MS/MS values
 

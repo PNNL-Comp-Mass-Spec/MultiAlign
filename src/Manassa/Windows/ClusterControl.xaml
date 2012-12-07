@@ -41,9 +41,11 @@
                 Header="Tags and Clusters">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="33*"/>
-                        <ColumnDefinition Width="33*"/>
-                        <ColumnDefinition Width="33*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>                            
@@ -53,7 +55,7 @@
                     <WindowsFormsHost
                         Margin="1,1,1,1"
                         Grid.Row="0"
-                        Grid.Column="1">
+                        Grid.Column="2">
                         <maCharts:SingleClusterChart
                                 x:Name="m_clusterChart"
                                 Title=""
@@ -65,10 +67,11 @@
                     </WindowsFormsHost>
                     <WindowsFormsHost
                         Margin="1,1,1,1"
-                        Grid.Row="0"
-                        Grid.Column="2">
+                        Grid.Row="0"                        
+                        Grid.Column="4">
                         <maCharts:SingleClusterChart
                                 x:Name="m_driftChart"
+                                
                                 Title=""                                
                                 IsDriftTimeXAxis="True"
                                 XAxisLabel="Drift Time (ms)"
@@ -115,6 +118,7 @@
             <TabItem
                 Style="{DynamicResource ResourceKey=SimpleTabItem}"
                 Header="Nearby Cluster Stats"
+                Visibility="Collapsed"
                 >
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -293,12 +297,6 @@
             </TabItem>
             <TabItem 
                 Style="{DynamicResource ResourceKey=SimpleTabItem}"
-                Header="MS/MS">
-                <maWindows:MsMsViewer
-                    x:Name="m_msmsGrid"/>
-            </TabItem>
-            <TabItem 
-                Style="{DynamicResource ResourceKey=SimpleTabItem}"
                 Header="Abundance Profile"
                 >
                 <WindowsFormsHost>
@@ -308,6 +306,13 @@
                                         LegendVisible="False"                
                                         />
                 </WindowsFormsHost>
+            </TabItem>
+
+            <TabItem 
+                Style="{DynamicResource ResourceKey=SimpleTabItem}"
+                Header="MS/MS">
+                <maWindows:MsMsViewer
+                    x:Name="m_msmsGrid"/>
             </TabItem>
         </TabControl>
     </Grid>

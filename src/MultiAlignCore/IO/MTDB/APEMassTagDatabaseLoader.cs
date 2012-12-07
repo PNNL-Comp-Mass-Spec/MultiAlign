@@ -42,6 +42,7 @@ namespace MultiAlignCore.IO.MTDB
             command.CommandTimeout  = 180;
             command.CommandType     = CommandType.Text;
             string commandString    = "SELECT * FROM T_Mass_Tag_To_Protein_Map ";
+            commandString += " INNER JOIN T_Proteins ON T_Mass_Tag_to_Protein_Map.Ref_ID = T_Proteins.Ref_ID";
             command.CommandText     = commandString;
         }
         /// <summary>
@@ -94,6 +95,49 @@ namespace MultiAlignCore.IO.MTDB
         #endregion
 
         #region  This is a "Good thing I can design software" region where I saved my ass because the database formats were different.
+        //private Dictionary<string, Protein> CreateProteinInfo(IDbConnection connection)
+        //{
+        //    Dictionary<string, Protein> map = new Dictionary<string, Protein>();
+
+        //    using (IDbCommand command = connection.CreateCommand())
+        //    {
+        //            command.CommandText = "SELECT * FROM T_Proteins";
+        //            using(IDataReader reader = command.ExecuteReader())
+        //            {
+        //                while(reader.Read())
+        //                {					        
+        //                    if (reader["Mass_Tag_ID"] != System.DBNull.Value) 
+        //                    {
+        //                        int     id          = Convert.ToInt32(reader["Mass_Tag_ID"]); 
+        //                        string  refName     = "";                                
+        //                        int     proteinId   = -1; 				
+        //                        int     refID       = -1;
+
+        //                        if (reader["Ref_ID"] != System.DBNull.Value)        refID       = Convert.ToInt32(reader["Ref_ID"]);
+        //                        if (reader["Description"] != System.DBNull.Value) refName       = reader["Description"].ToString();
+        //                        //if (reader["Protein"] != System.DBNull.Value) proteinId = Convert.ToInt32(reader["Protein"]);
+                                
+        //                        Protein protein     = new Protein();
+        //                        protein.Sequence    = refName;
+        //                        protein.RefID       = refID;
+        //                        protein.ProteinID   = proteinId;
+                                
+        //                        // Link to the Mass tags.
+        //                        bool hasMassTagID   = massTagToProtein.ContainsKey(id);
+        //                        if (!hasMassTagID)
+        //                        {
+        //                            massTagToProtein.Add(id, new List<Protein>());
+        //                        }
+        //                        massTagToProtein[id].Add(protein); ;
+        //                    }                                                        
+        //                }
+        //                reader.Close();
+        //            }                    
+        //        }
+        //    }
+
+        //    return map;
+        //}
         
         protected override Dictionary<int, List<Protein>> LoadProteins()
         {
@@ -101,6 +145,7 @@ namespace MultiAlignCore.IO.MTDB
             using (IDbConnection connection = CreateConnection(CreateConnectionString()))
             {
                 connection.Open();                
+                
                 using (IDbCommand command = connection.CreateCommand())
                 {
                     SetupProteinMassTagCommand(command);
@@ -115,9 +160,11 @@ namespace MultiAlignCore.IO.MTDB
 						        string  refName     = "";                                
 						        int     proteinId   = -1; 				
 		                        int     refID       = -1;
+                                string  description = "";
 
-						        if (reader["Ref_ID"] != System.DBNull.Value)        refID       = Convert.ToInt32(reader["Ref_ID"]);
-                                if (reader["Description"] != System.DBNull.Value) refName       = reader["Description"].ToString();
+						        if (reader["Ref_ID"] != System.DBNull.Value)        refID           = Convert.ToInt32(reader["Ref_ID"]);
+                                if (reader["Description"] != System.DBNull.Value) refName           = reader["Description"].ToString();
+                                if (reader["Protein"] != System.DBNull.Value) description           = reader["Protein"].ToString();
                                 if (reader["External_Protein_ID"] != System.DBNull.Value) proteinId = Convert.ToInt32(reader["External_Protein_ID"]);
                                 
                                 Protein protein     = new Protein();
@@ -140,7 +187,7 @@ namespace MultiAlignCore.IO.MTDB
                 connection.Close();
             }	
 			return massTagToProtein;						
-		}		
+		}
         
         protected override List<MassTagLight> LoadMassTags()
         {         

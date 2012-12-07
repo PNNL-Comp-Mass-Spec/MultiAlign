@@ -50,7 +50,7 @@
                 Grid.Row="1"
                 Grid.Column="0"
                 Grid.ColumnSpan="2"
-                ItemsSource="{Binding}" 
+                ItemsSource="{Binding Path=Datasets}" 
                 HorizontalContentAlignment="Center"            
                 AlternatingRowBackground="WhiteSmoke"
                 AlternationCount="1"

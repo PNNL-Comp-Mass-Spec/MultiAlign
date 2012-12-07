@@ -91,7 +91,7 @@
             </TabItem>
             <TabItem                
                 Style="{DynamicResource ResourceKey=SimpleTabItem}"
-                Header="AMT Identifications" 
+                Header="Identifications" 
                 Width="{Binding Path=HasIdentifications,
                                 Converter={StaticResource ResourceKey=IntVisibilityConverter}}"               
                 
@@ -145,15 +145,15 @@
                 >
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="*" />
+                        <RowDefinition Height="220" />
+                        <RowDefinition Height="220" />
+                        <RowDefinition Height="220" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
 
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="220" />
+                        <ColumnDefinition Width="200" />
                     </Grid.ColumnDefinitions>
                     
                     <WindowsFormsHost                 

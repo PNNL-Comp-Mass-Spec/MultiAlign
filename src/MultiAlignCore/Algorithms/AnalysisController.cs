@@ -1231,6 +1231,18 @@ namespace MultiAlignCore.Algorithms
             // Tell the processor whether to load data or not.
             processor.ShouldLoadData = createDatabase;
 
+
+            // Construct the dataset information for export.// Create dataset information.
+            Logger.PrintMessage("Storing dataset information into the database.");
+
+            List<DatasetInformation> information = new List<DatasetInformation>();
+            foreach (DatasetInformation info in config.Analysis.MetaData.Datasets)
+            {
+                information.Add(info);
+            }                        
+            m_config.Analysis.DataProviders.DatasetCache.AddAll(information);
+            
+
             // Give the processor somewhere to put the SIC images.
             if (validated == AnalysisType.ExportSICs)
             {
@@ -1262,7 +1274,7 @@ namespace MultiAlignCore.Algorithms
 
             if (handleID == 1)
             {
-                Logger.PrintMessage("There was an error during processing.");
+                Logger.PrintMessageWorker("There was an error during processing.", 1, false);
                 config.triggerEvent.Dispose();
                 config.errorEvent.Dispose();
                 processor.Dispose();
@@ -1275,7 +1287,7 @@ namespace MultiAlignCore.Algorithms
             }
             else if (handleID == 2)
             {
-                Logger.PrintMessage("Stopping the analysis.");
+                Logger.PrintMessageWorker("Stopping the analysis.", 1, false);
                 processor.StopAnalysis();
 
                 try

@@ -73,6 +73,17 @@ namespace MultiAlignCore.IO.MTDB
                 }
             }
 
+            Dictionary<int, List<MassTagToProteinMap>> matchedMaps = new Dictionary<int, List<MassTagToProteinMap>>();
+
+            foreach (MassTagToProteinMap singleMap in maps)
+            {
+                if (!matchedMaps.ContainsKey(singleMap.MassTagId))
+                {
+                    matchedMaps.Add(singleMap.MassTagId, new List<MassTagToProteinMap>());
+                }
+                matchedMaps[singleMap.MassTagId].Add(singleMap);
+            }
+
             UpdateStatus("Re-mapping the proteins to the mass tags.");
             Dictionary<int, List<Protein>> massTagProteinMap = new Dictionary<int, List<Protein>>();
 
@@ -80,27 +91,30 @@ namespace MultiAlignCore.IO.MTDB
             foreach (MassTagLight tag in massTags)
             {
                 int id = tag.ID;
+
                 if (!massTagProteinMap.ContainsKey(id))
                 {
                     massTagProteinMap.Add(id, new List<Protein>());
                 }
 
-                List<MassTagToProteinMap> matchedMaps = maps.FindAll(delegate(MassTagToProteinMap map)
+                List<MassTagToProteinMap> matches = new List<MassTagToProteinMap>();
+
+                if (matchedMaps.ContainsKey(id))
                 {
-                    return map.MassTagId == id;
-                });
+                    matches = matchedMaps[id];
+                }
 
                 List<Protein> newProteins = new List<Protein>();
-                foreach (MassTagToProteinMap mtMap in matchedMaps)
+                foreach (MassTagToProteinMap mtMap in matches)
                 {
                     newProteins.Add(proteinMap[mtMap.ProteinId]);
                 }
                 massTagProteinMap[id].AddRange(newProteins);
             }
-
+            
             UpdateStatus("Building the in memory mass tag database.");
             database.AddMassTagsAndProteins(massTags, massTagProteinMap);
-
+            database.AllProteins = proteins;
 
             int totalMassTags = database.MassTags.Count;
             UpdateStatus("Loaded " + totalMassTags.ToString() + " mass tags.");

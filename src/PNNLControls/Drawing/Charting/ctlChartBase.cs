@@ -1359,6 +1359,20 @@ namespace PNNLControls
             }
 
 
+            double[] ranges = new double[] { yMin, yMax, xMin, xMax };
+            foreach (double val in ranges)
+            {
+                if (double.IsInfinity(val))
+                {
+                    return;
+                }
+
+                if (double.IsNaN(val))
+                {
+                    return;
+                }
+            }
+
 			if (xMin == xMax || yMin == yMax || xMin == float.MaxValue || xMax == float.MinValue 
 				|| yMin == float.MaxValue || yMax == float.MinValue) 
 			{
@@ -1366,7 +1380,7 @@ namespace PNNLControls
 			}
 			else 
 			{
-				this.ViewPort = new RectangleF(xMin, yMin, xMax - xMin, yMax - yMin);
+				this.ViewPort = new RectangleF(xMin, yMin, Math.Abs(xMax - xMin), Math.Abs(yMax - yMin));
 			}			
 		}
 

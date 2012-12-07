@@ -1246,7 +1246,7 @@ namespace MultiAlignCore.Algorithms
             
             if (MassTagsLoaded != null)
             {
-                MassTagsLoaded(this, new MassTagsLoadedEventArgs(database.MassTags));
+                MassTagsLoaded(this, new MassTagsLoadedEventArgs(database.MassTags, database));
             }
             DeRegisterProgressNotifier(provider);
         }
@@ -1312,7 +1312,7 @@ namespace MultiAlignCore.Algorithms
 
             if (MassTagsLoaded != null)
             {
-                MassTagsLoaded(this, new MassTagsLoadedEventArgs(database.MassTags));
+                MassTagsLoaded(this, new MassTagsLoadedEventArgs(database.MassTags, database));
             }
         }
         

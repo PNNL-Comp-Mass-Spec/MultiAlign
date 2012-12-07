@@ -86,7 +86,7 @@ namespace Manassa.Windows
         }
 
 
-        private void AnalysisEnded(string reason, bool isCancelled)
+        private void AnalysisEnded(string reason, bool isCancelled, bool isComplete)
         {
             Action workAction = delegate
             {
@@ -97,7 +97,14 @@ namespace Manassa.Windows
                 Controller.AnalysisError -= Controller_AnalysisError;
                 Controller.AnalysisCancelled -= Controller_AnalysisCancelled;
 
-
+                if (isComplete)
+                {
+                    if (AnalysisComplete != null)
+                    {
+                        AnalysisComplete(this, null);
+                    }
+                    return;
+                }
                 if (!isCancelled)
                 {
                     if (AnalysisComplete != null)
@@ -112,20 +119,22 @@ namespace Manassa.Windows
                         AnalysisCancelled(this, null);
                     }
                 }
+
+                DerouteMessages();
             };
             Dispatcher.Invoke(workAction, DispatcherPriority.Normal);
         }
         void Controller_AnalysisCancelled(object sender, EventArgs e)
         {
-            AnalysisEnded("The analysis was cancelled.", true);
+            AnalysisEnded("The analysis was cancelled.", true, false);
         }
         void Controller_AnalysisError(object sender, EventArgs e)
         {
-            AnalysisEnded("There was an error with the analysis.", true);            
+            AnalysisEnded("There was an error with the analysis.", true, false);            
         }
         void Controller_AnalysisComplete(object sender, EventArgs e)
         {
-            AnalysisEnded("The analysis is complete.", true);
+            AnalysisEnded("The analysis is complete.", false, true);
         }
 
         public ObservableCollection<UserControl> GalleryImages
@@ -213,16 +222,27 @@ namespace Manassa.Windows
             GalleryImages.Add(view);
             GalleryScroll.ScrollToEnd();
         }
+        private void BuildMassTagPlots(MassTagsLoadedEventArgs e)
+        {
+            FeaturePlotView view = new FeaturePlotView();
+            view.MassTagsData    = e;
+            GalleryImages.Add(view);
+            GalleryScroll.ScrollToEnd();
+        }
         /// <summary>
         /// Builds the alignment plot views.
         /// </summary>
         /// <param name="e"></param>
         private void BuildBaselineView(BaselineFeaturesLoadedEventArgs e)
         {
-            FeaturePlotView view = new FeaturePlotView();
-            view.BaselineData    = e;
-            GalleryImages.Add(view);
-            GalleryScroll.ScrollToEnd();
+            // We dont care about the dataset
+            if (e.DatasetInformation != null)
+            {
+                FeaturePlotView view = new FeaturePlotView();
+                view.BaselineData = e;
+                GalleryImages.Add(view);
+                GalleryScroll.ScrollToEnd();
+            }
         }
         /// <summary>
         /// Builds the alignment plot views.
@@ -293,6 +313,7 @@ namespace Manassa.Windows
         {
             Action workAction = delegate
             {
+                BuildMassTagPlots(e);
                 Reporter.CreateMassTagPlot(e);
             };
             Dispatcher.Invoke(workAction, DispatcherPriority.Normal);        

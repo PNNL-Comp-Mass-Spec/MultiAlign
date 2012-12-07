@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using PNNLOmics.Data;
 using MultiAlignCore.Data;
+using System.Collections.ObjectModel;
 
 namespace Manassa.Windows
 {
@@ -16,28 +17,22 @@ namespace Manassa.Windows
         public DatasetGrid()
         {
             InitializeComponent();
-            Datasets = new List<DatasetInformation>();
             DataContext = this;
         }
 
-        /// <summary>
-        /// Gets or sets the clusters used in the analysis.
-        /// </summary>
-        public List<DatasetInformation> Datasets
+
+
+        public ObservableCollection<DatasetInformation> Datasets
         {
-            get
-            {
-                return m_datasets;
-            }
-            set
-            {
-                m_datasets = value;
-                if (value != null)
-                {
-                    m_dataGrid.ItemsSource = value;
-                }
-            }
+            get { return (ObservableCollection<DatasetInformation>)GetValue(DatasetsProperty); }
+            set { SetValue(DatasetsProperty, value); }
         }
+
+        // Using a DependencyProperty as the backing store for Datasets.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty DatasetsProperty =
+            DependencyProperty.Register("Datasets", typeof(ObservableCollection<DatasetInformation>), typeof(DatasetGrid), 
+            new UIPropertyMetadata(new ObservableCollection<DatasetInformation>()));
+
 
         public DatasetInformation SelectedDataset
         {

@@ -5,6 +5,8 @@ using PNNLOmics.Data.Features;
 using System.Collections.Generic;
 using System;
 using System.Drawing;
+using MultiAlignCore.Data.MassTags;
+using PNNLOmics.Data.MassTags;
 
 namespace MultiAlignCore.Data.Imaging
 {
@@ -129,9 +131,9 @@ namespace MultiAlignCore.Data.Imaging
                                                             int height,
                                                             bool shouldDisplayText)
         {
-            FeatureImageData imageData = new FeatureImageData();
-
+            FeatureImageData imageData      = new FeatureImageData();
             DatasetInformation baselineInfo = data.DatasetInformation;
+
             if (baselineInfo != null)
             {
                 // chart setup
@@ -152,11 +154,55 @@ namespace MultiAlignCore.Data.Imaging
             }
             else
             {
+                imageData.FeatureImage = CreateMassTagPlotImage(data.Database, width, height, shouldDisplayText);
                 //TODO: Load information about the mass tag database.  
             }
 
             return imageData;
         }
+        public static FeatureImageData CreateMassTagPlots(MassTagDatabase database,
+                                                           int width,
+                                                           int height,
+                                                           bool shouldDisplayText)
+        {
+            FeatureImageData data   = new FeatureImageData();
+            data.FeatureImage       = CreateMassTagPlotImage(database, width, height, shouldDisplayText);
+            return data;
+        }
+        private static Image CreateMassTagPlotImage( MassTagDatabase database,
+                                                    int width,
+                                                    int height,
+                                                    bool shouldDisplayText)
+        {                               
+            ChartDisplayOptions options = new ChartDisplayOptions(false, true, true, true);
+            options.MarginMin           = 1;
+            options.MarginMax           = 100;
+            options.Title               = "Mass Tags ";
+            options.XAxisLabel          = "NET";
+            options.YAxisLabel          = "Monoisotopic Mass";
+            options.Width               = width;
+            options.Height              = height;
+
+            SetupDisplayOptions(shouldDisplayText, options);
+            
+            List<MassTagLight> tags     = database.MassTags;
+            List<PointF> points         = new List<PointF>();
+            foreach (MassTagLight tagLight in tags)
+            {
+                PointF point = new PointF(Convert.ToSingle(tagLight.NETAverage), Convert.ToSingle(tagLight.MassMonoisotopic));
+                points.Add(point);
+            }
+
+            SeriesOptions series    = new SeriesOptions();
+            series.Points           = points;
+            series.Label            = "Mass Tags";
+            series.Color            = Color.Red;
+            series.Shape            = new PNNLControls.BubbleShape(1, false);
+            Image image             = RenderDatasetInfo.GenericScatterPlot_Thumbnail(new List<SeriesOptions>() {series}, options);
+
+            return image;                      
+        }
+
 
         public static Dictionary<string, Image> CreateChargePlots(Dictionary<int, int> chargeMap,
                                                                 int width,

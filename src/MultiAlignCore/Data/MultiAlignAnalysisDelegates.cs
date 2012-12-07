@@ -169,22 +169,25 @@ namespace MultiAlignCore.Data
         }
     }
     public class MassTagsLoadedEventArgs : EventArgs
-    {
-        private DatasetInformation m_datasetInformation;
-        private List<clsUMC> m_features;
-
+    {        
         /// <summary>
         /// Arguments that hold dataset information when features are loaded.
         /// </summary>        
         /// <param name="info">Dataset information object</param>        
-        public MassTagsLoadedEventArgs(List<MassTagLight> tags)
+        public MassTagsLoadedEventArgs(List<MassTagLight> tags, MassTagDatabase database)
         {
             MassTags = tags;
+            Database = database;
         }
         /// <summary>
         /// Gets the dataset information.
         /// </summary>
         public List<MassTagLight> MassTags
+        {
+            get;
+            private set;
+        }
+        public MassTagDatabase Database
         {
             get;
             private set;
