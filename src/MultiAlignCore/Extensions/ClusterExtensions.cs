@@ -98,7 +98,7 @@ namespace MultiAlignCore.Extensions
             // Maps a cluster ID to a cluster that was matched (or not in which case it will have zero matches).
             Dictionary<int, UMCClusterLightMatched> clusterMap               = new Dictionary<int, UMCClusterLightMatched>();
             
-            // Maps the mass tags to clusters 
+            // Maps the mass tags to clusters, the second dictionary is for the conformations.
             Dictionary<int, Dictionary<int, MassTagToCluster>> massTagMap = 
                 new Dictionary<int, Dictionary<int, Data.MassTagToCluster>>();
 
@@ -125,10 +125,47 @@ namespace MultiAlignCore.Extensions
                     if (!massTagMap[tag.ID].ContainsKey(tag.ConformationID))
                     {
                         MassTagToCluster matchedTag = new Data.MassTagToCluster();
-                        matchedTag.MassTag = tag;
-
+                        matchedTag.MassTag = tag;                        
                         massTagMap[tag.ID].Add(tag.ConformationID, matchedTag);
                     }
+                }
+
+                // Keeps track of all the proteins that we have mapped so far.
+                Dictionary<int, ProteinToMassTags> proteinList = new Dictionary<int,Data.ProteinToMassTags>();
+
+                // Link up the protein data
+                foreach (int massTagId in massTagMap.Keys)
+                {
+                    foreach (int conformationID in massTagMap[massTagId].Keys)
+                    {
+                        MassTagToCluster clusterTag = massTagMap[massTagId][conformationID];
+
+                        // Here we make sure we link up the protein data too
+                        if (database.Proteins.ContainsKey(massTagId))
+                        {
+                            // Get a list of the proteins this tag mapped to.
+                            List<Protein> proteins = database.Proteins[massTagId];
+
+                            // Then for each protein, wrap it with a proteintomasstag map, then
+                            //    mapping the tag to the protein
+                            //    and mapping the protein to the tags.
+                            foreach (Protein p in proteins)
+                            {
+                                if (!proteinList.ContainsKey(p.ProteinID))
+                                {
+                                    ProteinToMassTags tempProtein   = new Data.ProteinToMassTags();
+                                    tempProtein.Protein             = p;
+                                    proteinList.Add(p.ProteinID, tempProtein);                                    
+                                }
+
+                                ProteinToMassTags protein = proteinList[p.ProteinID];
+
+                                // Double link the data so we can go back and forth
+                                protein.MassTags.Add(clusterTag);
+                                clusterTag.MatchingProteins.Add(protein);
+                            }                            
+                        }
+                    }                    
                 }
             }
             

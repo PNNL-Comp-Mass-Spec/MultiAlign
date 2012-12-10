@@ -1,15 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Windows.Forms;
 using MultiAlignCore.Data;
-using MultiAlignEngine.Features;
-using MultiAlignEngine.MassTags;
-using PNNLOmics.Data;
-using PNNLControls;
-using PNNLOmics.Data.Features;
-using PNNLOmics.Data.MassTags;
 using MultiAlignCore.Extensions;
+using MultiAlignEngine.MassTags;
+using PNNLControls;
+using PNNLOmics.Data;
+using PNNLOmics.Data.Features;
 
 namespace MultiAlignCustomControls.Charting
 {
@@ -64,8 +61,7 @@ namespace MultiAlignCustomControls.Charting
             massDifference          = Math.Abs(massDifference);
             double netDifference    = Math.Abs(maxNet - minNet);
             double driftDifference  = Math.Abs(maxDrift - minDrift);
-
-            string xAddString   = "Scan";
+            
             Graphics graphics   = args.Graphics;                                                
 
             float netLineRight  = this.mobj_axis_plotter.XScreenPixel(Convert.ToSingle(maxNet));
@@ -179,67 +175,65 @@ namespace MultiAlignCustomControls.Charting
 
             clsColorIterator colors = new clsColorIterator();            
             if (m_mainFeature.MSFeatures.Count > 0)
-            {
-                List<float> massList = new List<float>();
-                List<float> scanList = new List<float>();
-                Color color = colors.GetColor(0);
+            {                
+                Dictionary<int, List<XYZData>> charges   = m_mainFeature.CreateChargeSICForMonoMass();
 
-                foreach (MSFeatureLight msFeature in m_mainFeature.MSFeatures)
+                foreach (int charge in charges.Keys)
                 {
-                    if (msFeature.MSnSpectra.Count > 0)
+                    Color color = colors.GetColor(charge);
+
+                    List<float> massList = new List<float>();
+                    List<float> scanList = new List<float>();
+                    
+                   
+                    float[] masses  = null;
+                    float[] scans   = null;
+
+                    
+                    if (massList.Count > 0)
                     {
-                        massList.Add(Convert.ToSingle(msFeature.MassMonoisotopicAligned));
-                        scanList.Add(Convert.ToSingle(msFeature.Scan));
+                        // Add the series for MS/MS features
+                        masses = new float[massList.Count];
+                        scans  = new float[scanList.Count];
+                        massList.CopyTo(masses);
+                        scanList.CopyTo(scans);
+
+                        clsShape shape              = new BubbleShape(mint_pt_size * 2, true);
+                        clsPlotParams plotParams    = new clsPlotParams(shape, Color.Red);
+                        clsSeries series            = new clsSeries(ref scans, ref masses, plotParams);
+                        base.AddSeries(series);
+                        massList.Clear();
+                        scanList.Clear();
                     }
-                }
-                float[] masses = null;
-                float[] scans  = null;
-                if (massList.Count > 0)
-                {
-                    // Add the series for MS/MS features
+
+                    // Now add the rest of the features into the plot
+                    charges[charge].ForEach(x => scanList.Add(Convert.ToSingle(x.X)));
+                    charges[charge].ForEach(x => massList.Add(Convert.ToSingle(x.Z)));
+
                     masses  = new float[massList.Count];
                     scans   = new float[scanList.Count];
                     massList.CopyTo(masses);
                     scanList.CopyTo(scans);
 
-                    clsShape shape              = new BubbleShape(mint_pt_size * 2, true);
-                    clsPlotParams plotParams    = new clsPlotParams(shape, Color.Red);
-                    clsSeries series            = new clsSeries(ref scans, ref masses, plotParams);
-                    base.AddSeries(series);
-                    massList.Clear();
-                    scanList.Clear();
+                    clsShape msFeatureShape         = new BubbleShape(mint_pt_size, false);
+                    clsPlotParams msFeatureParams   = new clsPlotParams(msFeatureShape, color);
+                    msFeatureParams.Name            = string.Format("charge state {0}", charge);
+                    clsSeries msFeaturesseries      = new clsSeries(ref scans, ref masses, msFeatureParams);
+                    base.AddSeries(msFeaturesseries);                    
                 }
-
-                // Now add the rest of the features into the plot
-                m_mainFeature.MSFeatures.ForEach(x => scanList.Add(Convert.ToSingle(x.Scan)));
-                m_mainFeature.MSFeatures.ForEach(x => massList.Add(Convert.ToSingle(x.MassMonoisotopicAligned)));
-                masses = new float[massList.Count];
-                scans  = new float[scanList.Count];     
-                massList.CopyTo(masses);
-                scanList.CopyTo(scans);
-
-                clsShape msFeatureShape         = new BubbleShape(mint_pt_size, false);
-                clsPlotParams msFeatureParams   = new clsPlotParams(msFeatureShape, color);
-                clsSeries msFeaturesseries      = new clsSeries(ref scans, ref masses, msFeatureParams);
-                base.AddSeries(msFeaturesseries);
-
-                massList.Clear();
-                scanList.Clear();
             }
 
-            float[] clusterMass = new float[2];
-            float[] clusterScan = new float[2];
-            Color clusterColor = Color.Red;
+            float[] clusterMass = new float[1];
+            float[] clusterScan = new float[1];
+            Color clusterColor = Color.FromArgb(200, 255, 0, 0);
             
-            // Scan Aligned.
-            clusterMass[0] = Convert.ToSingle(m_mainFeature.MassMonoisotopicAligned);            
-            clusterScan[0] = Convert.ToSingle(m_mainFeature.ScanAligned);
 
             // Original Scan
-            clusterMass[1] = Convert.ToSingle(m_mainFeature.MassMonoisotopicAligned);
-            clusterScan[1] = Convert.ToSingle(m_mainFeature.Scan);
+            clusterMass[0] = Convert.ToSingle(m_mainFeature.MassMonoisotopicAligned);
+            clusterScan[0] = Convert.ToSingle(m_mainFeature.Scan);
             
             clsPlotParams plotParamsCluster = new clsPlotParams(new TriangleShape(mint_pt_size, false), clusterColor);
+            plotParamsCluster.Name  = "Feature Centroid";
             clsSeries clusterSeries = new clsSeries(ref clusterScan, ref clusterMass, plotParamsCluster);
             base.AddSeries(clusterSeries);
 

@@ -179,7 +179,7 @@
     <PostBuildEvent>copy ..\..\..\..\..\lib\$(PlatformName)\System.Data.SQLite.dll "$(TargetDir)System.Data.SQLite.dll"
 REM copy ..\..\..\..\..\lib\Thermo*.dll "$(TargetDir)"
 REM copy ..\..\..\..\..\lib\Interop.XRAWFILE2Lib.dll "$(TargetDir)"</PostBuildEvent>
-    <PreBuildEvent>REM files.txt MultiAlignAnalysis_parameters.xml SYN_DATA02 SINGLE
-REM -plots  SYN_DATA02\SINGLE</PreBuildEvent>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
 </Project>

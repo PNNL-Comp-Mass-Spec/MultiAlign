@@ -12,7 +12,6 @@
         <converters:BoolListSizeConverter x:Key="ListSizeConverter"/>
         <converters:IntVisibilityConverter x:Key="IntVisibilityConverter"/>
         <converters:BoolVisibilityConverter x:Key="BoolVisibilityConverter"/>
-
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -82,7 +81,7 @@
                     <windows:ClusterControl
                         Margin="5,5,5,5"
                         x:Name="m_clusterControl"
-                        
+                        UsesDriftTime="{Binding Path=UsesDriftTime, NotifyOnSourceUpdated=True}"
                         Grid.Row="2"                    
                         Grid.Column="0"
                         Grid.ColumnSpan="3"
@@ -108,9 +107,10 @@
                 Header="MS/MS"
                 Width="{Binding Path=HasMsMs,
                                 Converter={StaticResource ResourceKey=IntVisibilityConverter}}"
-                Visibility="{Binding Path=HasMsMs,
-                                Converter={StaticResource ResourceKey=BoolVisibilityConverter}}"
+                Visibility="Collapsed"
                 >
+                <!--Visibility="{Binding Path=HasMsMs,
+                                Converter={StaticResource ResourceKey=BoolVisibilityConverter}}"-->
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
@@ -145,15 +145,13 @@
                 >
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="220" />
-                        <RowDefinition Height="220" />
-                        <RowDefinition Height="220" />
+                        <RowDefinition Height="*" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
 
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="220" />
-                        <ColumnDefinition Width="200" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                     
                     <WindowsFormsHost                 
@@ -201,7 +199,7 @@
                             TitleVisible="True" />
                     </WindowsFormsHost>
 
-                    <WindowsFormsHost                 
+                    <!--<WindowsFormsHost                 
                         Margin="5,5,5,5"
                         Grid.Row="1"
                         Grid.Column="0">
@@ -214,8 +212,8 @@
                             LegendVisible="False"
                             x:Name="m_clusterRatioRawPlot"
                             TitleVisible="True" />
-                    </WindowsFormsHost>
-                    <WindowsFormsHost                 
+                    </WindowsFormsHost>-->
+                    <!--<WindowsFormsHost                 
                         Margin="5,5,5,5"
                         Grid.Row="1"
                         Grid.Column="1">
@@ -229,9 +227,11 @@
                             DisplayRatio="True"
                             x:Name="m_clusterRatioPlot"
                             TitleVisible="True" />
-                    </WindowsFormsHost>
+                    </WindowsFormsHost>-->
                     <WindowsFormsHost                 
                         Margin="5,5,5,5"
+                        Visibility="{Binding Path=HasIdentifications,
+                                Converter={StaticResource ResourceKey=BoolVisibilityConverter}}"
                         Grid.Row="2"
                         Grid.Column="1">
                         <maCharts:GenericHistogram
@@ -259,6 +259,23 @@
                 >
                 <windows:DatasetGrid
                     x:Name="m_datasetsName"/>
+            </TabItem>
+            <TabItem
+                
+                Style="{DynamicResource ResourceKey=SimpleTabItem}"
+                Header="Advanced"                
+                >
+                <StackPanel>
+                    
+                    <GroupBox  Header="Visualization">
+                        <CheckBox
+                            IsChecked ="{Binding Path=UsesDriftTime, NotifyOnSourceUpdated=True, Mode=TwoWay}"
+                            Margin="5"
+                            >
+                            Show Ion Mobility Dimensions
+                        </CheckBox>
+                    </GroupBox>
+                </StackPanel>
             </TabItem>
         </TabControl>
     </Grid>

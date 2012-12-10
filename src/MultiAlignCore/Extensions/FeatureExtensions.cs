@@ -122,7 +122,7 @@ namespace MultiAlignCore.Extensions
             }
 
             return sicMap;
-        }        
+        }
         /// <summary>
         /// Creates SIC's mapped by charge state for the MS Features in the feature.
         /// </summary>
@@ -132,7 +132,7 @@ namespace MultiAlignCore.Extensions
         {
             Dictionary<int, List<MSFeatureLight>> chargeMap = feature.CreateChargeMap();
             Dictionary<int, List<XYZData>> sicMap = new Dictionary<int, List<XYZData>>();
-                        
+
             foreach (int charge in chargeMap.Keys)
             {
                 chargeMap[charge].Sort(delegate(MSFeatureLight x, MSFeatureLight y)
@@ -141,6 +141,28 @@ namespace MultiAlignCore.Extensions
                 }
                 );
                 List<XYZData> data = chargeMap[charge].ConvertAll<XYZData>(x => new XYZData(x.Scan, x.Abundance, x.Mz));
+                sicMap.Add(charge, data);
+            }
+            return sicMap;
+        }
+        /// <summary>
+        /// Creates SIC's mapped by charge state for the MS Features in the feature.
+        /// </summary>
+        /// <param name="feature"></param>
+        /// <returns></returns>
+        public static Dictionary<int, List<XYZData>> CreateChargeSICForMonoMass(this UMCLight feature)
+        {
+            Dictionary<int, List<MSFeatureLight>> chargeMap = feature.CreateChargeMap();
+            Dictionary<int, List<XYZData>> sicMap = new Dictionary<int, List<XYZData>>();
+
+            foreach (int charge in chargeMap.Keys)
+            {
+                chargeMap[charge].Sort(delegate(MSFeatureLight x, MSFeatureLight y)
+                {
+                    return x.Scan.CompareTo(y.Scan);
+                }
+                );
+                List<XYZData> data = chargeMap[charge].ConvertAll<XYZData>(x => new XYZData(x.Scan, x.Abundance, x.MassMonoisotopicAligned));
                 sicMap.Add(charge, data);
             }
             return sicMap;

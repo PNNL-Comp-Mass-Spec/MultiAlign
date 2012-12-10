@@ -374,10 +374,6 @@ namespace MultiAlignCore.IO.Parameters
 
                 using (XmlTextWriter writer = new XmlTextWriter(File.CreateText(fName)))
                 {
-
-                    //StreamWriter sw = File.CreateText (fName);
-                    //sw.Write(doc.InnerXml);
-                    //sw.Close();
                     writer.Formatting = Formatting.Indented;
                     doc.Save(writer);
                     writer.Close();

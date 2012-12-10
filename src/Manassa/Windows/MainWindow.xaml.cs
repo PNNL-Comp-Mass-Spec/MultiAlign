@@ -159,6 +159,15 @@ namespace Manassa
         }
         private void LoadMultiAlignFile(RecentAnalysis analysis)
         {
+            if (analysis == null)
+            {
+                Status = "Cannot open analysis file.";
+                return;
+            }
+
+            StateModerator.CurrentViewState = ViewState.OpenView; 
+            System.Windows.Forms.Application.DoEvents();
+
             LoadMultiAlignFile(analysis.Path);
 
             string version  = MultiAlignCore.ApplicationUtility.GetEntryAssemblyData();
@@ -299,6 +308,7 @@ namespace Manassa
         }
         void m_gettingStarted_RecentAnalysisSelected(object sender, Windows.OpenAnalysisArgs e)
         {
+
             LoadMultiAlignFile(e.AnalysisData);
             CurrentWorkspace.AddAnalysis(e.AnalysisData);
         }
@@ -362,6 +372,10 @@ namespace Manassa
         private void OpenExisting_Executed(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
         {
             OpenExistingAnalysis();
+        }
+        private void OpenRecent_Executed(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
+        {
+            LoadMultiAlignFile(e.Parameter as RecentAnalysis );
         }
         #endregion        
     }

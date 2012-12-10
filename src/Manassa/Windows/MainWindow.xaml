@@ -11,6 +11,7 @@
     <Window.CommandBindings>
         <CommandBinding Command="New" Executed="NewAnalysis_Executed"></CommandBinding>
         <CommandBinding Command="Open" Executed="OpenExisting_Executed"></CommandBinding>
+        <CommandBinding Command="Favorites" Executed="OpenRecent_Executed"></CommandBinding>
         <CommandBinding Command="BrowseHome" Executed="ShowGettingStarted_Executed"></CommandBinding>
         <CommandBinding Command="FirstPage" Executed="CurrentAnalysis_Executed"></CommandBinding>                        
     </Window.CommandBindings>
@@ -133,6 +134,7 @@
                 Visibility="Hidden"
                 >                
             </TabItem>
+            
         </TabControl>            
         <StatusBar 
                 Grid.Row="2"

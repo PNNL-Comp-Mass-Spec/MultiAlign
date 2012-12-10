@@ -149,14 +149,16 @@ namespace MultiAlignCustomControls.Charting
             List<float> scanList        = new List<float>();
             Color color                 = Color.Orange;
             int size                    = mint_pt_size*3;
+
+            string name = string.Format("Mass Tag {0}", matchedTag.Id);
             if (isAlternative)
             {
+                name = string.Format("Nearby Tag {0}", matchedTag.Id);
                 color = Color.Black;
                 size += 2;
             }
             clsShape shape              = new DiamondShape(size, isAlternative); 
             clsPlotParams plotParams    = new clsPlotParams(shape, color);
-
              massList.Add(Convert.ToSingle(tag.MassMonoisotopic));            
             if (IsDriftTimeXAxis)
             {
@@ -246,11 +248,13 @@ namespace MultiAlignCustomControls.Charting
 
             float[] clusterMass = new float[1];
             float[] clusterScan = new float[1];
-            Color clusterColor  = Color.Red;
+            Color clusterColor =  Color.FromArgb(200, Color.Red);
             bool isHollow = isAlternate;
+            string name = string.Format("Matching Cluster {0}", cluster.ID); 
             if (isAlternate)
             {
-                clusterColor = Color.Lime;
+                name = string.Format("Nearby cluster {0}", cluster.ID);
+                clusterColor = Color.FromArgb(200, Color.Lime);
             }            
 
             clusterMass[0] = Convert.ToSingle(cluster.MassMonoisotopic);

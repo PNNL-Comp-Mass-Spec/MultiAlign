@@ -107,7 +107,10 @@ namespace MultiAlignCore.IO.MTDB
                 List<Protein> newProteins = new List<Protein>();
                 foreach (MassTagToProteinMap mtMap in matches)
                 {
-                    newProteins.Add(proteinMap[mtMap.ProteinId]);
+                    if (proteinMap.ContainsKey(mtMap.ProteinId))
+                    {
+                        newProteins.Add(proteinMap[mtMap.ProteinId]);
+                    }
                 }
                 massTagProteinMap[id].AddRange(newProteins);
             }

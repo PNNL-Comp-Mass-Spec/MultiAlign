@@ -7,6 +7,8 @@ using Manassa.Workspace;
 using MultiAlignCore.IO;
 using System.Collections.ObjectModel;
 using MultiAlignCore.IO.Parameters;
+using System.Xml;
+using System.IO;
 
 namespace Manassa.IO
 {
@@ -16,30 +18,29 @@ namespace Manassa.IO
         public ManassaWorkspace Read(string path)
         {
             ManassaWorkspace workspace  = new ManassaWorkspace();
-            MetaData data               = new MetaData("MultiAlignWorkspace");
-            data.ReadFile(path);
-
-            workspace.RecentAnalysis    = LoadAnalysis(data);
-
+                        
+            XmlDocument document = new XmlDocument();
+            document.Load(path);
+                
+            XmlNode element = document.SelectSingleNode("MultiAlignWorkspace");
+            XmlNode data    = element.SelectSingleNode("RecentAnalysis");
+            workspace.RecentAnalysis    = LoadRecent(data);
+                    
             return workspace;
         }
 
-        private ObservableCollection<RecentAnalysis> LoadAnalysis(MetaData data)
+        private ObservableCollection<RecentAnalysis> LoadRecent(XmlNode data)
         {
             ObservableCollection<RecentAnalysis> allAnalysis = new ObservableCollection<RecentAnalysis>();
-
-            MetaNode parentNode = data.OpenChild("RecentAnalysis", false);
-            int totalAnalysis   = parentNode.ChildCount();
-            for (int i = 0; i < totalAnalysis; i++)
+            foreach (XmlNode node in data.ChildNodes)
             {
-                MetaNode node = parentNode.OpenChildFromArray("Analysis", i);
-                RecentAnalysis analysis = new RecentAnalysis();
-                string analysisName = node.GetValue("Name").ToString();
-                string analysisPath = node.GetValue("Path").ToString();
-
-                analysis.Name = analysisName;
-                analysis.Path = analysisPath;
-                allAnalysis.Add(analysis);
+                if (node.Name == "Analysis")
+                {
+                    RecentAnalysis analysis = new RecentAnalysis();
+                    analysis.Name = node.Attributes.GetNamedItem("Name").ToString();
+                    analysis.Path = node.Attributes.GetNamedItem("Path").ToString();
+                    allAnalysis.Add(analysis);
+                }
             }
             return allAnalysis;
         }

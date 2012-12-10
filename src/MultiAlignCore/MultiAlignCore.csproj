@@ -181,6 +181,7 @@
     <Compile Include="Data\AnalysisUtils.cs" />
     <Compile Include="Data\IFeatureMap.cs" />
     <Compile Include="Data\MassTagLightCacheManager.cs" />
+    <Compile Include="Data\ProteinToMassTags.cs" />
     <Compile Include="Data\UMCClusterLightCacheManager.cs" />
     <Compile Include="Data\DataSummaryAttribute.cs" />
     <Compile Include="Data\Features\FeatureLoadingData.cs" />

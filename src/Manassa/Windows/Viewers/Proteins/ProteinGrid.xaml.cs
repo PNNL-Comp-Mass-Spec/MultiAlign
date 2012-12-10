@@ -24,7 +24,7 @@ namespace Manassa.Windows
     /// </summary>
     public partial class ProteinGrid : UserControl
     {
-        private List<Protein> m_proteins;
+        private List<ProteinToMassTags> m_proteins;
 
         /// <summary>
         /// Constructor.
@@ -32,13 +32,13 @@ namespace Manassa.Windows
         public ProteinGrid()
         {
             InitializeComponent();
-            Proteins = new List<Protein>();
+            Proteins = new List<ProteinToMassTags>();
         }
 
         /// <summary>
         /// Gets or sets the clusters used in the analysis.
         /// </summary>
-        public List<Protein> Proteins
+        public List<ProteinToMassTags> Proteins
         {
             get
             {
@@ -54,18 +54,18 @@ namespace Manassa.Windows
             }
         }
 
-        public Protein SelectedProtein
+        public ProteinToMassTags SelectedProtein
         {
-            get { return (Protein)GetValue(SelectedMassTagProperty); }
+            get { return (ProteinToMassTags)GetValue(SelectedMassTagProperty); }
             set { SetValue(SelectedMassTagProperty, value); }
         }        
         public static readonly DependencyProperty SelectedMassTagProperty =
-            DependencyProperty.Register("SelectedProtein", typeof(Protein), typeof(ProteinGrid)); 
+            DependencyProperty.Register("SelectedProtein", typeof(ProteinToMassTags), typeof(ProteinGrid)); 
 
        
         private void m_dataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            SelectedProtein = m_dataGrid.SelectedItem as Protein;
+            SelectedProtein = m_dataGrid.SelectedItem as ProteinToMassTags;
         }    
     }
 }

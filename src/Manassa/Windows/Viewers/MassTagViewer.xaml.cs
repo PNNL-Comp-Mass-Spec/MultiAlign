@@ -29,12 +29,10 @@ namespace Manassa.Windows
     public partial class MassTagViewer : UserControl
     {
         private MassTagDatabase m_database;
-        private bool m_areTagsMatched;
 
         public MassTagViewer()
         {
             InitializeComponent();
-            m_areTagsMatched = false;
         }
 
         public MassTagDatabase Database
@@ -48,25 +46,29 @@ namespace Manassa.Windows
                 m_database = value;
 
                 if (value != null)
-                {                    
-                    m_proteinGrid.Proteins      = value.AllProteins;
-                    m_matchedProteins.Proteins  = value.MatchedProteins;                    
+                {                               
+                    //m_proteinGrid.Proteins      = value.AllProteins;
+                    //m_matchedProteins.Proteins  = value.MatchedProteins;
+
+                    if (value.AllProteins     != null) AllProteinsLabel.Content        = value.AllProteins.Count.ToString();
+                    if (value.MatchedProteins != null) MatchingProteinsLabel.Content   = value.MatchedProteins.Count.ToString();
+
                     m_massTagPlot.AddMassTags(value.MassTags);
                     m_massTagPlot.AutoViewPort();
                 }                
             }
-        }
-        public bool AreTagsMatched
+        }                
+
+
+        public bool UseDriftTime
         {
-            get
-            {
-                return m_areTagsMatched;
-            }
-            set
-            {
-                m_areTagsMatched = value;
-            }
+            get { return (bool)GetValue(UseDriftTimeProperty); }
+            set { SetValue(UseDriftTimeProperty, value); }
         }
+
+        // Using a DependencyProperty as the backing store for UseDriftTime.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty UseDriftTimeProperty =
+            DependencyProperty.Register("UseDriftTime", typeof(bool), typeof(MassTagViewer), new UIPropertyMetadata(false));
 
 
 

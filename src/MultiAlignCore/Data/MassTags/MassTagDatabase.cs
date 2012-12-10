@@ -22,11 +22,13 @@ namespace MultiAlignCore.Data.MassTags
             AllProteins = new List<Protein>();
             MatchedProteins = new List<Protein>();
             Proteins    = new Dictionary<int, List<Protein>>();
+            ProteinsToMassTags = new Dictionary<int, List<MassTagLight>>();
             Name        = "Unknown";
         }
 
 
         #region Properties
+
         /// <summary>
         /// Set the name of the mass tag database.
         /// </summary>
@@ -67,6 +69,11 @@ namespace MultiAlignCore.Data.MassTags
             get;
             private set;
         }
+        public Dictionary<int, List<MassTagLight>> ProteinsToMassTags
+        {
+            get;
+            private set;
+        }
         /// <summary>
         /// Gets whether the database contains drift time or not.
         /// </summary>
@@ -97,12 +104,20 @@ namespace MultiAlignCore.Data.MassTags
         /// <param name="massTags"></param>
         public void AddMassTagsAndProteins(List<MassTagLight>               massTags,
                                             Dictionary<int, List<Protein>>  massTagToProteinMap)
-        {            
+        {
+            
             MassTags.AddRange(massTags);
+
+            Dictionary<int, MassTagLight> massTagMap = new Dictionary<int, MassTagLight>();
+            massTags.ForEach(x => massTagMap.Add(x.ID, x));
+
+            ProteinsToMassTags                  = new Dictionary<int, List<MassTagLight>>();
             Dictionary<int, Protein> proteinMap = new Dictionary<int, Protein>();
             foreach (int key in massTagToProteinMap.Keys)
             {
-                List<Protein> proteins = massTagToProteinMap[key];
+
+                List<Protein> proteins  = massTagToProteinMap[key];
+                MassTagLight tag        = massTagMap[key];
 
                 foreach (Protein p in proteins)
                 {
@@ -111,9 +126,16 @@ namespace MultiAlignCore.Data.MassTags
                         proteinMap.Add(p.RefID, p);
                         MatchedProteins.Add(p);
                     }
+
+                    if (!ProteinsToMassTags.ContainsKey(p.ProteinID))
+                    {
+                        ProteinsToMassTags.Add(p.ProteinID, new List<MassTagLight>());
+                    }
+                    ProteinsToMassTags[p.ProteinID].Add(tag);
                 }
             }
-            Proteins = massTagToProteinMap;
+
+            Proteins                    = massTagToProteinMap;
 
             DetermineIfContainsDriftTime(massTags);
         }

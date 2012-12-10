@@ -3,23 +3,57 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              mc:Ignorable="d" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             d:DesignHeight="133" d:DesignWidth="395">
+             d:DesignHeight="600" d:DesignWidth="395">
     <Grid
         Background="White"
         Margin="5">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        
+        <Image
+            Width="32"
+            Grid.Column="0"
+            VerticalAlignment="Bottom"
+            HorizontalAlignment="Center" Source="/MultiAlign;component/Resources/molecule.png">
+
+        </Image>
+        <Image
+            Width="32"
+            Grid.Column="1"
+            VerticalAlignment="Bottom"
+            HorizontalAlignment="Center" Source="/MultiAlign;component/Resources/MainIcon.png">
+
+        </Image>
+        <Image
+            Height="32"
+            Grid.Column="2"
+            VerticalAlignment="Bottom"
+            HorizontalAlignment="Center" Source="/MultiAlign;component/Resources/AlignmentIcon.png">
+
+        </Image>
+        <Image
+            Height="32"
+            Grid.Column="3"
+            VerticalAlignment="Bottom"
+            HorizontalAlignment="Center" Source="/MultiAlign;component/Resources/manassaMain.png">
+
+        </Image>
         <Label     
             FontSize="24"
             FontWeight="Bold"
+            Margin="5"
+            VerticalAlignment="Top"
             HorizontalContentAlignment="Center"
             VerticalContentAlignment="Center"
             Grid.Row="1"
+            Grid.ColumnSpan="4"
             Grid.Column="0">
             Loading...
         </Label>

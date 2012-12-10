@@ -32,6 +32,8 @@ namespace Manassa.Windows
         {
             InitializeComponent();
 
+            DataContext = this;
+
             m_chartSynchMap = new Dictionary<ctlChartBase, List<ChartSynchData>>();
 
             FeatureFindingTolerances                = new FeatureTolerances();
@@ -159,9 +161,7 @@ namespace Manassa.Windows
                 MassTagToCluster tag = e.NewValue as MassTagToCluster;
                 if (tag == null)
                     return;
-
                 
-
                 lock (thisSender.Providers.Synch)
                 {
                     foreach (UMCClusterLightMatched cluster in tag.Matches)
@@ -169,7 +169,8 @@ namespace Manassa.Windows
                         cluster.Cluster.ReconstructUMCCluster(thisSender.Providers, false, false);
                     }
                 }
-
+                thisSender.ProteinDetailGrid.Proteins   = tag.MatchingProteins;
+                thisSender.MassTagDetails.MassTag       = tag;
                 thisSender.UpdatePlotsWithClusterData(tag);
             }
         }

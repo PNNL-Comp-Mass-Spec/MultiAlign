@@ -22,11 +22,11 @@
                 CanUserReorderColumns="True"
                 CanUserSortColumns="True"            
                 AutoGenerateColumns="False"
+            
                 Grid.ColumnSpan="6"
                 IsTextSearchEnabled="True"
                 RowDetailsVisibilityMode="{Binding IsChecked, ElementName=m_detailsChecked, Converter={StaticResource boolConverter}}"
-                SelectionChanged="m_dataGrid_SelectionChanged"
-            >
+                SelectionChanged="m_dataGrid_SelectionChanged" SelectionMode="Single">
             <DataGrid.CellStyle>
                 <Style TargetType="DataGridCell">
                     <Style.Triggers>

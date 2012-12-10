@@ -28,10 +28,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>x64</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>bin\x86\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -75,6 +75,9 @@
     <Compile Include="Converters\BoolVisibilityConverter.cs" />
     <Compile Include="Converters\BoolListSizeConverter.cs" />
     <Compile Include="Converters\AnalysisStepVisibilityConverter.cs" />
+    <Compile Include="Converters\BoolWidthConverter.cs" />
+    <Compile Include="Converters\DoubleToStringConverter.cs" />
+    <Compile Include="Converters\IntToStringConverter.cs" />
     <Compile Include="Converters\ViewStateVisibilityConverter.cs" />
     <Compile Include="Converters\ViewStateIsSelectedConverter.cs" />
     <Compile Include="Converters\IntVisibilityConverter.cs" />
@@ -102,163 +105,105 @@
     <Compile Include="IO\ManassaWorkspaceWriter.cs" />
     <Compile Include="IO\DatasetSearcher.cs" />
     <Compile Include="IO\ManassaWorkspaceReader.cs" />
-    <Compile Include="Windows\AlignmentPlotView.xaml.cs">
+    <Compile Include="Windows\Plots\AlignmentPlotView.xaml.cs">
       <DependentUpon>AlignmentPlotView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\ClustersPlotView.xaml.cs">
+    <Compile Include="Windows\Plots\ClustersPlotView.xaml.cs">
       <DependentUpon>ClustersPlotView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\LoadingAnalysisView.xaml.cs">
-      <DependentUpon>LoadingAnalysisView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\FeaturePlotView.xaml.cs">
+    <Compile Include="Windows\Plots\FeaturePlotView.xaml.cs">
       <DependentUpon>FeaturePlotView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\GettingStarted.xaml.cs">
+    <Compile Include="Windows\Viewers\AnalysisView.xaml.cs">
+      <DependentUpon>AnalysisView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Viewers\Clusters\ClusterControl.xaml.cs">
+      <DependentUpon>ClusterControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Viewers\Clusters\ClusterGrid.xaml.cs">
+      <DependentUpon>ClusterGrid.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Viewers\Clusters\ClusterToMassTagGrid.xaml.cs">
+      <DependentUpon>ClusterToMassTagGrid.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Viewers\Datasets\DatasetInformationView.xaml.cs">
+      <DependentUpon>DatasetInformationView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Viewers\Datasets\DatasetListBox.xaml.cs">
+      <DependentUpon>DatasetListBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Viewers\Datasets\DatasetsGrid.xaml.cs">
+      <DependentUpon>DatasetsGrid.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Viewers\Features\FeatureGrid.xaml.cs">
+      <DependentUpon>FeatureGrid.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Viewers\GettingStarted.xaml.cs">
       <DependentUpon>GettingStarted.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Viewers\LoadingAnalysisView.xaml.cs">
+      <DependentUpon>LoadingAnalysisView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Viewers\MassTags\MassTagControl.xaml.cs">
+      <DependentUpon>MassTagControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Viewers\MassTags\MassTagDetail.xaml.cs">
+      <DependentUpon>MassTagDetail.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Viewers\MassTags\MassTagGrid.xaml.cs">
+      <DependentUpon>MassTagGrid.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Viewers\MassTagViewer.xaml.cs">
+      <DependentUpon>MassTagViewer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Viewers\MsMsViewer.xaml.cs">
+      <DependentUpon>MsMsViewer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Viewers\Proteins\ProteinDetail.xaml.cs">
+      <DependentUpon>ProteinDetail.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Viewers\Proteins\ProteinGrid.xaml.cs">
+      <DependentUpon>ProteinGrid.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Viewers\Proteins\ProteinListBox.xaml.cs">
+      <DependentUpon>ProteinListBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Viewers\Spectra\MsMsGrid.xaml.cs">
+      <DependentUpon>MsMsGrid.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Viewers\StartWindow.xaml.cs">
+      <DependentUpon>StartWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Wizard\AnalysisNaming.xaml.cs">
+      <DependentUpon>AnalysisNaming.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Wizard\AnalysisOptionsView.xaml.cs">
+      <DependentUpon>AnalysisOptionsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Wizard\AnalysisRunningControl.xaml.cs">
+      <DependentUpon>AnalysisRunningControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Wizard\DatasetSelection.xaml.cs">
+      <DependentUpon>DatasetSelection.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Wizard\PerformAnalysisControl.xaml.cs">
+      <DependentUpon>PerformAnalysisControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Wizard\SelectBaselinesAndOptions.xaml.cs">
+      <DependentUpon>SelectBaselinesAndOptions.xaml</DependentUpon>
     </Compile>
     <Compile Include="Workspace\Workspace.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Settings.cs" />
-    <Compile Include="Windows\AnalysisNaming.xaml.cs">
-      <DependentUpon>AnalysisNaming.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\AnalysisOptionsView.xaml.cs">
-      <DependentUpon>AnalysisOptionsView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\ClusterToMassTagGrid.xaml.cs">
-      <DependentUpon>ClusterToMassTagGrid.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\AnalysisRunningControl.xaml.cs">
-      <DependentUpon>AnalysisRunningControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\DatasetListBox.xaml.cs">
-      <DependentUpon>DatasetListBox.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\DatasetSelection.xaml.cs">
-      <DependentUpon>DatasetSelection.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\MassTagControl.xaml.cs">
-      <DependentUpon>MassTagControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\PerformAnalysisControl.xaml.cs">
-      <DependentUpon>PerformAnalysisControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\ProteinGrid.xaml.cs">
-      <DependentUpon>ProteinGrid.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\DatasetInformationView.xaml.cs">
-      <DependentUpon>DatasetInformationView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\DatasetsGrid.xaml.cs">
-      <DependentUpon>DatasetsGrid.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\MsMsGrid.xaml.cs">
-      <DependentUpon>MsMsGrid.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\FeatureGrid.xaml.cs">
-      <DependentUpon>FeatureGrid.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\MassTagGrid.xaml.cs">
-      <DependentUpon>MassTagGrid.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\MassTagViewer.xaml.cs">
-      <DependentUpon>MassTagViewer.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\MsMsViewer.xaml.cs">
-      <DependentUpon>MsMsViewer.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\SelectBaselinesAndOptions.xaml.cs">
-      <DependentUpon>SelectBaselinesAndOptions.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\StartWindow.xaml.cs">
-      <DependentUpon>StartWindow.xaml</DependentUpon>
-    </Compile>
-    <Page Include="Windows\AlignmentPlotView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Windows\AnalysisNaming.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Windows\AnalysisOptionsView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Windows\AnalysisView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Windows\ClusterControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Windows\ClusterGrid.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Windows\ClustersPlotView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Windows\ClusterToMassTagGrid.xaml">
+    <Page Include="Windows\Plots\AlignmentPlotView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\AnalysisRunningControl.xaml">
+    <Page Include="Windows\Plots\ClustersPlotView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\LoadingAnalysisView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Windows\DatasetListBox.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Windows\DatasetSelection.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Windows\FeaturePlotView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Windows\GettingStarted.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Windows\MassTagControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Windows\PerformAnalysisControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Windows\ProteinGrid.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Windows\DatasetInformationView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Windows\DatasetsGrid.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Windows\MsMsGrid.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Windows\FeatureGrid.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Windows\MassTagGrid.xaml">
+    <Page Include="Windows\Plots\FeaturePlotView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -270,34 +215,113 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Windows\AnalysisView.xaml.cs">
-      <DependentUpon>AnalysisView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\ClusterControl.xaml.cs">
-      <DependentUpon>ClusterControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\ClusterGrid.xaml.cs">
-      <DependentUpon>ClusterGrid.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Windows\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Windows\MassTagViewer.xaml">
+    <Page Include="Windows\Viewers\AnalysisView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\Viewers\Clusters\ClusterControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\Viewers\Clusters\ClusterGrid.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\Viewers\Clusters\ClusterToMassTagGrid.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\Viewers\Datasets\DatasetInformationView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\Viewers\Datasets\DatasetListBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\Viewers\Datasets\DatasetsGrid.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\Viewers\Features\FeatureGrid.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\Viewers\GettingStarted.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\Viewers\LoadingAnalysisView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\Viewers\MassTags\MassTagControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\Viewers\MassTags\MassTagDetail.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Windows\MsMsViewer.xaml">
+    <Page Include="Windows\Viewers\MassTags\MassTagGrid.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\Viewers\MassTagViewer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\Viewers\MsMsViewer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\Viewers\Proteins\ProteinDetail.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\Viewers\Proteins\ProteinGrid.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\Viewers\Proteins\ProteinListBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Windows\SelectBaselinesAndOptions.xaml">
-      <SubType>Designer</SubType>
+    <Page Include="Windows\Viewers\Spectra\MsMsGrid.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\StartWindow.xaml">
-      <SubType>Designer</SubType>
+    <Page Include="Windows\Viewers\StartWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\Wizard\AnalysisNaming.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\Wizard\AnalysisOptionsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\Wizard\AnalysisRunningControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\Wizard\DatasetSelection.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\Wizard\PerformAnalysisControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\Wizard\SelectBaselinesAndOptions.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>

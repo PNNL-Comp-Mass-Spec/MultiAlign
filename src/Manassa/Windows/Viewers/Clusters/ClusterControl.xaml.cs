@@ -75,6 +75,20 @@ namespace Manassa.Windows
 
         }
 
+
+
+        public bool UsesDriftTime
+        {
+            get { return (bool)GetValue(UsesDriftTimeProperty); }
+            set { SetValue(UsesDriftTimeProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for UsesDriftTime.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty UsesDriftTimeProperty =
+            DependencyProperty.Register("UsesDriftTime", typeof(bool), typeof(ClusterControl), new UIPropertyMetadata(false));
+
+
+
         private void SynchViewports(ctlChartBase sender, ChartSynchType synchType, params ctlChartBase[] targets)
         {
             sender.ViewPortChanged += new ViewPortChangedHandler(sender_ViewPortChanged);
@@ -350,8 +364,7 @@ namespace Manassa.Windows
             m_driftChart.MainCluster        = matchedCluster;
             m_profileChart.MainCluster      = matchedCluster;
             m_profileChart.UpdateCharts(true);
-
-            m_clusterName.Content           = string.Format("Cluster: {0}", cluster.ID);
+            
             m_featureGrid.Features          = cluster.Features;
 
             // Load the matching data.

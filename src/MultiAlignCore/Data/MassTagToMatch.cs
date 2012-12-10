@@ -5,6 +5,7 @@ using System.Text;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Data.MassTags;
 using MultiAlignCore.Data.Features;
+using PNNLOmics.Data;
 
 namespace MultiAlignCore.Data
 {
@@ -16,8 +17,9 @@ namespace MultiAlignCore.Data
     {
         public MassTagToCluster()
         {
-            Matches = new List<UMCClusterLightMatched>();
-            MassTag = null;
+            Matches          = new List<UMCClusterLightMatched>();
+            MatchingProteins = new List<ProteinToMassTags>();
+            MassTag          = null;
         }
 
         public MassTagLight MassTag
@@ -27,6 +29,11 @@ namespace MultiAlignCore.Data
         }
 
         public List<UMCClusterLightMatched> Matches
+        {
+            get;
+            set;
+        }
+        public List<ProteinToMassTags> MatchingProteins
         {
             get;
             set;

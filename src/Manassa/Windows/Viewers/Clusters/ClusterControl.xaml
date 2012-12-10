@@ -7,10 +7,16 @@
              xmlns:pnnlCharts="clr-namespace:PNNLControls.Drawing.Charting;assembly=PNNLControls"
              xmlns:maCharts="clr-namespace:MultiAlignCustomControls.Charting;assembly=MultiAlignCustomControls"
              xmlns:maWindows="clr-namespace:Manassa.Windows"
+             xmlns:converters="clr-namespace:Manassa.Converters"
              mc:Ignorable="d"          
              x:Name="myControl"
              d:DesignHeight="382" d:DesignWidth="838">
-                 
+
+    <UserControl.Resources>
+        <converters:BoolVisibilityConverter x:Key="UseDriftTimeConverter" FalseVisibility="Collapsed"></converters:BoolVisibilityConverter>
+        <converters:BoolWidthConverter x:Key="UseDriftTimeWidthConverter" ></converters:BoolWidthConverter>
+    </UserControl.Resources>
+
     <Grid 
         Margin="4">
         <Grid.ColumnDefinitions>
@@ -22,14 +28,6 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-
-        <Label 
-            Content="Cluster" 
-            Grid.Row="0"
-            Grid.Column="0"
-            x:Name="m_clusterName">            
-        </Label>
-
         <!-- Abundances -->
         <TabControl
             Grid.Column="0"
@@ -45,7 +43,7 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="{Binding Path=UsesDriftTime, Converter={StaticResource ResourceKey=UseDriftTimeWidthConverter}}"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>                            
@@ -67,6 +65,7 @@
                     </WindowsFormsHost>
                     <WindowsFormsHost
                         Margin="1,1,1,1"
+                        Visibility="{Binding Path=UsesDriftTime , Converter={StaticResource ResourceKey=UseDriftTimeConverter}}"
                         Grid.Row="0"                        
                         Grid.Column="4">
                         <maCharts:SingleClusterChart
@@ -89,6 +88,7 @@
                             Header="Nearby Clusters"
                             Margin="1,1,1,1">
                             <maWindows:ClusterGrid
+                                UsesDriftTime="{Binding Path=UsesDriftTime, NotifyOnSourceUpdated=True}"
                                 x:Name="m_clusterGrid" />
                         </TabItem>
                         <TabItem

@@ -8,6 +8,8 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <converters:BooleanToDataGridVisibilityModeConverter x:Key="boolConverter"/>
+        <converters:BoolVisibilityConverter x:Key="UseDriftTimeConverter" FalseVisibility="Collapsed"></converters:BoolVisibilityConverter>
+        <converters:BoolWidthConverter x:Key="UseDriftTimeWidthConverter" ></converters:BoolWidthConverter>
     </UserControl.Resources>
     <Grid>
         <DataGrid
@@ -53,7 +55,9 @@
                 <DataGridTextColumn         Header="ID"                 CanUserSort="True"     Binding="{Binding Cluster.ID}"                   IsReadOnly="True"/>
                 <DataGridTextColumn         Header="Monoisotopic Mass"  CanUserSort="True"     Binding="{Binding Cluster.MassMonoisotopic}"     IsReadOnly="True"/>
                 <DataGridTextColumn         Header="NET"                CanUserSort="True"     Binding="{Binding Cluster.RetentionTime}"        IsReadOnly="True"/>
-                <DataGridTextColumn         Header="Drift Time"         CanUserSort="True"     Binding="{Binding Cluster.DriftTime}"            IsReadOnly="True"/>
+                <DataGridTextColumn         Header="Drift Time"      
+                                            Visibility="{Binding Path=UsesDriftTime, Converter={StaticResource ResourceKey=UseDriftTimeConverter}}"
+                                            CanUserSort="True"     Binding="{Binding Cluster.DriftTime}"            IsReadOnly="True"/>
                 <DataGridTextColumn         Header="Charge"             CanUserSort="True"     Binding="{Binding Cluster.ChargeState}"          IsReadOnly="True"/>
                 <DataGridTextColumn         Header="Dataset Members"    CanUserSort="True"     Binding="{Binding Cluster.DatasetMemberCount}"   IsReadOnly="True"/>
                 <DataGridTextColumn         Header="Total Members"      CanUserSort="True"     Binding="{Binding Cluster.MemberCount}"          IsReadOnly="True"/>

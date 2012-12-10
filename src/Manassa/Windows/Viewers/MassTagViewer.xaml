@@ -5,8 +5,12 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:maWindows="clr-namespace:Manassa.Windows"
              xmlns:maCharts="clr-namespace:MultiAlignCustomControls.Charting;assembly=MultiAlignCustomControls"
+             xmlns:converters="clr-namespace:Manassa.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="598" d:DesignWidth="920">
+    <UserControl.Resources>
+        <converters:IntToStringConverter x:Key="IntToStringConverter" />
+    </UserControl.Resources>
     <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
@@ -48,7 +52,7 @@
                             DockPanel.Dock="Top">
                             <Label  Foreground="Gray">Number of Mass Tags: </Label>
                             <Label
-                                Content="{Binding Path=MatchedTags}">                            
+                                Content="{Binding Path=MatchedTags, Converter={StaticResource  ResourceKey=IntToStringConverter}}">                            
                             </Label>
                         </WrapPanel>
                         <maWindows:MassTagGrid
@@ -61,17 +65,40 @@
                     
                     Style="{DynamicResource ResourceKey=SimpleTabItem}"
                     Header="All Proteins">
+                <DockPanel>
+                    <WrapPanel
+                            HorizontalAlignment="Right"
+                            DockPanel.Dock="Top">
+                        <Label  Foreground="Gray">Number of Proteins:</Label>
+                        <Label
+                               x:Name="AllProteinsLabel">
+                        </Label>
+                    </WrapPanel>
+                    
                     <maWindows:ProteinGrid
                         x:Name="m_proteinGrid"            
                         />
-                </TabItem>
+                </DockPanel>
+            </TabItem>
                 <TabItem
                     
                     Style="{DynamicResource ResourceKey=SimpleTabItem}"
                     Header="Matched Proteins">
+                <DockPanel>
+                    <WrapPanel
+                            HorizontalAlignment="Right"
+                            DockPanel.Dock="Top">
+                        <Label  Foreground="Gray">Number of Matching Proteins:</Label>
+                        <Label
+                               x:Name="MatchingProteinsLabel">
+                        </Label>
+                    </WrapPanel>
+
+                    
                     <maWindows:ProteinGrid
                         x:Name="m_matchedProteins"            
                         />
+                </DockPanel>
                 </TabItem>
             </TabControl>
             <TabControl                
@@ -114,11 +141,25 @@
             </TabItem>
         </TabControl>
 
-            <maWindows:MassTagControl
+        <TabControl            
                 Grid.Row="2"
                 Grid.Column="0"
                 Grid.ColumnSpan="3"
+            >
+
+            <TabItem                   
+                    Width="200"
+                    Style="{DynamicResource ResourceKey=SimpleTabItem}"
+                    Header="Selected Mass Tag Detail">
+                <maWindows:MassTagControl
                 x:Name="m_massTagDisplay"
-                MassTag="{Binding Mode=OneWay, ElementName=m_massTagGrid, Path=SelectedTag}"/>                                        
+                MassTag="{Binding Mode=OneWay, ElementName=m_massTagGrid, Path=SelectedTag}"/>
+            </TabItem>
+            <TabItem                
+                    Width="200"
+                    Style="{DynamicResource ResourceKey=SimpleTabItem}"
+                    Header="Selected Protein Detail">                    
+            </TabItem>
+        </TabControl>
     </Grid>
 </UserControl>

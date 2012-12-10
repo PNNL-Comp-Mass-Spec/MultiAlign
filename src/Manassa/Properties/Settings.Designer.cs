@@ -72,7 +72,7 @@ namespace Manassa.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("manassaworkspace.xml")]
+        [global::System.Configuration.DefaultSettingValueAttribute("workspace.xml")]
         public string WorkspaceFile {
             get {
                 return ((string)(this["WorkspaceFile"]));

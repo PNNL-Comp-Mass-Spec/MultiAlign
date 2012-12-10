@@ -138,7 +138,21 @@ namespace MultiAlignCore.IO.MTDB
 
         //    return map;
         //}
-        
+        private void GetValue(IDataReader reader, string name, ref double value)
+        {
+            if (reader[name] != DBNull.Value)
+                value = Convert.ToDouble(reader[name]);
+        }
+        private void GetValue(IDataReader reader, string name, ref int value)
+        {
+            if (reader[name] != DBNull.Value)
+                value = Convert.ToInt32(reader[name]);
+        }
+        private void GetValue(IDataReader reader, string name, ref string value)
+        {
+            if (reader[name] != DBNull.Value)
+                value = Convert.ToString(reader[name]);
+        }
         protected override Dictionary<int, List<Protein>> LoadProteins()
         {
 			Dictionary<int, List<Protein>> massTagToProtein = new Dictionary<int,List<Protein>>();									
@@ -156,20 +170,23 @@ namespace MultiAlignCore.IO.MTDB
                         {					        
 					        if (reader["Mass_Tag_ID"] != System.DBNull.Value) 
 					        {
-						        int     id          = Convert.ToInt32(reader["Mass_Tag_ID"]); 
-						        string  refName     = "";                                
+						        int     id          = Convert.ToInt32(reader["Mass_Tag_ID"]); 						                           
 						        int     proteinId   = -1; 				
 		                        int     refID       = -1;
                                 string  description = "";
+                                string  proteinName = "";
+                                string  proteinSequence = "";
 
-						        if (reader["Ref_ID"] != System.DBNull.Value)        refID           = Convert.ToInt32(reader["Ref_ID"]);
-                                if (reader["Description"] != System.DBNull.Value) refName           = reader["Description"].ToString();
-                                if (reader["Protein"] != System.DBNull.Value) description           = reader["Protein"].ToString();
-                                if (reader["External_Protein_ID"] != System.DBNull.Value) proteinId = Convert.ToInt32(reader["External_Protein_ID"]);
-                                
-                                Protein protein     = new Protein();
-                                protein.Sequence    = refName;
+                                GetValue(reader, "Ref_ID", ref refID);
+                                GetValue(reader, "Description", ref description);
+                                GetValue(reader, "Protein", ref proteinName);
+                                GetValue(reader, "External_Protein_ID", ref proteinId);
+                                GetValue(reader, "Protein_Sequence", ref proteinSequence);
+
+                                Protein protein     = new Protein();                                
                                 protein.RefID       = refID;
+                                protein.Description = description;
+                                protein.Sequence    = proteinSequence;
                                 protein.ProteinID   = proteinId;
                                 
                                 // Link to the Mass tags.

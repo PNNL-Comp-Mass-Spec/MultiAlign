@@ -43,7 +43,7 @@ namespace Manassa.Windows
 
         // Using a DependencyProperty as the backing store for UsesDriftTime.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty UsesDriftTimeProperty =
-            DependencyProperty.Register("UsesDriftTime", typeof(bool), typeof(AnalysisView), new UIPropertyMetadata(false));
+            DependencyProperty.Register("UsesDriftTime", typeof(bool), typeof(AnalysisView), new UIPropertyMetadata(true));
 
 
         /// <summary>
@@ -64,6 +64,8 @@ namespace Manassa.Windows
                     List<ClusterToMassTagMap> matches = m_analysis.DataProviders.MassTagMatches.FindAll();
                     Tuple<List<UMCClusterLightMatched>, List<MassTagToCluster>> clusters = 
                         value.Clusters.MapMassTagsToClusters(matches, m_analysis.MassTagDatabase);
+
+
                                         
                     m_massTagViewer.MatchedTags = new System.Collections.ObjectModel.ObservableCollection<MassTagToCluster>(clusters.Item2);
 
@@ -136,10 +138,10 @@ namespace Manassa.Windows
                     m_massTagHistogram.ConstructHistogram(massTagMap);
                     m_massTagHistogram.AutoViewPort();
 
-                    m_clusterRatioPlot.AddClusters(value.Clusters);
-                    m_clusterRatioPlot.UpdateCharts(true);
-                    m_clusterRatioRawPlot.AddClusters(value.Clusters);
-                    m_clusterRatioRawPlot.UpdateCharts(true);
+                    //m_clusterRatioPlot.AddClusters(value.Clusters);
+                    //m_clusterRatioPlot.UpdateCharts(true);
+                    //m_clusterRatioRawPlot.AddClusters(value.Clusters);
+                    //m_clusterRatioRawPlot.UpdateCharts(true);
                   
                 }
             }

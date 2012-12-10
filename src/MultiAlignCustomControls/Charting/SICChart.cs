@@ -106,16 +106,18 @@ namespace MultiAlignCustomControls.Charting
                 return;
 
             clsColorIterator colors     = new clsColorIterator();  
-            Color color                 = colors.GetColor(0);
             
             Dictionary<int, List<XYZData>> charges = m_feature.CreateChargeSIC();
 
             foreach (int charge in charges.Keys)
-            {                                      
+            {
+                Color color = colors.GetColor(charge);
+  
                 List<float> intensities     = new List<float>();
                 List<float> scanList        = new List<float>();                
                 clsShape shape              = new BubbleShape(mint_pt_size, false);
                 clsPlotParams plotParams    = new clsPlotParams(shape, color);
+                plotParams.Name = string.Format("charge {0}", charge);
 
                 // Sort by scan.
                 List<XYZData> data = charges[charge];
@@ -143,22 +145,7 @@ namespace MultiAlignCustomControls.Charting
 
                 clsSeries series = new clsSeries(ref scans, ref intensity, plotParams);
                 base.AddSeries(series);                
-            }                              
-   
-            // Plot the feature max
-            float [] intensityOfFeature = new float[2];
-            float [] scanOfFeature      = new float[2];
-            
-            intensityOfFeature[0]       = Convert.ToSingle(m_feature.Abundance);
-            intensityOfFeature[1]       = Convert.ToSingle(m_feature.Abundance);
-            scanOfFeature[0]            = Convert.ToSingle(m_feature.Scan);
-            scanOfFeature[1]            = Convert.ToSingle(m_feature.ScanAligned);
-
-            clsShape featureShape       = new TriangleShape(mint_pt_size, false);
-            clsPlotParams featureParams = new clsPlotParams(featureShape, Color.Red);
-            clsSeries featureSeries     = new clsSeries(ref scanOfFeature, ref intensityOfFeature, featureParams);
-            base.AddSeries(featureSeries);
-
+            }                                            
         }
         #endregion
 

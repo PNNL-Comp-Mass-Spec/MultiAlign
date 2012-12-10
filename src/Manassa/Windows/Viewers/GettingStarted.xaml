@@ -18,7 +18,7 @@
                         Style="{DynamicResource ResourceKey=HyperLinkButtonStyle}"
                         Margin="5,5,5,5"
                         HorizontalContentAlignment="Left"
-                        Command="Open"
+                        Command="Favorites" 
                         CommandParameter="{Binding}"
                         Width="128">
                         <Button.Content>
@@ -101,6 +101,7 @@
             <TabControl
                 Margin="15,40,20,15"
                 Grid.Column="1"
+                Visibility="Hidden"
                 >
                 <TabItem
                     Style="{DynamicResource ResourceKey=SimpleTabItem}"

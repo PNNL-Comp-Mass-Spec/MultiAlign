@@ -177,7 +177,7 @@ namespace MultiAlignCustomControls.Charting
             Color color              = colors.GetColor(0);
             clsShape shape           = new BubbleShape(mint_pt_size, false);
             clsPlotParams plotParams = new clsPlotParams(shape, color);
-                
+            
             int clustersAdded = 0;
             foreach(UMCClusterLight cluster in clusters)
             {

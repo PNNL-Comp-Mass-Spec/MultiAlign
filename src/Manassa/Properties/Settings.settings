@@ -15,7 +15,7 @@
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="WorkspaceFile" Type="System.String" Scope="User">
-      <Value Profile="(Default)">manassaworkspace.xml</Value>
+      <Value Profile="(Default)">workspace.xml</Value>
     </Setting>
   </Settings>
 </SettingsFile>

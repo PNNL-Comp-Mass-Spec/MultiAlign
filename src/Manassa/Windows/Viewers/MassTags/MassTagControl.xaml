@@ -7,10 +7,16 @@
              xmlns:pnnlCharts="clr-namespace:PNNLControls.Drawing.Charting;assembly=PNNLControls"
              xmlns:maCharts="clr-namespace:MultiAlignCustomControls.Charting;assembly=MultiAlignCustomControls"
              xmlns:maWindows="clr-namespace:Manassa.Windows"
+             xmlns:converters="clr-namespace:Manassa.Converters"
+             xmlns:massTagPlots="clr-namespace:Manassa.Windows.Viewers.MassTags"
              mc:Ignorable="d"          
              x:Name="myControl"
              d:DesignHeight="382" d:DesignWidth="838">
                  
+    <UserControl.Resources>
+        <converters:BoolVisibilityConverter x:Key="UseDriftTimeConverter" FalseVisibility="Collapsed"></converters:BoolVisibilityConverter>
+    </UserControl.Resources>
+    
     <Grid 
         Margin="4">
         <Grid.ColumnDefinitions>
@@ -23,13 +29,6 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Label 
-            Content="Mass Tag" 
-            Grid.Row="0"
-            Grid.Column="0"
-            x:Name="m_massTagName">            
-        </Label>
-
         <!-- Abundances -->
         <TabControl
             Grid.Column="0"
@@ -37,24 +36,50 @@
             Grid.ColumnSpan="2">
 
             <TabItem 
+                Style="{DynamicResource ResourceKey=SimpleTabItem}"
+                Header="Synposis">
+                <massTagPlots:MassTagDetail
+                    x:Name="MassTagDetails"
+                    MassTag="{Binding Path=MassTag, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True }"
+                    ></massTagPlots:MassTagDetail>
+            </TabItem>
+            <TabItem 
                 
                 Style="{DynamicResource ResourceKey=SimpleTabItem}"
                 Header="Tags and Clusters">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="33*"/>
-                        <ColumnDefinition Width="33*"/>
-                        <ColumnDefinition Width="33*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>                            
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <WindowsFormsHost
+                    <GridSplitter
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        Width="3"
+                        Background="DarkGray"
+                        Grid.Column="1"
+                        Grid.Row="0"
+                        />
+                     <GridSplitter
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        Width="3"
+                        Background="DarkGray"
+                        Grid.Column="3"
+                        Grid.Row="0"/>
+
+                        <WindowsFormsHost
                         Margin="1,1,1,1"
                         Grid.Row="0"
-                        Grid.Column="0">
+                        Grid.Column="2">
                         <maCharts:SingleMassTagChart
                                 x:Name="m_massTagChart"
                                 Title=""
@@ -65,9 +90,10 @@
                                 />
                     </WindowsFormsHost>
                     <WindowsFormsHost
+                        Visibility="{Binding Path=UseDriftTime , Converter={StaticResource ResourceKey=UseDriftTimeConverter}}"
                         Margin="1,1,1,1"
                         Grid.Row="0"
-                        Grid.Column="1">
+                        Grid.Column="4">
                         <maCharts:SingleMassTagChart
                                 x:Name="m_driftChart"
                                 Title=""                                
@@ -81,7 +107,7 @@
                     
                     <TabControl
                         Grid.Row="0"
-                        Grid.Column="2"   >
+                        Grid.Column="0"   >
                         <TabItem
                             Header="Nearby Mass Tags"
                             Margin="1,1,1,1">
@@ -101,6 +127,8 @@
                         Margin="3,3,3,3"
                         Grid.ColumnSpan="3">
                         <Button 
+                            Width="128"
+                                Style="{DynamicResource ResourceKey=SimpleButtonStyle}"  
                                 Content="Save Feature Plots"
                                 x:Name="m_saveFeaturePlotButton" 
                                 Click="m_saveFeaturePlotButton_Click" />
@@ -109,25 +137,11 @@
             </TabItem>
 
             <TabItem 
-                Style="{DynamicResource ResourceKey=SimpleTabItem}"
-                Header="Mass Tag Details">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="60*" />
-                        <ColumnDefinition Width="40*" />
-                    </Grid.ColumnDefinitions>
-
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="50*"/>
-                        <RowDefinition Height="50*"/>
-                    </Grid.RowDefinitions>
+                Style="{DynamicResource ResourceKey=SimpleTabItem}" Header=" Matched Proteins">
+                <maWindows:ProteinGrid 
+                    x:Name="ProteinDetailGrid"
+                    />
                     
-                    <!-- Features Grid -->
-                    <!-- Plots based on feature selection -->
-                </Grid>
-            </TabItem>
-            <TabItem 
-                Style="{DynamicResource ResourceKey=SimpleTabItem}" Header="Proteins">
             </TabItem>           
         </TabControl>
     </Grid>

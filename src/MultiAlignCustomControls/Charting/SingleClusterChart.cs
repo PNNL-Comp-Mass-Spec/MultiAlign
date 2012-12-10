@@ -346,18 +346,22 @@ namespace MultiAlignCustomControls.Charting
                 float[] scans  = new float[scanList.Count];
                 massList.CopyTo(masses);
                 scanList.CopyTo(scans);
-
+                
+                plotParams.Name  = string.Format("Cluster {0} Features", cluster.ID);
                 clsSeries series = new clsSeries(ref scans, ref masses, plotParams);
                 base.AddSeries(series);                
             }
 
             float[] clusterMass = new float[1];
             float[] clusterScan = new float[1];
-            Color clusterColor  = Color.Red;
-            bool isHollow = isAlternate;
+            Color clusterColor = clusterColor = Color.FromArgb(200, Color.Red);
+            bool isHollow       = isAlternate;
+
+            string name = string.Format("Main Cluster {0} Charge {1}", cluster.ID, cluster.ChargeState); 
             if (isAlternate)
             {
-                clusterColor = Color.Lime;
+                name = string.Format("Nearby Cluster {0} Charge {1}", cluster.ID, cluster.ChargeState);
+                clusterColor = Color.FromArgb(200, Color.Lime);
             }            
 
             clusterMass[0] = Convert.ToSingle(cluster.MassMonoisotopic);
@@ -370,9 +374,11 @@ namespace MultiAlignCustomControls.Charting
                 clusterScan[0] = Convert.ToSingle(cluster.RetentionTime);
             }
 
+            
 
             clsShape clusterShape           = m_clusterShapes[charge];
             clsPlotParams plotParamsCluster = new clsPlotParams(clusterShape, clusterColor);
+            plotParamsCluster.Name          = name;
             clsSeries clusterSeries         = new clsSeries(ref clusterScan, ref clusterMass, plotParamsCluster);
             base.AddSeries(clusterSeries);
 
