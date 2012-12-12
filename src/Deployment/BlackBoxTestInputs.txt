@@ -1,0 +1,3 @@
+-params m:\data\proteomics\MAPaper\SuppliedInformation\Shewanella\analysisFiles\parametersOrbitrap.xml -files m:\data\proteomics\MAPaper\SuppliedInformation\Shewanella\analysisFiles\datasetInput.txt -path m:\data\proteomics\MAPaper\SuppliedInformation\Shewanella\results\dataset -name datasetAnalysis 
+
+-params m:\data\proteomics\MAPaper\SuppliedInformation\Shewanella\analysisFiles\parametersOrbitrap.xml -files m:\data\proteomics\MAPaper\SuppliedInformation\Shewanella\analysisFiles\databaseInput.txt -path m:\data\proteomics\MAPaper\SuppliedInformation\Shewanella\results\database -name databaseAnalysis
