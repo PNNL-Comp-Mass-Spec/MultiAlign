@@ -52,10 +52,11 @@
                             DockPanel.Dock="Top">
                             <Label  Foreground="Gray">Number of Mass Tags: </Label>
                             <Label
-                                Content="{Binding Path=MatchedTags, Converter={StaticResource  ResourceKey=IntToStringConverter}}">                            
+                                x:Name="m_massTagCountNameLabel">                            
                             </Label>
                         </WrapPanel>
                         <maWindows:MassTagGrid
+                            DataGridExpandMode="Collapsed"
                             x:Name="m_massTagGrid"            
                             />
                     </DockPanel>
@@ -79,27 +80,7 @@
                         x:Name="m_proteinGrid"            
                         />
                 </DockPanel>
-            </TabItem>
-                <TabItem
-                    
-                    Style="{DynamicResource ResourceKey=SimpleTabItem}"
-                    Header="Matched Proteins">
-                <DockPanel>
-                    <WrapPanel
-                            HorizontalAlignment="Right"
-                            DockPanel.Dock="Top">
-                        <Label  Foreground="Gray">Number of Matching Proteins:</Label>
-                        <Label
-                               x:Name="MatchingProteinsLabel">
-                        </Label>
-                    </WrapPanel>
-
-                    
-                    <maWindows:ProteinGrid
-                        x:Name="m_matchedProteins"            
-                        />
-                </DockPanel>
-                </TabItem>
+            </TabItem>                
             </TabControl>
             <TabControl                
                     Grid.Row="0"   
@@ -152,7 +133,9 @@
                     Style="{DynamicResource ResourceKey=SimpleTabItem}"
                     Header="Selected Mass Tag Detail">
                 <maWindows:MassTagControl
-                x:Name="m_massTagDisplay"
+                    UsesDriftTime="{Binding Path=UsesDriftTime, 
+                                            RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                    x:Name="m_massTagDisplay"
                 MassTag="{Binding Mode=OneWay, ElementName=m_massTagGrid, Path=SelectedTag}"/>
             </TabItem>
             <TabItem                

@@ -176,6 +176,18 @@ namespace Manassa.Windows
         }
         #endregion
 
+
+        public bool UsesDriftTime
+        {
+            get { return (bool)GetValue(UsesDriftTimeProperty); }
+            set { SetValue(UsesDriftTimeProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for UsesDriftTime.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty UsesDriftTimeProperty =
+            DependencyProperty.Register("UsesDriftTime", typeof(bool), typeof(MassTagControl), new UIPropertyMetadata(false));
+
+
         /// <summary>
         /// Dependency Property
         /// </summary>
@@ -319,5 +331,10 @@ namespace Manassa.Windows
             }
         }
         #endregion
+
+        private void WindowsFormsHost_ChildChanged(object sender, System.Windows.Forms.Integration.ChildChangedEventArgs e)
+        {
+
+        }
     }
 }

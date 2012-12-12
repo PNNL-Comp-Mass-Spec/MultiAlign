@@ -4,6 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:converters="clr-namespace:Manassa.Converters"
+             xmlns:massTagViewers="clr-namespace:Manassa.Windows.Viewers.MassTags"
+             
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
@@ -20,7 +22,7 @@
                 AutoGenerateColumns="False"
                 Grid.ColumnSpan="6"
                 IsTextSearchEnabled="True"
-                RowDetailsVisibilityMode="{Binding IsChecked, ElementName=m_detailsChecked, Converter={StaticResource boolConverter}}"
+                RowDetailsVisibilityMode="Collapsed"            
                 SelectionChanged="m_dataGrid_SelectionChanged"
             >
             <DataGrid.CellStyle>
@@ -43,6 +45,13 @@
                     </Style.Triggers>
                 </Style>
             </DataGrid.RowStyle>
+
+
+            <DataGrid.RowDetailsTemplate>
+                <DataTemplate>
+                    <massTagViewers:MassTagDetail/>
+                </DataTemplate>
+            </DataGrid.RowDetailsTemplate>
 
             <DataGrid.Columns >
                 <!--Dataset Information-->

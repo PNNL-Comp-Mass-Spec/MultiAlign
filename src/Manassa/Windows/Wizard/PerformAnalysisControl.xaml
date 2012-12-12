@@ -48,7 +48,9 @@
                 Style="{DynamicResource ResourceKey=HidenTabItem}"
                 Header="Options Selection"
                 IsSelected="{Binding Path=CurrentStep, Converter={StaticResource ResourceKey=OptionsSelection}}">
-                <ui:AnalysisOptionsView/>
+                <ui:AnalysisOptionsView
+                    Options="{Binding Path=AnalysisConfiguration.Analysis.Options, Mode=TwoWay, NotifyOnSourceUpdated=True}"
+                    />
             </TabItem>
             <TabItem
                 Style="{DynamicResource ResourceKey=HidenTabItem}"

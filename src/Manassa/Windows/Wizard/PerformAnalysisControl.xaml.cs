@@ -153,7 +153,7 @@ namespace Manassa.Windows
                 case AnalysisSetupStep.BaselineSelection:
                     CurrentStep = AnalysisSetupStep.OptionsSelection;
                     break;
-                case AnalysisSetupStep.OptionsSelection:
+                case AnalysisSetupStep.OptionsSelection:                    
                     CurrentStep = AnalysisSetupStep.Naming;
                     break;
                 case AnalysisSetupStep.Naming:

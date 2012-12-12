@@ -50,9 +50,9 @@ namespace Manassa.Windows
                     //m_proteinGrid.Proteins      = value.AllProteins;
                     //m_matchedProteins.Proteins  = value.MatchedProteins;
 
+                    m_massTagCountNameLabel.Content = value.MassTags.Count.ToString();
                     if (value.AllProteins     != null) AllProteinsLabel.Content        = value.AllProteins.Count.ToString();
-                    if (value.MatchedProteins != null) MatchingProteinsLabel.Content   = value.MatchedProteins.Count.ToString();
-
+                    
                     m_massTagPlot.AddMassTags(value.MassTags);
                     m_massTagPlot.AutoViewPort();
                 }                
@@ -68,7 +68,15 @@ namespace Manassa.Windows
 
         // Using a DependencyProperty as the backing store for UseDriftTime.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty UseDriftTimeProperty =
-            DependencyProperty.Register("UseDriftTime", typeof(bool), typeof(MassTagViewer), new UIPropertyMetadata(false));
+            DependencyProperty.Register("UseDriftTime", typeof(bool), typeof(MassTagViewer), 
+            new PropertyMetadata(delegate (DependencyObject sender, DependencyPropertyChangedEventArgs args)
+                {
+                    var x = sender as MassTagViewer;
+                    if (x == null) return;
+
+                    x.m_massTagDisplay.UsesDriftTime = x.UseDriftTime;
+
+                }));
 
 
 

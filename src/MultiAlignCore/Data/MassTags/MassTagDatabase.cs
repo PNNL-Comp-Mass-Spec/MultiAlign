@@ -20,7 +20,6 @@ namespace MultiAlignCore.Data.MassTags
         {
             MassTags    = new List<MassTagLight>();
             AllProteins = new List<Protein>();
-            MatchedProteins = new List<Protein>();
             Proteins    = new Dictionary<int, List<Protein>>();
             ProteinsToMassTags = new Dictionary<int, List<MassTagLight>>();
             Name        = "Unknown";
@@ -60,14 +59,6 @@ namespace MultiAlignCore.Data.MassTags
         {
             get;
             set;
-        }
-        /// <summary>
-        /// Gets a list of all proteins.
-        /// </summary>
-        public List<Protein> MatchedProteins
-        {
-            get;
-            private set;
         }
         public Dictionary<int, List<MassTagLight>> ProteinsToMassTags
         {
@@ -113,18 +104,25 @@ namespace MultiAlignCore.Data.MassTags
 
             ProteinsToMassTags                  = new Dictionary<int, List<MassTagLight>>();
             Dictionary<int, Protein> proteinMap = new Dictionary<int, Protein>();
+
+            AllProteins = new List<Protein>();
+
+
             foreach (int key in massTagToProteinMap.Keys)
             {
-
                 List<Protein> proteins  = massTagToProteinMap[key];
+
+                if (massTagMap.ContainsKey(key) == false)
+                    continue;
+
                 MassTagLight tag        = massTagMap[key];
 
                 foreach (Protein p in proteins)
                 {
                     if (!proteinMap.ContainsKey(p.RefID))
                     {
-                        proteinMap.Add(p.RefID, p);
-                        MatchedProteins.Add(p);
+                        AllProteins.Add(p);
+                        proteinMap.Add(p.RefID, p);                        
                     }
 
                     if (!ProteinsToMassTags.ContainsKey(p.ProteinID))

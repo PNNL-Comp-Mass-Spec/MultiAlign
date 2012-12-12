@@ -15,6 +15,8 @@
                  
     <UserControl.Resources>
         <converters:BoolVisibilityConverter x:Key="UseDriftTimeConverter" FalseVisibility="Collapsed"></converters:BoolVisibilityConverter>
+
+        <converters:BoolWidthConverter x:Key="UseDriftTimeWidthConverter" ></converters:BoolWidthConverter>
     </UserControl.Resources>
     
     <Grid 
@@ -53,7 +55,7 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="{Binding Path=UsesDriftTime, Converter={StaticResource ResourceKey=UseDriftTimeWidthConverter}}"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>                            
@@ -90,10 +92,9 @@
                                 />
                     </WindowsFormsHost>
                     <WindowsFormsHost
-                        Visibility="{Binding Path=UseDriftTime , Converter={StaticResource ResourceKey=UseDriftTimeConverter}}"
                         Margin="1,1,1,1"
                         Grid.Row="0"
-                        Grid.Column="4">
+                        Grid.Column="4" ChildChanged="WindowsFormsHost_ChildChanged">
                         <maCharts:SingleMassTagChart
                                 x:Name="m_driftChart"
                                 Title=""                                
@@ -112,6 +113,7 @@
                             Header="Nearby Mass Tags"
                             Margin="1,1,1,1">
                             <maWindows:MassTagGrid
+                                DataGridExpandMode="VisibleWhenSelected"
                                 x:Name="m_masstagGrid" />
                         </TabItem>
                         <TabItem

@@ -112,10 +112,11 @@ namespace Manassa.Data
                         errorMessage = "Invalid database type.";
                         isStepValid = false;
                         break;
+                    case MassTagDatabaseType.APE:
                     case MassTagDatabaseType.SQLite:
                         if (databasePath == null)
                         {
-                            errorMessage = "No SQLite MTDB database was selected.";
+                            errorMessage = "No MTDB database file was selected.";
                             isStepValid = false;
                         }
                         else
@@ -137,13 +138,17 @@ namespace Manassa.Data
             }
             else
             {
-                if (analysis.MetaData.BaselineDataset == null)
+                if (analysis.MetaData.Datasets.Count < 2)
+                {
+                    isStepValid = false;
+                    errorMessage = "You must align a single dataset to a database.";
+                }
+                else if (analysis.MetaData.BaselineDataset == null)
                 {
                     errorMessage = "No baseline dataset was selected.";
                     isStepValid = false;
                 }
             }
-
             return isStepValid;            
         }
     }

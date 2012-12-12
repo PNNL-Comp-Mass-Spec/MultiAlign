@@ -37,8 +37,8 @@ namespace Manassa.IO
                 if (node.Name == "Analysis")
                 {
                     RecentAnalysis analysis = new RecentAnalysis();
-                    analysis.Name = node.Attributes.GetNamedItem("Name").ToString();
-                    analysis.Path = node.Attributes.GetNamedItem("Path").ToString();
+                    analysis.Name = node.Attributes["Name"].Value.ToString();
+                    analysis.Path = node.Attributes["Path"].Value.ToString();
                     allAnalysis.Add(analysis);
                 }
             }

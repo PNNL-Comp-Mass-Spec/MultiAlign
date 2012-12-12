@@ -16,14 +16,24 @@
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="250"/>
-                <ColumnDefinition Width="80*"/>
-                <ColumnDefinition Width="80*"/>
+                <ColumnDefinition Width="196"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <StackPanel Grid.Column="0" Margin="5">
-                <Label FontSize="24" Foreground="LightGray">Mass Tag Details</Label>
+            <GridSplitter
+                Width="3"
+                Background="DarkGray"
+                Grid.RowSpan="2"
+                Grid.Row="0"
+                Grid.Column="1"
+                >
+                
+            </GridSplitter>
+            <StackPanel Grid.Column="0" Grid.RowSpan="2" Margin="5">
+                <Label FontSize="16" Foreground="Gray">Mass Tag Details</Label>
                 <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
@@ -69,9 +79,10 @@
                     </Label>
 
                 </Grid>
-                <Label FontSize="24" Foreground="LightGray">Matches</Label>
+                <Label FontSize="16" Foreground="Gray">Matches</Label>
                 <Grid>
                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
@@ -81,10 +92,16 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <Label      Grid.Row="0"
+                    <Button                        
+                                HorizontalContentAlignment="Center"
+                                Content="Matching Clusters"
+                        
+                        Style="{DynamicResource ResourceKey=HyperLinkButtonStyle}"
+                        Width="100"
+                                Grid.Row="0"
                                 Grid.Column="0">
-                        Number of Matching Clusters
-                    </Label>
+
+                    </Button>
                     <Label      
                                 HorizontalAlignment="Stretch"
                                 HorizontalContentAlignment="Right"
@@ -94,19 +111,26 @@
                     </Label>
                     <Label      Grid.Row="1"
                                 Grid.Column="0">
-                        Number of Matching Proteins
                     </Label>
-                    <Label     
-                                HorizontalAlignment="Stretch"
-                                HorizontalContentAlignment="Right"
+                    <Button                        
+                                HorizontalContentAlignment="Center"
+                                Content="Matching Proteins"
                                 Grid.Row="1"
-                                Grid.Column="1">
+                        Style="{DynamicResource ResourceKey=HyperLinkButtonStyle}"
+                        Width="100"
+                                Grid.Column="0">
+                        
+                    </Button>
+                    <Label
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        >
                         <Binding Path="MassTag.MatchingProteins.Count" Converter="{StaticResource ResourceKey=IntToStringConverter}"></Binding>
                     </Label>
                 </Grid>
             </StackPanel>
-            <StackPanel Grid.Row="0" Grid.Column="1">
-                <Label FontSize="24" Foreground="LightGray">Modifications</Label>
+            <StackPanel Grid.Row="1" Grid.Column="2">
+                <Label FontSize="16" Foreground="Gray">Modifications</Label>
                 <Label FontSize="12">Modifications</Label>
                 <Label>
                     <Binding Path="MassTag.MassTag.Modifications"></Binding>
@@ -116,13 +140,12 @@
                     <Binding Path="MassTag.MassTag.ModificationCount" Converter="{StaticResource ResourceKey=IntToStringConverter}"></Binding>
                 </Label>
             </StackPanel>
-            <StackPanel Grid.Column="2" Margin="5">
-                <Label FontSize="24" Foreground="LightGray">Peptide</Label>
+            <StackPanel Grid.Row="0" Grid.Column="2" Margin="5">
+                <Label FontSize="16" Foreground="Gray">Peptide</Label>
                 <Label FontSize="12">Sequence</Label>
                 <Label FontSize="12" FontWeight="Bold" Foreground ="Gray">
                             <Binding Path="MassTag.MassTag.PeptideSequence"></Binding>
                 </Label>
-                <Label FontSize="12">Extended Sequence</Label>
                 <Label FontSize="12"  FontWeight="Bold" Foreground ="Gray">
                     <Binding Path="MassTag.MassTag.PeptideSequenceEx"></Binding>
                 </Label>

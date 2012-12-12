@@ -69,6 +69,8 @@ namespace MultiAlignCore.Extensions
         /// <param name="getMsMS"></param>
         public static void ReconstructUMCCluster(this UMCClusterLight cluster, FeatureDataAccessProviders providers, bool getMsFeature, bool getMsMs)
         {
+            cluster.Features.Clear();
+
             List<UMCLight> features = providers.FeatureCache.FindByClusterID(cluster.ID);
             foreach (UMCLight feature in features)
             {

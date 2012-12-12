@@ -448,8 +448,10 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy  ..\..\..\..\lib\$(PlatformName)\System.Data.SQLite.dll "$(TargetDir)System.Data.SQLite.dll"
-copy ..\..\..\..\..\lib\$(PlatformName)\Thermo\*.dll "$(TargetDir)"</PostBuildEvent>
+    <PostBuildEvent>REM copy  ..\..\..\..\lib\$(PlatformName)\System.Data.SQLite.dll "$(TargetDir)System.Data.SQLite.dll"
+copy ..\..\..\..\..\lib\$(PlatformName)\Thermo\*.dll "$(TargetDir)"
+
+copy "$(SolutionDir)..\lib\$(PlatformName)\System.Data.SQLite.dll" "$(TargetDir)System.Data.SQLite.dll"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

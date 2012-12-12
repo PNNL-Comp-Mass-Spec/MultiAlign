@@ -69,6 +69,15 @@ namespace Manassa.Windows
 
         // Using a DependencyProperty as the backing store for Options.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty OptionsProperty =
-            DependencyProperty.Register("Options", typeof(AnalysisOptions), typeof(AnalysisOptions));        
+            DependencyProperty.Register("Options", typeof(AnalysisOptions), typeof(AnalysisOptionsView),
+            new PropertyMetadata(delegate (DependencyObject sender, DependencyPropertyChangedEventArgs args)
+                {
+                    var x = sender as AnalysisOptionsView;
+
+                    if (x == null)
+                        return;
+
+                    x.m_editor.SetOptions(x.Options, "");
+                }));        
     }
 }

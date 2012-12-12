@@ -45,11 +45,10 @@
             </DataGrid.RowStyle>
 
             <DataGrid.Columns >
-                <!--Dataset Information-->
-                <DataGridTextColumn         Header="Protein ID"  CanUserSort="True"      Binding="{Binding ProteinID}"      IsReadOnly="True"/>
-                <DataGridTextColumn         Header="Ref ID"      CanUserSort="True"      Binding="{Binding RefID}"          IsReadOnly="True"/>
-                <DataGridTextColumn         Header="Description" CanUserSort="True"      Binding="{Binding Description}"    IsReadOnly="True"/>
-                <DataGridTextColumn         Header="Sequence"    CanUserSort="True"      Binding="{Binding Sequence}"       IsReadOnly="True"/>                
+                <DataGridTextColumn         Header="Protein ID"  CanUserSort="True"      Binding="{Binding Protein.ProteinID}"      IsReadOnly="True"/>
+                <DataGridTextColumn         Header="Ref ID"      CanUserSort="True"      Binding="{Binding Protein.RefID}"          IsReadOnly="True"/>
+                <DataGridTextColumn         Header="Description" CanUserSort="True"      Binding="{Binding Protein.Description}"    IsReadOnly="True"/>
+                <DataGridTextColumn         Header="Sequence"    CanUserSort="True"      Binding="{Binding Protein.Sequence}"       IsReadOnly="True"/>                
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

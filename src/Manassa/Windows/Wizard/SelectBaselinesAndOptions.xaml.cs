@@ -63,8 +63,8 @@ namespace Manassa.Windows
 
         // Using a DependencyProperty as the backing store for Analysis.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty AnalysisProperty =
-            DependencyProperty.Register("Analysis", typeof(MultiAlignAnalysis), 
-            typeof(SelectBaselinesAndOptions));
+            DependencyProperty.Register("Analysis", typeof(MultiAlignAnalysis),
+            typeof(SelectBaselinesAndOptions));        
             
                 
 
@@ -74,6 +74,10 @@ namespace Manassa.Windows
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            SetDatabaseAsBaseline();
+        }
+        private void SetDatabaseAsBaseline()
         {
             Analysis.Options.AlignmentOptions.IsAlignmentBaselineAMasstagDB = true;
             Analysis.MetaData.BaselineDataset = null;

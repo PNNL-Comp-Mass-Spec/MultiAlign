@@ -78,9 +78,10 @@
                     Grid.Row="1"
                     Margin="5"
                     Height="32"
+                    x:Name="DatasetComboBox"
                     DisplayMemberPath="DatasetName"
                     ItemsSource="{Binding Path=Analysis.MetaData.Datasets}"
-                    SelectedItem="{Binding Path=Analysis.MetaData.BaselineDataset, Mode=TwoWay}">
+                    SelectedItem="{Binding Path=Analysis.MetaData.BaselineDataset, Mode=TwoWay}" FontSize="14">
                 </ComboBox>
                 <Canvas
                     Width="16"

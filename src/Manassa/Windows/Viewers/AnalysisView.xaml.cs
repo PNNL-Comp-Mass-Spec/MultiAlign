@@ -96,9 +96,8 @@ namespace Manassa.Windows
                     m_clusterControl.Analysis   = value;
                     m_datasetBox.Datasets       = new ObservableCollection<DatasetInformation>(value.MetaData.Datasets);                    
                     
-                    // Make the dataset plots.
-                    string directoryPath        = Path.GetDirectoryName(value.MetaData.AnalysisPath);
-                    string plotPath             = Path.Combine(directoryPath, "plots");
+                    // Make the dataset plots.                    
+                    string plotPath = Path.Combine(value.MetaData.AnalysisPath, "plots");
                     if (Directory.Exists(plotPath))
                     {
                         Manassa.Data.DatasetPlotLoader loader = new Data.DatasetPlotLoader();                      

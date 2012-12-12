@@ -54,6 +54,21 @@ namespace Manassa.Windows
             }
         }
 
+
+
+        public DataGridRowDetailsVisibilityMode DataGridExpandMode
+        {
+            get { return (DataGridRowDetailsVisibilityMode)GetValue(DataGridExpandModeProperty); }
+            set { SetValue(DataGridExpandModeProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for DataGridExpandMode.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty DataGridExpandModeProperty =
+            DependencyProperty.Register("DataGridExpandMode", typeof(DataGridRowDetailsVisibilityMode),
+            typeof(MassTagGrid), new UIPropertyMetadata(DataGridRowDetailsVisibilityMode.Collapsed));
+
+
+
         public MassTagToCluster SelectedTag
         {
             get { return (MassTagToCluster)GetValue(SelectedMassTagProperty); }

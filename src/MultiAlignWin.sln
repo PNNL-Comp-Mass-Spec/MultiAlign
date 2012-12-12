@@ -23,6 +23,20 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeconToolsTesting", "DeconT
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "ManassaSetup", "ManassaSetup\ManassaSetup.vdproj", "{4A303BC5-9DBC-455C-BCE7-9F991D33F8A6}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Website", "Website", "{D2530E66-87BA-4E2A-AC25-B4F056A39669}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\..\doc\website\MultiAlign.php = ..\..\..\doc\website\MultiAlign.php
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tutorials", "tutorials", "{54FBAD8A-A65F-435C-8A62-197A4485A436}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Guides", "Guides", "{3B731C48-62B9-49BB-A587-305C3025F579}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\..\doc\website\MultiAlign-QuickStartGuide.docx = ..\..\..\doc\website\MultiAlign-QuickStartGuide.docx
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeployTool", "DeployTool\DeployTool.csproj", "{F952F320-FD74-4057-917B-597CA84D15D8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -81,33 +95,45 @@ Global
 		{A853D633-C2DE-4B9F-9EE8-AF97329E2BF8}.Debug|x64.ActiveCfg = Debug|x86
 		{A853D633-C2DE-4B9F-9EE8-AF97329E2BF8}.Debug|x86.ActiveCfg = Debug|x86
 		{A853D633-C2DE-4B9F-9EE8-AF97329E2BF8}.Debug|x86.Build.0 = Debug|x86
-		{A853D633-C2DE-4B9F-9EE8-AF97329E2BF8}.Release|x64.ActiveCfg = Release|x86
+		{A853D633-C2DE-4B9F-9EE8-AF97329E2BF8}.Release|x64.ActiveCfg = Release|x64
+		{A853D633-C2DE-4B9F-9EE8-AF97329E2BF8}.Release|x64.Build.0 = Release|x64
 		{A853D633-C2DE-4B9F-9EE8-AF97329E2BF8}.Release|x86.ActiveCfg = Release|x86
 		{A853D633-C2DE-4B9F-9EE8-AF97329E2BF8}.Release|x86.Build.0 = Release|x86
 		{6EC23CCC-4F36-47BF-B997-F0A5727822A5}.Debug|x64.ActiveCfg = Debug|x86
 		{6EC23CCC-4F36-47BF-B997-F0A5727822A5}.Debug|x86.ActiveCfg = Debug|x86
 		{6EC23CCC-4F36-47BF-B997-F0A5727822A5}.Debug|x86.Build.0 = Debug|x86
-		{6EC23CCC-4F36-47BF-B997-F0A5727822A5}.Release|x64.ActiveCfg = Release|x86
+		{6EC23CCC-4F36-47BF-B997-F0A5727822A5}.Release|x64.ActiveCfg = Release|x64
+		{6EC23CCC-4F36-47BF-B997-F0A5727822A5}.Release|x64.Build.0 = Release|x64
 		{6EC23CCC-4F36-47BF-B997-F0A5727822A5}.Release|x86.ActiveCfg = Release|x86
 		{6EC23CCC-4F36-47BF-B997-F0A5727822A5}.Release|x86.Build.0 = Release|x86
 		{7C3DE69F-04FF-4C3D-A606-20F43BFCE35F}.Debug|x64.ActiveCfg = Debug|x86
 		{7C3DE69F-04FF-4C3D-A606-20F43BFCE35F}.Debug|x86.ActiveCfg = Debug|x86
 		{7C3DE69F-04FF-4C3D-A606-20F43BFCE35F}.Debug|x86.Build.0 = Debug|x86
-		{7C3DE69F-04FF-4C3D-A606-20F43BFCE35F}.Release|x64.ActiveCfg = Release|x86
+		{7C3DE69F-04FF-4C3D-A606-20F43BFCE35F}.Release|x64.ActiveCfg = Release|x64
 		{7C3DE69F-04FF-4C3D-A606-20F43BFCE35F}.Release|x86.ActiveCfg = Release|x86
 		{7C3DE69F-04FF-4C3D-A606-20F43BFCE35F}.Release|x86.Build.0 = Release|x86
 		{7F6EA9C2-A56E-46EA-9E22-DDD5382A3874}.Debug|x64.ActiveCfg = Debug|x86
 		{7F6EA9C2-A56E-46EA-9E22-DDD5382A3874}.Debug|x86.ActiveCfg = Debug|x86
 		{7F6EA9C2-A56E-46EA-9E22-DDD5382A3874}.Debug|x86.Build.0 = Debug|x86
-		{7F6EA9C2-A56E-46EA-9E22-DDD5382A3874}.Release|x64.ActiveCfg = Release|x86
+		{7F6EA9C2-A56E-46EA-9E22-DDD5382A3874}.Release|x64.ActiveCfg = Release|x64
 		{7F6EA9C2-A56E-46EA-9E22-DDD5382A3874}.Release|x86.ActiveCfg = Release|x86
 		{7F6EA9C2-A56E-46EA-9E22-DDD5382A3874}.Release|x86.Build.0 = Release|x86
 		{4A303BC5-9DBC-455C-BCE7-9F991D33F8A6}.Debug|x64.ActiveCfg = Debug
 		{4A303BC5-9DBC-455C-BCE7-9F991D33F8A6}.Debug|x86.ActiveCfg = Debug
 		{4A303BC5-9DBC-455C-BCE7-9F991D33F8A6}.Release|x64.ActiveCfg = Release
 		{4A303BC5-9DBC-455C-BCE7-9F991D33F8A6}.Release|x86.ActiveCfg = Release
+		{F952F320-FD74-4057-917B-597CA84D15D8}.Debug|x64.ActiveCfg = Debug|x86
+		{F952F320-FD74-4057-917B-597CA84D15D8}.Debug|x86.ActiveCfg = Debug|x86
+		{F952F320-FD74-4057-917B-597CA84D15D8}.Debug|x86.Build.0 = Debug|x86
+		{F952F320-FD74-4057-917B-597CA84D15D8}.Release|x64.ActiveCfg = Release|x86
+		{F952F320-FD74-4057-917B-597CA84D15D8}.Release|x86.ActiveCfg = Release|x86
+		{F952F320-FD74-4057-917B-597CA84D15D8}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{54FBAD8A-A65F-435C-8A62-197A4485A436} = {D2530E66-87BA-4E2A-AC25-B4F056A39669}
+		{3B731C48-62B9-49BB-A587-305C3025F579} = {D2530E66-87BA-4E2A-AC25-B4F056A39669}
 	EndGlobalSection
 EndGlobal

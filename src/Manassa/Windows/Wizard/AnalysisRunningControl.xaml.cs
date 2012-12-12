@@ -29,7 +29,9 @@ namespace Manassa.Windows
             InitializeComponent();            
             DataContext   = this;
             Messages      = new ObservableCollection<string>();
-            GalleryImages = new ObservableCollection<UserControl>();            
+            GalleryImages = new ObservableCollection<UserControl>();
+
+            RouteMessages();
         }
 
         #region Logging Handlers 
@@ -69,11 +71,9 @@ namespace Manassa.Windows
         {
             // Set the messages
             Messages.Clear();
+            GalleryImages.Clear();
             CurrentStatusMessage = "Starting Analysis.";
-
-            // route the logger messages
-            RouteMessages();
-
+            
             IsAnalysisRunning   = true;
             Reporter.Config = config;
 
@@ -119,8 +119,6 @@ namespace Manassa.Windows
                         AnalysisCancelled(this, null);
                     }
                 }
-
-                DerouteMessages();
             };
             Dispatcher.Invoke(workAction, DispatcherPriority.Normal);
         }

@@ -167,20 +167,18 @@ namespace Manassa
 
             StateModerator.CurrentViewState = ViewState.OpenView; 
             System.Windows.Forms.Application.DoEvents();
-
-            LoadMultiAlignFile(analysis.Path);
-
+            
+            
             string version  = MultiAlignCore.ApplicationUtility.GetEntryAssemblyData();
             Title           = string.Format("{0} - {1}", version, analysis.Name);
-        }
-        private void LoadMultiAlignFile(string filename)
-        {
+            string filename = System.IO.Path.Combine(analysis.Path, analysis.Name);
             ApplicationStatusMediator.SetStatus(string.Format("Loading analysis...{0}", filename));                        
             CancelAnalysis();
 
             Controller                                       = new AnalysisController();
             Controller.LoadExistingAnalysis(filename, Reporter);
-            Controller.Config.Analysis.MetaData.AnalysisPath = filename;
+            Controller.Config.Analysis.MetaData.AnalysisPath = analysis.Path;
+            Controller.Config.Analysis.MetaData.AnalysisName = analysis.Name;
 
             ApplicationStatusMediator.SetStatus("Analysis loaded.  Creating plots.");
             m_mainControl.Analysis = Controller.Config.Analysis;
@@ -207,10 +205,11 @@ namespace Manassa
                 StateModerator.CurrentAnalysisState = AnalysisState.Loading;
                 
                 RecentAnalysis newAnalysis  = new RecentAnalysis();
-                newAnalysis.Name            = System.IO.Path.GetFileNameWithoutExtension(m_analysisLoadDialog.FileName);
-                newAnalysis.Path            = m_analysisLoadDialog.FileName;
+                newAnalysis.Name            = System.IO.Path.GetFileName(m_analysisLoadDialog.FileName);
+                newAnalysis.Path            = System.IO.Path.GetDirectoryName(m_analysisLoadDialog.FileName);
                 LoadMultiAlignFile(newAnalysis);
 
+                newAnalysis.Name            = System.IO.Path.GetFileName(m_analysisLoadDialog.FileName);
 
                 StateModerator.CurrentViewState     = ViewState.AnalysisView;
                 StateModerator.CurrentAnalysisState = AnalysisState.Viewing;
@@ -292,13 +291,16 @@ namespace Manassa
         {
             RecentAnalysis analysis = new RecentAnalysis();
             analysis.Path = Controller.Config.AnalysisPath;
-            analysis.Name = Controller.Config.AnalysisName;
-
+            analysis.Name = System.IO.Path.GetFileName(Controller.Config.AnalysisName);
+            StateModerator.CurrentViewState = ViewState.OpenView;
+            System.Windows.Forms.Application.DoEvents();
+           
             m_mainControl.Analysis = Controller.Config.Analysis;
 
             StateModerator.CurrentViewState     = ViewState.AnalysisView;
             StateModerator.CurrentAnalysisState = AnalysisState.Viewing;
-                            
+            
+                
             CurrentWorkspace.AddAnalysis(analysis);   
         }
         void runningAnalysisControl_AnalysisCancelled(object sender, System.EventArgs e)

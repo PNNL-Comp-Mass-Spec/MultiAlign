@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Battelle PNNL")]
 [assembly: AssemblyProduct("MultiAlignConsole")]
-[assembly: AssemblyCopyright("Copyright © Battelle PNNL 2010")]
+[assembly: AssemblyCopyright("")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -29,5 +29,5 @@ using System.Runtime.InteropServices;
 //      Build Number
 //      Revision
 //
-[assembly: AssemblyVersion("4.4.1.*")]
-[assembly: AssemblyFileVersion("4.4.1.*")]
+[assembly: AssemblyVersion("5.0.0.*")]
+[assembly: AssemblyFileVersion("5.0.0.*")]
