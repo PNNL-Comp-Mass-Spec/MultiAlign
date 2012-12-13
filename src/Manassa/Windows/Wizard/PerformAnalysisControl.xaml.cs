@@ -115,14 +115,14 @@ namespace Manassa.Windows
             {
                 case AnalysisSetupStep.DatasetSelection:
                     break;
-                case AnalysisSetupStep.BaselineSelection:
+                case AnalysisSetupStep.OptionsSelection:
                     CurrentStep = AnalysisSetupStep.DatasetSelection;
                     break;
-                case AnalysisSetupStep.OptionsSelection:
-                    CurrentStep = AnalysisSetupStep.BaselineSelection;
+                case AnalysisSetupStep.BaselineSelection:
+                    CurrentStep = AnalysisSetupStep.OptionsSelection;
                     break;
                 case AnalysisSetupStep.Naming:
-                    CurrentStep = AnalysisSetupStep.OptionsSelection;
+                    CurrentStep = AnalysisSetupStep.BaselineSelection;
                     break;
                 case AnalysisSetupStep.Started:
                     break;
@@ -148,12 +148,12 @@ namespace Manassa.Windows
             switch (CurrentStep)
             {
                 case AnalysisSetupStep.DatasetSelection:
-                    CurrentStep = AnalysisSetupStep.BaselineSelection;
-                    break;
-                case AnalysisSetupStep.BaselineSelection:
                     CurrentStep = AnalysisSetupStep.OptionsSelection;
                     break;
                 case AnalysisSetupStep.OptionsSelection:                    
+                    CurrentStep = AnalysisSetupStep.BaselineSelection;
+                    break;
+                case AnalysisSetupStep.BaselineSelection:
                     CurrentStep = AnalysisSetupStep.Naming;
                     break;
                 case AnalysisSetupStep.Naming:

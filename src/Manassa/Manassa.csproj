@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -77,12 +77,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
-    <Reference Include="MultiAlignEngine, Version=1.0.4084.24787, Culture=neutral, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\x64\MultiAlignEngine.dll</HintPath>
-    </Reference>
+    
   </ItemGroup>
   <ItemGroup>
+  	<Reference Include="MultiAlignEngine, Version=1.0.4084.24787, Culture=neutral, processorArchitecture=AMD64">
+        <SpecificVersion>False</SpecificVersion>
+        <HintPath>..\..\lib\$(Platform)\MultiAlignEngine.dll</HintPath>
+    </Reference>
     <Reference Include="PNNLOmics, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\PNNLOmics.dll</HintPath>

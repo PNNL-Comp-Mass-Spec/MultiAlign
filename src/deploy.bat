@@ -1,5 +1,8 @@
-CLS
 ECHO OFF
+REM This DOS script deploys a new version of MultiAlign to the sandbox site before being pushed out the main location
+REM and ultimately website.
+CLS
+
 
 SET /P "major=Please Enter Major Number: "
 SET /P "minor=Please Enter Minor Number: "
@@ -47,7 +50,6 @@ del /F /S %x86%\Manassa\*.pdb
 rmdir /Q /S %x86%\MultiAlignConsole\examples
 rmdir /Q /S %x86%\MultiAlignConsole\sic
 rmdir /Q /S %x86%\MultiAlignConsole\scripts
-
 
 del /F /S %x86%\MultiAlignConsole\*.vshost.exe*
 del /F /S %x86%\MultiAlignConsole\*.pdb

@@ -665,6 +665,7 @@ namespace MultiAlignCore.Algorithms
             filteredFeatures = LCMSFeatureFilters.FilterFeatures(features,
                                                                  filterOptions);
 
+            int id = 0;
             foreach (UMCLight feature in filteredFeatures)
             {
                 foreach (MSFeatureLight msFeature in feature.MSFeatures)
@@ -674,6 +675,9 @@ namespace MultiAlignCore.Algorithms
                 feature.MassMonoisotopicAligned = feature.MassMonoisotopic;
                 feature.NETAligned              = feature.NET;
                 feature.ScanAligned             = feature.Scan;
+
+                // Make sure we re-id everything to be consecutive.
+                feature.ID                      = id++;
             }
 
             UpdateStatus( string.Format("Filtered features from: {0} to {1}.", features.Count, filteredFeatures.Count));            

@@ -21,9 +21,10 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
             DriftTimeTolerance      = 50.0;
             WriteResultsBackToMTS   = false;            
             ShiftAmount             = 11;
-            UsePriors               = false;
+            UsePriors               = true;
             UseEllipsoid            = false;
-            UseDriftTime            = false;            
+            UseDriftTime            = false;
+            ShouldCalculateSTAC     = true;
         }
 
         [ParameterFileAttribute("UsePriors", "STAC")]
