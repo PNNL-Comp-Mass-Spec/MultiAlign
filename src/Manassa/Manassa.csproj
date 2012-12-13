@@ -76,9 +76,6 @@
       <HintPath>..\..\lib\x64\MultiAlignEngine.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
-    
-  </ItemGroup>
   <ItemGroup>
   	<Reference Include="MultiAlignEngine, Version=1.0.4084.24787, Culture=neutral, processorArchitecture=AMD64">
         <SpecificVersion>False</SpecificVersion>
