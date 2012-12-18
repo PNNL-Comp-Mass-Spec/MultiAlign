@@ -31,9 +31,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tutorials", "tutorials", "{54FBAD8A-A65F-435C-8A62-197A4485A436}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Guides", "Guides", "{3B731C48-62B9-49BB-A587-305C3025F579}"
-	ProjectSection(SolutionItems) = preProject
-		..\..\..\doc\website\MultiAlign-QuickStartGuide.docx = ..\..\..\doc\website\MultiAlign-QuickStartGuide.docx
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

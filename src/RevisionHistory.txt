@@ -1,4 +1,13 @@
 MutliaAlign Revision History
+version 5.0.1  December 12, 2012
+ 	- Added new GUI
+	- Added traceback capability
+	- improved alignment performance 
+	- improved caching performance for database
+	- 32/64 bit support for both GUI and console
+		- 64-bit does not support Thermo raw file reading yet.
+	- removed MTDB database loading from Microsoft Access files
+	- added capability to load MTDB databases in SQLite format from APE
 version 4.1.1. November, 16, 2011
 	- Added the ability to use a local MTDB for SQLite
 	- Added factor loading using MAGE

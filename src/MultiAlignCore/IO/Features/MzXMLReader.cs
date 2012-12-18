@@ -14,14 +14,14 @@ namespace MultiAlignCore.IO.Features
         /// <summary>
         /// Readers for each dataset.
         /// </summary>
-        private Dictionary<int, clsMzXMLFileReader> m_readers;
+        private Dictionary<int, clsMzXMLFileAccessor> m_readers;
 
         private Dictionary<int, string> m_dataFiles;
 
         public MzXMLReader()
         {
             m_dataFiles = new Dictionary<int, string>();
-            m_readers   = new Dictionary<int,clsMzXMLFileReader>();
+            m_readers = new Dictionary<int, clsMzXMLFileAccessor>();
             BinSize     = .5; 
         }
        
@@ -91,8 +91,7 @@ namespace MultiAlignCore.IO.Features
             if (!m_readers.ContainsKey(group))
             {
                 string path                 = m_dataFiles[group];
-                clsMzXMLFileReader reader   = new clsMzXMLFileReader();
-                reader.SkipBinaryData       = true;
+                clsMzXMLFileAccessor reader = new clsMzXMLFileAccessor();                
                 m_readers.Add(group, reader);
 
                 bool opened = reader.OpenFile(path);
@@ -101,7 +100,7 @@ namespace MultiAlignCore.IO.Features
                     throw new IOException("Could not open the mzXML file " + path);
                 }
             }
-            clsMzXMLFileReader rawReader = m_readers[group];
+            clsMzXMLFileAccessor rawReader = m_readers[group];
 
             int totalScans = rawReader.ScanCount;            
             clsSpectrumInfo info = new clsSpectrumInfo();
@@ -150,8 +149,7 @@ namespace MultiAlignCore.IO.Features
             if (!m_readers.ContainsKey(group))
             {
                 string path                 = m_dataFiles[group];
-                clsMzXMLFileReader reader   = new clsMzXMLFileReader();
-                reader.SkipBinaryData       = true;
+                clsMzXMLFileAccessor reader = new clsMzXMLFileAccessor();                
                 m_readers.Add(group, reader);
 
                 bool opened = reader.OpenFile(path);
@@ -160,7 +158,7 @@ namespace MultiAlignCore.IO.Features
                     throw new IOException("Could not open the mzXML file " + path);
                 }
             }
-            clsMzXMLFileReader rawReader = m_readers[group];
+            clsMzXMLFileAccessor rawReader = m_readers[group];
 
             int numberOfScans = rawReader.ScanCount;            
             clsSpectrumInfo info = new clsSpectrumInfo();
@@ -173,7 +171,8 @@ namespace MultiAlignCore.IO.Features
                     continue;
 
                 clsSpectrumInfo header = new clsSpectrumInfo();
-            
+
+                rawReader.GetSpectrumHeaderInfoByIndex(i, ref header);
                 if (header.MSLevel > 1)
                 {
                     MSSpectra spectrum       = new MSSpectra();

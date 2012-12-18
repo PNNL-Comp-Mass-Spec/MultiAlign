@@ -3,7 +3,6 @@ REM This DOS script deploys a new version of MultiAlign to the sandbox site befo
 REM and ultimately website.
 CLS
 
-
 SET /P "major=Please Enter Major Number: "
 SET /P "minor=Please Enter Minor Number: "
 SET /P "build=Please Enter Build Number: "
@@ -11,7 +10,6 @@ SET "version=%major%.%minor%.%build%"
 
 SET "vDir=MultiAlign-v"
 SET "finalVersion=%vDir%%version%"
-SET "outpath=\\floyd\software\MultiAlign\test\%finalVersion%"
 SET "localpath=m:\software\proteomics\MultiAlign\deployed\%finalVersion%"
 
 ECHO %outpath%
@@ -36,10 +34,12 @@ mkdir %x64%\MultiAlignConsole
 xcopy /S .\MultiAlignParameterFileEditor\bin\x86\release\*  	%x86%\MultiAlignParameterFileEditor
 xcopy /S .\Manassa\bin\x86\release\*  				%x86%\MultiAlign
 xcopy /S .\MultiAlignConsole\bin\x86\release\*  		%x86%\MultiAlignConsole
+xcopy /S .\RevisionHistory.txt 					%x86%
 
 xcopy /S .\MultiAlignParameterFileEditor\bin\x64\release\*  	%x64%\MultiAlignParameterFileEditor
 xcopy /S .\Manassa\bin\x64\release\*  				%x64%\MultiAlign
 xcopy /S .\MultiAlignConsole\bin\x64\release\*  		%x64%\MultiAlignConsole
+xcopy /S .\RevisionHistory.txt 					%x64%
 
 ECHO Cleaning up directories
 del /F /S %x86%\MultiAlignParameterFileEditor\*.vshost.exe*
