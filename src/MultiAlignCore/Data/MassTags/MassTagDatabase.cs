@@ -100,8 +100,15 @@ namespace MultiAlignCore.Data.MassTags
             MassTags.AddRange(massTags);
 
             Dictionary<int, MassTagLight> massTagMap = new Dictionary<int, MassTagLight>();
-            massTags.ForEach(x => massTagMap.Add(x.ID, x));
 
+            foreach (MassTagLight tag in massTags)
+            {
+                if (massTagMap.ContainsKey(tag.ID) == false)
+                {
+                    massTagMap.Add(tag.ID, tag);
+                }
+            }
+            
             ProteinsToMassTags                  = new Dictionary<int, List<MassTagLight>>();
             Dictionary<int, Protein> proteinMap = new Dictionary<int, Protein>();
 

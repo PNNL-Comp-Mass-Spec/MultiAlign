@@ -545,16 +545,24 @@ namespace MultiAlignCore.Algorithms
                     if (dataset.Raw != null)
                     {
                         UpdateStatus( string.Format("Loading MS/MS Raw data from {0}", dataset.DatasetName));
-                        
-                        spectra = UMCLoaderFactory.LoadRawData(dataset,
-                                                               excludeMap);
 
-                        if (spectra.Count > 1)
+
+                        try
                         {
 
-                            UpdateStatus( "Linking MS/MS data to MS Features");
-                            mapped = LinkMSFeaturesToMSMS(msFeatures, spectra);
-                        }
+                            spectra = UMCLoaderFactory.LoadRawData(dataset,
+                                                                   excludeMap);
+
+                            if (spectra.Count > 1)
+                            {
+
+                                UpdateStatus("Linking MS/MS data to MS Features");
+                                mapped = LinkMSFeaturesToMSMS(msFeatures, spectra);
+                            }
+                        }catch(Exception ex)
+                        {
+                            UpdateStatus(string.Format("Could not load the raw file for dataset {0} - {1}", dataset.DatasetName,  ex.Message));
+                        }                         
                     }
                 }
 

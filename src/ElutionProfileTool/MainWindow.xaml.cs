@@ -122,6 +122,101 @@ namespace ElutionProfileTool
 
             return fits;
         }
+
+        public string GetStateString(FitEnum fit)
+        {
+            if (IsDoublePeakAnnotation)
+            {
+                return DoubleAnnotation(fit);
+            }
+            else
+            {
+                return SingleAnnotation(fit);
+            }
+        }
+        public string DoubleAnnotation(FitEnum fit)
+        {
+            string stateData = "";
+            switch (fit)
+            {
+                case FitEnum.Ideal0:
+                    stateData = "0\tOnePeak";
+                    break;
+                case FitEnum.Good1:
+                    stateData = "1\tOnePeakWithTail";
+                    break;
+                case FitEnum.Ok2:
+                    stateData = "2\tTwoPeaks";
+                    break;
+                case FitEnum.Poor3:
+                    stateData = "3\tThreePeaks";
+                    break;
+                case FitEnum.Bad4:
+                    stateData = "4\tMoreThanThree";
+                    break;
+                case FitEnum.Double:
+                    stateData = "5\tCannotTell";
+                    break;
+                case FitEnum.Bad3Points:
+                    stateData = "6\tBad 5 or less Points";
+                    break;
+                case FitEnum.NotSet:
+                    stateData = "-1\tNot Scored";
+                    break;
+                default:
+                    break;
+            }
+
+            return stateData;
+        }
+        public string SingleAnnotation(FitEnum fit)
+        {
+             string stateData = "";
+             switch (fit)
+             {
+                 case FitEnum.Ideal0:
+                     stateData = "0\tIdeal";
+                     break;
+                 case FitEnum.Good1:
+                     stateData = "1\tGood";
+                     break;
+                 case FitEnum.Ok2:
+                     stateData = "2\tOk";
+                     break;
+                 case FitEnum.Poor3:
+                     stateData = "3\tPoor";
+                     break;
+                 case FitEnum.Bad4:
+                     stateData = "4\tBad";
+                     break;
+                 case FitEnum.Double:
+                     stateData = "5\tDouble Peak";
+                     break;
+                 case FitEnum.Bad3Points:
+                     stateData = "6\tBad 5 Points";
+                     break;
+                 case FitEnum.NotSet:
+                     stateData = "-1\tNot Scored";
+                     break;
+                 default:
+                     break;
+             }
+
+             return stateData;
+        }
+
+        public bool IsDoublePeakAnnotation
+        {
+            get { return (bool)GetValue(IsDoublePeakAnnotationProperty); }
+            set { SetValue(IsDoublePeakAnnotationProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for IsDoublePeakAnnotation.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty IsDoublePeakAnnotationProperty =
+            DependencyProperty.Register("IsDoublePeakAnnotation", typeof(bool), typeof(MainWindow), new UIPropertyMetadata(false));
+
+
+
         public void ViewFit(FitData data)
         {            
 
@@ -202,41 +297,9 @@ namespace ElutionProfileTool
 
             if (!skip)
             {
-                string name = m_fits[m_fitIndex].Name;
-
-
-                string stateData = "";
-                switch (m_state)
-                {
-                    case FitEnum.Ideal0:
-                        stateData = "0\tIdeal";
-                        break;
-                    case FitEnum.Good1:
-                        stateData = "1\tGood";
-                        break;
-                    case FitEnum.Ok2:
-                        stateData = "2\tOk";
-                        break;
-                    case FitEnum.Poor3:
-                        stateData = "3\tPoor";
-                        break;
-                    case FitEnum.Bad4:
-                        stateData = "4\tBad";
-                        break;
-                    case FitEnum.Double:
-                        stateData = "5\tDouble Peak";
-                        break;
-                    case FitEnum.Bad3Points:
-                        stateData = "6\tBad 3 Points";
-                        break;
-                    case FitEnum.NotSet:
-                        stateData = "-1\tNot Scored";
-                        break;
-                    default:
-                        break;
-                }
-
-                string data = string.Format("{0}\t{1}\n", name, stateData);
+                string name         = m_fits[m_fitIndex].Name;
+                string stateData    = GetStateString(m_state);
+                string data         = string.Format("{0}\t{1}\n", name, stateData);
                 File.AppendAllText(m_saved, data);
             }
 
@@ -245,7 +308,7 @@ namespace ElutionProfileTool
             int randomPoint = m_random.Next(0, m_indexList.Count - 1);
             m_fitIndex      = randomPoint;
 
-            if (m_fits[m_fitIndex].X.Count < 4)
+            if (m_fits[m_fitIndex].X.Count < 5)
             {
                 m_state = FitEnum.Bad3Points;
                 MoveNext();
@@ -254,6 +317,33 @@ namespace ElutionProfileTool
             {
                 ViewFit(m_fits[m_fitIndex]);
                 m_state = FitEnum.NotSet;
+            }
+        }
+
+        private void modeButton_Click(object sender, RoutedEventArgs e)
+        {
+            IsDoublePeakAnnotation = (IsDoublePeakAnnotation == false);
+
+            if (IsDoublePeakAnnotation)
+            {
+                ideaButton.Content      = "One Peak";
+                goodOneButton.Content   = "One With Long Tail";
+                okButton.Content        = "Two Peaks";
+                badButton.Content       = "Three Peaks";
+                failedButton.Content    = "More Than Three";
+                doubleButton.Content    = "Cannot Tell";
+                modeButton.Content      = "Set To Single Mode";
+            }   
+            else
+            {
+                
+                ideaButton.Content      = "Ideal - 0";
+                goodOneButton.Content   = "Good - 1";
+                okButton.Content        = "Ok - 2";
+                badButton.Content       = "Poor - 3";
+                failedButton.Content    = "Failed - 4";
+                doubleButton.Content    = "Double";
+                modeButton.Content      = "Set To Double Mode";
             }
         }        
     }
