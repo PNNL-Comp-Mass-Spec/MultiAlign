@@ -123,15 +123,71 @@ namespace MultiAlignCore.IO.Features
         #region ISpectraProvider Members
         public void AddDataFile(string path, int groupID)
         {
-            
+            if (m_dataFiles.ContainsKey(groupID) == false)
+            {
+                m_dataFiles.Add(groupID, path);
+            }
+            else
+            {
+                m_dataFiles[groupID] = path;
+            }
         }
         public List<MSSpectra> GetMSMSSpectra(int group)
         {
-            return null;
+            return GetMSMSSpectra(group, new Dictionary<int, int>());
         }
         public List<MSSpectra> GetMSMSSpectra(int group, Dictionary<int, int> excludeMap)
         {
-            return null;
+            List<MSSpectra> spectra = new List<MSSpectra>();
+
+            if (!m_dataFiles.ContainsKey(group))
+            {
+                throw new System.Exception("The group-dataset ID provided was not found.");
+            }
+            // If we dont have a reader, then create one for this group 
+            // next time, it will be available and we won't have to waste time
+            // opening the file.
+            if (!m_readers.ContainsKey(group))
+            {
+                string path                 = m_dataFiles[group];
+                clsMzXMLFileReader reader   = new clsMzXMLFileReader();
+                reader.SkipBinaryData       = true;
+                m_readers.Add(group, reader);
+
+                bool opened = reader.OpenFile(path);
+                if (!opened)
+                {
+                    throw new IOException("Could not open the mzXML file " + path);
+                }
+            }
+            clsMzXMLFileReader rawReader = m_readers[group];
+
+            int numberOfScans = rawReader.ScanCount;            
+            clsSpectrumInfo info = new clsSpectrumInfo();
+            
+            for (int i = 0; i < numberOfScans; i++)
+            {
+                // This scan is not to be used.
+                bool isInExcludeMap = excludeMap.ContainsKey(i);
+                if (isInExcludeMap)
+                    continue;
+
+                clsSpectrumInfo header = new clsSpectrumInfo();
+            
+                if (header.MSLevel > 1)
+                {
+                    MSSpectra spectrum       = new MSSpectra();
+                    spectrum.MSLevel         = header.MSLevel;
+                    spectrum.RetentionTime   = header.RetentionTimeMin;
+                    spectrum.Scan            = i;
+                    spectrum.PrecursorMZ     = header.ParentIonMZ;
+                    spectrum.TotalIonCurrent = header.TotalIonCurrent;
+                    spectrum.CollisionType   = CollisionType.Other;                    
+                    spectra.Add(spectrum);
+                }
+            }
+
+            return spectra;
         }
         #endregion
 
