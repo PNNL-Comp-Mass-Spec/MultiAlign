@@ -38,17 +38,17 @@ namespace MultiAlignWin
 
         private int mint_numberOfRows = 0;
         private bool mbool_proteinsMapped               = false;
-		private bool mbool_show_cluster_aligned_net     = true ; 
-		private bool mbool_show_cluster_calibrated_mass = true ; 
+		private bool mbool_show_cluster_aligned_net     = false ; 
+		private bool mbool_show_cluster_calibrated_mass = false ; 
 		private bool mbool_show_all_columns             = true ; 
-		private bool mbool_show_calibrated_mass_columns = true ; 
+		private bool mbool_show_calibrated_mass_columns = false ; 
 		private bool mbool_show_mass_columns            = true ;
-        private bool mbool_show_driftTime_columns       = true;
+        private bool mbool_show_driftTime_columns       = false;
 		private bool mbool_show_scan_columns            = true ; 
 		private bool mbool_show_aligned_scan_columns    = true ; 
 		private bool mbool_show_umc_index_columns       = true ; 
 		private bool mbool_ShowMassTags                 = true ;
-        private bool mbool_showCMCAbundances            = false;
+        private bool mbool_showCMCAbundances            = true;
 		private bool mbool_PeakMatched                  = false ; 
 		private bool mbool_ttest_performed              = false ; 
 		private bool mbool_show_ttest_column            = false ;
@@ -156,7 +156,7 @@ namespace MultiAlignWin
 			DataTable table = new DataTable("Analysis") ; 
 
 			table.Columns.Add(mstring_umc_index_col, typeof(int)) ; 
-			table.Columns.Add(mstring_umc_rep_size_col, typeof(int)) ; 
+		table.Columns.Add(mstring_umc_rep_size_col, typeof(int)) ; 
 			table.Columns.Add(mstring_umc_rep_mass_col, typeof(double)) ;
             
 
@@ -241,7 +241,7 @@ namespace MultiAlignWin
                 /// Then we figure out what other columns each dataset needs.  Here
                 /// we see if we haev enough for all the calibrated masses etc.
                 /// 
-				int num_columns_per_dataset = 2 ; 
+				int num_columns_per_dataset = 3 ; 
 				if (mbool_show_mass_columns)
 				{
 					num_columns_per_dataset++ ; 
@@ -251,8 +251,11 @@ namespace MultiAlignWin
 					num_columns_per_dataset++ ; 
 				}
 				if (mbool_show_scan_columns)
-				{
-					num_columns_per_dataset++ ; 
+                {
+                    num_columns_per_dataset++;
+                    num_columns_per_dataset++;
+                    num_columns_per_dataset++;
+                    num_columns_per_dataset++; 
 				}
 				if (mbool_show_aligned_scan_columns)
 				{
@@ -294,50 +297,57 @@ namespace MultiAlignWin
                 /// 
 				for (int dataset_num = 0 ; dataset_num < num_datasets ; dataset_num++)
 				{
+
 					string file_name = mobjAnalysis.UMCData.DatasetName[dataset_num] ;
 					int index        = file_name.LastIndexOf("\\") ;
-					string col_name  = file_name.Substring(index+1) ; 
+					string col_name  = file_name.Substring(index+1) ;
+                    col_name = "_" + dataset_num.ToString();
                                         
 					arr_datasets_to_show.Add(dataset_num) ;
 
+                    table.Columns.Add("Dataset Id" + col_name, typeof(int));
+
                     if (mbool_show_mass_columns)
                     {
-                        table.Columns.Add(mstring_mass_colum + "_" + col_name, typeof(double));
+                        table.Columns.Add(mstring_mass_colum + col_name, typeof(double));
                     }
 					if (mbool_show_calibrated_mass_columns)					
                     {
-                        table.Columns.Add(mstring_calibrated_mass_colum  + "_" +  col_name, typeof(double));
+                        table.Columns.Add(mstring_calibrated_mass_colum + col_name, typeof(double));
 					}
-					if (mbool_show_scan_columns)					
-					{
-                    	table.Columns.Add(mstring_scan_colum  + "_" +  col_name , typeof(double)) ;
+					if (mbool_show_scan_columns)
+                    {
+                        table.Columns.Add("NET" + col_name, typeof(double));
+                        table.Columns.Add(mstring_scan_colum + col_name, typeof(double));
+                        table.Columns.Add("ScanStart" + col_name, typeof(double));
+                        table.Columns.Add("ScanEnd" + col_name, typeof(double));
 					}
 					
 					if (mbool_show_aligned_scan_columns)					
 					{
-                    	table.Columns.Add(  mstring_aligned_scan_colum + "_" + col_name, typeof(double)) ;
+                        table.Columns.Add(mstring_aligned_scan_colum + col_name, typeof(double));
 					}
 					
 					if (mbool_show_umc_index_columns)					
 					{
-                    	table.Columns.Add(mstring_umc_index_column + "_" + col_name, typeof(long)) ;
+                        table.Columns.Add(mstring_umc_index_column + col_name, typeof(long));
 					}
 
                     if (mbool_show_driftTime_columns)
                     {
-                        table.Columns.Add(mstring_driftTime_column + "_" + col_name, typeof(double));
+                        table.Columns.Add(mstring_driftTime_column + col_name, typeof(double));
                     }
 					                    
                     /// 
                     /// This is for the abundance value 
                     /// 
-                    table.Columns.Add("Abundance-Sum-" + col_name, typeof(double));
-                    table.Columns.Add("Abundance-Max-" + col_name, typeof(double));
+                    table.Columns.Add("Abundance-Sum" + col_name, typeof(double));
+                    table.Columns.Add("Abundance-Max" + col_name, typeof(double));
 
                     /// 
                     /// Spectral count - # of peaks 
                     /// 
-                    table.Columns.Add(mstring_umc_spectral_count + "_" + col_name, typeof(string));
+                    table.Columns.Add(mstring_umc_spectral_count +  col_name, typeof(string));
 
                     /// 
                     /// Charge state abundances
@@ -347,10 +357,12 @@ namespace MultiAlignWin
                         for (int j = 0; j < mobjAnalysis.UMCData.HighestChargeState; j++)
                         {
                             int chargeState = j + 1;
-                            table.Columns.Add(string.Format("{0}_CS_{1}_{2}", CONST_CHARGE_ABUNDANCE_START,
-                                                                                chargeState,
-                                                                                col_name),
-                                                                                typeof(long));                            
+                            table.Columns.Add(string.Format("{0}_CS_{1}" + col_name, CONST_CHARGE_ABUNDANCE_START,
+                                                                                chargeState),
+                                                                                typeof(long));
+                            table.Columns.Add(string.Format("{0}_mz_{1}" + col_name, CONST_CHARGE_ABUNDANCE_START,
+                                                                                chargeState),
+                                                                                typeof(double));                            
                         }
                     }
 				}
@@ -473,8 +485,15 @@ namespace MultiAlignWin
                             col_num += num_columns_per_dataset;
                             continue;
                         }
-
-
+                        if (umc != null)
+                        {
+                            row[start_data_column_num + col_num] = umc.DatasetId;
+                        }
+                        else
+                        {
+                            row[start_data_column_num + col_num] = DBNull.Value; 
+                        }
+                        col_num++;
 
 						if (mbool_show_mass_columns)
 						{
@@ -495,11 +514,29 @@ namespace MultiAlignWin
 
 						if (mbool_show_scan_columns)
 						{
-							if (umc != null)
-								row[start_data_column_num+col_num] = Convert.ToString(umc.mint_scan) ; 
-							else
-								row[start_data_column_num+col_num] = DBNull.Value ; 
-							col_num++ ; 
+                            if (umc != null)
+                            {
+                                row[start_data_column_num + col_num] = Convert.ToString(umc.mdouble_net);
+                                col_num++; 
+                                row[start_data_column_num + col_num] = Convert.ToString(umc.mint_scan);
+                                col_num++;
+                                row[start_data_column_num + col_num] = Convert.ToString(umc.mint_start_scan);
+                                col_num++;
+                                row[start_data_column_num + col_num] = Convert.ToString(umc.mint_end_scan);
+                                col_num++;                                 
+                            }
+                            else
+                            {
+                                row[start_data_column_num + col_num] = DBNull.Value;
+                                col_num++;
+                                row[start_data_column_num + col_num] = DBNull.Value;
+                                col_num++;
+                                row[start_data_column_num + col_num] = DBNull.Value;
+                                col_num++;
+                                row[start_data_column_num + col_num] = DBNull.Value;
+                                col_num++;                                 
+                            }
+
 						}
 						if (mbool_show_aligned_scan_columns)
 						{
@@ -566,16 +603,41 @@ namespace MultiAlignWin
                         /// //////////////////////////////////////////////////////////////////////////////
                         if (mbool_showCMCAbundances)
                         {
-                            
+
+                            double totalAbundance = 0;
+
+                            if (umc != null)
+                            {
+                                totalAbundance = umc.mdouble_sum_abundance;
+                            }
+
                             /// 
                             /// For each charge state, we should have a column of data available.
                             /// 
                             for(int j = 0; j < mobjAnalysis.UMCData.HighestChargeState; j++)
                             {
+                                double mzValue = 0;
+                                col_num++;
+                                if (umc != null)
+                                {                                    
+                                    row[start_data_column_num + col_num] = umc.marray_chargeStatesAbundances[j];
+                                }
+                                else
+                                {
+                                    row[start_data_column_num + col_num] = DBNull.Value;
+                                }
+
                                 col_num++;
                                 if (umc != null)
                                 {
-                                    row[start_data_column_num + col_num] = umc.marray_chargeStatesAbundances[j];
+                                    if (umc.marray_chargeStatesAbundances[j] > 0)
+                                    {
+                                        int chargeState = j + 1;
+                                        double monoMass = umc.Mass;
+                                        double charge = Convert.ToDouble(chargeState);
+                                        mzValue = (monoMass + charge) / charge;                             
+                                    }
+                                    row[start_data_column_num + col_num] = mzValue;
                                 }
                                 else
                                 {
@@ -1268,44 +1330,134 @@ namespace MultiAlignWin
 				}
 
 
-				// now go through each row and save it. 
-				DataTable tb = (DataTable) DataSource ; 
-				
-				int num_rows = tb.Rows.Count ; 
+                using (TextWriter writer = new StreamWriter(fileDialog.FileName))
+                {
 
-				TextWriter writer = new StreamWriter(fileDialog.FileName);
+                    int[] arrClusterMainMemberIndex     = mobjAnalysis.UMCData.mobjClusterData.marrClusterMainMemberIndex; 
+                    clsUMCData umcData                  = mobjAnalysis.UMCData;
+                    clsClusterData clusters             = mobjAnalysis.UMCData.mobjClusterData;
 
-				// first write out the column names. 
-				for (int col_num = 0 ; col_num < tb.Columns.Count ; col_num++)
-				{
-					writer.Write(tb.Columns[col_num].ColumnName) ; 
-					if (col_num != tb.Columns.Count - 1)
-						writer.Write(delimiter) ;
-					else
-						writer.Write("\n")  ;
-				}
+                    int totalDatasets = mobjAnalysis.FileNames.Length;                    
+                    int totalClusters = clusters.NumClusters;
 
-				for (int row_num = 0 ; row_num < num_rows ; row_num++)
-				{
-					DataRow row = tb.Rows[row_num] ; 
-					for (int col_num = 0 ; col_num < tb.Columns.Count ; col_num++)
-					{
-						if (row[tb.Columns[col_num].ColumnName] != null && row[tb.Columns[col_num].ColumnName] != DBNull.Value)
-						{
-							string data_val = Convert.ToString(row[tb.Columns[col_num].ColumnName]) ; 
-							if (data_val.IndexOf(delimiter) >= 0)
-							{
-								data_val = "\"" + data_val + "\"" ; 
-							}
-							writer.Write(data_val) ; 
-						}
-						if (col_num != tb.Columns.Count - 1)
-							writer.Write(delimiter) ;
-						else
-							writer.Write("\n")  ;
-					}
-				}
-				writer.Close();
+
+                    writer.WriteLine("[DatasetMap]");
+                    writer.WriteLine("Dataset ID{0}Dataset Path", delimiter);
+                    for (int i = 0; i < totalDatasets; i++)
+                    {
+                        writer.WriteLine("{1}{0}{2}",
+                                            delimiter,
+                                            i,
+                                            mobjAnalysis.FileNames[i].Replace("_isos.csv", "")
+                                            );
+                    }
+
+                    writer.WriteLine("[Data]");
+                    writer.WriteLine("Row ID{0}Cluster Size{0}Cluster Mass{0}Cluster NET{0}Dataset ID{0}Mass{0}NET{0}Scan{0}ScanStart{0}ScanEnd{0}Aligned Scan{0}UMC Index{0}Abundance-Sum{0}Abundance-Max{0}MS Feature Scan Count{0}Representative mz{0}Representative charge{0}CMC-Abundance_CS_1{0}CMC-Abundance_CS_2{0}CMC-Abundance_CS_3{0}CMC-Abundance_CS_4",
+                                        delimiter);
+
+                    for (int clusterNum = 0; clusterNum < totalClusters; clusterNum++)                
+                    {
+                        clsCluster cluster      = clusters.GetCluster(clusterNum);
+                        string clusterString    = string.Format("{1}{0}{2}{0}{3}{0}{4}",
+                                                        delimiter,
+                                                        clusterNum,
+                                                        cluster.mshort_num_dataset_members,
+                                                        cluster.Mass,
+                                                        cluster.Net);
+
+                        for (int dataset = 0; dataset < totalDatasets; dataset++)
+                        {                                                        
+                            int pt_index = (clusterNum * totalDatasets) + dataset;
+                            int index    = arrClusterMainMemberIndex[pt_index];
+                            clsUMC umc   = null;
+
+                            /// ////////////////////////////////////////////////////////////////////////////// 
+                            /// Find the UMC so we can grab data from it to show
+                            /// ////////////////////////////////////////////////////////////////////////////// 
+                            if (index != -1)
+                            {
+                                double mz   = 0;                                  
+                                umc         = umcData.GetUMC(index);
+                                writer.WriteLine("{1}{0}{2}{0}{3}{0}{4}{0}{5}{0}{6}{0}{7}{0}{8}{0}{9}{0}{10}{0}{11}{0}{12}{0}{13}{0}{14}{0}{15}{0}{16}{0}{17}{0}{18}",
+                                                    delimiter,
+                                                    clusterString,                          //1
+                                                    umc.DatasetId,                          //2
+                                                    umc.MassCalibrated,                     //3
+                                                    umc.Net,                                //4
+                                                    umc.Scan,                               //5
+                                                    umc.ScanStart,                          //6
+                                                    umc.ScanEnd,                            //7
+                                                    umc.ScanAligned,                        //8
+                                                    umc.mint_umc_index,                     //9
+                                                    umc.AbundanceSum,                       //10
+                                                    umc.AbundanceMax,                       //11
+                                                    umc.mint_spectral_count,                //12
+                                                    umc.mdouble_class_rep_mz,               //13
+                                                    umc.mshort_class_rep_charge,            //14
+                                                    umc.marray_chargeStatesAbundances[0],   //15
+                                                    umc.marray_chargeStatesAbundances[1],   //16
+                                                    umc.marray_chargeStatesAbundances[2],   //17
+                                                    umc.marray_chargeStatesAbundances[3]);  //18       
+                            }                                                     
+                        }
+                        if ((clusterNum % 300) == 0)
+                        {
+                            GC.Collect();
+                            GC.WaitForPendingFinalizers();
+                            GC.Collect();
+                            GC.WaitForPendingFinalizers();
+                        }                                                 
+                    }
+                }
+
+                return;
+
+
+                //// now go through each row and save it. 
+                //DataTable tb = (DataTable) DataSource ;				
+                //int num_rows = tb.Rows.Count ; 
+
+                //TextWriter writer = new StreamWriter(fileDialog.FileName);
+
+                //// first write out the column names. 
+                //for (int col_num = 0 ; col_num < tb.Columns.Count ; col_num++)
+                //{
+                //    writer.Write(tb.Columns[col_num].ColumnName) ; 
+                //    if (col_num != tb.Columns.Count - 1)
+                //        writer.Write(delimiter) ;
+                //    else
+                //        writer.Write("\n")  ;
+                //}
+
+                //for (int row_num = 0 ; row_num < num_rows ; row_num++)
+                //{
+                //    if ((row_num % 300) == 0)
+                //    {
+                //        GC.Collect();
+                //        GC.WaitForPendingFinalizers();
+                //        GC.Collect();
+                //        GC.WaitForPendingFinalizers();
+                //    }                    
+                //    DataRow row = tb.Rows[row_num] ; 
+                //    for (int col_num = 0 ; col_num < tb.Columns.Count ; col_num++)
+                //    {
+                //        if (row[tb.Columns[col_num].ColumnName] != null && row[tb.Columns[col_num].ColumnName] != DBNull.Value)
+                //        {
+                //            string data_val = Convert.ToString(row[tb.Columns[col_num].ColumnName]) ; 
+                //            if (data_val.IndexOf(delimiter) >= 0)
+                //            {
+                //                data_val = "\"" + data_val + "\"" ; 
+                //            }
+                //            writer.Write(data_val) ; 
+                //        }
+                //        if (col_num != tb.Columns.Count - 1)
+                //            writer.Write(delimiter) ;
+                //        else
+                //            writer.Write("\n")  ;
+                //    }
+                //}
+                //writer.Close();
 				
 			}
 			catch (Exception ex) 
