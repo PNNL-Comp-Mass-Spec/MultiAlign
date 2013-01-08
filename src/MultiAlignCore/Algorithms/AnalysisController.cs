@@ -168,7 +168,7 @@ namespace MultiAlignCore.Algorithms
         /// <param name="e"></param>
         private void processor_FeaturesClustered(object sender, FeaturesClusteredEventArgs e)
         {
-            m_reportCreator.CreateClusterPlots(e.Clusters);
+            m_reportCreator.CreateClusterPlots(e);
             m_reportCreator.CreateChargePlots(m_chargeMap);
         }
         /// <summary>

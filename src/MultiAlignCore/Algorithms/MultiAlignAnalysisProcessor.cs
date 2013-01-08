@@ -1092,7 +1092,7 @@ namespace MultiAlignCore.Algorithms
 
                     if (FeaturesClustered != null)
                     {
-                        FeaturesClustered(this, new FeaturesClusteredEventArgs(clusters));
+                        FeaturesClustered(this, new FeaturesClusteredEventArgs(clusters, chargeState));
                     }
                 }
             }

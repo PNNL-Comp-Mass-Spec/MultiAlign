@@ -10,7 +10,7 @@ SET "version=%major%.%minor%.%build%"
 
 SET "vDir=MultiAlign-v"
 SET "finalVersion=%vDir%%version%"
-SET "localpath=m:\software\proteomics\MultiAlign\deployed\%finalVersion%"
+SET "localpath=m:\software\proteomics\MultiAlign\%finalVersion%"
 
 ECHO %outpath%
 

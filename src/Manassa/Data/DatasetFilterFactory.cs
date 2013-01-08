@@ -31,12 +31,15 @@ namespace Manassa.Data
                     fileFilter = AppendExtension(fileFilter, "SEQUEST Synopsis", ".syn");
                     break;
                 case InputFileType.Features:
-                    fileFilter = AppendExtension(fileFilter, "DeconTools", "_isos.csv");
+                    fileFilter = AppendExtension(fileFilter, "DeconTools Features Files", "_isos.csv");
                     fileFilter = AppendExtension(fileFilter, "LCMS Feature Finder Files", "LCMSFeatures.txt");
                     break;
+                case InputFileType.Peaks:
+                    fileFilter = AppendExtension(fileFilter, "DeconTools Peaks Files", "peaks.txt");                    
+                    break;
                 case InputFileType.Raw:
-                    fileFilter = AppendExtension(fileFilter, "Thermo Raw", ".raw");
-                    fileFilter = AppendExtension(fileFilter, "MZ XML", ".mzxml");
+                    fileFilter = AppendExtension(fileFilter, "Thermo Raw",  ".raw");
+                    fileFilter = AppendExtension(fileFilter, "MZ XML",      ".mzxml");
                     break;
                 default:
                     break;
@@ -59,6 +62,10 @@ namespace Manassa.Data
             if (newPath.EndsWith("lcmsfeatures.txt"))
             {
                 return InputFileType.Features;
+            }
+            if (newPath.EndsWith("peaks.txt"))
+            {
+                return InputFileType.Peaks;
             }
 
             InputFileType type = InputFileType.NotRecognized;

@@ -20,6 +20,7 @@ using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.Data;
 using System.ComponentModel;
 using System.IO;
+using Manassa.Windows.Viewers.Datasets;
 
 namespace Manassa.Windows
 {
@@ -220,7 +221,7 @@ namespace Manassa.Windows
         private void AddFolderButton_Click(object sender, RoutedEventArgs e)
         {
 
-            List<string> extensions = new List<string>() { "*_isos.csv", "*LCMSFeatures.txt", "*.syn", "*.raw", "*.mzxml" };
+            List<string> extensions = new List<string>() { "*_isos.csv", "*LCMSFeatures.txt", "*.syn", "*.raw", "*.mzxml", "*peaks.txt" };
 
             System.IO.SearchOption option = ShouldSearchSubDirectories;
 
@@ -305,6 +306,22 @@ namespace Manassa.Windows
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             ToggleSelection();
+        }
+
+        private void DatasetDetailsButton_Click(object sender, RoutedEventArgs e)
+        {
+            DatasetInformation dataset = ((System.Windows.Controls.Button)sender).CommandParameter as DatasetInformation;
+            if (dataset != null)
+            {
+                Window newWindow                = new Window();
+                newWindow.Width                 = 650;
+                newWindow.Height                = 350;
+                DatasetInputFileEditor viewer   = new DatasetInputFileEditor();
+                viewer.Dataset                  = dataset;
+                newWindow.Content               = viewer;
+                newWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+                newWindow.ShowDialog();
+            }
         }
     }
 

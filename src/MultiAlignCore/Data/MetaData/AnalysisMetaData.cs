@@ -205,6 +205,9 @@ namespace MultiAlignCore.Data
                         case InputFileType.Sequence:
                             datasetInformation.Sequence = file;
                             break;
+                        case InputFileType.Peaks:
+                            datasetInformation.Peaks = file;
+                            break;
                     }
                 }
 

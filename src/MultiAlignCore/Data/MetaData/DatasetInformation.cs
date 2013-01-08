@@ -19,6 +19,8 @@ namespace MultiAlignCore.Data
         private InputFile m_scans;
         private InputFile m_raw;
         private InputFile m_sequence;
+        private InputFile m_peaks;
+        private int m_datasetId;
 
         /// <summary>
 		/// Default constructor.
@@ -34,6 +36,7 @@ namespace MultiAlignCore.Data
             Raw                 = null;
             Sequence            = null;
             Features            = null;
+            Peaks               = null;
             IsBaseline          = false;
 
             PlotData = new DatasetPlotInformation();
@@ -88,8 +91,6 @@ namespace MultiAlignCore.Data
             get;
             set;
         }
-
-        private int m_datasetId;
 		/// <summary>
 		/// Gets or sets the ID of the dataset
 		/// </summary>
@@ -261,6 +262,24 @@ namespace MultiAlignCore.Data
                 }
             }
         }
+        /// <summary>
+        /// Gets or sets the path to the peaks file.
+        /// </summary>
+        public InputFile Peaks
+        {
+            get
+            {
+                return m_peaks;
+            }
+            set
+            {
+                if (m_peaks != value)
+                {
+                    m_peaks = value;
+                    OnNotify("Peaks");
+                }
+            }
+        }
         public DatasetPlotInformation PlotData
         {
             get;
@@ -305,8 +324,9 @@ namespace MultiAlignCore.Data
         {
             string datasetName  = path.Replace("_isos.csv", "").ToLower();
             datasetName         = datasetName.Replace(".scans", "");
-            datasetName         = datasetName.Replace("_fht", "");            
+            datasetName         = datasetName.Replace("_fht", "");
             datasetName         = datasetName.Replace("lcmsfeatures.txt", "");
+            datasetName         = datasetName.Replace("_peaks.txt", "");
             datasetName         = System.IO.Path.GetFileNameWithoutExtension(datasetName);
             return datasetName;                
         }

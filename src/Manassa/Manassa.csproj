@@ -58,28 +58,10 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
   </PropertyGroup>
-  <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <Reference Include="MultiAlignEngine, Version=1.0.4084.24787, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\x86\MultiAlignEngine.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <Reference Include="MultiAlignEngine, Version=1.0.4084.24787, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\x86\MultiAlignEngine.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+  <ItemGroup>
     <Reference Include="MultiAlignEngine, Version=1.0.4084.24787, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\x64\MultiAlignEngine.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
-  	<Reference Include="MultiAlignEngine, Version=1.0.4084.24787, Culture=neutral, processorArchitecture=AMD64">
-        <SpecificVersion>False</SpecificVersion>
-        <HintPath>..\..\lib\$(Platform)\MultiAlignEngine.dll</HintPath>
+      <HintPath>..\..\lib\$(Platform)\MultiAlignEngine.dll</HintPath>
     </Reference>
     <Reference Include="PNNLOmics, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -113,6 +95,7 @@
     <Compile Include="Converters\BoolListSizeConverter.cs" />
     <Compile Include="Converters\AnalysisStepVisibilityConverter.cs" />
     <Compile Include="Converters\BoolWidthConverter.cs" />
+    <Compile Include="Converters\HasPathConverter.cs" />
     <Compile Include="Converters\DoubleToStringConverter.cs" />
     <Compile Include="Converters\IntToStringConverter.cs" />
     <Compile Include="Converters\ViewStateVisibilityConverter.cs" />
@@ -142,6 +125,9 @@
     <Compile Include="IO\ManassaWorkspaceWriter.cs" />
     <Compile Include="IO\DatasetSearcher.cs" />
     <Compile Include="IO\ManassaWorkspaceReader.cs" />
+    <Compile Include="Windows\FilePathFinder.xaml.cs">
+      <DependentUpon>FilePathFinder.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\Plots\AlignmentPlotView.xaml.cs">
       <DependentUpon>AlignmentPlotView.xaml</DependentUpon>
     </Compile>
@@ -165,6 +151,9 @@
     </Compile>
     <Compile Include="Windows\Viewers\Datasets\DatasetInformationView.xaml.cs">
       <DependentUpon>DatasetInformationView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Viewers\Datasets\DatasetInputFileEditor.xaml.cs">
+      <DependentUpon>DatasetInputFileEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\Viewers\Datasets\DatasetListBox.xaml.cs">
       <DependentUpon>DatasetListBox.xaml</DependentUpon>
@@ -232,6 +221,10 @@
     <Compile Include="Workspace\Workspace.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Settings.cs" />
+    <Page Include="Windows\FilePathFinder.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\Plots\AlignmentPlotView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -275,6 +268,10 @@
     <Page Include="Windows\Viewers\Datasets\DatasetInformationView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\Viewers\Datasets\DatasetInputFileEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\Viewers\Datasets\DatasetListBox.xaml">
       <Generator>MSBuild:Compile</Generator>

@@ -10,7 +10,9 @@
     <UserControl.Resources>
         <converters:SearchOptionConverter x:Key="SearchOptionConverter"></converters:SearchOptionConverter>
         <converters:DatasetPathConverter x:Key="DatasetPathConverter"></converters:DatasetPathConverter>
-<converters:DatasetFolderPathConverter x:Key="DatasetFolderPathConverter"></converters:DatasetFolderPathConverter>
+        <converters:HasPathConverter x:Key="HasPathConverter"/>
+        
+        <converters:DatasetFolderPathConverter x:Key="DatasetFolderPathConverter"></converters:DatasetFolderPathConverter>
 
         
     </UserControl.Resources>
@@ -185,13 +187,24 @@
             CanUserAddRows="False"                           
             CanUserSortColumns="True">            
             <DataGrid.Columns >
-                <DataGridTextColumn         Header="Dataset ID"      CanUserSort="True"     Binding="{Binding Path=DatasetId}"   IsReadOnly="True"/>
-                <DataGridTextColumn         Header="Dataset Name"    CanUserSort="True"     Binding="{Binding Path=DatasetName,   Converter={StaticResource ResourceKey=DatasetPathConverter}}"           IsReadOnly="True"/>
-                <DataGridHyperlinkColumn    Header="Instrument File" CanUserSort="True"     Binding="{Binding Raw.Path,             Converter={StaticResource ResourceKey=DatasetPathConverter}}"            IsReadOnly="True"/>
-                <DataGridHyperlinkColumn    Header="Sequence File"   CanUserSort="True"     Binding="{Binding Sequence.Path,        Converter={StaticResource ResourceKey=DatasetPathConverter}}"       IsReadOnly="True"
-                                            >
-                </DataGridHyperlinkColumn>
-                <DataGridTextColumn         Header="Parent Folder"   CanUserSort="True"     Binding="{Binding Path=Features.Path, Converter={StaticResource ResourceKey=DatasetFolderPathConverter}}"  IsReadOnly="True"/>
+                <DataGridTemplateColumn>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Name="DatasetDetailsButton"
+                                    Margin="5"                                    
+                                    Style="{DynamicResource ResourceKey=SimpleButtonStyle}"
+                                    Width="100"
+                                    CommandParameter="{Binding}"
+                                    Click="DatasetDetailsButton_Click">Modify</Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn         Header="Dataset ID"      CanUserSort="True"     Binding="{Binding Path=DatasetId}"    IsReadOnly="True"/>
+                <DataGridTextColumn         Header="Dataset Name"    CanUserSort="True"     Binding="{Binding Path=DatasetName,   Converter={StaticResource ResourceKey=DatasetPathConverter}}"         IsReadOnly="True"/>
+                <DataGridTextColumn         Header="Instrument File" CanUserSort="True"     Binding="{Binding Raw.Path,           Converter={StaticResource ResourceKey=HasPathConverter}}"             IsReadOnly="True"/>
+                <DataGridTextColumn         Header="Peaks File"      CanUserSort="True"     Binding="{Binding Peaks.Path,         Converter={StaticResource ResourceKey=HasPathConverter}}"             IsReadOnly="True"/>
+                <DataGridTextColumn         Header="Sequence File"   CanUserSort="True"     Binding="{Binding Sequence.Path,      Converter={StaticResource ResourceKey=HasPathConverter}}"             IsReadOnly="True"/>                
+                <DataGridTextColumn         Header="Parent Folder"   CanUserSort="True"     Binding="{Binding Path=Features.Path, Converter={StaticResource ResourceKey=DatasetFolderPathConverter}}"   IsReadOnly="True"/>
             </DataGrid.Columns>            
         </DataGrid>
         <Grid

@@ -27,6 +27,10 @@ namespace MultiAlignCore.IO.InputFiles
         /// </summary>
         Database,
         /// <summary>
+        /// Reads DeconTools Peaks files.
+        /// </summary>
+        Peaks,
+        /// <summary>
         /// There is a bad input definition file. 
         /// </summary>
         Unknown,

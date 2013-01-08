@@ -324,11 +324,11 @@ namespace Manassa.Windows
             };
             Dispatcher.Invoke(workAction, DispatcherPriority.Normal);
         }
-        public void CreateClusterPlots(List<UMCClusterLight> clusters)
+        public void CreateClusterPlots(FeaturesClusteredEventArgs clusters)
         {
             Action workAction = delegate
             {
-                BuildClusterPlots(clusters);
+                BuildClusterPlots(clusters.Clusters);
                 Reporter.CreateClusterPlots(clusters);
             };
             Dispatcher.Invoke(workAction, DispatcherPriority.Normal);

@@ -10,6 +10,7 @@ using MultiAlignCustomControls.Charting;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Data.MassTags;
 using MultiAlignCore.Data.Imaging;
+using MultiAlignCore.Algorithms;
 
 namespace MultiAlignCustomControls.Drawing
 {
@@ -55,35 +56,60 @@ namespace MultiAlignCustomControls.Drawing
                 Logger.PrintMessage(string.Format("Could not create {0} plot.", name));
             }
         }
-        public void CreateClusterPlots(List<UMCClusterLight> clusters)
+        public void CreateClusterPlots(FeaturesClusteredEventArgs args)
         {
+            List<UMCClusterLight> clusters = args.Clusters;
             ChartDisplayOptions options = new ChartDisplayOptions(true, true, true, true,
                                                 1, 100,
                                                 "Charge State Histogram", "Charge State", "Count", Config.width, Config.height);
             options.DisplayLegend = false;
 
-            Config.Report.PushTextHeader("Cluster Data");
+            string chargeStateAmmendum = "";
+
+            if (args.WasChargeStateClusteredSeparately)
+            {
+                chargeStateAmmendum = string.Format(" - Charge State {0}", args.ChargeState);
+            }
+
+
+            Config.Report.PushTextHeader("Cluster Data" + chargeStateAmmendum);
             Config.Report.PushStartTable();
             Config.Report.PushStartTableRow();
-            
-            options.Title = "Cluster Member Size Histogram ( Total Clusters = " + clusters.Count.ToString() + ")";
+
+            options.Title = "Cluster Member Size Histogram ( Total Clusters = " + clusters.Count.ToString() + ")" + chargeStateAmmendum;
             options.DisplayLegend = false;
             Image image = RenderDatasetInfo.ClusterSizeHistogram_Thumbnail(clusters, Config.width, Config.height, options);
-            SaveImage(image, "ClusterMemberSizes.png", "Cluster Member Sizes");
-            Config.Report.PushImageColumn(Path.Combine("Plots", "ClusterMemberSizes.png"));
 
-            options.Title = "Cluster Dataset Member Size Histogram ( Total Clusters = " + clusters.Count.ToString() + ")";
+            string imageNameMemberSizes = "ClusterMemberSizes";
+            if (args.WasChargeStateClusteredSeparately)
+            {
+                imageNameMemberSizes += "-charge-" + args.ChargeState.ToString();
+            }
+            SaveImage(image, imageNameMemberSizes + ".png", "Cluster Member Sizes");
+            Config.Report.PushImageColumn(Path.Combine("Plots", imageNameMemberSizes + ".png"));
+
+            options.Title = "Cluster Dataset Member Size Histogram ( Total Clusters = " + clusters.Count.ToString() + ")" + chargeStateAmmendum;
+            imageNameMemberSizes = "ClusterDatasetMemberSizes";
+            if (args.WasChargeStateClusteredSeparately)
+            {
+                imageNameMemberSizes += "-charge-" + args.ChargeState.ToString();
+            }
             image = RenderDatasetInfo.ClusterDatasetMemberSizeHistogram_Thumbnail(clusters, Config.width, Config.height, options);
-            SaveImage(image, "ClusterDatasetMemberSizes.png", "Cluster Dataset Member Sizes");
-            Config.Report.PushImageColumn(Path.Combine("Plots", "ClusterDatasetMemberSizes.png"));
+            SaveImage(image, imageNameMemberSizes + ".png", "Cluster Dataset Member Sizes");
+            Config.Report.PushImageColumn(Path.Combine("Plots", imageNameMemberSizes + ".png"));
 
             // Mass vs. Cluster score 
             options.Title = "Clusters";
             options.YAxisLabel = "Cluster Monoisotopic Mass";
             options.XAxisLabel = "Cluster NET";
             image = RenderDatasetInfo.ClusterScatterPlot_Thumbnail(clusters, options);
-            SaveImage(image, "ClusterScatterPlot.png", "Clusters");
-            Config.Report.PushImageColumn(Path.Combine(PlotPath, "ClusterScatterPlot.png"));
+            imageNameMemberSizes = "ClusterScatterPlot";
+            if (args.WasChargeStateClusteredSeparately)
+            {
+                imageNameMemberSizes += "-charge-" + args.ChargeState.ToString();
+            }
+            SaveImage(image, imageNameMemberSizes + ".png", "Clusters");
+            Config.Report.PushImageColumn(Path.Combine(PlotPath, imageNameMemberSizes +  ".png"));
             Config.Report.PushEndTableRow();
             Config.Report.PushStartTableRow();
             Config.Report.PushEndTable();
@@ -104,6 +130,7 @@ namespace MultiAlignCustomControls.Drawing
             {
                 for (int i = 0; i < histogram.Length; i++)
                 {
+                   
                     Config.Report.PushStartTableRow();
                     Config.Report.PushStartTableColumn();
                     Config.Report.PushData(i.ToString());
@@ -282,10 +309,10 @@ namespace MultiAlignCustomControls.Drawing
                    };
 
                 image       = RenderDatasetInfo.GenericScatterPlot_Thumbnail(new List<SeriesOptions>() { clusterSeries, tagsSeries }, options);
-                labelName   = string.Format("matches-STAC-{0}", confidence - step);                
+                labelName   = string.Format("matches-STAC-{0}.png", confidence - step);                
                 SaveImage(image, labelName, "STAC Matches");
                 Config.Report.PushData(labelName);
-                Config.Report.PushImageColumn(Path.Combine("Plots", labelName + ".png"));
+                Config.Report.PushImageColumn(Path.Combine("Plots", labelName));
 
                 confidence += step;
                 columnIndex++;

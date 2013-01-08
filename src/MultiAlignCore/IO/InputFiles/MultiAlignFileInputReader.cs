@@ -28,6 +28,10 @@ namespace MultiAlignCore.IO.InputFiles
         /// </summary>
         private const string SEQUENCE_HEADER = "[sequence]";
         /// <summary>
+        /// Header for peaks files.
+        /// </summary>
+        private const string PEAKS_HEADER = "[peaks]";
+        /// <summary>
         /// Indicates the start of the raw files.
         /// </summary>
         private const string RAW_HEADER = "[raw]";
@@ -87,6 +91,10 @@ namespace MultiAlignCore.IO.InputFiles
                     case SCANS_HEADER:
                         wasModeChanged      = true;
                         readType            = FileReadMode.ScanFiles;
+                        break;
+                    case PEAKS_HEADER:
+                        wasModeChanged      = true;
+                        readType            = FileReadMode.Peaks;
                         break;
                     case SEQUENCE_HEADER:
                         wasModeChanged      = true;
@@ -183,6 +191,12 @@ namespace MultiAlignCore.IO.InputFiles
                             sequenceFile.Path       = fixedLine;
                             sequenceFile.FileType   = InputFileType.Sequence;
                             info.Files.Add(sequenceFile);
+                            break;
+                        case FileReadMode.Peaks:
+                            InputFile peaksFile = new InputFile();
+                            peaksFile.Path = fixedLine;
+                            peaksFile.FileType = InputFileType.Peaks;
+                            info.Files.Add(peaksFile);
                             break;
                         default:
                             break;

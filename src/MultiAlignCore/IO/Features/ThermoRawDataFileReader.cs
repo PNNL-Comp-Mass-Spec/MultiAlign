@@ -97,7 +97,7 @@ namespace MultiAlignCore.IO.Features
                     continue;
 
                 FinniganFileReaderBaseClass.udtScanHeaderInfoType header = new FinniganFileReaderBaseClass.udtScanHeaderInfoType();
-                rawReader.GetScanInfo(i, ref header);
+                rawReader.GetScanInfo(i, out header);
                 
                 if (header.MSLevel > 1)
                 {
@@ -182,7 +182,7 @@ namespace MultiAlignCore.IO.Features
             
             FinniganFileReaderBaseClass.udtScanHeaderInfoType header = new FinniganFileReaderBaseClass.udtScanHeaderInfoType();
 
-            rawReader.GetScanInfo(scan, ref header);
+            rawReader.GetScanInfo(scan, out header);
 
             if (header.MSLevel != msLevel && msLevel != -1)
                 return null;
@@ -229,7 +229,7 @@ namespace MultiAlignCore.IO.Features
             
             XRawFileIO rawReader                                     = m_readers[group];
             FinniganFileReaderBaseClass.udtScanHeaderInfoType header = new FinniganFileReaderBaseClass.udtScanHeaderInfoType();
-            rawReader.GetScanInfo(scan, ref header);
+            rawReader.GetScanInfo(scan, out header);
 
             return header.MSLevel == 1;
         }
