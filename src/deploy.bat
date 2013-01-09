@@ -11,6 +11,8 @@ SET "version=%major%.%minor%.%build%"
 SET "vDir=MultiAlign-v"
 SET "finalVersion=%vDir%%version%"
 SET "localpath=m:\software\proteomics\MultiAlign\%finalVersion%"
+SET "localwebpath=C:\development\Proteomics\MultiAlign\doc\website\RevisionHistory_Files\"
+
 
 ECHO %outpath%
 
@@ -85,3 +87,6 @@ rmdir /Q /S %consolex64%\MultiAlignConsole\zh-cn
 
 ECHO Running Tests
 
+ECHO Copying Revision History for Web-site
+
+xcopy /S .\RevisionHistory.txt 	%%				
