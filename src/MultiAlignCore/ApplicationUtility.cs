@@ -9,7 +9,7 @@ using MultiAlignEngine;
 namespace MultiAlignCore
 {
     public static class ApplicationUtility
-    {
+    {  
 
         /// <summary>
         /// Calculates the current usage of current processes memory.

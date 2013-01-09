@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
     <DebugSymbols>true</DebugSymbols>
@@ -65,19 +65,19 @@
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
-  </PropertyGroup>  
+  </PropertyGroup>
   <ItemGroup>
-      <Reference Include="System.Data.SQLite">
-        <SpecificVersion>True</SpecificVersion>
-        <HintPath>..\..\lib\$(Platform)\System.Data.SQLite.dll</HintPath>
-        <Private>True</Private>
+    <Reference Include="System.Data.SQLite">
+      <SpecificVersion>True</SpecificVersion>
+      <HintPath>..\..\lib\$(Platform)\System.Data.SQLite.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="PNNLOmics">
       <HintPath>..\..\lib\PNNLOmics.dll</HintPath>
-    </Reference>    
+    </Reference>
     <Reference Include="MultiAlignEngine">
-        <SpecificVersion>False</SpecificVersion>
-        <HintPath>..\..\lib\$(Platform)\MultiAlignEngine.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\$(Platform)\MultiAlignEngine.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -138,8 +138,8 @@
   -->
   <PropertyGroup>
     <PostBuildEvent>copy ..\..\..\..\..\lib\$(PlatformName)\System.Data.SQLite.dll "$(TargetDir)System.Data.SQLite.dll"
-REM copy ..\..\..\..\..\lib\Thermo*.dll "$(TargetDir)"
-REM copy ..\..\..\..\..\lib\Interop.XRAWFILE2Lib.dll "$(TargetDir)"</PostBuildEvent>
+copy ..\..\..\..\..\lib\$(PlatformName)\Thermo\*.dll "$(TargetDir)"
+</PostBuildEvent>
     <PreBuildEvent>
     </PreBuildEvent>
   </PropertyGroup>

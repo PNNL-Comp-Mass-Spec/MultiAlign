@@ -1,4 +1,8 @@
 MutliaAlign Revision History
+version 5.0.2 January 1, 2013
+	- Added 64-bit support for raw files.
+	- Removed any references to Thermo DLL's in the installer.  This package must be installed separately through Thermo's website.  See install page (omics.pnl.gov/software/MultiAlign.php) for more information.
+	- Added edit file locations in the GUI so that you can remove or add raw files (or feature files) from the data selection window.
 version 5.0.1  December 12, 2012
  	- Added new GUI
 	- Added traceback capability
