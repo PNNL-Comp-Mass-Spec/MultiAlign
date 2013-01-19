@@ -6,6 +6,7 @@ using System.Text;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Data;
 using MultiAlignCore.Data.Alignment;
+using MultiAlignCore.Data;
 
 namespace MultiAlignCore.Algorithms.Alignment
 {
@@ -86,6 +87,12 @@ namespace MultiAlignCore.Algorithms.Alignment
         }
         #endregion
 
+
+        public List<DatasetInformation> Datasets
+        {
+            get;
+            set;
+        }
         #region IFeatureAligner Members
 
 
@@ -110,7 +117,7 @@ namespace MultiAlignCore.Algorithms.Alignment
             OnStatus(string.Format("Using {0} features after filtering.", filteredFeatures.Count));
 
             OnStatus(string.Format("Clustering MS/MS Spectra" ));
-            List<MSMSCluster> clusters = clusterer.ClusterMSMSSpectra(filteredFeatures);            
+            List<MSMSCluster> clusters = clusterer.ClusterMSMSSpectra(filteredFeatures, Datasets);            
             OnStatus(string.Format("Found {0} MS/MS Spectra Clusters", clusters.Count ));
 
             OnStatus("Filtering Poor Matches");
