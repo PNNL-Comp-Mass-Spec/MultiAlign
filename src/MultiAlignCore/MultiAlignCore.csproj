@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -69,10 +69,10 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-      <Reference Include="ThermoRawFileReaderDLL, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-        <SpecificVersion>False</SpecificVersion>
-        <HintPath>..\..\lib\$(Platform)\Thermo\ThermoRawFileReaderDLL.dll</HintPath>
-      </Reference>
+    <Reference Include="ThermoRawFileReaderDLL, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\$(Platform)\Thermo\ThermoRawFileReaderDLL.dll</HintPath>
+    </Reference>
     <Reference Include="alglibnet2">
       <HintPath>..\..\lib\alglibnet2.dll</HintPath>
     </Reference>
@@ -124,7 +124,6 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
-    
     <Reference Include="WindowsBase" />
     <Reference Include="ZedGraph">
       <HintPath>..\..\lib\ZedGraph.dll</HintPath>
@@ -138,7 +137,7 @@
     <Compile Include="Algorithms\Alignment\AsymmetricGaussianScanAdjuster.cs" />
     <Compile Include="Algorithms\Alignment\ILcScanAdjuster.cs" />
     <Compile Include="Algorithms\Alignment\LcScanAdjustment.cs" />
-    <Compile Include="Algorithms\Alignment\MSMSAlignmentDatabaseBuilder.cs" />
+    <Compile Include="Algorithms\Alignment\MsMsAligner.cs" />
     <Compile Include="Algorithms\Alignment\MSMSSpectralClusterer.cs" />
     <Compile Include="Algorithms\Alignment\DriftTimeAlignmentOptions.cs" />
     <Compile Include="Algorithms\Alignment\LCMSWarpFeatureAligner.cs" />

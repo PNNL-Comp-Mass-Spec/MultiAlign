@@ -60,6 +60,10 @@
     <Reference Include="Accessibility">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
+    <Reference Include="PNNLOmics, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\PNNLOmics.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
@@ -83,6 +87,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="XicFileReader.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -122,6 +127,10 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DeconToolsTesting\DeconToolsTesting.csproj">
+      <Project>{7F6EA9C2-A56E-46EA-9E22-DDD5382A3874}</Project>
+      <Name>DeconToolsTesting</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MultiAlignCore\MultiAlignCore.csproj">
       <Project>{BDFA22C4-5822-4AA5-996E-6FDE57F7118B}</Project>
       <Name>MultiAlignCore</Name>

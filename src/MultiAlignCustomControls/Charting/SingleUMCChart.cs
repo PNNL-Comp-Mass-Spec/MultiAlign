@@ -223,19 +223,19 @@ namespace MultiAlignCustomControls.Charting
                 }
             }
 
-            float[] clusterMass = new float[1];
-            float[] clusterScan = new float[1];
-            Color clusterColor = Color.FromArgb(200, 255, 0, 0);
+            //float[] clusterMass = new float[1];
+            //float[] clusterScan = new float[1];
+            //Color clusterColor = Color.FromArgb(200, 255, 0, 0);
             
 
-            // Original Scan
-            clusterMass[0] = Convert.ToSingle(m_mainFeature.MassMonoisotopicAligned);
-            clusterScan[0] = Convert.ToSingle(m_mainFeature.Scan);
+            //// Original Scan
+            //clusterMass[0] = Convert.ToSingle(m_mainFeature.MassMonoisotopicAligned);
+            //clusterScan[0] = Convert.ToSingle(m_mainFeature.Scan);
             
-            clsPlotParams plotParamsCluster = new clsPlotParams(new TriangleShape(mint_pt_size, false), clusterColor);
-            plotParamsCluster.Name  = "Feature Centroid";
-            clsSeries clusterSeries = new clsSeries(ref clusterScan, ref clusterMass, plotParamsCluster);
-            base.AddSeries(clusterSeries);
+            //clsPlotParams plotParamsCluster = new clsPlotParams(new TriangleShape(mint_pt_size, false), clusterColor);
+            //plotParamsCluster.Name  = "Feature Centroid";
+            //clsSeries clusterSeries = new clsSeries(ref clusterScan, ref clusterMass, plotParamsCluster);
+            //base.AddSeries(clusterSeries);
 
         }
         #endregion

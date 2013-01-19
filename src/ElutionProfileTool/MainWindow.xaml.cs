@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Documents;
 using PNNLControls;
 using System.Drawing;
+using PNNLOmics.Data;
 
 namespace ElutionProfileTool
 {
@@ -24,6 +25,7 @@ namespace ElutionProfileTool
     /// </summary>
     public partial class MainWindow : Window
     {
+        private XicFileReader m_reader;
         private List<FitData>   m_fits;
         private int             m_fitIndex;
         private FitEnum         m_state;
@@ -34,11 +36,12 @@ namespace ElutionProfileTool
         public MainWindow()
         {
             InitializeComponent();
+            m_reader = new XicFileReader();
             m_fits = new List<FitData>();
             m_fitIndex = 0;
             m_state = FitEnum.NotSet;
             m_saved = "fitScores.txt";
-
+                        
             try
             {
                 File.Delete(m_saved);
@@ -50,79 +53,7 @@ namespace ElutionProfileTool
             m_indexList     = new List<int>();
             m_random        = new Random();
         }
-        public List<FitData> ReadFits(string file)
-        {
-            if (!File.Exists(file))
-            {
-                return new List<FitData>();
-            }
-            List<FitData> fits = new List<FitData>();
-
-            string dirPath  = Path.GetDirectoryName(file);
-            string fileName = Path.GetFileNameWithoutExtension(file);
-            m_saved = Path.Combine(dirPath, fileName + "_fitScores.txt");
-
-            try
-            {
-                string [] data = File.ReadAllLines(file);                
-                int state       = 0;
-                FitData fit     = null;
-                foreach(string line in data)
-                {
-                    if (line.Length < 3)
-                        continue;
-
-                    if (line.Contains("feature"))
-                    {   
-                        if (fit != null)
-                        {
-                            fits.Add(fit);
-                        }
-                        fit         = new FitData();
-                        fit.Name    = line.Replace("feature", "").Replace(",", "");                        
-                        state       = 0;
-                    }
-                    else if (line.Contains("mz"))
-                    {
-                        state = 1;
-                    }
-                    else
-                    {
-                        state = 2;
-                    }
-
-                    if (fit == null)
-                        continue;
-
-                    switch (state)
-	                {
-                        case 2:
-                            string[] lineData = line.Split(',');
-                            fit.X.Add(Convert.ToSingle(lineData[1]));
-                            fit.Y.Add(Convert.ToSingle(lineData[2]));
-                            break;
-		                default:
-                             break;
-	                }
-                }
-                if (fit != null)
-                {                    
-                    fits.Add(fit);
-                }
-            }
-            catch
-            {
-            }
-
-            m_indexList  = new List<int>();
-            for (int i = 0; i < fits.Count; i++)
-            {
-                m_indexList.Add(i);
-            }
-
-            return fits;
-        }
-
+        
         public string GetStateString(FitEnum fit)
         {
             if (IsDoublePeakAnnotation)
@@ -214,11 +145,10 @@ namespace ElutionProfileTool
         // Using a DependencyProperty as the backing store for IsDoublePeakAnnotation.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty IsDoublePeakAnnotationProperty =
             DependencyProperty.Register("IsDoublePeakAnnotation", typeof(bool), typeof(MainWindow), new UIPropertyMetadata(false));
-
-
-
+     
         public void ViewFit(FitData data)
-        {            
+        {
+            
 
             BubbleShape shape           = new BubbleShape(8, false); 
             clsPlotParams plotParams    = new clsPlotParams(shape, System.Drawing.Color.Red);
@@ -240,8 +170,16 @@ namespace ElutionProfileTool
             m_plot2.Title = data.Name;
         }
         private void button_Click(object sender, RoutedEventArgs e)
-        {
-            m_fits      = ReadFits(textBox1.Text);
+        {            
+            string xic = textBox1.Text.ToLower().Replace(".raw", ".xic"); 
+            m_fits      = m_reader.ReadFits(xic);
+
+            m_indexList = new List<int>();
+            for (int i = 0; i < m_fits.Count; i++)
+            {
+                m_indexList.Add(i);
+            }
+
             m_fitIndex  = -1;
             MoveNext(true);
         }
@@ -302,11 +240,10 @@ namespace ElutionProfileTool
                 string data         = string.Format("{0}\t{1}\n", name, stateData);
                 File.AppendAllText(m_saved, data);
             }
-
             
             // Have it randomly get the next guy.
             int randomPoint = m_random.Next(0, m_indexList.Count - 1);
-            m_fitIndex      = randomPoint;
+            m_fitIndex      = randomPoint;          
 
             if (m_fits[m_fitIndex].X.Count < 5)
             {
@@ -355,6 +292,9 @@ namespace ElutionProfileTool
             X = new List<float>();
             Y = new List<float>();
         }
+        public int Charge { get; set; }
+        public double Mz { get; set; }
+        public int Scan { get; set; }
         public string Name      {get;set;}
         public List<float> X   {get;set;}
         public List<float> Y { get; set; }

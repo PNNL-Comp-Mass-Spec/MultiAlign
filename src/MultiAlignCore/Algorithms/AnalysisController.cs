@@ -1105,22 +1105,23 @@ namespace MultiAlignCore.Algorithms
                 createDatabase = false;
             }
 
+            int result = 0;
             switch (validated)
             {
                 case AnalysisType.FactorImporting:
-                    ImportFactors(config,  databaseExists);
+                    result = ImportFactors(config,  databaseExists);
                     break;
                 case AnalysisType.Full:
-                    PerformAnalysis(config, builder, validated, createDatabase);
+                    result = PerformAnalysis(config, builder, validated, createDatabase);
                     break;
                 case AnalysisType.ExportDataOnly:
-                    ExportData(config, builder, databasePath, databaseExists);
+                    result = ExportData(config, builder, databasePath, databaseExists);
                     break;
                 case AnalysisType.ExportSICs:
-                    PerformAnalysis(config, builder, validated, createDatabase);
+                    result = PerformAnalysis(config, builder, validated, createDatabase);
                     break;
             }
-            return 0;
+            return result;
         }
 
         /// <summary>

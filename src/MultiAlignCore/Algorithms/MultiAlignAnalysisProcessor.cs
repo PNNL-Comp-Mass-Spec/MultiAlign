@@ -23,6 +23,7 @@ using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
 using MultiAlignCore.Extensions;
 using PNNLOmics.Data.MassTags;
+using PNNLOmics.Algorithms.Distance;
 
 namespace MultiAlignCore.Algorithms
 {        
@@ -450,6 +451,44 @@ namespace MultiAlignCore.Algorithms
                     feature.GroupID         = datasetID;
                     feature.RetentionTime   = (Convert.ToDouble(feature.Scan) - minScan)/(maxScan - minScan);  
                     feature.SpectralCount   = feature.MSFeatures.Count;
+                }
+
+                if (true)
+                {
+                    try
+                    {
+                        string p = dataset.Features.Path.ToLower().Replace("_isos.csv", ".xicKey");
+                        using (TextWriter writer = File.CreateText(p))
+                        {
+                            writer.WriteLine("dataset, feature id, scan, mz, charge");
+                            foreach (UMCLight feature in features)
+                            {
+                                Dictionary<int, List<MSFeatureLight>> map = feature.CreateChargeMap();
+                                foreach (int charge in map.Keys)
+                                {
+                                    int scan            = feature.Scan;
+                                    double mz           = -1;
+                                    List<MSFeatureLight> ms  = map[charge];
+                                    if (ms.Count > 0)
+                                    {
+                                        mz = ms[0].Mz;
+                                    }
+
+                                    if (mz > 0)
+                                    {
+                                        writer.WriteLine(string.Format("{0},{1},{2},{3},{4}",datasetID, feature.ID, scan, mz, charge));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception ex) {
+
+                        string message = "";
+                        message = ex.Message + "asdf";
+                        int x = 9;
+                        x++;
+                    }
                 }
 
                 if (!shouldDelayCachingFeatures)
@@ -1022,7 +1061,9 @@ namespace MultiAlignCore.Algorithms
             
             FeatureTolerances tolerances = new FeatureTolerances();
             FeatureClusterParameters<UMCLight> parameters = new FeatureClusterParameters<UMCLight>();
-            clusterer.Parameters = Clustering.LCMSFeatureClusteringOptions.ConvertToOmics(analysis.Options.ClusterOptions);
+
+            parameters.DistanceFunction = DistanceFactory<UMCLight>.CreateDistanceFunction(analysis.Options.ClusterOptions.DistanceFunction);
+            clusterer.Parameters        = Clustering.LCMSFeatureClusteringOptions.ConvertToOmics(analysis.Options.ClusterOptions);
 
             // This just tells us whether we are using mammoth memory partitions or not.          
             string databaseName = Path.Combine(analysis.MetaData.AnalysisPath, analysis.MetaData.AnalysisName);

@@ -8,6 +8,7 @@ using PNNLOmics.Data.Features;
 using PNNLOmics.Algorithms.FeatureClustering;
 using PNNLOmics.Algorithms;
 using System.ComponentModel;
+using PNNLOmics.Algorithms.Distance;
 
 namespace MultiAlignCore.Algorithms.Clustering
 {
@@ -23,13 +24,13 @@ namespace MultiAlignCore.Algorithms.Clustering
 			DriftTimeTolerance      = 50.0;			
             ClusteringAlgorithm     = ClusteringAlgorithmType.AverageLinkage;
 			ClusterCentroid         = ClusterCentroidRepresentation.Median;
+            DistanceFunction        = DistanceMetric.PowerEuclidean;
 			IgnoreCharge		    = true;			
             AlignClusters	        = false;			
         }
 
 
-        [ParameterFileAttribute("ClusteringAlgorithm", "LCMSFeatureClustering")]
-        [DataSummaryAttribute("Align clusters to database")]
+        [ParameterFileAttribute("ClusteringAlgorithm", "LCMSFeatureClustering")]        
         [Category("Algorithm")]
         [Description("Determines the type of clustering algorithm to use.")]
         public ClusteringAlgorithmType ClusteringAlgorithm
@@ -38,6 +39,17 @@ namespace MultiAlignCore.Algorithms.Clustering
             set;
         }
 
+        /// <summary>
+        /// Gets or sets the enumeration for selecting a distance function to use for clustering.
+        /// </summary>
+        [ParameterFileAttribute("DistanceFunction", "LCMSFeatureClustering")]
+        [Category("Distance Function")]
+        [Description("Determines the distance function to use.")]
+        public DistanceMetric DistanceFunction
+        {
+            get;
+            set;
+        }
         [ParameterFileAttribute("AlignClusters", "LCMSFeatureClustering")]
         [DataSummaryAttribute("Align clusters to database")]
         [Category("AMT")]

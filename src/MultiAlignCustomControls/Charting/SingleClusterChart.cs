@@ -154,7 +154,7 @@ namespace MultiAlignCustomControls.Charting
                     cluster.DriftTime,
                     cluster.ChargeState);
 
-                foreach (UMCLight feature in m_mainCluster.Cluster.Features)
+                foreach (UMCLight feature in cluster.Features)
                 {
                     featureData += string.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\n",
                         feature.ClusterID,

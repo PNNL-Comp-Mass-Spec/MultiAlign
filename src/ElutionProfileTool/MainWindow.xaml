@@ -20,7 +20,8 @@
             Grid.Row="0"
             Grid.Column="0"
             Margin="5,5,5,5"
-            Name="textBox1" FontStretch="Normal" FontSize="28" Text="C:\development\lamarche-phd\PHD\trunk\lib\results\sics\CuratedSIC\biorument2012_Jan.csv" />
+            Name="textBox1" FontStretch="Normal" FontSize="28" 
+            Text="M:\data\proteomics\IQ-Api-Testing\226151_QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27.RAW" />
 
         <Button 
             Grid.Row="0"
@@ -64,21 +65,21 @@
             <Button
                 Content="Ideal - 0"
                 HorizontalAlignment="Stretch"
-                Height="100"
+                Height="48"
                 Width="256"
                 Click="ideaButton_Click"     
                 Name="ideaButton" FontSize="28" />
             <Button
                 Content="Good - 1"
                 HorizontalAlignment="Stretch"
-                Height="100"
+                Height="48"
                 Width="256"
                 Click="goodOneButton_Click" 
                 Name="goodOneButton" FontSize="28" />
             <Button
                 Margin="5,5,5,5"
                 Content="Ok - 2"
-                Height="100"
+                Height="48"
                 Width="256"
                 Click="okButton_Click"  
                 HorizontalAlignment="Stretch"
@@ -86,7 +87,7 @@
             <Button
                 Margin="5,5,5,5"
                 Content="Poor- 3"
-                Height="100"
+                Height="48"
                 Width="256"
                 Click="badButton_Click" 
                 HorizontalAlignment="Stretch"
@@ -94,7 +95,7 @@
             <Button
                 Margin="5,5,5,5"
                 Content="Failed - 4"
-                Height="100"
+                Height="48"
                 Width="256"
                 Click="failedButton_Click"  
                 HorizontalAlignment="Stretch"
@@ -102,7 +103,7 @@
             <Button
                 Margin="5,5,5,5"
                 Content="Double"
-                Height="100"
+                Height="48"
                 Width="256"
                 HorizontalAlignment="Stretch"
                 Click="doubleButton_Click"
@@ -110,7 +111,7 @@
             <Button
                 Margin="5,5,5,5"
                 Content="Set To Double Mode"
-                Height="100"
+                Height="48"
                 Width="256"
                 HorizontalAlignment="Stretch"
                 Click="modeButton_Click"

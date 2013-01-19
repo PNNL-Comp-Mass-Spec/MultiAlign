@@ -38,16 +38,6 @@ namespace MultiAlignCore.Algorithms.Alignment
         /// <returns>Synopsis of alignment information</returns>
         classAlignmentData AlignFeatures(   List<UMCLight>      baseline,
                                             List<UMCLight>      features,  
-                                            AlignmentOptions    options);
-        /// <summary>
-        /// Aligns clusters to a mass tag database.
-        /// </summary>
-        /// <param name="massTagDatabase">Database to align to.</param>
-        /// <param name="clusters">Clusters to align.</param>
-        /// <param name="options">Options to use.</param>
-        /// <returns>Synopsis of alignment information</returns>
-        classAlignmentData AlignFeatures(   MassTagDatabase     massTagDatabase,  
-                                            List<clsCluster>    clusters,
-                                            AlignmentOptions    options);        
+                                            AlignmentOptions    options);               
     }
 }

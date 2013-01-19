@@ -15,12 +15,16 @@ using MultiAlignEngine.Features;
 
 namespace MultiAlignCore.Algorithms.Alignment
 {
-    public class MSMSSpectralClusterer: IProgressNotifer
+    public class MSMSSpectralClusterer: IProgressNotifer 
     {
         public event EventHandler<ProgressNotifierArgs> Progress;
 
         public MSMSSpectralClusterer()
         {
+            SpectralNormalizedDotProductComparer comparer =
+                    new SpectralNormalizedDotProductComparer();
+            comparer.TopPercent         = .8;
+            SpectralComparer            = comparer;
             SpectralSimilarityTolerance = .75;
         }
         
@@ -62,61 +66,40 @@ namespace MultiAlignCore.Algorithms.Alignment
         private void DeRegisterNotifier(IProgressNotifer notifier)
         {
         }
+        public ISpectralComparer SpectralComparer
+        {
+            get;
+            set;
+        }
         /// <summary>
         /// Clusters a set of MS/MS spectra together.
         /// </summary>
         /// <param name="analysis"></param>
-       /* public void ClusterMSMSSpectra(MultiAlignAnalysis analysis)
-        {           
-            Dictionary<int, Dictionary<int, Dictionary<int, DatabaseSearchSequence>>> sequenceMap =
-                new Dictionary<int, Dictionary<int, Dictionary<int, DatabaseSearchSequence>>>();
-            
-            // Create the object that knows how to read the RAW files we are analyzing.
+        public List<MSMSCluster> ClusterMSMSSpectra(List<UMCLight>           features,
+                                                    List<DatasetInformation> information)
+        {
+            List<MSMSCluster> clusters = new List<MSMSCluster>();
+                  
+            UpdateStatus(string.Format("Performing Spectral Clustering using MS/MS spectra at {0} similarity level.", 
+                                SpectralSimilarityTolerance));
+                
+            MSMSClusterer msCluster         = new MSMSClusterer();
+            msCluster.SimilarityTolerance   = SpectralSimilarityTolerance;
+            msCluster.ScanRange             = 2000;
+            msCluster.SpectralComparer      = this.SpectralComparer;
+            //msCluster.Progress              += new EventHandler<ProgressNotifierArgs>(msCluster_Progress);
+
             using (ThermoRawDataFileReader reader = new ThermoRawDataFileReader())
             {
-                //TODO: Drop msms cluster table if msms cluster table exists....
-                MSMSFeatureExtractor extractor = new MSMSFeatureExtractor();
-                extractor.Progress            += new EventHandler<ProgressNotifierArgs>(extractor_Progress);
-                Dictionary<int, List<UMCLight>> features = extractor.ExtractUMCWithMSMS(analysis.DataProviders,
-                                                                                        analysis.MetaData.Datasets);
-
-                UpdateStatus(string.Format("Performing Spectral Clustering using MS/MS spectra at {0} similarity level.", SpectralSimilarityTolerance));
-               
-                string path  = analysis.MetaData.AnalysisPath; 
-                
-                // Create the object o align.
-                SpectralNormalizedDotProductComparer comparer = new SpectralNormalizedDotProductComparer();
-                comparer.TopPercent             = .8;
-                MSMSClusterer msCluster         = new MSMSClusterer();
-                msCluster.SimilarityTolerance   = SpectralSimilarityTolerance;
-                msCluster.ScanRange             = 2000;
-                msCluster.SpectralComparer      = comparer;
-                msCluster.Progress              += new EventHandler<ProgressNotifierArgs>(msCluster_Progress);
-                List<MSMSCluster> clusters      = msCluster.Cluster(features, reader);
-                List<MSMSClusterMap> maps       = new List<MSMSClusterMap>();
-                int id = 0;
-                
-                foreach (MSMSCluster cluster in clusters)
+                foreach(DatasetInformation info in information)
                 {
-                    cluster.ID = id++;
-                    string line = string.Format("{0},", cluster.ID);
-
-                    // Exclude singleton clusters.
-                    if (cluster.Features.Count < 2) continue;
-                                        
-                    foreach (MSFeatureLight feature in cluster.Features)
-                    {
-                        MSMSClusterMap newMap   = new MSMSClusterMap();
-                        newMap.ClusterID        = cluster.ID;
-                        newMap.MSMSID           = feature.MSnSpectra[0].ID;
-                        newMap.GroupID          = feature.GroupID;
-                        maps.Add(newMap);
-                    }
-                }                                           
-                analysis.DataProviders.MSMSClusterCache.AddAll(maps);
+                    reader.AddDataFile(info.Raw.Path, info.DatasetId);
+                }
+                clusters      = msCluster.Cluster(features, reader);                
             }
+            return clusters;
         }
-        */
+        
         void extractor_Progress(object sender, ProgressNotifierArgs e)
         {
             UpdateStatus(e.Message);
