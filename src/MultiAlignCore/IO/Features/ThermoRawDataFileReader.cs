@@ -192,8 +192,8 @@ namespace MultiAlignCore.IO.Features
             double[] mz             = new double[N];
             double[] intensities    = new double[N];            
             rawReader.GetScanData(scan, ref mz, ref intensities, ref header);
-
-            rawReader.CloseRawFile();
+            
+            //rawReader.CloseRawFile();
             // construct the array.
             List<XYData> data = new List<XYData>(mz.Length);            
             for (int i = 0; i < mz.Length; i++)

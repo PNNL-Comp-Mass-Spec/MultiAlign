@@ -16,12 +16,12 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
     public class UMCFeatureFinder: IFeatureFinder
     {
         private LCMSFeatureFindingOptions m_options;
-        private int                     m_minScan;
-        private int                     m_maxScan;
+        private int                       m_minScan;
+        private int                       m_maxScan;
         /// <summary>
         /// The maximum distance two features can be from each other.
         /// </summary>
-        private double                  m_maxDistance;
+        private double                    m_maxDistance;
 
         /// <summary>
         /// Finds LCMS Features using the PNNL Omics linkage clustering algorithms.  

@@ -15,6 +15,11 @@ namespace MultiAlignCore.Algorithms.Alignment
     /// </summary>
     public class MsMsAligner: IFeatureAligner
     {
+        public MsMsAligner()
+        {
+            BasisFunction = BasisFunctionType.ChebyshevSecondKind;
+        }
+
         private List<UMCLight> FilterFeatures(List<UMCLight> features)
         {
             return features;
@@ -31,21 +36,12 @@ namespace MultiAlignCore.Algorithms.Alignment
             }
         }
         #region Alignment
-        public void ChebyShev(double[] c, double[] x, ref double func, object obj)
-        {
-            double sum = 0;
-            double t0 = c[0];
-            double t1 = c[1] * x[0];
-            double prev = t0;
-            for (int i = 0; i < c.Length - 1; i++)
-            {
-                double value = 2 * x[0] * c[i] - prev;
-                prev = value;
-                sum += value;
-            }
-            func = sum;
-        }
 
+        public BasisFunctionType BasisFunction
+        {
+            get;
+            set;
+        }
 
         public void CorrectFeatures(List<UMCLight> features, List<MSMSCluster> clusters)
         {
@@ -71,7 +67,8 @@ namespace MultiAlignCore.Algorithms.Alignment
             List<double> tX         = xValues.ToList();
             List<double> tY         = yValues.ToList();
             LevenburgMarquadt warp  = new LevenburgMarquadt();
-            warp.BasisFunction      = ChebyShev;
+            alglib.ndimensional_pfunc basisFunction = LevenburgMarquadtSolverFactory.CreateSolver(BasisFunction);
+            warp.BasisFunction                      = basisFunction;
 
             double[] coeffs = new double[20];
             coeffs[1]       = 1;
@@ -81,7 +78,7 @@ namespace MultiAlignCore.Algorithms.Alignment
 
             foreach (UMCLight feature in features)
             {
-               ChebyShev(coeffs, new double[] { feature.Scan }, ref func, null);
+               basisFunction(coeffs, new double[] { feature.Scan }, ref func, null);
                feature.ScanAligned = Convert.ToInt32(func);
             }
         }

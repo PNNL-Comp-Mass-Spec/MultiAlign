@@ -346,26 +346,7 @@ namespace MultiAlignCore.Algorithms
                                             filterOptions,
                                             providers,
                                             true);
-
-                    
-                    if (scanAdjuster != null)
-                    {
-                        ISpectraProvider rawReader = null;
-
-                        if (dataset.Raw != null)
-                        {
-                            string rawPath  = dataset.Raw.Path;
-                            rawReader       = RawLoaderFactory.CreateFileReader(rawPath);                            
-                        }
-
-                        
-                        List<UMCLight> oldFeatures = scanAdjuster.AdjustScans(features, rawReader);
-                        if (FeaturesAdjusted != null)
-                        {
-                            FeaturesAdjusted(this, new FeaturesAdjustedEventArgs(dataset, oldFeatures, features));
-                        }
-                    }
-                    
+                                                            
                     features = AlignDataset(features,
                                              baselineFeatures,
                                              config.Analysis.MassTagDatabase,
