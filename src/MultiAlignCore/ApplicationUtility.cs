@@ -94,5 +94,22 @@ namespace MultiAlignCore
 
             return data;
         }
+        /// <summary>
+        /// Gets the application data folder for the application.  
+        /// </summary>
+        /// <returns>Path to application data, null if path not applicable.</returns>
+        public static string GetApplicationDataFolderPath(string applicationName)
+        {
+            string appDataFolderPath = null;            
+            appDataFolderPath        = System.IO.Path.Combine(
+                                        System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData),
+                                        applicationName);
+            if (!System.IO.Directory.Exists(appDataFolderPath))
+            {
+                System.IO.Directory.CreateDirectory(appDataFolderPath);
+            }            
+            return appDataFolderPath;
+        }
+
     }
 }

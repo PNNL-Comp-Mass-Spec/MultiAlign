@@ -5,8 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:ui="clr-namespace:Manassa.Windows"
              xmlns:converters="clr-namespace:Manassa.Converters"
-             mc:Ignorable="d" 
-             >
+             mc:Ignorable="d" d:DesignHeight="561" d:DesignWidth="790">
     <UserControl.Resources>
         <converters:SearchOptionConverter x:Key="SearchOptionConverter"></converters:SearchOptionConverter>
         <converters:DatasetPathConverter x:Key="DatasetPathConverter"></converters:DatasetPathConverter>
@@ -117,13 +116,11 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="32"/>
                         <RowDefinition Height="32"/>
-                        <RowDefinition Height="*"/>                        
                         <RowDefinition Height="32"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="33*"/>
                         <ColumnDefinition Width="66*"/>
-                        <ColumnDefinition Width="128"/>
                         <ColumnDefinition Width="128"/>
                     </Grid.ColumnDefinitions>
                     <Label 
@@ -131,7 +128,7 @@
                         VerticalContentAlignment="Center"
                         >Dataset Names</Label>
                     <TextBox Grid.Column="1" Grid.Row="0" x:Name="DatasetNames" Margin="10,5,10,5"/>
-                    <Button Grid.Column="3" Grid.Row="0" Width="100" Margin="10,5,10,5" x:Name="DatasetFindButton">Find</Button>
+                    <Button Grid.Column="3" Grid.Row="0" Width="100" Margin="10,5,10,5" x:Name="DatasetFindButton" Click="DatasetFindButton_Click">Find</Button>
 
                     <Label 
                         HorizontalContentAlignment="Center"
@@ -142,29 +139,15 @@
                     </Label>
                     <TextBox Grid.Column="1" Grid.Row="1" x:Name="JobInputName" Margin="10,5,10,5"/>
                     <Button Grid.Column="3" Grid.Row="1" Width="100" Margin="10,5,10,5" x:Name="JobFindButton">Find</Button>
-
-                    <DataGrid
-                    Margin="2,2,2,2"
-                    Grid.Column="0"
-                    Grid.ColumnSpan="4"
-                    Grid.Row="2"
-                    HorizontalContentAlignment="Center"            
-                    AlternatingRowBackground="WhiteSmoke"
-                    AlternationCount="1" 
-                    AutoGenerateColumns="False"
-                    CanUserReorderColumns="True"               
-                    CanUserAddRows="False"
-                    CanUserSortColumns="True">
-                        <DataGrid.Columns >
-                            <DataGridCheckBoxColumn     Header="Is Baseline"     CanUserSort="True"     Binding="{Binding Cluster.Tightness}"           IsReadOnly="False"/>
-                            <DataGridTextColumn         Header="Dataset Name"    CanUserSort="True"     Binding="{Binding Cluster.ID}"                  IsReadOnly="True"/>
-                            <DataGridTextColumn         Header="Dataset Type"    CanUserSort="True"     Binding="{Binding Cluster.DatasetMemberCount}"  IsReadOnly="True"/>
-                            <DataGridTextColumn         Header="Instrument"      CanUserSort="True"     Binding="{Binding Cluster.MemberCount}"         IsReadOnly="True"/>
-                            <DataGridTextColumn         Header="File Size"       CanUserSort="True"     Binding="{Binding Cluster.AmbiguityScore}"      IsReadOnly="True"/>
-                            <DataGridTextColumn         Header="Parent Folder"   CanUserSort="True"     Binding="{Binding Cluster.Tightness}"           IsReadOnly="True"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
-                    <Button Grid.Column="3"   Grid.Row="4" Width="100"  Margin="10,5,10,5" x:Name="AddSelectedDatasets">Add Selected</Button>
+                    <Label 
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        Grid.Row="2"
+                        Grid.Column="0">
+                        Data Package
+                    </Label>
+                    <TextBox Grid.Column="1" Grid.Row="2" x:Name="DatasetPackageText" Margin="10,5,10,5"/>
+                    <Button Grid.Column="3" Grid.Row="2" Width="100" Margin="10,5,10,5" x:Name="DatasetPackageButton">Find</Button>
                 </Grid>
             </TabItem>
         </TabControl>

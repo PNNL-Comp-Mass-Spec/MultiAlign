@@ -323,6 +323,11 @@ namespace Manassa.Windows
                 newWindow.ShowDialog();
             }
         }
+
+        private void DatasetFindButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 
     /// <summary>

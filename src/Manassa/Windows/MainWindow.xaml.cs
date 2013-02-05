@@ -9,6 +9,8 @@ using MultiAlignCore.Data;
 using MultiAlignCustomControls.Drawing;
 using MultiAlignCore.IO;
 using System;
+using System.IO;
+using MultiAlignCore;
 
 namespace Manassa
 {
@@ -49,7 +51,11 @@ namespace Manassa
 
             Closing += new System.ComponentModel.CancelEventHandler(MainWindow_Closing);
 
-            LoadWorkspace(Properties.Settings.Default.WorkspaceFile);
+
+            string workSpacePath    = ApplicationUtility.GetApplicationDataFolderPath("MultiAlign");
+            workSpacePath           = Path.Combine(workSpacePath, Properties.Settings.Default.WorkspaceFile);
+            LoadWorkspace(workSpacePath);
+
             ApplicationStatusMediator.SetStatus("Ready.");
         }
 
@@ -172,6 +178,13 @@ namespace Manassa
             string version  = MultiAlignCore.ApplicationUtility.GetEntryAssemblyData();
             Title           = string.Format("{0} - {1}", version, analysis.Name);
             string filename = System.IO.Path.Combine(analysis.Path, analysis.Name);
+
+            if (!File.Exists(filename))
+            {
+                Status = "The analysis file does not exist";
+                return;
+            }
+
             ApplicationStatusMediator.SetStatus(string.Format("Loading analysis...{0}", filename));                        
             CancelAnalysis();
 
@@ -346,7 +359,19 @@ namespace Manassa
         void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             ManassaWorkspaceWriter writer = new ManassaWorkspaceWriter();
-            writer.Write(Properties.Settings.Default.WorkspaceFile, CurrentWorkspace);
+            try
+            {
+                string workspacePath = ApplicationUtility.GetApplicationDataFolderPath("MultiAlign");
+                if (workspacePath != null)
+                {
+                    workspacePath = Path.Combine(workspacePath, Properties.Settings.Default.WorkspaceFile);
+                    writer.Write(workspacePath, CurrentWorkspace);
+                }
+            }
+            catch
+            {
+            }
+
 
             try
             {

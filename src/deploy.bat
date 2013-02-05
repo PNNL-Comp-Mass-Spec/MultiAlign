@@ -64,6 +64,7 @@ del /F /S %guix86%\MultiAlignParameterFileEditor\*.vshost.exe*
 del /F /S %guix86%\MultiAlignParameterFileEditor\*.pdb
 del /F /S %guix86%\MultiAlign\*.vshost.exe*
 del /F /S %guix86%\MultiAlign\*.pdb
+del /F /S %guix86%\MultiAlign\workspace.xml
 
 rmdir /Q /S %consolex86%\MultiAlignConsole\examples
 rmdir /Q /S %consolex86%\MultiAlignConsole\sic
@@ -78,6 +79,7 @@ del /F /S %guix64%\MultiAlignParameterFileEditor\*.vshost.exe*
 del /F /S %guix64%\MultiAlignParameterFileEditor\*.pdb
 del /F /S %guix64%\MultiAlign\*.vshost.exe*
 del /F /S %guix64%\MultiAlign\*.pdb
+del /F /S %guix64%\MultiAlign\workspace.xml
 
 ECHO Cleaning up Old Deprecated Directories
 rmdir /Q /S %consolex64%\MultiAlignConsole\examples

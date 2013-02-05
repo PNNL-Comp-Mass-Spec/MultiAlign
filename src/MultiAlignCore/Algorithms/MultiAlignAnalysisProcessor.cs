@@ -434,7 +434,7 @@ namespace MultiAlignCore.Algorithms
                     feature.SpectralCount   = feature.MSFeatures.Count;
                 }
 
-                if (true)
+                if (options.CreateXicFile)
                 {
                     try
                     {
