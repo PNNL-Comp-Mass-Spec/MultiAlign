@@ -11,18 +11,22 @@
             <RowDefinition Height="Auto" ></RowDefinition>
             <RowDefinition Height="*" ></RowDefinition>
             <RowDefinition Height="*" ></RowDefinition>
+            <RowDefinition Height="Auto" ></RowDefinition>
         </Grid.RowDefinitions>
+        
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"></ColumnDefinition>
             <ColumnDefinition Width="Auto"></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <TextBox 
-            Grid.Row="0"
-            Grid.Column="0"
-            Margin="5,5,5,5"
+        <Label Grid.Row="4"
+               Height="48"
+               x:Name="m_spectraCount"
+               >
+            Total XIC's Graded = 0   / Novice 
+        </Label>
+        <TextBox Margin="5,4,5,6"
             Name="textBox1" FontStretch="Normal" FontSize="28" 
-            Text="M:\data\proteomics\IQ-Api-Testing\226151_QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27.RAW" />
-
+            Text="M:\data\proteomics\IQ-Api-Testing\226151_QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27.xic" />
         <Button 
             Grid.Row="0"
             Grid.Column="1"
@@ -71,6 +75,7 @@
                 Name="ideaButton" FontSize="28" />
             <Button
                 Content="Good - 1"
+                Margin="5"
                 HorizontalAlignment="Stretch"
                 Height="48"
                 Width="256"
@@ -94,15 +99,7 @@
                 Name="badButton" FontSize="28" />
             <Button
                 Margin="5,5,5,5"
-                Content="Failed - 4"
-                Height="48"
-                Width="256"
-                Click="failedButton_Click"  
-                HorizontalAlignment="Stretch"
-                Name="failedButton" FontSize="28"></Button>
-            <Button
-                Margin="5,5,5,5"
-                Content="Double"
+                Content="Multiple"
                 Height="48"
                 Width="256"
                 HorizontalAlignment="Stretch"
@@ -116,6 +113,15 @@
                 HorizontalAlignment="Stretch"
                 Click="modeButton_Click"
                 Name="modeButton" FontSize="24" />
+            <Button
+                Margin="5,5,5,5"
+                Content="Failed - 4"
+                Visibility="Hidden"
+                Height="48"
+                Width="256"
+                Click="failedButton_Click"  
+                HorizontalAlignment="Stretch"
+                Name="failedButton" FontSize="28"></Button>
 
 
         </StackPanel>

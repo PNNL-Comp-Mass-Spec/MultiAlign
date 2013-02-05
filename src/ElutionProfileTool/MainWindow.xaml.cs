@@ -25,13 +25,16 @@ namespace ElutionProfileTool
     /// </summary>
     public partial class MainWindow : Window
     {
-        private XicFileReader m_reader;
+        private int             m_totalGraded = 0;
+        private XicFileReader   m_reader;
         private List<FitData>   m_fits;
         private int             m_fitIndex;
         private FitEnum         m_state;
         private string          m_saved;
         private List<int>       m_indexList;
         private Random          m_random;
+        List<Grade>             m_ratingLevels;
+        int                     m_currentGrade;
 
         public MainWindow()
         {
@@ -41,19 +44,45 @@ namespace ElutionProfileTool
             m_fitIndex = 0;
             m_state = FitEnum.NotSet;
             m_saved = "fitScores.txt";
-                        
-            try
-            {
-                File.Delete(m_saved);
-            }
-            catch
-            {
-            }
 
+            m_ratingLevels = new List<Grade>();
+            
+            int currentLevel    = 5;
+            int nextLevel       = 8;
+
+            List<string> names = new List<string>()
+                                        {
+                                        "Peon",
+                                        "Novice",
+                                        "Begginner",
+                                        "Assistant Professor",
+                                        "Professor",
+                                        "Senior Scientist",
+                                        "PI",
+                                        "RDS"};
+
+            Grade lastGrade = new Grade()
+            {
+                Name        = "Ameba",
+                NextGrade   = currentLevel
+            };
+            m_ratingLevels.Add(lastGrade);
+
+            foreach(string name in names)
+            {
+                Grade newGrade = new Grade();
+                newGrade.Name       = name;
+                lastGrade.NextGrade = nextLevel;
+                lastGrade           = newGrade; 
+               
+                nextLevel   += (nextLevel + currentLevel);
+                currentLevel   = nextLevel;
+                m_ratingLevels.Add(newGrade);
+            }
+            m_currentGrade  = 0; 
             m_indexList     = new List<int>();
             m_random        = new Random();
         }
-        
         public string GetStateString(FitEnum fit)
         {
             if (IsDoublePeakAnnotation)
@@ -171,7 +200,29 @@ namespace ElutionProfileTool
         }
         private void button_Click(object sender, RoutedEventArgs e)
         {            
-            string xic = textBox1.Text.ToLower().Replace(".raw", ".xic"); 
+            string xic  = textBox1.Text.ToLower();
+
+            System.Windows.Forms.OpenFileDialog dialog = new System.Windows.Forms.OpenFileDialog();
+            dialog.FileName     = xic;
+            dialog.Filter       = "XIC Files (.xic)|*.xic";
+            System.Windows.Forms.DialogResult result = dialog.ShowDialog();
+
+            if (result != System.Windows.Forms.DialogResult.OK)
+            {
+                return;
+            }
+            textBox1.Text = dialog.FileName;
+            xic = textBox1.Text.ToLower();
+
+            m_saved     = xic.Replace(".xic", "_results.txt");
+            try
+            {
+                File.Delete(m_saved);
+            }
+            catch
+            {
+            }
+
             m_fits      = m_reader.ReadFits(xic);
 
             m_indexList = new List<int>();
@@ -253,8 +304,50 @@ namespace ElutionProfileTool
             else
             {
                 ViewFit(m_fits[m_fitIndex]);
+                IncreaseGrade();
                 m_state = FitEnum.NotSet;
             }
+        }
+        private void IncreaseGrade()
+        {
+            m_totalGraded++;
+
+            
+            Grade currentGrade = m_ratingLevels[m_currentGrade];
+            
+            int nextGradeCount      = 0;
+            string congrats         = "";
+            // If we reached the goal advance it
+            string nextGradeString = "";
+            if (m_totalGraded >= currentGrade.NextGrade)
+            {
+                m_currentGrade++;
+                if (m_currentGrade < m_ratingLevels.Count)
+                {                    
+                    congrats        = "Congratulations you were promoted!";
+                    currentGrade    = m_ratingLevels[m_currentGrade];
+                }
+                else
+                {
+                    congrats        = "";
+                    nextGradeString = "You are enlightened.";
+                    m_currentGrade--;
+                }
+            }
+            nextGradeCount = currentGrade.NextGrade;
+
+            int leftToScore = nextGradeCount - m_totalGraded;
+            if (leftToScore > 0)
+            {
+                nextGradeString = string.Format( "Next promotion in {0} chromatograms", leftToScore);
+            }
+            string message = string.Format("Total XIC's Graded = {0} You are a: {1} ...{2}  {3}",
+                                                m_totalGraded,
+                                                currentGrade.Name,
+                                                nextGradeString,
+                                                congrats);
+
+            m_spectraCount.Content = message;
         }
 
         private void modeButton_Click(object sender, RoutedEventArgs e)
@@ -279,12 +372,16 @@ namespace ElutionProfileTool
                 okButton.Content        = "Ok - 2";
                 badButton.Content       = "Poor - 3";
                 failedButton.Content    = "Failed - 4";
-                doubleButton.Content    = "Double";
+                doubleButton.Content    = "Multiple";
                 modeButton.Content      = "Set To Double Mode";
             }
         }        
     }
-
+    public class Grade
+    {
+        public string   Name;
+        public int      NextGrade;
+    }
     public class FitData
     {
         public FitData()
