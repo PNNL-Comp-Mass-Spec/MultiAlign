@@ -35,14 +35,14 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
             this.IsotopicIntensityFilter        = 0;
             this.UMCAbundanceReportingType      = AbundanceReportingType.Max;
             this.Split                          = false;
-            this.CreateXicFile                       = false;
+            this.ShouldCreateXicFile            = false;
         }
 
         [DataSummaryAttribute("Create XIC Key File")]
-        [ParameterFileAttribute("CreateXicKeyFile", "LCMSFeatureFinding")]
+        [ParameterFileAttribute("ShouldCreateXicKeyFile", "LCMSFeatureFinding")]
         [Category("Persistence")]
         [Description("Creates an XIC key file.")]
-        public bool CreateXicFile { get; set; }
+        public bool ShouldCreateXicFile { get; set; }
         [DataSummaryAttribute("Store MS Feature Results")]
         [ParameterFileAttribute("StoreMSFeatureResults", "LCMSFeatureFinding")]
         [Category("Persistence")]
