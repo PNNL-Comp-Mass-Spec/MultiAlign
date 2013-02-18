@@ -70,6 +70,17 @@ namespace PNNLControls
                 mobj_UnitPlotter.IsVertical = value;
             }
         }
+        public bool ShouldUseScientificNotation
+        {
+            get
+            {
+                return mobj_UnitPlotter.ShouldUseScientificNotation;
+            }
+            set
+            {
+                mobj_UnitPlotter.ShouldUseScientificNotation = value;
+            }
+        }
         public int MinFontSize
         {
             get

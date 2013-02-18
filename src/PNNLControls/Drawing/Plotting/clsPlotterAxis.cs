@@ -36,7 +36,18 @@ namespace PNNLControls
 		private Rectangle m_bounds;
 
 		#region "Public Properties"
-
+        public bool ShouldUseScientificNotation
+        {
+            get
+            {
+                return mobj_xUnitPlotter.ShouldUseScientificNotation;
+            }
+            set
+            {
+                mobj_xUnitPlotter.ShouldUseScientificNotation = value;
+                mobj_yUnitPlotter.ShouldUseScientificNotation = value;
+            }
+        }
 		public int MinFontSize 
 		{
 			get 
@@ -274,6 +285,8 @@ namespace PNNLControls
 			this.mobj_yUnitPlotter.SetRange(yMinData, yMaxData) ;
 			//Console.WriteLine("Setting ranges {0} {1} {2} {3}", xMinData, xMaxData, yMinData, yMaxData);
 		}
+
+        
 
 //		public void SetLabels(string xAxisLabel, string yAxisLabel, string Title)
 //		{

@@ -7,6 +7,7 @@ using PNNLOmics.Data.Features;
 using PNNLOmics.Data;
 using MultiAlignCore.Data.Alignment;
 using MultiAlignCore.Data;
+using PNNLOmics.Algorithms.Solvers.LevenburgMarquadt.BasisFunctions;
 
 namespace MultiAlignCore.Algorithms.Alignment
 {
@@ -17,7 +18,7 @@ namespace MultiAlignCore.Algorithms.Alignment
     {
         public MsMsAligner()
         {
-            BasisFunction = BasisFunctionType.ChebyshevSecondKind;
+            BasisFunction = BasisFunctionsEnum.Gaussian;
         }
 
         private List<UMCLight> FilterFeatures(List<UMCLight> features)
@@ -35,9 +36,10 @@ namespace MultiAlignCore.Algorithms.Alignment
                 Progress(this, new PNNLOmics.Algorithms.ProgressNotifierArgs(message));
             }
         }
+
         #region Alignment
 
-        public BasisFunctionType BasisFunction
+        public BasisFunctionsEnum BasisFunction
         {
             get;
             set;
@@ -66,20 +68,13 @@ namespace MultiAlignCore.Algorithms.Alignment
             yValues                 = values.Select(i => i.Value).ToList();
             List<double> tX         = xValues.ToList();
             List<double> tY         = yValues.ToList();
-            LevenburgMarquadt warp  = new LevenburgMarquadt();
-            alglib.ndimensional_pfunc basisFunction = LevenburgMarquadtSolverFactory.CreateSolver(BasisFunction);
-            warp.BasisFunction                      = basisFunction;
-
-            double[] coeffs = new double[20];
-            coeffs[1]       = 1;
-            bool passed     = false;
-            passed          = warp.Solve(tX, tY, ref coeffs);            
-            double func     = 0;
-
+            
+            //TODO:  Use the PNNL Omics version of this.
+            
             foreach (UMCLight feature in features)
             {
-               basisFunction(coeffs, new double[] { feature.Scan }, ref func, null);
-               feature.ScanAligned = Convert.ToInt32(func);
+            //   basisFunction(coeffs, new double[] { feature.Scan }, ref func, null);
+              // feature.ScanAligned = Convert.ToInt32(func);
             }
         }
         #endregion

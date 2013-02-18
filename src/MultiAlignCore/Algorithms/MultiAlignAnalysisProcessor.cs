@@ -437,19 +437,20 @@ namespace MultiAlignCore.Algorithms
                 if (options.ShouldCreateXicFile)
                 {
                     try
-                    {
-                        string p = dataset.Features.Path.ToLower().Replace("_isos.csv", ".xicKey");
+                    {                        
                         using (TextWriter writer = File.CreateText(p))
                         {
+                            string p = dataset.Features.Path.ToLower().Replace("_isos.csv", ".xic");
+
                             writer.WriteLine("dataset, feature id, scan, mz, charge");
                             foreach (UMCLight feature in features)
                             {
                                 Dictionary<int, List<MSFeatureLight>> map = feature.CreateChargeMap();
                                 foreach (int charge in map.Keys)
                                 {
-                                    int scan            = feature.Scan;
-                                    double mz           = -1;
-                                    List<MSFeatureLight> ms  = map[charge];
+                                    int scan = feature.Scan;
+                                    double mz = -1;
+                                    List<MSFeatureLight> ms = map[charge];
                                     if (ms.Count > 0)
                                     {
                                         mz = ms[0].Mz;
@@ -457,11 +458,16 @@ namespace MultiAlignCore.Algorithms
 
                                     if (mz > 0)
                                     {
-                                        writer.WriteLine(string.Format("{0},{1},{2},{3},{4}",datasetID, feature.ID, scan, mz, charge));
+                                        writer.WriteLine(string.Format("{0},{1},{2},{3},{4}", datasetID, feature.ID, scan, mz, charge));
                                     }
                                 }
                             }
                         }
+                        foreach (UMCLight feature in features)
+                        {
+
+                        }
+                        
                     }
                     catch (Exception ex) {
 

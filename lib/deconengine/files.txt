@@ -1,6 +1,0 @@
-DeconEngine.dll
-DeconEngineV2.dll
-DeconTools.Backend.dll
-DeconTools.Workflows.dll
-ProteowizardWrapper.dll
-YafmsLibrary.dll

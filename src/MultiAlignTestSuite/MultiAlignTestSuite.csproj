@@ -104,6 +104,7 @@
     <Compile Include="Algorithms\UMCAlignment.cs" />
     <Compile Include="Algorithms\UMCClustering.cs" />
     <Compile Include="Algorithms\UMCFeatureFinding.cs" />
+    <Compile Include="Algorithms\Xic\XicTest.cs" />
     <Compile Include="IO\UMCFeatureDOATest.cs" />
     <Compile Include="IO\MSFeatureDOATest.cs" />
     <Compile Include="IO\MassTagDOATest.cs" />
@@ -111,7 +112,7 @@
     <Compile Include="IO\MTDB\MTDBLoaderTests.cs" />
     <Compile Include="IO\Parameters\XMLParameterFileTests.cs" />
     <Compile Include="IO\UMCReaderFailure.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="IO\DataProviderTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

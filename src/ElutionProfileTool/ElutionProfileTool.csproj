@@ -87,6 +87,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Graders\DoubleGrader.cs" />
+    <Compile Include="Graders\Grade.cs" />
+    <Compile Include="Graders\GradeFactory.cs" />
+    <Compile Include="Graders\ExpertBase.cs" />
+    <Compile Include="Graders\IGrader.cs" />
+    <Compile Include="Graders\SimpleGrader.cs" />
+    <Compile Include="Graders\XicData.cs" />
+    <Compile Include="Graders\XicScore.cs" />
     <Compile Include="XicFileReader.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

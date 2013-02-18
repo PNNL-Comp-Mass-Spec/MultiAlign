@@ -69,12 +69,12 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DeconTools.Backend">
+      <HintPath>..\..\lib\deconengine\DeconTools.Backend.dll</HintPath>
+    </Reference>
     <Reference Include="ThermoRawFileReaderDLL, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\$(Platform)\Thermo\ThermoRawFileReaderDLL.dll</HintPath>
-    </Reference>
-    <Reference Include="alglibnet2">
-      <HintPath>..\..\lib\alglibnet2.dll</HintPath>
     </Reference>
     <Reference Include="Mage">
       <HintPath>..\..\lib\$(Platform)\Mage.dll</HintPath>
@@ -136,7 +136,6 @@
     <Compile Include="Algorithms\Alignment\AsymmetricGaussianScanAdjuster.cs" />
     <Compile Include="Algorithms\Alignment\ILcScanAdjuster.cs" />
     <Compile Include="Algorithms\Alignment\LcScanAdjustment.cs" />
-    <Compile Include="Algorithms\Alignment\LevenburgMarquadtSolverFactory.cs" />
     <Compile Include="Algorithms\Alignment\MsMsAligner.cs" />
     <Compile Include="Algorithms\Alignment\MSMSSpectralClusterer.cs" />
     <Compile Include="Algorithms\Alignment\DriftTimeAlignmentOptions.cs" />
@@ -157,6 +156,8 @@
     <Compile Include="Algorithms\FeatureFinding\UMCFeatureFinderOptions.cs" />
     <Compile Include="Algorithms\FeatureFinding\IFeatureFinder.cs" />
     <Compile Include="Algorithms\FeatureFinding\UMCFeatureFinder.cs" />
+    <Compile Include="Algorithms\FeatureFinding\XicAdaptor.cs" />
+    <Compile Include="Algorithms\FeatureFinding\XicFinder.cs" />
     <Compile Include="Algorithms\FeatureMatcher\STACOptions.cs" />
     <Compile Include="Algorithms\FeatureMatcher\PeakMatchingType.cs" />
     <Compile Include="Algorithms\FeatureMatcher\STAC.cs" />
@@ -216,6 +217,7 @@
     <Compile Include="Data\PeakMatchingResults.cs" />
     <Compile Include="Data\SequenceData\DatabaseSearchSequence.cs" />
     <Compile Include="Extensions\ClusterExtensions.cs" />
+    <Compile Include="Extensions\XYDataExtensions.cs" />
     <Compile Include="Extensions\DatasetInformationCollection.cs" />
     <Compile Include="Extensions\MassTagExtensions.cs" />
     <Compile Include="Extensions\FeatureExtensions.cs" />

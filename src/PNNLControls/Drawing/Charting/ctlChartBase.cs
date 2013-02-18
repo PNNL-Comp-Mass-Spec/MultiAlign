@@ -284,6 +284,19 @@ namespace PNNLControls
                 
             }
         }
+        public bool ShouldUseScientificNotation
+        {
+            get
+            {
+                return mobj_axis_plotter.ShouldUseScientificNotation;
+            }
+            set 
+            {
+                mobj_axis_plotter.ShouldUseScientificNotation = value;
+            }
+
+
+        }
         [System.ComponentModel.DefaultValue(.1F)]
         [System.ComponentModel.Description("The fraction of the chart area by which the chart is panned "
              + " when the arrow keys are pressed.")]

@@ -188,6 +188,11 @@ namespace PNNLControls
                 return (this.mflt_max_val > this.mflt_max_num_without_scientific);
             }
         }
+        public bool ShouldUseScientificNotation
+        {
+            get;
+            set;
+        }
 
         #region "Private Helpers"
         private string GetStringRepresentation(float val)
@@ -199,7 +204,7 @@ namespace PNNLControls
                 return "0";
             }
 
-            if (!this.ScientificNotationRequired)
+            if (!ScientificNotationRequired || !ShouldUseScientificNotation)
             {
                 //       decimal_place_to_see_till = Convert.ToInt32(Math.Log10(resolution + resolution/2)) ; 
                 decimal_place_to_see_till = Convert.ToInt32(Math.Floor(Math.Log10(this.mdbl_resolution + this.mdbl_resolution / 2)));
