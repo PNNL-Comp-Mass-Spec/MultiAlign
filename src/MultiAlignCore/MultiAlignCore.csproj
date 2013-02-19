@@ -152,6 +152,7 @@
     <Compile Include="Algorithms\Clustering\MsnClusterer.cs" />
     <Compile Include="Algorithms\Clustering\ClusteringAlgorithmType.cs" />
     <Compile Include="Algorithms\FeatureFinding\AbundanceReportingType.cs" />
+    <Compile Include="Algorithms\FeatureFinding\FeatureEvaluator.cs" />
     <Compile Include="Algorithms\FeatureFinding\FeatureFinderFactory.cs" />
     <Compile Include="Algorithms\FeatureFinding\UMCFeatureFinderOptions.cs" />
     <Compile Include="Algorithms\FeatureFinding\IFeatureFinder.cs" />
@@ -225,9 +226,12 @@
     <Compile Include="IO\ClusterExporterComposite.cs" />
     <Compile Include="IO\Factors\FactorFileReader.cs" />
     <Compile Include="IO\Factors\MultiAlignFactorSink.cs" />
+    <Compile Include="IO\Features\XicComparisonWriter.cs" />
+    <Compile Include="IO\Features\XicMsFeatureWriter.cs" />
     <Compile Include="IO\Features\FeatureAdjusterWriter.cs" />
     <Compile Include="IO\Features\Hibernate\ClusterToMassTagMap.cs" />
     <Compile Include="IO\Features\Hibernate\STACDAOHibernate.cs" />
+    <Compile Include="IO\Features\IXicWriter.cs" />
     <Compile Include="IO\Features\LCMSFeatureFileReader.cs" />
     <Compile Include="IO\Features\Hibernate\MassTagMatchDAO.cs" />
     <Compile Include="IO\Features\IMassTagMatchDAO.cs" />
@@ -235,6 +239,7 @@
     <Compile Include="IO\Features\IAlignmentDAO.cs" />
     <Compile Include="IO\Features\Hibernate\AlignmentDAOHibernate.cs" />
     <Compile Include="IO\Features\UMCClusterMsmsWriter.cs" />
+    <Compile Include="IO\Features\XicWriter.cs" />
     <Compile Include="IO\MTDB\APEMassTagDatabaseLoader.cs" />
     <Compile Include="IO\MTDB\MassTagDatabaseLoaderCache.cs" />
     <Compile Include="IO\Reports\IAnalysisReportGenerator.cs" />
@@ -246,7 +251,6 @@
     <Compile Include="IO\Features\Hibernate\MSMSClusterMapDAOHibernate.cs" />
     <Compile Include="IO\Features\Hibernate\DatasetToFactorMap.cs" />
     <Compile Include="IO\Features\IDatasetToFactorMapDAO.cs" />
-    <Compile Include="IO\Features\SICExtractor.cs" />
     <Compile Include="IO\Features\UMCClusterAbundanceCrossTabWriter.cs" />
     <Compile Include="IO\Features\FeatureExtractionTableWriter.cs" />
     <Compile Include="IO\Features\IMSnFeatureToMSFeatureDAO.cs" />

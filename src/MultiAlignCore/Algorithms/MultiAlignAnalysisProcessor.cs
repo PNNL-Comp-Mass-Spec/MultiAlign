@@ -105,11 +105,21 @@ namespace MultiAlignCore.Algorithms
             m_algorithms      = null;
             AnalysisStartStep = Algorithms.AnalysisStep.Alignment;
 
+            XicWriter = new XicComparisonWriter();
+
             CreateAnalysisMethodMap();            
         }
         #endregion
 
         #region Properties
+        /// <summary>
+        /// Writer for exporting Xic's
+        /// </summary>
+        public IXicWriter XicWriter
+        {
+            get;
+            set;
+        }
         /// <summary>
         /// Gets or sets whether to load data.
         /// </summary>
@@ -434,49 +444,33 @@ namespace MultiAlignCore.Algorithms
                     feature.SpectralCount   = feature.MSFeatures.Count;
                 }
 
-                if (options.ShouldCreateXicFile)
+                
+                try
                 {
-                    try
-                    {                        
-                        using (TextWriter writer = File.CreateText(p))
-                        {
-                            string p = dataset.Features.Path.ToLower().Replace("_isos.csv", ".xic");
-
-                            writer.WriteLine("dataset, feature id, scan, mz, charge");
-                            foreach (UMCLight feature in features)
-                            {
-                                Dictionary<int, List<MSFeatureLight>> map = feature.CreateChargeMap();
-                                foreach (int charge in map.Keys)
-                                {
-                                    int scan = feature.Scan;
-                                    double mz = -1;
-                                    List<MSFeatureLight> ms = map[charge];
-                                    if (ms.Count > 0)
-                                    {
-                                        mz = ms[0].Mz;
-                                    }
-
-                                    if (mz > 0)
-                                    {
-                                        writer.WriteLine(string.Format("{0},{1},{2},{3},{4}", datasetID, feature.ID, scan, mz, charge));
-                                    }
-                                }
-                            }
-                        }
-                        foreach (UMCLight feature in features)
-                        {
-
-                        }
                         
+                    XicAdaptor adaptor = new XicAdaptor(dataset.Raw.Path, dataset.Peaks.Path);
+                    foreach(UMCLight feature in features)
+                    {
+                        feature.ChargeStateChromatograms = adaptor.CreateXicForChargeStates(feature);
                     }
-                    catch (Exception ex) {
 
-                        string message = "";
-                        message = ex.Message + "asdf";
-                        int x = 9;
-                        x++;
+                    if (options.ShouldCreateXicFile)
+                    {   
+                        string xicPath = dataset.Features.Path.ToLower().Replace("_isos.csv", ".xic");
+                        XicWriter.WriteXics(xicPath, features);
                     }
+
+                    if (options.ShouldCreateXicFile)
+                    {
+                        string xicPath = dataset.Features.Path.ToLower().Replace("_isos.csv", ".xic");
+                        XicWriter.WriteXics(xicPath, features);
+                    }                        
                 }
+                catch (Exception) 
+                {
+                    //TODO: What do we do with this exception.
+                }
+                
 
                 if (!shouldDelayCachingFeatures)
                 {

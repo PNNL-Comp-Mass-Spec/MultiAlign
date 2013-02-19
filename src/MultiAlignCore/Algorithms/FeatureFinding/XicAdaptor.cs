@@ -14,6 +14,7 @@ using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
 using System.Text;
 using System.Linq;
+using DeconTools.Utilities;
 
 namespace MultiAlignCore.Algorithms.FeatureFinding
 {
@@ -123,9 +124,7 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
         /// <param name="rawPath">Path to the raw file.</param>
         /// <param name="peaksPath">Path to the peaks file.</param>        
         /// <param name="feature">Feature to target</param>
-        public Dictionary<int, Chromatogram> CreateXicForChargeStates(string rawPath,
-                                                string peaksPath,
-                                                UMCLight                       feature)
+        public Dictionary<int, Chromatogram> CreateXicForChargeStates(UMCLight feature)
         {            
 
             Dictionary<int, Chromatogram> chromatograms = new Dictionary<int, Chromatogram>();
@@ -148,16 +147,26 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
                 double  targetMz    = maxPoint.Z; 
 
                 // Find the Xic based on the target point, this may include other peaks
-                List<PNNLOmics.Data.XYData> totalXic = FindXic( targetMz,
-                                                           targetScan);
+                List<PNNLOmics.Data.XYData> totalXic = null;
 
-                // Then find a specific Xic based on the target scan.
-                List<PNNLOmics.Data.XYData> specificXic = finder.FindTarget(totalXic, targetScan);
+                try
+                {
+                    totalXic = FindXic(targetMz, targetScan);
 
-                // Add the targeted Xic to the charge state map so that we can create Xic's for each charge state.
-                Chromatogram gram               = new Chromatogram(specificXic, maxPoint.Z, charge);
-                feature.ChargeStateChromatograms.Add(charge, gram);
-                chromatograms.Add(charge, gram);                 
+                    if (totalXic.Count > 1)
+                    {
+                        // Then find a specific Xic based on the target scan.
+                        List<PNNLOmics.Data.XYData> specificXic = finder.FindTarget(totalXic, targetScan);
+
+                        // Add the targeted Xic to the charge state map so that we can create Xic's for each charge state.
+                        Chromatogram gram = new Chromatogram(specificXic, maxPoint.Z, charge);
+                        chromatograms.Add(charge, gram);
+                    }
+                }
+                catch (PreconditionException)
+                {
+                    // This would mean that the charge state didnt have enough features in it.
+                }
             }
             return chromatograms;
         }
