@@ -19,12 +19,15 @@ namespace ElutionProfileTool
         private List<XicData>   m_fits;
         private XicScore        m_state;
         private string          m_saved;
-        
-        private Random          m_random;
+                
         private int             m_fitIndex;
         private List<int>       m_indexList;
         private ExpertBase      m_expertLevel;
         private GradeFactory    m_gradeFactory;
+        /// <summary>
+        /// Determines if an indice has been used.
+        /// </summary>
+        private Dictionary<int, bool> m_usedIndices;
         
         public MainWindow()
         {
@@ -35,11 +38,21 @@ namespace ElutionProfileTool
             m_state         = XicScore.NotSet;
             m_saved         = "fitScores.txt";                                    
             m_indexList     = new List<int>();
-            m_random        = new Random();
-            m_expertLevel   = new ScienceExpert();
+           // m_random        = new Random();
+            m_expertLevel = new ScienceExpert();
+            m_ratingCountLabel.Content = string.Format(" {0} XIC's Graded", m_expertLevel.TotalGraded);
+            m_expertLevelLabel.Content = string.Format("{0} ", m_expertLevel.CurrentLevel.Name, m_expertLevel.CurrentLevel.NextLevel.MinimumRating);
+
+            m_usedIndices = new Dictionary<int, bool>();
+
+            NameText.Text = global::Racoon.Properties.Settings.Default.Grader;
+
+
+            m_n = 1;
+            m_d = 2;
 
             m_gradeFactory = new GradeFactory();
-            m_plot.Title = "XIC";                        
+            m_plot.Title = "XIC - index = " + m_fitIndex.ToString();                      
         }
 
         
@@ -52,24 +65,68 @@ namespace ElutionProfileTool
         // Using a DependencyProperty as the backing store for IsDoublePeakAnnotation.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty IsDoublePeakAnnotationProperty =
             DependencyProperty.Register("IsDoublePeakAnnotation", typeof(bool), typeof(MainWindow), new UIPropertyMetadata(false));
-     
-        public void ViewFit(XicData data)
-        {
-            
 
+
+        int m_n;
+        int m_d;
+        /// <summary>
+        /// Retrieves the next point
+        /// </summary>
+        /// <returns></returns>
+        private void GetNextPoint()
+        {            
+            m_fitIndex *= m_n;
+            m_fitIndex /= m_d;
+
+            if (m_fitIndex <= 0)
+            {
+                m_n++;
+                if (m_n == m_d)
+                {
+                    m_d++;
+                    m_n = 1;                    
+                }
+                m_fitIndex = m_indexList.Count;
+                GetNextPoint();
+                return;
+            }
+
+            /// They have found all indices.
+            if (m_usedIndices.Count == m_indexList.Count)
+            {
+                m_fitIndex = 0;
+                return;
+            }
+
+            if (m_usedIndices.ContainsKey(m_fitIndex))
+            {
+                m_fitIndex--;
+                GetNextPoint();                
+            }            
+            else
+            {
+                m_usedIndices.Add(m_fitIndex, true);
+            }
+        }
+        public void ViewFit(XicData data)
+        {           
             BubbleShape shape           = new BubbleShape(8, false); 
             clsPlotParams plotParams    = new clsPlotParams(shape, System.Drawing.Color.Red);
             float[] xdata               = new float[data.X.Count];
             float[] ydata               = new float[data.Y.Count];
             data.X.CopyTo(xdata);
+
+            int length          = Convert.ToInt32(Math.Abs(xdata[xdata.Length - 1] - xdata[0]));
+            ScanLength.Content  = string.Format("Scan Length = {0}", length);
+
             data.Y.CopyTo(ydata);
             clsSeries series            = new clsSeries(ref xdata, ref ydata, plotParams);
-
-
+            
             m_plot.ShouldUseScientificNotation = false;
             m_plot.SeriesCollection.Clear();
             m_plot.AddSeries(series);
-            m_plot.AutoViewPort();      
+            m_plot.AutoViewPort();
+            m_plot.Title = string.Format("XIC - index = {0}  - {1}/{2} ", m_fitIndex, m_n, m_d); 
             
         }
         private void button_Click(object sender, RoutedEventArgs e)
@@ -77,8 +134,9 @@ namespace ElutionProfileTool
             string xic  = textBox1.Text.ToLower();
 
             System.Windows.Forms.OpenFileDialog dialog = new System.Windows.Forms.OpenFileDialog();
-            dialog.FileName     = xic;
-            dialog.Filter       = "XIC Files (.xic)|*.xic";
+            dialog.InitialDirectory = Path.GetDirectoryName(xic);
+            dialog.FileName         = xic;
+            dialog.Filter           = "XIC Files (.xic)|*.xic";
             System.Windows.Forms.DialogResult result = dialog.ShowDialog();
 
             if (result != System.Windows.Forms.DialogResult.OK)
@@ -105,7 +163,8 @@ namespace ElutionProfileTool
                 m_indexList.Add(i);
             }
 
-            m_fitIndex  = -1;
+            m_usedIndices   = new Dictionary<int, bool>();
+            m_fitIndex      = m_indexList.Count - 1;
             MoveNext(true);
         }
                 
@@ -115,6 +174,15 @@ namespace ElutionProfileTool
         }        
         private void MoveNext(bool skip)
         {
+            if (m_indexList.Count == m_usedIndices.Count)
+            {
+                if (m_indexList.Count > 0)
+                {
+                    m_expertLevelLabel.Content = "You have evaluated every feature!  No MORE LEFT!  Choose a new file!";
+                }
+                return;
+            }
+
             if (m_state == XicScore.NotSet && !skip)
                 return;
 
@@ -133,13 +201,16 @@ namespace ElutionProfileTool
                 XicData score      = m_fits[m_fitIndex];
                 string name         = score.Name;                 
                 string state        = m_gradeFactory.GetStateString(m_state);
-                string data         = string.Format("{0}\t{1}\n", name, state);
+                string data = string.Format("{0}\t{1}\t{2}\n", name, state, NameText.Text);
+
+                global::Racoon.Properties.Settings.Default.Grader = NameText.Text;
+                global::Racoon.Properties.Settings.Default.Save();
+
+                m_saved = textBox1.Text.ToLower().Replace(".xic", string.Format("_{0}_results.txt", NameText.Text));
                 File.AppendAllText(m_saved, data);
             }
             
-            // Have it randomly get the next guy.
-            int randomPoint = m_random.Next(0, m_indexList.Count - 1);
-            m_fitIndex      = randomPoint;          
+            GetNextPoint();                      
 
             if (m_fits[m_fitIndex].X.Count < 5)
             {

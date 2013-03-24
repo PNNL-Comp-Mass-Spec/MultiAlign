@@ -13,15 +13,15 @@ namespace MultiAlignCore.IO.Features
     /// <summary>
     /// Writes a list of clusters to a cross tab.
     /// </summary>
-    public class UMCClusterAbundanceCrossTabWriter : IFeatureClusterWriter
+    public class UMCClusterAbundanceSumCrossTabWriter : IFeatureClusterWriter
     {
         /// <summary>
         /// Default constructor.
         /// </summary>
         /// <param name="path"></param>
-        public UMCClusterAbundanceCrossTabWriter(string path)
+        public UMCClusterAbundanceSumCrossTabWriter(string path)
         {
-            Path = path + "_abundanceMaxSum.csv"; ;
+            Path = path + "_abundance.csv"; ;
         }
         /// <summary>
         /// Gets or sets the path to the file to output.
@@ -79,7 +79,7 @@ namespace MultiAlignCore.IO.Features
                 string header = mainHeader;
                 for (int i = 0; i < datasetIds.Count; i++)
                 {
-                    header += string.Format(", AbundanceMax-{0}, AbundanceSum-{0}", datasetIds[i]);
+                    header += string.Format(", AbundanceSum-{0}", datasetIds[i]);
                 }
                 writer.WriteLine(header);
 
@@ -96,7 +96,7 @@ namespace MultiAlignCore.IO.Features
                         if (containsUMC)
                         {
                             UMCLight umc = features[id];
-                            umcBuilder.Append(string.Format(",{0},{1}", umc.Abundance, umc.AbundanceSum));
+                            umcBuilder.Append(string.Format(",{0}", umc.AbundanceSum));
                         }
                         else
                         {
@@ -129,7 +129,7 @@ namespace MultiAlignCore.IO.Features
                         }
                         else
                         {
-                            writer.WriteLine(builder.Append(",,,,," + umcBuilder.ToString()));
+                            writer.WriteLine(builder.Append(",,,," + umcBuilder.ToString()));
                         }
                     }
                     else

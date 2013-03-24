@@ -6,6 +6,7 @@ using PNNLOmics.Data.Features;
 using System.IO;
 using MultiAlignCore.Extensions;
 using PNNLOmics.Data;
+using PNNLOmics.Extensions;
 
 namespace MultiAlignCore.IO.Features
 {

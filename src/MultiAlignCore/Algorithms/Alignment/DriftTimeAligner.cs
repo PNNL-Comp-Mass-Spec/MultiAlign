@@ -46,12 +46,12 @@ namespace MultiAlignCore.Algorithms.Alignment
 
             foreach (UMCLight feature in features)
             {
-                UMC umc = new UMC();
+                UMC umc                     = new UMC();
                 umc.MassMonoisotopicAligned = feature.MassMonoisotopicAligned;
-                umc.NETAligned = feature.NET;
-                umc.DriftTime = Convert.ToSingle(feature.DriftTime);
-                umc.ID = feature.ID;
-                umc.ChargeState = feature.ChargeState;
+                umc.NETAligned              = feature.NETAligned;
+                umc.DriftTime               = Convert.ToSingle(feature.DriftTime);
+                umc.ID                      = feature.ID;
+                umc.ChargeState             = feature.ChargeState;
                 aligneeUMCs.Add(umc);
 
                 featureIDMap.Add(feature.ID, feature);

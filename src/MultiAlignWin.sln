@@ -17,7 +17,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiAlignParameterFileEdit
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Manassa", "Manassa\Manassa.csproj", "{6EC23CCC-4F36-47BF-B997-F0A5727822A5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElutionProfileTool", "ElutionProfileTool\ElutionProfileTool.csproj", "{7C3DE69F-04FF-4C3D-A606-20F43BFCE35F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Racoon", "ElutionProfileTool\Racoon.csproj", "{7C3DE69F-04FF-4C3D-A606-20F43BFCE35F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeconToolsTesting", "DeconToolsTesting\DeconToolsTesting.csproj", "{7F6EA9C2-A56E-46EA-9E22-DDD5382A3874}"
 EndProject

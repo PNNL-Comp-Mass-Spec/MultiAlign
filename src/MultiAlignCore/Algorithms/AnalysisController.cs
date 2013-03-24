@@ -19,6 +19,8 @@ using PNNLOmics.Data.Features;
 using System.ComponentModel;
 using MultiAlignCore.Extensions;
 using System.Collections.ObjectModel;
+using PNNLOmics.Data;
+using System.Text;
 
 
 namespace MultiAlignCore.Algorithms
@@ -160,6 +162,66 @@ namespace MultiAlignCore.Algorithms
         {
             Logger.PrintMessage("Creating feature alignment plots.");
             m_reportCreator.CreateAlignmentPlots(e);
+
+            ReportPeptideFeatures(e.AligneeDatasetInformation, e.AlignedFeatures);
+        }
+        private void ReportPeptideFeatures(DatasetInformation information, List<UMCLight> features)
+        {
+            string path = Path.Combine(m_config.AnalysisPath, information.DatasetName +  "_peptide_scans.csv");
+
+            using (TextWriter writer = File.CreateText(path))
+            {
+                writer.WriteLine("Dataset, Feature_Id, MS_Feature_Id, MsMs_Feature_ID, Ms_Charge, NET, NET_Aligned, MsMs_PrecursorMz, MsMs_Scan, Peptide_Sequence, Peptide_Score");
+                int totalFragments          = 0;
+                int totalPeptides           = 0;
+                int totalMultipleFragments  = 0;
+
+                foreach (UMCLight feature in features)
+                {
+                    
+
+                    foreach (MSFeatureLight msFeature in feature.MSFeatures)
+                    {
+                        StringBuilder builder = new StringBuilder();
+
+                        if (msFeature.MSnSpectra.Count > 1)
+                        {
+                            totalMultipleFragments++;
+                        }
+
+                        foreach (MSSpectra spectrum in msFeature.MSnSpectra)
+                        {
+                            totalFragments++;
+                            if (spectrum.Peptides.Count > 0)
+                            {
+                                totalPeptides++;
+                            }
+
+                            builder.Append(string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8}",
+                                                                        feature.GroupID,
+                                                                        feature.ID,
+                                                                        msFeature.ID,
+                                                                        spectrum.ID,
+                                                                        msFeature.ChargeState,
+                                                                        feature.NET,
+                                                                        feature.NETAligned,
+                                                                        spectrum.PrecursorMZ,
+                                                                        spectrum.Scan));
+
+                            foreach (Peptide peptide in spectrum.Peptides)
+                            {
+                                builder.Append(string.Format(",{0},{1}", peptide.Sequence,
+                                                           peptide.Score));
+                            }
+                            writer.WriteLine(builder.ToString());
+                        }
+                    }
+                }
+
+                writer.WriteLine();
+                writer.WriteLine("Total_Fragments,Total_Peptides,Total_Multiple_Fragment_Features");
+                writer.WriteLine("{0},{1},{2}", totalFragments, totalPeptides, totalMultipleFragments);
+            }
         }
         /// <summary>
         /// Logs when features are clustered.
@@ -509,6 +571,8 @@ namespace MultiAlignCore.Algorithms
         void processor_BaselineFeaturesLoaded(object sender, BaselineFeaturesLoadedEventArgs e)
         {
             m_reportCreator.CreateBaselinePlots(e);
+
+            ReportPeptideFeatures(e.DatasetInformation, e.Features);
         }
 
         /// <summary>

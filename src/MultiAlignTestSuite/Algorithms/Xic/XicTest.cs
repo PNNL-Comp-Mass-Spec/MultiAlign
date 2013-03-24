@@ -22,7 +22,7 @@ namespace MultiAlignTestSuite.Algorithms.Xic
 
             // This object uses the data files to find Xic's
             XicAdaptor adaptor          = new XicAdaptor(rawPath, peaksPath);            
-            List<XYData> xic            = adaptor.FindXic(mz,      scan);
+            List<XYData> xic            = adaptor.FindXic(mz, scan, true);
 
             // This one finds the target.
             XicFinder finder            = new XicFinder();

@@ -55,80 +55,7 @@ namespace MultiAlignTestSuite.Algorithms
             return matchingPeaks;
         }
 
-        public int LinkSpectraToPeptides(List<Peptide> peptides, 
-                                         List<MSFeatureLight> features,
-                                         string rawPath,
-                                         int datasetId,
-                                         double tol)
-        {
-            Dictionary<string, List<Triplet>> matches = new Dictionary<string, List<Triplet>>();
-
-            int linked = 0;
-            using (ThermoRawDataFileReader reader = new ThermoRawDataFileReader())
-            {
-                reader.AddDataFile(rawPath, datasetId);
-
-                // Brute force approach to finding MSMS spectra peptide id's
-                foreach (MSFeatureLight feature in features)
-                {
-                    foreach (MSSpectra spectrum in feature.MSnSpectra)
-                    {
-                        foreach (Peptide peptide in peptides)
-                        {
-                            double ppmError = Feature.ComputeMassPPMDifference(
-                                                            peptide.Spectrum.PrecursorMZ,
-                                                            feature.Mz);
-
-                            if (Math.Abs(ppmError) < tol)
-                            {
-                                Console.WriteLine("\tDiff = {0} Spectra ID = {4} Sequence = {1}, peptide mz = {2},  spectrum mz = {3}",
-                                                ppmError,
-                                                peptide.Sequence,
-                                                peptide.Spectrum.PrecursorMZ,
-                                                feature.Mz,
-                                                spectrum.ID);
-
-                                List<XYData> spectra = reader.GetRawSpectra(spectrum.Scan, feature.GroupID);
-                                spectrum.Peaks       = spectra;
-
-                                int totalIonsMatcing = CompareSpectra(peptide, spectrum);
-
-                                if (!matches.ContainsKey(peptide.Sequence))
-                                {
-                                    matches.Add(peptide.Sequence, new List<Triplet>());
-                                }
-                                Triplet triplet = new Triplet();
-                                triplet.Feature         = feature;
-                                triplet.Error           = ppmError;
-                                triplet.MatchingPeaks   = totalIonsMatcing;
-                                triplet.Spectrum        = spectrum;
-
-                                matches[peptide.Sequence].Add(triplet);
-                                linked++;
-                                spectrum.Peptide.Sequence = peptide.Sequence;
-                            }
-                        }
-                    }
-                }
-            }
-
-            foreach (string peptide in matches.Keys)
-            {
-                Console.WriteLine("peptide: {0}", peptide);
-                foreach (Triplet key in matches[peptide])
-                {
-                    Console.WriteLine("\tFeature ID = {0}\tSpectra ID = {1}\tPrecursor = {6}\tScan = {2}\tRetention Time = {5}\tTotal Ions = {4}\tError = {3}", 
-                                                                                            key.Feature.ID,
-                                                                                            key.Spectrum.ID,
-                                                                                            key.Feature.Scan,
-                                                                                            key.Error,
-                                                                                            key.MatchingPeaks,
-                                                                                            key.Spectrum.RetentionTime,
-                                                                                            key.Feature.Mz);                    
-                }
-            }
-            return linked;
-        }
+        
 
         [Test]
         [TestCase(
@@ -221,24 +148,7 @@ namespace MultiAlignTestSuite.Algorithms
 
             Console.WriteLine("Reading Alignee Sequence Files");
             List<Peptide> aligneePeptides       = sequenceReader.Read(aligneeInfo.Sequence.Path).ToList();
-
-            double ppmTol   = .5;
-            Console.WriteLine("Linking Known Peptide Precursors to Alignee MS/MS Spectra");
-            int totalLinked = LinkSpectraToPeptides(aligneePeptides, 
-                                                    aligneeMsFeatures, 
-                                                    aligneeInfo.Raw.Path,
-                                                    aligneeInfo.DatasetId,
-                                                    ppmTol);
-            Console.WriteLine("Alignee Linked: {0}", totalLinked);
-
-            Console.WriteLine("Linking Known Peptide Precursors to Baseline MS/MS Spectra");
-            totalLinked     = LinkSpectraToPeptides(baseLinePeptides,
-                                                    baselineMsFeatures,
-                                                    baselineInfo.Raw.Path,
-                                                    baselineInfo.DatasetId, 
-                                                    ppmTol);
-            Console.WriteLine("Baseline Linked: {0}", totalLinked);
-
+                        
             Console.WriteLine("Detecting Baseline Features");
             List<UMCLight> baselineFeatures     = finder.FindFeatures(baselineMsFeatures, options);
             
@@ -342,7 +252,10 @@ namespace MultiAlignTestSuite.Algorithms
                                                             feature.Scan);
                             foreach (MSSpectra spectrum in feature.MSnSpectra)
                             {
-                                data += string.Format(",{0},{1}", spectrum.Peptide.Sequence, spectrum.Peptide.Score);
+                                foreach (Peptide peptide in spectrum.Peptides)
+                                {
+                                    data += string.Format(",{0},{1}", peptide.Sequence, peptide.Score);
+                                }
                             }
                         }
                         writer.WriteLine(scanData + "," + data);
@@ -368,7 +281,10 @@ namespace MultiAlignTestSuite.Algorithms
                                                             feature.Scan);
                             foreach (MSSpectra spectrum in feature.MSnSpectra)
                             {
-                                data += string.Format(",{0},{1}", spectrum.Peptide.Sequence, spectrum.Peptide.Score);
+                                foreach (Peptide peptide in spectrum.Peptides)
+                                {
+                                    data += string.Format(",{0},{1}", peptide.Sequence, peptide.Score);
+                                }
                             }
                             writer.WriteLine(data);
                         }
@@ -401,7 +317,7 @@ namespace MultiAlignTestSuite.Algorithms
                     bool hasScan = scanMap.ContainsKey(spectrum.Scan);
                     if (hasScan)
                     {
-                        spectrum.Peptide = scanMap[spectrum.Scan];
+                        spectrum.Peptides.Add(scanMap[spectrum.Scan]);
                     }
                 }
             }

@@ -5,5 +5,8 @@
     <Setting Name="Grade" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
+    <Setting Name="Grader" Type="System.String" Scope="User">
+      <Value Profile="(Default)">enteryourname</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

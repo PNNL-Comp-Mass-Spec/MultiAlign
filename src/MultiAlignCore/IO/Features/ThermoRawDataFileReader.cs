@@ -15,13 +15,17 @@ namespace MultiAlignCore.IO.Features
         /// <summary>
         /// Readers for each dataset.
         /// </summary>
-        private Dictionary<int, XRawFileIO> m_readers;
-
-        private Dictionary<int, string> m_dataFiles;
-        private Dictionary<int, bool> m_opened;
+        private Dictionary<int, XRawFileIO>     m_readers;
+        private Dictionary<int, string>         m_dataFiles;
+        private Dictionary<int, bool>           m_opened;
+        /// <summary>
+        /// Gets or sets the map 
+        /// </summary>
+        private Dictionary<int, DatasetSummary> m_datasetMetaData;
 
         public ThermoRawDataFileReader()
         {
+            m_datasetMetaData = new Dictionary<int, DatasetSummary>();
             m_dataFiles = new Dictionary<int, string>();
             m_readers   = new Dictionary<int,XRawFileIO>();
             m_opened    = new Dictionary<int,bool>();
@@ -181,7 +185,6 @@ namespace MultiAlignCore.IO.Features
             XRawFileIO rawReader     = m_readers[group];
             
             FinniganFileReaderBaseClass.udtScanHeaderInfoType header = new FinniganFileReaderBaseClass.udtScanHeaderInfoType();
-
             rawReader.GetScanInfo(scan, out header);
 
             if (header.MSLevel != msLevel && msLevel != -1)
@@ -253,6 +256,72 @@ namespace MultiAlignCore.IO.Features
                 }
             }
             m_readers.Clear();
+        }
+
+        #endregion
+
+        #region ISpectraProvider Members
+
+
+        /// <summary>
+        /// Retrieves a dictionary of scan data
+        /// </summary>
+        /// <param name="groupId">Group ID to </param>
+        /// <returns>Map between </returns>
+        public Dictionary<int, ScanSummary> GetScanData(int group)
+        {            
+            if (m_datasetMetaData.ContainsKey(group))
+            {
+                return m_datasetMetaData[group].ScanMetaData;
+            }
+
+            
+            if (!m_readers.ContainsKey(group))
+            {
+                string path = m_dataFiles[group];
+                XRawFileIO reader = new XRawFileIO();
+                m_readers.Add(group, reader);
+
+            }
+
+            XRawFileIO rawReader = m_readers[group];
+            if (!m_opened[group])
+            {
+                bool opened = rawReader.OpenRawFile(m_dataFiles[group]);
+                if (!opened)
+                {
+                    throw new IOException("Could not open the Thermo raw file " + m_dataFiles[group]);
+                }
+            }
+
+            DatasetSummary datasetSummary = new DatasetSummary();
+
+            int numberOfScans = rawReader.GetNumScans();
+            for (int i = 0; i < numberOfScans; i++)
+            {                
+                FinniganFileReaderBaseClass.udtScanHeaderInfoType header = new FinniganFileReaderBaseClass.udtScanHeaderInfoType();
+                rawReader.GetScanInfo(i, out header);
+
+                ScanSummary summary     = new ScanSummary();
+                summary.MsLevel         = header.MSLevel;
+                summary.Time            = header.RetentionTime;
+                summary.Scan            = i;
+                summary.TotalIonCurrent = Convert.ToInt64(header.TotalIonCurrent);
+                summary.PrecursorMZ     = header.ParentIonMZ;
+                summary.CollisionType   = CollisionType.Other;
+                                                                        
+                switch (header.CollisionMode)
+                {
+                    case "cid":
+                        summary.CollisionType = CollisionType.CID;
+                        break;
+                    default:
+                        break;
+                }                                
+            }
+            rawReader.CloseRawFile();                        
+            m_datasetMetaData.Add(group, datasetSummary);
+            return datasetSummary.ScanMetaData;            
         }
 
         #endregion

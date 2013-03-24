@@ -218,6 +218,8 @@
     <Compile Include="Data\PeakMatchingResults.cs" />
     <Compile Include="Data\SequenceData\DatabaseSearchSequence.cs" />
     <Compile Include="Extensions\ClusterExtensions.cs" />
+    <Compile Include="Extensions\MSFeatureExtensions.cs" />
+    <Compile Include="Extensions\PeptideExtensions.cs" />
     <Compile Include="Extensions\XYDataExtensions.cs" />
     <Compile Include="Extensions\DatasetInformationCollection.cs" />
     <Compile Include="Extensions\MassTagExtensions.cs" />
@@ -226,6 +228,8 @@
     <Compile Include="IO\ClusterExporterComposite.cs" />
     <Compile Include="IO\Factors\FactorFileReader.cs" />
     <Compile Include="IO\Factors\MultiAlignFactorSink.cs" />
+    <Compile Include="IO\Features\UMCClusterAbundanceSumCrossTabWriter.cs" />
+    <Compile Include="IO\Features\XicFitWriter.cs" />
     <Compile Include="IO\Features\XicComparisonWriter.cs" />
     <Compile Include="IO\Features\XicMsFeatureWriter.cs" />
     <Compile Include="IO\Features\FeatureAdjusterWriter.cs" />

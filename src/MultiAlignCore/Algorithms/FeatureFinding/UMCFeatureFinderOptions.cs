@@ -38,6 +38,11 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
             this.ShouldCreateXicFile            = false;
         }
 
+        [DataSummaryAttribute("Smooth Xic Data")]
+        [ParameterFileAttribute("ShouldSmoothXicData", "LCMSFeatureFinding")]
+        [Category("Persistence")]
+        [Description("Smooths intensity profile when creating Xic's")]
+        public bool ShouldSmoothXic { get; set; }
         [DataSummaryAttribute("Create XIC Key File")]
         [ParameterFileAttribute("ShouldCreateXicKeyFile", "LCMSFeatureFinding")]
         [Category("Persistence")]

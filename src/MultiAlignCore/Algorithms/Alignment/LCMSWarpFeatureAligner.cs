@@ -152,7 +152,6 @@ namespace MultiAlignCore.Algorithms.Alignment
                 alignmentProcessor.SetAligneeDatasetFeatures(oldFeatures, alignmentOptions.MZBoundaries[i]);                
 
                 // Find alignment 
-
                 OnStatus("Performing alignment warping.");
                 alignmentProcessor.PerformAlignmentToMSFeatures();
 
@@ -176,7 +175,7 @@ namespace MultiAlignCore.Algorithms.Alignment
                     if (isInMap)
                     {
                         map[featureID].MassMonoisotopicAligned = feature.MassCalibrated;
-                        map[featureID].NET                     = feature.Net;
+                        map[featureID].NETAligned              = feature.Net;
                         map[featureID].RetentionTime           = feature.Net;     
                         map[featureID].ScanAligned             = feature.ScanAligned;                  
                     }
@@ -186,8 +185,8 @@ namespace MultiAlignCore.Algorithms.Alignment
 
                 // Pull out the heat maps...
                 float[,] heatScore = new float[1, 1];
-                float[] xInterval = new float[1];
-                float[] yInterval = new float[1];
+                float[] xInterval  = new float[1];
+                float[] yInterval  = new float[1];
 
                 OnStatus("Retrieving alignment data.");
                 alignmentProcessor.GetAlignmentHeatMap(ref heatScore, ref xInterval, ref yInterval);

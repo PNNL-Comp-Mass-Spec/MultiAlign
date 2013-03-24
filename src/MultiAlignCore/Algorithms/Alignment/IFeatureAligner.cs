@@ -40,4 +40,5 @@ namespace MultiAlignCore.Algorithms.Alignment
                                             List<UMCLight>      features,  
                                             AlignmentOptions    options);               
     }
+
 }

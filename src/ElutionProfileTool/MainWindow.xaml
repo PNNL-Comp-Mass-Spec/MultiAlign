@@ -1,7 +1,7 @@
 ﻿<Window x:Class="ElutionProfileTool.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MainWindow"
+        Title="Racoon"
         xmlns:ma="clr-namespace:PNNLControls;assembly=PNNLControls"
         Height="901" 
         Width="1110"
@@ -10,6 +10,7 @@
         <TabItem>            
             <Grid>
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" ></RowDefinition>
                     <RowDefinition Height="Auto" ></RowDefinition>
                     <RowDefinition Height="*" ></RowDefinition>
                     <RowDefinition Height="*" ></RowDefinition>
@@ -35,37 +36,46 @@
                         0  XIC's Graded
                 </Label>
                 <TextBox Margin="5,4,5,6"
-                    Name="textBox1" FontStretch="Normal" FontSize="28" 
+                    Name="NameText" FontStretch="Normal" FontSize="28" 
+                    Text="enter your name" />
+                <TextBox 
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Margin="5,4,5,6"
+                    Name="textBox1" FontStretch="Normal" FontSize="16" 
                     Text="M:\data\proteomics\IQ-Api-Testing\226151_QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27.xic" />
                 <Button 
-                    Grid.Row="0"
+                    Grid.Row="1"
                     Grid.Column="1"
-                        Height="64"
+                        Height="32"
                         Width="256"
-                    Content=" View "
+                    Content=" Open "
                     Margin="5,5,5,5"
                     Click="button_Click"
-                    Name="button" FontSize="28" />
+                    Name="button" FontSize="18" />
                 <Grid
                     
-                        Grid.Row="1"
+                        Grid.Row="2"
                         Grid.Column="0"
                         Grid.RowSpan="2"
                     >
 
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" ></RowDefinition>
                         <RowDefinition Height="*" ></RowDefinition>
                         <RowDefinition Height="32" ></RowDefinition>
                     </Grid.RowDefinitions>
                     <Label
                         HorizontalContentAlignment="Center"
-                        Grid.Row="1"    
+                        Grid.Row="2"    
                         FontSize="18"
+                        x:Name="ScanLength"
                         >
                        Scan Length = ""
                     </Label>
                     <WindowsFormsHost
-                        Grid.Row="0"
+                        Margin="15"
+                        Grid.Row="1"
                         >
                         <ma:ctlLineChart 
                             Title="Elution Profile"  
@@ -77,8 +87,8 @@
                     </WindowsFormsHost>
                 </Grid>
                 <StackPanel            
-                    Margin="5,5,5,5"
-                    Grid.Row="1"
+                    Margin="5,25,5,5"
+                    Grid.Row="2"
                     Grid.RowSpan="2"
                     Grid.Column="1">
             
@@ -115,6 +125,7 @@
                         Click="FourButton_Click"
 
                         Name="FourButton" FontSize="28" />
+                    
                 </StackPanel>
             </Grid>
         </TabItem>

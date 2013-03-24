@@ -206,5 +206,15 @@ namespace MultiAlignCore.IO.Features
         }
 
         #endregion
+
+        #region ISpectraProvider Members
+
+
+        public Dictionary<int, ScanSummary> GetScanData(int groupId)
+        {
+            return new Dictionary<int, ScanSummary>();
+        }
+
+        #endregion
     }
 }

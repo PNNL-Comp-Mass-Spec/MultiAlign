@@ -182,7 +182,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn         Header="Dataset ID"      CanUserSort="True"     Binding="{Binding Path=DatasetId}"    IsReadOnly="True"/>
+                <DataGridTextColumn         Header="Dataset ID"      CanUserSort="True"     Binding="{Binding Path=DatasetId}"     IsReadOnly="True"/>
                 <DataGridTextColumn         Header="Dataset Name"    CanUserSort="True"     Binding="{Binding Path=DatasetName,   Converter={StaticResource ResourceKey=DatasetPathConverter}}"         IsReadOnly="True"/>
                 <DataGridTextColumn         Header="Instrument File" CanUserSort="True"     Binding="{Binding Raw.Path,           Converter={StaticResource ResourceKey=HasPathConverter}}"             IsReadOnly="True"/>
                 <DataGridTextColumn         Header="Peaks File"      CanUserSort="True"     Binding="{Binding Peaks.Path,         Converter={StaticResource ResourceKey=HasPathConverter}}"             IsReadOnly="True"/>

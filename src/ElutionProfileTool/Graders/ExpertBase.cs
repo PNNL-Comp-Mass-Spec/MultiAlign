@@ -10,7 +10,8 @@ namespace ElutionProfileTool.Graders
         private ExpertLevel         m_currentLevel;                 
         public ExpertBase()
         {
-            m_currentLevel = BuildExpertLevels();
+            m_currentLevel  = BuildExpertLevels();
+            TotalGraded     = global::Racoon.Properties.Settings.Default.Grade;
         }
 
         /// <summary>
@@ -36,6 +37,8 @@ namespace ElutionProfileTool.Graders
         public ExpertLevel AddRating()
         {
             TotalGraded++;
+            global::Racoon.Properties.Settings.Default.Grade = TotalGraded;
+            global::Racoon.Properties.Settings.Default.Save();
 
             if (m_currentLevel.NextLevel == null)
                 return m_currentLevel;
@@ -97,7 +100,7 @@ namespace ElutionProfileTool.Graders
                                         "Professor",
                                         "Senior Scientist",
                                         "PI",
-                                        "RDS"};
+                                        "Jedi"};
 
             ExpertLevel tempLevel   = new ExpertLevel();
             tempLevel.Name          = names[names.Count - 1];

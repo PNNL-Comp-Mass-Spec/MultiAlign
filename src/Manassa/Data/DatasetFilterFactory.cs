@@ -67,6 +67,10 @@ namespace Manassa.Data
             {
                 return InputFileType.Peaks;
             }
+            if (newPath.EndsWith("msgfdb_fht.txt"))
+            {
+                return InputFileType.Sequence;
+            }
 
             InputFileType type = InputFileType.NotRecognized;
             string extension = Path.GetExtension(newPath).ToLower();            

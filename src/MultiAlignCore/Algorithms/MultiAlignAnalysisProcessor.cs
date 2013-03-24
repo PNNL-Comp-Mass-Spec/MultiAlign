@@ -11,19 +11,23 @@ using MultiAlignCore.Data;
 using MultiAlignCore.Data.Alignment;
 using MultiAlignCore.Data.Features;
 using MultiAlignCore.Data.MassTags;
+using MultiAlignCore.Extensions;
 using MultiAlignCore.IO;
 using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.Features.Hibernate;
 using MultiAlignCore.IO.MTDB;
 using PNNLOmics.Algorithms;
 using PNNLOmics.Algorithms.Alignment;
+using PNNLOmics.Algorithms.Distance;
 using PNNLOmics.Algorithms.FeatureClustering;
 using PNNLOmics.Algorithms.FeatureMatcher.MSnLinker;
+using PNNLOmics.Algorithms.FeatureMetrics;
+using PNNLOmics.Algorithms.Solvers.LevenburgMarquadt;
+using PNNLOmics.Algorithms.Solvers.LevenburgMarquadt.BasisFunctions;
 using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
-using MultiAlignCore.Extensions;
 using PNNLOmics.Data.MassTags;
-using PNNLOmics.Algorithms.Distance;
+using PNNLOmicsIO.IO;
 
 namespace MultiAlignCore.Algorithms
 {        
@@ -351,12 +355,12 @@ namespace MultiAlignCore.Algorithms
 
                 if (!dataset.IsBaseline)
                 {
-                    features = LoadDataset( dataset,
-                                            options, 
+                    features = LoadDataset(dataset,
+                                            options,
                                             filterOptions,
                                             providers,
                                             true);
-                                                            
+
                     features = AlignDataset(features,
                                              baselineFeatures,
                                              config.Analysis.MassTagDatabase,
@@ -367,7 +371,10 @@ namespace MultiAlignCore.Algorithms
                                              dataset,
                                              baselineDataset);
 
-                    providers.FeatureCache.AddAll(features);                    
+                   // MsMsAligner aligner2 = new MsMsAligner();
+                   // aligner2.AlignFeatures(baselineFeatures, features, config.Analysis.Options.AlignmentOptions);
+                    
+                    providers.FeatureCache.AddAll(features);
                 }                        
             }
             DeRegisterProgressNotifier(aligner);
@@ -404,16 +411,15 @@ namespace MultiAlignCore.Algorithms
             
 
             UpdateStatus(string.Format("Loading dataset [{0}] - {1}.", dataset.DatasetId, dataset.DatasetName));
-            int datasetID           = dataset.DatasetId;
-            List<UMCLight> features = UMCLoaderFactory.LoadUmcFeatureData(dataset,
-                                                                          featureCache);
+            int datasetID                   = dataset.DatasetId;
+            List<UMCLight> features         = UMCLoaderFactory.LoadUmcFeatureData(dataset,
+                                                                                  featureCache);
 
             List<MSFeatureLight> msFeatures = UMCLoaderFactory.LoadMsFeatureData(dataset,
                                                                                  msFeatureCache);
             List<MSFeatureToMSnFeatureMap> matches = new List<MSFeatureToMSnFeatureMap>();
             List<ScanSummary> scans         = UMCLoaderFactory.LoadScansData(dataset);
-            List<MSSpectra> msnSpectra      = UMCLoaderFactory.LoadMsnSpectra(dataset,
-                                                                                        msnCache);
+            List<MSSpectra> msnSpectra      = UMCLoaderFactory.LoadMsnSpectra(dataset, msnCache);
 
             // If we don't have any features, then we have to create some from the MS features
             // provided to us.
@@ -436,35 +442,61 @@ namespace MultiAlignCore.Algorithms
                 }
                 ));
 
-
                 foreach (UMCLight feature in features)
                 {
                     feature.GroupID         = datasetID;
                     feature.RetentionTime   = (Convert.ToDouble(feature.Scan) - minScan)/(maxScan - minScan);  
                     feature.SpectralCount   = feature.MSFeatures.Count;
                 }
-
                 
                 try
-                {
-                        
+                {                        
                     XicAdaptor adaptor = new XicAdaptor(dataset.Raw.Path, dataset.Peaks.Path);
                     foreach(UMCLight feature in features)
                     {
-                        feature.ChargeStateChromatograms = adaptor.CreateXicForChargeStates(feature);
+                        feature.ChargeStateChromatograms = adaptor.CreateXicForChargeStates(feature, options.ShouldSmoothXic);
+                        feature.IsotopeChromatograms     = adaptor.CreateXicForIsotopes(feature, options.ShouldSmoothXic);
+
+                        if (dataset.DatasetSummary != null)
+                        {
+                            Dictionary<int, ScanSummary> summary = dataset.DatasetSummary.ScanMetaData;
+                            if (summary != null)
+                            {
+                                foreach (int charge in feature.ChargeStateChromatograms.Keys)
+                                {
+                                    Chromatogram gram = feature.ChargeStateChromatograms[charge];
+                                    foreach (XYData point in gram.Points)
+                                    {
+                                        int scan = Convert.ToInt32(point.X);
+                                        point.X =  summary[scan].Time;
+                                    }
+                                }
+                            }
+                         }
                     }
 
                     if (options.ShouldCreateXicFile)
                     {   
+                        
+
                         string xicPath = dataset.Features.Path.ToLower().Replace("_isos.csv", ".xic");
                         XicWriter.WriteXics(xicPath, features);
+
+                        ChromatogramMetrics metrics = new ChromatogramMetrics();
+                        BasisFunctionBase basis     = BasisFunctionFactory.BasisFunctionSelector(BasisFunctionsEnum.Gaussian);
+                        metrics.FitChromatograms(features, basis);
+
+                        string fitPath          = dataset.Features.Path.ToLower().Replace("_isos.csv", "_fit.xic");
+                        XicFitWriter fitWriter  = new XicFitWriter();
+                        fitWriter.WriteXics(fitPath, features);
                     }
 
-                    if (options.ShouldCreateXicFile)
-                    {
-                        string xicPath = dataset.Features.Path.ToLower().Replace("_isos.csv", ".xic");
-                        XicWriter.WriteXics(xicPath, features);
-                    }                        
+                    //if (options.ShouldCreateXicFile)
+                    //{
+                    //    string xicPath                          = dataset.Features.Path.ToLower().Replace("_isos.csv", ".xic");
+                    //    XicWriter.WriteXics(xicPath, features);
+
+                    //}                        
                 }
                 catch (Exception) 
                 {
@@ -578,6 +610,25 @@ namespace MultiAlignCore.Algorithms
 
                                 UpdateStatus("Linking MS/MS data to MS Features");
                                 mapped = LinkMSFeaturesToMSMS(msFeatures, spectra);
+
+                                UpdateStatus("Reading List of Peptides");
+
+
+                                ISequenceFileReader sequenceProvider = PeptideReaderFactory.CreateReader(dataset.SequencePath);
+                                if (sequenceProvider != null)
+                                {
+                                    try
+                                    {
+                                        IEnumerable<Peptide> peptides = sequenceProvider.Read(dataset.SequencePath);
+
+                                        UpdateStatus("Linking MS/MS to any known Peptide/Metabolite Sequences");
+                                        LinkMsMsToPeptideSequences(spectra, peptides.ToList());
+
+                                    }catch(Exception ex)
+                                    {
+                                        UpdateStatus(string.Format("Could not load sequences for dataset {0} - {1}", dataset.DatasetName, ex.Message));
+                                    }
+                                }
                             }
                         }catch(Exception ex)
                         {
@@ -593,8 +644,10 @@ namespace MultiAlignCore.Algorithms
                     // table/container.
                     Dictionary<int, MSSpectra> spectraTracker = new Dictionary<int, MSSpectra>();
 
-                    int totalMSFeatures = 0;
-                    int totalUMCFeatures = 0;
+                    int totalMSFeatures         = 0;
+                    int totalUMCFeatures        = 0;
+                    int totalPeptidesMatching   = 0;
+
                     List<MSSpectra> msmsFeatures = new List<MSSpectra>();
 
                     // Next we may want to map our MSn features to our parents.  This would allow us to do traceback...
@@ -617,6 +670,11 @@ namespace MultiAlignCore.Algorithms
                                     spectrum.GroupID = feature.GroupID;
                                     matches.Add(match);
 
+                                    if (spectrum.Peptides.Count > 0)
+                                    {
+                                        totalPeptidesMatching++;
+                                    }
+
                                     if (!spectraTracker.ContainsKey(spectrum.ID))
                                     {
                                         msmsFeatures.Add(spectrum);
@@ -635,19 +693,22 @@ namespace MultiAlignCore.Algorithms
                                             totalMSFeatures,
                                             totalUMCFeatures
                                             ));
-
+                        if (dataset.Sequence != null)
+                        {
+                            UpdateStatus(
+                                string.Format("Mapped {0} peptides/metabolites to features based on supplied sequences",
+                                                totalPeptidesMatching));
+                        }
                         if (msmsFeatures.Count > 0)
                         {
                             msnCache.AddAll(msmsFeatures);
                         }
-
                         if (msnToMsCache != null)
                         {
                             msnToMsCache.AddAll(matches);
                         }
                     }
                 }
-
             }
 
             // This dataset is done!                               
@@ -658,6 +719,43 @@ namespace MultiAlignCore.Algorithms
             }
 
             return features;            
+        }
+
+        private void LinkMsMsToPeptideSequences(List<MSSpectra> msFeatures,
+                                                List<Peptide> peptides)
+        {
+            Dictionary<int, List<Peptide>> peptideMap   = peptides.CreateScanMaps();
+            Dictionary<int, List<MSSpectra>> msFeatureMap = msFeatures.CreateScanMapsForMsMs();
+
+            // Number of spectra that are identified.
+            int count           = 0;
+            int noFeatureCount  = 0;
+            foreach (int scan in peptideMap.Keys)
+            {
+                // Here we don't allow any scans without MS/MS to make it through.                
+                // We only add one, because per MS/MS scan there should be only one Spectra. 
+                if (!msFeatureMap.ContainsKey(scan))
+                {
+                    noFeatureCount ++;
+                    continue;
+                }
+
+                // Then we want to match the list of all possible peptides for a given MS/MS to
+                // that MS/MS
+                List<Peptide>   potentialPeptides = peptideMap[scan];
+                List<MSSpectra> spectra           = msFeatureMap[scan];
+
+                // This is probably a N to 1 thing (N = number of peptide id's)                
+                foreach (Peptide peptide in potentialPeptides)
+                {
+                    foreach (MSSpectra spectrum in spectra)
+                    {
+                        count++;
+                        spectrum.Peptides.Add(peptide);
+                    }
+                }
+            }
+            UpdateStatus(string.Format("Linked {0} peptides to MS/MS spectra.   {1} peptides did not get assigend to spectra", count, noFeatureCount));
         }
         /// <summary>
         /// Creates LCMS Features from the MS feature data provided.

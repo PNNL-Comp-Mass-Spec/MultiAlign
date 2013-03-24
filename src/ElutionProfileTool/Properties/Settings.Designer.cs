@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ElutionProfileTool.Properties {
+namespace Racoon.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
@@ -32,6 +32,18 @@ namespace ElutionProfileTool.Properties {
             }
             set {
                 this["Grade"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("enteryourname")]
+        public string Grader {
+            get {
+                return ((string)(this["Grader"]));
+            }
+            set {
+                this["Grader"] = value;
             }
         }
     }

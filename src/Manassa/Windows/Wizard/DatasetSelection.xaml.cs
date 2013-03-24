@@ -221,7 +221,13 @@ namespace Manassa.Windows
         private void AddFolderButton_Click(object sender, RoutedEventArgs e)
         {
 
-            List<string> extensions = new List<string>() { "*_isos.csv", "*LCMSFeatures.txt", "*.syn", "*.raw", "*.mzxml", "*peaks.txt" };
+            List<string> extensions = new List<string>() { "*_isos.csv", 
+                                                            "*LCMSFeatures.txt", 
+                                                            "*.syn", 
+                                                            "*.raw", 
+                                                            "*.mzxml", 
+                                                            "*msgfdb_fht.txt",
+                                                            "*peaks.txt" };
 
             System.IO.SearchOption option = ShouldSearchSubDirectories;
 

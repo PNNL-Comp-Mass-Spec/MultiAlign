@@ -7,6 +7,8 @@ using System.IO;
 using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO.InputFiles;
 using System.ComponentModel;
+using PNNLOmics.Data;
+using System.Text.RegularExpressions;
 
 namespace MultiAlignCore.Data
 {
@@ -41,7 +43,14 @@ namespace MultiAlignCore.Data
 
             PlotData = new DatasetPlotInformation();
 		}
-
+        /// <summary>
+        /// Gets or sets the dataset summary.
+        /// </summary>
+        public DatasetSummary DatasetSummary
+        {
+            get;
+            set;
+        }
         private void OnNotify(string property)
         {
             if (PropertyChanged != null)
@@ -316,18 +325,38 @@ namespace MultiAlignCore.Data
 		}
 		#endregion
 
+        //private static string CleanExtension(string name, string extension)
+        //{
+        //    string lowerExtension   = extension.ToLower();
+        //    string lowerName        = name.ToLower();
+
+        //    if (lowerName.EndsWith(lowerExtension))
+        //    {                
+        //        int index = lowerName.IndexOf(lowerExtension, lowerName.Length - lowerExtension.Length, StringComparison.OrdinalIgnoreCase);
+        //    }
+        //}
         /// <summary>
         /// Cleans dataset names of extensions in case the data as not loaded from DMS, but manually.
         /// </summary>
         /// <returns></returns>
         public static string ExtractDatasetName(string path)
         {
-            string datasetName  = path.Replace("_isos.csv", "").ToLower();
-            datasetName         = datasetName.Replace(".scans", "");
-            datasetName         = datasetName.Replace("_fht", "");
-            datasetName         = datasetName.Replace("lcmsfeatures.txt", "");
-            datasetName         = datasetName.Replace("_peaks.txt", "");
-            datasetName         = System.IO.Path.GetFileNameWithoutExtension(datasetName);
+            string  datasetName = path;
+            
+            datasetName = Regex.Replace(datasetName, "_isos.csv", "", RegexOptions.IgnoreCase);
+            datasetName = Regex.Replace(datasetName, ".scans", "", RegexOptions.IgnoreCase);
+            datasetName = Regex.Replace(datasetName, "_msgfdb_fht.txt", "", RegexOptions.IgnoreCase);
+            datasetName = Regex.Replace(datasetName, "lcmsfeatures.txt", "", RegexOptions.IgnoreCase);
+            datasetName = Regex.Replace(datasetName, "_peaks.txt", "", RegexOptions.IgnoreCase);
+            datasetName = Regex.Replace(datasetName, "_fht", "", RegexOptions.IgnoreCase);
+            datasetName = System.IO.Path.GetFileNameWithoutExtension(datasetName);
+
+            //datasetName         = path.Replace("_isos.csv", "");
+            //datasetName         = datasetName.Replace(".scans", "");
+            //datasetName         = datasetName.Replace("_msgfdb_fht.txt", "");
+            //datasetName         = datasetName.Replace("_fht", "");            
+            //datasetName         = datasetName.Replace("lcmsfeatures.txt", "");
+            //datasetName         = datasetName.Replace("_peaks.txt", "");
             return datasetName;                
         }
         public static List<DatasetInformation> CreateDatasetsFromInputFile(List<InputFile> inputFiles)

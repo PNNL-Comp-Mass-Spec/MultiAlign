@@ -64,7 +64,7 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
         /// <param name="mz"></param>
         /// <param name="scan"></param>
         /// <returns></returns>
-        public List<PNNLOmics.Data.XYData> FindXic(double mz, int scan)
+        public List<PNNLOmics.Data.XYData> FindXic(double mz, int scan, bool shouldSmooth)
         {
             LcmsFeatureTarget target    = new LcmsFeatureTarget();
             target.ID                   = 0;
@@ -97,8 +97,11 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
             chromGen.Execute(m_run.ResultCollection);
 
             //this smooths the data - very important step!
-            chromSmoother.Execute(m_run.ResultCollection);
-            
+            if (shouldSmooth)
+            {
+                chromSmoother.Execute(m_run.ResultCollection);
+            }
+
             //this detects peaks within an extracted ion chromatogram
             chromPeakDetector.Execute(m_run.ResultCollection);
 
@@ -124,7 +127,7 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
         /// <param name="rawPath">Path to the raw file.</param>
         /// <param name="peaksPath">Path to the peaks file.</param>        
         /// <param name="feature">Feature to target</param>
-        public Dictionary<int, Chromatogram> CreateXicForChargeStates(UMCLight feature)
+        public Dictionary<int, Chromatogram> CreateXicForChargeStates(UMCLight feature, bool shouldSmooth)
         {            
 
             Dictionary<int, Chromatogram> chromatograms = new Dictionary<int, Chromatogram>();
@@ -151,7 +154,7 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
 
                 try
                 {
-                    totalXic = FindXic(targetMz, targetScan);
+                    totalXic = FindXic(targetMz, targetScan, shouldSmooth);
 
                     if (totalXic.Count > 1)
                     {
@@ -188,15 +191,13 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
         /// <param name="rawPath">Path to the raw file.</param>
         /// <param name="peaksPath">Path to the peaks file.</param>        
         /// <param name="feature">Feature to target</param>
-        public Dictionary<int, List<Chromatogram>> CreateXicForIsotopes(string rawPath,
-                                                string peaksPath,
-                                                UMCLight feature)
+        public Dictionary<int, List<Chromatogram>> CreateXicForIsotopes(UMCLight feature, bool shouldSmooth)
         {
 
             Dictionary<int, List<Chromatogram>> chromatograms = new Dictionary<int, List<Chromatogram>>();
             Dictionary<int, List<XYZData>> charges      = feature.CreateChargeSIC();
             XicFinder finder                            = new XicFinder();
-            feature.ChargeStateChromatograms.Clear();
+            feature.IsotopeChromatograms.Clear();
             
             foreach (int charge in charges.Keys)
             {
@@ -218,8 +219,7 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
                 foreach (PNNLOmics.Data.XYData isotope in isotopicProfile)
                 {
                     // Find the Xic based on the target point, this may include other peaks
-                    List<PNNLOmics.Data.XYData> totalXic = FindXic(targetMz,
-                                                                            targetScan);
+                    List<PNNLOmics.Data.XYData> totalXic = FindXic(targetMz, targetScan, shouldSmooth);
 
                     // Then find a specific Xic based on the target scan.
                     List<PNNLOmics.Data.XYData> targetIsotopeXic = finder.FindTarget(totalXic, targetScan);

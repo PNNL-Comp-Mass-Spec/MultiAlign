@@ -121,8 +121,30 @@ namespace MultiAlignCore.IO.Features
                 case ".CSV":
                     MSFeatureLightFileReader reader = new MSFeatureLightFileReader();
                     reader.Delimeter                = ",";
+
                     IEnumerable<MSFeatureLight> newMsFeatures = reader.ReadFile(path);
                     msFeatures.AddRange(newMsFeatures);
+
+                    ISpectraProvider spectraProvider = null;
+                    if (dataset.Raw != null)
+                    {
+                        spectraProvider = RawLoaderFactory.CreateFileReader(dataset.Raw.Path);
+                    }
+                    //if (spectraProvider != null)
+                    //{
+                    //    spectraProvider.AddDataFile(dataset.Raw.Path, 0);
+                    //    Dictionary<int, ScanSummary> summary = spectraProvider.GetScanData(0);
+                    //    dataset.DatasetSummary               = new DatasetSummary();
+                    //    dataset.DatasetSummary.ScanMetaData  = summary;
+                    //    foreach (MSFeatureLight featureLight in msFeatures)
+                    //    {
+                    //        if (summary.ContainsKey(featureLight.Scan))
+                    //        {
+                    //            featureLight.RetentionTime = summary[featureLight.Scan].Time;
+                    //        }
+                    //    }
+                    //}
+
                     UpdateStatus("Loaded features from the CSV files.");
                     break;
                 case ".TXT":

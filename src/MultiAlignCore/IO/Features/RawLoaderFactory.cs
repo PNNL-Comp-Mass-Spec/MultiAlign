@@ -20,6 +20,9 @@ namespace MultiAlignCore.IO.Features
         /// <returns></returns>
         public static ISpectraProvider CreateFileReader(string name)
         {
+            if (name == null)
+                return null;
+
             ISpectraProvider reader     = null;
             string extension            = Path.GetExtension(name);
 
