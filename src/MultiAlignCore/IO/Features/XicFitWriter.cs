@@ -23,14 +23,24 @@ namespace MultiAlignCore.IO.Features
                     foreach (int charge in feature.ChargeStateChromatograms.Keys)
                     {
                         writer.WriteLine("id\t{0}\tcharge\t{1}", feature.ID, charge);
-                        writer.WriteLine("mz\tscan\tintensity");
+                        writer.WriteLine("mz\tfit scan\tfit intensity\tregular scan\tregular intensity");
 
                         Chromatogram gram = feature.ChargeStateChromatograms[charge];
-
-                        foreach (PNNLOmics.Data.XYData point in gram.FitPoints)                                                
+                        int i = 0;
+                        for (i = 0; i < gram.Points.Count; i++)
                         {
-                            writer.WriteLine("{0}\t{1}t{2}", gram.Mz, point.X, point.Y);
-                        }                        
+                            //(PNNLOmics.Data.XYData point in gram.FitPoints)
+                            PNNLOmics.Data.XYData fitPoint = gram.FitPoints[i];
+                            PNNLOmics.Data.XYData regPoint = gram.Points[i];
+
+                            writer.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}", gram.Mz, fitPoint.X, fitPoint.Y, regPoint.X, regPoint.Y);                            
+                        }
+                        for (; i < gram.FitPoints.Count; i++)
+                        {
+                            //(PNNLOmics.Data.XYData point in gram.FitPoints)
+                            PNNLOmics.Data.XYData fitPoint = gram.FitPoints[i];
+                            writer.WriteLine("{0}\t{1}\t{2}", gram.Mz, fitPoint.X, fitPoint.Y);
+                        }
                     }
                 }
             }

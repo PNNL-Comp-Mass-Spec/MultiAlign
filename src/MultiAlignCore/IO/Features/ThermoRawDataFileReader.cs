@@ -248,7 +248,7 @@ namespace MultiAlignCore.IO.Features
             {
                 try
                 {
-                    m_readers[key].CloseRawFile();
+                    m_readers[key].CloseRawFile();                    
                 }
                 catch
                 {

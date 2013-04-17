@@ -28,8 +28,6 @@ namespace Manassa.Windows
             DataContext = this;
         }
 
-
-
         public ObservableCollection<DatasetInformation> Datasets
         {
             get { return (ObservableCollection<DatasetInformation>)GetValue(DatasetsProperty); }
@@ -39,8 +37,6 @@ namespace Manassa.Windows
         // Using a DependencyProperty as the backing store for Datasets.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty DatasetsProperty =
             DependencyProperty.Register("Datasets", typeof(ObservableCollection<DatasetInformation>), typeof(DatasetListBox));
-
-
 
         public DatasetInformation SelectedDataset
         {

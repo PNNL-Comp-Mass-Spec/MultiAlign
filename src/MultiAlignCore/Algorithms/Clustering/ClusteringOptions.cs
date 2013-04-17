@@ -24,7 +24,7 @@ namespace MultiAlignCore.Algorithms.Clustering
 			DriftTimeTolerance      = 50.0;			
             ClusteringAlgorithm     = ClusteringAlgorithmType.AverageLinkage;
 			ClusterCentroid         = ClusterCentroidRepresentation.Median;
-            DistanceFunction        = DistanceMetric.PowerEuclidean;
+            DistanceFunction        = DistanceMetric.WeightedEuclidean;
 			IgnoreCharge		    = true;			
             AlignClusters	        = false;			
         }

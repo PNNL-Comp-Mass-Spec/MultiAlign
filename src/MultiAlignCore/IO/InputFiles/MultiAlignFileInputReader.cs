@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using MultiAlignCore.IO.MTDB;
+using System.Collections.Generic;
 
 namespace MultiAlignCore.IO.InputFiles
 {    
@@ -206,6 +207,22 @@ namespace MultiAlignCore.IO.InputFiles
             }
 
             return info;
+        }
+
+        public static List<string> GetSupportedFileTypes()
+        {
+            List<string> inputFileTypes = new List<string>();
+
+            inputFileTypes = new List<string>(){ "_isos.csv", 
+                                                 "LCMSFeatures.txt", 
+                                                 ".fht", 
+                                                 ".raw", 
+                                                 ".mzxml", 
+                                                 "msgfdb_fht.txt",
+                                                 "msgfdb_fht.txt",
+                                                 "peaks.txt" };
+
+            return inputFileTypes;
         }
     }
 }

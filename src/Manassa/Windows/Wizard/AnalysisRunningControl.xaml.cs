@@ -219,6 +219,12 @@ namespace Manassa.Windows
             view.AlignmentData = e;
             GalleryImages.Add(view);
             GalleryScroll.ScrollToEnd();
+
+            if (GalleryImages.Count > 10)
+            {
+                UserControl control = GalleryImages[0];                
+                GalleryImages.RemoveAt(0);
+            }
         }
         private void BuildMassTagPlots(MassTagsLoadedEventArgs e)
         {
@@ -226,6 +232,10 @@ namespace Manassa.Windows
             view.MassTagsData    = e;
             GalleryImages.Add(view);
             GalleryScroll.ScrollToEnd();
+            if (GalleryImages.Count > 10)
+            {
+                GalleryImages.RemoveAt(0);
+            }
         }
         /// <summary>
         /// Builds the alignment plot views.
@@ -240,6 +250,10 @@ namespace Manassa.Windows
                 view.BaselineData = e;
                 GalleryImages.Add(view);
                 GalleryScroll.ScrollToEnd();
+                if (GalleryImages.Count > 10)
+                {
+                    GalleryImages.RemoveAt(0);
+                }
             }
         }
         /// <summary>
@@ -253,6 +267,10 @@ namespace Manassa.Windows
 
             GalleryImages.Add(view);
             GalleryScroll.ScrollToEnd();
+            if (GalleryImages.Count > 10)
+            {
+                GalleryImages.RemoveAt(0);
+            }
         }
         #endregion
 

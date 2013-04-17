@@ -172,29 +172,29 @@ namespace MultiAlignCore.Algorithms
             using (TextWriter writer = File.CreateText(path))
             {
                 writer.WriteLine("Dataset, Feature_Id, MS_Feature_Id, MsMs_Feature_ID, Ms_Charge, NET, NET_Aligned, MsMs_PrecursorMz, MsMs_Scan, Peptide_Sequence, Peptide_Score");
-                int totalFragments          = 0;
-                int totalPeptides           = 0;
-                int totalMultipleFragments  = 0;
+                int totalFragments              = 0;
+                int totalPeptides               = 0;
+                int totalMultipleFragments      = 0;
+                int totalMultipleNonIdentified  = 0;
 
                 foreach (UMCLight feature in features)
                 {
-                    
+                    int totalFeatureFragments           = 0;
+                    int totalFeatureIdentifiedFragments = 0;
 
                     foreach (MSFeatureLight msFeature in feature.MSFeatures)
                     {
                         StringBuilder builder = new StringBuilder();
 
-                        if (msFeature.MSnSpectra.Count > 1)
-                        {
-                            totalMultipleFragments++;
-                        }
-
                         foreach (MSSpectra spectrum in msFeature.MSnSpectra)
                         {
+
+                            totalFeatureFragments++;
                             totalFragments++;
                             if (spectrum.Peptides.Count > 0)
                             {
                                 totalPeptides++;
+                                totalFeatureIdentifiedFragments++;
                             }
 
                             builder.Append(string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8}",
@@ -216,11 +216,21 @@ namespace MultiAlignCore.Algorithms
                             writer.WriteLine(builder.ToString());
                         }
                     }
+
+                    if (totalFeatureFragments > 1)
+                    {
+                        totalMultipleFragments++;
+
+                        if (totalFeatureIdentifiedFragments < 1)
+                        {
+                            totalMultipleNonIdentified++;
+                        }
+                    }
                 }
 
                 writer.WriteLine();
-                writer.WriteLine("Total_Fragments,Total_Peptides,Total_Multiple_Fragment_Features");
-                writer.WriteLine("{0},{1},{2}", totalFragments, totalPeptides, totalMultipleFragments);
+                writer.WriteLine("Total Features, Total MsMs, Total Identified, Total Multiple MsMs, Total Multiple MsMs Without Ids");
+                writer.WriteLine("{0},{1},{2},{3},{4}", features.Count, totalFragments, totalPeptides, totalMultipleFragments, totalMultipleNonIdentified);
             }
         }
         /// <summary>
@@ -572,7 +582,10 @@ namespace MultiAlignCore.Algorithms
         {
             m_reportCreator.CreateBaselinePlots(e);
 
-            ReportPeptideFeatures(e.DatasetInformation, e.Features);
+            if (e.DatasetInformation != null && e.Features != null)
+            {
+                ReportPeptideFeatures(e.DatasetInformation, e.Features);
+            }
         }
 
         /// <summary>
@@ -1311,10 +1324,10 @@ namespace MultiAlignCore.Algorithms
             // Give the processor somewhere to put the SIC images.
             if (validated == AnalysisType.ExportSICs)
             {
-                processor.AnalaysisPath = Path.Combine(config.AnalysisPath, "SICs");
-                if (!Directory.Exists(processor.AnalaysisPath))
+                processor.AnalysisPath = Path.Combine(config.AnalysisPath, "SICs");
+                if (!Directory.Exists(processor.AnalysisPath))
                 {
-                    Directory.CreateDirectory(processor.AnalaysisPath);
+                    Directory.CreateDirectory(processor.AnalysisPath);
                 }
             }
 
@@ -1491,10 +1504,10 @@ namespace MultiAlignCore.Algorithms
             // Give the processor somewhere to put the SIC images.
             if (validated == AnalysisType.ExportSICs)
             {
-                processor.AnalaysisPath = Path.Combine(config.AnalysisPath, "SICs");
-                if (!Directory.Exists(processor.AnalaysisPath))
+                processor.AnalysisPath = Path.Combine(config.AnalysisPath, "SICs");
+                if (!Directory.Exists(processor.AnalysisPath))
                 {
-                    Directory.CreateDirectory(processor.AnalaysisPath);
+                    Directory.CreateDirectory(processor.AnalysisPath);
                 }
             }
 

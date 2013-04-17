@@ -122,14 +122,17 @@ namespace MultiAlignCore.IO.Features
                     MSFeatureLightFileReader reader = new MSFeatureLightFileReader();
                     reader.Delimeter                = ",";
 
+                    //IEnumerable<MSFeatureLight> newMsFeatures = reader.ReadFile(path);
                     IEnumerable<MSFeatureLight> newMsFeatures = reader.ReadFile(path);
                     msFeatures.AddRange(newMsFeatures);
+                    newMsFeatures = null;
 
-                    ISpectraProvider spectraProvider = null;
-                    if (dataset.Raw != null)
-                    {
-                        spectraProvider = RawLoaderFactory.CreateFileReader(dataset.Raw.Path);
-                    }
+
+                    //ISpectraProvider spectraProvider = null;
+                    //if (dataset.Raw != null)
+                    //{
+                    //    spectraProvider = RawLoaderFactory.CreateFileReader(dataset.Raw.Path);
+                    //}
                     //if (spectraProvider != null)
                     //{
                     //    spectraProvider.AddDataFile(dataset.Raw.Path, 0);
@@ -219,10 +222,11 @@ namespace MultiAlignCore.IO.Features
             int datasetID                       = dataset.DatasetId;
             string rawPath                      = dataset.Raw.Path;
             List<MSSpectra> msnSpectra          = new List<MSSpectra>();
+            
             using (ISpectraProvider rawReader   = RawLoaderFactory.CreateFileReader(rawPath))
             {
                 rawReader.AddDataFile(rawPath, 0);
-                msnSpectra = rawReader.GetMSMSSpectra(0, excludeMap);
+                msnSpectra = rawReader.GetMSMSSpectra(0, excludeMap);                
             }
 
             int id = 0;

@@ -133,9 +133,9 @@ namespace MultiAlignCore.Algorithms
             set;
         }
         /// <summary>
-        /// Gets or sets the path to store the SIC's
+        /// Gets or sets the path to store the output data
         /// </summary>
-        public string AnalaysisPath
+        public string AnalysisPath
         {
             get;
             set;
@@ -408,17 +408,20 @@ namespace MultiAlignCore.Algorithms
             msFeatureCache  = providers.MSFeatureCache;
             msnCache        = providers.MSnFeatureCache;
             msnToMsCache    = providers.MSFeatureToMSnFeatureCache;
-            
 
-            UpdateStatus(string.Format("Loading dataset [{0}] - {1}.", dataset.DatasetId, dataset.DatasetName));
+
+            UpdateStatus(string.Format("[{0}] - Loading dataset [{0}] - {1}.", dataset.DatasetId, dataset.DatasetName));
             int datasetID                   = dataset.DatasetId;
             List<UMCLight> features         = UMCLoaderFactory.LoadUmcFeatureData(dataset,
                                                                                   featureCache);
 
+            UpdateStatus(string.Format("[{0}] Loading MS Feature Data [{0}] - {1}.", dataset.DatasetId, dataset.DatasetName));
             List<MSFeatureLight> msFeatures = UMCLoaderFactory.LoadMsFeatureData(dataset,
                                                                                  msFeatureCache);
             List<MSFeatureToMSnFeatureMap> matches = new List<MSFeatureToMSnFeatureMap>();
             List<ScanSummary> scans         = UMCLoaderFactory.LoadScansData(dataset);
+
+            UpdateStatus(string.Format("[{0}] Loading MSn Feature Data [{0}] - {1}.", dataset.DatasetId, dataset.DatasetName));
             List<MSSpectra> msnSpectra      = UMCLoaderFactory.LoadMsnSpectra(dataset, msnCache);
 
             // If we don't have any features, then we have to create some from the MS features
@@ -448,58 +451,53 @@ namespace MultiAlignCore.Algorithms
                     feature.RetentionTime   = (Convert.ToDouble(feature.Scan) - minScan)/(maxScan - minScan);  
                     feature.SpectralCount   = feature.MSFeatures.Count;
                 }
-                
-                try
-                {                        
-                    XicAdaptor adaptor = new XicAdaptor(dataset.Raw.Path, dataset.Peaks.Path);
-                    foreach(UMCLight feature in features)
-                    {
-                        feature.ChargeStateChromatograms = adaptor.CreateXicForChargeStates(feature, options.ShouldSmoothXic);
-                        feature.IsotopeChromatograms     = adaptor.CreateXicForIsotopes(feature, options.ShouldSmoothXic);
 
-                        if (dataset.DatasetSummary != null)
+                try
+                {
+                    if (options.ShouldCreateXicFile)
+                    {
+                        UpdateStatus("Constructing extracted ion chromatograms (XIC)");
+                        XicAdaptor adaptor = new XicAdaptor(dataset.Raw.Path, dataset.Peaks.Path);
+                        foreach (UMCLight feature in features)
                         {
-                            Dictionary<int, ScanSummary> summary = dataset.DatasetSummary.ScanMetaData;
-                            if (summary != null)
+                            feature.ChargeStateChromatograms = adaptor.CreateXicForChargeStates(feature, options.ShouldSmoothXic);
+                            feature.IsotopeChromatograms = adaptor.CreateXicForIsotopes(feature, options.ShouldSmoothXic);
+
+                            // Convert the time to seconds if we have scan information. 
+                            if (dataset.DatasetSummary != null)
                             {
-                                foreach (int charge in feature.ChargeStateChromatograms.Keys)
+                                Dictionary<int, ScanSummary> summary = dataset.DatasetSummary.ScanMetaData;
+                                if (summary != null)
                                 {
-                                    Chromatogram gram = feature.ChargeStateChromatograms[charge];
-                                    foreach (XYData point in gram.Points)
+                                    foreach (int charge in feature.ChargeStateChromatograms.Keys)
                                     {
-                                        int scan = Convert.ToInt32(point.X);
-                                        point.X =  summary[scan].Time;
+                                        Chromatogram gram = feature.ChargeStateChromatograms[charge];
+                                        foreach (XYData point in gram.Points)
+                                        {
+                                            int scan = Convert.ToInt32(point.X);
+                                            point.X = summary[scan].Time;
+                                        }
                                     }
                                 }
                             }
-                         }
-                    }
+                        }
 
-                    if (options.ShouldCreateXicFile)
-                    {   
-                        
-
-                        string xicPath = dataset.Features.Path.ToLower().Replace("_isos.csv", ".xic");
+                        UpdateStatus("Exporting Xic data");
+                        string xicPath = Path.Combine(m_config.AnalysisPath, dataset.DatasetName + ".xic");
                         XicWriter.WriteXics(xicPath, features);
 
                         ChromatogramMetrics metrics = new ChromatogramMetrics();
-                        BasisFunctionBase basis     = BasisFunctionFactory.BasisFunctionSelector(BasisFunctionsEnum.Gaussian);
+                        BasisFunctionBase basis = BasisFunctionFactory.BasisFunctionSelector(BasisFunctionsEnum.Gaussian);
                         metrics.FitChromatograms(features, basis);
 
-                        string fitPath          = dataset.Features.Path.ToLower().Replace("_isos.csv", "_fit.xic");
-                        XicFitWriter fitWriter  = new XicFitWriter();
+                        string fitPath = Path.Combine(m_config.AnalysisPath, dataset.DatasetName + "_fit.xic");
+                        XicFitWriter fitWriter = new XicFitWriter();
                         fitWriter.WriteXics(fitPath, features);
-                    }
-
-                    //if (options.ShouldCreateXicFile)
-                    //{
-                    //    string xicPath                          = dataset.Features.Path.ToLower().Replace("_isos.csv", ".xic");
-                    //    XicWriter.WriteXics(xicPath, features);
-
-                    //}                        
+                    }                     
                 }
-                catch (Exception) 
-                {
+                catch (Exception ex)                
+                {                    
+                    UpdateStatus(string.Format("Could not complete XIC Fits {0}", ex.Message));
                     //TODO: What do we do with this exception.
                 }
                 
@@ -707,9 +705,17 @@ namespace MultiAlignCore.Algorithms
                         {
                             msnToMsCache.AddAll(matches);
                         }
+
+                        msmsFeatures.Clear();
+                        matches.Clear();
+                        spectraTracker.Clear();
                     }
                 }
             }
+
+            msFeatures.Clear();
+            features.ForEach(x => x.MSFeatures.Clear());
+
 
             // This dataset is done!                               
             if (FeaturesLoaded != null)
@@ -717,6 +723,7 @@ namespace MultiAlignCore.Algorithms
                 FeaturesLoadedEventArgs args = new FeaturesLoadedEventArgs(dataset, features);
                 FeaturesLoaded(this, args);
             }
+
 
             return features;            
         }
@@ -1135,6 +1142,7 @@ namespace MultiAlignCore.Algorithms
             MultiAlignAnalysis analysis = config.Analysis;
             IClusterer<UMCLight, UMCClusterLight> clusterer = m_algorithms.Clusterer;
 
+            RegisterProgressNotifier(clusterer as IProgressNotifer);
             UpdateStatus( "Using Cluster Algorithm: " + clusterer.ToString());
 
             
@@ -1216,6 +1224,7 @@ namespace MultiAlignCore.Algorithms
                     }
                 }
             }
+            DeRegisterProgressNotifier(clusterer as IProgressNotifer);
             UpdateStatus(string.Format("Finished clustering.  Found {0} total clusters.", clusterCount));            
         }        
         #endregion
@@ -1233,7 +1242,7 @@ namespace MultiAlignCore.Algorithms
                     UpdateStatus("Could not peak match.  The database was not set.");
                 }
                 else
-                {                   
+                {                    
                     List<UMCClusterLight> clusters              = m_config.Analysis.DataProviders.ClusterCache.FindAll();
                     IPeakMatcher<UMCClusterLight> peakMatcher   = m_algorithms.PeakMatcher;
 

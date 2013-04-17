@@ -6,6 +6,7 @@ namespace MultiAlignCore.Algorithms.Clustering
     {
         AverageLinkage,
         SingleLinkage,
-        Centroid
+        Centroid,
+        Prims
     }
 }

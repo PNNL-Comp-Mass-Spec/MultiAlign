@@ -171,10 +171,8 @@ namespace MultiAlignTestSuite.Algorithms
             }
         }
 
-        [Test(Description = "Tests how clusters form when the are within tolerance boolean is not set")]
-        [TestCase(@"M:\data\proteomics\Clusters\twoClusters-split.csv", DistanceMetric.PowerEuclidean, false)]
-        [TestCase(@"M:\data\proteomics\Clusters\twoClusters-split.csv", DistanceMetric.PowerEuclidean, true)]
-        [TestCase(@"M:\data\proteomics\Clusters\twoClusters-split.csv", DistanceMetric.Euclidean, false)]
+        [Test(Description = "Tests how clusters form when the are within tolerance boolean is not set")]        
+        [TestCase(@"M:\data\proteomics\Clusters\twoClusters-split.csv", DistanceMetric.WeightedEuclidean, true)]
         [TestCase(@"M:\data\proteomics\Clusters\twoClusters-split.csv", DistanceMetric.Euclidean, true)]
         public void TestRestrictiveBoxMethod(string path, DistanceMetric dist, bool useBoxMethod)
         {
@@ -195,7 +193,7 @@ namespace MultiAlignTestSuite.Algorithms
         }
 
         [Test(Description = "Tests how clusters form when the are within tolerance boolean is not set")]
-        [TestCase(@"M:\data\proteomics\Clusters\twoClusters-split.csv", DistanceMetric.PowerEuclidean)]
+        [TestCase(@"M:\data\proteomics\Clusters\twoClusters-split.csv", DistanceMetric.WeightedEuclidean)]
         [TestCase(@"M:\data\proteomics\Clusters\twoClusters-split.csv", DistanceMetric.Euclidean)]
         public void TestDistanceDistributions(string path, DistanceMetric dist)
         {
@@ -236,7 +234,7 @@ namespace MultiAlignTestSuite.Algorithms
         }
 
         [Test]
-        [TestCase(@"M:\data\proteomics\Clusters\clusterBaseline-01.csv", DistanceMetric.PowerEuclidean)]
+        [TestCase(@"M:\data\proteomics\Clusters\clusterBaseline-01.csv", DistanceMetric.WeightedEuclidean)]
         public void TestDistancesEuclidean(string path, DistanceMetric dist)
         {            
             DistanceFunction<UMCClusterLight> func          = DistanceFactory<UMCClusterLight>.CreateDistanceFunction(DistanceMetric.Euclidean);
@@ -311,57 +309,6 @@ namespace MultiAlignTestSuite.Algorithms
                 string output = string.Format("{0},{1},{2},{3},{4},{5}", deltaMassPPM*i, distM, deltaNet*i, distN, deltaDriftTime*i, distD);
                 Console.WriteLine(output);
                 
-            }
-        }
-        [Test]
-        public void TestPowerDistanceChangeEuclidean()
-        {
-            UMCClusterLight cluster = new UMCClusterLight();
-            cluster.MassMonoisotopic = 500;
-            cluster.NET = .5;
-            cluster.RetentionTime = .5;
-            cluster.DriftTime = 20;
-
-
-            PowerEuclideanDistanceMetric<UMCClusterLight> euclid = new PowerEuclideanDistanceMetric<UMCClusterLight>();
-            DistanceFunction<UMCClusterLight> func = euclid.EuclideanDistance;
-
-            double deltaNet = .01;
-            double deltaMassPPM = 1;
-            double deltaDriftTime = 1;
-
-            Console.WriteLine("xxMass Diff, Mass Dist, Net, Net Dist, Drift, Drift Dist");
-
-            for (int i = 0; i < 50; i++)
-            {
-                UMCClusterLight clusterD = new UMCClusterLight();
-                UMCClusterLight clusterN = new UMCClusterLight();
-                UMCClusterLight clusterM = new UMCClusterLight();
-
-                clusterM.DriftTime = cluster.DriftTime + deltaDriftTime;
-                clusterM.NET = cluster.NET + deltaNet;
-                clusterM.RetentionTime = cluster.RetentionTime + deltaNet;
-                clusterM.MassMonoisotopic = Feature.ComputeDaDifferenceFromPPM(cluster.MassMonoisotopic, deltaMassPPM * i);
-
-
-                clusterN.DriftTime = cluster.DriftTime + deltaDriftTime;
-                clusterN.NET = cluster.NET + (deltaNet * i);
-                clusterN.RetentionTime = cluster.RetentionTime + (deltaNet * i);
-                clusterN.MassMonoisotopic = Feature.ComputeDaDifferenceFromPPM(cluster.MassMonoisotopic, deltaMassPPM);
-
-
-                clusterD.DriftTime = cluster.DriftTime + (deltaDriftTime * i);
-                clusterD.NET = cluster.NET + deltaNet;
-                clusterD.RetentionTime = cluster.RetentionTime + deltaNet;
-                clusterD.MassMonoisotopic = Feature.ComputeDaDifferenceFromPPM(cluster.MassMonoisotopic, deltaMassPPM);
-
-                double distM = func(cluster, clusterM);
-                double distN = func(cluster, clusterN);
-                double distD = func(cluster, clusterD);
-
-                string output = string.Format("{0},{1},{2},{3},{4},{5}", deltaMassPPM * i, distM, deltaNet * i, distN, deltaDriftTime * i, distD);
-                Console.WriteLine(output);
-
             }
         }
     }

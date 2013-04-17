@@ -346,9 +346,9 @@ namespace MultiAlignCore.Data
             datasetName = Regex.Replace(datasetName, "_isos.csv", "", RegexOptions.IgnoreCase);
             datasetName = Regex.Replace(datasetName, ".scans", "", RegexOptions.IgnoreCase);
             datasetName = Regex.Replace(datasetName, "_msgfdb_fht.txt", "", RegexOptions.IgnoreCase);
-            datasetName = Regex.Replace(datasetName, "lcmsfeatures.txt", "", RegexOptions.IgnoreCase);
+            datasetName = Regex.Replace(datasetName, "_lcmsfeatures.txt", "", RegexOptions.IgnoreCase);
             datasetName = Regex.Replace(datasetName, "_peaks.txt", "", RegexOptions.IgnoreCase);
-            datasetName = Regex.Replace(datasetName, "_fht", "", RegexOptions.IgnoreCase);
+            datasetName = Regex.Replace(datasetName, "_fht.txt", "", RegexOptions.IgnoreCase);
             datasetName = System.IO.Path.GetFileNameWithoutExtension(datasetName);
 
             //datasetName         = path.Replace("_isos.csv", "");

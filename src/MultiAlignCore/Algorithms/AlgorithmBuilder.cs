@@ -5,6 +5,7 @@ using PNNLOmics.Algorithms.FeatureClustering;
 using PNNLOmics.Data.Features;
 using MultiAlignCore.Data;
 using PNNLOmics.Algorithms.FeatureMatcher.Data;
+using PNNLOmics.Algorithms.Distance;
 
 namespace MultiAlignCore.Algorithms
 {
@@ -35,8 +36,7 @@ namespace MultiAlignCore.Algorithms
         {
             IClusterer<UMCLight, UMCClusterLight> clusterer = null;
             switch (clusterType)
-            {
-                    
+            {                    
                 case ClusteringAlgorithmType.AverageLinkage:
                     clusterer = new UMCAverageLinkageClusterer<UMCLight, UMCClusterLight>();
                     break;
@@ -45,6 +45,9 @@ namespace MultiAlignCore.Algorithms
                     break;
                 case ClusteringAlgorithmType.SingleLinkage:
                     clusterer = new UMCSingleLinkageClusterer<UMCLight, UMCClusterLight>();
+                    break;
+                case ClusteringAlgorithmType.Prims:                                
+                    clusterer = new UMCPrimsClustering<UMCLight, UMCClusterLight>();
                     break;
             }
 
