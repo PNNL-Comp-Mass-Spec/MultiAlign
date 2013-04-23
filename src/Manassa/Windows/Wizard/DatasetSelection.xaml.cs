@@ -220,15 +220,12 @@ namespace Manassa.Windows
 
         private void AddFolderButton_Click(object sender, RoutedEventArgs e)
         {
-
-            List<string> supportedTypes = MultiAlignFileInputReader.GetSupportedFileTypes();
+            List<SupportedDatasetType> supportedTypes = DatasetInformation.SupportedFileTypes;
             List<string> extensions     = new List<string>();
 
-            supportedTypes.ForEach(x => extensions.Add("*" + x));
+            supportedTypes.ForEach(x => extensions.Add("*" + x.Extension));
 
-            System.IO.SearchOption option = ShouldSearchSubDirectories;
-
-            
+            System.IO.SearchOption option = ShouldSearchSubDirectories;            
             if (FolderPath == null)
             {
                 ApplicationStatusMediator.SetStatus("The directory specified does not exist.");                

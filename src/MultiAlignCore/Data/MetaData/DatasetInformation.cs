@@ -342,22 +342,14 @@ namespace MultiAlignCore.Data
         public static string ExtractDatasetName(string path)
         {
             string  datasetName = path;
-            
-            datasetName = Regex.Replace(datasetName, "_isos.csv", "", RegexOptions.IgnoreCase);
-            datasetName = Regex.Replace(datasetName, ".scans", "", RegexOptions.IgnoreCase);
-            datasetName = Regex.Replace(datasetName, "_msgfdb_fht.txt", "", RegexOptions.IgnoreCase);
-            datasetName = Regex.Replace(datasetName, "_lcmsfeatures.txt", "", RegexOptions.IgnoreCase);
-            datasetName = Regex.Replace(datasetName, "_peaks.txt", "", RegexOptions.IgnoreCase);
-            datasetName = Regex.Replace(datasetName, "_fht.txt", "", RegexOptions.IgnoreCase);
-            datasetName = System.IO.Path.GetFileNameWithoutExtension(datasetName);
 
-            //datasetName         = path.Replace("_isos.csv", "");
-            //datasetName         = datasetName.Replace(".scans", "");
-            //datasetName         = datasetName.Replace("_msgfdb_fht.txt", "");
-            //datasetName         = datasetName.Replace("_fht", "");            
-            //datasetName         = datasetName.Replace("lcmsfeatures.txt", "");
-            //datasetName         = datasetName.Replace("_peaks.txt", "");
-            return datasetName;                
+            List<SupportedDatasetType> supportedTypes = DatasetInformation.SupportedFileTypes;
+
+            foreach (SupportedDatasetType extension in supportedTypes)
+            {
+                datasetName = Regex.Replace(datasetName, extension.Extension, "", RegexOptions.IgnoreCase);
+            }
+            return System.IO.Path.GetFileNameWithoutExtension(datasetName);            
         }
         public static List<DatasetInformation> CreateDatasetsFromInputFile(List<InputFile> inputFiles)
         {
@@ -374,7 +366,6 @@ namespace MultiAlignCore.Data
                 {
                     datasetMap.Add(datasetName, new List<InputFile>());
                 }
-
                 datasetMap[datasetName].Add(file);
             }
 
@@ -415,5 +406,58 @@ namespace MultiAlignCore.Data
         public event PropertyChangedEventHandler PropertyChanged;
 
         #endregion
+
+        private static readonly List<SupportedDatasetType> m_supportedTypes = new List<SupportedDatasetType>();
+        
+        /// <summary>
+        /// Retrieves the supported file types by multialign.
+        /// </summary>
+        /// <returns></returns>
+        public static List<SupportedDatasetType> SupportedFileTypes
+        {            
+            get
+            {
+                if (m_supportedTypes == null)
+                {                            
+                    m_supportedTypes.Add(new SupportedDatasetType("Decon Tools Isos", "_isos.csv",          InputFileType.Features));
+                    m_supportedTypes.Add(new SupportedDatasetType("LCMS Feature Finder", "LCMSFeatures.txt", InputFileType.Features));
+                    m_supportedTypes.Add(new SupportedDatasetType("Sequest First Hit", ".fht", InputFileType.Sequence));
+                    m_supportedTypes.Add(new SupportedDatasetType("Thermo Raw", ".raw", InputFileType.Raw));
+                    m_supportedTypes.Add(new SupportedDatasetType("mzXML", ".mzxml", InputFileType.Raw));
+                    m_supportedTypes.Add(new SupportedDatasetType("MSGF+ First Hit", "msgfdb_fht.txt", InputFileType.Sequence));
+                    m_supportedTypes.Add(new SupportedDatasetType("MSGF+ First Hit", "fht_msgf.txt", InputFileType.Sequence));
+                    m_supportedTypes.Add(new SupportedDatasetType("DeconTools XIC Peak File", "peaks.txt", InputFileType.Peaks));                                                                                                                                                                                                    
+                }                  
+                return m_supportedTypes;
+            }            
+        }
+    }
+
+    public class SupportedDatasetType
+    {
+        public SupportedDatasetType(string name,
+                                    string extension,                                
+                                    InputFileType type)
+        {
+            Name        = name;
+            InputType   = type;
+
+        }
+
+        /// <summary>
+        /// Gets or sets the extension of the dataset type.
+        /// </summary>
+        public string Extension { get; private set; }
+
+        public string Name
+        {
+            get;
+            private set;
+        }
+        public InputFileType InputType 
+        { 
+            get;
+            private set; 
+        }
     }
 }

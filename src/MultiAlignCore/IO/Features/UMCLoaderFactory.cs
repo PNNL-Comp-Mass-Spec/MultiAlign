@@ -187,29 +187,6 @@ namespace MultiAlignCore.IO.Features
 
             return scans;
         }
-        public static void LoadSequenceData(DatasetInformation dataset,
-                                            IDatabaseSearchSequenceDAO cache)
-        {
-            if (dataset.Sequence != null)
-            {
-                MAGEDatabaseSearchAdaptor adapter = new IO.SequenceData.MAGEDatabaseSearchAdaptor();
-                adapter.LoadSequenceData(   dataset.Sequence.Path,
-                                            dataset.DatasetId,
-                                            cache);
-            }
-        }
-
-        /// <summary>
-        /// Loads MS Spectra from a raw data file.
-        /// </summary>
-        /// <param name="rawReader"></param>
-        /// <param name="msnCache"></param>
-        /// <param name="dataset"></param>
-        /// <returns></returns>
-        public static List<MSSpectra> LoadRawData(DatasetInformation dataset)
-        {
-            return LoadRawData(dataset, new Dictionary<int, int>());
-        }
         /// <summary>
         /// Loads MS Spectra from a raw data file.
         /// </summary>

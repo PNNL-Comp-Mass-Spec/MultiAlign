@@ -10,6 +10,7 @@
         <converters:BooleanToDataGridVisibilityModeConverter x:Key="boolConverter"/>
         <converters:BoolVisibilityConverter x:Key="UseDriftTimeConverter" FalseVisibility="Collapsed"></converters:BoolVisibilityConverter>
         <converters:BoolWidthConverter x:Key="UseDriftTimeWidthConverter" ></converters:BoolWidthConverter>
+        <converters:DoubleToStringConverter x:Key="DoublePrecisionConverter" Precision="3" ></converters:DoubleToStringConverter>
     </UserControl.Resources>
     <Grid>
         <DataGrid
@@ -52,17 +53,17 @@
 
             <DataGrid.Columns >
                 <!--Dataset Information-->
-                <DataGridTextColumn         Header="ID"                 CanUserSort="True"     Binding="{Binding Cluster.ID}"                   IsReadOnly="True"/>
-                <DataGridTextColumn         Header="Monoisotopic Mass"  CanUserSort="True"     Binding="{Binding Cluster.MassMonoisotopic}"     IsReadOnly="True"/>
-                <DataGridTextColumn         Header="NET"                CanUserSort="True"     Binding="{Binding Cluster.RetentionTime}"        IsReadOnly="True"/>
+                <DataGridTextColumn         Header="ID"                 CanUserSort="True"     Binding="{Binding Cluster.ID}"                   IsReadOnly="True"  />
+                <DataGridTextColumn         Header="Mass"               CanUserSort="True"     Binding="{Binding Cluster.MassMonoisotopic,      Converter={StaticResource ResourceKey=DoublePrecisionConverter}}"        IsReadOnly="True"  />
+                <DataGridTextColumn         Header="NET"                CanUserSort="True"     Binding="{Binding Cluster.RetentionTime,         Converter={StaticResource ResourceKey=DoublePrecisionConverter}}"        IsReadOnly="True"/>
                 <DataGridTextColumn         Header="Drift Time"      
                                             Visibility="{Binding Path=UsesDriftTime, Converter={StaticResource ResourceKey=UseDriftTimeConverter}}"
-                                            CanUserSort="True"     Binding="{Binding Cluster.DriftTime}"            IsReadOnly="True"/>
+                                            CanUserSort="True"     Binding="{Binding Cluster.DriftTime,         Converter={StaticResource ResourceKey=DoublePrecisionConverter}}"            IsReadOnly="True"/>
                 <DataGridTextColumn         Header="Charge"             CanUserSort="True"     Binding="{Binding Cluster.ChargeState}"          IsReadOnly="True"/>
                 <DataGridTextColumn         Header="Dataset Members"    CanUserSort="True"     Binding="{Binding Cluster.DatasetMemberCount}"   IsReadOnly="True"/>
                 <DataGridTextColumn         Header="Total Members"      CanUserSort="True"     Binding="{Binding Cluster.MemberCount}"          IsReadOnly="True"/>
-                <DataGridTextColumn         Header="Ambiguity"          CanUserSort="True"     Binding="{Binding Cluster.AmbiguityScore}"       IsReadOnly="True"/>
-                <DataGridTextColumn         Header="Tightness"          CanUserSort="True"     Binding="{Binding Cluster.Tightness}"            IsReadOnly="True"/>
+                <DataGridTextColumn         Header="Ambiguity"          CanUserSort="True"     Binding="{Binding Cluster.AmbiguityScore ,         Converter={StaticResource ResourceKey=DoublePrecisionConverter}}"       IsReadOnly="True"/>
+                <DataGridTextColumn         Header="Tightness"          CanUserSort="True"     Binding="{Binding Cluster.Tightness,         Converter={StaticResource ResourceKey=DoublePrecisionConverter}}"            IsReadOnly="True"/>
                 <DataGridTextColumn         Header="AMT Matches"        CanUserSort="True"     Binding="{Binding ClusterMatches.Count}"            IsReadOnly="True"/>
             </DataGrid.Columns>
         </DataGrid>

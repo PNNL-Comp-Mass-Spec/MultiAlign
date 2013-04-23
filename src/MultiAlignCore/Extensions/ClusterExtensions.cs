@@ -8,6 +8,7 @@ using MultiAlignCore.IO.Features;
 using PNNLOmics.Data;
 using MultiAlignCore.Data;
 using PNNLOmics.Data.Features;
+using PNNLOmicsIO.IO;
 
 namespace MultiAlignCore.Extensions
 {
@@ -220,6 +221,17 @@ namespace MultiAlignCore.Extensions
                 }
             }
             return false;
+        }
+
+        public static void ExportMsMs(this UMCClusterLight cluster, string path, IMsMsSpectraWriter writer)
+        {
+            foreach (UMCLight feature in cluster.Features)
+            {
+                foreach (MSFeatureLight msFeature in feature.MSFeatures)
+                {
+                    writer.Write(path, msFeature.MSnSpectra);
+                }
+            }
         }
     }
 }

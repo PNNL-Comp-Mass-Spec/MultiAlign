@@ -246,6 +246,7 @@
     <Compile Include="IO\Features\XicWriter.cs" />
     <Compile Include="IO\MTDB\APEMassTagDatabaseLoader.cs" />
     <Compile Include="IO\MTDB\MassTagDatabaseLoaderCache.cs" />
+    <Compile Include="IO\PeptideScanWriter.cs" />
     <Compile Include="IO\Reports\IAnalysisReportGenerator.cs" />
     <Compile Include="IO\MTDB\MAGEMetaSampleDatabaseSink.cs" />
     <Compile Include="IO\MTDB\MetaSampleDatbaseLoader.cs" />

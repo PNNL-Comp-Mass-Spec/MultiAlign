@@ -14,6 +14,7 @@ using PNNLControls;
 using PNNLOmics.Algorithms;
 using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
+using PNNLOmicsIO.IO;
 
 namespace Manassa.Windows
 {
@@ -26,6 +27,7 @@ namespace Manassa.Windows
         private UMCClusterLight m_mainCluster;
         private bool m_adjustingFeaturePlots = false;
         private Dictionary<ctlChartBase, List<ChartSynchData>> m_chartSynchMap;
+        private System.Windows.Forms.SaveFileDialog m_saveFileDialog;
 
         /// <summary>
         /// Constructor.
@@ -73,9 +75,10 @@ namespace Manassa.Windows
             SynchViewports(m_errorScatterplot,      ChartSynchType.YToXAxis,    m_massErrorHistogram);
             SynchViewports(m_errorScatterplot,      ChartSynchType.YToXAxis,    m_massDistances);
 
+            m_saveFileDialog = new System.Windows.Forms.SaveFileDialog();
+            m_saveFileDialog.Filter = "DTA (*.dta)|*.dta|MGF (*.mgf)|*.mgf";
+
         }
-
-
 
         public bool UsesDriftTime
         {
@@ -362,8 +365,8 @@ namespace Manassa.Windows
             m_mainCluster                   = cluster;
             m_clusterChart.MainCluster      = matchedCluster;
             m_driftChart.MainCluster        = matchedCluster;
-            m_profileChart.MainCluster      = matchedCluster;
-            m_profileChart.UpdateCharts(true);
+            //m_profileChart.MainCluster      = matchedCluster;
+            //m_profileChart.UpdateCharts(true);
             
             m_featureGrid.Features          = cluster.Features;
 
@@ -554,5 +557,16 @@ namespace Manassa.Windows
             }
         }
         #endregion
+
+        private void exportMsMsButton_Click(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Forms.DialogResult result =  m_saveFileDialog.ShowDialog();
+            if (result == System.Windows.Forms.DialogResult.OK)
+            {
+                string path               = m_saveFileDialog.FileName;
+                IMsMsSpectraWriter writer = MsMsFileWriterFactory.CreateSpectraWriter(System.IO.Path.GetExtension(path));
+                Cluster.Cluster.ExportMsMs(m_saveFileDialog.FileName, writer);
+            }
+        }
     }
 }

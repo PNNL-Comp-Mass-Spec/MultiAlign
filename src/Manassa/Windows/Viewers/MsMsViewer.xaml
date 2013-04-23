@@ -15,43 +15,33 @@
         <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>                
         </Grid.ColumnDefinitions>
-
-            <GridSplitter
-                    Grid.Row="1"
-                    Grid.Column="0"
-                Grid.ColumnSpan="3"
-                Height="3"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Stretch"                                
-                    />
-        
-                <maWindows:MsMsGrid
-                    
+        <maWindows:MsMsGrid                    
                 Grid.Row="0"   
                 Grid.Column="0"
-                    Grid.ColumnSpan="3"
-                            x:Name="m_msmsGrid"/>
-
-
+                Grid.ColumnSpan="3"
+                x:Name="m_msmsGrid"/>
+        <GridSplitter
+                Grid.Row="0"
+                Grid.Column="1"                
+                Width="3"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"                                
+                />
         <WindowsFormsHost 
-                Grid.Row="2"   
-                Grid.Column="0"
-                    Grid.ColumnSpan="3"
-                >
+                Grid.Row="0"   
+                Grid.Column="2">                
                 <maCharts:SpectraChart
                     x:Name="m_spectraChart"
                     TitleVisible="True"
                     Title="MS/MS"
+                    
                     />
-            </WindowsFormsHost>            
-        </Grid>    
+        </WindowsFormsHost>            
+    </Grid>    
 </UserControl>

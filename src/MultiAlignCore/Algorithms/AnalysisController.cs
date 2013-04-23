@@ -168,70 +168,8 @@ namespace MultiAlignCore.Algorithms
         private void ReportPeptideFeatures(DatasetInformation information, List<UMCLight> features)
         {
             string path = Path.Combine(m_config.AnalysisPath, information.DatasetName +  "_peptide_scans.csv");
-
-            using (TextWriter writer = File.CreateText(path))
-            {
-                writer.WriteLine("Dataset, Feature_Id, MS_Feature_Id, MsMs_Feature_ID, Ms_Charge, NET, NET_Aligned, MsMs_PrecursorMz, MsMs_Scan, Peptide_Sequence, Peptide_Score");
-                int totalFragments              = 0;
-                int totalPeptides               = 0;
-                int totalMultipleFragments      = 0;
-                int totalMultipleNonIdentified  = 0;
-
-                foreach (UMCLight feature in features)
-                {
-                    int totalFeatureFragments           = 0;
-                    int totalFeatureIdentifiedFragments = 0;
-
-                    foreach (MSFeatureLight msFeature in feature.MSFeatures)
-                    {
-                        StringBuilder builder = new StringBuilder();
-
-                        foreach (MSSpectra spectrum in msFeature.MSnSpectra)
-                        {
-
-                            totalFeatureFragments++;
-                            totalFragments++;
-                            if (spectrum.Peptides.Count > 0)
-                            {
-                                totalPeptides++;
-                                totalFeatureIdentifiedFragments++;
-                            }
-
-                            builder.Append(string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8}",
-                                                                        feature.GroupID,
-                                                                        feature.ID,
-                                                                        msFeature.ID,
-                                                                        spectrum.ID,
-                                                                        msFeature.ChargeState,
-                                                                        feature.NET,
-                                                                        feature.NETAligned,
-                                                                        spectrum.PrecursorMZ,
-                                                                        spectrum.Scan));
-
-                            foreach (Peptide peptide in spectrum.Peptides)
-                            {
-                                builder.Append(string.Format(",{0},{1}", peptide.Sequence,
-                                                           peptide.Score));
-                            }
-                            writer.WriteLine(builder.ToString());
-                        }
-                    }
-
-                    if (totalFeatureFragments > 1)
-                    {
-                        totalMultipleFragments++;
-
-                        if (totalFeatureIdentifiedFragments < 1)
-                        {
-                            totalMultipleNonIdentified++;
-                        }
-                    }
-                }
-
-                writer.WriteLine();
-                writer.WriteLine("Total Features, Total MsMs, Total Identified, Total Multiple MsMs, Total Multiple MsMs Without Ids");
-                writer.WriteLine("{0},{1},{2},{3},{4}", features.Count, totalFragments, totalPeptides, totalMultipleFragments, totalMultipleNonIdentified);
-            }
+            PeptideScanWriter writer = new PeptideScanWriter();
+            writer.Write(path, features);
         }
         /// <summary>
         /// Logs when features are clustered.

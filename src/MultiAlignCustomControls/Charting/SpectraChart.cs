@@ -28,7 +28,8 @@ namespace MultiAlignCustomControls.Charting
         public SpectraChart()
 	    {			
 			InitializeComponent();
-            m_feature = null;
+            m_feature  = null;
+            DrawSticks = true;
         }
         #endregion        
         

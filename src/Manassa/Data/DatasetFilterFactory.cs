@@ -12,6 +12,12 @@ namespace Manassa.Data
     /// </summary>
     public class DatasetFilterFactory
     {
+        private static Dictionary<string, InputFileType> fileTypes = new Dictionary<string, InputFileType>();
+        DatasetFilterFactory()
+        {
+
+        }
+
         private static string AppendExtension(string baseName, string extension, string description)
         {
             return string.Format("{0}|{1}", CreateFilterName(extension, description), baseName);
@@ -29,6 +35,7 @@ namespace Manassa.Data
             {
                 case InputFileType.Sequence:
                     fileFilter = AppendExtension(fileFilter, "SEQUEST Synopsis", ".syn");
+                    fileFilter = AppendExtension(fileFilter, "MSGF+ FHT", "fht_msgf.txt");
                     break;
                 case InputFileType.Features:
                     fileFilter = AppendExtension(fileFilter, "DeconTools Features Files", "_isos.csv");

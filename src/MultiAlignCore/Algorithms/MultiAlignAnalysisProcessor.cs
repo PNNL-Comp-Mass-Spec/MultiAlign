@@ -712,18 +712,13 @@ namespace MultiAlignCore.Algorithms
                     }
                 }
             }
-
-            msFeatures.Clear();
-            features.ForEach(x => x.MSFeatures.Clear());
-
-
+            
             // This dataset is done!                               
             if (FeaturesLoaded != null)
             {
                 FeaturesLoadedEventArgs args = new FeaturesLoadedEventArgs(dataset, features);
                 FeaturesLoaded(this, args);
             }
-
 
             return features;            
         }

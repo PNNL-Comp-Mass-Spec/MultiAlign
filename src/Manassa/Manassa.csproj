@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -66,6 +66,10 @@
     <Reference Include="PNNLOmics, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\PNNLOmics.dll</HintPath>
+    </Reference>
+    <Reference Include="PNNLOmicsIO, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\PNNLOmicsIO.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -149,6 +153,10 @@
     <Compile Include="Windows\Viewers\Clusters\ClusterToMassTagGrid.xaml.cs">
       <DependentUpon>ClusterToMassTagGrid.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Windows\Viewers\Clusters\ClusterTree.xaml.cs">
+      <DependentUpon>ClusterTree.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\ClusterTreeViewModel.cs" />
     <Compile Include="Windows\Viewers\Datasets\DatasetInformationView.xaml.cs">
       <DependentUpon>DatasetInformationView.xaml</DependentUpon>
     </Compile>
@@ -264,6 +272,10 @@
     <Page Include="Windows\Viewers\Clusters\ClusterToMassTagGrid.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\Viewers\Clusters\ClusterTree.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\Viewers\Datasets\DatasetInformationView.xaml">
       <Generator>MSBuild:Compile</Generator>

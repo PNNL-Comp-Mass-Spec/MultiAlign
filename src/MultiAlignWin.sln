@@ -28,6 +28,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Website", "Website", "{D253
 		..\..\..\doc\website\MultiAlign.php = ..\..\..\doc\website\MultiAlign.php
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CazyRetrieve", "CazyRetrieve\CazyRetrieve.csproj", "{160A668C-4C1F-42E3-9524-26A499DC1C0D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -142,6 +144,14 @@ Global
 		{4A303BC5-9DBC-455C-BCE7-9F991D33F8A6}.Release|Any CPU.Build.0 = Release
 		{4A303BC5-9DBC-455C-BCE7-9F991D33F8A6}.Release|x64.ActiveCfg = Release
 		{4A303BC5-9DBC-455C-BCE7-9F991D33F8A6}.Release|x86.ActiveCfg = Release
+		{160A668C-4C1F-42E3-9524-26A499DC1C0D}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{160A668C-4C1F-42E3-9524-26A499DC1C0D}.Debug|x64.ActiveCfg = Debug|x86
+		{160A668C-4C1F-42E3-9524-26A499DC1C0D}.Debug|x86.ActiveCfg = Debug|x86
+		{160A668C-4C1F-42E3-9524-26A499DC1C0D}.Debug|x86.Build.0 = Debug|x86
+		{160A668C-4C1F-42E3-9524-26A499DC1C0D}.Release|Any CPU.ActiveCfg = Release|x86
+		{160A668C-4C1F-42E3-9524-26A499DC1C0D}.Release|x64.ActiveCfg = Release|x86
+		{160A668C-4C1F-42E3-9524-26A499DC1C0D}.Release|x86.ActiveCfg = Release|x86
+		{160A668C-4C1F-42E3-9524-26A499DC1C0D}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

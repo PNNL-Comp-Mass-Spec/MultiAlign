@@ -28,38 +28,31 @@
                 Header="Clusters">
                 <Grid>        
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="20*"/>
                         <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="80*"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="55*"/>
+                        <RowDefinition Height="75*"/>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="45*"/>
+                        <RowDefinition Height="25*"/>
                     </Grid.RowDefinitions>
      
                     <GridSplitter
                         Grid.Row="0"
+                        Grid.RowSpan="3"
                         Grid.Column="1"
                         Width="3"
                         
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Stretch" 
                         Background="#FF00000A" />
-                    <GridSplitter
-                        Grid.Row="1"
-                        Grid.Column="0"
-                        Grid.ColumnSpan="3"
-                        Height="3"
-                        HorizontalAlignment="Stretch"
-                        VerticalAlignment="Stretch"
-                        Background="#FF00000A"/>
                     
                     <!-- Cluster Grid Plots -->
                     <WindowsFormsHost                
                         Margin="5,5,5,5"
-                        Grid.Row="0"
-                        Grid.Column="2">                        
+                        Grid.Row="2"
+                        Grid.Column="0">                        
                         <maCharts:ctlClusterChart
                             Title=""
                             LegendVisible="false"
@@ -82,9 +75,10 @@
                         Margin="5,5,5,5"
                         x:Name="m_clusterControl"
                         UsesDriftTime="{Binding Path=UsesDriftTime, NotifyOnSourceUpdated=True}"
-                        Grid.Row="2"                    
-                        Grid.Column="0"
-                        Grid.ColumnSpan="3"
+                        Grid.Row="0"                    
+                        Grid.RowSpan="3"
+                        Grid.Column="2"
+                        Grid.ColumnSpan="1"
                         Cluster="{Binding Mode=OneWay, ElementName=m_clusterGrid, Path=SelectedCluster}"/>
                 </Grid>
             </TabItem>
