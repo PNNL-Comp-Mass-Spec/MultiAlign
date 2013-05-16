@@ -223,13 +223,68 @@ namespace MultiAlignCore.Extensions
             return false;
         }
 
-        public static void ExportMsMs(this UMCClusterLight cluster, string path, IMsMsSpectraWriter writer)
+        public static void ExportMsMs(this UMCClusterLight cluster, string path, List<DatasetInformation> datasets, IMsMsSpectraWriter writer)
         {
+            // Let's map the datasets first.
+            Dictionary<int, ISpectraProvider> readers = new Dictionary<int,ISpectraProvider>();    
+            Dictionary<int , DatasetInformation> information = new Dictionary<int,Data.DatasetInformation>();
+
+            datasets.ForEach(x => information.Add(x.DatasetId, x));
+
+            // We are only loading what datasets we have to here!
+            // The point is, each cluster or feature may have come from a different raw data source...
+            // since we dont store all of the data in memory, we have to fetch it from the appropriate source.
+            // This means that we have to go into the raw data and get the scans for an MSMS spectra.
             foreach (UMCLight feature in cluster.Features)
             {
-                foreach (MSFeatureLight msFeature in feature.MSFeatures)
+                if (!readers.ContainsKey(feature.GroupID))
                 {
-                    writer.Write(path, msFeature.MSnSpectra);
+                    if (information.ContainsKey(feature.GroupID))
+                    {
+                        DatasetInformation singleInfo = information[feature.GroupID];
+
+                        if (singleInfo.Raw != null && singleInfo.RawPath != null)
+                        {
+                            // Make sure that we have a file.
+                            if (!System.IO.File.Exists(singleInfo.RawPath))
+                                continue;
+
+                            // Here we create a data file reader for the file we want to access.
+                            ISpectraProvider provider = RawLoaderFactory.CreateFileReader(singleInfo.RawPath);
+                            // Then we make sure we key it to the provider.  
+                            provider.AddDataFile(singleInfo.RawPath, feature.GroupID);
+                            // Then make sure we map it for a dataset, so when we sort through a cluster
+                            // we make sure that we can access in O(1) time.
+                            readers.Add(feature.GroupID, provider);
+                        }
+                    }
+                }
+            }
+
+            // We flag the first write, so that if the file exists, we overwrite.  They should have done 
+            // checking to make sure that the file was already created...we dont care.
+            bool firstWrite = true;
+            foreach (UMCLight feature in cluster.Features)
+            {
+                if (readers.ContainsKey(feature.GroupID))
+                {
+                    ISpectraProvider provider = readers[feature.GroupID];
+                    foreach (MSFeatureLight msFeature in feature.MSFeatures)
+                    {
+                        foreach(MSSpectra spectrum in msFeature.MSnSpectra)
+                        {
+                            List<XYData> data = provider.GetRawSpectra(spectrum.Scan, spectrum.GroupID);
+                            spectrum.Peaks    = data;
+                        }
+                        if (firstWrite)
+                        {
+                            writer.Write(path, msFeature.MSnSpectra);
+                        }
+                        else 
+                        {
+                            writer.Append(path, msFeature.MSnSpectra);
+                        }
+                    }
                 }
             }
         }

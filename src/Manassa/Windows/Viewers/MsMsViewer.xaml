@@ -40,7 +40,8 @@
                     x:Name="m_spectraChart"
                     TitleVisible="True"
                     Title="MS/MS"
-                    
+                    XAxisLabel="m/z"
+                    YAxisLabel="Intensity"
                     />
         </WindowsFormsHost>            
     </Grid>    

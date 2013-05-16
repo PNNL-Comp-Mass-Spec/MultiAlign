@@ -14,20 +14,33 @@ namespace Manassa.Converters
         #region IValueConverter Members
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            UMCLight feature = (UMCLight)value;
-            List<MSFeatureLight> msFeatures = feature.MSFeatures.FindAll(delegate(MSFeatureLight msFeature)
+            UMCLight feature = value as UMCLight;
+            if (feature != null)
             {
-                return msFeature.MSnSpectra.Count > 0;
-            }
-            );
+                List<MSFeatureLight> msFeatures = feature.MSFeatures.FindAll(delegate(MSFeatureLight msFeature)
+                {
+                    return msFeature.MSnSpectra.Count > 0;
+                }
+                );
 
-            int? returnValue = 0;
-            if (msFeatures == null)
-            {
+                int? returnValue = 0;
+                if (msFeatures == null)
+                {
+                    return returnValue;
+                }
+                returnValue = msFeatures.Count;
                 return returnValue;
             }
-            returnValue = msFeatures.Count;
-            return returnValue;
+            else
+            {
+                MSFeatureLight featureLight = value as MSFeatureLight;
+                if (featureLight != null)
+                {
+                    return featureLight.MSnSpectra.Count;
+                }
+            }
+
+            return 0;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

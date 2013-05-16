@@ -46,5 +46,41 @@ namespace Racoon.Properties {
                 this["Grader"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("c:\\")]
+        public string LastXic {
+            get {
+                return ((string)(this["LastXic"]));
+            }
+            set {
+                this["LastXic"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int Count {
+            get {
+                return ((int)(this["Count"]));
+            }
+            set {
+                this["Count"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public int Index {
+            get {
+                return ((int)(this["Index"]));
+            }
+            set {
+                this["Index"] = value;
+            }
+        }
     }
 }

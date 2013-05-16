@@ -54,46 +54,5 @@ namespace Manassa.Data
 
             return fileFilter;
         }
-        /// <summary>
-        /// Determines what kind of file this is.
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
-        public static InputFileType DetermineInputFileType(string path)
-        {
-            string newPath = path.ToLower();
-            if (newPath.EndsWith("_isos.csv"))
-            {
-                return InputFileType.Features;
-            }
-            if (newPath.EndsWith("lcmsfeatures.txt"))
-            {
-                return InputFileType.Features;
-            }
-            if (newPath.EndsWith("peaks.txt"))
-            {
-                return InputFileType.Peaks;
-            }
-            if (newPath.EndsWith("msgfdb_fht.txt"))
-            {
-                return InputFileType.Sequence;
-            }
-
-            InputFileType type = InputFileType.NotRecognized;
-            string extension = Path.GetExtension(newPath).ToLower();            
-            switch (extension)
-            {
-                case ".raw":
-                    type = InputFileType.Raw;
-                    break;
-                case ".mzxml":
-                    type = InputFileType.Raw;
-                    break;
-                case ".syn":
-                    type = InputFileType.Sequence;
-                    break;
-            }
-            return type;            
-        }
     }    
 }

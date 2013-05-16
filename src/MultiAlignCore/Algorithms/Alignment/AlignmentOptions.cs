@@ -36,25 +36,11 @@ namespace MultiAlignCore.Algorithms.Alignment
 			DriftTimeBinSize		    = .03;
             ShouldStoreAlignmentFunction  = false;
             SplitAlignmentInMZ            = false;
-			MZBoundaries				  = new List<classAlignmentMZBoundary>();
-            UseSicScanCorrection          = false;
+			MZBoundaries				  = new List<classAlignmentMZBoundary>();            
 
 			/// Construct the m/z boundary object.			
 			MZBoundaries.Add(new classAlignmentMZBoundary(0.0, 505.7));
 			MZBoundaries.Add(new classAlignmentMZBoundary(505.7, 999999999.0));
-        }
-
-
-        /// <summary>
-        /// Gets or sets whether to store alignment data.
-        /// </summary>
-        [ParameterFileAttribute("UseSicScanCorrection", "Alignment")]
-        [Category("Experimental")]
-        [Description("Corrects for the LC-scan time based on the peak of the Lc-elution profile (SIC)")]
-        public bool UseSicScanCorrection
-        {
-            get;
-            set;
         }
         /// <summary>
         /// Gets or sets whether to store alignment data.

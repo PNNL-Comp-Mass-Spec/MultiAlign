@@ -24,6 +24,9 @@ namespace ElutionProfileTool
         private List<int>       m_indexList;
         private ExpertBase      m_expertLevel;
         private GradeFactory    m_gradeFactory;
+
+        private int m_step = 50;
+
         /// <summary>
         /// Determines if an indice has been used.
         /// </summary>
@@ -43,16 +46,16 @@ namespace ElutionProfileTool
             m_ratingCountLabel.Content = string.Format(" {0} XIC's Graded", m_expertLevel.TotalGraded);
             m_expertLevelLabel.Content = string.Format("{0} ", m_expertLevel.CurrentLevel.Name, m_expertLevel.CurrentLevel.NextLevel.MinimumRating);
 
-            m_usedIndices = new Dictionary<int, bool>();
+            string name     = Environment.UserName;
+            NameText.Text   = name;            
+            m_fitIndex      = Racoon.Properties.Settings.Default.Index; 
 
-            NameText.Text = global::Racoon.Properties.Settings.Default.Grader;
+            m_gradeFactory  = new GradeFactory();
+            textBox1.Text   = Racoon.Properties.Settings.Default.LastXic;
+            m_plot.Title    = "XIC - index = " + m_fitIndex.ToString();
 
-
-            m_n = 1;
-            m_d = 2;
-
-            m_gradeFactory = new GradeFactory();
-            m_plot.Title = "XIC - index = " + m_fitIndex.ToString();                      
+            Load(textBox1.Text, false);            
+            MoveNext(true, true);
         }
 
         
@@ -67,46 +70,48 @@ namespace ElutionProfileTool
             DependencyProperty.Register("IsDoublePeakAnnotation", typeof(bool), typeof(MainWindow), new UIPropertyMetadata(false));
 
 
-        int m_n;
-        int m_d;
+        private void SaveSettings()
+        {
+            Racoon.Properties.Settings.Default.Index = m_fitIndex;
+            Racoon.Properties.Settings.Default.Save();
+        }
+
         /// <summary>
         /// Retrieves the next point
         /// </summary>
         /// <returns></returns>
         private void GetNextPoint()
-        {            
-            m_fitIndex *= m_n;
-            m_fitIndex /= m_d;
-
-            if (m_fitIndex <= 0)
-            {
-                m_n++;
-                if (m_n == m_d)
-                {
-                    m_d++;
-                    m_n = 1;                    
-                }
-                m_fitIndex = m_indexList.Count;
-                GetNextPoint();
-                return;
-            }
+        {
+            m_fitIndex += m_step;
 
             /// They have found all indices.
             if (m_usedIndices.Count == m_indexList.Count)
-            {
+            {   
                 m_fitIndex = 0;
+                SaveSettings();
                 return;
             }
 
+            if (m_fitIndex >= m_indexList.Count)
+            {
+                m_step++;
+                m_fitIndex = 0;                
+                GetNextPoint();
+                return;
+            }
+            
             if (m_usedIndices.ContainsKey(m_fitIndex))
             {
-                m_fitIndex--;
-                GetNextPoint();                
+                m_fitIndex++;
+                GetNextPoint();
+                return;
             }            
             else
             {
                 m_usedIndices.Add(m_fitIndex, true);
             }
+
+            SaveSettings();
         }
         public void ViewFit(XicData data)
         {           
@@ -117,7 +122,7 @@ namespace ElutionProfileTool
             data.X.CopyTo(xdata);
 
             int length          = Convert.ToInt32(Math.Abs(xdata[xdata.Length - 1] - xdata[0]));
-            ScanLength.Content  = string.Format("Scan Length = {0}", length);
+            ScanLength.Content  = string.Format("Time Difference = {0}", length);
 
             data.Y.CopyTo(ydata);
             clsSeries series            = new clsSeries(ref xdata, ref ydata, plotParams);
@@ -126,53 +131,65 @@ namespace ElutionProfileTool
             m_plot.SeriesCollection.Clear();
             m_plot.AddSeries(series);
             m_plot.AutoViewPort();
-            m_plot.Title = string.Format("XIC - index = {0}  - {1}/{2} ", m_fitIndex, m_n, m_d); 
+            m_plot.Title = string.Format("XIC - index = {0}", m_fitIndex); 
             
         }
         private void button_Click(object sender, RoutedEventArgs e)
-        {            
-            string xic  = textBox1.Text.ToLower();
-
+        {
+            string xic = textBox1.Text.ToLower();
             System.Windows.Forms.OpenFileDialog dialog = new System.Windows.Forms.OpenFileDialog();
             dialog.InitialDirectory = Path.GetDirectoryName(xic);
-            dialog.FileName         = xic;
-            dialog.Filter           = "XIC Files (.xic)|*.xic";
+            dialog.FileName = xic;
+            dialog.Filter = "XIC Files (.xic)|*.xic";
             System.Windows.Forms.DialogResult result = dialog.ShowDialog();
 
             if (result != System.Windows.Forms.DialogResult.OK)
             {
                 return;
             }
-            textBox1.Text = dialog.FileName;
-            xic = textBox1.Text.ToLower();
 
-            m_saved     = xic.Replace(".xic", "_results.txt");
+            Load(dialog.FileName, true);
+            MoveNext(true, false);
+        }
+
+        private void Load(string name, bool shouldReset)
+        {
+            textBox1.Text   = name;
+            string xic      = textBox1.Text.ToLower();
+            m_saved         = xic.Replace(".xic", "_results.txt");
             try
             {
                 File.Delete(m_saved);
             }
             catch
             {
+
             }
+            m_fits       = m_reader.ReadXicData(xic);
 
-            m_fits      = m_reader.ReadXicData(xic);
-
+            m_usedIndices = new Dictionary<int, bool>();
             m_indexList = new List<int>();
             for (int i = 0; i < m_fits.Count; i++)
             {
                 m_indexList.Add(i);
             }
 
-            m_usedIndices   = new Dictionary<int, bool>();
-            m_fitIndex      = m_indexList.Count - 1;
-            MoveNext(true);
+            /// Resets the index...
+            if (shouldReset)
+            {
+                m_fitIndex  = m_indexList.Count - 1;                
+            }
+
+            SaveSettings();
+            global::Racoon.Properties.Settings.Default.LastXic = name;
+            global::Racoon.Properties.Settings.Default.Save();
         }
                 
         private void MoveNext()
         {
-            MoveNext(false);
+            MoveNext(false, false);
         }        
-        private void MoveNext(bool skip)
+        private void MoveNext(bool skipSave, bool skipNext)
         {
             if (m_indexList.Count == m_usedIndices.Count)
             {
@@ -183,7 +200,7 @@ namespace ElutionProfileTool
                 return;
             }
 
-            if (m_state == XicScore.NotSet && !skip)
+            if (m_state == XicScore.NotSet && !skipSave)
                 return;
 
             if (m_fits.Count < 1)
@@ -195,7 +212,7 @@ namespace ElutionProfileTool
             if (m_indexList.Count < 1)
                 return;
 
-            if (!skip)
+            if (!skipSave)
             {
                 
                 XicData score      = m_fits[m_fitIndex];
@@ -209,8 +226,11 @@ namespace ElutionProfileTool
                 m_saved = textBox1.Text.ToLower().Replace(".xic", string.Format("_{0}_results.txt", NameText.Text));
                 File.AppendAllText(m_saved, data);
             }
-            
-            GetNextPoint();                      
+
+            if (!skipNext)
+            {
+                GetNextPoint();
+            }
 
             if (m_fits[m_fitIndex].X.Count < 5)
             {

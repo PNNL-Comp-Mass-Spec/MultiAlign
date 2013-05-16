@@ -6,6 +6,9 @@
         Height="901" 
         Width="1110"
         >
+    <Window.Resources>
+        <BitmapImage x:Key="MyImageSource" UriSource="racoon.png" />
+    </Window.Resources>
     <TabControl>  
         <TabItem>            
             <Grid>
@@ -15,12 +18,12 @@
                     <RowDefinition Height="*" ></RowDefinition>
                     <RowDefinition Height="*" ></RowDefinition>
                     <RowDefinition Height="Auto" ></RowDefinition>
-                </Grid.RowDefinitions>
-        
+                </Grid.RowDefinitions>        
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"></ColumnDefinition>
                     <ColumnDefinition Width="Auto"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
+                    
                 <Label Grid.Row="4"
                        FontSize="24"
                        Height="48"
@@ -36,8 +39,12 @@
                         0  XIC's Graded
                 </Label>
                 <TextBox Margin="5,4,5,6"
-                    Name="NameText" FontStretch="Normal" FontSize="28" 
-                    Text="enter your name" />
+                         Name="NameText" 
+                         IsReadOnly="True"
+                         FontStretch="Normal" 
+                         FontSize="28" 
+                         Background="LightGray"
+                         Text="enter your name" />
                 <TextBox 
                     Grid.Row="1"
                     Grid.Column="0"
@@ -71,7 +78,7 @@
                         FontSize="18"
                         x:Name="ScanLength"
                         >
-                       Scan Length = ""
+                       Retention Time (min)
                     </Label>
                     <WindowsFormsHost
                         Margin="15"
@@ -81,6 +88,7 @@
                             Title="Elution Profile"  
                             LegendVisible="False"
                             XAxisLabel="Scan"
+                            DrawPoints="True"
                             YAxisLabel="Intensity"
                             x:Name="m_plot"/>
 
@@ -89,7 +97,7 @@
                 <StackPanel            
                     Margin="5,25,5,5"
                     Grid.Row="2"
-                    Grid.RowSpan="2"
+                    Grid.RowSpan="1"
                     Grid.Column="1">
             
                     <Button
@@ -125,8 +133,15 @@
                         Click="FourButton_Click"
 
                         Name="FourButton" FontSize="28" />
-                    
+
                 </StackPanel>
+                <Image
+                    Grid.Row="3"
+                    Grid.Column="1"
+                        Width="256"
+                        Height="256"
+                        Source="{StaticResource MyImageSource}"
+                        />
             </Grid>
         </TabItem>
     </TabControl>

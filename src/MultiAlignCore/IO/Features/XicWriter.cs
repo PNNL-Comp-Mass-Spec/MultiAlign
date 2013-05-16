@@ -20,13 +20,13 @@ namespace MultiAlignCore.IO.Features
                     foreach (int charge in feature.ChargeStateChromatograms.Keys)
                     {
                         writer.WriteLine("id\t{0}\tcharge\t{1}", feature.ID, charge);
-                        writer.WriteLine("mz\tscan\tintensity");
+                        writer.WriteLine("mz\ttime\tintensity");
 
                         Chromatogram gram = feature.ChargeStateChromatograms[charge];
 
                         foreach (PNNLOmics.Data.XYData point in gram.Points)
                         {
-                            writer.WriteLine("{0}\t{1}t{2}", gram.Mz, point.X, point.Y);
+                            writer.WriteLine("{0}\t{1}\t{2}", gram.Mz, point.X, point.Y);
                         }                        
                     }
                 }

@@ -26,7 +26,8 @@ namespace MultiAlignCore.Data
         #endregion
 
         public AnalysisConfig()
-        {            
+        {
+            ShouldCreatePeptideScanFiles = false;
             ParameterFile           = null;
             HtmlPathName            = "index.html";
             width                   = PLOT_WIDTH;
@@ -234,6 +235,8 @@ namespace MultiAlignCore.Data
         public event PropertyChangedEventHandler PropertyChanged;
 
         #endregion
+
+        public bool ShouldCreatePeptideScanFiles { get; set; }
     }    
 }
 

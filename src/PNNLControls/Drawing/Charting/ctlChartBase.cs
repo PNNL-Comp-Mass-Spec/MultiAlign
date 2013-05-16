@@ -19,6 +19,10 @@ namespace PNNLControls
 	public abstract class ctlChartBase : System.Windows.Forms.UserControl, System.ComponentModel.ISupportInitialize
     {
         public event EventHandler<SelectedPointEventArgs> DataPointSelected;
+        /// <summary>
+        /// Fired when a chart area point is selected, but no key modifies are set.  
+        /// </summary>
+        public event EventHandler<SelectedPointEventArgs> ChartPointPressed;
 
         #region Members        
         protected clsSeriesCollection mobj_series_collection;		
@@ -2774,27 +2778,35 @@ namespace PNNLControls
 
 				// If the chart has a series at the given point, then alternate whether the 
 				// series is selected or not.
-				if (ChartVisibilityBitmapConstants.IsSeries(val)) 
-				{
-					if (e.Button == MouseButtons.Left) 
-					{
-						this.mSelectedSeries.Alternate(
-							ChartVisibilityBitmapConstants.SeriesIndexFromInt(val));
-					} 
-					else if (e.Button == MouseButtons.Right) 
-					{
-						this.mSelectedSeries.Alternate(
-							ChartVisibilityBitmapConstants.SeriesIndexFromInt(val));
-					}
+                if (ChartVisibilityBitmapConstants.IsSeries(val))
+                {
+                    if (e.Button == MouseButtons.Left)
+                    {
+                        this.mSelectedSeries.Alternate(
+                            ChartVisibilityBitmapConstants.SeriesIndexFromInt(val));
+                    }
+                    else if (e.Button == MouseButtons.Right)
+                    {
+                        this.mSelectedSeries.Alternate(
+                            ChartVisibilityBitmapConstants.SeriesIndexFromInt(val));
+                    }
 
                     SeriesSelectedAtPoint(ChartVisibilityBitmapConstants.SeriesIndexFromInt(val), e.X, e.Y);
 
 
                     float xChart = mobj_axis_plotter.XChartCoordinate(e.X);
                     float yChart = mobj_axis_plotter.YChartCoordinate(e.Y);
-                    
+
                     OnDataPointSelected(xChart, yChart, 0);
-				}
+                }
+                else if (Control.ModifierKeys == Keys.Shift)
+                {
+
+                    float xChart = mobj_axis_plotter.XChartCoordinate(e.X - mobj_axis_plotter.ChartAreaBounds.X);
+                    float yChart = mobj_axis_plotter.YChartCoordinate(e.Y - mobj_axis_plotter.ChartAreaBounds.Y);
+
+                    OnStablePointSelected(xChart, yChart, 0);
+                }
 			} 
 
 			Point p = new Point(e.X, e.Y);
@@ -2838,6 +2850,19 @@ namespace PNNLControls
 				}
 			}
 		}
+        /// <summary>
+        /// Called when a point is selected but is not part of a zooming feature.
+        /// </summary>
+        /// <param name="xChart"></param>
+        /// <param name="yChart"></param>
+        /// <param name="p"></param>
+        protected virtual void OnStablePointSelected(float xChart, float yChart, int p)
+        {
+            if (this.ChartPointPressed != null)
+            {
+                ChartPointPressed(this, new SelectedPointEventArgs(xChart, yChart, p));
+            }            
+        }
         protected virtual void OnDataPointSelected(float x, float y, int series)
         {
             if (this.DataPointSelected != null)

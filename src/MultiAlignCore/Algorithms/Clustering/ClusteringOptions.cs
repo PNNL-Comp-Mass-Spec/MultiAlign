@@ -96,8 +96,7 @@ namespace MultiAlignCore.Algorithms.Clustering
             tolerances.RetentionTime                            = options.NETTolerance;            
             parameters.Tolerances                               = tolerances;            
             parameters.OnlyClusterSameChargeStates              = (options.IgnoreCharge == false);
-            parameters.CentroidRepresentation                   = options.ClusterCentroid;  
-
+            parameters.CentroidRepresentation                   = options.ClusterCentroid;              
             return parameters;
         }
     }

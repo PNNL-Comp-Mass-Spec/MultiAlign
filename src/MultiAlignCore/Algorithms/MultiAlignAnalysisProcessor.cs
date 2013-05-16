@@ -109,7 +109,7 @@ namespace MultiAlignCore.Algorithms
             m_algorithms      = null;
             AnalysisStartStep = Algorithms.AnalysisStep.Alignment;
 
-            XicWriter = new XicComparisonWriter();
+            XicWriter = new XicWriter();
 
             CreateAnalysisMethodMap();            
         }
@@ -338,8 +338,7 @@ namespace MultiAlignCore.Algorithms
                                                                    config.Analysis.DataProviders,
                                                                    config.Analysis.MassTagDatabase,
                                                                    config.Analysis.Options.AlignmentOptions.IsAlignmentBaselineAMasstagDB,
-                                                                   config.Analysis.Options.DriftTimeAlignmentOptions.ShouldAlignDriftTimes);
-            ILcScanAdjuster scanAdjuster        = AlgorithmProviders.LcScanAdjuster;
+                                                                   config.Analysis.Options.DriftTimeAlignmentOptions.ShouldAlignDriftTimes);            
             IFeatureAligner aligner             = m_algorithms.Aligner;
             AlignmentDAOHibernate alignmentData = new AlignmentDAOHibernate();
             alignmentData.ClearAll();
@@ -421,6 +420,17 @@ namespace MultiAlignCore.Algorithms
             List<MSFeatureToMSnFeatureMap> matches = new List<MSFeatureToMSnFeatureMap>();
             List<ScanSummary> scans         = UMCLoaderFactory.LoadScansData(dataset);
 
+            // Extract any scan meta-data.
+            if (dataset.Raw != null && dataset.RawPath != null)
+            {
+                Dictionary<int, ScanSummary> summary = new Dictionary<int, ScanSummary>();
+                using (ISpectraProvider provider = RawLoaderFactory.CreateFileReader(dataset.RawPath))
+                {
+                    provider.AddDataFile(dataset.RawPath, dataset.DatasetId);
+                    dataset.DatasetSummary.ScanMetaData = provider.GetScanData(dataset.DatasetId);
+                }
+            }
+
             UpdateStatus(string.Format("[{0}] Loading MSn Feature Data [{0}] - {1}.", dataset.DatasetId, dataset.DatasetName));
             List<MSSpectra> msnSpectra      = UMCLoaderFactory.LoadMsnSpectra(dataset, msnCache);
 
@@ -456,12 +466,13 @@ namespace MultiAlignCore.Algorithms
                 {
                     if (options.ShouldCreateXicFile)
                     {
+                        
                         UpdateStatus("Constructing extracted ion chromatograms (XIC)");
                         XicAdaptor adaptor = new XicAdaptor(dataset.Raw.Path, dataset.Peaks.Path);
                         foreach (UMCLight feature in features)
                         {
-                            feature.ChargeStateChromatograms = adaptor.CreateXicForChargeStates(feature, options.ShouldSmoothXic);
-                            feature.IsotopeChromatograms = adaptor.CreateXicForIsotopes(feature, options.ShouldSmoothXic);
+                            feature.ChargeStateChromatograms    = adaptor.CreateXicForChargeStates(feature, options.ShouldSmoothXic);
+                            feature.IsotopeChromatograms        = adaptor.CreateXicForIsotopes(feature, options.ShouldSmoothXic);
 
                             // Convert the time to seconds if we have scan information. 
                             if (dataset.DatasetSummary != null)
@@ -475,7 +486,7 @@ namespace MultiAlignCore.Algorithms
                                         foreach (XYData point in gram.Points)
                                         {
                                             int scan = Convert.ToInt32(point.X);
-                                            point.X = summary[scan].Time;
+                                            point.X  = summary[scan].Time;
                                         }
                                     }
                                 }
@@ -844,17 +855,7 @@ namespace MultiAlignCore.Algorithms
                                                 filterOptions,
                                                 dataProviders,
                                                 false);
-
-                if (AlgorithmProviders.LcScanAdjuster != null)
-                {
-                    List<UMCLight> oldFeatures = AlgorithmProviders.LcScanAdjuster.AdjustScans(baselineFeatures, null);
-                    
-                    if (FeaturesAdjusted != null)
-                    {
-                        FeaturesAdjusted(this, new FeaturesAdjustedEventArgs(baselineInfo, oldFeatures, baselineFeatures));
-                    }
-                }
-
+                
                 if (BaselineFeaturesLoaded != null)
                 {
                     BaselineFeaturesLoaded(this, new BaselineFeaturesLoadedEventArgs(baselineInfo, baselineFeatures));
@@ -1142,10 +1143,9 @@ namespace MultiAlignCore.Algorithms
 
             
             FeatureTolerances tolerances = new FeatureTolerances();
-            FeatureClusterParameters<UMCLight> parameters = new FeatureClusterParameters<UMCLight>();
 
-            parameters.DistanceFunction = DistanceFactory<UMCLight>.CreateDistanceFunction(analysis.Options.ClusterOptions.DistanceFunction);
-            clusterer.Parameters        = Clustering.LCMSFeatureClusteringOptions.ConvertToOmics(analysis.Options.ClusterOptions);
+            clusterer.Parameters                    = Clustering.LCMSFeatureClusteringOptions.ConvertToOmics(analysis.Options.ClusterOptions);
+            clusterer.Parameters.DistanceFunction   = DistanceFactory<UMCLight>.CreateDistanceFunction(analysis.Options.ClusterOptions.DistanceFunction);
 
             // This just tells us whether we are using mammoth memory partitions or not.          
             string databaseName = Path.Combine(analysis.MetaData.AnalysisPath, analysis.MetaData.AnalysisName);
@@ -1207,6 +1207,7 @@ namespace MultiAlignCore.Algorithms
                         cluster.ID = clusterCount++;
                         cluster.UMCList.ForEach(x => x.ClusterID = cluster.ID);                        
                     }
+                    
                     config.Analysis.DataProviders.ClusterCache.AddAll(clusters);
                     config.Analysis.DataProviders.FeatureCache.UpdateAll(features);
                     config.Analysis.Clusters = clusters;

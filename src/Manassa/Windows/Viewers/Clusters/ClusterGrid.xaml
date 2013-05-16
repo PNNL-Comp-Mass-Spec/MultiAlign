@@ -62,6 +62,7 @@
                 <DataGridTextColumn         Header="Charge"             CanUserSort="True"     Binding="{Binding Cluster.ChargeState}"          IsReadOnly="True"/>
                 <DataGridTextColumn         Header="Dataset Members"    CanUserSort="True"     Binding="{Binding Cluster.DatasetMemberCount}"   IsReadOnly="True"/>
                 <DataGridTextColumn         Header="Total Members"      CanUserSort="True"     Binding="{Binding Cluster.MemberCount}"          IsReadOnly="True"/>
+                <DataGridTextColumn         Header="Min Centroid Dist"          CanUserSort="True"     Binding="{Binding Cluster.MinimumCentroidDistance ,         Converter={StaticResource ResourceKey=DoublePrecisionConverter}}"       IsReadOnly="True"/>
                 <DataGridTextColumn         Header="Ambiguity"          CanUserSort="True"     Binding="{Binding Cluster.AmbiguityScore ,         Converter={StaticResource ResourceKey=DoublePrecisionConverter}}"       IsReadOnly="True"/>
                 <DataGridTextColumn         Header="Tightness"          CanUserSort="True"     Binding="{Binding Cluster.Tightness,         Converter={StaticResource ResourceKey=DoublePrecisionConverter}}"            IsReadOnly="True"/>
                 <DataGridTextColumn         Header="AMT Matches"        CanUserSort="True"     Binding="{Binding ClusterMatches.Count}"            IsReadOnly="True"/>
@@ -69,3 +70,5 @@
         </DataGrid>
     </Grid>
 </UserControl>
+
+

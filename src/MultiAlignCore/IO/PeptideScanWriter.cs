@@ -60,7 +60,10 @@ namespace MultiAlignCore.IO
                                 builder.Append(string.Format(",{0},{1}", peptide.Sequence,
                                                            peptide.Score));
                             }
+
+                            // After we write, clear the data so we dont append multiple lines
                             writer.WriteLine(builder.ToString());
+                            builder.Clear();
                         }
                     }
 

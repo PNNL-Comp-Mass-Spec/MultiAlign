@@ -17,6 +17,7 @@ namespace MultiAlignCustomControls.Charting
     /// </summary>
 	public class SICChart : ctlLineChart
     {
+
         #region Members
         private System.ComponentModel.IContainer components = null;		
 		private clsColorIterator miter_color = new  clsColorIterator() ; 
@@ -31,8 +32,10 @@ namespace MultiAlignCustomControls.Charting
             m_feature = null;
 
             AddPostProcessor(new ChartPostRenderingProcessor(RenderMSMS), PostProcessPriority.MidHigh);
+            
         }
         #endregion
+
 
         #region MSMS Processing Display
         private void RenderMSMS(ctlChartBase chart, PostRenderEventArgs args)

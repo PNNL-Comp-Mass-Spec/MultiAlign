@@ -21,26 +21,26 @@
     <Grid 
         Margin="4">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="50*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="50*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="50*"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="50*"/>
-            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid
-            Grid.Row="0"
-            >
+            Grid.Row="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>                
                 <ColumnDefinition Width="{Binding Path=UsesDriftTime, Converter={StaticResource ResourceKey=UseDriftTimeWidthConverter}}"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="50*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="50*"/>
             </Grid.RowDefinitions>
-
             <WindowsFormsHost
                         Margin="1,1,1,1"
                         Grid.Row="0"
@@ -54,14 +54,14 @@
                                 XAxisShortHand="NET"
                                 />
             </WindowsFormsHost>
-
             <GridSplitter
                         Grid.Row="0"
                         Grid.Column="1"
                         Width="3"
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Stretch"
-                        Background="#FF00000A"/>
+                        Margin="1"
+                        Background="#FFA0A0A0"/>
             <WindowsFormsHost
                         Margin="1,1,1,1"
                         Visibility="{Binding Path=UsesDriftTime , Converter={StaticResource ResourceKey=UseDriftTimeConverter}}"
@@ -78,252 +78,79 @@
                                 LegendVisible="False"
                                 />
             </WindowsFormsHost>
-        </Grid>
-        <GridSplitter
+            <GridSplitter
                         Grid.Row="1"
                         Grid.Column="0"
                         Grid.ColumnSpan="3"
                         Height="3"
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Stretch"
-                        Background="#FF00000A"/>
-        <TabControl
-            Grid.Column="0"
-            Grid.Row="2"
-            Grid.ColumnSpan="2">
-            <TabItem 
+                        Margin="1"
+                        Background="#FFA0A0A0"/>
+            <TabControl
+                Grid.Column="0"
+                Grid.ColumnSpan="3"
+                Grid.Row="2">
+                <TabItem 
                 Style="{DynamicResource ResourceKey=SimpleTabItem}"
                 Header="Features">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="60*" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="40*" />
-                    </Grid.ColumnDefinitions>
-
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="50*"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="50*"/>
-                    </Grid.RowDefinitions>
-
-                    <GridSplitter
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="50*"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="50*"/>
+                        </Grid.RowDefinitions>
+                        <maWindows:FeatureGrid
                         Grid.Row="0"
-                        Grid.RowSpan="2"
-                        Grid.Column="1"                
-                        Width="3"
-                        HorizontalAlignment="Stretch"
-                        VerticalAlignment="Stretch"                                
-                        />
+                        x:Name="m_featureGrid"/>
 
-                    <GridSplitter
+                        <GridSplitter
                         Grid.Row="1"
-                        Grid.Column="2"                
+                        Grid.Column="0"                
                         Height="3"
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Stretch"                                
                         />
-
-                    <!-- Features Grid -->
-                    <maWindows:FeatureGrid
-                        Grid.Column="0"
-                        Grid.RowSpan="3"
-                        x:Name="m_featureGrid"/>
-
-
-                    <WindowsFormsHost
-                        Grid.Column="2"
-                        Grid.Row="0"
-                        >
-                        <maCharts:SingleUMCChart
-                                x:Name="m_msFeaturePlot"
-                                Title=""
-                                LegendVisible="False"                
-                                />
-                    </WindowsFormsHost>
-
-                    <!-- Plots based on feature selection -->
-                    <WindowsFormsHost
-                        Grid.Column="2"
+                        <maWindows:MsFeatureGrid 
                         Grid.Row="2"
-                        >
-                        <maCharts:SICChart
-                                x:Name="m_sicChart"
-                                Title=""
-                                TitleVisible="False"
-                                LegendVisible="False"                
-                                />
-                    </WindowsFormsHost>
-
-                </Grid>
-            </TabItem>
-            <TabItem
+                        x:Name="m_msFeatureGrid"/>
+                    </Grid>
+                </TabItem>
+                <TabItem
                 Style="{DynamicResource ResourceKey=SimpleTabItem}"
                             Header="Nearby Clusters"
                             Margin="1,1,1,1">
-                <maWindows:ClusterGrid
+                    <maWindows:ClusterGrid
                                 UsesDriftTime="{Binding Path=UsesDriftTime, NotifyOnSourceUpdated=True}"
                                 x:Name="m_clusterGrid" />
-            </TabItem>            
-            <TabItem
+                </TabItem>
+                <TabItem
                             
                 Style="{DynamicResource ResourceKey=SimpleTabItem}"
                             Header="AMT Tags"
                             Margin="1,1,1,1">
-                <Grid>    
-                    <Grid.RowDefinitions>
-                        
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>                            
-                        <ColumnDefinition/>
-                    </Grid.ColumnDefinitions>
-                    <maWindows:ClusterToMassTagGrid
+                    <Grid>
+                        <Grid.RowDefinitions>
+
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <maWindows:ClusterToMassTagGrid
                                     Grid.Column="0"
                                     x:Name="m_masstagGrid" />
 
-                    <maWindows:MassTagControl
+                        <maWindows:MassTagControl
                                 Grid.Column="1"
                                 UsesDriftTime="{Binding Path=UsesDriftTime, 
                                 RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
                                 x:Name="m_massTagDisplay"
                                 MassTag="{Binding Mode=OneWay, ElementName=m_massTagGrid, Path=SelectedTag}"/>
-                </Grid>
-            </TabItem>
-            <TabItem
-                Style="{DynamicResource ResourceKey=SimpleTabItem}"
-                Header="Nearby Cluster Stats"
-                Visibility="Collapsed"
-                >
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    <WindowsFormsHost
-                        Grid.Row="0"
-                        Grid.Column="0"
-                        >
-                        <maCharts:ClusterErrorScatterPlot
-                            Title="Mass vs. NET Cluster Error"
-                            TitleVisible="True"
-                            XAxisLabel="NET Error"
-                            YAxisLabel="Monoisotopic Mass Error"
-                            XAxisShortHand="NET"
-                            YAxisShortHand="PPM"
-                            x:Name="m_errorScatterplot"/>
-                    </WindowsFormsHost>
+                    </Grid>
+                </TabItem>
 
-                    <TabControl                            
-                        Grid.Row="0"
-                        Grid.Column="2">
-                        <TabItem
-                            Header="Mass CDF">
-                            <WindowsFormsHost>
-                                <maCharts:ClusterErrorHistogram
-                                    Title="Mass Error"
-                                    TitleVisible="True"
-                                    XAxisLabel="Mass Error (ppm)"
-                                    YAxisLabel="Count"
-                                    DifferenceType="0"
-                                    x:Name="m_massErrorHistogram"/>
-                            </WindowsFormsHost>
-                        </TabItem>
-                        <TabItem
-                            Header="Mass Distances">
-                            <WindowsFormsHost>
-                                <maCharts:ClusterErrorDistancePlot
-                                    Title="Mass Error"
-                                    TitleVisible="True"
-                                    XAxisLabel="Mass Error (ppm)"
-                                    YAxisLabel="Count"
-                                    DifferenceType="0"
-                                    x:Name="m_massDistances"/>
-                            </WindowsFormsHost>
-                        </TabItem>
-                    </TabControl>
-
-                    <TabControl                            
-                        Grid.Row="1"
-                        Grid.Column="0">
-                        <TabItem
-                            Header="NET CDF"
-                            >
-                            <WindowsFormsHost
-                                >
-                                <maCharts:ClusterErrorHistogram
-                                    Title="NET Error"
-                                    TitleVisible="True"
-                                    XAxisLabel="NET Error"
-                                    YAxisLabel="Count"
-                                    DifferenceType="1"
-                                    x:Name="m_netErrorHistogram"/>
-                            </WindowsFormsHost>
-                        </TabItem>
-                        <TabItem
-                            Header="NET Distances"
-                            >
-                            <WindowsFormsHost
-                                >
-                                <maCharts:ClusterErrorDistancePlot
-                                    Title="NET Distances"
-                                    TitleVisible="True"
-                                    XAxisLabel="NET Delta"
-                                    YAxisLabel="Count"
-                                    DifferenceType="1"
-                                    x:Name="m_netDistances"/>
-                            </WindowsFormsHost>
-                        </TabItem>
-                    </TabControl>
-                    <WindowsFormsHost                        
-                        Grid.Row="0"
-                        Grid.Column="1">
-                        <maCharts:ClusterErrorScatterPlot
-                                    IsDriftTimeXAxis="True"
-                                    Title="Mass vs. Drift Time Cluster Error"
-                                    TitleVisible="True"
-                                    XAxisLabel="Drift Error"                            
-                                    YAxisLabel="Monoisotopic Mass Error"
-                                    XAxisShortHand="ms"
-                                    YAxisShortHand="PPM"
-                                    x:Name="m_driftErrorScatterplot"/>
-                    </WindowsFormsHost>
-                    <TabControl                            
-                        Grid.Row="1"
-                        Grid.Column="1">
-                        <TabItem
-                            Header="Drift CDF">
-                            <WindowsFormsHost>
-                                <maCharts:ClusterErrorHistogram
-                                    Title="Drift Time Error"
-                                    TitleVisible="True"
-                                    XAxisLabel="Drift Error (ms)"
-                                    YAxisLabel="Count"
-                                    DifferenceType="2"
-                                    x:Name="m_driftErrorHistogram"/>
-                            </WindowsFormsHost>
-                        </TabItem>
-                        <TabItem
-                            Header="Drift Distances">
-                            <WindowsFormsHost>
-                                <maCharts:ClusterErrorDistancePlot
-                                    Title="Drift Time Error"
-                                    TitleVisible="True"
-                                    XAxisLabel="Drift Error (ms)"
-                                    YAxisLabel="Count"
-                                    DifferenceType="2"
-                                    x:Name="m_driftErrorDistances"/>
-                            </WindowsFormsHost>
-                        </TabItem>
-                    </TabControl>
-                </Grid>
-            </TabItem>
-            <!--<TabItem 
+                <!--<TabItem 
                 Style="{DynamicResource ResourceKey=SimpleTabItem}"
                 Header="Abundance Profile"
                 >
@@ -335,15 +162,26 @@
                                         />
                 </WindowsFormsHost>
             </TabItem>-->
-            <TabItem 
+
+                <TabItem 
                 Style="{DynamicResource ResourceKey=SimpleTabItem}"
                 Header="MS/MS">
-                <maWindows:MsMsViewer
+                    <maWindows:MsMsGrid
                     x:Name="m_msmsGrid"/>
-            </TabItem>
-        </TabControl>
+                </TabItem>
+            </TabControl>
+        </Grid>
+        <GridSplitter
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        Grid.RowSpan="3"
+                        Height="3"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        Background="#FF00000A"/>
+       
         <WrapPanel
-                        Grid.Row="3"
+                        Grid.Row="2"
                         Margin="3,3,3,3"
                         Grid.ColumnSpan="3">
             <Button                                 
@@ -358,6 +196,92 @@
                                 Content="Export MS/MS"
                                 x:Name="exportMsMsButton" Click="exportMsMsButton_Click" />
         </WrapPanel>
+
+        <Grid
+            Grid.Row="0"
+            Grid.Column="2">
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="25*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="25*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="25*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="25*"/>
+            </Grid.RowDefinitions>
+
+            <WindowsFormsHost
+                            Grid.Column="0"
+                            Grid.Row="0">
+                <maCharts:SingleUMCChart
+                                    x:Name="m_msFeaturePlot"
+                                    Title=""
+                                    LegendVisible="False"                
+                                    />
+            </WindowsFormsHost>
+
+            <GridSplitter
+                        Grid.Row="1"
+                        Grid.Column="0"                
+                        Height="3"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        Margin="1"
+                        Background="#FFA0A0A0"/>
+            <!-- Plots based on feature selection -->
+            <WindowsFormsHost
+                            Grid.Column="2"
+                            Grid.Row="2">
+                <maCharts:SICChart
+                                    x:Name="m_sicChart"
+                                    Title=""
+                                    TitleVisible="False"
+                                    LegendVisible="False"                
+                                    />
+            </WindowsFormsHost>
+
+            <GridSplitter
+                        Grid.Row="3"
+                        Grid.Column="0"                
+                        Height="3"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"  
+                        Margin="1"
+                        Background="#FFA0A0A0"/>
+            <WindowsFormsHost
+                Grid.Row="4"   
+                Grid.Column="0">
+                <maCharts:SpectraChart
+                    x:Name="m_parentSpectra"
+                    TitleVisible="True"
+                    Title="MS"
+                    XAxisLabel="m/z"
+                    YAxisLabel="Intensity"/>
+            </WindowsFormsHost>
+
+            <GridSplitter
+                        Grid.Row="5"
+                        Grid.Column="0"                
+                        Height="3"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"  
+                        Margin="1"
+                        Background="#FFA0A0A0"/>
+            <WindowsFormsHost
+                Grid.Row="6"   
+                Grid.Column="0">
+                <maCharts:SpectraChart
+                    x:Name="m_spectraChart"
+                    TitleVisible="True"
+                    Title="MS/MS"
+                    XAxisLabel="m/z"
+                    YAxisLabel="Intensity"/>
+            </WindowsFormsHost>
+        </Grid>
     </Grid>
     
 </UserControl>

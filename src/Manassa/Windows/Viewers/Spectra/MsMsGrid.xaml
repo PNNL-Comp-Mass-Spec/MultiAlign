@@ -9,7 +9,7 @@
     <UserControl.Resources>
         <converters:BooleanToDataGridVisibilityModeConverter x:Key="boolConverter"/>
     </UserControl.Resources>
-    <StackPanel>
+    <DockPanel>
         
         <ScrollViewer>                    
         <DataGrid
@@ -64,5 +64,5 @@
             </DataGrid.Columns>
         </DataGrid>
         </ScrollViewer>
-    </StackPanel>
+    </DockPanel>
 </UserControl>

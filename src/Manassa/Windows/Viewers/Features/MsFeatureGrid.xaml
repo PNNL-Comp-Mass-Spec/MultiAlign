@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Manassa.Windows.FeatureGrid"
+﻿<UserControl x:Class="Manassa.Windows.MsFeatureGrid"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -48,14 +48,13 @@
                 </Style>
             </DataGrid.RowStyle>
 
-            <DataGrid.Columns >                
-                <DataGridTextColumn         Header="Dataset"            CanUserSort="True"      Binding="{Binding GroupID}" IsReadOnly="True"/>
+            <DataGrid.Columns >
+                <!--Dataset Information-->
                 <DataGridTextColumn         Header="ID"                 CanUserSort="True"      Binding="{Binding ID}"                                             IsReadOnly="True"/>
-                <DataGridTextColumn         Header="Mono Mass"  CanUserSort="True"      Binding="{Binding MassMonoisotopicAligned}"                         IsReadOnly="True"/>
-                <DataGridTextColumn         Header="NET"                CanUserSort="True"      Binding="{Binding RetentionTime}"                                   IsReadOnly="True"/>
-                <DataGridTextColumn         Header="Drift Time"         CanUserSort="True"      Binding="{Binding DriftTime}"                                       IsReadOnly="True"/>
+                <DataGridTextColumn         Header="m/z"                CanUserSort="True"      Binding="{Binding Mz}"                                              IsReadOnly="True"/>
+                <DataGridTextColumn         Header="Scan"                CanUserSort="True"      Binding="{Binding Scan}"                                   IsReadOnly="True"/>
                 <DataGridTextColumn         Header="Charge"             CanUserSort="True"      Binding="{Binding ChargeState}"                                     IsReadOnly="True"/>
-                <DataGridTextColumn         Header="Abundance"          CanUserSort="True"      Binding="{Binding AbundanceSum}"                                    IsReadOnly="True"/>
+                <DataGridTextColumn         Header="Abundance"          CanUserSort="True"      Binding="{Binding Abundance}"                                       IsReadOnly="True"/>                
                 <DataGridTextColumn         Header="MS/MS Spectra"      CanUserSort="True"      Binding="{Binding Converter={StaticResource msmsConverter}}"        IsReadOnly="True"/>
             </DataGrid.Columns>
         </DataGrid>

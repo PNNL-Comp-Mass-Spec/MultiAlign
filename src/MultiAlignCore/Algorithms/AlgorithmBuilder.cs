@@ -54,27 +54,6 @@ namespace MultiAlignCore.Algorithms
             m_provider.Clusterer = clusterer;               
         }
         /// <summary>
-        /// Builds an object to adjust scans after feature finding based on SIC profiles.
-        /// </summary>
-        public void BuildLcAligner(LcScanAdjustment adjustmentType)
-        {
-            ILcScanAdjuster adjuster = null;
-            switch (adjustmentType)
-            {
-                case LcScanAdjustment.None:
-                    break;
-                case LcScanAdjustment.SicAsymmetricGaussian:
-                    adjuster = new AsymmetricGaussianScanAdjuster()
-                    {
-                        DirectoryPath = "sic"
-                    };                 
-                    break;
-                default:
-                    break;
-            }
-            m_provider.LcScanAdjuster = adjuster;
-        }
-        /// <summary>
         /// Builds the feature aligner.
         /// </summary>
         public void BuildAligner()
@@ -135,16 +114,6 @@ namespace MultiAlignCore.Algorithms
             if (m_provider.Aligner == null)
             {
                 BuildAligner();
-            }
-            /// Used in scan adjustment.
-            if (m_provider.LcScanAdjuster == null)
-            {
-                LcScanAdjustment adjuster =  LcScanAdjustment.None;
-                if (options.AlignmentOptions.UseSicScanCorrection)
-                {
-                    adjuster = LcScanAdjustment.SicAsymmetricGaussian;
-                }
-                BuildLcAligner(adjuster);
             }
             if (m_provider.PeakMatcher == null)
             {

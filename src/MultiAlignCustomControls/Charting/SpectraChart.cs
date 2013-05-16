@@ -21,15 +21,17 @@ namespace MultiAlignCustomControls.Charting
         private System.ComponentModel.IContainer components = null;		
 		private clsColorIterator miter_color = new  clsColorIterator() ; 
 		private int mint_pt_size = 2 ; 		
-        private List<XYData> m_feature;
+        private Dictionary<string, List<XYData>> m_features;
+
+        clsColorIterator colors = new clsColorIterator();
         #endregion
 
         #region Constructors
         public SpectraChart()
-	    {			
+	    {
 			InitializeComponent();
-            m_feature  = null;
-            DrawSticks = true;
+            m_features = new Dictionary<string, List<XYData>>(); 
+            DrawSticks = true;            
         }
         #endregion        
         
@@ -38,7 +40,8 @@ namespace MultiAlignCustomControls.Charting
         /// Clears the data currently on the plot.
         /// </summary>
         public void ClearData()
-        {            
+        {
+            m_features.Clear();
             ViewPortHistory.Clear();
             SeriesCollection.Clear();
         }
@@ -48,9 +51,25 @@ namespace MultiAlignCustomControls.Charting
         public void SetSpectra(List<XYData> feature)
         {            
             SeriesCollection.Clear();
-            m_feature = feature;
-            PlotFeature();                                    
-        }        
+            m_features.Clear();
+            m_features.Add("", feature);
+            
+            PlotFeature(feature, Color.Blue, "");
+
+        }
+        /// <summary>
+        /// Sets the analysis object and extracts data for display.
+        /// </summary>
+        public void AddSpectra(List<XYData> feature, string name)
+        {
+            if (m_features.ContainsKey(name))
+                m_features[name] = feature;
+            else
+                m_features.Add(name, feature);
+            
+            PlotFeature(feature, Color.Red, name);
+        }      
+    
         #endregion
         
         #region Cluster Rendering
@@ -59,16 +78,13 @@ namespace MultiAlignCustomControls.Charting
         /// </summary>
         /// <param name="clusters"></param>
         /// <param name="specificCharge"></param>
-        private void PlotFeature()
+        private void PlotFeature(List<XYData> feature, Color color, string name)
         {            
-            if (m_feature == null)
-                return;
 
-            clsColorIterator colors     = new clsColorIterator();  
-            Color color                 = colors.GetColor(0);
+            
 
             /// Sort by m/z
-            m_feature.Sort(delegate(XYData x, XYData y)
+            feature.Sort(delegate(XYData x, XYData y)
             {
                 return x.X.CompareTo(y.X);
             });
@@ -77,8 +93,9 @@ namespace MultiAlignCustomControls.Charting
             List<float> scanList        = new List<float>();                
             clsShape shape              = new BubbleShape(mint_pt_size, false);
             clsPlotParams plotParams    = new clsPlotParams(shape, color);
+            plotParams.Name             = name;
 
-            foreach (XYData datum in m_feature)
+            foreach (XYData datum in feature)
             {
                     scanList.Add(Convert.ToSingle(datum.X));
                     intensities.Add(Convert.ToSingle(datum.Y));

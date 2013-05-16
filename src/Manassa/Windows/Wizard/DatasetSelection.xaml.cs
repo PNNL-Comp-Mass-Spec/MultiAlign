@@ -163,7 +163,7 @@ namespace Manassa.Windows
             if (fileExists)
             {
 
-                InputFileType type = DatasetFilterFactory.DetermineInputFileType(SingleFilePath);
+                InputFileType type = DatasetInformation.GetInputFileType(SingleFilePath);
 
                 if (type == InputFileType.NotRecognized)
                 {

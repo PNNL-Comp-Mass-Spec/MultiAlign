@@ -32,7 +32,7 @@ namespace Manassa.IO
             foreach (string path in candidates)
             {
 
-                InputFileType type = DatasetFilterFactory.DetermineInputFileType(path);
+                InputFileType type = DatasetInformation.GetInputFileType(path);
                 
                 if (type == InputFileType.NotRecognized)
                 {

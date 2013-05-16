@@ -41,6 +41,7 @@ namespace MultiAlignCore.Data
             Peaks               = null;
             IsBaseline          = false;
 
+            DatasetSummary = new PNNLOmics.Data.DatasetSummary();
             PlotData = new DatasetPlotInformation();
 		}
         /// <summary>
@@ -345,9 +346,14 @@ namespace MultiAlignCore.Data
 
             List<SupportedDatasetType> supportedTypes = DatasetInformation.SupportedFileTypes;
 
+            string newPath = path.ToLower();
             foreach (SupportedDatasetType extension in supportedTypes)
             {
-                datasetName = Regex.Replace(datasetName, extension.Extension, "", RegexOptions.IgnoreCase);
+                string ext  = extension.Extension.ToLower();
+                if (newPath.EndsWith(ext))
+                {
+                    datasetName = datasetName.Substring(0, datasetName.Length - ext.Length);                    
+                }
             }
             return System.IO.Path.GetFileNameWithoutExtension(datasetName);            
         }
@@ -417,19 +423,40 @@ namespace MultiAlignCore.Data
         {            
             get
             {
-                if (m_supportedTypes == null)
+                if (m_supportedTypes.Count < 1)
                 {                            
                     m_supportedTypes.Add(new SupportedDatasetType("Decon Tools Isos", "_isos.csv",          InputFileType.Features));
-                    m_supportedTypes.Add(new SupportedDatasetType("LCMS Feature Finder", "LCMSFeatures.txt", InputFileType.Features));
+                    m_supportedTypes.Add(new SupportedDatasetType("LCMS Feature Finder", "_LCMSFeatures.txt", InputFileType.Features));
                     m_supportedTypes.Add(new SupportedDatasetType("Sequest First Hit", ".fht", InputFileType.Sequence));
                     m_supportedTypes.Add(new SupportedDatasetType("Thermo Raw", ".raw", InputFileType.Raw));
                     m_supportedTypes.Add(new SupportedDatasetType("mzXML", ".mzxml", InputFileType.Raw));
-                    m_supportedTypes.Add(new SupportedDatasetType("MSGF+ First Hit", "msgfdb_fht.txt", InputFileType.Sequence));
-                    m_supportedTypes.Add(new SupportedDatasetType("MSGF+ First Hit", "fht_msgf.txt", InputFileType.Sequence));
-                    m_supportedTypes.Add(new SupportedDatasetType("DeconTools XIC Peak File", "peaks.txt", InputFileType.Peaks));                                                                                                                                                                                                    
+                    m_supportedTypes.Add(new SupportedDatasetType("MSGF+ First Hit", "_msgfdb_fht.txt", InputFileType.Sequence));
+                    m_supportedTypes.Add(new SupportedDatasetType("MSGF+ First Hit", "_fht_msgf.txt", InputFileType.Sequence));
+                    m_supportedTypes.Add(new SupportedDatasetType("DeconTools XIC Peak File", "_peaks.txt", InputFileType.Peaks));                                                                                                                                                                                                    
                 }                  
                 return m_supportedTypes;
             }            
+        }
+        /// <summary>
+        /// Determiens the file type based on the supported file types within MultiAlign.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public static InputFileType GetInputFileType(string path)
+        {
+            InputFileType t = InputFileType.NotRecognized;
+
+            string newPath = path.ToLower();
+            foreach (SupportedDatasetType type in m_supportedTypes)
+            {
+                string lower = type.Extension.ToLower();
+                if (newPath.EndsWith(lower))
+                {
+                    t = type.InputType;
+                    break;
+                }
+            }
+            return t;
         }
     }
 
@@ -441,7 +468,7 @@ namespace MultiAlignCore.Data
         {
             Name        = name;
             InputType   = type;
-
+            Extension   = extension;
         }
 
         /// <summary>

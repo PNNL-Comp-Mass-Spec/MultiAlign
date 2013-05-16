@@ -31,7 +31,6 @@ namespace PNNLControls
 			// This call is required by the Windows.Forms Form Designer.
 			InitializeComponent();
 
-			// TODO: Add any initialization after the InitializeComponent call
 			this.Title = "Line Chart";
 			mobj_peak_labeler = new clsPeakLabeler() ; 
 			mobjPeakLabeler = new ChartPostRenderingProcessor(this.LabelPeaks) ; 

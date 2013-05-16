@@ -15,6 +15,9 @@ using PNNLOmics.Algorithms;
 using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
 using PNNLOmicsIO.IO;
+using System.IO;
+using System;
+using System.Linq;
 
 namespace Manassa.Windows
 {
@@ -55,29 +58,46 @@ namespace Manassa.Windows
             SetBinding(FeatureProperty, binding);
 
             m_sicChart.ViewPortChanged      += new PNNLControls.ViewPortChangedHandler(m_sicChart_ViewPortChanged);
+            m_sicChart.ChartPointPressed    += new System.EventHandler<SelectedPointEventArgs>(m_sicChart_ChartPointPressed);     
+
             m_msFeaturePlot.ViewPortChanged += new PNNLControls.ViewPortChangedHandler(m_msFeaturePlot_ViewPortChanged);
 
             m_clusterChart.ViewPortChanged  += new PNNLControls.ViewPortChangedHandler(m_clusterChart_ViewPortChanged);
             m_driftChart.ViewPortChanged    += new PNNLControls.ViewPortChangedHandler(m_driftChart_ViewPortChanged);
-            
-            SynchViewports(m_driftErrorScatterplot, ChartSynchType.XAxis,       m_driftErrorHistogram);
-            SynchViewports(m_driftErrorScatterplot, ChartSynchType.XAxis,       m_driftErrorDistances);
-            SynchViewports(m_driftErrorScatterplot, ChartSynchType.YToXAxis,    m_massErrorHistogram);
-            SynchViewports(m_driftErrorScatterplot, ChartSynchType.YAxis,       m_errorScatterplot);
-            
-            SynchViewports(m_driftErrorHistogram,   ChartSynchType.XAxis,       m_driftErrorScatterplot);
-            SynchViewports(m_netErrorHistogram,     ChartSynchType.XAxis,       m_errorScatterplot);
-            SynchViewports(m_massErrorHistogram,    ChartSynchType.XToYAxis,    m_errorScatterplot);
-            
-            SynchViewports(m_errorScatterplot,      ChartSynchType.XAxis,       m_netErrorHistogram); 
-            SynchViewports(m_errorScatterplot,      ChartSynchType.XAxis,       m_netDistances);                        
-            SynchViewports(m_errorScatterplot,      ChartSynchType.YAxis,       m_driftErrorScatterplot);
-            SynchViewports(m_errorScatterplot,      ChartSynchType.YToXAxis,    m_massErrorHistogram);
-            SynchViewports(m_errorScatterplot,      ChartSynchType.YToXAxis,    m_massDistances);
-
+                        
             m_saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             m_saveFileDialog.Filter = "DTA (*.dta)|*.dta|MGF (*.mgf)|*.mgf";
 
+        }
+
+        void m_sicChart_ChartPointPressed(object sender, SelectedPointEventArgs e)
+        {
+            // Figure out the closest spectra to view.
+            // TODO: Move this out of the way!
+            if (e != null && e.SelectedPoint != null)
+            {
+                float x = e.SelectedPoint.X;
+
+                if (this.UMCFeature != null)
+                {
+                    int point           = Convert.ToInt32(x);
+                    MSFeatureLight closest   = null;
+                    int closestDist     = int.MaxValue;
+                    foreach (MSFeatureLight feature in UMCFeature.MSFeatures)
+                    {
+                        int diff = Math.Abs(feature.Scan - point);
+                        if (closest == null || diff < closestDist)
+                        {
+                            closest     = feature; 
+                            closestDist = diff;
+                        }
+                    }
+                    if (closest != null)
+                    {
+                        this.LoadMsSpectrum(closest);
+                    }
+                }
+            }
         }
 
         public bool UsesDriftTime
@@ -246,8 +266,68 @@ namespace Manassa.Windows
 
                 thisSender.m_sicChart.AdjustViewPortWithTolerances(thisSender.FeatureFindingTolerances, false);
                 thisSender.m_msFeaturePlot.AdjustViewPortWithTolerances(thisSender.FeatureFindingTolerances, false);
-
                 thisSender.m_adjustingFeaturePlots = false;
+                
+                if (feature.MSFeatures.Count > 0)
+                {
+                    feature.MSFeatures.Sort(delegate(MSFeatureLight x, MSFeatureLight y)
+                    {
+                        return x.Scan.CompareTo(y.Scan);
+                    });
+                    thisSender.LoadMsSpectrum(feature.MSFeatures[0]);
+                    thisSender.m_msFeatureGrid.Features = feature.MSFeatures;
+                }
+            }
+        }
+
+        private void LoadMsSpectrum(MSFeatureLight msFeature)
+        {
+            DatasetInformation info = Analysis.MetaData.FindDatasetInformation(msFeature.GroupID);            
+            if (info != null && info.Raw != null && info.RawPath != null)
+            {
+                Dictionary<int, List<MSFeatureLight>> features = msFeature.ParentFeature.CreateChargeMap();
+                
+                int N = features[msFeature.ChargeState].Count;
+                if (!features.ContainsKey(msFeature.ChargeState) || N < 1)
+                    return;
+
+                double sum = 0;
+                double min = double.MaxValue;
+                double max = double.MinValue;
+
+                foreach (MSFeatureLight chargeFeature in features[msFeature.ChargeState])
+                {
+                    min = Math.Min(min, chargeFeature.Mz);
+                    max = Math.Max(max, chargeFeature.Mz);
+                    sum += chargeFeature.Mz;                    
+                }
+
+                double averageMz = sum / Convert.ToDouble(N);
+                double rangeLow  = .02;
+                double rangeHigh = .02;
+                double lowMz     = min - rangeLow;
+                double highMz    = max + rangeHigh;
+
+                List<XYData> spectrum = ParentSpectraFinder.GetParentSpectrum(info.RawPath,
+                                                                                msFeature.Scan,
+                                                                                lowMz,
+                                                                                highMz);
+                if (spectrum != null)
+                {
+                    m_parentSpectra.Title = string.Format("scan {0} @ {1} m/z", msFeature.Scan, msFeature.Mz);
+                    m_parentSpectra.SetSpectra(spectrum);
+
+                    List<XYData> monoFeature = new List<XYData>();
+                    monoFeature.Add(new XYData(msFeature.Mz, msFeature.Abundance));
+                    m_parentSpectra.AddSpectra(monoFeature, "Monoisotopic Peak");
+                     
+                    m_parentSpectra.AutoViewPort();
+                    RectangleF viewport = m_parentSpectra.ViewPort;
+                    m_parentSpectra.ViewPort = new RectangleF(  Convert.ToSingle(lowMz), 
+                                                                viewport.Top, 
+                                                                Convert.ToSingle(Math.Abs(highMz  - lowMz)), 
+                                                                Math.Abs(viewport.Bottom - viewport.Top));
+                }
             }
         }
         /// <summary>
@@ -350,14 +430,6 @@ namespace Manassa.Windows
             // Clear the charta
             m_clusterChart.ClearData();
             m_driftChart.ClearData();
-            m_errorScatterplot.ClearData();
-            m_driftErrorScatterplot.ClearData();
-            m_driftErrorHistogram.ClearData();
-            m_massErrorHistogram.ClearData();
-            m_netErrorHistogram.ClearData();
-            m_massDistances.ClearData();
-            m_netDistances.ClearData();
-            m_driftErrorDistances.ClearData();
 
             UMCClusterLight cluster = matchedCluster.Cluster;
 
@@ -394,7 +466,8 @@ namespace Manassa.Windows
             if (index > -1)
             {
                 otherClusters.RemoveAt(index);
-            }
+            } 
+
 
             // Then find the matching clusters and map them back to previously matched (to mass tag data)
             List<UMCClusterLightMatched> otherClusterMatches = new List<UMCClusterLightMatched>();            
@@ -441,52 +514,12 @@ namespace Manassa.Windows
                     }
                 }
             }
-            m_msmsGrid.SetMsMsFeatureSpectra(msmsFeatures);
+            m_msmsGrid.MsMsSpectra = new System.Collections.ObjectModel.ObservableCollection<MSFeatureMsMs>(msmsFeatures);
 
             float count = 0;
             List<KeyValuePair<float, float>> distances = new List<KeyValuePair<float, float>>();
             List<UMCLight> features = new List<UMCLight>();
-            features.AddRange(matchedCluster.Cluster.Features);
-            
-            m_errorScatterplot.MainCluster = matchedCluster;
-            m_errorScatterplot.AddAdditionalClusters(otherClusterMatches);
-            m_errorScatterplot.UpdateCharts(true);
-            m_errorScatterplot.AdjustViewPortWithTolerances(ClusterTolerances, false);
-
-            m_driftErrorScatterplot.MainCluster = matchedCluster;
-            m_driftErrorScatterplot.AddAdditionalClusters(otherClusterMatches);
-            m_driftErrorScatterplot.UpdateCharts(true);
-            m_driftErrorScatterplot.AdjustViewPortWithTolerances(ClusterTolerances, true);
-
-            m_massErrorHistogram.MainCluster = matchedCluster;
-            m_massErrorHistogram.AddAdditionalClusters(otherClusterMatches);
-            m_massErrorHistogram.UpdateCharts(true);
-            m_massErrorHistogram.AdjustViewPortWithTolerances(ClusterTolerances.Mass);
-
-            m_netErrorHistogram.MainCluster = matchedCluster;
-            m_netErrorHistogram.AddAdditionalClusters(otherClusterMatches);
-            m_netErrorHistogram.UpdateCharts(true);
-            m_netErrorHistogram.AdjustViewPortWithTolerances(ClusterTolerances.RetentionTime);
-
-            m_driftErrorHistogram.MainCluster = matchedCluster;
-            m_driftErrorHistogram.AddAdditionalClusters(otherClusterMatches);
-            m_driftErrorHistogram.UpdateCharts(true);
-            m_driftErrorHistogram.AdjustViewPortWithTolerances(ClusterTolerances.DriftTime);
-
-            m_driftErrorDistances.MainCluster = matchedCluster;
-            m_driftErrorDistances.AddAdditionalClusters(otherClusterMatches);
-            m_driftErrorDistances.UpdateCharts(true);
-            m_driftErrorDistances.AdjustViewPortWithTolerances(ClusterTolerances.DriftTime);
-
-            m_massDistances.MainCluster = matchedCluster;
-            m_massDistances.AddAdditionalClusters(otherClusterMatches);
-            m_massDistances.UpdateCharts(true);
-            m_massDistances.AdjustViewPortWithTolerances(ClusterTolerances.Mass);
-
-            m_netDistances.MainCluster = matchedCluster;
-            m_netDistances.AddAdditionalClusters(otherClusterMatches);
-            m_netDistances.UpdateCharts(true);
-            m_netDistances.AdjustViewPortWithTolerances(ClusterTolerances.RetentionTime);
+            features.AddRange(matchedCluster.Cluster.Features);                       
         }
         #endregion
 
@@ -520,14 +553,8 @@ namespace Manassa.Windows
         /// </summary>
         public MultiAlignAnalysis Analysis
         {
-            get
-            {
-                return m_msmsGrid.Analysis;
-            }
-            set
-            {
-                m_msmsGrid.Analysis = value;
-            }
+            get;
+            set;
         }
         #endregion
 
@@ -563,9 +590,10 @@ namespace Manassa.Windows
             System.Windows.Forms.DialogResult result =  m_saveFileDialog.ShowDialog();
             if (result == System.Windows.Forms.DialogResult.OK)
             {
-                string path               = m_saveFileDialog.FileName;
-                IMsMsSpectraWriter writer = MsMsFileWriterFactory.CreateSpectraWriter(System.IO.Path.GetExtension(path));
-                Cluster.Cluster.ExportMsMs(m_saveFileDialog.FileName, writer);
+                string path                         = m_saveFileDialog.FileName;
+                IMsMsSpectraWriter writer           = MsMsFileWriterFactory.CreateSpectraWriter(System.IO.Path.GetExtension(path));                                                
+                List<DatasetInformation> datasets   = Analysis.MetaData.Datasets.ToList();
+                Cluster.Cluster.ExportMsMs(m_saveFileDialog.FileName, datasets, writer);           
             }
         }
     }

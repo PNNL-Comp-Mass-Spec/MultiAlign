@@ -140,6 +140,7 @@ namespace MultiAlignCore.IO.Features
         {
             return GetMSMSSpectra(group, new Dictionary<int, int>());
         }
+
         #endregion
 
         #region IMSMSDataSource Members
@@ -295,7 +296,7 @@ namespace MultiAlignCore.IO.Features
             }
 
             DatasetSummary datasetSummary = new DatasetSummary();
-
+            Dictionary<int, ScanSummary> scanMap = new Dictionary<int, ScanSummary>();
             int numberOfScans = rawReader.GetNumScans();
             for (int i = 0; i < numberOfScans; i++)
             {                
@@ -317,8 +318,12 @@ namespace MultiAlignCore.IO.Features
                         break;
                     default:
                         break;
-                }                                
+                }
+                scanMap.Add(i, summary);     
             }
+
+            datasetSummary.ScanMetaData = scanMap;
+
             rawReader.CloseRawFile();                        
             m_datasetMetaData.Add(group, datasetSummary);
             return datasetSummary.ScanMetaData;            

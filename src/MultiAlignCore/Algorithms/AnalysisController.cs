@@ -167,9 +167,12 @@ namespace MultiAlignCore.Algorithms
         }
         private void ReportPeptideFeatures(DatasetInformation information, List<UMCLight> features)
         {
-            string path = Path.Combine(m_config.AnalysisPath, information.DatasetName +  "_peptide_scans.csv");
-            PeptideScanWriter writer = new PeptideScanWriter();
-            writer.Write(path, features);
+            if (m_config.ShouldCreatePeptideScanFiles)
+            {
+                string path = Path.Combine(m_config.AnalysisPath, information.DatasetName + "_peptide_scans.csv");
+                PeptideScanWriter writer = new PeptideScanWriter();
+                writer.Write(path, features);
+            }
         }
         /// <summary>
         /// Logs when features are clustered.
@@ -500,20 +503,13 @@ namespace MultiAlignCore.Algorithms
             processor.FeaturesClustered     += new EventHandler<FeaturesClusteredEventArgs>(processor_FeaturesClustered);
             processor.FeaturesPeakMatched   += new EventHandler<FeaturesPeakMatchedEventArgs>(processor_FeaturesPeakMatched);
             processor.AnalysisComplete      += new EventHandler<AnalysisCompleteEventArgs>(processor_AnalysisComplete);
-            processor.Status                += new EventHandler<AnalysisStatusEventArgs>(processor_Status);
-            processor.FeaturesAdjusted += new EventHandler<FeaturesAdjustedEventArgs>(processor_FeaturesAdjusted);
+            processor.Status                += new EventHandler<AnalysisStatusEventArgs>(processor_Status);            
             processor.BaselineFeaturesLoaded += new EventHandler<BaselineFeaturesLoadedEventArgs>(processor_BaselineFeaturesLoaded);
             processor.FeaturesExtracted     += new EventHandler<MultiAlignCore.Algorithms.MSLinker.FeaturesExtractedEventArgs>(processor_FeaturesExtracted);
             m_config.Analysis.DataProviders          = providers;
             processor.AlgorithmProviders     = builder.GetAlgorithmProvider(m_config.Analysis.Options);
 
             return processor;
-        }
-
-        void processor_FeaturesAdjusted(object sender, FeaturesAdjustedEventArgs e)
-        {
-            FeatureAdjusterWriter writer = new FeatureAdjusterWriter();
-            writer.WriteFeatures(Path.Combine(m_config.AnalysisPath, e.DatasetInformation.DatasetName + "_adjustedScans.csv"), e.Features, e.AdjustedFeatures);
         }
 
         void processor_BaselineFeaturesLoaded(object sender, BaselineFeaturesLoadedEventArgs e)

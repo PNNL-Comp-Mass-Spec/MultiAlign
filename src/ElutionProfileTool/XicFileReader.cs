@@ -13,6 +13,12 @@ namespace ElutionProfileTool
     /// </summary>
     public class XicFileReader
     {
+        public XicFileReader()
+        {
+            Delimeter = "\t";
+        }
+        public string Delimeter { get; set; }
+
         /// <summary>
         /// Reads Xic Data
         /// </summary>
@@ -20,6 +26,7 @@ namespace ElutionProfileTool
         /// <returns></returns>
         public List<XicData> ReadXicData(string file)
         {
+
             if (!File.Exists(file))
             {
                 return new List<XicData>();
@@ -38,14 +45,14 @@ namespace ElutionProfileTool
                     if (line.Length < 3)
                         continue;
 
-                    if (line.Contains("feature"))
+                    if (line.Contains("id"))
                     {
                         if (fit != null)
                         {
                             xics.Add(fit);
                         }
                         fit = new XicData();
-                        fit.Name = line.Replace("feature", "").Replace(",", "");
+                        fit.Name = line.Replace("feature", "").Replace(Delimeter, "");
                         state = 0;
                     }
                     else if (line.Contains("mz"))
@@ -63,7 +70,7 @@ namespace ElutionProfileTool
                     switch (state)
                     {
                         case 2:
-                            string[] lineData = line.Split(',');
+                            string[] lineData = line.Split(new string [] {Delimeter}, StringSplitOptions.RemoveEmptyEntries);
                             fit.X.Add(Convert.ToSingle(lineData[1]));
                             fit.Y.Add(Convert.ToSingle(lineData[2]));
                             break;

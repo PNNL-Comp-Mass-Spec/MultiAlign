@@ -129,6 +129,7 @@
     <Compile Include="IO\ManassaWorkspaceWriter.cs" />
     <Compile Include="IO\DatasetSearcher.cs" />
     <Compile Include="IO\ManassaWorkspaceReader.cs" />
+    <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="Windows\FilePathFinder.xaml.cs">
       <DependentUpon>FilePathFinder.xaml</DependentUpon>
     </Compile>
@@ -168,6 +169,9 @@
     </Compile>
     <Compile Include="Windows\Viewers\Datasets\DatasetsGrid.xaml.cs">
       <DependentUpon>DatasetsGrid.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Viewers\Features\MsFeatureGrid.xaml.cs">
+      <DependentUpon>MsFeatureGrid.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\Viewers\Features\FeatureGrid.xaml.cs">
       <DependentUpon>FeatureGrid.xaml</DependentUpon>
@@ -290,6 +294,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Windows\Viewers\Datasets\DatasetsGrid.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\Viewers\Features\MsFeatureGrid.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

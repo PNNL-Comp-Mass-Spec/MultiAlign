@@ -30,7 +30,7 @@ namespace MultiAlignCore.IO.Features
                         List<XYData> newPoints = gram.Points;
 
                         writer.WriteLine("id\t{0}\tcharge\t{1}", feature.ID, charge);
-                        writer.WriteLine("mz\tscan\tintensity\told-intensity");
+                        writer.WriteLine("mz\tscan\tretention-time\tintensity\told-intensity");
 
                         // Find the minimum and maximum scans
                         int minScan = Convert.ToInt32(oldPoints.Min(x => x.X));
@@ -58,8 +58,6 @@ namespace MultiAlignCore.IO.Features
                             int scan = Convert.ToInt32(x.X);
                             if (newMap.ContainsKey(scan))
                             {
-                                int xx = 99;
-                                xx++;
                                 continue;
                             }
 

@@ -76,6 +76,7 @@ namespace Manassa.Windows
 
                     m_clusterGrid.Clusters = clusters.Item1;                   
                     m_clusterPlot.SetClusters(value.Clusters);
+                    //m_clusterTree.SetClusters(clusters.Item1);
                     
                     /// 
                     /// Cache the clusters so that they can be readily accessible later on.

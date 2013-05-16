@@ -39,7 +39,6 @@ namespace MultiAlignCore.Algorithms
             m_clusterer     = null;
             m_aligner       = null;
             m_peakMatcher   = null;
-            LcScanAdjuster  = null;
         }
 
         /// <summary>
@@ -84,21 +83,13 @@ namespace MultiAlignCore.Algorithms
                 m_peakMatcher = value;
             }
         }
-        /// <summary>
-        /// Gets or sets the scan adjuster
-        /// </summary>
-        public ILcScanAdjuster LcScanAdjuster
-        {
-            get;
-            set;
-        }
-        
+                
         /// <summary>
         /// Registers events for algorithms.
         /// </summary>
         public void RegisterEvents()
         {
-            RegisterEvents(PeakMatcher, Aligner, LcScanAdjuster);
+            RegisterEvents(PeakMatcher, Aligner);
         }
         /// <summary>
         /// Registers status event handlers for each algorithm type.

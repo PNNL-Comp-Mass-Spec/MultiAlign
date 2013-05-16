@@ -229,6 +229,24 @@ namespace MultiAlignCore.Data
 
             return addedSets;
         }
+        /// <summary>
+        /// Finds the dataset information for the dataset ID provided.
+        /// </summary>
+        /// <param name="datasetId"></param>
+        /// <returns></returns>
+        public DatasetInformation FindDatasetInformation(int datasetId)
+        {
+            DatasetInformation info = null;
+            foreach (DatasetInformation datasetInfo in Datasets)
+            {
+                if (datasetInfo.DatasetId == datasetId)
+                {
+                    info = datasetInfo;
+                    break;
+                }
+            }            
+            return info;
+        }
 
         #region INotifyPropertyChanged Members
 

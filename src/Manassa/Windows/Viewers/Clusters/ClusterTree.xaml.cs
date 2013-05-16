@@ -11,6 +11,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using MultiAlignCore.Data.Features;
+using Manassa.ViewModels;
 
 namespace Manassa.Windows.Viewers.Clusters
 {
@@ -19,9 +21,18 @@ namespace Manassa.Windows.Viewers.Clusters
     /// </summary>
     public partial class ClusterTree : UserControl
     {
+        UMCClusterTreeRootViewModel m_clusters;
+
         public ClusterTree()
         {
             InitializeComponent();
+
+        }
+
+        public void SetClusters(List<UMCClusterLightMatched> clusters)
+        {
+            m_clusters = new UMCClusterTreeRootViewModel(clusters);
+            DataContext = m_clusters;
         }
     }
 }
