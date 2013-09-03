@@ -62,12 +62,19 @@ namespace MultiAlignCustomControls.Charting
         /// </summary>
         public void AddSpectra(List<XYData> feature, string name)
         {
+            AddSpectra(feature, name, Color.Red);
+        }
+        /// <summary>
+        /// Sets the analysis object and extracts data for display.
+        /// </summary>
+        public void AddSpectra(List<XYData> feature, string name, Color color)
+        {
             if (m_features.ContainsKey(name))
                 m_features[name] = feature;
             else
                 m_features.Add(name, feature);
             
-            PlotFeature(feature, Color.Red, name);
+            PlotFeature(feature, color, name);
         }      
     
         #endregion

@@ -30,5 +30,6 @@ namespace MultiAlignCore.IO.Features
         /// <returns></returns>
         List<UMCClusterLight> FindNearby(double massMin, double massMax, double netMin, double netMax, double driftMin, double driftMax);
         void ClearAllClusters();
+        List<UMCClusterLight> FindByCharge(int charge);
     }
 }

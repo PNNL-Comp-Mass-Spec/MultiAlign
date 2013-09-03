@@ -122,7 +122,9 @@ namespace PNNLControls
 						}
 						else
 						{
-							DrawLine(g, pen, drawRect, prevXPixel, yMinimum, prevXPixel, maxChartY);
+                            //BLL - set yMinimum to zero
+                            //DrawLine(g, pen, drawRect, prevXPixel, yMinimum, prevXPixel, maxChartY);
+                            DrawLine(g, pen, drawRect, prevXPixel, 0, prevXPixel, maxChartY);
 							linesDrawn++;
 						}
 					}
@@ -134,8 +136,11 @@ namespace PNNLControls
 					{
 						// now draw line between last pixel and this one
 						if (!mbln_draw_sticks)
-						{
-							DrawLine(g, pen, drawRect, prevX, prevY, currentX, currentY);
+                        {
+                            // BLL Changed prevY to zero
+                            DrawLine(g, pen, drawRect, prevX, prevY, currentX, currentY);
+							//DrawLine(g, pen, drawRect, prevX, 0, currentX, currentY);
+
 							linesDrawn++;
 							if (prevYVal > yData && prevYVal > prevprevYVal && prevXPixel >= 0 )
 							{
@@ -144,7 +149,8 @@ namespace PNNLControls
 						}
 						else
 						{
-							mobj_peak_labeler.AddPeak(i, new Point(prevXPixel, prevYPixel), prevXVal, mblnDrawBox) ; 
+							//mobj_peak_labeler.AddPeak(i, new Point(prevXPixel, prevYPixel), prevXVal, mblnDrawBox) ; 
+                            mobj_peak_labeler.AddPeak(i, new Point(prevXPixel, 0), prevXVal, mblnDrawBox); 
 						}
 					}
 					// update pixel measurements

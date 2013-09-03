@@ -165,8 +165,7 @@ namespace MultiAlignCore.IO.MTDB
                                     if (reader["Cleavage_State"] != System.DBNull.Value) cleaveageState = Convert.ToInt16(reader["Cleavage_State"]);
                                     if (reader["Drift_Time_Avg"] != System.DBNull.Value) driftTime = Convert.ToSingle(reader["Drift_Time_Avg"]);
                                     if (reader["Conformer_Charge"] != System.DBNull.Value) charge = Convert.ToInt32(reader["Conformer_Charge"]);
-                                    if (reader["Conformer_ID"] != System.DBNull.Value) conformerID = Convert.ToInt32(reader["Conformer_ID"]);
-                                    if (reader["Mod_Description"] != System.DBNull.Value) modification = reader["Mod_Description"].ToString();
+                                    if (reader["Conformer_ID"] != System.DBNull.Value) conformerID = Convert.ToInt32(reader["Conformer_ID"]);                                    
 
                                     /// Make sure the mass tag has been seen enough times
                                     if (numObservations >= Options.MinimumObservationCountFilter)

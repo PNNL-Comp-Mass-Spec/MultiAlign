@@ -53,6 +53,7 @@ namespace MultiAlignCore.IO.Features
         /// <param name="charge"></param>
         /// <returns></returns>
         List<UMCLight> FindByCharge(int charge);
+        List<UMCLight> FindByChargeDataset(int charge, int dataset);
         /// <summary>
         /// Finds all features that are clustered.
         /// </summary>

@@ -75,7 +75,20 @@ namespace MultiAlignCore.IO.Features.Hibernate
             ICriterion criterion = Expression.Eq("ChargeState", charge);
             List<ICriterion> criterionList = new List<ICriterion>();
             criterionList.Add(criterion);
-            return FindByCriteria(criterionList);                        
+            return FindByCriteria(criterionList);
+        }
+        /// <summary>
+        /// Finds a feature based on a charge state.
+        /// </summary>
+        /// <param name="charge">Charge state interested in</param>
+        /// <param name="dataset">Dataset interested in</param>
+        /// <returns></returns>
+        public List<UMCLight> FindByChargeDataset(int charge, int dataset)
+        {
+            ICriterion criterion = Expression.Eq("ChargeState", charge);
+            List<ICriterion> criterionList = new List<ICriterion>();
+            criterionList.Add(criterion);
+            return FindByCriteria(criterionList);
         }
         /// <summary>
         /// Finds a feature based on a feature id.

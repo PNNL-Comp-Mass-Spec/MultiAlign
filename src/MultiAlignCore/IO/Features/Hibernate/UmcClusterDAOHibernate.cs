@@ -9,7 +9,15 @@ namespace MultiAlignCore.IO.Features.Hibernate
 
     public class UmcClusterDAOHibernate : GenericDAOHibernate<UMCClusterLight>, IUmcClusterDAO
     {
-		
+
+        public List<UMCClusterLight> FindByCharge(int charge)
+        {
+            ICriterion criterion            = Expression.Eq("ChargeState", charge);
+            List<ICriterion> criterionList  = new List<ICriterion>();
+            criterionList.Add(criterion);
+            return FindByCriteria(criterionList);
+        }
+
         /// <summary>
         /// Searches for and returns a List of UmcCluster Objects in the Database that have the exact Mass given.
         /// </summary>

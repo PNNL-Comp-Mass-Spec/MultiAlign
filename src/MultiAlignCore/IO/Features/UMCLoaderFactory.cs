@@ -41,7 +41,7 @@ namespace MultiAlignCore.IO.Features
                 Status(null, new UMCLoadingEventArgs(message));
             }
         }
-        
+
         /// <summary>
         /// Loads feature data from the files provided.
         /// </summary>
@@ -64,7 +64,7 @@ namespace MultiAlignCore.IO.Features
                     break;
             }
             return features;
-        }
+        }        
         public static bool AreExistingFeatures(DatasetInformation dataset)
         {
             bool areExisting = false;

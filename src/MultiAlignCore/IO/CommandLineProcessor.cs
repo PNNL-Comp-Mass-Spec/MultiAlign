@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using MultiAlignCore.IO.InputFiles;
 using MultiAlignCore.Data;
 
-namespace MultiAlignConsole.IO
+namespace MultiAlignCore.IO
 {
     public class CommandLineProcessor
     {
@@ -36,6 +36,10 @@ namespace MultiAlignConsole.IO
                                 MultiAlignCore.IO.Logger.PrintMessage(string.Format("The job Id {0} was not understood", values[0]));
                                 return;
                             }
+                            break;
+                        case "-charge":
+                            config.ChargeState              = Convert.ToInt32(values[0]);
+                            config.ShouldClusterOnlyCharge  = true; 
                             break;
                         //--------------------------------------------------------------------
                         //  Path and name

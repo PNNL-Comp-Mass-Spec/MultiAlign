@@ -181,8 +181,11 @@ namespace MultiAlignCore.Algorithms
         /// <param name="e"></param>
         private void processor_FeaturesClustered(object sender, FeaturesClusteredEventArgs e)
         {
-            m_reportCreator.CreateClusterPlots(e);
-            m_reportCreator.CreateChargePlots(m_chargeMap);
+            if (m_config.ShouldCreatePlots)
+            {
+                m_reportCreator.CreateClusterPlots(e);
+                m_reportCreator.CreateChargePlots(m_chargeMap);
+            }
         }
         /// <summary>
         /// Logs when features are peak matched.
@@ -192,7 +195,10 @@ namespace MultiAlignCore.Algorithms
         private void processor_FeaturesPeakMatched(object sender, FeaturesPeakMatchedEventArgs e)
         {
             Logger.PrintMessage("Creating peak match plots");
-            m_reportCreator.CreatePeakMatchedPlots(e);
+            if (m_config.ShouldCreatePlots)
+            {
+                m_reportCreator.CreatePeakMatchedPlots(e);
+            }
         }
         /// <summary>
         /// Logs when features are loaded.
@@ -506,7 +512,7 @@ namespace MultiAlignCore.Algorithms
             processor.Status                += new EventHandler<AnalysisStatusEventArgs>(processor_Status);            
             processor.BaselineFeaturesLoaded += new EventHandler<BaselineFeaturesLoadedEventArgs>(processor_BaselineFeaturesLoaded);
             processor.FeaturesExtracted     += new EventHandler<MultiAlignCore.Algorithms.MSLinker.FeaturesExtractedEventArgs>(processor_FeaturesExtracted);
-            m_config.Analysis.DataProviders          = providers;
+            m_config.Analysis.DataProviders  = providers;
             processor.AlgorithmProviders     = builder.GetAlgorithmProvider(m_config.Analysis.Options);
 
             return processor;

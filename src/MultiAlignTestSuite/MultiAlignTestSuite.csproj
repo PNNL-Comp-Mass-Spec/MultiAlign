@@ -74,11 +74,19 @@
     <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MultiAlignEngine, Version=1.0.4370.23337, Culture=neutral, processorArchitecture=AMD64">
+    <Reference Include="MultiAlignEngine, Version=1.0.4729.30607, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\x86\MultiAlignEngine.dll</HintPath>
+      <HintPath>..\..\lib\x64\MultiAlignEngine.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework, Version=2.5.10.11092, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL" />
+    <Reference Include="OxyPlot, Version=2013.1.52.1, Culture=neutral, PublicKeyToken=638079a8f0bd61e9, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\OxyPlot.dll</HintPath>
+    </Reference>
+    <Reference Include="OxyPlot.WindowsForms, Version=2013.1.52.1, Culture=neutral, PublicKeyToken=245eacd6b5d2d338, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\OxyPlot.WindowsForms.dll</HintPath>
+    </Reference>
     <Reference Include="PNNLOmics">
       <HintPath>..\..\lib\PNNLOmics.dll</HintPath>
     </Reference>
@@ -92,6 +100,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\x64\System.Data.SQLite.dll</HintPath>
     </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -101,6 +111,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Algorithms\MsMsClustering.cs" />
+    <Compile Include="Algorithms\SpectralProcessing\SpectralAlignmentTests.cs" />
+    <Compile Include="Algorithms\SpectralProcessing\SpectralComparisonTests.cs" />
+    <Compile Include="Algorithms\SpectralProcessing\BinaryProcessor.cs" />
     <Compile Include="Algorithms\UMCAlignment.cs" />
     <Compile Include="Algorithms\UMCClustering.cs" />
     <Compile Include="Algorithms\UMCFeatureFinding.cs" />
@@ -113,15 +126,27 @@
     <Compile Include="IO\Parameters\XMLParameterFileTests.cs" />
     <Compile Include="IO\UMCReaderFailure.cs" />
     <Compile Include="IO\DataProviderTests.cs" />
+    <Compile Include="OHSU\ExtractClusters.cs" />
+    <Compile Include="OHSU\LargeScaleClusterTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MultiAlignCore\MultiAlignCore.csproj">
       <Project>{BDFA22C4-5822-4AA5-996E-6FDE57F7118B}</Project>
       <Name>MultiAlignCore</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MultiAlignCustomControls\MultiAlignCustomControls.csproj">
+      <Project>{EE7596B2-FCD3-471A-856F-1270713DD5B1}</Project>
+      <Name>MultiAlignCustomControls</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PNNLControls\PNNLControls.csproj">
+      <Project>{9409DE9B-F3F0-41AA-95F5-8BFD525F5669}</Project>
+      <Name>PNNLControls</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

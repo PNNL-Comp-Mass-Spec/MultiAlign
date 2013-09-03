@@ -56,6 +56,9 @@ namespace MultiAlignCore.Data
             ShouldExportMSMS                = false;
             ShouldUseExistingDatabase       = false;
             ShouldPeakMatch                 = true;
+            ChargeState                     = 1;
+            ShouldClusterOnlyCharge         = true;
+            ShouldCreatePlots      = true;
         }
         #region Properties 
         /// <summary>
@@ -236,7 +239,18 @@ namespace MultiAlignCore.Data
 
         #endregion
 
+
         public bool ShouldCreatePeptideScanFiles { get; set; }
+        /// <summary>
+        /// Gets or sets the charge state to cluster.
+        /// </summary>
+        public int ChargeState { get; set; }
+        /// <summary>
+        /// Gets or sets whether clustering only should be performed.  
+        /// </summary>
+        public bool ShouldClusterOnlyCharge { get; set; }
+
+        public bool ShouldCreatePlots { get; set; }
     }    
 }
 

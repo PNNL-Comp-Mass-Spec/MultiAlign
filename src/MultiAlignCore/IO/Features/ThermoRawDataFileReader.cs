@@ -324,7 +324,7 @@ namespace MultiAlignCore.IO.Features
 
             datasetSummary.ScanMetaData = scanMap;
 
-            rawReader.CloseRawFile();                        
+            //rawReader.CloseRawFile();                        
             m_datasetMetaData.Add(group, datasetSummary);
             return datasetSummary.ScanMetaData;            
         }
