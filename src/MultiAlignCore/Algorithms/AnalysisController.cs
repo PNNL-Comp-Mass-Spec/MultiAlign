@@ -184,6 +184,10 @@ namespace MultiAlignCore.Algorithms
             if (m_config.ShouldCreatePlots)
             {
                 m_reportCreator.CreateClusterPlots(e);
+            }
+
+            if (m_config.ShouldCreateChargeStatePlots)
+            {
                 m_reportCreator.CreateChargePlots(m_chargeMap);
             }
         }

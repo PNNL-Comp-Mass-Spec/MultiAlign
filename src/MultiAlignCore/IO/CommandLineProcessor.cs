@@ -145,6 +145,10 @@ namespace MultiAlignCore.IO
                                     break;
                             }
                             break;
+                        case "-noplots":
+                            config.ShouldCreateChargeStatePlots = false;
+                            config.ShouldCreatePlots            = false;
+                            break;
                         default:
                             MultiAlignCore.IO.Logger.PrintMessage("One option was not understood: " + option);
                             break;

@@ -58,9 +58,14 @@ namespace MultiAlignCore.Data
             ShouldPeakMatch                 = true;
             ChargeState                     = 1;
             ShouldClusterOnlyCharge         = true;
-            ShouldCreatePlots      = true;
+            ShouldCreatePlots               = true;
+            ShouldCreateChargeStatePlots    = true;
         }
         #region Properties 
+        /// <summary>
+        /// Gets or sets the flag to say whether to create charge state plots.
+        /// </summary>
+        public bool ShouldCreateChargeStatePlots { get; set; }
         /// <summary>
         /// Gets or sets whether the analysis should peak match features to another feature set.
         /// </summary>

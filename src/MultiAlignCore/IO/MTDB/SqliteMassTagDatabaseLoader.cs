@@ -1,6 +1,7 @@
 ﻿using System.Data;
 using System.Data.SQLite;
 using MultiAlignCore.Data.MassTags;
+using System;
 
 namespace MultiAlignCore.IO.MTDB
 {
@@ -49,9 +50,6 @@ namespace MultiAlignCore.IO.MTDB
             command.CommandTimeout  = 180;
             command.CommandType     = CommandType.Text;
             string commandString    = "SELECT * FROM T_Mass_Tags_plus_Conformers ";
-            commandString           += string.Format(" WHERE (High_Normalized_Score >= {0})", Options.MinimumXCorr);
-            commandString           += string.Format(" AND (High_Discriminant_Score >= {0})", Options.MinimumDiscriminant);
-            commandString           += string.Format(" AND (High_Peptide_Prophet_Probability >= {0})", Options.PeptideProphetVal);
             command.CommandText     = commandString;
         }
         /// <summary>
@@ -69,12 +67,15 @@ namespace MultiAlignCore.IO.MTDB
         /// <returns>String to use for connecting to local databases.</returns>
         protected override string CreateConnectionString()
         {
-            string newPath = DatabasePath;
-            if (DatabasePath.Contains(" "))
+            string newPath = DatabasePath.Trim();
+            
+
+            SQLiteConnectionStringBuilder builder = new SQLiteConnectionStringBuilder
             {
-                newPath = "\"" + DatabasePath.Trim() + "\"";
-            }
-            return string.Format("Data Source={0}", newPath);
+                DataSource = newPath
+            };
+
+            return builder.ConnectionString;
         }
         /// <summary>
         /// Creates a new Sqlite data paramter for use in queries.

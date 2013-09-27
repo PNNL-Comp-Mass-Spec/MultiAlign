@@ -74,6 +74,14 @@
     <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Accord.Statistics, Version=2.7.0.0, Culture=neutral, PublicKeyToken=fa1a88e29555ccf7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\Accord.Statistics.dll</HintPath>
+    </Reference>
+    <Reference Include="AForge, Version=2.2.4.0, Culture=neutral, PublicKeyToken=c1db6ff4eaa06aeb, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Accord.NET\Framework\Externals\AForge.NET\AForge.dll</HintPath>
+    </Reference>
     <Reference Include="MultiAlignEngine, Version=1.0.4729.30607, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\x64\MultiAlignEngine.dll</HintPath>
@@ -111,9 +119,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Algorithms\MsMsClustering.cs" />
+    <Compile Include="Algorithms\SpectralProcessing\DummyTests.cs" />
     <Compile Include="Algorithms\SpectralProcessing\SpectralAlignmentTests.cs" />
     <Compile Include="Algorithms\SpectralProcessing\SpectralComparisonTests.cs" />
     <Compile Include="Algorithms\SpectralProcessing\BinaryProcessor.cs" />
+    <Compile Include="Algorithms\SpectralProcessing\TestSpectralLinking.cs" />
     <Compile Include="Algorithms\UMCAlignment.cs" />
     <Compile Include="Algorithms\UMCClustering.cs" />
     <Compile Include="Algorithms\UMCFeatureFinding.cs" />

@@ -76,7 +76,10 @@ namespace MultiAlignCore.IO.Features
             reader.CloseFile();
             return spectra;
         }
-
+        public List<MSSpectra> GetRawSpectra(int group)
+        {
+            return new List<MSSpectra>();
+        }
         public List<XYData> GetRawSpectra(int scan, int group)
         {
             List<XYData> spectrum = null;
@@ -135,7 +138,12 @@ namespace MultiAlignCore.IO.Features
         {
             return GetMSMSSpectra(group, new Dictionary<int, int>());
         }
+
         public List<MSSpectra> GetMSMSSpectra(int group, Dictionary<int, int> excludeMap)
+        {
+            return GetMSMSSpectra(group, excludeMap, false);
+        }
+        public List<MSSpectra> GetMSMSSpectra(int group, Dictionary<int, int> excludeMap, bool loadPeaks)
         {
             List<MSSpectra> spectra = new List<MSSpectra>();
 

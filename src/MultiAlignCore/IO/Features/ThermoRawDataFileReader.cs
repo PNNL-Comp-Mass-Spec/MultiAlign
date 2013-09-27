@@ -62,14 +62,18 @@ namespace MultiAlignCore.IO.Features
         }        
 
         #region IRawDataFileReader Members
-
+        public
+        List<MSSpectra> GetMSMSSpectra(int group, Dictionary<int, int> excludeMap)
+        {
+            return GetMSMSSpectra(group, excludeMap, false);
+        }
         /// <summary>
         /// Reads a list of MSMS Spectra header data from the mzXML file.
         /// </summary>
         /// <param name="file">file to read.</param>
         /// <param name="excludeMap">Dictionary indicating which scans and related feature ID's to ignore.</param>
         /// <returns>List of MSMS spectra data</returns>        
-        public List<MSSpectra> GetMSMSSpectra(int group, Dictionary<int, int> excludeMap)
+        public List<MSSpectra> GetMSMSSpectra(int group, Dictionary<int, int> excludeMap, bool loadPeaks)
         {
             List<MSSpectra> spectra = new List<MSSpectra>();
 
@@ -123,7 +127,10 @@ namespace MultiAlignCore.IO.Features
                     }
 
                     // Need to make this a standard type of collision based off of the data.
-                    
+                    if (loadPeaks)
+                    {
+                        spectrum.Peaks = LoadRawSpectra(rawReader, i);
+                    }
                     spectra.Add(spectrum);
                 }
             }
@@ -138,7 +145,7 @@ namespace MultiAlignCore.IO.Features
         /// <returns>List of MSMS spectra data</returns>
         public List<MSSpectra> GetMSMSSpectra(int group)
         {
-            return GetMSMSSpectra(group, new Dictionary<int, int>());
+            return GetMSMSSpectra(group, new Dictionary<int, int>(), false);
         }
 
         #endregion
@@ -152,6 +159,35 @@ namespace MultiAlignCore.IO.Features
         public List<XYData> GetRawSpectra(int scan, int group)
         {
             return GetRawSpectra(scan, group, -1);
+        }
+        /// <summary>
+        /// Gets the raw data from the data file.
+        /// </summary>
+        /// <param name="scan"></param>
+        /// <returns></returns>        
+        public List<MSSpectra> GetRawSpectra(int group)
+        {
+            return GetMSMSSpectra(group, new Dictionary<int, int>(), true);
+        }
+        private List<XYData> LoadRawSpectra(XRawFileIO rawReader, int scan)
+        {
+            FinniganFileReaderBaseClass.udtScanHeaderInfoType header = new FinniganFileReaderBaseClass.udtScanHeaderInfoType();
+            rawReader.GetScanInfo(scan, out header);
+            int N                   = header.NumPeaks;
+
+            double[] mz             = new double[N];
+            double[] intensities    = new double[N];            
+            rawReader.GetScanData(scan, ref mz, ref intensities, ref header);
+            
+            //rawReader.CloseRawFile();
+            // construct the array.
+            List<XYData> data = new List<XYData>(mz.Length);            
+            for (int i = 0; i < mz.Length; i++)
+            {
+                double intensity = intensities[i];
+                data.Add(new XYData(mz[i], intensity));                
+            }
+            return data;
         }
         
         /// <summary>
