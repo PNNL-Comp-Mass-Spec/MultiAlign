@@ -4,7 +4,7 @@ using System.Windows.Data;
 using MultiAlignCore.Data;
 using System.IO;
 
-namespace Manassa.Converters
+namespace MultiAlign.Converters
 {
 
     public class SearchOptionConverter : IValueConverter

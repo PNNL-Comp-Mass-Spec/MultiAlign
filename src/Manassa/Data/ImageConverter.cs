@@ -6,7 +6,7 @@ using System.Windows.Controls;
 using System.IO;
 using System.Windows.Media.Imaging;
 
-namespace Manassa.Data
+namespace MultiAlign.Data
 {
     public class ImageConverter
     {

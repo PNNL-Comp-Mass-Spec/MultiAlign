@@ -13,9 +13,9 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using PNNLOmics.Data.Features;
 using MultiAlignCore.Data.Imaging;
-using Manassa.Data;
+using MultiAlign.Data;
 
-namespace Manassa.Windows
+namespace MultiAlign.Windows
 {
     /// <summary>
     /// Interaction logic for ClustersView.xaml

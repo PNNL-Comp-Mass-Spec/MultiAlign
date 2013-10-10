@@ -14,15 +14,15 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Forms;
-using Manassa.Data;
-using Manassa.IO;
+using MultiAlign.Data;
+using MultiAlign.IO;
 using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.Data;
 using System.ComponentModel;
 using System.IO;
-using Manassa.Windows.Viewers.Datasets;
+using MultiAlign.Windows.Viewers.Datasets;
 
-namespace Manassa.Windows
+namespace MultiAlign.Windows.Wizard
 {
     /// <summary>
     /// Interaction logic for DatasetSelection.xaml

@@ -13,7 +13,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.IO;
 
-namespace Manassa.Windows
+namespace MultiAlign.Windows
 {
     /// <summary>
     /// Interaction logic for FilePathFinder.xaml

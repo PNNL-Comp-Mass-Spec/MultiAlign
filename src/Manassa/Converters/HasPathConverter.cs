@@ -6,7 +6,7 @@ using System.Windows.Data;
 using System.IO;
 using System.Windows.Controls;
 
-namespace Manassa.Converters
+namespace MultiAlign.Converters
 {
     /// <summary>
     /// Converts whether the path is null or not to yes or no string.

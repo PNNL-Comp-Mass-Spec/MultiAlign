@@ -4,14 +4,14 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
-using Manassa.Data;
+using MultiAlign.Data;
 using MultiAlignCore.Algorithms;
 using MultiAlignCore.Data;
 using MultiAlignCore.IO;
 using System.IO;
 using PNNLOmics.Data.Features;
 
-namespace Manassa.Windows
+namespace MultiAlign.Windows.Wizard
 {
     /// <summary>
     /// ViewModel for running an analysis, display results, etc.

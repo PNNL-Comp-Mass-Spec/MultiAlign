@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.ComponentModel;
 
-namespace Manassa.ViewModels
+namespace MultiAlign.ViewModels
 {
 
     public abstract class ViewModelBase : INotifyPropertyChanged

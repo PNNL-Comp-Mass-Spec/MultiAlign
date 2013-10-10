@@ -8,10 +8,10 @@ using PNNLOmics.Data.Features;
 using MultiAlignCore.Data.Features;
 using System.ComponentModel;
 using System.Collections.ObjectModel;
-using Manassa.ViewModels;
+using MultiAlign.ViewModels;
 using MultiAlignCore.Data;
 
-namespace Manassa.ViewModels
+namespace MultiAlign.ViewModels
 {
     /// <summary>
     /// Root tree object.

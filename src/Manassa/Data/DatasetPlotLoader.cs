@@ -3,7 +3,7 @@ using System.IO;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.MetaData;
 
-namespace Manassa.Data
+namespace MultiAlign.Data
 {
     public class DatasetPlotLoader
     {

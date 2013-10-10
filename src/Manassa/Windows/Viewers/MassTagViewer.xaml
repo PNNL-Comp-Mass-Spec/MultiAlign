@@ -1,11 +1,11 @@
-﻿<UserControl x:Class="Manassa.Windows.MassTagViewer"
+﻿<UserControl x:Class="MultiAlign.Windows.Viewers.MassTagViewer"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:maWindows="clr-namespace:Manassa.Windows"
+             xmlns:massTagViews="clr-namespace:MultiAlign.Windows.MassTags"
              xmlns:maCharts="clr-namespace:MultiAlignCustomControls.Charting;assembly=MultiAlignCustomControls"
-             xmlns:converters="clr-namespace:Manassa.Converters"
+             xmlns:converters="clr-namespace:MultiAlign.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="598" d:DesignWidth="920">
     <UserControl.Resources>

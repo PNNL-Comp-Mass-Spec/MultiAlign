@@ -4,14 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Collections.ObjectModel;
-using Manassa.Data;
+using MultiAlign.Data;
 
-namespace Manassa.Workspace
+namespace MultiAlign.Workspace
 {
-    public class ManassaWorkspace: DependencyObject
+    public class MultiAlignWorkspace: DependencyObject
     {
 
-        public ManassaWorkspace()
+        public MultiAlignWorkspace()
         {
             RecentAnalysis = new ObservableCollection<RecentAnalysis>();
         }
@@ -24,7 +24,7 @@ namespace Manassa.Workspace
 
         // Using a DependencyProperty as the backing store for RecentAnalysis.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty RecentAnalysisProperty =
-            DependencyProperty.Register("RecentAnalysis", typeof(ObservableCollection<RecentAnalysis>), typeof(ManassaWorkspace)
+            DependencyProperty.Register("RecentAnalysis", typeof(ObservableCollection<RecentAnalysis>), typeof(MultiAlignWorkspace)
             );
 
 

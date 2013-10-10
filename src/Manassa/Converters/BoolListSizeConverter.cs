@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 using System.Windows.Data;
 using MultiAlignCore.Data;
 
-namespace Manassa.Converters
+namespace MultiAlign.Converters
 {
 
     public class BoolListSizeConverter : IValueConverter

@@ -12,9 +12,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using MultiAlignCore.Data.Features;
-using Manassa.ViewModels;
+using MultiAlign.ViewModels;
 
-namespace Manassa.Windows.Viewers.Clusters
+namespace MultiAlign.Windows.Viewers.Clusters
 {
     /// <summary>
     /// Interaction logic for ClusterTree.xaml

@@ -10,10 +10,10 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using Manassa.Workspace;
-using Manassa.Data;
+using MultiAlign.Workspace;
+using MultiAlign.Data;
 
-namespace Manassa.Windows
+namespace MultiAlign.Windows.Viewers
 {
     /// <summary>
     /// Interaction logic for GettingStarted.xaml
@@ -32,15 +32,15 @@ namespace Manassa.Windows
         /// <summary>
         /// Gets or sets the current work space item
         /// </summary>        
-        public ManassaWorkspace CurrentWorkspace
+        public MultiAlignWorkspace CurrentWorkspace
         {
-            get { return (ManassaWorkspace)GetValue(CurrentWorkSpaceProperty); }
+            get { return (MultiAlignWorkspace)GetValue(CurrentWorkSpaceProperty); }
             set { SetValue(CurrentWorkSpaceProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for CurrentWorkSpace.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty CurrentWorkSpaceProperty =
-            DependencyProperty.Register("CurrentWorkspace", typeof(ManassaWorkspace), typeof(GettingStarted));
+            DependencyProperty.Register("CurrentWorkspace", typeof(MultiAlignWorkspace), typeof(GettingStarted));
 
         private void CommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
         {

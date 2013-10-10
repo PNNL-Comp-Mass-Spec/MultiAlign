@@ -15,7 +15,7 @@ using MultiAlignCore.Data;
 using MultiAlignCore.IO;
 using MultiAlignCore.IO.Parameters;
 
-namespace Manassa.Windows
+namespace MultiAlign.Windows.Wizard
 {
     /// <summary>
     /// Interaction logic for AnalysisOptions.xaml

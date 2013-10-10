@@ -12,7 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Manassa.Windows.Viewers.Proteins
+namespace MultiAlign.Windows.Viewers.Proteins
 {
     /// <summary>
     /// Interaction logic for ProteinListBox.xaml

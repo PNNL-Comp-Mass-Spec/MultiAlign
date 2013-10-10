@@ -13,7 +13,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using MultiAlignCore.Data;
 
-namespace Manassa.Windows.Viewers.Datasets
+namespace MultiAlign.Windows.Viewers.Datasets
 {
     /// <summary>
     /// Interaction logic for DatasetInputFileEditor.xaml

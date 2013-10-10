@@ -11,9 +11,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using MultiAlignCore.Data;
-using Manassa.Data;
+using MultiAlign.Data;
+using MultiAlign.Data.States;
 
-namespace Manassa.Windows
+namespace MultiAlign.Windows.Wizard
 {
     /// <summary>
     /// Interaction logic for PerformAnalysisWindow.xaml

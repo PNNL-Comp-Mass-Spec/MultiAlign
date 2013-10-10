@@ -123,8 +123,8 @@ namespace PNNLControls
 						else
 						{
                             //BLL - set yMinimum to zero
-                            //DrawLine(g, pen, drawRect, prevXPixel, yMinimum, prevXPixel, maxChartY);
-                            DrawLine(g, pen, drawRect, prevXPixel, 0, prevXPixel, maxChartY);
+                            DrawLine(g, pen, drawRect, prevXPixel, yMinimum, prevXPixel, maxChartY);
+                            //DrawLine(g, pen, drawRect, prevXPixel, 0, prevXPixel, maxChartY);
 							linesDrawn++;
 						}
 					}
@@ -149,8 +149,8 @@ namespace PNNLControls
 						}
 						else
 						{
-							//mobj_peak_labeler.AddPeak(i, new Point(prevXPixel, prevYPixel), prevXVal, mblnDrawBox) ; 
-                            mobj_peak_labeler.AddPeak(i, new Point(prevXPixel, 0), prevXVal, mblnDrawBox); 
+							mobj_peak_labeler.AddPeak(i, new Point(prevXPixel, prevYPixel), prevXVal, mblnDrawBox) ; 
+                            //mobj_peak_labeler.AddPeak(i, new Point(prevXPixel, 0), prevXVal, mblnDrawBox); 
 						}
 					}
 					// update pixel measurements

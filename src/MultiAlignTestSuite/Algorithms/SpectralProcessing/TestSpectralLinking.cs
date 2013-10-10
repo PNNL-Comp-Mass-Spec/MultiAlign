@@ -101,11 +101,14 @@ namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
                     Ignore=true)]
         [TestCase( @"M:\data\proteomics\Applications\NCRR-falcon",
                     "QC_Shew_11_06-pt5_1_24Feb12_Falcon_12-02-32",
-                    "QC_Shew_11_06-pt5_7_24Feb12_Falcon_12-02-34")]
+                    "QC_Shew_11_06-pt5_7_24Feb12_Falcon_12-02-34",
+                    .6,
+                    Ignore = false)]
         [TestCase(@"M:\data\proteomics\Thesis\mci\rumen",
                 "Bioreacter_Rumen5_R2_31Jul11_Jaguar_11-07-18",
                 "Bioreacter_Rumen4_R2_31Jul11_Jaguar_11-07-19",
-                .7)]
+                .7,
+                    Ignore=true)]
         public void TestSpectralAlignment(string basePath, string baselineName, string aligneeName, double comparisonCutoff)
         {
             RootDataPath = basePath;

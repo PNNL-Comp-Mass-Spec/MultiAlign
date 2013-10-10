@@ -5,7 +5,7 @@ using System.Text;
 using System.IO;
 using MultiAlignCore.IO.InputFiles;
 
-namespace Manassa.Data
+namespace MultiAlign.Data
 {
     /// <summary>
     /// Creates a file browser filter based on the input file types.

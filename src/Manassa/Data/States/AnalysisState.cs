@@ -1,4 +1,4 @@
-﻿namespace Manassa.Data
+﻿namespace MultiAlign.Data.States
 {
     public enum AnalysisState
     {

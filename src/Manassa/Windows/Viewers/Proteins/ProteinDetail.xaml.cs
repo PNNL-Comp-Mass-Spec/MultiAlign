@@ -14,7 +14,7 @@ using System.Windows.Shapes;
 using MultiAlignCore.Data;
 using PNNLOmics.Data;
 
-namespace Manassa.Windows.Viewers.Proteins
+namespace MultiAlign.Windows.Viewers.Proteins
 {
     /// <summary>
     /// Interaction logic for MassTagDetail.xaml

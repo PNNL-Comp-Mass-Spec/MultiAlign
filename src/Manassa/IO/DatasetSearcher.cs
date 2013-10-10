@@ -5,10 +5,10 @@ using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Manassa.Data;
+using MultiAlign.Data;
 using MultiAlignCore.IO.InputFiles;
 
-namespace Manassa.IO
+namespace MultiAlign.IO
 {
     public class DatasetSearcher
     {

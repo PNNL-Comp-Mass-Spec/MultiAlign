@@ -14,7 +14,7 @@ using MultiAlignCore.Data;
 
 using System.IO;
 
-namespace Manassa.Windows
+namespace MultiAlign.Windows.Viewers
 {
     /// <summary>
     /// Interaction logic for AnalysisNaming.xaml

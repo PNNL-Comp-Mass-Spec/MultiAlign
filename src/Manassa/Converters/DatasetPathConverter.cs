@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Data;
 using MultiAlignCore.Data;
 
-namespace Manassa.Converters
+namespace MultiAlign.Converters
 {
 
     public class DatasetPathConverter : IValueConverter

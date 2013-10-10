@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Manassa.Data
+namespace MultiAlign.Data.States
 {
     public enum AnalysisSetupStep
     {

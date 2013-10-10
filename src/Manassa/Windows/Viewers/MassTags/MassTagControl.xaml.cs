@@ -14,7 +14,7 @@ using MultiAlignCore.Data.Features;
 using MultiAlignCore.Extensions;
 using PNNLOmics.Data.MassTags;
 
-namespace Manassa.Windows
+namespace MultiAlign.Windows.Viewers.MassTags
 {    
     /// <summary>
     /// Interaction logic for ClusterControl.xaml

@@ -6,7 +6,7 @@ using System.Windows;
 using System.Linq;
 using System.Text;
 
-namespace Manassa.Data
+namespace MultiAlign.Data
 {
     /// <summary>
     /// Class that holds information about a recent analysis.

@@ -18,9 +18,9 @@ using MultiAlignCore.Data;
 using MultiAlignCore.Data.Features;
 using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
-using Manassa.Data;
+using MultiAlign.Data;
 
-namespace Manassa.Windows
+namespace MultiAlign.Windows.Viewers
 {
     /// <summary>
     /// Interaction logic for MsMsViewer.xaml

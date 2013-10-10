@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 
-namespace Manassa.Data
+namespace MultiAlign.Data
 {
     public class StatusMessageWrapper: DependencyObject
     {

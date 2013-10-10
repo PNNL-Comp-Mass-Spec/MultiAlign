@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Data;
 
-namespace Manassa.Converters
+namespace MultiAlign.Converters
 {
     
     public class BoolVisibilityConverter : DependencyObject, IValueConverter

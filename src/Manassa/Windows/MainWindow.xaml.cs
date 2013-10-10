@@ -1,9 +1,9 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Data;
-using Manassa.Data;
-using Manassa.IO;
-using Manassa.Workspace;
+using MultiAlign.Data;
+using MultiAlign.IO;
+using MultiAlign.Workspace;
 using MultiAlignCore.Algorithms;
 using MultiAlignCore.Data;
 using MultiAlignCustomControls.Drawing;
@@ -11,8 +11,10 @@ using MultiAlignCore.IO;
 using System;
 using System.IO;
 using MultiAlignCore;
+using MultiAlign.Data.States;
+using MultiAlign.Windows.Viewers;
 
-namespace Manassa
+namespace MultiAlign.Windows
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -28,7 +30,7 @@ namespace Manassa
 
             BuildStateModerator();
 
-            CurrentWorkspace                           = new ManassaWorkspace();                       
+            CurrentWorkspace                           = new MultiAlignWorkspace();                       
             m_analysisLoadDialog                       = new System.Windows.Forms.OpenFileDialog();
             Controller                                 = new AnalysisController();
             Reporter                                   = new AnalysisReportGenerator();
@@ -80,7 +82,7 @@ namespace Manassa
             if (System.IO.File.Exists(path))
             {
                 ApplicationStatusMediator.SetStatus("Loading workspace");
-                ManassaWorkspaceReader reader = new ManassaWorkspaceReader();
+                MultiAlignWorkspaceReader reader = new MultiAlignWorkspaceReader();
                 try
                 {
                     CurrentWorkspace = reader.Read(path);
@@ -116,14 +118,14 @@ namespace Manassa
         /// <summary>
         /// Gets or sets the current work space item
         /// </summary>        
-        public ManassaWorkspace CurrentWorkspace
+        public MultiAlignWorkspace CurrentWorkspace
         {
-            get { return (ManassaWorkspace)GetValue(CurrentWorkSpaceProperty); }
+            get { return (MultiAlignWorkspace)GetValue(CurrentWorkSpaceProperty); }
             set { SetValue(CurrentWorkSpaceProperty, value); }
         }
         // Using a DependencyProperty as the backing store for CurrentWorkSpace.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty CurrentWorkSpaceProperty =
-            DependencyProperty.Register("CurrentWorkspace", typeof(ManassaWorkspace), typeof(MainWindow));
+            DependencyProperty.Register("CurrentWorkspace", typeof(MultiAlignWorkspace), typeof(MainWindow));
         /// <summary>
         /// Gets or sets the status message to display.
         /// </summary>
@@ -321,7 +323,7 @@ namespace Manassa
             StateModerator.CurrentAnalysisState = AnalysisState.Idle;
             StateModerator.CurrentViewState     = ViewState.HomeView;            
         }
-        void m_gettingStarted_RecentAnalysisSelected(object sender, Windows.OpenAnalysisArgs e)
+        void m_gettingStarted_RecentAnalysisSelected(object sender, OpenAnalysisArgs e)
         {
 
             LoadMultiAlignFile(e.AnalysisData);
@@ -358,7 +360,7 @@ namespace Manassa
         /// <param name="e"></param>
         void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            ManassaWorkspaceWriter writer = new ManassaWorkspaceWriter();
+            MultiAlignWorkspaceWriter writer = new MultiAlignWorkspaceWriter();
             try
             {
                 string workspacePath = ApplicationUtility.GetApplicationDataFolderPath("MultiAlign");

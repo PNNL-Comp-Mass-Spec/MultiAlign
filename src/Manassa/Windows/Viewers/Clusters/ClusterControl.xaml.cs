@@ -19,7 +19,7 @@ using System.IO;
 using System;
 using System.Linq;
 
-namespace Manassa.Windows
+namespace MultiAlign.Windows.Viewers.Clusters
 {
     /// <summary>
     /// Interaction logic for ClusterControl.xaml
@@ -303,10 +303,14 @@ namespace Manassa.Windows
                 }
 
                 double averageMz = sum / Convert.ToDouble(N);
-                double rangeLow  = .02;
-                double rangeHigh = .02;
-                double lowMz     = min - rangeLow;
-                double highMz    = max + rangeHigh;
+                //double adder = .02; //Math.Abs(max - min) * .1;
+                //double lowMz = msFeature.Mz - adder; // min - adder;
+                //double highMz = msFeature.Mz + adder;//max + adder;
+                min = max = msFeature.Mz;
+                double adder    = .09; //  Math.Abs(max - min) * .1;
+                double lowMz    = min - adder;
+                double highMz   = max + adder;
+
 
                 List<XYData> spectrum = ParentSpectraFinder.GetParentSpectrum(info.RawPath,
                                                                                 msFeature.Scan,
@@ -315,21 +319,62 @@ namespace Manassa.Windows
                 if (spectrum != null)
                 {
                     m_parentSpectra.Title = string.Format("scan {0} @ {1} m/z", msFeature.Scan, msFeature.Mz);
-                    m_parentSpectra.SetSpectra(spectrum);
-
-                    List<XYData> monoFeature = new List<XYData>();
-                    monoFeature.Add(new XYData(msFeature.Mz, msFeature.Abundance));
-                    m_parentSpectra.AddSpectra(monoFeature, "Monoisotopic Peak");
-                     
-                    m_parentSpectra.AutoViewPort();
-                    RectangleF viewport = m_parentSpectra.ViewPort;
-                    m_parentSpectra.ViewPort = new RectangleF(  Convert.ToSingle(lowMz), 
-                                                                viewport.Top, 
-                                                                Convert.ToSingle(Math.Abs(highMz  - lowMz)), 
-                                                                Math.Abs(viewport.Bottom - viewport.Top));
+                    m_parentSpectra.SetSpectra(spectrum);                     
+                    m_parentSpectra.AutoViewPort(); 
+                    //RectangleF viewport = m_parentSpectra.ViewPort;
+                    //m_parentSpectra.ViewPort = new RectangleF(  Convert.ToSingle(lowMz), 
+                    //                                            viewport.Top, 
+                    //                                            Convert.ToSingle(Math.Abs(highMz  - lowMz)), 
+                    //                                            Math.Abs(viewport.Bottom - viewport.Top));
                 }
             }
         }
+        /// <summary>
+        /// Hack for stephens presentation.
+        /// </summary>
+        static int clusterCount = 0;
+        void WriteUMCCluster(UMCClusterLight cluster)
+        {
+            using(TextWriter writer = File.CreateText(@"m:\clusterData.txt"))
+            {
+                
+                List<MSSpectra> spectra = new List<MSSpectra>();
+                foreach (UMCLight feature in cluster.Features)
+                {
+                    foreach (MSFeatureLight msfeature in feature.MSFeatures)
+                    {
+                        foreach(MSSpectra spectrum in msfeature.MSnSpectra)
+                        {
+                            DatasetInformation info = Analysis.MetaData.FindDatasetInformation(msfeature.GroupID);
+                            if (info != null && info.Raw != null && info.RawPath != null)
+                            {
+                                writer.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}", cluster.ID,
+                                                                    feature.GroupID,
+                                                                    feature.ID,
+                                                                    msfeature.ID,
+                                                                    spectrum.ID,
+                                                                    spectrum.Scan,
+                                                                    info.RawPath);
+                            
+                                spectrum.Peaks = ParentSpectraFinder.GetDaughterSpectrum(info.RawPath, spectrum.Scan);
+                                spectra.Add(spectrum);
+
+                                using (TextWriter specWriter = File.CreateText(string.Format(@"m:\spec-{0}-{1}-{2}.txt", cluster.ID, spectrum.GroupID, spectrum.ID)))
+                                {
+                                    foreach (XYData datum in spectrum.Peaks)
+                                    {
+                                        specWriter.WriteLine("{0}\t{1}", datum.X, datum.Y);
+                                    }
+                                }
+                            }                                                          
+                        }
+                    }
+                }
+            }
+
+
+        }
+
         /// <summary>
         /// Grabs the data from the provider cache and shoves into UI where needed.  This is done
         /// here like this to prevent holding large amounts of data in memory.
@@ -349,6 +394,7 @@ namespace Manassa.Windows
                 {
                     matchedCluster.Cluster.ReconstructUMCCluster(thisSender.Providers);
                 }
+                thisSender.WriteUMCCluster(matchedCluster.Cluster);
                 thisSender.UpdatePlotsWithClusterData(matchedCluster);
 
 

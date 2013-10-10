@@ -88,7 +88,7 @@ namespace MultiAlignCore.Algorithms.Alignment
 
 
             OnStatus("Setting features from baseline dataset.");
-            List<clsUMC> convertedBaseLineFeatures = FeatureDataConverters.ConvertToUMC(baselineFeatures);
+            List<clsUMC> convertedBaseLineFeatures      = FeatureDataConverters.ConvertToUMC(baselineFeatures);
             alignmentProcessor.SetReferenceDatasetFeatures(convertedBaseLineFeatures);
             classAlignmentData alignmentData            = AlignFeatures( alignmentProcessor,
                                                                         features,
@@ -141,9 +141,25 @@ namespace MultiAlignCore.Algorithms.Alignment
                 totalBoundaries = 2;
             }
 
+            features.Sort(delegate(UMCLight x, UMCLight y)
+            {
+                return x.AbundanceSum.CompareTo(y.AbundanceSum);
+            });
+
+            double percent  = alignmentOptions.TopFeatureAbundancePercent / 100;
+            int total       = features.Count - Convert.ToInt32(features.Count * percent);
+            long threshold  = features[Math.Min(features.Count - 1, Math.Max(0, total))].AbundanceSum;   
+
+            // Filters features below a certain threshold.
+            List<UMCLight> filteredFeatures = features.FindAll(delegate(UMCLight feature)
+            {
+                return feature.AbundanceSum > threshold;
+            });
+
             // Conver the features, and make a map, so that we can re-adjust the aligned values later.
-            List<clsUMC> oldFeatures        = FeatureDataConverters.ConvertToUMC(features);
-            Dictionary<int, UMCLight> map   = FeatureDataConverters.MapFeature<UMCLight>(features);
+            List<clsUMC> oldFeatures         = FeatureDataConverters.ConvertToUMC(filteredFeatures);            
+            List<clsUMC> transformedFeatures = FeatureDataConverters.ConvertToUMC(features);
+            Dictionary<int, UMCLight> map    = FeatureDataConverters.MapFeature<UMCLight>(features);
 
             for (int i = 0; i < totalBoundaries; i++)
             {
@@ -161,12 +177,12 @@ namespace MultiAlignCore.Algorithms.Alignment
 
                 // Correct the features
                 OnStatus("Applying alignment function to all features.");
-                alignmentProcessor.ApplyNETMassFunctionToAligneeDatasetFeatures(ref oldFeatures);
+                alignmentProcessor.ApplyNETMassFunctionToAligneeDatasetFeatures(ref transformedFeatures);
                 
                 // Find min/max scan for meta-data
                 int tempMinScanBaseline = int.MaxValue;
                 int tempMaxScanBaseline = int.MinValue;
-                foreach (clsUMC feature in oldFeatures)
+                foreach (clsUMC feature in transformedFeatures)
                 {
                     tempMaxScanBaseline     = Math.Max(tempMaxScanBaseline, feature.Scan);
                     tempMinScanBaseline     = Math.Min(tempMinScanBaseline, feature.Scan);

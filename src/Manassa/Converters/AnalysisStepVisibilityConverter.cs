@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Data;
-using Manassa.Windows;
-using Manassa.Data;
+using MultiAlign.Windows;
+using MultiAlign.Data;
 using System.ComponentModel;
+using MultiAlign.Data.States;
 
-namespace Manassa.Converters
+namespace MultiAlign.Converters
 {
 
     public class AnalysisStepVisibilityConverter : DependencyObject, IValueConverter

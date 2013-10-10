@@ -14,10 +14,10 @@ using System.Windows.Shapes;
 using MultiAlignCore.Data;
 using MultiAlignCustomControls.Drawing;
 using MultiAlignCustomControls.Charting;
-using Manassa.Data;
+using MultiAlign.Data;
 using MultiAlignCore.Data.Imaging;
 
-namespace Manassa.Windows
+namespace MultiAlign.Windows
 {
     /// <summary>
     /// Interaction logic for AlignmentPlotView.xaml

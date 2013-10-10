@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 
-namespace Manassa.Data
+namespace MultiAlign.Data.States
 {
     /// <summary>
     /// Delegate that is parameterless but makes a transition

@@ -21,7 +21,7 @@ using PNNLOmics.Data.MassTags;
 using PNNLOmics.Data.Features;
 using MultiAlignCore.IO.Features;
 
-namespace Manassa.Windows
+namespace MultiAlign.Windows.Viewers
 {
     /// <summary>
     /// Interaction logic for MassTagControl.xaml

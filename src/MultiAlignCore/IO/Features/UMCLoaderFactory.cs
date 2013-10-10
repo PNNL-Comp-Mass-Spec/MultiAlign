@@ -52,7 +52,17 @@ namespace MultiAlignCore.IO.Features
                                                         IUmcDAO featureCache)
         {
             List<UMCLight> features = new List<UMCLight>();
-            string extension = Path.GetExtension(dataset.Features.Path).ToUpper();
+            string extension = null;
+            try
+            {
+                Path.GetExtension(dataset.Features.Path).ToUpper();
+            }
+            catch(Exception ex)
+            {
+                int x = 99;
+                string message = ex.Message;
+                throw;
+            }
             switch (extension)
             {
                 case ".TXT":

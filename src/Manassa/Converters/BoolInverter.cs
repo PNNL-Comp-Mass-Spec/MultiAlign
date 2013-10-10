@@ -6,7 +6,7 @@ using System.Windows.Data;
 using System.IO;
 using System.Windows.Controls;
 
-namespace Manassa.Converters
+namespace MultiAlign.Converters
 {
     public class BoolInverter: IValueConverter      
     {

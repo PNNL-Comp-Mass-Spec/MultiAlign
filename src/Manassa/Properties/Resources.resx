@@ -130,9 +130,6 @@
   <data name="text_x_generic" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\resources\text_x_generic.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="manassaMain" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\resources\manassamain.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="molecule" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\resources\molecule.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -150,5 +147,8 @@
   </data>
   <data name="repeater" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\repeater.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="manassaMain" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\manassaMain.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

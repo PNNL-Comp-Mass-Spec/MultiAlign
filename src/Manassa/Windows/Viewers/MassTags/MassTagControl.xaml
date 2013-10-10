@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Manassa.Windows.MassTagControl"
+﻿<UserControl x:Class="MultiAlign.Windows.Viewers.MassTags.MassTagControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -6,16 +6,16 @@
              xmlns:wf="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
              xmlns:pnnlCharts="clr-namespace:PNNLControls.Drawing.Charting;assembly=PNNLControls"
              xmlns:maCharts="clr-namespace:MultiAlignCustomControls.Charting;assembly=MultiAlignCustomControls"
-             xmlns:maWindows="clr-namespace:Manassa.Windows"
-             xmlns:converters="clr-namespace:Manassa.Converters"
-             xmlns:massTagPlots="clr-namespace:Manassa.Windows.Viewers.MassTags"
+             xmlns:massTagViews="clr-namespace:MultiAlign.Windows.Viewers.MassTags"
+             xmlns:proteinViews="clr-namespace:MultiAlign.Windows.Viewers.Proteins"
+             xmlns:clusterViews="clr-namespace:MultiAlign.Windows.Viewers.Clusters"
+             xmlns:converters="clr-namespace:MultiAlign.Converters"
              mc:Ignorable="d"          
              x:Name="myControl"
              d:DesignHeight="382" d:DesignWidth="838">
                  
     <UserControl.Resources>
         <converters:BoolVisibilityConverter x:Key="UseDriftTimeConverter" FalseVisibility="Collapsed"></converters:BoolVisibilityConverter>
-
         <converters:BoolWidthConverter x:Key="UseDriftTimeWidthConverter" ></converters:BoolWidthConverter>
     </UserControl.Resources>
     
@@ -40,10 +40,10 @@
             <TabItem 
                 Style="{DynamicResource ResourceKey=SimpleTabItem}"
                 Header="Synposis">
-                <massTagPlots:MassTagDetail
+                <massTagViews:MassTagDetail
                     x:Name="MassTagDetails"
                     MassTag="{Binding Path=MassTag, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True }"
-                    ></massTagPlots:MassTagDetail>
+                    ></massTagViews:MassTagDetail>
             </TabItem>
             <TabItem 
                 
@@ -112,14 +112,14 @@
                         <TabItem
                             Header="Nearby Mass Tags"
                             Margin="1,1,1,1">
-                            <maWindows:MassTagGrid
+                            <massTagViews:MassTagGrid
                                 DataGridExpandMode="VisibleWhenSelected"
                                 x:Name="m_masstagGrid" />
                         </TabItem>
                         <TabItem
                             Header="Matching Clusters"
                             Margin="1,1,1,1">
-                            <maWindows:ClusterGrid
+                            <clusterViews:ClusterGrid
                                 x:Name="m_clusterGrid" />
                         </TabItem>
                     </TabControl>
@@ -140,7 +140,7 @@
 
             <TabItem 
                 Style="{DynamicResource ResourceKey=SimpleTabItem}" Header=" Matched Proteins">
-                <maWindows:ProteinGrid 
+                <proteinViews:ProteinGrid 
                     x:Name="ProteinDetailGrid"
                     />
                     

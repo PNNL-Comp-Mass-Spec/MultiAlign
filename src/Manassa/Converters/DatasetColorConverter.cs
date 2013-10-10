@@ -8,7 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace Manassa.Converters
+namespace MultiAlign.Converters
 {
     public class DatasetColorConverter: DependencyObject, IValueConverter      
     {

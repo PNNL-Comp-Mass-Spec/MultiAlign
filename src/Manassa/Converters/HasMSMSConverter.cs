@@ -7,7 +7,7 @@ using System.IO;
 using System.Windows.Controls;
 using PNNLOmics.Data.Features;
 
-namespace Manassa.Converters
+namespace MultiAlign.Converters
 {
     public class HasMSMSConverter: IValueConverter
     {       

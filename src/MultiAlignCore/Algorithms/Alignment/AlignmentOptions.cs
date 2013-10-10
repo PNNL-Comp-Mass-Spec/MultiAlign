@@ -12,7 +12,8 @@ namespace MultiAlignCore.Algorithms.Alignment
     {
         public AlignmentOptions()
         {
-            NumTimeSections				= 100; 
+            NumTimeSections				        = 100;
+            TopFeatureAbundancePercent  = 0;
 			ContractionFactor			= 3; 
 			MaxTimeJump			        = 10; 
 			MaxPromiscuity			    = 3; 
@@ -53,6 +54,13 @@ namespace MultiAlignCore.Algorithms.Alignment
             set;
         }
 
+        [ParameterFileAttribute("TopFeatureAbundancePercent", "Alignment")]
+        [Description("Percentage of top Abundance features to use for alignment. ")]
+        public double  TopFeatureAbundancePercent
+        {
+            get;
+            set;
+        }
         private void OnNotify(string name)
         {
             if (PropertyChanged != null)

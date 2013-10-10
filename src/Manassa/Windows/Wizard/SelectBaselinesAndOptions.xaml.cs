@@ -17,7 +17,7 @@ using MultiAlignCore.Data;
 
 using MultiAlignParameterFileEditor;
 
-namespace Manassa.Windows
+namespace MultiAlign.Windows.Wizard
 {
     /// <summary>
     /// Interaction logic for SelectBaselinesAndOptions.xaml

@@ -4,7 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using MultiAlignCore.Data.Features;
 
-namespace Manassa.Windows
+namespace MultiAlign.Windows.Viewers.Spectra
 {
     /// <summary>
     /// Interaction logic for ClusterGrid.xaml

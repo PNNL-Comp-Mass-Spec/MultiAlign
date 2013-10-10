@@ -2,21 +2,21 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Manassa.Data;
-using Manassa.Workspace;
+using MultiAlign.Data;
+using MultiAlign.Workspace;
 using MultiAlignCore.IO;
 using MultiAlignCore.IO.Parameters;
 using System.Xml;
 using System.Collections.ObjectModel;
 using System.IO;
 
-namespace Manassa.IO
+namespace MultiAlign.IO
 {
 
-    public class ManassaWorkspaceWriter
+    public class MultiAlignWorkspaceWriter
     {
 
-        public void Write(string path, ManassaWorkspace workspace)
+        public void Write(string path, MultiAlignWorkspace workspace)
         {            
             XmlDocument document = new XmlDocument();
 

@@ -118,8 +118,8 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Algorithms\CallisterClusters\CompareClusters.cs" />
     <Compile Include="Algorithms\MsMsClustering.cs" />
-    <Compile Include="Algorithms\SpectralProcessing\DummyTests.cs" />
     <Compile Include="Algorithms\SpectralProcessing\SpectralAlignmentTests.cs" />
     <Compile Include="Algorithms\SpectralProcessing\SpectralComparisonTests.cs" />
     <Compile Include="Algorithms\SpectralProcessing\BinaryProcessor.cs" />

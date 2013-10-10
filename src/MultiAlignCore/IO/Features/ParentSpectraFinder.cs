@@ -38,11 +38,42 @@ namespace MultiAlignCore.IO.Features
                         return null;
                     }
 
+                    if (spectrum == null)
+                    {
+                        return null;
+                    }
+
                     var data = (from x in spectrum
                                 where x.X > minMz && x.X < maxMz
                                 select x).ToList();
 
                     return data;
+                }
+            }
+            return null;
+        }
+
+        public static List<XYData> GetDaughterSpectrum(string path, int scan)
+        {
+            using (ISpectraProvider provider = RawLoaderFactory.CreateFileReader(path))
+            {
+                if (provider != null)
+                {
+                    provider.AddDataFile(path, 0);
+
+                    List<XYData> spectrum = null;
+                    try
+                    {
+                        spectrum = provider.GetRawSpectra(scan, 0, 2);
+                    }
+                    catch
+                    {
+                        Logger.PrintMessage("Could not load the raw spectra");
+                        return null;
+                    }
+
+
+                    return spectrum;
                 }
             }
             return null;

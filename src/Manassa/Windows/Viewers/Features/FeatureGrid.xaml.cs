@@ -15,7 +15,7 @@ using MultiAlignCore.Data;
 using System.ComponentModel;
 using PNNLOmics.Data.Features;
 
-namespace Manassa.Windows
+namespace MultiAlign.Windows.Viewers.Features
 {
     /// <summary>
     /// Interaction logic for ClusterGrid.xaml

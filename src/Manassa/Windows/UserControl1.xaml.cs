@@ -12,14 +12,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace MultiAlign.Windows.Viewers.Datasets
+namespace MultiAlign.Windows
 {
     /// <summary>
-    /// Interaction logic for DatasetInformationView.xaml
+    /// Interaction logic for UserControl1.xaml
     /// </summary>
-    public partial class DatasetInformationView : UserControl
+    public partial class UserControl1 : UserControl
     {
-        public DatasetInformationView()
+        public UserControl1()
         {
             InitializeComponent();
         }

@@ -4,8 +4,9 @@ using System.Configuration;
 using System.Data;
 using System.Linq;
 using System.Windows;
+using MultiAlign.Windows;
 
-namespace Manassa
+namespace MultiAlign
 {
     /// <summary>
     /// Interaction logic for App.xaml

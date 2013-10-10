@@ -13,7 +13,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using MultiAlignCore.Data;
 
-namespace Manassa.Windows.Viewers.MassTags
+namespace MultiAlign.Windows.Viewers.MassTags
 {
     /// <summary>
     /// Interaction logic for MassTagDetail.xaml

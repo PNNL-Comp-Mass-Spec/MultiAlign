@@ -5,8 +5,9 @@ using System.Text;
 using MultiAlignCore.IO.MTDB;
 using MultiAlignCore.Data;
 using System.IO;
+using MultiAlign.Data.States;
 
-namespace Manassa.Data
+namespace MultiAlign.Data
 {
     public class MultiAlignAnalysisValidator
     {

@@ -12,9 +12,12 @@ using MultiAlignCore.Extensions;
 using PNNLOmics.Data.Features;
 using MultiAlignCore.Algorithms.Features;
 using System.Collections.ObjectModel;
+using MultiAlign.ViewModels;
 
-namespace Manassa.Windows
+namespace MultiAlign.Windows.Viewers
 {
+    
+
     /// <summary>
     /// Interaction logic for AllClustersControl.xaml
     /// </summary>
@@ -29,8 +32,8 @@ namespace Manassa.Windows
             m_analysis  = null;
             DataContext = this;
 
-            Binding binding = new Binding("Viewport");
-            binding.Source = m_clusterControl;
+            Binding binding  = new Binding("Viewport");
+            binding.Source   = m_clusterControl;
             SetBinding(ViewportProperty, binding);
 
         }
@@ -101,7 +104,7 @@ namespace Manassa.Windows
                     string plotPath = Path.Combine(value.MetaData.AnalysisPath, "plots");
                     if (Directory.Exists(plotPath))
                     {
-                        Manassa.Data.DatasetPlotLoader loader = new Data.DatasetPlotLoader();                      
+                        MultiAlign.Data.DatasetPlotLoader loader = new Data.DatasetPlotLoader();                      
                         loader.LoadDatasetPlots(plotPath, value.MetaData.Datasets.ToList());
                     }
 
@@ -137,12 +140,6 @@ namespace Manassa.Windows
                     Dictionary<int, int> massTagMap = clusters.Item2.CreateMassTagClusterSizeHistogram();
                     m_massTagHistogram.ConstructHistogram(massTagMap);
                     m_massTagHistogram.AutoViewPort();
-
-                    //m_clusterRatioPlot.AddClusters(value.Clusters);
-                    //m_clusterRatioPlot.UpdateCharts(true);
-                    //m_clusterRatioRawPlot.AddClusters(value.Clusters);
-                    //m_clusterRatioRawPlot.UpdateCharts(true);
-                  
                 }
             }
         }

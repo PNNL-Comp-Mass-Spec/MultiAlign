@@ -11,7 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace Manassa.Windows
+namespace MultiAlign.Windows.Viewers
 {
     /// <summary>
     /// Interaction logic for StartWindow.xaml

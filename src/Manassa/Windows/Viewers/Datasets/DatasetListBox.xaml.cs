@@ -14,7 +14,7 @@ using System.Windows.Shapes;
 using MultiAlignCore.Data;
 using System.Collections.ObjectModel;
 
-namespace Manassa.Windows
+namespace MultiAlign.Windows.Viewers.Datasets
 {
     /// <summary>
     /// Interaction logic for ListBoxTemplate.xaml

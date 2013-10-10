@@ -1,10 +1,10 @@
-﻿<UserControl x:Class="Manassa.Windows.Viewers.MassTags.MassTagDetail"
+﻿<UserControl x:Class="MultiAlign.Windows.Viewers.MassTags.MassTagDetail"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:proteinViewers="clr-namespace:Manassa.Windows.Viewers.Proteins"  
-             xmlns:converters="clr-namespace:Manassa.Converters"           
+             xmlns:proteinViewers="clr-namespace:MultiAlign.Windows.Viewers.Proteins"  
+             xmlns:converters="clr-namespace:MultiAlign.Converters"           
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="600">
 

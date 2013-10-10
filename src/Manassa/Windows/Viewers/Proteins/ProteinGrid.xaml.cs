@@ -17,7 +17,7 @@ using PNNLOmics.Data.Features;
 using PNNLOmics.Data.MassTags;
 using PNNLOmics.Data;
 
-namespace Manassa.Windows
+namespace MultiAlign.Windows.Viewers.Proteins
 {
     /// <summary>
     /// Interaction logic for ClusterGrid.xaml
