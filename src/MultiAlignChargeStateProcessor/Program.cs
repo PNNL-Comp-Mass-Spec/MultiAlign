@@ -111,7 +111,7 @@ namespace MultiAlignChargeStateProcessor
                 {
                     clustermap.Add(feature.GroupID, feature.AbundanceSum);
                 }
-                idMapper.AppendFormat(",{0},{1},{2}\n\r", cluster.ID, feature.GroupID, feature.ID);
+                idMapper.AppendFormat("{0},{1},{2}\n\r", cluster.ID, feature.GroupID, feature.ID);
             }
 
             foreach (int did in m_ids)
@@ -170,8 +170,8 @@ namespace MultiAlignChargeStateProcessor
             {
                 if (args.Length < 2)
                 {
-                    Console.WriteLine("MultiAlignChargeStateProcessor databasePath chargeState");
-                    Console.WriteLine("\tThe cross-tab file will be named similar to the database path");
+                    Console.WriteLine("MultiAlignChargeStateProcessor databasePath chargeState crossTabPath [dataset List]");
+                    Console.WriteLine("\tThe cross-tab file will be placed in the same directory as the database path");
                     return 1;
                 }
 
@@ -182,6 +182,13 @@ namespace MultiAlignChargeStateProcessor
                 string crossPath = args[2];
                 string logPath      = Path.Combine(path, databaseName  + "_log.txt");
                 int chargeState     = Convert.ToInt32(args[1]);
+
+                List<string> datasetList = null;
+                if (args.Length == 4)
+                {
+                    datasetList = File.ReadAllLines(args[3]).ToList(); 
+                }
+
 
                 
                 NHibernateUtil.ConnectToDatabase(databasePath, false);
@@ -205,8 +212,47 @@ namespace MultiAlignChargeStateProcessor
                 
                 
                 Logger.PrintMessage(string.Format("Extracting Features"), true);
-                List<UMCLight> features = featureDao.FindByCharge(chargeState);                                
-                Logger.PrintMessage(string.Format("Found {0} features", features.Count), true);
+                List<UMCLight> tempFeatures = featureDao.FindByCharge(chargeState);                                
+                Logger.PrintMessage(string.Format("Found {0} features", tempFeatures.Count), true);
+
+
+                List<UMCLight> features = new List<UMCLight>();
+                if (datasetList != null)
+                {
+                    Dictionary<string, DatasetInformation> featuremap = new Dictionary<string, DatasetInformation>();
+                    foreach (DatasetInformation info in datasets)
+                    {
+                        featuremap.Add(info.DatasetName.ToLower(), info);                        
+                    }
+
+                    Dictionary<int, DatasetInformation> focusedDatasetList = new Dictionary<int, DatasetInformation>();
+                    foreach (string name in datasetList)
+                    {
+                        string key = name.ToLower();
+                        if (featuremap.ContainsKey(key))
+                        {
+                            Logger.PrintMessage("Using dataset: " + name);
+                            focusedDatasetList.Add(featuremap[key].DatasetId, featuremap[key]);
+                        }
+                        else
+                            throw new Exception("Didn't find the dataset required..." + name);
+                    }
+
+                    foreach (UMCLight feature in tempFeatures)
+                    {
+                        bool use = focusedDatasetList.ContainsKey(feature.GroupID);
+                        if (use)
+                        {
+                            features.Add(feature);
+                        }
+                    }
+
+                    Logger.PrintMessage(string.Format("Found {0} filtered features for dataset list", features.Count), true);
+                }
+                else
+                {
+                    features = tempFeatures;
+                }
 
                 // Handle logging progress.
                 clusterer.Progress      += new EventHandler<PNNLOmics.Algorithms.ProgressNotifierArgs>(clusterer_Progress);
