@@ -264,9 +264,7 @@ namespace MultiAlign.Windows.Wizard
         }
 
         private void SelectAllButton_Click(object sender, RoutedEventArgs e)
-        {
-
-            
+        {            
             MainDatasetGrid.SelectAll();
         }
 

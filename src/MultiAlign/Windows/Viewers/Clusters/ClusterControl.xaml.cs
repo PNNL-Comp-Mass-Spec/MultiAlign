@@ -53,9 +53,12 @@ namespace MultiAlign.Windows.Viewers.Clusters
             ClusterTolerances.RetentionTime = .03;
 
             m_featureImageSaveDialog        = new System.Windows.Forms.SaveFileDialog();
-            Binding binding                 = new Binding("SelectedFeature");
+            
+            
+            /*Binding binding                 = new Binding("SelectedFeature");
             binding.Source                  = m_featureGrid;
             SetBinding(FeatureProperty, binding);
+            */
 
             m_sicChart.ViewPortChanged      += new PNNLControls.ViewPortChangedHandler(m_sicChart_ViewPortChanged);
             m_sicChart.ChartPointPressed    += new System.EventHandler<SelectedPointEventArgs>(m_sicChart_ChartPointPressed);     
@@ -275,7 +278,7 @@ namespace MultiAlign.Windows.Viewers.Clusters
                         return x.Scan.CompareTo(y.Scan);
                     });
                     thisSender.LoadMsSpectrum(feature.MSFeatures[0]);
-                    thisSender.m_msFeatureGrid.Features = feature.MSFeatures;
+                   // thisSender.m_msFeatureGrid.Features = feature.MSFeatures;
                 }
             }
         }
@@ -401,7 +404,7 @@ namespace MultiAlign.Windows.Viewers.Clusters
                 // Make sure that if a new feature is selected that we update the feature list.
                 if (matchedCluster.Cluster.Features.Count > 0)
                 {
-                    thisSender.m_featureGrid.SelectedFeature = matchedCluster.Cluster.Features[0];
+                   // thisSender.m_featureGrid.SelectedFeature = matchedCluster.Cluster.Features[0];
                 }
                 thisSender.m_adjustingFeaturePlots = false;
             }
@@ -486,11 +489,11 @@ namespace MultiAlign.Windows.Viewers.Clusters
             //m_profileChart.MainCluster      = matchedCluster;
             //m_profileChart.UpdateCharts(true);
             
-            m_featureGrid.Features          = cluster.Features;
+           //  m_featureGrid.Features          = cluster.Features;
 
             // Load the matching data.
-            List<ClusterToMassTagMap> tagMatches       = matchedCluster.ClusterMatches;            
-            m_masstagGrid.MassTags = tagMatches;
+            //List<ClusterToMassTagMap> tagMatches       = matchedCluster.ClusterMatches;            
+            //m_masstagGrid.MassTags = tagMatches;
 
             // Then we find all the nearby clusters
             double massPpm  = ClusterTolerances.Mass;
@@ -524,7 +527,7 @@ namespace MultiAlign.Windows.Viewers.Clusters
                 matchedOtherCluster.Cluster.Features.Clear();
                 matchedOtherCluster.Cluster.ReconstructUMCCluster(Providers, false, false);
             }            
-            m_clusterGrid.Clusters = otherClusterMatches;
+           // m_clusterGrid.Clusters = otherClusterMatches;
 
 
 

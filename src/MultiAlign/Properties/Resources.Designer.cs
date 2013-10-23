@@ -73,6 +73,16 @@ namespace MultiAlign.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap database_32 {
+            get {
+                object obj = ResourceManager.GetObject("database_32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap folder_default {
             get {
                 object obj = ResourceManager.GetObject("folder_default", resourceCulture);
@@ -146,6 +156,26 @@ namespace MultiAlign.Properties {
         internal static System.Drawing.Bitmap repeater {
             get {
                 object obj = ResourceManager.GetObject("repeater", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap server_32 {
+            get {
+                object obj = ResourceManager.GetObject("server_32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap text_file_3_32 {
+            get {
+                object obj = ResourceManager.GetObject("text_file_3_32", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

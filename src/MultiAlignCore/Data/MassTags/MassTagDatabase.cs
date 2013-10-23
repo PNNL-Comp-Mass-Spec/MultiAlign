@@ -26,6 +26,14 @@ namespace MultiAlignCore.Data.MassTags
         }
 
 
+        public MassTagDatabase(MassTagDatabase database, int requiredObservations):
+            this()
+        {
+            Name                    = database.Name;
+            List<MassTagLight> tags = database.MassTags.Where(x => x.ObservationCount >= requiredObservations).ToList();
+            AddMassTagsAndProteins(tags, database.Proteins);
+        }
+
         #region Properties
 
         /// <summary>

@@ -7,10 +7,6 @@ namespace MultiAlignCore.Data.MassTags
     public enum MassTagDatabaseFormat
     {
         /// <summary>
-        /// Local MTDB.
-        /// </summary>
-        Access,
-        /// <summary>
         /// MTS enabled MTDB
         /// </summary>
         SQL,
@@ -25,7 +21,11 @@ namespace MultiAlignCore.Data.MassTags
         /// <summary>
         /// Database built from a collection of samples using clusters.
         /// </summary>
-        MetaSample
+        MetaSample,
+        /// <summary>
+        /// Ape enabled databases
+        /// </summary>
+        APE
     }
 
 }

@@ -1,8 +1,12 @@
 ﻿<UserControl x:Class="MultiAlign.Windows.Wizard.PerformAnalysisControl"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"             
         xmlns:maConverters="clr-namespace:MultiAlign.Converters"
-        xmlns:ui="clr-namespace:MultiAlign.Windows" mc:Ignorable="d" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" d:DesignHeight="330" d:DesignWidth="615">
+        xmlns:wizardViews="clr-namespace:MultiAlign.Windows.Wizard"              
+        mc:Ignorable="d" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        d:DesignHeight="330" d:DesignWidth="615">
     <UserControl.Resources>
         <maConverters:DatasetCountConverter     x:Key="DatasetCountConverter" />
         <maConverters:DatasetSelectedConverter  x:Key="DatasetSelectedConverter" />
@@ -25,7 +29,7 @@
                 Style="{DynamicResource ResourceKey=HidenTabItem}"
                 Header="Dataset Selection"
                 IsSelected="{Binding Path=CurrentStep, Converter={StaticResource ResourceKey=DatasetSelection}}">
-                <ui:DatasetSelection
+                <wizardViews:DatasetSelection
                     x:Name="DatasetSelectionControl"
                     Analysis="{Binding  
                                 Path=AnalysisConfiguration.Analysis,
@@ -37,7 +41,7 @@
                 Style="{DynamicResource ResourceKey=HidenTabItem}"
                 Header="Baseline Selection"
                 IsSelected="{Binding Path=CurrentStep, Converter={StaticResource ResourceKey=BaselineStep}}">
-                <ui:SelectBaselinesAndOptions
+                <wizardViews:SelectBaselinesAndOptions
                     Analysis="{Binding  
                                 Path=AnalysisConfiguration.Analysis,
                                 RelativeSource={RelativeSource AncestorType={x:Type UserControl}},
@@ -48,7 +52,7 @@
                 Style="{DynamicResource ResourceKey=HidenTabItem}"
                 Header="Options Selection"
                 IsSelected="{Binding Path=CurrentStep, Converter={StaticResource ResourceKey=OptionsSelection}}">
-                <ui:AnalysisOptionsView
+                <wizardViews:AnalysisOptionsView
                     Options="{Binding Path=AnalysisConfiguration.Analysis.Options, Mode=TwoWay, NotifyOnSourceUpdated=True}"
                     />
             </TabItem>
@@ -56,12 +60,12 @@
                 Style="{DynamicResource ResourceKey=HidenTabItem}"
                 Header="Name"
                 IsSelected="{Binding Path=CurrentStep, Converter={StaticResource ResourceKey=Naming}}">
-                <ui:AnalysisNaming
+                <wizardViews:AnalysisNaming
                     AnalysisConfiguration="{Binding  
                                 Path=AnalysisConfiguration,
                                 RelativeSource={RelativeSource AncestorType={x:Type UserControl}},
                                 UpdateSourceTrigger=PropertyChanged}"
-                    ></ui:AnalysisNaming>
+                    ></wizardViews:AnalysisNaming>
             </TabItem>
         </TabControl>
 

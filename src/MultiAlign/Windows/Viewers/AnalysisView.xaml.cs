@@ -13,6 +13,7 @@ using PNNLOmics.Data.Features;
 using MultiAlignCore.Algorithms.Features;
 using System.Collections.ObjectModel;
 using MultiAlign.ViewModels;
+using MultiAlign.IO;
 
 namespace MultiAlign.Windows.Viewers
 {
@@ -28,14 +29,13 @@ namespace MultiAlign.Windows.Viewers
         public AnalysisView()
         {
             InitializeComponent();
-
-            m_analysis  = null;
-            DataContext = this;
+            UsesDriftTime   = false;
+            m_analysis      = null;
+            DataContext     = this;
 
             Binding binding  = new Binding("Viewport");
             binding.Source   = m_clusterControl;
             SetBinding(ViewportProperty, binding);
-
         }
 
         public bool UsesDriftTime
@@ -47,8 +47,7 @@ namespace MultiAlign.Windows.Viewers
         // Using a DependencyProperty as the backing store for UsesDriftTime.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty UsesDriftTimeProperty =
             DependencyProperty.Register("UsesDriftTime", typeof(bool), typeof(AnalysisView), new UIPropertyMetadata(true));
-
-
+        
         /// <summary>
         /// Gets or sets the Analysis
         /// </summary>
@@ -76,10 +75,9 @@ namespace MultiAlign.Windows.Viewers
                     HasMsMs   = (count > 0);
 
                     HasIdentifications = (m_massTagViewer.MatchedTags.Count > 0);
-
-                    m_clusterGrid.Clusters = clusters.Item1;                   
+                   
                     m_clusterPlot.SetClusters(value.Clusters);
-                    //m_clusterTree.SetClusters(clusters.Item1);
+                    m_clusterTree.SetClusters(clusters.Item1);
                     
                     /// 
                     /// Cache the clusters so that they can be readily accessible later on.
@@ -88,6 +86,9 @@ namespace MultiAlign.Windows.Viewers
                     ///                     
                     FeatureCacheManager<UMCClusterLightMatched>.SetFeatures(clusters.Item1);
                     FeatureCacheManager<MassTagToCluster>.SetFeatures(clusters.Item2);
+
+
+                    SingletonDataProviders.Providers = m_analysis.DataProviders;
 
                     m_clusterControl.Providers  = m_analysis.DataProviders;
                     m_massTagViewer.Providers   = m_analysis.DataProviders;

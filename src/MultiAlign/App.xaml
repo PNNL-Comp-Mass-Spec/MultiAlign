@@ -28,32 +28,26 @@
             </Setter>
         </Style>
         <Style x:Key="SimpleToggleButtonStyle" TargetType="ToggleButton">
-            <Setter Property="FontFamily"
-            Value="Arial Narrow" />
-            <Setter Property="FontSize" Value="16" />
-            <Setter Property="Width" Value="50"/>
-            <Setter Property="Height" Value="32"/>
-            <Setter Property="Margin" Value="3"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="BorderBrush" Value="#FF2743E2"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="HorizontalAlignment" Value="Left"/>
-            <Setter Property="VerticalAlignment" Value="Top"/>
-            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontFamily"   Value="Arial Narrow" />
+            <Setter Property="FontSize"     Value="16" />
+            <Setter Property="Width"        Value="50"/>
+            <Setter Property="Height"       Value="32"/>
+            <Setter Property="Margin"       Value="3"/>
+            <Setter Property="Cursor"       Value="Hand"/>
+            <Setter Property="BorderBrush"  Value="#FF1733D2"/>
+            <Setter Property="BorderThickness"      Value="1"/>
+            <Setter Property="HorizontalAlignment"  Value="Left"/>
+            <Setter Property="VerticalAlignment"    Value="Top"/>
+            <Setter Property="Foreground"           Value="White"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ToggleButton">
-                        <Border x:Name="Border" Background="#FFB0B0B0 ">
+                        <Border x:Name="Border" Background="#FF1733D2 ">
                             <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center" />
                         </Border>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
-            <Style.Triggers>
-                <Trigger Property="IsChecked" Value="True">
-                    <Setter Property="Content" Value="Hide Details"/>
-                </Trigger>
-            </Style.Triggers>
         </Style>
         <Style x:Key="HyperLinkButtonStyle" TargetType="Button">
             <Setter Property="FontFamily"

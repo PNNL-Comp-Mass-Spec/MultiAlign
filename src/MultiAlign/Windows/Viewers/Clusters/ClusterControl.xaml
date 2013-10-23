@@ -5,9 +5,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:wf="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"             
              xmlns:pnnlCharts="clr-namespace:PNNLControls.Drawing.Charting;assembly=PNNLControls"
-             xmlns:maCharts="clr-namespace:MultiAlignCustomControls.Charting;assembly=MultiAlignCustomControls"                   
-             xmlns:maWindows="clr-namespace:MultiAlign.Windows"                   
-             xmlns:featureViewers="clr-namespace:MultiAlign.Windows.Viewers.Features"          
+             xmlns:maCharts="clr-namespace:MultiAlignCustomControls.Charting;assembly=MultiAlignCustomControls"                                               
+             xmlns:featureViews="clr-namespace:MultiAlign.Windows.Viewers.Features"          
+             xmlns:clusterViews="clr-namespace:MultiAlign.Windows.Viewers.Clusters"         
+             xmlns:spectraViews="clr-namespace:MultiAlign.Windows.Viewers.Spectra"          
+             xmlns:massTagViews="clr-namespace:MultiAlign.Windows.Viewers.MassTags"       
              xmlns:converters="clr-namespace:MultiAlign.Converters"
              mc:Ignorable="d"          
              x:Name="myControl" 
@@ -31,6 +33,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid
+            Grid.Column="2"
             Grid.Row="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
@@ -92,64 +95,17 @@
                 Grid.Column="0"
                 Grid.ColumnSpan="3"
                 Grid.Row="2">
-                <TabItem 
-                Style="{DynamicResource ResourceKey=SimpleTabItem}"
-                Header="Features">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="50*"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="50*"/>
-                        </Grid.RowDefinitions>
-                        
-                        <featureViewers:FeatureGrid
-                            Grid.Row="0"
-                            x:Name="m_featureGrid"/>
-
-                        <GridSplitter
-                        Grid.Row="1"
-                        Grid.Column="0"                
-                        Height="3"
-                        HorizontalAlignment="Stretch"
-                        VerticalAlignment="Stretch"                                
-                        />
-                        <maWindows:MsFeatureGrid 
-                            Grid.Row="2"
-                            x:Name="m_msFeatureGrid"/>
-                    </Grid>
-                </TabItem>
                 <TabItem
-                Style="{DynamicResource ResourceKey=SimpleTabItem}"
+                            Style="{DynamicResource ResourceKey=SimpleTabItem}"
                             Header="Nearby Clusters"
                             Margin="1,1,1,1">
-                    <maWindows:ClusterGrid
-                                UsesDriftTime="{Binding Path=UsesDriftTime, NotifyOnSourceUpdated=True}"
-                                x:Name="m_clusterGrid" />
+                    <clusterViews:ClusterTree x:Name="m_nearbyClusterTree"/>                    
                 </TabItem>
-                <TabItem
-                            
-                Style="{DynamicResource ResourceKey=SimpleTabItem}"
-                            Header="AMT Tags"
+                <TabItem                            
+                            Style="{DynamicResource ResourceKey=SimpleTabItem}"
+                            Header="Identifications"
                             Margin="1,1,1,1">
-                    <Grid>
-                        <Grid.RowDefinitions>
-
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                        </Grid.ColumnDefinitions>
-                        <maWindows:ClusterToMassTagGrid
-                                    Grid.Column="0"
-                                    x:Name="m_masstagGrid" />
-
-                        <maWindows:MassTagControl
-                                Grid.Column="1"
-                                UsesDriftTime="{Binding Path=UsesDriftTime, 
-                                RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
-                                x:Name="m_massTagDisplay"
-                                MassTag="{Binding Mode=OneWay, ElementName=m_massTagGrid, Path=SelectedTag}"/>
-                    </Grid>
+                    
                 </TabItem>
 
                 <!--<TabItem 
@@ -168,8 +124,7 @@
                 <TabItem 
                 Style="{DynamicResource ResourceKey=SimpleTabItem}"
                 Header="MS/MS">
-                    <maWindows:MsMsGrid
-                    x:Name="m_msmsGrid"/>
+                    <spectraViews:MsMsGrid x:Name="m_msmsGrid"/>
                 </TabItem>
             </TabControl>
         </Grid>
@@ -184,6 +139,7 @@
        
         <WrapPanel
                         Grid.Row="2"
+                        Grid.Column="1"
                         Margin="3,3,3,3"
                         Grid.ColumnSpan="3">
             <Button                                 
@@ -201,7 +157,7 @@
 
         <Grid
             Grid.Row="0"
-            Grid.Column="2">
+            Grid.Column="0">
 
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>

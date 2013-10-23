@@ -4,11 +4,29 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"              
              xmlns:viewModels="clr-namespace:MultiAlign.ViewModels"
+             xmlns:converters ="clr-namespace:MultiAlign.Converters"             
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <converters:DoubleToStringConverter x:Key="DoubleConverter"/>
+        <converters:IntToStringConverter    x:Key="IntConverter"/>
+    </UserControl.Resources>
     <Grid>
-        <TreeView ItemsSource="{Binding Clusters}">
-            <TreeView.ItemContainerStyle>    
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>            
+        </Grid.RowDefinitions>
+        <Border
+                 BorderThickness="1"
+                 BorderBrush="LightGray"            
+                 Margin="5"
+                 Grid.Row="0">                    
+            <TreeView 
+                  Margin="5"
+                  ItemsSource="{Binding Clusters}"
+                  VirtualizingStackPanel.IsVirtualizing="True"
+                  VirtualizingStackPanel.VirtualizationMode="Recycling"
+                  >
+            <TreeView.ItemContainerStyle>
                 <Style TargetType="{x:Type TreeViewItem}">
                     <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
                     <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
@@ -21,25 +39,189 @@
                 </Style>
             </TreeView.ItemContainerStyle>
             <TreeView.Resources>
+                
+                <!-- Cluster View Model --> 
                 <HierarchicalDataTemplate 
-                  DataType="{x:Type viewModels:UMCClusterTreeViewItemModel}" 
+                  DataType="{x:Type viewModels:UMCClusterViewModel}" 
                   ItemsSource="{Binding Features}">
-                  <StackPanel Orientation="Horizontal">                    
-                    <TextBlock Text="{Binding ClusterId}" />
-                  </StackPanel>
+                        <Border CornerRadius="2" 
+                            BorderThickness="1"
+                            HorizontalAlignment="Stretch" 
+                            Padding="3" 
+                            Margin="3" 
+                            BorderBrush="#FFCCCCCC">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="48"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="32"/>
+                                    <ColumnDefinition Width="20*"/>
+                                    <ColumnDefinition Width="80*"/>
+                                </Grid.ColumnDefinitions>
+                                <Image
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    Width="16"
+                                    Height="16"
+                                    Source="/MultiAlign;component/Resources/molecule.png"/>
+                                
+                                <Label   
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    FontSize="12"   
+                                    HorizontalContentAlignment="Center"  
+                                    VerticalContentAlignment="Center"
+                                    Content="{Binding Path=ClusterId}" />
+                                <StackPanel   
+                                    Grid.Row="1"
+                                    Grid.Column="2"
+                                    Orientation="Horizontal">   
+                                    <Label         >
+                                        Dataset Count
+                                    </Label>
+                                    <Label   
+                                        FontSize="12"                                                                    
+                                        Content="{Binding Path=DatasetMemberCount}" />
+                                </StackPanel>
+                                <StackPanel   
+                                        Grid.Row="2"
+                                        Grid.Column="2"
+                                        Orientation="Horizontal">   
+                                    <Label          
+                                        Margin="5">
+                                        Feature Count
+                                    </Label>
+                                    <Label   
+                                        FontSize="12"   
+                                        Margin="5"                                                                       
+                                        Content="{Binding Path=FeatureCount}" />
+                                </StackPanel>
+                                <StackPanel   
+                                        Grid.Row="3"
+                                        Grid.Column="2"
+                                        Orientation="Horizontal">
+                                    <Label        >
+                                        Match Count
+                                    </Label>
+                                    <Label   
+                                        FontSize="12"                                                                    
+                                        Content="{Binding Path=MatchCount}" />
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+               </HierarchicalDataTemplate>
+
+                <!-- LCMS Features -->                 
+                <HierarchicalDataTemplate 
+                  DataType="{x:Type viewModels:UMCCollectionTreeViewModel}" 
+                  ItemsSource="{Binding Features}">
+                        <Label>Features</Label>
                 </HierarchicalDataTemplate>
 
+               
+
+                <!-- Mass View Model --> 
                 <HierarchicalDataTemplate 
-                  DataType="{x:Type viewModels:UMCTreeViewViewModel}" 
-                  ItemsSource="{Binding Features}"
-                  >
-                  <StackPanel Orientation="Horizontal">
-                    <Image Width="16" Height="16" 
-                      Margin="3,0" Source="Images\State.png" />
-                    <TextBlock Text="{Binding FeatureId}" />
-                  </StackPanel>
+                  DataType="{x:Type viewModels:MassTagMatchViewModel}" 
+                  ItemsSource="{Binding Matches}">
+                    <Border CornerRadius="2" BorderThickness="1" HorizontalAlignment="Stretch" Padding="3" Margin="3" BorderBrush="#FFCCCCCC">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="32"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Image
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Width="16"
+                                Height="16"
+                                Source="/MultiAlign;component/Resources/molecule.png"
+                                />
+                            <Label
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                Margin="5"
+                                >
+                                Cluster ID:
+                            </Label>
+                            <TextBlock 
+                                Grid.Row="0"
+                                Grid.Column="2"
+                                FontSize="14"   
+                                Margin="5"
+                                HorizontalAlignment="Stretch">
+                                <TextBlock.Text>                                                            
+                                        <Binding Path="Name" />                    
+                                </TextBlock.Text>
+                            </TextBlock>
+
+                            <Image
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                Width="16"
+                                Height="16"
+                                Source="/MultiAlign;component/Resources/molecule.png"
+                                />
+                            <Label
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                Margin="5"
+                                >
+                                Cluster ID:
+                            </Label>
+                            <TextBlock 
+                                Grid.Row="1"
+                                Grid.Column="2"
+                                FontSize="14"   
+                                Margin="5"
+                                HorizontalAlignment="Stretch">
+                                <TextBlock.Text>                                                            
+                                        <Binding Path="Name" />                    
+                                </TextBlock.Text>
+                            </TextBlock>
+
+
+                            <Image
+                                Grid.Row="2"
+                                Grid.Column="0"
+                                Width="16"
+                                Height="16"
+                                Source="/MultiAlign;component/Resources/molecule.png"
+                                />
+                            <Label
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                Margin="5"
+                                >
+                                STAC
+                            </Label>
+                            <TextBlock 
+                                Grid.Row="2"
+                                Grid.Column="2"
+                                FontSize="14"   
+                                Margin="5"
+                                HorizontalAlignment="Stretch">
+                                <TextBlock.Text>                                                            
+                                        <Binding Path="Name" />                    
+                                </TextBlock.Text>
+                            </TextBlock>
+                        </Grid>
+                    </Border>
                 </HierarchicalDataTemplate>
-              </TreeView.Resources>
+                
+            </TreeView.Resources>
         </TreeView>
+        </Border>
     </Grid>
 </UserControl>
+    
+    
+    
+    

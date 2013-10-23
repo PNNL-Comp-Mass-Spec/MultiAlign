@@ -6,6 +6,8 @@ using MultiAlignCore.IO.MTDB;
 using MultiAlignCore.Data;
 using System.IO;
 using MultiAlign.Data.States;
+using MultiAlignCore.IO.InputFiles;
+using MultiAlignCore.Data.MassTags;
 
 namespace MultiAlign.Data
 {
@@ -91,30 +93,29 @@ namespace MultiAlign.Data
 
         private static bool ValidateBaseline(MultiAlignAnalysis analysis, ref string errorMessage)
         {
-            string databasePath = analysis.Options.MassTagDatabaseOptions.DatabaseFilePath;
+            
             bool isStepValid = true;
 
             if (analysis.Options.AlignmentOptions.IsAlignmentBaselineAMasstagDB)
             {
-                switch (analysis.Options.MassTagDatabaseOptions.DatabaseType)
+                InputDatabase database = analysis.MetaData.Database;
+                string databasePath = analysis.MetaData.Database.DatabaseName;
+
+                switch (database.DatabaseFormat)
                 {
-                    case MassTagDatabaseType.None:
+                    case MassTagDatabaseFormat.None:
                         errorMessage = "No database was selected.";
                         isStepValid = false;
                         break;
-                    case MassTagDatabaseType.SQL:
-                        if (analysis.Options.MassTagDatabaseOptions.DatabaseName == null || analysis.Options.MassTagDatabaseOptions.Server == null)
+                    case MassTagDatabaseFormat.SQL:
+                        if (database.DatabaseName == null || database.DatabaseServer == null)
                         {
                             isStepValid = false;
                             errorMessage = "The database or server was not set.";
                         }
-                        break;
-                    case MassTagDatabaseType.ACCESS:
-                        errorMessage = "Invalid database type.";
-                        isStepValid = false;
-                        break;
-                    case MassTagDatabaseType.APE:
-                    case MassTagDatabaseType.SQLite:
+                        break;                    
+                    case MassTagDatabaseFormat.APE:
+                    case MassTagDatabaseFormat.Sqlite:
                         if (databasePath == null)
                         {
                             errorMessage = "No MTDB database file was selected.";
@@ -129,7 +130,7 @@ namespace MultiAlign.Data
                             }
                         }
                         break;
-                    case MassTagDatabaseType.MetaSample:
+                    case MassTagDatabaseFormat.MetaSample:
                         errorMessage = "Invalid database type.";
                         isStepValid = false;
                         break;

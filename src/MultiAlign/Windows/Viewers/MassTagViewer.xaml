@@ -3,9 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:massTagViews="clr-namespace:MultiAlign.Windows.MassTags"
+             xmlns:massTagViews="clr-namespace:MultiAlign.Windows.Viewers.MassTags"
              xmlns:maCharts="clr-namespace:MultiAlignCustomControls.Charting;assembly=MultiAlignCustomControls"
              xmlns:converters="clr-namespace:MultiAlign.Converters"
+             xmlns:proteinViews="clr-namespace:MultiAlign.Windows.Viewers.Proteins"
              mc:Ignorable="d" 
              d:DesignHeight="598" d:DesignWidth="920">
     <UserControl.Resources>
@@ -55,7 +56,7 @@
                                 x:Name="m_massTagCountNameLabel">                            
                             </Label>
                         </WrapPanel>
-                        <maWindows:MassTagGrid
+                        <massTagViews:MassTagGrid
                             DataGridExpandMode="Collapsed"
                             x:Name="m_massTagGrid"            
                             />
@@ -75,8 +76,8 @@
                                x:Name="AllProteinsLabel">
                         </Label>
                     </WrapPanel>
-                    
-                    <maWindows:ProteinGrid
+
+                    <proteinViews:ProteinGrid
                         x:Name="m_proteinGrid"            
                         />
                 </DockPanel>
@@ -132,7 +133,7 @@
                     Width="200"
                     Style="{DynamicResource ResourceKey=SimpleTabItem}"
                     Header="Selected Mass Tag Detail">
-                <maWindows:MassTagControl
+                <massTagViews:MassTagControl
                     UsesDriftTime="{Binding Path=UsesDriftTime, 
                                             RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
                     x:Name="m_massTagDisplay"

@@ -22,16 +22,9 @@ namespace MultiAlignCore.IO.MTDB
 				MinimumPMTScore		            = 1; 
 				NETValType			            = 0; //-- 0 to use GANET values, 1 to use PNET values
 				MinimumDiscriminant		        = 0;
-				PeptideProphetVal	            = 0.5; 
-				Server				            = "albert"; 
-				DatabaseName			        = "";
-                DatabaseFilePath                = "";
-				UserID				            = "mtuser"; 
-				Password				        = "mt4fun"; 
+				PeptideProphetVal	            = 0.5; 		
 				ExperimentExclusionFilter	    = ""; 
-				ExperimentFilter			    = "";
-				DatabaseType				    = MassTagDatabaseType.None;
-            
+				ExperimentFilter			    = "";				            
         }
 
 
@@ -120,62 +113,7 @@ namespace MultiAlignCore.IO.MTDB
             get;
             set;
         }
-
-
-        [Description("Database Type")]
-        [Browsable(false)]        
-        public MassTagDatabaseType DatabaseType
-        {
-            get;
-            set;
-        }
-
-        private string m_databaseFilePath;
-        [Description("Database File Path")]
-        [Browsable(false)]
-        public string DatabaseFilePath
-        {
-            get { return m_databaseFilePath; }
-            set 
-            {
-                if (m_databaseFilePath != value)
-                {
-                    m_databaseFilePath = value;
-                    OnNotify("DatabaseFilePath");
-                }
-            }
-        }
-
-        [Description("Database Name")]
-        [Browsable(false)]
-        public string DatabaseName
-        {
-            get;
-            set;
-        }
-
-        [Description("Server Name")]
-        [Browsable(false)]
-        public string Server
-        {
-            get;
-            set;
-        }
-
-        [Browsable(false)]				
-        public string UserID
-        {
-            get;
-            set;
-        }
-        [Browsable(false)]
-        public string Password
-        {
-            get;
-            set;
-        }
-
-
+       
         private void OnNotify(string name)
         {
             if (PropertyChanged != null)

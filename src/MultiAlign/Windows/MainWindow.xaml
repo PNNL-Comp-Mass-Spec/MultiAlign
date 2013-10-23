@@ -1,9 +1,9 @@
 ﻿<Window x:Class="MultiAlign.Windows.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
-        xmlns:MultiAlign="clr-namespace:MultiAlign.Windows"
-        xmlns:maConverters="clr-namespace:MultiAlign.Converters"
-        
+        xmlns:wizardViews="clr-namespace:MultiAlign.Windows.Wizard"        
+        xmlns:viewerViews="clr-namespace:MultiAlign.Windows.Viewers"
+        xmlns:maConverters="clr-namespace:MultiAlign.Converters"        
         Title="MultiAlign"         
         Height="800" 
         Width="1200"
@@ -16,8 +16,10 @@
         <CommandBinding Command="BrowseHome" Executed="ShowGettingStarted_Executed"></CommandBinding>
         <CommandBinding Command="FirstPage" Executed="CurrentAnalysis_Executed"></CommandBinding>                        
     </Window.CommandBindings>
-    <Window.Resources>        
+    <Window.Resources>
         <BitmapImage x:Key="MannassaImage" UriSource="pack://application:,,,/Resources/MainIcon.png" />
+        <BitmapImage x:Key="DatabaseImage" UriSource="pack://application:,,,/Resources/database-32.png" />
+        <BitmapImage x:Key="ServerImage" UriSource="pack://application:,,,/Resources/server-32.png" />
         <BitmapImage x:Key="AlignmentIcon" UriSource="pack://application:,,,/Resources/AlignmentIcon.png" />
         <BitmapImage x:Key="FolderIcon" UriSource="pack://application:,,,/Resources/folder_default.png" />
         <BitmapImage x:Key="NewIcon" UriSource="pack://application:,,,/Resources/text_x_generic.png" />
@@ -80,31 +82,31 @@
             <TabItem
                 IsSelected="{Binding Path=StateModerator.CurrentViewState, Converter={StaticResource ResourceKey=HomeViewSelected}}"
                 Style="{DynamicResource ResourceKey=HidenTabItem}"   >
-                <MultiAlign:GettingStarted  
+                <viewerViews:GettingStarted  
                     x:Name="GettingStartedControl"
                     Visibility="{Binding Path=StateModerator.CurrentViewState, Converter={StaticResource ResourceKey=HomeState}}"
                     CurrentWorkspace="{Binding Path=CurrentWorkspace,                     
                                             RelativeSource={RelativeSource AncestorType={x:Type Window}}}">
-                    
-                </MultiAlign:GettingStarted>
+
+                </viewerViews:GettingStarted>
             </TabItem>
             <TabItem         
                 Style="{DynamicResource ResourceKey=HidenTabItem}"       
                 Header="New Analysis"
                 IsSelected="{Binding Path=StateModerator.CurrentViewState, Converter={StaticResource ResourceKey=SetupAnalysisViewStateSelected}}"
                 >
-                <MultiAlign:PerformAnalysisControl
+                <wizardViews:PerformAnalysisControl
                     x:Name="PerformAnalysisControl"                    
                     Visibility="{Binding Path=StateModerator.CurrentViewState, Converter={StaticResource ResourceKey=SetupAnalysisViewState}}"
                     >
-                </MultiAlign:PerformAnalysisControl>
+                </wizardViews:PerformAnalysisControl>
             </TabItem>
             <TabItem         
                 Style="{DynamicResource ResourceKey=HidenTabItem}"       
                 Header="Running Analysis"
                 IsSelected="{Binding Path=StateModerator.CurrentViewState, Converter={StaticResource ResourceKey=RunningAnalysisViewStateSelected}}"
                 >
-                <MultiAlign:AnalysisRunningControl     
+                <wizardViews:AnalysisRunningControl     
                     x:Name="RunningAnalysisControl"                    
                     AnalysisConfiguration="{Binding Path=AnalysisConfiguration, 
                                             ElementName=m_performAnalysisControl}"
@@ -113,14 +115,14 @@
                     Reporter="{Binding Path=Reporter, 
                                             RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
                     Visibility="{Binding Path=StateModerator.CurrentViewState, Converter={StaticResource ResourceKey=RunningAnalysisViewState}}">
-                </MultiAlign:AnalysisRunningControl>
+                </wizardViews:AnalysisRunningControl>
             </TabItem>
             <TabItem
                 Style="{DynamicResource ResourceKey=HidenTabItem}"
                 Header="Analysis"
                 IsSelected="{Binding Path=StateModerator.CurrentViewState, Converter={StaticResource ResourceKey=AnalysisViewSelected}}"
                 >
-                <MultiAlign:AnalysisView
+                <viewerViews:AnalysisView
                     x:Name="m_mainControl"/>
             </TabItem>
             <TabItem
@@ -128,7 +130,7 @@
                 Header="Loading"
                 IsSelected="{Binding Path=StateModerator.CurrentViewState, Converter={StaticResource ResourceKey=LoadingViewStateSelected}}"
                 >
-                <MultiAlign:LoadingAnalysisView/>
+                <viewerViews:LoadingAnalysisView/>
             </TabItem>
             <TabItem
                 Header="Main"

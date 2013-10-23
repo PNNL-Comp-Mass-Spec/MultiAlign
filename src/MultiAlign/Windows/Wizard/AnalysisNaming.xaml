@@ -3,49 +3,68 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              mc:Ignorable="d" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             d:DesignHeight="133" d:DesignWidth="395">
+             d:DesignHeight="448" d:DesignWidth="694">
     <Grid
         Background="White"
         Margin="5">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="72"/>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="96"/>
+            <ColumnDefinition Width="24"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="48"/>
+            <RowDefinition Height="48"/>
             <RowDefinition Height="48"/>
             <RowDefinition Height="48"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Label
-            Grid.Column="0">
-            Select the path for the data
+
+        <Label             
+            FontSize="24"
+            FontStyle="Italic"
+            Foreground="Gray"
+            HorizontalContentAlignment="Center"
+            Grid.Row="1"
+            Grid.Column="1">
+            First Select a Place To Save Your Data...
         </Label>
         <TextBox
+            FontSize="24"
+            Grid.Row="2"
+            HorizontalContentAlignment="Center"
             Text="{Binding Path=AnalysisConfiguration.AnalysisPath}"
             Margin="5"          
             Grid.Column="1"             
-            HorizontalContentAlignment="Stretch" />
+            />
         <Button
             x:Name="BrowseButton"
             Margin="5,5,5,5"
             Style="{DynamicResource ResourceKey=SimpleBrowseButtonStyle}"
             Grid.Column="2"
-            Grid.Row="0"
-            Width="100"
-            HorizontalAlignment="Left"
+            Grid.Row="2"
+            Width="72"
+            VerticalAlignment="Center"
+            HorizontalAlignment="Center"            
             Content="Browse" 
             Click="BrowseButton_Click" />
         <Label             
-            Grid.Row="1"
-            Grid.Column="0">
-            Give your analysis a name
+            FontSize="24"
+            FontStyle="Italic"
+            Foreground="Firebrick"
+            HorizontalContentAlignment="Center"
+            Grid.Row="3"
+            Grid.Column="1">
+            ...then give your analysis a name...
         </Label>
         <TextBox
+            FontSize="24"
             Text="{Binding Path=AnalysisConfiguration.AnalysisName}"
             Margin="5"   
-            Grid.Row="1"
+            Grid.Row="4"
             Grid.Column="1"             
-            HorizontalContentAlignment="Stretch" />
+            HorizontalContentAlignment="Center" />
     </Grid>
 </UserControl>

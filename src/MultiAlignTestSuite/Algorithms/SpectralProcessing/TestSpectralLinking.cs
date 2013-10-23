@@ -265,6 +265,50 @@ namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
             }
         }
 
+
+        [Test]
+        [TestCase(@"M:\data\proteomics\Applications\NCRR-falcon",
+                    "dist1-lcmsWarp.csv",                    
+                    NormalityTests.JacqueBera,
+                    Ignore = false)]
+        public void TestNormality(string basePath, string name, NormalityTests testType)
+        {
+            RootDataPath = basePath;
+
+            List<double> preDist = new List<double>();
+            List<double> postDist = new List<double>();
+
+            string[] lines = File.ReadAllLines(Path.Combine(basePath, name));
+            bool header = true;
+
+            Print(string.Format("TEST: {1} - {0}", name, testType));
+            Print("");
+
+            foreach (string line in lines)
+            {
+                if (!header)
+                {
+                    string[] stringData = line.Split(',');
+                    if (stringData.Length > 2)
+                    {
+                        double preValue = Convert.ToDouble(stringData[1]);
+                        double postValue = Convert.ToDouble(stringData[2]);
+
+                        preDist.Add(preValue);
+                        postDist.Add(postValue);
+                     }
+                }
+                header = false;
+            }
+
+            INormalityTest test = NormalityTestingFactory.CreateTests(testType);
+            HypothesisTestingData preTestData  = test.Test(preDist);
+            HypothesisTestingData postTestData = test.Test(postDist);
+            
+            Print(string.Format("Pre  {0} ", preTestData.PValue));
+            Print(string.Format("Post {0} ", postTestData.PValue));
+        }
+
         [Test]
         [TestCase(@"M:\data\proteomics\Applications\NCRR-falcon",
                     "dist1-lcmsWarp.csv",
@@ -305,7 +349,7 @@ namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
         {
             RootDataPath = basePath;
 
-            List<double> preDist = new List<double>();
+            List<double> preDist  = new List<double>();
             List<double> postDist = new List<double>();
 
             string[] lines  = File.ReadAllLines(Path.Combine(basePath, name));
@@ -382,7 +426,7 @@ namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
                 nIterations++;
                 shift += step;
             }
-
+            
             Histogram originalPreHistogram  = new Histogram(.002, -.05, .05, "pre-histogram");
             originalPreHistogram.AddData(preDist);
             Print("");

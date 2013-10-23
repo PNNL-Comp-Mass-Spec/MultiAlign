@@ -3,9 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:maWindows="clr-namespace:MultiAlign.Windows"
-             xmlns:converters="clr-namespace:MultiAlign.Converters"
-             
+             xmlns:spectraViews="clr-namespace:MultiAlign.Windows.Viewers.Spectra"
+             xmlns:converters="clr-namespace:MultiAlign.Converters"             
              xmlns:maCharts="clr-namespace:MultiAlignCustomControls.Charting;assembly=MultiAlignCustomControls"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
@@ -21,7 +20,7 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>                
         </Grid.ColumnDefinitions>
-        <maWindows:MsMsGrid                    
+        <spectraViews:MsMsGrid                    
                 Grid.Row="0"   
                 Grid.Column="0"
                 Grid.ColumnSpan="3"

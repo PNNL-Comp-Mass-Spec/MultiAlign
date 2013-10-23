@@ -3,7 +3,7 @@
                    assembly="MultiAlignCore"
                    namespace="MultiAlignCore.Data">
 
-	<class name="MSMSClusterMap" table="T_MSn_Clusters" lazy="false">
+	<class name="MSMSClusterMap" table="T_Msn_Clusters" lazy="false">
 		<composite-id>
       <key-property name="ClusterID"  column="Cluster_ID"  type="int" />
       <key-property name="MSMSID"      column="MSn_ID"  type="int" />

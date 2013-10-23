@@ -16,9 +16,21 @@ namespace MultiAlignCore.IO.InputFiles
             DatabaseServer      = null;
             DatabaseName        = null;
             LocalPath           = null;
-            DatabaseFormat      = MassTagDatabaseType.None;
+            DatabaseFormat      = MassTagDatabaseFormat.None;
+            
+			UserName        	= "mtuser"; 
+			Password			= "mt4fun";
         }
 
+        public InputDatabase(MassTagDatabaseFormat format):
+            this()
+        {
+            DatabaseFormat = format;
+        }
+
+        public string Organism    { get; set; }
+        public int    Jobs        { get; set; }
+        public string Description { get; set; }
         /// <summary>
         /// Gets or sets the database.
         /// </summary>
@@ -46,12 +58,15 @@ namespace MultiAlignCore.IO.InputFiles
         /// <summary>
         /// Gets or sets the database format.
         /// </summary>
-        public MassTagDatabaseType DatabaseFormat
+        public MassTagDatabaseFormat DatabaseFormat
         {
             get;
             set;
         }
-        
+
+        public string UserName { get; set; }
+        public string Password { get; set; }
+
         #region Methods
         /// <summary>
         /// Determines if the right combination of input settings are correct for specifying a MTDB.
@@ -63,7 +78,7 @@ namespace MultiAlignCore.IO.InputFiles
             bool useMTDB    = true;
 
 
-            if (DatabaseFormat == MassTagDatabaseType.SQL)
+            if (DatabaseFormat == MassTagDatabaseFormat.SQL)
             {
                 if (DatabaseName == null && DatabaseServer != null)
                 {
@@ -82,7 +97,7 @@ namespace MultiAlignCore.IO.InputFiles
                     if (LocalPath == null)
                     {
                         // No, we do not have a MTDB to use.
-                        DatabaseFormat = MassTagDatabaseType.None;
+                        DatabaseFormat = MassTagDatabaseFormat.None;
                         useMTDB = false;
                     }
                 }                

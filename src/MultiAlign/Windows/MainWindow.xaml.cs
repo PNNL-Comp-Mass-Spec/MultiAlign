@@ -39,12 +39,12 @@ namespace MultiAlign.Windows
             RunningAnalysisControl.AnalysisComplete   += new System.EventHandler(runningAnalysisControl_AnalysisComplete);
             PerformAnalysisControl.AnalysisQuit     += new System.EventHandler(m_performAnalysisControl_AnalysisQuit);
             PerformAnalysisControl.AnalysisStart    += new System.EventHandler(m_performAnalysisControl_AnalysisStart);
-            GettingStartedControl.RecentAnalysisSelected += new System.EventHandler<Windows.OpenAnalysisArgs>(m_gettingStarted_RecentAnalysisSelected);
+            GettingStartedControl.RecentAnalysisSelected += new System.EventHandler<OpenAnalysisArgs>(m_gettingStarted_RecentAnalysisSelected);
 
             // Bind the status to the status mediators.
             Binding binding = new Binding("Status");
             binding.Source  = ApplicationStatusMediator.Mediator;
-            binding.Mode    = BindingMode.TwoWay;
+            binding.Mode    = BindingMode.TwoWay; 
             SetBinding(StatusProperty, binding);
 
             // Update the titles.

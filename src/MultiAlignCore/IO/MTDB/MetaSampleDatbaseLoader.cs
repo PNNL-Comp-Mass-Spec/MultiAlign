@@ -19,6 +19,7 @@ namespace MultiAlignCore.IO.MTDB
         {
             MassTagDatabase database = new MassTagDatabase();
 
+            
             MAGEMetaSampleDatabaseSink sink = new MAGEMetaSampleDatabaseSink();
             using (DelimitedFileReader reader = new DelimitedFileReader())
             {

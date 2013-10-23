@@ -7,6 +7,7 @@ using MultiAlignCore.Data.MassTags;
 using MultiAlignCore.IO.MTDB;
 using NUnit.Framework;
 using PNNLOmics.Data.MassTags;
+using MultiAlignCore.IO.InputFiles;
 
 namespace MultiAlignTestSuite.IO.MTDB
 {
@@ -19,8 +20,10 @@ namespace MultiAlignTestSuite.IO.MTDB
         {
             MultiAlignAnalysis analysis                          = new MultiAlignAnalysis();
             analysis.Options.MassTagDatabaseOptions.OnlyLoadTagsWithDriftTime = true;
-            analysis.Options.MassTagDatabaseOptions.Server       = server;
-            analysis.Options.MassTagDatabaseOptions.DatabaseName = databaseName;
+
+            analysis.MetaData.Database = new InputDatabase(MassTagDatabaseFormat.SQL);            
+            analysis.MetaData.Database.DatabaseServer   = server;
+            analysis.MetaData.Database.DatabaseName     = databaseName;
 
             MassTagDatabaseLoader   loader      = new MTSMassTagDatabaseLoader(databaseName, server);
             loader.Options                      = analysis.Options.MassTagDatabaseOptions;
@@ -39,8 +42,10 @@ namespace MultiAlignTestSuite.IO.MTDB
         {
             MultiAlignAnalysis analysis                                         = new MultiAlignAnalysis();
             analysis.Options.MassTagDatabaseOptions.OnlyLoadTagsWithDriftTime   = false;
-            analysis.Options.MassTagDatabaseOptions.Server                      = server;
-            analysis.Options.MassTagDatabaseOptions.DatabaseName                = databaseName;
+
+            analysis.MetaData.Database = new InputDatabase(MassTagDatabaseFormat.SQL);
+            analysis.MetaData.Database.DatabaseServer = server;
+            analysis.MetaData.Database.DatabaseName = databaseName;
 
             MassTagDatabaseLoader loader    = new MTSMassTagDatabaseLoader(databaseName, server);
             loader.Options                  = analysis.Options.MassTagDatabaseOptions;

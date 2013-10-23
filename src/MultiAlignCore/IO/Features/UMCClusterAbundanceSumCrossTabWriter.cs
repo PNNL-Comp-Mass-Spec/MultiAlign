@@ -61,7 +61,7 @@ namespace MultiAlignCore.IO.Features
                 string mainHeader = "Cluster ID, Total Members, Dataset Members,  Tightness, Ambiguity";              
                 
                 // Make blank columns for clusters that dont have enough dta.
-                string blankColumns = ",,";
+                string blankColumns = ",";
 
                 // Map the dataset ID's to a list of numbers sorted from lowest to highest.
                 List<int> datasetIds = new List<int>();
@@ -129,7 +129,7 @@ namespace MultiAlignCore.IO.Features
                         }
                         else
                         {
-                            writer.WriteLine(builder.Append(",,,," + umcBuilder.ToString()));
+                            writer.WriteLine(builder.Append(",,,,," + umcBuilder.ToString()));
                         }
                     }
                     else

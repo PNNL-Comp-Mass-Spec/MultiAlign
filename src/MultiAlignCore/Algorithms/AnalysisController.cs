@@ -735,50 +735,30 @@ namespace MultiAlignCore.Algorithms
             {
                 switch (analysisSetupInformation.Database.DatabaseFormat)
                 {
-                    case MassTagDatabaseType.APE:
+                    case MassTagDatabaseFormat.APE:
                         Logger.PrintMessage("Using local APE Cache Mass Tag Database at location: ");
                         Logger.PrintMessage(string.Format("\tFull Path: {0}", analysisSetupInformation.Database.LocalPath));
                         Logger.PrintMessage(string.Format("\tDatabase Name: {0}", Path.GetFileName(analysisSetupInformation.Database.LocalPath)));
-
-                        m_config.Analysis.Options.MassTagDatabaseOptions.DatabaseFilePath   = analysisSetupInformation.Database.LocalPath;
-                        m_config.Analysis.Options.MassTagDatabaseOptions.Server             = analysisSetupInformation.Database.DatabaseServer;
-                        m_config.Analysis.Options.MassTagDatabaseOptions.DatabaseType       = MassTagDatabaseType.APE;
-                        break;   
-                    case MassTagDatabaseType.ACCESS:
-                        Logger.PrintMessage("Using local Access Mass Tag Database at location: ");
-                        Logger.PrintMessage(string.Format("\tFull Path: {0}", analysisSetupInformation.Database.LocalPath));
-                        Logger.PrintMessage(string.Format("\tDatabase Name: {0}", Path.GetFileName(analysisSetupInformation.Database.LocalPath)));
-
-                        m_config.Analysis.Options.MassTagDatabaseOptions.DatabaseFilePath = analysisSetupInformation.Database.LocalPath;
-                        m_config.Analysis.Options.MassTagDatabaseOptions.Server = analysisSetupInformation.Database.DatabaseServer;
-                        m_config.Analysis.Options.MassTagDatabaseOptions.DatabaseType = MassTagDatabaseType.ACCESS;
-                        break;
-                        
-                    case MassTagDatabaseType.SQL:
+                        m_config.Analysis.MetaData.Database = analysisSetupInformation.Database;
+                        break;                                               
+                    case MassTagDatabaseFormat.SQL:
                         Logger.PrintMessage("Using Mass Tag Database:");
                         Logger.PrintMessage(string.Format("\tServer:        {0}", analysisSetupInformation.Database.DatabaseServer));
                         Logger.PrintMessage(string.Format("\tDatabase Name: {0}", analysisSetupInformation.Database.DatabaseName));
-                        m_config.Analysis.Options.MassTagDatabaseOptions.DatabaseName = analysisSetupInformation.Database.DatabaseName;
-                        m_config.Analysis.Options.MassTagDatabaseOptions.Server = analysisSetupInformation.Database.DatabaseServer;
-                        m_config.Analysis.Options.MassTagDatabaseOptions.DatabaseType = MassTagDatabaseType.SQL;
+                        m_config.Analysis.MetaData.Database = analysisSetupInformation.Database;
                         break;
-                    case MassTagDatabaseType.SQLite:
+                    case MassTagDatabaseFormat.Sqlite:
                         Logger.PrintMessage("Using local Sqlite Mass Tag Database at location: ");
                         Logger.PrintMessage(string.Format("\tFull Path: {0}", analysisSetupInformation.Database.LocalPath));
                         Logger.PrintMessage(string.Format("\tDatabase Name: {0}", Path.GetFileName(analysisSetupInformation.Database.LocalPath)));
 
-                        m_config.Analysis.Options.MassTagDatabaseOptions.DatabaseFilePath = analysisSetupInformation.Database.LocalPath;
-                        m_config.Analysis.Options.MassTagDatabaseOptions.Server = analysisSetupInformation.Database.DatabaseServer;
-                        m_config.Analysis.Options.MassTagDatabaseOptions.DatabaseType = MassTagDatabaseType.SQLite;
+                        m_config.Analysis.MetaData.Database = analysisSetupInformation.Database;
                         break;
-                    case MassTagDatabaseType.MetaSample:
+                    case MassTagDatabaseFormat.MetaSample:
                         Logger.PrintMessage("Using local MetaSample Mass Tag Database at location: ");
                         Logger.PrintMessage(string.Format("\tFull Path: {0}", analysisSetupInformation.Database.LocalPath));
                         Logger.PrintMessage(string.Format("\tDatabase Name: {0}", Path.GetFileName(analysisSetupInformation.Database.LocalPath)));
-
-                        m_config.Analysis.Options.MassTagDatabaseOptions.DatabaseFilePath = analysisSetupInformation.Database.LocalPath;
-                        m_config.Analysis.Options.MassTagDatabaseOptions.Server = analysisSetupInformation.Database.DatabaseServer;
-                        m_config.Analysis.Options.MassTagDatabaseOptions.DatabaseType = MassTagDatabaseType.MetaSample;
+                        m_config.Analysis.MetaData.Database = analysisSetupInformation.Database;
                         break;
                 }
 
@@ -806,7 +786,7 @@ namespace MultiAlignCore.Algorithms
             }
             else
             {
-                m_config.Analysis.Options.MassTagDatabaseOptions.DatabaseType = MassTagDatabaseType.None;
+                m_config.Analysis.MetaData.Database                                      = analysisSetupInformation.Database;
                 m_config.Analysis.Options.AlignmentOptions.IsAlignmentBaselineAMasstagDB = false;
                 if (analysisSetupInformation.BaselineFile == null)
                 {
@@ -896,7 +876,11 @@ namespace MultiAlignCore.Algorithms
             }
             if (m_config.ExporterNames.CrossTabAbundance != null)
             {
-                UMCClusterAbundanceCrossTabWriter writer = new UMCClusterAbundanceCrossTabWriter(Path.Combine(m_config.AnalysisPath,
+                //UMCClusterAbundanceCrossTabWriter writer = new UMCClusterAbundanceCrossTabWriter(Path.Combine(m_config.AnalysisPath,
+                //                                                                                 m_config.ExporterNames.CrossTabAbundance));
+
+
+                UMCClusterAbundanceSumCrossTabWriter writerSumOnly = new UMCClusterAbundanceSumCrossTabWriter(Path.Combine(m_config.AnalysisPath,
                                                                                                  m_config.ExporterNames.CrossTabAbundance));
 
                 MultiAlignCore.Algorithms.FeatureFinding.AbundanceReportingType reporting    = MultiAlignCore.Algorithms.FeatureFinding.AbundanceReportingType.Sum;
@@ -906,15 +890,10 @@ namespace MultiAlignCore.Algorithms
                     reporting = m_config.Analysis.Options.ConsolidationOptions.AbundanceType;
                     umcAbundance = m_config.Analysis.Options.FeatureFindingOptions.UMCAbundanceReportingType;
                 }
-                writer.Consolidator = FeatureConsolidatorFactory.CreateConsolidator(reporting,
+                writerSumOnly.Consolidator = FeatureConsolidatorFactory.CreateConsolidator(reporting,
                                                                                     umcAbundance);
-
-                UMCClusterAbundanceSumCrossTabWriter writerSumOnly = new UMCClusterAbundanceSumCrossTabWriter(Path.Combine(m_config.AnalysisPath,
-                                                                                                 m_config.ExporterNames.CrossTabAbundance));
-                writerSumOnly.Consolidator = writer.Consolidator;
-
-                m_config.ClusterExporters.Add(writer);
-                m_config.ClusterExporters.Add(writerSumOnly);
+                
+                m_config.ClusterExporters.Add(writerSumOnly);                
             }
         }
         /// <summary>
@@ -1339,6 +1318,9 @@ namespace MultiAlignCore.Algorithms
             }
             else
             {
+                Logger.PrintMessage("Indexing Database for Faster Retrieval");
+                DatabaseIndexer.IndexClusters(config.AnalysisPath);
+
                 try
                 {
                     m_reportCreator.CreatePlotReport();

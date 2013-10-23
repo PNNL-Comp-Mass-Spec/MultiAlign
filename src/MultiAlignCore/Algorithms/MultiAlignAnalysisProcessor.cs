@@ -345,6 +345,11 @@ namespace MultiAlignCore.Algorithms
 
             RegisterProgressNotifier(aligner);
 
+            MassTagDatabase database = null;
+            if (config.Analysis.MassTagDatabase != null)
+            {
+                database = new MassTagDatabase(config.Analysis.MassTagDatabase, config.Analysis.Options.AlignmentOptions.MassTagObservationCount);
+            }
 
             FeatureDataAccessProviders providers = config.Analysis.DataProviders;
 
@@ -362,22 +367,22 @@ namespace MultiAlignCore.Algorithms
 
                     features = AlignDataset(features,
                                              baselineFeatures,
-                                             config.Analysis.MassTagDatabase,
+                                             database,
                                              config.Analysis.Options.AlignmentOptions,
                                              config.Analysis.Options.DriftTimeAlignmentOptions,
                                              alignmentData,
                                              aligner,
                                              dataset,
                                              baselineDataset);
-
-                   // MsMsAligner aligner2 = new MsMsAligner();
-                   // aligner2.AlignFeatures(baselineFeatures, features, config.Analysis.Options.AlignmentOptions);
-                    
                     providers.FeatureCache.AddAll(features);
                 }                        
             }
             DeRegisterProgressNotifier(aligner);
             UMCLoaderFactory.Status -= UMCLoaderFactory_Status;
+
+
+            Logger.PrintMessage("Indexing Database Features");
+            DatabaseIndexer.IndexFeatures(config.AnalysisPath);
         }
         /// <summary>
         /// Load a single dataset from the provider.
@@ -1399,14 +1404,13 @@ namespace MultiAlignCore.Algorithms
             // peak matching (but aligning to a reference dataset.
             if (m_config.Analysis.Options.AlignmentOptions.IsAlignmentBaselineAMasstagDB)
             {
-                UpdateStatus("Loading Mass Tag database from database:  " + m_config.Analysis.Options.MassTagDatabaseOptions.DatabaseName);
-                               
-                database = MTDBLoaderFactory.LoadMassTagDB(m_config.Analysis.Options.MassTagDatabaseOptions);
+                UpdateStatus("Loading Mass Tag database from database:  " + m_config.Analysis.MetaData.Database.DatabaseName);
+                database = MTDBLoaderFactory.LoadMassTagDB(m_config.Analysis.MetaData.Database, m_config.Analysis.Options.MassTagDatabaseOptions);
             }
-            else if (m_config.Analysis.Options.MassTagDatabaseOptions.DatabaseType != MassTagDatabaseType.None)
-            {                
-                UpdateStatus("Loading Mass Tag database from database:  " + m_config.Analysis.Options.MassTagDatabaseOptions.DatabaseName);
-                database = MTDBLoaderFactory.LoadMassTagDB(m_config.Analysis.Options.MassTagDatabaseOptions);
+            else if (m_config.Analysis.MetaData.Database != null && m_config.Analysis.MetaData.Database.DatabaseFormat != MassTagDatabaseFormat.None)
+            {
+                UpdateStatus("Loading Mass Tag database from database:  " + m_config.Analysis.MetaData.Database.DatabaseName);
+                database = MTDBLoaderFactory.LoadMassTagDB(m_config.Analysis.MetaData.Database, m_config.Analysis.Options.MassTagDatabaseOptions);
             }
             else
             {

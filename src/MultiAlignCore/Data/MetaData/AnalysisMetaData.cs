@@ -4,6 +4,7 @@ using MultiAlignCore.IO.InputFiles;
 using MultiAlignEngine;
 using System.ComponentModel;
 using System.Collections.ObjectModel;
+using MultiAlignCore.Data.MassTags;
 
 namespace MultiAlignCore.Data
 {
@@ -21,6 +22,13 @@ namespace MultiAlignCore.Data
             InputFileDefinition = null;
             ParameterFile       = null;
             FactorTreeNode      = null;
+            Database            = new InputDatabase(MassTagDatabaseFormat.None);
+        }
+
+        public InputDatabase Database
+        {
+            get;
+            set;
         }
 
         /// <summary>

@@ -85,7 +85,13 @@ namespace MultiAlignCore.Algorithms.Alignment
             }
         }
 
-
+        /// <summary>
+        /// Minimum number of observations to use for alignment.
+        /// </summary>
+        [ParameterFileAttribute("MassTagObservationCount", "Alignment")]
+        [Category("Filtering")]
+        [Description("Says how many LC-MS sample runs the mass tag must have been seen in.")]
+        public int MassTagObservationCount { get; set; }
         
         [Browsable(false)]
         public string AlignmentBaselineName { get; set; }

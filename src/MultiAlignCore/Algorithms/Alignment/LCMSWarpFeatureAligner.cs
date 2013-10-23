@@ -146,14 +146,14 @@ namespace MultiAlignCore.Algorithms.Alignment
                 return x.AbundanceSum.CompareTo(y.AbundanceSum);
             });
 
-            double percent  = alignmentOptions.TopFeatureAbundancePercent / 100;
+            double percent  = 1 - (alignmentOptions.TopFeatureAbundancePercent / 100);
             int total       = features.Count - Convert.ToInt32(features.Count * percent);
             long threshold  = features[Math.Min(features.Count - 1, Math.Max(0, total))].AbundanceSum;   
 
             // Filters features below a certain threshold.
             List<UMCLight> filteredFeatures = features.FindAll(delegate(UMCLight feature)
             {
-                return feature.AbundanceSum > threshold;
+                return feature.AbundanceSum >= threshold;
             });
 
             // Conver the features, and make a map, so that we can re-adjust the aligned values later.

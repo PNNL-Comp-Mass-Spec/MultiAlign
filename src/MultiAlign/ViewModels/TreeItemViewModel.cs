@@ -1,0 +1,84 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace MultiAlign.ViewModels
+{
+
+    /// <summary>
+    /// Base class for tree view items.
+    /// </summary>
+    public abstract class TreeItemViewModel : ViewModelBase
+    {
+        protected bool m_loaded;
+        /// <summary>
+        /// Flag indicating the model was expanded.
+        /// </summary>
+        protected bool m_isExpanded;
+        /// <summary>
+        /// Flag indicating the model was selected.
+        /// </summary>
+        protected bool m_isSelected;
+        /// <summary>
+        /// Parent Item
+        /// </summary>
+        protected TreeItemViewModel m_parent;
+
+        public TreeItemViewModel()
+        {
+            m_loaded = false;
+        }
+
+
+        public string Name { get; set; }
+
+        /// <summary>
+        /// Gets/sets whether the TreeViewItem 
+        /// associated with this object is expanded.
+        /// </summary>
+        public bool IsExpanded
+        {
+            get { return m_isExpanded; }
+            set
+            {
+                if (value != m_isExpanded)
+                {
+                    m_isExpanded = value;
+                    OnPropertyChanged("IsExpanded");
+                }
+
+                // Expand all the way up to the root.
+                if (m_isExpanded && m_parent != null)
+                {
+                    m_parent.IsExpanded = true;
+                }
+                if (m_isExpanded)
+                {
+                    m_loaded = true;
+                    LoadChildren();
+                }
+            }
+        }
+
+        public abstract void LoadChildren();
+
+
+        /// <summary>
+        /// Gets/sets whether the TreeViewItem 
+        /// associated with this object is selected.
+        /// </summary>
+        public bool IsSelected
+        {
+            get { return m_isSelected; }
+            set
+            {
+                if (value != m_isSelected)
+                {
+                    m_isSelected = value;
+                    OnPropertyChanged("IsSelected");
+                }
+            }
+        }
+    }
+}

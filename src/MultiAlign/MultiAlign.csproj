@@ -129,6 +129,20 @@
     <Compile Include="IO\ManassaWorkspaceWriter.cs" />
     <Compile Include="IO\DatasetSearcher.cs" />
     <Compile Include="IO\ManassaWorkspaceReader.cs" />
+    <Compile Include="IO\SingletonDataProviders.cs" />
+    <Compile Include="ViewModels\AnalysisViewModel.cs" />
+    <Compile Include="ViewModels\DatabaseSearchIdentifications.cs" />
+    <Compile Include="ViewModels\MassTagCollectionMatchViewModel.cs" />
+    <Compile Include="ViewModels\MsMsCollectionTreeViewModel.cs" />
+    <Compile Include="ViewModels\MsMsTreeViewModel.cs" />
+    <Compile Include="ViewModels\DatabasesViewModel.cs" />
+    <Compile Include="ViewModels\DmsDatabaseServerViewModel.cs" />
+    <Compile Include="ViewModels\MassTagMatchViewModel.cs" />
+    <Compile Include="ViewModels\PeptideTreeViewModel.cs" />
+    <Compile Include="ViewModels\TreeItemViewModel.cs" />
+    <Compile Include="ViewModels\UMCClusterCollectionViewModel.cs" />
+    <Compile Include="ViewModels\UMCCollectionTreeViewModel.cs" />
+    <Compile Include="ViewModels\UMCViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="Windows\FilePathFinder.xaml.cs">
       <DependentUpon>FilePathFinder.xaml</DependentUpon>
@@ -154,13 +168,22 @@
     <Compile Include="Windows\Viewers\Clusters\ClusterGrid.xaml.cs">
       <DependentUpon>ClusterGrid.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Windows\Viewers\Clusters\ClusterItemTemplate.xaml.cs">
+      <DependentUpon>ClusterItemTemplate.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\Viewers\Clusters\ClusterToMassTagGrid.xaml.cs">
       <DependentUpon>ClusterToMassTagGrid.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\Viewers\Clusters\ClusterTree.xaml.cs">
       <DependentUpon>ClusterTree.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\ClusterTreeViewModel.cs" />
+    <Compile Include="ViewModels\UMCClusterViewModel.cs" />
+    <Compile Include="Windows\Viewers\Databases\DatabaseSearchToolWindow.xaml.cs">
+      <DependentUpon>DatabaseSearchToolWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Viewers\Databases\DatabaseView.xaml.cs">
+      <DependentUpon>DatabaseView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\Viewers\Datasets\DatasetInformationView.xaml.cs">
       <DependentUpon>DatasetInformationView.xaml</DependentUpon>
     </Compile>
@@ -224,6 +247,9 @@
     <Compile Include="Windows\Wizard\AnalysisRunningControl.xaml.cs">
       <DependentUpon>AnalysisRunningControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Windows\Viewers\Databases\DatabaseSearchTool.xaml.cs">
+      <DependentUpon>DatabaseSearchTool.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\Wizard\DatasetSelection.xaml.cs">
       <DependentUpon>DatasetSelection.xaml</DependentUpon>
     </Compile>
@@ -279,11 +305,23 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Windows\Viewers\Clusters\ClusterItemTemplate.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\Viewers\Clusters\ClusterToMassTagGrid.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Windows\Viewers\Clusters\ClusterTree.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Viewers\Databases\DatabaseSearchToolWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Viewers\Databases\DatabaseView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -370,6 +408,10 @@
     <Page Include="Windows\Wizard\AnalysisRunningControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\Viewers\Databases\DatabaseSearchTool.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\Wizard\DatasetSelection.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -466,7 +508,13 @@
   <ItemGroup>
     <Resource Include="Resources\repeater.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Resources\database-32.png" />
+    <Resource Include="Resources\server-32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\text-file-3-32.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>REM copy  ..\..\..\..\lib\$(PlatformName)\System.Data.SQLite.dll "$(TargetDir)System.Data.SQLite.dll"

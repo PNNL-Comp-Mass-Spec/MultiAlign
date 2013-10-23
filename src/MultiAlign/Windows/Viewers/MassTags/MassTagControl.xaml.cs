@@ -13,6 +13,7 @@ using PNNLOmics.Data.Features;
 using MultiAlignCore.Data.Features;
 using MultiAlignCore.Extensions;
 using PNNLOmics.Data.MassTags;
+using MultiAlign.Windows.Viewers.Clusters;
 
 namespace MultiAlign.Windows.Viewers.MassTags
 {    

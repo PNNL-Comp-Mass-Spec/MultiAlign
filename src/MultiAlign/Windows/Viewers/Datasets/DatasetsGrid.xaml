@@ -1,10 +1,10 @@
 ﻿<UserControl x:Class="MultiAlign.Windows.Viewers.Datasets.DatasetGrid"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:datasetViews="clr-namespace:MultiAlign.Windows.Viewers.Datasets"
              xmlns:converters="clr-namespace:MultiAlign.Converters"
-             xmlns:maWindows="clr-namespace:MultiAlign.Windows"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              d:DesignHeight="317" d:DesignWidth="669">
     <UserControl.Resources>
@@ -85,7 +85,7 @@
 
             <DataGrid.RowDetailsTemplate>
                 <DataTemplate>
-                    <maWindows:DatasetInformationView/>
+                    <datasetViews:DatasetInformationView/>
                 </DataTemplate>
             </DataGrid.RowDetailsTemplate>
 
