@@ -1,0 +1,72 @@
+﻿<UserControl x:Class="MultiAlign.Windows.Viewers.Clusters.ClusterFilterControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:views="clr-namespace:MultiAlign.Windows.Viewers"
+             mc:Ignorable="d" 
+             d:DesignHeight="425" d:DesignWidth="580">
+    
+        <TabControl>
+            <TabItem
+                Header="Cluster Properties"
+                Style="{DynamicResource ResourceKey=SimpleTabItem}">
+                <StackPanel>
+                    <views:RangeView DataContext="{Binding TotalMembers}"></views:RangeView>
+                    <views:RangeView DataContext="{Binding DatasetMembers}"></views:RangeView>
+                    <views:RangeView DataContext="{Binding TightnessRange}"></views:RangeView>
+                    <views:RangeView DataContext="{Binding AmbiguityRange}"></views:RangeView>
+                </StackPanel>                
+            </TabItem>
+            <TabItem
+                Header="Mass and NET"
+                Style="{DynamicResource ResourceKey=SimpleTabItem}">
+                <StackPanel>
+                    <views:RangeView DataContext="{Binding MassRange}"></views:RangeView>
+                    <views:RangeView DataContext="{Binding NetRange}"></views:RangeView>
+                    <views:RangeView DataContext="{Binding DriftRange}"></views:RangeView>
+                </StackPanel>
+            </TabItem>
+            <TabItem
+                Header="MS/MS"
+                Style="{DynamicResource ResourceKey=SimpleTabItem}">
+                <StackPanel>
+                    <CheckBox 
+                    Margin="5"
+                    FontSize="20" IsChecked="{Binding Path=HasMsMs}">Has MS/MS</CheckBox>
+                    <views:RangeView DataContext="{Binding IdentificationRange}"></views:RangeView>
+                    <views:RangeView DataContext="{Binding MsMsTotal}"></views:RangeView>
+                </StackPanel>
+            </TabItem>
+            <TabItem
+                Header="Search"
+                Style="{DynamicResource ResourceKey=SimpleTabItem}">
+                <TabControl  TabStripPlacement="Left">
+                    <TabItem                    
+                        Header="Cluster Id's"
+                        Style="{DynamicResource ResourceKey=SimpleTabItem}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="32"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Label HorizontalContentAlignment="Center">Has These Cluster ID's</Label>
+                            <TextBox Margin="5" Grid.Row="1" />
+                        </Grid>
+                    </TabItem>
+                    <TabItem                    
+                        Header="Dataset Filters"
+                        Style="{DynamicResource ResourceKey=SimpleTabItem}">                        
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="32"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Label HorizontalContentAlignment="Center">Has Features From These Datasets</Label>
+                            <ListBox Margin="5" Grid.Row="1"/>
+                        </Grid>
+                    </TabItem>
+                </TabControl>                                                    
+            </TabItem>
+        </TabControl>    
+</UserControl>

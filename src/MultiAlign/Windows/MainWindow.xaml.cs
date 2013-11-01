@@ -13,6 +13,7 @@ using System.IO;
 using MultiAlignCore;
 using MultiAlign.Data.States;
 using MultiAlign.Windows.Viewers;
+using MultiAlign.ViewModels;
 
 namespace MultiAlign.Windows
 {
@@ -196,7 +197,8 @@ namespace MultiAlign.Windows
             Controller.Config.Analysis.MetaData.AnalysisName = analysis.Name;
 
             ApplicationStatusMediator.SetStatus("Analysis loaded.  Creating plots.");
-            m_mainControl.Analysis = Controller.Config.Analysis;
+            AnalysisViewModel model     = new AnalysisViewModel(Controller.Config.Analysis);
+            m_mainControl.DataContext   = model;
         }
         /// <summary>
         /// Opens an existing analysis 
@@ -266,7 +268,7 @@ namespace MultiAlign.Windows
             }
             else
             {
-                if (m_mainControl.Analysis != null)
+                //if (m_mainControl.Analysis != null)
                 {
                     StateModerator.CurrentAnalysisState = AnalysisState.Viewing;
                     StateModerator.CurrentViewState     = ViewState.AnalysisView;                    
@@ -310,7 +312,7 @@ namespace MultiAlign.Windows
             StateModerator.CurrentViewState = ViewState.OpenView;
             System.Windows.Forms.Application.DoEvents();
            
-            m_mainControl.Analysis = Controller.Config.Analysis;
+            m_mainControl.DataContext = new AnalysisViewModel(Controller.Config.Analysis);
 
             StateModerator.CurrentViewState     = ViewState.AnalysisView;
             StateModerator.CurrentAnalysisState = AnalysisState.Viewing;

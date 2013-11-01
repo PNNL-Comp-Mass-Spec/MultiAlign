@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"              
-             xmlns:viewModels="clr-namespace:MultiAlign.ViewModels"
+             xmlns:viewModels="clr-namespace:MultiAlign.ViewModels.TreeView"
              xmlns:converters ="clr-namespace:MultiAlign.Converters"             
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
@@ -13,20 +13,39 @@
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>            
+            <RowDefinition Height="48"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="56"/>
         </Grid.RowDefinitions>
+
         <Border
+                 Grid.Row="0"
                  BorderThickness="1"
                  BorderBrush="LightGray"            
-                 Margin="5"
-                 Grid.Row="0">                    
+                 Margin="5">
+            <StackPanel Orientation="Horizontal">
+                <Label FontSize="16" Foreground="Gray"  VerticalContentAlignment="Center">
+                    Total Clusters: 
+                </Label>
+                <Label FontSize="16" Foreground="Gray" VerticalContentAlignment="Center" Margin="0,5,5,0" Content="{Binding Path=FilteredClusters.Count}" />
+                <Label FontSize="16" Foreground="Gray"  VerticalContentAlignment="Center">
+                    /
+                </Label>
+                <Label FontSize="16" Foreground="Gray"  VerticalContentAlignment="Center" Margin="0,5,5,0" Content="{Binding Path=Clusters.Count}" />
+            </StackPanel>
+        </Border>
+        <Border
+                 Grid.Row="1"
+                 BorderThickness="1"
+                 BorderBrush="LightGray"            
+                 Margin="5">                    
             <TreeView 
                   Margin="5"
-                  ItemsSource="{Binding Clusters}"
+                  ItemsSource="{Binding FilteredClusters}"
                   VirtualizingStackPanel.IsVirtualizing="True"
                   VirtualizingStackPanel.VirtualizationMode="Recycling"
                   >
-            <TreeView.ItemContainerStyle>
+                <TreeView.ItemContainerStyle>
                 <Style TargetType="{x:Type TreeViewItem}">
                     <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
                     <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
@@ -38,95 +57,223 @@
                     </Style.Triggers>
                 </Style>
             </TreeView.ItemContainerStyle>
-            <TreeView.Resources>
+                <TreeView.Resources>                
+                <!-- ************************* Collections ************************* --> 
+                               
+                <!-- Generic Cluster Creation -->                 
+                <HierarchicalDataTemplate 
+                        DataType="{x:Type viewModels:GenericCollectionTreeViewModel}" 
+                        ItemsSource="{Binding Items}">
+                            <Label Content="{Binding Path=Name}"/>
+                </HierarchicalDataTemplate>
                 
+                
+                <!-- UMC Cluster Collection Features -->                 
+                <HierarchicalDataTemplate 
+                        DataType="{x:Type viewModels:UMCClusterCollectionTreeViewModel}" 
+                        ItemsSource="{Binding FilteredClusters}">
+                            <Label Content="Clusters"/>
+                </HierarchicalDataTemplate>
+                
+                <!-- LCMS Features -->                 
+                <HierarchicalDataTemplate 
+                        DataType="{x:Type viewModels:UMCCollectionTreeViewModel}" 
+                        ItemsSource="{Binding Features}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="48"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="32"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Image
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Width="16"
+                                Height="16"
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Left"
+                                Source="/MultiAlign;component/Resources/list-view-32.png"/>
+                            <Label  VerticalContentAlignment="Center" Grid.Column="1" Content="{Binding Path=Name}"/>
+                        </Grid>
+                    </HierarchicalDataTemplate>
+                
+                <!-- Peptides -->   
+                <HierarchicalDataTemplate 
+                        DataType="{x:Type viewModels:PeptideCollectionTreeViewModel}" 
+                        ItemsSource="{Binding Peptides}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="48"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="32"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Image
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Width="16"
+                                Height="16"
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Left"
+                                Source="/MultiAlign;component/Resources/search-3-32.png"/>
+                            <Label  VerticalContentAlignment="Center" Grid.Column="1" Content="{Binding Path=Name}"/>
+                        </Grid>
+                    </HierarchicalDataTemplate>
+                
+
+                    <!-- Mass Tags -->  
+                <HierarchicalDataTemplate 
+                        DataType="{x:Type viewModels:MassTagCollectionMatchTreeViewModel}" 
+                        ItemsSource="{Binding MassTags}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="48"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="32"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Image
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Width="16"
+                                Height="16"
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Left"
+                                Source="/MultiAlign;component/Resources/tag-32.png"/>
+                            <Label  VerticalContentAlignment="Center" Grid.Column="1" Content="{Binding Path=Name}"/>
+                        </Grid>
+                </HierarchicalDataTemplate>
+                
+                <!-- MS/MS -->  
+                <HierarchicalDataTemplate 
+                        DataType="{x:Type viewModels:MsMsCollectionTreeViewModel}" 
+                        ItemsSource="{Binding Spectra}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="48"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="32"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Image
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Width="16"
+                                Height="16"
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Left"
+                                Source="/MultiAlign;component/Resources/molecule1.png"/>
+                            <Label  VerticalContentAlignment="Center" Grid.Column="1" Content="{Binding Path=Name}"/>
+                        </Grid>
+                    </HierarchicalDataTemplate>
+
+
+                <!-- *************************Data Models ************************* -->                                                          
+                <!-- Statistic Attribute Model -->
+                <HierarchicalDataTemplate 
+                        DataType="{x:Type viewModels:StatisticTreeViewItem}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition Width="64"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Image
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Width="16"
+                                Height="16"
+                                Stretch="UniformToFill"
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Left"
+                                Source="/MultiAlign;component/Resources/circle-32.png"/>
+                            <Label Grid.Row="0" Grid.Column="1" Content="{Binding Path=Name}" Margin="0,0,5,0"/>
+                            <Label Grid.Row="0" Grid.Column="2" Content="{Binding Path=Value}"/>
+                        </Grid>
+                </HierarchicalDataTemplate>
+                                
                 <!-- Cluster View Model --> 
                 <HierarchicalDataTemplate 
-                  DataType="{x:Type viewModels:UMCClusterViewModel}" 
-                  ItemsSource="{Binding Features}">
-                        <Border CornerRadius="2" 
-                            BorderThickness="1"
-                            HorizontalAlignment="Stretch" 
-                            Padding="3" 
-                            Margin="3" 
-                            BorderBrush="#FFCCCCCC">
+                  DataType="{x:Type viewModels:UMCClusterTreeViewModel}" 
+                        ItemsSource="{Binding Items}">
+                        <Border
+                             Width="Auto"
+                             BorderThickness="1"
+                             BorderBrush="LightGray"            
+                             Margin="5"
+                             Grid.Row="0">
                             <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="48"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="32"/>
-                                    <ColumnDefinition Width="20*"/>
-                                    <ColumnDefinition Width="80*"/>
-                                </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="48"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="32"/>
+                                        <ColumnDefinition Width="48"/>
+                                        <ColumnDefinition Width="20*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
                                 <Image
+                                        Grid.Row="0"
+                                        Grid.Column="0"
+                                        Width="16"
+                                        Height="16"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Left"
+                                        Source="/MultiAlign;component/Resources/molecule.png"/>
+                                <Label
                                     Grid.Row="0"
-                                    Grid.Column="0"
-                                    Width="16"
-                                    Height="16"
-                                    Source="/MultiAlign;component/Resources/molecule.png"/>
-                                
+                                    Grid.Column="1"                                
+                                    HorizontalContentAlignment="Left"  
+                                    VerticalContentAlignment="Center"
+                                    >
+                                    Cluster ID
+                                </Label>
                                 <Label   
                                     Grid.Row="0"
-                                    Grid.Column="1"
+                                    Grid.Column="2"
                                     FontSize="12"   
-                                    HorizontalContentAlignment="Center"  
+                                    HorizontalContentAlignment="Left"  
                                     VerticalContentAlignment="Center"
                                     Content="{Binding Path=ClusterId}" />
-                                <StackPanel   
-                                    Grid.Row="1"
-                                    Grid.Column="2"
-                                    Orientation="Horizontal">   
-                                    <Label         >
-                                        Dataset Count
-                                    </Label>
-                                    <Label   
-                                        FontSize="12"                                                                    
+                                <Label
+                                    Grid.Row="0"
+                                    Grid.Column="3"                                
+                                    HorizontalContentAlignment="Left"  
+                                    VerticalContentAlignment="Center"
+                                    >(members: </Label>
+                                <Label   
+                                        Grid.Row="0"
+                                        Grid.Column="4"
+                                        FontSize="12"               
+                                        HorizontalContentAlignment="Left"  
+                                        VerticalContentAlignment="Center"                                                     
                                         Content="{Binding Path=DatasetMemberCount}" />
-                                </StackPanel>
-                                <StackPanel   
-                                        Grid.Row="2"
-                                        Grid.Column="2"
-                                        Orientation="Horizontal">   
-                                    <Label          
-                                        Margin="5">
-                                        Feature Count
-                                    </Label>
-                                    <Label   
-                                        FontSize="12"   
-                                        Margin="5"                                                                       
-                                        Content="{Binding Path=FeatureCount}" />
-                                </StackPanel>
-                                <StackPanel   
-                                        Grid.Row="3"
-                                        Grid.Column="2"
-                                        Orientation="Horizontal">
-                                    <Label        >
-                                        Match Count
-                                    </Label>
-                                    <Label   
-                                        FontSize="12"                                                                    
-                                        Content="{Binding Path=MatchCount}" />
-                                </StackPanel>
+                                <Label
+                                    Grid.Row="0"
+                                    Grid.Column="5"                                
+                                    HorizontalContentAlignment="Left"  
+                                    VerticalContentAlignment="Center"
+                                    >)</Label>
                             </Grid>
                         </Border>
                </HierarchicalDataTemplate>
-
-                <!-- LCMS Features -->                 
+                                
+                <!-- Peptide View Model -->
                 <HierarchicalDataTemplate 
-                  DataType="{x:Type viewModels:UMCCollectionTreeViewModel}" 
-                  ItemsSource="{Binding Features}">
-                        <Label>Features</Label>
+                    DataType="{x:Type viewModels:PeptideTreeViewModel}">
+                    <Label>Feature</Label>
                 </HierarchicalDataTemplate>
 
-               
-
-                <!-- Mass View Model --> 
+                <!-- Mass Tag Match View Model --> 
                 <HierarchicalDataTemplate 
-                  DataType="{x:Type viewModels:MassTagMatchViewModel}" 
+                  DataType="{x:Type viewModels:MassTagMatchTreeViewModel}" 
                   ItemsSource="{Binding Matches}">
                     <Border CornerRadius="2" BorderThickness="1" HorizontalAlignment="Stretch" Padding="3" Margin="3" BorderBrush="#FFCCCCCC">
                         <Grid>
@@ -161,7 +308,6 @@
                                         <Binding Path="Name" />                    
                                 </TextBlock.Text>
                             </TextBlock>
-
                             <Image
                                 Grid.Row="1"
                                 Grid.Column="0"
@@ -186,8 +332,6 @@
                                         <Binding Path="Name" />                    
                                 </TextBlock.Text>
                             </TextBlock>
-
-
                             <Image
                                 Grid.Row="2"
                                 Grid.Column="0"
@@ -214,10 +358,23 @@
                             </TextBlock>
                         </Grid>
                     </Border>
-                </HierarchicalDataTemplate>
-                
+                </HierarchicalDataTemplate>                
             </TreeView.Resources>
-        </TreeView>
+            </TreeView>
+        </Border>
+        <Border
+            BorderThickness="1"
+            BorderBrush="LightGray"
+            Margin="5"
+            Grid.Row="2">
+            <Button  
+                Margin="5"
+                Style="{DynamicResource ResourceKey=SimpleButtonStyle}"  
+                HorizontalContentAlignment="Center"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Command="{Binding Path=FilterCommand}"
+                Width="128">Filter</Button>
         </Border>
     </Grid>
 </UserControl>

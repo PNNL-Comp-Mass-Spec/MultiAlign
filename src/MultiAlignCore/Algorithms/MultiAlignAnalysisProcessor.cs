@@ -381,8 +381,6 @@ namespace MultiAlignCore.Algorithms
             UMCLoaderFactory.Status -= UMCLoaderFactory_Status;
 
 
-            Logger.PrintMessage("Indexing Database Features");
-            DatabaseIndexer.IndexFeatures(config.AnalysisPath);
         }
         /// <summary>
         /// Load a single dataset from the provider.

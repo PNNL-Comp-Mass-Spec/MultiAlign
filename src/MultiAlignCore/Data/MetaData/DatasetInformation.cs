@@ -15,14 +15,8 @@ namespace MultiAlignCore.Data
 	/// <summary>
 	/// Contains information about a dataset used for analysis.r
 	/// </summary>	
-	public class DatasetInformation : IComparable<DatasetInformation>, INotifyPropertyChanged
+	public class DatasetInformation : IComparable<DatasetInformation>
 	{
-        private InputFile m_features;
-        private InputFile m_scans;
-        private InputFile m_raw;
-        private InputFile m_sequence;
-        private InputFile m_peaks;
-        private int m_datasetId;
 
         /// <summary>
 		/// Default constructor.
@@ -52,15 +46,10 @@ namespace MultiAlignCore.Data
             get;
             set;
         }
-        private void OnNotify(string property)
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(property));
-            }
-        }
 
         #region Properties
+        public string Alias { get; set; }
+
         /// <summary>
         /// Gets or sets whether this dataset is a baseline or not.
         /// </summary>
@@ -106,18 +95,8 @@ namespace MultiAlignCore.Data
 		/// </summary>
         public int DatasetId
         {
-            get
-            {
-                return m_datasetId;
-            }
-            set
-            {
-                if (m_datasetId != value)
-                {
-                    m_datasetId = value;
-                    OnNotify("DatasetId");
-                }
-            }
+            get;
+            set;
         }
         /// <summary>
         /// Job tracking ID of the dataset.
@@ -191,13 +170,21 @@ namespace MultiAlignCore.Data
             get;
             set;
         }
+        private string m_datasetName;
 		/// <summary>
 		/// Gets or sets the name of the dataset
 		/// </summary>
         public string DatasetName
         {
-            get;
-            set;
+            get
+            {
+                return m_datasetName;
+            }
+            set
+            {
+                m_datasetName = value;
+                Alias = value;
+            }
         }
 
 		/// <summary>
@@ -205,90 +192,40 @@ namespace MultiAlignCore.Data
 		/// </summary>
         public InputFile Features
         {
-            get
-            {
-                return m_features;
-            }
-            set
-            {
-                if (m_features != value)
-                {
-                    m_features = value;
-                    OnNotify("Features");
-                }
-            }
+            get;
+            set;
         }
         /// <summary>
         /// Path to the scans file.
         /// </summary>
         public InputFile Scans
         {
-            get
-            {
-                return m_scans;
-            }
-            set
-            {
-                if (m_scans != value)
-                {
-                    m_scans = value;
-                    OnNotify("Scans");
-                }
-            }
+            get;
+            set;
         }
         /// <summary>
         /// Path to the Raw data file.
         /// </summary>
         public InputFile Raw
         {
-            get
-            {
-                return m_raw;
-            }
-            set
-            {
-                if (m_raw != value)
-                {
-                    m_raw = value; 
-                    OnNotify("Raw");
-                }
-            }
+            get;
+            set;
         }
         /// <summary>
         /// Path to the Raw data file.
         /// </summary>
         public InputFile Sequence
         {
-            get
-            {
-                return m_sequence;
-            }
-            set
-            {
-                if (m_sequence != value)
-                {
-                    m_sequence = value; 
-                    OnNotify("Sequence");
-                }
-            }
+            get;
+            set;
         }
         /// <summary>
         /// Gets or sets the path to the peaks file.
         /// </summary>
         public InputFile Peaks
         {
-            get
-            {
-                return m_peaks;
-            }
-            set
-            {
-                if (m_peaks != value)
-                {
-                    m_peaks = value;
-                    OnNotify("Peaks");
-                }
-            }
+            get;
+            set;
         }
         public DatasetPlotInformation PlotData
         {
@@ -326,16 +263,7 @@ namespace MultiAlignCore.Data
 		}
 		#endregion
 
-        //private static string CleanExtension(string name, string extension)
-        //{
-        //    string lowerExtension   = extension.ToLower();
-        //    string lowerName        = name.ToLower();
-
-        //    if (lowerName.EndsWith(lowerExtension))
-        //    {                
-        //        int index = lowerName.IndexOf(lowerExtension, lowerName.Length - lowerExtension.Length, StringComparison.OrdinalIgnoreCase);
-        //    }
-        //}
+       
         /// <summary>
         /// Cleans dataset names of extensions in case the data as not loaded from DMS, but manually.
         /// </summary>

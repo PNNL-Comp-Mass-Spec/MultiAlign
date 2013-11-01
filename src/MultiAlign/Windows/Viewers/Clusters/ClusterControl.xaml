@@ -45,7 +45,16 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="50*"/>
             </Grid.RowDefinitions>
-            <WindowsFormsHost
+            <TabControl
+                Grid.Column="0"
+                Grid.ColumnSpan="3"
+                Grid.Row="0">
+                <TabItem 
+                    Style="{DynamicResource ResourceKey=SimpleTabItem}"
+                    FontSize="12"
+                    Header="Mass vs. Net"
+                    >                    
+                    <WindowsFormsHost
                         Margin="1,1,1,1"
                         Grid.Row="0"
                         Grid.Column="0">
@@ -58,22 +67,19 @@
                                 XAxisShortHand="NET"
                                 />
             </WindowsFormsHost>
-            <GridSplitter
-                        Grid.Row="0"
-                        Grid.Column="1"
-                        Width="3"
-                        HorizontalAlignment="Stretch"
-                        VerticalAlignment="Stretch"
-                        Margin="1"
-                        Background="#FFA0A0A0"/>
-            <WindowsFormsHost
+                </TabItem>
+                <TabItem 
+                    Style="{DynamicResource ResourceKey=SimpleTabItem}"
+                    FontSize="12"
+                    Visibility="{Binding Path=UsesDriftTime , Converter={StaticResource ResourceKey=UseDriftTimeConverter}}"
+                    Header="Mass vs. Drift Time"
+                    >
+                    <WindowsFormsHost
                         Margin="1,1,1,1"
-                        Visibility="{Binding Path=UsesDriftTime , Converter={StaticResource ResourceKey=UseDriftTimeConverter}}"
                         Grid.Row="0"                        
                         Grid.Column="2">
-                <maCharts:SingleClusterChart
-                                x:Name="m_driftChart"
-                                
+                        <maCharts:SingleClusterChart
+                                x:Name="m_driftChart"                                
                                 Title=""                                
                                 IsDriftTimeXAxis="True"
                                 XAxisLabel="Drift Time (ms)"
@@ -81,7 +87,9 @@
                             XAxisShortHand="ms"
                                 LegendVisible="False"
                                 />
-            </WindowsFormsHost>
+                    </WindowsFormsHost>
+                </TabItem>
+            </TabControl>
             <GridSplitter
                         Grid.Row="1"
                         Grid.Column="0"
@@ -95,19 +103,6 @@
                 Grid.Column="0"
                 Grid.ColumnSpan="3"
                 Grid.Row="2">
-                <TabItem
-                            Style="{DynamicResource ResourceKey=SimpleTabItem}"
-                            Header="Nearby Clusters"
-                            Margin="1,1,1,1">
-                    <clusterViews:ClusterTree x:Name="m_nearbyClusterTree"/>                    
-                </TabItem>
-                <TabItem                            
-                            Style="{DynamicResource ResourceKey=SimpleTabItem}"
-                            Header="Identifications"
-                            Margin="1,1,1,1">
-                    
-                </TabItem>
-
                 <!--<TabItem 
                 Style="{DynamicResource ResourceKey=SimpleTabItem}"
                 Header="Abundance Profile"
@@ -120,11 +115,38 @@
                                         />
                 </WindowsFormsHost>
             </TabItem>-->
+                <TabItem 
+                    Style="{DynamicResource ResourceKey=SimpleTabItem}"
+                    Header="MS Spectra"
+                    >
+                    <WindowsFormsHost
+                        Grid.Row="4"   
+                        Grid.Column="0">
+                        <maCharts:SpectraChart
+                            x:Name="m_parentSpectra"
+                            TitleVisible="True"
+                            Title="MS"
+                            XAxisLabel="m/z"
+                            YAxisLabel="Intensity"/>
+                    </WindowsFormsHost>
+
+                </TabItem>
 
                 <TabItem 
-                Style="{DynamicResource ResourceKey=SimpleTabItem}"
-                Header="MS/MS">
-                    <spectraViews:MsMsGrid x:Name="m_msmsGrid"/>
+                    Style="{DynamicResource ResourceKey=SimpleTabItem}"
+                    Header="MS/MS"
+                    >
+                    <WindowsFormsHost
+                        Grid.Row="4"   
+                        Grid.Column="0">
+                        <maCharts:SpectraChart
+                                x:Name="m_spectraChart"
+                                TitleVisible="True"
+                                Title="MS/MS"
+                                XAxisLabel="m/z"
+                                YAxisLabel="Intensity"/>
+                    </WindowsFormsHost>
+
                 </TabItem>
             </TabControl>
         </Grid>
@@ -141,19 +163,7 @@
                         Grid.Row="2"
                         Grid.Column="1"
                         Margin="3,3,3,3"
-                        Grid.ColumnSpan="3">
-            <Button                                 
-                                Width="120"
-                                Style="{DynamicResource ResourceKey=SimpleButtonStyle}"
-                                Content="Save Feature Plots"
-                                x:Name="m_saveFeaturePlotButton" 
-                                Click="m_saveFeaturePlotButton_Click" />
-            <Button                                 
-                                Width="120"
-                                Style="{DynamicResource ResourceKey=SimpleButtonStyle}"
-                                Content="Export MS/MS"
-                                x:Name="exportMsMsButton" Click="exportMsMsButton_Click" />
-        </WrapPanel>
+                        Grid.ColumnSpan="3"></WrapPanel>
 
         <Grid
             Grid.Row="0"
@@ -167,21 +177,24 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="25*"/>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="25*"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="25*"/>
             </Grid.RowDefinitions>
-
-            <WindowsFormsHost
-                            Grid.Column="0"
-                            Grid.Row="0">
-                <maCharts:SingleUMCChart
+            <StackPanel
+                Grid.Column="0"
+                Grid.Row="0">
+                <Border
+                    BorderBrush="LightGray"
+                    BorderThickness="1"
+                    Margin="5">
+                    <Label HorizontalContentAlignment="Center" FontSize="16" Foreground="Gray">Mass Vs. Scan</Label>
+                </Border>
+                <WindowsFormsHost>
+                    <maCharts:SingleUMCChart
                                     x:Name="m_msFeaturePlot"
-                                    Title=""
+                                    Title=""                                    
                                     LegendVisible="False"                
                                     />
             </WindowsFormsHost>
-
+            </StackPanel>
             <GridSplitter
                         Grid.Row="1"
                         Grid.Column="0"                
@@ -191,54 +204,26 @@
                         Margin="1"
                         Background="#FFA0A0A0"/>
             <!-- Plots based on feature selection -->
-            <WindowsFormsHost
-                            Grid.Column="2"
-                            Grid.Row="2">
-                <maCharts:SICChart
-                                    x:Name="m_sicChart"
-                                    Title=""
-                                    TitleVisible="False"
-                                    LegendVisible="False"                
-                                    />
-            </WindowsFormsHost>
-
-            <GridSplitter
-                        Grid.Row="3"
-                        Grid.Column="0"                
-                        Height="3"
-                        HorizontalAlignment="Stretch"
-                        VerticalAlignment="Stretch"  
-                        Margin="1"
-                        Background="#FFA0A0A0"/>
-            <WindowsFormsHost
-                Grid.Row="4"   
-                Grid.Column="0">
-                <maCharts:SpectraChart
-                    x:Name="m_parentSpectra"
-                    TitleVisible="True"
-                    Title="MS"
-                    XAxisLabel="m/z"
-                    YAxisLabel="Intensity"/>
-            </WindowsFormsHost>
-
-            <GridSplitter
-                        Grid.Row="5"
-                        Grid.Column="0"                
-                        Height="3"
-                        HorizontalAlignment="Stretch"
-                        VerticalAlignment="Stretch"  
-                        Margin="1"
-                        Background="#FFA0A0A0"/>
-            <WindowsFormsHost
-                Grid.Row="6"   
-                Grid.Column="0">
-                <maCharts:SpectraChart
-                    x:Name="m_spectraChart"
-                    TitleVisible="True"
-                    Title="MS/MS"
-                    XAxisLabel="m/z"
-                    YAxisLabel="Intensity"/>
-            </WindowsFormsHost>
+            <StackPanel
+                                Grid.Column="2"
+                                Grid.Row="2">
+                <Border
+                    BorderBrush="LightGray"
+                    BorderThickness="1"
+                    Margin="5">
+                    <Label HorizontalContentAlignment="Center" FontSize="16" Foreground="Gray">XIC</Label>
+                </Border>
+                <WindowsFormsHost
+                                Grid.Column="2"
+                                Grid.Row="2">
+                    <maCharts:SICChart
+                                        x:Name="m_sicChart"
+                                        Title="XIC"                        
+                                        TitleVisible="False"
+                                        LegendVisible="False"                
+                                        />
+                </WindowsFormsHost>
+            </StackPanel>
         </Grid>
     </Grid>
     

@@ -226,7 +226,11 @@ namespace MultiAlignCore.Extensions
                     map.Add(subFeature.MSDatasetID, new Dictionary<int,MSFeatureToMSnFeatureMap>());
                 }
 
+                //TODO: There may be multiple MSMS spectra
                 // Then map its msms spectra id
+                if (map[subFeature.MSDatasetID].ContainsKey(subFeature.MSFeatureID))
+                    continue;
+
                 map[subFeature.MSDatasetID].Add(subFeature.MSFeatureID, subFeature);
             }
             
@@ -270,8 +274,8 @@ namespace MultiAlignCore.Extensions
             List<int> ids = new List<int>();
 
             // Make a map, from the dataset, then the spectra to the ms feature Id.
-            Dictionary<int, Dictionary<int, MSFeatureToMSnFeatureMap>> map
-                            = new Dictionary<int, Dictionary<int, MSFeatureToMSnFeatureMap>>();
+            Dictionary<int, Dictionary<int, List<MSFeatureToMSnFeatureMap>>> map
+                            = new Dictionary<int, Dictionary<int, List<MSFeatureToMSnFeatureMap>>>();
 
 
             if (getMsMs)
@@ -290,11 +294,16 @@ namespace MultiAlignCore.Extensions
                 // first map the dataset id
                 if (!map.ContainsKey(subFeature.MSDatasetID))
                 {
-                    map.Add(subFeature.MSDatasetID, new Dictionary<int,MSFeatureToMSnFeatureMap>());
+                    map.Add(subFeature.MSDatasetID, new Dictionary<int, List<MSFeatureToMSnFeatureMap>>());
                 }
 
                 // Then map its msms spectra id
-                map[subFeature.MSDatasetID].Add(subFeature.MSFeatureID, subFeature);
+                Dictionary<int, List<MSFeatureToMSnFeatureMap>> datasetMap = map[subFeature.MSDatasetID];
+
+                if (!datasetMap.ContainsKey(subFeature.MSFeatureID))
+                    datasetMap.Add(subFeature.MSFeatureID, new List<Data.MSFeatureToMSnFeatureMap>());
+
+                datasetMap[subFeature.MSFeatureID].Add(subFeature);
             }
             
             // Now we get all the spectra, map to the UMC, then the ms/ms spectra. 
@@ -318,9 +327,15 @@ namespace MultiAlignCore.Extensions
                     if (map[msFeature.GroupID].ContainsKey(msFeature.ID))
                     {
                         // ok, we are sure that the spectra is present now!
-                        MSFeatureToMSnFeatureMap singleMap = map[msFeature.GroupID][msFeature.ID];
-                        MSSpectra spectrum = spectraMap[singleMap.MSDatasetID][singleMap.MSMSFeatureID];
-                        msFeature.MSnSpectra.Add(spectrum);
+                        foreach (var singleMap in map[msFeature.GroupID][msFeature.ID])
+                        {
+                            if (singleMap.MSFeatureID == msFeature.ID)
+                            {
+                                MSSpectra spectrum = spectraMap[singleMap.MSDatasetID][singleMap.MSMSFeatureID];
+                                msFeature.MSnSpectra.Add(spectrum);
+                            }
+                        }
+                        
                     }
                 }
             }                        

@@ -1318,8 +1318,6 @@ namespace MultiAlignCore.Algorithms
             }
             else
             {
-                Logger.PrintMessage("Indexing Database for Faster Retrieval");
-                DatabaseIndexer.IndexClusters(config.AnalysisPath);
 
                 try
                 {
@@ -1337,6 +1335,13 @@ namespace MultiAlignCore.Algorithms
             config.triggerEvent.Dispose();
             config.errorEvent.Dispose();
             processor.Dispose();
+            CleanupDataProviders();
+
+            Logger.PrintMessage("Indexing Database Clusters for Faster Retrieval");
+            DatabaseIndexer.IndexClusters(config.AnalysisPath);
+            Logger.PrintMessage("Indexing Database Features");
+            DatabaseIndexer.IndexFeatures(config.AnalysisPath);
+
             Logger.PrintMessage("Analysis Complete");
                                     
             if (AnalysisComplete != null)
@@ -1463,9 +1468,12 @@ namespace MultiAlignCore.Algorithms
             Logger.PrintMessage("Analysis Started.");
             processor.StartAnalysis(config);
             int handleID = WaitHandle.WaitAny(new WaitHandle[] { config.triggerEvent, config.errorEvent });
+            
+            bool wasError = false;
 
             if (handleID == 1)
             {
+                
                 Logger.PrintMessage("There was an error during processing.");
                 return 1;
             }
@@ -1490,6 +1498,14 @@ namespace MultiAlignCore.Algorithms
             config.errorEvent.Dispose();
             processor.Dispose();
             CleanupDataProviders();
+
+            if (!wasError)
+            {
+                Logger.PrintMessage("Indexing Database Features");
+                DatabaseIndexer.IndexFeatures(config.AnalysisPath);
+                DatabaseIndexer.IndexClusters(config.AnalysisPath);
+            }
+
             Logger.PrintMessage("Analysis Complete.");
             return 0;
         }

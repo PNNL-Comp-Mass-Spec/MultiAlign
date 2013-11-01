@@ -42,7 +42,7 @@
                         <RowDefinition Height="32"/>
                     </Grid.RowDefinitions>     
                     <clusterViews:ClusterTree                         
-                        x:Name="m_clusterTree"    
+                        DataContext="{Binding Path=ClusterTree}"   
                         Grid.Row="0"                                            
                         Grid.Column="0"/>
                     <GridSplitter
@@ -61,8 +61,9 @@
                             <clusterViews:ClusterControl
                                 Margin="5,5,5,5"
                                 x:Name="m_clusterControl"
+                                UMCFeature="{Binding Path=ClusterTree.SelectedFeature}"
                                 UsesDriftTime="{Binding Path=UsesDriftTime, NotifyOnSourceUpdated=True}"                        
-                                Cluster="{Binding Mode=OneWay, ElementName=m_clusterGrid, Path=SelectedCluster}"/>
+                                Cluster="{Binding Mode=OneWay, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True, Path=ClusterTree.SelectedCluster}"/>
                         </TabItem>
                         <TabItem 
                             
@@ -117,7 +118,7 @@
                     </Grid.ColumnDefinitions>
                     <datasetViews:DatasetListBox  
                         Width="160"
-                        x:Name="m_datasetBox"/>   
+                        Datasets="{Binding Path=Datasets}"/>   
                     <GridSplitter
                         Grid.Row="0"
                         Grid.Column="1"
@@ -255,7 +256,7 @@
                 Header="Datasets"                
                 >
                 <datasetViews:DatasetGrid
-                    x:Name="m_datasetsName"/>
+                    Datasets="{Binding Path=Datasets}"/>
             </TabItem>
             <TabItem
                 

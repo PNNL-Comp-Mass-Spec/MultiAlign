@@ -8,7 +8,7 @@ using PNNLOmics.Data.Features;
 using MultiAlignCore.Extensions;
 using PNNLOmics.Data;
 
-namespace MultiAlign.ViewModels
+namespace MultiAlign.ViewModels.TreeView
 {
 
     /// <summary>

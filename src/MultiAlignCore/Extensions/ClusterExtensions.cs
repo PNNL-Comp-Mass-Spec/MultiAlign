@@ -82,7 +82,49 @@ namespace MultiAlignCore.Extensions
                     feature.ReconstructUMC(providers, getMsMs);
                 }
             }
-        }        
+        }
+        /// <summary>
+        /// Retrieves a list of known peptides attributed to this cluster.
+        /// </summary>
+        /// <param name="cluster"></param>
+        /// <param name="providers"></param>
+        /// <returns></returns>
+        public static List<Peptide> FindPeptides(this UMCClusterLight cluster, FeatureDataAccessProviders providers)
+        {
+            List<Peptide> peptides = new List<Peptide>();
+
+            return peptides;
+        }
+        /// <summary>
+        /// Retrieves a list of known peptides attributed to this cluster.
+        /// </summary>
+        /// <param name="cluster"></param>
+        /// <param name="providers"></param>
+        /// <returns></returns>
+        public static List<MSSpectra> FindSpectra(this UMCClusterLight cluster, FeatureDataAccessProviders providers)
+        {
+            List<MSSpectra> peptides = new List<MSSpectra>();
+            return peptides;
+        }
+
+        /// <summary>
+        /// Retrieves a list of known peptides attributed to this cluster.
+        /// </summary>
+        /// <param name="cluster"></param>
+        /// <param name="providers"></param>
+        /// <returns></returns>
+        public static List<MSSpectra> FindSpectra(this UMCClusterLight cluster)
+        {
+            List<MSSpectra> peptides = new List<MSSpectra>();
+            foreach (UMCLight feature in cluster.Features)
+            {
+                foreach (MSFeatureLight msFeature in feature.MSFeatures)
+                {
+                    peptides.AddRange(msFeature.MSnSpectra);
+                }
+            }
+            return peptides;
+        }
         /// <summary>
         /// Reconstructs the mass tags and clusters joining tabled data.
         /// </summary>

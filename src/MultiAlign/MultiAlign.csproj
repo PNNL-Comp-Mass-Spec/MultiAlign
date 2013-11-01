@@ -93,6 +93,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Commands\Clusters\ClusterTreeFilterCommand.cs" />
     <Compile Include="Converters\BooleanToDataGridVisibilityModeConverter.cs" />
     <Compile Include="Converters\BoolInverter.cs" />
     <Compile Include="Converters\BoolVisibilityConverter.cs" />
@@ -131,18 +132,22 @@
     <Compile Include="IO\ManassaWorkspaceReader.cs" />
     <Compile Include="IO\SingletonDataProviders.cs" />
     <Compile Include="ViewModels\AnalysisViewModel.cs" />
-    <Compile Include="ViewModels\DatabaseSearchIdentifications.cs" />
-    <Compile Include="ViewModels\MassTagCollectionMatchViewModel.cs" />
-    <Compile Include="ViewModels\MsMsCollectionTreeViewModel.cs" />
-    <Compile Include="ViewModels\MsMsTreeViewModel.cs" />
+    <Compile Include="ViewModels\TreeView\GenericCollectionTreeViewModel.cs" />
+    <Compile Include="ViewModels\TreeView\MassTagCollectionMatchTreeViewModel.cs" />
+    <Compile Include="ViewModels\TreeView\MsMsCollectionTreeViewModel.cs" />
+    <Compile Include="ViewModels\TreeView\MsMsTreeViewModel.cs" />
     <Compile Include="ViewModels\DatabasesViewModel.cs" />
     <Compile Include="ViewModels\DmsDatabaseServerViewModel.cs" />
-    <Compile Include="ViewModels\MassTagMatchViewModel.cs" />
-    <Compile Include="ViewModels\PeptideTreeViewModel.cs" />
-    <Compile Include="ViewModels\TreeItemViewModel.cs" />
-    <Compile Include="ViewModels\UMCClusterCollectionViewModel.cs" />
-    <Compile Include="ViewModels\UMCCollectionTreeViewModel.cs" />
-    <Compile Include="ViewModels\UMCViewModel.cs" />
+    <Compile Include="ViewModels\TreeView\MassTagMatchTreeViewModel.cs" />
+    <Compile Include="ViewModels\TreeView\PeptideCollectionTreeViewModel.cs" />
+    <Compile Include="ViewModels\TreeView\PeptideTreeViewModel.cs" />
+    <Compile Include="ViewModels\TreeView\StatisticTreeViewItem.cs" />
+    <Compile Include="ViewModels\TreeView\TreeItemViewModel.cs" />
+    <Compile Include="ViewModels\TreeView\UMCClusterCollectionTreeViewModel.cs" />
+    <Compile Include="ViewModels\TreeView\UMCCollectionTreeViewModel.cs" />
+    <Compile Include="ViewModels\TreeView\UMCTreeViewModel.cs" />
+    <Compile Include="ViewModels\UMCClusterFilterViewModel.cs" />
+    <Compile Include="ViewModels\UMCClusterViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="Windows\FilePathFinder.xaml.cs">
       <DependentUpon>FilePathFinder.xaml</DependentUpon>
@@ -165,6 +170,12 @@
     <Compile Include="Windows\Viewers\Clusters\ClusterControl.xaml.cs">
       <DependentUpon>ClusterControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Windows\Viewers\Clusters\ClusterFilterControl.xaml.cs">
+      <DependentUpon>ClusterFilterControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Viewers\Clusters\ClusterFilterWindow.xaml.cs">
+      <DependentUpon>ClusterFilterWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\Viewers\Clusters\ClusterGrid.xaml.cs">
       <DependentUpon>ClusterGrid.xaml</DependentUpon>
     </Compile>
@@ -177,7 +188,7 @@
     <Compile Include="Windows\Viewers\Clusters\ClusterTree.xaml.cs">
       <DependentUpon>ClusterTree.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\UMCClusterViewModel.cs" />
+    <Compile Include="ViewModels\TreeView\UMCClusterTreeViewModel.cs" />
     <Compile Include="Windows\Viewers\Databases\DatabaseSearchToolWindow.xaml.cs">
       <DependentUpon>DatabaseSearchToolWindow.xaml</DependentUpon>
     </Compile>
@@ -231,6 +242,9 @@
     </Compile>
     <Compile Include="Windows\Viewers\Proteins\ProteinListBox.xaml.cs">
       <DependentUpon>ProteinListBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Viewers\RangeView.xaml.cs">
+      <DependentUpon>RangeView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\Viewers\Spectra\MsMsGrid.xaml.cs">
       <DependentUpon>MsMsGrid.xaml</DependentUpon>
@@ -300,6 +314,14 @@
     <Page Include="Windows\Viewers\Clusters\ClusterControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\Viewers\Clusters\ClusterFilterControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Viewers\Clusters\ClusterFilterWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\Viewers\Clusters\ClusterGrid.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -386,6 +408,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Windows\Viewers\Proteins\ProteinListBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Viewers\RangeView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -514,6 +540,21 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\text-file-3-32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\molecule1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\search-3-32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\circle-32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\tag-32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\list-view-32.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

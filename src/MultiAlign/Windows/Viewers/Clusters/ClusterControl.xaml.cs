@@ -18,6 +18,7 @@ using PNNLOmicsIO.IO;
 using System.IO;
 using System;
 using System.Linq;
+using MultiAlign.IO;
 
 namespace MultiAlign.Windows.Viewers.Clusters
 {
@@ -55,11 +56,6 @@ namespace MultiAlign.Windows.Viewers.Clusters
             m_featureImageSaveDialog        = new System.Windows.Forms.SaveFileDialog();
             
             
-            /*Binding binding                 = new Binding("SelectedFeature");
-            binding.Source                  = m_featureGrid;
-            SetBinding(FeatureProperty, binding);
-            */
-
             m_sicChart.ViewPortChanged      += new PNNLControls.ViewPortChangedHandler(m_sicChart_ViewPortChanged);
             m_sicChart.ChartPointPressed    += new System.EventHandler<SelectedPointEventArgs>(m_sicChart_ChartPointPressed);     
 
@@ -285,7 +281,7 @@ namespace MultiAlign.Windows.Viewers.Clusters
 
         private void LoadMsSpectrum(MSFeatureLight msFeature)
         {
-            DatasetInformation info = Analysis.MetaData.FindDatasetInformation(msFeature.GroupID);            
+            DatasetInformation info = SingletonDataProviders.GetDatasetInformation(msFeature.GroupID);            
             if (info != null && info.Raw != null && info.RawPath != null)
             {
                 Dictionary<int, List<MSFeatureLight>> features = msFeature.ParentFeature.CreateChargeMap();
@@ -332,52 +328,7 @@ namespace MultiAlign.Windows.Viewers.Clusters
                 }
             }
         }
-        /// <summary>
-        /// Hack for stephens presentation.
-        /// </summary>
-        static int clusterCount = 0;
-        void WriteUMCCluster(UMCClusterLight cluster)
-        {
-            using(TextWriter writer = File.CreateText(@"m:\clusterData.txt"))
-            {
-                
-                List<MSSpectra> spectra = new List<MSSpectra>();
-                foreach (UMCLight feature in cluster.Features)
-                {
-                    foreach (MSFeatureLight msfeature in feature.MSFeatures)
-                    {
-                        foreach(MSSpectra spectrum in msfeature.MSnSpectra)
-                        {
-                            DatasetInformation info = Analysis.MetaData.FindDatasetInformation(msfeature.GroupID);
-                            if (info != null && info.Raw != null && info.RawPath != null)
-                            {
-                                writer.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}", cluster.ID,
-                                                                    feature.GroupID,
-                                                                    feature.ID,
-                                                                    msfeature.ID,
-                                                                    spectrum.ID,
-                                                                    spectrum.Scan,
-                                                                    info.RawPath);
-                            
-                                spectrum.Peaks = ParentSpectraFinder.GetDaughterSpectrum(info.RawPath, spectrum.Scan);
-                                spectra.Add(spectrum);
-
-                                using (TextWriter specWriter = File.CreateText(string.Format(@"m:\spec-{0}-{1}-{2}.txt", cluster.ID, spectrum.GroupID, spectrum.ID)))
-                                {
-                                    foreach (XYData datum in spectrum.Peaks)
-                                    {
-                                        specWriter.WriteLine("{0}\t{1}", datum.X, datum.Y);
-                                    }
-                                }
-                            }                                                          
-                        }
-                    }
-                }
-            }
-
-
-        }
-
+        
         /// <summary>
         /// Grabs the data from the provider cache and shoves into UI where needed.  This is done
         /// here like this to prevent holding large amounts of data in memory.
@@ -392,14 +343,8 @@ namespace MultiAlign.Windows.Viewers.Clusters
                 thisSender.m_adjustingFeaturePlots = true;
 
                 // Grab the data from the cache
-                UMCClusterLightMatched matchedCluster = (UMCClusterLightMatched)e.NewValue;
-                lock (thisSender.Providers.Synch)
-                {
-                    matchedCluster.Cluster.ReconstructUMCCluster(thisSender.Providers);
-                }
-                thisSender.WriteUMCCluster(matchedCluster.Cluster);
+                UMCClusterLightMatched matchedCluster = (UMCClusterLightMatched)e.NewValue;                             
                 thisSender.UpdatePlotsWithClusterData(matchedCluster);
-
 
                 // Make sure that if a new feature is selected that we update the feature list.
                 if (matchedCluster.Cluster.Features.Count > 0)
@@ -476,6 +421,8 @@ namespace MultiAlign.Windows.Viewers.Clusters
         /// <param name="cluster"></param>
         private void UpdatePlotsWithClusterData(UMCClusterLightMatched matchedCluster)
         {
+
+
             // Clear the charta
             m_clusterChart.ClearData();
             m_driftChart.ClearData();
@@ -486,15 +433,7 @@ namespace MultiAlign.Windows.Viewers.Clusters
             m_mainCluster                   = cluster;
             m_clusterChart.MainCluster      = matchedCluster;
             m_driftChart.MainCluster        = matchedCluster;
-            //m_profileChart.MainCluster      = matchedCluster;
-            //m_profileChart.UpdateCharts(true);
-            
-           //  m_featureGrid.Features          = cluster.Features;
-
-            // Load the matching data.
-            //List<ClusterToMassTagMap> tagMatches       = matchedCluster.ClusterMatches;            
-            //m_masstagGrid.MassTags = tagMatches;
-
+                                   
             // Then we find all the nearby clusters
             double massPpm  = ClusterTolerances.Mass;
             double net      = ClusterTolerances.RetentionTime;
@@ -504,7 +443,7 @@ namespace MultiAlign.Windows.Viewers.Clusters
             double maxNet   = cluster.RetentionTime + net;
 
             List<UMCClusterLight> otherClusters
-                = Providers.ClusterCache.FindNearby(minMass, maxMass, minNet, maxNet);
+                = SingletonDataProviders.Providers.ClusterCache.FindNearby(minMass, maxMass, minNet, maxNet);
 
             // Remove self from the list
             int index = otherClusters.FindIndex(delegate(UMCClusterLight x)
@@ -525,7 +464,7 @@ namespace MultiAlign.Windows.Viewers.Clusters
             foreach (UMCClusterLightMatched matchedOtherCluster in otherClusterMatches)
             {
                 matchedOtherCluster.Cluster.Features.Clear();
-                matchedOtherCluster.Cluster.ReconstructUMCCluster(Providers, false, false);
+                matchedOtherCluster.Cluster.ReconstructUMCCluster(SingletonDataProviders.Providers, false, false);
             }            
            // m_clusterGrid.Clusters = otherClusterMatches;
 
@@ -563,9 +502,7 @@ namespace MultiAlign.Windows.Viewers.Clusters
                     }
                 }
             }
-            m_msmsGrid.MsMsSpectra = new System.Collections.ObjectModel.ObservableCollection<MSFeatureMsMs>(msmsFeatures);
 
-            float count = 0;
             List<KeyValuePair<float, float>> distances = new List<KeyValuePair<float, float>>();
             List<UMCLight> features = new List<UMCLight>();
             features.AddRange(matchedCluster.Cluster.Features);                       
@@ -589,61 +526,6 @@ namespace MultiAlign.Windows.Viewers.Clusters
             get;
             set;
         }
-        /// <summary>
-        /// Gets or sets the feature data access providers for retrieving extra data for display.
-        /// </summary>
-        public FeatureDataAccessProviders Providers
-        {
-            get;
-            set;
-        } 
-        /// <summary>
-        /// Gets or sets the analysis used.
-        /// </summary>
-        public MultiAlignAnalysis Analysis
-        {
-            get;
-            set;
-        }
-        #endregion
-
-        #region Control Event Handlers
-
-        private void m_saveFeaturePlotButton_Click(object sender, RoutedEventArgs e)
-        {
-
-            m_featureImageSaveDialog.FileName = string.Format("cluster-{0}.png", m_mainCluster.ID);
-            System.Windows.Forms.DialogResult result = m_featureImageSaveDialog.ShowDialog();
-
-            if (result == System.Windows.Forms.DialogResult.OK)
-            {
-                string extension = System.IO.Path.GetExtension(m_featureImageSaveDialog.FileName);
-                string filename  = System.IO.Path.GetFileNameWithoutExtension(m_featureImageSaveDialog.FileName);
-                string pathName  = System.IO.Path.GetDirectoryName(m_featureImageSaveDialog.FileName);
-
-                try
-                {
-                    m_clusterChart.ToBitmap(640, 640).Save(System.IO.Path.Combine(pathName, string.Format("{0}-massnet.{1}", filename, extension)));
-                    m_driftChart.ToBitmap(640, 640).Save(System.IO.Path.Combine(pathName, string.Format("{0}-massdrifttime.{1}", filename, extension)));
-                }
-                catch
-                {
-                    //TODO: Add a message to the user here.
-                }
-            }
-        }
-        #endregion
-
-        private void exportMsMsButton_Click(object sender, RoutedEventArgs e)
-        {
-            System.Windows.Forms.DialogResult result =  m_saveFileDialog.ShowDialog();
-            if (result == System.Windows.Forms.DialogResult.OK)
-            {
-                string path                         = m_saveFileDialog.FileName;
-                IMsMsSpectraWriter writer           = MsMsFileWriterFactory.CreateSpectraWriter(System.IO.Path.GetExtension(path));                                                
-                List<DatasetInformation> datasets   = Analysis.MetaData.Datasets.ToList();
-                Cluster.Cluster.ExportMsMs(m_saveFileDialog.FileName, datasets, writer);           
-            }
-        }
+        #endregion       
     }
 }

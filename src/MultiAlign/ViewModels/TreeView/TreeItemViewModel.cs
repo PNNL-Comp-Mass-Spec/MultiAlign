@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace MultiAlign.ViewModels
+namespace MultiAlign.ViewModels.TreeView
 {
 
     /// <summary>
@@ -11,6 +11,11 @@ namespace MultiAlign.ViewModels
     /// </summary>
     public abstract class TreeItemViewModel : ViewModelBase
     {
+        /// <summary>
+        /// Fired if the item was selected
+        /// </summary>
+        public event EventHandler Selected;
+
         protected bool m_loaded;
         /// <summary>
         /// Flag indicating the model was expanded.
@@ -30,8 +35,10 @@ namespace MultiAlign.ViewModels
             m_loaded = false;
         }
 
-
-        public string Name { get; set; }
+        /// <summary>
+        /// Gets or sets the name of the tree view item model
+        /// </summary>
+        public virtual string Name { get; set; }
 
         /// <summary>
         /// Gets/sets whether the TreeViewItem 
@@ -53,16 +60,13 @@ namespace MultiAlign.ViewModels
                 {
                     m_parent.IsExpanded = true;
                 }
-                if (m_isExpanded)
+                if (m_isExpanded && ! m_loaded)
                 {
                     m_loaded = true;
                     LoadChildren();
                 }
             }
         }
-
-        public abstract void LoadChildren();
-
 
         /// <summary>
         /// Gets/sets whether the TreeViewItem 
@@ -77,8 +81,20 @@ namespace MultiAlign.ViewModels
                 {
                     m_isSelected = value;
                     OnPropertyChanged("IsSelected");
+                    if (value == true)
+                    {
+                        if (Selected != null)
+                        {
+                            Selected(this, null);
+                        }
+                    }
                 }
             }
         }
+
+        /// <summary>
+        /// Forces items to lazy load their children
+        /// </summary>
+        public abstract void LoadChildren();        
     }
 }

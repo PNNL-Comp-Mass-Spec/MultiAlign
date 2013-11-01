@@ -5,23 +5,23 @@ using System.Text;
 using MultiAlignCore.Data;
 using System.Collections.ObjectModel;
 
-namespace MultiAlign.ViewModels
+namespace MultiAlign.ViewModels.TreeView
 {
 
     /// <summary>
     /// 
     /// </summary>
-    public class MassTagMatchViewModel : TreeItemViewModel
+    public class MassTagMatchTreeViewModel : TreeItemViewModel
     {
         private ClusterToMassTagMap m_match;
 
-        public MassTagMatchViewModel(ClusterToMassTagMap match)
+        public MassTagMatchTreeViewModel(ClusterToMassTagMap match)
             : this(match, null)
         {
 
         }
 
-        public MassTagMatchViewModel(ClusterToMassTagMap match, UMCClusterViewModel parent)
+        public MassTagMatchTreeViewModel(ClusterToMassTagMap match, UMCClusterTreeViewModel parent)
         {
             m_match = match;
             m_parent = parent;
