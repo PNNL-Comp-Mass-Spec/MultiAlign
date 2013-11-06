@@ -282,6 +282,9 @@ namespace MultiAlignCore.Extensions
             {
                 msmsFeatures = providers.MSFeatureToMSnFeatureCache.FindByUMCFeatureId(feature.GroupID,
                                                                                         feature.ID);
+
+
+
             }
             // Then grab the spectra id list
             ids = msmsFeatures.ConvertAll<int>(x => x.MSMSFeatureID);

@@ -14,13 +14,16 @@ namespace MultiAlign.Commands.Clusters
 {
     class ClusterTreeFilterCommand: ICommand
     {
-        public event EventHandler CanExecuteChanged;
-
-        UMCClusterCollectionTreeViewModel m_viewModel;
+        public event EventHandler                   CanExecuteChanged;
+        private UMCClusterFilterViewModel           m_filterViewModel;
+        private UMCClusterCollectionTreeViewModel   m_viewModel;
+        private ClusterFilterWindow                 m_newWindow;  
 
         public ClusterTreeFilterCommand(UMCClusterCollectionTreeViewModel viewModel)
         {
-            m_viewModel = viewModel;
+            m_viewModel         = viewModel;
+            m_filterViewModel   = new UMCClusterFilterViewModel(viewModel.Clusters);
+            
         }
 
         #region ICommand Members
@@ -36,18 +39,18 @@ namespace MultiAlign.Commands.Clusters
 
         private void FilterWindow()
         {
-            ClusterFilterWindow newWindow               = new ClusterFilterWindow();            
-            UMCClusterFilterViewModel filterViewModel   = new UMCClusterFilterViewModel(m_viewModel.Clusters);
-            newWindow.DataContext                       = filterViewModel;            
-            newWindow.WindowStartupLocation             = WindowStartupLocation.CenterScreen;
-            newWindow.WindowState                       = WindowState.Normal;
-            newWindow.WindowStyle                       = WindowStyle.ToolWindow;
-            
-            bool? worked = newWindow.ShowDialog();
+
+            m_newWindow = new ClusterFilterWindow();
+            m_newWindow.DataContext = m_filterViewModel;
+            m_newWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            m_newWindow.WindowState = WindowState.Normal;
+            m_newWindow.WindowStyle = WindowStyle.ToolWindow;
+
+            bool? worked = m_newWindow.ShowDialog();
             if (worked == true)
             {
                 m_viewModel.FilteredClusters.Clear();
-                IEnumerable<UMCClusterLightMatched> clusters = filterViewModel.ApplyFilters();
+                IEnumerable<UMCClusterLightMatched> clusters = m_filterViewModel.ApplyFilters();
                 m_viewModel.ResetClusters(clusters);
             }
         }

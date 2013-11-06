@@ -5,6 +5,8 @@ using System.Text;
 using MultiAlignCore.Data.Features;
 using System.Collections.ObjectModel;
 using MultiAlign.ViewModels.TreeView;
+using MultiAlign.IO;
+using MultiAlignCore.Data;
 
 namespace MultiAlign.ViewModels
 {
@@ -28,7 +30,7 @@ namespace MultiAlign.ViewModels
             MsMsTotal           = new RangeViewModel(new Range(0, 100), "Number Of Ms/Ms");
             
         }
-
+        
         public RangeViewModel TightnessRange
         {
             get;
@@ -61,8 +63,7 @@ namespace MultiAlign.ViewModels
             private set;
         }
 
-        #region Mass NET Filters     
-        
+        #region Mass NET Filters        
         public RangeViewModel NetRange
         {
             get;
@@ -89,7 +90,16 @@ namespace MultiAlign.ViewModels
             }
         }
 
+        /// <summary>
+        /// Filter string for clusters
+        /// </summary>
         private string m_clusterIdFilter;
+        /// <summary>
+        /// Flag if the filter should be used
+        /// </summary>
+        private bool m_shouldUseClusterFilter;
+        private string m_datasetFilterId;
+        private bool m_shouldUseDatasetFilter;
 
         /// <summary>
         /// Filter for clusters.
@@ -98,14 +108,33 @@ namespace MultiAlign.ViewModels
         {
             get
             {
-
+                return m_clusterIdFilter;
             }
             set
             {
-            }
-            
+                if (value != m_clusterIdFilter)
+                {
+                    m_clusterIdFilter = value;
+                    OnPropertyChanged("ClusterIdFilter");
+                }
+            }            
         }
 
+        public bool ShouldUseClusterFilter
+        {
+            get
+            {
+                return m_shouldUseClusterFilter;
+            }
+            set
+            {
+                if (m_shouldUseClusterFilter != value)
+                {
+                    m_shouldUseClusterFilter = value;
+                    OnPropertyChanged("ShouldUseDFilter");
+                }
+            }
+        }
         public void Update()
         {
 
@@ -131,6 +160,29 @@ namespace MultiAlign.ViewModels
             {
                 filtered = filtered.Where(x => x.Cluster.AmbiguityScore >= AmbiguityRange.Minimum && x.Cluster.AmbiguityScore <= AmbiguityRange.Maximum);
             }
+
+            if (ShouldUseClusterFilter)
+            {
+                // First map the cluster ID's from the text...who cares if some malformed.
+                Dictionary<int, bool> hasClusters = new Dictionary<int, bool>();
+                string[] data = m_clusterIdFilter.Replace("\r"," ").Replace("\n"," ").Split(' ');
+                foreach (var id in data)
+                {
+                    int  clusterId  = 0;
+                    bool worked     = int.TryParse(id, out clusterId);
+                    if (worked)
+                    {
+                        if (!hasClusters.ContainsKey(clusterId))
+                        {
+                            hasClusters.Add(clusterId, true);
+                        }                        
+                    }
+                }
+
+                filtered = filtered.Where(x => hasClusters.ContainsKey(x.Cluster.ID));
+            }
+
+            
 
             return filtered;
         }

@@ -49,24 +49,25 @@
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="32"/>
                                 <RowDefinition Height="*"/>
+                                <RowDefinition Height="32"/>        
                             </Grid.RowDefinitions>
                             <Label HorizontalContentAlignment="Center">Has These Cluster ID's</Label>
-                            <TextBox Margin="5" Grid.Row="1" />
-                        </Grid>
+                            <TextBox
+                                Grid.Row="1" 
+                                Margin="5" 
+                                AcceptsReturn="True"
+                                TextWrapping="WrapWithOverflow"
+                                VerticalScrollBarVisibility="Auto"
+                                
+                                Text="{Binding Path=ClusterIdFilter}"/>
+                            <CheckBox
+                                Grid.Row="2"
+                                Margin="5"
+                                FontSize="16"
+                                IsChecked="{Binding Path=ShouldUseClusterFilter}">Should Use</CheckBox>
+                    </Grid>
                     </TabItem>
-                    <TabItem                    
-                        Header="Dataset Filters"
-                        Style="{DynamicResource ResourceKey=SimpleTabItem}">                        
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="32"/>
-                                <RowDefinition Height="*"/>
-                            </Grid.RowDefinitions>
-                            <Label HorizontalContentAlignment="Center">Has Features From These Datasets</Label>
-                            <ListBox Margin="5" Grid.Row="1"/>
-                        </Grid>
-                    </TabItem>
-                </TabControl>                                                    
+            </TabControl>                                                    
             </TabItem>
         </TabControl>    
 </UserControl>

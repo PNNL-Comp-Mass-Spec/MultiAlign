@@ -39,6 +39,15 @@ namespace MultiAlign.IO
         }
 
         /// <summary>
+        /// Retrieves a list of the datasets loaded.
+        /// </summary>
+        /// <returns></returns>
+        public static IEnumerable<DatasetInformation> GetAllInformation()
+        {
+            return m_datasets.Values;
+        }
+
+        /// <summary>
         /// Finds the dataset information if a group id can be found.  Null otherwise.
         /// </summary>
         /// <param name="groupID"></param>

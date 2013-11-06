@@ -136,16 +136,10 @@ namespace MultiAlign.Windows.Viewers.MassTags
 
             if (e.NewValue != null)
             {
-                UMCLight feature                        = (UMCLight)e.NewValue;                
-                thisSender.m_msFeaturePlot.MainFeature  = feature;
-
+                UMCLight feature                        = (UMCLight)e.NewValue;                                
                 thisSender.m_sicChart.SetFeature(feature); 
-                thisSender.m_sicChart.AutoViewPort();
-                thisSender.m_msFeaturePlot.UpdateCharts(true);
-
-                thisSender.m_sicChart.AdjustViewPortWithTolerances(thisSender.FeatureFindingTolerances, false);
-                thisSender.m_msFeaturePlot.AdjustViewPortWithTolerances(thisSender.FeatureFindingTolerances, false);
-
+                thisSender.m_sicChart.AutoViewPort();                
+                thisSender.m_sicChart.AdjustViewPortWithTolerances(thisSender.FeatureFindingTolerances, false);                
             }
         }
         /// <summary>

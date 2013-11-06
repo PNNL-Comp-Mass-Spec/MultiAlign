@@ -196,9 +196,13 @@ namespace MultiAlign.Windows
             Controller.Config.Analysis.MetaData.AnalysisPath = analysis.Path;
             Controller.Config.Analysis.MetaData.AnalysisName = analysis.Name;
 
-            ApplicationStatusMediator.SetStatus("Analysis loaded.  Creating plots.");
+            ApplicationStatusMediator.SetStatus(".");
             AnalysisViewModel model     = new AnalysisViewModel(Controller.Config.Analysis);
             m_mainControl.DataContext   = model;
+
+
+            StateModerator.CurrentViewState = ViewState.AnalysisView;
+            System.Windows.Forms.Application.DoEvents();
         }
         /// <summary>
         /// Opens an existing analysis 

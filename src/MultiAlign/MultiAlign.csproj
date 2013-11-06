@@ -63,6 +63,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\$(Platform)\MultiAlignEngine.dll</HintPath>
     </Reference>
+    <Reference Include="OxyPlot.Wpf">
+      <HintPath>..\..\lib\OxyPlot.Wpf.dll</HintPath>
+    </Reference>
     <Reference Include="PNNLOmics, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\PNNLOmics.dll</HintPath>
@@ -160,6 +163,9 @@
     </Compile>
     <Compile Include="Windows\Plots\FeaturePlotView.xaml.cs">
       <DependentUpon>FeaturePlotView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Plots\MsSpectra.xaml.cs">
+      <DependentUpon>MsSpectra.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\UserControl1.xaml.cs">
       <DependentUpon>UserControl1.xaml</DependentUpon>
@@ -303,6 +309,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Windows\Plots\MsSpectra.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\UserControl1.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

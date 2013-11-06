@@ -62,8 +62,8 @@ namespace MultiAlign.ViewModels.TreeView
                 }
                 if (m_isExpanded && ! m_loaded)
                 {
-                    m_loaded = true;
                     LoadChildren();
+                    m_loaded = true;
                 }
             }
         }

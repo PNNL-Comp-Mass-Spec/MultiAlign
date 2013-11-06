@@ -50,7 +50,6 @@ namespace MultiAlignCore.IO.Features.Hibernate
 
             return FindByCriteria(criterionList);
         }
-
         #endregion
     }
 }

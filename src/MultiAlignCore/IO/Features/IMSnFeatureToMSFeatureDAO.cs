@@ -10,6 +10,5 @@ namespace MultiAlignCore.IO.Features
     {
         List<MSFeatureToMSnFeatureMap> FindByDatasetId(int datasetId);
         List<MSFeatureToMSnFeatureMap> FindByUMCFeatureId(int datasetId, int featureId);
-        List<MSFeatureToMSnFeatureMap> FindByMsFeatureId(int datasetId, int featureId);
     }
 }
