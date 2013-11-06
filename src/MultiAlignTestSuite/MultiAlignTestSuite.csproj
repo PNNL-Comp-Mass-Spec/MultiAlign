@@ -130,6 +130,7 @@
     <Compile Include="Algorithms\UMCFeatureFinding.cs" />
     <Compile Include="Algorithms\Xic\XicTest.cs" />
     <Compile Include="IO\Databases\DatabaseIoTests.cs" />
+    <Compile Include="IO\UMCClusterReconstruction.cs" />
     <Compile Include="IO\UMCFeatureDOATest.cs" />
     <Compile Include="IO\MSFeatureDOATest.cs" />
     <Compile Include="IO\MassTagDOATest.cs" />
