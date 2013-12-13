@@ -25,7 +25,14 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
             UseEllipsoid            = false;
             UseDriftTime            = false;
             ShouldCalculateSTAC     = true;
+
+            IdentificationAlgorithm = PeakMatchingType.STAC;
         }
+
+        [ParameterFileAttribute("IdentificationAlgorithm", "Algorithm")]
+        [Category("Algorithm")]
+        [Description("Determines what identification algorithm to use")]
+        public PeakMatchingType IdentificationAlgorithm { get; set; }
 
         [ParameterFileAttribute("UsePriors", "STAC")]
         [Category("AMT")]

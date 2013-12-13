@@ -13,6 +13,8 @@ namespace MultiAlignTestSuite.Papers.Alignment
     {
         public AnchorPointMatch()
         {
+            AnchorPointX = new AnchorPoint();
+            AnchorPointY = new AnchorPoint();
         }
 
 

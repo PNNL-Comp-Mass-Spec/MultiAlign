@@ -2721,6 +2721,13 @@ namespace PNNLControls
 					this.Legend.Bounds.Height);
 				this.PerformLayout();
 			}
+            else if (this.mChartClickState == ChartClickState.Normal)
+            {                
+                float xChart = mobj_axis_plotter.XChartCoordinate(e.X - mobj_axis_plotter.ChartAreaBounds.X);
+                float yChart = mobj_axis_plotter.YChartCoordinate(e.Y - mobj_axis_plotter.ChartAreaBounds.Y);
+
+                OnStablePointSelected(xChart, yChart, 0);
+            }
 //			if (this.mChartClickState == ChartClickState.Normal) 
 //			{
 //
@@ -2745,7 +2752,7 @@ namespace PNNLControls
 //					//					editor.Dispose();
 //				}
 //			}
-			if (this.mChartClickState == ChartClickState.LegendSize) 
+			else if (this.mChartClickState == ChartClickState.LegendSize) 
 			{
 				this.mChartClickState = ChartClickState.Normal;
 				this.Cursor = System.Windows.Forms.Cursors.Default;
@@ -2802,10 +2809,11 @@ namespace PNNLControls
                 else if (Control.ModifierKeys == Keys.Shift)
                 {
 
-                    float xChart = mobj_axis_plotter.XChartCoordinate(e.X - mobj_axis_plotter.ChartAreaBounds.X);
-                    float yChart = mobj_axis_plotter.YChartCoordinate(e.Y - mobj_axis_plotter.ChartAreaBounds.Y);
 
-                    OnStablePointSelected(xChart, yChart, 0);
+                    //float xChart = mobj_axis_plotter.XChartCoordinate(e.X - mobj_axis_plotter.ChartAreaBounds.X);
+                    //float yChart = mobj_axis_plotter.YChartCoordinate(e.Y - mobj_axis_plotter.ChartAreaBounds.Y);
+
+                    //OnStablePointSelected(xChart, yChart, 0);
                 }
 			} 
 

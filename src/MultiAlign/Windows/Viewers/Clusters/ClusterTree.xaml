@@ -25,7 +25,7 @@
                  Margin="5">
             <StackPanel Orientation="Horizontal">
                 <Label FontSize="16" Foreground="Gray"  VerticalContentAlignment="Center">
-                    Total Clusters: 
+                    Total: 
                 </Label>
                 <Label FontSize="16" Foreground="Gray" VerticalContentAlignment="Center" Margin="0,5,5,0" Content="{Binding Path=FilteredClusters.Count}" />
                 <Label FontSize="16" Foreground="Gray"  VerticalContentAlignment="Center">
@@ -85,7 +85,7 @@
                                 <RowDefinition Height="48"/>
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="32"/>
+                                <ColumnDefinition Width="48"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Image
@@ -103,13 +103,13 @@
                 <!-- Peptides -->   
                 <HierarchicalDataTemplate 
                         DataType="{x:Type viewModels:PeptideCollectionTreeViewModel}" 
-                        ItemsSource="{Binding Peptides}">
+                        ItemsSource="{Binding Items}">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="48"/>
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="32"/>
+                                <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Image
@@ -177,10 +177,10 @@
                 <!-- Statistic Attribute Model -->
                 <HierarchicalDataTemplate 
                         DataType="{x:Type viewModels:StatisticTreeViewItem}">
-                        <Grid>
+                        <Grid >
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="20"/>
-                                <ColumnDefinition Width="64"/>
+                                <ColumnDefinition Width="20" />
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="B"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <Image
@@ -196,8 +196,30 @@
                             <Label Grid.Row="0" Grid.Column="2" Content="{Binding Path=Value}"/>
                         </Grid>
                 </HierarchicalDataTemplate>
-                                
-                <!-- Cluster View Model --> 
+                    <HierarchicalDataTemplate 
+                        DataType="{x:Type viewModels:StringTreeViewItem}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="20" />
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="B"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Image
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Width="16"
+                                Height="16"
+                                Stretch="UniformToFill"
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Left"
+                                Source="/MultiAlign;component/Resources/circle-32.png"/>
+                            <Label Grid.Row="0" Grid.Column="1" Content="{Binding Path=Name}" Margin="0,0,5,0"/>
+                            <Label Grid.Row="0" Grid.Column="2" Content="{Binding Path=Value}"/>
+                        </Grid>
+                    </HierarchicalDataTemplate>
+                    
+
+                    <!-- Cluster View Model --> 
                 <HierarchicalDataTemplate 
                   DataType="{x:Type viewModels:UMCClusterTreeViewModel}" 
                         ItemsSource="{Binding Items}">
@@ -265,11 +287,6 @@
                         </Border>
                </HierarchicalDataTemplate>
                                 
-                <!-- Peptide View Model -->
-                <HierarchicalDataTemplate 
-                    DataType="{x:Type viewModels:PeptideTreeViewModel}">
-                    <Label>Feature</Label>
-                </HierarchicalDataTemplate>
 
                 <!-- Mass Tag Match View Model --> 
                 <HierarchicalDataTemplate 
@@ -367,14 +384,24 @@
             BorderBrush="LightGray"
             Margin="5"
             Grid.Row="2">
-            <Button  
-                Margin="5"
-                Style="{DynamicResource ResourceKey=SimpleButtonStyle}"  
-                HorizontalContentAlignment="Center"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Command="{Binding Path=FilterCommand}"
-                Width="128">Filter</Button>
+            <StackPanel Orientation="Horizontal">
+                <Button  
+                    Margin="5"
+                    Style="{DynamicResource ResourceKey=SimpleButtonStyle}"  
+                    HorizontalContentAlignment="Center"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Command="{Binding Path=FilterCommand}"
+                    Width="128">Filter</Button>
+                <Button
+                    Margin="5"
+                    Style="{DynamicResource ResourceKey=SimpleButtonStyle}"  
+                    HorizontalContentAlignment="Center"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Command="{Binding Path=ExportCommand}"
+                    Width="128">Export</Button>
+            </StackPanel>
         </Border>
     </Grid>
 </UserControl>

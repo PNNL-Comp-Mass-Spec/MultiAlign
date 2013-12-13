@@ -18,14 +18,14 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Image
-            Width="32"
+            Width="24"
             Grid.Column="0"
             VerticalAlignment="Bottom"
             HorizontalAlignment="Center" Source="/MultiAlign;component/Resources/molecule.png">
 
         </Image>
         <Image
-            Width="32"
+            Width="28"
             Grid.Column="1"
             VerticalAlignment="Bottom"
             HorizontalAlignment="Center" Source="/MultiAlign;component/Resources/MainIcon.png">
@@ -39,10 +39,10 @@
 
         </Image>
         <Image
-            Height="32"
+            Height="48"
             Grid.Column="3"
             VerticalAlignment="Bottom"
-            HorizontalAlignment="Center" Source="/MultiAlign;component/Resources/MultiAlignMain.png">
+            HorizontalAlignment="Center" Source="/MultiAlign;component/Resources/tag-32.png">
 
         </Image>
         <Label     

@@ -53,15 +53,32 @@ namespace MultiAlignCore.IO.Features
                     command.CommandText = "CREATE INDEX idx_msfeature_id on T_MSFeatures(FEATURE_ID ASC)";
                     command.ExecuteNonQuery();
 
+                    command.CommandText = "CREATE INDEX idx_umc ON T_MSFeatures (Dataset_ID, LCMS_Feature_ID)";
+                    command.ExecuteNonQuery();
+
                     command.CommandText = "CREATE INDEX idx_spectra_id on T_MSn_Features(SPECTRA_ID ASC)";
                     command.ExecuteNonQuery();
 
                     // MSMS Mapping Table
-                    command.CommandText = "CREATE INDEX idx_msFeature_id on T_MSnFeature_To_MSFeature_Map(MS_Feature_ID ASC)";
+                    command.CommandText = "CREATE INDEX idx_msMsnFeature_id on T_MSnFeature_To_MSFeature_Map(MS_Feature_ID ASC)";
                     command.ExecuteNonQuery();
 
-                    command.CommandText = "CREATE INDEX idx_msmsFeature_id on T_MSnFeature_To_MSFeature_Map(MSn_Feature_ID ASC)";
+                    command.CommandText = "CREATE INDEX idx_msn_umc ON T_MSnFeature_To_MSFeature_Map(MS_Dataset_ID, LCMS_Feature_ID)";
                     command.ExecuteNonQuery();
+
+                    command.CommandText = "CREATE INDEX idx_msnFeature_id on T_MSnFeature_To_MSFeature_Map(MSn_Feature_ID ASC)";
+                    command.ExecuteNonQuery();
+
+
+                    // Create the peptide sequences index
+                    command.CommandText = "CREATE INDEX idx_databaseIndex_id on T_DatabaseSearch(Dataset_ID ASC, LCMS_Feature_ID)";
+                    command.ExecuteNonQuery();
+
+
+                    command.CommandText = "CREATE INDEX idx_msnDatbaseIndex_id on T_DatabaseSearch_To_MsnFeature(Dataset_ID ASC, LCMS_Feature_ID )";
+                    command.ExecuteNonQuery();
+
+
                 }
 
                 connection.Close();

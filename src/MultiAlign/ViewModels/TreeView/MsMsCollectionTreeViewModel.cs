@@ -14,6 +14,7 @@ namespace MultiAlign.ViewModels.TreeView
     {
         private UMCClusterLight m_cluster;
         protected ObservableCollection<MsMsTreeViewModel> m_spectra;
+        public event EventHandler<IdentificationFeatureSelectedEventArgs> SpectrumSelected;
 
         public MsMsCollectionTreeViewModel(UMCClusterLight cluster) :
             this(cluster, null)
@@ -35,15 +36,39 @@ namespace MultiAlign.ViewModels.TreeView
             }
         }
 
+        
         public override void LoadChildren()
         {
+            if (m_loaded)
+                return;
+
             List <MSSpectra> spectra = m_cluster.FindSpectra();
 
             List<MsMsTreeViewModel> peptideModels =
                 (from spectrum in spectra
                  select new MsMsTreeViewModel(spectrum)).ToList();
 
-            peptideModels.ForEach(x => m_spectra.Add(x));
+            foreach (MsMsTreeViewModel model in peptideModels)
+            {
+                m_spectra.Add(model);
+                model.FeatureSelected += new EventHandler<FeatureSelectedEventArgs>(model_FeatureSelected);
+                model.SpectrumSelected += new EventHandler<IdentificationFeatureSelectedEventArgs>(model_SpectrumSelected);
+            }            
+
+            m_loaded = true;
+        }
+
+        void model_SpectrumSelected(object sender, IdentificationFeatureSelectedEventArgs e)
+        {
+            if (SpectrumSelected != null)
+            {
+                SpectrumSelected(sender, e);
+            }
+        }
+
+        void model_FeatureSelected(object sender, FeatureSelectedEventArgs e)
+        {
+            OnFeatureSelected(e.Feature);
         }
     }
 }

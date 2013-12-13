@@ -35,6 +35,7 @@ namespace MultiAlign.ViewModels.TreeView
             {
                 Name = string.Format("Dataset {0}", m_feature.GroupID);
             }
+
             AddStatistic("Id",          m_feature.ID);
             AddStatistic("Dataset Id",  m_feature.GroupID);
             AddStatistic("Mass",        m_feature.MassMonoisotopicAligned);
@@ -46,17 +47,28 @@ namespace MultiAlign.ViewModels.TreeView
             AddStatistic("Charge",      m_feature.ChargeState);            
         }
 
-        private void AddStatistic(string name, double value)
-        {
-            StatisticTreeViewItem x = new StatisticTreeViewItem(value, name);
-            m_items.Add(x);
-        }
 
         public UMCLight Feature
         {
             get
             {
                 return m_feature;
+            }
+        }
+
+        public override bool IsSelected
+        {
+            get
+            {
+                return base.IsSelected;
+            }
+            set
+            {
+                base.IsSelected = value;
+                if (m_feature != null)
+                {                   
+                    OnFeatureSelected(m_feature);
+                }
             }
         }
 

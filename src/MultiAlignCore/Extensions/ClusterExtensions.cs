@@ -73,6 +73,9 @@ namespace MultiAlignCore.Extensions
             cluster.Features.Clear();
 
             List<UMCLight> features = providers.FeatureCache.FindByClusterID(cluster.ID);
+            
+            int totalSpectra    = 0;
+            int totalIdentified = 0;
             foreach (UMCLight feature in features)
             {
                 cluster.AddChildFeature(feature);
@@ -80,8 +83,43 @@ namespace MultiAlignCore.Extensions
                 if (getMsFeature)
                 {
                     feature.ReconstructUMC(providers, getMsMs);
+
+                    foreach (MSFeatureLight msFeature in feature.MSFeatures)
+                    {
+                        totalSpectra += msFeature.MSnSpectra.Count;
+                        foreach (MSSpectra spectrum in msFeature.MSnSpectra)
+                        {
+                            if (spectrum.Peptides.Count > 0)
+                                totalIdentified++;
+                        }
+                    }
                 }
             }
+
+            cluster.IdentifiedSpectraCount = totalIdentified;
+            cluster.MsMsCount              = totalSpectra;
+        }        
+        /// <summary>
+        /// Retrieves a list of known peptides attributed to this cluster.
+        /// </summary>
+        /// <param name="cluster"></param>
+        /// <param name="providers"></param>
+        /// <returns></returns>
+        public static List<Peptide> FindPeptides(this UMCClusterLight cluster)
+        {
+            List<Peptide> peptides = new List<Peptide>();
+
+            foreach (UMCLight feature in cluster.Features)
+            {
+                foreach (MSFeatureLight msFeature in feature.MSFeatures)
+                {
+                    foreach (MSSpectra spectrum in msFeature.MSnSpectra)
+                    {
+                        peptides.AddRange(spectrum.Peptides);
+                    }
+                }
+            }
+            return peptides;
         }
         /// <summary>
         /// Retrieves a list of known peptides attributed to this cluster.
@@ -89,11 +127,18 @@ namespace MultiAlignCore.Extensions
         /// <param name="cluster"></param>
         /// <param name="providers"></param>
         /// <returns></returns>
-        public static List<Peptide> FindPeptides(this UMCClusterLight cluster, FeatureDataAccessProviders providers)
+        public static List<MSSpectra> GetLoadedSpectra(this UMCClusterLight cluster)
         {
-            List<Peptide> peptides = new List<Peptide>();
+            List<MSSpectra> spectra = new List<MSSpectra>();
 
-            return peptides;
+            foreach (UMCLight feature in cluster.Features)
+            {
+                foreach (MSFeatureLight msFeature in feature.MSFeatures)
+                {
+                    spectra.AddRange(msFeature.MSnSpectra);
+                }
+            }
+            return spectra;
         }
         /// <summary>
         /// Retrieves a list of known peptides attributed to this cluster.

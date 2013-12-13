@@ -12,6 +12,8 @@ using MultiAlignCore.Extensions;
 using MultiAlignCustomControls.Extensions;
 using MultiAlignCustomControls.Drawing;
 using MultiAlignCore.Data.Features;
+using PNNLOmics.Data;
+using MultiAlignCore.Extensions;
 
 namespace MultiAlignCustomControls.Charting
 {    
@@ -70,48 +72,106 @@ namespace MultiAlignCustomControls.Charting
         }
         private void DisplayDifferences(List<UMCLight> features, ctlChartBase chart, PostRenderEventArgs args)
         {
-            double minMass, maxMass, minNet, maxNet, minDrift, maxDrift; 
+            double minMass, maxMass, minNet, maxNet, minDrift, maxDrift;
 
-            m_mainCluster.Cluster.Features.FindRanges(  out minMass, 
-                                                out maxMass, 
-                                                out minNet, 
-                                                out maxNet, 
+            m_mainCluster.Cluster.Features.FindRanges(out minMass,
+                                                out maxMass,
+                                                out minNet,
+                                                out maxNet,
                                                 out minDrift,
                                                 out maxDrift);
 
-            double massDifference   = Feature.ComputeMassPPMDifference(minMass, maxMass);
-            massDifference          = Math.Abs(massDifference);
-            double netDifference    = Math.Abs(maxNet - minNet);
-            double driftDifference  = Math.Abs(maxDrift - minDrift);
+            double massDifference = Feature.ComputeMassPPMDifference(minMass, maxMass);
+            massDifference = Math.Abs(massDifference);
+            double netDifference = Math.Abs(maxNet - minNet);
+            double driftDifference = Math.Abs(maxDrift - minDrift);
 
-            string xAddString   = XAxisShortHand;
-            Graphics graphics   = args.Graphics;                        
+            string xAddString = XAxisShortHand;
+            Graphics graphics = args.Graphics;
             if (IsDriftTimeXAxis)
             {
-                minNet          = minDrift;
-                maxNet          = maxDrift;
-                netDifference   = driftDifference;                
+                minNet = minDrift;
+                maxNet = maxDrift;
+                netDifference = driftDifference;
             }
-            
 
-            float netLineRight  = this.mobj_axis_plotter.XScreenPixel(Convert.ToSingle(maxNet));
-            float netLineLeft   = this.mobj_axis_plotter.XScreenPixel(Convert.ToSingle(minNet));
-            float netString     = netLineLeft + ((netLineRight - netLineLeft) / 4);
 
-            float massLineTop   = this.mobj_axis_plotter.YScreenPixel(Convert.ToSingle(maxMass));
-            float massLineBot   = this.mobj_axis_plotter.YScreenPixel(Convert.ToSingle(minMass));
-            float massString    = massLineBot + ((massLineTop - massLineBot) / 2);
+            float netLineRight = this.mobj_axis_plotter.XScreenPixel(Convert.ToSingle(maxNet));
+            float netLineLeft = this.mobj_axis_plotter.XScreenPixel(Convert.ToSingle(minNet));
+            float netString = netLineLeft + ((netLineRight - netLineLeft) / 4);
+
+            float massLineTop = this.mobj_axis_plotter.YScreenPixel(Convert.ToSingle(maxMass));
+            float massLineBot = this.mobj_axis_plotter.YScreenPixel(Convert.ToSingle(minMass));
+            float massString = massLineBot + ((massLineTop - massLineBot) / 2);
 
             using (Brush brush = new SolidBrush(Color.Black))
             {
                 using (Pen pen = new Pen(brush))
                 {
-                    graphics.DrawLine(pen, netLineRight  + 10 , massLineTop, netLineRight + 10, massLineBot);
+                    graphics.DrawLine(pen, netLineRight + 10, massLineTop, netLineRight + 10, massLineBot);
                     graphics.DrawLine(pen, netLineLeft, massLineTop - 10, netLineRight, massLineTop - 10);
-                    graphics.DrawString(string.Format("{0:.0} PPM", massDifference), Font, brush, netLineRight   + 20, massString);
+                    graphics.DrawString(string.Format("{0:.0} PPM", massDifference), Font, brush, netLineRight + 20, massString);
                     graphics.DrawString(string.Format("{0:.000} {1}", netDifference, xAddString), Font, brush, netString, massLineTop - 40);
-                }
+
+
+                } 
             }
+
+
+                clsColorIterator colors = new clsColorIterator(); 
+                float offset            = Convert.ToSingle(MaxChartAreaXPixel) * .1F;
+                float width             = Convert.ToSingle(MaxChartAreaXPixel);
+                float direction         = offset* -1;
+                float directionOffset   = -1;
+
+                // Renders the peptide strings...
+                if (m_mainCluster != null)
+                {
+                    Font newFont = new Font(Font, FontStyle.Bold);
+                    /// Quickest way to access the feature and the peptides it has...for a given cluster
+                    foreach (UMCLight feature in m_mainCluster.Cluster.Features)
+                    {
+                        float msMassScan    = mobj_axis_plotter.YScreenPixel(Convert.ToSingle(feature.MassMonoisotopicAligned));
+                        float idOffset      = 0;
+                                                
+                        foreach (MSFeatureLight msFeature in feature.MSFeatures)
+                        {
+                            Color color        = colors.GetColor(msFeature.ChargeState);
+                            using (Brush brush = new SolidBrush(color))
+                            {
+                                using (Pen pen = new Pen(brush, 3.0F))
+                                {
+
+                                foreach (MSSpectra spectrum in msFeature.MSnSpectra)
+                                {
+                                    foreach (Peptide p in spectrum.Peptides)
+                                    {
+                                        float msScan     = mobj_axis_plotter.XScreenPixel(Convert.ToSingle(feature.RetentionTime));
+
+                                        // Draw the precursor strings.
+                                        string precursorString = string.Format("{0}", p.Sequence);
+                                        SizeF sizeOfPrecursor = graphics.MeasureString(precursorString, Font);
+
+                                        float xPositionPrecursorString = msScan + offset + 2;
+                                        if (xPositionPrecursorString + sizeOfPrecursor.Width >= width)
+                                        {
+                                            xPositionPrecursorString = width - sizeOfPrecursor.Width - 2;
+                                        }
+
+                                        graphics.DrawLine(pen, msScan, msMassScan,    xPositionPrecursorString - 2,        msMassScan + direction);
+                                        graphics.DrawString(precursorString, newFont, brush, xPositionPrecursorString, msMassScan + direction + idOffset);
+
+                                        idOffset += (sizeOfPrecursor.Height + 2) * directionOffset;
+                                    }
+                                }
+                                }
+                            }
+                        }                             
+                        // Alternate the direction of the MSMS precursor label
+                        direction       *= -1;
+                        directionOffset *= -1;
+                    }
+                }                                                                                 
         }
 
         #endregion

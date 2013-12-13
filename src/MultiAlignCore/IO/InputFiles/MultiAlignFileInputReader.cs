@@ -164,6 +164,10 @@ namespace MultiAlignCore.IO.InputFiles
                                         info.Database.DatabaseFormat    = MassTagDatabaseFormat.APE;
                                         info.Database.LocalPath         = keys[1];
                                         break;
+                                    case "ims":
+                                        info.Database.DatabaseFormat    = MassTagDatabaseFormat.DirectInfusionIms;
+                                        info.Database.LocalPath         = keys[1];
+                                        break;  
                                 }
                             }
                             break;

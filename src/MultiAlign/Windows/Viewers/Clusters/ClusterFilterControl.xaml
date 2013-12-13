@@ -31,11 +31,21 @@
                 Header="MS/MS"
                 Style="{DynamicResource ResourceKey=SimpleTabItem}">
                 <StackPanel>
-                    <CheckBox 
-                    Margin="5"
-                    FontSize="20" IsChecked="{Binding Path=HasMsMs}">Has MS/MS</CheckBox>
-                    <views:RangeView DataContext="{Binding IdentificationRange}"></views:RangeView>
                     <views:RangeView DataContext="{Binding MsMsTotal}"></views:RangeView>
+                </StackPanel>
+            </TabItem>
+            
+            <TabItem
+                Header="Identifications"
+                Style="{DynamicResource ResourceKey=SimpleTabItem}">
+                
+                <StackPanel>
+                    <GroupBox Header="Database Search">
+                        <views:RangeView DataContext="{Binding IdentificationRange}"></views:RangeView>    
+                    </GroupBox>
+                    <GroupBox Header="AMT Tag">
+                        <views:RangeView DataContext="{Binding AMTTagRange}"></views:RangeView>    
+                    </GroupBox>                    
                 </StackPanel>
             </TabItem>
             <TabItem

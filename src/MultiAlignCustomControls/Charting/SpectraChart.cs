@@ -20,7 +20,7 @@ namespace MultiAlignCustomControls.Charting
         #region Members
         private System.ComponentModel.IContainer components = null;		
 		private clsColorIterator miter_color = new  clsColorIterator() ; 
-		private int mint_pt_size = 2 ; 		
+		private int mint_pt_size = 5 ; 		
         private Dictionary<string, List<XYData>> m_features;
 
         clsColorIterator colors = new clsColorIterator();
@@ -30,8 +30,11 @@ namespace MultiAlignCustomControls.Charting
         public SpectraChart()
 	    {
 			InitializeComponent();
-            m_features = new Dictionary<string, List<XYData>>(); 
-            DrawSticks = true;            
+            m_features      = new Dictionary<string, List<XYData>>(); 
+            //DrawSticks      = true;
+            
+            UseLogarithm    = false;
+            YAxisLabel      = "Log Intensity";
         }
         #endregion        
         
@@ -78,6 +81,10 @@ namespace MultiAlignCustomControls.Charting
         }      
     
         #endregion
+        /// <summary>
+        /// Gets or sets whether the y-axis display is logarithmic.
+        /// </summary>
+        public bool UseLogarithm { get; set; }
         
         #region Cluster Rendering
         /// <summary>
@@ -105,7 +112,20 @@ namespace MultiAlignCustomControls.Charting
             foreach (XYData datum in feature)
             {
                     scanList.Add(Convert.ToSingle(datum.X));
-                    intensities.Add(Convert.ToSingle(datum.Y));
+
+                if (UseLogarithm)
+                {
+                    if (datum.Y > 0)
+                    {
+                        intensities.Add(Convert.ToSingle(Math.Log10(datum.Y)));
+                    }
+                    else
+                    {
+                        intensities.Add(0);
+                    }
+                }
+                else
+                        intensities.Add(Convert.ToSingle(datum.Y));
             }                
             // Then plot.
             if (scanList.Count < 1)
@@ -147,7 +167,7 @@ namespace MultiAlignCustomControls.Charting
             ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
             this.SuspendLayout();
             // 
-            // SICChart
+            // SpectraChart
             // 
             this.AxisAndLabelFont = new System.Drawing.Font("Microsoft Sans Serif", 8F);
             this.ChartLayout.LegendFraction = 0.2F;
@@ -163,6 +183,7 @@ namespace MultiAlignCustomControls.Charting
             this.DefaultZoomHandler.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(119)))), ((int)(((byte)(136)))), ((int)(((byte)(153)))));
             this.DefaultZoomHandler.LineColor = System.Drawing.Color.Black;
             this.DoubleBuffered = true;
+            this.DrawPeakBoxes = false;
             this.HasLegend = false;
             this.Legend.BackColor = System.Drawing.Color.Transparent;
             penProvider1.Color = System.Drawing.Color.Black;
@@ -183,7 +204,7 @@ namespace MultiAlignCustomControls.Charting
             this.Margins.LeftMarginFraction = 0.2F;
             this.Margins.LeftMarginMax = 150;
             this.Margins.LeftMarginMin = 72;
-            this.Name = "SICChart";
+            this.Name = "SpectraChart";
             this.Size = new System.Drawing.Size(408, 382);
             this.Title = "SIC Chart";
             this.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 6F);

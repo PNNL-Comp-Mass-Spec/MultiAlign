@@ -125,20 +125,14 @@ namespace MultiAlignCore.IO.Features.Exporters
                         }
                         string pepsequence = "";
                         double score = 0;
-                        double mass = 0;
-                        int charge = 0;
-                        int ends = 0;
-
+                        
                         if (sequence != null)
                         {
                             pepsequence = sequence.Sequence;
                             score = sequence.Score;
-                            mass = sequence.Mass;
-                            charge = sequence.Charge;
-                            ends = sequence.TrypticEnds;
                         }
 
-                        line += string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},",
+                        line += string.Format("{0},{1},{2},{3},{4},{5},{6},{7}",
                                                     feature.GroupID,
                                                     feature.Scan,
                                                     feature.Mz,
@@ -146,10 +140,7 @@ namespace MultiAlignCore.IO.Features.Exporters
                                                     feature.MassMonoisotopicMostAbundant,
                                                     findScan,
                                                     pepsequence,
-                                                    score,
-                                                    mass,
-                                                    charge,
-                                                    ends);
+                                                    score);
                     }
                     xwriter.WriteLine(line);
                 }

@@ -24,4 +24,23 @@ namespace MultiAlign.ViewModels.TreeView
         {            
         }
     }
+    public class StringTreeViewItem : TreeItemViewModel
+    {
+
+        public StringTreeViewItem(string value, string name)
+        {
+            Name  = name;
+            Value = value;
+        }
+
+        public string Value
+        {
+            get;
+            private set;
+        }
+
+        public override void LoadChildren()
+        {
+        }
+    }
 }

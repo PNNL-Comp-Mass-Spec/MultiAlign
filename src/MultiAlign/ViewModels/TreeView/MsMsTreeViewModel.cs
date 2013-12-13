@@ -18,7 +18,8 @@ namespace MultiAlign.ViewModels.TreeView
     public class MsMsTreeViewModel : GenericCollectionTreeViewModel
     {
         private MSSpectra m_feature;
-        
+
+        public event EventHandler<IdentificationFeatureSelectedEventArgs> SpectrumSelected;
 
         public MsMsTreeViewModel(MSSpectra feature)
             : this(feature, null)
@@ -38,7 +39,14 @@ namespace MultiAlign.ViewModels.TreeView
             AddStatistic("Id",              m_feature.ID);
             AddStatistic("Dataset Id",      m_feature.GroupID);
             AddStatistic("Precursor m/z",   m_feature.PrecursorMZ);
-            AddStatistic("Charge",          m_feature.PrecursorChargeState);
+            if (feature.ParentFeature != null)
+            {
+                AddStatistic("Charge", m_feature.ParentFeature.ChargeState);
+            }
+            else
+            {
+                AddStatistic("Charge", m_feature.PrecursorChargeState);
+            }
             AddStatistic("Scan",            m_feature.Scan);
 
 
@@ -61,6 +69,8 @@ namespace MultiAlign.ViewModels.TreeView
             if (maxPeptide != null)
             {
                 Name = maxPeptide.Sequence;
+                AddStatistic("Score", maxPeptide.Score);
+                AddStatistic("Scan",  maxPeptide.Scan);
             }
             else
             {
@@ -70,14 +80,45 @@ namespace MultiAlign.ViewModels.TreeView
 
         public ObservableCollection<Peptide> Peptides { get; set; }
 
-        private void AddStatistic(string name, double value)
+
+        private void OnSpectrumSelected(UMCLight feature)
         {
-            StatisticTreeViewItem x = new StatisticTreeViewItem(value, name);
-            m_items.Add(x);
+            if (SpectrumSelected != null)
+            {
+                Peptide peptide = null;
+                if (m_feature.Peptides != null && m_feature.Peptides.Count  > 0)
+                {
+                    peptide = m_feature.Peptides[0];
+                }
+
+                IdentificationFeatureSelectedEventArgs args = new IdentificationFeatureSelectedEventArgs(
+                                                                    m_feature,
+                                                                    peptide,
+                                                                    feature);
+
+
+                SpectrumSelected(this, args);
+            }
         }
 
-
-        
+        public override bool IsSelected
+        {
+            get
+            {
+                return base.IsSelected;
+            }
+            set
+            {
+                base.IsSelected = value;
+                if (m_feature != null)
+                {
+                    UMCLight feature =  m_feature.GetParentUmc();
+                    OnFeatureSelected(feature);                    
+                    OnSpectrumSelected(feature);
+                }
+            }
+        }
+                
         public override void LoadChildren()
         {
                       

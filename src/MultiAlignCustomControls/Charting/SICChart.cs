@@ -21,7 +21,7 @@ namespace MultiAlignCustomControls.Charting
         #region Members
         private System.ComponentModel.IContainer components = null;		
 		private clsColorIterator miter_color = new  clsColorIterator() ; 
-		private int mint_pt_size = 2 ; 		
+		private int mint_pt_size = 3 ; 		
         private UMCLight m_feature;
         #endregion
 
@@ -32,7 +32,7 @@ namespace MultiAlignCustomControls.Charting
             m_feature = null;
 
             AddPostProcessor(new ChartPostRenderingProcessor(RenderMSMS), PostProcessPriority.MidHigh);
-            
+            MSMSPenSize = 4;
         }
         #endregion
 
@@ -67,7 +67,7 @@ namespace MultiAlignCustomControls.Charting
                     
                     using (Brush brush = new SolidBrush(Color.Red))
                     {
-                        using (Pen pen = new Pen(brush, 8.0F))
+                        using (Pen pen = new Pen(brush, MSMSPenSize))
                         {
                             graphics.DrawLine(pen, scan, pixelBottom, scan, intensity);
                         }
@@ -76,6 +76,19 @@ namespace MultiAlignCustomControls.Charting
             }           
         }
         #endregion
+
+        public float PenSize
+        {
+            get;
+            set;
+
+        }
+
+        public float MSMSPenSize
+        {
+            get;
+            set;
+        }
 
         #region Data Addition Methods
         /// <summary>
@@ -229,6 +242,9 @@ namespace MultiAlignCustomControls.Charting
             this.DefaultZoomHandler.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(119)))), ((int)(((byte)(136)))), ((int)(((byte)(153)))));
             this.DefaultZoomHandler.LineColor = System.Drawing.Color.Black;
             this.DoubleBuffered = true;
+            this.DrawPeakBoxes = false;
+            this.DrawPeakLabels = false;
+            this.DrawPoints = true;
             this.HasLegend = false;
             this.Legend.BackColor = System.Drawing.Color.Transparent;
             penProvider1.Color = System.Drawing.Color.Black;

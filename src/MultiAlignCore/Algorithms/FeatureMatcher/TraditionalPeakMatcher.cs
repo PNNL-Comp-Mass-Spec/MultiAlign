@@ -22,9 +22,7 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public class TraditionalPeakMatcher<T>  : IProgressNotifer, IPeakMatcher<T> where T: UMCClusterLight
-    {
-        
-
+    {        
         /// <summary>
         /// Gets or sets the peak matching options.
         /// </summary>

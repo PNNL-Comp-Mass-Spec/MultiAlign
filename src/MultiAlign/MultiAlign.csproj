@@ -63,9 +63,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\$(Platform)\MultiAlignEngine.dll</HintPath>
     </Reference>
-    <Reference Include="OxyPlot.Wpf">
-      <HintPath>..\..\lib\OxyPlot.Wpf.dll</HintPath>
-    </Reference>
     <Reference Include="PNNLOmics, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\PNNLOmics.dll</HintPath>
@@ -97,6 +94,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Commands\Clusters\ClusterTreeFilterCommand.cs" />
+    <Compile Include="Commands\Clusters\ClusterExportCommand.cs" />
     <Compile Include="Converters\BooleanToDataGridVisibilityModeConverter.cs" />
     <Compile Include="Converters\BoolInverter.cs" />
     <Compile Include="Converters\BoolVisibilityConverter.cs" />
@@ -134,9 +132,20 @@
     <Compile Include="IO\DatasetSearcher.cs" />
     <Compile Include="IO\ManassaWorkspaceReader.cs" />
     <Compile Include="IO\SingletonDataProviders.cs" />
+    <Compile Include="IO\SpectraLoader.cs" />
     <Compile Include="ViewModels\AnalysisViewModel.cs" />
+    <Compile Include="ViewModels\DatasetViewModel.cs" />
+    <Compile Include="ViewModels\MassTagMatchedViewModel.cs" />
+    <Compile Include="ViewModels\MSSpectraViewModel.cs" />
+    <Compile Include="ViewModels\PeptideViewModel.cs" />
+    <Compile Include="ViewModels\ProteinViewModel.cs" />
+    <Compile Include="ViewModels\TreeView\IdentificationCollectionTreeViewModel.cs" />
+    <Compile Include="ViewModels\ParameterViewModels.cs" />
+    <Compile Include="ViewModels\TreeView\FeatureSelectedEventArgs.cs" />
     <Compile Include="ViewModels\TreeView\GenericCollectionTreeViewModel.cs" />
     <Compile Include="ViewModels\TreeView\MassTagCollectionMatchTreeViewModel.cs" />
+    <Compile Include="ViewModels\TreeView\MassTagToClusterMatch.cs" />
+    <Compile Include="ViewModels\TreeView\MassTagTreeViewModel.cs" />
     <Compile Include="ViewModels\TreeView\MsMsCollectionTreeViewModel.cs" />
     <Compile Include="ViewModels\TreeView\MsMsTreeViewModel.cs" />
     <Compile Include="ViewModels\DatabasesViewModel.cs" />
@@ -150,6 +159,8 @@
     <Compile Include="ViewModels\TreeView\UMCCollectionTreeViewModel.cs" />
     <Compile Include="ViewModels\TreeView\UMCTreeViewModel.cs" />
     <Compile Include="ViewModels\UMCClusterFilterViewModel.cs" />
+    <Compile Include="ViewModels\UMCClusterIdentificationViewModel.cs" />
+    <Compile Include="ViewModels\UMCClusterSpectraViewModel.cs" />
     <Compile Include="ViewModels\UMCClusterViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="Windows\FilePathFinder.xaml.cs">
@@ -201,6 +212,9 @@
     <Compile Include="Windows\Viewers\Databases\DatabaseView.xaml.cs">
       <DependentUpon>DatabaseView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Windows\Viewers\Databases\IdentificationTree.xaml.cs">
+      <DependentUpon>IdentificationTree.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\Viewers\Datasets\DatasetInformationView.xaml.cs">
       <DependentUpon>DatasetInformationView.xaml</DependentUpon>
     </Compile>
@@ -222,23 +236,17 @@
     <Compile Include="Windows\Viewers\GettingStarted.xaml.cs">
       <DependentUpon>GettingStarted.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Windows\Viewers\Identifications\IdentificationDetail.xaml.cs">
+      <DependentUpon>IdentificationDetail.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Viewers\IdentificationView.xaml.cs">
+      <DependentUpon>IdentificationView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\Viewers\LoadingAnalysisView.xaml.cs">
       <DependentUpon>LoadingAnalysisView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\Viewers\MassTags\MassTagControl.xaml.cs">
-      <DependentUpon>MassTagControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Windows\Viewers\MassTags\MassTagDetail.xaml.cs">
       <DependentUpon>MassTagDetail.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\Viewers\MassTags\MassTagGrid.xaml.cs">
-      <DependentUpon>MassTagGrid.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\Viewers\MassTagViewer.xaml.cs">
-      <DependentUpon>MassTagViewer.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\Viewers\MsMsViewer.xaml.cs">
-      <DependentUpon>MsMsViewer.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\Viewers\Proteins\ProteinDetail.xaml.cs">
       <DependentUpon>ProteinDetail.xaml</DependentUpon>
@@ -252,8 +260,14 @@
     <Compile Include="Windows\Viewers\RangeView.xaml.cs">
       <DependentUpon>RangeView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\Viewers\Spectra\MsMsGrid.xaml.cs">
-      <DependentUpon>MsMsGrid.xaml</DependentUpon>
+    <Compile Include="Windows\Viewers\Spectra\MSSpectraTemplate.xaml.cs">
+      <DependentUpon>MSSpectraTemplate.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Viewers\Spectra\SpectraDetail.xaml.cs">
+      <DependentUpon>SpectraDetail.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Viewers\Spectra\SpectraView.xaml.cs">
+      <DependentUpon>SpectraView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\Viewers\StartWindow.xaml.cs">
       <DependentUpon>StartWindow.xaml</DependentUpon>
@@ -357,6 +371,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Windows\Viewers\Databases\IdentificationTree.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\Viewers\Datasets\DatasetInformationView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -385,29 +403,21 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\Viewers\LoadingAnalysisView.xaml">
+    <Page Include="Windows\Viewers\Identifications\IdentificationDetail.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\Viewers\MassTags\MassTagControl.xaml">
+    <Page Include="Windows\Viewers\IdentificationView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Viewers\LoadingAnalysisView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Windows\Viewers\MassTags\MassTagDetail.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Windows\Viewers\MassTags\MassTagGrid.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Windows\Viewers\MassTagViewer.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Windows\Viewers\MsMsViewer.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="Windows\Viewers\Proteins\ProteinDetail.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -425,9 +435,17 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Windows\Viewers\Spectra\MsMsGrid.xaml">
-      <Generator>MSBuild:Compile</Generator>
+    <Page Include="Windows\Viewers\Spectra\MSSpectraTemplate.xaml">
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Viewers\Spectra\SpectraDetail.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Viewers\Spectra\SpectraView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\Viewers\StartWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

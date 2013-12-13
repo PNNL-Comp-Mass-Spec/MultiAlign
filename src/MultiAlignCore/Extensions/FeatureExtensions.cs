@@ -8,6 +8,7 @@ using MultiAlignCore.IO.Features;
 using PNNLOmics.Data;
 using MultiAlignCore.Data;
 using PNNLOmics.Data.Features;
+using MultiAlignCore.Data.SequenceData;
 
 namespace MultiAlignCore.Extensions
 {
@@ -179,7 +180,7 @@ namespace MultiAlignCore.Extensions
 
 
             foreach (MSFeatureLight msFeature in msFeatures)
-            {
+            {                
                 feature.AddChildFeature(msFeature);
             }
 
@@ -278,18 +279,49 @@ namespace MultiAlignCore.Extensions
                             = new Dictionary<int, Dictionary<int, List<MSFeatureToMSnFeatureMap>>>();
 
 
+            List<SequenceToMsnFeature>   mappedSequences = new List<SequenceToMsnFeature>();
+            List<DatabaseSearchSequence> sequences       = new List<DatabaseSearchSequence>();
+
             if (getMsMs)
             {
                 msmsFeatures = providers.MSFeatureToMSnFeatureCache.FindByUMCFeatureId(feature.GroupID,
                                                                                         feature.ID);
 
 
+               mappedSequences  =  providers.SequenceMsnMapCache.FindByDatasetId(feature.GroupID, feature.ID);
+               sequences        = providers.DatabaseSequenceCache.FindByDatasetId(feature.GroupID, feature.ID);
+
 
             }
             // Then grab the spectra id list
             ids = msmsFeatures.ConvertAll<int>(x => x.MSMSFeatureID);
-            
-            
+
+            // Here we map the peptides 
+            Dictionary<int, Peptide> peptideSequenceMaps = new Dictionary<int, Peptide>();  // this guy maps the peptide id to the peptide
+            Dictionary<int, List<Peptide>> msmsMap = new Dictionary<int, List<Peptide>>();              // This guy maps the ms/ms feature to the peptide
+            foreach (DatabaseSearchSequence sequence in sequences)
+            {
+                Peptide newPeptide          = new Peptide();
+                newPeptide.GroupId          = sequence.GroupId;
+                newPeptide.Sequence         = sequence.Sequence;
+                newPeptide.Score            = sequence.Score;
+                newPeptide.Scan             = sequence.Scan;
+                newPeptide.Mz               = sequence.Mz;
+                newPeptide.MassMonoisotopic = sequence.MassMonoisotopic;
+                newPeptide.ID               = sequence.Id;
+                
+                peptideSequenceMaps.Add(newPeptide.ID, newPeptide);
+            }
+            foreach (SequenceToMsnFeature sequenceMap in mappedSequences)
+            {
+                int msmsId = sequenceMap.MsnFeatureId;
+                if (!msmsMap.ContainsKey(msmsId))
+                {
+                    msmsMap.Add(msmsId, new List<Peptide>());
+                }
+                msmsMap[msmsId].Add(peptideSequenceMaps[sequenceMap.SequenceId]);
+            }
+
             
             // construct that map here.
             foreach (MSFeatureToMSnFeatureMap subFeature in msmsFeatures)
@@ -334,8 +366,22 @@ namespace MultiAlignCore.Extensions
                         {
                             if (singleMap.MSFeatureID == msFeature.ID)
                             {
-                                MSSpectra spectrum = spectraMap[singleMap.MSDatasetID][singleMap.MSMSFeatureID];
+                                int msmsFeatureId = singleMap.MSMSFeatureID;
+
+                                MSSpectra spectrum = spectraMap[singleMap.MSDatasetID][msmsFeatureId];
                                 msFeature.MSnSpectra.Add(spectrum);
+                                spectrum.ParentFeature = msFeature;
+
+                                // Map any features
+                                if (msmsMap.ContainsKey(msmsFeatureId))
+                                {
+                                    List<Peptide> peptides = msmsMap[msmsFeatureId];
+                                    foreach (Peptide peptide in peptides)
+                                    {                                         
+                                        spectrum.Peptides.Add(peptide);
+                                        peptide.Spectrum        = spectrum;                                        
+                                    }
+                                }
                             }
                         }
                         

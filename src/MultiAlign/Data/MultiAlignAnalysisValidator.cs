@@ -113,9 +113,11 @@ namespace MultiAlign.Data
                             isStepValid = false;
                             errorMessage = "The database or server was not set.";
                         }
-                        break;                    
+                        break; 
+                    case MassTagDatabaseFormat.DirectInfusionIms:
                     case MassTagDatabaseFormat.APE:
                     case MassTagDatabaseFormat.Sqlite:
+                        databasePath = analysis.MetaData.Database.LocalPath;
                         if (databasePath == null)
                         {
                             errorMessage = "No MTDB database file was selected.";

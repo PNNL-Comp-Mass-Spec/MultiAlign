@@ -160,15 +160,25 @@ namespace MultiAlign.Windows
         {
             FeaturesAlignedEventArgs data   = AlignmentData;
             PlotName                        = data.AligneeDatasetInformation.DatasetName;
-            AlignmentImageData imageData    = AnalysisImageCreator.CreateAlignmentPlots(data, PlotWidth, PlotHeight, false); 
+            AlignmentImageData imageData    = AnalysisImageCreator.CreateAlignmentPlots(data, PlotWidth, PlotHeight, false);
 
-            NetScanImage    = ImageConverter.ConvertImage(imageData.NetResidualsHistogramImage);
-            MassHistogram   = ImageConverter.ConvertImage(imageData.MassHistogramImage);
-            NetHistogram    = ImageConverter.ConvertImage(imageData.NetHistogramImage);
-            HeatmapImage    = ImageConverter.ConvertImage(imageData.HeatmapImage);
-            MassMzImage     = ImageConverter.ConvertImage(imageData.MassMzImage);
-            MassScanImage   = ImageConverter.ConvertImage(imageData.MassScanImage);
-            FeaturePlotImage = ImageConverter.ConvertImage(imageData.FeaturePlotImage);
+            if (imageData == null)
+                return;
+
+            if (imageData.NetResidualsHistogramImage != null)
+                NetScanImage    = ImageConverter.ConvertImage(imageData.NetResidualsHistogramImage);
+            if (imageData.MassHistogramImage != null) 
+                MassHistogram = ImageConverter.ConvertImage(imageData.MassHistogramImage);
+            if (imageData.NetHistogramImage != null)
+                NetHistogram = ImageConverter.ConvertImage(imageData.NetHistogramImage);
+            if (imageData.HeatmapImage != null)
+                HeatmapImage = ImageConverter.ConvertImage(imageData.HeatmapImage);
+            if (imageData.MassMzImage != null)
+                MassMzImage = ImageConverter.ConvertImage(imageData.MassMzImage);
+            if (imageData.MassScanImage != null)
+                MassScanImage = ImageConverter.ConvertImage(imageData.MassScanImage);
+            if (imageData.FeaturePlotImage != null)
+                FeaturePlotImage = ImageConverter.ConvertImage(imageData.FeaturePlotImage);
         }
     }
 }

@@ -61,95 +61,11 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
 
             if (split)
             {
-                Dictionary<UMCLight, List<UMCLight>> replacementFeatures = new Dictionary<UMCLight, List<UMCLight>>();
-
-                foreach (UMCLight feature in features)
-                {
-                    // Sort first by scan, so we can look at consecutive MS feature distances.
-                    feature.MSFeatures.Sort(
-                            delegate(MSFeatureLight x, MSFeatureLight y)
-                            {
-                                return (x.Scan.CompareTo(y.Scan));
-                            }
-                        );
+                IUMCFeatureRefinement refiner   = UMCFeatureRefinementFactory.Create(UMCRefinementType.ScanSplit);
+                List<UMCLight> newFeatures      = new List<UMCLight>();
+                features.ForEach(x => newFeatures.AddRange(refiner.RefineFeature(x)));
 
 
-
-                    // Then calculate their respective scan deltas.
-                    List<int> deltas = new List<int>();
-                    for (int i = 1; i < feature.MSFeatures.Count; i++)
-                    {
-                        int delta = feature.MSFeatures[i].Scan - feature.MSFeatures[i - 1].Scan;
-                        deltas.Add(delta);
-                    }
-
-                    int min          = deltas.Min(); 
-                    List<int> divisions = new List<int>();
-
-                    // Then we break up any features that are ill-behaived.               
-                    
-                        for (int i = 0; i < deltas.Count; i++)
-                        {
-                            if (deltas[i] > 3*min)
-                            {
-                                divisions.Add(i + 1);
-                            }
-                        }
-
-                        // Divide the features up and move them.
-                        int j = 0;
-                        int N = feature.MSFeatures.Count;
-                        // This is the first set of partitions
-                        foreach (int i in divisions)
-                        {
-                            // copy the jth to the ith feature
-                            MSFeatureLight[] tempFeatures = new MSFeatureLight[i - j];
-                            feature.MSFeatures.CopyTo(j, tempFeatures, 0, i - j);
-                            j = i;
-
-                            // Then set the parent feature and child features.
-                            UMCLight newFeature = new UMCLight();
-                            for (int k = 0; k < tempFeatures.Length; k++)
-                            {
-                                tempFeatures[k].SetParentFeature(newFeature);
-                                newFeature.AddChildFeature(tempFeatures[k]);
-                            }
-                            newFeature.CalculateStatistics(ClusterCentroidRepresentation.Mean);
-                            if (!replacementFeatures.ContainsKey(feature))
-                            {
-                                replacementFeatures.Add(feature, new List<UMCLight>());
-                            }
-                            replacementFeatures[feature].Add(newFeature);
-                        }
-                        // Here we cleanup the last half of the feature.
-                        if (N != j)
-                        {
-                            MSFeatureLight[] tempFeatures = new MSFeatureLight[N - j];
-                            feature.MSFeatures.CopyTo(j, tempFeatures, 0, N - j);
-
-                            UMCLight newFeature = new UMCLight();
-                            for (int k = 0; k < tempFeatures.Length; k++)
-                            {
-                                tempFeatures[k].SetParentFeature(newFeature);
-                                newFeature.AddChildFeature(tempFeatures[k]);
-                            }
-                            newFeature.CalculateStatistics(ClusterCentroidRepresentation.Mean);
-                            if (!replacementFeatures.ContainsKey(feature))
-                            {
-                                replacementFeatures.Add(feature, new List<UMCLight>());
-                            }
-                            replacementFeatures[feature].Add(newFeature);
-                        }                    
-                }
-
-                // add the new features
-                foreach (UMCLight feature in replacementFeatures.Keys)
-                {
-                    features.Remove(feature);
-                    feature.MSFeatures.Clear();
-                    features.AddRange(replacementFeatures[feature]);
-                     
-                }
                 // Remove the short UMC's.
                 features.RemoveAll(x => (x.ScanEnd - x.ScanStart + 1) < options.MinUMCLength);
                 features.RemoveAll(x => (x.MSFeatures.Count) < options.MinUMCLength);

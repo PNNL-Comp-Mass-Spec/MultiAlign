@@ -11,6 +11,8 @@ namespace MultiAlignCore.IO.Features
     /// </summary>
     public class ParentSpectraFinder
     {
+
+
         /// <summary>
         /// 
         /// </summary>

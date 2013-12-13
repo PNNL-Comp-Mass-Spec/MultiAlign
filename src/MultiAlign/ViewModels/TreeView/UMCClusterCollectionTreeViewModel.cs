@@ -7,6 +7,7 @@ using PNNLOmics.Data.Features;
 using System;
 using MultiAlign.Commands.Clusters;
 using System.Windows.Input;
+using PNNLOmics.Data;
 
 namespace MultiAlign.ViewModels.TreeView
 {
@@ -15,9 +16,14 @@ namespace MultiAlign.ViewModels.TreeView
     /// </summary>
     public class UMCClusterCollectionTreeViewModel : TreeItemViewModel
     {
+        public event EventHandler<ClusterSelectedEventArgs> ClusterSelected;
+        public event EventHandler<ClustersUpdatedEventArgs> ClustersFiltered;
+
         private UMCLight                        m_selectedFeature;
         private UMCClusterLightMatched          m_selectedCluster;
+        private MSSpectra                       m_selectedSpectrum;
         private ClusterTreeFilterCommand        m_command;
+        private ClusterExportCommand            m_exportCommand;
 
         readonly List<UMCClusterLightMatched>   m_clusters;
         private ObservableCollection<UMCClusterTreeViewModel> m_filteredClusters;
@@ -35,6 +41,7 @@ namespace MultiAlign.ViewModels.TreeView
                  select new UMCClusterTreeViewModel(cluster)).ToList());
 
             m_command           = new ClusterTreeFilterCommand(this);
+            m_exportCommand     = new ClusterExportCommand(this);
 
             RegisterEvents();
         }
@@ -46,9 +53,15 @@ namespace MultiAlign.ViewModels.TreeView
         {
             foreach (UMCClusterTreeViewModel cluster in m_filteredClusters)
             {
-                cluster.Selected += new System.EventHandler(cluster_Selected);
-                cluster.FeatureSelected += new EventHandler<FeatureSelectedEventArgs>(cluster_FeatureSelected);
+                cluster.Selected         += new System.EventHandler(cluster_Selected);
+                cluster.FeatureSelected  += new EventHandler<FeatureSelectedEventArgs>(cluster_FeatureSelected);
+                cluster.SpectrumSelected += new EventHandler<IdentificationFeatureSelectedEventArgs>(cluster_SpectrumSelected);
             }
+        }
+
+        void cluster_SpectrumSelected(object sender, IdentificationFeatureSelectedEventArgs e)
+        {
+            SelectedSpectrum = e.Spectrum;
         }
 
         void cluster_FeatureSelected(object sender, FeatureSelectedEventArgs e)
@@ -62,6 +75,10 @@ namespace MultiAlign.ViewModels.TreeView
             model.LoadChildren();        
             SelectedCluster                 = model.Cluster;
 
+            if (ClusterSelected != null)
+            {
+                ClusterSelected(this, new ClusterSelectedEventArgs(model.Cluster));
+            }
 
             if (model.Cluster.Cluster.Features.Count > 0)
             {
@@ -76,6 +93,13 @@ namespace MultiAlign.ViewModels.TreeView
                 return m_command;
             }
 
+        }
+        public ICommand ExportCommand
+        {
+            get
+            {
+                return m_exportCommand;
+            }
         }
 
         public List<UMCClusterLightMatched> Clusters
@@ -109,6 +133,21 @@ namespace MultiAlign.ViewModels.TreeView
                 }
             }            
         }
+        public MSSpectra SelectedSpectrum
+        {
+            get
+            {
+                return m_selectedSpectrum;
+            }
+            set
+            {
+                if (value != m_selectedSpectrum)
+                {
+                    m_selectedSpectrum = value;
+                    OnPropertyChanged("SelectedSpectrum");
+                }
+            }
+        }
         public UMCLight SelectedFeature
         {
             get
@@ -138,7 +177,23 @@ namespace MultiAlign.ViewModels.TreeView
             {
                 m_filteredClusters.Add(new UMCClusterTreeViewModel(cluster));
             }
+            m_filteredClusters.OrderBy(x => x.Cluster.Cluster.MemberCount);
             RegisterEvents();
+
+            if (ClustersFiltered != null)
+            {
+                ClustersFiltered(this, new ClustersUpdatedEventArgs(m_filteredClusters));
+            }
         }
+    }
+
+    public class ClustersUpdatedEventArgs: EventArgs
+    {
+        public ClustersUpdatedEventArgs(ObservableCollection<UMCClusterTreeViewModel> clusters)
+        {
+            Clusters = clusters;
+        }
+
+        public ObservableCollection<UMCClusterTreeViewModel> Clusters { get;  private set; }
     }
 }

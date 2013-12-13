@@ -1338,9 +1338,10 @@ namespace MultiAlignCore.Algorithms
             CleanupDataProviders();
 
             Logger.PrintMessage("Indexing Database Clusters for Faster Retrieval");
-            DatabaseIndexer.IndexClusters(config.AnalysisPath);
+            string databasePath = Path.Combine(m_config.AnalysisPath, m_config.AnalysisName);
+            DatabaseIndexer.IndexClusters(databasePath);
             Logger.PrintMessage("Indexing Database Features");
-            DatabaseIndexer.IndexFeatures(config.AnalysisPath);
+            DatabaseIndexer.IndexFeatures(databasePath);
 
             Logger.PrintMessage("Analysis Complete");
                                     

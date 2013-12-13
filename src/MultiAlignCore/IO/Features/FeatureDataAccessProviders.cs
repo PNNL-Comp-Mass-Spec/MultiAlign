@@ -41,7 +41,8 @@ namespace MultiAlignCore.IO.Features
                                             IFactorDAO                  factorCache,
                                             IDatasetToFactorMapDAO      factorAssignmentCache,
                                             IMSMSClusterMapDAO          msmsClusterCache,
-                                            IDatabaseSearchSequenceDAO  sequenceCache):
+                                            IDatabaseSearchSequenceDAO  sequenceCache,
+                                            ISequenceToMsnFeatureDAO    sequenceMapCache ):
             this()
         {
             ClusterCache                = clusterCache;
@@ -56,7 +57,9 @@ namespace MultiAlignCore.IO.Features
             FactorCache                 = factorCache;
             MSMSClusterCache            = msmsClusterCache;
             this.DatabaseSequenceCache  = sequenceCache;
+            this.SequenceMsnMapCache    = sequenceMapCache;
         }
+        public ISequenceToMsnFeatureDAO  SequenceMsnMapCache { get; set; }
         /// <summary>
         /// Gets or sets the data provider for storing MS/MS Clusters.
         /// </summary>

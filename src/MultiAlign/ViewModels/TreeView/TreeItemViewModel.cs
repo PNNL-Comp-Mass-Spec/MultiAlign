@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using PNNLOmics.Data.Features;
 
 namespace MultiAlign.ViewModels.TreeView
 {
@@ -11,6 +12,9 @@ namespace MultiAlign.ViewModels.TreeView
     /// </summary>
     public abstract class TreeItemViewModel : ViewModelBase
     {
+
+        public event EventHandler<FeatureSelectedEventArgs> FeatureSelected;
+
         /// <summary>
         /// Fired if the item was selected
         /// </summary>
@@ -44,7 +48,7 @@ namespace MultiAlign.ViewModels.TreeView
         /// Gets/sets whether the TreeViewItem 
         /// associated with this object is expanded.
         /// </summary>
-        public bool IsExpanded
+        public virtual bool IsExpanded
         {
             get { return m_isExpanded; }
             set
@@ -65,6 +69,11 @@ namespace MultiAlign.ViewModels.TreeView
                     LoadChildren();
                     m_loaded = true;
                 }
+
+                if (m_isExpanded)
+                {
+                    IsSelected = true;
+                }
             }
         }
 
@@ -72,7 +81,7 @@ namespace MultiAlign.ViewModels.TreeView
         /// Gets/sets whether the TreeViewItem 
         /// associated with this object is selected.
         /// </summary>
-        public bool IsSelected
+        public virtual bool IsSelected
         {
             get { return m_isSelected; }
             set
@@ -89,6 +98,17 @@ namespace MultiAlign.ViewModels.TreeView
                         }
                     }
                 }
+            }
+        }
+
+        protected void OnFeatureSelected(UMCLight feature)
+        {
+            if (FeatureSelected != null)
+            {
+                if (feature == null)
+                    return;
+
+                FeatureSelected(this, new FeatureSelectedEventArgs(feature));
             }
         }
 

@@ -16,7 +16,6 @@ namespace MultiAlign.ViewModels.TreeView
 
     public class UMCCollectionTreeViewModel: TreeItemViewModel
     {
-        public event EventHandler<FeatureSelectedEventArgs> FeatureSelected;
         private UMCClusterLight     m_parentCluster;
         protected ObservableCollection<UMCTreeViewModel> m_features;
 
@@ -27,9 +26,9 @@ namespace MultiAlign.ViewModels.TreeView
 
         public UMCCollectionTreeViewModel(UMCClusterLight parentCluster, TreeItemViewModel parent)
         {
-            m_parent = parent;
-            m_parentCluster = parentCluster;
-            m_features = new ObservableCollection<UMCTreeViewModel>();
+            m_parent            = parent;
+            m_parentCluster     = parentCluster;
+            m_features          = new ObservableCollection<UMCTreeViewModel>();
         }
 
         public ObservableCollection<UMCTreeViewModel> Features
@@ -54,9 +53,14 @@ namespace MultiAlign.ViewModels.TreeView
             foreach (UMCTreeViewModel model in features)
             {
                 Features.Add(model);
-                model.Selected += new EventHandler(model_Selected);
+                model.FeatureSelected += new EventHandler<FeatureSelectedEventArgs>(model_FeatureSelected);
             }
             m_loaded = true;
+        }
+
+        void model_FeatureSelected(object sender, FeatureSelectedEventArgs e)
+        {
+            OnFeatureSelected(e.Feature);
         }
 
         /// <summary>
@@ -66,21 +70,9 @@ namespace MultiAlign.ViewModels.TreeView
         /// <param name="e"></param>
         void model_Selected(object sender, EventArgs e)
         {
-            if (FeatureSelected != null)
-            {
-                UMCTreeViewModel model = sender as UMCTreeViewModel;
-                FeatureSelected(this, new FeatureSelectedEventArgs(model.Feature));
-            }
+            
         }
     }
 
 
-    public class FeatureSelectedEventArgs : EventArgs
-    {
-        public FeatureSelectedEventArgs(UMCLight feature)
-        {
-            Feature = feature;
-        }
-        public UMCLight Feature { get; private set; }
-    }
 }

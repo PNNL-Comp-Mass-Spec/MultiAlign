@@ -5,10 +5,11 @@
              xmlns:windows="clr-namespace:MultiAlign.Windows"   
              xmlns:datasetViews="clr-namespace:MultiAlign.Windows.Viewers.Datasets"
              xmlns:clusterViews="clr-namespace:MultiAlign.Windows.Viewers.Clusters"
+             xmlns:databaseViews="clr-namespace:MultiAlign.Windows.Viewers.Databases"                          
              xmlns:massTagViews="clr-namespace:MultiAlign.Windows.Viewers.MassTags"
              xmlns:spectraViews="clr-namespace:MultiAlign.Windows.Viewers.Spectra"
              xmlns:viewerViews="clr-namespace:MultiAlign.Windows.Viewers"
-             xmlns:converters="clr-namespace:MultiAlign.Converters"
+             xmlns:converters="clr-namespace:MultiAlign.Converters"          
              xmlns:maCharts="clr-namespace:MultiAlignCustomControls.Charting;assembly=MultiAlignCustomControls"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"                  
              mc:Ignorable="d" 
@@ -24,27 +25,30 @@
             <RowDefinition Height="32"></RowDefinition>
         </Grid.RowDefinitions>
         <TabControl 
-            Grid.RowSpan="2"
-            >
-            <TabItem
-                
+            Grid.RowSpan="2" >
+            <TabItem                
                 IsSelected="True"
                 Style="{DynamicResource ResourceKey=SimpleTabItem}"
-                Header="Clusters">
+                Header="Cluster Data">
                 <Grid>        
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="30*"/>
+                        <ColumnDefinition Width="20*"/>
                         <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="70*"/>
+                        <ColumnDefinition Width="80*"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="32"/>
-                    </Grid.RowDefinitions>     
-                    <clusterViews:ClusterTree                         
-                        DataContext="{Binding Path=ClusterTree}"   
-                        Grid.Row="0"                                            
-                        Grid.Column="0"/>
+                    </Grid.RowDefinitions> 
+                    <TabControl>
+                        <TabItem Header="Clusters"
+                                 Style="{DynamicResource ResourceKey=SimpleTabItem}">
+                            <clusterViews:ClusterTree                         
+                                DataContext="{Binding Path=ClusterTree}"   
+                                Grid.Row="0"                                            
+                                Grid.Column="0"/>
+                        </TabItem>                        
+                    </TabControl>
                     <GridSplitter
                         Grid.Row="0"                        
                         Grid.Column="1"
@@ -55,20 +59,10 @@
                     <TabControl
                         Grid.Row="0"                                            
                         Grid.Column="2">
-                        <TabItem                             
-                            Style="{DynamicResource ResourceKey=SimpleTabItem}"
-                            Header="Cluster View">
-                            <clusterViews:ClusterControl
-                                Margin="5,5,5,5"
-                                x:Name="m_clusterControl"
-                                UMCFeature="{Binding Path=ClusterTree.SelectedFeature}"
-                                UsesDriftTime="{Binding Path=UsesDriftTime, NotifyOnSourceUpdated=True}"                        
-                                Cluster="{Binding Mode=OneWay, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True, Path=ClusterTree.SelectedCluster}"/>
-                        </TabItem>
                         <TabItem 
                             
                             Style="{DynamicResource ResourceKey=SimpleTabItem}"
-                            Header="All Clusters"> 
+                            Header="All Clusters">
                             <!-- Cluster Grid Plots -->
                             <WindowsFormsHost                
                                 Margin="5,5,5,5"
@@ -83,175 +77,41 @@
                                         />
                             </WindowsFormsHost>
                         </TabItem>
+                        <TabItem                             
+                            Style="{DynamicResource ResourceKey=SimpleTabItem}"
+                            Header="Cluster Details">
+                            <clusterViews:ClusterControl
+                                Margin="5,5,5,5"
+                                x:Name="m_clusterControl"
+                                UMCFeature="{Binding Path=ClusterTree.SelectedFeature}"
+                                SelectedSpectrum="{Binding Path=ClusterTree.SelectedSpectrum}"
+                                UsesDriftTime="{Binding Path=UsesDriftTime, NotifyOnSourceUpdated=True}"                        
+                                Cluster="{Binding Mode=OneWay, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True, Path=ClusterTree.SelectedCluster}"/>
+                        </TabItem>
+
+                        <TabItem                             
+                            Style="{DynamicResource ResourceKey=SimpleTabItem}"
+                            Header="Cluster Spectra">
+                            <spectraViews:SpectraView                                                              
+                                DataContext="{Binding Path=ClusterSpectraViewModel}"/>
+                        </TabItem>
+                        <TabItem                             
+                            Style="{DynamicResource ResourceKey=SimpleTabItem}"
+                            Header="Clusters Identifications">
+                            <viewerViews:IdentificationView                                                             
+                                DataContext="{Binding Path=ClusterIdentificationViewModel}"/>
+                                
+                        </TabItem>
+
                     </TabControl>                        
                 </Grid>
             </TabItem>
-            <TabItem                
-                Style="{DynamicResource ResourceKey=SimpleTabItem}"
-                Header="Identifications" 
-                Width="{Binding Path=HasIdentifications,
-                                Converter={StaticResource ResourceKey=IntVisibilityConverter}}"               
-                
-                
-                Visibility="{Binding Path=HasIdentifications,
-                                Converter={StaticResource ResourceKey=BoolVisibilityConverter}}"
-                >
-                <viewerViews:MassTagViewer
-                    x:Name="m_massTagViewer"
-                    UseDriftTime="{Binding Path=UsesDriftTime, NotifyOnSourceUpdated=True}"
-                    />
-            </TabItem>
             <TabItem
                 Style="{DynamicResource ResourceKey=SimpleTabItem}"
-                Header="MS/MS"
-                Width="{Binding Path=HasMsMs,
-                                Converter={StaticResource ResourceKey=IntVisibilityConverter}}"
-                Visibility="Collapsed"
-                >
-                <!--Visibility="{Binding Path=HasMsMs,
-                                Converter={StaticResource ResourceKey=BoolVisibilityConverter}}"-->
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <datasetViews:DatasetListBox  
-                        Width="160"
-                        Datasets="{Binding Path=Datasets}"/>   
-                    <GridSplitter
-                        Grid.Row="0"
-                        Grid.Column="1"
-                        HorizontalAlignment="Stretch"
-                        VerticalAlignment="Stretch"
-                        Width="5"
-                        Background="DarkGray"
-                        >
-                        
-                    </GridSplitter>
-                    <viewerViews:MsMsViewer                        
-                        Grid.Row="0"
-                        Grid.Column="2"
-                        SelectedDataset="{Binding Path=SelectedDataset, ElementName=m_datasetBox}"
-                        x:Name="m_msmsViewer">
-                    </viewerViews:MsMsViewer>
-                </Grid>
+                Header="Identifications"
+                Visibility="Collapsed">
             </TabItem>
             <TabItem
-                Style="{DynamicResource ResourceKey=SimpleTabItem}"
-                Header="Statistics Plots"
-                >
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    
-                    <WindowsFormsHost                 
-                        Margin="5,5,5,5"
-                        Grid.Row="2"
-                        Grid.Column="0">
-                        <maCharts:GenericHistogram
-                            Title="Charge States"
-                            XAxisLabel="Charge State"
-                            YAxisLabel="Count"
-                            YAxisGridLines="True"
-                            XAxisGridLines="True"
-                            LegendVisible="False"
-                            x:Name="m_chargeStates"
-                            TitleVisible="True" />
-                    </WindowsFormsHost>
-
-                    <WindowsFormsHost                 
-                        Margin="5,5,5,5"
-                        Grid.Row="0"
-                        Grid.Column="0">
-                        <maCharts:GenericHistogram
-                            Title="Dataset Size Histogram"
-                            XAxisLabel="Dataset members"
-                            YAxisLabel="Count"
-                            YAxisGridLines="True"
-                            XAxisGridLines="True"
-                            LegendVisible="False"
-                            x:Name="m_datasetSizeHistogram"
-                            TitleVisible="True" />
-                    </WindowsFormsHost>
-
-                    <WindowsFormsHost                 
-                        Margin="5,5,5,5"
-                        Grid.Row="0"
-                        Grid.Column="1">
-                        <maCharts:GenericHistogram
-                            Title="Cluster Size Histogram"
-                            XAxisLabel="Dataset members"
-                            YAxisLabel="Count"
-                            YAxisGridLines="True"
-                            XAxisGridLines="True"
-                            LegendVisible="False"
-                            x:Name="m_clusterSizeHistogram"
-                            TitleVisible="True" />
-                    </WindowsFormsHost>
-
-                    <!--<WindowsFormsHost                 
-                        Margin="5,5,5,5"
-                        Grid.Row="1"
-                        Grid.Column="0">
-                        <maCharts:ClusterMemberSizeScatterPlot
-                            Title="Cluster Size Ratio"
-                            XAxisLabel="Dataset Member Count"
-                            YAxisLabel="Member Count"
-                            YAxisGridLines="True"
-                            XAxisGridLines="True"
-                            LegendVisible="False"
-                            x:Name="m_clusterRatioRawPlot"
-                            TitleVisible="True" />
-                    </WindowsFormsHost>-->
-                    <!--<WindowsFormsHost                 
-                        Margin="5,5,5,5"
-                        Grid.Row="1"
-                        Grid.Column="1">
-                        <maCharts:ClusterMemberSizeScatterPlot
-                            Title="Cluster Size Ratio"
-                            XAxisLabel="Dataset Member Count"
-                            YAxisLabel="Ratio"
-                            YAxisGridLines="True"
-                            XAxisGridLines="True"
-                            LegendVisible="False"
-                            DisplayRatio="True"
-                            x:Name="m_clusterRatioPlot"
-                            TitleVisible="True" />
-                    </WindowsFormsHost>-->
-                    <WindowsFormsHost                 
-                        Margin="5,5,5,5"
-                        Visibility="{Binding Path=HasIdentifications,
-                                Converter={StaticResource ResourceKey=BoolVisibilityConverter}}"
-                        Grid.Row="2"
-                        Grid.Column="1">
-                        <maCharts:GenericHistogram
-                            Title="Mass Tag Clusters"
-                            XAxisLabel="Features"
-                            YAxisLabel="Count"
-                            YAxisGridLines="True"
-                            XAxisGridLines="True"
-                            LegendVisible="False"
-                            x:Name="m_massTagHistogram"
-                            TitleVisible="True" />
-                    </WindowsFormsHost>
-                    <WindowsFormsHost 
-                        Grid.Row="3"
-                        Grid.Column="3"
-                        >
-                        
-                        </WindowsFormsHost>
-                </Grid>
-            </TabItem>
-            <TabItem
-                
                 Style="{DynamicResource ResourceKey=SimpleTabItem}"
                 Header="Datasets"                
                 >

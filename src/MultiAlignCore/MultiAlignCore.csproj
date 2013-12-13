@@ -133,6 +133,8 @@
     <Compile Include="Algorithms\AlgorithmProvider.cs" />
     <Compile Include="Algorithms\Alignment\AlignmentOptions.cs" />
     <Compile Include="Algorithms\Alignment\DriftTimeAligner.cs" />
+    <Compile Include="Algorithms\Alignment\DummyAlignment.cs" />
+    <Compile Include="Algorithms\Alignment\FeatureAlignerFactory.cs" />
     <Compile Include="Algorithms\Alignment\MsMsAligner.cs" />
     <Compile Include="Algorithms\Alignment\MSMSSpectralClusterer.cs" />
     <Compile Include="Algorithms\Alignment\DriftTimeAlignmentOptions.cs" />
@@ -151,6 +153,8 @@
     <Compile Include="Algorithms\FeatureFinding\AbundanceReportingType.cs" />
     <Compile Include="Algorithms\FeatureFinding\FeatureEvaluator.cs" />
     <Compile Include="Algorithms\FeatureFinding\FeatureFinderFactory.cs" />
+    <Compile Include="Algorithms\FeatureFinding\ILcmsFeatureRefinement.cs" />
+    <Compile Include="Algorithms\FeatureFinding\LcmsRawFeatureFinder.cs" />
     <Compile Include="Algorithms\FeatureFinding\UMCFeatureFinderOptions.cs" />
     <Compile Include="Algorithms\FeatureFinding\IFeatureFinder.cs" />
     <Compile Include="Algorithms\FeatureFinding\UMCFeatureFinder.cs" />
@@ -174,6 +178,8 @@
     <Compile Include="Algorithms\MultiAlignAnalysisProcessor.cs" />
     <Compile Include="Algorithms\FeatureMatcher\IPeakMatcher.cs" />
     <Compile Include="Algorithms\FeatureMatcher\TraditionalPeakMatcher.cs" />
+    <Compile Include="Algorithms\Workflow\Alignment.cs" />
+    <Compile Include="Algorithms\Workflow\WorkflowBase.cs" />
     <Compile Include="ApplicationUtility.cs" />
     <Compile Include="Data\AnalysisConfig.cs" />
     <Compile Include="Data\AnalysisOptions.cs" />
@@ -251,10 +257,13 @@
     <Compile Include="IO\MTDB\MageDmsDatabaseLoader.cs" />
     <Compile Include="IO\MTDB\MassTagDatabaseLoaderCache.cs" />
     <Compile Include="IO\MTDB\MassTagDatabaseLoaderFactory.cs" />
+    <Compile Include="IO\MTDB\DriftTimeTextFileDatabaseLoader.cs" />
     <Compile Include="IO\PeptideScanWriter.cs" />
     <Compile Include="IO\Reports\IAnalysisReportGenerator.cs" />
     <Compile Include="IO\MTDB\MAGEMetaSampleDatabaseSink.cs" />
     <Compile Include="IO\MTDB\MetaSampleDatbaseLoader.cs" />
+    <Compile Include="IO\SequenceData\SequenceToMsnDAOHibernate.cs" />
+    <Compile Include="IO\SequenceData\ISequenceToMsnFeatureDAO.cs" />
     <Compile Include="IO\SequenceData\DatabaseSearchSequenceDAOHibernate.cs" />
     <Compile Include="IO\SequenceData\IDatabaseSearchSequenceDAO.cs" />
     <Compile Include="IO\Features\IMSMSClusterMapDAO.cs" />
@@ -342,6 +351,7 @@
     <Compile Include="Data\Factors\FactorDefinitions.cs" />
     <Compile Include="Data\MassTags\clsMassTags.cs" />
     <Compile Include="IO\SequenceData\MAGEDatabaseSearchAdaptor.cs" />
+    <Compile Include="Data\SequenceData\SequenceToMsnFeature.cs" />
     <Compile Include="IO\SequenceData\SequestFirstHitSink.cs" />
     <Compile Include="Data\Features\ClusterStats.cs" />
     <Compile Include="Math\MathUtilities.cs" />
@@ -351,6 +361,7 @@
     <Content Include="hibernate.cfg.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <EmbeddedResource Include="IO\SequenceData\Mappings\SequenceToMsnFeature.hbm.xml" />
     <EmbeddedResource Include="IO\Features\Hibernate\Mappings\ClusterToMassTagMap.hbm.xml" />
     <EmbeddedResource Include="IO\Features\Hibernate\Mappings\MSMSFeature.hbm.xml">
       <SubType>Designer</SubType>

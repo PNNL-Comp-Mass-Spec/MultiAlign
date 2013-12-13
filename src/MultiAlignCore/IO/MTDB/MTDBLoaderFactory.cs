@@ -23,6 +23,9 @@ namespace MultiAlignCore.IO.MTDB
 
             switch (databaseDefinition.DatabaseFormat)
             {
+                case MassTagDatabaseFormat.DirectInfusionIms:
+                    loader = new DriftTimeTextFileDatabaseLoader(databaseDefinition.LocalPath);
+                    break;
                 case MassTagDatabaseFormat.APE:
                     loader = new ApeMassTagDatabaseLoader(databaseDefinition.LocalPath);
                     break;

@@ -13,7 +13,13 @@ using System.IO;
 using MultiAlignCore;
 using MultiAlign.Data.States;
 using MultiAlign.Windows.Viewers;
+using System.Linq;
 using MultiAlign.ViewModels;
+using MultiAlign.ViewModels.TreeView;
+using System.Windows.Documents;
+using PNNLOmics.Data.Features;
+using MultiAlignCore.Data.Features;
+using System.Collections.Generic;
 
 namespace MultiAlign.Windows
 {
@@ -196,14 +202,28 @@ namespace MultiAlign.Windows
             Controller.Config.Analysis.MetaData.AnalysisPath = analysis.Path;
             Controller.Config.Analysis.MetaData.AnalysisName = analysis.Name;
 
-            ApplicationStatusMediator.SetStatus(".");
+            ApplicationStatusMediator.SetStatus("Analysis Loaded.");
             AnalysisViewModel model     = new AnalysisViewModel(Controller.Config.Analysis);
+            model.ClusterTree.ClustersFiltered += new EventHandler<ClustersUpdatedEventArgs>(ClusterTree_ClustersFiltered);
             m_mainControl.DataContext   = model;
-
+            UpdateAllClustersPlot(model.ClusterTree.FilteredClusters, true);
 
             StateModerator.CurrentViewState = ViewState.AnalysisView;
             System.Windows.Forms.Application.DoEvents();
         }
+
+        void ClusterTree_ClustersFiltered(object sender, ClustersUpdatedEventArgs e)
+        {
+            UpdateAllClustersPlot(e.Clusters, false);
+        }
+        void UpdateAllClustersPlot(ObservableCollection<UMCClusterTreeViewModel> clusters, bool autoViewport)
+        {
+            List<UMCClusterLightMatched> filteredClusters = (from cluster in clusters
+                                                                select cluster.Cluster).ToList();
+
+            m_mainControl.SetClusters(filteredClusters, autoViewport);
+        }
+
         /// <summary>
         /// Opens an existing analysis 
         /// </summary>

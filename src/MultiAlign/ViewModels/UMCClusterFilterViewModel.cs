@@ -26,9 +26,15 @@ namespace MultiAlign.ViewModels
             TotalMembers        = new RangeViewModel(new Range(0, 10000), "Total Members");
             DatasetMembers      = new RangeViewModel(new Range(0, 10000), "Dataset Members");
 
-            IdentificationRange = new RangeViewModel(new Range(0, 100), "Score Range");
-            MsMsTotal           = new RangeViewModel(new Range(0, 100), "Number Of Ms/Ms");
-            
+             MsMsTotal           = new RangeViewModel(new Range(0, 100), "Total MS/MS");
+             IdentificationRange = new RangeViewModel(new Range(0, 100), "Identifications");
+             AMTTagRange         = new RangeViewModel(new Range(0, 100), "AMT Tags");
+        }
+
+        public RangeViewModel AMTTagRange
+        {
+            get;
+            private set;
         }
         
         public RangeViewModel TightnessRange
@@ -98,8 +104,6 @@ namespace MultiAlign.ViewModels
         /// Flag if the filter should be used
         /// </summary>
         private bool m_shouldUseClusterFilter;
-        private string m_datasetFilterId;
-        private bool m_shouldUseDatasetFilter;
 
         /// <summary>
         /// Filter for clusters.
@@ -132,7 +136,7 @@ namespace MultiAlign.ViewModels
                 {
                     m_shouldUseClusterFilter = value;
                     OnPropertyChanged("ShouldUseDFilter");
-                }
+               }
             }
         }
         public void Update()
@@ -178,11 +182,36 @@ namespace MultiAlign.ViewModels
                         }                        
                     }
                 }
-
                 filtered = filtered.Where(x => hasClusters.ContainsKey(x.Cluster.ID));
             }
 
-            
+            /// MS/MS Identifications
+            if (IdentificationRange.ShouldUse)
+            {
+                filtered = filtered.Where(x => x.Cluster.IdentifiedSpectraCount >= IdentificationRange.Minimum && x.Cluster.IdentifiedSpectraCount <= IdentificationRange.Maximum);
+            }
+            if (AMTTagRange.ShouldUse)
+            {
+                filtered = filtered.Where(x => x.ClusterMatches.Count >= AMTTagRange.Minimum && x.ClusterMatches.Count <= AMTTagRange.Maximum);
+            }
+            if (MsMsTotal.ShouldUse)
+            {
+                filtered = filtered.Where(x => x.Cluster.MsMsCount >= MsMsTotal.Minimum && x.Cluster.MsMsCount <= MsMsTotal.Maximum);
+            }
+
+            // Mass and NET Ranges
+            if (MassRange.ShouldUse)
+            {
+                filtered = filtered.Where(x => x.Cluster.MassMonoisotopic >= MassRange.Minimum && x.Cluster.MassMonoisotopic <= MassRange.Maximum);
+            }
+            if (NetRange.ShouldUse)
+            {
+                filtered = filtered.Where(x => x.Cluster.RetentionTime >= NetRange.Minimum && x.Cluster.RetentionTime <= NetRange.Maximum);
+            }
+            if (DriftRange.ShouldUse)
+            {
+                filtered = filtered.Where(x => x.Cluster.DriftTime >= DriftRange.Minimum && x.Cluster.DriftTime <= DriftRange.Maximum);
+            }            
 
             return filtered;
         }

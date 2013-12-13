@@ -10,7 +10,7 @@ using MultiAlign.IO;
 
 namespace MultiAlign.ViewModels.TreeView
 {
-    public class PeptideCollectionTreeViewModel: TreeItemViewModel
+    public class PeptideCollectionTreeViewModel: GenericCollectionTreeViewModel
     {
         private UMCClusterLight m_parentCluster;
 
@@ -25,25 +25,60 @@ namespace MultiAlign.ViewModels.TreeView
         {
             m_parent        = parent;
             m_parentCluster = parentCluster;
-            m_features      = new ObservableCollection<PeptideTreeViewModel>();
-        }
-
-        public ObservableCollection<PeptideTreeViewModel> Peptides
-        {
-            get
-            {
-                return m_features;
-            }
         }
 
         public override void LoadChildren()
         {
-            List<Peptide> peptides = m_parentCluster.FindPeptides(SingletonDataProviders.Providers);
+            if (m_loaded)
+                return;
 
-            List<PeptideTreeViewModel> peptideModels = 
-                (from peptide in peptides
-                 select new PeptideTreeViewModel(peptide)).ToList();
-            peptideModels.ForEach(x => m_features.Add(x));
+            List<Peptide> peptides = m_parentCluster.FindPeptides();
+
+            if (peptides.Count < 1)
+                return;
+
+            // Tally up the unique peptides
+            Dictionary<string, List<Peptide>> uniqueCounts = new Dictionary<string,List<Peptide>>();
+            foreach(Peptide peptide in peptides)
+            {
+                if (!uniqueCounts.ContainsKey(peptide.Sequence))
+                {
+                    uniqueCounts.Add(peptide.Sequence, new List<Peptide>());
+                }
+                uniqueCounts[peptide.Sequence].Add(peptide);
+            }
+            // Show that to the user
+            AddStatistic("Unique Identifications", uniqueCounts.Count);
+            AddStatistic("Total Identifications", peptides.Count);
+            
+
+            foreach(string sequence in uniqueCounts.Keys)
+            {
+                // Create a collection for each unique sequence
+                GenericCollectionTreeViewModel model = new GenericCollectionTreeViewModel();
+                model.Name = sequence;
+                model.AddStatistic("Total Members", uniqueCounts[sequence].Count);
+
+                foreach(Peptide p in uniqueCounts[sequence])
+                {
+                    PeptideTreeViewModel peptideModel = new PeptideTreeViewModel(p);
+                    peptideModel.FeatureSelected += new EventHandler<FeatureSelectedEventArgs>(peptideModel_FeatureSelected);
+                    model.Items.Add(peptideModel);
+                }
+
+
+                m_items.Add(model);                                
+            }
+            
+
+            m_loaded = true;
         }
+
+        void peptideModel_FeatureSelected(object sender, FeatureSelectedEventArgs e)
+        {
+            OnFeatureSelected(e.Feature);
+        }
+
+
     }
 }

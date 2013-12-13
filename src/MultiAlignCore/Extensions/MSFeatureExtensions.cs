@@ -9,6 +9,12 @@ namespace MultiAlignCore.Extensions
 {
     public static class MSFeatureExtensions
     {
+
+        public static UMCLight GetParentUmc(this MSFeatureLight feature)
+        {
+            if (feature == null) return null;            
+            return feature.ParentFeature;                    
+        }
         /// <summary>        
         /// Maps all of the MS Features to an indexed scan map.
         /// </summary>

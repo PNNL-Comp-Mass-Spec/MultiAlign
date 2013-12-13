@@ -14,7 +14,7 @@ namespace MultiAlign.ViewModels.TreeView
     public class MassTagMatchTreeViewModel : TreeItemViewModel
     {
         private ClusterToMassTagMap m_match;
-
+        
         public MassTagMatchTreeViewModel(ClusterToMassTagMap match)
             : this(match, null)
         {
@@ -48,7 +48,6 @@ namespace MultiAlign.ViewModels.TreeView
                 return m_match.StacUP;
             }
         }
-
 
         public override void LoadChildren()
         {

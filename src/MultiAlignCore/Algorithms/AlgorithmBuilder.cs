@@ -56,9 +56,9 @@ namespace MultiAlignCore.Algorithms
         /// <summary>
         /// Builds the feature aligner.
         /// </summary>
-        public void BuildAligner()
+        public void BuildAligner(AlignmentOptions options)
         {
-            m_provider.Aligner = new LCMSWarpFeatureAligner();
+            m_provider.Aligner = FeatureAlignerFactory.Create(options.AlignmentAlgorithm);
         }
         /// <summary>
         /// Builds a peak matcher object.
@@ -113,7 +113,7 @@ namespace MultiAlignCore.Algorithms
             }
             if (m_provider.Aligner == null)
             {
-                BuildAligner();
+                BuildAligner(options.AlignmentOptions);
             }
             if (m_provider.PeakMatcher == null)
             {

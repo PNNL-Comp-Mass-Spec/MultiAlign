@@ -37,12 +37,20 @@ namespace MultiAlignCore.Algorithms.Alignment
 			DriftTimeBinSize		    = .03;
             ShouldStoreAlignmentFunction  = false;
             SplitAlignmentInMZ            = false;
-			MZBoundaries				  = new List<classAlignmentMZBoundary>();            
+			MZBoundaries				  = new List<classAlignmentMZBoundary>();
+
+            AlignmentAlgorithm = FeatureAlignmentType.LCMSWarp;
 
 			/// Construct the m/z boundary object.			
 			MZBoundaries.Add(new classAlignmentMZBoundary(0.0, 505.7));
 			MZBoundaries.Add(new classAlignmentMZBoundary(505.7, 999999999.0));
         }
+
+        [ParameterFileAttribute("AlignmentAlgorithmType", "Alignment")]
+        [Category("Algorithm")]
+        [Description("Type of algorithm to use for alignment.")]
+        public FeatureAlignmentType  AlignmentAlgorithm { get; set; }
+
         /// <summary>
         /// Gets or sets whether to store alignment data.
         /// </summary>

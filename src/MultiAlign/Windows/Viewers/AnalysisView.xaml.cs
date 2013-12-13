@@ -15,6 +15,7 @@ using System.Collections.ObjectModel;
 using MultiAlign.ViewModels;
 using MultiAlign.IO;
 using MultiAlign.ViewModels.TreeView;
+using System.Linq;
 
 namespace MultiAlign.Windows.Viewers
 {
@@ -28,21 +29,19 @@ namespace MultiAlign.Windows.Viewers
                 
         public AnalysisView()
         {
-            InitializeComponent();
-            
-            //Binding binding  = new Binding("Viewport");
-            //binding.Source   = m_clusterControl;
-            //SetBinding(ViewportProperty, binding);
+            InitializeComponent();            
         }
                 
         /// <summary>
         /// Gets or sets the Analysis
         /// </summary>
-        public void Analysis(MultiAlignAnalysis analysis)
-        {                                                                          
-                   
+        public void SetClusters(List<UMCClusterLightMatched> matches, bool autoViewport)
+        {
+            List<UMCClusterLight> clusters =    (from cluster in matches
+                                                select cluster.Cluster).ToList();
+                        
+            m_clusterPlot.SetClusters(clusters, autoViewport);                                                             
             //m_clusterPlot.SetClusters(value.Clusters);                                                                 
-            //m_clusterControl.Providers  = m_analysis.DataProviders;
             //m_massTagViewer.Providers   = m_analysis.DataProviders;
 
             //if (value.MassTagDatabase != null)
@@ -67,17 +66,6 @@ namespace MultiAlign.Windows.Viewers
             //Dictionary<int, int> massTagMap = clusters.Item2.CreateMassTagClusterSizeHistogram();
             //m_massTagHistogram.ConstructHistogram(massTagMap);
             //m_massTagHistogram.AutoViewPort();                            
-        }
-
-        //private static void SynchronizeViewport(DependencyObject sender, DependencyPropertyChangedEventArgs e)
-        //{
-        //    var thisSender = (AnalysisView)sender;
-
-        //    if (e.NewValue != null)
-        //    {
-        //        RectangleF viewport = (RectangleF) e.NewValue;
-        //        thisSender.m_clusterPlot.UpdateHighlightArea(viewport);                
-        //    }
-        //}
+        }        
     }
 }

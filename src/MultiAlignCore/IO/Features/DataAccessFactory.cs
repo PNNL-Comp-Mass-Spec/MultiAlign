@@ -41,6 +41,8 @@ namespace MultiAlignCore.IO.Features
             IDatasetDAO                 datasetCache            = new DatasetDAOHibernate();
             IMassTagDAO                 massTagCache            = new MassTagDAOHibernate();
             IMassTagMatchDAO            massTagMatchCache       = new MassTagMatchDAO();
+            ISequenceToMsnFeatureDAO    sequenceMap             = new SequenceToMsnDAOHibernate();
+
             FeatureDataAccessProviders providers =
                                             new FeatureDataAccessProviders(featureCache, 
                                                                             clusterCache,
@@ -53,7 +55,8 @@ namespace MultiAlignCore.IO.Features
                                                                             new FactorDAOHibernate(),
                                                                             new DatasetToFactorDAOHibernate(),
                                                                             new MSMSClusterMapClusterDAOHibernate(),
-                                                                            new DatabaseSearchSequenceDAOHiberate());
+                                                                            new DatabaseSearchSequenceDAOHiberate(),
+                                                                            sequenceMap);
 
             return providers;
         }

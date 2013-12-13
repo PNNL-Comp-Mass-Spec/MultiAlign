@@ -24,8 +24,10 @@ namespace MultiAlignCore.Data.Imaging
                                                             int height,
                         bool shouldDisplayText)
         {
+       
 
             AlignmentImageData imageData = new AlignmentImageData();
+
             string name = data.AligneeDatasetInformation.DatasetName;
 
             ChartDisplayOptions options = new ChartDisplayOptions(false, true, true, true);
@@ -50,64 +52,69 @@ namespace MultiAlignCore.Data.Imaging
             options.YAxisLabel = "Alignee";
             options.Width  = width;
             options.Height = height;
-            imageData.HeatmapImage = RenderDatasetInfo.AlignmentHeatmap_Thumbnail(data.AlignmentData, width, height);
-            imageData.HeatmapImage.RotateFlip(System.Drawing.RotateFlipType.RotateNoneFlipY);
-
-            options.Title = "NET Error Histogram " + name;
-            options.XAxisLabel = "NET Error (%)";
-            options.YAxisLabel = "Count";
-            imageData.NetHistogramImage = RenderDatasetInfo.ErrorHistogram_Thumbnail(data.AlignmentData.netErrorHistogram, options);
-
-            options.Title = "Net vs. Scan Residuals" + name;
-            imageData.NetResidualsHistogramImage = RenderDatasetInfo.NETResiduals_Thumbnail(data.AlignmentData.ResidualData, options);
-
-            options.Title = "Mass Error Histogram " + name;
-            options.XAxisLabel = "Mass Error (PPM)";
-            imageData.MassHistogramImage = RenderDatasetInfo.ErrorHistogram_Thumbnail(data.AlignmentData.massErrorHistogram, options);
-
-            options.Title = "Mass vs. Scan Residuals" + name;
-            imageData.MassScanImage = RenderDatasetInfo.MassVsScanResiduals_Thumbnail(data.AlignmentData.ResidualData, options);
-
-            options.Title = "Mass vs. m/z Residuals" + name;
-            imageData.MassMzImage = RenderDatasetInfo.ClusterMassVsMZResidual_Thumbnail(data.AlignmentData.ResidualData, options);
 
 
-            if (data.AlignmentData.driftErrorHistogram != null)
+            if (data.AlignmentData != null)
             {
-                options.Title = "Drift Time Error Histogram " + name;
-                options.XAxisLabel = "Drift Time Error (ms)";
-                imageData.DriftTimeHistogramImage = RenderDatasetInfo.ErrorHistogram_Thumbnail(data.AlignmentData.driftErrorHistogram, options);
-                                
-                options.Title = "Drift Time Plot";
-                options.XAxisLabel = "Baseline Drift Times (ms)";
-                options.YAxisLabel = "Alignee Drift Times (ms)";
+                imageData.HeatmapImage = RenderDatasetInfo.AlignmentHeatmap_Thumbnail(data.AlignmentData, width, height);
+                imageData.HeatmapImage.RotateFlip(System.Drawing.RotateFlipType.RotateNoneFlipY);
 
-                if (data.DriftTimeAlignmentData != null)
+                options.Title = "NET Error Histogram " + name;
+                options.XAxisLabel = "NET Error (%)";
+                options.YAxisLabel = "Count";
+                imageData.NetHistogramImage = RenderDatasetInfo.ErrorHistogram_Thumbnail(data.AlignmentData.netErrorHistogram, options);
+
+                options.Title = "Net vs. Scan Residuals" + name;
+                imageData.NetResidualsHistogramImage = RenderDatasetInfo.NETResiduals_Thumbnail(data.AlignmentData.ResidualData, options);
+
+                options.Title = "Mass Error Histogram " + name;
+                options.XAxisLabel = "Mass Error (PPM)";
+                imageData.MassHistogramImage = RenderDatasetInfo.ErrorHistogram_Thumbnail(data.AlignmentData.massErrorHistogram, options);
+
+                options.Title = "Mass vs. Scan Residuals" + name;
+                imageData.MassScanImage = RenderDatasetInfo.MassVsScanResiduals_Thumbnail(data.AlignmentData.ResidualData, options);
+
+                options.Title = "Mass vs. m/z Residuals" + name;
+                imageData.MassMzImage = RenderDatasetInfo.ClusterMassVsMZResidual_Thumbnail(data.AlignmentData.ResidualData, options);
+
+
+                if (data.AlignmentData.driftErrorHistogram != null)
                 {
-                    List<FeatureMatch<UMC, UMC>> matches = data.DriftTimeAlignmentData.Matches;
-                    int totalMatches = matches.Count;
-                    float[] x = new float[totalMatches];
-                    float[] yC = new float[totalMatches];
-                    float[] y = new float[totalMatches];
+                    options.Title = "Drift Time Error Histogram " + name;
+                    options.XAxisLabel = "Drift Time Error (ms)";
+                    imageData.DriftTimeHistogramImage = RenderDatasetInfo.ErrorHistogram_Thumbnail(data.AlignmentData.driftErrorHistogram, options);
 
-                    int i = 0;
-                    foreach (FeatureMatch<UMC, UMC> match in matches)
+                    options.Title = "Drift Time Plot";
+                    options.XAxisLabel = "Baseline Drift Times (ms)";
+                    options.YAxisLabel = "Alignee Drift Times (ms)";
+
+                    if (data.DriftTimeAlignmentData != null)
                     {
-                        y[i] = Convert.ToSingle(match.ObservedFeature.DriftTime);
-                        yC[i] = Convert.ToSingle(match.ObservedFeature.DriftTimeAligned);
-                        x[i] = Convert.ToSingle(match.TargetFeature.DriftTime);
-                        i++;
+                        List<FeatureMatch<UMC, UMC>> matches = data.DriftTimeAlignmentData.Matches;
+                        int totalMatches = matches.Count;
+                        float[] x = new float[totalMatches];
+                        float[] yC = new float[totalMatches];
+                        float[] y = new float[totalMatches];
+
+                        int i = 0;
+                        foreach (FeatureMatch<UMC, UMC> match in matches)
+                        {
+                            y[i] = Convert.ToSingle(match.ObservedFeature.DriftTime);
+                            yC[i] = Convert.ToSingle(match.ObservedFeature.DriftTimeAligned);
+                            x[i] = Convert.ToSingle(match.TargetFeature.DriftTime);
+                            i++;
+                        }
+                        imageData.DriftTimeScatterImage = GenericPlotFactory.ScatterPlot_Thumbnail(x, y, options);
+
+                        options.Title = "Aligned Drift Time Plot";
+                        imageData.DriftTimeAlignedErrorImage = GenericPlotFactory.ScatterPlot_Thumbnail(x, yC, options);
+
+                        options.Title = "Drift Time Error Distributions";
+                        imageData.DriftTimeErrorImage = GenericPlotFactory.ResidualHistogram_Thumbnail(x, y, options);
+
+                        options.Title = "Aligned Drift Time Error Distributions";
+                        imageData.DriftTimeHistogramImage = GenericPlotFactory.ResidualHistogram_Thumbnail(x, yC, options);
                     }
-                    imageData.DriftTimeScatterImage = GenericPlotFactory.ScatterPlot_Thumbnail(x, y, options);
-
-                    options.Title = "Aligned Drift Time Plot";
-                    imageData.DriftTimeAlignedErrorImage = GenericPlotFactory.ScatterPlot_Thumbnail(x, yC, options);
-
-                    options.Title = "Drift Time Error Distributions";
-                    imageData.DriftTimeErrorImage = GenericPlotFactory.ResidualHistogram_Thumbnail(x, y, options);
-
-                    options.Title = "Aligned Drift Time Error Distributions";
-                    imageData.DriftTimeHistogramImage = GenericPlotFactory.ResidualHistogram_Thumbnail(x, yC, options);
                 }
             }
             return imageData;

@@ -17,13 +17,15 @@ namespace MultiAlignTestSuite.Papers.Alignment
                                                    Tuple<List<UMCLight>, List<MSFeatureLight>> alignee ,
                                                    SpectralOptions  options)
         {        
-            // Then align the samples
-            AlgorithmBuilder builder = new AlgorithmBuilder();
-            builder.BuildAligner();
-
+            
             // Use the default settings for now
             AnalysisOptions analysisOptions = new AnalysisOptions();
+            AlgorithmBuilder builder        = new AlgorithmBuilder();
             AlgorithmProvider provider      = builder.GetAlgorithmProvider(analysisOptions);
+
+            // Then align the samples
+            builder.BuildAligner(analysisOptions.AlignmentOptions);
+
             IFeatureAligner aligner         = provider.Aligner;
             aligner.AlignFeatures(  baseline.Item1,
                                     alignee.Item1,

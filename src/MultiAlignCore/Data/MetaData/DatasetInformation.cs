@@ -280,7 +280,8 @@ namespace MultiAlignCore.Data
                 string ext  = extension.Extension.ToLower();
                 if (newPath.EndsWith(ext))
                 {
-                    datasetName = datasetName.Substring(0, datasetName.Length - ext.Length);                    
+                    datasetName = datasetName.Substring(0, newPath.Length - ext.Length);
+                    break;
                 }
             }
             return System.IO.Path.GetFileNameWithoutExtension(datasetName);            
@@ -359,7 +360,9 @@ namespace MultiAlignCore.Data
                     m_supportedTypes.Add(new SupportedDatasetType("Thermo Raw", ".raw", InputFileType.Raw));
                     m_supportedTypes.Add(new SupportedDatasetType("mzXML", ".mzxml", InputFileType.Raw));
                     m_supportedTypes.Add(new SupportedDatasetType("MSGF+ First Hit", "_msgfdb_fht.txt", InputFileType.Sequence));
+                    m_supportedTypes.Add(new SupportedDatasetType("MSGF+ First Hit", "_msgfdb_fht_MSGF.txt", InputFileType.Sequence)); 
                     m_supportedTypes.Add(new SupportedDatasetType("MSGF+ First Hit", "_fht_msgf.txt", InputFileType.Sequence));
+                    m_supportedTypes.Add(new SupportedDatasetType("MSGF+ Tab Delimited", "_msgf.tsv", InputFileType.Sequence));  
                     m_supportedTypes.Add(new SupportedDatasetType("DeconTools XIC Peak File", "_peaks.txt", InputFileType.Peaks));                                                                                                                                                                                                    
                 }                  
                 return m_supportedTypes;

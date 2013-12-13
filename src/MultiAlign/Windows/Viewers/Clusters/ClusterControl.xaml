@@ -13,8 +13,8 @@
              xmlns:converters="clr-namespace:MultiAlign.Converters"
              mc:Ignorable="d"          
              x:Name="myControl" 
-             d:DesignWidth="800"
-             d:DesignHeight="600">
+             d:DesignWidth="968"
+             d:DesignHeight="582">
 
     <UserControl.Resources>
         <converters:BoolVisibilityConverter x:Key="UseDriftTimeConverter" FalseVisibility="Collapsed"></converters:BoolVisibilityConverter>
@@ -26,39 +26,36 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="50*"/>
             <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="50*"/>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="50*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+            <ColumnDefinition Width="80*"/>
+        </Grid.ColumnDefinitions>        
         <Grid
-            Grid.Column="2"
+            Grid.Column="0"
             Grid.Row="0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>                
-                <ColumnDefinition Width="{Binding Path=UsesDriftTime, Converter={StaticResource ResourceKey=UseDriftTimeWidthConverter}}"/>
+                <ColumnDefinition Width="*"/>             
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="50*"/>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="50*"/>
+                <RowDefinition Height="80*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="30*"/>
             </Grid.RowDefinitions>
+
             <TabControl
-                Grid.Column="0"
-                Grid.ColumnSpan="3"
-                Grid.Row="0">
+                Grid.Row="1"
+                Grid.Column="0">
                 <TabItem 
                     Style="{DynamicResource ResourceKey=SimpleTabItem}"
-                    FontSize="12"
-                    Header="Mass vs. Net"
+                    FontSize="14"
+                    Width="128"
+                    Header="Cluster Mass vs. NET"
                     >                    
                     <WindowsFormsHost
                         Margin="1,1,1,1"
                         Grid.Row="0"
                         Grid.Column="0">
-                <maCharts:SingleClusterChart
+                        <maCharts:SingleClusterChart
                                 x:Name="m_clusterChart"
                                 Title=""
                                 XAxisLabel="NET"
@@ -66,14 +63,16 @@
                                 YAxisShortHand="ppm"
                                 XAxisShortHand="NET"
                                 />
-            </WindowsFormsHost>
+                    </WindowsFormsHost>
                 </TabItem>
                 <TabItem 
                     Style="{DynamicResource ResourceKey=SimpleTabItem}"
-                    FontSize="12"
+                    FontSize="16"
+                    Width="196"
                     Visibility="{Binding Path=UsesDriftTime , Converter={StaticResource ResourceKey=UseDriftTimeConverter}}"
-                    Header="Mass vs. Drift Time"
+                    Header="Cluster Mass vs. Drift Time"
                     >
+
                     <WindowsFormsHost
                         Margin="1,1,1,1"
                         Grid.Row="0"                        
@@ -83,15 +82,15 @@
                                 Title=""                                
                                 IsDriftTimeXAxis="True"
                                 XAxisLabel="Drift Time (ms)"
-                            YAxisShortHand="ppm"
-                            XAxisShortHand="ms"
+                                YAxisShortHand="ppm"
+                                XAxisShortHand="ms"
                                 LegendVisible="False"
                                 />
                     </WindowsFormsHost>
                 </TabItem>
             </TabControl>
             <GridSplitter
-                        Grid.Row="1"
+                        Grid.Row="2"
                         Grid.Column="0"
                         Grid.ColumnSpan="3"
                         Height="3"
@@ -99,145 +98,132 @@
                         VerticalAlignment="Stretch"
                         Margin="1"
                         Background="#FFA0A0A0"/>
-            <TabControl
-                Grid.Column="0"
-                Grid.ColumnSpan="3"
-                Grid.Row="2">
-                <!--<TabItem 
-                Style="{DynamicResource ResourceKey=SimpleTabItem}"
-                Header="Abundance Profile"
-                >
-                <WindowsFormsHost>
-                    <maCharts:AbundanceProfileChart
-                                        x:Name="m_profileChart"
-                                        Title=""
-                                        LegendVisible="False"                
-                                        />
-                </WindowsFormsHost>
-            </TabItem>-->
-                <TabItem 
-                    Style="{DynamicResource ResourceKey=SimpleTabItem}"
-                    Header="MS Spectra"
-                    >
-                    <WindowsFormsHost
-                        Grid.Row="4"   
-                        Grid.Column="0">
-                        <maCharts:SpectraChart
-                            x:Name="m_parentSpectra"
-                            TitleVisible="True"
-                            Title="MS"
-                            XAxisLabel="m/z"
-                            YAxisLabel="Intensity"/>
-                    </WindowsFormsHost>
-
-                </TabItem>
-
-                <TabItem 
-                    Style="{DynamicResource ResourceKey=SimpleTabItem}"
-                    Header="MS/MS"
-                    >
-                    <WindowsFormsHost
-                        Grid.Row="4"   
-                        Grid.Column="0">
-                        <maCharts:SpectraChart
-                                x:Name="m_spectraChart"
-                                TitleVisible="True"
-                                Title="MS/MS"
-                                XAxisLabel="m/z"
-                                YAxisLabel="Intensity"/>
-                    </WindowsFormsHost>
-
-                </TabItem>
-            </TabControl>
+            <Label 
+                Grid.Row="3"
+                HorizontalContentAlignment="Center" 
+                FontSize="16" 
+                Foreground="Gray" 
+                Content="Feature"/>
+            <WindowsFormsHost   
+                Grid.Column="0"                
+                Grid.Row="4">
+                <maCharts:SingleUMCChart
+                                    x:Name="m_msFeaturePlot"
+                                    Title=""  
+                                    YAxisShortHand="ppm"
+                                    XAxisShortHand="scans"
+                                    LegendVisible="False"                
+                                    />
+            </WindowsFormsHost>
         </Grid>
-        <GridSplitter
-                        Grid.Row="0"
+        <GridSplitter                        
                         Grid.Column="1"
-                        Grid.RowSpan="3"
-                        Height="3"
+                        Width="3"
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Stretch"
-                        Background="#FF00000A"/>
-       
-        <WrapPanel
-                        Grid.Row="2"
-                        Grid.Column="1"
-                        Margin="3,3,3,3"
-                        Grid.ColumnSpan="3"></WrapPanel>
-
+                        Background="#FF00000A"/> 
         <Grid
-            Grid.Row="0"
-            Grid.Column="0">
-
+            Grid.Column="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
+            
             <Grid.RowDefinitions>
-                <RowDefinition Height="25*"/>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="25*"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <Grid
-                Grid.Column="0"
-                Grid.Row="0">
-
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <Border
-                    Grid.Row="0"
-                    BorderBrush="LightGray"
-                    BorderThickness="1"
-                    Margin="5">
-                    <Label HorizontalContentAlignment="Center" FontSize="16" Foreground="Gray">Mass Vs. Scan</Label>
-                </Border>
-                <WindowsFormsHost                    
-                    Grid.Row="1"
-                    >
-                    <maCharts:SingleUMCChart
-                                    x:Name="m_msFeaturePlot"
-                                    Title=""                                    
-                                    LegendVisible="False"                
-                                    />
-                </WindowsFormsHost>
-            </Grid>
-            <GridSplitter
-                        Grid.Row="1"
-                        Grid.Column="0"                
+            <Border
+                Grid.Row="0"
+                BorderBrush="LightGray"
+                BorderThickness="1"
+                Margin="5">                    
+                                   
+            </Border>
+                <Grid 
+                    Grid.Row="4">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="20*"/>
+                    </Grid.ColumnDefinitions>
+                    <Label 
+                        FontSize="12"
+                        Margin="5"
+                        Foreground ="Gray"  
+                        VerticalContentAlignment="Center"                      
+                        Grid.Row="0"
+                        Grid.Column="0">Charge</Label>
+                    <ComboBox
+                            FontSize="12"
+                            HorizontalContentAlignment="Center"
+                            SelectedItem="{Binding SelectedCharge, 
+                            RelativeSource={RelativeSource AncestorType={x:Type UserControl}},
+                            UpdateSourceTrigger=PropertyChanged,
+                            Mode=TwoWay,
+                            NotifyOnSourceUpdated=True}"
+                            ItemsSource="{Binding Charges, 
+                            RelativeSource={RelativeSource AncestorType={x:Type UserControl}},
+                            UpdateSourceTrigger=PropertyChanged,
+                            NotifyOnSourceUpdated=True}"                        
+                            Margin="5"
+                            Grid.Column="1"/>
+                </Grid>
+                
+                <GridSplitter
+                        Grid.Row="3"            
                         Height="3"
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Stretch"
                         Margin="1"
                         Background="#FFA0A0A0"/>
-            <!-- Plots based on feature selection -->
-            <Grid
-                Grid.Column="0"
-                Grid.Row="2">
-
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <Border
-                    BorderBrush="LightGray"
-                    BorderThickness="1"
-                    Margin="5">
-                    <Label HorizontalContentAlignment="Center" FontSize="16" Foreground="Gray">XIC</Label>
-                </Border>
-                <WindowsFormsHost
-                                Grid.Column="2"
-                                Grid.Row="2">
+                <Label 
+                    Margin="5"
+                    Foreground ="Gray"  
+                    Content="Extracted Ion Chromatrogram"
+                    FontSize="12"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"                      
+                    Grid.Row="0"/>
+                <WindowsFormsHost                                
+                        Grid.Row="2">
                     <maCharts:SICChart
                                         x:Name="m_sicChart"
                                         Title="XIC"                        
                                         TitleVisible="False"
                                         LegendVisible="False"                
                                         />
+                </WindowsFormsHost>                       
+                <Label 
+                    Margin="5"
+                    Foreground ="Gray"  
+                    Content="Parent Spectra"
+                    FontSize="12"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"                      
+                    Grid.Row="4"/>
+                <WindowsFormsHost                        
+                    Grid.Row="5" >
+                    <maCharts:MsFeatureChart
+                            x:Name="m_parentSpectra"
+                            TitleVisible="False"
+                            Title="MS"
+                            XAxisLabel="m/z"
+                            YAxisLabel="Intensity"/>
                 </WindowsFormsHost>
-            </Grid>
-        </Grid>
-    </Grid>
-    
+                <GridSplitter
+                        Grid.Row="3"            
+                        Height="3"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        Margin="1"
+                        Background="#FFA0A0A0"/>
+            
+        </Grid>        
+    </Grid>    
 </UserControl>

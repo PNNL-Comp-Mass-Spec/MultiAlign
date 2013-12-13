@@ -174,7 +174,14 @@ namespace MultiAlignCore.IO.Features.Hibernate
         #region IDisposable Members
 
         public static void Dispose()
-        {            
+        {
+            try
+            {
+                NHibernateUtil.SessionFactory.Close();
+            }
+            catch
+            {
+            }
             NHibernateUtil.SessionFactory.Dispose();
         }
 

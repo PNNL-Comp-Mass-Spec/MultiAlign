@@ -109,6 +109,9 @@
     <Compile Include="Charting\GenericCDF.designer.cs">
       <DependentUpon>GenericCDF.cs</DependentUpon>
     </Compile>
+    <Compile Include="Charting\MsFeatureChart.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Charting\SingleMassTagChart.cs">
       <SubType>UserControl</SubType>
     </Compile>

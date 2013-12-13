@@ -16,7 +16,7 @@ namespace MultiAlignCustomControls.Charting
     /// <summary>
     /// Renders UMC Clusters and UMC Features as a scatter plot.
     /// </summary>
-	public class SingleUMCChart : ctlScatterChart
+    public class SingleUMCChart : FeatureScatterPlot
     {
         #region Members
         private int mint_pt_size = 3;
@@ -32,7 +32,9 @@ namespace MultiAlignCustomControls.Charting
 			InitializeComponent();
                         
             m_mainFeature           = null;
-            m_info                  = null;            
+            m_info                  = null;
+
+            XAxisShortHand          = "NET";
 
             AddPostProcessor(new ChartPostRenderingProcessor(RenderDifferences), PostProcessPriority.MidHigh);
         }
@@ -89,45 +91,98 @@ namespace MultiAlignCustomControls.Charting
                     float mass          = this.mobj_axis_plotter.YScreenPixel(Convert.ToSingle(feature.MassMonoisotopicAligned));
                     float minValue      = Math.Min(scan, scanAligned);                    
                     float scanDiff      = minValue + Math.Abs(scanAligned - scan) / 2;
+                    
 
-                    //graphics.DrawLine(pen, scan, mass, scanAligned, mass);
-                    //graphics.DrawString(string.Format("{0:.0} centroid scan difference", Math.Abs(feature.ScanAligned - feature.Scan)), Font, brush, scanDiff, mass - 20);
+                }
+            }
 
-                    // Then draw the MS/MS values
+            // Then draw the MS/MS values
+            float offset    = Convert.ToSingle(MaxChartAreaXPixel) * .1F;
+            float width     = Convert.ToSingle(MaxChartAreaXPixel);
+            float direction = offset;
+            float directionOffset = 1;
+            Font newFont    = new Font(Font, FontStyle.Bold);
+            clsColorIterator colors = new clsColorIterator(); 
 
-                    float offset    = Convert.ToSingle(MaxChartAreaXPixel) * .1F;
-                    float width     = Convert.ToSingle(MaxChartAreaXPixel);
-                    float direction = offset;
+            foreach (MSFeatureLight msFeature in feature.MSFeatures)
+            {
 
-                    foreach (MSFeatureLight msFeature in feature.MSFeatures)
+                float msMassScan    = mobj_axis_plotter.YScreenPixel(Convert.ToSingle(msFeature.MassMonoisotopicAligned));
+                Color color         = colors.GetColor(msFeature.ChargeState);
+                using (Brush brush  = new SolidBrush(color))
+                {
+                    using (Pen pen  = new Pen(brush, 3.0F))
                     {
                         foreach (MSSpectra spectrum in msFeature.MSnSpectra)
                         {
-                            float msMassScan = mobj_axis_plotter.YScreenPixel(Convert.ToSingle(msFeature.MassMonoisotopicAligned)) ;
-                            float msScan     = mobj_axis_plotter.XScreenPixel(Convert.ToSingle(msFeature.Scan)) ;
+                            float msScan = mobj_axis_plotter.XScreenPixel(Convert.ToSingle(msFeature.Scan));
 
-                            // Draw the precursor strings.
-                            string precursorString = string.Format("({0}, @{1:.00} m/z)", spectrum.Scan, spectrum.PrecursorMZ);
-                            SizeF sizeOfPrecursor =  graphics.MeasureString(precursorString, Font);
+                            string precursorString = "";                            
+                            precursorString = string.Format("({0}, @{1:.00} m/z)", spectrum.Scan, spectrum.PrecursorMZ);
+                            
+
+                            SizeF sizeOfPrecursor = graphics.MeasureString(precursorString, Font);
 
                             float xPositionPrecursorString = msScan + offset + 2;
                             if (xPositionPrecursorString + sizeOfPrecursor.Width >= width)
                             {
                                 xPositionPrecursorString = width - sizeOfPrecursor.Width - 2;
                             }
-                            
+
                             graphics.DrawLine(pen, msScan, msMassScan, xPositionPrecursorString - 2, msMassScan + direction);
-                            graphics.DrawString(precursorString, Font, brush, xPositionPrecursorString , msMassScan + direction );
+                            graphics.DrawString(precursorString, newFont, brush, xPositionPrecursorString, msMassScan + direction);
+                            
+                            foreach (Peptide p in spectrum.Peptides)
+                            {
+                                msMassScan     +=   (sizeOfPrecursor.Height + 2)*directionOffset; 
+                                precursorString = string.Format("{0}", p.Sequence);                                                                
+                                graphics.DrawString(precursorString, newFont, brush, xPositionPrecursorString, msMassScan + direction);
+                            }
 
                             // Alternate the direction of the MSMS precursor label
                             direction *= -1;
+                            // This helps keep the peptide ID's stacked on top of one another.
+                            directionOffset *= -1; 
                         }
                     }
                 }
-
-                
-            }
+            }                          
         }
+
+        #region Copying to System Clipboard
+        public override void CopyDataToClipboard()
+        {
+            string clusterData = "";
+            string featureData = "";
+
+
+            clusterData += string.Format("{0}\t{1}\t{2}\t{3}\t{4}\n",
+                                                            m_mainFeature.ClusterID,
+                                                            m_mainFeature.GroupID,
+                                                            m_mainFeature.ID,
+                                                            m_mainFeature.MassMonoisotopicAligned,
+                                                            m_mainFeature.RetentionTime,
+                                                            m_mainFeature.DriftTime,
+                                                            m_mainFeature.ChargeState
+                                                            );
+
+            foreach (MSFeatureLight feature in m_mainFeature.MSFeatures)
+            {
+
+
+                featureData += string.Format("{0}\t{1}\t{2}\t{3}\t{4}\n",   feature.ID,
+                                                                            feature.MassMonoisotopicAligned,
+                                                                            feature.Scan,
+                                                                            feature.DriftTime,
+                                                                            feature.ChargeState);                
+            }
+
+
+            clusterData = "Cluster Id\tDataset Id\tFeature Id\tMono Mass\tNET\tDrift Time\tCharge\n" + clusterData;
+            clusterData += "MS Feature Id\tMono Mass\tScan\tDrift Time\tcharge\n" + featureData;
+            ApplicationClipboard.SetData(clusterData);
+        }
+        #endregion
 
         #region Data Addition Methods
         /// <summary>

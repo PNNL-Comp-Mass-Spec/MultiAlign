@@ -19,6 +19,7 @@ using OxyPlot.WindowsForms;
 using System.Windows.Forms;
 using System.Drawing;
 using MultiAlignTestSuite.Algorithms.SpectralProcessing;
+using MultiAlignTestSuite.Papers.Alignment.SSM;
 
 
 namespace MultiAlignTestSuite.Algorithms

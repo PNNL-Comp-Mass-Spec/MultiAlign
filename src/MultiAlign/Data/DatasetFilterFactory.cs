@@ -36,6 +36,7 @@ namespace MultiAlign.Data
                 case InputFileType.Sequence:
                     fileFilter = AppendExtension(fileFilter, "SEQUEST Synopsis", ".syn");
                     fileFilter = AppendExtension(fileFilter, "MSGF+ FHT", "fht_msgf.txt");
+                    fileFilter = AppendExtension(fileFilter, "MSGF+ TSV", "_msgf.tsv");
                     break;
                 case InputFileType.Features:
                     fileFilter = AppendExtension(fileFilter, "DeconTools Features Files", "_isos.csv");

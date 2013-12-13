@@ -12,12 +12,15 @@ namespace MultiAlignCore.IO.SequenceData
 	{
 
         #region IDatabaseSearchSequenceDAO Members
-        List<DatabaseSearchSequence> IDatabaseSearchSequenceDAO.FindByDatasetId(int datasetId)
+        List<DatabaseSearchSequence> IDatabaseSearchSequenceDAO.FindByDatasetId(int datasetId, int lcmsFeatureId)
         {
-            ICriterion criterion                = Expression.Eq("GroupID", datasetId);
-            List<ICriterion> criterionList      = new List<ICriterion>();
-            criterionList.Add(criterion);
-            return FindByCriteria(criterionList);
+            ICriterion criterionDataset = Expression.Eq("GroupId", datasetId);
+            ICriterion criterionFeature = Expression.Eq("UmcFeatureId", lcmsFeatureId);
+            List<ICriterion> criterionList = new List<ICriterion>();
+            criterionList.Add(criterionDataset);
+            criterionList.Add(criterionFeature);
+
+            return FindByCriteria(criterionList); 
         }
         #endregion
     }

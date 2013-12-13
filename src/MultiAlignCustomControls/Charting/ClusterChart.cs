@@ -8,6 +8,7 @@ using MultiAlignEngine.MassTags;
 using PNNLControls;
 using PNNLOmics.Data.Features;
 using MultiAlignCustomControls.Extensions;
+using PNNLOmics.Data;
 
 namespace MultiAlignCustomControls.Charting
 {
@@ -137,13 +138,21 @@ namespace MultiAlignCustomControls.Charting
             AutoViewPort();
             Refresh();
         }
+
         public void SetClusters(List<UMCClusterLight> clusters)
+        {
+            SetClusters(clusters, true);
+        }
+        public void SetClusters(List<UMCClusterLight> clusters, bool autoViewport)
         {
             m_clusters.Clear();
             m_clusters.AddRange(clusters);
             SeriesCollection.Clear();
             AddClusterDataToChart(m_clusters);
-            AutoViewPort(); 
+            if (autoViewport)
+            {
+                AutoViewPort();
+            }
             Refresh();
         }
         public void SetClusters(UMCClusterLight cluster)

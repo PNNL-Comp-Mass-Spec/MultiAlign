@@ -13,7 +13,7 @@ namespace MultiAlign.ViewModels.TreeView
     /// </summary>
     public class UMCClusterTreeViewModel : TreeItemViewModel
     {
-        public event EventHandler<FeatureSelectedEventArgs> FeatureSelected;
+        public event EventHandler<IdentificationFeatureSelectedEventArgs> SpectrumSelected;
 
         /// <summary>
         ///  The cluster in question
@@ -21,6 +21,7 @@ namespace MultiAlign.ViewModels.TreeView
         UMCClusterLightMatched                  m_cluster;
         MsMsCollectionTreeViewModel             m_spectra;
         ObservableCollection<TreeItemViewModel> m_items;
+        GenericCollectionTreeViewModel m_allIdentifications;
 
         public UMCClusterTreeViewModel(UMCClusterLightMatched cluster):
             this(cluster, null)
@@ -33,7 +34,7 @@ namespace MultiAlign.ViewModels.TreeView
             m_parent                                        = parent;
             m_cluster                                       = matchedCluster;
             UMCCollectionTreeViewModel features             = new UMCCollectionTreeViewModel(matchedCluster.Cluster);
-            features.FeatureSelected += new EventHandler<FeatureSelectedEventArgs>(features_FeatureSelected);
+            features.FeatureSelected += new EventHandler<FeatureSelectedEventArgs>(feature_FeatureSelected);
             features.Name                                   = "Features";
 
             // Cluster level statistics
@@ -48,29 +49,47 @@ namespace MultiAlign.ViewModels.TreeView
             AddStatistics("Datasets",   cluster.DatasetMemberCount);
             AddStatistics("Total",      cluster.MemberCount);
 
+            AddStatistics("Total MS/MS", cluster.MsMsCount);
+            AddStatistics("Total Identifications", cluster.IdentifiedSpectraCount);
+
+            GenericCollectionTreeViewModel allIdentifications = new GenericCollectionTreeViewModel();
+            allIdentifications.Name = "Identifications";
+
             // Items to display the base childen.
             PeptideCollectionTreeViewModel identifications  = new PeptideCollectionTreeViewModel(cluster);
             identifications.Name                            = "Search Results";
+            identifications.FeatureSelected += new EventHandler<FeatureSelectedEventArgs>(feature_FeatureSelected);
+            
 
             MsMsCollectionTreeViewModel spectra             = new MsMsCollectionTreeViewModel(cluster);
             spectra.Name                                    = "MS/MS";
             m_spectra                                       = spectra;
+            spectra.SpectrumSelected += new EventHandler<IdentificationFeatureSelectedEventArgs>(spectra_SpectrumSelected);
+            spectra.FeatureSelected         += new EventHandler<FeatureSelectedEventArgs>(feature_FeatureSelected);
 
             MassTagCollectionMatchTreeViewModel matches     = new MassTagCollectionMatchTreeViewModel(matchedCluster.ClusterMatches);
             matches.Name                                    = "AMT Tags";
 
+            allIdentifications.Items.Add(identifications);
+            allIdentifications.Items.Add(spectra);
+            allIdentifications.Items.Add(matches);
+            m_allIdentifications = allIdentifications;
+
             m_items.Add(features);
-            m_items.Add(identifications);
-            m_items.Add(spectra);
-            m_items.Add(matches);            
+            m_items.Add(allIdentifications);
         }
 
-        void features_FeatureSelected(object sender, FeatureSelectedEventArgs e)
+        void spectra_SpectrumSelected(object sender, IdentificationFeatureSelectedEventArgs e)
         {
-            if (FeatureSelected != null)
+            if (SpectrumSelected != null)
             {
-                FeatureSelected(sender, e);
+                SpectrumSelected(sender, e);
             }
+        }
+
+        void feature_FeatureSelected(object sender, FeatureSelectedEventArgs e)
+        {
+            OnFeatureSelected(e.Feature);
         }
 
         private void AddStatistics(string name, double value)
@@ -78,15 +97,7 @@ namespace MultiAlign.ViewModels.TreeView
             StatisticTreeViewItem item = new StatisticTreeViewItem(value, name);
             m_items.Add(item);
         }
-
-
-        public ObservableCollection<TreeItemViewModel> Items
-        {
-            get
-            {
-                return m_items; 
-            }
-        }
+        
         
         public int DatasetMemberCount
         {
@@ -94,6 +105,14 @@ namespace MultiAlign.ViewModels.TreeView
             {
                 return m_cluster.Cluster.DatasetMemberCount;
             }
+        }
+
+        public ObservableCollection<TreeItemViewModel> Items
+        {
+            get
+            {
+                return m_items;
+            }            
         }
 
         public UMCClusterLightMatched Cluster
@@ -121,6 +140,12 @@ namespace MultiAlign.ViewModels.TreeView
             m_cluster.Cluster.ReconstructUMCCluster(SingletonDataProviders.Providers, true, true);
 
             foreach (TreeItemViewModel treeModel in m_items)
+            {
+                treeModel.LoadChildren();
+            }
+
+
+            foreach (TreeItemViewModel treeModel in m_allIdentifications.Items)
             {
                 treeModel.LoadChildren();
             }   

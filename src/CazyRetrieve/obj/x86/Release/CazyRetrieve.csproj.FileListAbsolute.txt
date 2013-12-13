@@ -2,4 +2,3 @@ C:\development\Proteomics\MultiAlign\development\trunk\src\CazyRetrieve\bin\Rele
 C:\development\Proteomics\MultiAlign\development\trunk\src\CazyRetrieve\bin\Release\CazyRetrieve.pdb
 C:\development\Proteomics\MultiAlign\development\trunk\src\CazyRetrieve\obj\x86\Release\CazyRetrieve.exe
 C:\development\Proteomics\MultiAlign\development\trunk\src\CazyRetrieve\obj\x86\Release\CazyRetrieve.pdb
-C:\development\Proteomics\MultiAlign\development\trunk\src\CazyRetrieve\obj\x86\Release\CazyRetrieve.csprojResolveAssemblyReference.cache

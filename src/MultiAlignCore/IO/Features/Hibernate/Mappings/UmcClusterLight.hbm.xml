@@ -9,11 +9,13 @@
 		<property name="MassMonoisotopic"         column="Mass"                 type="double" not-null="false" />
 		<property name="RetentionTime"            column="NET"                  type="double" not-null="false" />				
 		<property name="DriftTime"                column="Drift_Time"           type="double" not-null="false" />
-    <property name="Tightness"                column="Tightness_Score"      type="double" not-null="false" />
-    <!--<property name="MinimumCentroidDistance"  column="Min_Centroid_Distance" type="double" not-null="false" />-->
+    <property name="Tightness"                column="Tightness_Score"      type="double" not-null="false" />    
     <property name="AmbiguityScore"           column="Ambiguity_Score"      type="double" not-null="false" />
     <property name="MemberCount"              column="Member_Count"         type="int"    not-null="false" />
     <property name="DatasetMemberCount"       column="Dataset_Member_Count" type="int"    not-null="false" />
     <property name="ChargeState"              column="Charge"               type="int"    not-null="false" />
+    <property name="MsMsCount"                column="MsMs_Spectra_Count"         type="int"    not-null="false" />
+    <property name="IdentifiedSpectraCount"   column="Identified_Spectra_Count"   type="int"    not-null="false" />
+    <property name="MeanSpectralSimilarity"   column="Mean_Spectral_Similarity_Score"      type="double" not-null="false" />
   </class>
 </hibernate-mapping>

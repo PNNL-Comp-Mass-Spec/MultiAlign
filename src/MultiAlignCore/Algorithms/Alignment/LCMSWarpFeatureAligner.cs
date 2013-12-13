@@ -9,6 +9,7 @@ using MultiAlignEngine.MassTags;
 using PNNLOmics.Algorithms;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Data.MassTags;
+using System.IO;
 
 namespace MultiAlignCore.Algorithms.Alignment
 {
@@ -178,24 +179,30 @@ namespace MultiAlignCore.Algorithms.Alignment
                 // Correct the features
                 OnStatus("Applying alignment function to all features.");
                 alignmentProcessor.ApplyNETMassFunctionToAligneeDatasetFeatures(ref transformedFeatures);
-                
+
+
                 // Find min/max scan for meta-data
                 int tempMinScanBaseline = int.MaxValue;
                 int tempMaxScanBaseline = int.MinValue;
+                
                 foreach (clsUMC feature in transformedFeatures)
                 {
-                    tempMaxScanBaseline     = Math.Max(tempMaxScanBaseline, feature.Scan);
-                    tempMinScanBaseline     = Math.Min(tempMinScanBaseline, feature.Scan);
-                    int featureID           = feature.Id;
-                    bool isInMap            = map.ContainsKey(featureID);
+                    tempMaxScanBaseline = Math.Max(tempMaxScanBaseline, feature.Scan);
+                    tempMinScanBaseline = Math.Min(tempMinScanBaseline, feature.Scan);
+                    int featureID = feature.Id;
+                    bool isInMap = map.ContainsKey(featureID);
                     if (isInMap)
                     {
                         map[featureID].MassMonoisotopicAligned = feature.MassCalibrated;
-                        map[featureID].NETAligned              = feature.Net;
-                        map[featureID].RetentionTime           = feature.Net;     
-                        map[featureID].ScanAligned             = feature.ScanAligned;                  
+                        map[featureID].NETAligned = feature.Net;
+                        map[featureID].RetentionTime = feature.Net;
+                        map[featureID].ScanAligned = feature.ScanAligned;
+
+                                                            
+
                     }
-                }                
+                }
+                
                 minScanBaseline = Math.Min(minScanBaseline, tempMinScanBaseline);
                 maxScanBaseline = Math.Max(maxScanBaseline, tempMaxScanBaseline);
 

@@ -26,6 +26,8 @@
     <property name="AverageDeconFitScore"       column="Average_Decon_Fit_Score"    type="double" not-null="false" />
     <property name="SpectralCount"              column="UMC_Member_Count"           type="int" not-null="false" />
     <property name="SaturatedMemberCount"       column="Saturated_Member_Count"     type="int" not-null="false" />
+    <property name="MsMsCount"                  column="MsMs_Spectra_Count"         type="int"    not-null="false" />
+    <property name="IdentifiedSpectraCount"     column="Identified_Spectra_Count"   type="int"    not-null="false" />
   </class>
 
 </hibernate-mapping> 

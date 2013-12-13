@@ -5,145 +5,61 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="700">
-    <StackPanel>
+    <UserControl.Resources>
+
+    </UserControl.Resources>
+
+    <Border CornerRadius="2" BorderThickness="1" HorizontalAlignment="Stretch" Padding="3" Margin="3" BorderBrush="#FFCCCCCC">
         <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition></RowDefinition>
-            </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="250"/>
-                <ColumnDefinition Width="80*"/>
+                <ColumnDefinition Width="32"></ColumnDefinition>
+                <ColumnDefinition Width="128"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <StackPanel Grid.Column="0" Margin="5">
-                <Label FontSize="24" Foreground="LightGray">Mass Tag Details</Label>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Image
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        Width="16"
+                        Height="16"
+                        Source="/MultiAlign;component/Resources/molecule.png"/>
 
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
+            <Label
+                Grid.Row="0"
+                Grid.Column="1"
+                Foreground="Gray">
+                Name
+            </Label>
+            <TextBlock 
+                    Grid.Row="0"
+                    Grid.Column="2"
+                    FontSize="14"   
+                    Margin="5"
+                    HorizontalAlignment="Stretch">
+                    <TextBlock.Text>                                                            
+                            <Binding Path="Protein.Sequence" />                    
+                    </TextBlock.Text>
+            </TextBlock>
 
-                    <Label
-                            Grid.Row="0"
-                            Grid.Column="0"
-                            >
-                        Mass Tag ID
-                    </Label>
-                    <Label          
-                                HorizontalAlignment="Stretch"
-                                HorizontalContentAlignment="Right"                  
-                            Grid.Row="0"
-                            Grid.Column="1"
-                            >
-                        <Binding Path="MassTag.MassTag.ID" Converter="{StaticResource ResourceKey=IntToStringConverter}"></Binding>
-                    </Label>
-
-
-
-                    <Label
-                            Grid.Row="4"
-                            Grid.Column="0"
-                            >
-                        Observation Count
-                    </Label>
-                    <Label                  
-                                HorizontalAlignment="Stretch"
-                                HorizontalContentAlignment="Right"          
-                            Grid.Row="4"
-                            Grid.Column="1"
-                            >
-                        <Binding Path="MassTag.MassTag.ObservationCount" Converter="{StaticResource ResourceKey=IntToStringConverter}"></Binding>
-                    </Label>
-
-                </Grid>
-                <Label FontSize="24" Foreground="LightGray">Matches</Label>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    <Label      Grid.Row="0"
-                                Grid.Column="0">
-                        Number of Matching Clusters
-                    </Label>
-                    <Label      
-                                HorizontalAlignment="Stretch"
-                                HorizontalContentAlignment="Right"
-                                Grid.Row="0"
-                                Grid.Column="1">
-                        <Binding Path="MassTag.Matches.Count" Converter="{StaticResource ResourceKey=IntToStringConverter}"></Binding>
-                    </Label>
-                    <Label      Grid.Row="1"
-                                Grid.Column="0">
-                        Number of Matching Proteins
-                    </Label>
-                    <Label     
-                                HorizontalAlignment="Stretch"
-                                HorizontalContentAlignment="Right"
-                                Grid.Row="1"
-                                Grid.Column="1">
-                        <Binding Path="MassTag.MatchingProteins.Count" Converter="{StaticResource ResourceKey=IntToStringConverter}"></Binding>
-                    </Label>
-                </Grid>
-            </StackPanel>
-            <StackPanel Grid.Column="1" Margin="5">
-                <Label FontSize="24" Foreground="LightGray">Peptide</Label>
-                <Label FontSize="12">Sequence</Label>
-                <Label FontSize="12" FontWeight="Bold" Foreground ="Gray">
-                    <Binding Path="MassTag.MassTag.PeptideSequence"></Binding>
-                </Label>
-                <Label FontSize="12">Extended Sequence</Label>
-                <Label FontSize="12"  FontWeight="Bold" Foreground ="Gray">
-                    <Binding Path="MassTag.MassTag.PeptideSequenceEx"></Binding>
-                </Label>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    <Label
-                            Grid.Row="1"
-                            Grid.Column="0"
-                            >
-                        Cleavage State
-                    </Label>
-                    <Label        
-                                    HorizontalAlignment="Stretch"
-                                    HorizontalContentAlignment="Right"                    
-                                Grid.Row="1"
-                                Grid.Column="1"
-                                >
-                        <Binding Path="MassTag.MassTag.CleavageState" Converter="{StaticResource ResourceKey=IntToStringConverter}"></Binding>
-                    </Label>
-                </Grid>
-                <Label FontSize="24" Foreground="LightGray">Modifications</Label>
-                <Label FontSize="12">Modifications</Label>
-                <Label>
-                    <Binding Path="MassTag.MassTag.Modifications"></Binding>
-                </Label>
-                <Label>Modification Count</Label>
-                <Label>
-                    <Binding Path="MassTag.MassTag.ModificationCount" Converter="{StaticResource ResourceKey=IntToStringConverter}"></Binding>
-                </Label>
-
-            </StackPanel>
+            <Label
+                Grid.Row="1"
+                Grid.Column="1"
+                Foreground="Gray">
+                Sequence
+            </Label>
+            <TextBlock 
+                    Grid.Row="1"
+                    Grid.Column="2"
+                    FontSize="14"   
+                    Margin="5"
+                    HorizontalAlignment="Stretch">
+                    <TextBlock.Text>                                                            
+                            <Binding Path="Protein.ProteinDescription" />                    
+                    </TextBlock.Text>
+            </TextBlock>
         </Grid>
-    </StackPanel>
+    </Border>
 </UserControl>

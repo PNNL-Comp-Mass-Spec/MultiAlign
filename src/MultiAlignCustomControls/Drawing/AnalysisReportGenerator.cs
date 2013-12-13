@@ -264,6 +264,7 @@ namespace MultiAlignCustomControls.Drawing
             //string path      = "";  
             SeriesOptions clusterSeries = null;
 
+            
             while (confidence <= .9)
             {
                 matchPoints.Clear();
@@ -408,52 +409,54 @@ namespace MultiAlignCustomControls.Drawing
             string labelName = Path.GetFileNameWithoutExtension(name) + "_featurePlot.png";            
             SaveImage(imageData.FeaturePlotImage, labelName, "Features " + name);
             Config.Report.PushImageColumn(Path.Combine("Plots", labelName));
-            
-            labelName = Path.GetFileNameWithoutExtension(name) + "_heatmap.png";            
-            SaveImage(imageData.HeatmapImage, labelName, "Alignment heat map " + name);
-            Config.Report.PushImageColumn(Path.Combine("Plots", labelName));
-                        
-            labelName = Path.GetFileNameWithoutExtension(name) + "_netErrorHistogram.png";
-            SaveImage(imageData.NetHistogramImage, labelName, "NET error histogram " + name);
-            Config.Report.PushImageColumn(Path.Combine("Plots", labelName));
 
-            labelName = Path.GetFileNameWithoutExtension(name) + "_netResiduals.png";
-            SaveImage(imageData.NetResidualsHistogramImage, labelName, "NET vs. scan residuals " + name);
-            Config.Report.PushImageColumn(Path.Combine("Plots", labelName));
-
-            labelName = Path.GetFileNameWithoutExtension(name) + "_massErrorHistogram.png";
-            SaveImage(imageData.MassHistogramImage, labelName, "Mass error histogram (ppm) " + name );
-            Config.Report.PushImageColumn(Path.Combine("Plots", labelName));
-           
-            labelName       = Path.GetFileNameWithoutExtension(name) + "_massScanResiduals.png";           
-            SaveImage(imageData.MassScanImage, labelName, "Mass vs Scan Residuals");
-            Config.Report.PushImageColumn(Path.Combine("Plots", labelName));
-            
-            labelName = Path.GetFileNameWithoutExtension(name) + "_massMZResiduals.png";            
-            SaveImage(imageData.MassMzImage, labelName, "Mass vs m/z Residuals");
-            Config.Report.PushImageColumn(Path.Combine("Plots", labelName));
-            Config.Report.PushEndTableRow();
-            
-            if (e.DriftTimeAlignmentData != null)
-            {                
-                labelName = Path.GetFileNameWithoutExtension(name) + "_driftTimes.png";                
-                SaveImage(imageData.DriftTimeScatterImage, labelName, "Drift Times " + name);
+            if (e.AlignmentData != null)
+            {
+                labelName = Path.GetFileNameWithoutExtension(name) + "_heatmap.png";
+                SaveImage(imageData.HeatmapImage, labelName, "Alignment heat map " + name);
                 Config.Report.PushImageColumn(Path.Combine("Plots", labelName));
 
-                labelName = Path.GetFileNameWithoutExtension(name) + "_driftTimesAligned.png";                
-                SaveImage(imageData.DriftTimeAlignedErrorImage, labelName, "Aligned Drift Times " + name);
+                labelName = Path.GetFileNameWithoutExtension(name) + "_netErrorHistogram.png";
+                SaveImage(imageData.NetHistogramImage, labelName, "NET error histogram " + name);
                 Config.Report.PushImageColumn(Path.Combine("Plots", labelName));
 
-                labelName = Path.GetFileNameWithoutExtension(name) + "_driftTimesErrorHistogram.png";
-                SaveImage(imageData.DriftTimeHistogramImage, labelName, "Drift Time Error Distributions " + name);
+                labelName = Path.GetFileNameWithoutExtension(name) + "_netResiduals.png";
+                SaveImage(imageData.NetResidualsHistogramImage, labelName, "NET vs. scan residuals " + name);
                 Config.Report.PushImageColumn(Path.Combine("Plots", labelName));
 
-                labelName = Path.GetFileNameWithoutExtension(name) + "_driftTimesErrorHistogramAligned.png";
-                SaveImage(imageData.DriftTimeAlignedHistogramImage, labelName, "Aligned Drift Time Error Distributions");
+                labelName = Path.GetFileNameWithoutExtension(name) + "_massErrorHistogram.png";
+                SaveImage(imageData.MassHistogramImage, labelName, "Mass error histogram (ppm) " + name);
+                Config.Report.PushImageColumn(Path.Combine("Plots", labelName));
+
+                labelName = Path.GetFileNameWithoutExtension(name) + "_massScanResiduals.png";
+                SaveImage(imageData.MassScanImage, labelName, "Mass vs Scan Residuals");
+                Config.Report.PushImageColumn(Path.Combine("Plots", labelName));
+
+                labelName = Path.GetFileNameWithoutExtension(name) + "_massMZResiduals.png";
+                SaveImage(imageData.MassMzImage, labelName, "Mass vs m/z Residuals");
                 Config.Report.PushImageColumn(Path.Combine("Plots", labelName));
                 Config.Report.PushEndTableRow();
-            }
 
+                if (e.DriftTimeAlignmentData != null)
+                {
+                    labelName = Path.GetFileNameWithoutExtension(name) + "_driftTimes.png";
+                    SaveImage(imageData.DriftTimeScatterImage, labelName, "Drift Times " + name);
+                    Config.Report.PushImageColumn(Path.Combine("Plots", labelName));
+
+                    labelName = Path.GetFileNameWithoutExtension(name) + "_driftTimesAligned.png";
+                    SaveImage(imageData.DriftTimeAlignedErrorImage, labelName, "Aligned Drift Times " + name);
+                    Config.Report.PushImageColumn(Path.Combine("Plots", labelName));
+
+                    labelName = Path.GetFileNameWithoutExtension(name) + "_driftTimesErrorHistogram.png";
+                    SaveImage(imageData.DriftTimeHistogramImage, labelName, "Drift Time Error Distributions " + name);
+                    Config.Report.PushImageColumn(Path.Combine("Plots", labelName));
+
+                    labelName = Path.GetFileNameWithoutExtension(name) + "_driftTimesErrorHistogramAligned.png";
+                    SaveImage(imageData.DriftTimeAlignedHistogramImage, labelName, "Aligned Drift Time Error Distributions");
+                    Config.Report.PushImageColumn(Path.Combine("Plots", labelName));
+                    Config.Report.PushEndTableRow();
+                }
+            }
             Config.Report.PushEndTable();
         }
         #endregion

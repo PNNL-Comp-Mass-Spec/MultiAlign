@@ -25,7 +25,11 @@ namespace MultiAlignCore.Data.MassTags
         /// <summary>
         /// Ape enabled databases
         /// </summary>
-        APE
+        APE,
+        /// <summary>
+        /// For Direct Infusion IMS Experiments 
+        /// </summary>
+        DirectInfusionIms
     }
 
 }

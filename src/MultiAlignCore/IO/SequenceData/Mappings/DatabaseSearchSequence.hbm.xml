@@ -3,20 +3,14 @@
                    assembly="MultiAlignCore" 
                    namespace="MultiAlignCore.Data.SequenceData">
 
-	<class name="DatabaseSearchSequence" table="T_DatabaseSearchResults" lazy="false">
+	<class name="DatabaseSearchSequence" table="T_DatabaseSearch" lazy="false">
     <composite-id>
-      <key-property name="ID"                     column="Feature_Id" type="integer" />
-      <key-property name="GroupID"                column="Dataset_Id" type="integer" />
-    </composite-id>  
-    <property name="Sequence"       column="Sequence"       type="string"   not-null="false" />
-    <property name="Scan"           column="Scan"           type="integer"  not-null="false" />
-    <property name="Reference"      column="Reference"      type="string"   not-null="false" />
-    <property name="Score"          column="Score"          type="double"   not-null="false" />
-    <property name="DeltaScore"     column="DeltaScore"     type="double"   not-null="false" />
-    <property name="DeltaScore2"    column="DeltaScore2"    type="double"   not-null="false" />
-    <property name="Rank"           column="Rank"           type="integer"  not-null="false" />
-    <property name="Charge"         column="Charge"         type="integer"  not-null="false" />
-    <property name="Mass"           column="Mass"           type="double"   not-null="false" />
-    <property name="TrypticEnds"    column="TrypticEnds"    type="integer"  not-null="false" />                            
+      <key-property name="Id"             column="Sequence_ID"      type="integer" />
+      <key-property name="GroupId"        column="Dataset_ID"       type="integer" />
+    </composite-id>
+    <property name="UmcFeatureId"         column="LCMS_Feature_ID"  type="integer" />
+    <property name="Sequence"             column="Sequence"         type="string"   not-null="false" />
+    <property name="Scan"                 column="Scan"             type="integer"  not-null="false" />
+    <property name="Score"                column="Score"            type="double"   not-null="false" />    
   </class>
 </hibernate-mapping>  

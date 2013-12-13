@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using PNNLOmics.Data;
+using PNNLOmics.Data.Features;
 
 namespace MultiAlignCore.Extensions
 {
@@ -21,6 +22,29 @@ namespace MultiAlignCore.Extensions
             }
 
             return peptideMap;
+        }
+
+        public static UMCLight GetParentUmc(this Peptide peptide)
+        {
+            if (peptide == null) return null;
+
+            if (peptide.Spectrum == null) return null;
+
+            return peptide.Spectrum.GetParentUmc();
+        }
+    }
+
+    public static class MsnExtensions
+    {        
+        public static UMCLight GetParentUmc(this MSSpectra spectrum)
+        {
+            if (spectrum == null) return null;
+
+            if (spectrum.ParentFeature != null)
+            {
+                return spectrum.ParentFeature.GetParentUmc();
+            }
+            return null;
         }
     }
 }

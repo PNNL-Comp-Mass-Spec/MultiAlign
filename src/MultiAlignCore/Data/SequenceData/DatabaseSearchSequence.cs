@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using PNNLOmics.Data;
 
 namespace MultiAlignCore.Data.SequenceData
 {
@@ -11,19 +12,34 @@ namespace MultiAlignCore.Data.SequenceData
     public class DatabaseSearchSequence
     {
 
-        public string   Sequence { get; set; }
-        public int      Scan { get; set; }
-        public string   Reference { get; set; }
-        public double   Score {get;set;}
-        public double   DeltaScore {get;set;}
-        public double   DeltaScore2 {get;set;}
-        public int      Rank {get;set;}
-        public int      Charge {get;set;}
-        public double   Mass{get;set;}
-        public int      TrypticEnds {get;set;}
-        public int ID        { get; set; }
-        public int GroupID   { get; set; }
+        public DatabaseSearchSequence()
+        {
+        }
 
+        public DatabaseSearchSequence(Peptide peptide, int featureId)
+        {
+            Sequence     = peptide.Sequence;
+            Scan         = peptide.Scan;
+            Score        = peptide.Score;
+            GroupId      = peptide.GroupId;               
+            UmcFeatureId = featureId;
+            Id           = peptide.ID;
+        }
+
+        public string   Sequence    { get; set; }
+        public int      Scan        { get; set; }
+        public double   Score       { get; set; }        
+        public int      Id          { get; set; }
+        public int GroupId          { get; set; }
+        public double Mz { get; set; }
+        public double MassMonoisotopic { get; set; }
+
+
+        /// <summary>
+        /// Gets or sets the parent feature this is associated with.
+        /// </summary>
+        public int UmcFeatureId { get; set; }
+        
         public override bool Equals(object obj)
         {
             DatabaseSearchSequence other = (DatabaseSearchSequence)obj;
@@ -32,11 +48,11 @@ namespace MultiAlignCore.Data.SequenceData
             {
                 return false;
             }
-            else if (!this.ID.Equals(other.ID))
+            else if (!this.Id.Equals(other.Id))
             {
                 return false;
             }
-            else if (!this.GroupID.Equals(other.ID))
+            else if (!this.GroupId.Equals(other.GroupId))
             {
                 return false;
             }
@@ -47,39 +63,11 @@ namespace MultiAlignCore.Data.SequenceData
             else if (!this.Scan.Equals(other.Scan))
             {
                 return false;
-            }
-            else if (!this.DeltaScore.Equals(other.DeltaScore))
-            {
-                return false;
-            }
-            else if (!this.DeltaScore2.Equals(other.DeltaScore2))
-            {
-                return false;
-            }
-            else if (!this.Mass.Equals(other.Mass))
-            {
-                return false;
-            }
-            else if (!this.Charge.Equals(other.Charge))
-            {
-                return false;
-            }
-            else if (!this.Rank.Equals(other.Rank))
-            {
-                return false;
-            }
-            else if (!this.Reference.Equals(other.Reference))
-            {
-                return false;
-            }
+            }            
             else if (!this.Score.Equals(other.Score))
             {
                 return false;
-            }
-            else if (!this.TrypticEnds.Equals(other.TrypticEnds))
-            {
-                return false;
-            }              
+            }                          
             else
             {
                 return this.Score.Equals(other.Score);
@@ -89,19 +77,11 @@ namespace MultiAlignCore.Data.SequenceData
         public override int GetHashCode()
         {
             int hash = 17;
-
             hash = hash * 23 + this.Sequence.GetHashCode();
             hash = hash * 23 + this.Scan.GetHashCode();
-            hash = hash * 23 + this.Reference.GetHashCode();
             hash = hash * 23 + this.Score.GetHashCode();
-            hash = hash * 23 + this.DeltaScore.GetHashCode();
-            hash = hash * 23 + this.DeltaScore2.GetHashCode();
-            hash = hash * 23 + this.Rank.GetHashCode();
-            hash = hash * 23 + this.Charge.GetHashCode();
-            hash = hash * 23 + this.Mass.GetHashCode();
-            hash = hash * 23 + this.TrypticEnds.GetHashCode();
-            hash = hash * 23 + this.ID.GetHashCode();
-            hash = hash * 23 + this.GroupID.GetHashCode();                                     
+            hash = hash * 23 + this.Id.GetHashCode();
+            hash = hash * 23 + this.GroupId.GetHashCode();            
             return hash;
         }
     }

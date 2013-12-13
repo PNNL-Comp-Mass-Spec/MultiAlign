@@ -27,7 +27,7 @@ namespace MultiAlign.Windows.Wizard
             InitializeComponent();
 
             m_openFileDialog        = new System.Windows.Forms.OpenFileDialog();
-            m_openFileDialog.Filter = "Mass Tag Database (.db3)|*.db3|APE Cache Database (.ape)|*.ape|All Files (*.*)|*.*";
+            m_openFileDialog.Filter = "Mass Tag Database (.db3)|*.db3|Direct Infusion IMS Database (.dims)|*.dims|APE Cache Database (.ape)|*.ape|All Files (*.*)|*.*";
             DataContext             = this;            
         }
 
@@ -40,18 +40,16 @@ namespace MultiAlign.Windows.Wizard
 
                 switch(extension)
                 {
-                    case ".ape":
-                        if (Analysis.MetaData.Database == null)
-                        {
-                            Analysis.MetaData.Database = new InputDatabase(MassTagDatabaseFormat.APE);
-                        }
-                        Analysis.MetaData.Database.LocalPath = m_openFileDialog.FileName;
+                    case ".dims":
+                        Analysis.MetaData.Database.DatabaseFormat = MassTagDatabaseFormat.DirectInfusionIms;                        
+                        Analysis.MetaData.Database.LocalPath      = m_openFileDialog.FileName;
+                        break;
+                    case ".ape":                        
+                        Analysis.MetaData.Database.DatabaseFormat = MassTagDatabaseFormat.APE;                        
+                        Analysis.MetaData.Database.LocalPath      = m_openFileDialog.FileName;
                         break;
                     case ".db3":
-                        if (Analysis.MetaData.Database == null)
-                        {
-                            Analysis.MetaData.Database = new InputDatabase(MassTagDatabaseFormat.Sqlite);
-                        }
+                        Analysis.MetaData.Database.DatabaseFormat = MassTagDatabaseFormat.Sqlite;
                         Analysis.MetaData.Database.LocalPath = m_openFileDialog.FileName;
                         break;
                 }

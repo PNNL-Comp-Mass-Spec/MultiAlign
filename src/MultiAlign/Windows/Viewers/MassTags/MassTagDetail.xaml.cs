@@ -23,17 +23,8 @@ namespace MultiAlign.Windows.Viewers.MassTags
         public MassTagDetail()
         {
             InitializeComponent();
-            DataContext = this; 
+
         }
 
-        public MassTagToCluster MassTag
-        {
-            get { return (MassTagToCluster)GetValue(MassTagProperty); }
-            set { SetValue(MassTagProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for MassTag.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty MassTagProperty =
-            DependencyProperty.Register("MassTag", typeof(MassTagToCluster), typeof(MassTagDetail));
     }
 }

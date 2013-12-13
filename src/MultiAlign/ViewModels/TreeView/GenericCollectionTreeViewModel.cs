@@ -22,6 +22,20 @@ namespace MultiAlign.ViewModels.TreeView
             data.ForEach(x => Items.Add(x));
         }
 
+
+        public void AddStatistic(string name, double value)
+        {
+            StatisticTreeViewItem x = new StatisticTreeViewItem(value, name);
+            m_items.Add(x);
+        }
+
+        public void AddString(string name, string value)
+        {
+            StringTreeViewItem x = new StringTreeViewItem(value, name);
+            m_items.Add(x);
+        }
+
+
         public ObservableCollection<TreeItemViewModel> Items
         {
             get

@@ -9,175 +9,117 @@
              d:DesignHeight="300" d:DesignWidth="600">
 
     <UserControl.Resources>
-        <converters:IntToStringConverter x:Key="IntToStringConverter" />
-        <converters:DoubleToStringConverter x:Key="DoubleToStringConverter" />
+
+        <DataTemplate x:Key="ProteinDataTemplate">
+            <proteinViewers:ProteinDetail/>
+        </DataTemplate>
     </UserControl.Resources>
-    <StackPanel>
+    
+    <Border CornerRadius="2" BorderThickness="1" HorizontalAlignment="Stretch" Padding="3" Margin="3" BorderBrush="#FFCCCCCC">
         <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition></RowDefinition>
-                <RowDefinition></RowDefinition>
-            </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="196"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="32"></ColumnDefinition>
+                <ColumnDefinition Width="128"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <GridSplitter
-                Width="3"
-                Background="DarkGray"
-                Grid.RowSpan="2"
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Image
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        Width="16"
+                        Height="16"
+                        Source="/MultiAlign;component/Resources/molecule.png"/>
+
+            <Label
                 Grid.Row="0"
                 Grid.Column="1"
-                >
-                
-            </GridSplitter>
-            <StackPanel Grid.Column="0" Grid.RowSpan="2" Margin="5">
-                <Label FontSize="16" Foreground="Gray">Mass Tag Details</Label>
-                <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
+                Foreground="Gray">
+               Sequence
+            </Label>
+            <TextBlock 
+                    Grid.Row="0"
+                    Grid.Column="2"
+                    FontSize="14"   
+                    Margin="5"
+                    HorizontalAlignment="Stretch">
+                    <TextBlock.Text>                                                            
+                            <Binding Path="MassTag.PeptideSequence" />                    
+                    </TextBlock.Text>
+            </TextBlock>
+            <!-- ID -->
+            <Label
+                Grid.Row="1"
+                Grid.Column="1"
+                Foreground="Gray">
+                Mass Tag ID
+            </Label>
+            <TextBlock 
+                    Grid.Row="1"
+                    Grid.Column="2"
+                    FontSize="14"   
+                    Margin="5"
+                    HorizontalAlignment="Stretch">
+                    <TextBlock.Text>                                                            
+                            <Binding Path="MassTag.ID" />                    
+                    </TextBlock.Text>
+            </TextBlock>
 
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-                        
-                        <Label
-                            Grid.Row="0"
-                            Grid.Column="0"
-                            >
-                            Mass Tag ID
-                        </Label>
-                    <Label          
-                                HorizontalAlignment="Stretch"
-                                HorizontalContentAlignment="Right"                  
-                            Grid.Row="0"
-                            Grid.Column="1"
-                            >
-                        <Binding Path="MassTag.MassTag.ID" Converter="{StaticResource ResourceKey=IntToStringConverter}"></Binding>
-                        </Label>
-                        
-                    
-                    
-                    <Label
-                            Grid.Row="4"
-                            Grid.Column="0"
-                            >
-                            Observation Count
-                    </Label>
-                    <Label                  
-                                HorizontalAlignment="Stretch"
-                                HorizontalContentAlignment="Right"          
-                            Grid.Row="4"
-                            Grid.Column="1"
-                            >
-                        <Binding Path="MassTag.MassTag.ObservationCount" Converter="{StaticResource ResourceKey=IntToStringConverter}"></Binding>
-                    </Label>
+            <!-- Mass / NET -->
+            <Label
+                Grid.Row="2"
+                Grid.Column="1"
+                Foreground="Gray">
+                Monoisotopic Mass
+            </Label>
+            <TextBlock 
+                    Grid.Row="2"
+                    Grid.Column="2"
+                    FontSize="14"   
+                    Margin="5"
+                    HorizontalAlignment="Stretch">
+                    <TextBlock.Text>                                                            
+                            <Binding Path="MassTag.MassMonoisotopic" />                    
+                    </TextBlock.Text>
+            </TextBlock>
 
-                </Grid>
-                <Label FontSize="16" Foreground="Gray">Matches</Label>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
+            <!-- Mass / NET -->
+            <Label
+                Grid.Row="3"
+                Grid.Column="1"
+                Foreground="Gray">
+                NET
+            </Label>
+            <TextBlock 
+                    Grid.Row="3"
+                    Grid.Column="2"
+                    FontSize="14"   
+                    Margin="5"
+                    HorizontalAlignment="Stretch">
+                    <TextBlock.Text>                                                            
+                            <Binding Path="MassTag.NET" />                    
+                    </TextBlock.Text>
+            </TextBlock>
 
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    <Button                        
-                                HorizontalContentAlignment="Center"
-                                Content="Matching Clusters"
-                        
-                        Style="{DynamicResource ResourceKey=HyperLinkButtonStyle}"
-                        Width="100"
-                                Grid.Row="0"
-                                Grid.Column="0">
-
-                    </Button>
-                    <Label      
-                                HorizontalAlignment="Stretch"
-                                HorizontalContentAlignment="Right"
-                                Grid.Row="0"
-                                Grid.Column="1">
-                        <Binding Path="MassTag.Matches.Count" Converter="{StaticResource ResourceKey=IntToStringConverter}"></Binding>
-                    </Label>
-                    <Label      Grid.Row="1"
-                                Grid.Column="0">
-                    </Label>
-                    <Button                        
-                                HorizontalContentAlignment="Center"
-                                Content="Matching Proteins"
-                                Grid.Row="1"
-                        Style="{DynamicResource ResourceKey=HyperLinkButtonStyle}"
-                        Width="100"
-                                Grid.Column="0">
-                        
-                    </Button>
-                    <Label
-                        Grid.Row="1"
-                        Grid.Column="1"
-                        >
-                        <Binding Path="MassTag.MatchingProteins.Count" Converter="{StaticResource ResourceKey=IntToStringConverter}"></Binding>
-                    </Label>
-                </Grid>
-            </StackPanel>
-            <StackPanel Grid.Row="1" Grid.Column="2">
-                <Label FontSize="16" Foreground="Gray">Modifications</Label>
-                <Label FontSize="12">Modifications</Label>
-                <Label>
-                    <Binding Path="MassTag.MassTag.Modifications"></Binding>
-                </Label>
-                <Label>Modification Count</Label>
-                <Label>
-                    <Binding Path="MassTag.MassTag.ModificationCount" Converter="{StaticResource ResourceKey=IntToStringConverter}"></Binding>
-                </Label>
-            </StackPanel>
-            <StackPanel Grid.Row="0" Grid.Column="2" Margin="5">
-                <Label FontSize="16" Foreground="Gray">Peptide</Label>
-                <Label FontSize="12">Sequence</Label>
-                <Label FontSize="12" FontWeight="Bold" Foreground ="Gray">
-                            <Binding Path="MassTag.MassTag.PeptideSequence"></Binding>
-                </Label>
-                <Label FontSize="12"  FontWeight="Bold" Foreground ="Gray">
-                    <Binding Path="MassTag.MassTag.PeptideSequenceEx"></Binding>
-                </Label>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    <Label
-                            Grid.Row="1"
-                            Grid.Column="0"
-                            >
-                        Cleavage State
-                    </Label>
-                    <Label        
-                                    HorizontalAlignment="Stretch"
-                                    HorizontalContentAlignment="Right"                    
-                                Grid.Row="1"
-                                Grid.Column="1"
-                                >
-                        <Binding Path="MassTag.MassTag.CleavageState" Converter="{StaticResource ResourceKey=IntToStringConverter}"></Binding>
-                    </Label>
-                </Grid>
-                
-                
-            </StackPanel>
-        </Grid>        
-    </StackPanel>
+            <Label
+                Grid.Row="4"
+                Grid.Column="1"
+                Foreground="Gray">
+                Proteins
+            </Label>
+            <ListBox
+                    Margin="2"
+                    Grid.Row="4"
+                    Grid.Column="2"
+                    VerticalAlignment="Stretch"
+                    HorizontalContentAlignment="Stretch"
+                    ItemTemplate="{StaticResource ProteinDataTemplate}"
+                    ItemsSource="{Binding Path=MatchedProteins, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True}" />
+        </Grid>
+     </Border>
 </UserControl>

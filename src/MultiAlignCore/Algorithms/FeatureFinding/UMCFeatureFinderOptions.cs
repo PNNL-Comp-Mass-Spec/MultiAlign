@@ -33,7 +33,7 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
             this.UseIsotopicIntensityFilter     = false;
             this.IsotopicFitFilter              = .15;
             this.IsotopicIntensityFilter        = 0;
-            this.UMCAbundanceReportingType      = AbundanceReportingType.Max;
+            this.UMCAbundanceReportingType      = AbundanceReportingType.Sum;
             this.Split                          = false;
             this.ShouldCreateXicFile            = false;
         }

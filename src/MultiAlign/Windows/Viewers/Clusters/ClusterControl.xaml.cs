@@ -19,19 +19,29 @@ using System.IO;
 using System;
 using System.Linq;
 using MultiAlign.IO;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 namespace MultiAlign.Windows.Viewers.Clusters
 {
+
+
     /// <summary>
     /// Interaction logic for ClusterControl.xaml
     /// </summary>
-    public partial class ClusterControl : UserControl
+    public partial class ClusterControl : UserControl, INotifyPropertyChanged
     {
         private System.Windows.Forms.SaveFileDialog  m_featureImageSaveDialog;
         private UMCClusterLight m_mainCluster;
         private bool m_adjustingFeaturePlots = false;
         private Dictionary<ctlChartBase, List<ChartSynchData>> m_chartSynchMap;
         private System.Windows.Forms.SaveFileDialog m_saveFileDialog;
+
+        private int m_numberOfIsotopes;
+        private int m_minScan;
+        private int m_maxScan;
+
+        private Dictionary<int, List<MSFeatureLight>> m_scanMaps;
 
         /// <summary>
         /// Constructor.
@@ -40,7 +50,10 @@ namespace MultiAlign.Windows.Viewers.Clusters
         {
             InitializeComponent();
 
-            m_chartSynchMap = new Dictionary<ctlChartBase, List<ChartSynchData>>();
+            m_numberOfIsotopes  = 4;
+            m_scanMaps          = new Dictionary<int, List<MSFeatureLight>>();
+            Charges             = new ObservableCollection<int>();
+            m_chartSynchMap     = new Dictionary<ctlChartBase, List<ChartSynchData>>();
 
             FeatureFindingTolerances                = new FeatureTolerances();
             FeatureFindingTolerances.Mass           = 10;
@@ -69,10 +82,11 @@ namespace MultiAlign.Windows.Viewers.Clusters
 
         }
 
+        
+
         void m_sicChart_ChartPointPressed(object sender, SelectedPointEventArgs e)
         {
-            // Figure out the closest spectra to view.
-            // TODO: Move this out of the way!
+            // Figure out the closest spectra to view.            
             if (e != null && e.SelectedPoint != null)
             {
                 float x = e.SelectedPoint.X;
@@ -85,7 +99,7 @@ namespace MultiAlign.Windows.Viewers.Clusters
                     foreach (MSFeatureLight feature in UMCFeature.MSFeatures)
                     {
                         int diff = Math.Abs(feature.Scan - point);
-                        if (closest == null || diff < closestDist)
+                        if (closest == null || diff < closestDist && (SelectedCharge == feature.ChargeState))
                         {
                             closest     = feature; 
                             closestDist = diff;
@@ -93,7 +107,7 @@ namespace MultiAlign.Windows.Viewers.Clusters
                     }
                     if (closest != null)
                     {
-                        this.LoadMsSpectrum(closest);
+                        LoadSpectrum(closest);                        
                     }
                 }
             }
@@ -243,6 +257,44 @@ namespace MultiAlign.Windows.Viewers.Clusters
         }
         #endregion
 
+        
+        private string m_selectedFeatureName;
+
+        public string SelectedFeatureName
+        {
+            get
+            {
+                return m_selectedFeatureName;
+            }
+            set
+            {
+                if (m_selectedFeatureName != value)
+                {
+                    m_selectedFeatureName = value;
+                    //OnPropertyChanged("SelectedFeatureName");
+                }
+            }
+        }
+                
+        /// <summary>
+        /// Gets or sets the number of isotopes to display.
+        /// </summary>
+        public int NumberOfIsotopes 
+        {
+            get
+            {
+                return m_numberOfIsotopes;
+            }
+            set
+            {
+                if (m_numberOfIsotopes != value)
+                {
+                    m_numberOfIsotopes = value;
+                    OnNotify("NumberOfIsotopes");
+                }
+            }
+        }
+
         #region Dependency Property Setters
         /// <summary>
         /// Updates the single feature plots.
@@ -254,32 +306,154 @@ namespace MultiAlign.Windows.Viewers.Clusters
             var thisSender = (ClusterControl)sender;
 
             if (e.NewValue != null)
+            {                                                
+                UMCLight feature = e.NewValue as UMCLight;
+
+                if (feature != null)
+                    thisSender.SetFeature(feature);
+            }
+        }
+        private static void SpectraSet(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+        {
+            var thisSender = (ClusterControl)sender;
+
+            if (e.NewValue != null)
+            {                                                
+                MSSpectra feature = e.NewValue as MSSpectra;
+
+            }
+        }                
+        private void SetFeature(UMCLight feature)
+        {
+            m_adjustingFeaturePlots                  = true;
+            DatasetInformation info                  = SingletonDataProviders.GetDatasetInformation(feature.GroupID);
+
+            if (info != null)
             {
-                thisSender.m_adjustingFeaturePlots = true;
-                UMCLight feature                        = (UMCLight)e.NewValue;                
-                thisSender.m_msFeaturePlot.MainFeature  = feature;
+                SelectedFeatureName = info.DatasetName;
+            }
 
-                thisSender.m_sicChart.SetFeature(feature); 
-                thisSender.m_sicChart.AutoViewPort();
-                thisSender.m_msFeaturePlot.UpdateCharts(true);
+            m_msFeaturePlot.MainFeature = feature;
 
-                thisSender.m_sicChart.AdjustViewPortWithTolerances(thisSender.FeatureFindingTolerances, false);
-                thisSender.m_msFeaturePlot.AdjustViewPortWithTolerances(thisSender.FeatureFindingTolerances, false);
-                thisSender.m_adjustingFeaturePlots = false;
-                
-                if (feature.MSFeatures.Count > 0)
+            m_sicChart.SetFeature(feature);
+            m_sicChart.AutoViewPort();
+            m_msFeaturePlot.UpdateCharts(true);
+
+            m_sicChart.AdjustViewPortWithTolerances(FeatureFindingTolerances, false);
+            m_msFeaturePlot.AdjustViewPortWithTolerances(FeatureFindingTolerances, false);
+            m_adjustingFeaturePlots = false;
+
+
+            UpdateCharges(feature);
+
+            if (feature.MSFeatures.Count > 0)
+            {
+                feature.MSFeatures.Sort(delegate(MSFeatureLight x, MSFeatureLight y)
                 {
-                    feature.MSFeatures.Sort(delegate(MSFeatureLight x, MSFeatureLight y)
+                    return x.Scan.CompareTo(y.Scan);
+                });
+                MSFeatureLight msFeature = feature.MSFeatures[0];
+                LoadSpectrum(msFeature);
+            }
+        }
+
+        #region View Model Stuff
+        private void UpdateCharges(UMCLight feature)
+        {
+            Charges.Clear();
+
+            m_scanMaps = feature.CreateChargeMap();
+
+            foreach (int charge in m_scanMaps.Keys)            
+            {
+                Charges.Add(charge);
+                
+            }
+            Charges.OrderBy(x => x);
+            if (Charges.Count > 0)
+            {
+                m_charge        = -1;
+                SelectedCharge  = Charges[0];
+            }
+        }
+        private int m_charge;
+        public int SelectedCharge
+        {
+            get
+            {
+                return m_charge;
+            }
+            set
+            {
+                if (m_charge != value)
+                {
+                    m_charge = value;
+                    OnNotify("SelectedCharge");
+
+                    if (m_scanMaps.ContainsKey(value))
                     {
-                        return x.Scan.CompareTo(y.Scan);
-                    });
-                    thisSender.LoadMsSpectrum(feature.MSFeatures[0]);
-                   // thisSender.m_msFeatureGrid.Features = feature.MSFeatures;
+                        int minScan = int.MaxValue;
+                        int maxScan = int.MinValue;
+                        foreach (MSFeatureLight msFeature in m_scanMaps[value])
+                        {
+                            minScan = Math.Min(minScan, msFeature.Scan);
+                            maxScan = Math.Max(maxScan, msFeature.Scan);
+                        }
+
+                        if (m_scanMaps[value].Count > 0)
+                        {
+                            MinimumScan = minScan;
+                            MaximumScan = maxScan;
+                        }
+                    }
                 }
             }
         }
 
-        private void LoadMsSpectrum(MSFeatureLight msFeature)
+        //TODO:Put this all in a view model
+        public ObservableCollection<int> Charges { get; set; }
+
+        public int MinimumScan
+        {
+            get
+            {
+                return m_minScan;
+            }
+            set
+            {
+                if (value != m_minScan)
+                {
+                    m_minScan = value;
+                    OnNotify("MinimumScan");
+                }
+            }
+        }
+        public int MaximumScan
+        {
+            get
+            {
+                return m_maxScan;
+            }
+            set
+            {
+                if (value != m_maxScan)
+                {
+                    m_maxScan = value;
+                    OnNotify("MaximumScan");
+                }
+            }
+        }
+        private void OnNotify(string propertyName)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+        #endregion
+        #region Spectrum Loading 
+        
+        private void LoadSpectrum(MSFeatureLight msFeature)
         {
             DatasetInformation info = SingletonDataProviders.GetDatasetInformation(msFeature.GroupID);            
             if (info != null && info.Raw != null && info.RawPath != null)
@@ -290,52 +464,45 @@ namespace MultiAlign.Windows.Viewers.Clusters
                 if (!features.ContainsKey(msFeature.ChargeState) || N < 1)
                     return;
 
-                double sum = 0;
-                double min = double.MaxValue;
-                double max = double.MinValue;
+                double sum          = 0;
+                double min          = double.MaxValue;
+                double max          = double.MinValue;
+                double maxIntensity = 0;
 
                 foreach (MSFeatureLight chargeFeature in features[msFeature.ChargeState])
                 {
-                    min = Math.Min(min, chargeFeature.Mz);
-                    max = Math.Max(max, chargeFeature.Mz);
+                    min          = Math.Min(min, chargeFeature.Mz);
+                    max          = Math.Max(max, chargeFeature.Mz);
+                    maxIntensity = Math.Max(chargeFeature.Abundance, maxIntensity);
                     sum += chargeFeature.Mz;                    
                 }
+                maxIntensity += (maxIntensity * .1);
 
-                double averageMz = sum / Convert.ToDouble(N);
-                //double adder = .02; //Math.Abs(max - min) * .1;
-                //double lowMz = msFeature.Mz - adder; // min - adder;
-                //double highMz = msFeature.Mz + adder;//max + adder;
-                min = max = msFeature.Mz;
-                double adder    = .09; //  Math.Abs(max - min) * .1;
-                double lowMz    = min - adder;
-                double highMz   = max + adder;
-
+                double averageMz    = sum / Convert.ToDouble(N);
+                double spacing      = (1.0 / Convert.ToDouble(msFeature.ChargeState));
+                double adder        = spacing * m_numberOfIsotopes;
+                double lowMz        = averageMz - spacing;
+                double highMz       = averageMz + adder;
 
                 List<XYData> spectrum = ParentSpectraFinder.GetParentSpectrum(info.RawPath,
                                                                                 msFeature.Scan,
                                                                                 lowMz,
                                                                                 highMz);
-                if (spectrum != null)
-                {
-                    m_parentSpectra.Title = string.Format("scan {0} @ {1} m/z", msFeature.Scan, msFeature.Mz);
-                    m_parentSpectra.SetSpectra(spectrum);                     
-                    m_parentSpectra.AutoViewPort(); 
-                    //RectangleF viewport = m_parentSpectra.ViewPort;
-                    //m_parentSpectra.ViewPort = new RectangleF(  Convert.ToSingle(lowMz), 
-                    //                                            viewport.Top, 
-                    //                                            Convert.ToSingle(Math.Abs(highMz  - lowMz)), 
-                    //                                            Math.Abs(viewport.Bottom - viewport.Top));
-                }
+
+                m_parentSpectra.SetFeature(msFeature, spectrum);
+                m_parentSpectra.AutoViewPort();                
             }
         }
-        
+        #endregion
+
+
         /// <summary>
         /// Grabs the data from the provider cache and shoves into UI where needed.  This is done
         /// here like this to prevent holding large amounts of data in memory.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private static void ClusterSet(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+        private static void SetCluster(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
             var thisSender = (ClusterControl)sender;
             if (e.NewValue != null)
@@ -344,13 +511,7 @@ namespace MultiAlign.Windows.Viewers.Clusters
 
                 // Grab the data from the cache
                 UMCClusterLightMatched matchedCluster = (UMCClusterLightMatched)e.NewValue;                             
-                thisSender.UpdatePlotsWithClusterData(matchedCluster);
-
-                // Make sure that if a new feature is selected that we update the feature list.
-                if (matchedCluster.Cluster.Features.Count > 0)
-                {
-                   // thisSender.m_featureGrid.SelectedFeature = matchedCluster.Cluster.Features[0];
-                }
+                thisSender.UpdatePlotsWithClusterData(matchedCluster);                
                 thisSender.m_adjustingFeaturePlots = false;
             }
         }
@@ -376,7 +537,7 @@ namespace MultiAlign.Windows.Viewers.Clusters
             DependencyProperty.Register("Cluster",
                                         typeof(UMCClusterLightMatched), 
                                         typeof(ClusterControl),
-                                        new FrameworkPropertyMetadata(new PropertyChangedCallback(ClusterSet)));
+                                        new FrameworkPropertyMetadata(new PropertyChangedCallback(SetCluster)));
 
 
 
@@ -390,7 +551,22 @@ namespace MultiAlign.Windows.Viewers.Clusters
         public static readonly DependencyProperty ViewportProperty =
             DependencyProperty.Register("Viewport", typeof(RectangleF), typeof(ClusterControl));
 
-        
+
+
+        public MSSpectra SelectedSpectrum
+        {
+            get { return (MSSpectra)GetValue(SelectedSpectraProperty); }
+            set { SetValue(SelectedSpectraProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for SelectedSpectra.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty SelectedSpectraProperty =
+            DependencyProperty.Register("SelectedSpectrum", 
+                                        typeof(MSSpectra), 
+                                        typeof(ClusterControl),
+                                        new FrameworkPropertyMetadata(new PropertyChangedCallback(SpectraSet)));
+
+
 
         /// <summary>
         /// Gets or sets the UMC feature that was selected to view in the feature viewer
@@ -421,8 +597,6 @@ namespace MultiAlign.Windows.Viewers.Clusters
         /// <param name="cluster"></param>
         private void UpdatePlotsWithClusterData(UMCClusterLightMatched matchedCluster)
         {
-
-
             // Clear the charta
             m_clusterChart.ClearData();
             m_driftChart.ClearData();
@@ -466,15 +640,12 @@ namespace MultiAlign.Windows.Viewers.Clusters
                 matchedOtherCluster.Cluster.Features.Clear();
                 matchedOtherCluster.Cluster.ReconstructUMCCluster(SingletonDataProviders.Providers, false, false);
             }            
-           // m_clusterGrid.Clusters = otherClusterMatches;
-
-
-
-
+                       
             m_clusterChart.AddAdditionalClusters(otherClusterMatches);
             m_driftChart.AddAdditionalClusters(otherClusterMatches);
             m_clusterChart.UpdateCharts(true);
             m_driftChart.UpdateCharts(true);
+
             m_clusterChart.AdjustViewPortWithTolerances(ClusterTolerances,  false);
             m_driftChart.AdjustViewPortWithTolerances(ClusterTolerances,    true);
             Viewport = m_clusterChart.ViewPort;
@@ -527,5 +698,11 @@ namespace MultiAlign.Windows.Viewers.Clusters
             set;
         }
         #endregion       
+    
+        #region INotifyPropertyChanged Members
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        #endregion
     }
 }

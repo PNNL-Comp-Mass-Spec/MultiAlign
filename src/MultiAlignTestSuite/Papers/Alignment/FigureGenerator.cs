@@ -118,7 +118,9 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
             // Write the results
             writer.Write(analysis);                     
         }
+        #endregion
 
+        #region Figure 2
         /// <summary>
         /// Tests distributions using the peptide match file (uniqued matches for building error distributions)
         /// </summary>
@@ -152,7 +154,7 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
 
             // Create alignment datasets 
             AlignmentDataset datasetX       = new AlignmentDataset(m_basePath, rawNameX);
-            AlignmentDataset datasetY       = new AlignmentDataset(m_basePath, rawNameX);
+            AlignmentDataset datasetY       = new AlignmentDataset(m_basePath, rawNameY);
             
             // The options for the analysis 
             SpectralOptions options         = new SpectralOptions();
@@ -168,7 +170,7 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
 
 
             // Create an action to load and align the feature data.
-            AlignedFeatureData features = null;
+            AlignedFeatureData features = new AlignedFeatureData();
             FeatureAligner aligner      = new FeatureAligner();
             FeatureLoader  loader       = new FeatureLoader();
             Action loadingAction = delegate()
@@ -187,17 +189,17 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
             IEnumerable<AnchorPointMatch> peptideMatches = null;
             Action peptideLoadingAction = delegate()
                     {
-                        IEnumerable<Peptide> peptidesA = reader.Read(datasetX.PeptideFile);
-                        IEnumerable<Peptide> peptidesB = reader.Read(datasetY.PeptideFile);
+                        IEnumerable<Peptide> peptidesX = reader.Read(datasetX.PeptideFile);
+                        IEnumerable<Peptide> peptidesY = reader.Read(datasetY.PeptideFile);
 
-                        peptidesA = peptidesA.Where(x => x.Score < options.IdScore);
-                        peptidesA = peptidesA.Where(x => x.Score < options.IdScore);
+                        peptidesX = peptidesX.Where(x => x.Score < options.IdScore);
+                        peptidesY = peptidesY.Where(x => x.Score < options.IdScore);
 
                         /// Then map the peptide sequences to identify True Positive and False Positives
                         PeptideAnchorPointFinder peptideFinder = new PeptideAnchorPointFinder();
-                        peptideMatches = peptideFinder.FindAnchorPoints(peptidesA,
-                                                                                                        peptidesB,
-                                                                                                        options);
+                        peptideMatches = peptideFinder.FindAnchorPoints(peptidesX,
+                                                                        peptidesY,
+                                                                        options);
 
                     };
 

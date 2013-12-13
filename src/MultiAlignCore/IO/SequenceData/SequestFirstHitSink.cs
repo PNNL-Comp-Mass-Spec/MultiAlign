@@ -98,14 +98,6 @@ namespace MultiAlignCore.IO.SequenceData
             }
 
             
-            if (m_columnMapping.ContainsKey("Reference"))
-            {
-               sequence.Reference  = args.Fields[m_columnMapping["Reference"]].ToString();
-            }
-            else
-            {
-                return;
-            }
 
             if (m_columnMapping.ContainsKey("XCorr"))
             {
@@ -115,58 +107,10 @@ namespace MultiAlignCore.IO.SequenceData
             {
                 return;
             }
-            if (m_columnMapping.ContainsKey("DelCn2"))
-            {
-                sequence.DeltaScore = Convert.ToDouble(args.Fields[m_columnMapping["DelCn2"]]);
-            }
-            else
-            {
-                return;
-            }
-            if (m_columnMapping.ContainsKey("DelCn"))
-            {
-                sequence.DeltaScore2 = Convert.ToDouble(args.Fields[m_columnMapping["DelCn"]]);
-            }
-            else
-            {
-                return;
-            }
-            if (m_columnMapping.ContainsKey("RankSp"))
-            {
-                sequence.Rank = Convert.ToInt32(args.Fields[m_columnMapping["RankSp"]]);
-            }
-            else
-            {
-                return;
-            }
-            if (m_columnMapping.ContainsKey("ChargeState"))
-            {
-                sequence.Charge = Convert.ToInt32(args.Fields[m_columnMapping["ChargeState"]]);
-            }
-            else
-            {
-                return;
-            }
-
-            if (m_columnMapping.ContainsKey("MH"))
-            {
-                sequence.Mass = Convert.ToDouble(args.Fields[m_columnMapping["MH"]]);
-            }
-            else
-            {
-                return;
-            }
-            if (m_columnMapping.ContainsKey("NumTrypticEnds"))
-            {
-                sequence.TrypticEnds = Convert.ToInt32(args.Fields[m_columnMapping["NumTrypticEnds"]]);
-            }
-            else
-            {
-                return;
-            }
             
-            sequence.ID      = m_count ++;
-            sequence.GroupID = DatasetID;    
+                                    
+            sequence.Id      = m_count ++;
+            sequence.GroupId = DatasetID;    
             m_sequences.Add(sequence);
         }
 

@@ -28,6 +28,9 @@ using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Data.MassTags;
 using PNNLOmicsIO.IO;
+using MultiAlignCore.IO.SequenceData;
+using MultiAlignCore.Data.SequenceData;
+using MultiAlignCore.Algorithms.Workflow;
 
 namespace MultiAlignCore.Algorithms
 {        
@@ -35,7 +38,7 @@ namespace MultiAlignCore.Algorithms
     /// Transition class to remove the excess from the data storage object.
     ///     Remove garbage code and mixed-mode BS.
     /// </summary>
-    public class MultiAlignAnalysisProcessor: IDisposable
+    public class MultiAlignAnalysisProcessor: WorkflowBase, IDisposable
     {   
         #region Events
         /// <summary>
@@ -208,35 +211,7 @@ namespace MultiAlignCore.Algorithms
         #endregion
 
         #region Delegate Handlers / Marshallers
-        /// <summary>
-        /// Updates listeners with status messages.
-        /// </summary>
-        /// <param name="message"></param>
-        private void UpdateStatus(string message)
-        {
-            if (Status != null)
-            {
-                Status(this, new AnalysisStatusEventArgs(message, 0));
-            }
-        }
-        private void RegisterProgressNotifier(IProgressNotifer notifier)
-        {
-            if (notifier != null)
-            {
-                notifier.Progress += new EventHandler<ProgressNotifierArgs>(notifier_Progress);
-            }
-        }
-        private void DeRegisterProgressNotifier(IProgressNotifer notifier)
-        {
-            if (notifier != null)
-            {
-                notifier.Progress -= notifier_Progress;
-            }
-        }
-        void notifier_Progress(object sender, ProgressNotifierArgs e)
-        {
-            UpdateStatus( e.Message);
-        }
+        
         #endregion
 
         #region Analysis Graph Construction
@@ -424,7 +399,7 @@ namespace MultiAlignCore.Algorithms
             List<ScanSummary> scans         = UMCLoaderFactory.LoadScansData(dataset);
 
             // Extract any scan meta-data.
-            if (dataset.Raw != null && dataset.RawPath != null)
+            if (dataset.Raw != null && dataset.RawPath != null && options.StoreMSFeatureResults)
             {
                 Dictionary<int, ScanSummary> summary = new Dictionary<int, ScanSummary>();
                 using (ISpectraProvider provider = RawLoaderFactory.CreateFileReader(dataset.RawPath))
@@ -434,8 +409,13 @@ namespace MultiAlignCore.Algorithms
                 }
             }
 
-            UpdateStatus(string.Format("[{0}] Loading MSn Feature Data [{0}] - {1}.", dataset.DatasetId, dataset.DatasetName));
-            List<MSSpectra> msnSpectra      = UMCLoaderFactory.LoadMsnSpectra(dataset, msnCache);
+            List<MSSpectra> msnSpectra = new List<MSSpectra>();
+
+            if (options.StoreMSFeatureResults)
+            {
+                UpdateStatus(string.Format("[{0}] Loading MSn Feature Data [{0}] - {1}.", dataset.DatasetId, dataset.DatasetName));
+                msnSpectra = UMCLoaderFactory.LoadMsnSpectra(dataset, msnCache);
+            }
 
             // If we don't have any features, then we have to create some from the MS features
             // provided to us.
@@ -511,8 +491,7 @@ namespace MultiAlignCore.Algorithms
                 }
                 catch (Exception ex)                
                 {                    
-                    UpdateStatus(string.Format("Could not complete XIC Fits {0}", ex.Message));
-                    //TODO: What do we do with this exception.
+                    UpdateStatus(string.Format("Could not complete XIC Fits {0}", ex.Message));                    
                 }
                 
 
@@ -633,8 +612,12 @@ namespace MultiAlignCore.Algorithms
                                     {
                                         IEnumerable<Peptide> peptides = sequenceProvider.Read(dataset.SequencePath);
 
+                                        int count = 0;
+                                        List<Peptide> peptideList = peptides.ToList();
+                                        peptideList.ForEach(x => x.ID = count++);
+
                                         UpdateStatus("Linking MS/MS to any known Peptide/Metabolite Sequences");
-                                        LinkMsMsToPeptideSequences(spectra, peptides.ToList());
+                                        LinkMsMsToPeptideSequences(spectra, peptideList);
 
                                     }catch(Exception ex)
                                     {
@@ -661,16 +644,27 @@ namespace MultiAlignCore.Algorithms
                     int totalPeptidesMatching   = 0;
 
                     List<MSSpectra> msmsFeatures = new List<MSSpectra>();
+                    List<DatabaseSearchSequence> mappedPeptides = new List<DatabaseSearchSequence>();
+                    List<SequenceToMsnFeature> sequenceMaps = new List<SequenceToMsnFeature>();
+
+                    // This dictionary makes sure that the peptide was not seen already, since a peptide can be mapped multiple times...?
+                    Dictionary<int, DatabaseSearchSequence> trackedPeptides = new Dictionary<int, DatabaseSearchSequence>();
 
                     // Next we may want to map our MSn features to our parents.  This would allow us to do traceback...
                     foreach (UMCLight feature in features)
                     {
                         totalUMCFeatures++;
+
+                        int totalMsMs       = 0;
+                        int totalIdentified = 0;
+
                         foreach (MSFeatureLight msFeature in feature.MSFeatures)
                         {
                             if (msFeature.MSnSpectra.Count > 0)
                             {
                                 totalMSFeatures++;
+                                totalMsMs       += msFeature.MSnSpectra.Count;
+
                                 foreach (MSSpectra spectrum in msFeature.MSnSpectra)
                                 {
                                     MSFeatureToMSnFeatureMap match = new MSFeatureToMSnFeatureMap();
@@ -691,10 +685,38 @@ namespace MultiAlignCore.Algorithms
                                     {
                                         msmsFeatures.Add(spectrum);
                                         spectraTracker.Add(spectrum.ID, spectrum);
+
+
+                                        // We are prepping the sequences that we found from peptides that were 
+                                        // matched only, not all of the results. 
+                                        // These maps here are made to help establish database search results to msms 
+                                        // spectra
+                                        foreach (Peptide peptide in spectrum.Peptides)
+                                        {
+                                            peptide.GroupId = datasetID;
+                                            DatabaseSearchSequence newPeptide = new DatabaseSearchSequence(peptide, feature.ID);
+                                            mappedPeptides.Add(newPeptide);
+
+                                            SequenceToMsnFeature sequenceMap = new SequenceToMsnFeature();
+                                            sequenceMap.UmcFeatureId = feature.ID;
+                                            sequenceMap.DatasetId = msFeature.GroupID;
+                                            sequenceMap.MsnFeatureId = spectrum.ID; // should be the same
+                                            sequenceMap.SequenceId = peptide.ID;   // this should be the same
+                                            sequenceMaps.Add(sequenceMap);
+
+
+                                        }
+
+                                        totalIdentified += spectrum.Peptides.Count;
+                                        
                                     }
+
                                 }
                             }
                         }
+
+                        feature.MsMsCount              = totalMsMs;
+                        feature.IdentifiedSpectraCount = totalIdentified;
                     }
 
                     if (matches.Count > 0)
@@ -720,6 +742,26 @@ namespace MultiAlignCore.Algorithms
                             msnToMsCache.AddAll(matches);
                         }
 
+                        if (providers.SequenceMsnMapCache != null)
+                        {
+                            if (sequenceMaps.Count > 0)
+                            {
+                                int count = 0;
+                                sequenceMaps.ForEach(x => x.Id = count++);
+                                providers.SequenceMsnMapCache.AddAll(sequenceMaps);
+                            }                            
+                        }
+                        if (providers.DatabaseSequenceCache != null)
+                        {
+                            if (mappedPeptides.Count > 0)
+                            {
+                               // int count = 0;
+                               // mappedPeptides.ForEach(x => x.Id = count++);
+                                providers.DatabaseSequenceCache.AddAll(mappedPeptides);
+                            }                          
+                        }
+                        mappedPeptides.Clear();
+                        sequenceMaps.Clear();
                         msmsFeatures.Clear();
                         matches.Clear();
                         spectraTracker.Clear();
@@ -1009,12 +1051,18 @@ namespace MultiAlignCore.Algorithms
                 UpdateStatus( "Aligning " + datasetInfo.DatasetName + " to mass tag database.");
                 alignmentData = AlignFeatures(features, database, aligner, options);
             }
-            alignmentData.aligneeDataset    = datasetInfo.DatasetName;
-            alignmentData.DatasetID         = datasetInfo.DatasetId;
 
-            FeaturesAlignedEventArgs args   = new FeaturesAlignedEventArgs    (baselineInfo,
+            if (alignmentData != null)
+            {
+                alignmentData.aligneeDataset = datasetInfo.DatasetName;
+                alignmentData.DatasetID = datasetInfo.DatasetId;
+
+            }
+
+            FeaturesAlignedEventArgs args = new FeaturesAlignedEventArgs(baselineInfo,
                                                                             datasetInfo,
                                                                             alignmentData);
+
             args.AlignedFeatures = features;
 
             // Execute any post-processing corrections.
@@ -1022,15 +1070,15 @@ namespace MultiAlignCore.Algorithms
             {
                 // Drift time alignment.
                 KeyValuePair<DriftTimeAlignmentResults<UMC, UMC>,
-                                DriftTimeAlignmentResults<UMC, UMC>> pair = new KeyValuePair<DriftTimeAlignmentResults<UMC,UMC>,
-                                                                                                DriftTimeAlignmentResults<UMC,UMC>>();
+                                DriftTimeAlignmentResults<UMC, UMC>> pair = new KeyValuePair<DriftTimeAlignmentResults<UMC, UMC>,
+                                                                                                DriftTimeAlignmentResults<UMC, UMC>>();
 
                 DriftTimeAligner driftTimeAligner = new DriftTimeAligner();
                 RegisterProgressNotifier(driftTimeAligner);
                 pair = CorrectDriftTimes(features, baselineFeatures, options, driftTimeOptions, database, driftTimeAligner);
                 DeRegisterProgressNotifier(driftTimeAligner);
-                                                
-                args.DriftTimeAlignmentData   = pair.Key;
+
+                args.DriftTimeAlignmentData = pair.Key;
                 args.OffsetDriftAlignmentData = pair.Value;
             }
 
@@ -1040,11 +1088,12 @@ namespace MultiAlignCore.Algorithms
                 FeaturesAligned(this, args);
             }
 
-            if (options.ShouldStoreAlignmentFunction)
+            if (options.ShouldStoreAlignmentFunction && alignmentData != null)
             {
                 // Store
                 alignmentCache.Add(alignmentData);
             }
+            
 
             UpdateStatus( "Updating cache with aligned features.");
             return features;
@@ -1156,6 +1205,8 @@ namespace MultiAlignCore.Algorithms
             IUmcDAO featureCache            = config.Analysis.DataProviders.FeatureCache;            
             int clusterCount                = 0;
             
+            FeatureDataAccessProviders providers = config.Analysis.DataProviders;
+
             if (analysis.Options.ClusterOptions.IgnoreCharge)
             {
                 /*
@@ -1171,9 +1222,16 @@ namespace MultiAlignCore.Algorithms
                 {
                     cluster.ID = clusterCount++;
                     cluster.UMCList.ForEach(x => x.ClusterID = cluster.ID);
+
+                    // Updates the cluster with statistics
+                    foreach (UMCLight feature in cluster.UMCList)
+                    {
+                        cluster.MsMsCount += feature.MsMsCount;
+                        cluster.IdentifiedSpectraCount += feature.IdentifiedSpectraCount;
+                    }
                 }
-                config.Analysis.DataProviders.ClusterCache.AddAll(clusters);
-                config.Analysis.DataProviders.FeatureCache.UpdateAll(features);
+                providers.ClusterCache.AddAll(clusters);
+                providers.FeatureCache.UpdateAll(features);
                 config.Analysis.Clusters = clusters;
                     
                 UpdateStatus( string.Format("Found {0} clusters.", clusters.Count));
@@ -1203,13 +1261,20 @@ namespace MultiAlignCore.Algorithms
                     UpdateStatus(
                         string.Format("Retrieved and is clustering {0} features from charge state {1}.", 
                                 features.Count, chargeState));              
-                          
+                                        
                     List<UMCClusterLight> clusters  = clusterer.Cluster(features);
                     foreach (UMCClusterLight cluster in clusters)
                     {
                         cluster.ID = clusterCount++;
-                        cluster.UMCList.ForEach(x => x.ClusterID = cluster.ID);                        
-                    }
+                        cluster.UMCList.ForEach(x => x.ClusterID = cluster.ID);
+
+                        // Updates the cluster with statistics
+                        foreach (UMCLight feature in cluster.Features)
+                        {
+                            cluster.MsMsCount += feature.MsMsCount;
+                            cluster.IdentifiedSpectraCount += feature.IdentifiedSpectraCount;
+                        }                    
+                    }                    
                     
                     config.Analysis.DataProviders.ClusterCache.AddAll(clusters);
                     config.Analysis.DataProviders.FeatureCache.UpdateAll(features);
