@@ -115,8 +115,7 @@
                 Style="{DynamicResource ResourceKey=SimpleTabItem}"
                 Header="Datasets"                
                 >
-                <datasetViews:DatasetGrid
-                    Datasets="{Binding Path=Datasets}"/>
+                <datasetViews:DatasetView DataContext="{Binding Path=Datasets}"/>
             </TabItem>
             <TabItem
                 

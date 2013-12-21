@@ -134,7 +134,10 @@
     <Compile Include="IO\SingletonDataProviders.cs" />
     <Compile Include="IO\SpectraLoader.cs" />
     <Compile Include="ViewModels\AnalysisViewModel.cs" />
+    <Compile Include="ViewModels\DatasetCollectionViewModel.cs" />
     <Compile Include="ViewModels\DatasetViewModel.cs" />
+    <Compile Include="ViewModels\ImageViewModel.cs" />
+    <Compile Include="ViewModels\IO\ExportViewModel.cs" />
     <Compile Include="ViewModels\MassTagMatchedViewModel.cs" />
     <Compile Include="ViewModels\MSSpectraViewModel.cs" />
     <Compile Include="ViewModels\PeptideViewModel.cs" />
@@ -165,6 +168,9 @@
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="Windows\FilePathFinder.xaml.cs">
       <DependentUpon>FilePathFinder.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\IO\ExportView.xaml.cs">
+      <DependentUpon>ExportView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\Plots\AlignmentPlotView.xaml.cs">
       <DependentUpon>AlignmentPlotView.xaml</DependentUpon>
@@ -221,11 +227,11 @@
     <Compile Include="Windows\Viewers\Datasets\DatasetInputFileEditor.xaml.cs">
       <DependentUpon>DatasetInputFileEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\Viewers\Datasets\DatasetListBox.xaml.cs">
-      <DependentUpon>DatasetListBox.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Windows\Viewers\Datasets\DatasetsGrid.xaml.cs">
       <DependentUpon>DatasetsGrid.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Viewers\Datasets\DatasetView.xaml.cs">
+      <DependentUpon>DatasetView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\Viewers\Features\MsFeatureGrid.xaml.cs">
       <DependentUpon>MsFeatureGrid.xaml</DependentUpon>
@@ -296,6 +302,10 @@
     <Compile Include="Workspace\Workspace.cs" />
     <Compile Include="Settings.cs" />
     <Page Include="Windows\FilePathFinder.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\IO\ExportView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -383,13 +393,13 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Windows\Viewers\Datasets\DatasetListBox.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Windows\Viewers\Datasets\DatasetsGrid.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\Viewers\Datasets\DatasetView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\Viewers\Features\MsFeatureGrid.xaml">
       <Generator>MSBuild:Compile</Generator>

@@ -14,6 +14,7 @@ using MultiAlignCustomControls.Drawing;
 using MultiAlignCore.Data.Features;
 using PNNLOmics.Data;
 using MultiAlignCore.Extensions;
+using System.Linq;
 
 namespace MultiAlignCustomControls.Charting
 {    
@@ -47,6 +48,7 @@ namespace MultiAlignCustomControls.Charting
         public SingleClusterChart()
 	    {			
 			InitializeComponent();
+            PeptideAlphaValue       = 128;
 
             IsClipboardCopyEnabled  = true;
             m_additionalClusters    = new List<UMCClusterLightMatched>();
@@ -61,6 +63,7 @@ namespace MultiAlignCustomControls.Charting
             m_clusterShapes         = ShapeIterator.CreateShapeList(mint_pt_size + 2, false);
                         
             AddPostProcessor(new ChartPostRenderingProcessor(RenderDifferences), PostProcessPriority.MidHigh);
+            ShouldRenderPeptides = true;
         }
                         
         private void RenderDifferences(ctlChartBase chart, PostRenderEventArgs args)
@@ -119,64 +122,155 @@ namespace MultiAlignCustomControls.Charting
 
 
                 clsColorIterator colors = new clsColorIterator(); 
-                float offset            = Convert.ToSingle(MaxChartAreaXPixel) * .1F;
                 float width             = Convert.ToSingle(MaxChartAreaXPixel);
-                float direction         = offset* -1;
-                float directionOffset   = -1;
-
+            
                 // Renders the peptide strings...
-                if (m_mainCluster != null)
+                if (ShouldRenderPeptides && m_mainCluster != null)
                 {
+                    List<AnnotationPoint> points = new List<AnnotationPoint>();
+
                     Font newFont = new Font(Font, FontStyle.Bold);
                     /// Quickest way to access the feature and the peptides it has...for a given cluster
                     foreach (UMCLight feature in m_mainCluster.Cluster.Features)
                     {
                         float msMassScan    = mobj_axis_plotter.YScreenPixel(Convert.ToSingle(feature.MassMonoisotopicAligned));
-                        float idOffset      = 0;
-                                                
+                        float msScan        = mobj_axis_plotter.XScreenPixel(Convert.ToSingle(feature.RetentionTime));
+                                                                        
                         foreach (MSFeatureLight msFeature in feature.MSFeatures)
                         {
                             Color color        = colors.GetColor(msFeature.ChargeState);
+                            color = Color.FromArgb(PeptideAlphaValue, color.R, color.G, color.B);
+
                             using (Brush brush = new SolidBrush(color))
                             {
                                 using (Pen pen = new Pen(brush, 3.0F))
                                 {
-
-                                foreach (MSSpectra spectrum in msFeature.MSnSpectra)
-                                {
-                                    foreach (Peptide p in spectrum.Peptides)
+                                    foreach (MSSpectra spectrum in msFeature.MSnSpectra)
                                     {
-                                        float msScan     = mobj_axis_plotter.XScreenPixel(Convert.ToSingle(feature.RetentionTime));
-
-                                        // Draw the precursor strings.
-                                        string precursorString = string.Format("{0}", p.Sequence);
-                                        SizeF sizeOfPrecursor = graphics.MeasureString(precursorString, Font);
-
-                                        float xPositionPrecursorString = msScan + offset + 2;
-                                        if (xPositionPrecursorString + sizeOfPrecursor.Width >= width)
+                                        foreach (Peptide p in spectrum.Peptides)
                                         {
-                                            xPositionPrecursorString = width - sizeOfPrecursor.Width - 2;
+                                            // Draw the precursor strings.
+                                            string precursorString = string.Format("{0}", p.Sequence);
+                                            SizeF sizeOfPrecursor  = graphics.MeasureString(precursorString, Font);
+                                            
+                                            AnnotationPoint point = new AnnotationPoint();
+                                            point.Annotations.Add(new AnnotationPoint(sizeOfPrecursor.Width, sizeOfPrecursor.Height)  { Annotation = precursorString });                                            
+                                            point.Location          = new PointF(msScan, msMassScan);
+                                            point.Color             = color;
+                                            points.Add(point);
                                         }
-
-                                        graphics.DrawLine(pen, msScan, msMassScan,    xPositionPrecursorString - 2,        msMassScan + direction);
-                                        graphics.DrawString(precursorString, newFont, brush, xPositionPrecursorString, msMassScan + direction + idOffset);
-
-                                        idOffset += (sizeOfPrecursor.Height + 2) * directionOffset;
                                     }
                                 }
+                            }
+                        }                        
+                    }
+
+
+
+                    Color tagColor  = Color.Orange;
+                    tagColor        = Color.FromArgb(PeptideAlphaValue, tagColor.R, tagColor.G, tagColor.B);
+                    foreach (MassTagLight tag in m_massTags)
+                    {
+                        float msMassScan        = mobj_axis_plotter.YScreenPixel(Convert.ToSingle(tag.MassMonoisotopic));                        
+                        float msScan            = mobj_axis_plotter.XScreenPixel(Convert.ToSingle(tag.NETAverage));    
+                        string precursorString  = string.Format("{0}", tag.PeptideSequence);                    
+                        SizeF sizeOfPrecursor   = graphics.MeasureString(precursorString, Font);
+
+                        AnnotationPoint point   = new AnnotationPoint();
+                        point.Annotations.Add(new AnnotationPoint(sizeOfPrecursor.Width, sizeOfPrecursor.Height) { Annotation = precursorString });
+                        point.Location          = new PointF(msScan, msMassScan);                        
+                        point.Color             = tagColor;
+                        points.Add(point);
+                    }
+
+                    // Update the sizes
+                    points.ForEach(x => x.FindMaxSubSize());
+
+                    // CODE TO break the annotations up nicely...sucks
+                    float sx = mobj_axis_plotter.XScreenPixel(ViewPort.X);
+                    float ey = mobj_axis_plotter.YScreenPixel(ViewPort.Y);
+                    float ex = mobj_axis_plotter.XScreenPixel(ViewPort.X + ViewPort.Width);
+                    float sy = mobj_axis_plotter.YScreenPixel(ViewPort.Y + ViewPort.Height);
+                    
+                    
+                    //float quadwidth  = Math.Abs(sx - ex) / 2;
+                    //float quadheight = Math.Abs(sy - ey) / 2;
+                    
+                    //RectangleF quadTwo   = new RectangleF(sx,               sy,                 quadwidth,     quadheight);             
+                    //RectangleF quadOne   = new RectangleF(sx + quadwidth,   sy,                 quadwidth,     quadheight); 
+                    //RectangleF quadThree = new RectangleF(sx,               sy + quadheight,    quadwidth,     quadheight); 
+                    //RectangleF quadFour  = new RectangleF(sx + quadwidth,   sy + quadheight,    quadwidth,     quadheight);
+
+                    //RenderAnnotation(graphics, points, quadTwo,     newFont, -1,   1);
+                    //RenderAnnotation(graphics, points, quadOne,     newFont,  1,   1); 
+                    //RenderAnnotation(graphics, points, quadThree,   newFont, -1,  -1); 
+                    //RenderAnnotation(graphics, points, quadFour,    newFont,  1,  -1);   
+
+                    // Only get annotations in the box
+                    
+
+                    // Order by area
+                    var orderedAnnotations = points.OrderBy(xx => xx.Location.X);
+                    int direction   = 1;
+                    float xPadding  = 5;
+                    float drawX     = sx + xPadding;                    
+                    float drawY     = sy + xPadding;
+
+                    float lastWidthUp   = drawX;
+                    float lastWidthDown = drawX;
+
+                    // Then render each point based on area
+                    foreach (var parent in orderedAnnotations)
+                    {
+                        // Highly inefficient, but only if the number of annotations
+                        // is large and so is the number of points which isnt normally true.
+                        using (Brush brush = new SolidBrush(parent.Color))
+                        {
+                            using (Pen pen = new Pen(brush, 3.0F))
+                            {
+                                foreach (AnnotationPoint point in parent.Annotations)
+                                {
+                                    graphics.DrawString(point.Annotation, newFont, brush, drawX + xPadding, drawY);
+                                    drawY     += (point.AnnotationSize.Height * direction);                                    
+                                }
+
+                                // modify to make this draw the shortest line possible
+                                graphics.DrawLine(pen, parent.Location, new PointF(drawX, drawY));
+
+                                // Change the direction now...modify the starting y position.
+                                direction        *= -1;                                
+                                drawX            += parent.AnnotationSize.Width;
+
+                                if (direction < 0)
+                                {
+                                    drawY           = ey - xPadding - 20;   
+                                    lastWidthUp     = drawX;
+                                    drawX           = lastWidthDown;
+                                }
+                                else
+                                {
+                                    // we just finished rendering below
+                                    drawY           = sy + xPadding;
+                                    lastWidthDown   = drawX;
+                                    drawX           = lastWidthUp;
                                 }
                             }
-                        }                             
-                        // Alternate the direction of the MSMS precursor label
-                        direction       *= -1;
-                        directionOffset *= -1;
-                    }
-                }                                                                                 
-        }
-
+                        }
+                    }   
+                }                                                                               
+        }       
         #endregion
 
         #region Properties
+        /// <summary>
+        /// Gets or sets the alpha value to use for peptide strings.
+        /// </summary>
+        public int PeptideAlphaValue { get; set; }
+        /// <summary>
+        /// Gets or sets whether peptide strings should be rendered.
+        /// </summary>
+        public bool ShouldRenderPeptides { get; set; }
+
         public Color AlternateColor
         {
             get;

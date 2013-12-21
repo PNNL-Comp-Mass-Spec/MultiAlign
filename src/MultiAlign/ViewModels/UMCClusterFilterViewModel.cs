@@ -26,9 +26,13 @@ namespace MultiAlign.ViewModels
             TotalMembers        = new RangeViewModel(new Range(0, 10000), "Total Members");
             DatasetMembers      = new RangeViewModel(new Range(0, 10000), "Dataset Members");
 
-             MsMsTotal           = new RangeViewModel(new Range(0, 100), "Total MS/MS");
-             IdentificationRange = new RangeViewModel(new Range(0, 100), "Identifications");
-             AMTTagRange         = new RangeViewModel(new Range(0, 100), "AMT Tags");
+            DatasetMembers.Minimum = 2;
+            DatasetMembers.ShouldUse = true;
+
+
+            MsMsTotal           = new RangeViewModel(new Range(0, 100), "Total MS/MS");
+            IdentificationRange = new RangeViewModel(new Range(0, 100), "Identifications");
+            AMTTagRange         = new RangeViewModel(new Range(0, 100), "AMT Tags");
         }
 
         public RangeViewModel AMTTagRange

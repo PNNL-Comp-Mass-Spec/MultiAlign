@@ -112,6 +112,7 @@
     <Compile Include="Charting\MsFeatureChart.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Charting\QuadrantSelector.cs" />
     <Compile Include="Charting\SingleMassTagChart.cs">
       <SubType>UserControl</SubType>
     </Compile>

@@ -93,7 +93,7 @@ namespace MultiAlign.ViewModels
                 return x.DatasetName.CompareTo(y.DatasetName);
             });
 
-            Datasets = new ObservableCollection<DatasetInformation>(datasets);
+            Datasets = new DatasetCollectionViewModel(datasets);
         }
 
         public IdentificationCollectionTreeViewModel IdentificationTree
@@ -161,7 +161,7 @@ namespace MultiAlign.ViewModels
             }
         }
 
-        public ObservableCollection<DatasetInformation> Datasets
+        public DatasetCollectionViewModel Datasets
         {
             get;
             private set;

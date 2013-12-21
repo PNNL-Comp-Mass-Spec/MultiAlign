@@ -30,6 +30,15 @@
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
+            <Label
+                FontSize="64"
+                Grid.Row="5"
+                Grid.Column="0"
+                Grid.ColumnSpan="3"
+                Foreground="LightGray"
+                VerticalContentAlignment="Bottom"
+                Content="{Binding Path=Dataset.Id}"
+               />
             <Image
                         Grid.Row="0"
                         Grid.Column="0"

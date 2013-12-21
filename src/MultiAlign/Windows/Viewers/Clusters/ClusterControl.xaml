@@ -36,10 +36,10 @@
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="80*"/>
+                <RowDefinition Height="60*"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="30*"/>
+                <RowDefinition Height="40*"/>
             </Grid.RowDefinitions>
 
             <TabControl
@@ -98,12 +98,7 @@
                         VerticalAlignment="Stretch"
                         Margin="1"
                         Background="#FFA0A0A0"/>
-            <Label 
-                Grid.Row="3"
-                HorizontalContentAlignment="Center" 
-                FontSize="16" 
-                Foreground="Gray" 
-                Content="Feature"/>
+           
             <WindowsFormsHost   
                 Grid.Column="0"                
                 Grid.Row="4">
@@ -115,6 +110,37 @@
                                     LegendVisible="False"                
                                     />
             </WindowsFormsHost>
+            <Grid 
+                Grid.Row="3">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="20*"/>
+                </Grid.ColumnDefinitions>
+                <Label 
+                        FontSize="12"
+                        Margin="5"
+                        Foreground ="Gray"  
+                        VerticalContentAlignment="Center"                      
+                        Grid.Row="0"
+                        Grid.Column="0">Features</Label>
+                <ComboBox
+                            FontSize="12"
+                            HorizontalContentAlignment="Center"
+                            SelectedItem="{Binding UMCFeature, 
+                            RelativeSource={RelativeSource AncestorType={x:Type UserControl}},
+                            UpdateSourceTrigger=PropertyChanged,
+                            Mode=TwoWay,
+                            NotifyOnSourceUpdated=True}"
+                            ItemsSource="{Binding Features, 
+                            RelativeSource={RelativeSource AncestorType={x:Type UserControl}},
+                            UpdateSourceTrigger=PropertyChanged,
+                            NotifyOnSourceUpdated=True}"                        
+                            Margin="5"
+                            Grid.Column="1"/>
+            </Grid>
         </Grid>
         <GridSplitter                        
                         Grid.Column="1"
@@ -134,6 +160,7 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Border
@@ -144,7 +171,7 @@
                                    
             </Border>
                 <Grid 
-                    Grid.Row="4">
+                    Grid.Row="5">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
@@ -186,7 +213,7 @@
                     Margin="5"
                     Foreground ="Gray"  
                     Content="Extracted Ion Chromatrogram"
-                    FontSize="12"
+                    FontSize="10"
                     HorizontalContentAlignment="Center"
                     VerticalContentAlignment="Center"                      
                     Grid.Row="0"/>
@@ -203,12 +230,12 @@
                     Margin="5"
                     Foreground ="Gray"  
                     Content="Parent Spectra"
-                    FontSize="12"
+                    FontSize="10"
                     HorizontalContentAlignment="Center"
                     VerticalContentAlignment="Center"                      
                     Grid.Row="4"/>
                 <WindowsFormsHost                        
-                    Grid.Row="5" >
+                    Grid.Row="6" >
                     <maCharts:MsFeatureChart
                             x:Name="m_parentSpectra"
                             TitleVisible="False"

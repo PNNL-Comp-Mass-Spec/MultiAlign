@@ -80,6 +80,7 @@ namespace MultiAlign.Windows.Viewers.Clusters
             m_saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             m_saveFileDialog.Filter = "DTA (*.dta)|*.dta|MGF (*.mgf)|*.mgf";
 
+            Features = new ObservableCollection<UMCLight>();
         }
 
         
@@ -413,6 +414,8 @@ namespace MultiAlign.Windows.Viewers.Clusters
         //TODO:Put this all in a view model
         public ObservableCollection<int> Charges { get; set; }
 
+        public ObservableCollection<UMCLight> Features { get; set; }
+
         public int MinimumScan
         {
             get
@@ -615,6 +618,9 @@ namespace MultiAlign.Windows.Viewers.Clusters
             double maxMass  = Feature.ComputeDaDifferenceFromPPM(cluster.MassMonoisotopic, -massPpm);
             double minNet   = cluster.RetentionTime - net;
             double maxNet   = cluster.RetentionTime + net;
+
+            Features.Clear();
+            matchedCluster.Cluster.Features.ForEach(x => Features.Add(x));
 
             List<UMCClusterLight> otherClusters
                 = SingletonDataProviders.Providers.ClusterCache.FindNearby(minMass, maxMass, minNet, maxNet);

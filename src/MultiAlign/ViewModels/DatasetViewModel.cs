@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using MultiAlignCore.Data;
+using MultiAlignCore.Data.MetaData;
 
 namespace MultiAlign.ViewModels
 {
@@ -25,6 +26,27 @@ namespace MultiAlign.ViewModels
                 }
                 return name;
             }
+        }
+
+        public int Id
+        {
+            get
+            {
+                int id = 0;
+                if (m_information != null)
+                {
+                    id = m_information.DatasetId;
+                }
+                return id;
+            }
+        }
+
+        public DatasetPlotInformation PlotData        
+        {
+            get
+            {
+                return m_information.PlotData;
+            }            
         }
     }
 }

@@ -13,13 +13,55 @@
         <maConverters:BoolVisibilityConverter x:Key="boolConverter"/>
     </UserControl.Resources>
     
-    <Grid Margin="10,10,10,10">
+    <Grid>
+
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"  />
+            <RowDefinition Height="96"  />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <Grid.ColumnDefinitions>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"  />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="96"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Label Grid.Row="0"     Grid.Column="1"   Content="{Binding Path=Name}"/>
+            <Label Grid.Row="1"     Grid.Column="1"   Content="{Binding Path=Id}"/>
+            
+            <Label
+            FontSize="16"
+            Foreground="Gray">
+                Dataset ID:
+            </Label>
+            <Label
+                Grid.Row="1"
+                FontSize="16"
+                Foreground="Gray">
+                Dataset:
+            </Label>
+        </Grid>
+        
+        <Expander
+            Margin="5"
+            HorizontalAlignment="Stretch"
+            Grid.Row="1"
+            FontSize="16"
+            Header="Dataset Images"
+            IsExpanded="True"
+            
+            ExpandDirection="Down"
+            >
+            <Grid Grid.Row="1" Margin="30,10,10,10">
+                <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"  />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
@@ -28,83 +70,74 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        
-        <Label
-            Grid.Row="1"
-            Grid.Column="1"
-            Grid.ColumnSpan="6"
-            VerticalAlignment ="Center"        
-            HorizontalAlignment="Left"
-            Visibility="{Binding IsBaseline, Converter={StaticResource ResourceKey=boolConverter}}"
-            Content="Baseline" FontSize="64" FontStretch="Expanded" FontWeight="SemiBold" Foreground="LightGray">
-            
-        </Label>
-        
-        <!-- Feature Plots-->
-        <Label HorizontalAlignment="Center"
+                
+                <!-- Feature Plots-->
+                        <Label HorizontalAlignment="Center"
             Content="Features"  />
-        <Image
+                                        <Image
             Grid.Row="1" 
             Source="{Binding  Path=PlotData.Features, Converter={StaticResource UriToBitmapConverter}}" 
             />
-        <!-- Alignment Heatmap -->
-        <Label Grid.Column="1"            
+                <!-- Alignment Heatmap -->
+                                <Label Grid.Column="1"            
             HorizontalAlignment="Center"
             Content="Alignment"  />
-            <Image
+                                                    <Image
             Grid.Row="1"
             Grid.Column="1"
             x:Name="m_alignmentHeatmap"
             Source="{Binding  Path=PlotData.Alignment, Converter={StaticResource UriToBitmapConverter}}"/>
-        <!-- Mass Error Histograms -->
-        <Label Grid.Column="2"
+                <!-- Mass Error Histograms -->
+                                <Label Grid.Column="2"
             HorizontalAlignment="Center"
             Content="Mass Error" />
-        <Image
+                                                <Image
             Grid.Row="1"
             Grid.Column="2"            
             x:Name="m_massErrorHistogram"            
             Source="{Binding  Path=PlotData.MassErrorHistogram, Converter={StaticResource UriToBitmapConverter}}"/>
-        <!-- NET Histograms -->
-        <Label Grid.Column="3"
+                <!-- NET Histograms -->
+                                <Label Grid.Column="3"
             HorizontalAlignment="Center"
             Content="NET Error" />
-        <Image 
+                                                        <Image 
             Grid.Column="3"
             Grid.Row="1"
             x:Name="m_netErrorHistogram"            
             Source="{Binding  Path=PlotData.NetErrorHistogram, Converter={StaticResource UriToBitmapConverter}}" 
                 />        
-        <!-- Mass / Net Residual -->
-        <!-- Mass Residuals Scan -->
-        <Label Grid.Column="4"
+                <!-- Mass / Net Residual -->
+                <!-- Mass Residuals Scan -->
+                                <Label Grid.Column="4"
             HorizontalAlignment="Center"
             Content="Mass Residuals (scan)" />
-        <Image
+                                                <Image
             Grid.Row="1"
             Grid.Column="4"
             x:Name="m_massScanResidual"
             Source="{Binding  Path=PlotData.MassScanResidual, Converter={StaticResource UriToBitmapConverter}}"/>
         
-        <!-- Mass Residuals m/z -->
-        <Label Grid.Column="5"
-            HorizontalAlignment="Center"
-            Content="Mass Residuals (m/z)"   />
-        <Image Grid.Column="5"
-               Grid.Row="1"
-            x:Name="m_massMzResidual"
-            Source="{Binding  Path=PlotData.MassMzResidual, Converter={StaticResource UriToBitmapConverter}}"
-             />
-        <!-- Net Residuals -->
-        <Label Grid.Column="6"
-            HorizontalAlignment="Center"
-            Content="NET Residuals"  />
-        <Image
-            Grid.Row="1"
-            Grid.Column="6"
-            x:Name="m_netResidual"
-            Source="{Binding  Path=PlotData.NetResiduals, Converter={StaticResource UriToBitmapConverter}}"/>
+                <!-- Mass Residuals m/z -->
+                <Label Grid.Column="5"
+                    HorizontalAlignment="Center"
+                    Content="Mass Residuals (m/z)"   />
+                <Image Grid.Column="5"
+                       Grid.Row="1"
+                    x:Name="m_massMzResidual"
+                    Source="{Binding  Path=PlotData.MassMzResidual, Converter={StaticResource UriToBitmapConverter}}"
+                     />
+                <!-- Net Residuals -->
+                <Label Grid.Column="6"
+                    HorizontalAlignment="Center"
+                    Content="NET Residuals"  />
+                <Image
+                    Grid.Row="1"
+                    Grid.Column="6"
+                    x:Name="m_netResidual"
+                    Source="{Binding  Path=PlotData.NetResiduals, Converter={StaticResource UriToBitmapConverter}}"/>
         
-        <!-- Scan vs. Net -->
+                <!-- Scan vs. Net -->
+            </Grid>
+        </Expander>
     </Grid>
 </UserControl>
