@@ -11,46 +11,70 @@
             <datasetViews:DatasetInformationView/>
         </DataTemplate>
     </UserControl.Resources>
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="48"/>
-        </Grid.RowDefinitions>
-
-        <ListBox
-                    Grid.Row="1"
-                    Grid.Column="0"
-                    Margin="5"
-                    VerticalAlignment="Stretch"
-                    HorizontalContentAlignment="Stretch"     
-                    ScrollViewer.VerticalScrollBarVisibility="Auto"
-                    ItemTemplate="{StaticResource DatasetTemplate}"
-                    ItemsSource="{Binding Path=FilteredDatasets, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True}" />
-        <Border
-            Grid.Row="2"
-            BorderThickness="1"
-            BorderBrush="LightGray"
-            Margin="5"
-            >
+    
+    <TabControl>
+        <TabItem
+            Header="Datasets"
+            Style="{DynamicResource ResourceKey=SimpleTabItem}">
             <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="48" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <Label
-                    FontSize="16"
-                    Foreground="Gray">
-                    Filter:
-                </Label>
-                <TextBox 
-                    Grid.Column="1"
-                    HorizontalAlignment="Stretch"
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="48"/>
+                </Grid.RowDefinitions>
+                <CheckBox Foreground="Gray" VerticalAlignment="Center" IsChecked="{Binding Path=IsExpandAllImages}">Expand All Images</CheckBox>
+                <StackPanel                                        
+                    HorizontalAlignment="Right"
+                    Orientation="Horizontal"
+                    Grid.Row="0">
+                    <Label Foreground="Gray" FontSize="15">Displaying</Label>
+                    <Label Foreground="Gray" FontSize="15" Content="{Binding Path=FilteredDatasets.Count}"/>
+                    <Label Foreground="Gray" FontSize="15">of</Label>
+                    <Label Foreground="Gray" FontSize="15" Content="{Binding Path=Datasets.Count}"/>
+                </StackPanel>
+                
+                <ListBox
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Margin="5"
+                            VerticalAlignment="Stretch"
+                            HorizontalContentAlignment="Stretch"     
+                            ScrollViewer.VerticalScrollBarVisibility="Auto"
+                            ItemTemplate="{StaticResource DatasetTemplate}"
+                            ItemsSource="{Binding Path=FilteredDatasets, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True}" />
+                <Border
+                    Grid.Row="2"
+                    BorderThickness="1"
+                    BorderBrush="LightGray"
                     Margin="5"
-                    FontSize="16"
-                    Text="{Binding Path=Filter}"
-                    />
-            </Grid>
-        </Border>
-    </Grid>
+                    >
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="48" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Label
+                            VerticalContentAlignment="Center"
+                            FontSize="16"
+                            Foreground="Gray">
+                            Filter:
+                        </Label>
+                        <TextBox 
+                            Grid.Column="1"
+                            HorizontalAlignment="Stretch"
+                            Margin="5"
+                            FontSize="16"
+                            Text="{Binding Path=Filter, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"
+                            />
+                    </Grid>
+                </Border>
+                </Grid>
+        </TabItem>
+        <TabItem
+            Header="Factors"
+            IsEnabled="False"
+            Style="{DynamicResource ResourceKey=SimpleTabItem}"
+            >            
+        </TabItem>
+    </TabControl>
 </UserControl>

@@ -249,21 +249,21 @@ namespace MultiAlignCustomControls.Drawing
             chart.YAxisGridLines = options.DisplayGridLines;
 
 
-            int i = 0;
+            int i = 1;
             Dictionary<int, List<UMCLight>> chargeMaps = new Dictionary<int, List<UMCLight>>();
-            for (i = 0; i < 8; i++)
+            for (i = 1; i < 9; i++)
             {
                 chargeMaps.Add(i, new List<UMCLight>());
             }
-            chargeMaps.Add(8, new List<UMCLight>());
+            chargeMaps.Add(i, new List<UMCLight>());
 
             
             foreach (UMCLight feature in features)
             {
                 int charge = feature.ChargeState;
-                if (charge >= 8)
+                if (charge >= i)
                 {
-                    chargeMaps[8].Add(feature);
+                    chargeMaps[i].Add(feature);
                 }
                 else
                 {

@@ -28,9 +28,9 @@ namespace MultiAlign.ViewModels
 
         private void FilterDatasets()
         {
+            string filter                           = m_filter.ToLower();
             IEnumerable<DatasetViewModel> filtered  = new List<DatasetViewModel>(m_models);           
-            filtered                                = filtered.Where(x => x.Name.Contains(m_filter));
-
+            filtered                                = filtered.Where(x => x.Name.ToLower().Contains(filter));
             FilteredDatasets.Clear();
             filtered.ToList().ForEach(x => FilteredDatasets.Add(x));
         }
@@ -47,8 +47,31 @@ namespace MultiAlign.ViewModels
             private set;
         }
 
+        private bool m_expandImagesall;
 
+        public bool IsExpandAllImages
+        {
+            get
+            {
+                return m_expandImagesall;
+            }
+            set
+            {
+                if (value != m_expandImagesall)
+                {
+                    if (value != null)
+                    {
+                        m_expandImagesall = value;
 
+                        foreach (DatasetViewModel model in Datasets)
+                        {
+                            model.ShouldExpand = value;
+                        }
+                        OnPropertyChanged("IsExpandAllImages");
+                    }
+                }
+            }
+        }
         public string Filter
         {
             get
@@ -59,9 +82,12 @@ namespace MultiAlign.ViewModels
             {
                 if (value != m_filter)
                 {
-                    m_filter = value;
-                    OnPropertyChanged("Filter");
-                    FilterDatasets();
+                    if (value != null)
+                    {
+                        m_filter = value;                  
+                        OnPropertyChanged("Filter");
+                        FilterDatasets();
+                    }
                 }
             }
         }

@@ -95,6 +95,8 @@
     </ApplicationDefinition>
     <Compile Include="Commands\Clusters\ClusterTreeFilterCommand.cs" />
     <Compile Include="Commands\Clusters\ClusterExportCommand.cs" />
+    <Compile Include="Commands\Plotting\FeatureDisplayCommand.cs" />
+    <Compile Include="Commands\Plotting\PictureDisplayCommand.cs" />
     <Compile Include="Converters\BooleanToDataGridVisibilityModeConverter.cs" />
     <Compile Include="Converters\BoolInverter.cs" />
     <Compile Include="Converters\BoolVisibilityConverter.cs" />
@@ -141,6 +143,9 @@
     <Compile Include="ViewModels\MassTagMatchedViewModel.cs" />
     <Compile Include="ViewModels\MSSpectraViewModel.cs" />
     <Compile Include="ViewModels\PeptideViewModel.cs" />
+    <Compile Include="ViewModels\PictureViewModel.cs" />
+    <Compile Include="ViewModels\Plotting\FeaturesViewModel.cs" />
+    <Compile Include="ViewModels\Plotting\PlotDataViewModel.cs" />
     <Compile Include="ViewModels\ProteinViewModel.cs" />
     <Compile Include="ViewModels\TreeView\IdentificationCollectionTreeViewModel.cs" />
     <Compile Include="ViewModels\ParameterViewModels.cs" />
@@ -180,6 +185,12 @@
     </Compile>
     <Compile Include="Windows\Plots\FeaturePlotView.xaml.cs">
       <DependentUpon>FeaturePlotView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Plots\LargeFeatureView.xaml.cs">
+      <DependentUpon>LargeFeatureView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Plots\LargeImageView.xaml.cs">
+      <DependentUpon>LargeImageView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\Plots\MsSpectra.xaml.cs">
       <DependentUpon>MsSpectra.xaml</DependentUpon>
@@ -226,6 +237,9 @@
     </Compile>
     <Compile Include="Windows\Viewers\Datasets\DatasetInputFileEditor.xaml.cs">
       <DependentUpon>DatasetInputFileEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Viewers\Datasets\DatasetPlotView.xaml.cs">
+      <DependentUpon>DatasetPlotView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\Viewers\Datasets\DatasetsGrid.xaml.cs">
       <DependentUpon>DatasetsGrid.xaml</DependentUpon>
@@ -333,6 +347,14 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Windows\Plots\LargeFeatureView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Plots\LargeImageView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\Plots\MsSpectra.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -390,6 +412,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Windows\Viewers\Datasets\DatasetInputFileEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Viewers\Datasets\DatasetPlotView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

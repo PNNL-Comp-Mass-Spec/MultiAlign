@@ -244,9 +244,8 @@
             </WrapPanel>
             <Label
                 Grid.Column="1"
-                Content="{Binding Path=Datasets.Count}"
-                    VerticalContentAlignment="Center"
-                >
+                Content="{Binding Path=Analysis.MetaData.Datasets.Count}"
+                    VerticalContentAlignment="Center">
             </Label>
             <Label
                 Grid.Column="2"

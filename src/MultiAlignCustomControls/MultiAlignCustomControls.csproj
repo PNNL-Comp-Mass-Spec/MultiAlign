@@ -156,6 +156,10 @@
       <DependentUpon>Histogram.cs</DependentUpon>
     </Compile>
     <Compile Include="Charting\SeriesOptions.cs" />
+    <Compile Include="Charting\UMCScatterChart.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Charting\UnitSingletons.cs" />
     <Compile Include="Drawing\AnalysisReportGenerator.cs" />
     <Compile Include="Drawing\RenderDatasetInfo.cs" />
     <Compile Include="Drawing\ShapeIterator.cs" />

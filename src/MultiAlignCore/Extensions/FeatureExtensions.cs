@@ -23,7 +23,20 @@ namespace MultiAlignCore.Extensions
                 {
                     map.Add(feature.ChargeState, 0);
                 }
-                map[feature.ChargeState]++;             
+                map[feature.ChargeState]++;
+            }
+            return map;
+        }
+        public static Dictionary<int, List<T>> MapCharges<T>(this List<T> features) where T : FeatureLight
+        {
+            Dictionary<int, List<T>> map = new Dictionary<int, List<T>>();
+            foreach (T feature in features)
+            {
+                if (!map.ContainsKey(feature.ChargeState))
+                {
+                    map.Add(feature.ChargeState, new List<T>());
+                }
+                map[feature.ChargeState].Add(feature);
             }
             return map;
         }

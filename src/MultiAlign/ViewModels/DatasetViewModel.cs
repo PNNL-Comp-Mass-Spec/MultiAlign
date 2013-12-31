@@ -4,20 +4,44 @@ using System.Linq;
 using System.Text;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.MetaData;
+using MultiAlign.ViewModels.Plotting;
+using System.Windows.Input;
+using System.Collections.ObjectModel;
+using MultiAlign.Commands.Plotting;
 
 namespace MultiAlign.ViewModels
 {
     public class DatasetViewModel: ViewModelBase
     {
-        private DatasetInformation m_information;
+        private bool                m_expand;
+        private DatasetInformation  m_information;
+
         public DatasetViewModel(DatasetInformation information)
         {
-            m_information = information;
+            m_information               = information;
+            DatasetPlotInformation data = information.PlotData;
+            PlotData                    = new ObservableCollection<PlotViewModel>();
+
+            if (data != null)
+            {                
+                PlotData.Add(new PlotViewModel(data.Alignment,                    
+                                                    "Alignment",
+                                                    new PictureDisplayCommand(data.Alignment,"Alignment" + information.DatasetName)));
+                PlotData.Add(new PlotViewModel(data.Features, 
+                                                    "Features",
+                                                    new FeatureDisplayCommand(information)));
+
+                PlotData.Add(new PlotViewModel(data.MassErrorHistogram, "Mass Error Histogram"));
+                PlotData.Add(new PlotViewModel(data.NetErrorHistogram,  "NET Error Histogram"));
+                PlotData.Add(new PlotViewModel(data.MassScanResidual,   "Mass vs Scan Residuals"));
+                PlotData.Add(new PlotViewModel(data.MassMzResidual,     "Mass vs m/z Residuals"));
+                PlotData.Add(new PlotViewModel(data.NetResiduals,       "NET Residuals"));
+            }                  
         }
 
         public string Name
         {
-            get 
+            get
             {
                 string name = "";
                 if (m_information != null)
@@ -25,6 +49,14 @@ namespace MultiAlign.ViewModels
                     name = m_information.DatasetName;
                 }
                 return name;
+            }
+        }
+        public string DisplayName
+        {
+            get
+            {
+                ///stupid WPF content __ http://stackoverflow.com/questions/7861699/can-not-see-underscore-in-wpf-content
+                return Name.Replace("_", "__");
             }
         }
 
@@ -41,12 +73,25 @@ namespace MultiAlign.ViewModels
             }
         }
 
-        public DatasetPlotInformation PlotData        
+        public ObservableCollection<PlotViewModel> PlotData
+        {
+            get;
+            private set;
+        }
+        public bool ShouldExpand 
         {
             get
             {
-                return m_information.PlotData;
-            }            
+                return m_expand;
+            }
+            set
+            {
+                if (value != m_expand)
+                {
+                    m_expand = value;
+                    OnPropertyChanged("ShouldExpand");
+                }
+            }
         }
     }
 }

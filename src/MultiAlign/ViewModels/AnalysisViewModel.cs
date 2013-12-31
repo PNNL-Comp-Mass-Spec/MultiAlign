@@ -68,13 +68,6 @@ namespace MultiAlign.ViewModels
             spectraBinding.Source = ClusterTree;
             
 
-            // Make the dataset plots.                    
-            string plotPath = Path.Combine(analysis.MetaData.AnalysisPath, "plots");
-            if (Directory.Exists(plotPath))
-            {
-                DatasetPlotLoader loader = new Data.DatasetPlotLoader();
-                loader.LoadDatasetPlots(plotPath, analysis.MetaData.Datasets.ToList());
-            }
         }
 
         private void LoadDatasets(MultiAlignAnalysis analysis)
@@ -92,6 +85,14 @@ namespace MultiAlign.ViewModels
 
                 return x.DatasetName.CompareTo(y.DatasetName);
             });
+
+            // Make the dataset plots.                    
+            string plotPath = Path.Combine(analysis.MetaData.AnalysisPath, "plots");
+            if (Directory.Exists(plotPath))
+            {
+                DatasetPlotLoader loader = new Data.DatasetPlotLoader();
+                loader.LoadDatasetPlots(plotPath, analysis.MetaData.Datasets.ToList());
+            }
 
             Datasets = new DatasetCollectionViewModel(datasets);
         }
