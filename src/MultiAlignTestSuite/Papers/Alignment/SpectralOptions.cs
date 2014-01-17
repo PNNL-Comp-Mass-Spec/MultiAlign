@@ -12,6 +12,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
     /// </summary>
     public class SpectralOptions
     {
+        public double MzBinSize { get; set; }
         public double NetTolerance { get; set; }
         public double MzTolerance { get; set; }
         public double TopIonPercent { get; set; }

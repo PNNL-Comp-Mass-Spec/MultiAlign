@@ -10,6 +10,7 @@ using PNNLOmics.Algorithms.SpectralProcessing;
 using PNNLOmics.Data;
 using PNNLOmicsIO.IO;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace MultiAlignTestSuite.Papers.Alignment.SSM
 {
@@ -25,7 +26,8 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
         [SetUp]
         public void TestSetup()
         {
-            m_basePath      = @"M:\data\proteomics\Papers\AlignmentPaper\data\Shewanella\ConstantPressure\TechReplicates-00";            
+            m_basePath      = @"M:\data\proteomics\Papers\AlignmentPaper\data\Shewanella\ConstantPressure\TechReplicates-00";
+            AlignmentAnalysisWriterFactory.BasePath = @"M:\doc\papers\paperAlignment\Data\figure1";
         }
 
         #region Figure 1
@@ -41,8 +43,9 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
         [TestCase(  @"QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32",
                     @"QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32",                    
                     SpectralComparison.CosineDotProduct,
-                    .5,     // m/z
+                    .05,     // m/z
                     .25,    // NET
+                    0,      // Similarity Cutoff Score
                     1e-15,  // MSGF+ Score
                     .1,     // Peptide FDR
                     .5)]    // Ion Percent
@@ -60,10 +63,10 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
 
             // Create alignment datasets 
             AlignmentDataset datasetX       = new AlignmentDataset(m_basePath, rawNameX);
-            AlignmentDataset datasetY       = new AlignmentDataset(m_basePath, rawNameX);
+            AlignmentDataset datasetY       = new AlignmentDataset(m_basePath, rawNameY);
             
             // Then the writer for creating a report
-            ISpectralAnalysisWriter writer  = AlignmentAnalysisWriterFactory.Create(AlignmentFigureType.Figure1);
+            ISpectralAnalysisWriter writer  = AlignmentAnalysisWriterFactory.Create(AlignmentFigureType.Figure1, "Figure1");
 
             // The options for the analysis 
             SpectralOptions options         = new SpectralOptions();
@@ -81,13 +84,16 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
             ISpectraFilter filter                   = SpectrumFilterFactory.CreateFilter(SpectraFilters.TopPercent);
 
             // Here we find all the matches
-            SpectralAnchorPointFinder finder                = new SpectralAnchorPointFinder();
+            SpectralAnchorPointFinder finder        = new SpectralAnchorPointFinder();
 
             IEnumerable<AnchorPointMatch> matches   = null;
             using (ISpectraProvider readerX = RawLoaderFactory.CreateFileReader(datasetX.RawFile))
             {
+                readerX.AddDataFile(datasetX.RawFile, 0);
                 using (ISpectraProvider readerY = RawLoaderFactory.CreateFileReader(datasetY.RawFile))
                 {
+                    readerY.AddDataFile(datasetY.RawFile, 0);
+
                     matches = finder.FindAnchorPoints(readerX,
                                             readerY,
                                             comparer,
@@ -117,6 +123,170 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
 
             // Write the results
             writer.Write(analysis);                     
+        }
+        #endregion
+
+        #region Figure 1 - Statistics
+
+        internal class PathCache
+        {
+            public string Cache;
+            public string Msgf;
+        }
+
+        /// <summary>
+        /// Tests distributions using the peptide match file (uniqued matches for building error distributions)
+        /// </summary>
+        /// <param name="rawPathX"></param>
+        /// <param name="rawPathY"></param>
+        /// <param name="peptideMatches"></param>
+        /// <param name="comparerType"></param>
+        /// <param name="mzTolerance"></param>
+        [Test(Description = "Figure 1: Compares all spectra (N x N) computing true / false positives based on peptide sequence.")]
+        [TestCase(@"M:\doc\papers\paperAlignment\Data\figure1\Test",
+                    //SpectralComparison.CosineDotProduct,    
+                    SpectralComparison.NormalizedDotProduct,
+                    .5,     // mz bin size when retrieving spectra
+                    .05,    // m/z
+                    .25,    // NET
+                    0,      // Similarity Cutoff Score
+                    1e-3,  // MSGF+ Score
+                    .1,     // Peptide FDR
+                    .5)]    // Ion Percent
+        public void GenerateFigure1_LargeScaleStatistics(string directory,
+                                                         SpectralComparison comparerType,
+                                                         double mzBinSize,
+                                                         double mzTolerance,
+                                                         double netTolerance,
+                                                         double similarityScoreCutoff,
+                                                         double peptideScore,
+                                                         double peptideFdr,
+                                                         double ionPercent)
+        {
+            Console.WriteLine("Large Scale Test For {0}", directory);
+
+            string[] cacheFiles = Directory.GetFiles(directory, "*.mscache");
+            string[] msgfFiles  = Directory.GetFiles(directory, "*_msgfdb_fht.txt");
+
+            Console.WriteLine("Building data cache");
+            Dictionary<string, PathCache> map = new Dictionary<string, PathCache>();
+            foreach (var path in cacheFiles)            
+                map.Add(path.ToLower(), null);
+
+            List<PathCache> data = new List<PathCache>();
+            foreach (var path in msgfFiles)
+            {
+                string name    = path.ToLower().Replace("_msgfdb_fht.txt", ".mscache");
+                string newName = Path.Combine(directory, name);
+                if (map.ContainsKey(newName))
+                {
+                    PathCache cacheData = new PathCache();
+                    cacheData.Cache     = newName;
+                    cacheData.Msgf      = path;
+                    data.Add(cacheData);
+                    
+                }
+            }
+
+            // The options for the analysis 
+            SpectralOptions options     = new SpectralOptions();
+            options.MzBinSize           = mzBinSize;
+            options.MzTolerance         = mzTolerance;
+            options.NetTolerance        = netTolerance;
+            options.SimilarityCutoff    = 0;
+            options.TopIonPercent       = ionPercent;
+            options.IdScore             = peptideScore;
+            options.ComparerType        = comparerType;
+
+
+            Console.WriteLine("Data: {0}", data.Count);
+
+            for (int i = 0; i < data.Count; i++)
+            {
+                PathCache cachex            = data[i];            
+                // Get the raw path stored in the cache file...
+                // then get the dataset object 
+                string rawPathX             = ScanSummaryCache.ReadPath(cachex.Cache);                
+                AlignmentDataset datasetX   = new AlignmentDataset(rawPathX, "", cachex.Msgf);         
+       
+                // create a raw file reader for the datasets
+                using (ISpectraProvider readerX = RawLoaderFactory.CreateFileReader(datasetX.RawFile))
+                {
+                    // wrap it in the cached object so we can load scan meta-data
+                    RawLoaderCache cacheReaderX             = new RawLoaderCache(readerX);
+                    Dictionary<int, ScanSummary> cacheDataX = ScanSummaryCache.ReadCache(cachex.Cache);                    
+                    readerX.AddDataFile(rawPathX, 0);
+                    cacheReaderX.AddCache(0, cacheDataX);
+
+                    for (int j = i + 1; j < data.Count; j++)
+                    {
+                        PathCache cachey            = data[j];            
+                        // Get the raw path stored in the cache file...
+                        // then get the dataset object 
+                        string rawPathY             = ScanSummaryCache.ReadPath(cachey.Cache);                                        
+                        AlignmentDataset datasetY   = new AlignmentDataset(rawPathY, "", cachey.Msgf);         
+       
+                        // create a raw file reader for the datasets
+                        using (ISpectraProvider readerY = RawLoaderFactory.CreateFileReader(datasetY.RawFile))
+                        {
+                            // wrap it in the cached object so we can load scan meta-data
+                            RawLoaderCache cacheReaderY             = new RawLoaderCache(readerY);
+                            Dictionary<int, ScanSummary> cacheDataY = ScanSummaryCache.ReadCache(cachey.Cache);
+                            cacheReaderY.AddCache(0, cacheDataY);
+                            readerY.AddDataFile(rawPathY, 0);
+                            MatchDatasets(cacheReaderX, cacheReaderY, datasetX, datasetY, options);
+                        }
+                    }
+                }
+            }
+        }
+
+        private void MatchDatasets( ISpectraProvider readerX,
+                                    ISpectraProvider readerY, 
+                                    AlignmentDataset datasetX, 
+                                    AlignmentDataset datasetY, 
+                                    SpectralOptions options)
+        {            
+            // Then the writer for creating a report
+            ISpectralAnalysisWriter writer = AlignmentAnalysisWriterFactory.Create(AlignmentFigureType.Figure1, "results-figure1-largeStatistics");
+
+            // This helps us compare various comparison calculation methods
+            ISpectralComparer comparer = SpectralComparerFactory.CreateSpectraComparer(options.ComparerType);
+
+            // This guy filters the spectra, so that we only keep the N most intense ions for comparison
+            ISpectraFilter filter = SpectrumFilterFactory.CreateFilter(SpectraFilters.TopPercent);
+
+            // Here we find all the matches
+            SpectralAnchorPointFinder finder        = new SpectralAnchorPointFinder();
+            IEnumerable<AnchorPointMatch> matches   = null;
+                               
+            matches = finder.FindAnchorPoints(  readerX,
+                                                readerY,
+                                                comparer,
+                                                filter,
+                                                options);
+
+            // Read data for peptides 
+            ISequenceFileReader reader           = PeptideReaderFactory.CreateReader(SequenceFileType.MSGF);
+            IEnumerable<Peptide> peptidesA       = reader.Read(datasetX.PeptideFile);
+            IEnumerable<Peptide> peptidesB       = reader.Read(datasetY.PeptideFile);
+            Dictionary<int, Peptide> peptideMapX = PeptideUtility.MapWithBestScan(peptidesA);
+            Dictionary<int, Peptide> peptideMapY = PeptideUtility.MapWithBestScan(peptidesB);
+
+            /// Then map the peptide sequences to identify True Positive and False Positives
+            PeptideAnchorPointMatcher matcher = new PeptideAnchorPointMatcher();
+            matcher.Match(matches,
+                            peptideMapX,
+                            peptideMapY,
+                            options);
+
+            // Package the data
+            SpectralAnalysis analysis   = new SpectralAnalysis();
+            analysis.Options            = options;
+            analysis.Matches            = matches;
+
+            // Write the results
+            writer.Write(analysis);
         }
         #endregion
 
@@ -166,7 +336,7 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
             options.ComparerType            = comparerType;
 
             // Then the writer for creating a report
-            ISpectralAnalysisWriter writer = AlignmentAnalysisWriterFactory.Create(AlignmentFigureType.Figure1);
+            ISpectralAnalysisWriter writer = AlignmentAnalysisWriterFactory.Create(AlignmentFigureType.Figure2, "Figure2");
 
 
             // Create an action to load and align the feature data.
@@ -250,8 +420,5 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
             writer.Write(analysisPeptides);
         }        
         #endregion            
-    }
-
-    
-
+    }    
 }

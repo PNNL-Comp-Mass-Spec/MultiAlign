@@ -5,6 +5,7 @@ using System.Text;
 using PNNLOmics.Data;
 using PNNLOmics.Algorithms.SpectralComparisons;
 using PNNLOmics.Algorithms.SpectralProcessing;
+using System.Diagnostics;
 
 namespace MultiAlignTestSuite.Papers.Alignment.SSM
 {
@@ -23,11 +24,12 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
         /// <param name="filter"></param>
         /// <param name="options"></param>
         /// <returns></returns>
-        public IEnumerable<AnchorPointMatch> FindAnchorPoints(  ISpectraProvider           readerX,
+        public IEnumerable<AnchorPointMatch> FindAnchorPoints2(  ISpectraProvider           readerX,
                                                                 ISpectraProvider           readerY,
                                                                 ISpectralComparer          comparer,
                                                                 ISpectraFilter             filter,
-                                                                SpectralOptions            options)
+                                                                SpectralOptions            options,
+                                                                bool skipComparison=true)
         {
             List<AnchorPointMatch> matches          = new List<AnchorPointMatch>();                    
             Dictionary<int, ScanSummary> scanDataX  = readerX.GetScanData(0);
@@ -43,64 +45,86 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
 
             // Create a spectral comparer
             List<double> scans = new List<double>();
-            Dictionary<int, MSSpectra> spectraMap = new Dictionary<int, MSSpectra>();
+            Dictionary<int, MSSpectra> ySpectraCache = new Dictionary<int, MSSpectra>();
 
-            foreach (int scanx in scanDataX.Keys)
+            // Here we sort the summary spectra....so that we can improve run time efficiency
+            // and minimize as much memory as possible.
+            List<ScanSummary> ySpectraSummary = new List<ScanSummary>();
+            foreach (var summary in scanDataY.Values)
             {
-                ScanSummary xsum = scanDataX[scanx];
-
-                if (xsum.MsLevel != 2)
+                if (summary.MsLevel != 2)
                     continue;
 
+                ySpectraSummary.Add(summary);
+            }
+            List<ScanSummary> xSpectraSummary = new List<ScanSummary>();
+            foreach (var summary in scanDataX.Values)
+            {
+                if (summary.MsLevel != 2)
+                    continue;
+                xSpectraSummary.Add(summary);
+            }
+            ySpectraSummary.Sort(delegate(ScanSummary x, ScanSummary y) { return x.PrecursorMZ.CompareTo(y.PrecursorMZ); });
+            xSpectraSummary.Sort(delegate(ScanSummary x, ScanSummary y) { return x.PrecursorMZ.CompareTo(y.PrecursorMZ); });
+            
+            double mzTolerance = options.MzTolerance;
+
+            foreach (ScanSummary xsum in xSpectraSummary)
+            {
+                int scanx = xsum.Scan;              
+
                 // Grab the first spectra
-                MSSpectra spectrumX = SpectralUtilities.GetSpectra( options.MzTolerance, 
+                MSSpectra spectrumX     = SpectralUtilities.GetSpectra(options.MzBinSize, 
                                                                     options.TopIonPercent, 
                                                                     filter, 
                                                                     readerX, 
                                                                     scanDataX,
                                                                     scanx);
 
-                // Iterate through the other analysis.  
-                foreach (int scany in scanDataY.Keys)
+                spectrumX.PrecursorMZ   = xsum.PrecursorMZ;
+
+
+                // Here we make sure that we are efficiently using the cache...we want to clear any 
+                // cached spectra that we arent using.  We know that the summaries are sorted by m/z
+                // so if the xsum m/z is greater than anything in the cache, dump the spectra...
+                double currentMz = xsum.PrecursorMZ;
+                // Use linq?
+                List<int> toRemove = new List<int>();
+                foreach (int scan in ySpectraCache.Keys)
                 {
-                    ScanSummary ysum = scanDataY[scany];
-                    if (ysum.MsLevel != 2)
-                        continue;
-
-                    if (Math.Abs(xsum.PrecursorMZ - ysum.PrecursorMZ) >= options.MzTolerance)
-                        continue;
-
-                    // Grab the first spectra...if we have it, great dont re-read
-                    MSSpectra spectrumY = null;
-                    if (spectraMap.ContainsKey(scany))
+                    MSSpectra yscan     = ySpectraCache[scan];
+                    double difference   = currentMz - yscan.PrecursorMZ;
+                    // We only need to care about smaller m/z's
+                    if (difference >= mzTolerance)
                     {
-                        spectrumY = spectraMap[scany];
+                        toRemove.Add(scan);
                     }
                     else
                     {
-                        spectrumY = SpectralUtilities.GetSpectra(   options.MzTolerance, 
-                                                                    options.TopIonPercent, 
-                                                                    filter, 
-                                                                    readerY,
-                                                                    scanDataY, 
-                                                                    scany);
-                        spectraMap.Add(scany, spectrumY);
+                        // Because if we are here, we are within range...AND! 
+                        // ...the m/z of i + 1 > i...because they are sorted...
+                        // so if the m/z comes within range (positive) then 
+                        // that means we need to evaluate the tolerance.
+                        break;
                     }
+                }
 
-                    // compare the spectra
-                    double spectralSimilarity = comparer.CompareSpectra(spectrumX, spectrumY);
-                    if (double.IsNaN(spectralSimilarity))
-                    {
-                        continue;
-                    }
+                // Then we clean up...since spectra can be large...we'll take the performance hit here...
+                // and minimize memory impacts!
+                if (toRemove.Count > 0)
+                {
+                    toRemove.ForEach(x => ySpectraCache.Remove(x));
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
+                }
 
-                    if (spectralSimilarity < options.SimilarityCutoff)
-                        continue;
+                // Iterate through the other analysis.  
+                foreach (ScanSummary ysum in ySpectraSummary)
+                {
+                    int scany = ysum.Scan;
 
-                    bool isMatch = false;
-                    
-
-                    if (double.IsNaN(spectralSimilarity) || double.IsNegativeInfinity(spectralSimilarity) || double.IsPositiveInfinity(spectralSimilarity))
+                    // We know that we are out of range here....
+                    if (Math.Abs(xsum.PrecursorMZ - ysum.PrecursorMZ) >= mzTolerance)
                         continue;
 
                     double netX = Convert.ToDouble(scanx - minX) / Convert.ToDouble(maxX - minX);
@@ -108,32 +132,230 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
                     double net  = Convert.ToDouble(netX - netY);
 
                     // Has to pass the NET tolerance
-                    if (options.NetTolerance < net) continue;
+                    if (options.NetTolerance < Math.Abs(net)) continue;
 
-                    AnchorPointMatch match = new AnchorPointMatch();
-                    AnchorPoint pointX  = new AnchorPoint();
-                    pointX.Net          = netX;
-                    pointX.Mass         = 0;
-                    pointX.Mz           = xsum.PrecursorMZ;
-                    pointX.Scan         = scanx;
-                    pointX.Spectrum     = spectrumX;
+
+                    // Grab the first spectra...if we have it, great dont re-read
+                    MSSpectra spectrumY = null;
+                    if (ySpectraCache.ContainsKey(scany))
+                    {
+                        if (!skipComparison)
+                            spectrumY = ySpectraCache[scany];
+                    }
+                    else
+                    {
+                        if (!skipComparison)
+                        {
+                            spectrumY = SpectralUtilities.GetSpectra(options.MzBinSize,
+                                                                    options.TopIonPercent,
+                                                                    filter,
+                                                                    readerY,
+                                                                    scanDataY,
+                                                                    scany);
+                            spectrumY.PrecursorMZ = ysum.PrecursorMZ;
+                            ySpectraCache.Add(scany, spectrumY);
+                        }
+                    }
+
+                    // compare the spectra
+                    double spectralSimilarity = 0;
+
+
+                    if (!skipComparison)
+                        spectralSimilarity = comparer.CompareSpectra(spectrumX, spectrumY);
+
+                    if (double.IsNaN(spectralSimilarity) || double.IsNegativeInfinity(spectralSimilarity) || double.IsPositiveInfinity(spectralSimilarity))
+                        continue;
+
+                    if (spectralSimilarity < options.SimilarityCutoff)
+                        continue;
+                                      
+                    AnchorPointMatch match  = new AnchorPointMatch();
+                    AnchorPoint pointX      = new AnchorPoint();
+                    pointX.Net              = netX;
+                    pointX.Mass             = 0;
+                    pointX.Mz               = xsum.PrecursorMZ;
+                    pointX.Scan             = scanx;
+                    pointX.Spectrum         = spectrumX;
                     
-                    AnchorPoint pointY  = new AnchorPoint();
-                    pointY.Net          = netX;
-                    pointY.Mass         = 0;
-                    pointY.Mz           = ysum.PrecursorMZ;
-                    pointY.Scan         = scany;
-                    pointY.Spectrum     = spectrumY;
+                    AnchorPoint pointY      = new AnchorPoint();
+                    pointY.Net              = netX;
+                    pointY.Mass             = 0;
+                    pointY.Mz               = ysum.PrecursorMZ;
+                    pointY.Scan             = scany;
+                    pointY.Spectrum         = spectrumY;
 
                     match.AnchorPointX      = pointX;
                     match.AnchorPointY      = pointY;
                     match.SimilarityScore   = spectralSimilarity;
-                    match.IsValidMatch      = isMatch;
+                    match.IsValidMatch      = false;
 
                     matches.Add(match);                    
                 }                    
             }
 
+            return matches;
+        }
+
+
+        public IEnumerable<AnchorPointMatch> FindAnchorPoints(ISpectraProvider readerX,
+                                                                ISpectraProvider readerY,
+                                                                ISpectralComparer comparer,
+                                                                ISpectraFilter filter,
+                                                                SpectralOptions options,
+                                                                bool skipComparison = false)
+        {
+            List<AnchorPointMatch> matches          = new List<AnchorPointMatch>();
+            Dictionary<int, ScanSummary> scanDataX  = readerX.GetScanData(0);
+            Dictionary<int, ScanSummary> scanDataY  = readerY.GetScanData(0);
+
+            // Determine the scan extrema
+            var maxX = scanDataX.Aggregate((l, r) => l.Value.Scan > r.Value.Scan ? l : r).Key;
+            var minX = scanDataX.Aggregate((l, r) => l.Value.Scan < r.Value.Scan ? l : r).Key;
+            var maxY = scanDataY.Aggregate((l, r) => l.Value.Scan > r.Value.Scan ? l : r).Key;
+            var minY = scanDataY.Aggregate((l, r) => l.Value.Scan < r.Value.Scan ? l : r).Key;
+            int Nx = scanDataX.Count;
+            int Ny = scanDataX.Count;
+
+            // Create a spectral comparer
+            List<double> scans = new List<double>();
+
+            // Here we sort the summary spectra....so that we can improve run time efficiency
+            // and minimize as much memory as possible.
+            List<ScanSummary> ySpectraSummary = new List<ScanSummary>();
+            foreach (var summary in scanDataY.Values)
+            {
+                if (summary.MsLevel != 2)
+                    continue;
+
+                ySpectraSummary.Add(summary);
+            }
+            List<ScanSummary> xSpectraSummary = new List<ScanSummary>();
+            foreach (var summary in scanDataX.Values)
+            {
+                if (summary.MsLevel != 2)
+                    continue;
+                xSpectraSummary.Add(summary);
+            }
+            ySpectraSummary.Sort(delegate(ScanSummary x, ScanSummary y) { return x.PrecursorMZ.CompareTo(y.PrecursorMZ); });
+            xSpectraSummary.Sort(delegate(ScanSummary x, ScanSummary y) { return x.PrecursorMZ.CompareTo(y.PrecursorMZ); });
+
+            double netTolerance = options.NetTolerance;
+            double mzTolerance  = options.MzTolerance;
+            bool found          = false;
+            int j               = 0;
+            int i               = 0;
+            int yTotal          = ySpectraSummary.Count;
+            int xTotal          = xSpectraSummary.Count;
+
+            Dictionary<int, MSSpectra> cache = new Dictionary<int, MSSpectra>();
+
+            int removalCount = 0;
+            while (i < xTotal && j < yTotal)
+            {
+                ScanSummary xsum    = xSpectraSummary[i];
+                int scanx           = xsum.Scan;
+                double precursorX   = xsum.PrecursorMZ;
+                MSSpectra spectrumX = null;
+
+                while (j < yTotal && ySpectraSummary[j].PrecursorMZ < (precursorX - mzTolerance))
+                {
+                    // Here we make sure we arent caching something 
+                    int scany = ySpectraSummary[j].Scan;
+                    if (cache.ContainsKey(scany))
+                    {
+                        cache.Remove(scany);
+                        removalCount++;                        
+                    }
+                    j++;
+                }
+
+
+                int k = 0;
+                while ((j + k) < yTotal && Math.Abs(ySpectraSummary[j + k].PrecursorMZ - precursorX) < mzTolerance)
+                {
+                    ScanSummary ysum = ySpectraSummary[j + k];
+                    k++;
+                    int scany       = ysum.Scan;
+                    double netX     = Convert.ToDouble(scanx - minX) / Convert.ToDouble(maxX - minX);
+                    double netY     = Convert.ToDouble(scany - minY) / Convert.ToDouble(maxY - minY);
+                    double net      = Convert.ToDouble(netX - netY);
+
+                    // Test whether the spectra are within decent range.
+                    if (Math.Abs(netX - netY) < netTolerance)
+                    {
+                        // Compare the two spectra
+                        if (spectrumX == null)
+                        {
+                            if (!skipComparison)
+                            {
+                                // Grab the first spectra
+                                spectrumX = SpectralUtilities.GetSpectra(options.MzBinSize,
+                                                                        options.TopIonPercent,
+                                                                        filter,
+                                                                        readerX,
+                                                                        scanDataX,
+                                                                        scanx);
+                                spectrumX.PrecursorMZ = xsum.PrecursorMZ;
+                            }
+                        }
+                        MSSpectra spectrumY = null;
+                        if (!skipComparison)
+                        {
+
+                            if (cache.ContainsKey(scany))
+                            {
+                                spectrumY = cache[scany];
+                            }
+                            else
+                            {
+                                spectrumY = SpectralUtilities.GetSpectra(options.MzBinSize,
+                                                                    options.TopIonPercent,
+                                                                    filter,
+                                                                    readerY,
+                                                                    scanDataY,
+                                                                    scany);
+                                spectrumY.PrecursorMZ = ysum.PrecursorMZ;                                
+                                cache.Add(scany, spectrumY);
+                            }                            
+                        }
+
+                        // compare the spectra
+                        double spectralSimilarity = 0;
+                        if (!skipComparison)
+                            spectralSimilarity = comparer.CompareSpectra(spectrumX, spectrumY);
+
+                        if (double.IsNaN(spectralSimilarity) || double.IsInfinity(spectralSimilarity))
+                            continue;
+
+                        if (spectralSimilarity < options.SimilarityCutoff)
+                            continue;
+
+                        AnchorPointMatch match  = new AnchorPointMatch();
+                        AnchorPoint pointX      = new AnchorPoint();
+                        pointX.Net              = netX;
+                        pointX.Mass             = 0;
+                        pointX.Mz               = xsum.PrecursorMZ;
+                        pointX.Scan             = scanx;
+                        pointX.Spectrum         = spectrumX;
+
+                        AnchorPoint pointY      = new AnchorPoint();
+                        pointY.Net              = netX;
+                        pointY.Mass             = 0;
+                        pointY.Mz               = ysum.PrecursorMZ;
+                        pointY.Scan             = scany;
+                        pointY.Spectrum         = spectrumY;
+
+                        match.AnchorPointX      = pointX;
+                        match.AnchorPointY      = pointY;
+                        match.SimilarityScore   = spectralSimilarity;
+                        match.IsValidMatch      = false;
+                        matches.Add(match);
+                    }
+                }
+                // Move to the next spectra in the x-list
+                i++;
+            }
             return matches;
         }
     }
