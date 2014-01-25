@@ -11,12 +11,15 @@ using MultiAlign.Commands.Plotting;
 
 namespace MultiAlign.ViewModels
 {
-    public class DatasetViewModel: ViewModelBase
+    public class DatasetInformationViewModel : ViewModelBase
     {
         private bool                m_expand;
         private DatasetInformation  m_information;
+        private bool m_isSelected;
 
-        public DatasetViewModel(DatasetInformation information)
+        public event EventHandler Selected;
+
+        public DatasetInformationViewModel(DatasetInformation information)
         {
             m_information               = information;
             DatasetPlotInformation data = information.PlotData;
@@ -37,6 +40,33 @@ namespace MultiAlign.ViewModels
                 PlotData.Add(new PlotViewModel(data.MassMzResidual,     "Mass vs m/z Residuals"));
                 PlotData.Add(new PlotViewModel(data.NetResiduals,       "NET Residuals"));
             }                  
+        }
+
+        public bool IsSelected
+        {
+            get
+            {
+                return m_isSelected;
+            }
+            set
+            {
+                if (value != m_isSelected)
+                {
+                    m_isSelected = value;
+                    OnPropertyChanged("IsSelected");
+
+                    if (Selected != null)
+                        Selected(this, null);
+                }
+            }
+
+        }
+        public DatasetInformation Dataset
+        {
+            get
+            {
+                return m_information;
+            }            
         }
 
         public string Name

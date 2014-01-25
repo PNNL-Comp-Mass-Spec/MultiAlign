@@ -19,7 +19,7 @@
         </Grid.RowDefinitions>
         <Label
             Grid.Row="0" 
-            Content="{Binding Path=Dataset.DatasetName, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"/>
+            Content="{Binding Path=Name}"/>
         
         <windows:FilePathFinder            
             Grid.Row="1"
@@ -27,7 +27,6 @@
             LabelText="Features File"
             FilePath="{Binding 
                         Path=Dataset.Features.Path, 
-                        RelativeSource={RelativeSource AncestorType={x:Type UserControl}},
                         Mode=TwoWay, 
                         NotifyOnSourceUpdated=True,
                         NotifyOnTargetUpdated=True}"
@@ -37,7 +36,6 @@
             Margin="5"
             LabelText="Raw File"
             FilePath="{Binding Path=Dataset.Raw.Path, 
-                        RelativeSource={RelativeSource AncestorType={x:Type UserControl}},
                         Mode=TwoWay, 
                         NotifyOnSourceUpdated=True,
                         NotifyOnTargetUpdated=True}"
@@ -48,7 +46,6 @@
             LabelText="Sequences"
             FilePath="{Binding 
                         Path=Dataset.Sequence.Path,
-                        RelativeSource={RelativeSource AncestorType={x:Type UserControl}},
                         Mode=TwoWay, 
                         NotifyOnSourceUpdated=True,
                         NotifyOnTargetUpdated=True}"
@@ -59,19 +56,6 @@
             LabelText="Peaks"
             FilePath="{Binding 
                         Path=Dataset.Peaks.Path,
-                        RelativeSource={RelativeSource AncestorType={x:Type UserControl}},
-                        Mode=TwoWay, 
-                        NotifyOnSourceUpdated=True,
-                        NotifyOnTargetUpdated=True}"
-            />
-        <windows:FilePathFinder
-            Grid.Row="5"
-            Margin="5"
-            IsEnabled="False"
-            LabelText="Scans"
-            FilePath="{Binding 
-                        Path=Dataset.ParameterFile,
-                        RelativeSource={RelativeSource AncestorType={x:Type UserControl}},
                         Mode=TwoWay, 
                         NotifyOnSourceUpdated=True,
                         NotifyOnTargetUpdated=True}"

@@ -11,6 +11,12 @@ namespace MultiAlign.ViewModels
     {
         private UMCClusterLightMatched m_cluster;
         private UMCLight m_feature;
+        private string m_name;
+
+        public UMCClusterViewModel()
+        {
+            m_name = "";
+        }
 
         /// <summary>
         /// Gets or sets the UMC Feature Matched
@@ -26,10 +32,31 @@ namespace MultiAlign.ViewModels
                 if (value != m_cluster)
                 {
                     m_cluster = value;
+                    if (m_cluster != null)
+                    {
+                        Name = m_cluster.ToString();
+                    }
                     OnPropertyChanged("UMCClusterLightMatched");
                 }
             }
         }
+
+        public string Name
+        {
+            get
+            {
+                return m_name;
+            }
+            set
+            {
+                if (m_name != value)
+                {
+                    m_name = value;
+                    OnPropertyChanged("Name");
+                }
+            }
+        }
+
 
         /// <summary>
         /// Gets or sets the UMC Feature

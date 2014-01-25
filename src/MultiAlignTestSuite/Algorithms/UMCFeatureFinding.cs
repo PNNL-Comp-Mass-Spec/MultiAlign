@@ -4,7 +4,6 @@ using System.Linq;
 using System.IO;
 using System.Text;
 using PNNLOmics.Data.Features;
-using MultiAlignEngine.Features;
 using MultiAlignCore.Algorithms.FeatureFinding;
 
 namespace MultiAlignTestSuite.Algorithms

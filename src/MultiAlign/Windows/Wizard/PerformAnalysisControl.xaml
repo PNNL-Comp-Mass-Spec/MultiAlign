@@ -6,7 +6,7 @@
         mc:Ignorable="d" 
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        d:DesignHeight="330" d:DesignWidth="615">
+        d:DesignHeight="688" d:DesignWidth="852">
     <UserControl.Resources>
         <maConverters:DatasetCountConverter     x:Key="DatasetCountConverter" />
         <maConverters:DatasetSelectedConverter  x:Key="DatasetSelectedConverter" />
@@ -30,41 +30,30 @@
                 Header="Dataset Selection"
                 IsSelected="{Binding Path=CurrentStep, Converter={StaticResource ResourceKey=DatasetSelection}}">
                 <wizardViews:DatasetSelection
-                    x:Name="DatasetSelectionControl"
-                    Analysis="{Binding  
-                                Path=AnalysisConfiguration.Analysis,
-                                RelativeSource={RelativeSource AncestorType={x:Type UserControl}},
-                                UpdateSourceTrigger=PropertyChanged}"
-                    />
+                    DataContext="{Binding Path=DatasetSelectionViewModel}"/>
             </TabItem>
+            <!--Baseline Selection-->
             <TabItem 
                 Style="{DynamicResource ResourceKey=HidenTabItem}"
                 Header="Baseline Selection"
                 IsSelected="{Binding Path=CurrentStep, Converter={StaticResource ResourceKey=BaselineStep}}">
                 <wizardViews:SelectBaselinesAndOptions
-                    Analysis="{Binding  
-                                Path=AnalysisConfiguration.Analysis,
-                                RelativeSource={RelativeSource AncestorType={x:Type UserControl}},
-                                UpdateSourceTrigger=PropertyChanged}"
-                    />
+                    DataContext="{Binding Path=BaselineSelectionViewModel}" />
             </TabItem>
+            <!--Analysis Options Selection-->
             <TabItem
                 Style="{DynamicResource ResourceKey=HidenTabItem}"
                 Header="Options Selection"
                 IsSelected="{Binding Path=CurrentStep, Converter={StaticResource ResourceKey=OptionsSelection}}">
-                <wizardViews:AnalysisOptionsView
-                    Options="{Binding Path=AnalysisConfiguration.Analysis.Options, Mode=TwoWay, NotifyOnSourceUpdated=True}"
-                    />
+                <wizardViews:CondensedAnalysisOptionsView  DataContext="{Binding Path=AnalysisOptionsViewModel}"/>
             </TabItem>
+            <!--Analysis Naming Selection-->
             <TabItem
                 Style="{DynamicResource ResourceKey=HidenTabItem}"
                 Header="Name"
                 IsSelected="{Binding Path=CurrentStep, Converter={StaticResource ResourceKey=Naming}}">
                 <wizardViews:AnalysisNaming
-                    AnalysisConfiguration="{Binding  
-                                Path=AnalysisConfiguration,
-                                RelativeSource={RelativeSource AncestorType={x:Type UserControl}},
-                                UpdateSourceTrigger=PropertyChanged}"
+                    DataContext="{Binding Path=AnalysisNamingViewModel}"
                     ></wizardViews:AnalysisNaming>
             </TabItem>
         </TabControl>
@@ -86,7 +75,6 @@
         </Grid.ColumnDefinitions>
             
         <Button
-            x:Name="CancelButton"
             Style="{DynamicResource ResourceKey=SimpleBrowseButtonStyle}"                                        
             Grid.Row="1"
             Grid.Column="0"
@@ -94,28 +82,27 @@
             Width="128"
             Margin="5,5,5,5"
             Content="Cancel"
-            Click="CancelButton_Click"  
+            Command="{Binding Path=CancelCommand}"
             />
         <Button
-            x:Name="BackButton"
-            Style="{DynamicResource ResourceKey=SimpleButtonStyle}"
-                            
+            Style="{DynamicResource ResourceKey=SimpleButtonStyle}"                            
             Grid.Row="1"
             Grid.Column="4"
             Height="32"
             Width="128"
             Margin="5,5,5,5"
-            Content="Back" Click="BackButton_Click" />
+            Content="Back"             
+            Command="{Binding Path=BackCommand}"/>
         <Button
-            x:Name="NextButton"
             Style="{DynamicResource ResourceKey=SimpleButtonStyle}"                            
             Grid.Row="1"
             Grid.Column="5"
             Height="32"
             Width="128"
             Margin="5,5,5,5"
-            Content="Next"
-            IsEnabled="{Binding DatasetCount, Converter={StaticResource ResourceKey=DatasetSelectedConverter}}" Click="NextButton_Click" />
+            Content="Next"            
+            Command="{Binding Path=NextCommand}"
+            IsEnabled="{Binding DatasetCount, Converter={StaticResource ResourceKey=DatasetSelectedConverter}}" />
         </Grid>
     </Grid>
 </UserControl>

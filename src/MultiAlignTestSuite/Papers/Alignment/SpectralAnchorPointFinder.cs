@@ -188,7 +188,7 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
                     match.AnchorPointX      = pointX;
                     match.AnchorPointY      = pointY;
                     match.SimilarityScore   = spectralSimilarity;
-                    match.IsValidMatch      = false;
+                    match.IsValidMatch      = AnchorMatch.FalseMatch;
 
                     matches.Add(match);                    
                 }                    
@@ -251,6 +251,8 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
             Dictionary<int, MSSpectra> cache = new Dictionary<int, MSSpectra>();
 
             int removalCount = 0;
+            Dictionary<int, AnchorPoint> pointsY = new Dictionary<int, AnchorPoint>();
+
             while (i < xTotal && j < yTotal)
             {
                 ScanSummary xsum    = xSpectraSummary[i];
@@ -265,13 +267,23 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
                     if (cache.ContainsKey(scany))
                     {
                         cache.Remove(scany);
-                        removalCount++;                        
+                        removalCount++;
+                        if (pointsY.ContainsKey(scany))
+                        {
+                            if (pointsY[scany].Spectrum.Peaks != null)
+                            {
+                                pointsY[scany].Spectrum.Peaks.Clear();
+                                pointsY[scany].Spectrum.Peaks = null;
+                            }
+                        }
                     }
                     j++;
                 }
 
 
                 int k = 0;
+                List<AnchorPoint> points = new List<AnchorPoint>();
+
                 while ((j + k) < yTotal && Math.Abs(ySpectraSummary[j + k].PrecursorMZ - precursorX) < mzTolerance)
                 {
                     ScanSummary ysum = ySpectraSummary[j + k];
@@ -349,12 +361,28 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
                         match.AnchorPointX      = pointX;
                         match.AnchorPointY      = pointY;
                         match.SimilarityScore   = spectralSimilarity;
-                        match.IsValidMatch      = false;
+                        match.IsValidMatch      = AnchorMatch.FalseMatch;
                         matches.Add(match);
+
+
+                        points.Add(pointX);
+                        if (!pointsY.ContainsKey(scany))
+                        {
+                            pointsY.Add(scany, pointY);
+                        }
                     }
                 }
                 // Move to the next spectra in the x-list
                 i++;
+                foreach (var p in points)
+                {
+                    if (p.Spectrum.Peaks != null)
+                    {
+                        p.Spectrum.Peaks.Clear();
+                        p.Spectrum.Peaks = null;
+                    }
+                }
+                points.Clear();
             }
             return matches;
         }

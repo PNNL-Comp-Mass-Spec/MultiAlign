@@ -114,4 +114,80 @@ namespace MultiAlignCore.IO.MTDB
         }
         #endregion
     }
+
+    public class MageMSGFFinderLoader : ISinkModule
+    {
+        private const string    CONST_DATABASE_LOAD_QUERY  = "SELECT * FROM V_Analysis_Job_List_Report_2 WHERE [State] LIKE '%Complete%' AND [Tool] LIKE '%MSGFPlus%' AND [Dataset] LIKE '%{0}%' AND [Last_Affected] > DATEADD(Week, -104, GETDATE()) AND [Instrument] LIKE '%LTQ%'";
+        private const string    CONST_SERVER               = "gigasax";
+        private const string    CONST_DATABASE             = "DMS5";
+        private const string    CONST_ARCHIVENAME          = "archive folder path";                
+        private int             m_archiveFolderPath        = 0;        
+        private List<string>    m_folders;
+
+        public MageMSGFFinderLoader()
+        {
+            Server      = CONST_SERVER;
+            Database    = CONST_DATABASE;
+        }
+
+        #region IDatabaseServerLoader Members
+        public List<string> LoadFiles(string name)
+        {
+            m_folders = new List<string>();
+
+            using (MSSQLReader reader       = new MSSQLReader())
+            {
+                reader.Server               = Server;
+                reader.Database             = Database;
+                reader.SQLText              = string.Format(CONST_DATABASE_LOAD_QUERY, name);
+                ProcessingPipeline pipeline = ProcessingPipeline.Assemble("Results", reader, this);
+                pipeline.RunRoot(null);
+            }
+            return m_folders;
+        }
+        #endregion
+
+        public string Server { get; set; }
+        public string Database { get; set; }
+              
+        #region ISinkModule Members
+        /// <summary>
+        /// Handles the definition of columns.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        public void HandleColumnDef(object sender, MageColumnEventArgs args)
+        {
+            int i = 0;
+            foreach (MageColumnDef columnName in args.ColumnDefs)
+            {
+                switch (columnName.Name.ToLower())
+                {
+                    case CONST_ARCHIVENAME:
+                        m_archiveFolderPath = i;
+                        break;
+                    default:
+                        break;
+                }
+                i++;
+            }
+        }
+
+        /// <summary>
+        /// Handles the definitions of data rows.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        public void HandleDataRow(object sender, MageDataEventArgs args)
+        {
+            if (!args.DataAvailable)
+            {
+                return;
+            }            
+            string value = args.Fields[m_archiveFolderPath].ToString();                        
+            m_folders.Add(value);
+        }
+        #endregion
+
+    }
 }

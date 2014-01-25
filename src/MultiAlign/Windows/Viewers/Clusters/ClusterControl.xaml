@@ -21,6 +21,13 @@
         <converters:BoolWidthConverter x:Key="UseDriftTimeWidthConverter" ></converters:BoolWidthConverter>
     </UserControl.Resources>
 
+    <DockPanel>
+     <Label 
+         DockPanel.Dock="Top"
+         HorizontalContentAlignment="Center"
+         VerticalContentAlignment="Center"
+         FontSize="14"
+         Content="{Binding Path=Name}"/>
     <Grid 
         Margin="4">
         <Grid.ColumnDefinitions>
@@ -252,5 +259,6 @@
                         Background="#FFA0A0A0"/>
             
         </Grid>        
-    </Grid>    
+    </Grid>
+    </DockPanel>
 </UserControl>

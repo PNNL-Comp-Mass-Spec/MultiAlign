@@ -17,7 +17,7 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
             IFeatureFinder finder = null;
             switch (type)
             {
-                case FeatureFinderType.DeconToolsCSV:
+                case FeatureFinderType.SingleLinkage:
                     finder = new UMCFeatureFinder();
                     break;
                 default:
@@ -30,6 +30,6 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
 
     public enum FeatureFinderType
     {
-        DeconToolsCSV
+        SingleLinkage
     }
 }

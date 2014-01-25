@@ -23,5 +23,6 @@ namespace MultiAlign.Windows.Wizard
         {
             InitializeComponent();
         }
+
     }
 }

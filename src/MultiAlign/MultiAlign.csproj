@@ -63,6 +63,12 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\$(Platform)\MultiAlignEngine.dll</HintPath>
     </Reference>
+    <Reference Include="Ookii.Dialogs">
+      <HintPath>..\..\lib\Ookii.Dialogs.dll</HintPath>
+    </Reference>
+    <Reference Include="Ookii.Dialogs.Wpf">
+      <HintPath>..\..\lib\Ookii.Dialogs.Wpf.dll</HintPath>
+    </Reference>
     <Reference Include="PNNLOmics, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\PNNLOmics.dll</HintPath>
@@ -93,10 +99,20 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Commands\BaseCommand.cs" />
+    <Compile Include="Commands\BrowseFolderCommand.cs" />
     <Compile Include="Commands\Clusters\ClusterTreeFilterCommand.cs" />
     <Compile Include="Commands\Clusters\ClusterExportCommand.cs" />
+    <Compile Include="Commands\Datasets\ShowDatasetDetailCommand.cs" />
     <Compile Include="Commands\Plotting\FeatureDisplayCommand.cs" />
     <Compile Include="Commands\Plotting\PictureDisplayCommand.cs" />
+    <Compile Include="Commands\Viewers\StartNewAnalysisCommand.cs" />
+    <Compile Include="Commands\Viewers\LoadExistingAnalysisCommand.cs" />
+    <Compile Include="Commands\Viewers\LoadRecentAnalysisCommand.cs" />
+    <Compile Include="Commands\Wizard\AnalysisBackCommand.cs" />
+    <Compile Include="Commands\Wizard\AnalysisCancelCommand.cs" />
+    <Compile Include="Commands\Datasets\AddDatasetsCommand.cs" />
+    <Compile Include="Commands\Wizard\AnalysisNextCommand.cs" />
     <Compile Include="Converters\BooleanToDataGridVisibilityModeConverter.cs" />
     <Compile Include="Converters\BoolInverter.cs" />
     <Compile Include="Converters\BoolVisibilityConverter.cs" />
@@ -119,6 +135,7 @@
     <Compile Include="Converters\HasMSMSConverter.cs" />
     <Compile Include="Converters\UriToBitmapConverter.cs" />
     <Compile Include="Data\LogicLayerViewModel.cs" />
+    <Compile Include="Data\OpenAnalysisArgs.cs" />
     <Compile Include="Data\States\AnalysisSetupState.cs" />
     <Compile Include="Data\States\AnalysisState.cs" />
     <Compile Include="Data\ApplicationStatusMediator.cs" />
@@ -129,17 +146,27 @@
     <Compile Include="Data\MultiAlignAnalysisValidator.cs" />
     <Compile Include="Data\RecentAnalysis.cs" />
     <Compile Include="Data\StatusMessageWrapper.cs" />
-    <Compile Include="Data\States\StateModerator.cs" />
+    <Compile Include="ViewModels\InstrumentPresetFactory.cs" />
+    <Compile Include="ViewModels\StateModeratorViewModel.cs" />
     <Compile Include="IO\ManassaWorkspaceWriter.cs" />
     <Compile Include="IO\DatasetSearcher.cs" />
     <Compile Include="IO\ManassaWorkspaceReader.cs" />
     <Compile Include="IO\SingletonDataProviders.cs" />
     <Compile Include="IO\SpectraLoader.cs" />
+    <Compile Include="ViewModels\RecentAnalysisViewModel.cs" />
+    <Compile Include="ViewModels\Wizard\AdvancedOptionsViewModel.cs" />
+    <Compile Include="ViewModels\Wizard\AnalysisDatasetSelectionViewModel.cs" />
+    <Compile Include="ViewModels\Wizard\AnalysisNamingViewModel.cs" />
+    <Compile Include="ViewModels\Wizard\AnalysisRunningViewModel.cs" />
+    <Compile Include="ViewModels\Wizard\AnalysisSetupViewModel.cs" />
     <Compile Include="ViewModels\AnalysisViewModel.cs" />
-    <Compile Include="ViewModels\DatasetCollectionViewModel.cs" />
-    <Compile Include="ViewModels\DatasetViewModel.cs" />
+    <Compile Include="ViewModels\Wizard\AnalysisOptionsViewModel.cs" />
+    <Compile Include="ViewModels\Datasets\DatasetCollectionViewModel.cs" />
+    <Compile Include="ViewModels\Datasets\DatasetInformationViewModel.cs" />
+    <Compile Include="ViewModels\Viewers\GettingStartedViewModel.cs" />
     <Compile Include="ViewModels\ImageViewModel.cs" />
     <Compile Include="ViewModels\IO\ExportViewModel.cs" />
+    <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\MassTagMatchedViewModel.cs" />
     <Compile Include="ViewModels\MSSpectraViewModel.cs" />
     <Compile Include="ViewModels\PeptideViewModel.cs" />
@@ -171,6 +198,8 @@
     <Compile Include="ViewModels\UMCClusterSpectraViewModel.cs" />
     <Compile Include="ViewModels\UMCClusterViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
+    <Compile Include="ViewModels\Wizard\AnalysisBaselineSelectionViewModel.cs" />
+    <Compile Include="ViewModels\InstrumentPresetViewModel.cs" />
     <Compile Include="Windows\FilePathFinder.xaml.cs">
       <DependentUpon>FilePathFinder.xaml</DependentUpon>
     </Compile>
@@ -194,9 +223,6 @@
     </Compile>
     <Compile Include="Windows\Plots\MsSpectra.xaml.cs">
       <DependentUpon>MsSpectra.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\UserControl1.xaml.cs">
-      <DependentUpon>UserControl1.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\Viewers\AnalysisView.xaml.cs">
       <DependentUpon>AnalysisView.xaml</DependentUpon>
@@ -304,6 +330,9 @@
     <Compile Include="Windows\Viewers\Databases\DatabaseSearchTool.xaml.cs">
       <DependentUpon>DatabaseSearchTool.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Windows\Wizard\CondensedAnalysisOptionsView.xaml.cs">
+      <DependentUpon>CondensedAnalysisOptionsView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\Wizard\DatasetSelection.xaml.cs">
       <DependentUpon>DatasetSelection.xaml</DependentUpon>
     </Compile>
@@ -356,10 +385,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\Plots\MsSpectra.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Windows\UserControl1.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -503,6 +528,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Windows\Wizard\CondensedAnalysisOptionsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\Wizard\DatasetSelection.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -619,6 +648,18 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\list-view-32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\hammer-64.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\gantt-chart-64.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\test-tube-64.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Commands\Options\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

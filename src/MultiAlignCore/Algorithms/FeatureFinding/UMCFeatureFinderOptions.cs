@@ -35,9 +35,15 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
             this.IsotopicIntensityFilter        = 0;
             this.UMCAbundanceReportingType      = AbundanceReportingType.Sum;
             this.Split                          = false;
+            this.FeatureFinderAlgorithm         = FeatureFinderType.SingleLinkage;
             this.ShouldCreateXicFile            = false;
         }
 
+        [DataSummaryAttribute("Algorithm for feature finding")]
+        [ParameterFileAttribute("FeatureFinderAlgorithm", "LCMSFeatureFinding")]
+        [Category("Algorithms")]
+        [Description("Determines the algorithm to use for feature finding.")]
+        public FeatureFinderType FeatureFinderAlgorithm { get; set; }
         [DataSummaryAttribute("Smooth Xic Data")]
         [ParameterFileAttribute("ShouldSmoothXicData", "LCMSFeatureFinding")]
         [Category("Persistence")]

@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Windows;
+﻿using System.Windows;
+using MultiAlign.ViewModels;
 using MultiAlign.Windows;
 
 namespace MultiAlign
@@ -15,7 +11,10 @@ namespace MultiAlign
     {
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            MainWindow mainWindow = new MainWindow();
+            MainWindow mainWindow   = new MainWindow();
+            MainViewModel model     = new MainViewModel();
+            MainWindow.DataContext  = model;
+
             mainWindow.ShowDialog();
         }
     }

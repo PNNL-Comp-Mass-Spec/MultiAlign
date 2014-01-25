@@ -18,7 +18,7 @@
                         Style="{DynamicResource ResourceKey=HyperLinkButtonStyle}"
                         Margin="5,5,5,5"
                         HorizontalContentAlignment="Left"
-                        Command="Favorites" 
+                        Command="{Binding Path=LoadRecent}" 
                         CommandParameter="{Binding}"
                         Width="128">
                         <Button.Content>
@@ -48,9 +48,7 @@
             </Grid.ColumnDefinitions>
            
                 <StackPanel
-                    Background="#FF414141"
-                    >
-                    <!--<Image Source="/MultiAlign;component/Resources/gettingStartedImage.png"  />-->
+                    Background="#FF414141">                    
                     <Label 
                         FontSize="31pt"
                         Foreground="WhiteSmoke">
@@ -63,25 +61,22 @@
                         Margin="5,5,5,5">
                         Start
                     </Label>
-                    <Button 
-                        x:Name="NewButton"
+                <Button                         
                         FontSize="16"
                         Style="{DynamicResource ResourceKey=HyperLinkButtonStyle}"
-                        Margin="5,5,5,5"
+                        Margin="5"
                         HorizontalContentAlignment="Right"
-                        Command="New"
-                        Width="128">New Analysis</Button>
-                    <Button 
-                        x:Name="Open"
+                        Command="{Binding Path=StartNewAnalysis}"
+                        Content="New Analysis"
+                        Width="128"/>
+                <Button                         
                         FontSize="16"
+                        Margin="5"
+                        Width="128"
                         HorizontalContentAlignment="Right"
-                        Style="{DynamicResource ResourceKey=HyperLinkButtonStyle}"
-                        Margin="5,5,5,5"
-                        Command="Open"
-                    
-                        Width="128">
-                            Open Analysis
-                    </Button>
+                        Style="{DynamicResource ResourceKey=HyperLinkButtonStyle}"                        
+                        Command="{Binding Path=LoadExistingAnalysis}"
+                        Content="Open Analysis"/>
 
                     <Label 
                         FontSize="12pt"
@@ -91,7 +86,7 @@
                     </Label>
                     <ListBox 
                         DockPanel.Dock="Left"
-                        ItemsSource="{Binding Path=CurrentWorkspace.RecentAnalysis}"
+                        ItemsSource="{Binding Path=RecentAnalyses}"
                         BorderThickness="0"  
                         HorizontalContentAlignment="Stretch"
                         ItemTemplate="{StaticResource RecentAnalysisItemTemplate}"                

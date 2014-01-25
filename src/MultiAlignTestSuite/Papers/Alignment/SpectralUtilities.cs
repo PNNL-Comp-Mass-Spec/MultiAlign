@@ -9,9 +9,25 @@ namespace MultiAlignTestSuite.Papers.Alignment
 {
     public static class SpectralUtilities
     {
+         static SpectralUtilities()
+        {
+            ShouldLogScale = false;
+        }
+
+        public static bool ShouldLogScale { get; set; }
+
         public static MSSpectra GetSpectrum(ISpectraProvider reader, int scan, int group, double mzTolerance = .5)
         {
             List<XYData> peaks  = reader.GetRawSpectra(scan, group, 2);
+
+            if (ShouldLogScale)
+            {
+                foreach (var peak in peaks)
+                {
+                    peak.Y = Math.Log(peak.Y, 2);
+                }
+            }
+
             MSSpectra spectrum  = new MSSpectra();
             spectrum.Peaks      = peaks;
 
@@ -19,11 +35,11 @@ namespace MultiAlignTestSuite.Papers.Alignment
         }
 
         public static MSSpectra GetSpectra(double mzTolerance,
-                                   double percent,
-                                   ISpectraFilter filter,
-                                   ISpectraProvider readerY,
-                                   Dictionary<int, ScanSummary> scanDataY,
-                                   int scany)
+                                           double percent,
+                                           ISpectraFilter filter,
+                                           ISpectraProvider readerY,
+                                           Dictionary<int, ScanSummary> scanDataY,
+                                           int scany)
         {
             MSSpectra spectrumY = SpectralUtilities.GetSpectrum(readerY,
                                         scanDataY[scany].Scan,

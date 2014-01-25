@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows;
+using MultiAlign.ViewModels;
 
 namespace MultiAlign.Data.States
 {
@@ -15,55 +16,87 @@ namespace MultiAlign.Data.States
     /// <summary>
     /// Validates whether the user interface can transition from one state to another.
     /// </summary>
-    public class StateModerator : DependencyObject
-    {
+    public class StateModeratorViewModel : ViewModelBase
+    {        
+        private AnalysisState   m_currentAnalysisState;
+        private AnalysisState   m_previousAnalysisState;
+        private ViewState       m_previousViewState;
+        private ViewState       m_currentViewState;
 
-        public StateModerator()
+        public StateModeratorViewModel()
         {
+            CurrentViewState        = ViewState.HomeView;
+            CurrentAnalysisState    = AnalysisState.Idle;
         }
         
-        #region Dependency Properties for View and Analysis States
+        #region View Model Property States
         public ViewState CurrentViewState
         {
-            get { return (ViewState)GetValue(CurrentViewStateProperty); }
-            set { SetValue(CurrentViewStateProperty, value); }
+            get
+            {
+                return m_currentViewState;
+            }
+            set
+            {
+                if (value != m_currentViewState)
+                {
+                    m_currentViewState = value;
+                    OnPropertyChanged("CurrentViewState");
+                }
+            }
         }
 
-        // Using a DependencyProperty as the backing store for CurrentViewState.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty CurrentViewStateProperty =
-            DependencyProperty.Register("CurrentViewState", typeof(ViewState), typeof(StateModerator), new UIPropertyMetadata(ViewState.HomeView));
 
         public ViewState PreviousViewState
         {
-            get { return (ViewState)GetValue(PreviousViewStateProperty); }
-            set { SetValue(PreviousViewStateProperty, value); }
+            get
+            {
+                return m_previousViewState;
+            }
+            set
+            {
+                if (value != m_currentViewState)
+                {
+                    m_previousViewState = value;
+                    OnPropertyChanged("PreviousViewState");
+                }
+            }
         }
-
-        // Using a DependencyProperty as the backing store for PreviousViewState.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty PreviousViewStateProperty =
-            DependencyProperty.Register("PreviousViewState", typeof(ViewState), typeof(StateModerator), new UIPropertyMetadata(ViewState.HomeView));
 
 
         public AnalysisState CurrentAnalysisState
         {
-            get { return (AnalysisState)GetValue(CurrentAnalysisStateProperty); }
-            set { SetValue(CurrentAnalysisStateProperty, value); }
+            get
+            {
+                return m_currentAnalysisState;
+            }
+            set
+            {
+                if (value != m_currentAnalysisState)
+                {
+                    m_currentAnalysisState = value;
+                    OnPropertyChanged("CurrentAnalysisState");
+                }
+            }
         }
-
-        // Using a DependencyProperty as the backing store for AnalysisState.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty CurrentAnalysisStateProperty =
-            DependencyProperty.Register("CurrentAnalysisState", typeof(AnalysisState), typeof(StateModerator), new UIPropertyMetadata(AnalysisState.Idle));
 
 
         public AnalysisState PreviousAnalysisState
         {
-            get { return (AnalysisState)GetValue(PreviousAnalysisStateProperty); }
-            set { SetValue(PreviousAnalysisStateProperty, value); }
+            get
+            {
+                return m_previousAnalysisState;
+            }
+            set
+            {
+                if (value != m_previousAnalysisState)
+                {
+                    m_previousAnalysisState = value;
+                    OnPropertyChanged("PreviousAnalysisState");
+                }
+            }
         }
 
-        // Using a DependencyProperty as the backing store for PreviousAnalysisState.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty PreviousAnalysisStateProperty =
-            DependencyProperty.Register("PreviousAnalysisState", typeof(AnalysisState), typeof(StateModerator), new UIPropertyMetadata(AnalysisState.Idle));
         #endregion
 
         /// <summary>

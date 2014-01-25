@@ -9,6 +9,7 @@ using MultiAlignCore.IO.Parameters;
 using System.Xml;
 using System.Collections.ObjectModel;
 using System.IO;
+using MultiAlign.ViewModels;
 
 namespace MultiAlign.IO
 {
@@ -36,15 +37,15 @@ namespace MultiAlign.IO
             }
         }
 
-        private void WriteRecent(XmlDocument document,  XmlElement data, ObservableCollection<RecentAnalysis> analysis)
+        private void WriteRecent(XmlDocument document,  XmlElement data, ObservableCollection<RecentAnalysisViewModel> analysis)
         {                            
-            foreach(RecentAnalysis recent in analysis)
+            foreach(RecentAnalysisViewModel recent in analysis)
             {
                 XmlElement element          = document.CreateElement("Analysis");
                 XmlAttribute nameAttribute  = document.CreateAttribute("Name");
-                nameAttribute.Value = recent.Name;
+                nameAttribute.Value         = recent.Name;
                 XmlAttribute pathAttribute  = document.CreateAttribute("Path");
-                pathAttribute.Value = recent.Path;
+                pathAttribute.Value         = recent.Path;
                 element.Attributes.Append(nameAttribute);
                 element.Attributes.Append(pathAttribute);
                 data.AppendChild(element);

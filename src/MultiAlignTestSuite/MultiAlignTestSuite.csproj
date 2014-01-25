@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -82,18 +82,22 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Accord.NET\Framework\Externals\AForge.NET\AForge.dll</HintPath>
     </Reference>
+    <Reference Include="Mage, Version=1.3.4337.17845, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\Mage.dll</HintPath>
+    </Reference>
     <Reference Include="MultiAlignEngine">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\$(Platform)\MultiAlignEngine.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework, Version=2.5.10.11092, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL" />
-    <Reference Include="OxyPlot, Version=2013.1.52.1, Culture=neutral, PublicKeyToken=638079a8f0bd61e9, processorArchitecture=MSIL">
+    <Reference Include="OxyPlot, Version=2013.2.108.1, Culture=neutral, PublicKeyToken=638079a8f0bd61e9, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\OxyPlot.dll</HintPath>
+      <HintPath>M:\download\OxyPlot-2014.1.1.1\NET40\OxyPlot.dll</HintPath>
     </Reference>
     <Reference Include="OxyPlot.WindowsForms, Version=2013.1.52.1, Culture=neutral, PublicKeyToken=245eacd6b5d2d338, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\OxyPlot.WindowsForms.dll</HintPath>
+      <HintPath>M:\download\OxyPlot-2014.1.1.1\NET40\OxyPlot.WindowsForms.dll</HintPath>
     </Reference>
     <Reference Include="PNNLOmics">
       <HintPath>..\..\lib\PNNLOmics.dll</HintPath>
@@ -131,7 +135,10 @@
     <Compile Include="Papers\Alignment\FeatureLoader.cs" />
     <Compile Include="Papers\Alignment\IO\AlignmentAnalysisWriterFactory.cs" />
     <Compile Include="Papers\Alignment\IO\AlignmentFigureType.cs" />
+    <Compile Include="Papers\Alignment\IO\PaperFileWriter.cs" />
+    <Compile Include="Papers\Alignment\IO\RawLoaderCache.cs" />
     <Compile Include="Papers\Alignment\IO\ReportFileUtility.cs" />
+    <Compile Include="Papers\Alignment\IO\ScanSummaryCache.cs" />
     <Compile Include="Papers\Alignment\IO\SpectralWriterFigureTwo.cs" />
     <Compile Include="Papers\Alignment\IO\SpectralWriterFigureOne.cs" />
     <Compile Include="Papers\Alignment\PeptideAnchorPointFinder.cs" />
@@ -139,6 +146,7 @@
     <Compile Include="Papers\Alignment\MatchCountHistogramBuilder.cs" />
     <Compile Include="Papers\Alignment\PeptideAnchorPointMatcher.cs" />
     <Compile Include="Papers\Alignment\PeptideUtility.cs" />
+    <Compile Include="Papers\Alignment\SpectralCacheUtility.cs" />
     <Compile Include="Papers\Alignment\SpectralAnalysis.cs" />
     <Compile Include="Papers\Alignment\SpectralOptions.cs" />
     <Compile Include="Papers\Alignment\SpectralUtilities.cs" />

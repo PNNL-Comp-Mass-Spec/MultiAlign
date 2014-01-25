@@ -28,28 +28,36 @@ namespace MultiAlignTestSuite.Papers.Alignment
             {
                 int scanX    = match.AnchorPointX.Scan;
                 int scanY    = match.AnchorPointY.Scan;
-                bool isMatch = false;
-                
-                if (!peptideMapX.ContainsKey(scanX)) continue;
-                if (!peptideMapY.ContainsKey(scanY)) continue;
+                // Assume the spectrum was not identified first...then prove a false match later
+                AnchorMatch isMatch = AnchorMatch.PeptideFailed;
+
+                if (!peptideMapX.ContainsKey(scanX))
+                {
+                    match.IsValidMatch = isMatch;
+                    continue;
+                }
+                if (!peptideMapY.ContainsKey(scanY))
+                {
+                    match.IsValidMatch = isMatch;
+                    continue;
+                }
 
                 peptidex = peptideMapX[scanX];
                 peptidey = peptideMapY[scanY];
                 if (peptidex == null || peptidey == null)
+                {
+                    match.IsValidMatch = isMatch;
                     continue;
+                }
 
                 peptidex.Sequence = PeptideUtility.CleanString(peptidex.Sequence);
                 peptidey.Sequence = PeptideUtility.CleanString(peptidey.Sequence);
 
                 // Make sure the peptides are equivalent.
-                if (peptidex.Sequence.Equals(peptidey.Sequence) && !string.IsNullOrWhiteSpace(peptidey.Sequence))
-                    isMatch = true;
-
-                // Make sure that it passes a cutoff score
-                bool passesCutoff = PeptideUtility.PassesCutoff(peptidex,     options.IdScore, options.Fdr) &&
-                                    PeptideUtility.PassesCutoff(peptidey, options.IdScore, options.Fdr);
-                if (!passesCutoff)
-                    continue;
+                if (peptidex.Sequence.Equals(peptidey.Sequence) && !string.IsNullOrWhiteSpace(peptidey.Sequence))                
+                    isMatch = AnchorMatch.TrueMatch;                
+                else
+                    isMatch = AnchorMatch.FalseMatch;
 
                 // Then link as true positive.
                 match.AnchorPointX.Peptide  = peptidex;

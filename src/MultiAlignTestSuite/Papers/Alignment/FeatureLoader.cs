@@ -21,7 +21,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
             List<UMCLight> features         = new List<UMCLight>();
 
             // Find the features 
-            IFeatureFinder finder               = FeatureFinderFactory.CreateFeatureFinder(FeatureFinderType.DeconToolsCSV);
+            IFeatureFinder finder               = FeatureFinderFactory.CreateFeatureFinder(FeatureFinderType.SingleLinkage);
             LCMSFeatureFindingOptions options   = new LCMSFeatureFindingOptions();
             features = finder.FindFeatures(msFeatures, options);
 

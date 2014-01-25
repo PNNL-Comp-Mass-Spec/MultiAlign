@@ -13,7 +13,7 @@ namespace MultiAlignTestSuite.Papers.Alignment.IO
     public class SpectralWriterFigureTwo : PaperFileWriter, ISpectralAnalysisWriter
     {
         public SpectralWriterFigureTwo(string name, string path)
-            : base(name, path)
+            : base(name, path, false)
         {
         }
 

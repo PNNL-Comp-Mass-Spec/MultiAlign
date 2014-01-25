@@ -24,25 +24,5 @@ namespace MultiAlign.Windows.Viewers.Datasets
         {
             InitializeComponent();
         }
-
-        public bool  IsReadOnly
-        {
-            get { return (bool )GetValue(IsReadOnlyProperty); }
-            set { SetValue(IsReadOnlyProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for IsReadOnly.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty IsReadOnlyProperty =
-            DependencyProperty.Register("IsReadOnly", typeof(bool), typeof(DatasetInputFileEditor), new UIPropertyMetadata(false));
-
-        public DatasetInformation Dataset
-        {
-            get { return (DatasetInformation)GetValue(DatasetProperty); }
-            set { SetValue(DatasetProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for Dataset.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty DatasetProperty =
-            DependencyProperty.Register("Dataset", typeof(DatasetInformation), typeof(DatasetInputFileEditor));
     }
 }

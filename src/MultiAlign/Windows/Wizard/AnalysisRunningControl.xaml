@@ -36,8 +36,7 @@
                 Width="128"
                 Margin="5,5,5,5"
                 HorizontalAlignment="Left"
-                Content="Cancel" 
-                Click="Button_Click" />
+                Content="Cancel"  />
         </Grid>
 
         <Border
@@ -55,10 +54,8 @@
                     Grid.Row="1"
                     Margin="5"
                     VerticalAlignment="Stretch"
-                    VerticalContentAlignment="Stretch"
-                    >
-                    <ListBox
-                        x:Name="messagesBox"
+                    VerticalContentAlignment="Stretch">
+                    <ListBox                        
                         ItemsSource="{Binding Path=Messages}">
                     </ListBox>
                 </ScrollViewer>

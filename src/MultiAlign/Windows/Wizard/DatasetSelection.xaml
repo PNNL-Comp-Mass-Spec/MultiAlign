@@ -47,27 +47,33 @@
                     
                     <Label 
                         HorizontalContentAlignment="Left"
-                        VerticalContentAlignment="Center"
-                        >Add Folder Path</Label>
+                        VerticalContentAlignment="Center">
+                        Add Folder Path</Label>
                     <TextBox Grid.Column="1" 
                              Grid.Row="0" 
                              Text="{Binding Path=FolderPath}"
-                             x:Name="InputFolderTextBox" 
                              Margin="10,5,10,5"/>
-                    <CheckBox Grid.Row="1" Grid.Column="1"
+                    <CheckBox Grid.Row="1" 
+                              Grid.Column="1"
                               Content="Include sub-directories"
-                              IsChecked="{Binding Path=ShouldSearchSubDirectories, Converter={StaticResource ResourceKey=SearchOptionConverter}}"
+                              IsChecked="{Binding Path=ShouldSearchSubDirectories,
+                                        Converter={StaticResource 
+                                        ResourceKey=SearchOptionConverter}}"
                               HorizontalAlignment="Right"></CheckBox>
-                    <Button Grid.Column="2" Grid.Row="0" 
-                          
+                    <Button Grid.Column="2" 
+                            Grid.Row="0"                           
                             HorizontalAlignment="Right" 
-                        Style="{DynamicResource ResourceKey=SimpleBrowseButtonStyle}"
-                        Width="100" Margin="10,5,10,5" x:Name="BrowseForFolderButton" Click="BrowseForFolderButton_Click">Browse</Button>
-                    <Button Grid.Column="3" Grid.Row="0"      
-                            HorizontalAlignment="Right"                       
+                            Command="{Binding Path=BrowseFolderCommand}"
+                            Style="{DynamicResource ResourceKey=SimpleBrowseButtonStyle}"                            
+                            Width="100" 
+                            Margin="10,5,10,5">Browse</Button>
+                    <Button Grid.Column="3"
+                            Grid.Row="0"      
+                            HorizontalAlignment="Right"    
+                            Command="{Binding Path=AddFolderCommand}"
                             Style="{DynamicResource ResourceKey=SimpleBrowseButtonStyle}"
-                            Width="100" Margin="10,5,10,5" x:Name="AddFolderButton" Click="AddFolderButton_Click">Add</Button>
-
+                            Width="100" 
+                            Margin="10,5,10,5">Add</Button>
                     <Label 
                         HorizontalContentAlignment="Left"
                         VerticalContentAlignment="Center"
@@ -78,15 +84,19 @@
                     <TextBox Grid.Column="1" 
                              Grid.Row="2"                              
                              Text="{Binding Path=InputFilePath}"
-                             x:Name="InputFileTextBox" Margin="10,5,10,5"/>
+                             Margin="10,5,10,5"/>
                     <Button Grid.Column="2" Grid.Row="2" 
                             HorizontalAlignment="Right"
+                            Command="{Binding BrowseInputFileCommand}"
                             Style="{DynamicResource ResourceKey=SimpleBrowseButtonStyle}"
-                            Width="100" Margin="10,5,10,5" x:Name="BrowseForInputFileButton" Click="BrowseForInputFileButton_Click">Browse</Button>
+                            Width="100" Margin="10,5,10,5">Browse</Button>
                     <Button Grid.Column="3"
-                            HorizontalAlignment="Right"
-                            Grid.Row="2" Style="{DynamicResource ResourceKey=SimpleBrowseButtonStyle}"
-                            Width="100" Margin="10,5,10,5" x:Name="AddInputFileButton" Click="AddInputFileButton_Click">Add</Button>
+                            Grid.Row="2" 
+                            HorizontalAlignment="Right" 
+                            Command="{Binding Path=AddInputFileCommand}"                           
+                            Style="{DynamicResource ResourceKey=SimpleBrowseButtonStyle}"
+                            Width="100" 
+                            Margin="10,5,10,5">Add</Button>
                     <Label 
                         HorizontalContentAlignment="Left"
                         VerticalContentAlignment="Center"
@@ -94,17 +104,24 @@
                         Grid.Column="0">
                         Add  Single File
                     </Label>
-                    <TextBox Grid.Column="1"  Grid.Row="3"                             
+                    <TextBox Grid.Column="1"  
+                             Grid.Row="3"                             
                              Text="{Binding Path=SingleFilePath}"
-                             x:Name="SingleFileTextBox" Margin="10,5,10,5"/>
-                    <Button Grid.Column="2"   Grid.Row="3" 
+                             Margin="10,5,10,5"/>
+                    <Button Grid.Column="2"   
+                            Grid.Row="3" 
                             HorizontalAlignment="Right"
+                            Command="{Binding BrowseSingleFileCommand}"
                             Style="{DynamicResource ResourceKey=SimpleBrowseButtonStyle}"
-                            Width="100" Margin="10,5,10,5" x:Name="BrowseSingleFile" Click="BrowseSingleFile_Click">Browse</Button>
-                    <Button Grid.Column="3"   Grid.Row="3" 
+                            Width="100" 
+                            Margin="10,5,10,5">Browse</Button>
+                    <Button Grid.Column="3"   
+                            Grid.Row="3" 
                             HorizontalAlignment="Right"
+                            Command="{Binding Path=AddSingleFileCommand}"
                             Style="{DynamicResource ResourceKey=SimpleBrowseButtonStyle}"
-                            Width="100" Margin="10,5,10,5" x:Name="InputSingleFile" Click="InputSingleFile_Click">Add</Button>
+                            Width="100" 
+                            Margin="10,5,10,5">Add</Button>
                 </Grid>
             </TabItem>
             <TabItem 
@@ -116,35 +133,10 @@
                         <RowDefinition Height="32"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="33*"/>
+                        <ColumnDefinition Width="213"/>
                         <ColumnDefinition Width="66*"/>
                         <ColumnDefinition Width="128"/>
                     </Grid.ColumnDefinitions>
-                    <Label 
-                        HorizontalContentAlignment="Center"
-                        VerticalContentAlignment="Center"
-                        >Dataset Names</Label>
-                    <TextBox Grid.Column="1" Grid.Row="0" x:Name="DatasetNames" Margin="10,5,10,5"/>
-                    <Button Grid.Column="3" Grid.Row="0" Width="100" Margin="10,5,10,5" x:Name="DatasetFindButton" Click="DatasetFindButton_Click">Find</Button>
-
-                    <Label 
-                        HorizontalContentAlignment="Center"
-                        VerticalContentAlignment="Center"
-                        Grid.Row="1"
-                        Grid.Column="0">
-                        Job IDs
-                    </Label>
-                    <TextBox Grid.Column="1" Grid.Row="1" x:Name="JobInputName" Margin="10,5,10,5"/>
-                    <Button Grid.Column="3" Grid.Row="1" Width="100" Margin="10,5,10,5" x:Name="JobFindButton">Find</Button>
-                    <Label 
-                        HorizontalContentAlignment="Center"
-                        VerticalContentAlignment="Center"
-                        Grid.Row="2"
-                        Grid.Column="0">
-                        Data Package
-                    </Label>
-                    <TextBox Grid.Column="1" Grid.Row="2" x:Name="DatasetPackageText" Margin="10,5,10,5"/>
-                    <Button Grid.Column="3" Grid.Row="2" Width="100" Margin="10,5,10,5" x:Name="DatasetPackageButton">Find</Button>
                 </Grid>
             </TabItem>
         </TabControl>
@@ -152,25 +144,23 @@
                       Grid.Column="0"
                       Background="Black"
                       HorizontalAlignment="Stretch"
-                      VerticalAlignment="Stretch"
-                      />
-        <DataGrid
-            x:Name="MainDatasetGrid"
+                      VerticalAlignment="Stretch"/>
+        <DataGrid            
             Margin="2,2,2,2"
             Grid.Row="3"
-            ItemsSource="{Binding Path=Analysis.MetaData.Datasets}"
+            ItemsSource="{Binding Path=Datasets}"
             HorizontalContentAlignment="Center"                
             AlternationCount="1" 
             AutoGenerateColumns="False"
-            CanUserReorderColumns="True"               
-            CanUserAddRows="False"                           
+            CanUserReorderColumns="True"  
+            CanUserAddRows="False"             
             CanUserSortColumns="True">
             <DataGrid.RowStyle>
                 <Style TargetType="DataGridRow">
-                    <Style.Triggers>
-                        <Trigger Property="IsSelected" Value="True">
-                            <Setter Property="Background" Value="#FF3399FF">
-                            </Setter>
+                        <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}"/>
+                        <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="true">
+                            <Setter Property="Background" Value="#FF3399FF"/>                            
                         </Trigger>
                     </Style.Triggers>
                 </Style>
@@ -179,21 +169,21 @@
                 <DataGridTemplateColumn>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Name="DatasetDetailsButton"
+                            <Button 
                                     Margin="5"                                    
                                     Style="{DynamicResource ResourceKey=SimpleButtonStyle}"
                                     Width="100"
-                                    CommandParameter="{Binding}"
-                                    Click="DatasetDetailsButton_Click">Modify</Button>
+                                    Command="{Binding ModifyDatasetCommand}"
+                                    CommandParameter="{Binding}">Modify</Button>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn         Header="Dataset ID"      CanUserSort="True"     Binding="{Binding Path=DatasetId}"     IsReadOnly="True"/>
-                <DataGridTextColumn         Header="Dataset Name"    CanUserSort="True"     Binding="{Binding Path=DatasetName,   Converter={StaticResource ResourceKey=DatasetPathConverter}}"         IsReadOnly="True"/>
-                <DataGridTextColumn         Header="Instrument File" CanUserSort="True"     Binding="{Binding Raw.Path,           Converter={StaticResource ResourceKey=HasPathConverter}}"             IsReadOnly="True"/>
-                <DataGridTextColumn         Header="Peaks File"      CanUserSort="True"     Binding="{Binding Peaks.Path,         Converter={StaticResource ResourceKey=HasPathConverter}}"             IsReadOnly="True"/>
-                <DataGridTextColumn         Header="Sequence File"   CanUserSort="True"     Binding="{Binding Sequence.Path,      Converter={StaticResource ResourceKey=HasPathConverter}}"             IsReadOnly="True"/>                
-                <DataGridTextColumn         Header="Parent Folder"   CanUserSort="True"     Binding="{Binding Path=Features.Path, Converter={StaticResource ResourceKey=DatasetFolderPathConverter}}"   IsReadOnly="True"/>
+                <DataGridTextColumn         Header="Dataset ID"      CanUserSort="True"     Binding="{Binding Path=Dataset.DatasetId}"    IsReadOnly="True"/>
+                <DataGridTextColumn         Header="Dataset Name"    CanUserSort="True"     Binding="{Binding Path=Dataset.DatasetName,   Converter={StaticResource ResourceKey=DatasetPathConverter}}"         IsReadOnly="True"/>
+                <DataGridTextColumn         Header="Instrument File" CanUserSort="True"     Binding="{Binding Path=Dataset.Raw.Path,      Converter={StaticResource ResourceKey=HasPathConverter}}"             IsReadOnly="True"/>
+                <DataGridTextColumn         Header="Peaks File"      CanUserSort="True"     Binding="{Binding Path=Dataset.Peaks.Path,    Converter={StaticResource ResourceKey=HasPathConverter}}"             IsReadOnly="True"/>
+                <DataGridTextColumn         Header="Sequence File"   CanUserSort="True"     Binding="{Binding Path=Dataset.Sequence.Path, Converter={StaticResource ResourceKey=HasPathConverter}}"             IsReadOnly="True"/>
+                <DataGridTextColumn         Header="Parent Folder"   CanUserSort="True"     Binding="{Binding Path=Dataset.Features.Path, Converter={StaticResource ResourceKey=DatasetFolderPathConverter}}"   IsReadOnly="True"/>
             </DataGrid.Columns>            
         </DataGrid>
         <Grid
@@ -204,55 +194,56 @@
                 <ColumnDefinition Width="Auto"></ColumnDefinition>
                 <ColumnDefinition Width="Auto"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-       <WrapPanel
-            >
-            <Button
-                Margin="5,5,5,5"                
-                Style="{DynamicResource ResourceKey=SimpleButtonStyle}"
-                Width="128"
-                HorizontalAlignment="Left"
-                x:Name="RemoveSelectedButton" Click="RemoveSelectedButton_Click">
-                Remove Selected
-            </Button>
-            <Label
-                Grid.Column="1"
-                Grid.Row="2"
-                FontWeight="Bold"
-                >Select:</Label>
-            <Button
-                Margin="5,5,5,5"
-                Style="{DynamicResource ResourceKey=SimpleButtonStyle}"
-                Grid.Column="2"
-                Grid.Row="2"
-                Width="100"
-                HorizontalAlignment="Left"
-                x:Name="SelectAllButton"
-                Click="SelectAllButton_Click">
-                All
-            </Button>
-            <Button
-                Margin="5,5,5,5"
-                Style="{DynamicResource ResourceKey=SimpleButtonStyle}"
-                Grid.Column="3"
-                Grid.Row="2"
-                Width="100"
-                HorizontalAlignment="Left"
-                x:Name="SelectNoneButton"
-                Click="SelectNoneButton_Click">
-                None
+            <WrapPanel>
+                <Button
+                    Margin="5,5,5,5"                
+                    Style="{DynamicResource ResourceKey=SimpleButtonStyle}"
+                    Width="128"
+                    Command="{Binding Path=RemoveSelectedCommand}"
+                    HorizontalAlignment="Left">
+                    Remove Selected
+                </Button>
+                <Label
+                    Grid.Column="1"
+                    Grid.Row="2"
+                    FontWeight="Bold">
+                    Select:</Label>
+                <Button
+                        Margin="5,5,5,5"
+                        Style="{DynamicResource ResourceKey=SimpleButtonStyle}"
+                        Grid.Column="2"
+                        Grid.Row="2"
+                        Width="100"
+                        Command="{Binding Path=SelectAllCommand}"
+                        HorizontalAlignment="Left">
+                        All
+                </Button>
+                <Button
+                    Margin="5,5,5,5"
+                    Style="{DynamicResource ResourceKey=SimpleButtonStyle}"
+                    Grid.Column="3"
+                    Grid.Row="2"
+                    Width="100"
+                    Command="{Binding Path=SelectNoneCommand}"
+                    HorizontalAlignment="Left">
+                    None
                 </Button>
             </WrapPanel>
-            <Label
-                Grid.Column="1"
-                Content="{Binding Path=Analysis.MetaData.Datasets.Count}"
-                    VerticalContentAlignment="Center">
-            </Label>
-            <Label
-                Grid.Column="2"
-                Content="Datasets"
-                    VerticalContentAlignment="Center"
-                >
-            </Label>
+            <StackPanel Orientation="Horizontal"
+                        Grid.Column="1">
+                <Label                
+                    Content="{Binding Path=SelectedCount}"
+                    VerticalContentAlignment="Center"/>
+                <Label                    
+                    Content="/"
+                    VerticalContentAlignment="Center"/>
+                <Label
+                    Content="{Binding Path=Datasets.Count}"
+                    VerticalContentAlignment="Center"/>                
+                <Label
+                    Content="Datasets"
+                    VerticalContentAlignment="Center"/>
+            </StackPanel>
         </Grid>
     </Grid>
 </UserControl>

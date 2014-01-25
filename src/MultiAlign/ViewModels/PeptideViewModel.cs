@@ -11,7 +11,7 @@ namespace MultiAlign.ViewModels
 {
     public class PeptideViewModel: ViewModelBase
     {
-        DatasetViewModel    m_dataset;
+        DatasetInformationViewModel    m_dataset;
         private Peptide     m_peptide;
 
         public PeptideViewModel(Peptide peptide)
@@ -21,7 +21,7 @@ namespace MultiAlign.ViewModels
             DatasetInformation info = SingletonDataProviders.GetDatasetInformation(peptide.GroupId);
             if (info != null)
             {
-                m_dataset = new DatasetViewModel(info);
+                m_dataset = new DatasetInformationViewModel(info);
             }
 
 
@@ -40,7 +40,7 @@ namespace MultiAlign.ViewModels
         /// </summary>
         public ObservableCollection<ProteinViewModel> MatchedProteins { get; set; }
 
-        public DatasetViewModel Dataset
+        public DatasetInformationViewModel Dataset
         {
             get
             {

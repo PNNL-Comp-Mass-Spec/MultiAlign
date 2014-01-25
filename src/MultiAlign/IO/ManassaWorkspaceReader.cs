@@ -9,6 +9,7 @@ using System.Collections.ObjectModel;
 using MultiAlignCore.IO.Parameters;
 using System.Xml;
 using System.IO;
+using MultiAlign.ViewModels;
 
 namespace MultiAlign.IO
 {
@@ -29,17 +30,18 @@ namespace MultiAlign.IO
             return workspace;
         }
 
-        private ObservableCollection<RecentAnalysis> LoadRecent(XmlNode data)
+        private ObservableCollection<RecentAnalysisViewModel> LoadRecent(XmlNode data)
         {
-            ObservableCollection<RecentAnalysis> allAnalysis = new ObservableCollection<RecentAnalysis>();
+            ObservableCollection<RecentAnalysisViewModel> allAnalysis = new ObservableCollection<RecentAnalysisViewModel>();
             foreach (XmlNode node in data.ChildNodes)
             {
                 if (node.Name == "Analysis")
                 {
-                    RecentAnalysis analysis = new RecentAnalysis();
-                    analysis.Name = node.Attributes["Name"].Value.ToString();
-                    analysis.Path = node.Attributes["Path"].Value.ToString();
-                    allAnalysis.Add(analysis);
+                    string name = node.Attributes["Name"].Value.ToString();
+                    string path = node.Attributes["Path"].Value.ToString();
+
+                    RecentAnalysis analysis = new RecentAnalysis(path, name);
+                    allAnalysis.Add(new RecentAnalysisViewModel(analysis));
                 }
             }
             return allAnalysis;

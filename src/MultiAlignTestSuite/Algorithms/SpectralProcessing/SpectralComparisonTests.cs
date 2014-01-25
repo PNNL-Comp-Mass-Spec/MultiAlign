@@ -209,8 +209,8 @@ namespace MultiAlignTestSuite.Algorithms
                     .8,
                     1,
                     Ignore = false)]
-        [TestCase(@"M:\data\proteomics\MsMsAlignment\data\Shewanella\ConstantPressure\TechReplicates-00\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32.RAW", 3726,
-                    @"M:\data\proteomics\MsMsAlignment\data\Shewanella\ConstantPressure\TechReplicates-00\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32.RAW", 7413,
+        [TestCase(@"M:\data\proteomics\Papers\AlignmentPaper\data\Shewanella\ConstantPressure\TechReplicates-00\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32.RAW", 3726,
+                    @"M:\data\proteomics\Papers\AlignmentPaper\data\Shewanella\ConstantPressure\TechReplicates-00\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32.RAW", 7413,
                     SpectralComparison.CosineDotProduct,
                     SpectraFilters.TopPercent,
                     .8,

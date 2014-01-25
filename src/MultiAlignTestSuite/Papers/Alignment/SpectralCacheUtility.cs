@@ -14,7 +14,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
 {
 
     [TestFixture]
-    public class ScanSummaryGenerator
+    public class SpectralCacheUtility
     {
         /// <summary>
         /// Creates a cache file 
@@ -33,11 +33,46 @@ namespace MultiAlignTestSuite.Papers.Alignment
                 ScanSummaryCache.WriteCache(outPath, summary, rawPath);
             }
         }
+        [Test]
+        [TestCase(@"M:\doc\papers\paperAlignment\Data\figure1\LargeScale",
+                  @"M:\doc\papers\paperAlignment\Data\figure1\100minute-released.txt",
+                  @"M:\doc\papers\paperAlignment\Data\figure1\LargeScale\dne"
+                  )]
+        public void FixFolders(string directory, string path, string outpath)
+        {
+            string[] datasets = File.ReadAllLines(path);
+            string[] files    = Directory.GetFiles(directory);
 
+            Dictionary<string, string> maps = new Dictionary<string, string>();
+            foreach (var dataset in datasets)
+            {
+                maps.Add(dataset.ToLower(), dataset);
+            }
 
+            foreach (var file in files)
+            {
+                string stripped = Path.GetFileNameWithoutExtension(file);
+                stripped = stripped.ToLower().Replace("_msgfdb_fht", "");                
+
+                if (!maps.ContainsKey(stripped))
+                {
+                    File.Move(file,  Path.Combine(outpath, Path.GetFileName(file)));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Creates a cache file 
+        /// </summary>
+        /// <param name="path">Path to raw files to create caches for </param>
+        /// <param name="directory">output directory to put the cache files</param>
         [Test]
         [TestCase(@"M:\doc\papers\paperAlignment\Data\figure1\figure1-paths.txt",
-            @"M:\doc\papers\paperAlignment\Data\figure1\")]
+            @"M:\doc\papers\paperAlignment\Data\figure1\",
+            Ignore=true)]
+
+        [TestCase(@"M:\doc\papers\paperAlignment\Data\figure1\Figure\figure1-figurePath.txt",
+                  @"M:\data\proteomics\Papers\AlignmentPaper\data\Shewanella\ConstantPressure\TechReplicates-00\")]
         public void CreateCacheFiles(string path, string directory)
         {
             string[] files = File.ReadAllLines(path);
@@ -79,6 +114,12 @@ namespace MultiAlignTestSuite.Papers.Alignment
                         }
                     }                             
                 );
+        }
+        [Test]
+        [TestCase(@"M:\doc\papers\paperAlignment\Data\figure1\Test")]
+        public void DownloadRequiredIsos(string path, string directory)
+        {
+
         }
     }    
 }

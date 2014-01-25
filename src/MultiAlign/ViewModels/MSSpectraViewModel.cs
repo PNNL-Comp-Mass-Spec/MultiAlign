@@ -44,7 +44,7 @@ namespace MultiAlign.ViewModels
             DatasetInformation info = SingletonDataProviders.GetDatasetInformation(spectrum.GroupID);
             if (info != null)
             {
-                Dataset = new DatasetViewModel(info);
+                Dataset = new DatasetInformationViewModel(info);
             }
 
             UpdateSpectra(spectrum);
@@ -71,7 +71,7 @@ namespace MultiAlign.ViewModels
 
         public MSSpectra Spectrum { get { return m_spectra; } }
 
-        public DatasetViewModel Dataset { get; set; }
+        public DatasetInformationViewModel Dataset { get; set; }
 
         private void UpdateSpectra(MSSpectra spectrum)
         {

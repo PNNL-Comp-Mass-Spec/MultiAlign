@@ -19,55 +19,10 @@ namespace MultiAlign.Windows.Viewers
     /// Interaction logic for GettingStarted.xaml
     /// </summary>
     public partial class GettingStarted : UserControl
-    {
-        public event EventHandler<OpenAnalysisArgs> RecentAnalysisSelected;
-
+    {        
         public GettingStarted()
         {
-            InitializeComponent();
-
-            DataContext = this;
-        }
-
-        /// <summary>
-        /// Gets or sets the current work space item
-        /// </summary>        
-        public MultiAlignWorkspace CurrentWorkspace
-        {
-            get { return (MultiAlignWorkspace)GetValue(CurrentWorkSpaceProperty); }
-            set { SetValue(CurrentWorkSpaceProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for CurrentWorkSpace.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty CurrentWorkSpaceProperty =
-            DependencyProperty.Register("CurrentWorkspace", typeof(MultiAlignWorkspace), typeof(GettingStarted));
-
-        private void CommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            RecentAnalysis analysis = e.Parameter as RecentAnalysis;
-            if (analysis == null)
-            {
-                return;
-            }
-
-            if (RecentAnalysisSelected != null)
-            {
-                RecentAnalysisSelected(this, new OpenAnalysisArgs(analysis));
-            }
-        }
-    }
-
-    public class OpenAnalysisArgs : EventArgs
-    {
-        public OpenAnalysisArgs(RecentAnalysis analysis)
-        {
-            AnalysisData = analysis;
-        }
-
-        public RecentAnalysis AnalysisData
-        {
-            get;
-            private set;
+            InitializeComponent();     
         }
     }
 }

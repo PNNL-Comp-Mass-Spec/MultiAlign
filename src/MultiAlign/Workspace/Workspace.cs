@@ -5,31 +5,29 @@ using System.Text;
 using System.Windows;
 using System.Collections.ObjectModel;
 using MultiAlign.Data;
+using MultiAlign.ViewModels;
 
 namespace MultiAlign.Workspace
 {
-    public class MultiAlignWorkspace: DependencyObject
+    public class MultiAlignWorkspace: ViewModelBase 
     {
 
         public MultiAlignWorkspace()
         {
-            RecentAnalysis = new ObservableCollection<RecentAnalysis>();
+            RecentAnalysis = new ObservableCollection<RecentAnalysisViewModel>();
         }
 
-        public ObservableCollection<RecentAnalysis> RecentAnalysis
+        public ObservableCollection<RecentAnalysisViewModel> RecentAnalysis
         {
-            get { return (ObservableCollection<RecentAnalysis>)GetValue(RecentAnalysisProperty); }
-            set { SetValue(RecentAnalysisProperty, value); }
+            get;
+            set;
         }
 
-        // Using a DependencyProperty as the backing store for RecentAnalysis.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty RecentAnalysisProperty =
-            DependencyProperty.Register("RecentAnalysis", typeof(ObservableCollection<RecentAnalysis>), typeof(MultiAlignWorkspace)
-            );
 
-
-        public void AddAnalysis(RecentAnalysis analysis)
+        public void AddAnalysis(RecentAnalysis recent)
         {
+            RecentAnalysisViewModel analysis = new RecentAnalysisViewModel(recent);
+
             if (RecentAnalysis.Contains(analysis))
             {
                 RecentAnalysis.Remove(analysis);

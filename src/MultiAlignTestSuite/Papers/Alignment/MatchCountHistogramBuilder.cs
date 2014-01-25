@@ -16,7 +16,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
             
             for (double score = start; score <= stop; score += step)
             {
-                int count = matches.Count(x => x.SimilarityScore < (stop - score));
+                int count = matches.Count(x =>  x.SimilarityScore < (score + step)  && x.SimilarityScore >= score);
                 bins.Add(score);
                 values.Add(Convert.ToDouble(count));
             }

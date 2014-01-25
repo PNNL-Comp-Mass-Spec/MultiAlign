@@ -103,7 +103,7 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
                 info.Features = new InputFile();
                 info.Features.Path = featureFile;
 
-                IFeatureFinder finder = FeatureFinderFactory.CreateFeatureFinder(FeatureFinderType.DeconToolsCSV);
+                IFeatureFinder finder = FeatureFinderFactory.CreateFeatureFinder(FeatureFinderType.SingleLinkage);
                 LCMSFeatureFindingOptions options = new LCMSFeatureFindingOptions();
 
                 // Load and create features

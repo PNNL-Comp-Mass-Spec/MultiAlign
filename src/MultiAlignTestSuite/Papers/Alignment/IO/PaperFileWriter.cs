@@ -13,9 +13,16 @@ namespace MultiAlignTestSuite.Papers.Alignment.IO
     public abstract class PaperFileWriter
     {
         private TextWriter m_writer;
-
-        public PaperFileWriter(string name, string path)
+        private bool m_isOpen = false;
+        private bool m_shouldAppend;
+        public PaperFileWriter(bool append)
         {
+            m_shouldAppend = append;
+        }
+
+        public PaperFileWriter(string name, string path, bool append)
+            :this(append)
+        {            
             DateTime now    = DateTime.Now;
             string newName  = string.Format("{0}_{1}_{2}_{3}_{4}_{5}_{6}.csv", name,
                                                                             now.Year,
@@ -28,16 +35,26 @@ namespace MultiAlignTestSuite.Papers.Alignment.IO
             Path = System.IO.Path.Combine(path, newName);
         }
 
+        
         public string Path { get; protected set; }
 
         protected void Open()
         {
-            m_writer = File.CreateText(Path);
+            if (!m_isOpen)
+            {
+                if (m_shouldAppend)
+                    m_writer = File.AppendText(Path);
+                else
+                    m_writer = File.CreateText(Path);
+            }
+            m_isOpen = true;
         }
 
         protected void Close()
         {
-            m_writer.Close();
+            if (m_isOpen)
+                m_writer.Close();
+            m_isOpen = false;
         }
 
         protected void WriteLine(string line)

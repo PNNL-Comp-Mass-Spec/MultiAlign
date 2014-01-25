@@ -31,6 +31,8 @@
         <GroupBox
             Grid.Row="0"
             Header="Alignment Type"  
+            FontSize="20"
+            Foreground="DarkGray"
             Margin="5"
             >   
             <Grid Margin="5">
@@ -71,9 +73,8 @@
                     Grid.Column="1"
                     Width="156"
                     Height="64"
-                    Margin="10"
-                    x:Name="DatasetToDatasetAlignmentButton"
-                    Content="Align Dataset(s) to Dataset" Click="Button_Click" >                    
+                    Margin="10"                    
+                    Content="Align Dataset(s) to Dataset" >                    
                 </Button>
                 <ComboBox                    
                     IsEnabled="{Binding Path=Analysis.Options.AlignmentOptions.IsAlignmentBaselineAMasstagDB, 
@@ -115,9 +116,8 @@
                     Margin="10"
                     Grid.Row="2"
                     Grid.Column="1"
-                    VerticalAlignment="Center"
-                    x:Name="DatasetToDatabaseAlignmentButton"
-                    Content="Align Dataset(s) to Database" Click="Button_Click_1" />
+                    VerticalAlignment="Center"                    
+                    Content="Align Dataset(s) to Database"  />
                 <Label          
                     IsEnabled="{Binding Path=Analysis.Options.AlignmentOptions.IsAlignmentBaselineAMasstagDB, 
                                 UpdateSourceTrigger=PropertyChanged}"                    
@@ -131,7 +131,9 @@
         </GroupBox>
         <GroupBox
             Grid.Row="1"
-            Header="Mass Tag Database for Alignment or Identification"  
+            FontSize="20"
+            Foreground="DarkGray"
+            Header="Mass Tag Database for Alignment and/or Identification"  
             Margin="5"
             >
             <Grid                     
@@ -153,7 +155,7 @@
                     Grid.Row="0"
                     Grid.Column="0"
                     Margin="5"
-                    FontSize="16">
+                    FontSize="18">
                     Use Local Database
                 </RadioButton>
                 <RadioButton
@@ -161,7 +163,7 @@
                     Grid.Column="0"
                     Margin="5"
                     IsChecked="{Binding Path=IsDatabaseDms, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"
-                    FontSize="16">
+                    FontSize="18">
                     Use Server Database
                 </RadioButton>
 
@@ -172,7 +174,8 @@
                 <Button Grid.Column="2" 
                         Grid.Row="0" 
                         Style="{DynamicResource ResourceKey=SimpleBrowseButtonStyle}"
-                        Width="100" Margin="5,5,5,0" x:Name="BrowseForFolderButton" Click="BrowseForFolderButton_Click">Browse</Button>                
+                        Width="100" Margin="5,5,5,0" 
+                        >Browse</Button>                
                 
                 <Label      Grid.Column="1" 
                             Grid.Row="1" 
@@ -183,9 +186,7 @@
                         Grid.Row="1" 
                         Style="{DynamicResource ResourceKey=SimpleBrowseButtonStyle}"
                         Width="100" 
-                        Margin="5,5,5,0" 
-                        x:Name="buttonFindPNNL" 
-                        Click="buttonFindPNNL_Click">Find</Button>
+                        Margin="5,5,5,0" >Find</Button>
                 <Label                        
                     Visibility="Hidden"
                             Grid.Column="1" 
@@ -194,8 +195,7 @@
                             Margin="5"/>
                 <Button     Grid.Column="2"
                             Grid.Row="2" 
-                             Visibility="Hidden"            
-                            x:Name="SelectMtsMtdbButton"
+                            Visibility="Hidden"                                        
                             HorizontalAlignment="Right" 
                             Style="{DynamicResource ResourceKey=SimpleBrowseButtonStyle}"
                             Width="100" 

@@ -20,7 +20,7 @@ namespace MultiAlignTestSuite.IO.MTDB
         {
             MultiAlignAnalysis analysis                          = new MultiAlignAnalysis();
             analysis.Options.MassTagDatabaseOptions.OnlyLoadTagsWithDriftTime = true;
-
+            
             analysis.MetaData.Database = new InputDatabase(MassTagDatabaseFormat.SQL);            
             analysis.MetaData.Database.DatabaseServer   = server;
             analysis.MetaData.Database.DatabaseName     = databaseName;

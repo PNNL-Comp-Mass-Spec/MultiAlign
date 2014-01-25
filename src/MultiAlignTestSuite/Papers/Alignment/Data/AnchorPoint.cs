@@ -15,6 +15,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
         {
             AnchorPointX = new AnchorPoint();
             AnchorPointY = new AnchorPoint();
+            IsValidMatch = AnchorMatch.FalseMatch;
         }
 
 
@@ -27,8 +28,16 @@ namespace MultiAlignTestSuite.Papers.Alignment
         /// <summary>
         /// Gets or sets whether this match is valid, or invalid (false positive)
         /// </summary>
-        public bool IsValidMatch { get; set; }
+        public AnchorMatch IsValidMatch { get; set; }
     }
+
+    public enum AnchorMatch
+    {
+        PeptideFailed,
+        TrueMatch,
+        FalseMatch
+    }
+
     /// <summary>
     /// Defines an anchor point
     /// </summary>
@@ -40,5 +49,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
         public double    Mass       { get; set; }
         public double    Mz         { get; set; }
         public int       Scan       { get; set; }
+
+        public bool IsTrue { get; set; }
     }
 }

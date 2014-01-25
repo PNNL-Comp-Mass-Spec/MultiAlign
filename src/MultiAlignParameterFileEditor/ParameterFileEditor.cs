@@ -127,6 +127,17 @@ namespace MultiAlignParameterFileEditor
             saveButton.Visible = true;
         }
 
+        public bool SaveButtonVisible
+        {
+            get { return saveButton.Visible; }
+            set { saveButton.Visible = value; }
+        }
+        public bool CloseButtonVisible
+        {
+            get { return closeButton.Visible; }
+            set { closeButton.Visible = value; }
+        }
+
         #region Properties
         /// <summary>
         /// Gets or sets the group colors.
@@ -447,3 +458,4 @@ namespace MultiAlignParameterFileEditor
         #endregion
     }
 }
+

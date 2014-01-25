@@ -20,8 +20,10 @@ namespace MultiAlignTestSuite.Papers.Alignment
             NetData     = new AlignmentMeasurement<double>(); 
             Matches     = new List<AnchorPointMatch>();
             Options     = new SpectralOptions();
+            DatasetNames = new List<string>();
         }
 
+        public List<string> DatasetNames { get; set; }
         public AlignmentMeasurement<double> MassData { get; set; }
         public AlignmentMeasurement<double> NetData { get; set; }
 

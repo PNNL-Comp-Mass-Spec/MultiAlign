@@ -116,6 +116,7 @@ namespace MultiAlignCore.IO.Features
                     spectrum.PrecursorMZ     = header.ParentIonMZ;                    
                     spectrum.TotalIonCurrent = header.TotalIonCurrent;
                     spectrum.CollisionType   = CollisionType.Other;
+                    
 
                     switch(header.CollisionMode)
                     {
@@ -345,7 +346,7 @@ namespace MultiAlignCore.IO.Features
                 summary.Scan            = i;
                 summary.TotalIonCurrent = Convert.ToInt64(header.TotalIonCurrent);
                 summary.PrecursorMZ     = header.ParentIonMZ;
-                summary.CollisionType   = CollisionType.Other;
+                summary.CollisionType   = CollisionType.Other;                
                                                                         
                 switch (header.CollisionMode)
                 {

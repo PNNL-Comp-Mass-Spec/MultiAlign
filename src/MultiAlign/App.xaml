@@ -81,7 +81,7 @@
             <Setter Property="Height" Value="32"/>
             <Setter Property="Margin" Value="3"/>
             <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="BorderBrush" Value="#FF1733D2"/>
+            <Setter Property="BorderBrush" Value="#FF1955D5"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="HorizontalAlignment" Value="Left"/>
             <Setter Property="VerticalAlignment" Value="Top"/>

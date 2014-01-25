@@ -9,13 +9,7 @@
         Width="1200"
         Icon="/MultiAlign;component/Resources/logo.png" 
         WindowStartupLocation="CenterScreen">
-    <Window.CommandBindings>
-        <CommandBinding Command="New" Executed="NewAnalysis_Executed"></CommandBinding>
-        <CommandBinding Command="Open" Executed="OpenExisting_Executed"></CommandBinding>
-        <CommandBinding Command="Favorites" Executed="OpenRecent_Executed"></CommandBinding>
-        <CommandBinding Command="BrowseHome" Executed="ShowGettingStarted_Executed"></CommandBinding>
-        <CommandBinding Command="FirstPage" Executed="CurrentAnalysis_Executed"></CommandBinding>                        
-    </Window.CommandBindings>
+    
     <Window.Resources>
         <BitmapImage x:Key="MannassaImage" UriSource="pack://application:,,,/Resources/MainIcon.png" />
         <BitmapImage x:Key="DatabaseImage" UriSource="pack://application:,,,/Resources/database-32.png" />
@@ -23,16 +17,15 @@
         <BitmapImage x:Key="AlignmentIcon" UriSource="pack://application:,,,/Resources/AlignmentIcon.png" />
         <BitmapImage x:Key="FolderIcon" UriSource="pack://application:,,,/Resources/folder_default.png" />
         <BitmapImage x:Key="NewIcon" UriSource="pack://application:,,,/Resources/text_x_generic.png" />
-        <BitmapImage x:Key="MenuIcon" UriSource="pack://application:,,,/Resources/MultiAlignMain.png" />
         <BitmapImage x:Key="Molecule" UriSource="pack://application:,,,/Resources/molecule.png" />
         <BitmapImage x:Key="Unknown" UriSource="pack://application:,,,/Resources/unknown.png" />
         <BitmapImage x:Key="Home" UriSource="pack://application:,,,/Resources/home.png" />
 
         <maConverters:ViewStateVisibilityConverter  x:Key="HomeState"                           ViewState="HomeView"/>
-        <maConverters:ViewStateVisibilityConverter  x:Key="SetupAnalysisViewState"                      ViewState="SetupAnalysisView"/>
+        <maConverters:ViewStateVisibilityConverter  x:Key="SetupAnalysisViewState"              ViewState="SetupAnalysisView"/>
         <maConverters:ViewStateVisibilityConverter  x:Key="RunningAnalysisViewState"            ViewState="RunningAnalysisView"/>
         <maConverters:ViewStateVisibilityConverter  x:Key="AnalysisViewState"                   ViewState="AnalysisView"/>
-        <maConverters:ViewStateVisibilityConverter  x:Key="LoadingViewState"                   ViewState="OpenView"/>
+        <maConverters:ViewStateVisibilityConverter  x:Key="LoadingViewState"                    ViewState="OpenView"/>
                       
         <maConverters:ViewStateIsSelectedConverter  x:Key="HomeViewSelected"                    ViewState="HomeView"/>
         <maConverters:ViewStateIsSelectedConverter  x:Key="SetupAnalysisViewStateSelected"      ViewState="SetupAnalysisView"/>
@@ -82,38 +75,24 @@
             <TabItem
                 IsSelected="{Binding Path=StateModerator.CurrentViewState, Converter={StaticResource ResourceKey=HomeViewSelected}}"
                 Style="{DynamicResource ResourceKey=HidenTabItem}"   >
-                <viewerViews:GettingStarted  
-                    x:Name="GettingStartedControl"
-                    Visibility="{Binding Path=StateModerator.CurrentViewState, Converter={StaticResource ResourceKey=HomeState}}"
-                    CurrentWorkspace="{Binding Path=CurrentWorkspace,                     
-                                            RelativeSource={RelativeSource AncestorType={x:Type Window}}}">
-
-                </viewerViews:GettingStarted>
+                <viewerViews:GettingStarted           
+                    DataContext="{Binding Path=GettingStartedViewModel}"
+                    Visibility="{Binding Path=StateModerator.CurrentViewState, Converter={StaticResource ResourceKey=HomeState}}"/>
             </TabItem>
             <TabItem         
                 Style="{DynamicResource ResourceKey=HidenTabItem}"       
                 Header="New Analysis"
-                IsSelected="{Binding Path=StateModerator.CurrentViewState, Converter={StaticResource ResourceKey=SetupAnalysisViewStateSelected}}"
-                >
-                <wizardViews:PerformAnalysisControl
-                    x:Name="PerformAnalysisControl"                    
-                    Visibility="{Binding Path=StateModerator.CurrentViewState, Converter={StaticResource ResourceKey=SetupAnalysisViewState}}"
-                    >
-                </wizardViews:PerformAnalysisControl>
+                IsSelected="{Binding Path=StateModerator.CurrentViewState, Converter={StaticResource ResourceKey=SetupAnalysisViewStateSelected}}">
+                <wizardViews:PerformAnalysisControl                      
+                    DataContext="{Binding AnalysisSetupViewModel}"
+                    Visibility="{Binding Path=StateModerator.CurrentViewState, Converter={StaticResource ResourceKey=SetupAnalysisViewState}}"/>                
             </TabItem>
             <TabItem         
                 Style="{DynamicResource ResourceKey=HidenTabItem}"       
                 Header="Running Analysis"
                 IsSelected="{Binding Path=StateModerator.CurrentViewState, Converter={StaticResource ResourceKey=RunningAnalysisViewStateSelected}}"
                 >
-                <wizardViews:AnalysisRunningControl     
-                    x:Name="RunningAnalysisControl"                    
-                    AnalysisConfiguration="{Binding Path=AnalysisConfiguration, 
-                                            ElementName=m_performAnalysisControl}"
-                    Controller="{Binding Path=Controller, 
-                                            RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
-                    Reporter="{Binding Path=Reporter, 
-                                            RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                <wizardViews:AnalysisRunningControl                          
                     Visibility="{Binding Path=StateModerator.CurrentViewState, Converter={StaticResource ResourceKey=RunningAnalysisViewState}}">
                 </wizardViews:AnalysisRunningControl>
             </TabItem>
@@ -122,8 +101,7 @@
                 Header="Analysis"
                 IsSelected="{Binding Path=StateModerator.CurrentViewState, Converter={StaticResource ResourceKey=AnalysisViewSelected}}"
                 >
-                <viewerViews:AnalysisView
-                    x:Name="m_mainControl"/>
+                <viewerViews:AnalysisView  DataContext="{Binding Path=CurrentAnalysis}"/>
             </TabItem>
             <TabItem
                 Style="{DynamicResource ResourceKey=HidenTabItem}"
@@ -148,7 +126,7 @@
                 <WrapPanel>
                     <Button
                             Background="Transparent"
-                            Command="BrowseHome"
+                            Command="{Binding ShowStartCommand}"
                             ToolTip="Go Home"
                             Margin="5,0,5,0">
                         <Image Source="/MultiAlign;component/Resources/home.png"  />
@@ -156,7 +134,7 @@
                     <Button
                             Margin="5,0,5,0"
                             Background="Transparent"
-                            Command="FirstPage"
+                            Command="{Binding ShowAnalysisCommand}"
                             ToolTip="Current Analysis" OpacityMask="#FFFEFEFE">
                         <Image Source="/MultiAlign;component/Resources/MainIcon.png"/>
                     </Button>

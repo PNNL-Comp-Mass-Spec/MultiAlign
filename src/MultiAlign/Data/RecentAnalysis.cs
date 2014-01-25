@@ -11,37 +11,23 @@ namespace MultiAlign.Data
     /// <summary>
     /// Class that holds information about a recent analysis.
     /// </summary>
-    public class RecentAnalysis: DependencyObject
+    public class RecentAnalysis
     {
+        public RecentAnalysis(string path, string name)
+        {
+            Path = path;
+            Name = name;
+
+
+        }
 
         /// <summary>
         /// Gets or sets the path of the analysis.
         /// </summary>
-        public string Path
-        {
-            get { return (string)GetValue(PathProperty); }
-            set { SetValue(PathProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for Path.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty PathProperty =
-            DependencyProperty.Register("Path", typeof(string), typeof(RecentAnalysis));
-
-
-
+        public string Path { get; set; }
         /// <summary>
         /// Gets or sets the name of the analysis.
         /// </summary>
-        public string Name
-        {
-            get { return (string)GetValue(NameProperty); }
-            set { SetValue(NameProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for Name.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty NameProperty =
-            DependencyProperty.Register("Name", typeof(string), typeof(RecentAnalysis));
-
-
+        public string Name { get; set; }        
     }
 }

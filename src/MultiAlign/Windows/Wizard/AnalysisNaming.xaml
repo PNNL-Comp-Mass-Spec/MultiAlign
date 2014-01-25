@@ -21,7 +21,6 @@
             <RowDefinition Height="48"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-
         <Label             
             FontSize="24"
             FontStyle="Italic"
@@ -35,7 +34,7 @@
             FontSize="24"
             Grid.Row="2"
             HorizontalContentAlignment="Center"
-            Text="{Binding Path=AnalysisConfiguration.AnalysisPath}"
+            Text="{Binding Path=Path}"
             Margin="5"          
             Grid.Column="1"             
             />
@@ -46,10 +45,12 @@
             Grid.Column="2"
             Grid.Row="2"
             Width="72"
+            
+            BorderThickness="2"
             VerticalAlignment="Center"
-            HorizontalAlignment="Center"            
-            Content="Browse" 
-            Click="BrowseButton_Click" />
+            HorizontalAlignment="Center"       
+            Command="{Binding Path=BrowseCommand}"
+            Content="Browse"  />
         <Label             
             FontSize="24"
             FontStyle="Italic"
@@ -61,7 +62,7 @@
         </Label>
         <TextBox
             FontSize="24"
-            Text="{Binding Path=AnalysisConfiguration.AnalysisName}"
+            Text="{Binding Path=Name}"
             Margin="5"   
             Grid.Row="4"
             Grid.Column="1"             

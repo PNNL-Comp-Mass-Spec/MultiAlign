@@ -823,7 +823,7 @@ namespace MultiAlignCore.Algorithms
         /// <param name="options"></param>
         /// <param name="filterOptions"></param>
         /// <returns></returns>
-        private List<UMCLight> CreateLCMSFeatures(List<MSFeatureLight> msFeatures, 
+        private List<UMCLight> CreateLCMSFeatures(List<MSFeatureLight> msFeatures,  
                                         IMSFeatureDAO msFeatureCache, 
                                         LCMSFeatureFindingOptions options, 
                                         FeatureFilterOptions filterOptions)
@@ -842,7 +842,7 @@ namespace MultiAlignCore.Algorithms
             filteredMsFeatures = LCMSFeatureFilters.FilterMSFeatures(msFeatures, options);
 
             // Find LCMS Features
-            IFeatureFinder finder   = FeatureFinderFactory.CreateFeatureFinder(FeatureFinderType.DeconToolsCSV);
+            IFeatureFinder finder   = FeatureFinderFactory.CreateFeatureFinder(FeatureFinderType.SingleLinkage);
             features                = finder.FindFeatures(filteredMsFeatures, options);
 
             UpdateStatus( "Filtering features.");            

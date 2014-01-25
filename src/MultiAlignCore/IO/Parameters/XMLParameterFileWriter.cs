@@ -82,19 +82,23 @@ namespace MultiAlignCore.IO.Parameters
 					}					
 				}	
 			}
-		}       
+		}
         public void WriteParameterFile(string parameterFilePath, MultiAlignAnalysis analysis)
+        {
+            WriteParameterFile(parameterFilePath, analysis.Options);
+        }
+        public void WriteParameterFile(string parameterFilePath, AnalysisOptions options)
         {            				
 			MetaData metaData = new MetaData("PNNLProteomics");
-            ReflectParameterOptions(analysis.Options.MSLinkerOptions,           metaData.OpenChild("MSnLinker"));
-            ReflectParameterOptions(analysis.Options.FeatureFindingOptions,     metaData.OpenChild("LCMSFeatureFinding"));
-            ReflectParameterOptions(analysis.Options.FeatureFilterOptions,      metaData.OpenChild("LCMSFeatureFilters"));
-            ReflectParameterOptions(analysis.Options.MassTagDatabaseOptions,    metaData.OpenChild("MassTagDatabase"));
-            ReflectParameterOptions(analysis.Options.AlignmentOptions,          metaData.OpenChild("Alignment"));
-            ReflectParameterOptions(analysis.Options.DriftTimeAlignmentOptions, metaData.OpenChild("DriftTimeAlignment"));
-            ReflectParameterOptions(analysis.Options.ClusterOptions,            metaData.OpenChild("LCMSFeatureClustering"));
-            ReflectParameterOptions(analysis.Options.STACOptions,               metaData.OpenChild("STAC"));
-            ReflectParameterOptions(analysis.Options.ConsolidationOptions,      metaData.OpenChild("FeatureConsolidator"));
+            ReflectParameterOptions(options.MSLinkerOptions,           metaData.OpenChild("MSnLinker"));
+            ReflectParameterOptions(options.FeatureFindingOptions,     metaData.OpenChild("LCMSFeatureFinding"));
+            ReflectParameterOptions(options.FeatureFilterOptions,      metaData.OpenChild("LCMSFeatureFilters"));
+            ReflectParameterOptions(options.MassTagDatabaseOptions,    metaData.OpenChild("MassTagDatabase"));
+            ReflectParameterOptions(options.AlignmentOptions,          metaData.OpenChild("Alignment"));
+            ReflectParameterOptions(options.DriftTimeAlignmentOptions, metaData.OpenChild("DriftTimeAlignment"));
+            ReflectParameterOptions(options.ClusterOptions,            metaData.OpenChild("LCMSFeatureClustering"));
+            ReflectParameterOptions(options.STACOptions,               metaData.OpenChild("STAC"));
+            ReflectParameterOptions(options.ConsolidationOptions,      metaData.OpenChild("FeatureConsolidator"));
             metaData.WriteFile(parameterFilePath);
         }        
     }

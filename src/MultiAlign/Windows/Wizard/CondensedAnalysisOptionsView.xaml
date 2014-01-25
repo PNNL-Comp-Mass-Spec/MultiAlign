@@ -3,9 +3,24 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             
              mc:Ignorable="d" 
              d:DesignHeight="800" d:DesignWidth="800">
     <UserControl.Resources>
+        <DataTemplate x:Key="PresetTemplate">
+            <Border BorderThickness="1"                
+                Margin="5">
+                <StackPanel Orientation="Horizontal">                    
+                    <Image
+                        Margin="5"                        
+                        Width="12"
+                        Height="12"
+                        Source="/MultiAlign;component/Resources/hammer-64.png"
+                        />
+                       <TextBlock Margin="5" Text="{Binding Name}" />
+                </StackPanel>
+            </Border>
+        </DataTemplate>
         <Style TargetType="{x:Type ComboBox}">
             <Setter Property="Width">
                 <Setter.Value>
@@ -29,7 +44,6 @@
                 </Setter.Value>
             </Setter>
         </Style>
-
         <Style TargetType="{x:Type TextBox}">
             <Setter Property="Width">
                 <Setter.Value>
@@ -52,9 +66,36 @@
                     Center
                 </Setter.Value>
             </Setter>
-        </Style>
+        </Style>        
     </UserControl.Resources>
-    <Grid>
+
+    <DockPanel>
+        <StackPanel 
+                DockPanel.Dock="Bottom"
+                HorizontalAlignment="Left"
+                Orientation="Horizontal">
+            <Button 
+                    Content="Advanced" 
+                    Style="{DynamicResource ResourceKey=SimpleBrowseButtonStyle}"   
+                    Command="{Binding ShowAdvancedWindowCommand}"                    
+                    Margin="5"                
+                    Width="92"/>
+            <Button         
+                    Content="Load Existing"
+                    Style="{DynamicResource ResourceKey=SimpleBrowseButtonStyle}"
+                    Command="{Binding LoadExistingCommand}"                    
+                    Width="92"                            
+                    Margin="5"
+                    HorizontalAlignment="Right"/>
+            <Button         
+                    Content="Save"
+                    Style="{DynamicResource ResourceKey=SimpleBrowseButtonStyle}"
+                    Command="{Binding SaveOptionsCommand}"                    
+                    Width="92"                            
+                    Margin="5"
+                    HorizontalAlignment="Right"/>
+        </StackPanel>
+        <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -70,7 +111,7 @@
             Margin="5"
             HorizontalAlignment="Right"
             VerticalAlignment="Top"
-            Grid.Row="0"
+            Grid.Row="1"
             Grid.Column="0"
             Width="32"
             Height="32"
@@ -80,7 +121,7 @@
             Margin="5"
             HorizontalAlignment="Right"
             VerticalAlignment="Top"
-            Grid.Row="1"
+            Grid.Row="2"
             Grid.Column="0"
             Width="32"
             Height="32"
@@ -90,7 +131,7 @@
             Margin="5"
             HorizontalAlignment="Right"
             VerticalAlignment="Top"
-            Grid.Row="2"
+            Grid.Row="3"
             Grid.Column="0"
             Width="32"
             Height="32"
@@ -98,34 +139,41 @@
             />
 
         <GroupBox 
+            Grid.Row="1"
             Grid.Column="1"
             Margin="5"
             Foreground="Gray"
             FontSize="18"
-            Header="Experiment Type">
+            Header="Experiment">
             <StackPanel>
                 <CheckBox
                     Margin="5"
-                    FontSize="16">
+                    FontSize="16"
+                    IsChecked="{Binding Path=IsIonMobility, Mode=TwoWay}">
                     Is this an Ion Mobility Experiment (IMS)?
                 </CheckBox>
 
                 <CheckBox
                     Margin="5"
+                    IsChecked="{Binding Path=HasMsMsFragmentation, Mode=TwoWay}"
                     FontSize="16">
                     Was there any MS/MS fragmentation?
                 </CheckBox>
             </StackPanel>
         </GroupBox>
         <GroupBox
-            Grid.Row="1"
+            Grid.Row="2"
             Grid.Column="1"
             Margin="5"
             Foreground="Gray"
             FontSize="18"
             Header="Instrument">
+                <ScrollViewer>
+                    <DockPanel>    
+            
             <Grid>
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
@@ -133,112 +181,132 @@
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="200"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <Label
-                    Foreground="Gray"
-                    FontSize="14"
-                    Margin="5"
-                    Grid.Row="0">
-                    Precursor Mass Resolution
-                </Label>
-                <Label
-                    Foreground="Gray"
-                    FontSize="14"
-                    Margin="5"
-                    Grid.Row="1">
-                    Fragmentation Window Size
-                </Label>
+                    <Label Content="Instrument Presets"
+                        Grid.Row="0"
+                        VerticalContentAlignment="Center"
+                        Foreground="Gray"
+                        FontSize="14"/>
+                
+                    <ComboBox
+                        Grid.Column="1"
+                        FontSize="16"
+                        Width="180"
+                        Margin="5"
+                        ItemTemplate="{StaticResource ResourceKey=PresetTemplate}"
+                        SelectedItem="{Binding SelectedPreset, Mode=TwoWay}"
+                        ItemsSource="{Binding InstrumentPresets}"
+                        />
 
-                <Label
-                    Foreground="Gray"
-                    FontSize="14"
-                    Margin="5"
-                    Grid.Row="2">
-                    LC-Retention Time
-                </Label>
-                <Label
-                    Foreground="Gray"
-                    FontSize="14"
-                    Margin="5"
-                    Visibility="{Binding Path=IsIonMobility}"
-                    Grid.Row="3">
-                    Ion Mobility 
-                </Label>
-                <TextBox 
-                    Margin="5"
-                    Grid.Row="0"
-                    Grid.Column="1"
-                    
-                    Text="{Binding Path=MassResolution, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Label
+                        Foreground="Gray"
+                        FontSize="14"
+                        Margin="5"
+                        Grid.Row="1">
+                        Precursor Mass Resolution
+                    </Label>
+                    <Label
+                        Foreground="Gray"
+                        FontSize="14"
+                        Margin="5"
+                        Grid.Row="2">
+                        Fragmentation Window Size
+                    </Label>
 
-                <TextBox 
-                    Margin="5"
-                    Grid.Row="1"
-                    Grid.Column="1"
-                    Text="{Binding Path=MsMsLinkerTolerance, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Label
+                        Foreground="Gray"
+                        FontSize="14"
+                        Margin="5"
+                        Grid.Row="3">
+                        LC-Retention Time
+                    </Label>
+                    <Label
+                        Foreground="Gray"
+                        FontSize="14"
+                        Margin="5"
+                        Visibility="{Binding Path=IsIonMobility}"
+                        Grid.Row="4">
+                        Ion Mobility 
+                    </Label>
+                    <TextBox 
+                        Width="Auto"
+                        Margin="5"
+                        Grid.Row="1"
+                        Grid.Column="1"                    
+                        Text="{Binding Path=MassResolution, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
 
-                <TextBox 
-                    Margin="5"
-                    Grid.Row="2"
-                    Grid.Column="1"
-                    
-                    Text="{Binding Path=NETTolerance, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBox Width="Auto"
+                        Margin="5"
+                        Grid.Row="2"
+                        Grid.Column="1"
+                        Text="{Binding Path=FragmentationTolerance, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
 
-                <TextBox 
-                    Margin="5"
-                    Grid.Row="3"
-                    Grid.Column="1"
-                    Visibility="{Binding Path=IsIonMobility}"
-                    Text="{Binding Path=MassResolution, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBox 
+                        Margin="5"
+                        Grid.Row="3"
+                        Grid.Column="1"
+                        Width="Auto"
+                        Text="{Binding Path=NETTolerance, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
 
-                <Label
-                    Foreground="Gray"
-                    FontSize="14"
-                    Margin="5"
-                    Grid.Column="2"
-                    Grid.Row="0">
-                    ppm
-                </Label>
+                    <TextBox 
+                        Width="Auto"
+                        Margin="5"
+                        Grid.Row="4"
+                        Grid.Column="1"
+                        Visibility="{Binding Path=IsIonMobility}"
+                        Text="{Binding Path=DriftTimeTolerance, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
 
-                <Label                    
-                    Foreground="Gray"
-                    FontSize="14"
-                    Margin="5"
-                    Grid.Column="2"
-                    Grid.Row="1">
-                    Th.
-                </Label>
-                <Label                    
-                    Foreground="Gray"
-                    FontSize="14"
-                    Margin="5"
-                    Grid.Column="2"
-                    Grid.Row="2">
-                    NET
-                </Label>
-                <Label
-                    Foreground="Gray"
-                    FontSize="14"
-                    Margin="5"
-                    Grid.Column="2"
-                    Visibility="{Binding Path=IsIonMobility}"
-                    Grid.Row="3">
-                    milliseconds
-                </Label>
+                    <Label
+                        Foreground="Gray"
+                        FontSize="14"
+                        Margin="5"
+                        Grid.Column="2"
+                        Grid.Row="1">
+                        ppm
+                    </Label>
 
-            </Grid>
-        </GroupBox>
+                    <Label                    
+                        Foreground="Gray"
+                        FontSize="14"
+                        Margin="5"
+                        Grid.Column="2"
+                        Grid.Row="2">
+                        Th.
+                    </Label>
+                    <Label                    
+                        Foreground="Gray"
+                        FontSize="14"
+                        Margin="5"
+                        Grid.Column="2"
+                        Grid.Row="3">
+                        NET
+                    </Label>
+                    <Label
+                        Foreground="Gray"
+                        FontSize="14"
+                        Margin="5"
+                        Grid.Column="2"
+                        Visibility="{Binding Path=IsIonMobility}"
+                        Grid.Row="4">
+                        milliseconds
+                    </Label>
+
+                </Grid>
+            </DockPanel>
+                </ScrollViewer>
+            </GroupBox>
         <GroupBox 
-            Grid.Row="2"
+            Grid.Row="3"
             Grid.Column="1"
             Margin="5"
             Foreground="Gray"
             FontSize="18"
             Header="Algorithms">
 
-            <Grid>
+                <ScrollViewer>
+                    <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
@@ -276,10 +344,11 @@
                         Grid.Row="0"
                         Grid.Column="1">
                     <ComboBox 
-                        FontSize="14"/>
+                        FontSize="16"
+                        ItemsSource="{Binding Path=FeatureFindingAlgorithms}"
+                        SelectedItem="{Binding Path=SelectedFeatureFindingAlgorithm, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
                     <Expander
                         Foreground="Gray"
-                        FontSize="14"
                         Header="Parameters">
                         <Grid>
                             <Grid.RowDefinitions>
@@ -290,7 +359,7 @@
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="128"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             
@@ -311,6 +380,7 @@
                                 FontSize="14"
                                 Margin="5"
                                 Grid.Column="2"
+                                HorizontalAlignment="Left"
                                 Grid.Row="0">
                                 scans
                             </Label>
@@ -339,7 +409,7 @@
                                 Margin="5"
                                 Grid.Row="2"
                                 Grid.Column="1"                                
-                                Text="{Binding Path=IsotopicFitScore, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
+                                Text="{Binding Path=MinimumAbundance, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
 
 
                         </Grid>
@@ -349,113 +419,32 @@
                         Margin="5"
                         Grid.Row="1"
                         Grid.Column="1">
-                    <ComboBox 
-                        FontSize="14"/>
-                    <Expander
-                        Foreground="Gray"
-                        FontSize="14"
-                        Header="Parameters">
-
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-
-                            <Label
-                                Foreground="Gray"
-                                FontSize="14"
-                                Margin="5"                                
-                                Grid.Row="0">
-                                Mass Tolerance
-                            </Label>
-                            <TextBox 
-                                Margin="5"
-                                Grid.Row="0"
-                                Grid.Column="1"                                
-                                Text="{Binding Path=MinimumScans, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
-                            <Label
-                                Foreground="Gray"
-                                FontSize="14"
-                                Margin="5"
-                                Grid.Column="2"
-                                Grid.Row="0">
-                                ppm
-                            </Label>
-
-                            <Label
-                                Foreground="Gray"
-                                FontSize="14"
-                                Margin="5,8,5,2"                                
-                                Grid.Row="1">
-                                NET Tolerance
-                            </Label>
-                            <TextBox 
-                                Margin="5"
-                                Grid.Row="1"
-                                Grid.Column="1"                                
-                                Text="{Binding Path=IsotopicFitScore, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
-                            <Label
-                                Foreground="Gray"
-                                FontSize="14"
-                                Margin="5"
-                                Grid.Column="2"
-                                Grid.Row="1">
-                                NET
-                            </Label>
-                        </Grid>
-                    </Expander>
-                </StackPanel>
+                            <ComboBox 
+                        FontSize="16"
+                        ItemsSource="{Binding Path=AlignmentAlgorithms}"
+                        SelectedItem="{Binding Path=SelectedAlignmentAlgorithm, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"
+                        />
+                        </StackPanel>
                 <StackPanel 
                         Margin="5"
                         Grid.Row="2"
                         Grid.Column="1">
-                    <ComboBox 
-                        FontSize="14"/>
-                    <Expander
-                        Foreground="Gray"
-                        FontSize="14"
-                        Header="Parameters">
-                    </Expander>
-                </StackPanel>
+                            <ComboBox 
+                        FontSize="16"
+                        ItemsSource="{Binding Path=ClusteringAlgorithms}"
+                        SelectedItem="{Binding Path=SelectedClusteringAlgorithm, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"
+                        />
+                        </StackPanel>
             </Grid>
-        </GroupBox>
-        <GroupBox 
-            Grid.Row="3"
+                </ScrollViewer>
+            </GroupBox>
+        <Label
             Grid.Column="1"
-            Margin="5"
             Foreground="Gray"
-            FontSize="18"
-            Header="">
-            <StackPanel
-                HorizontalAlignment="Right"
-                Orientation="Horizontal">
-                <Button 
-                    Content="Advanced" 
-                    Margin="5"
-                    Grid.ColumnSpan="2"  
-                    Style="{DynamicResource SimpleButtonStyle}"                    
-                    Width="128"
-                    Height="48"/>
-
-                <Button        
-                        Style="{DynamicResource ResourceKey=SimpleButtonStyle}"      
-                        Grid.Row="0"
-                        Grid.Column="0"
-                        Margin="5"
-                        HorizontalAlignment="Right"
-                        Width="128"
-                        Height="48">
-                            Load Existing
-                </Button>
-            </StackPanel>
-        </GroupBox>
-    </Grid>
+            FontSize="24"
+            >
+            Options
+        </Label>
+        </Grid>
+    </DockPanel>
 </UserControl>

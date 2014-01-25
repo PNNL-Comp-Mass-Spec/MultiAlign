@@ -8,7 +8,7 @@ namespace MultiAlign.ViewModels
     public class DatasetCollectionViewModel: ViewModelBase 
     {
         private string m_filter;
-        private IEnumerable<DatasetViewModel> m_models;
+        private IEnumerable<DatasetInformationViewModel> m_models;
 
         public DatasetCollectionViewModel():
             this(new List<DatasetInformation>())
@@ -18,30 +18,30 @@ namespace MultiAlign.ViewModels
         public DatasetCollectionViewModel(IEnumerable<DatasetInformation> datasets)
         {
             
-            List<DatasetViewModel> datasetViewModels =  (from dataset in datasets
-                                                                select new DatasetViewModel(dataset)).ToList(); 
+            List<DatasetInformationViewModel> datasetViewModels =  (from dataset in datasets
+                                                                    select new DatasetInformationViewModel(dataset)).ToList(); 
             m_models         = datasetViewModels;
-            Datasets         = new ObservableCollection<DatasetViewModel>(datasetViewModels);            
-            FilteredDatasets = new ObservableCollection<DatasetViewModel>(datasetViewModels);
+            Datasets         = new ObservableCollection<DatasetInformationViewModel>(datasetViewModels);
+            FilteredDatasets = new ObservableCollection<DatasetInformationViewModel>(datasetViewModels);
         }
 
 
         private void FilterDatasets()
         {
             string filter                           = m_filter.ToLower();
-            IEnumerable<DatasetViewModel> filtered  = new List<DatasetViewModel>(m_models);           
+            IEnumerable<DatasetInformationViewModel> filtered = new List<DatasetInformationViewModel>(m_models);           
             filtered                                = filtered.Where(x => x.Name.ToLower().Contains(filter));
             FilteredDatasets.Clear();
             filtered.ToList().ForEach(x => FilteredDatasets.Add(x));
         }
 
-        public ObservableCollection<DatasetViewModel> Datasets
+        public ObservableCollection<DatasetInformationViewModel> Datasets
         {
             get;
             private set;
         }
 
-        public ObservableCollection<DatasetViewModel> FilteredDatasets
+        public ObservableCollection<DatasetInformationViewModel> FilteredDatasets
         {
             get;
             private set;
@@ -63,7 +63,7 @@ namespace MultiAlign.ViewModels
                     {
                         m_expandImagesall = value;
 
-                        foreach (DatasetViewModel model in Datasets)
+                        foreach (DatasetInformationViewModel model in Datasets)
                         {
                             model.ShouldExpand = value;
                         }
