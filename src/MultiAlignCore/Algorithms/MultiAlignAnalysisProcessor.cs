@@ -421,6 +421,13 @@ namespace MultiAlignCore.Algorithms
             // provided to us.
             if (features.Count < 1)
             {
+                Dictionary<int, ScanSummary> scanMap = dataset.DatasetSummary.ScanMetaData;
+
+                if (scanMap != null && scanMap.Count > 0)
+                {
+                    msFeatures = msFeatures.Where(x => scanMap.ContainsKey(x.Scan) && scanMap[x.Scan].MsLevel == 1).ToList();                  
+                }                   
+
                 features = CreateLCMSFeatures(msFeatures,
                                                 msFeatureCache,
                                                 options,

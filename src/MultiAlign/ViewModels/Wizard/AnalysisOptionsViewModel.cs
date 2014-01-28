@@ -40,6 +40,7 @@ namespace MultiAlign.ViewModels.Analysis
             {
                 InstrumentPresets.Add(preset);
             }
+            SelectedPreset = InstrumentPresets[0];
 
             m_saveDialog        = new System.Windows.Forms.SaveFileDialog();
             m_dialog            = new System.Windows.Forms.OpenFileDialog();
@@ -418,4 +419,5 @@ namespace MultiAlign.ViewModels.Analysis
         public ICommand SaveOptionsCommand { get; set; }
         #endregion
     }
+
 }

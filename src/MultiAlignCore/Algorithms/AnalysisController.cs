@@ -73,18 +73,6 @@ namespace MultiAlignCore.Algorithms
         #endregion
 
         #region Data Provider Setup
-        public void LoadExistingAnalysis(string path, IAnalysisReportGenerator reporter)
-        {
-            // Create the access to the database.
-            FeatureDataAccessProviders providers = SetupDataProviders(path, false);
-
-            // Create an analysis configuration
-            m_config            = new AnalysisConfig();
-            m_reportCreator     = reporter;
-
-            // Create an analysis processor.            
-            m_config.Analysis   = ConstructAnalysisObject(providers);            
-        }
         /// <summary>
         /// Sets up the NHibernate caches for storing and retrieving data.
         /// </summary>
@@ -970,17 +958,7 @@ namespace MultiAlignCore.Algorithms
             m_config        = config;
 
             m_worker.WorkerSupportsCancellation = true;            
-            m_worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(m_worker_RunWorkerCompleted);
             m_worker.RunWorkerAsync();            
-        }
-        /// <summary>
-        /// Fired when the analysis stops
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void m_worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            
         }
         /// <summary>
         /// Main bulk for processing setup for the GUI version

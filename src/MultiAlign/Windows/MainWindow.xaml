@@ -60,18 +60,16 @@
     
         <Grid
             DockPanel.Dock="Top"
-            Margin="4"
-            >
-        <Grid.ColumnDefinitions>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
+            Margin="5">
+            <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>                           
-        <TabControl            
+            <TabControl            
             Grid.Row="0"
             Grid.Column="0">
+            <!-- Getting Started -->
             <TabItem
                 IsSelected="{Binding Path=StateModerator.CurrentViewState, Converter={StaticResource ResourceKey=HomeViewSelected}}"
                 Style="{DynamicResource ResourceKey=HidenTabItem}"   >
@@ -79,6 +77,7 @@
                     DataContext="{Binding Path=GettingStartedViewModel}"
                     Visibility="{Binding Path=StateModerator.CurrentViewState, Converter={StaticResource ResourceKey=HomeState}}"/>
             </TabItem>
+            <!-- New Analysis -->
             <TabItem         
                 Style="{DynamicResource ResourceKey=HidenTabItem}"       
                 Header="New Analysis"
@@ -87,15 +86,18 @@
                     DataContext="{Binding AnalysisSetupViewModel}"
                     Visibility="{Binding Path=StateModerator.CurrentViewState, Converter={StaticResource ResourceKey=SetupAnalysisViewState}}"/>                
             </TabItem>
+            <!-- Running Analysis -->
             <TabItem         
                 Style="{DynamicResource ResourceKey=HidenTabItem}"       
                 Header="Running Analysis"
                 IsSelected="{Binding Path=StateModerator.CurrentViewState, Converter={StaticResource ResourceKey=RunningAnalysisViewStateSelected}}"
                 >
-                <wizardViews:AnalysisRunningControl                          
+                <wizardViews:AnalysisRunningView       
+                    DataContext="{Binding Path=AnalysisRunningViewModel}"
                     Visibility="{Binding Path=StateModerator.CurrentViewState, Converter={StaticResource ResourceKey=RunningAnalysisViewState}}">
-                </wizardViews:AnalysisRunningControl>
+                </wizardViews:AnalysisRunningView>
             </TabItem>
+            <!-- Viewing Analysis -->
             <TabItem
                 Style="{DynamicResource ResourceKey=HidenTabItem}"
                 Header="Analysis"
@@ -103,47 +105,45 @@
                 >
                 <viewerViews:AnalysisView  DataContext="{Binding Path=CurrentAnalysis}"/>
             </TabItem>
+            <!-- Loading Analysis -->
             <TabItem
                 Style="{DynamicResource ResourceKey=HidenTabItem}"
                 Header="Loading"
                 IsSelected="{Binding Path=StateModerator.CurrentViewState, Converter={StaticResource ResourceKey=LoadingViewStateSelected}}"
                 >
-                <viewerViews:LoadingAnalysisView/>
-            </TabItem>
-            <TabItem
-                Header="Main"
-                Visibility="Hidden"
-                >                
+                <viewerViews:LoadingAnalysisView
+                    DataContext="{Binding LoadingAnalysisViewModel}"
+                    />
             </TabItem>
             
         </TabControl>            
-        <StatusBar 
-                Grid.Row="2"
-                Grid.Column="0"
-                Grid.ColumnSpan="2"
-                Height="40">
-            <StatusBarItem>
-                <WrapPanel>
-                    <Button
-                            Background="Transparent"
-                            Command="{Binding ShowStartCommand}"
-                            ToolTip="Go Home"
-                            Margin="5,0,5,0">
-                        <Image Source="/MultiAlign;component/Resources/home.png"  />
-                    </Button>
-                    <Button
-                            Margin="5,0,5,0"
-                            Background="Transparent"
-                            Command="{Binding ShowAnalysisCommand}"
-                            ToolTip="Current Analysis" OpacityMask="#FFFEFEFE">
-                        <Image Source="/MultiAlign;component/Resources/MainIcon.png"/>
-                    </Button>
-                </WrapPanel>
-            </StatusBarItem>            
-            <StatusBarItem >
-                <TextBlock Text="{Binding Path=Status, 
-                                            RelativeSource={RelativeSource AncestorType={x:Type Window}}}" />
-             </StatusBarItem>            
-        </StatusBar>
+            <StatusBar 
+                    Grid.Row="2"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    Height="40">
+                <StatusBarItem>
+                    <WrapPanel>
+                        <Button
+                                Background="Transparent"
+                                Command="{Binding ShowStartCommand}"
+                                ToolTip="Go Home"
+                                Margin="5,0,5,0">
+                            <Image Source="/MultiAlign;component/Resources/home.png"  />
+                        </Button>
+                        <Button
+                                Margin="5,0,5,0"
+                                Background="Transparent"
+                                Command="{Binding ShowAnalysisCommand}"
+                                ToolTip="Current Analysis" OpacityMask="#FFFEFEFE">
+                            <Image Source="/MultiAlign;component/Resources/MainIcon.png"/>
+                        </Button>
+                    </WrapPanel>
+                </StatusBarItem>            
+                <StatusBarItem >
+                    <TextBlock Text="{Binding Path=Status, 
+                                                RelativeSource={RelativeSource AncestorType={x:Type Window}}}" />
+                 </StatusBarItem>            
+            </StatusBar>
      </Grid>        
 </Window>

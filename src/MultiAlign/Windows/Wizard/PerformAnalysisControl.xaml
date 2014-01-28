@@ -25,6 +25,7 @@
         <TabControl
             Grid.Row="0"
             Grid.Column="0">
+            <!-- Dataset Selection-->
             <TabItem 
                 Style="{DynamicResource ResourceKey=HidenTabItem}"
                 Header="Dataset Selection"
@@ -32,7 +33,7 @@
                 <wizardViews:DatasetSelection
                     DataContext="{Binding Path=DatasetSelectionViewModel}"/>
             </TabItem>
-            <!--Baseline Selection-->
+            <!-- Baseline Selection-->
             <TabItem 
                 Style="{DynamicResource ResourceKey=HidenTabItem}"
                 Header="Baseline Selection"
@@ -40,7 +41,7 @@
                 <wizardViews:SelectBaselinesAndOptions
                     DataContext="{Binding Path=BaselineSelectionViewModel}" />
             </TabItem>
-            <!--Analysis Options Selection-->
+            <!-- Analysis Options Selection-->
             <TabItem
                 Style="{DynamicResource ResourceKey=HidenTabItem}"
                 Header="Options Selection"
@@ -58,51 +59,49 @@
             </TabItem>
         </TabControl>
 
-        <Grid
-        Grid.Row="1"
-        >
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition/>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="Auto"/>
-        </Grid.ColumnDefinitions>
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
             
-        <Button
-            Style="{DynamicResource ResourceKey=SimpleBrowseButtonStyle}"                                        
-            Grid.Row="1"
-            Grid.Column="0"
-            Height="32"
-            Width="128"
-            Margin="5,5,5,5"
-            Content="Cancel"
-            Command="{Binding Path=CancelCommand}"
-            />
-        <Button
-            Style="{DynamicResource ResourceKey=SimpleButtonStyle}"                            
-            Grid.Row="1"
-            Grid.Column="4"
-            Height="32"
-            Width="128"
-            Margin="5,5,5,5"
-            Content="Back"             
-            Command="{Binding Path=BackCommand}"/>
-        <Button
-            Style="{DynamicResource ResourceKey=SimpleButtonStyle}"                            
-            Grid.Row="1"
-            Grid.Column="5"
-            Height="32"
-            Width="128"
-            Margin="5,5,5,5"
-            Content="Next"            
-            Command="{Binding Path=NextCommand}"
-            IsEnabled="{Binding DatasetCount, Converter={StaticResource ResourceKey=DatasetSelectedConverter}}" />
+            <Button
+                Style="{DynamicResource ResourceKey=SimpleBrowseButtonStyle}"                                        
+                Grid.Row="1"
+                Grid.Column="0"
+                Height="32"
+                Width="128"
+                Margin="5,5,5,5"
+                Content="Cancel"
+                Command="{Binding Path=CancelCommand}"
+                />
+            <Button
+                Style="{DynamicResource ResourceKey=SimpleButtonStyle}"                            
+                Grid.Row="1"
+                Grid.Column="4"
+                Height="32"
+                Width="128"
+                Margin="5,5,5,5"
+                Content="Back"             
+                Command="{Binding Path=BackCommand}"/>
+            <Button
+                Style="{DynamicResource ResourceKey=SimpleButtonStyle}"                            
+                Grid.Row="1"
+                Grid.Column="5"
+                Height="32"
+                Width="128"
+                Margin="5,5,5,5"
+                Content="Next"            
+                Command="{Binding Path=NextCommand}"
+                IsEnabled="{Binding DatasetCount, Converter={StaticResource ResourceKey=DatasetSelectedConverter}}" />
         </Grid>
     </Grid>
 </UserControl>

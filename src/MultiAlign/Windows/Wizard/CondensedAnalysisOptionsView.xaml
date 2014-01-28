@@ -21,6 +21,20 @@
                 </StackPanel>
             </Border>
         </DataTemplate>
+        <DataTemplate x:Key="AlgorithmTemplate">
+            <Border BorderThickness="1"                
+                Margin="5">
+                <StackPanel Orientation="Horizontal">
+                    <Image
+                        Margin="5"                        
+                        Width="12"
+                        Height="12"
+                        Source="/MultiAlign;component/Resources/gantt-chart-64.png"
+                        />
+                    <TextBlock Margin="5" Text="{Binding Name}" />
+                </StackPanel>
+            </Border>
+        </DataTemplate>
         <Style TargetType="{x:Type ComboBox}">
             <Setter Property="Width">
                 <Setter.Value>

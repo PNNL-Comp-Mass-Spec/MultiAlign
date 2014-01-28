@@ -146,6 +146,7 @@
     <Compile Include="Data\MultiAlignAnalysisValidator.cs" />
     <Compile Include="Data\RecentAnalysis.cs" />
     <Compile Include="Data\StatusMessageWrapper.cs" />
+    <Compile Include="Data\ThreadSafeDispatcher.cs" />
     <Compile Include="ViewModels\InstrumentPresetFactory.cs" />
     <Compile Include="ViewModels\StateModeratorViewModel.cs" />
     <Compile Include="IO\ManassaWorkspaceWriter.cs" />
@@ -156,6 +157,7 @@
     <Compile Include="ViewModels\RecentAnalysisViewModel.cs" />
     <Compile Include="ViewModels\Wizard\AdvancedOptionsViewModel.cs" />
     <Compile Include="ViewModels\Wizard\AnalysisDatasetSelectionViewModel.cs" />
+    <Compile Include="ViewModels\Wizard\AnalysisLoadingViewModel.cs" />
     <Compile Include="ViewModels\Wizard\AnalysisNamingViewModel.cs" />
     <Compile Include="ViewModels\Wizard\AnalysisRunningViewModel.cs" />
     <Compile Include="ViewModels\Wizard\AnalysisSetupViewModel.cs" />
@@ -200,6 +202,7 @@
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="ViewModels\Wizard\AnalysisBaselineSelectionViewModel.cs" />
     <Compile Include="ViewModels\InstrumentPresetViewModel.cs" />
+    <Compile Include="ViewModels\Wizard\AnalysisStatusArgs.cs" />
     <Compile Include="Windows\FilePathFinder.xaml.cs">
       <DependentUpon>FilePathFinder.xaml</DependentUpon>
     </Compile>
@@ -324,8 +327,8 @@
     <Compile Include="Windows\Wizard\AnalysisOptionsView.xaml.cs">
       <DependentUpon>AnalysisOptionsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\Wizard\AnalysisRunningControl.xaml.cs">
-      <DependentUpon>AnalysisRunningControl.xaml</DependentUpon>
+    <Compile Include="Windows\Wizard\AnalysisRunningView.xaml.cs">
+      <DependentUpon>AnalysisRunningView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\Viewers\Databases\DatabaseSearchTool.xaml.cs">
       <DependentUpon>DatabaseSearchTool.xaml</DependentUpon>
@@ -520,7 +523,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\Wizard\AnalysisRunningControl.xaml">
+    <Page Include="Windows\Wizard\AnalysisRunningView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

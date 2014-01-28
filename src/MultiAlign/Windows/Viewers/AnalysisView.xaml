@@ -32,9 +32,9 @@
                 Header="Cluster Data">
                 <Grid>        
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="20*"/>
+                        <ColumnDefinition Width="256"/>
                         <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="80*"/>
+                        <ColumnDefinition Width="70*"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
@@ -70,7 +70,6 @@
                             Header="Cluster Details">
                             <clusterViews:ClusterControl
                                 Margin="5,5,5,5"
-                                x:Name="m_clusterControl"
                                 UMCFeature="{Binding Path=ClusterTree.SelectedFeature}"
                                 SelectedSpectrum="{Binding Path=ClusterTree.SelectedSpectrum}"
                                 UsesDriftTime="{Binding Path=UsesDriftTime, NotifyOnSourceUpdated=True}"                        

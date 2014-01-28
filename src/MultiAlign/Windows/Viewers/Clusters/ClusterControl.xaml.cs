@@ -516,6 +516,7 @@ namespace MultiAlign.Windows.Viewers.Clusters
                 UMCClusterLightMatched matchedCluster = (UMCClusterLightMatched)e.NewValue;                             
                 thisSender.UpdatePlotsWithClusterData(matchedCluster);                
                 thisSender.m_adjustingFeaturePlots = false;
+                thisSender.UMCFeature = matchedCluster.Cluster.UMCList[0];
             }
         }
         #endregion

@@ -19,6 +19,80 @@
     <UserControl.Resources>
         <converters:BoolVisibilityConverter x:Key="UseDriftTimeConverter" FalseVisibility="Collapsed"></converters:BoolVisibilityConverter>
         <converters:BoolWidthConverter x:Key="UseDriftTimeWidthConverter" ></converters:BoolWidthConverter>
+
+        <DataTemplate x:Key="UMCFeatureTemplate">
+            <Border BorderThickness="1"                
+                Margin="5">
+                <Grid >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Image
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        Margin="5" 
+                        Width="16" 
+                        Height="16"                        
+                        Grid.RowSpan="2"
+                        Source="/MultiAlign;component/Resources/molecule.png"
+                        />
+                    <TextBlock 
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        FontSize="14"
+                        Margin="5" Text="Dataset" />
+                    <TextBlock 
+                        Grid.Row="0"
+                        Grid.Column="2"
+                        FontSize="14"
+                        Margin="5" Text="{Binding GroupID}" />
+
+                    <TextBlock
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        Margin="5" Text="Mass" />
+                    <TextBlock
+                        Grid.Row="1"
+                        Grid.Column="2"
+                        Margin="5" Text="NET"/>
+                    <TextBlock
+                        Grid.Row="1"
+                        Grid.Column="3"
+                        Margin="5" Text="Drift Time" />    
+                    
+                    <TextBlock
+                        Grid.Row="2"
+                        Grid.Column="1"
+                        Margin="5" Text="{Binding MassMonoisotopicAligned, StringFormat=N2}" />
+                    <TextBlock
+                        Grid.Row="2"
+                        Grid.Column="2"
+                        Margin="5" Text="{Binding RetentionTime, StringFormat=N2}" />
+                    <TextBlock
+                        Grid.Row="2"
+                        Grid.Column="3"
+                        Margin="5" Text="{Binding DriftTime, StringFormat=N2}" />
+
+                    <TextBlock
+                        Grid.Row="3"
+                        Grid.Column="1"
+                        Margin="5" Text="Charge State" />
+                    <TextBlock
+                        Grid.Row="3"
+                        Grid.Column="2"
+                        Margin="5" Text="{Binding ChargeState}" />
+                </Grid>
+            </Border>
+        </DataTemplate>
     </UserControl.Resources>
 
     <DockPanel>
@@ -134,13 +208,14 @@
                         Grid.Row="0"
                         Grid.Column="0">Features</Label>
                 <ComboBox
-                            FontSize="12"
+                            FontSize="14"
                             HorizontalContentAlignment="Center"
                             SelectedItem="{Binding UMCFeature, 
-                            RelativeSource={RelativeSource AncestorType={x:Type UserControl}},
-                            UpdateSourceTrigger=PropertyChanged,
-                            Mode=TwoWay,
-                            NotifyOnSourceUpdated=True}"
+                                        RelativeSource={RelativeSource AncestorType={x:Type UserControl}},
+                                        UpdateSourceTrigger=PropertyChanged,
+                                        Mode=TwoWay,
+                                        NotifyOnSourceUpdated=True}"
+                            ItemTemplate="{StaticResource UMCFeatureTemplate}"
                             ItemsSource="{Binding Features, 
                             RelativeSource={RelativeSource AncestorType={x:Type UserControl}},
                             UpdateSourceTrigger=PropertyChanged,
@@ -262,3 +337,5 @@
     </Grid>
     </DockPanel>
 </UserControl>
+
+    

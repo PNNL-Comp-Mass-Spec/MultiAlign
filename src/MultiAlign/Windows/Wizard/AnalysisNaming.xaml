@@ -8,13 +8,13 @@
         Background="White"
         Margin="5">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="72"/>
+            <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="96"/>
             <ColumnDefinition Width="24"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="48"/>
             <RowDefinition Height="48"/>
             <RowDefinition Height="48"/>
@@ -22,13 +22,12 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Label             
-            FontSize="24"
-            FontStyle="Italic"
+            FontSize="24"            
             Foreground="Gray"
-            HorizontalContentAlignment="Center"
+            HorizontalContentAlignment="Left"
             Grid.Row="1"
             Grid.Column="1">
-            First Select a Place To Save Your Data...
+            Output Data Directory
         </Label>
         <TextBox
             FontSize="24"
@@ -38,27 +37,24 @@
             Margin="5"          
             Grid.Column="1"             
             />
-        <Button
-            x:Name="BrowseButton"
+        <Button            
             Margin="5,5,5,5"
             Style="{DynamicResource ResourceKey=SimpleBrowseButtonStyle}"
             Grid.Column="2"
             Grid.Row="2"
-            Width="72"
-            
+            Width="72"            
             BorderThickness="2"
             VerticalAlignment="Center"
             HorizontalAlignment="Center"       
             Command="{Binding Path=BrowseCommand}"
             Content="Browse"  />
         <Label             
-            FontSize="24"
-            FontStyle="Italic"
-            Foreground="Firebrick"
-            HorizontalContentAlignment="Center"
+            FontSize="24"            
+            Foreground="Gray"
+            HorizontalContentAlignment="Left"
             Grid.Row="3"
             Grid.Column="1">
-            ...then give your analysis a name...
+            Analysis Name
         </Label>
         <TextBox
             FontSize="24"

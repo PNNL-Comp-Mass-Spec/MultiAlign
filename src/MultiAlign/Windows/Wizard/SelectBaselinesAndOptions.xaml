@@ -80,13 +80,15 @@
                     IsEnabled="{Binding Path=Analysis.Options.AlignmentOptions.IsAlignmentBaselineAMasstagDB, 
                             Converter={StaticResource ResourceKey=BoolInverter}}"
                     Grid.Column="2"
+                    VerticalContentAlignment="Center"
+                    HorizontalContentAlignment="Left"
                     Grid.Row="1"
                     Margin="5"
-                    Height="32"
+                    FontSize="24"
                     x:Name="DatasetComboBox"
                     DisplayMemberPath="DatasetName"
                     ItemsSource="{Binding Path=Analysis.MetaData.Datasets}"
-                    SelectedItem="{Binding Path=Analysis.MetaData.BaselineDataset, Mode=TwoWay}" FontSize="14">
+                    SelectedItem="{Binding Path=Analysis.MetaData.BaselineDataset, Mode=TwoWay}" >
                 </ComboBox>
                 <Canvas
                     Width="16"
