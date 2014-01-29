@@ -43,7 +43,7 @@ xcopy /S .\MultiAlignParameterFileEditor\bin\x86\release\*  	%consolex86%\MultiA
 xcopy /S .\MultiAlignConsole\bin\x86\release\*  		%consolex86%\MultiAlignConsole
 xcopy /S .\RevisionHistory.txt 					%consolex86%
 
-xcopy /S .\Manassa\bin\x86\release\*  				%guix86%\MultiAlign
+xcopy /S .\MultiAlign\bin\x86\release\*  				%guix86%\MultiAlign
 xcopy /S .\MultiAlignParameterFileEditor\bin\x86\release\*  	%guix86%\MultiAlignParameterFileEditor
 xcopy /S .\RevisionHistory.txt 					%guix86%
 
@@ -52,7 +52,7 @@ xcopy /S .\MultiAlignConsole\bin\x64\release\*  		%consolex64%\MultiAlignConsole
 xcopy /S .\RevisionHistory.txt 					%consolex64%
 
 xcopy /S .\MultiAlignParameterFileEditor\bin\x64\release\*  	%guix64%\MultiAlignParameterFileEditor
-xcopy /S .\Manassa\bin\x64\release\*  				%guix64%\MultiAlign
+xcopy /S .\MultiAlign\bin\x64\release\*  				%guix64%\MultiAlign
 xcopy /S .\RevisionHistory.txt 					%guix64%
 
 ECHO Cleaning up directories

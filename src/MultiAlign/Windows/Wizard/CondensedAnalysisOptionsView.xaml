@@ -373,7 +373,7 @@
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="128"/>
+                                <ColumnDefinition Width="164"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             
@@ -388,7 +388,7 @@
                                 Margin="5"
                                 Grid.Row="0"
                                 Grid.Column="1"                                
-                                Text="{Binding Path=MinimumScans, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
+                                Text="{Binding Path=MinimumFeatureLength, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
                             <Label
                                 Foreground="Gray"
                                 FontSize="14"
@@ -410,7 +410,7 @@
                                 Margin="5"
                                 Grid.Row="1"
                                 Grid.Column="1"                                
-                                Text="{Binding Path=IsotopicFitScore, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
+                                Text="{Binding Path=DeisotopingFitScore, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
 
                             <Label
                                 Foreground="Gray"
