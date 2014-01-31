@@ -28,6 +28,11 @@ namespace MultiAlign.ViewModels.TreeView
             StatisticTreeViewItem x = new StatisticTreeViewItem(value, name);
             m_items.Add(x);
         }
+        public void AddStatistic(string name, double value, string format)
+        {
+            StatisticTreeViewItem x = new StatisticTreeViewItem(value, name, format);
+            m_items.Add(x);
+        }
 
         public void AddString(string name, string value)
         {

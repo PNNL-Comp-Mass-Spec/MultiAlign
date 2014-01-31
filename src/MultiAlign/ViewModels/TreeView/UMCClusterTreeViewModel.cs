@@ -137,18 +137,24 @@ namespace MultiAlign.ViewModels.TreeView
             if (m_loaded)
                 return;
 
-            m_cluster.Cluster.ReconstructUMCCluster(SingletonDataProviders.Providers, true, true);
-
-            foreach (TreeItemViewModel treeModel in m_items)
+            try
             {
-                treeModel.LoadChildren();
+                m_cluster.Cluster.ReconstructUMCCluster(SingletonDataProviders.Providers, true, true);
+
+                foreach (TreeItemViewModel treeModel in m_items)
+                {
+                    treeModel.LoadChildren();
+                }
+
+
+                foreach (TreeItemViewModel treeModel in m_allIdentifications.Items)
+                {
+                    treeModel.LoadChildren();
+                }
+            }catch
+            {
+                //TODO: Handle error?!
             }
-
-
-            foreach (TreeItemViewModel treeModel in m_allIdentifications.Items)
-            {
-                treeModel.LoadChildren();
-            }   
         }
     }
 }

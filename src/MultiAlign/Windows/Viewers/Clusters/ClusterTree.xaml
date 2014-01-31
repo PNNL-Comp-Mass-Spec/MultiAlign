@@ -192,7 +192,7 @@
                                 VerticalAlignment="Center"
                                 HorizontalAlignment="Left"
                                 Source="/MultiAlign;component/Resources/circle-32.png"/>
-                            <Label Grid.Row="0" Grid.Column="1" Content="{Binding Path=Name}" Margin="0,0,5,0"/>
+                            <Label Grid.Row="0" Grid.Column="1" Content="{Binding Path=Name, StringFormat={Binding Path=Format}}" Margin="0,0,5,0"/>
                             <Label Grid.Row="0" Grid.Column="2" Content="{Binding Path=Value}"/>
                         </Grid>
                 </HierarchicalDataTemplate>

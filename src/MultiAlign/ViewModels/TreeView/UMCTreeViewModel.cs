@@ -38,13 +38,14 @@ namespace MultiAlign.ViewModels.TreeView
 
             AddStatistic("Id",          m_feature.ID);
             AddStatistic("Dataset Id",  m_feature.GroupID);
-            AddStatistic("Mass",        m_feature.MassMonoisotopicAligned);
-            AddStatistic("NET",         m_feature.RetentionTime);
+            AddStatistic("Mass",        m_feature.MassMonoisotopicAligned, "N2");
+            AddStatistic("NET",         m_feature.RetentionTime, "N2");
             if (m_feature.DriftTime > 0)
             {
-                AddStatistic("Drift Time", m_feature.DriftTime);
+                AddStatistic("Drift Time", m_feature.DriftTime, "N2");
             }
-            AddStatistic("Charge",      m_feature.ChargeState);            
+            AddStatistic("Charge",      m_feature.ChargeState);  
+            
         }
 
         

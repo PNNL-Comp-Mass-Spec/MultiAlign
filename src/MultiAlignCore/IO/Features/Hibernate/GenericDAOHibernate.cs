@@ -230,8 +230,6 @@ namespace MultiAlignCore.IO.Features.Hibernate
             }
             return list;
 
-            MSSpectra x;
-            x.CollisionType = CollisionType.HID;
         }
         #endregion
     }

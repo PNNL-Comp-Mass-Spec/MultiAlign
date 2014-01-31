@@ -42,7 +42,7 @@ namespace MultiAlign.ViewModels.Wizard
             {
                 if (m_configuration.AnalysisPath != value)
                 {
-                    m_configuration.Analysis.MetaData.AnalysisName = value;
+                    m_configuration.Analysis.MetaData.AnalysisPath = value;
                     m_configuration.AnalysisPath = value;
                     OnPropertyChanged("Path");
                 }
@@ -61,7 +61,7 @@ namespace MultiAlign.ViewModels.Wizard
             {
                 if (m_configuration.AnalysisName != value)
                 {
-                    m_configuration.Analysis.MetaData.AnalysisPath = value;
+                    m_configuration.Analysis.MetaData.AnalysisName = value;
                     m_configuration.AnalysisName = value;
                     OnPropertyChanged("Name");
                 }
