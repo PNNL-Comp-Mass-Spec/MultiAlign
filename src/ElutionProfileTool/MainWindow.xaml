@@ -80,7 +80,7 @@
                         >
                        Retention Time (min)
                     </Label>
-                    <WindowsFormsHost
+                    <!--<WindowsFormsHost
                         Margin="15"
                         Grid.Row="1"
                         >
@@ -92,7 +92,7 @@
                             YAxisLabel="Intensity"
                             x:Name="m_plot"/>
 
-                    </WindowsFormsHost>
+                    </WindowsFormsHost>-->
                 </Grid>
                 <StackPanel            
                     Margin="5,25,5,5"

@@ -45,8 +45,9 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="32"></ColumnDefinition>
                     <ColumnDefinition Width="100"></ColumnDefinition>
-                    <ColumnDefinition Width="25*"></ColumnDefinition>
-                    <ColumnDefinition Width="75*"></ColumnDefinition>
+                    <ColumnDefinition Width="124"></ColumnDefinition>
+                    <ColumnDefinition Width="124"></ColumnDefinition>
+                    <ColumnDefinition Width="124"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"></RowDefinition>
@@ -55,34 +56,19 @@
                     <RowDefinition Height="Auto"></RowDefinition>
                     <RowDefinition Height="*"></RowDefinition>
                 </Grid.RowDefinitions>
-                
-                <Image
-                            Grid.Row="0"
-                            Grid.Column="0"
-                            Width="16"
-                            Height="16"
-                            Source="/MultiAlign;component/Resources/database-32.png"
-                            />
                 <TextBlock 
                             Margin="5"
                             Grid.Row="0"
                             Grid.Column="1"
-                            Grid.ColumnSpan="2"                            
+                            Grid.ColumnSpan="3"                            
                             FontSize="20"                                       
                             HorizontalAlignment="Stretch">
                             <TextBlock.Text>                                                            
                                     <Binding Path="Dataset.Name" />                    
                             </TextBlock.Text>
                 </TextBlock>
-
-                <Image
-                            Grid.Row="1"
-                            Grid.Column="0"
-                            Width="16"
-                            Height="16"
-                            Source="/MultiAlign;component/Resources/server-32.png"
-                            />
                 <Label
+                            FontSize="16"
                             Margin="5"
                             Grid.Row="1"
                             Grid.Column="1"
@@ -90,25 +76,22 @@
                     Scan
                 </Label>
                 <TextBlock 
+                            FontSize="16"
                             Margin="5"
                             Grid.Row="1"
-                            Grid.Column="2"
-                            FontSize="14"                                                                                                     
-                            HorizontalAlignment="Stretch">
-                            <TextBlock.Text>                                                            
-                                    <Binding Path="Spectrum.Scan" />                    
-                            </TextBlock.Text>
-                </TextBlock>
-
+                            Grid.Column="2"                     
+                            Text="{Binding Path=Spectrum.Scan, StringFormat=N2}"
+                            HorizontalAlignment="Stretch"/>
                 <Image
                             Margin="5"
-                            Grid.Row="2"
+                            Grid.Row="0"
                             Grid.Column="0"
                             Width="16"
                             Height="16"
                             Source="/MultiAlign;component/Resources/text-file-3-32.png"
                             />
                 <Label
+                            FontSize="16"
                             Margin="5"
                             Grid.Row="2"
                             Grid.Column="1"
@@ -116,39 +99,58 @@
                     Precursor M/z
                 </Label>
                 <TextBlock 
+                            FontSize="16"
                             Margin="5"
                             Grid.Row="2"
-                            Grid.Column="2"
-                            FontSize="14"                                                                                                     
-                            HorizontalAlignment="Stretch">
-                            <TextBlock.Text>                                                            
-                                    <Binding Path="Spectrum.PrecursorMZ" />                    
-                            </TextBlock.Text>
-                </TextBlock>
+                            Grid.Column="2"   
+                                 Text="{Binding Path=Spectrum.PrecursorMZ , StringFormat=N2}"                                                                     
+                            HorizontalAlignment="Stretch"/>
 
-                <Image
-                                Grid.Row="3"
-                                Grid.Column="0"
-                                Width="16"
-                                Height="16"
-                                Source="/MultiAlign;component/Resources/molecule.png"
-                                />
                 <Label
-                            Grid.Row="3"
-                            Grid.Column="1"
-                            Margin="5">
-                    Identifications
+                            FontSize="16"
+                            Margin="5"
+                            Grid.Row="1"
+                            Grid.Column="3"
+                            >
+                    Collision Type
                 </Label>
-                <ListBox 
-                    Margin="5"            
-                    Grid.Column="2"
-                    Grid.Row="3"  
-                    Grid.RowSpan="2"
-                    FontSize="14"
-                    HorizontalContentAlignment="Stretch"
-                    SelectedItem="{Binding Path=SelectedPeptide, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"
-                    ItemTemplate="{StaticResource MSSpectraDataTemplate}"
-                    ItemsSource="{Binding Path=Peptides, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True}" />                
+                <TextBlock 
+                            FontSize="16"
+                            Margin="5"
+                            Grid.Row="1"
+                            Grid.Column="4"                       
+                            Text="{Binding Path=Spectrum.CollisionType}"
+                            HorizontalAlignment="Stretch"/>
+                <Label
+                            FontSize="16"
+                            Margin="5"
+                            Grid.Row="2"
+                            Grid.Column="3"
+                            >
+                    Parent Charge
+                </Label>
+                <TextBlock 
+                            Margin="5"
+                            Grid.Row="2"
+                            Grid.Column="4"
+                            FontSize="16"   
+                            Text="{Binding Path=Spectrum.PrecursorChargeState , StringFormat=N2}"                                                                     
+                            HorizontalAlignment="Stretch"/>
+                <Expander      
+                        Grid.Column="1"
+                        Grid.Row="3"  
+                        Grid.RowSpan="2"
+                        Grid.ColumnSpan="4"
+                        IsExpanded="True"
+                        Header="Identifications">
+                    <ListBox 
+                        Margin="5"      
+                        FontSize="14"
+                        HorizontalContentAlignment="Stretch"
+                        SelectedItem="{Binding Path=SelectedPeptide, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"
+                        ItemTemplate="{StaticResource MSSpectraDataTemplate}"
+                        ItemsSource="{Binding Path=Peptides, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True}" />
+                </Expander>
             </Grid>
         </Border>
     </Grid>

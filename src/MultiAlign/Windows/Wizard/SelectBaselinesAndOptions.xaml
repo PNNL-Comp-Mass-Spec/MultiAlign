@@ -9,13 +9,8 @@
              Name="thisControl"
              d:DesignHeight="600" d:DesignWidth="600">
     <UserControl.Resources>
-        <converters:BoolInverter            x:Key="BoolInverter"/>
-        <converters:DatasetPathConverter    x:Key="DatasetNameConverter"/>
-        <converters:DatasetColorConverter   x:Key="datasetConverter"   IsDataset="True"/>
-        <converters:DatasetColorConverter   x:Key="databaseConverter"  IsDataset="False"/>
 
-        <converters:DatasetColorConverter   x:Key="databaseLocalConverter"   IsDataset="True"/>
-        <converters:DatasetColorConverter   x:Key="databaseServerConverter"  IsDataset="False"/>
+
     </UserControl.Resources>
     <Grid
         Background="White"
@@ -34,108 +29,70 @@
             FontSize="20"
             Foreground="DarkGray"
             Margin="5"
-            >   
+            >
             <Grid Margin="5">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <Canvas
-                    Grid.Row="1"
-                    Grid.Column="0"
-                    Width="16"
-                    Height="16"
-                    >
-                    <Rectangle
-                        Width="16"
-                        Height="16"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center">
-                        <Rectangle.Fill>
-                            <SolidColorBrush
-                                Color="{Binding Path=Analysis.Options.AlignmentOptions.IsAlignmentBaselineAMasstagDB, 
-                                UpdateSourceTrigger=PropertyChanged,
-                                Converter={StaticResource ResourceKey=datasetConverter}}"
-                                >
-                            </SolidColorBrush>
-                        </Rectangle.Fill>
-                    </Rectangle>
-                </Canvas>
-                <Button
-                    Style="{DynamicResource ResourceKey=SimpleButtonStyle}"     
-                    Grid.Row="1"
-                    Grid.Column="1"
-                    Width="156"
-                    Height="64"
-                    Margin="10"                    
-                    Content="Align Dataset(s) to Dataset" >                    
-                </Button>
+
+                <RadioButton                 
+                        IsChecked="{Binding IsBaselineDataset}"
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        Margin="5">
+                    <Button 
+                        Style="{DynamicResource ResourceKey=SimpleButtonStyle}"
+                        Width="180"
+                        Height="64"     
+                        Command="{Binding SetBaselineToDataset}"
+                        Content="Align Dataset(s) to Dataset" Margin="0" />
+                </RadioButton>
                 <ComboBox                    
-                    IsEnabled="{Binding Path=Analysis.Options.AlignmentOptions.IsAlignmentBaselineAMasstagDB, 
-                            Converter={StaticResource ResourceKey=BoolInverter}}"
-                    Grid.Column="2"
+                    IsEnabled="{Binding Path=IsBaselineDataset}"                    
                     VerticalContentAlignment="Center"
                     HorizontalContentAlignment="Left"
-                    Grid.Row="1"
-                    Margin="5"
-                    FontSize="24"
-                    x:Name="DatasetComboBox"
-                    DisplayMemberPath="DatasetName"
-                    ItemsSource="{Binding Path=Analysis.MetaData.Datasets}"
-                    SelectedItem="{Binding Path=Analysis.MetaData.BaselineDataset, Mode=TwoWay}" >
-                </ComboBox>
-                <Canvas
-                    Width="16"
-                    Height="16"
-                    Grid.Row="2"
-                    Grid.Column="0">
-                    <Rectangle
-                        Width="16"
-                        Height="16"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center">
-                        <Rectangle.Fill>
-                            <SolidColorBrush
-                                Color="{Binding Path=Analysis.Options.AlignmentOptions.IsAlignmentBaselineAMasstagDB, 
-                                
-                                UpdateSourceTrigger=PropertyChanged,
-                                    Converter={StaticResource ResourceKey=databaseConverter}}"
-                                >                                
-                            </SolidColorBrush>
-                        </Rectangle.Fill>
-                    </Rectangle>
-                </Canvas>
-                <Button
-                    Style="{DynamicResource ResourceKey=SimpleButtonStyle}"    
-                    Width="156"
-                    Height="64"
-                    Margin="10"
-                    Grid.Row="2"
+                    HorizontalAlignment="Stretch"
+                    Grid.Row="0"
                     Grid.Column="1"
-                    VerticalAlignment="Center"                    
-                    Content="Align Dataset(s) to Database"  />
+                    FontSize="16"
+                    Margin="5"
+                    DisplayMemberPath="Name"
+                    ItemsSource="{Binding Path=Datasets}"
+                    SelectedItem="{Binding Path=SelectedDataset, Mode=TwoWay}" />
+                <RadioButton
+                        IsChecked="{Binding Path=IsBaselineDatabase}"
+                        Margin="5"
+                        Grid.Row="1"
+                        Grid.Column="0">
+                    <Button
+                        Style="{DynamicResource ResourceKey=SimpleButtonStyle}" 
+                        Width="180"
+                        Height="64"
+                        Command="{Binding SetBaselineToDatabase}"
+                        VerticalAlignment="Center"                    
+                        Content="Align Dataset(s) to Database"  />
+                </RadioButton>
+
                 <Label          
-                    IsEnabled="{Binding Path=Analysis.Options.AlignmentOptions.IsAlignmentBaselineAMasstagDB, 
-                                UpdateSourceTrigger=PropertyChanged}"                    
+                    Visibility="{Binding  RequiresDatabaseSelection}"                    
                     VerticalContentAlignment="Center"
-                    Grid.Row="2"
-                    Grid.Column="2">
+                    Grid.Row="1"
+                    Grid.Column="1">
                     You must select a database below.
                 </Label>
             </Grid>
-            
+
         </GroupBox>
         <GroupBox
             Grid.Row="1"
             FontSize="20"
             Foreground="DarkGray"
-            Header="Mass Tag Database for Alignment and/or Identification"  
+            Header="Database for Alignment and/or Identification"  
             Margin="5"
             >
             <Grid                     
@@ -145,20 +102,28 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                
+
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition />
-                    <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <RadioButton
                     Grid.Row="0"
                     Grid.Column="0"
                     Margin="5"
+                    IsChecked="{Binding Path=IsDatabaseLocal, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"
                     FontSize="18">
-                    Use Local Database
+                    <Button
+                        Width="180"
+                        Height="64"
+                        Command="{Binding SetDatabaseToLocal}"
+                        Style="{DynamicResource ResourceKey=SimpleButtonStyle}"  
+                        >
+                        Use Local Database
+                    </Button>
                 </RadioButton>
                 <RadioButton
                     Grid.Row="1"
@@ -166,42 +131,54 @@
                     Margin="5"
                     IsChecked="{Binding Path=IsDatabaseDms, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"
                     FontSize="18">
-                    Use Server Database
+                    <Button
+                        Width="180"
+                        Height="64"
+                        Command="{Binding SetDatabaseToDms}"
+                        Style="{DynamicResource ResourceKey=SimpleButtonStyle}">
+                        Use Server Database
+                    </Button>
                 </RadioButton>
-
-                <Label Grid.Column="1" 
-                             Grid.Row="0" 
-                             Content="{Binding Path=Analysis.Options.MassTagDatabaseOptions.DatabaseFilePath, Mode=TwoWay}"
-                             Margin="10,5,10,5"/>                
+                <Label       Grid.Column="1" 
+                             Grid.Row="0"                        
+                             HorizontalContentAlignment="Left"
+                             VerticalContentAlignment="Center"
+                             Content="{Binding Path=DatabaseFilePath, Mode=TwoWay}"
+                             Margin="10,5,10,5"/>
                 <Button Grid.Column="2" 
                         Grid.Row="0" 
+                        Width="180"
+                        Height="64"
+                        Command="{Binding FindLocalDatabase}"
                         Style="{DynamicResource ResourceKey=SimpleBrowseButtonStyle}"
-                        Width="100" Margin="5,5,5,0" 
-                        >Browse</Button>                
-                
+                        Margin="5"
+                        Content="Browse"/>
+
                 <Label      Grid.Column="1" 
                             Grid.Row="1" 
+                            HorizontalContentAlignment="Left"
+                            VerticalContentAlignment="Center"
                             Content="{Binding Path=SelectedDatabaseServer.DatabaseName, Mode=OneWay}"
-                            Margin="10,5,10,5"/>
+                            Margin="5"/>
 
                 <Button Grid.Column="2"
                         Grid.Row="1" 
-                        Style="{DynamicResource ResourceKey=SimpleBrowseButtonStyle}"
-                        Width="100" 
-                        Margin="5,5,5,0" >Find</Button>
-                <Label                        
-                    Visibility="Hidden"
-                            Grid.Column="1" 
-                            Grid.Row="2" 
-                            Content="{Binding Path=Analysis.Options.MassTagDatabaseOptions.DatabaseName}"
-                            Margin="5"/>
-                <Button     Grid.Column="2"
-                            Grid.Row="2" 
-                            Visibility="Hidden"                                        
-                            HorizontalAlignment="Right" 
-                            Style="{DynamicResource ResourceKey=SimpleBrowseButtonStyle}"
-                            Width="100" 
-                            Margin="5" >Select MTDB</Button>                
+                        Command="{Binding FindDmsDatabase}"
+                        Style="{DynamicResource ResourceKey=SimpleBrowseButtonStyle}"                        
+                        Width="180"
+                        Height="64"
+                        Margin="5">Find</Button>
+
+                
+                    <Button Grid.Column="0"
+                        Grid.Row="2" 
+                        HorizontalAlignment="Right"
+                        Command="{Binding ClearDatabase}"
+                        Style="{DynamicResource ResourceKey=SimpleButtonStyle}"                        
+                        Width="180"
+                        Height="64"
+                        Margin="5">Don't use database</Button>
+                
             </Grid>
         </GroupBox>
     </Grid>

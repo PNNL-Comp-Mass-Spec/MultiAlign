@@ -31,5 +31,4 @@ namespace MultiAlignCore.Data.MassTags
         /// </summary>
         DirectInfusionIms
     }
-
 }

@@ -12,11 +12,11 @@ namespace MultiAlign.ViewModels.TreeView
 
     public class ClusterSelectedEventArgs : EventArgs
     {
-        public ClusterSelectedEventArgs(UMCClusterLightMatched cluster)
+        public ClusterSelectedEventArgs(UMCClusterTreeViewModel cluster)
         {
             Cluster = cluster;
         }
-        public UMCClusterLightMatched Cluster { get; private set; }
+        public UMCClusterTreeViewModel Cluster { get; private set; }
     }
 
 

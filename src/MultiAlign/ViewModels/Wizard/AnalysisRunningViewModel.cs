@@ -46,6 +46,8 @@ namespace MultiAlign.ViewModels.Wizard
             Controller.CancelAnalysis();
         }
 
+        
+
         #region Logging Handlers
         /// <summary>
         /// Stops the routing of the logger messages for the UI.

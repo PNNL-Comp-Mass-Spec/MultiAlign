@@ -77,7 +77,7 @@ namespace MultiAlign.ViewModels.TreeView
 
             if (ClusterSelected != null)
             {
-                ClusterSelected(this, new ClusterSelectedEventArgs(model.Cluster));
+                ClusterSelected(this, new ClusterSelectedEventArgs(model));
             }
 
             if (model.Cluster.Cluster.Features.Count > 0)

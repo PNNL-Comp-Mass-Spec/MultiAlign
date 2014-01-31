@@ -261,5 +261,7 @@ namespace MultiAlignCore.Data
         public event PropertyChangedEventHandler PropertyChanged;
 
         #endregion
+
+
     }
 }

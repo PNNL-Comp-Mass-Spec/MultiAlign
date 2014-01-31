@@ -33,7 +33,7 @@ namespace MultiAlign.ViewModels
                 {
                     m_cluster = value;
                     if (m_cluster != null)
-                    {
+                    {                        
                         Name = m_cluster.ToString();
                     }
                     OnPropertyChanged("UMCClusterLightMatched");

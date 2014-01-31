@@ -117,7 +117,7 @@ namespace MultiAlignCore.Algorithms.Features
                 }
                 );
 
-            
+           
             int i = 0;
             foreach (UMCLight featureA in featuresA)
             {

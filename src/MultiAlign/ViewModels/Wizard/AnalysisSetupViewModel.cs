@@ -243,6 +243,7 @@ namespace MultiAlign.ViewModels.Analysis
                     CurrentStep = AnalysisSetupStep.OptionsSelection;
                     break;
                 case AnalysisSetupStep.OptionsSelection:
+                    BaselineSelectionViewModel.UpdateDatasets();
                     CurrentStep = AnalysisSetupStep.BaselineSelection;
                     break;
                 case AnalysisSetupStep.BaselineSelection:
@@ -275,6 +276,7 @@ namespace MultiAlign.ViewModels.Analysis
                     CurrentStep = AnalysisSetupStep.OptionsSelection;
                     break;
                 case AnalysisSetupStep.Naming:
+                    BaselineSelectionViewModel.UpdateDatasets();
                     CurrentStep = AnalysisSetupStep.BaselineSelection;
                     break;
                 case AnalysisSetupStep.Started:

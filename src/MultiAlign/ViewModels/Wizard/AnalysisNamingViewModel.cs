@@ -25,7 +25,7 @@ namespace MultiAlign.ViewModels.Wizard
 
             BrowseFolderCommand command = new BrowseFolderCommand();
             command.FolderSelected     += new EventHandler<Data.OpenAnalysisArgs>(command_FolderSelected);
-            
+            BrowseCommand = command;
         }
 
 

@@ -10,12 +10,22 @@ namespace MultiAlign.Commands
     public class BrowseFolderCommand: ICommand
     {
         
-        private System.Windows.Forms.FolderBrowserDialog m_folderBrowser;
+        private Ookii.Dialogs.VistaFolderBrowserDialog m_folderBrowser;
         public event EventHandler<OpenAnalysisArgs> FolderSelected;
+        private Action<string> m_action;
 
         public BrowseFolderCommand()
         {
-            m_folderBrowser = new System.Windows.Forms.FolderBrowserDialog();            
+            m_folderBrowser = new Ookii.Dialogs.VistaFolderBrowserDialog();
+            m_folderBrowser.ShowNewFolderButton = true;
+        }
+
+        public BrowseFolderCommand(Action<string> actionOnExecute)
+        {
+            m_folderBrowser = new Ookii.Dialogs.VistaFolderBrowserDialog();
+            m_folderBrowser.ShowNewFolderButton = true;
+
+            m_action = actionOnExecute;
         }
 
         public bool CanExecute(object parameter)
@@ -26,8 +36,7 @@ namespace MultiAlign.Commands
         public event EventHandler CanExecuteChanged;
         public void Execute(object parameter)
         {
-            string message = "";
-            
+            string message = "";            
             System.Windows.Forms.DialogResult result = m_folderBrowser.ShowDialog();
 
             if (result == System.Windows.Forms.DialogResult.OK)
@@ -40,6 +49,12 @@ namespace MultiAlign.Commands
                 if (FolderSelected != null)
                 {
                     FolderSelected(this, new OpenAnalysisArgs(newAnalysis));
+                }
+
+                if (m_action != null)
+                {
+                    m_action(path);
+
                 }
             }
         }

@@ -31,7 +31,6 @@ namespace MultiAlign.ViewModels.Wizard
         private string m_singleFilePath;
         private string m_inputFilePath;
         private SearchOption m_shouldSearchSubdirectories;
-        private Ookii.Dialogs.VistaFolderBrowserDialog m_dialog;
 
         public AnalysisDatasetSelectionViewModel(MultiAlignAnalysis analysis)
         {
@@ -42,9 +41,6 @@ namespace MultiAlign.ViewModels.Wizard
             m_analysis                   = analysis;
             ShouldSearchSubDirectories   = SearchOption.TopDirectoryOnly;
 
-
-            m_dialog = new Ookii.Dialogs.VistaFolderBrowserDialog();
-            m_dialog.ShowNewFolderButton = true;
 
             // Create The Dataset View Model for Binding
             Datasets = new ObservableCollection<DatasetInformationViewModel>();
@@ -60,9 +56,11 @@ namespace MultiAlign.ViewModels.Wizard
             AddFolderCommand        = new BaseCommandBridge(new CommandDelegate(AddFolderDelegate));
             AddInputFileCommand     = new BaseCommandBridge(new CommandDelegate(AddInputFileDelegate));
             AddSingleFileCommand    = new BaseCommandBridge(new CommandDelegate(AddSingleFileDelegate));
+            
             BrowseSingleFileCommand = new BaseCommandBridge(new CommandDelegate(BrowseSingleFile));
             BrowseInputFileCommand  = new BaseCommandBridge(new CommandDelegate(BrowseInput));
-            BrowseFolderCommand     = new BaseCommandBridge(new CommandDelegate(BrowseFolder));
+            BrowseFolderCommand     = new BrowseFolderCommand((string x) => { FolderPath = x; });
+
             RemoveSelectedCommand   = new BaseCommandBridge(new CommandDelegate(RemoveSelected));
             SelectAllCommand        = new BaseCommandBridge(new CommandDelegate(SelectAllDelegate));
             SelectNoneCommand       = new BaseCommandBridge(new CommandDelegate(SelectNoneDelegate));
@@ -159,15 +157,7 @@ namespace MultiAlign.ViewModels.Wizard
             {
                 InputFilePath = m_openFileDialog.FileName;
             }
-        }
-        private void BrowseFolder(object parameter)
-        {
-            DialogResult result = m_dialog.ShowDialog();
-            if (result == DialogResult.OK)
-            {
-                FolderPath = m_dialog.SelectedPath;
-            }
-        }             
+        }                    
         /// <summary>
         /// Adds the  folder containing dataset specific elements
         /// </summary>

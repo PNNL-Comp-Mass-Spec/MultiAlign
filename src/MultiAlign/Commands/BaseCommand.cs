@@ -33,6 +33,7 @@ namespace MultiAlign.Commands
             {
                 m_delegate(parameter);
             }
+
         }
 
         #endregion

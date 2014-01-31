@@ -47,6 +47,7 @@ namespace MultiAlign.ViewModels.TreeView
             AddStatistic("Charge",      m_feature.ChargeState);            
         }
 
+        
 
         public UMCLight Feature
         {

@@ -1,20 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using MultiAlign.Data;
+using MultiAlign.IO;
+using MultiAlign.ViewModels.Analysis;
 using MultiAlign.ViewModels.TreeView;
+using MultiAlign.ViewModels.Viewers;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.Features;
 using MultiAlignCore.Extensions;
-using MultiAlign.IO;
-using System.Collections.ObjectModel;
-using MultiAlign.Data;
-using System.IO;
-using System.Drawing;
-using PNNLOmics.Data;
-using System.Windows.Data;
-using MultiAlign.ViewModels.Analysis;
-using System.Windows.Forms.Integration;
 using MultiAlignCustomControls.Charting;
 using PNNLOmics.Data.Features;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Drawing;
+using System.IO;
+using System.Windows.Forms.Integration;
 
 namespace MultiAlign.ViewModels
 {
@@ -32,12 +31,12 @@ namespace MultiAlign.ViewModels
         private ObservableCollection<MassTagToCluster>  m_massTags;
         private Analysis.AnalysisOptionsViewModel       m_analysisOptionsViewModel;
         private WindowsFormsHost                        m_host;
+        private ClusterDetailViewModel                        m_clusterViewModel;
 
         public AnalysisViewModel(MultiAlignAnalysis analysis)
         {
             m_showDriftTime = false;
             m_analysis      = analysis;
-
 
             LoadDatasets(analysis);
 
@@ -53,30 +52,23 @@ namespace MultiAlign.ViewModels
             ///                     
             FeatureCacheManager<UMCClusterLightMatched>.SetFeatures(clusters.Item1);
             FeatureCacheManager<MassTagToCluster>.SetFeatures(clusters.Item2);
-            SingletonDataProviders.Providers = m_analysis.DataProviders;
+            SingletonDataProviders.Providers    = m_analysis.DataProviders;
 
-            MassTags           = new ObservableCollection<MassTagToCluster>(clusters.Item2);
-            HasIdentifications = (MassTags.Count > 0);
-
-            ClusterTree         = new UMCClusterCollectionTreeViewModel(clusters.Item1);           
-            OnPropertyChanged("ClusterTree");
             
             // Create sub-view models
-            ClusterSpectraViewModel         = new UMCClusterSpectraViewModel();
-            ClusterIdentificationViewModel  = new UMCClusterIdentificationViewModel();
-            AnalysisOptionsViewModel        = new AnalysisOptionsViewModel(analysis.Options);
+            MassTags                            = new ObservableCollection<MassTagToCluster>(clusters.Item2);
+            ClusterTree                         = new UMCClusterCollectionTreeViewModel(clusters.Item1);   
+            ClusterSpectraViewModel             = new UMCClusterSpectraViewModel();
+            ClusterIdentificationViewModel      = new UMCClusterIdentificationViewModel();
+            AnalysisOptionsViewModel            = new AnalysisOptionsViewModel(analysis.Options);
+            ClusterViewModel                    = new ClusterDetailViewModel();
+            HasIdentifications                  = (MassTags.Count > 0);
 
-            Binding spectraBinding               = new Binding();
-            spectraBinding.Mode                  = BindingMode.TwoWay;
-            spectraBinding.NotifyOnSourceUpdated = true;
-            spectraBinding.UpdateSourceTrigger   = UpdateSourceTrigger.PropertyChanged;
-            spectraBinding.Source = ClusterTree;
-
-            m_clusterChart = new ctlClusterChart();
-            m_clusterChart.Title = "";
-            m_clusterChart.LegendVisible = false;
-            m_clusterChart.YAxisShortHand = "ppm";
-            m_clusterChart.XAxisShortHand = "NET";
+            m_clusterChart                      = new ctlClusterChart();
+            m_clusterChart.Title                = "";
+            m_clusterChart.LegendVisible        = false;
+            m_clusterChart.YAxisShortHand       = "ppm";
+            m_clusterChart.XAxisShortHand       = "NET";
             LoadClusters(clusters.Item1);
 
             ClusterChart = new WindowsFormsHost() { Child = m_clusterChart };            
@@ -144,55 +136,30 @@ namespace MultiAlign.ViewModels
         {
             if (e != null)
             {
-                if (m_clusterSpectraViewModel != null)
-                {
-                    m_clusterSpectraViewModel.SelectedCluster = e.Cluster;
-                }
-                if (m_clusterIdentificationViewModel != null)
-                {
-                    m_clusterIdentificationViewModel.SelectedCluster = e.Cluster;
-                }
+                m_clusterSpectraViewModel.SelectedCluster        = e.Cluster.Cluster;                
+                m_clusterIdentificationViewModel.SelectedCluster = e.Cluster.Cluster;
+                m_clusterViewModel.SelectedCluster               = e.Cluster;
+            }
+        }
+        /// <summary>
+        /// Handles updating the cluster detail with the appropriate data.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void value_FeatureSelected(object sender, FeatureSelectedEventArgs e)
+        {
+            
+            if (e != null)
+            {
+                m_clusterViewModel.SelectedFeature = new UMCTreeViewModel(e.Feature);
             }
         }
         #endregion
 
-        #region Properties
-        public IdentificationCollectionTreeViewModel IdentificationTree
-        {
-            get
-            {
-                return m_identificationTreeView;
-            }
-            set{
-                m_identificationTreeView = value;
-            }
-        }
-
-
-        public UMCClusterCollectionTreeViewModel ClusterTree
-        {
-            get
-            {
-                return m_clusterTreeModel;
-            }
-            set
-            {
-                
-                if (value != null && value != m_clusterTreeModel)
-                {
-                    m_clusterTreeModel = value;
-                    value.ClustersFiltered += new EventHandler<ClustersUpdatedEventArgs>(value_ClustersFiltered);
-                    value.ClusterSelected  += new EventHandler<ClusterSelectedEventArgs>(value_ClusterSelected);
-                }
-            }
-        }
-
-
-        void value_Selected(object sender, EventArgs e)
-        {
-            
-        }
-
+        #region View Model Properties
+        /// <summary>
+        /// Gets a list of the mass tags loaded.
+        /// </summary>
         public ObservableCollection<MassTagToCluster> MassTags
         {
             get
@@ -208,13 +175,14 @@ namespace MultiAlign.ViewModels
                 }
             }
         }
-
+        /// <summary>
+        /// Gets a list of the datasets loaded
+        /// </summary>
         public DatasetCollectionViewModel Datasets
         {
             get;
             private set;
         }
-
         /// <summary>
         /// Gets or sets whether the analysis used drift time.
         /// </summary>
@@ -267,14 +235,16 @@ namespace MultiAlign.ViewModels
                 }
             }
         }
-
+        /// <summary>
+        /// Gets the control used for displaying a global view of the clusters
+        /// </summary>
         public WindowsFormsHost ClusterChart
         {
             get
             {
                 return m_host;
             }
-            set
+            private set
             {
                 if (value != null && m_host != value)
                 {
@@ -286,6 +256,55 @@ namespace MultiAlign.ViewModels
         #endregion
 
         #region ViewModels
+        /// <summary>
+        /// Gets the cluster detail view model
+        /// </summary>
+        public ClusterDetailViewModel ClusterViewModel
+        {
+            get
+            {
+                return m_clusterViewModel;
+            }
+            private set
+            {
+                m_clusterViewModel = value;
+            }
+        }
+        /// <summary>
+        /// Gets the identification tree view model
+        /// </summary>
+        public IdentificationCollectionTreeViewModel IdentificationTree
+        {
+            get
+            {
+                return m_identificationTreeView;
+            }
+            set
+            {
+                m_identificationTreeView = value;
+            }
+        }
+        /// <summary>
+        /// Gets the cluster tree view model
+        /// </summary>
+        public UMCClusterCollectionTreeViewModel ClusterTree
+        {
+            get
+            {
+                return m_clusterTreeModel;
+            }
+            set
+            {
+
+                if (value != null && value != m_clusterTreeModel)
+                {
+                    m_clusterTreeModel = value;
+                    value.FeatureSelected += value_FeatureSelected;
+                    value.ClustersFiltered += new EventHandler<ClustersUpdatedEventArgs>(value_ClustersFiltered);
+                    value.ClusterSelected += new EventHandler<ClusterSelectedEventArgs>(value_ClusterSelected);
+                }
+            }
+        }        
         /// <summary>
         /// Gets or sets the view model for a selected cluster.
         /// </summary>

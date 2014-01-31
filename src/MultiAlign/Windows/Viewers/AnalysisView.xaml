@@ -69,11 +69,8 @@
                             Style="{DynamicResource ResourceKey=SimpleTabItem}"
                             Header="Cluster Details">
                             <clusterViews:ClusterControl
-                                Margin="5,5,5,5"
-                                UMCFeature="{Binding Path=ClusterTree.SelectedFeature}"
-                                SelectedSpectrum="{Binding Path=ClusterTree.SelectedSpectrum}"
-                                UsesDriftTime="{Binding Path=UsesDriftTime, NotifyOnSourceUpdated=True}"                        
-                                Cluster="{Binding Mode=OneWay, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True, Path=ClusterTree.SelectedCluster}"/>
+                                Margin="5"
+                                DataContext="{Binding ClusterViewModel}"/>
                         </TabItem>
 
                         <TabItem                             
