@@ -10,6 +10,8 @@ using MultiAlignCustomControls.Charting;
 using System.Windows.Forms.Integration;
 using MultiAlign.IO;
 using System.Drawing;
+using System.Windows.Input;
+using MultiAlign.Commands;
 
 namespace MultiAlign.ViewModels
 {
@@ -34,10 +36,42 @@ namespace MultiAlign.ViewModels
         /// 
         /// </summary>
         SpectraChart m_chart;
+        private SpectraSortOptions m_selectedSortOption;
 
         public UMCClusterSpectraViewModel()
         {
             Spectra = new ObservableCollection<MSSpectraViewModel>();
+            SortTypes = new ObservableCollection<SpectraSortOptions>();
+
+            CreateSortOptions();
+
+            ExpandIdentifications = new BaseCommandBridge(delegate(object parameter)
+                {
+                    foreach(var spectrum in Spectra)
+                    {
+                        spectrum.IdentificationsExpanded = true;
+                    }
+                }
+                );
+            CollapseIdentifications = new BaseCommandBridge(delegate(object parameter)
+            {
+                foreach (var spectrum in Spectra)
+                {
+                    spectrum.IdentificationsExpanded = false;
+                }
+            }
+                );
+        }
+
+        public ICommand CollapseIdentifications
+        {
+            get;
+            private set;
+        }
+        public ICommand ExpandIdentifications
+        {
+            get;
+            private set;
         }
         
         private void LoadCluster(UMCClusterLightMatched cluster)
@@ -61,8 +95,81 @@ namespace MultiAlign.ViewModels
             {
                 SelectedSpectra = Spectra[0];
             }
+
         }
 
+        private void CreateSortOptions()
+        {            
+            SortTypes.Add(new SpectraSortOptions("Charge", () =>
+            {
+                ObservableCollection<MSSpectraViewModel> temp = new ObservableCollection<MSSpectraViewModel>(
+                        from x in Spectra orderby x.Spectrum.ParentFeature.ChargeState select x);
+
+                Spectra.Clear();
+                foreach (var x in temp)
+                    Spectra.Add(x);
+            }
+            ));
+
+
+            SortTypes.Add(new SpectraSortOptions("Dataset", () =>
+            {
+                ObservableCollection<MSSpectraViewModel> temp = new ObservableCollection<MSSpectraViewModel>(
+                        from x in Spectra orderby x.Spectrum.GroupID select x);
+
+                Spectra.Clear();
+                foreach (var x in temp)
+                    Spectra.Add(x);
+            }
+            ));
+
+            SortTypes.Add(new SpectraSortOptions("m/z", () =>
+            {
+                ObservableCollection<MSSpectraViewModel> temp = new ObservableCollection<MSSpectraViewModel>(
+                        from x in Spectra orderby x.Spectrum.PrecursorMZ select x);
+
+                Spectra.Clear();
+                foreach (var x in temp)
+                    Spectra.Add(x);
+            }
+            ));
+
+
+            SortTypes.Add(new SpectraSortOptions("Retention Time (NET)", () =>
+            {
+                ObservableCollection<MSSpectraViewModel> temp = new ObservableCollection<MSSpectraViewModel>(
+                        from x in Spectra orderby x.Spectrum.RetentionTime select x);
+
+                Spectra.Clear();
+                foreach (var x in temp)
+                    Spectra.Add(x);
+            }
+            ));
+
+        }
+        /// <summary>
+        /// Gets or sets the selected sort option
+        /// </summary>
+        public SpectraSortOptions SelectedSort
+        {
+            get
+            {
+                return m_selectedSortOption;
+            }
+
+            set
+            {
+                if (m_selectedSortOption != value)
+                {
+                    m_selectedSortOption = value;
+                    if (value != null)
+                        m_selectedSortOption.Action.Invoke();
+
+                    OnPropertyChanged("SelectedSort");
+                }
+            }
+        }
+        public ObservableCollection<SpectraSortOptions> SortTypes { get; private set; }
 
         public WindowsFormsHost SpectraChart 
         { 

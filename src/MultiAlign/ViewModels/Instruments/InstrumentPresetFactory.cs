@@ -23,6 +23,15 @@ namespace MultiAlign.ViewModels
             InstrumentPresetViewModel model = null;
             switch (preset)
             {
+                case InstrumentPresets.IMS_TOF:
+                    model = new InstrumentPresetViewModel("IMS TOF",
+                                                          false,
+                                                          8,
+                                                          .03,
+                                                          .03,
+                                                          .5,
+                                                          8);
+                    break;
                 case InstrumentPresets.TOF:
                     model = new InstrumentPresetViewModel("TOF",
                                                           false,
@@ -32,15 +41,6 @@ namespace MultiAlign.ViewModels
                                                           .5,
                                                           8);
 
-                    break;
-                case InstrumentPresets.IMS_TOF:
-                    model = new InstrumentPresetViewModel("IMS TOF",
-                                                          true,
-                                                          8,
-                                                          .03,
-                                                          .3,
-                                                          .5,
-                                                          8);
                     break;
                 case InstrumentPresets.Velos:
                     model = new InstrumentPresetViewModel("Velos",

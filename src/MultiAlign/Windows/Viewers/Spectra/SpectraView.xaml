@@ -15,6 +15,11 @@
         <DataTemplate x:Key="MSSpectraDataTemplate">
             <spectraViews:MSSpectraTemplate/>
         </DataTemplate>
+        <DataTemplate x:Key="SortOptionTemplate">
+            <TextBlock Margin="5" Text="{Binding Name}"/>
+        </DataTemplate>
+                      
+            
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -28,41 +33,87 @@
         </Grid.ColumnDefinitions>
 
 
-        <GridSplitter   Grid.Row="1"
-                            Height="3"
+        <GridSplitter       Grid.Row="1"
+                            Height="5"
+                            Background="Gray"
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Stretch"/>
 
         <ContentControl 
             Content="{Binding SpectraChart}"
             />
-        <Grid            
-                Grid.Row="2">
-
+        <Grid   Grid.Row="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
+            <Expander     
+                IsExpanded="True"
+                Header="Options">
+                <Border
+                    Style="{DynamicResource BorderStyle}"
+                    >
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="48"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Label
+                            Grid.Row="0"
+                            Foreground="Gray"
+                            HorizontalContentAlignment="Left"
+                            VerticalContentAlignment="Center"
+                            Content="Sorting"/>
+                        <ComboBox 
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            Margin="5"
+                            FontSize="16"
+                            Width="256"
+                            HorizontalAlignment="Left"
+                            HorizontalContentAlignment="Left"
+                            ItemTemplate="{StaticResource SortOptionTemplate}"
+                            SelectedItem="{Binding SelectedSort, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"
+                            ItemsSource="{Binding SortTypes}"/>
+                        <Button
+                            Style="{DynamicResource SimpleBrowseButtonStyle}"
+                            Width="150"
+                            Height="48"
+                            Margin="5"
+                            Grid.Row="1"       
+                            Command="{Binding ExpandIdentifications}"
+                            HorizontalContentAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            Content="Expand Identifications"/>
+                        <Button
+                            Style="{DynamicResource SimpleBrowseButtonStyle}"
+                            Width="150"
+                            Height="48"
+                            Margin="5"
+                            Grid.Row="1" 
+                            Grid.Column="1"
+                            Command="{Binding CollapseIdentifications}"
+                            HorizontalContentAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            Content="Collapse Identifications"/>
 
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <Label 
-                HorizontalContentAlignment="Center"
-                Foreground="Gray"
-                >
-                Spectra
-            </Label>
+                    </Grid>
+                </Border>
+            </Expander>
             <ListBox 
                 Margin="5"            
                 Grid.Column="0"
                 Grid.Row="1"         
-                FontSize="14"
+                FontSize="14"                
                 HorizontalContentAlignment="Stretch"
                 SelectedItem="{Binding Path=SelectedSpectra, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"
                 ItemTemplate="{StaticResource MSSpectraDataTemplate}"
-                ItemsSource="{Binding Path=Spectra, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True}" />
-            
+                ItemsSource="{Binding Path=Spectra, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True}" Grid.ColumnSpan="2" />
+
 
         </Grid>
     </Grid>

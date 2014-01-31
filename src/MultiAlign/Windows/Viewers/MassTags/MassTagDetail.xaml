@@ -106,13 +106,14 @@
                     </TextBlock.Text>
             </TextBlock>
 
-            <Label
-                Grid.Row="4"
+            <Expander
+                Grid.Row="5"
                 Grid.Column="1"
-                Foreground="Gray">
-                Proteins
-            </Label>
-            <ListBox
+                Grid.ColumnSpan="2"
+                Header="Proteins"
+                >
+            <DockPanel>
+                    <ListBox
                     Margin="2"
                     Grid.Row="4"
                     Grid.Column="2"
@@ -120,6 +121,8 @@
                     HorizontalContentAlignment="Stretch"
                     ItemTemplate="{StaticResource ProteinDataTemplate}"
                     ItemsSource="{Binding Path=MatchedProteins, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True}" />
+                </DockPanel>
+            </Expander>
         </Grid>
      </Border>
 </UserControl>

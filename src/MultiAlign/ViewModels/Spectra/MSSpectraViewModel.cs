@@ -25,6 +25,7 @@ namespace MultiAlign.ViewModels
         /// 
         /// </summary>
         SpectraChart m_chart;
+        private bool m_isExpanded;
 
         public MSSpectraViewModel(MSSpectra spectrum)
         {
@@ -48,6 +49,7 @@ namespace MultiAlign.ViewModels
             }
 
             UpdateSpectra(spectrum);
+
         }
 
         public ObservableCollection<PeptideViewModel> Peptides { get; set; }
@@ -89,6 +91,22 @@ namespace MultiAlign.ViewModels
                 m_chart.AutoViewPort();
                 RectangleF viewport = m_chart.ViewPort;
                 m_chart.ViewPort = new System.Drawing.RectangleF(0, viewport.Y, 2000, viewport.Height);
+            }
+        }
+
+        public bool IdentificationsExpanded 
+        {
+            get
+            {
+                return m_isExpanded;
+            }
+            set
+            {
+                if (m_isExpanded != value)
+                {
+                    m_isExpanded = value;
+                    OnPropertyChanged("IdentificationsExpanded");
+                }
             }
         }
     }

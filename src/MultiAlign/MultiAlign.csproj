@@ -162,7 +162,8 @@
     <Compile Include="Data\RecentAnalysis.cs" />
     <Compile Include="Data\StatusMessageWrapper.cs" />
     <Compile Include="Data\ThreadSafeDispatcher.cs" />
-    <Compile Include="ViewModels\InstrumentPresetFactory.cs" />
+    <Compile Include="ViewModels\Instruments\InstrumentPresetFactory.cs" />
+    <Compile Include="ViewModels\Features\SpectraSortOptions.cs" />
     <Compile Include="ViewModels\StateModeratorViewModel.cs" />
     <Compile Include="IO\ManassaWorkspaceWriter.cs" />
     <Compile Include="IO\DatasetSearcher.cs" />
@@ -186,12 +187,12 @@
     <Compile Include="ViewModels\IO\ExportViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\MassTagMatchedViewModel.cs" />
-    <Compile Include="ViewModels\MSSpectraViewModel.cs" />
-    <Compile Include="ViewModels\PeptideViewModel.cs" />
+    <Compile Include="ViewModels\Spectra\MSSpectraViewModel.cs" />
+    <Compile Include="ViewModels\Proteins\PeptideViewModel.cs" />
     <Compile Include="ViewModels\PictureViewModel.cs" />
     <Compile Include="ViewModels\Plotting\FeaturesViewModel.cs" />
     <Compile Include="ViewModels\Plotting\PlotDataViewModel.cs" />
-    <Compile Include="ViewModels\ProteinViewModel.cs" />
+    <Compile Include="ViewModels\Proteins\ProteinViewModel.cs" />
     <Compile Include="ViewModels\TreeView\IdentificationCollectionTreeViewModel.cs" />
     <Compile Include="ViewModels\ParameterViewModels.cs" />
     <Compile Include="ViewModels\TreeView\FeatureSelectedEventArgs.cs" />
@@ -201,8 +202,8 @@
     <Compile Include="ViewModels\TreeView\MassTagTreeViewModel.cs" />
     <Compile Include="ViewModels\TreeView\MsMsCollectionTreeViewModel.cs" />
     <Compile Include="ViewModels\TreeView\MsMsTreeViewModel.cs" />
-    <Compile Include="ViewModels\DatabasesViewModel.cs" />
-    <Compile Include="ViewModels\DmsDatabaseServerViewModel.cs" />
+    <Compile Include="ViewModels\Databases\DatabasesViewModel.cs" />
+    <Compile Include="ViewModels\Databases\DmsDatabaseServerViewModel.cs" />
     <Compile Include="ViewModels\TreeView\MassTagMatchTreeViewModel.cs" />
     <Compile Include="ViewModels\TreeView\PeptideCollectionTreeViewModel.cs" />
     <Compile Include="ViewModels\TreeView\PeptideTreeViewModel.cs" />
@@ -211,14 +212,16 @@
     <Compile Include="ViewModels\TreeView\UMCClusterCollectionTreeViewModel.cs" />
     <Compile Include="ViewModels\TreeView\UMCCollectionTreeViewModel.cs" />
     <Compile Include="ViewModels\TreeView\UMCTreeViewModel.cs" />
-    <Compile Include="ViewModels\UMCClusterFilterViewModel.cs" />
-    <Compile Include="ViewModels\UMCClusterIdentificationViewModel.cs" />
-    <Compile Include="ViewModels\UMCClusterSpectraViewModel.cs" />
-    <Compile Include="ViewModels\UMCClusterViewModel.cs" />
+    <Compile Include="ViewModels\Features\UMCClusterFilterViewModel.cs" />
+    <Compile Include="ViewModels\Features\UMCClusterIdentificationViewModel.cs" />
+    <Compile Include="ViewModels\Features\UMCClusterSpectraViewModel.cs" />
+    <Compile Include="ViewModels\Features\UMCClusterViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="ViewModels\Wizard\AnalysisBaselineSelectionViewModel.cs" />
-    <Compile Include="ViewModels\InstrumentPresetViewModel.cs" />
+    <Compile Include="ViewModels\Instruments\InstrumentPresetViewModel.cs" />
     <Compile Include="ViewModels\Wizard\AnalysisStatusArgs.cs" />
+    <Compile Include="ViewModels\Wizard\ExperimentPresetFactory.cs" />
+    <Compile Include="ViewModels\Wizard\ExperimentPresetViewModel.cs" />
     <Compile Include="Windows\FilePathFinder.xaml.cs">
       <DependentUpon>FilePathFinder.xaml</DependentUpon>
     </Compile>

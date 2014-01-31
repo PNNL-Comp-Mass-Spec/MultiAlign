@@ -23,7 +23,7 @@
         </Grid.RowDefinitions>
         <Label             
             FontSize="24"            
-            Foreground="Gray"
+            Foreground="LightGray"
             HorizontalContentAlignment="Left"
             Grid.Row="1"
             Grid.Column="1">
@@ -32,7 +32,7 @@
         <TextBox
             FontSize="24"
             Grid.Row="2"
-            HorizontalContentAlignment="Center"
+            HorizontalContentAlignment="Left"
             Text="{Binding Path=Path}"
             Margin="5"          
             Grid.Column="1"             
@@ -50,7 +50,7 @@
             Content="Browse"  />
         <Label             
             FontSize="24"            
-            Foreground="Gray"
+            Foreground="LightGray"
             HorizontalContentAlignment="Left"
             Grid.Row="3"
             Grid.Column="1">
@@ -62,6 +62,6 @@
             Margin="5"   
             Grid.Row="4"
             Grid.Column="1"             
-            HorizontalContentAlignment="Center" />
+            HorizontalContentAlignment="Left" />
     </Grid>
 </UserControl>

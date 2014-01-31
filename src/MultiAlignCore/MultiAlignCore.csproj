@@ -78,7 +78,7 @@
     </Reference>
     <Reference Include="Mage, Version=1.3.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\x64\Mage.dll</HintPath>
+      <HintPath>..\..\lib\$(Platform)\Mage.dll</HintPath>
     </Reference>
     <Reference Include="ThermoRawFileReaderDLL, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

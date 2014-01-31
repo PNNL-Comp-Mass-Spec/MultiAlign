@@ -156,7 +156,7 @@ namespace MultiAlign.ViewModels
         }
         #endregion
 
-        #region View Model Properties
+        #region Properties
         /// <summary>
         /// Gets a list of the mass tags loaded.
         /// </summary>

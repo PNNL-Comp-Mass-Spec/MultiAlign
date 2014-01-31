@@ -6,6 +6,7 @@
              xmlns:converters="clr-namespace:MultiAlign.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="500">
+    
     <UserControl.Resources>
         <converters:IntToStringConverter x:Key="IntToStringConverter" />
         <DataTemplate x:Key="MSSpectraDataTemplate">
@@ -40,11 +41,11 @@
         </DataTemplate>
     </UserControl.Resources>
     <Grid >
-        <Border CornerRadius="2" BorderThickness="1" HorizontalAlignment="Stretch" Padding="3" Margin="3" BorderBrush="#FFCCCCCC">
+        <Border CornerRadius="2" BorderThickness="1" HorizontalAlignment="Stretch" Margin="3" BorderBrush="#FFCCCCCC">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="32"></ColumnDefinition>
-                    <ColumnDefinition Width="100"></ColumnDefinition>
+                    <ColumnDefinition Width="124"></ColumnDefinition>
                     <ColumnDefinition Width="124"></ColumnDefinition>
                     <ColumnDefinition Width="124"></ColumnDefinition>
                     <ColumnDefinition Width="124"></ColumnDefinition>
@@ -56,6 +57,21 @@
                     <RowDefinition Height="Auto"></RowDefinition>
                     <RowDefinition Height="*"></RowDefinition>
                 </Grid.RowDefinitions>
+                <Label
+                    Foreground="LightGray"
+                    FontSize="24"
+                    HorizontalAlignment="Left"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    VerticalAlignment="Bottom"
+                    Margin="5"
+                    Grid.Row="1"
+                    Grid.RowSpan="2"
+                    Grid.ColumnSpan="2"
+                    Content="{Binding Path=Spectrum.GroupID}"
+                    />
+
+
                 <TextBlock 
                             Margin="5"
                             Grid.Row="0"
@@ -72,6 +88,7 @@
                             Margin="5"
                             Grid.Row="1"
                             Grid.Column="1"
+                            Foreground="Gray"
                             >
                     Scan
                 </Label>
@@ -95,6 +112,7 @@
                             Margin="5"
                             Grid.Row="2"
                             Grid.Column="1"
+                            Foreground="Gray"
                             >
                     Precursor M/z
                 </Label>
@@ -110,6 +128,7 @@
                             FontSize="16"
                             Margin="5"
                             Grid.Row="1"
+                            Foreground="Gray"
                             Grid.Column="3"
                             >
                     Collision Type
@@ -125,6 +144,7 @@
                             FontSize="16"
                             Margin="5"
                             Grid.Row="2"
+                            Foreground="Gray"
                             Grid.Column="3"
                             >
                     Parent Charge
@@ -134,14 +154,15 @@
                             Grid.Row="2"
                             Grid.Column="4"
                             FontSize="16"   
-                            Text="{Binding Path=Spectrum.PrecursorChargeState , StringFormat=N2}"                                                                     
+                            Text="{Binding Path=Spectrum.ParentFeature.ChargeState }"                                                                     
                             HorizontalAlignment="Stretch"/>
                 <Expander      
                         Grid.Column="1"
                         Grid.Row="3"  
                         Grid.RowSpan="2"
                         Grid.ColumnSpan="4"
-                        IsExpanded="True"
+                            Foreground="Gray"
+                        IsExpanded="{Binding IdentificationsExpanded, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True}"
                         Header="Identifications">
                     <ListBox 
                         Margin="5"      

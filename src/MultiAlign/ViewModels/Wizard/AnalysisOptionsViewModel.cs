@@ -25,6 +25,7 @@ namespace MultiAlign.ViewModels.Analysis
         /// </summary>
         private System.Windows.Forms.OpenFileDialog m_dialog;
         private System.Windows.Forms.SaveFileDialog m_saveDialog;
+        private ExperimentPresetViewModel m_selectedExperimentPreset;
 
         public AnalysisOptionsViewModel(AnalysisOptions options)
         {
@@ -36,16 +37,35 @@ namespace MultiAlign.ViewModels.Analysis
             UpdateOptions(options);
 
             InstrumentPresets = new ObservableCollection<InstrumentPresetViewModel>();
+            ExperimentPresets = new ObservableCollection<ExperimentPresetViewModel>();
+
+            Dictionary<string, bool> presets = new Dictionary<string, bool>();
+            foreach (var preset in ExperimentPresetFactory.Create())
+            {
+                ExperimentPresets.Add(preset);
+                InstrumentPresets.Add(preset.InstrumentPreset);
+
+                if (!presets.ContainsKey(preset.InstrumentPreset.Name))
+                {
+                    presets.Add(preset.InstrumentPreset.Name, false);
+                }
+            }
+
             foreach (var preset in InstrumentPresetFactory.Create())
             {
-                InstrumentPresets.Add(preset);
+                if (!presets.ContainsKey(preset.Name))
+                {
+                    InstrumentPresets.Add(preset);
+                }
             }
-            SelectedPreset = InstrumentPresets[0];
 
-            m_saveDialog        = new System.Windows.Forms.SaveFileDialog();
-            m_dialog            = new System.Windows.Forms.OpenFileDialog();
-            m_dialog.Filter     = "MultiAlign Parameters (*.xml)| *.xml|All Files (*.*)|*.*";
-            m_saveDialog.Filter = "MultiAlign Parameters (*.xml)| *.xml|All Files (*.*)|*.*";
+            
+            SelectedExperimentPreset = ExperimentPresets[0];
+
+            m_saveDialog                = new System.Windows.Forms.SaveFileDialog();
+            m_dialog                    = new System.Windows.Forms.OpenFileDialog();
+            m_dialog.Filter             = "MultiAlign Parameters (*.xml)| *.xml|All Files (*.*)|*.*";
+            m_saveDialog.Filter         = "MultiAlign Parameters (*.xml)| *.xml|All Files (*.*)|*.*";
 
             ShowAdvancedWindowCommand   = new BaseCommandBridge(new CommandDelegate(ShowAdvancedWindow));
             SaveOptionsCommand          = new BaseCommandBridge(new CommandDelegate(SaveCurrentParameters));
@@ -61,12 +81,12 @@ namespace MultiAlign.ViewModels.Analysis
             AdvancedOptionsViewModel viewModel  = new AdvancedOptionsViewModel(m_options);            
             AnalysisOptionsView view            = new AnalysisOptionsView();
             view.DataContext                    = viewModel;            
-            view.MinWidth   = 800;
-            view.MinHeight  = 600;
-            view.MaxWidth   = 1200;
-            view.MaxHeight  = 1024;
-            view.Width      = 800;
-            view.Height     = 600;
+            view.MinWidth       = 800;
+            view.MinHeight      = 600;
+            view.MaxWidth       = 1200;
+            view.MaxHeight      = 1024;
+            view.Width          = 800;
+            view.Height         = 600;
             view.ShowInTaskbar  = true;            
             view.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             view.ShowDialog();
@@ -120,8 +140,8 @@ namespace MultiAlign.ViewModels.Analysis
             OnPropertyChanged("MinimumScans");
             OnPropertyChanged("IsotopicFitScore");
             OnPropertyChanged("MinimumAbundance");
-            OnPropertyChanged("");
-            OnPropertyChanged("");
+            OnPropertyChanged("LowMassRange");
+            OnPropertyChanged("HighMassRange");            
             OnPropertyChanged("MassResolution");
             OnPropertyChanged("FragmentationTolerance");
             OnPropertyChanged("NETTolerance");
@@ -132,6 +152,7 @@ namespace MultiAlign.ViewModels.Analysis
 
         #region Instrument Presets
         public ObservableCollection<InstrumentPresetViewModel> InstrumentPresets { get; private set; }
+        public ObservableCollection<ExperimentPresetViewModel> ExperimentPresets { get; private set; }
         public InstrumentPresetViewModel SelectedPreset 
         {
             get
@@ -148,6 +169,29 @@ namespace MultiAlign.ViewModels.Analysis
                 }
             }
         }
+        public ExperimentPresetViewModel SelectedExperimentPreset 
+        {
+            get
+            {
+                return m_selectedExperimentPreset;
+            }
+            set
+            {
+                if (m_selectedExperimentPreset != value)
+                {
+                    m_selectedExperimentPreset = value;
+                    
+                    m_options.FeatureFilterOptions.MinimumMonoIsotopicMass = value.MassRangeLow;
+                    m_options.FeatureFilterOptions.MaximumMonoIsotopicMass = value.MassRangeHigh;
+                    HasMsMsFragmentation = value.HasMsMs;
+
+                    SelectedPreset = value.InstrumentPreset;
+                    OnPropertyChanged("SelectedExperimentPreset");
+                }
+            }
+        }
+
+
         private void UpdatePreset(InstrumentPresetViewModel preset)
         {
             MassResolution         = preset.Mass;
@@ -253,6 +297,36 @@ namespace MultiAlign.ViewModels.Analysis
                 {
                     m_options.MSLinkerOptions.MzTolerance = value;                    
                     OnPropertyChanged("FragmentationTolerance");
+                }
+            }
+        }
+        public double HighMassRange
+        {
+            get
+            {
+                return m_options.FeatureFilterOptions.MaximumMonoIsotopicMass;
+            }
+            set
+            {
+                if (m_options.FeatureFilterOptions.MaximumMonoIsotopicMass != value)
+                {
+                    m_options.FeatureFilterOptions.MaximumMonoIsotopicMass = value;
+                    OnPropertyChanged("HighMassRange");
+                }
+            }
+        }
+        public double LowMassRange
+        {
+            get
+            {
+                return m_options.FeatureFilterOptions.MinimumMonoIsotopicMass;
+            }
+            set
+            {
+                if (m_options.FeatureFilterOptions.MinimumMonoIsotopicMass != value)
+                {
+                    m_options.FeatureFilterOptions.MinimumMonoIsotopicMass = value;
+                    OnPropertyChanged("LowMassRange");
                 }
             }
         }

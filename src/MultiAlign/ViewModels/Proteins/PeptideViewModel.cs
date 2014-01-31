@@ -74,7 +74,7 @@ namespace MultiAlign.ViewModels
             get
             {
                 if (m_peptide == null)
-                    return double.NaN;
+                    return double.NaN;                
                 return m_peptide.MassMonoisotopic;
             }
         }

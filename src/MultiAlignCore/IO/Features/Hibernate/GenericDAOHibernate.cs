@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using NHibernate;
 using NHibernate.Criterion;
+using PNNLOmics.Data;
 
 namespace MultiAlignCore.IO.Features.Hibernate
 {
@@ -228,6 +229,9 @@ namespace MultiAlignCore.IO.Features.Hibernate
                 list = (List<T>)crit.List<T>();              
             }
             return list;
+
+            MSSpectra x;
+            x.CollisionType = CollisionType.HID;
         }
         #endregion
     }

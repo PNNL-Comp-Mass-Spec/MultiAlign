@@ -36,8 +36,8 @@ namespace MultiAlign.ViewModels.Wizard
 
     public enum InstrumentPresets
     {
-        TOF,
         IMS_TOF,
+        TOF,
         Velos,
         LTQ_Orbitrap,
     }
