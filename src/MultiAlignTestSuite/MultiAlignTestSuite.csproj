@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -10,8 +10,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MultiAlignTestSuite</RootNamespace>
     <AssemblyName>MultiAlignTestSuite</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -21,6 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,6 +31,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -39,6 +42,7 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
     <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\x64\Release\</OutputPath>
@@ -49,6 +53,7 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
     <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject />
@@ -62,6 +67,7 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
     <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>bin\x86\Release\</OutputPath>
@@ -72,6 +78,7 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
     <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Accord.Statistics, Version=2.7.0.0, Culture=neutral, PublicKeyToken=fa1a88e29555ccf7, processorArchitecture=MSIL">
@@ -125,6 +132,7 @@
     <Compile Include="Algorithms\MsMsClustering.cs" />
     <Compile Include="Algorithms\SpectralProcessing\SpectralAlignmentTests.cs" />
     <Compile Include="Algorithms\SpectralProcessing\SpectralComparisonTests.cs" />
+    <Compile Include="Algorithms\UMCTreeFeatureFinding.cs" />
     <Compile Include="Papers\Alignment\AlignmentMeasurement.cs" />
     <Compile Include="Papers\Alignment\AnchorPointErrorMeasurement.cs" />
     <Compile Include="Papers\Alignment\Data\AlignedFeatureData.cs" />
@@ -139,6 +147,7 @@
     <Compile Include="Papers\Alignment\IO\RawLoaderCache.cs" />
     <Compile Include="Papers\Alignment\IO\ReportFileUtility.cs" />
     <Compile Include="Papers\Alignment\IO\ScanSummaryCache.cs" />
+    <Compile Include="Papers\Alignment\IO\SpectralWriterFigureThree.cs" />
     <Compile Include="Papers\Alignment\IO\SpectralWriterFigureTwo.cs" />
     <Compile Include="Papers\Alignment\IO\SpectralWriterFigureOne.cs" />
     <Compile Include="Papers\Alignment\PeptideAnchorPointFinder.cs" />
@@ -180,15 +189,15 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MultiAlignCore\MultiAlignCore.csproj">
-      <Project>{BDFA22C4-5822-4AA5-996E-6FDE57F7118B}</Project>
+      <Project>{bdfa22c4-5822-4aa5-996e-6fde57f7118b}</Project>
       <Name>MultiAlignCore</Name>
     </ProjectReference>
     <ProjectReference Include="..\MultiAlignCustomControls\MultiAlignCustomControls.csproj">
-      <Project>{EE7596B2-FCD3-471A-856F-1270713DD5B1}</Project>
+      <Project>{ee7596b2-fcd3-471a-856f-1270713dd5b1}</Project>
       <Name>MultiAlignCustomControls</Name>
     </ProjectReference>
     <ProjectReference Include="..\PNNLControls\PNNLControls.csproj">
-      <Project>{9409DE9B-F3F0-41AA-95F5-8BFD525F5669}</Project>
+      <Project>{9409de9b-f3f0-41aa-95f5-8bfd525f5669}</Project>
       <Name>PNNLControls</Name>
     </ProjectReference>
   </ItemGroup>

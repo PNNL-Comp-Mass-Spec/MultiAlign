@@ -63,6 +63,15 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="GalaSoft.MvvmLight.Extras.WPF45">
+      <HintPath>..\packages\MvvmLightLibs.4.2.30.0\lib\net45\GalaSoft.MvvmLight.Extras.WPF45.dll</HintPath>
+    </Reference>
+    <Reference Include="GalaSoft.MvvmLight.WPF45">
+      <HintPath>..\packages\MvvmLightLibs.4.2.30.0\lib\net45\GalaSoft.MvvmLight.WPF45.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.ServiceLocation">
+      <HintPath>..\packages\CommonServiceLocator.1.0\lib\NET35\Microsoft.Practices.ServiceLocation.dll</HintPath>
+    </Reference>
     <Reference Include="MultiAlignEngine, Version=1.0.4084.24787, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\$(Platform)\MultiAlignEngine.dll</HintPath>
@@ -94,6 +103,9 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\MvvmLightLibs.4.2.30.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -113,7 +125,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Commands\BaseCommand.cs" />
-    <Compile Include="Commands\BrowseFileCommand.cs" />
+    <Compile Include="Commands\BrowseSaveFileCommand.cs" />
+    <Compile Include="Commands\BrowseOpenFileCommand.cs" />
     <Compile Include="Commands\BrowseFolderCommand.cs" />
     <Compile Include="Commands\Clusters\ClusterTreeFilterCommand.cs" />
     <Compile Include="Commands\Clusters\ClusterExportCommand.cs" />
@@ -162,13 +175,13 @@
     <Compile Include="Data\RecentAnalysis.cs" />
     <Compile Include="Data\StatusMessageWrapper.cs" />
     <Compile Include="Data\ThreadSafeDispatcher.cs" />
+    <Compile Include="ViewModels\Features\ChargeStateViewModel.cs" />
     <Compile Include="ViewModels\Instruments\InstrumentPresetFactory.cs" />
     <Compile Include="ViewModels\Features\SpectraSortOptions.cs" />
     <Compile Include="ViewModels\StateModeratorViewModel.cs" />
     <Compile Include="IO\ManassaWorkspaceWriter.cs" />
     <Compile Include="IO\DatasetSearcher.cs" />
     <Compile Include="IO\ManassaWorkspaceReader.cs" />
-    <Compile Include="IO\SingletonDataProviders.cs" />
     <Compile Include="IO\SpectraLoader.cs" />
     <Compile Include="ViewModels\RecentAnalysisViewModel.cs" />
     <Compile Include="ViewModels\Viewers\ClusterViewModel.cs" />
@@ -184,7 +197,7 @@
     <Compile Include="ViewModels\Datasets\DatasetInformationViewModel.cs" />
     <Compile Include="ViewModels\Viewers\GettingStartedViewModel.cs" />
     <Compile Include="ViewModels\ImageViewModel.cs" />
-    <Compile Include="ViewModels\IO\ExportViewModel.cs" />
+    <Compile Include="ViewModels\IO\ClusterExportViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\MassTagMatchedViewModel.cs" />
     <Compile Include="ViewModels\Spectra\MSSpectraViewModel.cs" />
@@ -215,18 +228,22 @@
     <Compile Include="ViewModels\Features\UMCClusterFilterViewModel.cs" />
     <Compile Include="ViewModels\Features\UMCClusterIdentificationViewModel.cs" />
     <Compile Include="ViewModels\Features\UMCClusterSpectraViewModel.cs" />
-    <Compile Include="ViewModels\Features\UMCClusterViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="ViewModels\Wizard\AnalysisBaselineSelectionViewModel.cs" />
     <Compile Include="ViewModels\Instruments\InstrumentPresetViewModel.cs" />
     <Compile Include="ViewModels\Wizard\AnalysisStatusArgs.cs" />
     <Compile Include="ViewModels\Wizard\ExperimentPresetFactory.cs" />
     <Compile Include="ViewModels\Wizard\ExperimentPresetViewModel.cs" />
+    <Compile Include="ViewModel\MainViewModel.cs" />
+    <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Compile Include="Windows\FilePathFinder.xaml.cs">
       <DependentUpon>FilePathFinder.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\IO\ExportView.xaml.cs">
-      <DependentUpon>ExportView.xaml</DependentUpon>
+    <Compile Include="Windows\IO\ClusterExportView.xaml.cs">
+      <DependentUpon>ClusterExportView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\IO\NameDescriptionControl.xaml.cs">
+      <DependentUpon>NameDescriptionControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\Plots\AlignmentPlotView.xaml.cs">
       <DependentUpon>AlignmentPlotView.xaml</DependentUpon>
@@ -298,6 +315,9 @@
     <Compile Include="Windows\Viewers\Datasets\DatasetView.xaml.cs">
       <DependentUpon>DatasetView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Windows\Viewers\Features\ChargeStateControl.xaml.cs">
+      <DependentUpon>ChargeStateControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\Viewers\Features\MsFeatureGrid.xaml.cs">
       <DependentUpon>MsFeatureGrid.xaml</DependentUpon>
     </Compile>
@@ -333,6 +353,9 @@
     </Compile>
     <Compile Include="Windows\Viewers\Spectra\MSSpectraTemplate.xaml.cs">
       <DependentUpon>MSSpectraTemplate.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Viewers\Spectra\MSSpectraSummary.xaml.cs">
+      <DependentUpon>MSSpectraSummary.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\Viewers\Spectra\SpectraDetail.xaml.cs">
       <DependentUpon>SpectraDetail.xaml</DependentUpon>
@@ -373,7 +396,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Windows\IO\ExportView.xaml">
+    <Page Include="Windows\IO\ClusterExportView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\IO\NameDescriptionControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -481,6 +508,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Windows\Viewers\Features\ChargeStateControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\Viewers\Features\MsFeatureGrid.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -526,6 +557,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\Viewers\Spectra\MSSpectraTemplate.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\Viewers\Spectra\MSSpectraSummary.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -17,6 +17,11 @@ namespace MultiAlignTestSuite.Papers.Alignment.IO
         {
         }
 
+        public override void WriteLine(string data)
+        {
+            base.WriteLine(data);
+        }
+
         /// <summary>
         /// Serializes the data provided.
         /// </summary>

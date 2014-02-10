@@ -7,13 +7,22 @@ namespace MultiAlign.ViewModels.TreeView
 {
     public class StatisticTreeViewItem: TreeItemViewModel
     {
-
         public StatisticTreeViewItem(double value, string name)
+            : this(value, name, "")
+        {
+
+        }
+        public StatisticTreeViewItem(double value, string name, string format)
         {
             Name  = name;
             Value = value;
+            Format = format;    
         }
-
+        public string Format
+        {
+            get;
+            private set;
+        }
         public double Value 
         { 
             get; 
@@ -27,11 +36,7 @@ namespace MultiAlign.ViewModels.TreeView
     public class StringTreeViewItem : TreeItemViewModel
     {
 
-        public StringTreeViewItem(string value, string name):
-            this(value, name , "")
-        {
-        }
-        public StringTreeViewItem(string value, string name, string format)
+        public StringTreeViewItem(string value, string name)
         {
             Name = name;
             Value = value;
@@ -45,12 +50,6 @@ namespace MultiAlign.ViewModels.TreeView
 
         public override void LoadChildren()
         {
-        }
-
-        public string Format
-        {
-            get;
-            private set;
         }
     }
 }

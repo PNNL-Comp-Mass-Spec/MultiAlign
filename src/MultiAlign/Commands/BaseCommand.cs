@@ -14,18 +14,42 @@ namespace MultiAlign.Commands
     {
         CommandDelegate m_delegate;
 
-        public BaseCommandBridge(CommandDelegate newDelegate )
+        public event EventHandler CanExecuteChanged;
+        private Action      m_action;
+        private Func<bool>  m_determineExecute;
+        bool m_canExecute = true;
+
+        public BaseCommandBridge(CommandDelegate newDelegate)
         {
-            m_delegate = newDelegate;
+            m_delegate          = newDelegate;
+            m_determineExecute  = null;
+        }
+
+        public BaseCommandBridge(Action action, Func<bool> determineExecute)
+        {
+            m_delegate          = null;
+            m_action            = action;
+            m_determineExecute  = determineExecute;
         }
 
         #region ICommand Members
         public bool CanExecute(object parameter)
         {
-            return true;
-        }
+            if (m_determineExecute != null)
+            {
 
-        public event EventHandler CanExecuteChanged;
+                bool execute = m_determineExecute();
+                if (m_canExecute != execute)
+                {
+                    m_canExecute = execute;
+                    if (CanExecuteChanged !=null )
+                    {
+                        CanExecuteChanged(this, null);
+                    }
+                }
+            }
+            return m_canExecute;
+        }
 
         public void Execute(object parameter)
         {
@@ -33,7 +57,10 @@ namespace MultiAlign.Commands
             {
                 m_delegate(parameter);
             }
-
+            if (m_action != null)
+            {
+                m_action.Invoke();
+            }
         }
 
         #endregion

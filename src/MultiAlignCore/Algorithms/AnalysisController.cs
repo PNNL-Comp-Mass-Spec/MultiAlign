@@ -21,6 +21,7 @@ using MultiAlignCore.Extensions;
 using System.Collections.ObjectModel;
 using PNNLOmics.Data;
 using System.Text;
+using MultiAlignCore.Algorithms.FeatureFinding;
 
 
 namespace MultiAlignCore.Algorithms
@@ -836,52 +837,42 @@ namespace MultiAlignCore.Algorithms
                 m_config.Analysis.DataProviders.DatasetCache.AddAll(datasets);
             }
         }
-
-        
         /// <summary>
         /// Determine what exporting features need to be had.
         /// </summary>
         private  void ConstructExporting()
         {
+            AbundanceReportingType reporting     = AbundanceReportingType.Sum;
+            AbundanceReportingType umcAbundance  = AbundanceReportingType.Sum;
+            LCMSFeatureConsolidator consolidator = FeatureConsolidatorFactory.CreateConsolidator(reporting,
+                                                                                                 umcAbundance);
+            if (m_config.Analysis != null)
+            {                    
+                reporting    = m_config.Analysis.Options.ConsolidationOptions.AbundanceType;
+                umcAbundance = m_config.Analysis.Options.FeatureFindingOptions.UMCAbundanceReportingType;
+            }
+            
             if (m_config.ExporterNames.ClusterScanPath != null)
             {
-                m_config.ClusterExporters.Add(new UMCClusterScanWriter(Path.Combine(m_config.AnalysisPath, m_config.ExporterNames.ClusterScanPath)));
+                IFeatureClusterWriter writer = UMCClusterExporterFactory.Create(ClusterFeatureExporters.ClusterScans);  
+                writer.Path                  = Path.Combine(m_config.AnalysisPath, m_config.ExporterNames.ClusterScanPath);
+                writer.Consolidator          = consolidator;
+                m_config.ClusterExporters.Add(writer);
+
             }
             if (m_config.ExporterNames.CrossTabPath != null)
-            {
-                UMCClusterCrossTabWriter writer = new UMCClusterCrossTabWriter(Path.Combine(m_config.AnalysisPath, m_config.ExporterNames.CrossTabPath));
-           
-                MultiAlignCore.Algorithms.FeatureFinding.AbundanceReportingType reporting    = MultiAlignCore.Algorithms.FeatureFinding.AbundanceReportingType.Sum;
-                MultiAlignCore.Algorithms.FeatureFinding.AbundanceReportingType umcAbundance = MultiAlignCore.Algorithms.FeatureFinding.AbundanceReportingType.Sum;
-                if (m_config.Analysis != null)
-                {                    
-                    reporting    = m_config.Analysis.Options.ConsolidationOptions.AbundanceType;
-                    umcAbundance = m_config.Analysis.Options.FeatureFindingOptions.UMCAbundanceReportingType;
-                }
-                writer.Consolidator = FeatureConsolidatorFactory.CreateConsolidator(reporting,
-                                                                                    umcAbundance);
+            {                
+                IFeatureClusterWriter writer = UMCClusterExporterFactory.Create(ClusterFeatureExporters.CrossTab);  
+                writer.Path                  = Path.Combine(m_config.AnalysisPath, m_config.ExporterNames.CrossTabPath);
+                writer.Consolidator          = consolidator;
                 m_config.ClusterExporters.Add(writer);
             }
             if (m_config.ExporterNames.CrossTabAbundance != null)
-            {
-                //UMCClusterAbundanceCrossTabWriter writer = new UMCClusterAbundanceCrossTabWriter(Path.Combine(m_config.AnalysisPath,
-                //                                                                                 m_config.ExporterNames.CrossTabAbundance));
-
-
-                UMCClusterAbundanceSumCrossTabWriter writerSumOnly = new UMCClusterAbundanceSumCrossTabWriter(Path.Combine(m_config.AnalysisPath,
-                                                                                                 m_config.ExporterNames.CrossTabAbundance));
-
-                MultiAlignCore.Algorithms.FeatureFinding.AbundanceReportingType reporting    = MultiAlignCore.Algorithms.FeatureFinding.AbundanceReportingType.Sum;
-                MultiAlignCore.Algorithms.FeatureFinding.AbundanceReportingType umcAbundance = MultiAlignCore.Algorithms.FeatureFinding.AbundanceReportingType.Sum;
-                if (m_config.Analysis != null)
-                {
-                    reporting = m_config.Analysis.Options.ConsolidationOptions.AbundanceType;
-                    umcAbundance = m_config.Analysis.Options.FeatureFindingOptions.UMCAbundanceReportingType;
-                }
-                writerSumOnly.Consolidator = FeatureConsolidatorFactory.CreateConsolidator(reporting,
-                                                                                    umcAbundance);
-                
-                m_config.ClusterExporters.Add(writerSumOnly);                
+            {                
+                IFeatureClusterWriter writer = UMCClusterExporterFactory.Create(ClusterFeatureExporters.CrossTabAbundanceSum);  
+                writer.Path                  = Path.Combine(m_config.AnalysisPath, m_config.ExporterNames.CrossTabAbundance);
+                writer.Consolidator          = consolidator;
+                m_config.ClusterExporters.Add(writer);                
             }
         }
         /// <summary>

@@ -27,11 +27,19 @@ namespace MultiAlign.Workspace
         public void AddAnalysis(RecentAnalysis recent)
         {
             RecentAnalysisViewModel analysis = new RecentAnalysisViewModel(recent);
+            RecentAnalysisViewModel model    = null;
 
-            if (RecentAnalysis.Contains(analysis))
+            foreach(var x in RecentAnalysis)
             {
-                RecentAnalysis.Remove(analysis);
+                if (x.Analysis == recent)
+                    model = x;
             }
+
+            if (model != null)
+            {
+                RecentAnalysis.Remove(model);
+            }
+
             RecentAnalysis.Insert(0, analysis);
 
             if (RecentAnalysis.Count > 10)

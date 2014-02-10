@@ -6,46 +6,94 @@ using MultiAlign.Workspace;
 using MultiAlign.Commands.Viewers;
 using MultiAlign.Data.States;
 using System.Collections.ObjectModel;
+using MultiAlign.Commands;
+using MultiAlign.IO;
+using System.Collections.Generic;
 
 namespace MultiAlign.ViewModels
 {
     public class GettingStartedViewModel: ViewModelBase
     {
-        private MultiAlignWorkspace     m_currentWorkspace;
-        private StateModeratorViewModel m_moderator;        
+        private MultiAlignWorkspace                 m_currentWorkspace;
+        private StateModeratorViewModel             m_moderator;        
         public event EventHandler<OpenAnalysisArgs> ExistingAnalysisSelected;
         public event EventHandler<OpenAnalysisArgs> NewAnalysisStarted;
+        /// <summary>
+        /// Path to the workspace
+        /// </summary>
+        private  string m_workspacePath;
 
-        public GettingStartedViewModel(MultiAlignWorkspace workspace, StateModeratorViewModel moderator)
+
+        public GettingStartedViewModel(string workspacePath,  StateModeratorViewModel moderator)
         {
-            m_moderator = moderator;
+            m_moderator     = moderator;
+            m_workspacePath = workspacePath;
 
-            CurrentWorkspace                         = workspace;
+            CreateCommands();
+            LoadWorkspace(workspacePath);
+
+            foreach (var item in CurrentWorkspace.RecentAnalysis)            
+                item.RecentAnalysisSelected += new EventHandler<OpenAnalysisArgs>(item_RecentAnalysisSelected);
+                       
+        }
+
+        private void CreateCommands()
+        {
+            Action removeRecentList = delegate()
+            {                
+                RecentAnalyses.Clear();
+                SaveWorkSpace();
+            };
+
+            ClearRecentList = new BaseCommandBridge(removeRecentList, null);
+            
             LoadExistingAnalysisCommand command      = new LoadExistingAnalysisCommand();
             command.ExistingAnalysisSelected        += new EventHandler<OpenAnalysisArgs>(command_ExistingAnalysisSelected);
-            LoadExistingAnalysis = command;
+            LoadExistingAnalysis                    = command;
             
             StartNewAnalysisCommand startNew = new StartNewAnalysisCommand();
             startNew.StartNewAnalysis       += new EventHandler(startNew_StartNewAnalysis);
             StartNewAnalysis                 = startNew;
+        }
 
-            foreach (var item in workspace.RecentAnalysis)
+        /// <summary>
+        /// Loads a current workspace.
+        /// </summary>
+        private void LoadWorkspace(string path)
+        {
+            if (System.IO.File.Exists(path))
             {
-                item.RecentAnalysisSelected += new EventHandler<OpenAnalysisArgs>(item_RecentAnalysisSelected);
+                ApplicationStatusMediator.SetStatus("Loading workspace");
+                MultiAlignWorkspaceReader reader = new MultiAlignWorkspaceReader();
+                try
+                {
+                    CurrentWorkspace = reader.Read(path);
+                }
+                catch
+                {
+                    ApplicationStatusMediator.SetStatus(string.Format("Could not load the default workspace: {0}"));
+                }
             }
+        }
 
-            RecentAnalyses = new ObservableCollection<RecentAnalysisViewModel>();
-            foreach (var item in workspace.RecentAnalysis)
-            {                
-                RecentAnalyses.Add(item);
-                item.RecentAnalysisSelected += new EventHandler<OpenAnalysisArgs>(item_RecentAnalysisSelected);
+        private void SaveWorkSpace()
+        {
+            MultiAlignWorkspaceWriter writer = new MultiAlignWorkspaceWriter();
+            try
+            {
+                writer.Write(m_workspacePath, m_currentWorkspace);
+            }
+            catch
+            {
             }
         }
 
         public ObservableCollection<RecentAnalysisViewModel> RecentAnalyses
         {
-            get;
-            private set;
+            get
+            {
+                return m_currentWorkspace.RecentAnalysis;
+            }            
         }
 
         void item_RecentAnalysisSelected(object sender, OpenAnalysisArgs e)
@@ -56,6 +104,7 @@ namespace MultiAlign.ViewModels
                 ExistingAnalysisSelected(sender, e);
             }
             CurrentWorkspace.AddAnalysis(e.AnalysisData);
+            SaveWorkSpace();
         }
 
         void startNew_StartNewAnalysis(object sender, EventArgs e)
@@ -76,6 +125,7 @@ namespace MultiAlign.ViewModels
                 ExistingAnalysisSelected(sender, e);
             }                
             CurrentWorkspace.AddAnalysis(e.AnalysisData);
+            SaveWorkSpace();
         }
 
         public MultiAlignWorkspace CurrentWorkspace
@@ -97,10 +147,14 @@ namespace MultiAlign.ViewModels
 
         #region Commands        
         public ICommand LoadExistingAnalysis { get; private set; }
-        public ICommand StartNewAnalysis     { get; private set; }        
+        public ICommand StartNewAnalysis     { get; private set; }
+        public ICommand ClearRecentList { get; private set; }           
         #endregion
 
-        
-
+        public  void AddAnalysis(RecentAnalysis recent)
+        {
+            CurrentWorkspace.AddAnalysis(recent);            
+            SaveWorkSpace();
+        }
     }
 }

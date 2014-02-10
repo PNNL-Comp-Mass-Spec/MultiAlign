@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using MultiAlignTestSuite.Papers.Alignment.SSM;
+using MultiAlignTestSuite.Algorithms.SpectralProcessing;
 
 namespace MultiAlignTestSuite.Papers.Alignment
 {
@@ -32,6 +33,8 @@ namespace MultiAlignTestSuite.Papers.Alignment
         /// Gets or sets the list of matches.
         /// </summary>
         public IEnumerable<AnchorPointMatch> Matches { get; set; }
+
+        
     }
 
 }

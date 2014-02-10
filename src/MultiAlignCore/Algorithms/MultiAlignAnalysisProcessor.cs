@@ -849,7 +849,7 @@ namespace MultiAlignCore.Algorithms
             filteredMsFeatures = LCMSFeatureFilters.FilterMSFeatures(msFeatures, options);
 
             // Find LCMS Features
-            IFeatureFinder finder   = FeatureFinderFactory.CreateFeatureFinder(FeatureFinderType.SingleLinkage);
+            IFeatureFinder finder   = FeatureFinderFactory.CreateFeatureFinder(options.FeatureFinderAlgorithm);
             features                = finder.FindFeatures(filteredMsFeatures, options);
 
             UpdateStatus( "Filtering features.");            

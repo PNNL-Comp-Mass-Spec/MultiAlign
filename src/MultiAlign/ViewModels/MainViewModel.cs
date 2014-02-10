@@ -41,11 +41,6 @@ namespace MultiAlign.ViewModels
             MainDataName      = "analysis";
 
 
-            // Workspace
-            CurrentWorkspace        = new MultiAlignWorkspace();
-            string workSpacePath    = ApplicationUtility.GetApplicationDataFolderPath("MultiAlign");
-            workSpacePath           = Path.Combine(workSpacePath, Properties.Settings.Default.WorkspaceFile);
-            LoadWorkspace(workSpacePath);
 
             // Titles and Status
             string version  = MultiAlignCore.ApplicationUtility.GetEntryAssemblyData();
@@ -56,7 +51,11 @@ namespace MultiAlign.ViewModels
             ShowStartCommand    = new BaseCommandBridge(new CommandDelegate(ShowStart));
 
             // View Models
-            GettingStartedViewModel = new GettingStartedViewModel(m_workspace, StateModerator);
+            
+            string workSpacePath    = ApplicationUtility.GetApplicationDataFolderPath("MultiAlign");
+            workSpacePath           = Path.Combine(workSpacePath, Properties.Settings.Default.WorkspaceFile);
+            GettingStartedViewModel = new GettingStartedViewModel(workSpacePath, StateModerator);
+
             GettingStartedViewModel.NewAnalysisStarted += new EventHandler<OpenAnalysisArgs>(GettingStartedViewModel_NewAnalysisStarted);
             GettingStartedViewModel.ExistingAnalysisSelected += new EventHandler<OpenAnalysisArgs>(GettingStartedViewModel_ExistingAnalysisSelected);
 
@@ -68,6 +67,7 @@ namespace MultiAlign.ViewModels
             LoadingAnalysisViewModel.AnalysisLoaded += new EventHandler<AnalysisStatusArgs>(LoadingAnalysisViewModel_AnalysisLoaded);
 
             ApplicationStatusMediator.SetStatus("Ready.");
+            
         }
 
 
@@ -109,24 +109,6 @@ namespace MultiAlign.ViewModels
                 {
                     m_currentAnalysis = value;
                     OnPropertyChanged("CurrentAnalysis");
-                }
-            }
-        }
-        /// <summary>
-        /// Gets or sets the current workspace.
-        /// </summary>
-        public MultiAlignWorkspace CurrentWorkspace
-        {
-            get
-            {
-                return m_workspace;
-            }
-            set
-            {
-                if (m_workspace != value)
-                {
-                    m_workspace = value;
-                    OnPropertyChanged("CurrentWorkspace");
                 }
             }
         }
@@ -237,26 +219,8 @@ namespace MultiAlign.ViewModels
         }
         #endregion
 
-        #region Loading        
-        /// <summary>
-        /// Loads a current workspace.
-        /// </summary>
-        private void LoadWorkspace(string path)
-        {
-            if (System.IO.File.Exists(path))
-            {
-                ApplicationStatusMediator.SetStatus("Loading workspace");
-                MultiAlignWorkspaceReader reader = new MultiAlignWorkspaceReader();
-                try
-                {
-                    CurrentWorkspace = reader.Read(path);
-                }
-                catch
-                {
-                    ApplicationStatusMediator.SetStatus(string.Format("Could not load the default workspace: {0}"));
-                }
-            }
-        }
+        #region Loading      
+
         /// <summary>
         /// Loads a recent analysis
         /// </summary>
@@ -306,7 +270,7 @@ namespace MultiAlign.ViewModels
             StateModerator.CurrentViewState         = ViewState.AnalysisView;
             RecentAnalysis recent                   = new RecentAnalysis(   analysis.MetaData.AnalysisPath,
                                                                             analysis.MetaData.AnalysisName);
-            CurrentWorkspace.AddAnalysis(recent);
+            GettingStartedViewModel.CurrentWorkspace.AddAnalysis(recent);
         }
         #endregion
 
@@ -460,12 +424,11 @@ namespace MultiAlign.ViewModels
         {
             string path                         = e.Configuration.AnalysisPath;
             string name                         = System.IO.Path.GetFileName(e.Configuration.AnalysisName);
-            RecentAnalysis analysis             = new RecentAnalysis(path, name);
-
+            RecentAnalysis recent               = new RecentAnalysis(path, name);
             StateModerator.CurrentViewState     = ViewState.AnalysisView;
             StateModerator.CurrentAnalysisState = AnalysisState.Viewing;
 
-            CurrentWorkspace.AddAnalysis(analysis);
+            GettingStartedViewModel.AddAnalysis(recent);            
             DisplayAnalysis(e.Configuration.Analysis);
         }
         void AnalysisRunningViewModel_AnalysisCancelled(object sender, EventArgs e)

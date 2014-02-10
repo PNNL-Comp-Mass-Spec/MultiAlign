@@ -23,5 +23,7 @@ namespace MultiAlign.Windows.Viewers.Spectra
         {
             InitializeComponent();
         }
+
+        //
     }
 }

@@ -1,4 +1,6 @@
-﻿using MultiAlign.IO;
+﻿using MultiAlign.Commands;
+using MultiAlign.IO;
+using MultiAlign.ViewModels.Features;
 using MultiAlign.ViewModels.TreeView;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.Features;
@@ -17,17 +19,21 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Documents;
 using System.Windows.Forms.Integration;
+using System.Windows.Input;
 
 
 namespace MultiAlign.ViewModels.Viewers
 {
+    /// <summary>
+    /// View model for the main cluste control viewer
+    /// </summary>
     public class ClusterDetailViewModel: ViewModelBase
     {
-        private int                     m_charge;
+        private ChargeStateViewModel    m_charge;
         private WindowsFormsHost        m_parentSpectraHost;
         private WindowsFormsHost        m_clusterChartHost;
         private WindowsFormsHost        m_driftChartHost;
-        private UMCTreeViewModel                m_selectedFeature;
+        private UMCTreeViewModel        m_selectedFeature;
         private UMCClusterTreeViewModel m_clusterViewModel;
 
         private System.Windows.Forms.SaveFileDialog  m_featureImageSaveDialog;
@@ -56,7 +62,7 @@ namespace MultiAlign.ViewModels.Viewers
         {
             m_numberOfIsotopes  = 4;
             m_scanMaps          = new Dictionary<int, List<MSFeatureLight>>();
-            Charges             = new ObservableCollection<int>();
+            Charges             = new ObservableCollection<ChargeStateViewModel>();
             m_chartSynchMap     = new Dictionary<ctlChartBase, List<ChartSynchData>>();
 
             FeatureFindingTolerances                = new FeatureTolerances();
@@ -68,7 +74,7 @@ namespace MultiAlign.ViewModels.Viewers
             ClusterTolerances.DriftTime             = 3;
             ClusterTolerances.RetentionTime         = .03;
 
-
+            m_ppmError                      = 10;
 
             m_sicChart                      = new SICChart();
             m_sicChart.Title                = "XIC";                        
@@ -105,6 +111,14 @@ namespace MultiAlign.ViewModels.Viewers
             m_driftChart.LegendVisible      = false;
             m_driftChartHost                = new WindowsFormsHost() { Child = m_driftChart };
 
+            Action x = delegate() 
+            {
+                UMCLight feature    = SelectedFeature.Feature;
+                UMCLight newFeature = LoadExtractedIonChromatrogram(feature, m_ppmError);                
+                m_sicChart.SetFeature(newFeature);
+                m_sicChart.AutoViewPort();                
+            };
+            CreateXic = new BaseCommandBridge (x, null);
 
             m_sicChart.ViewPortChanged      += new ViewPortChangedHandler(m_sicChart_ViewPortChanged);
             m_sicChart.ChartPointPressed    += new EventHandler<SelectedPointEventArgs>(m_sicChart_ChartPointPressed);     
@@ -278,8 +292,8 @@ namespace MultiAlign.ViewModels.Viewers
             }
 
             m_msFeaturePlot.MainFeature = feature;
-
-            m_sicChart.SetFeature(feature);
+            UMCLight newFeature = LoadExtractedIonChromatrogram(feature, m_ppmError);
+            m_sicChart.SetFeature(newFeature);
             m_sicChart.AutoViewPort();
             m_msFeaturePlot.UpdateCharts(true);
 
@@ -335,7 +349,7 @@ namespace MultiAlign.ViewModels.Viewers
                     foreach (MSFeatureLight feature in SelectedFeature.Feature.MSFeatures)
                     {
                         int diff = Math.Abs(feature.Scan - point);
-                        if (closest == null || diff < closestDist && (SelectedCharge == feature.ChargeState))
+                        if (closest == null || diff < closestDist && (SelectedCharge.ChargeState == feature.ChargeState))
                         {
                             closest = feature;
                             closestDist = diff;
@@ -463,6 +477,7 @@ namespace MultiAlign.ViewModels.Viewers
         #endregion
 
         private string m_selectedFeatureName;
+        private double m_ppmError;
 
                 
         /// <summary>
@@ -482,24 +497,37 @@ namespace MultiAlign.ViewModels.Viewers
         private void UpdateCharges(UMCLight feature)
         {
             Charges.Clear();
-
             m_scanMaps = feature.CreateChargeMap();
 
             foreach (int charge in m_scanMaps.Keys)
             {
-                Charges.Add(charge);
+                double mz           = 0;
+                int  minScan        = int.MaxValue;
+                int  maxScan        = int.MinValue;
+                long maxIntensity   = 0;
 
+                foreach (MSFeatureLight msFeature in m_scanMaps[charge])
+                {
+                    minScan = Math.Min(minScan, msFeature.Scan);
+                    maxScan = Math.Max(maxScan, msFeature.Scan);
+                    if (maxIntensity < msFeature.Abundance)
+                    {
+                        maxIntensity = msFeature.Abundance;
+                        mz           = msFeature.Mz;
+                    }
+                }
+
+                Charges.Add(new ChargeStateViewModel(charge, mz, minScan, maxScan));
             }
             Charges.OrderBy(x => x);
             if (Charges.Count > 0)
-            {
-                m_charge = -1;
+            {                
                 SelectedCharge = Charges[0];
             }
         }
 
         #region View Model 
-        public int SelectedCharge
+        public ChargeStateViewModel SelectedCharge
         {
             get
             {
@@ -512,17 +540,20 @@ namespace MultiAlign.ViewModels.Viewers
                     m_charge = value;
                     OnPropertyChanged("SelectedCharge");
 
-                    if (m_scanMaps.ContainsKey(value))
+                    if (value == null)
+                        return;
+
+                    if (m_scanMaps.ContainsKey(value.ChargeState))
                     {
                         int minScan = int.MaxValue;
                         int maxScan = int.MinValue;
-                        foreach (MSFeatureLight msFeature in m_scanMaps[value])
+                        foreach (MSFeatureLight msFeature in m_scanMaps[value.ChargeState])
                         {
                             minScan = Math.Min(minScan, msFeature.Scan);
                             maxScan = Math.Max(maxScan, msFeature.Scan);
                         }
 
-                        if (m_scanMaps[value].Count > 0)
+                        if (m_scanMaps[value.ChargeState].Count > 0)
                         {
                             MinimumScan = minScan;
                             MaximumScan = maxScan;
@@ -530,11 +561,27 @@ namespace MultiAlign.ViewModels.Viewers
                     }
                 }
             }
-        }        
-        public ObservableCollection<int> Charges
+        }
+        public ObservableCollection<ChargeStateViewModel> Charges
         { 
             get;
             private set; 
+        }
+        public ICommand CreateXic { get; set; }
+        public double PpmError
+        {
+            get
+            {
+                return m_ppmError;
+            }
+            set
+            {
+                if (m_ppmError != value)
+                {
+                    m_ppmError = value;
+                    OnPropertyChanged("PpmError");
+                }
+            }
         }
         public ObservableCollection<UMCTreeViewModel> Features 
         { 
@@ -574,7 +621,108 @@ namespace MultiAlign.ViewModels.Viewers
         #endregion
 
         #region Spectrum Loading
+        private UMCLight LoadExtractedIonChromatrogram(UMCLight feature, double massError)
+        {
+            UMCLight umcFeature = new UMCLight(feature);
+           // umcFeature.MSFeatures.Clear();
 
+             DatasetInformation info = SingletonDataProviders.GetDatasetInformation(feature.GroupID);
+             if (info != null && info.Raw != null && info.RawPath != null)
+             {
+                 using (ISpectraProvider provider = RawLoaderFactory.CreateFileReader(info.RawPath))
+                 {
+                     if (provider != null)
+                     {
+                         provider.AddDataFile(info.RawPath, 0);
+
+                         Dictionary<int, List<MSFeatureLight>> chargeFeatures = feature.CreateChargeMap();
+                         Dictionary<int, Dictionary<int, double>> xic = new Dictionary<int, Dictionary<int, double>>();
+                        
+                         foreach (int charge in chargeFeatures.Keys)
+                         {
+                             // Find the mininmum and maximum features
+
+                             var msFeatures = chargeFeatures[charge].OrderBy(x => x.Scan).ToList();
+                             if (msFeatures.Count > 0)
+                             {
+                                 int minScan = msFeatures[0].Scan;
+                                 int maxScan = msFeatures[msFeatures.Count - 1].Scan;
+
+                                 minScan -= 100;
+                                 maxScan += 100;
+
+                                 double sum          = 0;
+                                 double min          = double.MaxValue;
+                                 double max          = double.MinValue;
+                                 double maxIntensity = 0;
+                                 double mz           = feature.Mz;
+
+                                 Dictionary<int, MSFeatureLight> featureMap = new Dictionary<int, MSFeatureLight>();
+
+                                 foreach (MSFeatureLight chargeFeature in msFeatures)
+                                 {
+                                     min  = Math.Min(min, chargeFeature.Mz);
+                                     max  = Math.Max(max, chargeFeature.Mz);                             
+                                     sum += chargeFeature.Mz;
+
+                                     if (chargeFeature.Abundance > maxIntensity)
+                                     {
+                                         maxIntensity   = chargeFeature.Abundance;
+                                         mz             = chargeFeature.Mz;
+                                     }
+
+                                     // Map the feature...
+                                     if (!featureMap.ContainsKey(chargeFeature.Scan))
+                                     {
+                                         featureMap.Add(chargeFeature.Scan, chargeFeature);
+                                     }                             
+                                 }
+                                 xic.Add(charge, new Dictionary<int, double>());                        
+                                 List<XYData> spectrum = null;
+                                 
+                                 double diff   = Feature.ComputeDaDifferenceFromPPM(mz, massError);
+                                 double lower  = Feature.ComputeDaDifferenceFromPPM(mz, massError);
+                                 double higher = Feature.ComputeDaDifferenceFromPPM(mz, -massError);
+
+                                 for (int i = minScan; i < maxScan; i++)
+                                 {
+                                    spectrum = provider.GetRawSpectra(i, 0, 1);
+                                    if (spectrum == null)
+                                        continue;
+
+                                    var data = (from x in spectrum
+                                                where x.X > lower && x.X < higher
+                                                select x).ToList();
+
+                                    double summedIntensity = data.Sum(x => x.Y);
+                                    xic[charge].Add(i, summedIntensity);
+
+                                    if (featureMap.ContainsKey(i))
+                                    {
+                                        featureMap[i].Abundance = Convert.ToInt64(summedIntensity);
+                                        umcFeature.AddChildFeature(featureMap[i]);
+                                    }
+                                    else
+                                    {
+                                        MSFeatureLight newFeature   = new MSFeatureLight();
+                                        newFeature.Scan             = i;
+                                        newFeature.MassMonoisotopic = feature.MassMonoisotopic;
+                                        newFeature.RetentionTime    = i;
+                                        newFeature.DriftTime        = feature.DriftTime;
+                                        newFeature.ChargeState      = charge;
+                                        newFeature.GroupID          = feature.GroupID;                                        
+                                        newFeature.Abundance        = Convert.ToInt64(summedIntensity);
+                                        feature.AddChildFeature(newFeature);
+                                        umcFeature.AddChildFeature(newFeature);
+                                    }
+                                 }                                                                  
+                              } 
+                        }
+                    }
+                 }
+             }
+             return umcFeature;
+        }
         private void LoadSpectrum(MSFeatureLight msFeature)
         {
             DatasetInformation info = SingletonDataProviders.GetDatasetInformation(msFeature.GroupID);
@@ -732,5 +880,10 @@ namespace MultiAlign.ViewModels.Viewers
             SelectedFeature     =  Features[0];
         }
         #endregion        
+    
+        /// <summary>
+        /// Gets or sets the PPM error 
+        /// </summary>
+        public double XicPpmError { get; set; }
     }
 }

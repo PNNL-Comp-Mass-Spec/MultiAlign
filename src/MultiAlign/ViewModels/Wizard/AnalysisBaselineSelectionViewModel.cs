@@ -33,7 +33,7 @@ namespace MultiAlign.ViewModels.Wizard
             SetDatabaseToLocal      = new BaseCommandBridge(new CommandDelegate(SetDatabaseToLocalDelegate));
             SetBaselineToDatabase   = new BaseCommandBridge(new CommandDelegate(SetBaselineToDatabaseDelegate));
             SetBaselineToDataset    = new BaseCommandBridge(new CommandDelegate(SetBaselineToDatasetDelegate));
-            FindLocalDatabase = new BrowseFileCommand((string x) =>
+            FindLocalDatabase = new BrowseOpenFileCommand((string x) =>
             {
                 DatabaseFilePath = x;
                 IsDatabaseLocal  = true;

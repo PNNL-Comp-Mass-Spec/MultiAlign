@@ -5,13 +5,9 @@ using System.Text;
 
 namespace MultiAlignCore.MathUtilities
 {
-    class Loess
-    {
-    }
-
     public class LoessInterpolator
     {
-        public static double DEFAULT_BANDWIDTH = 0.3;
+        public static double DEFAULT_BANDWIDTH = 0.50;
         public static int DEFAULT_ROBUSTNESS_ITERS = 2;
 
         /**
@@ -32,10 +28,20 @@ namespace MultiAlignCore.MathUtilities
          * robustness iterations) to 4.
          */
         private int robustnessIters;
+        private  IList<double> m_xModel;
+        private  IList<double> m_yModel;
+        private double[] m_res;
+        private double[] m_residuals;
+        private double[] m_sortedResiduals;
+        private double[] m_robustnessWeights;
+        private int[] m_bandwidthInterval;
+        private int m_modelSize;
+        private int m_bandwidthInPoints;
+        private Func<double, double> m_fitFunction;
 
         public LoessInterpolator()
         {
-            this.bandwidth = DEFAULT_BANDWIDTH;
+            this.bandwidth       = DEFAULT_BANDWIDTH;
             this.robustnessIters = DEFAULT_ROBUSTNESS_ITERS;
         }
 
@@ -53,147 +59,210 @@ namespace MultiAlignCore.MathUtilities
             this.robustnessIters = robustnessIters;
         }
 
-        /**
-         * Compute a loess fit on the data at the original abscissae.
-         *
-         * @param xval the arguments for the interpolation points
-         * @param yval the values for the interpolation points
-         * @return values of the loess fit at corresponding original abscissae
-         * @throws MathException if some of the following conditions are false:
-         * <ul>
-         * <li> Arguments and values are of the same size that is greater than zero</li>
-         * <li> The arguments are in a strictly increasing order</li>
-         * <li> All arguments and values are finite real numbers</li>
-         * </ul>
-         */
-        public double[] smooth(double[] xval, double[] yval)
+        private void Predict(double x,  out double res, out double residuals, double[] robustnessWeights, int[] bandwidthInterval, int i)
         {
-            if (xval.Length != yval.Length)
+            
+
+            int ileft  = bandwidthInterval[0];
+            int iright = bandwidthInterval[1];
+
+            // Compute the point of the bandwidth interval that is
+            // farthest from x
+            int edge;
+            if (m_xModel[i] - m_xModel[ileft] > m_xModel[iright] - m_xModel[i])
             {
-                throw new ApplicationException(string.Format("Loess expects the abscissa and ordinate arrays to be of the same size, but got {0} abscisssae and {1} ordinatae", xval.Length, yval.Length));
+                edge = ileft;
             }
-            int n = xval.Length;
-            if (n == 0)
+            else
+            {
+                edge = iright;
+            }
+
+            // Compute a least-squares linear fit weighted by
+            // the product of robustness weights and the tricube
+            // weight function.
+            // See http://en.wikipedia.org/wiki/Linear_regression
+            // (section "Univariate linear case")
+            // and http://en.wikipedia.org/wiki/Weighted_least_squares
+            // (section "Weighted least squares")
+            double sumWeights   = 0;
+            double sumX         = 0, sumXSquared = 0, sumY = 0, sumXY = 0;
+            double denom        = Math.Abs(1.0 / (m_xModel[edge] - x));
+            for (int k = ileft; k <= iright; ++k)
+            {
+                double xk = m_xModel[k];
+                double yk = m_yModel[k];
+
+                double dist;
+                if (k < i)
+                {
+                    dist = (x - xk);
+                }
+                else
+                {
+                    dist = (xk - x);
+                }
+
+                double w     = m_fitFunction(dist * denom) * robustnessWeights[k];
+                double xkw   = xk * w;
+
+                sumWeights  += w;
+                sumX        += xkw;
+                sumXSquared += xk * xkw;
+                sumY        += yk * w;
+                sumXY       += yk * xkw;
+            }
+
+            double meanX        = sumX / sumWeights;
+            double meanY        = sumY / sumWeights;
+            double meanXY       = sumXY / sumWeights;
+            double meanXSquared = sumXSquared / sumWeights;
+
+            double beta;
+            if (meanXSquared == meanX * meanX)
+            {
+                beta = 0;
+            }
+            else
+            {
+                beta = (meanXY - meanX * meanY) / (meanXSquared - meanX * meanX);
+            }
+
+            double alpha = meanY - beta * meanX;
+            res          = beta * x + alpha;
+            residuals    = Math.Abs(m_yModel[i] - res);            
+        }
+
+        /// <summary>
+        /// Predicts a new value based on xValue
+        /// </summary>
+        /// <param name="xValue"></param>
+        /// <returns></returns>
+        public double Predict(double xValue)
+        {
+            if (m_xModel == null || m_yModel == null)
+                throw new Exception("The models have not been set yet.  Please set them");
+            if (m_xModel.Count != m_yModel.Count)
+                throw new Exception("The models do not match in size. They must be the same dimension");
+
+            // Find index within the model...for the locally weighted regression
+            int index = FindIndex(xValue, m_xModel);
+            double res              = 0;
+            double residuals        = 0;            
+            
+            
+            m_bandwidthInterval = new int[] { 0, m_bandwidthInPoints - 1 };
+
+            // From the left 
+            int points = m_bandwidthInPoints / 2;
+
+            // We are at the left edge.
+            if (index - points  < 0)
+            {
+                m_bandwidthInterval[0] = 0;
+                m_bandwidthInterval[1] = m_bandwidthInPoints - 1;
+            }
+            else if (index + points > m_xModel.Count)
+            {
+
+                m_bandwidthInterval[1] = m_xModel.Count - 1;
+                m_bandwidthInterval[0] = m_bandwidthInterval[1] - m_bandwidthInPoints;
+            }
+            else
+            {
+                m_bandwidthInterval[0] = index - points;
+                m_bandwidthInterval[1] = index + points - 1;
+
+            }            
+            // At each x, compute a local weighted linear regression                
+            Predict(xValue, out res, out residuals, m_robustnessWeights, m_bandwidthInterval, index);                                
+            return res;
+        }
+
+        /// <summary>
+        /// Compute a loess fit on the data at the original abscissae.
+        /// </summary>
+        /// <param name="xval">xval the arguments for the interpolation points</param>
+        /// <param name="yval">the values for the interpolation points</param>
+        /// <returns>values of the loess fit at corresponding original abscissae</returns>
+        /// <exception cref="MathException">MathException if some of the following conditions are false:</exception>
+        /// <remarks>
+        ///  Arguments and values are of the same size that is greater than zero
+        ///  The arguments are in a strictly increasing order
+        ///  All arguments and values are finite real numbers
+        /// </remarks>
+        public IList<double> Smooth(IList<double> xval, IList<double> yval, Func<double, double> fitFunction)
+        {
+            m_xModel = xval;
+            m_yModel = yval;
+
+            m_fitFunction = fitFunction;
+
+            if (m_xModel.Count() != m_yModel.Count())
+            {
+                throw new ApplicationException(string.Format("Loess expects the abscissa and ordinate arrays to be of the same size, but got {0} abscisssae and {1} ordinatae",
+                        m_xModel.Count,
+                        m_yModel.Count));
+            }
+            m_modelSize = m_xModel.Count();
+            if (m_modelSize == 0)
             {
                 throw new ApplicationException("Loess expects at least 1 point");
             }
 
-            checkAllFiniteReal(xval, true);
-            checkAllFiniteReal(yval, false);
-            checkStrictlyIncreasing(xval);
+            CheckAllFiniteReal(m_xModel, true);
+            CheckAllFiniteReal(m_yModel, false);
+            CheckStrictlyIncreasing(m_xModel);
 
-            if (n == 1)
-            {
-                return new double[] { yval[0] };
-            }
+            if (m_modelSize == 1)
+                return new List<double>() { m_yModel[0] };
+            
+            if (m_modelSize == 2)
+                return new List<double>() { m_yModel[0], m_yModel[1] };
+            
 
-            if (n == 2)
-            {
-                return new double[] { yval[0], yval[1] };
-            }
+            m_bandwidthInPoints = (int)(bandwidth * m_modelSize);
 
-            int bandwidthInPoints = (int)(bandwidth * n);
-
-            if (bandwidthInPoints < 2)
+            if (m_bandwidthInPoints < 2)
             {
                 throw new ApplicationException(string.Format("the bandwidth must be large enough to accomodate at least 2 points. There are {0} " +
                     " data points, and bandwidth must be at least {1} but it is only {2}",
-                    n, 2.0 / n, bandwidth
+                    m_modelSize, 2.0 / m_modelSize, bandwidth
                 ));
             }
 
-            double[] res = new double[n];
-
-            double[] residuals = new double[n];
-            double[] sortedResiduals = new double[n];
-
-            double[] robustnessWeights = new double[n];
+            m_res               = new double[m_modelSize];
+            m_residuals         = new double[m_modelSize];
+            m_sortedResiduals   = new double[m_modelSize];
+            m_robustnessWeights = new double[m_modelSize];
 
             // Do an initial fit and 'robustnessIters' robustness iterations.
             // This is equivalent to doing 'robustnessIters+1' robustness iterations
             // starting with all robustness weights set to 1.
-            for (int i = 0; i < robustnessWeights.Length; i++) robustnessWeights[i] = 1;
+            for (int i = 0; i < m_robustnessWeights.Length; i++) 
+                    m_robustnessWeights[i] = 1;
+
             for (int iter = 0; iter <= robustnessIters; ++iter)
             {
-                int[] bandwidthInterval = { 0, bandwidthInPoints - 1 };
+                m_bandwidthInterval = new int[] { 0, m_bandwidthInPoints - 1 };
+
                 // At each x, compute a local weighted linear regression
-                for (int i = 0; i < n; ++i)
+                for (int i = 0; i < m_modelSize; ++i)
                 {
-                    double x = xval[i];
+                    double res       = m_res[i];
+                    double residuals = m_res[i];
 
                     // Find out the interval of source points on which
                     // a regression is to be made.
                     if (i > 0)
                     {
-                        updateBandwidthInterval(xval, i, bandwidthInterval);
+                        updateBandwidthInterval(m_xModel, i, m_bandwidthInterval);
                     }
 
-                    int ileft = bandwidthInterval[0];
-                    int iright = bandwidthInterval[1];
+                    Predict(m_xModel[i], out res, out residuals, m_robustnessWeights, m_bandwidthInterval, i);
 
-                    // Compute the point of the bandwidth interval that is
-                    // farthest from x
-                    int edge;
-                    if (xval[i] - xval[ileft] > xval[iright] - xval[i])
-                    {
-                        edge = ileft;
-                    }
-                    else
-                    {
-                        edge = iright;
-                    }
-
-                    // Compute a least-squares linear fit weighted by
-                    // the product of robustness weights and the tricube
-                    // weight function.
-                    // See http://en.wikipedia.org/wiki/Linear_regression
-                    // (section "Univariate linear case")
-                    // and http://en.wikipedia.org/wiki/Weighted_least_squares
-                    // (section "Weighted least squares")
-                    double sumWeights = 0;
-                    double sumX = 0, sumXSquared = 0, sumY = 0, sumXY = 0;
-                    double denom = Math.Abs(1.0 / (xval[edge] - x));
-                    for (int k = ileft; k <= iright; ++k)
-                    {
-                        double xk = xval[k];
-                        double yk = yval[k];
-                        double dist;
-                        if (k < i)
-                        {
-                            dist = (x - xk);
-                        }
-                        else
-                        {
-                            dist = (xk - x);
-                        }
-                        double w = tricube(dist * denom) * robustnessWeights[k];
-                        double xkw = xk * w;
-                        sumWeights += w;
-                        sumX += xkw;
-                        sumXSquared += xk * xkw;
-                        sumY += yk * w;
-                        sumXY += yk * xkw;
-                    }
-
-                    double meanX = sumX / sumWeights;
-                    double meanY = sumY / sumWeights;
-                    double meanXY = sumXY / sumWeights;
-                    double meanXSquared = sumXSquared / sumWeights;
-
-                    double beta;
-                    if (meanXSquared == meanX * meanX)
-                    {
-                        beta = 0;
-                    }
-                    else
-                    {
-                        beta = (meanXY - meanX * meanY) / (meanXSquared - meanX * meanX);
-                    }
-
-                    double alpha = meanY - beta * meanX;
-
-                    res[i] = beta * x + alpha;
-                    residuals[i] = Math.Abs(yval[i] - res[i]);
+                    m_res[i]        = res;
+                    m_residuals[i]  = res;
                 }
 
                 // No need to recompute the robustness weights at the last
@@ -204,28 +273,52 @@ namespace MultiAlignCore.MathUtilities
                 }
 
                 // Recompute the robustness weights.
-
                 // Find the median residual.
                 // An arraycopy and a sort are completely tractable here, 
                 // because the preceding loop is a lot more expensive
-                System.Array.Copy(residuals, sortedResiduals, n);
-                //System.arraycopy(residuals, 0, sortedResiduals, 0, n);
-                Array.Sort<double>(sortedResiduals);
-                double medianResidual = sortedResiduals[n / 2];
+                System.Array.Copy(m_residuals, m_sortedResiduals, m_modelSize);
+                Array.Sort<double>(m_sortedResiduals);
+                double medianResidual = m_sortedResiduals[m_modelSize / 2];
 
                 if (medianResidual == 0)
                 {
                     break;
                 }
 
-                for (int i = 0; i < n; ++i)
+                for (int i = 0; i < m_modelSize; ++i)
                 {
-                    double arg = residuals[i] / (6 * medianResidual);
-                    robustnessWeights[i] = (arg >= 1) ? 0 : Math.Pow(1 - arg * arg, 2);
+                    double arg = m_residuals[i] / (6 * medianResidual);
+                    m_robustnessWeights[i] = (arg >= 1) ? 0 : Math.Pow(1 - arg * arg, 2);
                 }
             }
 
-            return res;
+            return m_res;
+        }        
+
+        /// <summary>
+        /// Determines which part of the model the query value exists in.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        private int FindIndex(double x, IList<double> model)
+        {
+            int i           = 0;
+            double tempDiff = double.MaxValue;
+            int j           = 0;
+
+            // throw new NotImplementedException();
+            for(i = 0; i < model.Count - 1; i++)
+            {
+                double diff = Math.Abs(x - model[i]);
+
+                if (tempDiff > diff)
+                {
+                    tempDiff = diff;
+                    j        = i;
+                }                
+            }
+            return j;
         }
 
         /**
@@ -241,14 +334,13 @@ namespace MultiAlignCore.MathUtilities
          * <tt>(right==xval.length-1 or xval[right+1] - xval[i] > xval[i] - xval[left])</tt>.
          * The array will be updated.
          */
-        private static void updateBandwidthInterval(double[] xval, int i, int[] bandwidthInterval)
+        private void updateBandwidthInterval(IList<double> xval, int i, int[] bandwidthInterval)
         {
-            int left = bandwidthInterval[0];
+            int left  = bandwidthInterval[0];
             int right = bandwidthInterval[1];
             // The right edge should be adjusted if the next point to the right
             // is closer to xval[i] than the leftmost point of the current interval
-            if (right < xval.Length - 1 &&
-               xval[right + 1] - xval[i] < xval[i] - xval[left])
+            if (right < xval.Count - 1 && xval[right + 1] - xval[i] < xval[i] - xval[left])
             {
                 bandwidthInterval[0]++;
                 bandwidthInterval[1]++;
@@ -263,7 +355,7 @@ namespace MultiAlignCore.MathUtilities
          * @param x the argument
          * @return (1-|x|^3)^3
          */
-        private static double tricube(double x)
+        private double tricube(double x)
         {
             double tmp = 1 - x * x * x;
             return tmp * tmp * tmp;
@@ -277,9 +369,9 @@ namespace MultiAlignCore.MathUtilities
          * @throws MathException if one of the values is not
          *         a finite real number
          */
-        private static void checkAllFiniteReal(double[] values, bool isAbscissae)
+        private void CheckAllFiniteReal(IList<double> values, bool isAbscissae)
         {
-            for (int i = 0; i < values.Length; i++)
+            for (int i = 0; i < values.Count; i++)
             {
                 double x = values[i];
                 if (Double.IsInfinity(x) || Double.IsNaN(x))
@@ -300,11 +392,12 @@ namespace MultiAlignCore.MathUtilities
          * @throws MathException if the abscissae array
          * is not in a strictly increasing order
          */
-        private static void checkStrictlyIncreasing(double[] xval)
+        private void CheckStrictlyIncreasing(IList<double> xval)
         {
-            for (int i = 0; i < xval.Length; ++i)
+            for (int i = 0; i < xval.Count; ++i)
             {
-                if (i >= 1 && xval[i - 1] >= xval[i])
+                //if (i >= 1 && xval[i - 1] >= xval[i])
+                if (i >= 1 && xval[i - 1] > xval[i])
                 {
                     throw new ApplicationException(string.Format(
                             "the abscissae array must be sorted in a strictly " +

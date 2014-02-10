@@ -22,6 +22,9 @@ namespace MultiAlignTestSuite.Papers.Alignment.IO
                 case AlignmentFigureType.Figure2:
                     writer = new SpectralWriterFigureTwo(name, BasePath);
                     break;
+                case AlignmentFigureType.Figure3:
+                    writer = new SpectralWriterFigureThree(name, BasePath);
+                    break;
                 default:
                     break;
             }

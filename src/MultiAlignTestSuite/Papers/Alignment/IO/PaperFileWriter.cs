@@ -20,6 +20,18 @@ namespace MultiAlignTestSuite.Papers.Alignment.IO
             m_shouldAppend = append;
         }
 
+        ~PaperFileWriter()
+        {
+            try
+            {
+                Close();
+            }
+            catch
+            {
+                
+            }
+        }
+
         public PaperFileWriter(string name, string path, bool append)
             :this(append)
         {            
@@ -50,19 +62,23 @@ namespace MultiAlignTestSuite.Papers.Alignment.IO
             m_isOpen = true;
         }
 
-        protected void Close()
+        public void Close()
         {
             if (m_isOpen)
+            {
+                m_writer.Flush();            
                 m_writer.Close();
+                
+            }
             m_isOpen = false;
         }
 
-        protected void WriteLine(string line)
+        public virtual void WriteLine(string line)
         {
             m_writer.WriteLine(line);
             Console.WriteLine(line);
         }
-        protected void WriteLine()
+        public virtual void WriteLine()
         {
             WriteLine("");
         }

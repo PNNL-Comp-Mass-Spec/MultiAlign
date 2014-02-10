@@ -23,6 +23,9 @@
                 HorizontalAlignment="Stretch"
                 DataContext="{Binding}"/> 
         </DataTemplate>
+        <DataTemplate x:Key="ChargeStateTemplate">
+            <featureViews:ChargeStateControl DataContext="{Binding}"/>
+        </DataTemplate>
     </UserControl.Resources>
 
     <DockPanel>
@@ -142,33 +145,57 @@
                 <Grid 
                     Grid.Row="5">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="48"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="20*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
+
+                    <Label 
+                        Margin="5"
+                        Foreground ="Gray"  
+                        Content="Parent Spectra"
+                        FontSize="16"
+                        HorizontalAlignment="Left"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"                      
+                        Grid.Row="5"/>
                     <Label 
                         FontSize="12"
                         Margin="5"
                         Foreground ="Gray"  
+                        HorizontalAlignment="Right"
                         VerticalContentAlignment="Center"                      
                         Grid.Row="0"
-                        Grid.Column="0">Charge</Label>
+                        Grid.Column="1">Select Charge</Label>
+                    <TextBox
+                        Margin="5"
+                        Grid.Column="1"
+                        Width="64"
+                        HorizontalAlignment="Left"
+                        Text="{Binding PpmError}"
+                        />
+                    <Button Command="{Binding CreateXic}" Content="Create xic " Margin="5"
+                            Grid.Column="1"
+                            Width="64"
+                            />
                     <ComboBox
-                            FontSize="12"
-                            HorizontalContentAlignment="Center"
+                            FontSize="18"
+                            Width="128"
+                            HorizontalAlignment="Right"
+                            HorizontalContentAlignment="Left"
+                            ItemTemplate="{StaticResource ResourceKey=ChargeStateTemplate}"
                             SelectedItem="{Binding SelectedCharge, 
-                            RelativeSource={RelativeSource AncestorType={x:Type UserControl}},
-                            UpdateSourceTrigger=PropertyChanged,
-                            Mode=TwoWay,
-                            NotifyOnSourceUpdated=True}"
-                            ItemsSource="{Binding Charges, 
-                            RelativeSource={RelativeSource AncestorType={x:Type UserControl}},
-                            UpdateSourceTrigger=PropertyChanged,
-                            NotifyOnSourceUpdated=True}"                        
+                                            UpdateSourceTrigger=PropertyChanged,
+                                            Mode=TwoWay,
+                                            NotifyOnSourceUpdated=True}"
+                            ItemsSource="{Binding Charges,                             
+                                            UpdateSourceTrigger=PropertyChanged,
+                                            NotifyOnSourceUpdated=True}"                        
                             Margin="5"
-                            Grid.Column="1"/>
+                            Grid.Column="3"/>
                 </Grid>
                 
                 <GridSplitter
@@ -182,21 +209,13 @@
                     Margin="5"
                     Foreground ="Gray"  
                     Content="Extracted Ion Chromatrogram"
-                    FontSize="10"
+                    FontSize="16"
                     HorizontalContentAlignment="Center"
                     VerticalContentAlignment="Center"                      
                     Grid.Row="0"/>                
                 <ContentControl 
                     Grid.Row="2"
                     Content="{Binding XicChart}"/>
-                <Label 
-                    Margin="5"
-                    Foreground ="Gray"  
-                    Content="Parent Spectra"
-                    FontSize="10"
-                    HorizontalContentAlignment="Center"
-                    VerticalContentAlignment="Center"                      
-                    Grid.Row="4"/>
                 <ContentControl                         
                     Grid.Row="6" 
                     Content="{Binding ParentSpectraChart}"

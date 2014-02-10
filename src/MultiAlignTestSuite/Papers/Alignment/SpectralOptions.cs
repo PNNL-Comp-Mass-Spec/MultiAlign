@@ -20,5 +20,9 @@ namespace MultiAlignTestSuite.Papers.Alignment
         public double SimilarityCutoff { get; set; }
         public double IdScore { get; set; }
         public SpectralComparison ComparerType { get; set; }
+        /// <summary>
+        /// Gets or sets the number of required peaks 
+        /// </summary>
+        public int RequiredPeakCount { get; set; }
     }
 }

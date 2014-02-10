@@ -78,8 +78,8 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
                                                                     options.TopIonPercent, 
                                                                     filter, 
                                                                     readerX, 
-                                                                    scanDataX,
-                                                                    scanx);
+                                                                    scanx,
+                                                                    options.RequiredPeakCount);
 
                 spectrumX.PrecursorMZ   = xsum.PrecursorMZ;
 
@@ -150,8 +150,8 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
                                                                     options.TopIonPercent,
                                                                     filter,
                                                                     readerY,
-                                                                    scanDataY,
-                                                                    scany);
+                                                                    scany,
+                                                                    options.RequiredPeakCount);
                             spectrumY.PrecursorMZ = ysum.PrecursorMZ;
                             ySpectraCache.Add(scany, spectrumY);
                         }
@@ -197,7 +197,16 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
             return matches;
         }
 
-
+        /// <summary>
+        /// Computes all anchor point matches between two sets of spectra.
+        /// </summary>
+        /// <param name="readerX"></param>
+        /// <param name="readerY"></param>
+        /// <param name="comparer"></param>
+        /// <param name="filter"></param>
+        /// <param name="options"></param>
+        /// <param name="skipComparison"></param>
+        /// <returns></returns>
         public IEnumerable<AnchorPointMatch> FindAnchorPoints(ISpectraProvider readerX,
                                                                 ISpectraProvider readerY,
                                                                 ISpectralComparer comparer,
@@ -242,7 +251,6 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
 
             double netTolerance = options.NetTolerance;
             double mzTolerance  = options.MzTolerance;
-            bool found          = false;
             int j               = 0;
             int i               = 0;
             int yTotal          = ySpectraSummary.Count;
@@ -282,7 +290,7 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
 
 
                 int k = 0;
-                List<AnchorPoint> points = new List<AnchorPoint>();
+                var points = new List<AnchorPoint>();
 
                 while ((j + k) < yTotal && Math.Abs(ySpectraSummary[j + k].PrecursorMZ - precursorX) < mzTolerance)
                 {
@@ -294,9 +302,11 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
                     double net      = Convert.ToDouble(netX - netY);
 
                     // Test whether the spectra are within decent range.
-                    if (Math.Abs(netX - netY) < netTolerance)
+                    if (Math.Abs(net) < netTolerance)
                     {
-                        // Compare the two spectra
+                        // We didnt pull this spectrum before, because we arent sure
+                        // if it will be within tolerance....so we just delay this
+                        // until we have to...after this happens, we only pull it once.
                         if (spectrumX == null)
                         {
                             if (!skipComparison)
@@ -306,9 +316,18 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
                                                                         options.TopIonPercent,
                                                                         filter,
                                                                         readerX,
-                                                                        scanDataX,
-                                                                        scanx);
-                                spectrumX.PrecursorMZ = xsum.PrecursorMZ;
+                                                                        scanx,
+                                                                        options.RequiredPeakCount);
+
+                                if (spectrumX != null)
+                                {
+                                    spectrumX.PrecursorMZ = xsum.PrecursorMZ;
+                                }
+                                else
+                                {
+                                    // This spectra does not have enough peaks or did not pass our filters, throw it away!
+                                    break;
+                                }
                             }
                         }
                         MSSpectra spectrumY = null;
@@ -322,15 +341,23 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
                             else
                             {
                                 spectrumY = SpectralUtilities.GetSpectra(options.MzBinSize,
-                                                                    options.TopIonPercent,
-                                                                    filter,
-                                                                    readerY,
-                                                                    scanDataY,
-                                                                    scany);
-                                spectrumY.PrecursorMZ = ysum.PrecursorMZ;                                
-                                cache.Add(scany, spectrumY);
+                                                                        options.TopIonPercent,
+                                                                        filter,
+                                                                        readerY,
+                                                                        scany,
+                                                                        options.RequiredPeakCount);
+
+                                if (spectrumY != null)
+                                {
+                                    spectrumY.PrecursorMZ = ysum.PrecursorMZ;
+                                    cache.Add(scany, spectrumY);
+                                }
+                                else continue; // This spectra does not have enough peaks or did not pass our filters, throw it away!
                             }                            
                         }
+
+                        if (spectrumX == null || spectrumY == null)
+                            continue;
 
                         // compare the spectra
                         double spectralSimilarity = 0;
@@ -352,7 +379,7 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
                         pointX.Spectrum         = spectrumX;
 
                         AnchorPoint pointY      = new AnchorPoint();
-                        pointY.Net              = netX;
+                        pointY.Net              = netY;
                         pointY.Mass             = 0;
                         pointY.Mz               = ysum.PrecursorMZ;
                         pointY.Scan             = scany;

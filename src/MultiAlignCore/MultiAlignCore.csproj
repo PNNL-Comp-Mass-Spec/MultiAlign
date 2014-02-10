@@ -163,6 +163,7 @@
     <Compile Include="Algorithms\FeatureFinding\UMCFeatureFinderOptions.cs" />
     <Compile Include="Algorithms\FeatureFinding\IFeatureFinder.cs" />
     <Compile Include="Algorithms\FeatureFinding\UMCFeatureFinder.cs" />
+    <Compile Include="Algorithms\FeatureFinding\UMCTreeFeatureFinder.cs" />
     <Compile Include="Algorithms\FeatureFinding\XicAdaptor.cs" />
     <Compile Include="Algorithms\FeatureFinding\XicFinder.cs" />
     <Compile Include="Algorithms\FeatureMatcher\STACOptions.cs" />
@@ -233,37 +234,40 @@
     <Compile Include="Extensions\MassTagExtensions.cs" />
     <Compile Include="Extensions\FeatureExtensions.cs" />
     <Compile Include="IO\Analysis\PeakMatchResultsWriter.cs" />
-    <Compile Include="IO\ClusterExporterComposite.cs" />
+    <Compile Include="IO\Clusters\BaseUmcClusterWriter.cs" />
+    <Compile Include="IO\Clusters\ClusterExporterComposite.cs" />
+    <Compile Include="IO\Clusters\UMCClusterMsmsSpectraWriter.cs" />
     <Compile Include="IO\CommandLineProcessor.cs" />
     <Compile Include="IO\Factors\FactorFileReader.cs" />
     <Compile Include="IO\Factors\MultiAlignFactorSink.cs" />
-    <Compile Include="IO\Features\DatabaseIndexer.cs" />
-    <Compile Include="IO\Features\ParentSpectraFinder.cs" />
+    <Compile Include="IO\DatabaseIndexer.cs" />
+    <Compile Include="IO\MsMs\ParentSpectraFinder.cs" />
     <Compile Include="IO\Features\UmcAdoDAO.cs" />
-    <Compile Include="IO\Features\UMCClusterAbundanceSumCrossTabWriter.cs" />
-    <Compile Include="IO\Features\UmcClusterStreamWriter.cs" />
-    <Compile Include="IO\Features\XicFitWriter.cs" />
-    <Compile Include="IO\Features\XicComparisonWriter.cs" />
-    <Compile Include="IO\Features\XicMsFeatureWriter.cs" />
+    <Compile Include="IO\Clusters\UMCClusterAbundanceSumCrossTabWriter.cs" />
+    <Compile Include="IO\Clusters\UMCClusterExporterFactory.cs" />
+    <Compile Include="IO\SingletonDataProviders.cs" />
+    <Compile Include="IO\Xic\XicFitWriter.cs" />
+    <Compile Include="IO\Xic\XicComparisonWriter.cs" />
+    <Compile Include="IO\Xic\XicMsFeatureWriter.cs" />
     <Compile Include="IO\Features\FeatureAdjusterWriter.cs" />
-    <Compile Include="IO\Features\Hibernate\ClusterToMassTagMap.cs" />
-    <Compile Include="IO\Features\Hibernate\STACDAOHibernate.cs" />
-    <Compile Include="IO\Features\IXicWriter.cs" />
+    <Compile Include="IO\Hibernate\ClusterToMassTagMap.cs" />
+    <Compile Include="IO\Hibernate\STACDAOHibernate.cs" />
+    <Compile Include="IO\Xic\IXicWriter.cs" />
     <Compile Include="IO\Features\LCMSFeatureFileReader.cs" />
-    <Compile Include="IO\Features\Hibernate\MassTagMatchDAO.cs" />
-    <Compile Include="IO\Features\IMassTagMatchDAO.cs" />
-    <Compile Include="IO\Features\MSMSClusterWriter.cs" />
+    <Compile Include="IO\Hibernate\MassTagMatchDAO.cs" />
+    <Compile Include="IO\MassTags\IMassTagMatchDAO.cs" />
+    <Compile Include="IO\MsMs\MSMSClusterWriter.cs" />
     <Compile Include="IO\Features\IAlignmentDAO.cs" />
-    <Compile Include="IO\Features\Hibernate\AlignmentDAOHibernate.cs" />
-    <Compile Include="IO\Features\UMCClusterMsmsWriter.cs" />
-    <Compile Include="IO\Features\XicWriter.cs" />
+    <Compile Include="IO\Hibernate\AlignmentDAOHibernate.cs" />
+    <Compile Include="IO\Clusters\UMCClusterMsmsMetaDataWriter.cs" />
+    <Compile Include="IO\Xic\XicWriter.cs" />
     <Compile Include="IO\MTDB\APEMassTagDatabaseLoader.cs" />
-    <Compile Include="IO\IDatabaseServerLoader.cs" />
+    <Compile Include="IO\MTDB\IDatabaseServerLoader.cs" />
     <Compile Include="IO\MTDB\MageDmsDatabaseLoader.cs" />
     <Compile Include="IO\MTDB\MassTagDatabaseLoaderCache.cs" />
     <Compile Include="IO\MTDB\MassTagDatabaseLoaderFactory.cs" />
     <Compile Include="IO\MTDB\DriftTimeTextFileDatabaseLoader.cs" />
-    <Compile Include="IO\PeptideScanWriter.cs" />
+    <Compile Include="IO\Proteins\PeptideScanWriter.cs" />
     <Compile Include="IO\Reports\IAnalysisReportGenerator.cs" />
     <Compile Include="IO\MTDB\MAGEMetaSampleDatabaseSink.cs" />
     <Compile Include="IO\MTDB\MetaSampleDatbaseLoader.cs" />
@@ -271,42 +275,42 @@
     <Compile Include="IO\SequenceData\ISequenceToMsnFeatureDAO.cs" />
     <Compile Include="IO\SequenceData\DatabaseSearchSequenceDAOHibernate.cs" />
     <Compile Include="IO\SequenceData\IDatabaseSearchSequenceDAO.cs" />
-    <Compile Include="IO\Features\IMSMSClusterMapDAO.cs" />
-    <Compile Include="IO\Features\Hibernate\MSMSClusterMapDAOHibernate.cs" />
-    <Compile Include="IO\Features\Hibernate\DatasetToFactorMap.cs" />
-    <Compile Include="IO\Features\IDatasetToFactorMapDAO.cs" />
-    <Compile Include="IO\Features\UMCClusterAbundanceCrossTabWriter.cs" />
+    <Compile Include="IO\MsMs\IMSMSClusterMapDAO.cs" />
+    <Compile Include="IO\Hibernate\MSMSClusterMapDAOHibernate.cs" />
+    <Compile Include="IO\Hibernate\DatasetToFactorMap.cs" />
+    <Compile Include="IO\Datasets\IDatasetToFactorMapDAO.cs" />
+    <Compile Include="IO\Clusters\UMCClusterAbundanceCrossTabWriter.cs" />
     <Compile Include="IO\Features\FeatureExtractionTableWriter.cs" />
-    <Compile Include="IO\Features\IMSnFeatureToMSFeatureDAO.cs" />
-    <Compile Include="IO\Features\Hibernate\MSnFeatureToMSFeatureDAOHibernate.cs" />
-    <Compile Include="IO\Features\IFeatureClusterWriter.cs" />
-    <Compile Include="IO\Features\IMSnFeatureDAO.cs" />
-    <Compile Include="IO\Features\DataAccessFactory.cs" />
+    <Compile Include="IO\MsMs\IMSnFeatureToMSFeatureDAO.cs" />
+    <Compile Include="IO\Hibernate\MSnFeatureToMSFeatureDAOHibernate.cs" />
+    <Compile Include="IO\Clusters\IFeatureClusterWriter.cs" />
+    <Compile Include="IO\MsMs\IMSnFeatureDAO.cs" />
+    <Compile Include="IO\DataAccessFactory.cs" />
     <Compile Include="IO\Features\FeatureDataAccessProviders.cs" />
-    <Compile Include="IO\Features\Hibernate\DatasetDAOHibernate.cs" />
-    <Compile Include="IO\Features\Hibernate\FactorDAOHibernate.cs" />
-    <Compile Include="IO\Features\Hibernate\GenericDAOHibernate.cs" />
-    <Compile Include="IO\Features\Hibernate\MassTagDAOHibernate.cs" />
-    <Compile Include="IO\Features\Hibernate\MSFeatureDAOHibernate.cs" />
-    <Compile Include="IO\Features\Hibernate\MSnFeatureDAOHibernate.cs" />
-    <Compile Include="IO\Features\Hibernate\NHibernateUtil.cs" />
-    <Compile Include="IO\Features\Hibernate\ProteinDAO.cs" />
-    <Compile Include="IO\Features\Hibernate\UmcClusterDAOHibernate.cs" />
-    <Compile Include="IO\Features\Hibernate\UmcDAOHibernate.cs" />
-    <Compile Include="IO\Features\IDatasetDAO.cs" />
-    <Compile Include="IO\Features\IFactorDAO.cs" />
-    <Compile Include="IO\Features\IGenericDAO.cs" />
-    <Compile Include="IO\Features\IMassTagDAO.cs" />
+    <Compile Include="IO\Hibernate\DatasetDAOHibernate.cs" />
+    <Compile Include="IO\Hibernate\FactorDAOHibernate.cs" />
+    <Compile Include="IO\Hibernate\GenericDAOHibernate.cs" />
+    <Compile Include="IO\Hibernate\MassTagDAOHibernate.cs" />
+    <Compile Include="IO\Hibernate\MSFeatureDAOHibernate.cs" />
+    <Compile Include="IO\Hibernate\MSnFeatureDAOHibernate.cs" />
+    <Compile Include="IO\Hibernate\NHibernateUtil.cs" />
+    <Compile Include="IO\Hibernate\ProteinDAO.cs" />
+    <Compile Include="IO\Hibernate\UmcClusterDAOHibernate.cs" />
+    <Compile Include="IO\Hibernate\UmcDAOHibernate.cs" />
+    <Compile Include="IO\Datasets\IDatasetDAO.cs" />
+    <Compile Include="IO\Analysis\IFactorDAO.cs" />
+    <Compile Include="IO\IGenericDAO.cs" />
+    <Compile Include="IO\MassTags\IMassTagDAO.cs" />
     <Compile Include="IO\Features\IMSFeatureDAO.cs" />
-    <Compile Include="IO\Features\IProteinDAO.cs" />
-    <Compile Include="IO\Features\IRawDataFileReader.cs" />
+    <Compile Include="IO\Proteins\IProteinDAO.cs" />
+    <Compile Include="IO\RawData\IRawDataFileReader.cs" />
     <Compile Include="IO\Features\IUmcClusterDAO.cs" />
     <Compile Include="IO\Features\IUmcDAO.cs" />
-    <Compile Include="IO\Features\MzXMLReader.cs" />
-    <Compile Include="IO\Features\RawLoaderFactory.cs" />
-    <Compile Include="IO\Features\ThermoRawDataFileReader.cs" />
-    <Compile Include="IO\Features\UMCClusterCrossTabWriter.cs" />
-    <Compile Include="IO\Features\UMCClusterScanWriter.cs" />
+    <Compile Include="IO\RawData\MzXMLReader.cs" />
+    <Compile Include="IO\RawData\RawLoaderFactory.cs" />
+    <Compile Include="IO\RawData\ThermoRawDataFileReader.cs" />
+    <Compile Include="IO\Clusters\UMCClusterCrossTabWriter.cs" />
+    <Compile Include="IO\Clusters\UMCClusterScanWriter.cs" />
     <Compile Include="IO\Features\UMCLoaderFactory.cs" />
     <Compile Include="IO\Features\UmcReader.cs" />
     <Compile Include="IO\IMageSink.cs" />
@@ -359,6 +363,7 @@
     <Compile Include="Data\SequenceData\SequenceToMsnFeature.cs" />
     <Compile Include="IO\SequenceData\SequestFirstHitSink.cs" />
     <Compile Include="Data\Features\ClusterStats.cs" />
+    <Compile Include="Math\FitFunctions.cs" />
     <Compile Include="Math\Loess.cs" />
     <Compile Include="Math\MathUtilities.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -368,31 +373,31 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <EmbeddedResource Include="IO\SequenceData\Mappings\SequenceToMsnFeature.hbm.xml" />
-    <EmbeddedResource Include="IO\Features\Hibernate\Mappings\ClusterToMassTagMap.hbm.xml" />
-    <EmbeddedResource Include="IO\Features\Hibernate\Mappings\MSMSFeature.hbm.xml">
+    <EmbeddedResource Include="IO\Hibernate\Mappings\ClusterToMassTagMap.hbm.xml" />
+    <EmbeddedResource Include="IO\Hibernate\Mappings\MSMSFeature.hbm.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="IO\Features\Hibernate\Mappings\MSnFeatureToMSFeatureMap.hbm.xml" />
-    <EmbeddedResource Include="IO\Features\Hibernate\Mappings\Dataset.hbm.xml">
+    <EmbeddedResource Include="IO\Hibernate\Mappings\MSnFeatureToMSFeatureMap.hbm.xml" />
+    <EmbeddedResource Include="IO\Hibernate\Mappings\Dataset.hbm.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="IO\Features\Hibernate\Mappings\Factor.hbm.xml" />
-    <EmbeddedResource Include="IO\Features\Hibernate\Mappings\MassTag.hbm.xml" />
-    <EmbeddedResource Include="IO\Features\Hibernate\Mappings\MassTagToProteinMap.hbm.xml" />
-    <EmbeddedResource Include="IO\Features\Hibernate\Mappings\MSFeature.hbm.xml" />
-    <EmbeddedResource Include="IO\Features\Hibernate\Mappings\Protein.hbm.xml" />
-    <EmbeddedResource Include="IO\Features\Hibernate\Mappings\StacFDR.hbm.xml" />
+    <EmbeddedResource Include="IO\Hibernate\Mappings\Factor.hbm.xml" />
+    <EmbeddedResource Include="IO\Hibernate\Mappings\MassTag.hbm.xml" />
+    <EmbeddedResource Include="IO\Hibernate\Mappings\MassTagToProteinMap.hbm.xml" />
+    <EmbeddedResource Include="IO\Hibernate\Mappings\MSFeature.hbm.xml" />
+    <EmbeddedResource Include="IO\Hibernate\Mappings\Protein.hbm.xml" />
+    <EmbeddedResource Include="IO\Hibernate\Mappings\StacFDR.hbm.xml" />
     <EmbeddedResource Include="IO\Parameters\Hibernate\ParameterHibernateMapping.hbm.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="IO\Features\Hibernate\Mappings\DatasetToFactor.hbm.xml" />
-    <EmbeddedResource Include="IO\Features\Hibernate\Mappings\MSMSClusterMap.hbm.xml" />
+    <EmbeddedResource Include="IO\Hibernate\Mappings\DatasetToFactor.hbm.xml" />
+    <EmbeddedResource Include="IO\Hibernate\Mappings\MSMSClusterMap.hbm.xml" />
     <EmbeddedResource Include="IO\SequenceData\Mappings\DatabaseSearchSequence.hbm.xml" />
-    <EmbeddedResource Include="IO\Features\Hibernate\Mappings\AlignmentData.hbm.xml" />
-    <EmbeddedResource Include="IO\Features\Hibernate\Mappings\UmcLight.hbm.xml">
+    <EmbeddedResource Include="IO\Hibernate\Mappings\AlignmentData.hbm.xml" />
+    <EmbeddedResource Include="IO\Hibernate\Mappings\UmcLight.hbm.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="IO\Features\Hibernate\Mappings\UmcClusterLight.hbm.xml">
+    <EmbeddedResource Include="IO\Hibernate\Mappings\UmcClusterLight.hbm.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
@@ -413,9 +418,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="IO\RawData\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

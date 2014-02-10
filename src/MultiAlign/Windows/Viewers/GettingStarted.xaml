@@ -6,7 +6,7 @@
              xmlns:maWindows="clr-namespace:MultiAlign.Windows"
              xmlns:maConverters="clr-namespace:MultiAlign.Converters"
              mc:Ignorable="d" 
-             d:DesignHeight="243"
+             d:DesignHeight="400"
              d:DesignWidth="804">
 
     <UserControl.Resources>
@@ -40,28 +40,89 @@
         </Grid.RowDefinitions>
         
         <Grid
-            Grid.Row="1"
-            >
+            Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-           
-                <StackPanel
-                    Background="#FF414141">                    
+
+            <Grid
+                Grid.Column="1"
+                Margin="5"
+                Background="White">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="32"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                
+                <Image
+                            Margin="5"
+                            Grid.Row="0"
+                            Grid.Column="0"  
+                    Visibility="Hidden"
+                            Width="16"
+                            Height="16"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center"
+                            Source="/MultiAlign;component/Resources/molecule.png"
+                            />
+
+                <Label 
+                        Grid.Row="0"
+                        Grid.Column="1"  
+                    Visibility="Hidden"
+                        FontSize="21pt">
+                    Welcome!
+                </Label>
+                <TextBlock
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    TextWrapping="Wrap"
+                    Foreground="Gray"    
+                    Visibility="Hidden"
+                    >
+                        Start a new analysis by clicking "New Analysis" or select "Open Analysis" to open an existing MultiAlign database.                    
+                </TextBlock>         
+            </Grid>
+
+            <Grid
+                Background="#FF414141">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                    
+                </Grid.RowDefinitions>
                     <Label 
+                        Grid.Row="0"
                         FontSize="31pt"
                         Foreground="WhiteSmoke">
                         MultiAlign
                     </Label>
 
                     <Label 
+                        Grid.Row="1"
                         FontSize="20pt"
                         Foreground="WhiteSmoke"
                         Margin="5,5,5,5">
                         Start
                     </Label>
-                <Button                         
+                <Button               
+                        Grid.Row="2"
                         FontSize="16"
                         Style="{DynamicResource ResourceKey=HyperLinkButtonStyle}"
                         Margin="5"
@@ -69,7 +130,8 @@
                         Command="{Binding Path=StartNewAnalysis}"
                         Content="New Analysis"
                         Width="128"/>
-                <Button                         
+                <Button                 
+                        Grid.Row="3"        
                         FontSize="16"
                         Margin="5"
                         Width="128"
@@ -78,21 +140,32 @@
                         Command="{Binding Path=LoadExistingAnalysis}"
                         Content="Open Analysis"/>
 
-                    <Label 
+                <Label 
+                        Grid.Row="4"
                         FontSize="12pt"
                         Foreground="WhiteSmoke"
-                        Margin="5,5,5,5">
-                        Recent Analysis
-                    </Label>
-                    <ListBox 
-                        DockPanel.Dock="Left"
+                        Margin="5,5,5,5"
+                        Content="Recent Analysis"/>
+                <ListBox                
+                        Grid.Row="5"
+                        Margin="1"
                         ItemsSource="{Binding Path=RecentAnalyses}"
                         BorderThickness="0"  
                         HorizontalContentAlignment="Stretch"
                         ItemTemplate="{StaticResource RecentAnalysisItemTemplate}"                
                         Background="Transparent">
-                    </ListBox>
-                </StackPanel>
+                </ListBox>
+                <Button             
+                        Grid.Row="6"
+                        FontSize="10"
+                        Margin="5"
+                        Width="Auto"
+                        HorizontalAlignment="Left"
+                        Style="{DynamicResource ResourceKey=HyperLinkButtonStyle}"                        
+                        Foreground="DarkGray"
+                        Command="{Binding Path=ClearRecentList}"
+                        Content="Clear Recent List"/>
+            </Grid>
             <TabControl
                 Margin="15,40,20,15"
                 Grid.Column="1"

@@ -37,14 +37,18 @@ namespace MultiAlignTestSuite.Papers.Alignment
         public static MSSpectra GetSpectra(double mzTolerance,
                                            double percent,
                                            ISpectraFilter filter,
-                                           ISpectraProvider readerY,
-                                           Dictionary<int, ScanSummary> scanDataY,
-                                           int scany)
+                                           ISpectraProvider readerY,                                           
+                                           int scany,
+                                           int numberRequiredPeaks)
         {
             MSSpectra spectrumY = SpectralUtilities.GetSpectrum(readerY,
-                                        scanDataY[scany].Scan,
-                                        0,
-                                        mzTolerance: mzTolerance);
+                                                                scany,
+                                                                0,
+                                                                mzTolerance: mzTolerance);
+
+            if (spectrumY.Peaks.Count < numberRequiredPeaks)
+                return null;
+
             spectrumY           = filter.Threshold(spectrumY, percent);
             spectrumY.Peaks     = XYData.Bin(spectrumY.Peaks,
                                                 0,

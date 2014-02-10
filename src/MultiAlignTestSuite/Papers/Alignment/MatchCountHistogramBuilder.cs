@@ -10,18 +10,34 @@ namespace MultiAlignTestSuite.Papers.Alignment
     {
         public static Histogram SimilarityScore(double start, double stop, double step, IEnumerable<AnchorPointMatch> matches)
         {
-            List<double> bins   = new List<double>();
+            List<double> bins = new List<double>();
             List<double> values = new List<double>();
-            
-            
+
+
             for (double score = start; score <= stop; score += step)
             {
-                int count = matches.Count(x =>  x.SimilarityScore < (score + step)  && x.SimilarityScore >= score);
+                int count = matches.Count(x => x.SimilarityScore < (score + step) && x.SimilarityScore >= score);
                 bins.Add(score);
                 values.Add(Convert.ToDouble(count));
             }
 
-            Histogram gram = new Histogram(step, "", bins, values);                                                
+            Histogram gram = new Histogram(step, "", bins, values);
+            return gram;
+        }
+        public static Histogram CreateResidualHistogram(double start, double stop, double step, IEnumerable<double> anchors)
+        {
+            List<double> bins = new List<double>();
+            List<double> values = new List<double>();
+
+
+            for (double score = start; score <= stop; score += step)
+            {
+                int count = anchors.Count(x => x < (score + step) && x >= score);
+                bins.Add(score);
+                values.Add(Convert.ToDouble(count));
+            }
+
+            Histogram gram = new Histogram(step, "", bins, values);
             return gram;
         }
     }    

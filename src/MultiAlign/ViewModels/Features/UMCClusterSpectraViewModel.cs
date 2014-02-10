@@ -135,7 +135,7 @@ namespace MultiAlign.ViewModels
             ));
 
 
-            SortTypes.Add(new SpectraSortOptions("Retention Time (NET)", () =>
+            SortTypes.Add(new SpectraSortOptions("Scan", () =>
             {
                 ObservableCollection<MSSpectraViewModel> temp = new ObservableCollection<MSSpectraViewModel>(
                         from x in Spectra orderby x.Spectrum.RetentionTime select x);

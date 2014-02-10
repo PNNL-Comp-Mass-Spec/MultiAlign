@@ -15,10 +15,11 @@ namespace MultiAlignCustomControls.Charting
 
         public MsFeatureChart()
 	    {
-            NumberOfIsotopes = 3;
-            IsotopeRatio     = .66;
-            PenSize          = 3;
-            MinIntensity     = 100;
+            NumberOfIsotopes  = 3;
+            IsotopeRatio      = .66;
+            PenSize           = 3;
+            MinIntensity      = 100;
+            IsotopeAlphaValue = 128;
             AddPostProcessor(new ChartPostRenderingProcessor(RenderSpectra), PostProcessPriority.MidHigh);
         }
 
@@ -49,7 +50,9 @@ namespace MultiAlignCustomControls.Charting
 
 
             float bottom = this.mobj_axis_plotter.YScreenPixel(Convert.ToSingle(0));   
-            using (Brush brush = new SolidBrush(Color.Red))
+            
+            Color color = Color.FromArgb(IsotopeAlphaValue, Color.Red);
+            using (Brush brush = new SolidBrush(color))
             {
                 using (Pen pen = new Pen(brush, PenSize))
                 {
@@ -72,6 +75,11 @@ namespace MultiAlignCustomControls.Charting
         public int NumberOfIsotopes { get; set; }
 
         public float PenSize
+        {
+            get;
+            set;
+        }
+        public int IsotopeAlphaValue
         {
             get;
             set;

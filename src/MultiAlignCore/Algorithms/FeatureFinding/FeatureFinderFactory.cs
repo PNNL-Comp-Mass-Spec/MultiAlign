@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+﻿
 namespace MultiAlignCore.Algorithms.FeatureFinding
 {
     public class FeatureFinderFactory
@@ -20,6 +16,9 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
                 case FeatureFinderType.SingleLinkage:
                     finder = new UMCFeatureFinder();
                     break;
+                case FeatureFinderType.TreeBased:
+                    finder = new UMCTreeFeatureFinder();
+                    break;
                 default:
                     break;
             }
@@ -30,6 +29,7 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
 
     public enum FeatureFinderType
     {
-        SingleLinkage
+        SingleLinkage,
+        TreeBased
     }
 }

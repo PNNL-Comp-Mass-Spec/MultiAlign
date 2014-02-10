@@ -10,10 +10,16 @@ namespace MultiAlignTestSuite.Papers.Alignment
     /// </summary>
     public class AlignmentMeasurement<T>
     {
+        public AlignmentMeasurement()
+        {
+            PreAlignment  = new List<T>();
+            PostAlignment = new List<T>();
+        }
         /// <summary>
         /// Gets or sets the pre alignment value
         /// </summary>
         public List<T> PreAlignment { get; set; }
+
         /// <summary>
         /// Gets or sets the post alignment value
         /// </summary>

@@ -35,7 +35,7 @@ namespace MultiAlignCore.Algorithms.Features
                         continue;
 
                     double ppmDiff      = Feature.ComputeMassPPMDifference(y.MassMonoisotopicAligned, x.MassMonoisotopicAligned);
-                    if (Math.Abs(ppmDiff) > tolerances.Mass)
+                    if (System.Math.Abs(ppmDiff) > tolerances.Mass)
                     {
                         continue;
                     }

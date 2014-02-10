@@ -8,5 +8,8 @@ namespace MultiAlignTestSuite.Papers.Alignment
     public interface ISpectralAnalysisWriter
     {
         void Write(SpectralAnalysis analysis);
+        void WriteLine(string value);
+
+        void Close();
     }
 }
