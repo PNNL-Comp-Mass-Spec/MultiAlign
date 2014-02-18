@@ -23,7 +23,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
             // Find the features 
             IFeatureFinder finder               = FeatureFinderFactory.CreateFeatureFinder(FeatureFinderType.SingleLinkage);
             LCMSFeatureFindingOptions options   = new LCMSFeatureFindingOptions();
-            features = finder.FindFeatures(msFeatures, options);
+            features = finder.FindFeatures(msFeatures, options, null);
 
             return new Tuple<List<UMCLight>, List<MSFeatureLight>>(features, msFeatures);
         }

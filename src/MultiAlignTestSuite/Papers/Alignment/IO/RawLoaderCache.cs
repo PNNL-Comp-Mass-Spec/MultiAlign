@@ -59,20 +59,12 @@ namespace MultiAlignTestSuite.Papers.Alignment.IO
             return m_provider.GetMSMSSpectra(group);
         }
 
-        public List<XYData>  GetRawSpectra(int scan, int group, int scanLevel)
-        {
-            return m_provider.GetRawSpectra(scan, group, scanLevel);
-        }
 
         public List<MSSpectra>  GetRawSpectra(int group)
         {
             return m_provider.GetRawSpectra(group);
         }
 
-        public List<XYData>  GetRawSpectra(int scan, int group)
-        {
-            return m_provider.GetRawSpectra(scan, group);
-        }
 
         #endregion
 
@@ -84,5 +76,17 @@ namespace MultiAlignTestSuite.Papers.Alignment.IO
         }
 
         #endregion
+
+
+        public List<XYData> GetRawSpectra(int scan, int group, int scanLevel, out ScanSummary summary)
+        {
+            return m_provider.GetRawSpectra(scan, group, scanLevel, out summary);
         }
+
+
+        public List<XYData> GetRawSpectra(int scan, int group, out ScanSummary summary)
+        {
+            return m_provider.GetRawSpectra(scan, group, -1, out summary);
+        }
+    }
 }

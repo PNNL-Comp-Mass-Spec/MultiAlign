@@ -18,7 +18,9 @@ namespace MultiAlignTestSuite.Papers.Alignment
 
         public static MSSpectra GetSpectrum(ISpectraProvider reader, int scan, int group, double mzTolerance = .5)
         {
-            List<XYData> peaks  = reader.GetRawSpectra(scan, group, 2);
+
+            var summary = new ScanSummary();
+            List<XYData> peaks  = reader.GetRawSpectra(scan, group, 2, out summary);
 
             if (ShouldLogScale)
             {

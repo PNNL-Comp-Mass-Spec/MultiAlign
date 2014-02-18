@@ -212,7 +212,7 @@ namespace MultiAlign.ViewModels.Wizard
             }
             set
             {
-                if (m_selectedDataset != value)
+                if (m_selectedDataset != value && value != null)
                 {                    
                     m_analysis.MetaData.BaselineDataset = value.Dataset;
                     m_selectedDataset                   = value;

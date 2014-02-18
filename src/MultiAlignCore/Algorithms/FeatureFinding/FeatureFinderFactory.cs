@@ -17,7 +17,7 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
                     finder = new UMCFeatureFinder();
                     break;
                 case FeatureFinderType.TreeBased:
-                    finder = new UMCTreeFeatureFinder();
+                    finder = new UmcTreeFeatureFinder();
                     break;
                 default:
                     break;

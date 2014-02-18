@@ -93,7 +93,8 @@ namespace MultiAlignTestSuite.IO
                                         rawReader.AddDataFile(info.Raw.Path, spectrumMetaData.GroupID);
 
                                         // Then grab the actual spectrum...
-                                        List<XYData> spectrum = rawReader.GetRawSpectra(spectrumMetaData.Scan, spectrumMetaData.GroupID, 2);
+                                        var summary = new ScanSummary();
+                                        List<XYData> spectrum = rawReader.GetRawSpectra(spectrumMetaData.Scan, spectrumMetaData.GroupID, 2, out summary);
 
                                         // Then do what you want...
                                         // Profit???

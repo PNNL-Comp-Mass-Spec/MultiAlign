@@ -9,20 +9,16 @@
     <Border Style="{DynamicResource BorderStyle}">
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="32"/>
+                <RowDefinition Height="48"/>
                 <!--<RowDefinition Height="18"/>-->
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="32"/>
-                <ColumnDefinition Width="Auto"/>                
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            
-            <TextBlock
-                        Grid.Column="1"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        ToolTip="{Binding ToolText}"
-                        Text="{Binding ChargeState}"/>                       
+
             <Canvas
                 Grid.Column="0"
                 Width="12"
@@ -31,26 +27,26 @@
                 VerticalAlignment="Center"
                 Background="{Binding ChargeColor}"/>
 
-            <!--<TextBlock Grid.Row="0"
-                       Grid.Column="2"
-                       Margin="3"
+            <TextBlock
+                        Grid.Column="1"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        ToolTip="{Binding ToolText}"
+                        Text="{Binding ChargeState}"/>
+
+            <TextBlock
+                        Grid.Column="2"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"                        
+                        Text="@"/>  
+
+            <TextBlock 
+                       Grid.Column="3"
+                       Margin="5"
+                       VerticalAlignment="Center"
                        Text="{Binding Mz}"
                        />
-            <TextBlock Text="Scans"
-                       Grid.Row="1" 
-                       VerticalAlignment="Center"
-                       HorizontalAlignment="Center"/>
-            <TextBlock 
-                        Margin="3"
-                        Grid.Row="1"
-                       Grid.Column="1"
-                       Text="{Binding ScanStart}"
-                       />
-            <TextBlock Margin="3"
-                        Grid.Row="1"
-                        Grid.Column="2"
-                       Text="{Binding ScanEnd}"
-                        />-->
+                    
         </Grid>
     </Border>
 </UserControl>

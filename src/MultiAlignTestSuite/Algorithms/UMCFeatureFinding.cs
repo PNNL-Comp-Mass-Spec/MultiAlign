@@ -1,68 +1,44 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.IO;
-using System.Text;
-using PNNLOmics.Data.Features;
+﻿using System.Linq;
+using Mage;
 using MultiAlignCore.Algorithms.FeatureFinding;
+using NUnit.Framework;
+using PNNLOmicsIO.IO;
+using System.IO;
 
 namespace MultiAlignTestSuite.Algorithms
 {
-    public class UMCFeatureFinding
+    public class UmcFeatureFinding
     {
-        public void Test()
-        {
-            string path     = @"m:\data\proteomics\chronicFatigue\crap.txt";
-            string[] lines  = File.ReadAllLines(path);
-
-            List<MSFeatureLight> features = new List<MSFeatureLight>();
-            int i = 0;
-            foreach (string line in lines)
+        [Test]
+        [TestCase(@"M:\data\proteomics\TestData\QC-Shew\226151_QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27_isos.csv")]
+        public void TestUmcFeatures(string path)
+        {         
+            var reader          = new MSFeatureLightFileReader { Delimeter = "," };
+            var newMsFeatures   = reader.ReadFile(path);
+            var finder          = new UMCFeatureFinder();
+            var options         = new LCMSFeatureFindingOptions
             {
-                i++;
-                if (i == 1)
-                {
-                    continue;
-                }
-                string[] data   = line.Split('\t');
-                int scan        = Convert.ToInt32(data[1]);
-                double net      = Convert.ToDouble(data[2]);
-                long abundance  = Convert.ToInt64(data[3]);
-                double weight   = Convert.ToDouble(data[5]);
-                double fit      = Convert.ToDouble(data[6]);
+                AveMassWeight = .01f,
+                ConstraintAveMass = 6,
+                ConstraintMonoMass = 6,
+                FitWeight = .1f,
+                IsIsotopicFitFilterInverted = false,
+                IsotopicFitFilter = .15,
+                IsotopicIntensityFilter = 0,
+                LogAbundanceWeight = .1f,
+                MaxDistance = .1,
+                MinUMCLength = 3,
+                MonoMassWeight = .01f,
+                NETWeight = .1f,
+                ScanWeight = .01f,
+                UMCAbundanceReportingType = AbundanceReportingType.Max,
+                UseIsotopicFitFilter = true,
+                UseIsotopicIntensityFilter = false,
+                UseNET = true
+            };
 
-                MSFeatureLight feature = new MSFeatureLight();
-                feature.ID   = i;
-                feature.Scan = scan;
-                feature.NET  = net;
-                feature.MassMonoisotopic    = weight;
-                feature.Score               = fit;
-                feature.Abundance           = abundance;
-                features.Add(feature);                
-            }
-
-            UMCFeatureFinder finder             = new UMCFeatureFinder();
-            LCMSFeatureFindingOptions options   = new LCMSFeatureFindingOptions();
-            options.AveMassWeight               = .01f;
-            options.ConstraintAveMass           = 6;
-            options.ConstraintMonoMass          = 6;
-            options.FitWeight                   = .1f;
-            options.IsIsotopicFitFilterInverted = false;
-            options.IsotopicFitFilter           = .15;
-            options.IsotopicIntensityFilter     = 0;
-            options.LogAbundanceWeight          = .1f;
-            options.MaxDistance                 = .1;
-            options.MinUMCLength                = 3;
-            options.MonoMassWeight              = .01f;
-            options.NETWeight                   = .1f;
-            options.ScanWeight                  = .01f;
-            options.UMCAbundanceReportingType   = AbundanceReportingType.Max;
-            options.UseIsotopicFitFilter        = true;
-            options.UseIsotopicIntensityFilter  = false;
-            options.UseNET                      = true; 
-           
-            List<UMCLight> umcs = finder.FindFeatures(features, options);            
-
+            var umcs = finder.FindFeatures(newMsFeatures.ToList(), options, null);
+            Assert.Greater(umcs.Count, 0);
         }
     }
 }

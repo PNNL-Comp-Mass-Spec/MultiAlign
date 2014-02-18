@@ -4,6 +4,7 @@ using System.IO;
 using System;
 using PNNLOmics.Algorithms.Alignment;
 using ThermoRawFileReaderDLL.FinniganFileIO;
+using MultiAlignCore.IO.RawData;
 
 namespace MultiAlignCore.IO.Features
 {
@@ -122,9 +123,7 @@ namespace MultiAlignCore.IO.Features
                     {
                         case "cid":
                             spectrum.CollisionType = CollisionType.CID;
-                            break;
-                        default:
-                            break;
+                            break;                        
                     }
 
                     // Need to make this a standard type of collision based off of the data.
@@ -157,22 +156,20 @@ namespace MultiAlignCore.IO.Features
         /// </summary>
         /// <param name="scan"></param>
         /// <returns></returns>        
-        public List<XYData> GetRawSpectra(int scan, int group)
+        public List<XYData> GetRawSpectra(int scan, int group, out ScanSummary summary)
         {
-            return GetRawSpectra(scan, group, -1);
+            return GetRawSpectra(scan, group, -1,  out summary);
         }
         /// <summary>
         /// Gets the raw data from the data file.
         /// </summary>
-        /// <param name="scan"></param>
-        /// <returns></returns>        
         public List<MSSpectra> GetRawSpectra(int group)
         {
             return GetMSMSSpectra(group, new Dictionary<int, int>(), true);
         }
         private List<XYData> LoadRawSpectra(XRawFileIO rawReader, int scan)
         {
-            FinniganFileReaderBaseClass.udtScanHeaderInfoType header = new FinniganFileReaderBaseClass.udtScanHeaderInfoType();
+            var header = new FinniganFileReaderBaseClass.udtScanHeaderInfoType();
             rawReader.GetScanInfo(scan, out header);
             int N                   = header.NumPeaks;
 
@@ -182,25 +179,28 @@ namespace MultiAlignCore.IO.Features
             
             //rawReader.CloseRawFile();
             // construct the array.
-            List<XYData> data = new List<XYData>(mz.Length);            
+            var data = new List<XYData>(mz.Length);            
             for (int i = 0; i < mz.Length; i++)
             {
-                double intensity = intensities[i];
+                var intensity = intensities[i];
                 data.Add(new XYData(mz[i], intensity));                
             }
             return data;
         }
-        
+
         /// <summary>
         /// Gets the raw data from the data file.
         /// </summary>
-        /// <param name="scan"></param>
-        /// <returns></returns>
         public List<XYData> GetRawSpectra(int scan, int group, int msLevel)
+        {
+            var summary = new ScanSummary();
+            return GetRawSpectra(scan, group, msLevel, out summary);
+        }
+        public List<XYData> GetRawSpectra(int scan, int group, int msLevel, out ScanSummary summary)
         {
             if (!m_dataFiles.ContainsKey(group))
             {
-                throw new System.Exception("The group-dataset ID provided was not found.");
+                throw new Exception("The group-dataset ID provided was not found.");
             }
             // If we dont have a reader, then create one for this group 
             // next time, it will be available and we won't have to waste time
@@ -221,22 +221,45 @@ namespace MultiAlignCore.IO.Features
 
             List<MSSpectra> spectra  = new List<MSSpectra>();
             XRawFileIO rawReader     = m_readers[group];
+
             
+            var totalSpectra = rawReader.GetNumScans();
+
+            if (scan > totalSpectra)
+                throw new ScanOutOfRangeException("The requested scan is out of range.");
+
             FinniganFileReaderBaseClass.udtScanHeaderInfoType header = new FinniganFileReaderBaseClass.udtScanHeaderInfoType();
             rawReader.GetScanInfo(scan, out header);
+
+            summary = new ScanSummary()
+            {
+                MsLevel         = header.MSLevel,
+                Time            = header.RetentionTime,
+                Scan            = scan,
+                TotalIonCurrent = Convert.ToInt64(header.TotalIonCurrent),
+                PrecursorMZ     = header.ParentIonMZ,
+                CollisionType   = CollisionType.Other,                
+            };
+
+            switch (header.CollisionMode)
+            {
+                case "cid":
+                    summary.CollisionType = CollisionType.CID;
+                    break;
+
+            }
 
             if (header.MSLevel != msLevel && msLevel != -1)
                 return null;
 
-            int N                   = header.NumPeaks;
-
-            double[] mz             = new double[N];
-            double[] intensities    = new double[N];            
+            var n              = header.NumPeaks;
+            var mz             = new double[n];
+            var intensities    = new double[n];            
             rawReader.GetScanData(scan, ref mz, ref intensities, ref header);
             
-            //rawReader.CloseRawFile();
+            
             // construct the array.
-            List<XYData> data = new List<XYData>(mz.Length);            
+            var data = new List<XYData>(mz.Length);            
             for (int i = 0; i < mz.Length; i++)
             {
                 double intensity = intensities[i];

@@ -16,9 +16,8 @@ using PNNLOmics.Algorithms.FeatureMatcher.MSnLinker;
 
 namespace MultiAlignTestSuite.Papers.Alignment.SSM
 {
-
     /// <summary>
-    /// Base class for setting up tests
+    /// Base class for setting up tests`
     /// </summary>
     public abstract class BaseSpectralAlignmentTest
     {
@@ -108,8 +107,9 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
 
                 // Load and create features
                 List<MSFeatureLight> msFeatures = UMCLoaderFactory.LoadMsFeatureData(info, null);
-                features = finder.FindFeatures(msFeatures, options);
-                List<MSSpectra> msms = raw.GetRawSpectra(0);
+                ISpectraProvider provider       = RawLoaderFactory.CreateFileReader(rawFile);
+                features                        = finder.FindFeatures(msFeatures, options, provider);
+                List<MSSpectra> msms            = raw.GetRawSpectra(0);
 
                 // Link the features
                 IMSnLinker linker = MSnLinkerFactory.CreateLinker(MSnLinkerType.BoxMethod);

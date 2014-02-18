@@ -32,7 +32,8 @@ namespace MultiAlignCore.IO.Features
                     List<XYData> spectrum = null;
                     try
                     {
-                        spectrum = provider.GetRawSpectra(scan, 0, 1);
+                        var summary = new ScanSummary();
+                        spectrum = provider.GetRawSpectra(scan, 0, 1, out summary);
                     }
                     catch
                     {
@@ -66,7 +67,8 @@ namespace MultiAlignCore.IO.Features
                     List<XYData> spectrum = null;
                     try
                     {
-                        spectrum = provider.GetRawSpectra(scan, 0, 2);
+                        var summary = new ScanSummary();
+                        spectrum = provider.GetRawSpectra(scan, 0, 2, out summary);
                     }
                     catch
                     {

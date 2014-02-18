@@ -170,25 +170,31 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
                     if (spectralSimilarity < options.SimilarityCutoff)
                         continue;
                                       
-                    AnchorPointMatch match  = new AnchorPointMatch();
-                    AnchorPoint pointX      = new AnchorPoint();
-                    pointX.Net              = netX;
-                    pointX.Mass             = 0;
-                    pointX.Mz               = xsum.PrecursorMZ;
-                    pointX.Scan             = scanx;
-                    pointX.Spectrum         = spectrumX;
-                    
-                    AnchorPoint pointY      = new AnchorPoint();
-                    pointY.Net              = netX;
-                    pointY.Mass             = 0;
-                    pointY.Mz               = ysum.PrecursorMZ;
-                    pointY.Scan             = scany;
-                    pointY.Spectrum         = spectrumY;
+                    var pointX      = new AnchorPoint
+                    {
+                        Net = netX,
+                        Mass = 0,
+                        Mz = xsum.PrecursorMZ,
+                        Scan = scanx,
+                        Spectrum = spectrumX
+                    };
 
-                    match.AnchorPointX      = pointX;
-                    match.AnchorPointY      = pointY;
-                    match.SimilarityScore   = spectralSimilarity;
-                    match.IsValidMatch      = AnchorMatch.FalseMatch;
+                    var pointY      = new AnchorPoint
+                    {
+                        Net = netX,
+                        Mass = 0,
+                        Mz = ysum.PrecursorMZ,
+                        Scan = scany,
+                        Spectrum = spectrumY
+                    };
+
+                    var match = new AnchorPointMatch
+                    {
+                        AnchorPointX = pointX,
+                        AnchorPointY = pointY,
+                        SimilarityScore = spectralSimilarity,
+                        IsValidMatch = AnchorMatch.FalseMatch
+                    };
 
                     matches.Add(match);                    
                 }                    

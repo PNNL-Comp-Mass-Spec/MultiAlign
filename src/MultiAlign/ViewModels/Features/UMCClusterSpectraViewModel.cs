@@ -84,11 +84,13 @@ namespace MultiAlign.ViewModels
             List<MSSpectra> spectra = cluster.Cluster.GetLoadedSpectra();
             spectra.ForEach(x => Spectra.Add(new MSSpectraViewModel(x)));
 
-            m_chart = new SpectraChart();
-            m_chart.Title       = "MS/MS";
-            m_chart.XAxisLabel  = "m/z";
-            m_chart.YAxisLabel  = "Intensity";
-            m_chart.DrawSticks  = true;            
+            m_chart = new SpectraChart
+            {
+                Title = "MS/MS",
+                XAxisLabel = "m/z",
+                YAxisLabel = "Intensity",
+                DrawSticks = true
+            };
             SpectraChart = new WindowsFormsHost() { Child = m_chart };
 
             if (spectra.Count > 0)

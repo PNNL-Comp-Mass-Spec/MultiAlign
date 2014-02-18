@@ -1,10 +1,4 @@
 ﻿using PNNLControls;
-using PNNLOmics.Data.Features;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Media;
 
 namespace MultiAlign.ViewModels.Features
@@ -17,13 +11,15 @@ namespace MultiAlign.ViewModels.Features
                                     int     scanStart,
                                     int     scanEnd)
         {
-            clsColorIterator iterator      = new clsColorIterator();
+            var iterator      = new clsColorIterator();
             System.Drawing.Color oldColor  = iterator.GetColor(charge);
-            Color newColor  = new System.Windows.Media.Color();
-            newColor.A      = oldColor.A;
-            newColor.R      = oldColor.R;
-            newColor.G      = oldColor.G;
-            newColor.B      = oldColor.B;
+            var newColor  = new System.Windows.Media.Color
+            {
+                A = oldColor.A,
+                R = oldColor.R,
+                G = oldColor.G,
+                B = oldColor.B
+            };
             ChargeColor     = new SolidColorBrush(newColor);   
             
             ChargeState     = charge;

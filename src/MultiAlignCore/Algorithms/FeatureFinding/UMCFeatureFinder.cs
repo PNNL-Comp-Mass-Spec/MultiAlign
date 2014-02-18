@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Algorithms;
 using PNNLOmics.Algorithms.FeatureClustering;
@@ -29,8 +30,9 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
         /// <param name="msFeatures"></param>
         /// <param name="options"></param>
         /// <returns></returns>
-        public List<UMCLight> FindFeatures( List<MSFeatureLight>    rawMsFeatures, 
-                                            LCMSFeatureFindingOptions options)
+        public List<UMCLight> FindFeatures( List<MSFeatureLight>        rawMsFeatures, 
+                                            LCMSFeatureFindingOptions   options,
+                                            ISpectraProvider            provider)
         {
             ClusterCentroidRepresentation centroidType  = ClusterCentroidRepresentation.Mean;                           
             List<UMCLight>       features               = null;           

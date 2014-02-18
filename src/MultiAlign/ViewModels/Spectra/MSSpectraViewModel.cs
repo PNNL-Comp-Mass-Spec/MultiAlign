@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using MultiAlign.IO;
+using MultiAlignCore.Data;
+using MultiAlignCustomControls.Charting;
 using PNNLOmics.Data;
 using System.Collections.ObjectModel;
-using MultiAlignCustomControls.Charting;
-using System.Windows.Forms.Integration;
-using MultiAlign.IO;
 using System.Drawing;
-using MultiAlignCore.Data;
+using System.Windows.Forms.Integration;
 
 namespace MultiAlign.ViewModels
 {

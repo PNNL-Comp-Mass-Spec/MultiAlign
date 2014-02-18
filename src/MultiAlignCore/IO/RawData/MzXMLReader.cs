@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.IO.IsolatedStorage;
 using MSDataFileReader;
 using PNNLOmics.Data;
 
@@ -80,45 +82,9 @@ namespace MultiAlignCore.IO.Features
         {
             return new List<MSSpectra>();
         }
-        public List<XYData> GetRawSpectra(int scan, int group)
+        public List<XYData> GetRawSpectra(int scan, int group, out ScanSummary summary)
         {
-            List<XYData> spectrum = null;
-
-            if (!m_dataFiles.ContainsKey(group))
-            {
-                throw new System.Exception("The group-dataset ID provided was not found.");
-            }
-            // If we dont have a reader, then create one for this group 
-            // next time, it will be available and we won't have to waste time
-            // opening the file.
-            if (!m_readers.ContainsKey(group))
-            {
-                string path                 = m_dataFiles[group];
-                clsMzXMLFileAccessor reader = new clsMzXMLFileAccessor();                
-                m_readers.Add(group, reader);
-
-                bool opened = reader.OpenFile(path);
-                if (!opened)
-                {
-                    throw new IOException("Could not open the mzXML file " + path);
-                }
-            }
-            clsMzXMLFileAccessor rawReader = m_readers[group];
-
-            int totalScans = rawReader.ScanCount;            
-            clsSpectrumInfo info = new clsSpectrumInfo();
-            rawReader.GetSpectrumByScanNumber(scan, ref info);
-            if (info.MSLevel > 1)
-            {
-
-                spectrum = new List<XYData>();
-                for (int j = 0; j < info.MZList.Length; j++)
-                {
-                    spectrum.Add(new XYData(info.MZList[j], info.IntensityList[j]));
-                }
-            }
-            
-            return spectrum;
+            return GetRawSpectra(scan, group, -11, out summary);
         }
         #endregion
 
@@ -208,10 +174,10 @@ namespace MultiAlignCore.IO.Features
         #region ISpectraProvider Members
 
 
-        public List<XYData> GetRawSpectra(int scan, int group, int scanLevel)
-        {
-            return GetRawSpectra(scan, group);
-        }
+        //public List<XYData> GetRawSpectra(int scan, int group, int scanLevel)
+        //{
+        //    return GetRawSpectra(scan, group);
+        //}
 
         #endregion
 
@@ -224,5 +190,59 @@ namespace MultiAlignCore.IO.Features
         }
 
         #endregion
+
+
+        public List<XYData> GetRawSpectra(int scan, int group, int scanLevel, out ScanSummary summary)
+        {
+            List<XYData> spectrum = null;
+
+            if (!m_dataFiles.ContainsKey(group))
+            {
+                throw new System.Exception("The group-dataset ID provided was not found.");
+            }
+            // If we dont have a reader, then create one for this group 
+            // next time, it will be available and we won't have to waste time
+            // opening the file.
+            if (!m_readers.ContainsKey(group))
+            {
+                string path = m_dataFiles[group];
+                var reader  = new clsMzXMLFileAccessor();
+                m_readers.Add(group, reader);
+
+                bool opened = reader.OpenFile(path);
+                if (!opened)
+                {
+                    throw new IOException("Could not open the mzXML file " + path);
+                }
+            }
+            clsMzXMLFileAccessor rawReader = m_readers[group];
+
+            int totalScans  = rawReader.ScanCount;
+            var info        = new clsSpectrumInfo();
+
+                        
+            rawReader.GetSpectrumByScanNumber(scan, ref info);
+            
+            summary = new ScanSummary()
+            {
+                Bpi             = Convert.ToInt64(info.BasePeakIntensity),
+                BpiMz           = info.BasePeakMZ,
+                MsLevel         = info.MSLevel,
+                PrecursorMZ     = info.ParentIonMZ,
+                TotalIonCurrent = Convert.ToInt64(info.TotalIonCurrent)
+            };
+
+            if (info.MSLevel == scanLevel)
+            {
+                spectrum = new List<XYData>();
+                for (int j = 0; j < info.MZList.Length; j++)
+                {
+                    spectrum.Add(new XYData(info.MZList[j], info.IntensityList[j]));
+                }
+            }
+
+            return spectrum;
+        }
+
     }
 }

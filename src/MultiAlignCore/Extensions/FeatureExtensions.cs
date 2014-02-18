@@ -7,6 +7,7 @@ using MultiAlignCore.Data.MassTags;
 using MultiAlignCore.IO.Features;
 using PNNLOmics.Data;
 using MultiAlignCore.Data;
+using PNNLOmics.Extensions;
 using PNNLOmics.Data.Features;
 using MultiAlignCore.Data.SequenceData;
 
@@ -39,25 +40,6 @@ namespace MultiAlignCore.Extensions
                 map[feature.ChargeState].Add(feature);
             }
             return map;
-        }
-        /// <summary>
-        /// Creates a charge map for a given ms feature list.
-        /// </summary>
-        /// <param name="feature"></param>
-        /// <returns></returns>
-        public static Dictionary<int, List<MSFeatureLight>> CreateChargeMap(this UMCLight feature)
-        {
-            Dictionary<int, List<MSFeatureLight>> chargeMap = new Dictionary<int, List<MSFeatureLight>>();
-            foreach (MSFeatureLight msFeature in feature.MSFeatures)
-            {
-                if (!chargeMap.ContainsKey(msFeature.ChargeState))
-                {
-                    chargeMap.Add(msFeature.ChargeState, new List<MSFeatureLight>());
-                }
-                chargeMap[msFeature.ChargeState].Add(msFeature);
-            }
-
-            return chargeMap;
         }
         /// <summary>
         /// Creates SIC's mapped by charge state for the MS Features in the feature.
@@ -109,7 +91,8 @@ namespace MultiAlignCore.Extensions
                     List<XYZData> intensities = new List<XYZData>();
                     for (int scan = minScan; scan < maxScan; scan++)
                     {
-                        List<XYData> spectrum = provider.GetRawSpectra(scan, feature.GroupID, 1);
+                        var summary = new ScanSummary();
+                        List<XYData> spectrum = provider.GetRawSpectra(scan, feature.GroupID, 1, out summary);
                         double intensity = 0;
                         double minDistance = double.MaxValue;
                         int index = -1;

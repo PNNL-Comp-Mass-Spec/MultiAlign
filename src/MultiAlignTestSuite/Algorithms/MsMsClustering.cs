@@ -150,10 +150,10 @@ namespace MultiAlignTestSuite.Algorithms
             List<Peptide> aligneePeptides       = sequenceReader.Read(aligneeInfo.Sequence.Path).ToList();
                         
             Console.WriteLine("Detecting Baseline Features");
-            List<UMCLight> baselineFeatures     = finder.FindFeatures(baselineMsFeatures, options);
+            List<UMCLight> baselineFeatures     = finder.FindFeatures(baselineMsFeatures, options, null);
             
             Console.WriteLine("Detecting Alignee Features");
-            List<UMCLight> aligneeFeatures = finder.FindFeatures(aligneeMsFeatures, options);
+            List<UMCLight> aligneeFeatures = finder.FindFeatures(aligneeMsFeatures, options, null);
 
             Console.WriteLine("Managing baseline and alignee features");        
             baselineFeatures.ForEach(x  => x.GroupID = baselineInfo.DatasetId);

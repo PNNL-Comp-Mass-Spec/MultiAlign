@@ -360,8 +360,10 @@ namespace MultiAlignCore.Extensions
                     {
                         foreach(MSSpectra spectrum in msFeature.MSnSpectra)
                         {
-                            List<XYData> data = provider.GetRawSpectra(spectrum.Scan, spectrum.GroupID);
+                            var summary       = new ScanSummary();
+                            List<XYData> data = provider.GetRawSpectra(spectrum.Scan, spectrum.GroupID, out summary);
                             spectrum.Peaks    = data;
+                            spectrum.ScanMetaData = summary;
                         }
                         if (firstWrite)
                         {

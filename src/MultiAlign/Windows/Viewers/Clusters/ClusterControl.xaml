@@ -145,7 +145,7 @@
                 <Grid 
                     Grid.Row="5">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="48"/>
+                        <RowDefinition Height="64"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
@@ -183,7 +183,7 @@
                             />
                     <ComboBox
                             FontSize="18"
-                            Width="128"
+                            Width="164"
                             HorizontalAlignment="Right"
                             HorizontalContentAlignment="Left"
                             ItemTemplate="{StaticResource ResourceKey=ChargeStateTemplate}"

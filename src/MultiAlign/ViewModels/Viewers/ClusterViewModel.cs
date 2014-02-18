@@ -10,6 +10,7 @@ using MultiAlignCustomControls.Charting;
 using MultiAlignCustomControls.Extensions;
 using PNNLControls;
 using PNNLOmics.Algorithms;
+using PNNLOmics.Algorithms.Chromatograms;
 using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
 using System;
@@ -17,7 +18,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Linq;
-using System.Windows.Documents;
+using PNNLOmics.Extensions;
 using System.Windows.Forms.Integration;
 using System.Windows.Input;
 
@@ -292,8 +293,8 @@ namespace MultiAlign.ViewModels.Viewers
             }
 
             m_msFeaturePlot.MainFeature = feature;
-            UMCLight newFeature = LoadExtractedIonChromatrogram(feature, m_ppmError);
-            m_sicChart.SetFeature(newFeature);
+            //UMCLight newFeature = LoadExtractedIonChromatrogram(feature, m_ppmError);
+            m_sicChart.SetFeature(feature);
             m_sicChart.AutoViewPort();
             m_msFeaturePlot.UpdateCharts(true);
 
@@ -622,9 +623,8 @@ namespace MultiAlign.ViewModels.Viewers
 
         #region Spectrum Loading
         private UMCLight LoadExtractedIonChromatrogram(UMCLight feature, double massError)
-        {
-            UMCLight umcFeature = new UMCLight(feature);
-           // umcFeature.MSFeatures.Clear();
+        {           
+            var tempFeature = new UMCLight(feature);
 
              DatasetInformation info = SingletonDataProviders.GetDatasetInformation(feature.GroupID);
              if (info != null && info.Raw != null && info.RawPath != null)
@@ -634,95 +634,23 @@ namespace MultiAlign.ViewModels.Viewers
                      if (provider != null)
                      {
                          provider.AddDataFile(info.RawPath, 0);
-
-                         Dictionary<int, List<MSFeatureLight>> chargeFeatures = feature.CreateChargeMap();
-                         Dictionary<int, Dictionary<int, double>> xic = new Dictionary<int, Dictionary<int, double>>();
-                        
-                         foreach (int charge in chargeFeatures.Keys)
+            
+                         var creator = new XicCreator();
+                         var xics    = creator.CreateXic(feature, m_ppmError, provider);
+                         foreach (var charge in xics.Keys)
                          {
-                             // Find the mininmum and maximum features
-
-                             var msFeatures = chargeFeatures[charge].OrderBy(x => x.Scan).ToList();
-                             if (msFeatures.Count > 0)
+                             foreach (var msfeature in xics[charge])
                              {
-                                 int minScan = msFeatures[0].Scan;
-                                 int maxScan = msFeatures[msFeatures.Count - 1].Scan;
-
-                                 minScan -= 100;
-                                 maxScan += 100;
-
-                                 double sum          = 0;
-                                 double min          = double.MaxValue;
-                                 double max          = double.MinValue;
-                                 double maxIntensity = 0;
-                                 double mz           = feature.Mz;
-
-                                 Dictionary<int, MSFeatureLight> featureMap = new Dictionary<int, MSFeatureLight>();
-
-                                 foreach (MSFeatureLight chargeFeature in msFeatures)
-                                 {
-                                     min  = Math.Min(min, chargeFeature.Mz);
-                                     max  = Math.Max(max, chargeFeature.Mz);                             
-                                     sum += chargeFeature.Mz;
-
-                                     if (chargeFeature.Abundance > maxIntensity)
-                                     {
-                                         maxIntensity   = chargeFeature.Abundance;
-                                         mz             = chargeFeature.Mz;
-                                     }
-
-                                     // Map the feature...
-                                     if (!featureMap.ContainsKey(chargeFeature.Scan))
-                                     {
-                                         featureMap.Add(chargeFeature.Scan, chargeFeature);
-                                     }                             
-                                 }
-                                 xic.Add(charge, new Dictionary<int, double>());                        
-                                 List<XYData> spectrum = null;
-                                 
-                                 double diff   = Feature.ComputeDaDifferenceFromPPM(mz, massError);
-                                 double lower  = Feature.ComputeDaDifferenceFromPPM(mz, massError);
-                                 double higher = Feature.ComputeDaDifferenceFromPPM(mz, -massError);
-
-                                 for (int i = minScan; i < maxScan; i++)
-                                 {
-                                    spectrum = provider.GetRawSpectra(i, 0, 1);
-                                    if (spectrum == null)
-                                        continue;
-
-                                    var data = (from x in spectrum
-                                                where x.X > lower && x.X < higher
-                                                select x).ToList();
-
-                                    double summedIntensity = data.Sum(x => x.Y);
-                                    xic[charge].Add(i, summedIntensity);
-
-                                    if (featureMap.ContainsKey(i))
-                                    {
-                                        featureMap[i].Abundance = Convert.ToInt64(summedIntensity);
-                                        umcFeature.AddChildFeature(featureMap[i]);
-                                    }
-                                    else
-                                    {
-                                        MSFeatureLight newFeature   = new MSFeatureLight();
-                                        newFeature.Scan             = i;
-                                        newFeature.MassMonoisotopic = feature.MassMonoisotopic;
-                                        newFeature.RetentionTime    = i;
-                                        newFeature.DriftTime        = feature.DriftTime;
-                                        newFeature.ChargeState      = charge;
-                                        newFeature.GroupID          = feature.GroupID;                                        
-                                        newFeature.Abundance        = Convert.ToInt64(summedIntensity);
-                                        feature.AddChildFeature(newFeature);
-                                        umcFeature.AddChildFeature(newFeature);
-                                    }
-                                 }                                                                  
-                              } 
-                        }
-                    }
+                                 tempFeature.AddChildFeature(msfeature);
+                             }
+                         }
+                     }
                  }
              }
-             return umcFeature;
+
+             return tempFeature;
         }
+        
         private void LoadSpectrum(MSFeatureLight msFeature)
         {
             DatasetInformation info = SingletonDataProviders.GetDatasetInformation(msFeature.GroupID);
@@ -758,7 +686,11 @@ namespace MultiAlign.ViewModels.Viewers
                                                                                 msFeature.Scan,
                                                                                 lowMz,
                                                                                 highMz);
-
+                m_parentSpectra.Title = string.Format("Scan {0} Charge {1} Dataset {2}",
+                                                        msFeature.Scan,
+                                                        msFeature.ChargeState,
+                                                        msFeature.GroupID
+                                                        );
                 m_parentSpectra.SetFeature(msFeature, spectrum);
                 m_parentSpectra.AutoViewPort();
             }

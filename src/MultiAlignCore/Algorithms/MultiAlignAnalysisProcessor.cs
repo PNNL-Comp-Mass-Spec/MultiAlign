@@ -1,16 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading;
+using MultiAlign.IO;
 using MultiAlignCore.Algorithms.Alignment;
 using MultiAlignCore.Algorithms.FeatureFinding;
 using MultiAlignCore.Algorithms.FeatureMatcher;
 using MultiAlignCore.Algorithms.MSLinker;
+using MultiAlignCore.Algorithms.Workflow;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.Alignment;
 using MultiAlignCore.Data.Features;
 using MultiAlignCore.Data.MassTags;
+using MultiAlignCore.Data.SequenceData;
 using MultiAlignCore.Extensions;
 using MultiAlignCore.IO;
 using MultiAlignCore.IO.Features;
@@ -21,16 +19,15 @@ using PNNLOmics.Algorithms.Alignment;
 using PNNLOmics.Algorithms.Distance;
 using PNNLOmics.Algorithms.FeatureClustering;
 using PNNLOmics.Algorithms.FeatureMatcher.MSnLinker;
-using PNNLOmics.Algorithms.FeatureMetrics;
-using PNNLOmics.Algorithms.Solvers.LevenburgMarquadt;
-using PNNLOmics.Algorithms.Solvers.LevenburgMarquadt.BasisFunctions;
 using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Data.MassTags;
 using PNNLOmicsIO.IO;
-using MultiAlignCore.IO.SequenceData;
-using MultiAlignCore.Data.SequenceData;
-using MultiAlignCore.Algorithms.Workflow;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading;
 
 namespace MultiAlignCore.Algorithms
 {        
@@ -360,14 +357,6 @@ namespace MultiAlignCore.Algorithms
         /// <summary>
         /// Load a single dataset from the provider.
         /// </summary>
-        /// <param name="dataset"></param>
-        /// <param name="options"></param>
-        /// <param name="filterOptions"></param>
-        /// <param name="featureCache"></param>
-        /// <param name="msFeatureCache"></param>
-        /// <param name="rawReader"></param>
-        /// <param name="msnCache"></param>
-        /// <param name="msnToMsCache"></param>
         /// <returns></returns>
         private List<UMCLight> LoadDataset(   
                                     DatasetInformation          dataset,
@@ -375,16 +364,11 @@ namespace MultiAlignCore.Algorithms
                                     FeatureFilterOptions        filterOptions,
                                     FeatureDataAccessProviders  providers,
                                     bool shouldDelayCachingFeatures)
-        {                        
-            IUmcDAO featureCache                    = null;
-            IMSFeatureDAO msFeatureCache            = null;                                  
-            IMSnFeatureDAO msnCache                 = null;
-            IMsnFeatureToMSFeatureDAO msnToMsCache  = null;
-            
-            featureCache    = providers.FeatureCache;
-            msFeatureCache  = providers.MSFeatureCache;
-            msnCache        = providers.MSnFeatureCache;
-            msnToMsCache    = providers.MSFeatureToMSnFeatureCache;
+        {
+            IUmcDAO featureCache                    = providers.FeatureCache;
+            IMSFeatureDAO msFeatureCache            = providers.MSFeatureCache;
+            IMSnFeatureDAO msnCache                 = providers.MSnFeatureCache;
+            IMsnFeatureToMSFeatureDAO msnToMsCache  = providers.MSFeatureToMSnFeatureCache;
 
 
             UpdateStatus(string.Format("[{0}] - Loading dataset [{0}] - {1}.", dataset.DatasetId, dataset.DatasetName));
@@ -393,10 +377,10 @@ namespace MultiAlignCore.Algorithms
                                                                                   featureCache);
 
             UpdateStatus(string.Format("[{0}] Loading MS Feature Data [{0}] - {1}.", dataset.DatasetId, dataset.DatasetName));
-            List<MSFeatureLight> msFeatures = UMCLoaderFactory.LoadMsFeatureData(dataset,
+            var msFeatures = UMCLoaderFactory.LoadMsFeatureData(dataset,
                                                                                  msFeatureCache);
-            List<MSFeatureToMSnFeatureMap> matches = new List<MSFeatureToMSnFeatureMap>();
-            List<ScanSummary> scans         = UMCLoaderFactory.LoadScansData(dataset);
+            var matches  = new List<MSFeatureToMSnFeatureMap>();
+            var scans    = UMCLoaderFactory.LoadScansData(dataset);
 
             // Extract any scan meta-data.
             if (dataset.Raw != null && dataset.RawPath != null && options.StoreMSFeatureResults)
@@ -409,7 +393,7 @@ namespace MultiAlignCore.Algorithms
                 }
             }
 
-            List<MSSpectra> msnSpectra = new List<MSSpectra>();
+            var msnSpectra = new List<MSSpectra>();
 
             if (options.StoreMSFeatureResults)
             {
@@ -421,87 +405,28 @@ namespace MultiAlignCore.Algorithms
             // provided to us.
             if (features.Count < 1)
             {
-                Dictionary<int, ScanSummary> scanMap = dataset.DatasetSummary.ScanMetaData;
+                var scanMap = dataset.DatasetSummary.ScanMetaData;
 
-                if (scanMap != null && scanMap.Count > 0)
-                {
+                if (scanMap != null && scanMap.Count > 0)                
                     msFeatures = msFeatures.Where(x => scanMap.ContainsKey(x.Scan) && scanMap[x.Scan].MsLevel == 1).ToList();                  
-                }                   
-
-                features = CreateLCMSFeatures(msFeatures,
+                                   
+                features = CreateLCMSFeatures(
+                                                dataset,
+                                                msFeatures,
                                                 msFeatureCache,
                                                 options,
                                                 filterOptions);
 
+                var maxScan = Convert.ToDouble(features.Max(feature => feature.Scan));
+                var minScan = Convert.ToDouble(features.Min(feature => feature.Scan));
 
-                double maxScan = Convert.ToDouble(features.Max(delegate(UMCLight feature)
-                {
-                    return feature.Scan;
-                }
-                ));
-                double minScan = Convert.ToDouble(features.Min(delegate(UMCLight feature)
-                {
-                    return feature.Scan;
-                }
-                ));
-
-                foreach (UMCLight feature in features)
+                foreach (var feature in features)
                 {
                     feature.GroupID         = datasetID;
                     feature.RetentionTime   = (Convert.ToDouble(feature.Scan) - minScan)/(maxScan - minScan);  
                     feature.SpectralCount   = feature.MSFeatures.Count;
                 }
-
-                try
-                {
-                    if (options.ShouldCreateXicFile)
-                    {
-                        
-                        UpdateStatus("Constructing extracted ion chromatograms (XIC)");
-                        XicAdaptor adaptor = new XicAdaptor(dataset.Raw.Path, dataset.Peaks.Path);
-                        foreach (UMCLight feature in features)
-                        {
-                            feature.ChargeStateChromatograms    = adaptor.CreateXicForChargeStates(feature, options.ShouldSmoothXic);
-                            feature.IsotopeChromatograms        = adaptor.CreateXicForIsotopes(feature, options.ShouldSmoothXic);
-
-                            // Convert the time to seconds if we have scan information. 
-                            if (dataset.DatasetSummary != null)
-                            {
-                                Dictionary<int, ScanSummary> summary = dataset.DatasetSummary.ScanMetaData;
-                                if (summary != null)
-                                {
-                                    foreach (int charge in feature.ChargeStateChromatograms.Keys)
-                                    {
-                                        Chromatogram gram = feature.ChargeStateChromatograms[charge];
-                                        foreach (XYData point in gram.Points)
-                                        {
-                                            int scan = Convert.ToInt32(point.X);
-                                            point.X  = summary[scan].Time;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        UpdateStatus("Exporting Xic data");
-                        string xicPath = Path.Combine(m_config.AnalysisPath, dataset.DatasetName + ".xic");
-                        XicWriter.WriteXics(xicPath, features);
-
-                        ChromatogramMetrics metrics = new ChromatogramMetrics();
-                        BasisFunctionBase basis = BasisFunctionFactory.BasisFunctionSelector(BasisFunctionsEnum.Gaussian);
-                        metrics.FitChromatograms(features, basis);
-
-                        string fitPath = Path.Combine(m_config.AnalysisPath, dataset.DatasetName + "_fit.xic");
-                        XicFitWriter fitWriter = new XicFitWriter();
-                        fitWriter.WriteXics(fitPath, features);
-                    }                     
-                }
-                catch (Exception ex)                
-                {                    
-                    UpdateStatus(string.Format("Could not complete XIC Fits {0}", ex.Message));                    
-                }
-                
-
+                                
                 if (!shouldDelayCachingFeatures)
                 {
                     UpdateStatus("Adding features to cache database.");
@@ -646,11 +571,11 @@ namespace MultiAlignCore.Algorithms
                     // table/container.
                     Dictionary<int, MSSpectra> spectraTracker = new Dictionary<int, MSSpectra>();
 
-                    int totalMSFeatures         = 0;
+                    int totalMsFeatures         = 0;
                     int totalUMCFeatures        = 0;
                     int totalPeptidesMatching   = 0;
 
-                    List<MSSpectra> msmsFeatures = new List<MSSpectra>();
+                    var msmsFeatures = new List<MSSpectra>();
                     List<DatabaseSearchSequence> mappedPeptides = new List<DatabaseSearchSequence>();
                     List<SequenceToMsnFeature> sequenceMaps = new List<SequenceToMsnFeature>();
 
@@ -669,7 +594,7 @@ namespace MultiAlignCore.Algorithms
                         {
                             if (msFeature.MSnSpectra.Count > 0)
                             {
-                                totalMSFeatures++;
+                                totalMsFeatures++;
                                 totalMsMs       += msFeature.MSnSpectra.Count;
 
                                 foreach (MSSpectra spectrum in msFeature.MSnSpectra)
@@ -731,7 +656,7 @@ namespace MultiAlignCore.Algorithms
                         UpdateStatus( 
                             string.Format("Mapped {0} MSn spectra to {1} MS features and {2} LC-MS features",
                                             mapped.Keys.Count,
-                                            totalMSFeatures,
+                                            totalMsFeatures,
                                             totalUMCFeatures
                                             ));
                         if (dataset.Sequence != null)
@@ -830,7 +755,9 @@ namespace MultiAlignCore.Algorithms
         /// <param name="options"></param>
         /// <param name="filterOptions"></param>
         /// <returns></returns>
-        private List<UMCLight> CreateLCMSFeatures(List<MSFeatureLight> msFeatures,  
+        private List<UMCLight> CreateLCMSFeatures(
+                                        DatasetInformation information,
+                                        List<MSFeatureLight> msFeatures,  
                                         IMSFeatureDAO msFeatureCache, 
                                         LCMSFeatureFindingOptions options, 
                                         FeatureFilterOptions filterOptions)
@@ -848,9 +775,15 @@ namespace MultiAlignCore.Algorithms
             // Filter out bad MS Features
             filteredMsFeatures = LCMSFeatureFilters.FilterMSFeatures(msFeatures, options);
 
-            // Find LCMS Features
-            IFeatureFinder finder   = FeatureFinderFactory.CreateFeatureFinder(options.FeatureFinderAlgorithm);
-            features                = finder.FindFeatures(filteredMsFeatures, options);
+            // Find LCMS Features            
+            ISpectraProvider provider = null;
+            if (information.RawPath != null)
+            {
+                provider = RawLoaderFactory.CreateFileReader(information.RawPath);
+                provider.AddDataFile(information.RawPath, 0);
+            }
+            var finder   = FeatureFinderFactory.CreateFeatureFinder(options.FeatureFinderAlgorithm);            
+            features     = finder.FindFeatures(filteredMsFeatures, options, provider);
 
             UpdateStatus( "Filtering features.");            
             filteredFeatures = LCMSFeatureFilters.FilterFeatures(features,
@@ -1151,8 +1084,8 @@ namespace MultiAlignCore.Algorithms
                                                                                         List<UMCLight>      baselineFeatures, 
                                                                                         AlignmentOptions    alignmentOptions,
                                                                                         DriftTimeAlignmentOptions driftTimeAlignmentOptions,
-                                                                                        MassTagDatabase     database,
-                                                                                        DriftTimeAligner    driftTimeAligner)
+                                                                                        MassTagDatabase         database,
+                                                                                        DriftTimeAligner        driftTimeAligner)
         {            
             KeyValuePair<DriftTimeAlignmentResults<UMC, UMC>, 
                                 DriftTimeAlignmentResults<UMC, UMC>> pair = new KeyValuePair<DriftTimeAlignmentResults<UMC,UMC>,DriftTimeAlignmentResults<UMC,UMC>>();

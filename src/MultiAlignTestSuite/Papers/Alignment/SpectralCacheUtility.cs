@@ -70,9 +70,11 @@ namespace MultiAlignTestSuite.Papers.Alignment
         [TestCase(@"M:\doc\papers\paperAlignment\Data\figure1\figure1-paths.txt",
             @"M:\doc\papers\paperAlignment\Data\figure1\",
             Ignore=true)]
-
-        [TestCase(@"M:\doc\papers\paperAlignment\Data\figure1\Figure\figure1-figurePath.txt",
-                  @"M:\data\proteomics\Papers\AlignmentPaper\data\Shewanella\ConstantPressure\TechReplicates-00\")]
+        
+        [TestCase(
+            @"M:\doc\papers\paperAlignment\Data\figure4\biorumenInput.txt",
+            @"M:\doc\papers\paperAlignment\Data\figure4",
+            Ignore=true)]
         public void CreateCacheFiles(string path, string directory)
         {
             string[] files = File.ReadAllLines(path);
