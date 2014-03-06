@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using MultiAlign.IO;
 using MultiAlignCore.Data.Alignment;
 using MultiAlignCore.Data.Features;
 using MultiAlignCore.Data.MassTags;
@@ -13,18 +14,9 @@ using System.IO;
 
 namespace MultiAlignCore.Algorithms.Alignment
 {
-    public class LCMSWarpFeatureAligner: IFeatureAligner, IProgressNotifer
+    public class LCMSWarpFeatureAligner: IFeatureAligner
     {
         public event EventHandler<ProgressNotifierArgs> Progress;
-
-        clsAlignmentProcessor m_processor = new clsAlignmentProcessor();
-
-        /// <summary>
-        /// Default constructor.
-        /// </summary>
-        public LCMSWarpFeatureAligner()
-        {
-        }
 
         private void OnStatus(string message)
         {
@@ -46,7 +38,7 @@ namespace MultiAlignCore.Algorithms.Alignment
                                                 AlignmentOptions                alignmentOptions,
                                                 bool                            alignDriftTimes)
         {                        
-            clsAlignmentProcessor alignmentProcessor    = new clsAlignmentProcessor();
+            var alignmentProcessor    = new clsAlignmentProcessor();
             alignmentProcessor.AlignmentOptions         = AlignmentOptions.ConvertToEngine(alignmentOptions);
             
 
@@ -196,10 +188,7 @@ namespace MultiAlignCore.Algorithms.Alignment
                         map[featureID].MassMonoisotopicAligned = feature.MassCalibrated;
                         map[featureID].NETAligned = feature.Net;
                         map[featureID].RetentionTime = feature.Net;
-                        map[featureID].ScanAligned = feature.ScanAligned;
-
-                                                            
-
+                        map[featureID].ScanAligned = feature.ScanAligned;                                                            
                     }
                 }
                 
@@ -256,10 +245,47 @@ namespace MultiAlignCore.Algorithms.Alignment
                 data.NETRsquared            = alignmentProcessor.NETLinearRSquared;
                 data.NETSlope               = alignmentProcessor.NETSlope;
                 data.ResidualData           = residualData;
+                
                 data.MassMean               = alignmentProcessor.GetMassMean();
                 data.MassStandardDeviation  = alignmentProcessor.GetMassStandardDeviation();
                 data.NETMean                = alignmentProcessor.GetNETMean();
                 data.NETStandardDeviation   = alignmentProcessor.GetNETStandardDeviation();
+
+                ///// Temporary fix for Yehia Ibrahim
+                //if (true)
+                //{
+                //    var path    = SingletonDataProviders.GetDatasetInformation(features[0].GroupID);
+                //    var newPath = Path.GetFileNameWithoutExtension(path.Path) + ".histogram";
+                //    var dirPath = Path.GetDirectoryName(path.Path);
+                //    using (var writer = File.CreateText(Path.Combine(dirPath, newPath)))
+                //    {
+
+
+                //        writer.WriteLine("[Mass Error Histogram]");
+                //        writer.WriteLine("mass\t count");
+                //        for (var x = 0; x < massErrorHistogram.GetLength(0); x++)
+                //        {
+                //            writer.WriteLine("{0}\t{1}", massErrorHistogram[x, 0],
+                //                                         massErrorHistogram[x, 1]);
+                //        }
+                //        writer.WriteLine();
+                //        writer.WriteLine("[NET Error Histogram]");
+                //        writer.WriteLine("NET\t count");
+                //        for (var x = 0; x < netErrorHistogram.GetLength(0); x++)
+                //        {
+                //            writer.WriteLine("{0}\t{1}", netErrorHistogram[x, 0],
+                //                                         netErrorHistogram[x, 1]);
+                //        }
+                //        writer.WriteLine();
+                //        writer.WriteLine("[Drift Time Error Histogram]");
+                //        writer.WriteLine("drift time\t count");
+                //        for (var x = 0; x < driftErrorHistogram.GetLength(0); x++)
+                //        {
+                //            writer.WriteLine("{0}\t{1}", driftErrorHistogram[x, 0],
+                //                                         driftErrorHistogram[x, 1]);
+                //        }
+                //    }                    
+                //}
 
                 // Find out the max scan or NET value to use for the range depending on what 
                 // type of baseline dataset it was (MTDB or dataset).                 

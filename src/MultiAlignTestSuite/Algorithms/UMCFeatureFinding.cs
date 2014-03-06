@@ -1,16 +1,15 @@
-﻿using System.Linq;
-using Mage;
-using MultiAlignCore.Algorithms.FeatureFinding;
+﻿using MultiAlignCore.Algorithms.FeatureFinding;
 using NUnit.Framework;
 using PNNLOmicsIO.IO;
-using System.IO;
+using System;
+using System.Linq;
 
 namespace MultiAlignTestSuite.Algorithms
 {
     public class UmcFeatureFinding
     {
         [Test]
-        [TestCase(@"M:\data\proteomics\TestData\QC-Shew\226151_QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27_isos.csv")]
+        [TestCase(@"M:\data\proteomics\TestData\QC-Shew\226151_QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27_isos.csv")]        
         public void TestUmcFeatures(string path)
         {         
             var reader          = new MSFeatureLightFileReader { Delimeter = "," };
@@ -36,8 +35,10 @@ namespace MultiAlignTestSuite.Algorithms
                 UseIsotopicIntensityFilter = false,
                 UseNET = true
             };
-
-            var umcs = finder.FindFeatures(newMsFeatures.ToList(), options, null);
+            var start = DateTime.Now;            
+            var umcs  = finder.FindFeatures(newMsFeatures.ToList(), options, null);            
+            var end   = DateTime.Now;
+            Console.WriteLine(end.Subtract(start).TotalSeconds);
             Assert.Greater(umcs.Count, 0);
         }
     }

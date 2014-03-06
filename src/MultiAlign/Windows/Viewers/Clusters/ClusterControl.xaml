@@ -152,16 +152,6 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-
-                    <Label 
-                        Margin="5"
-                        Foreground ="Gray"  
-                        Content="Parent Spectra"
-                        FontSize="16"
-                        HorizontalAlignment="Left"
-                        HorizontalContentAlignment="Center"
-                        VerticalContentAlignment="Center"                      
-                        Grid.Row="5"/>
                     <Label 
                         FontSize="12"
                         Margin="5"
@@ -170,20 +160,9 @@
                         VerticalContentAlignment="Center"                      
                         Grid.Row="0"
                         Grid.Column="1">Select Charge</Label>
-                    <TextBox
-                        Margin="5"
-                        Grid.Column="1"
-                        Width="64"
-                        HorizontalAlignment="Left"
-                        Text="{Binding PpmError}"
-                        />
-                    <Button Command="{Binding CreateXic}" Content="Create xic " Margin="5"
-                            Grid.Column="1"
-                            Width="64"
-                            />
                     <ComboBox
                             FontSize="18"
-                            Width="164"
+                            Width="200"
                             HorizontalAlignment="Right"
                             HorizontalContentAlignment="Left"
                             ItemTemplate="{StaticResource ResourceKey=ChargeStateTemplate}"
@@ -195,7 +174,7 @@
                                             UpdateSourceTrigger=PropertyChanged,
                                             NotifyOnSourceUpdated=True}"                        
                             Margin="5"
-                            Grid.Column="3"/>
+                            Grid.Column="2"/>
                 </Grid>
                 
                 <GridSplitter

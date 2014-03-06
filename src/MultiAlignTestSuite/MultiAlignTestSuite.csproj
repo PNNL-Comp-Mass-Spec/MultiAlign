@@ -107,7 +107,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>M:\download\OxyPlot-2014.1.1.1\NET40\OxyPlot.WindowsForms.dll</HintPath>
     </Reference>
-    <Reference Include="PNNLOmics">
+    <Reference Include="PNNLOmics, Version=1.0.5176.20116, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\PNNLOmics.dll</HintPath>
     </Reference>
     <Reference Include="PNNLOmicsIO, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -129,6 +130,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Algorithms\Alignment\LCMSWarp\LcmsWarpAlignmentTests.cs" />
     <Compile Include="Algorithms\CallisterClusters\CompareClusters.cs" />
     <Compile Include="Algorithms\MsMsClustering.cs" />
     <Compile Include="Algorithms\SpectralProcessing\SpectralAlignmentTests.cs" />

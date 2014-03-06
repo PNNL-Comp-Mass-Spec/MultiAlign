@@ -63,15 +63,6 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="GalaSoft.MvvmLight.Extras.WPF45">
-      <HintPath>..\packages\MvvmLightLibs.4.2.30.0\lib\net45\GalaSoft.MvvmLight.Extras.WPF45.dll</HintPath>
-    </Reference>
-    <Reference Include="GalaSoft.MvvmLight.WPF45">
-      <HintPath>..\packages\MvvmLightLibs.4.2.30.0\lib\net45\GalaSoft.MvvmLight.WPF45.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Practices.ServiceLocation">
-      <HintPath>..\packages\CommonServiceLocator.1.0\lib\NET35\Microsoft.Practices.ServiceLocation.dll</HintPath>
-    </Reference>
     <Reference Include="MultiAlignEngine, Version=1.0.4084.24787, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\$(Platform)\MultiAlignEngine.dll</HintPath>
@@ -234,8 +225,6 @@
     <Compile Include="ViewModels\Wizard\AnalysisStatusArgs.cs" />
     <Compile Include="ViewModels\Wizard\ExperimentPresetFactory.cs" />
     <Compile Include="ViewModels\Wizard\ExperimentPresetViewModel.cs" />
-    <Compile Include="ViewModel\MainViewModel.cs" />
-    <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Compile Include="Windows\FilePathFinder.xaml.cs">
       <DependentUpon>FilePathFinder.xaml</DependentUpon>
     </Compile>

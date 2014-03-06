@@ -48,15 +48,15 @@ namespace MultiAlignCore.IO.Features
         /// <param name="dataset"></param>
         /// <param name="featureCache"></param>
         /// <returns></returns>
-        public static List<UMCLight> LoadUmcFeatureData(DatasetInformation dataset,
+        public static IList<UMCLight> LoadUmcFeatureData(DatasetInformation dataset,
                                                         IUmcDAO featureCache)
         {
-            List<UMCLight> features = new List<UMCLight>();
-            string extension = extension = Path.GetExtension(dataset.Features.Path).ToUpper();            
+            var features     = new List<UMCLight>();
+            string extension = Path.GetExtension(dataset.Features.Path).ToUpper();            
             switch (extension)
             {
                 case ".TXT":
-                    LCMSFeatureFileReader umcReader = new LCMSFeatureFileReader(dataset.Features.Path);
+                    var umcReader = new LCMSFeatureFileReader(dataset.Features.Path);
                     features = umcReader.GetUmcList();
                     break;
                 case ".DB3":
@@ -65,15 +65,17 @@ namespace MultiAlignCore.IO.Features
             }
             return features;
         }        
+        /// <summary>
+        /// Determines if the features came from the database or a feature file.
+        /// </summary>
+        /// <param name="dataset"></param>
+        /// <returns></returns>
         public static bool AreExistingFeatures(DatasetInformation dataset)
         {
             bool areExisting = false;
             string extension = Path.GetExtension(dataset.Features.Path).ToUpper();
             switch (extension)
             {
-                case ".TXT":
-                    areExisting = false;
-                    break;
                 case ".DB3":
                     areExisting = true;
                     break;
@@ -89,7 +91,7 @@ namespace MultiAlignCore.IO.Features
         public static List<MSFeatureLight> LoadMsFeatureData(DatasetInformation dataset,
                                                               IMSFeatureDAO msFeatureCache)
         {
-            List<MSFeatureLight> msFeatures = new List<MSFeatureLight>();
+            var msFeatures = new List<MSFeatureLight>();
 
             string path = dataset.Features.Path;
 

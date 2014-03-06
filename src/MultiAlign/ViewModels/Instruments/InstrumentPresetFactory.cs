@@ -10,11 +10,12 @@ namespace MultiAlign.ViewModels
     {
         public static IEnumerable<InstrumentPresetViewModel> Create()
         {
-            List<InstrumentPresetViewModel> presets = new List<InstrumentPresetViewModel>();
-            presets.Add(Create(InstrumentPresets.IMS_TOF));
-            presets.Add(Create(InstrumentPresets.TOF));
-            presets.Add(Create(InstrumentPresets.Velos));
-            presets.Add(Create(InstrumentPresets.LTQ_Orbitrap));
+            var presets = new List<InstrumentPresetViewModel>
+            {
+                Create(InstrumentPresets.TOF),
+                Create(InstrumentPresets.Velos),
+                Create(InstrumentPresets.LTQ_Orbitrap)
+            };
 
             return presets;
         }
@@ -22,20 +23,11 @@ namespace MultiAlign.ViewModels
         {
             InstrumentPresetViewModel model = null;
             switch (preset)
-            {
-                case InstrumentPresets.IMS_TOF:
-                    model = new InstrumentPresetViewModel("IMS TOF",
-                                                          false,
-                                                          8,
-                                                          .03,
-                                                          .03,
-                                                          .5,
-                                                          8);
-                    break;
+            {                
                 case InstrumentPresets.TOF:
                     model = new InstrumentPresetViewModel("TOF",
                                                           false,
-                                                          8,
+                                                          12,
                                                           .03,
                                                           50,
                                                           .5,
@@ -45,7 +37,7 @@ namespace MultiAlign.ViewModels
                 case InstrumentPresets.Velos:
                     model = new InstrumentPresetViewModel("Velos",
                                                           false,
-                                                          8,
+                                                          6,
                                                           .03,
                                                           50,
                                                           .5,

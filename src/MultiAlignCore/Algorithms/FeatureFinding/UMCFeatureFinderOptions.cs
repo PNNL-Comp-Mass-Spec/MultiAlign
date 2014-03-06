@@ -13,30 +13,30 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
     {
         public LCMSFeatureFindingOptions()
         {
-            this.MonoMassWeight = 0.01F;
-            this.AveMassWeight = 0.01F;
-            this.LogAbundanceWeight = 0.10F;
-            this.ScanWeight = 0.01F;
-            this.FitWeight = 0.10F;
-            this.NETWeight = 0.10F;
+            MonoMassWeight = 0.01F;
+            AveMassWeight = 0.01F;
+            LogAbundanceWeight = 0.10F;
+            ScanWeight = 0.01F;
+            FitWeight = 0.10F;
+            NETWeight = 0.10F;
 
-            this.ConstraintMonoMass      = 6.0F; // in ppm 
-            this.ConstraintAveMass       = 6.0F; // in ppm; 
+            ConstraintMonoMass      = 6.0F; // in ppm 
+            ConstraintAveMass       = 6.0F; // in ppm; 
 
-            this.MaxDistance             = 0.1;
-            this.UseNET                  = true;
-            this.MinUMCLength            = 3;
-            this.IsotopicIntensityFilter = 0;
+            MaxDistance             = 0.1;
+            UseNET                  = true;
+            MinUMCLength            = 3;
+            IsotopicIntensityFilter = 0;
 
-            this.StoreMSFeatureResults          = true;
-            this.IsIsotopicFitFilterInverted    = false;
-            this.UseIsotopicIntensityFilter     = false;
-            this.IsotopicFitFilter              = .15;
-            this.IsotopicIntensityFilter        = 0;
-            this.UMCAbundanceReportingType      = AbundanceReportingType.Sum;
-            this.Split                          = false;
-            this.FeatureFinderAlgorithm         = FeatureFinderType.SingleLinkage;
-            this.ShouldCreateXicFile            = false;
+            StoreMSFeatureResults          = true;
+            IsIsotopicFitFilterInverted    = false;
+            UseIsotopicIntensityFilter     = false;
+            IsotopicFitFilter              = .15;
+            IsotopicIntensityFilter        = 0;
+            UMCAbundanceReportingType      = AbundanceReportingType.Sum;
+            Split                          = false;
+            FeatureFinderAlgorithm         = FeatureFinderType.TreeBased;
+            ShouldCreateXicFile            = false;
         }
 
         [DataSummaryAttribute("Algorithm for feature finding")]

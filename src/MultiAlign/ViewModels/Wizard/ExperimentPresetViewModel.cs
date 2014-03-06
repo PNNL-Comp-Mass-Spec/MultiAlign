@@ -29,17 +29,8 @@ namespace MultiAlign.ViewModels.Wizard
     }
 
     public enum ExperimentPresets
-    {
-        LipidsNegativeLcMs,
-        LipidsPositiveLcMs,
-        LipidsNegativeLcMSMs,
-        LipidsPositiveLcMSMs,        
-        IonMobilityLipids,
-        BottomUpAmt,
-        BottomUpLcMs,
-        BottomUpLcMsMs,
-        BottomUpLcMsMsAmt,
-        BottomUpLcImsMs,
-        BottomUpLcImsMsAmt
+    {       
+        Peptides,                
+        Lipids        
     }
 }

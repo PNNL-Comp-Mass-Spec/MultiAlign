@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using PNNLOmics.Algorithms.FeatureClustering;
 using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
-using PNNLOmics.Algorithms;
-using PNNLOmics.Algorithms.FeatureClustering;
-using MultiAlignEngine.Features;
-using PNNLOmicsIO.IO;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace MultiAlignCore.Algorithms.FeatureFinding
 {
@@ -27,54 +23,40 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
         /// <summary>
         /// Finds LCMS Features using the PNNL Omics linkage clustering algorithms.  
         /// </summary>
-        /// <param name="msFeatures"></param>
-        /// <param name="options"></param>
-        /// <returns></returns>
         public List<UMCLight> FindFeatures( List<MSFeatureLight>        rawMsFeatures, 
                                             LCMSFeatureFindingOptions   options,
                                             ISpectraProvider            provider)
         {
-            ClusterCentroidRepresentation centroidType  = ClusterCentroidRepresentation.Mean;                           
-            List<UMCLight>       features               = null;           
-            m_options                                   = options;
+            const ClusterCentroidRepresentation centroidType = ClusterCentroidRepresentation.Mean;                           
+            List<UMCLight>       features                    = null;           
+            m_options                                        = options;
 
             m_minScan = int.MaxValue;
             m_maxScan = int.MinValue;
-            foreach (MSFeatureLight feature in rawMsFeatures)
+            foreach (var feature in rawMsFeatures)
             {
                 m_minScan = Math.Min(feature.Scan, m_minScan);
                 m_maxScan = Math.Max(feature.Scan, m_maxScan);                
             }
 
-            MSFeatureSingleLinkageClustering<MSFeatureLight, UMCLight> finder   = new MSFeatureSingleLinkageClustering<MSFeatureLight, UMCLight>();            
-            finder.Parameters.DistanceFunction                                  = new DistanceFunction<MSFeatureLight>(WeightedNETDistanceFunction);
-            finder.Parameters.RangeFunction                                     = new WithinTolerances<MSFeatureLight>(WithinRange);
-            finder.Parameters.Tolerances.Mass                                   = options.ConstraintMonoMass;
-            finder.Parameters.Tolerances.RetentionTime                          = 100;
-            finder.Parameters.Tolerances.DriftTime                              = 100;            
+            var finder   = new MSFeatureSingleLinkageClustering<MSFeatureLight, UMCLight>
+            {
+                Parameters =
+                {
+                    DistanceFunction = WeightedNETDistanceFunction,
+                    RangeFunction    = WithinRange,
+                    Tolerances       = {Mass = options.ConstraintMonoMass, RetentionTime = 100, DriftTime = 100}
+                }
+            };
             finder.Parameters.CentroidRepresentation                            = centroidType;
             m_maxDistance                                                       = options.MaxDistance;
             features                                                            = finder.Cluster(rawMsFeatures);            
             
             // Remove the short UMC's.
             features.RemoveAll(x => (x.ScanEnd - x.ScanStart + 1) < options.MinUMCLength);
-
-            bool split = options.Split;
-
-            if (split)
-            {
-                IUMCFeatureRefinement refiner   = UMCFeatureRefinementFactory.Create(UMCRefinementType.ScanSplit);
-                List<UMCLight> newFeatures      = new List<UMCLight>();
-                features.ForEach(x => newFeatures.AddRange(refiner.RefineFeature(x)));
-
-
-                // Remove the short UMC's.
-                features.RemoveAll(x => (x.ScanEnd - x.ScanStart + 1) < options.MinUMCLength);
-                features.RemoveAll(x => (x.MSFeatures.Count) < options.MinUMCLength);
-            }
-
-            int id = 0;
-            foreach (UMCLight feature in features)
+            
+            var id = 0;
+            foreach (var feature in features)
             {
                 feature.NET             = Convert.ToDouble(feature.Scan - m_minScan) / Convert.ToDouble(m_maxScan - m_minScan);
                 feature.RetentionTime   = feature.NET;

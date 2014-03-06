@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using MultiAlignCore.Data;
 using MultiAlignCore.IO;
 using MultiAlignCore.IO.Features;
@@ -376,7 +377,7 @@ namespace MultiAlignCustomControls.Drawing
 
                 FeatureImageData imageData = AnalysisImageCreator.CreateBaselinePlots(e, Config.width, Config.height);
                                 
-                List<UMCLight> baselineFeatures     = e.Features;                                
+                List<UMCLight> baselineFeatures     = e.Features.ToList();                                
                 string baselineLabelName            = Path.GetFileNameWithoutExtension(baselineInfo.DatasetName) + "_featurePlot.png";
                 string baselinePath                 = Path.Combine(Config.plotSavePath, baselineLabelName);                
                 SaveImage(imageData.FeatureImage, baselineLabelName, "Baseline feature plot ");

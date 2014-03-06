@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using MultiAlignCore;
 using MultiAlignCore.Algorithms;
@@ -494,7 +495,7 @@ namespace MultiAlignCore.Algorithms
         /// <returns></returns>
         private  MultiAlignAnalysisProcessor ConstructAnalysisProcessor(AlgorithmBuilder builder, FeatureDataAccessProviders providers)
         {
-            MultiAlignAnalysisProcessor processor = new MultiAlignAnalysisProcessor();
+            var processor = new MultiAlignAnalysisProcessor();
             processor.AnalysisError         += new EventHandler<AnalysisErrorEventArgs>(processor_AnalysisError);
             processor.FeaturesAligned       += new EventHandler<FeaturesAlignedEventArgs>(processor_FeaturesAligned);
             processor.FeaturesLoaded        += new EventHandler<FeaturesLoadedEventArgs>(processor_FeaturesLoaded);
@@ -517,7 +518,7 @@ namespace MultiAlignCore.Algorithms
 
             if (e.DatasetInformation != null && e.Features != null)
             {
-                ReportPeptideFeatures(e.DatasetInformation, e.Features);
+                ReportPeptideFeatures(e.DatasetInformation, e.Features.ToList());
             }
         }
 
@@ -539,8 +540,8 @@ namespace MultiAlignCore.Algorithms
             m_config.plotSavePath = AnalysisPathUtils.BuildPlotPath(m_config.AnalysisPath);
 
             // Build analysis name                  
-            bool containsExtensionDB3 = m_config.AnalysisName.EndsWith(".db3");
-            if (!containsExtensionDB3)
+            bool containsExtensionDb3 = m_config.AnalysisName.EndsWith(".db3");
+            if (!containsExtensionDb3)
             {
                 m_config.AnalysisName += ".db3";
             }

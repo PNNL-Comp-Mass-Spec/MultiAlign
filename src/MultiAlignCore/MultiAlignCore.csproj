@@ -80,16 +80,16 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\$(Platform)\Mage.dll</HintPath>
     </Reference>
+    <Reference Include="PNNLOmics, Version=1.0.5176.20116, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\PNNLOmics.dll</HintPath>
+    </Reference>
     <Reference Include="ThermoRawFileReaderDLL, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\$(Platform)\Thermo\ThermoRawFileReaderDLL.dll</HintPath>
     </Reference>
     <Reference Include="MultiAlignEngine">
       <HintPath>..\..\lib\$(Platform)\MultiAlignEngine.dll</HintPath>
-    </Reference>
-    <Reference Include="PNNLOmics, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\PNNLOmics.dll</HintPath>
     </Reference>
     <Reference Include="System.Data.SQLite">
       <HintPath>..\..\lib\$(Platform)\System.Data.SQLite.dll</HintPath>
@@ -155,6 +155,7 @@
     <Compile Include="Algorithms\Clustering\ClusteringOptions.cs" />
     <Compile Include="Algorithms\Clustering\MsnClusterer.cs" />
     <Compile Include="Algorithms\Clustering\ClusteringAlgorithmType.cs" />
+    <Compile Include="Algorithms\FeatureCache.cs" />
     <Compile Include="Algorithms\FeatureFinding\AbundanceReportingType.cs" />
     <Compile Include="Algorithms\FeatureFinding\FeatureEvaluator.cs" />
     <Compile Include="Algorithms\FeatureFinding\FeatureFinderFactory.cs" />
@@ -184,12 +185,16 @@
     <Compile Include="Algorithms\MultiAlignAnalysisProcessor.cs" />
     <Compile Include="Algorithms\FeatureMatcher\IPeakMatcher.cs" />
     <Compile Include="Algorithms\FeatureMatcher\TraditionalPeakMatcher.cs" />
+    <Compile Include="Algorithms\PeptideMsMsLinker.cs" />
     <Compile Include="Algorithms\Workflow\Alignment.cs" />
     <Compile Include="Algorithms\Workflow\WorkflowBase.cs" />
     <Compile Include="ApplicationUtility.cs" />
     <Compile Include="Data\AnalysisConfig.cs" />
     <Compile Include="Data\AnalysisOptions.cs" />
+    <Compile Include="Data\AnalysisStatusEventArgs.cs" />
     <Compile Include="Data\AnalysisUtils.cs" />
+    <Compile Include="Data\FeaturesLoadedEventArgs.cs" />
+    <Compile Include="Data\FeaturesPeakMatchedEventArgs.cs" />
     <Compile Include="Data\IFeatureMap.cs" />
     <Compile Include="Data\MassTagLightCacheManager.cs" />
     <Compile Include="Data\ProteinToMassTags.cs" />
@@ -419,7 +424,6 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

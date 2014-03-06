@@ -1,22 +1,20 @@
-﻿using System;
+﻿using MultiAlign.Commands;
+using MultiAlign.Data;
+using MultiAlign.Data.States;
+using MultiAlign.ViewModels.Analysis;
+using MultiAlign.ViewModels.TreeView;
+using MultiAlign.ViewModels.Wizard;
+using MultiAlignCore;
+using MultiAlignCore.Algorithms;
+using MultiAlignCore.Data;
+using MultiAlignCore.Data.Features;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
-using MultiAlign.Commands;
-using MultiAlign.Data;
-using MultiAlign.Data.States;
-using MultiAlign.IO;
-using MultiAlign.ViewModels.Analysis;
-using MultiAlign.ViewModels.TreeView;
-using MultiAlign.ViewModels.Wizard;
-using MultiAlign.Workspace;
-using MultiAlignCore;
-using MultiAlignCore.Algorithms;
-using MultiAlignCore.Data;
-using MultiAlignCore.Data.Features;
 
 namespace MultiAlign.ViewModels
 {
@@ -26,11 +24,10 @@ namespace MultiAlign.ViewModels
     public class MainViewModel: ViewModelBase
     {
         private string m_status;
-        private string m_title;
-        private MultiAlignWorkspace         m_workspace;
+        private string m_title;        
         private AnalysisViewModel           m_currentAnalysis;
-        private Analysis.AnalysisSetupViewModel m_analysisSetupViewModel;
-        private Wizard.AnalysisRunningViewModel m_analysisRunningViewModel;
+        private AnalysisSetupViewModel m_analysisSetupViewModel;
+        private AnalysisRunningViewModel m_analysisRunningViewModel;
 
         public MainViewModel()
         {
@@ -43,28 +40,28 @@ namespace MultiAlign.ViewModels
 
 
             // Titles and Status
-            string version  = MultiAlignCore.ApplicationUtility.GetEntryAssemblyData();
+            var version  = ApplicationUtility.GetEntryAssemblyData();
             Title           = version;
             
             // Command Setup
-            ShowAnalysisCommand = new BaseCommandBridge(new CommandDelegate(ShowAnalysis));
-            ShowStartCommand    = new BaseCommandBridge(new CommandDelegate(ShowStart));
+            ShowAnalysisCommand = new BaseCommandBridge(ShowAnalysis);
+            ShowStartCommand    = new BaseCommandBridge(ShowStart);
 
             // View Models
             
-            string workSpacePath    = ApplicationUtility.GetApplicationDataFolderPath("MultiAlign");
+            var workSpacePath    = ApplicationUtility.GetApplicationDataFolderPath("MultiAlign");
             workSpacePath           = Path.Combine(workSpacePath, Properties.Settings.Default.WorkspaceFile);
             GettingStartedViewModel = new GettingStartedViewModel(workSpacePath, StateModerator);
 
-            GettingStartedViewModel.NewAnalysisStarted += new EventHandler<OpenAnalysisArgs>(GettingStartedViewModel_NewAnalysisStarted);
-            GettingStartedViewModel.ExistingAnalysisSelected += new EventHandler<OpenAnalysisArgs>(GettingStartedViewModel_ExistingAnalysisSelected);
+            GettingStartedViewModel.NewAnalysisStarted += GettingStartedViewModel_NewAnalysisStarted;
+            GettingStartedViewModel.ExistingAnalysisSelected += GettingStartedViewModel_ExistingAnalysisSelected;
 
             AnalysisRunningViewModel = new AnalysisRunningViewModel();            
-            AnalysisRunningViewModel.AnalysisCancelled += new EventHandler<AnalysisStatusArgs>(AnalysisRunningViewModel_AnalysisCancelled);
-            AnalysisRunningViewModel.AnalysisComplete  += new EventHandler<AnalysisStatusArgs>(AnalysisRunningViewModel_AnalysisComplete);
+            AnalysisRunningViewModel.AnalysisCancelled += AnalysisRunningViewModel_AnalysisCancelled;
+            AnalysisRunningViewModel.AnalysisComplete  += AnalysisRunningViewModel_AnalysisComplete;
 
             LoadingAnalysisViewModel = new AnalysisLoadingViewModel();
-            LoadingAnalysisViewModel.AnalysisLoaded += new EventHandler<AnalysisStatusArgs>(LoadingAnalysisViewModel_AnalysisLoaded);
+            LoadingAnalysisViewModel.AnalysisLoaded += LoadingAnalysisViewModel_AnalysisLoaded;
 
             ApplicationStatusMediator.SetStatus("Ready.");
             
@@ -234,7 +231,7 @@ namespace MultiAlign.ViewModels
                 return;
             }
 
-            string filename = System.IO.Path.Combine(recentAnalysis.Path, recentAnalysis.Name);
+            string filename = Path.Combine(recentAnalysis.Path, recentAnalysis.Name);
             if (!File.Exists(filename))
             {
                 StateModerator.CurrentViewState = ViewState.HomeView;
@@ -259,16 +256,16 @@ namespace MultiAlign.ViewModels
         private void DisplayAnalysis(MultiAlignAnalysis analysis)
         {
             // Change the title
-            string version = MultiAlignCore.ApplicationUtility.GetEntryAssemblyData();
+            string version = ApplicationUtility.GetEntryAssemblyData();
             Title = string.Format("{0} - {1}", version, analysis.MetaData.AnalysisName);
 
-            AnalysisViewModel model                 = new AnalysisViewModel(analysis);
-            model.ClusterTree.ClustersFiltered      += new EventHandler<ClustersUpdatedEventArgs>(ClustersFiltered);
-            UpdateAllClustersPlot(model.ClusterTree.FilteredClusters, true);
+            var model                 = new AnalysisViewModel(analysis);
+            model.ClusterTree.ClustersFiltered      += ClustersFiltered;
+            UpdateAllClustersPlot(model.ClusterTree.FilteredClusters);
             
             CurrentAnalysis                         = model;
             StateModerator.CurrentViewState         = ViewState.AnalysisView;
-            RecentAnalysis recent                   = new RecentAnalysis(   analysis.MetaData.AnalysisPath,
+            var recent                              = new RecentAnalysis(   analysis.MetaData.AnalysisPath,
                                                                             analysis.MetaData.AnalysisName);
             GettingStartedViewModel.CurrentWorkspace.AddAnalysis(recent);
         }
@@ -277,14 +274,14 @@ namespace MultiAlign.ViewModels
         #region Display
         void ClustersFiltered(object sender, ClustersUpdatedEventArgs e)
         {
-            UpdateAllClustersPlot(e.Clusters, false);
+            UpdateAllClustersPlot(e.Clusters);
         }
+
         /// <summary>
         /// Updates the clustered plots...
         /// </summary>
         /// <param name="clusters"></param>
-        /// <param name="autoViewport"></param>
-        void UpdateAllClustersPlot(ObservableCollection<UMCClusterTreeViewModel> clusters, bool autoViewport)
+        void UpdateAllClustersPlot(ObservableCollection<UMCClusterTreeViewModel> clusters)
         {
             List<UMCClusterLightMatched> filteredClusters = (from cluster in clusters
                                                                 select cluster.Cluster).ToList();

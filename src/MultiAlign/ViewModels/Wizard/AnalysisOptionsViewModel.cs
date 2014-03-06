@@ -1,20 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using MultiAlignCore.Data;
-using MultiAlignCore.Algorithms.Clustering;
-using MultiAlignCore.Algorithms.Alignment;
-using MultiAlignCore.Algorithms.FeatureFinding;
-using System.Windows.Input;
 using System.Collections.ObjectModel;
-using MultiAlign.ViewModels.Wizard;
-using MultiAlign.Commands;
+using System.Linq;
 using System.Windows;
-using MultiAlignCore.IO.Parameters;
+using System.Windows.Input;
+using MultiAlign.Commands;
+using MultiAlign.Properties;
 using MultiAlign.Windows.Wizard;
+using MultiAlignCore.Algorithms.Alignment;
+using MultiAlignCore.Algorithms.Clustering;
+using MultiAlignCore.Algorithms.FeatureFinding;
+using MultiAlignCore.Data;
+using MultiAlignCore.IO.Parameters;
 
-namespace MultiAlign.ViewModels.Analysis
+namespace MultiAlign.ViewModels.Wizard
 {
     public class AnalysisOptionsViewModel: ViewModelBase
     {
@@ -23,8 +22,8 @@ namespace MultiAlign.ViewModels.Analysis
         /// <summary>
         /// Open file dialog for opening an existing parameter file.
         /// </summary>
-        private System.Windows.Forms.OpenFileDialog m_dialog;
-        private System.Windows.Forms.SaveFileDialog m_saveDialog;
+        private readonly System.Windows.Forms.OpenFileDialog m_dialog;
+        private readonly System.Windows.Forms.SaveFileDialog m_saveDialog;
         private ExperimentPresetViewModel m_selectedExperimentPreset;
 
         public AnalysisOptionsViewModel(AnalysisOptions options)
@@ -39,15 +38,15 @@ namespace MultiAlign.ViewModels.Analysis
             InstrumentPresets = new ObservableCollection<InstrumentPresetViewModel>();
             ExperimentPresets = new ObservableCollection<ExperimentPresetViewModel>();
 
-            Dictionary<string, bool> presets = new Dictionary<string, bool>();
+            var presets = new Dictionary<string, bool>();
             foreach (var preset in ExperimentPresetFactory.Create())
             {
                 ExperimentPresets.Add(preset);
-                InstrumentPresets.Add(preset.InstrumentPreset);
 
                 if (!presets.ContainsKey(preset.InstrumentPreset.Name))
                 {
                     presets.Add(preset.InstrumentPreset.Name, false);
+                    InstrumentPresets.Add(preset.InstrumentPreset);
                 }
             }
 
@@ -64,8 +63,8 @@ namespace MultiAlign.ViewModels.Analysis
 
             m_saveDialog                = new System.Windows.Forms.SaveFileDialog();
             m_dialog                    = new System.Windows.Forms.OpenFileDialog();
-            m_dialog.Filter             = "MultiAlign Parameters (*.xml)| *.xml|All Files (*.*)|*.*";
-            m_saveDialog.Filter         = "MultiAlign Parameters (*.xml)| *.xml|All Files (*.*)|*.*";
+            m_dialog.Filter             = Resources.AnalysisOptionsViewModel_AnalysisOptionsViewModel_MultiAlign_Parameters____xml_____xml_All_Files__________;
+            m_saveDialog.Filter         = Resources.AnalysisOptionsViewModel_AnalysisOptionsViewModel_MultiAlign_Parameters____xml_____xml_All_Files__________;
 
             ShowAdvancedWindowCommand   = new BaseCommandBridge(new CommandDelegate(ShowAdvancedWindow));
             SaveOptionsCommand          = new BaseCommandBridge(new CommandDelegate(SaveCurrentParameters));
@@ -78,8 +77,8 @@ namespace MultiAlign.ViewModels.Analysis
 
         private void ShowAdvancedWindow(object parameter)
         {
-            AdvancedOptionsViewModel viewModel  = new AdvancedOptionsViewModel(m_options);            
-            AnalysisOptionsView view            = new AnalysisOptionsView();
+            var viewModel  = new AdvancedOptionsViewModel(m_options);            
+            var view            = new AnalysisOptionsView();
             view.DataContext                    = viewModel;            
             view.MinWidth       = 800;
             view.MinHeight      = 600;
@@ -100,8 +99,8 @@ namespace MultiAlign.ViewModels.Analysis
                 System.Windows.Forms.DialogResult result = m_dialog.ShowDialog();
                 if (result == System.Windows.Forms.DialogResult.OK)
                 {
-                    XMLParamterFileReader reader = new XMLParamterFileReader();
-                    MultiAlignAnalysis analysis  = new MultiAlignAnalysis();
+                    var reader = new XMLParamterFileReader();
+                    var analysis  = new MultiAlignAnalysis();
                     reader.ReadParameterFile(m_dialog.FileName, ref m_options);
 
                     UpdateOptions(m_options);
@@ -118,8 +117,8 @@ namespace MultiAlign.ViewModels.Analysis
                 System.Windows.Forms.DialogResult result = m_saveDialog.ShowDialog();
                 if (result == System.Windows.Forms.DialogResult.OK)
                 {
-                    XMLParameterFileWriter writer = new XMLParameterFileWriter();
-                    MultiAlignAnalysis analysis   = new MultiAlignAnalysis();
+                    var writer = new XMLParameterFileWriter();
+                    var analysis   = new MultiAlignAnalysis();
                     writer.WriteParameterFile(m_saveDialog.FileName, m_options);
                 }
             }
@@ -183,10 +182,9 @@ namespace MultiAlign.ViewModels.Analysis
                     
                     m_options.FeatureFilterOptions.MinimumMonoIsotopicMass = value.MassRangeLow;
                     m_options.FeatureFilterOptions.MaximumMonoIsotopicMass = value.MassRangeHigh;
-                    HasMsMsFragmentation = value.HasMsMs;
-
-                    SelectedPreset = value.InstrumentPreset;
                     OnPropertyChanged("SelectedExperimentPreset");
+                    OnPropertyChanged("LowMassRange");
+                    OnPropertyChanged("HighMassRange");   
                 }
             }
         }
@@ -211,13 +209,12 @@ namespace MultiAlign.ViewModels.Analysis
             }
             set
             {
-                if (m_options.IsImsExperiment != value)
-                {
-                    m_options.IsImsExperiment               = value;                    
-                    m_options.ClusterOptions.IgnoreCharge   = (value == false);
+                if (m_options.IsImsExperiment == value) return;
 
-                    OnPropertyChanged("IsIonMobility");
-                }
+                m_options.IsImsExperiment               = value;                    
+                m_options.ClusterOptions.IgnoreCharge   = (value == false);
+
+                OnPropertyChanged("IsIonMobility");
             }
         }
         public bool HasMsMsFragmentation
@@ -228,11 +225,9 @@ namespace MultiAlign.ViewModels.Analysis
             }
             set
             {
-                if (m_options.HasMsMsData != value)
-                {
-                    m_options.HasMsMsData = value;                    
-                    OnPropertyChanged("HasMsMsFragmentation");
-                }
+                if (m_options.HasMsMsData == value) return;
+                m_options.HasMsMsData = value;                    
+                OnPropertyChanged("HasMsMsFragmentation");
             }
         }
         #endregion
@@ -246,12 +241,10 @@ namespace MultiAlign.ViewModels.Analysis
             }
             set
             {
-                if (m_options.ClusterOptions.MassTolerance != value)
-                {
-                    m_options.AlignmentOptions.MassTolerance = value;
-                    m_options.ClusterOptions.MassTolerance   = value;
-                    OnPropertyChanged("MassResolution");
-                }
+                if (m_options.ClusterOptions.MassTolerance == value) return;
+                m_options.AlignmentOptions.MassTolerance = value;
+                m_options.ClusterOptions.MassTolerance   = value;
+                OnPropertyChanged("MassResolution");
             }
         }
         public double NETTolerance
@@ -262,12 +255,10 @@ namespace MultiAlign.ViewModels.Analysis
             }
             set
             {
-                if (m_options.ClusterOptions.NETTolerance != value)
-                {
-                    m_options.AlignmentOptions.NETTolerance = value;
-                    m_options.ClusterOptions.NETTolerance   = value;
-                    OnPropertyChanged("NETTolerance");
-                }
+                if (m_options.ClusterOptions.NETTolerance == value) return;
+                m_options.AlignmentOptions.NETTolerance = value;
+                m_options.ClusterOptions.NETTolerance   = value;
+                OnPropertyChanged("NETTolerance");
             }
         }
         public double DriftTimeTolerance

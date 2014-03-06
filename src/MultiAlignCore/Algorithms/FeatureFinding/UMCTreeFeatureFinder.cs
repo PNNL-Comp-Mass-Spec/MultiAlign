@@ -12,7 +12,7 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
     /// Finds UMC features based on m/z and uses a tree approach
     /// </summary>
     public class UmcTreeFeatureFinder: IFeatureFinder 
-    {
+    {        
         /// <summary>
         /// Finds features
         /// </summary>
@@ -26,16 +26,18 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
                                 Tolerances =
                                     new FeatureTolerances
                                     {
-                                        Mass = options.ConstraintMonoMass,
-                                        RetentionTime = 50
+                                        Mass = options.ConstraintMonoMass ,
+                                        RetentionTime = .005
                                     },
+                                ScanTolerance   = 50,
                                 SpectraProvider = provider
                             };
 
-            List<UMCLight>  features            = clusterer.Cluster(msFeatures);
+            clusterer.SpectraProvider = provider;
+            var features  = clusterer.Cluster(msFeatures);
 
-            int minScan = int.MaxValue;
-            int maxScan = int.MinValue;
+            var minScan = int.MaxValue;
+            var maxScan = int.MinValue;
             foreach (var feature in msFeatures)
             {
                 minScan = Math.Min(feature.Scan, minScan);
@@ -43,12 +45,17 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
             }
 
             int id = 0;
+            var newFeatures = new List<UMCLight>();
             foreach (var feature in features)
             {
-                feature.NET             = Convert.ToDouble(feature.Scan - minScan) / Convert.ToDouble(maxScan - minScan);
-                feature.CalculateStatistics(ClusterCentroidRepresentation.Median);
+                if (feature.MSFeatures.Count < 1)
+                    continue;
+                
+                feature.NET             = Convert.ToDouble(feature.Scan - minScan) / Convert.ToDouble(maxScan - minScan);                
+                feature.CalculateStatistics(ClusterCentroidRepresentation.Median);                
                 feature.RetentionTime   = feature.NET;
                 feature.ID              = id++;
+                newFeatures.Add(feature);
             }
             return features;
         }

@@ -1,4 +1,5 @@
 ﻿
+using System.Linq;
 using MultiAlignCustomControls.Charting;
 using MultiAlignCustomControls.Drawing;
 using PNNLOmics.Data.Features;
@@ -156,7 +157,7 @@ namespace MultiAlignCore.Data.Imaging
                 SetupDisplayOptions(shouldDisplayText, options);
 
                 // Image creation and saving
-                List<UMCLight> baselineFeatures = data.Features;
+                List<UMCLight> baselineFeatures = data.Features.ToList();
                 imageData.FeatureImage = RenderDatasetInfo.FeaturesScatterPlot_Thumbnail(baselineFeatures, options);                
             }
             else

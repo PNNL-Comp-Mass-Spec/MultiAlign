@@ -3,6 +3,7 @@ using MultiAlign.IO;
 using MultiAlign.ViewModels.Analysis;
 using MultiAlign.ViewModels.TreeView;
 using MultiAlign.ViewModels.Viewers;
+using MultiAlign.ViewModels.Wizard;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.Features;
 using MultiAlignCore.Extensions;
@@ -29,7 +30,7 @@ namespace MultiAlign.ViewModels
         UMCClusterSpectraViewModel                      m_clusterSpectraViewModel;
         UMCClusterIdentificationViewModel               m_clusterIdentificationViewModel;
         private ObservableCollection<MassTagToCluster>  m_massTags;
-        private Analysis.AnalysisOptionsViewModel       m_analysisOptionsViewModel;
+        private AnalysisOptionsViewModel       m_analysisOptionsViewModel;
         private WindowsFormsHost                        m_host;
         private ClusterDetailViewModel                        m_clusterViewModel;
 
