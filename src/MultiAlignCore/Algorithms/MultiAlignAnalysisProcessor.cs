@@ -2,19 +2,18 @@ using MultiAlign.IO;
 using MultiAlignCore.Algorithms.Alignment;
 using MultiAlignCore.Algorithms.FeatureFinding;
 using MultiAlignCore.Algorithms.FeatureMatcher;
-using MultiAlignCore.Algorithms.MSLinker;
 using MultiAlignCore.Algorithms.Workflow;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.Alignment;
 using MultiAlignCore.Data.Features;
 using MultiAlignCore.Data.MassTags;
+using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.Extensions;
 using MultiAlignCore.IO;
 using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.Features.Hibernate;
 using MultiAlignCore.IO.MTDB;
 using PNNLOmics.Algorithms;
-using PNNLOmics.Algorithms.Alignment;
 using PNNLOmics.Algorithms.Distance;
 using PNNLOmics.Algorithms.FeatureClustering;
 using PNNLOmics.Data.Features;
@@ -43,10 +42,6 @@ namespace MultiAlignCore.Algorithms
         /// </summary>
         public event EventHandler<FeaturesLoadedEventArgs>      FeaturesLoaded;
         /// <summary>
-        /// Fired when features are adjusted for retention time.
-        /// </summary>
-        public event EventHandler<FeaturesAdjustedEventArgs> FeaturesAdjusted;
-        /// <summary>
         /// Fired when mass tags are loaded.
         /// </summary>
         public event EventHandler<MassTagsLoadedEventArgs>      MassTagsLoaded;
@@ -63,21 +58,13 @@ namespace MultiAlignCore.Algorithms
         /// </summary>
         public event EventHandler<FeaturesPeakMatchedEventArgs> FeaturesPeakMatched;
         /// <summary>
-        /// Fired when features are extracted from datasets.
-        /// </summary>
-        public event EventHandler<FeaturesExtractedEventArgs>   FeaturesExtracted;
-        /// <summary>
         /// Fired when a catastrophic error occurs.
         /// </summary>
         public event EventHandler<AnalysisErrorEventArgs>       AnalysisError;
         /// <summary>
         /// Fired when the analysis is complete.
         /// </summary>
-        public event EventHandler<AnalysisCompleteEventArgs>    AnalysisComplete;
-        /// <summary>
-        /// Fired when a status update is ready.
-        /// </summary>
-        public event EventHandler<AnalysisStatusEventArgs>      Status;        
+        public event EventHandler<AnalysisCompleteEventArgs>    AnalysisComplete;   
         #endregion
 
         #region Members
@@ -179,12 +166,11 @@ namespace MultiAlignCore.Algorithms
         /// </summary>
         public void Dispose()
         {
-            StopAnalysis();
-                                    
-            System.GC.Collect();
-            System.GC.WaitForPendingFinalizers();
-            System.GC.Collect();
-            System.GC.WaitForPendingFinalizers();
+            StopAnalysis();                                    
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
         }
         /// <summary>
         /// Aborts the analysis thread.
@@ -214,7 +200,7 @@ namespace MultiAlignCore.Algorithms
             {
                 {AnalysisStep.FindFeatures, PerformDataLoadAndAlignment},
                 {AnalysisStep.Alignment,    PerformAlignment},
-                {AnalysisStep.Clustering,   PerformLCMSFeatureClustering},
+                {AnalysisStep.Clustering,   PerformLcmsFeatureClustering},
                 {AnalysisStep.PeakMatching, PerformPeakMatching}
             };
         }
@@ -550,66 +536,13 @@ namespace MultiAlignCore.Algorithms
             return alignmentData;
         }
 
-
-        
-        
-
-        /// <summary>
-        /// Corrects for drift time.
-        /// </summary>
-        /// <param name="config"></param>
-        /// <param name="baselineFeatures"></param>
-        /// <param name="features"></param>
-        /// <param name="driftTimeAligner"></param>
-        /// <param name="pair"></param>
-        /// <returns></returns>
-        private KeyValuePair<DriftTimeAlignmentResults<UMC, UMC>,
-                                DriftTimeAlignmentResults<UMC, UMC>> CorrectDriftTimes(
-                                                                                        List<UMCLight>      features, 
-                                                                                        List<UMCLight>      baselineFeatures, 
-                                                                                        AlignmentOptions    alignmentOptions,
-                                                                                        DriftTimeAlignmentOptions driftTimeAlignmentOptions,
-                                                                                        MassTagDatabase         database,
-                                                                                        DriftTimeAligner        driftTimeAligner)
-        {            
-            var pair = new KeyValuePair<DriftTimeAlignmentResults<UMC,UMC>,DriftTimeAlignmentResults<UMC,UMC>>();
-
-            // Make sure that if the database does not have drift time, that we don't
-            // perform drift time alignment.
-            if (alignmentOptions.IsAlignmentBaselineAMasstagDB)
-            {
-                // Make sure that we have drift time to align to.
-                if (database.DoesContainDriftTime)
-                {
-                    UpdateStatus("Aligning Drift Time to database.");
-                    pair = driftTimeAligner.AlignDriftTimes(features,
-                                                            baselineFeatures,
-                                                            driftTimeAlignmentOptions);
-                }
-                else
-                {
-                    UpdateStatus("Skipping drift time alignment since the database does not contain drift time.");
-                }
-            }
-            else
-            {
-                UpdateStatus("Aligning Drift Time to baseline.");
-                pair = driftTimeAligner.AlignDriftTimes(features,
-                                                        baselineFeatures,
-                                                        driftTimeAlignmentOptions);
-            }
-            return pair;
-        }
         #endregion
 
         #region Clustering
         /// <summary>
         /// Performs clustering of LCMS Features
         /// </summary>
-        /// <param name="analysis"></param>
-        /// <param name="clusterer"></param>
-        /// <returns></returns>       
-        public void PerformLCMSFeatureClustering(AnalysisConfig config)
+        public void PerformLcmsFeatureClustering(AnalysisConfig config)
         {
             MultiAlignAnalysis analysis = config.Analysis;
             IClusterer<UMCLight, UMCClusterLight> clusterer = m_algorithms.Clusterer;

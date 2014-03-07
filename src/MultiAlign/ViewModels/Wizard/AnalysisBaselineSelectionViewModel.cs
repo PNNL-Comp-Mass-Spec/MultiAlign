@@ -9,6 +9,7 @@ using System.Collections.ObjectModel;
 using System.Windows.Input;
 using MultiAlign.Commands;
 using MultiAlign.Windows.Viewers.Databases;
+using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO.MTDB;
 using MultiAlignCore.IO.InputFiles;
 

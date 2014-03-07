@@ -1,4 +1,5 @@
 ﻿using MultiAlign.IO;
+using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.Extensions;
 using PNNLOmics.Data;
 using PNNLOmics.Data.Features;

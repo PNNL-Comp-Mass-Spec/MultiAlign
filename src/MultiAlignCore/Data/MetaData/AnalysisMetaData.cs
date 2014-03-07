@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using MultiAlignCore.Data.Factors;
+using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO.InputFiles;
 using MultiAlignEngine;
 using System.ComponentModel;
@@ -212,9 +213,6 @@ namespace MultiAlignCore.Data
                             break;
                         case InputFileType.Sequence:
                             datasetInformation.Sequence = file;
-                            break;
-                        case InputFileType.Peaks:
-                            datasetInformation.Peaks = file;
                             break;
                     }
                 }

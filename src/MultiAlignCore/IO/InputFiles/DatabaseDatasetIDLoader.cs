@@ -4,7 +4,7 @@ using System.Text;
 using System.Threading; 
 using System.Collections;
 using System.Collections.Generic;
-
+using MultiAlignCore.Data.MetaData;
 using MultiAlignEngine;
 using MultiAlignCore.IO;
 using MultiAlignCore.Data;

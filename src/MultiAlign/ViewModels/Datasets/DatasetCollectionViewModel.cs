@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using MultiAlignCore.Data;
 using System.Linq;
+using MultiAlignCore.Data.MetaData;
 
 namespace MultiAlign.ViewModels
 {

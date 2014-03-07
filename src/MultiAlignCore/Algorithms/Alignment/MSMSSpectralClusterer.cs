@@ -1,4 +1,5 @@
 ﻿using System;
+using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.Data.SequenceData;
 using System.Collections.Generic;
 using System.Linq;

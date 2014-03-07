@@ -4,6 +4,7 @@ using MultiAlign.ViewModels.Features;
 using MultiAlign.ViewModels.TreeView;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.Features;
+using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.Extensions;
 using MultiAlignCore.IO.Features;
 using MultiAlignCustomControls.Charting;

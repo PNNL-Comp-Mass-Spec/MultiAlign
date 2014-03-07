@@ -155,7 +155,7 @@
     <Compile Include="Algorithms\Clustering\ClusteringOptions.cs" />
     <Compile Include="Algorithms\Clustering\MsnClusterer.cs" />
     <Compile Include="Algorithms\Clustering\ClusteringAlgorithmType.cs" />
-    <Compile Include="Algorithms\FeatureCache.cs" />
+    <Compile Include="IO\FeatureCache.cs" />
     <Compile Include="Algorithms\FeatureFinding\AbundanceReportingType.cs" />
     <Compile Include="Algorithms\FeatureFinding\FeatureEvaluator.cs" />
     <Compile Include="Algorithms\FeatureFinding\FeatureFinderFactory.cs" />
@@ -252,6 +252,7 @@
     <Compile Include="IO\Clusters\UMCClusterExporterFactory.cs" />
     <Compile Include="IO\RawData\ScanOutOfRangeException.cs" />
     <Compile Include="IO\SingletonDataProviders.cs" />
+    <Compile Include="IO\StatusEventArgs.cs" />
     <Compile Include="IO\Xic\XicFitWriter.cs" />
     <Compile Include="IO\Xic\XicComparisonWriter.cs" />
     <Compile Include="IO\Xic\XicMsFeatureWriter.cs" />

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using MultiAlignCore.Data.MetaData;
 using NUnit.Framework;
 using MultiAlignCore.Algorithms.FeatureFinding;
 using PNNLOmicsIO.IO;
@@ -101,33 +102,30 @@ namespace MultiAlignTestSuite.Algorithms
                                 string features,
                                 double percent)
         {
-            string baselineRaw              = baseline.ToString().Replace("_isos.csv", ".raw");
-            string sequencesBaselinePath    = baseline.ToString().Replace("_isos.csv", "_xt_MSGF.txt");
-            string featuresRaw              = features.ToString().Replace("_isos.csv", ".raw");
-            string sequencesFeaturesPath    = features.ToString().Replace("_isos.csv", "_xt_MSGF.txt");
+            string baselineRaw              = baseline.Replace("_isos.csv", ".raw");            
+            string featuresRaw              = features.Replace("_isos.csv", ".raw");
+            
             
             Console.WriteLine("Create Baseline Information");        
 
-            DatasetInformation baselineInfo = new DatasetInformation();
-            baselineInfo.DatasetId          = 0;
-            baselineInfo.Features           = new InputFile();
-            baselineInfo.Features.Path      = baseline;
-            baselineInfo.Raw                = new InputFile();
-            baselineInfo.Raw.Path           = baselineRaw;
-            baselineInfo.Sequence           = new InputFile();
-            baselineInfo.Sequence.Path      = sequencePath;
+            var baselineInfo = new DatasetInformation
+            {
+                DatasetId = 0,
+                Features = new InputFile {Path = baseline},
+                Raw = new InputFile {Path = baselineRaw},
+                Sequence = new InputFile {Path = sequencePath}
+            };
 
             Console.WriteLine("Create Alignee Information");        
-            DatasetInformation aligneeInfo  = new DatasetInformation();
-            aligneeInfo.DatasetId           = 1;
-            aligneeInfo.Features            = new InputFile();
-            aligneeInfo.Features.Path       = features;
-            aligneeInfo.Raw                 = new InputFile();
-            aligneeInfo.Raw.Path            = featuresRaw;
-            aligneeInfo.Sequence            = new InputFile();            
-            aligneeInfo.Sequence.Path       = sequencePath;
+            var aligneeInfo  = new DatasetInformation
+            {
+                DatasetId = 1,
+                Features = new InputFile {Path = features},
+                Raw = new InputFile {Path = featuresRaw},
+                Sequence = new InputFile {Path = sequencePath}
+            };
 
-            MSFeatureLightFileReader reader       = new MSFeatureLightFileReader();
+            var reader       = new MSFeatureLightFileReader();
 
             Console.WriteLine("Reading Baseline Features");
             List<MSFeatureLight> baselineMsFeatures = reader.ReadFile(baseline).ToList();

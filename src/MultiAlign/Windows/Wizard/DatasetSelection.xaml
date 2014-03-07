@@ -181,7 +181,6 @@
                 <DataGridTextColumn         Header="Dataset ID"      CanUserSort="True"     Binding="{Binding Path=Dataset.DatasetId}"    IsReadOnly="True"/>
                 <DataGridTextColumn         Header="Dataset Name"    CanUserSort="True"     Binding="{Binding Path=Dataset.DatasetName,   Converter={StaticResource ResourceKey=DatasetPathConverter}}"         IsReadOnly="True"/>
                 <DataGridTextColumn         Header="Instrument File" CanUserSort="True"     Binding="{Binding Path=Dataset.Raw.Path,      Converter={StaticResource ResourceKey=HasPathConverter}}"             IsReadOnly="True"/>
-                <DataGridTextColumn         Header="Peaks File"      CanUserSort="True"     Binding="{Binding Path=Dataset.Peaks.Path,    Converter={StaticResource ResourceKey=HasPathConverter}}"             IsReadOnly="True"/>
                 <DataGridTextColumn         Header="Sequence File"   CanUserSort="True"     Binding="{Binding Path=Dataset.Sequence.Path, Converter={StaticResource ResourceKey=HasPathConverter}}"             IsReadOnly="True"/>
                 <DataGridTextColumn         Header="Parent Folder"   CanUserSort="True"     Binding="{Binding Path=Dataset.Features.Path, Converter={StaticResource ResourceKey=DatasetFolderPathConverter}}"   IsReadOnly="True"/>
             </DataGrid.Columns>            

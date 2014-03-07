@@ -118,19 +118,16 @@ namespace MultiAlignCore.IO.InputFiles
         /// <returns></returns>
         public static MassTagDatabaseFormat DetermineFormat(string path)
         {
-            string extension = System.IO.Path.GetExtension(path).ToLower();
+            var extension = System.IO.Path.GetExtension(path).ToLower();
 
             switch (extension)
             {
                 case ".dims":
-                    return MassTagDatabaseFormat.DirectInfusionIms;
-                    break;
+                    return MassTagDatabaseFormat.DirectInfusionIms;                    
                 case ".ape":
-                    return MassTagDatabaseFormat.APE;
-                    break;
+                    return MassTagDatabaseFormat.APE;                    
                 case ".db3":
-                    return MassTagDatabaseFormat.Sqlite;
-                    break;
+                    return MassTagDatabaseFormat.Sqlite;                    
             }
             return MassTagDatabaseFormat.None;
         }

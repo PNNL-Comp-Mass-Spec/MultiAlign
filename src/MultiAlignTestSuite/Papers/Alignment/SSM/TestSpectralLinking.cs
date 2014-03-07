@@ -80,7 +80,7 @@ namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
 
             Print("Aligning Features");
             // Align the features
-            IFeatureAligner aligner  = new LCMSWarpFeatureAligner();
+            IFeatureAligner aligner  = new LcmsWarpFeatureAligner();
             AlignmentOptions options = new AlignmentOptions();
             aligner.AlignFeatures(featuresX, featuresY, options);
 
@@ -128,7 +128,7 @@ namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
             
             Print("Aligning Features");
             // Align the features
-            IFeatureAligner aligner  = new LCMSWarpFeatureAligner();
+            IFeatureAligner aligner  = new LcmsWarpFeatureAligner();
             AlignmentOptions options = new AlignmentOptions();
             aligner.AlignFeatures(baselineFeatures, aligneeFeatures, options);
 

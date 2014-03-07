@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO.Features;
 using MultiAlignCore.Data;
 

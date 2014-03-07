@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.Serialization;
+using MultiAlignCore.Data.MetaData;
 
 namespace MultiAlignCore.Data.Factors
 {

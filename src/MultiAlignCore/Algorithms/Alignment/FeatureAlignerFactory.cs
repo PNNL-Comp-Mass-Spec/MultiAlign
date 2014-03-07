@@ -14,7 +14,7 @@ namespace MultiAlignCore.Algorithms.Alignment
             switch (type)
             {
                 case FeatureAlignmentType.LCMSWarp:
-                    aligner = new LCMSWarpFeatureAligner();
+                    aligner = new LcmsWarpFeatureAligner();
                     break;
                 case FeatureAlignmentType.DirectImsInfusion:
                     aligner = new DummyAlignment();

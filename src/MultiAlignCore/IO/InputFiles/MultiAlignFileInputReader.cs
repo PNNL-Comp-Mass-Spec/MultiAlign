@@ -191,16 +191,7 @@ namespace MultiAlignCore.IO.InputFiles
                             sequenceFile.Path       = fixedLine;
                             sequenceFile.FileType   = InputFileType.Sequence;
                             info.Files.Add(sequenceFile);
-                            break;
-                        case FileReadMode.Peaks:
-                            InputFile peaksFile = new InputFile();
-                            peaksFile.Path = fixedLine;
-                            peaksFile.FileType = InputFileType.Peaks;
-                            info.Files.Add(peaksFile);
-                            break;
-                        default:
-                            break;
-
+                            break;                      
                     }
                 }
             }

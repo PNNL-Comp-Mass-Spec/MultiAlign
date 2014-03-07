@@ -1,6 +1,7 @@
 ﻿using MultiAlignCore.Algorithms.Alignment;
 using MultiAlignCore.IO.Features.Hibernate;
 using NUnit.Framework;
+using PNNLOmics.Data.Features;
 
 namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
 {
@@ -17,7 +18,13 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
             var features0 = featureCache.FindByDatasetId(0);
             var features1 = featureCache.FindByDatasetId(1);
 
-            var aligner = new LCMSWarpFeatureAligner();
+            var aligner = new LcmsWarpFeatureAligner();
+
+            foreach (var feature in features1)
+            {
+                feature.MassMonoisotopicAligned = feature.MassMonoisotopic;
+                feature.NETAligned              = feature.NET;
+            }
             var data    = aligner.AlignFeatures(features0, features1, new AlignmentOptions());
 
 

@@ -1,28 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices;
-using MultiAlignCore;
-using MultiAlignCore.Algorithms;
-using MultiAlignCore.Algorithms.Clustering;
+﻿using MultiAlignCore.Algorithms.Clustering;
+using MultiAlignCore.Algorithms.FeatureFinding;
 using MultiAlignCore.Algorithms.Features;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.MassTags;
+using MultiAlignCore.Data.MetaData;
+using MultiAlignCore.Extensions;
 using MultiAlignCore.IO;
+using MultiAlignCore.IO.Factors;
 using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.Features.Hibernate;
 using MultiAlignCore.IO.InputFiles;
 using MultiAlignCore.IO.MTDB;
-using System.Threading;
 using MultiAlignCore.IO.Parameters;
 using PNNLOmics.Data.Features;
-using System.ComponentModel;
-using MultiAlignCore.Extensions;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using PNNLOmics.Data;
-using System.Text;
-using MultiAlignCore.Algorithms.FeatureFinding;
+using System.ComponentModel;
+using System.IO;
+using System.Linq;
+using System.Threading;
 
 
 namespace MultiAlignCore.Algorithms
@@ -78,18 +75,16 @@ namespace MultiAlignCore.Algorithms
         /// <summary>
         /// Sets up the NHibernate caches for storing and retrieving data.
         /// </summary>
-        /// <param name="analysisPath"></param>
-        /// <returns></returns>
         private  FeatureDataAccessProviders SetupDataProviders(string path, bool createNew)
         {
             try
             {
                 return DataAccessFactory.CreateDataAccessProviders(path, createNew);
             }
-            catch (System.IO.IOException ex)
+            catch (IOException ex)
             {
                 Logger.PrintMessage("Could not access the database.  Is it opened somewhere else?");
-                throw ex;
+                throw;
             }
         }
         /// <summary>
@@ -102,14 +97,14 @@ namespace MultiAlignCore.Algorithms
             Logger.PrintMessage("Setting up data providers for caching and storage.");
             try
             {
-                string path = AnalysisPathUtils.BuildAnalysisName(m_config.AnalysisPath, m_config.AnalysisName);
+                var path = AnalysisPathUtils.BuildAnalysisName(m_config.AnalysisPath, m_config.AnalysisName);
                 providers = SetupDataProviders(path, createNewDatabase);
             }
-            catch (System.IO.IOException ex)
+            catch (IOException ex)
             {
                 Logger.PrintMessage(ex.Message);
                 Logger.PrintMessage(ex.StackTrace);
-                throw ex;
+                throw;
             }
             return providers;
         }
@@ -135,15 +130,6 @@ namespace MultiAlignCore.Algorithms
             m_config.triggerEvent.Set();
         }
         /// <summary>
-        /// Extractor progress.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void extractor_Progress(object sender, PNNLOmics.Algorithms.ProgressNotifierArgs e)
-        {
-            Logger.PrintMessage(e.Message, true);
-        }
-        /// <summary>
         /// Logs when features are aligned.
         /// </summary>
         /// <param name="sender"></param>
@@ -159,8 +145,8 @@ namespace MultiAlignCore.Algorithms
         {
             if (m_config.ShouldCreatePeptideScanFiles)
             {
-                string path = Path.Combine(m_config.AnalysisPath, information.DatasetName + "_peptide_scans.csv");
-                PeptideScanWriter writer = new PeptideScanWriter();
+                var path   = Path.Combine(m_config.AnalysisPath, information.DatasetName + "_peptide_scans.csv");
+                var writer = new PeptideScanWriter();
                 writer.Write(path, features);
             }
         }
@@ -215,28 +201,7 @@ namespace MultiAlignCore.Algorithms
         void processor_MassTagsLoaded(object sender, MassTagsLoadedEventArgs e)
         {
             m_reportCreator.CreateMassTagPlot(e);            
-        }
-        /// <summary>
-        /// Logs status messages.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void processor_Status(object sender, AnalysisStatusEventArgs e)
-        {
-            Logger.PrintMessage(e.StatusMessage);
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void processor_FeaturesExtracted(object sender, MultiAlignCore.Algorithms.MSLinker.FeaturesExtractedEventArgs e)
-        {
-            string extractionPath = Path.Combine(m_config.AnalysisPath, m_config.ExporterNames.ClusterMSMSPath);
-
-            FeatureExtractionTableWriter writer = new MultiAlignCore.IO.Features.FeatureExtractionTableWriter();
-            writer.WriteData(extractionPath, e);
-        }
+        }        
         #endregion
 
         #region Processor Events
@@ -253,13 +218,7 @@ namespace MultiAlignCore.Algorithms
                 Logger.PrintMessage(string.Format("\n{0}", e.Exception.StackTrace));
             }
             m_config.errorException = e.Exception;
-
-            try
-            {
-                m_config.errorEvent.Set();
-            }
-            catch
-            { }
+            m_config.errorEvent.Set();            
         }
         #endregion
 
@@ -350,21 +309,22 @@ namespace MultiAlignCore.Algorithms
         }/// <summary>
         /// Writes the parameters to the log file and database.
         /// </summary>
-        /// <param name="analysis"></param>
         private void PrintParameters(MultiAlignAnalysis analysis, bool insertIntoDatabase)
         {
             Logger.PrintMessage("Parameters Loaded");
-            Dictionary<string, object> options = new Dictionary<string, object>();
-            options.Add("MS Linker Options", analysis.Options.MSLinkerOptions);
-            options.Add("UMC Finding Options", analysis.Options.FeatureFindingOptions);
-            options.Add("Feature Filtering Options", analysis.Options.FeatureFilterOptions);
-            options.Add("Mass Tag Database Options", analysis.Options.MassTagDatabaseOptions);
-            options.Add("Alignment Options", analysis.Options.AlignmentOptions);
-            options.Add("Drift Time Alignment Options", analysis.Options.DriftTimeAlignmentOptions);
-            options.Add("Cluster Options", analysis.Options.ClusterOptions);
-            options.Add("STAC Options", analysis.Options.STACOptions);
+            var options = new Dictionary<string, object>
+            {
+                {"MS Linker Options", analysis.Options.MSLinkerOptions},
+                {"UMC Finding Options", analysis.Options.FeatureFindingOptions},
+                {"Feature Filtering Options", analysis.Options.FeatureFilterOptions},
+                {"Mass Tag Database Options", analysis.Options.MassTagDatabaseOptions},
+                {"Alignment Options", analysis.Options.AlignmentOptions},
+                {"Drift Time Alignment Options", analysis.Options.DriftTimeAlignmentOptions},
+                {"Cluster Options", analysis.Options.ClusterOptions},
+                {"STAC Options", analysis.Options.STACOptions}
+            };
 
-            List<ParameterHibernateMapping> allmappings = new List<MultiAlignCore.IO.Parameters.ParameterHibernateMapping>();
+            var allmappings = new List<ParameterHibernateMapping>();
             foreach (string key in options.Keys)
             {
                 object o = options[key];
@@ -379,24 +339,28 @@ namespace MultiAlignCore.Algorithms
                 allmappings.AddRange(mappings);
             }
 
-            ParameterHibernateMapping assemblyMap = new ParameterHibernateMapping();
             string assemblyData = ApplicationUtility.GetAssemblyData();
-            assemblyMap.OptionGroup = "Assembly Info";
-            assemblyMap.Parameter = "Version";
-            assemblyMap.Value = assemblyData;
+            var assemblyMap = new ParameterHibernateMapping
+            {
+                OptionGroup = "Assembly Info",
+                Parameter = "Version",
+                Value = assemblyData
+            };
             allmappings.Add(assemblyMap);
 
-            ParameterHibernateMapping systemMap = new ParameterHibernateMapping();
             string systemData = ApplicationUtility.GetSystemData();
-            systemMap.OptionGroup = "Assembly Info";
-            systemMap.Parameter = "System Info";
-            systemMap.Value = systemData;
+            var systemMap = new ParameterHibernateMapping
+            {
+                OptionGroup = "Assembly Info",
+                Parameter = "System Info",
+                Value = systemData
+            };
             allmappings.Add(systemMap);
 
             if (insertIntoDatabase)
             {
                 Logger.PrintMessage("Writing parameters to the analysis database.");
-                GenericDAOHibernate<ParameterHibernateMapping> parameterCache = new GenericDAOHibernate<MultiAlignCore.IO.Parameters.ParameterHibernateMapping>();
+                var parameterCache = new GenericDAOHibernate<ParameterHibernateMapping>();
                 parameterCache.AddAll(allmappings);
             }
         }
@@ -404,37 +368,35 @@ namespace MultiAlignCore.Algorithms
         #endregion
         
         #region Exporting
-        private int ExportData(FeatureDataAccessProviders providers,
-                                string databasePath,
-                                List<DatasetInformation> datasets)
+        private void ExportData(FeatureDataAccessProviders providers, string buildAnalysisName, List<DatasetInformation> datasets)
         {
             if (m_config.ClusterExporters.Count > 0)
             {
-                List<UMCClusterLight> clusters = providers.ClusterCache.FindAll();                                                        
+                var clusters = providers.ClusterCache.FindAll();                                                        
                 if (clusters.Count < 1)
                 {
                     Logger.PrintMessage("No clusters present in the database.");
-                    return 1;
+                    return;
                 }
-                List<UMCLight> features = providers.FeatureCache.FindAllClustered();
+                var features = providers.FeatureCache.FindAllClustered();
 
-                Dictionary<int, UMCClusterLight> clusterFeatureMap = new Dictionary<int, UMCClusterLight>();
-                foreach (UMCClusterLight cluster in clusters)
+                var clusterFeatureMap = new Dictionary<int, UMCClusterLight>();
+                foreach (var cluster in clusters)
                 {
                     clusterFeatureMap[cluster.ID] = cluster;
                 }
-                foreach (UMCLight umc in features)
+                foreach (var umc in features)
                 {
                     clusterFeatureMap[umc.ClusterID].AddChildFeature(umc);
                 }
 
                 Logger.PrintMessage("Checking for mass tag matches");
-                List<ClusterToMassTagMap> clusterMatches = providers.MassTagMatches.FindAll();
+                var clusterMatches = providers.MassTagMatches.FindAll();
 
                 Logger.PrintMessage("Checking for mass tags");
-                List<PNNLOmics.Data.MassTags.MassTagLight> massTags = providers.MassTags.FindAll();
+                var massTags = providers.MassTags.FindAll();
 
-                Dictionary<int, List<ClusterToMassTagMap>> clusterMap = new Dictionary<int, List<ClusterToMassTagMap>>();
+                var clusterMap = new Dictionary<int, List<ClusterToMassTagMap>>();
                 if (clusterMatches.Count > 0)
                 {
                     foreach (ClusterToMassTagMap map in clusterMatches)
@@ -447,7 +409,7 @@ namespace MultiAlignCore.Algorithms
                     }
                 }
 
-                Dictionary<string, PNNLOmics.Data.MassTags.MassTagLight> tags = new Dictionary<string, PNNLOmics.Data.MassTags.MassTagLight>();
+                var tags = new Dictionary<string, PNNLOmics.Data.MassTags.MassTagLight>();
                 if (massTags.Count > 0)
                 {
                     foreach (PNNLOmics.Data.MassTags.MassTagLight tag in massTags)
@@ -461,17 +423,17 @@ namespace MultiAlignCore.Algorithms
                 }
 
                 Logger.PrintMessage("Exporting Data");
-                foreach (IFeatureClusterWriter writer in m_config.ClusterExporters)
+                foreach (var writer in m_config.ClusterExporters)
                 {
-                    Logger.PrintMessage("Exporting in " + writer.ToString() + " format to " + m_config.AnalysisPath);
+                    Logger.PrintMessage("Exporting in " + writer + " format to " + m_config.AnalysisPath);
                     writer.WriteClusters(clusters,
                                          clusterMap,
                                          datasets,
                                          tags);
                 }
-            }
-            return 0;
+            }            
         }
+
         #endregion
         
         #region Construction
@@ -496,16 +458,14 @@ namespace MultiAlignCore.Algorithms
         private  MultiAlignAnalysisProcessor ConstructAnalysisProcessor(AlgorithmBuilder builder, FeatureDataAccessProviders providers)
         {
             var processor = new MultiAlignAnalysisProcessor();
-            processor.AnalysisError         += new EventHandler<AnalysisErrorEventArgs>(processor_AnalysisError);
-            processor.FeaturesAligned       += new EventHandler<FeaturesAlignedEventArgs>(processor_FeaturesAligned);
-            processor.FeaturesLoaded        += new EventHandler<FeaturesLoadedEventArgs>(processor_FeaturesLoaded);
-            processor.MassTagsLoaded        += new EventHandler<MassTagsLoadedEventArgs>(processor_MassTagsLoaded);
-            processor.FeaturesClustered     += new EventHandler<FeaturesClusteredEventArgs>(processor_FeaturesClustered);
-            processor.FeaturesPeakMatched   += new EventHandler<FeaturesPeakMatchedEventArgs>(processor_FeaturesPeakMatched);
-            processor.AnalysisComplete      += new EventHandler<AnalysisCompleteEventArgs>(processor_AnalysisComplete);
-            processor.Status                += new EventHandler<AnalysisStatusEventArgs>(processor_Status);            
-            processor.BaselineFeaturesLoaded += new EventHandler<BaselineFeaturesLoadedEventArgs>(processor_BaselineFeaturesLoaded);
-            processor.FeaturesExtracted     += new EventHandler<MultiAlignCore.Algorithms.MSLinker.FeaturesExtractedEventArgs>(processor_FeaturesExtracted);
+            processor.AnalysisError          += processor_AnalysisError;
+            processor.FeaturesAligned        += processor_FeaturesAligned;
+            processor.FeaturesLoaded         += processor_FeaturesLoaded;
+            processor.MassTagsLoaded         += processor_MassTagsLoaded;
+            processor.FeaturesClustered      += processor_FeaturesClustered;
+            processor.FeaturesPeakMatched    += processor_FeaturesPeakMatched;
+            processor.AnalysisComplete       += processor_AnalysisComplete;            
+            processor.BaselineFeaturesLoaded += processor_BaselineFeaturesLoaded;            
             m_config.Analysis.DataProviders  = providers;
             processor.AlgorithmProviders     = builder.GetAlgorithmProvider(m_config.Analysis.Options);
 
@@ -530,7 +490,6 @@ namespace MultiAlignCore.Algorithms
         {
             // Create the analysis path and log file paths.
             ConstructAnalysisPath();
-            string dateSuffix = ConstructLogPath();
             
             // Log the version information to the log.
             Logger.PrintVersion();
@@ -552,7 +511,7 @@ namespace MultiAlignCore.Algorithms
             Logger.PrintMessage("\t" + m_config.AnalysisName);
             Logger.PrintMessage("Storing analysis: ");
             Logger.PrintMessage("\t" + Path.GetFullPath(m_config.AnalysisPath));
-            if (m_config.InputPaths != null && m_config.InputPaths.Length > 0)
+            if (!string.IsNullOrEmpty(m_config.InputPaths))
             {
                 Logger.PrintMessage("Using Files:  ");
                 Logger.PrintMessage("\tFull Path: " + Path.GetFullPath(m_config.InputPaths));
@@ -584,29 +543,11 @@ namespace MultiAlignCore.Algorithms
                 Logger.PrintMessage("The parameter file does not exist.");
                 //return 1;
             }
-            XMLParamterFileReader reader = new XMLParamterFileReader();
+            var reader = new XMLParamterFileReader();
             MultiAlignAnalysis analysis = m_config.Analysis;
             reader.ReadParameterFile(m_config.ParameterFile, ref analysis);
         }
-        private  string ConstructLogPath()
-        {
-            // Create the LOG FILE.
-            string dateSuffix = AnalysisPathUtils.BuildDateSuffix();
-            if (m_config.logPath == null)
-            {
-                m_config.logPath = AnalysisPathUtils.BuildLogPath(m_config.AnalysisPath,
-                                                            m_config.AnalysisName,
-                                                            dateSuffix);                
-            }
-            else
-            {                
-                m_config.logPath = Path.Combine(m_config.AnalysisPath,
-                                         m_config.logPath,
-                                         dateSuffix);                
-            }
-            Logger.LogPath = m_config.logPath;
-            return dateSuffix;
-        }
+
         private  void ConstructAnalysisPath()
         {
             //Create the analysis directory.
@@ -623,45 +564,23 @@ namespace MultiAlignCore.Algorithms
         private  MultiAlignAnalysis ConstructAnalysisObject(InputAnalysisInfo analysisSetupInformation)
         {
             Logger.PrintMessage("Creating Analysis Objects.");
-            MultiAlignAnalysis analysis             = new MultiAlignAnalysis();
-            analysis.MetaData.AnalysisPath          = m_config.AnalysisPath;
-            analysis.MetaData.AnalysisName          = m_config.AnalysisName;
+            var analysis             = new MultiAlignAnalysis
+            {
+                MetaData = {AnalysisPath = m_config.AnalysisPath, AnalysisName = m_config.AnalysisName}
+            };
             analysis.Options.AlignmentOptions.IsAlignmentBaselineAMasstagDB = true;
-
             analysis.MetaData.ParameterFile         = m_config.ParameterFile;
             analysis.MetaData.InputFileDefinition   = m_config.InputPaths;
             analysis.MetaData.AnalysisSetupInfo     = analysisSetupInformation;
             return analysis;
         }
-        private MultiAlignAnalysis ConstructAnalysisObject(FeatureDataAccessProviders providers)
-        {
-            Logger.PrintMessage("Creating Analysis Objects.");
-            MultiAlignAnalysis analysis             = new MultiAlignAnalysis();
-            
-            // Need to extract from the database.
-            analysis.MetaData.AnalysisPath          = m_config.AnalysisPath;
-            analysis.MetaData.AnalysisName          = m_config.AnalysisName;
-            analysis.Options.AlignmentOptions.IsAlignmentBaselineAMasstagDB = true;            
-            analysis.MetaData.ParameterFile         = m_config.ParameterFile;
-            analysis.MetaData.InputFileDefinition   = m_config.InputPaths;                        
-            analysis.MetaData.AnalysisSetupInfo     = null;
-            analysis.DataProviders                  = providers;
-            analysis.Clusters                       = providers.ClusterCache.FindAll();
-            analysis.MetaData.Datasets              = providers.DatasetCache.FindAll().ToObservableCollection();
-
-            MassTagDatabaseLoaderCache provider     = new MassTagDatabaseLoaderCache();
-            provider.Provider                       = analysis.DataProviders.MassTags;
-            analysis.MassTagDatabase                = provider.LoadDatabase();
-            
-            return analysis;
-        }
-        private  bool ReadInputDefinitionFile(out InputAnalysisInfo analysisSetupInformation, out bool useMTDB)
+        
+        private  bool ReadInputDefinitionFile(out InputAnalysisInfo analysisSetupInformation, out bool useMtdb)
         {
             // Read the input datasets.
             if (!File.Exists(m_config.InputPaths))
             {
                 Logger.PrintMessage(string.Format("The input file {0} does not exist.", m_config.InputPaths));
-                //return 1;
             }
             else
             {
@@ -680,7 +599,7 @@ namespace MultiAlignCore.Algorithms
             }
 
             Logger.PrintMessage("Parsing Input Filenames and Databases.");
-            useMTDB = false;
+            useMtdb = false;
             analysisSetupInformation = null;
             try
             {
@@ -696,7 +615,7 @@ namespace MultiAlignCore.Algorithms
             // Validate the mass tag database settings.
             try
             {
-                useMTDB = analysisSetupInformation.Database.ValidateDatabaseType();
+                useMtdb = analysisSetupInformation.Database.ValidateDatabaseType();
             }
             catch (AnalysisMTDBSetupException ex)
             {
@@ -803,11 +722,9 @@ namespace MultiAlignCore.Algorithms
         /// <summary>
         /// Loads factors from file or other.
         /// </summary>
-        /// <param name="analysisSetupInformation"></param>
-        /// <param name="datasets"></param>
         private  void ConstructFactorInformation(InputAnalysisInfo analysisSetupInformation, ObservableCollection<DatasetInformation> datasets, FeatureDataAccessProviders providers)
         {
-            MultiAlignCore.IO.Factors.MAGEFactorAdapter mage = new MultiAlignCore.IO.Factors.MAGEFactorAdapter();
+            var mage = new MAGEFactorAdapter();
 
             if (analysisSetupInformation.FactorFile == null)
             {
@@ -843,16 +760,9 @@ namespace MultiAlignCore.Algorithms
         /// </summary>
         private  void ConstructExporting()
         {
-            AbundanceReportingType reporting     = AbundanceReportingType.Sum;
-            AbundanceReportingType umcAbundance  = AbundanceReportingType.Sum;
-            LCMSFeatureConsolidator consolidator = FeatureConsolidatorFactory.CreateConsolidator(reporting,
-                                                                                                 umcAbundance);
-            if (m_config.Analysis != null)
-            {                    
-                reporting    = m_config.Analysis.Options.ConsolidationOptions.AbundanceType;
-                umcAbundance = m_config.Analysis.Options.FeatureFindingOptions.UMCAbundanceReportingType;
-            }
-            
+            var consolidator = FeatureConsolidatorFactory.CreateConsolidator(AbundanceReportingType.Sum,
+                                                                             AbundanceReportingType.Sum);
+                        
             if (m_config.ExporterNames.ClusterScanPath != null)
             {
                 IFeatureClusterWriter writer = UMCClusterExporterFactory.Create(ClusterFeatureExporters.ClusterScans);  
@@ -926,8 +836,6 @@ namespace MultiAlignCore.Algorithms
                 case AnalysisStep.PeakMatching:
                     config.Analysis.DataProviders.MassTagMatches.ClearAllMatches();                        
                     break;
-                default:
-                    break;
             }
         }
         #endregion
@@ -961,27 +869,23 @@ namespace MultiAlignCore.Algorithms
         {
 
             // Builds the list of algorithm providers.
-            AlgorithmBuilder builder = new AlgorithmBuilder();
+            var builder             = new AlgorithmBuilder();
 
             // Use this to signal when the analysis is done.              
-            m_config.triggerEvent = new ManualResetEvent(false);
-            m_config.errorEvent = new ManualResetEvent(false);
-            m_config.stopEvent = new ManualResetEvent(false);
+            m_config.triggerEvent   = new ManualResetEvent(false);
+            m_config.errorEvent     = new ManualResetEvent(false);
+            m_config.stopEvent      = new ManualResetEvent(false);
             m_config.errorException = null;
 
 
             m_config.Analysis.MetaData.AnalysisPath = m_config.AnalysisPath;
             m_config.Analysis.MetaData.AnalysisName = m_config.AnalysisName;
 
-            /// /////////////////////////////////////////////////////////////
-            /// Setup log path, analysis path, and print version to log file.            
-            /// /////////////////////////////////////////////////////////////                        
+            // Setup log path, analysis path, and print version to log file.            
             SetupAnalysisEssentials();
 
-            /// /////////////////////////////////////////////////////////////
-            /// Determine if we have specified a valid database to extract
-            /// data from or to re-start an analysis.
-            /// /////////////////////////////////////////////////////////////    
+            // Determine if we have specified a valid database to extract
+            // data from or to re-start an analysis.
             string databasePath = Path.Combine(m_config.AnalysisPath, m_config.AnalysisName);
             bool databaseExists = File.Exists(databasePath);
             bool createDatabase = true;
@@ -995,22 +899,21 @@ namespace MultiAlignCore.Algorithms
             }
 
 
-            AnalysisType validated = m_config.Analysis.AnalysisType;
-            AnalysisConfig config  = m_config;
+            var validated = m_config.Analysis.AnalysisType;
 
             switch (m_config.Analysis.AnalysisType)
             {
                 case AnalysisType.FactorImporting:
-                    ImportFactors(config, databaseExists);
+                    ImportFactors(m_config, databaseExists);
                     break;
                 case AnalysisType.Full:
-                    PerformAnalysisGUI(config, builder, validated, createDatabase, m_workerManager);
+                    PerformAnalysisGui(m_config, builder, validated, createDatabase, m_workerManager);
                     break;
                 case AnalysisType.ExportDataOnly:
-                    ExportData(config, builder, databasePath, databaseExists);
+                    ExportData(databasePath, databaseExists);
                     break;
                 case AnalysisType.ExportSICs:
-                    PerformAnalysisGUI(config, builder, validated, createDatabase, m_workerManager);
+                    PerformAnalysisGui(m_config, builder, validated, createDatabase, m_workerManager);
                     break;
             }
         }
@@ -1020,15 +923,13 @@ namespace MultiAlignCore.Algorithms
         /// <summary>
         /// Processes the MA analysis data.
         /// </summary>
-        /// <param name="args"></param>
-        /// 
         public int StartMultiAlign(AnalysisConfig config, IAnalysisReportGenerator reporter)
         {
             m_reportCreator = reporter;
             m_config        = config;
 
             // Builds the list of algorithm providers.
-            AlgorithmBuilder builder = new AlgorithmBuilder();
+            var builder = new AlgorithmBuilder();
 
             // Use this to signal when the analysis is done.              
             config.triggerEvent     = new ManualResetEvent(false);
@@ -1036,9 +937,7 @@ namespace MultiAlignCore.Algorithms
             m_config.stopEvent      = new ManualResetEvent(false);
             config.errorException   = null;
 
-            /// /////////////////////////////////////////////////////////////
-            /// Print Help
-            /// /////////////////////////////////////////////////////////////
+            // Print Help
             // See if the user wants help
             if (config.showHelp)
             {
@@ -1048,10 +947,8 @@ namespace MultiAlignCore.Algorithms
                 return 0;
             }
 
-            /// /////////////////////////////////////////////////////////////
-            /// Validate the command line
-            /// /////////////////////////////////////////////////////////////            
-            AnalysisType validated = AnalysisValidator.ValidateSetup(m_config);
+            // Validate the command line
+            var validated = AnalysisValidator.ValidateSetup(m_config);
             if (validated == AnalysisType.InvalidParameters)
             {
 
@@ -1059,20 +956,14 @@ namespace MultiAlignCore.Algorithms
                 return 0;
             }
 
-            /// /////////////////////////////////////////////////////////////
-            /// Setup log path, analysis path, and print version to log file.            
-            /// /////////////////////////////////////////////////////////////                        
+            // Setup log path, analysis path, and print version to log file.            
             SetupAnalysisEssentials();
 
-            /// /////////////////////////////////////////////////////////////
-            /// Determine if we have specified a valid database to extract
-            /// data from or to re-start an analysis.
-            /// /////////////////////////////////////////////////////////////    
-            string databasePath = Path.Combine(config.AnalysisPath, config.AnalysisName);
-            bool databaseExists = File.Exists(databasePath);
-            bool createDatabase = true;
-
-            createDatabase = ShouldCreateDatabase(validated, databaseExists);
+            // Determine if we have specified a valid database to extract
+            // data from or to re-start an analysis.
+            var databasePath    = Path.Combine(config.AnalysisPath, config.AnalysisName);
+            var databaseExists  = File.Exists(databasePath);
+            var createDatabase  = ShouldCreateDatabase(validated, databaseExists);
 
             // make sure that we were not told to skip to a new part of the analysis.
             if (config.InitialStep >= AnalysisStep.Alignment)
@@ -1080,19 +971,10 @@ namespace MultiAlignCore.Algorithms
                 createDatabase = false;
             }
 
-            int result = 0;
+            var result = 0;
             switch (validated)
             {
-                case AnalysisType.FactorImporting:
-                    result = ImportFactors(config,  databaseExists);
-                    break;
                 case AnalysisType.Full:
-                    result = PerformAnalysis(config, builder, validated, createDatabase);
-                    break;
-                case AnalysisType.ExportDataOnly:
-                    result = ExportData(config, builder, databasePath, databaseExists);
-                    break;
-                case AnalysisType.ExportSICs:
                     result = PerformAnalysis(config, builder, validated, createDatabase);
                     break;
             }
@@ -1134,8 +1016,8 @@ namespace MultiAlignCore.Algorithms
 
                     Logger.PrintMessage("Cancelling Analysis.");
 
-                    WaitHandle[] handles = new WaitHandle[] { m_workerManager.SynchEvent };
-                    bool waited = System.Threading.WaitHandle.WaitAll(handles, 1000);
+                    var handles = new WaitHandle[] { m_workerManager.SynchEvent };
+                    WaitHandle.WaitAll(handles, 1000);
                                     
                     // Then the background worker threads.  
                     // Processing thread does all of the post-analysis report generation and is based on the Console
@@ -1148,13 +1030,11 @@ namespace MultiAlignCore.Algorithms
                 }
                 catch(Exception ex)
                 {
-                    int xx = 0;
-                    xx++;
 
                 }
             }
 
-            if (this.AnalysisCancelled != null)
+            if (AnalysisCancelled != null)
             {
                 AnalysisCancelled(this, null);
             }
@@ -1166,29 +1046,17 @@ namespace MultiAlignCore.Algorithms
         /// <summary>
         /// Performs the analysis.
         /// </summary>
-        /// <param name="config"></param>
-        /// <param name="builder"></param>
-        /// <param name="providers"></param>
-        /// <param name="processor"></param>
-        /// <param name="validated"></param>
-        /// <param name="analysisSetupInformation"></param>
-        /// <param name="createDatabase"></param>
-        /// <returns></returns>
-        private void PerformAnalysisGUI(AnalysisConfig config, AlgorithmBuilder builder, AnalysisType validated, bool createDatabase, WorkerObject worker)
+        private void PerformAnalysisGui(AnalysisConfig config, AlgorithmBuilder builder, AnalysisType validated, bool createDatabase, WorkerObject worker)
         {                        
             FeatureDataAccessProviders providers        = null;
             MultiAlignAnalysisProcessor processor       = null;
             
             Logger.PrintMessage("Performing analysis.");
          
-            /// /////////////////////////////////////////////////////////////            
-            /// Creates or connects to the underlying analysis database.
-            /// ///////////////////////////////////////////////////////////// 
+            // Creates or connects to the underlying analysis database.
             providers = SetupDataProviders(createDatabase);
 
-            /// /////////////////////////////////////////////////////////////
-            /// Create the clustering, analysis, and plotting paths.
-            /// /////////////////////////////////////////////////////////////                                    
+            // Create the clustering, analysis, and plotting paths.
             builder.BuildClusterer(config.Analysis.Options.ClusterOptions.ClusteringAlgorithm);
             config.Analysis.DataProviders   = providers;
             config.Analysis.AnalysisType    = validated;
@@ -1199,9 +1067,7 @@ namespace MultiAlignCore.Algorithms
             PrintParameters(config.Analysis, createDatabase);
             Logger.PrintSpacer();
 
-            /// /////////////////////////////////////////////////////////////
-            /// Setup the processor.
-            /// /////////////////////////////////////////////////////////////            
+            // Setup the processor.
             processor = ConstructAnalysisProcessor(builder, providers);
 
             // Tell the processor whether to load data or not.
@@ -1211,11 +1077,7 @@ namespace MultiAlignCore.Algorithms
             // Construct the dataset information for export.// Create dataset information.
             Logger.PrintMessage("Storing dataset information into the database.");
 
-            List<DatasetInformation> information = new List<DatasetInformation>();
-            foreach (DatasetInformation info in config.Analysis.MetaData.Datasets)
-            {
-                information.Add(info);
-            }                        
+            var information = Enumerable.ToList(config.Analysis.MetaData.Datasets);
             m_config.Analysis.DataProviders.DatasetCache.AddAll(information);
             
 
@@ -1246,9 +1108,9 @@ namespace MultiAlignCore.Algorithms
             Logger.PrintMessage("Analysis Started.");
             processor.StartAnalysis(config);
 
-            int handleID = WaitHandle.WaitAny(new WaitHandle[] { config.triggerEvent, config.errorEvent, config.stopEvent });
+            int handleId = WaitHandle.WaitAny(new WaitHandle[] { config.triggerEvent, config.errorEvent, config.stopEvent });
 
-            if (handleID == 1)
+            if (handleId == 1)
             {
                 Logger.PrintMessageWorker("There was an error during processing.", 1, false);
                 config.triggerEvent.Dispose();
@@ -1261,21 +1123,14 @@ namespace MultiAlignCore.Algorithms
                 }
                 return;
             }
-            else if (handleID == 2)
+            if (handleId == 2)
             {
                 Logger.PrintMessageWorker("Stopping the analysis.", 1, false);
                 processor.StopAnalysis();
 
-                try
-                {
-                    // We use this guy to tell the GUI thread that killed us that it's ok to finish cleaning up.
-                    worker.SynchEvent.Set();
-                    System.Threading.Thread.Sleep(50);
-                }
-                catch
-                {
-                }
-
+                worker.SynchEvent.Set();
+                Thread.Sleep(50);
+                
                 config.triggerEvent.Dispose();
                 config.errorEvent.Dispose();
                 processor.Dispose();
@@ -1286,29 +1141,26 @@ namespace MultiAlignCore.Algorithms
                 }
                 return;
             }
-            else
-            {
 
-                try
-                {
-                    m_reportCreator.CreatePlotReport();
-                }
-                catch (Exception ex)
-                {
-                    Logger.PrintMessage("There was an error when trying to create the final analysis plots, however, the data analysis is complete.");
-                    Logger.PrintMessage(ex.Message);
-                    Logger.PrintMessage(ex.StackTrace);                    
-                }
+            try
+            {
+                m_reportCreator.CreatePlotReport();
             }
-            
-            
+            catch (Exception ex)
+            {
+                Logger.PrintMessage("There was an error when trying to create the final analysis plots, however, the data analysis is complete.");
+                Logger.PrintMessage(ex.Message);
+                Logger.PrintMessage(ex.StackTrace);                    
+            }
+
+
             config.triggerEvent.Dispose();
             config.errorEvent.Dispose();
             processor.Dispose();
             CleanupDataProviders();
 
             Logger.PrintMessage("Indexing Database Clusters for Faster Retrieval");
-            string databasePath = Path.Combine(m_config.AnalysisPath, m_config.AnalysisName);
+            var databasePath = Path.Combine(m_config.AnalysisPath, m_config.AnalysisName);
             DatabaseIndexer.IndexClusters(databasePath);
             Logger.PrintMessage("Indexing Database Features");
             DatabaseIndexer.IndexFeatures(databasePath);
@@ -1323,48 +1175,30 @@ namespace MultiAlignCore.Algorithms
         /// <summary>
         /// Performs the analysis.
         /// </summary>
-        /// <param name="config"></param>
-        /// <param name="builder"></param>
-        /// <param name="providers"></param>
-        /// <param name="processor"></param>
-        /// <param name="validated"></param>
-        /// <param name="analysisSetupInformation"></param>
-        /// <param name="createDatabase"></param>
-        /// <returns></returns>
         private int PerformAnalysis(AnalysisConfig config, AlgorithmBuilder builder, AnalysisType validated, bool createDatabase)
         {
-            InputAnalysisInfo analysisSetupInformation = null;
-            FeatureDataAccessProviders  providers = null;
-            MultiAlignAnalysisProcessor processor = null;
+            InputAnalysisInfo analysisSetupInformation;
 
             Logger.PrintMessage("Performing analysis.");
 
-            /// /////////////////////////////////////////////////////////////            
-            /// Read the input files.
-            /// /////////////////////////////////////////////////////////////                                    
-            bool useMTDB = false;
-            bool isInputFileOk = ReadInputDefinitionFile(out analysisSetupInformation, out useMTDB);
+            // Read the input files.
+            bool useMtdb;
+            bool isInputFileOk = ReadInputDefinitionFile(out analysisSetupInformation, out useMtdb);
             if (!isInputFileOk)
                 return 1;
 
-            /// /////////////////////////////////////////////////////////////            
-            /// Figure out if the factors are defined.
-            /// /////////////////////////////////////////////////////////////                                    
+            // Figure out if the factors are defined.
             if (config.options.ContainsKey("-factors"))
             {
                 Logger.PrintMessage("Factor file specified.");
-                string factorFile = config.options["-factors"][0];
+                var factorFile = config.options["-factors"][0];
                 analysisSetupInformation.FactorFile = factorFile;
             }
 
-            /// /////////////////////////////////////////////////////////////            
-            /// Creates or connects to the underlying analysis database.
-            /// ///////////////////////////////////////////////////////////// 
-            providers = SetupDataProviders(createDatabase);
+            // Creates or connects to the underlying analysis database.            
+            var providers = SetupDataProviders(createDatabase);
 
-            /// /////////////////////////////////////////////////////////////
-            /// Create the clustering, analysis, and plotting paths.
-            /// /////////////////////////////////////////////////////////////                                    
+            // Create the clustering, analysis, and plotting paths.
             ConstructClustering(builder);
 
             config.Analysis                 = ConstructAnalysisObject(analysisSetupInformation);
@@ -1372,14 +1206,10 @@ namespace MultiAlignCore.Algorithms
             config.Analysis.AnalysisType    = validated;
             ConstructPlotPath();
 
-            /// /////////////////////////////////////////////////////////////
-            /// Read the parameter files.
-            /// /////////////////////////////////////////////////////////////        
+            // Read the parameter files.
             ReadParameterFile();
 
-            /// /////////////////////////////////////////////////////////////
-            /// Construct Dataset information
-            /// /////////////////////////////////////////////////////////////            
+            // Construct Dataset information
             // Construct the dataset information for export.
             ConstructDatasetInformation(analysisSetupInformation, config.Analysis, createDatabase);
 
@@ -1388,7 +1218,7 @@ namespace MultiAlignCore.Algorithms
                 ConstructFactorInformation(analysisSetupInformation, config.Analysis.MetaData.Datasets, config.Analysis.DataProviders);
             }
 
-            bool isBaselineSpecified = ConstructBaselines(analysisSetupInformation, config.Analysis.MetaData, useMTDB);
+            bool isBaselineSpecified = ConstructBaselines(analysisSetupInformation, config.Analysis.MetaData, useMtdb);
             if (!isBaselineSpecified)
             {
                 return 1;
@@ -1399,10 +1229,8 @@ namespace MultiAlignCore.Algorithms
             PrintParameters(config.Analysis, createDatabase);
             Logger.PrintSpacer();
 
-            /// /////////////////////////////////////////////////////////////
-            /// Setup the processor.
-            /// /////////////////////////////////////////////////////////////            
-            processor = ConstructAnalysisProcessor(builder, providers);
+            // Setup the processor.            
+            MultiAlignAnalysisProcessor processor = ConstructAnalysisProcessor(builder, providers);
 
             // Tell the processor whether to load data or not.
             processor.ShouldLoadData = createDatabase;
@@ -1432,108 +1260,94 @@ namespace MultiAlignCore.Algorithms
             Logger.PrintMessage("Cleaning up old analysis branches.");
             CleanupOldAnalysisBranches(config);
 
-
-            /// /////////////////////////////////////////////////////////////
-            /// Start the analysis
-            /// /////////////////////////////////////////////////////////////            
+            // Start the analysis
             Logger.PrintMessage("Analysis Started.");
             processor.StartAnalysis(config);
-            int handleID = WaitHandle.WaitAny(new WaitHandle[] { config.triggerEvent, config.errorEvent });
+            int handleId = WaitHandle.WaitAny(new WaitHandle[] { config.triggerEvent, config.errorEvent });
             
             bool wasError = false;
 
-            if (handleID == 1)
+            if (handleId != 1)
             {
-                
-                Logger.PrintMessage("There was an error during processing.");
-                return 1;
+                try
+                {                    
+                    m_reportCreator.CreatePlotReport();
+                }
+                catch (Exception ex)
+                {
+                    wasError = true;
+                    Logger.PrintMessage(
+                        "There was an error when trying to create the final analysis plots, however, the data analysis is complete.");
+                    Logger.PrintMessage(ex.Message);
+                    Logger.PrintMessage(ex.StackTrace);
+                }
+
+                config.Analysis.Dispose();
+                config.triggerEvent.Dispose();
+                config.errorEvent.Dispose();
+                processor.Dispose();
+                CleanupDataProviders();
+
+                if (!wasError)
+                {
+                    Logger.PrintMessage("Indexing Database Features");
+                    DatabaseIndexer.IndexFeatures(config.AnalysisPath);
+                    DatabaseIndexer.IndexClusters(config.AnalysisPath);
+                }
+
+                Logger.PrintMessage("Analysis Complete.");
+                return 0;
             }
 
-            /// /////////////////////////////////////////////////////////////
-            /// Finalize the analysis plots etc.
-            /// /////////////////////////////////////////////////////////////
-            try
-            {
-                //m_reportCreator.CreateFinalAnalysisPlots(providers.FeatureCache, providers.ClusterCache);
-                m_reportCreator.CreatePlotReport();
-            }
-            catch (Exception ex)
-            {
-                Logger.PrintMessage("There was an error when trying to create the final analysis plots, however, the data analysis is complete.");
-                Logger.PrintMessage(ex.Message);
-                Logger.PrintMessage(ex.StackTrace);
-            }
-
-            config.Analysis.Dispose();
-            config.triggerEvent.Dispose();
-            config.errorEvent.Dispose();
-            processor.Dispose();
-            CleanupDataProviders();
-
-            if (!wasError)
-            {
-                Logger.PrintMessage("Indexing Database Features");
-                DatabaseIndexer.IndexFeatures(config.AnalysisPath);
-                DatabaseIndexer.IndexClusters(config.AnalysisPath);
-            }
-
-            Logger.PrintMessage("Analysis Complete.");
-            return 0;
+            // Finalize the analysis plots etc.
+            Logger.PrintMessage("There was an error during processing.");
+            return 1;
         }
-        private int ExportData(AnalysisConfig config, AlgorithmBuilder builder, string databasePath, bool databaseExists)
+        private void ExportData(string databasePath, bool databaseExists)
         {
-            InputAnalysisInfo analysisSetupInformation  = null;
-            FeatureDataAccessProviders providers        = null;
-            MultiAlignAnalysisProcessor processor       = null;
-
             Logger.PrintMessage("Exporting data only selected.");
             if (!databaseExists)
             {
                 Logger.PrintMessage("The database you specified to extract data from does not exist.");
-                return 1;
+                return;
             }
 
             // Create access to data.
-            providers = SetupDataProviders(false);
+            FeatureDataAccessProviders providers = SetupDataProviders(false);
             if (providers == null)
             {
                 Logger.PrintMessage("Could not create connection to database.");
-                return 1;
+                return;
             }
 
             // Find all the datasets 
-            List<DatasetInformation> datasets = providers.DatasetCache.FindAll();
+            var datasets = providers.DatasetCache.FindAll();
             if (datasets == null || datasets.Count == 0)
             {
                 Logger.PrintMessage("There are no datasets present in the current database.");
                 CleanupDataProviders();
-                return 1;
+                return;
             }
 
             ConstructExporting();
             ExportData(providers, databasePath, datasets);
             CleanupDataProviders();
-            return 0;
         }
-        private int ImportFactors(AnalysisConfig config,  bool databaseExists)
+        private void ImportFactors(AnalysisConfig config, bool databaseExists)
         {
-
-            FeatureDataAccessProviders providers = null;
-            MultiAlignAnalysisProcessor processor = null;
-
             Logger.PrintMessage("Updating factors");
             if (!databaseExists)
             {
                 Logger.PrintMessage("The database you specified to extract data from does not exist.");
-                return 1;
+                return;
             }
 
             // Create access to data.
-            providers = SetupDataProviders(false);
+            FeatureDataAccessProviders providers = SetupDataProviders(false);
             if (providers == null)
             {
                 Logger.PrintMessage("Could not create connection to database.");
-                return 1;
+                return;
             }
 
             // Find all the datasets 
@@ -1542,10 +1356,10 @@ namespace MultiAlignCore.Algorithms
             {
                 Logger.PrintMessage("There are no datasets present in the current database.");
                 CleanupDataProviders();
-                return 1;
+                return;
             }
 
-            InputAnalysisInfo info = new InputAnalysisInfo();
+            var info = new InputAnalysisInfo();
 
             if (config.options.ContainsKey("-factors"))
             {
@@ -1555,7 +1369,6 @@ namespace MultiAlignCore.Algorithms
             }
             ConstructFactorInformation(info, datasetsFactors.ToObservableCollection(), providers);
             CleanupDataProviders();
-            return 0;
         }
         #endregion
     }

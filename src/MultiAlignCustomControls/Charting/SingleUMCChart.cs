@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using MultiAlignCore.Data;
+using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.Extensions;
 using MultiAlignEngine.MassTags;
 using PNNLControls;

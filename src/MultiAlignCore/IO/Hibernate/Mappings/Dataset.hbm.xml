@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" 
                    assembly="MultiAlignCore" 
-                   namespace="MultiAlignCore.Data">
+                   namespace="MultiAlignCore.Data.MetaData">
 
 	<class name="DatasetInformation" table="T_Datasets" lazy="false">
 		<composite-id>
@@ -16,6 +16,5 @@
     <property name="RawPath"            column="Raw_Path"       type="string"   not-null="false" />
     <property name="SequencePath"       column="Sequence_Path"  type="string"   not-null="false" />
     <property name="IsBaseline"         column="Is_Baseline"    type="Boolean"  not-null="false" />
-
   </class>
 </hibernate-mapping>

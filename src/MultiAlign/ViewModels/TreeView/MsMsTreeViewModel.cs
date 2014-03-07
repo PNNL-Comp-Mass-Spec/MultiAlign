@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Collections.ObjectModel;
 using MultiAlign.IO;
+using MultiAlignCore.Data.MetaData;
 using PNNLOmics.Data.Features;
 using MultiAlignCore.Extensions;
 using PNNLOmics.Data;

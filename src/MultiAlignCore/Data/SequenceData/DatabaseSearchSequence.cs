@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using PNNLOmics.Data;
+﻿using PNNLOmics.Data;
 
 namespace MultiAlignCore.Data.SequenceData
 {
@@ -42,46 +38,43 @@ namespace MultiAlignCore.Data.SequenceData
         
         public override bool Equals(object obj)
         {
-            DatabaseSearchSequence other = (DatabaseSearchSequence)obj;
+            var other = (DatabaseSearchSequence)obj;
 
             if (other == null)
             {
                 return false;
             }
-            else if (!this.Id.Equals(other.Id))
+            if (!Id.Equals(other.Id))
             {
                 return false;
             }
-            else if (!this.GroupId.Equals(other.GroupId))
+            if (!GroupId.Equals(other.GroupId))
             {
                 return false;
             }
-            else if (!this.Sequence.Equals(other.Sequence))
+            if (!Sequence.Equals(other.Sequence))
             {
                 return false;
             }
-            else if (!this.Scan.Equals(other.Scan))
+            if (!Scan.Equals(other.Scan))
             {
                 return false;
             }            
-            else if (!this.Score.Equals(other.Score))
+            if (!Score.Equals(other.Score))
             {
                 return false;
-            }                          
-            else
-            {
-                return this.Score.Equals(other.Score);
             }
+            return Score.Equals(other.Score);
         }
 
         public override int GetHashCode()
         {
             int hash = 17;
-            hash = hash * 23 + this.Sequence.GetHashCode();
-            hash = hash * 23 + this.Scan.GetHashCode();
-            hash = hash * 23 + this.Score.GetHashCode();
-            hash = hash * 23 + this.Id.GetHashCode();
-            hash = hash * 23 + this.GroupId.GetHashCode();            
+            hash = hash * 23 + Sequence.GetHashCode();
+            hash = hash * 23 + Scan.GetHashCode();
+            hash = hash * 23 + Score.GetHashCode();
+            hash = hash * 23 + Id.GetHashCode();
+            hash = hash * 23 + GroupId.GetHashCode();            
             return hash;
         }
     }

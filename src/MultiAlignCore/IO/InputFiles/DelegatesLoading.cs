@@ -14,6 +14,8 @@
  *          - Created file and comment header.
  * 
  *////////////////////////////////////////////////////////////////////////
+
+using MultiAlignCore.Data.MetaData;
 using MultiAlignEngine;
 
 using MultiAlignCore.Data;

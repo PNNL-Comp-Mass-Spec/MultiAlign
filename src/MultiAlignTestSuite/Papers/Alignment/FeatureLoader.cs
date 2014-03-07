@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using MultiAlignCore.Algorithms.FeatureFinding;
 using MultiAlignCore.Data;
+using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.InputFiles;
 using PNNLOmics.Data.Features;

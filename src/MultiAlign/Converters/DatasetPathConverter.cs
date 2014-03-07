@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Data;
 using MultiAlignCore.Data;
+using MultiAlignCore.Data.MetaData;
 
 namespace MultiAlign.Converters
 {

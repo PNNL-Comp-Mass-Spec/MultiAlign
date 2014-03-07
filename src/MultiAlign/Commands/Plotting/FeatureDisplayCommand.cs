@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows.Input;
 using MultiAlignCore.Data;
 using MultiAlign.IO;
+using MultiAlignCore.Data.MetaData;
 using PNNLOmics.Data.Features;
 using MultiAlign.Windows.Plots;
 using System.Windows;

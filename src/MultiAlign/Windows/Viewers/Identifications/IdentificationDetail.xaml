@@ -124,9 +124,7 @@
                 <DockPanel>
                     <!-- Proteins -->
                     <ListBox                        
-                            Margin="2"
-                            Grid.Row="5"
-                            Grid.Column="2"
+                            Margin="2"                            
                             VerticalAlignment="Stretch"
                             HorizontalContentAlignment="Stretch"
                             ItemTemplate="{StaticResource ProteinDataTemplate}"

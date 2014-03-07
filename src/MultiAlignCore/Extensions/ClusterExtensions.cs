@@ -1,4 +1,5 @@
 ﻿using System;
+using MultiAlignCore.Data.MetaData;
 using PNNLOmics.Data.MassTags;
 using System.Collections.Generic;
 using MultiAlignCore.Data;
@@ -314,7 +315,7 @@ namespace MultiAlignCore.Extensions
         {
             // Let's map the datasets first.
             Dictionary<int, ISpectraProvider> readers = new Dictionary<int,ISpectraProvider>();    
-            Dictionary<int , DatasetInformation> information = new Dictionary<int,Data.DatasetInformation>();
+            Dictionary<int , DatasetInformation> information = new Dictionary<int,DatasetInformation>();
 
             datasets.ForEach(x => information.Add(x.DatasetId, x));
 

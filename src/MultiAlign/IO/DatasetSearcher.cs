@@ -1,4 +1,5 @@
 ﻿using System;
+using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO;
 using MultiAlignCore.Data;
 using System.IO;

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Collections.ObjectModel;
 using MultiAlignCore.Data;
+using MultiAlignCore.Data.MetaData;
 
 namespace MultiAlignCore.Extensions
 {

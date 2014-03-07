@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using MultiAlignCore.Data.Alignment;
+using MultiAlignCore.Data.MetaData;
 using MultiAlignEngine.Features;
 using PNNLOmics.Algorithms.Alignment;
 using PNNLOmics.Data.Features;

@@ -1,16 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using MultiAlignCore.Data.Factors;
-using MultiAlignEngine;
-using System.IO;
-using MultiAlignCore.Data.MetaData;
-using MultiAlignCore.IO.InputFiles;
 using System.ComponentModel;
+using MultiAlignCore.Data.Factors;
+using MultiAlignCore.IO.InputFiles;
 using PNNLOmics.Data;
-using System.Text.RegularExpressions;
 
-namespace MultiAlignCore.Data
+namespace MultiAlignCore.Data.MetaData
 {
 	/// <summary>
 	/// Contains information about a dataset used for analysis.r
@@ -24,19 +19,15 @@ namespace MultiAlignCore.Data
 		public DatasetInformation()
 		{
 			MetaData            = new Dictionary<string,string>();
-
 			FactorInformation   = new Dictionary<FactorInformation, string>();
 			Factors             = new List<Factor>();
-
             Scans               = null;
             Raw                 = null;
             Sequence            = null;
             Features            = null;
-            Peaks               = null;
             IsBaseline          = false;
-
-            DatasetSummary = new PNNLOmics.Data.DatasetSummary();
-            PlotData = new DatasetPlotInformation();
+            DatasetSummary      = new DatasetSummary();
+            PlotData            = new DatasetPlotInformation();
 		}
         /// <summary>
         /// Gets or sets the dataset summary.
@@ -219,14 +210,6 @@ namespace MultiAlignCore.Data
             get;
             set;
         }
-        /// <summary>
-        /// Gets or sets the path to the peaks file.
-        /// </summary>
-        public InputFile Peaks
-        {
-            get;
-            set;
-        }
         public DatasetPlotInformation PlotData
         {
             get;
@@ -237,21 +220,13 @@ namespace MultiAlignCore.Data
         #region Comparison Methods 
         public override bool Equals(object obj)
         {
-            DatasetInformation dataset = obj as DatasetInformation;
+            var dataset = obj as DatasetInformation;
 
-            if (dataset == null)
-            {
-                return false;
-            }
-            else if (!this.DatasetId.Equals(dataset.DatasetId))
-            {
-                return false;
-            }
-            return true;
+            return dataset != null && DatasetId.Equals(dataset.DatasetId);
         }
         public override int GetHashCode()
         {
-            int hash = 17;
+            var hash = 17;
 
             hash = hash * 23 + DatasetId.GetHashCode();
 
@@ -342,7 +317,7 @@ namespace MultiAlignCore.Data
 
         #endregion
 
-        private static readonly List<SupportedDatasetType> m_supportedTypes = new List<SupportedDatasetType>();
+        private static readonly List<SupportedDatasetType> SupportedTypes = new List<SupportedDatasetType>();
         
         /// <summary>
         /// Retrieves the supported file types by multialign.
@@ -352,20 +327,19 @@ namespace MultiAlignCore.Data
         {            
             get
             {
-                if (m_supportedTypes.Count < 1)
+                if (SupportedTypes.Count < 1)
                 {                            
-                    m_supportedTypes.Add(new SupportedDatasetType("Decon Tools Isos", "_isos.csv",          InputFileType.Features));
-                    m_supportedTypes.Add(new SupportedDatasetType("LCMS Feature Finder", "_LCMSFeatures.txt", InputFileType.Features));
-                    m_supportedTypes.Add(new SupportedDatasetType("Sequest First Hit", ".fht", InputFileType.Sequence));
-                    m_supportedTypes.Add(new SupportedDatasetType("Thermo Raw", ".raw", InputFileType.Raw));
-                    m_supportedTypes.Add(new SupportedDatasetType("mzXML", ".mzxml", InputFileType.Raw));
-                    m_supportedTypes.Add(new SupportedDatasetType("MSGF+ First Hit", "_msgfdb_fht.txt", InputFileType.Sequence));
-                    m_supportedTypes.Add(new SupportedDatasetType("MSGF+ First Hit", "_msgfdb_fht_MSGF.txt", InputFileType.Sequence)); 
-                    m_supportedTypes.Add(new SupportedDatasetType("MSGF+ First Hit", "_fht_msgf.txt", InputFileType.Sequence));
-                    m_supportedTypes.Add(new SupportedDatasetType("MSGF+ Tab Delimited", "_msgf.tsv", InputFileType.Sequence));  
-                    m_supportedTypes.Add(new SupportedDatasetType("DeconTools XIC Peak File", "_peaks.txt", InputFileType.Peaks));                                                                                                                                                                                                    
+                    SupportedTypes.Add(new SupportedDatasetType("Decon Tools Isos", "_isos.csv",          InputFileType.Features));
+                    SupportedTypes.Add(new SupportedDatasetType("LCMS Feature Finder", "_LCMSFeatures.txt", InputFileType.Features));
+                    SupportedTypes.Add(new SupportedDatasetType("Sequest First Hit", ".fht", InputFileType.Sequence));
+                    SupportedTypes.Add(new SupportedDatasetType("Thermo Raw", ".raw", InputFileType.Raw));
+                    SupportedTypes.Add(new SupportedDatasetType("mzXML", ".mzxml", InputFileType.Raw));
+                    SupportedTypes.Add(new SupportedDatasetType("MSGF+ First Hit", "_msgfdb_fht.txt", InputFileType.Sequence));
+                    SupportedTypes.Add(new SupportedDatasetType("MSGF+ First Hit", "_msgfdb_fht_MSGF.txt", InputFileType.Sequence)); 
+                    SupportedTypes.Add(new SupportedDatasetType("MSGF+ First Hit", "_fht_msgf.txt", InputFileType.Sequence));
+                    SupportedTypes.Add(new SupportedDatasetType("MSGF+ Tab Delimited", "_msgf.tsv", InputFileType.Sequence));  
                 }                  
-                return m_supportedTypes;
+                return SupportedTypes;
             }            
         }
         /// <summary>
@@ -378,7 +352,7 @@ namespace MultiAlignCore.Data
             InputFileType t = InputFileType.NotRecognized;
 
             string newPath = path.ToLower();
-            foreach (SupportedDatasetType type in m_supportedTypes)
+            foreach (SupportedDatasetType type in SupportedTypes)
             {
                 string lower = type.Extension.ToLower();
                 if (newPath.EndsWith(lower))

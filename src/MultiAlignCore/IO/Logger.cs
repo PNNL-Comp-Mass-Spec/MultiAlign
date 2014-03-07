@@ -1,30 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
 using System.Reflection;
+using System.Text;
 
 namespace MultiAlignCore.IO
 {
-    public class StatusEventArgs: EventArgs
-    {
-        public StatusEventArgs(string message, int size)
-        {
-            Message = message;
-            Size    = size;
-        }
-        public string Message
-        {
-            get;
-            private set;
-        }
-        public int Size
-        {
-            get;
-            private set;
-        }
-    }
     /// <summary>
     /// Class that handles logging messages to the console and log files.
     /// </summary>
@@ -40,79 +20,66 @@ namespace MultiAlignCore.IO
             get;
             set;
         }
-        /// <summary>
-        /// Prints a message to the console and log file.
-        /// </summary>
-        /// <param name="message"></param>
-        public static void PrintMessage(string message, int size)
-        {
-            PrintMessage(message, size, true);
-        }
-        /// <summary>
-        /// Prints a message to the console and log file.
-        /// </summary>
-        /// <param name="message"></param>
-        public static void PrintMessage(string message)
-        {
-            PrintMessage(message, 12, true);
-        }
-        private static void OnMessage(string message, int size)
+        private static void OnMessage(string message, long size, DateTime time)
         {
             if (Status != null)
             {
-                Status(null, new StatusEventArgs(message, size));
+                Status(null, new StatusEventArgs(message, size, time));
             }
         }
         /// <summary>
         /// Prints a message to the console and log file.
         /// </summary>
-        /// <param name="message"></param>
         public static void PrintSpacer()
         {
-            System.Text.StringBuilder builder = new System.Text.StringBuilder();
-            for (int i = 0; i < 80; i++)
+            var builder = new StringBuilder();
+            for (var i = 0; i < 80; i++)
             {
                 builder.Append("-");
             }
-            PrintMessage(builder.ToString(), 12, false);
+            PrintMessage(builder.ToString(), false);
         }
         /// <summary>
         /// Prints a message to the console and log file.
         /// </summary>
-        /// <param name="message"></param>
+        public static void PrintMessage(string message)
+        {
+            PrintMessage(message, true);
+        }
+        /// <summary>
+        /// Prints a message to the console and log file.
+        /// </summary>
         public static void PrintMessage(string message, bool useMemory)
         {
-            PrintMessage(message, 12, useMemory);
+            lock (Synched)
+            {
+                SynchMessaged(message, useMemory);
+            }
         }
         public static void PrintMessageWorker(string message, int size, bool useMemory)
         {
-            lock (synched)
+            lock (Synched)
             {
-                SynchMessaged(message, size, useMemory);
-            }
-        }
-        public static void PrintMessage(string message, int size, bool useMemory)
-        {
-            lock (synched)
-            {
-                SynchMessaged(message, size, useMemory);
+                SynchMessaged(message, useMemory);
             }
         }
 
-        private static object synched = new object();
+        private static readonly object Synched = new object();
 
-        private static void SynchMessaged(string message, int size, bool useMemory)
+        private static void SynchMessaged(string message, bool useMemory)
         {
-            string newMessage = message;
-            if (useMemory)
+            var newMessage  = message;
+            var size        = ApplicationUtility.GetMemory();
+            var time        = DateTime.Now;
+
+            if (LogPath != null)
             {
-                newMessage = DateTime.Now.ToString() + " - " + ApplicationUtility.GetMemory().ToString() + " MB - " + newMessage;
+                if (useMemory)
+                    File.AppendAllText(LogPath, time + " - " + size + " MB - " + newMessage + Environment.NewLine);
+                else
+                    File.AppendAllText(LogPath, time + " - " + newMessage + Environment.NewLine);                                    
             }
-            if (Logger.LogPath != null)
-            {
-                File.AppendAllText(Logger.LogPath, newMessage + Environment.NewLine);
-            }
-            OnMessage(newMessage, size);
+            OnMessage(newMessage, size, DateTime.Now);
             Console.WriteLine(newMessage);
         }
         /// <summary>

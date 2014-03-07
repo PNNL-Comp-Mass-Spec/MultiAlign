@@ -5,6 +5,7 @@ using System.Text;
 using Mage;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.Factors;
+using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO.Features;
 using System.Collections.ObjectModel;
 

@@ -6,6 +6,7 @@ using MultiAlign.ViewModels.Viewers;
 using MultiAlign.ViewModels.Wizard;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.Features;
+using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.Extensions;
 using MultiAlignCustomControls.Charting;
 using PNNLOmics.Data.Features;

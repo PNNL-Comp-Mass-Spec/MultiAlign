@@ -25,10 +25,6 @@ namespace MultiAlignCore.IO.InputFiles
         /// <summary>
         /// Database search results.
         /// </summary>
-        Sequence,
-        /// <summary>
-        /// The peak file that contains indices for constructing XIC's
-        /// </summary>
-        Peaks
+        Sequence
     }
 }

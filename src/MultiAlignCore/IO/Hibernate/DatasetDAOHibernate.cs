@@ -1,4 +1,5 @@
 using MultiAlignCore.Data;
+using MultiAlignCore.Data.MetaData;
 
 namespace MultiAlignCore.IO.Features.Hibernate
 {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using MultiAlignCore.Data;
+using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO.InputFiles;
 using System.Windows.Forms;
 using System.IO;

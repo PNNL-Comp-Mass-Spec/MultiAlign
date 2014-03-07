@@ -1,4 +1,5 @@
 ﻿using System;
+using MultiAlignCore.Data.MetaData;
 using PNNLOmics.Algorithms.Solvers;
 using System.Collections.Generic;
 using System.Linq;

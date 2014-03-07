@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using MultiAlignCore.Data.MetaData;
 using MultiAlignTestSuite.Algorithms;
 using PNNLOmics.Data;
 using PNNLOmics.Data.Features;

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using MultiAlignCore.Data.MetaData;
 using PNNLOmics.Data;
 using MultiAlignCore.Data;
 using System.Collections.ObjectModel;

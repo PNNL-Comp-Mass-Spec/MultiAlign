@@ -1,5 +1,5 @@
 ﻿using MultiAlignCore.Algorithms.FeatureFinding;
-
+using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.Extensions;
 using MultiAlignCore.Algorithms.Features;
 using MultiAlignCore.Data;

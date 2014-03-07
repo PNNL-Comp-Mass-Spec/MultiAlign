@@ -28,16 +28,15 @@ namespace MultiAlign.ViewModels.Wizard
         private AnalysisController          m_controller;
         private IAnalysisReportGenerator    m_reporter;
         private AnalysisConfig              m_configuration;
-        private string                      m_currentStatus;
         private bool                        m_isAnalysisRunning;
 
         public AnalysisRunningViewModel()
-        {            
-            Messages        = new ObservableCollection<string>();
+        {
+            Messages        = new ObservableCollection<StatusEventArgs>();
             GalleryImages   = new ObservableCollection<UserControl>();
             Reporter        = new AnalysisReportGenerator();
 
-            CancelAnalysis = new BaseCommandBridge(new CommandDelegate(CancelAnalysisDelegate));
+            CancelAnalysis = new BaseCommandBridge(CancelAnalysisDelegate);
             RouteMessages();
         }
 
@@ -49,33 +48,20 @@ namespace MultiAlign.ViewModels.Wizard
         
 
         #region Logging Handlers
-        /// <summary>
-        /// Stops the routing of the logger messages for the UI.
-        /// </summary>
-        private void DerouteMessages()
-        {
-            Logger.Status -= Logger_Status;
-        }
+
         /// <summary>
         /// Starts the routing of the logger messages for the UI.
         /// </summary>
         private void RouteMessages()
         {
-            Logger.Status += new EventHandler<MultiAlignCore.IO.StatusEventArgs>(Logger_Status);
+            Logger.Status += Logger_Status;
         }
         /// <summary>
         /// Updates the current messages windows.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void Logger_Status(object sender, MultiAlignCore.IO.StatusEventArgs e)
+        void Logger_Status(object sender, StatusEventArgs e)
         {
-            Action workAction = delegate
-            {
-                CurrentStatusMessage = e.Message;
-                Messages.Insert(0, e.Message);   
-           
-            };
+            Action workAction = () => Messages.Insert(0, e);
 
             ThreadSafeDispatcher.Invoke(workAction);
         }
@@ -86,15 +72,14 @@ namespace MultiAlign.ViewModels.Wizard
             // Set the messages
             Messages.Clear();
             GalleryImages.Clear();
-
-            CurrentStatusMessage             = "Starting Analysis.";            
+        
             IsAnalysisRunning                = true;
             Reporter.Config                  = config;
             m_configuration                  = config;
             Controller                       = new AnalysisController();            
-            Controller.AnalysisComplete     += new EventHandler(Controller_AnalysisComplete);
-            Controller.AnalysisError        += new EventHandler(Controller_AnalysisError);
-            Controller.AnalysisCancelled    += new EventHandler(Controller_AnalysisCancelled);
+            Controller.AnalysisComplete     += Controller_AnalysisComplete;
+            Controller.AnalysisError        += Controller_AnalysisError;
+            Controller.AnalysisCancelled    += Controller_AnalysisCancelled;
 
             // Start the analysis.
             Controller.StartMultiAlignGUI(config, this);                        
@@ -167,29 +152,12 @@ namespace MultiAlign.ViewModels.Wizard
             }
             set
             {
-                if (m_configuration != value)
-                {
-                    m_configuration = value;
-                    OnPropertyChanged("AnalysisConfiguration");
-                }
+                if (m_configuration == value) return;
+                m_configuration = value;
+                OnPropertyChanged("AnalysisConfiguration");
             }
         }
-        public string CurrentStatusMessage
-        {
-            get
-            {
-                return m_currentStatus;
-            }
-            set
-            {
-                if (m_currentStatus != value)
-                {
-                    m_currentStatus = value;
-                    OnPropertyChanged("CurrentStatusMessage");
-                }
-            }
-        }
-        public ObservableCollection<string> Messages
+        public ObservableCollection<StatusEventArgs> Messages
         {
             get;
             private set;
@@ -255,24 +223,21 @@ namespace MultiAlign.ViewModels.Wizard
         /// <param name="e"></param>
         private void BuildAlignmentPlotView(FeaturesAlignedEventArgs e)
         {
-            AlignmentPlotView view = new AlignmentPlotView();
-            view.AlignmentData = e;
+            var view = new AlignmentPlotView {AlignmentData = e};
             GalleryImages.Insert(0, view);
 
             if (GalleryImages.Count > 10)
             {
-                UserControl control = GalleryImages[0];
                 GalleryImages.RemoveAt(0);
             }
         }
         private void BuildMassTagPlots(MassTagsLoadedEventArgs e)
         {            
-            FeaturePlotView view = new FeaturePlotView();
-            view.MassTagsData    = e;
+            var view = new FeaturePlotView {MassTagsData = e};
             GalleryImages.Insert(0, view);            
             if (GalleryImages.Count > 10)
             {
-                GalleryImages.RemoveAt(0);
+                GalleryImages.RemoveAt(9);
             }           
         }
         /// <summary>
@@ -284,10 +249,8 @@ namespace MultiAlign.ViewModels.Wizard
             // We dont care about the dataset
             if (e.DatasetInformation != null)
             {
-                FeaturePlotView view = new FeaturePlotView();
-                view.BaselineData = e;
+                var view = new FeaturePlotView {BaselineData = e};
                 GalleryImages.Insert(0, view);
-                //GalleryScroll.ScrollToEnd();
                 if (GalleryImages.Count > 10)
                 {
                     GalleryImages.RemoveAt(0);
@@ -297,14 +260,11 @@ namespace MultiAlign.ViewModels.Wizard
         /// <summary>
         /// Builds the alignment plot views.
         /// </summary>
-        /// <param name="e"></param>
         private void BuildClusterPlots(List<UMCClusterLight> clusters)
         {
-            ClustersPlotView view = new ClustersPlotView();
-            view.Clusters = clusters;
+            var view = new ClustersPlotView {Clusters = clusters};
 
-            GalleryImages.Insert(0, view);
-            //GalleryScroll.ScrollToEnd();
+            GalleryImages.Insert(0, view);           
             if (GalleryImages.Count > 10)
             {
                 GalleryImages.RemoveAt(0);
@@ -317,8 +277,7 @@ namespace MultiAlign.ViewModels.Wizard
         {
             get
             {
-                string plotPath =  Reporter.PlotPath;                
-                return plotPath;
+                return Reporter.PlotPath;                
             }
             set
             {               
@@ -327,7 +286,7 @@ namespace MultiAlign.ViewModels.Wizard
         }        
         public void CreateAlignmentPlots(FeaturesAlignedEventArgs e)
         {
-            Action workAction = delegate
+            Action workAction = () =>
             {
                 BuildAlignmentPlotView(e);
                 Reporter.CreateAlignmentPlots(e);
@@ -336,7 +295,7 @@ namespace MultiAlign.ViewModels.Wizard
         }
         public void CreateBaselinePlots(BaselineFeaturesLoadedEventArgs e)
         {
-            Action workAction = delegate
+            Action workAction = () =>
             {
                 BuildBaselineView(e);
                 Reporter.CreateBaselinePlots(e);
@@ -345,7 +304,7 @@ namespace MultiAlign.ViewModels.Wizard
         }
         public void CreateMassTagPlot(MassTagsLoadedEventArgs e)
         {
-            Action workAction = delegate
+            Action workAction = () =>
             {
                 BuildMassTagPlots(e);
                 Reporter.CreateMassTagPlot(e);
@@ -354,15 +313,12 @@ namespace MultiAlign.ViewModels.Wizard
         }
         public void CreatePeakMatchedPlots(FeaturesPeakMatchedEventArgs e)
         {
-            Action workAction = delegate
-            {
-                Reporter.CreatePeakMatchedPlots(e);
-            };
+            Action workAction = () => Reporter.CreatePeakMatchedPlots(e);
             ThreadSafeDispatcher.Invoke(workAction);
         }
         public void CreateClusterPlots(FeaturesClusteredEventArgs clusters)
         {
-            Action workAction = delegate
+            Action workAction = () =>
             {
                 BuildClusterPlots(clusters.Clusters);
                 Reporter.CreateClusterPlots(clusters);
@@ -371,18 +327,12 @@ namespace MultiAlign.ViewModels.Wizard
         }
         public void CreateChargePlots(Dictionary<int, int> chargeMap)
         {
-            Action workAction = delegate
-            {
-                Reporter.CreateChargePlots(chargeMap);
-            };
+            Action workAction = () => Reporter.CreateChargePlots(chargeMap);
             ThreadSafeDispatcher.Invoke(workAction);
         }
         public void CreatePlotReport()
         {
-            Action workAction = delegate
-            {
-                Reporter.CreatePlotReport();
-            };
+            Action workAction = () => Reporter.CreatePlotReport();
             ThreadSafeDispatcher.Invoke(workAction);
         }
         #endregion
@@ -399,6 +349,7 @@ namespace MultiAlign.ViewModels.Wizard
                 AnalysisConfiguration = value;
             }
         }
+
         #endregion
     }
 }

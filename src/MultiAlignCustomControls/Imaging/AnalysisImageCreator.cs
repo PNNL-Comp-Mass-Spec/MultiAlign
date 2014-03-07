@@ -1,5 +1,6 @@
 ﻿
 using System.Linq;
+using MultiAlignCore.Data.MetaData;
 using MultiAlignCustomControls.Charting;
 using MultiAlignCustomControls.Drawing;
 using PNNLOmics.Data.Features;

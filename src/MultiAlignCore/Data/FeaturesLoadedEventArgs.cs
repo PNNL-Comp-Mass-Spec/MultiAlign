@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using MultiAlignCore.Data.MetaData;
 using PNNLOmics.Data.Features;
 
 namespace MultiAlignCore.Data

@@ -7,6 +7,7 @@ using System.Windows.Input;
 using System.Windows;
 using MultiAlign.Windows.Viewers.Datasets;
 using MultiAlign.ViewModels;
+using MultiAlignCore.Data.MetaData;
 
 namespace MultiAlign.Commands.Datasets
 {

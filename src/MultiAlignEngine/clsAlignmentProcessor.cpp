@@ -156,12 +156,13 @@ namespace MultiAlignEngine
 			}
 		}
 
-		void clsAlignmentProcessor::ApplyNETMassFunctionToAligneeDatasetFeatures(List<clsUMC*>* &features)
+		List<clsUMC*>* clsAlignmentProcessor::ApplyNETMassFunctionToAligneeDatasetFeatures(List<clsUMC*>* &features)
 		{
 			// if deserialized, lcmswarp object will be null. recreate it.
 			if (mobjLCMSWarp == 0)
 				mobjLCMSWarp = __nogc new MultiAlignEngine::Alignment::LCMSWarp(); 
 
+			List<clsUMC*>* newFeatures = __gc new List<clsUMC*>();
 			mintPercentDone = 0; 
 			std::vector<int>	umcIndices; 
 			std::vector<double> umcCalibratedMasses; 
@@ -175,7 +176,7 @@ namespace MultiAlignEngine
 																		umcCalibratedMasses, 
 																		umcAlignedNETs,
 																		umcDriftTimes); 				
-				int numUMCs = (int) umcIndices.size(); 
+				int numUMCs = (int) umcIndices.size();  
 				for (int umcNum = 0; umcNum < numUMCs; umcNum++)
 				{
 					int		umcIndex		= umcIndices[umcNum]; 
@@ -185,6 +186,14 @@ namespace MultiAlignEngine
 					features->Item[umcIndex]->mdouble_mono_mass_calibrated	= calibratedMass; 
 					features->Item[umcIndex]->mdouble_net					= alignedNET;
 					features->Item[umcIndex]->mfloat_drift_time				= driftTime;
+
+					
+					clsUMC* umc = __gc new clsUMC();
+					umc->mdouble_mono_mass_calibrated	= calibratedMass; 
+					umc->mdouble_net					= alignedNET;
+					umc->mfloat_drift_time				= driftTime;
+					umc->Id								= umcIndex;
+					newFeatures->Add(umc);
 				}					
 			}
 			else
@@ -210,9 +219,17 @@ namespace MultiAlignEngine
 					features->Item[umcIndex]->mdouble_net					= alignedNET;
 					features->Item[umcIndex]->mint_scan_aligned				= alignedScan;
 					features->Item[umcIndex]->mfloat_drift_time				= driftTime;
-
+					clsUMC* umc = __gc new clsUMC();
+					umc->mdouble_mono_mass_calibrated	= calibratedMass; 
+					umc->mdouble_net					= alignedNET;
+					umc->mint_scan_aligned				= alignedScan;
+					umc->mfloat_drift_time				= driftTime;
+					umc->Id								= umcIndex;
+					newFeatures->Add(umc);
 				}				
 			}
+
+			return newFeatures;
 		}
 
 

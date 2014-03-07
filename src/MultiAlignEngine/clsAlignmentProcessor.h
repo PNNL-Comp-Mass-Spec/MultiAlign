@@ -79,7 +79,7 @@ namespace MultiAlignEngine
 			double GetNETMean();
 
 			void ApplyNETMassFunctionToAligneeDatasetFeatures(MultiAlignEngine::Features::clsUMCData* &umcData); 			
-			void clsAlignmentProcessor::ApplyNETMassFunctionToAligneeDatasetFeatures(List<clsUMC*>* &features);
+			List<clsUMC*>* ApplyNETMassFunctionToAligneeDatasetFeatures(List<clsUMC*>* &features);
 
 			void ApplyNETMassFunctionToAligneeDatasetFeatures(MultiAlignEngine::Features::clsClusterData* &clusterData); 
 			void SetAligneeDatasetFeatures(	MultiAlignEngine::Features::clsUMCData *umcData, 

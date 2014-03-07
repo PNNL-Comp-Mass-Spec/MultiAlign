@@ -2,6 +2,7 @@
 using System.IO;
 using System.Text;  
 using System.Collections.Generic;
+using MultiAlignCore.Data.MetaData;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Data.MassTags;
 using MultiAlignCore.Data;

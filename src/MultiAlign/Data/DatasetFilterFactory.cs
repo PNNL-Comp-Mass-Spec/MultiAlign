@@ -1,9 +1,5 @@
-﻿using System;
+﻿using MultiAlignCore.IO.InputFiles;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
-using MultiAlignCore.IO.InputFiles;
 
 namespace MultiAlign.Data
 {
@@ -12,7 +8,6 @@ namespace MultiAlign.Data
     /// </summary>
     public class DatasetFilterFactory
     {
-        private static Dictionary<string, InputFileType> fileTypes = new Dictionary<string, InputFileType>();
         DatasetFilterFactory()
         {
 
@@ -42,15 +37,10 @@ namespace MultiAlign.Data
                     fileFilter = AppendExtension(fileFilter, "DeconTools Features Files", "_isos.csv");
                     fileFilter = AppendExtension(fileFilter, "LCMS Feature Finder Files", "LCMSFeatures.txt");
                     break;
-                case InputFileType.Peaks:
-                    fileFilter = AppendExtension(fileFilter, "DeconTools Peaks Files", "peaks.txt");                    
-                    break;
                 case InputFileType.Raw:
                     fileFilter = AppendExtension(fileFilter, "Thermo Raw",  ".raw");
                     fileFilter = AppendExtension(fileFilter, "MZ XML",      ".mzxml");
-                    break;
-                default:
-                    break;
+                    break;                
             }
 
             return fileFilter;

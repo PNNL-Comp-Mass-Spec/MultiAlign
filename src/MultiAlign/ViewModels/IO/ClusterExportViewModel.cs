@@ -3,6 +3,7 @@ using MultiAlign.IO;
 using MultiAlign.ViewModels.TreeView;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.Features;
+using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO.Features;
 using PNNLOmics.Data.Features;
 using System;
