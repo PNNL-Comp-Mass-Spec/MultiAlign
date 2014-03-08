@@ -10,6 +10,7 @@ using MultiAlignCore.Data.MassTags;
 using PNNLOmics.Utilities;
 using PNNLOmics.Algorithms;
 using PNNLOmics.Data.Features;
+using MultiAlignCore.Algorithms.Options;
 
 namespace MultiAlignCore.Algorithms.Alignment
 {
@@ -21,10 +22,6 @@ namespace MultiAlignCore.Algorithms.Alignment
         /// <summary>
         /// Aligns a set of features (from a dataset) to a mass tag database.
         /// </summary>
-        /// <param name="massTagDatabase">Database to align to.</param>
-        /// <param name="features">Features to align.</param>
-        /// <param name="options">Options to use.</param>
-        /// <returns>Synopsis of alignment information</returns>
         classAlignmentData AlignFeatures(   MassTagDatabase     database,      
                                             List<UMCLight>      features,  
                                             AlignmentOptions    options,
@@ -32,10 +29,6 @@ namespace MultiAlignCore.Algorithms.Alignment
         /// <summary>
         /// Aligns a set of features to another set of features.
         /// </summary>
-        /// <param name="baseline">Features to align to. (baseline)</param>
-        /// <param name="features">Features to align.  (alignee)</param>
-        /// <param name="options">Options to use.</param>
-        /// <returns>Synopsis of alignment information</returns>
         classAlignmentData AlignFeatures(   List<UMCLight>      baseline,
                                             List<UMCLight>      features,  
                                             AlignmentOptions    options);               

@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using MultiAlignCore.Data;
 using MultiAlignCore.IO.Parameters;
-using MultiAlignCore.Data;
-using System.Text;
-using PNNLOmics.Data.Features;
-using PNNLOmics.Algorithms.FeatureClustering;
 using PNNLOmics.Algorithms;
-using System.ComponentModel;
 using PNNLOmics.Algorithms.Distance;
+using PNNLOmics.Algorithms.FeatureClustering;
+using PNNLOmics.Data.Features;
+using System.ComponentModel;
 
 namespace MultiAlignCore.Algorithms.Clustering
 {

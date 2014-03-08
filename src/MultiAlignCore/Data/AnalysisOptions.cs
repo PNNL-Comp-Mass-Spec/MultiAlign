@@ -4,6 +4,7 @@ using MultiAlignCore.Algorithms.FeatureFinding;
 using MultiAlignCore.Algorithms.FeatureMatcher;
 using MultiAlignCore.Algorithms.Features;
 using MultiAlignCore.Algorithms.MSLinker;
+using MultiAlignCore.Algorithms.Options;
 using MultiAlignCore.Data.Features;
 using MultiAlignCore.IO.MTDB;
 using MultiAlignCore.IO.Parameters;
@@ -27,7 +28,7 @@ namespace MultiAlignCore.Data
             MSLinkerOptions                 = new MSLinkerOptions();
             FeatureFilterOptions            = new FeatureFilterOptions();
             STACOptions                     = new STACOptions();            
-            MassTagDatabaseOptions          = new MassTagDatabaseOptions();
+            MassTagDatabaseOptions          = new MultiAlignCore.IO.MTDB.MassTagDatabaseOptions();
             ConsolidationOptions            = new FeatureConsolidatorOptions();
         }
 
@@ -62,7 +63,7 @@ namespace MultiAlignCore.Data
         /// Gets or sets the mass tag database options.
         /// </summary>
         [ParameterFileGroupAttribute("Mass Tag Database", "Filtering options for loading mass tags from the database.")]
-        public MassTagDatabaseOptions MassTagDatabaseOptions
+        public MultiAlignCore.IO.MTDB.MassTagDatabaseOptions MassTagDatabaseOptions
         {
             get;
             set;

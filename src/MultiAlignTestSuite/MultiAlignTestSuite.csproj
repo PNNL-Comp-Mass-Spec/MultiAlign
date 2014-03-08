@@ -168,7 +168,6 @@
     <Compile Include="Algorithms\UMCAlignment.cs" />
     <Compile Include="Algorithms\UMCClustering.cs" />
     <Compile Include="Algorithms\UMCFeatureFinding.cs" />
-    <Compile Include="Algorithms\Xic\XicTest.cs" />
     <Compile Include="IO\Databases\DatabaseIoTests.cs" />
     <Compile Include="IO\UMCClusterIO.cs" />
     <Compile Include="IO\UMCFeatureDOATest.cs" />
@@ -203,6 +202,9 @@
       <Project>{9409de9b-f3f0-41aa-95f5-8bfd525f5669}</Project>
       <Name>PNNLControls</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Algorithms\Xic\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

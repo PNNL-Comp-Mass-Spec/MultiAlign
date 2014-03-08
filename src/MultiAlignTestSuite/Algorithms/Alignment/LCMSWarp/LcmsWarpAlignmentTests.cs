@@ -1,4 +1,5 @@
 ﻿using MultiAlignCore.Algorithms.Alignment;
+using MultiAlignCore.Algorithms.Options;
 using MultiAlignCore.IO.Features.Hibernate;
 using NUnit.Framework;
 using PNNLOmics.Data.Features;

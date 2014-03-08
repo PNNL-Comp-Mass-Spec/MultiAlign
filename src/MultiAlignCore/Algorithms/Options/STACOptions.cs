@@ -18,14 +18,12 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
         {
             MassTolerancePPM        = 6.0;
             NETTolerance            = 0.03;
-            DriftTimeTolerance      = 50.0;
-            WriteResultsBackToMTS   = false;            
+            DriftTimeTolerance      = 50.0;           
             ShiftAmount             = 11;
             UsePriors               = true;
             UseEllipsoid            = false;
             UseDriftTime            = false;
             ShouldCalculateSTAC     = true;
-
             IdentificationAlgorithm = PeakMatchingType.STAC;
         }
 
@@ -38,14 +36,6 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
         [Category("AMT")]
         [Description("Determines if prior probilities of the tags being matched to should be used.")]
         public bool UsePriors
-        {
-            get;
-            set;
-        }
-        [ParameterFileAttribute("WriteResultsBackToMTS", "STAC")]
-        [Category("AMT")]
-        [Description("Determines if results from STAC should be written back to the Mass Tag System (PNNL Only).")]
-        public bool WriteResultsBackToMTS
         {
             get;
             set;

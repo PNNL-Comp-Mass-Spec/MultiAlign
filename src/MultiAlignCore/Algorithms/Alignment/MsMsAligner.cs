@@ -1,14 +1,12 @@
-﻿using System;
+﻿using MultiAlignCore.Algorithms.Options;
+using MultiAlignCore.Data.Alignment;
 using MultiAlignCore.Data.MetaData;
-using PNNLOmics.Algorithms.Solvers;
+using PNNLOmics.Algorithms.Solvers.LevenburgMarquadt.BasisFunctions;
+using PNNLOmics.Data;
+using PNNLOmics.Data.Features;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using PNNLOmics.Data.Features;
-using PNNLOmics.Data;
-using MultiAlignCore.Data.Alignment;
-using MultiAlignCore.Data;
-using PNNLOmics.Algorithms.Solvers.LevenburgMarquadt.BasisFunctions;
 
 namespace MultiAlignCore.Algorithms.Alignment
 {

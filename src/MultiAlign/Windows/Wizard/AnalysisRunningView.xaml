@@ -8,17 +8,24 @@
              d:DesignWidth="1200">
     <UserControl.Resources>
         <DataTemplate x:Key="MessageTemplate">
-            <Border>
+            <Border
+                Margin="2"
+                BorderThickness="1"
+                BorderBrush="LightGray"
+                >
                 <StackPanel>
                     <TextBlock Text="{Binding Time}"
                                FontWeight="Bold"
-                               FontSize="12"
-                               Foreground="LightGray"/>
+                               FontSize="14"
+                               Margin="2"
+                               Foreground="Gray"/>
                     <TextBlock TextWrapping="WrapWithOverflow"                   
                                HorizontalAlignment="Left"
                                VerticalAlignment="Top"
-                               FontSize="10"
-                               Foreground="Gray"
+                               FontSize="12"
+                               Margin="2"
+                               FontWeight="ExtraBlack"
+                               Foreground="Black"
                                Text="{Binding Path=Message}" />
                 </StackPanel>
             </Border>            
@@ -26,42 +33,124 @@
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="82"/>
             <RowDefinition Height="65*"/>
             <RowDefinition Height="38"/>
         </Grid.RowDefinitions>
-        <Grid
-            Grid.Row="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="60*"/>
-                <ColumnDefinition Width="40*"/>
-            </Grid.ColumnDefinitions>
 
-            <Border
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="60*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="40*"/>
+        </Grid.ColumnDefinitions>
+        
+        <ItemsControl Grid.Row="0"
+                      Margin="10"
+                      ItemsSource="{Binding AnalysisNodes}"
+                      >
+            <ItemsControl.Template>
+                <ControlTemplate>
+                    <WrapPanel  
+                                Width="{TemplateBinding Width}" 
+                                Height="{TemplateBinding Height}" 
+                                FlowDirection="LeftToRight"
+                                IsItemsHost="true">
+                    </WrapPanel>
+                </ControlTemplate>
+            </ItemsControl.Template>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Border Margin="2"
+                            BorderThickness="1">
+                        <Border.Style>
+                            <Style TargetType="{x:Type Border}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsCurrent}" Value="True">
+                                        <Setter Property="BorderBrush" Value="Crimson"/>
+                                        <Setter Property="BorderThickness" Value="3"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding IsCurrent}" Value="False">
+                                        <Setter Property="BorderBrush" Value="Gainsboro"/>
+                                        <Setter Property="BorderThickness" Value="1"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+                        <StackPanel Orientation="Horizontal">
+                            <Image            
+                                    Height="16"
+                                    VerticalAlignment="Center"
+                                    HorizontalAlignment="Center"
+                                    Source="/MultiAlign;component/Resources/circle-32.png">
+                                <Image.Style >
+                                    <Style TargetType="{x:Type Image}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsCurrent}" Value="True">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                                
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding IsCurrent}" Value="False">
+                                                <Setter Property="Visibility" Value="Hidden"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Image.Style>
+                            </Image>
+                            <TextBlock Text="{Binding Name}"
+                               FontWeight="Bold"
+                               FontSize="18"
+                               Margin="2"
+                               ToolTip="{Binding Description}"
+                               Foreground="Black"/>
+                        </StackPanel>
+                    </Border>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        <Border
+            BorderBrush="LightGray"
+            BorderThickness="5"
+            Padding="2"
+            Margin="5"
+            Grid.Row="1"
+            Grid.Column="0">
+            <ScrollViewer>
+                <ListBox  
+                    ItemsSource="{Binding Path=GalleryImages}"/>
+            </ScrollViewer>
+        </Border>
+
+        <Border
                 BorderBrush="LightGray"
                 BorderThickness="5"
                 Padding="2"
                 Margin="5"
-                Grid.Column="0"
+                Grid.Column="2"
+                Grid.RowSpan="2"
                 Grid.Row="0">
-                <ScrollViewer>
-                    <ListBox  
-                        ItemsSource="{Binding Path=GalleryImages}"/>
-                </ScrollViewer>
-            </Border>
-            <ScrollViewer
-                Margin="5"
-                Grid.Column="1">
+            <ScrollViewer                    
+                    Margin="5">
                 <ListBox 
-                    HorizontalContentAlignment="Left"
-                    VerticalContentAlignment="Center"
-                    ItemTemplate="{StaticResource MessageTemplate}"
-                    ItemsSource="{Binding Messages, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True}"/>
+                        HorizontalContentAlignment="Stretch"
+                        VerticalContentAlignment="Center"
+                        ItemTemplate="{StaticResource MessageTemplate}"
+                        HorizontalAlignment="Stretch"
+                        ItemsSource="{Binding Messages, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True}"/>
             </ScrollViewer>
-        </Grid>
-
+        </Border>
+        <GridSplitter
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                Width="3"
+                Grid.Column="1"
+                Grid.Row="0"
+                Grid.RowSpan="2"
+                Background="Gray"
+                />
         <Button            
                 Style="{DynamicResource ResourceKey=SimpleButtonStyle}"                            
-                Grid.Row="1"
+                Grid.Row="2"
+                Grid.Column="2"
                 Width="128"
                 HorizontalAlignment="Right"
                 Margin="5,5,5,5"

@@ -1,3 +1,4 @@
+using MultiAlignCore.Algorithms.Options;
 using MultiAlignCore.Data.Alignment;
 using MultiAlignCore.Data.Features;
 using MultiAlignCore.Data.MassTags;

@@ -35,8 +35,8 @@ namespace MultiAlign.ViewModels.Wizard
             Messages        = new ObservableCollection<StatusEventArgs>();
             GalleryImages   = new ObservableCollection<UserControl>();
             Reporter        = new AnalysisReportGenerator();
-
-            CancelAnalysis = new BaseCommandBridge(CancelAnalysisDelegate);
+            AnalysisNodes   = new ObservableCollection<AnalysisGraphNodeViewModel>();
+            CancelAnalysis  = new BaseCommandBridge(CancelAnalysisDelegate);
             RouteMessages();
         }
 
@@ -80,14 +80,18 @@ namespace MultiAlign.ViewModels.Wizard
             Controller.AnalysisComplete     += Controller_AnalysisComplete;
             Controller.AnalysisError        += Controller_AnalysisError;
             Controller.AnalysisCancelled    += Controller_AnalysisCancelled;
+            Controller.AnalysisStarted      += ControllerOnAnalysisStarted;
 
             // Start the analysis.
             Controller.StartMultiAlignGui(config, this);                        
         }
 
+
         public ICommand CancelAnalysis { get; set; }
 
         #region Properties
+
+        public ObservableCollection<AnalysisGraphNodeViewModel> AnalysisNodes { get; set; }
         /// <summary>
         /// Gets the images associated with a dataset.
         /// </summary>
@@ -201,6 +205,17 @@ namespace MultiAlign.ViewModels.Wizard
             };
             ThreadSafeDispatcher.Invoke(workAction);
             
+        }
+        private void ControllerOnAnalysisStarted(object sender, AnalysisGraphEventArgs analysisGraphEventArgs)
+        {
+
+            Action workAction = () =>
+            {
+                AnalysisNodes.Clear();
+                analysisGraphEventArgs.AnalysisGraph.Nodes.ForEach(x => AnalysisNodes.Add(new AnalysisGraphNodeViewModel(x)));
+            };
+            ThreadSafeDispatcher.Invoke(workAction);
+
         }
         void Controller_AnalysisCancelled(object sender, EventArgs e)
         {

@@ -136,7 +136,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Algorithms\AlgorithmProvider.cs" />
-    <Compile Include="Algorithms\Alignment\AlignmentOptions.cs" />
+    <Compile Include="Algorithms\Options\AlignmentOptions.cs" />
     <Compile Include="Algorithms\Alignment\DriftTimeAligner.cs" />
     <Compile Include="Algorithms\Alignment\DummyAlignment.cs" />
     <Compile Include="Algorithms\Alignment\FeatureAlignerFactory.cs" />
@@ -149,12 +149,21 @@
     <Compile Include="Algorithms\AnalysisController.cs" />
     <Compile Include="Algorithms\AnalysisGraph.cs" />
     <Compile Include="Algorithms\AnalysisGraphBuilder.cs" />
+    <Compile Include="Algorithms\AnalysisGraphEventArgs.cs" />
+    <Compile Include="Algorithms\AnalysisGraphNode.cs" />
     <Compile Include="Algorithms\AnalysisStep.cs" />
     <Compile Include="Algorithms\AnalysisType.cs" />
     <Compile Include="Algorithms\AnalysisValidator.cs" />
     <Compile Include="Algorithms\Clustering\ClusteringOptions.cs" />
     <Compile Include="Algorithms\Clustering\MsnClusterer.cs" />
     <Compile Include="Algorithms\Clustering\ClusteringAlgorithmType.cs" />
+    <Compile Include="Algorithms\DelegateAnalysisMethod.cs" />
+    <Compile Include="Algorithms\FilterRange.cs" />
+    <Compile Include="Algorithms\Options\MultiAlignAnalysisOptions.cs" />
+    <Compile Include="Algorithms\Options\LcmsClusteringOptions.cs" />
+    <Compile Include="Algorithms\Options\LcmsFeatureFilteringOptions.cs" />
+    <Compile Include="Algorithms\Options\MassTagDatabaseOptions.cs" />
+    <Compile Include="Algorithms\Options\MsFeatureFilteringOptions.cs" />
     <Compile Include="IO\FeatureCache.cs" />
     <Compile Include="Algorithms\FeatureFinding\AbundanceReportingType.cs" />
     <Compile Include="Algorithms\FeatureFinding\FeatureEvaluator.cs" />
@@ -167,7 +176,7 @@
     <Compile Include="Algorithms\FeatureFinding\UMCTreeFeatureFinder.cs" />
     <Compile Include="Algorithms\FeatureFinding\XicAdaptor.cs" />
     <Compile Include="Algorithms\FeatureFinding\XicFinder.cs" />
-    <Compile Include="Algorithms\FeatureMatcher\STACOptions.cs" />
+    <Compile Include="Algorithms\Options\STACOptions.cs" />
     <Compile Include="Algorithms\FeatureMatcher\PeakMatchingType.cs" />
     <Compile Include="Algorithms\FeatureMatcher\STAC.cs" />
     <Compile Include="Algorithms\FeaturesClusteredEventArgs.cs" />

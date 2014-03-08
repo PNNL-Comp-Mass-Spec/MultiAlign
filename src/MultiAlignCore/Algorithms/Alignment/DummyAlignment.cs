@@ -5,6 +5,7 @@ using System.Text;
 using MultiAlignCore.Data.Alignment;
 using PNNLOmics.Algorithms;
 using MultiAlignCore.Data.MassTags;
+using MultiAlignCore.Algorithms.Options;
 
 namespace MultiAlignCore.Algorithms.Alignment
 {
@@ -15,7 +16,8 @@ namespace MultiAlignCore.Algorithms.Alignment
     {
         #region IFeatureAligner Members
 
-        public classAlignmentData AlignFeatures(MassTagDatabase database, List<PNNLOmics.Data.Features.UMCLight> features, AlignmentOptions options, bool alignDriftTimes)
+        public classAlignmentData AlignFeatures(MassTagDatabase database,
+            List<PNNLOmics.Data.Features.UMCLight> features, AlignmentOptions options, bool alignDriftTimes)
         {
             return null;
         }

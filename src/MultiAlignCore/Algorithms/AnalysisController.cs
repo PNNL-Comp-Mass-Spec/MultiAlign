@@ -1,6 +1,4 @@
-﻿using System.Data;
-using System.Diagnostics;
-using MultiAlignCore.Algorithms.Clustering;
+﻿using MultiAlignCore.Algorithms.Clustering;
 using MultiAlignCore.Algorithms.FeatureFinding;
 using MultiAlignCore.Algorithms.Features;
 using MultiAlignCore.Data;
@@ -14,6 +12,7 @@ using MultiAlignCore.IO.Features.Hibernate;
 using MultiAlignCore.IO.InputFiles;
 using MultiAlignCore.IO.MTDB;
 using MultiAlignCore.IO.Parameters;
+using PNNLOmics.Algorithms;
 using PNNLOmics.Data.Features;
 using System;
 using System.Collections.Generic;
@@ -22,7 +21,6 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using PNNLOmics.Algorithms;
 
 
 namespace MultiAlignCore.Algorithms
@@ -35,6 +33,7 @@ namespace MultiAlignCore.Algorithms
         public event EventHandler AnalysisComplete;
         public event EventHandler AnalysisError;
         public event EventHandler AnalysisCancelled;
+        public event EventHandler<AnalysisGraphEventArgs> AnalysisStarted;
 
         #region Analysis Config and Reporting     
         private IAnalysisReportGenerator        m_reportCreator;
@@ -194,10 +193,7 @@ namespace MultiAlignCore.Algorithms
         void processor_MassTagsLoaded(object sender, MassTagsLoadedEventArgs e)
         {
             m_reportCreator.CreateMassTagPlot(e);            
-        }        
-        #endregion
-
-        #region Processor Events
+        }
         /// <summary>
         /// 
         /// </summary>
@@ -211,10 +207,10 @@ namespace MultiAlignCore.Algorithms
                 Logger.PrintMessage(string.Format("\n{0}", e.Exception.StackTrace));
             }
             m_config.errorException = e.Exception;
-            m_config.errorEvent.Set();            
+            m_config.errorEvent.Set();
         }
         #endregion
-
+        
         #region Help
         /// <summary>
         /// Prints the help message.
@@ -292,9 +288,7 @@ namespace MultiAlignCore.Algorithms
             Logger.PrintMessage("   -exportCrossTab  crossTabFileName     ", false);
             Logger.PrintMessage("          Exports clusters and their LC-MS features in cross tab fashion.  Each row is a cluster.  No mass tags are exported.  This file will be sent to the analysis path folder you specified.", false);
             Logger.PrintMessage("   -exportAbundances  crossTabFileName     ", false);
-            Logger.PrintMessage("          Exports cluster ids and the abundances of their LC-MS features in cross tab fashion.  Each row is a cluster.  No mass tags are exported.  This file will be sent to the analysis path folder you specified.", false);
-            Logger.PrintMessage("   -exportDTA      ", false);
-            Logger.PrintMessage("          Exports all MS/MS spectra in the DTA format.", false);
+            Logger.PrintMessage("          Exports cluster ids and the abundances of their LC-MS features in cross tab fashion.  Each row is a cluster.  No mass tags are exported.  This file will be sent to the analysis path folder you specified.", false);            
             Logger.PrintMessage("   -plots   [databaseName]  ", false);
             Logger.PrintMessage("          Creates plots for final analysis.  If [databaseName] specified when not running analysis, this will create plots post-analysis.", false);
             Logger.PrintMessage("   -useFactors ", false);
@@ -450,7 +444,8 @@ namespace MultiAlignCore.Algorithms
         /// <returns></returns>
         private  MultiAlignAnalysisProcessor ConstructAnalysisProcessor(AlgorithmBuilder builder, FeatureDataAccessProviders providers)
         {
-            var processor = new MultiAlignAnalysisProcessor();
+            var processor                     = new MultiAlignAnalysisProcessor();
+            processor.AnalysisStarted        += processor_AnalysisStarted;
             processor.AnalysisError          += processor_AnalysisError;
             processor.FeaturesAligned        += processor_FeaturesAligned;
             processor.FeaturesLoaded         += processor_FeaturesLoaded;
@@ -464,6 +459,14 @@ namespace MultiAlignCore.Algorithms
             processor.AlgorithmProviders     = builder.GetAlgorithmProvider(m_config.Analysis.Options);
 
             return processor;
+        }
+
+        void processor_AnalysisStarted(object sender, AnalysisGraphEventArgs e)
+        {
+            if (AnalysisStarted != null)
+            {
+                AnalysisStarted(sender, e);
+            }
         }
 
         void processor_Progress(object sender, ProgressNotifierArgs e)
@@ -812,7 +815,7 @@ namespace MultiAlignCore.Algorithms
             {
                 case AnalysisStep.None:
                     break;
-                case AnalysisStep.LoadMTDB:
+                case AnalysisStep.LoadMtdb:
                     break;
                 case AnalysisStep.FindFeatures:
                     break;
@@ -824,8 +827,6 @@ namespace MultiAlignCore.Algorithms
                 case AnalysisStep.Clustering:
                     config.Analysis.DataProviders.ClusterCache.ClearAllClusters();
                     config.Analysis.DataProviders.MassTagMatches.ClearAllMatches();  
-                    break;
-                case AnalysisStep.ClusterQC:
                     break;
                 case AnalysisStep.PeakMatching:
                     config.Analysis.DataProviders.MassTagMatches.ClearAllMatches();                        

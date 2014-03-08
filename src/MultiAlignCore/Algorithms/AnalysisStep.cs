@@ -17,7 +17,7 @@ namespace MultiAlignCore.Algorithms
         /// <summary>
         /// Invalid, initial, or final state.
         /// </summary>
-        LoadMTDB,
+        LoadMtdb,
         /// <summary>
         /// Indicates that feature data should be loaded.
         /// </summary>
@@ -29,11 +29,7 @@ namespace MultiAlignCore.Algorithms
         /// <summary>
         /// Features must already be aligned.
         /// </summary>
-        Clustering,         
-        /// <summary>
-        /// Compute the QC for a cluster
-        /// </summary>
-        ClusterQC,
+        Clustering,   
         /// <summary>
         /// Features must already be clustered.
         /// </summary>

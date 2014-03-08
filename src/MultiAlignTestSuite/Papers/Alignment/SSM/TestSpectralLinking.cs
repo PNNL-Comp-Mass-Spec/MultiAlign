@@ -19,6 +19,7 @@ using PNNLOmics.Algorithms.SpectralComparisons;
 using PNNLOmics.Algorithms.Statistics;
 using PNNLOmics.Algorithms.Statistics.Distributions;
 using MultiAlignTestSuite.Papers.Alignment.SSM;
+using MultiAlignCore.Algorithms.Options;
 
 namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
 {

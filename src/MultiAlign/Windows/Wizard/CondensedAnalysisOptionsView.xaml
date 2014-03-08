@@ -265,7 +265,8 @@
                                 Foreground="Gray"
                                 FontSize="14"
                                 Margin="5"
-                                Grid.Row="2">
+                                Grid.Column="3"
+                                Grid.Row="1">
                                 Fragmentation Window Size
                             </Label>
                             <Label
@@ -279,9 +280,9 @@
                                 Foreground="Gray"
                                 FontSize="14"
                                 Margin="5"
-                                Grid.Column="3"
+                                Grid.Column="0"
                                 Visibility="{Binding Path=IsIonMobility}"
-                                Grid.Row="3">
+                                Grid.Row="4">
                                 Ion Mobility
                             </Label>
                             <TextBox 
@@ -292,8 +293,8 @@
                         Text="{Binding Path=MassResolution, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
                             <TextBox Width="Auto"
                         Margin="5"
-                        Grid.Row="2"
-                        Grid.Column="1"
+                        Grid.Row="1"
+                        Grid.Column="4"
                         Text="{Binding Path=FragmentationTolerance, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
                             <TextBox 
                         Margin="5"
@@ -304,8 +305,8 @@
                             <TextBox 
                         Width="Auto"
                         Margin="5"
-                        Grid.Row="3"
-                        Grid.Column="4"
+                        Grid.Row="4"
+                        Grid.Column="1"
                         Visibility="{Binding Path=IsIonMobility}"
                         Text="{Binding Path=DriftTimeTolerance, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
                             <Label
@@ -320,8 +321,8 @@
                         Foreground="Gray"
                         FontSize="14"
                         Margin="5"
-                        Grid.Column="2"
-                        Grid.Row="2">
+                        Grid.Column="5"
+                        Grid.Row="1">
                                 Th.
                             </Label>
                             <Label                    
@@ -336,40 +337,10 @@
                                 Foreground="Gray"
                                 FontSize="14"
                                 Margin="5"
-                                Grid.Column="5"
-                                Grid.Row="3">
+                                Grid.Column="2"
+                                Grid.Row="4">
                                 ms
                             </Label>
-                            <Label
-                                Foreground="Gray"
-                                FontSize="14"
-                                Margin="5"
-                                Grid.Column="3"
-                                Visibility="{Binding Path=IsIonMobility}"
-                                Grid.Row="1">
-                                Low Mass (mono)
-                            </Label>
-                            <Label
-                                Foreground="Gray"
-                                FontSize="14"
-                                Margin="5"
-                                Visibility="{Binding Path=IsIonMobility}"
-                                Grid.Row="2"
-                                Grid.Column="3">
-                                High Mass(mono)
-                            </Label>
-                            <TextBox 
-                                Width="Auto"
-                                Margin="5"
-                                Grid.Row="1"
-                                Grid.Column="4"                    
-                                Text="{Binding Path=LowMassRange, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
-                            <TextBox 
-                                Width="Auto"
-                                Margin="5"
-                                Grid.Row="2"
-                                Grid.Column="4"                    
-                                Text="{Binding Path=HighMassRange, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
 
                         </Grid>
                     </DockPanel>
@@ -455,70 +426,135 @@
                         FontSize="14"
                         Foreground="Gray"
                         Header="Features">
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                    </Grid.RowDefinitions>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="164"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
+                       <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="164"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="164"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
 
                                     <Label
                                             Foreground="Gray"
                                             FontSize="14"
                                             Margin="5"                                
                                             Grid.Row="0">   
-                                        Minimum Retention Time (scans)
+                                            LC-MS Features should be between
                                     </Label>
-                                    <TextBox 
-                                Margin="5"
-                                Grid.Row="0"
-                                Grid.Column="1"                                
-                                Text="{Binding Path=MinimumFeatureLength, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
-                                    <Label
-                                Foreground="Gray"
-                                FontSize="14"
-                                Margin="5"
-                                Grid.Column="2"
-                                HorizontalAlignment="Left"
-                                Grid.Row="0">
-                                        scans
-                                    </Label>
-
-                                    <Label
-                                Foreground="Gray"
-                                FontSize="14"
-                                Margin="5,8,5,2"                                
-                                Grid.Row="1">
-                                        Minimum Deisotoping Fit Score
-                                    </Label>
-                                    <TextBox 
-                                Margin="5"
+                            <TextBox 
+                                    Margin="5"
+                                    Grid.Row="0"
+                                    Grid.Column="1"                                
+                                    Text="{Binding  Path=MinimumFeatureLength, 
+                                                    Mode=TwoWay, 
+                                                    NotifyOnSourceUpdated=True, 
+                                                    UpdateSourceTrigger=PropertyChanged}"/>      
+                            <Label
+                                        Foreground="Gray"
+                                        FontSize="14"
+                                        Margin="5"
+                                        Grid.Column="2"
+                                        HorizontalAlignment="Left"
+                                        Grid.Row="0">
+                                        and
+                            </Label>
+                            <TextBox 
+                                    Margin="5"
+                                    Grid.Row="0"
+                                    Grid.Column="3"                                
+                                    Text="{Binding  Path=MaximumFeatureLength, 
+                                                    Mode=TwoWay, 
+                                                    NotifyOnSourceUpdated=True, 
+                                                    UpdateSourceTrigger=PropertyChanged}"/>
+                            <Label
+                                        Foreground="Gray"
+                                        FontSize="14"
+                                        Margin="5"
+                                        Grid.Column="4"
+                                        HorizontalAlignment="Left"
+                                        Grid.Row="0">
+                                scans long
+                            </Label>
+                            <CheckBox 
                                 Grid.Row="1"
-                                Grid.Column="1"                                
-                                Text="{Binding Path=DeisotopingFitScore, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
-
-                                    <Label
+                                Grid.Column="0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
                                 Foreground="Gray"
-                                FontSize="14"
-                                Margin="5,8,5,2"                                
-                                Grid.Row="2">
-                                        Minimum Abundance
-                                    </Label>
-                                    <TextBox 
+                                Content="Only analyze m/z from "
+                                />
+                            <TextBox 
+                                    Margin="5"
+                                    Grid.Row="1"
+                                    Grid.Column="1"                                
+                                    Text="{Binding  Path=MinimumMz, 
+                                                    Mode=TwoWay, 
+                                                    NotifyOnSourceUpdated=True, 
+                                                    UpdateSourceTrigger=PropertyChanged}"/>
+                            <Label
+                                        Foreground="Gray"
+                                        FontSize="14"
+                                        Margin="5"
+                                        Grid.Row="1"
+                                        Grid.Column="2"
+                                        HorizontalAlignment="Left">
+                                and
+                            </Label>
+                            <TextBox 
+                                    Margin="5"
+                                    Grid.Row="1"
+                                    Grid.Column="3"                                
+                                    Text="{Binding  Path=MaximumMz, 
+                                                    Mode=TwoWay, 
+                                                    NotifyOnSourceUpdated=True, 
+                                                    UpdateSourceTrigger=PropertyChanged}"/>
+                            <Label
+                                        Foreground="Gray"
+                                        FontSize="14"
+                                        Margin="5"
+                                        Grid.Row="1"
+                                        Grid.Column="4"
+                                        HorizontalAlignment="Left">
+                                Th.
+                            </Label>
+                           
+                            <CheckBox 
+                                Grid.Row="2"
+                                Grid.Column="0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Foreground="Gray"
+                                IsChecked="{Binding UseMinimumDeisotopingScore}"
+                                Content="Minimum Deisotoping Fit Score"
+                                />
+                            <TextBox 
                                 Margin="5"
                                 Grid.Row="2"
                                 Grid.Column="1"                                
-                                Text="{Binding Path=MinimumAbundance, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
+                                Text="{Binding Path=DeisotopingFitScore, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
 
-
-                                </Grid>
-                            </Expander>
+                            <CheckBox 
+                                Grid.Row="3"
+                                Grid.Column="0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Foreground="Gray"
+                                Content="Minimum Abundance"
+                                />
+                            <TextBox 
+                                Margin="5"
+                                Grid.Row="3"
+                                Grid.Column="1"                                
+                                Text="{Binding Path=MinimumAbundance, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>                            
+                        </Grid>
+                    </Expander>
                 </Expander>
                 <Label
                     Grid.Column="1"

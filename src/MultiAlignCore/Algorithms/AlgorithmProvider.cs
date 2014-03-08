@@ -101,7 +101,7 @@ namespace MultiAlignCore.Algorithms
             {
                 if (provider != null)
                 {
-                    provider.Progress += new System.EventHandler<ProgressNotifierArgs>(provider_Progress);
+                    provider.Progress += provider_Progress;
                 }
             }
         }

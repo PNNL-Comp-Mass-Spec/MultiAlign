@@ -2,6 +2,7 @@ using MultiAlign.IO;
 using MultiAlignCore.Algorithms.Alignment;
 using MultiAlignCore.Algorithms.FeatureFinding;
 using MultiAlignCore.Algorithms.FeatureMatcher;
+using MultiAlignCore.Algorithms.Options;
 using MultiAlignCore.Algorithms.Workflow;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.Alignment;
@@ -63,6 +64,10 @@ namespace MultiAlignCore.Algorithms
         /// Fired when the analysis is complete.
         /// </summary>
         public event EventHandler<AnalysisCompleteEventArgs>    AnalysisComplete;   
+        /// <summary>
+        /// Fired when the analysis is ready to start.
+        /// </summary>
+        public event EventHandler<AnalysisGraphEventArgs>       AnalysisStarted;
         #endregion
 
         #region Members
@@ -89,22 +94,12 @@ namespace MultiAlignCore.Algorithms
         {
             m_algorithms      = null;
             AnalysisStartStep = AnalysisStep.Alignment;
-
-            XicWriter = new XicWriter();
-
+            
             CreateAnalysisMethodMap();            
         }
         #endregion
 
         #region Properties
-        /// <summary>
-        /// Writer for exporting Xic's
-        /// </summary>
-        public IXicWriter XicWriter
-        {
-            get;
-            set;
-        }
         /// <summary>
         /// Gets or sets whether to load data.
         /// </summary>
@@ -203,12 +198,14 @@ namespace MultiAlignCore.Algorithms
             };
         }
         
-        private AnalysisGraphNode CreateNode(AnalysisStep step)
+        private AnalysisGraphNode CreateNode(AnalysisStep step, string name, string description)
         {
             var node        = new AnalysisGraphNode 
             {
+                Name        = name,
+                Description = description,
                 CurrentStep = step, 
-                Method = m_methodMap[step]
+                Method      = m_methodMap[step]
             };
             return node;
         }
@@ -220,42 +217,45 @@ namespace MultiAlignCore.Algorithms
             // Create a feature database
             if (config.ShouldCreateFeatureDatabaseOnly)
             {                
-                graph.AddNode(CreateNode(AnalysisStep.FindFeatures));                
+                graph.AddNode(CreateNode(AnalysisStep.FindFeatures, "Feature Creation", "Creates or loads features from deisotoped data."));                
             }
             else
             {
                 if (config.ShouldLoadMTDB)
                 {
-                    var node  = new AnalysisGraphNode();
-                    node.CurrentStep        = AnalysisStep.LoadMTDB;
+                    var node  = new AnalysisGraphNode
+                    {
+                        Name        = "Load MTDB",
+                        Description = "Loads an AMT Tag Database for alignment or peptide identification",
+                        CurrentStep = AnalysisStep.LoadMtdb,
+                        Method =
+                            config.InitialStep == AnalysisStep.FindFeatures
+                                ? CreateMtdb
+                                : new DelegateAnalysisMethod(LoadMtdb)
+                    };
 
-                    node.Method = config.InitialStep == AnalysisStep.FindFeatures ? CreateMtdb : new DelegateAnalysisMethod(LoadMtdb);
-                    
                     graph.AddNode(node);                    
                 }
                 
                 switch (config.InitialStep)
                 {
-                    case AnalysisStep.LoadMTDB:
+                    case AnalysisStep.LoadMtdb:
                     case AnalysisStep.FindFeatures:
-                        graph.AddNode(CreateNode(AnalysisStep.FindFeatures));
-                        graph.AddNode(CreateNode(AnalysisStep.Clustering));
-                        graph.AddNode(CreateNode(AnalysisStep.PeakMatching));
+                        graph.AddNode(CreateNode(AnalysisStep.FindFeatures, "Feature Creation And Alignment", "Creates or loads features from deisotoped data and aligns them to a baseline."));
+                        graph.AddNode(CreateNode(AnalysisStep.Clustering, "Cluster Features", "Clusters features across datasets."));
+                        graph.AddNode(CreateNode(AnalysisStep.PeakMatching, "Feature Identification", "Matches features to an AMT Tag database."));
                         break;
                     case AnalysisStep.Alignment:
-                        graph.AddNode(CreateNode(AnalysisStep.Alignment));
-                        graph.AddNode(CreateNode(AnalysisStep.Clustering));
-                        graph.AddNode(CreateNode(AnalysisStep.PeakMatching));
+                        graph.AddNode(CreateNode(AnalysisStep.Alignment, "Feature Alignment", "Aligns features to a reference to correct for systematic errors."));
+                        graph.AddNode(CreateNode(AnalysisStep.Clustering, "Cluster Features", "Clusters features across datasets."));
+                        graph.AddNode(CreateNode(AnalysisStep.PeakMatching, "Feature Identification", "Matches features to an AMT Tag database."));
                         break;
                     case AnalysisStep.Clustering:
-                        graph.AddNode(CreateNode(AnalysisStep.Clustering));
-                        graph.AddNode(CreateNode(AnalysisStep.PeakMatching));
-                        break;
-                    case AnalysisStep.ClusterQC:                        
-                        graph.AddNode(CreateNode(AnalysisStep.ClusterQC));
+                        graph.AddNode(CreateNode(AnalysisStep.Clustering, "Cluster Features", "Clusters features across datasets."));
+                        graph.AddNode(CreateNode(AnalysisStep.PeakMatching, "Feature Identification", "Matches features to an AMT Tag database."));
                         break;
                     case AnalysisStep.PeakMatching:
-                        graph.AddNode(CreateNode(AnalysisStep.PeakMatching));
+                        graph.AddNode(CreateNode(AnalysisStep.PeakMatching, "Feature Identification", "Matches features to an AMT Tag database."));
                         break;
                 }                
             }
@@ -458,7 +458,7 @@ namespace MultiAlignCore.Algorithms
 
         private IList<UMCLight> AlignDataset(
                                             IList<UMCLight>          features,
-                                            IList<UMCLight>          baselineFeatures,
+                                            IEnumerable<UMCLight> baselineFeatures,
                                             MassTagDatabase         database,
                                             AlignmentOptions        options,
                                             IAlignmentDAO           alignmentCache,
@@ -489,10 +489,8 @@ namespace MultiAlignCore.Algorithms
 
             var args = new FeaturesAlignedEventArgs(baselineInfo,
                                                     datasetInfo,
-                                                    alignmentData);
+                                                    alignmentData) {AlignedFeatures = features.ToList()};
 
-            args.AlignedFeatures = features.ToList();
-                        
             if (FeaturesAligned != null)            
                 FeaturesAligned(this, args);
             
@@ -502,20 +500,19 @@ namespace MultiAlignCore.Algorithms
             UpdateStatus( "Updating cache with aligned features.");
             return features;
         }
-        private classAlignmentData AlignFeatures(IList<UMCLight>   features,
-                                                 IList<UMCLight>    baselineFeatures,
+        private classAlignmentData AlignFeatures(IEnumerable<UMCLight> features,
+                                                 IEnumerable<UMCLight> baselineFeatures,
                                                  IFeatureAligner   aligner,
                                                  AlignmentOptions  options)
         {
-            classAlignmentData alignmentData;
-            
-            alignmentData = aligner.AlignFeatures(baselineFeatures.ToList(),
-                                                    features.ToList(),
-                                                    options);
-            
+            classAlignmentData alignmentData = aligner.AlignFeatures(baselineFeatures.ToList(),
+                features.ToList(),
+                options);
+
             return alignmentData;
         }
-        private classAlignmentData AlignFeatures(   IList<UMCLight>  features,
+
+        private classAlignmentData AlignFeatures(   IEnumerable<UMCLight> features,
                                                     MassTagDatabase  database,
                                                     IFeatureAligner  aligner,
                                                     AlignmentOptions options)
@@ -587,14 +584,13 @@ namespace MultiAlignCore.Algorithms
             }
             else
             {
-                int maxChargeState = featureCache.FindMaxCharge();
-                int minChargeState = 1;
+                var maxChargeState = featureCache.FindMaxCharge();                
             
                 /*
                  * Here we cluster all charge states separately.  Probably IMS Data.
                  */
                 UpdateStatus("Clustering charge states individually.");
-                for(var chargeState = minChargeState; chargeState <= maxChargeState; chargeState++)
+                for(var chargeState = 1; chargeState <= maxChargeState; chargeState++)
                 {
                     List<UMCLight> features         = featureCache.FindByCharge(chargeState);
                     if (features.Count < 1)
@@ -655,21 +651,14 @@ namespace MultiAlignCore.Algorithms
                     IPeakMatcher<UMCClusterLight> peakMatcher   = m_algorithms.PeakMatcher;
 
                     UpdateStatus("Performing Peak Matching");                          
-                    STACAdapter<UMCClusterLight> adapter = peakMatcher as STACAdapter<UMCClusterLight>;
+                    var adapter = peakMatcher as STACAdapter<UMCClusterLight>;
                     if (adapter != null)
                     {
-                        if (adapter.Options.UseDriftTime)
-                        {
-                            UpdateStatus( "Using drift time.");
-                        }
-                        else
-                        {
-                            UpdateStatus( "Ignoring drift time.");
-                        }
+                        UpdateStatus(adapter.Options.UseDriftTime ? "Using drift time." : "Ignoring drift time.");
                     }
                     else
                     {
-                        TraditionalPeakMatcher<UMCClusterLight> traditional = peakMatcher as TraditionalPeakMatcher<UMCClusterLight>;
+                        var traditional = peakMatcher as TraditionalPeakMatcher<UMCClusterLight>;
                         if (traditional != null && !m_config.Analysis.MassTagDatabase.DoesContainDriftTime)
                         {
                             if (!m_config.Analysis.MassTagDatabase.DoesContainDriftTime)
@@ -680,7 +669,7 @@ namespace MultiAlignCore.Algorithms
                         }
                     }
 
-                    PeakMatchingResults<UMCClusterLight, MassTagLight> matchResults = new PeakMatchingResults<UMCClusterLight, MassTagLight>();
+                    var matchResults = new PeakMatchingResults<UMCClusterLight, MassTagLight>();
                     clusters.ForEach(x => x.NET = x.RetentionTime);
                     matchResults.Matches = peakMatcher.PerformPeakMatching(clusters, m_config.Analysis.MassTagDatabase);
 
@@ -694,10 +683,7 @@ namespace MultiAlignCore.Algorithms
                     {
                         FeaturesPeakMatched(this, new FeaturesPeakMatchedEventArgs(clusters, matchResults.Matches));
                     }
-
-                    
-                    
-                    
+                                                           
                     UpdateStatus( "Updating database with peak matched results.");
                     var writer = new PeakMatchResultsWriter();
                     int matchedMassTags;
@@ -709,20 +695,7 @@ namespace MultiAlignCore.Algorithms
 
                     UpdateStatus( string.Format("Found {0} mass tag matches. Matching to {1} potential proteins.",
                                                                                                 matchedMassTags,
-                                                                                                matchedProteins));
-
-                    if (m_config.Analysis.Options.STACOptions.WriteResultsBackToMTS && m_config.Analysis.MetaData.JobID != -1)
-                    {
-                        const string databasePath = "";
-                        MTSPeakMatchResultsWriter mtsWriter = new MTSSqlServerPeakMatchResultWriter();
-                        mtsWriter.WriteClusters(m_config.Analysis,
-                                                clusters,
-                                                databasePath);
-                    }
-                    else if (m_config.Analysis.Options.STACOptions.WriteResultsBackToMTS)
-                    {
-                        UpdateStatus( "Cannot write mass tag results back to database.  The Job ID was not specified for this analysis.");
-                    }
+                                                                                                matchedProteins));                    
                 }
             }
         }
@@ -827,20 +800,14 @@ namespace MultiAlignCore.Algorithms
                 var proteinCache = new ProteinDAO();          
                 proteinCache.AddAll(database.AllProteins);
 
-                var map = new List<MassTagToProteinMap>();
-                foreach (var massTagId in database.Proteins.Keys)
-                {
-                    foreach(var p in database.Proteins[massTagId])
-                    {                    
-                        var tempMap = new MassTagToProteinMap
-                        {
-                            ProteinId = p.ProteinID,
-                            MassTagId = massTagId,
-                            RefId = p.RefID
-                        };
-                        map.Add(tempMap);
-                    }
-                }
+                var map = (from massTagId in database.Proteins.Keys
+                                from p in database.Proteins[massTagId]
+                                    select new MassTagToProteinMap
+                                    {
+                                        ProteinId = p.ProteinID, 
+                                        MassTagId = massTagId, 
+                                        RefId = p.RefID
+                                    }).ToList();
 
                 var tempCache = new GenericDAOHibernate<MassTagToProteinMap>();
                 tempCache.AddAll(map);
@@ -857,38 +824,38 @@ namespace MultiAlignCore.Algorithms
         {
             try
             {
-                BuildAnalysisGraph(m_config);
-
+                BuildAnalysisGraph(m_config);                
                 var graph = m_config.AnalysisGraph;
+
+                if (AnalysisStarted != null)                
+                    AnalysisStarted(this, new AnalysisGraphEventArgs(graph));
+
                 foreach (var node in graph.Nodes)
                 {
+                    node.IsCurrent = true;
                     node.Method(m_config);
-                }                
+                    node.IsCurrent = false;
+                }
             }
             catch (OutOfMemoryException ex)
             {
                 UMCLoaderFactory.Status -= UMCLoaderFactory_Status;
-                if (AnalysisError != null)
-                {
+                if (AnalysisError != null)                
                     AnalysisError(this, new AnalysisErrorEventArgs("Out of memory.", ex));
-                }
+                
                 return;
             }
             catch (Exception ex)
             {
                 UMCLoaderFactory.Status -= UMCLoaderFactory_Status;
-                if (AnalysisError != null)
-                {
+                if (AnalysisError != null)                
                     AnalysisError(this, new AnalysisErrorEventArgs("Handled Error. ", ex));
-                }
+                
                 return;
             }
            
-
-            if (AnalysisComplete != null)
-            {
-                AnalysisComplete(this, new AnalysisCompleteEventArgs(m_config.Analysis));
-            }            
+            if (AnalysisComplete != null)            
+                AnalysisComplete(this, new AnalysisCompleteEventArgs(m_config.Analysis));                        
         }
         #endregion    
 

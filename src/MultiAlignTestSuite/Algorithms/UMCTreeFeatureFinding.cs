@@ -4,7 +4,6 @@ using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.Features.Hibernate;
 using MultiAlignCore.IO.RawData;
 using NUnit.Framework;
-using PNNLOmics.Algorithms.Chromatograms;
 using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Extensions;
@@ -26,8 +25,8 @@ namespace MultiAlignTestSuite.Algorithms
             var reader = new MSFeatureLightFileReader { Delimeter = "," };
             var newMsFeatures = reader.ReadFile(path);
 
-            var finder = new UmcTreeFeatureFinder();
-            var options = new LCMSFeatureFindingOptions { ConstraintMonoMass = 8, MinUMCLength = 50 };
+            var finder   = new UmcTreeFeatureFinder();
+            var options  = new LCMSFeatureFindingOptions { ConstraintMonoMass = 8, MinUMCLength = 50 };
             var features = finder.FindFeatures(newMsFeatures.ToList(), options, null);
 
             // Work on total feature count here.
@@ -57,23 +56,13 @@ namespace MultiAlignTestSuite.Algorithms
             var provider = RawLoaderFactory.CreateFileReader(rawPath);
             provider.AddDataFile(rawPath, 0);
 
-            IEnumerable<UMCLight> features = null;
-            try
-            {
-                var start = DateTime.Now;
-                features = finder.FindFeatures(newMsFeatures.ToList(), options, provider);
-                DateTime end = DateTime.Now;
-                Console.WriteLine(@"Test Took: " + end.Subtract(start).TotalSeconds);
+            IEnumerable<UMCLight> features;            
+            var start = DateTime.Now;
+            features = finder.FindFeatures(newMsFeatures.ToList(), options, provider);
+            DateTime end = DateTime.Now;
+            Console.WriteLine(@"Test Took: " + end.Subtract(start).TotalSeconds);
 
-            }catch(Exception ex)
-            {
-                int x = 0;                
-                x++;
-                if (x > 1)
-                {
-                    
-                }
-            }
+            
 
             if (features == null)
                 throw new NullReferenceException("The feature list came back empty.  This is a problem.");
@@ -81,26 +70,25 @@ namespace MultiAlignTestSuite.Algorithms
 
             
             var dirPath = Path.GetDirectoryName(path);
-            using (var writer = File.CreateText(Path.Combine(dirPath,  Path.GetFileName(path).Replace("_isos.csv", "_xics.csv"))))
-            {
-                foreach (var feature in features)
-                {                    
-                    writer.WriteLine();
-                    writer.WriteLine("Feature {0}", feature.ID);
-                    var chargeMap = feature.CreateChargeMap();
-                    foreach (int charge in chargeMap.Keys)
-                    {
+            if (dirPath != null)
+                using (var writer = File.CreateText(Path.Combine(dirPath,  Path.GetFileName(path).Replace("_isos.csv", "_xics.csv"))))
+                {
+                    foreach (var feature in features)
+                    {                    
                         writer.WriteLine();
-                        foreach (var msFeature in chargeMap[charge])
+                        writer.WriteLine("Feature {0}", feature.ID);
+                        var chargeMap = feature.CreateChargeMap();
+                        foreach (int charge in chargeMap.Keys)
                         {
-                            var count = msFeature.MSnSpectra.Count;
-                            writer.WriteLine("{0},{1},{2},{3},{4}", charge, msFeature.Mz, msFeature.Scan, msFeature.Abundance, count);
+                            writer.WriteLine();
+                            foreach (var msFeature in chargeMap[charge])
+                            {
+                                var count = msFeature.MSnSpectra.Count;
+                                writer.WriteLine("{0},{1},{2},{3},{4}", charge, msFeature.Mz, msFeature.Scan, msFeature.Abundance, count);
+                            }
                         }
                     }
                 }
-            }
-
-
 
             // Work on total feature count here.
             Assert.Greater(features.Count(), 0);
@@ -131,24 +119,11 @@ namespace MultiAlignTestSuite.Algorithms
             var provider = RawLoaderFactory.CreateFileReader(rawPath);
             provider.AddDataFile(rawPath, 0);
 
-            IEnumerable<UMCLight> features = null;
-            try
-            {
-                var start = DateTime.Now;
-                features = finder.FindFeatures(newMsFeatures.ToList(), options, provider);
-                DateTime end = DateTime.Now;
-                Console.WriteLine(@"Test Took: " + end.Subtract(start).TotalSeconds);
+            var start = DateTime.Now;
+            IEnumerable<UMCLight> features = finder.FindFeatures(newMsFeatures.ToList(), options, provider);
+            DateTime end = DateTime.Now;
+            Console.WriteLine(@"Test Took: " + end.Subtract(start).TotalSeconds);
 
-            }
-            catch (Exception ex)
-            {
-                int x = 0;
-                x++;
-                if (x > 1)
-                {
-
-                }
-            }
 
             if (features == null)
                 throw new NullReferenceException("The feature list came back empty.  This is a problem.");
@@ -156,47 +131,47 @@ namespace MultiAlignTestSuite.Algorithms
 
 
             var dirPath = Path.GetDirectoryName(path);
-            using (var writer = File.CreateText(Path.Combine(dirPath, Path.GetFileName(path).Replace("_isos.csv", "_xics.csv"))))
-            {
-                foreach (var feature in features)
+            if (dirPath != null)
+                using (var writer = File.CreateText(Path.Combine(dirPath, Path.GetFileName(path).Replace("_isos.csv", "_xics.csv"))))
                 {
-                    writer.WriteLine();
-                    writer.WriteLine("Feature {0}", feature.ID);
-                    var chargeMap = feature.CreateChargeMap();
-
-                    if (chargeMap.Keys.Count < 2)
-                        continue;
-
-                    foreach (int charge in chargeMap.Keys)
+                    foreach (var feature in features)
                     {
                         writer.WriteLine();
-                        foreach (var msFeature in chargeMap[charge])
+                        writer.WriteLine("Feature {0}", feature.ID);
+                        var chargeMap = feature.CreateChargeMap();
+
+                        if (chargeMap.Keys.Count < 2)
+                            continue;
+
+                        foreach (int charge in chargeMap.Keys)
                         {
-                            var count = msFeature.MSnSpectra.Count;
-                            writer.WriteLine("{0},{1},{2},{3},{4}", charge, msFeature.Mz, msFeature.Scan, msFeature.Abundance, count);
+                            writer.WriteLine();
+                            foreach (var msFeature in chargeMap[charge])
+                            {
+                                var count = msFeature.MSnSpectra.Count;
+                                writer.WriteLine("{0},{1},{2},{3},{4}", charge, msFeature.Mz, msFeature.Scan, msFeature.Abundance, count);
+                            }
                         }
-                    }
 
                     
-                    var charges = chargeMap.Keys.ToList();
+                        var charges = chargeMap.Keys.ToList();
 
-                    for (var i = 0; i < charges.Count; i++)
-                    {
-                        for (var j = i; j < charges.Count; j++)
+                        for (var i = 0; i < charges.Count; i++)
                         {
-                            var x = chargeMap[charges[i]];
-                            var y = chargeMap[charges[j]];
-
-                            var diff = x.MinScan() - y.MinScan();
-                            if (diff > maxScanDiff)
+                            for (var j = i; j < charges.Count; j++)
                             {
-                                throw new Exception("There is a problem with the feature finder across charge states");
+                                var x = chargeMap[charges[i]];
+                                var y = chargeMap[charges[j]];
+
+                                var diff = x.MinScan() - y.MinScan();
+                                if (diff > maxScanDiff)
+                                {
+                                    throw new Exception("There is a problem with the feature finder across charge states");
+                                }
                             }
                         }
                     }
                 }
-            }
-
 
 
             // Work on total feature count here.

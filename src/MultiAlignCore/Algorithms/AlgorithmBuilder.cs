@@ -6,6 +6,7 @@ using PNNLOmics.Data.Features;
 using MultiAlignCore.Data;
 using PNNLOmics.Algorithms.FeatureMatcher.Data;
 using PNNLOmics.Algorithms.Distance;
+using MultiAlignCore.Algorithms.Options;
 
 namespace MultiAlignCore.Algorithms
 {

@@ -248,46 +248,7 @@ namespace MultiAlignTestSuite.IO.Parameters
             return o;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="path"></param>
-        [Test]
-        [TestCase("testParameter2.xml")]
-        public void TestXMLParameterWriterAlignment(string path)
-        {
-            try
-            {
-                XMLParameterFileWriter writer  = new XMLParameterFileWriter();
-                XMLParamterFileReader  reader  = new XMLParamterFileReader();
-                MultiAlignAnalysis analysis    = new MultiAlignAnalysis();
-                analysis.Options.AlignmentOptions = ChangeObjectValues(analysis.Options.AlignmentOptions) as MultiAlignCore.Algorithms.Alignment.AlignmentOptions;                
-                writer.WriteParameterFile(path, analysis);
-                MultiAlignAnalysis newAnalysis = new MultiAlignAnalysis();
-                reader.ReadParameterFile(path, ref newAnalysis);
-                Compare(analysis.Options.AlignmentOptions, newAnalysis.Options.AlignmentOptions);
-            }
-            catch (Exception ex)
-            {                
-                throw ;
-            }
-            finally
-            {
-                try
-                {
-                    bool exists = File.Exists(path);
-                    if (exists)
-                    {
-                        File.Delete(path);
-                    }
-                }
-                catch
-                {
-                    Console.WriteLine("The file was not deleted.");
-                }
-            }
-        }
-
+        
         [Test]
         [TestCase("testParameter2.xml")]
         public void TestXMLParameterWriterCluster(string path)

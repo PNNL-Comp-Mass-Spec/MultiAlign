@@ -1,14 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using MultiAlignCore.Algorithms.Alignment;
 using MultiAlignCore.IO.Parameters;
-using MultiAlignEngine;
 using MultiAlignEngine.Alignment;
-using System.Windows;
-using MultiAlignCore.Data;
+using System.Collections.Generic;
 using System.ComponentModel;
 
-namespace MultiAlignCore.Algorithms.Alignment
+namespace MultiAlignCore.Algorithms.Options
 {
-    public class AlignmentOptions: INotifyPropertyChanged
+    public class AlignmentOptions
     {
         public AlignmentOptions()
         {
@@ -192,8 +190,6 @@ namespace MultiAlignCore.Algorithms.Alignment
         [Category("Tolerances")]
         [Description("Number of divisions to make in NET.")]
         public int NumTimeSections { get; set; }
-
-
         [ParameterFileAttribute("ContractionFactor", "Alignment")]
         [Category("Weights")]
         [Description("Determines how far away a baseline scan can be compared to alignee scans.")]
@@ -206,32 +202,33 @@ namespace MultiAlignCore.Algorithms.Alignment
         /// <returns></returns>
         public static clsAlignmentOptions ConvertToEngine(AlignmentOptions newOptions)
         {
-            clsAlignmentOptions options             = new clsAlignmentOptions();
-            options.AlignmentBaselineName           = newOptions.AlignmentBaselineName;
-            options.AlignmentType                   = newOptions.AlignmentType;
-           
-            options.ContractionFactor               = System.Convert.ToInt16(newOptions.ContractionFactor);
-            options.DriftTimeBinSize                = newOptions.DriftTimeBinSize;
-            options.IsAlignmentBaselineAMasstagDB   = newOptions.IsAlignmentBaselineAMasstagDB;
-            options.MassBinSize                     = newOptions.MassBinSize;
-            options.MassCalibrationLSQNumKnots      = System.Convert.ToInt16(newOptions.MassCalibrationLSQNumKnots);
-            options.MassCalibrationLSQZScore        = newOptions.MassCalibrationLSQZScore;
-            options.MassCalibrationMaxJump          = System.Convert.ToInt16(newOptions.MassCalibrationMaxJump);
-            options.MassCalibrationMaxZScore        = newOptions.MassCalibrationMaxZScore;
-            options.MassCalibrationNumMassDeltaBins = System.Convert.ToInt16(newOptions.MassCalibrationNumMassDeltaBins);
-            options.MassCalibrationNumXSlices       = System.Convert.ToInt16(newOptions.MassCalibrationNumXSlices);
-            options.MassCalibrationUseLSQ           = newOptions.MassCalibrationUseLSQ;
-            options.MassCalibrationWindow           = newOptions.MassCalibrationWindow;
-            options.MassTolerance                   = newOptions.MassTolerance;
-            options.MaxPromiscuity                  = System.Convert.ToInt16(newOptions.MaxPromiscuity); 
-            options.MaxTimeJump                     = System.Convert.ToInt16(newOptions.MaxTimeJump);
-            options.MZBoundaries                    = newOptions.MZBoundaries;
-            options.NETBinSize                      = newOptions.NETBinSize;
-            options.NETTolerance                    = newOptions.NETTolerance;
-            options.NumTimeSections                 = newOptions.NumTimeSections; 
-            options.RecalibrationType               = newOptions.RecalibrationType; 
-            options.SplitAlignmentInMZ              = newOptions.SplitAlignmentInMZ; 
-            options.UsePromiscuousPoints            = newOptions.UsePromiscuousPoints;
+            var options             = new clsAlignmentOptions
+            {
+                AlignmentBaselineName = newOptions.AlignmentBaselineName,
+                AlignmentType = newOptions.AlignmentType,
+                ContractionFactor = System.Convert.ToInt16(newOptions.ContractionFactor),
+                DriftTimeBinSize = newOptions.DriftTimeBinSize,
+                IsAlignmentBaselineAMasstagDB = newOptions.IsAlignmentBaselineAMasstagDB,
+                MassBinSize = newOptions.MassBinSize,
+                MassCalibrationLSQNumKnots = System.Convert.ToInt16(newOptions.MassCalibrationLSQNumKnots),
+                MassCalibrationLSQZScore = newOptions.MassCalibrationLSQZScore,
+                MassCalibrationMaxJump = System.Convert.ToInt16(newOptions.MassCalibrationMaxJump),
+                MassCalibrationMaxZScore = newOptions.MassCalibrationMaxZScore,
+                MassCalibrationNumMassDeltaBins = System.Convert.ToInt16(newOptions.MassCalibrationNumMassDeltaBins),
+                MassCalibrationNumXSlices = System.Convert.ToInt16(newOptions.MassCalibrationNumXSlices),
+                MassCalibrationUseLSQ = newOptions.MassCalibrationUseLSQ,
+                MassCalibrationWindow = newOptions.MassCalibrationWindow,
+                MassTolerance = newOptions.MassTolerance,
+                MaxPromiscuity = System.Convert.ToInt16(newOptions.MaxPromiscuity),
+                MaxTimeJump = System.Convert.ToInt16(newOptions.MaxTimeJump),
+                MZBoundaries = newOptions.MZBoundaries,
+                NETBinSize = newOptions.NETBinSize,
+                NETTolerance = newOptions.NETTolerance,
+                NumTimeSections = newOptions.NumTimeSections,
+                RecalibrationType = newOptions.RecalibrationType,
+                SplitAlignmentInMZ = newOptions.SplitAlignmentInMZ,
+                UsePromiscuousPoints = newOptions.UsePromiscuousPoints
+            };
 
             return options;
         }

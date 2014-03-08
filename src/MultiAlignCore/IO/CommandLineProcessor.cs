@@ -111,52 +111,18 @@ namespace MultiAlignCore.IO
                         case "-export":
                             config.ExporterNames.ClusterScanPath = values[0];                            
                             break;
-                        //--------------------------------------------------------------------                        
-                        // Processing
-                        //--------------------------------------------------------------------                        
-                        case "-spectralcluster":
-                            config.ShouldClusterSpectra = true;
-                            break;
-                        case "-traceback":
-                            config.ShouldTraceback      = true;
-                            break;   
-                        case "-skipto":
-                            // Turn off the previous steps.
-                            switch (values[0])
-                            {
-                                default:
-                                    MultiAlignCore.IO.Logger.PrintMessage("Did not understand the analysis step to skip to.");
-                                    break;
-                                case "alignment":
-                                    config.ShouldUseExistingDatabase = true;
-                                    config.InitialStep               = AnalysisStep.Alignment;
-                                    break;
-                                case "clustering":
-                                    config.ShouldUseExistingDatabase = true;
-                                    config.InitialStep               = AnalysisStep.Clustering; 
-                                    break;
-                                case "clusterScore":
-                                    config.ShouldUseExistingDatabase = true;
-                                    config.InitialStep               = AnalysisStep.ClusterQC;
-                                    break;
-                                case "peakmatching":
-                                    config.ShouldUseExistingDatabase = true;
-                                    config.InitialStep               = AnalysisStep.PeakMatching;                                
-                                    break;
-                            }
-                            break;
                         case "-noplots":
                             config.ShouldCreateChargeStatePlots = false;
                             config.ShouldCreatePlots            = false;
                             break;
                         default:
-                            MultiAlignCore.IO.Logger.PrintMessage("One option was not understood: " + option);
+                            Logger.PrintMessage("One option was not understood: " + option);
                             break;
                     }
                 }
                 catch (ArgumentOutOfRangeException)
                 {
-                    MultiAlignCore.IO.Logger.PrintMessage(string.Format("You did not provide enough information for the option {0}", option));
+                    Logger.PrintMessage(string.Format("You did not provide enough information for the option {0}", option));
                     return;
                 }                
             }

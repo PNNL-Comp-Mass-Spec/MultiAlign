@@ -10,7 +10,7 @@ namespace MultiAlignCore.IO.MTDB
     /// <summary>
     /// Class in progress.  Options for loading data to and from the MTDB.
     /// </summary>
-    public class MassTagDatabaseOptions: INotifyPropertyChanged
+    public class MassTagDatabaseOptions
     {
 
         public MassTagDatabaseOptions()
@@ -114,18 +114,5 @@ namespace MultiAlignCore.IO.MTDB
             set;
         }
        
-        private void OnNotify(string name)
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(name));
-            }
-        }
-
-        #region INotifyPropertyChanged Members
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        #endregion
     }    
 }

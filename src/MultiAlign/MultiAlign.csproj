@@ -178,6 +178,7 @@
     <Compile Include="ViewModels\Viewers\ClusterViewModel.cs" />
     <Compile Include="ViewModels\Wizard\AdvancedOptionsViewModel.cs" />
     <Compile Include="ViewModels\Wizard\AnalysisDatasetSelectionViewModel.cs" />
+    <Compile Include="ViewModels\Wizard\AnalysisGraphNodeViewModel.cs" />
     <Compile Include="ViewModels\Wizard\AnalysisLoadingViewModel.cs" />
     <Compile Include="ViewModels\Wizard\AnalysisNamingViewModel.cs" />
     <Compile Include="ViewModels\Wizard\AnalysisRunningViewModel.cs" />
