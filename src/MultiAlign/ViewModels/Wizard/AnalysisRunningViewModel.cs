@@ -82,7 +82,7 @@ namespace MultiAlign.ViewModels.Wizard
             Controller.AnalysisCancelled    += Controller_AnalysisCancelled;
 
             // Start the analysis.
-            Controller.StartMultiAlignGUI(config, this);                        
+            Controller.StartMultiAlignGui(config, this);                        
         }
 
         public ICommand CancelAnalysis { get; set; }

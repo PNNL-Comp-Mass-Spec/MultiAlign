@@ -15,12 +15,10 @@ using MultiAlignCore.IO.Features.Hibernate;
 using MultiAlignCore.IO.MTDB;
 using PNNLOmics.Algorithms;
 using PNNLOmics.Algorithms.Distance;
-using PNNLOmics.Algorithms.FeatureClustering;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Data.MassTags;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading;
 
@@ -90,7 +88,7 @@ namespace MultiAlignCore.Algorithms
         public MultiAlignAnalysisProcessor()
         {
             m_algorithms      = null;
-            AnalysisStartStep = Algorithms.AnalysisStep.Alignment;
+            AnalysisStartStep = AnalysisStep.Alignment;
 
             XicWriter = new XicWriter();
 
@@ -145,7 +143,7 @@ namespace MultiAlignCore.Algorithms
                 m_algorithms = value;
                 if (value != null)
                 {
-                    m_algorithms.Progress += new EventHandler<ProgressNotifierArgs>(m_algorithms_Progress);
+                    m_algorithms.Progress += m_algorithms_Progress;
                 }
             }
         }
@@ -182,9 +180,9 @@ namespace MultiAlignCore.Algorithms
                 if (threadToAbort != null && threadToAbort.IsAlive)
                     threadToAbort.Abort();
             }
-            finally
-            {                
-                threadToAbort = null;
+            catch (ThreadAbortException)
+            {
+                
             }
         }
         #endregion
@@ -231,7 +229,7 @@ namespace MultiAlignCore.Algorithms
                     var node  = new AnalysisGraphNode();
                     node.CurrentStep        = AnalysisStep.LoadMTDB;
 
-                    node.Method = config.InitialStep == AnalysisStep.FindFeatures ? CreateMtdb : new DelegateAnalysisMethod(LoadMTDB);
+                    node.Method = config.InitialStep == AnalysisStep.FindFeatures ? CreateMtdb : new DelegateAnalysisMethod(LoadMtdb);
                     
                     graph.AddNode(node);                    
                 }
@@ -258,8 +256,6 @@ namespace MultiAlignCore.Algorithms
                         break;
                     case AnalysisStep.PeakMatching:
                         graph.AddNode(CreateNode(AnalysisStep.PeakMatching));
-                        break;
-                    default:
                         break;
                 }                
             }
@@ -294,7 +290,7 @@ namespace MultiAlignCore.Algorithms
 
 
             var providers = config.Analysis.DataProviders;
-            var featureCache = new FeatureLoader()
+            var featureCache = new FeatureLoader
             {
                 Providers = providers
             };
@@ -324,7 +320,6 @@ namespace MultiAlignCore.Algorithms
                                         baselineFeatures,
                                         database,
                                         config.Analysis.Options.AlignmentOptions,
-                                        config.Analysis.Options.DriftTimeAlignmentOptions,
                                         alignmentData,
                                         aligner,
                                         dataset,
@@ -357,7 +352,7 @@ namespace MultiAlignCore.Algorithms
                     throw new Exception("The baseline dataset was never set.");
                 }
 
-                var cache = new FeatureLoader()
+                var cache = new FeatureLoader
                 {
                     Providers = dataProviders
                 };
@@ -387,9 +382,9 @@ namespace MultiAlignCore.Algorithms
                     baselineFeatures = FeatureDataConverters.ConvertToUMC(database.MassTags);
                 }
                 
-                if (BaselineFeaturesLoaded != null)                
-                    BaselineFeaturesLoaded(this, new BaselineFeaturesLoadedEventArgs(baselineInfo, baselineFeatures.ToList(), database));
-                
+                if (BaselineFeaturesLoaded != null)
+                    if (baselineFeatures != null)
+                        BaselineFeaturesLoaded(this, new BaselineFeaturesLoadedEventArgs(null, baselineFeatures.ToList(), database));
             }
             return baselineFeatures;
         }
@@ -442,8 +437,7 @@ namespace MultiAlignCore.Algorithms
                     features                 = AlignDataset(features, 
                                                             baselineFeatures, 
                                                             config.Analysis.MassTagDatabase,
-                                                            config.Analysis.Options.AlignmentOptions,
-                                                            config.Analysis.Options.DriftTimeAlignmentOptions,       
+                                                            config.Analysis.Options.AlignmentOptions,       
                                                             alignmentCache,
                                                             aligner, 
                                                             datasetInfo,
@@ -467,13 +461,12 @@ namespace MultiAlignCore.Algorithms
                                             IList<UMCLight>          baselineFeatures,
                                             MassTagDatabase         database,
                                             AlignmentOptions        options,
-                                            DriftTimeAlignmentOptions driftTimeOptions,
                                             IAlignmentDAO           alignmentCache,
                                             IFeatureAligner         aligner, 
                                             DatasetInformation      datasetInfo,
                                             DatasetInformation      baselineInfo)
         {
-            classAlignmentData alignmentData     = null;
+            classAlignmentData alignmentData;
 
             // align the data.
             if (baselineFeatures != null)
@@ -514,7 +507,7 @@ namespace MultiAlignCore.Algorithms
                                                  IFeatureAligner   aligner,
                                                  AlignmentOptions  options)
         {
-            classAlignmentData alignmentData = null;
+            classAlignmentData alignmentData;
             
             alignmentData = aligner.AlignFeatures(baselineFeatures.ToList(),
                                                     features.ToList(),
@@ -527,12 +520,11 @@ namespace MultiAlignCore.Algorithms
                                                     IFeatureAligner  aligner,
                                                     AlignmentOptions options)
         {
-            classAlignmentData alignmentData = null;            
-            alignmentData = aligner.AlignFeatures(database,
+            var alignmentData = aligner.AlignFeatures(database,
                                                     features.ToList(),
                                                     options,
                                                     false);
-            
+
             return alignmentData;
         }
 
@@ -544,25 +536,20 @@ namespace MultiAlignCore.Algorithms
         /// </summary>
         public void PerformLcmsFeatureClustering(AnalysisConfig config)
         {
-            MultiAlignAnalysis analysis = config.Analysis;
-            IClusterer<UMCLight, UMCClusterLight> clusterer = m_algorithms.Clusterer;
+            var analysis = config.Analysis;
+            var clusterer = m_algorithms.Clusterer;
 
-            RegisterProgressNotifier(clusterer as IProgressNotifer);
-            UpdateStatus( "Using Cluster Algorithm: " + clusterer.ToString());
-
+            RegisterProgressNotifier(clusterer);
+            UpdateStatus( "Using Cluster Algorithm: " + clusterer);
             
-            FeatureTolerances tolerances = new FeatureTolerances();
-
             clusterer.Parameters                    = Clustering.LCMSFeatureClusteringOptions.ConvertToOmics(analysis.Options.ClusterOptions);
             clusterer.Parameters.DistanceFunction   = DistanceFactory<UMCLight>.CreateDistanceFunction(analysis.Options.ClusterOptions.DistanceFunction);
 
             // This just tells us whether we are using mammoth memory partitions or not.          
-            string databaseName = Path.Combine(analysis.MetaData.AnalysisPath, analysis.MetaData.AnalysisName);
+            var featureCache            = config.Analysis.DataProviders.FeatureCache;            
+            var clusterCount                = 0;
             
-            IUmcDAO featureCache            = config.Analysis.DataProviders.FeatureCache;            
-            int clusterCount                = 0;
-            
-            FeatureDataAccessProviders providers = config.Analysis.DataProviders;
+            var providers = config.Analysis.DataProviders;
 
             if (analysis.Options.ClusterOptions.IgnoreCharge)
             {
@@ -571,9 +558,9 @@ namespace MultiAlignCore.Algorithms
                  */
                 UpdateStatus("Clustering features from all charge states.");
                 UpdateStatus( "Retrieving features for clustering from cache.");                
-                List<UMCLight> features         = featureCache.FindAll();
+                var features         = featureCache.FindAll();
                 UpdateStatus( string.Format("Clustering {0} features. ", features.Count));
-                List<UMCClusterLight> clusters = new List<UMCClusterLight>();
+                var clusters = new List<UMCClusterLight>();
                 clusters = clusterer.Cluster(features, clusters);                
                 foreach (UMCClusterLight cluster in clusters)
                 {
@@ -607,7 +594,7 @@ namespace MultiAlignCore.Algorithms
                  * Here we cluster all charge states separately.  Probably IMS Data.
                  */
                 UpdateStatus("Clustering charge states individually.");
-                for(int chargeState = minChargeState; chargeState <= maxChargeState; chargeState++)
+                for(var chargeState = minChargeState; chargeState <= maxChargeState; chargeState++)
                 {
                     List<UMCLight> features         = featureCache.FindByCharge(chargeState);
                     if (features.Count < 1)
@@ -619,8 +606,8 @@ namespace MultiAlignCore.Algorithms
                         string.Format("Retrieved and is clustering {0} features from charge state {1}.", 
                                 features.Count, chargeState));              
                                         
-                    List<UMCClusterLight> clusters  = clusterer.Cluster(features);
-                    foreach (UMCClusterLight cluster in clusters)
+                    var clusters  = clusterer.Cluster(features);
+                    foreach (var cluster in clusters)
                     {
                         cluster.ID = clusterCount++;
                         cluster.UMCList.ForEach(x => x.ClusterID = cluster.ID);
@@ -645,7 +632,7 @@ namespace MultiAlignCore.Algorithms
 
                 config.Analysis.Clusters = config.Analysis.DataProviders.ClusterCache.FindAll();                    
             }
-            DeRegisterProgressNotifier(clusterer as IProgressNotifer);
+            DeRegisterProgressNotifier(clusterer);
             UpdateStatus(string.Format("Finished clustering.  Found {0} total clusters.", clusterCount));            
         }        
         #endregion
@@ -712,9 +699,9 @@ namespace MultiAlignCore.Algorithms
                     
                     
                     UpdateStatus( "Updating database with peak matched results.");
-                    PeakMatchResultsWriter writer = new PeakMatchResultsWriter();
-                    int matchedMassTags = 0;
-                    int matchedProteins = 0;
+                    var writer = new PeakMatchResultsWriter();
+                    int matchedMassTags;
+                    int matchedProteins;
                     writer.WritePeakMatchResults(matchResults,
                                                  m_config.Analysis.MassTagDatabase,
                                                  out matchedMassTags,
@@ -726,7 +713,7 @@ namespace MultiAlignCore.Algorithms
 
                     if (m_config.Analysis.Options.STACOptions.WriteResultsBackToMTS && m_config.Analysis.MetaData.JobID != -1)
                     {
-                        string databasePath = "";
+                        const string databasePath = "";
                         MTSPeakMatchResultsWriter mtsWriter = new MTSSqlServerPeakMatchResultWriter();
                         mtsWriter.WriteClusters(m_config.Analysis,
                                                 clusters,
@@ -741,12 +728,6 @@ namespace MultiAlignCore.Algorithms
         }
         #endregion
 
-        #region MSMS Alignment
-        void processor_Progress(object sender, ProgressNotifierArgs e)
-        {
-            UpdateStatus(e.Message);
-        }
-        #endregion
                 
         #region Analysis Start/Stop
         /// <summary>
@@ -774,10 +755,8 @@ namespace MultiAlignCore.Algorithms
             // Make sure we start with a fresh analysis.
             AbortAnalysisThread(m_analysisThread);
 
-
-
-            ThreadStart threadStart  = new ThreadStart(PerformAnalysis);
-            m_analysisThread         = new Thread(threadStart);
+            var threadStart  = new ThreadStart(PerformAnalysis);
+            m_analysisThread = new Thread(threadStart);
             m_analysisThread.Start();
         }
         /// <summary>
@@ -787,15 +766,14 @@ namespace MultiAlignCore.Algorithms
         {
             AbortAnalysisThread(m_analysisThread);
         }
-        private void LoadMTDB(AnalysisConfig config)
+        private void LoadMtdb(AnalysisConfig config)
         {
             UpdateStatus("Loading the database from the SQLite result database.");
 
-            MassTagDatabaseLoaderCache provider  = new MassTagDatabaseLoaderCache();
-            provider.Provider                    = m_config.Analysis.DataProviders.MassTags;
+            var provider  = new MassTagDatabaseLoaderCache {Provider = m_config.Analysis.DataProviders.MassTags};
             RegisterProgressNotifier(provider);
-            MassTagDatabase database             = provider.LoadDatabase();
-                       
+
+            var database                    = provider.LoadDatabase();                       
             config.Analysis.MassTagDatabase = database;
             
             if (MassTagsLoaded != null)
@@ -835,37 +813,41 @@ namespace MultiAlignCore.Algorithms
             if (database != null)
             {
                 config.ShouldPeakMatch  = true;
-                int totalMassTags       = database.MassTags.Count;
+                var totalMassTags       = database.MassTags.Count;
                 UpdateStatus("Loaded " + totalMassTags + " mass tags.");
             }
 
             config.Analysis.MassTagDatabase = database;
 
-            
-            config.Analysis.DataProviders.MassTags.AddAll(database.MassTags);
 
-            var proteinCache = new MultiAlignCore.IO.Features.Hibernate.ProteinDAO();          
-            proteinCache.AddAll(database.AllProteins);
-
-            var map = new List<MassTagToProteinMap>();
-            foreach (int massTagID in database.Proteins.Keys)
+            if (database != null)
             {
-                foreach(var p in database.Proteins[massTagID])
-                {                    
-                    var tempMap = new MassTagToProteinMap();
-                    tempMap.ProteinId = p.ProteinID;                    
-                    tempMap.MassTagId = massTagID;
-                    tempMap.RefId     = p.RefID;
-                    map.Add(tempMap);
+                config.Analysis.DataProviders.MassTags.AddAll(database.MassTags);
+
+                var proteinCache = new ProteinDAO();          
+                proteinCache.AddAll(database.AllProteins);
+
+                var map = new List<MassTagToProteinMap>();
+                foreach (var massTagId in database.Proteins.Keys)
+                {
+                    foreach(var p in database.Proteins[massTagId])
+                    {                    
+                        var tempMap = new MassTagToProteinMap
+                        {
+                            ProteinId = p.ProteinID,
+                            MassTagId = massTagId,
+                            RefId = p.RefID
+                        };
+                        map.Add(tempMap);
+                    }
                 }
+
+                var tempCache = new GenericDAOHibernate<MassTagToProteinMap>();
+                tempCache.AddAll(map);
+
+                if (MassTagsLoaded != null)            
+                    MassTagsLoaded(this, new MassTagsLoadedEventArgs(database.MassTags, database));
             }
-
-            var tempCache = new GenericDAOHibernate<MassTagToProteinMap>();
-            tempCache.AddAll(map);
-
-            if (MassTagsLoaded != null)            
-                MassTagsLoaded(this, new MassTagsLoadedEventArgs(database.MassTags, database));
-            
         }
         
         /// <summary>

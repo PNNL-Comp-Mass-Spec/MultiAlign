@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using PNNLOmics.Algorithms;
+﻿using PNNLOmics.Algorithms;
+using System;
 
 namespace MultiAlignCore.Algorithms.Workflow
 {
@@ -26,7 +23,7 @@ namespace MultiAlignCore.Algorithms.Workflow
         {
             if (notifier != null)
             {
-                notifier.Progress += new EventHandler<ProgressNotifierArgs>(notifier_Progress);
+                notifier.Progress += notifier_Progress;
             }
         }
         protected void DeRegisterProgressNotifier(IProgressNotifer notifier)
