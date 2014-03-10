@@ -376,8 +376,6 @@ namespace MultiAlignCore.IO.Features
                     case "cid":
                         summary.CollisionType = CollisionType.CID;
                         break;
-                    default:
-                        break;
                 }
                 scanMap.Add(i, summary);     
             }
