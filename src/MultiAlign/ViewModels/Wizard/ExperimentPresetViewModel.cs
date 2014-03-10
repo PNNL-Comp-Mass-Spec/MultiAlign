@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using MultiAlign.ViewModels.Instruments;
 
 namespace MultiAlign.ViewModels.Wizard
 {
@@ -24,13 +21,6 @@ namespace MultiAlign.ViewModels.Wizard
         public double MassRangeHigh { get; private set; }
         public double MassRangeLow { get; private set; }        
         public string Name { get; private set; }        
-        public InstrumentPresetViewModel InstrumentPreset
-        { get; private set; }
-    }
-
-    public enum ExperimentPresets
-    {       
-        Peptides,                
-        Lipids        
+        public InstrumentPresetViewModel InstrumentPreset { get; private set; }
     }
 }

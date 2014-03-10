@@ -23,10 +23,10 @@ namespace MultiAlignCore.Data
         {
 			AlignmentOptions                = new AlignmentOptions() ; 
 			DriftTimeAlignmentOptions       = new DriftTimeAlignmentOptions();            
-            FeatureFindingOptions           = new LCMSFeatureFindingOptions();
+            //FeatureFindingOptions           = new LCMSFeatureFindingOptions();
 			ClusterOptions                  = new LCMSFeatureClusteringOptions() ;
             MSLinkerOptions                 = new MSLinkerOptions();
-            FeatureFilterOptions            = new FeatureFilterOptions();
+            //FeatureFilterOptions            = new FeatureFilterOptions();
             STACOptions                     = new STACOptions();            
             MassTagDatabaseOptions          = new MultiAlignCore.IO.MTDB.MassTagDatabaseOptions();
             ConsolidationOptions            = new FeatureConsolidatorOptions();
@@ -35,7 +35,7 @@ namespace MultiAlignCore.Data
         /// <summary>
         /// Gets or sets the options for linking MS features to MSMS Spectra.
         /// </summary>
-        [ParameterFileGroupAttribute("MS-MSn Feature Linking","Options when linking MS/MS spectra to MS Features")]
+        //[ParameterFileGroupAttribute("MS-MSn Feature Linking","Options when linking MS/MS spectra to MS Features")]
         public MSLinkerOptions MSLinkerOptions
         {
             get;
@@ -44,21 +44,21 @@ namespace MultiAlignCore.Data
         /// <summary>
         /// Gets or sets the UMC Finding Options.
         /// </summary>
-        [ParameterFileGroup("LC-MS Feature Finding", "Options for the LC-MS Feature Finding when loading Decon2ls output.")]
-        public LCMSFeatureFindingOptions FeatureFindingOptions
-        {
-            get;
-            set;
-        }
+        //[ParameterFileGroup("LC-MS Feature Finding", "Options for the LC-MS Feature Finding when loading Decon2ls output.")]
+        //public LCMSFeatureFindingOptions FeatureFindingOptions
+        //{
+        //    get;
+        //    set;
+        //}
         /// <summary>
         /// Gets or sets the filter criteria for loading features.
         /// </summary>
-        [ParameterFileGroup("LC-MS Filtering", "Options for filtering LC-MS features after feature loading or finding.")]
-        public FeatureFilterOptions FeatureFilterOptions
-        {
-            get;
-            set;
-        }
+        //[ParameterFileGroup("LC-MS Filtering", "Options for filtering LC-MS features after feature loading or finding.")]
+        //public FeatureFilterOptions FeatureFilterOptions
+        //{
+        //    get;
+        //    set;
+        //}
         /// <summary>
         /// Gets or sets the mass tag database options.
         /// </summary>

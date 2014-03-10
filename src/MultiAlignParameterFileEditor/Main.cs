@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
+using MultiAlignCore.Algorithms.Options;
+using MultiAlignCore.IO.Generic;
 using MultiAlignCore.IO.Parameters;
 
 namespace MultiAlignParameterFileEditor
@@ -55,15 +52,12 @@ namespace MultiAlignParameterFileEditor
                 DialogResult result = m_dialog.ShowDialog();
                 if (result == System.Windows.Forms.DialogResult.OK)
                 {
-                    XMLParamterFileReader reader                    = new XMLParamterFileReader();
-                    MultiAlignCore.Data.MultiAlignAnalysis analysis = new MultiAlignCore.Data.MultiAlignAnalysis();
-                    reader.ReadParameterFile(m_dialog.FileName, ref analysis);
-
-                    Options = analysis.Options;
+                    var reader = new JsonReader<MultiAlignAnalysisOptions>();
+                    Options    = reader.Read(m_dialog.FileName);
 
                     string path = System.IO.Path.GetFileNameWithoutExtension(m_dialog.FileName);
 
-                    AddPage(new ParameterFileEditor(analysis.Options, m_dialog.FileName), path);
+                    AddPage(new ParameterFileEditor(Options, m_dialog.FileName), path);
                     UpdateStatus("Opened " + m_dialog.FileName);
                 }
                 else
@@ -78,7 +72,7 @@ namespace MultiAlignParameterFileEditor
         }
         #endregion
 
-        public MultiAlignCore.Data.AnalysisOptions Options
+        public MultiAlignAnalysisOptions Options
         {
             get;
             set;
@@ -93,8 +87,11 @@ namespace MultiAlignParameterFileEditor
         void editor_Saved(object sender, ParameterFileEventArgs e)
         {
             string name  = System.IO.Path.GetFileNameWithoutExtension(e.Path);
-            TabPage page = m_editorTabPageMap[sender as ParameterFileEditor];
-            page.Text    = name;
+            if (sender != null)
+            {
+                TabPage page = m_editorTabPageMap[sender as ParameterFileEditor];
+                page.Text    = name;
+            }
 
             UpdateStatus("Saved parameter file to " + e.Path);
 
@@ -102,30 +99,33 @@ namespace MultiAlignParameterFileEditor
         }
         void editor_Closed(object sender, ParameterFileEventArgs e)
         {
-            ParameterFileEditor control = sender as ParameterFileEditor;
-            control.Saved  -= editor_Saved;
-            control.Closed -= editor_Closed;
-            control.Dispose();
-
-            TabPage page  = m_editorTabPageMap[control];
-            int lastIndex = mainTabPage.TabPages.IndexOf(page);
-            mainTabPage.TabPages.Remove(page);                        
-            page.Dispose();
-
-            // If after removing a tab page, we are at the end of all tab pages,
-            // then that means we should move back one page.            
-            if (lastIndex == mainTabPage.TabPages.Count)
+            var control = sender as ParameterFileEditor;
+            if (control != null)
             {
-                lastIndex--;
-            }
+                control.Saved  -= editor_Saved;
+                control.Closed -= editor_Closed;
+                control.Dispose();
 
-            // However, if the last index is now 0, then that means we are 
-            // only at the start page, which is the only one left.
-            // Here, otherwise if true, we are not at the start page. 
-            // So select the tab page.
-            if (lastIndex > 0)
-            {
-                mainTabPage.SelectedIndex = lastIndex;
+                TabPage page  = m_editorTabPageMap[control];
+                int lastIndex = mainTabPage.TabPages.IndexOf(page);
+                mainTabPage.TabPages.Remove(page);                        
+                page.Dispose();
+
+                // If after removing a tab page, we are at the end of all tab pages,
+                // then that means we should move back one page.            
+                if (lastIndex == mainTabPage.TabPages.Count)
+                {
+                    lastIndex--;
+                }
+
+                // However, if the last index is now 0, then that means we are 
+                // only at the start page, which is the only one left.
+                // Here, otherwise if true, we are not at the start page. 
+                // So select the tab page.
+                if (lastIndex > 0)
+                {
+                    mainTabPage.SelectedIndex = lastIndex;
+                }
             }
 
             UpdateStatus("Closed parameter file editor");

@@ -1,24 +1,26 @@
-﻿using System;
+﻿using MultiAlign.Commands;
+using MultiAlign.Properties;
+using MultiAlign.ViewModels.Instruments;
+using MultiAlign.Windows.Wizard;
+using MultiAlignCore.Algorithms.Alignment;
+using MultiAlignCore.Algorithms.Clustering;
+using MultiAlignCore.Algorithms.FeatureFinding;
+using MultiAlignCore.Algorithms.Options;
+using MultiAlignCore.IO.Generic;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
-using MultiAlign.Commands;
-using MultiAlign.Properties;
-using MultiAlign.Windows.Wizard;
-using MultiAlignCore.Algorithms.Alignment;
-using MultiAlignCore.Algorithms.Clustering;
-using MultiAlignCore.Algorithms.FeatureFinding;
-using MultiAlignCore.Data;
-using MultiAlignCore.IO.Parameters;
 
 namespace MultiAlign.ViewModels.Wizard
 {
     public class AnalysisOptionsViewModel: ViewModelBase
     {
-        private AnalysisOptions m_options;
+        private MultiAlignAnalysisOptions m_options;
         private InstrumentPresetViewModel m_instrumentPreset;
+
         /// <summary>
         /// Open file dialog for opening an existing parameter file.
         /// </summary>
@@ -26,14 +28,14 @@ namespace MultiAlign.ViewModels.Wizard
         private readonly System.Windows.Forms.SaveFileDialog m_saveDialog;
         private ExperimentPresetViewModel m_selectedExperimentPreset;
 
-        public AnalysisOptionsViewModel(AnalysisOptions options)
+        public AnalysisOptionsViewModel(MultiAlignAnalysisOptions options)
         {
             m_options            = options;
             ClusteringAlgorithms = new ObservableCollection<ClusteringAlgorithmType>();
             AlignmentAlgorithms  = new ObservableCollection<FeatureAlignmentType>();
             FeatureFindingAlgorithms = new ObservableCollection<FeatureFinderType>();
 
-            UpdateOptions(options);
+            UpdateOptions();
 
             InstrumentPresets = new ObservableCollection<InstrumentPresetViewModel>();
             ExperimentPresets = new ObservableCollection<ExperimentPresetViewModel>();
@@ -59,16 +61,19 @@ namespace MultiAlign.ViewModels.Wizard
             }
 
             
+            SelectedPreset           = InstrumentPresets[0];
             SelectedExperimentPreset = ExperimentPresets[0];
 
             m_saveDialog                = new System.Windows.Forms.SaveFileDialog();
-            m_dialog                    = new System.Windows.Forms.OpenFileDialog();
-            m_dialog.Filter             = Resources.AnalysisOptionsViewModel_AnalysisOptionsViewModel_MultiAlign_Parameters____xml_____xml_All_Files__________;
-            m_saveDialog.Filter         = Resources.AnalysisOptionsViewModel_AnalysisOptionsViewModel_MultiAlign_Parameters____xml_____xml_All_Files__________;
+            m_dialog                    = new System.Windows.Forms.OpenFileDialog
+            {
+                Filter = Resources.MultiAlignParameterFileFilter                        
+            };
+            m_saveDialog.Filter         = Resources.MultiAlignParameterFileFilter;
 
-            ShowAdvancedWindowCommand   = new BaseCommandBridge(new CommandDelegate(ShowAdvancedWindow));
-            SaveOptionsCommand          = new BaseCommandBridge(new CommandDelegate(SaveCurrentParameters));
-            LoadExistingCommand         = new BaseCommandBridge(new CommandDelegate(LoadExistingParameters));
+            ShowAdvancedWindowCommand   = new BaseCommandBridge(ShowAdvancedWindow);
+            SaveOptionsCommand          = new BaseCommandBridge(SaveCurrentParameters);
+            LoadExistingCommand         = new BaseCommandBridge(LoadExistingParameters);
 
             Enum.GetValues(typeof(ClusteringAlgorithmType)).Cast<ClusteringAlgorithmType>().ToList().ForEach(x => ClusteringAlgorithms.Add(x));
             Enum.GetValues(typeof(FeatureAlignmentType)).Cast<FeatureAlignmentType>().ToList().ForEach(x => AlignmentAlgorithms.Add(x));
@@ -77,37 +82,40 @@ namespace MultiAlign.ViewModels.Wizard
 
         private void ShowAdvancedWindow(object parameter)
         {
-            var viewModel  = new AdvancedOptionsViewModel(m_options);            
-            var view            = new AnalysisOptionsView();
-            view.DataContext                    = viewModel;            
-            view.MinWidth       = 800;
-            view.MinHeight      = 600;
-            view.MaxWidth       = 1200;
-            view.MaxHeight      = 1024;
-            view.Width          = 800;
-            view.Height         = 600;
-            view.ShowInTaskbar  = true;            
-            view.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            var viewModel       = new AdvancedOptionsViewModel(m_options);            
+            var view            = new AnalysisOptionsView
+            {
+                DataContext = viewModel,
+                MinWidth = 800,
+                MinHeight = 600,
+                MaxWidth = 1200,
+                MaxHeight = 1024,
+                Width = 800,
+                Height = 600,
+                ShowInTaskbar = true,
+                WindowStartupLocation = WindowStartupLocation.CenterScreen
+            };
             view.ShowDialog();
 
-            UpdateOptions(m_options);
+            UpdateOptions();
         }
         private void LoadExistingParameters(object parameter)
         {
             try
             {
+                //TODO: Replace with OOKI dialogs
                 System.Windows.Forms.DialogResult result = m_dialog.ShowDialog();
                 if (result == System.Windows.Forms.DialogResult.OK)
                 {
-                    var reader = new XMLParamterFileReader();
-                    var analysis  = new MultiAlignAnalysis();
-                    reader.ReadParameterFile(m_dialog.FileName, ref m_options);
-
-                    UpdateOptions(m_options);
+                    var reader = new JsonReader<MultiAlignAnalysisOptions>();
+                    m_options = reader.Read(m_dialog.FileName);
+                    UpdateOptions();
                 }
             }
+                //TODO: Replace with appropriate exception handling
             catch (Exception ex)
             {
+                //TODO: Add message?
             }
         }
         private void SaveCurrentParameters(object parameter)
@@ -117,11 +125,11 @@ namespace MultiAlign.ViewModels.Wizard
                 System.Windows.Forms.DialogResult result = m_saveDialog.ShowDialog();
                 if (result == System.Windows.Forms.DialogResult.OK)
                 {
-                    var writer = new XMLParameterFileWriter();
-                    var analysis   = new MultiAlignAnalysis();
-                    writer.WriteParameterFile(m_saveDialog.FileName, m_options);
+                    var writer = new JsonWriter<MultiAlignAnalysisOptions>();
+                    writer.Write(m_saveDialog.FileName, m_options);
                 }
             }
+            //TODO: Replace with appropriate exception handling
             catch (Exception ex)
             {
             }
@@ -129,23 +137,27 @@ namespace MultiAlign.ViewModels.Wizard
 
 
         #region Updating 
-        private void UpdateOptions(AnalysisOptions options)
-        {
-            m_options = options;
-
-            OnPropertyChanged("FeatureFindingAlgorithms");
-            OnPropertyChanged("IsIonMobility");
-            OnPropertyChanged("HasMsMsFragmentation");
-            OnPropertyChanged("MinimumScans");
-            OnPropertyChanged("IsotopicFitScore");
-            OnPropertyChanged("MinimumAbundance");
-            OnPropertyChanged("LowMassRange");
-            OnPropertyChanged("HighMassRange");            
+        private void UpdateOptions()
+        {                        
+            OnPropertyChanged("ShouldUseMzFilter");
+            OnPropertyChanged("ShouldUseDeisotopingFilter");
+            OnPropertyChanged("ShouldUseMzFilter");
+            
+            OnPropertyChanged("MinimumDeisotopingFitScore");
+            OnPropertyChanged("MinimumIntensity");
+            OnPropertyChanged("MinimumMz");
+            OnPropertyChanged("MaximumMz");
+            OnPropertyChanged("MinimumFeatureLength");
+            OnPropertyChanged("MaximumFeatureLength");     
+       
             OnPropertyChanged("MassResolution");
             OnPropertyChanged("FragmentationTolerance");
             OnPropertyChanged("NETTolerance");
             OnPropertyChanged("DriftTimeTolerance");
-            OnPropertyChanged("IsIonMobility");                               
+
+            OnPropertyChanged("IsIonMobility");
+            OnPropertyChanged("SelectedAlignmentAlgorithm");
+            OnPropertyChanged("SelectedClusteringAlgorithm");                  
         }
         #endregion
 
@@ -165,6 +177,7 @@ namespace MultiAlign.ViewModels.Wizard
                     m_instrumentPreset = value;
                     UpdatePreset(value);
                     OnPropertyChanged("SelectedPreset");
+                    UpdateOptions();
                 }
             }
         }
@@ -180,11 +193,10 @@ namespace MultiAlign.ViewModels.Wizard
                 {
                     m_selectedExperimentPreset = value;
                     
-                    m_options.FeatureFilterOptions.MinimumMonoIsotopicMass = value.MassRangeLow;
-                    m_options.FeatureFilterOptions.MaximumMonoIsotopicMass = value.MassRangeHigh;
-                    OnPropertyChanged("SelectedExperimentPreset");
-                    OnPropertyChanged("LowMassRange");
-                    OnPropertyChanged("HighMassRange");   
+                    m_options.MsFilteringOptions.MzRange.Minimum = value.MassRangeLow;
+                    m_options.MsFilteringOptions.MzRange.Maximum = value.MassRangeHigh;
+
+                    UpdateOptions();
                 }
             }
         }
@@ -194,9 +206,8 @@ namespace MultiAlign.ViewModels.Wizard
         {
             MassResolution         = preset.Mass;
             FragmentationTolerance = preset.FragmentWindowSize;
-            NETTolerance           = preset.NETTolerance;
+            NetTolerance           = preset.NetTolerance;
             DriftTimeTolerance     = preset.DriftTimeTolerance;
-            IsIonMobility          = preset.IsIonMobility;
         }
         #endregion
 
@@ -205,28 +216,30 @@ namespace MultiAlign.ViewModels.Wizard
         {
             get
             {
-                return m_options.IsImsExperiment;
+                return m_options.UsedIonMobility;
             }
             set
             {
-                if (m_options.IsImsExperiment == value) return;
+                if (m_options.UsedIonMobility == value) return;
 
-                m_options.IsImsExperiment               = value;                    
-                m_options.ClusterOptions.IgnoreCharge   = (value == false);
-
+                m_options.UsedIonMobility                = value;
+                m_options.InstrumentTolerances.DriftTime = value ? 3 : 50;                                
+                m_options.LcmsClusteringOptions.ShouldSeparateCharge = value;
                 OnPropertyChanged("IsIonMobility");
+                OnPropertyChanged("DriftTimeTolerance");
+                
             }
         }
         public bool HasMsMsFragmentation
         {
             get
             {
-                return m_options.HasMsMsData;
+                return m_options.HasMsMs;
             }
             set
             {
-                if (m_options.HasMsMsData == value) return;
-                m_options.HasMsMsData = value;                    
+                if (m_options.HasMsMs == value) return;
+                m_options.HasMsMs = value;                    
                 OnPropertyChanged("HasMsMsFragmentation");
             }
         }
@@ -237,88 +250,101 @@ namespace MultiAlign.ViewModels.Wizard
         {
             get
             {
-                return m_options.ClusterOptions.MassTolerance;
+                return m_options.InstrumentTolerances.Mass;
             }
             set
-            {
-                if (m_options.ClusterOptions.MassTolerance == value) return;
+            {                                
                 m_options.AlignmentOptions.MassTolerance = value;
-                m_options.ClusterOptions.MassTolerance   = value;
+                m_options.InstrumentTolerances.Mass      = value;
                 OnPropertyChanged("MassResolution");
             }
         }
-        public double NETTolerance
+        public double NetTolerance
         {
             get
             {
-                return m_options.ClusterOptions.NETTolerance;
+                return m_options.InstrumentTolerances.RetentionTime;
             }
             set
             {
-                if (m_options.ClusterOptions.NETTolerance == value) return;
-                m_options.AlignmentOptions.NETTolerance = value;
-                m_options.ClusterOptions.NETTolerance   = value;
+                
+                m_options.AlignmentOptions.NETTolerance         = value;
+                m_options.InstrumentTolerances.RetentionTime    = value;
                 OnPropertyChanged("NETTolerance");
             }
         }
         public double DriftTimeTolerance
         {
-            get
-            {
-                return m_options.ClusterOptions.DriftTimeTolerance;
-            }
+            get { return m_options.InstrumentTolerances.DriftTime; }
             set
             {
-                if (m_options.ClusterOptions.DriftTimeTolerance != value)
-                {
-                    m_options.ClusterOptions.DriftTimeTolerance = value;
+                    m_options.InstrumentTolerances.DriftTime = value;
                     OnPropertyChanged("DriftTimeTolerance");
-                }
+                
             }
         }
         public double FragmentationTolerance
         {
             get
             {
-                return m_options.MSLinkerOptions.MzTolerance;
+                return m_options.InstrumentTolerances.FragmentationWindowSize;
             }
             set
             {
-                if (m_options.MSLinkerOptions.MzTolerance != value)
-                {
-                    m_options.MSLinkerOptions.MzTolerance = value;                    
-                    OnPropertyChanged("FragmentationTolerance");
-                }
+                m_options.InstrumentTolerances.FragmentationWindowSize = value;                    
+                OnPropertyChanged("FragmentationTolerance");
             }
         }
-        public double HighMassRange
+        public double MaximumMz
         {
             get
             {
-                return m_options.FeatureFilterOptions.MaximumMonoIsotopicMass;
+                return m_options.MsFilteringOptions.MzRange.Maximum;
             }
             set
             {
-                if (m_options.FeatureFilterOptions.MaximumMonoIsotopicMass != value)
-                {
-                    m_options.FeatureFilterOptions.MaximumMonoIsotopicMass = value;
-                    OnPropertyChanged("HighMassRange");
-                }
+                    m_options.MsFilteringOptions.MzRange.Maximum = value;
+                    OnPropertyChanged("MaximumMz");                
             }
         }
-        public double LowMassRange
+        public double MinimumMz
         {
             get
             {
-                return m_options.FeatureFilterOptions.MinimumMonoIsotopicMass;
+                return m_options.MsFilteringOptions.MzRange.Minimum;
             }
             set
+            {                
+                m_options.MsFilteringOptions.MzRange.Minimum = value;
+                OnPropertyChanged("MinimumMz");                
+            }
+        }
+
+        public bool ShouldUseMzFilter
+        {
+            get { return m_options.MsFilteringOptions.ShouldUseMzFilter; }
+            set
             {
-                if (m_options.FeatureFilterOptions.MinimumMonoIsotopicMass != value)
-                {
-                    m_options.FeatureFilterOptions.MinimumMonoIsotopicMass = value;
-                    OnPropertyChanged("LowMassRange");
-                }
+                m_options.MsFilteringOptions.ShouldUseMzFilter = value;
+                OnPropertyChanged("ShouldUseMzFilter");
+            }
+        }
+        public bool ShouldUseIntensityFilter
+        {
+            get { return m_options.MsFilteringOptions.ShouldUseIntensityFilter; }
+            set
+            {
+                m_options.MsFilteringOptions.ShouldUseIntensityFilter = value;
+                OnPropertyChanged("ShouldUseIntensityFilter");
+            }
+        }
+        public bool ShouldUseDeisotopingFilter
+        {
+            get { return m_options.MsFilteringOptions.ShouldUseDeisotopingFilter; }
+            set
+            {
+                m_options.MsFilteringOptions.ShouldUseDeisotopingFilter = value;
+                OnPropertyChanged("ShouldUseDeisotopingFilter");
             }
         }
         #endregion
@@ -332,13 +358,13 @@ namespace MultiAlign.ViewModels.Wizard
         {
             get
             {
-                return m_options.ClusterOptions.ClusteringAlgorithm;
+                return m_options.LcmsClusteringOptions.ClusteringAlgorithm;
             }
             set
             {
-                if (m_options.ClusterOptions.ClusteringAlgorithm != value)
+                if (m_options.LcmsClusteringOptions.ClusteringAlgorithm != value)
                 {
-                    m_options.ClusterOptions.ClusteringAlgorithm = value;
+                    m_options.LcmsClusteringOptions.ClusteringAlgorithm = value;
                     OnPropertyChanged("SelectedClusteringAlgorithm");
                 }
             }
@@ -357,115 +383,61 @@ namespace MultiAlign.ViewModels.Wizard
                     OnPropertyChanged("SelectedAlignmentAlgorithm");
                 }
             }
-        }
-        public FeatureFinderType SelectedFeatureFindingAlgorithm
-        {
-            get
-            {
-                return m_options.FeatureFindingOptions.FeatureFinderAlgorithm;
-            }
-            set
-            {
-                if (m_options.FeatureFindingOptions.FeatureFinderAlgorithm != value)
-                {
-                    m_options.FeatureFindingOptions.FeatureFinderAlgorithm = value;                    
-                    OnPropertyChanged("SelectedFeatureFindingAlgorithm");
-                }
-            }
-        }
-
-        public double ClusteringDriftTime
-        {
-            get
-            {
-                return m_options.ClusterOptions.DriftTimeTolerance;
-            }
-            set
-            {
-                if (m_options.ClusterOptions.DriftTimeTolerance != value)
-                {
-                    m_options.ClusterOptions.DriftTimeTolerance = value;
-                    OnPropertyChanged("ClusteringDriftTime");
-                }
-            }
-        }
-        public double ClusteringMassTolerance
-        {
-            get
-            {
-                return m_options.ClusterOptions.MassTolerance;
-            }
-            set
-            {
-                if (m_options.ClusterOptions.MassTolerance != value)
-                {
-                    m_options.ClusterOptions.MassTolerance = value;
-                    OnPropertyChanged("ClusteringMassTolerance");
-                }
-            }
-        }
-        public double ClusteringNetTolerance
-        {
-            get
-            {
-                return m_options.ClusterOptions.NETTolerance;
-            }
-            set
-            {
-                if (m_options.ClusterOptions.NETTolerance != value)
-                {
-                    m_options.ClusterOptions.NETTolerance = value;
-                    OnPropertyChanged("ClusteringNetTolerance");
-                }
-            }
-        }        
+        }              
         #endregion
 
         #region Feature Definition Algorithm Parameters
-        public int MinimumFeatureLength 
+        public double MinimumFeatureLength
         {
             get
             {
-                return m_options.FeatureFilterOptions.MinimumScanLength;
+                return m_options.LcmsFilteringOptions.FeatureLengthRange.Minimum;
             }
             set
             {
-                if (m_options.FeatureFilterOptions.MinimumScanLength != value)
-                {
-                    m_options.FeatureFilterOptions.MinimumScanLength = value;
-                    m_options.FeatureFindingOptions.MinUMCLength     = value;
+                
+                    m_options.LcmsFilteringOptions.FeatureLengthRange.Minimum = value;
+                    m_options.LcmsFilteringOptions.FeatureLengthRange.Minimum = value;
                     OnPropertyChanged("MinimumFeatureLength");
-                }
+                
             }
         }
-        public double DeisotopingFitScore 
+        public double MaximumFeatureLength
         {
             get
             {
-                return m_options.FeatureFindingOptions.IsotopicFitFilter;
+                return m_options.LcmsFilteringOptions.FeatureLengthRange.Maximum;
             }
             set
             {
-                if (m_options.FeatureFindingOptions.IsotopicFitFilter != value)
-                {
-                    m_options.FeatureFindingOptions.IsotopicFitFilter = value;
-                    OnPropertyChanged("DeisotopingFitScore");
-                }
+                
+                m_options.LcmsFilteringOptions.FeatureLengthRange.Maximum = value;
+                m_options.LcmsFilteringOptions.FeatureLengthRange.Maximum = value;
+                OnPropertyChanged("MaximumFeatureLength");
             }
         }
-        public double MinimumAbundance
+        public double MinimumDeisotopingScore 
         {
             get
             {
-                return m_options.FeatureFilterOptions.MinimumAbundance;
+                return m_options.MsFilteringOptions.MinimumDeisotopingScore;
             }
             set
             {
-                if (m_options.FeatureFilterOptions.MinimumAbundance != value)
-                {
-                    m_options.FeatureFilterOptions.MinimumAbundance = value;
-                    OnPropertyChanged("MinimumAbundance");
-                }
+                m_options.MsFilteringOptions.MinimumDeisotopingScore = value;
+                OnPropertyChanged("MinimumDeisotopingScore");
+            }
+        }
+        public double MinimumIntensity
+        {
+            get
+            {
+                return m_options.MsFilteringOptions.MinimumIntensity;
+            }
+            set
+            {
+                m_options.MsFilteringOptions.MinimumIntensity = value;
+                OnPropertyChanged("MinimumIntensity");
             }
         }
         #endregion

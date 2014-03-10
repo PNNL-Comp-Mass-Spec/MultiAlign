@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using MultiAlignCore.Algorithms.Options;
 using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
-using System.Text;
-using MultiAlignEngine.Features;
+using System.Collections.Generic;
 
 namespace MultiAlignCore.Algorithms.FeatureFinding
 {
@@ -16,8 +13,8 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
         /// <summary>
         /// Finds features from the file of MS Features.
         /// </summary>
-        /// <param name="path">Path containing MS Features.</param>
-        /// <returns>List of UMC's.</returns>
-        List<UMCLight> FindFeatures(List<MSFeatureLight> features, LCMSFeatureFindingOptions options, ISpectraProvider provider);
+        List<UMCLight> FindFeatures(List<MSFeatureLight> features, 
+                                    LcmsFeatureFindingOptions   options,                                     
+                                    ISpectraProvider provider);
     }
 }

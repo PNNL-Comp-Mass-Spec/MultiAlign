@@ -1,71 +1,60 @@
-﻿using System;
-using System.Collections.Generic;
-using MultiAlignCore.Algorithms.FeatureFinding;
+﻿using MultiAlignCore.Algorithms.Options;
 using PNNLOmics.Data.Features;
+using System;
+using System.Collections.Generic;
 
 namespace MultiAlignCore.Data.Features
 {
-    public static class LCMSFeatureFilters
+    public static class LcmsFeatureFilters
     {
-        public static List<UMCLight> FilterFeatures(List<UMCLight> features, FeatureFilterOptions options)
+        public static List<UMCLight> FilterFeatures(List<UMCLight> features, LcmsFeatureFilteringOptions options)
         {
+            var minimumSize = options.FeatureLengthRange.Minimum;
+            var maximumSize = options.FeatureLengthRange.Maximum;
+            
+
             // Scan Length
-            features = features.FindAll(delegate(UMCLight x)
+            var newFeatures = features.FindAll(delegate(UMCLight x)
             {
-                return Math.Abs(x.ScanStart - x.ScanEnd) >= options.MinimumScanLength;                
+                var size = Math.Abs(x.ScanStart - x.ScanEnd);
+                return size >= minimumSize && size <= maximumSize;
             });
-
-            features = features.FindAll(delegate(UMCLight x)
-            {
-                return  x.Abundance >= options.MinimumAbundance;
-            });
-
-
-            features = features.FindAll(delegate(UMCLight x)
-            {
-                return (x.ChargeState >= options.MinimumChargeState && x.ChargeState <= options.MaximumChargeState);
-            });
-
-            features = features.FindAll(delegate(UMCLight x)
-            {
-                return x.AverageDeconFitScore <= options.IsotopicFit;
-            });
-
-            return features;
+            
+            return newFeatures;
         }
+        /// <summary>
+        /// Filters the list of MS Features based on user defined filtering criteria.
+        /// </summary>
+        /// <param name="features"></param>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        public static List<MSFeatureLight> FilterMsFeatures(List<MSFeatureLight> features, MsFeatureFilteringOptions options)
+        {
+            var minimumMz = options.MzRange.Minimum;
+            var maximumMz = options.MzRange.Maximum;
 
-        public static List<MSFeatureLight> FilterMSFeatures(List<MSFeatureLight> features, LCMSFeatureFindingOptions options)
-        {            
-            List<MSFeatureLight> filteredMSFeatures = new List<MSFeatureLight>();
-            filteredMSFeatures.AddRange(features);
+            var filteredMsFeatures = new List<MSFeatureLight>();
+            filteredMsFeatures.AddRange(features);
 
-            if (options.UseIsotopicFitFilter == true)
+            if (options.ShouldUseDeisotopingFilter)
             {
-                if (!options.IsIsotopicFitFilterInverted)
-                {
-                    filteredMSFeatures = filteredMSFeatures.FindAll(delegate(MSFeatureLight msFeature)
-                    {
-                        return msFeature.Score <= options.IsotopicFitFilter;                        
-                    });
-                }
-                else if (options.IsIsotopicFitFilterInverted)
-                {
-                    filteredMSFeatures = filteredMSFeatures.FindAll(delegate(MSFeatureLight msFeature)
-                    {
-                        return msFeature.Score >= options.IsotopicFitFilter;                        
-                    });
-                }
+                filteredMsFeatures = 
+                    filteredMsFeatures.FindAll(msFeature => msFeature.Score <= options.MinimumDeisotopingScore);                
             }
 
-            if (options.UseIsotopicIntensityFilter)
+            if (options.ShouldUseIntensityFilter)
             {
-                filteredMSFeatures = filteredMSFeatures.FindAll(delegate(MSFeatureLight msFeature)
-                {
-                    return msFeature.Abundance > options.IsotopicIntensityFilter;
-                });       
+                filteredMsFeatures =
+                    filteredMsFeatures.FindAll(msFeature => msFeature.Abundance >= options.MinimumIntensity);
+            }
+
+            if (options.ShouldUseMzFilter)
+            {
+                filteredMsFeatures =
+                    filteredMsFeatures.FindAll(msFeature => msFeature.Mz >= minimumMz && msFeature.Mz <= maximumMz);
             }
             
-            return filteredMSFeatures;
+            return filteredMsFeatures;
         }
     }
 }

@@ -67,6 +67,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\$(Platform)\MultiAlignEngine.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.6.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="Ookii.Dialogs">
       <HintPath>..\..\lib\Ookii.Dialogs.dll</HintPath>
     </Reference>
@@ -169,6 +173,7 @@
     <Compile Include="ViewModels\Features\ChargeStateViewModel.cs" />
     <Compile Include="ViewModels\Instruments\InstrumentPresetFactory.cs" />
     <Compile Include="ViewModels\Features\SpectraSortOptions.cs" />
+    <Compile Include="ViewModels\Instruments\InstrumentPresets.cs" />
     <Compile Include="ViewModels\StateModeratorViewModel.cs" />
     <Compile Include="IO\ManassaWorkspaceWriter.cs" />
     <Compile Include="IO\DatasetSearcher.cs" />
@@ -225,6 +230,7 @@
     <Compile Include="ViewModels\Instruments\InstrumentPresetViewModel.cs" />
     <Compile Include="ViewModels\Wizard\AnalysisStatusArgs.cs" />
     <Compile Include="ViewModels\Wizard\ExperimentPresetFactory.cs" />
+    <Compile Include="ViewModels\Wizard\ExperimentPresets.cs" />
     <Compile Include="ViewModels\Wizard\ExperimentPresetViewModel.cs" />
     <Compile Include="Windows\FilePathFinder.xaml.cs">
       <DependentUpon>FilePathFinder.xaml</DependentUpon>
@@ -616,6 +622,7 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="app.config" />
     <None Include="packages.config" />
@@ -715,6 +722,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Commands\Options\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\filter-32.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

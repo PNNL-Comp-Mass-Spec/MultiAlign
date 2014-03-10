@@ -95,57 +95,62 @@
             Header="Database for Alignment and/or Identification"  
             Margin="5"
             >
-            <Grid                     
-                    Grid.Row="1"
-                    Grid.Column="1"
-                    Margin="5">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
+            <StackPanel>
+                <Button 
+                        Command="{Binding ClearDatabase}"
+                        Style="{DynamicResource ResourceKey=SimpleBrowseButtonStyle}"                        
+                        Width="128"
+                        Margin="5">Don't use database</Button>
 
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <RadioButton
+                <Grid                     
+                    Margin="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <RadioButton
                     Grid.Row="0"
                     Grid.Column="0"
                     Margin="5"
                     IsChecked="{Binding Path=IsDatabaseLocal, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"
                     FontSize="18">
-                    <Button
+                        <Button
                         Width="180"
                         Height="64"
                         Command="{Binding SetDatabaseToLocal}"
                         Style="{DynamicResource ResourceKey=SimpleButtonStyle}"  
                         >
-                        Use Local Database
-                    </Button>
-                </RadioButton>
-                <RadioButton
+                            Use Local Database
+                        </Button>
+                    </RadioButton>
+                    <RadioButton
                     Grid.Row="1"
                     Grid.Column="0"
                     Margin="5"
                     IsChecked="{Binding Path=IsDatabaseDms, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"
                     FontSize="18">
-                    <Button
+                        <Button
                         Width="180"
                         Height="64"
                         Command="{Binding SetDatabaseToDms}"
                         Style="{DynamicResource ResourceKey=SimpleButtonStyle}">
-                        Use Server Database
-                    </Button>
-                </RadioButton>
-                <Label       Grid.Column="1" 
+                            Use Server Database
+                        </Button>
+                    </RadioButton>
+                    <Label       Grid.Column="1" 
                              Grid.Row="0"                        
                              HorizontalContentAlignment="Left"
                              VerticalContentAlignment="Center"
                              Content="{Binding Path=DatabaseFilePath, Mode=TwoWay}"
                              Margin="10,5,10,5"/>
-                <Button Grid.Column="2" 
+                    <Button Grid.Column="2" 
                         Grid.Row="0" 
                         Width="180"
                         Height="64"
@@ -154,32 +159,22 @@
                         Margin="5"
                         Content="Browse"/>
 
-                <Label      Grid.Column="1" 
+                    <Label      Grid.Column="1" 
                             Grid.Row="1" 
                             HorizontalContentAlignment="Left"
                             VerticalContentAlignment="Center"
                             Content="{Binding Path=SelectedDatabaseServer.DatabaseName, Mode=OneWay}"
                             Margin="5"/>
 
-                <Button Grid.Column="2"
+                    <Button Grid.Column="2"
                         Grid.Row="1" 
                         Command="{Binding FindDmsDatabase}"
                         Style="{DynamicResource ResourceKey=SimpleBrowseButtonStyle}"                        
                         Width="180"
                         Height="64"
                         Margin="5">Find</Button>
-
-                
-                    <Button Grid.Column="0"
-                        Grid.Row="2" 
-                        HorizontalAlignment="Right"
-                        Command="{Binding ClearDatabase}"
-                        Style="{DynamicResource ResourceKey=SimpleButtonStyle}"                        
-                        Width="180"
-                        Height="64"
-                        Margin="5">Don't use database</Button>
-                
-            </Grid>
+                </Grid>
+            </StackPanel>
         </GroupBox>
     </Grid>
 </UserControl>

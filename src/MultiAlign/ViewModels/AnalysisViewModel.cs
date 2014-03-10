@@ -47,11 +47,9 @@ namespace MultiAlign.ViewModels
             Tuple<List<UMCClusterLightMatched>, List<MassTagToCluster>> clusters =
                                 analysis.Clusters.MapMassTagsToClusters(matches, m_analysis.MassTagDatabase);
 
-            /// 
-            /// Cache the clusters so that they can be readily accessible later on.
-            /// This will help speed up performance, so that we dont have to hit the database
-            /// when we want to find matching mass tags, and dont have to map clusters to tags multiple times.
-            ///                     
+            // Cache the clusters so that they can be readily accessible later on.
+            // This will help speed up performance, so that we dont have to hit the database
+            // when we want to find matching mass tags, and dont have to map clusters to tags multiple times.
             FeatureCacheManager<UMCClusterLightMatched>.SetFeatures(clusters.Item1);
             FeatureCacheManager<MassTagToCluster>.SetFeatures(clusters.Item2);
             SingletonDataProviders.Providers    = m_analysis.DataProviders;

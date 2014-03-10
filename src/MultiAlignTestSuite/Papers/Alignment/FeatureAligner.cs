@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using MultiAlignTestSuite.Papers.Alignment.SSM;
-using MultiAlignTestSuite.Papers.Alignment.Data;
-using MultiAlignCore.Data;
-using MultiAlignCore.Algorithms;
+﻿using MultiAlignCore.Algorithms;
 using MultiAlignCore.Algorithms.Alignment;
+using MultiAlignCore.Algorithms.Options;
+using MultiAlignTestSuite.Papers.Alignment.Data;
 using PNNLOmics.Data.Features;
+using System;
+using System.Collections.Generic;
 
 namespace MultiAlignTestSuite.Papers.Alignment
 {
@@ -19,9 +16,9 @@ namespace MultiAlignTestSuite.Papers.Alignment
         {        
             
             // Use the default settings for now
-            AnalysisOptions analysisOptions = new AnalysisOptions();
-            AlgorithmBuilder builder        = new AlgorithmBuilder();
-            AlgorithmProvider provider      = builder.GetAlgorithmProvider(analysisOptions);
+            var analysisOptions             = new MultiAlignAnalysisOptions();
+            var builder        = new AlgorithmBuilder();
+            var provider      = builder.GetAlgorithmProvider(analysisOptions);
 
             // Then align the samples
             builder.BuildAligner(analysisOptions.AlignmentOptions);

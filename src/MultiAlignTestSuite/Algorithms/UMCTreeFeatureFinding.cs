@@ -1,9 +1,11 @@
 ﻿using System;
 using MultiAlignCore.Algorithms.FeatureFinding;
+using MultiAlignCore.Algorithms.Options;
 using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.Features.Hibernate;
 using MultiAlignCore.IO.RawData;
 using NUnit.Framework;
+using PNNLOmics.Algorithms;
 using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Extensions;
@@ -25,8 +27,17 @@ namespace MultiAlignTestSuite.Algorithms
             var reader = new MSFeatureLightFileReader { Delimeter = "," };
             var newMsFeatures = reader.ReadFile(path);
 
-            var finder   = new UmcTreeFeatureFinder();
-            var options  = new LCMSFeatureFindingOptions { ConstraintMonoMass = 8, MinUMCLength = 50 };
+            var finder = new UmcTreeFeatureFinder()
+            {
+                MaximumNet = .005,
+                MaximumScan = 50
+            };
+            var tolerances  = new FeatureTolerances()
+            {
+                Mass = 8,
+                RetentionTime = .005
+            };
+            var options  = new LcmsFeatureFindingOptions(tolerances); 
             var features = finder.FindFeatures(newMsFeatures.ToList(), options, null);
 
             // Work on total feature count here.
@@ -50,15 +61,24 @@ namespace MultiAlignTestSuite.Algorithms
             var reader          = new MSFeatureLightFileReader { Delimeter = "," };
             var newMsFeatures   = reader.ReadFile(path);
             var finder          = new UmcTreeFeatureFinder();
-            var options         = new LCMSFeatureFindingOptions { ConstraintMonoMass = 12, MinUMCLength = 50 };
+            var featureTolerances        = new FeatureTolerances()
+            {
+                Mass            = 12,
+                RetentionTime   = .05
+            };
+            var options         = new LcmsFeatureFindingOptions(featureTolerances)
+            { 
+                    MaximumNetRange = 12,
+                    MaximumScanRange = 50
+                    
+            };
 
 
             var provider = RawLoaderFactory.CreateFileReader(rawPath);
             provider.AddDataFile(rawPath, 0);
 
-            IEnumerable<UMCLight> features;            
             var start = DateTime.Now;
-            features = finder.FindFeatures(newMsFeatures.ToList(), options, provider);
+            IEnumerable<UMCLight> features = finder.FindFeatures(newMsFeatures.ToList(), options, provider);
             DateTime end = DateTime.Now;
             Console.WriteLine(@"Test Took: " + end.Subtract(start).TotalSeconds);
 
@@ -113,8 +133,17 @@ namespace MultiAlignTestSuite.Algorithms
             var reader = new MSFeatureLightFileReader { Delimeter = "," };
             var newMsFeatures = reader.ReadFile(path);
             var finder = new UmcTreeFeatureFinder();
-            var options = new LCMSFeatureFindingOptions { ConstraintMonoMass = 12, MinUMCLength = 50 };
+            var featureTolerances = new FeatureTolerances()
+            {
+                Mass = 12,
+                RetentionTime = .05
+            };
+            var options = new LcmsFeatureFindingOptions(featureTolerances)
+            {
+                MaximumNetRange = 12,
+                MaximumScanRange = 50
 
+            };
 
             var provider = RawLoaderFactory.CreateFileReader(rawPath);
             provider.AddDataFile(rawPath, 0);

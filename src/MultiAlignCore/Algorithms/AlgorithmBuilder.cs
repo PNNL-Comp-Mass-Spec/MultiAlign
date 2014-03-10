@@ -7,6 +7,7 @@ using MultiAlignCore.Data;
 using PNNLOmics.Algorithms.FeatureMatcher.Data;
 using PNNLOmics.Algorithms.Distance;
 using MultiAlignCore.Algorithms.Options;
+using System;
 
 namespace MultiAlignCore.Algorithms
 {
@@ -64,49 +65,40 @@ namespace MultiAlignCore.Algorithms
         /// <summary>
         /// Builds a peak matcher object.
         /// </summary>
-        public void BuildPeakMatcher(AnalysisOptions options)
+        public void BuildPeakMatcher(MultiAlignAnalysisOptions options)
         {
-            PeakMatchingType type = PeakMatchingType.STAC;                        
-
-            FeatureMatcherTolerances tolerances = new FeatureMatcherTolerances();
-
-            switch(type)
+            
+            var tolerances          = new FeatureMatcherTolerances();            
+            var stanleyMatcher      = new STACAdapter<UMCClusterLight>
             {
-                case PeakMatchingType.Traditional:
-
-                    TraditionalPeakMatcher<UMCClusterLight> matcher     = new TraditionalPeakMatcher<UMCClusterLight>();
-                    matcher.Options                                     = options.STACOptions;
-                    m_provider.PeakMatcher                              = matcher;
-                    break;
-                
-                case PeakMatchingType.STAC:
-                default:
-                    STACAdapter<UMCClusterLight> stanleyMatcher         = new STACAdapter<UMCClusterLight>();
-                    stanleyMatcher.Options.HistogramBinWidth            = options.STACOptions.HistogramBinWidth;
-                    stanleyMatcher.Options.HistogramMultiplier          = options.STACOptions.HistogramMultiplier;
-                    stanleyMatcher.Options.ShiftAmount                  = options.STACOptions.ShiftAmount;
-                    stanleyMatcher.Options.ShouldCalculateHistogramFDR  = options.STACOptions.ShouldCalculateHistogramFDR;
-                    stanleyMatcher.Options.ShouldCalculateShiftFDR      = options.STACOptions.ShouldCalculateShiftFDR;
-                    stanleyMatcher.Options.ShouldCalculateSLiC          = options.STACOptions.ShouldCalculateSLiC;
-                    stanleyMatcher.Options.ShouldCalculateSTAC          = options.STACOptions.ShouldCalculateSTAC;
-                    stanleyMatcher.Options.UseDriftTime                 = options.STACOptions.UseDriftTime;
-                    stanleyMatcher.Options.UseEllipsoid                 = options.STACOptions.UseEllipsoid;
-                    stanleyMatcher.Options.UsePriors                    = options.STACOptions.UsePriors;
-                    tolerances.DriftTimeTolerance                       = System.Convert.ToSingle(options.STACOptions.DriftTimeTolerance);
-                    tolerances.MassTolerancePPM                         = options.STACOptions.MassTolerancePPM;
-                    tolerances.NETTolerance                             = options.STACOptions.NETTolerance;
-                    tolerances.Refined                                  = options.STACOptions.Refined;
-                    stanleyMatcher.Options.UserTolerances               = tolerances;                    
-                    m_provider.PeakMatcher                              = stanleyMatcher;
-                    break;
-            }
+                Options =
+                {
+                    HistogramBinWidth = options.StacOptions.HistogramBinWidth,
+                    HistogramMultiplier = options.StacOptions.HistogramMultiplier,
+                    ShiftAmount = options.StacOptions.ShiftAmount,
+                    ShouldCalculateHistogramFDR = options.StacOptions.ShouldCalculateHistogramFDR,
+                    ShouldCalculateShiftFDR = options.StacOptions.ShouldCalculateShiftFDR,
+                    ShouldCalculateSLiC = options.StacOptions.ShouldCalculateSLiC,
+                    ShouldCalculateSTAC = options.StacOptions.ShouldCalculateSTAC,
+                    UseDriftTime = options.StacOptions.UseDriftTime,
+                    UseEllipsoid = options.StacOptions.UseEllipsoid,
+                    UsePriors = options.StacOptions.UsePriors
+                }
+            };
+            tolerances.DriftTimeTolerance                       = Convert.ToSingle(options.StacOptions.DriftTimeTolerance);
+            tolerances.MassTolerancePPM                         = options.StacOptions.MassTolerancePPM;
+            tolerances.NETTolerance                             = options.StacOptions.NETTolerance;
+            tolerances.Refined                                  = options.StacOptions.Refined;
+            stanleyMatcher.Options.UserTolerances               = tolerances;                    
+            m_provider.PeakMatcher                              = stanleyMatcher;
+            
         }
 
         /// <summary>
         /// Returns the list of algorithms post build.
         /// </summary>
         /// <returns></returns>
-        public AlgorithmProvider GetAlgorithmProvider(AnalysisOptions options)
+        public AlgorithmProvider GetAlgorithmProvider(MultiAlignAnalysisOptions options)
         {
             if (m_provider.Clusterer == null)
             {

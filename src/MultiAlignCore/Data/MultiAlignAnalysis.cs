@@ -1,21 +1,12 @@
-using System;
-using System.Collections.Generic;
-using MultiAlignCore.Algorithms.Alignment;
+using MultiAlignCore.Algorithms;
+using MultiAlignCore.Algorithms.Options;
 using MultiAlignCore.Data.Alignment;
 using MultiAlignCore.Data.MassTags;
 using MultiAlignCore.IO.Features;
-using MultiAlignEngine;
-using MultiAlignEngine.Alignment;
-using MultiAlignEngine.Clustering;
-using MultiAlignEngine.Features;
-using MultiAlignEngine.PeakMatching;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Data.MassTags;
-using MultiAlignCore.Algorithms.FeatureMatcher;
-using MultiAlignCore.Data.Features;
-using MultiAlignCore.Algorithms.FeatureFinding;
-using System.Windows;
-using System.ComponentModel;
+using System;
+using System.Collections.Generic;
 
 namespace MultiAlignCore.Data
 {
@@ -26,15 +17,11 @@ namespace MultiAlignCore.Data
         /// <summary>
         /// Default constructor for a MultiAlign analysis object.
         /// </summary>
-        /// <param name="evntPercentComplete"></param>
-        /// <param name="evntStatusMessage"></param>
-        /// <param name="evntTitleMessage"></param>
         public MultiAlignAnalysis()
         {
             // Meta Data Information about the analysis and datasets.
-            MetaData                        = new AnalysisMetaData();
-            MetaData.AnalysisName           = string.Empty;
-            Options                         = new AnalysisOptions();
+            MetaData                        = new AnalysisMetaData {AnalysisName = string.Empty};
+            Options                         = new MultiAlignAnalysisOptions();
             MassTagDatabase                 = new MassTagDatabase();
             
             // Alignment options and data.
@@ -68,7 +55,7 @@ namespace MultiAlignCore.Data
         /// <summary>
         /// Gets or sets what kind of analysis to do.  
         /// </summary>
-        public MultiAlignCore.Algorithms.AnalysisType AnalysisType
+        public AnalysisType AnalysisType
         {
             get;
             set;
@@ -76,7 +63,7 @@ namespace MultiAlignCore.Data
         /// <summary>
         /// Gets or est the analysis options.
         /// </summary>
-        public AnalysisOptions Options
+        public MultiAlignAnalysisOptions Options
         {
             get;
             set;

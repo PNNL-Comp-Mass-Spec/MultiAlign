@@ -306,124 +306,124 @@ namespace MultiAlignTestSuite.Papers.Alignment
             }
         }
 
-        [Test(Description = "Figure 2: Computes the NET / MASS Error Distributions for pre-post ")]
-        [TestCase(@"QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32",
-            @"QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32",
-            SpectralComparison.CosineDotProduct,
-            .5, // m/z
-            .15, // NET          
-            .6, // SSM similarity score,
-            1e-15, // MSGF+ Score
-            .1, // Peptide FDR
-            .5)] // Ion Percent
-        public void GenerateFigure2_peptideMatches(string rawNameX,
-            string rawNameY,
-            SpectralComparison comparerType,
-            double mzTolerance,
-            double netTolerance,
-            double similarityScoreCutoff,
-            double peptideScore,
-            double peptideFdr,
-            double ionPercent)
-        {
-            Console.WriteLine(@"Creating Figure 2: {2}, Test: {0}	Compared To	{1}", rawNameX, rawNameY, comparerType);
+        //[Test(Description = "Figure 2: Computes the NET / MASS Error Distributions for pre-post ")]
+        //[TestCase(@"QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32",
+        //    @"QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32",
+        //    SpectralComparison.CosineDotProduct,
+        //    .5, // m/z
+        //    .15, // NET          
+        //    .6, // SSM similarity score,
+        //    1e-15, // MSGF+ Score
+        //    .1, // Peptide FDR
+        //    .5)] // Ion Percent
+        //public void GenerateFigure2_peptideMatches(string rawNameX,
+        //    string rawNameY,
+        //    SpectralComparison comparerType,
+        //    double mzTolerance,
+        //    double netTolerance,
+        //    double similarityScoreCutoff,
+        //    double peptideScore,
+        //    double peptideFdr,
+        //    double ionPercent)
+        //{
+        //    Console.WriteLine(@"Creating Figure 2: {2}, Test: {0}	Compared To	{1}", rawNameX, rawNameY, comparerType);
 
-            // Create alignment datasets 
-            var datasetX = new AlignmentDataset(m_basePath, rawNameX);
-            var datasetY = new AlignmentDataset(m_basePath, rawNameY);
+        //    // Create alignment datasets 
+        //    var datasetX = new AlignmentDataset(m_basePath, rawNameX);
+        //    var datasetY = new AlignmentDataset(m_basePath, rawNameY);
 
-            // The options for the analysis 
-            var options = new SpectralOptions
-            {
-                MzTolerance = mzTolerance,
-                NetTolerance = netTolerance,
-                SimilarityCutoff = similarityScoreCutoff,
-                TopIonPercent = ionPercent,
-                IdScore = peptideScore,
-                ComparerType = comparerType
-            };
+        //    // The options for the analysis 
+        //    var options = new SpectralOptions
+        //    {
+        //        MzTolerance = mzTolerance,
+        //        NetTolerance = netTolerance,
+        //        SimilarityCutoff = similarityScoreCutoff,
+        //        TopIonPercent = ionPercent,
+        //        IdScore = peptideScore,
+        //        ComparerType = comparerType
+        //    };
 
-            // Then the writer for creating a report
-            var writer = AlignmentAnalysisWriterFactory.Create(AlignmentFigureType.Figure2,"Figure2");
-
-
-            // Create an action to load and align the feature data.
-            var features = new AlignedFeatureData();
-            var aligner = new FeatureAligner();
-            var loader = new FeatureLoader();
-            Action loadingAction = delegate
-            {
-                features.Baseline = loader.LoadFeatures(datasetX.FeatureFile);
-                features.Alignee = loader.LoadFeatures(datasetY.FeatureFile);
-                features = aligner.AlignFeatures(features.Baseline,
-                    features.Alignee,
-                    options);
-            };
+        //    // Then the writer for creating a report
+        //    var writer = AlignmentAnalysisWriterFactory.Create(AlignmentFigureType.Figure2,"Figure2");
 
 
-            // Creates an action to load the peptide data on a separate task
-            // Find the anchor point matches based on peptide sequences
-            ISequenceFileReader reader = PeptideReaderFactory.CreateReader(SequenceFileType.MSGF);
-            IEnumerable<AnchorPointMatch> peptideMatches = null;
-            Action peptideLoadingAction = delegate
-            {
-                IEnumerable<Peptide> peptidesX = reader.Read(datasetX.PeptideFile);
-                IEnumerable<Peptide> peptidesY = reader.Read(datasetY.PeptideFile);
-
-                peptidesX = peptidesX.Where(x => x.Score < options.IdScore);
-                peptidesY = peptidesY.Where(x => x.Score < options.IdScore);
-
-                // Then map the peptide sequences to identify True Positive and False Positives
-                var peptideFinder = new PeptideAnchorPointFinder();
-                peptideMatches = peptideFinder.FindAnchorPoints(peptidesX,
-                    peptidesY,
-                    options);
-            };
-
-            var loadingTask = new Task(loadingAction);
-            loadingTask.Start();
-
-            var peptideLoadingTask = new Task(peptideLoadingAction);
-            peptideLoadingTask.Start();
+        //    // Create an action to load and align the feature data.
+        //    var features = new AlignedFeatureData();
+        //    var aligner = new FeatureAligner();
+        //    var loader = new FeatureLoader();
+        //    Action loadingAction = delegate
+        //    {
+        //        features.Baseline = loader.LoadFeatures(datasetX.FeatureFile);
+        //        features.Alignee = loader.LoadFeatures(datasetY.FeatureFile);
+        //        features = aligner.AlignFeatures(features.Baseline,
+        //            features.Alignee,
+        //            options);
+        //    };
 
 
-            // Find the anchor point matches based on SSM
-            var comparer        = SpectralComparerFactory.CreateSpectraComparer(options.ComparerType);
-            var filter          = SpectrumFilterFactory.CreateFilter(SpectraFilters.TopPercent);
-            var spectralFinder  = new SpectralAnchorPointFinder();
-            IEnumerable<AnchorPointMatch> spectralMatches;
-            using (var readerX = RawLoaderFactory.CreateFileReader(datasetX.RawFile))
-            {
-                using (var readerY = RawLoaderFactory.CreateFileReader(datasetY.RawFile))
-                {
-                    readerX.AddDataFile(datasetX.RawFile, 0);
-                    readerY.AddDataFile(datasetY.RawFile, 0);
+        //    // Creates an action to load the peptide data on a separate task
+        //    // Find the anchor point matches based on peptide sequences
+        //    ISequenceFileReader reader = PeptideReaderFactory.CreateReader(SequenceFileType.MSGF);
+        //    IEnumerable<AnchorPointMatch> peptideMatches = null;
+        //    Action peptideLoadingAction = delegate
+        //    {
+        //        IEnumerable<Peptide> peptidesX = reader.Read(datasetX.PeptideFile);
+        //        IEnumerable<Peptide> peptidesY = reader.Read(datasetY.PeptideFile);
 
-                    spectralMatches = spectralFinder.FindAnchorPoints(readerX,
-                        readerY,
-                        comparer,
-                        filter,
-                        options);
-                }
-            }
+        //        peptidesX = peptidesX.Where(x => x.Score < options.IdScore);
+        //        peptidesY = peptidesY.Where(x => x.Score < options.IdScore);
+
+        //        // Then map the peptide sequences to identify True Positive and False Positives
+        //        var peptideFinder = new PeptideAnchorPointFinder();
+        //        peptideMatches = peptideFinder.FindAnchorPoints(peptidesX,
+        //            peptidesY,
+        //            options);
+        //    };
+
+        //    var loadingTask = new Task(loadingAction);
+        //    loadingTask.Start();
+
+        //    var peptideLoadingTask = new Task(peptideLoadingAction);
+        //    peptideLoadingTask.Start();
 
 
-            // These should already be done by the time we get here...let's just try
-            loadingTask.Wait();
-            peptideLoadingTask.Wait();
+        //    // Find the anchor point matches based on SSM
+        //    var comparer        = SpectralComparerFactory.CreateSpectraComparer(options.ComparerType);
+        //    var filter          = SpectrumFilterFactory.CreateFilter(SpectraFilters.TopPercent);
+        //    var spectralFinder  = new SpectralAnchorPointFinder();
+        //    IEnumerable<AnchorPointMatch> spectralMatches;
+        //    using (var readerX = RawLoaderFactory.CreateFileReader(datasetX.RawFile))
+        //    {
+        //        using (var readerY = RawLoaderFactory.CreateFileReader(datasetY.RawFile))
+        //        {
+        //            readerX.AddDataFile(datasetX.RawFile, 0);
+        //            readerY.AddDataFile(datasetY.RawFile, 0);
 
-            // Package the data
-            var analysisSpectra = new SpectralAnalysis {Options = options, Matches = spectralMatches};
-            analysisSpectra.Options = options;
-            analysisSpectra.Matches = peptideMatches;
+        //            spectralMatches = spectralFinder.FindAnchorPoints(readerX,
+        //                readerY,
+        //                comparer,
+        //                filter,
+        //                options);
+        //        }
+        //    }
 
-            // Package the data
-            var analysisPeptides = new SpectralAnalysis();
 
-            // Write the results
-            writer.Write(analysisSpectra);
-            writer.Write(analysisPeptides);
-        }
+        //    // These should already be done by the time we get here...let's just try
+        //    loadingTask.Wait();
+        //    peptideLoadingTask.Wait();
+
+        //    // Package the data
+        //    var analysisSpectra = new SpectralAnalysis {Options = options, Matches = spectralMatches};
+        //    analysisSpectra.Options = options;
+        //    analysisSpectra.Matches = peptideMatches;
+
+        //    // Package the data
+        //    var analysisPeptides = new SpectralAnalysis();
+
+        //    // Write the results
+        //    writer.Write(analysisSpectra);
+        //    writer.Write(analysisPeptides);
+        //}
 
         [Test(Description = "Figure 3: Creates a pre-post alignment using Lowess.")]
         [TestCase(

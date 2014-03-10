@@ -1,23 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using MultiAlignCore.Algorithms.Options;
 using System.Windows.Forms.Integration;
-using MultiAlignCore.Data;
+using MultiAlignParameterFileEditor;
 
 namespace MultiAlign.ViewModels.Wizard
 {
     public class AdvancedOptionsViewModel: ViewModelBase
     {
-
-        MultiAlignParameterFileEditor.ParameterFileEditor m_editor;
-
-        public AdvancedOptionsViewModel(AnalysisOptions options)
+        public AdvancedOptionsViewModel(MultiAlignAnalysisOptions options)
         {
-            m_editor = new MultiAlignParameterFileEditor.ParameterFileEditor();
-            m_editor.SetOptions(options, "");
+            var editor = new ParameterFileEditor();
+            editor.SetOptions(options, "");
 
-            Editor = new WindowsFormsHost() { Child = m_editor };
+            Editor = new WindowsFormsHost { Child = editor };
         }
 
         public WindowsFormsHost Editor { get; private set; }

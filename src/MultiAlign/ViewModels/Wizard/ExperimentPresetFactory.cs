@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using MultiAlign.ViewModels.Instruments;
 
 namespace MultiAlign.ViewModels.Wizard
 {
@@ -9,9 +10,10 @@ namespace MultiAlign.ViewModels.Wizard
     {
         public static IEnumerable<ExperimentPresetViewModel> Create()
         {
-            var presets = new List<ExperimentPresetViewModel>();            
-            presets.Add(Create(ExperimentPresets.Lipids));
-            presets.Add(Create(ExperimentPresets.Peptides));            
+            var presets = new List<ExperimentPresetViewModel>();
+            presets.Add(Create(ExperimentPresets.Peptides));
+            presets.Add(Create(ExperimentPresets.LipidsPositive));
+            presets.Add(Create(ExperimentPresets.LipidsNegative));
             return presets;
         }
 
@@ -21,19 +23,26 @@ namespace MultiAlign.ViewModels.Wizard
 
             switch (preset)
             {
-                case ExperimentPresets.Lipids:
-                    model = new ExperimentPresetViewModel("Small Molecules (Lipids, Metabolites)",
-                                    4000,
+                case ExperimentPresets.LipidsPositive:
+                    model = new ExperimentPresetViewModel("Small Molecules Positive Mode (Lipids, Metabolites)",
+                                    2000,
+                                    300,
+                                    false,
+                                    InstrumentPresetFactory.Create(InstrumentPresets.LtqOrbitrap));
+                    break;
+                case ExperimentPresets.LipidsNegative:
+                    model = new ExperimentPresetViewModel("Small Molecules Negative Mode (Lipids, Metabolites)",
+                                    2000,
                                     200,
                                     false,
-                                    InstrumentPresetFactory.Create(InstrumentPresets.LTQ_Orbitrap));
+                                    InstrumentPresetFactory.Create(InstrumentPresets.LtqOrbitrap));
                     break;
                 case ExperimentPresets.Peptides:
                     model = new ExperimentPresetViewModel("Bottom Up Proteomics (Peptides)",
                                     10000,
                                     200,
                                     false,
-                                    InstrumentPresetFactory.Create(InstrumentPresets.LTQ_Orbitrap));
+                                    InstrumentPresetFactory.Create(InstrumentPresets.LtqOrbitrap));
                     break;                
             }
             return model;

@@ -1,6 +1,5 @@
 using MultiAlign.IO;
 using MultiAlignCore.Algorithms.Alignment;
-using MultiAlignCore.Algorithms.FeatureFinding;
 using MultiAlignCore.Algorithms.FeatureMatcher;
 using MultiAlignCore.Algorithms.Options;
 using MultiAlignCore.Algorithms.Workflow;
@@ -15,7 +14,6 @@ using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.Features.Hibernate;
 using MultiAlignCore.IO.MTDB;
 using PNNLOmics.Algorithms;
-using PNNLOmics.Algorithms.Distance;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Data.MassTags;
 using System;
@@ -269,21 +267,21 @@ namespace MultiAlignCore.Algorithms
         /// </summary>
         private void PerformDataLoadAndAlignment(AnalysisConfig config)
         {
-            UMCLoaderFactory.Status += UMCLoaderFactory_Status;
+            UmcLoaderFactory.Status += UMCLoaderFactory_Status;
 
             UpdateStatus("Loading data.");
-            var datasets       = config.Analysis.MetaData.Datasets.ToList(); 
-            var options        = config.Analysis.Options.FeatureFindingOptions;            
-            var filterOptions  = config.Analysis.Options.FeatureFilterOptions;
-
+            var analysisOptions     = config.Analysis.Options;
+            var datasets            = config.Analysis.MetaData.Datasets.ToList();             
+            var lcmsFilterOptions   = analysisOptions.LcmsFilteringOptions;
+            var msFilterOptions     = analysisOptions.MsFilteringOptions;
             var baselineDataset     = config.Analysis.MetaData.BaselineDataset;
             var baselineFeatures    = LoadBaselineData(baselineDataset,
-                                                        options,
-                                                        filterOptions,
+                                                        msFilterOptions,
+                                                        analysisOptions.LcmsFindingOptions,
+                                                        lcmsFilterOptions,
                                                         config.Analysis.DataProviders,
                                                         config.Analysis.MassTagDatabase,
-                                                        config.Analysis.Options.AlignmentOptions.IsAlignmentBaselineAMasstagDB,
-                                                        config.Analysis.Options.DriftTimeAlignmentOptions.ShouldAlignDriftTimes);            
+                                                        config.Analysis.Options.AlignmentOptions.IsAlignmentBaselineAMasstagDB);            
             var aligner       = m_algorithms.Aligner;
             var alignmentData = new AlignmentDAOHibernate();
             alignmentData.ClearAll();
@@ -312,9 +310,10 @@ namespace MultiAlignCore.Algorithms
             {
                 if (dataset.IsBaseline) continue;
 
-                var features = featureCache.LoadDataset( dataset,
-                                                        options,
-                                                        filterOptions);
+                var features = featureCache.LoadDataset(dataset,
+                                                        analysisOptions.MsFilteringOptions,
+                                                        analysisOptions.LcmsFindingOptions,
+                                                        analysisOptions.LcmsFilteringOptions);
 
                 features = AlignDataset(features,
                                         baselineFeatures,
@@ -328,19 +327,19 @@ namespace MultiAlignCore.Algorithms
                 featureCache.CacheFeatures(features);
             }
             DeRegisterProgressNotifier(aligner);
-            UMCLoaderFactory.Status -= UMCLoaderFactory_Status;
+            UmcLoaderFactory.Status -= UMCLoaderFactory_Status;
         }
 
         /// <summary>
         /// Loads baseline data for alignment.
         /// </summary>
         private IList<UMCLight> LoadBaselineData(DatasetInformation         baselineInfo,
-                                                LCMSFeatureFindingOptions   options,
-                                                FeatureFilterOptions        filterOptions,
+                                                MsFeatureFilteringOptions   msFilterOptions,
+                                                LcmsFeatureFindingOptions   lcmsFindingOptions,
+                                                LcmsFeatureFilteringOptions lcmsFilterOptions,                                                
                                                 FeatureDataAccessProviders  dataProviders,
                                                 MassTagDatabase             database,
-                                                bool                        shouldUseMassTagDbAsBaseline,
-                                                bool                        shouldAlignDriftTimes)
+                                                bool                        shouldUseMassTagDbAsBaseline)
         {
             IList<UMCLight> baselineFeatures = null;
             
@@ -360,9 +359,12 @@ namespace MultiAlignCore.Algorithms
                 RegisterProgressNotifier(cache);
 
                 UpdateStatus("Loading baseline features from " + baselineInfo.DatasetName + " for alignment.");
-                baselineFeatures =  cache.LoadDataset(  baselineInfo,
-                                                        options,
-                                                        filterOptions);
+                
+                baselineFeatures = cache.LoadDataset(baselineInfo, 
+                                                     msFilterOptions,
+                                                     lcmsFindingOptions,
+                                                     lcmsFilterOptions);
+
                 cache.CacheFeatures(baselineFeatures);
                 if (BaselineFeaturesLoaded != null)
                 {
@@ -373,7 +375,8 @@ namespace MultiAlignCore.Algorithms
             }
             else
             {                
-                if (baselineInfo == null && shouldAlignDriftTimes)
+                //TODO: convert this to be cleaner.
+                if (baselineInfo == null)
                 {
                     if (database == null)                    
                         throw new NullReferenceException("The mass tag database has to have data in it if it's being used for drift time alignment.");
@@ -381,10 +384,10 @@ namespace MultiAlignCore.Algorithms
                     UpdateStatus( "Setting baseline features for post drift time alignment from mass tag database.");
                     baselineFeatures = FeatureDataConverters.ConvertToUMC(database.MassTags);
                 }
-                
-                if (BaselineFeaturesLoaded != null)
-                    if (baselineFeatures != null)
-                        BaselineFeaturesLoaded(this, new BaselineFeaturesLoadedEventArgs(null, baselineFeatures.ToList(), database));
+
+                if (BaselineFeaturesLoaded == null) return baselineFeatures;
+                if (baselineFeatures != null)
+                    BaselineFeaturesLoaded(this, new BaselineFeaturesLoadedEventArgs(null, baselineFeatures.ToList(), database));
             }
             return baselineFeatures;
         }
@@ -393,7 +396,7 @@ namespace MultiAlignCore.Algorithms
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void UMCLoaderFactory_Status(object sender, UMCLoadingEventArgs e)
+        void UMCLoaderFactory_Status(object sender, UmcLoadingEventArgs e)
         {
             UpdateStatus( e.Message);
         }
@@ -410,15 +413,17 @@ namespace MultiAlignCore.Algorithms
             // Connect to database of features.                
             var featureCache = config.Analysis.DataProviders.FeatureCache;
 
+            var options = config.Analysis.Options;
+
             // Load the baseline data.
             var baselineInfo = config.Analysis.MetaData.BaselineDataset;
             var baselineFeatures = LoadBaselineData(baselineInfo,
-                                                    config.Analysis.Options.FeatureFindingOptions,
-                                                    config.Analysis.Options.FeatureFilterOptions,                                                                   
+                                                    options.MsFilteringOptions,
+                                                    options.LcmsFindingOptions,
+                                                    options.LcmsFilteringOptions,                                                    
                                                     config.Analysis.DataProviders,
                                                     config.Analysis.MassTagDatabase,
-                                                    config.Analysis.Options.AlignmentOptions.IsAlignmentBaselineAMasstagDB,
-                                                    config.Analysis.Options.DriftTimeAlignmentOptions.ShouldAlignDriftTimes);
+                                                    config.Analysis.Options.AlignmentOptions.IsAlignmentBaselineAMasstagDB);
 
             // Create the alignment cache and clear it.
             var alignmentCache = new AlignmentDAOHibernate();
@@ -539,20 +544,18 @@ namespace MultiAlignCore.Algorithms
             RegisterProgressNotifier(clusterer);
             UpdateStatus( "Using Cluster Algorithm: " + clusterer);
             
-            clusterer.Parameters                    = Clustering.LCMSFeatureClusteringOptions.ConvertToOmics(analysis.Options.ClusterOptions);
-            clusterer.Parameters.DistanceFunction   = DistanceFactory<UMCLight>.CreateDistanceFunction(analysis.Options.ClusterOptions.DistanceFunction);
-
+            clusterer.Parameters                  = LcmsClusteringOptions.ConvertToOmics(analysis.Options.LcmsClusteringOptions);
+            
             // This just tells us whether we are using mammoth memory partitions or not.          
-            var featureCache            = config.Analysis.DataProviders.FeatureCache;            
-            var clusterCount                = 0;
+            var featureCache = config.Analysis.DataProviders.FeatureCache;            
+            var clusterCount = 0;
             
             var providers = config.Analysis.DataProviders;
 
-            if (analysis.Options.ClusterOptions.IgnoreCharge)
+            // Here we see if we need to separate the charge...
+            // IMS is said to require charge separation 
+            if (!analysis.Options.LcmsClusteringOptions.ShouldSeparateCharge)
             {
-                /*
-                 * Here we cluster all charge states together.  Probably Non IMS data.
-                 */
                 UpdateStatus("Clustering features from all charge states.");
                 UpdateStatus( "Retrieving features for clustering from cache.");                
                 var features         = featureCache.FindAll();
@@ -839,7 +842,7 @@ namespace MultiAlignCore.Algorithms
             }
             catch (OutOfMemoryException ex)
             {
-                UMCLoaderFactory.Status -= UMCLoaderFactory_Status;
+                UmcLoaderFactory.Status -= UMCLoaderFactory_Status;
                 if (AnalysisError != null)                
                     AnalysisError(this, new AnalysisErrorEventArgs("Out of memory.", ex));
                 
@@ -847,7 +850,7 @@ namespace MultiAlignCore.Algorithms
             }
             catch (Exception ex)
             {
-                UMCLoaderFactory.Status -= UMCLoaderFactory_Status;
+                UmcLoaderFactory.Status -= UMCLoaderFactory_Status;
                 if (AnalysisError != null)                
                     AnalysisError(this, new AnalysisErrorEventArgs("Handled Error. ", ex));
                 

@@ -71,16 +71,6 @@ namespace MultiAlign.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to MultiAlign Parameters (*.xml)| *.xml|All Files (*.*)|*.*.
-        /// </summary>
-        internal static string AnalysisOptionsViewModel_AnalysisOptionsViewModel_MultiAlign_Parameters____xml_____xml_All_Files__________ {
-            get {
-                return ResourceManager.GetString("AnalysisOptionsViewModel_AnalysisOptionsViewModel_MultiAlign_Parameters____xml___" +
-                        "__xml_All_Files__________", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap circle_32 {
@@ -177,6 +167,15 @@ namespace MultiAlign.Properties {
             get {
                 object obj = ResourceManager.GetObject("molecule", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MultiAlign Parameters (*.json)| *.json|All Files (*.*)|*.*.
+        /// </summary>
+        internal static string MultiAlignParameterFileFilter {
+            get {
+                return ResourceManager.GetString("MultiAlignParameterFileFilter", resourceCulture);
             }
         }
         

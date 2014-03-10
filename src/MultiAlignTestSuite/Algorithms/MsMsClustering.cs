@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using MultiAlignCore.Algorithms.Options;
 using MultiAlignCore.Data.MetaData;
 using NUnit.Framework;
 using MultiAlignCore.Algorithms.FeatureFinding;
@@ -137,8 +138,9 @@ namespace MultiAlignTestSuite.Algorithms
             aligneeMsFeatures.ForEach(x => x.GroupID = aligneeInfo.DatasetId);
             LinkMsMsSpectra(aligneeInfo, aligneeMsFeatures);
 
-            LCMSFeatureFindingOptions options   = new LCMSFeatureFindingOptions();
-            UMCFeatureFinder finder             = new UMCFeatureFinder();
+            //LCMSFeatureFindingOptions options   = new LCMSFeatureFindingOptions();
+            //UMCFeatureFinder finder             = new UMCFeatureFinder();
+            var finder = FeatureFinderFactory.CreateFeatureFinder(FeatureFinderType.TreeBased);
 
             Console.WriteLine("Reading Baseline Sequence Files");
             ISequenceFileReader sequenceReader  = PeptideReaderFactory.CreateReader(type);
@@ -146,7 +148,14 @@ namespace MultiAlignTestSuite.Algorithms
 
             Console.WriteLine("Reading Alignee Sequence Files");
             List<Peptide> aligneePeptides       = sequenceReader.Read(aligneeInfo.Sequence.Path).ToList();
-                        
+
+            var tolerances = new FeatureTolerances()
+            {
+                Mass = 8,
+                RetentionTime = .005
+            };
+            var options = new LcmsFeatureFindingOptions(tolerances); 
+
             Console.WriteLine("Detecting Baseline Features");
             List<UMCLight> baselineFeatures     = finder.FindFeatures(baselineMsFeatures, options, null);
             

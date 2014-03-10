@@ -99,31 +99,6 @@
         VerticalScrollBarVisibility="Auto"
         >
         <DockPanel>
-            <StackPanel 
-                DockPanel.Dock="Bottom"
-                HorizontalAlignment="Left"
-                Orientation="Horizontal">
-                <Button 
-                    Content="Advanced" 
-                    Style="{DynamicResource ResourceKey=SimpleBrowseButtonStyle}"   
-                    Command="{Binding ShowAdvancedWindowCommand}"                    
-                    Margin="5"                
-                    Width="92"/>
-                <Button         
-                    Content="Load Existing"
-                    Style="{DynamicResource ResourceKey=SimpleBrowseButtonStyle}"
-                    Command="{Binding LoadExistingCommand}"                    
-                    Width="92"                            
-                    Margin="5"
-                    HorizontalAlignment="Right"/>
-                <Button         
-                    Content="Save"
-                    Style="{DynamicResource ResourceKey=SimpleBrowseButtonStyle}"
-                    Command="{Binding SaveOptionsCommand}"                    
-                    Width="92"                            
-                    Margin="5"
-                    HorizontalAlignment="Right"/>
-            </StackPanel>
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -147,33 +122,45 @@
             Source="/MultiAlign;component/Resources/test-tube-64.png"
             />
                 <Image
-            Margin="5"
-            HorizontalAlignment="Right"
-            VerticalAlignment="Top"
-            Grid.Row="2"
-            Grid.Column="0"
-            Width="32"
-            Height="32"
-            Source="/MultiAlign;component/Resources/hammer-64.png"
-            />
+                    Margin="5"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    Grid.Row="2"
+                    Grid.Column="0"
+                    Width="32"
+                    Height="32"
+                    Source="/MultiAlign;component/Resources/hammer-64.png"
+                    />
+
+                <Image
+                    Margin="5"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    Grid.Row="3"
+                    Grid.Column="0"
+                    Width="32"
+                    Height="32"
+                    Source="/MultiAlign;component/Resources/filter-32.png"
+                    />
                 <Image
             Margin="5"
             HorizontalAlignment="Right"
             VerticalAlignment="Top"
-            Grid.Row="3"
+            Grid.Row="4"
             Grid.Column="0"
             Width="32"
             Height="32"
             Source="/MultiAlign;component/Resources/gantt-chart-64.png"
             />
-
-                <GroupBox 
-            Grid.Row="1"
-            Grid.Column="1"
-            Margin="5"
-            Foreground="Gray"
-            FontSize="18"
-            Header="Experiment">
+        
+                <Expander 
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Margin="5"
+                    Foreground="Gray"
+                    FontSize="18"
+                    IsExpanded="True"
+                    Header="Experiment">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -183,7 +170,7 @@
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="300"/>
                         </Grid.ColumnDefinitions>
-                    
+
                         <Label Content="Experiment Presets"                        
                                 VerticalContentAlignment="Center"
                                 Foreground="Gray"
@@ -197,7 +184,7 @@
                             SelectedItem="{Binding SelectedExperimentPreset, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"
                             ItemsSource="{Binding ExperimentPresets}"
                             />
-                        
+
                         <CheckBox
                             Margin="5"
                             FontSize="12"
@@ -207,7 +194,7 @@
                             Ion Mobility Experiment (IMS)?
                         </CheckBox>
                     </Grid>
-                </GroupBox>
+                </Expander>
                 <Expander
                     IsExpanded="True"
                     Grid.Row="2"
@@ -274,7 +261,7 @@
                                 FontSize="14"
                                 Margin="5"
                                 Grid.Row="3">
-                                        LC-Retention Time
+                                LC-Retention Time
                             </Label>
                             <Label
                                 Foreground="Gray"
@@ -297,11 +284,11 @@
                         Grid.Column="4"
                         Text="{Binding Path=FragmentationTolerance, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
                             <TextBox 
-                        Margin="5"
-                        Grid.Row="3"
-                        Grid.Column="1"
-                        Width="Auto"
-                        Text="{Binding Path=NETTolerance, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
+                                Margin="5"
+                                Grid.Row="3"
+                                Grid.Column="1"
+                                Width="Auto"
+                                Text="{Binding Path=NetTolerance, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
                             <TextBox 
                         Width="Auto"
                         Margin="5"
@@ -346,7 +333,7 @@
                     </DockPanel>
                 </Expander>
                 <Expander 
-                    Grid.Row="3"
+                    Grid.Row="4"
                     Grid.Column="1"
                     Margin="5"
                     Foreground="Gray"
@@ -364,13 +351,6 @@
                             <ColumnDefinition Width="126.654"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <Label
-                            Foreground="Gray"
-                            FontSize="14"
-                            Margin="5"
-                            Grid.Row="0" Grid.ColumnSpan="2">
-                            Feature Definition
-                        </Label>
 
                         <Label
                     Foreground="Gray"
@@ -385,13 +365,8 @@
                     Margin="5"
                     Grid.Row="2" Grid.ColumnSpan="2">
                             Across Dataset Clustering
-                        </Label>                       
-                        <ComboBox 
-                            FontSize="16"
-                            Grid.Column="2"
-                            ItemsSource="{Binding Path=FeatureFindingAlgorithms}"
-                            SelectedItem="{Binding Path=SelectedFeatureFindingAlgorithm, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
-                                                   
+                        </Label>
+
                         <StackPanel 
                         Margin="5"
                         Grid.Row="1"
@@ -415,18 +390,22 @@
                     </Grid>
                 </Expander>
                 <Expander
-                    Header="Filtering"
-                    Grid.Row="4"
+                    Header="Data Filtering"
+                    Grid.Row="3"
                     Grid.Column="1"
                     Margin="5"
                     FontSize="18"
-                    Foreground="Gray">   
+                    Foreground="Gray">
+                    <StackPanel>
                     <Expander
                         Margin="25,5,5,5"
                         FontSize="14"
                         Foreground="Gray"
-                        Header="Features">
-                       <Grid>
+                        IsExpanded="True"
+                        Header="Deisotoped Features">
+                        <Grid
+                            Margin="20,5,5,5"
+                            >
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
@@ -441,53 +420,16 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
 
-                                    <Label
-                                            Foreground="Gray"
-                                            FontSize="14"
-                                            Margin="5"                                
-                                            Grid.Row="0">   
-                                            LC-MS Features should be between
-                                    </Label>
-                            <TextBox 
-                                    Margin="5"
-                                    Grid.Row="0"
-                                    Grid.Column="1"                                
-                                    Text="{Binding  Path=MinimumFeatureLength, 
-                                                    Mode=TwoWay, 
-                                                    NotifyOnSourceUpdated=True, 
-                                                    UpdateSourceTrigger=PropertyChanged}"/>      
-                            <Label
-                                        Foreground="Gray"
-                                        FontSize="14"
-                                        Margin="5"
-                                        Grid.Column="2"
-                                        HorizontalAlignment="Left"
-                                        Grid.Row="0">
-                                        and
-                            </Label>
-                            <TextBox 
-                                    Margin="5"
-                                    Grid.Row="0"
-                                    Grid.Column="3"                                
-                                    Text="{Binding  Path=MaximumFeatureLength, 
-                                                    Mode=TwoWay, 
-                                                    NotifyOnSourceUpdated=True, 
-                                                    UpdateSourceTrigger=PropertyChanged}"/>
-                            <Label
-                                        Foreground="Gray"
-                                        FontSize="14"
-                                        Margin="5"
-                                        Grid.Column="4"
-                                        HorizontalAlignment="Left"
-                                        Grid.Row="0">
-                                scans long
-                            </Label>
                             <CheckBox 
                                 Grid.Row="1"
                                 Grid.Column="0"
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
                                 Foreground="Gray"
+                                IsChecked="{Binding ShouldUseMzFilter, 
+                                                    Mode=TwoWay, 
+                                                    NotifyOnSourceUpdated=True, 
+                                                    UpdateSourceTrigger=PropertyChanged}"
                                 Content="Only analyze m/z from "
                                 />
                             <TextBox 
@@ -515,30 +457,32 @@
                                                     Mode=TwoWay, 
                                                     NotifyOnSourceUpdated=True, 
                                                     UpdateSourceTrigger=PropertyChanged}"/>
-                            <Label
+                                <Label
                                         Foreground="Gray"
                                         FontSize="14"
                                         Margin="5"
                                         Grid.Row="1"
                                         Grid.Column="4"
                                         HorizontalAlignment="Left">
-                                Th.
-                            </Label>
-                           
-                            <CheckBox 
+                                    Th.
+                                </Label>
+                                <CheckBox 
                                 Grid.Row="2"
                                 Grid.Column="0"
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
                                 Foreground="Gray"
-                                IsChecked="{Binding UseMinimumDeisotopingScore}"
+                                IsChecked="{Binding ShouldUseDeisotopingFilter, 
+                                                    Mode=TwoWay, 
+                                                    NotifyOnSourceUpdated=True, 
+                                                    UpdateSourceTrigger=PropertyChanged}"
                                 Content="Minimum Deisotoping Fit Score"
                                 />
                             <TextBox 
                                 Margin="5"
                                 Grid.Row="2"
                                 Grid.Column="1"                                
-                                Text="{Binding Path=DeisotopingFitScore, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
+                                Text="{Binding Path=MinimumDeisotopingScore, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
 
                             <CheckBox 
                                 Grid.Row="3"
@@ -546,23 +490,118 @@
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
                                 Foreground="Gray"
-                                Content="Minimum Abundance"
-                                />
+                                Content="Minimum Intensity"
+                                IsChecked="{Binding ShouldUseIntensityFilter, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
                             <TextBox 
                                 Margin="5"
                                 Grid.Row="3"
                                 Grid.Column="1"                                
-                                Text="{Binding Path=MinimumAbundance, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>                            
+                                Text="{Binding Path=MinimumIntensity, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
                         </Grid>
                     </Expander>
+
+                    <Expander
+                        Margin="25,5,5,5"
+                        FontSize="14"
+                        Foreground="Gray"
+                        IsExpanded="True"
+                        Header="LC-MS Features">
+                        <Grid
+                            Margin="20,5,5,5"
+                            >
+                            <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="164"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="164"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Label
+                                            Foreground="Gray"
+                                            FontSize="14"
+                                            Margin="5"                                
+                                            Grid.Row="0">
+                                LC-MS Features should be between
+                            </Label>
+                            <TextBox 
+                                    Margin="5"
+                                    Grid.Row="0"
+                                    Grid.Column="1"                                
+                                    Text="{Binding  Path=MinimumFeatureLength, 
+                                                    Mode=TwoWay, 
+                                                    NotifyOnSourceUpdated=True, 
+                                                    UpdateSourceTrigger=PropertyChanged}"/>
+                            <Label
+                                        Foreground="Gray"
+                                        FontSize="14"
+                                        Margin="5"
+                                        Grid.Column="2"
+                                        HorizontalAlignment="Left"
+                                        Grid.Row="0">
+                                and
+                            </Label>
+                            <TextBox 
+                                    Margin="5"
+                                    Grid.Row="0"
+                                    Grid.Column="3"                                
+                                    Text="{Binding  Path=MaximumFeatureLength, 
+                                                    Mode=TwoWay, 
+                                                    NotifyOnSourceUpdated=True, 
+                                                    UpdateSourceTrigger=PropertyChanged}"/>
+                            <Label
+                                        Foreground="Gray"
+                                        FontSize="14"
+                                        Margin="5"
+                                        Grid.Column="4"
+                                        HorizontalAlignment="Left"
+                                        Grid.Row="0">
+                                scans long
+                            </Label>
+                            
+                        </Grid>
+                    </Expander>
+                    </StackPanel>
                 </Expander>
-                <Label
-                    Grid.Column="1"
-                    Foreground="Gray"
-                    FontSize="24"
-                    >
-                    Options
-                </Label>
+                <StackPanel
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="2">
+                    <Label
+                        Foreground="Gray"
+                        FontSize="24"
+                        >
+                            Options
+                    </Label>
+                    <StackPanel 
+                        Margin="5"
+                        HorizontalAlignment="Left"
+                        Orientation="Horizontal">
+                        <Button 
+                    Content="Advanced" 
+                    Style="{DynamicResource ResourceKey=SimpleBrowseButtonStyle}"   
+                    Command="{Binding ShowAdvancedWindowCommand}"                    
+                    Margin="5"                
+                    Width="92"/>
+                        <Button         
+                    Content="Load Existing"
+                    Style="{DynamicResource ResourceKey=SimpleBrowseButtonStyle}"
+                    Command="{Binding LoadExistingCommand}"                    
+                    Width="92"                            
+                    Margin="5"
+                    HorizontalAlignment="Right"/>
+                        <Button         
+                    Content="Save"
+                    Style="{DynamicResource ResourceKey=SimpleBrowseButtonStyle}"
+                    Command="{Binding SaveOptionsCommand}"                    
+                    Width="92"                            
+                    Margin="5"
+                    HorizontalAlignment="Right"/>
+                    </StackPanel>
+                </StackPanel>
             </Grid>
         </DockPanel>
     </ScrollViewer>

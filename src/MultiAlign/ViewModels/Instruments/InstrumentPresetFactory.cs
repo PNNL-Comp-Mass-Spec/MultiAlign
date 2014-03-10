@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using MultiAlign.ViewModels.Wizard;
+﻿using System.Collections.Generic;
 
-namespace MultiAlign.ViewModels
+namespace MultiAlign.ViewModels.Instruments
 {
     public class InstrumentPresetFactory
     {
@@ -12,9 +8,9 @@ namespace MultiAlign.ViewModels
         {
             var presets = new List<InstrumentPresetViewModel>
             {
-                Create(InstrumentPresets.TOF),
+                Create(InstrumentPresets.Tof),
                 Create(InstrumentPresets.Velos),
-                Create(InstrumentPresets.LTQ_Orbitrap)
+                Create(InstrumentPresets.LtqOrbitrap)
             };
 
             return presets;
@@ -24,9 +20,8 @@ namespace MultiAlign.ViewModels
             InstrumentPresetViewModel model = null;
             switch (preset)
             {                
-                case InstrumentPresets.TOF:
+                case InstrumentPresets.Tof:
                     model = new InstrumentPresetViewModel("TOF",
-                                                          false,
                                                           12,
                                                           .03,
                                                           50,
@@ -36,25 +31,21 @@ namespace MultiAlign.ViewModels
                     break;
                 case InstrumentPresets.Velos:
                     model = new InstrumentPresetViewModel("Velos",
-                                                          false,
                                                           6,
                                                           .03,
                                                           50,
                                                           .5,
                                                           8);
                     break;
-                case InstrumentPresets.LTQ_Orbitrap:
+                case InstrumentPresets.LtqOrbitrap:
                     model = new InstrumentPresetViewModel("LTQ Orbitrap",
-                                                          false,
                                                           8,
                                                           .03,
                                                           50,
                                                           .5,
                                                           8);
                     break;
-                default:
-                    break;
-            }
+             }
 
             return model;
         }

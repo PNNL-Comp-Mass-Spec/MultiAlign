@@ -3,9 +3,11 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Windows.Forms;
+using MultiAlignCore.IO.Generic;
 using MultiAlignCore.IO.Parameters;
 using MultiAlignCore.Data;
 using System.Drawing;
+using MultiAlignCore.Algorithms.Options;
 
 namespace MultiAlignParameterFileEditor
 {
@@ -39,7 +41,7 @@ namespace MultiAlignParameterFileEditor
         /// <summary>
         /// Internal options being edited.
         /// </summary>
-        private AnalysisOptions m_options;
+        private MultiAlignAnalysisOptions m_options;
         /// <summary>
         /// Maps the parameter file group attribute to the object that holds 
         /// the parameters to be edited.
@@ -62,7 +64,7 @@ namespace MultiAlignParameterFileEditor
         {
             InitializeComponent();
 
-            m_options            = new AnalysisOptions();
+            m_options            = new MultiAlignAnalysisOptions();
             m_path               = "";
             m_parameterMap       = new Dictionary<ParameterFileGroupAttribute, object>();
             m_buttonParameterMap = new Dictionary<Button, ParameterFileGroupAttribute>();
@@ -83,13 +85,13 @@ namespace MultiAlignParameterFileEditor
         /// Constructor when a parameter file is loaded.
         /// </summary>
         /// <param name="options"></param>
-        public ParameterFileEditor(AnalysisOptions options, string path)
+        public ParameterFileEditor(MultiAlignAnalysisOptions options, string path)
         {
             InitializeComponent();
 
             SetOptions(options, path);
         }
-        public void SetOptions(AnalysisOptions options, string path)
+        public void SetOptions(MultiAlignAnalysisOptions options, string path)
         {
             m_options            = options;
             m_path               = path;
@@ -215,9 +217,7 @@ namespace MultiAlignParameterFileEditor
         /// </summary>
         /// <param name="options"></param>
         private void ProcessGroups(object options)
-        {
-            System.Diagnostics.Debug.Assert(options != null);
-
+        {            
             Type type                   = options.GetType();
             PropertyInfo [] properties  = type.GetProperties();
             foreach (PropertyInfo property in properties)
@@ -264,14 +264,11 @@ namespace MultiAlignParameterFileEditor
         /// <param name="path"></param>
         private void Save(string path)
         {
-            XMLParameterFileWriter writer   = new XMLParameterFileWriter();
-            // Fake the analysis.
-            MultiAlignAnalysis analysis     = new MultiAlignAnalysis();
-            analysis.Options                = m_options;
-
+            var writer   = new JsonWriter<MultiAlignAnalysisOptions>();
+                        
             try
             {
-                writer.WriteParameterFile(path, analysis);
+                writer.Write(path, m_options);
                 m_path = path;
                 if (Saved != null)
                 {

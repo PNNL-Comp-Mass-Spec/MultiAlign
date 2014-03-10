@@ -25,15 +25,7 @@ namespace MultiAlignCore.Algorithms
         /// <summary>
         /// Invalid analysis specified.
         /// </summary>
-        InvalidParameters,
-        /// <summary>
-        /// Extract the selected ion chromatogram.
-        /// </summary>
-        ExportSICs,
-        /// <summary>
-        /// Extract MS/MS spectra and DTA files from the data.
-        /// </summary>
-        ExportMSMS
+        InvalidParameters        
     }
     
 }

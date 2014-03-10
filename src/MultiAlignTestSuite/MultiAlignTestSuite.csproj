@@ -98,6 +98,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\$(Platform)\MultiAlignEngine.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.6.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework, Version=2.5.10.11092, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL" />
     <Reference Include="OxyPlot, Version=2013.2.108.1, Culture=neutral, PublicKeyToken=638079a8f0bd61e9, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -167,7 +171,6 @@
     <Compile Include="Papers\Alignment\SSM\TestSpectralLinking.cs" />
     <Compile Include="Algorithms\UMCAlignment.cs" />
     <Compile Include="Algorithms\UMCClustering.cs" />
-    <Compile Include="Algorithms\UMCFeatureFinding.cs" />
     <Compile Include="IO\Databases\DatabaseIoTests.cs" />
     <Compile Include="IO\UMCClusterIO.cs" />
     <Compile Include="IO\UMCFeatureDOATest.cs" />
@@ -175,7 +178,6 @@
     <Compile Include="IO\MassTagDOATest.cs" />
     <Compile Include="IO\NHibernateFeatureTests.cs" />
     <Compile Include="IO\MTDB\MTDBLoaderTests.cs" />
-    <Compile Include="IO\Parameters\XMLParameterFileTests.cs" />
     <Compile Include="IO\UMCReaderFailure.cs" />
     <Compile Include="IO\DataProviderTests.cs" />
     <Compile Include="IO\UMCClusterReconstruction.cs" />
@@ -188,6 +190,7 @@
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MultiAlignCore\MultiAlignCore.csproj">
@@ -205,6 +208,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Algorithms\Xic\" />
+    <Folder Include="IO\Parameters\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

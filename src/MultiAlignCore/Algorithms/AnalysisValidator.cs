@@ -68,16 +68,6 @@ namespace MultiAlignCore.Algorithms
                     analysisType = AnalysisType.InvalidParameters;
                     return analysisType;
                 }
-                else if (config.ShouldExportSICs)
-                {
-                    Logger.PrintMessage("Exporting SIC's only");
-                    analysisType = AnalysisType.ExportSICs;
-                }
-                else if (config.ShouldExportMSMS)
-                {
-                    Logger.PrintMessage("Exporting MS/MS only");
-                    analysisType = AnalysisType.ExportMSMS;
-                }
             }
             
             return analysisType;

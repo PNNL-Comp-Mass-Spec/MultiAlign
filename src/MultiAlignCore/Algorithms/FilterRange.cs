@@ -12,11 +12,11 @@
 
         public FilterRange(double lower, double upper)
         {
-            Lower = lower;
-            Upper = upper;
+            Minimum = lower;
+            Maximum = upper;
         }
 
-        public double Lower { get; set; }
-        public double Upper { get; set; }        
+        public double Minimum { get; set; }
+        public double Maximum { get; set; }        
     }
 }

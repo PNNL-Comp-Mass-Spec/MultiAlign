@@ -83,18 +83,7 @@ namespace MultiAlignCore.Algorithms.Clustering
         [Description("Normalized elution time (NET) tolerance.")]
         public double NETTolerance { get; set; }
 
-        public static FeatureClusterParameters<UMCLight> ConvertToOmics(LCMSFeatureClusteringOptions options)
-        {            
-            FeatureTolerances tolerances                        = new FeatureTolerances();
-            FeatureClusterParameters<UMCLight> parameters       = new FeatureClusterParameters<UMCLight>();
-            tolerances.DriftTime                                = options.DriftTimeTolerance;
-            tolerances.Mass                                     = options.MassTolerance;
-            tolerances.RetentionTime                            = options.NETTolerance;            
-            parameters.Tolerances                               = tolerances;            
-            parameters.OnlyClusterSameChargeStates              = (options.IgnoreCharge == false);
-            parameters.CentroidRepresentation                   = options.ClusterCentroid;              
-            return parameters;
-        }
+        
     }
     
 }

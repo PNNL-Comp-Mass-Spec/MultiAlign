@@ -15,6 +15,6 @@
         /// <summary>
         /// Gets or sets the range to use for feature lengths (size in scans minimum number to maximum number).
         /// </summary>
-        public FilterRange FeatureLengthRange { get; set; }
+        public FilterRange FeatureLengthRange { get; set; }        
     }
 }

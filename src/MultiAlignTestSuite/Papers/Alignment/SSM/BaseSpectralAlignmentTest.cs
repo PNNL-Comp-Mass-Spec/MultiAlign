@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using MultiAlignCore.Algorithms.Options;
 using MultiAlignCore.Data.MetaData;
 using MultiAlignTestSuite.Algorithms;
+using PNNLOmics.Algorithms;
 using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
 using MultiAlignCore.Data;
@@ -103,13 +105,20 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
                 info.Features = new InputFile();
                 info.Features.Path = featureFile;
 
-                IFeatureFinder finder = FeatureFinderFactory.CreateFeatureFinder(FeatureFinderType.SingleLinkage);
-                LCMSFeatureFindingOptions options = new LCMSFeatureFindingOptions();
+                IFeatureFinder finder = FeatureFinderFactory.CreateFeatureFinder(FeatureFinderType.TreeBased);
+
+                var tolerances = new FeatureTolerances()
+                {
+                    Mass = 8,
+                    RetentionTime = .005
+                };
+                var options = new LcmsFeatureFindingOptions(tolerances); 
+
 
                 // Load and create features
-                List<MSFeatureLight> msFeatures = UMCLoaderFactory.LoadMsFeatureData(info, null);
+                List<MSFeatureLight> msFeatures = UmcLoaderFactory.LoadMsFeatureData(info, null);
                 ISpectraProvider provider       = RawLoaderFactory.CreateFileReader(rawFile);
-                features                        = finder.FindFeatures(msFeatures, options, provider);
+                //features                        = finder.FindFeatures(msFeatures, options, provider);
                 List<MSSpectra> msms            = raw.GetRawSpectra(0);
 
                 // Link the features

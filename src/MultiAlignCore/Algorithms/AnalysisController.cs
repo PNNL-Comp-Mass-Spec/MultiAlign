@@ -1,6 +1,7 @@
 ﻿using MultiAlignCore.Algorithms.Clustering;
 using MultiAlignCore.Algorithms.FeatureFinding;
 using MultiAlignCore.Algorithms.Features;
+using MultiAlignCore.Algorithms.Options;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.MassTags;
 using MultiAlignCore.Data.MetaData;
@@ -9,6 +10,7 @@ using MultiAlignCore.IO;
 using MultiAlignCore.IO.Factors;
 using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.Features.Hibernate;
+using MultiAlignCore.IO.Generic;
 using MultiAlignCore.IO.InputFiles;
 using MultiAlignCore.IO.MTDB;
 using MultiAlignCore.IO.Parameters;
@@ -301,14 +303,13 @@ namespace MultiAlignCore.Algorithms
             Logger.PrintMessage("Parameters Loaded");
             var options = new Dictionary<string, object>
             {
-                {"MS Linker Options", analysis.Options.MSLinkerOptions},
-                {"UMC Finding Options", analysis.Options.FeatureFindingOptions},
-                {"Feature Filtering Options", analysis.Options.FeatureFilterOptions},
+                {"Instrument Tolerances", analysis.Options.InstrumentTolerances},
+                {"Ms Feature Filtering Options", analysis.Options.MsFilteringOptions},
+                {"Feature Filtering Options", analysis.Options.LcmsFilteringOptions},
                 {"Mass Tag Database Options", analysis.Options.MassTagDatabaseOptions},
                 {"Alignment Options", analysis.Options.AlignmentOptions},
-                {"Drift Time Alignment Options", analysis.Options.DriftTimeAlignmentOptions},
-                {"Cluster Options", analysis.Options.ClusterOptions},
-                {"STAC Options", analysis.Options.STACOptions}
+                {"Clustering Options", analysis.Options.LcmsClusteringOptions},
+                {"STAC Options", analysis.Options.StacOptions}
             };
 
             var allmappings = new List<ParameterHibernateMapping>();
@@ -544,9 +545,9 @@ namespace MultiAlignCore.Algorithms
                 Logger.PrintMessage("The parameter file does not exist.");
                 //return 1;
             }
-            var reader = new XMLParamterFileReader();
-            MultiAlignAnalysis analysis = m_config.Analysis;
-            reader.ReadParameterFile(m_config.ParameterFile, ref analysis);
+            var reader = new JsonReader<MultiAlignAnalysisOptions>();            
+            var options  = reader.Read(m_config.ParameterFile);
+            m_config.Analysis.Options = options;
         }
 
         private  void ConstructAnalysisPath()
@@ -628,13 +629,11 @@ namespace MultiAlignCore.Algorithms
         private  void ExportParameterFile()
         {
             // Output the settings to INI for viewing.
-            string outParamName = Path.GetFileNameWithoutExtension(m_config.ParameterFile);
-            if (outParamName != null)
-            {
-                string outParamPath = Path.Combine(m_config.AnalysisPath, outParamName);
-                var xmlWriter = new XMLParameterFileWriter();
-                xmlWriter.WriteParameterFile(outParamPath + ".xml", m_config.Analysis);
-            }
+            var outParamName = Path.GetFileNameWithoutExtension(m_config.ParameterFile);
+            if (outParamName == null) return;
+            var outParamPath = Path.Combine(m_config.AnalysisPath, outParamName);                
+            var writer       = new JsonWriter<MultiAlignAnalysisOptions>();
+            writer.Write(outParamPath + ".json", m_config.Analysis.Options);
         }
         /// <summary>
         /// Constructs the baseline databases.
@@ -904,9 +903,6 @@ namespace MultiAlignCore.Algorithms
                 case AnalysisType.ExportDataOnly:
                     ExportData(databaseExists);
                     break;
-                case AnalysisType.ExportSICs:
-                    PerformAnalysisGui(m_config, builder, validated, createDatabase, m_workerManager);
-                    break;
             }
         }
 
@@ -1037,7 +1033,7 @@ namespace MultiAlignCore.Algorithms
             FeatureDataAccessProviders providers = SetupDataProviders(createDatabase);
 
             // Create the clustering, analysis, and plotting paths.
-            builder.BuildClusterer(config.Analysis.Options.ClusterOptions.ClusteringAlgorithm);
+            builder.BuildClusterer(config.Analysis.Options.LcmsClusteringOptions.ClusteringAlgorithm);
             config.Analysis.DataProviders   = providers;
             config.Analysis.AnalysisType    = validated;
             ConstructPlotPath();
@@ -1060,16 +1056,6 @@ namespace MultiAlignCore.Algorithms
             var information = Enumerable.ToList(config.Analysis.MetaData.Datasets);
             m_config.Analysis.DataProviders.DatasetCache.AddAll(information);
             
-
-            // Give the processor somewhere to put the SIC images.
-            if (validated == AnalysisType.ExportSICs)
-            {
-                processor.AnalysisPath = Path.Combine(config.AnalysisPath, "SICs");
-                if (!Directory.Exists(processor.AnalysisPath))
-                {
-                    Directory.CreateDirectory(processor.AnalysisPath);
-                }
-            }
 
             Logger.PrintMessage("Creating exporter options.");
             if (config.ExporterNames.CrossTabPath == null)
@@ -1214,17 +1200,6 @@ namespace MultiAlignCore.Algorithms
 
             // Tell the processor whether to load data or not.
             processor.ShouldLoadData = createDatabase;
-
-
-            // Give the processor somewhere to put the SIC images.
-            if (validated == AnalysisType.ExportSICs)
-            {
-                processor.AnalysisPath = Path.Combine(config.AnalysisPath, "SICs");
-                if (!Directory.Exists(processor.AnalysisPath))
-                {
-                    Directory.CreateDirectory(processor.AnalysisPath);
-                }
-            }
 
             Logger.PrintMessage("Creating exporter options.");
             if (config.ExporterNames.CrossTabPath == null)

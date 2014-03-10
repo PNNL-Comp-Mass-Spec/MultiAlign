@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using MultiAlignCore.Data;
-using MultiAlignCore.Extensions;
-using PNNLOmics.Algorithms;
-using PNNLOmics.Data;
-using PNNLOmics.Data.Features;
-using System.Text;
-using System.Linq;
+﻿using PNNLOmics.Algorithms.Solvers;
 using PNNLOmics.Algorithms.Solvers.LevenburgMarquadt;
 using PNNLOmics.Algorithms.Solvers.LevenburgMarquadt.BasisFunctions;
-using PNNLOmics.Algorithms.Solvers;
+using PNNLOmics.Data;
+using PNNLOmics.Data.Features;
+using System;
+using System.Collections.Generic;
 
 namespace MultiAlignCore.Algorithms.FeatureFinding
 {

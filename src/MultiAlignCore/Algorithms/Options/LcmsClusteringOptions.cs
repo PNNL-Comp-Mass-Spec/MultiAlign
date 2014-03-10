@@ -21,10 +21,14 @@ namespace MultiAlignCore.Algorithms.Options
 
         public static FeatureClusterParameters<UMCLight> ConvertToOmics(LcmsClusteringOptions options)
         {                        
-            FeatureClusterParameters<UMCLight> parameters       = new FeatureClusterParameters<UMCLight>();                 
-            parameters.Tolerances                               = options.InstrumentTolerances;            
-            parameters.OnlyClusterSameChargeStates              = (options.ShouldSeparateCharge == false);
-            parameters.CentroidRepresentation                   = options.ClusterCentroidRepresentation;              
+            var parameters       = new FeatureClusterParameters<UMCLight>
+            {
+                Tolerances                  = options.InstrumentTolerances,
+                OnlyClusterSameChargeStates = (options.ShouldSeparateCharge == false),
+                CentroidRepresentation      = options.ClusterCentroidRepresentation
+            };
+
+            parameters.DistanceFunction = DistanceFactory<UMCLight>.CreateDistanceFunction(options.DistanceFunction);
             return parameters;
         }
     }

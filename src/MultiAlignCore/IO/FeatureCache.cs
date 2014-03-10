@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using MultiAlignCore.Algorithms;
 using MultiAlignCore.Algorithms.FeatureFinding;
+using MultiAlignCore.Algorithms.Options;
 using MultiAlignCore.Algorithms.Workflow;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.Features;
 using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.Data.SequenceData;
 using MultiAlignCore.IO.Features;
+using PNNLOmics.Algorithms;
 using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
 using PNNLOmicsIO.IO;
@@ -125,31 +127,29 @@ namespace MultiAlignCore.IO
         /// Creates LCMS Features 
         /// </summary>
         private List<UMCLight> CreateLcmsFeatures(
-                                        DatasetInformation information,
-                                        List<MSFeatureLight> msFeatures,
-                                        LCMSFeatureFindingOptions options,
-                                        FeatureFilterOptions filterOptions)
+                                        DatasetInformation          information,
+                                        List<MSFeatureLight>        msFeatures,
+                                        LcmsFeatureFindingOptions   options,
+                                        LcmsFeatureFilteringOptions filterOptions)
         {                                    
             // Make features
             if (msFeatures.Count < 1)
                 throw new Exception("No features were found in the feature files provided.");
 
-            // Filter out bad MS Features
-            var filteredMsFeatures = LCMSFeatureFilters.FilterMSFeatures(msFeatures, options);
-
             UpdateStatus("Finding features.");
             ISpectraProvider provider = null;
             if (information.RawPath != null)
             {
+                UpdateStatus("Using raw data to create better features.");
                 provider = RawLoaderFactory.CreateFileReader(information.RawPath);
                 provider.AddDataFile(information.RawPath, 0);
             }
-            var finder = FeatureFinderFactory.CreateFeatureFinder(options.FeatureFinderAlgorithm);
-            var features = finder.FindFeatures(filteredMsFeatures, options, provider);
+            var finder = FeatureFinderFactory.CreateFeatureFinder(FeatureFinderType.TreeBased);
+            var features = finder.FindFeatures(msFeatures, options, provider);
 
             UpdateStatus("Filtering features.");
-            var filteredFeatures = LCMSFeatureFilters.FilterFeatures(features,
-                                                                 filterOptions);
+            var filteredFeatures = LcmsFeatureFilters.FilterFeatures(features,
+                                                                     filterOptions);
             
             UpdateStatus(string.Format("Filtered features from: {0} to {1}.", features.Count, filteredFeatures.Count));
             return filteredFeatures;
@@ -159,34 +159,34 @@ namespace MultiAlignCore.IO
         /// Load a single dataset from the provider.
         /// </summary>
         /// <returns></returns>
-        public IList<UMCLight> LoadDataset( DatasetInformation dataset,
-                                            LCMSFeatureFindingOptions options,
-                                            FeatureFilterOptions filterOptions)
+        public IList<UMCLight> LoadDataset( DatasetInformation          dataset,
+                                            MsFeatureFilteringOptions   msFilteringOptions,
+                                            LcmsFeatureFindingOptions   lcmsFindingOptions,
+                                            LcmsFeatureFilteringOptions lcmsFilteringOptions)
         {
 
             UpdateStatus(string.Format("[{0}] - Loading dataset [{0}] - {1}.", dataset.DatasetId, dataset.DatasetName));
             var datasetId = dataset.DatasetId;
-            var features = UMCLoaderFactory.LoadUmcFeatureData(dataset, Providers.FeatureCache);
+            var features = UmcLoaderFactory.LoadUmcFeatureData(dataset, Providers.FeatureCache);
 
             UpdateStatus(string.Format("[{0}] Loading MS Feature Data [{0}] - {1}.", dataset.DatasetId,
                 dataset.DatasetName));
-            var msFeatures = UMCLoaderFactory.LoadMsFeatureData(dataset, Providers.MSFeatureCache);
+            var msFeatures = UmcLoaderFactory.LoadMsFeatureData(dataset, Providers.MSFeatureCache);
             var msnSpectra = new List<MSSpectra>();
 
             // If we don't have any features, then we have to create some from the MS features
             // provided to us.
             if (features.Count < 1)
             {
-                var scanMap = dataset.DatasetSummary.ScanMetaData;
 
-                if (scanMap != null && scanMap.Count > 0)
-                    msFeatures =
-                        msFeatures.Where(x => scanMap.ContainsKey(x.Scan) && scanMap[x.Scan].MsLevel == 1).ToList();
+                msFeatures = LcmsFeatureFilters.FilterMsFeatures(msFeatures, msFilteringOptions);
+                msFeatures = Filter(msFeatures, dataset.RawPath);
 
+                
                 features = CreateLcmsFeatures(dataset,
-                                                msFeatures,                                                
-                                                options,
-                                                filterOptions);
+                                              msFeatures,
+                                              lcmsFindingOptions,
+                                              lcmsFilteringOptions);
 
                 var maxScan = Convert.ToDouble(features.Max(feature => feature.Scan));
                 var minScan = Convert.ToDouble(features.Min(feature => feature.Scan));
@@ -213,7 +213,7 @@ namespace MultiAlignCore.IO
             }
             else
             {
-                if (!UMCLoaderFactory.AreExistingFeatures(dataset))
+                if (!UmcLoaderFactory.AreExistingFeatures(dataset))
                 {
                     var i = 0;
                     foreach (var feature in features)
@@ -257,6 +257,41 @@ namespace MultiAlignCore.IO
                 linker.LinkPeptidesToSpectra(msnSpectra, peptideList);
             }
             return features;
+        }
+
+        /// <summary>
+        /// Filters the list of MS Features that may be from MS/MS deisotoped data.
+        /// </summary>
+        private List<MSFeatureLight> Filter(List<MSFeatureLight> msFeatures, string rawPath)
+        {
+            if (rawPath == null)
+                return msFeatures;
+
+            // First find all unique scans
+            var scanMap = new Dictionary<int, bool>();
+            foreach (var feature in msFeatures)
+            {
+                if (!scanMap.ContainsKey(feature.Scan))
+                {
+                    // Assume all scans are parents
+                    scanMap.Add(feature.Scan, true);
+                }
+            }
+            // Then parse each to figure out if this is true.
+            var fullScans = new Dictionary<int, bool>();
+            using (var provider = RawLoaderFactory.CreateFileReader(rawPath))
+            {
+                provider.AddDataFile(rawPath, 0);
+                foreach (var scan in scanMap.Keys)
+                {
+                    ScanSummary summary;                    
+                    provider.GetRawSpectra(scan, 0, out summary);
+                    if (summary.MsLevel == 1)
+                        fullScans.Add(scan, true);
+                }
+            }
+            
+            return msFeatures.Where(x => fullScans.ContainsKey(x.Scan)).ToList();            
         }
 
 

@@ -73,12 +73,13 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DeconTools.Backend">
-      <HintPath>..\..\lib\deconengine\DeconTools.Backend.dll</HintPath>
-    </Reference>
     <Reference Include="Mage, Version=1.3.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\$(Platform)\Mage.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.6.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="PNNLOmics, Version=1.0.5176.20116, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -136,6 +137,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Algorithms\AlgorithmProvider.cs" />
+    <Compile Include="Algorithms\FeatureFinding\UMCTreeFeatureFinder.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Algorithms\Options\AlignmentOptions.cs" />
     <Compile Include="Algorithms\Alignment\DriftTimeAligner.cs" />
     <Compile Include="Algorithms\Alignment\DummyAlignment.cs" />
@@ -159,6 +163,7 @@
     <Compile Include="Algorithms\Clustering\ClusteringAlgorithmType.cs" />
     <Compile Include="Algorithms\DelegateAnalysisMethod.cs" />
     <Compile Include="Algorithms\FilterRange.cs" />
+    <Compile Include="Algorithms\Options\LcmsFeatureFindingOptions.cs" />
     <Compile Include="Algorithms\Options\MultiAlignAnalysisOptions.cs" />
     <Compile Include="Algorithms\Options\LcmsClusteringOptions.cs" />
     <Compile Include="Algorithms\Options\LcmsFeatureFilteringOptions.cs" />
@@ -170,12 +175,7 @@
     <Compile Include="Algorithms\FeatureFinding\FeatureFinderFactory.cs" />
     <Compile Include="Algorithms\FeatureFinding\ILcmsFeatureRefinement.cs" />
     <Compile Include="Algorithms\FeatureFinding\LcmsRawFeatureFinder.cs" />
-    <Compile Include="Algorithms\FeatureFinding\UMCFeatureFinderOptions.cs" />
     <Compile Include="Algorithms\FeatureFinding\IFeatureFinder.cs" />
-    <Compile Include="Algorithms\FeatureFinding\UMCFeatureFinder.cs" />
-    <Compile Include="Algorithms\FeatureFinding\UMCTreeFeatureFinder.cs" />
-    <Compile Include="Algorithms\FeatureFinding\XicAdaptor.cs" />
-    <Compile Include="Algorithms\FeatureFinding\XicFinder.cs" />
     <Compile Include="Algorithms\Options\STACOptions.cs" />
     <Compile Include="Algorithms\FeatureMatcher\PeakMatchingType.cs" />
     <Compile Include="Algorithms\FeatureMatcher\STAC.cs" />
@@ -209,7 +209,6 @@
     <Compile Include="Data\ProteinToMassTags.cs" />
     <Compile Include="Data\UMCClusterLightCacheManager.cs" />
     <Compile Include="Data\DataSummaryAttribute.cs" />
-    <Compile Include="Data\Features\FeatureLoadingData.cs" />
     <Compile Include="Data\Features\LCMSFeatureChargeMapBuilder.cs" />
     <Compile Include="Data\Features\FeatureDataConverters.cs" />
     <Compile Include="Data\Features\MSFeatureMsMs.cs" />
@@ -230,7 +229,6 @@
     <Compile Include="Data\Factors\FactorTree.cs" />
     <Compile Include="Data\Factors\TreeNode.cs" />
     <Compile Include="Data\Factors\TreeNodeConverter.cs" />
-    <Compile Include="Data\Features\FeatureFilterOptions.cs" />
     <Compile Include="Data\Features\LCMSFeatureFilters.cs" />
     <Compile Include="Data\MassTags\MassTagDatabase.cs" />
     <Compile Include="Data\MassTags\MassTagDatabaseFormat.cs" />
@@ -255,6 +253,9 @@
     <Compile Include="IO\Factors\FactorFileReader.cs" />
     <Compile Include="IO\Factors\MultiAlignFactorSink.cs" />
     <Compile Include="IO\DatabaseIndexer.cs" />
+    <Compile Include="IO\Features\UmcLoadingEventArgs.cs" />
+    <Compile Include="IO\Generic\JsonReader.cs" />
+    <Compile Include="IO\Generic\JsonWriter.cs" />
     <Compile Include="IO\MsMs\ParentSpectraFinder.cs" />
     <Compile Include="IO\Features\UmcAdoDAO.cs" />
     <Compile Include="IO\Clusters\UMCClusterAbundanceSumCrossTabWriter.cs" />
@@ -358,17 +359,11 @@
     <Compile Include="IO\MTDB\MTSPeakMatchResultsWriter.cs" />
     <Compile Include="IO\MTDB\MTSSqlServerPeakMatchResultWriter.cs" />
     <Compile Include="IO\MTDB\SqliteMassTagDatabaseLoader.cs" />
-    <Compile Include="IO\Parameters\IParameterFileReader.cs" />
-    <Compile Include="IO\Parameters\IParameterFileWriter.cs" />
-    <Compile Include="IO\Parameters\MultiAlignParameterIniFileReader.cs" />
-    <Compile Include="IO\Parameters\MultiAlignParameterIniFileWriter.cs" />
     <Compile Include="IO\Parameters\ParameterFileAttribute.cs" />
     <Compile Include="IO\Parameters\ParameterFileGroupAttribute.cs" />
     <Compile Include="IO\Parameters\ParameterHibernateMapping.cs" />
     <Compile Include="IO\Parameters\ParameterUtility.cs" />
     <Compile Include="IO\Parameters\xmlIO.cs" />
-    <Compile Include="IO\Parameters\XMLParameterFileReader.cs" />
-    <Compile Include="IO\Parameters\XMLParameterFileWriter.cs" />
     <Compile Include="IO\Reports\AnalysisHTMLReport.cs" />
     <Compile Include="IO\MTDB\MTDBLoaderFactory.cs" />
     <Compile Include="Data\Alignment\classAlignmentData.cs" />
@@ -433,6 +428,9 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

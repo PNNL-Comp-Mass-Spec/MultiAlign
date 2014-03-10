@@ -9,17 +9,12 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
         /// <param name="type"></param>
         /// <returns></returns>
         public static IFeatureFinder CreateFeatureFinder(FeatureFinderType type)
-        {
-            IFeatureFinder finder = null;
+        {            
+            IFeatureFinder finder;
             switch (type)
-            {
-                case FeatureFinderType.SingleLinkage:
-                    finder = new UMCFeatureFinder();
-                    break;
-                case FeatureFinderType.TreeBased:
+            {                
+                default:                    
                     finder = new UmcTreeFeatureFinder();
-                    break;
-                default:
                     break;
             }
 
@@ -29,7 +24,6 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
 
     public enum FeatureFinderType
     {
-        SingleLinkage,
         TreeBased
     }
 }

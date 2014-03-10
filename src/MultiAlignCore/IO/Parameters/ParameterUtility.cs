@@ -78,7 +78,7 @@ namespace MultiAlignCore.IO.Parameters
             List<string> values = new List<string>();
             if (o != null)
             {
-                foreach (PropertyInfo prop in o.GetType().GetProperties())
+                foreach (var prop in o.GetType().GetProperties())
                 {
                     // Recurse to get parameters.
                     if (prop.CanRead)
@@ -94,13 +94,12 @@ namespace MultiAlignCore.IO.Parameters
                         for (int i = 0; i < customAttributes.Length; i++)
                         {
 
-                            ParameterFileAttribute attr = customAttributes[i] as ParameterFileAttribute;
-
-                            if (potential != null && attr != null && attr.Name != "")
+                            
+                            if (potential != null)
                             {
                                 try
                                 {
-                                    string value = string.Format("{0} = {1}", attr.Name, potential);
+                                    string value = string.Format("{0} = {1}", prop.Name, potential);
                                     values.Add(value);
                                 }
                                 catch (Exception ex)
@@ -112,18 +111,12 @@ namespace MultiAlignCore.IO.Parameters
                 }
                 foreach (FieldInfo field in o.GetType().GetFields())
                 {
-                    object[] customAttributes = field.GetCustomAttributes(typeof(ParameterFileAttribute), true);
-                    object objectValue = null;
-                    if (customAttributes.Length > 0)
-                        objectValue = field.GetValue(o);
-                    for (int i = 0; i < customAttributes.Length; i++)
-                    {
-                        ParameterFileAttribute attr = customAttributes[i] as ParameterFileAttribute;
-                        if (objectValue != null && attr != null)
+                    object objectValue = field.GetValue(o);
+                    if (objectValue != null)
                         {
                             try
                             {
-                                string value = string.Format("{0} = {1}", attr.Name, objectValue);
+                                string value = string.Format("{0} = {1}", field.Name, objectValue);
                                 values.Add(value);
                             }
                             catch
@@ -131,7 +124,7 @@ namespace MultiAlignCore.IO.Parameters
                             }
                         }
                     }
-                }
+                
             }
             return values;
         }

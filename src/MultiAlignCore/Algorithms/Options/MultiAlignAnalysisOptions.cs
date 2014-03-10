@@ -1,4 +1,5 @@
 ﻿using MultiAlignCore.Algorithms.FeatureMatcher;
+using MultiAlignCore.IO.Parameters;
 using PNNLOmics.Algorithms;
 
 namespace MultiAlignCore.Algorithms.Options
@@ -14,8 +15,9 @@ namespace MultiAlignCore.Algorithms.Options
         public MultiAlignAnalysisOptions()
         {
             InstrumentTolerances    = new FeatureTolerances();                        
-            MassTagDatabaseOptions  = new MassTagDatabaseOptions();
+            MassTagDatabaseOptions  = new IO.MTDB.MassTagDatabaseOptions();
             MsFilteringOptions      = new MsFeatureFilteringOptions();
+            LcmsFindingOptions      = new LcmsFeatureFindingOptions(InstrumentTolerances);
             LcmsFilteringOptions    = new LcmsFeatureFilteringOptions();            
             AlignmentOptions        = new AlignmentOptions();
             LcmsClusteringOptions   = new LcmsClusteringOptions(InstrumentTolerances);
@@ -31,11 +33,16 @@ namespace MultiAlignCore.Algorithms.Options
         /// <summary>
         /// Gets or sets the options for loading data from a mass tag database.
         /// </summary>
-        public MassTagDatabaseOptions MassTagDatabaseOptions { get; set; }
+        [ParameterFileGroup("Mass Tag Database", "Filtering options for loading mass tags from the database.")]
+        public IO.MTDB.MassTagDatabaseOptions MassTagDatabaseOptions { get; set; }
         /// <summary>
         /// Gets or sets the options for MS filtering.
         /// </summary>
-        public MsFeatureFilteringOptions MsFilteringOptions { get; set; }        
+        public MsFeatureFilteringOptions MsFilteringOptions { get; set; }
+        /// <summary>
+        /// Gets or sets the feature finding options.
+        /// </summary>
+        public LcmsFeatureFindingOptions LcmsFindingOptions { get; set; }
         /// <summary>
         /// Gets or sets the options for LC-MS filtering.
         /// </summary>
@@ -43,6 +50,7 @@ namespace MultiAlignCore.Algorithms.Options
         /// <summary>
         /// Gets or sets the options for LC-MS alignment
         /// </summary>
+        [ParameterFileGroup("LC-MS Feature Alignment", "Alignment options for LCMSWarp of LC-MS Features")]
         public AlignmentOptions AlignmentOptions { get; set; }
         /// <summary>
         /// Gets or sets the options for clustering LC-MS data
@@ -51,6 +59,7 @@ namespace MultiAlignCore.Algorithms.Options
         /// <summary>
         /// Gets or sets the options for STAC identification
         /// </summary>
+        [ParameterFileGroupAttribute("Peptide Identification - STAC", "Peak Matching options for statistical testing of AMT related peak matching.")]        
         public STACOptions StacOptions
         {
             get;
