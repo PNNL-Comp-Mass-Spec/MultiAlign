@@ -123,7 +123,6 @@
     <Compile Include="Commands\BrowseSaveFileCommand.cs" />
     <Compile Include="Commands\BrowseOpenFileCommand.cs" />
     <Compile Include="Commands\BrowseFolderCommand.cs" />
-    <Compile Include="Commands\Clusters\ClusterTreeFilterCommand.cs" />
     <Compile Include="Commands\Clusters\ClusterExportCommand.cs" />
     <Compile Include="Commands\Datasets\ShowDatasetDetailCommand.cs" />
     <Compile Include="Commands\Plotting\FeatureDisplayCommand.cs" />
@@ -295,6 +294,9 @@
     </Compile>
     <Compile Include="Windows\Viewers\Databases\IdentificationTree.xaml.cs">
       <DependentUpon>IdentificationTree.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Viewers\Databases\MassTagOptionsView.xaml.cs">
+      <DependentUpon>MassTagOptionsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\Viewers\Datasets\DatasetInformationView.xaml.cs">
       <DependentUpon>DatasetInformationView.xaml</DependentUpon>
@@ -481,6 +483,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\Viewers\Databases\IdentificationTree.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\Viewers\Databases\MassTagOptionsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

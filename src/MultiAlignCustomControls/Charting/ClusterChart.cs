@@ -1,4 +1,4 @@
-using System;
+using System;   
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
@@ -101,7 +101,7 @@ namespace MultiAlignCustomControls.Charting
         public ctlClusterChart(List<UMCClusterLight> clusters) :
             this()
         {
-            AddClusters(clusters);
+            AddClusters(clusters, true);
         }
         #endregion
 
@@ -123,12 +123,13 @@ namespace MultiAlignCustomControls.Charting
         /// <summary>
         /// Sets the analysis object and extracts data for display.
         /// </summary>
-        public void AddClusters(List<UMCClusterLight> clusters)
+        public void AddClusters(List<UMCClusterLight> clusters, bool autoViewPort)
         {
             m_clusters.AddRange(clusters);
             SeriesCollection.Clear();
             AddClusterDataToChart(m_clusters);
-            AutoViewPort();
+            if (autoViewPort)
+                AutoViewPort();
             Refresh();            
         }
         public void AddClusters(UMCClusterLight cluster)

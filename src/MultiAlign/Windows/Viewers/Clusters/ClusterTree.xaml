@@ -71,7 +71,7 @@
                 
                 <!-- UMC Cluster Collection Features -->                 
                 <HierarchicalDataTemplate 
-                        DataType="{x:Type viewModels:UMCClusterCollectionTreeViewModel}" 
+                        DataType="{x:Type viewModels:UmcClusterCollectionTreeViewModel}" 
                         ItemsSource="{Binding FilteredClusters}">
                             <Label Content="Clusters"/>
                 </HierarchicalDataTemplate>

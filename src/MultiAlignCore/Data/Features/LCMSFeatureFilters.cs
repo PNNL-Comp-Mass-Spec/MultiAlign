@@ -1,4 +1,5 @@
-﻿using MultiAlignCore.Algorithms.Options;
+﻿using System.Linq;
+using MultiAlignCore.Algorithms.Options;
 using PNNLOmics.Data.Features;
 using System;
 using System.Collections.Generic;
@@ -19,8 +20,8 @@ namespace MultiAlignCore.Data.Features
                 var size = Math.Abs(x.ScanStart - x.ScanEnd);
                 return size >= minimumSize && size <= maximumSize;
             });
-            
-            return newFeatures;
+
+            return newFeatures.Where(x => x.Abundance > 0).ToList();            
         }
         /// <summary>
         /// Filters the list of MS Features based on user defined filtering criteria.
@@ -32,6 +33,9 @@ namespace MultiAlignCore.Data.Features
         {
             var minimumMz = options.MzRange.Minimum;
             var maximumMz = options.MzRange.Maximum;
+
+            var minimumCharge = options.ChargeRange.Minimum;
+            var maximumCharge = options.ChargeRange.Maximum;
 
             var filteredMsFeatures = new List<MSFeatureLight>();
             filteredMsFeatures.AddRange(features);
@@ -52,6 +56,13 @@ namespace MultiAlignCore.Data.Features
             {
                 filteredMsFeatures =
                     filteredMsFeatures.FindAll(msFeature => msFeature.Mz >= minimumMz && msFeature.Mz <= maximumMz);
+            }
+
+            if (options.ShouldUseChargeFilter)
+            {
+                filteredMsFeatures =
+                   filteredMsFeatures.FindAll(msFeature => msFeature.ChargeState >= minimumCharge 
+                                                                && msFeature.ChargeState <= maximumCharge);
             }
             
             return filteredMsFeatures;

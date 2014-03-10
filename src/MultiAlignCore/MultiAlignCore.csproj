@@ -174,7 +174,6 @@
     <Compile Include="Algorithms\FeatureFinding\FeatureEvaluator.cs" />
     <Compile Include="Algorithms\FeatureFinding\FeatureFinderFactory.cs" />
     <Compile Include="Algorithms\FeatureFinding\ILcmsFeatureRefinement.cs" />
-    <Compile Include="Algorithms\FeatureFinding\LcmsRawFeatureFinder.cs" />
     <Compile Include="Algorithms\FeatureFinding\IFeatureFinder.cs" />
     <Compile Include="Algorithms\Options\STACOptions.cs" />
     <Compile Include="Algorithms\FeatureMatcher\PeakMatchingType.cs" />

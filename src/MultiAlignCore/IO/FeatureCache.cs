@@ -288,12 +288,10 @@ namespace MultiAlignCore.IO
                     provider.GetRawSpectra(scan, 0, out summary);
                     if (summary.MsLevel == 1)
                         fullScans.Add(scan, true);
-                }
+                }                
             }
             
             return msFeatures.Where(x => fullScans.ContainsKey(x.Scan)).ToList();            
         }
-
-
     }
 }

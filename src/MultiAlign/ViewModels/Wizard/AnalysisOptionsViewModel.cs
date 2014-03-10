@@ -320,6 +320,41 @@ namespace MultiAlign.ViewModels.Wizard
             }
         }
 
+
+        public double MaximumCharge
+        {
+            get
+            {
+                return m_options.MsFilteringOptions.MzRange.Maximum;
+            }
+            set
+            {
+                m_options.MsFilteringOptions.MzRange.Maximum = value;
+                OnPropertyChanged("MaximumCharge");
+            }
+        }
+        public double MinimumCharge
+        {
+            get
+            {
+                return m_options.MsFilteringOptions.ChargeRange.Minimum;
+            }
+            set
+            {
+                m_options.MsFilteringOptions.ChargeRange.Minimum = value;
+                OnPropertyChanged("MinimumCharge");
+            }
+        }
+        public bool ShouldUseChargeStateFilter
+        {
+            get { return m_options.MsFilteringOptions.ShouldUseChargeFilter; }
+            set
+            {
+                m_options.MsFilteringOptions.ShouldUseChargeFilter = value;
+                OnPropertyChanged("ShouldUseChargeStateFilter");
+            }
+        }
+
         public bool ShouldUseMzFilter
         {
             get { return m_options.MsFilteringOptions.ShouldUseMzFilter; }

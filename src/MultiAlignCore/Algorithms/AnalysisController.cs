@@ -209,7 +209,15 @@ namespace MultiAlignCore.Algorithms
                 Logger.PrintMessage(string.Format("\n{0}", e.Exception.StackTrace));
             }
             m_config.errorException = e.Exception;
-            m_config.errorEvent.Set();
+            try
+            {
+                m_config.errorEvent.Set();
+            }
+            catch
+            {
+                //TODO: Fix...something happens on exit.
+            }
+                
         }
         #endregion
         
@@ -219,6 +227,7 @@ namespace MultiAlignCore.Algorithms
         /// </summary>
         private void PrintHelp()
         {
+            //TODO: Move to the console application project
             Logger.PrintMessage(" ", false);
             Logger.PrintMessage("usage: MultiAlignConsole [options]", false);
             Logger.PrintMessage(" ", false);

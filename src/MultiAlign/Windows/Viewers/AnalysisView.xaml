@@ -63,7 +63,25 @@
                             
                             Style="{DynamicResource ResourceKey=SimpleTabItem}"
                             Header="All Clusters">
-                            <ContentControl Margin="5" Content="{Binding ClusterChart}"/>                                                        
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"></RowDefinition>
+                                    <RowDefinition Height="Auto"></RowDefinition>
+                                </Grid.RowDefinitions>
+                                <ContentControl                                     
+                                    Grid.Row="0"
+                                    Margin="5" Content="{Binding ClusterChart}"/>
+                                <Button 
+                                    Grid.Row="1"
+                                    Margin="5"
+                                    Command="{Binding ApplyViewAsFilter}"
+                                    Style="{DynamicResource SimpleButtonStyle}"
+                                    Width="156"
+                                    HorizontalAlignment="Right"
+                                    >
+                                    Use Mass / NET As Filter
+                                </Button>
+                            </Grid>
                         </TabItem>
                         <TabItem                             
                             Style="{DynamicResource ResourceKey=SimpleTabItem}"

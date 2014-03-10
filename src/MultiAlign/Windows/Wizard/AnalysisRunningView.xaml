@@ -60,34 +60,39 @@
             </ItemsControl.Template>
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <Border Margin="2"
-                            BorderThickness="1">
-                        <Border.Style>
-                            <Style TargetType="{x:Type Border}">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsCurrent}" Value="True">
-                                        <Setter Property="BorderBrush" Value="Crimson"/>
-                                        <Setter Property="BorderThickness" Value="3"/>
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding IsCurrent}" Value="False">
-                                        <Setter Property="BorderBrush" Value="Gainsboro"/>
-                                        <Setter Property="BorderThickness" Value="1"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Border.Style>
-                        <StackPanel Orientation="Horizontal">
+                    
+                        <StackPanel Orientation="Vertical">
+                        <TextBlock Text="{Binding Name}"
+                               FontWeight="Bold"
+                               FontSize="18"
+                               Margin="2"
+                               ToolTip="{Binding Description}">
+                            <TextBlock.Style >
+                                <Style TargetType="{x:Type TextBlock}">
+                                        <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsCurrent}" Value="True">
+                                            <Setter Property="Foreground" Value="Crimson"/>
+                                            <Setter Property="FontWeight" Value="ExtraBold"/>
+                                        </DataTrigger>
+                                            <DataTrigger Binding="{Binding IsCurrent}" Value="False">
+                                            <Setter Property="Foreground" Value="LightGray"/>
+                                            <Setter Property="FontWeight" Value="Normal"/>
+                                        </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                        </TextBlock>
+                                       
                             <Image            
-                                    Height="16"
+                                    Height="32"
                                     VerticalAlignment="Center"
                                     HorizontalAlignment="Center"
-                                    Source="/MultiAlign;component/Resources/circle-32.png">
+                                    Source="/MultiAlign;component/Resources/test-tube-64.png">
                                 <Image.Style >
                                     <Style TargetType="{x:Type Image}">
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding IsCurrent}" Value="True">
-                                                <Setter Property="Visibility" Value="Visible"/>
-                                                
+                                                <Setter Property="Visibility" Value="Visible"/>                                                
                                             </DataTrigger>
                                             <DataTrigger Binding="{Binding IsCurrent}" Value="False">
                                                 <Setter Property="Visibility" Value="Hidden"/>
@@ -96,14 +101,7 @@
                                     </Style>
                                 </Image.Style>
                             </Image>
-                            <TextBlock Text="{Binding Name}"
-                               FontWeight="Bold"
-                               FontSize="18"
-                               Margin="2"
-                               ToolTip="{Binding Description}"
-                               Foreground="Black"/>
                         </StackPanel>
-                    </Border>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>

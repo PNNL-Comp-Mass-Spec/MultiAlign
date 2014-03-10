@@ -1,9 +1,12 @@
-﻿using MultiAlign.Data;
+﻿using System.Windows.Input;
+using MultiAlign.Commands;
+using MultiAlign.Data;
 using MultiAlign.IO;
 using MultiAlign.ViewModels.Analysis;
 using MultiAlign.ViewModels.TreeView;
 using MultiAlign.ViewModels.Viewers;
 using MultiAlign.ViewModels.Wizard;
+using MultiAlignCore.Algorithms;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.Features;
 using MultiAlignCore.Data.MetaData;
@@ -23,7 +26,7 @@ namespace MultiAlign.ViewModels
     {        
         private RectangleF                              m_viewport; 
         private bool                                    m_hasIdentifications;
-        private UMCClusterCollectionTreeViewModel       m_clusterTreeModel;
+        private UmcClusterCollectionTreeViewModel       m_clusterTreeModel;
         private IdentificationCollectionTreeViewModel   m_identificationTreeView;
         private bool                                    m_showDriftTime;
         private MultiAlignAnalysis                      m_analysis;
@@ -34,6 +37,7 @@ namespace MultiAlign.ViewModels
         private AnalysisOptionsViewModel       m_analysisOptionsViewModel;
         private WindowsFormsHost                        m_host;
         private ClusterDetailViewModel                        m_clusterViewModel;
+        private RectangleF m_savedClusterViewPort;
 
         public AnalysisViewModel(MultiAlignAnalysis analysis)
         {
@@ -57,7 +61,7 @@ namespace MultiAlign.ViewModels
             
             // Create sub-view models
             MassTags                            = new ObservableCollection<MassTagToCluster>(clusters.Item2);
-            ClusterTree                         = new UMCClusterCollectionTreeViewModel(clusters.Item1);   
+            ClusterTree                         = new UmcClusterCollectionTreeViewModel(clusters.Item1);   
             ClusterSpectraViewModel             = new UMCClusterSpectraViewModel();
             ClusterIdentificationViewModel      = new UMCClusterIdentificationViewModel();
             AnalysisOptionsViewModel            = new AnalysisOptionsViewModel(analysis.Options);
@@ -70,8 +74,19 @@ namespace MultiAlign.ViewModels
             m_clusterChart.YAxisShortHand       = "ppm";
             m_clusterChart.XAxisShortHand       = "NET";
             LoadClusters(clusters.Item1);
+            m_clusterChart.AutoViewPort();
+
+            ApplyViewAsFilter = new BaseCommandBridge(FilterFromView);
 
             ClusterChart = new WindowsFormsHost() { Child = m_clusterChart };            
+        }
+
+        private void FilterFromView(object parameter)
+        {
+            var viewport = m_clusterChart.ViewPort;
+            var mass     = new FilterRange(viewport.Y, viewport.Bottom);
+            var net      = new FilterRange(viewport.X, viewport.X + viewport.Right);
+            m_clusterTreeModel.Filter(mass, net);
         }
 
         #region Loading 
@@ -82,7 +97,7 @@ namespace MultiAlign.ViewModels
                 clustersOnly.Add(cluster.Cluster);
 
             m_clusterChart.ClearData();
-            m_clusterChart.AddClusters(clustersOnly);
+            m_clusterChart.AddClusters(clustersOnly, false);
         }
         private void LoadDatasets(MultiAlignAnalysis analysis)
         {
@@ -287,7 +302,7 @@ namespace MultiAlign.ViewModels
         /// <summary>
         /// Gets the cluster tree view model
         /// </summary>
-        public UMCClusterCollectionTreeViewModel ClusterTree
+        public UmcClusterCollectionTreeViewModel ClusterTree
         {
             get
             {
@@ -360,5 +375,9 @@ namespace MultiAlign.ViewModels
             }
         }
         #endregion
+
+
+        public ICommand ApplyViewAsFilter { get; set; }
+
     }
 }

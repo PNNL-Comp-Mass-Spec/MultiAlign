@@ -20,11 +20,11 @@ namespace MultiAlign.Commands.Clusters
     class ClusterExportCommand: ICommand
     {
         public event EventHandler                   CanExecuteChanged;
-        private UMCClusterCollectionTreeViewModel m_clustersViewModel;
+        private UmcClusterCollectionTreeViewModel m_clustersViewModel;
         private ClusterExportViewModel m_viewModel;
         
 
-        public ClusterExportCommand(UMCClusterCollectionTreeViewModel viewModel)
+        public ClusterExportCommand(UmcClusterCollectionTreeViewModel viewModel)
         {
             m_clustersViewModel     = viewModel;
             m_viewModel = new ClusterExportViewModel(m_clustersViewModel.Clusters, m_clustersViewModel.FilteredClusters);

@@ -12,17 +12,23 @@
             MzRange                 = new FilterRange();
             MinimumIntensity        = 0;
             MinimumDeisotopingScore = MINIMUM_DEISOTOPING_SCORE;
+            ChargeRange             = new FilterRange(1, 6);
 
             ShouldUseIntensityFilter    = false;
             ShouldUseMzFilter           = false;
             ShouldUseDeisotopingFilter  = true;
+            ShouldUseChargeFilter       = true;
         }
+        /// <summary>
+        /// Gets or sets the range for a charge states
+        /// </summary>
+        public FilterRange ChargeRange { get; set; }
         public FilterRange MzRange              { get; set; }
         public double MinimumIntensity          { get; set; }
         public double MinimumDeisotopingScore   { get; set; }
-
         public bool ShouldUseMzFilter           { get; set; }
-        public bool ShouldUseIntensityFilter    { get; set; }  
-        public bool ShouldUseDeisotopingFilter    { get; set; }        
+        public bool ShouldUseIntensityFilter    { get; set; }
+        public bool ShouldUseChargeFilter        { get; set; }  
+        public bool ShouldUseDeisotopingFilter  { get; set; }        
     }
 }

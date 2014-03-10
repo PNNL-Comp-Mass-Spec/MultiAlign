@@ -18,7 +18,7 @@ namespace MultiAlign.ViewModels
         {
             m_clusters          = clusters;
             NetRange            = new RangeViewModel(new Range(0, 1),       "NET");
-            MassRange           = new RangeViewModel(new Range(0, 4000),    "Mass");
+            MassRange           = new RangeViewModel(new Range(0, 4000),    "Monoisotopic Mass");
             DriftRange          = new RangeViewModel(new Range(0, 600),     "Drift Time");
             
             TightnessRange      = new RangeViewModel(new Range(0, 10000), "Tightness");

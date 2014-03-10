@@ -2,19 +2,23 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows;
+using MultiAlign.Commands;
+using MultiAlignCore.Algorithms;
 using MultiAlignCore.Data.Features;
 using PNNLOmics.Data.Features;
 using System;
 using MultiAlign.Commands.Clusters;
 using System.Windows.Input;
 using PNNLOmics.Data;
+using MultiAlign.Windows.Viewers.Clusters;
 
 namespace MultiAlign.ViewModels.TreeView
 {
     /// <summary>
     /// Root tree object.
     /// </summary>
-    public class UMCClusterCollectionTreeViewModel : TreeItemViewModel
+    public class UmcClusterCollectionTreeViewModel : TreeItemViewModel
     {
         public event EventHandler<ClusterSelectedEventArgs> ClusterSelected;
         public event EventHandler<ClustersUpdatedEventArgs> ClustersFiltered;
@@ -22,26 +26,31 @@ namespace MultiAlign.ViewModels.TreeView
         private UMCLight                        m_selectedFeature;
         private UMCClusterLightMatched          m_selectedCluster;
         private MSSpectra                       m_selectedSpectrum;
-        private ClusterTreeFilterCommand        m_command;
-        private ClusterExportCommand            m_exportCommand;
+        private readonly ClusterExportCommand            m_exportCommand;
 
         readonly List<UMCClusterLightMatched>   m_clusters;
-        private ObservableCollection<UMCClusterTreeViewModel> m_filteredClusters;
+        private readonly ObservableCollection<UMCClusterTreeViewModel> m_filteredClusters;
 
-        public UMCClusterCollectionTreeViewModel(List<UMCClusterLightMatched> clusters)
+
+        private readonly UMCClusterFilterViewModel           m_filterViewModel;
+        private ClusterFilterWindow                 m_newWindow;  
+
+
+        public UmcClusterCollectionTreeViewModel(List<UMCClusterLightMatched> clusters)
             : this(clusters, null)
         {
         }
 
-        public UMCClusterCollectionTreeViewModel(List<UMCClusterLightMatched> clusters, UMCClusterTreeViewModel parent)
+        public UmcClusterCollectionTreeViewModel(List<UMCClusterLightMatched> clusters, UMCClusterTreeViewModel parent)
         {
             m_clusters          = clusters;
             m_filteredClusters  = new ObservableCollection<UMCClusterTreeViewModel>(
                 (from cluster in clusters
                  select new UMCClusterTreeViewModel(cluster)).ToList());
-
-            m_command           = new ClusterTreeFilterCommand(this);
-            m_exportCommand     = new ClusterExportCommand(this);
+            
+            m_exportCommand   = new ClusterExportCommand(this);            
+            m_filterViewModel = new UMCClusterFilterViewModel(Clusters);    
+            FilterCommand     = new BaseCommandBridge(FilterWindow, null);
 
             RegisterEvents();
         }
@@ -53,9 +62,9 @@ namespace MultiAlign.ViewModels.TreeView
         {
             foreach (UMCClusterTreeViewModel cluster in m_filteredClusters)
             {
-                cluster.Selected         += new System.EventHandler(cluster_Selected);
-                cluster.FeatureSelected  += new EventHandler<FeatureSelectedEventArgs>(cluster_FeatureSelected);
-                cluster.SpectrumSelected += new EventHandler<IdentificationFeatureSelectedEventArgs>(cluster_SpectrumSelected);
+                cluster.Selected         += cluster_Selected;
+                cluster.FeatureSelected  += cluster_FeatureSelected;
+                cluster.SpectrumSelected += cluster_SpectrumSelected;
             }
         }
 
@@ -69,9 +78,11 @@ namespace MultiAlign.ViewModels.TreeView
             SelectedFeature = e.Feature;
         }
 
-        void cluster_Selected(object sender, System.EventArgs e)
+        void cluster_Selected(object sender, EventArgs e)
         {
-            UMCClusterTreeViewModel model   = sender as UMCClusterTreeViewModel;
+            var model   = sender as UMCClusterTreeViewModel;
+            if (model == null) return;
+
             model.LoadChildren();        
             SelectedCluster                 = model.Cluster;
 
@@ -83,17 +94,24 @@ namespace MultiAlign.ViewModels.TreeView
             if (model.Cluster.Cluster.Features.Count > 0)
             {
                 SelectedFeature = model.Cluster.Cluster.Features[0];
-            }            
-        }
-
-        public ICommand FilterCommand 
-        {
-            get
-            {
-                return m_command;
             }
-
         }
+        /// <summary>
+        /// Filters the clusters based on the given mass and NET range
+        /// </summary>
+        public void Filter(FilterRange monoisotopicMass, FilterRange net)
+        {
+            m_filterViewModel.MassRange.Minimum = monoisotopicMass.Minimum;
+            m_filterViewModel.MassRange.Maximum = monoisotopicMass.Maximum;
+            m_filterViewModel.NetRange.Minimum  = net.Minimum;
+            m_filterViewModel.NetRange.Maximum  = net.Maximum;
+
+            m_filterViewModel.MassRange.ShouldUse   = true;
+            m_filterViewModel.NetRange.ShouldUse    = true;
+
+            Filter();
+        }
+        public ICommand FilterCommand { get; private set; }
         public ICommand ExportCommand
         {
             get
@@ -141,11 +159,10 @@ namespace MultiAlign.ViewModels.TreeView
             }
             set
             {
-                if (value != m_selectedSpectrum)
-                {
-                    m_selectedSpectrum = value;
-                    OnPropertyChanged("SelectedSpectrum");
-                }
+                if (value == m_selectedSpectrum) return;
+
+                m_selectedSpectrum = value;
+                OnPropertyChanged("SelectedSpectrum");
             }
         }
         public UMCLight SelectedFeature
@@ -156,11 +173,9 @@ namespace MultiAlign.ViewModels.TreeView
             }
             set
             {
-                if (value != m_selectedFeature)
-                {
-                    m_selectedFeature = value;
-                    OnPropertyChanged("SelectedFeature");
-                }
+                if (value == m_selectedFeature) return;
+                m_selectedFeature = value;
+                OnPropertyChanged("SelectedFeature");
             }   
         }
 
@@ -184,6 +199,31 @@ namespace MultiAlign.ViewModels.TreeView
             {
                 ClustersFiltered(this, new ClustersUpdatedEventArgs(m_filteredClusters));
             }
+        }
+
+        private void FilterWindow()
+        {
+
+            m_newWindow = new ClusterFilterWindow
+            {
+                DataContext = m_filterViewModel,
+                WindowStartupLocation = WindowStartupLocation.CenterScreen,
+                WindowState = WindowState.Normal,
+                WindowStyle = WindowStyle.ToolWindow
+            };
+
+            var worked = m_newWindow.ShowDialog();
+            if (worked == true)
+            {
+                Filter();
+            }
+        }
+
+        private void Filter()
+        {
+            FilteredClusters.Clear();
+            var clusters = m_filterViewModel.ApplyFilters();
+            ResetClusters(clusters);
         }
     }
 
