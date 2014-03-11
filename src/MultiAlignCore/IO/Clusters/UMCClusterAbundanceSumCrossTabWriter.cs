@@ -45,7 +45,7 @@ namespace MultiAlignCore.IO.Features
             using (TextWriter writer = File.CreateText(Path))
             {
                 // Build the header.
-                string mainHeader = "Cluster ID, Total Members, Dataset Members,  Tightness, Ambiguity";              
+                string mainHeader = "Cluster ID, Total Members, Dataset Members,  Tightness, Ambiguity, Mass, NET, Drift time,";              
                 
                 // Make blank columns for clusters that dont have enough dta.
                 string blankColumns = ",";
@@ -93,7 +93,7 @@ namespace MultiAlignCore.IO.Features
 
                     StringBuilder builder = new StringBuilder();
                     builder.Append(string.Format("{0},{1},{2},{3},{4}", cluster.ID, cluster.UMCList.Count, features.Keys.Count, cluster.Tightness, cluster.AmbiguityScore));
-
+                    builder.Append(string.Format(",{0},{1},{2},{3}", cluster.MassMonoisotopic, cluster.RetentionTime, cluster.DriftTime, cluster.MsMsCount));
 
                     if (clusterMap.Count > 0)
                     {
