@@ -1,4 +1,5 @@
 ﻿
+using System.Globalization;
 using MultiAlign.IO;
 using MultiAlignCore.Data.Features;
 using MultiAlignCore.Extensions;
@@ -40,7 +41,14 @@ namespace MultiAlign.ViewModels.TreeView
             // Cluster level statistics
             UMCClusterLight cluster = matchedCluster.Cluster;
             AddStatistics("Mass",       cluster.MassMonoisotopic);
-            AddStatistics("NET",        cluster.NET);
+
+
+            var item = new StringTreeViewItem(
+                                            cluster.RetentionTime.ToString("F3", 
+                                                                CultureInfo.InvariantCulture),
+                                            "NET");
+                
+            m_items.Add(item);
 
             if (cluster.DriftTime > 0)
             {
