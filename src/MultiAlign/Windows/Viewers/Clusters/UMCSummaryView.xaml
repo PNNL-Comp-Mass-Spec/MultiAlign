@@ -8,15 +8,22 @@
     <Border BorderThickness="1"                
             BorderBrush="LightGray"
                 Margin="5">
+        <StackPanel>
+            <TextBlock
+                            HorizontalAlignment="Left"
+                            Foreground="Gray"
+                            Margin="5" Text="{Binding Name}" />
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="32"/>
-                    <RowDefinition Height="32"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
@@ -32,7 +39,7 @@
                         />
                 <TextBlock 
                         Grid.Row="1"
-                        Grid.RowSpan="2"
+                        Grid.RowSpan="3"
                         Grid.Column="0"
                         FontSize="24"
                         Foreground="Gray"
@@ -43,10 +50,12 @@
                         Grid.Row="0"
                         Grid.Column="1"
                         Margin="5" 
-                    Text="Mass" />
+                        VerticalAlignment="Center"
+                        Text="Mono. Mass" />
                 <TextBlock
                         Grid.Row="1"
                         Grid.Column="1"
+                        VerticalAlignment="Center"
                         Margin="5" Text="NET"/>
                 <TextBlock
                         Grid.Row="2"
@@ -57,17 +66,17 @@
                         Grid.Row="0"
                         Grid.Column="2"
                         HorizontalAlignment="Left"
-                        Margin="5" Text="{Binding Path=Feature.MassMonoisotopicAligned, StringFormat=N2}" />
+                        Margin="5" Text="{Binding Path=Feature.MassMonoisotopicAligned, StringFormat=F3}" />
                 <TextBlock
                         Grid.Row="1"
                         Grid.Column="2"
                         HorizontalAlignment="Left"
-                        Margin="5" Text="{Binding Path=Feature.RetentionTime, StringFormat=N2}" />
+                        Margin="5" Text="{Binding Path=Feature.RetentionTime, StringFormat=F3}" />
                 <TextBlock
                         Grid.Row="2"
                         Grid.Column="2"
                         HorizontalAlignment="Left"
-                        Margin="5" Text="{Binding Path=Feature.DriftTime, StringFormat=N2}" />
+                        Margin="5" Text="{Binding Path=Feature.DriftTime, StringFormat=F2}" />
 
                 <TextBlock
                         Grid.Row="3"
@@ -84,7 +93,7 @@
                             Grid.Row="4"
                             Grid.Column="1"
                             HorizontalAlignment="Left"
-                            Margin="5" Text="MS/MS" />
+                            Margin="5" Text="MS/MS Count" />
 
                 <TextBlock
                             Grid.Row="4"
@@ -92,13 +101,31 @@
                             HorizontalAlignment="Left"
                             Margin="5" Text="{Binding Path=Feature.MsMsCount}" />
 
-                 <TextBlock
-                            Grid.Row="5"
-                            Grid.Column="0"
-                            Grid.ColumnSpan="3"
+            <TextBlock
+                            Grid.Row="6"
+                            Grid.Column="1"
                             HorizontalAlignment="Left"
-                            Foreground="Gray"
-                            Margin="5" Text="{Binding Name}" />
-        </Grid>
-        </Border>
+                            Margin="5" Text="ID" />
+
+            <TextBlock
+                            Grid.Row="6"
+                            Grid.Column="2"
+                            HorizontalAlignment="Left"
+                            Margin="5" Text="{Binding Path=Feature.ID}" />
+                <TextBlock
+                            Grid.Row="5"
+                            Grid.Column="1"
+                            HorizontalAlignment="Left"
+                            Margin="5" Text="Scan" />
+
+            <TextBlock
+                            Grid.Row="5"
+                            Grid.Column="2"
+                            HorizontalAlignment="Left"
+                            Margin="5" Text="{Binding Path=Feature.Scan}" />
+
+
+            </Grid>
+        </StackPanel>
+    </Border>
 </UserControl>

@@ -56,6 +56,8 @@
                     <RowDefinition Height="Auto"></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
                     <RowDefinition Height="*"></RowDefinition>
                 </Grid.RowDefinitions>
                 <Label
@@ -84,9 +86,9 @@
                             Margin="5"
                             Grid.Row="1"
                             Grid.Column="2"                     
-                            Text="{Binding Path=Spectrum.Scan, StringFormat=N2}"
+                            Text="{Binding Path=Spectrum.Scan, StringFormat=F1}"
                             HorizontalAlignment="Stretch"/>
-                
+
                 <Label
                             FontSize="16"
                             Margin="5"
@@ -94,15 +96,16 @@
                             Grid.Column="1"
                             Foreground="Gray"
                             >
-                   M/z
+                    M/z
                 </Label>
                 <TextBlock 
                             FontSize="16"
                             Margin="5"
                             Grid.Row="2"
                             Grid.Column="2"   
-                                 Text="{Binding Path=Spectrum.PrecursorMZ , StringFormat=N2}"                                                                     
+                                 Text="{Binding Path=Spectrum.PrecursorMZ , StringFormat=F3}"                                                                     
                             HorizontalAlignment="Stretch"/>
+
 
                 <Label
                             FontSize="16"
@@ -111,19 +114,36 @@
                             Grid.Column="1"
                             Foreground="Gray"
                             >
-                    Type
+                    Mono Mass
                 </Label>
                 <TextBlock 
                             FontSize="16"
                             Margin="5"
                             Grid.Row="3"
+                            Grid.Column="2"   
+                                 Text="{Binding Path=Spectrum.ParentFeature.MassMonoisotopic , StringFormat=F3}"                                                                     
+                            HorizontalAlignment="Stretch"/>
+
+                <Label
+                            FontSize="16"
+                            Margin="5"
+                            Grid.Row="4"
+                            Grid.Column="1"
+                            Foreground="Gray"
+                            >
+                    Type
+                </Label>
+                <TextBlock 
+                            FontSize="16"
+                            Margin="5"
+                            Grid.Row="4"
                             Grid.Column="2"                       
                             Text="{Binding Path=Spectrum.CollisionType}"
                             HorizontalAlignment="Stretch"/>
                 <Label
                             FontSize="16"
                             Margin="5"
-                            Grid.Row="4"
+                            Grid.Row="5"
                             Foreground="Gray"
                             Grid.Column="1"
                             >
@@ -131,10 +151,27 @@
                 </Label>
                 <TextBlock 
                             Margin="5"
-                            Grid.Row="4"
+                            Grid.Row="5"
                             Grid.Column="2"
                             FontSize="16"   
                             Text="{Binding Path=Spectrum.ParentFeature.ChargeState }"                                                                     
+                            HorizontalAlignment="Stretch"/>
+
+                <Label
+                            FontSize="16"
+                            Margin="5"
+                            Grid.Row="6"
+                            Foreground="Gray"
+                            Grid.Column="1"
+                            >
+                    ID
+                </Label>
+                <TextBlock 
+                            Margin="5"
+                            Grid.Row="6"
+                            Grid.Column="2"
+                            FontSize="16"   
+                            Text="{Binding Path=Spectrum.ID }"                                                                     
                             HorizontalAlignment="Stretch"/>
             </Grid>
         </Border>

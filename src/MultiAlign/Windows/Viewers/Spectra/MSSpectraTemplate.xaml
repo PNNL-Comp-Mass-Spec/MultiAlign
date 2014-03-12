@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:converters="clr-namespace:MultiAlign.Converters"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="500">
+             d:DesignHeight="300" d:DesignWidth="600">
     
     <UserControl.Resources>
         <converters:IntToStringConverter x:Key="IntToStringConverter" />
@@ -45,12 +45,14 @@
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="32"></ColumnDefinition>
-                    <ColumnDefinition Width="124"></ColumnDefinition>
+                    <ColumnDefinition Width="160"></ColumnDefinition>
                     <ColumnDefinition Width="124"></ColumnDefinition>
                     <ColumnDefinition Width="124"></ColumnDefinition>
                     <ColumnDefinition Width="124"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>
@@ -97,7 +99,7 @@
                             Margin="5"
                             Grid.Row="1"
                             Grid.Column="2"                     
-                            Text="{Binding Path=Spectrum.Scan, StringFormat=N2}"
+                            Text="{Binding Path=Spectrum.Scan, StringFormat=F2}"
                             HorizontalAlignment="Stretch"/>
                 <Image
                             Margin="5"
@@ -121,7 +123,7 @@
                             Margin="5"
                             Grid.Row="2"
                             Grid.Column="2"   
-                                 Text="{Binding Path=Spectrum.PrecursorMZ , StringFormat=N2}"                                                                     
+                                 Text="{Binding Path=Spectrum.PrecursorMZ , StringFormat=F3}"                                                                     
                             HorizontalAlignment="Stretch"/>
 
                 <Label
@@ -156,9 +158,46 @@
                             FontSize="16"   
                             Text="{Binding Path=Spectrum.ParentFeature.ChargeState }"                                                                     
                             HorizontalAlignment="Stretch"/>
+
+
+                <Label
+                            FontSize="16"
+                            Margin="5"
+                            Grid.Row="3"
+                            Foreground="Gray"
+                            Grid.Column="1"
+                            >
+                    Parent Mono Mass
+                </Label>
+                <TextBlock 
+                            Margin="5"
+                            Grid.Row="3"
+                            Grid.Column="2"
+                            FontSize="16"   
+                            Text="{Binding Path=Spectrum.ParentFeature.MassMonoisotopic }"                                                                     
+                            HorizontalAlignment="Stretch"/>
+
+
+                <Label
+                            FontSize="16"
+                            Margin="5"
+                            Grid.Row="3"
+                            Foreground="Gray"
+                            Grid.Column="3"
+                            >
+                    Spectrum ID
+                </Label>
+                <TextBlock 
+                            Margin="5"
+                            Grid.Row="3"
+                            Grid.Column=""
+                            FontSize="16"   
+                            Text="{Binding Path=Spectrum.ID}"                                                                     
+                            HorizontalAlignment="Stretch"/>
+
                 <Expander      
                         Grid.Column="1"
-                        Grid.Row="3"  
+                        Grid.Row="5"  
                         Grid.RowSpan="2"
                         Grid.ColumnSpan="4"
                             Foreground="Gray"
