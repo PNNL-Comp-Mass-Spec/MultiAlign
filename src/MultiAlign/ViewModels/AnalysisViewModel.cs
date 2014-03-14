@@ -3,6 +3,7 @@ using MultiAlign.Commands;
 using MultiAlign.Data;
 using MultiAlign.IO;
 using MultiAlign.ViewModels.Analysis;
+using MultiAlign.ViewModels.Spectra;
 using MultiAlign.ViewModels.TreeView;
 using MultiAlign.ViewModels.Viewers;
 using MultiAlign.ViewModels.Wizard;
@@ -31,13 +32,14 @@ namespace MultiAlign.ViewModels
         private bool                                    m_showDriftTime;
         private MultiAlignAnalysis                      m_analysis;
         private ctlClusterChart                         m_clusterChart;
-        UMCClusterSpectraViewModel                      m_clusterSpectraViewModel;
+        UmcClusterSpectraViewModel                      m_clusterSpectraViewModel;
         UMCClusterIdentificationViewModel               m_clusterIdentificationViewModel;
         private ObservableCollection<MassTagToCluster>  m_massTags;
         private AnalysisOptionsViewModel       m_analysisOptionsViewModel;
         private WindowsFormsHost                        m_host;
         private ClusterDetailViewModel                        m_clusterViewModel;
         private RectangleF m_savedClusterViewPort;
+        private string m_selectedClusterName;
 
         public AnalysisViewModel(MultiAlignAnalysis analysis)
         {
@@ -62,7 +64,7 @@ namespace MultiAlign.ViewModels
             // Create sub-view models
             MassTags                            = new ObservableCollection<MassTagToCluster>(clusters.Item2);
             ClusterTree                         = new UmcClusterCollectionTreeViewModel(clusters.Item1);   
-            ClusterSpectraViewModel             = new UMCClusterSpectraViewModel();
+            ClusterSpectraViewModel             = new UmcClusterSpectraViewModel();
             ClusterIdentificationViewModel      = new UMCClusterIdentificationViewModel();
             AnalysisOptionsViewModel            = new AnalysisOptionsViewModel(analysis.Options);
             ClusterViewModel                    = new ClusterDetailViewModel();
@@ -73,6 +75,7 @@ namespace MultiAlign.ViewModels
             m_clusterChart.LegendVisible        = false;
             m_clusterChart.YAxisShortHand       = "ppm";
             m_clusterChart.XAxisShortHand       = "NET";
+            SelectedClusterName                 = "Cluster Details:";
             LoadClusters(clusters.Item1);
             m_clusterChart.AutoViewPort();
 
@@ -154,8 +157,20 @@ namespace MultiAlign.ViewModels
                 m_clusterSpectraViewModel.SelectedCluster        = e.Cluster.Cluster;                
                 m_clusterIdentificationViewModel.SelectedCluster = e.Cluster.Cluster;
                 m_clusterViewModel.SelectedCluster               = e.Cluster;
+                SelectedClusterName                              = string.Format("Cluster Details: {0}", e.Cluster.ClusterId);
             }
         }
+
+        public string SelectedClusterName
+        {
+            get { return m_selectedClusterName; }
+            set
+            {
+                m_selectedClusterName = value;
+                OnPropertyChanged("SelectedClusterName");
+            }
+        }
+
         /// <summary>
         /// Handles updating the cluster detail with the appropriate data.
         /// </summary>
@@ -250,6 +265,7 @@ namespace MultiAlign.ViewModels
                 }
             }
         }
+
         /// <summary>
         /// Gets the control used for displaying a global view of the clusters
         /// </summary>
@@ -341,7 +357,7 @@ namespace MultiAlign.ViewModels
         /// <summary>
         /// Gets or sets the view model for a selected cluster.
         /// </summary>
-        public UMCClusterSpectraViewModel ClusterSpectraViewModel
+        public UmcClusterSpectraViewModel ClusterSpectraViewModel
         {
             get
             {

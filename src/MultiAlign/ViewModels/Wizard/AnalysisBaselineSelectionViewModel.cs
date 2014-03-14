@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using MultiAlign.ViewModels.IO;
+using MultiAlignCore.Algorithms.Options;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.MassTags;
 using System.Windows;
@@ -12,6 +14,7 @@ using MultiAlign.Windows.Viewers.Databases;
 using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO.MTDB;
 using MultiAlignCore.IO.InputFiles;
+using PNNLOmics.Data;
 
 namespace MultiAlign.ViewModels.Wizard
 {
@@ -30,21 +33,24 @@ namespace MultiAlign.ViewModels.Wizard
             IsDatabaseLocal         = false;
             IsBaselineDataset       = true;
 
-            SetDatabaseToDms        = new BaseCommandBridge(new CommandDelegate(SetDatabaseToDmsDelegate));
-            SetDatabaseToLocal      = new BaseCommandBridge(new CommandDelegate(SetDatabaseToLocalDelegate));
-            SetBaselineToDatabase   = new BaseCommandBridge(new CommandDelegate(SetBaselineToDatabaseDelegate));
-            SetBaselineToDataset    = new BaseCommandBridge(new CommandDelegate(SetBaselineToDatasetDelegate));
-            FindLocalDatabase = new BrowseOpenFileCommand((string x) =>
+            SetDatabaseToDms        = new BaseCommandBridge(SetDatabaseToDmsDelegate);
+            SetDatabaseToLocal      = new BaseCommandBridge(SetDatabaseToLocalDelegate);
+            SetBaselineToDatabase   = new BaseCommandBridge(SetBaselineToDatabaseDelegate);
+            SetBaselineToDataset    = new BaseCommandBridge(SetBaselineToDatasetDelegate);
+            FindLocalDatabase = new BrowseOpenFileCommand(x =>
             {
                 DatabaseFilePath = x;
                 IsDatabaseLocal  = true;
                 OnPropertyChanged("RequiresDatabaseSelection");
 
             }, filter);
-            FindDmsDatabase         = new BaseCommandBridge(new CommandDelegate(FindDmsDatabaseDelegate));
-            ClearDatabase           = new BaseCommandBridge(new CommandDelegate(ClearDatabaseDelegate));
+            FindDmsDatabase         = new BaseCommandBridge(FindDmsDatabaseDelegate);
+            ClearDatabase           = new BaseCommandBridge(ClearDatabaseDelegate);
             Datasets                = new ObservableCollection<DatasetInformationViewModel>();
             UpdateDatasets();
+
+            StacOptionsViewModel            = new StacOptionsViewModel(analysis.Options.StacOptions);
+            MassTagDatabaseOptionsViewModel = new MassTagDatabaseOptionsViewModel(analysis.Options.MassTagDatabaseOptions);
         }
         public void UpdateDatasets()
         {
@@ -55,6 +61,10 @@ namespace MultiAlign.ViewModels.Wizard
                 Datasets.Add(viewmodel);
             }
         }
+
+        public StacOptionsViewModel StacOptionsViewModel { get; set; }
+        public MassTagDatabaseOptionsViewModel MassTagDatabaseOptionsViewModel { get; set; }
+
         private void ClearDatabaseDelegate(object parameter)
         {
             IsDatabaseDms           = false;

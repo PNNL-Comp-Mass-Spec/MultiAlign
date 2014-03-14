@@ -1,96 +1,88 @@
 ﻿using MultiAlign.IO;
-using MultiAlignCore.Data;
-using MultiAlignCore.Data.MetaData;
-using MultiAlignCustomControls.Charting;
+using MultiAlign.ViewModels.Charting;
 using PNNLOmics.Data;
+using PNNLOmics.Data.Features;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Drawing;
-using System.Windows.Forms.Integration;
 
-namespace MultiAlign.ViewModels
+namespace MultiAlign.ViewModels.Spectra
 {
 
-    public class MSSpectraViewModel : ViewModelBase
-    {
-        private MSSpectra m_spectra;
-        private PeptideViewModel m_peptide;
-        /// <summary>
-        /// 
-        /// </summary>
-        WindowsFormsHost m_host;
-        /// <summary>
-        /// 
-        /// </summary>
-        SpectraChart m_chart;
+    public class MsSpectraViewModel : ViewModelBase
+    {        
         private bool m_isExpanded;
+        private MsMsSpectraViewModel m_selectedSpectrum;
+        private XicViewModel m_xicModel;
 
-        public MSSpectraViewModel(MSSpectra spectrum)
+        public MsSpectraViewModel(MSSpectra spectrum)
         {
-            Peptides = new ObservableCollection<PeptideViewModel>();
-            m_spectra = spectrum;
-            m_spectra.Peptides.ForEach(x => Peptides.Add(new PeptideViewModel(x)));
+            Peptides = new ObservableCollection<PeptideViewModel>();            
+            spectrum.Peptides.ForEach(x => Peptides.Add(new PeptideViewModel(x)));
 
-
-            m_chart             = new SpectraChart();
-            m_chart.Title       = "MS/MS";
-            m_chart.XAxisLabel  = "m/z";
-            m_chart.YAxisLabel  = "Intensity";
-            m_chart.DrawSticks  = true;
-            m_chart.AxisVisible = false;
-            SpectraChart        = new WindowsFormsHost() { Child = m_chart };
-
-            DatasetInformation info = SingletonDataProviders.GetDatasetInformation(spectrum.GroupID);
+            var info = SingletonDataProviders.GetDatasetInformation(spectrum.GroupID);
             if (info != null)
             {
                 Dataset = new DatasetInformationViewModel(info);
             }
 
-            UpdateSpectra(spectrum);
+            Spectrum = spectrum;
+            SelectedSpectrumPlotModel = new MsMsSpectraViewModel(spectrum, "");
 
+            if (spectrum.ParentFeature != null)
+            {
+                var msFeature   = spectrum.ParentFeature;
+                var umc         = msFeature.ParentFeature;
+                if (umc != null)
+                {
+                    var newList = new List<UMCLight> {umc};
+
+                    var xic = new XicViewModel(newList, "xic") 
+                    {
+                        Model = {
+                         IsLegendVisible = false,
+                         TitleFontSize = 0}
+                    };
+
+                    SelectedSpectrumXic = xic;
+                }
+            }
+
+        }
+        /// <summary>
+        /// Updates the view models with a maximum value for m/z and intensity.
+        /// </summary>
+        /// <param name="maxMz"></param>
+        /// <param name="maxIntensity"></param>
+        public void SetMax(double maxMz, double maxIntensity)
+        {
+            SelectedSpectrumPlotModel.SetMax(maxMz, maxIntensity);            
         }
 
         public ObservableCollection<PeptideViewModel> Peptides { get; set; }
 
-        public WindowsFormsHost SpectraChart
+        public MSSpectra Spectrum { get; private set; }
+        public MsMsSpectraViewModel SelectedSpectrumPlotModel
         {
-            get
-            {
-                return m_host;
-            }
+            get { return m_selectedSpectrum; }
             set
             {
-                if (value != null && m_host != value)
-                {
-                    m_host = value;
-                    OnPropertyChanged("SpectraChart");
-                }
+                m_selectedSpectrum = value;
+                OnPropertyChanged("SelectedSpectrumPlotModel");
             }
-
         }
 
-        public MSSpectra Spectrum { get { return m_spectra; } }
+        public XicViewModel SelectedSpectrumXic
+        {
+            get { return m_xicModel; }
+            set
+            {
+                m_xicModel = value;
+                OnPropertyChanged("SelectedSpectrumXic");
+            }
+        }
 
         public DatasetInformationViewModel Dataset { get; set; }
-
-        private void UpdateSpectra(MSSpectra spectrum)
-        {
-            if (m_chart != null && spectrum != null)
-            {
-                
-                if (spectrum.Peaks.Count < 1)
-                {
-                    spectrum.Peaks = SpectraLoader.LoadSpectrum(spectrum);
-                }
-
-                m_chart.SetSpectra(spectrum.Peaks);
-                m_chart.Title = string.Format("scan {0} @ {1} m/z ", spectrum.Scan,
-                                                                        spectrum.PrecursorMZ);
-                m_chart.AutoViewPort();
-                RectangleF viewport = m_chart.ViewPort;
-                m_chart.ViewPort = new System.Drawing.RectangleF(0, viewport.Y, 2000, viewport.Height);
-            }
-        }
-
+        
         public bool IdentificationsExpanded 
         {
             get

@@ -29,7 +29,7 @@ namespace MultiAlignCore.IO.MTDB
         /// <summary>
         /// Gets or sets the default mass tag database options.
         /// </summary>
-        public MassTagDatabaseOptions Options
+        public Algorithms.Options.MassTagDatabaseOptions Options
         {
             get;
             set;

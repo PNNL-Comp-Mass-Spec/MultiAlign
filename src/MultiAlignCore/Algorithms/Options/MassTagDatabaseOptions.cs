@@ -7,9 +7,9 @@
             MinimumObservationCountFilter = 0;            
             OnlyLoadTagsWithDriftTime = false;
             MinimumXCorr = 0.0F;
-            MinimumPMTScore = 1;
+            MinimumPmtScore = 1;
             MinimumDiscriminant = 0;
-            PeptideProphetVal = 0.5;
+            MinimumPeptideProphetScore = 0.5;
             ExperimentExclusionFilter = "";
             ExperimentFilter = "";
         }
@@ -35,7 +35,7 @@
             get;
             set;
         }
-        public double MinimumPMTScore
+        public double MinimumPmtScore
         {
             get;
             set;
@@ -46,7 +46,7 @@
             get;
             set;
         }
-        public double PeptideProphetVal
+        public double MinimumPeptideProphetScore
         {
             get;
             set;

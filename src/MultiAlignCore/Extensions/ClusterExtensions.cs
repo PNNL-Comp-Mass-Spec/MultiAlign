@@ -9,6 +9,7 @@ using MultiAlignCore.IO.Features;
 using PNNLOmics.Data;
 using MultiAlignCore.Data;
 using PNNLOmics.Data.Features;
+using PNNLOmics.Extensions;
 using PNNLOmicsIO.IO;
 
 namespace MultiAlignCore.Extensions
@@ -52,6 +53,27 @@ namespace MultiAlignCore.Extensions
             }
 
             return map;
+        }
+
+        public static Dictionary<double, int> BuildChargeStateHistogram(this UMCClusterLight cluster)
+        {
+            var chargeHistogram = new Dictionary<double, int>();
+            for (var i = 1; i < 10; i++)
+            {
+                chargeHistogram.Add(i, 0);
+            }
+            foreach (var feature in cluster.Features)
+            {
+                var chargeMap = feature.CreateChargeMap();
+                foreach (var charge in chargeMap.Keys)
+                {
+                    var chargeDouble = Convert.ToDouble(charge);
+                    if (!chargeHistogram.ContainsKey(chargeDouble))
+                        chargeHistogram.Add(chargeDouble, 0);
+                    chargeHistogram[chargeDouble] = chargeHistogram[chargeDouble] + 1;
+                }
+            }
+            return chargeHistogram;
         }
        
         /// <summary>

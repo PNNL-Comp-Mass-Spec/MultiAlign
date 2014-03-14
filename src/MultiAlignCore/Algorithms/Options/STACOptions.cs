@@ -1,20 +1,18 @@
-﻿using MultiAlignEngine;
-using PNNLOmics.Algorithms.FeatureMatcher;
+﻿using System.ComponentModel;
+using MultiAlignCore.Algorithms.FeatureMatcher;
 using MultiAlignCore.IO.Parameters;
-using MultiAlignCore.Data;
-using System.ComponentModel;
 
-namespace MultiAlignCore.Algorithms.FeatureMatcher
+namespace MultiAlignCore.Algorithms.Options
 {
     /// <summary>
     /// Options for running STAC.
     /// </summary>
-    public class STACOptions
+    public class StacOptions
     {
         /// <summary>
         /// Default constructor.
         /// </summary>
-        public STACOptions()
+        public StacOptions()
         {
             MassTolerancePPM        = 6.0;
             NETTolerance            = 0.03;
@@ -27,12 +25,12 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
             IdentificationAlgorithm = PeakMatchingType.STAC;
         }
 
-        [ParameterFileAttribute("IdentificationAlgorithm", "Algorithm")]
+        [ParameterFile("IdentificationAlgorithm", "Algorithm")]
         [Category("Algorithm")]
         [Description("Determines what identification algorithm to use")]
         public PeakMatchingType IdentificationAlgorithm { get; set; }
 
-        [ParameterFileAttribute("UsePriors", "STAC")]
+        [ParameterFile("UsePriors", "STAC")]
         [Category("AMT")]
         [Description("Determines if prior probilities of the tags being matched to should be used.")]
         public bool UsePriors
@@ -40,7 +38,7 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
             get;
             set;
         }
-        [ParameterFileAttribute("HistogramBinWidth", "STAC")]
+        [ParameterFile("HistogramBinWidth", "STAC")]
         [Category("Binning")]
         [Description("Determines the width of the bin")]        
         public double HistogramBinWidth 
@@ -48,7 +46,7 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
             get;
             set;
         }
-        [ParameterFileAttribute("HistogramMultiplier", "STAC")]
+        [ParameterFile("HistogramMultiplier", "STAC")]
         [Category("Binning")]
         [Description("")]        
         public double HistogramMultiplier  
@@ -56,7 +54,7 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
             get;
             set;
         }
-        [ParameterFileAttribute("ShiftAmount", "STAC")]
+        [ParameterFile("ShiftAmount", "STAC")]
         [Category("FDR Calculation")]
         [Description("Shift amount for the dalton shift FDR calculation.")]        
         public double  ShiftAmount  
@@ -64,7 +62,7 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
             get;
             set;
         }
-        [ParameterFileAttribute("ShouldCalculateHistogramFDR", "STAC")]
+        [ParameterFile("ShouldCalculateHistogramFDR", "STAC")]
         [Category("FDR Calculation")]
         [Description("Determines if a FDR histogram should be calculated.")]        
         public bool ShouldCalculateHistogramFDR  
@@ -72,7 +70,7 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
             get;
             set;
         }
-        [ParameterFileAttribute("ShouldCalculateShiftFDR", "STAC")]
+        [ParameterFile("ShouldCalculateShiftFDR", "STAC")]
         [Category("FDR Calculation")]
         [Description("Determines if STAC should calculate the dalton shift FDR.")]        
         public bool ShouldCalculateShiftFDR  
@@ -80,7 +78,7 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
             get;
             set;
         }
-        [ParameterFileAttribute("ShouldCalculateSLiC", "STAC")]
+        [ParameterFile("ShouldCalculateSLiC", "STAC")]
         [Category("FDR Calculation")]
         [Description("Determines if STAC should calculate The SLiC Score previously used by VIPER")]        
         public bool ShouldCalculateSLiC  
@@ -88,7 +86,7 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
             get;
             set;
         }
-        [ParameterFileAttribute("ShouldCalculateSTAC", "STAC")]
+        [ParameterFile("ShouldCalculateSTAC", "STAC")]
         [Category("FDR Calculation")]
         [Description("Determines if the STAC scores should be calculated")]        
         public bool ShouldCalculateSTAC  
@@ -96,7 +94,7 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
             get;
             set;
         }
-        [ParameterFileAttribute("UseDriftTime", "STAC")]
+        [ParameterFile("UseDriftTime", "STAC")]
         [Category("Ion Mobility")]
         [Description("Determines if Ion Mobility was used.")]        
         public bool UseDriftTime  
@@ -104,7 +102,7 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
             get;
             set;
         }
-        [ParameterFileAttribute("UseEllipsoid", "STAC")]
+        [ParameterFile("UseEllipsoid", "STAC")]
         [Category("Tolerances")]
         [Description("")]        
         public bool UseEllipsoid  
@@ -112,19 +110,19 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
             get;
             set;
         }
-        [ParameterFileAttribute("DriftTimeTolerance", "STAC")]
+        [ParameterFile("DriftTimeTolerance", "STAC")]
         [Category("Tolerances")]
         [Description("Drift time tolerance if using Ion Mobility data.")]        
         public double DriftTimeTolerance { get; set; }
-        [ParameterFileAttribute("MassTolerancePPM", "STAC")]
+        [ParameterFile("MassTolerancePPM", "STAC")]
         [Category("Tolerances")]
         [Description("Monoisotopic Mass tolerance in parts per million (PPM).")]        
         public double MassTolerancePPM { get; set; }
-        [ParameterFileAttribute("NETTolerance", "STAC")]
+        [ParameterFile("NETTolerance", "STAC")]
         [Category("Tolerances")]
         [Description("Normalized elution time (NET) tolerance.")]        
         public double NETTolerance { get; set; }
-        [ParameterFileAttribute("Refined", "STAC")]
+        [ParameterFile("Refined", "STAC")]
         [Category("Tolerances")]
         [Description("Determines if tolerances were refined using STAC.")]        
         public bool Refined { get; set; }

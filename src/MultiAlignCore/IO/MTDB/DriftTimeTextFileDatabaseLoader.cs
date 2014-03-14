@@ -50,7 +50,7 @@ namespace MultiAlignCore.IO.MTDB
             return database;
         }
 
-        public MassTagDatabaseOptions Options
+        public Algorithms.Options.MassTagDatabaseOptions Options
         {
             get;
             set;

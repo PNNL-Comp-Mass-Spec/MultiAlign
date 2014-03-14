@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-
+using MultiAlignCore.Algorithms.Options;
 using MultiAlignCore.Data;
 using MultiAlignEngine.Features;
 using MultiAlignEngine.MassTags;
@@ -26,7 +26,7 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
         /// <summary>
         /// Gets or sets the peak matching options.
         /// </summary>
-        public STACOptions Options
+        public StacOptions Options
         {
             get;
             set;

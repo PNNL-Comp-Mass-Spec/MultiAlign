@@ -169,10 +169,20 @@
     <Compile Include="Data\RecentAnalysis.cs" />
     <Compile Include="Data\StatusMessageWrapper.cs" />
     <Compile Include="Data\ThreadSafeDispatcher.cs" />
+    <Compile Include="ViewModels\Charting\ColorTypeIterator.cs" />
+    <Compile Include="ViewModels\Charting\HistogramViewModel.cs" />
+    <Compile Include="ViewModels\Charting\MarkerTypeIterator.cs" />
+    <Compile Include="ViewModels\Charting\MsFeatureSpectraViewModel.cs" />
+    <Compile Include="ViewModels\Charting\PlotModelBase.cs" />
+    <Compile Include="ViewModels\Charting\MsMsSpectraViewModel.cs" />
+    <Compile Include="ViewModels\Charting\PositionArgs.cs" />
+    <Compile Include="ViewModels\Charting\UmcClusterHistogram.cs" />
+    <Compile Include="ViewModels\Charting\XicViewModel.cs" />
     <Compile Include="ViewModels\Features\ChargeStateViewModel.cs" />
     <Compile Include="ViewModels\Instruments\InstrumentPresetFactory.cs" />
     <Compile Include="ViewModels\Features\SpectraSortOptions.cs" />
     <Compile Include="ViewModels\Instruments\InstrumentPresets.cs" />
+    <Compile Include="ViewModels\IO\MassTagDatabaseOptionsViewModel.cs" />
     <Compile Include="ViewModels\StateModeratorViewModel.cs" />
     <Compile Include="IO\ManassaWorkspaceWriter.cs" />
     <Compile Include="IO\DatasetSearcher.cs" />
@@ -223,7 +233,7 @@
     <Compile Include="ViewModels\TreeView\UMCTreeViewModel.cs" />
     <Compile Include="ViewModels\Features\UMCClusterFilterViewModel.cs" />
     <Compile Include="ViewModels\Features\UMCClusterIdentificationViewModel.cs" />
-    <Compile Include="ViewModels\Features\UMCClusterSpectraViewModel.cs" />
+    <Compile Include="ViewModels\Spectra\UMCClusterSpectraViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="ViewModels\Wizard\AnalysisBaselineSelectionViewModel.cs" />
     <Compile Include="ViewModels\Instruments\InstrumentPresetViewModel.cs" />
@@ -231,6 +241,7 @@
     <Compile Include="ViewModels\Wizard\ExperimentPresetFactory.cs" />
     <Compile Include="ViewModels\Wizard\ExperimentPresets.cs" />
     <Compile Include="ViewModels\Wizard\ExperimentPresetViewModel.cs" />
+    <Compile Include="ViewModels\Wizard\StacOptionsViewModel.cs" />
     <Compile Include="Windows\FilePathFinder.xaml.cs">
       <DependentUpon>FilePathFinder.xaml</DependentUpon>
     </Compile>
@@ -275,6 +286,9 @@
     </Compile>
     <Compile Include="Windows\Viewers\Clusters\ClusterItemTemplate.xaml.cs">
       <DependentUpon>ClusterItemTemplate.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Viewers\Clusters\ClusterOverview.xaml.cs">
+      <DependentUpon>ClusterOverview.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\Viewers\Clusters\ClusterToMassTagGrid.xaml.cs">
       <DependentUpon>ClusterToMassTagGrid.xaml</DependentUpon>
@@ -324,6 +338,9 @@
     </Compile>
     <Compile Include="Windows\Viewers\GettingStarted.xaml.cs">
       <DependentUpon>GettingStarted.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Viewers\GlobalStatistics.xaml.cs">
+      <DependentUpon>GlobalStatistics.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\Viewers\Identifications\IdentificationDetail.xaml.cs">
       <DependentUpon>IdentificationDetail.xaml</DependentUpon>
@@ -387,6 +404,9 @@
     </Compile>
     <Compile Include="Windows\Wizard\SelectBaselinesAndOptions.xaml.cs">
       <DependentUpon>SelectBaselinesAndOptions.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Wizard\StacOptionsView.xaml.cs">
+      <DependentUpon>StacOptionsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Workspace\Workspace.cs" />
     <Compile Include="Settings.cs" />
@@ -462,6 +482,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Windows\Viewers\Clusters\ClusterOverview.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\Viewers\Clusters\ClusterToMassTagGrid.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -525,6 +549,10 @@
     <Page Include="Windows\Viewers\GettingStarted.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\Viewers\GlobalStatistics.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\Viewers\Identifications\IdentificationDetail.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -609,6 +637,10 @@
     <Page Include="Windows\Wizard\SelectBaselinesAndOptions.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\Wizard\StacOptionsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>

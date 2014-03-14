@@ -21,7 +21,7 @@ namespace MultiAlign.ViewModels
         /// <summary>
         /// Path to the workspace
         /// </summary>
-        private  string m_workspacePath;
+        private readonly string m_workspacePath;
 
 
         public GettingStartedViewModel(string workspacePath,  StateModeratorViewModel moderator)

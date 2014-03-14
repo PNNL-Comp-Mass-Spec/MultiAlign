@@ -16,7 +16,7 @@ namespace MultiAlignCore.IO.MTDB
         /// </summary>
         /// <param name="options">Loading options.</param>
         /// <returns>The mass tag database.</returns>
-        public static MassTagDatabase LoadMassTagDB(InputDatabase databaseDefinition,  MassTagDatabaseOptions options)            
+        public static MassTagDatabase LoadMassTagDB(InputDatabase databaseDefinition, Algorithms.Options.MassTagDatabaseOptions options)            
         {
             MassTagDatabase database = null;
             IMtdbLoader loader       = null;

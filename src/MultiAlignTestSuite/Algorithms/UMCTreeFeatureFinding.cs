@@ -64,13 +64,12 @@ namespace MultiAlignTestSuite.Algorithms
             var featureTolerances        = new FeatureTolerances()
             {
                 Mass            = 12,
-                RetentionTime   = .05
+                RetentionTime   = .04
             };
             var options         = new LcmsFeatureFindingOptions(featureTolerances)
             { 
-                    MaximumNetRange = 12,
-                    MaximumScanRange = 50
-                    
+                    MaximumNetRange = .003,
+                    MaximumScanRange = 50                    
             };
 
 

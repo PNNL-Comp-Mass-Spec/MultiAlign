@@ -1,59 +1,51 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Collections.ObjectModel;
-using PNNLOmics.Data;
-using MultiAlignCore.Extensions;
-using MultiAlignCore.Data.Features;
-using MultiAlignCustomControls.Charting;
-using System.Windows.Forms.Integration;
+﻿using MultiAlign.Commands;
 using MultiAlign.IO;
-using System.Drawing;
+using MultiAlign.ViewModels.Charting;
+using MultiAlignCore.Data.Features;
+using MultiAlignCore.Extensions;
+using PNNLOmics.Data;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows.Input;
-using MultiAlign.Commands;
 
-namespace MultiAlign.ViewModels
+namespace MultiAlign.ViewModels.Spectra
 {
     /// <summary>
     /// View Model for a cluster with spectra
     /// </summary>
-    public class UMCClusterSpectraViewModel: ViewModelBase
+    public class UmcClusterSpectraViewModel: ViewModelBase
     {
         /// <summary>
         /// Selected spectra
         /// </summary>
-        private MSSpectraViewModel m_selectedSpectra;
+        private MsSpectraViewModel m_selectedSpectra;
         /// <summary>
         /// Selected cluster.
         /// </summary>
         private UMCClusterLightMatched m_selectedCluster;
-        /// <summary>
-        /// 
-        /// </summary>
-        WindowsFormsHost m_host;
-        /// <summary>
-        /// 
-        /// </summary>
-        SpectraChart m_chart;
         private SpectraSortOptions m_selectedSortOption;
+        private MsMsSpectraViewModel m_selectedSpectrum;
+        private double m_maxMz;
+        private double m_maxIntensity;
 
-        public UMCClusterSpectraViewModel()
+        public UmcClusterSpectraViewModel()
         {
-            Spectra = new ObservableCollection<MSSpectraViewModel>();
+            Spectra   = new ObservableCollection<MsSpectraViewModel>();
             SortTypes = new ObservableCollection<SpectraSortOptions>();
 
             CreateSortOptions();
 
-            ExpandIdentifications = new BaseCommandBridge(delegate(object parameter)
-                {
+            ExpandIdentifications = new BaseCommandBridge(delegate
+            {
                     foreach(var spectrum in Spectra)
                     {
                         spectrum.IdentificationsExpanded = true;
                     }
                 }
                 );
-            CollapseIdentifications = new BaseCommandBridge(delegate(object parameter)
+            CollapseIdentifications = new BaseCommandBridge(delegate
             {
                 foreach (var spectrum in Spectra)
                 {
@@ -82,21 +74,29 @@ namespace MultiAlign.ViewModels
                 return;
 
             List<MSSpectra> spectra = cluster.Cluster.GetLoadedSpectra();
-            spectra.ForEach(x => Spectra.Add(new MSSpectraViewModel(x)));
-
-            m_chart = new SpectraChart
+            m_maxMz        = 0.0;
+            m_maxIntensity = 0.0;
+            foreach (var spectrum in spectra)
             {
-                Title = "MS/MS",
-                XAxisLabel = "m/z",
-                YAxisLabel = "Intensity",
-                DrawSticks = true
-            };
-            SpectraChart = new WindowsFormsHost() { Child = m_chart };
+                spectrum.Peaks  = SpectraLoader.LoadSpectrum(spectrum);
+                m_maxMz = Math.Max(m_maxMz, spectrum.Peaks.Max(x => x.X));
+                m_maxIntensity = Math.Max(m_maxIntensity, spectrum.Peaks.Max(x => x.Y));
+
+                var msSpectrum = new MsSpectraViewModel(spectrum);                
+                Spectra.Add(msSpectrum);
+            }
+
+            foreach (var model in Spectra)
+            {
+                model.SetMax(m_maxMz, m_maxIntensity);
+                model.SelectedSpectrumPlotModel.PlotSpectra(model.Spectrum);
+            }
 
             if (spectra.Count > 0)
             {
                 SelectedSpectra = Spectra[0];
             }
+
 
         }
 
@@ -104,7 +104,7 @@ namespace MultiAlign.ViewModels
         {            
             SortTypes.Add(new SpectraSortOptions("Charge", () =>
             {
-                ObservableCollection<MSSpectraViewModel> temp = new ObservableCollection<MSSpectraViewModel>(
+                ObservableCollection<MsSpectraViewModel> temp = new ObservableCollection<MsSpectraViewModel>(
                         from x in Spectra orderby x.Spectrum.ParentFeature.ChargeState select x);
 
                 Spectra.Clear();
@@ -116,7 +116,7 @@ namespace MultiAlign.ViewModels
 
             SortTypes.Add(new SpectraSortOptions("Dataset", () =>
             {
-                ObservableCollection<MSSpectraViewModel> temp = new ObservableCollection<MSSpectraViewModel>(
+                ObservableCollection<MsSpectraViewModel> temp = new ObservableCollection<MsSpectraViewModel>(
                         from x in Spectra orderby x.Spectrum.GroupID select x);
 
                 Spectra.Clear();
@@ -127,7 +127,7 @@ namespace MultiAlign.ViewModels
 
             SortTypes.Add(new SpectraSortOptions("m/z", () =>
             {
-                ObservableCollection<MSSpectraViewModel> temp = new ObservableCollection<MSSpectraViewModel>(
+                ObservableCollection<MsSpectraViewModel> temp = new ObservableCollection<MsSpectraViewModel>(
                         from x in Spectra orderby x.Spectrum.PrecursorMZ select x);
 
                 Spectra.Clear();
@@ -139,7 +139,7 @@ namespace MultiAlign.ViewModels
 
             SortTypes.Add(new SpectraSortOptions("Scan", () =>
             {
-                ObservableCollection<MSSpectraViewModel> temp = new ObservableCollection<MSSpectraViewModel>(
+                ObservableCollection<MsSpectraViewModel> temp = new ObservableCollection<MsSpectraViewModel>(
                         from x in Spectra orderby x.Spectrum.RetentionTime select x);
 
                 Spectra.Clear();
@@ -171,25 +171,7 @@ namespace MultiAlign.ViewModels
                 }
             }
         }
-        public ObservableCollection<SpectraSortOptions> SortTypes { get; private set; }
-
-        public WindowsFormsHost SpectraChart 
-        { 
-            get
-            {
-                return m_host;
-            }
-            set
-            {
-                if (value != null && m_host != value)
-                {
-                    m_host = value;                    
-                    OnPropertyChanged("SpectraChart");
-                }
-            }
-        
-        }
-        
+        public ObservableCollection<SpectraSortOptions> SortTypes { get; private set; }                
         public UMCClusterLightMatched SelectedCluster
         {
             get
@@ -208,7 +190,7 @@ namespace MultiAlign.ViewModels
             }
         }
 
-        public MSSpectraViewModel SelectedSpectra
+        public MsSpectraViewModel SelectedSpectra
         {
             get
             {
@@ -225,25 +207,29 @@ namespace MultiAlign.ViewModels
             }
         }
 
-        private void UpdateSpectra(MSSpectraViewModel value)
+        public MsMsSpectraViewModel SelectedSpectrumPlotModel
         {
-            if (m_chart != null && value != null)
+            get { return m_selectedSpectrum; }
+            set
             {
-                MSSpectra spectrum = value.Spectrum;
-                if (value.Spectrum.Peaks.Count < 1)
-                {
-                    value.Spectrum.Peaks = SpectraLoader.LoadSpectrum(spectrum);
-                }
-            
-                m_chart.SetSpectra(value.Spectrum.Peaks);
-                m_chart.Title = string.Format("scan {0} @ {1} m/z ", spectrum.Scan,
-                                                                        spectrum.PrecursorMZ);
-                m_chart.AutoViewPort();
-                RectangleF viewport = m_chart.ViewPort;
-                m_chart.ViewPort = new System.Drawing.RectangleF(0, viewport.Y, 2000, viewport.Height);                
+                m_selectedSpectrum = value;
+                OnPropertyChanged("SelectedSpectrumPlotModel");
             }
         }
 
-        public ObservableCollection<MSSpectraViewModel> Spectra { get; set; }
+        private void UpdateSpectra(MsSpectraViewModel value)
+        {
+            if (value != null)
+            {
+                var spectrum = value.Spectrum;
+                var name     = string.Format("scan {0} @ {1} m/z ", spectrum.Scan,
+                                                                    spectrum.PrecursorMZ);
+                SelectedSpectrumPlotModel = new MsMsSpectraViewModel(value.Spectrum, name);
+
+                this.SelectedSpectrumPlotModel.SetMax(m_maxMz, m_maxIntensity);             
+            }
+        }
+
+        public ObservableCollection<MsSpectraViewModel> Spectra { get; set; }
     }
 }

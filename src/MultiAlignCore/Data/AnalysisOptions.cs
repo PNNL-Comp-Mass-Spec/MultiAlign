@@ -1,12 +1,8 @@
 ﻿using MultiAlignCore.Algorithms.Alignment;
 using MultiAlignCore.Algorithms.Clustering;
-using MultiAlignCore.Algorithms.FeatureFinding;
-using MultiAlignCore.Algorithms.FeatureMatcher;
 using MultiAlignCore.Algorithms.Features;
 using MultiAlignCore.Algorithms.MSLinker;
 using MultiAlignCore.Algorithms.Options;
-using MultiAlignCore.Data.Features;
-using MultiAlignCore.IO.MTDB;
 using MultiAlignCore.IO.Parameters;
 
 namespace MultiAlignCore.Data
@@ -27,7 +23,7 @@ namespace MultiAlignCore.Data
 			ClusterOptions                  = new LCMSFeatureClusteringOptions() ;
             MSLinkerOptions                 = new MSLinkerOptions();
             //FeatureFilterOptions            = new FeatureFilterOptions();
-            STACOptions                     = new STACOptions();            
+            STACOptions                     = new StacOptions();            
             MassTagDatabaseOptions          = new MultiAlignCore.IO.MTDB.MassTagDatabaseOptions();
             ConsolidationOptions            = new FeatureConsolidatorOptions();
         }
@@ -101,7 +97,7 @@ namespace MultiAlignCore.Data
         /// Stac Options
         /// </summary>
         [ParameterFileGroupAttribute("Peptide Identification - STAC", "Peak Matching options for statistical testing of AMT related peak matching.")]
-        public STACOptions STACOptions
+        public StacOptions STACOptions
         {
             get;
             set;

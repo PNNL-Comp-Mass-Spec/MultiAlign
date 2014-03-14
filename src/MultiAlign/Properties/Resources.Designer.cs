@@ -171,6 +171,15 @@ namespace MultiAlign.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to DTA (*.dta)|*.dta|MGF (*.mgf)|*.mgf.
+        /// </summary>
+        internal static string MsMsSaveFilter {
+            get {
+                return ResourceManager.GetString("MsMsSaveFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to MultiAlign Parameters (*.json)| *.json|All Files (*.*)|*.*.
         /// </summary>
         internal static string MultiAlignParameterFileFilter {

@@ -3,36 +3,27 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-              xmlns:massTagViews="clr-namespace:MultiAlign.Windows.Viewers.MassTags"
-             xmlns:maCharts="clr-namespace:MultiAlignCustomControls.Charting;assembly=MultiAlignCustomControls"
-             xmlns:converters="clr-namespace:MultiAlign.Converters"
              xmlns:spectraViews="clr-namespace:MultiAlign.Windows.Viewers.Spectra"
-             xmlns:proteinViews="clr-namespace:MultiAlign.Windows.Viewers.Proteins"
+             xmlns:wpf="http://oxyplot.codeplex.com"
              mc:Ignorable="d" 
              d:DesignHeight="598" d:DesignWidth="920">
-    <UserControl.Resources>
-        <converters:IntToStringConverter x:Key="IntToStringConverter" />
+    <UserControl.Resources>        
         <DataTemplate x:Key="MSSpectraDataTemplate">
             <spectraViews:MSSpectraSummary/>
         </DataTemplate>
         <DataTemplate x:Key="SortOptionTemplate">
             <TextBlock Margin="5" Text="{Binding Name}"/>
-        </DataTemplate>
-                      
-            
+        </DataTemplate>                                  
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="75*"/>
+            <ColumnDefinition Width="50*"/>
             <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="25*"/>
+            <ColumnDefinition Width="50*"/>
         </Grid.ColumnDefinitions>
-
-
         <GridSplitter       Grid.Row="0"
                             Grid.Column="1"
                             Width="5"
@@ -42,22 +33,20 @@
 
         <Grid
             Grid.Row="0">
-
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="185" />
             </Grid.RowDefinitions>
-
             <GridSplitter       
                             Grid.Row="1"
                             Height="5"
                             Background="Gray"
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Stretch"/>
-            <ContentControl 
-                Grid.Row="0"
-                Content="{Binding SpectraChart}"
+            <wpf:Plot
+                Margin="5"
+                Model="{Binding SelectedSpectrumPlotModel.Model}"
                 />
             <spectraViews:MSSpectraTemplate 
                 Grid.Row="2"
@@ -72,7 +61,7 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <Expander     
-                IsExpanded="True"
+                IsExpanded="True"                
                 Header="Options">
                 <Border
                     Style="{DynamicResource BorderStyle}"
@@ -105,7 +94,6 @@
                         <Button
                             Style="{DynamicResource SimpleBrowseButtonStyle}"
                             Width="64"
-                            Height="32"
                             Margin="5" 
                             Command="{Binding ExpandIdentifications}"
                             HorizontalContentAlignment="Center"
@@ -114,7 +102,6 @@
                         <Button
                             Style="{DynamicResource SimpleBrowseButtonStyle}"
                             Width="64"
-                            Height="32"
                             Margin="5"
                             Command="{Binding CollapseIdentifications}"
                             HorizontalContentAlignment="Center"
@@ -135,7 +122,7 @@
                     HorizontalContentAlignment="Stretch"
                     SelectedItem="{Binding Path=SelectedSpectra, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"
                     ItemTemplate="{StaticResource MSSpectraDataTemplate}"
-                    ItemsSource="{Binding Path=Spectra, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True}" Grid.ColumnSpan="2" />
+                    ItemsSource="{Binding Path=Spectra, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True}" />
             </ScrollViewer>
 
         </Grid>

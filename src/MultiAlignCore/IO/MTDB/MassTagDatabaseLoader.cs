@@ -50,7 +50,7 @@ namespace MultiAlignCore.IO.MTDB
         /// <summary>
         /// Gets or sets the default mass tag database options.
         /// </summary>
-        public MassTagDatabaseOptions Options
+        public Algorithms.Options.MassTagDatabaseOptions Options
         {
             get;
             set;
@@ -89,11 +89,11 @@ namespace MultiAlignCore.IO.MTDB
             command.CommandTimeout = 180;
             command.CommandText = m_massTagsPlusPeptideProphetStats_sp;
 
-            command.Parameters.Add(CreateParameter("@ConfirmedOnly",                    Options.ConfirmedTags));
+            command.Parameters.Add(CreateParameter("@ConfirmedOnly",                    1));
             command.Parameters.Add(CreateParameter("@MinimumHighNormalizedScore",       Options.MinimumXCorr));
-            command.Parameters.Add(CreateParameter("@MinimumPMTQualityScore",           Options.MinimumPMTScore));
+            command.Parameters.Add(CreateParameter("@MinimumPMTQualityScore",           Options.MinimumPmtScore));
             command.Parameters.Add(CreateParameter("@MinimumHighDiscriminantScore",     Options.MinimumDiscriminant));
-            command.Parameters.Add(CreateParameter("@MinimumPeptideProphetProbability", Options.PeptideProphetVal));
+            command.Parameters.Add(CreateParameter("@MinimumPeptideProphetProbability", Options.MinimumPeptideProphetScore));
         }
         /// <summary>
         /// Sets up the protein mass tag command for execution. 
@@ -104,11 +104,11 @@ namespace MultiAlignCore.IO.MTDB
             command.CommandTimeout = 180;
             command.CommandText = m_protein2MassTags_sp;
             
-            command.Parameters.Add(CreateParameter("@ConfirmedOnly",                    Options.ConfirmedTags));
+            command.Parameters.Add(CreateParameter("@ConfirmedOnly",                    1));
             command.Parameters.Add(CreateParameter("@MinimumHighNormalizedScore",       Options.MinimumXCorr));
-            command.Parameters.Add(CreateParameter("@MinimumPMTQualityScore",           Options.MinimumPMTScore));
+            command.Parameters.Add(CreateParameter("@MinimumPMTQualityScore",           Options.MinimumPmtScore));
             command.Parameters.Add(CreateParameter("@MinimumHighDiscriminantScore",     Options.MinimumDiscriminant));
-            command.Parameters.Add(CreateParameter("@MinimumPeptideProphetProbability", Options.PeptideProphetVal));
+            command.Parameters.Add(CreateParameter("@MinimumPeptideProphetProbability", Options.MinimumPeptideProphetScore));
         }
         /// <summary>
         /// Downloads the mass tags

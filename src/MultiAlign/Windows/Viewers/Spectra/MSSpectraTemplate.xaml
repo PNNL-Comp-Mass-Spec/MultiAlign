@@ -160,7 +160,7 @@
                             HorizontalAlignment="Stretch"/>
 
 
-                <Label
+                <!--<Label
                             FontSize="16"
                             Margin="5"
                             Grid.Row="3"
@@ -193,7 +193,7 @@
                             Grid.Column=""
                             FontSize="16"   
                             Text="{Binding Path=Spectrum.ID}"                                                                     
-                            HorizontalAlignment="Stretch"/>
+                            HorizontalAlignment="Stretch"/>-->
 
                 <Expander      
                         Grid.Column="1"

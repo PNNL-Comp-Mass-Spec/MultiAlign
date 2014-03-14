@@ -325,11 +325,11 @@ namespace MultiAlign.ViewModels.Wizard
         {
             get
             {
-                return m_options.MsFilteringOptions.MzRange.Maximum;
+                return m_options.MsFilteringOptions.ChargeRange.Maximum;
             }
             set
             {
-                m_options.MsFilteringOptions.MzRange.Maximum = value;
+                m_options.MsFilteringOptions.ChargeRange.Maximum = value;
                 OnPropertyChanged("MaximumCharge");
             }
         }

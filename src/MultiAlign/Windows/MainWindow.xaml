@@ -4,22 +4,13 @@
         xmlns:wizardViews="clr-namespace:MultiAlign.Windows.Wizard"        
         xmlns:viewerViews="clr-namespace:MultiAlign.Windows.Viewers"
         xmlns:maConverters="clr-namespace:MultiAlign.Converters"        
-        Title="MultiAlign"         
+        Title="{Binding Title}"         
         Height="800" 
         Width="1200"
         Icon="/MultiAlign;component/Resources/logo.png" 
         WindowStartupLocation="CenterScreen">
     
     <Window.Resources>
-        <BitmapImage x:Key="MannassaImage" UriSource="pack://application:,,,/Resources/MainIcon.png" />
-        <BitmapImage x:Key="DatabaseImage" UriSource="pack://application:,,,/Resources/database-32.png" />
-        <BitmapImage x:Key="ServerImage" UriSource="pack://application:,,,/Resources/server-32.png" />
-        <BitmapImage x:Key="AlignmentIcon" UriSource="pack://application:,,,/Resources/AlignmentIcon.png" />
-        <BitmapImage x:Key="FolderIcon" UriSource="pack://application:,,,/Resources/folder_default.png" />
-        <BitmapImage x:Key="NewIcon" UriSource="pack://application:,,,/Resources/text_x_generic.png" />
-        <BitmapImage x:Key="Molecule" UriSource="pack://application:,,,/Resources/molecule.png" />
-        <BitmapImage x:Key="Unknown" UriSource="pack://application:,,,/Resources/unknown.png" />
-        <BitmapImage x:Key="Home" UriSource="pack://application:,,,/Resources/home.png" />
 
         <maConverters:ViewStateVisibilityConverter  x:Key="HomeState"                           ViewState="HomeView"/>
         <maConverters:ViewStateVisibilityConverter  x:Key="SetupAnalysisViewState"              ViewState="SetupAnalysisView"/>
@@ -74,8 +65,7 @@
                 IsSelected="{Binding Path=StateModerator.CurrentViewState, Converter={StaticResource ResourceKey=HomeViewSelected}}"
                 Style="{DynamicResource ResourceKey=HidenTabItem}"   >
                 <viewerViews:GettingStarted           
-                    DataContext="{Binding Path=GettingStartedViewModel}"
-                    Visibility="{Binding Path=StateModerator.CurrentViewState, Converter={StaticResource ResourceKey=HomeState}}"/>
+                    DataContext="{Binding Path=GettingStartedViewModel}"/>
             </TabItem>
             <!-- New Analysis -->
             <TabItem         
@@ -83,8 +73,7 @@
                 Header="New Analysis"
                 IsSelected="{Binding Path=StateModerator.CurrentViewState, Converter={StaticResource ResourceKey=SetupAnalysisViewStateSelected}}">
                 <wizardViews:PerformAnalysisControl                      
-                    DataContext="{Binding AnalysisSetupViewModel}"
-                    Visibility="{Binding Path=StateModerator.CurrentViewState, Converter={StaticResource ResourceKey=SetupAnalysisViewState}}"/>                
+                    DataContext="{Binding AnalysisSetupViewModel}"/>                
             </TabItem>
             <!-- Running Analysis -->
             <TabItem         
@@ -93,9 +82,7 @@
                 IsSelected="{Binding Path=StateModerator.CurrentViewState, Converter={StaticResource ResourceKey=RunningAnalysisViewStateSelected}}"
                 >
                 <wizardViews:AnalysisRunningView       
-                    DataContext="{Binding Path=AnalysisRunningViewModel}"
-                    Visibility="{Binding Path=StateModerator.CurrentViewState, Converter={StaticResource ResourceKey=RunningAnalysisViewState}}">
-                </wizardViews:AnalysisRunningView>
+                    DataContext="{Binding Path=AnalysisRunningViewModel}"/>
             </TabItem>
             <!-- Viewing Analysis -->
             <TabItem
@@ -141,8 +128,7 @@
                     </WrapPanel>
                 </StatusBarItem>            
                 <StatusBarItem >
-                    <TextBlock Text="{Binding Path=Status, 
-                                                RelativeSource={RelativeSource AncestorType={x:Type Window}}}" />
+                    <TextBlock Text="{Binding Path=Status}" />
                  </StatusBarItem>            
             </StatusBar>
      </Grid>        

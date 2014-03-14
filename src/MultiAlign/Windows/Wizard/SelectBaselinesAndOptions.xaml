@@ -3,8 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:converters="clr-namespace:MultiAlign.Converters"
-             
+             xmlns:databaseOptions="clr-namespace:MultiAlign.Windows.Viewers.Databases"
+             xmlns:identificationsOptions="clr-namespace:MultiAlign.Windows.Wizard"
              mc:Ignorable="d" 
              Name="thisControl"
              d:DesignHeight="600" d:DesignWidth="600">
@@ -12,17 +12,21 @@
 
 
     </UserControl.Resources>
-    <Grid
+
+    <ScrollViewer
+                                  Margin="5"                                 
+                                 VerticalScrollBarVisibility="Auto"
+                                  
+                                  >
+        <Grid
         Background="White"
         Margin="5"
         >
         <Grid.RowDefinitions>
             <RowDefinition Height="40*"/>
             <RowDefinition Height="60*"/>
+            <RowDefinition Height="30*"/>
         </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-        </Grid.ColumnDefinitions>
         <GroupBox
             Grid.Row="0"
             Header="Alignment Type"  
@@ -108,6 +112,7 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
                     <Grid.ColumnDefinitions>
@@ -173,8 +178,33 @@
                         Width="180"
                         Height="64"
                         Margin="5">Find</Button>
+
                 </Grid>
             </StackPanel>
         </GroupBox>
+
+            <Border
+                        Grid.Row="2"
+                        Grid.Column="0"
+                            BorderThickness="1"
+                            BorderBrush="LightGray"
+                            >
+                <StackPanel>
+                    <Expander Margin="5"
+                                          Foreground="Gray"
+                                          FontSize="14"
+                                          Header="Mass Tag Database Options">
+                        <databaseOptions:MassTagOptionsView  DataContext="{Binding MassTagDatabaseOptionsViewModel}"/>
+                    </Expander>
+                    <Expander Margin="5"
+                                          Foreground="Gray"
+                                          FontSize="14"
+                                          Header="STAC Identification Options">
+                        <identificationsOptions:StacOptionsView DataContext="{Binding StacOptionsViewModel}"/>
+                    </Expander>
+                </StackPanel>
+            </Border>
+        
     </Grid>
+    </ScrollViewer>
 </UserControl>

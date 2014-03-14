@@ -178,4 +178,7 @@
   <data name="MultiAlignParameterFileFilter" xml:space="preserve">
     <value>MultiAlign Parameters (*.json)| *.json|All Files (*.*)|*.*</value>
   </data>
+  <data name="MsMsSaveFilter" xml:space="preserve">
+    <value>DTA (*.dta)|*.dta|MGF (*.mgf)|*.mgf</value>
+  </data>
 </root>

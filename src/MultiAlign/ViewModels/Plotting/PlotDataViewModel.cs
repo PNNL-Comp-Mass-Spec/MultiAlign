@@ -1,13 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using MultiAlignCore.Data.MetaData;
+﻿using MultiAlign.Commands.Plotting;
 using System.Windows.Input;
-using System.Windows.Media.Imaging;
-using System.Windows.Data;
-using System.Windows;
-using MultiAlign.Commands.Plotting;
 
 namespace MultiAlign.ViewModels.Plotting
 {

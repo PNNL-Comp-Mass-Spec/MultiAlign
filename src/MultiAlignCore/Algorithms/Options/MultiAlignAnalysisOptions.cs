@@ -15,13 +15,13 @@ namespace MultiAlignCore.Algorithms.Options
         public MultiAlignAnalysisOptions()
         {
             InstrumentTolerances    = new FeatureTolerances();                        
-            MassTagDatabaseOptions  = new IO.MTDB.MassTagDatabaseOptions();
+            MassTagDatabaseOptions  = new MassTagDatabaseOptions();
             MsFilteringOptions      = new MsFeatureFilteringOptions();
             LcmsFindingOptions      = new LcmsFeatureFindingOptions(InstrumentTolerances);
             LcmsFilteringOptions    = new LcmsFeatureFilteringOptions();            
             AlignmentOptions        = new AlignmentOptions();
             LcmsClusteringOptions   = new LcmsClusteringOptions(InstrumentTolerances);
-            StacOptions             = new STACOptions();
+            StacOptions             = new StacOptions();
             HasMsMs                 = false;
             UsedIonMobility         = false;
         }
@@ -33,8 +33,7 @@ namespace MultiAlignCore.Algorithms.Options
         /// <summary>
         /// Gets or sets the options for loading data from a mass tag database.
         /// </summary>
-        [ParameterFileGroup("Mass Tag Database", "Filtering options for loading mass tags from the database.")]
-        public IO.MTDB.MassTagDatabaseOptions MassTagDatabaseOptions { get; set; }
+        public MassTagDatabaseOptions MassTagDatabaseOptions { get; set; }
         /// <summary>
         /// Gets or sets the options for MS filtering.
         /// </summary>
@@ -58,9 +57,8 @@ namespace MultiAlignCore.Algorithms.Options
         public LcmsClusteringOptions LcmsClusteringOptions { get; set; }
         /// <summary>
         /// Gets or sets the options for STAC identification
-        /// </summary>
-        [ParameterFileGroupAttribute("Peptide Identification - STAC", "Peak Matching options for statistical testing of AMT related peak matching.")]        
-        public STACOptions StacOptions
+        /// </summary>        
+        public StacOptions StacOptions
         {
             get;
             set;

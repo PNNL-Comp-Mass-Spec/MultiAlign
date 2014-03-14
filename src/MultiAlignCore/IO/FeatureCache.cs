@@ -104,6 +104,7 @@ namespace MultiAlignCore.IO
                 }
 
                 var count = 0;
+            //TODO: Fix!!! make sure sequence maps are unique
                 sequenceMaps.ForEach(x => x.Id = count++);                     
 
                 if (msmsFeatures.Count > 0)

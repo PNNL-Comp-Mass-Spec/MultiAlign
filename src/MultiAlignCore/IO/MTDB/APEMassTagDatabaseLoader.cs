@@ -57,7 +57,7 @@ namespace MultiAlignCore.IO.MTDB
             string commandString    = "SELECT * FROM T_Mass_Tags ";
             commandString           += string.Format(" WHERE (High_Normalized_Score >= {0})", Options.MinimumXCorr);
             commandString           += string.Format(" AND (High_Discriminant_Score >= {0})", Options.MinimumDiscriminant);
-            commandString           += string.Format(" AND (High_Peptide_Prophet_Probability >= {0})", Options.PeptideProphetVal);
+            commandString           += string.Format(" AND (High_Peptide_Prophet_Probability >= {0})", Options.MinimumPeptideProphetScore);
             command.CommandText     = commandString;
         }
         /// <summary>

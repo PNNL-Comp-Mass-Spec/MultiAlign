@@ -1,15 +1,12 @@
-﻿using System;
-using PNNLOmics.Data.MassTags;
-using System.Collections.Generic;
+﻿using System.Linq;
 using MultiAlignCore.Data;
-using MultiAlignCore.Data.Features;
-using MultiAlignCore.Data.MassTags;
+using MultiAlignCore.Data.SequenceData;
 using MultiAlignCore.IO.Features;
 using PNNLOmics.Data;
-using MultiAlignCore.Data;
-using PNNLOmics.Extensions;
 using PNNLOmics.Data.Features;
-using MultiAlignCore.Data.SequenceData;
+using PNNLOmics.Extensions;
+using System;
+using System.Collections.Generic;
 
 namespace MultiAlignCore.Extensions
 {
@@ -259,132 +256,93 @@ namespace MultiAlignCore.Extensions
         }
         public static void ReconstructMSFeature(this UMCLight feature, FeatureDataAccessProviders providers, bool getMsMs)
         {
-            // We are reconstruction the objects here.  But 
-            // I want to reduce the number of transactions to make.
-            // So I go back through the database and pull out all msms spectra first
-            // then sort it out in memory.
-
-            // Get the map
-            List<MSFeatureToMSnFeatureMap> msmsFeatures = new List<MSFeatureToMSnFeatureMap>();
-
-            // Maps the id's of the MS/MS spectra
-            List<int> ids = new List<int>();
-
-            // Make a map, from the dataset, then the spectra to the ms feature Id.
-            Dictionary<int, Dictionary<int, List<MSFeatureToMSnFeatureMap>>> map
-                            = new Dictionary<int, Dictionary<int, List<MSFeatureToMSnFeatureMap>>>();
-
-
-            List<SequenceToMsnFeature>   mappedSequences = new List<SequenceToMsnFeature>();
-            List<DatabaseSearchSequence> sequences       = new List<DatabaseSearchSequence>();
+            var msmsFeatureMaps = new List<MSFeatureToMSnFeatureMap>();         
+            var mappedSequences = new List<SequenceToMsnFeature>();
+            var sequences       = new List<DatabaseSearchSequence>();
 
             if (getMsMs)
             {
-                msmsFeatures = providers.MSFeatureToMSnFeatureCache.FindByUMCFeatureId(feature.GroupID,
-                                                                                        feature.ID);
+                msmsFeatureMaps  = providers.MSFeatureToMSnFeatureCache.FindByUMCFeatureId(feature.GroupID, feature.ID);
+                mappedSequences  = providers.SequenceMsnMapCache.FindByDatasetId(feature.GroupID, feature.ID);
+                sequences        = providers.DatabaseSequenceCache.FindByDatasetId(feature.GroupID, feature.ID);
+            }            
+            var ids         = msmsFeatureMaps.ConvertAll(x => x.MSMSFeatureID);
+            var spectra     = providers.MSnFeatureCache.FindBySpectraId(ids);
+            spectra         = spectra.Where(x => x.GroupID == feature.GroupID).ToList(); 
 
+            // Map the sequences into peptide objects...
+            // Map the MS features, spectra, and peptide sequences
+            var peptideSequenceMaps = MapSequenceMapsToPeptides(sequences);                        
+            var msFeatures          = new Dictionary<int, MSFeatureLight>();
+            var spectraMap          = new Dictionary<int, MSSpectra>();
+            var sequenceMap         = new Dictionary<int, int>();
 
-               mappedSequences  =  providers.SequenceMsnMapCache.FindByDatasetId(feature.GroupID, feature.ID);
-               sequences        = providers.DatabaseSequenceCache.FindByDatasetId(feature.GroupID, feature.ID);
-
-
-            }
-            // Then grab the spectra id list
-            ids = msmsFeatures.ConvertAll<int>(x => x.MSMSFeatureID);
-
-            // Here we map the peptides 
-            Dictionary<int, Peptide> peptideSequenceMaps = new Dictionary<int, Peptide>();  // this guy maps the peptide id to the peptide
-            Dictionary<int, List<Peptide>> msmsMap = new Dictionary<int, List<Peptide>>();              // This guy maps the ms/ms feature to the peptide
-            foreach (DatabaseSearchSequence sequence in sequences)
+            foreach (var map in mappedSequences)
             {
-                Peptide newPeptide          = new Peptide();
-                newPeptide.GroupId          = sequence.GroupId;
-                newPeptide.Sequence         = sequence.Sequence;
-                newPeptide.Score            = sequence.Score;
-                newPeptide.Scan             = sequence.Scan;
-                newPeptide.Mz               = sequence.Mz;
-                newPeptide.MassMonoisotopic = sequence.MassMonoisotopic;
-                newPeptide.ID               = sequence.Id;
+                if (sequenceMap.ContainsKey(map.MsnFeatureId)) continue;
+                sequenceMap.Add(map.MsnFeatureId, map.SequenceId);
+            }
+
+            spectra.ForEach(x => spectraMap.Add(x.ID, x));
+            feature.MSFeatures.ForEach(x => msFeatures.Add(x.ID, x));
+
+            foreach (var msmsFeature in msmsFeatureMaps)
+            {
+                var msFeatureId = msmsFeature.MSFeatureID;
+                var spectraId   = msmsFeature.MSMSFeatureID;
+
+                if (!msFeatures.ContainsKey(msFeatureId)) continue;
+                if (!spectraMap.ContainsKey(spectraId))   continue;
+
+                var msFeature = msFeatures[msFeatureId];
+                var spectrum  = spectraMap[spectraId];
+
+                // Annotate the spectra with a peptide sequence
+                if (sequenceMap.ContainsKey(spectraId))
+                {
+                    var peptideId  = sequenceMap[spectraId];
+                    var hasPeptide = new Dictionary<int, Peptide>();
+                    foreach (var peptide in peptideSequenceMaps.Values)
+                    {
+                        if (peptide.Scan == spectrum.Scan)
+                        {
+                            if (hasPeptide.ContainsKey(peptide.Scan))
+                                continue;
+
+                            hasPeptide.Add(peptide.Scan, peptide);
+                            spectrum.Peptides.Add(peptide);    
+                        }
+                    }                                            
+                }
+                msFeature.MSnSpectra.Add(spectrum);
+                spectrum.ParentFeature = msFeature;
+            }
+        }
                 
+        private static  Dictionary<int, Peptide> MapSequenceMapsToPeptides(IEnumerable<DatabaseSearchSequence> sequences)
+        {
+            var peptideSequenceMaps = new Dictionary<int, Peptide>();
+            foreach (var sequence in sequences)
+            {
+                var newPeptide = new Peptide
+                {
+                    GroupId             = sequence.GroupId,
+                    Sequence            = sequence.Sequence,
+                    Score               = sequence.Score,
+                    Scan                = sequence.Scan,
+                    Mz                  = sequence.Mz,
+                    MassMonoisotopic    = sequence.MassMonoisotopic,
+                    ID                  = sequence.Id
+                };
+
+                if (peptideSequenceMaps.ContainsKey(newPeptide.ID)) continue;
+
                 peptideSequenceMaps.Add(newPeptide.ID, newPeptide);
             }
-            foreach (SequenceToMsnFeature sequenceMap in mappedSequences)
-            {
-                int msmsId = sequenceMap.MsnFeatureId;
-                if (!msmsMap.ContainsKey(msmsId))
-                {
-                    msmsMap.Add(msmsId, new List<Peptide>());
-                }
-                msmsMap[msmsId].Add(peptideSequenceMaps[sequenceMap.SequenceId]);
-            }
 
-            
-            // construct that map here.
-            foreach (MSFeatureToMSnFeatureMap subFeature in msmsFeatures)
-            {
-                // first map the dataset id
-                if (!map.ContainsKey(subFeature.MSDatasetID))
-                {
-                    map.Add(subFeature.MSDatasetID, new Dictionary<int, List<MSFeatureToMSnFeatureMap>>());
-                }
-
-                // Then map its msms spectra id
-                Dictionary<int, List<MSFeatureToMSnFeatureMap>> datasetMap = map[subFeature.MSDatasetID];
-
-                if (!datasetMap.ContainsKey(subFeature.MSFeatureID))
-                    datasetMap.Add(subFeature.MSFeatureID, new List<Data.MSFeatureToMSnFeatureMap>());
-
-                datasetMap[subFeature.MSFeatureID].Add(subFeature);
-            }
-            
-            // Now we get all the spectra, map to the UMC, then the ms/ms spectra. 
-            List<MSSpectra> spectra                                 = providers.MSnFeatureCache.FindBySpectraId(ids);                              
-            Dictionary<int, Dictionary<int, MSSpectra>> spectraMap  = new Dictionary<int,Dictionary<int,MSSpectra>>();
-            foreach(MSSpectra spectrum in spectra)
-            {
-                if (!spectraMap.ContainsKey(spectrum.GroupID))
-                {
-                    spectraMap.Add(spectrum.GroupID, new Dictionary<int,MSSpectra>());
-                }
-                spectraMap[spectrum.GroupID].Add(spectrum.ID, spectrum);
-            }            
-            
-            foreach(MSFeatureLight msFeature in feature.MSFeatures)
-            {
-                // Here we check the dataset.
-                if (map.ContainsKey(msFeature.GroupID))
-                {
-                    // then check the ms/ms spectra
-                    if (map[msFeature.GroupID].ContainsKey(msFeature.ID))
-                    {
-                        // ok, we are sure that the spectra is present now!
-                        foreach (var singleMap in map[msFeature.GroupID][msFeature.ID])
-                        {
-                            if (singleMap.MSFeatureID == msFeature.ID)
-                            {
-                                int msmsFeatureId = singleMap.MSMSFeatureID;
-
-                                MSSpectra spectrum = spectraMap[singleMap.MSDatasetID][msmsFeatureId];
-                                msFeature.MSnSpectra.Add(spectrum);
-                                spectrum.ParentFeature = msFeature;
-
-                                // Map any features
-                                if (msmsMap.ContainsKey(msmsFeatureId))
-                                {
-                                    List<Peptide> peptides = msmsMap[msmsFeatureId];
-                                    foreach (Peptide peptide in peptides)
-                                    {                                         
-                                        spectrum.Peptides.Add(peptide);
-                                        peptide.Spectrum        = spectrum;                                        
-                                    }
-                                }
-                            }
-                        }
-                        
-                    }
-                }
-            }                        
+            return peptideSequenceMaps;
         }
+
         /// <summary>
         /// Finds the ranges of a given feature for all of its dimensions.
         /// </summary>
