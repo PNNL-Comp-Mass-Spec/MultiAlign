@@ -112,6 +112,7 @@ namespace MultiAlignCore.Data.Features
                 UMCLight umc                = new UMCLight();
                 umc.ChargeState             = 0;
                 umc.NET                     = tag.NET;
+                umc.MassMonoisotopic        = tag.MassMonoisotopic;
                 umc.MassMonoisotopicAligned = tag.MassMonoisotopic;
                 umc.DriftTime               = tag.DriftTime;
                 umc.ID                      = tag.ID;

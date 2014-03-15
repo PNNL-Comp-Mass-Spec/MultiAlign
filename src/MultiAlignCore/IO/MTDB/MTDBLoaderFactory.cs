@@ -37,9 +37,7 @@ namespace MultiAlignCore.IO.MTDB
                     break;
                 case MassTagDatabaseFormat.MetaSample:
                     loader = new MetaSampleDatbaseLoader(databaseDefinition.LocalPath);
-                    break;
-                default:                    
-                    break;
+                    break;               
             }
 
             if (loader == null)

@@ -182,6 +182,10 @@ namespace MultiAlign.ViewModels.Wizard
                 if (m_analysis.Options.AlignmentOptions.IsAlignmentBaselineAMasstagDB != value)
                 {
                     m_analysis.Options.AlignmentOptions.IsAlignmentBaselineAMasstagDB = value;
+                    if (value == true)
+                    {
+                        SelectedDataset = null;
+                    }
                     OnPropertyChanged("RequiresDatabaseSelection");
 
                     OnPropertyChanged("IsBaselineDatabase");
@@ -223,10 +227,19 @@ namespace MultiAlign.ViewModels.Wizard
             }
             set
             {
-                if (m_selectedDataset != value && value != null)
-                {                    
-                    m_analysis.MetaData.BaselineDataset = value.Dataset;
-                    m_selectedDataset                   = value;
+                if (m_selectedDataset != value)
+                {
+                    if (value == null)
+                    {
+                        m_analysis.MetaData.BaselineDataset = null;
+
+                    }
+                    else
+                    {
+                        m_selectedDataset = value;
+                        m_analysis.MetaData.BaselineDataset = value.Dataset;
+                    }
+
                     OnPropertyChanged("SelectedDataset");
                 }
             }

@@ -147,14 +147,31 @@ namespace MultiAlign.ViewModels.Charting
                         var spaceAnnotation = new LineAnnotation
                         {
                             Type        = LineAnnotationType.Vertical,
-                            Color       = OxyColors.LightGray,
-                            TextColor   = OxyColors.LightGray,                                              
+                            Color       = OxyColors.Gray,
+                            TextColor   = OxyColors.Gray,                                              
+                            FontWeight = 3,
                             TextVerticalAlignment = VerticalAlignment.Top,
                             TextPosition = 1,
+                            StrokeThickness = 2,                            
                             Text = string.Format("msms {0} - scan {1}", fragmentation.PrecursorMZ.ToString("F2"), fragmentation.Scan),
                             X    = fragmentation.PrecursorMZ 
                         };
                         Model.Annotations.Add(spaceAnnotation);
+
+
+                        //var spaceAnnotation = new LineAnnotation
+                        //{
+                        //    Type = LineAnnotationType.Vertical,
+                        //    Color = OxyColors.Gray,
+                        //    TextColor = OxyColors.Gray,
+                        //    FontWeight = 3,
+                        //    TextVerticalAlignment = VerticalAlignment.Top,
+                        //    TextPosition = 1,
+                        //    StrokeThickness = 2,
+                        //    Text = string.Format("msms {0} - scan {1}", fragmentation.PrecursorMZ.ToString("F2"), fragmentation.Scan),
+                        //    X = fragmentation.PrecursorMZ - MSMSDistance
+                        //};
+                        //Model.Annotations.Add(spaceAnnotation);
                     }
                 }
             }
