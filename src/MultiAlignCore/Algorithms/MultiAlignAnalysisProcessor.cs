@@ -375,19 +375,17 @@ namespace MultiAlignCore.Algorithms
             }
             else
             {                
-                //TODO: convert this to be cleaner.
-                if (baselineInfo == null)
-                {
-                    if (database == null)                    
-                        throw new NullReferenceException("The mass tag database has to have data in it if it's being used for drift time alignment.");
+                if (database == null)                    
+                    throw new NullReferenceException("The mass tag database has to have data in it if it's being used for drift time alignment.");
                     
-                    UpdateStatus( "Setting baseline features for post drift time alignment from mass tag database.");
-                    baselineFeatures = FeatureDataConverters.ConvertToUMC(database.MassTags);
-                }
+                UpdateStatus( "Setting baseline features for post drift time alignment from mass tag database.");
+                var tags = FeatureDataConverters.ConvertToUMC(database.MassTags);
+                
+                if (BaselineFeaturesLoaded == null)
+                    return tags;
 
-                if (BaselineFeaturesLoaded == null) return baselineFeatures;
-                if (baselineFeatures != null)
-                    BaselineFeaturesLoaded(this, new BaselineFeaturesLoadedEventArgs(null, baselineFeatures.ToList(), database));
+                if (tags != null)
+                    BaselineFeaturesLoaded(this, new BaselineFeaturesLoadedEventArgs(null, tags.ToList(), database));
             }
             return baselineFeatures;
         }
@@ -473,8 +471,13 @@ namespace MultiAlignCore.Algorithms
         {
             classAlignmentData alignmentData;
 
+            if (baselineInfo == null && database == null)
+            {
+                throw new NullReferenceException("No reference was set for LC-MS alignment.");
+            }
+
             // align the data.
-            if (baselineFeatures != null)
+            if (baselineFeatures != null && baselineInfo != null && baselineInfo.IsBaseline)
             {
                 UpdateStatus( "Aligning " + datasetInfo.DatasetName + " to baseline.");
                 alignmentData = AlignFeatures(features, baselineFeatures, aligner, options);
@@ -727,6 +730,7 @@ namespace MultiAlignCore.Algorithms
             {
                 throw new NullReferenceException("The data cache providers have not been set for this analysis.");
             }
+            Logger.LogPath = AnalysisPathUtils.BuildLogPath(config.AnalysisPath, config.AnalysisName);            
 
             // Make sure we start with a fresh analysis.
             AbortAnalysisThread(m_analysisThread);
