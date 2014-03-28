@@ -26,14 +26,11 @@ namespace MultiAlignCore.IO
             List<MassTagLight> massTagArray = database.MassTags;
 
             ClusterToMassTagMapDAOHibernate clusterToMassTagMapDAOHibernate = new ClusterToMassTagMapDAOHibernate();
-            GenericDAOHibernate<MassTagToProteinMap> massTagToProteinMapDAOHibernate =
-                                new GenericDAOHibernate<MassTagToProteinMap>();
-
+            
             STACDAOHibernate stacFDRDAOHibernate                = new STACDAOHibernate();
             List<MassTagLight> massTagList                      = new List<MassTagLight>();
             Dictionary<int, Protein> proteinList                = new Dictionary<int,Protein>();
             List<ClusterToMassTagMap> clusterToMassTagMapList   = new List<ClusterToMassTagMap>();
-            List<STACFDR> stacFDRResultsList                    = new List<STACFDR>();
 
             clusterToMassTagMapDAOHibernate.ClearAll();
             stacFDRDAOHibernate.ClearAll();

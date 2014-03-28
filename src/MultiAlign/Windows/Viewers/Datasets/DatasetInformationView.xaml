@@ -36,15 +36,16 @@
             Margin="5">
 
         <Grid.RowDefinitions>
-            <RowDefinition Height="96"  />
+            <RowDefinition Height="128"  />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="*"  />
-                <RowDefinition Height="24" />
-            </Grid.RowDefinitions>
+                    <RowDefinition Height="*"  />
+                    <RowDefinition Height="24" />
+                    <RowDefinition Height="48" />
+                </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="96"/>
                 <ColumnDefinition Width="*"/>
@@ -74,7 +75,18 @@
                     Foreground="Gray">
                     ID
                 </Label>
-        </Grid>
+
+
+                <Button
+                    Grid.Row="2"
+                    Width="96"
+                    Command="{Binding ModifyDatasetCommand}"
+                    CommandParameter="{Binding}"
+                    Style="{DynamicResource SimpleButtonStyle}"
+                    VerticalContentAlignment="Center">
+                    Modify
+                </Button>
+            </Grid>
 
             <Expander
                 Margin="5"

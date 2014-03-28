@@ -1,13 +1,11 @@
 ﻿using System.Collections.Generic;
-using MultiAlignCore.Data.Factors;
-using MultiAlignCore.Data.MetaData;
-using MultiAlignCore.IO.InputFiles;
-using MultiAlignEngine;
-using System.ComponentModel;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using MultiAlignCore.Data.Factors;
 using MultiAlignCore.Data.MassTags;
+using MultiAlignCore.IO.InputFiles;
 
-namespace MultiAlignCore.Data
+namespace MultiAlignCore.Data.MetaData
 {
     /// <summary>
     /// Class that holds meta-data information about the analysis.
@@ -44,7 +42,7 @@ namespace MultiAlignCore.Data
         /// <summary>
         /// Gets or sets the name of the baseline dataset.
         /// </summary>
-        [DataSummaryAttribute("Baseline Dataset")]
+        [DataSummary("Baseline Dataset")]
         public DatasetInformation BaselineDataset
         {
             get
@@ -91,7 +89,7 @@ namespace MultiAlignCore.Data
         /// <summary>
         /// Gets or sets the input file used.
         /// </summary>
-		[DataSummaryAttribute("Input File Definition Name")]
+		[DataSummary("Input File Definition Name")]
         public string InputFileDefinition
         {
             get;
@@ -100,7 +98,7 @@ namespace MultiAlignCore.Data
         /// <summary>
         /// Gets or sets the parameter file used.
         /// </summary>
-        [DataSummaryAttribute("Parameter File")]
+        [DataSummary("Parameter File")]
         public string ParameterFile
         {
             get;
@@ -109,7 +107,7 @@ namespace MultiAlignCore.Data
         /// <summary>
         /// Gets or sets the job id for this analysis.
         /// </summary>
-        [DataSummaryAttribute("Job ID")]
+        [DataSummary("Job ID")]
         public int JobID
         {
             get;
@@ -126,7 +124,7 @@ namespace MultiAlignCore.Data
         /// <summary>
         /// Gets or sets the name of the analysis.
         /// </summary>
-        [DataSummaryAttribute("Analysis Name")]
+        [DataSummary("Analysis Name")]
         public string AnalysisName
         {
             get;
@@ -135,7 +133,7 @@ namespace MultiAlignCore.Data
         /// <summary>
         /// Gets or sets the pathname associated with the analysis.
         /// </summary>
-        [DataSummaryAttribute("Analysis Path")]
+        [DataSummary("Analysis Path")]
         public string AnalysisPath
         {
             get;

@@ -1,9 +1,6 @@
-﻿using System;
+﻿using PNNLOmics.Data;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using PNNLOmics.Data;
-using MultiAlignCore.IO.Features;
 
 namespace MultiAlignTestSuite.Papers.Alignment.IO
 {
@@ -87,6 +84,12 @@ namespace MultiAlignTestSuite.Papers.Alignment.IO
         public List<XYData> GetRawSpectra(int scan, int group, out ScanSummary summary)
         {
             return m_provider.GetRawSpectra(scan, group, -1, out summary);
+        }
+
+
+        public int GetTotalScans(int group)
+        {
+            return m_provider.GetTotalScans(group);
         }
     }
 }

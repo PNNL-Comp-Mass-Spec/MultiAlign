@@ -1,21 +1,30 @@
 using MultiAlignCore.Algorithms.Options;
 using MultiAlignCore.Data.Alignment;
 using MultiAlignCore.Data.Features;
-using MultiAlignCore.Data.MassTags;
 using MultiAlignEngine.Alignment;
 using MultiAlignEngine.Features;
 using MultiAlignEngine.MassTags;
 using PNNLOmics.Algorithms;
+using PNNLOmics.Algorithms.Alignment;
+using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
+using PNNLOmics.Data.MassTags;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace MultiAlignCore.Algorithms.Alignment
 {
-    public class LcmsWarpFeatureAligner: IFeatureAligner
+    public class LcmsWarpFeatureAligner:
+                IFeatureAligner<IEnumerable<UMCLight>, IEnumerable<UMCLight>, classAlignmentData>,
+                IFeatureAligner<MassTagDatabase, IEnumerable<UMCLight>,       classAlignmentData>
     {
         public event EventHandler<ProgressNotifierArgs> Progress;
+
+        public LcmsWarpFeatureAligner()
+        {
+            Options = new AlignmentOptions();            
+        }
 
         private void OnStatus(string message)
         {
@@ -24,21 +33,34 @@ namespace MultiAlignCore.Algorithms.Alignment
                 Progress(this, new ProgressNotifierArgs(message));
             }
         }
+
+        /// <summary>
+        /// Gets or sets the baseline spectra provider
+        /// </summary>
+        public ISpectraProvider BaselineSpectraProvider { get; set; }
+        /// <summary>
+        /// Gets or sets the alignee spectra provider.
+        /// </summary>
+        public ISpectraProvider AligneeSpectraProvider { get; set; }
+        /// <summary>
+        /// Gets or sets the alignment options
+        /// </summary>
+        public AlignmentOptions Options { get; set; }
+
         /// <summary>
         /// Aligns a dataset to a mass tag database.
         /// </summary>
-        public classAlignmentData AlignFeatures(MassTagDatabase                 massTagDatabase,
-                                                List<UMCLight>                  features,
-                                                AlignmentOptions                alignmentOptions,
-                                                bool                            alignDriftTimes)
+        public classAlignmentData Align(MassTagDatabase massTagDatabase,
+                                        IEnumerable<UMCLight>  features)
         {                        
             var alignmentProcessor    = new clsAlignmentProcessor
             {
-                AlignmentOptions = AlignmentOptions.ConvertToEngine(alignmentOptions)
+                AlignmentOptions      = AlignmentOptions.ConvertToEngine(Options)
             };
 
 
-            var featureTest = features.Find(x => x.DriftTime > 0);
+            var umcLights = features as IList<UMCLight> ?? features.ToList();
+            var featureTest = umcLights.ToList().Find(x => x.DriftTime > 0);
             
             if (featureTest != null && !massTagDatabase.DoesContainDriftTime)
             {
@@ -51,8 +73,8 @@ namespace MultiAlignCore.Algorithms.Alignment
             OnStatus("Setting reference features using mass tags.");
             alignmentProcessor.SetReferenceDatasetFeatures(tags, true);
             var data =  AlignFeatures(alignmentProcessor,
-                                                     features,   
-                                                     alignmentOptions);
+                                        umcLights,   
+                                        Options);
 
             alignmentProcessor.Dispose();
             return data;
@@ -60,27 +82,28 @@ namespace MultiAlignCore.Algorithms.Alignment
         /// <summary>
         /// Aligns a dataset to a dataset
         /// </summary>
-        public classAlignmentData AlignFeatures(List<UMCLight>                  baselineFeatures,
-                                                List<UMCLight>                  features,
-                                                AlignmentOptions                alignmentOptions)
+        public classAlignmentData Align(IEnumerable<UMCLight>   baselineFeatures,
+                                        IEnumerable<UMCLight>   features)
         {
             var alignmentProcessor    = new clsAlignmentProcessor
             {
-                AlignmentOptions = AlignmentOptions.ConvertToEngine(alignmentOptions)
+                AlignmentOptions = AlignmentOptions.ConvertToEngine(Options)
             };
             OnStatus("Setting features from baseline dataset.");
 
 
-            var filteredFeatures            = FilterFeaturesByAbundance(baselineFeatures, alignmentOptions);
+            var umcLights = baselineFeatures as IList<UMCLight> ?? baselineFeatures.ToList();
+
+            var filteredFeatures = FilterFeaturesByAbundance(umcLights.ToList(), Options);
             var convertedBaseLineFeatures   = FeatureDataConverters.ConvertToUMC(filteredFeatures);
             alignmentProcessor.SetReferenceDatasetFeatures(convertedBaseLineFeatures);
-            classAlignmentData alignmentData            = AlignFeatures( alignmentProcessor,
+            classAlignmentData alignmentData            = AlignFeatures(alignmentProcessor,
                                                                         features,
-                                                                        alignmentOptions);
+                                                                        Options);
 
             int minScanReference = int.MaxValue;
             int maxScanReference = int.MinValue;
-            foreach (var feature in baselineFeatures)
+            foreach (var feature in umcLights)
             {
                 minScanReference = Math.Min(minScanReference, feature.Scan);
                 maxScanReference = Math.Max(maxScanReference, feature.Scan);
@@ -97,7 +120,7 @@ namespace MultiAlignCore.Algorithms.Alignment
         /// Aligns the dataset to the data stored in the alignment processor.
         /// </summary>
         private classAlignmentData AlignFeatures(clsAlignmentProcessor              alignmentProcessor,
-                                                List<UMCLight>                      features,
+                                                IEnumerable<UMCLight>               features,
                                                 AlignmentOptions                    alignmentOptions)
         {
 
@@ -122,13 +145,15 @@ namespace MultiAlignCore.Algorithms.Alignment
             var totalBoundaries = 1;
             if (alignmentOptions.SplitAlignmentInMZ)            
                 totalBoundaries = 2;
-            
-            var filteredFeatures = FilterFeaturesByAbundance(features, alignmentOptions);
+
+            var umcLights = features as IList<UMCLight> ?? features.ToList();
+
+            var filteredFeatures = FilterFeaturesByAbundance(umcLights.ToList(), alignmentOptions);
 
             // Conver the features, and make a map, so that we can re-adjust the aligned values later.
             var oldFeatures         = FeatureDataConverters.ConvertToUMC(filteredFeatures);            
-            var transformedFeatures = FeatureDataConverters.ConvertToUMC(features);
-            var map                 = FeatureDataConverters.MapFeature(features);
+            var transformedFeatures = FeatureDataConverters.ConvertToUMC(umcLights);
+            var map                 = FeatureDataConverters.MapFeature(umcLights);
 
             for (var i = 0; i < totalBoundaries; i++)
             {

@@ -1,9 +1,9 @@
-﻿using System;
+﻿using MultiAlignTestSuite.Papers.Alignment.SSM;
+using PNNLOmics.Algorithms.Alignment;
+using PNNLOmics.Algorithms.Alignment.SpectralMatching;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using MultiAlignTestSuite.Algorithms.SpectralProcessing;
-using System.IO;
 
 namespace MultiAlignTestSuite.Papers.Alignment.IO
 {
@@ -33,12 +33,12 @@ namespace MultiAlignTestSuite.Papers.Alignment.IO
             Histogram falseMatches = MatchCountHistogramBuilder.SimilarityScore(0,
                                                                                 1,
                                                                                 .05,
-                                                                                analysis.Matches.Where(x => x.IsValidMatch == AnchorMatch.FalseMatch));
+                                                                                analysis.Matches.Where(x => x.IsValidMatch == AnchorPointMatchType.FalseMatch));
 
             Histogram trueMatches = MatchCountHistogramBuilder.SimilarityScore(0,
                                                                                 1,
                                                                                 .05,
-                                                                                analysis.Matches.Where(x => x.IsValidMatch == AnchorMatch.TrueMatch));
+                                                                                analysis.Matches.Where(x => x.IsValidMatch == AnchorPointMatchType.TrueMatch));
 
             Histogram allMatches = MatchCountHistogramBuilder.SimilarityScore(0, 1, .05, analysis.Matches);
 
@@ -54,17 +54,17 @@ namespace MultiAlignTestSuite.Papers.Alignment.IO
             }
             // Determine how many matches we have
             WriteLine("[Matches]");
-            Dictionary<int, List<AnchorPoint>> datasetX = new Dictionary<int, List<AnchorPoint>>();
+            Dictionary<int, List<SpectralAnchorPoint>> datasetX = new Dictionary<int, List<SpectralAnchorPoint>>();
 
             // Here we tally the number of matches
             foreach (var match in analysis.Matches)
             {         
                 int scanX = match.AnchorPointX.Scan;
                 if (!datasetX.ContainsKey(scanX))
-                    datasetX.Add(scanX, new List<AnchorPoint>());
+                    datasetX.Add(scanX, new List<SpectralAnchorPoint>());
 
                 // making sure to attribute true positive matches
-                match.AnchorPointX.IsTrue = match.IsValidMatch == AnchorMatch.TrueMatch;
+                match.AnchorPointX.IsTrue = match.IsValidMatch == AnchorPointMatchType.TrueMatch;
                 datasetX[scanX].Add(match.AnchorPointX);
             }
 

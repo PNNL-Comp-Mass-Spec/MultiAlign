@@ -1,5 +1,8 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using MultiAlignEngine.Alignment;
+using PNNLOmics.Algorithms.Alignment.SpectralMatching;
 
 namespace MultiAlignCore.Data.Alignment
 {
@@ -27,8 +30,12 @@ namespace MultiAlignCore.Data.Alignment
         public double       MassStandardDeviation {get;set;}
         public double       NETStandardDeviation {get;set;}
 
-        
-        
+
+        /// <summary>
+        /// Gets or sets the anchor poitns defined by spectral matching if that algorithm was used.
+        /// This is a stop gap until I can port this all to better objects.
+        /// </summary>
+        public IEnumerable<SpectralAnchorPointMatch> Matches { get; set; }
 
         /// <summary>
         /// Gets or sets the residual alignment data.

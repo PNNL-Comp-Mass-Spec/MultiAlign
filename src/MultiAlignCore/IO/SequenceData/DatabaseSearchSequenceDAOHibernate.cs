@@ -11,7 +11,7 @@ namespace MultiAlignCore.IO.SequenceData
 	public class DatabaseSearchSequenceDAOHiberate : GenericDAOHibernate<DatabaseSearchSequence>, IDatabaseSearchSequenceDAO 
 	{
 
-        #region IDatabaseSearchSequenceDAO Members
+        
         List<DatabaseSearchSequence> IDatabaseSearchSequenceDAO.FindByDatasetId(int datasetId, int lcmsFeatureId)
         {
             ICriterion criterionDataset = Expression.Eq("GroupId", datasetId);
@@ -22,7 +22,16 @@ namespace MultiAlignCore.IO.SequenceData
 
             return FindByCriteria(criterionList); 
         }
-        #endregion
+
+
+        List<DatabaseSearchSequence> IDatabaseSearchSequenceDAO.FindByDatasetId(int datasetId)
+        {
+            ICriterion criterionDataset = Expression.Eq("GroupId", datasetId);
+            List<ICriterion> criterionList = new List<ICriterion>();
+            criterionList.Add(criterionDataset);
+
+            return FindByCriteria(criterionList);
+        }
     }
 
 }

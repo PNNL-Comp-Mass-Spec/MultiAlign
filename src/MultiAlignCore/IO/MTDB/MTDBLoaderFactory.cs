@@ -3,6 +3,7 @@ using System;
 using MultiAlignCore.Data.MassTags;
 using MultiAlignEngine.MassTags;
 using MultiAlignCore.IO.InputFiles;
+using PNNLOmics.Data.MassTags;
 
 namespace MultiAlignCore.IO.MTDB
 {
@@ -18,7 +19,6 @@ namespace MultiAlignCore.IO.MTDB
         /// <returns>The mass tag database.</returns>
         public static MassTagDatabase LoadMassTagDB(InputDatabase databaseDefinition, Algorithms.Options.MassTagDatabaseOptions options)            
         {
-            MassTagDatabase database = null;
             IMtdbLoader loader       = null;
 
             switch (databaseDefinition.DatabaseFormat)
@@ -46,8 +46,7 @@ namespace MultiAlignCore.IO.MTDB
             }
 
             loader.Options  = options;
-            database        = loader.LoadDatabase();            
-            return database;
+            return loader.LoadDatabase();                        
         }
     }
 }

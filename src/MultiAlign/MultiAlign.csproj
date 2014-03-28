@@ -86,10 +86,6 @@
     <Reference Include="OxyPlot.Xps">
       <HintPath>..\packages\OxyPlot.Wpf.2014.1.227.1\lib\NET45\OxyPlot.Xps.dll</HintPath>
     </Reference>
-    <Reference Include="PNNLOmics, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\PNNLOmics.dll</HintPath>
-    </Reference>
     <Reference Include="PNNLOmicsIO, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\PNNLOmicsIO.dll</HintPath>
@@ -169,6 +165,7 @@
     <Compile Include="Data\RecentAnalysis.cs" />
     <Compile Include="Data\StatusMessageWrapper.cs" />
     <Compile Include="Data\ThreadSafeDispatcher.cs" />
+    <Compile Include="ViewModels\Charting\ChargeHistogramViewModel.cs" />
     <Compile Include="ViewModels\Charting\ColorTypeIterator.cs" />
     <Compile Include="ViewModels\Charting\HistogramViewModel.cs" />
     <Compile Include="ViewModels\Charting\MarkerTypeIterator.cs" />
@@ -178,6 +175,8 @@
     <Compile Include="ViewModels\Charting\PositionArgs.cs" />
     <Compile Include="ViewModels\Charting\UmcClusterHistogram.cs" />
     <Compile Include="ViewModels\Charting\XicViewModel.cs" />
+    <Compile Include="ViewModels\Datasets\DatasetResolveCollectionViewModel.cs" />
+    <Compile Include="ViewModels\Datasets\DatasetResolveMatchViewModel.cs" />
     <Compile Include="ViewModels\Features\ChargeStateViewModel.cs" />
     <Compile Include="ViewModels\Instruments\InstrumentPresetFactory.cs" />
     <Compile Include="ViewModels\Features\SpectraSortOptions.cs" />
@@ -190,6 +189,7 @@
     <Compile Include="IO\SpectraLoader.cs" />
     <Compile Include="ViewModels\RecentAnalysisViewModel.cs" />
     <Compile Include="ViewModels\Viewers\ClusterViewModel.cs" />
+    <Compile Include="ViewModels\Viewers\GlobalStatisticsViewModel.cs" />
     <Compile Include="ViewModels\Wizard\AdvancedOptionsViewModel.cs" />
     <Compile Include="ViewModels\Wizard\AnalysisDatasetSelectionViewModel.cs" />
     <Compile Include="ViewModels\Wizard\AnalysisGraphNodeViewModel.cs" />
@@ -320,6 +320,9 @@
     </Compile>
     <Compile Include="Windows\Viewers\Datasets\DatasetPlotView.xaml.cs">
       <DependentUpon>DatasetPlotView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Viewers\Datasets\DatasetResolveView.xaml.cs">
+      <DependentUpon>DatasetResolveView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\Viewers\Datasets\DatasetsGrid.xaml.cs">
       <DependentUpon>DatasetsGrid.xaml</DependentUpon>
@@ -526,6 +529,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Windows\Viewers\Datasets\DatasetResolveView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\Viewers\Datasets\DatasetsGrid.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -671,6 +678,10 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\PNNLOmics\development\trunk\PNNLOmics\PNNLOmics.csproj">
+      <Project>{8a934dc1-3418-449f-adf6-9962499f49b2}</Project>
+      <Name>PNNLOmics</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MultiAlignCore\MultiAlignCore.csproj">
       <Project>{BDFA22C4-5822-4AA5-996E-6FDE57F7118B}</Project>
       <Name>MultiAlignCore</Name>

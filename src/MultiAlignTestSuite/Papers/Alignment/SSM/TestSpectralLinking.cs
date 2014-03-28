@@ -1,27 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using NUnit.Framework;
 using System.IO;
-using PNNLOmics.Data;
-using MultiAlignCore.IO.Features;
-using MultiAlignCore.Data;
-using MultiAlignCore.IO.InputFiles;
-using MultiAlignCore.Algorithms.FeatureFinding;
-using PNNLOmics.Data.Features;
-using MultiAlignCore.Extensions;
-using MultiAlignCore.Algorithms;
-using PNNLOmics.Algorithms.FeatureMatcher.MSnLinker;
+using System.Linq;
 using MultiAlignCore.Algorithms.Alignment;
-using PNNLOmics.Algorithms.SpectralProcessing;
+using MultiAlignCore.Algorithms.Options;
+using MultiAlignCore.Extensions;
+using NUnit.Framework;
 using PNNLOmics.Algorithms.SpectralComparisons;
+using PNNLOmics.Algorithms.SpectralProcessing;
 using PNNLOmics.Algorithms.Statistics;
 using PNNLOmics.Algorithms.Statistics.Distributions;
-using MultiAlignTestSuite.Papers.Alignment.SSM;
-using MultiAlignCore.Algorithms.Options;
+using PNNLOmics.Data;
+using PNNLOmics.Data.Features;
 
-namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
+namespace MultiAlignTestSuite.Papers.Alignment.SSM
 {
     [TestFixture]
     public class TestSpectralLinking: BaseSpectralAlignmentTest
@@ -81,9 +73,10 @@ namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
 
             Print("Aligning Features");
             // Align the features
-            IFeatureAligner aligner  = new LcmsWarpFeatureAligner();
-            AlignmentOptions options = new AlignmentOptions();
-            aligner.AlignFeatures(featuresX, featuresY, options);
+            var aligner  = new LcmsWarpFeatureAligner();
+            var options = new AlignmentOptions();
+            aligner.Options = options;
+            aligner.Align(featuresX, featuresY);
 
             Print("");
             Print("NET, NETAligned");
@@ -129,9 +122,10 @@ namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
             
             Print("Aligning Features");
             // Align the features
-            IFeatureAligner aligner  = new LcmsWarpFeatureAligner();
-            AlignmentOptions options = new AlignmentOptions();
-            aligner.AlignFeatures(baselineFeatures, aligneeFeatures, options);
+            var aligner     = new LcmsWarpFeatureAligner();
+            var options     = new AlignmentOptions();
+            aligner.Options = options;
+            aligner.Align(baselineFeatures, aligneeFeatures);
 
             PrintFeatureMsMsData(baselineFeatures);
             PrintFeatureMsMsData(aligneeFeatures);

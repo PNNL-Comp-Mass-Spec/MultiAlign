@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
-using MultiAlign.ViewModels;
+﻿using MultiAlign.ViewModels;
 
 namespace MultiAlign.Data.States
 {

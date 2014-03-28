@@ -1,4 +1,6 @@
 ﻿
+using PNNLOmics.Algorithms.FeatureClustering;
+
 namespace MultiAlignCore.Algorithms.FeatureFinding
 {
     public class FeatureFinderFactory
@@ -20,10 +22,5 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
 
             return finder;            
         }
-    }
-
-    public enum FeatureFinderType
-    {
-        TreeBased
     }
 }

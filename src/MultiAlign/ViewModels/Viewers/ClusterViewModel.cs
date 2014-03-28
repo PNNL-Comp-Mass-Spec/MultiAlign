@@ -120,7 +120,7 @@ namespace MultiAlign.ViewModels.Viewers
             }
         }
 
-        public UmcClusterHistogram ChargeHistogramModel
+        public UmcClusterChargeHistogram ChargeHistogramModel
         {
             get
             {
@@ -291,7 +291,7 @@ namespace MultiAlign.ViewModels.Viewers
         private string m_selectedFeatureName;
         private PlotModelBase m_model;
         private PlotModelBase m_parentSpectrumViewModel;
-        private UmcClusterHistogram m_chargeStateHistogramModel;
+        private UmcClusterChargeHistogram m_chargeStateHistogramModel;
 
 
         public PlotModelBase ParentSpectrumViewModel
@@ -313,7 +313,7 @@ namespace MultiAlign.ViewModels.Viewers
             // Grab the data from the cache            
             UpdatePlotsWithClusterData(cluster); 
 
-            ChargeHistogramModel = new UmcClusterHistogram(cluster.Cluster, "Charge State Histogram");
+            ChargeHistogramModel = new UmcClusterChargeHistogram(cluster.Cluster, "Charge State Histogram");
         }
         private void UpdateCharges(UMCLight feature)
         {

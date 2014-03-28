@@ -26,9 +26,12 @@ namespace MultiAlignCore.Algorithms
                 var spectra             = msFeatureMap[scan];
 
                 // This is probably a N to 1 thing (N = number of peptide id's)                
-                foreach (var peptide in potentialPeptides)                
-                    foreach (var spectrum in spectra)                                            
-                        spectrum.Peptides.Add(peptide);                 
+                foreach (var peptide in potentialPeptides)
+                    foreach (var spectrum in spectra)
+                    {
+                        spectrum.Peptides.Add(peptide);
+                        peptide.Spectrum = spectrum;
+                    }
             }
         }
     }

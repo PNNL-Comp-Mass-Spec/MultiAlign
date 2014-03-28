@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using NUnit.Framework;
 using PNNLOmics.Data;
 using MultiAlignCore.IO.Features;
@@ -14,7 +12,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
 {
 
     [TestFixture]
-    public class SpectralCacheUtility
+    public class SpectralCacheUtilityTests
     {
         /// <summary>
         /// Creates a cache file 

@@ -157,7 +157,7 @@
             CanUserSortColumns="True">
             <DataGrid.RowStyle>
                 <Style TargetType="DataGridRow">
-                        <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}"/>
+                        <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
                         <Style.Triggers>
                         <Trigger Property="IsSelected" Value="true">
                             <Setter Property="Background" Value="#FF3399FF"/>                            
@@ -178,7 +178,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn         Header="Dataset ID"      CanUserSort="True"     Binding="{Binding Path=Dataset.DatasetId}"    IsReadOnly="True"/>
+                <DataGridTextColumn         Header="Dataset ID"      CanUserSort="True"     Binding="{Binding Path=DatasetId}"    IsReadOnly="True"/>
                 <DataGridTextColumn         Header="Dataset Name"    CanUserSort="True"     Binding="{Binding Path=Dataset.DatasetName,   Converter={StaticResource ResourceKey=DatasetPathConverter}}"         IsReadOnly="True"/>
                 <DataGridTextColumn         Header="Instrument File" CanUserSort="True"     Binding="{Binding Path=Dataset.Raw.Path,      Converter={StaticResource ResourceKey=HasPathConverter}}"             IsReadOnly="True"/>
                 <DataGridTextColumn         Header="Sequence File"   CanUserSort="True"     Binding="{Binding Path=Dataset.Sequence.Path, Converter={StaticResource ResourceKey=HasPathConverter}}"             IsReadOnly="True"/>

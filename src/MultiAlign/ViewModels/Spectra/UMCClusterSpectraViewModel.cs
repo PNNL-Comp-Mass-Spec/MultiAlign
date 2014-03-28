@@ -73,6 +73,9 @@ namespace MultiAlign.ViewModels.Spectra
             if (cluster == null)
                 return;
 
+            //TODO: Make this a task!!!
+
+
             List<MSSpectra> spectra = cluster.Cluster.GetLoadedSpectra();
             m_maxMz        = 0.0;
             m_maxIntensity = 0.0;
@@ -109,7 +112,10 @@ namespace MultiAlign.ViewModels.Spectra
 
                 Spectra.Clear();
                 foreach (var x in temp)
-                    Spectra.Add(x);
+                {
+                    var newmodel = new MsSpectraViewModel(x.Spectrum);
+                    Spectra.Add(newmodel);
+                }
             }
             ));
 
@@ -121,7 +127,10 @@ namespace MultiAlign.ViewModels.Spectra
 
                 Spectra.Clear();
                 foreach (var x in temp)
-                    Spectra.Add(x);
+                {
+                    var newmodel = new MsSpectraViewModel(x.Spectrum);
+                    Spectra.Add(newmodel);
+                }
             }
             ));
 
@@ -130,9 +139,12 @@ namespace MultiAlign.ViewModels.Spectra
                 ObservableCollection<MsSpectraViewModel> temp = new ObservableCollection<MsSpectraViewModel>(
                         from x in Spectra orderby x.Spectrum.PrecursorMZ select x);
 
-                Spectra.Clear();
+                Spectra.Clear(); 
                 foreach (var x in temp)
-                    Spectra.Add(x);
+                {
+                    var newmodel = new MsSpectraViewModel(x.Spectrum);
+                    Spectra.Add(newmodel);
+                }
             }
             ));
 
@@ -142,9 +154,13 @@ namespace MultiAlign.ViewModels.Spectra
                 ObservableCollection<MsSpectraViewModel> temp = new ObservableCollection<MsSpectraViewModel>(
                         from x in Spectra orderby x.Spectrum.RetentionTime select x);
 
+                
                 Spectra.Clear();
                 foreach (var x in temp)
-                    Spectra.Add(x);
+                {
+                    var newmodel = new MsSpectraViewModel(x.Spectrum);
+                    Spectra.Add(newmodel);
+                }
             }
             ));
 

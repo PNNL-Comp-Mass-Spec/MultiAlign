@@ -77,13 +77,12 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\$(Platform)\Mage.dll</HintPath>
     </Reference>
+    <Reference Include="MathNet.Numerics">
+      <HintPath>..\..\lib\MathNet.Numerics.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.6.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="PNNLOmics, Version=1.0.5176.20116, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\PNNLOmics.dll</HintPath>
     </Reference>
     <Reference Include="ThermoRawFileReaderDLL, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -137,6 +136,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Algorithms\AlgorithmProvider.cs" />
+    <Compile Include="Algorithms\Alignment\FeatureAlignmentType.cs" />
+    <Compile Include="Algorithms\Alignment\SpectralAlignerWrapper.cs" />
+    <Compile Include="Algorithms\ClusterFactory.cs" />
+    <Compile Include="Algorithms\FeatureFinding\FeatureFinderType.cs" />
     <Compile Include="Algorithms\FeatureFinding\UMCTreeFeatureFinder.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -144,11 +147,8 @@
     <Compile Include="Algorithms\Alignment\DriftTimeAligner.cs" />
     <Compile Include="Algorithms\Alignment\DummyAlignment.cs" />
     <Compile Include="Algorithms\Alignment\FeatureAlignerFactory.cs" />
-    <Compile Include="Algorithms\Alignment\MsMsAligner.cs" />
-    <Compile Include="Algorithms\Alignment\MSMSSpectralClusterer.cs" />
     <Compile Include="Algorithms\Alignment\DriftTimeAlignmentOptions.cs" />
     <Compile Include="Algorithms\Alignment\LCMSWarpFeatureAligner.cs" />
-    <Compile Include="Algorithms\Alignment\IFeatureAligner.cs" />
     <Compile Include="Algorithms\AlgorithmBuilder.cs" />
     <Compile Include="Algorithms\AnalysisController.cs" />
     <Compile Include="Algorithms\AnalysisGraph.cs" />
@@ -160,21 +160,19 @@
     <Compile Include="Algorithms\AnalysisValidator.cs" />
     <Compile Include="Algorithms\Clustering\ClusteringOptions.cs" />
     <Compile Include="Algorithms\Clustering\MsnClusterer.cs" />
-    <Compile Include="Algorithms\Clustering\ClusteringAlgorithmType.cs" />
     <Compile Include="Algorithms\DelegateAnalysisMethod.cs" />
     <Compile Include="Algorithms\FilterRange.cs" />
-    <Compile Include="Algorithms\Options\LcmsFeatureFindingOptions.cs" />
     <Compile Include="Algorithms\Options\MultiAlignAnalysisOptions.cs" />
-    <Compile Include="Algorithms\Options\LcmsClusteringOptions.cs" />
     <Compile Include="Algorithms\Options\LcmsFeatureFilteringOptions.cs" />
     <Compile Include="Algorithms\Options\MassTagDatabaseOptions.cs" />
     <Compile Include="Algorithms\Options\MsFeatureFilteringOptions.cs" />
+    <Compile Include="Data\MetaData\SupportedDatasetType.cs" />
+    <Compile Include="Extensions\GenericExtensions.cs" />
     <Compile Include="IO\FeatureCache.cs" />
     <Compile Include="Algorithms\FeatureFinding\AbundanceReportingType.cs" />
     <Compile Include="Algorithms\FeatureFinding\FeatureEvaluator.cs" />
     <Compile Include="Algorithms\FeatureFinding\FeatureFinderFactory.cs" />
     <Compile Include="Algorithms\FeatureFinding\ILcmsFeatureRefinement.cs" />
-    <Compile Include="Algorithms\FeatureFinding\IFeatureFinder.cs" />
     <Compile Include="Algorithms\Options\STACOptions.cs" />
     <Compile Include="Algorithms\FeatureMatcher\PeakMatchingType.cs" />
     <Compile Include="Algorithms\FeatureMatcher\STAC.cs" />
@@ -229,7 +227,6 @@
     <Compile Include="Data\Factors\TreeNode.cs" />
     <Compile Include="Data\Factors\TreeNodeConverter.cs" />
     <Compile Include="Data\Features\LCMSFeatureFilters.cs" />
-    <Compile Include="Data\MassTags\MassTagDatabase.cs" />
     <Compile Include="Data\MassTags\MassTagDatabaseFormat.cs" />
     <Compile Include="Data\MassTagToProteinMap.cs" />
     <Compile Include="Data\MSFeatureToMSnFeatureMap.cs" />
@@ -334,7 +331,6 @@
     <Compile Include="IO\InputFiles\DatabaseDatasetIDLoader.cs" />
     <Compile Include="IO\InputFiles\DatabaseDatasetLoader.cs" />
     <Compile Include="IO\InputFiles\DelegatesLoading.cs" />
-    <Compile Include="IO\InputFiles\DiskDatasetLoader.cs" />
     <Compile Include="IO\InputFiles\DMSDatasetSearchOptions.cs" />
     <Compile Include="IO\InputFiles\InputAnalysisInfo.cs" />
     <Compile Include="IO\InputFiles\InputDatabase.cs" />
@@ -368,13 +364,10 @@
     <Compile Include="Data\Alignment\classAlignmentData.cs" />
     <Compile Include="Data\MetaData\clsDMSServerInformation.cs" />
     <Compile Include="Data\Factors\FactorDefinitions.cs" />
-    <Compile Include="Data\MassTags\clsMassTags.cs" />
     <Compile Include="IO\SequenceData\MAGEDatabaseSearchAdaptor.cs" />
     <Compile Include="Data\SequenceData\SequenceToMsnFeature.cs" />
     <Compile Include="IO\SequenceData\SequestFirstHitSink.cs" />
     <Compile Include="Data\Features\ClusterStats.cs" />
-    <Compile Include="Math\FitFunctions.cs" />
-    <Compile Include="Math\Loess.cs" />
     <Compile Include="Math\MathUtilities.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -430,6 +423,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\PNNLOmics\development\trunk\PNNLOmics\PNNLOmics.csproj">
+      <Project>{8a934dc1-3418-449f-adf6-9962499f49b2}</Project>
+      <Name>PNNLOmics</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

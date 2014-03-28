@@ -12,13 +12,16 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
     /// <summary>
     /// Finds UMC features based on m/z and uses a tree approach
     /// </summary>
-    public class UmcTreeFeatureFinder: IFeatureFinder 
-    {        
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        public UmcTreeFeatureFinder()
-        {            
+    public class UmcTreeFeatureFinder: IFeatureFinder
+    {
+        public event EventHandler<ProgressNotifierArgs> Progress;
+
+        private void OnStatus(string message)
+        {
+            if (Progress != null)
+            {
+                Progress(this, new ProgressNotifierArgs(message));
+            }
         }
 
         /// <summary>
@@ -43,6 +46,10 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
                             };
 
             clusterer.SpectraProvider = provider;
+
+            OnStatus("Starting cluster definition");
+            clusterer.Progress += (sender, args) => OnStatus(args.Message);
+
             var features  = clusterer.Cluster(msFeatures);
 
             var minScan = int.MaxValue;
@@ -76,5 +83,6 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
         /// Gets or sets the maximum scan values any two deisotoped peaks can be before they are not considered to be from the same feature.
         /// </summary>
         public int MaximumScan { get; set; }
+
     }
 }

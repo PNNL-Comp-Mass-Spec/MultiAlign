@@ -17,6 +17,10 @@ namespace MultiAlign.ViewModels.Charting
         public MsFeatureSpectraViewModel(MSFeatureLight feature, IEnumerable<XYData> spectrum, string name)            
             : base(name)
         {
+
+            MsmsDistanceLower = 1.5;
+            MsmsDistanceUpper = 1.5;
+
             var mzAxis = new LinearAxis
             {
                 Position = AxisPosition.Bottom,
@@ -39,6 +43,7 @@ namespace MultiAlign.ViewModels.Charting
 
             m_mzAxis = mzAxis;
             PlotSpectra(feature, spectrum);
+
         }
 
         public void SetXExtrema(double minimumX, double maximumY)
@@ -70,6 +75,7 @@ namespace MultiAlign.ViewModels.Charting
                 series.Points.Add(new DataPoint(peak.X, peak.Y));
             }
 
+            var maxAbundanceTop = maxAbundance*.5;
 
             Model.Axes[0].AbsoluteMinimum = minimumMz;
             Model.Axes[0].AbsoluteMaximum = maximumMz;
@@ -159,22 +165,45 @@ namespace MultiAlign.ViewModels.Charting
                         Model.Annotations.Add(spaceAnnotation);
 
 
-                        //var spaceAnnotation = new LineAnnotation
-                        //{
-                        //    Type = LineAnnotationType.Vertical,
-                        //    Color = OxyColors.Gray,
-                        //    TextColor = OxyColors.Gray,
-                        //    FontWeight = 3,
-                        //    TextVerticalAlignment = VerticalAlignment.Top,
-                        //    TextPosition = 1,
-                        //    StrokeThickness = 2,
-                        //    Text = string.Format("msms {0} - scan {1}", fragmentation.PrecursorMZ.ToString("F2"), fragmentation.Scan),
-                        //    X = fragmentation.PrecursorMZ - MSMSDistance
-                        //};
-                        //Model.Annotations.Add(spaceAnnotation);
+                        var lowerMz = new LineAnnotation
+                        {
+                            Type                    = LineAnnotationType.Horizontal,
+                            Color                   = OxyColors.LightGray,
+                            TextColor               = OxyColors.LightGray,
+                            FontWeight              = 3,
+                            TextVerticalAlignment   = VerticalAlignment.Top,
+                            TextPosition            = 1,
+                            StrokeThickness         = 2,
+                            Y                       = maxAbundanceTop,
+                            Text                    = string.Format("{0} m/z", MsmsDistanceLower.ToString("F2")),
+                            MinimumX                = fragmentation.PrecursorMZ - MsmsDistanceLower,                            
+                            MaximumX                = fragmentation.PrecursorMZ
+                        };
+
+                        var upperMz = new LineAnnotation
+                        {
+                            Type                    = LineAnnotationType.Horizontal,
+                            Color                   = OxyColors.LightGray,
+                            TextColor               = OxyColors.LightGray,
+                            FontWeight              = 3,
+                            TextVerticalAlignment   = VerticalAlignment.Top,
+                            TextPosition            = 1,
+                            StrokeThickness         = 2,
+                            Text                    = string.Format("{0} m/z", MsmsDistanceUpper.ToString("F2")),
+                            Y                       = maxAbundanceTop,
+                            MinimumX                = fragmentation.PrecursorMZ,
+                            MaximumX                = fragmentation.PrecursorMZ + MsmsDistanceUpper
+                        };
+                        Model.Annotations.Add(spaceAnnotation);
+                        Model.Annotations.Add(upperMz);
+                        Model.Annotations.Add(lowerMz);
                     }
                 }
             }
         }
+
+        public double MsmsDistanceLower { get; set; }
+
+        public double MsmsDistanceUpper { get; set; }
     }
 }

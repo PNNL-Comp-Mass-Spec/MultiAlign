@@ -1,15 +1,7 @@
-using System;
-using System.Collections.Generic;
-
-using MultiAlignCore.Data;
-using MultiAlignEngine.Features;
-using MultiAlignEngine.MassTags;
-using MultiAlignEngine.PeakMatching;
-
-using MultiAlignCore.Data.MassTags;
+using PNNLOmics.Algorithms;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Data.MassTags;
-using PNNLOmics.Algorithms;
+using System.Collections.Generic;
 
 namespace MultiAlignCore.Algorithms.FeatureMatcher
 {

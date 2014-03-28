@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using MultiAlignCore.Data;
-using System.Windows.Input;
-using System.Windows;
+﻿using MultiAlign.ViewModels;
 using MultiAlign.Windows.Viewers.Datasets;
-using MultiAlign.ViewModels;
 using MultiAlignCore.Data.MetaData;
+using System;
+using System.Windows;
+using System.Windows.Input;
 
 namespace MultiAlign.Commands.Datasets
 {
@@ -33,21 +29,16 @@ namespace MultiAlign.Commands.Datasets
         /// <param name="parameter"></param>
         public void Execute(object parameter)
         {
-            DatasetInformation information = parameter as DatasetInformation;
+            var information = parameter as DatasetInformationViewModel;
 
-            if (information != null)
-            {
-                Window newWindow    = new Window();
-                newWindow.Width     = 650;
-                newWindow.Height    = 350;
+            if (information == null) return;
+            var newWindow    = new Window {Width = 650, Height = 350};
 
-                DatasetInputFileEditor viewer   = new DatasetInputFileEditor();
-                viewer.DataContext              = new DatasetInformationViewModel(information);
-                newWindow.Content               = viewer;
-                newWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            var viewer   = new DatasetInputFileEditor {DataContext = information};
+            newWindow.Content               = viewer;
+            newWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
 
-                newWindow.ShowDialog();
-            }
+            newWindow.ShowDialog();
         }
     }
 }

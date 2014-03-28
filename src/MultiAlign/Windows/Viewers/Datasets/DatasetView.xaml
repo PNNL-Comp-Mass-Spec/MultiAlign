@@ -21,6 +21,7 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="48"/>
+                    <RowDefinition Height="48"/>
                 </Grid.RowDefinitions>
                 <CheckBox Foreground="Gray" VerticalAlignment="Center" IsChecked="{Binding Path=IsExpandAllImages}">Expand All Images</CheckBox>
                 <StackPanel                                        
@@ -68,7 +69,17 @@
                             />
                     </Grid>
                 </Border>
-                </Grid>
+                <Button
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Style="{DynamicResource SimpleButtonStyle}"
+                    Width="128"
+                    ToolTip="If you moved your raw files, this will help find them."
+                    Command="{Binding ReconcilePathsCommand}"
+                    Grid.Row="3" >
+                   Reconcile Paths
+                </Button>
+           </Grid>
         </TabItem>
         <TabItem
             Header="Factors"

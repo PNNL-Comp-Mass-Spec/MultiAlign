@@ -20,7 +20,7 @@ namespace MultiAlignCore.IO.MTDB
         public string DatabasePath { get; private set; }
 
         #region IMtdbLoader Members
-        public Data.MassTags.MassTagDatabase LoadDatabase()
+        public MassTagDatabase LoadDatabase()
         {
             MassTagDatabase database                    = new MassTagDatabase();
             List<MassTagLight> massTags                 = new List<MassTagLight>();

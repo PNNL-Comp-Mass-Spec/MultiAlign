@@ -191,5 +191,31 @@ namespace MultiAlignCore.IO.Features.Hibernate
                 connection.Close();
             }
         }
+
+        public IEnumerable<int> RetrieveChargeStates()
+        {
+            var charges = new List<int>();
+            using (var connection = new SQLiteConnection("Data Source=" + NHibernateUtil.Path))
+            {
+                connection.Open();
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandType = System.Data.CommandType.Text;
+                    command.CommandText = "SELECT Charge FROM T_LCMS_Features";
+                    var reader = command.ExecuteReader();
+
+                    if (reader != null)
+                    {
+                        while (reader.Read())
+                        {
+                            var charge = reader.GetInt32(0);
+                            charges.Add(charge);
+                        }
+                    }
+                }
+                connection.Close();
+            }
+            return charges;
+        }
     }
 }

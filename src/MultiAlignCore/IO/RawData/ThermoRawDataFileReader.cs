@@ -22,7 +22,7 @@ namespace MultiAlignCore.IO.Features
         /// <summary>
         /// Gets or sets the map 
         /// </summary>
-        private Dictionary<int, DatasetSummary> m_datasetMetaData;
+        private readonly Dictionary<int, DatasetSummary> m_datasetMetaData;
 
         public ThermoRawDataFileReader()
         {
@@ -31,7 +31,27 @@ namespace MultiAlignCore.IO.Features
             m_readers   = new Dictionary<int,XRawFileIO>();
             m_opened    = new Dictionary<int,bool>();
         }
-       
+
+        public int GetTotalScans(int group)
+        {
+            if (!m_readers.ContainsKey(group))
+            {
+                var reader  = new XRawFileIO();
+                m_readers.Add(group, reader);
+            }
+
+            XRawFileIO rawReader = m_readers[group];
+            if (!m_opened[group])
+            {
+                var opened = rawReader.OpenRawFile(m_dataFiles[group]);
+                if (!opened)
+                {
+                    throw new IOException("Could not open the Thermo raw file " + m_dataFiles[group]);
+                }
+            }
+            return rawReader.GetNumScans();
+        }
+
         /// <summary>
         /// Adds a dataset file to the reader map so when in use the application
         /// knows where to get raw data from.
@@ -76,7 +96,7 @@ namespace MultiAlignCore.IO.Features
         /// <returns>List of MSMS spectra data</returns>        
         public List<MSSpectra> GetMSMSSpectra(int group, Dictionary<int, int> excludeMap, bool loadPeaks)
         {
-            List<MSSpectra> spectra = new List<MSSpectra>();
+            var spectra = new List<MSSpectra>();
 
             if (!m_readers.ContainsKey(group))
             {
@@ -86,7 +106,7 @@ namespace MultiAlignCore.IO.Features
                 
             }
 
-            XRawFileIO rawReader = m_readers[group];
+            var rawReader = m_readers[group];
             if (!m_opened[group])
             {
                 bool opened = rawReader.OpenRawFile(m_dataFiles[group]);

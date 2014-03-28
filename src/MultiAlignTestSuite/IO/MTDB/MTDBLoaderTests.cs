@@ -27,10 +27,8 @@ namespace MultiAlignTestSuite.IO.MTDB
 
             MassTagDatabaseLoader   loader      = new MTSMassTagDatabaseLoader(databaseName, server);
             loader.Options                      = analysis.Options.MassTagDatabaseOptions;
-            MassTagDatabase         database    = loader.LoadDatabase();
-
-            bool containsDriftTime = database.DoesContainDriftTime;
-
+            var         database                = loader.LoadDatabase();
+            
             foreach(MassTagLight tag in database.MassTags)
             {
                 Assert.IsTrue(tag.DriftTime > 0);

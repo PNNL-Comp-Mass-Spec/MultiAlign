@@ -21,7 +21,7 @@ namespace MultiAlign.ViewModels.Charting
             };
 
             // Count axis
-            var linearAxis = new LinearAxis(AxisPosition.Left, minimum: 0)
+            var linearAxis = new LinearAxis(AxisPosition.Left, 0)
             {
                 AbsoluteMinimum = 0,
                 MinimumPadding = 1,
@@ -33,7 +33,12 @@ namespace MultiAlign.ViewModels.Charting
 
 
             // Add the data to the view model
-            var data = new ColumnSeries { ValueField = "Value" };
+            var data = new ColumnSeries
+            {
+                ValueField = "Value",
+                LabelFormatString = "{0}"
+            };
+
             foreach (var key in histogram.Keys)
             {
                 axis.Labels.Add(key.ToString());
@@ -45,5 +50,5 @@ namespace MultiAlign.ViewModels.Charting
             m_yAxis = linearAxis;
             Model.Series.Add(data);
         }
-    }
+    }   
 }

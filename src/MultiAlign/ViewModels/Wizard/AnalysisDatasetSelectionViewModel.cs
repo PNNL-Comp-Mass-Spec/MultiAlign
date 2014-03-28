@@ -1,34 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using MultiAlign.Commands;
+using MultiAlign.Commands.Datasets;
+using MultiAlign.Data;
+using MultiAlign.IO;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO.InputFiles;
-using System.Windows.Forms;
-using System.IO;
-using System.Windows.Input;
-using System.Windows;
-using MultiAlign.Data;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using MultiAlign.Commands.Datasets;
-using MultiAlign.IO;
-using MultiAlign.Commands;
+using System.IO;
+using System.Linq;
+using System.Windows.Forms;
+using System.Windows.Input;
 
 namespace MultiAlign.ViewModels.Wizard
 {
     public class AnalysisDatasetSelectionViewModel: ViewModelBase 
     {
 
-        private System.Windows.Forms.OpenFileDialog m_openFileDialog;
+        private readonly OpenFileDialog m_openFileDialog;
         DmsDatabaseServerViewModel m_selectedDmsDatabase;
 
         MultiAlignAnalysis m_analysis;
         private InputAnalysisInfo m_analysisInput;
         private string m_folderPath;
         private Dictionary<InputFileType, string> m_filterMap = new Dictionary<InputFileType, string>();
-        private string m_inputFileFilter;
-        private string m_featureFileFilter;
+        private readonly string m_inputFileFilter;
+        private readonly string m_featureFileFilter;
         private string m_singleFilePath;
         private string m_inputFilePath;
         private SearchOption m_shouldSearchSubdirectories;
@@ -36,9 +34,8 @@ namespace MultiAlign.ViewModels.Wizard
         public AnalysisDatasetSelectionViewModel(MultiAlignAnalysis analysis)
         {
             m_inputFileFilter            = "Input Files (*.txt)| *.txt| All Files (*.*)|*.*";
-            m_featureFileFilter          = DatasetFilterFactory.BuildFileFilters(MultiAlignCore.IO.InputFiles.InputFileType.Features);
-            m_openFileDialog             = new OpenFileDialog();
-            m_openFileDialog.Filter      = m_inputFileFilter;            
+            m_featureFileFilter          = DatasetFilterFactory.BuildFileFilters(InputFileType.Features);
+            m_openFileDialog             = new OpenFileDialog {Filter = m_inputFileFilter};
             m_analysis                   = analysis;
             ShouldSearchSubDirectories   = SearchOption.TopDirectoryOnly;
 
@@ -47,25 +44,24 @@ namespace MultiAlign.ViewModels.Wizard
             Datasets = new ObservableCollection<DatasetInformationViewModel>();
             foreach (var information in analysis.MetaData.Datasets)
             {
-                DatasetInformationViewModel info = new DatasetInformationViewModel(information);
-                info.Selected                   += new EventHandler(info_Selected);
+                var info = new DatasetInformationViewModel(information);
+                info.Selected                   += info_Selected;
                 Datasets.Add(info);
             }
             
 
             // Route the events here...
-            AddFolderCommand        = new BaseCommandBridge(new CommandDelegate(AddFolderDelegate));
-            AddInputFileCommand     = new BaseCommandBridge(new CommandDelegate(AddInputFileDelegate));
-            AddSingleFileCommand    = new BaseCommandBridge(new CommandDelegate(AddSingleFileDelegate));
+            AddFolderCommand        = new BaseCommandBridge(AddFolderDelegate);
+            AddInputFileCommand     = new BaseCommandBridge(AddInputFileDelegate);
+            AddSingleFileCommand    = new BaseCommandBridge(AddSingleFileDelegate);
             
-            BrowseSingleFileCommand = new BaseCommandBridge(new CommandDelegate(BrowseSingleFile));
-            BrowseInputFileCommand  = new BaseCommandBridge(new CommandDelegate(BrowseInput));
-            BrowseFolderCommand     = new BrowseFolderCommand((string x) => { FolderPath = x; });
+            BrowseSingleFileCommand = new BaseCommandBridge(BrowseSingleFile);
+            BrowseInputFileCommand  = new BaseCommandBridge(BrowseInput);
+            BrowseFolderCommand     = new BrowseFolderCommand(x => { FolderPath = x; });
 
-            RemoveSelectedCommand   = new BaseCommandBridge(new CommandDelegate(RemoveSelected));
-            SelectAllCommand        = new BaseCommandBridge(new CommandDelegate(SelectAllDelegate));
-            SelectNoneCommand       = new BaseCommandBridge(new CommandDelegate(SelectNoneDelegate));
-            ModifyDatasetCommand    = new ShowDatasetDetailCommand();
+            RemoveSelectedCommand   = new BaseCommandBridge(RemoveSelected);
+            SelectAllCommand        = new BaseCommandBridge(SelectAllDelegate);
+            SelectNoneCommand       = new BaseCommandBridge(SelectNoneDelegate);
 
             SelectedDatasets = new ObservableCollection<DatasetInformationViewModel>();
         }
@@ -115,13 +111,8 @@ namespace MultiAlign.ViewModels.Wizard
         /// <param name="parameter"></param>
         private void RemoveSelected(object parameter)
         {
-            List<DatasetInformationViewModel> datasets = new List<DatasetInformationViewModel>();
-            foreach (var dataset in Datasets)
-            {
-                if (dataset.IsSelected)
-                    datasets.Add(dataset);
-            }
-            
+            var datasets = Datasets.Where(dataset => dataset.IsSelected).ToList();
+
 
             foreach (var dataset in datasets)
             {
@@ -132,7 +123,7 @@ namespace MultiAlign.ViewModels.Wizard
             int id = 0;
             foreach (var info in Datasets)
             {
-                info.Dataset.DatasetId = id++;
+                info.DatasetId = id++;
             }
 
             OnPropertyChanged("SelectedCount");
@@ -165,25 +156,25 @@ namespace MultiAlign.ViewModels.Wizard
         /// <param name="parameter"></param>
         private void AddFolderDelegate(object parameter)
         {
-            List<SupportedDatasetType> supportedTypes = DatasetInformation.SupportedFileTypes;
-            List<string> extensions = new List<string>();
+            var supportedTypes = DatasetInformation.SupportedFileTypes;
+            var extensions = new List<string>();
 
             supportedTypes.ForEach(x => extensions.Add("*" + x.Extension));
 
-            System.IO.SearchOption option = ShouldSearchSubDirectories;
+            var option = ShouldSearchSubDirectories;
             if (FolderPath == null)
             {
                 ApplicationStatusMediator.SetStatus("The directory specified does not exist.");
                 return;
             }
 
-            if (!System.IO.Directory.Exists(FolderPath))
+            if (!Directory.Exists(FolderPath))
             {
                 ApplicationStatusMediator.SetStatus("The directory specified does not exist.");
                 return;
             }
 
-            List<InputFile> files = DatasetSearcher.FindDatasets(FolderPath,
+            var files = DatasetSearcher.FindDatasets(FolderPath,
                                         extensions,
                                         option);
             AddDatasets(files);
@@ -194,13 +185,13 @@ namespace MultiAlign.ViewModels.Wizard
         /// <param name="parameter"></param>
         private void AddInputFileDelegate(object parameter)
         {
-            bool fileExists = System.IO.File.Exists(InputFilePath);
+            bool fileExists = File.Exists(InputFilePath);
             if (fileExists)
             {
                 // Read input files
                 try
                 {
-                    InputAnalysisInfo info = MultiAlignFileInputReader.ReadInputFile(InputFilePath);
+                    var info = MultiAlignFileInputReader.ReadInputFile(InputFilePath);
                     AddDatasets(info.Files);
                 }
                 catch
@@ -219,7 +210,7 @@ namespace MultiAlign.ViewModels.Wizard
         /// <param name="parameter"></param>
         private void AddSingleFileDelegate(object parameter)
         {
-            bool fileExists = System.IO.File.Exists(SingleFilePath);
+            bool fileExists = File.Exists(SingleFilePath);
 
             if (fileExists)
             {
@@ -237,12 +228,9 @@ namespace MultiAlign.ViewModels.Wizard
                     return;
                 }
 
-                InputFile file  = new InputFile();
-                file.Path       = SingleFilePath;
-                file.FileType   = type;
+                var file  = new InputFile {Path = SingleFilePath, FileType = type};
 
-                List<InputFile> inputs = new List<InputFile>();
-                inputs.Add(file);
+                var inputs = new List<InputFile> {file};
 
                 AddDatasets(inputs);
             }
@@ -407,14 +395,13 @@ namespace MultiAlign.ViewModels.Wizard
         /// <summary>
         /// Adds the list of input files into the analysis configuration.
         /// </summary>
-        /// <param name="information"></param>
         private void AddDatasets(List<InputFile> information)
         {
             List<DatasetInformation> datasets = Analysis.MetaData.AddInputFiles(information);
             foreach (DatasetInformation info in datasets)
             {
-                DatasetInformationViewModel infoViewModel = new DatasetInformationViewModel(info);
-                infoViewModel.Selected += new EventHandler(info_Selected);
+                var infoViewModel = new DatasetInformationViewModel(info);
+                infoViewModel.Selected += info_Selected;
                 Datasets.Add(infoViewModel);
             }
         }

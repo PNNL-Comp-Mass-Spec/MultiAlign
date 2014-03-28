@@ -55,9 +55,33 @@ namespace MultiAlignCore.Extensions
             return map;
         }
 
-        public static Dictionary<double, int> BuildChargeStateHistogram(this UMCClusterLight cluster)
+
+        public static Dictionary<int, int> BuildChargeStateHistogram(this IEnumerable<UMCClusterLight> clusters)
         {
-            var chargeHistogram = new Dictionary<double, int>();
+            var chargeHistogram = new Dictionary<int, int>();
+            for (var i = 1; i < 10; i++)
+            {
+                chargeHistogram.Add(i, 0);
+            }
+            foreach (var cluster in clusters)
+            {
+                foreach (var feature in cluster.Features)
+                {
+                    var chargeMap = feature.CreateChargeMap();
+                    foreach (var chargeDouble in chargeMap.Keys)
+                    {                     
+                        if (!chargeHistogram.ContainsKey(chargeDouble))
+                            chargeHistogram.Add(chargeDouble, 0);
+                        chargeHistogram[chargeDouble] = chargeHistogram[chargeDouble] + 1;
+                    }
+                }
+            }
+            return chargeHistogram;
+        }
+
+        public static Dictionary<int, int> BuildChargeStateHistogram(this UMCClusterLight cluster)
+        {
+            var chargeHistogram = new Dictionary<int, int>();
             for (var i = 1; i < 10; i++)
             {
                 chargeHistogram.Add(i, 0);
@@ -67,10 +91,9 @@ namespace MultiAlignCore.Extensions
                 var chargeMap = feature.CreateChargeMap();
                 foreach (var charge in chargeMap.Keys)
                 {
-                    var chargeDouble = Convert.ToDouble(charge);
-                    if (!chargeHistogram.ContainsKey(chargeDouble))
-                        chargeHistogram.Add(chargeDouble, 0);
-                    chargeHistogram[chargeDouble] = chargeHistogram[chargeDouble] + 1;
+                    if (!chargeHistogram.ContainsKey(charge))
+                        chargeHistogram.Add(charge, 0);
+                    chargeHistogram[charge] = chargeHistogram[charge] + 1;
                 }
             }
             return chargeHistogram;

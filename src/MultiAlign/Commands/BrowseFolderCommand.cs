@@ -45,7 +45,7 @@ namespace MultiAlign.Commands
                 string path = m_folderBrowser.SelectedPath;
                 string name = "";
 
-                RecentAnalysis newAnalysis = new RecentAnalysis(path, name);
+                var newAnalysis = new RecentAnalysis(path, name);
                 if (FolderSelected != null)
                 {
                     FolderSelected(this, new OpenAnalysisArgs(newAnalysis));

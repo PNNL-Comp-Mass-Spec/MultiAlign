@@ -1,23 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using MultiAlignCore.IO.Features;
-using MultiAlignCore.MathUtilities;
-using MultiAlignTestSuite.Papers.Alignment.Data;
+﻿using MultiAlignCore.IO.Features;
 using MultiAlignTestSuite.Papers.Alignment.IO;
-using MultiAlignTestSuite.Papers.Alignment.SSM;
 using NUnit.Framework;
 using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
 using OxyPlot.WindowsForms;
+using PNNLOmics.Algorithms.Alignment.SpectralMatches;
+using PNNLOmics.Algorithms.Alignment.SpectralMatching;
+using PNNLOmics.Algorithms.Regression;
 using PNNLOmics.Algorithms.SpectralProcessing;
 using PNNLOmics.Data;
-using PNNLOmicsIO.IO;
 using PNNLOmics.Data.Features;
+using PNNLOmics.Utilities;
+using PNNLOmicsIO.IO;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Windows.Forms;
 
 namespace MultiAlignTestSuite.Papers.Alignment
 {
@@ -224,7 +224,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
             Console.WriteLine(@"Large Scale Test For {0}", directory);
 
             var cacheFiles = Directory.GetFiles(directory, "*.mscache");
-            var msgfFiles = Directory.GetFiles(directory, "*_msgfdb_fht.txt");
+            var msgfFiles  = Directory.GetFiles(directory, "*_msgfdb_fht.txt");
 
             Console.WriteLine(@"Building data cache");
             var map = cacheFiles.ToDictionary<string, string, PathCache>(path => path.ToLower(), path => null);
@@ -293,137 +293,19 @@ namespace MultiAlignTestSuite.Papers.Alignment
 
                             var names = new List<string> {data[i].Cache, data[j].Cache};
 
-                            var analysis = MatchDatasets(cacheReaderX,
-                                cacheReaderY,
-                                datasetX,
-                                datasetY,
-                                names,
-                                options, true);
+                            var analysis = MatchDatasets(comparerType,
+                                                         cacheReaderX,
+                                                         cacheReaderY,
+                                                         options,
+                                                         datasetX,
+                                                         datasetY,
+                                                         names);
                             writer.Write(analysis);
                         }
                     }
                 }
             }
         }
-
-        //[Test(Description = "Figure 2: Computes the NET / MASS Error Distributions for pre-post ")]
-        //[TestCase(@"QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32",
-        //    @"QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32",
-        //    SpectralComparison.CosineDotProduct,
-        //    .5, // m/z
-        //    .15, // NET          
-        //    .6, // SSM similarity score,
-        //    1e-15, // MSGF+ Score
-        //    .1, // Peptide FDR
-        //    .5)] // Ion Percent
-        //public void GenerateFigure2_peptideMatches(string rawNameX,
-        //    string rawNameY,
-        //    SpectralComparison comparerType,
-        //    double mzTolerance,
-        //    double netTolerance,
-        //    double similarityScoreCutoff,
-        //    double peptideScore,
-        //    double peptideFdr,
-        //    double ionPercent)
-        //{
-        //    Console.WriteLine(@"Creating Figure 2: {2}, Test: {0}	Compared To	{1}", rawNameX, rawNameY, comparerType);
-
-        //    // Create alignment datasets 
-        //    var datasetX = new AlignmentDataset(m_basePath, rawNameX);
-        //    var datasetY = new AlignmentDataset(m_basePath, rawNameY);
-
-        //    // The options for the analysis 
-        //    var options = new SpectralOptions
-        //    {
-        //        MzTolerance = mzTolerance,
-        //        NetTolerance = netTolerance,
-        //        SimilarityCutoff = similarityScoreCutoff,
-        //        TopIonPercent = ionPercent,
-        //        IdScore = peptideScore,
-        //        ComparerType = comparerType
-        //    };
-
-        //    // Then the writer for creating a report
-        //    var writer = AlignmentAnalysisWriterFactory.Create(AlignmentFigureType.Figure2,"Figure2");
-
-
-        //    // Create an action to load and align the feature data.
-        //    var features = new AlignedFeatureData();
-        //    var aligner = new FeatureAligner();
-        //    var loader = new FeatureLoader();
-        //    Action loadingAction = delegate
-        //    {
-        //        features.Baseline = loader.LoadFeatures(datasetX.FeatureFile);
-        //        features.Alignee = loader.LoadFeatures(datasetY.FeatureFile);
-        //        features = aligner.AlignFeatures(features.Baseline,
-        //            features.Alignee,
-        //            options);
-        //    };
-
-
-        //    // Creates an action to load the peptide data on a separate task
-        //    // Find the anchor point matches based on peptide sequences
-        //    ISequenceFileReader reader = PeptideReaderFactory.CreateReader(SequenceFileType.MSGF);
-        //    IEnumerable<AnchorPointMatch> peptideMatches = null;
-        //    Action peptideLoadingAction = delegate
-        //    {
-        //        IEnumerable<Peptide> peptidesX = reader.Read(datasetX.PeptideFile);
-        //        IEnumerable<Peptide> peptidesY = reader.Read(datasetY.PeptideFile);
-
-        //        peptidesX = peptidesX.Where(x => x.Score < options.IdScore);
-        //        peptidesY = peptidesY.Where(x => x.Score < options.IdScore);
-
-        //        // Then map the peptide sequences to identify True Positive and False Positives
-        //        var peptideFinder = new PeptideAnchorPointFinder();
-        //        peptideMatches = peptideFinder.FindAnchorPoints(peptidesX,
-        //            peptidesY,
-        //            options);
-        //    };
-
-        //    var loadingTask = new Task(loadingAction);
-        //    loadingTask.Start();
-
-        //    var peptideLoadingTask = new Task(peptideLoadingAction);
-        //    peptideLoadingTask.Start();
-
-
-        //    // Find the anchor point matches based on SSM
-        //    var comparer        = SpectralComparerFactory.CreateSpectraComparer(options.ComparerType);
-        //    var filter          = SpectrumFilterFactory.CreateFilter(SpectraFilters.TopPercent);
-        //    var spectralFinder  = new SpectralAnchorPointFinder();
-        //    IEnumerable<AnchorPointMatch> spectralMatches;
-        //    using (var readerX = RawLoaderFactory.CreateFileReader(datasetX.RawFile))
-        //    {
-        //        using (var readerY = RawLoaderFactory.CreateFileReader(datasetY.RawFile))
-        //        {
-        //            readerX.AddDataFile(datasetX.RawFile, 0);
-        //            readerY.AddDataFile(datasetY.RawFile, 0);
-
-        //            spectralMatches = spectralFinder.FindAnchorPoints(readerX,
-        //                readerY,
-        //                comparer,
-        //                filter,
-        //                options);
-        //        }
-        //    }
-
-
-        //    // These should already be done by the time we get here...let's just try
-        //    loadingTask.Wait();
-        //    peptideLoadingTask.Wait();
-
-        //    // Package the data
-        //    var analysisSpectra = new SpectralAnalysis {Options = options, Matches = spectralMatches};
-        //    analysisSpectra.Options = options;
-        //    analysisSpectra.Matches = peptideMatches;
-
-        //    // Package the data
-        //    var analysisPeptides = new SpectralAnalysis();
-
-        //    // Write the results
-        //    writer.Write(analysisSpectra);
-        //    writer.Write(analysisPeptides);
-        //}
 
         [Test(Description = "Figure 3: Creates a pre-post alignment using Lowess.")]
         [TestCase(
@@ -559,12 +441,13 @@ namespace MultiAlignTestSuite.Papers.Alignment
                             var names = new List<string> {data[i].Cache, data[j].Cache};
 
                             // Write the results
-                            var analysis = MatchDatasets(cacheReaderX,
-                                cacheReaderY,
-                                datasetX,
-                                datasetY,
-                                names,
-                                options, true);
+                            var analysis = MatchDatasets(comparerType,
+                                                         cacheReaderX,
+                                                         cacheReaderY,
+                                                         options,
+                                                         datasetX,
+                                                         datasetY,
+                                                         names);
 
                             AlignMatches(analysis, writer);                            
                         }
@@ -637,7 +520,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
                 {
                     // wrap it in the cached object so we can load scan meta-data
                     var cacheReaderX = new RawLoaderCache(readerX);
-                    var cacheDataX = ScanSummaryCache.ReadCache(cachex.Cache);
+                    var cacheDataX   = ScanSummaryCache.ReadCache(cachex.Cache);
 
                     readerX.AddDataFile(rawPathX, 0);
                     cacheReaderX.AddCache(0, cacheDataX);
@@ -655,8 +538,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
                         {
                             // Then the writer for creating a report
                             var writer =
-                                AlignmentAnalysisWriterFactory.Create(AlignmentFigureType.Figure3,
-                                    name + comparison);
+                                AlignmentAnalysisWriterFactory.Create(AlignmentFigureType.Figure3, name + comparison);
                             comparison++;
 
                             // wrap it in the cached object so we can load scan meta-data
@@ -666,13 +548,14 @@ namespace MultiAlignTestSuite.Papers.Alignment
                             readerY.AddDataFile(rawPathY, 0);
                             var names           = new List<string> {data[i].Cache, data[j].Cache};
 
-                            // Write the results
-                            var analysis = MatchDatasets(cacheReaderX,
-                                                cacheReaderY,
-                                                datasetX,
-                                                datasetY,
-                                                names,
-                                                options, false);
+                            var analysis = MatchDatasets(comparerType, 
+                                                        readerX, 
+                                                        readerY, 
+                                                        options, 
+                                                        datasetX, 
+                                                        datasetY, 
+                                                        names);
+
                             AlignMatches(analysis, writer);
                             writer.Close();
                         }
@@ -681,58 +564,42 @@ namespace MultiAlignTestSuite.Papers.Alignment
             }
         }
 
-        private SpectralAnalysis MatchDatasets( ISpectraProvider readerX,
-                                                ISpectraProvider readerY,
-                                                AlignmentDataset datasetX,
-                                                AlignmentDataset datasetY,
-                                                List<string> names,
-                                                SpectralOptions options,
-                                                bool matchPeptides)
+        private static SpectralAnalysis MatchDatasets(  SpectralComparison comparerType, 
+                                                        ISpectraProvider readerX,
+                                                        ISpectraProvider readerY, 
+                                                        SpectralOptions options,
+                                                        AlignmentDataset datasetX, 
+                                                        AlignmentDataset datasetY, 
+                                                        List<string> names)
         {
+            var peptideReader   = PeptideReaderFactory.CreateReader(SequenceFileType.MSGF);
+            var finder          = new SpectralAnchorPointFinder();
+            var validator       = new SpectralAnchorPointValidator();
+            var comparer        = SpectralComparerFactory.CreateSpectraComparer(comparerType);
+            var filter          = SpectrumFilterFactory.CreateFilter(SpectraFilters.TopPercent);
 
-            // This helps us compare various comparison calculation methods
-            var comparer = SpectralComparerFactory.CreateSpectraComparer(options.ComparerType);
+            var matches = finder.FindAnchorPoints(  readerX,
+                                                    readerY,
+                                                    comparer,
+                                                    filter,
+                                                    options);
 
-            // This guy filters the spectra, so that we only keep the N most intense ions for comparison
-            var filter = SpectrumFilterFactory.CreateFilter(SpectraFilters.TopPercent);
+            var peptidesX = peptideReader.Read(datasetX.PeptideFile);
+            var peptidesY = peptideReader.Read(datasetY.PeptideFile);
+            validator.ValidateMatches(matches,
+                                      peptidesX,
+                                      peptidesY,
+                                      options);
 
-            // Here we find all the matches
-            var finder = new SpectralAnchorPointFinder();
-            var matches = finder.FindAnchorPoints(readerX,
-                                                readerY,
-                                                comparer,
-                                                filter,
-                                                options);
-
-            IEnumerable<AnchorPointMatch> anchorPointMatches = matches as AnchorPointMatch[] ?? matches.ToArray();
-            if (matchPeptides)
+            var analysis = new SpectralAnalysis()
             {
-                // Read data for peptides 
-                var reader    = PeptideReaderFactory.CreateReader(SequenceFileType.MSGF);
-                var peptidesA = reader.Read(datasetX.PeptideFile);
-                var peptidesB = reader.Read(datasetY.PeptideFile);
-
-                peptidesA =
-                    peptidesA.ToList().Where(x => PeptideUtility.PassesCutoff(x, options.IdScore, options.Fdr)).ToList();
-                peptidesB =
-                    peptidesB.ToList().Where(x => PeptideUtility.PassesCutoff(x, options.IdScore, options.Fdr)).ToList();
-
-
-                var peptideMapX = PeptideUtility.MapWithBestScan(peptidesA);
-                var peptideMapY = PeptideUtility.MapWithBestScan(peptidesB);
-
-
-                // Then map the peptide sequences to identify True Positive and False Positives
-                var matcher = new PeptideAnchorPointMatcher();
-                matcher.Match(anchorPointMatches,
-                                peptideMapX,
-                                peptideMapY,
-                                options);
-            }
-            
-            var analysis = new SpectralAnalysis {Options = options, Matches = anchorPointMatches, DatasetNames = names};
+                DatasetNames    = names,
+                Matches         = matches,
+                Options         = options
+            };
             return analysis;
         }
+
 
         private void MatchPeptides( AlignmentDataset datasetX,
                                     AlignmentDataset datasetY,
@@ -780,10 +647,12 @@ namespace MultiAlignTestSuite.Papers.Alignment
                 Console.WriteLine(name);            
             Console.WriteLine(@"Matches - {0}", count);
         }
+
+
         private static void AlignMatches(SpectralAnalysis analysis, ISpectralAnalysisWriter writer)
         {
-            var netXvalues = new List<double>();
-            var netYvalues = new List<double>();
+            var netXvalues  = new List<double>();
+            var netYvalues  = new List<double>();
             var massXvalues = new List<double>();
             var massYvalues = new List<double>();
 
@@ -793,7 +662,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
             // 1. Find the best matches
             // 2. Find only matches that have been made once.
 
-            var bestMatches = new Dictionary<int, AnchorPointMatch>();
+            var bestMatches = new Dictionary<int, SpectralAnchorPointMatch>();
             foreach (var match in matches)
             {
                 var scan = match.AnchorPointX.Scan;
@@ -811,7 +680,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
             }
 
             // 2. Find only those matched once
-            var all = new Dictionary<int, AnchorPointMatch>();
+            var all = new Dictionary<int, SpectralAnchorPointMatch>();
             foreach (var match in bestMatches.Values)
             {
                 var scan = match.AnchorPointY.Scan;
@@ -859,8 +728,8 @@ namespace MultiAlignTestSuite.Papers.Alignment
         private static void InterpolateDimension(string name, 
                                                     ISpectralAnalysisWriter writer, 
                                                     List<double> xvalues, 
-                                                    List<double> yvalues, 
-                                                    List<AnchorPointMatch> anchorPoints,
+                                                    List<double> yvalues,
+                                                    List<SpectralAnchorPointMatch> anchorPoints,
                                                     Func<double, double, double> func)
         {
 
@@ -892,8 +761,8 @@ namespace MultiAlignTestSuite.Papers.Alignment
                                 List<double> xvalues, 
                                 List<double> yvalues,
                                 IList<double> fit,
-                                LoessInterpolator interpolator, 
-                                List<AnchorPointMatch> anchorPoints, 
+                                LoessInterpolator interpolator,
+                                List<SpectralAnchorPointMatch> anchorPoints, 
                                 List<double> preNet, 
                                 List<double> postNet,
                                 Func<double, double, double> difference)

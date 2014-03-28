@@ -26,7 +26,7 @@
             Margin="5"
             LabelText="Features File"
             FilePath="{Binding 
-                        Path=Dataset.Features.Path, 
+                        Path=Dataset.Path, 
                         Mode=TwoWay, 
                         NotifyOnSourceUpdated=True,
                         NotifyOnTargetUpdated=True}"

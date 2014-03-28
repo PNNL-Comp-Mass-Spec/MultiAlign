@@ -26,9 +26,9 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
                 feature.MassMonoisotopicAligned = feature.MassMonoisotopic;
                 feature.NETAligned              = feature.NET;
             }
-            var data    = aligner.AlignFeatures(features0, features1, new AlignmentOptions());
 
-
+            aligner.Options = new AlignmentOptions();            
+            var data = aligner.Align(features0, features1); 
         }
     }
 }

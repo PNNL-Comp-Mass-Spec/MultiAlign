@@ -11,8 +11,8 @@ namespace MultiAlign
     {
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            MainWindow mainWindow   = new MainWindow();
-            MainViewModel model     = new MainViewModel();
+            var mainWindow   = new MainWindow();
+            var model     = new MainViewModel();
             MainWindow.DataContext  = model;
 
             mainWindow.ShowDialog();

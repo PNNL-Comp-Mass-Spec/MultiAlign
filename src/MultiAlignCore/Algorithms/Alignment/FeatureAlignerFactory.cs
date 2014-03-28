@@ -1,35 +1,55 @@
-﻿using System;
+﻿using MultiAlignCore.Algorithms.Options;
+using MultiAlignCore.Data.Alignment;
+using PNNLOmics.Algorithms.Alignment;
+using PNNLOmics.Algorithms.Alignment.SpectralMatches;
+using PNNLOmics.Data.Features;
+using PNNLOmics.Data.MassTags;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace MultiAlignCore.Algorithms.Alignment
 {
     public class FeatureAlignerFactory
     {
-        public static IFeatureAligner Create(FeatureAlignmentType type )
+        public static IFeatureAligner<IEnumerable<UMCLight>, IEnumerable<UMCLight>, classAlignmentData> CreateDatasetAligner(FeatureAlignmentType type,
+                                                                                                                             AlignmentOptions options,
+                                                                                                                             SpectralOptions spectralOptions)
         {
-            IFeatureAligner aligner = null;
-
+            IFeatureAligner<IEnumerable<UMCLight>, IEnumerable<UMCLight>, classAlignmentData> aligner = null;
             switch (type)
             {
-                case FeatureAlignmentType.LCMSWarp:
-                    aligner = new LcmsWarpFeatureAligner();
+                case FeatureAlignmentType.LcmsWarp:
+                    aligner = new LcmsWarpFeatureAligner{ Options = options };
                     break;
                 case FeatureAlignmentType.DirectImsInfusion:
                     aligner = new DummyAlignment();
                     break;
-                default:
+                case FeatureAlignmentType.SpectralAlignment:
+                    aligner = new SpectralAlignerWrapper { Options = spectralOptions };
                     break;
             }
 
             return aligner;
         }
-    }
+        public static IFeatureAligner<MassTagDatabase, IEnumerable<UMCLight>, classAlignmentData> CreateDatabaseAligner(FeatureAlignmentType type,
+                                                                                                                        AlignmentOptions options,
+                                                                                                                        SpectralOptions spectralOptions)
+        {
+            IFeatureAligner<MassTagDatabase, IEnumerable<UMCLight>, classAlignmentData> aligner = null;
 
-    public enum FeatureAlignmentType
-    {
-        LCMSWarp,
-        DirectImsInfusion
+            switch (type)
+            {
+                case FeatureAlignmentType.LcmsWarp:
+                    aligner = new LcmsWarpFeatureAligner{ Options = options };
+                    break;
+                case FeatureAlignmentType.DirectImsInfusion:
+                    aligner = new DummyAlignment();
+                    break;
+                case FeatureAlignmentType.SpectralAlignment:
+                    aligner = new SpectralAlignerWrapper{Options = spectralOptions};
+                    break;
+            }
+
+            return aligner;
+        }
     }
 }

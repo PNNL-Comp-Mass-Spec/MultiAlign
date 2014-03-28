@@ -1,6 +1,8 @@
 ﻿using MultiAlignCore.Algorithms.FeatureMatcher;
 using MultiAlignCore.IO.Parameters;
 using PNNLOmics.Algorithms;
+using PNNLOmics.Algorithms.Alignment.SpectralMatches;
+using PNNLOmics.Algorithms.FeatureClustering;
 
 namespace MultiAlignCore.Algorithms.Options
 {
@@ -71,5 +73,9 @@ namespace MultiAlignCore.Algorithms.Options
         /// Gets or sets whether the analysis used Ion Mobility
         /// </summary>
         public bool UsedIonMobility { get; set; }
+        /// <summary>
+        /// Gets or sets the alignment spectral options
+        /// </summary>
+        public SpectralOptions SpectralOptions { get; set; }
     }
 }

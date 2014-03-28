@@ -11,6 +11,7 @@ using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.Data.SequenceData;
 using MultiAlignCore.IO.Features;
 using PNNLOmics.Algorithms;
+using PNNLOmics.Algorithms.FeatureClustering;
 using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
 using PNNLOmicsIO.IO;
@@ -139,13 +140,14 @@ namespace MultiAlignCore.IO
 
             UpdateStatus("Finding features.");
             ISpectraProvider provider = null;
-            if (information.RawPath != null)
+            if (information.RawPath != null && !string.IsNullOrWhiteSpace(information.RawPath))
             {
                 UpdateStatus("Using raw data to create better features.");
                 provider = RawLoaderFactory.CreateFileReader(information.RawPath);
                 provider.AddDataFile(information.RawPath, 0);
             }
             var finder = FeatureFinderFactory.CreateFeatureFinder(FeatureFinderType.TreeBased);
+            finder.Progress += (sender, args) => UpdateStatus(args.Message);
             var features = finder.FindFeatures(msFeatures, options, provider);
 
             UpdateStatus("Filtering features.");
@@ -168,11 +170,11 @@ namespace MultiAlignCore.IO
 
             UpdateStatus(string.Format("[{0}] - Loading dataset [{0}] - {1}.", dataset.DatasetId, dataset.DatasetName));
             var datasetId = dataset.DatasetId;
-            var features = UmcLoaderFactory.LoadUmcFeatureData(dataset, Providers.FeatureCache);
+            var features = UmcLoaderFactory.LoadUmcFeatureData(dataset.Features.Path, dataset.DatasetId, Providers.FeatureCache);
 
             UpdateStatus(string.Format("[{0}] Loading MS Feature Data [{0}] - {1}.", dataset.DatasetId,
                 dataset.DatasetName));
-            var msFeatures = UmcLoaderFactory.LoadMsFeatureData(dataset, Providers.MSFeatureCache);
+            var msFeatures = UmcLoaderFactory.LoadMsFeatureData(dataset.Features.Path);
             var msnSpectra = new List<MSSpectra>();
 
             // If we don't have any features, then we have to create some from the MS features
@@ -214,7 +216,7 @@ namespace MultiAlignCore.IO
             }
             else
             {
-                if (!UmcLoaderFactory.AreExistingFeatures(dataset))
+                if (!UmcLoaderFactory.AreExistingFeatures(dataset.Features.Path))
                 {
                     var i = 0;
                     foreach (var feature in features)
@@ -265,7 +267,7 @@ namespace MultiAlignCore.IO
         /// </summary>
         private List<MSFeatureLight> Filter(List<MSFeatureLight> msFeatures, string rawPath)
         {
-            if (rawPath == null)
+            if (rawPath == null || string.IsNullOrWhiteSpace(rawPath))
                 return msFeatures;
 
             // First find all unique scans
@@ -282,14 +284,18 @@ namespace MultiAlignCore.IO
             var fullScans = new Dictionary<int, bool>();
             using (var provider = RawLoaderFactory.CreateFileReader(rawPath))
             {
-                provider.AddDataFile(rawPath, 0);
-                foreach (var scan in scanMap.Keys)
+                if (provider != null)
                 {
-                    ScanSummary summary;                    
-                    provider.GetRawSpectra(scan, 0, out summary);
-                    if (summary.MsLevel == 1)
-                        fullScans.Add(scan, true);
-                }                
+
+                    provider.AddDataFile(rawPath, 0);
+                    foreach (var scan in scanMap.Keys)
+                    {
+                        ScanSummary summary;
+                        provider.GetRawSpectra(scan, 0, out summary);
+                        if (summary.MsLevel == 1)
+                            fullScans.Add(scan, true);
+                    }
+                }
             }
             
             return msFeatures.Where(x => fullScans.ContainsKey(x.Scan)).ToList();            

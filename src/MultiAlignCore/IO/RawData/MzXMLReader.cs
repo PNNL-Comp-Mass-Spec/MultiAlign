@@ -36,7 +36,6 @@ namespace MultiAlignCore.IO.Features
             set;
         }
 
-        #region ISpectraProvider Members
         /// <summary>
         /// Reads a list of MSMS Spectra header data from the mzXML file.
         /// </summary>
@@ -44,9 +43,8 @@ namespace MultiAlignCore.IO.Features
         /// <returns>List of MSMS spectra data</returns>
         public List<MSSpectra> ReadMSMSSpectra(string file)
         {
-            List<MSSpectra> spectra     = new List<MSSpectra>();
-            clsMzXMLFileReader reader   = new clsMzXMLFileReader();
-            reader.SkipBinaryData       = true;
+            var spectra  = new List<MSSpectra>();
+            var reader   = new clsMzXMLFileReader {SkipBinaryData = true};
             bool opened                 = reader.OpenFile(file);
 
             if (!opened)
@@ -63,15 +61,17 @@ namespace MultiAlignCore.IO.Features
                 reader.GetSpectrumByScanNumber(i, ref info);
                 if (info.MSLevel > 1)
                 {
-                    MSSpectra spectrum          = new MSSpectra();
-                    spectrum.MSLevel            = info.MSLevel;
-                    spectrum.RetentionTime      = info.RetentionTimeMin;
-                    spectrum.Scan               = i;
-                    spectrum.PrecursorMZ        = info.ParentIonMZ;
-                    spectrum.TotalIonCurrent    = info.TotalIonCurrent;
+                    var spectrum          = new MSSpectra
+                    {
+                        MSLevel = info.MSLevel,
+                        RetentionTime = info.RetentionTimeMin,
+                        Scan = i,
+                        PrecursorMZ = info.ParentIonMZ,
+                        TotalIonCurrent = info.TotalIonCurrent,
+                        CollisionType = CollisionType.Other
+                    };
 
                     // Need to make this a standard type of collision based off of the data.
-                    spectrum.CollisionType = CollisionType.Other;                    
                     spectra.Add(spectrum);
                 }
             }
@@ -86,9 +86,8 @@ namespace MultiAlignCore.IO.Features
         {
             return GetRawSpectra(scan, group, -11, out summary);
         }
-        #endregion
+        
 
-        #region ISpectraProvider Members
         public void AddDataFile(string path, int groupID)
         {
             if (m_dataFiles.ContainsKey(groupID) == false)
@@ -123,7 +122,7 @@ namespace MultiAlignCore.IO.Features
             if (!m_readers.ContainsKey(group))
             {
                 string path                 = m_dataFiles[group];
-                clsMzXMLFileAccessor reader = new clsMzXMLFileAccessor();                
+                var reader = new clsMzXMLFileAccessor();                
                 m_readers.Add(group, reader);
 
                 bool opened = reader.OpenFile(path);
@@ -162,35 +161,46 @@ namespace MultiAlignCore.IO.Features
 
             return spectra;
         }
-        #endregion
 
-        #region IDisposable Members
-        public void Dispose()
+        /// <summary>
+        /// Gets the total number of scans for the group id provided
+        /// </summary>
+        /// <param name="group"></param>
+        /// <returns></returns>
+        public int GetTotalScans(int group)
         {
-            
+            if (!m_dataFiles.ContainsKey(group))
+            {
+                throw new Exception("The group-dataset ID provided was not found.");
+            }
+            // If we dont have a reader, then create one for this group 
+            // next time, it will be available and we won't have to waste time
+            // opening the file.
+            if (!m_readers.ContainsKey(group))
+            {
+                string path = m_dataFiles[group];
+                var reader = new clsMzXMLFileAccessor();
+                m_readers.Add(group, reader);
+
+                bool opened = reader.OpenFile(path);
+                if (!opened)
+                {
+                    throw new IOException("Could not open the mzXML file " + path);
+                }
+            }
+            var rawReader = m_readers[group];            
+            return rawReader.ScanCount;
         }
-        #endregion
-
-        #region ISpectraProvider Members
-
-
-        //public List<XYData> GetRawSpectra(int scan, int group, int scanLevel)
-        //{
-        //    return GetRawSpectra(scan, group);
-        //}
-
-        #endregion
-
-        #region ISpectraProvider Members
-
 
         public Dictionary<int, ScanSummary> GetScanData(int groupId)
         {
             return new Dictionary<int, ScanSummary>();
         }
 
-        #endregion
+        public void Dispose()
+        {
 
+        }
 
         public List<XYData> GetRawSpectra(int scan, int group, int scanLevel, out ScanSummary summary)
         {

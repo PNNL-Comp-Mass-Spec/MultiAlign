@@ -33,7 +33,7 @@ namespace MultiAlign.ViewModels
             LoadWorkspace(workspacePath);
 
             foreach (var item in CurrentWorkspace.RecentAnalysis)            
-                item.RecentAnalysisSelected += new EventHandler<OpenAnalysisArgs>(item_RecentAnalysisSelected);
+                item.RecentAnalysisSelected += item_RecentAnalysisSelected;
                        
         }
 
@@ -61,6 +61,9 @@ namespace MultiAlign.ViewModels
         /// </summary>
         private void LoadWorkspace(string path)
         {
+            if (path == null)
+                return;
+
             if (System.IO.File.Exists(path))
             {
                 ApplicationStatusMediator.SetStatus("Loading workspace");
@@ -73,6 +76,10 @@ namespace MultiAlign.ViewModels
                 {
                     ApplicationStatusMediator.SetStatus(string.Format("Could not load the default workspace: {0}"));
                 }
+            }
+            else
+            {
+               CurrentWorkspace = new MultiAlignWorkspace();
             }
         }
 

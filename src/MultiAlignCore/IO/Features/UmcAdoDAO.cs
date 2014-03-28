@@ -158,5 +158,11 @@ namespace MultiAlignCore.IO.Features
         }
 
         #endregion
+
+
+        public IEnumerable<int> RetrieveChargeStates()
+        {
+            return new List<int>();
+        }
     }
 }

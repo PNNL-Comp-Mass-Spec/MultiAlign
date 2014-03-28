@@ -40,6 +40,7 @@ namespace MultiAlign.ViewModels
         private ClusterDetailViewModel                        m_clusterViewModel;
         private RectangleF m_savedClusterViewPort;
         private string m_selectedClusterName;
+        private Viewers.GlobalStatisticsViewModel m_globalStatistics;
 
         public AnalysisViewModel(MultiAlignAnalysis analysis)
         {
@@ -68,13 +69,19 @@ namespace MultiAlign.ViewModels
             ClusterIdentificationViewModel      = new UMCClusterIdentificationViewModel();
             AnalysisOptionsViewModel            = new AnalysisOptionsViewModel(analysis.Options);
             ClusterViewModel                    = new ClusterDetailViewModel();
+
+            var charges = SingletonDataProviders.Providers.FeatureCache.RetrieveChargeStates();            
+
+            GlobalStatisticsViewModel           = new GlobalStatisticsViewModel(clusters.Item1, charges);
             HasIdentifications                  = (MassTags.Count > 0);
 
-            m_clusterChart                      = new ctlClusterChart();
-            m_clusterChart.Title                = "";
-            m_clusterChart.LegendVisible        = false;
-            m_clusterChart.YAxisShortHand       = "ppm";
-            m_clusterChart.XAxisShortHand       = "NET";
+            m_clusterChart                      = new ctlClusterChart
+            {
+                Title = "",
+                LegendVisible = false,
+                YAxisShortHand = "ppm",
+                XAxisShortHand = "NET"
+            };
             SelectedClusterName                 = "Cluster Details:";
             LoadClusters(clusters.Item1);
             m_clusterChart.AutoViewPort();
@@ -313,6 +320,22 @@ namespace MultiAlign.ViewModels
             set
             {
                 m_identificationTreeView = value;
+            }
+        }
+
+        public GlobalStatisticsViewModel GlobalStatisticsViewModel
+        {
+            get
+            {
+                return m_globalStatistics;
+            }
+            set 
+            { 
+                if (m_globalStatistics == value) 
+                    return;
+
+                m_globalStatistics = value;
+                OnPropertyChanged("GlobalStatisticsViewModel");
             }
         }
         /// <summary>

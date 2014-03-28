@@ -2,6 +2,7 @@ using MultiAlignCore.Algorithms;
 using MultiAlignCore.Algorithms.Options;
 using MultiAlignCore.Data.Alignment;
 using MultiAlignCore.Data.MassTags;
+using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO.Features;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Data.MassTags;

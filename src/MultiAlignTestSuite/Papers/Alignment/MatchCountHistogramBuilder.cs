@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using MultiAlignTestSuite.Algorithms.SpectralProcessing;
+using MultiAlignTestSuite.Papers.Alignment.SSM;
+using PNNLOmics.Algorithms.Alignment.SpectralMatching;
 
 namespace MultiAlignTestSuite.Papers.Alignment
 {
     public class MatchCountHistogramBuilder
     {
-        public static Histogram SimilarityScore(double start, double stop, double step, IEnumerable<AnchorPointMatch> matches)
+        public static Histogram SimilarityScore(double start, double stop, double step, IEnumerable<SpectralAnchorPointMatch> matches)
         {
-            List<double> bins = new List<double>();
-            List<double> values = new List<double>();
-
+            var bins    = new List<double>();
+            var values  = new List<double>();
 
             for (double score = start; score <= stop; score += step)
             {
@@ -21,14 +21,12 @@ namespace MultiAlignTestSuite.Papers.Alignment
                 values.Add(Convert.ToDouble(count));
             }
 
-            Histogram gram = new Histogram(step, "", bins, values);
-            return gram;
+            return  new Histogram(step, "", bins, values);            
         }
         public static Histogram CreateResidualHistogram(double start, double stop, double step, IEnumerable<double> anchors)
         {
-            List<double> bins = new List<double>();
-            List<double> values = new List<double>();
-
+            var bins   = new List<double>();
+            var values = new List<double>();
 
             for (double score = start; score <= stop; score += step)
             {
@@ -37,8 +35,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
                 values.Add(Convert.ToDouble(count));
             }
 
-            Histogram gram = new Histogram(step, "", bins, values);
-            return gram;
+            return new Histogram(step, "", bins, values);            
         }
     }    
 }

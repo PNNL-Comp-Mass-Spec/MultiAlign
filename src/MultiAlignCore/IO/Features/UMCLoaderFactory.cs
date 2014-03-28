@@ -34,19 +34,20 @@ namespace MultiAlignCore.IO.Features
         /// <param name="dataset"></param>
         /// <param name="featureCache"></param>
         /// <returns></returns>
-        public static IList<UMCLight> LoadUmcFeatureData(DatasetInformation dataset,
-                                                        IUmcDAO featureCache)
+        public static IList<UMCLight> LoadUmcFeatureData(string path,
+                                                         int  datasetId,
+                                                         IUmcDAO featureCache)
         {
             var features     = new List<UMCLight>();
-            string extension = Path.GetExtension(dataset.Features.Path).ToUpper();            
+            string extension = Path.GetExtension(path).ToUpper();            
             switch (extension)
             {
                 case ".TXT":
-                    var umcReader = new LCMSFeatureFileReader(dataset.Features.Path);
+                    var umcReader = new LCMSFeatureFileReader(path);
                     features = umcReader.GetUmcList();
                     break;
                 case ".DB3":
-                    features = featureCache.FindByDatasetId(dataset.DatasetId);
+                    features = featureCache.FindByDatasetId(datasetId);
                     break;
             }
             return features;
@@ -56,10 +57,10 @@ namespace MultiAlignCore.IO.Features
         /// </summary>
         /// <param name="dataset"></param>
         /// <returns></returns>
-        public static bool AreExistingFeatures(DatasetInformation dataset)
+        public static bool AreExistingFeatures(string path)
         {
             bool areExisting = false;
-            string extension = Path.GetExtension(dataset.Features.Path).ToUpper();
+            string extension = Path.GetExtension(path).ToUpper();
             switch (extension)
             {
                 case ".DB3":
@@ -74,11 +75,9 @@ namespace MultiAlignCore.IO.Features
         /// <param name="dataset"></param>
         /// <param name="msFeatureCache"></param>
         /// <returns></returns>
-        public static List<MSFeatureLight> LoadMsFeatureData(DatasetInformation dataset,
-                                                              IMSFeatureDAO msFeatureCache)
+        public static List<MSFeatureLight> LoadMsFeatureData(string path)
         {
             var msFeatures      = new List<MSFeatureLight>();
-            string path         = dataset.Features.Path;
             string extension    = Path.GetExtension(path).ToUpper();
             switch (extension)
             {

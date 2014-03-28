@@ -111,10 +111,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>M:\download\OxyPlot-2014.1.1.1\NET40\OxyPlot.WindowsForms.dll</HintPath>
     </Reference>
-    <Reference Include="PNNLOmics, Version=1.0.5176.20116, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\PNNLOmics.dll</HintPath>
-    </Reference>
     <Reference Include="PNNLOmicsIO, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\PNNLOmicsIO.dll</HintPath>
@@ -140,14 +136,8 @@
     <Compile Include="Algorithms\SpectralProcessing\SpectralAlignmentTests.cs" />
     <Compile Include="Algorithms\SpectralProcessing\SpectralComparisonTests.cs" />
     <Compile Include="Algorithms\UMCTreeFeatureFinding.cs" />
-    <Compile Include="Papers\Alignment\AlignmentMeasurement.cs" />
-    <Compile Include="Papers\Alignment\AnchorPointErrorMeasurement.cs" />
-    <Compile Include="Papers\Alignment\Data\AlignedFeatureData.cs" />
-    <Compile Include="Papers\Alignment\Data\AlignmentDataset.cs" />
-    <Compile Include="Papers\Alignment\Data\AnchorPoint.cs" />
-    <Compile Include="Papers\Alignment\FeatureAligner.cs" />
-    <Compile Include="Papers\Alignment\FeatureAnchorPointLinker.cs" />
-    <Compile Include="Papers\Alignment\FeatureLoader.cs" />
+    <Compile Include="Papers\Alignment\ClusterIdentificationStatistic.cs" />
+    <Compile Include="Papers\Alignment\ClusterValidationTests.cs" />
     <Compile Include="Papers\Alignment\IO\AlignmentAnalysisWriterFactory.cs" />
     <Compile Include="Papers\Alignment\IO\AlignmentFigureType.cs" />
     <Compile Include="Papers\Alignment\IO\PaperFileWriter.cs" />
@@ -157,16 +147,8 @@
     <Compile Include="Papers\Alignment\IO\SpectralWriterFigureThree.cs" />
     <Compile Include="Papers\Alignment\IO\SpectralWriterFigureTwo.cs" />
     <Compile Include="Papers\Alignment\IO\SpectralWriterFigureOne.cs" />
-    <Compile Include="Papers\Alignment\PeptideAnchorPointFinder.cs" />
-    <Compile Include="Papers\Alignment\ISpectralAnalysisWriter.cs" />
     <Compile Include="Papers\Alignment\MatchCountHistogramBuilder.cs" />
-    <Compile Include="Papers\Alignment\PeptideAnchorPointMatcher.cs" />
-    <Compile Include="Papers\Alignment\PeptideUtility.cs" />
     <Compile Include="Papers\Alignment\SpectralCacheUtility.cs" />
-    <Compile Include="Papers\Alignment\SpectralAnalysis.cs" />
-    <Compile Include="Papers\Alignment\SpectralOptions.cs" />
-    <Compile Include="Papers\Alignment\SpectralUtilities.cs" />
-    <Compile Include="Papers\Alignment\SpectralAnchorPointFinder.cs" />
     <Compile Include="Papers\Alignment\SSM\BaseSpectralAlignmentTest.cs" />
     <Compile Include="Papers\Alignment\SSM\TestSpectralLinking.cs" />
     <Compile Include="Algorithms\UMCAlignment.cs" />
@@ -193,6 +175,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\PNNLOmics\development\trunk\PNNLOmics\PNNLOmics.csproj">
+      <Project>{8a934dc1-3418-449f-adf6-9962499f49b2}</Project>
+      <Name>PNNLOmics</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MultiAlignCore\MultiAlignCore.csproj">
       <Project>{bdfa22c4-5822-4aa5-996e-6fde57f7118b}</Project>
       <Name>MultiAlignCore</Name>
@@ -200,6 +186,10 @@
     <ProjectReference Include="..\MultiAlignCustomControls\MultiAlignCustomControls.csproj">
       <Project>{ee7596b2-fcd3-471a-856f-1270713dd5b1}</Project>
       <Name>MultiAlignCustomControls</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MultiAlign\MultiAlign.csproj">
+      <Project>{6EC23CCC-4F36-47BF-B997-F0A5727822A5}</Project>
+      <Name>MultiAlign</Name>
     </ProjectReference>
     <ProjectReference Include="..\PNNLControls\PNNLControls.csproj">
       <Project>{9409de9b-f3f0-41aa-95f5-8bfd525f5669}</Project>
@@ -209,6 +199,7 @@
   <ItemGroup>
     <Folder Include="Algorithms\Xic\" />
     <Folder Include="IO\Parameters\" />
+    <Folder Include="Papers\Alignment\Data\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

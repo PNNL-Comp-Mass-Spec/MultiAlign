@@ -64,5 +64,10 @@ namespace MultiAlignCore.IO.Features
         /// Clears old alignment data from all of the features.
         /// </summary>
         void ClearAlignmentData();
+        /// <summary>
+        /// Retrieves the charge states for all features in the database.
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<int> RetrieveChargeStates();
     }
 }

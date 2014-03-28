@@ -1,20 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using MultiAlign.Commands;
 using MultiAlign.ViewModels.IO;
-using MultiAlignCore.Algorithms.Options;
+using MultiAlign.Windows.Viewers.Databases;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.MassTags;
-using System.Windows;
-using System.Collections.ObjectModel;
-using System.Windows.Input;
-using MultiAlign.Commands;
-using MultiAlign.Windows.Viewers.Databases;
 using MultiAlignCore.Data.MetaData;
-using MultiAlignCore.IO.MTDB;
 using MultiAlignCore.IO.InputFiles;
-using PNNLOmics.Data;
+using MultiAlignCore.IO.MTDB;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Windows;
+using System.Windows.Input;
 
 namespace MultiAlign.ViewModels.Wizard
 {

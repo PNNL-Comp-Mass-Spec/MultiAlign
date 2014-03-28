@@ -11,7 +11,7 @@ namespace MultiAlignCore.Algorithms.Workflow
         /// Updates listeners with status messages.
         /// </summary>
         /// <param name="message"></param>
-        protected void UpdateStatus(string message)
+        protected virtual void UpdateStatus(string message)
         {
             if (Progress != null)
             {

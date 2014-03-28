@@ -6,10 +6,10 @@ using MultiAlignCore.Algorithms.Options;
 using MultiAlignCore.Data.MetaData;
 using MultiAlignTestSuite.Algorithms;
 using PNNLOmics.Algorithms;
+using PNNLOmics.Algorithms.FeatureClustering;
 using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
 using MultiAlignCore.Data;
-using MultiAlignTestSuite.Algorithms.SpectralProcessing;
 using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.InputFiles;
 using MultiAlignCore.Algorithms.FeatureFinding;
@@ -116,7 +116,7 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
 
 
                 // Load and create features
-                List<MSFeatureLight> msFeatures = UmcLoaderFactory.LoadMsFeatureData(info, null);
+                List<MSFeatureLight> msFeatures = UmcLoaderFactory.LoadMsFeatureData(info.Features.Path);
                 ISpectraProvider provider       = RawLoaderFactory.CreateFileReader(rawFile);
                 //features                        = finder.FindFeatures(msFeatures, options, provider);
                 List<MSSpectra> msms            = raw.GetRawSpectra(0);

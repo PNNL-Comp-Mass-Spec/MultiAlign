@@ -37,7 +37,7 @@ namespace MultiAlignCore.Algorithms.Options
             SplitAlignmentInMZ            = false;
 			MZBoundaries				  = new List<classAlignmentMZBoundary>();
 
-            AlignmentAlgorithm = FeatureAlignmentType.LCMSWarp;
+            AlignmentAlgorithm = FeatureAlignmentType.LcmsWarp;
 
 			/// Construct the m/z boundary object.			
 			MZBoundaries.Add(new classAlignmentMZBoundary(0.0, 505.7));

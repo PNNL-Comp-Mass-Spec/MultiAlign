@@ -13,6 +13,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+using PNNLOmics.Algorithms.FeatureClustering;
 
 namespace MultiAlign.ViewModels.Wizard
 {
@@ -31,7 +32,7 @@ namespace MultiAlign.ViewModels.Wizard
         public AnalysisOptionsViewModel(MultiAlignAnalysisOptions options)
         {
             m_options            = options;
-            ClusteringAlgorithms = new ObservableCollection<ClusteringAlgorithmType>();
+            ClusteringAlgorithms = new ObservableCollection<LcmsFeatureClusteringAlgorithmType>();
             AlignmentAlgorithms  = new ObservableCollection<FeatureAlignmentType>();
             FeatureFindingAlgorithms = new ObservableCollection<FeatureFinderType>();
 
@@ -75,7 +76,7 @@ namespace MultiAlign.ViewModels.Wizard
             SaveOptionsCommand          = new BaseCommandBridge(SaveCurrentParameters);
             LoadExistingCommand         = new BaseCommandBridge(LoadExistingParameters);
 
-            Enum.GetValues(typeof(ClusteringAlgorithmType)).Cast<ClusteringAlgorithmType>().ToList().ForEach(x => ClusteringAlgorithms.Add(x));
+            Enum.GetValues(typeof(LcmsFeatureClusteringAlgorithmType)).Cast<LcmsFeatureClusteringAlgorithmType>().ToList().ForEach(x => ClusteringAlgorithms.Add(x));
             Enum.GetValues(typeof(FeatureAlignmentType)).Cast<FeatureAlignmentType>().ToList().ForEach(x => AlignmentAlgorithms.Add(x));
             Enum.GetValues(typeof(FeatureFinderType)).Cast<FeatureFinderType>().ToList().ForEach(x => FeatureFindingAlgorithms.Add(x));
         }
@@ -385,21 +386,21 @@ namespace MultiAlign.ViewModels.Wizard
         #endregion
 
         #region Algorithms
-        public ObservableCollection<ClusteringAlgorithmType> ClusteringAlgorithms { get; set; }
+        public ObservableCollection<LcmsFeatureClusteringAlgorithmType> ClusteringAlgorithms { get; set; }
         public ObservableCollection<FeatureAlignmentType>    AlignmentAlgorithms { get; set; }
         public ObservableCollection<FeatureFinderType>       FeatureFindingAlgorithms { get; set; }
 
-        public ClusteringAlgorithmType SelectedClusteringAlgorithm
+        public LcmsFeatureClusteringAlgorithmType SelectedLcmsFeatureClusteringAlgorithm
         {
             get
             {
-                return m_options.LcmsClusteringOptions.ClusteringAlgorithm;
+                return m_options.LcmsClusteringOptions.LcmsFeatureClusteringAlgorithm;
             }
             set
             {
-                if (m_options.LcmsClusteringOptions.ClusteringAlgorithm != value)
+                if (m_options.LcmsClusteringOptions.LcmsFeatureClusteringAlgorithm != value)
                 {
-                    m_options.LcmsClusteringOptions.ClusteringAlgorithm = value;
+                    m_options.LcmsClusteringOptions.LcmsFeatureClusteringAlgorithm = value;
                     OnPropertyChanged("SelectedClusteringAlgorithm");
                 }
             }

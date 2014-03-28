@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using MultiAlignCore.Data;
-using MultiAlignCore.Data.MetaData;
-using MultiAlign.ViewModels.Plotting;
-using System.Windows.Input;
-using System.Collections.ObjectModel;
+﻿using System.Windows.Input;
+using MultiAlign.Commands.Datasets;
 using MultiAlign.Commands.Plotting;
+using MultiAlign.ViewModels.Plotting;
+using MultiAlignCore.Data.MetaData;
+using System;
+using System.Collections.ObjectModel;
+using MultiAlignCore.IO.InputFiles;
 
 namespace MultiAlign.ViewModels
 {
@@ -39,7 +37,10 @@ namespace MultiAlign.ViewModels
                 PlotData.Add(new PlotViewModel(data.MassScanResidual,   "Mass vs Scan Residuals"));
                 PlotData.Add(new PlotViewModel(data.MassMzResidual,     "Mass vs m/z Residuals"));
                 PlotData.Add(new PlotViewModel(data.NetResiduals,       "NET Residuals"));
-            }                  
+            }
+
+
+            ModifyDatasetCommand = new ShowDatasetDetailCommand();
         }
 
         public bool IsSelected
@@ -50,14 +51,12 @@ namespace MultiAlign.ViewModels
             }
             set
             {
-                if (value != m_isSelected)
-                {
-                    m_isSelected = value;
-                    OnPropertyChanged("IsSelected");
+                if (value == m_isSelected) return;
+                m_isSelected = value;
+                OnPropertyChanged("IsSelected");
 
-                    if (Selected != null)
-                        Selected(this, null);
-                }
+                if (Selected != null)
+                    Selected(this, null);
             }
 
         }
@@ -67,6 +66,24 @@ namespace MultiAlign.ViewModels
             {
                 return m_information;
             }            
+        }
+
+        public  int DatasetId
+        {
+
+            get
+            {
+                return m_information.DatasetId;
+            }
+            set
+            {
+                if (m_information != null)
+                {
+                    m_information.DatasetId = value;
+                    OnPropertyChanged("DatasetId");
+                }
+            }
+            
         }
 
         public string Name
@@ -123,5 +140,7 @@ namespace MultiAlign.ViewModels
                 }
             }
         }
+
+        public ICommand ModifyDatasetCommand { get; set; }
     }
 }

@@ -43,10 +43,9 @@ namespace MultiAlignCore.IO.MTDB
 
         #region IMtdbLoader Members
 
-        public Data.MassTags.MassTagDatabase LoadDatabase()
+        public MassTagDatabase LoadDatabase()
         {
-            MassTagDatabase database = new MassTagDatabase();
-            database.Name = "";
+            var database = new MassTagDatabase {Name = ""};
 
             UpdateStatus("Loading all of the mass tags.");
             // Get all of the mass tags

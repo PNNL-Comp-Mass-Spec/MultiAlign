@@ -191,7 +191,7 @@ namespace MultiAlignCore.Data.Imaging
             options.YAxisLabel          = "Monoisotopic Mass";
             options.Width               = width;
             options.Height              = height;
-
+            
             SetupDisplayOptions(shouldDisplayText, options);
             
             List<MassTagLight> tags     = database.MassTags;

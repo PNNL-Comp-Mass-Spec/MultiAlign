@@ -1,6 +1,7 @@
 using MultiAlignCore.Algorithms.Alignment;
 using MultiAlignCore.Algorithms.Clustering;
 using MultiAlignCore.Algorithms.FeatureMatcher;
+using PNNLOmics.Algorithms.Alignment.SpectralMatches;
 using PNNLOmics.Algorithms.FeatureClustering;
 using PNNLOmics.Data.Features;
 using MultiAlignCore.Data;
@@ -34,33 +35,17 @@ namespace MultiAlignCore.Algorithms
         /// </summary>
         /// <param name="clusterType"></param>
         /// <returns></returns>
-        public void BuildClusterer(ClusteringAlgorithmType clusterType)
+        public void BuildClusterer(LcmsFeatureClusteringAlgorithmType clusterType)
         {
-            IClusterer<UMCLight, UMCClusterLight> clusterer = null;
-            switch (clusterType)
-            {                    
-                case ClusteringAlgorithmType.AverageLinkage:
-                    clusterer = new UMCAverageLinkageClusterer<UMCLight, UMCClusterLight>();
-                    break;
-                case ClusteringAlgorithmType.Centroid:
-                    clusterer = new UMCCentroidClusterer<UMCLight, UMCClusterLight>();
-                    break;
-                case ClusteringAlgorithmType.SingleLinkage:
-                    clusterer = new UMCSingleLinkageClusterer<UMCLight, UMCClusterLight>();
-                    break;
-                case ClusteringAlgorithmType.Prims:                                
-                    clusterer = new UMCPrimsClustering<UMCLight, UMCClusterLight>();
-                    break;
-            }
-
-            m_provider.Clusterer = clusterer;               
+            m_provider.Clusterer = ClusterFactory.Create(clusterType);
         }
         /// <summary>
         /// Builds the feature aligner.
         /// </summary>
-        public void BuildAligner(AlignmentOptions options)
+        public void BuildAligner(AlignmentOptions options, SpectralOptions spectralOptions)
         {
-            m_provider.Aligner = FeatureAlignerFactory.Create(options.AlignmentAlgorithm);
+            m_provider.DatasetAligner  = FeatureAlignerFactory.CreateDatasetAligner(options.AlignmentAlgorithm, options, spectralOptions);
+            m_provider.DatabaseAligner = FeatureAlignerFactory.CreateDatabaseAligner(options.AlignmentAlgorithm, options, spectralOptions);
         }
         /// <summary>
         /// Builds a peak matcher object.
@@ -102,11 +87,11 @@ namespace MultiAlignCore.Algorithms
         {
             if (m_provider.Clusterer == null)
             {
-                BuildClusterer(ClusteringAlgorithmType.AverageLinkage);
+                BuildClusterer(LcmsFeatureClusteringAlgorithmType.AverageLinkage);
             }
-            if (m_provider.Aligner == null)
+            if (m_provider.DatabaseAligner == null && m_provider.DatabaseAligner == null)
             {
-                BuildAligner(options.AlignmentOptions);
+                BuildAligner(options.AlignmentOptions, options.SpectralOptions);
             }
             if (m_provider.PeakMatcher == null)
             {

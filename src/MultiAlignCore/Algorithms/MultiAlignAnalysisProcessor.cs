@@ -14,6 +14,8 @@ using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.Features.Hibernate;
 using MultiAlignCore.IO.MTDB;
 using PNNLOmics.Algorithms;
+using PNNLOmics.Algorithms.Alignment;
+using PNNLOmics.Algorithms.FeatureClustering;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Data.MassTags;
 using System;
@@ -190,7 +192,6 @@ namespace MultiAlignCore.Algorithms
             m_methodMap                                     = new Dictionary<AnalysisStep, DelegateAnalysisMethod>
             {
                 {AnalysisStep.FindFeatures, PerformDataLoadAndAlignment},
-                {AnalysisStep.Alignment,    PerformAlignment},
                 {AnalysisStep.Clustering,   PerformLcmsFeatureClustering},
                 {AnalysisStep.PeakMatching, PerformPeakMatching}
             };
@@ -282,7 +283,7 @@ namespace MultiAlignCore.Algorithms
                                                         config.Analysis.DataProviders,
                                                         config.Analysis.MassTagDatabase,
                                                         config.Analysis.Options.AlignmentOptions.IsAlignmentBaselineAMasstagDB);            
-            var aligner       = m_algorithms.Aligner;
+            
             var alignmentData = new AlignmentDAOHibernate();
             alignmentData.ClearAll();
 
@@ -293,18 +294,13 @@ namespace MultiAlignCore.Algorithms
                 Providers = providers
             };
 
-            RegisterProgressNotifier(aligner);
             RegisterProgressNotifier(featureCache);
 
             MassTagDatabase database = null;
             if (config.Analysis.MassTagDatabase != null)            
                 database = new MassTagDatabase(config.Analysis.MassTagDatabase, config.Analysis.Options.AlignmentOptions.MassTagObservationCount);
-
-
-            if (true)
-            {
-                SingletonDataProviders.Providers = config.Analysis.DataProviders;
-            }
+            
+            SingletonDataProviders.Providers = config.Analysis.DataProviders;            
 
             foreach (var dataset in datasets)
             {
@@ -314,19 +310,13 @@ namespace MultiAlignCore.Algorithms
                                                         analysisOptions.MsFilteringOptions,
                                                         analysisOptions.LcmsFindingOptions,
                                                         analysisOptions.LcmsFilteringOptions);
-
                 features = AlignDataset(features,
                                         baselineFeatures,
                                         database,
-                                        config.Analysis.Options.AlignmentOptions,
-                                        alignmentData,
-                                        aligner,
                                         dataset,
                                         baselineDataset);
-
                 featureCache.CacheFeatures(features);
             }
-            DeRegisterProgressNotifier(aligner);
             UmcLoaderFactory.Status -= UMCLoaderFactory_Status;
         }
 
@@ -427,9 +417,9 @@ namespace MultiAlignCore.Algorithms
             var alignmentCache = new AlignmentDAOHibernate();
             alignmentCache.ClearAll();
 
-            // Align pairwise and cache results intermediately.
-            var aligner = m_algorithms.Aligner;
-            RegisterProgressNotifier(aligner);
+
+            
+            //config.Analysis.Options.AlignmentOptions
 
             foreach(var datasetInfo in config.Analysis.MetaData.Datasets)
             {
@@ -439,10 +429,7 @@ namespace MultiAlignCore.Algorithms
                     var features             = featureCache.FindByDatasetId(datasetInfo.DatasetId) as IList<UMCLight>;
                     features                 = AlignDataset(features, 
                                                             baselineFeatures, 
-                                                            config.Analysis.MassTagDatabase,
-                                                            config.Analysis.Options.AlignmentOptions,       
-                                                            alignmentCache,
-                                                            aligner, 
+                                                            config.Analysis.MassTagDatabase,                                                                 
                                                             datasetInfo,
                                                             baselineInfo);
                     featureCache.UpdateAll(features);
@@ -456,16 +443,12 @@ namespace MultiAlignCore.Algorithms
                     config.Analysis.AlignmentData.Add(null);
                 }
             }
-            DeRegisterProgressNotifier(aligner);
         }
 
         private IList<UMCLight> AlignDataset(
                                             IList<UMCLight>          features,
                                             IEnumerable<UMCLight> baselineFeatures,
                                             MassTagDatabase         database,
-                                            AlignmentOptions        options,
-                                            IAlignmentDAO           alignmentCache,
-                                            IFeatureAligner         aligner, 
                                             DatasetInformation      datasetInfo,
                                             DatasetInformation      baselineInfo)
         {
@@ -479,20 +462,32 @@ namespace MultiAlignCore.Algorithms
             // align the data.
             if (baselineFeatures != null && baselineInfo != null && baselineInfo.IsBaseline)
             {
+                
+                // Align pairwise and cache results intermediately.
+                var aligner = m_algorithms.DatasetAligner;
+                RegisterProgressNotifier(aligner);
+                
                 UpdateStatus( "Aligning " + datasetInfo.DatasetName + " to baseline.");
-                alignmentData = AlignFeatures(features, baselineFeatures, aligner, options);
+                alignmentData = aligner.Align(baselineFeatures, features);
+
+                DeRegisterProgressNotifier(aligner);
             }
             else
             {
-                UpdateStatus( "Aligning " + datasetInfo.DatasetName + " to mass tag database.");
-                alignmentData = AlignFeatures(features, database, aligner, options);
+                // Align pairwise and cache results intermediately.
+                var aligner = m_algorithms.DatabaseAligner;
+                RegisterProgressNotifier(aligner);
+
+                UpdateStatus("Aligning " + datasetInfo.DatasetName + " to mass tag database.");
+                alignmentData = aligner.Align(database, features);
+
+                DeRegisterProgressNotifier(aligner);
             }
 
             if (alignmentData != null)
             {
-                alignmentData.aligneeDataset = datasetInfo.DatasetName;
-                alignmentData.DatasetID = datasetInfo.DatasetId;
-
+                alignmentData.aligneeDataset    = datasetInfo.DatasetName;
+                alignmentData.DatasetID         = datasetInfo.DatasetId;
             }
 
             var args = new FeaturesAlignedEventArgs(baselineInfo,
@@ -501,38 +496,10 @@ namespace MultiAlignCore.Algorithms
 
             if (FeaturesAligned != null)            
                 FeaturesAligned(this, args);
-            
-            if (options.ShouldStoreAlignmentFunction && alignmentData != null)                        
-                alignmentCache.Add(alignmentData);
-                        
+                                                
             UpdateStatus( "Updating cache with aligned features.");
             return features;
         }
-        private classAlignmentData AlignFeatures(IEnumerable<UMCLight> features,
-                                                 IEnumerable<UMCLight> baselineFeatures,
-                                                 IFeatureAligner   aligner,
-                                                 AlignmentOptions  options)
-        {
-            classAlignmentData alignmentData = aligner.AlignFeatures(baselineFeatures.ToList(),
-                features.ToList(),
-                options);
-
-            return alignmentData;
-        }
-
-        private classAlignmentData AlignFeatures(   IEnumerable<UMCLight> features,
-                                                    MassTagDatabase  database,
-                                                    IFeatureAligner  aligner,
-                                                    AlignmentOptions options)
-        {
-            var alignmentData = aligner.AlignFeatures(database,
-                                                    features.ToList(),
-                                                    options,
-                                                    false);
-
-            return alignmentData;
-        }
-
         #endregion
 
         #region Clustering
@@ -827,7 +794,7 @@ namespace MultiAlignCore.Algorithms
         /// <summary>
         /// Starts the main analysis.
         /// </summary>
-        private void PerformAnalysis()
+        private void PerformAnalysis() 
         {
             try
             {
@@ -841,8 +808,8 @@ namespace MultiAlignCore.Algorithms
                 {
                     node.IsCurrent = true;
                     node.Method(m_config);
-                    node.IsCurrent = false;
-                }
+                    node.IsCurrent = false; 
+                } 
             }
             catch (OutOfMemoryException ex)
             {
@@ -864,9 +831,6 @@ namespace MultiAlignCore.Algorithms
             if (AnalysisComplete != null)            
                 AnalysisComplete(this, new AnalysisCompleteEventArgs(m_config.Analysis));                        
         }
-        #endregion    
-
-        
-
+        #endregion            
     }
 }

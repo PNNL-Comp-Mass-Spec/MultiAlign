@@ -1,5 +1,4 @@
-﻿using MultiAlignCore.Algorithms.Clustering;
-using MultiAlignCore.Algorithms.FeatureFinding;
+﻿using MultiAlignCore.Algorithms.FeatureFinding;
 using MultiAlignCore.Algorithms.Features;
 using MultiAlignCore.Algorithms.Options;
 using MultiAlignCore.Data;
@@ -15,6 +14,7 @@ using MultiAlignCore.IO.InputFiles;
 using MultiAlignCore.IO.MTDB;
 using MultiAlignCore.IO.Parameters;
 using PNNLOmics.Algorithms;
+using PNNLOmics.Algorithms.FeatureClustering;
 using PNNLOmics.Data.Features;
 using System;
 using System.Collections.Generic;
@@ -801,13 +801,13 @@ namespace MultiAlignCore.Algorithms
             if (m_config.options.ContainsKey("-centroid"))
             {
                 Logger.PrintMessage("Building centroid clusterer");
-                builder.BuildClusterer(ClusteringAlgorithmType.Centroid);
+                builder.BuildClusterer(LcmsFeatureClusteringAlgorithmType.Centroid);
             }
             else if (m_config.options.ContainsKey("-singlelinkage"))
             {
 
                 Logger.PrintMessage("Building single linkage clusterer");
-                builder.BuildClusterer(ClusteringAlgorithmType.SingleLinkage);
+                builder.BuildClusterer(LcmsFeatureClusteringAlgorithmType.SingleLinkage);
             }
             else
             {
@@ -1042,7 +1042,7 @@ namespace MultiAlignCore.Algorithms
             FeatureDataAccessProviders providers = SetupDataProviders(createDatabase);
 
             // Create the clustering, analysis, and plotting paths.
-            builder.BuildClusterer(config.Analysis.Options.LcmsClusteringOptions.ClusteringAlgorithm);
+            builder.BuildClusterer(config.Analysis.Options.LcmsClusteringOptions.LcmsFeatureClusteringAlgorithm);
             config.Analysis.DataProviders   = providers;
             config.Analysis.AnalysisType    = validated;
             ConstructPlotPath();

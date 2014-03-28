@@ -1,5 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data;
+using System.IO;
+using System.Windows.Input;
+using MultiAlign.Commands;
+using MultiAlign.ViewModels.Datasets;
+using MultiAlign.Windows.Viewers.Datasets;
 using MultiAlignCore.Data;
 using System.Linq;
 using MultiAlignCore.Data.MetaData;
@@ -18,12 +25,70 @@ namespace MultiAlign.ViewModels
 
         public DatasetCollectionViewModel(IEnumerable<DatasetInformation> datasets)
         {
-            
-            List<DatasetInformationViewModel> datasetViewModels =  (from dataset in datasets
-                                                                    select new DatasetInformationViewModel(dataset)).ToList(); 
-            m_models         = datasetViewModels;
-            Datasets         = new ObservableCollection<DatasetInformationViewModel>(datasetViewModels);
+
+            List<DatasetInformationViewModel> datasetViewModels = (from dataset in datasets
+                select new DatasetInformationViewModel(dataset)).ToList();
+            m_models = datasetViewModels;
+            Datasets = new ObservableCollection<DatasetInformationViewModel>(datasetViewModels);
             FilteredDatasets = new ObservableCollection<DatasetInformationViewModel>(datasetViewModels);
+
+            Action<string> action = ReconcilePaths;
+            var command = new BrowseFolderCommand(action);
+            ReconcilePathsCommand = command;
+        }
+
+        /// <summary>
+        /// Reconciles the paths to the 
+        /// </summary>
+        /// <param name="path"></param>
+        private void ReconcilePaths(string path)
+        {
+            var files = Directory.GetFiles(path);
+            var nameMap = new Dictionary<string, string>();
+            // Map the names of the files to the dictionary
+            foreach (var file in files)
+            {
+                var filenameOnly = Path.GetFileName(file);
+                if (filenameOnly == null) continue;                
+                if (nameMap.ContainsKey(filenameOnly)) continue;                
+                nameMap.Add(filenameOnly, file);
+            }
+
+            var newPaths = new List<DatasetResolveMatchViewModel>();
+            foreach (var dataset in Datasets)
+            {
+                if (dataset.Dataset.RawPath == null)
+                    continue;
+                
+
+                var filename = Path.GetFileName(dataset.Dataset.RawPath);
+                if (nameMap.ContainsKey(filename))
+                {
+                    var newPath = nameMap[filename];
+                    var model = new DatasetResolveMatchViewModel(dataset, newPath);   
+                    newPaths.Add(model);
+                }                 
+            }
+
+            if (newPaths.Count > 0)
+            {
+                var view            = new DatasetResolveView();
+                var viewModel       = new DatasetResolveCollectionViewModel(newPaths);
+                view.DataContext    = viewModel;
+
+                bool? result = view.ShowDialog();
+
+                if (result == true)
+                {
+                    foreach (var match in newPaths)
+                    {
+                        if (match.IsSelected)
+                        {
+                            match.Dataset.Dataset.RawPath = match.NewPath;
+                        }
+                    }
+                }
+            }
         }
 
 
@@ -92,5 +157,7 @@ namespace MultiAlign.ViewModels
                 }
             }
         }
+
+        public ICommand ReconcilePathsCommand { get; private set; }
     }
 }

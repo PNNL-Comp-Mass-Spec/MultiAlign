@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using PNNLOmics.Algorithms.Alignment.SpectralMatching;
 
 namespace MultiAlignTestSuite.Papers.Alignment.IO
 {
@@ -24,8 +21,6 @@ namespace MultiAlignTestSuite.Papers.Alignment.IO
                     break;
                 case AlignmentFigureType.Figure3:
                     writer = new SpectralWriterFigureThree(name, BasePath);
-                    break;
-                default:
                     break;
             }
             return writer;

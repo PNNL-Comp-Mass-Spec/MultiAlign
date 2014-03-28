@@ -363,33 +363,78 @@ namespace MultiAlignCore.Data.MetaData
             }
             return t;
         }
-    }
-
-    public class SupportedDatasetType
-    {
-        public SupportedDatasetType(string name,
-                                    string extension,                                
-                                    InputFileType type)
-        {
-            Name        = name;
-            InputType   = type;
-            Extension   = extension;
-        }
 
         /// <summary>
-        /// Gets or sets the extension of the dataset type.
+        /// Adds a new dataset to the list. 
         /// </summary>
-        public string Extension { get; private set; }
-
-        public string Name
+        /// <returns>A list of added datasets</returns>
+        public static List<DatasetInformation> ConvertInputFilesIntoDatasets(List<InputFile> inputFiles)
         {
-            get;
-            private set;
-        }
-        public InputFileType InputType 
-        { 
-            get;
-            private set; 
+            var addedSets                  = new List<DatasetInformation>();
+            var datasetMap   = new Dictionary<string, DatasetInformation>();
+            var inputMap        = new Dictionary<string, List<InputFile>>();
+
+            foreach (InputFile file in inputFiles)
+            {
+                string name = System.IO.Path.GetFileName(file.Path);
+                string datasetName = DatasetInformation.ExtractDatasetName(name);
+                bool isEntryMade = inputMap.ContainsKey(datasetName);
+                if (!isEntryMade)
+                {
+                    inputMap.Add(datasetName, new List<InputFile>());
+                }
+
+                inputMap[datasetName].Add(file);
+            }
+
+            int i = 0;
+            foreach (string datasetName in inputMap.Keys)
+            {
+                var files = inputMap[datasetName];
+                var datasetInformation = new DatasetInformation {DatasetId = i++, DatasetName = datasetName};
+
+                bool doesDatasetExist = datasetMap.ContainsKey(datasetName);
+
+                // Here we map the old dataset if it existed already.
+                if (datasetMap.ContainsKey(datasetName))
+                {
+                    datasetInformation = datasetMap[datasetName];
+                }
+
+                foreach (InputFile file in files)
+                {
+                    switch (file.FileType)
+                    {
+                        case InputFileType.Features:
+                            datasetInformation.Features = file;
+                            datasetInformation.Path = file.Path;
+                            break;
+                        case InputFileType.Scans:
+                            datasetInformation.Scans = file;
+                            break;
+                        case InputFileType.Raw:
+                            datasetInformation.Raw = file;
+                            break;
+                        case InputFileType.Sequence:
+                            datasetInformation.Sequence = file;
+                            break;
+                    }
+                }
+
+                // Add the dataset
+                if (!doesDatasetExist)
+                {
+                    addedSets.Add(datasetInformation);
+                }
+            }
+
+            // Reformat their Id's
+            var id = 0;
+            foreach (var x in addedSets)
+            {
+                x.DatasetId = id++;
+            }
+            return addedSets;
         }
     }
 }

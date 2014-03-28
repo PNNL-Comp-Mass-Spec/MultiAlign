@@ -1,8 +1,7 @@
-﻿using MultiAlignTestSuite.Algorithms.SpectralProcessing;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
+using MultiAlignTestSuite.Papers.Alignment.SSM;
+using PNNLOmics.Algorithms.Alignment;
+using PNNLOmics.Algorithms.Alignment.SpectralMatching;
 
 namespace MultiAlignTestSuite.Papers.Alignment.IO
 {
@@ -30,15 +29,15 @@ namespace MultiAlignTestSuite.Papers.Alignment.IO
             }
 
             WriteLine("[Histogram]");
-            Histogram falseMatches = MatchCountHistogramBuilder.SimilarityScore(0,
+            var falseMatches = MatchCountHistogramBuilder.SimilarityScore(0,
                                                                                 1,
                                                                                 .05,
-                                                                                analysis.Matches.Where(x => x.IsValidMatch == AnchorMatch.FalseMatch));
+                                                                                analysis.Matches.Where(x => x.IsValidMatch == AnchorPointMatchType.FalseMatch));
 
-            Histogram trueMatches = MatchCountHistogramBuilder.SimilarityScore(0,
+            var trueMatches = MatchCountHistogramBuilder.SimilarityScore(0,
                                                                                 1,
                                                                                 .05,
-                                                                                analysis.Matches.Where(x => x.IsValidMatch == AnchorMatch.TrueMatch));
+                                                                                analysis.Matches.Where(x => x.IsValidMatch == AnchorPointMatchType.TrueMatch));
 
             Histogram allMatches = MatchCountHistogramBuilder.SimilarityScore(0, 1, .05, analysis.Matches);
             WriteLine("Value\t False Matches\t True Matches\t All");

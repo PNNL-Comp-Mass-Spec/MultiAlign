@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using MultiAlignTestSuite.Algorithms.SpectralProcessing;
+using PNNLOmics.Algorithms.Alignment.SpectralMatching;
 
 namespace MultiAlignTestSuite.Papers.Alignment.IO
 {

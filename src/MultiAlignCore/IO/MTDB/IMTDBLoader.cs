@@ -1,5 +1,4 @@
-﻿using MultiAlignCore.Data.MassTags;
-using MultiAlignEngine.MassTags;
+﻿using PNNLOmics.Data.MassTags;
 
 namespace MultiAlignCore.IO.MTDB
 {
