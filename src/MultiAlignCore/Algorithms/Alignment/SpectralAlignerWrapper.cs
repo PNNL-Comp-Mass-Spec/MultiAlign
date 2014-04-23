@@ -15,13 +15,22 @@ namespace MultiAlignCore.Algorithms.Alignment
         {
             var matches = base.Align(baseline, alignee);
             var data = new classAlignmentData { Matches = matches };
+
+            Matches = matches;
+
             return data;
         }
         public new classAlignmentData Align(MassTagDatabase database, IEnumerable<UMCLight> alignee)
         {
             var matches = base.Align(database, alignee);
             var data = new classAlignmentData {Matches = matches};
+            
+            Matches = matches;
+
             return data;
+
         }
+
+        public IEnumerable<SpectralAnchorPointMatch> Matches { get; private set; }
     }
 }

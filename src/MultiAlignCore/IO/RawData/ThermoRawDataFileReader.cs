@@ -11,7 +11,7 @@ namespace MultiAlignCore.IO.Features
     /// <summary>
     /// Adapter for the Thermo Finnigan file format reader made by Matt Monroe.
     /// </summary>
-    public class ThermoRawDataFileReader: ISpectraProvider, IDisposable
+    public class ThermoRawDataFileReader: ISpectraProvider
     {
         /// <summary>
         /// Readers for each dataset.
@@ -57,29 +57,29 @@ namespace MultiAlignCore.IO.Features
         /// knows where to get raw data from.
         /// </summary>
         /// <param name="path"></param>
-        /// <param name="groupID"></param>
-        public void AddDataFile(string path, int groupID)
+        /// <param name="groupId"></param>
+        public void AddDataFile(string path, int groupId)
         {
-            if (m_opened.ContainsKey(groupID))
+            if (m_opened.ContainsKey(groupId))
             {
                 try
                 {
-                    if (m_readers.ContainsKey(groupID))
+                    if (m_readers.ContainsKey(groupId))
                     {
-                        m_readers[groupID].CloseRawFile();
+                        m_readers[groupId].CloseRawFile();
                     }
                 }
                 catch
                 {
                 }
 
-                m_opened[groupID]    = false;
-                m_dataFiles[groupID] = path;
+                m_opened[groupId]    = false;
+                m_dataFiles[groupId] = path;
 
                 return;
             }
-            m_dataFiles.Add(groupID, path);
-            m_opened.Add(groupID, false);
+            m_dataFiles.Add(groupId, path);
+            m_opened.Add(groupId, false);
         }        
 
         #region IRawDataFileReader Members
@@ -144,6 +144,19 @@ namespace MultiAlignCore.IO.Features
                         case "cid":
                             spectrum.CollisionType = CollisionType.CID;
                             break;                        
+                        case "hcd":
+                            spectrum.CollisionType = CollisionType.HCD;
+                            break;
+                        case "etd":
+                            spectrum.CollisionType = CollisionType.ETD;
+                            break;
+                        case "ecd":
+                            spectrum.CollisionType = CollisionType.ECD;
+                            break;
+                        case "hid":
+                            spectrum.CollisionType = CollisionType.HID;
+                            break;
+
                     }
 
                     // Need to make this a standard type of collision based off of the data.
@@ -261,10 +274,23 @@ namespace MultiAlignCore.IO.Features
                 CollisionType   = CollisionType.Other,                
             };
 
+
             switch (header.CollisionMode)
             {
                 case "cid":
                     summary.CollisionType = CollisionType.CID;
+                    break;
+                case "hcd":
+                    summary.CollisionType = CollisionType.HCD;
+                    break;
+                case "etd":
+                    summary.CollisionType = CollisionType.ETD;
+                    break;
+                case "ecd":
+                    summary.CollisionType = CollisionType.ECD;
+                    break;
+                case "hid":
+                    summary.CollisionType = CollisionType.HID;
                     break;
 
             }
@@ -389,13 +415,27 @@ namespace MultiAlignCore.IO.Features
                 summary.Scan            = i;
                 summary.TotalIonCurrent = Convert.ToInt64(header.TotalIonCurrent);
                 summary.PrecursorMZ     = header.ParentIonMZ;
-                summary.CollisionType   = CollisionType.Other;                
-                                                                        
+                summary.CollisionType   = CollisionType.Other;
+
+
                 switch (header.CollisionMode)
                 {
                     case "cid":
                         summary.CollisionType = CollisionType.CID;
                         break;
+                    case "hcd":
+                        summary.CollisionType = CollisionType.HCD;
+                        break;
+                    case "etd":
+                        summary.CollisionType = CollisionType.ETD;
+                        break;
+                    case "ecd":
+                        summary.CollisionType = CollisionType.ECD;
+                        break;
+                    case "hid":
+                        summary.CollisionType = CollisionType.HID;
+                        break;
+
                 }
                 scanMap.Add(i, summary);     
             }
@@ -408,5 +448,128 @@ namespace MultiAlignCore.IO.Features
         }
 
         #endregion
+
+
+        public MSSpectra GetSpectrum(int scan, int group, int scanLevel, out ScanSummary summary, bool loadPeaks)
+        {
+            if (!m_dataFiles.ContainsKey(group))
+            {
+                throw new Exception("The group-dataset ID provided was not found.");
+            }
+            // If we dont have a reader, then create one for this group 
+            // next time, it will be available and we won't have to waste time
+            // opening the file.
+            if (!m_readers.ContainsKey(group))
+            {
+                string path         = m_dataFiles[group];
+                XRawFileIO reader   = new XRawFileIO();
+
+                m_readers.Add(group, reader);
+                bool opened         = reader.OpenRawFile(path);
+
+                if (!opened)
+                {
+                    throw new IOException("Could not open the Thermo raw file " + m_dataFiles[group]);
+                }
+            }
+
+            List<MSSpectra> spectra  = new List<MSSpectra>();
+            XRawFileIO rawReader     = m_readers[group];
+
+            
+            var totalSpectra = rawReader.GetNumScans();
+
+            if (scan > totalSpectra)
+                throw new ScanOutOfRangeException("The requested scan is out of range.");
+
+            FinniganFileReaderBaseClass.udtScanHeaderInfoType header = new FinniganFileReaderBaseClass.udtScanHeaderInfoType();
+            rawReader.GetScanInfo(scan, out header);
+
+            summary = new ScanSummary()
+            {
+                MsLevel         = header.MSLevel,
+                Time            = header.RetentionTime,
+                Scan            = scan,
+                TotalIonCurrent = Convert.ToInt64(header.TotalIonCurrent),
+                PrecursorMZ     = header.ParentIonMZ,
+                CollisionType   = CollisionType.Other,                
+            };
+
+
+            switch (header.CollisionMode)
+            {
+                case "cid":
+                    summary.CollisionType = CollisionType.CID;
+                    break;
+                case "hcd":
+                    summary.CollisionType = CollisionType.HCD;
+                    break;
+                case "etd":
+                    summary.CollisionType = CollisionType.ETD;
+                    break;
+                case "ecd":
+                    summary.CollisionType = CollisionType.ECD;
+                    break;
+                case "hid":
+                    summary.CollisionType = CollisionType.HID;
+                    break;
+
+            }
+
+
+            var n              = header.NumPeaks;
+            var mz             = new double[n];
+            var intensities    = new double[n];            
+            rawReader.GetScanData(scan, ref mz, ref intensities, ref header);
+            
+            
+            // construct the array.
+            var data = new List<XYData>(mz.Length);            
+            for (int i = 0; i < mz.Length; i++)
+            {
+                double intensity = intensities[i];
+                data.Add(new XYData(mz[i], intensity));                
+            }
+
+
+            var spectrum = new MSSpectra
+            {
+                MSLevel = header.MSLevel,
+                RetentionTime = header.RetentionTime,
+                Scan = scan,
+                PrecursorMZ = header.ParentIonMZ,
+                TotalIonCurrent = header.TotalIonCurrent,
+                CollisionType = CollisionType.Other
+            };
+
+
+            switch (header.CollisionMode)
+            {
+                case "cid":
+                    spectrum.CollisionType = CollisionType.CID;
+                    break;
+                case "hcd":
+                    spectrum.CollisionType = CollisionType.HCD;
+                    break;
+                case "etd":
+                    spectrum.CollisionType = CollisionType.ETD;
+                    break;
+                case "ecd":
+                    spectrum.CollisionType = CollisionType.ECD;
+                    break;
+                case "hid":
+                    spectrum.CollisionType = CollisionType.HID;
+                    break;
+
+            }
+
+            // Need to make this a standard type of collision based off of the data.
+            if (loadPeaks)
+            {
+                spectrum.Peaks = LoadRawSpectra(rawReader, scan);
+            }
+
+            return spectrum;
+        }
     }
 }

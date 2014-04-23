@@ -1,10 +1,7 @@
-﻿using AForge;
-using MultiAlign.IO;
-using MultiAlign.ViewModels.Charting;
+﻿using MultiAlign.IO;
 using MultiAlign.ViewModels.Instruments;
 using MultiAlignCore.Algorithms;
 using MultiAlignCore.Algorithms.Alignment;
-using MultiAlignCore.Algorithms.Clustering;
 using MultiAlignCore.Algorithms.FeatureFinding;
 using MultiAlignCore.Algorithms.Options;
 using MultiAlignCore.Algorithms.Workflow;
@@ -13,23 +10,24 @@ using MultiAlignCore.Data.Features;
 using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.Extensions;
 using MultiAlignCore.IO.Features;
-using MultiAlignEngine.Alignment;
+using MultiAlignCore.IO.RawData;
 using NUnit.Framework;
-using OxyPlot.WindowsForms;
 using PNNLOmics.Algorithms;
 using PNNLOmics.Algorithms.Alignment;
 using PNNLOmics.Algorithms.Alignment.SpectralMatches;
-using PNNLOmics.Algorithms.Distance;
+using PNNLOmics.Algorithms.Alignment.SpectralMatching;
 using PNNLOmics.Algorithms.FeatureClustering;
+using PNNLOmics.Algorithms.Regression;
 using PNNLOmics.Algorithms.SpectralProcessing;
+using PNNLOmics.Alignment.LCMSWarp.LCMSWarper.LCMSRegression;
 using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
+using PNNLOmics.Utilities;
+using PNNLOmicsIO.IO;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using PNNLOmicsIO.IO;
-using PNNLOmics.Utilities;
 
 namespace MultiAlignTestSuite.Papers.Alignment
 {
@@ -146,17 +144,204 @@ namespace MultiAlignTestSuite.Papers.Alignment
 
             Console.WriteLine("Same: {0}\t Not Same{1}", same, notSame);
         }
+        
+        [Test]
+        [TestCase(  @"M:\data\proteomics\TestData\QC-Shew-Annotated2",
+                    @"M:\data\proteomics\TestData\QC-Shew-Annotated2\peptidematches-2.txt")]
+        public void TestPeptideBands( string directory,
+            string matchPath)
+        {
+            // Loads the supported MultiAlign types 
+            var supportedTypes  = DatasetInformation.SupportedFileTypes;
+            var extensions      = new List<string>();
+            supportedTypes.ForEach(x => extensions.Add("*" + x.Extension));
+
+            // Find our datasets
+            var inputFiles  = DatasetSearcher.FindDatasets(directory,
+                                                            extensions,
+                                                            SearchOption.TopDirectoryOnly);
+            var datasets    = DatasetInformation.ConvertInputFilesIntoDatasets(inputFiles);
+            
+            // Options setup
+            var instrumentOptions   = InstrumentPresetFactory.Create(InstrumentPresets.LtqOrbitrap);
+            var featureTolerances   = new FeatureTolerances{
+                Mass                = instrumentOptions.Mass,
+                RetentionTime       = instrumentOptions.NetTolerance,
+                DriftTime           = instrumentOptions.DriftTimeTolerance
+            };
+            
+            var msFilterOptions = new MsFeatureFilteringOptions
+            {
+                MinimumIntensity            =  5000,
+                ChargeRange                 = new FilterRange(1, 6),
+                ShouldUseChargeFilter       = true,
+                ShouldUseDeisotopingFilter  = true,
+                ShouldUseIntensityFilter    = true
+            };
+
+            var featureFindingOptions = new LcmsFeatureFindingOptions(featureTolerances)
+            {
+                MaximumNetRange     = .002,
+                MaximumScanRange    = 50
+            };
+
+            var baselineDataset     = datasets[0];
+
+            UpdateStatus("Loading baseline features.");
+            var msFeatures      = UmcLoaderFactory.LoadMsFeatureData(baselineDataset.Features.Path);
+            msFeatures          = LcmsFeatureFilters.FilterMsFeatures(msFeatures, msFilterOptions);
+            var finderFinder    = FeatureFinderFactory.CreateFeatureFinder(FeatureFinderType.TreeBased);
+
+            var peptideOptions = new SpectralOptions
+            {
+                ComparerType        = SpectralComparison.CosineDotProduct,
+                Fdr                 = .05,
+                IdScore             = 1e-09,
+                MzBinSize           = .5,
+                MzTolerance         = .5,
+                NetTolerance        = .1,
+                RequiredPeakCount   = 32,
+                SimilarityCutoff    = .75,
+                TopIonPercent       = .8
+            };
+
+            var features = new List<MSFeatureLight>();
+
+            // Load the baseline reference set
+            using (var rawProviderX = RawLoaderFactory.CreateFileReader(baselineDataset.RawPath))
+            {
+                rawProviderX.AddDataFile(baselineDataset.RawPath, 0);
+                UpdateStatus("Creating Baseline LCMS Features.");
+                var baselineFeatures = finderFinder.FindFeatures(msFeatures,
+                    featureFindingOptions,
+                    rawProviderX);
+
+                LinkPeptidesToFeatures(baselineDataset.SequencePath, 
+                                        baselineFeatures,
+                                        peptideOptions.Fdr,
+                                        peptideOptions.IdScore);
+
+                baselineFeatures.ForEach(x => features.AddRange(x.MSFeatures));
+                features = features.Where(x => x.HasMsMs()).ToList();
+                features = features.OrderBy(x => x.Mz).ToList();
+
+                var peptideList = new List<MSFeatureLight>();
+                foreach (var feature in features)
+                {
+                    foreach (var spectrum in feature.MSnSpectra)
+                    {
+                        var peptideFound = false;
+                        foreach (var peptide in spectrum.Peptides)
+                        {
+                            peptideList.Add(feature);
+                            peptideFound = true;
+                            break;
+                        }
+
+                        if (peptideFound)
+                            break;
+                    }
+                }
+
+                using (var writer = File.CreateText(matchPath))
+                {
+                    writer.WriteLine("Charge\tpmz\tscan\tNET\t");    
+                    foreach (var feature in peptideList)
+                    {
+                        writer.WriteLine("{0}\t{1}\t{2}\t{3}\t", feature.ChargeState, feature.Mz, feature.Scan, feature.NET);    
+                    }                    
+                }
+            }
+        }
+
+        [Test]
+        [TestCase(@"M:\errors.txt",
+            @"M:\errors-fit-05.txt",
+            .05,
+            5
+            )]
+        [TestCase(@"M:\errors.txt",
+            @"M:\errors-fit-02.txt",
+            .02,
+            5
+            )]
+        [TestCase(@"M:\errors.txt",
+            @"M:\errors-fit-20.txt",
+            .2,
+            5
+            )]
+        [TestCase(@"M:\errors.txt",
+            @"M:\errors-fit-30.txt",
+            .3,
+            15
+            )]
+        [TestCase(@"M:\errors.txt",
+            @"M:\errors-fit-10.txt",
+            .1,
+            5
+            )]
+        [TestCase(@"M:\errors.txt",
+            @"M:\errors-fit-90.txt",
+            .9,
+            5
+            )]
+        public void TestAlignmentfunction(
+            string path,
+            string outputPath,
+            double bandwidth,
+            int robustnessIterators
+
+            )
+        {
+            string[] data = File.ReadAllLines(path);
+
+            var x = new List<double>();
+            var y = new List<double>();
+
+            for (var i = 1; i < data.Length; i++)
+            {
+                var columns = data[i].Split('\t');
+                if (columns.Count() < 4)
+                    continue;
+
+                x.Add(Convert.ToDouble(columns[0]));
+                y.Add(Convert.ToDouble(columns[2]));
+
+            }
+            using (var writer = File.CreateText(outputPath))
+            {
+                var loess = new LoessInterpolator(bandwidth, robustnessIterators);
+                loess.MaxDistance = bandwidth;
+                loess.Smooth(x, y, FitFunctionFactory.Create(FitFunctionTypes.Cubic));
+                writer.WriteLine("NET\tNETY\tAligned\tNET\tERRORY\tERROR-Aligned");
+                for (var i = 0; i < y.Count; i++)
+                {
+                    var value = loess.Predict(y[i]);
+                    writer.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}", x[i], y[i], value, x[i], y[i] - x[i], value - x[i]);
+                }
+            }
+
+        }
 
         [Test]
         [TestCase(@"M:\data\proteomics\TestData\QC-Shew-Annotated2",
+            @"M:\data\proteomics\TestData\QC-Shew-Annotated2\matches",
+            FeatureAlignmentType.SpectralAlignment,
+            LcmsFeatureClusteringAlgorithmType.AverageLinkage,
+            Ignore=true )]
+        [TestCase(@"M:\data\proteomics\TestData\LipidTests", 
+            @"M:\data\proteomics\TestData\QC-Shew-Annotated2\lipidMatches",
             FeatureAlignmentType.SpectralAlignment,
             LcmsFeatureClusteringAlgorithmType.AverageLinkage
             )]
         public void TestClustering(
             string directory,
+            string outputPath,
             FeatureAlignmentType alignmentType,
             LcmsFeatureClusteringAlgorithmType clusterType)
         {
+
+            var matchPath = string.Format("{0}.txt", outputPath);
 
             // Loads the supported MultiAlign types 
             var supportedTypes = DatasetInformation.SupportedFileTypes;
@@ -175,7 +360,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
             {
                 ComparerType = SpectralComparison.CosineDotProduct,
                 Fdr = .01,
-                IdScore =  1e-15,
+                IdScore =  1e-09,
                 MzBinSize = .5,
                 MzTolerance = .5,
                 NetTolerance = .1,
@@ -187,11 +372,11 @@ namespace MultiAlignTestSuite.Papers.Alignment
 
             // Options setup
             var instrumentOptions = InstrumentPresetFactory.Create(InstrumentPresets.LtqOrbitrap);
-            var featureTolerances = new FeatureTolerances()
+            var featureTolerances = new FeatureTolerances
             {
-                Mass = instrumentOptions.Mass,
-                RetentionTime = instrumentOptions.NetTolerance,
-                DriftTime = instrumentOptions.DriftTimeTolerance
+                Mass            = instrumentOptions.Mass + 6,
+                RetentionTime   = instrumentOptions.NetTolerance,
+                DriftTime       = instrumentOptions.DriftTimeTolerance
             };
             var featureFindingOptions = new LcmsFeatureFindingOptions(featureTolerances)
             {
@@ -200,29 +385,25 @@ namespace MultiAlignTestSuite.Papers.Alignment
             };
 
             // Create our algorithms
-            var finder = FeatureFinderFactory.CreateFeatureFinder(FeatureFinderType.TreeBased);
-            var aligner = FeatureAlignerFactory.CreateDatasetAligner(alignmentType,
-                warpOptions,
-                spectralOptions);
-            var clusterer = ClusterFactory.Create(clusterType);
-            clusterer.Parameters = new FeatureClusterParameters<UMCLight>()
+            var finder  = FeatureFinderFactory.CreateFeatureFinder(FeatureFinderType.TreeBased);
+            var aligner = FeatureAlignerFactory.CreateDatasetAligner(   alignmentType,
+                                                                        warpOptions,
+                                                                        spectralOptions);
+            var clusterer        = ClusterFactory.Create(clusterType);
+            clusterer.Parameters = new FeatureClusterParameters<UMCLight>
             {
                 Tolerances = featureTolerances
             };
-
-
-           // ((LcmsWarpFeatureAligner)aligner).Options.AlignmentType = enmAlignmentType.NET_MASS_WARP;
-            
-
+                        
             RegisterProgressNotifier(aligner);
             RegisterProgressNotifier(finder);
             RegisterProgressNotifier(clusterer);
 
-            var lcmsFilters = new LcmsFeatureFilteringOptions()
+            var lcmsFilters = new LcmsFeatureFilteringOptions
             {
                 FeatureLengthRange = new FilterRange(50, 300)
             };
-            var msFilterOptions = new MsFeatureFilteringOptions()
+            var msFilterOptions = new MsFeatureFilteringOptions
             {
                 MinimumIntensity =  5000,
                 ChargeRange = new FilterRange(1, 6),
@@ -242,7 +423,8 @@ namespace MultiAlignTestSuite.Papers.Alignment
                                             spectralOptions,
                                             finder, 
                                             aligner,
-                                            clusterer);                            
+                                            clusterer,
+                                            matchPath);                            
             }
         }
         /// <summary>
@@ -258,7 +440,8 @@ namespace MultiAlignTestSuite.Papers.Alignment
                                                 IFeatureAligner  <IEnumerable<UMCLight>, 
                                                                     IEnumerable<UMCLight>, 
                                                                         classAlignmentData> aligner,
-                                                IClusterer<UMCLight, UMCClusterLight> clusterer)
+                                                IClusterer<UMCLight, UMCClusterLight> clusterer,
+                                                string matchPath)
         {
 
             UpdateStatus("Loading baseline features.");
@@ -266,79 +449,123 @@ namespace MultiAlignTestSuite.Papers.Alignment
             msFeatures      = LcmsFeatureFilters.FilterMsFeatures(msFeatures, msFilterOptions); 
 
             // Load the baseline reference set
-            using (var providerX = RawLoaderFactory.CreateFileReader(baselineDataset.RawPath))
+            using (var rawProviderX = RawLoaderFactory.CreateFileReader(baselineDataset.RawPath))
             {
-                providerX.AddDataFile(baselineDataset.RawPath, 0);
+                rawProviderX.AddDataFile(baselineDataset.RawPath, 0);
                 UpdateStatus("Creating Baseline LCMS Features.");
                 var baselineFeatures = featureFinder.FindFeatures(msFeatures,
-                                                                  featureFindingOptions, 
-                                                                  providerX);
+                                                                  featureFindingOptions,
+                                                                  rawProviderX);
                 LinkPeptidesToFeatures(baselineDataset.SequencePath, baselineFeatures, peptideOptions.Fdr, peptideOptions.IdScore);
 
-                providerX.AddDataFile(baselineDataset.RawPath, 0);
-
+                var providerX = new CachedFeatureSpectraProvider(rawProviderX, baselineFeatures);
+                
                 // Then load the alignee dataset
                 foreach (var dataset in aligneeDatasets)
                 {
-                    var aligneeMsFeatures   = UmcLoaderFactory.LoadMsFeatureData(dataset.Features.Path);
-                    aligneeMsFeatures = LcmsFeatureFilters.FilterMsFeatures(aligneeMsFeatures, msFilterOptions); 
-
-                    using (var providerY    = RawLoaderFactory.CreateFileReader(dataset.RawPath))
+                    var aligneeMsFeatures       = UmcLoaderFactory.LoadMsFeatureData(dataset.Features.Path);
+                    aligneeMsFeatures           = LcmsFeatureFilters.FilterMsFeatures(aligneeMsFeatures, msFilterOptions); 
+                    using (var rawProviderY     = RawLoaderFactory.CreateFileReader(dataset.RawPath))
                     {
-                        providerY.AddDataFile(dataset.RawPath, 0);
-
+                        rawProviderY.AddDataFile(dataset.RawPath, 0);
 
                         UpdateStatus("Finding alignee features");
                         var aligneeFeatures = featureFinder.FindFeatures(aligneeMsFeatures, 
                                                                          featureFindingOptions,
-                                                                         providerY);
+                                                                         rawProviderY);
                         LinkPeptidesToFeatures(dataset.SequencePath, aligneeFeatures, peptideOptions.Fdr    , peptideOptions.IdScore);
 
-
-
+                        var providerY = new CachedFeatureSpectraProvider(rawProviderY, aligneeFeatures);
+                        
+                        // cluster before we do anything else....
                         var allFeatures = new List<UMCLight>();
                         allFeatures.AddRange(baselineFeatures);
                         allFeatures.AddRange(aligneeFeatures);
-
                         foreach (var feature in allFeatures)
                         {
-                            feature.RetentionTime = feature.NET;
+                            feature.RetentionTime           = feature.NET;
                             feature.MassMonoisotopicAligned = feature.MassMonoisotopic;
                         }
 
-
-                        var clusters        = clusterer.Cluster(allFeatures);
+                        // This tells us the differences before we align.
+                        var clusters     = clusterer.Cluster(allFeatures);
                         var preAlignment =  AnalyzeClusters(clusters);
 
                         aligner.AligneeSpectraProvider  = providerY;
                         aligner.BaselineSpectraProvider = providerX;
 
+
                         UpdateStatus("Aligning data");
                         // Aligner data
-                        var data = aligner.Align(baselineFeatures, aligneeFeatures);         
-                        
-                        
-                        //ExportAlignmentData(data,
-                        //                    baselineDataset, 
-                        //                    dataset,
-                        //                    baselineFeatures,
-                        //                    aligneeFeatures);
+                        var data    = aligner.Align(baselineFeatures, aligneeFeatures);
+                        var matches = data.Matches;
+
+
+                        matches =
+                            matches.Where(
+                                x => Feature.ComputeMassPPMDifference(x.AnchorPointX.Mz, x.AnchorPointY.Mz) < 20).ToList();
+
+                        using (var writer = File.CreateText(@"m:\errors.txt"))
+                        {
+                            writer.WriteLine(
+                                "NET\tMass\tNET\tMass\tNETA\tMassA\tNETA\tMassA\tNetError\tMassError\tScore");
+                            foreach (var match in matches)
+                            {
+
+                                var point       = new LcmsRegressionPts();
+                                point.X         = match.AnchorPointX.Mz;
+                                point.MassError = Feature.ComputeMassPPMDifference(match.AnchorPointX.Mz, match.AnchorPointY.Mz);
+                                point.NetError  = match.AnchorPointX.NetAligned - match.AnchorPointY.NetAligned;
+
+
+                                writer.WriteLine("{0:F5}\t{1:F5}\t{2:F5}\t{3:F5}\t{4:F5}\t{5:F5}\t{6:F5}\t{7:F5}\t{8:F5}\t{9:F5}\t{10:F5}", match.AnchorPointX.Net,
+                                                                                                        match.AnchorPointX.Mz,
+                                                                                                        match.AnchorPointY.Net,
+                                                                                                        match.AnchorPointY.Mz,
+                                                                                                        match.AnchorPointX.NetAligned,
+                                                                                                        match.AnchorPointX.MzAligned,
+                                                                                                        match.AnchorPointY.NetAligned,
+                                                                                                        match.AnchorPointY.MzAligned,
+                                                                                                        point.NetError,
+                                                                                                        point.MassError,
+                                                                                                        match.SimilarityScore);
+                            }
+                        }
+
+                        // create anchor points for LCMSWarp alignment
+                        var massPoints = new List<LcmsRegressionPts>();
+                        var netPoints = new List<LcmsRegressionPts>();
+                        foreach (var match in matches)
+                        {
+                            var massPoint       = new LcmsRegressionPts();
+                            massPoint.X         = match.AnchorPointX.Mz;
+                            massPoint.MassError = Feature.ComputeMassPPMDifference(match.AnchorPointX.Mz, match.AnchorPointY.Mz);
+                            massPoint.NetError  = match.AnchorPointX.Net - match.AnchorPointY.Net;
+                            massPoints.Add(massPoint);
+
+                            var netPoint        = new LcmsRegressionPts();
+                            netPoint.X          = match.AnchorPointX.Net;
+                            netPoint.MassError  = Feature.ComputeMassPPMDifference(match.AnchorPointX.Mz, match.AnchorPointY.Mz);
+                            netPoint.NetError   = match.AnchorPointX.Net - match.AnchorPointY.Net ;                            
+                            netPoints.Add(netPoint);
+                        }
 
 
                         foreach (var feature in allFeatures)
-                        {
+                        {                            
                             feature.UMCCluster = null;
-                            feature.ClusterID  = -1;
+                            feature.ClusterID = -1;
                         }
-
-                        UpdateStatus("Re-clustering data");
-                        clusters = clusterer.Cluster(allFeatures);
-                        var postAlignment = AnalyzeClusters(clusters);
+                        // Then cluster after alignment!
+                        UpdateStatus("clustering data");
+                        clusters            = clusterer.Cluster(allFeatures);
+                        var postAlignment   = AnalyzeClusters(clusters);
 
                         UpdateStatus("Note\tSame\tDifferent");
-                        UpdateStatus(string.Format("Pre\t{0}\t{1}", preAlignment.SameCluster,  preAlignment.DifferentCluster));
+                        UpdateStatus(string.Format("Pre\t{0}\t{1}", preAlignment.SameCluster, preAlignment.DifferentCluster));
                         UpdateStatus(string.Format("Post\t{0}\t{1}", postAlignment.SameCluster, postAlignment.DifferentCluster));
-                        
+                                                                        
+                        SaveMatches(matchPath, matches);                                                
                     }
                 }
             }
@@ -347,11 +574,59 @@ namespace MultiAlignTestSuite.Papers.Alignment
             DeRegisterProgressNotifier(featureFinder);
             DeRegisterProgressNotifier(clusterer);
         }
+
+        
+
+        private void SaveMatches(string path, IEnumerable<SpectralAnchorPointMatch> matches)
+        {
+            using (var writer = File.CreateText(path))
+            {
+                writer.WriteLine("NET-apx\tNET-apy\tNETAligned-apy\tmz-apx\tmzAligned-apx\tmz-apy\tmzAligned-apy\tScan-x\tScan-y\tpmz-x\tpmz-y\tpmonomass-x\tpmonomass-y\tpNET-x\tpNET-y\tpNETa-x\tpNETa-y\tpmonomass-x\tpmonomassyx\tpmonomass-errorppm\tpmz-errorppm");
+                foreach (var match in matches)
+                {                    
+                    if (match.AnchorPointX.Spectrum == null)
+                        continue;
+                    
+                    if (match.AnchorPointY.Spectrum == null)
+                        continue;
+                    
+                    
+                    var parentFeatureX = match.AnchorPointX.Spectrum.ParentFeature;                    
+                    var parentFeatureY = match.AnchorPointY.Spectrum.ParentFeature;
+
+
+                    var data = string.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}\t{11}\t{12}\t{13}\t{14}\t{15}\t{16}\t{17}\t{18}\t{19}\t{20}\t",
+                                                match.AnchorPointX.Net,                                                
+                                                match.AnchorPointY.Net,
+                                                match.AnchorPointY.NetAligned,
+                                                match.AnchorPointX.Mz,
+                                                match.AnchorPointX.MzAligned,
+                                                match.AnchorPointY.Mz,
+                                                match.AnchorPointY.MzAligned,
+                                                parentFeatureX.Scan,
+                                                parentFeatureY.Scan,
+                                                parentFeatureX.Mz,
+                                                parentFeatureY.Mz,
+                                                parentFeatureX.MassMonoisotopic,
+                                                parentFeatureY.MassMonoisotopic,
+                                                parentFeatureX.ParentFeature.NET,
+                                                parentFeatureY.ParentFeature.NET,
+                                                parentFeatureX.ParentFeature.NETAligned,
+                                                parentFeatureY.ParentFeature.NETAligned,
+                                                parentFeatureX.ParentFeature.MassMonoisotopicAligned,
+                                                parentFeatureY.ParentFeature.MassMonoisotopicAligned,
+                                                Feature.ComputeMassPPMDifference(parentFeatureX.Mz, parentFeatureY.Mz),
+                                                Feature.ComputeMassPPMDifference(parentFeatureX.ParentFeature.MassMonoisotopicAligned, parentFeatureY.ParentFeature.MassMonoisotopicAligned)                                                
+                                                );
+
+                    writer.WriteLine(data);
+                }
+            }
+        }
+
         /// <summary>
         /// Links a list of peptides to the features provided if the dataset has knowledge of the sequence file file 
-        /// </summary>
-        /// <param name="dataset"></param>
-        /// <param name="aligneeFeatures"></param>
+        /// </summary>        
         private void LinkPeptidesToFeatures(string sequencePath, List<UMCLight> aligneeFeatures, double fdr, double idScore)
         {
             // Get the peptides associated with this feature set.
@@ -453,10 +728,10 @@ namespace MultiAlignTestSuite.Papers.Alignment
         /// <param name="message"></param>
         protected override void UpdateStatus(string message)
         {
-            Console.WriteLine("\t" + message); 
+            Console.WriteLine("\t" + message);
             base.UpdateStatus(message);            
         }
-
+        
         private void ExportAlignmentData(classAlignmentData data,
                                          DatasetInformation baselineDatasetInformation,
                                          DatasetInformation alignDatasetInformation,

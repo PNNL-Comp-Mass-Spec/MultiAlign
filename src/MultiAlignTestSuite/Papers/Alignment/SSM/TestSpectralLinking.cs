@@ -459,9 +459,9 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
 
             
             foreach (var baselineSpectrum in baselineSpectra)
-            {                    
-                MSSpectra tempBaseline             = filter.Threshold(baselineSpectrum, percent);
-                tempBaseline.Peaks       = XYData.Bin(tempBaseline.Peaks, 0, 2000, mzTolerance);
+            {
+                baselineSpectrum.Peaks  = filter.Threshold(baselineSpectrum.Peaks, percent);
+                baselineSpectrum.Peaks = XYData.Bin(baselineSpectrum.Peaks, 0, 2000, mzTolerance);
 
                 foreach (var aligneeSpectrum in aligneeSpectra)
                 {
@@ -476,11 +476,11 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
                         continue;
 
                     // Bin and threshold the spectra
-                    MSSpectra tempAlignee   = filter.Threshold(aligneeSpectrum, percent);
-                    tempAlignee.Peaks       = XYData.Bin(tempAlignee.Peaks, 0, 2000, mzTolerance);
+                    aligneeSpectrum.Peaks = filter.Threshold(aligneeSpectrum.Peaks, percent);
+                    aligneeSpectrum.Peaks = XYData.Bin(aligneeSpectrum.Peaks, 0, 2000, mzTolerance);
 
                     // Compare the spectra
-                    double value = comparer.CompareSpectra(tempBaseline, tempAlignee);
+                    double value = comparer.CompareSpectra(baselineSpectrum, aligneeSpectrum);
                     if (double.IsNaN(value))
                         continue;
 

@@ -231,21 +231,19 @@ namespace MultiAlignTestSuite.Algorithms
             ISpectralComparer comparer = SpectralComparerFactory.CreateSpectraComparer(comparerType, percent: percent);
             
             ISpectraFilter filter   = SpectrumFilterFactory.CreateFilter(filterType);
-            spectrumX               = filter.Threshold(spectrumX, percent);
-            spectrumY               = filter.Threshold(spectrumY, percent);
+            spectrumX.Peaks         = filter.Threshold(spectrumX.Peaks, percent);
+            spectrumY.Peaks         = filter.Threshold(spectrumY.Peaks, percent);
 
-
-            spectrumX.Peaks = XYData.Bin(spectrumX.Peaks,
+            spectrumX.Peaks         = XYData.Bin(spectrumX.Peaks,
                                                 0,
                                                 2000,
                                                 mzTolerance);
 
-            spectrumY.Peaks = XYData.Bin(spectrumY.Peaks,
+            spectrumY.Peaks         = XYData.Bin(spectrumY.Peaks,
                                                 0,
                                                 2000,
                                                 mzTolerance);
                 
-
             double value = comparer.CompareSpectra(spectrumX, spectrumY);
 
             string path             = Path.GetDirectoryName(pathX);

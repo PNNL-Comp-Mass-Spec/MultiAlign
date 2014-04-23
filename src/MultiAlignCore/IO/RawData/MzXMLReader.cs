@@ -88,15 +88,15 @@ namespace MultiAlignCore.IO.Features
         }
         
 
-        public void AddDataFile(string path, int groupID)
+        public void AddDataFile(string path, int groupId)
         {
-            if (m_dataFiles.ContainsKey(groupID) == false)
+            if (m_dataFiles.ContainsKey(groupId) == false)
             {
-                m_dataFiles.Add(groupID, path);
+                m_dataFiles.Add(groupId, path);
             }
             else
             {
-                m_dataFiles[groupID] = path;
+                m_dataFiles[groupId] = path;
             }
         }
         public List<MSSpectra> GetMSMSSpectra(int group)
@@ -254,5 +254,11 @@ namespace MultiAlignCore.IO.Features
             return spectrum;
         }
 
+
+
+        public MSSpectra GetSpectrum(int scan, int group, int scanLevel, out ScanSummary summary, bool loadPeaks)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

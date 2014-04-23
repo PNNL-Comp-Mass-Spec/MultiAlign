@@ -256,6 +256,7 @@
     <Compile Include="IO\Features\UmcAdoDAO.cs" />
     <Compile Include="IO\Clusters\UMCClusterAbundanceSumCrossTabWriter.cs" />
     <Compile Include="IO\Clusters\UMCClusterExporterFactory.cs" />
+    <Compile Include="IO\RawData\CachedFeatureSpectraProvider.cs" />
     <Compile Include="IO\RawData\ScanOutOfRangeException.cs" />
     <Compile Include="IO\SingletonDataProviders.cs" />
     <Compile Include="IO\StatusEventArgs.cs" />

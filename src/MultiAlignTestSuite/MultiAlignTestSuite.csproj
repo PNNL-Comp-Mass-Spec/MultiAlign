@@ -94,6 +94,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\Mage.dll</HintPath>
     </Reference>
+    <Reference Include="MTDBFramework">
+      <HintPath>..\..\lib\MTDBFramework.dll</HintPath>
+    </Reference>
     <Reference Include="MultiAlignEngine">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\$(Platform)\MultiAlignEngine.dll</HintPath>
@@ -110,6 +113,9 @@
     <Reference Include="OxyPlot.WindowsForms, Version=2013.1.52.1, Culture=neutral, PublicKeyToken=245eacd6b5d2d338, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>M:\download\OxyPlot-2014.1.1.1\NET40\OxyPlot.WindowsForms.dll</HintPath>
+    </Reference>
+    <Reference Include="PHRPReader">
+      <HintPath>..\..\lib\PHRPReader.dll</HintPath>
     </Reference>
     <Reference Include="PNNLOmicsIO, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -131,6 +137,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Algorithms\Alignment\LCMSWarp\LcmsWarpAlignmentTests.cs" />
+    <Compile Include="Algorithms\Alignment\LCMSWarp\LCMSWarpTest1.cs" />
+    <Compile Include="Algorithms\Alignment\LCMSWarp\MtdbFileReaderTest.cs" />
     <Compile Include="Algorithms\CallisterClusters\CompareClusters.cs" />
     <Compile Include="Algorithms\MsMsClustering.cs" />
     <Compile Include="Algorithms\SpectralProcessing\SpectralAlignmentTests.cs" />

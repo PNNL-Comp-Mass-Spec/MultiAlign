@@ -28,9 +28,9 @@ namespace MultiAlignTestSuite.Papers.Alignment.IO
     
         #region ISpectraProvider Members
         
-        public void AddDataFile(string path, int groupID)
+        public void AddDataFile(string path, int groupId)
         {
-            m_provider.AddDataFile(path, groupID);
+            m_provider.AddDataFile(path, groupId);
         }
 
         public void AddCache(int groupID, Dictionary<int, ScanSummary> cache)
@@ -90,6 +90,12 @@ namespace MultiAlignTestSuite.Papers.Alignment.IO
         public int GetTotalScans(int group)
         {
             return m_provider.GetTotalScans(group);
+        }
+
+
+        public MSSpectra GetSpectrum(int scan, int group, int scanLevel, out ScanSummary summary, bool loadPeaks)
+        {
+            return m_provider.GetSpectrum(scan, group, scanLevel, out summary, loadPeaks);
         }
     }
 }
