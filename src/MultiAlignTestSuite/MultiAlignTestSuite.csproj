@@ -86,9 +86,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\Accord.Statistics.dll</HintPath>
     </Reference>
-    <Reference Include="AForge, Version=2.2.4.0, Culture=neutral, PublicKeyToken=c1db6ff4eaa06aeb, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Accord.NET\Framework\Externals\AForge.NET\AForge.dll</HintPath>
+    <Reference Include="AForge">
+      <HintPath>..\..\lib\AForge.dll</HintPath>
     </Reference>
     <Reference Include="Mage, Version=1.3.4337.17845, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
@@ -105,14 +104,15 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.6.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="nunit.framework, Version=2.5.10.11092, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL" />
-    <Reference Include="OxyPlot, Version=2013.2.108.1, Culture=neutral, PublicKeyToken=638079a8f0bd61e9, processorArchitecture=MSIL">
+    <Reference Include="nunit.framework, Version=2.6.3.13283, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>M:\download\OxyPlot-2014.1.1.1\NET40\OxyPlot.dll</HintPath>
+      <HintPath>..\..\lib\nunit.framework.dll</HintPath>
     </Reference>
-    <Reference Include="OxyPlot.WindowsForms, Version=2013.1.52.1, Culture=neutral, PublicKeyToken=245eacd6b5d2d338, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>M:\download\OxyPlot-2014.1.1.1\NET40\OxyPlot.WindowsForms.dll</HintPath>
+    <Reference Include="OxyPlot">
+      <HintPath>..\..\lib\OxyPlot.dll</HintPath>
+    </Reference>
+    <Reference Include="OxyPlot.WindowsForms">
+      <HintPath>..\..\lib\OxyPlot.WindowsForms.dll</HintPath>
     </Reference>
     <Reference Include="PHRPReader">
       <HintPath>..\..\lib\PHRPReader.dll</HintPath>

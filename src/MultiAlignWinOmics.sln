@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+VisualStudioVersion = 12.0.30110.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PNNLControls", "PNNLControls\PNNLControls.csproj", "{9409DE9B-F3F0-41AA-95F5-8BFD525F5669}"
 EndProject
@@ -255,8 +255,5 @@ Global
 		{9DE80954-0823-4186-83F2-AA9DF568B61A} = {2C157EF4-2595-452C-B9A8-4910985257AB}
 		{189F00D7-D0C6-4376-B4CF-21F9362CA7DE} = {47B0F1FD-E120-4077-9F16-0E042648FD8E}
 		{553F0F69-E2CC-4AB5-BA2C-0C0604265E36} = {47B0F1FD-E120-4077-9F16-0E042648FD8E}
-	EndGlobalSection
-	GlobalSection(Performance) = preSolution
-		HasPerformanceSessions = true
 	EndGlobalSection
 EndGlobal
