@@ -19,7 +19,6 @@ using PNNLOmics.Algorithms.Alignment.SpectralMatching;
 using PNNLOmics.Algorithms.FeatureClustering;
 using PNNLOmics.Algorithms.Regression;
 using PNNLOmics.Algorithms.SpectralProcessing;
-using PNNLOmics.Alignment.LCMSWarp.LCMSWarper.LCMSRegression;
 using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Utilities;
@@ -512,7 +511,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
                             foreach (var match in matches)
                             {
 
-                                var point       = new LcmsRegressionPts();
+                                var point       = new RegressionPoint();
                                 point.X         = match.AnchorPointX.Mz;
                                 point.MassError = Feature.ComputeMassPPMDifference(match.AnchorPointX.Mz, match.AnchorPointY.Mz);
                                 point.NetError  = match.AnchorPointX.NetAligned - match.AnchorPointY.NetAligned;
@@ -533,17 +532,17 @@ namespace MultiAlignTestSuite.Papers.Alignment
                         }
 
                         // create anchor points for LCMSWarp alignment
-                        var massPoints = new List<LcmsRegressionPts>();
-                        var netPoints = new List<LcmsRegressionPts>();
+                        var massPoints = new List<RegressionPoint>();
+                        var netPoints = new List<RegressionPoint>();
                         foreach (var match in matches)
                         {
-                            var massPoint       = new LcmsRegressionPts();
+                            var massPoint       = new RegressionPoint();
                             massPoint.X         = match.AnchorPointX.Mz;
                             massPoint.MassError = Feature.ComputeMassPPMDifference(match.AnchorPointX.Mz, match.AnchorPointY.Mz);
                             massPoint.NetError  = match.AnchorPointX.Net - match.AnchorPointY.Net;
                             massPoints.Add(massPoint);
 
-                            var netPoint        = new LcmsRegressionPts();
+                            var netPoint        = new RegressionPoint();
                             netPoint.X          = match.AnchorPointX.Net;
                             netPoint.MassError  = Feature.ComputeMassPPMDifference(match.AnchorPointX.Mz, match.AnchorPointY.Mz);
                             netPoint.NetError   = match.AnchorPointX.Net - match.AnchorPointY.Net ;                            

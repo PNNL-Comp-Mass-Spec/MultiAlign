@@ -9,7 +9,6 @@ using NUnit.Framework;
 using PNNLOmics.Algorithms.SpectralComparisons;
 using PNNLOmics.Algorithms.SpectralProcessing;
 using PNNLOmics.Algorithms.Statistics;
-using PNNLOmics.Algorithms.Statistics.Distributions;
 using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
 
@@ -233,33 +232,6 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
             Print(string.Format("Right Tail - {0} ", data.RightTail));
         }
 
-        [Test]
-        [TestCase(
-              1000,
-              -.02,      // mu
-              .009,     // sigma
-              .003,     // sigma post
-              @"M:\data\proteomics\Applications\NCRR-falcon\synthetic_gaussian_1000-left.csv")]
-        [TestCase(
-              1000,
-              .02,      // mu
-              .009,     // sigma
-              .003,     // sigma post
-              @"M:\data\proteomics\Applications\NCRR-falcon\synthetic_gaussian_1000-right.csv")]
-        public void CreateGaussianDistributions(int samples,  double mu, double sigma, double sigmaPost, string path)
-        {
-            List<double> pre    = Distributions.CreateNormalDistribution(samples, mu, sigma);
-            List<double> post   = Distributions.CreateNormalDistribution(samples, 0,  sigmaPost);
-
-            using (TextWriter writer = File.CreateText(path))
-            {
-                writer.WriteLine("empty, pre, post");
-                for(int i = 0; i < pre.Count; i++)
-                {
-                    writer.WriteLine("0,{0},{1}", pre[i], post[i]);
-                }
-            }
-        }
 
 
         [Test]

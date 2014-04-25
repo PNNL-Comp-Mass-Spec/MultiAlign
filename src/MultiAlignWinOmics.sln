@@ -44,6 +44,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PNNLOmics.UnitTests", "..\.
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Deploy", "Deploy", "{DDEC96B8-3E30-463E-BFD3-7C38F08F0914}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LaMarcheMultiAlignGridApp", "LaMarcheMultiAlignGridApp\LaMarcheMultiAlignGridApp.csproj", "{39ED6D06-67D9-4A87-B0AD-D0AE7A798A44}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -237,6 +239,18 @@ Global
 		{9DE80954-0823-4186-83F2-AA9DF568B61A}.Release|x64.Build.0 = Release|x64
 		{9DE80954-0823-4186-83F2-AA9DF568B61A}.Release|x86.ActiveCfg = Release|x86
 		{9DE80954-0823-4186-83F2-AA9DF568B61A}.Release|x86.Build.0 = Release|x86
+		{39ED6D06-67D9-4A87-B0AD-D0AE7A798A44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39ED6D06-67D9-4A87-B0AD-D0AE7A798A44}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39ED6D06-67D9-4A87-B0AD-D0AE7A798A44}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{39ED6D06-67D9-4A87-B0AD-D0AE7A798A44}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{39ED6D06-67D9-4A87-B0AD-D0AE7A798A44}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{39ED6D06-67D9-4A87-B0AD-D0AE7A798A44}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{39ED6D06-67D9-4A87-B0AD-D0AE7A798A44}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39ED6D06-67D9-4A87-B0AD-D0AE7A798A44}.Release|Any CPU.Build.0 = Release|Any CPU
+		{39ED6D06-67D9-4A87-B0AD-D0AE7A798A44}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{39ED6D06-67D9-4A87-B0AD-D0AE7A798A44}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{39ED6D06-67D9-4A87-B0AD-D0AE7A798A44}.Release|x64.ActiveCfg = Release|Any CPU
+		{39ED6D06-67D9-4A87-B0AD-D0AE7A798A44}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -255,5 +269,6 @@ Global
 		{9DE80954-0823-4186-83F2-AA9DF568B61A} = {2C157EF4-2595-452C-B9A8-4910985257AB}
 		{189F00D7-D0C6-4376-B4CF-21F9362CA7DE} = {47B0F1FD-E120-4077-9F16-0E042648FD8E}
 		{553F0F69-E2CC-4AB5-BA2C-0C0604265E36} = {47B0F1FD-E120-4077-9F16-0E042648FD8E}
+		{39ED6D06-67D9-4A87-B0AD-D0AE7A798A44} = {47B0F1FD-E120-4077-9F16-0E042648FD8E}
 	EndGlobalSection
 EndGlobal
