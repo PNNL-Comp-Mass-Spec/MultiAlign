@@ -1,24 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using MultiAlignTestSuite.Papers.Alignment.SSM;
 using NUnit.Framework;
-using PNNLOmics.Data.Features;
-using System.IO;
-using PNNLOmics.Algorithms.Distance;
-using PNNLOmics.Algorithms.FeatureClustering;
-using PNNLOmics.Algorithms.SpectralComparisons;
-using PNNLOmics.Algorithms.SpectralProcessing;
-using PNNLOmics.Data;
-using PNNLOmicsIO.IO;
-using MultiAlignCore.IO.Features;
 using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
 using OxyPlot.WindowsForms;
-using System.Windows.Forms;
+using PNNLOmics.Algorithms.SpectralComparisons;
+using PNNLOmics.Algorithms.SpectralProcessing;
+using PNNLOmics.Data;
+using System;
+using System.Collections.Generic;
 using System.Drawing;
-using MultiAlignTestSuite.Papers.Alignment.SSM;
+using System.IO;
+using System.Windows.Forms;
 
 
 namespace MultiAlignTestSuite.Algorithms

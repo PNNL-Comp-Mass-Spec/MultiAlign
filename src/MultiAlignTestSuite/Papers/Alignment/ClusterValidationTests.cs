@@ -327,12 +327,16 @@ namespace MultiAlignTestSuite.Papers.Alignment
             @"M:\data\proteomics\TestData\QC-Shew-Annotated2\matches",
             FeatureAlignmentType.SpectralAlignment,
             LcmsFeatureClusteringAlgorithmType.AverageLinkage,
-            Ignore=true )]
+            Ignore=false             
+            )]
         [TestCase(@"M:\data\proteomics\TestData\LipidTests", 
             @"M:\data\proteomics\TestData\QC-Shew-Annotated2\lipidMatches",
             FeatureAlignmentType.SpectralAlignment,
-            LcmsFeatureClusteringAlgorithmType.AverageLinkage
+            LcmsFeatureClusteringAlgorithmType.AverageLinkage,            
+            Ignore=true 
             )]
+
+
         public void TestClustering(
             string directory,
             string outputPath,
@@ -341,6 +345,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
         {
 
             var matchPath = string.Format("{0}.txt", outputPath);
+            var errorPath = string.Format("{0}-errors.txt", outputPath);
 
             // Loads the supported MultiAlign types 
             var supportedTypes = DatasetInformation.SupportedFileTypes;
@@ -423,7 +428,8 @@ namespace MultiAlignTestSuite.Papers.Alignment
                                             finder, 
                                             aligner,
                                             clusterer,
-                                            matchPath);                            
+                                            matchPath,
+                                            errorPath);                            
             }
         }
         /// <summary>
@@ -440,7 +446,8 @@ namespace MultiAlignTestSuite.Papers.Alignment
                                                                     IEnumerable<UMCLight>, 
                                                                         classAlignmentData> aligner,
                                                 IClusterer<UMCLight, UMCClusterLight> clusterer,
-                                                string matchPath)
+                                                string matchPath,
+                                                string errorPath)
         {
 
             UpdateStatus("Loading baseline features.");
@@ -500,36 +507,8 @@ namespace MultiAlignTestSuite.Papers.Alignment
                         var matches = data.Matches;
 
 
-                        matches =
-                            matches.Where(
-                                x => Feature.ComputeMassPPMDifference(x.AnchorPointX.Mz, x.AnchorPointY.Mz) < 20).ToList();
 
-                        using (var writer = File.CreateText(@"m:\errors.txt"))
-                        {
-                            writer.WriteLine(
-                                "NET\tMass\tNET\tMass\tNETA\tMassA\tNETA\tMassA\tNetError\tMassError\tScore");
-                            foreach (var match in matches)
-                            {
-
-                                var point       = new RegressionPoint();
-                                point.X         = match.AnchorPointX.Mz;
-                                point.MassError = Feature.ComputeMassPPMDifference(match.AnchorPointX.Mz, match.AnchorPointY.Mz);
-                                point.NetError  = match.AnchorPointX.NetAligned - match.AnchorPointY.NetAligned;
-
-
-                                writer.WriteLine("{0:F5}\t{1:F5}\t{2:F5}\t{3:F5}\t{4:F5}\t{5:F5}\t{6:F5}\t{7:F5}\t{8:F5}\t{9:F5}\t{10:F5}", match.AnchorPointX.Net,
-                                                                                                        match.AnchorPointX.Mz,
-                                                                                                        match.AnchorPointY.Net,
-                                                                                                        match.AnchorPointY.Mz,
-                                                                                                        match.AnchorPointX.NetAligned,
-                                                                                                        match.AnchorPointX.MzAligned,
-                                                                                                        match.AnchorPointY.NetAligned,
-                                                                                                        match.AnchorPointY.MzAligned,
-                                                                                                        point.NetError,
-                                                                                                        point.MassError,
-                                                                                                        match.SimilarityScore);
-                            }
-                        }
+                        WriteErrors(errorPath, matches);
 
                         // create anchor points for LCMSWarp alignment
                         var massPoints = new List<RegressionPoint>();
@@ -574,7 +553,31 @@ namespace MultiAlignTestSuite.Papers.Alignment
             DeRegisterProgressNotifier(clusterer);
         }
 
-        
+        private static void WriteErrors(string errorPath, IEnumerable<SpectralAnchorPointMatch> matches)
+        {
+            using (var writer = File.CreateText(errorPath))
+            {
+                writer.WriteLine(
+                    "NET\tMass\tNET\tMass\tNETA\tMassA\tNETA\tMassA\tNetError\tMassError\tScore");
+                foreach (var match in matches)
+                {                                        
+                    var massError = Feature.ComputeMassPPMDifference(match.AnchorPointX.Mz, match.AnchorPointY.Mz);
+                    var netError = match.AnchorPointX.Net - match.AnchorPointY.NetAligned;
+
+                    writer.WriteLine("{0:F5}\t{1:F5}\t{2:F5}\t{3:F5}\t{4:F5}\t{5:F5}\t{6:F5}\t{7:F5}\t{8:F5}\t",
+                        match.AnchorPointX.Net,
+                        match.AnchorPointX.Mz,
+                        match.AnchorPointY.Net,
+                        match.AnchorPointY.Mz,
+                        match.AnchorPointY.NetAligned,
+                        match.AnchorPointY.MzAligned,
+                        netError,
+                        massError,
+                        match.SimilarityScore);
+                }
+            }
+        }
+
 
         private void SaveMatches(string path, IEnumerable<SpectralAnchorPointMatch> matches)
         {

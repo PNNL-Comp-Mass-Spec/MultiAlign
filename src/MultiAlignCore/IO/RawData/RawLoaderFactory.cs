@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using PNNLOmics.Data;
 using System.IO;
-using PNNLOmics.Data;
 
 namespace MultiAlignCore.IO.Features
 {

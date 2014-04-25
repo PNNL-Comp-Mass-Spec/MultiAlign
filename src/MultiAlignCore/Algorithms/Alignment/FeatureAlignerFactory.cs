@@ -8,8 +8,15 @@ using System.Collections.Generic;
 
 namespace MultiAlignCore.Algorithms.Alignment
 {
-    public class FeatureAlignerFactory
+    public static class FeatureAlignerFactory
     {
+        static FeatureAlignerFactory()
+        {
+            Bandwidth = .25;
+        }
+
+        public static double Bandwidth { get; set; }
+
         public static IFeatureAligner<IEnumerable<UMCLight>, IEnumerable<UMCLight>, classAlignmentData> CreateDatasetAligner(FeatureAlignmentType type,
                                                                                                                              AlignmentOptions options,
                                                                                                                              SpectralOptions spectralOptions)
@@ -24,7 +31,7 @@ namespace MultiAlignCore.Algorithms.Alignment
                     aligner = new DummyAlignment();
                     break;
                 case FeatureAlignmentType.SpectralAlignment:
-                    aligner = new SpectralAlignerWrapper { Options = spectralOptions };
+                    aligner = new SpectralAlignerWrapper { Options = spectralOptions, Bandwidth = Bandwidth };
                     break;
             }
 

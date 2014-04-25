@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using MultiAlignCore.Algorithms.Alignment;
+﻿using MultiAlignCore.Algorithms.Alignment;
 using MultiAlignCore.Algorithms.Options;
 using MultiAlignCore.Extensions;
 using NUnit.Framework;
@@ -11,6 +7,10 @@ using PNNLOmics.Algorithms.SpectralProcessing;
 using PNNLOmics.Algorithms.Statistics;
 using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace MultiAlignTestSuite.Papers.Alignment.SSM
 {
@@ -231,7 +231,6 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
             Print(string.Format("Left Tail - {0} ", data.LeftTail));
             Print(string.Format("Right Tail - {0} ", data.RightTail));
         }
-
 
 
         [Test]
