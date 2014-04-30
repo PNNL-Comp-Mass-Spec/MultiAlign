@@ -1,23 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows.Input;
-using MultiAlign.Data;
 
 namespace MultiAlign.Commands
 {
-    public class BrowseOpenFileCommand: ICommand
+    public sealed class BrowseOpenFileCommand: ICommand
     {
 
-        private Ookii.Dialogs.VistaOpenFileDialog m_dialog;
-        public event EventHandler<OpenAnalysisArgs> FolderSelected;
-        private Action<string> m_action;
+        private readonly Ookii.Dialogs.VistaOpenFileDialog m_dialog;
+        private readonly Action<string> m_action;
 
-        public BrowseOpenFileCommand(string filter)
+
+
+        private BrowseOpenFileCommand(string filter)
         {
-            m_dialog = new Ookii.Dialogs.VistaOpenFileDialog();
-            m_dialog.Filter = filter;
+            m_dialog = new Ookii.Dialogs.VistaOpenFileDialog {Filter = filter};
         }
 
         public BrowseOpenFileCommand(Action<string> actionOnExecute, string filter)
@@ -35,14 +31,14 @@ namespace MultiAlign.Commands
         public event EventHandler CanExecuteChanged;
         public void Execute(object parameter)
         {                
-            System.Windows.Forms.DialogResult result = m_dialog.ShowDialog();
+            var result = m_dialog.ShowDialog();
 
-            if (result == System.Windows.Forms.DialogResult.OK)
-            {            
-                if (m_action != null)
-                {
-                    m_action(m_dialog.FileName);
-                }
+            if (result != System.Windows.Forms.DialogResult.OK) 
+                return;
+
+            if (m_action != null)
+            {
+                m_action(m_dialog.FileName);
             }
         }
     }

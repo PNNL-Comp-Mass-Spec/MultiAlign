@@ -115,10 +115,14 @@ namespace MultiAlignTestSuite.Algorithms
 
 
         [Test]
+        [TestCase(@"M:\data\proteomics\Applications\lewy-small\Lewy2_18Cs_2Nov13_Samwise_13-07-28_isos.csv",
+                  @"M:\data\proteomics\Applications\lewy-small\Lewy2_18Cs_2Nov13_Samwise_13-07-28.raw",
+                  500,
+                  Ignore = false)]
         [TestCase(@"M:\data\proteomics\TestData\QC-Shew\226151_QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27_isos.csv",
                   @"M:\data\proteomics\TestData\QC-Shew\226151_QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27.RAW",
                   500,
-                  Ignore = false)]
+                  Ignore = true)]
         [TestCase(@"M:\data\proteomics\TestData\QC-Shew\smallTest\226151_QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27_isos.csv",
                   @"M:\data\proteomics\TestData\QC-Shew\smallTest\226151_QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27.RAW",
                   500,
@@ -139,7 +143,7 @@ namespace MultiAlignTestSuite.Algorithms
             };
             var options = new LcmsFeatureFindingOptions(featureTolerances)
             {
-                MaximumNetRange = 12,
+                MaximumNetRange = .002,
                 MaximumScanRange = 50
 
             };

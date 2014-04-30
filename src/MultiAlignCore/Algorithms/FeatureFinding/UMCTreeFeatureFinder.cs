@@ -1,4 +1,5 @@
 ﻿using MultiAlignCore.Algorithms.Options;
+using MultiAlignCore.Data.Features;
 using PNNLOmics.Algorithms;
 using PNNLOmics.Algorithms.FeatureClustering;
 using PNNLOmics.Data;
@@ -16,6 +17,11 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
     {
         public event EventHandler<ProgressNotifierArgs> Progress;
 
+        public UmcTreeFeatureFinder()
+        {
+            FilteringOptions = new LcmsFeatureFilteringOptions();
+        }
+
         private void OnStatus(string message)
         {
             if (Progress != null)
@@ -23,6 +29,8 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
                 Progress(this, new ProgressNotifierArgs(message));
             }
         }
+
+        public LcmsFeatureFilteringOptions FilteringOptions { get; set; }
 
         /// <summary>
         /// Finds features
@@ -50,7 +58,7 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
             OnStatus("Starting cluster definition");
             clusterer.Progress += (sender, args) => OnStatus(args.Message);
 
-            var features  = clusterer.Cluster(msFeatures);
+            var features    = clusterer.Cluster(msFeatures);
 
             var minScan = int.MaxValue;
             var maxScan = int.MinValue;

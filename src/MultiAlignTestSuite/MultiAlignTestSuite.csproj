@@ -205,7 +205,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Algorithms\Xic\" />
     <Folder Include="IO\Parameters\" />
     <Folder Include="Papers\Alignment\Data\" />
   </ItemGroup>

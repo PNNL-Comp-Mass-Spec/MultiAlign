@@ -1,8 +1,8 @@
-﻿using MultiAlignCore.Algorithms.FeatureMatcher;
-using MultiAlignCore.IO.Parameters;
+﻿using MultiAlignCore.IO.Parameters;
 using PNNLOmics.Algorithms;
 using PNNLOmics.Algorithms.Alignment.SpectralMatches;
 using PNNLOmics.Algorithms.FeatureClustering;
+using PNNLOmics.Data.Features;
 
 namespace MultiAlignCore.Algorithms.Options
 {

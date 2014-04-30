@@ -1,18 +1,16 @@
-﻿using System.Windows.Input;
-using MultiAlign.Commands;
+﻿using MultiAlign.Commands;
 using MultiAlign.Data;
 using MultiAlign.IO;
-using MultiAlign.ViewModels.Analysis;
 using MultiAlign.ViewModels.Spectra;
 using MultiAlign.ViewModels.TreeView;
 using MultiAlign.ViewModels.Viewers;
 using MultiAlign.ViewModels.Wizard;
-using MultiAlignCore.Algorithms;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.Features;
 using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.Extensions;
 using MultiAlignCustomControls.Charting;
+using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
 using System;
 using System.Collections.Generic;
@@ -20,6 +18,7 @@ using System.Collections.ObjectModel;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms.Integration;
+using System.Windows.Input;
 
 namespace MultiAlign.ViewModels
 {
