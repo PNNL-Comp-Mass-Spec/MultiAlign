@@ -1,25 +1,25 @@
-﻿using MultiAlign.ViewModels.Charting;
+﻿using System.Collections.Generic;
 using MultiAlignCore.Data.Features;
 using MultiAlignCore.Extensions;
-using System.Collections.Generic;
+using PNNLOmicsViz.Drawing;
 
 namespace MultiAlign.ViewModels.Viewers
 {
     public class GlobalStatisticsViewModel : ViewModelBase
     {
-        private ChargeHistogramViewModel m_chargeStateHistogramModel;
-        private ChargeHistogramViewModel m_filteredChargeStateModel;
+        private ChargeHistogramPlot m_chargeStateHistogramModel;
+        private ChargeHistogramPlot m_filteredChargeStateModel;
 
         public GlobalStatisticsViewModel(IEnumerable<UMCClusterLightMatched> clusters, IEnumerable<int> charges)
         {
             var histogram = charges.CreateHistogram(1, 10);
-            AllChargeHistogramModel = new ChargeHistogramViewModel(histogram, "All Charge States");
-            FilteredChargeHistogramModel = new ChargeHistogramViewModel(histogram, "Filtered Charge States");
+            AllChargeHistogramModel = new ChargeHistogramPlot(histogram, "All Charge States");
+            FilteredChargeHistogramModel = new ChargeHistogramPlot(histogram, "Filtered Charge States");
         }
 
         
 
-        public ChargeHistogramViewModel AllChargeHistogramModel
+        public ChargeHistogramPlot AllChargeHistogramModel
         {
             get
             {
@@ -32,7 +32,7 @@ namespace MultiAlign.ViewModels.Viewers
             }
         }
 
-        public ChargeHistogramViewModel FilteredChargeHistogramModel
+        public ChargeHistogramPlot FilteredChargeHistogramModel
         {
             get
             {

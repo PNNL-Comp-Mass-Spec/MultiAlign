@@ -3,14 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using MultiAlignCore.Algorithms;
 using MultiAlignCore.Algorithms.FeatureFinding;
-using MultiAlignCore.Algorithms.Options;
 using MultiAlignCore.Algorithms.Workflow;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.Features;
 using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.Data.SequenceData;
 using MultiAlignCore.IO.Features;
-using PNNLOmics.Algorithms;
 using PNNLOmics.Algorithms.FeatureClustering;
 using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
@@ -46,11 +44,11 @@ namespace MultiAlignCore.IO
                 {
                     var totalMsMs       = 0;
                     var totalIdentified = 0;
-                    var datasetId       = feature.GroupID;
-                    msFeatures.AddRange(feature.MSFeatures);
+                    var datasetId       = feature.GroupId;
+                    msFeatures.AddRange(feature.MsFeatures);
 
                     // For Each MS Feature
-                    foreach (var msFeature in feature.MSFeatures)
+                    foreach (var msFeature in feature.MsFeatures)
                     {                        
                         totalMsMs += msFeature.MSnSpectra.Count;
                         // For each MS / MS 
@@ -60,17 +58,17 @@ namespace MultiAlignCore.IO
                             {
                                 RawDatasetID    = datasetId,
                                 MSDatasetID     = datasetId,
-                                MSFeatureID     = msFeature.ID,
-                                MSMSFeatureID   = spectrum.ID,
-                                LCMSFeatureID   = feature.ID
+                                MSFeatureID     = msFeature.Id,
+                                MSMSFeatureID   = spectrum.Id,
+                                LCMSFeatureID   = feature.Id
                             };                            
-                            spectrum.GroupID    = datasetId;
+                            spectrum.GroupId    = datasetId;
                             matches.Add(match);
                             
-                            if (spectraTracker.ContainsKey(spectrum.ID)) continue;
+                            if (spectraTracker.ContainsKey(spectrum.Id)) continue;
 
                             msmsFeatures.Add(spectrum);
-                            spectraTracker.Add(spectrum.ID, spectrum);
+                            spectraTracker.Add(spectrum.Id, spectrum);
 
                             // We are prepping the sequences that we found from peptides that were 
                             // matched only, not all of the results. 
@@ -79,7 +77,7 @@ namespace MultiAlignCore.IO
                             foreach (var peptide in spectrum.Peptides)
                             {
                                 peptide.GroupId     = datasetId;
-                                var newPeptide      = new DatabaseSearchSequence(peptide, feature.ID)
+                                var newPeptide      = new DatabaseSearchSequence(peptide, feature.Id)
                                 {
                                     GroupId = datasetId,
                                     Id      = peptideId++
@@ -88,10 +86,10 @@ namespace MultiAlignCore.IO
 
                                 var sequenceMap = new SequenceToMsnFeature
                                 {
-                                    UmcFeatureId    = feature.ID,
-                                    DatasetId       = msFeature.GroupID,
-                                    MsnFeatureId    = spectrum.ID,
-                                    SequenceId      = peptide.ID
+                                    UmcFeatureId    = feature.Id,
+                                    DatasetId       = msFeature.GroupId,
+                                    MsnFeatureId    = spectrum.Id,
+                                    SequenceId      = peptide.Id
                                 };
                                 sequenceMaps.Add(sequenceMap);
                             }
@@ -197,19 +195,19 @@ namespace MultiAlignCore.IO
                     
                 foreach (var feature in features)
                 {
-                    feature.ID              = id++;
+                    feature.Id              = id++;
                     feature.RetentionTime   = (Convert.ToDouble(feature.Scan) - minScan) / (maxScan - minScan);   
-                    feature.NET             = feature.RetentionTime;
+                    feature.Net             = feature.RetentionTime;
                     feature.MassMonoisotopicAligned = feature.MassMonoisotopic;
-                    feature.NETAligned      = feature.NET;                    
-                    feature.GroupID         = datasetId;
-                    feature.SpectralCount   = feature.MSFeatures.Count;
+                    feature.NetAligned      = feature.Net;                    
+                    feature.GroupId         = datasetId;
+                    feature.SpectralCount   = feature.MsFeatures.Count;
 
-                    foreach (var msFeature in feature.MSFeatures.Where(msFeature => msFeature != null))
+                    foreach (var msFeature in feature.MsFeatures.Where(msFeature => msFeature != null))
                     {
-                        msFeature.UMCID     = feature.ID;
-                        msFeature.GroupID   = datasetId;
-                        msFeature.MSnSpectra.ForEach(x => x.GroupID = datasetId);
+                        msFeature.UmcId     = feature.Id;
+                        msFeature.GroupId   = datasetId;
+                        msFeature.MSnSpectra.ForEach(x => x.GroupId = datasetId);
                         msnSpectra.AddRange(msFeature.MSnSpectra);
                     }
                 }
@@ -221,8 +219,8 @@ namespace MultiAlignCore.IO
                     var i = 0;
                     foreach (var feature in features)
                     {
-                        feature.GroupID = datasetId;
-                        feature.ID = i++;
+                        feature.GroupId = datasetId;
+                        feature.Id = i++;
                     }
                 }
 
@@ -233,11 +231,11 @@ namespace MultiAlignCore.IO
                     var map = FeatureDataConverters.MapFeature(features);
                     foreach (var feature in
                         from feature in msFeatures
-                        let doesFeatureExists = map.ContainsKey(feature.UMCID)
+                        let doesFeatureExists = map.ContainsKey(feature.UmcId)
                         where doesFeatureExists
                         select feature)
                     {
-                        map[feature.UMCID].AddChildFeature(feature);
+                        map[feature.UmcId].AddChildFeature(feature);
                     }
                 }
             }
@@ -252,7 +250,7 @@ namespace MultiAlignCore.IO
                 var peptides = sequenceProvider.Read(dataset.SequencePath);
                 var count = 0;
                 var peptideList = peptides.ToList();
-                peptideList.ForEach(x => x.ID = count++);
+                peptideList.ForEach(x => x.Id = count++);
 
                 UpdateStatus("Linking MS/MS to any known Peptide/Metabolite Sequences");
 

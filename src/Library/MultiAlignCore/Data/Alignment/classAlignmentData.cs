@@ -1,12 +1,11 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using MultiAlignEngine.Alignment;
 using PNNLOmics.Algorithms.Alignment.SpectralMatching;
 
 namespace MultiAlignCore.Data.Alignment
 {
-    [Serializable()]
+    [Serializable]
     public class classAlignmentData
     {
         private classAlignmentResidualData mobj_residualData;
@@ -71,22 +70,22 @@ namespace MultiAlignCore.Data.Alignment
 
         public override bool Equals(object obj)
         {
-            classAlignmentData factor = (classAlignmentData)obj;
+            var factor = (classAlignmentData)obj;
 
             if (factor == null)
             {
                 return false;
             }
-            else if (!this.DatasetID.Equals(factor.DatasetID))
+            if (!DatasetID.Equals(factor.DatasetID))
             {
                 return false;
-            }            
+            }
             return true;
         }
 
         public override int GetHashCode()
         {
-            int hash = 17;
+            var hash = 17;
 
             hash = hash * 23 + DatasetID.GetHashCode();            
 

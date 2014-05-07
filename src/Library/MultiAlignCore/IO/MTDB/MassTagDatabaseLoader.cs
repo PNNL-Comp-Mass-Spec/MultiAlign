@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using MultiAlignCore.Data.MassTags;
-using MultiAlignEngine.MassTags;
 using PNNLOmics.Data;
 using PNNLOmics.Data.MassTags;
+
 namespace MultiAlignCore.IO.MTDB
 {
     /// <summary>
@@ -53,7 +52,7 @@ namespace MultiAlignCore.IO.MTDB
         public Algorithms.Options.MassTagDatabaseOptions Options
         {
             get;
-            set;
+            protected set;
         }
         #endregion
 
@@ -116,83 +115,83 @@ namespace MultiAlignCore.IO.MTDB
         /// <returns></returns>
         protected virtual List<MassTagLight> LoadMassTags()
         {
-            List<MassTagLight> massTags     = new List<MassTagLight>();
-            using (IDbConnection connection = CreateConnection(CreateConnectionString()))
+            var massTags     = new List<MassTagLight>();
+            using (var connection = CreateConnection(CreateConnectionString()))
             {
                 connection.Open();
                 
-                using (IDbCommand command = connection.CreateCommand())
+                using (var command = connection.CreateCommand())
                 {
                     SetupMassTagCommand(command);
 
                     try
                     {
-                        using (IDataReader reader = command.ExecuteReader())
+                        using (var reader = command.ExecuteReader())
                         {
                             while (reader.Read())
                             {
-                                MassTagLight massTag = new MassTagLight();
-                                if (reader["Mass_Tag_ID"] != System.DBNull.Value)
+                                var massTag = new MassTagLight();
+                                if (reader["Mass_Tag_ID"] != DBNull.Value)
                                 {
-                                    int id = System.Convert.ToInt32(reader["Mass_Tag_ID"]);
-                                    string peptide = "";
+                                    var id = Convert.ToInt32(reader["Mass_Tag_ID"]);
+                                    var peptide = "";
                                     float ganet = -1;
                                     float xcorr_max = 0;
                                     float stdNet = 0;
-                                    double monoMass = 0.0;
+                                    var monoMass = 0.0;
                                     float highDiscriminant = 0;
-                                    int numObservations = 0;
-                                    string modification = "";
-                                    int modCount = 0;
+                                    var numObservations = 0;
+                                    var modification = "";
+                                    var modCount = 0;
                                     short cleaveageState = 2;
                                     float driftTime = 0;
-                                    int charge = 0;
-                                    int conformerID = 0;
+                                    var charge = 0;
+                                    var conformerID = 0;
                                     float highPeptideProphetProbability = 0;
                                     double msgf = 0;
 
 
-                                    if (reader["Peptide"] != System.DBNull.Value) peptide = reader["Peptide"].ToString();
-                                    if (reader["Net_Value_to_Use"] != System.DBNull.Value) ganet = Convert.ToSingle(reader["Net_Value_to_Use"]);
-                                    if (reader["High_Normalized_Score"] != System.DBNull.Value) xcorr_max = Convert.ToSingle(reader["High_Normalized_Score"]);
-                                    if (reader["StD_GANET"] != System.DBNull.Value) stdNet = Convert.ToSingle(reader["StD_GANET"]);
-                                    if (reader["Monoisotopic_Mass"] != System.DBNull.Value) monoMass = Convert.ToDouble(reader["Monoisotopic_Mass"]);
-                                    if (reader["Min_MSGF_SpecProb"] != System.DBNull.Value) msgf = Convert.ToDouble(reader["Min_MSGF_SpecProb"]);
-                                    if (reader["Peptide_Obs_Count_Passing_Filter"] != System.DBNull.Value) numObservations = Convert.ToInt32(reader["Peptide_Obs_Count_Passing_Filter"]);
-                                    if (reader["Mod_Count"] != System.DBNull.Value) modCount = Convert.ToInt32(reader["Mod_Count"]);
-                                    if (reader["Mod_Description"] != System.DBNull.Value) modification = reader["Mod_Description"].ToString();
-                                    if (reader["High_Peptide_Prophet_Probability"] != System.DBNull.Value) highPeptideProphetProbability = Convert.ToSingle(reader["High_Peptide_Prophet_Probability"]);
-                                    if (reader["Cleavage_State"] != System.DBNull.Value) cleaveageState = Convert.ToInt16(reader["Cleavage_State"]);
-                                    if (reader["Drift_Time_Avg"] != System.DBNull.Value) driftTime = Convert.ToSingle(reader["Drift_Time_Avg"]);
-                                    if (reader["Conformer_Charge"] != System.DBNull.Value) charge = Convert.ToInt32(reader["Conformer_Charge"]);
-                                    if (reader["Conformer_ID"] != System.DBNull.Value) conformerID = Convert.ToInt32(reader["Conformer_ID"]);                                    
+                                    if (reader["Peptide"] != DBNull.Value) peptide = reader["Peptide"].ToString();
+                                    if (reader["Net_Value_to_Use"] != DBNull.Value) ganet = Convert.ToSingle(reader["Net_Value_to_Use"]);
+                                    if (reader["High_Normalized_Score"] != DBNull.Value) xcorr_max = Convert.ToSingle(reader["High_Normalized_Score"]);
+                                    if (reader["StD_GANET"] != DBNull.Value) stdNet = Convert.ToSingle(reader["StD_GANET"]);
+                                    if (reader["Monoisotopic_Mass"] != DBNull.Value) monoMass = Convert.ToDouble(reader["Monoisotopic_Mass"]);
+                                    if (reader["Min_MSGF_SpecProb"] != DBNull.Value) msgf = Convert.ToDouble(reader["Min_MSGF_SpecProb"]);
+                                    if (reader["Peptide_Obs_Count_Passing_Filter"] != DBNull.Value) numObservations = Convert.ToInt32(reader["Peptide_Obs_Count_Passing_Filter"]);
+                                    if (reader["Mod_Count"] != DBNull.Value) modCount = Convert.ToInt32(reader["Mod_Count"]);
+                                    if (reader["Mod_Description"] != DBNull.Value) modification = reader["Mod_Description"].ToString();
+                                    if (reader["High_Peptide_Prophet_Probability"] != DBNull.Value) highPeptideProphetProbability = Convert.ToSingle(reader["High_Peptide_Prophet_Probability"]);
+                                    if (reader["Cleavage_State"] != DBNull.Value) cleaveageState = Convert.ToInt16(reader["Cleavage_State"]);
+                                    if (reader["Drift_Time_Avg"] != DBNull.Value) driftTime = Convert.ToSingle(reader["Drift_Time_Avg"]);
+                                    if (reader["Conformer_Charge"] != DBNull.Value) charge = Convert.ToInt32(reader["Conformer_Charge"]);
+                                    if (reader["Conformer_ID"] != DBNull.Value) conformerID = Convert.ToInt32(reader["Conformer_ID"]);                                    
 
                                     /// Make sure the mass tag has been seen enough times
                                     if (numObservations >= Options.MinimumObservationCountFilter)
                                     {
-                                        Molecule molecule           = new Molecule();
+                                        var molecule           = new Molecule();
                                         molecule.Name               = peptide;
-                                        massTag.ID                  = id;
+                                        massTag.Id                  = id;
                                         massTag.Molecule            = molecule;
-                                        massTag.NET                 = ganet;
-                                        massTag.NETAverage          = ganet;
+                                        massTag.Net                 = ganet;
+                                        massTag.NetAverage          = ganet;
                                         massTag.XCorr               = xcorr_max;
                                         massTag.DiscriminantMax     = highDiscriminant;
                                         massTag.MassMonoisotopic    = monoMass;
-                                        massTag.ConformationID       = conformerID;
-                                        massTag.NETStandardDeviation = stdNet;
+                                        massTag.ConformationId       = conformerID;
+                                        massTag.NetStandardDeviation = stdNet;
                                         massTag.ObservationCount     = numObservations;
                                         massTag.DriftTime            = driftTime;
                                         massTag.PriorProbability     = highPeptideProphetProbability;
                                         massTag.CleavageState        = cleaveageState;
                                         massTag.ModificationCount    = modCount;
-                                        massTag.MSGFSpecProbMax      = msgf;
+                                        massTag.MsgfSpecProbMax      = msgf;
                                         massTag.PeptideSequence      = peptide;
                                         massTag.ChargeState          = charge;
 
-                                        if (massTag.NETAverage != -1)
+                                        if (massTag.NetAverage != -1)
                                         {
-                                            bool shouldAdd = false;
+                                            var shouldAdd = false;
                                             // If we are using drift time, then we should only 
                                             // use mass tags that have drift time.
                                             if (Options.OnlyLoadTagsWithDriftTime)
@@ -232,36 +231,36 @@ namespace MultiAlignCore.IO.MTDB
         /// </summary>
         protected virtual Dictionary<int, List<Protein>> LoadProteins()
 		{
-			Dictionary<int, List<Protein>> massTagToProtein = new Dictionary<int,List<Protein>>();									
-            using (IDbConnection connection = CreateConnection(CreateConnectionString()))
+			var massTagToProtein = new Dictionary<int,List<Protein>>();									
+            using (var connection = CreateConnection(CreateConnectionString()))
             {
                 connection.Open();                
-                using (IDbCommand command = connection.CreateCommand())
+                using (var command = connection.CreateCommand())
                 {
                     SetupProteinMassTagCommand(command);
 
-				    using(IDataReader reader = command.ExecuteReader())
+				    using(var reader = command.ExecuteReader())
                     {
                         while(reader.Read())
                         {					        
-					        if (reader["Mass_Tag_ID"] != System.DBNull.Value) 
+					        if (reader["Mass_Tag_ID"] != DBNull.Value) 
 					        {
-						        int     id          = Convert.ToInt32(reader["Mass_Tag_ID"]); 
-						        string  refName     = "";                                
-						        int     proteinId   = -1; 				
-		                        int     refID       = -1;
+						        var     id          = Convert.ToInt32(reader["Mass_Tag_ID"]); 
+						        var  refName     = "";                                
+						        var     proteinId   = -1; 				
+		                        var     refID       = -1;
 
-						        if (reader["Ref_ID"] != System.DBNull.Value)        refID       = Convert.ToInt32(reader["Ref_ID"]);
-                                if (reader["Reference"] != System.DBNull.Value)     refName     = reader["Reference"].ToString();                                
-                                if (reader["Protein_ID"] != System.DBNull.Value)    proteinId   = Convert.ToInt32(reader["Protein_ID"]);
+						        if (reader["Ref_ID"] != DBNull.Value)        refID       = Convert.ToInt32(reader["Ref_ID"]);
+                                if (reader["Reference"] != DBNull.Value)     refName     = reader["Reference"].ToString();                                
+                                if (reader["Protein_ID"] != DBNull.Value)    proteinId   = Convert.ToInt32(reader["Protein_ID"]);
                                 
-                                Protein protein     = new Protein();
+                                var protein     = new Protein();
                                 protein.Sequence    = refName;
-                                protein.RefID       = refID;
-                                protein.ProteinID   = proteinId;
+                                protein.RefId       = refID;
+                                protein.ProteinId   = proteinId;
                                 
                                 // Link to the Mass tags.
-                                bool hasMassTagID   = massTagToProtein.ContainsKey(id);
+                                var hasMassTagID   = massTagToProtein.ContainsKey(id);
                                 if (!hasMassTagID)
                                 {
                                     massTagToProtein.Add(id, new List<Protein>());
@@ -285,9 +284,9 @@ namespace MultiAlignCore.IO.MTDB
         /// <returns></returns>
         public virtual MassTagDatabase LoadDatabase()
         {
-            MassTagDatabase database                  = new MassTagDatabase();
-            List<MassTagLight> tags                   = LoadMassTags();
-            Dictionary<int, List<Protein>> proteinMap = LoadProteins();
+            var database                  = new MassTagDatabase();
+            var tags                   = LoadMassTags();
+            var proteinMap = LoadProteins();
 
             database.AddMassTagsAndProteins(tags, proteinMap);            
 

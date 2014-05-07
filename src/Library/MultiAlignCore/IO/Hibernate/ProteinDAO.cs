@@ -14,8 +14,8 @@ namespace MultiAlignCore.IO.Features.Hibernate
         /// <returns>List of Protein Objects</returns>
 		public ICollection<Protein> FindByProteinString(string proteinString)
         {
-            ICriterion criterion            = Expression.Eq("ProteinString", proteinString);
-            List<ICriterion> criterionList  = new List<ICriterion>();
+            ICriterion criterion            = Restrictions.Eq("ProteinString", proteinString);
+            var criterionList  = new List<ICriterion>();
             criterionList.Add(criterion);
             return FindByCriteria(criterionList);
         }

@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using MultiAlignCore.Data;
 using MultiAlignCore.Data.MetaData;
 
 namespace MultiAlignCore.Extensions
@@ -17,7 +13,7 @@ namespace MultiAlignCore.Extensions
         /// <returns></returns>
         public static void AddRange(this ObservableCollection<DatasetInformation> myData, IEnumerable<DatasetInformation> datasets)
         {
-            foreach (DatasetInformation info in datasets)
+            foreach (var info in datasets)
             {
                 myData.Add(info);
             }
@@ -29,8 +25,8 @@ namespace MultiAlignCore.Extensions
         /// <returns></returns>
         public static List<DatasetInformation> ToList(this ObservableCollection<DatasetInformation> myData)
         {
-            List<DatasetInformation> information = new List<DatasetInformation>();
-            foreach (DatasetInformation info in myData)
+            var information = new List<DatasetInformation>();
+            foreach (var info in myData)
             {
                 information.Add(info);
             }

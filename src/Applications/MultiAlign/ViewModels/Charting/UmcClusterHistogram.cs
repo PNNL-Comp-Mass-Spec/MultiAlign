@@ -1,12 +1,12 @@
 ﻿
-using System.Collections;
 using System.Collections.Generic;
 using PNNLOmics.Data.Features;
-using MultiAlignCore.Extensions;
+using PNNLOmics.Extensions;
+using PNNLOmicsViz.Drawing;
 
 namespace MultiAlign.ViewModels.Charting
 {
-    public class UmcClusterChargeHistogram : ChargeHistogramViewModel
+    public class UmcClusterChargeHistogram : ChargeHistogramPlot
     {
         public UmcClusterChargeHistogram(UMCClusterLight cluster, string name)
             : base(cluster.BuildChargeStateHistogram(), name)

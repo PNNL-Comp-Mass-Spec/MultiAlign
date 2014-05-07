@@ -1,14 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using PNNLOmics;
-using PNNLOmics.Data;
-using PNNLOmics.Data.Features;
+﻿using MultiAlignCore.Data;
 using MultiAlignCore.IO.Features.Hibernate;
-using MultiAlignCore.IO.Features;
-using MultiAlignCore.Data;
-
 using NUnit.Framework;
 
 namespace MultiAlignTestSuite.IO
@@ -28,9 +19,9 @@ namespace MultiAlignTestSuite.IO
         [Test]
         public void CreateMsnTest()
         {
-            MSnFeatureToMSFeatureDAOHibernate msnFeatures = new MSnFeatureToMSFeatureDAOHibernate();
+            var msnFeatures = new MSnFeatureToMSFeatureDAOHibernate();
             
-            MSFeatureToMSnFeatureMap map = new MSFeatureToMSnFeatureMap();
+            var map = new MSFeatureToMSnFeatureMap();
             map.LCMSFeatureID   = 0;
             map.MSDatasetID     = 0;
             map.MSFeatureID     = 0;

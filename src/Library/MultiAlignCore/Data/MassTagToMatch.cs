@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using PNNLOmics.Data.Features;
-using PNNLOmics.Data.MassTags;
+﻿using System.Collections.Generic;
 using MultiAlignCore.Data.Features;
-using PNNLOmics.Data;
+using PNNLOmics.Data.MassTags;
 
 namespace MultiAlignCore.Data
 {
@@ -46,7 +41,7 @@ namespace MultiAlignCore.Data
         {
             get
             {
-                return string.Format("{0}-{1}", MassTag.ID, MassTag.ConformationID);
+                return string.Format("{0}-{1}", MassTag.Id, MassTag.ConformationId);
             }
         }
     }

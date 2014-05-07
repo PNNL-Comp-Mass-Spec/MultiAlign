@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using PNNLOmics.Data;
 
 namespace MultiAlignCore.IO.Features
@@ -23,7 +21,7 @@ namespace MultiAlignCore.IO.Features
         /// <returns></returns>
         public static List<XYData> GetParentSpectrum(string path, int scan, double minMz, double maxMz)
         {
-            using (ISpectraProvider provider = RawLoaderFactory.CreateFileReader(path))
+            using (var provider = RawLoaderFactory.CreateFileReader(path))
             {
                 if (provider != null)
                 {
@@ -58,7 +56,7 @@ namespace MultiAlignCore.IO.Features
 
         public static List<XYData> GetDaughterSpectrum(string path, int scan)
         {
-            using (ISpectraProvider provider = RawLoaderFactory.CreateFileReader(path))
+            using (var provider = RawLoaderFactory.CreateFileReader(path))
             {
                 if (provider != null)
                 {

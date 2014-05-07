@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Windows.Controls;
-using MultiAlign.ViewModels;
-using MultiAlignCore.Data.Features;
-using MultiAlign.ViewModels.TreeView;
+﻿using System.Windows.Controls;
 
 namespace MultiAlign.Windows.Viewers.Clusters
 {

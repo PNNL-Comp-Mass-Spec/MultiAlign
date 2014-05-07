@@ -1,4 +1,4 @@
-using MultiAlignCore.Data;
+using MultiAlignCore.IO.Analysis;
 using MultiAlignCore.IO.SequenceData;
 
 namespace MultiAlignCore.IO.Features
@@ -38,7 +38,7 @@ namespace MultiAlignCore.IO.Features
                                             IDatasetDAO                 datasetCache,
                                             IMassTagMatchDAO            massTagMatches,
                                             IMassTagDAO                 massTags,
-                                            IFactorDAO                  factorCache,
+                                            IFactorDao                  factorCache,
                                             IDatasetToFactorMapDAO      factorAssignmentCache,
                                             IMSMSClusterMapDAO          msmsClusterCache,
                                             IDatabaseSearchSequenceDAO  sequenceCache,
@@ -56,8 +56,8 @@ namespace MultiAlignCore.IO.Features
             FactorAssignmentCache       = factorAssignmentCache;
             FactorCache                 = factorCache;
             MSMSClusterCache            = msmsClusterCache;
-            this.DatabaseSequenceCache  = sequenceCache;
-            this.SequenceMsnMapCache    = sequenceMapCache;
+            DatabaseSequenceCache  = sequenceCache;
+            SequenceMsnMapCache    = sequenceMapCache;
         }
         public ISequenceToMsnFeatureDAO  SequenceMsnMapCache { get; set; }
         /// <summary>
@@ -76,7 +76,7 @@ namespace MultiAlignCore.IO.Features
             get;
             set;
         }
-        public IFactorDAO FactorCache
+        public IFactorDao FactorCache
         {
             get;
             set;

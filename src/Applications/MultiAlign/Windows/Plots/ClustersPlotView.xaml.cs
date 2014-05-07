@@ -1,21 +1,10 @@
-﻿using System;
+﻿using PNNLOmics.Data.Features;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using PNNLOmics.Data.Features;
-using MultiAlignCore.Data.Imaging;
-using MultiAlign.Data;
 
-namespace MultiAlign.Windows
+namespace MultiAlign.Windows.Plots
 {
     /// <summary>
     /// Interaction logic for ClustersView.xaml
@@ -45,10 +34,10 @@ namespace MultiAlign.Windows
 
         private void SetClusters()
         {
-            ClustersImageData data          = AnalysisImageCreator.CreateClusterPlots(Clusters, PlotWidth, PlotHeight, false);
-            ClustersImage                   = ImageConverter.ConvertImage(data.ClustersImage);
-            ClustersDatasetSizeHistogram    = ImageConverter.ConvertImage(data.ClustersDatasetSizeHistogramImage);
-            ClusterSizeHistogram            = ImageConverter.ConvertImage(data.ClustersSizeHistogramImage);
+            //var data                        = AnalysisPlotFactory.CreateClusterPlots(Clusters, PlotWidth, PlotHeight, false);
+            //ClustersImage                   = ImageConverter.ConvertImage(data.ClustersImage);
+            //ClustersDatasetSizeHistogram    = ImageConverter.ConvertImage(data.ClustersDatasetSizeHistogramImage);
+            //ClusterSizeHistogram            = ImageConverter.ConvertImage(data.ClustersSizeHistogramImage);
         }
 
         public int PlotWidth

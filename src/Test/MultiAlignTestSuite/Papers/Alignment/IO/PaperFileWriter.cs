@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
 
 namespace MultiAlignTestSuite.Papers.Alignment.IO
@@ -13,7 +10,7 @@ namespace MultiAlignTestSuite.Papers.Alignment.IO
     public abstract class PaperFileWriter
     {
         private TextWriter m_writer;
-        private bool m_isOpen = false;
+        private bool m_isOpen;
         private bool m_shouldAppend;
         public PaperFileWriter(bool append)
         {
@@ -35,8 +32,8 @@ namespace MultiAlignTestSuite.Papers.Alignment.IO
         public PaperFileWriter(string name, string path, bool append)
             :this(append)
         {            
-            DateTime now    = DateTime.Now;
-            string newName  = string.Format("{0}_{1}_{2}_{3}_{4}_{5}_{6}.csv", name,
+            var now    = DateTime.Now;
+            var newName  = string.Format("{0}_{1}_{2}_{3}_{4}_{5}_{6}.csv", name,
                                                                             now.Year,
                                                                             now.Month,
                                                                             now.Day,

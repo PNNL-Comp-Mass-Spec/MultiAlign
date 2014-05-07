@@ -1,23 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Data;
-using System.IO;
 using System.Windows;
-using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Media;
 
 namespace MultiAlign.Converters
 {
     public class DatasetColorConverter: DependencyObject, IValueConverter      
     {
-
-        public DatasetColorConverter()
-        {
-            
-        }
-
         public bool?  IsDataset
 
         {
@@ -37,12 +26,12 @@ namespace MultiAlign.Converters
             if (value == null)
                 return null;
 
-            bool isAlignedToDatabase = (bool) value;
-            Color x = Colors.Green;
+            var isAlignedToDatabase = (bool) value;
+            var x = Colors.Green;
 
             if (IsDataset == true)
             {
-                if (isAlignedToDatabase == true)
+                if (isAlignedToDatabase)
                 {
                     x = Colors.LightGray;
                 }

@@ -1,19 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using MultiAlignCore.Algorithms.FeatureFinding;
-using MultiAlignCore.Algorithms.Options;
 using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.Features.Hibernate;
 using MultiAlignCore.IO.RawData;
 using NUnit.Framework;
 using PNNLOmics.Algorithms;
+using PNNLOmics.Algorithms.FeatureClustering;
 using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Extensions;
 using PNNLOmicsIO.IO;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using PNNLOmics.Algorithms.FeatureClustering;
 
 namespace MultiAlignTestSuite.Algorithms
 {
@@ -24,15 +23,15 @@ namespace MultiAlignTestSuite.Algorithms
         [TestCase(@"M:\data\proteomics\TestData\QC-Shew\226151_QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27_isos.csv")]
         public IEnumerable<UMCLight> TestUmcFeatures(string path)
         {
-            var reader = new MSFeatureLightFileReader { Delimeter = "," };
+            var reader = new MsFeatureLightFileReader { Delimeter = "," };
             var newMsFeatures = reader.ReadFile(path);
 
-            var finder = new UmcTreeFeatureFinder()
+            var finder = new UmcTreeFeatureFinder
             {
                 MaximumNet = .005,
                 MaximumScan = 50
             };
-            var tolerances  = new FeatureTolerances()
+            var tolerances  = new FeatureTolerances
             {
                 Mass = 8,
                 RetentionTime = .005
@@ -58,10 +57,10 @@ namespace MultiAlignTestSuite.Algorithms
                   Ignore = true)]
         public void TestUmcFeatures(string path, string rawPath)
         {
-            var reader          = new MSFeatureLightFileReader { Delimeter = "," };
+            var reader          = new MsFeatureLightFileReader{ Delimeter = "," };
             var newMsFeatures   = reader.ReadFile(path);
             var finder          = new UmcTreeFeatureFinder();
-            var featureTolerances        = new FeatureTolerances()
+            var featureTolerances        = new FeatureTolerances
             {
                 Mass            = 12,
                 RetentionTime   = .04
@@ -78,7 +77,7 @@ namespace MultiAlignTestSuite.Algorithms
 
             var start = DateTime.Now;
             IEnumerable<UMCLight> features = finder.FindFeatures(newMsFeatures.ToList(), options, provider);
-            DateTime end = DateTime.Now;
+            var end = DateTime.Now;
             Console.WriteLine(@"Test Took: " + end.Subtract(start).TotalSeconds);
 
             
@@ -95,9 +94,9 @@ namespace MultiAlignTestSuite.Algorithms
                     foreach (var feature in features)
                     {                    
                         writer.WriteLine();
-                        writer.WriteLine("Feature {0}", feature.ID);
+                        writer.WriteLine("Feature {0}", feature.Id);
                         var chargeMap = feature.CreateChargeMap();
-                        foreach (int charge in chargeMap.Keys)
+                        foreach (var charge in chargeMap.Keys)
                         {
                             writer.WriteLine();
                             foreach (var msFeature in chargeMap[charge])
@@ -133,10 +132,10 @@ namespace MultiAlignTestSuite.Algorithms
                   Ignore = true)]
         public void TestUmcFeaturesMultipleCharges(string path, string rawPath, int maxScanDiff)
         {
-            var reader = new MSFeatureLightFileReader { Delimeter = "," };
+            var reader = new MsFeatureLightFileReader { Delimeter = "," };
             var newMsFeatures = reader.ReadFile(path);
             var finder = new UmcTreeFeatureFinder();
-            var featureTolerances = new FeatureTolerances()
+            var featureTolerances = new FeatureTolerances
             {
                 Mass = 12,
                 RetentionTime = .05
@@ -153,7 +152,7 @@ namespace MultiAlignTestSuite.Algorithms
 
             var start = DateTime.Now;
             IEnumerable<UMCLight> features = finder.FindFeatures(newMsFeatures.ToList(), options, provider);
-            DateTime end = DateTime.Now;
+            var end = DateTime.Now;
             Console.WriteLine(@"Test Took: " + end.Subtract(start).TotalSeconds);
 
 
@@ -169,13 +168,13 @@ namespace MultiAlignTestSuite.Algorithms
                     foreach (var feature in features)
                     {
                         writer.WriteLine();
-                        writer.WriteLine("Feature {0}", feature.ID);
+                        writer.WriteLine("Feature {0}", feature.Id);
                         var chargeMap = feature.CreateChargeMap();
 
                         if (chargeMap.Keys.Count < 2)
                             continue;
 
-                        foreach (int charge in chargeMap.Keys)
+                        foreach (var charge in chargeMap.Keys)
                         {
                             writer.WriteLine();
                             foreach (var msFeature in chargeMap[charge])
@@ -304,7 +303,7 @@ namespace MultiAlignTestSuite.Algorithms
             var cache             = new MSFeatureDAOHibernate();
             var msFeatures = new List<MSFeatureLight>();
             foreach(var feature in features)            
-                msFeatures.AddRange(feature.MSFeatures);            
+                msFeatures.AddRange(feature.MsFeatures);            
             cache.AddAll(msFeatures);
 
             var umcCache = new UmcDAOHibernate();

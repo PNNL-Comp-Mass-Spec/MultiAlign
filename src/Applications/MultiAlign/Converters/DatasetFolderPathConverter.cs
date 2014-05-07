@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Windows;
 using System.Windows.Data;
-using MultiAlignCore.Data;
 
 namespace MultiAlign.Converters
 {
@@ -17,7 +15,7 @@ namespace MultiAlign.Converters
                 return false;
             }
 
-            string data = value.ToString();
+            var data = value.ToString();
             return System.IO.Path.GetDirectoryName(data);
         }
 

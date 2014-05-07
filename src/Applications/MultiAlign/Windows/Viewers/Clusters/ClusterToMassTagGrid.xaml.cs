@@ -1,27 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using MultiAlignCore.Data;
-using System.ComponentModel;
-using PNNLOmics.Data.Features;
-using PNNLOmics.Data.MassTags;
-using MultiAlignCore.Data.Features;
 using MultiAlignCore.Data;
 
 namespace MultiAlign.Windows.Viewers.Clusters
 {
     /// <summary>
-    /// Interaction logic for ClusterGrid.xaml
+    /// Interaction logic for 
     /// </summary>
     public partial class ClusterToMassTagGrid : UserControl
     {
@@ -66,7 +51,7 @@ namespace MultiAlign.Windows.Viewers.Clusters
        
         private void m_dataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            ClusterToMassTagMap tag = m_dataGrid.SelectedItem as ClusterToMassTagMap;
+            var tag = m_dataGrid.SelectedItem as ClusterToMassTagMap;
             SelectedTag = tag;
         }    
     }

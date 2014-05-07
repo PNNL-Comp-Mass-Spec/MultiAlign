@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using PNNLOmics.Data.Features;
 using System.Data.SQLite;
+using PNNLOmics.Data.Features;
 
 namespace MultiAlignCore.IO.Features
 {
@@ -41,40 +39,40 @@ namespace MultiAlignCore.IO.Features
             throw new NotImplementedException();
         }
 
-        public List<PNNLOmics.Data.Features.UMCLight> FindByDatasetId(int datasetId)
+        public List<UMCLight> FindByDatasetId(int datasetId)
         {
             throw new NotImplementedException();
         }
 
         public List<UMCLight> FindByCharge(int charge)
         {
-            List<UMCLight> features = new List<UMCLight>();
+            var features = new List<UMCLight>();
 
 
-            int featurecount = 0;
-            int cuont = 0;
-            using (SQLiteConnection connection = new SQLiteConnection(string.Format("Data Source = {0}", DatabasePath))) 
+            var featurecount = 0;
+            var cuont = 0;
+            using (var connection = new SQLiteConnection(string.Format("Data Source = {0}", DatabasePath))) 
             {
                 connection.Open();
-                using (SQLiteCommand command = connection.CreateCommand())
+                using (var command = connection.CreateCommand())
                 {
                     command.CommandText = string.Format("SELECT * FROM T_LCMS_FEATURES WHERE CHARGE = {0}", charge);
-                    using (SQLiteDataReader reader = command.ExecuteReader())
+                    using (var reader = command.ExecuteReader())
                     {
                         while (reader.Read())
                         {
-                            object[] values = new object[20];
+                            var values = new object[20];
                             reader.GetValues(values);
 
-                            UMCLight feature    = new UMCLight();
+                            var feature    = new UMCLight();
                             feature.ChargeState = Convert.ToInt32(values[11]);
                             feature.MassMonoisotopicAligned = Convert.ToDouble(values[5]);
                             feature.RetentionTime           = Convert.ToDouble(values[6]);
                             feature.DriftTime               = Convert.ToDouble(values[15]);
                             feature.AbundanceSum            = Convert.ToInt64(values[14]);
                             feature.Abundance               = Convert.ToInt64(values[13]);
-                            feature.GroupID                 = Convert.ToInt32(values[1]);
-                            feature.ID                      = Convert.ToInt32(values[0]);
+                            feature.GroupId                 = Convert.ToInt32(values[1]);
+                            feature.Id                      = Convert.ToInt32(values[0]);
                             features.Add(feature);
 
                             featurecount++;
@@ -93,12 +91,12 @@ namespace MultiAlignCore.IO.Features
             return features;
         }
 
-        public List<PNNLOmics.Data.Features.UMCLight> FindByChargeDataset(int charge, int dataset)
+        public List<UMCLight> FindByChargeDataset(int charge, int dataset)
         {
             throw new NotImplementedException();
         }
 
-        public List<PNNLOmics.Data.Features.UMCLight> FindAllClustered()
+        public List<UMCLight> FindAllClustered()
         {
             throw new NotImplementedException();
         }
@@ -117,42 +115,42 @@ namespace MultiAlignCore.IO.Features
 
         #region IGenericDAO<UMCLight> Members
 
-        public void Add(PNNLOmics.Data.Features.UMCLight t)
+        public void Add(UMCLight t)
         {
             throw new NotImplementedException();
         }
 
-        public void AddAll(ICollection<PNNLOmics.Data.Features.UMCLight> tList)
+        public void AddAll(ICollection<UMCLight> tList)
         {
             throw new NotImplementedException();
         }
 
-        public void Update(PNNLOmics.Data.Features.UMCLight t)
+        public void Update(UMCLight t)
         {
             throw new NotImplementedException();
         }
 
-        public void UpdateAll(ICollection<PNNLOmics.Data.Features.UMCLight> tList)
+        public void UpdateAll(ICollection<UMCLight> tList)
         {
             throw new NotImplementedException();
         }
 
-        public void Delete(PNNLOmics.Data.Features.UMCLight t)
+        public void Delete(UMCLight t)
         {
             throw new NotImplementedException();
         }
 
-        public void DeleteAll(ICollection<PNNLOmics.Data.Features.UMCLight> tList)
+        public void DeleteAll(ICollection<UMCLight> tList)
         {
             throw new NotImplementedException();
         }
 
-        public PNNLOmics.Data.Features.UMCLight FindById(int id)
+        public UMCLight FindById(int id)
         {
             throw new NotImplementedException();
         }
 
-        public List<PNNLOmics.Data.Features.UMCLight> FindAll()
+        public List<UMCLight> FindAll()
         {
             throw new NotImplementedException();
         }

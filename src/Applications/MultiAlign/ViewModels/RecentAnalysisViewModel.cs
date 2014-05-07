@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using MultiAlign.Data;
 using System.Windows.Input;
 using MultiAlign.Commands.Viewers;
+using MultiAlign.Data;
 
 namespace MultiAlign.ViewModels
 {
@@ -17,8 +14,8 @@ namespace MultiAlign.ViewModels
         public RecentAnalysisViewModel(RecentAnalysis analysis)
         {
             m_analysis                        = analysis;
-            LoadRecentAnalysisCommand command = new LoadRecentAnalysisCommand();
-            command.RecentAnalysisSelected   += new EventHandler<OpenAnalysisArgs>(command_RecentAnalysisSelected);
+            var command = new LoadRecentAnalysisCommand();
+            command.RecentAnalysisSelected   += command_RecentAnalysisSelected;
             LoadRecent                        = command;
         }
 

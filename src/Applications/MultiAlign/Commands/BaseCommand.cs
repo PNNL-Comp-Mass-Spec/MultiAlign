@@ -3,65 +3,46 @@ using System.Windows.Input;
 
 namespace MultiAlign.Commands
 {
-    /// <summary>
-    /// Base Command Bridge for easily synching a command back to a view model to reduce the number 
-    /// of required commands.
-    /// </summary>
-    public sealed class BaseCommandBridge: ICommand 
-    {
-        readonly CommandDelegate    m_delegate;
+    public class BaseCommand : ICommand
+    {        
+        public event EventHandler CanExecuteChanged;
+        private readonly Action m_action;
+        private readonly Func<object, bool> m_executeCheckFunc;
 
-        public event EventHandler   CanExecuteChanged;
-        private readonly Action      m_action;
-        private readonly Func<bool>  m_determineExecute;
-        bool m_canExecute = true;
 
-        public BaseCommandBridge(CommandDelegate newDelegate)
+        public BaseCommand(Action actionOnExecute)
+            : this(actionOnExecute, AlwaysPass)
         {
-            m_delegate          = newDelegate;
-            m_determineExecute  = null;
+            
+        }
+        public BaseCommand(Action actionOnExecute, Func<object, bool> executeFunc)          
+        {            
+            m_action           = actionOnExecute;
+            m_executeCheckFunc = executeFunc;
         }
 
-        public BaseCommandBridge(Action action, Func<bool> determineExecute)
+        public void InvokeCanExecuteChanged()
         {
-            m_delegate          = null;
-            m_action            = action;
-            m_determineExecute  = determineExecute;
+            if (CanExecuteChanged != null)
+                CanExecuteChanged(this, new EventArgs());
         }
 
-        #region ICommand Members
-        public bool CanExecute(object parameter)
-        {
-            if (m_determineExecute == null) 
-                return m_canExecute;
-
-            var execute = m_determineExecute();
-
-            if (m_canExecute == execute) 
-                return m_canExecute;
-
-            m_canExecute = execute;
-            if (CanExecuteChanged !=null )
-            {
-                CanExecuteChanged(this, null);
-            }
-            return m_canExecute;
+        public virtual bool CanExecute(object parameter)
+        {             
+            return m_executeCheckFunc(parameter);
         }
 
-        public void Execute(object parameter)
-        {
-            if (m_delegate != null)
-            {
-                m_delegate(parameter);
-            }
+        public virtual void Execute(object parameter)
+        {                            
             if (m_action != null)
             {
-                m_action.Invoke();
+                m_action();
             }
         }
 
-        #endregion
+        public static bool AlwaysPass(object parameter)
+        {
+            return true;
+        }
     }
-
-    public delegate void CommandDelegate(object parameter);
 }

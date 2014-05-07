@@ -73,8 +73,7 @@
                     FontSize="18"
                     Grid.ColumnSpan="2"
                     Margin="5"
-                    Text="{Binding Path=OutputPath, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"
-                    ></TextBox>
+                    Text="{Binding Path=OutputPath, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
                 <Button
                     Grid.Row="4"                                        
                     Grid.Column="2"

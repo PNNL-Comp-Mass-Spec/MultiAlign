@@ -1,7 +1,9 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using MultiAlign.IO;
-using MultiAlignCore.Algorithms.Alignment;
 using MultiAlignCore.Algorithms.FeatureMatcher;
-using MultiAlignCore.Algorithms.Options;
 using MultiAlignCore.Algorithms.Workflow;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.Alignment;
@@ -10,18 +12,14 @@ using MultiAlignCore.Data.MassTags;
 using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.Extensions;
 using MultiAlignCore.IO;
+using MultiAlignCore.IO.Analysis;
 using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.Features.Hibernate;
 using MultiAlignCore.IO.MTDB;
 using PNNLOmics.Algorithms;
-using PNNLOmics.Algorithms.Alignment;
 using PNNLOmics.Algorithms.FeatureClustering;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Data.MassTags;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
 
 namespace MultiAlignCore.Algorithms
 {        
@@ -93,8 +91,6 @@ namespace MultiAlignCore.Algorithms
         public MultiAlignAnalysisProcessor()
         {
             m_algorithms      = null;
-            AnalysisStartStep = AnalysisStep.Alignment;
-            
             CreateAnalysisMethodMap();            
         }
         #endregion
@@ -108,19 +104,7 @@ namespace MultiAlignCore.Algorithms
             get;
             set;
         }
-        /// <summary>
-        /// Gets or sets the path to store the output data
-        /// </summary>
-        public string AnalysisPath
-        {
-            get;
-            set;
-        }
-        public AnalysisStep AnalysisStartStep
-        {
-            get;
-            set;
-        }
+
         #endregion
 
         #region Algorithm Providers and Event Handlers
@@ -490,9 +474,10 @@ namespace MultiAlignCore.Algorithms
                 alignmentData.DatasetID         = datasetInfo.DatasetId;
             }
 
-            var args = new FeaturesAlignedEventArgs(baselineInfo,
-                                                    datasetInfo,
-                                                    alignmentData) {AlignedFeatures = features.ToList()};
+            var args = new FeaturesAlignedEventArgs(datasetInfo,
+                                                    baselineFeatures,
+                                                    features,
+                                                    alignmentData);
 
             if (FeaturesAligned != null)            
                 FeaturesAligned(this, args);
@@ -532,13 +517,13 @@ namespace MultiAlignCore.Algorithms
                 UpdateStatus( string.Format("Clustering {0} features. ", features.Count));
                 var clusters = new List<UMCClusterLight>();
                 clusters = clusterer.Cluster(features, clusters);                
-                foreach (UMCClusterLight cluster in clusters)
+                foreach (var cluster in clusters)
                 {
-                    cluster.ID = clusterCount++;
-                    cluster.UMCList.ForEach(x => x.ClusterID = cluster.ID);
+                    cluster.Id = clusterCount++;
+                    cluster.UmcList.ForEach(x => x.ClusterId = cluster.Id);
 
                     // Updates the cluster with statistics
-                    foreach (UMCLight feature in cluster.UMCList)
+                    foreach (var feature in cluster.UmcList)
                     {
                         cluster.MsMsCount += feature.MsMsCount;
                         cluster.IdentifiedSpectraCount += feature.IdentifiedSpectraCount;
@@ -565,7 +550,7 @@ namespace MultiAlignCore.Algorithms
                 UpdateStatus("Clustering charge states individually.");
                 for(var chargeState = 1; chargeState <= maxChargeState; chargeState++)
                 {
-                    List<UMCLight> features         = featureCache.FindByCharge(chargeState);
+                    var features         = featureCache.FindByCharge(chargeState);
                     if (features.Count < 1)
                     {
                         UpdateStatus(string.Format("No features found for charge state {0}.  Stopping clustering", chargeState));
@@ -578,11 +563,11 @@ namespace MultiAlignCore.Algorithms
                     var clusters  = clusterer.Cluster(features);
                     foreach (var cluster in clusters)
                     {
-                        cluster.ID = clusterCount++;
-                        cluster.UMCList.ForEach(x => x.ClusterID = cluster.ID);
+                        cluster.Id = clusterCount++;
+                        cluster.UmcList.ForEach(x => x.ClusterId = cluster.Id);
 
                         // Updates the cluster with statistics
-                        foreach (UMCLight feature in cluster.Features)
+                        foreach (var feature in cluster.Features)
                         {
                             cluster.MsMsCount += feature.MsMsCount;
                             cluster.IdentifiedSpectraCount += feature.IdentifiedSpectraCount;
@@ -610,68 +595,56 @@ namespace MultiAlignCore.Algorithms
         /// <summary>
         /// Performs peak matching with loaded clusters. 
         /// </summary>
-        public void PerformPeakMatching(AnalysisConfig config)
-        {            
-            if (config.ShouldPeakMatch)
+        private void PerformPeakMatching(AnalysisConfig config)
+        {
+            if (!config.ShouldPeakMatch) return;
+
+            if (m_config.Analysis.MassTagDatabase == null)
             {
-                if (m_config.Analysis.MassTagDatabase == null)
+                UpdateStatus("Could not peak match.  The database was not set.");
+            }
+            else
+            {                    
+                var clusters      = m_config.Analysis.DataProviders.ClusterCache.FindAll();
+                var peakMatcher   = m_algorithms.PeakMatcher;
+
+                UpdateStatus("Performing Peak Matching");                          
+                var adapter = peakMatcher as STACAdapter<UMCClusterLight>;
+                if (adapter != null)
                 {
-                    UpdateStatus("Could not peak match.  The database was not set.");
+                    UpdateStatus(adapter.Options.UseDriftTime ? "Using drift time." : "Ignoring drift time.");
                 }
-                else
-                {                    
-                    List<UMCClusterLight> clusters              = m_config.Analysis.DataProviders.ClusterCache.FindAll();
-                    IPeakMatcher<UMCClusterLight> peakMatcher   = m_algorithms.PeakMatcher;
+                                        
+                var matchResults = new PeakMatchingResults<UMCClusterLight, MassTagLight>();
+                clusters.ForEach(x => x.Net = x.RetentionTime);
+                matchResults.Matches = peakMatcher.PerformPeakMatching(clusters, m_config.Analysis.MassTagDatabase);
 
-                    UpdateStatus("Performing Peak Matching");                          
-                    var adapter = peakMatcher as STACAdapter<UMCClusterLight>;
-                    if (adapter != null)
-                    {
-                        UpdateStatus(adapter.Options.UseDriftTime ? "Using drift time." : "Ignoring drift time.");
-                    }
-                    else
-                    {
-                        var traditional = peakMatcher as TraditionalPeakMatcher<UMCClusterLight>;
-                        if (traditional != null && !m_config.Analysis.MassTagDatabase.DoesContainDriftTime)
-                        {
-                            if (!m_config.Analysis.MassTagDatabase.DoesContainDriftTime)
-                            {
-                                UpdateStatus( "The database does not contain drift time.  Ensuring drift time tolerances are disabled.");
-                                traditional.Options.DriftTimeTolerance = 1000;
-                            }
-                        }
-                    }
+                if (adapter != null)
+                {
+                    matchResults.FdrTable = adapter.Matcher.StacFdrTable;
+                }
+                m_config.Analysis.MatchResults = matchResults;
 
-                    var matchResults = new PeakMatchingResults<UMCClusterLight, MassTagLight>();
-                    clusters.ForEach(x => x.NET = x.RetentionTime);
-                    matchResults.Matches = peakMatcher.PerformPeakMatching(clusters, m_config.Analysis.MassTagDatabase);
-
-                    if (adapter != null)
-                    {
-                        matchResults.FdrTable = adapter.Matcher.STACFDRTable;
-                    }
-                    m_config.Analysis.MatchResults = matchResults;
-
-                    if (FeaturesPeakMatched != null)
-                    {
-                        FeaturesPeakMatched(this, new FeaturesPeakMatchedEventArgs(clusters, matchResults.Matches));
-                    }
+                if (FeaturesPeakMatched != null)
+                {
+                    FeaturesPeakMatched(this, new FeaturesPeakMatchedEventArgs(clusters, matchResults.Matches));
+                }
                                                            
-                    UpdateStatus( "Updating database with peak matched results.");
-                    var writer = new PeakMatchResultsWriter();
-                    int matchedMassTags;
-                    int matchedProteins;
-                    writer.WritePeakMatchResults(matchResults,
-                                                 m_config.Analysis.MassTagDatabase,
-                                                 out matchedMassTags,
-                                                 out matchedProteins);
+                UpdateStatus( "Updating database with peak matched results.");
+                var writer = new PeakMatchResultsWriter();
+                int matchedMassTags;
+                int matchedProteins;
+                writer.WritePeakMatchResults(matchResults,
+                    m_config.Analysis.MassTagDatabase,
+                    out matchedMassTags,
+                    out matchedProteins);
 
-                    UpdateStatus( string.Format("Found {0} mass tag matches. Matching to {1} potential proteins.",
-                                                                                                matchedMassTags,
-                                                                                                matchedProteins));                    
-                }
+                UpdateStatus( string.Format("Found {0} mass tag matches. Matching to {1} potential proteins.",
+                    matchedMassTags,
+                    matchedProteins));                    
             }
         }
+
         #endregion
 
                 
@@ -742,12 +715,12 @@ namespace MultiAlignCore.Algorithms
             if (m_config.Analysis.Options.AlignmentOptions.IsAlignmentBaselineAMasstagDB)
             {
                 UpdateStatus("Loading Mass Tag database from database:  " + m_config.Analysis.MetaData.Database.DatabaseName);
-                database = MTDBLoaderFactory.LoadMassTagDB(m_config.Analysis.MetaData.Database, m_config.Analysis.Options.MassTagDatabaseOptions);
+                database = MtdbLoaderFactory.LoadMassTagDatabase(m_config.Analysis.MetaData.Database, m_config.Analysis.Options.MassTagDatabaseOptions);
             }
             else if (m_config.Analysis.MetaData.Database != null && m_config.Analysis.MetaData.Database.DatabaseFormat != MassTagDatabaseFormat.None)
             {
                 UpdateStatus("Loading Mass Tag database from database:  " + m_config.Analysis.MetaData.Database.DatabaseName);
-                database = MTDBLoaderFactory.LoadMassTagDB(m_config.Analysis.MetaData.Database, m_config.Analysis.Options.MassTagDatabaseOptions);
+                database = MtdbLoaderFactory.LoadMassTagDatabase(m_config.Analysis.MetaData.Database, m_config.Analysis.Options.MassTagDatabaseOptions);
             }
             else
             {
@@ -767,28 +740,26 @@ namespace MultiAlignCore.Algorithms
             config.Analysis.MassTagDatabase = database;
 
 
-            if (database != null)
-            {
-                config.Analysis.DataProviders.MassTags.AddAll(database.MassTags);
+            if (database == null) return;
+            config.Analysis.DataProviders.MassTags.AddAll(database.MassTags);
 
-                var proteinCache = new ProteinDAO();          
-                proteinCache.AddAll(database.AllProteins);
+            var proteinCache = new ProteinDAO();          
+            proteinCache.AddAll(database.AllProteins);
 
-                var map = (from massTagId in database.Proteins.Keys
-                                from p in database.Proteins[massTagId]
-                                    select new MassTagToProteinMap
-                                    {
-                                        ProteinId = p.ProteinID, 
-                                        MassTagId = massTagId, 
-                                        RefId = p.RefID
-                                    }).ToList();
+            var map = (from massTagId in database.Proteins.Keys
+                from p in database.Proteins[massTagId]
+                select new MassTagToProteinMap
+                {
+                    ProteinId = p.ProteinId, 
+                    MassTagId = massTagId, 
+                    RefId = p.RefId
+                }).ToList();
 
-                var tempCache = new GenericDAOHibernate<MassTagToProteinMap>();
-                tempCache.AddAll(map);
+            var tempCache = new GenericDAOHibernate<MassTagToProteinMap>();
+            tempCache.AddAll(map);
 
-                if (MassTagsLoaded != null)            
-                    MassTagsLoaded(this, new MassTagsLoadedEventArgs(database.MassTags, database));
-            }
+            if (MassTagsLoaded != null)            
+                MassTagsLoaded(this, new MassTagsLoadedEventArgs(database.MassTags, database));
         }
         
         /// <summary>

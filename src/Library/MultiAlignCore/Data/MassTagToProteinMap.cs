@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Runtime.Serialization;
 
 namespace MultiAlignCore.Data
@@ -32,25 +30,22 @@ namespace MultiAlignCore.Data
 
 		public override bool Equals(object obj)
 		{
-			MassTagToProteinMap massTagToProteinMap = (MassTagToProteinMap)obj;
+			var massTagToProteinMap = (MassTagToProteinMap)obj;
 
 			if (massTagToProteinMap == null)
 			{
 				return false;
-			} 
-			else if (!this.MassTagId.Equals(massTagToProteinMap.MassTagId))
-			{
-				return false;
 			}
-			else
-			{
-				return this.ProteinId.Equals(massTagToProteinMap.ProteinId);
-			}
+		    if (!MassTagId.Equals(massTagToProteinMap.MassTagId))
+		    {
+		        return false;
+		    }
+		    return ProteinId.Equals(massTagToProteinMap.ProteinId);
 		}
 
 		public override int GetHashCode()
 		{
-			int hash = 17;
+			var hash = 17;
 
             hash = hash * 23 + m_massTagId.GetHashCode();
             hash = hash * 23 + m_proteinId.GetHashCode();

@@ -1,15 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using PNNLOmics.Data.Features;
-using MultiAlignCore.Data.Features;
-using System.ComponentModel;
 using System.Collections.ObjectModel;
-using MultiAlign.ViewModels;
-using MultiAlignCore.Data;
-using MultiAlignCore.Extensions;
-using MultiAlign.IO;
+using System.Linq;
+using PNNLOmics.Data.Features;
 
 namespace MultiAlign.ViewModels.TreeView
 {
@@ -47,13 +39,13 @@ namespace MultiAlign.ViewModels.TreeView
             if (m_loaded)
                 return;
 
-            List<UMCTreeViewModel> features = (from feature in m_parentCluster.Features
+            var features = (from feature in m_parentCluster.Features
                                             select new UMCTreeViewModel(feature)).ToList();
 
-            foreach (UMCTreeViewModel model in features)
+            foreach (var model in features)
             {
                 Features.Add(model);
-                model.FeatureSelected += new EventHandler<FeatureSelectedEventArgs>(model_FeatureSelected);
+                model.FeatureSelected += model_FeatureSelected;
             }
             m_loaded = true;
         }

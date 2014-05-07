@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace MultiAlignCore.IO
+﻿namespace MultiAlignCore.IO.Clusters
 {
     /// <summary>
     /// Class that tracks the paths for cross tabs cluster MSMS and cross tab abundance.

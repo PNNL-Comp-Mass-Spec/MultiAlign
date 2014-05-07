@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.IO;
 using System.Linq;
-using System.Text;
-using MultiAlignCore.IO.MTDB;
-using MultiAlignCore.Data;
-using System.IO;
 using MultiAlign.Data.States;
-using MultiAlignCore.IO.InputFiles;
+using MultiAlignCore.Data;
 using MultiAlignCore.Data.MassTags;
 
 namespace MultiAlign.Data
@@ -15,14 +10,12 @@ namespace MultiAlign.Data
     {
         /// <summary>
         /// Determines if all of the data is valid yet for the analysis.
-        /// </summary>
-        /// <param name="analysis"></param>
-        /// <param name="step"></param>
+        /// </summary>        
         /// <returns></returns>
         public static bool IsStepValid(AnalysisConfig config, AnalysisSetupStep step, ref string errorMessage)
         {
-            MultiAlignAnalysis analysis = config.Analysis;
-            bool isStepValid            = true;
+            var analysis = config.Analysis;
+            var isStepValid            = true;
 
             switch (step)
             {
@@ -47,8 +40,6 @@ namespace MultiAlign.Data
                         isStepValid = false;
                     }
                     break;
-                default:
-                    break;
             }
 
             return isStepValid;
@@ -56,7 +47,7 @@ namespace MultiAlign.Data
 
         private static bool ValidateNames(AnalysisConfig config, ref string errorMessage)
         {
-            bool isStepValid = true;
+            var isStepValid = true;
             if (config.AnalysisPath == null)
             {
                 errorMessage = "An output folder location needs to be supplied.";
@@ -64,15 +55,14 @@ namespace MultiAlign.Data
             }
             else
             {
-                char [] chars = Path.GetInvalidPathChars();
-                string name   = config.AnalysisPath; 
-                foreach (char c in chars)
+                var chars  = Path.GetInvalidPathChars();
+                var name   = config.AnalysisPath; 
+                foreach (var c in chars)
                 {
                     if (name.Contains(c))
-                    {
-                        isStepValid  = false;
+                    {                        
                         errorMessage = "The path you provided has invalid characters.";
-                        return isStepValid;
+                        return false;
                     }
                 }
                 
@@ -94,12 +84,12 @@ namespace MultiAlign.Data
         private static bool ValidateBaseline(MultiAlignAnalysis analysis, ref string errorMessage)
         {
             
-            bool isStepValid = true;
+            var isStepValid = true;
 
             if (analysis.Options.AlignmentOptions.IsAlignmentBaselineAMasstagDB)
             {
-                InputDatabase database = analysis.MetaData.Database;
-                string databasePath = analysis.MetaData.Database.DatabaseName;
+                var database = analysis.MetaData.Database;
+                var databasePath = analysis.MetaData.Database.DatabaseName;
 
                 switch (database.DatabaseFormat)
                 {
@@ -107,15 +97,14 @@ namespace MultiAlign.Data
                         errorMessage = "No database was selected.";
                         isStepValid = false;
                         break;
-                    case MassTagDatabaseFormat.SQL:
+                    case MassTagDatabaseFormat.MassTagSystemSql:
                         if (database.DatabaseName == null || database.DatabaseServer == null)
                         {
                             isStepValid = false;
                             errorMessage = "The database or server was not set.";
                         }
                         break; 
-                    case MassTagDatabaseFormat.DirectInfusionIms:
-                    case MassTagDatabaseFormat.APE:
+                    case MassTagDatabaseFormat.SkipAlignment:                    
                     case MassTagDatabaseFormat.Sqlite:
                         databasePath = analysis.MetaData.Database.LocalPath;
                         if (databasePath == null)
@@ -125,19 +114,17 @@ namespace MultiAlign.Data
                         }
                         else
                         {
-                            if (!System.IO.File.Exists(databasePath))
+                            if (!File.Exists(databasePath))
                             {
                                 errorMessage = "The database file provided does not exist.";
                                 isStepValid = false;
                             }
                         }
                         break;
-                    case MassTagDatabaseFormat.MetaSample:
+                    case MassTagDatabaseFormat.DelimitedTextFile:
                         errorMessage = "Invalid database type.";
                         isStepValid = false;
-                        break;
-                    default:
-                        break;
+                        break;                    
                 }
             }
             else

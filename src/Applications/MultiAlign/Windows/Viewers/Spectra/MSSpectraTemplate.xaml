@@ -13,11 +13,11 @@
             <Border CornerRadius="2" BorderThickness="1" HorizontalAlignment="Stretch" Padding="3" Margin="3" BorderBrush="#FFCCCCCC">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="32"></ColumnDefinition>
-                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="32" />
+                        <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
                    
                     <Image
@@ -44,20 +44,20 @@
         <Border CornerRadius="2" BorderThickness="1" HorizontalAlignment="Stretch" Margin="3" BorderBrush="#FFCCCCCC">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="32"></ColumnDefinition>
-                    <ColumnDefinition Width="160"></ColumnDefinition>
-                    <ColumnDefinition Width="124"></ColumnDefinition>
-                    <ColumnDefinition Width="124"></ColumnDefinition>
-                    <ColumnDefinition Width="124"></ColumnDefinition>
+                    <ColumnDefinition Width="32" />
+                    <ColumnDefinition Width="160" />
+                    <ColumnDefinition Width="124" />
+                    <ColumnDefinition Width="124" />
+                    <ColumnDefinition Width="124" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
                 <Label
                     Foreground="LightGray"

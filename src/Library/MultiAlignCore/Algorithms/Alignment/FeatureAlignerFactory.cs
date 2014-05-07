@@ -1,10 +1,10 @@
-﻿using MultiAlignCore.Algorithms.Options;
+﻿using System.Collections.Generic;
+using MultiAlignCore.Algorithms.Options;
 using MultiAlignCore.Data.Alignment;
 using PNNLOmics.Algorithms.Alignment;
 using PNNLOmics.Algorithms.Alignment.SpectralMatches;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Data.MassTags;
-using System.Collections.Generic;
 
 namespace MultiAlignCore.Algorithms.Alignment
 {

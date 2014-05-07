@@ -1,6 +1,6 @@
-﻿using MultiAlignCore.Extensions;
+﻿using System.Collections.Generic;
+using MultiAlignCore.Extensions;
 using PNNLOmics.Data;
-using System.Collections.Generic;
 
 namespace MultiAlignCore.Algorithms
 {

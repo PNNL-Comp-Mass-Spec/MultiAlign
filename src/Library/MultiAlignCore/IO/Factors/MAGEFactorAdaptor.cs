@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.ObjectModel;
 using Mage;
-using MultiAlignCore.Data;
-using MultiAlignCore.Data.Factors;
 using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO.Features;
-using System.Collections.ObjectModel;
 
 namespace MultiAlignCore.IO.Factors
 {
@@ -56,19 +50,19 @@ namespace MultiAlignCore.IO.Factors
                 return;
             }
 
-            MultiAlignFactorSink sink = new MultiAlignFactorSink(datasets,
+            var sink = new MultiAlignFactorSink(datasets,
                                                                 providers.DatasetCache,
                                                                 providers.FactorCache,
                                                                 providers.FactorAssignmentCache);
-            foreach (DatasetInformation info in datasets)
+            foreach (var info in datasets)
             {
-                string query        = m_sqlQuery + string.Format(" = '{0}'", info.DatasetName);
-                MSSQLReader reader  = new MSSQLReader();
+                var query        = m_sqlQuery + string.Format(" = '{0}'", info.DatasetName);
+                var reader  = new MSSQLReader();
                 reader.Server       = Server;
                 reader.Database     = Database;
                 reader.SQLText      = query;
                 
-                ProcessingPipeline pipeline = ProcessingPipeline.Assemble("PlainFactors", reader, sink);
+                var pipeline = ProcessingPipeline.Assemble("PlainFactors", reader, sink);
                 pipeline.RunRoot(null);                                
             }
             sink.CommitChanges();
@@ -80,16 +74,16 @@ namespace MultiAlignCore.IO.Factors
                 return;
             }
 
-            MultiAlignFactorSink sink = new MultiAlignFactorSink(datasets,
+            var sink = new MultiAlignFactorSink(datasets,
                                                                 providers.DatasetCache,
                                                                 providers.FactorCache,
                                                                 providers.FactorAssignmentCache); 
                 
-            DelimitedFileReader reader = new DelimitedFileReader();
+            var reader = new DelimitedFileReader();
             reader.Delimiter    = "\t";
             reader.FilePath     = path;
             
-            ProcessingPipeline pipeline = ProcessingPipeline.Assemble("PlainFactors", reader, sink);
+            var pipeline = ProcessingPipeline.Assemble("PlainFactors", reader, sink);
             pipeline.RunRoot(null);
             sink.CommitChanges();                                      
         }       

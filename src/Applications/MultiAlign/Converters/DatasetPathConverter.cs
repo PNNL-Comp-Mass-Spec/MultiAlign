@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Windows;
 using System.Windows.Data;
-using MultiAlignCore.Data;
 using MultiAlignCore.Data.MetaData;
 
 namespace MultiAlign.Converters
@@ -18,7 +16,7 @@ namespace MultiAlign.Converters
                 return false;
             }
 
-            string data = value.ToString();
+            var data = value.ToString();
             return DatasetInformation.ExtractDatasetName(data);
         }
 

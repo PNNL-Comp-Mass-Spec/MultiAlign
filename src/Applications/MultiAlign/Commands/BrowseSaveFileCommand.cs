@@ -1,43 +1,32 @@
-﻿using Ookii.Dialogs.Wpf;
-using System;
-using System.Windows.Input;
+﻿using System;
+using Ookii.Dialogs.Wpf;
 
 namespace MultiAlign.Commands
 {
-    public sealed class BrowseSaveFileCommand: ICommand
+    public sealed class BrowseSaveFileCommand: BaseCommand
     {
-
-        public event EventHandler CanExecuteChanged;
         private readonly VistaSaveFileDialog                 m_dialog;
-        private readonly Action<string> m_action;
+        private readonly Action<string> m_saveAction;
 
-        private BrowseSaveFileCommand(string filter)
+        public BrowseSaveFileCommand(Action<string> actionOnExecute, Func<object, bool> executeFunc, string filter)
+            : base(null, executeFunc)
         {
-            m_dialog                = new VistaSaveFileDialog {Filter = filter, AddExtension = true};
+            m_saveAction    = actionOnExecute;
+            m_dialog        = new VistaSaveFileDialog { Filter = filter, AddExtension = true };
         }
 
-        public BrowseSaveFileCommand(Action<string> actionOnExecute, string filter)
-            : this (filter)
-        {            
-            m_action            = actionOnExecute;            
-        }
-
-        public bool CanExecute(object parameter)
-        {             
-            return true;
-        }
-
-
-        public void Execute(object parameter)
+        public override  void Execute(object parameter)
         {                
             var result = m_dialog.ShowDialog();
+            if (result != true) return;            
 
-            if (result != true) return;
-
-            if (m_action != null)
+            if (m_saveAction != null)
             {
-                m_action(m_dialog.FileName);
+                m_saveAction(m_dialog.FileName);
             }
+
+            base.Execute(parameter);
         }
+
     }
 }

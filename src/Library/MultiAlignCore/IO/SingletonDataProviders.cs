@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO.Features;
-using MultiAlignCore.Data;
 
 namespace MultiAlign.IO
 {
@@ -32,7 +28,7 @@ namespace MultiAlign.IO
             if (m_providers != null)
             {
                 
-                foreach (DatasetInformation info in m_providers.DatasetCache.FindAll())
+                foreach (var info in m_providers.DatasetCache.FindAll())
                 {
                     m_datasets.Add(info.DatasetId, info);
                 }

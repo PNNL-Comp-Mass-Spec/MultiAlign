@@ -1,18 +1,18 @@
-﻿using MultiAlign.Commands;
-using MultiAlign.Properties;
-using MultiAlign.ViewModels.Instruments;
-using MultiAlign.Windows.Wizard;
-using MultiAlignCore.Algorithms.Alignment;
-using MultiAlignCore.Algorithms.Clustering;
-using MultiAlignCore.Algorithms.FeatureFinding;
-using MultiAlignCore.Algorithms.Options;
-using MultiAlignCore.IO.Generic;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+using MultiAlign.Commands;
+using MultiAlign.Properties;
+using MultiAlign.ViewModels.Instruments;
+using MultiAlign.Windows.Controls;
+using MultiAlign.Windows.Wizard;
+using MultiAlignCore.Algorithms.Alignment;
+using MultiAlignCore.Algorithms.FeatureFinding;
+using MultiAlignCore.Algorithms.Options;
+using MultiAlignCore.IO.Generic;
 using PNNLOmics.Algorithms.FeatureClustering;
 
 namespace MultiAlign.ViewModels.Wizard
@@ -72,21 +72,21 @@ namespace MultiAlign.ViewModels.Wizard
             };
             m_saveDialog.Filter         = Resources.MultiAlignParameterFileFilter;
 
-            ShowAdvancedWindowCommand   = new BaseCommandBridge(ShowAdvancedWindow);
-            SaveOptionsCommand          = new BaseCommandBridge(SaveCurrentParameters);
-            LoadExistingCommand         = new BaseCommandBridge(LoadExistingParameters);
+            ShowAdvancedWindowCommand   = new BaseCommand(ShowAdvancedWindow);
+            SaveOptionsCommand          = new BaseCommand(SaveCurrentParameters);
+            LoadExistingCommand         = new BaseCommand(LoadExistingParameters);
 
             Enum.GetValues(typeof(LcmsFeatureClusteringAlgorithmType)).Cast<LcmsFeatureClusteringAlgorithmType>().ToList().ForEach(x => ClusteringAlgorithms.Add(x));
             Enum.GetValues(typeof(FeatureAlignmentType)).Cast<FeatureAlignmentType>().ToList().ForEach(x => AlignmentAlgorithms.Add(x));
             Enum.GetValues(typeof(FeatureFinderType)).Cast<FeatureFinderType>().ToList().ForEach(x => FeatureFindingAlgorithms.Add(x));
         }
 
-        private void ShowAdvancedWindow(object parameter)
+        private void ShowAdvancedWindow()
         {
-            var viewModel       = new AdvancedOptionsViewModel(m_options);            
-            var view            = new AnalysisOptionsView
+            //var viewModel       = new AdvancedOptionsViewModel(m_options);            
+            var view = new AdvancedOptionsWindow()
             {
-                DataContext = viewModel,
+                DataContext = m_options,
                 MinWidth = 800,
                 MinHeight = 600,
                 MaxWidth = 1200,
@@ -100,12 +100,12 @@ namespace MultiAlign.ViewModels.Wizard
 
             UpdateOptions();
         }
-        private void LoadExistingParameters(object parameter)
+        private void LoadExistingParameters()
         {
             try
             {
                 //TODO: Replace with OOKI dialogs
-                System.Windows.Forms.DialogResult result = m_dialog.ShowDialog();
+                var result = m_dialog.ShowDialog();
                 if (result == System.Windows.Forms.DialogResult.OK)
                 {
                     var reader = new JsonReader<MultiAlignAnalysisOptions>();
@@ -114,25 +114,25 @@ namespace MultiAlign.ViewModels.Wizard
                 }
             }
                 //TODO: Replace with appropriate exception handling
-            catch (Exception ex)
+            catch (Exception)
             {
-                //TODO: Add message?
+                //TODO: Display the error
             }
         }
-        private void SaveCurrentParameters(object parameter)
+        private void SaveCurrentParameters()
         {
             try
             {
-                System.Windows.Forms.DialogResult result = m_saveDialog.ShowDialog();
+                var result = m_saveDialog.ShowDialog();
                 if (result == System.Windows.Forms.DialogResult.OK)
                 {
                     var writer = new JsonWriter<MultiAlignAnalysisOptions>();
                     writer.Write(m_saveDialog.FileName, m_options);
                 }
-            }
-            //TODO: Replace with appropriate exception handling
-            catch (Exception ex)
+            }            
+            catch (Exception)
             {
+                //TODO: Display the error
             }
         }
 

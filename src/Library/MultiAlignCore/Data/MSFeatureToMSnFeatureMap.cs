@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace MultiAlignCore.Data
+﻿namespace MultiAlignCore.Data
 {
     
     /// <summary>
@@ -54,33 +49,30 @@ namespace MultiAlignCore.Data
 
         public override bool Equals(object obj)
         {
-            MSFeatureToMSnFeatureMap other = (MSFeatureToMSnFeatureMap)obj;
+            var other = (MSFeatureToMSnFeatureMap)obj;
 
             if (other == null)
             {
                 return false;
             }
-            else if (!this.RawDatasetID.Equals(other.RawDatasetID))
+            if (!RawDatasetID.Equals(other.RawDatasetID))
             {
                 return false;
             }
-            else if (!this.MSFeatureID.Equals(other.MSFeatureID))
+            if (!MSFeatureID.Equals(other.MSFeatureID))
             {
                 return false;
             }
-            else if (!this.MSMSFeatureID.Equals(other.MSMSFeatureID))
+            if (!MSMSFeatureID.Equals(other.MSMSFeatureID))
             {
                 return false;
             }
-            else
-            {
-                return this.MSDatasetID.Equals(other.MSDatasetID);
-            }
+            return MSDatasetID.Equals(other.MSDatasetID);
         }
 
         public override int GetHashCode()
         {
-            int hash = 17;
+            var hash = 17;
 
             hash = hash * 23 + MSFeatureID.GetHashCode();
             hash = hash * 23 + MSMSFeatureID.GetHashCode();

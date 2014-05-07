@@ -1,17 +1,10 @@
-﻿using System.IO;
-using System.Text;
-using System.Collections.Generic;
-using MultiAlignCore.Data.MetaData;
-using PNNLOmics.Data.Features;
+﻿using System.Collections.Generic;
 using MultiAlignCore.Data;
-using PNNLOmics.Data.MassTags;
-using MultiAlignCore.Algorithms.Features;
-using MultiAlignCore.Algorithms.MSLinker;
-using MultiAlignEngine.Clustering;
-using MultiAlignEngine.Features;
-using PNNLOmicsIO.IO;
+using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO.Clusters;
-
+using PNNLOmics.Data.Features;
+using PNNLOmics.Data.MassTags;
+using PNNLOmicsIO.IO;
 
 namespace MultiAlignCore.IO.Features
 {

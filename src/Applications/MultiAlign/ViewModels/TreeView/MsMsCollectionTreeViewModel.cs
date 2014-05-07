@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using PNNLOmics.Data;
 using System.Collections.ObjectModel;
+using System.Linq;
 using MultiAlignCore.Extensions;
 using PNNLOmics.Data.Features;
-using MultiAlign.IO;
 
 namespace MultiAlign.ViewModels.TreeView
 {
@@ -42,17 +38,17 @@ namespace MultiAlign.ViewModels.TreeView
             if (m_loaded)
                 return;
 
-            List <MSSpectra> spectra = m_cluster.FindSpectra();
+            var spectra = m_cluster.FindSpectra();
 
-            List<MsMsTreeViewModel> peptideModels =
+            var peptideModels =
                 (from spectrum in spectra
                  select new MsMsTreeViewModel(spectrum)).ToList();
 
-            foreach (MsMsTreeViewModel model in peptideModels)
+            foreach (var model in peptideModels)
             {
                 m_spectra.Add(model);
-                model.FeatureSelected += new EventHandler<FeatureSelectedEventArgs>(model_FeatureSelected);
-                model.SpectrumSelected += new EventHandler<IdentificationFeatureSelectedEventArgs>(model_SpectrumSelected);
+                model.FeatureSelected += model_FeatureSelected;
+                model.SpectrumSelected += model_SpectrumSelected;
             }            
 
             m_loaded = true;

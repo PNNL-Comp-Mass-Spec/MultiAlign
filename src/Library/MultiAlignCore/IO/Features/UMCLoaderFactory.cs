@@ -1,9 +1,8 @@
-using MultiAlignCore.Data.MetaData;
-using PNNLOmics.Data.Features;
-using PNNLOmicsIO.IO;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using PNNLOmics.Data.Features;
+using PNNLOmicsIO.IO;
 
 namespace MultiAlignCore.IO.Features
 {
@@ -31,15 +30,16 @@ namespace MultiAlignCore.IO.Features
         /// <summary>
         /// Loads feature data from the files provided.
         /// </summary>
-        /// <param name="dataset"></param>
-        /// <param name="featureCache"></param>
         /// <returns></returns>
         public static IList<UMCLight> LoadUmcFeatureData(string path,
                                                          int  datasetId,
                                                          IUmcDAO featureCache)
         {
-            var features     = new List<UMCLight>();
-            string extension = Path.GetExtension(path).ToUpper();            
+            var features  = new List<UMCLight>();
+            var extension = Path.GetExtension(path);
+            if (extension == null) return features;
+
+            extension = extension.ToUpper();            
             switch (extension)
             {
                 case ".TXT":
@@ -51,16 +51,19 @@ namespace MultiAlignCore.IO.Features
                     break;
             }
             return features;
-        }        
+        }
+
         /// <summary>
         /// Determines if the features came from the database or a feature file.
         /// </summary>
-        /// <param name="dataset"></param>
         /// <returns></returns>
         public static bool AreExistingFeatures(string path)
         {
-            bool areExisting = false;
-            string extension = Path.GetExtension(path).ToUpper();
+            var areExisting = false;
+            var extension = Path.GetExtension(path);
+            if (extension == null) return false;
+
+            extension = extension.ToUpper();
             switch (extension)
             {
                 case ".DB3":
@@ -69,21 +72,23 @@ namespace MultiAlignCore.IO.Features
             }
             return areExisting;
         }
+
         /// <summary>
         /// Loads MS Features from a CSV file or existing database.
         /// </summary>
-        /// <param name="dataset"></param>
-        /// <param name="msFeatureCache"></param>
         /// <returns></returns>
         public static List<MSFeatureLight> LoadMsFeatureData(string path)
         {
             var msFeatures      = new List<MSFeatureLight>();
-            string extension    = Path.GetExtension(path).ToUpper();
+            var extension = Path.GetExtension(path);
+            if (extension == null) return msFeatures;
+
+            extension    = extension.ToUpper();
             switch (extension)
             {
                 default:
-                    var reader = new MSFeatureLightFileReader { Delimeter = "," };
-                    IEnumerable<MSFeatureLight> newMsFeatures = reader.ReadFile(path);
+                    var reader = new MsFeatureLightFileReader { Delimeter = "," };
+                    var newMsFeatures = reader.ReadFile(path);
                     msFeatures.AddRange(newMsFeatures);                    
                     UpdateStatus("Loaded features from the CSV files.");
                     break;                    

@@ -1,7 +1,4 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using MultiAlignCore;
 
 namespace MultiAlignCore.Data.Factors
 {
@@ -44,7 +41,7 @@ namespace MultiAlignCore.Data.Factors
         {
             get
             {                
-                foreach (FactorInformation information in m_factors.Values)
+                foreach (var information in m_factors.Values)
                 {
                     if (!information.IsFullyDefined)
                         return false;                    
@@ -83,7 +80,7 @@ namespace MultiAlignCore.Data.Factors
                 return FactorEditResult.Exists;
 
             // Create the new factor.
-            FactorInformation newFactor = new FactorInformation();
+            var newFactor = new FactorInformation();
             newFactor.FactorName = factorName;
             m_factors.Add(factorName, newFactor);
             return FactorEditResult.Added;
@@ -120,7 +117,7 @@ namespace MultiAlignCore.Data.Factors
                 return FactorEditResult.DoesNotExist;
             
             // Make sure the factor value does not exist.
-            List<string> values = m_factors[factorName].FactorValues;
+            var values = m_factors[factorName].FactorValues;
             if (values.Contains(factorValue))            
                 return FactorEditResult.Exists;
             
@@ -163,7 +160,7 @@ namespace MultiAlignCore.Data.Factors
             if (!m_factors.ContainsKey(factorName))
                 return false;
 
-            FactorInformation information = m_factors[factorName];
+            var information = m_factors[factorName];
             if (!information.FactorValues.Contains(factorValue))
                 return false;
 
@@ -183,11 +180,11 @@ namespace MultiAlignCore.Data.Factors
             if (!m_factors.ContainsKey(oldFactorName))
                 return FactorEditResult.DoesNotExist;
 
-            if (m_factors.ContainsKey(newFactorName) == true)
+            if (m_factors.ContainsKey(newFactorName))
                 return FactorEditResult.Exists;
             
             // Create a new deep list reference of the values
-            FactorInformation information = m_factors[oldFactorName];
+            var information = m_factors[oldFactorName];
 
             /// 
             /// Remove the old, add the new
@@ -211,7 +208,7 @@ namespace MultiAlignCore.Data.Factors
             if (!m_factors.ContainsKey(factorName))
                 return FactorEditResult.DoesNotExist;
          
-            FactorInformation information = m_factors[factorName];
+            var information = m_factors[factorName];
             if (!information.FactorValues.Contains(oldFactorValue))
                 return FactorEditResult.DoesNotExist;
             if (information.FactorValues.Contains(newFactorValue))
@@ -231,10 +228,10 @@ namespace MultiAlignCore.Data.Factors
         /// <returns></returns>
         public FactorCollection Clone()
         {
-            FactorCollection definitions = new FactorCollection();
-            foreach (FactorInformation information in this.Factors.Values)
+            var definitions = new FactorCollection();
+            foreach (var information in Factors.Values)
             {
-                FactorInformation newInformation = new FactorInformation();
+                var newInformation = new FactorInformation();
                 newInformation.FactorName = information.FactorName;
                 newInformation.FactorValues.AddRange(information.FactorValues);
 

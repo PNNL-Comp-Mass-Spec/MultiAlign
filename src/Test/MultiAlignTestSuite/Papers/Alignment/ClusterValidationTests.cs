@@ -1,4 +1,8 @@
-﻿using MultiAlign.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using MultiAlign.IO;
 using MultiAlign.ViewModels.Instruments;
 using MultiAlignCore.Algorithms;
 using MultiAlignCore.Algorithms.Alignment;
@@ -6,7 +10,6 @@ using MultiAlignCore.Algorithms.FeatureFinding;
 using MultiAlignCore.Algorithms.Options;
 using MultiAlignCore.Algorithms.Workflow;
 using MultiAlignCore.Data.Alignment;
-using MultiAlignCore.Data.Features;
 using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.Extensions;
 using MultiAlignCore.IO.Features;
@@ -23,10 +26,6 @@ using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Utilities;
 using PNNLOmicsIO.IO;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 
 namespace MultiAlignTestSuite.Papers.Alignment
 {
@@ -37,9 +36,8 @@ namespace MultiAlignTestSuite.Papers.Alignment
         [TestCase(@"M:\data\proteomics\Papers\AlignmentPaper\data\annotated-QC-6\test-annotated-6.db3", 2)]
         public void TestClusters(string databasetPath, int minMsMsCount)
         {
-
             var providers = DataAccessFactory.CreateDataAccessProviders(databasetPath, false);            
-            var clusters = providers.ClusterCache.FindAll();
+            var clusters  = providers.ClusterCache.FindAll();
             
             Console.WriteLine(@"Cluster ID\tCluster Size\tMs Ms Total\tMatching");
             foreach (var cluster in clusters)
@@ -51,7 +49,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
                 cluster.ReconstructUMCCluster(providers, true, true);
 
                 var hasIdentifications = false;
-                foreach (var umc in cluster.UMCList)
+                foreach (var umc in cluster.UmcList)
                 {                    
                     foreach (var feature in umc.Features)
                     {
@@ -65,20 +63,16 @@ namespace MultiAlignTestSuite.Papers.Alignment
                                     clusterPeptideMap.Peptides.Add(sequence, 0);
                                     clusterPeptideMap.PeptideDatasets.Add(sequence, new List<int>());
                                 }
-                                clusterPeptideMap.PeptideDatasets[sequence].Add(umc.GroupID);
+                                clusterPeptideMap.PeptideDatasets[sequence].Add(umc.GroupId);
                                 clusterPeptideMap.Peptides[sequence]++;
                                 hasIdentifications = true;
                             }
                         }
-                    }
-
-                    
+                    }                    
                 }
 
                 if (hasIdentifications)
-                    Console.WriteLine("{0}\t{1}\t{2}\t{3}", cluster.ID, cluster.UMCList.Count, cluster.MsMsCount, clusterPeptideMap.TotalDatasetsObserved);
-
-                cluster.Clear();
+                    Console.WriteLine("{0}\t{1}\t{2}\t{3}", cluster.Id, cluster.UmcList.Count, cluster.MsMsCount, clusterPeptideMap.TotalDatasetsObserved);                
             }            
         }
 
@@ -89,8 +83,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
         [TestCase(@"M:\data\proteomics\Papers\AlignmentPaper\data\annotated-QC-6\clusterTests-matches.txt",                     
                     900)]
         public void TestPeptides(string databasePath, int scanTolerance)
-        {            
-            var map  = new  Dictionary<string, int>();
+        {                        
             var data = File.ReadAllLines(databasePath).ToList();
 
             var currentPeptide   = "";
@@ -98,8 +91,8 @@ namespace MultiAlignTestSuite.Papers.Alignment
             var currentClusterId = 0;
             var currentScan      = 0;
 
-            int same    = 0;
-            int notSame = 0;
+            var same    = 0;
+            var notSame = 0;
 
             var peptides   = new List<Peptide>();
             var clusterMap = new Dictionary<string, int>();
@@ -116,7 +109,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
                 var scan      = Convert.ToInt32(columns[3]);
                 var clusterId = Convert.ToInt32(columns[4]);
 
-                var peptide = new Peptide()
+                var peptide = new Peptide
                 {
                     Scan = scan,
                     Sequence = sequence,
@@ -220,7 +213,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
                                         peptideOptions.Fdr,
                                         peptideOptions.IdScore);
 
-                baselineFeatures.ForEach(x => features.AddRange(x.MSFeatures));
+                baselineFeatures.ForEach(x => features.AddRange(x.MsFeatures));
                 features = features.Where(x => x.HasMsMs()).ToList();
                 features = features.OrderBy(x => x.Mz).ToList();
 
@@ -247,7 +240,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
                     writer.WriteLine("Charge\tpmz\tscan\tNET\t");    
                     foreach (var feature in peptideList)
                     {
-                        writer.WriteLine("{0}\t{1}\t{2}\t{3}\t", feature.ChargeState, feature.Mz, feature.Scan, feature.NET);    
+                        writer.WriteLine("{0}\t{1}\t{2}\t{3}\t", feature.ChargeState, feature.Mz, feature.Scan, feature.Net);    
                     }                    
                 }
             }
@@ -292,7 +285,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
 
             )
         {
-            string[] data = File.ReadAllLines(path);
+            var data = File.ReadAllLines(path);
 
             var x = new List<double>();
             var y = new List<double>();
@@ -416,7 +409,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
                 ShouldUseIntensityFilter = true
             };
 
-            for (int i = 0; i < 1; i++)
+            for (var i = 0; i < 1; i++)
             {
                 var aligneeDatasets = datasets.Where((t, j) => j != i).ToList();
                 PerformMultiAlignAnalysis(  datasets[0],
@@ -489,7 +482,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
                         allFeatures.AddRange(aligneeFeatures);
                         foreach (var feature in allFeatures)
                         {
-                            feature.RetentionTime           = feature.NET;
+                            feature.RetentionTime           = feature.Net;
                             feature.MassMonoisotopicAligned = feature.MassMonoisotopic;
                         }
 
@@ -517,13 +510,13 @@ namespace MultiAlignTestSuite.Papers.Alignment
                         {
                             var massPoint       = new RegressionPoint();
                             massPoint.X         = match.AnchorPointX.Mz;
-                            massPoint.MassError = Feature.ComputeMassPPMDifference(match.AnchorPointX.Mz, match.AnchorPointY.Mz);
+                            massPoint.MassError = FeatureLight.ComputeMassPPMDifference(match.AnchorPointX.Mz, match.AnchorPointY.Mz);
                             massPoint.NetError  = match.AnchorPointX.Net - match.AnchorPointY.Net;
                             massPoints.Add(massPoint);
 
                             var netPoint        = new RegressionPoint();
                             netPoint.X          = match.AnchorPointX.Net;
-                            netPoint.MassError  = Feature.ComputeMassPPMDifference(match.AnchorPointX.Mz, match.AnchorPointY.Mz);
+                            netPoint.MassError = FeatureLight.ComputeMassPPMDifference(match.AnchorPointX.Mz, match.AnchorPointY.Mz);
                             netPoint.NetError   = match.AnchorPointX.Net - match.AnchorPointY.Net ;                            
                             netPoints.Add(netPoint);
                         }
@@ -531,8 +524,8 @@ namespace MultiAlignTestSuite.Papers.Alignment
 
                         foreach (var feature in allFeatures)
                         {                            
-                            feature.UMCCluster = null;
-                            feature.ClusterID = -1;
+                            feature.UmcCluster = null;
+                            feature.ClusterId = -1;
                         }
                         // Then cluster after alignment!
                         UpdateStatus("clustering data");
@@ -561,7 +554,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
                     "NET\tMass\tNET\tMass\tNETA\tMassA\tNETA\tMassA\tNetError\tMassError\tScore");
                 foreach (var match in matches)
                 {                                        
-                    var massError = Feature.ComputeMassPPMDifference(match.AnchorPointX.Mz, match.AnchorPointY.Mz);
+                    var massError = FeatureLight.ComputeMassPPMDifference(match.AnchorPointX.Mz, match.AnchorPointY.Mz);
                     var netError = match.AnchorPointX.Net - match.AnchorPointY.NetAligned;
 
                     writer.WriteLine("{0:F5}\t{1:F5}\t{2:F5}\t{3:F5}\t{4:F5}\t{5:F5}\t{6:F5}\t{7:F5}\t{8:F5}\t",
@@ -611,14 +604,14 @@ namespace MultiAlignTestSuite.Papers.Alignment
                                                 parentFeatureY.Mz,
                                                 parentFeatureX.MassMonoisotopic,
                                                 parentFeatureY.MassMonoisotopic,
-                                                parentFeatureX.ParentFeature.NET,
-                                                parentFeatureY.ParentFeature.NET,
-                                                parentFeatureX.ParentFeature.NETAligned,
-                                                parentFeatureY.ParentFeature.NETAligned,
+                                                parentFeatureX.ParentFeature.Net,
+                                                parentFeatureY.ParentFeature.Net,
+                                                parentFeatureX.ParentFeature.NetAligned,
+                                                parentFeatureY.ParentFeature.NetAligned,
                                                 parentFeatureX.ParentFeature.MassMonoisotopicAligned,
                                                 parentFeatureY.ParentFeature.MassMonoisotopicAligned,
-                                                Feature.ComputeMassPPMDifference(parentFeatureX.Mz, parentFeatureY.Mz),
-                                                Feature.ComputeMassPPMDifference(parentFeatureX.ParentFeature.MassMonoisotopicAligned, parentFeatureY.ParentFeature.MassMonoisotopicAligned)                                                
+                                                FeatureLight.ComputeMassPPMDifference(parentFeatureX.Mz, parentFeatureY.Mz),
+                                                FeatureLight.ComputeMassPPMDifference(parentFeatureX.ParentFeature.MassMonoisotopicAligned, parentFeatureY.ParentFeature.MassMonoisotopicAligned)                                                
                                                 );
 
                     writer.WriteLine(data);
@@ -644,7 +637,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
             var msnSpectra = new List<MSSpectra>();
             foreach (var feature in aligneeFeatures)
             {
-                foreach (var msFeature in feature.MSFeatures)
+                foreach (var msFeature in feature.MsFeatures)
                 {
                     msnSpectra.AddRange(msFeature.MSnSpectra);
                 }
@@ -663,7 +656,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
             var peptides = new List<Peptide>();
             foreach (var feature in features)
             {
-                foreach (var msFeature in feature.MSFeatures)
+                foreach (var msFeature in feature.MsFeatures)
                 {
                     foreach (var spectrum in msFeature.MSnSpectra)
                     {
@@ -695,15 +688,15 @@ namespace MultiAlignTestSuite.Papers.Alignment
 
             foreach (var sequence in peptides.Keys)
             {
-                Dictionary<int, int> map = new Dictionary<int, int>();              
+                var map = new Dictionary<int, int>();              
                 foreach (var peptide in peptides[sequence])
                 {
                     var parent = peptide.GetParentUmc();
                     if (parent != null)
                     {
-                        if (parent.UMCCluster != null)
+                        if (parent.UmcCluster != null)
                         {
-                            var id = parent.UMCCluster.ID;
+                            var id = parent.UmcCluster.Id;
                             if (!map.ContainsKey(id))
                             {
                                 map.Add(id, 0);
@@ -760,7 +753,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
             var netHistogram = new Dictionary<double, int>();
             
             Console.WriteLine();
-            for(int i = 0; i < netHist.Bins.Count; i++)
+            for(var i = 0; i < netHist.Bins.Count; i++)
             {
                 netHistogram.Add(netHist.Bins[i],   Convert.ToInt32(netHist.Data[i]));                
                 Console.WriteLine("{0}\t{1}", netHist.Bins[i], netHist.Data[i]);

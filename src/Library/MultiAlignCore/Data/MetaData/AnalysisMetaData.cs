@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using MultiAlignCore.Data.Factors;
 using MultiAlignCore.Data.MassTags;
 using MultiAlignCore.IO.InputFiles;
@@ -156,21 +157,21 @@ namespace MultiAlignCore.Data.MetaData
         /// <returns>A list of added datasets</returns>
         public List<DatasetInformation> AddInputFiles(List<InputFile> inputFiles)
         {
-            List<DatasetInformation> addedSets = new List<DatasetInformation>();
-            Dictionary<string, DatasetInformation> datasetMap = new Dictionary<string, DatasetInformation>();
+            var addedSets = new List<DatasetInformation>();
+            var datasetMap = new Dictionary<string, DatasetInformation>();
 
-            foreach (DatasetInformation x in Datasets)
+            foreach (var x in Datasets)
             {
                 datasetMap.Add(x.DatasetName, x);
             }
 
-            Dictionary<string, List<InputFile>> inputMap = new Dictionary<string, List<InputFile>>();
+            var inputMap = new Dictionary<string, List<InputFile>>();
 
-            foreach (InputFile file in inputFiles)
+            foreach (var file in inputFiles)
             {
-                string name = System.IO.Path.GetFileName(file.Path);
-                string datasetName = DatasetInformation.ExtractDatasetName(name);
-                bool isEntryMade = inputMap.ContainsKey(datasetName);
+                var name = Path.GetFileName(file.Path);
+                var datasetName = DatasetInformation.ExtractDatasetName(name);
+                var isEntryMade = inputMap.ContainsKey(datasetName);
                 if (!isEntryMade)
                 {
                     inputMap.Add(datasetName, new List<InputFile>());
@@ -179,15 +180,15 @@ namespace MultiAlignCore.Data.MetaData
                 inputMap[datasetName].Add(file);
             }
 
-            int i = 0;
-            foreach (string datasetName in inputMap.Keys)
+            var i = 0;
+            foreach (var datasetName in inputMap.Keys)
             {
-                List<InputFile> files                   = inputMap[datasetName];
-                DatasetInformation datasetInformation   = new DatasetInformation();
+                var files                   = inputMap[datasetName];
+                var datasetInformation   = new DatasetInformation();
                 datasetInformation.DatasetId            = i++;
                 datasetInformation.DatasetName          = datasetName;
 
-                bool doesDatasetExist = datasetMap.ContainsKey(datasetName);
+                var doesDatasetExist = datasetMap.ContainsKey(datasetName);
 
                 // Here we map the old dataset if it existed already.
                 if (datasetMap.ContainsKey(datasetName))
@@ -195,7 +196,7 @@ namespace MultiAlignCore.Data.MetaData
                     datasetInformation = datasetMap[datasetName]; 
                 }
 
-                foreach (InputFile file in files)
+                foreach (var file in files)
                 {
                     switch (file.FileType)
                     {
@@ -224,9 +225,9 @@ namespace MultiAlignCore.Data.MetaData
             }
 
             // Reformat their Id's
-            int id = 0;
+            var id = 0;
 
-            foreach (DatasetInformation x in Datasets)
+            foreach (var x in Datasets)
             {
                 x.DatasetId = id++;
             }
@@ -241,7 +242,7 @@ namespace MultiAlignCore.Data.MetaData
         public DatasetInformation FindDatasetInformation(int datasetId)
         {
             DatasetInformation info = null;
-            foreach (DatasetInformation datasetInfo in Datasets)
+            foreach (var datasetInfo in Datasets)
             {
                 if (datasetInfo.DatasetId == datasetId)
                 {

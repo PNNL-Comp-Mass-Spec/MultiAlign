@@ -153,8 +153,7 @@
                         BorderThickness="0"  
                         HorizontalContentAlignment="Stretch"
                         ItemTemplate="{StaticResource RecentAnalysisItemTemplate}"                
-                        Background="Transparent">
-                </ListBox>
+                        Background="Transparent" />
                 <Button             
                         Grid.Row="6"
                         FontSize="10"
@@ -175,17 +174,13 @@
                     Style="{DynamicResource ResourceKey=SimpleTabItem}"
                     Header="Guidance"
                     >
-                    <ScrollViewer>
-
-                    </ScrollViewer>
+                    <ScrollViewer />
                 </TabItem>
                 <TabItem                    
                     Style="{DynamicResource ResourceKey=SimpleTabItem}"
                     Header="Latest"
                     >
-                    <ScrollViewer>
-
-                    </ScrollViewer>
+                    <ScrollViewer />
                 </TabItem>
             </TabControl>
         </Grid>

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace MultiAlignCore.Algorithms
+﻿namespace MultiAlignCore.Algorithms
 {
     /// <summary>
     /// Analysis Type to be performed.  Some types are modifications to the 

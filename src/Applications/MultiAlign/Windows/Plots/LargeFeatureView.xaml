@@ -1,15 +1,17 @@
 ﻿<Window x:Class="MultiAlign.Windows.Plots.LargeFeatureView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"   
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"      
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:oxy="http://oxyplot.codeplex.com"
         Title="{Binding Path=Text}"
         MaxHeight="{Binding Path=Height}"
         MaxWidth="{Binding Path=Width}"
         MinHeight="{Binding Path=Height}"
         MinWidth="{Binding Path=Width}">
     <Grid>
-        <ContentControl 
-            Content="{Binding FeaturesHost}"
-            />
+        <oxy:Plot Model="{Binding Path=FeaturesPlot.Model}"
+                            Grid.Row="0"
+                            Margin="5" />
+       
     </Grid>
 </Window>

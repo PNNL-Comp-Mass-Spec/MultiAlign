@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Windows;
-
-using System.Linq;
-using System.Text;
-
-namespace MultiAlign.Data
+﻿namespace MultiAlign.Data
 {
     /// <summary>
     /// Class that holds information about a recent analysis.

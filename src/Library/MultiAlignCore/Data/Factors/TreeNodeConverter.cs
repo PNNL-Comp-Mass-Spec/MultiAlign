@@ -1,5 +1,3 @@
-using System;
-
 namespace MultiAlignCore.Data.Factors
 {
 	/// <summary>
@@ -7,12 +5,7 @@ namespace MultiAlignCore.Data.Factors
 	/// </summary>
 	public sealed class classTreeNodeConverter
 	{
-		public classTreeNodeConverter()
-		{	
-		
-		}
-
-        ///// <summary>
+	    ///// <summary>
         ///// Converts a tree node heirachy to the data label heirachy for visualization.
         ///// </summary>
         ///// <param name="root">current root of the tree node structure.</param>

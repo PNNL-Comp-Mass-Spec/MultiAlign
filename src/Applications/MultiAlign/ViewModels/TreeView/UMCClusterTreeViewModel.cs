@@ -1,11 +1,10 @@
 ﻿
+using System;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using MultiAlign.IO;
 using MultiAlignCore.Data.Features;
 using MultiAlignCore.Extensions;
-using System.Collections.ObjectModel;
-using PNNLOmics.Data.Features;
-using System;
 
 namespace MultiAlign.ViewModels.TreeView
 {    
@@ -34,12 +33,12 @@ namespace MultiAlign.ViewModels.TreeView
             m_items                                         = new ObservableCollection<TreeItemViewModel>();            
             m_parent                                        = parent;
             m_cluster                                       = matchedCluster;
-            UMCCollectionTreeViewModel features             = new UMCCollectionTreeViewModel(matchedCluster.Cluster);
-            features.FeatureSelected += new EventHandler<FeatureSelectedEventArgs>(feature_FeatureSelected);
+            var features             = new UMCCollectionTreeViewModel(matchedCluster.Cluster);
+            features.FeatureSelected += feature_FeatureSelected;
             features.Name                                   = "Features";
 
             // Cluster level statistics
-            UMCClusterLight cluster = matchedCluster.Cluster;
+            var cluster = matchedCluster.Cluster;
             AddStatistics("Mass",       cluster.MassMonoisotopic);
 
 
@@ -60,22 +59,22 @@ namespace MultiAlign.ViewModels.TreeView
             AddStatistics("Total MS/MS", cluster.MsMsCount);
             AddStatistics("Total Identifications", cluster.IdentifiedSpectraCount);
 
-            GenericCollectionTreeViewModel allIdentifications = new GenericCollectionTreeViewModel();
+            var allIdentifications = new GenericCollectionTreeViewModel();
             allIdentifications.Name = "Identifications";
 
             // Items to display the base childen.
-            PeptideCollectionTreeViewModel identifications  = new PeptideCollectionTreeViewModel(cluster);
+            var identifications  = new PeptideCollectionTreeViewModel(cluster);
             identifications.Name                            = "Search Results";
-            identifications.FeatureSelected += new EventHandler<FeatureSelectedEventArgs>(feature_FeatureSelected);
+            identifications.FeatureSelected += feature_FeatureSelected;
             
 
-            MsMsCollectionTreeViewModel spectra             = new MsMsCollectionTreeViewModel(cluster);
+            var spectra             = new MsMsCollectionTreeViewModel(cluster);
             spectra.Name                                    = "MS/MS";
             m_spectra                                       = spectra;
-            spectra.SpectrumSelected += new EventHandler<IdentificationFeatureSelectedEventArgs>(spectra_SpectrumSelected);
-            spectra.FeatureSelected         += new EventHandler<FeatureSelectedEventArgs>(feature_FeatureSelected);
+            spectra.SpectrumSelected += spectra_SpectrumSelected;
+            spectra.FeatureSelected         += feature_FeatureSelected;
 
-            MassTagCollectionMatchTreeViewModel matches     = new MassTagCollectionMatchTreeViewModel(matchedCluster.ClusterMatches);
+            var matches     = new MassTagCollectionMatchTreeViewModel(matchedCluster.ClusterMatches);
             matches.Name                                    = "AMT Tags";
 
             allIdentifications.Items.Add(identifications);
@@ -102,7 +101,7 @@ namespace MultiAlign.ViewModels.TreeView
 
         private void AddStatistics(string name, double value)
         {
-            StatisticTreeViewItem item = new StatisticTreeViewItem(value, name);
+            var item = new StatisticTreeViewItem(value, name);
             m_items.Add(item);
         }
         
@@ -137,7 +136,7 @@ namespace MultiAlign.ViewModels.TreeView
         /// </summary>
         public string ClusterId         
         { 
-            get { return m_cluster.Cluster.ID.ToString();  } 
+            get { return m_cluster.Cluster.Id.ToString();  } 
         }
 
         public override void LoadChildren()
@@ -149,18 +148,24 @@ namespace MultiAlign.ViewModels.TreeView
             {
                 m_cluster.Cluster.ReconstructUMCCluster(SingletonDataProviders.Providers, true, true);
 
-                foreach (TreeItemViewModel treeModel in m_items)
+                foreach (var treeModel in m_items)
                 {
                     treeModel.LoadChildren();
                 }
 
 
-                foreach (TreeItemViewModel treeModel in m_allIdentifications.Items)
+                foreach (var treeModel in m_allIdentifications.Items)
                 {
                     treeModel.LoadChildren();
                 }
-            }catch
+            }catch(Exception ex)
             {
+                int x = 0;
+                x++;
+                if (x > 5)
+                {
+                    throw ex;
+                }
                 //TODO: Handle error?!
             }
         }

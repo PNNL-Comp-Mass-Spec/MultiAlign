@@ -84,8 +84,6 @@
         <TabItem
             Header="Factors"
             IsEnabled="False"
-            Style="{DynamicResource ResourceKey=SimpleTabItem}"
-            >            
-        </TabItem>
+            Style="{DynamicResource ResourceKey=SimpleTabItem}" />
     </TabControl>
 </UserControl>

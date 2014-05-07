@@ -10,8 +10,8 @@
     
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"></ColumnDefinition>
-            <ColumnDefinition Width="75*"></ColumnDefinition>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="75*" />
         </Grid.ColumnDefinitions>
         <TabControl                            
                 Template="{DynamicResource ResourceKey=OfficeTabControl}" 
@@ -22,9 +22,7 @@
                     Margin="5,5,5,5"
                     Grid.Row="3"
                     Background="WhiteSmoke"
-                    x:Name="RecentAnalysis"
-                    >
-                </WrapPanel>
+                    x:Name="RecentAnalysis" />
             </TabItem>
         </TabControl>
         

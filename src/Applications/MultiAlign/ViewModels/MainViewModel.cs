@@ -1,27 +1,22 @@
-﻿using MultiAlign.Commands;
+﻿using System;
+using System.IO;
+using System.Windows.Input;
+using MultiAlign.Commands;
 using MultiAlign.Data;
 using MultiAlign.Data.States;
-using MultiAlign.ViewModels.Analysis;
-using MultiAlign.ViewModels.TreeView;
+using MultiAlign.ViewModels.Viewers;
 using MultiAlign.ViewModels.Wizard;
 using MultiAlignCore;
 using MultiAlignCore.Algorithms;
 using MultiAlignCore.Data;
-using MultiAlignCore.Data.Features;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
-using System.Windows;
-using System.Windows.Input;
+using PNNLOmics.Annotations;
 
 namespace MultiAlign.ViewModels
 {
     /// <summary>
     /// Does nothing right now...needs to replace the code behind from the main window
     /// </summary>
-    public class MainViewModel: ViewModelBase
+    public sealed class MainViewModel: ViewModelBase
     {
         private string m_status;
         private string m_title;        
@@ -44,8 +39,8 @@ namespace MultiAlign.ViewModels
             Title           = version;
             
             // Command Setup
-            ShowAnalysisCommand = new BaseCommandBridge(ShowAnalysis);
-            ShowStartCommand    = new BaseCommandBridge(ShowStart);
+            ShowAnalysisCommand = new BaseCommand(ShowAnalysis, BaseCommand.AlwaysPass);
+            ShowStartCommand    = new BaseCommand(ShowStart, BaseCommand.AlwaysPass);
 
             // View Models
             
@@ -69,11 +64,13 @@ namespace MultiAlign.ViewModels
 
 
         #region Command Delegate Method Handlers
-        public void ShowAnalysis(object parameter)
+
+        private void ShowAnalysis()
         {
             ShowLoadedAnalysis();
         }
-        public void ShowStart(object parameter)
+
+        private void ShowStart()
         {
             ShowHomeScreen();
         }
@@ -82,11 +79,13 @@ namespace MultiAlign.ViewModels
         #region Commands
         /// <summary>
         /// Gets the showing of an analysis 
-        /// </summary>
+        /// </summary>        
+        [UsedImplicitly]  
         public ICommand ShowAnalysisCommand { get; private set; }
         /// <summary>
         /// Gets the showing of a new analysis
-        /// </summary>
+        /// </summary>        
+        [UsedImplicitly]  
         public ICommand ShowStartCommand { get; private set; }
         #endregion
 
@@ -94,6 +93,7 @@ namespace MultiAlign.ViewModels
         /// <summary>
         /// Gets or sets the current analysis.
         /// </summary>
+        [UsedImplicitly]  
         public AnalysisViewModel CurrentAnalysis
         {
             get
@@ -102,16 +102,15 @@ namespace MultiAlign.ViewModels
             }
             set
             {
-                if (m_currentAnalysis != value)
-                {
-                    m_currentAnalysis = value;
-                    OnPropertyChanged("CurrentAnalysis");
-                }
+                if (m_currentAnalysis == value) return;
+                m_currentAnalysis = value;
+                OnPropertyChanged("CurrentAnalysis");
             }
         }
         /// <summary>
         /// Gets or sets the title of the window
         /// </summary>
+        [UsedImplicitly]  
         public string Title
         {
             get
@@ -120,16 +119,15 @@ namespace MultiAlign.ViewModels
             }
             set
             {
-                if (m_title != value)
-                {
-                    m_title = value;
-                    OnPropertyChanged("Title");
-                }
+                if (m_title == value) return;
+                m_title = value;
+                OnPropertyChanged("Title");
             }
         }
         /// <summary>
         /// Gets or sets the status 
         /// </summary>
+        [UsedImplicitly]
         public string Status
         {
             get
@@ -138,11 +136,9 @@ namespace MultiAlign.ViewModels
             }
             set
             {
-                if (m_status != value)
-                {
-                    m_status = value;
-                    OnPropertyChanged("Status");
-                }
+                if (m_status == value) return;
+                m_status = value;
+                OnPropertyChanged("Status");
             }
         }
         #endregion
@@ -151,6 +147,8 @@ namespace MultiAlign.ViewModels
         /// <summary>
         /// Gets or sets the view model for displaying the home screen.
         /// </summary>
+
+        [UsedImplicitly]
         public GettingStartedViewModel GettingStartedViewModel
         {
             get;
@@ -159,6 +157,7 @@ namespace MultiAlign.ViewModels
         /// <summary>
         /// Gets or sets the view model for creating a new analysis.
         /// </summary>
+        [UsedImplicitly]  
         public AnalysisSetupViewModel AnalysisSetupViewModel
         {
             get
@@ -167,16 +166,15 @@ namespace MultiAlign.ViewModels
             }
             set
             {
-                if (m_analysisSetupViewModel != value)
-                {
-                    m_analysisSetupViewModel = value;
-                    OnPropertyChanged("AnalysisSetupViewModel");
-                }
+                if (m_analysisSetupViewModel == value) return;
+                m_analysisSetupViewModel = value;
+                OnPropertyChanged("AnalysisSetupViewModel");
             }
         }
         /// <summary>
         /// Gets or sets the analysis running view model
         /// </summary>
+        [UsedImplicitly]  
         public AnalysisRunningViewModel AnalysisRunningViewModel
         {
             get
@@ -185,16 +183,15 @@ namespace MultiAlign.ViewModels
             }
             set
             {
-                if (m_analysisRunningViewModel != value)
-                {
-                    m_analysisRunningViewModel = value;
-                    OnPropertyChanged("AnalysisRunningViewModel");
-                }
+                if (m_analysisRunningViewModel == value) return;
+                m_analysisRunningViewModel = value;
+                OnPropertyChanged("AnalysisRunningViewModel");
             }
         }
         /// <summary>
         /// Gets or sets the state moderator.
         /// </summary>
+        [UsedImplicitly]  
         public StateModeratorViewModel StateModerator
         {
             get;
@@ -203,18 +200,10 @@ namespace MultiAlign.ViewModels
         /// <summary>
         /// Gets or set the view model for loading an analysis.
         /// </summary>
+        [UsedImplicitly]  
         public AnalysisLoadingViewModel LoadingAnalysisViewModel { get; set; }
         #endregion
 
-        #region Analysis State Commands        
-        private bool ConfirmCancel()
-        {
-            System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show(   "Performing this action will cancel the running analysis.  Do you want to cancel?", 
-                                                                                       "Cancel Analysis", 
-                                                                                       MessageBoxButton.YesNo);
-            return (result == System.Windows.MessageBoxResult.Yes);
-        }
-        #endregion
 
         #region Loading      
 
@@ -224,14 +213,14 @@ namespace MultiAlign.ViewModels
         /// <param name="recentAnalysis"></param>
         private void LoadAnalysis(RecentAnalysis recentAnalysis)
         {
-            string message = "";
-            if (StateModerator.IsAnalysisRunning(ref message))
+            string message;
+            if (StateModerator.IsAnalysisRunning(out message))
             {
                 Status = "Cannot open a new analysis while one is running.";
                 return;
             }
 
-            string filename = Path.Combine(recentAnalysis.Path, recentAnalysis.Name);
+            var filename = Path.Combine(recentAnalysis.Path, recentAnalysis.Name);
             if (!File.Exists(filename))
             {
                 StateModerator.CurrentViewState = ViewState.HomeView;
@@ -256,13 +245,10 @@ namespace MultiAlign.ViewModels
         private void DisplayAnalysis(MultiAlignAnalysis analysis)
         {
             // Change the title
-            string version = ApplicationUtility.GetEntryAssemblyData();
+            var version = ApplicationUtility.GetEntryAssemblyData();
             Title = string.Format("{0} - {1}", version, analysis.MetaData.AnalysisName);
 
-            var model                 = new AnalysisViewModel(analysis);
-            model.ClusterTree.ClustersFiltered      += ClustersFiltered;
-            UpdateAllClustersPlot(model.ClusterTree.FilteredClusters);
-            
+            var model                               = new AnalysisViewModel(analysis);            
             CurrentAnalysis                         = model;
             StateModerator.CurrentViewState         = ViewState.AnalysisView;
             var recent                              = new RecentAnalysis(   analysis.MetaData.AnalysisPath,
@@ -272,28 +258,15 @@ namespace MultiAlign.ViewModels
         #endregion
 
         #region Display
-        void ClustersFiltered(object sender, ClustersUpdatedEventArgs e)
-        {
-            UpdateAllClustersPlot(e.Clusters);
-        }
 
-        /// <summary>
-        /// Updates the clustered plots...
-        /// </summary>
-        /// <param name="clusters"></param>
-        void UpdateAllClustersPlot(ObservableCollection<UMCClusterTreeViewModel> clusters)
-        {
-            List<UMCClusterLightMatched> filteredClusters = (from cluster in clusters
-                                                                select cluster.Cluster).ToList();
-        }
         /// <summary>
         /// Shows the new analysis setup
         /// </summary>
         private void ShowNewAnalysisSetup()
         {
-            string message = "";
-            bool canStart  = StateModerator.CanPerformNewAnalysis(ref message);
-            Status         = message;
+            string message;
+            var canStart    = StateModerator.CanPerformNewAnalysis(out message);
+            Status          = message;
             if (!canStart)
             {              
                 return ;
@@ -304,16 +277,18 @@ namespace MultiAlign.ViewModels
             StateModerator.CurrentViewState                 = ViewState.SetupAnalysisView;
             StateModerator.CurrentAnalysisState             = AnalysisState.Setup;
             
-            AnalysisConfig config                           = new AnalysisConfig();
-            config.Analysis                                 = new MultiAlignAnalysis();
-            config.AnalysisPath                             = MainDataDirectory;
-            config.AnalysisName                             = MainDataName;
+            var config                           = new AnalysisConfig
+            {
+                Analysis = new MultiAlignAnalysis(),
+                AnalysisPath = MainDataDirectory,
+                AnalysisName = MainDataName
+            };
             config.Analysis.AnalysisType                    = AnalysisType.Full;
             config.Analysis.Options.AlignmentOptions.IsAlignmentBaselineAMasstagDB = false;
 
-            AnalysisSetupViewModel                = new Analysis.AnalysisSetupViewModel(config);
-            AnalysisSetupViewModel.AnalysisQuit  += new EventHandler(AnalysisSetupViewModel_AnalysisQuit);
-            AnalysisSetupViewModel.AnalysisStart += new EventHandler(AnalysisSetupViewModel_AnalysisStart);
+            AnalysisSetupViewModel                = new AnalysisSetupViewModel(config);
+            AnalysisSetupViewModel.AnalysisQuit  += AnalysisSetupViewModel_AnalysisQuit;
+            AnalysisSetupViewModel.AnalysisStart += AnalysisSetupViewModel_AnalysisStart;
             AnalysisSetupViewModel.CurrentStep    = AnalysisSetupStep.DatasetSelection;
         }
         /// <summary>
@@ -321,8 +296,8 @@ namespace MultiAlign.ViewModels
         /// </summary>
         private void ShowLoadedAnalysis()
         {
-            string message = "";
-            bool isRunning = StateModerator.IsAnalysisRunning(ref message);
+            string message;
+            var isRunning = StateModerator.IsAnalysisRunning(out message);
 
             if (isRunning)
             {
@@ -334,18 +309,19 @@ namespace MultiAlign.ViewModels
                 StateModerator.CurrentViewState     = ViewState.AnalysisView;                                    
             }
         }
+
         /// <summary>
         /// Shows the home screen.
         /// </summary>
-        private bool ShowHomeScreen()
+        private void ShowHomeScreen()
         {
             StateModerator.CurrentViewState = ViewState.HomeView;
-            return true;
         }
+
         /// <summary>
         /// Cancels the analysis setup
         /// </summary>
-        private bool CancelAnalysisSetup()
+        private void CancelAnalysisSetup()
         {
             // If we were looking at an analysis before, then go back to it.
             if (StateModerator.PreviousViewState == ViewState.AnalysisView)
@@ -358,12 +334,14 @@ namespace MultiAlign.ViewModels
                 StateModerator.CurrentViewState     = ViewState.HomeView;
                 StateModerator.CurrentAnalysisState = AnalysisState.Idle;
             }
-            return true;
         }
+
         #endregion
 
         #region Settings
+        [UsedImplicitly]
         public string MainDataDirectory { get; set; }
+        [UsedImplicitly]  
         public string MainDataName { get; set; }
         #endregion
 
@@ -373,11 +351,13 @@ namespace MultiAlign.ViewModels
         /// </summary>
         private void BuildStateModerator()
         {
-            StateModerator = new StateModeratorViewModel();
-            StateModerator.CurrentAnalysisState     = AnalysisState.Idle;
-            StateModerator.CurrentViewState         = ViewState.HomeView;
-            StateModerator.PreviousAnalysisState    = AnalysisState.Idle;
-            StateModerator.PreviousViewState        = ViewState.HomeView;            
+            StateModerator = new StateModeratorViewModel
+            {
+                CurrentAnalysisState = AnalysisState.Idle,
+                CurrentViewState = ViewState.HomeView,
+                PreviousAnalysisState = AnalysisState.Idle,
+                PreviousViewState = ViewState.HomeView
+            };
         }
         #endregion
         
@@ -400,15 +380,7 @@ namespace MultiAlign.ViewModels
         {
             ShowNewAnalysisSetup();
         }
-        /// <summary>
-        /// Loads a recently selected view
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void m_gettingStarted_RecentAnalysisSelected(object sender, OpenAnalysisArgs e)
-        {
-            LoadAnalysis(e.AnalysisData);         
-        }
+
         #endregion
 
         #region Analysis Running View Model Events
@@ -419,9 +391,9 @@ namespace MultiAlign.ViewModels
         /// <param name="e"></param>
         void AnalysisRunningViewModel_AnalysisComplete(object sender, AnalysisStatusArgs e)
         {
-            string path                         = e.Configuration.AnalysisPath;
-            string name                         = System.IO.Path.GetFileName(e.Configuration.AnalysisName);
-            RecentAnalysis recent               = new RecentAnalysis(path, name);
+            var path                         = e.Configuration.AnalysisPath;
+            var name                         = Path.GetFileName(e.Configuration.AnalysisName);
+            var recent               = new RecentAnalysis(path, name);
             StateModerator.CurrentViewState     = ViewState.AnalysisView;
             StateModerator.CurrentAnalysisState = AnalysisState.Viewing;
 

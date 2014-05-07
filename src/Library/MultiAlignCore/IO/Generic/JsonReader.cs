@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using System.Runtime.Serialization.Formatters;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 namespace MultiAlignCore.IO.Generic

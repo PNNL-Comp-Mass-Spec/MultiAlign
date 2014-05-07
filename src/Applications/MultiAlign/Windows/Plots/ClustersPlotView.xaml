@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="MultiAlign.Windows.ClustersPlotView"
+﻿<UserControl x:Class="MultiAlign.Windows.Plots.ClustersPlotView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -23,7 +23,7 @@
             Grid.ColumnSpan="7"
             Grid.Row="0"
             >
-            <Binding Path="Name"></Binding>
+            <Binding Path="Name" />
         </Label>
 
         <StackPanel
@@ -41,10 +41,7 @@
                 BorderBrush="LightGray"
                 BorderThickness="4"
                 CornerRadius="3">
-                <Button Grid.Column="0" 
-                        Background="Transparent">
-                    <Image Source="{Binding Path=ClustersImage}"/>
-                </Button>
+                <Image Source="{Binding Path=ClustersImage}"/>
             </Border>
         </StackPanel>
         <StackPanel
@@ -63,10 +60,9 @@
                 BorderBrush="LightGray"
                 BorderThickness="4"
                 CornerRadius="3">
-                <Button 
-                        Background="Transparent">
+                
                     <Image Source="{Binding Path=ClusterSizeHistogram}"/>
-                </Button>
+                
             </Border>
         </StackPanel>
         <StackPanel
@@ -85,10 +81,8 @@
                 BorderBrush="LightGray"
                 BorderThickness="4"
                 CornerRadius="3">
-                <Button 
-                        Background="Transparent">
                     <Image Source="{Binding Path=ClustersDatasetSizeHistogram}"/>
-                </Button>
+                
             </Border>
         </StackPanel>
     </Grid>

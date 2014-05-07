@@ -40,16 +40,13 @@ namespace MultiAlign.Converters
         #region IValueConverter Members
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            bool hasData = (bool)value;
+            var hasData = (bool)value;
 
             if (hasData)
             {
                 return TrueValue;
             }
-            else
-            {
-                return FalseValue;
-            }
+            return FalseValue;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

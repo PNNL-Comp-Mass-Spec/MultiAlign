@@ -1,12 +1,4 @@
-﻿using System;
-using System.Drawing;
-using System.Data.SQLite;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using System.IO;
-using PNNLOmics.Data.Features;
-
-namespace MultiAlignCore
+﻿namespace MultiAlignCore
 {
     //class FunctionalRedundancy
     //{

@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using MultiAlignCore.Data.Features;
-using System.Collections.ObjectModel;
-using MultiAlign.ViewModels.TreeView;
-using MultiAlign.IO;
-using MultiAlignCore.Data;
 
-namespace MultiAlign.ViewModels
+namespace MultiAlign.ViewModels.Features
 {
     public class UMCClusterFilterViewModel : ViewModelBase
     {
@@ -172,12 +166,12 @@ namespace MultiAlign.ViewModels
             if (ShouldUseClusterFilter)
             {
                 // First map the cluster ID's from the text...who cares if some malformed.
-                Dictionary<int, bool> hasClusters = new Dictionary<int, bool>();
-                string[] data = m_clusterIdFilter.Replace("\r"," ").Replace("\n"," ").Split(' ');
+                var hasClusters = new Dictionary<int, bool>();
+                var data = m_clusterIdFilter.Replace("\r"," ").Replace("\n"," ").Split(' ');
                 foreach (var id in data)
                 {
-                    int  clusterId  = 0;
-                    bool worked     = int.TryParse(id, out clusterId);
+                    var  clusterId  = 0;
+                    var worked     = int.TryParse(id, out clusterId);
                     if (worked)
                     {
                         if (!hasClusters.ContainsKey(clusterId))
@@ -186,7 +180,7 @@ namespace MultiAlign.ViewModels
                         }                        
                     }
                 }
-                filtered = filtered.Where(x => hasClusters.ContainsKey(x.Cluster.ID));
+                filtered = filtered.Where(x => hasClusters.ContainsKey(x.Cluster.Id));
             }
 
             /// MS/MS Identifications

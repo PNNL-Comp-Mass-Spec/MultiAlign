@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Threading;
 using System.Windows;
 
 namespace MultiAlign.Data
@@ -11,7 +7,12 @@ namespace MultiAlign.Data
     {        
         public static void Invoke(Action action)
         {
-            Dispatcher dispatchObject = Application.Current.Dispatcher;
+            if (Application.Current == null)
+            {
+                return;
+            }
+
+            var dispatchObject = Application.Current.Dispatcher;
             if (dispatchObject == null || dispatchObject.CheckAccess())
             {
                 action();

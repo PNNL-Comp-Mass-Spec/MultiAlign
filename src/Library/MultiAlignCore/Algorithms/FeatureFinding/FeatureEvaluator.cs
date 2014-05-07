@@ -1,10 +1,10 @@
-﻿using PNNLOmics.Algorithms.Solvers;
+﻿using System;
+using System.Collections.Generic;
+using PNNLOmics.Algorithms.Solvers;
 using PNNLOmics.Algorithms.Solvers.LevenburgMarquadt;
 using PNNLOmics.Algorithms.Solvers.LevenburgMarquadt.BasisFunctions;
 using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
-using System;
-using System.Collections.Generic;
 
 namespace MultiAlignCore.Algorithms.FeatureFinding
 {
@@ -48,21 +48,21 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
         public void ScoreFeature(UMCLight feature)
         {
             // Get the basis function of interest
-            BasisFunctionBase basisFunction     = BasisFunctionFactory.BasisFunctionSelector(BasisFunction);
-            NumericalIntegrationBase integrator = NumericalIntegrationFactory.CreateIntegrator(IntegrationType);
+            var basisFunction     = BasisFunctionFactory.BasisFunctionSelector(BasisFunction);
+            var integrator = NumericalIntegrationFactory.CreateIntegrator(IntegrationType);
 
 
             // Evaluate every charge state XIC.
-            foreach(int charge in feature.ChargeStateChromatograms.Keys)
+            foreach(var charge in feature.ChargeStateChromatograms.Keys)
             {
-                Chromatogram gram   = feature.ChargeStateChromatograms[charge];
-                int totalPoints     = gram.Points.Count;
+                var gram   = feature.ChargeStateChromatograms[charge];
+                var totalPoints     = gram.Points.Count;
                 if (totalPoints > 1)
                 {
                     // Convert the data types, not sure why this has to be done...
                     // Should just using the XYData points
-                    List<double> x = new List<double>();
-                    List<double> y = new List<double>();
+                    var x = new List<double>();
+                    var y = new List<double>();
                     foreach (var xyData in gram.Points)
                     {
                         x.Add(xyData.X);
@@ -70,19 +70,18 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
                     }
 
                     // First solve for the function
-                    double [] coefficients          = basisFunction.Coefficients; 
-                    LevenburgMarquadtSolver solver  = new LevenburgMarquadtSolver();
-                    SolverReport report             = solver.Solve(x, y, ref coefficients);
+                    var coefficients          = basisFunction.Coefficients; 
+                    var solver  = new LevenburgMarquadtSolver();
+                    var report             = solver.Solve(x, y, ref coefficients);
                     gram.FitPoints                  = new List<XYData>();
                 
-                    foreach (XYData datum in gram.Points)
+                    foreach (var datum in gram.Points)
                     {
-                        double yValue = basisFunction.Evaluate(coefficients, datum.X);
+                        var yValue = basisFunction.Evaluate(coefficients, datum.X);
                         gram.FitPoints.Add(new XYData(datum.X, yValue));
                     }
-                    gram.FitReport  = report;
-
-                    int totalSamples = 4 * Math.Abs(gram.EndScan - gram.StartScan);
+                    
+                    var totalSamples = 4 * Math.Abs(gram.EndScan - gram.StartScan);
 
                     // Then integrate the function
                     // Let's integrate with 4x the number of scans
@@ -94,17 +93,17 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
                 }
             }
             // Then calculate all of the fits for each 
-            foreach (int charge in feature.IsotopeChromatograms.Keys)
+            foreach (var charge in feature.IsotopeChromatograms.Keys)
             {
-                foreach (Chromatogram gram in feature.IsotopeChromatograms[charge])
+                foreach (var gram in feature.IsotopeChromatograms[charge])
                 {
-                    int totalPoints = gram.Points.Count;
+                    var totalPoints = gram.Points.Count;
                     if (totalPoints > 1)
                     {
                         // Convert the data types, not sure why this has to be done...
                         // Should just using the XYData points
-                        List<double> x = new List<double>();
-                        List<double> y = new List<double>();
+                        var x = new List<double>();
+                        var y = new List<double>();
                         foreach (var xyData in gram.Points)
                         {
                             x.Add(xyData.X);
@@ -112,19 +111,18 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
                         }
 
                         // First solve for the function
-                        double[] coefficients = basisFunction.Coefficients;
-                        LevenburgMarquadtSolver solver = new LevenburgMarquadtSolver();
-                        SolverReport report = solver.Solve(x, y, ref coefficients);
+                        var coefficients = basisFunction.Coefficients;
+                        var solver = new LevenburgMarquadtSolver();
+                        solver.Solve(x, y, ref coefficients);
                         gram.FitPoints = new List<XYData>();
 
-                        foreach (XYData datum in gram.Points)
+                        foreach (var datum in gram.Points)
                         {
-                            double yValue = basisFunction.Evaluate(coefficients, datum.X);
+                            var yValue = basisFunction.Evaluate(coefficients, datum.X);
                             gram.FitPoints.Add(new XYData(datum.X, yValue));
                         }
-                        gram.FitReport = report;
-
-                        int totalSamples = 4 * Math.Abs(gram.EndScan - gram.StartScan);
+                        
+                        var totalSamples = 4 * Math.Abs(gram.EndScan - gram.StartScan);
 
                         // Then integrate the function
                         // Let's integrate with 4x the number of scans

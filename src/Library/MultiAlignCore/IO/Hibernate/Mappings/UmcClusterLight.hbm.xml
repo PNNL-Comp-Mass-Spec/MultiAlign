@@ -3,7 +3,7 @@
                    assembly="PNNLOmics"
                    namespace="PNNLOmics.Data.Features">
 	<class name="UMCClusterLight" table="T_Clusters" lazy="false">
-		<id name="ID" column="Cluster_ID" type="int">
+		<id name="Id" column="Cluster_ID" type="int">
 			<generator class="assigned" />
 		</id>
 		<property name="MassMonoisotopic"         column="Mass"                 type="double" not-null="false" />

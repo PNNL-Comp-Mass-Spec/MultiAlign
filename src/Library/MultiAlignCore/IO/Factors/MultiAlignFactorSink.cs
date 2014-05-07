@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Mage;
-using MultiAlignCore.Data;
 using MultiAlignCore.Data.Factors;
 using MultiAlignCore.Data.MetaData;
+using MultiAlignCore.IO.Analysis;
 using MultiAlignCore.IO.Features;
-using System.Collections.ObjectModel;
 
 namespace MultiAlignCore.IO.Factors
 {
@@ -22,7 +22,7 @@ namespace MultiAlignCore.IO.Factors
         private Dictionary<string, Dictionary<string, int>>              m_factorMaps;
         
         private IDatasetDAO             m_datasetProvider;
-        private IFactorDAO              m_factorProvider;
+        private IFactorDao              m_factorProvider;
         private IDatasetToFactorMapDAO  m_datasetFactorMapProvider;
         /// <summary>
         /// Maps a column 
@@ -35,7 +35,7 @@ namespace MultiAlignCore.IO.Factors
         /// <param name="datasets">Datasets to store data about.</param>
         public MultiAlignFactorSink(ObservableCollection<DatasetInformation> datasets, 
                                     IDatasetDAO datasetProvider, 
-                                    IFactorDAO factorProvider,
+                                    IFactorDao factorProvider,
                                     IDatasetToFactorMapDAO datasetToFactorMapProvider)
         {
             m_factorMaps                = new Dictionary<string, Dictionary<string, int>>();
@@ -46,7 +46,7 @@ namespace MultiAlignCore.IO.Factors
             m_factorProvider            = factorProvider;
             m_datasetFactorMapProvider  = datasetToFactorMapProvider;
             m_columnMapping             = new Dictionary<string, int>();
-            foreach (DatasetInformation info in datasets)
+            foreach (var info in datasets)
             {
                 m_datasets.Add(info.DatasetName, info);
             }
@@ -60,9 +60,9 @@ namespace MultiAlignCore.IO.Factors
         {
             m_columnMapping.Clear();
 
-            for(int i = 0; i < args.ColumnDefs.Count; i++)                
+            for(var i = 0; i < args.ColumnDefs.Count; i++)                
             {
-                MageColumnDef def = args.ColumnDefs[i];
+                var def = args.ColumnDefs[i];
                 m_columnMapping.Add(def.Name.Trim(), i);
             }
             // ignore the column definitions.
@@ -102,7 +102,7 @@ namespace MultiAlignCore.IO.Factors
                 throw new ArgumentException("The number of columns for the factors are invalid.");
             }
 
-            string datasetName = "";
+            var datasetName = "";
             if (m_columnMapping.ContainsKey("Dataset"))
             {
                 datasetName = Convert.ToString(args.Fields[m_columnMapping["Dataset"]]).ToLower().Replace("\"", "");
@@ -111,7 +111,7 @@ namespace MultiAlignCore.IO.Factors
             {
                 return;
             }
-            int datasetId = -1;
+            var datasetId = -1;
             if (m_columnMapping.ContainsKey("Dataset_ID"))
             {
                 datasetId = Convert.ToInt32(args.Fields[m_columnMapping["Dataset_ID"]].ToString().Replace("\"",""));
@@ -120,7 +120,7 @@ namespace MultiAlignCore.IO.Factors
             {
                 return;
             }
-            string factor = "";
+            var factor = "";
             if (m_columnMapping.ContainsKey("Factor"))
             {
                 factor = Convert.ToString(args.Fields[m_columnMapping["Factor"]]).Replace("\"","");
@@ -129,7 +129,7 @@ namespace MultiAlignCore.IO.Factors
             {
                 return;
             }
-            string value = "";
+            var value = "";
             if (m_columnMapping.ContainsKey("Value"))
             {
                 value = Convert.ToString(args.Fields[m_columnMapping["Value"]]).Replace("\"", "");
@@ -139,7 +139,7 @@ namespace MultiAlignCore.IO.Factors
                 return;
             }
 
-            ExperimentalFactor factorMap    = new ExperimentalFactor();
+            var factorMap    = new ExperimentalFactor();
             factorMap.Value                 = value;
             factorMap.Name                  = factor;
 
@@ -157,7 +157,7 @@ namespace MultiAlignCore.IO.Factors
 
 
             // Make sure we haven't seen this factor map before.
-            bool shouldAdd = true;
+            var shouldAdd = true;
             if (m_factorMaps.ContainsKey(factor))
             {
                 if (m_factorMaps[factor].ContainsKey(value))
@@ -170,7 +170,7 @@ namespace MultiAlignCore.IO.Factors
                 m_factorMaps.Add(factor, new Dictionary<string, int>());
             }
 
-            int factorID = 0;
+            var factorID = 0;
             // Add it to the list and map of factors to dump into the database.
             if (shouldAdd)
             {
@@ -186,7 +186,7 @@ namespace MultiAlignCore.IO.Factors
             }
 
 
-            DatasetToExperimentalFactorMap datasetFactorMap = new DatasetToExperimentalFactorMap();
+            var datasetFactorMap = new DatasetToExperimentalFactorMap();
             datasetFactorMap.DatasetID                      = info.DatasetId;
             datasetFactorMap.FactorID                       = factorID;
             m_factorAssignments.Add(datasetFactorMap);
@@ -201,8 +201,8 @@ namespace MultiAlignCore.IO.Factors
             m_factorProvider.AddAll(m_factors);
                         
             // Update datasets
-            List<DatasetInformation> datasets = new List<DatasetInformation>();
-            foreach (DatasetInformation info in m_datasets.Values)
+            var datasets = new List<DatasetInformation>();
+            foreach (var info in m_datasets.Values)
             {
                 datasets.Add(info);
             }

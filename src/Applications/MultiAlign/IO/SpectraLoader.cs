@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using MultiAlignCore.Data.MetaData;
+﻿using System.Collections.Generic;
 using MultiAlignCore.IO.Features;
-using MultiAlignCore.Data;
 using PNNLOmics.Data;
 
 namespace MultiAlign.IO
@@ -22,8 +17,8 @@ namespace MultiAlign.IO
         /// <param name="spectrum"></param>
         public static List<XYData> LoadSpectrum(MSSpectra spectrum)
         {
-            List<XYData> peaks = new List<XYData>();
-            DatasetInformation info = SingletonDataProviders.GetDatasetInformation(spectrum.GroupID);
+            var peaks = new List<XYData>();
+            var info = SingletonDataProviders.GetDatasetInformation(spectrum.GroupId);
             if (info != null && info.Raw != null && info.RawPath != null)
             {
                 peaks = ParentSpectraFinder.GetDaughterSpectrum(info.RawPath, spectrum.Scan);                

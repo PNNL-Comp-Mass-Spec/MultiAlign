@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using MultiAlignEngine.Features;
-using PNNLOmics.Data.Features;
 using MultiAlignCore.Extensions;
+using PNNLOmics.Data.Features;
+using PNNLOmics.Extensions;
 
 namespace MultiAlignCore.Data.Features
 {
@@ -17,22 +17,22 @@ namespace MultiAlignCore.Data.Features
             if (clusters.Count < 1)
                 return null;
 
-            Dictionary<int, int> clusterMaps = clusters.CreateClusterDatasetMemeberSizeHistogram();
+            var clusterMaps = clusters.CreateClusterDatasetMemeberSizeHistogram();
                         
             // Find the maximum cluster size.
-            List<int> sizes = new List<int>();
-            foreach (int key in clusterMaps.Keys)
+            var sizes = new List<int>();
+            foreach (var key in clusterMaps.Keys)
             {
                 sizes.Add(key);
             }
             sizes.Sort();
-            int maxClusters = sizes[sizes.Count - 1] + 3;
+            var maxClusters = sizes[sizes.Count - 1] + 3;
 
             // Create the histogram.
-            float[] bins  = new float[maxClusters];
-            float[] freqs = new float[maxClusters];
+            var bins  = new float[maxClusters];
+            var freqs = new float[maxClusters];
 
-            int i = 0;
+            var i = 0;
             for (i = 0; i < maxClusters; i++)
             {
                 if (clusterMaps.ContainsKey(i))

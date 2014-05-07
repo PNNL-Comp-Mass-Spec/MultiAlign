@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using NHibernate;
 using NHibernate.Criterion;
-using PNNLOmics.Data;
 
 namespace MultiAlignCore.IO.Features.Hibernate
 {
@@ -15,7 +14,7 @@ namespace MultiAlignCore.IO.Features.Hibernate
     {
 
         private Type m_persistentType;
-        private ISession m_session = null;
+        private ISession m_session;
 
         #region Constructor
 
@@ -76,9 +75,9 @@ namespace MultiAlignCore.IO.Features.Hibernate
         /// <param name="t">Object to be added</param>
         public void Add(T t)
         {                        
-            using (ISession session = GetSession())
+            using (var session = GetSession())
             {
-                using (ITransaction transaction = session.BeginTransaction())
+                using (var transaction = session.BeginTransaction())
                 {
                     session.Save(t);
                     transaction.Commit();
@@ -96,11 +95,11 @@ namespace MultiAlignCore.IO.Features.Hibernate
 		/// <param name="tCollection">Collection of Objects to be added</param>
 		public virtual void AddAll(ICollection<T> tCollection)
         {
-            using (IStatelessSession session = GetStatelessSession())
+            using (var session = GetStatelessSession())
             {                
-                using (ITransaction transaction = session.BeginTransaction())
+                using (var transaction = session.BeginTransaction())
                 {
-                    foreach (T t in tCollection)
+                    foreach (var t in tCollection)
                     {                                                
                         session.Insert(t);
                     }
@@ -115,9 +114,9 @@ namespace MultiAlignCore.IO.Features.Hibernate
         /// <param name="t">Object to be updated</param>
         public void Update(T t)
         {
-            using (ISession session = GetSession())
+            using (var session = GetSession())
             {
-                using (ITransaction transaction = session.BeginTransaction())
+                using (var transaction = session.BeginTransaction())
                 {
                     session.Update(t);
                     transaction.Commit();
@@ -131,11 +130,11 @@ namespace MultiAlignCore.IO.Features.Hibernate
 		/// <param name="tCollection">Collection of Objects to be updated</param>
 		public void UpdateAll(ICollection<T> tCollection)
         {
-            using (IStatelessSession session = GetStatelessSession())
+            using (var session = GetStatelessSession())
             {                
-                using (ITransaction transaction = session.BeginTransaction())
+                using (var transaction = session.BeginTransaction())
                 {
-                    foreach (T t in tCollection)
+                    foreach (var t in tCollection)
                     {
                         session.Update(t);                         
                     }
@@ -150,9 +149,9 @@ namespace MultiAlignCore.IO.Features.Hibernate
         /// <param name="t">Object to be deleted</param>
         public void Delete(T t)
         {
-            using (ISession session = GetSession())
+            using (var session = GetSession())
             {
-                using (ITransaction transaction = session.BeginTransaction())
+                using (var transaction = session.BeginTransaction())
                 {
                     session.Delete(t);
                     transaction.Commit();
@@ -166,11 +165,11 @@ namespace MultiAlignCore.IO.Features.Hibernate
 		/// <param name="tCollection">Collection of Objects to be deleted</param>
 		public void DeleteAll(ICollection<T> tCollection)
         {
-            using (IStatelessSession session = GetStatelessSession())
+            using (var session = GetStatelessSession())
             {
-                using (ITransaction transaction = session.BeginTransaction())
+                using (var transaction = session.BeginTransaction())
                 {
-                    foreach (T t in tCollection)
+                    foreach (var t in tCollection)
                     {
                         session.Delete(t);                        
                     }
@@ -215,18 +214,18 @@ namespace MultiAlignCore.IO.Features.Hibernate
         protected List<T> FindByCriteria(List<ICriterion> criterionList)
         {
             List<T> list = null;
-            using (ISession session = GetSession())
+            using (var session = GetSession())
             {
 
-                ICriteria crit = session.CreateCriteria(GetPersistentType());
+                var crit = session.CreateCriteria(GetPersistentType());
                 if (criterionList != null)
                 {
-                    foreach (ICriterion c in criterionList)
+                    foreach (var c in criterionList)
                     {
                         crit.Add(c);
                     }
                 }
-                list = (List<T>)crit.List<T>();              
+                    list = (List<T>)crit.List<T>();              
             }
             return list;
 

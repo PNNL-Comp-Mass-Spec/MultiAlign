@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using PNNLOmics.Data;
 using System.IO;
-using MultiAlignCore.IO.MTDB;
+using PNNLOmics.Data;
 
 namespace MultiAlignTestSuite.Papers.Alignment.IO
 {
@@ -24,26 +21,26 @@ namespace MultiAlignTestSuite.Papers.Alignment.IO
                 writer.WriteLine("Scan\tPrecursor\tMsLevel\tCharge");
                 foreach (var scan in cache.Values)
                 {
-                    writer.WriteLine("{0}\t{1}\t{2}", scan.Scan, scan.PrecursorMZ, scan.MsLevel);
+                    writer.WriteLine("{0}\t{1}\t{2}", scan.Scan, scan.PrecursorMz, scan.MsLevel);
                 }
             }
         }
         public static Dictionary<int, ScanSummary> ReadCache(string path)
         {
-            Dictionary<int, ScanSummary> cache = new Dictionary<int, ScanSummary>();
+            var cache = new Dictionary<int, ScanSummary>();
 
-            string[] lines = File.ReadAllLines(path);
-            for (int i = CONST_HEADER_SIZE; i < lines.Length; i++)
+            var lines = File.ReadAllLines(path);
+            for (var i = CONST_HEADER_SIZE; i < lines.Length; i++)
             {
-                ScanSummary summary = new ScanSummary();
-                string line         = lines[i];
+                var summary = new ScanSummary();
+                var line         = lines[i];
                 line                = line.Trim().Replace(" ", "");
-                string[] data       = line.Split('\t');
+                var data       = line.Split('\t');
                 
                 if (data.Length == 3)
                 {
                     summary.Scan        = Convert.ToInt32(data[0]);
-                    summary.PrecursorMZ = Convert.ToDouble(data[1]);
+                    summary.PrecursorMz = Convert.ToDouble(data[1]);
                     summary.MsLevel     = Convert.ToInt32(data[2]);
 
                     cache.Add(summary.Scan, summary);
@@ -53,7 +50,7 @@ namespace MultiAlignTestSuite.Papers.Alignment.IO
         }
         public static string ReadPath(string path)
         {            
-            string[] lines = File.ReadAllLines(path);
+            var lines = File.ReadAllLines(path);
             return lines[0];
         }
     }
@@ -65,27 +62,9 @@ namespace MultiAlignTestSuite.Papers.Alignment.IO
             if (File.Exists(localPath))
                 return;
 
-            try
-            {
-                File.Copy(path, localPath);
-            }
-            catch
-            {
-
-            }
-        }
-
-        public void Download(IEnumerable<string> paths, string localPath)
-        {
-            MageMSGFFinderLoader x = new MageMSGFFinderLoader();
             
-            foreach (string path in paths)
-            {
-                List<string> msgfPaths = x.LoadFiles(path);    
-
-                if (msgfPaths != null && msgfPaths.Count > 0)
-                    Download(msgfPaths[0], localPath);
-            }
+                File.Copy(path, localPath);
+            
         }
     }
 }

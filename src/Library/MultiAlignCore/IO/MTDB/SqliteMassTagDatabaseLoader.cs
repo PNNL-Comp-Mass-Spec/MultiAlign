@@ -1,7 +1,5 @@
 ﻿using System.Data;
 using System.Data.SQLite;
-using MultiAlignCore.Data.MassTags;
-using System;
 
 namespace MultiAlignCore.IO.MTDB
 {
@@ -13,9 +11,10 @@ namespace MultiAlignCore.IO.MTDB
         /// <summary>
         /// Sqlite database loader constructor.
         /// </summary>
-        public SQLiteMassTagDatabaseLoader(string databasePath)
+        public SQLiteMassTagDatabaseLoader(string databasePath, Algorithms.Options.MassTagDatabaseOptions options)
         {
-            DatabasePath = databasePath; 
+            DatabasePath    = databasePath;
+            Options         = options;
         }
 
         /// <summary>
@@ -37,7 +36,7 @@ namespace MultiAlignCore.IO.MTDB
             command.CommandText     = "";
             command.CommandTimeout  = 180;
             command.CommandType     = CommandType.Text;
-            string commandString    = "SELECT * FROM T_Mass_Tag_To_Protein_Name_Map ";
+            var commandString    = "SELECT * FROM T_Mass_Tag_To_Protein_Name_Map ";
             command.CommandText     = commandString;
         }
         /// <summary>
@@ -49,7 +48,7 @@ namespace MultiAlignCore.IO.MTDB
             command.CommandText     = "";
             command.CommandTimeout  = 180;
             command.CommandType     = CommandType.Text;
-            string commandString    = "SELECT * FROM T_Mass_Tags_plus_Conformers ";
+            var commandString    = "SELECT * FROM T_Mass_Tags_plus_Conformers ";
             command.CommandText     = commandString;
         }
         /// <summary>
@@ -67,10 +66,10 @@ namespace MultiAlignCore.IO.MTDB
         /// <returns>String to use for connecting to local databases.</returns>
         protected override string CreateConnectionString()
         {
-            string newPath = DatabasePath.Trim();
+            var newPath = DatabasePath.Trim();
             
 
-            SQLiteConnectionStringBuilder builder = new SQLiteConnectionStringBuilder
+            var builder = new SQLiteConnectionStringBuilder
             {
                 DataSource = newPath
             };

@@ -17,8 +17,7 @@
         <databaseViews:DatabaseSearchTool
                 Grid.Row="0"
                 Grid.ColumnSpan="3"
-                DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType=Window}}">
-        </databaseViews:DatabaseSearchTool>
+                DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType=Window}}" />
         <Button
             Style="{DynamicResource ResourceKey=SimpleButtonStyle}"    
                     Width="128"

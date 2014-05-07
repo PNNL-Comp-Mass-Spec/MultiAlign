@@ -50,16 +50,16 @@ namespace MultiAlignCore.IO.InputFiles
         /// <returns></returns>
         public static InputAnalysisInfo ReadInputFile(string path)
         {
-            InputAnalysisInfo info  = new InputAnalysisInfo();
-            string[] lines          = File.ReadAllLines(path);
-            FileReadMode readType   = FileReadMode.None;
+            var info  = new InputAnalysisInfo();
+            var lines          = File.ReadAllLines(path);
+            var readType   = FileReadMode.None;
             
-            foreach (string line in lines)
+            foreach (var line in lines)
             {
-                string fixedLine            = line.ToLower();
+                var fixedLine            = line.ToLower();
                 fixedLine                   = fixedLine.Trim();
-                bool containsHeaderOpen     = fixedLine.Contains("[");
-                bool containsHeaderClose    = fixedLine.Contains("]");
+                var containsHeaderOpen     = fixedLine.Contains("[");
+                var containsHeaderClose    = fixedLine.Contains("]");
 
                 if (containsHeaderClose && containsHeaderOpen)
                 {
@@ -73,7 +73,7 @@ namespace MultiAlignCore.IO.InputFiles
 
                 // If wasModeChanged = true, then the current 
                 // line is not data, but a tag to say change how read the next section.
-                bool wasModeChanged = false;
+                var wasModeChanged = false;
                 switch (fixedLine)
                 {
                     case FILE_HEADER:
@@ -107,10 +107,7 @@ namespace MultiAlignCore.IO.InputFiles
                             readType        = FileReadMode.Unknown;
                             throw new Exception(fixedLine + " is not a recognized data tag.");
                         }
-                        else
-                        {
-                            wasModeChanged  = false;
-                        }
+                        wasModeChanged  = false;
                         break;
                 }
 
@@ -119,10 +116,10 @@ namespace MultiAlignCore.IO.InputFiles
                     switch (readType)
                     {
                         case FileReadMode.Files:
-                            string[] baselineCheck  = fixedLine.Split(BASELINE_INDICATOR);
+                            var baselineCheck  = fixedLine.Split(BASELINE_INDICATOR);
                             if (baselineCheck.Length == 2 && !string.IsNullOrEmpty(baselineCheck[0]))
                             {
-                                InputFile newFile   = new InputFile();                                
+                                var newFile   = new InputFile();                                
                                 newFile.Path        = baselineCheck[0];
                                 newFile.FileType    = InputFileType.Features;
                                 info.BaselineFile   = newFile;                                
@@ -130,14 +127,14 @@ namespace MultiAlignCore.IO.InputFiles
                             }
                             else if (!string.IsNullOrEmpty(baselineCheck[0]))
                             {
-                                InputFile newFile   = new InputFile();
+                                var newFile   = new InputFile();
                                 newFile.Path        = baselineCheck[0];                                
                                 newFile.FileType    = InputFileType.Features;                                
                                 info.Files.Add(newFile);
                             }                            
                             break;
                         case FileReadMode.Database:
-                            string[] keys = fixedLine.Split('=');
+                            var keys = fixedLine.Split('=');
                             if (keys.Length > 1)
                             {
                                 keys[0] = keys[0].Replace('\t', ' ').Trim();
@@ -145,11 +142,11 @@ namespace MultiAlignCore.IO.InputFiles
                                 switch (keys[0].ToLower())
                                 {
                                     case "database":
-                                        info.Database.DatabaseFormat    = MassTagDatabaseFormat.SQL;
+                                        info.Database.DatabaseFormat    = MassTagDatabaseFormat.MassTagSystemSql;
                                         info.Database.DatabaseName      = keys[1];
                                         break;
                                     case "server":
-                                        info.Database.DatabaseFormat    = MassTagDatabaseFormat.SQL;
+                                        info.Database.DatabaseFormat    = MassTagDatabaseFormat.MassTagSystemSql;
                                         info.Database.DatabaseServer    = keys[1];
                                         break;
                                     case "sqlite":
@@ -157,28 +154,28 @@ namespace MultiAlignCore.IO.InputFiles
                                         info.Database.LocalPath         = keys[1];
                                         break;
                                     case "metasample":
-                                        info.Database.DatabaseFormat    = MassTagDatabaseFormat.MetaSample;
+                                        info.Database.DatabaseFormat    = MassTagDatabaseFormat.DelimitedTextFile;
                                         info.Database.LocalPath         = keys[1];
                                         break;
                                     case "ape":
-                                        info.Database.DatabaseFormat    = MassTagDatabaseFormat.APE;
+                                        info.Database.DatabaseFormat    = MassTagDatabaseFormat.Ape;
                                         info.Database.LocalPath         = keys[1];
                                         break;
                                     case "ims":
-                                        info.Database.DatabaseFormat    = MassTagDatabaseFormat.DirectInfusionIms;
+                                        info.Database.DatabaseFormat    = MassTagDatabaseFormat.SkipAlignment;
                                         info.Database.LocalPath         = keys[1];
                                         break;  
                                 }
                             }
                             break;
                         case FileReadMode.RawFiles:                            
-                            InputFile rawFile       = new InputFile();
+                            var rawFile       = new InputFile();
                             rawFile.Path            = fixedLine;
                             rawFile.FileType        = InputFileType.Raw;                                
                             info.Files.Add(rawFile);
                             break;
                         case FileReadMode.ScanFiles:                                                       
-                            InputFile scanFile      = new InputFile();
+                            var scanFile      = new InputFile();
                             scanFile.Path           = fixedLine;
                             scanFile.FileType       = InputFileType.Scans;                                
                             info.Files.Add(scanFile);
@@ -187,7 +184,7 @@ namespace MultiAlignCore.IO.InputFiles
                             // do nothing!
                             break;
                         case FileReadMode.Sequence:
-                            InputFile sequenceFile  = new InputFile();
+                            var sequenceFile  = new InputFile();
                             sequenceFile.Path       = fixedLine;
                             sequenceFile.FileType   = InputFileType.Sequence;
                             info.Files.Add(sequenceFile);

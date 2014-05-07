@@ -1,16 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using MultiAlignCore.Data;
-using MultiAlign.Data;
-using MultiAlign.Data.States;
-using MultiAlignCore.IO.Features;
 using System.IO;
-using MultiAlignCore.IO.MTDB;
-using MultiAlignCore.Extensions;
-using MultiAlign.ViewModels.TreeView;
 using System.Threading.Tasks;
+using MultiAlign.Data;
+using MultiAlignCore.Data;
+using MultiAlignCore.Extensions;
+using MultiAlignCore.IO.Features;
+using MultiAlignCore.IO.MTDB;
 
 namespace MultiAlign.ViewModels.Wizard
 {
@@ -24,19 +19,12 @@ namespace MultiAlign.ViewModels.Wizard
         /// 
         /// </summary>
         private string m_status;
-        /// <summary>
-        /// 
-        /// </summary>
-        private StateModeratorViewModel m_stateModerator;
+
         /// <summary>
         /// Loads the analysis from disk.
         /// </summary>
         private Task m_loadingTask;
 
-        public AnalysisLoadingViewModel()
-        {
-        }
-        
         /// <summary>
         /// Updates the status.
         /// </summary>
@@ -70,11 +58,11 @@ namespace MultiAlign.ViewModels.Wizard
 
             Action loadAnalysis = delegate
             {
-                string filename = Path.Combine(recentAnalysis.Path, recentAnalysis.Name);
+                var filename = Path.Combine(recentAnalysis.Path, recentAnalysis.Name);
                 
                 OnStatus("Gaining access to the analysis database...");
-                FeatureDataAccessProviders providers    = DataAccessFactory.CreateDataAccessProviders(filename, false);            
-                MultiAlignAnalysis analysis             = new MultiAlignAnalysis();                        
+                var providers    = DataAccessFactory.CreateDataAccessProviders(filename, false);            
+                var analysis             = new MultiAlignAnalysis();                        
                 analysis.MetaData.AnalysisPath          = recentAnalysis.Path;
                 analysis.MetaData.AnalysisName          = recentAnalysis.Name;
                 analysis.MetaData.AnalysisSetupInfo     = null; 
@@ -87,7 +75,7 @@ namespace MultiAlign.ViewModels.Wizard
                 analysis.MetaData.Datasets              = providers.DatasetCache.FindAll().ToObservableCollection();
 
                 OnStatus("Securing mass tags...");
-                MassTagDatabaseLoaderCache provider     = new MassTagDatabaseLoaderCache();
+                var provider     = new MassTagDatabaseLoaderCache();
                 provider.Provider                       = analysis.DataProviders.MassTags;
                 analysis.MassTagDatabase                = provider.LoadDatabase();
 

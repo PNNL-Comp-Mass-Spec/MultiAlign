@@ -1,27 +1,22 @@
 ﻿using System;
-using System.Windows.Input;
 using MultiAlign.Data;
-using MultiAlign.Data.States;
 using MultiAlign.ViewModels;
 
 namespace MultiAlign.Commands.Viewers
 {
-    public class LoadRecentAnalysisCommand: ICommand
+    public sealed class LoadRecentAnalysisCommand: BaseCommand
     {
-        public event EventHandler<OpenAnalysisArgs> RecentAnalysisSelected;        
+        public event EventHandler<OpenAnalysisArgs> RecentAnalysisSelected;
+
         public LoadRecentAnalysisCommand()
+            : base(null, AlwaysPass)
         {
+            
         }
 
-        public bool CanExecute(object parameter)
+        public override void Execute(object parameter)
         {
-            return true;
-        }
-
-        public event EventHandler CanExecuteChanged;
-        public void Execute(object parameter)
-        {
-            RecentAnalysisViewModel analysis = parameter as RecentAnalysisViewModel;
+            var analysis = parameter as RecentAnalysisViewModel;
             if (analysis == null)
             {
                 return;

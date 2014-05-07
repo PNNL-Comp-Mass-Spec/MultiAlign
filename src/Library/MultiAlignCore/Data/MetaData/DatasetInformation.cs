@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using MultiAlignCore.Data.Factors;
 using MultiAlignCore.IO.InputFiles;
 using PNNLOmics.Data;
@@ -112,7 +111,7 @@ namespace MultiAlignCore.Data.MetaData
         {
             get
             {
-                string path = "";
+                var path = "";
                 if (Raw != null)
                 {
                     path = Raw.Path;
@@ -136,7 +135,7 @@ namespace MultiAlignCore.Data.MetaData
         {
             get
             {
-                string path = "";
+                var path = "";
                 if (Sequence != null)
                 {
                     path = Sequence.Path;
@@ -245,14 +244,14 @@ namespace MultiAlignCore.Data.MetaData
         /// <returns></returns>
         public static string ExtractDatasetName(string path)
         {
-            string  datasetName = path;
+            var  datasetName = path;
 
-            List<SupportedDatasetType> supportedTypes = DatasetInformation.SupportedFileTypes;
+            var supportedTypes = SupportedFileTypes;
 
-            string newPath = path.ToLower();
-            foreach (SupportedDatasetType extension in supportedTypes)
+            var newPath = path.ToLower();
+            foreach (var extension in supportedTypes)
             {
-                string ext  = extension.Extension.ToLower();
+                var ext  = extension.Extension.ToLower();
                 if (newPath.EndsWith(ext))
                 {
                     datasetName = datasetName.Substring(0, newPath.Length - ext.Length);
@@ -263,15 +262,15 @@ namespace MultiAlignCore.Data.MetaData
         }
         public static List<DatasetInformation> CreateDatasetsFromInputFile(List<InputFile> inputFiles)
         {
-            List<DatasetInformation> datasets = new List<DatasetInformation>();
+            var datasets = new List<DatasetInformation>();
 
-            Dictionary<string, List<InputFile>> datasetMap = new Dictionary<string, List<InputFile>>();
+            var datasetMap = new Dictionary<string, List<InputFile>>();
 
-            foreach (InputFile file in inputFiles)
+            foreach (var file in inputFiles)
             {
-                string name         = System.IO.Path.GetFileName(file.Path);
-                string datasetName  = DatasetInformation.ExtractDatasetName(name);
-                bool isEntryMade    = datasetMap.ContainsKey(datasetName);
+                var name         = System.IO.Path.GetFileName(file.Path);
+                var datasetName  = ExtractDatasetName(name);
+                var isEntryMade    = datasetMap.ContainsKey(datasetName);
                 if (!isEntryMade)
                 {
                     datasetMap.Add(datasetName, new List<InputFile>());
@@ -279,15 +278,15 @@ namespace MultiAlignCore.Data.MetaData
                 datasetMap[datasetName].Add(file);
             }
 
-            int i = 0;
-            foreach (string datasetName in datasetMap.Keys)
+            var i = 0;
+            foreach (var datasetName in datasetMap.Keys)
             {
-                List<InputFile> files = datasetMap[datasetName];
-                DatasetInformation datasetInformation = new DatasetInformation();
+                var files = datasetMap[datasetName];
+                var datasetInformation = new DatasetInformation();
                 datasetInformation.DatasetId = i++;
                 datasetInformation.DatasetName = datasetName;
 
-                foreach (InputFile file in files)
+                foreach (var file in files)
                 {
                     switch (file.FileType)
                     {
@@ -311,11 +310,6 @@ namespace MultiAlignCore.Data.MetaData
             return datasets;
         }
 
-        #region INotifyPropertyChanged Members
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        #endregion
 
         private static readonly List<SupportedDatasetType> SupportedTypes = new List<SupportedDatasetType>();
         
@@ -349,12 +343,12 @@ namespace MultiAlignCore.Data.MetaData
         /// <returns></returns>
         public static InputFileType GetInputFileType(string path)
         {
-            InputFileType t = InputFileType.NotRecognized;
+            var t = InputFileType.NotRecognized;
 
-            string newPath = path.ToLower();
-            foreach (SupportedDatasetType type in SupportedTypes)
+            var newPath = path.ToLower();
+            foreach (var type in SupportedTypes)
             {
-                string lower = type.Extension.ToLower();
+                var lower = type.Extension.ToLower();
                 if (newPath.EndsWith(lower))
                 {
                     t = type.InputType;
@@ -374,11 +368,11 @@ namespace MultiAlignCore.Data.MetaData
             var datasetMap   = new Dictionary<string, DatasetInformation>();
             var inputMap        = new Dictionary<string, List<InputFile>>();
 
-            foreach (InputFile file in inputFiles)
+            foreach (var file in inputFiles)
             {
-                string name = System.IO.Path.GetFileName(file.Path);
-                string datasetName = DatasetInformation.ExtractDatasetName(name);
-                bool isEntryMade = inputMap.ContainsKey(datasetName);
+                var name = System.IO.Path.GetFileName(file.Path);
+                var datasetName = ExtractDatasetName(name);
+                var isEntryMade = inputMap.ContainsKey(datasetName);
                 if (!isEntryMade)
                 {
                     inputMap.Add(datasetName, new List<InputFile>());
@@ -387,13 +381,13 @@ namespace MultiAlignCore.Data.MetaData
                 inputMap[datasetName].Add(file);
             }
 
-            int i = 0;
-            foreach (string datasetName in inputMap.Keys)
+            var i = 0;
+            foreach (var datasetName in inputMap.Keys)
             {
                 var files = inputMap[datasetName];
                 var datasetInformation = new DatasetInformation {DatasetId = i++, DatasetName = datasetName};
 
-                bool doesDatasetExist = datasetMap.ContainsKey(datasetName);
+                var doesDatasetExist = datasetMap.ContainsKey(datasetName);
 
                 // Here we map the old dataset if it existed already.
                 if (datasetMap.ContainsKey(datasetName))
@@ -401,7 +395,7 @@ namespace MultiAlignCore.Data.MetaData
                     datasetInformation = datasetMap[datasetName];
                 }
 
-                foreach (InputFile file in files)
+                foreach (var file in files)
                 {
                     switch (file.FileType)
                     {

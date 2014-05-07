@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Collections.ObjectModel;
 using MultiAlign.IO;
-using MultiAlignCore.Data.MetaData;
-using PNNLOmics.Data.Features;
 using MultiAlignCore.Extensions;
 using PNNLOmics.Data;
-using MultiAlignCore.Data;
+using PNNLOmics.Data.Features;
 
 namespace MultiAlign.ViewModels.TreeView
 {
@@ -34,12 +29,12 @@ namespace MultiAlign.ViewModels.TreeView
             m_parent  = parent;
 
 
-            DatasetInformation information = SingletonDataProviders.GetDatasetInformation(m_feature.GroupID);
+            var information = SingletonDataProviders.GetDatasetInformation(m_feature.GroupId);
 
 
-            AddStatistic("Id",              m_feature.ID);
-            AddStatistic("Dataset Id",      m_feature.GroupID);
-            AddStatistic("Precursor m/z",   m_feature.PrecursorMZ);
+            AddStatistic("Id",              m_feature.Id);
+            AddStatistic("Dataset Id",      m_feature.GroupId);
+            AddStatistic("Precursor m/z",   m_feature.PrecursorMz);
             if (feature.ParentFeature != null)
             {
                 AddStatistic("Charge", m_feature.ParentFeature.ChargeState);
@@ -54,7 +49,7 @@ namespace MultiAlign.ViewModels.TreeView
             Peptides = new ObservableCollection<Peptide>();
 
             Peptide maxPeptide = null;
-            foreach (Peptide p in m_feature.Peptides)
+            foreach (var p in m_feature.Peptides)
             {
                 Peptides.Add(p);
                 if (maxPeptide == null)
@@ -75,7 +70,7 @@ namespace MultiAlign.ViewModels.TreeView
             }
             else
             {
-                Name = string.Format("Unknown - Scan: {0} m/z: {1:.00} ", m_feature.Scan, m_feature.PrecursorMZ);
+                Name = string.Format("Unknown - Scan: {0} m/z: {1:.00} ", m_feature.Scan, m_feature.PrecursorMz);
             }
         }
 
@@ -92,7 +87,7 @@ namespace MultiAlign.ViewModels.TreeView
                     peptide = m_feature.Peptides[0];
                 }
 
-                IdentificationFeatureSelectedEventArgs args = new IdentificationFeatureSelectedEventArgs(
+                var args = new IdentificationFeatureSelectedEventArgs(
                                                                     m_feature,
                                                                     peptide,
                                                                     feature);
@@ -113,7 +108,7 @@ namespace MultiAlign.ViewModels.TreeView
                 base.IsSelected = value;
                 if (m_feature != null)
                 {
-                    UMCLight feature =  m_feature.GetParentUmc();
+                    var feature =  m_feature.GetParentUmc();
                     OnFeatureSelected(feature);                    
                     OnSpectrumSelected(feature);
                 }

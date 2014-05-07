@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using MultiAlignEngine;
 using PNNLOmics.Algorithms.FeatureMatcher.Data;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Data.MassTags;
@@ -53,7 +52,7 @@ namespace MultiAlignCore.Data
         /// <summary>
         /// Gets the flag whether the results were peaked matched against the Mass Tag Database.
         /// </summary>
-        [DataSummaryAttribute("Peaks Matched to MTDB")]
+        [DataSummary("Peaks Matched to MTDB")]
         public bool PeakMatchedToMassTagDB
         {
             get;

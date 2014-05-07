@@ -1,22 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using MultiAlignCore.Algorithms;
-using MultiAlignCore.Algorithms.Alignment;
-using MultiAlignCore.Algorithms.FeatureFinding;
-using MultiAlignCore.Data;
-using MultiAlignCore.IO.Features;
-using NUnit.Framework;
-using PNNLOmics.Algorithms.FeatureMatcher.MSnLinker;
-using PNNLOmics.Algorithms.SpectralComparisons;
-using PNNLOmics.Algorithms.SpectralProcessing;
-using PNNLOmics.Data;
-using PNNLOmics.Data.Features;
-using MultiAlignTestSuite.Papers.Alignment.SSM;
-using MultiAlignTestSuite.Papers.Alignment;
-
-namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
+﻿namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
 {
     
 //    [TestFixture]

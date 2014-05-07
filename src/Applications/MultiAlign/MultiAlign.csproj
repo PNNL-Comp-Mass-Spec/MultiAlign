@@ -63,13 +63,9 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MultiAlignEngine, Version=1.0.4084.24787, Culture=neutral, processorArchitecture=AMD64">
+    <Reference Include="MultiAlignEngine, Version=1.0.5179.16901, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\$(Platform)\MultiAlignEngine.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Newtonsoft.Json.6.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Ookii.Dialogs">
       <HintPath>..\..\lib\Ookii.Dialogs.dll</HintPath>
@@ -77,31 +73,22 @@
     <Reference Include="Ookii.Dialogs.Wpf">
       <HintPath>..\..\lib\Ookii.Dialogs.Wpf.dll</HintPath>
     </Reference>
-    <Reference Include="OxyPlot">
-      <HintPath>..\packages\OxyPlot.Core.2014.1.227.1\lib\portable-net4+sl4+wp71+win8\OxyPlot.dll</HintPath>
+    <Reference Include="OxyPlot, Version=2014.1.297.1, Culture=neutral, PublicKeyToken=638079a8f0bd61e9, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\OxyPlot.Core.2014.1.297.1\lib\portable-net4+sl4+wp71+win8\OxyPlot.dll</HintPath>
     </Reference>
-    <Reference Include="OxyPlot.Wpf">
-      <HintPath>..\packages\OxyPlot.Wpf.2014.1.227.1\lib\NET45\OxyPlot.Wpf.dll</HintPath>
+    <Reference Include="OxyPlot.Wpf, Version=2014.1.297.1, Culture=neutral, PublicKeyToken=75e952ba404cdbb0, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\OxyPlot.Wpf.2014.1.297.1\lib\NET45\OxyPlot.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="OxyPlot.Xps">
-      <HintPath>..\packages\OxyPlot.Wpf.2014.1.227.1\lib\NET45\OxyPlot.Xps.dll</HintPath>
-    </Reference>
-    <Reference Include="PNNLOmicsIO, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\PNNLOmicsIO.dll</HintPath>
+      <HintPath>..\packages\OxyPlot.Wpf.2014.1.297.1\lib\NET45\OxyPlot.Xps.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\MvvmLightLibs.4.2.30.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
-    </Reference>
     <Reference Include="System.Xml" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
@@ -109,6 +96,24 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="WindowsFormsIntegration" />
+    <Reference Include="Xceed.Wpf.AvalonDock">
+      <HintPath>..\..\packages\Extended.Wpf.Toolkit.2.1.0\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Aero">
+      <HintPath>..\..\packages\Extended.Wpf.Toolkit.2.1.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.Aero.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Metro">
+      <HintPath>..\..\packages\Extended.Wpf.Toolkit.2.1.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.Metro.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.VS2010">
+      <HintPath>..\..\packages\Extended.Wpf.Toolkit.2.1.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.VS2010.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.DataGrid">
+      <HintPath>..\..\packages\Extended.Wpf.Toolkit.2.1.0\lib\net40\Xceed.Wpf.DataGrid.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.Toolkit">
+      <HintPath>..\..\packages\Extended.Wpf.Toolkit.2.1.0\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -128,7 +133,6 @@
     <Compile Include="Commands\Viewers\LoadRecentAnalysisCommand.cs" />
     <Compile Include="Commands\Wizard\AnalysisBackCommand.cs" />
     <Compile Include="Commands\Wizard\AnalysisCancelCommand.cs" />
-    <Compile Include="Commands\Datasets\AddDatasetsCommand.cs" />
     <Compile Include="Commands\Wizard\AnalysisNextCommand.cs" />
     <Compile Include="Converters\BooleanToDataGridVisibilityModeConverter.cs" />
     <Compile Include="Converters\BoolInverter.cs" />
@@ -151,7 +155,6 @@
     <Compile Include="Converters\DatasetCountConverter.cs" />
     <Compile Include="Converters\HasMSMSConverter.cs" />
     <Compile Include="Converters\UriToBitmapConverter.cs" />
-    <Compile Include="Data\DatasetColorSelector.cs" />
     <Compile Include="Data\LogicLayerViewModel.cs" />
     <Compile Include="Data\OpenAnalysisArgs.cs" />
     <Compile Include="Data\States\AnalysisSetupState.cs" />
@@ -165,10 +168,6 @@
     <Compile Include="Data\RecentAnalysis.cs" />
     <Compile Include="Data\StatusMessageWrapper.cs" />
     <Compile Include="Data\ThreadSafeDispatcher.cs" />
-    <Compile Include="ViewModels\Charting\ChargeHistogramViewModel.cs" />
-    <Compile Include="ViewModels\Charting\ColorTypeIterator.cs" />
-    <Compile Include="ViewModels\Charting\HistogramViewModel.cs" />
-    <Compile Include="ViewModels\Charting\MarkerTypeIterator.cs" />
     <Compile Include="ViewModels\Charting\MsFeatureSpectraViewModel.cs" />
     <Compile Include="ViewModels\Charting\PlotModelBase.cs" />
     <Compile Include="ViewModels\Charting\MsMsSpectraViewModel.cs" />
@@ -190,7 +189,6 @@
     <Compile Include="ViewModels\RecentAnalysisViewModel.cs" />
     <Compile Include="ViewModels\Viewers\ClusterViewModel.cs" />
     <Compile Include="ViewModels\Viewers\GlobalStatisticsViewModel.cs" />
-    <Compile Include="ViewModels\Wizard\AdvancedOptionsViewModel.cs" />
     <Compile Include="ViewModels\Wizard\AnalysisDatasetSelectionViewModel.cs" />
     <Compile Include="ViewModels\Wizard\AnalysisGraphNodeViewModel.cs" />
     <Compile Include="ViewModels\Wizard\AnalysisLoadingViewModel.cs" />
@@ -213,7 +211,6 @@
     <Compile Include="ViewModels\Plotting\PlotDataViewModel.cs" />
     <Compile Include="ViewModels\Proteins\ProteinViewModel.cs" />
     <Compile Include="ViewModels\TreeView\IdentificationCollectionTreeViewModel.cs" />
-    <Compile Include="ViewModels\ParameterViewModels.cs" />
     <Compile Include="ViewModels\TreeView\FeatureSelectedEventArgs.cs" />
     <Compile Include="ViewModels\TreeView\GenericCollectionTreeViewModel.cs" />
     <Compile Include="ViewModels\TreeView\MassTagCollectionMatchTreeViewModel.cs" />
@@ -242,6 +239,9 @@
     <Compile Include="ViewModels\Wizard\ExperimentPresets.cs" />
     <Compile Include="ViewModels\Wizard\ExperimentPresetViewModel.cs" />
     <Compile Include="ViewModels\Wizard\StacOptionsViewModel.cs" />
+    <Compile Include="Windows\Controls\AdvancedOptionsWindow.xaml.cs">
+      <DependentUpon>AdvancedOptionsWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\FilePathFinder.xaml.cs">
       <DependentUpon>FilePathFinder.xaml</DependentUpon>
     </Compile>
@@ -280,9 +280,6 @@
     </Compile>
     <Compile Include="Windows\Viewers\Clusters\ClusterFilterWindow.xaml.cs">
       <DependentUpon>ClusterFilterWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\Viewers\Clusters\ClusterGrid.xaml.cs">
-      <DependentUpon>ClusterGrid.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\Viewers\Clusters\ClusterItemTemplate.xaml.cs">
       <DependentUpon>ClusterItemTemplate.xaml</DependentUpon>
@@ -323,9 +320,6 @@
     </Compile>
     <Compile Include="Windows\Viewers\Datasets\DatasetResolveView.xaml.cs">
       <DependentUpon>DatasetResolveView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\Viewers\Datasets\DatasetsGrid.xaml.cs">
-      <DependentUpon>DatasetsGrid.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\Viewers\Datasets\DatasetView.xaml.cs">
       <DependentUpon>DatasetView.xaml</DependentUpon>
@@ -387,9 +381,6 @@
     <Compile Include="Windows\Wizard\AnalysisNaming.xaml.cs">
       <DependentUpon>AnalysisNaming.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\Wizard\AnalysisOptionsView.xaml.cs">
-      <DependentUpon>AnalysisOptionsView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Windows\Wizard\AnalysisRunningView.xaml.cs">
       <DependentUpon>AnalysisRunningView.xaml</DependentUpon>
     </Compile>
@@ -413,6 +404,10 @@
     </Compile>
     <Compile Include="Workspace\Workspace.cs" />
     <Compile Include="Settings.cs" />
+    <Page Include="Windows\Controls\AdvancedOptionsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\FilePathFinder.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -477,10 +472,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Windows\Viewers\Clusters\ClusterGrid.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Windows\Viewers\Clusters\ClusterItemTemplate.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -532,10 +523,6 @@
     <Page Include="Windows\Viewers\Datasets\DatasetResolveView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Windows\Viewers\Datasets\DatasetsGrid.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="Windows\Viewers\Datasets\DatasetView.xaml">
       <SubType>Designer</SubType>
@@ -617,10 +604,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Windows\Wizard\AnalysisOptionsView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Windows\Wizard\AnalysisRunningView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -678,25 +661,17 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\PNNLOmics\development\trunk\PNNLOmics\PNNLOmics.csproj">
+    <ProjectReference Include="..\..\..\..\..\..\PNNLOmics\development\trunk\PNNLOmicsViz\PNNLOmicsViz\PNNLOmicsViz.csproj">
+      <Project>{6f933e2a-aea8-43e1-a8e1-5f9207704b21}</Project>
+      <Name>PNNLOmicsViz</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\..\PNNLOmics\development\trunk\PNNLOmics\PNNLOmics.csproj">
       <Project>{8a934dc1-3418-449f-adf6-9962499f49b2}</Project>
       <Name>PNNLOmics</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MultiAlignCore\MultiAlignCore.csproj">
-      <Project>{BDFA22C4-5822-4AA5-996E-6FDE57F7118B}</Project>
+    <ProjectReference Include="..\..\Library\MultiAlignCore\MultiAlignCore.csproj">
+      <Project>{bdfa22c4-5822-4aa5-996e-6fde57f7118b}</Project>
       <Name>MultiAlignCore</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MultiAlignCustomControls\MultiAlignCustomControls.csproj">
-      <Project>{EE7596B2-FCD3-471A-856F-1270713DD5B1}</Project>
-      <Name>MultiAlignCustomControls</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MultiAlignParameterFileEditor\MultiAlignParameterFileEditor.csproj">
-      <Project>{A853D633-C2DE-4B9F-9EE8-AF97329E2BF8}</Project>
-      <Name>MultiAlignParameterFileEditor</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\PNNLControls\PNNLControls.csproj">
-      <Project>{9409DE9B-F3F0-41AA-95F5-8BFD525F5669}</Project>
-      <Name>PNNLControls</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

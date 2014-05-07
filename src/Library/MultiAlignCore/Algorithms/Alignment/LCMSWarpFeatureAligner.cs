@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using MultiAlignCore.Algorithms.Options;
 using MultiAlignCore.Data.Alignment;
 using MultiAlignCore.Data.Features;
@@ -9,9 +12,6 @@ using PNNLOmics.Algorithms.Alignment;
 using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Data.MassTags;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace MultiAlignCore.Algorithms.Alignment
 {
@@ -97,12 +97,12 @@ namespace MultiAlignCore.Algorithms.Alignment
             var filteredFeatures = FilterFeaturesByAbundance(umcLights.ToList(), Options);
             var convertedBaseLineFeatures   = FeatureDataConverters.ConvertToUMC(filteredFeatures);
             alignmentProcessor.SetReferenceDatasetFeatures(convertedBaseLineFeatures);
-            classAlignmentData alignmentData            = AlignFeatures(alignmentProcessor,
+            var alignmentData            = AlignFeatures(alignmentProcessor,
                                                                         features,
                                                                         Options);
 
-            int minScanReference = int.MaxValue;
-            int maxScanReference = int.MinValue;
+            var minScanReference = int.MaxValue;
+            var maxScanReference = int.MinValue;
             foreach (var feature in umcLights)
             {
                 minScanReference = Math.Min(minScanReference, feature.Scan);
@@ -188,7 +188,7 @@ namespace MultiAlignCore.Algorithms.Alignment
                     if (!isInMap) continue;
 
                     map[featureId].MassMonoisotopicAligned  = feature.MassCalibrated;
-                    map[featureId].NETAligned               = feature.Net;
+                    map[featureId].NetAligned               = feature.Net;
                     map[featureId].RetentionTime            = feature.Net;
                     map[featureId].ScanAligned              = feature.ScanAligned;
                 }
@@ -267,7 +267,7 @@ namespace MultiAlignCore.Algorithms.Alignment
             var maxMassHistogramLength  = 0;
             var maxNetHistogramLength   = 0;
             var maxDriftHistogramLength = 0;
-            foreach (classAlignmentData t in alignmentData)
+            foreach (var t in alignmentData)
             {
                 maxMassHistogramLength  = Math.Max(maxMassHistogramLength,  t.massErrorHistogram.GetLength(0));
                 maxNetHistogramLength   = Math.Max(maxNetHistogramLength,   t.netErrorHistogram.GetLength(0));
@@ -316,7 +316,7 @@ namespace MultiAlignCore.Algorithms.Alignment
             var copyNetBlocks = 0;
             var copyMassBlocks = 0;
 
-            for (int i = 0; i < alignmentData.Count; i++)
+            for (var i = 0; i < alignmentData.Count; i++)
             {
                 
                 // Merge the residual data                
@@ -400,9 +400,9 @@ namespace MultiAlignCore.Algorithms.Alignment
                     var length = Math.Min(histogramDest.GetLength(0), histogramSource.GetLength(0));
 
                     // Find the best mass item if the previous mass items are skewed or changed                    
-                    for (int j = 0; j < length; j++)
+                    for (var j = 0; j < length; j++)
                     {
-                        double diff = Math.Abs(histogramDest[j, 0] - histogramSource[j, 0]);
+                        var diff = Math.Abs(histogramDest[j, 0] - histogramSource[j, 0]);
                         if (diff < massDiff)
                         {
                             bestIndex = j;
@@ -429,10 +429,10 @@ namespace MultiAlignCore.Algorithms.Alignment
             var alignmentProcessor = new clsAlignmentProcessor();
             var tags                    = massTagDatabase.MassTags.Select(tag => new clsMassTag
                                     {
-                                        mintMassTagId   = tag.ID, 
-                                        mintConformerID = tag.ConformationID, 
+                                        mintMassTagId   = tag.Id, 
+                                        mintConformerID = tag.ConformationId, 
                                         DriftTime       = tag.DriftTime, 
-                                        mdblAvgGANET    = tag.NETAverage,
+                                        mdblAvgGANET    = tag.NetAverage,
                                         mdblMonoMass    = tag.MassMonoisotopic
                                     }).ToList();
 
@@ -446,7 +446,7 @@ namespace MultiAlignCore.Algorithms.Alignment
 
             OnStatus("Applying alignment function to all features.");
             alignmentProcessor.ApplyNETMassFunctionToAligneeDatasetFeatures(ref clusters); 
-            clsAlignmentFunction alignmentFunction = alignmentProcessor.GetAlignmentFunction();
+            var alignmentFunction = alignmentProcessor.GetAlignmentFunction();
 
 
             OnStatus("Retrieving alignment data.");
@@ -463,7 +463,7 @@ namespace MultiAlignCore.Algorithms.Alignment
 
             // Residuals
             
-            classAlignmentResidualData residualData = alignmentProcessor.GetResidualData();
+            var residualData = alignmentProcessor.GetResidualData();
 
             // Get error histograms 
             var netErrorHistogram     = new double[1, 1];

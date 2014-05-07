@@ -5,193 +5,147 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              d1p1:Ignorable="d" 
              xmlns:d1p1="http://schemas.openxmlformats.org/markup-compatibility/2006">
-  <Application.Resources>
-    <Style x:Key="SimpleButtonStyle" TargetType="Button">
-      <Setter Property="FontFamily" Value="Arial Narrow" />
-      <Setter Property="FontSize" Value="16" />
-      <Setter Property="Width" Value="50" />
-      <Setter Property="Height" Value="32" />
-      <Setter Property="Margin" Value="3" />
-      <Setter Property="Cursor" Value="Hand" />
-      <Setter Property="BorderBrush" Value="#FF1733D2" />
-      <Setter Property="BorderThickness" Value="1" />
-      <Setter Property="HorizontalAlignment" Value="Left" />
-      <Setter Property="VerticalAlignment" Value="Top" />
-      <Setter Property="Foreground" Value="White" />
-      <Setter Property="Template">
-        <Setter.Value>
-          <ControlTemplate TargetType="Button">
-            <Border x:Name="Border" Background="#FF1733D2">
-              <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center" />
-            </Border>
-          </ControlTemplate>
-        </Setter.Value>
-      </Setter>
-    </Style>
-    <Style x:Key="BorderStyle" TargetType="Border">
-      <Setter Property="Margin" Value="5" />
-      <Setter Property="BorderBrush" Value="LightGray" />
-      <Setter Property="BorderThickness" Value="1" />
-    </Style>
-    <Style x:Key="SimpleToggleButtonStyle" TargetType="ToggleButton">
-      <Setter Property="FontFamily" Value="Arial Narrow" />
-      <Setter Property="FontSize" Value="16" />
-      <Setter Property="Width" Value="50" />
-      <Setter Property="Height" Value="32" />
-      <Setter Property="Margin" Value="3" />
-      <Setter Property="Cursor" Value="Hand" />
-      <Setter Property="BorderBrush" Value="#FF1733D2" />
-      <Setter Property="BorderThickness" Value="1" />
-      <Setter Property="HorizontalAlignment" Value="Left" />
-      <Setter Property="VerticalAlignment" Value="Top" />
-      <Setter Property="Foreground" Value="White" />
-      <Setter Property="Template">
-        <Setter.Value>
-          <ControlTemplate TargetType="ToggleButton">
-            <Border x:Name="Border" Background="#FF1733D2 ">
-              <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center" />
-            </Border>
-          </ControlTemplate>
-        </Setter.Value>
-      </Setter>
-    </Style>
-    <Style x:Key="HyperLinkButtonStyle" TargetType="Button">
-      <Setter Property="FontFamily" Value="Arial Narrow" />
-      <Setter Property="FontSize" Value="13" />
-      <Setter Property="Width" Value="50" />
-      <Setter Property="Height" Value="20" />
-      <Setter Property="Margin" Value="3" />
-      <Setter Property="Cursor" Value="Hand" />
-      <Setter Property="BorderBrush" Value="#00000000" />
-      <Setter Property="BorderThickness" Value="1" />
-      <Setter Property="HorizontalAlignment" Value="Left" />
-      <Setter Property="VerticalAlignment" Value="Top" />
-      <Setter Property="Foreground" Value="#FF00AAFF" />
-      <Setter Property="Template">
-        <Setter.Value>
-          <ControlTemplate TargetType="Button">
-            <Border x:Name="Border" Background="#00000000">
-              <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center" />
-            </Border>
-          </ControlTemplate>
-        </Setter.Value>
-      </Setter>
-    </Style>
-    <Style x:Key="SimpleBrowseButtonStyle" TargetType="Button">
-      <Setter Property="FontFamily" Value="Arial Narrow" />
-      <Setter Property="FontSize" Value="16" />
-      <Setter Property="Width" Value="50" />
-      <Setter Property="Height" Value="32" />
-      <Setter Property="Margin" Value="3" />
-      <Setter Property="Cursor" Value="Hand" />
-      <Setter Property="BorderBrush" Value="#FF1955D5" />
-      <Setter Property="BorderThickness" Value="1" />
-      <Setter Property="HorizontalAlignment" Value="Left" />
-      <Setter Property="VerticalAlignment" Value="Top" />
-      <Setter Property="Foreground" Value="White" />
-      <Setter Property="Template">
-        <Setter.Value>
-          <ControlTemplate TargetType="Button">
-            <Border x:Name="Border" Background="#FF606060">
-              <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center" />
-            </Border>
-          </ControlTemplate>
-        </Setter.Value>
-      </Setter>
-      <Style.Triggers>
-        <Trigger Property="IsEnabled" Value="False">
-          <Setter Property="Opacity" Value="0.5" />
-        </Trigger>
-      </Style.Triggers>
-    </Style>
-    <Style x:Key="DarkButtonStyle" TargetType="Button">
-      <Setter Property="FontFamily" Value="Arial Narrow" />
-      <Setter Property="FontSize" Value="13" />
-      <Setter Property="Width" Value="50" />
-      <Setter Property="Height" Value="20" />
-      <Setter Property="Margin" Value="3" />
-      <Setter Property="Cursor" Value="Hand" />
-      <Setter Property="BorderBrush" Value="#FF1733D2" />
-      <Setter Property="BorderThickness" Value="1" />
-      <Setter Property="HorizontalAlignment" Value="Left" />
-      <Setter Property="VerticalAlignment" Value="Top" />
-      <Setter Property="Foreground" Value="White" />
-      <Setter Property="Template">
-        <Setter.Value>
-          <ControlTemplate TargetType="Button">
-            <Border x:Name="Border" Background="#FF505050">
-              <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center" />
-            </Border>
-          </ControlTemplate>
-        </Setter.Value>
-      </Setter>
-      <Style.Triggers>
-        <Trigger Property="IsEnabled" Value="False">
-          <Setter Property="Opacity" Value="0.5" />
-        </Trigger>
-      </Style.Triggers>
-    </Style>
-    <ControlTemplate x:Key="OfficeTabControl" TargetType="{x:Type TabControl}">
-      <ControlTemplate.Resources>
-        <Style TargetType="{x:Type TabItem}">
+    <Application.Resources>
+        <!-- Border Styles -->
+        <Style x:Key="BorderStyle" TargetType="Border">
+            <Setter Property="Margin" Value="5" />
+            <Setter Property="BorderBrush" Value="LightGray" />
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
+
+        <!-- Button Styles -->
+        <Style x:Key="SimpleButtonStyle" TargetType="Button">
+          <Setter Property="FontFamily" Value="Arial Narrow" />
+          <Setter Property="FontSize" Value="16" />
+          <Setter Property="Width" Value="50" />
+          <Setter Property="Height" Value="32" />
+          <Setter Property="Margin" Value="3" />
+          <Setter Property="Cursor" Value="Hand" />
+          <Setter Property="BorderBrush"  Value="DarkRed" />
+          <Setter Property="BorderThickness" Value="1" />
+          <Setter Property="HorizontalAlignment" Value="Left" />
+          <Setter Property="VerticalAlignment" Value="Top" />
+          <Setter Property="Foreground" Value="White" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Border" Background="DarkRed">
+                            <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>   
+        </Style>
+        <Style x:Key="HyperLinkButtonStyle" TargetType="Button">
+          <Setter Property="FontFamily" Value="Arial Narrow" />
+          <Setter Property="FontSize" Value="13" />
+          <Setter Property="Width" Value="50" />
+          <Setter Property="Height" Value="20" />
+          <Setter Property="Margin" Value="3" />
+          <Setter Property="Cursor" Value="Hand" />
+          <Setter Property="BorderBrush" Value="#00000000" />
+          <Setter Property="BorderThickness" Value="1" />
+          <Setter Property="HorizontalAlignment" Value="Left" />
+          <Setter Property="VerticalAlignment" Value="Top" />
+          <Setter Property="Foreground" Value="#FF00AAFF" />
           <Setter Property="Template">
             <Setter.Value>
-              <ControlTemplate TargetType="{x:Type TabItem}">
-                <Grid SnapsToDevicePixels="True">
-                  <VisualStateManager.VisualStateGroups>
-                    <VisualStateGroup Name="CommonStates">
-                      <VisualState Name="MouseOver">
-                        <Storyboard>
-                          <DoubleAnimation Storyboard.TargetName="hoverShape" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:.1" />
-                        </Storyboard>
-                      </VisualState>
-                      <VisualState Name="Normal">
-                        <Storyboard>
-                          <DoubleAnimation Storyboard.TargetName="hoverShape" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:.1" />
-                        </Storyboard>
-                      </VisualState>
-                    </VisualStateGroup>
-                  </VisualStateManager.VisualStateGroups>
-                  <ContentPresenter Name="buttonText" Margin="15,0,5,0" TextBlock.FontFamily="Calibri" TextBlock.FontSize="12pt" TextBlock.Foreground="Black" Content="{TemplateBinding Header}" VerticalAlignment="Center" />
-                  <Border Name="hoverShape" Height="40" Margin="0,0,1,0" SnapsToDevicePixels="True" BorderThickness="0,0,1,0" BorderBrush="LightGray">
-                    <Border BorderBrush="#FFA1B7EA" BorderThickness="0,1" Background="#FFE5EEF9" Height="40" SnapsToDevicePixels="True" />
-                  </Border>
-                </Grid>
+              <ControlTemplate TargetType="Button">
+                <Border x:Name="Border" Background="#00000000">
+                  <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center" />
+                </Border>
               </ControlTemplate>
             </Setter.Value>
           </Setter>
         </Style>
-      </ControlTemplate.Resources>
-      <Grid SnapsToDevicePixels="True">
-        <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="160" />
-          <ColumnDefinition />
-        </Grid.ColumnDefinitions>
-        <Border Background="#FFE9ECEF" Grid.Column="0" BorderBrush="LightGray" BorderThickness="1" SnapsToDevicePixels="True" />
-        <StackPanel IsItemsHost="True" Grid.Column="0" Margin="0,0,-1,0" SnapsToDevicePixels="True" />
-        <ContentPresenter Content="{TemplateBinding SelectedContent}" Grid.Column="1" Margin="15,0,0,0" />
-      </Grid>
-    </ControlTemplate>
-    <Style x:Key="SimpleTabItem" TargetType="TabItem">
-      <Setter Property="FontFamily" Value="Arial Narrow" />
-      <Setter Property="FontSize" Value="14" />
-      <Setter Property="Height" Value="32" />
-      <Setter Property="Width" Value="128" />
-      <Setter Property="Margin" Value="0" />
-      <Setter Property="Background" Value="#FFFFFFFF" />
-      <Setter Property="BorderBrush" Value="#FFFFFFFF" />
-      <Setter Property="BorderThickness" Value="0" />
-      <Setter Property="HorizontalAlignment" Value="Left" />
-      <Setter Property="VerticalAlignment" Value="Center" />
-      <Setter Property="Foreground" Value="DarkGray" />
-      <Style.Triggers>
-        <Trigger Property="IsSelected" Value="True">
-          <Setter Property="Background" Value="Gainsboro" />
-          <Setter Property="Foreground" Value="Black" />
-        </Trigger>
-      </Style.Triggers>
-    </Style>
-    <Style x:Key="HidenTabItem" TargetType="TabItem">
+        <Style x:Key="SimpleBrowseButtonStyle" TargetType="Button">
+          <Setter Property="FontFamily" Value="Arial Narrow" />
+          <Setter Property="FontSize" Value="16" />
+          <Setter Property="Width" Value="50" />
+          <Setter Property="Height" Value="32" />
+          <Setter Property="Margin" Value="3" />
+          <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="BorderBrush" Value="#FF606060" />
+          <Setter Property="BorderThickness" Value="1" />
+          <Setter Property="HorizontalAlignment" Value="Left" />
+          <Setter Property="VerticalAlignment" Value="Top" />
+          <Setter Property="Foreground" Value="White" />
+          <Setter Property="Template">
+            <Setter.Value>
+              <ControlTemplate TargetType="Button">
+                <Border x:Name="Border" Background="#FF606060">
+                  <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center" />
+                </Border>
+              </ControlTemplate>
+            </Setter.Value>
+          </Setter>
+          <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+              <Setter Property="Opacity" Value="0.5" />
+            </Trigger>
+          </Style.Triggers>
+        </Style>
+        <ControlTemplate x:Key="OfficeTabControl" TargetType="{x:Type TabControl}">
+          <ControlTemplate.Resources>
+            <Style TargetType="{x:Type TabItem}">
+              <Setter Property="Template">
+                <Setter.Value>
+                  <ControlTemplate TargetType="{x:Type TabItem}">
+                    <Grid SnapsToDevicePixels="True">
+                      <VisualStateManager.VisualStateGroups>
+                        <VisualStateGroup Name="CommonStates">
+                          <VisualState Name="MouseOver">
+                            <Storyboard>
+                              <DoubleAnimation Storyboard.TargetName="hoverShape" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:.1" />
+                            </Storyboard>
+                          </VisualState>
+                          <VisualState Name="Normal">
+                            <Storyboard>
+                              <DoubleAnimation Storyboard.TargetName="hoverShape" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:.1" />
+                            </Storyboard>
+                          </VisualState>
+                        </VisualStateGroup>
+                      </VisualStateManager.VisualStateGroups>
+                      <ContentPresenter Name="buttonText" Margin="15,0,5,0" TextBlock.FontFamily="Calibri" TextBlock.FontSize="12pt" TextBlock.Foreground="Black" Content="{TemplateBinding Header}" VerticalAlignment="Center" />
+                      <Border Name="hoverShape" Height="40" Margin="0,0,1,0" SnapsToDevicePixels="True" BorderThickness="0,0,1,0" BorderBrush="LightGray">
+                        <Border BorderBrush="#FFA1B7EA" BorderThickness="0,1" Background="#FFE5EEF9" Height="40" SnapsToDevicePixels="True" />
+                      </Border>
+                    </Grid>
+                  </ControlTemplate>
+                </Setter.Value>
+              </Setter>
+            </Style>
+          </ControlTemplate.Resources>
+          <Grid SnapsToDevicePixels="True">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="160" />
+              <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Border Background="#FFE9ECEF" Grid.Column="0" BorderBrush="LightGray" BorderThickness="1" SnapsToDevicePixels="True" />
+            <StackPanel IsItemsHost="True" Grid.Column="0" Margin="0,0,-1,0" SnapsToDevicePixels="True" />
+            <ContentPresenter Content="{TemplateBinding SelectedContent}" Grid.Column="1" Margin="15,0,0,0" />
+          </Grid>
+        </ControlTemplate>
+        <Style x:Key="SimpleTabItem" TargetType="TabItem">
+          <Setter Property="FontFamily" Value="Arial Narrow" />
+          <Setter Property="FontSize" Value="14" />
+          <Setter Property="Height" Value="32" />
+          <Setter Property="Width" Value="128" />
+          <Setter Property="Margin" Value="0" />
+          <Setter Property="Background" Value="#FFFFFFFF" />
+          <Setter Property="BorderBrush" Value="#FFFFFFFF" />
+          <Setter Property="BorderThickness" Value="0" />
+          <Setter Property="HorizontalAlignment" Value="Left" />
+          <Setter Property="VerticalAlignment" Value="Center" />
+          <Setter Property="Foreground" Value="DarkGray" />
+          <Style.Triggers>
+            <Trigger Property="IsSelected" Value="True">
+              <Setter Property="Background" Value="Gainsboro" />
+              <Setter Property="Foreground" Value="Black" />
+            </Trigger>
+          </Style.Triggers>
+        </Style>
+        <Style x:Key="HidenTabItem" TargetType="TabItem">
       <Setter Property="FontFamily" Value="Arial Narrow" />
       <Setter Property="FontSize" Value="14" />
       <Setter Property="Height" Value="0" />

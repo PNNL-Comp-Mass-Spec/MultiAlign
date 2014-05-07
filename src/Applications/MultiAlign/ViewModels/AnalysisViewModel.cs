@@ -1,6 +1,8 @@
-﻿using MultiAlign.Commands;
-using MultiAlign.Data;
+﻿using System.Windows.Media.Media3D;
+using MultiAlign.Commands;
 using MultiAlign.IO;
+using MultiAlign.ViewModels.Datasets;
+using MultiAlign.ViewModels.Features;
 using MultiAlign.ViewModels.Spectra;
 using MultiAlign.ViewModels.TreeView;
 using MultiAlign.ViewModels.Viewers;
@@ -9,14 +11,13 @@ using MultiAlignCore.Data;
 using MultiAlignCore.Data.Features;
 using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.Extensions;
-using MultiAlignCustomControls.Charting;
 using PNNLOmics.Data;
-using PNNLOmics.Data.Features;
-using System;
+using PNNLOmicsViz.Drawing;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms.Integration;
 using System.Windows.Input;
 
@@ -28,37 +29,34 @@ namespace MultiAlign.ViewModels
         private bool                                    m_hasIdentifications;
         private UmcClusterCollectionTreeViewModel       m_clusterTreeModel;
         private IdentificationCollectionTreeViewModel   m_identificationTreeView;
-        private bool                                    m_showDriftTime;
-        private MultiAlignAnalysis                      m_analysis;
-        private ctlClusterChart                         m_clusterChart;
+        private bool                                    m_showDriftTime;        
         UmcClusterSpectraViewModel                      m_clusterSpectraViewModel;
         UMCClusterIdentificationViewModel               m_clusterIdentificationViewModel;
         private ObservableCollection<MassTagToCluster>  m_massTags;
-        private AnalysisOptionsViewModel       m_analysisOptionsViewModel;
+        private AnalysisOptionsViewModel                m_analysisOptionsViewModel;
         private WindowsFormsHost                        m_host;
-        private ClusterDetailViewModel                        m_clusterViewModel;
-        private RectangleF m_savedClusterViewPort;
-        private string m_selectedClusterName;
-        private Viewers.GlobalStatisticsViewModel m_globalStatistics;
+        private ClusterDetailViewModel                  m_clusterViewModel;
+        private string                                  m_selectedClusterName;
+        private Viewers.GlobalStatisticsViewModel       m_globalStatistics;
+        private PlotBase m_clustersPlotModel;
 
         public AnalysisViewModel(MultiAlignAnalysis analysis)
         {
             m_showDriftTime = false;
-            m_analysis      = analysis;
 
             LoadDatasets(analysis);
 
-            /// Create matching clusters and AMT Matches.
-            List<ClusterToMassTagMap> matches = m_analysis.DataProviders.MassTagMatches.FindAll();
-            Tuple<List<UMCClusterLightMatched>, List<MassTagToCluster>> clusters =
-                                analysis.Clusters.MapMassTagsToClusters(matches, m_analysis.MassTagDatabase);
+            // Create matching clusters and AMT Matches.
+            var matches = analysis.DataProviders.MassTagMatches.FindAll();
+            var clusters =
+                                analysis.Clusters.MapMassTagsToClusters(matches, analysis.MassTagDatabase);
 
             // Cache the clusters so that they can be readily accessible later on.
             // This will help speed up performance, so that we dont have to hit the database
             // when we want to find matching mass tags, and dont have to map clusters to tags multiple times.
             FeatureCacheManager<UMCClusterLightMatched>.SetFeatures(clusters.Item1);
             FeatureCacheManager<MassTagToCluster>.SetFeatures(clusters.Item2);
-            SingletonDataProviders.Providers    = m_analysis.DataProviders;
+            SingletonDataProviders.Providers    = analysis.DataProviders;
 
             
             // Create sub-view models
@@ -74,43 +72,33 @@ namespace MultiAlign.ViewModels
             GlobalStatisticsViewModel           = new GlobalStatisticsViewModel(clusters.Item1, charges);
             HasIdentifications                  = (MassTags.Count > 0);
 
-            m_clusterChart                      = new ctlClusterChart
-            {
-                Title = "",
-                LegendVisible = false,
-                YAxisShortHand = "ppm",
-                XAxisShortHand = "NET"
-            };
+            
             SelectedClusterName                 = "Cluster Details:";
-            LoadClusters(clusters.Item1);
-            m_clusterChart.AutoViewPort();
-
-            ApplyViewAsFilter = new BaseCommandBridge(FilterFromView);
-
-            ClusterChart = new WindowsFormsHost() { Child = m_clusterChart };            
+            LoadClusters(clusters.Item1);            
+            ApplyViewAsFilter = new BaseCommand(FilterFromView);
+                     
         }
 
-        private void FilterFromView(object parameter)
+        private void FilterFromView()
         {
-            var viewport = m_clusterChart.ViewPort;
-            var mass     = new FilterRange(viewport.Y, viewport.Bottom);
-            var net      = new FilterRange(viewport.X, viewport.X + viewport.Right);
+            if (m_clustersPlotModel == null) return;
+
+            var model = m_clustersPlotModel.Model;
+            //var viewport = m_clusterChart.ViewPort;
+            var mass     = new FilterRange(model.DefaultYAxis.ActualMinimum, model.DefaultYAxis.ActualMaximum);
+            var net      = new FilterRange(model.DefaultXAxis.ActualMinimum, model.DefaultXAxis.ActualMaximum);
             m_clusterTreeModel.Filter(mass, net);
         }
 
         #region Loading 
         private void LoadClusters(IEnumerable<UMCClusterLightMatched> clusters)
         {
-            List<UMCClusterLight> clustersOnly = new List<UMCClusterLight>();
-            foreach (var cluster in clusters)            
-                clustersOnly.Add(cluster.Cluster);
-
-            m_clusterChart.ClearData();
-            m_clusterChart.AddClusters(clustersOnly, false);
+            var clustersOnly = clusters.Select(cluster => cluster.Cluster).ToList();
+            ClustersPlotModel = ScatterPlotFactory.CreateClusterMassScatterPlot(clustersOnly);
         }
         private void LoadDatasets(MultiAlignAnalysis analysis)
         {
-            List<DatasetInformation> datasets = analysis.MetaData.Datasets.ToList();
+            var datasets = analysis.MetaData.Datasets.ToList();
 
             // Sort the datasets for the view...
             datasets.Sort(delegate(DatasetInformation x, DatasetInformation y)
@@ -125,10 +113,10 @@ namespace MultiAlign.ViewModels
             });
 
             // Make the dataset plots.                    
-            string plotPath = Path.Combine(analysis.MetaData.AnalysisPath, "plots");
+            var plotPath = Path.Combine(analysis.MetaData.AnalysisPath, "plots");
             if (Directory.Exists(plotPath))
             {
-                DatasetPlotLoader loader = new Data.DatasetPlotLoader();
+                var loader = new Data.DatasetPlotLoader();
                 loader.LoadDatasetPlots(plotPath, analysis.MetaData.Datasets.ToList());
             }
 
@@ -144,7 +132,7 @@ namespace MultiAlign.ViewModels
         /// <param name="e"></param>
         void value_ClustersFiltered(object sender, ClustersUpdatedEventArgs e)
         {
-            List<UMCClusterLightMatched> clusters = new List<UMCClusterLightMatched>();
+            var clusters = new List<UMCClusterLightMatched>();
             foreach (var cluster in e.Clusters)
             {
                 clusters.Add(cluster.Cluster);
@@ -271,25 +259,6 @@ namespace MultiAlign.ViewModels
                 }
             }
         }
-
-        /// <summary>
-        /// Gets the control used for displaying a global view of the clusters
-        /// </summary>
-        public WindowsFormsHost ClusterChart
-        {
-            get
-            {
-                return m_host;
-            }
-            private set
-            {
-                if (value != null && m_host != value)
-                {
-                    m_host = value;
-                    OnPropertyChanged("ClusterChart");
-                }
-            }
-        }
         #endregion
 
         #region ViewModels
@@ -353,8 +322,8 @@ namespace MultiAlign.ViewModels
                 {
                     m_clusterTreeModel = value;
                     value.FeatureSelected += value_FeatureSelected;
-                    value.ClustersFiltered += new EventHandler<ClustersUpdatedEventArgs>(value_ClustersFiltered);
-                    value.ClusterSelected += new EventHandler<ClusterSelectedEventArgs>(value_ClusterSelected);
+                    value.ClustersFiltered += value_ClustersFiltered;
+                    value.ClusterSelected += value_ClusterSelected;
                 }
             }
         }        
@@ -417,5 +386,16 @@ namespace MultiAlign.ViewModels
 
         public ICommand ApplyViewAsFilter { get; set; }
 
+
+        public PlotBase ClustersPlotModel
+        {
+            get { return m_clustersPlotModel; }
+            set
+            {
+                if (value == null || value == m_clustersPlotModel) return;
+                m_clustersPlotModel = value;
+                OnPropertyChanged("ClustersPlotModel");
+            }
+        }
     }
 }

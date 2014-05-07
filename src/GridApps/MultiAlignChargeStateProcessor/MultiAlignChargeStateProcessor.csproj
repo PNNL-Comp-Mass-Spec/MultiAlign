@@ -61,27 +61,13 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="PNNLOmics">
-      <HintPath>..\..\lib\PNNLOmics.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Data.SQLite, Version=1.0.66.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\x64\System.Data.SQLite.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Deployment" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UmcClusterWriter.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -104,17 +90,13 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MultiAlignCore\MultiAlignCore.csproj">
+    <ProjectReference Include="..\..\..\..\..\..\PNNLOmics\development\trunk\PNNLOmics\PNNLOmics.csproj">
+      <Project>{8a934dc1-3418-449f-adf6-9962499f49b2}</Project>
+      <Name>PNNLOmics</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Library\MultiAlignCore\MultiAlignCore.csproj">
       <Project>{BDFA22C4-5822-4AA5-996E-6FDE57F7118B}</Project>
       <Name>MultiAlignCore</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MultiAlignCustomControls\MultiAlignCustomControls.csproj">
-      <Project>{EE7596B2-FCD3-471A-856F-1270713DD5B1}</Project>
-      <Name>MultiAlignCustomControls</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\PNNLControls\PNNLControls.csproj">
-      <Project>{9409DE9B-F3F0-41AA-95F5-8BFD525F5669}</Project>
-      <Name>PNNLControls</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

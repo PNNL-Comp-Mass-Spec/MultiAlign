@@ -1,9 +1,8 @@
-﻿using MultiAlignTestSuite.Papers.Alignment.SSM;
-using PNNLOmics.Algorithms.Alignment;
-using PNNLOmics.Algorithms.Alignment.SpectralMatching;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using PNNLOmics.Algorithms.Alignment;
+using PNNLOmics.Algorithms.Alignment.SpectralMatching;
 
 namespace MultiAlignTestSuite.Papers.Alignment.IO
 {
@@ -24,28 +23,28 @@ namespace MultiAlignTestSuite.Papers.Alignment.IO
             Open();
             WriteLine("[Test]");
             WriteLine("[Datasets]");
-            foreach (string name in analysis.DatasetNames)
+            foreach (var name in analysis.DatasetNames)
             {
                 WriteLine(name);
             }
 
             WriteLine("[Histogram]");
-            Histogram falseMatches = MatchCountHistogramBuilder.SimilarityScore(0,
+            var falseMatches = MatchCountHistogramBuilder.SimilarityScore(0,
                                                                                 1,
                                                                                 .05,
                                                                                 analysis.Matches.Where(x => x.IsValidMatch == AnchorPointMatchType.FalseMatch));
 
-            Histogram trueMatches = MatchCountHistogramBuilder.SimilarityScore(0,
+            var trueMatches = MatchCountHistogramBuilder.SimilarityScore(0,
                                                                                 1,
                                                                                 .05,
                                                                                 analysis.Matches.Where(x => x.IsValidMatch == AnchorPointMatchType.TrueMatch));
 
-            Histogram allMatches = MatchCountHistogramBuilder.SimilarityScore(0, 1, .05, analysis.Matches);
+            var allMatches = MatchCountHistogramBuilder.SimilarityScore(0, 1, .05, analysis.Matches);
 
             WriteLine("Value\t False Matches\t True Matches");
-            for (int i = 0; i < falseMatches.Bins.Count; i++)
+            for (var i = 0; i < falseMatches.Bins.Count; i++)
             {
-                double score = falseMatches.Bins[i];
+                var score = falseMatches.Bins[i];
                 WriteLine(string.Format("{0}\t{1}\t{2}\t{3}", 
                                                  score,
                                                  falseMatches.Data[i],
@@ -54,12 +53,12 @@ namespace MultiAlignTestSuite.Papers.Alignment.IO
             }
             // Determine how many matches we have
             WriteLine("[Matches]");
-            Dictionary<int, List<SpectralAnchorPoint>> datasetX = new Dictionary<int, List<SpectralAnchorPoint>>();
+            var datasetX = new Dictionary<int, List<SpectralAnchorPoint>>();
 
             // Here we tally the number of matches
             foreach (var match in analysis.Matches)
             {         
-                int scanX = match.AnchorPointX.Scan;
+                var scanX = match.AnchorPointX.Scan;
                 if (!datasetX.ContainsKey(scanX))
                     datasetX.Add(scanX, new List<SpectralAnchorPoint>());
 
@@ -68,15 +67,15 @@ namespace MultiAlignTestSuite.Papers.Alignment.IO
                 datasetX[scanX].Add(match.AnchorPointX);
             }
 
-            int maxMatch = 0;
-            Dictionary<int, int> matchCount   = new Dictionary<int, int>();
-            Dictionary<int, int> multipleTrue = new Dictionary<int, int>();
+            var maxMatch = 0;
+            var matchCount   = new Dictionary<int, int>();
+            var multipleTrue = new Dictionary<int, int>();
             foreach (var points in datasetX.Values)
             {
                 // Then we go through the list...
                 // count the number of true matches
-                int total       = points.Count;
-                int totalTrue   = points.Count(x => x.IsTrue);
+                var total       = points.Count;
+                var totalTrue   = points.Count(x => x.IsTrue);
 
                 // first time to see this match total...then make a new list
                 maxMatch        = Math.Max(maxMatch, total);
@@ -97,10 +96,10 @@ namespace MultiAlignTestSuite.Papers.Alignment.IO
             }
 
             WriteLine("Num Matches\tTotal\tTotal True");
-            for (int i = 1; i < maxMatch; i++)
+            for (var i = 1; i < maxMatch; i++)
             {
-                int totalTrue = 0;
-                int total     = 0;
+                var totalTrue = 0;
+                var total     = 0;
                 if (multipleTrue.ContainsKey(i)) totalTrue  = multipleTrue[i];
                 if (matchCount.ContainsKey(i)) total        = matchCount[i];
  

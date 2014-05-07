@@ -1,148 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
+using System.Runtime.InteropServices;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.MetaData;
+using MultiAlignCore.IO;
 using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.Features.Hibernate;
-using PNNLOmics.Data.Features;
-using System.Data.SQLite;
-using System.IO;
-using System.Runtime.InteropServices;
 using PNNLOmics.Algorithms.FeatureClustering;
-using MultiAlignCore.IO;
+using PNNLOmics.Data.Features;
 
 namespace MultiAlignChargeStateProcessor
 {
-    public class UMCClusterDummyWriter : IClusterWriter<UMCClusterLight>
-    {
-
-        #region IClusterWriter<UMCClusterLight> Members
-
-        public void Close()
-        {
-            
-        }
-
-        public void WriteCluster(UMCClusterLight cluster)
-        {
-            
-        }
-
-        #endregion
-    }
-    /// <summary>
-    /// UMC Cluster writer class.
-    /// </summary>
-    public class UMCClusterWriter : IClusterWriter<UMCClusterLight>
-    {
-        private TextWriter m_writer;
-        private TextWriter m_idMapper;
-        private List<DatasetInformation> m_datasets;
-        private List<int> m_ids;
-
-        public UMCClusterWriter()
-        {
-            m_datasets  = new List<DatasetInformation>();
-            m_ids       = new List<int>();                        
-        }
-        public void Open(string path)
-        {
-            string folder   = Path.GetDirectoryName(path);
-            string name     = Path.GetFileNameWithoutExtension(path);
-            m_writer        = File.CreateText(path);
-            m_idMapper      = File.CreateText(Path.Combine(folder, name + "_map.txt"));
-            m_idMapper.WriteLine("Cluster, Dataset, Feature");
-        }
-        #region IClusterWriter<UMCClusterLight> Members
-
-        public void Close()
-        {
-            m_writer.Close();
-            m_idMapper.Close();
-        }
-
-        public void WriteHeader(List<DatasetInformation> datasets)
-        {
-            string header = "Cluster ID, Total Members, Dataset Members, Tightness, Ambiguity, Mass, NET, DriftTime,";
-
-            StringBuilder builder = new StringBuilder();
-            foreach (DatasetInformation information in datasets)
-            {
-                m_ids.Add(information.DatasetId);
-            }
-            m_ids.Sort();
-            foreach (int id in m_ids)
-            {
-                builder.AppendFormat("AbundanceSum-{0},", id);
-            }
-
-            header += builder.ToString();
-            m_writer.WriteLine(header);
-
-        }
-        
-        public static int m_count = 0;
-        public void WriteCluster(UMCClusterLight cluster)
-        {
-            m_count++;
-
-            StringBuilder idMapper = new StringBuilder();
-            StringBuilder builder = new StringBuilder();
-
-            builder.AppendFormat("{0},{1},{2},{3:.000},{4:.000},{5:.0000},{6:.0000},{7:.0000},",
-                                    cluster.ID,
-                                    cluster.MemberCount,
-                                    cluster.DatasetMemberCount,
-                                    cluster.Tightness,
-                                    cluster.AmbiguityScore,
-                                    cluster.MassMonoisotopicAligned,
-                                    cluster.RetentionTime,
-                                    cluster.DriftTime);
-
-            Dictionary<int, long> clustermap = new Dictionary<int, long>();
-            foreach (UMCLight feature in cluster.Features)
-            {
-                if (clustermap.ContainsKey(feature.GroupID))
-                {
-                    clustermap[feature.GroupID] += feature.AbundanceSum;
-                }
-                else
-                {
-                    clustermap.Add(feature.GroupID, feature.AbundanceSum);
-                }
-                idMapper.AppendFormat("{0},{1},{2}\n\r", cluster.ID, feature.GroupID, feature.ID);
-            }
-
-            foreach (int did in m_ids)
-            {
-                // If the cluster does not have an entry for this, then leave it
-                if (clustermap.ContainsKey(did))
-                {
-                    builder.AppendFormat("{0},", clustermap[did]);
-                }
-                else
-                {
-                    builder.AppendFormat(",");
-                }
-            }
-            m_writer.WriteLine(builder.ToString());
-            m_idMapper.Write(idMapper.ToString());
-            builder.Clear();
-            idMapper.Clear();
-
-            if (m_count > 1000)
-            {
-                m_count = 0;
-                m_writer.Flush();
-                m_idMapper.Flush();
-            }
-        }
-
-        #endregion
-    }
-
     /// <summary>
     ///  This project is for clustering single charge states from an existing database file.
     /// </summary>
@@ -157,32 +27,31 @@ namespace MultiAlignChargeStateProcessor
         /// <param name="dwMode"></param>
         /// <returns></returns>
         [DllImport("kernel32.dll")]
-        public static extern bool SetConsoleMode(IntPtr hConsoleHandle, uint dwMode);
+        private static extern bool SetConsoleMode(IntPtr hConsoleHandle, uint dwMode);
 
         /// <summary>
         /// The main entry point for the application.
         /// </summary>        
         static int Main(string [] args)
         {
-            IntPtr handle = System.Diagnostics.Process.GetCurrentProcess().MainWindowHandle;
+            var handle = System.Diagnostics.Process.GetCurrentProcess().MainWindowHandle;
             SetConsoleMode(handle, ENABLE_EXTENDED_FLAGS);
 
             try
             {
                 if (args.Length < 2)
                 {
-                    Console.WriteLine("MultiAlignChargeStateProcessor databasePath chargeState crossTabPath [dataset List]");
-                    Console.WriteLine("\tThe cross-tab file will be placed in the same directory as the database path");
+                    Console.WriteLine(@"MultiAlignChargeStateProcessor databasePath chargeState crossTabPath [dataset List]");
+                    Console.WriteLine(@"\tThe cross-tab file will be placed in the same directory as the database path");
                     return 1;
                 }
 
                 // Setup the analysis processing    
-                string databasePath = args[0]; 
-                string databaseName = Path.GetFileNameWithoutExtension(databasePath);
-                string path         = Path.GetDirectoryName(databasePath);
-                string crossPath = args[2];
-                string logPath      = Path.Combine(path, databaseName  + "_log.txt");
-                int chargeState     = Convert.ToInt32(args[1]);
+                var databasePath = args[0]; 
+                var databaseName = Path.GetFileNameWithoutExtension(databasePath);
+                var path         = Path.GetDirectoryName(databasePath);
+                var crossPath = args[2];
+                var chargeState     = Convert.ToInt32(args[1]);
 
                 List<string> datasetList = null;
                 if (args.Length == 4)
@@ -191,45 +60,45 @@ namespace MultiAlignChargeStateProcessor
                 }
 
 
+                if (path == null)
+                {
+                    Console.WriteLine(@"The directory path is invalid");
+                    return 1;
+                }
+
                 
                 NHibernateUtil.ConnectToDatabase(databasePath, false);
 
                 IDatasetDAO datasetCache = new DatasetDAOHibernate();
-                string dateSuffix        = AnalysisPathUtils.BuildDateSuffix();
+                var dateSuffix        = AnalysisPathUtils.BuildDateSuffix();
                 Logger.LogPath           = Path.Combine(path, string.Format("{0}_charge_{2}_{1}.txt", databaseName, dateSuffix, chargeState));
 
                 Logger.PrintMessage("Find all datasets", true);
-                List<DatasetInformation> datasets = datasetCache.FindAll();
+                var datasets = datasetCache.FindAll();
                 Logger.PrintMessage(string.Format("Found {0} datasets", datasets.Count), true);
                 
                 // Create the clustering algorithm - average linkage                
                 IClusterer<UMCLight, UMCClusterLight> clusterer = new UMCAverageLinkageClusterer<UMCLight, UMCClusterLight>();
 
                 // Create the DAO object to extract the features
-                IUmcDAO featureDao      = null; 
-                UmcAdoDAO database      = new UmcAdoDAO();
-                database.DatabasePath   = databasePath; 
-                featureDao = database;
+                var database      = new UmcAdoDAO {DatabasePath = databasePath};
+                IUmcDAO featureDao = database;
                 
                 
                 Logger.PrintMessage(string.Format("Extracting Features"), true);
-                List<UMCLight> tempFeatures = featureDao.FindByCharge(chargeState);                                
+                var tempFeatures = featureDao.FindByCharge(chargeState);                                
                 Logger.PrintMessage(string.Format("Found {0} features", tempFeatures.Count), true);
 
 
-                List<UMCLight> features = new List<UMCLight>();
+                var features = new List<UMCLight>();
                 if (datasetList != null)
                 {
-                    Dictionary<string, DatasetInformation> featuremap = new Dictionary<string, DatasetInformation>();
-                    foreach (DatasetInformation info in datasets)
-                    {
-                        featuremap.Add(info.DatasetName.ToLower(), info);                        
-                    }
+                    var featuremap = datasets.ToDictionary(info => info.DatasetName.ToLower());
 
-                    Dictionary<int, DatasetInformation> focusedDatasetList = new Dictionary<int, DatasetInformation>();
-                    foreach (string name in datasetList)
+                    var focusedDatasetList = new Dictionary<int, DatasetInformation>();
+                    foreach (var name in datasetList)
                     {
-                        string key = name.ToLower();
+                        var key = name.ToLower();
                         if (featuremap.ContainsKey(key))
                         {
                             Logger.PrintMessage("Using dataset: " + name);
@@ -239,14 +108,7 @@ namespace MultiAlignChargeStateProcessor
                             throw new Exception("Didn't find the dataset required..." + name);
                     }
 
-                    foreach (UMCLight feature in tempFeatures)
-                    {
-                        bool use = focusedDatasetList.ContainsKey(feature.GroupID);
-                        if (use)
-                        {
-                            features.Add(feature);
-                        }
-                    }
+                    features.AddRange(from feature in tempFeatures let use = focusedDatasetList.ContainsKey(feature.GroupId) where use select feature);
 
                     Logger.PrintMessage(string.Format("Found {0} filtered features for dataset list", features.Count), true);
                 }
@@ -256,7 +118,7 @@ namespace MultiAlignChargeStateProcessor
                 }
 
                 // Handle logging progress.
-                clusterer.Progress      += new EventHandler<PNNLOmics.Algorithms.ProgressNotifierArgs>(clusterer_Progress);
+                clusterer.Progress      += clusterer_Progress;
                 clusterer.Parameters.Tolerances.DriftTime           = .3;
                 clusterer.Parameters.Tolerances.Mass                = 16;
                 clusterer.Parameters.Tolerances.RetentionTime       = .014;
@@ -265,7 +127,7 @@ namespace MultiAlignChargeStateProcessor
                 clusterer.Parameters.DistanceFunction               = PNNLOmics.Algorithms.Distance.DistanceFactory<UMCLight>.CreateDistanceFunction(PNNLOmics.Algorithms.Distance.DistanceMetric.WeightedEuclidean);
                 
                 // Then cluster
-                UMCClusterWriter clusterWriter = new UMCClusterWriter();
+                var clusterWriter = new UmcClusterWriter();
                 IClusterWriter<UMCClusterLight> writer = clusterWriter; //new UMCClusterDummyWriter(); 
                 try
                 {                    
@@ -280,7 +142,7 @@ namespace MultiAlignChargeStateProcessor
                 catch (Exception ex)
                 {
                     Logger.PrintMessage("Unhandled Error: " + ex.Message);
-                    Exception innerEx = ex.InnerException;
+                    var innerEx = ex.InnerException;
                     while (innerEx != null)
                     {
                         Logger.PrintMessage("Inner Exception: " + innerEx.Message);
@@ -299,7 +161,7 @@ namespace MultiAlignChargeStateProcessor
             catch (Exception ex)
             {
                 Logger.PrintMessage("Unhandled Error: " + ex.Message, true);
-                Exception innerEx = ex.InnerException;
+                var innerEx = ex.InnerException;
                 while (innerEx != null)
                 {
                     Logger.PrintMessage("Inner Exception: " + innerEx.Message);

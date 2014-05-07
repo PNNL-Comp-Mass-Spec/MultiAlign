@@ -1,17 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.IO;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.IO;
 
 namespace MultiAlign.Windows
 {
@@ -63,16 +52,16 @@ namespace MultiAlign.Windows
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             
-            bool isEmpty = string.IsNullOrWhiteSpace(FilePath);
+            var isEmpty = string.IsNullOrWhiteSpace(FilePath);
 
             if (!isEmpty)
             {
-                bool doesExist = File.Exists(FilePath);
+                var doesExist = File.Exists(FilePath);
                 if (!doesExist)
                 {
                     try
                     {
-                        string dirName = System.IO.Path.GetDirectoryName(FilePath);
+                        var dirName = System.IO.Path.GetDirectoryName(FilePath);
                         doesExist = Directory.Exists(dirName);
                         if (doesExist)
                         {
@@ -90,7 +79,7 @@ namespace MultiAlign.Windows
             }
 
 
-            System.Windows.Forms.DialogResult result = m_dialog.ShowDialog();
+            var result = m_dialog.ShowDialog();
             if (result == System.Windows.Forms.DialogResult.OK)
             {
                 FilePath = m_dialog.FileName;

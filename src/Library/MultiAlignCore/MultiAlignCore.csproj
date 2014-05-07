@@ -77,13 +77,11 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\$(Platform)\Mage.dll</HintPath>
     </Reference>
-    <Reference Include="MathNet.Numerics">
-      <HintPath>..\..\lib\MathNet.Numerics.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.6.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="System.Drawing" />
     <Reference Include="ThermoRawFileReaderDLL, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\$(Platform)\Thermo\ThermoRawFileReaderDLL.dll</HintPath>
@@ -94,26 +92,6 @@
     <Reference Include="System.Data.SQLite">
       <HintPath>..\..\lib\$(Platform)\System.Data.SQLite.dll</HintPath>
     </Reference>
-    <Reference Include="Castle.Core, Version=1.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\Castle.Core.dll</HintPath>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="Castle.DynamicProxy2, Version=2.0.3.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\Castle.DynamicProxy2.dll</HintPath>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="Iesi.Collections, Version=1.0.0.3, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\Iesi.Collections.dll</HintPath>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\log4net.dll</HintPath>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-    </Reference>
     <Reference Include="MSDataFileReader">
       <HintPath>..\..\lib\MSDataFileReader.dll</HintPath>
     </Reference>
@@ -121,18 +99,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\NHibernate.dll</HintPath>
     </Reference>
-    <Reference Include="PNNLOmicsIO">
-      <HintPath>..\..\lib\PNNLOmicsIO.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Xml.Linq" />
     <Reference Include="WindowsBase" />
-    <Reference Include="ZedGraph">
-      <HintPath>..\..\lib\ZedGraph.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Algorithms\AlgorithmProvider.cs" />
@@ -163,7 +132,13 @@
     <Compile Include="Algorithms\DelegateAnalysisMethod.cs" />
     <Compile Include="Algorithms\Options\MultiAlignAnalysisOptions.cs" />
     <Compile Include="Algorithms\Options\MassTagDatabaseOptions.cs" />
+    <Compile Include="Data\AnalysisCompleteEventArgs.cs" />
+    <Compile Include="Data\AnalysisErrorEventArgs.cs" />
+    <Compile Include="Data\BaselineFeaturesLoadedEventArgs.cs" />
+    <Compile Include="Data\MassTagsLoadedEventArgs.cs" />
     <Compile Include="Data\MetaData\SupportedDatasetType.cs" />
+    <Compile Include="IO\MTDB\MtdbCreatorDatabaseLoader.cs" />
+    <Compile Include="IO\Reports\AnalysisReportGenerator.cs" />
     <Compile Include="Extensions\GenericExtensions.cs" />
     <Compile Include="IO\FeatureCache.cs" />
     <Compile Include="Algorithms\FeatureFinding\AbundanceReportingType.cs" />
@@ -174,19 +149,14 @@
     <Compile Include="Algorithms\FeatureMatcher\PeakMatchingType.cs" />
     <Compile Include="Algorithms\FeatureMatcher\STAC.cs" />
     <Compile Include="Algorithms\FeaturesClusteredEventArgs.cs" />
-    <Compile Include="Algorithms\Features\ClusterErrorHistograms.cs" />
     <Compile Include="Algorithms\Features\FeatureConsolidatorFactory.cs" />
     <Compile Include="Algorithms\Features\FeatureConsolidatorOptions.cs" />
     <Compile Include="Algorithms\Features\LCMSFeatureConsolidator.cs" />
     <Compile Include="Algorithms\Features\UMCAbundanceSumConsolidator.cs" />
     <Compile Include="Algorithms\Features\UMCAbundanceConsolidator.cs" />
     <Compile Include="Algorithms\FunctionalRedundancy.cs" />
-    <Compile Include="Algorithms\MSLinker\MSLinkerOptions.cs" />
-    <Compile Include="Algorithms\MSLinker\MSLinkerType.cs" />
-    <Compile Include="Algorithms\MSLinker\MSnLinkerFactory.cs" />
     <Compile Include="Algorithms\MultiAlignAnalysisProcessor.cs" />
     <Compile Include="Algorithms\FeatureMatcher\IPeakMatcher.cs" />
-    <Compile Include="Algorithms\FeatureMatcher\TraditionalPeakMatcher.cs" />
     <Compile Include="Algorithms\PeptideMsMsLinker.cs" />
     <Compile Include="Algorithms\Workflow\Alignment.cs" />
     <Compile Include="Algorithms\Workflow\WorkflowBase.cs" />
@@ -237,7 +207,6 @@
     <Compile Include="IO\Clusters\ClusterExporterComposite.cs" />
     <Compile Include="IO\Clusters\UMCClusterMsmsSpectraWriter.cs" />
     <Compile Include="IO\CommandLineProcessor.cs" />
-    <Compile Include="IO\Factors\FactorFileReader.cs" />
     <Compile Include="IO\Factors\MultiAlignFactorSink.cs" />
     <Compile Include="IO\DatabaseIndexer.cs" />
     <Compile Include="IO\Features\UmcLoadingEventArgs.cs" />
@@ -251,13 +220,8 @@
     <Compile Include="IO\RawData\ScanOutOfRangeException.cs" />
     <Compile Include="IO\SingletonDataProviders.cs" />
     <Compile Include="IO\StatusEventArgs.cs" />
-    <Compile Include="IO\Xic\XicFitWriter.cs" />
-    <Compile Include="IO\Xic\XicComparisonWriter.cs" />
-    <Compile Include="IO\Xic\XicMsFeatureWriter.cs" />
-    <Compile Include="IO\Features\FeatureAdjusterWriter.cs" />
     <Compile Include="IO\Hibernate\ClusterToMassTagMap.cs" />
     <Compile Include="IO\Hibernate\STACDAOHibernate.cs" />
-    <Compile Include="IO\Xic\IXicWriter.cs" />
     <Compile Include="IO\Features\LCMSFeatureFileReader.cs" />
     <Compile Include="IO\Hibernate\MassTagMatchDAO.cs" />
     <Compile Include="IO\MassTags\IMassTagMatchDAO.cs" />
@@ -265,7 +229,6 @@
     <Compile Include="IO\Features\IAlignmentDAO.cs" />
     <Compile Include="IO\Hibernate\AlignmentDAOHibernate.cs" />
     <Compile Include="IO\Clusters\UMCClusterMsmsMetaDataWriter.cs" />
-    <Compile Include="IO\Xic\XicWriter.cs" />
     <Compile Include="IO\MTDB\APEMassTagDatabaseLoader.cs" />
     <Compile Include="IO\MTDB\IDatabaseServerLoader.cs" />
     <Compile Include="IO\MTDB\MageDmsDatabaseLoader.cs" />
@@ -332,7 +295,6 @@
     <Compile Include="IO\MTDB\AnalysisMTDBSetupException.cs" />
     <Compile Include="IO\MTDB\IMTDBLoader.cs" />
     <Compile Include="IO\MTDB\MassTagDatabaseLoader.cs" />
-    <Compile Include="IO\MTDB\MassTagDatabaseOptions.cs" />
     <Compile Include="IO\MTDB\MTSMassTagDatabaseLoader.cs" />
     <Compile Include="IO\MTDB\MTSPeakMatchResultsWriter.cs" />
     <Compile Include="IO\MTDB\MTSSqlServerPeakMatchResultWriter.cs" />
@@ -340,8 +302,6 @@
     <Compile Include="IO\Parameters\ParameterFileAttribute.cs" />
     <Compile Include="IO\Parameters\ParameterFileGroupAttribute.cs" />
     <Compile Include="IO\Parameters\ParameterHibernateMapping.cs" />
-    <Compile Include="IO\Parameters\ParameterUtility.cs" />
-    <Compile Include="IO\Parameters\xmlIO.cs" />
     <Compile Include="IO\Reports\AnalysisHTMLReport.cs" />
     <Compile Include="IO\MTDB\MTDBLoaderFactory.cs" />
     <Compile Include="Data\Alignment\classAlignmentData.cs" />
@@ -360,7 +320,7 @@
     </Content>
     <EmbeddedResource Include="IO\SequenceData\Mappings\SequenceToMsnFeature.hbm.xml" />
     <EmbeddedResource Include="IO\Hibernate\Mappings\ClusterToMassTagMap.hbm.xml" />
-    <EmbeddedResource Include="IO\Hibernate\Mappings\MSMSFeature.hbm.xml">
+    <EmbeddedResource Include="IO\Hibernate\Mappings\MsSpectra.hbm.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="IO\Hibernate\Mappings\MSnFeatureToMSFeatureMap.hbm.xml" />
@@ -408,11 +368,20 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\PNNLOmics\development\trunk\PNNLOmics\PNNLOmics.csproj">
+    <ProjectReference Include="..\..\..\..\..\..\PNNLOmics\development\trunk\PNNLOmicsIO\PNNLOmicsIO.csproj">
+      <Project>{20d49543-cd31-44d2-8403-f045b3fb363d}</Project>
+      <Name>PNNLOmicsIO</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\..\PNNLOmics\development\trunk\PNNLOmicsViz\PNNLOmicsViz\PNNLOmicsViz.csproj">
+      <Project>{6f933e2a-aea8-43e1-a8e1-5f9207704b21}</Project>
+      <Name>PNNLOmicsViz</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\..\PNNLOmics\development\trunk\PNNLOmics\PNNLOmics.csproj">
       <Project>{8a934dc1-3418-449f-adf6-9962499f49b2}</Project>
       <Name>PNNLOmics</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

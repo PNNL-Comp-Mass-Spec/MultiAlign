@@ -1,8 +1,4 @@
 using System;
-using System.Collections.Generic;
-using MultiAlignCore.Data.Factors;
-using MultiAlignEngine;
-using System.IO;
 
 namespace MultiAlignCore.Data.Factors
 {
@@ -25,7 +21,7 @@ namespace MultiAlignCore.Data.Factors
 
 		public override bool Equals(object obj)
 		{
-            DatasetToExperimentalFactorMap map = obj as DatasetToExperimentalFactorMap;
+            var map = obj as DatasetToExperimentalFactorMap;
             if (map == null)
                 return false;
 
@@ -35,7 +31,7 @@ namespace MultiAlignCore.Data.Factors
 
 		public override int GetHashCode()
 		{
-			int hash = 17;
+			var hash = 17;
 
 			hash = hash * 23 + FactorID.GetHashCode();
 			hash = hash * 23 + DatasetID.GetHashCode();

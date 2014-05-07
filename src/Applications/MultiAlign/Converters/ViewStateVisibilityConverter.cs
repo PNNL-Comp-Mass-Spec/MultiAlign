@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Data;
-using MultiAlign.Windows;
-using MultiAlign.Data;
-using System.ComponentModel;
-using MultiAlign;
 using MultiAlign.Data.States;
 
 namespace MultiAlign.Converters
@@ -30,8 +26,8 @@ namespace MultiAlign.Converters
                 return Visibility.Hidden;
             }
 
-            ViewState step = (ViewState)value;
-            Visibility vis                  = Visibility.Hidden;
+            var step = (ViewState)value;
+            var vis                  = Visibility.Hidden;
 
             if (step == ViewState)
             {

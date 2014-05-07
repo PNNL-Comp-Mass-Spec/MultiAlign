@@ -1,50 +1,45 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using MultiAlignCore.Data.MassTags;
-using PNNLOmics.Data.MassTags;
+﻿using System.Collections.Generic;
 using Mage;
+using PNNLOmics.Data;
+using PNNLOmics.Data.MassTags;
 
 namespace MultiAlignCore.IO.MTDB
 {
-    public class MetaSampleDatbaseLoader: IMtdbLoader
+    public sealed class MetaSampleDatbaseLoader: IMtdbLoader
     {
-        public MetaSampleDatbaseLoader(string path)
+        private readonly Algorithms.Options.MassTagDatabaseOptions m_options;
+
+        public MetaSampleDatbaseLoader(string path, Algorithms.Options.MassTagDatabaseOptions options)
         {
-            Path = path;
+            Path        = path;
+            m_options   = options;
         }
 
         public MassTagDatabase LoadDatabase()
         {
-            MassTagDatabase database = new MassTagDatabase();
+            var database = new MassTagDatabase();
 
             
-            MAGEMetaSampleDatabaseSink sink = new MAGEMetaSampleDatabaseSink();
-            using (DelimitedFileReader reader = new DelimitedFileReader())
+            var sink = new MAGEMetaSampleDatabaseSink();
+            using (var reader = new DelimitedFileReader())
             {
                 reader.Delimiter    = ",";
                 reader.FilePath     = Path;
 
-                ProcessingPipeline pipeline = ProcessingPipeline.Assemble("MetaSample", reader, sink);
+                var pipeline = ProcessingPipeline.Assemble("MetaSample", reader, sink);
                 pipeline.RunRoot(null);
             }
 
             
-            List<MassTagLight> tags = sink.MassTags.FindAll(delegate(MassTagLight x) { return x.ObservationCount >= Options.MinimumObservationCountFilter; });
+            var tags = sink.MassTags.FindAll(delegate(MassTagLight x) { return x.ObservationCount >= m_options.MinimumObservationCountFilter; });
             
-            database.AddMassTagsAndProteins(tags, new Dictionary<int,List<PNNLOmics.Data.Protein>>());
+            database.AddMassTagsAndProteins(tags, new Dictionary<int,List<Protein>>());
         
             // Fill in logic to read new type of mass tag database.
             return database;
         }
 
 
-        public Algorithms.Options.MassTagDatabaseOptions Options
-        {
-            get;
-            set;
-        }
         public string Path
         {
             get;

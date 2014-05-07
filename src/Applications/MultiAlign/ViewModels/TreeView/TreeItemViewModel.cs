@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using PNNLOmics.Data.Features;
 
 namespace MultiAlign.ViewModels.TreeView
@@ -90,7 +87,7 @@ namespace MultiAlign.ViewModels.TreeView
                 {
                     m_isSelected = value;
                     OnPropertyChanged("IsSelected");
-                    if (value == true)
+                    if (value)
                     {
                         if (Selected != null)
                         {

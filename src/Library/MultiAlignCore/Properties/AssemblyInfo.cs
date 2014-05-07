@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("MultiAlignCore")]
@@ -12,5 +11,5 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]
 [assembly: Guid("27d3a265-14f3-4eb7-8bfd-dff88046ac1a")]
-[assembly: AssemblyVersion("5.0.4.*")]
-[assembly: AssemblyFileVersion("5.0.4.*")]
+[assembly: AssemblyVersion("5.0.4")]
+[assembly: AssemblyFileVersion("5.0.4")]

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace MultiAlignCore.IO.Parameters
+﻿namespace MultiAlignCore.IO.Parameters
 {
     public class ParameterHibernateMapping
     {
@@ -44,7 +39,7 @@ namespace MultiAlignCore.IO.Parameters
 
         public override bool Equals(object obj)
         {
-            ParameterHibernateMapping map = obj as ParameterHibernateMapping;
+            var map = obj as ParameterHibernateMapping;
             if (map == null)
                 return false;
 

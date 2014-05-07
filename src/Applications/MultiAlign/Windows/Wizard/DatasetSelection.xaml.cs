@@ -1,11 +1,4 @@
-﻿using System;
-using System.ComponentModel;
-using System.Windows;
-using System.Windows.Controls;
-using MultiAlign.Data;
-using MultiAlign.Windows.Viewers.Datasets;
-using MultiAlignCore.Data;
-using MultiAlignCore.IO.InputFiles;
+﻿using System.Windows.Controls;
 
 namespace MultiAlign.Windows.Wizard
 {

@@ -1,8 +1,6 @@
 ﻿using System;
-using MultiAlignCore.Algorithms;
-using System.Collections.Generic;
-using MultiAlignCore.IO.InputFiles;
 using MultiAlignCore.Data;
+using MultiAlignCore.IO.InputFiles;
 
 namespace MultiAlignCore.IO
 {
@@ -14,14 +12,14 @@ namespace MultiAlignCore.IO
         /// <param name="args"></param>
         public static void ProcessCommandLineArguments(string[] args, AnalysisConfig config)
         {
-            int jobID   = -1;
-            bool worked = false;
+            var jobID   = -1;
+            var worked = false;
             config.options   = CommandLineParser.ProcessArgs(args, 0);
-            foreach (string option in config.options.Keys)
+            foreach (var option in config.options.Keys)
             {                
                 try
                 {
-                    List<string> values = config.options[option];
+                    var values = config.options[option];
                     switch (option)
                     {
                            
@@ -33,7 +31,7 @@ namespace MultiAlignCore.IO
                             }
                             else
                             {
-                                MultiAlignCore.IO.Logger.PrintMessage(string.Format("The job Id {0} was not understood", values[0]));
+                                Logger.PrintMessage(string.Format("The job Id {0} was not understood", values[0]));
                                 return;
                             }
                             break;

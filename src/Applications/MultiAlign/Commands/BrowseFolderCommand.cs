@@ -1,55 +1,29 @@
-﻿using MultiAlign.Data;
-using System;
-using System.Windows.Input;
+﻿using System;
 
 namespace MultiAlign.Commands
 {
-    public sealed class BrowseFolderCommand: ICommand
+    public sealed class BrowseFolderCommand: BaseCommand
     {
 
-        private readonly Ookii.Dialogs.VistaFolderBrowserDialog m_folderBrowser;
-        private readonly Action<string> m_action;
-
-        public  event EventHandler CanExecuteChanged;
-        public  event EventHandler<OpenAnalysisArgs> FolderSelected;
-
-        public BrowseFolderCommand()
-        {
-            m_folderBrowser = new Ookii.Dialogs.VistaFolderBrowserDialog {ShowNewFolderButton = true};
-        }
-
+        private readonly Ookii.Dialogs.VistaFolderBrowserDialog m_folderBrowser;        
+        private readonly Action<string> m_saveAction;
+        
         public BrowseFolderCommand(Action<string> actionOnExecute)
+            : base(null, AlwaysPass)
         {
             m_folderBrowser = new Ookii.Dialogs.VistaFolderBrowserDialog {ShowNewFolderButton = true};
-
-            m_action = actionOnExecute;
+            m_saveAction = actionOnExecute;
         }
 
-        public bool CanExecute(object parameter)
-        {
-            return true;
-        }
 
-        public void Execute(object parameter)
+        public override void Execute(object parameter)
         {
             var result = m_folderBrowser.ShowDialog();
 
             if (result != System.Windows.Forms.DialogResult.OK) 
-                return;
-
-            var path          = m_folderBrowser.SelectedPath;
-            const string name = "";
-
-            var newAnalysis = new RecentAnalysis(path, name);
-            if (FolderSelected != null)
-            {
-                FolderSelected(this, new OpenAnalysisArgs(newAnalysis));
-            }
-
-            if (m_action != null)
-            {
-                m_action(path);
-            }
+                return;            
+            if (m_saveAction != null)
+                m_saveAction(m_folderBrowser.SelectedPath);            
         }
     }
 }

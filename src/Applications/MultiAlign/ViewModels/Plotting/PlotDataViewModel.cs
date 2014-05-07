@@ -1,5 +1,5 @@
-﻿using MultiAlign.Commands.Plotting;
-using System.Windows.Input;
+﻿using System.Windows.Input;
+using MultiAlign.Commands.Plotting;
 
 namespace MultiAlign.ViewModels.Plotting
 {
@@ -16,7 +16,7 @@ namespace MultiAlign.ViewModels.Plotting
         }
 
         public PlotViewModel(string path, string name):
-            this(path, name, new PictureDisplayCommand(path, name) as ICommand)
+            this(path, name, new PictureDisplayCommand(path, name))
         {         
         }
 

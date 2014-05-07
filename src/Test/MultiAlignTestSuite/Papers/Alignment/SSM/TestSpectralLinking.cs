@@ -1,16 +1,15 @@
-﻿using MultiAlignCore.Algorithms.Alignment;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using MultiAlignCore.Algorithms.Alignment;
 using MultiAlignCore.Algorithms.Options;
 using MultiAlignCore.Extensions;
 using NUnit.Framework;
-using PNNLOmics.Algorithms.SpectralComparisons;
 using PNNLOmics.Algorithms.SpectralProcessing;
 using PNNLOmics.Algorithms.Statistics;
 using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 
 namespace MultiAlignTestSuite.Papers.Alignment.SSM
 {
@@ -27,17 +26,17 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
         [TestCase(@"226159_QC_Shew_11_02_pt5-d_6Jun11_Sphinx_11-04-05")]
         public void TestLinking(string datasetName)
         {
-            string featureFile = GetTestPath(datasetName + "_isos.csv");
-            string rawFile     = GetTestPath(datasetName + ".raw");
+            var featureFile = GetTestPath(datasetName + "_isos.csv");
+            var rawFile     = GetTestPath(datasetName + ".raw");
 
-            List<UMCLight> features = FindFeatures(rawFile, featureFile);
+            var features = FindFeatures(rawFile, featureFile);
 
-            int count = 0;
-            int doubleCount = 0;
+            var count = 0;
+            var doubleCount = 0;
             foreach (var feature in features)
             {
-                int singleCount = 0;
-                foreach (var msFeature in feature.MSFeatures)
+                var singleCount = 0;
+                foreach (var msFeature in feature.MsFeatures)
                 {
                     if (msFeature.MSnSpectra.Count > 0)
                     {
@@ -57,15 +56,15 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
                     @"226151_QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27")]
         public void TestAlignment(string datasetNameX, string datasetNameY)
         {
-            string featureFileX = GetTestPath(datasetNameX + "_isos.csv");
-            string rawFileX     = GetTestPath(datasetNameX + ".raw");
+            var featureFileX = GetTestPath(datasetNameX + "_isos.csv");
+            var rawFileX     = GetTestPath(datasetNameX + ".raw");
 
-            string featureFileY = GetTestPath(datasetNameY + "_isos.csv");
-            string rawFileY     = GetTestPath(datasetNameY + ".raw");
+            var featureFileY = GetTestPath(datasetNameY + "_isos.csv");
+            var rawFileY     = GetTestPath(datasetNameY + ".raw");
 
             Print("Detecting Features");
-            List<UMCLight> featuresX = FindFeatures(rawFileX, featureFileX);
-            List<UMCLight> featuresY = FindFeatures(rawFileY, featureFileY);
+            var featuresX = FindFeatures(rawFileX, featureFileX);
+            var featuresY = FindFeatures(rawFileY, featureFileY);
 
             PrintFeatureMsMsData(featuresX);
             PrintFeatureMsMsData(featuresY);
@@ -79,11 +78,11 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
 
             Print("");
             Print("NET, NETAligned");
-            foreach (UMCLight feature in featuresY)
+            foreach (var feature in featuresY)
             {
                 if (feature.HasMsMs())
                 {
-                    Print(string.Format("{0}", feature.NET - feature.NETAligned));
+                    Print(string.Format("{0}", feature.Net - feature.NetAligned));
                 }
             }
         }        
@@ -109,15 +108,15 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
 
             
 
-            string featureFileX = GetTestPath(baselineName + "_isos.csv");
-            string rawFileX     = GetTestPath(baselineName + ".raw");
+            var featureFileX = GetTestPath(baselineName + "_isos.csv");
+            var rawFileX     = GetTestPath(baselineName + ".raw");
 
-            string featureFileY = GetTestPath(aligneeName + "_isos.csv");
-            string rawFileY     = GetTestPath(aligneeName + ".raw");
+            var featureFileY = GetTestPath(aligneeName + "_isos.csv");
+            var rawFileY     = GetTestPath(aligneeName + ".raw");
 
             Print("Detecting Features");
-            List<UMCLight> baselineFeatures = FindFeatures(rawFileX, featureFileX);
-            List<UMCLight> aligneeFeatures  = FindFeatures(rawFileY, featureFileY);
+            var baselineFeatures = FindFeatures(rawFileX, featureFileX);
+            var aligneeFeatures  = FindFeatures(rawFileY, featureFileY);
             
             Print("Aligning Features");
             // Align the features
@@ -129,28 +128,28 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
             PrintFeatureMsMsData(baselineFeatures);
             PrintFeatureMsMsData(aligneeFeatures);
 
-            List<SpectralMatch> matches = GetSpectralMatches(
+            var matches = GetSpectralMatches(
                                                     baselineFeatures, aligneeFeatures, comparisonCutoff);
             Print(string.Format("Found {0} spectral matches", matches.Count));
             Print("Similarity, Pre-Alignment, Post-Alignment");
 
-            Dictionary<double, int> counts = new Dictionary<double, int>();
+            var counts = new Dictionary<double, int>();
             counts.Add(.9, 0);
             counts.Add(.8, 0);
             counts.Add(.7, 0);
             counts.Add(.6, 0);
             counts.Add(.5, 0);
 
-            List<double> preDist  = new List<double>();
-            List<double> postDist = new List<double>();
+            var preDist  = new List<double>();
+            var postDist = new List<double>();
 
-            foreach(SpectralMatch match in matches)
+            foreach(var match in matches)
             {
-                UMCLight baselineFeature = match.Baseline.ParentFeature.ParentFeature;
-                UMCLight aligneeFeature  = match.Alignee.ParentFeature.ParentFeature;
+                var baselineFeature = match.Baseline.ParentFeature.ParentFeature;
+                var aligneeFeature  = match.Alignee.ParentFeature.ParentFeature;
                 
-                double preAlignment     = baselineFeature.NET - aligneeFeature.NET;
-                double postAlignment    = baselineFeature.NET - aligneeFeature.NETAligned;
+                var preAlignment     = baselineFeature.Net - aligneeFeature.Net;
+                var postAlignment    = baselineFeature.Net - aligneeFeature.NetAligned;
 
                 postDist.Add(postAlignment);
                 preDist.Add(preAlignment);
@@ -177,13 +176,13 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
             Print("");
             Print("Counts");
             Print("");
-            foreach (double key in counts.Keys)
+            foreach (var key in counts.Keys)
             {
                 Print(string.Format("{0},{1}", key, counts[key]));
             }
 
-            MannWhitneyTest test = new MannWhitneyTest();
-            HypothesisTestingData data = test.Test(preDist, postDist);
+            var test = new MannWhitneyTest();
+            var data = test.Test(preDist, postDist);
             Print(string.Format("Two Tail - {0} ", data.TwoTail));
             Print(string.Format("Left Tail - {0} ", data.LeftTail));
             Print(string.Format("Right Tail - {0} ", data.RightTail));
@@ -197,20 +196,20 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
         {
             RootDataPath = basePath;
 
-            List<double> preDist = new List<double>();
-            List<double> postDist = new List<double>();
+            var preDist = new List<double>();
+            var postDist = new List<double>();
 
-            string[] lines = File.ReadAllLines(Path.Combine(basePath, name));
-            bool header = true;
-            foreach (string line in lines)
+            var lines = File.ReadAllLines(Path.Combine(basePath, name));
+            var header = true;
+            foreach (var line in lines)
             {
                 if (!header)
                 {
-                    string[] stringData = line.Split(',');
+                    var stringData = line.Split(',');
                     if (stringData.Length > 2)
                     {
-                        double preValue     = Convert.ToDouble(stringData[1]);
-                        double postValue    = Convert.ToDouble(stringData[2]);
+                        var preValue     = Convert.ToDouble(stringData[1]);
+                        var postValue    = Convert.ToDouble(stringData[2]);
 
                         if (Math.Abs(preValue) < .05)
                         {
@@ -225,8 +224,8 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
                 header = false;
             }
 
-            IHypothesisTestingTwoSample test = HypothesisTestingFactory.CreateTests(HypothesisTests.MannWhitneyU);
-            HypothesisTestingData data            = test.Test(preDist, postDist);
+            var test = HypothesisTestingFactory.CreateTests(HypothesisTests.MannWhitneyU);
+            var data            = test.Test(preDist, postDist);
             Print(string.Format("Two Tail - {0} ", data.TwoTail));
             Print(string.Format("Left Tail - {0} ", data.LeftTail));
             Print(string.Format("Right Tail - {0} ", data.RightTail));
@@ -242,24 +241,24 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
         {
             RootDataPath = basePath;
 
-            List<double> preDist = new List<double>();
-            List<double> postDist = new List<double>();
+            var preDist = new List<double>();
+            var postDist = new List<double>();
 
-            string[] lines = File.ReadAllLines(Path.Combine(basePath, name));
-            bool header = true;
+            var lines = File.ReadAllLines(Path.Combine(basePath, name));
+            var header = true;
 
             Print(string.Format("TEST: {1} - {0}", name, testType));
             Print("");
 
-            foreach (string line in lines)
+            foreach (var line in lines)
             {
                 if (!header)
                 {
-                    string[] stringData = line.Split(',');
+                    var stringData = line.Split(',');
                     if (stringData.Length > 2)
                     {
-                        double preValue = Convert.ToDouble(stringData[1]);
-                        double postValue = Convert.ToDouble(stringData[2]);
+                        var preValue = Convert.ToDouble(stringData[1]);
+                        var postValue = Convert.ToDouble(stringData[2]);
 
                         preDist.Add(preValue);
                         postDist.Add(postValue);
@@ -268,9 +267,9 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
                 header = false;
             }
 
-            INormalityTest test = NormalityTestingFactory.CreateTests(testType);
-            HypothesisTestingData preTestData  = test.Test(preDist);
-            HypothesisTestingData postTestData = test.Test(postDist);
+            var test = NormalityTestingFactory.CreateTests(testType);
+            var preTestData  = test.Test(preDist);
+            var postTestData = test.Test(postDist);
             
             Print(string.Format("Pre  {0} ", preTestData.PValue));
             Print(string.Format("Post {0} ", postTestData.PValue));
@@ -316,24 +315,24 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
         {
             RootDataPath = basePath;
 
-            List<double> preDist  = new List<double>();
-            List<double> postDist = new List<double>();
+            var preDist  = new List<double>();
+            var postDist = new List<double>();
 
-            string[] lines  = File.ReadAllLines(Path.Combine(basePath, name));
-            bool header     = true;
+            var lines  = File.ReadAllLines(Path.Combine(basePath, name));
+            var header     = true;
 
             Print(string.Format("TEST: {1} - {0}", name, testType));
             Print("");
 
-            foreach (string line in lines)
+            foreach (var line in lines)
             {
                 if (!header)
                 {
-                    string[] stringData = line.Split(',');
+                    var stringData = line.Split(',');
                     if (stringData.Length > 2)
                     {
-                        double preValue = Convert.ToDouble(stringData[1]);
-                        double postValue = Convert.ToDouble(stringData[2]);
+                        var preValue = Convert.ToDouble(stringData[1]);
+                        var postValue = Convert.ToDouble(stringData[2]);
 
                         //if (Math.Abs(preValue) < .05)
                         {                         
@@ -362,30 +361,30 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
         private void TestAlignmentPValueToFailure(List<double> preDist, List<double> postDist, HypothesisTests testType, double step)
         {
             double pValue   = 0;
-            int nIterations = 0;
+            var nIterations = 0;
             double shift    = 0;
             Print("Mean-Pre, Mean Post, Shift Amount, Mean Diff, p-Value two, left, right");
-            double meanPost = postDist.Average();
+            var meanPost = postDist.Average();
 
 
 
 
             
-            Histogram postHistogram = new Histogram(.002, -.05, .05, "post-alignment");     
+            var postHistogram = new Histogram(.002, -.05, .05, "post-alignment");     
             postHistogram.AddData(postDist);
-            List<Histogram> histograms  =  new List<Histogram>();
+            var histograms  =  new List<Histogram>();
             histograms.Add(postHistogram);
             while(pValue < .05 && nIterations < 100)
             {
-                List<double> newPre = new List<double>();
+                var newPre = new List<double>();
                 preDist.ForEach(x => newPre.Add(x + shift));
-                double mean = newPre.Average();                   
+                var mean = newPre.Average();                   
              
-                IHypothesisTestingTwoSample test        = HypothesisTestingFactory.CreateTests(testType);
-                HypothesisTestingData data              = test.Test(newPre, postDist);
+                var test        = HypothesisTestingFactory.CreateTests(testType);
+                var data              = test.Test(newPre, postDist);
                 Print(string.Format("{0},{1},{2},{3},{4},{5},{5}", mean, meanPost, shift, Math.Abs(mean - meanPost), data.TwoTail, data.LeftTail, data.RightTail));
 
-                Histogram preHistogram = new Histogram(.002, -.05, .05, string.Format("{0:.0000}", mean));
+                var preHistogram = new Histogram(.002, -.05, .05, string.Format("{0:.0000}", mean));
                 preHistogram.AddData(newPre);
                 histograms.Add(preHistogram);
 
@@ -394,7 +393,7 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
                 shift += step;
             }
             
-            Histogram originalPreHistogram  = new Histogram(.002, -.05, .05, "pre-histogram");
+            var originalPreHistogram  = new Histogram(.002, -.05, .05, "pre-histogram");
             originalPreHistogram.AddData(preDist);
             Print("");
             PrintHistogram(originalPreHistogram);
@@ -415,17 +414,17 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
                                                     List<UMCLight> aligneeFeatures,
                                                     double comparisonCutoff)
         {
-            List<SpectralMatch> matches     = new List<SpectralMatch>();
-            List<MSSpectra> baselineSpectra = GetSpectra(baselineFeatures);
-            List<MSSpectra> aligneeSpectra  = GetSpectra(aligneeFeatures);
+            var matches     = new List<SpectralMatch>();
+            var baselineSpectra = GetSpectra(baselineFeatures);
+            var aligneeSpectra  = GetSpectra(aligneeFeatures);
 
             // Optimizes the loading of a spectra...
-            Dictionary<int, MSSpectra> map  = new Dictionary<int, MSSpectra>();
-            ISpectraFilter filter           = SpectrumFilterFactory.CreateFilter(SpectraFilters.TopPercent);
-            ISpectralComparer comparer      = SpectralComparerFactory.CreateSpectraComparer(SpectralComparison.CosineDotProduct);
+            var map  = new Dictionary<int, MSSpectra>();
+            var filter           = SpectrumFilterFactory.CreateFilter(SpectraFilters.TopPercent);
+            var comparer      = SpectralComparerFactory.CreateSpectraComparer(SpectralComparison.CosineDotProduct);
 
-            double percent          = .2;
-            double mzTolerance      = .5;
+            var percent          = .2;
+            var mzTolerance      = .5;
             double maxScanDiff      = 1500;
 
             
@@ -437,12 +436,12 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
                 foreach (var aligneeSpectrum in aligneeSpectra)
                 {
                     // Only consider spectra that are near each other in mass.
-                    double diff = Math.Abs(baselineSpectrum.PrecursorMZ - aligneeSpectrum.PrecursorMZ);
+                    var diff = Math.Abs(baselineSpectrum.PrecursorMz - aligneeSpectrum.PrecursorMz);
                     if (diff >= mzTolerance)
                         continue;
 
                     // Only consider spectra that are within some range of another.
-                    int scanDiff = Math.Abs(aligneeSpectrum.Scan - baselineSpectrum.Scan);
+                    var scanDiff = Math.Abs(aligneeSpectrum.Scan - baselineSpectrum.Scan);
                     if (scanDiff > maxScanDiff)
                         continue;
 
@@ -451,13 +450,13 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
                     aligneeSpectrum.Peaks = XYData.Bin(aligneeSpectrum.Peaks, 0, 2000, mzTolerance);
 
                     // Compare the spectra
-                    double value = comparer.CompareSpectra(baselineSpectrum, aligneeSpectrum);
+                    var value = comparer.CompareSpectra(baselineSpectrum, aligneeSpectrum);
                     if (double.IsNaN(value))
                         continue;
 
                     if (value > comparisonCutoff)
                     {
-                        SpectralMatch match = new SpectralMatch();
+                        var match = new SpectralMatch();
                         match.Alignee       = aligneeSpectrum;
                         match.Baseline      = baselineSpectrum;
                         match.Similarity    = value;
@@ -489,7 +488,7 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
             Data    = new List<double>();
             Spacing = spacing;
 
-            double temp = low;
+            var temp = low;
             while (temp <= high)
             {
                 temp += spacing;
@@ -519,14 +518,14 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
 
         public void AddData(double value)
         {
-            int i   = Convert.ToInt32(Math.Abs(value - m_low) / Spacing);
+            var i   = Convert.ToInt32(Math.Abs(value - m_low) / Spacing);
             i       = Math.Max(0, Math.Min(Data.Count - 1, i)); 
             Data[i]++;
         }
 
         public void AddData(IEnumerable<double> data)
         {
-            foreach(double datum in data)
+            foreach(var datum in data)
             {                
                 AddData(datum);
             }

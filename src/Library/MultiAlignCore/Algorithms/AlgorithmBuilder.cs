@@ -1,14 +1,11 @@
+using System;
 using MultiAlignCore.Algorithms.Alignment;
-using MultiAlignCore.Algorithms.Clustering;
 using MultiAlignCore.Algorithms.FeatureMatcher;
+using MultiAlignCore.Algorithms.Options;
 using PNNLOmics.Algorithms.Alignment.SpectralMatches;
 using PNNLOmics.Algorithms.FeatureClustering;
-using PNNLOmics.Data.Features;
-using MultiAlignCore.Data;
 using PNNLOmics.Algorithms.FeatureMatcher.Data;
-using PNNLOmics.Algorithms.Distance;
-using MultiAlignCore.Algorithms.Options;
-using System;
+using PNNLOmics.Data.Features;
 
 namespace MultiAlignCore.Algorithms
 {

@@ -1,10 +1,9 @@
-﻿using MultiAlignCore.Data;
+﻿using System.Collections.Generic;
+using MultiAlignCore.Data;
 using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO.Clusters;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Data.MassTags;
-using System.Collections.Generic;
-
 
 namespace MultiAlignCore.IO.Features
 {
@@ -12,13 +11,11 @@ namespace MultiAlignCore.IO.Features
     /// <summary>
     /// Writes a list of clusters to a cross tab.
     /// </summary>
-    public class UMCClusterMsmsWriter: BaseUmcClusterWriter
+    public sealed class UMCClusterMsmsWriter: BaseUmcClusterWriter
     {
-        private string m_path;
         /// <summary>
         /// Default constructor.
         /// </summary>
-        /// <param name="path"></param>
         public UMCClusterMsmsWriter()
             : base(true)
         {

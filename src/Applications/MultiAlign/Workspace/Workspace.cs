@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using MultiAlign.Data;
 using MultiAlign.ViewModels;
 
@@ -26,7 +21,7 @@ namespace MultiAlign.Workspace
 
         public void AddAnalysis(RecentAnalysis recent)
         {
-            RecentAnalysisViewModel analysis = new RecentAnalysisViewModel(recent);
+            var analysis = new RecentAnalysisViewModel(recent);
             RecentAnalysisViewModel model    = null;
 
             foreach(var x in RecentAnalysis)

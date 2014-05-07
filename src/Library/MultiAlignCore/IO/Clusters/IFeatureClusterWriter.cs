@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-
+﻿using System.Collections.Generic;
+using MultiAlignCore.Algorithms.Features;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.MetaData;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Data.MassTags;
-using MultiAlignCore.Algorithms.Features;
 
-namespace MultiAlignCore.IO.Features
+namespace MultiAlignCore.IO.Clusters
 {
     /// <summary>
     /// Interface for writing clusters to a file.
@@ -51,6 +49,6 @@ namespace MultiAlignCore.IO.Features
         void WriteClusters(List<UMCClusterLight> clusters,
                             Dictionary<int, List<ClusterToMassTagMap>> clusterMap,
                             List<DatasetInformation> datasets,
-                            Dictionary<string, PNNLOmics.Data.MassTags.MassTagLight> tags);         
+                            Dictionary<string, MassTagLight> tags);         
     }
 }

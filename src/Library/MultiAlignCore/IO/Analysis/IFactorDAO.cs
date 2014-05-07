@@ -1,8 +1,9 @@
 using MultiAlignCore.Data.Factors;
+using MultiAlignCore.IO.Features;
 
-namespace MultiAlignCore.IO.Features
+namespace MultiAlignCore.IO.Analysis
 {
-	public interface IFactorDAO : IGenericDAO<ExperimentalFactor>
+	public interface IFactorDao : IGenericDAO<ExperimentalFactor>
     {
 
     }

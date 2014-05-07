@@ -1,17 +1,18 @@
 ﻿
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
-using MultiAlign.Commands;
-using MultiAlignCore.Algorithms;
-using MultiAlignCore.Data.Features;
-using PNNLOmics.Data.Features;
-using System;
-using MultiAlign.Commands.Clusters;
 using System.Windows.Input;
-using PNNLOmics.Data;
+using MultiAlign.Commands;
+using MultiAlign.ViewModels.Features;
+using MultiAlign.ViewModels.IO;
+using MultiAlign.Windows.IO;
 using MultiAlign.Windows.Viewers.Clusters;
+using MultiAlignCore.Data.Features;
+using PNNLOmics.Data;
+using PNNLOmics.Data.Features;
 
 namespace MultiAlign.ViewModels.TreeView
 {
@@ -26,7 +27,7 @@ namespace MultiAlign.ViewModels.TreeView
         private UMCLight                        m_selectedFeature;
         private UMCClusterLightMatched          m_selectedCluster;
         private MSSpectra                       m_selectedSpectrum;
-        private readonly ClusterExportCommand            m_exportCommand;
+        private readonly ICommand               m_exportCommand;
 
         readonly List<UMCClusterLightMatched>   m_clusters;
         private readonly ObservableCollection<UMCClusterTreeViewModel> m_filteredClusters;
@@ -48,19 +49,30 @@ namespace MultiAlign.ViewModels.TreeView
                 (from cluster in clusters
                  select new UMCClusterTreeViewModel(cluster)).ToList());
             
-            m_exportCommand   = new ClusterExportCommand(this);            
+            m_exportCommand   = new BaseCommand(ShowFilterWindow);            
             m_filterViewModel = new UMCClusterFilterViewModel(Clusters);    
-            FilterCommand     = new BaseCommandBridge(FilterWindow, null);
+            FilterCommand     = new BaseCommand(FilterWindow, BaseCommand.AlwaysPass);
 
             RegisterEvents();
         }
+        private void ShowFilterWindow()
+        {
+            ClusterExportView clusterExport;
+            clusterExport = new ClusterExportView();
+            clusterExport.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            
+            var viewModel = new ClusterExportViewModel(Clusters, FilteredClusters) {Status = ""};
+            clusterExport.DataContext = viewModel;
+            clusterExport.ShowDialog();
+        }
+
         /// <summary>
         /// Makes sure that we have event handlers to know when a feature was selected below us....
         /// probably a better way through bubble-based command routing...
         /// </summary>
         void RegisterEvents()
         {
-            foreach (UMCClusterTreeViewModel cluster in m_filteredClusters)
+            foreach (var cluster in m_filteredClusters)
             {
                 cluster.Selected         += cluster_Selected;
                 cluster.FeatureSelected  += cluster_FeatureSelected;

@@ -12,26 +12,26 @@
                 Header="Cluster Properties"
                 Style="{DynamicResource ResourceKey=SimpleTabItem}">
                 <StackPanel>
-                    <views:RangeView DataContext="{Binding TotalMembers}"></views:RangeView>
-                    <views:RangeView DataContext="{Binding DatasetMembers}"></views:RangeView>
-                    <views:RangeView DataContext="{Binding TightnessRange}"></views:RangeView>
-                    <views:RangeView DataContext="{Binding AmbiguityRange}"></views:RangeView>
+                    <views:RangeView DataContext="{Binding TotalMembers}" />
+                    <views:RangeView DataContext="{Binding DatasetMembers}" />
+                    <views:RangeView DataContext="{Binding TightnessRange}" />
+                    <views:RangeView DataContext="{Binding AmbiguityRange}" />
                 </StackPanel>                
             </TabItem>
             <TabItem
                 Header="Mass and NET"
                 Style="{DynamicResource ResourceKey=SimpleTabItem}">
                 <StackPanel>
-                    <views:RangeView DataContext="{Binding MassRange}"></views:RangeView>
-                    <views:RangeView DataContext="{Binding NetRange}"></views:RangeView>
-                    <views:RangeView DataContext="{Binding DriftRange}"></views:RangeView>
+                    <views:RangeView DataContext="{Binding MassRange}" />
+                    <views:RangeView DataContext="{Binding NetRange}" />
+                    <views:RangeView DataContext="{Binding DriftRange}" />
                 </StackPanel>
             </TabItem>
             <TabItem
                 Header="MS/MS"
                 Style="{DynamicResource ResourceKey=SimpleTabItem}">
                 <StackPanel>
-                    <views:RangeView DataContext="{Binding MsMsTotal}"></views:RangeView>
+                    <views:RangeView DataContext="{Binding MsMsTotal}" />
                 </StackPanel>
             </TabItem>
             
@@ -41,10 +41,10 @@
                 
                 <StackPanel>
                     <GroupBox Header="Database Search">
-                        <views:RangeView DataContext="{Binding IdentificationRange}"></views:RangeView>    
+                        <views:RangeView DataContext="{Binding IdentificationRange}" />
                     </GroupBox>
                     <GroupBox Header="AMT Tag">
-                        <views:RangeView DataContext="{Binding AMTTagRange}"></views:RangeView>    
+                        <views:RangeView DataContext="{Binding AMTTagRange}" />
                     </GroupBox>                    
                 </StackPanel>
             </TabItem>

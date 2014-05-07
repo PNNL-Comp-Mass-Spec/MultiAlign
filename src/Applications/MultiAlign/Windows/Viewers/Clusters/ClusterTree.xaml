@@ -295,11 +295,11 @@
                     <Border CornerRadius="2" BorderThickness="1" HorizontalAlignment="Stretch" Padding="3" Margin="3" BorderBrush="#FFCCCCCC">
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="32"></ColumnDefinition>
-                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                <ColumnDefinition Width="32" />
+                                <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"></RowDefinition>
+                                <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
                             <Image
                                 Grid.Row="0"

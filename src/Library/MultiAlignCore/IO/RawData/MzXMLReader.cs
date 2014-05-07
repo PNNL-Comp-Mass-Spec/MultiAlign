@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.IsolatedStorage;
 using MSDataFileReader;
 using PNNLOmics.Data;
 
@@ -45,28 +44,28 @@ namespace MultiAlignCore.IO.Features
         {
             var spectra  = new List<MSSpectra>();
             var reader   = new clsMzXMLFileReader {SkipBinaryData = true};
-            bool opened                 = reader.OpenFile(file);
+            var opened                 = reader.OpenFile(file);
 
             if (!opened)
             {
                 throw new IOException("Could not open the mzXML file " + file);
             }
 
-            int totalScans = reader.ScanCount;
+            var totalScans = reader.ScanCount;
 
-            for (int i = 0; i < totalScans; i++)
+            for (var i = 0; i < totalScans; i++)
             {
                 
-                clsSpectrumInfo info = new clsSpectrumInfo();
+                var info = new clsSpectrumInfo();
                 reader.GetSpectrumByScanNumber(i, ref info);
                 if (info.MSLevel > 1)
                 {
                     var spectrum          = new MSSpectra
                     {
-                        MSLevel = info.MSLevel,
+                        MsLevel = info.MSLevel,
                         RetentionTime = info.RetentionTimeMin,
                         Scan = i,
-                        PrecursorMZ = info.ParentIonMZ,
+                        PrecursorMz = info.ParentIonMZ,
                         TotalIonCurrent = info.TotalIonCurrent,
                         CollisionType = CollisionType.Other
                     };
@@ -110,49 +109,49 @@ namespace MultiAlignCore.IO.Features
         }
         public List<MSSpectra> GetMSMSSpectra(int group, Dictionary<int, int> excludeMap, bool loadPeaks)
         {
-            List<MSSpectra> spectra = new List<MSSpectra>();
+            var spectra = new List<MSSpectra>();
 
             if (!m_dataFiles.ContainsKey(group))
             {
-                throw new System.Exception("The group-dataset ID provided was not found.");
+                throw new Exception("The group-dataset ID provided was not found.");
             }
             // If we dont have a reader, then create one for this group 
             // next time, it will be available and we won't have to waste time
             // opening the file.
             if (!m_readers.ContainsKey(group))
             {
-                string path                 = m_dataFiles[group];
+                var path                 = m_dataFiles[group];
                 var reader = new clsMzXMLFileAccessor();                
                 m_readers.Add(group, reader);
 
-                bool opened = reader.OpenFile(path);
+                var opened = reader.OpenFile(path);
                 if (!opened)
                 {
                     throw new IOException("Could not open the mzXML file " + path);
                 }
             }
-            clsMzXMLFileAccessor rawReader = m_readers[group];
+            var rawReader = m_readers[group];
 
-            int numberOfScans = rawReader.ScanCount;            
-            clsSpectrumInfo info = new clsSpectrumInfo();
+            var numberOfScans = rawReader.ScanCount;            
+            var info = new clsSpectrumInfo();
             
-            for (int i = 0; i < numberOfScans; i++)
+            for (var i = 0; i < numberOfScans; i++)
             {
                 // This scan is not to be used.
-                bool isInExcludeMap = excludeMap.ContainsKey(i);
+                var isInExcludeMap = excludeMap.ContainsKey(i);
                 if (isInExcludeMap)
                     continue;
 
-                clsSpectrumInfo header = new clsSpectrumInfo();
+                var header = new clsSpectrumInfo();
 
                 rawReader.GetSpectrumHeaderInfoByIndex(i, ref header);
                 if (header.MSLevel > 1)
                 {
-                    MSSpectra spectrum       = new MSSpectra();
-                    spectrum.MSLevel         = header.MSLevel;
+                    var spectrum       = new MSSpectra();
+                    spectrum.MsLevel         = header.MSLevel;
                     spectrum.RetentionTime   = header.RetentionTimeMin;
                     spectrum.Scan            = i;
-                    spectrum.PrecursorMZ     = header.ParentIonMZ;
+                    spectrum.PrecursorMz     = header.ParentIonMZ;
                     spectrum.TotalIonCurrent = header.TotalIonCurrent;
                     spectrum.CollisionType   = CollisionType.Other;                    
                     spectra.Add(spectrum);
@@ -178,11 +177,11 @@ namespace MultiAlignCore.IO.Features
             // opening the file.
             if (!m_readers.ContainsKey(group))
             {
-                string path = m_dataFiles[group];
+                var path = m_dataFiles[group];
                 var reader = new clsMzXMLFileAccessor();
                 m_readers.Add(group, reader);
 
-                bool opened = reader.OpenFile(path);
+                var opened = reader.OpenFile(path);
                 if (!opened)
                 {
                     throw new IOException("Could not open the mzXML file " + path);
@@ -208,44 +207,44 @@ namespace MultiAlignCore.IO.Features
 
             if (!m_dataFiles.ContainsKey(group))
             {
-                throw new System.Exception("The group-dataset ID provided was not found.");
+                throw new Exception("The group-dataset ID provided was not found.");
             }
             // If we dont have a reader, then create one for this group 
             // next time, it will be available and we won't have to waste time
             // opening the file.
             if (!m_readers.ContainsKey(group))
             {
-                string path = m_dataFiles[group];
+                var path = m_dataFiles[group];
                 var reader  = new clsMzXMLFileAccessor();
                 m_readers.Add(group, reader);
 
-                bool opened = reader.OpenFile(path);
+                var opened = reader.OpenFile(path);
                 if (!opened)
                 {
                     throw new IOException("Could not open the mzXML file " + path);
                 }
             }
-            clsMzXMLFileAccessor rawReader = m_readers[group];
+            var rawReader = m_readers[group];
 
-            int totalScans  = rawReader.ScanCount;
+            var totalScans  = rawReader.ScanCount;
             var info        = new clsSpectrumInfo();
 
                         
             rawReader.GetSpectrumByScanNumber(scan, ref info);
             
-            summary = new ScanSummary()
+            summary = new ScanSummary
             {
                 Bpi             = Convert.ToInt64(info.BasePeakIntensity),
                 BpiMz           = info.BasePeakMZ,
                 MsLevel         = info.MSLevel,
-                PrecursorMZ     = info.ParentIonMZ,
+                PrecursorMz     = info.ParentIonMZ,
                 TotalIonCurrent = Convert.ToInt64(info.TotalIonCurrent)
             };
 
             if (info.MSLevel == scanLevel)
             {
                 spectrum = new List<XYData>();
-                for (int j = 0; j < info.MZList.Length; j++)
+                for (var j = 0; j < info.MZList.Length; j++)
                 {
                     spectrum.Add(new XYData(info.MZList[j], info.IntensityList[j]));
                 }

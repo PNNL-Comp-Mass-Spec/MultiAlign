@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using PNNLOmics.Data.Features;
 using MultiAlignCore.Algorithms.FeatureFinding;
+using PNNLOmics.Data.Features;
 
 namespace MultiAlignCore.Algorithms.Features
 {
@@ -23,14 +23,14 @@ namespace MultiAlignCore.Algorithms.Features
         public override Dictionary<int, UMCLight> ConsolidateUMCs(List<UMCLight> features)
         {
             // Maps the UMC abundances to sum across the groups.
-            Dictionary<int, long> umcAbundanceMap = new Dictionary<int, long>();
-            Dictionary<int, long> umcAbundanceSumMap = new Dictionary<int, long>();
+            var umcAbundanceMap = new Dictionary<int, long>();
+            var umcAbundanceSumMap = new Dictionary<int, long>();
 
             // Map the UMC's to datasets so we can choose only one.
-            Dictionary<int, UMCLight> umcs = new Dictionary<int, UMCLight>();
-            foreach (UMCLight umc in features)
+            var umcs = new Dictionary<int, UMCLight>();
+            foreach (var umc in features)
             {
-                int group = umc.GroupID;
+                var group = umc.GroupId;
                 if (!umcs.ContainsKey(group))
                 {
                     umcs.Add(group, umc);
@@ -61,7 +61,7 @@ namespace MultiAlignCore.Algorithms.Features
                 }
             }
             // Setting the abundance value for each used UMC after summing.
-            foreach (int key in umcs.Keys)
+            foreach (var key in umcs.Keys)
             {
                 umcs[key].Abundance    = umcAbundanceMap[key];
                 umcs[key].AbundanceSum = umcAbundanceSumMap[key];

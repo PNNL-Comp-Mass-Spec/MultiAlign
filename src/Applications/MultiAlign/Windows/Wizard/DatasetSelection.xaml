@@ -7,10 +7,10 @@
              xmlns:converters="clr-namespace:MultiAlign.Converters"
              mc:Ignorable="d" d:DesignHeight="561" d:DesignWidth="790">
     <UserControl.Resources>
-        <converters:SearchOptionConverter x:Key="SearchOptionConverter"></converters:SearchOptionConverter>
-        <converters:DatasetPathConverter x:Key="DatasetPathConverter"></converters:DatasetPathConverter>
+        <converters:SearchOptionConverter x:Key="SearchOptionConverter" />
+        <converters:DatasetPathConverter x:Key="DatasetPathConverter" />
         <converters:HasPathConverter x:Key="HasPathConverter"/>        
-        <converters:DatasetFolderPathConverter x:Key="DatasetFolderPathConverter"></converters:DatasetFolderPathConverter>        
+        <converters:DatasetFolderPathConverter x:Key="DatasetFolderPathConverter" />
     </UserControl.Resources>
     <Grid
         Background="White"
@@ -59,7 +59,7 @@
                               IsChecked="{Binding Path=ShouldSearchSubDirectories,
                                         Converter={StaticResource 
                                         ResourceKey=SearchOptionConverter}}"
-                              HorizontalAlignment="Right"></CheckBox>
+                              HorizontalAlignment="Right" />
                     <Button Grid.Column="2" 
                             Grid.Row="0"                           
                             HorizontalAlignment="Right" 
@@ -189,9 +189,9 @@
             Grid.Column="0"
             Grid.Row="2">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition></ColumnDefinition>
-                <ColumnDefinition Width="Auto"></ColumnDefinition>
-                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <WrapPanel>
                 <Button

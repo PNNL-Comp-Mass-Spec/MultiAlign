@@ -11,7 +11,7 @@ namespace MultiAlignCore.IO.Features
 
         public static FeatureDataAccessProviders CreateDataAccessProviders(MultiAlignAnalysis analysis, bool deleteIfExists)
         {
-            string path = AnalysisPathUtils.BuildAnalysisName(analysis.MetaData.AnalysisPath, analysis.MetaData.AnalysisName);
+            var path = AnalysisPathUtils.BuildAnalysisName(analysis.MetaData.AnalysisPath, analysis.MetaData.AnalysisName);
             return CreateDataAccessProviders(path, deleteIfExists);
         }
 
@@ -19,7 +19,7 @@ namespace MultiAlignCore.IO.Features
         {
             if (deleteIfExists)
             {
-                bool exists = File.Exists(path);
+                var exists = File.Exists(path);
                 if (exists)
                 {
                     File.Delete(path);
@@ -43,7 +43,7 @@ namespace MultiAlignCore.IO.Features
             IMassTagMatchDAO            massTagMatchCache       = new MassTagMatchDAO();
             ISequenceToMsnFeatureDAO    sequenceMap             = new SequenceToMsnDAOHibernate();
 
-            FeatureDataAccessProviders providers =
+            var providers =
                                             new FeatureDataAccessProviders(featureCache, 
                                                                             clusterCache,
                                                                             msFeatureCache,

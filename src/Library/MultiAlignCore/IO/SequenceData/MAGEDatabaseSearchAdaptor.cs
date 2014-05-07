@@ -1,25 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Mage;
-using MultiAlignCore.Data;
-using MultiAlignCore.Data.Factors;
-using MultiAlignCore.IO.Features;
-using MultiAlignCore.IO.InputFiles;
+using PNNLOmics.Algorithms;
 
 namespace MultiAlignCore.IO.SequenceData
 {
     /// <summary>
     /// Adapter to the MAGE file library.
     /// </summary>
-    public class MAGEDatabaseSearchAdaptor: PNNLOmics.Algorithms.IProgressNotifer
+    public class MAGEDatabaseSearchAdaptor: IProgressNotifer
     {
         private void UpdateStatus(string message)
         {
             if (Progress != null)
             {
-                Progress(this, new PNNLOmics.Algorithms.ProgressNotifierArgs(message));
+                Progress(this, new ProgressNotifierArgs(message));
             }
         }
 
@@ -32,7 +26,7 @@ namespace MultiAlignCore.IO.SequenceData
             {
                 UpdateStatus("First Hit File MAGE Sink created. ");
 
-                SequestFirstHitSink sequest = new SequestFirstHitSink(databaseSequenceCache);
+                var sequest = new SequestFirstHitSink(databaseSequenceCache);
                 sequest.DatasetID           = datasetID;
                 sink                        = sequest;                
             }
@@ -41,12 +35,12 @@ namespace MultiAlignCore.IO.SequenceData
                 UpdateStatus("File type is not supported for this kind of sequence data. ");
                 return;
             }
-            using (DelimitedFileReader reader = new DelimitedFileReader())
+            using (var reader = new DelimitedFileReader())
             {
                 reader.Delimiter = "\t";
                 reader.FilePath  = path;
 
-                ProcessingPipeline pipeline = ProcessingPipeline.Assemble("PlainFactors", reader, sink);
+                var pipeline = ProcessingPipeline.Assemble("PlainFactors", reader, sink);
                 pipeline.RunRoot(null);
                 sink.CommitChanges();
             }                                     
@@ -54,7 +48,7 @@ namespace MultiAlignCore.IO.SequenceData
 
         #region IProgressNotifer Members
 
-        public event EventHandler<PNNLOmics.Algorithms.ProgressNotifierArgs> Progress;
+        public event EventHandler<ProgressNotifierArgs> Progress;
 
         #endregion
     }

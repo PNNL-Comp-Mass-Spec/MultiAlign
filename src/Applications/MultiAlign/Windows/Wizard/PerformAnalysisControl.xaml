@@ -54,8 +54,7 @@
                 Header="Name"
                 IsSelected="{Binding Path=CurrentStep, Converter={StaticResource ResourceKey=Naming}}">
                 <wizardViews:AnalysisNaming
-                    DataContext="{Binding Path=AnalysisNamingViewModel}"
-                    ></wizardViews:AnalysisNaming>
+                    DataContext="{Binding Path=AnalysisNamingViewModel}" />
             </TabItem>
         </TabControl>
 

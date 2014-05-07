@@ -1,18 +1,19 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using OxyPlot;
 using OxyPlot.Annotations;
 using OxyPlot.Axes;
 using OxyPlot.Series;
 using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
-using System;
-using System.Collections.Generic;
+using PNNLOmicsViz.Drawing;
 
 namespace MultiAlign.ViewModels.Charting
 {
-    public class MsFeatureSpectraViewModel : PlotModelBase
+    public sealed class MsFeatureSpectraViewModel : PlotModelBase
     {
-        private LinearAxis m_mzAxis;
+        private readonly LinearAxis m_mzAxis;
 
         public MsFeatureSpectraViewModel(MSFeatureLight feature, IEnumerable<XYData> spectrum, string name)            
             : base(name)
@@ -128,7 +129,7 @@ namespace MultiAlign.ViewModels.Charting
                     TextColor = alphaColor,
                     TextHorizontalAlignment = HorizontalAlignment.Center,
                     TextVerticalAlignment =  VerticalAlignment.Top,
-                    TextPosition = .5,
+                    TextPosition = new DataPoint(.5, 0),
                     MinimumX = lastMz,
                     MaximumX = mz,
                     Text=string.Format("d={0}", spacing.ToString("F2")),
@@ -146,7 +147,7 @@ namespace MultiAlign.ViewModels.Charting
                 var features = feature.ParentFeature.Features;
                 foreach (var subFeature in features)
                 {
-                    var msms = subFeature.MSnSpectra.Where(x => x.PrecursorMZ > minimumMz && x.PrecursorMZ < maximumMz);
+                    var msms = subFeature.MSnSpectra.Where(x => x.PrecursorMz > minimumMz && x.PrecursorMz < maximumMz);
                     foreach (var fragmentation  in msms)
                     {
 
@@ -157,10 +158,10 @@ namespace MultiAlign.ViewModels.Charting
                             TextColor   = OxyColors.Gray,                                              
                             FontWeight = 3,
                             TextVerticalAlignment = VerticalAlignment.Top,
-                            TextPosition = 1,
+                            TextPosition = new DataPoint(1, 0),
                             StrokeThickness = 2,                            
-                            Text = string.Format("msms {0} - scan {1}", fragmentation.PrecursorMZ.ToString("F2"), fragmentation.Scan),
-                            X    = fragmentation.PrecursorMZ 
+                            Text = string.Format("msms {0} - scan {1}", fragmentation.PrecursorMz.ToString("F2"), fragmentation.Scan),
+                            X    = fragmentation.PrecursorMz 
                         };
                         Model.Annotations.Add(spaceAnnotation);
 
@@ -172,12 +173,13 @@ namespace MultiAlign.ViewModels.Charting
                             TextColor               = OxyColors.LightGray,
                             FontWeight              = 3,
                             TextVerticalAlignment   = VerticalAlignment.Top,
-                            TextPosition            = 1,
+
+                            TextPosition = new DataPoint(1, 0),
                             StrokeThickness         = 2,
                             Y                       = maxAbundanceTop,
                             Text                    = string.Format("{0} m/z", MsmsDistanceLower.ToString("F2")),
-                            MinimumX                = fragmentation.PrecursorMZ - MsmsDistanceLower,                            
-                            MaximumX                = fragmentation.PrecursorMZ
+                            MinimumX                = fragmentation.PrecursorMz - MsmsDistanceLower,                            
+                            MaximumX                = fragmentation.PrecursorMz
                         };
 
                         var upperMz = new LineAnnotation
@@ -187,12 +189,13 @@ namespace MultiAlign.ViewModels.Charting
                             TextColor               = OxyColors.LightGray,
                             FontWeight              = 3,
                             TextVerticalAlignment   = VerticalAlignment.Top,
-                            TextPosition            = 1,
+
+                            TextPosition = new DataPoint(1, 0),
                             StrokeThickness         = 2,
                             Text                    = string.Format("{0} m/z", MsmsDistanceUpper.ToString("F2")),
                             Y                       = maxAbundanceTop,
-                            MinimumX                = fragmentation.PrecursorMZ,
-                            MaximumX                = fragmentation.PrecursorMZ + MsmsDistanceUpper
+                            MinimumX                = fragmentation.PrecursorMz,
+                            MaximumX                = fragmentation.PrecursorMz + MsmsDistanceUpper
                         };
                         Model.Annotations.Add(spaceAnnotation);
                         Model.Annotations.Add(upperMz);

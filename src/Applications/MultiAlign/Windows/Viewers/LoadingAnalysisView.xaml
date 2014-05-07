@@ -21,34 +21,26 @@
         <Image
             Width="24" Grid.Row="1"
             VerticalAlignment="Center"
-            HorizontalAlignment="Center" Source="/MultiAlign;component/Resources/molecule.png" Margin="36,4,36,0">
-
-        </Image>
+            HorizontalAlignment="Center" Source="/MultiAlign;component/Resources/molecule.png" Margin="36,4,36,0" />
         <Image
             Width="28"
             Grid.Row="1"
             Grid.Column="1"
             VerticalAlignment="Center"
-            HorizontalAlignment="Center" Source="/MultiAlign;component/Resources/MainIcon.png">
-
-        </Image>
+            HorizontalAlignment="Center" Source="/MultiAlign;component/Resources/MainIcon.png" />
         <Image
             
             Grid.Row="1"
             Height="32"
             Grid.Column="2"
             VerticalAlignment="Center"
-            HorizontalAlignment="Center" Source="/MultiAlign;component/Resources/AlignmentIcon.png">
-
-        </Image>
+            HorizontalAlignment="Center" Source="/MultiAlign;component/Resources/AlignmentIcon.png" />
         <Image
             Height="48"
             Grid.Row="1"
             Grid.Column="3"
             VerticalAlignment="Center"            
-            HorizontalAlignment="Center" Source="/MultiAlign;component/Resources/tag-32.png">
-
-        </Image>
+            HorizontalAlignment="Center" Source="/MultiAlign;component/Resources/tag-32.png" />
         <Label     
             FontSize="32"
             FontWeight="Bold"

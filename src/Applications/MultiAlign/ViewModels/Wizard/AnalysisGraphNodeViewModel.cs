@@ -1,6 +1,6 @@
 ﻿using System;
-using MultiAlignCore.Algorithms;
 using MultiAlign.Data;
+using MultiAlignCore.Algorithms;
 
 namespace MultiAlign.ViewModels.Wizard
 {

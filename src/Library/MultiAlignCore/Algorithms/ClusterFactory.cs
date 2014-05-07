@@ -1,4 +1,3 @@
-using MultiAlignCore.Algorithms.Clustering;
 using PNNLOmics.Algorithms.FeatureClustering;
 using PNNLOmics.Data.Features;
 

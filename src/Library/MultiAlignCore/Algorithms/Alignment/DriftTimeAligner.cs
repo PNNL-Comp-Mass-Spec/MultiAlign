@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using PNNLOmics.Algorithms;
 using PNNLOmics.Algorithms.Alignment;
 using PNNLOmics.Data.Features;
-using PNNLOmics.Algorithms;
 
 namespace MultiAlignCore.Algorithms.Alignment
 {
@@ -34,87 +34,90 @@ namespace MultiAlignCore.Algorithms.Alignment
         /// <param name="features"></param>
         /// <param name="baselineFeatures"></param>
         /// <param name="options"></param>
-        public KeyValuePair<DriftTimeAlignmentResults<UMC, UMC>, DriftTimeAlignmentResults<UMC, UMC>>
+        public KeyValuePair<DriftTimeAlignmentResults<UMCLight, UMCLight>, DriftTimeAlignmentResults<UMCLight, UMCLight>>
             AlignDriftTimes(List<UMCLight> features, List<UMCLight> baselineFeatures, DriftTimeAlignmentOptions options)
         {
             UpdateStatus("Correcting drift times.");
-            List<UMC> baselineUMCs = new List<UMC>();
-            List<UMC> aligneeUMCs = new List<UMC>();
+            var baselineUmCs = new List<UMCLight>();
+            var aligneeUmCs = new List<UMCLight>();
 
             UpdateStatus("Mapping data structures.");
-            Dictionary<int, UMCLight> featureIDMap = new Dictionary<int, UMCLight>();
+            var featureIdMap = new Dictionary<int, UMCLight>();
 
-            foreach (UMCLight feature in features)
+            foreach (var feature in features)
             {
-                UMC umc                     = new UMC();
-                umc.MassMonoisotopicAligned = feature.MassMonoisotopicAligned;
-                umc.NETAligned              = feature.NETAligned;
-                umc.DriftTime               = Convert.ToSingle(feature.DriftTime);
-                umc.ID                      = feature.ID;
-                umc.ChargeState             = feature.ChargeState;
-                aligneeUMCs.Add(umc);
+                var umc                     = new UMCLight
+                {
+                    MassMonoisotopicAligned = feature.MassMonoisotopicAligned,
+                    NetAligned = feature.NetAligned,
+                    DriftTime = Convert.ToSingle(feature.DriftTime),
+                    Id = feature.Id,
+                    ChargeState = feature.ChargeState
+                };
+                aligneeUmCs.Add(umc);
 
-                featureIDMap.Add(feature.ID, feature);
+                featureIdMap.Add(feature.Id, feature);
             }
 
-            foreach (UMCLight feature in baselineFeatures)
+            foreach (var feature in baselineFeatures)
             {
-                UMC umc = new UMC();
-                umc.MassMonoisotopicAligned = feature.MassMonoisotopicAligned;
-                umc.NETAligned = feature.NET;
-                umc.DriftTime = Convert.ToSingle(feature.DriftTime);
-                umc.ID = feature.ID;
-                umc.ChargeState = feature.ChargeState;
-                baselineUMCs.Add(umc);
+                var umc = new UMCLight
+                {
+                    MassMonoisotopicAligned = feature.MassMonoisotopicAligned,
+                    NetAligned = feature.Net,
+                    DriftTime = Convert.ToSingle(feature.DriftTime),
+                    Id = feature.Id,
+                    ChargeState = feature.ChargeState
+                };
+                baselineUmCs.Add(umc);
             }
 
             // filter based on charge state.                  
-            int chargeMax = options.MaxChargeState;
-            int chargeMin = options.MinChargeState;
+            var chargeMax = options.MaxChargeState;
+            var chargeMin = options.MinChargeState;
 
             UpdateStatus(string.Format("Filtering Features Min Charge: {0} <= charge <= Max Charge {1}", chargeMin, chargeMax));
-            var filteredQuery = from feature in aligneeUMCs
+            var filteredQuery = from feature in aligneeUmCs
                                 where feature.ChargeState <= chargeMax && feature.ChargeState >= chargeMin
                                 select feature;
-            List<UMC> filteredUMCs = filteredQuery.ToList();
+            var filteredUmCs = filteredQuery.ToList();
 
             UpdateStatus("Finding Aligned Matches and correcting drift times.");
-            DriftTimeAlignmentResults<UMC, UMC> alignedResults =
-                            DriftTimeAlignment<UMC, UMC>.AlignObservedEnumerable(aligneeUMCs,
-                                                                                filteredUMCs,
-                                                                                baselineUMCs,
+            var alignedResults =
+                            DriftTimeAlignment<UMCLight, UMCLight>.AlignObservedEnumerable(aligneeUmCs,
+                                                                                filteredUmCs,
+                                                                                baselineUmCs,
                                                                                 options.MassPPMTolerance,
                                                                                 options.NETTolerance);
 
 
-            DriftTimeAlignmentResults<UMC, UMC> offsetResults = null;
+            DriftTimeAlignmentResults<UMCLight, UMCLight> offsetResults = null;
             if (options.ShouldPerformOffset)
             {
                 UpdateStatus("Adjusting drift time offsets.");
-                List<UMC> aligneeData = aligneeUMCs;
+                var aligneeData = aligneeUmCs;
                 if (!options.ShouldUseAllObservationsForOffsetCalculation)
                 {
                     UpdateStatus("Using only filtered matches for offset correction.");
-                    aligneeData = filteredUMCs;
+                    aligneeData = filteredUmCs;
                 }
                 else
                 {
                     UpdateStatus("Using all feature matches for offset correction.");
                 }
-                offsetResults = DriftTimeAlignment<UMC, UMC>.CorrectForOffset(aligneeData, baselineUMCs, options.MassPPMTolerance, options.NETTolerance, options.DriftTimeTolerance);
+                offsetResults = DriftTimeAlignment<UMCLight, UMCLight>.CorrectForOffset(aligneeData, baselineUmCs, options.MassPPMTolerance, options.NETTolerance, options.DriftTimeTolerance);
             }
 
 
             UpdateStatus("Remapping data structures for persistence to database.");
 
-            foreach (UMC umc in aligneeUMCs)
+            foreach (var umc in aligneeUmCs)
             {
-                featureIDMap[umc.ID].DriftTime = umc.DriftTimeAligned;
+                featureIdMap[umc.Id].DriftTime = umc.DriftTimeAligned;
             }
 
-            KeyValuePair<DriftTimeAlignmentResults<UMC, UMC>, DriftTimeAlignmentResults<UMC, UMC>> pair =
-                            new KeyValuePair<DriftTimeAlignmentResults<UMC, UMC>, DriftTimeAlignmentResults<UMC, UMC>>(alignedResults,
-                                                                                                                       offsetResults);
+            var pair =  new KeyValuePair<DriftTimeAlignmentResults<UMCLight, UMCLight>, DriftTimeAlignmentResults<UMCLight, UMCLight>>(alignedResults,
+                                                                                                                                offsetResults);
             return pair;
         }
 

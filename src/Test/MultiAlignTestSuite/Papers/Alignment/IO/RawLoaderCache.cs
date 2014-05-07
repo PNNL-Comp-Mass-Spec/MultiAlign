@@ -1,6 +1,6 @@
-﻿using PNNLOmics.Data;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using PNNLOmics.Data;
 
 namespace MultiAlignTestSuite.Papers.Alignment.IO
 {

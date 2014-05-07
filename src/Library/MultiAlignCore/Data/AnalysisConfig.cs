@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Threading;
+using MultiAlignCore.Algorithms;
+using MultiAlignCore.IO;
+using MultiAlignCore.IO.Clusters;
 using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.Reports;
-using MultiAlignCore.IO;
-using MultiAlignCore.Algorithms;
-using System.Windows;
-using System.ComponentModel;
 
 namespace MultiAlignCore.Data
 {

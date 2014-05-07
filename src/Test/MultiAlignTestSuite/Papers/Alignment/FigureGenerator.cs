@@ -1,4 +1,9 @@
-﻿using MultiAlignCore.IO.Features;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Windows.Forms;
+using MultiAlignCore.IO.Features;
 using MultiAlignTestSuite.Papers.Alignment.IO;
 using NUnit.Framework;
 using OxyPlot;
@@ -13,11 +18,6 @@ using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Utilities;
 using PNNLOmicsIO.IO;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Windows.Forms;
 
 namespace MultiAlignTestSuite.Papers.Alignment
 {
@@ -30,11 +30,8 @@ namespace MultiAlignTestSuite.Papers.Alignment
         [SetUp]
         public void SetupFigureTests()
         {
-            m_basePath = @"M:\data\proteomics\Papers\AlignmentPaper\data\Shewanella\ConstantPressure\TechReplicates-00";
             AlignmentAnalysisWriterFactory.BasePath = @"M:\doc\papers\paperAlignment\Data\figure1";
         }
-
-        private string m_basePath;
 
         internal class PathCache
         {
@@ -70,7 +67,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
             plotModel1.Axes.Add(linearAxis1);
 
             var xseries = new StemSeries();
-            for (int j = 0; j < peaksY.Count; j++)
+            for (var j = 0; j < peaksY.Count; j++)
             {
                 var peakX = peaksX[j];
                 var peakY = peaksY[j];
@@ -157,8 +154,8 @@ namespace MultiAlignTestSuite.Papers.Alignment
                 cv += dt;
             }
 
-            IList<double> newYValues = interpolator.Smooth(xValues, yValues, fitFunction);
-            for (int i = 0; i < xValues.Count; i++)
+            var newYValues = interpolator.Smooth(xValues, yValues, fitFunction);
+            for (var i = 0; i < xValues.Count; i++)
             {
                 Console.WriteLine(@"{0}	{1}	{2}	{3}", i, xValues[i], yValues[i], newYValues[i]);
             }
@@ -171,7 +168,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
             // Take one period of the sine wave...
             while (cv < Math.PI * 3)
             {
-                double predicted = interpolator.Predict(cv);
+                var predicted = interpolator.Predict(cv);
                 Console.WriteLine(@"{0}	{1}", cv, predicted);
                 cv += dt;
             }
@@ -256,16 +253,16 @@ namespace MultiAlignTestSuite.Papers.Alignment
 
             Console.WriteLine(@"Data: {0}", data.Count);
 
-            for (int i = 0; i < data.Count; i++)
+            for (var i = 0; i < data.Count; i++)
             {
-                PathCache cachex = data[i];
+                var cachex = data[i];
                 // Get the raw path stored in the cache file...
                 // then get the dataset object 
-                string rawPathX = ScanSummaryCache.ReadPath(cachex.Cache);
+                var rawPathX = ScanSummaryCache.ReadPath(cachex.Cache);
                 var datasetX = new AlignmentDataset(rawPathX, "", cachex.Msgf);
 
                 // create a raw file reader for the datasets
-                using (ISpectraProvider readerX = RawLoaderFactory.CreateFileReader(datasetX.RawFile))
+                using (var readerX = RawLoaderFactory.CreateFileReader(datasetX.RawFile))
                 {
                     // wrap it in the cached object so we can load scan meta-data
                     var cacheReaderX = new RawLoaderCache(readerX);
@@ -274,9 +271,9 @@ namespace MultiAlignTestSuite.Papers.Alignment
                     readerX.AddDataFile(rawPathX, 0);
                     cacheReaderX.AddCache(0, cacheDataX);
 
-                    for (int j = i + 1; j < data.Count; j++)
+                    for (var j = i + 1; j < data.Count; j++)
                     {
-                        PathCache cachey = data[j];
+                        var cachey = data[j];
                         // Get the raw path stored in the cache file...
                         // then get the dataset object 
                         var rawPathY = ScanSummaryCache.ReadPath(cachey.Cache);
@@ -367,8 +364,8 @@ namespace MultiAlignTestSuite.Papers.Alignment
 
             Console.WriteLine(@"Post-Pre Tests For {0}", directory);
 
-            string[] cacheFiles = Directory.GetFiles(directory, "*.mscache");
-            string[] msgfFiles = Directory.GetFiles(directory, "*_msgfdb_fht.txt");
+            var cacheFiles = Directory.GetFiles(directory, "*.mscache");
+            var msgfFiles = Directory.GetFiles(directory, "*_msgfdb_fht.txt");
 
             Console.WriteLine(@"Building data cache");
             var map = cacheFiles.ToDictionary<string, string, PathCache>(path => path.ToLower(), path => null);
@@ -397,10 +394,10 @@ namespace MultiAlignTestSuite.Papers.Alignment
 
             Console.WriteLine(@"{0}", data.Count);
 
-            int comparison = 0;
-            for (int i = 0; i < data.Count; i++)
+            var comparison = 0;
+            for (var i = 0; i < data.Count; i++)
             {
-                PathCache cachex = data[i];
+                var cachex = data[i];
                 // Get the raw path stored in the cache file...
                 // then get the dataset object 
                 var rawPathX = ScanSummaryCache.ReadPath(cachex.Cache);
@@ -416,7 +413,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
                     readerX.AddDataFile(rawPathX, 0);
                     cacheReaderX.AddCache(0, cacheDataX);
 
-                    for (int j = i + 1; j < data.Count; j++)
+                    for (var j = i + 1; j < data.Count; j++)
                     {
                         // Then the writer for creating a report
                         var writer =
@@ -591,7 +588,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
                                       peptidesY,
                                       options);
 
-            var analysis = new SpectralAnalysis()
+            var analysis = new SpectralAnalysis
             {
                 DatasetNames    = names,
                 Matches         = matches,
@@ -710,7 +707,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
             }
 
             Func<double, double, double> netFunc = (x, y) => x - y;
-            Func<double, double, double> massFunc = Feature.ComputeMassPPMDifference;
+            Func<double, double, double> massFunc = FeatureLight.ComputeMassPPMDifference;
             InterpolateDimension("NET-R1", writer,  netXvalues,  netYvalues,  anchorPoints, netFunc);
 
 
@@ -803,7 +800,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
                 MatchCountHistogramBuilder.CreateResidualHistogram(-.5, .5, .01, post);
 
             writer.WriteLine("Value\t False Matches\t True Matches");
-            for (int index = 0; index < preHist.Bins.Count; index++)
+            for (var index = 0; index < preHist.Bins.Count; index++)
             {
                 var preValue = preHist.Bins[index];
                 writer.WriteLine(string.Format("{0}\t{1}\t{2}",

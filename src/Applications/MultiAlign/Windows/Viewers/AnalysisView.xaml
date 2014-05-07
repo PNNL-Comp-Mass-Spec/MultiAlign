@@ -7,13 +7,14 @@
              xmlns:spectraViews="clr-namespace:MultiAlign.Windows.Viewers.Spectra"
              xmlns:viewerViews="clr-namespace:MultiAlign.Windows.Viewers"
              xmlns:converters="clr-namespace:MultiAlign.Converters"          
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"                  
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:oxy="http://oxyplot.codeplex.com"
              mc:Ignorable="d" 
              d:DesignHeight="616" d:DesignWidth="1100">    
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition></RowDefinition>
-            <RowDefinition Height="32"></RowDefinition>
+            <RowDefinition />
+            <RowDefinition Height="32" />
         </Grid.RowDefinitions>
         <Grid>        
             <Grid.ColumnDefinitions>
@@ -49,12 +50,10 @@
                     Header="All Clusters">
                     <Grid>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="*"></RowDefinition>
-                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        <ContentControl                                     
-                            Grid.Row="0"
-                            Margin="5" Content="{Binding ClusterChart}"/>
+                        <oxy:Plot Model="{Binding ClustersPlotModel.Model}"/>
                         <Button 
                             Grid.Row="1"
                             Margin="5"

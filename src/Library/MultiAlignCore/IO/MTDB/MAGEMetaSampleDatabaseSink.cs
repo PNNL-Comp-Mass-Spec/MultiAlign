@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Mage;
-using MultiAlignCore.Data.MassTags;
 using PNNLOmics.Data.MassTags;
 
 namespace MultiAlignCore.IO.MTDB
@@ -11,12 +10,11 @@ namespace MultiAlignCore.IO.MTDB
         /// <summary>
         /// Maps a column 
         /// </summary>
-        private Dictionary<string, int> m_columnMapping;
+        private readonly Dictionary<string, int> m_columnMapping;
 
         /// <summary>
         /// Constructor.
         /// </summary>
-        /// <param name="datasets">Datasets to store data about.</param>
         public MAGEMetaSampleDatabaseSink()
         {
             MassTags        = new List<MassTagLight>();
@@ -31,9 +29,9 @@ namespace MultiAlignCore.IO.MTDB
         {
             m_columnMapping.Clear();
 
-            for(int i = 0; i < args.ColumnDefs.Count; i++)                
+            for(var i = 0; i < args.ColumnDefs.Count; i++)                
             {
-                MageColumnDef def = args.ColumnDefs[i];
+                var def = args.ColumnDefs[i];
                 m_columnMapping.Add(def.Name.Trim(), i);
             }
             // ignore the column definitions.
@@ -63,7 +61,7 @@ namespace MultiAlignCore.IO.MTDB
                 throw new ArgumentException("The number of columns for the mass tags are invalid.");
             }
 
-            MassTagLight tag = new MassTagLight();
+            var tag = new MassTagLight();
 
             if (m_columnMapping.ContainsKey("Mass"))
             {
@@ -76,8 +74,8 @@ namespace MultiAlignCore.IO.MTDB
 
             if (m_columnMapping.ContainsKey("NET"))
             {
-                tag.NETAverage  = Convert.ToDouble(args.Fields[m_columnMapping["NET"]]);
-                tag.NET         = tag.NETAverage;                
+                tag.NetAverage  = Convert.ToDouble(args.Fields[m_columnMapping["NET"]]);
+                tag.Net         = tag.NetAverage;                
             }
             else
             {
@@ -94,7 +92,7 @@ namespace MultiAlignCore.IO.MTDB
 
             if (m_columnMapping.ContainsKey("Cluster_ID"))
             {
-                tag.ID = Convert.ToInt32(args.Fields[m_columnMapping["Cluster_ID"]]);
+                tag.Id = Convert.ToInt32(args.Fields[m_columnMapping["Cluster_ID"]]);
             }
             else
             {

@@ -1,27 +1,20 @@
-﻿using System.Linq;
-using MultiAlign.IO;
+﻿using MultiAlign.IO;
 using MultiAlign.ViewModels.Charting;
 using MultiAlign.ViewModels.Features;
 using MultiAlign.ViewModels.TreeView;
-using MultiAlignCore.Data;
 using MultiAlignCore.Data.Features;
-using MultiAlignCore.Data.MetaData;
-using MultiAlignCore.Extensions;
 using MultiAlignCore.IO.Features;
-using MultiAlignCustomControls.Charting;
-using MultiAlignCustomControls.Extensions;
-using PNNLControls;
 using PNNLOmics.Algorithms;
+using PNNLOmics.Annotations;
 using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Extensions;
+using PNNLOmicsViz.Drawing;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Drawing;
-using System.Windows.Forms.Integration;
+using System.Linq;
 using System.Windows.Input;
-
 
 namespace MultiAlign.ViewModels.Viewers
 {
@@ -31,8 +24,6 @@ namespace MultiAlign.ViewModels.Viewers
     public class ClusterDetailViewModel: ViewModelBase
     {
         private ChargeStateViewModel    m_charge;
-        private readonly WindowsFormsHost m_clusterChartHost;
-        private readonly WindowsFormsHost m_driftChartHost;
         private UMCTreeViewModel        m_selectedFeature;
         private UMCClusterTreeViewModel m_clusterViewModel;
 
@@ -41,8 +32,6 @@ namespace MultiAlign.ViewModels.Viewers
         private int m_maxScan;
         private Dictionary<int, List<MSFeatureLight>> m_scanMaps;
 
-        readonly SingleClusterChart m_clusterChart;
-        readonly SingleClusterChart m_driftChart;
         private bool m_usesDriftTime;
 
 
@@ -65,61 +54,21 @@ namespace MultiAlign.ViewModels.Viewers
                 RetentionTime = .03
             };
 
-
-            m_clusterChart                  = new SingleClusterChart
-            {
-                TitleVisible = false,
-                XAxisShortHand = "NET",
-                YAxisShortHand = "ppm",
-                LegendVisible = false
-            };
-            m_clusterChartHost              = new WindowsFormsHost{ Child = m_clusterChart };
-
-            m_driftChart                    = new SingleClusterChart
-            {
-                TitleVisible = false,
-                XAxisShortHand = "ms",
-                YAxisShortHand = "ppm",
-                XAxisLabel = "Drift Time (ms)",
-                LegendVisible = false
-            };
-            m_driftChartHost                = new WindowsFormsHost{ Child = m_driftChart };
-
-
-            m_clusterChart.ViewPortChanged  += (m_clusterChart_ViewPortChanged);
-            m_driftChart.ViewPortChanged    += (m_driftChart_ViewPortChanged);
-
+                                    
             Features                        = new ObservableCollection<UMCTreeViewModel>();            
         }
 
-        #region Windows Form Base
-        public WindowsFormsHost DriftChartHost
-        {
-            get
-            {
-                return m_driftChartHost;
-            }
-        }
-        public WindowsFormsHost ClusterChartHost
-        {
-            get
-            {
-                return m_clusterChartHost;
-            }
-        }
-        #endregion
-
+        [UsedImplicitly]
         public PlotModelBase XicModel
         {
             get { return m_model; }
             set
             {
-                m_model = value;
-                
+                m_model = value;                
                 OnPropertyChanged("XicModel");
             }
         }
-
+        [UsedImplicitly]
         public UmcClusterChargeHistogram ChargeHistogramModel
         {
             get
@@ -135,7 +84,7 @@ namespace MultiAlign.ViewModels.Viewers
 
         /// <summary>
         /// Gets or sets the current cluster.
-        /// </summary>
+        /// </summary>        
         public UMCClusterLight Cluster { get; set; }
 
         public UMCTreeViewModel SelectedFeature
@@ -156,6 +105,7 @@ namespace MultiAlign.ViewModels.Viewers
                 }
             }
         }
+
         #region Properties
         public string SelectedFeatureName
         {
@@ -226,7 +176,6 @@ namespace MultiAlign.ViewModels.Viewers
         }
         #endregion   
 
-        public RectangleF Viewport { get; set; }
 
         public MSSpectra SelectedSpectrum { get; set; }
 
@@ -236,7 +185,7 @@ namespace MultiAlign.ViewModels.Viewers
             if (feature == null)
                 return;
 
-            DatasetInformation info = SingletonDataProviders.GetDatasetInformation(feature.GroupID);
+            var info = SingletonDataProviders.GetDatasetInformation(feature.GroupId);
 
             if (info != null)
             {
@@ -258,40 +207,13 @@ namespace MultiAlign.ViewModels.Viewers
                 LoadSpectrum(best);
             }
         }
-
-        #region Chart Event Handlers
-
-        #region Viewport synching
-        void m_driftChart_ViewPortChanged(ctlChartBase chart, ViewPortChangedEventArgs args)
-        {
-            RectangleF otherView = args.ViewPort;
-            var newViewport = new RectangleF(m_clusterChart.ViewPort.X,
-                                                            otherView.Y,
-                                                            m_clusterChart.ViewPort.Width,
-                                                            otherView.Height);
-            m_clusterChart.ViewPort = newViewport;
-
-            Viewport = m_clusterChart.ViewPort;
-        }
-        void m_clusterChart_ViewPortChanged(ctlChartBase chart, ViewPortChangedEventArgs args)
-        {
-            RectangleF otherView = args.ViewPort;
-
-            var newViewport = new RectangleF(m_driftChart.ViewPort.X,
-                                                            otherView.Y,
-                                                            m_driftChart.ViewPort.Width,
-                                                            otherView.Height);
-            m_driftChart.ViewPort = newViewport;
-
-            Viewport = m_clusterChart.ViewPort;
-        }        
-        #endregion
-        #endregion
-
+        
         private string m_selectedFeatureName;
         private PlotModelBase m_model;
         private PlotModelBase m_parentSpectrumViewModel;
         private UmcClusterChargeHistogram m_chargeStateHistogramModel;
+        private PlotBase m_clusterDriftModel;
+        private PlotBase m_clusterMassModel;
 
 
         public PlotModelBase ParentSpectrumViewModel
@@ -323,8 +245,8 @@ namespace MultiAlign.ViewModels.Viewers
             foreach (var charge in m_scanMaps.Keys)
             {
                 double mz           = 0;
-                int  minScan        = int.MaxValue;
-                int  maxScan        = int.MinValue;
+                var  minScan        = int.MaxValue;
+                var  maxScan        = int.MinValue;
                 long maxIntensity   = 0;
 
                 foreach (var msFeature in m_scanMaps[charge])
@@ -451,7 +373,7 @@ namespace MultiAlign.ViewModels.Viewers
         #region Spectrum Loading                
         private void LoadSpectrum(MSFeatureLight msFeature)
         {
-            var info = SingletonDataProviders.GetDatasetInformation(msFeature.GroupID);
+            var info = SingletonDataProviders.GetDatasetInformation(msFeature.GroupId);
             if (info == null || info.Raw == null || info.RawPath == null) return;
             
             var mz       = msFeature.Mz;  
@@ -470,7 +392,7 @@ namespace MultiAlign.ViewModels.Viewers
             var name = string.Format("Scan {0} Charge {1} Dataset {2}",
                                                     msFeature.Scan,
                                                     msFeature.ChargeState,
-                                                    msFeature.GroupID
+                                                    msFeature.GroupId
                                                     );
             
            var msFeatureSpectra = new MsFeatureSpectraViewModel(msFeature, spectrum, name);
@@ -505,68 +427,61 @@ namespace MultiAlign.ViewModels.Viewers
         /// Updates the plots with data stored in the cache.  
         /// </summary>
         private void UpdatePlotsWithClusterData(UMCClusterLightMatched matchedCluster)
-        {
-            // Clear the charta
-            m_clusterChart.ClearData();
-            m_driftChart.ClearData();
+        {            
+            //TODO: Make this select mass!
+            ClusterMassPlot = ScatterPlotFactory.CreateFeatureMassScatterPlot(matchedCluster.Cluster.Features);
+
+            //TODO: Make this select drift time!
+            ClusterDriftPlot = ScatterPlotFactory.CreateFeatureDriftTimeScatterPlot(matchedCluster.Cluster.Features);
 
             var cluster = matchedCluster.Cluster;
-
-            m_clusterChart.MainCluster  = matchedCluster;
-            m_driftChart.MainCluster    = matchedCluster;
-
+            
             // Then we find all the nearby clusters
             var massPpm  = ClusterTolerances.Mass;
             var net      = ClusterTolerances.RetentionTime;
-            var minMass  = Feature.ComputeDaDifferenceFromPPM(cluster.MassMonoisotopic, massPpm);
-            var maxMass  = Feature.ComputeDaDifferenceFromPPM(cluster.MassMonoisotopic, -massPpm);
-            var minNet   = cluster.RetentionTime - net;
-            var maxNet   = cluster.RetentionTime + net;
+            
+
+            //TODO: Add other clusters back
+            // var minMass = FeatureLight.ComputeDaDifferenceFromPPM(cluster.MassMonoisotopic, massPpm);
+            //var maxMass = FeatureLight.ComputeDaDifferenceFromPPM(cluster.MassMonoisotopic, -massPpm);
+            //var minNet = cluster.RetentionTime - net;
+            //var maxNet = cluster.RetentionTime + net;
+ 
+            //var otherClusters
+            //    = SingletonDataProviders.Providers.ClusterCache.FindNearby(minMass, maxMass, minNet, maxNet);
+
+            //// Remove self from the list
+            //var index = otherClusters.FindIndex(x => x.Id == cluster.Id);
+
+            //if (index > -1)
+            //{
+            //    otherClusters.RemoveAt(index);
+            //}
 
 
-            List<UMCClusterLight> otherClusters
-                = SingletonDataProviders.Providers.ClusterCache.FindNearby(minMass, maxMass, minNet, maxNet);
+            //// Then find the matching clusters and map them back to previously matched (to mass tag data)
+            //var otherClusterMatches = new List<UMCClusterLightMatched>();
+            //otherClusters.ForEach(x => otherClusterMatches.Add(FeatureCacheManager<UMCClusterLightMatched>.FindById(x.Id)));
 
-            // Remove self from the list
-            int index = otherClusters.FindIndex(x => x.ID == cluster.ID);
+            //foreach (var matchedOtherCluster in otherClusterMatches)
+            //{
+            //    matchedOtherCluster.Cluster.Features.Clear();
+            //    matchedOtherCluster.Cluster.ReconstructUMCCluster(SingletonDataProviders.Providers, false, false);
+            //}
 
-            if (index > -1)
-            {
-                otherClusters.RemoveAt(index);
-            }
-
-
-            // Then find the matching clusters and map them back to previously matched (to mass tag data)
-            var otherClusterMatches = new List<UMCClusterLightMatched>();
-            otherClusters.ForEach(x => otherClusterMatches.Add(FeatureCacheManager<UMCClusterLightMatched>.FindById(x.ID)));
-
-            foreach (UMCClusterLightMatched matchedOtherCluster in otherClusterMatches)
-            {
-                matchedOtherCluster.Cluster.Features.Clear();
-                matchedOtherCluster.Cluster.ReconstructUMCCluster(SingletonDataProviders.Providers, false, false);
-            }
-
-            m_clusterChart.AddAdditionalClusters(otherClusterMatches);
-            m_driftChart.AddAdditionalClusters(otherClusterMatches);
-            m_clusterChart.UpdateCharts(true);
-            m_driftChart.UpdateCharts(true);
-
-            m_clusterChart.AdjustViewPortWithTolerances(ClusterTolerances, false);
-            m_driftChart.AdjustViewPortWithTolerances(ClusterTolerances, true);
-            Viewport = m_clusterChart.ViewPort;
 
             // Map out the MS/MS spectra.
             var msmsFeatures = new List<MSFeatureMsMs>();
-            foreach (UMCLight feature in cluster.Features)
+            foreach (var feature in cluster.Features)
             {
-                foreach (MSFeatureLight msFeature in feature.MSFeatures)
+                foreach (var msFeature in feature.MsFeatures)
                 {
                     msmsFeatures.AddRange(msFeature.MSnSpectra.Select(spectrum => new MSFeatureMsMs
                     {
-                        FeatureID = msFeature.ID, 
-                        FeatureGroupID = msFeature.GroupID,
+                        FeatureID = msFeature.Id, 
+                        FeatureGroupID = msFeature.GroupId,
                         Mz = msFeature.Mz,
-                        PrecursorMZ = spectrum.PrecursorMZ, 
+                        PrecursorMZ = spectrum.PrecursorMz, 
                         FeatureScan = msFeature.Scan, 
                         MsMsScan = spectrum.Scan, 
                         MassMonoisotopicAligned = msFeature.MassMonoisotopicAligned, 
@@ -585,6 +500,32 @@ namespace MultiAlign.ViewModels.Viewers
             features.ForEach(x  => Features.Add(new UMCTreeViewModel(x)));
             SelectedFeature     =  Features[0];
         }
+
+        public PlotBase ClusterDriftPlot
+        {
+            get { return m_clusterDriftModel; }
+            set
+            {
+                if (value == null || value == m_clusterDriftModel)
+                    return;
+
+                m_clusterDriftModel = value;
+                OnPropertyChanged("ClusterDriftPlot");
+            }
+        }
+        public PlotBase ClusterMassPlot
+        {
+            get { return m_clusterMassModel; }
+            set
+            {
+                if (value == null || value == m_clusterMassModel)
+                    return;
+
+                m_clusterMassModel = value;
+                OnPropertyChanged("ClusterMassPlot");
+            }
+        }
+
         #endregion           
     }
 }

@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
-using MultiAlignCore.Data;
 using PNNLOmics.Data.Features;
-using System.IO;
-using PNNLOmics.Data;
 
 namespace MultiAlignCore.IO
 {
@@ -14,26 +11,26 @@ namespace MultiAlignCore.IO
     /// </summary>
     public class PeptideScanWriter
     {
-        public void Write(string path, List<UMCLight> features)
+        public void Write(string path, IEnumerable<UMCLight> features)
         {
             using (TextWriter writer = File.CreateText(path))
             {
                 writer.WriteLine("Dataset, Feature_Id, MS_Feature_Id, MsMs_Feature_ID, Ms_Charge, NET, NET_Aligned, MsMs_PrecursorMz, MsMs_Scan, Peptide_Sequence, Peptide_Score");
-                int totalFragments = 0;
-                int totalPeptides = 0;
-                int totalMultipleFragments = 0;
-                int totalMultipleNonIdentified = 0;
+                var totalFragments = 0;
+                var totalPeptides = 0;
+                var totalMultipleFragments = 0;
+                var totalMultipleNonIdentified = 0;
 
-                foreach (UMCLight feature in features)
+                foreach (var feature in features)
                 {
-                    int totalFeatureFragments = 0;
-                    int totalFeatureIdentifiedFragments = 0;
+                    var totalFeatureFragments = 0;
+                    var totalFeatureIdentifiedFragments = 0;
 
-                    foreach (MSFeatureLight msFeature in feature.MSFeatures)
+                    foreach (var msFeature in feature.MsFeatures)
                     {
-                        StringBuilder builder = new StringBuilder();
+                        var builder = new StringBuilder();
 
-                        foreach (MSSpectra spectrum in msFeature.MSnSpectra)
+                        foreach (var spectrum in msFeature.MSnSpectra)
                         {
 
                             totalFeatureFragments++;
@@ -45,17 +42,17 @@ namespace MultiAlignCore.IO
                             }
 
                             builder.Append(string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8}",
-                                                                        feature.GroupID,
-                                                                        feature.ID,
-                                                                        msFeature.ID,
-                                                                        spectrum.ID,
+                                                                        feature.GroupId,
+                                                                        feature.Id,
+                                                                        msFeature.Id,
+                                                                        spectrum.Id,
                                                                         msFeature.ChargeState,
-                                                                        feature.NET,
-                                                                        feature.NETAligned,
-                                                                        spectrum.PrecursorMZ,
+                                                                        feature.Net,
+                                                                        feature.NetAligned,
+                                                                        spectrum.PrecursorMz,
                                                                         spectrum.Scan));
 
-                            foreach (Peptide peptide in spectrum.Peptides)
+                            foreach (var peptide in spectrum.Peptides)
                             {
                                 builder.Append(string.Format(",{0},{1}", peptide.Sequence,
                                                            peptide.Score));
@@ -80,7 +77,7 @@ namespace MultiAlignCore.IO
 
                 writer.WriteLine();
                 writer.WriteLine("Total Features, Total MsMs, Total Identified, Total Multiple MsMs, Total Multiple MsMs Without Ids");
-                writer.WriteLine("{0},{1},{2},{3},{4}", features.Count, totalFragments, totalPeptides, totalMultipleFragments, totalMultipleNonIdentified);
+                writer.WriteLine("{0},{1},{2},{3},{4}", features.Count(), totalFragments, totalPeptides, totalMultipleFragments, totalMultipleNonIdentified);
             }
         }
     }

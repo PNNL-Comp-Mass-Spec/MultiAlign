@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 
 namespace MultiAlignCore.Data.Factors
@@ -40,11 +39,11 @@ namespace MultiAlignCore.Data.Factors
 		{
 			get
 			{
-				return this.m_children;
+				return m_children;
 			}
 			set
 			{
-				this.m_children = value;
+				m_children = value;
 			}
 		}
 

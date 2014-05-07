@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Data;
 using MultiAlignCore.Data;
-using MultiAlignEngine.Features;
 using PNNLOmics.Data.Features;
-using System;
 
 namespace MultiAlignCore.IO.MTDB
 {

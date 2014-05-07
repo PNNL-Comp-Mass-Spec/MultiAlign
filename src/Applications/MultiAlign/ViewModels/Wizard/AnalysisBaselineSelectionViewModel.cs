@@ -1,37 +1,37 @@
-﻿using MultiAlign.Commands;
+﻿using System.Collections.ObjectModel;
+using System.Windows;
+using System.Windows.Input;
+using MultiAlign.Commands;
+using MultiAlign.ViewModels.Databases;
+using MultiAlign.ViewModels.Datasets;
 using MultiAlign.ViewModels.IO;
 using MultiAlign.Windows.Viewers.Databases;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.MassTags;
-using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO.InputFiles;
 using MultiAlignCore.IO.MTDB;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Windows;
-using System.Windows.Input;
 
 namespace MultiAlign.ViewModels.Wizard
 {
     public class AnalysisBaselineSelectionViewModel : ViewModelBase 
     {        
         DmsDatabaseServerViewModel          m_selectedDmsDatabase;
-        MultiAlignAnalysis                  m_analysis;
+        readonly MultiAlignAnalysis         m_analysis;
         private DatasetInformationViewModel m_selectedDataset;
 
         public AnalysisBaselineSelectionViewModel(MultiAlignAnalysis analysis)
         {            
-            string filter            = "Mass Tag Database (.db3)|*.db3|Direct Infusion IMS Database (.dims)|*.dims|APE Cache Database (.ape)|*.ape|All Files (*.*)|*.*";
+            var filter            = "Mass Tag Database (.db3)|*.db3|Direct Infusion IMS Database (.dims)|*.dims|All Files (*.*)|*.*";
             m_analysis               = analysis;
             
             IsDatabaseDms           = false;
             IsDatabaseLocal         = false;
             IsBaselineDataset       = true;
 
-            SetDatabaseToDms        = new BaseCommandBridge(SetDatabaseToDmsDelegate);
-            SetDatabaseToLocal      = new BaseCommandBridge(SetDatabaseToLocalDelegate);
-            SetBaselineToDatabase   = new BaseCommandBridge(SetBaselineToDatabaseDelegate);
-            SetBaselineToDataset    = new BaseCommandBridge(SetBaselineToDatasetDelegate);
+            SetDatabaseToDms        = new BaseCommand(SetDatabaseToDmsDelegate, BaseCommand.AlwaysPass);
+            SetDatabaseToLocal      = new BaseCommand(SetDatabaseToLocalDelegate, BaseCommand.AlwaysPass);
+            SetBaselineToDatabase   = new BaseCommand(SetBaselineToDatabaseDelegate, BaseCommand.AlwaysPass);
+            SetBaselineToDataset    = new BaseCommand(SetBaselineToDatasetDelegate, BaseCommand.AlwaysPass);
             FindLocalDatabase = new BrowseOpenFileCommand(x =>
             {
                 DatabaseFilePath = x;
@@ -39,8 +39,8 @@ namespace MultiAlign.ViewModels.Wizard
                 OnPropertyChanged("RequiresDatabaseSelection");
 
             }, filter);
-            FindDmsDatabase         = new BaseCommandBridge(FindDmsDatabaseDelegate);
-            ClearDatabase           = new BaseCommandBridge(ClearDatabaseDelegate);
+            FindDmsDatabase         = new BaseCommand(FindDmsDatabaseDelegate, BaseCommand.AlwaysPass);
+            ClearDatabase           = new BaseCommand(ClearDatabaseDelegate, BaseCommand.AlwaysPass);
             Datasets                = new ObservableCollection<DatasetInformationViewModel>();
             UpdateDatasets();
 
@@ -50,9 +50,9 @@ namespace MultiAlign.ViewModels.Wizard
         public void UpdateDatasets()
         {
             Datasets.Clear();
-            foreach(DatasetInformation info in m_analysis.MetaData.Datasets)
+            foreach(var info in m_analysis.MetaData.Datasets)
             {
-                DatasetInformationViewModel viewmodel = new DatasetInformationViewModel(info);
+                var viewmodel = new DatasetInformationViewModel(info);
                 Datasets.Add(viewmodel);
             }
         }
@@ -60,7 +60,7 @@ namespace MultiAlign.ViewModels.Wizard
         public StacOptionsViewModel StacOptionsViewModel { get; set; }
         public MassTagDatabaseOptionsViewModel MassTagDatabaseOptionsViewModel { get; set; }
 
-        private void ClearDatabaseDelegate(object parameter)
+        private void ClearDatabaseDelegate()
         {
             IsDatabaseDms           = false;
             IsDatabaseLocal         = false;
@@ -69,32 +69,32 @@ namespace MultiAlign.ViewModels.Wizard
             m_analysis.MetaData.Database.DatabaseFormat = MassTagDatabaseFormat.None;
             OnPropertyChanged("RequiresDatabaseSelection");
         }
-        private void SetDatabaseToDmsDelegate(object parameter)
+        private void SetDatabaseToDmsDelegate()
         {
             IsDatabaseDms   = true;
         }
-        private void SetDatabaseToLocalDelegate(object parameter)
+        private void SetDatabaseToLocalDelegate()
         {
             IsDatabaseLocal = true;
         }
-        private void SetBaselineToDatabaseDelegate(object parameter)
+        private void SetBaselineToDatabaseDelegate()
         {
             IsBaselineDatabase = true;
         }
-        private void SetBaselineToDatasetDelegate(object parameter)
+        private void SetBaselineToDatasetDelegate()
         {
             IsBaselineDataset = true;
         }
-        private void FindDmsDatabaseDelegate(object parameter)
+        private void FindDmsDatabaseDelegate()
         {
-            DatabaseSearchToolWindow dmsWindow   = new DatabaseSearchToolWindow();
-            DatabasesViewModel databaseView      = new DatabasesViewModel();
+            var dmsWindow                        = new DatabaseSearchToolWindow();
+            var databaseView                     = new DatabasesViewModel();
             dmsWindow.DataContext                = databaseView;
             dmsWindow.WindowStartupLocation      = WindowStartupLocation.CenterOwner;
-            IDatabaseServerLoader loader         = MassTagDatabaseLoaderFactory.Create(MtdbDatabaseServerType.Dms);
-            ICollection<InputDatabase> databases = loader.LoadDatabases();
+            var loader         = MassTagDatabaseLoaderFactory.Create(MtdbDatabaseServerType.Dms);
+            var databases = loader.LoadDatabases();
 
-            foreach (InputDatabase database in databases)
+            foreach (var database in databases)
             {
                 databaseView.AddDatabase(database);
             }
@@ -102,13 +102,13 @@ namespace MultiAlign.ViewModels.Wizard
             if (SelectedDatabaseServer != null)
                 databaseView.SelectedDatabase = SelectedDatabaseServer;
 
-            bool? result = dmsWindow.ShowDialog();
+            var result = dmsWindow.ShowDialog();
             if (result == true)
             {
                 if (databaseView.SelectedDatabase != null)
                 {
                     SelectedDatabaseServer          = databaseView.SelectedDatabase;
-                    InputDatabase database          = SelectedDatabaseServer.Database;
+                    var database          = SelectedDatabaseServer.Database;
                     database.DatabaseName           = database.DatabaseName;
                     database.DatabaseServer         = database.DatabaseServer;
                     m_analysis.MetaData.Database    = database;
@@ -177,7 +177,7 @@ namespace MultiAlign.ViewModels.Wizard
                 if (m_analysis.Options.AlignmentOptions.IsAlignmentBaselineAMasstagDB != value)
                 {
                     m_analysis.Options.AlignmentOptions.IsAlignmentBaselineAMasstagDB = value;
-                    if (value == true)
+                    if (value)
                     {
                         SelectedDataset = null;
                     }
@@ -246,22 +246,21 @@ namespace MultiAlign.ViewModels.Wizard
         {
             get
             {                
-                return (m_analysis.MetaData.Database.DatabaseFormat != MassTagDatabaseFormat.SQL);
+                return (m_analysis.MetaData.Database.DatabaseFormat != MassTagDatabaseFormat.MassTagSystemSql);
             }
             set
             {                
-                MassTagDatabaseFormat format = m_analysis.MetaData.Database.DatabaseFormat;
+                var format = m_analysis.MetaData.Database.DatabaseFormat;
 
-                bool isLocal = (format != MassTagDatabaseFormat.SQL && format != MassTagDatabaseFormat.None);
+                var isLocal = (format != MassTagDatabaseFormat.MassTagSystemSql && format != MassTagDatabaseFormat.None);
                 if (isLocal != value)
                 {
                     // If we are being told not to set it to be local...we change...
                     if (!value)
-                        m_analysis.MetaData.Database.DatabaseFormat = MassTagDatabaseFormat.SQL;
+                        m_analysis.MetaData.Database.DatabaseFormat = MassTagDatabaseFormat.MassTagSystemSql;
                     else
                         m_analysis.MetaData.Database.DatabaseFormat = MassTagDatabaseFormat.Sqlite;
 
-                    OnPropertyChanged("IsDatabaseLocal");
                     OnPropertyChanged("IsDatabaseLocal");
                 }
             }
@@ -272,17 +271,17 @@ namespace MultiAlign.ViewModels.Wizard
         public bool IsDatabaseDms
         {
             get
-            {             
-                return (m_analysis.MetaData.Database.DatabaseFormat == MassTagDatabaseFormat.SQL);
+            {
+                return (m_analysis.MetaData.Database.DatabaseFormat == MassTagDatabaseFormat.MassTagSystemSql);
             }
             set
             {                
-                bool isDms                  = (m_analysis.MetaData.Database.DatabaseFormat == MassTagDatabaseFormat.SQL);
+                var isDms                  = (m_analysis.MetaData.Database.DatabaseFormat == MassTagDatabaseFormat.MassTagSystemSql);
                 if (isDms != value)
                 {
                     // If we are being told to set it to be local...we change...
                     if (value)
-                        m_analysis.MetaData.Database.DatabaseFormat = MassTagDatabaseFormat.SQL;
+                        m_analysis.MetaData.Database.DatabaseFormat = MassTagDatabaseFormat.MassTagSystemSql;
                     else
                         m_analysis.MetaData.Database.DatabaseFormat = MassTagDatabaseFormat.Sqlite;
 

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+
 namespace MultiAlignCore.IO.InputFiles
 {
     /// <summary>

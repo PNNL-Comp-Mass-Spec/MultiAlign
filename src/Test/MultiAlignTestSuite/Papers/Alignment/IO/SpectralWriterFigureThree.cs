@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using MultiAlignTestSuite.Papers.Alignment.SSM;
 using PNNLOmics.Algorithms.Alignment;
 using PNNLOmics.Algorithms.Alignment.SpectralMatching;
 
@@ -23,7 +22,7 @@ namespace MultiAlignTestSuite.Papers.Alignment.IO
             Open();
             WriteLine("[Test]");
             WriteLine("[Datasets]");
-            foreach (string name in analysis.DatasetNames)
+            foreach (var name in analysis.DatasetNames)
             {
                 WriteLine(name);
             }
@@ -39,11 +38,11 @@ namespace MultiAlignTestSuite.Papers.Alignment.IO
                                                                                 .05,
                                                                                 analysis.Matches.Where(x => x.IsValidMatch == AnchorPointMatchType.TrueMatch));
 
-            Histogram allMatches = MatchCountHistogramBuilder.SimilarityScore(0, 1, .05, analysis.Matches);
+            var allMatches = MatchCountHistogramBuilder.SimilarityScore(0, 1, .05, analysis.Matches);
             WriteLine("Value\t False Matches\t True Matches\t All");
-            for (int i = 0; i < falseMatches.Bins.Count; i++)
+            for (var i = 0; i < falseMatches.Bins.Count; i++)
             {
-                double score = falseMatches.Bins[i];
+                var score = falseMatches.Bins[i];
                 WriteLine(string.Format("{0}\t{1}\t{2}\t{3}",
                                                  score,
                                                  falseMatches.Data[i],

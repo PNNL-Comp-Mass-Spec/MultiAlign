@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Data;
-using MultiAlign.Windows;
-using MultiAlign.Data;
-using System.ComponentModel;
 using MultiAlign.Data.States;
 
 namespace MultiAlign.Converters
@@ -29,7 +26,7 @@ namespace MultiAlign.Converters
                 return Visibility.Hidden;
             }
 
-            AnalysisSetupStep step  = (AnalysisSetupStep)value;
+            var step  = (AnalysisSetupStep)value;
             bool? vis          = false;
 
             if (step == VisibleStep)

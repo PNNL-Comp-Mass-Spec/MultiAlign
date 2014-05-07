@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using MultiAlignCore.Data.MassTags;
-using PNNLOmics.Data.MassTags;
-using PNNLOmics.Data;
 using System.IO;
-using System.Collections;
+using PNNLOmics.Data;
+using PNNLOmics.Data.MassTags;
 
 namespace MultiAlignCore.IO.MTDB
 {
@@ -22,22 +18,22 @@ namespace MultiAlignCore.IO.MTDB
         #region IMtdbLoader Members
         public MassTagDatabase LoadDatabase()
         {
-            MassTagDatabase database                    = new MassTagDatabase();
-            List<MassTagLight> massTags                 = new List<MassTagLight>();
-            Dictionary<int, List<Protein>> masstagMap   = new Dictionary<int, List<Protein>>();
+            var database                    = new MassTagDatabase();
+            var massTags                 = new List<MassTagLight>();
+            var masstagMap   = new Dictionary<int, List<Protein>>();
 
             //TODO: Put into base table file reader
-            string [] lines = File.ReadAllLines(DatabasePath);
+            var lines = File.ReadAllLines(DatabasePath);
 
-            string [] delimiters = new string [] {"\t"};
+            var delimiters = new[] {"\t"};
 
-            for (int i = 1; i < lines.Length; i++)
+            for (var i = 1; i < lines.Length; i++)
             {
-                string[] data        = lines[i].Split(delimiters, StringSplitOptions.RemoveEmptyEntries );
-                MassTagLight tag     = new MassTagLight();
+                var data        = lines[i].Split(delimiters, StringSplitOptions.RemoveEmptyEntries );
+                var tag     = new MassTagLight();
                 if (data.Length > 4)
                 {
-                    tag.ID               = Convert.ToInt32(data[0]);
+                    tag.Id               = Convert.ToInt32(data[0]);
                     tag.PeptideSequence  = data[1];
                     tag.MassMonoisotopic = Convert.ToDouble(data[2]);
                     tag.RetentionTime    = Convert.ToDouble(data[3]);
@@ -48,12 +44,6 @@ namespace MultiAlignCore.IO.MTDB
 
             database.AddMassTagsAndProteins(massTags, masstagMap);
             return database;
-        }
-
-        public Algorithms.Options.MassTagDatabaseOptions Options
-        {
-            get;
-            set;
         }
 
         #endregion

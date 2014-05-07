@@ -1,17 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Data;
 using System.IO;
+using System.Linq;
 using System.Windows.Input;
 using MultiAlign.Commands;
-using MultiAlign.ViewModels.Datasets;
 using MultiAlign.Windows.Viewers.Datasets;
-using MultiAlignCore.Data;
-using System.Linq;
 using MultiAlignCore.Data.MetaData;
 
-namespace MultiAlign.ViewModels
+namespace MultiAlign.ViewModels.Datasets
 {
     public class DatasetCollectionViewModel: ViewModelBase 
     {
@@ -26,7 +23,7 @@ namespace MultiAlign.ViewModels
         public DatasetCollectionViewModel(IEnumerable<DatasetInformation> datasets)
         {
 
-            List<DatasetInformationViewModel> datasetViewModels = (from dataset in datasets
+            var datasetViewModels = (from dataset in datasets
                 select new DatasetInformationViewModel(dataset)).ToList();
             m_models = datasetViewModels;
             Datasets = new ObservableCollection<DatasetInformationViewModel>(datasetViewModels);
@@ -76,7 +73,7 @@ namespace MultiAlign.ViewModels
                 var viewModel       = new DatasetResolveCollectionViewModel(newPaths);
                 view.DataContext    = viewModel;
 
-                bool? result = view.ShowDialog();
+                var result = view.ShowDialog();
 
                 if (result == true)
                 {
@@ -94,7 +91,7 @@ namespace MultiAlign.ViewModels
 
         private void FilterDatasets()
         {
-            string filter                           = m_filter.ToLower();
+            var filter                           = m_filter.ToLower();
             IEnumerable<DatasetInformationViewModel> filtered = new List<DatasetInformationViewModel>(m_models);           
             filtered                                = filtered.Where(x => x.Name.ToLower().Contains(filter));
             FilteredDatasets.Clear();
@@ -123,19 +120,14 @@ namespace MultiAlign.ViewModels
             }
             set
             {
-                if (value != m_expandImagesall)
-                {
-                    if (value != null)
-                    {
-                        m_expandImagesall = value;
+                if (value == m_expandImagesall) return;
+                m_expandImagesall = value;
 
-                        foreach (DatasetInformationViewModel model in Datasets)
-                        {
-                            model.ShouldExpand = value;
-                        }
-                        OnPropertyChanged("IsExpandAllImages");
-                    }
+                foreach (var model in Datasets)
+                {
+                    model.ShouldExpand = value;
                 }
+                OnPropertyChanged("IsExpandAllImages");
             }
         }
         public string Filter

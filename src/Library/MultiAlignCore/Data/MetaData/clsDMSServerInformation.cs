@@ -13,14 +13,8 @@
  *          - Created file.
  */
 ///////////////////////////////////////////////////////////////////////
-using System;
-using System.Text;
-using System.Data;
-using System.Threading;
-using System.Data.SqlClient;
-using System.Collections.Generic;
-using System.ComponentModel;
 
+using System.ComponentModel;
 
 namespace MultiAlignCore.Data
 {

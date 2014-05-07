@@ -1,14 +1,13 @@
-﻿using MultiAlign.Commands;
-using MultiAlign.IO;
-using MultiAlign.ViewModels.Charting;
-using MultiAlignCore.Data.Features;
-using MultiAlignCore.Extensions;
-using PNNLOmics.Data;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
+using MultiAlign.Commands;
+using MultiAlign.IO;
+using MultiAlign.ViewModels.Charting;
+using MultiAlign.ViewModels.Features;
+using MultiAlignCore.Data.Features;
+using MultiAlignCore.Extensions;
 
 namespace MultiAlign.ViewModels.Spectra
 {
@@ -37,22 +36,26 @@ namespace MultiAlign.ViewModels.Spectra
 
             CreateSortOptions();
 
-            ExpandIdentifications = new BaseCommandBridge(delegate
-            {
+            ExpandIdentifications = new BaseCommand(delegate
+                {
                     foreach(var spectrum in Spectra)
                     {
                         spectrum.IdentificationsExpanded = true;
                     }
                 }
-                );
-            CollapseIdentifications = new BaseCommandBridge(delegate
-            {
-                foreach (var spectrum in Spectra)
-                {
-                    spectrum.IdentificationsExpanded = false;
+            );
+
+
+
+            CollapseIdentifications = new BaseCommand(delegate
+                {                
+                    foreach (var spectrum in Spectra)
+                    {
+                        spectrum.IdentificationsExpanded = false;
+                    }                
                 }
-            }
-                );
+            );
+
         }
 
         public ICommand CollapseIdentifications
@@ -76,7 +79,7 @@ namespace MultiAlign.ViewModels.Spectra
             //TODO: Make this a task!!!
 
 
-            List<MSSpectra> spectra = cluster.Cluster.GetLoadedSpectra();
+            var spectra = cluster.Cluster.GetLoadedSpectra();
             m_maxMz        = 0.0;
             m_maxIntensity = 0.0;
             foreach (var spectrum in spectra)
@@ -107,7 +110,7 @@ namespace MultiAlign.ViewModels.Spectra
         {            
             SortTypes.Add(new SpectraSortOptions("Charge", () =>
             {
-                ObservableCollection<MsSpectraViewModel> temp = new ObservableCollection<MsSpectraViewModel>(
+                var temp = new ObservableCollection<MsSpectraViewModel>(
                         from x in Spectra orderby x.Spectrum.ParentFeature.ChargeState select x);
 
                 Spectra.Clear();
@@ -122,8 +125,8 @@ namespace MultiAlign.ViewModels.Spectra
 
             SortTypes.Add(new SpectraSortOptions("Dataset", () =>
             {
-                ObservableCollection<MsSpectraViewModel> temp = new ObservableCollection<MsSpectraViewModel>(
-                        from x in Spectra orderby x.Spectrum.GroupID select x);
+                var temp = new ObservableCollection<MsSpectraViewModel>(
+                        from x in Spectra orderby x.Spectrum.GroupId select x);
 
                 Spectra.Clear();
                 foreach (var x in temp)
@@ -136,8 +139,8 @@ namespace MultiAlign.ViewModels.Spectra
 
             SortTypes.Add(new SpectraSortOptions("m/z", () =>
             {
-                ObservableCollection<MsSpectraViewModel> temp = new ObservableCollection<MsSpectraViewModel>(
-                        from x in Spectra orderby x.Spectrum.PrecursorMZ select x);
+                var temp = new ObservableCollection<MsSpectraViewModel>(
+                        from x in Spectra orderby x.Spectrum.PrecursorMz select x);
 
                 Spectra.Clear(); 
                 foreach (var x in temp)
@@ -151,7 +154,7 @@ namespace MultiAlign.ViewModels.Spectra
 
             SortTypes.Add(new SpectraSortOptions("Scan", () =>
             {
-                ObservableCollection<MsSpectraViewModel> temp = new ObservableCollection<MsSpectraViewModel>(
+                var temp = new ObservableCollection<MsSpectraViewModel>(
                         from x in Spectra orderby x.Spectrum.RetentionTime select x);
 
                 
@@ -239,10 +242,10 @@ namespace MultiAlign.ViewModels.Spectra
             {
                 var spectrum = value.Spectrum;
                 var name     = string.Format("scan {0} @ {1} m/z ", spectrum.Scan,
-                                                                    spectrum.PrecursorMZ);
+                                                                    spectrum.PrecursorMz);
                 SelectedSpectrumPlotModel = new MsMsSpectraViewModel(value.Spectrum, name);
 
-                this.SelectedSpectrumPlotModel.SetMax(m_maxMz, m_maxIntensity);             
+                SelectedSpectrumPlotModel.SetMax(m_maxMz, m_maxIntensity);             
             }
         }
 

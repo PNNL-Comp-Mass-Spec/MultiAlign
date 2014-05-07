@@ -1,47 +1,35 @@
-﻿using System;   
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using MultiAlignCore.Algorithms.Options;
-using MultiAlignCore.Data.MetaData;
-using NUnit.Framework;
-using MultiAlignCore.Algorithms.FeatureFinding;
-using PNNLOmicsIO.IO;
-using PNNLOmics.Data.Features;
-using PNNLOmics.Algorithms.FeatureClustering;
-using MultiAlignCore.Data;
-using MultiAlignCore.IO.InputFiles;
-using PNNLOmics.Data;
-using MultiAlignCore.IO.Features;
-using MultiAlignCore.Algorithms;
-using PNNLOmics.Algorithms.SpectralComparisons;
-using PNNLOmics.Algorithms.FeatureMatcher.MSnLinker;
-using PNNLOmics.Algorithms;
 using System.IO;
+using System.Linq;
+using MultiAlignCore.Algorithms.FeatureFinding;
+using MultiAlignCore.Data.MetaData;
+using MultiAlignCore.IO.Features;
+using MultiAlignCore.IO.InputFiles;
+using NUnit.Framework;
+using PNNLOmics.Algorithms;
+using PNNLOmics.Algorithms.FeatureClustering;
+using PNNLOmics.Algorithms.SpectralComparisons;
+using PNNLOmics.Data;
+using PNNLOmics.Data.Features;
+using PNNLOmicsIO.IO;
 
 namespace MultiAlignTestSuite.Algorithms
-{
-    public class Triplet
-    {
-        public MSSpectra        Spectrum;
-        public MSFeatureLight   Feature;
-        public int              MatchingPeaks;
-        public double           Error;
-    }
+{    
     [TestFixture]
-    public class MsMsClusterTests
+    public sealed class MsMsClusterTests
     {
         public int CompareSpectra(Peptide p, MSSpectra s)
         {
-            int matchingPeaks = 0;
+            var matchingPeaks = 0;
 
-            foreach (XYData point in p.Spectrum.Peaks)
+            foreach (var point in p.Spectrum.Peaks)
             {
-                double px = point.X;
-                for(int i = 0; i < s.Peaks.Count - 1; i++)
+                var px = point.X;
+                for(var i = 0; i < s.Peaks.Count - 1; i++)
                 {
-                    XYData iPoint = s.Peaks[i];
-                    XYData jPoint = s.Peaks[i + 1];
+                    var iPoint = s.Peaks[i];
+                    var jPoint = s.Peaks[i + 1];
                     
                     if (px < jPoint.X && px >= iPoint.X)
                     {
@@ -103,8 +91,8 @@ namespace MultiAlignTestSuite.Algorithms
                                 string features,
                                 double percent)
         {
-            string baselineRaw              = baseline.Replace("_isos.csv", ".raw");            
-            string featuresRaw              = features.Replace("_isos.csv", ".raw");
+            var baselineRaw              = baseline.Replace("_isos.csv", ".raw");            
+            var featuresRaw              = features.Replace("_isos.csv", ".raw");
             
             
             Console.WriteLine("Create Baseline Information");        
@@ -126,30 +114,19 @@ namespace MultiAlignTestSuite.Algorithms
                 Sequence = new InputFile {Path = sequencePath}
             };
 
-            var reader       = new MSFeatureLightFileReader();
+            var reader       = new MsFeatureLightFileReader();
 
             Console.WriteLine("Reading Baseline Features");
-            List<MSFeatureLight> baselineMsFeatures = reader.ReadFile(baseline).ToList();
-            baselineMsFeatures.ForEach(x => x.GroupID = baselineInfo.DatasetId);          
-            LinkMsMsSpectra(baselineInfo, baselineMsFeatures);
-
+            var baselineMsFeatures = reader.ReadFile(baseline).ToList();
+            baselineMsFeatures.ForEach(x => x.GroupId = baselineInfo.DatasetId);          
+            
             Console.WriteLine("Reading Alignee Features");
-            List<MSFeatureLight> aligneeMsFeatures  = reader.ReadFile(features).ToList();
-            aligneeMsFeatures.ForEach(x => x.GroupID = aligneeInfo.DatasetId);
-            LinkMsMsSpectra(aligneeInfo, aligneeMsFeatures);
+            var aligneeMsFeatures  = reader.ReadFile(features).ToList();
+            aligneeMsFeatures.ForEach(x => x.GroupId = aligneeInfo.DatasetId);
+            
 
-            //LCMSFeatureFindingOptions options   = new LCMSFeatureFindingOptions();
-            //UMCFeatureFinder finder             = new UMCFeatureFinder();
-            var finder = FeatureFinderFactory.CreateFeatureFinder(FeatureFinderType.TreeBased);
-
-            Console.WriteLine("Reading Baseline Sequence Files");
-            ISequenceFileReader sequenceReader  = PeptideReaderFactory.CreateReader(type);
-            List<Peptide> baseLinePeptides      = sequenceReader.Read(baselineInfo.Sequence.Path).ToList();
-
-            Console.WriteLine("Reading Alignee Sequence Files");
-            List<Peptide> aligneePeptides       = sequenceReader.Read(aligneeInfo.Sequence.Path).ToList();
-
-            var tolerances = new FeatureTolerances()
+            var finder = FeatureFinderFactory.CreateFeatureFinder(FeatureFinderType.TreeBased);            
+            var tolerances = new FeatureTolerances
             {
                 Mass = 8,
                 RetentionTime = .005
@@ -157,33 +134,33 @@ namespace MultiAlignTestSuite.Algorithms
             var options = new LcmsFeatureFindingOptions(tolerances); 
 
             Console.WriteLine("Detecting Baseline Features");
-            List<UMCLight> baselineFeatures     = finder.FindFeatures(baselineMsFeatures, options, null);
+            var baselineFeatures     = finder.FindFeatures(baselineMsFeatures, options, null);
             
             Console.WriteLine("Detecting Alignee Features");
-            List<UMCLight> aligneeFeatures = finder.FindFeatures(aligneeMsFeatures, options, null);
+            var aligneeFeatures = finder.FindFeatures(aligneeMsFeatures, options, null);
 
             Console.WriteLine("Managing baseline and alignee features");        
-            baselineFeatures.ForEach(x  => x.GroupID = baselineInfo.DatasetId);
-            aligneeFeatures.ForEach(x   => x.GroupID = aligneeInfo.DatasetId);
+            baselineFeatures.ForEach(x  => x.GroupId = baselineInfo.DatasetId);
+            aligneeFeatures.ForEach(x   => x.GroupId = aligneeInfo.DatasetId);
 
             Console.WriteLine("Clustering MS/MS Spectra");        
-            MSMSClusterer clusterer         = new MSMSClusterer();
+            var clusterer         = new MSMSClusterer();
             clusterer.MzTolerance           = .5;
             clusterer.MassTolerance         = 6;
-            clusterer.SpectralComparer      = new SpectralNormalizedDotProductComparer()
+            clusterer.SpectralComparer      = new SpectralNormalizedDotProductComparer
             {
                 TopPercent = percent
             };
             clusterer.SimilarityTolerance   = .5;            
             clusterer.ScanRange             = 905;                        
-            clusterer.Progress              += new EventHandler<ProgressNotifierArgs>(clusterer_Progress);
+            clusterer.Progress              += clusterer_Progress;
 
-            List<UMCLight> allFeatures      = new List<UMCLight>();
+            var allFeatures      = new List<UMCLight>();
             allFeatures.AddRange(baselineFeatures);
             allFeatures.AddRange(aligneeFeatures);
 
-            List<MSMSCluster> clusters      = null;
-            using (ThermoRawDataFileReader rawReader = new ThermoRawDataFileReader())
+            List<MsmsCluster> clusters      = null;
+            using (var rawReader = new ThermoRawDataFileReader())
             {
                 rawReader.AddDataFile(baselineInfo.Raw.Path, baselineInfo.DatasetId);
                 rawReader.AddDataFile(aligneeInfo.Raw.Path,  aligneeInfo.DatasetId);
@@ -194,8 +171,8 @@ namespace MultiAlignTestSuite.Algorithms
 
             if (clusters != null)
             {
-                DateTime now                = DateTime.Now;
-                string testResultPath       = string.Format("{7}\\{0}-results-{1}-{2}-{3}-{4}-{5}-{6}_scans.txt", 
+                var now                = DateTime.Now;
+                var testResultPath       = string.Format("{7}\\{0}-results-{1}-{2}-{3}-{4}-{5}-{6}_scans.txt", 
                                                             name,
                                                             now.Year,
                                                             now.Month,
@@ -212,12 +189,12 @@ namespace MultiAlignTestSuite.Algorithms
                     writer.WriteLine("{0}", features);
                     writer.WriteLine("[Scans]");
                     writer.WriteLine();
-                    foreach (MSMSCluster cluster in clusters)
+                    foreach (var cluster in clusters)
                     {
-                        string scanData = "";
+                        var scanData = "";
                         if (cluster.Features.Count == 2)
                         {
-                            foreach (MSFeatureLight feature in cluster.Features)
+                            foreach (var feature in cluster.Features)
                             {
                                 scanData += string.Format("{0},", feature.Scan);
                             }
@@ -243,23 +220,23 @@ namespace MultiAlignTestSuite.Algorithms
                     writer.WriteLine("{0}", baseline);
                     writer.WriteLine("{0}", features);
                     writer.WriteLine("[Scans]");
-                    foreach (MSMSCluster cluster in clusters)
+                    foreach (var cluster in clusters)
                     {
-                        string scanData = "";
-                        string data = "";
-                        foreach (MSFeatureLight feature in cluster.Features)
+                        var scanData = "";
+                        var data = "";
+                        foreach (var feature in cluster.Features)
                         {
                             scanData += string.Format("{0},", feature.Scan);
                             data     += string.Format("{0},{1},{2},{3},{4},{5}",
-                                                            feature.GroupID,
-                                                            feature.ID,
+                                                            feature.GroupId,
+                                                            feature.Id,
                                                             feature.MassMonoisotopic,
                                                             feature.Mz,
                                                             feature.ChargeState,
                                                             feature.Scan);
-                            foreach (MSSpectra spectrum in feature.MSnSpectra)
+                            foreach (var spectrum in feature.MSnSpectra)
                             {
-                                foreach (Peptide peptide in spectrum.Peptides)
+                                foreach (var peptide in spectrum.Peptides)
                                 {
                                     data += string.Format(",{0},{1}", peptide.Sequence, peptide.Score);
                                 }
@@ -271,24 +248,24 @@ namespace MultiAlignTestSuite.Algorithms
                     writer.WriteLine("");
                     writer.WriteLine("[Clusters]");                    
 
-                    foreach (MSMSCluster cluster in clusters)
+                    foreach (var cluster in clusters)
                     {                        
                         writer.WriteLine("cluster id, cluster score");                                               
-                        writer.WriteLine("{0}, {1}", cluster.ID, cluster.MeanScore);
+                        writer.WriteLine("{0}, {1}", cluster.Id, cluster.MeanScore);
                         writer.WriteLine("feature dataset id, id, monoisotopic mass, mz, charge, scan, peptides");
 
-                        foreach(MSFeatureLight feature in cluster.Features)
+                        foreach(var feature in cluster.Features)
                         {
-                            string data = string.Format("{0},{1},{2},{3},{4},{5}",
-                                                            feature.GroupID,
-                                                            feature.ID,
+                            var data = string.Format("{0},{1},{2},{3},{4},{5}",
+                                                            feature.GroupId,
+                                                            feature.Id,
                                                             feature.MassMonoisotopic,
                                                             feature.Mz,
                                                             feature.ChargeState,
                                                             feature.Scan);
-                            foreach (MSSpectra spectrum in feature.MSnSpectra)
+                            foreach (var spectrum in feature.MSnSpectra)
                             {
-                                foreach (Peptide peptide in spectrum.Peptides)
+                                foreach (var peptide in spectrum.Peptides)
                                 {
                                     data += string.Format(",{0},{1}", peptide.Sequence, peptide.Score);
                                 }
@@ -304,12 +281,12 @@ namespace MultiAlignTestSuite.Algorithms
         
         private static void MapSequencesToSpectra(List<MSFeatureLight> features, string path)
         {
-            PNNLOmicsIO.IO.MsgfReader reader = new MsgfReader();
+            var reader = new MsgfReader();
             reader.Delimeter                 = "\t";
-            IEnumerable<Peptide> peptides    = reader.ReadFile(path);
+            var peptides    = reader.ReadFile(path);
 
-            Dictionary<int, Peptide> scanMap = new Dictionary<int, Peptide>();
-            foreach (Peptide p in peptides)
+            var scanMap = new Dictionary<int, Peptide>();
+            foreach (var p in peptides)
             {
                 if (!scanMap.ContainsKey(p.Scan))
                 {
@@ -317,11 +294,11 @@ namespace MultiAlignTestSuite.Algorithms
                 }
             }
 
-            foreach (MSFeatureLight feature in features)
+            foreach (var feature in features)
             {
-                foreach (MSSpectra spectrum in feature.MSnSpectra)
+                foreach (var spectrum in feature.MSnSpectra)
                 {
-                    bool hasScan = scanMap.ContainsKey(spectrum.Scan);
+                    var hasScan = scanMap.ContainsKey(spectrum.Scan);
                     if (hasScan)
                     {
                         spectrum.Peptides.Add(scanMap[spectrum.Scan]);
@@ -329,36 +306,8 @@ namespace MultiAlignTestSuite.Algorithms
                 }
             }
         }
-        private static void LinkMsMsSpectra(DatasetInformation baselineInfo,
-                                            List<MSFeatureLight> baselineMsFeatures)
-        {
-            IMSnLinker linker       = MSnLinkerFactory.CreateLinker(MSnLinkerType.BoxMethod);
-            linker.Tolerances       = new PNNLOmics.Algorithms.FeatureTolerances();
-            linker.Tolerances.Mass  = .5;
 
-            Console.WriteLine("Coordinating Dataset MS/MS Spectra");
-            using (ThermoRawDataFileReader rawReader = new ThermoRawDataFileReader())
-            {
-
-                rawReader.AddDataFile(baselineInfo.Raw.Path, baselineInfo.DatasetId);
-
-                Console.WriteLine("Reading MS/MS Spectra Header Information");
-                List<MSSpectra> spectra = rawReader.GetMSMSSpectra(baselineInfo.DatasetId);
-                Console.WriteLine("Found {0} MS/MS Spectra", spectra.Count);
-
-                Console.WriteLine("Assigning indices to MS/MS spectra");
-                int i = 0;
-                spectra.ForEach(x => x.ID = i++);
-                spectra.ForEach(x => x.GroupID = baselineInfo.DatasetId);
-
-                Console.WriteLine("Linking MS/MS Spectra");
-                Dictionary<int, int> linked = linker.LinkMSFeaturesToMSn(baselineMsFeatures, spectra);
-
-                Console.WriteLine("Linked {0} total MS/MS Spectra", linked.Keys.Count);
-            }
-        }
-
-        void clusterer_Progress(object sender, PNNLOmics.Algorithms.ProgressNotifierArgs e)
+        void clusterer_Progress(object sender, ProgressNotifierArgs e)
         {
             Console.WriteLine(e.Message);
         }

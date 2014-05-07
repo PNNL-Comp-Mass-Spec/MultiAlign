@@ -1,5 +1,5 @@
-﻿using PNNLOmics.Algorithms;
-using System;
+﻿using System;
+using PNNLOmics.Algorithms;
 
 namespace MultiAlignCore.Algorithms.Workflow
 {

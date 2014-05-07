@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
 
@@ -11,8 +8,8 @@ namespace MultiAlignCore.Extensions
     {
         public static Dictionary<int, List<Peptide>> CreateScanMaps(this List<Peptide> peptides)
         {
-            Dictionary<int, List<Peptide>> peptideMap = new Dictionary<int, List<Peptide>>();
-            foreach (Peptide p in peptides)
+            var peptideMap = new Dictionary<int, List<Peptide>>();
+            foreach (var p in peptides)
             {
                 if (!peptideMap.ContainsKey(p.Scan))
                 {

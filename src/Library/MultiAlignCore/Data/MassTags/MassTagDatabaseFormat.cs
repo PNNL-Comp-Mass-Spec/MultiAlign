@@ -1,4 +1,6 @@
 ﻿
+using System;
+
 namespace MultiAlignCore.Data.MassTags
 {
     /// <summary>
@@ -7,9 +9,9 @@ namespace MultiAlignCore.Data.MassTags
     public enum MassTagDatabaseFormat
     {
         /// <summary>
-        /// MTS enabled MTDB
+        /// Mass Tag System (MTS) based mass tag databases
         /// </summary>
-        SQL,
+        MassTagSystemSql,
         /// <summary>
         /// No database specified.
         /// </summary>
@@ -20,15 +22,20 @@ namespace MultiAlignCore.Data.MassTags
         Sqlite,
         /// <summary>
         /// Database built from a collection of samples using clusters.
-        /// </summary>
-        MetaSample,
+        /// </summary>        ]
+        DelimitedTextFile,
         /// <summary>
-        /// Ape enabled databases
+        /// APE created databases
         /// </summary>
-        APE,
+        [Obsolete]
+        Ape,
         /// <summary>
-        /// For Direct Infusion IMS Experiments 
+        /// For Direct Infusionn based experiments, where no alignment should be made.
         /// </summary>
-        DirectInfusionIms
+        SkipAlignment,
+        /// <summary>
+        /// New version of Mass Tag Database Creator databases.
+        /// </summary>
+        MtdbCreator
     }
 }

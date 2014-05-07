@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows.Data;
-using System.IO;
-using System.Windows.Controls;
 
 namespace MultiAlign.Converters
 {
@@ -17,8 +12,8 @@ namespace MultiAlign.Converters
             if (value == null)
                 return false;
 
-            bool enabled = (bool)value;
-            if (enabled == true)
+            var enabled = (bool)value;
+            if (enabled)
                 return false;
             return true;
         }

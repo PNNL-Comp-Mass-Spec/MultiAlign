@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using MultiAlignCore.Data.MetaData;
-using PNNLOmics.Data;
-using System.Collections.ObjectModel;
-using MultiAlignCore.Data;
+﻿using System.Collections.ObjectModel;
 using MultiAlign.IO;
+using MultiAlign.ViewModels.Datasets;
+using PNNLOmics.Data;
 
-namespace MultiAlign.ViewModels
+namespace MultiAlign.ViewModels.Proteins
 {
     public class PeptideViewModel: ViewModelBase
     {
@@ -19,7 +14,7 @@ namespace MultiAlign.ViewModels
         {
             m_peptide = peptide;
 
-            DatasetInformation info = SingletonDataProviders.GetDatasetInformation(peptide.GroupId);
+            var info = SingletonDataProviders.GetDatasetInformation(peptide.GroupId);
             if (info != null)
             {
                 m_dataset = new DatasetInformationViewModel(info);

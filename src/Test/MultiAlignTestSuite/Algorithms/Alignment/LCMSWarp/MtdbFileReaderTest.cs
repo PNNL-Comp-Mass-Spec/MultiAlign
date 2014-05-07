@@ -33,16 +33,16 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
             foreach (var line in rawBaselineData)
             {
                 if (line == "") continue;
-                string[] parsed = line.Split(',');
+                var parsed = line.Split(',');
                 var data = new UMCLight
                 {
-                    NET = Convert.ToDouble(parsed[0]),
+                    Net = Convert.ToDouble(parsed[0]),
                     ChargeState = Convert.ToInt32(parsed[1]),
                     Mz = Convert.ToDouble(parsed[2]),
                     Scan = Convert.ToInt32(parsed[3]),
                     MassMonoisotopic = Convert.ToDouble(parsed[4]),
                     MassMonoisotopicAligned = Convert.ToDouble(parsed[5]),
-                    ID = Convert.ToInt32(parsed[6])
+                    Id = Convert.ToInt32(parsed[6])
                 };
                 txtbaseline.Add(data);
             }
@@ -54,13 +54,13 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
                 var parsed = line.Split(',');
                 var data = new UMCLight
                 {
-                    NET = Convert.ToDouble(parsed[0]),
+                    Net = Convert.ToDouble(parsed[0]),
                     ChargeState = Convert.ToInt32(parsed[1]),
                     Mz = Convert.ToDouble(parsed[2]),
                     Scan = Convert.ToInt32(parsed[3]),
                     MassMonoisotopic = Convert.ToDouble(parsed[4]),
                     MassMonoisotopicAligned = Convert.ToDouble(parsed[5]),
-                    ID = Convert.ToInt32(parsed[6])
+                    Id = Convert.ToInt32(parsed[6])
                 };
                 txtfeatures.Add(data);
             }
@@ -73,13 +73,13 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
             datasets.Add(dataset);
             var baseline = dataset.Evidences.Select(evidence => new UMCLight
             {
-                NET = evidence.ObservedNet,
+                Net = evidence.ObservedNet,
                 ChargeState = evidence.Charge,
                 Mz = evidence.Mz,
                 Scan = evidence.Scan,
                 MassMonoisotopic = evidence.ObservedMonoisotopicMass,
                 MassMonoisotopicAligned = evidence.MonoisotopicMass,
-                ID = evidence.AnalysisId
+                Id = evidence.AnalysisId
             }).ToList();
 
             dataset = msgfReader.Read(path2);
@@ -87,7 +87,7 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
             
             for(var i = 0; i < baseline.Count; i++)
             {
-                Assert.IsTrue(Math.Abs(baseline[i].NET - txtbaseline[i].NET) < 0.0000000001);
+                Assert.IsTrue(Math.Abs(baseline[i].Net - txtbaseline[i].Net) < 0.0000000001);
                 Assert.AreEqual(baseline[i].ChargeState, txtbaseline[i].ChargeState);
                 Assert.IsTrue(Math.Abs(baseline[i].Mz - txtbaseline[i].Mz) < 0.0000000001);
                 Assert.AreEqual(baseline[i].Scan, txtbaseline[i].Scan);

@@ -1,28 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Input;
-using MultiAlign.ViewModels.Analysis;
+﻿using MultiAlign.ViewModels.Wizard;
 
 namespace MultiAlign.Commands.Wizard
 {
-    class AnalysisBackCommand: ICommand
+    public sealed class AnalysisBackCommand: BaseCommand
     {
-        private AnalysisSetupViewModel m_model;
+        private readonly AnalysisSetupViewModel m_model;
 
         public AnalysisBackCommand(AnalysisSetupViewModel model)
+            : base(null, AlwaysPass)
         {
             m_model = model;
         }
-
-        public bool CanExecute(object parameter)
-        {
-            return true;
-        }
-
-        public event EventHandler CanExecuteChanged;
-        public void Execute(object parameter)
+        public override void Execute(object parameter)
         {
             m_model.MoveBack();
         }

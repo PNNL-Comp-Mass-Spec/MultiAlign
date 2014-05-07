@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using MultiAlign.Commands;
 using MultiAlignCore.Data;
 
@@ -13,7 +12,7 @@ namespace MultiAlign.ViewModels.Wizard
         /// <summary>
         /// Reference to the analysis configuration.
         /// </summary>
-        private AnalysisConfig m_configuration;
+        private readonly AnalysisConfig m_configuration;
 
         /// <summary>
         /// Creates an analysis naming view model
@@ -23,8 +22,7 @@ namespace MultiAlign.ViewModels.Wizard
         {
             m_configuration = configuration;
 
-            BrowseFolderCommand command = new BrowseFolderCommand();
-            command.FolderSelected     += new EventHandler<Data.OpenAnalysisArgs>(command_FolderSelected);
+            var command = new BrowseFolderCommand(command_FolderSelected);            
             BrowseCommand = command;
         }
 
@@ -71,11 +69,9 @@ namespace MultiAlign.ViewModels.Wizard
         /// <summary>
         /// Updates the path to the analysis.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void command_FolderSelected(object sender, Data.OpenAnalysisArgs e)
+        void command_FolderSelected(string path)
         {
-            Path = e.AnalysisData.Path;
+            Path = path;
         }
 
         /// <summary>

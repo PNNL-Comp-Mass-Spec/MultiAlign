@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using NUnit.Framework;
+﻿using System.Collections.Generic;
 using System.IO;
 using MultiAlignCore.IO.Features;
+using NUnit.Framework;
 using PNNLOmics.Data.Features;
 
 namespace MultiAlignTestSuite.IO
@@ -24,18 +21,18 @@ namespace MultiAlignTestSuite.IO
         [TestCase(@"clusterTest.db3")]
         public void TestAddClusters(string name)
         {
-            string databasePath = Path.Combine(m_basePath, name);
+            var databasePath = Path.Combine(m_basePath, name);
 
             // This is a factory based method that creates a set of data access providers used throughout MultiAlign
-            FeatureDataAccessProviders providers = DataAccessFactory.CreateDataAccessProviders(databasePath, true);
+            var providers = DataAccessFactory.CreateDataAccessProviders(databasePath, true);
 
 
-            List<UMCClusterLight> clusters = new List<UMCClusterLight>();
-            for (int i = 0; i < 10; i++)
+            var clusters = new List<UMCClusterLight>();
+            for (var i = 0; i < 10; i++)
             {
-                UMCClusterLight cluster = new UMCClusterLight();
-                cluster.ID      = i;
-                cluster.GroupID = 0;
+                var cluster = new UMCClusterLight();
+                cluster.Id      = i;
+                cluster.GroupId = 0;
             }
             providers.ClusterCache.AddAll(clusters);
         }

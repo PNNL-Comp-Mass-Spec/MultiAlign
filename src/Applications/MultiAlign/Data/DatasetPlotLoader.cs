@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using MultiAlignCore.Data;
 using MultiAlignCore.Data.MetaData;
 
 namespace MultiAlign.Data
@@ -14,17 +13,17 @@ namespace MultiAlign.Data
         /// <returns></returns>
         public DatasetPlotInformation LoadDatasetPlots(string [] files, DatasetInformation info)
         {
-            DatasetPlotInformation plotInfo = new DatasetPlotInformation();
+            var plotInfo = new DatasetPlotInformation();
 
-            List<string> fileList = new List<string>();
+            var fileList = new List<string>();
             fileList.AddRange(files);
 
-            List<string> datasetFiles = new List<string>();
-            string name = info.DatasetName.ToLower();
+            var datasetFiles = new List<string>();
+            var name = info.DatasetName.ToLower();
 
-            foreach (string filename in fileList)
+            foreach (var filename in fileList)
             {
-                string file = filename.ToLower();
+                var file = filename.ToLower();
                 if (file.Contains(name))
                 {
                     if (file.Contains("featureplot"))
@@ -63,7 +62,7 @@ namespace MultiAlign.Data
 
         public void LoadDatasetPlots(string path, List<DatasetInformation> datasets)
         {
-            string[] files = Directory.GetFiles(path);
+            var files = Directory.GetFiles(path);
             datasets.ForEach(x => LoadDatasetPlots(files, x));
         }
     }

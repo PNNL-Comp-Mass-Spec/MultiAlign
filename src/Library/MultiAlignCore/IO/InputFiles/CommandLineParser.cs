@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace MultiAlignCore.IO.InputFiles
 {
@@ -20,29 +18,26 @@ namespace MultiAlignCore.IO.InputFiles
         {
             IDictionary<string, List<string>> options = new Dictionary<string, List<string>>();
 
-            int i               = offset;            
+            var i               = offset;            
             while(i < args.Length)            
             {
-                string key          = args[i].ToLower();
+                var key          = args[i].ToLower();
                 if (key.StartsWith("-"))
                 {
                     if (options.ContainsKey(key))
                     {
                         throw new Exception("The argument key already exists " + key);
                     }
-                    else
+                    options.Add(key, new List<string>());
+                    while (++i < args.Length)
                     {
-                        options.Add(key, new List<string>());
-                        while (++i < args.Length)
+                        if (!args[i].StartsWith("-"))
                         {
-                            if (!args[i].StartsWith("-"))
-                            {
-                                options[key].Add(args[i].ToLower());
-                            }
-                            else
-                            {
-                                break;
-                            }
+                            options[key].Add(args[i].ToLower());
+                        }
+                        else
+                        {
+                            break;
                         }
                     }
                 }

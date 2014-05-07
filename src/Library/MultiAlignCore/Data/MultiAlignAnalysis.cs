@@ -1,17 +1,16 @@
+using System;
+using System.Collections.Generic;
 using MultiAlignCore.Algorithms;
 using MultiAlignCore.Algorithms.Options;
 using MultiAlignCore.Data.Alignment;
-using MultiAlignCore.Data.MassTags;
 using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO.Features;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Data.MassTags;
-using System;
-using System.Collections.Generic;
 
 namespace MultiAlignCore.Data
 {
-	[Serializable()]
+	
 	public class MultiAlignAnalysis :  IDisposable
     {                             
         #region Constructor

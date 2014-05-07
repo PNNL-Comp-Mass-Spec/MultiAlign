@@ -1,14 +1,9 @@
 using System;
-using System.Globalization;
 using System.IO;
-using System.Collections.Generic;
-using MultiAlignTestSuite.IO;
 using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.Features.Hibernate;
-using MultiAlignTestSuite.Algorithms;
-using PNNLOmics.Data.Features;
 
-namespace MultiAlignTestSuite
+namespace MultiAlignTestSuite.IO
 {
     /// <summary>
     /// Main application.
@@ -16,10 +11,10 @@ namespace MultiAlignTestSuite
     public class DataProviderTest
     {                
         #region Data Provider Setup
+
         /// <summary>
         /// Sets up the NHibernate caches for storing and retrieving data.
         /// </summary>
-        /// <param name="analysisPath"></param>
         /// <returns></returns>
         private static FeatureDataAccessProviders SetupDataProviders(string path, bool createNew)
         {
@@ -50,15 +45,15 @@ namespace MultiAlignTestSuite
 		{
             //MassTagDOATest massTagTest = new MassTagDOATest();
             SetupDataProviders(@"m:\data\proteomics\matest-gui\guitest.db3");
-            MSFeatureDAOHibernate dao = new MSFeatureDAOHibernate();
-            System.DateTime start = DateTime.Now;
-            List<MSFeatureLight> features = dao.FindByDatasetId(0);            
-            System.DateTime end = DateTime.Now;
+            var dao = new MSFeatureDAOHibernate();
+            var start = DateTime.Now;
+            var features = dao.FindByDatasetId(0);            
+            var end = DateTime.Now;
             //msFeatureTest.LoadMSFeaturesFromCache(@"m:\data\proteomics\matest-gui\guitest.db3");
-            TimeSpan span = end.Subtract(start);
+            var span = end.Subtract(start);
             System.Console.WriteLine("{0} total ms", span.TotalMilliseconds);
 
-            MSFeatureDOATest msFeatureTest = new MSFeatureDOATest();
+            var msFeatureTest = new MSFeatureDOATest();
             start = System.DateTime.Now;
             msFeatureTest.LoadMSFeaturesFromCache(@"m:\data\proteomics\matest-gui\guitest.db3");
             end = System.DateTime.Now;

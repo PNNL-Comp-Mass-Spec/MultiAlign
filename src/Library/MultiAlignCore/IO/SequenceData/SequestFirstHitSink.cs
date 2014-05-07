@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Mage;
-using MultiAlignCore.Data;
-using MultiAlignCore.Data.Factors;
-using MultiAlignCore.IO.Features;
-using MultiAlignCore.IO.SequenceData;
-using MultiAlignCore.IO.InputFiles;
 using MultiAlignCore.Data.SequenceData;
 
 namespace MultiAlignCore.IO.SequenceData
@@ -45,9 +40,9 @@ namespace MultiAlignCore.IO.SequenceData
             m_count = 0;
             m_columnMapping.Clear();
 
-            for(int i = 0; i < args.ColumnDefs.Count; i++)                
+            for(var i = 0; i < args.ColumnDefs.Count; i++)                
             {
-                MageColumnDef def = args.ColumnDefs[i];
+                var def = args.ColumnDefs[i];
                 m_columnMapping.Add(def.Name.Trim(), i);
             }            
         }
@@ -76,7 +71,7 @@ namespace MultiAlignCore.IO.SequenceData
                 throw new ArgumentException("The number of columns for the factors are invalid.");
             }
 
-            DatabaseSearchSequence sequence = new DatabaseSearchSequence();
+            var sequence = new DatabaseSearchSequence();
             
             if (m_columnMapping.ContainsKey("Peptide"))
             {

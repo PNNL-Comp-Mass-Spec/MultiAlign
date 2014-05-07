@@ -1,33 +1,26 @@
-﻿using MultiAlign.ViewModels;
+﻿using System.Windows;
+using MultiAlign.ViewModels;
+using MultiAlign.ViewModels.Datasets;
 using MultiAlign.Windows.Viewers.Datasets;
-using MultiAlignCore.Data.MetaData;
-using System;
-using System.Windows;
-using System.Windows.Input;
 
 namespace MultiAlign.Commands.Datasets
 {
     /// <summary>
     /// Handles showing the details of a particular dataset.
     /// </summary>
-    public class ShowDatasetDetailCommand: ICommand
+    public sealed class ShowDatasetDetailCommand: BaseCommand
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="parameter"></param>
-        /// <returns></returns>
-        public bool CanExecute(object parameter)
+        public ShowDatasetDetailCommand():
+            base(null, AlwaysPass)        
         {
-            return true;
+            
         }
 
-        public event EventHandler CanExecuteChanged;
         /// <summary>
         /// Displays a window for modifying information about a dataset.
         /// </summary>
         /// <param name="parameter"></param>
-        public void Execute(object parameter)
+        public override void Execute(object parameter)
         {
             var information = parameter as DatasetInformationViewModel;
 
@@ -37,7 +30,6 @@ namespace MultiAlign.Commands.Datasets
             var viewer   = new DatasetInputFileEditor {DataContext = information};
             newWindow.Content               = viewer;
             newWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-
             newWindow.ShowDialog();
         }
     }

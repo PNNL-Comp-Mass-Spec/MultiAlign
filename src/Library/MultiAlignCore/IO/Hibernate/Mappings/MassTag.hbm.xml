@@ -6,15 +6,15 @@
 	<class name="MassTagLight" table="T_Mass_Tags" lazy="false">
 
     <composite-id>
-      <key-property name="ID" column="Mass_Tag_ID" type="int" />
-      <key-property name="ConformationID" column="Conformer_ID" type="int" />
+      <key-property name="Id" column="Mass_Tag_ID" type="int" />
+      <key-property name="ConformationId" column="Conformer_ID" type="int" />
     </composite-id>
 		<property name="MassMonoisotopic"     column="Mass"                 type="double" not-null="false" />
-		<property name="NETAverage"           column="NET_Average"          type="double" not-null="false" />
-		<property name="NETPredicted"         column="NET_Predicted"        type="double" not-null="false" />
-		<property name="NETStandardDeviation" column="NET_Std_Dev"          type="double" not-null="false" />
+		<property name="NetAverage"           column="NET_Average"          type="double" not-null="false" />
+		<property name="NetPredicted"         column="NET_Predicted"        type="double" not-null="false" />
+		<property name="NetStandardDeviation" column="NET_Std_Dev"          type="double" not-null="false" />
 		<property name="DiscriminantMax"      column="Normalized_Score_Max" type="double" not-null="false" />
-		<property name="MSGFSpecProbMax"      column="MSGF_Spec_Prob_Max"   type="double" not-null="false" />
+		<property name="MsgfSpecProbMax"      column="MSGF_Spec_Prob_Max"   type="double" not-null="false" />
 		<property name="CleavageState"        column="Cleavage_State"       type="int"    not-null="false" />
 		<property name="Modifications"        column="Modifications"        type="string" not-null="false" />
 		<property name="PeptideSequence"      column="Peptide"              type="string" not-null="false" />

@@ -1,61 +1,51 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.IO;
 using System.Windows;
 using System.Windows.Media.Imaging;
-using System.Windows.Input;
 using MultiAlign.ViewModels;
-using System.IO;
 using MultiAlign.Windows.Plots;
 
 namespace MultiAlign.Commands.Plotting
 {
 
-    public class PictureDisplayCommand : ICommand
+    public sealed class PictureDisplayCommand : BaseCommand
     {
         private Window m_window;
-        private string m_path;
-        private string m_name;
+        private readonly string m_path;
+        private readonly string m_name;
 
         public PictureDisplayCommand(string path, string name)
+            : base(null, AlwaysPass)
         {
             m_path   = path;
             m_name   = name;
             m_window = null;
         }
 
-        public bool CanExecute(object parameter)
-        {
-            return true;
-        }
-
-        public event EventHandler CanExecuteChanged;
-
-        public void Execute(object parameter)
+        public override void Execute(object parameter)
         {
             if (m_path != null)
             {
                 if (m_window == null)
                 {                    
-                    LargeImageView window = new LargeImageView();
+                    var window = new LargeImageView();
 
                     if (!File.Exists(m_path))
                         return;
 
-                    BitmapImage bi = new BitmapImage();
+                    var bi = new BitmapImage();
                     bi.BeginInit();
                     bi.CacheOption = BitmapCacheOption.OnLoad;
                     bi.UriSource = new Uri(m_path);
                     bi.EndInit();
 
-                    PictureViewModel viewModel = new PictureViewModel(bi, m_name);
+                    var viewModel = new PictureViewModel(bi, m_name);
                     window.DataContext = viewModel;
                     window.WindowStartupLocation = WindowStartupLocation.CenterScreen;
                     window.Show();
 
                     m_window = window;
-                    m_window.Closed += new EventHandler(m_window_Closed);
+                    m_window.Closed += m_window_Closed;
                 }
                 m_window.BringIntoView();
             }

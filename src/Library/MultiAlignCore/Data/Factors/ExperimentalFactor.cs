@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace MultiAlignCore.Data.Factors
 {
@@ -27,7 +24,7 @@ namespace MultiAlignCore.Data.Factors
 
         public override bool Equals(object obj)
         {
-            ExperimentalFactor map = obj as ExperimentalFactor;
+            var map = obj as ExperimentalFactor;
             if (map == null)
                 return false;
 
@@ -36,7 +33,7 @@ namespace MultiAlignCore.Data.Factors
 
         public override int GetHashCode()
         {
-            int hash = 17;
+            var hash = 17;
 
             hash = hash * 23 + FactorID.GetHashCode();
             hash = hash * 23 + Name.GetHashCode();

@@ -11,15 +11,6 @@ namespace MultiAlignCore.IO.MTDB
         /// Loads the database.
         /// </summary>
         /// <returns></returns>
-        MassTagDatabase LoadDatabase();
-
-        /// <summary>
-        /// Gets or sets the database options.
-        /// </summary>
-        Algorithms.Options.MassTagDatabaseOptions Options
-        {
-            get;
-            set;
-        }
+        MassTagDatabase LoadDatabase();        
     }
 }

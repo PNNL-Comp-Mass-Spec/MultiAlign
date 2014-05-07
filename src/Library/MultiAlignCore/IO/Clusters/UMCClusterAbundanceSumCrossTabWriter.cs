@@ -1,13 +1,11 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using System.Collections.Generic;
-using MultiAlignCore.Data.MetaData;
-using PNNLOmics.Data.Features;
 using MultiAlignCore.Data;
-using PNNLOmics.Data.MassTags;
-using MultiAlignCore.Algorithms.Features;
+using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO.Clusters;
+using PNNLOmics.Data.Features;
+using PNNLOmics.Data.MassTags;
 
 namespace MultiAlignCore.IO.Features
 {
@@ -15,11 +13,9 @@ namespace MultiAlignCore.IO.Features
     /// <summary>
     /// Writes a list of clusters to a cross tab.
     /// </summary>
-    public class UMCClusterAbundanceSumCrossTabWriter : BaseUmcClusterWriter
+    public sealed class UmcClusterAbundanceSumCrossTabWriter : BaseUmcClusterWriter
     {
-        private string m_path;
-        
-        public UMCClusterAbundanceSumCrossTabWriter()
+        public UmcClusterAbundanceSumCrossTabWriter()
             : base(false)
         {
             Extension   = "_abundance.csv"; 
@@ -45,14 +41,14 @@ namespace MultiAlignCore.IO.Features
             using (TextWriter writer = File.CreateText(Path))
             {
                 // Build the header.
-                string mainHeader = "Cluster ID, Total Members, Dataset Members,  Tightness, Ambiguity, Mass, NET, Drift time,";              
+                var mainHeader = "Cluster ID, Total Members, Dataset Members,  Tightness, Ambiguity, Mass, NET, Drift time,";              
                 
                 // Make blank columns for clusters that dont have enough dta.
-                string blankColumns = ",";
+                var blankColumns = ",";
 
                 // Map the dataset ID's to a list of numbers sorted from lowest to highest.
-                List<int> datasetIds = new List<int>();
-                foreach (DatasetInformation info in datasets)
+                var datasetIds = new List<int>();
+                foreach (var info in datasets)
                 {
                     datasetIds.Add(info.DatasetId);                    
                 }
@@ -63,26 +59,26 @@ namespace MultiAlignCore.IO.Features
                     mainHeader += ", MassTag ID, Conformation ID, Peptide Sequence, STAC, STAC-UP";
                 }
 
-                string header = mainHeader;
-                for (int i = 0; i < datasetIds.Count; i++)
+                var header = mainHeader;
+                for (var i = 0; i < datasetIds.Count; i++)
                 {
                     header += string.Format(", AbundanceSum-{0}", datasetIds[i]);
                 }
                 writer.WriteLine(header);
 
                 // Parse each cluster - cluster per line.
-                foreach (UMCClusterLight cluster in clusters)
+                foreach (var cluster in clusters)
                 {                    
-                    Dictionary<int, UMCLight> features = Consolidator.ConsolidateUMCs(cluster.UMCList);
+                    var features = Consolidator.ConsolidateUMCs(cluster.UmcList);
                     
                     // Build the output sets.
-                    StringBuilder umcBuilder = new StringBuilder();
-                    foreach (int id in datasetIds)
+                    var umcBuilder = new StringBuilder();
+                    foreach (var id in datasetIds)
                     {                        
-                        bool containsUMC = features.ContainsKey(id);
+                        var containsUMC = features.ContainsKey(id);
                         if (containsUMC)
                         {
-                            UMCLight umc = features[id];
+                            var umc = features[id];
                             umcBuilder.Append(string.Format(",{0}", umc.AbundanceSum));
                         }
                         else
@@ -91,37 +87,37 @@ namespace MultiAlignCore.IO.Features
                         }                        
                     }
 
-                    StringBuilder builder = new StringBuilder();
-                    builder.Append(string.Format("{0},{1},{2},{3},{4}", cluster.ID, cluster.UMCList.Count, features.Keys.Count, cluster.Tightness, cluster.AmbiguityScore));
+                    var builder = new StringBuilder();
+                    builder.Append(string.Format("{0},{1},{2},{3},{4}", cluster.Id, cluster.UmcList.Count, features.Keys.Count, cluster.Tightness, cluster.AmbiguityScore));
                     builder.Append(string.Format(",{0},{1},{2},{3}", cluster.MassMonoisotopic, cluster.RetentionTime, cluster.DriftTime, cluster.MsMsCount));
 
                     if (clusterMap.Count > 0)
                     {
-                        if (clusterMap.ContainsKey(cluster.ID))
+                        if (clusterMap.ContainsKey(cluster.Id))
                         {
 
-                            foreach (ClusterToMassTagMap map in clusterMap[cluster.ID])
+                            foreach (var map in clusterMap[cluster.Id])
                             {
 
-                                string clusterString = builder.ToString();
-                                string key = map.ConformerId + "-" + map.MassTagId;
-                                MassTagLight tag = tags[key];
-                                clusterString += string.Format(",{0},{1},{2},{3},{4}", tag.ID,
-                                                                                     tag.ConformationID,
+                                var clusterString = builder.ToString();
+                                var key = map.ConformerId + "-" + map.MassTagId;
+                                var tag = tags[key];
+                                clusterString += string.Format(",{0},{1},{2},{3},{4}", tag.Id,
+                                                                                     tag.ConformationId,
                                                                                      tag.PeptideSequence,
                                                                                      map.StacScore,
                                                                                      map.StacUP);
-                                writer.WriteLine(clusterString + umcBuilder.ToString());
+                                writer.WriteLine(clusterString + umcBuilder);
                             }
                         }
                         else
                         {
-                            writer.WriteLine(builder.Append(",,,,," + umcBuilder.ToString()));
+                            writer.WriteLine(builder.Append(",,,,," + umcBuilder));
                         }
                     }
                     else
                     {
-                        writer.WriteLine(builder.Append(umcBuilder.ToString()));
+                        writer.WriteLine(builder.Append(umcBuilder));
                     }
                 }
             }

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace MultiAlignCore.Algorithms.FeatureFinding
+﻿namespace MultiAlignCore.Algorithms.FeatureFinding
 {
     public interface ILcmsFeatureRefinement
     {

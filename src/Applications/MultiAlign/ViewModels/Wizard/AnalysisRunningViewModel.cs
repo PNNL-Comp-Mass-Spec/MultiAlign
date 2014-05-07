@@ -1,16 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Windows.Controls;
+﻿using MultiAlign.Commands;
 using MultiAlign.Data;
-using MultiAlign.Windows;
+using MultiAlign.Windows.Plots;
 using MultiAlignCore.Algorithms;
 using MultiAlignCore.Data;
 using MultiAlignCore.IO;
-using MultiAlignCustomControls.Drawing;
+using MultiAlignCore.IO.Reports;
 using PNNLOmics.Data.Features;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Windows.Controls;
 using System.Windows.Input;
-using MultiAlign.Commands;
 
 namespace MultiAlign.ViewModels.Wizard
 {
@@ -36,11 +36,11 @@ namespace MultiAlign.ViewModels.Wizard
             GalleryImages   = new ObservableCollection<UserControl>();
             Reporter        = new AnalysisReportGenerator();
             AnalysisNodes   = new ObservableCollection<AnalysisGraphNodeViewModel>();
-            CancelAnalysis  = new BaseCommandBridge(CancelAnalysisDelegate);
+            CancelAnalysis = new BaseCommand(CancelAnalysisDelegate, BaseCommand.AlwaysPass);
             RouteMessages();
         }
 
-        private void CancelAnalysisDelegate(object parameter)
+        private void CancelAnalysisDelegate()
         {
             Controller.CancelAnalysis();
         }

@@ -12,7 +12,7 @@ namespace MultiAlignCore.IO.MTDB
         /// <returns></returns>
         protected override IDbConnection CreateConnection(string path)
         {
-            string connectionString = path;
+            var connectionString = path;
             return new SqlConnection(connectionString);
         }
         /// <summary>

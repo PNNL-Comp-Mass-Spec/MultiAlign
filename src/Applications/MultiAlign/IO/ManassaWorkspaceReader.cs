@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using MultiAlign.Data;
-using MultiAlign.Workspace;
-using MultiAlignCore.IO;
-using System.Collections.ObjectModel;
-using MultiAlignCore.IO.Parameters;
+﻿using System.Collections.ObjectModel;
 using System.Xml;
-using System.IO;
+using MultiAlign.Data;
 using MultiAlign.ViewModels;
+using MultiAlign.Workspace;
 
 namespace MultiAlign.IO
 {
@@ -18,13 +11,13 @@ namespace MultiAlign.IO
     {
         public MultiAlignWorkspace Read(string path)
         {
-            MultiAlignWorkspace workspace  = new MultiAlignWorkspace();
+            var workspace  = new MultiAlignWorkspace();
                         
-            XmlDocument document = new XmlDocument();
+            var document = new XmlDocument();
             document.Load(path);
                 
-            XmlNode element = document.SelectSingleNode("MultiAlignWorkspace");
-            XmlNode data    = element.SelectSingleNode("RecentAnalysis");
+            var element = document.SelectSingleNode("MultiAlignWorkspace");
+            var data    = element.SelectSingleNode("RecentAnalysis");
             workspace.RecentAnalysis    = LoadRecent(data);
                     
             return workspace;
@@ -32,15 +25,15 @@ namespace MultiAlign.IO
 
         private ObservableCollection<RecentAnalysisViewModel> LoadRecent(XmlNode data)
         {
-            ObservableCollection<RecentAnalysisViewModel> allAnalysis = new ObservableCollection<RecentAnalysisViewModel>();
+            var allAnalysis = new ObservableCollection<RecentAnalysisViewModel>();
             foreach (XmlNode node in data.ChildNodes)
             {
                 if (node.Name == "Analysis")
                 {
-                    string name = node.Attributes["Name"].Value.ToString();
-                    string path = node.Attributes["Path"].Value.ToString();
+                    var name = node.Attributes["Name"].Value;
+                    var path = node.Attributes["Path"].Value;
 
-                    RecentAnalysis analysis = new RecentAnalysis(path, name);
+                    var analysis = new RecentAnalysis(path, name);
                     allAnalysis.Add(new RecentAnalysisViewModel(analysis));
                 }
             }

@@ -25,7 +25,7 @@ namespace MultiAlign.Converters
         public static readonly DependencyProperty PrecisionProperty = 
             DependencyProperty.Register("Precision", typeof(int), typeof(DoubleToStringConverter));
 
-        private string m_format = null; 
+        private string m_format; 
         private string GetFormat()
         {
             if (m_format == null)
@@ -41,8 +41,8 @@ namespace MultiAlign.Converters
             if (value == null)
                 return "";
 
-            double x = (double)value;
-            string format = GetFormat();
+            var x = (double)value;
+            var format = GetFormat();
             return x.ToString(format);
         }
 

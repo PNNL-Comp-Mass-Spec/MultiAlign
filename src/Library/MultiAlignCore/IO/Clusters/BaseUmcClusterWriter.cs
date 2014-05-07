@@ -1,26 +1,21 @@
-﻿using MultiAlignCore.Algorithms.FeatureFinding;
-using MultiAlignCore.Data.MetaData;
-using MultiAlignCore.Extensions;
+﻿using System.Collections.Generic;
+using MultiAlign.IO;
+using MultiAlignCore.Algorithms.FeatureFinding;
 using MultiAlignCore.Algorithms.Features;
 using MultiAlignCore.Data;
+using MultiAlignCore.Data.MetaData;
+using MultiAlignCore.Extensions;
 using MultiAlignCore.IO.Features;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Data.MassTags;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using MultiAlign.IO;
 
 namespace MultiAlignCore.IO.Clusters
 {
     public abstract class BaseUmcClusterWriter : IFeatureClusterWriter
     {
-        protected string m_extension;
         private string m_name;
         private string m_description;
         private string m_path;
-        private bool m_shouldLoadClusters;
 
         public BaseUmcClusterWriter(bool shouldLoadMsData)
         {
@@ -125,7 +120,7 @@ namespace MultiAlignCore.IO.Clusters
 
         protected virtual void LoadClusterData(IEnumerable<UMCClusterLight> clusters)
         {
-            bool shouldLoadFeatureData = ShouldLoadMsFeatureData;
+            var shouldLoadFeatureData = ShouldLoadMsFeatureData;
             foreach(var cluster in clusters)
             {
                 cluster.ReconstructUMCCluster(SingletonDataProviders.Providers, shouldLoadFeatureData, shouldLoadFeatureData);

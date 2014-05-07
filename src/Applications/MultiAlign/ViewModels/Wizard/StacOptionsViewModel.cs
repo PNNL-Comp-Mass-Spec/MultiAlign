@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MultiAlignCore.Algorithms.Options;
+﻿using MultiAlignCore.Algorithms.Options;
 
 namespace MultiAlign.ViewModels.Wizard
 {

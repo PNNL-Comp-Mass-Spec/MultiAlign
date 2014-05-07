@@ -16,7 +16,7 @@ namespace MultiAlign.Converters
             if (value == null)
                 return false;
 
-            ObservableCollection<MassTagToCluster> bValue = value as ObservableCollection<MassTagToCluster>;
+            var bValue = value as ObservableCollection<MassTagToCluster>;
 
             if (bValue == null)
                 return false;

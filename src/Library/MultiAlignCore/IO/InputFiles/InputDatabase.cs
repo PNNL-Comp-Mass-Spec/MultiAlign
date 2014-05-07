@@ -1,4 +1,5 @@
-﻿using MultiAlignCore.Data.MassTags;
+﻿using System.IO;
+using MultiAlignCore.Data.MassTags;
 using MultiAlignCore.IO.MTDB;
 
 namespace MultiAlignCore.IO.InputFiles
@@ -75,10 +76,10 @@ namespace MultiAlignCore.IO.InputFiles
         public bool ValidateDatabaseType()
         {
             // By default we use a MTS enabled MTDB.
-            bool useMTDB    = true;
+            var useMTDB    = true;
 
 
-            if (DatabaseFormat == MassTagDatabaseFormat.SQL)
+            if (DatabaseFormat == MassTagDatabaseFormat.MassTagSystemSql)
             {
                 if (DatabaseName == null && DatabaseServer != null)
                 {
@@ -118,14 +119,14 @@ namespace MultiAlignCore.IO.InputFiles
         /// <returns></returns>
         public static MassTagDatabaseFormat DetermineFormat(string path)
         {
-            var extension = System.IO.Path.GetExtension(path).ToLower();
+            var extension = Path.GetExtension(path).ToLower();
 
             switch (extension)
             {
                 case ".dims":
-                    return MassTagDatabaseFormat.DirectInfusionIms;                    
+                    return MassTagDatabaseFormat.SkipAlignment;                    
                 case ".ape":
-                    return MassTagDatabaseFormat.APE;                    
+                    return MassTagDatabaseFormat.Ape;                    
                 case ".db3":
                     return MassTagDatabaseFormat.Sqlite;                    
             }

@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using PNNLOmics.Data;
+﻿using PNNLOmics.Data;
 
-namespace MultiAlign.ViewModels
+namespace MultiAlign.ViewModels.Proteins
 {
     public class ProteinViewModel: ViewModelBase 
     {

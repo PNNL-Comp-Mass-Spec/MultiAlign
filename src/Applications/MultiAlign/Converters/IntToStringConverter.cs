@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Windows;
 using System.Windows.Data;
 
 namespace MultiAlign.Converters
@@ -16,7 +15,7 @@ namespace MultiAlign.Converters
             if (value == null)
                 return "";
 
-            int x = (int)value;
+            var x = (int)value;
 
             return x.ToString();
         }

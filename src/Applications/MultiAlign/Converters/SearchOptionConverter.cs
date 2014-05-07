@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.ObjectModel;
-using System.Windows.Data;
-using MultiAlignCore.Data;
 using System.IO;
+using System.Windows.Data;
 
 namespace MultiAlign.Converters
 {
@@ -17,7 +15,7 @@ namespace MultiAlign.Converters
             if (value == null)
                 return false;
 
-            SearchOption option = SearchOption.TopDirectoryOnly;
+            var option = SearchOption.TopDirectoryOnly;
             try
             {
                 option = (SearchOption)value;
@@ -37,7 +35,7 @@ namespace MultiAlign.Converters
             if (value == null)
                 return SearchOption.TopDirectoryOnly;
 
-            bool status = false;
+            var status = false;
 
             try
             {
@@ -48,8 +46,7 @@ namespace MultiAlign.Converters
 
             if (status)
                 return SearchOption.AllDirectories;
-            else
-                return SearchOption.TopDirectoryOnly;
+            return SearchOption.TopDirectoryOnly;
         }
         #endregion
     }

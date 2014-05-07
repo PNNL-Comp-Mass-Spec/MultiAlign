@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace MultiAlignConsole.IO
+﻿namespace MultiAlignConsole.IO
 {
     /// <summary>
     /// class used to aggregate clusters.

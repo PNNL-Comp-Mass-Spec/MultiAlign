@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace MultiAlignCore.IO.MTDB
+﻿namespace MultiAlignCore.IO.MTDB
 {
     /// <summary>
     /// Creates Database Loaders for a mass tag database system.

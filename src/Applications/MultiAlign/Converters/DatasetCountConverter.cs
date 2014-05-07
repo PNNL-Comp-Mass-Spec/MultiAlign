@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Windows;
 using System.Windows.Data;
 
 namespace MultiAlign.Converters
@@ -16,10 +15,10 @@ namespace MultiAlign.Converters
                 return "No Datasets are selected.";
             }
 
-            string message = "No datasets are selected.";
+            var message = "No datasets are selected.";
             try
             {
-                int datasets = (int)value;
+                var datasets = (int)value;
                 if (datasets > 0)
                 {
                     message = string.Format("{0} datasets selected.", datasets);

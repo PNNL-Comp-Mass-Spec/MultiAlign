@@ -1,9 +1,9 @@
-﻿using System.Collections.ObjectModel;
-using MultiAlignCore.IO.InputFiles;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
-using System.Collections.Generic;
+using MultiAlignCore.IO.InputFiles;
 
-namespace MultiAlign.ViewModels
+namespace MultiAlign.ViewModels.Databases
 {
     public class DatabasesViewModel: ViewModelBase
     {
@@ -36,8 +36,8 @@ namespace MultiAlign.ViewModels
         private void  BuildOrganismsList(ObservableCollection<DmsDatabaseServerViewModel> servers)
         {            
             
-            Dictionary<string, string> map          = new Dictionary<string, string>();
-            IOrderedEnumerable<DmsDatabaseServerViewModel> orderedServers = servers.OrderBy(x => x.Organism.ToLower());
+            var map          = new Dictionary<string, string>();
+            var orderedServers = servers.OrderBy(x => x.Organism.ToLower());
             foreach (var server in orderedServers)
             {
                 if (!map.ContainsKey(server.Organism))
@@ -46,7 +46,7 @@ namespace MultiAlign.ViewModels
                 }
             }
 
-            string tempOrganism = m_organismFilter;
+            var tempOrganism = m_organismFilter;
 
             Organisms.Clear();
             Organisms.Add(CONST_ANY_ORGANISM);
@@ -66,7 +66,7 @@ namespace MultiAlign.ViewModels
         /// <param name="server"></param>
         public void AddDatabase(InputDatabase server)
         {
-            DmsDatabaseServerViewModel viewModel = new DmsDatabaseServerViewModel(server);
+            var viewModel = new DmsDatabaseServerViewModel(server);
             Databases.Add(viewModel);
             FilteredDatabases.Add(viewModel);
             BuildOrganismsList(Databases); 

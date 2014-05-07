@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Data.SQLite;
 using NUnit.Framework;
-using System.Data.SQLite;
 
 namespace MultiAlignTestSuite.IO.Databases
 {
@@ -16,12 +12,12 @@ namespace MultiAlignTestSuite.IO.Databases
         public void CreateIndex(string path)
         {
 
-            using (SQLiteConnection connection = new SQLiteConnection(string.Format("Data Source = {0};", path)))
+            using (var connection = new SQLiteConnection(string.Format("Data Source = {0};", path)))
             {
                 connection.Open();
 
 
-                using (SQLiteCommand command = connection.CreateCommand())
+                using (var command = connection.CreateCommand())
                 {
 
                     // UMC Clusters Index

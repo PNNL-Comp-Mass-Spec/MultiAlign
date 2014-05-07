@@ -1,4 +1,5 @@
-﻿using PNNLControls;
+﻿using PNNLOmics.Annotations;
+using PNNLOmicsViz.Drawing;
 using System.Windows.Media;
 
 namespace MultiAlign.ViewModels.Features
@@ -11,9 +12,11 @@ namespace MultiAlign.ViewModels.Features
                                     int     scanStart,
                                     int     scanEnd)
         {
-            var iterator      = new clsColorIterator();
-            System.Drawing.Color oldColor  = iterator.GetColor(charge);
-            var newColor  = new System.Windows.Media.Color
+
+
+            var iterator  = new ColorTypeIterator();
+            var oldColor  = iterator.GetColor(charge);
+            var newColor  = new Color
             {
                 A = oldColor.A,
                 R = oldColor.R,
@@ -52,6 +55,7 @@ namespace MultiAlign.ViewModels.Features
             get;
             private set;
         }
+        [UsedImplicitly]
         public string ToolText
         {
             get

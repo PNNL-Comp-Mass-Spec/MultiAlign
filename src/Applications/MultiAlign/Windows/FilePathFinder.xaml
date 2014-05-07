@@ -20,8 +20,7 @@
             Content="{Binding Path=LabelText, 
                     RelativeSource={RelativeSource AncestorType={x:Type UserControl}},
                     UpdateSourceTrigger=PropertyChanged,
-                    NotifyOnSourceUpdated=True}">            
-        </Label>
+                    NotifyOnSourceUpdated=True}" />
 
         <TextBox
             Grid.Column="1"
@@ -31,16 +30,12 @@
                     RelativeSource={RelativeSource AncestorType={x:Type UserControl}},
                     UpdateSourceTrigger=PropertyChanged, 
                     NotifyOnTargetUpdated=True,
-                    NotifyOnSourceUpdated=True}"    
-            >
-        </TextBox>
+                    NotifyOnSourceUpdated=True}" />
         <Button            
             Grid.Column="2"
             Margin="5"
             Width="64"
             Content="Browse"   
-            Click="Button_Click"    
-            >
-        </Button>
+            Click="Button_Click" />
     </Grid>
 </UserControl>

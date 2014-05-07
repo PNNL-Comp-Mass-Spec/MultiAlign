@@ -1,13 +1,12 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing;
 using System.Reflection;
 using System.Windows.Forms;
+using MultiAlignCore.Algorithms.Options;
 using MultiAlignCore.IO.Generic;
 using MultiAlignCore.IO.Parameters;
-using MultiAlignCore.Data;
-using System.Drawing;
-using MultiAlignCore.Algorithms.Options;
 
 namespace MultiAlignParameterFileEditor
 {
@@ -51,10 +50,7 @@ namespace MultiAlignParameterFileEditor
         /// Maps the button to a parameter file group attribute.
         /// </summary>
         private Dictionary<Button, ParameterFileGroupAttribute> m_buttonParameterMap;
-        /// <summary>
-        /// colors for buttons based on group id's
-        /// </summary>
-        private List<Color> m_colorEditor;
+
         #endregion
 
         /// <summary>
@@ -70,7 +66,7 @@ namespace MultiAlignParameterFileEditor
             m_buttonParameterMap = new Dictionary<Button, ParameterFileGroupAttribute>();
 
             GroupColors          = new List<Color>();
-            GroupColors.AddRange(new Color[] {  Color.White,
+            GroupColors.AddRange(new[] {  Color.White,
                                                 Color.LightGray,
                                                 Color.LightGray,
                                                 Color.LightSalmon,
@@ -99,7 +95,7 @@ namespace MultiAlignParameterFileEditor
             m_buttonParameterMap = new Dictionary<Button, ParameterFileGroupAttribute>();
 
             GroupColors = new List<Color>();
-            GroupColors.AddRange(new Color[] {  Color.White,
+            GroupColors.AddRange(new[] {  Color.White,
                                                 Color.LightGray,
                                                 Color.LightGray,
                                                 Color.LightSalmon,
@@ -206,9 +202,9 @@ namespace MultiAlignParameterFileEditor
         /// </summary>
         private void ClearColors()
         {
-            foreach(Button button in m_buttonParameterMap.Keys)
+            foreach(var button in m_buttonParameterMap.Keys)
             {
-                ParameterFileGroupAttribute attr    = m_buttonParameterMap[button];
+                var attr    = m_buttonParameterMap[button];
                 button.BackColor                    = Color.WhiteSmoke; 
             }
         }
@@ -218,15 +214,15 @@ namespace MultiAlignParameterFileEditor
         /// <param name="options"></param>
         private void ProcessGroups(object options)
         {            
-            Type type                   = options.GetType();
-            PropertyInfo [] properties  = type.GetProperties();
-            foreach (PropertyInfo property in properties)
+            var type                   = options.GetType();
+            var properties  = type.GetProperties();
+            foreach (var property in properties)
             {                    
                 if (property.CanRead)
                 {                    
-                    object[] customAttributes = property.GetCustomAttributes(typeof(ParameterFileGroupAttribute), true);
+                    var customAttributes = property.GetCustomAttributes(typeof(ParameterFileGroupAttribute), true);
 
-                    foreach (object attribute in customAttributes)
+                    foreach (var attribute in customAttributes)
                     {
                         object potential = null;                       
                         potential        = property.GetValue(   options,
@@ -236,12 +232,12 @@ namespace MultiAlignParameterFileEditor
                                                                 null);
 
                         
-                        ParameterFileGroupAttribute attr = attribute as ParameterFileGroupAttribute;
+                        var attr = attribute as ParameterFileGroupAttribute;
 
-                        Button newButton        = new Button();
+                        var newButton        = new Button();
                         newButton.Text          = attr.Name;
                         newButton.Dock          = DockStyle.Top;
-                        newButton.MouseClick   += new MouseEventHandler(newButton_MouseClick);
+                        newButton.MouseClick   += newButton_MouseClick;
                         newButton.Height        = BUTTON_SIZE;
                         newButton.BackColor     = Color.WhiteSmoke;
 
@@ -289,7 +285,7 @@ namespace MultiAlignParameterFileEditor
         /// <param name="path"></param>
         private void SaveAs(string path)
         {
-            SaveFileDialog dialog = new SaveFileDialog();
+            var dialog = new SaveFileDialog();
 
             // Determine if we have a preset from a previous save.
             if (path != "")
@@ -298,7 +294,7 @@ namespace MultiAlignParameterFileEditor
             }
             
             // Then go and save it if the user says its ok.
-            DialogResult result = dialog.ShowDialog();
+            var result = dialog.ShowDialog();
             if (result == DialogResult.OK)
             {
                 Save(dialog.FileName);
@@ -312,8 +308,8 @@ namespace MultiAlignParameterFileEditor
         {
             System.Diagnostics.Debug.Assert(button != null);
 
-            ParameterFileGroupAttribute attribute   = m_buttonParameterMap[button];
-            object data                             = m_parameterMap[attribute];
+            var attribute   = m_buttonParameterMap[button];
+            var data                             = m_parameterMap[attribute];
             optionDescription.Text                  = attribute.FullDecription;
             parameterEditor.SelectedObject          = data;
 
@@ -335,7 +331,7 @@ namespace MultiAlignParameterFileEditor
 
             // Then Load into the parameter editor. HACKED!
             Button button = null;
-            foreach (Button lessage in m_buttonParameterMap.Keys)
+            foreach (var lessage in m_buttonParameterMap.Keys)
             {
                 button = lessage;
                 break;
@@ -364,7 +360,7 @@ namespace MultiAlignParameterFileEditor
         
         private void exportHTML_Click(object sender, EventArgs e)
         {
-            SaveFileDialog dialog   = new SaveFileDialog();
+            var dialog   = new SaveFileDialog();
             dialog.DefaultExt       = ".html";
             dialog.Filter           = "HTML files (*.html)|*.html"; 
 
@@ -375,38 +371,38 @@ namespace MultiAlignParameterFileEditor
             }
 
             // Then go and save it if the user says its ok.
-            DialogResult result = dialog.ShowDialog();
+            var result = dialog.ShowDialog();
             if (result == DialogResult.OK)
             {
-                List<string> html = new List<string>();
+                var html = new List<string>();
                 html.Add("<html>");
                 html.Add("<body>");
                 
-                foreach (ParameterFileGroupAttribute attr in m_parameterMap.Keys)
+                foreach (var attr in m_parameterMap.Keys)
                 {
                     html.Add("<table border=\"1\" cellpadding=\"2\" >");
                     html.Add(string.Format("<caption >{0}</caption>", attr.Name));
                     html.Add(BuildParameter("Category", "Parameter Name", "Value", "Description", "style=\"background-color:#FFCC66;\""));
-                    object data = m_parameterMap[attr];
+                    var data = m_parameterMap[attr];
                     if (data == null) continue;
 
-                    Type   type = data.GetType();
+                    var   type = data.GetType();
 
-                    PropertyInfo[] properties = type.GetProperties();
-                    foreach (PropertyInfo property in properties)
+                    var properties = type.GetProperties();
+                    foreach (var property in properties)
                     {
                         if (property.CanRead)
                         {
                             // Get the value
-                            object[] attributes   = property.GetCustomAttributes(typeof(ParameterFileAttribute), false);
+                            var attributes   = property.GetCustomAttributes(typeof(ParameterFileAttribute), false);
                             if (attributes.Length < 1) continue;
 
                             object   value        = null; 
-                            string   name         = "";
+                            var   name         = "";
                             // Get the object value and name
-                            foreach (object attribute in attributes)
+                            foreach (var attribute in attributes)
                             {
-                                ParameterFileAttribute parameterAttribute = attribute as ParameterFileAttribute;
+                                var parameterAttribute = attribute as ParameterFileAttribute;
 
                                 value = property.GetValue(data,
                                                                   BindingFlags.GetProperty,
@@ -418,23 +414,23 @@ namespace MultiAlignParameterFileEditor
                             }
                             // Get the descriptions
                             attributes          = property.GetCustomAttributes(typeof(DescriptionAttribute), false);
-                            string description  = "";
-                            foreach (object attribute in attributes)
+                            var description  = "";
+                            foreach (var attribute in attributes)
                             {
-                                DescriptionAttribute descriptionAttribute = attribute as DescriptionAttribute;
+                                var descriptionAttribute = attribute as DescriptionAttribute;
                                 description                               = descriptionAttribute.Description;
                             }
 
                             // Get the group name
                             attributes = property.GetCustomAttributes(typeof(CategoryAttribute), false);
-                            string category = "";
-                            foreach (object attribute in attributes)
+                            var category = "";
+                            foreach (var attribute in attributes)
                             {
-                                CategoryAttribute groupAttribute = attribute as CategoryAttribute;
+                                var groupAttribute = attribute as CategoryAttribute;
                                 category = groupAttribute.Category;
                             }
                             
-                            string htmlTag = BuildParameter(category, name, value.ToString(), description);
+                            var htmlTag = BuildParameter(category, name, value.ToString(), description);
                             html.Add(htmlTag);
                         }
                     }
@@ -444,7 +440,7 @@ namespace MultiAlignParameterFileEditor
 
                 using (System.IO.TextWriter writer = System.IO.File.CreateText(dialog.FileName))
                 {
-                    foreach (string tag in html)
+                    foreach (var tag in html)
                     {
                         writer.WriteLine(tag);
                     }

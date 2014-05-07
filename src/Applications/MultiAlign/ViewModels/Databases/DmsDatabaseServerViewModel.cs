@@ -1,6 +1,6 @@
 ﻿using MultiAlignCore.IO.InputFiles;
 
-namespace MultiAlign.ViewModels
+namespace MultiAlign.ViewModels.Databases
 {
     public class DmsDatabaseServerViewModel: ViewModelBase
     {

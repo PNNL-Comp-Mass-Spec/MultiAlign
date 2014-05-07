@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using OxyPlot;
+﻿using OxyPlot;
 
 namespace MultiAlign.ViewModels.Charting
 {

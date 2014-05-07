@@ -1,13 +1,12 @@
-﻿using System.Windows.Input;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.Windows.Input;
 using MultiAlign.Commands.Datasets;
 using MultiAlign.Commands.Plotting;
 using MultiAlign.ViewModels.Plotting;
 using MultiAlignCore.Data.MetaData;
-using System;
-using System.Collections.ObjectModel;
-using MultiAlignCore.IO.InputFiles;
 
-namespace MultiAlign.ViewModels
+namespace MultiAlign.ViewModels.Datasets
 {
     public class DatasetInformationViewModel : ViewModelBase
     {
@@ -20,7 +19,7 @@ namespace MultiAlign.ViewModels
         public DatasetInformationViewModel(DatasetInformation information)
         {
             m_information               = information;
-            DatasetPlotInformation data = information.PlotData;
+            var data = information.PlotData;
             PlotData                    = new ObservableCollection<PlotViewModel>();
 
             if (data != null)
@@ -90,7 +89,7 @@ namespace MultiAlign.ViewModels
         {
             get
             {
-                string name = "";
+                var name = "";
                 if (m_information != null)
                 {
                     name = m_information.DatasetName;
@@ -111,7 +110,7 @@ namespace MultiAlign.ViewModels
         {
             get
             {
-                int id = 0;
+                var id = 0;
                 if (m_information != null)
                 {
                     id = m_information.DatasetId;

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using PNNLOmics.Data.Features;
 
 namespace MultiAlignCore.Data.Features
@@ -13,8 +10,8 @@ namespace MultiAlignCore.Data.Features
     {
         public static Dictionary<int, List<MSFeatureLight>> BuildChargeMap(UMCLight feature)
         {
-            Dictionary<int, List<MSFeatureLight>> chargeMap = new Dictionary<int, List<MSFeatureLight>>();
-            foreach (MSFeatureLight msFeature in feature.MSFeatures)
+            var chargeMap = new Dictionary<int, List<MSFeatureLight>>();
+            foreach (var msFeature in feature.MsFeatures)
             {
                 if (!chargeMap.ContainsKey(msFeature.ChargeState))
                 {

@@ -5,11 +5,11 @@
 
 	<class name="UMCLight" table="T_LCMS_Features" lazy="false">
 		<composite-id>
-			<key-property name="ID"                   column="Feature_ID" type="integer" />
-			<key-property name="GroupID"              column="Dataset_ID" type="integer" />
+			<key-property name="Id"                   column="Feature_ID" type="integer" />
+			<key-property name="GroupId"              column="Dataset_ID" type="integer" />
 		</composite-id>		
-		<property name="ClusterID"                  column="Cluster_ID"                 type="int" not-null="false"/>
-		<property name="ConformationID"             column="Conformation_ID"            type="int" not-null="false" />
+		<property name="ClusterId"                  column="Cluster_ID"                 type="int" not-null="false"/>
+		<property name="ConformationId"             column="Conformation_ID"            type="int" not-null="false" />
 		<property name="MassMonoisotopic"           column="Mass"                       type="double" not-null="false" />
 		<property name="MassMonoisotopicAligned"    column="Mass_Calibrated"            type="double" not-null="false" />
 		<property name="RetentionTime"              column="NET"                        type="double" not-null="false" />

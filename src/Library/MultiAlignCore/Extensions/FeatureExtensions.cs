@@ -1,12 +1,12 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.SequenceData;
 using MultiAlignCore.IO.Features;
 using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Extensions;
-using System;
-using System.Collections.Generic;
 
 namespace MultiAlignCore.Extensions
 {
@@ -14,8 +14,8 @@ namespace MultiAlignCore.Extensions
     {
         public static Dictionary<int, int> CreateChargeMap<T>(this List<T> features) where T : FeatureLight
         {
-            Dictionary<int, int> map = new Dictionary<int, int>();
-            foreach (T feature in features)
+            var map = new Dictionary<int, int>();
+            foreach (var feature in features)
             {
                 if (!map.ContainsKey(feature.ChargeState))
                 {
@@ -27,8 +27,8 @@ namespace MultiAlignCore.Extensions
         }
         public static Dictionary<int, List<T>> MapCharges<T>(this List<T> features) where T : FeatureLight
         {
-            Dictionary<int, List<T>> map = new Dictionary<int, List<T>>();
-            foreach (T feature in features)
+            var map = new Dictionary<int, List<T>>();
+            foreach (var feature in features)
             {
                 if (!map.ContainsKey(feature.ChargeState))
                 {
@@ -46,32 +46,32 @@ namespace MultiAlignCore.Extensions
         /// <returns></returns>
         public static Dictionary<int, List<XYZData>> CreateChargeSIC(this UMCLight feature, ISpectraProvider provider)
         {            
-            Dictionary<int, List<MSFeatureLight>> chargeMap = feature.CreateChargeMap();
-            Dictionary<int, List<XYZData>> sicMap = new Dictionary<int, List<XYZData>>();
+            var chargeMap = feature.CreateChargeMap();
+            var sicMap = new Dictionary<int, List<XYZData>>();
 
-            foreach (int charge in chargeMap.Keys)
+            foreach (var charge in chargeMap.Keys)
             {
                 chargeMap[charge].Sort(delegate(MSFeatureLight x, MSFeatureLight y)
                 {
                     return x.Scan.CompareTo(y.Scan);
                 }
                 );
-                List<XYZData> data = chargeMap[charge].ConvertAll<XYZData>(x => new XYZData(x.Scan, x.Abundance, x.Mz));
+                var data = chargeMap[charge].ConvertAll(x => new XYZData(x.Scan, x.Abundance, x.Mz));
                 sicMap.Add(charge, data);
             }
 
             if (provider != null)
             {
                 // Creates an SIC map for a given charge state of the feature.
-                foreach (int charge in sicMap.Keys)
+                foreach (var charge in sicMap.Keys)
                 {
-                    List<XYZData> data = sicMap[charge];
+                    var data = sicMap[charge];
 
                     // The data is alread sorted.
-                    int minScan = int.MaxValue;
-                    int maxScan = int.MinValue;
-                    List<double> mzValues = new List<double>();
-                    foreach (XYZData x in data)
+                    var minScan = int.MaxValue;
+                    var maxScan = int.MinValue;
+                    var mzValues = new List<double>();
+                    foreach (var x in data)
                     {
                         mzValues.Add(x.Z);
                         minScan = Math.Min(minScan, Convert.ToInt32(x.X));
@@ -79,23 +79,23 @@ namespace MultiAlignCore.Extensions
                     }
                     mzValues.Sort();
                     double mz = 0;
-                    int mid = Convert.ToInt32(mzValues.Count / 2);
+                    var mid = Convert.ToInt32(mzValues.Count / 2);
                     mz = mzValues[mid];
                     minScan -= 20;
                     maxScan += 20;
 
                     // Build the SIC
-                    List<XYZData> intensities = new List<XYZData>();
-                    for (int scan = minScan; scan < maxScan; scan++)
+                    var intensities = new List<XYZData>();
+                    for (var scan = minScan; scan < maxScan; scan++)
                     {
                         var summary = new ScanSummary();
-                        List<XYData> spectrum = provider.GetRawSpectra(scan, feature.GroupID, 1, out summary);
+                        var spectrum = provider.GetRawSpectra(scan, feature.GroupId, 1, out summary);
                         double intensity = 0;
-                        double minDistance = double.MaxValue;
-                        int index = -1;
-                        for (int i = 0; i < spectrum.Count; i++)
+                        var minDistance = double.MaxValue;
+                        var index = -1;
+                        for (var i = 0; i < spectrum.Count; i++)
                         {
-                            double distance = spectrum[i].X - mz;
+                            var distance = spectrum[i].X - mz;
                             if (distance < minDistance)
                             {
                                 index = i;
@@ -107,7 +107,7 @@ namespace MultiAlignCore.Extensions
                         {
                             intensity = spectrum[index].Y;
                         }
-                        XYZData newPoint = new XYZData(scan, intensity, mz);
+                        var newPoint = new XYZData(scan, intensity, mz);
                         intensities.Add(newPoint);
                     }
 
@@ -124,17 +124,17 @@ namespace MultiAlignCore.Extensions
         /// <returns></returns>
         public static Dictionary<int, List<XYZData>> CreateChargeSIC(this UMCLight feature)
         {
-            Dictionary<int, List<MSFeatureLight>> chargeMap = feature.CreateChargeMap();
-            Dictionary<int, List<XYZData>> sicMap = new Dictionary<int, List<XYZData>>();
+            var chargeMap = feature.CreateChargeMap();
+            var sicMap = new Dictionary<int, List<XYZData>>();
 
-            foreach (int charge in chargeMap.Keys)
+            foreach (var charge in chargeMap.Keys)
             {
                 chargeMap[charge].Sort(delegate(MSFeatureLight x, MSFeatureLight y)
                 {
                     return x.Scan.CompareTo(y.Scan);
                 }
                 );
-                List<XYZData> data = chargeMap[charge].ConvertAll<XYZData>(x => new XYZData(x.Scan, x.Abundance, x.Mz));
+                var data = chargeMap[charge].ConvertAll(x => new XYZData(x.Scan, x.Abundance, x.Mz));
                 sicMap.Add(charge, data);
             }
             return sicMap;
@@ -146,17 +146,17 @@ namespace MultiAlignCore.Extensions
         /// <returns></returns>
         public static Dictionary<int, List<XYZData>> CreateChargeSICForMonoMass(this UMCLight feature)
         {
-            Dictionary<int, List<MSFeatureLight>> chargeMap = feature.CreateChargeMap();
-            Dictionary<int, List<XYZData>> sicMap = new Dictionary<int, List<XYZData>>();
+            var chargeMap = feature.CreateChargeMap();
+            var sicMap = new Dictionary<int, List<XYZData>>();
 
-            foreach (int charge in chargeMap.Keys)
+            foreach (var charge in chargeMap.Keys)
             {
                 chargeMap[charge].Sort(delegate(MSFeatureLight x, MSFeatureLight y)
                 {
                     return x.Scan.CompareTo(y.Scan);
                 }
                 );
-                List<XYZData> data = chargeMap[charge].ConvertAll<XYZData>(x => new XYZData(x.Scan, x.Abundance, x.MassMonoisotopicAligned));
+                var data = chargeMap[charge].ConvertAll(x => new XYZData(x.Scan, x.Abundance, x.MassMonoisotopicAligned));
                 sicMap.Add(charge, data);
             }
             return sicMap;
@@ -169,10 +169,10 @@ namespace MultiAlignCore.Extensions
         public static void ReconstructUMC(this UMCLight feature, FeatureDataAccessProviders providers, bool getMsMs)
         {
             // This is easy to grab all ms features for this feature.
-            List<MSFeatureLight> msFeatures = providers.MSFeatureCache.FindByFeatureId(feature.GroupID, feature.ID);
+            var msFeatures = providers.MSFeatureCache.FindByFeatureId(feature.GroupId, feature.Id);
 
 
-            foreach (MSFeatureLight msFeature in msFeatures)
+            foreach (var msFeature in msFeatures)
             {                
                 feature.AddChildFeature(msFeature);
             }
@@ -195,24 +195,24 @@ namespace MultiAlignCore.Extensions
             // then sort it out in memory.
 
             // Get the map
-            List<MSFeatureToMSnFeatureMap> msmsFeatures = new List<MSFeatureToMSnFeatureMap>();
+            var msmsFeatures = new List<MSFeatureToMSnFeatureMap>();
 
             // Maps the id's of the MS/MS spectra
-            List<int> ids = new List<int>();
+            var ids = new List<int>();
 
             // Make a map, from the dataset, then the spectra to the ms feature Id.
-            Dictionary<int, Dictionary<int, MSFeatureToMSnFeatureMap>> map
+            var map
                             = new Dictionary<int, Dictionary<int, MSFeatureToMSnFeatureMap>>();
 
             
-            msmsFeatures =  providers.MSFeatureToMSnFeatureCache.FindByUMCFeatureId(msFeature.GroupID,
-                                                                                        msFeature.ID);
+            msmsFeatures =  providers.MSFeatureToMSnFeatureCache.FindByUMCFeatureId(msFeature.GroupId,
+                                                                                        msFeature.Id);
             // Then grab the spectra id list
-            ids = msmsFeatures.ConvertAll<int>(x => x.MSMSFeatureID);
+            ids = msmsFeatures.ConvertAll(x => x.MSMSFeatureID);
             
                         
             // construct that map here.
-            foreach (MSFeatureToMSnFeatureMap subFeature in msmsFeatures)
+            foreach (var subFeature in msmsFeatures)
             {
                 // first map the dataset id
                 if (!map.ContainsKey(subFeature.MSDatasetID))
@@ -229,27 +229,27 @@ namespace MultiAlignCore.Extensions
             }
             
             // Now we get all the spectra, map to the UMC, then the ms/ms spectra. 
-            List<MSSpectra> spectra               = providers.MSnFeatureCache.FindBySpectraId(ids);                  
+            var spectra               = providers.MSnFeatureCache.FindBySpectraId(ids);                  
             
-            Dictionary<int, Dictionary<int, MSSpectra>> spectraMap = new Dictionary<int,Dictionary<int,MSSpectra>>();
-            foreach(MSSpectra spectrum in spectra)
+            var spectraMap = new Dictionary<int,Dictionary<int,MSSpectra>>();
+            foreach(var spectrum in spectra)
             {
-                if (!spectraMap.ContainsKey(spectrum.GroupID))
+                if (!spectraMap.ContainsKey(spectrum.GroupId))
                 {
-                    spectraMap.Add(spectrum.GroupID, new Dictionary<int,MSSpectra>());
+                    spectraMap.Add(spectrum.GroupId, new Dictionary<int,MSSpectra>());
                 }
-                spectraMap[spectrum.GroupID].Add(spectrum.ID, spectrum);
+                spectraMap[spectrum.GroupId].Add(spectrum.Id, spectrum);
             }
                                         
             // Here we check the dataset.
-            if (map.ContainsKey(msFeature.GroupID))
+            if (map.ContainsKey(msFeature.GroupId))
             {
                 // then check the ms/ms spectra
-                if (map[msFeature.GroupID].ContainsKey(msFeature.ID))
+                if (map[msFeature.GroupId].ContainsKey(msFeature.Id))
                 {
                     // ok, we are sure that the spectra is present now!
-                    MSFeatureToMSnFeatureMap singleMap = map[msFeature.GroupID][msFeature.ID];
-                    MSSpectra spectrum = spectraMap[singleMap.MSDatasetID][singleMap.MSMSFeatureID];
+                    var singleMap = map[msFeature.GroupId][msFeature.Id];
+                    var spectrum = spectraMap[singleMap.MSDatasetID][singleMap.MSMSFeatureID];
                     msFeature.MSnSpectra.Add(spectrum);
                 }
             }                              
@@ -262,13 +262,13 @@ namespace MultiAlignCore.Extensions
 
             if (getMsMs)
             {
-                msmsFeatureMaps  = providers.MSFeatureToMSnFeatureCache.FindByUMCFeatureId(feature.GroupID, feature.ID);
-                mappedSequences  = providers.SequenceMsnMapCache.FindByDatasetId(feature.GroupID, feature.ID);
-                sequences        = providers.DatabaseSequenceCache.FindByDatasetId(feature.GroupID, feature.ID);
+                msmsFeatureMaps  = providers.MSFeatureToMSnFeatureCache.FindByUMCFeatureId(feature.GroupId, feature.Id);
+                mappedSequences  = providers.SequenceMsnMapCache.FindByDatasetId(feature.GroupId, feature.Id);
+                sequences        = providers.DatabaseSequenceCache.FindByDatasetId(feature.GroupId, feature.Id);
             }            
             var ids         = msmsFeatureMaps.ConvertAll(x => x.MSMSFeatureID);
             var spectra     = providers.MSnFeatureCache.FindBySpectraId(ids);
-            spectra         = spectra.Where(x => x.GroupID == feature.GroupID).ToList(); 
+            spectra         = spectra.Where(x => x.GroupId == feature.GroupId).ToList(); 
 
             // Map the sequences into peptide objects...
             // Map the MS features, spectra, and peptide sequences
@@ -283,8 +283,8 @@ namespace MultiAlignCore.Extensions
                 sequenceMap.Add(map.MsnFeatureId, map.SequenceId);
             }
 
-            spectra.ForEach(x => spectraMap.Add(x.ID, x));
-            feature.MSFeatures.ForEach(x => msFeatures.Add(x.ID, x));
+            spectra.ForEach(x => spectraMap.Add(x.Id, x));
+            feature.MsFeatures.ForEach(x => msFeatures.Add(x.Id, x));
 
             foreach (var msmsFeature in msmsFeatureMaps)
             {
@@ -310,7 +310,8 @@ namespace MultiAlignCore.Extensions
                                 continue;
 
                             hasPeptide.Add(peptide.Scan, peptide);
-                            spectrum.Peptides.Add(peptide);    
+                            spectrum.Peptides.Add(peptide);
+                            peptide.Spectrum = spectrum;
                         }
                     }                                            
                 }
@@ -332,12 +333,12 @@ namespace MultiAlignCore.Extensions
                     Scan                = sequence.Scan,
                     Mz                  = sequence.Mz,
                     MassMonoisotopic    = sequence.MassMonoisotopic,
-                    ID                  = sequence.Id
+                    Id                  = sequence.Id
                 };
 
-                if (peptideSequenceMaps.ContainsKey(newPeptide.ID)) continue;
+                if (peptideSequenceMaps.ContainsKey(newPeptide.Id)) continue;
 
-                peptideSequenceMaps.Add(newPeptide.ID, newPeptide);
+                peptideSequenceMaps.Add(newPeptide.Id, newPeptide);
             }
 
             return peptideSequenceMaps;
@@ -370,7 +371,7 @@ namespace MultiAlignCore.Extensions
             maxDrift = double.MinValue;
 
             // Find the mins
-            foreach (T feature in features)
+            foreach (var feature in features)
             {
                 minMass  = Math.Min(minMass,  feature.MassMonoisotopicAligned);
                 maxMass  = Math.Max(maxMass,  feature.MassMonoisotopicAligned);
@@ -385,7 +386,7 @@ namespace MultiAlignCore.Extensions
 
         public static bool HasMsMs(this UMCLight feature)
         {
-            foreach (MSFeatureLight msFeature in feature.MSFeatures)
+            foreach (var msFeature in feature.MsFeatures)
             {
                 bool hasMsMs = msFeature.HasMsMs();
 

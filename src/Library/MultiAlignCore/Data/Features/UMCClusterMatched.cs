@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+﻿using System.Collections.Generic;
 using PNNLOmics.Data.Features;
-using PNNLOmics.Data.MassTags;
 
 namespace MultiAlignCore.Data.Features
 {
@@ -46,7 +41,7 @@ namespace MultiAlignCore.Data.Features
         {
             get
             {
-                return Cluster.ID;
+                return Cluster.Id;
             }
         }
     }

@@ -1,9 +1,11 @@
-﻿using MultiAlign.IO;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using MultiAlign.IO;
 using MultiAlign.ViewModels.Charting;
+using MultiAlign.ViewModels.Datasets;
+using MultiAlign.ViewModels.Proteins;
 using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 
 namespace MultiAlign.ViewModels.Spectra
 {
@@ -19,7 +21,7 @@ namespace MultiAlign.ViewModels.Spectra
             Peptides = new ObservableCollection<PeptideViewModel>();            
             spectrum.Peptides.ForEach(x => Peptides.Add(new PeptideViewModel(x)));
 
-            var info = SingletonDataProviders.GetDatasetInformation(spectrum.GroupID);
+            var info = SingletonDataProviders.GetDatasetInformation(spectrum.GroupId);
             if (info != null)
             {
                 Dataset = new DatasetInformationViewModel(info);

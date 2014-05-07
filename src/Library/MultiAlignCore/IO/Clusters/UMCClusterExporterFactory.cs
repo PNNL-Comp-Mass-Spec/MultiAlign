@@ -1,15 +1,10 @@
-﻿using MultiAlignCore.Algorithms.FeatureFinding;
-using MultiAlignCore.Algorithms.Features;
+﻿using System.Collections.Generic;
+using MultiAlignCore.IO.Clusters;
 using PNNLOmicsIO.IO;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MultiAlignCore.IO.Features
 {
-    public static class UMCClusterExporterFactory
+    public static class UmcClusterExporterFactory
     {
         /// <summary>
         /// Creates a UMC Cluster  exporter
@@ -25,10 +20,10 @@ namespace MultiAlignCore.IO.Features
                     exporter = new UMCClusterCrossTabWriter();
                     break;
                 case ClusterFeatureExporters.CrossTabAbundanceSum:
-                    exporter = new UMCClusterAbundanceSumCrossTabWriter();
+                    exporter = new UmcClusterAbundanceSumCrossTabWriter();
                     break;
                 case ClusterFeatureExporters.CrossTabAbundanceSumMax:
-                    exporter = new UMCClusterAbundanceCrossTabWriter();
+                    exporter = new UmcClusterAbundanceCrossTabWriter();
                     break;
                 case ClusterFeatureExporters.MsMsMetaData:
                     exporter = new UMCClusterMsmsWriter();
@@ -60,7 +55,7 @@ namespace MultiAlignCore.IO.Features
         /// <returns></returns>
         public static IEnumerable<IFeatureClusterWriter> Create()
         {
-            List<IFeatureClusterWriter> exporters = new List<IFeatureClusterWriter>();
+            var exporters = new List<IFeatureClusterWriter>();
             exporters.Add(Create(ClusterFeatureExporters.ClusterScans));
             exporters.Add(Create(ClusterFeatureExporters.CrossTabAbundanceSum));
             exporters.Add(Create(ClusterFeatureExporters.CrossTabAbundanceSumMax));

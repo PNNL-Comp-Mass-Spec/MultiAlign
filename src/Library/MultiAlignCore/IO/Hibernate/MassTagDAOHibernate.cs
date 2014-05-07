@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using NHibernate.Criterion;
 using PNNLOmics.Data.MassTags;
 
-
 namespace MultiAlignCore.IO.Features.Hibernate
 {
     /// <summary>
@@ -21,9 +20,9 @@ namespace MultiAlignCore.IO.Features.Hibernate
         /// <returns></returns>
         public List<MassTagLight> FindNearby(double massMin, double massMax, double netMin, double netMax)
         {
-            List<ICriterion> criterionList  = new List<ICriterion>();
-            ICriterion criterionMass        = Expression.Between("MassMonoisotopic",    massMin,    massMax);
-            ICriterion criterionNet         = Expression.Between("NETAverage",          netMin,     netMax);
+            var criterionList  = new List<ICriterion>();
+            ICriterion criterionMass        = Restrictions.Between("MassMonoisotopic",    massMin,    massMax);
+            ICriterion criterionNet         = Restrictions.Between("NETAverage",          netMin,     netMax);
 
             criterionList.Add(criterionMass);
             criterionList.Add(criterionNet);
@@ -41,10 +40,10 @@ namespace MultiAlignCore.IO.Features.Hibernate
         /// <returns></returns>
         public List<MassTagLight> FindNearby(double massMin, double massMax, double netMin, double netMax, double driftMin, double driftMax)
         {
-            List<ICriterion> criterionList  = new List<ICriterion>();
-            ICriterion criterionMass        = Expression.Between("MassMonoisotopic",   massMin,    massMax);
-            ICriterion criterionNet         = Expression.Between("NETAverage",          netMin,     netMax);
-            ICriterion criterionDriftTime   = Expression.Between("DriftTime", driftMin, driftMax);
+            var criterionList  = new List<ICriterion>();
+            ICriterion criterionMass        = Restrictions.Between("MassMonoisotopic",   massMin,    massMax);
+            ICriterion criterionNet         = Restrictions.Between("NETAverage",          netMin,     netMax);
+            ICriterion criterionDriftTime   = Restrictions.Between("DriftTime", driftMin, driftMax);
 
             criterionList.Add(criterionMass);
             criterionList.Add(criterionNet);
@@ -59,8 +58,8 @@ namespace MultiAlignCore.IO.Features.Hibernate
         /// <returns></returns>
         public List<MassTagLight> FindMassTags(List<int> ids)
         {
-            ICriterion criterion            = Expression.In("ID", ids);
-            List<ICriterion> criterionList  = new List<ICriterion>();
+            ICriterion criterion            = Restrictions.In("Id", ids);
+            var criterionList  = new List<ICriterion>();
 
             criterionList.Add(criterion);
             return FindByCriteria(criterionList);

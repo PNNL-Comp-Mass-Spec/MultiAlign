@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
 
@@ -22,9 +19,9 @@ namespace MultiAlignCore.Extensions
         /// <returns></returns>
         public static Dictionary<int, List<MSFeatureLight>> CreateScanMaps(this List<MSFeatureLight> msFeatures)
         {
-            Dictionary<int, List<MSFeatureLight>> msFeatureMap = new Dictionary<int, List<MSFeatureLight>>();
+            var msFeatureMap = new Dictionary<int, List<MSFeatureLight>>();
 
-            foreach (MSFeatureLight feature in msFeatures)
+            foreach (var feature in msFeatures)
             {
                 if (!msFeatureMap.ContainsKey(feature.Scan))
                 {
@@ -41,9 +38,9 @@ namespace MultiAlignCore.Extensions
         /// <returns></returns>
         public static Dictionary<int, List<MSSpectra>> CreateScanMapsForMsMs(this List<MSSpectra> spectra)
         {
-            Dictionary<int, List<MSSpectra>> msFeatureMap = new Dictionary<int, List<MSSpectra>>();
+            var msFeatureMap = new Dictionary<int, List<MSSpectra>>();
             
-            foreach (MSSpectra spectrum in spectra)
+            foreach (var spectrum in spectra)
             {
                 if (!msFeatureMap.ContainsKey(spectrum.Scan))
                 {

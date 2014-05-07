@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Data;
-using System.IO;
 using System.Windows.Controls;
+using System.Windows.Data;
 
 namespace MultiAlign.Converters
 {
@@ -18,7 +14,7 @@ namespace MultiAlign.Converters
             if (value == null)
                 return 0;
 
-            Orientation orient = (Orientation)value;
+            var orient = (Orientation)value;
             
 
 

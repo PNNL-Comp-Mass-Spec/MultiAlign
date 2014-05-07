@@ -15,8 +15,8 @@ namespace MultiAlignCore.IO.Features.Hibernate
     /// </summary>
     public static class NHibernateUtil
     {
-		private static String m_dbLocation = null;
-		private static Configuration configuration; 
+		private static String m_dbLocation;
+		private static readonly Configuration Configuration; 
         private static ISessionFactory m_sessionFactory;
 
 		/// <summary>
@@ -24,9 +24,9 @@ namespace MultiAlignCore.IO.Features.Hibernate
 		/// </summary>
 		static NHibernateUtil()
 		{
-			configuration = new Configuration();            
-			configuration.Configure();
-			configuration.AddAssembly(typeof(NHibernateUtil).Assembly);
+            Configuration = new Configuration();
+            Configuration.Configure();
+            Configuration.AddAssembly(typeof(NHibernateUtil).Assembly);
 		}
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace MultiAlignCore.IO.Features.Hibernate
 			return SessionFactory.OpenSession();
 		}
 
-        // <summary>
+        /// <summary>
         /// Returns a session that is created from the SessionFactory. If a session already existed, it will return the existing Session, not create a new one.
         /// </summary>
         /// <returns>ISession object for the current hibernate session</returns>
@@ -74,19 +74,19 @@ namespace MultiAlignCore.IO.Features.Hibernate
 			m_dbLocation = dbLocation;
 			m_sessionFactory = null;
 
-			using (SQLiteConnection conn = new SQLiteConnection("Data Source=" + dbLocation + ";Version=3;New=True"))
+			using (var conn = new SQLiteConnection("Data Source=" + dbLocation + ";Version=3;New=True"))
 			{
 				conn.Open();
-				SchemaExport schemaExport = new SchemaExport(configuration);
+                var schemaExport = new SchemaExport(Configuration);
 				schemaExport.Execute(false, true, false, false, conn, null);
 
-                string[] optimizationCommands = new string[] {  "PRAGMA journal_mode = OFF",
+                var optimizationCommands = new[] {  "PRAGMA journal_mode = OFF",
                                                                 "PRAGMA synchronous = OFF",
                                                                 "PRAGMA page_size = 65536"
                                                             };
-                foreach (string commandText in optimizationCommands)
+                foreach (var commandText in optimizationCommands)
                 {
-                    using (SQLiteCommand command = conn.CreateCommand())
+                    using (var command = conn.CreateCommand())
                     {
                         command.CommandText = commandText;
                         command.ExecuteNonQuery();
@@ -98,15 +98,15 @@ namespace MultiAlignCore.IO.Features.Hibernate
         /// Sets the location of the database file that the Hibernate Session should be attached to. If a Session already existed,
         /// it will be killed so that a new Session can be created that points to the new database location.
         /// </summary>
-        /// <param name="dbLocation">The file location of the database file.</param>
-        /// <param name="ignoreIfMissing">Flag indicating whether or not to ignore if the file exists or not.</param>
+        /// <param name="databaseLocation">The file location of the database file.</param>
+        /// <param name="createIfMissing">Flag indicating whether or not to ignore if the file exists or not.</param>
 		public static void ConnectToDatabase(string databaseLocation, bool createIfMissing)
 		{
 			m_dbLocation = databaseLocation;
 
             // If the database does not exist, and we are trying to connect to it (not create)
             // then we have a problem.
-            bool exists = File.Exists(databaseLocation);
+            var exists = File.Exists(databaseLocation);
             if (!exists && !createIfMissing)
             {
                 throw new FileNotFoundException("The file does not exist.");
@@ -119,7 +119,7 @@ namespace MultiAlignCore.IO.Features.Hibernate
                 m_sessionFactory = null;
             }
 
-            // If the database is missing, open it.
+            // If the database is missing, and you want to create a database if it's missing, construct and open open it.
             if (createIfMissing && !exists)
             {
                 CreateDatabase(databaseLocation);
@@ -142,14 +142,14 @@ namespace MultiAlignCore.IO.Features.Hibernate
 					}
 					else
 					{
-						string connectionString = configuration.GetProperty("connection.connection_string");
-						string fileLocation = connectionString.Split('=', ';')[1];
+                        var connectionString = Configuration.GetProperty("connection.connection_string");
+						var fileLocation = connectionString.Split('=', ';')[1];
 						if (!File.Exists(fileLocation))
 						{
 							CreateDatabase(fileLocation);
 						}
 					}
-					m_sessionFactory = configuration.BuildSessionFactory();
+                    m_sessionFactory = Configuration.BuildSessionFactory();
 				}
 				return m_sessionFactory;
 			}
@@ -161,7 +161,7 @@ namespace MultiAlignCore.IO.Features.Hibernate
 		/// <param name="dbLocation">The file location of the database file</param>
 		private static void SetConfigurationDbLocation(string dbLocation)
 		{
-			configuration.SetProperty("connection.connection_string", "Data Source=" + dbLocation + ";Version=3;New=True");
+            Configuration.SetProperty("connection.connection_string", "Data Source=" + dbLocation + ";Version=3;New=True");
 		}
 
         public static string Connection
@@ -177,12 +177,12 @@ namespace MultiAlignCore.IO.Features.Hibernate
         {
             try
             {
-                NHibernateUtil.SessionFactory.Close();
+                SessionFactory.Close();
             }
             catch
             {
             }
-            NHibernateUtil.SessionFactory.Dispose();
+            SessionFactory.Dispose();
         }
 
         #endregion

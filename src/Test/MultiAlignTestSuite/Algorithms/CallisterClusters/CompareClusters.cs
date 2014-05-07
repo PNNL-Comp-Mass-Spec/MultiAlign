@@ -1,18 +1,16 @@
-﻿using MultiAlignTestSuite.Papers.Alignment.SSM;
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
+using System.Windows.Forms;
+using MultiAlignTestSuite.Papers.Alignment.SSM;
 using NUnit.Framework;
 using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
 using OxyPlot.WindowsForms;
-using PNNLOmics.Algorithms.SpectralComparisons;
 using PNNLOmics.Algorithms.SpectralProcessing;
 using PNNLOmics.Data;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
-using System.Windows.Forms;
-
 
 namespace MultiAlignTestSuite.Algorithms
 {
@@ -23,13 +21,13 @@ namespace MultiAlignTestSuite.Algorithms
 
         private MSSpectra ReadSpectrum(string path)
         {
-            MSSpectra spectrum  = new MSSpectra();
-            string[] lines      = File.ReadAllLines(path);
+            var spectrum  = new MSSpectra();
+            var lines      = File.ReadAllLines(path);
 
             spectrum.Peaks = new List<XYData>();
-            foreach (string line in lines)
+            foreach (var line in lines)
             {
-                string[] data = line.Split('\t');
+                var data = line.Split('\t');
                 if (data.Length > 1)
                 {
                     spectrum.Peaks.Add(new XYData(Convert.ToDouble(data[0]),
@@ -60,10 +58,10 @@ namespace MultiAlignTestSuite.Algorithms
             plotModel1.Axes.Add(linearAxis1);
 
             var xseries = new StemSeries();
-            for (int j = 0; j < peaksY.Count; j++)
+            for (var j = 0; j < peaksY.Count; j++)
             {
-                XYData peakX = peaksX[j];
-                XYData peakY = peaksY[j];
+                var peakX = peaksX[j];
+                var peakY = peaksY[j];
 
                 double value = 0;
                 if (peakX.Y > 0 && peakY.Y > 0)
@@ -73,29 +71,27 @@ namespace MultiAlignTestSuite.Algorithms
                 xseries.Points.Add(new DataPoint(peakX.X, value));
             }
             xseries.Color = OxyColors.Green;
-            xseries.Color.ChangeAlpha(100);
-            //plotModel1.Series.Add(xseries);
-
+                        
             var series = new StemSeries();
             series.Title = "Spectra X";
             double max = 0;
-            foreach (XYData datum in peaksX)
+            foreach (var datum in peaksX)
             {
                 max = Math.Max(max, datum.Y);
             }
-            foreach (XYData datum in peaksX)
+            foreach (var datum in peaksX)
             {
                 series.Points.Add(new DataPoint(datum.X, datum.Y / max));
             }
             plotModel1.Series.Add(series);
 
-            foreach (XYData datum in peaksY)
+            foreach (var datum in peaksY)
             {
                 max = Math.Max(max, datum.Y);
             }
             var series2 = new StemSeries();
             series2.Title = "Spectra Y";
-            foreach (XYData datum in peaksY)
+            foreach (var datum in peaksY)
             {
                 series2.Points.Add(new DataPoint(datum.X, (datum.Y * -1) / max));
             }
@@ -107,18 +103,18 @@ namespace MultiAlignTestSuite.Algorithms
 
         private void DisplayComparisonPlot(MSSpectra spectrumX, MSSpectra spectrumY, double mzTolerance, string path = "comparison.png", string newTitle = "MS/MS Spectra")
         {
-            PlotModel model = CreatePlot(spectrumX.Peaks, spectrumY.Peaks, mzTolerance);
+            var model = CreatePlot(spectrumX.Peaks, spectrumY.Peaks, mzTolerance);
             model.Title = newTitle;
 
-            Plot plot = new Plot();
+            var plot = new Plot();
             plot.Model = model;
-            Form form = new Form();
+            var form = new Form();
             form.Size = System.Windows.Forms.Screen.PrimaryScreen.WorkingArea.Size;
             plot.Dock = System.Windows.Forms.DockStyle.Fill;
             form.Controls.Add(plot);
             form.ShowDialog();
 
-            using (Bitmap bitmap = new Bitmap(form.Width, form.Height))
+            using (var bitmap = new Bitmap(form.Width, form.Height))
             {
                 form.DrawToBitmap(bitmap, form.DisplayRectangle);
                 bitmap.Save(path);
@@ -146,9 +142,9 @@ namespace MultiAlignTestSuite.Algorithms
             plotModel1.Axes.Add(linearAxis1);
 
             var xseries = new StemSeries();
-            for (int j = 0; j < peaksX.Count; j++)
+            for (var j = 0; j < peaksX.Count; j++)
             {
-                XYData peakX = peaksX[j];
+                var peakX = peaksX[j];
 
                 double value = 0;
                 if (peakX.Y  > 0)
@@ -157,18 +153,16 @@ namespace MultiAlignTestSuite.Algorithms
                 }
                 xseries.Points.Add(new DataPoint(peakX.X, value));
             }
-            xseries.Color = OxyColors.Green;
-            xseries.Color.ChangeAlpha(100);
-            //plotModel1.Series.Add(xseries);
+            xseries.Color = OxyColors.Green;                        
 
             var series = new StemSeries();
             series.Title = "Spectra X";
             double max = 0;
-            foreach (XYData datum in peaksX)
+            foreach (var datum in peaksX)
             {
                 max = Math.Max(max, datum.Y);
             }
-            foreach (XYData datum in peaksX)
+            foreach (var datum in peaksX)
             {
                 series.Points.Add(new DataPoint(datum.X, datum.Y / max));
             }
@@ -180,18 +174,18 @@ namespace MultiAlignTestSuite.Algorithms
 
         private void DisplaySpectra(MSSpectra spectrumX, double mzTolerance, string path = "comparison.png", string newTitle = "MS/MS Spectra")
         {
-            PlotModel model = CreatePlot(spectrumX.Peaks, mzTolerance);
+            var model = CreatePlot(spectrumX.Peaks, mzTolerance);
             model.Title = newTitle;
 
-            Plot plot = new Plot();
+            var plot = new Plot();
             plot.Model = model;
-            Form form = new Form();
+            var form = new Form();
             form.Size = System.Windows.Forms.Screen.PrimaryScreen.WorkingArea.Size;
             plot.Dock = System.Windows.Forms.DockStyle.Fill;
             form.Controls.Add(plot);
             form.ShowDialog();
 
-            using (Bitmap bitmap = new Bitmap(form.Width, form.Height))
+            using (var bitmap = new Bitmap(form.Width, form.Height))
             {
                 form.DrawToBitmap(bitmap, form.DisplayRectangle);
                 bitmap.Save(path);
@@ -202,18 +196,18 @@ namespace MultiAlignTestSuite.Algorithms
         [TestCase(@"m:\clusters\99665", SpectralComparison.CosineDotProduct, .8)]
         public void Create(string directory, SpectralComparison comparerType, double percent)
         {
-            ISpectralComparer comparer = SpectralComparerFactory.CreateSpectraComparer(comparerType, percent: percent);
+            var comparer = SpectralComparerFactory.CreateSpectraComparer(comparerType, percent);
 
-            List<MSSpectra> spectra = new List<MSSpectra>();
-            string[] files          = Directory.GetFiles(directory, "*.txt");
+            var spectra = new List<MSSpectra>();
+            var files          = Directory.GetFiles(directory, "*.txt");
             
-            foreach (string file in files)
+            foreach (var file in files)
             {
                 spectra.Add(ReadSpectrum(file));
             }
 
-            List<double> values = new List<double>();
-            for (int i = 0; i < spectra.Count; i++)
+            var values = new List<double>();
+            for (var i = 0; i < spectra.Count; i++)
             {
                 //for (int j = i + 1; j < spectra.Count; j++) 
                 {
@@ -227,7 +221,7 @@ namespace MultiAlignTestSuite.Algorithms
                 }
             }
 
-            string baseName = Path.GetFileName(directory);
+            var baseName = Path.GetFileName(directory);
            // Console.WriteLine("{0} - {1}", baseName, values.Average());
            // values.ForEach(x => Console.WriteLine("\t{0}", x));
         }

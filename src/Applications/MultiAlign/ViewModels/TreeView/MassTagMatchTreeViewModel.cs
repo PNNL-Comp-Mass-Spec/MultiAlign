@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using MultiAlignCore.Data;
-using System.Collections.ObjectModel;
+﻿using MultiAlignCore.Data;
 
 namespace MultiAlign.ViewModels.TreeView
 {
@@ -11,15 +6,9 @@ namespace MultiAlign.ViewModels.TreeView
     /// <summary>
     /// 
     /// </summary>
-    public class MassTagMatchTreeViewModel : TreeItemViewModel
+    public sealed class MassTagMatchTreeViewModel : TreeItemViewModel
     {
-        private ClusterToMassTagMap m_match;
-        
-        public MassTagMatchTreeViewModel(ClusterToMassTagMap match)
-            : this(match, null)
-        {
-
-        }
+        private readonly ClusterToMassTagMap m_match;
 
         public MassTagMatchTreeViewModel(ClusterToMassTagMap match, UMCClusterTreeViewModel parent)
         {
@@ -27,7 +16,7 @@ namespace MultiAlign.ViewModels.TreeView
             m_parent = parent;
         }
 
-        public string Name
+        public override string Name
         {
             get
             {

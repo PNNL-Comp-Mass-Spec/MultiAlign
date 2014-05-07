@@ -1,4 +1,4 @@
-﻿namespace MultiAlign.ViewModels
+﻿namespace MultiAlign.ViewModels.Datasets
 {
     public class DatasetResolveMatchViewModel: ViewModelBase
     {

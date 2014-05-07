@@ -20,22 +20,15 @@ namespace MultiAlignCore.IO.MTDB
         /// <summary>
         /// Constructor.
         /// </summary>
-        public MTSMassTagDatabaseLoader()
-        {
-            UserName        = DEFAULT_USERNAME;
-            Password        = DEFAULT_PASSWORD;
-        }
-        /// <summary>
-        /// Constructor.
-        /// </summary>
         /// <param name="databaseName">Database name.</param>
         /// <param name="server">Server the database is hosted on.</param>
-        public MTSMassTagDatabaseLoader(string databaseName, string server)
+        public MTSMassTagDatabaseLoader(string databaseName, string server, Algorithms.Options.MassTagDatabaseOptions options)
         {
             UserName        = DEFAULT_USERNAME;
             Password        = DEFAULT_PASSWORD;
             DatabaseName    = databaseName;
-            ServerName      = server; 
+            ServerName      = server;
+            Options         = options;
         }
 
         #region Properties
@@ -78,7 +71,7 @@ namespace MultiAlignCore.IO.MTDB
         /// </summary>
         /// <param name="connectionString">Connection to the database.</param>
         /// <returns></returns>
-        protected override System.Data.IDbConnection CreateConnection(string connectionString)
+        protected override IDbConnection CreateConnection(string connectionString)
         {
             return new SqlConnection(connectionString);
         }

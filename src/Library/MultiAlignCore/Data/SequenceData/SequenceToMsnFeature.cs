@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace MultiAlignCore.Data.SequenceData
+﻿namespace MultiAlignCore.Data.SequenceData
 {
     /// <summary>
     /// Maps the Database Search Sequence to an MSn feature
@@ -19,7 +14,7 @@ namespace MultiAlignCore.Data.SequenceData
         
         public override bool Equals(object obj)
         {
-            SequenceToMsnFeature other = (SequenceToMsnFeature)obj;
+            var other = (SequenceToMsnFeature)obj;
 
             if (other.SequenceId != SequenceId)
                 return false;
@@ -39,10 +34,10 @@ namespace MultiAlignCore.Data.SequenceData
         /// <returns></returns>
         public override int GetHashCode()
         {
-            int hash = 17;                                                            
-            hash     = hash * 23 + this.SequenceId.GetHashCode();
-            hash     = hash * 23 + this.MsnFeatureId.GetHashCode();
-            hash     = hash * 23 + this.DatasetId.GetHashCode();            
+            var hash = 17;                                                            
+            hash     = hash * 23 + SequenceId.GetHashCode();
+            hash     = hash * 23 + MsnFeatureId.GetHashCode();
+            hash     = hash * 23 + DatasetId.GetHashCode();            
             return hash;
         }
     }

@@ -1,14 +1,13 @@
 ﻿using System;
-using MultiAlignCore.Data.MetaData;
-using PNNLOmics.Data.MassTags;
 using System.Collections.Generic;
+using System.IO;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.Features;
-using MultiAlignCore.Data.MassTags;
+using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO.Features;
 using PNNLOmics.Data;
-using MultiAlignCore.Data;
 using PNNLOmics.Data.Features;
+using PNNLOmics.Data.MassTags;
 using PNNLOmics.Extensions;
 using PNNLOmicsIO.IO;
 
@@ -16,88 +15,6 @@ namespace MultiAlignCore.Extensions
 {
     public static class ClusterExtensions
     {        
-        /// <summary>
-        /// Creates a charge map for a given ms feature list.
-        /// </summary>
-        /// <param name="feature"></param>
-        /// <returns></returns>
-        public static Dictionary<int, int> CreateClusterSizeHistogram(this List<UMCClusterLight> clusters)
-        {
-            Dictionary<int, int> map = new Dictionary<int, int>();
-            foreach (UMCClusterLight cluster in clusters)
-            {
-                if (!map.ContainsKey(cluster.MemberCount))
-                {
-                    map.Add(cluster.MemberCount, 0);
-                }
-                map[cluster.MemberCount]++;
-            }
-
-            return map;
-        }
-        /// <summary>
-        /// Creates a charge map for a given ms feature list.
-        /// </summary>
-        /// <param name="feature"></param>
-        /// <returns></returns>
-        public static Dictionary<int, int> CreateClusterDatasetMemeberSizeHistogram(this List<UMCClusterLight> clusters)
-        {
-            Dictionary<int, int> map = new Dictionary<int, int>();
-            foreach (UMCClusterLight cluster in clusters)
-            {
-                if (!map.ContainsKey(cluster.DatasetMemberCount))
-                {
-                    map.Add(cluster.DatasetMemberCount, 0);
-                }
-                map[cluster.DatasetMemberCount]++;
-            }
-
-            return map;
-        }
-
-
-        public static Dictionary<int, int> BuildChargeStateHistogram(this IEnumerable<UMCClusterLight> clusters)
-        {
-            var chargeHistogram = new Dictionary<int, int>();
-            for (var i = 1; i < 10; i++)
-            {
-                chargeHistogram.Add(i, 0);
-            }
-            foreach (var cluster in clusters)
-            {
-                foreach (var feature in cluster.Features)
-                {
-                    var chargeMap = feature.CreateChargeMap();
-                    foreach (var chargeDouble in chargeMap.Keys)
-                    {                     
-                        if (!chargeHistogram.ContainsKey(chargeDouble))
-                            chargeHistogram.Add(chargeDouble, 0);
-                        chargeHistogram[chargeDouble] = chargeHistogram[chargeDouble] + 1;
-                    }
-                }
-            }
-            return chargeHistogram;
-        }
-
-        public static Dictionary<int, int> BuildChargeStateHistogram(this UMCClusterLight cluster)
-        {
-            var chargeHistogram = new Dictionary<int, int>();
-            for (var i = 1; i < 10; i++)
-            {
-                chargeHistogram.Add(i, 0);
-            }
-            foreach (var feature in cluster.Features)
-            {
-                var chargeMap = feature.CreateChargeMap();
-                foreach (var charge in chargeMap.Keys)
-                {
-                    if (!chargeHistogram.ContainsKey(charge))
-                        chargeHistogram.Add(charge, 0);
-                    chargeHistogram[charge] = chargeHistogram[charge] + 1;
-                }
-            }
-            return chargeHistogram;
-        }
        
         /// <summary>
         /// Gets a cluster and it's subsequent data structures.
@@ -118,11 +35,11 @@ namespace MultiAlignCore.Extensions
         {
             cluster.Features.Clear();
 
-            List<UMCLight> features = providers.FeatureCache.FindByClusterID(cluster.ID);
+            var features = providers.FeatureCache.FindByClusterID(cluster.Id);
             
-            int totalSpectra    = 0;
-            int totalIdentified = 0;
-            foreach (UMCLight feature in features)
+            var totalSpectra    = 0;
+            var totalIdentified = 0;
+            foreach (var feature in features)
             {
                 cluster.AddChildFeature(feature);
 
@@ -130,10 +47,10 @@ namespace MultiAlignCore.Extensions
                 {
                     feature.ReconstructUMC(providers, getMsMs);
 
-                    foreach (MSFeatureLight msFeature in feature.MSFeatures)
+                    foreach (var msFeature in feature.MsFeatures)
                     {
                         totalSpectra += msFeature.MSnSpectra.Count;
-                        foreach (MSSpectra spectrum in msFeature.MSnSpectra)
+                        foreach (var spectrum in msFeature.MSnSpectra)
                         {
                             if (spectrum.Peptides.Count > 0)
                                 totalIdentified++;
@@ -153,13 +70,13 @@ namespace MultiAlignCore.Extensions
         /// <returns></returns>
         public static List<Peptide> FindPeptides(this UMCClusterLight cluster)
         {
-            List<Peptide> peptides = new List<Peptide>();
+            var peptides = new List<Peptide>();
 
-            foreach (UMCLight feature in cluster.Features)
+            foreach (var feature in cluster.Features)
             {
-                foreach (MSFeatureLight msFeature in feature.MSFeatures)
+                foreach (var msFeature in feature.MsFeatures)
                 {
-                    foreach (MSSpectra spectrum in msFeature.MSnSpectra)
+                    foreach (var spectrum in msFeature.MSnSpectra)
                     {
                         peptides.AddRange(spectrum.Peptides);
                     }
@@ -175,11 +92,11 @@ namespace MultiAlignCore.Extensions
         /// <returns></returns>
         public static List<MSSpectra> GetLoadedSpectra(this UMCClusterLight cluster)
         {
-            List<MSSpectra> spectra = new List<MSSpectra>();
+            var spectra = new List<MSSpectra>();
 
-            foreach (UMCLight feature in cluster.Features)
+            foreach (var feature in cluster.Features)
             {
-                foreach (MSFeatureLight msFeature in feature.MSFeatures)
+                foreach (var msFeature in feature.MsFeatures)
                 {
                     spectra.AddRange(msFeature.MSnSpectra);
                 }
@@ -194,7 +111,7 @@ namespace MultiAlignCore.Extensions
         /// <returns></returns>
         public static List<MSSpectra> FindSpectra(this UMCClusterLight cluster, FeatureDataAccessProviders providers)
         {
-            List<MSSpectra> peptides = new List<MSSpectra>();
+            var peptides = new List<MSSpectra>();
             return peptides;
         }
 
@@ -206,10 +123,10 @@ namespace MultiAlignCore.Extensions
         /// <returns></returns>
         public static List<MSSpectra> FindSpectra(this UMCClusterLight cluster)
         {
-            List<MSSpectra> peptides = new List<MSSpectra>();
-            foreach (UMCLight feature in cluster.Features)
+            var peptides = new List<MSSpectra>();
+            foreach (var feature in cluster.Features)
             {
-                foreach (MSFeatureLight msFeature in feature.MSFeatures)
+                foreach (var msFeature in feature.MsFeatures)
                 {
                     peptides.AddRange(msFeature.MSnSpectra);
                 }
@@ -228,73 +145,73 @@ namespace MultiAlignCore.Extensions
                                                                     MassTagDatabase             database)
         {
 
-            List<UMCClusterLightMatched> matchedClusters = new List<UMCClusterLightMatched>();
-            List<MassTagToCluster> matchedTags           = new List<Data.MassTagToCluster>();
+            var matchedClusters = new List<UMCClusterLightMatched>();
+            var matchedTags           = new List<MassTagToCluster>();
 
             // Maps a cluster ID to a cluster that was matched (or not in which case it will have zero matches).
-            Dictionary<int, UMCClusterLightMatched> clusterMap               = new Dictionary<int, UMCClusterLightMatched>();
+            var clusterMap               = new Dictionary<int, UMCClusterLightMatched>();
             
             // Maps the mass tags to clusters, the second dictionary is for the conformations.
-            Dictionary<int, Dictionary<int, MassTagToCluster>> massTagMap = 
-                new Dictionary<int, Dictionary<int, Data.MassTagToCluster>>();
+            var massTagMap = 
+                new Dictionary<int, Dictionary<int, MassTagToCluster>>();
 
             // Index the clusters.
-            foreach (UMCClusterLight cluster in clusters)
+            foreach (var cluster in clusters)
             {
-                if (!clusterMap.ContainsKey(cluster.ID))
+                if (!clusterMap.ContainsKey(cluster.Id))
                 {
-                    UMCClusterLightMatched matchedCluster = new UMCClusterLightMatched();
+                    var matchedCluster = new UMCClusterLightMatched();
                     matchedCluster.Cluster           = cluster;
-                    clusterMap.Add(cluster.ID, matchedCluster);
+                    clusterMap.Add(cluster.Id, matchedCluster);
                 }
             }
 
             if (database != null)
             {
                 // Index the mass tags.
-                foreach (MassTagLight tag in database.MassTags)
+                foreach (var tag in database.MassTags)
                 {
-                    if (!massTagMap.ContainsKey(tag.ID))
+                    if (!massTagMap.ContainsKey(tag.Id))
                     {
-                        massTagMap.Add(tag.ID, new Dictionary<int, MassTagToCluster>());
+                        massTagMap.Add(tag.Id, new Dictionary<int, MassTagToCluster>());
                     }
-                    if (!massTagMap[tag.ID].ContainsKey(tag.ConformationID))
+                    if (!massTagMap[tag.Id].ContainsKey(tag.ConformationId))
                     {
-                        MassTagToCluster matchedTag = new Data.MassTagToCluster();
+                        var matchedTag = new MassTagToCluster();
                         matchedTag.MassTag = tag;                        
-                        massTagMap[tag.ID].Add(tag.ConformationID, matchedTag);
+                        massTagMap[tag.Id].Add(tag.ConformationId, matchedTag);
                     }
                 }
 
                 // Keeps track of all the proteins that we have mapped so far.
-                Dictionary<int, ProteinToMassTags> proteinList = new Dictionary<int,Data.ProteinToMassTags>();
+                var proteinList = new Dictionary<int,ProteinToMassTags>();
 
                 // Link up the protein data
-                foreach (int massTagId in massTagMap.Keys)
+                foreach (var massTagId in massTagMap.Keys)
                 {
-                    foreach (int conformationID in massTagMap[massTagId].Keys)
+                    foreach (var conformationID in massTagMap[massTagId].Keys)
                     {
-                        MassTagToCluster clusterTag = massTagMap[massTagId][conformationID];
+                        var clusterTag = massTagMap[massTagId][conformationID];
 
                         // Here we make sure we link up the protein data too
                         if (database.Proteins.ContainsKey(massTagId))
                         {
                             // Get a list of the proteins this tag mapped to.
-                            List<Protein> proteins = database.Proteins[massTagId];
+                            var proteins = database.Proteins[massTagId];
 
                             // Then for each protein, wrap it with a proteintomasstag map, then
                             //    mapping the tag to the protein
                             //    and mapping the protein to the tags.
-                            foreach (Protein p in proteins)
+                            foreach (var p in proteins)
                             {
-                                if (!proteinList.ContainsKey(p.ProteinID))
+                                if (!proteinList.ContainsKey(p.ProteinId))
                                 {
-                                    ProteinToMassTags tempProtein   = new Data.ProteinToMassTags();
+                                    var tempProtein   = new ProteinToMassTags();
                                     tempProtein.Protein             = p;
-                                    proteinList.Add(p.ProteinID, tempProtein);                                    
+                                    proteinList.Add(p.ProteinId, tempProtein);                                    
                                 }
 
-                                ProteinToMassTags protein = proteinList[p.ProteinID];
+                                var protein = proteinList[p.ProteinId];
 
                                 // Double link the data so we can go back and forth
                                 protein.MassTags.Add(clusterTag);
@@ -306,12 +223,12 @@ namespace MultiAlignCore.Extensions
             }
             
             // Index and align matches
-            foreach (ClusterToMassTagMap match in matches)
+            foreach (var match in matches)
             {
                 // Find the cluster map
                 if (clusterMap.ContainsKey(match.ClusterId))
                 {
-                    UMCClusterLightMatched cluster           = clusterMap[match.ClusterId];
+                    var cluster           = clusterMap[match.ClusterId];
                     cluster.ClusterMatches.Add(match);
 
                     MassTagToCluster tag = null;
@@ -324,30 +241,30 @@ namespace MultiAlignCore.Extensions
                 }
             }
 
-            foreach (int clusterId in clusterMap.Keys)
+            foreach (var clusterId in clusterMap.Keys)
             {
                 matchedClusters.Add(clusterMap[clusterId]);
             }
 
-            foreach (int tagId in massTagMap.Keys)
+            foreach (var tagId in massTagMap.Keys)
             {
-                foreach (int conformerId in massTagMap[tagId].Keys)
+                foreach (var conformerId in massTagMap[tagId].Keys)
                 {
                     matchedTags.Add(massTagMap[tagId][conformerId]);
                 }
             }
 
-            Tuple<List<UMCClusterLightMatched>, List<MassTagToCluster>> tuple =
-                new Tuple<List<UMCClusterLightMatched>, List<Data.MassTagToCluster>>(matchedClusters, matchedTags);
+            var tuple =
+                new Tuple<List<UMCClusterLightMatched>, List<MassTagToCluster>>(matchedClusters, matchedTags);
 
             return tuple;
         }
 
         public static bool HasMsMs(this UMCClusterLight cluster)
         {
-            foreach (UMCLight feature in cluster.Features)
+            foreach (var feature in cluster.Features)
             {
-                bool hasMsMs = feature.HasMsMs();
+                var hasMsMs = feature.HasMsMs();
                 if (hasMsMs)
                 {
                     return true;
@@ -359,8 +276,8 @@ namespace MultiAlignCore.Extensions
         public static void ExportMsMs(this UMCClusterLight cluster, string path, List<DatasetInformation> datasets, IMsMsSpectraWriter writer)
         {
             // Let's map the datasets first.
-            Dictionary<int, ISpectraProvider> readers = new Dictionary<int,ISpectraProvider>();    
-            Dictionary<int , DatasetInformation> information = new Dictionary<int,DatasetInformation>();
+            var readers = new Dictionary<int,ISpectraProvider>();    
+            var information = new Dictionary<int,DatasetInformation>();
 
             datasets.ForEach(x => information.Add(x.DatasetId, x));
 
@@ -368,27 +285,27 @@ namespace MultiAlignCore.Extensions
             // The point is, each cluster or feature may have come from a different raw data source...
             // since we dont store all of the data in memory, we have to fetch it from the appropriate source.
             // This means that we have to go into the raw data and get the scans for an MSMS spectra.
-            foreach (UMCLight feature in cluster.Features)
+            foreach (var feature in cluster.Features)
             {
-                if (!readers.ContainsKey(feature.GroupID))
+                if (!readers.ContainsKey(feature.GroupId))
                 {
-                    if (information.ContainsKey(feature.GroupID))
+                    if (information.ContainsKey(feature.GroupId))
                     {
-                        DatasetInformation singleInfo = information[feature.GroupID];
+                        var singleInfo = information[feature.GroupId];
 
                         if (singleInfo.Raw != null && singleInfo.RawPath != null)
                         {
                             // Make sure that we have a file.
-                            if (!System.IO.File.Exists(singleInfo.RawPath))
+                            if (!File.Exists(singleInfo.RawPath))
                                 continue;
 
                             // Here we create a data file reader for the file we want to access.
-                            ISpectraProvider provider = RawLoaderFactory.CreateFileReader(singleInfo.RawPath);
+                            var provider = RawLoaderFactory.CreateFileReader(singleInfo.RawPath);
                             // Then we make sure we key it to the provider.  
-                            provider.AddDataFile(singleInfo.RawPath, feature.GroupID);
+                            provider.AddDataFile(singleInfo.RawPath, feature.GroupId);
                             // Then make sure we map it for a dataset, so when we sort through a cluster
                             // we make sure that we can access in O(1) time.
-                            readers.Add(feature.GroupID, provider);
+                            readers.Add(feature.GroupId, provider);
                         }
                     }
                 }
@@ -396,18 +313,18 @@ namespace MultiAlignCore.Extensions
 
             // We flag the first write, so that if the file exists, we overwrite.  They should have done 
             // checking to make sure that the file was already created...we dont care.
-            bool firstWrite = true;
-            foreach (UMCLight feature in cluster.Features)
+            var firstWrite = true;
+            foreach (var feature in cluster.Features)
             {
-                if (readers.ContainsKey(feature.GroupID))
+                if (readers.ContainsKey(feature.GroupId))
                 {
-                    ISpectraProvider provider = readers[feature.GroupID];
-                    foreach (MSFeatureLight msFeature in feature.MSFeatures)
+                    var provider = readers[feature.GroupId];
+                    foreach (var msFeature in feature.MsFeatures)
                     {
-                        foreach(MSSpectra spectrum in msFeature.MSnSpectra)
+                        foreach(var spectrum in msFeature.MSnSpectra)
                         {
                             var summary       = new ScanSummary();
-                            List<XYData> data = provider.GetRawSpectra(spectrum.Scan, spectrum.GroupID, out summary);
+                            var data = provider.GetRawSpectra(spectrum.Scan, spectrum.GroupId, out summary);
                             spectrum.Peaks    = data;
                             spectrum.ScanMetaData = summary;
                         }

@@ -1,8 +1,3 @@
-using System;
-using PNNLOmics.Data.Features;
-using PNNLOmics.Data.MassTags;
-
-
 namespace MultiAlignCore.Data
 {
 	public class ClusterToMassTagMap 
@@ -30,25 +25,22 @@ namespace MultiAlignCore.Data
         
 		public override bool Equals(object obj)
 		{
-			ClusterToMassTagMap clusterToMassTagMap = (ClusterToMassTagMap)obj;
+			var clusterToMassTagMap = (ClusterToMassTagMap)obj;
 
 			if (clusterToMassTagMap == null)
 			{
 				return false;
 			}
-			else if (!this.ClusterId.Equals(clusterToMassTagMap.ClusterId))
-			{
-				return false;
-			}
-			else
-			{
-				return this.MassTagId.Equals(clusterToMassTagMap.MassTagId);
-			}
+		    if (!ClusterId.Equals(clusterToMassTagMap.ClusterId))
+		    {
+		        return false;
+		    }
+		    return MassTagId.Equals(clusterToMassTagMap.MassTagId);
 		}
 
 		public override int GetHashCode()
 		{
-			int hash = 17;
+			var hash = 17;
 
 			hash = hash * 23 + m_clusterId.GetHashCode();
 			hash = hash * 23 + m_massTagId.GetHashCode();

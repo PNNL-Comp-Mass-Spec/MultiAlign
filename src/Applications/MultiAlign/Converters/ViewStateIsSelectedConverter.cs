@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Data;
-using MultiAlign.Windows;
-using MultiAlign.Data;
-using System.ComponentModel;
-using MultiAlign;
 using MultiAlign.Data.States;
 
 namespace MultiAlign.Converters
@@ -30,7 +26,7 @@ namespace MultiAlign.Converters
                 return false;
             }
 
-            ViewState step = (ViewState)value;
+            var step = (ViewState)value;
             bool? vis = false;
 
             if (step == ViewState)

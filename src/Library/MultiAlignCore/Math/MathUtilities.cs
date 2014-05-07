@@ -1,4 +1,5 @@
 using System;
+
 /*
 	**************************************************************************
 	**
@@ -142,17 +143,17 @@ namespace Cephes
 		/// <summary>
 		/// approximation for 0 <= |y - 0.5| <= 3/8 
 		/// </summary>
-		static double [] P0 =  new double[]{-5.99633501014107895267E1, 9.80010754185999661536E1, -5.66762857469070293439E1, 1.39312609387279679503E1, -1.23916583867381258016E0} ;
-		static double [] Q0 =  new double[]{1.95448858338141759834E0, 4.67627912898881538453E0, 8.63602421390890590575E1, -2.25462687854119370527E2, 2.00260212380060660359E2, -8.20372256168333339912E1, 1.59056225126211695515E1, -1.18331621121330003142E0 };
+		static double [] P0 = {-5.99633501014107895267E1, 9.80010754185999661536E1, -5.66762857469070293439E1, 1.39312609387279679503E1, -1.23916583867381258016E0};
+		static double [] Q0 = {1.95448858338141759834E0, 4.67627912898881538453E0, 8.63602421390890590575E1, -2.25462687854119370527E2, 2.00260212380060660359E2, -8.20372256168333339912E1, 1.59056225126211695515E1, -1.18331621121330003142E0 };
 		/// <summary>
 		/// Approximation for interval z = sqrt(-2 log y ) between 2 and 8 i.e., y between exp(-2) = .135 and exp(-32) = 1.27e-14.
 		/// </summary>
-		static double [] P1 = new double[]{4.05544892305962419923E0, 3.15251094599893866154E1,5.71628192246421288162E1, 4.40805073893200834700E1,1.46849561928858024014E1, 2.18663306850790267539E0, -1.40256079171354495875E-1, -3.50424626827848203418E-2, -8.57456785154685413611E-4 };
-		static double [] Q1 = new double[]{1.57799883256466749731E1, 4.53907635128879210584E1, 4.13172038254672030440E1, 1.50425385692907503408E1, 2.50464946208309415979E0, -1.42182922854787788574E-1, -3.80806407691578277194E-2, -9.33259480895457427372E-4};		/// <summary>
+		static double [] P1 = {4.05544892305962419923E0, 3.15251094599893866154E1,5.71628192246421288162E1, 4.40805073893200834700E1,1.46849561928858024014E1, 2.18663306850790267539E0, -1.40256079171354495875E-1, -3.50424626827848203418E-2, -8.57456785154685413611E-4 };
+		static double [] Q1 = {1.57799883256466749731E1, 4.53907635128879210584E1, 4.13172038254672030440E1, 1.50425385692907503408E1, 2.50464946208309415979E0, -1.42182922854787788574E-1, -3.80806407691578277194E-2, -9.33259480895457427372E-4};		/// <summary>
 		/// Approximation for interval z = sqrt(-2 log y ) between 8 and 64 i.e., y between exp(-32) = 1.27e-14 and exp(-2048) = 3.67e-890.
 		/// </summary>
-		static double [] P2 =  new double[]{3.23774891776946035970E0, 6.91522889068984211695E0,	3.93881025292474443415E0, 1.33303460815807542389E0,	2.01485389549179081538E-1, 1.23716634817820021358E-2, 3.01581553508235416007E-4, 2.65806974686737550832E-6, 6.23974539184983293730E-9 };
-		static double [] Q2 = new double[] {6.02427039364742014255E0, 3.67983563856160859403E0, 1.37702099489081330271E0, 2.16236993594496635890E-1, 1.34204006088543189037E-2, 3.28014464682127739104E-4,	2.89247864745380683936E-6, 6.79019408009981274425E-9};
+		static double [] P2 = {3.23774891776946035970E0, 6.91522889068984211695E0,	3.93881025292474443415E0, 1.33303460815807542389E0,	2.01485389549179081538E-1, 1.23716634817820021358E-2, 3.01581553508235416007E-4, 2.65806974686737550832E-6, 6.23974539184983293730E-9 };
+		static double [] Q2 = {6.02427039364742014255E0, 3.67983563856160859403E0, 1.37702099489081330271E0, 2.16236993594496635890E-1, 1.34204006088543189037E-2, 3.28014464682127739104E-4,	2.89247864745380683936E-6, 6.79019408009981274425E-9};
 		
 		
 		/// <summary>
@@ -168,13 +169,13 @@ namespace Cephes
 		public static double StandardDeviation(double[] num) 
 		{ 
 			double Sum = 0.0, SumOfSqrs = 0.0; 
-			for (int i=0; i<num.Length; i++) 
+			for (var i=0; i<num.Length; i++) 
 			{ 
 				Sum += num[i]; 
 				SumOfSqrs += num[i] * num[i]; 
 			} 
-			double topSum = (num.Length * SumOfSqrs) - (Math.Pow(Sum, 2)); 
-			double n = (double)num.Length; 
+			var topSum = (num.Length * SumOfSqrs) - (Math.Pow(Sum, 2)); 
+			var n = (double)num.Length; 
 			return Math.Sqrt( topSum / (n * (n-1)) ); 
 		} 
 		///<Summary>
@@ -183,21 +184,21 @@ namespace Cephes
 		public static float StandardDeviation(float[] num) 
 		{ 
 			float Sum = 0.0F, SumOfSqrs = 0.0F; 
-			for (int i=0; i<num.Length; i++) 
+			for (var i=0; i<num.Length; i++) 
 			{ 
 				Sum += num[i]; 
 				SumOfSqrs += num[i] * num[i]; 
 			} 
-			float topSum = Convert.ToSingle((num.Length * SumOfSqrs) - Sum*Sum); 
-			float n = (float)num.Length; 
+			var topSum = Convert.ToSingle((num.Length * SumOfSqrs) - Sum*Sum); 
+			var n = (float)num.Length; 
 			return Convert.ToSingle(Math.Sqrt( topSum / (n * (n-1)))); 
 		} 
 
 		public static float mean(float []s1)
 		{
-			int len=s1.Length ;
+			var len=s1.Length ;
 			float sum = 0;
-			for (int i=0;i<=len-1;i++)
+			for (var i=0;i<=len-1;i++)
 				sum += s1[i] ;
 			sum /= len ; 
 			return sum ; 
@@ -205,9 +206,9 @@ namespace Cephes
 
 		public static double mean(double []s1)
 		{
-			int len=s1.Length ;
+			var len=s1.Length ;
 			double sum = 0;
-			for (int i=0;i<=len-1;i++)
+			for (var i=0;i<=len-1;i++)
 				sum += s1[i] ;
 			sum /= len ; 
 			return sum ; 
@@ -215,14 +216,14 @@ namespace Cephes
 
 		public static void Standardize(float [,]data)
 		{
-			int numPts = data.GetUpperBound(0) +1; 
-			int numDatasets = data.GetUpperBound(1)+1 ; 
+			var numPts = data.GetUpperBound(0) +1; 
+			var numDatasets = data.GetUpperBound(1)+1 ; 
 
-			for (int ptNum = 0 ; ptNum < numPts ; ptNum++)
+			for (var ptNum = 0 ; ptNum < numPts ; ptNum++)
 			{
-				int numNonZero = 0 ;
+				var numNonZero = 0 ;
 				float Sum = 0.0F, SumOfSqrs = 0.0F; 
-				for (int datasetNum = 0 ; datasetNum < numDatasets ; datasetNum++)
+				for (var datasetNum = 0 ; datasetNum < numDatasets ; datasetNum++)
 				{
 					if (!Double.IsNaN(data[ptNum,datasetNum]))
 					{
@@ -233,9 +234,9 @@ namespace Cephes
 				}
 				if (numNonZero > 1)
 				{
-					float topSum = Convert.ToSingle((numNonZero * SumOfSqrs) - Sum*Sum); 
-					float stdev =  Convert.ToSingle(Math.Sqrt( topSum / (numNonZero * (numNonZero-1)))); 
-					for (int datasetNum = 0 ; datasetNum < numDatasets ; datasetNum++)
+					var topSum = Convert.ToSingle((numNonZero * SumOfSqrs) - Sum*Sum); 
+					var stdev =  Convert.ToSingle(Math.Sqrt( topSum / (numNonZero * (numNonZero-1)))); 
+					for (var datasetNum = 0 ; datasetNum < numDatasets ; datasetNum++)
 					{
 						if (!Double.IsNaN(data[ptNum,datasetNum]))
 							data[ptNum, datasetNum] = (data[ptNum,datasetNum] - Sum/numNonZero)/stdev ; 
@@ -243,7 +244,7 @@ namespace Cephes
 				}
 				else
 				{
-					for (int datasetNum = 0 ; datasetNum < numDatasets ; datasetNum++)
+					for (var datasetNum = 0 ; datasetNum < numDatasets ; datasetNum++)
 					{
 						if (!Double.IsNaN(data[ptNum,datasetNum]))
 							data[ptNum, datasetNum] = 0 ; 
@@ -255,14 +256,14 @@ namespace Cephes
 
 		public static void Standardize(float [,]data, float replaceValue)
 		{
-			int numPts = data.GetUpperBound(0) +1; 
-			int numDatasets = data.GetUpperBound(1)+1 ; 
+			var numPts = data.GetUpperBound(0) +1; 
+			var numDatasets = data.GetUpperBound(1)+1 ; 
 
-			for (int ptNum = 0 ; ptNum < numPts ; ptNum++)
+			for (var ptNum = 0 ; ptNum < numPts ; ptNum++)
 			{
-				int numNonZero = 0 ;
+				var numNonZero = 0 ;
 				float Sum = 0.0F, SumOfSqrs = 0.0F; 
-				for (int datasetNum = 0 ; datasetNum < numDatasets ; datasetNum++)
+				for (var datasetNum = 0 ; datasetNum < numDatasets ; datasetNum++)
 				{
 					if (!Double.IsNaN(data[ptNum,datasetNum]))
 					{
@@ -273,9 +274,9 @@ namespace Cephes
 				}
 				if (numNonZero > 1)
 				{
-					float topSum = Convert.ToSingle((numNonZero * SumOfSqrs) - Sum*Sum); 
-					float stdev =  Convert.ToSingle(Math.Sqrt( topSum / (numNonZero * (numNonZero-1)))); 
-					for (int datasetNum = 0 ; datasetNum < numDatasets ; datasetNum++)
+					var topSum = Convert.ToSingle((numNonZero * SumOfSqrs) - Sum*Sum); 
+					var stdev =  Convert.ToSingle(Math.Sqrt( topSum / (numNonZero * (numNonZero-1)))); 
+					for (var datasetNum = 0 ; datasetNum < numDatasets ; datasetNum++)
 					{
 						if (!Double.IsNaN(data[ptNum,datasetNum]))
 							data[ptNum, datasetNum] = (data[ptNum,datasetNum] - Sum/numNonZero)/stdev ; 
@@ -283,13 +284,13 @@ namespace Cephes
 				}
 				else
 				{
-					for (int datasetNum = 0 ; datasetNum < numDatasets ; datasetNum++)
+					for (var datasetNum = 0 ; datasetNum < numDatasets ; datasetNum++)
 					{
 						if (!Double.IsNaN(data[ptNum,datasetNum]))
 							data[ptNum, datasetNum] = 0 ; 
 					}
 				}
-				for (int datasetNum = 0 ; datasetNum < numDatasets ; datasetNum++)
+				for (var datasetNum = 0 ; datasetNum < numDatasets ; datasetNum++)
 				{
 					if (Double.IsNaN(data[ptNum,datasetNum]))
 						data[ptNum, datasetNum] = replaceValue ; 
@@ -300,12 +301,12 @@ namespace Cephes
 
 		public static void Replace(float [,]data, float replaceValue)
 		{
-			int numPts = data.GetUpperBound(0) +1; 
-			int numDatasets = data.GetUpperBound(1)+1 ; 
+			var numPts = data.GetUpperBound(0) +1; 
+			var numDatasets = data.GetUpperBound(1)+1 ; 
 
-			for (int ptNum = 0 ; ptNum < numPts ; ptNum++)
+			for (var ptNum = 0 ; ptNum < numPts ; ptNum++)
 			{
-				for (int datasetNum = 0 ; datasetNum < numDatasets ; datasetNum++)
+				for (var datasetNum = 0 ; datasetNum < numDatasets ; datasetNum++)
 				{
 					if (Double.IsNaN(data[ptNum,datasetNum]))
 						data[ptNum, datasetNum] = replaceValue ; 
@@ -321,9 +322,9 @@ namespace Cephes
 				if (s1.Length != s2.Length) 
 					return float.NaN;
 
-				int len=s1.Length ;
+				var len=s1.Length ;
 				float sum_mul=0;
-				for (int i=0;i<=len-1;i++)
+				for (var i=0;i<=len-1;i++)
 					sum_mul+=(s1[i]*s2[i]);
 				return (sum_mul-len*mean(s1)*mean(s2))/(len-1);
 			}
@@ -353,8 +354,8 @@ namespace Cephes
 			SumXY = 0 ;
 			SumXX = 0 ;
 			SumYY = 0 ;
-			int num_pts = X.Length ; 
-			for (int index = 0 ; index < num_pts ; index++)
+			var num_pts = X.Length ; 
+			for (var index = 0 ; index < num_pts ; index++)
 			{
 				SumX = SumX + X[index] ; 
 				SumY = SumY + Y[index] ; 
@@ -365,7 +366,7 @@ namespace Cephes
 			slope = (num_pts * SumXY - SumX * SumY) / (num_pts * SumXX - SumX * SumX) ; 
 			intercept = (SumY - slope * SumX) / num_pts ;
 
-			double temp = (num_pts * SumXY - SumX * SumY) / Math.Sqrt((num_pts*SumXX - SumX * SumX)*(num_pts*SumYY - SumY * SumY)) ; 
+			var temp = (num_pts * SumXY - SumX * SumY) / Math.Sqrt((num_pts*SumXX - SumX * SumX)*(num_pts*SumYY - SumY * SumY)) ; 
 			rsquare = temp * temp ; 
 		}
 
@@ -411,7 +412,7 @@ namespace Cephes
 			if (a < 0.0) a = Math.Abs(x);
 			a = Math.Exp(a);
 			if (x < 0.0) return -0.5*(a - 1/a);
-			else return 0.5*(a - 1/a);
+		    return 0.5*(a - 1/a);
 		}
 
 	
@@ -428,7 +429,7 @@ namespace Cephes
 			if (a < 0.0) a = Math.Abs(x);
 			a = Math.Exp(2.0*a);
 			if (x < 0.0) return -(1.0 - 2.0/(a + 1.0));
-			else return (1.0 - 2.0/(a + 1.0));
+		    return (1.0 - 2.0/(a + 1.0));
 		}
 
 	
@@ -492,10 +493,10 @@ namespace Cephes
 
 			if ((ax = Math.Abs(x)) < 8.0)
 			{
-				double y = x*x;
-				double ans1 = 57568490574.0 + y*(-13362590354.0 + y*(651619640.7
+				var y = x*x;
+				var ans1 = 57568490574.0 + y*(-13362590354.0 + y*(651619640.7
 					+ y*(-11214424.18 + y*(77392.33017 + y*(-184.9052456)))));
-				double ans2 = 57568490411.0 + y*(1029532985.0 + y*(9494680.718
+				var ans2 = 57568490411.0 + y*(1029532985.0 + y*(9494680.718
 					+ y*(59272.64853 + y*(267.8532712 + y*1.0))));
 
 				return ans1/ans2;
@@ -503,12 +504,12 @@ namespace Cephes
 			}
 			else
 			{
-				double z = 8.0/ax;
-				double y = z*z;
-				double xx = ax - 0.785398164;
-				double ans1 = 1.0 + y*(-0.1098628627e-2 + y*(0.2734510407e-4
+				var z = 8.0/ax;
+				var y = z*z;
+				var xx = ax - 0.785398164;
+				var ans1 = 1.0 + y*(-0.1098628627e-2 + y*(0.2734510407e-4
 					+ y*(-0.2073370639e-5 + y*0.2093887211e-6)));
-				double ans2 = -0.1562499995e-1 + y*(0.1430488765e-3
+				var ans2 = -0.1562499995e-1 + y*(0.1430488765e-3
 					+ y*(-0.6911147651e-5 + y*(0.7621095161e-6
 					- y*0.934935152e-7)));
 
@@ -538,22 +539,19 @@ namespace Cephes
 					+ y*(99447.43394 + y*(376.9991397 + y*1.0))));
 				return ans1/ans2;
 			}
-			else
-			{
-				double z = 8.0/ax;
-				double xx = ax - 2.356194491;
-				y = z*z;
+		    var z = 8.0/ax;
+		    var xx = ax - 2.356194491;
+		    y = z*z;
 
-				ans1 = 1.0 + y*(0.183105e-2 + y*(-0.3516396496e-4
-					+ y*(0.2457520174e-5 + y*(-0.240337019e-6))));
-				ans2 = 0.04687499995 + y*(-0.2002690873e-3
-					+ y*(0.8449199096e-5 + y*(-0.88228987e-6
-					+ y*0.105787412e-6)));
-				double ans = Math.Sqrt(0.636619772/ax)*
-					(Math.Cos(xx)*ans1 - z*Math.Sin(xx)*ans2);
-				if (x < 0.0) ans = -ans;
-				return ans;
-			}
+		    ans1 = 1.0 + y*(0.183105e-2 + y*(-0.3516396496e-4
+		                                     + y*(0.2457520174e-5 + y*(-0.240337019e-6))));
+		    ans2 = 0.04687499995 + y*(-0.2002690873e-3
+		                              + y*(0.8449199096e-5 + y*(-0.88228987e-6
+		                                                        + y*0.105787412e-6)));
+		    var ans = Math.Sqrt(0.636619772/ax)*
+		              (Math.Cos(xx)*ans1 - z*Math.Sin(xx)*ans2);
+		    if (x < 0.0) ans = -ans;
+		    return ans;
 		}
 
 	
@@ -569,55 +567,55 @@ namespace Cephes
 			double ax, bj, bjm, bjp, sum, tox, ans;
 			bool jsum;
 
-			double ACC = 40.0;
-			double BIGNO = 1.0e+10;
-			double BIGNI = 1.0e-10;
+			var ACC = 40.0;
+			var BIGNO = 1.0e+10;
+			var BIGNI = 1.0e-10;
 
 			if (n == 0) return j0(x);
 			if (n == 1) return j1(x);
 
 			ax = Math.Abs(x);
 			if (ax == 0.0) return 0.0;
-			else if (ax > (double) n)
-			{
-				tox = 2.0/ax;
-				bjm = j0(ax);
-				bj = j1(ax);
-				for (j = 1; j < n; j++)
-				{
-					bjp = j*tox*bj - bjm;
-					bjm = bj;
-					bj = bjp;
-				}
-				ans = bj;
-			}
-			else
-			{
-				tox = 2.0/ax;
-				m = 2*((n + (int) Math.Sqrt(ACC*n))/2);
-				jsum = false;
-				bjp = ans = sum = 0.0;
-				bj = 1.0;
-				for (j = m; j > 0; j--)
-				{
-					bjm = j*tox*bj - bjp;
-					bjp = bj;
-					bj = bjm;
-					if (Math.Abs(bj) > BIGNO)
-					{
-						bj *= BIGNI;
-						bjp *= BIGNI;
-						ans *= BIGNI;
-						sum *= BIGNI;
-					}
-					if (jsum) sum += bj;
-					jsum = !jsum;
-					if (j == n) ans = bjp;
-				}
-				sum = 2.0*sum - bj;
-				ans /= sum;
-			}
-			return x < 0.0 && n%2 == 1 ? -ans : ans;
+		    if (ax > n)
+		    {
+		        tox = 2.0/ax;
+		        bjm = j0(ax);
+		        bj = j1(ax);
+		        for (j = 1; j < n; j++)
+		        {
+		            bjp = j*tox*bj - bjm;
+		            bjm = bj;
+		            bj = bjp;
+		        }
+		        ans = bj;
+		    }
+		    else
+		    {
+		        tox = 2.0/ax;
+		        m = 2*((n + (int) Math.Sqrt(ACC*n))/2);
+		        jsum = false;
+		        bjp = ans = sum = 0.0;
+		        bj = 1.0;
+		        for (j = m; j > 0; j--)
+		        {
+		            bjm = j*tox*bj - bjp;
+		            bjp = bj;
+		            bj = bjm;
+		            if (Math.Abs(bj) > BIGNO)
+		            {
+		                bj *= BIGNI;
+		                bjp *= BIGNI;
+		                ans *= BIGNI;
+		                sum *= BIGNI;
+		            }
+		            if (jsum) sum += bj;
+		            jsum = !jsum;
+		            if (j == n) ans = bjp;
+		        }
+		        sum = 2.0*sum - bj;
+		        ans /= sum;
+		    }
+		    return x < 0.0 && n%2 == 1 ? -ans : ans;
 		}
 
 	
@@ -630,24 +628,24 @@ namespace Cephes
 		{
 			if (x < 8.0)
 			{
-				double y = x*x;
+				var y = x*x;
 
-				double ans1 = -2957821389.0 + y*(7062834065.0 + y*(-512359803.6
+				var ans1 = -2957821389.0 + y*(7062834065.0 + y*(-512359803.6
 					+ y*(10879881.29 + y*(-86327.92757 + y*228.4622733))));
-				double ans2 = 40076544269.0 + y*(745249964.8 + y*(7189466.438
+				var ans2 = 40076544269.0 + y*(745249964.8 + y*(7189466.438
 					+ y*(47447.26470 + y*(226.1030244 + y*1.0))));
 
 				return (ans1/ans2) + 0.636619772*j0(x)*Math.Log(x);
 			}
 			else
 			{
-				double z = 8.0/x;
-				double y = z*z;
-				double xx = x - 0.785398164;
+				var z = 8.0/x;
+				var y = z*z;
+				var xx = x - 0.785398164;
 
-				double ans1 = 1.0 + y*(-0.1098628627e-2 + y*(0.2734510407e-4
+				var ans1 = 1.0 + y*(-0.1098628627e-2 + y*(0.2734510407e-4
 					+ y*(-0.2073370639e-5 + y*0.2093887211e-6)));
-				double ans2 = -0.1562499995e-1 + y*(0.1430488765e-3
+				var ans2 = -0.1562499995e-1 + y*(0.1430488765e-3
 					+ y*(-0.6911147651e-5 + y*(0.7621095161e-6
 					+ y*(-0.934945152e-7))));
 				return Math.Sqrt(0.636619772/x)*
@@ -665,23 +663,23 @@ namespace Cephes
 		{
 			if (x < 8.0)
 			{
-				double y = x*x;
-				double ans1 = x*(-0.4900604943e13 + y*(0.1275274390e13
+				var y = x*x;
+				var ans1 = x*(-0.4900604943e13 + y*(0.1275274390e13
 					+ y*(-0.5153438139e11 + y*(0.7349264551e9
 					+ y*(-0.4237922726e7 + y*0.8511937935e4)))));
-				double ans2 = 0.2499580570e14 + y*(0.4244419664e12
+				var ans2 = 0.2499580570e14 + y*(0.4244419664e12
 					+ y*(0.3733650367e10 + y*(0.2245904002e8
 					+ y*(0.1020426050e6 + y*(0.3549632885e3 + y)))));
 				return (ans1/ans2) + 0.636619772*(j1(x)*Math.Log(x) - 1.0/x);
 			}
 			else
 			{
-				double z = 8.0/x;
-				double y = z*z;
-				double xx = x - 2.356194491;
-				double ans1 = 1.0 + y*(0.183105e-2 + y*(-0.3516396496e-4
+				var z = 8.0/x;
+				var y = z*z;
+				var xx = x - 2.356194491;
+				var ans1 = 1.0 + y*(0.183105e-2 + y*(-0.3516396496e-4
 					+ y*(0.2457520174e-5 + y*(-0.240337019e-6))));
-				double ans2 = 0.04687499995 + y*(-0.2002690873e-3
+				var ans2 = 0.04687499995 + y*(-0.2002690873e-3
 					+ y*(0.8449199096e-5 + y*(-0.88228987e-6
 					+ y*0.105787412e-6)));
 				return Math.Sqrt(0.636619772/x)*
@@ -706,7 +704,7 @@ namespace Cephes
 			tox = 2.0/x;
 			by = y1(x);
 			bym = y0(x);
-			for (int j = 1; j < n; j++)
+			for (var j = 1; j < n; j++)
 			{
 				byp = j*tox*by - bym;
 				bym = by;
@@ -723,9 +721,9 @@ namespace Cephes
 		/// <returns></returns>
 		public static double fac(double x)
 		{
-			double d = Math.Abs(x);
-			if (Math.Floor(d) == d) return (double) fac((int) x);
-			else return gamma(x + 1.0);
+			var d = Math.Abs(x);
+			if (Math.Floor(d) == d) return fac((int) x);
+		    return gamma(x + 1.0);
 		}
 
 	
@@ -736,15 +734,15 @@ namespace Cephes
 		/// <returns></returns>
 		public static int fac(int j)
 		{
-			int i = j;
-			int d = 1;
+			var i = j;
+			var d = 1;
 			if (j < 0) i = Math.Abs(j);
 			while (i > 1)
 			{
 				d *= i--;
 			}
 			if (j < 0) return -d;
-			else return d;
+		    return d;
 		}
 
 	
@@ -777,11 +775,11 @@ namespace Cephes
 
 			double p, z;
 
-			double q = Math.Abs(x);
+			var q = Math.Abs(x);
 
 			if (q > 33.0)
 			{
-				if (x < 0.0)
+			    if (x < 0.0)
 				{
 					p = Math.Floor(q);
 					if (p == q) throw new ArithmeticException("gamma: overflow");
@@ -799,13 +797,10 @@ namespace Cephes
 
 					return -z;
 				}
-				else
-				{
-					return stirf(x);
-				}
+			    return stirf(x);
 			}
 
-			z = 1.0;
+		    z = 1.0;
 			while (x >= 3.0)
 			{
 				x -= 1.0;
@@ -818,11 +813,11 @@ namespace Cephes
 				{
 					throw new ArithmeticException("gamma: singular");
 				}
-				else if (x > -1.0E-9)
-				{
-					return (z/((1.0 + 0.5772156649015329*x)*x));
-				}
-				z /= x;
+			    if (x > -1.0E-9)
+			    {
+			        return (z/((1.0 + 0.5772156649015329*x)*x));
+			    }
+			    z /= x;
 				x += 1.0;
 			}
 
@@ -832,11 +827,11 @@ namespace Cephes
 				{
 					throw new ArithmeticException("gamma: singular");
 				}
-				else if (x < 1.0E-9)
-				{
-					return (z/((1.0 + 0.5772156649015329*x)*x));
-				}
-				z /= x;
+			    if (x < 1.0E-9)
+			    {
+			        return (z/((1.0 + 0.5772156649015329*x)*x));
+			    }
+			    z /= x;
 				x += 1.0;
 			}
 
@@ -862,19 +857,19 @@ namespace Cephes
 								-2.29549961613378126380E-4,
 								-2.68132617805781232825E-3,
 								3.47222221605458667310E-3,
-								8.33333333333482257126E-2,
+								8.33333333333482257126E-2
 			};
-			double MAXSTIR = 143.01608;
+			var MAXSTIR = 143.01608;
 
-			double w = 1.0/x;
-			double y = Math.Exp(x);
+			var w = 1.0/x;
+			var y = Math.Exp(x);
 
 			w = 1.0 + w*polevl(w, STIR, 4);
 
 			if (x > MAXSTIR)
 			{
 				/* Avoid overflow in Math.Pow() */
-				double v = Math.Pow(x, 0.5*x - 0.25);
+				var v = Math.Pow(x, 0.5*x - 0.25);
 				y = v*(v/y);
 			}
 			else
@@ -894,8 +889,8 @@ namespace Cephes
 		/// <returns></returns>
 		public static double igamc(double a, double x)
 		{
-			double big = 4.503599627370496e15;
-			double biginv = 2.22044604925031308085e-16;
+			var big = 4.503599627370496e15;
+			var biginv = 2.22044604925031308085e-16;
 			double ans, ax, c, yc, r, t, y, z;
 			double pk, pkm1, pkm2, qk, qkm1, qkm2;
 
@@ -1041,7 +1036,7 @@ namespace Cephes
 		{
 			if (k < 0 || x < 0) return 0.0;
 
-			return igamc((double) (k + 1), x);
+			return igamc(k + 1, x);
 		}
 
 	
@@ -1055,7 +1050,7 @@ namespace Cephes
 		{
 			if (k < 0 || x < 0) return 0.0;
 
-			return igam((double) (k + 1), x);
+			return igam(k + 1, x);
 		}
 
 	
@@ -1194,11 +1189,11 @@ namespace Cephes
 
 			if (z < -MAXLOG)
 			{
-				if (a < 0) return (2.0);
-				else return (0.0);
+			    if (a < 0) return (2.0);
+			    return (0.0);
 			}
 
-			z = Math.Exp(z);
+		    z = Math.Exp(z);
 
 			if (x < 8.0)
 			{
@@ -1217,12 +1212,12 @@ namespace Cephes
 
 			if (y == 0.0)
 			{
-				if (a < 0) return 2.0;
-				else return (0.0);
+			    if (a < 0) return 2.0;
+			    return (0.0);
 			}
 
 
-			return y;
+		    return y;
 		}
 
 	
@@ -1270,7 +1265,7 @@ namespace Cephes
 
 			ans = coef[0];
 
-			for (int i = 1; i <= N; i++)
+			for (var i = 1; i <= N; i++)
 			{
 				ans = ans*x + coef[i];
 			}
@@ -1292,7 +1287,7 @@ namespace Cephes
 
 			ans = x + coef[0];
 
-			for (int i = 1; i < N; i++)
+			for (var i = 1; i < N; i++)
 			{
 				ans = ans*x + coef[i];
 			}
@@ -1506,8 +1501,8 @@ namespace Cephes
 			double k1, k2, k3, k4, k5, k6, k7, k8;
 			double r, t, ans, thresh;
 			int n;
-			double big = 4.503599627370496e15;
-			double biginv = 2.22044604925031308085e-16;
+			var big = 4.503599627370496e15;
+			var biginv = 2.22044604925031308085e-16;
 
 			k1 = a;
 			k2 = a + b;
@@ -1597,8 +1592,8 @@ namespace Cephes
 			double k1, k2, k3, k4, k5, k6, k7, k8;
 			double r, t, ans, z, thresh;
 			int n;
-			double big = 4.503599627370496e15;
-			double biginv = 2.22044604925031308085e-16;
+			var big = 4.503599627370496e15;
+			var biginv = 2.22044604925031308085e-16;
 
 			k1 = a;
 			k2 = b - 1.0;
@@ -1703,11 +1698,8 @@ namespace Cephes
 				y = ibeta( a, b, x );
 				goto ihalve;
 			}
-			else
-			{
-				dithresh = 1.0e-4;
-			}
-			/* approximation to inverse function */
+		    dithresh = 1.0e-4;
+		    /* approximation to inverse function */
 
 			yp = -normali(yy0);
 
@@ -2005,7 +1997,7 @@ namespace Cephes
 
 			if( k <= 0 )
 			{
-				throw new System.Exception("stdtr. Incorrect number of degrees of freedom");				
+				throw new Exception("stdtr. Incorrect number of degrees of freedom");				
 			}
 
 			if( t == 0 )
@@ -2102,7 +2094,7 @@ namespace Cephes
 
 			if( k <= 0 || p <= 0.0 || p >= 1.0 )
 			{
-				throw new System.Exception("stdtri. Incorrect number of degrees of freedom or p value. p value =" + Convert.ToString(p) + " df ="  + Convert.ToString(k));				
+				throw new Exception("stdtri. Incorrect number of degrees of freedom or p value. p value =" + Convert.ToString(p) + " df ="  + Convert.ToString(k));				
 			}
 
 			rk = k;
@@ -2134,8 +2126,8 @@ namespace Cephes
 
 		public static double Max(double [] data)
 		{
-			double max_val = double.MinValue ; 
-			for (int i = 0 ; i < data.Length ; i++)
+			var max_val = double.MinValue ; 
+			for (var i = 0 ; i < data.Length ; i++)
 			{
 				if (max_val < data[i])
 					max_val = data[i] ; 
@@ -2144,8 +2136,8 @@ namespace Cephes
 		}
 		public static double Min(double [] data)
 		{
-			double min_val = double.MaxValue ; 
-			for (int i = 0 ; i < data.Length ; i++)
+			var min_val = double.MaxValue ; 
+			for (var i = 0 ; i < data.Length ; i++)
 			{
 				if (min_val > data[i])
 					min_val = data[i] ; 
@@ -2156,24 +2148,24 @@ namespace Cephes
 		// assumes that data is a mixture of normal and uniform distribution
 		public static void EMUniformRandom(double []data, ref double percent_normal, ref double mean_normal)
 		{
-			int num_pts = data.Length ; 
-			double pi_m = 0.9 ; // initial guess of percentage of normal distribution;
+			var num_pts = data.Length ; 
+			var pi_m = 0.9 ; // initial guess of percentage of normal distribution;
 			double mu_m = 0 ; // mean of normal distribution
-			double sigma_m = Cephes.clsMathUtilities.StandardDeviation(data) ; 
-			double m_max = Max(data) ; 
-			double m_min = Min(data) ; 
-			double u = 1.0/(m_max-m_min) ; 
+			var sigma_m = StandardDeviation(data) ; 
+			var m_max = Max(data) ; 
+			var m_min = Min(data) ; 
+			var u = 1.0/(m_max-m_min) ; 
 
-			double [] zi = new double [num_pts] ; 
-			int  NumIteration = 30 ;
+			var zi = new double [num_pts] ; 
+			var  NumIteration = 30 ;
 
 
-			for (int k = 1 ; k < NumIteration + 1 ; k++)
+			for (var k = 1 ; k < NumIteration + 1 ; k++)
 			{
 				// expectation step
-				for (int j = 0 ; j <  num_pts ; j++)
+				for (var j = 0 ; j <  num_pts ; j++)
 				{
-					double prob_normal = 1.0 /(sigma_m*SQTPI) * Math.Exp((-1 * (data[j] - mu_m)* (data[j] - mu_m))/(2*sigma_m*sigma_m));
+					var prob_normal = 1.0 /(sigma_m*SQTPI) * Math.Exp((-1 * (data[j] - mu_m)* (data[j] - mu_m))/(2*sigma_m*sigma_m));
 					zi[j] = (1 - pi_m) * u / (pi_m * prob_normal + (1 - pi_m) * u);    
 				}
 			                     
@@ -2181,7 +2173,7 @@ namespace Cephes
 				double pi_m_num = 0;
 				double mu_m_num = 0;
 				double var_m_num = 0;
-				for (int i = 0 ; i < num_pts ; i++)
+				for (var i = 0 ; i < num_pts ; i++)
 				{
 					pi_m_num = pi_m_num + (1 - zi[i]);			        
 					mu_m_num = mu_m_num + (1 - zi[i]) * data[i];

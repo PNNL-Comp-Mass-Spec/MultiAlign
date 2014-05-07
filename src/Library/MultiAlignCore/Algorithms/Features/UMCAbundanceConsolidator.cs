@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using PNNLOmics.Data.Features;
 using MultiAlignCore.Algorithms.FeatureFinding;
+using PNNLOmics.Data.Features;
 
 namespace MultiAlignCore.Algorithms.Features
 {
@@ -22,10 +22,10 @@ namespace MultiAlignCore.Algorithms.Features
         public override Dictionary<int, UMCLight> ConsolidateUMCs(List<UMCLight> features)
         {
             // Map the UMC's to datasets so we can choose only one.
-            Dictionary<int, UMCLight> umcs = new Dictionary<int, UMCLight>();
-            foreach (UMCLight umc in features)
+            var umcs = new Dictionary<int, UMCLight>();
+            foreach (var umc in features)
             {
-                int group = umc.GroupID;
+                var group = umc.GroupId;
                 if (!umcs.ContainsKey(group))
                 {
                     umcs.Add(group, umc);

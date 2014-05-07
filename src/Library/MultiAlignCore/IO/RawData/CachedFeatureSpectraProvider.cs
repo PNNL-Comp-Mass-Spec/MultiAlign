@@ -1,9 +1,5 @@
-﻿using MultiAlignCore.IO.Features;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
 
@@ -31,7 +27,7 @@ namespace MultiAlignCore.IO.RawData
             // this restricts all possible spectra to those that came from deisotoped data.
             foreach (var feature in features)
             {
-                foreach (var msFeature in feature.MSFeatures)
+                foreach (var msFeature in feature.MsFeatures)
                 {
                     foreach (var spectrum in msFeature.MSnSpectra)
                     {                        

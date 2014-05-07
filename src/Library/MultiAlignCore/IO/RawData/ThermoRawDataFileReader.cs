@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
-using PNNLOmics.Data;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
-using System;
-using PNNLOmics.Algorithms.Alignment;
-using ThermoRawFileReaderDLL.FinniganFileIO;
 using MultiAlignCore.IO.RawData;
+using PNNLOmics.Data;
+using ThermoRawFileReaderDLL.FinniganFileIO;
 
 namespace MultiAlignCore.IO.Features
 {
@@ -40,7 +39,7 @@ namespace MultiAlignCore.IO.Features
                 m_readers.Add(group, reader);
             }
 
-            XRawFileIO rawReader = m_readers[group];
+            var rawReader = m_readers[group];
             if (!m_opened[group])
             {
                 var opened = rawReader.OpenRawFile(m_dataFiles[group]);
@@ -100,8 +99,8 @@ namespace MultiAlignCore.IO.Features
 
             if (!m_readers.ContainsKey(group))
             {
-                string path       = m_dataFiles[group];
-                XRawFileIO reader = new XRawFileIO();
+                var path       = m_dataFiles[group];
+                var reader = new XRawFileIO();
                 m_readers.Add(group, reader);
                 
             }
@@ -109,7 +108,7 @@ namespace MultiAlignCore.IO.Features
             var rawReader = m_readers[group];
             if (!m_opened[group])
             {
-                bool opened = rawReader.OpenRawFile(m_dataFiles[group]);
+                var opened = rawReader.OpenRawFile(m_dataFiles[group]);
                 if (!opened)
                 {
                     throw new IOException("Could not open the Thermo raw file " + m_dataFiles[group]);
@@ -117,24 +116,24 @@ namespace MultiAlignCore.IO.Features
             }
 
 
-            int numberOfScans = rawReader.GetNumScans(); 
-            for (int i = 0; i < numberOfScans; i++)
+            var numberOfScans = rawReader.GetNumScans(); 
+            for (var i = 0; i < numberOfScans; i++)
             {
                 // This scan is not to be used.
-                bool isInExcludeMap = excludeMap.ContainsKey(i);
+                var isInExcludeMap = excludeMap.ContainsKey(i);
                 if (isInExcludeMap)
                     continue;
 
-                FinniganFileReaderBaseClass.udtScanHeaderInfoType header = new FinniganFileReaderBaseClass.udtScanHeaderInfoType();
+                var header = new FinniganFileReaderBaseClass.udtScanHeaderInfoType();
                 rawReader.GetScanInfo(i, out header);
                 
                 if (header.MSLevel > 1)
                 {
-                    MSSpectra spectrum       = new MSSpectra();
-                    spectrum.MSLevel         = header.MSLevel;
+                    var spectrum       = new MSSpectra();
+                    spectrum.MsLevel         = header.MSLevel;
                     spectrum.RetentionTime   = header.RetentionTime;
                     spectrum.Scan            = i;
-                    spectrum.PrecursorMZ     = header.ParentIonMZ;                    
+                    spectrum.PrecursorMz     = header.ParentIonMZ;                    
                     spectrum.TotalIonCurrent = header.TotalIonCurrent;
                     spectrum.CollisionType   = CollisionType.Other;
                     
@@ -142,19 +141,19 @@ namespace MultiAlignCore.IO.Features
                     switch(header.CollisionMode)
                     {
                         case "cid":
-                            spectrum.CollisionType = CollisionType.CID;
+                            spectrum.CollisionType = CollisionType.Cid;
                             break;                        
                         case "hcd":
-                            spectrum.CollisionType = CollisionType.HCD;
+                            spectrum.CollisionType = CollisionType.Hcd;
                             break;
                         case "etd":
-                            spectrum.CollisionType = CollisionType.ETD;
+                            spectrum.CollisionType = CollisionType.Etd;
                             break;
                         case "ecd":
-                            spectrum.CollisionType = CollisionType.ECD;
+                            spectrum.CollisionType = CollisionType.Ecd;
                             break;
                         case "hid":
-                            spectrum.CollisionType = CollisionType.HID;
+                            spectrum.CollisionType = CollisionType.Hid;
                             break;
 
                     }
@@ -204,16 +203,16 @@ namespace MultiAlignCore.IO.Features
         {
             var header = new FinniganFileReaderBaseClass.udtScanHeaderInfoType();
             rawReader.GetScanInfo(scan, out header);
-            int N                   = header.NumPeaks;
+            var N                   = header.NumPeaks;
 
-            double[] mz             = new double[N];
-            double[] intensities    = new double[N];            
+            var mz             = new double[N];
+            var intensities    = new double[N];            
             rawReader.GetScanData(scan, ref mz, ref intensities, ref header);
             
             //rawReader.CloseRawFile();
             // construct the array.
             var data = new List<XYData>(mz.Length);            
-            for (int i = 0; i < mz.Length; i++)
+            for (var i = 0; i < mz.Length; i++)
             {
                 var intensity = intensities[i];
                 data.Add(new XYData(mz[i], intensity));                
@@ -240,11 +239,11 @@ namespace MultiAlignCore.IO.Features
             // opening the file.
             if (!m_readers.ContainsKey(group))
             {
-                string path         = m_dataFiles[group];
-                XRawFileIO reader   = new XRawFileIO();
+                var path         = m_dataFiles[group];
+                var reader   = new XRawFileIO();
 
                 m_readers.Add(group, reader);
-                bool opened         = reader.OpenRawFile(path);
+                var opened         = reader.OpenRawFile(path);
 
                 if (!opened)
                 {
@@ -252,8 +251,8 @@ namespace MultiAlignCore.IO.Features
                 }
             }
 
-            List<MSSpectra> spectra  = new List<MSSpectra>();
-            XRawFileIO rawReader     = m_readers[group];
+            var spectra  = new List<MSSpectra>();
+            var rawReader     = m_readers[group];
 
             
             var totalSpectra = rawReader.GetNumScans();
@@ -261,16 +260,16 @@ namespace MultiAlignCore.IO.Features
             if (scan > totalSpectra)
                 throw new ScanOutOfRangeException("The requested scan is out of range.");
 
-            FinniganFileReaderBaseClass.udtScanHeaderInfoType header = new FinniganFileReaderBaseClass.udtScanHeaderInfoType();
+            var header = new FinniganFileReaderBaseClass.udtScanHeaderInfoType();
             rawReader.GetScanInfo(scan, out header);
 
-            summary = new ScanSummary()
+            summary = new ScanSummary
             {
                 MsLevel         = header.MSLevel,
                 Time            = header.RetentionTime,
                 Scan            = scan,
                 TotalIonCurrent = Convert.ToInt64(header.TotalIonCurrent),
-                PrecursorMZ     = header.ParentIonMZ,
+                PrecursorMz     = header.ParentIonMZ,
                 CollisionType   = CollisionType.Other,                
             };
 
@@ -278,19 +277,19 @@ namespace MultiAlignCore.IO.Features
             switch (header.CollisionMode)
             {
                 case "cid":
-                    summary.CollisionType = CollisionType.CID;
+                    summary.CollisionType = CollisionType.Cid;
                     break;
                 case "hcd":
-                    summary.CollisionType = CollisionType.HCD;
+                    summary.CollisionType = CollisionType.Hcd;
                     break;
                 case "etd":
-                    summary.CollisionType = CollisionType.ETD;
+                    summary.CollisionType = CollisionType.Etd;
                     break;
                 case "ecd":
-                    summary.CollisionType = CollisionType.ECD;
+                    summary.CollisionType = CollisionType.Ecd;
                     break;
                 case "hid":
-                    summary.CollisionType = CollisionType.HID;
+                    summary.CollisionType = CollisionType.Hid;
                     break;
 
             }
@@ -306,9 +305,9 @@ namespace MultiAlignCore.IO.Features
             
             // construct the array.
             var data = new List<XYData>(mz.Length);            
-            for (int i = 0; i < mz.Length; i++)
+            for (var i = 0; i < mz.Length; i++)
             {
-                double intensity = intensities[i];
+                var intensity = intensities[i];
                 data.Add(new XYData(mz[i], intensity));                
             }
             return data;
@@ -326,19 +325,19 @@ namespace MultiAlignCore.IO.Features
             // opening the file.
             if (!m_readers.ContainsKey(group))
             {
-                string path         = m_dataFiles[group];
-                XRawFileIO reader   = new XRawFileIO();
+                var path         = m_dataFiles[group];
+                var reader   = new XRawFileIO();
                 m_readers.Add(group, reader);
 
-                bool opened = reader.OpenRawFile(path);
+                var opened = reader.OpenRawFile(path);
                 if (!opened)
                 {
                     throw new IOException("Could not open the Thermo raw file " + m_dataFiles[group]);
                 }
             }
             
-            XRawFileIO rawReader                                     = m_readers[group];
-            FinniganFileReaderBaseClass.udtScanHeaderInfoType header = new FinniganFileReaderBaseClass.udtScanHeaderInfoType();
+            var rawReader                                     = m_readers[group];
+            var header = new FinniganFileReaderBaseClass.udtScanHeaderInfoType();
             rawReader.GetScanInfo(scan, out header);
 
             return header.MSLevel == 1;
@@ -351,7 +350,7 @@ namespace MultiAlignCore.IO.Features
         /// </summary>
         public void Dispose()
         {
-            foreach (int key in m_readers.Keys)
+            foreach (var key in m_readers.Keys)
             {
                 try
                 {
@@ -385,55 +384,55 @@ namespace MultiAlignCore.IO.Features
             
             if (!m_readers.ContainsKey(group))
             {
-                string path = m_dataFiles[group];
-                XRawFileIO reader = new XRawFileIO();
+                var path = m_dataFiles[group];
+                var reader = new XRawFileIO();
                 m_readers.Add(group, reader);
 
             }
 
-            XRawFileIO rawReader = m_readers[group];
+            var rawReader = m_readers[group];
             if (!m_opened[group])
             {
-                bool opened = rawReader.OpenRawFile(m_dataFiles[group]);
+                var opened = rawReader.OpenRawFile(m_dataFiles[group]);
                 if (!opened)
                 {
                     throw new IOException("Could not open the Thermo raw file " + m_dataFiles[group]);
                 }
             }
 
-            DatasetSummary datasetSummary = new DatasetSummary();
-            Dictionary<int, ScanSummary> scanMap = new Dictionary<int, ScanSummary>();
-            int numberOfScans = rawReader.GetNumScans();
-            for (int i = 0; i < numberOfScans; i++)
+            var datasetSummary = new DatasetSummary();
+            var scanMap = new Dictionary<int, ScanSummary>();
+            var numberOfScans = rawReader.GetNumScans();
+            for (var i = 0; i < numberOfScans; i++)
             {                
-                FinniganFileReaderBaseClass.udtScanHeaderInfoType header = new FinniganFileReaderBaseClass.udtScanHeaderInfoType();
+                var header = new FinniganFileReaderBaseClass.udtScanHeaderInfoType();
                 rawReader.GetScanInfo(i, out header);
 
-                ScanSummary summary     = new ScanSummary();
+                var summary     = new ScanSummary();
                 summary.MsLevel         = header.MSLevel;
                 summary.Time            = header.RetentionTime;
                 summary.Scan            = i;
                 summary.TotalIonCurrent = Convert.ToInt64(header.TotalIonCurrent);
-                summary.PrecursorMZ     = header.ParentIonMZ;
+                summary.PrecursorMz     = header.ParentIonMZ;
                 summary.CollisionType   = CollisionType.Other;
 
 
                 switch (header.CollisionMode)
                 {
                     case "cid":
-                        summary.CollisionType = CollisionType.CID;
+                        summary.CollisionType = CollisionType.Cid;
                         break;
                     case "hcd":
-                        summary.CollisionType = CollisionType.HCD;
+                        summary.CollisionType = CollisionType.Hcd;
                         break;
                     case "etd":
-                        summary.CollisionType = CollisionType.ETD;
+                        summary.CollisionType = CollisionType.Etd;
                         break;
                     case "ecd":
-                        summary.CollisionType = CollisionType.ECD;
+                        summary.CollisionType = CollisionType.Ecd;
                         break;
                     case "hid":
-                        summary.CollisionType = CollisionType.HID;
+                        summary.CollisionType = CollisionType.Hid;
                         break;
 
                 }
@@ -461,11 +460,11 @@ namespace MultiAlignCore.IO.Features
             // opening the file.
             if (!m_readers.ContainsKey(group))
             {
-                string path         = m_dataFiles[group];
-                XRawFileIO reader   = new XRawFileIO();
+                var path         = m_dataFiles[group];
+                var reader   = new XRawFileIO();
 
                 m_readers.Add(group, reader);
-                bool opened         = reader.OpenRawFile(path);
+                var opened         = reader.OpenRawFile(path);
 
                 if (!opened)
                 {
@@ -473,8 +472,8 @@ namespace MultiAlignCore.IO.Features
                 }
             }
 
-            List<MSSpectra> spectra  = new List<MSSpectra>();
-            XRawFileIO rawReader     = m_readers[group];
+            var spectra  = new List<MSSpectra>();
+            var rawReader     = m_readers[group];
 
             
             var totalSpectra = rawReader.GetNumScans();
@@ -482,16 +481,16 @@ namespace MultiAlignCore.IO.Features
             if (scan > totalSpectra)
                 throw new ScanOutOfRangeException("The requested scan is out of range.");
 
-            FinniganFileReaderBaseClass.udtScanHeaderInfoType header = new FinniganFileReaderBaseClass.udtScanHeaderInfoType();
+            var header = new FinniganFileReaderBaseClass.udtScanHeaderInfoType();
             rawReader.GetScanInfo(scan, out header);
 
-            summary = new ScanSummary()
+            summary = new ScanSummary
             {
                 MsLevel         = header.MSLevel,
                 Time            = header.RetentionTime,
                 Scan            = scan,
                 TotalIonCurrent = Convert.ToInt64(header.TotalIonCurrent),
-                PrecursorMZ     = header.ParentIonMZ,
+                PrecursorMz     = header.ParentIonMZ,
                 CollisionType   = CollisionType.Other,                
             };
 
@@ -499,19 +498,19 @@ namespace MultiAlignCore.IO.Features
             switch (header.CollisionMode)
             {
                 case "cid":
-                    summary.CollisionType = CollisionType.CID;
+                    summary.CollisionType = CollisionType.Cid;
                     break;
                 case "hcd":
-                    summary.CollisionType = CollisionType.HCD;
+                    summary.CollisionType = CollisionType.Hcd;
                     break;
                 case "etd":
-                    summary.CollisionType = CollisionType.ETD;
+                    summary.CollisionType = CollisionType.Etd;
                     break;
                 case "ecd":
-                    summary.CollisionType = CollisionType.ECD;
+                    summary.CollisionType = CollisionType.Ecd;
                     break;
                 case "hid":
-                    summary.CollisionType = CollisionType.HID;
+                    summary.CollisionType = CollisionType.Hid;
                     break;
 
             }
@@ -525,19 +524,19 @@ namespace MultiAlignCore.IO.Features
             
             // construct the array.
             var data = new List<XYData>(mz.Length);            
-            for (int i = 0; i < mz.Length; i++)
+            for (var i = 0; i < mz.Length; i++)
             {
-                double intensity = intensities[i];
+                var intensity = intensities[i];
                 data.Add(new XYData(mz[i], intensity));                
             }
 
 
             var spectrum = new MSSpectra
             {
-                MSLevel = header.MSLevel,
+                MsLevel = header.MSLevel,
                 RetentionTime = header.RetentionTime,
                 Scan = scan,
-                PrecursorMZ = header.ParentIonMZ,
+                PrecursorMz = header.ParentIonMZ,
                 TotalIonCurrent = header.TotalIonCurrent,
                 CollisionType = CollisionType.Other
             };
@@ -546,19 +545,19 @@ namespace MultiAlignCore.IO.Features
             switch (header.CollisionMode)
             {
                 case "cid":
-                    spectrum.CollisionType = CollisionType.CID;
+                    spectrum.CollisionType = CollisionType.Cid;
                     break;
                 case "hcd":
-                    spectrum.CollisionType = CollisionType.HCD;
+                    spectrum.CollisionType = CollisionType.Hcd;
                     break;
                 case "etd":
-                    spectrum.CollisionType = CollisionType.ETD;
+                    spectrum.CollisionType = CollisionType.Etd;
                     break;
                 case "ecd":
-                    spectrum.CollisionType = CollisionType.ECD;
+                    spectrum.CollisionType = CollisionType.Ecd;
                     break;
                 case "hid":
-                    spectrum.CollisionType = CollisionType.HID;
+                    spectrum.CollisionType = CollisionType.Hid;
                     break;
 
             }

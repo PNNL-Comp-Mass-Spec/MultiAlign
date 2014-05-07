@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Data.SQLite;
+﻿using System.Data.SQLite;
 
 namespace MultiAlignCore.IO.Features
 {
@@ -13,12 +9,12 @@ namespace MultiAlignCore.IO.Features
     {        
         public static void IndexClusters(string path)
         {
-            using (SQLiteConnection connection = new SQLiteConnection(string.Format("Data Source = {0};", path)))
+            using (var connection = new SQLiteConnection(string.Format("Data Source = {0};", path)))
             {
                 connection.Open();
 
 
-                using (SQLiteCommand command = connection.CreateCommand())
+                using (var command = connection.CreateCommand())
                 {
 
                     // UMC Clusters Index
@@ -35,11 +31,11 @@ namespace MultiAlignCore.IO.Features
 
         public static void IndexFeatures(string path)
         {
-            using (SQLiteConnection connection = new SQLiteConnection(string.Format("Data Source = {0};", path)))
+            using (var connection = new SQLiteConnection(string.Format("Data Source = {0};", path)))
             {
                 connection.Open();
 
-                using (SQLiteCommand command = connection.CreateCommand())
+                using (var command = connection.CreateCommand())
                 {
                     
                     // Feature Index for UMC

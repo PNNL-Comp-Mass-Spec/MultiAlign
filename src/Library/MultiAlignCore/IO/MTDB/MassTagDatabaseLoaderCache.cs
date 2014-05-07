@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using MultiAlignCore.Data;
-using MultiAlignCore.Data.MassTags;
 using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.Features.Hibernate;
 using PNNLOmics.Algorithms;
@@ -49,32 +48,32 @@ namespace MultiAlignCore.IO.MTDB
 
             UpdateStatus("Loading all of the mass tags.");
             // Get all of the mass tags
-            List<MassTagLight> massTags = Provider.FindAll();
+            var massTags = Provider.FindAll();
 
 
             UpdateStatus("Loading all of the tag to protein references.");
             // Then get all of the mass tag to protein maps
             IGenericDAO<MassTagToProteinMap> tagToProteinMapCache = new GenericDAOHibernate<MassTagToProteinMap>();
-            List<MassTagToProteinMap> maps = tagToProteinMapCache.FindAll();
+            var maps = tagToProteinMapCache.FindAll();
 
             // Then get all of the proteins
             UpdateStatus("Loading all of the protein data.");
-            IProteinDAO proteinCache = new MultiAlignCore.IO.Features.Hibernate.ProteinDAO();
-            List<Protein> proteins = proteinCache.FindAll();
+            IProteinDAO proteinCache = new ProteinDAO();
+            var proteins = proteinCache.FindAll();
 
             UpdateStatus("Indexing the protein data for faster assembly.");
-            Dictionary<int, Protein> proteinMap = new Dictionary<int, Protein>();
-            foreach (Protein p in proteins)
+            var proteinMap = new Dictionary<int, Protein>();
+            foreach (var p in proteins)
             {
-                if (!proteinMap.ContainsKey(p.ProteinID))
+                if (!proteinMap.ContainsKey(p.ProteinId))
                 {
-                    proteinMap.Add(p.ProteinID, p);
+                    proteinMap.Add(p.ProteinId, p);
                 }
             }
 
-            Dictionary<int, List<MassTagToProteinMap>> matchedMaps = new Dictionary<int, List<MassTagToProteinMap>>();
+            var matchedMaps = new Dictionary<int, List<MassTagToProteinMap>>();
 
-            foreach (MassTagToProteinMap singleMap in maps)
+            foreach (var singleMap in maps)
             {
                 if (!matchedMaps.ContainsKey(singleMap.MassTagId))
                 {
@@ -84,27 +83,27 @@ namespace MultiAlignCore.IO.MTDB
             }
 
             UpdateStatus("Re-mapping the proteins to the mass tags.");
-            Dictionary<int, List<Protein>> massTagProteinMap = new Dictionary<int, List<Protein>>();
+            var massTagProteinMap = new Dictionary<int, List<Protein>>();
 
             // Then map them.
-            foreach (MassTagLight tag in massTags)
+            foreach (var tag in massTags)
             {
-                int id = tag.ID;
+                var id = tag.Id;
 
                 if (!massTagProteinMap.ContainsKey(id))
                 {
                     massTagProteinMap.Add(id, new List<Protein>());
                 }
 
-                List<MassTagToProteinMap> matches = new List<MassTagToProteinMap>();
+                var matches = new List<MassTagToProteinMap>();
 
                 if (matchedMaps.ContainsKey(id))
                 {
                     matches = matchedMaps[id];
                 }
 
-                List<Protein> newProteins = new List<Protein>();
-                foreach (MassTagToProteinMap mtMap in matches)
+                var newProteins = new List<Protein>();
+                foreach (var mtMap in matches)
                 {
                     if (proteinMap.ContainsKey(mtMap.ProteinId))
                     {
@@ -118,8 +117,8 @@ namespace MultiAlignCore.IO.MTDB
             database.AddMassTagsAndProteins(massTags, massTagProteinMap);
             database.AllProteins = proteins;
 
-            int totalMassTags = database.MassTags.Count;
-            UpdateStatus("Loaded " + totalMassTags.ToString() + " mass tags.");
+            var totalMassTags = database.MassTags.Count;
+            UpdateStatus("Loaded " + totalMassTags + " mass tags.");
 
             return database;
         }

@@ -19,7 +19,7 @@ namespace MultiAlignCore.Data.SequenceData
             Score        = peptide.Score;
             GroupId      = peptide.GroupId;               
             UmcFeatureId = featureId;
-            Id           = peptide.ID;
+            Id           = peptide.Id;
         }
 
         public string   Sequence    { get; set; }
@@ -69,7 +69,7 @@ namespace MultiAlignCore.Data.SequenceData
 
         public override int GetHashCode()
         {
-            int hash = 17;
+            var hash = 17;
             hash = hash * 23 + Sequence.GetHashCode();
             hash = hash * 23 + Scan.GetHashCode();
             hash = hash * 23 + Score.GetHashCode();

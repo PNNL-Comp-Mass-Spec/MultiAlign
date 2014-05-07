@@ -1,21 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
-using MultiAlignCore.Algorithms.Options;
+using MultiAlignCore.Algorithms.FeatureFinding;
 using MultiAlignCore.Data.MetaData;
+using MultiAlignCore.IO.Features;
+using MultiAlignCore.IO.InputFiles;
 using MultiAlignTestSuite.Algorithms;
 using PNNLOmics.Algorithms;
 using PNNLOmics.Algorithms.FeatureClustering;
 using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
-using MultiAlignCore.Data;
-using MultiAlignCore.IO.Features;
-using MultiAlignCore.IO.InputFiles;
-using MultiAlignCore.Algorithms.FeatureFinding;
-using MultiAlignCore.Algorithms;
-using System.IO;
-using PNNLOmics.Algorithms.FeatureMatcher.MSnLinker;
 
 namespace MultiAlignTestSuite.Papers.Alignment.SSM
 {
@@ -28,7 +24,7 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
         protected void PrintHistogram(Histogram histogram)
         {
             Print("Histogram: " + histogram.Name);
-            for (int i = 0; i < histogram.Bins.Count; i++)
+            for (var i = 0; i < histogram.Bins.Count; i++)
             {
                 Print(string.Format("{0},{1}", histogram.Bins[i], histogram.Data[i]));
             }
@@ -36,11 +32,11 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
         protected void PrintHistogram(string title, List<Histogram> histograms)
         {
             Print("Histograms: " + title);
-            for (int i = 0; i < histograms[0].Bins.Count; i++)
+            for (var i = 0; i < histograms[0].Bins.Count; i++)
             {
-                StringBuilder builder = new StringBuilder();
+                var builder = new StringBuilder();
                 builder.AppendFormat("{0},", histograms[0].Bins[i]);
-                for (int j = 0; j < histograms.Count; j++)
+                for (var j = 0; j < histograms.Count; j++)
                 {
                     builder.AppendFormat("{0},", histograms[j].Data[i]);
                 }
@@ -55,10 +51,10 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
         /// <returns></returns>
         protected List<MSSpectra> GetSpectra(List<UMCLight> features)
         {
-            List<MSSpectra> spectra = new List<MSSpectra>();
-            foreach (UMCLight feature in features)
+            var spectra = new List<MSSpectra>();
+            foreach (var feature in features)
             {
-                feature.MSFeatures.ForEach(x => spectra.AddRange(x.MSnSpectra));
+                feature.MsFeatures.ForEach(x => spectra.AddRange(x.MSnSpectra));
             }
             return spectra;
         }
@@ -69,12 +65,12 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
         /// <param name="features"></param>
         protected void PrintFeatureMsMsData(List<UMCLight> features)
         {
-            int count = 0;
-            int doubleCount = 0;
+            var count = 0;
+            var doubleCount = 0;
             foreach (var feature in features)
             {
-                int singleCount = 0;
-                foreach (var msFeature in feature.MSFeatures)
+                var singleCount = 0;
+                foreach (var msFeature in feature.MsFeatures)
                 {
                     if (msFeature.MSnSpectra.Count > 0)
                     {
@@ -95,19 +91,19 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
         /// <returns></returns>
         public List<UMCLight> FindFeatures(string rawFile, string featureFile)
         {
-            List<UMCLight> features = new List<UMCLight>();
+            List<UMCLight> features;
             using (ISpectraProvider raw = new ThermoRawDataFileReader())
             {
                 // Read the raw file summary data...
                 raw.AddDataFile(rawFile, 0);
 
-                DatasetInformation info = new DatasetInformation();
+                var info = new DatasetInformation();
                 info.Features = new InputFile();
                 info.Features.Path = featureFile;
 
-                IFeatureFinder finder = FeatureFinderFactory.CreateFeatureFinder(FeatureFinderType.TreeBased);
+                var finder = FeatureFinderFactory.CreateFeatureFinder(FeatureFinderType.TreeBased);
 
-                var tolerances = new FeatureTolerances()
+                var tolerances = new FeatureTolerances
                 {
                     Mass = 8,
                     RetentionTime = .005
@@ -116,22 +112,12 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
 
 
                 // Load and create features
-                List<MSFeatureLight> msFeatures = UmcLoaderFactory.LoadMsFeatureData(info.Features.Path);
-                ISpectraProvider provider       = RawLoaderFactory.CreateFileReader(rawFile);
-                //features                        = finder.FindFeatures(msFeatures, options, provider);
-                List<MSSpectra> msms            = raw.GetRawSpectra(0);
-
-                // Link the features
-                IMSnLinker linker = MSnLinkerFactory.CreateLinker(MSnLinkerType.BoxMethod);
-                linker.Tolerances.Mass = .05;
-                linker.LinkMSFeaturesToMSn(msFeatures, msms);
+                var msFeatures = UmcLoaderFactory.LoadMsFeatureData(info.Features.Path);
+                var provider       = RawLoaderFactory.CreateFileReader(rawFile);
+                features           = finder.FindFeatures(msFeatures, options, provider);                
             }
             return features;
         }
-        /// <summary>
-        /// Default root test path.
-        /// </summary>
-        private const string CONST_ROOT_PATH = @"m:\data\proteomics\";
 
         /// <summary>
         /// Gets the root data path
@@ -164,12 +150,12 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
         /// <returns></returns>
         private List<PeptideMatch> GetPeptideMatches(string path)
         {
-            List<string> lines = File.ReadAllLines(path).ToList();
+            var lines = File.ReadAllLines(path).ToList();
 
-            List<PeptideMatch> matches = new List<PeptideMatch>();
-            foreach (string line in lines)
+            var matches = new List<PeptideMatch>();
+            foreach (var line in lines)
             {
-                string[] data = line.Split(',');
+                var data = line.Split(',');
                 if (data.Length < 6)
                 {
                     continue;
@@ -177,7 +163,7 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
 
                 try
                 {
-                    PeptideMatch match = new PeptideMatch();
+                    var match = new PeptideMatch();
                     match.Peptide = data[5];
                     match.ScanX = Convert.ToInt32(data[1]);
                     match.ScanY = Convert.ToInt32(data[3]);
@@ -198,11 +184,11 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
         /// <returns></returns>
         protected Dictionary<int, Dictionary<int, PeptideMatch>> CreateMatches(List<PeptideMatch> matches, int type)
         {
-            Dictionary<int, Dictionary<int, PeptideMatch>> matchesX = new Dictionary<int, Dictionary<int, PeptideMatch>>();
-            foreach (PeptideMatch match in matches)
+            var matchesX = new Dictionary<int, Dictionary<int, PeptideMatch>>();
+            foreach (var match in matches)
             {
-                int scanx = match.ScanX;
-                int scany = match.ScanY;
+                var scanx = match.ScanX;
+                var scany = match.ScanY;
                 if (type == 1)
                 {
                     scanx = match.ScanY;
@@ -230,19 +216,19 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
         /// <returns></returns>
         protected Dictionary<int, PeptideTest> ReadPeptideFile(string peptidePath)
         {
-            Dictionary<int, PeptideTest> peptideMap = new Dictionary<int, PeptideTest>();
-            string[] lines = File.ReadAllLines(peptidePath);
+            var peptideMap = new Dictionary<int, PeptideTest>();
+            var lines = File.ReadAllLines(peptidePath);
 
-            string header = lines[0];
-            string[] headerData = header.Split('\t');
+            var header = lines[0];
+            var headerData = header.Split('\t');
 
-            int scanIndex = 0;
-            int peptideIndex = 0;
-            int fdrIndex = 0;
-            int scoreIndex = 0;
+            var scanIndex = 0;
+            var peptideIndex = 0;
+            var fdrIndex = 0;
+            var scoreIndex = 0;
 
-            int i = 0;
-            foreach (string x in headerData)
+            var i = 0;
+            foreach (var x in headerData)
             {
                 switch (x.ToLower())
                 {
@@ -267,14 +253,14 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
             // Map all of the lines.
             for (i = 1; i < lines.Length; i++)
             {
-                string line = lines[i];
-                string[] data = line.Split('\t');
-                string pep = data[peptideIndex];
-                int scan = Convert.ToInt32(data[scanIndex]);
-                double score = Convert.ToDouble(data[scoreIndex]);
-                double fdr = Convert.ToDouble(data[fdrIndex]);
+                var line = lines[i];
+                var data = line.Split('\t');
+                var pep = data[peptideIndex];
+                var scan = Convert.ToInt32(data[scanIndex]);
+                var score = Convert.ToDouble(data[scoreIndex]);
+                var fdr = Convert.ToDouble(data[fdrIndex]);
 
-                PeptideTest p = new PeptideTest();
+                var p = new PeptideTest();
                 p.Sequence = pep;
                 p.Score = score;
                 p.FDR = fdr;

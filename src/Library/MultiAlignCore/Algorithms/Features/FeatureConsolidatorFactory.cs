@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using MultiAlignEngine.Features;
-using MultiAlignCore.Algorithms.FeatureFinding;
+﻿using MultiAlignCore.Algorithms.FeatureFinding;
 
 namespace MultiAlignCore.Algorithms.Features
 {
@@ -22,12 +17,12 @@ namespace MultiAlignCore.Algorithms.Features
             switch(report)
             {
                 case AbundanceReportingType.Sum:
-                    UMCAbundanceSumConsolidator sumConsolidate  = new UMCAbundanceSumConsolidator();
+                    var sumConsolidate  = new UMCAbundanceSumConsolidator();
                     sumConsolidate.AbundanceType                = umcBuilding; 
                     consolidator                                = sumConsolidate;
                     break;
                 case AbundanceReportingType.Max:
-                    UMCAbundanceConsolidator maxConsolidate     = new UMCAbundanceConsolidator();
+                    var maxConsolidate     = new UMCAbundanceConsolidator();
                     maxConsolidate.AbundanceType                = umcBuilding;
                     consolidator                                = maxConsolidate;
                     break;

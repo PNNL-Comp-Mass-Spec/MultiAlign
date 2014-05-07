@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using PNNLOmics.Data;
+﻿using System.Collections.ObjectModel;
+using MultiAlign.ViewModels.Proteins;
 using MultiAlignCore.Data;
-using System.Collections.ObjectModel;
 using PNNLOmics.Data.MassTags;
 
 namespace MultiAlign.ViewModels

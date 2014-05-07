@@ -1,16 +1,13 @@
 ﻿using System;
-using System.Windows.Forms;
-using System.Windows.Input;
-using MultiAlign.Data;
-using MultiAlign.Workspace;
-using MultiAlign.Commands.Viewers;
-using MultiAlign.Data.States;
 using System.Collections.ObjectModel;
+using System.Windows.Input;
 using MultiAlign.Commands;
+using MultiAlign.Commands.Viewers;
+using MultiAlign.Data;
 using MultiAlign.IO;
-using System.Collections.Generic;
+using MultiAlign.Workspace;
 
-namespace MultiAlign.ViewModels
+namespace MultiAlign.ViewModels.Viewers
 {
     public class GettingStartedViewModel: ViewModelBase
     {
@@ -39,20 +36,19 @@ namespace MultiAlign.ViewModels
 
         private void CreateCommands()
         {
-            Action removeRecentList = delegate()
+            Action removeRecentList = delegate
             {                
                 RecentAnalyses.Clear();
                 SaveWorkSpace();
             };
 
-            ClearRecentList = new BaseCommandBridge(removeRecentList, null);
+            ClearRecentList = new BaseCommand(removeRecentList);
             
-            LoadExistingAnalysisCommand command      = new LoadExistingAnalysisCommand();
-            command.ExistingAnalysisSelected        += new EventHandler<OpenAnalysisArgs>(command_ExistingAnalysisSelected);
+            var command      = new LoadExistingAnalysisCommand();
+            command.ExistingAnalysisSelected        += command_ExistingAnalysisSelected;
             LoadExistingAnalysis                    = command;
             
-            StartNewAnalysisCommand startNew = new StartNewAnalysisCommand();
-            startNew.StartNewAnalysis       += new EventHandler(startNew_StartNewAnalysis);
+            var startNew = new BaseCommand(startNew_StartNewAnalysis, BaseCommand.AlwaysPass);            
             StartNewAnalysis                 = startNew;
         }
 
@@ -67,7 +63,7 @@ namespace MultiAlign.ViewModels
             if (System.IO.File.Exists(path))
             {
                 ApplicationStatusMediator.SetStatus("Loading workspace");
-                MultiAlignWorkspaceReader reader = new MultiAlignWorkspaceReader();
+                var reader = new MultiAlignWorkspaceReader();
                 try
                 {
                     CurrentWorkspace = reader.Read(path);
@@ -85,7 +81,7 @@ namespace MultiAlign.ViewModels
 
         private void SaveWorkSpace()
         {
-            MultiAlignWorkspaceWriter writer = new MultiAlignWorkspaceWriter();
+            var writer = new MultiAlignWorkspaceWriter();
             try
             {
                 writer.Write(m_workspacePath, m_currentWorkspace);
@@ -114,9 +110,8 @@ namespace MultiAlign.ViewModels
             SaveWorkSpace();
         }
 
-        void startNew_StartNewAnalysis(object sender, EventArgs e)
-        {
-            // Start Wizard.
+        void startNew_StartNewAnalysis()
+        {            
             if (NewAnalysisStarted != null)
             {
                 NewAnalysisStarted(this, null);

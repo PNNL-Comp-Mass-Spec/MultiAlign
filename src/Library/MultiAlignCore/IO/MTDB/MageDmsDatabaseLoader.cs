@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using MultiAlignCore.IO.InputFiles;
+﻿using System;
+using System.Collections.Generic;
 using Mage;
-using System;
+using MultiAlignCore.IO.InputFiles;
 
 namespace MultiAlignCore.IO.MTDB
 {
@@ -19,11 +19,11 @@ namespace MultiAlignCore.IO.MTDB
         private const string CONST_DESCRIPTION          = "description";
         private const string CONST_JOBS                 = "msms_jobs";
         
-        private int m_serverNameColumn   = 0;
-        private int m_databaseNameColumn = 0;
-        private int m_organism           = 0;
-        private int m_description        = 0;
-        private int m_msmsJobs           = 0;        
+        private int m_serverNameColumn;
+        private int m_databaseNameColumn;
+        private int m_organism;
+        private int m_description;
+        private int m_msmsJobs;        
 
         private List<InputDatabase> m_databases;
 
@@ -38,12 +38,12 @@ namespace MultiAlignCore.IO.MTDB
         public ICollection<InputDatabase> LoadDatabases()
         {            
             m_databases                     = new List<InputDatabase>();
-            using (MSSQLReader reader       = new MSSQLReader())
+            using (var reader       = new MSSQLReader())
             {
                 reader.Server               = Server;
                 reader.Database             = Database;
                 reader.SQLText              = CONST_DATABASE_LOAD_QUERY;
-                ProcessingPipeline pipeline = ProcessingPipeline.Assemble("Databases", reader, this);
+                var pipeline = ProcessingPipeline.Assemble("Databases", reader, this);
                 pipeline.RunRoot(null);
             }
             return m_databases;
@@ -62,8 +62,8 @@ namespace MultiAlignCore.IO.MTDB
         /// <param name="args"></param>
         public void HandleColumnDef(object sender, MageColumnEventArgs args)
         {
-            int i = 0;
-            foreach (MageColumnDef columnName in args.ColumnDefs)
+            var i = 0;
+            foreach (var columnName in args.ColumnDefs)
             {
                 switch (columnName.Name.ToLower())
                 {
@@ -103,7 +103,7 @@ namespace MultiAlignCore.IO.MTDB
                 return;
             }
 
-            InputDatabase database  = new InputDatabase();
+            var database  = new InputDatabase();
             database.DatabaseName   = args.Fields[m_databaseNameColumn].ToString();
             database.DatabaseServer = args.Fields[m_serverNameColumn].ToString();
             database.Description    = args.Fields[m_description].ToString();
@@ -121,7 +121,7 @@ namespace MultiAlignCore.IO.MTDB
         private const string    CONST_SERVER               = "gigasax";
         private const string    CONST_DATABASE             = "DMS5";
         private const string    CONST_ARCHIVENAME          = "archive folder path";                
-        private int             m_archiveFolderPath        = 0;        
+        private int             m_archiveFolderPath;        
         private List<string>    m_folders;
 
         public MageMSGFFinderLoader()
@@ -135,12 +135,12 @@ namespace MultiAlignCore.IO.MTDB
         {
             m_folders = new List<string>();
 
-            using (MSSQLReader reader       = new MSSQLReader())
+            using (var reader       = new MSSQLReader())
             {
                 reader.Server               = Server;
                 reader.Database             = Database;
                 reader.SQLText              = string.Format(CONST_DATABASE_LOAD_QUERY, name);
-                ProcessingPipeline pipeline = ProcessingPipeline.Assemble("Results", reader, this);
+                var pipeline = ProcessingPipeline.Assemble("Results", reader, this);
                 pipeline.RunRoot(null);
             }
             return m_folders;
@@ -158,8 +158,8 @@ namespace MultiAlignCore.IO.MTDB
         /// <param name="args"></param>
         public void HandleColumnDef(object sender, MageColumnEventArgs args)
         {
-            int i = 0;
-            foreach (MageColumnDef columnName in args.ColumnDefs)
+            var i = 0;
+            foreach (var columnName in args.ColumnDefs)
             {
                 switch (columnName.Name.ToLower())
                 {
@@ -184,7 +184,7 @@ namespace MultiAlignCore.IO.MTDB
             {
                 return;
             }            
-            string value = args.Fields[m_archiveFolderPath].ToString();                        
+            var value = args.Fields[m_archiveFolderPath].ToString();                        
             m_folders.Add(value);
         }
         #endregion

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using MultiAlignCore.Data;
-using MultiAlignCore.Data.Features;
 using PNNLOmics.Data.MassTags;
 
 namespace MultiAlignCore.Extensions
@@ -14,7 +13,7 @@ namespace MultiAlignCore.Extensions
         /// <returns></returns>
         public static object BuildId(this MassTagLight tag)
         {
-            return string.Format("{0}-{1}", tag.ID, tag.ConformationID);
+            return string.Format("{0}-{1}", tag.Id, tag.ConformationId);
         }
         /// <summary>
         /// Creates a charge map for a given ms feature list.
@@ -23,13 +22,13 @@ namespace MultiAlignCore.Extensions
         /// <returns></returns>
         public static Dictionary<int, int> CreateMassTagClusterSizeHistogram(this List<MassTagToCluster> tags)
         {
-            Dictionary<int, int> map = new Dictionary<int, int>();
+            var map = new Dictionary<int, int>();
 
-            foreach (MassTagToCluster tag in tags)
+            foreach (var tag in tags)
             {
-                int size = 0;
+                var size = 0;
 
-                foreach (UMCClusterLightMatched cluster in tag.Matches)
+                foreach (var cluster in tag.Matches)
                 {
                     size += cluster.Cluster.MemberCount;
                 }
@@ -54,13 +53,13 @@ namespace MultiAlignCore.Extensions
         /// <returns></returns>
         public static Dictionary<int, int> CreateMassTagMatchedClusterSizeHistogram(this List<MassTagToCluster> tags)
         {
-            Dictionary<int, int> map = new Dictionary<int, int>();
+            var map = new Dictionary<int, int>();
 
-            foreach (MassTagToCluster tag in tags)
+            foreach (var tag in tags)
             {
-                int size = 0;
+                var size = 0;
 
-                foreach (UMCClusterLightMatched cluster in tag.Matches)
+                foreach (var cluster in tag.Matches)
                 {
                     size += cluster.Cluster.MemberCount;
                 }

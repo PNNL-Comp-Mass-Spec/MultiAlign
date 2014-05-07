@@ -2,6 +2,7 @@
 using OxyPlot.Axes;
 using OxyPlot.Series;
 using PNNLOmics.Data;
+using PNNLOmicsViz.Drawing;
 
 namespace MultiAlign.ViewModels.Charting
 {
@@ -52,11 +53,11 @@ namespace MultiAlign.ViewModels.Charting
             {
                 charge = spectrum.ParentFeature.ChargeState;
             }
-            var series = new StemSeries()
+            var series = new StemSeries
             {
                 
                 Title = string.Format("{0} m/z charge {1}",
-                                    spectrum.PrecursorMZ,
+                                    spectrum.PrecursorMz,
                                     charge),
                 Color = colorIterator.GetColor(charge)
             };

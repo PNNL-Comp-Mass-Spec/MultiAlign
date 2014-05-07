@@ -1,17 +1,11 @@
-﻿using MultiAlign.ViewModels;
+﻿using MultiAlign.Data.States;
 
-namespace MultiAlign.Data.States
+namespace MultiAlign.ViewModels
 {
-    /// <summary>
-    /// Delegate that is parameterless but makes a transition
-    /// </summary>
-    /// <returns></returns>
-    public delegate bool UITransition();
-
     /// <summary>
     /// Validates whether the user interface can transition from one state to another.
     /// </summary>
-    public class StateModeratorViewModel : ViewModelBase
+    public sealed class StateModeratorViewModel : ViewModelBase
     {        
         private AnalysisState   m_currentAnalysisState;
         private AnalysisState   m_previousAnalysisState;
@@ -33,11 +27,9 @@ namespace MultiAlign.Data.States
             }
             set
             {
-                if (value != m_currentViewState)
-                {
-                    m_currentViewState = value;
-                    OnPropertyChanged("CurrentViewState");
-                }
+                if (value == m_currentViewState) return;
+                m_currentViewState = value;
+                OnPropertyChanged("CurrentViewState");
             }
         }
 
@@ -50,11 +42,9 @@ namespace MultiAlign.Data.States
             }
             set
             {
-                if (value != m_currentViewState)
-                {
-                    m_previousViewState = value;
-                    OnPropertyChanged("PreviousViewState");
-                }
+                if (value == m_currentViewState) return;
+                m_previousViewState = value;
+                OnPropertyChanged("PreviousViewState");
             }
         }
 
@@ -67,11 +57,9 @@ namespace MultiAlign.Data.States
             }
             set
             {
-                if (value != m_currentAnalysisState)
-                {
-                    m_currentAnalysisState = value;
-                    OnPropertyChanged("CurrentAnalysisState");
-                }
+                if (value == m_currentAnalysisState) return;
+                m_currentAnalysisState = value;
+                OnPropertyChanged("CurrentAnalysisState");
             }
         }
 
@@ -94,37 +82,9 @@ namespace MultiAlign.Data.States
 
         #endregion
 
-        /// <summary>
-        /// Determines if the UI can open an analysis or not.
-        /// </summary>
-        /// <returns></returns>
-        public bool CanOpenAnalysis(ref string message)
+        public bool CanPerformNewAnalysis(out string message)
         {
-            bool canHappen  = true;
-            message         = "";
-            switch (CurrentAnalysisState)
-            {
-                case AnalysisState.Idle:
-                    break;
-                case AnalysisState.Viewing:
-                    break;
-                case AnalysisState.Loading:
-                    break;
-                case AnalysisState.Running:                    
-                    message = "Cannot open an analysis while one is running.";
-                    canHappen = false;
-                    break;
-                case AnalysisState.Setup:
-                    break;
-                default:
-                    break;
-            }
-            return canHappen;
-        }
-
-        public bool CanPerformNewAnalysis(ref string message)
-        {
-            bool canHappen = true;
+            var canHappen = true;
             message = "";
             switch (CurrentAnalysisState)
             {
@@ -140,15 +100,13 @@ namespace MultiAlign.Data.States
                     break;
                 case AnalysisState.Setup:
                     break;
-                default:
-                    break;
             }
             return canHappen;
         }
 
-        public bool IsAnalysisRunning(ref string message)
+        public bool IsAnalysisRunning(out string message)
         {
-            bool canHappen  = false;
+            var canHappen  = false;
             message         = "";
             switch (CurrentAnalysisState)
             {
@@ -162,8 +120,6 @@ namespace MultiAlign.Data.States
                     canHappen   = true;
                     break;
                 case AnalysisState.Setup:
-                    break;
-                default:
                     break;
             }
             return canHappen;

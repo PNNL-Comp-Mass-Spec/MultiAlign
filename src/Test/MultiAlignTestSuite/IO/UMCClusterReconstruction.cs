@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
+using System.IO;
 using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.Extensions;
-using NUnit.Framework;
-using PNNLOmics.Data.Features;
-using MultiAlignCore.IO.Features.Hibernate;
 using MultiAlignCore.IO.Features;
-using System.IO;
+using NUnit.Framework;
 using PNNLOmics.Data;
-using MultiAlignCore.Data;
 
 namespace MultiAlignTestSuite.IO
 {
@@ -43,7 +37,7 @@ namespace MultiAlignTestSuite.IO
             }
 
             // This is a factory based method that creates a set of data access providers used throughout MultiAlign
-            FeatureDataAccessProviders providers = DataAccessFactory.CreateDataAccessProviders(databasePath, false);
+            var providers = DataAccessFactory.CreateDataAccessProviders(databasePath, false);
 
             // If you just wanted the clusters you could do this:
             // 1. Connect to the database
@@ -52,15 +46,15 @@ namespace MultiAlignTestSuite.IO
             //IUmcClusterDAO clusterCache     = new UmcClusterDAOHibernate(); 
             //List<UMCClusterLight> clusters  = clusterCache.FindAll();
 
-            List<UMCClusterLight> clusters = providers.ClusterCache.FindAll();
-            bool shouldGetMsFeatures   = true;
-            bool shouldGetMsMsFeatures = true;
-            bool shouldGetRawData      = false;
+            var clusters = providers.ClusterCache.FindAll();
+            var shouldGetMsFeatures   = true;
+            var shouldGetMsMsFeatures = true;
+            var shouldGetRawData      = false;
            
             // This gets all of the dataset information and maps to a dictionary...if you want the raw data
             // otherwise comment this out.
-            List<DatasetInformation> datasets = providers.DatasetCache.FindAll();
-            Dictionary<int, DatasetInformation> datasetMap = new Dictionary<int,DatasetInformation>();
+            var datasets = providers.DatasetCache.FindAll();
+            var datasetMap = new Dictionary<int,DatasetInformation>();
             datasets.ForEach(x => datasetMap.Add(x.DatasetId, x));
 
             foreach(var cluster in clusters)
@@ -69,11 +63,11 @@ namespace MultiAlignTestSuite.IO
                                               shouldGetMsFeatures, 
                                               shouldGetMsMsFeatures);
 
-                foreach (UMCLight feature in cluster.Features)
+                foreach (var feature in cluster.Features)
                 {
-                    foreach (MSFeatureLight msFeature in feature.Features)
+                    foreach (var msFeature in feature.Features)
                     {
-                        foreach(MSSpectra spectrumMetaData in msFeature.MSnSpectra)
+                        foreach(var spectrumMetaData in msFeature.MSnSpectra)
                         {
                             // then you can do stuff with the ms/ms spectra
                             // If you had the path to the raw file, you could create a reader for you to extract the MS/MS spectra
@@ -81,7 +75,7 @@ namespace MultiAlignTestSuite.IO
                             if (shouldGetRawData)
                             {                                        
                                 DatasetInformation info = null;
-                                bool hasKey = datasetMap.TryGetValue(spectrumMetaData.GroupID, out info);
+                                var hasKey = datasetMap.TryGetValue(spectrumMetaData.GroupId, out info);
                                 if (hasKey)
                                 {
                                     if (info.Raw != null)
@@ -90,12 +84,12 @@ namespace MultiAlignTestSuite.IO
                                         // MS/MS spectra from PNNLOmics without having to reference any of the Thermo DLL's
                                         // Nor support file reading capability.  This is also nice because I don't have to load
                                         // several MS/MS spectra when analyzing large datasets for my spectral clustering work.
-                                        ISpectraProvider rawReader = RawLoaderFactory.CreateFileReader(info.Raw.Path);
-                                        rawReader.AddDataFile(info.Raw.Path, spectrumMetaData.GroupID);
+                                        var rawReader = RawLoaderFactory.CreateFileReader(info.Raw.Path);
+                                        rawReader.AddDataFile(info.Raw.Path, spectrumMetaData.GroupId);
 
                                         // Then grab the actual spectrum...
                                         var summary = new ScanSummary();
-                                        List<XYData> spectrum = rawReader.GetRawSpectra(spectrumMetaData.Scan, spectrumMetaData.GroupID, 2, out summary);
+                                        var spectrum = rawReader.GetRawSpectra(spectrumMetaData.Scan, spectrumMetaData.GroupId, 2, out summary);
 
                                         // Then do what you want...
                                         // Profit???

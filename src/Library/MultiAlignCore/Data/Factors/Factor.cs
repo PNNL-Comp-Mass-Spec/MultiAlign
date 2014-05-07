@@ -34,33 +34,30 @@ namespace MultiAlignCore.Data.Factors
 
 		public override bool Equals(object obj)
 		{
-			Factor factor = (Factor)obj;
+			var factor = (Factor)obj;
 
 			if (factor == null)
 			{
 				return false;
 			}
-			else if (!this.FactorId.Equals(factor.FactorId))
-			{
-				return false;
-			}
-			else if (!this.Dataset.Equals(factor.Dataset))
-			{
-				return false;
-			}
-			else if (!this.FactorName.Equals(factor.FactorName))
-			{
-				return false;
-			}
-			else
-			{
-				return this.FactorValue.Equals(factor.FactorValue);
-			}
+		    if (!FactorId.Equals(factor.FactorId))
+		    {
+		        return false;
+		    }
+		    if (!Dataset.Equals(factor.Dataset))
+		    {
+		        return false;
+		    }
+		    if (!FactorName.Equals(factor.FactorName))
+		    {
+		        return false;
+		    }
+		    return FactorValue.Equals(factor.FactorValue);
 		}
 
 		public override int GetHashCode()
 		{
-			int hash = 17;
+			var hash = 17;
 
 			hash = hash * 23 + m_id.GetHashCode();
 			hash = hash * 23 + m_dataset.GetHashCode();

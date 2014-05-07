@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using MultiAlignCore.Data;
-using MultiAlign.Data.States;
-using MultiAlign.Data;
 using System.Windows.Input;
 using MultiAlign.Commands.Wizard;
-using MultiAlign.ViewModels.Wizard;
+using MultiAlign.Data;
+using MultiAlign.Data.States;
+using MultiAlignCore.Data;
 
-namespace MultiAlign.ViewModels.Analysis
+namespace MultiAlign.ViewModels.Wizard
 {
     public class AnalysisSetupViewModel: ViewModelBase
     {
@@ -225,8 +221,8 @@ namespace MultiAlign.ViewModels.Analysis
         public void MoveNext()
         {
             // Validate the move
-            string errorMessage = "";
-            bool isValid        = MultiAlignAnalysisValidator.IsStepValid(AnalysisConfiguration, CurrentStep, ref errorMessage);
+            var errorMessage = "";
+            var isValid        = MultiAlignAnalysisValidator.IsStepValid(AnalysisConfiguration, CurrentStep, ref errorMessage);
 
             // Then display the error if exists...
             if (!isValid)
@@ -288,7 +284,7 @@ namespace MultiAlign.ViewModels.Analysis
 
         public void Cancel()
         {
-            if (this.AnalysisQuit != null)
+            if (AnalysisQuit != null)
             {
                 AnalysisQuit(this, null);
             }

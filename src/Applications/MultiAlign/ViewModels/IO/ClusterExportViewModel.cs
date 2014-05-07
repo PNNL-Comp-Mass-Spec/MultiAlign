@@ -1,19 +1,16 @@
-﻿using MultiAlign.Commands;
-using MultiAlign.IO;
-using MultiAlign.ViewModels.TreeView;
-using MultiAlignCore.Data;
-using MultiAlignCore.Data.Features;
-using MultiAlignCore.Data.MetaData;
-using MultiAlignCore.IO.Features;
-using PNNLOmics.Data.Features;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Windows;
 using System.Windows.Input;
-using System.Windows.Shapes;
+using MultiAlign.Commands;
+using MultiAlign.IO;
+using MultiAlign.ViewModels.TreeView;
+using MultiAlignCore.Data.Features;
+using MultiAlignCore.Data.MetaData;
+using MultiAlignCore.IO.Clusters;
+using MultiAlignCore.IO.Features;
+using PNNLOmics.Data.Features;
 
 namespace MultiAlign.ViewModels.IO
 {
@@ -39,10 +36,10 @@ namespace MultiAlign.ViewModels.IO
             m_filteredClusters  = filteredClusters;            
             m_datasets          = SingletonDataProviders.GetAllInformation();
             Exporters           = new ObservableCollection<IFeatureClusterWriter>();
-            string filters      = "";
+            var filters      = "";
 
             m_writerExtensionMap = new Dictionary<string, IFeatureClusterWriter>();            
-            foreach(var exporter in UMCClusterExporterFactory.Create())
+            foreach(var exporter in UmcClusterExporterFactory.Create())
             {
                 exporter.ShouldLoadClusterData = true;
 
@@ -62,13 +59,14 @@ namespace MultiAlign.ViewModels.IO
             BrowseSave = new BrowseSaveFileCommand((string x) =>
                                                    {
                                                         OutputPath = x;
-                                                   }, filters);
+                                                   },
+                                                   BaseCommand.AlwaysPass, filters);
 
-            /// Action for saving all clusters
-            Action saveAction = delegate()
+            // Action for saving all clusters
+            Action saveAction = delegate
             {
                 SelectedExporter.Path           = OutputPath;
-                List<UMCClusterLight> clusters  = new List<UMCClusterLight>();
+                var clusters  = new List<UMCClusterLight>();
                 if (IsFilteredClusters)
                 {                    
                     foreach(var x in m_filteredClusters)                 
@@ -92,10 +90,10 @@ namespace MultiAlign.ViewModels.IO
             };
 
 
-            SaveData = new BaseCommandBridge(saveAction, CanSave);
+            SaveData = new BaseCommand(saveAction, CanSave);
         }
 
-        private bool CanSave()
+        private bool CanSave(object parameter)
         {
             return !string.IsNullOrWhiteSpace(OutputPath);
         }

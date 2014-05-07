@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace MultiAlignCore.Data.MetaData
+﻿namespace MultiAlignCore.Data.MetaData
 {
     /// <summary>
     /// Class for tracking the plot paths for a dataset

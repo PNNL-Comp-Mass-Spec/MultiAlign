@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Reflection;
 using System.Text;
 
 namespace MultiAlignCore.IO
@@ -88,23 +87,23 @@ namespace MultiAlignCore.IO
         public static void PrintVersion()
         {
             PrintMessage("[Version Info]");
-            string assemblyData = ApplicationUtility.GetAssemblyData();
+            var assemblyData = ApplicationUtility.GetAssemblyData();
             PrintMessage("\t" + assemblyData);
 
-            AppDomain myDomain = AppDomain.CurrentDomain;
-            Assembly[] assembliesLoaded = myDomain.GetAssemblies();
+            var myDomain = AppDomain.CurrentDomain;
+            var assembliesLoaded = myDomain.GetAssemblies();
 
             PrintMessage("\tLoaded Assemblies");
-            foreach (Assembly subAssembly in assembliesLoaded)
+            foreach (var subAssembly in assembliesLoaded)
             {
-                AssemblyName subName = subAssembly.GetName();
+                var subName = subAssembly.GetName();
                 PrintMessage(string.Format("\t\t{0} - version {1}",
                                                                 subName,
                                                                 subName.Version));
             }
 
             PrintMessage("[System Information]");
-            string systemData = ApplicationUtility.GetSystemData();
+            var systemData = ApplicationUtility.GetSystemData();
             PrintMessage("\t" + systemData);
             PrintMessage("[LogStart]");
         }

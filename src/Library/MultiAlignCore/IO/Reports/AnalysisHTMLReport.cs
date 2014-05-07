@@ -22,7 +22,7 @@ namespace MultiAlignCore.IO.Reports
         public  void PushImageColumn(string data)
         {
             PushStartTableColumn();
-            PushData(string.Format("<a href={0}><img src={0} width={1} height={2} alt={0}/></a>", data, ImageWidth, ImageHeight));
+            PushData(string.Format("<a href={0}><img src={0} width={1} height={2} alt={0}/></a>", data, ImageWidth, ImageHeight));            
             PushEndTableColumn();
         }
         /// <summary>
@@ -138,7 +138,7 @@ namespace MultiAlignCore.IO.Reports
             }
             using (TextWriter htmlWriter = File.CreateText(path))
             {
-                string headerTag = "<html>\n<body>\n<table width=\"500\" border=\"0\">\n<tr>\n<td colspan=\"2\" style=\"background-color:#005500;color=#FFFFFF\">";
+                var headerTag = "<html>\n<body>\n<table width=\"500\" border=\"0\">\n<tr>\n<td colspan=\"2\" style=\"background-color:#005500;color=#FFFFFF\">";
                 headerTag += "<a name=\"top\"><h1 style=\"color:#FFFFFF\">MultiAlign Analysis Report</h1></a>";
                 headerTag += string.Format("<h3 style=\"color:#FFFFFF\">{0} {1}</h3>", AnalysisName, DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss"));
                 headerTag += "</td>\n</tr>\n<tr valign=\"top\">\n";
@@ -146,11 +146,11 @@ namespace MultiAlignCore.IO.Reports
 
                 htmlWriter.WriteLine(headerTag);
 
-                foreach (string tag in ContentTags)
+                foreach (var tag in ContentTags)
                 {
                     htmlWriter.WriteLine(tag);
                 }      
-                string bottomTag = "</tr>\n<tr>\n<td colspan=\"2\" style=\"background-color:#005500;text-align:center;\">\n</td>\n</tr>\n</table>\n</body>";
+                var bottomTag = "</tr>\n<tr>\n<td colspan=\"2\" style=\"background-color:#005500;text-align:center;\">\n</td>\n</tr>\n</table>\n</body>";
                 bottomTag += "</html>";
 
                 htmlWriter.WriteLine(bottomTag);

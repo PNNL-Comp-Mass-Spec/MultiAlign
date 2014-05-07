@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using PNNLOmics.Data.Features;
-using MultiAlignEngine.Features;
 
 namespace MultiAlignCore.IO.Features
 {
@@ -55,12 +54,12 @@ namespace MultiAlignCore.IO.Features
 		/// <returns>The column map as a Dictionary object</returns>
 		private Dictionary<String, int> CreateColumnMapping()
 		{
-			Dictionary<String, int> columnMap = new Dictionary<String, int>();
+			var columnMap = new Dictionary<String, int>();
 
-			String[] columnTitles = m_umcFileReader.ReadLine().Split('\t', '\n');
-			int numOfColumns = columnTitles.Length;
+			var columnTitles = m_umcFileReader.ReadLine().Split('\t', '\n');
+			var numOfColumns = columnTitles.Length;
 
-			for (int i = 0; i < numOfColumns; i++)
+			for (var i = 0; i < numOfColumns; i++)
 			{
 				switch (columnTitles[i].Trim())
 				{
@@ -184,20 +183,20 @@ namespace MultiAlignCore.IO.Features
 		/// </summary>
 		private List<UMCLight> SaveDataToUmcList()
 		{
-            List<UMCLight>  umcList     = new List<UMCLight>();
+            var  umcList     = new List<UMCLight>();
 			string          line;
             UMCLight        umc;
-			int             previousId  = -99;
-			int             currentId   = -99;
-			int             idIndex     = 0;
+			var             previousId  = -99;
+			var             currentId   = -99;
+			var             idIndex     = 0;
 
-            int minScan = int.MaxValue;
-            int maxScan = int.MinValue;
+            var minScan = int.MaxValue;
+            var maxScan = int.MinValue;
 
 			// Read the rest of the Stream, 1 line at a time, and save the appropriate data into new Objects
 			while ((line = m_umcFileReader.ReadLine()) != null)
 			{
-				String[] columns = line.Split(',', '\t', '\n');
+				var columns = line.Split(',', '\t', '\n');
 
 				if (m_columnMap.ContainsKey("Umc.Id"))
 				{
@@ -215,18 +214,18 @@ namespace MultiAlignCore.IO.Features
 				if (previousId != currentId)
 				{
                     umc = new UMCLight();
-					umc.ID = currentId;
+					umc.Id = currentId;
 					if (m_columnMap.ContainsKey("Umc.ScanStart"))				umc.ScanStart       = int.Parse(columns[m_columnMap["Umc.ScanStart"]]);
 					if (m_columnMap.ContainsKey("Umc.ScanEnd"))					umc.ScanEnd         = int.Parse(columns[m_columnMap["Umc.ScanEnd"]]);
 					if (m_columnMap.ContainsKey("Umc.Scan"))					umc.Scan            = int.Parse(columns[m_columnMap["Umc.Scan"]]);					
-					if (m_columnMap.ContainsKey("Umc.Net"))						umc.NET             = Double.Parse(columns[m_columnMap["Umc.Net"]]);
+					if (m_columnMap.ContainsKey("Umc.Net"))						umc.Net             = Double.Parse(columns[m_columnMap["Umc.Net"]]);
 					if (m_columnMap.ContainsKey("Umc.Mass"))					umc.MassMonoisotopic    = Double.Parse(columns[m_columnMap["Umc.Mass"]]);					
                     if (m_columnMap.ContainsKey("Umc.AbundanceSum"))
                     {
                         try
                         {
                             // To handle bugs from Feature Finder.
-                            string data = columns[m_columnMap["Umc.AbundanceSum"]];                            
+                            var data = columns[m_columnMap["Umc.AbundanceSum"]];                            
                             if (data.StartsWith("-"))
                             {
                                 umc.AbundanceSum = 0;
@@ -255,7 +254,7 @@ namespace MultiAlignCore.IO.Features
 					if (m_columnMap.ContainsKey("Umc.DriftTime"))					umc.DriftTime               = double.Parse(columns[m_columnMap["Umc.DriftTime"]]);
 					if (m_columnMap.ContainsKey("Umc.AverageInterferenceScore"))
                     {
-                        double d = Double.Parse(columns[m_columnMap["Umc.AverageInterferenceScore"]]);
+                        var d = Double.Parse(columns[m_columnMap["Umc.AverageInterferenceScore"]]);
                         if (double.IsNegativeInfinity(d))
                         {
                             d = Convert.ToDouble(Decimal.MinValue/100);
@@ -278,12 +277,12 @@ namespace MultiAlignCore.IO.Features
 				}
 			}
             
-            foreach(UMCLight x in umcList)
+            foreach(var x in umcList)
             {
                 x.MassMonoisotopicAligned   = x.MassMonoisotopic;
                 x.ScanAligned               = x.Scan;
-                x.NET                       = (Convert.ToDouble(x.Scan - minScan) / Convert.ToDouble(maxScan - minScan));
-                x.NETAligned                = x.NET;
+                x.Net                       = (Convert.ToDouble(x.Scan - minScan) / Convert.ToDouble(maxScan - minScan));
+                x.NetAligned                = x.Net;
                 x.RetentionTime             = (Convert.ToDouble(x.Scan - minScan) / Convert.ToDouble(maxScan - minScan));
             }            
 			return umcList;

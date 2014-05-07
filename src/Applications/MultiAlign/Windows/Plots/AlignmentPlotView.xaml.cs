@@ -1,23 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using MultiAlign.Data;
+using MultiAlignCore.Data;
+using MultiAlignCore.Drawing;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using MultiAlignCore.Data;
-using MultiAlignCustomControls.Drawing;
-using MultiAlignCustomControls.Charting;
-using MultiAlign.Data;
-using MultiAlignCore.Data.Imaging;
+using PNNLOmicsViz.Drawing;
 
-namespace MultiAlign.Windows
+namespace MultiAlign.Windows.Plots
 {
     /// <summary>
     /// Interaction logic for AlignmentPlotView.xaml
@@ -42,7 +31,7 @@ namespace MultiAlign.Windows
             DependencyProperty.Register("AlignmentData",
             typeof(FeaturesAlignedEventArgs),
             typeof(AlignmentPlotView),
-            new PropertyMetadata(new PropertyChangedCallback(SetData)));
+            new PropertyMetadata(SetData));
 
         private static void SetData(DependencyObject sender, DependencyPropertyChangedEventArgs args)
         {
@@ -158,27 +147,28 @@ namespace MultiAlign.Windows
 
         private void CreatePlots()
         {
-            FeaturesAlignedEventArgs data   = AlignmentData;
-            PlotName                        = data.AligneeDatasetInformation.DatasetName;
-            AlignmentImageData imageData    = AnalysisImageCreator.CreateAlignmentPlots(data, PlotWidth, PlotHeight, false);
+            if (AlignmentData == null) return;
+            var alignmentData = AlignmentData.AlignmentData;
 
-            if (imageData == null)
-                return;
+            if (alignmentData == null) return;
 
-            if (imageData.NetResidualsHistogramImage != null)
-                NetScanImage    = ImageConverter.ConvertImage(imageData.NetResidualsHistogramImage);
-            if (imageData.MassHistogramImage != null) 
-                MassHistogram = ImageConverter.ConvertImage(imageData.MassHistogramImage);
-            if (imageData.NetHistogramImage != null)
-                NetHistogram = ImageConverter.ConvertImage(imageData.NetHistogramImage);
-            if (imageData.HeatmapImage != null)
-                HeatmapImage = ImageConverter.ConvertImage(imageData.HeatmapImage);
-            if (imageData.MassMzImage != null)
-                MassMzImage = ImageConverter.ConvertImage(imageData.MassMzImage);
-            if (imageData.MassScanImage != null)
-                MassScanImage = ImageConverter.ConvertImage(imageData.MassScanImage);
-            if (imageData.FeaturePlotImage != null)
-                FeaturePlotImage = ImageConverter.ConvertImage(imageData.FeaturePlotImage);
+            var heatmap          = HeatmapFactory.CreateAlignedHeatmap(alignmentData.heatScores);
+            var feature          = ScatterPlotFactory.CreateFeatureMassScatterPlot(AlignmentData.AligneeFeatures);
+            var netHistomgram    = HistogramFactory.CreateHistogram(alignmentData.netErrorHistogram, "NET Error");
+            var massHistomgram   = HistogramFactory.CreateHistogram(alignmentData.netErrorHistogram, "Mass Error");           
+     
+            var residuals        = alignmentData.ResidualData;
+            var netResidual      = ScatterPlotFactory.CreateResidualPlot(residuals.scans, residuals.linearCustomNet, residuals.linearNet,          "NET Residuals", "Scans", "NET");
+            var massMzResidual   = ScatterPlotFactory.CreateResidualPlot(residuals.mz, residuals.mzMassError, residuals.mzMassErrorCorrected,      "Mass Residuals", "m/z", "Mass Errors");
+            var massScanResidual = ScatterPlotFactory.CreateResidualPlot(residuals.scans, residuals.mzMassError, residuals.mzMassErrorCorrected,   "Mass Residuals", "Scan", "Mass Errors");
+                                    
+            NetScanImage         = ImageConverter.ConvertImage(PlotImageUtility.CreateImage(netResidual));
+            MassHistogram        = ImageConverter.ConvertImage(PlotImageUtility.CreateImage(massHistomgram));
+            NetHistogram         = ImageConverter.ConvertImage(PlotImageUtility.CreateImage(netHistomgram));
+            HeatmapImage         = ImageConverter.ConvertImage(PlotImageUtility.CreateImage(heatmap));
+            MassMzImage          = ImageConverter.ConvertImage(PlotImageUtility.CreateImage(massMzResidual));
+            MassScanImage        = ImageConverter.ConvertImage(PlotImageUtility.CreateImage(massScanResidual));
+            FeaturePlotImage     = ImageConverter.ConvertImage(PlotImageUtility.CreateImage(feature));
         }
     }
 }

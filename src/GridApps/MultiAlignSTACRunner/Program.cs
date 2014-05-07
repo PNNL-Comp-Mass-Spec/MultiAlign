@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using System.IO;
-using System.Text;
-using MultiAlignCore.Data;
-using MultiAlignCore.IO;
+using System.Runtime.InteropServices;
 using MultiAlignCore.Algorithms.FeatureMatcher;
+using MultiAlignCore.Data;
 using MultiAlignCore.Data.MassTags;
+using MultiAlignCore.IO;
 using MultiAlignCore.IO.InputFiles;
 using MultiAlignCore.IO.MTDB;
 using PNNLOmics.Algorithms.FeatureMatcher.Data;
@@ -16,28 +15,7 @@ using MassTagDatabaseOptions = MultiAlignCore.Algorithms.Options.MassTagDatabase
 
 namespace MultiAlignSTACRunner
 {
-
-    public class FilteringOptions
-    {
-        public FilteringOptions(int totalDatasetMembers, double minRatio, double maxRatio)
-        {
-            TotalDatasetMembers = totalDatasetMembers;
-            MinRatio            = minRatio;
-            MaxRatio            = maxRatio;
-        }
-
-        public FilteringOptions()
-            : this(20, 1, 1.5)
-        {
-            
-        }
-
-        public int TotalDatasetMembers { get; set; }
-        public double MinRatio { get; set; }
-        public double MaxRatio { get; set; }
-    }
-
-        /// <summary>
+    /// <summary>
         ///  This project is for running STAC with previously analyzed MultiAlign results.
         /// </summary>
         static class Program
@@ -56,8 +34,6 @@ namespace MultiAlignSTACRunner
             /// <summary>
             /// Reads the clusters and filters cluster by cluster.  
             /// </summary>
-            /// <param name="path"></param>
-            /// <returns></returns>
             private static List<UMCClusterLight> ReadClusters(string path, FilteringOptions options)
             {
                 var clusters = new List<UMCClusterLight>();
@@ -69,18 +45,18 @@ namespace MultiAlignSTACRunner
                     
                         while ((line = reader.ReadLine()) != null)
                         {
-                            string[] data           = line.Split(',');
+                            var data           = line.Split(',');
 
                             var mass            = Convert.ToDouble(data[CONST_COLUMN_MASS]);
                             var retentionTime   = Convert.ToDouble(data[CONST_COLUMN_NET]);
 
                             var cluster         = new UMCClusterLight
                             {
-                                ID                      = Convert.ToInt32(data[CONST_COLUMN_ID]),
+                                Id                      = Convert.ToInt32(data[CONST_COLUMN_ID]),
                                 MassMonoisotopic        = mass,
                                 MassMonoisotopicAligned = mass,                                
-                                NET                     = retentionTime,
-                                NETAligned              = retentionTime,            
+                                Net                     = retentionTime,
+                                NetAligned              = retentionTime,            
                                 RetentionTime           = retentionTime,     
                                 DriftTime               = Convert.ToDouble(data[CONST_COLUMN_DRIFT]),                                                                
                                 Tightness               = Convert.ToDouble(data[CONST_COLUMN_TIGHTNESS]),
@@ -126,14 +102,14 @@ namespace MultiAlignSTACRunner
             /// <param name="dwMode"></param>
             /// <returns></returns>
             [DllImport("kernel32.dll")]
-            public static extern bool SetConsoleMode(IntPtr hConsoleHandle, uint dwMode);
+            private static extern bool SetConsoleMode(IntPtr hConsoleHandle, uint dwMode);
 
             /// <summary>
             /// The main entry point for the application.
             /// </summary>        
             static int Main(string[] args)
             {
-                IntPtr handle = System.Diagnostics.Process.GetCurrentProcess().MainWindowHandle;
+                var handle = System.Diagnostics.Process.GetCurrentProcess().MainWindowHandle;
                 SetConsoleMode(handle, ENABLE_EXTENDED_FLAGS);
 
                 var clusterIdMap = new Dictionary<int, UMCClusterLight>();
@@ -149,13 +125,13 @@ namespace MultiAlignSTACRunner
 
                     // Setup the analysis processing    
                     Logger.PrintMessage("Find all datasets", true);
-                    string directoryPath    = args[0].Replace("\r","").Replace("\n","");                    
-                    string databasePath     = args[1].Replace("\r","").Replace("\n","");                    
-                    string name             = args[2].Replace("\r","").Replace("\n","");                                                 
-                    string[] files          = Directory.GetFiles(directoryPath, "*.csv");
+                    var directoryPath    = args[0].Replace("\r","").Replace("\n","");                    
+                    var databasePath     = args[1].Replace("\r","").Replace("\n","");                    
+                    var name             = args[2].Replace("\r","").Replace("\n","");                                                 
+                    var files          = Directory.GetFiles(directoryPath, "*.csv");
 
                     Logger.PrintMessage("Creating Log File");
-                    string loggerPath       = AnalysisPathUtils.BuildLogPath(Path.GetDirectoryName(name), Path.GetFileNameWithoutExtension(name));
+                    var loggerPath       = AnalysisPathUtils.BuildLogPath(Path.GetDirectoryName(name), Path.GetFileNameWithoutExtension(name));
                     Logger.LogPath = loggerPath;
                     Logger.PrintMessage("Saving Log Data to: " + loggerPath);
                     
@@ -186,35 +162,38 @@ namespace MultiAlignSTACRunner
 
                     // Read the cluster data
                     var allClusters = new List<UMCClusterLight>();
-                    int clusterId   = 0;
+                    var clusterId   = 0;
                     foreach (var file in files)
                     {
                         var filename = Path.GetFileName(file);
                         Logger.PrintMessage(string.Format("Reading {0}", filename));
                         const string chargeString = "charge";
 
-                        if (filename.Contains(chargeString))
+                        if (filename == null)
+                            continue;
+
+                        if (!filename.Contains(chargeString)) continue;
+
+                        // Read each file.
+                        var start = DateTime.Now;
+
+                        var xname               = filename.Replace("_", "");
+                        // ReSharper disable once StringIndexOfIsCultureSpecific.1
+                        var indexOfChargeString = xname.IndexOf(chargeString);
+                        var charge              = Convert.ToInt32(xname.Substring(indexOfChargeString + chargeString.Length, 1));
+
+                        var clusters = ReadClusters(file, clusterFilteringOptions);
+                        var end      = DateTime.Now;
+                        Logger.PrintMessage(string.Format("\tReading Took {0:.00} seconds", end.Subtract(start).TotalSeconds));                        
+
+                        foreach (var cluster in clusters)
                         {
-                            // Read each file.
-                            DateTime start = DateTime.Now;
-
-                            var xname               = filename.Replace("_", "");
-                            var indexOfChargeString = xname.IndexOf(chargeString);
-                            var charge              = Convert.ToInt32(xname.Substring(indexOfChargeString + chargeString.Length, 1));
-
-                            var clusters = ReadClusters(file, clusterFilteringOptions);
-                            var end      = DateTime.Now;
-                            Logger.PrintMessage(string.Format("\tReading Took {0:.00} seconds", end.Subtract(start).TotalSeconds));                        
-
-                            foreach (UMCClusterLight cluster in clusters)
-                            {
-                                clusterIdMap.Add(clusterId, cluster);
-                                cluster.ID = clusterId++;
-                                cluster.ChargeState = charge;
-                            }
-
-                            allClusters.AddRange(clusters);
+                            clusterIdMap.Add(clusterId, cluster);
+                            cluster.Id = clusterId++;
+                            cluster.ChargeState = charge;
                         }
+
+                        allClusters.AddRange(clusters);
                     }
 
 
@@ -226,7 +205,7 @@ namespace MultiAlignSTACRunner
                         DatabaseFormat  = MassTagDatabaseFormat.Sqlite,
                         LocalPath       = databasePath
                     };
-                    var database            = MTDBLoaderFactory.LoadMassTagDB(databaseDefinition, options);                    
+                    var database            = MtdbLoaderFactory.LoadMassTagDatabase(databaseDefinition, options);                    
 
                     // Run stac
                     try
@@ -239,11 +218,11 @@ namespace MultiAlignSTACRunner
 
                         foreach (var match in matches)
                         {
-                            if (!duplicateMatches.ContainsKey(match.Observed.ID))                            
-                                duplicateMatches.Add(match.Observed.ID, new Dictionary<int, FeatureMatchLight<UMCClusterLight, MassTagLight>>());
+                            if (!duplicateMatches.ContainsKey(match.Observed.Id))                            
+                                duplicateMatches.Add(match.Observed.Id, new Dictionary<int, FeatureMatchLight<UMCClusterLight, MassTagLight>>());
                             
-                            if (!duplicateMatches[match.Observed.ID].ContainsKey(match.Target.ID))                            
-                                duplicateMatches[match.Observed.ID].Add(match.Target.ID, match);
+                            if (!duplicateMatches[match.Observed.Id].ContainsKey(match.Target.Id))                            
+                                duplicateMatches[match.Observed.Id].Add(match.Target.Id, match);
                             
                         }
                         WriteClusterData(name, duplicateMatches, clusterIdMap);
@@ -317,23 +296,23 @@ namespace MultiAlignSTACRunner
                         "Cluster Id, Dataset Member Count, Total Member Count, Cluster Mass, Cluster NET, Cluster Drift Time, Cluster Charge,Mass Tag Id,Peptide Sequence,Mass Tag Mono Mass,Mass Tag NET,Mass Tag Drift Time, STAC, STAC-UP");
                     foreach (var map in duplicateMatches.Values)
                     {
-                        foreach (FeatureMatchLight<UMCClusterLight, MassTagLight> match in map.Values)
+                        foreach (var match in map.Values)
                         {
-                            var cluster = clusterIdMap[match.Observed.ID];
+                            var cluster = clusterIdMap[match.Observed.Id];
 
 
                             writer.WriteLine("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13}",
-                                cluster.ID,
+                                cluster.Id,
                                 cluster.DatasetMemberCount,
                                 cluster.MemberCount,
                                 cluster.MassMonoisotopic,
-                                cluster.NET,
+                                cluster.Net,
                                 cluster.DriftTime,                                
                                 match.Observed.ChargeState,
-                                match.Target.ID,
+                                match.Target.Id,
                                 match.Target.PeptideSequence,
                                 match.Target.MassMonoisotopic,
-                                match.Target.NET,
+                                match.Target.Net,
                                 match.Target.DriftTime,
                                 match.Confidence,
                                 match.Uniqueness);

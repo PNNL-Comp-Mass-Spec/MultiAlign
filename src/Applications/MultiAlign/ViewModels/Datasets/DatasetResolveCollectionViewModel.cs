@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using System.Windows.Input;
 using MultiAlign.Commands;
 
@@ -16,12 +11,12 @@ namespace MultiAlign.ViewModels.Datasets
         {
             Datasets = new ObservableCollection<DatasetResolveMatchViewModel>(matches);
 
-            CheckAllCommand = new BaseCommandBridge(CheckAll);
-            UncheckAllCommand = new BaseCommandBridge(UncheckAll);        
+            CheckAllCommand     = new BaseCommand(CheckAll, BaseCommand.AlwaysPass);
+            UncheckAllCommand   = new BaseCommand(UncheckAll, BaseCommand.AlwaysPass);        
         }
 
 
-        private void UncheckAll(object parameter)
+        private void UncheckAll()
         {
             foreach (var dataset in Datasets)
             {
@@ -29,7 +24,7 @@ namespace MultiAlign.ViewModels.Datasets
             }
         }
 
-        private void CheckAll(object parameter)
+        private void CheckAll()
         {
             foreach (var dataset in Datasets)
             {

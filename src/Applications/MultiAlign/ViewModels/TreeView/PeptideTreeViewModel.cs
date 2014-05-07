@@ -1,14 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using MultiAlignCore.Data.MetaData;
-using PNNLOmics.Data;
-using PNNLOmics.Data.Features;
-using System.Collections.ObjectModel;
-using MultiAlignCore.Data;
-using MultiAlign.IO;
+﻿using MultiAlign.IO;
 using MultiAlignCore.Extensions;
+using PNNLOmics.Data;
 
 namespace MultiAlign.ViewModels.TreeView
 {
@@ -26,7 +18,7 @@ namespace MultiAlign.ViewModels.TreeView
             m_parent  = parent;
             m_peptide = peptide;
 
-            DatasetInformation information = SingletonDataProviders.GetDatasetInformation(m_peptide.GroupId);
+            var information = SingletonDataProviders.GetDatasetInformation(m_peptide.GroupId);
 
             if (information != null)
             {
@@ -37,10 +29,10 @@ namespace MultiAlign.ViewModels.TreeView
                 Name = string.Format("Dataset {0}", m_peptide.GroupId);
             } 
             
-            AddStatistic("Id",          m_peptide.ID);
+            AddStatistic("Id",          m_peptide.Id);
             AddStatistic("Dataset Id",  m_peptide.GroupId);
 
-            AddStatistic("Precursor m/z", m_peptide.Spectrum.PrecursorMZ);
+            AddStatistic("Precursor m/z", m_peptide.Spectrum.PrecursorMz);
             if (m_peptide.Spectrum.ParentFeature != null)
             {
                 AddStatistic("Charge", m_peptide.Spectrum.ParentFeature.ChargeState);
@@ -66,7 +58,7 @@ namespace MultiAlign.ViewModels.TreeView
                 base.IsSelected = value;
                 if (m_peptide != null)
                 {
-                    UMCLight feature = m_peptide.GetParentUmc();
+                    var feature = m_peptide.GetParentUmc();
                     OnFeatureSelected(feature);
                 }
             }

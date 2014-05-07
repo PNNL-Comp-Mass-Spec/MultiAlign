@@ -1,7 +1,4 @@
-using System;
 using System.Collections.Generic;
-using Iesi.Collections.Generic;
-using System.Runtime.Serialization;
 
 namespace MultiAlignCore.IO.Features
 {

@@ -1,5 +1,5 @@
-﻿using PNNLOmics.Data;
-using System.IO;
+﻿using System.IO;
+using PNNLOmics.Data;
 
 namespace MultiAlignCore.IO.Features
 {
@@ -20,7 +20,7 @@ namespace MultiAlignCore.IO.Features
                 return null;
 
             ISpectraProvider reader     = null;
-            string extension            = Path.GetExtension(name);
+            var extension            = Path.GetExtension(name);
 
             // Otherwise create a new one.
             switch (extension.ToLower())

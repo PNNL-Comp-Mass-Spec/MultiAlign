@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using PNNLOmics.Data.MassTags;
 using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.Features.Hibernate;
+using PNNLOmics.Data.MassTags;
 
 namespace MultiAlignTestSuite
 {
@@ -10,11 +10,11 @@ namespace MultiAlignTestSuite
 
         public void SaveMassTags()
         {
-            List<MassTagLight> lights = new List<MassTagLight>();
-            for (int i = 0; i < 100; i++)
+            var lights = new List<MassTagLight>();
+            for (var i = 0; i < 100; i++)
             {
                 lights.Add(new MassTagLight());
-                lights[i].ID = i;
+                lights[i].Id = i;
             }
 
             IMassTagDAO cache = new MassTagDAOHibernate();

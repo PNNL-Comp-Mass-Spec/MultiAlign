@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using MultiAlignTestSuite.Papers.Alignment.SSM;
 using PNNLOmics.Algorithms.Alignment.SpectralMatching;
 
@@ -14,9 +13,9 @@ namespace MultiAlignTestSuite.Papers.Alignment
             var bins    = new List<double>();
             var values  = new List<double>();
 
-            for (double score = start; score <= stop; score += step)
+            for (var score = start; score <= stop; score += step)
             {
-                int count = matches.Count(x => x.SimilarityScore < (score + step) && x.SimilarityScore >= score);
+                var count = matches.Count(x => x.SimilarityScore < (score + step) && x.SimilarityScore >= score);
                 bins.Add(score);
                 values.Add(Convert.ToDouble(count));
             }
@@ -28,9 +27,9 @@ namespace MultiAlignTestSuite.Papers.Alignment
             var bins   = new List<double>();
             var values = new List<double>();
 
-            for (double score = start; score <= stop; score += step)
+            for (var score = start; score <= stop; score += step)
             {
-                int count = anchors.Count(x => x < (score + step) && x >= score);
+                var count = anchors.Count(x => x < (score + step) && x >= score);
                 bins.Add(score);
                 values.Add(Convert.ToDouble(count));
             }

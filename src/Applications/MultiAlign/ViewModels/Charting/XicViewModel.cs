@@ -1,18 +1,13 @@
 ﻿using System;
-using System.Net.Mime;
-using System.Windows.Input;
-using MultiAlign.Commands;
+using System.Collections.Generic;
+using System.Linq;
 using OxyPlot;
 using OxyPlot.Annotations;
 using OxyPlot.Axes;
-using OxyPlot.Wpf;
+using OxyPlot.Series;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Extensions;
-using System.Collections.Generic;
-using System.Linq;
-using LineAnnotation = OxyPlot.Annotations.LineAnnotation;
-using LinearAxis = OxyPlot.Axes.LinearAxis;
-using LineSeries = OxyPlot.Series.LineSeries;
+using PNNLOmicsViz.Drawing;
 
 namespace MultiAlign.ViewModels.Charting
 {
@@ -56,7 +51,7 @@ namespace MultiAlign.ViewModels.Charting
 
         void Model_MouseUp(object sender, OxyMouseEventArgs e)
         {
-            if (e.ChangedButton == OxyMouseButton.Left)
+            //if (e == OxyMouseButton.Left)
             {
                 m_movingMouse = false;
             }
@@ -64,12 +59,11 @@ namespace MultiAlign.ViewModels.Charting
 
         void Model_MouseMove(object sender, OxyMouseEventArgs e)
         {
-            if (e.ChangedButton == OxyMouseButton.Left)
+            //if (e.ChangedButton == OxyMouseButton.Left)
             {
                 if (!m_movingMouse) return;
 
-                var point = FindPoint(e.Position);
-                if (point == null) return;
+                var point = FindPoint(e.Position);                
                 if (PointClicked != null)
                     PointClicked(this, new PositionArgs(point.X, point.Y));
                 ScanAnnotationX = point.X;
@@ -78,19 +72,19 @@ namespace MultiAlign.ViewModels.Charting
 
         void Model_MouseDown(object sender, OxyMouseEventArgs e)
         {
-            if (e.ChangedButton == OxyMouseButton.Left)
+           // if (e.ChangedButton == OxyMouseButton.Left)
             {
                 m_movingMouse = true;
 
                 var point = FindPoint(e.Position);
-                if (point == null) return;
+                
                 if (PointClicked != null)
                     PointClicked(this, new PositionArgs(point.X, point.Y));
                 ScanAnnotationX = point.X;
             }
         }
 
-        private IDataPoint FindPoint(ScreenPoint point)
+        private DataPoint FindPoint(ScreenPoint point)
         {
             foreach (var series in Model.Series)
             {
@@ -101,7 +95,7 @@ namespace MultiAlign.ViewModels.Charting
                     return dataPoint.DataPoint;
                 }
             }
-            return null;
+            return new DataPoint();
         }
         
         public double ScanAnnotationX
@@ -118,7 +112,7 @@ namespace MultiAlign.ViewModels.Charting
                 if (m_scanAnnotation == null) return;
                 m_scanAnnotation.X      = value;
                 m_scanAnnotation.Text   = value.ToString("F0");
-                Model.RefreshPlot(false);
+                Model.Update(false);
             }
         }
 
@@ -135,7 +129,7 @@ namespace MultiAlign.ViewModels.Charting
 
                 m_scanAnnotation.Color      = newColor;
                 m_scanAnnotation.TextColor  = newColor;
-                Model.RefreshPlot(false);
+                Model.Update(false);
             }
         }
 
@@ -148,8 +142,7 @@ namespace MultiAlign.ViewModels.Charting
             var markerIterator  = new MarkerTypeIterator();
             m_colorIterator     = new ColorTypeIterator();
 
-            int i       = 0;
-            var midScan = 0;
+            var i       = 0;
 
             m_scanAnnotation = new LineAnnotation
             {
@@ -214,7 +207,7 @@ namespace MultiAlign.ViewModels.Charting
                                 Color     = m_colorIterator.GetColor(msFeature.ChargeState),
                                 TextColor = m_colorIterator.GetColor(msFeature.ChargeState),
                                 Text = string.Format("{2} - {0} m/z {1}",
-                                                        msms.PrecursorMZ.ToString("F3"),
+                                                        msms.PrecursorMz.ToString("F3"),
                                                         peptideSequence,
                                                         msms.CollisionType)
                             };                                                     

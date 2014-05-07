@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using MultiAlignCore.IO.Parameters;
+﻿using System.ComponentModel;
 using MultiAlignCore.Algorithms.FeatureFinding;
-using System.ComponentModel;
+using MultiAlignCore.IO.Parameters;
 
 namespace MultiAlignCore.Algorithms.Features
 {    
@@ -17,7 +13,7 @@ namespace MultiAlignCore.Algorithms.Features
         /// <summary>
         /// 
         /// </summary>
-        [ParameterFileAttribute("AbundanceType", "FeatureConsolidator")]
+        [ParameterFile("AbundanceType", "FeatureConsolidator")]
         [Description("Determines how the abundance from features of the same dataset in a cluster will be reported.  Either by summing their abundance, or by taking the maximum")]
         [Category("Abundance")]
         public AbundanceReportingType AbundanceType

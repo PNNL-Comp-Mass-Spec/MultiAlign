@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using NHibernate.Criterion;
-
+﻿using System.Collections.Generic;
 using MultiAlignCore.Data;
+using NHibernate.Criterion;
 
 namespace MultiAlignCore.IO.Features.Hibernate
 {
@@ -12,8 +10,8 @@ namespace MultiAlignCore.IO.Features.Hibernate
     {
         public List<MSFeatureToMSnFeatureMap> FindByMSFeatureDatasetId(int datasetId)
         {
-            ICriterion criterion            = Expression.Eq("MSDatasetID", datasetId);
-            List<ICriterion> criterionList  = new List<ICriterion>();
+            ICriterion criterion            = Restrictions.Eq("MSDatasetID", datasetId);
+            var criterionList  = new List<ICriterion>();
 
             criterionList.Add(criterion);
 
@@ -30,9 +28,9 @@ namespace MultiAlignCore.IO.Features.Hibernate
         
         public List<MSFeatureToMSnFeatureMap> FindByUMCFeatureId(int datasetId, int featureId)
         {
-            ICriterion criterion            = Expression.Eq("LCMSFeatureID", featureId);
-            ICriterion datasetCriterion     = Expression.Eq("MSDatasetID", datasetId);
-            List<ICriterion> criterionList  = new List<ICriterion>();
+            ICriterion criterion            = Restrictions.Eq("LCMSFeatureID", featureId);
+            ICriterion datasetCriterion     = Restrictions.Eq("MSDatasetID", datasetId);
+            var criterionList  = new List<ICriterion>();
 
             criterionList.Add(criterion);
             criterionList.Add(datasetCriterion);
@@ -41,9 +39,9 @@ namespace MultiAlignCore.IO.Features.Hibernate
         }
         public List<MSFeatureToMSnFeatureMap> FindByMsFeatureId(int datasetId, int featureId)
         {
-            ICriterion criterion            = Expression.Eq("MSFeatureID", featureId);
-            ICriterion datasetCriterion     = Expression.Eq("MSDatasetID", datasetId);
-            List<ICriterion> criterionList  = new List<ICriterion>();
+            ICriterion criterion            = Restrictions.Eq("MSFeatureID", featureId);
+            ICriterion datasetCriterion     = Restrictions.Eq("MSDatasetID", datasetId);
+            var criterionList  = new List<ICriterion>();
 
             criterionList.Add(criterion);
             criterionList.Add(datasetCriterion);

@@ -54,8 +54,7 @@
                                 Width="{TemplateBinding Width}" 
                                 Height="{TemplateBinding Height}" 
                                 FlowDirection="LeftToRight"
-                                IsItemsHost="true">
-                    </WrapPanel>
+                                IsItemsHost="true" />
                 </ControlTemplate>
             </ItemsControl.Template>
             <ItemsControl.ItemTemplate>

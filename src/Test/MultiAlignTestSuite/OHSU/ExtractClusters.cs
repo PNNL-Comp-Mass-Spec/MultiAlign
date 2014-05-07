@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using MultiAlignCore.Data.MetaData;
-using NUnit.Framework;
-using MultiAlignCore.Data;
-using MultiAlignCore.IO.Features;
-using MultiAlignCore.IO.Features.Hibernate;
-using PNNLOmics.Data.Features;
 using System.Data.SQLite;
 using System.IO;
+using System.Text;
+using MultiAlignCore.Data.MetaData;
+using MultiAlignCore.IO.Features;
+using MultiAlignCore.IO.Features.Hibernate;
+using NUnit.Framework;
+using PNNLOmics.Data.Features;
 
 namespace MultiAlignTestSuite.OHSU
 {
@@ -23,11 +21,6 @@ namespace MultiAlignTestSuite.OHSU
                 @"M:\data\proteomics\OHSU\Data\Sarc-3000_charge-1",
                 1,
                 10)]
-        /// <summary>
-        /// Creates a cross tab
-        /// </summary>
-        /// <param name="charge"></param>
-        /// <param name="path"></param>
         public void CreateDatasetMap(string databasePath, string crossPath, int charge, int minimumClusterSize)
         {
             NHibernateUtil.ConnectToDatabase(databasePath, false);
@@ -37,11 +30,11 @@ namespace MultiAlignTestSuite.OHSU
             IUmcDAO featureCache        = new UmcDAOHibernate();
 
             Console.WriteLine("Find all datasets");
-            List<DatasetInformation> datasets   = datasetCache.FindAll();
+            var datasets   = datasetCache.FindAll();
             using (TextWriter writer            = File.CreateText(crossPath + ".csv"))
             {
                 writer.WriteLine("Dataset, Dataset Id");
-                foreach (DatasetInformation info in datasets)
+                foreach (var info in datasets)
                 {
                     writer.WriteLine("{0},{1}", info.DatasetName, info.DatasetId);
                 }
@@ -63,10 +56,10 @@ namespace MultiAlignTestSuite.OHSU
             IUmcDAO         featureCache                = new UmcDAOHibernate();
             
             Console.WriteLine("Find all datasets");
-            List<DatasetInformation> datasets = datasetCache.FindAll();
+            var datasets = datasetCache.FindAll();
             
             Console.WriteLine("Find all clusters"); 
-            List<UMCClusterLight> clusters = clusterCache.FindByCharge(charge);
+            var clusters = clusterCache.FindByCharge(charge);
 
             WriteClusters(datasets, clusters, minimumClusterSize, charge, crossPath, databasePath, 300000);
         }
@@ -85,13 +78,13 @@ namespace MultiAlignTestSuite.OHSU
 
             // Creating a dataset
             Console.WriteLine("Creating dummy datasets");
-            List<DatasetInformation> datasets = new List<DatasetInformation>();
-            int total = totalDatasets;
-            for (int i = 0; i < total; i++)
+            var datasets = new List<DatasetInformation>();
+            var total = totalDatasets;
+            for (var i = 0; i < total; i++)
             {
-                DatasetInformation dataset = new DatasetInformation();
+                var dataset = new DatasetInformation();
                 dataset.DatasetId = i;
-                dataset.DatasetName = "test" + i.ToString();
+                dataset.DatasetName = "test" + i;
                 datasets.Add(dataset);
             }
             datasetCache.AddAll(datasets);
@@ -100,25 +93,25 @@ namespace MultiAlignTestSuite.OHSU
 
             // Create features
             Console.WriteLine("Creating features");
-            List<UMCLight> features = new List<UMCLight>();
-            List<UMCClusterLight> clusters = new List<UMCClusterLight>();
-            Random x = new Random();
+            var features = new List<UMCLight>();
+            var clusters = new List<UMCClusterLight>();
+            var x = new Random();
 
-            int featureId = 0;
-            for (int i = 0; i < totalClusters; i++)
+            var featureId = 0;
+            for (var i = 0; i < totalClusters; i++)
             {                
-                int N = x.Next(1, total);                
-                int charge = x.Next(1, 10);                
-                HashSet<int> hash = new HashSet<int>();
+                var N = x.Next(1, total);                
+                var charge = x.Next(1, 10);                
+                var hash = new HashSet<int>();
 
-                double net      = x.NextDouble();
-                double mass     = 400 + (1600 * x.NextDouble());
-                double dt       = 60 * x.NextDouble();
+                var net      = x.NextDouble();
+                var mass     = 400 + (1600 * x.NextDouble());
+                var dt       = 60 * x.NextDouble();
 
-                for (int j = 0; j < N; j++)
+                for (var j = 0; j < N; j++)
                 {
 
-                    int did = -1;
+                    var did = -1;
                     do
                     {
                         did = x.Next(0, total);
@@ -130,19 +123,19 @@ namespace MultiAlignTestSuite.OHSU
                     } while (true);
 
 
-                    UMCLight feature                = new UMCLight();
-                    feature.GroupID                 = did;
-                    feature.ID                      = featureId++;
+                    var feature                = new UMCLight();
+                    feature.GroupId                 = did;
+                    feature.Id                      = featureId++;
                     feature.ChargeState             = charge;
-                    feature.MassMonoisotopic        = Feature.ComputeDaDifferenceFromPPM(mass, 3);
+                    feature.MassMonoisotopic = FeatureLight.ComputeDaDifferenceFromPPM(mass, 3);
                     feature.MassMonoisotopicAligned = feature.MassMonoisotopic;
-                    feature.NET                     = net + .03 * x.NextDouble();
-                    feature.NETAligned              = feature.NET;
-                    feature.RetentionTime           = feature.NET;
+                    feature.Net                     = net + .03 * x.NextDouble();
+                    feature.NetAligned              = feature.Net;
+                    feature.RetentionTime           = feature.Net;
                     feature.DriftTime               = dt;
                     feature.AbundanceSum            = x.Next(100, 200);
                     feature.Abundance               = feature.Abundance;
-                    feature.ClusterID               = -1;                    
+                    feature.ClusterId               = -1;                    
                     features.Add(feature);
                 }
             }
@@ -169,13 +162,13 @@ namespace MultiAlignTestSuite.OHSU
 
             // Creating a dataset
             Console.WriteLine("Creating dummy datasets");
-            List<DatasetInformation> datasets = new List<DatasetInformation>();
-            int total = 10;
-            for (int i = 0; i < total; i++)
+            var datasets = new List<DatasetInformation>();
+            var total = 10;
+            for (var i = 0; i < total; i++)
             {
-                DatasetInformation dataset  = new DatasetInformation();
+                var dataset  = new DatasetInformation();
                 dataset.DatasetId           = i;
-                dataset.DatasetName         = "test" + i.ToString();
+                dataset.DatasetName         = "test" + i;
                 datasets.Add(dataset);
             }
             datasetCache.AddAll(datasets);
@@ -184,26 +177,26 @@ namespace MultiAlignTestSuite.OHSU
 
             // Create features
             Console.WriteLine("Creating features");
-            List<UMCLight> features = new List<UMCLight>();
-            List<UMCClusterLight> clusters = new List<UMCClusterLight>();
-            Random x = new Random();
-            int featureId = 0;
-            for (int i = 0; i < 100; i++)
+            var features = new List<UMCLight>();
+            var clusters = new List<UMCClusterLight>();
+            var x = new Random();
+            var featureId = 0;
+            for (var i = 0; i < 100; i++)
             {
-                UMCClusterLight cluster = new UMCClusterLight();
-                cluster.ID              = i;
+                var cluster = new UMCClusterLight();
+                cluster.Id              = i;
                 cluster.AmbiguityScore  = i;
                 cluster.Tightness       = i;
                                 
-                int N = x.Next(1, total);
-                cluster.ID                  = i;
+                var N = x.Next(1, total);
+                cluster.Id                  = i;
                 cluster.ChargeState         = charge;
-                HashSet<int> hash = new HashSet<int>();
+                var hash = new HashSet<int>();
 
-                for(int j = 0; j < N; j++)
+                for(var j = 0; j < N; j++)
                 {
                     
-                    int did = -1;
+                    var did = -1;
                     do
                     {
                         did = x.Next(0, total);
@@ -215,15 +208,15 @@ namespace MultiAlignTestSuite.OHSU
                     } while (true);
                     
                     
-                    UMCLight feature         = new UMCLight();
-                    feature.GroupID          = did;
-                    feature.ID               = featureId++;
+                    var feature         = new UMCLight();
+                    feature.GroupId          = did;
+                    feature.Id               = featureId++;
                     feature.ChargeState      = charge;
                     feature.MassMonoisotopic = x.NextDouble();
-                    feature.NET              = x.NextDouble();
+                    feature.Net              = x.NextDouble();
                     feature.AbundanceSum     = x.Next(100, 200);
                     feature.Abundance        = feature.Abundance;
-                    feature.ClusterID        = cluster.ID;
+                    feature.ClusterId        = cluster.Id;
                     
                     cluster.AddChildFeature(feature);
                     features.Add(feature);
@@ -269,10 +262,10 @@ namespace MultiAlignTestSuite.OHSU
             IUmcDAO         featureCache                = new UmcDAOHibernate();
             
             Console.WriteLine("Find all datasets");
-            List<DatasetInformation> datasets = datasetCache.FindAll();
+            var datasets = datasetCache.FindAll();
             
             Console.WriteLine("Find all clusters"); 
-            List<UMCClusterLight> clusters = clusterCache.FindByCharge(charge);
+            var clusters = clusterCache.FindByCharge(charge);
 
             WriteClusters(datasets, clusters, minimumClusterSize, charge, crossPath, databasePath, 50000);
         }
@@ -281,16 +274,16 @@ namespace MultiAlignTestSuite.OHSU
         {
             Console.WriteLine("Mapping cluster ids");
             // here we map the clusters to a dictionary for quick lookup
-            Dictionary<int, ClusterUltraLight> clusterMap = new Dictionary<int, ClusterUltraLight>();
+            var clusterMap = new Dictionary<int, ClusterUltraLight>();
 
-            Dictionary<int, int> clustersCut = new Dictionary<int, int>();
-            for (int i = 0; i < minimumClusterSize; i++)
+            var clustersCut = new Dictionary<int, int>();
+            for (var i = 0; i < minimumClusterSize; i++)
             {
                 clustersCut.Add(i, 0);
             }
 
             // Map the clusters so we can add features.
-            foreach (UMCClusterLight cluster in clusters)
+            foreach (var cluster in clusters)
             {
                 // Only keep clusters of a given size to cut down on files.
                 if (cluster.MemberCount < minimumClusterSize)
@@ -299,17 +292,17 @@ namespace MultiAlignTestSuite.OHSU
                     continue;
                 }
                
-                int id = cluster.ID;
+                var id = cluster.Id;
                 if (!clusterMap.ContainsKey(id))
                 {
-                    ClusterUltraLight lightCluster  = new ClusterUltraLight();
+                    var lightCluster  = new ClusterUltraLight();
                     lightCluster.Ambiguity          = cluster.AmbiguityScore;
                     lightCluster.DatasetCount       = cluster.DatasetMemberCount;             
                     lightCluster.MemberCount        = cluster.MemberCount;
                     lightCluster.Drift              = cluster.DriftTime;
-                    lightCluster.Id                 = cluster.ID;
+                    lightCluster.Id                 = cluster.Id;
                     lightCluster.Mass               = cluster.MassMonoisotopic;
-                    lightCluster.Net                = cluster.NET;
+                    lightCluster.Net                = cluster.Net;
                     lightCluster.Tightness          = cluster.Tightness;
                     lightCluster.abundances = new Dictionary<int, long>();
                     clusterMap.Add(id, lightCluster);
@@ -320,7 +313,7 @@ namespace MultiAlignTestSuite.OHSU
 
             // Let the user know how many clusters we cut.
             Console.WriteLine("Clusters that were cut");
-            foreach (int key in clustersCut.Keys)
+            foreach (var key in clustersCut.Keys)
             {
                 Console.WriteLine("\t{0}\t{1}", key, clustersCut[key]);
             }            
@@ -330,34 +323,34 @@ namespace MultiAlignTestSuite.OHSU
             GC.WaitForPendingFinalizers();
 
             Console.WriteLine("Find all features");
-            using (SQLiteConnection connection = new SQLiteConnection(string.Format("Data Source = {0}", databasePath)))
+            using (var connection = new SQLiteConnection(string.Format("Data Source = {0}", databasePath)))
             {
                 connection.Open();                                    
                 long features = 0;
                 
-                using (SQLiteCommand command = connection.CreateCommand())
+                using (var command = connection.CreateCommand())
                 {
                     command.CommandText = string.Format("SELECT Cluster_ID, Dataset_ID, Abundance_Sum, Abundance_Max FROM T_LCMS_Features where Charge = {0}", charge);
                     command.CommandType = System.Data.CommandType.Text;
 
-                    object [] data = new object[4];
-                    using (SQLiteDataReader reader = command.ExecuteReader())
+                    var data = new object[4];
+                    using (var reader = command.ExecuteReader())
                     {
                         while(reader.Read())
                         {
                             features++;
                             reader.GetValues(data);
 
-                            int   id = Convert.ToInt32(data[0]);
-                            int  did = Convert.ToInt32(data[1]);
-                            long sum = Convert.ToInt64(data[2]);
-                            long max = Convert.ToInt64(data[3]);
+                            var   id = Convert.ToInt32(data[0]);
+                            var  did = Convert.ToInt32(data[1]);
+                            var sum = Convert.ToInt64(data[2]);
+                            var max = Convert.ToInt64(data[3]);
                             
                             if (clusterMap.ContainsKey(id))
                             {
                                 try
                                 {
-                                    Dictionary<int, long> map = clusterMap[id].abundances;
+                                    var map = clusterMap[id].abundances;
                                     if (map.ContainsKey(did))
                                     {
                                         map[did] += sum;
@@ -369,7 +362,7 @@ namespace MultiAlignTestSuite.OHSU
                                 }
                                 catch
                                 {
-                                    int x = 0;
+                                    var x = 0;
                                     x++;
                                     if (x > 1)
                                     {
@@ -412,14 +405,14 @@ namespace MultiAlignTestSuite.OHSU
             GC.WaitForPendingFinalizers();
 
             Console.WriteLine("Creating cross tabs");            
-            string sumPath = crossPath + "-sum.csv";
+            var sumPath = crossPath + "-sum.csv";
             using (TextWriter writer = File.CreateText(sumPath))
             {
-                string header = "Cluster ID, Total Members, Dataset Members, Tightness, Ambiguity, Mass, NET, DriftTime,";
+                var header = "Cluster ID, Total Members, Dataset Members, Tightness, Ambiguity, Mass, NET, DriftTime,";
                 
-                StringBuilder builder = new StringBuilder();
-                List<int> ids = new List<int>();
-                foreach(DatasetInformation information in datasets)
+                var builder = new StringBuilder();
+                var ids = new List<int>();
+                foreach(var information in datasets)
                 {
                     if (information.DatasetId > minDatabase)
                     {
@@ -437,12 +430,12 @@ namespace MultiAlignTestSuite.OHSU
 
                 long total          = clusterMap.Keys.Count;
                 long totalFeatures  = 0;
-                int features        = 0;
+                var features        = 0;
 
                 
-                foreach (int id in clusterMap.Keys)
+                foreach (var id in clusterMap.Keys)
                 {
-                    ClusterUltraLight cluster = clusterMap[id];
+                    var cluster = clusterMap[id];
 
                     if (features > 100000)
                     {
@@ -462,7 +455,7 @@ namespace MultiAlignTestSuite.OHSU
                                             cluster.Net,
                                             cluster.Drift);
 
-                    foreach (int did in ids)
+                    foreach (var did in ids)
                     {
                         if (did > minDatabase)
                         {

@@ -1,9 +1,5 @@
 ﻿using MultiAlign.IO;
-using MultiAlignCore.Data.MetaData;
-using MultiAlignCore.Extensions;
-using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
-using MultiAlignCore.Data;
 
 namespace MultiAlign.ViewModels.TreeView
 {
@@ -21,24 +17,23 @@ namespace MultiAlign.ViewModels.TreeView
         {
         }
 
-        public UMCTreeViewModel(UMCLight feature, UMCCollectionTreeViewModel parent):
-            base()
+        public UMCTreeViewModel(UMCLight feature, UMCCollectionTreeViewModel parent)
         {
             m_feature   = feature;
             m_parent    = parent;
 
-            DatasetInformation information = SingletonDataProviders.GetDatasetInformation(m_feature.GroupID);
+            var information = SingletonDataProviders.GetDatasetInformation(m_feature.GroupId);
 
             if (information != null)
             {
                 Name = information.DatasetName;
             }else
             {
-                Name = string.Format("Dataset {0}", m_feature.GroupID);
+                Name = string.Format("Dataset {0}", m_feature.GroupId);
             }
 
-            AddStatistic("Id",          m_feature.ID);
-            AddStatistic("Dataset Id",  m_feature.GroupID);
+            AddStatistic("Id",          m_feature.Id);
+            AddStatistic("Dataset Id",  m_feature.GroupId);
             AddStatistic("Mass",        m_feature.MassMonoisotopicAligned, "N2");
             AddStatistic("NET",         m_feature.RetentionTime, "N2");
             if (m_feature.DriftTime > 0)

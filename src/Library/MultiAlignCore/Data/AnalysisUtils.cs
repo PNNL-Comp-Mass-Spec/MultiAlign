@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Collections.Generic;
 
 namespace MultiAlignCore.Data
 {
@@ -10,7 +9,7 @@ namespace MultiAlignCore.Data
     /// </summary>
     public static class AnalysisPathUtils
     {
-        private static string m_dateSuffix = null;
+        private static string m_dateSuffix;
         /// <summary>
         /// Builds an analysis name from the path and name provided.
         /// </summary>
@@ -30,8 +29,8 @@ namespace MultiAlignCore.Data
         public static string BuildLogPath(string path, string name)
         {
             
-            string dateSuffix = BuildDateSuffix();
-            string logPath    = string.Format("{1}-log_{0}.txt",
+            var dateSuffix = BuildDateSuffix();
+            var logPath    = string.Format("{1}-log_{0}.txt",
                                         dateSuffix,
                                         name);
             return Path.Combine(path, logPath);
@@ -44,7 +43,7 @@ namespace MultiAlignCore.Data
         /// <returns></returns>
         public static string BuildLogPath(string path, string name, string dateSuffix)
         {            
-            string logPath    = string.Format("{1}-log_{0}.txt",
+            var logPath    = string.Format("{1}-log_{0}.txt",
                                         dateSuffix,
                                         name);
             return Path.Combine(path, logPath);
@@ -58,7 +57,7 @@ namespace MultiAlignCore.Data
         {                        
             if (m_dateSuffix == null)
             {
-                DateTime now = DateTime.Now;
+                var now = DateTime.Now;
                 m_dateSuffix = string.Format("{1:00}-{0:00}-{2:0000}-{3}-{4}-{5}",
                                             now.Day,
                                             now.Month,

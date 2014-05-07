@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Data;
-using System.IO;
 using System.Windows.Controls;
+using System.Windows.Data;
 
 namespace MultiAlign.Converters
 {
@@ -16,23 +12,20 @@ namespace MultiAlign.Converters
             if (value == null)
                 return DataGridRowDetailsVisibilityMode.Collapsed;
 
-            bool boolValue = System.Convert.ToBoolean(value);
+            var boolValue = System.Convert.ToBoolean(value);
 
             return (boolValue) ? DataGridRowDetailsVisibilityMode.Visible: DataGridRowDetailsVisibilityMode.VisibleWhenSelected;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            DataGridRowDetailsVisibilityMode vis = (DataGridRowDetailsVisibilityMode)value;
+            var vis = (DataGridRowDetailsVisibilityMode)value;
             
             if (vis == DataGridRowDetailsVisibilityMode.Collapsed)
             {
                 return false;
             }
-            else
-            {
-                return true;
-            }
+            return true;
         }
 
         #endregion

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using MultiAlignCore.Algorithms.Options;
 using MultiAlignCore.IO.Generic;
-using MultiAlignCore.IO.Parameters;
 
 namespace MultiAlignParameterFileEditor
 {
@@ -49,13 +48,13 @@ namespace MultiAlignParameterFileEditor
         {
             try
             {
-                DialogResult result = m_dialog.ShowDialog();
+                var result = m_dialog.ShowDialog();
                 if (result == System.Windows.Forms.DialogResult.OK)
                 {
                     var reader = new JsonReader<MultiAlignAnalysisOptions>();
                     Options    = reader.Read(m_dialog.FileName);
 
-                    string path = System.IO.Path.GetFileNameWithoutExtension(m_dialog.FileName);
+                    var path = System.IO.Path.GetFileNameWithoutExtension(m_dialog.FileName);
 
                     AddPage(new ParameterFileEditor(Options, m_dialog.FileName), path);
                     UpdateStatus("Opened " + m_dialog.FileName);
@@ -86,10 +85,10 @@ namespace MultiAlignParameterFileEditor
         /// <param name="e"></param>
         void editor_Saved(object sender, ParameterFileEventArgs e)
         {
-            string name  = System.IO.Path.GetFileNameWithoutExtension(e.Path);
+            var name  = System.IO.Path.GetFileNameWithoutExtension(e.Path);
             if (sender != null)
             {
-                TabPage page = m_editorTabPageMap[sender as ParameterFileEditor];
+                var page = m_editorTabPageMap[sender as ParameterFileEditor];
                 page.Text    = name;
             }
 
@@ -106,8 +105,8 @@ namespace MultiAlignParameterFileEditor
                 control.Closed -= editor_Closed;
                 control.Dispose();
 
-                TabPage page  = m_editorTabPageMap[control];
-                int lastIndex = mainTabPage.TabPages.IndexOf(page);
+                var page  = m_editorTabPageMap[control];
+                var lastIndex = mainTabPage.TabPages.IndexOf(page);
                 mainTabPage.TabPages.Remove(page);                        
                 page.Dispose();
 
@@ -135,9 +134,9 @@ namespace MultiAlignParameterFileEditor
         #region Updates And Other Related Utility
         private void AddPage(ParameterFileEditor editor, string name)
         {
-            TabPage page     = new TabPage();
-            editor.Saved    += new EventHandler<ParameterFileEventArgs>(editor_Saved);
-            editor.Closed   += new EventHandler<ParameterFileEventArgs>(editor_Closed);
+            var page     = new TabPage();
+            editor.Saved    += editor_Saved;
+            editor.Closed   += editor_Closed;
             editor.Dock      = DockStyle.Fill;
             page.Text        = name;
             page.Controls.Add(editor);

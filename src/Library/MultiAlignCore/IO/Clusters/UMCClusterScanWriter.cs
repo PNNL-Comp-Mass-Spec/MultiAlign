@@ -1,13 +1,12 @@
 ﻿using System;
-using System.IO;
-using System.Text;  
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
+using MultiAlignCore.Data;
 using MultiAlignCore.Data.MetaData;
+using MultiAlignCore.IO.Clusters;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Data.MassTags;
-using MultiAlignCore.Data;
-using MultiAlignCore.Algorithms.Features;
-using MultiAlignCore.IO.Clusters;
 
 namespace MultiAlignCore.IO.Features
 {
@@ -16,11 +15,9 @@ namespace MultiAlignCore.IO.Features
     /// </summary>
     public class UMCClusterScanWriter : BaseUmcClusterWriter
     {
-        private string m_path;
         /// <summary>
         /// Default constructor.
         /// </summary>
-        /// <param name="path"></param>
         public UMCClusterScanWriter()
             : base(false)
         {
@@ -45,24 +42,24 @@ namespace MultiAlignCore.IO.Features
             {
                 writer.WriteLine("Cluster ID, Mono Mass, Net, Min Net, Max Net, Feature ID, Feature Dataset ID, Feature Mono Mass, Feature Net, Feature Abundance, Scan, Scan Start, Scan End");
 
-                foreach (UMCClusterLight cluster in clusters)
+                foreach (var cluster in clusters)
                 {
-                    double minNet   = double.MaxValue;
-                    double maxNet   = double.MinValue;
+                    var minNet   = double.MaxValue;
+                    var maxNet   = double.MinValue;
 
-                    StringBuilder umcBuilder = new StringBuilder();
-                    foreach(UMCLight umc in cluster.UMCList)
+                    var umcBuilder = new StringBuilder();
+                    foreach(var umc in cluster.UmcList)
                     {
                         minNet  = Math.Min(umc.RetentionTime, minNet);
                         maxNet  = Math.Max(umc.RetentionTime, maxNet);
 
-                        umcBuilder.Append(string.Format(",{0},{1},{2},{3},{4},{5},{6},{7}", umc.ID, umc.GroupID, umc.MassMonoisotopic, umc.NET, umc.Abundance, umc.Scan, umc.ScanStart, umc.ScanEnd));
+                        umcBuilder.Append(string.Format(",{0},{1},{2},{3},{4},{5},{6},{7}", umc.Id, umc.GroupId, umc.MassMonoisotopic, umc.Net, umc.Abundance, umc.Scan, umc.ScanStart, umc.ScanEnd));
                     }
 
-                    StringBuilder builder = new StringBuilder();                    
-                    builder.Append(string.Format("{0},{1},{2},{3},{4}", cluster.ID, cluster.MassMonoisotopic, cluster.RetentionTime, minNet, maxNet));
+                    var builder = new StringBuilder();                    
+                    builder.Append(string.Format("{0},{1},{2},{3},{4}", cluster.Id, cluster.MassMonoisotopic, cluster.RetentionTime, minNet, maxNet));
 
-                    writer.WriteLine(builder.Append(umcBuilder.ToString()));
+                    writer.WriteLine(builder.Append(umcBuilder));
                 }
             }
         }

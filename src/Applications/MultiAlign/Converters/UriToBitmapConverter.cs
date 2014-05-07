@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows.Data;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace MultiAlign.Converters
@@ -16,7 +12,7 @@ namespace MultiAlign.Converters
            if (value == null)
                return null;
            
-           BitmapImage bi       = new BitmapImage();
+           var bi       = new BitmapImage();
            bi.BeginInit();
            bi.DecodePixelWidth  = 128;
            bi.CacheOption       = BitmapCacheOption.OnLoad;

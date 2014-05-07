@@ -36,14 +36,14 @@ namespace MultiAlign.Converters
         #region IValueConverter Members
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            GridLength x = new GridLength(1, GridUnitType.Star);
+            var x = new GridLength(1, GridUnitType.Star);
             if (value == null)
             {
                 return x;
             }
 
 
-            bool boolValue = (bool)value;
+            var boolValue = (bool)value;
             if (!boolValue)
             {
                 return new GridLength(0, GridUnitType.Pixel);

@@ -1,25 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using NUnit.Framework;
-using PNNLOmics.Data.Features;
+using System.Drawing;
 using System.IO;
-using PNNLOmics.Algorithms.Distance;
-using PNNLOmics.Algorithms.FeatureClustering;
-using PNNLOmics.Algorithms.SpectralComparisons;
-using PNNLOmics.Algorithms.SpectralProcessing;
-using PNNLOmics.Data;
-using PNNLOmicsIO.IO;
+using System.Linq;
+using System.Windows.Forms;
 using MultiAlignCore.IO.Features;
+using NUnit.Framework;
 using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
 using OxyPlot.WindowsForms;
-using System.Windows.Forms;
-using System.Drawing;
-using MultiAlignTestSuite.Papers.Alignment;
-
+using PNNLOmics.Algorithms.SpectralProcessing;
+using PNNLOmics.Data;
 
 namespace MultiAlignTestSuite.Algorithms
 {
@@ -45,8 +37,8 @@ namespace MultiAlignTestSuite.Algorithms
         private MSSpectra GetSpectrum(ISpectraProvider reader, int scan, int group, double mzTolerance = .5)
         {
             var summary = new ScanSummary();
-            List<XYData> peaks  = reader.GetRawSpectra(scan, group, 2, out summary);            
-            MSSpectra spectrum  = new MSSpectra();
+            var peaks  = reader.GetRawSpectra(scan, group, 2, out summary);            
+            var spectrum  = new MSSpectra();
             spectrum.Peaks      = peaks;
 
             return spectrum;
@@ -82,10 +74,10 @@ namespace MultiAlignTestSuite.Algorithms
             plotModel1.Axes.Add(linearAxis1);
             
             var xseries = new StemSeries();
-            for (int j = 0; j < peaksY.Count; j++)
+            for (var j = 0; j < peaksY.Count; j++)
             {
-                XYData peakX = peaksX[j];
-                XYData peakY = peaksY[j];
+                var peakX = peaksX[j];
+                var peakY = peaksY[j];
 
                 double value = 0;
                 if (peakX.Y > 0 && peakY.Y > 0)
@@ -95,29 +87,29 @@ namespace MultiAlignTestSuite.Algorithms
                 xseries.Points.Add(new DataPoint(peakX.X, value));
             }
             xseries.Color = OxyColors.Green;
-            xseries.Color.ChangeAlpha(100);
+            
             //plotModel1.Series.Add(xseries);
                 
             var series   = new StemSeries();
             series.Title = "Spectra X";
             double max = 0;
-            foreach (XYData datum in peaksX)
+            foreach (var datum in peaksX)
             {
                 max = Math.Max(max, datum.Y);
             }
-            foreach (XYData datum in peaksX)
+            foreach (var datum in peaksX)
             {
                 series.Points.Add(new DataPoint(datum.X, datum.Y / max));                    
             }
             plotModel1.Series.Add(series);
 
-            foreach (XYData datum in peaksY)
+            foreach (var datum in peaksY)
             {
                 max = Math.Max(max, datum.Y);
             }
             var series2 = new StemSeries();
             series2.Title = "Spectra Y";
-            foreach (XYData datum in peaksY)
+            foreach (var datum in peaksY)
             {                    
                 series2.Points.Add(new DataPoint(datum.X, (datum.Y * -1) / max));                 
             }
@@ -129,18 +121,18 @@ namespace MultiAlignTestSuite.Algorithms
 
         private void DisplayComparisonPlot(MSSpectra spectrumX, MSSpectra spectrumY, double mzTolerance, string path = "comparison.png", string newTitle = "MS/MS Spectra")
         {
-            PlotModel model = CreatePlot(spectrumX.Peaks, spectrumY.Peaks, mzTolerance);
+            var model = CreatePlot(spectrumX.Peaks, spectrumY.Peaks, mzTolerance);
             model.Title = newTitle;
 
-            Plot plot   = new Plot();
+            var plot   = new Plot();
             plot.Model  = model;            
-            Form form   = new Form();
+            var form   = new Form();
             form.Size   = System.Windows.Forms.Screen.PrimaryScreen.WorkingArea.Size;
             plot.Dock   = System.Windows.Forms.DockStyle.Fill;
             form.Controls.Add(plot);
             form.ShowDialog();
 
-            using (Bitmap bitmap = new Bitmap(form.Width, form.Height))
+            using (var bitmap = new Bitmap(form.Width, form.Height))
             {
                 form.DrawToBitmap(bitmap, form.DisplayRectangle);
                 bitmap.Save(path);
@@ -160,11 +152,11 @@ namespace MultiAlignTestSuite.Algorithms
                     Ignore = false)]
         public void DisplayComparisonFigure(string pathX, int scanX, string pathY, int scanY, double mzTolerance)
         {            
-            MSSpectra spectrumX = GetSpectrum(pathX, scanX);
-            MSSpectra spectrumY = GetSpectrum(pathY, scanY);
+            var spectrumX = GetSpectrum(pathX, scanX);
+            var spectrumY = GetSpectrum(pathY, scanY);
 
-            string path = Path.GetDirectoryName(pathX);
-            string pathCompareImage = Path.Combine(path, string.Format("comparison-{0}-{1}.png", scanX, scanY));
+            var path = Path.GetDirectoryName(pathX);
+            var pathCompareImage = Path.Combine(path, string.Format("comparison-{0}-{1}.png", scanX, scanY));
                         
             spectrumX.Peaks = XYData.Bin(spectrumX.Peaks,
                                                 0,
@@ -226,11 +218,11 @@ namespace MultiAlignTestSuite.Algorithms
                                                 double percent,
                                                 double mzTolerance)
         {            
-            MSSpectra spectrumX = GetSpectrum(pathX, scanX);
-            MSSpectra spectrumY = GetSpectrum(pathY, scanY);            
-            ISpectralComparer comparer = SpectralComparerFactory.CreateSpectraComparer(comparerType, percent: percent);
+            var spectrumX = GetSpectrum(pathX, scanX);
+            var spectrumY = GetSpectrum(pathY, scanY);            
+            var comparer = SpectralComparerFactory.CreateSpectraComparer(comparerType, percent);
             
-            ISpectraFilter filter   = SpectrumFilterFactory.CreateFilter(filterType);
+            var filter   = SpectrumFilterFactory.CreateFilter(filterType);
             spectrumX.Peaks         = filter.Threshold(spectrumX.Peaks, percent);
             spectrumY.Peaks         = filter.Threshold(spectrumY.Peaks, percent);
 
@@ -244,13 +236,13 @@ namespace MultiAlignTestSuite.Algorithms
                                                 2000,
                                                 mzTolerance);
                 
-            double value = comparer.CompareSpectra(spectrumX, spectrumY);
+            var value = comparer.CompareSpectra(spectrumX, spectrumY);
 
-            string path             = Path.GetDirectoryName(pathX);
-            string plotTitle        = string.Format("comparison-{2}-{3}-{0}-{1}_{4:0.000}", scanX, scanY, comparerType, percent, value);
-            string pathCompareImage = Path.Combine(path, plotTitle + ".png");
+            var path             = Path.GetDirectoryName(pathX);
+            var plotTitle        = string.Format("comparison-{2}-{3}-{0}-{1}_{4:0.000}", scanX, scanY, comparerType, percent, value);
+            var pathCompareImage = Path.Combine(path, plotTitle + ".png");
 
-            DisplayComparisonPlot(spectrumX, spectrumY, mzTolerance, path: pathCompareImage, newTitle: plotTitle);
+            DisplayComparisonPlot(spectrumX, spectrumY, mzTolerance, pathCompareImage, plotTitle);
         }
         #endregion
 
@@ -262,12 +254,12 @@ namespace MultiAlignTestSuite.Algorithms
         /// <returns></returns>
         private List<PeptideMatch> GetPeptideMatches(string path)
         {
-            List<string> lines = File.ReadAllLines(path).ToList();
+            var lines = File.ReadAllLines(path).ToList();
 
-            List<PeptideMatch> matches = new List<PeptideMatch>();
-            foreach (string line in lines)
+            var matches = new List<PeptideMatch>();
+            foreach (var line in lines)
             {
-                string[] data = line.Split(',');
+                var data = line.Split(',');
                 if (data.Length < 6)
                 {
                     continue;
@@ -275,7 +267,7 @@ namespace MultiAlignTestSuite.Algorithms
 
                 try
                 {
-                    PeptideMatch match = new PeptideMatch();
+                    var match = new PeptideMatch();
                     match.Peptide = data[5];
                     match.ScanX = Convert.ToInt32(data[1]);
                     match.ScanY = Convert.ToInt32(data[3]);
@@ -296,11 +288,11 @@ namespace MultiAlignTestSuite.Algorithms
         /// <returns></returns>
         Dictionary<int, Dictionary<int, PeptideMatch>> CreateMatches(List<PeptideMatch> matches, int type)
         {
-            Dictionary<int, Dictionary<int, PeptideMatch>> matchesX = new Dictionary<int, Dictionary<int, PeptideMatch>>();
-            foreach (PeptideMatch match in matches)
+            var matchesX = new Dictionary<int, Dictionary<int, PeptideMatch>>();
+            foreach (var match in matches)
             {
-                int scanx = match.ScanX;
-                int scany = match.ScanY;
+                var scanx = match.ScanX;
+                var scany = match.ScanY;
                 if (type == 1)
                 {
                     scanx = match.ScanY;
@@ -328,19 +320,19 @@ namespace MultiAlignTestSuite.Algorithms
         /// <returns></returns>
         private Dictionary<int, PeptideTest> ReadPeptideFile(string peptidePath)
         {
-            Dictionary<int, PeptideTest> peptideMap = new Dictionary<int, PeptideTest>();
-            string[] lines                      = File.ReadAllLines(peptidePath);
+            var peptideMap = new Dictionary<int, PeptideTest>();
+            var lines                      = File.ReadAllLines(peptidePath);
 
-            string header = lines[0];
-            string [] headerData = header.Split('\t');
+            var header = lines[0];
+            var headerData = header.Split('\t');
 
-            int scanIndex       = 0;
-            int peptideIndex    = 0;
-            int fdrIndex        = 0;
-            int scoreIndex      = 0;
+            var scanIndex       = 0;
+            var peptideIndex    = 0;
+            var fdrIndex        = 0;
+            var scoreIndex      = 0;
 
-            int i = 0;
-            foreach(string x in headerData)
+            var i = 0;
+            foreach(var x in headerData)
             {
                 switch(x.ToLower())
                 {
@@ -365,14 +357,14 @@ namespace MultiAlignTestSuite.Algorithms
             // Map all of the lines.
             for (i = 1; i < lines.Length; i++)
             {
-                string line     = lines[i];
-                string [] data  = line.Split('\t');
-                string pep      = data[peptideIndex];
-                int scan        = Convert.ToInt32(data[scanIndex]);
-                double score    = Convert.ToDouble(data[scoreIndex]);
-                double fdr      = Convert.ToDouble(data[fdrIndex]);
+                var line     = lines[i];
+                var data  = line.Split('\t');
+                var pep      = data[peptideIndex];
+                var scan        = Convert.ToInt32(data[scanIndex]);
+                var score    = Convert.ToDouble(data[scoreIndex]);
+                var fdr      = Convert.ToDouble(data[fdrIndex]);
 
-                PeptideTest p = new PeptideTest();
+                var p = new PeptideTest();
                 p.Sequence   = pep;
                 p.Score     = score;
                 p.FDR       = fdr; 
@@ -394,7 +386,7 @@ namespace MultiAlignTestSuite.Algorithms
         /// <returns></returns>
         private string CleanString(string peptide)
         {
-            string[] peptides = peptide.Split('.');
+            var peptides = peptide.Split('.');
 
             if (peptides.Length > 2)
             {

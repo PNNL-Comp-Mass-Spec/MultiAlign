@@ -1,8 +1,6 @@
-﻿using System;
-using MultiAlignEngine;
-using MultiAlignCore.IO.Parameters;
+﻿using System.ComponentModel;
 using MultiAlignCore.Data;
-using System.ComponentModel;
+using MultiAlignCore.IO.Parameters;
 
 namespace MultiAlignCore.Algorithms.Alignment
 {
@@ -30,8 +28,8 @@ namespace MultiAlignCore.Algorithms.Alignment
         /// <summary>
         /// Gets or sets whether to perform the offset for drift time calculation.
         /// </summary>
-        [ParameterFileAttribute("ShouldPerformOffset", "DriftTime")]
-        [DataSummaryAttribute("Perform offset calculation")]
+        [ParameterFile("ShouldPerformOffset", "DriftTime")]
+        [DataSummary("Perform offset calculation")]
         [Category("Alignment")]
         [Description("Should perform offset correction based on error distributions.")]
         public bool ShouldPerformOffset
@@ -42,8 +40,8 @@ namespace MultiAlignCore.Algorithms.Alignment
         /// <summary>
         /// Gets or sets whether to use all observations for the drift time offset calculation.
         /// </summary>
-        [ParameterFileAttribute("UseAllObservationsForOffset", "DriftTime")]
-        [DataSummaryAttribute("Uses all observatiosn for the offset calculation")]
+        [ParameterFile("UseAllObservationsForOffset", "DriftTime")]
+        [DataSummary("Uses all observatiosn for the offset calculation")]
         [Category("Alignment")]
         [Description("")]
         public bool ShouldUseAllObservationsForOffsetCalculation
@@ -54,8 +52,8 @@ namespace MultiAlignCore.Algorithms.Alignment
         /// <summary>
         /// Gets or sets whether to use all observations for the drift time offset calculation.
         /// </summary>
-        [ParameterFileAttribute("ShouldAlignDriftTimes", "DriftTime")]
-        [DataSummaryAttribute("Aligned Drift Times")]
+        [ParameterFile("ShouldAlignDriftTimes", "DriftTime")]
+        [DataSummary("Aligned Drift Times")]
         [Category("Ion Mobility")]
         [Description("Determines if drift time alignment should be computed at all.  True yes = IMS, False no = LC-MS.")]
         public bool ShouldAlignDriftTimes
@@ -67,8 +65,8 @@ namespace MultiAlignCore.Algorithms.Alignment
         /// <summary>
         /// Gets or sets the drift time tolerance to use.
         /// </summary>
-        [ParameterFileAttribute("DriftTimeTolerance", "DriftTime")]
-        [DataSummaryAttribute("Drift Time Tolerance")]
+        [ParameterFile("DriftTimeTolerance", "DriftTime")]
+        [DataSummary("Drift Time Tolerance")]
         [Category("Tolerances")]
         [Description("Drift time tolerance (ms).")]
         public double DriftTimeTolerance
@@ -79,8 +77,8 @@ namespace MultiAlignCore.Algorithms.Alignment
         /// <summary>
         /// Gets or sets the Mass PPM Tolerance (monoisotopic).
         /// </summary>
-        [ParameterFileAttribute("MassTolerance", "DriftTime")]
-        [DataSummaryAttribute("Mass Tolerance")]
+        [ParameterFile("MassTolerance", "DriftTime")]
+        [DataSummary("Mass Tolerance")]
         [Category("Tolerances")]
         [Description("Monoisotopic mass tolerance in parts per million (PPM)")]
         public double MassPPMTolerance
@@ -91,8 +89,8 @@ namespace MultiAlignCore.Algorithms.Alignment
         /// <summary>
         /// Gets or sets teh maximum charge state to allow.
         /// </summary>
-        [ParameterFileAttribute("MaxChargeState", "DriftTime")]
-        [DataSummaryAttribute("Maximum Charge State")]
+        [ParameterFile("MaxChargeState", "DriftTime")]
+        [DataSummary("Maximum Charge State")]
         [Category("Tolerances")]
         [Description("Maximum charge state to consider")]
         public int MaxChargeState
@@ -103,8 +101,8 @@ namespace MultiAlignCore.Algorithms.Alignment
         /// <summary>
         /// Gets or sets the minimum charge state to allow.
         /// </summary>
-        [ParameterFileAttribute("MinChargeState", "DriftTime")]
-        [DataSummaryAttribute("Minimum Charge State")]
+        [ParameterFile("MinChargeState", "DriftTime")]
+        [DataSummary("Minimum Charge State")]
         [Category("Tolerances")]
         [Description("Minimum charge state to consider.")]
         public int MinChargeState
@@ -115,8 +113,8 @@ namespace MultiAlignCore.Algorithms.Alignment
         /// <summary>
         /// Gets or sets the NET tolerance.
         /// </summary>
-        [ParameterFileAttribute("NETTolerance", "DriftTime")]
-        [DataSummaryAttribute("NET Tolerance")]
+        [ParameterFile("NETTolerance", "DriftTime")]
+        [DataSummary("NET Tolerance")]
         [Category("Tolerances")]
         [Description("Normalized elution time (NET) tolerance.")]
         public double NETTolerance

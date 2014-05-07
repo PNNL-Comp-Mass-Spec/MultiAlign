@@ -1,5 +1,4 @@
 ﻿using MultiAlignCore.IO.InputFiles;
-using System.Collections.Generic;
 
 namespace MultiAlign.Data
 {
@@ -24,7 +23,7 @@ namespace MultiAlign.Data
 
         public static string BuildFileFilters(InputFileType type)
         {
-            string fileFilter = "All Files (*.*)|*.*";
+            var fileFilter = "All Files (*.*)|*.*";
 
             switch (type)
             {

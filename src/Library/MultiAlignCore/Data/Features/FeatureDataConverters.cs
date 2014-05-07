@@ -1,14 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using MultiAlignEngine.Features;
 using MultiAlignEngine.MassTags;
 using PNNLOmics.Data.Features;
-using PNNLOmics.Data;
 using PNNLOmics.Data.MassTags;
-using MultiAlignCore.Data.MassTags;
-using PNNLOmics;
 
 namespace MultiAlignCore.Data.Features
 {
@@ -23,30 +18,30 @@ namespace MultiAlignCore.Data.Features
         /// <returns></returns>
         public static Dictionary<int, T> MapFeature<T>(IEnumerable<T> features) where T : FeatureLight
         {
-            Dictionary<int, T> map = new Dictionary<int, T>();
+            var map = new Dictionary<int, T>();
 
-            foreach (T feature in features)
+            foreach (var feature in features)
             {
-                map.Add(feature.ID, feature);
+                map.Add(feature.Id, feature);
             }
             return map;
         }
 
         public static clsUMC ConvertToUMC(UMCLight feature)
         {
-            clsUMC umc               = new clsUMC();
+            var umc               = new clsUMC();
             umc.AbundanceMax         = feature.Abundance;
             umc.AbundanceSum         = feature.AbundanceSum;
             umc.AverageDeconFitScore = -1;
             umc.ChargeRepresentative = Convert.ToInt16(feature.ChargeState);
-            umc.DatasetId            = feature.GroupID;
+            umc.DatasetId            = feature.GroupId;
             umc.ScanEnd              = feature.ScanEnd;
             umc.ScanStart            = feature.ScanStart;
-            int maxCharge            = feature.ChargeState;
-            long maxAbundance        = long.MinValue;
-            int scan                 = feature.ScanStart;
-            float mz                 = Convert.ToSingle(feature.Mz);
-            foreach (MSFeatureLight msFeature in feature.MSFeatures)
+            var maxCharge            = feature.ChargeState;
+            var maxAbundance        = long.MinValue;
+            var scan                 = feature.ScanStart;
+            var mz                 = Convert.ToSingle(feature.Mz);
+            foreach (var msFeature in feature.MsFeatures)
             {
                 maxCharge = Math.Max(msFeature.ChargeState, maxCharge);
                 if (msFeature.Abundance > maxAbundance)
@@ -61,9 +56,9 @@ namespace MultiAlignCore.Data.Features
             umc.MZForCharge             = mz;
             umc.Net                     = feature.RetentionTime;
             umc.DriftTime               = feature.DriftTime;
-            umc.Id                      = feature.ID;
-            umc.mint_umc_id             = feature.ID;
-            umc.mint_umc_index          = feature.ID;
+            umc.Id                      = feature.Id;
+            umc.mint_umc_id             = feature.Id;
+            umc.mint_umc_index          = feature.Id;
             umc.Mass                    = feature.MassMonoisotopic;
             umc.MassCalibrated          = feature.MassMonoisotopic;
             umc.ChargeRepresentative    = Convert.ToInt16(feature.ChargeState);
@@ -74,8 +69,8 @@ namespace MultiAlignCore.Data.Features
 
         public static List<clsUMC> ConvertToUMC(IEnumerable<UMCLight> features)
         {
-            List<clsUMC> oldFeatures = new List<clsUMC>();
-            foreach (UMCLight feature in features)
+            var oldFeatures = new List<clsUMC>();
+            foreach (var feature in features)
             {
                 oldFeatures.Add(ConvertToUMC(feature));
             }
@@ -84,14 +79,14 @@ namespace MultiAlignCore.Data.Features
 
         public static List<clsMassTag> ConvertToMassTag(List<MassTagLight> massTags)
         {
-            List<clsMassTag> tags = new List<clsMassTag>();
-            foreach (MassTagLight tag in massTags)
+            var tags = new List<clsMassTag>();
+            foreach (var tag in massTags)
             {
                 // mixed mode tag
-                clsMassTag mmTag        = new clsMassTag();
-                mmTag.mintMassTagId     = tag.ID;
-                mmTag.mintConformerID   = tag.ConformationID;
-                mmTag.mdblAvgGANET      = tag.NETAverage;
+                var mmTag        = new clsMassTag();
+                mmTag.mintMassTagId     = tag.Id;
+                mmTag.mintConformerID   = tag.ConformationId;
+                mmTag.mdblAvgGANET      = tag.NetAverage;
                 mmTag.mdblMonoMass      = tag.MassMonoisotopic;
                 mmTag.DriftTime         = tag.DriftTime;
                 tags.Add(mmTag);
@@ -105,19 +100,19 @@ namespace MultiAlignCore.Data.Features
         /// <returns></returns>
         public static List<UMCLight> ConvertToUMC(List<MassTagLight> massTags)
         {
-            List<UMCLight> baselineFeatures = new List<UMCLight>();                    
+            var baselineFeatures = new List<UMCLight>();                    
             // Convert the mass tags to features.                
-            foreach (MassTagLight tag in massTags)
+            foreach (var tag in massTags)
             {
-                UMCLight umc                = new UMCLight();
+                var umc                = new UMCLight();
                 umc.ChargeState             = 0;
-                umc.NET                     = tag.NET;
+                umc.Net                     = tag.Net;
                 umc.MassMonoisotopic        = tag.MassMonoisotopic;
                 umc.MassMonoisotopicAligned = tag.MassMonoisotopic;
                 umc.DriftTime               = tag.DriftTime;
-                umc.ID                      = tag.ID;
+                umc.Id                      = tag.Id;
                 umc.ChargeState             = tag.ChargeState;
-                umc.GroupID                 = -1;
+                umc.GroupId                 = -1;
                 baselineFeatures.Add(umc);
             }
             return baselineFeatures;

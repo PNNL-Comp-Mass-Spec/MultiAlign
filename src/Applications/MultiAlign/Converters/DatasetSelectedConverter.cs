@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Windows;
 using System.Windows.Data;
 
 namespace MultiAlign.Converters
@@ -17,10 +16,10 @@ namespace MultiAlign.Converters
             }
 
             //BLL Make sure that we validate it's working.
-            bool isEnabled = true;
+            var isEnabled = true;
             try
             {
-                int datasets = (int)value;
+                var datasets = (int)value;
                 if (datasets > 0)
                 {
                     isEnabled = true;

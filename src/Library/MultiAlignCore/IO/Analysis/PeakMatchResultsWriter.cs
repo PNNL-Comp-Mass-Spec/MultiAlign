@@ -1,46 +1,42 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using MultiAlignCore.Data;
-using MultiAlignCore.Data.MassTags;
 using MultiAlignCore.IO.Features.Hibernate;
-using PNNLOmics.Algorithms.FeatureMatcher.Data;
 using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Data.MassTags;
 
-namespace MultiAlignCore.IO
+namespace MultiAlignCore.IO.Analysis
 {
     /// <summary>
     /// Writes peak match results to the local database.
     /// </summary>
-    public class PeakMatchResultsWriter
+    public sealed class PeakMatchResultsWriter
     {
         /// <summary>
         /// Writes the peak matching results to the local peak matching database.
         /// </summary>
-        /// <param name="analysis"></param>
         public void WritePeakMatchResults(  PeakMatchingResults<UMCClusterLight, MassTagLight> results,
                                             MassTagDatabase database,
                                             out int         matchedMassTags, 
                                             out int         matchedProteins)
         {
-            List<MassTagLight> massTagArray = database.MassTags;
-
-            ClusterToMassTagMapDAOHibernate clusterToMassTagMapDAOHibernate = new ClusterToMassTagMapDAOHibernate();
+            var clusterToMassTagMapDaoHibernate = new ClusterToMassTagMapDAOHibernate();
             
-            STACDAOHibernate stacFDRDAOHibernate                = new STACDAOHibernate();
-            List<MassTagLight> massTagList                      = new List<MassTagLight>();
-            Dictionary<int, Protein> proteinList                = new Dictionary<int,Protein>();
-            List<ClusterToMassTagMap> clusterToMassTagMapList   = new List<ClusterToMassTagMap>();
+            var stacFdrdaoHibernate       = new STACDAOHibernate();
+            var massTagList               = new List<MassTagLight>();
+            var proteinList               = new Dictionary<int,Protein>();
+            var clusterToMassTagMapList   = new List<ClusterToMassTagMap>();
 
-            clusterToMassTagMapDAOHibernate.ClearAll();
-            stacFDRDAOHibernate.ClearAll();
+            clusterToMassTagMapDaoHibernate.ClearAll();
+            stacFdrdaoHibernate.ClearAll();
             
-            foreach (FeatureMatchLight<UMCClusterLight, MassTagLight> match in results.Matches)
+            foreach (var match in results.Matches)
             {
-                MassTagLight         tag                = match.Target;
-                UMCClusterLight feature                 = match.Observed;
-                ClusterToMassTagMap clusterToMassTagMap = new ClusterToMassTagMap(feature.ID, tag.ID);
-                clusterToMassTagMap.ConformerId         = tag.ConformationID;
+                var         tag                = match.Target;
+                var feature                 = match.Observed;
+                var clusterToMassTagMap = new ClusterToMassTagMap(feature.Id, tag.Id);
+                clusterToMassTagMap.ConformerId         = tag.ConformationId;
 
                 if (!clusterToMassTagMapList.Contains(clusterToMassTagMap))
                 {
@@ -54,32 +50,27 @@ namespace MultiAlignCore.IO
                     massTagList.Add(tag);
                 }
 
-                bool databaseContainsProtein = database.Proteins.ContainsKey(tag.ID);
+                var databaseContainsProtein = database.Proteins.ContainsKey(tag.Id);
                 if (databaseContainsProtein)
                 {
-                    List<Protein> proteins = database.Proteins[tag.ID];
-                    foreach (Protein protein in proteins)
+                    var proteins = database.Proteins[tag.Id];
+                    foreach (var protein in proteins.Where(protein => !proteinList.ContainsKey(protein.ProteinId)))
                     {
-                        MassTagToProteinMap massTagToProteinMap = new MassTagToProteinMap(tag.ID, protein.ProteinID, protein.RefID);
-                        
-                        if (!proteinList.ContainsKey(protein.ProteinID))
-                        {
-                            proteinList.Add(protein.ProteinID, protein);
-                        }
+                        proteinList.Add(protein.ProteinId, protein);
                     }
                 }
             }            
 
-            List<Protein> uniqueProteins = new List<Protein>();
-            foreach (Protein protein in proteinList.Values)
+            var uniqueProteins = new List<Protein>();
+            foreach (var protein in proteinList.Values)
             {
                 uniqueProteins.Add(protein);
             }
 
             matchedMassTags = massTagList.Count;
             matchedProteins = uniqueProteins.Count;                        
-            clusterToMassTagMapDAOHibernate.AddAll(clusterToMassTagMapList);
-            stacFDRDAOHibernate.AddAll(results.FdrTable);            
+            clusterToMassTagMapDaoHibernate.AddAll(clusterToMassTagMapList);
+            stacFdrdaoHibernate.AddAll(results.FdrTable);            
         }
     }
 }

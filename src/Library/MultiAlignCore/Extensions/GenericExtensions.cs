@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using MathNet.Numerics.Statistics;
-using PNNLOmics.Data.Features;
+﻿using System.Collections.Generic;
 
 namespace MultiAlignCore.Extensions
 {

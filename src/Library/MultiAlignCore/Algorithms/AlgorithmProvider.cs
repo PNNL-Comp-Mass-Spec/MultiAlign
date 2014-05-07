@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using MultiAlignCore.Algorithms.FeatureMatcher;
 using MultiAlignCore.Data.Alignment;
 using PNNLOmics.Algorithms;
@@ -5,8 +7,6 @@ using PNNLOmics.Algorithms.Alignment;
 using PNNLOmics.Algorithms.FeatureClustering;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Data.MassTags;
-using System;
-using System.Collections.Generic;
 
 namespace MultiAlignCore.Algorithms
 {

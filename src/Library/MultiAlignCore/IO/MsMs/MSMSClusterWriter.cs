@@ -11,14 +11,14 @@ namespace MultiAlignCore.IO.Features.Exporters
     public class MSMSClusterWriter
     {
 
-        private void ExportMSMSClusters(string path, double similarity, List<MSMSCluster> clusters, List<MSMSClusterMap> maps, int id, List<double> xValues, List<double> yValues, List<int> groupIDS)
+        private void ExportMSMSClusters(string path, double similarity, List<MsmsCluster> clusters, List<MSMSClusterMap> maps, int id, List<double> xValues, List<double> yValues, List<int> groupIDS)
         {
-            using (TextWriter xwriter = File.CreateText(System.IO.Path.Combine(path, string.Format("clusters-{0}.csv", similarity))))
+            using (TextWriter xwriter = File.CreateText(Path.Combine(path, string.Format("clusters-{0}.csv", similarity))))
             {
-                foreach (MSMSCluster cluster in clusters)
+                foreach (var cluster in clusters)
                 {
-                    cluster.ID = id++;
-                    string line = string.Format("{0},", cluster.ID);
+                    cluster.Id = id++;
+                    var line = string.Format("{0},", cluster.Id);
 
                     // This is temporary.  So that we only export clusters with two features.
                     if (cluster.Features.Count > 2) continue;
@@ -27,28 +27,28 @@ namespace MultiAlignCore.IO.Features.Exporters
                     cluster.Features.Sort(delegate(MSFeatureLight x, MSFeatureLight y)
                     {
                         // Sort by scan if they are the same feature.
-                        if (x.GroupID == y.GroupID)
+                        if (x.GroupId == y.GroupId)
                         {
                             return x.Scan.CompareTo(y.Scan);
                         }
                         // Otherwise we want to sort by what dataset they came from.
-                        return x.GroupID.CompareTo(y.GroupID);
+                        return x.GroupId.CompareTo(y.GroupId);
                     });
 
-                    groupIDS[0] = cluster.Features[0].GroupID;
-                    groupIDS[1] = cluster.Features[1].GroupID;
+                    groupIDS[0] = cluster.Features[0].GroupId;
+                    groupIDS[1] = cluster.Features[1].GroupId;
 
                     xValues.Add(Convert.ToDouble(cluster.Features[0].Scan));
                     yValues.Add(Convert.ToDouble(cluster.Features[1].Scan));
 
-                    foreach (MSFeatureLight feature in cluster.Features)
+                    foreach (var feature in cluster.Features)
                     {
-                        MSMSClusterMap newMap = new MSMSClusterMap();
-                        newMap.ClusterID = cluster.ID;
-                        newMap.MSMSID = feature.MSnSpectra[0].ID;
-                        newMap.GroupID = feature.GroupID;
+                        var newMap = new MSMSClusterMap();
+                        newMap.ClusterID = cluster.Id;
+                        newMap.MSMSID = feature.MSnSpectra[0].Id;
+                        newMap.GroupID = feature.GroupId;
                         maps.Add(newMap);
-                        line += string.Format("{2},{0},{1},", feature.Scan, feature.Mz, feature.GroupID);
+                        line += string.Format("{2},{0},{1},", feature.Scan, feature.Mz, feature.GroupId);
                     }
                     xwriter.WriteLine(line);
                 }
@@ -56,11 +56,11 @@ namespace MultiAlignCore.IO.Features.Exporters
         }
         private void ExportMatches(string path, double similarity, List<double> tX, List<double> tY, double[] coeffs)
         {
-            using (TextWriter xwriter = File.CreateText(System.IO.Path.Combine(path, string.Format("matches-{0}.csv", similarity))))
+            using (TextWriter xwriter = File.CreateText(Path.Combine(path, string.Format("matches-{0}.csv", similarity))))
             {
-                double[] x = new double[1];
+                var x = new double[1];
                 double value = 0;
-                for (int i = 0; i < tX.Count; i++)
+                for (var i = 0; i < tX.Count; i++)
                 {
                     x[0] = tX[i];
                     //ChebyShev(coeffs, x, ref value, null);
@@ -79,16 +79,16 @@ namespace MultiAlignCore.IO.Features.Exporters
                 }
             }
         }
-        private void ExportMatches(Dictionary<int, Dictionary<int, Dictionary<int, DatabaseSearchSequence>>> sequenceMap, string path, double similarity, List<MSMSCluster> clusters, int id)
+        private void ExportMatches(Dictionary<int, Dictionary<int, Dictionary<int, DatabaseSearchSequence>>> sequenceMap, string path, double similarity, List<MsmsCluster> clusters, int id)
         {
-            using (TextWriter xwriter = File.CreateText(System.IO.Path.Combine(path, string.Format("match-sequences-{0}.csv", similarity))))
+            using (TextWriter xwriter = File.CreateText(Path.Combine(path, string.Format("match-sequences-{0}.csv", similarity))))
             {
                 xwriter.WriteLine("cluster id, cluster mean score, dataset id, scan, mz, charge, mass most abundant, find scan, pep seq, score, mass, charge, tryptic ends");
 
-                foreach (MSMSCluster cluster in clusters)
+                foreach (var cluster in clusters)
                 {
-                    cluster.ID = id++;
-                    string line = string.Format("{0},{1},", cluster.ID, cluster.MeanScore);
+                    cluster.Id = id++;
+                    var line = string.Format("{0},{1},", cluster.Id, cluster.MeanScore);
 
                     // This is temporary.  So that we only export clusters with two features.
                     if (cluster.Features.Count > 2) continue;
@@ -97,33 +97,33 @@ namespace MultiAlignCore.IO.Features.Exporters
                     cluster.Features.Sort(delegate(MSFeatureLight x, MSFeatureLight y)
                     {
                         // Sort by scan if they are the same feature.
-                        if (x.GroupID == y.GroupID)
+                        if (x.GroupId == y.GroupId)
                         {
                             return x.Scan.CompareTo(y.Scan);
                         }
                         // Otherwise we want to sort by what dataset they came from.
-                        return x.GroupID.CompareTo(y.GroupID);
+                        return x.GroupId.CompareTo(y.GroupId);
                     });
 
-                    foreach (MSFeatureLight feature in cluster.Features)
+                    foreach (var feature in cluster.Features)
                     {
-                        int findScan = feature.MSnSpectra[0].Scan;
+                        var findScan = feature.MSnSpectra[0].Scan;
 
                         DatabaseSearchSequence sequence = null;
-                        if (!sequenceMap[feature.GroupID].ContainsKey(findScan))
+                        if (!sequenceMap[feature.GroupId].ContainsKey(findScan))
                         {
-                            line += string.Format("{0},{1},,,,,,,,,", feature.GroupID, feature.Scan);
+                            line += string.Format("{0},{1},,,,,,,,,", feature.GroupId, feature.Scan);
                             continue;
                         }
 
                         try
                         {
-                            sequence = sequenceMap[feature.GroupID][findScan][feature.ChargeState];
+                            sequence = sequenceMap[feature.GroupId][findScan][feature.ChargeState];
                         }
                         catch
                         {
                         }
-                        string pepsequence = "";
+                        var pepsequence = "";
                         double score = 0;
                         
                         if (sequence != null)
@@ -133,7 +133,7 @@ namespace MultiAlignCore.IO.Features.Exporters
                         }
 
                         line += string.Format("{0},{1},{2},{3},{4},{5},{6},{7}",
-                                                    feature.GroupID,
+                                                    feature.GroupId,
                                                     feature.Scan,
                                                     feature.Mz,
                                                     feature.ChargeState,

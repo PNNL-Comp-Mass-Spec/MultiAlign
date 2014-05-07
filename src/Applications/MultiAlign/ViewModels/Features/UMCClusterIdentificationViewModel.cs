@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.ObjectModel;
+using MultiAlign.ViewModels.Proteins;
 using MultiAlignCore.Data.Features;
-using System.Collections.ObjectModel;
-using PNNLOmics.Data;
 using MultiAlignCore.Extensions;
-using System.Windows.Documents;
 
-namespace MultiAlign.ViewModels
+namespace MultiAlign.ViewModels.Features
 {
     public class UMCClusterIdentificationViewModel: ViewModelBase
     {
@@ -27,7 +22,7 @@ namespace MultiAlign.ViewModels
             MassTagResults.Clear();
             DatabaseResults.Clear();
 
-            List<Peptide> peptides = cluster.Cluster.FindPeptides();
+            var peptides = cluster.Cluster.FindPeptides();
             peptides.ForEach(x => DatabaseResults.Add(new PeptideViewModel(x)));            
             cluster.ClusterMatches.ForEach(x => MassTagResults.Add(new MassTagMatchedViewModel(x)));
         }

@@ -11,9 +11,9 @@ namespace MultiAlignCore.Algorithms
         /// <returns></returns>
         public static AnalysisType ValidateSetup(AnalysisConfig config)
         {
-            AnalysisType analysisType = AnalysisType.Full;
+            var analysisType = AnalysisType.Full;
 
-            bool isExporting = (config.ExporterNames.CrossTabPath != null);
+            var isExporting = (config.ExporterNames.CrossTabPath != null);
             isExporting = (isExporting || config.ExporterNames.ClusterScanPath != null);
             isExporting = (isExporting || config.ExporterNames.ClusterMSMSPath != null);
             isExporting = (isExporting || config.ExporterNames.CrossTabAbundance != null);

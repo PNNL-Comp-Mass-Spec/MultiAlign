@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using MultiAlignCore.Data.Features;
-
 
 namespace MultiAlignCore.Data
 {
@@ -30,7 +26,7 @@ namespace MultiAlignCore.Data
             }
 
             m_clusterMap.Clear();
-            clusters.ForEach(x => m_clusterMap.Add(x.Cluster.ID, x));
+            clusters.ForEach(x => m_clusterMap.Add(x.Cluster.Id, x));
         }
         /// <summary>
         /// Finds the cluster based on it's id.

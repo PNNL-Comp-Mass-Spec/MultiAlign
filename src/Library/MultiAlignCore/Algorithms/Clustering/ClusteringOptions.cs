@@ -1,10 +1,9 @@
-﻿using MultiAlignCore.Data;
+﻿using System.ComponentModel;
+using MultiAlignCore.Data;
 using MultiAlignCore.IO.Parameters;
-using PNNLOmics.Algorithms;
 using PNNLOmics.Algorithms.Distance;
 using PNNLOmics.Algorithms.FeatureClustering;
 using PNNLOmics.Data.Features;
-using System.ComponentModel;
 
 namespace MultiAlignCore.Algorithms.Clustering
 {
@@ -26,7 +25,7 @@ namespace MultiAlignCore.Algorithms.Clustering
         }
 
 
-        [ParameterFileAttribute("ClusteringAlgorithm", "LCMSFeatureClustering")]        
+        [ParameterFile("ClusteringAlgorithm", "LCMSFeatureClustering")]        
         [Category("Algorithm")]
         [Description("Determines the type of clustering algorithm to use.")]
         public LcmsFeatureClusteringAlgorithmType LcmsFeatureClusteringAlgorithm
@@ -38,7 +37,7 @@ namespace MultiAlignCore.Algorithms.Clustering
         /// <summary>
         /// Gets or sets the enumeration for selecting a distance function to use for clustering.
         /// </summary>
-        [ParameterFileAttribute("DistanceFunction", "LCMSFeatureClustering")]
+        [ParameterFile("DistanceFunction", "LCMSFeatureClustering")]
         [Category("Distance Function")]
         [Description("Determines the distance function to use.")]
         public DistanceMetric DistanceFunction
@@ -46,39 +45,39 @@ namespace MultiAlignCore.Algorithms.Clustering
             get;
             set;
         }
-        [ParameterFileAttribute("AlignClusters", "LCMSFeatureClustering")]
-        [DataSummaryAttribute("Align clusters to database")]
+        [ParameterFile("AlignClusters", "LCMSFeatureClustering")]
+        [DataSummary("Align clusters to database")]
         [Category("AMT")]
         [Description("This is only valid if you have a mass tag database.  Setting to True will align each cluster to the database.")]
         public bool AlignClusters { get; set; }
 
-        [ParameterFileAttribute("ClusterRepresentativeType", "LCMSFeatureClustering")]
-        [DataSummaryAttribute("Cluster Representative Type")]
+        [ParameterFile("ClusterRepresentativeType", "LCMSFeatureClustering")]
+        [DataSummary("Cluster Representative Type")]
         [Category("Centroid")]
         [Description("Determines how the centroid should be calculated.")]
         public ClusterCentroidRepresentation ClusterCentroid { get; set; }
 
-        [ParameterFileAttribute("IgnoreCharge", "LCMSFeatureClustering")]
-        [DataSummaryAttribute("Ignore Charge")]
+        [ParameterFile("IgnoreCharge", "LCMSFeatureClustering")]
+        [DataSummary("Ignore Charge")]
         [Category("Ion Mobility")]
         [Description("Set Ignore Charge to True if you are not using Ion Mobility (IMS).  Set to False if you are using IMS.")]
         public bool IgnoreCharge { get; set; }
 
-        [ParameterFileAttribute("DriftTimeTolerance", "LCMSFeatureClustering")]
-        [DataSummaryAttribute("Drift Time Tolerance")]
+        [ParameterFile("DriftTimeTolerance", "LCMSFeatureClustering")]
+        [DataSummary("Drift Time Tolerance")]
         [Category("Tolerances")]
         [Description("For Ion Mobility Data.  Tolerance in drift time (ms) set to a large value if not using LC-MS")]
         public double DriftTimeTolerance { get; set; }
 
 
-        [ParameterFileAttribute("MassTolerance", "LCMSFeatureClustering")]
-        [DataSummaryAttribute("Mass Tolerance")]
+        [ParameterFile("MassTolerance", "LCMSFeatureClustering")]
+        [DataSummary("Mass Tolerance")]
         [Category("Tolerances")]
         [Description("Mass Tolerance in parts per million (PPM).")]
         public double MassTolerance { get; set; }
 
-        [ParameterFileAttribute("NETTolerance", "LCMSFeatureClustering")]
-        [DataSummaryAttribute("NET Tolerance")]
+        [ParameterFile("NETTolerance", "LCMSFeatureClustering")]
+        [DataSummary("NET Tolerance")]
         [Category("Tolerances")]
         [Description("Normalized elution time (NET) tolerance.")]
         public double NETTolerance { get; set; }

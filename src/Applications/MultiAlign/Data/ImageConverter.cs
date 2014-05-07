@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Controls;
-using System.IO;
+﻿using System.IO;
 using System.Windows.Media.Imaging;
 
 namespace MultiAlign.Data
@@ -17,7 +12,7 @@ namespace MultiAlign.Data
             var bitmap = new BitmapImage();
             bitmap.BeginInit();
             
-            MemoryStream memoryStream = new MemoryStream();
+            var memoryStream = new MemoryStream();
             // Save to a memory stream...
             image.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Bmp);
             // Rewind the stream...

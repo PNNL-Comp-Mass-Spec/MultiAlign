@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using MultiAlignCore.IO.Features.Hibernate;
 using MultiAlignEngine.Features;
 
 namespace MultiAlignCore.IO.Features
@@ -55,12 +54,12 @@ namespace MultiAlignCore.IO.Features
 		/// <returns>The column map as a Dictionary object</returns>
 		private Dictionary<String, int> CreateColumnMapping()
 		{
-			Dictionary<String, int> columnMap = new Dictionary<String, int>();
+			var columnMap = new Dictionary<String, int>();
 
-			String[] columnTitles = m_umcFileReader.ReadLine().Split('\t', '\n');
-			int numOfColumns = columnTitles.Length;
+			var columnTitles = m_umcFileReader.ReadLine().Split('\t', '\n');
+			var numOfColumns = columnTitles.Length;
 
-			for (int i = 0; i < numOfColumns; i++)
+			for (var i = 0; i < numOfColumns; i++)
 			{
 				switch (columnTitles[i].Trim())
 				{
@@ -184,17 +183,17 @@ namespace MultiAlignCore.IO.Features
 		/// </summary>
 		private List<clsUMC> SaveDataToUmcList()
 		{
-			List<clsUMC> umcList = new List<clsUMC>();
+			var umcList = new List<clsUMC>();
 			String line;
 			clsUMC umc;
-			int previousId = -99;
-			int currentId = -99;
-			int idIndex = 0;
+			var previousId = -99;
+			var currentId = -99;
+			var idIndex = 0;
 
 			// Read the rest of the Stream, 1 line at a time, and save the appropriate data into new Objects
 			while ((line = m_umcFileReader.ReadLine()) != null)
 			{
-				String[] columns = line.Split(',', '\t', '\n');
+				var columns = line.Split(',', '\t', '\n');
 
 				if (m_columnMap.ContainsKey("Umc.Id"))
 				{
@@ -225,7 +224,7 @@ namespace MultiAlignCore.IO.Features
                         try
                         {
                             // To handle bugs from Feature Finder.
-                            string data = columns[m_columnMap["Umc.AbundanceSum"]];                            
+                            var data = columns[m_columnMap["Umc.AbundanceSum"]];                            
                             if (data.StartsWith("-"))
                             {
                                 umc.AbundanceSum = 0;
@@ -248,12 +247,12 @@ namespace MultiAlignCore.IO.Features
                     }
                     if (m_columnMap.ContainsKey("Umc.ChargeRepresentative"))
                     {
-                        umc.ChargeRepresentative = (short)Int16.Parse(columns[m_columnMap["Umc.ChargeRepresentative"]]);
+                        umc.ChargeRepresentative = Int16.Parse(columns[m_columnMap["Umc.ChargeRepresentative"]]);
                         umc.ChargeMax = Math.Max(umc.ChargeMax, umc.ChargeRepresentative);
                     }
                     if (m_columnMap.ContainsKey("Umc.ChargeMax"))
                     {
-                        umc.ChargeMax = (short)Int16.Parse(columns[m_columnMap["Umc.ChargeMax"]]);
+                        umc.ChargeMax = Int16.Parse(columns[m_columnMap["Umc.ChargeMax"]]);
                     }
 					if (m_columnMap.ContainsKey("Umc.SpectralCount"))				umc.SpectralCount = int.Parse(columns[m_columnMap["Umc.SpectralCount"]]);
 					if (m_columnMap.ContainsKey("Umc.MZForCharge"))					umc.MZForCharge = Double.Parse(columns[m_columnMap["Umc.MZForCharge"]]);
@@ -261,7 +260,7 @@ namespace MultiAlignCore.IO.Features
 					if (m_columnMap.ContainsKey("Umc.DriftTimeUncorrected"))		umc.DriftTimeUncorrected = double.Parse(columns[m_columnMap["Umc.DriftTimeUncorrected"]]);
                     if (m_columnMap.ContainsKey("Umc.AverageInterferenceScore"))
                     {
-                        double d = Double.Parse(columns[m_columnMap["Umc.AverageInterferenceScore"]]);
+                        var d = Double.Parse(columns[m_columnMap["Umc.AverageInterferenceScore"]]);
                         if (double.IsNegativeInfinity(d))
                         {
                             d = Convert.ToDouble(Decimal.MinValue/100);

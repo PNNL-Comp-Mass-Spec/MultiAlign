@@ -1,12 +1,9 @@
-﻿using MultiAlignCore.Algorithms.Options;
-using MultiAlignCore.Data.Features;
+﻿using System;
+using System.Collections.Generic;
 using PNNLOmics.Algorithms;
 using PNNLOmics.Algorithms.FeatureClustering;
 using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
-using System;
-using System.Collections.Generic;
-
 
 namespace MultiAlignCore.Algorithms.FeatureFinding
 {
@@ -68,17 +65,17 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
                 maxScan = Math.Max(feature.Scan, maxScan);
             }
 
-            int id = 0;
+            var id = 0;
             var newFeatures = new List<UMCLight>();
             foreach (var feature in features)
             {
-                if (feature.MSFeatures.Count < 1)
+                if (feature.MsFeatures.Count < 1)
                     continue;
                 
-                feature.NET             = Convert.ToDouble(feature.Scan - minScan) / Convert.ToDouble(maxScan - minScan);                
+                feature.Net             = Convert.ToDouble(feature.Scan - minScan) / Convert.ToDouble(maxScan - minScan);                
                 feature.CalculateStatistics(ClusterCentroidRepresentation.Median);                
-                feature.RetentionTime   = feature.NET;
-                feature.ID              = id++;
+                feature.RetentionTime   = feature.Net;
+                feature.Id              = id++;
                 newFeatures.Add(feature);
             }
             return features;
