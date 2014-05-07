@@ -1,5 +1,0 @@
-C:\development\Proteomics\MultiAlign\development\trunk\src\CazyRetrieve\obj\x86\Debug\CazyRetrieve.csprojResolveAssemblyReference.cache
-C:\development\Proteomics\MultiAlign\development\trunk\src\CazyRetrieve\bin\Debug\CazyRetrieve.exe
-C:\development\Proteomics\MultiAlign\development\trunk\src\CazyRetrieve\bin\Debug\CazyRetrieve.pdb
-C:\development\Proteomics\MultiAlign\development\trunk\src\CazyRetrieve\obj\x86\Debug\CazyRetrieve.exe
-C:\development\Proteomics\MultiAlign\development\trunk\src\CazyRetrieve\obj\x86\Debug\CazyRetrieve.pdb
