@@ -2,9 +2,9 @@
 
 namespace MultiAlign.ViewModels.Proteins
 {
-    public class ProteinViewModel: ViewModelBase 
+    public sealed class ProteinViewModel : ViewModelBase
     {
-        private Protein m_protein;
+        private readonly Protein m_protein;
 
         public ProteinViewModel(Protein p)
         {
@@ -13,10 +13,7 @@ namespace MultiAlign.ViewModels.Proteins
 
         public Protein Protein
         {
-            get
-            {
-                return m_protein;
-            }
+            get { return m_protein; }
         }
     }
 }

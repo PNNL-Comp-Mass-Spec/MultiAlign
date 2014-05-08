@@ -5,10 +5,13 @@ using PNNLOmics.Data;
 namespace MultiAlign.Windows.Viewers.Proteins
 {
     /// <summary>
-    /// Interaction logic for MassTagDetail.xaml
+    ///     Interaction logic for MassTagDetail.xaml
     /// </summary>
     public partial class ProteinDetail : UserControl
     {
+        public static readonly DependencyProperty ProteinProperty =
+            DependencyProperty.Register("Protein", typeof (Protein), typeof (ProteinDetail));
+
         public ProteinDetail()
         {
             InitializeComponent();
@@ -16,14 +19,10 @@ namespace MultiAlign.Windows.Viewers.Proteins
 
         public Protein Protein
         {
-            get { return (Protein)GetValue(ProteinProperty); }
+            get { return (Protein) GetValue(ProteinProperty); }
             set { SetValue(ProteinProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for MassTag.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty ProteinProperty =
-            DependencyProperty.Register("Protein", typeof(Protein), typeof(ProteinDetail));
-
-
     }
 }

@@ -3,7 +3,7 @@
 namespace MultiAlign.Windows.Viewers.Clusters
 {
     /// <summary>
-    /// Interaction logic for ClusterFilterWindow.xaml
+    ///     Interaction logic for ClusterFilterWindow.xaml
     /// </summary>
     public partial class ClusterFilterWindow : Window
     {

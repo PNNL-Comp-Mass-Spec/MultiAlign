@@ -1,8 +1,8 @@
 ﻿namespace MultiAlign.ViewModels.Wizard
 {
     public enum ExperimentPresets
-    {       
-        Peptides,     
+    {
+        Peptides,
         LipidsPositive,
         LipidsNegative
     }

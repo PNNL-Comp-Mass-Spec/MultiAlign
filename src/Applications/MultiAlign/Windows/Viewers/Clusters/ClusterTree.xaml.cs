@@ -3,15 +3,13 @@
 namespace MultiAlign.Windows.Viewers.Clusters
 {
     /// <summary>
-    /// Interaction logic for ClusterTree.xaml
+    ///     Interaction logic for ClusterTree.xaml
     /// </summary>
     public partial class ClusterTree : UserControl
     {
-
         public ClusterTree()
         {
-            InitializeComponent();            
+            InitializeComponent();
         }
-
     }
 }

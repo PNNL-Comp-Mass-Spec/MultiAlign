@@ -1,20 +1,21 @@
 ﻿using System.Collections.ObjectModel;
 using MultiAlign.IO;
 using MultiAlign.ViewModels.Datasets;
+using MultiAlignCore.Data.MetaData;
 using PNNLOmics.Data;
 
 namespace MultiAlign.ViewModels.Proteins
 {
-    public class PeptideViewModel: ViewModelBase
+    public class PeptideViewModel : ViewModelBase
     {
-        DatasetInformationViewModel    m_dataset;
-        private Peptide     m_peptide;
+        private readonly DatasetInformationViewModel m_dataset;
+        private readonly Peptide m_peptide;
 
         public PeptideViewModel(Peptide peptide)
         {
             m_peptide = peptide;
 
-            var info = SingletonDataProviders.GetDatasetInformation(peptide.GroupId);
+            DatasetInformation info = SingletonDataProviders.GetDatasetInformation(peptide.GroupId);
             if (info != null)
             {
                 m_dataset = new DatasetInformationViewModel(info);
@@ -25,26 +26,17 @@ namespace MultiAlign.ViewModels.Proteins
             LoadProteinData(peptide);
         }
 
-        private void LoadProteinData(Peptide peptide)
-        {
-            MatchedProteins.Clear();
-            peptide.ProteinList.ForEach(x => MatchedProteins.Add(new ProteinViewModel(x)));
-        }
-
         /// <summary>
-        /// Gets or sets the matched proteins.
+        ///     Gets or sets the matched proteins.
         /// </summary>
         public ObservableCollection<ProteinViewModel> MatchedProteins { get; set; }
 
         public DatasetInformationViewModel Dataset
         {
-            get
-            {
-                return m_dataset;
-            }
+            get { return m_dataset; }
         }
 
-        public string Sequence 
+        public string Sequence
         {
             get
             {
@@ -70,7 +62,7 @@ namespace MultiAlign.ViewModels.Proteins
             get
             {
                 if (m_peptide == null)
-                    return double.NaN;                
+                    return double.NaN;
                 return m_peptide.MassMonoisotopic;
             }
         }
@@ -84,7 +76,11 @@ namespace MultiAlign.ViewModels.Proteins
                 return m_peptide.Scan;
             }
         }
-        
-    }
 
+        private void LoadProteinData(Peptide peptide)
+        {
+            MatchedProteins.Clear();
+            peptide.ProteinList.ForEach(x => MatchedProteins.Add(new ProteinViewModel(x)));
+        }
+    }
 }

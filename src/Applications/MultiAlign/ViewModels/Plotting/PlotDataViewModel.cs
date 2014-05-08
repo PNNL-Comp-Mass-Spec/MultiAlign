@@ -4,35 +4,32 @@ using MultiAlign.Commands.Plotting;
 namespace MultiAlign.ViewModels.Plotting
 {
     /// <summary>
-    /// Displays a plot information 
+    ///     Displays a plot information
     /// </summary>
-    public class PlotViewModel: ViewModelBase 
+    public class PlotViewModel : ViewModelBase
     {
         private string m_name;
 
-        public PlotViewModel(string path):
+        public PlotViewModel(string path) :
             this(path, "")
         {
         }
 
-        public PlotViewModel(string path, string name):
+        public PlotViewModel(string path, string name) :
             this(path, name, new PictureDisplayCommand(path, name))
-        {         
+        {
         }
 
         public PlotViewModel(string path, string name, ICommand command)
         {
-            Path    = path;
-            m_name  = name;
+            Path = path;
+            m_name = name;
             Command = command;
         }
 
         public string Name
         {
-            get
-            {
-                return m_name;
-            }
+            get { return m_name; }
             set
             {
                 if (m_name != value)
@@ -42,18 +39,9 @@ namespace MultiAlign.ViewModels.Plotting
                 }
             }
         }
-        public string Path
-        {
-            get;
-            private set;
-        }
 
-        public ICommand Command
-        {
-            get;
-            private set;
-        }
+        public string Path { get; private set; }
 
+        public ICommand Command { get; private set; }
     }
-    
 }

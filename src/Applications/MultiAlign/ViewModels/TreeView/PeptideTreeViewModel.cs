@@ -1,24 +1,26 @@
 ﻿using MultiAlign.IO;
+using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.Extensions;
 using PNNLOmics.Data;
+using PNNLOmics.Data.Features;
 
 namespace MultiAlign.ViewModels.TreeView
 {
     public class PeptideTreeViewModel : GenericCollectionTreeViewModel
     {
-        private Peptide m_peptide;
-        
-        public PeptideTreeViewModel(Peptide peptide):
+        private readonly Peptide m_peptide;
+
+        public PeptideTreeViewModel(Peptide peptide) :
             this(peptide, null)
         {
         }
 
         public PeptideTreeViewModel(Peptide peptide, TreeItemViewModel parent)
         {
-            m_parent  = parent;
+            m_parent = parent;
             m_peptide = peptide;
 
-            var information = SingletonDataProviders.GetDatasetInformation(m_peptide.GroupId);
+            DatasetInformation information = SingletonDataProviders.GetDatasetInformation(m_peptide.GroupId);
 
             if (information != null)
             {
@@ -27,10 +29,10 @@ namespace MultiAlign.ViewModels.TreeView
             else
             {
                 Name = string.Format("Dataset {0}", m_peptide.GroupId);
-            } 
-            
-            AddStatistic("Id",          m_peptide.Id);
-            AddStatistic("Dataset Id",  m_peptide.GroupId);
+            }
+
+            AddStatistic("Id", m_peptide.Id);
+            AddStatistic("Dataset Id", m_peptide.GroupId);
 
             AddStatistic("Precursor m/z", m_peptide.Spectrum.PrecursorMz);
             if (m_peptide.Spectrum.ParentFeature != null)
@@ -49,38 +51,31 @@ namespace MultiAlign.ViewModels.TreeView
 
         public override bool IsSelected
         {
-            get
-            {
-                return base.IsSelected;
-            }
+            get { return base.IsSelected; }
             set
             {
                 base.IsSelected = value;
                 if (m_peptide != null)
                 {
-                    var feature = m_peptide.GetParentUmc();
+                    UMCLight feature = m_peptide.GetParentUmc();
                     OnFeatureSelected(feature);
                 }
             }
         }
 
         /// <summary>
-        /// Gets the sequence.
+        ///     Gets the sequence.
         /// </summary>
         public string Sequence
         {
-            get
-            {
-                return m_peptide.Sequence;
-            }
+            get { return m_peptide.Sequence; }
         }
-        
+
         /// <summary>
-        /// Loads the children 
+        ///     Loads the children
         /// </summary>
-        public override void  LoadChildren()
+        public override void LoadChildren()
         {
-            
         }
     }
 }

@@ -12,19 +12,15 @@ namespace MultiAlign.ViewModels.Viewers
 
         public GlobalStatisticsViewModel(IEnumerable<UMCClusterLightMatched> clusters, IEnumerable<int> charges)
         {
-            var histogram = charges.CreateHistogram(1, 10);
+            Dictionary<int, int> histogram = charges.CreateHistogram(1, 10);
             AllChargeHistogramModel = new ChargeHistogramPlot(histogram, "All Charge States");
             FilteredChargeHistogramModel = new ChargeHistogramPlot(histogram, "Filtered Charge States");
         }
 
-        
 
         public ChargeHistogramPlot AllChargeHistogramModel
         {
-            get
-            {
-                return m_chargeStateHistogramModel;
-            }
+            get { return m_chargeStateHistogramModel; }
             set
             {
                 m_chargeStateHistogramModel = value;
@@ -34,10 +30,7 @@ namespace MultiAlign.ViewModels.Viewers
 
         public ChargeHistogramPlot FilteredChargeHistogramModel
         {
-            get
-            {
-                return m_filteredChargeStateModel;
-            }
+            get { return m_filteredChargeStateModel; }
             set
             {
                 m_filteredChargeStateModel = value;

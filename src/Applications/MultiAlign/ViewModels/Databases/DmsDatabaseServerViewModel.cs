@@ -2,47 +2,45 @@
 
 namespace MultiAlign.ViewModels.Databases
 {
-    public class DmsDatabaseServerViewModel: ViewModelBase
+    public sealed class DmsDatabaseServerViewModel : ViewModelBase
     {
-        private InputDatabase m_server;
+        private readonly InputDatabase m_server;
 
         public DmsDatabaseServerViewModel(InputDatabase server)
         {
-            m_server = server;            
+            m_server = server;
         }
 
         /// <summary>
-        /// Gets the selected database server
+        ///     Gets the selected database server
         /// </summary>
-        public InputDatabase Database { get {return m_server;} }
+        public InputDatabase Database
+        {
+            get { return m_server; }
+        }
 
         /// <summary>
-        /// Gets or sets the database server
+        ///     Gets or sets the database server
         /// </summary>
         public string DatabaseServer
         {
-            get
-            {
-                return m_server.DatabaseServer;
-            }
+            get { return m_server.DatabaseServer; }
             set
             {
                 if (m_server.DatabaseServer != value)
                 {
                     m_server.DatabaseServer = value;
                     OnPropertyChanged("DatabaseServer");
-                }                
+                }
             }
         }
+
         /// <summary>
-        /// Gets or sets the database name
+        ///     Gets or sets the database name
         /// </summary>
         public string DatabaseName
         {
-            get
-            {
-                return m_server.DatabaseName;
-            }
+            get { return m_server.DatabaseName; }
             set
             {
                 if (m_server.DatabaseName != value)
@@ -54,14 +52,11 @@ namespace MultiAlign.ViewModels.Databases
         }
 
         /// <summary>
-        /// Gets or sets the database name
+        ///     Gets or sets the database name
         /// </summary>
         public string Description
         {
-            get
-            {
-                return m_server.Description;
-            }
+            get { return m_server.Description; }
             set
             {
                 if (m_server.Description != value)
@@ -73,14 +68,11 @@ namespace MultiAlign.ViewModels.Databases
         }
 
         /// <summary>
-        /// Gets or sets the database name
+        ///     Gets or sets the database name
         /// </summary>
         public string Organism
         {
-            get
-            {
-                return m_server.Organism;
-            }
+            get { return m_server.Organism; }
             set
             {
                 if (m_server.Organism != value)
@@ -90,6 +82,5 @@ namespace MultiAlign.ViewModels.Databases
                 }
             }
         }
-
     }
 }

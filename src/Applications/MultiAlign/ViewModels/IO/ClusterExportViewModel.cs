@@ -14,67 +14,65 @@ using PNNLOmics.Data.Features;
 
 namespace MultiAlign.ViewModels.IO
 {
-    public class ClusterExportViewModel: ViewModelBase
+    public class ClusterExportViewModel : ViewModelBase
     {
-        private string m_outputPath;
-        private bool m_isClustersFiltered;
-        private IFeatureClusterWriter m_exporter;
-        private IEnumerable<UMCClusterLightMatched>          m_allClusters;
-        private IEnumerable<DatasetInformation> m_datasets;
-        private ObservableCollection<UMCClusterTreeViewModel> m_filteredClusters;
-        private string m_status;
+        private readonly IEnumerable<UMCClusterLightMatched> m_allClusters;
+        private readonly IEnumerable<DatasetInformation> m_datasets;
+        private readonly ObservableCollection<UMCClusterTreeViewModel> m_filteredClusters;
 
         /// <summary>
-        /// This allows us to dynamically build the filter string for an exporter....
+        ///     This allows us to dynamically build the filter string for an exporter....
         /// </summary>
-        Dictionary<string, IFeatureClusterWriter> m_writerExtensionMap;
+        private readonly Dictionary<string, IFeatureClusterWriter> m_writerExtensionMap;
+
+        private IFeatureClusterWriter m_exporter;
+        private bool m_isClustersFiltered;
+        private string m_outputPath;
+        private string m_status;
 
         public ClusterExportViewModel(IEnumerable<UMCClusterLightMatched> allClusters,
-                                      ObservableCollection<UMCClusterTreeViewModel> filteredClusters)
+            ObservableCollection<UMCClusterTreeViewModel> filteredClusters)
         {
-            m_allClusters       = allClusters;
-            m_filteredClusters  = filteredClusters;            
-            m_datasets          = SingletonDataProviders.GetAllInformation();
-            Exporters           = new ObservableCollection<IFeatureClusterWriter>();
-            var filters      = "";
+            m_allClusters = allClusters;
+            m_filteredClusters = filteredClusters;
+            m_datasets = SingletonDataProviders.GetAllInformation();
+            Exporters = new ObservableCollection<IFeatureClusterWriter>();
+            string filters = "";
 
-            m_writerExtensionMap = new Dictionary<string, IFeatureClusterWriter>();            
-            foreach(var exporter in UmcClusterExporterFactory.Create())
+            m_writerExtensionMap = new Dictionary<string, IFeatureClusterWriter>();
+            foreach (IFeatureClusterWriter exporter in UmcClusterExporterFactory.Create())
             {
                 exporter.ShouldLoadClusterData = true;
 
                 if (filters.Length > 1)
                     filters += "| ";
                 filters += string.Format(" {0}  (*{1}) | *{1}", exporter.Name,
-                                                            exporter.Extension
-                                                            );
+                    exporter.Extension
+                    );
 
                 m_writerExtensionMap.Add(exporter.Extension, exporter);
 
                 Exporters.Add(exporter);
             }
             filters += string.Format("|  All Files (*.*) | (*.*)");
-            
 
-            BrowseSave = new BrowseSaveFileCommand((string x) =>
-                                                   {
-                                                        OutputPath = x;
-                                                   },
-                                                   BaseCommand.AlwaysPass, filters);
+
+            BrowseSave = new BrowseSaveFileCommand((string x) => { OutputPath = x; },
+                BaseCommand.AlwaysPass, filters);
 
             // Action for saving all clusters
             Action saveAction = delegate
             {
-                SelectedExporter.Path           = OutputPath;
-                var clusters  = new List<UMCClusterLight>();
+                SelectedExporter.Path = OutputPath;
+                var clusters = new List<UMCClusterLight>();
                 if (IsFilteredClusters)
-                {                    
-                    foreach(var x in m_filteredClusters)                 
-                        clusters.Add(x.Cluster.Cluster);                 
-                }
-                else 
                 {
-                    foreach (var x in m_allClusters)
+                    foreach (UMCClusterTreeViewModel x in m_filteredClusters)
+                        clusters.Add(x.Cluster.Cluster);
+                }
+                else
+                {
+                    foreach (UMCClusterLightMatched x in m_allClusters)
                         clusters.Add(x.Cluster);
                 }
 
@@ -83,9 +81,9 @@ namespace MultiAlign.ViewModels.IO
                     SelectedExporter.WriteClusters(clusters, m_datasets.ToList());
                     Status = "The file was saved: " + SelectedExporter.Path;
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
-                    Status = "Could not save the file: " + ex.Message;                    
+                    Status = "Could not save the file: " + ex.Message;
                 }
             };
 
@@ -93,20 +91,12 @@ namespace MultiAlign.ViewModels.IO
             SaveData = new BaseCommand(saveAction, CanSave);
         }
 
-        private bool CanSave(object parameter)
-        {
-            return !string.IsNullOrWhiteSpace(OutputPath);
-        }
-
         /// <summary>
-        /// Gets or sets the status message
+        ///     Gets or sets the status message
         /// </summary>
         public string Status
         {
-            get
-            {
-                return m_status;
-            }
+            get { return m_status; }
             set
             {
                 if (m_status != value)
@@ -122,10 +112,7 @@ namespace MultiAlign.ViewModels.IO
 
         public string OutputPath
         {
-            get
-            {
-                return m_outputPath;
-            }
+            get { return m_outputPath; }
             set
             {
                 if (m_outputPath != value)
@@ -138,8 +125,8 @@ namespace MultiAlign.ViewModels.IO
                     {
                         // We have to do it this way because of the stupid numerous extensions
                         // but this can break if we have a _isos.csv and .csv ...fix!
-                        foreach(var extension in m_writerExtensionMap.Keys)
-                        { 
+                        foreach (string extension in m_writerExtensionMap.Keys)
+                        {
                             if (value.EndsWith(extension))
                             {
                                 SelectedExporter = m_writerExtensionMap[extension];
@@ -152,11 +139,7 @@ namespace MultiAlign.ViewModels.IO
 
         public bool IsFilteredClusters
         {
-
-            get
-            {
-                return m_isClustersFiltered;
-            }
+            get { return m_isClustersFiltered; }
             set
             {
                 if (m_isClustersFiltered != value)
@@ -167,17 +150,11 @@ namespace MultiAlign.ViewModels.IO
             }
         }
 
-        public ObservableCollection<IFeatureClusterWriter> Exporters
-        {
-            get;private set;
-        }
+        public ObservableCollection<IFeatureClusterWriter> Exporters { get; private set; }
 
         public IFeatureClusterWriter SelectedExporter
         {
-            get
-            {
-                return m_exporter;
-            }
+            get { return m_exporter; }
             set
             {
                 if (m_exporter != value)
@@ -186,6 +163,11 @@ namespace MultiAlign.ViewModels.IO
                     OnPropertyChanged("SelectedExporter");
                 }
             }
+        }
+
+        private bool CanSave(object parameter)
+        {
+            return !string.IsNullOrWhiteSpace(OutputPath);
         }
     }
 }

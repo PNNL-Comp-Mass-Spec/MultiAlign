@@ -3,7 +3,7 @@
 namespace MultiAlign.Windows.Viewers.Spectra
 {
     /// <summary>
-    /// Interaction logic for SpectraDetail.xaml
+    ///     Interaction logic for SpectraDetail.xaml
     /// </summary>
     public partial class SpectraDetail : UserControl
     {

@@ -4,24 +4,24 @@ using MultiAlign.IO;
 using MultiAlign.ViewModels.Charting;
 using MultiAlign.ViewModels.Datasets;
 using MultiAlign.ViewModels.Proteins;
+using MultiAlignCore.Data.MetaData;
 using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
 
 namespace MultiAlign.ViewModels.Spectra
 {
-
     public class MsSpectraViewModel : ViewModelBase
-    {        
+    {
         private bool m_isExpanded;
         private MsMsSpectraViewModel m_selectedSpectrum;
         private XicViewModel m_xicModel;
 
         public MsSpectraViewModel(MSSpectra spectrum)
         {
-            Peptides = new ObservableCollection<PeptideViewModel>();            
+            Peptides = new ObservableCollection<PeptideViewModel>();
             spectrum.Peptides.ForEach(x => Peptides.Add(new PeptideViewModel(x)));
 
-            var info = SingletonDataProviders.GetDatasetInformation(spectrum.GroupId);
+            DatasetInformation info = SingletonDataProviders.GetDatasetInformation(spectrum.GroupId);
             if (info != null)
             {
                 Dataset = new DatasetInformationViewModel(info);
@@ -32,37 +32,30 @@ namespace MultiAlign.ViewModels.Spectra
 
             if (spectrum.ParentFeature != null)
             {
-                var msFeature   = spectrum.ParentFeature;
-                var umc         = msFeature.ParentFeature;
+                MSFeatureLight msFeature = spectrum.ParentFeature;
+                UMCLight umc = msFeature.ParentFeature;
                 if (umc != null)
                 {
                     var newList = new List<UMCLight> {umc};
 
-                    var xic = new XicViewModel(newList, "xic") 
+                    var xic = new XicViewModel(newList, "xic")
                     {
-                        Model = {
-                         IsLegendVisible = false,
-                         TitleFontSize = 0}
+                        Model =
+                        {
+                            IsLegendVisible = false,
+                            TitleFontSize = 0
+                        }
                     };
 
                     SelectedSpectrumXic = xic;
                 }
             }
-
-        }
-        /// <summary>
-        /// Updates the view models with a maximum value for m/z and intensity.
-        /// </summary>
-        /// <param name="maxMz"></param>
-        /// <param name="maxIntensity"></param>
-        public void SetMax(double maxMz, double maxIntensity)
-        {
-            SelectedSpectrumPlotModel.SetMax(maxMz, maxIntensity);            
         }
 
         public ObservableCollection<PeptideViewModel> Peptides { get; set; }
 
         public MSSpectra Spectrum { get; private set; }
+
         public MsMsSpectraViewModel SelectedSpectrumPlotModel
         {
             get { return m_selectedSpectrum; }
@@ -84,13 +77,10 @@ namespace MultiAlign.ViewModels.Spectra
         }
 
         public DatasetInformationViewModel Dataset { get; set; }
-        
-        public bool IdentificationsExpanded 
+
+        public bool IdentificationsExpanded
         {
-            get
-            {
-                return m_isExpanded;
-            }
+            get { return m_isExpanded; }
             set
             {
                 if (m_isExpanded != value)
@@ -99,6 +89,16 @@ namespace MultiAlign.ViewModels.Spectra
                     OnPropertyChanged("IdentificationsExpanded");
                 }
             }
+        }
+
+        /// <summary>
+        ///     Updates the view models with a maximum value for m/z and intensity.
+        /// </summary>
+        /// <param name="maxMz"></param>
+        /// <param name="maxIntensity"></param>
+        public void SetMax(double maxMz, double maxIntensity)
+        {
+            SelectedSpectrumPlotModel.SetMax(maxMz, maxIntensity);
         }
     }
 }

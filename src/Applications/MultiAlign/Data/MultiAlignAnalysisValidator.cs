@@ -1,21 +1,23 @@
 ﻿using System.IO;
 using System.Linq;
 using MultiAlign.Data.States;
+using MultiAlignCore.Algorithms;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.MassTags;
+using MultiAlignCore.IO.InputFiles;
 
 namespace MultiAlign.Data
 {
     public class MultiAlignAnalysisValidator
     {
         /// <summary>
-        /// Determines if all of the data is valid yet for the analysis.
-        /// </summary>        
+        ///     Determines if all of the data is valid yet for the analysis.
+        /// </summary>
         /// <returns></returns>
         public static bool IsStepValid(AnalysisConfig config, AnalysisSetupStep step, ref string errorMessage)
         {
-            var analysis = config.Analysis;
-            var isStepValid            = true;
+            MultiAlignAnalysis analysis = config.Analysis;
+            bool isStepValid = true;
 
             switch (step)
             {
@@ -23,7 +25,7 @@ namespace MultiAlign.Data
                     if (analysis.MetaData.Datasets.Count < 1)
                     {
                         errorMessage = "Select datasets before continuing.";
-                        isStepValid  = false;
+                        isStepValid = false;
                     }
                     break;
                 case AnalysisSetupStep.BaselineSelection:
@@ -35,7 +37,7 @@ namespace MultiAlign.Data
                     isStepValid = ValidateNames(config, ref errorMessage);
                     break;
                 case AnalysisSetupStep.Started:
-                    if (analysis.AnalysisType != MultiAlignCore.Algorithms.AnalysisType.Full)
+                    if (analysis.AnalysisType != AnalysisType.Full)
                     {
                         isStepValid = false;
                     }
@@ -47,7 +49,7 @@ namespace MultiAlign.Data
 
         private static bool ValidateNames(AnalysisConfig config, ref string errorMessage)
         {
-            var isStepValid = true;
+            bool isStepValid = true;
             if (config.AnalysisPath == null)
             {
                 errorMessage = "An output folder location needs to be supplied.";
@@ -55,17 +57,17 @@ namespace MultiAlign.Data
             }
             else
             {
-                var chars  = Path.GetInvalidPathChars();
-                var name   = config.AnalysisPath; 
-                foreach (var c in chars)
+                char[] chars = Path.GetInvalidPathChars();
+                string name = config.AnalysisPath;
+                foreach (char c in chars)
                 {
                     if (name.Contains(c))
-                    {                        
+                    {
                         errorMessage = "The path you provided has invalid characters.";
                         return false;
                     }
                 }
-                
+
 
                 //if (!System.IO.Directory.Exists(config.AnalysisPath))
                 //{
@@ -83,13 +85,12 @@ namespace MultiAlign.Data
 
         private static bool ValidateBaseline(MultiAlignAnalysis analysis, ref string errorMessage)
         {
-            
-            var isStepValid = true;
+            bool isStepValid = true;
 
             if (analysis.Options.AlignmentOptions.IsAlignmentBaselineAMasstagDB)
             {
-                var database = analysis.MetaData.Database;
-                var databasePath = analysis.MetaData.Database.DatabaseName;
+                InputDatabase database = analysis.MetaData.Database;
+                string databasePath = analysis.MetaData.Database.DatabaseName;
 
                 switch (database.DatabaseFormat)
                 {
@@ -103,8 +104,8 @@ namespace MultiAlign.Data
                             isStepValid = false;
                             errorMessage = "The database or server was not set.";
                         }
-                        break; 
-                    case MassTagDatabaseFormat.SkipAlignment:                    
+                        break;
+                    case MassTagDatabaseFormat.SkipAlignment:
                     case MassTagDatabaseFormat.Sqlite:
                         databasePath = analysis.MetaData.Database.LocalPath;
                         if (databasePath == null)
@@ -124,7 +125,7 @@ namespace MultiAlign.Data
                     case MassTagDatabaseFormat.DelimitedTextFile:
                         errorMessage = "Invalid database type.";
                         isStepValid = false;
-                        break;                    
+                        break;
                 }
             }
             else
@@ -140,7 +141,7 @@ namespace MultiAlign.Data
                     isStepValid = false;
                 }
             }
-            return isStepValid;            
+            return isStepValid;
         }
     }
 }

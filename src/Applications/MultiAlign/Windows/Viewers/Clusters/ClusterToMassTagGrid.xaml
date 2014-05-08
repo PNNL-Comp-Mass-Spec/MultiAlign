@@ -1,28 +1,27 @@
 ﻿<UserControl x:Class="MultiAlign.Windows.Viewers.Clusters.ClusterToMassTagGrid"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:converters="clr-namespace:MultiAlign.Converters"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
-        <converters:BooleanToDataGridVisibilityModeConverter x:Key="boolConverter"/>
+        <converters:BooleanToDataGridVisibilityModeConverter x:Key="boolConverter" />
     </UserControl.Resources>
     <Grid>
         <DataGrid
-                Name="m_dataGrid" 
-                ItemsSource="{Binding}" 
-                HorizontalContentAlignment="Center"            
-                AlternatingRowBackground="WhiteSmoke"
-                AlternationCount="1"
-                CanUserAddRows="False"
-                AutoGenerateColumns="False"
-                Grid.ColumnSpan="6"
-                IsTextSearchEnabled="True"
-                RowDetailsVisibilityMode="{Binding IsChecked, ElementName=m_detailsChecked, Converter={StaticResource boolConverter}}"
-                SelectionChanged="m_dataGrid_SelectionChanged"
-            >
+            Name="m_dataGrid"
+            ItemsSource="{Binding}"
+            HorizontalContentAlignment="Center"
+            AlternatingRowBackground="WhiteSmoke"
+            AlternationCount="1"
+            CanUserAddRows="False"
+            AutoGenerateColumns="False"
+            Grid.ColumnSpan="6"
+            IsTextSearchEnabled="True"
+            RowDetailsVisibilityMode="{Binding IsChecked, ElementName=m_detailsChecked, Converter={StaticResource boolConverter}}"
+            SelectionChanged="m_dataGrid_SelectionChanged">
             <DataGrid.CellStyle>
                 <Style TargetType="DataGridCell">
                     <Style.Triggers>
@@ -44,17 +43,24 @@
                 </Style>
             </DataGrid.RowStyle>
 
-            <DataGrid.Columns >
+            <DataGrid.Columns>
                 <!--Dataset Information-->
-                <DataGridTextColumn         Header="Peptide Sequence"       CanUserSort="True"      Binding="{Binding MassTag.MassTag.PeptideSequence}"     IsReadOnly="True"/>
-                <DataGridTextColumn         Header="Monoisotopic Mass"      CanUserSort="True"      Binding="{Binding MassTag.MassTag.MassMonoisotopic}"    IsReadOnly="True"/>
-                <DataGridTextColumn         Header="NET"                    CanUserSort="True"      Binding="{Binding MassTag.MassTag.NETAverage}"          IsReadOnly="True"/>
-                <DataGridTextColumn         Header="Drift Time"             CanUserSort="True"      Binding="{Binding MassTag.MassTag.DriftTime}"           IsReadOnly="True"/>
-                <DataGridTextColumn         Header="ID"                     CanUserSort="True"      Binding="{Binding MassTag.MassTag.ID}"                  IsReadOnly="True"/>
-                <DataGridTextColumn         Header="Conformation ID"        CanUserSort="True"      Binding="{Binding MassTag.MassTag.ConformationID}"      IsReadOnly="True"/>
-                <DataGridTextColumn         Header="STAC"                   CanUserSort="True"      Binding="{Binding StacScore}"                   IsReadOnly="True"/>
-                <DataGridTextColumn         Header="STAC-UP"                CanUserSort="True"      Binding="{Binding StacUP}"                      IsReadOnly="True"/>
-                <DataGridTextColumn         Header="# Clusters Matched"     CanUserSort="True"      Binding="{Binding MassTag.Matches.Count}"                      IsReadOnly="True"/>
+                <DataGridTextColumn Header="Peptide Sequence" CanUserSort="True"
+                                    Binding="{Binding MassTag.MassTag.PeptideSequence}" IsReadOnly="True" />
+                <DataGridTextColumn Header="Monoisotopic Mass" CanUserSort="True"
+                                    Binding="{Binding MassTag.MassTag.MassMonoisotopic}" IsReadOnly="True" />
+                <DataGridTextColumn Header="NET" CanUserSort="True" Binding="{Binding MassTag.MassTag.NETAverage}"
+                                    IsReadOnly="True" />
+                <DataGridTextColumn Header="Drift Time" CanUserSort="True"
+                                    Binding="{Binding MassTag.MassTag.DriftTime}" IsReadOnly="True" />
+                <DataGridTextColumn Header="ID" CanUserSort="True" Binding="{Binding MassTag.MassTag.ID}"
+                                    IsReadOnly="True" />
+                <DataGridTextColumn Header="Conformation ID" CanUserSort="True"
+                                    Binding="{Binding MassTag.MassTag.ConformationID}" IsReadOnly="True" />
+                <DataGridTextColumn Header="STAC" CanUserSort="True" Binding="{Binding StacScore}" IsReadOnly="True" />
+                <DataGridTextColumn Header="STAC-UP" CanUserSort="True" Binding="{Binding StacUP}" IsReadOnly="True" />
+                <DataGridTextColumn Header="# Clusters Matched" CanUserSort="True"
+                                    Binding="{Binding MassTag.Matches.Count}" IsReadOnly="True" />
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

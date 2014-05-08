@@ -10,16 +10,8 @@ namespace MultiAlign.ViewModels.Features
             Name = name;
         }
 
-        public string Name
-        {
-            get;
-            private set;
-        }
+        public string Name { get; private set; }
 
-        public Action Action
-        {
-            get;
-            private set;
-        }
+        public Action Action { get; private set; }
     }
 }

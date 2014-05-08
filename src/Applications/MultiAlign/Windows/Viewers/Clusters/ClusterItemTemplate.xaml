@@ -1,73 +1,73 @@
 ﻿<UserControl x:Class="MultiAlign.Windows.Viewers.Clusters.ClusterItemTemplate"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             mc:Ignorable="d" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
              d:DesignHeight="128" d:DesignWidth="256">
 
-    <Border CornerRadius="2" 
-                            BorderThickness="1"
-                            HorizontalAlignment="Stretch" 
-                            Padding="3" 
-                            Margin="3" 
-                            BorderBrush="#FFCCCCCC">
+    <Border CornerRadius="2"
+            BorderThickness="1"
+            HorizontalAlignment="Stretch"
+            Padding="3"
+            Margin="3"
+            BorderBrush="#FFCCCCCC">
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="48"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="48" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="32"/>
-                <ColumnDefinition Width="20*"/>
-                <ColumnDefinition Width="80*"/>
+                <ColumnDefinition Width="32" />
+                <ColumnDefinition Width="20*" />
+                <ColumnDefinition Width="80*" />
             </Grid.ColumnDefinitions>
             <Image
                 Grid.Row="0"
                 Grid.Column="0"
                 Width="16"
                 Height="16"
-                Source="/MultiAlign;component/Resources/molecule.png"/>
-            
-            <Label                
+                Source="/MultiAlign;component/Resources/molecule.png" />
+
+            <Label
                 Grid.Row="0"
                 Grid.Column="1"
                 Margin="5">
                 ID:
             </Label>
-            <Label   
+            <Label
                 Grid.Row="0"
                 Grid.Column="2"
-                FontSize="12"   
+                FontSize="12"
                 Margin="5"
-                HorizontalContentAlignment="Center"  
+                HorizontalContentAlignment="Center"
                 VerticalContentAlignment="Center"
                 Content="{Binding Path=ClusterId}" />
-            <StackPanel   
+            <StackPanel
                 Grid.Row="1"
                 Grid.Column="2"
                 Orientation="Horizontal">
-                <Label          
+                <Label
                     Margin="5">
                     Dataset Count
                 </Label>
-                <Label   
-                    FontSize="12"   
-                    Margin="5"                                                                       
+                <Label
+                    FontSize="12"
+                    Margin="5"
                     Content="{Binding Path=DatasetMemberCount}" />
             </StackPanel>
-            <StackPanel   
+            <StackPanel
                 Grid.Row="2"
                 Grid.Column="2"
                 Orientation="Horizontal">
-                <Label          
+                <Label
                     Margin="5">
                     Feature Count
                 </Label>
-                <Label   
-                    FontSize="12"   
-                    Margin="5"                                                                       
+                <Label
+                    FontSize="12"
+                    Margin="5"
                     Content="{Binding Path=DatasetMemberCount}" />
             </StackPanel>
         </Grid>

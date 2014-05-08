@@ -6,20 +6,19 @@ using MultiAlign.Workspace;
 
 namespace MultiAlign.IO
 {
-
     public class MultiAlignWorkspaceReader
     {
         public MultiAlignWorkspace Read(string path)
         {
-            var workspace  = new MultiAlignWorkspace();
-                        
+            var workspace = new MultiAlignWorkspace();
+
             var document = new XmlDocument();
             document.Load(path);
-                
-            var element = document.SelectSingleNode("MultiAlignWorkspace");
-            var data    = element.SelectSingleNode("RecentAnalysis");
-            workspace.RecentAnalysis    = LoadRecent(data);
-                    
+
+            XmlNode element = document.SelectSingleNode("MultiAlignWorkspace");
+            XmlNode data = element.SelectSingleNode("RecentAnalysis");
+            workspace.RecentAnalysis = LoadRecent(data);
+
             return workspace;
         }
 
@@ -30,8 +29,8 @@ namespace MultiAlign.IO
             {
                 if (node.Name == "Analysis")
                 {
-                    var name = node.Attributes["Name"].Value;
-                    var path = node.Attributes["Path"].Value;
+                    string name = node.Attributes["Name"].Value;
+                    string path = node.Attributes["Path"].Value;
 
                     var analysis = new RecentAnalysis(path, name);
                     allAnalysis.Add(new RecentAnalysisViewModel(analysis));

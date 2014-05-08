@@ -6,18 +6,16 @@ using MultiAlign.Workspace;
 
 namespace MultiAlign.IO
 {
-
     public class MultiAlignWorkspaceWriter
     {
-
         public void Write(string path, MultiAlignWorkspace workspace)
-        {            
+        {
             var document = new XmlDocument();
 
-            var element   = document.CreateElement("MultiAlignWorkspace");
+            XmlElement element = document.CreateElement("MultiAlignWorkspace");
             document.AppendChild(element);
 
-            var recent    = document.CreateElement("RecentAnalysis");
+            XmlElement recent = document.CreateElement("RecentAnalysis");
             element.AppendChild(recent);
 
             WriteRecent(document, recent, workspace.RecentAnalysis);
@@ -30,19 +28,20 @@ namespace MultiAlign.IO
             }
         }
 
-        private void WriteRecent(XmlDocument document,  XmlElement data, ObservableCollection<RecentAnalysisViewModel> analysis)
-        {                            
-            foreach(var recent in analysis)
+        private void WriteRecent(XmlDocument document, XmlElement data,
+            ObservableCollection<RecentAnalysisViewModel> analysis)
+        {
+            foreach (RecentAnalysisViewModel recent in analysis)
             {
-                var element          = document.CreateElement("Analysis");
-                var nameAttribute  = document.CreateAttribute("Name");
-                nameAttribute.Value         = recent.Name;
-                var pathAttribute  = document.CreateAttribute("Path");
-                pathAttribute.Value         = recent.Path;
+                XmlElement element = document.CreateElement("Analysis");
+                XmlAttribute nameAttribute = document.CreateAttribute("Name");
+                nameAttribute.Value = recent.Name;
+                XmlAttribute pathAttribute = document.CreateAttribute("Path");
+                pathAttribute.Value = recent.Path;
                 element.Attributes.Append(nameAttribute);
                 element.Attributes.Append(pathAttribute);
                 data.AppendChild(element);
-            }            
+            }
         }
     }
 }

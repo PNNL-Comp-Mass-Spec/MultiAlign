@@ -2,7 +2,7 @@
 
 namespace MultiAlign.Commands.Wizard
 {
-    public sealed class AnalysisNextCommand: BaseCommand
+    public sealed class AnalysisNextCommand : BaseCommand
     {
         private readonly AnalysisSetupViewModel m_model;
 

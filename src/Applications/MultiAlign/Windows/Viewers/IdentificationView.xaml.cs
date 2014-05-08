@@ -3,7 +3,7 @@
 namespace MultiAlign.Windows.Viewers
 {
     /// <summary>
-    /// Interaction logic for IdentificationView.xaml
+    ///     Interaction logic for IdentificationView.xaml
     /// </summary>
     public partial class IdentificationView : UserControl
     {

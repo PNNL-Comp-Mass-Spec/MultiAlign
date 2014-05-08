@@ -2,14 +2,14 @@
 
 namespace MultiAlign.ViewModels.IO
 {
-    public class MassTagDatabaseOptionsViewModel: ViewModelBase 
+    public class MassTagDatabaseOptionsViewModel : ViewModelBase
     {
         private readonly MassTagDatabaseOptions m_options;
+
         public MassTagDatabaseOptionsViewModel(MassTagDatabaseOptions options)
         {
             m_options = options;
         }
-
 
 
         public double MinimumXcorr
@@ -52,7 +52,7 @@ namespace MultiAlign.ViewModels.IO
             }
         }
 
-        
+
         public int MinimumObservationCountFilter
         {
             get { return m_options.MinimumObservationCountFilter; }
@@ -71,7 +71,7 @@ namespace MultiAlign.ViewModels.IO
                 m_options.OnlyLoadTagsWithDriftTime = value;
                 OnPropertyChanged("OnlyLoadTagsWithDriftTime");
             }
-        }            
+        }
 
         public string ExperimentExclusionFilter
         {

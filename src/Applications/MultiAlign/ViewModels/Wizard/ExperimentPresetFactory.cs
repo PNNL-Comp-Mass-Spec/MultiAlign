@@ -22,25 +22,25 @@ namespace MultiAlign.ViewModels.Wizard
             {
                 case ExperimentPresets.LipidsPositive:
                     model = new ExperimentPresetViewModel("Small Molecules Positive Mode (Lipids, Metabolites)",
-                                    2000,
-                                    300,
-                                    false,
-                                    InstrumentPresetFactory.Create(InstrumentPresets.LtqOrbitrap));
+                        2000,
+                        300,
+                        false,
+                        InstrumentPresetFactory.Create(InstrumentPresets.LtqOrbitrap));
                     break;
                 case ExperimentPresets.LipidsNegative:
                     model = new ExperimentPresetViewModel("Small Molecules Negative Mode (Lipids, Metabolites)",
-                                    2000,
-                                    200,
-                                    false,
-                                    InstrumentPresetFactory.Create(InstrumentPresets.LtqOrbitrap));
+                        2000,
+                        200,
+                        false,
+                        InstrumentPresetFactory.Create(InstrumentPresets.LtqOrbitrap));
                     break;
                 case ExperimentPresets.Peptides:
                     model = new ExperimentPresetViewModel("Bottom Up Proteomics (Peptides)",
-                                    10000,
-                                    200,
-                                    false,
-                                    InstrumentPresetFactory.Create(InstrumentPresets.LtqOrbitrap));
-                    break;                
+                        10000,
+                        200,
+                        false,
+                        InstrumentPresetFactory.Create(InstrumentPresets.LtqOrbitrap));
+                    break;
             }
             return model;
         }

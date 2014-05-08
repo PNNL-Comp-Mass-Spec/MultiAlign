@@ -3,19 +3,19 @@
 namespace MultiAlign.Data
 {
     /// <summary>
-    /// Creates a file browser filter based on the input file types.
+    ///     Creates a file browser filter based on the input file types.
     /// </summary>
     public class DatasetFilterFactory
     {
-        DatasetFilterFactory()
+        private DatasetFilterFactory()
         {
-
         }
 
         private static string AppendExtension(string baseName, string extension, string description)
         {
             return string.Format("{0}|{1}", CreateFilterName(extension, description), baseName);
         }
+
         private static string CreateFilterName(string description, string extension)
         {
             return string.Format("{0} ({1})|*{1}", description, extension);
@@ -23,7 +23,7 @@ namespace MultiAlign.Data
 
         public static string BuildFileFilters(InputFileType type)
         {
-            var fileFilter = "All Files (*.*)|*.*";
+            string fileFilter = "All Files (*.*)|*.*";
 
             switch (type)
             {
@@ -37,12 +37,12 @@ namespace MultiAlign.Data
                     fileFilter = AppendExtension(fileFilter, "LCMS Feature Finder Files", "LCMSFeatures.txt");
                     break;
                 case InputFileType.Raw:
-                    fileFilter = AppendExtension(fileFilter, "Thermo Raw",  ".raw");
-                    fileFilter = AppendExtension(fileFilter, "MZ XML",      ".mzxml");
-                    break;                
+                    fileFilter = AppendExtension(fileFilter, "Thermo Raw", ".raw");
+                    fileFilter = AppendExtension(fileFilter, "MZ XML", ".mzxml");
+                    break;
             }
 
             return fileFilter;
         }
-    }    
+    }
 }

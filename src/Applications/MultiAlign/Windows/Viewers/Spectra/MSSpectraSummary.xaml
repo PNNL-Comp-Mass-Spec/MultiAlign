@@ -1,190 +1,182 @@
 ﻿<UserControl x:Class="MultiAlign.Windows.Viewers.Spectra.MSSpectraSummary"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:oxy="http://oxyplot.codeplex.com"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
              Height="300" d:DesignWidth="500">
     <Border
-            CornerRadius="2" 
-            BorderThickness="2"
-            HorizontalAlignment="Stretch" Margin="3" 
-            BorderBrush="Black">
-    <Grid >
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="50*"/>
-            <ColumnDefinition Width="50*"/>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="50*" />
-            <RowDefinition Height="50*" />
-        </Grid.RowDefinitions>
-        <Border
-            Grid.Column="0"
-            Grid.Row="0"
-            Grid.ColumnSpan="2"
-            CornerRadius="2" 
-            BorderThickness="1"
-            HorizontalAlignment="Stretch" Margin="3" BorderBrush="#FFCCCCCC">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="32" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="128" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="128" />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-                <Label
-                    Foreground="LightGray"
-                    FontSize="48"
-                    HorizontalAlignment="Left"
-                    HorizontalContentAlignment="Center"
-                    VerticalContentAlignment="Top"
-                    VerticalAlignment="Top"
-                    Margin="5"
-                    Grid.Row="0"
-                    Grid.RowSpan="3"
-                    Grid.ColumnSpan="2"
-                    Content="{Binding Path=Spectrum.GroupID}"/>
-                <Label
-                            FontSize="16"
-                            Margin="5"
-                            Grid.Row="1"
-                            Grid.Column="1"
-                            Foreground="Gray"
-                            >
-                    Scan
-                </Label>
-                <TextBlock 
-                            FontSize="16"
-                            Margin="5"
-                            Grid.Row="1"
-                            Grid.Column="2"                     
-                            Text="{Binding Path=Spectrum.Scan, StringFormat=F1}"
-                            HorizontalAlignment="Stretch"/>
+        CornerRadius="2"
+        BorderThickness="2"
+        HorizontalAlignment="Stretch" Margin="3"
+        BorderBrush="Black">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="50*" />
+                <ColumnDefinition Width="50*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50*" />
+                <RowDefinition Height="50*" />
+            </Grid.RowDefinitions>
+            <Border
+                Grid.Column="0"
+                Grid.Row="0"
+                Grid.ColumnSpan="2"
+                CornerRadius="2"
+                BorderThickness="1"
+                HorizontalAlignment="Stretch" Margin="3" BorderBrush="#FFCCCCCC">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="32" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="128" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="128" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Label
+                        Foreground="LightGray"
+                        FontSize="48"
+                        HorizontalAlignment="Left"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Top"
+                        VerticalAlignment="Top"
+                        Margin="5"
+                        Grid.Row="0"
+                        Grid.RowSpan="3"
+                        Grid.ColumnSpan="2"
+                        Content="{Binding Path=Spectrum.GroupID}" />
+                    <Label
+                        FontSize="16"
+                        Margin="5"
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        Foreground="Gray">
+                        Scan
+                    </Label>
+                    <TextBlock
+                        FontSize="16"
+                        Margin="5"
+                        Grid.Row="1"
+                        Grid.Column="2"
+                        Text="{Binding Path=Spectrum.Scan, StringFormat=F1}"
+                        HorizontalAlignment="Stretch" />
 
-                <Label
-                            FontSize="16"
-                            Margin="5"
-                            Grid.Row="2"
-                            Grid.Column="1"
-                            Foreground="Gray"
-                            >
-                    M/z
-                </Label>
-                <TextBlock 
-                            FontSize="16"
-                            Margin="5"
-                            Grid.Row="2"
-                            Grid.Column="2"   
-                                 Text="{Binding Path=Spectrum.PrecursorMZ , StringFormat=F3}"                                                                     
-                            HorizontalAlignment="Stretch"/>
+                    <Label
+                        FontSize="16"
+                        Margin="5"
+                        Grid.Row="2"
+                        Grid.Column="1"
+                        Foreground="Gray">
+                        M/z
+                    </Label>
+                    <TextBlock
+                        FontSize="16"
+                        Margin="5"
+                        Grid.Row="2"
+                        Grid.Column="2"
+                        Text="{Binding Path=Spectrum.PrecursorMZ , StringFormat=F3}"
+                        HorizontalAlignment="Stretch" />
 
 
-                <Label
-                            FontSize="16"
-                            Margin="5"
-                            Grid.Row="2"
-                            Grid.Column="3"
-                            Foreground="Gray"
-                            >
-                    Mono Mass
-                </Label>
-                <TextBlock 
-                            FontSize="16"
-                            Margin="5"
-                            Grid.Row="2"
-                            Grid.Column="4"   
-                                 Text="{Binding Path=Spectrum.ParentFeature.MassMonoisotopic , StringFormat=F3}"                                                                     
-                            HorizontalAlignment="Stretch"/>
+                    <Label
+                        FontSize="16"
+                        Margin="5"
+                        Grid.Row="2"
+                        Grid.Column="3"
+                        Foreground="Gray">
+                        Mono Mass
+                    </Label>
+                    <TextBlock
+                        FontSize="16"
+                        Margin="5"
+                        Grid.Row="2"
+                        Grid.Column="4"
+                        Text="{Binding Path=Spectrum.ParentFeature.MassMonoisotopic , StringFormat=F3}"
+                        HorizontalAlignment="Stretch" />
 
-                <Label
-                            FontSize="16"
-                            Margin="5"
-                            Grid.Row="4"
-                            Grid.Column="3"
-                            Foreground="Gray"
-                            >
-                    Type
-                </Label>
-                <TextBlock 
-                            FontSize="16"
-                            Margin="5"
-                            Grid.Row="4"
-                            Grid.Column="4"                       
-                            Text="{Binding Path=Spectrum.CollisionType}"
-                            HorizontalAlignment="Stretch"/>
-                <Label
-                            FontSize="16"
-                            Margin="5"
-                            Grid.Row="4"
-                            Foreground="Gray"
-                            Grid.Column="1"
-                            >
-                    Charge
-                </Label>
-                <TextBlock 
-                            Margin="5"
-                            Grid.Row="4"
-                            Grid.Column="2"
-                            FontSize="16"   
-                            Text="{Binding Path=Spectrum.ParentFeature.ChargeState }"                                                                     
-                            HorizontalAlignment="Stretch"/>
+                    <Label
+                        FontSize="16"
+                        Margin="5"
+                        Grid.Row="4"
+                        Grid.Column="3"
+                        Foreground="Gray">
+                        Type
+                    </Label>
+                    <TextBlock
+                        FontSize="16"
+                        Margin="5"
+                        Grid.Row="4"
+                        Grid.Column="4"
+                        Text="{Binding Path=Spectrum.CollisionType}"
+                        HorizontalAlignment="Stretch" />
+                    <Label
+                        FontSize="16"
+                        Margin="5"
+                        Grid.Row="4"
+                        Foreground="Gray"
+                        Grid.Column="1">
+                        Charge
+                    </Label>
+                    <TextBlock
+                        Margin="5"
+                        Grid.Row="4"
+                        Grid.Column="2"
+                        FontSize="16"
+                        Text="{Binding Path=Spectrum.ParentFeature.ChargeState }"
+                        HorizontalAlignment="Stretch" />
 
-                <Label
-                            FontSize="16"
-                            Margin="5"
-                            Grid.Row="1"
-                            Foreground="Gray"
-                            Grid.Column="3"
-                            >
-                    ID
-                </Label>
-                <TextBlock 
-                            Margin="5"
-                            Grid.Row="1"
-                            Grid.Column="4"
-                            FontSize="16"   
-                            Text="{Binding Path=Spectrum.ID }"                                                                     
-                            HorizontalAlignment="Stretch"/>
-            </Grid>
-        </Border>
-            <Expander 
+                    <Label
+                        FontSize="16"
+                        Margin="5"
+                        Grid.Row="1"
+                        Foreground="Gray"
+                        Grid.Column="3">
+                        ID
+                    </Label>
+                    <TextBlock
+                        Margin="5"
+                        Grid.Row="1"
+                        Grid.Column="4"
+                        FontSize="16"
+                        Text="{Binding Path=Spectrum.ID }"
+                        HorizontalAlignment="Stretch" />
+                </Grid>
+            </Border>
+            <Expander
                 IsExpanded="True"
                 Header="Plots"
-                Grid.Row="1" 
-                Grid.Column="0" 
+                Grid.Row="1"
+                Grid.Column="0"
                 Grid.ColumnSpan="2">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="50*"/>
-                        <ColumnDefinition Width="50*"/>
+                        <ColumnDefinition Width="50*" />
+                        <ColumnDefinition Width="50*" />
                     </Grid.ColumnDefinitions>
-                    <oxy:Plot 
+                    <oxy:Plot
                         Grid.Column="0"
                         Margin="2"
-                        Model="{Binding SelectedSpectrumPlotModel.Model}"
-                        />
-                    <oxy:Plot 
+                        Model="{Binding SelectedSpectrumPlotModel.Model}" />
+                    <oxy:Plot
                         Grid.Column="1"
                         Margin="2"
-                        Model="{Binding SelectedSpectrumXic.Model}"
-                        />
+                        Model="{Binding SelectedSpectrumXic.Model}" />
                 </Grid>
-        </Expander>
+            </Expander>
 
         </Grid>
     </Border>

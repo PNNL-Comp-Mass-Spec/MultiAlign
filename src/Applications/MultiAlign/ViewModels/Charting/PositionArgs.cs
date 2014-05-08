@@ -2,9 +2,8 @@
 
 namespace MultiAlign.ViewModels.Charting
 {
-    public class PositionArgs: EventArgs
+    public class PositionArgs : EventArgs
     {
-
         public PositionArgs(double x, double y)
         {
             X = x;
@@ -14,5 +13,4 @@ namespace MultiAlign.ViewModels.Charting
         public double X { get; private set; }
         public double Y { get; private set; }
     }
-    
 }

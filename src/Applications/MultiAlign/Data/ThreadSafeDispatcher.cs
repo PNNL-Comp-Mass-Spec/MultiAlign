@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace MultiAlign.Data
 {
     public static class ThreadSafeDispatcher
-    {        
+    {
         public static void Invoke(Action action)
         {
             if (Application.Current == null)
@@ -12,7 +13,7 @@ namespace MultiAlign.Data
                 return;
             }
 
-            var dispatchObject = Application.Current.Dispatcher;
+            Dispatcher dispatchObject = Application.Current.Dispatcher;
             if (dispatchObject == null || dispatchObject.CheckAccess())
             {
                 action();
@@ -21,6 +22,6 @@ namespace MultiAlign.Data
             {
                 dispatchObject.Invoke(action);
             }
-        }        
+        }
     }
 }

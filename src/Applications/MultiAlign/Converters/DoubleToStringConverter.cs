@@ -1,15 +1,21 @@
 ﻿using System;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 
 namespace MultiAlign.Converters
 {
     /// <summary>
-    /// Converts an integer value to a visibility item.
+    ///     Converts an integer value to a visibility item.
     /// </summary>
-    public class DoubleToStringConverter : DependencyObject,  IValueConverter
+    public class DoubleToStringConverter : DependencyObject, IValueConverter
     {
-        
+        // Using a DependencyProperty as the backing store for Precision.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty PrecisionProperty =
+            DependencyProperty.Register("Precision", typeof (int), typeof (DoubleToStringConverter));
+
+        private string m_format;
+
         public DoubleToStringConverter()
         {
             Precision = 5;
@@ -17,15 +23,10 @@ namespace MultiAlign.Converters
 
         public int Precision
         {
-            get { return (int)GetValue(PrecisionProperty); }
+            get { return (int) GetValue(PrecisionProperty); }
             set { SetValue(PrecisionProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for Precision.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty PrecisionProperty = 
-            DependencyProperty.Register("Precision", typeof(int), typeof(DoubleToStringConverter));
-
-        private string m_format; 
         private string GetFormat()
         {
             if (m_format == null)
@@ -36,20 +37,23 @@ namespace MultiAlign.Converters
         }
 
         #region IValueConverter Members
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value == null)
                 return "";
 
-            var x = (double)value;
-            var format = GetFormat();
+            var x = (double) value;
+            string format = GetFormat();
             return x.ToString(format);
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            throw new NotImplementedException("There is no way to convert back a visibility value to the original integer with this converter.");
+            throw new NotImplementedException(
+                "There is no way to convert back a visibility value to the original integer with this converter.");
         }
+
         #endregion
     }
 }

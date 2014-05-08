@@ -1,38 +1,31 @@
-﻿using MultiAlignCore.Drawing;
+﻿using System.Collections.Generic;
 using PNNLOmics.Annotations;
 using PNNLOmics.Data.Features;
 using PNNLOmicsViz.Drawing;
-using System.Collections.Generic;
 
 namespace MultiAlign.ViewModels.Plotting
 {
-    public class FeaturesViewModel: ViewModelBase
-    {        
+    public class FeaturesViewModel : ViewModelBase
+    {
         private int m_height;
         private int m_width;
 
         public FeaturesViewModel(IEnumerable<UMCLight> features, string text)
-        {            
-            Text       = text;
-            Height     = 800;
-            Width      = 800;
+        {
+            Text = text;
+            Height = 800;
+            Width = 800;
 
             FeaturesModel = ScatterPlotFactory.CreateFeatureMassScatterPlot(features);
         }
 
         [UsedImplicitly]
-        public string Text
-        {
-            get; 
-            private set;
-        }
+        public string Text { get; private set; }
+
         [UsedImplicitly]
         public int Height
         {
-            get
-            {
-                return m_height;
-            }
+            get { return m_height; }
             set
             {
                 if (value != m_height)
@@ -42,13 +35,11 @@ namespace MultiAlign.ViewModels.Plotting
                 }
             }
         }
+
         [UsedImplicitly]
         public int Width
         {
-            get
-            {
-                return m_width;
-            }
+            get { return m_width; }
             set
             {
                 if (value != m_width)
@@ -58,6 +49,7 @@ namespace MultiAlign.ViewModels.Plotting
                 }
             }
         }
+
         [UsedImplicitly]
         public PlotBase FeaturesModel { get; private set; }
     }

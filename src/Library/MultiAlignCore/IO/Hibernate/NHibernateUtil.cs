@@ -78,7 +78,8 @@ namespace MultiAlignCore.IO.Features.Hibernate
 			{
 				conn.Open();
                 var schemaExport = new SchemaExport(Configuration);
-				schemaExport.Execute(false, true, false, false, conn, null);
+				//schemaExport.Execute(false, true, false, false, conn, null);
+                schemaExport.Execute(false, true, false, conn, null);
 
                 var optimizationCommands = new[] {  "PRAGMA journal_mode = OFF",
                                                                 "PRAGMA synchronous = OFF",

@@ -4,10 +4,10 @@ using MultiAlignCore.Algorithms;
 
 namespace MultiAlign.ViewModels.Wizard
 {
-    public class AnalysisGraphNodeViewModel: ViewModelBase
+    public class AnalysisGraphNodeViewModel : ViewModelBase
     {
         private readonly AnalysisGraphNode m_node;
-        
+
         public AnalysisGraphNodeViewModel(AnalysisGraphNode node)
         {
             if (node == null)
@@ -25,8 +25,14 @@ namespace MultiAlign.ViewModels.Wizard
             get { return m_node.Name; }
         }
 
-        public string Description { get { return m_node.Description; }}
+        public string Description
+        {
+            get { return m_node.Description; }
+        }
 
-        public bool IsCurrent { get { return m_node.IsCurrent; } }
+        public bool IsCurrent
+        {
+            get { return m_node.IsCurrent; }
+        }
     }
 }

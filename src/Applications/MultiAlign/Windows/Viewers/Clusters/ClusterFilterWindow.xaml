@@ -5,35 +5,35 @@
         Title="Filter Clusters" Height="460" Width="759">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="90*"/>
-            <RowDefinition Height="64"/>
+            <RowDefinition Height="90*" />
+            <RowDefinition Height="64" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
-        <views:ClusterFilterControl Grid.ColumnSpan="3"                                    
-                DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType=Window}}"/>
+        <views:ClusterFilterControl Grid.ColumnSpan="3"
+                                    DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType=Window}}" />
 
         <Button
-            Style="{DynamicResource ResourceKey=SimpleButtonStyle}"    
-                    Width="128"
-                    Height="48"
-                    Margin="10"
-                    Grid.Row="1"
-                    Grid.Column="1"
-                    VerticalAlignment="Center" Click="Button_Click">
+            Style="{DynamicResource ResourceKey=SimpleButtonStyle}"
+            Width="128"
+            Height="48"
+            Margin="10"
+            Grid.Row="1"
+            Grid.Column="1"
+            VerticalAlignment="Center" Click="Button_Click">
             Ok
         </Button>
         <Button
-            Style="{DynamicResource ResourceKey=SimpleButtonStyle}"    
-                    Width="128"
-                    Height="48"
-                    Margin="10"
-                    Grid.Row="1"
-                    Grid.Column="2"
-                    VerticalAlignment="Center" Click="Button_Click_1">
+            Style="{DynamicResource ResourceKey=SimpleButtonStyle}"
+            Width="128"
+            Height="48"
+            Margin="10"
+            Grid.Row="1"
+            Grid.Column="2"
+            VerticalAlignment="Center" Click="Button_Click_1">
             Cancel
         </Button>
     </Grid>

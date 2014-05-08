@@ -3,25 +3,23 @@ using System.Windows.Media.Imaging;
 
 namespace MultiAlign.Data
 {
-    public class ImageConverter
+    public static class ImageConverter
     {
-        public static BitmapImage ConvertImage(System.Drawing.Image bitmapImage)
-        {            
-            var image       = bitmapImage;
-            
-            var bitmap = new BitmapImage();
-            bitmap.BeginInit();
-            
-            var memoryStream = new MemoryStream();
-            // Save to a memory stream...
-            image.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Bmp);
-            // Rewind the stream...
-            memoryStream.Seek(0, System.IO.SeekOrigin.Begin);
+        public static BitmapImage ConvertImage(BitmapSource bitmapSource)
+        {
+            var encoder = new PngBitmapEncoder();
+            using (var stream = new MemoryStream())
+            {
+                encoder.Frames.Add(BitmapFrame.Create(bitmapSource));
+                encoder.Save(stream);
 
-            bitmap.StreamSource = memoryStream;
-            bitmap.EndInit();
+                var image = new BitmapImage();
+                image.BeginInit();
+                image.StreamSource = new MemoryStream(stream.ToArray());
+                image.EndInit();
 
-            return bitmap;
+                return image;
+            }
         }
     }
 }

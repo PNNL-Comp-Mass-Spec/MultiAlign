@@ -1,26 +1,30 @@
 ﻿using System;
+using System.Globalization;
 using System.Windows.Controls;
 using System.Windows.Data;
 
 namespace MultiAlign.Converters
 {
-    public class BooleanToDataGridVisibilityModeConverter: IValueConverter
-    {       
+    public class BooleanToDataGridVisibilityModeConverter : IValueConverter
+    {
         #region IValueConverter Members
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value == null)
                 return DataGridRowDetailsVisibilityMode.Collapsed;
 
-            var boolValue = System.Convert.ToBoolean(value);
+            bool boolValue = System.Convert.ToBoolean(value);
 
-            return (boolValue) ? DataGridRowDetailsVisibilityMode.Visible: DataGridRowDetailsVisibilityMode.VisibleWhenSelected;
+            return (boolValue)
+                ? DataGridRowDetailsVisibilityMode.Visible
+                : DataGridRowDetailsVisibilityMode.VisibleWhenSelected;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var vis = (DataGridRowDetailsVisibilityMode)value;
-            
+            var vis = (DataGridRowDetailsVisibilityMode) value;
+
             if (vis == DataGridRowDetailsVisibilityMode.Collapsed)
             {
                 return false;

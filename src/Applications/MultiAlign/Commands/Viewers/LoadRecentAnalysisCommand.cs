@@ -4,15 +4,14 @@ using MultiAlign.ViewModels;
 
 namespace MultiAlign.Commands.Viewers
 {
-    public sealed class LoadRecentAnalysisCommand: BaseCommand
+    public sealed class LoadRecentAnalysisCommand : BaseCommand
     {
-        public event EventHandler<OpenAnalysisArgs> RecentAnalysisSelected;
-
         public LoadRecentAnalysisCommand()
             : base(null, AlwaysPass)
         {
-            
         }
+
+        public event EventHandler<OpenAnalysisArgs> RecentAnalysisSelected;
 
         public override void Execute(object parameter)
         {

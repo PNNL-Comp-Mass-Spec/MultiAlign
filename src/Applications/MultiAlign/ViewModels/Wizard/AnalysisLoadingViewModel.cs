@@ -9,31 +9,23 @@ using MultiAlignCore.IO.MTDB;
 
 namespace MultiAlign.ViewModels.Wizard
 {
-    public class AnalysisLoadingViewModel: ViewModelBase 
+    public class AnalysisLoadingViewModel : ViewModelBase
     {
         /// <summary>
-        /// Fired when an analysis has loaded.
-        /// </summary>
-        public event EventHandler<AnalysisStatusArgs> AnalysisLoaded;
-        /// <summary>
-        /// 
-        /// </summary>
-        private string m_status;
-
-        /// <summary>
-        /// Loads the analysis from disk.
+        ///     Loads the analysis from disk.
         /// </summary>
         private Task m_loadingTask;
 
         /// <summary>
-        /// Updates the status.
         /// </summary>
-        public string Status 
+        private string m_status;
+
+        /// <summary>
+        ///     Updates the status.
+        /// </summary>
+        public string Status
         {
-            get
-            {
-                return m_status;
-            }
+            get { return m_status; }
             set
             {
                 if (m_status != value)
@@ -43,8 +35,14 @@ namespace MultiAlign.ViewModels.Wizard
                 }
             }
         }
+
         /// <summary>
-        /// Loads the analysis.
+        ///     Fired when an analysis has loaded.
+        /// </summary>
+        public event EventHandler<AnalysisStatusArgs> AnalysisLoaded;
+
+        /// <summary>
+        ///     Loads the analysis.
         /// </summary>
         /// <param name="recentAnalysis"></param>
         public void LoadAnalysis(RecentAnalysis recentAnalysis)
@@ -58,26 +56,26 @@ namespace MultiAlign.ViewModels.Wizard
 
             Action loadAnalysis = delegate
             {
-                var filename = Path.Combine(recentAnalysis.Path, recentAnalysis.Name);
-                
+                string filename = Path.Combine(recentAnalysis.Path, recentAnalysis.Name);
+
                 OnStatus("Gaining access to the analysis database...");
-                var providers    = DataAccessFactory.CreateDataAccessProviders(filename, false);            
-                var analysis             = new MultiAlignAnalysis();                        
-                analysis.MetaData.AnalysisPath          = recentAnalysis.Path;
-                analysis.MetaData.AnalysisName          = recentAnalysis.Name;
-                analysis.MetaData.AnalysisSetupInfo     = null; 
-                analysis.DataProviders                  = providers;
+                FeatureDataAccessProviders providers = DataAccessFactory.CreateDataAccessProviders(filename, false);
+                var analysis = new MultiAlignAnalysis();
+                analysis.MetaData.AnalysisPath = recentAnalysis.Path;
+                analysis.MetaData.AnalysisName = recentAnalysis.Name;
+                analysis.MetaData.AnalysisSetupInfo = null;
+                analysis.DataProviders = providers;
 
                 OnStatus("Detecting your clusters...");
-                analysis.Clusters                       = providers.ClusterCache.FindAll();
+                analysis.Clusters = providers.ClusterCache.FindAll();
 
                 OnStatus("Updating your datasets...");
-                analysis.MetaData.Datasets              = providers.DatasetCache.FindAll().ToObservableCollection();
+                analysis.MetaData.Datasets = providers.DatasetCache.FindAll().ToObservableCollection();
 
                 OnStatus("Securing mass tags...");
-                var provider     = new MassTagDatabaseLoaderCache();
-                provider.Provider                       = analysis.DataProviders.MassTags;
-                analysis.MassTagDatabase                = provider.LoadDatabase();
+                var provider = new MassTagDatabaseLoaderCache();
+                provider.Provider = analysis.DataProviders.MassTags;
+                analysis.MassTagDatabase = provider.LoadDatabase();
 
                 OnStatus("Analysis Loaded...");
                 ThreadSafeDispatcher.Invoke(() =>
@@ -91,16 +89,16 @@ namespace MultiAlign.ViewModels.Wizard
 
 
             m_loadingTask = new Task(loadAnalysis);
-            m_loadingTask.Start();            
+            m_loadingTask.Start();
         }
 
         private void OnStatus(string message)
         {
             ThreadSafeDispatcher.Invoke(() =>
-                {
-                    ApplicationStatusMediator.SetStatus(message);
-                    Status = message;
-                });
+            {
+                ApplicationStatusMediator.SetStatus(message);
+                Status = message;
+            });
         }
     }
 }

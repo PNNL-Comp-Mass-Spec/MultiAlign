@@ -3,7 +3,7 @@
 namespace MultiAlign.Windows.Viewers
 {
     /// <summary>
-    /// Interaction logic for StartWindow.xaml
+    ///     Interaction logic for StartWindow.xaml
     /// </summary>
     public partial class StartWindow : UserControl
     {

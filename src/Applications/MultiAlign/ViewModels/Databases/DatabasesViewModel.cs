@@ -5,7 +5,7 @@ using MultiAlignCore.IO.InputFiles;
 
 namespace MultiAlign.ViewModels.Databases
 {
-    public class DatabasesViewModel: ViewModelBase
+    public class DatabasesViewModel : ViewModelBase
     {
         private const string CONST_ANY_ORGANISM = "<Show All>";
         private string m_databaseNameFilter;
@@ -14,73 +14,27 @@ namespace MultiAlign.ViewModels.Databases
 
         public DatabasesViewModel()
         {
-            Databases           = new ObservableCollection<DmsDatabaseServerViewModel>();
-            FilteredDatabases   = new ObservableCollection<DmsDatabaseServerViewModel>();
-            SelectedDatabase    = null;
-            Organisms           = new ObservableCollection<string>();
-            m_organismFilter     = "";
+            Databases = new ObservableCollection<DmsDatabaseServerViewModel>();
+            FilteredDatabases = new ObservableCollection<DmsDatabaseServerViewModel>();
+            SelectedDatabase = null;
+            Organisms = new ObservableCollection<string>();
+            m_organismFilter = "";
             m_databaseNameFilter = "";
         }
 
         /// <summary>
-        /// Gets the database collection
+        ///     Gets the database collection
         /// </summary>
         public ObservableCollection<DmsDatabaseServerViewModel> Databases { get; private set; }
 
-        public ObservableCollection<DmsDatabaseServerViewModel> FilteredDatabases
-        { 
-            get; 
-            private set; 
-        }
-
-        private void  BuildOrganismsList(ObservableCollection<DmsDatabaseServerViewModel> servers)
-        {            
-            
-            var map          = new Dictionary<string, string>();
-            var orderedServers = servers.OrderBy(x => x.Organism.ToLower());
-            foreach (var server in orderedServers)
-            {
-                if (!map.ContainsKey(server.Organism))
-                {
-                    map.Add(server.Organism, server.Organism);
-                }
-            }
-
-            var tempOrganism = m_organismFilter;
-
-            Organisms.Clear();
-            Organisms.Add(CONST_ANY_ORGANISM);
-            foreach (var organism in map.Values)
-            {
-                if (organism != "")
-                {
-                    Organisms.Add(organism);
-                }
-            }
-            SelectedOrganism = tempOrganism;
-        }
+        public ObservableCollection<DmsDatabaseServerViewModel> FilteredDatabases { get; private set; }
 
         /// <summary>
-        /// Adds a database to the collection
-        /// </summary>
-        /// <param name="server"></param>
-        public void AddDatabase(InputDatabase server)
-        {
-            var viewModel = new DmsDatabaseServerViewModel(server);
-            Databases.Add(viewModel);
-            FilteredDatabases.Add(viewModel);
-            BuildOrganismsList(Databases); 
-        }
-
-        /// <summary>
-        /// Gets or sets the database name filter
+        ///     Gets or sets the database name filter
         /// </summary>
         public string DatabaseFilter
         {
-            get
-            {
-                return m_databaseNameFilter;
-            }
+            get { return m_databaseNameFilter; }
             set
             {
                 if (m_databaseNameFilter != value)
@@ -99,24 +53,13 @@ namespace MultiAlign.ViewModels.Databases
                 }
             }
         }
-        private void FilterDatabases()
-        {
-            IEnumerable<DmsDatabaseServerViewModel> databases = Databases.Where(x => x.DatabaseName.ToLower().Contains(DatabaseFilter.ToLower()) && x.Organism.ToLower().Contains(m_organismFilter.ToLower())).OrderBy(x=>x.DatabaseName.ToLower());
-            FilteredDatabases.Clear();
-            foreach (var server in databases)
-            {
-                FilteredDatabases.Add(server);
-            }            
-        }
+
         /// <summary>
-        /// Gets or sets the selected database.
+        ///     Gets or sets the selected database.
         /// </summary>
-        public DmsDatabaseServerViewModel SelectedDatabase 
-        { 
-            get
-            {
-                return m_selectedDatabase;
-            }
+        public DmsDatabaseServerViewModel SelectedDatabase
+        {
+            get { return m_selectedDatabase; }
             set
             {
                 if (m_selectedDatabase != value)
@@ -127,18 +70,11 @@ namespace MultiAlign.ViewModels.Databases
             }
         }
 
-        public ObservableCollection<string> Organisms
-        {
-            get;
-            private set;
-        }
+        public ObservableCollection<string> Organisms { get; private set; }
 
         public string SelectedOrganism
         {
-            get
-            {
-                return m_organismFilter;
-            }
+            get { return m_organismFilter; }
             set
             {
                 if (m_organismFilter != value)
@@ -150,11 +86,64 @@ namespace MultiAlign.ViewModels.Databases
                     else
                     {
                         m_organismFilter = value;
-                    }                     
+                    }
                     FilterDatabases();
 
                     OnPropertyChanged("SelectedOrganism");
                 }
+            }
+        }
+
+        private void BuildOrganismsList(ObservableCollection<DmsDatabaseServerViewModel> servers)
+        {
+            var map = new Dictionary<string, string>();
+            IOrderedEnumerable<DmsDatabaseServerViewModel> orderedServers = servers.OrderBy(x => x.Organism.ToLower());
+            foreach (DmsDatabaseServerViewModel server in orderedServers)
+            {
+                if (!map.ContainsKey(server.Organism))
+                {
+                    map.Add(server.Organism, server.Organism);
+                }
+            }
+
+            string tempOrganism = m_organismFilter;
+
+            Organisms.Clear();
+            Organisms.Add(CONST_ANY_ORGANISM);
+            foreach (string organism in map.Values)
+            {
+                if (organism != "")
+                {
+                    Organisms.Add(organism);
+                }
+            }
+            SelectedOrganism = tempOrganism;
+        }
+
+        /// <summary>
+        ///     Adds a database to the collection
+        /// </summary>
+        /// <param name="server"></param>
+        public void AddDatabase(InputDatabase server)
+        {
+            var viewModel = new DmsDatabaseServerViewModel(server);
+            Databases.Add(viewModel);
+            FilteredDatabases.Add(viewModel);
+            BuildOrganismsList(Databases);
+        }
+
+        private void FilterDatabases()
+        {
+            IEnumerable<DmsDatabaseServerViewModel> databases =
+                Databases.Where(
+                    x =>
+                        x.DatabaseName.ToLower().Contains(DatabaseFilter.ToLower()) &&
+                        x.Organism.ToLower().Contains(m_organismFilter.ToLower()))
+                    .OrderBy(x => x.DatabaseName.ToLower());
+            FilteredDatabases.Clear();
+            foreach (DmsDatabaseServerViewModel server in databases)
+            {
+                FilteredDatabases.Add(server);
             }
         }
     }

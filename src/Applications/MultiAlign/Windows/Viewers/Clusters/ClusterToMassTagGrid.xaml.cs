@@ -6,14 +6,17 @@ using MultiAlignCore.Data;
 namespace MultiAlign.Windows.Viewers.Clusters
 {
     /// <summary>
-    /// Interaction logic for 
+    ///     Interaction logic for
     /// </summary>
     public partial class ClusterToMassTagGrid : UserControl
     {
+        public static readonly DependencyProperty SelectedMassTagProperty =
+            DependencyProperty.Register("SelectedTag", typeof (ClusterToMassTagMap), typeof (ClusterToMassTagGrid));
+
         private List<ClusterToMassTagMap> m_massTags;
 
         /// <summary>
-        /// Constructor.
+        ///     Constructor.
         /// </summary>
         public ClusterToMassTagGrid()
         {
@@ -22,14 +25,11 @@ namespace MultiAlign.Windows.Viewers.Clusters
         }
 
         /// <summary>
-        /// Gets or sets the clusters used in the analysis.
+        ///     Gets or sets the clusters used in the analysis.
         /// </summary>
         public List<ClusterToMassTagMap> MassTags
         {
-            get
-            {
-                return m_massTags;
-            }
+            get { return m_massTags; }
             set
             {
                 m_massTags = value;
@@ -42,17 +42,15 @@ namespace MultiAlign.Windows.Viewers.Clusters
 
         public ClusterToMassTagMap SelectedTag
         {
-            get { return (ClusterToMassTagMap)GetValue(SelectedMassTagProperty); }
+            get { return (ClusterToMassTagMap) GetValue(SelectedMassTagProperty); }
             set { SetValue(SelectedMassTagProperty, value); }
-        }        
-        public static readonly DependencyProperty SelectedMassTagProperty =
-            DependencyProperty.Register("SelectedTag", typeof(ClusterToMassTagMap), typeof(ClusterToMassTagGrid)); 
+        }
 
-       
+
         private void m_dataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var tag = m_dataGrid.SelectedItem as ClusterToMassTagMap;
             SelectedTag = tag;
-        }    
+        }
     }
 }

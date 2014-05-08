@@ -7,18 +7,17 @@ using MultiAlign.Windows.Plots;
 
 namespace MultiAlign.Commands.Plotting
 {
-
     public sealed class PictureDisplayCommand : BaseCommand
     {
-        private Window m_window;
-        private readonly string m_path;
         private readonly string m_name;
+        private readonly string m_path;
+        private Window m_window;
 
         public PictureDisplayCommand(string path, string name)
             : base(null, AlwaysPass)
         {
-            m_path   = path;
-            m_name   = name;
+            m_path = path;
+            m_name = name;
             m_window = null;
         }
 
@@ -27,7 +26,7 @@ namespace MultiAlign.Commands.Plotting
             if (m_path != null)
             {
                 if (m_window == null)
-                {                    
+                {
                     var window = new LargeImageView();
 
                     if (!File.Exists(m_path))
@@ -51,7 +50,7 @@ namespace MultiAlign.Commands.Plotting
             }
         }
 
-        void m_window_Closed(object sender, EventArgs e)
+        private void m_window_Closed(object sender, EventArgs e)
         {
             m_window = null;
         }

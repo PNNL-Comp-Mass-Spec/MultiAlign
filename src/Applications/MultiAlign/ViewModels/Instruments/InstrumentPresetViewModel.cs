@@ -1,22 +1,21 @@
-﻿
-namespace MultiAlign.ViewModels.Instruments
+﻿namespace MultiAlign.ViewModels.Instruments
 {
     public class InstrumentPresetViewModel
     {
         public InstrumentPresetViewModel(
-                                        string name,
-                                        double mass,
-                                        double lc,
-                                        double mobility,
-                                        double fragmentWindow,
-                                        double precursorMass)
+            string name,
+            double mass,
+            double lc,
+            double mobility,
+            double fragmentWindow,
+            double precursorMass)
         {
-            Mass                    = mass;
-            NetTolerance            = lc;
-            DriftTimeTolerance      = mobility;
-            FragmentWindowSize      = fragmentWindow;
+            Mass = mass;
+            NetTolerance = lc;
+            DriftTimeTolerance = mobility;
+            FragmentWindowSize = fragmentWindow;
             PrecursorMassResolution = precursorMass;
-            Name                    = name;
+            Name = name;
         }
 
         public double Mass { get; private set; }

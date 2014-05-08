@@ -2,9 +2,7 @@
 
 namespace MultiAlign.ViewModels.TreeView
 {
-
     /// <summary>
-    /// 
     /// </summary>
     public sealed class MassTagMatchTreeViewModel : TreeItemViewModel
     {
@@ -18,29 +16,21 @@ namespace MultiAlign.ViewModels.TreeView
 
         public override string Name
         {
-            get
-            {
-                return m_match.MassTag.MassTag.PeptideSequence;
-            }
+            get { return m_match.MassTag.MassTag.PeptideSequence; }
         }
+
         public double Stac
         {
-            get
-            {
-                return m_match.StacScore;
-            }
+            get { return m_match.StacScore; }
         }
+
         public double StacUp
         {
-            get
-            {
-                return m_match.StacUP;
-            }
+            get { return m_match.StacUP; }
         }
 
         public override void LoadChildren()
         {
-
         }
     }
 }

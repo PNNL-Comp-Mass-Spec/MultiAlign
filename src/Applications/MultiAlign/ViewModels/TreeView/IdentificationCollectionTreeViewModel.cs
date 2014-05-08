@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using MultiAlignCore.Data;
 using MultiAlignCore.Data.Features;
 using PNNLOmics.Data;
 
@@ -8,37 +9,34 @@ namespace MultiAlign.ViewModels.TreeView
 {
     public class IdentificationCollectionTreeViewModel : TreeItemViewModel
     {
-        ObservableCollection<TreeItemViewModel> m_items;
+        private ObservableCollection<TreeItemViewModel> m_items;
 
         public IdentificationCollectionTreeViewModel(IEnumerable<UMCClusterLightMatched> tags,
-                                                     IEnumerable<Peptide> peptides) :
-            this(tags, peptides, null)
+            IEnumerable<Peptide> peptides) :
+                this(tags, peptides, null)
         {
-
         }
 
         public IdentificationCollectionTreeViewModel(IEnumerable<UMCClusterLightMatched> clusters,
-                                                     IEnumerable<Peptide> peptides, 
-                                                     TreeItemViewModel parent)            
+            IEnumerable<Peptide> peptides,
+            TreeItemViewModel parent)
         {
-
-            
             var tags = new GenericCollectionTreeViewModel();
             tags.Name = "AMT Tags";
 
-            foreach (var cluster in clusters)
+            foreach (UMCClusterLightMatched cluster in clusters)
             {
-                foreach (var match in cluster.ClusterMatches)
+                foreach (ClusterToMassTagMap match in cluster.ClusterMatches)
                 {
                     tags.Items.Add(new MassTagToClusterMatch(match.MassTag));
-                }                
+                }
             }
 
             var peptideItems = new GenericCollectionTreeViewModel();
-            peptideItems.Name                           = "Database Searches";
-            var peptideModels    = (from peptide in peptides
-                                            select new PeptideTreeViewModel(peptide)).ToList();
-            foreach(var item in peptideModels)
+            peptideItems.Name = "Database Searches";
+            List<PeptideTreeViewModel> peptideModels = (from peptide in peptides
+                select new PeptideTreeViewModel(peptide)).ToList();
+            foreach (PeptideTreeViewModel item in peptideModels)
             {
                 peptideItems.Items.Add(item);
             }
@@ -46,13 +44,13 @@ namespace MultiAlign.ViewModels.TreeView
         }
 
         /// <summary>
-        /// Loads the children 
+        ///     Loads the children
         /// </summary>
-        public override void  LoadChildren()
+        public override void LoadChildren()
         {
             if (m_loaded)
-                return;            
+                return;
             m_loaded = true;
-        }        
+        }
     }
 }

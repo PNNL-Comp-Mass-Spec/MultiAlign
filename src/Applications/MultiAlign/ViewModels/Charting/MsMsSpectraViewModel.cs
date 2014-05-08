@@ -8,13 +8,13 @@ namespace MultiAlign.ViewModels.Charting
 {
     public class MsMsSpectraViewModel : PlotModelBase
     {
+        private readonly LinearAxis m_intensityAxis;
+        private readonly LinearAxis m_mzAxis;
         private MSSpectra m_spectrum;
-        private LinearAxis m_mzAxis;
-        private LinearAxis m_intensityAxis;
+
         public MsMsSpectraViewModel(MSSpectra spectrum, string name) :
             base(name)
         {
-
             var mzAxis = new LinearAxis
             {
                 Position = AxisPosition.Bottom,
@@ -42,27 +42,27 @@ namespace MultiAlign.ViewModels.Charting
 
             m_spectrum = spectrum;
             PlotSpectra(spectrum);
-        }        
+        }
+
         public void PlotSpectra(MSSpectra spectrum)
         {
             Model.Series.Clear();
 
             var colorIterator = new ColorTypeIterator();
-            var charge = 0;
+            int charge = 0;
             if (spectrum.ParentFeature != null)
             {
                 charge = spectrum.ParentFeature.ChargeState;
             }
             var series = new StemSeries
             {
-                
                 Title = string.Format("{0} m/z charge {1}",
-                                    spectrum.PrecursorMz,
-                                    charge),
+                    spectrum.PrecursorMz,
+                    charge),
                 Color = colorIterator.GetColor(charge)
             };
 
-            foreach (var peak in spectrum.Peaks)
+            foreach (XYData peak in spectrum.Peaks)
             {
                 series.Points.Add(new DataPoint(peak.X, peak.Y));
             }
@@ -72,7 +72,7 @@ namespace MultiAlign.ViewModels.Charting
         public void SetMax(double maxMz, double maxIntensity)
         {
             m_mzAxis.AbsoluteMaximum = maxMz;
-            m_intensityAxis.AbsoluteMaximum = maxIntensity;            
+            m_intensityAxis.AbsoluteMaximum = maxIntensity;
             m_mzAxis.Maximum = maxMz;
             m_intensityAxis.Maximum = maxIntensity;
         }

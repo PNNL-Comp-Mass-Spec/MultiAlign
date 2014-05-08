@@ -9,10 +9,6 @@ namespace MultiAlign.Data
             AnalysisData = analysis;
         }
 
-        public RecentAnalysis AnalysisData
-        {
-            get;
-            private set;
-        }
+        public RecentAnalysis AnalysisData { get; private set; }
     }
 }

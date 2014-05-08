@@ -5,37 +5,34 @@ using MultiAlignCore.Data;
 namespace MultiAlign.ViewModels.Wizard
 {
     /// <summary>
-    /// Handles interaction logic for naming the analysis.
+    ///     Handles interaction logic for naming the analysis.
     /// </summary>
-    public class AnalysisNamingViewModel: ViewModelBase
+    public class AnalysisNamingViewModel : ViewModelBase
     {
         /// <summary>
-        /// Reference to the analysis configuration.
+        ///     Reference to the analysis configuration.
         /// </summary>
         private readonly AnalysisConfig m_configuration;
 
         /// <summary>
-        /// Creates an analysis naming view model
+        ///     Creates an analysis naming view model
         /// </summary>
         /// <param name="configuration"></param>
         public AnalysisNamingViewModel(AnalysisConfig configuration)
         {
             m_configuration = configuration;
 
-            var command = new BrowseFolderCommand(command_FolderSelected);            
+            var command = new BrowseFolderCommand(command_FolderSelected);
             BrowseCommand = command;
         }
 
 
         /// <summary>
-        /// Gets or sets the path of the analysis
+        ///     Gets or sets the path of the analysis
         /// </summary>
         public string Path
         {
-            get
-            {
-                return m_configuration.AnalysisPath;
-            }
+            get { return m_configuration.AnalysisPath; }
             set
             {
                 if (m_configuration.AnalysisPath != value)
@@ -46,15 +43,13 @@ namespace MultiAlign.ViewModels.Wizard
                 }
             }
         }
+
         /// <summary>
-        /// Gets or sets the name of the analysis.
+        ///     Gets or sets the name of the analysis.
         /// </summary>
         public string Name
         {
-            get
-            {
-                return m_configuration.AnalysisName;
-            }
+            get { return m_configuration.AnalysisName; }
             set
             {
                 if (m_configuration.AnalysisName != value)
@@ -67,16 +62,16 @@ namespace MultiAlign.ViewModels.Wizard
         }
 
         /// <summary>
-        /// Updates the path to the analysis.
+        ///     Gets the command for browsing to a folder for the analysis path.
         /// </summary>
-        void command_FolderSelected(string path)
+        public ICommand BrowseCommand { get; private set; }
+
+        /// <summary>
+        ///     Updates the path to the analysis.
+        /// </summary>
+        private void command_FolderSelected(string path)
         {
             Path = path;
         }
-
-        /// <summary>
-        /// Gets the command for browsing to a folder for the analysis path.
-        /// </summary>
-        public ICommand BrowseCommand { get; private set; }
     }
 }

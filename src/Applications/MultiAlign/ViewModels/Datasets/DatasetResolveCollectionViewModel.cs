@@ -5,20 +5,24 @@ using MultiAlign.Commands;
 
 namespace MultiAlign.ViewModels.Datasets
 {
-    public class DatasetResolveCollectionViewModel : ViewModelBase 
+    public class DatasetResolveCollectionViewModel : ViewModelBase
     {
         public DatasetResolveCollectionViewModel(IEnumerable<DatasetResolveMatchViewModel> matches)
         {
             Datasets = new ObservableCollection<DatasetResolveMatchViewModel>(matches);
 
-            CheckAllCommand     = new BaseCommand(CheckAll, BaseCommand.AlwaysPass);
-            UncheckAllCommand   = new BaseCommand(UncheckAll, BaseCommand.AlwaysPass);        
+            CheckAllCommand = new BaseCommand(CheckAll, BaseCommand.AlwaysPass);
+            UncheckAllCommand = new BaseCommand(UncheckAll, BaseCommand.AlwaysPass);
         }
 
 
+        public ObservableCollection<DatasetResolveMatchViewModel> Datasets { get; private set; }
+        public ICommand UncheckAllCommand { get; private set; }
+        public ICommand CheckAllCommand { get; private set; }
+
         private void UncheckAll()
         {
-            foreach (var dataset in Datasets)
+            foreach (DatasetResolveMatchViewModel dataset in Datasets)
             {
                 dataset.IsSelected = false;
             }
@@ -26,14 +30,10 @@ namespace MultiAlign.ViewModels.Datasets
 
         private void CheckAll()
         {
-            foreach (var dataset in Datasets)
+            foreach (DatasetResolveMatchViewModel dataset in Datasets)
             {
                 dataset.IsSelected = true;
             }
         }
-
-        public ObservableCollection<DatasetResolveMatchViewModel> Datasets { get; private set; }
-        public ICommand UncheckAllCommand { get; private set; }
-        public ICommand CheckAllCommand { get; private set; }
     }
 }

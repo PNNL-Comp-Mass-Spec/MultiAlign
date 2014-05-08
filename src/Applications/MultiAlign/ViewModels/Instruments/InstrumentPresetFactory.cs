@@ -15,37 +15,38 @@ namespace MultiAlign.ViewModels.Instruments
 
             return presets;
         }
+
         public static InstrumentPresetViewModel Create(InstrumentPresets preset)
         {
             InstrumentPresetViewModel model = null;
             switch (preset)
-            {                
+            {
                 case InstrumentPresets.Tof:
                     model = new InstrumentPresetViewModel("TOF",
-                                                          12,
-                                                          .03,
-                                                          50,
-                                                          .5,
-                                                          8);
+                        12,
+                        .03,
+                        50,
+                        .5,
+                        8);
 
                     break;
                 case InstrumentPresets.Velos:
                     model = new InstrumentPresetViewModel("Velos",
-                                                          6,
-                                                          .03,
-                                                          50,
-                                                          .5,
-                                                          8);
+                        6,
+                        .03,
+                        50,
+                        .5,
+                        8);
                     break;
                 case InstrumentPresets.LtqOrbitrap:
                     model = new InstrumentPresetViewModel("LTQ Orbitrap",
-                                                          8,
-                                                          .03,
-                                                          50,
-                                                          .5,
-                                                          8);
+                        8,
+                        .03,
+                        50,
+                        .5,
+                        8);
                     break;
-             }
+            }
 
             return model;
         }

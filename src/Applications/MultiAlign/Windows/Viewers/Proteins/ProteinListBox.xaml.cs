@@ -3,7 +3,7 @@
 namespace MultiAlign.Windows.Viewers.Proteins
 {
     /// <summary>
-    /// Interaction logic for ProteinListBox.xaml
+    ///     Interaction logic for ProteinListBox.xaml
     /// </summary>
     public partial class ProteinListBox : UserControl
     {

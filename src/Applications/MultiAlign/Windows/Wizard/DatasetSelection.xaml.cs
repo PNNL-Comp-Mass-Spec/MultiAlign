@@ -3,18 +3,17 @@
 namespace MultiAlign.Windows.Wizard
 {
     /// <summary>
-    /// Interaction logic for DatasetSelection.xaml
+    ///     Interaction logic for DatasetSelection.xaml
     /// </summary>
     public partial class DatasetSelection : UserControl
     {
         public DatasetSelection()
         {
-            InitializeComponent();            
+            InitializeComponent();
         }
 
         private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
-        }        
+        }
     }
 }

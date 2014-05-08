@@ -3,7 +3,7 @@
 namespace MultiAlign.Windows.Viewers.Databases
 {
     /// <summary>
-    /// Interaction logic for IdentificationTree.xaml
+    ///     Interaction logic for IdentificationTree.xaml
     /// </summary>
     public partial class IdentificationTree : UserControl
     {

@@ -3,32 +3,30 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Resolve Raw Dataset Paths"
         WindowStartupLocation="CenterScreen"
-        Height="600" 
+        Height="600"
         Width="800">
     <Window.Resources>
         <DataTemplate x:Key="DatasetTemplate">
             <Border
                 BorderBrush="LightGray"
                 BorderThickness="1"
-                Margin="5"
-               >
+                Margin="5">
                 <StackPanel>
                     <TextBlock
                         Foreground="Gray"
                         FontSize="12"
                         Text="{Binding Path=Dataset.Name}"
-                        Margin="5"
-                        />
-                        
+                        Margin="5" />
+
                     <Grid>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="64"/>
-                            <RowDefinition Height="64"/>
+                            <RowDefinition Height="64" />
+                            <RowDefinition Height="64" />
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="96"/>
-                            <ColumnDefinition Width="96"/>
-                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="96" />
+                            <ColumnDefinition Width="96" />
+                            <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <CheckBox
                             IsChecked="{Binding Path=IsSelected}"
@@ -36,105 +34,100 @@
                             Foreground="Gray"
                             FontSize="12"
                             Margin="5"
-                            Content="Use Path"
-                            />
-                        <Label  
+                            Content="Use Path" />
+                        <Label
                             Grid.Row="0"
                             Grid.Column="1"
                             FontSize="12"
-                            Margin="5" 
+                            Margin="5"
                             VerticalAlignment="Center"
-                            Foreground="Gray">Old Path</Label>
+                            Foreground="Gray">
+                            Old Path
+                        </Label>
                         <TextBlock
                             Grid.Row="0"
                             Grid.Column="2"
                             FontSize="12"
                             Margin="5"
                             VerticalAlignment="Center"
-                            Text="{Binding Path=Dataset.Dataset.RawPath}"
-                            />
-                        <Label  
+                            Text="{Binding Path=Dataset.Dataset.RawPath}" />
+                        <Label
                             Grid.Row="1"
                             Grid.Column="1"
                             FontSize="12"
-                            Margin="5" 
+                            Margin="5"
                             VerticalAlignment="Center"
-                            Foreground="Gray">New Path</Label>
+                            Foreground="Gray">
+                            New Path
+                        </Label>
                         <TextBlock
                             Grid.Row="1"
                             Grid.Column="2"
                             FontSize="12"
                             Margin="5"
                             VerticalAlignment="Center"
-                            Text="{Binding Path=NewPath}"
-                            />
-                    </Grid>                    
+                            Text="{Binding Path=NewPath}" />
+                    </Grid>
                 </StackPanel>
-            </Border>            
-        </DataTemplate>    
+            </Border>
+        </DataTemplate>
     </Window.Resources>
-    
+
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="48"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="48"/>
+            <RowDefinition Height="48" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="48" />
         </Grid.RowDefinitions>
-        <StackPanel 
+        <StackPanel
             Grid.Row="0"
             Orientation="Horizontal">
-            <Button 
+            <Button
                 Margin="5"
                 VerticalAlignment="Center"
                 Style="{DynamicResource SimpleButtonStyle }"
                 Content="Check All"
                 Width="96"
-                Command="{Binding CheckAllCommand}"
-                />
-            <Button 
+                Command="{Binding CheckAllCommand}" />
+            <Button
                 Margin="5"
                 VerticalAlignment="Center"
                 Style="{DynamicResource SimpleButtonStyle }"
                 Content="Uncheck All"
                 Width="96"
-                Command="{Binding UncheckAllCommand}"
-                />
+                Command="{Binding UncheckAllCommand}" />
         </StackPanel>
         <Border
             Grid.Row="1"
             BorderBrush="LightGray"
             BorderThickness="1"
             Margin="5">
-            <ListBox 
+            <ListBox
                 Margin="5"
-                HorizontalContentAlignment="Stretch"            
+                HorizontalContentAlignment="Stretch"
                 ItemsSource="{Binding Datasets}"
-                ItemTemplate="{StaticResource DatasetTemplate}"
-                />
+                ItemTemplate="{StaticResource DatasetTemplate}" />
         </Border>
 
-        <StackPanel 
+        <StackPanel
             Grid.Row="10"
             Orientation="Horizontal"
-            HorizontalAlignment="Right"
-            >
-            <Button 
+            HorizontalAlignment="Right">
+            <Button
                 Margin="5"
                 VerticalAlignment="Center"
                 Style="{DynamicResource SimpleButtonStyle }"
                 Content="OK"
                 Width="96"
                 Click="ButtonBase_OnClick"
-                IsDefault="True"
-                />
-            <Button 
+                IsDefault="True" />
+            <Button
                 Margin="5"
                 VerticalAlignment="Center"
                 Style="{DynamicResource SimpleButtonStyle }"
                 Content="Cancel"
                 Width="96"
-                IsCancel="True"
-                />
+                IsCancel="True" />
         </StackPanel>
     </Grid>
 </Window>

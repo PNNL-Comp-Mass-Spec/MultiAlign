@@ -65,24 +65,22 @@
   <ItemGroup>
     <Reference Include="MultiAlignEngine, Version=1.0.5179.16901, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\$(Platform)\MultiAlignEngine.dll</HintPath>
+      <HintPath>..\..\..\lib\$(Platform)\MultiAlignEngine.dll</HintPath>
     </Reference>
     <Reference Include="Ookii.Dialogs">
-      <HintPath>..\..\lib\Ookii.Dialogs.dll</HintPath>
+      <HintPath>..\..\..\lib\Ookii.Dialogs.dll</HintPath>
     </Reference>
     <Reference Include="Ookii.Dialogs.Wpf">
-      <HintPath>..\..\lib\Ookii.Dialogs.Wpf.dll</HintPath>
+      <HintPath>..\..\..\lib\Ookii.Dialogs.Wpf.dll</HintPath>
     </Reference>
-    <Reference Include="OxyPlot, Version=2014.1.297.1, Culture=neutral, PublicKeyToken=638079a8f0bd61e9, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\OxyPlot.Core.2014.1.297.1\lib\portable-net4+sl4+wp71+win8\OxyPlot.dll</HintPath>
+    <Reference Include="OxyPlot">
+      <HintPath>..\..\packages\OxyPlot.Core.2014.1.299.1\lib\portable-net4+sl4+wp71+win8\OxyPlot.dll</HintPath>
     </Reference>
-    <Reference Include="OxyPlot.Wpf, Version=2014.1.297.1, Culture=neutral, PublicKeyToken=75e952ba404cdbb0, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\OxyPlot.Wpf.2014.1.297.1\lib\NET45\OxyPlot.Wpf.dll</HintPath>
+    <Reference Include="OxyPlot.Wpf">
+      <HintPath>..\..\packages\OxyPlot.Wpf.2014.1.297.1\lib\NET45\OxyPlot.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="OxyPlot.Xps">
-      <HintPath>..\packages\OxyPlot.Wpf.2014.1.297.1\lib\NET45\OxyPlot.Xps.dll</HintPath>
+      <HintPath>..\..\packages\OxyPlot.Wpf.2014.1.297.1\lib\NET45\OxyPlot.Xps.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
@@ -153,7 +151,6 @@
     <Compile Include="Converters\SearchOptionConverter.cs" />
     <Compile Include="Converters\DatasetSelectedConverter.cs" />
     <Compile Include="Converters\DatasetCountConverter.cs" />
-    <Compile Include="Converters\HasMSMSConverter.cs" />
     <Compile Include="Converters\UriToBitmapConverter.cs" />
     <Compile Include="Data\LogicLayerViewModel.cs" />
     <Compile Include="Data\OpenAnalysisArgs.cs" />
@@ -326,12 +323,6 @@
     </Compile>
     <Compile Include="Windows\Viewers\Features\ChargeStateControl.xaml.cs">
       <DependentUpon>ChargeStateControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\Viewers\Features\MsFeatureGrid.xaml.cs">
-      <DependentUpon>MsFeatureGrid.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\Viewers\Features\FeatureGrid.xaml.cs">
-      <DependentUpon>FeatureGrid.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\Viewers\GettingStarted.xaml.cs">
       <DependentUpon>GettingStarted.xaml</DependentUpon>
@@ -531,14 +522,6 @@
     <Page Include="Windows\Viewers\Features\ChargeStateControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Windows\Viewers\Features\MsFeatureGrid.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Windows\Viewers\Features\FeatureGrid.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="Windows\Viewers\GettingStarted.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -744,16 +727,13 @@
   <ItemGroup>
     <Resource Include="Resources\test-tube-64.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Commands\Options\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Resource Include="Resources\filter-32.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>REM copy  ..\..\..\..\lib\$(PlatformName)\System.Data.SQLite.dll "$(TargetDir)System.Data.SQLite.dll"
-copy ..\..\..\..\..\lib\$(PlatformName)\Thermo\*.dll "$(TargetDir)"
+    <PostBuildEvent>copy ..\..\..\..\lib\$(PlatformName)\Thermo\*.dll "$(TargetDir)"
 
 copy "$(SolutionDir)..\lib\$(PlatformName)\System.Data.SQLite.dll" "$(TargetDir)System.Data.SQLite.dll"</PostBuildEvent>
   </PropertyGroup>

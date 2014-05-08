@@ -1,21 +1,19 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using MultiAlign.IO;
+using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.Extensions;
 using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
 
 namespace MultiAlign.ViewModels.TreeView
 {
-
     /// <summary>
-    /// Feature tree view model.
+    ///     Feature tree view model.
     /// </summary>
     public class MsMsTreeViewModel : GenericCollectionTreeViewModel
     {
-        private MSSpectra m_feature;
-
-        public event EventHandler<IdentificationFeatureSelectedEventArgs> SpectrumSelected;
+        private readonly MSSpectra m_feature;
 
         public MsMsTreeViewModel(MSSpectra feature)
             : this(feature, null)
@@ -26,15 +24,15 @@ namespace MultiAlign.ViewModels.TreeView
         public MsMsTreeViewModel(MSSpectra feature, TreeItemViewModel parent)
         {
             m_feature = feature;
-            m_parent  = parent;
+            m_parent = parent;
 
 
-            var information = SingletonDataProviders.GetDatasetInformation(m_feature.GroupId);
+            DatasetInformation information = SingletonDataProviders.GetDatasetInformation(m_feature.GroupId);
 
 
-            AddStatistic("Id",              m_feature.Id);
-            AddStatistic("Dataset Id",      m_feature.GroupId);
-            AddStatistic("Precursor m/z",   m_feature.PrecursorMz);
+            AddStatistic("Id", m_feature.Id);
+            AddStatistic("Dataset Id", m_feature.GroupId);
+            AddStatistic("Precursor m/z", m_feature.PrecursorMz);
             if (feature.ParentFeature != null)
             {
                 AddStatistic("Charge", m_feature.ParentFeature.ChargeState);
@@ -43,13 +41,13 @@ namespace MultiAlign.ViewModels.TreeView
             {
                 AddStatistic("Charge", m_feature.PrecursorChargeState);
             }
-            AddStatistic("Scan",            m_feature.Scan);
+            AddStatistic("Scan", m_feature.Scan);
 
 
             Peptides = new ObservableCollection<Peptide>();
 
             Peptide maxPeptide = null;
-            foreach (var p in m_feature.Peptides)
+            foreach (Peptide p in m_feature.Peptides)
             {
                 Peptides.Add(p);
                 if (maxPeptide == null)
@@ -66,7 +64,7 @@ namespace MultiAlign.ViewModels.TreeView
             {
                 Name = maxPeptide.Sequence;
                 AddStatistic("Score", maxPeptide.Score);
-                AddStatistic("Scan",  maxPeptide.Scan);
+                AddStatistic("Scan", maxPeptide.Scan);
             }
             else
             {
@@ -77,47 +75,45 @@ namespace MultiAlign.ViewModels.TreeView
         public ObservableCollection<Peptide> Peptides { get; set; }
 
 
+        public override bool IsSelected
+        {
+            get { return base.IsSelected; }
+            set
+            {
+                base.IsSelected = value;
+                if (m_feature != null)
+                {
+                    UMCLight feature = m_feature.GetParentUmc();
+                    OnFeatureSelected(feature);
+                    OnSpectrumSelected(feature);
+                }
+            }
+        }
+
+        public event EventHandler<IdentificationFeatureSelectedEventArgs> SpectrumSelected;
+
         private void OnSpectrumSelected(UMCLight feature)
         {
             if (SpectrumSelected != null)
             {
                 Peptide peptide = null;
-                if (m_feature.Peptides != null && m_feature.Peptides.Count  > 0)
+                if (m_feature.Peptides != null && m_feature.Peptides.Count > 0)
                 {
                     peptide = m_feature.Peptides[0];
                 }
 
                 var args = new IdentificationFeatureSelectedEventArgs(
-                                                                    m_feature,
-                                                                    peptide,
-                                                                    feature);
+                    m_feature,
+                    peptide,
+                    feature);
 
 
                 SpectrumSelected(this, args);
             }
         }
 
-        public override bool IsSelected
-        {
-            get
-            {
-                return base.IsSelected;
-            }
-            set
-            {
-                base.IsSelected = value;
-                if (m_feature != null)
-                {
-                    var feature =  m_feature.GetParentUmc();
-                    OnFeatureSelected(feature);                    
-                    OnSpectrumSelected(feature);
-                }
-            }
-        }
-                
         public override void LoadChildren()
         {
-                      
         }
     }
 }

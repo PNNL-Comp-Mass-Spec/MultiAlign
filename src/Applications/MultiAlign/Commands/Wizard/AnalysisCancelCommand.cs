@@ -2,7 +2,7 @@
 
 namespace MultiAlign.Commands.Wizard
 {
-    public class AnalysisCancelCommand: BaseCommand
+    public class AnalysisCancelCommand : BaseCommand
     {
         private readonly AnalysisSetupViewModel m_model;
 

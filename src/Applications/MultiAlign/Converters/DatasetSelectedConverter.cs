@@ -1,41 +1,23 @@
 ﻿using System;
+using System.Globalization;
 using System.Windows.Data;
 
 namespace MultiAlign.Converters
 {
-    
-    public class DatasetSelectedConverter : IValueConverter
+    public sealed class DatasetSelectedConverter : IValueConverter
     {
-
         #region IValueConverter Members
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value == null)
-            {
-                return false;
-            }
-
-            //BLL Make sure that we validate it's working.
-            var isEnabled = true;
-            try
-            {
-                var datasets = (int)value;
-                if (datasets > 0)
-                {
-                    isEnabled = true;
-                }
-            }
-            catch
-            {
-
-            }
-            return isEnabled;
+            return value != null;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return null;
         }
+
         #endregion
     }
 }

@@ -4,7 +4,6 @@ using System.Windows.Media.Imaging;
 using MultiAlign.Data;
 using MultiAlignCore.Data;
 using PNNLOmicsViz.Drawing;
-using Image = System.Drawing.Image;
 
 namespace MultiAlign.Windows.Plots
 {
@@ -125,20 +124,17 @@ namespace MultiAlign.Windows.Plots
 
             PlotName = string.Format("Baseline: {0}", name);
             PlotBase plot = ScatterPlotFactory.CreateFeatureMassScatterPlot(data.Features);
-            Image image = PlotImageUtility.CreateImage(plot);
-            FeaturesImage = ImageConverter.ConvertImage(image);
+            FeaturesImage = ImageConverter.ConvertImage(PlotImageUtility.CreateImage(plot));
         }
 
-        ///
+
         private void CreateMassTagPlots()
         {
             MassTagsLoadedEventArgs data = MassTagsData;
             PlotName = string.Format("Mass Tag Database");
             PlotBase plot = ScatterPlotFactory.CreateFeatureMassScatterPlot(data.MassTags);
             plot.Model.Title = PlotName;
-
-            Image image = PlotImageUtility.CreateImage(plot);
-            FeaturesImage = ImageConverter.ConvertImage(image);
+            FeaturesImage = ImageConverter.ConvertImage(PlotImageUtility.CreateImage(plot));
         }
     }
 }

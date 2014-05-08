@@ -3,7 +3,7 @@
 namespace MultiAlign.Windows.Viewers.Datasets
 {
     /// <summary>
-    /// Interaction logic for DatasetInputFileEditor.xaml
+    ///     Interaction logic for DatasetInputFileEditor.xaml
     /// </summary>
     public partial class DatasetInputFileEditor : UserControl
     {

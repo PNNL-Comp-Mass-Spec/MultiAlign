@@ -7,5 +7,5 @@
         OptionsSelection,
         Naming,
         Started
-    }    
+    }
 }

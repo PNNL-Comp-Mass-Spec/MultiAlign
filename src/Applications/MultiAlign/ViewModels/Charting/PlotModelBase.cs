@@ -5,6 +5,7 @@ namespace MultiAlign.ViewModels.Charting
     public class PlotModelBase : ViewModelBase
     {
         private PlotModel m_model;
+
         public PlotModelBase(string name)
         {
             Model = new PlotModel(name);

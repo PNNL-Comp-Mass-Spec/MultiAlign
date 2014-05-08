@@ -1,42 +1,28 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using MultiAlign.ViewModels.Proteins;
 using MultiAlignCore.Data.Features;
 using MultiAlignCore.Extensions;
+using PNNLOmics.Data;
 
 namespace MultiAlign.ViewModels.Features
 {
-    public class UMCClusterIdentificationViewModel: ViewModelBase
+    public class UMCClusterIdentificationViewModel : ViewModelBase
     {
         private UMCClusterLightMatched m_selectedCluster;
 
         public UMCClusterIdentificationViewModel()
         {
             DatabaseResults = new ObservableCollection<PeptideViewModel>();
-            MassTagResults  = new ObservableCollection<MassTagMatchedViewModel>();
-        }
-
-        private void LoadCluster(UMCClusterLightMatched cluster)
-        {
-            m_selectedCluster = cluster;
-
-            MassTagResults.Clear();
-            DatabaseResults.Clear();
-
-            var peptides = cluster.Cluster.FindPeptides();
-            peptides.ForEach(x => DatabaseResults.Add(new PeptideViewModel(x)));            
-            cluster.ClusterMatches.ForEach(x => MassTagResults.Add(new MassTagMatchedViewModel(x)));
+            MassTagResults = new ObservableCollection<MassTagMatchedViewModel>();
         }
 
 
         public UMCClusterLightMatched SelectedCluster
         {
-            get
-            {
-                return m_selectedCluster;
-            }
+            get { return m_selectedCluster; }
             set
             {
-
                 if (m_selectedCluster != value)
                 {
                     m_selectedCluster = value;
@@ -49,5 +35,16 @@ namespace MultiAlign.ViewModels.Features
         public ObservableCollection<PeptideViewModel> DatabaseResults { get; set; }
         public ObservableCollection<MassTagMatchedViewModel> MassTagResults { get; set; }
 
+        private void LoadCluster(UMCClusterLightMatched cluster)
+        {
+            m_selectedCluster = cluster;
+
+            MassTagResults.Clear();
+            DatabaseResults.Clear();
+
+            List<Peptide> peptides = cluster.Cluster.FindPeptides();
+            peptides.ForEach(x => DatabaseResults.Add(new PeptideViewModel(x)));
+            cluster.ClusterMatches.ForEach(x => MassTagResults.Add(new MassTagMatchedViewModel(x)));
+        }
     }
 }

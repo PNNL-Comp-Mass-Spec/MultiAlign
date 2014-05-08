@@ -3,8 +3,7 @@ using System.Collections.ObjectModel;
 
 namespace MultiAlign.ViewModels.TreeView
 {
-
-    public class GenericCollectionTreeViewModel: TreeItemViewModel
+    public class GenericCollectionTreeViewModel : TreeItemViewModel
     {
         protected ObservableCollection<TreeItemViewModel> m_items;
 
@@ -13,10 +12,15 @@ namespace MultiAlign.ViewModels.TreeView
             m_items = new ObservableCollection<TreeItemViewModel>();
         }
 
-        public GenericCollectionTreeViewModel(List<TreeItemViewModel> data):
+        public GenericCollectionTreeViewModel(List<TreeItemViewModel> data) :
             this()
-        {                        
+        {
             data.ForEach(x => Items.Add(x));
+        }
+
+        public ObservableCollection<TreeItemViewModel> Items
+        {
+            get { return m_items; }
         }
 
 
@@ -25,6 +29,7 @@ namespace MultiAlign.ViewModels.TreeView
             var x = new StatisticTreeViewItem(value, name);
             m_items.Add(x);
         }
+
         public void AddStatistic(string name, double value, string format)
         {
             var x = new StatisticTreeViewItem(value, name, format);
@@ -37,14 +42,6 @@ namespace MultiAlign.ViewModels.TreeView
             m_items.Add(x);
         }
 
-
-        public ObservableCollection<TreeItemViewModel> Items
-        {
-            get
-            {
-                return m_items;
-            }
-        }        
 
         public override void LoadChildren()
         {

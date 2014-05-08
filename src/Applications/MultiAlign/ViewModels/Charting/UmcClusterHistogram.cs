@@ -1,5 +1,4 @@
-﻿
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Extensions;
 using PNNLOmicsViz.Drawing;
@@ -13,6 +12,7 @@ namespace MultiAlign.ViewModels.Charting
         {
             m_xAxis.Maximum = 10;
         }
+
         public UmcClusterChargeHistogram(IEnumerable<UMCClusterLight> clusters, string name)
             : base(clusters.BuildChargeStateHistogram(), name)
         {

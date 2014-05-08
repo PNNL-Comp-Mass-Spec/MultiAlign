@@ -29,11 +29,9 @@ namespace MultiAlignCore.Data.Features
             var maxClusters = sizes[sizes.Count - 1] + 3;
 
             // Create the histogram.
-            var bins  = new float[maxClusters];
             var freqs = new float[maxClusters];
-
-            var i = 0;
-            for (i = 0; i < maxClusters; i++)
+            
+            for (var i = 0; i < maxClusters; i++)
             {
                 if (clusterMaps.ContainsKey(i))
                 {

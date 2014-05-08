@@ -4,27 +4,22 @@ using MultiAlign.ViewModels;
 
 namespace MultiAlign.Workspace
 {
-    public class MultiAlignWorkspace: ViewModelBase 
+    public class MultiAlignWorkspace : ViewModelBase
     {
-
         public MultiAlignWorkspace()
         {
             RecentAnalysis = new ObservableCollection<RecentAnalysisViewModel>();
         }
 
-        public ObservableCollection<RecentAnalysisViewModel> RecentAnalysis
-        {
-            get;
-            set;
-        }
+        public ObservableCollection<RecentAnalysisViewModel> RecentAnalysis { get; set; }
 
 
         public void AddAnalysis(RecentAnalysis recent)
         {
             var analysis = new RecentAnalysisViewModel(recent);
-            RecentAnalysisViewModel model    = null;
+            RecentAnalysisViewModel model = null;
 
-            foreach(var x in RecentAnalysis)
+            foreach (RecentAnalysisViewModel x in RecentAnalysis)
             {
                 if (x.Analysis == recent)
                     model = x;

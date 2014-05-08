@@ -2,7 +2,7 @@
 
 namespace MultiAlign.Commands.Wizard
 {
-    public sealed class AnalysisBackCommand: BaseCommand
+    public sealed class AnalysisBackCommand : BaseCommand
     {
         private readonly AnalysisSetupViewModel m_model;
 
@@ -11,6 +11,7 @@ namespace MultiAlign.Commands.Wizard
         {
             m_model = model;
         }
+
         public override void Execute(object parameter)
         {
             m_model.MoveBack();
