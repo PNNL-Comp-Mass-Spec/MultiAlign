@@ -29,7 +29,7 @@ namespace MultiAlign.Commands.Plotting
             {
                 if (m_window == null)
                 {
-                    List<UMCLight> features =
+                    var features =
                         SingletonDataProviders.Providers.FeatureCache.FindByDatasetId(m_information.DatasetId);
                     if (features == null || features.Count < 1)
                         return;

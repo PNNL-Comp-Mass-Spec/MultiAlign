@@ -1,6 +1,10 @@
-﻿using System.Collections.Generic;
+﻿#region
+
+using System.Collections.Generic;
 using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO.Features;
+
+#endregion
 
 namespace MultiAlign.IO
 {
@@ -9,12 +13,9 @@ namespace MultiAlign.IO
         private static FeatureDataAccessProviders m_providers;
         private static Dictionary<int, DatasetInformation> m_datasets = new Dictionary<int, DatasetInformation>();
 
-        public static FeatureDataAccessProviders Providers 
+        public static FeatureDataAccessProviders Providers
         {
-            get
-            {
-                return m_providers;
-            }
+            get { return m_providers; }
             set
             {
                 m_providers = value;
@@ -27,7 +28,6 @@ namespace MultiAlign.IO
             m_datasets = new Dictionary<int, DatasetInformation>();
             if (m_providers != null)
             {
-                
                 foreach (var info in m_providers.DatasetCache.FindAll())
                 {
                     m_datasets.Add(info.DatasetId, info);
@@ -36,7 +36,7 @@ namespace MultiAlign.IO
         }
 
         /// <summary>
-        /// Retrieves a list of the datasets loaded.
+        ///     Retrieves a list of the datasets loaded.
         /// </summary>
         /// <returns></returns>
         public static IEnumerable<DatasetInformation> GetAllInformation()
@@ -45,7 +45,7 @@ namespace MultiAlign.IO
         }
 
         /// <summary>
-        /// Finds the dataset information if a group id can be found.  Null otherwise.
+        ///     Finds the dataset information if a group id can be found.  Null otherwise.
         /// </summary>
         /// <param name="groupID"></param>
         /// <returns></returns>

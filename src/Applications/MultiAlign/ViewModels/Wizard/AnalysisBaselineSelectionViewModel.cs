@@ -23,7 +23,7 @@ namespace MultiAlign.ViewModels.Wizard
 
         public AnalysisBaselineSelectionViewModel(MultiAlignAnalysis analysis)
         {
-            string filter =
+            var filter =
                 "Mass Tag Database (.db3)|*.db3|Direct Infusion IMS Database (.dims)|*.dims|All Files (*.*)|*.*";
             m_analysis = analysis;
 
@@ -156,9 +156,9 @@ namespace MultiAlign.ViewModels.Wizard
             get { return (m_analysis.MetaData.Database.DatabaseFormat != MassTagDatabaseFormat.MassTagSystemSql); }
             set
             {
-                MassTagDatabaseFormat format = m_analysis.MetaData.Database.DatabaseFormat;
+                var format = m_analysis.MetaData.Database.DatabaseFormat;
 
-                bool isLocal = (format != MassTagDatabaseFormat.MassTagSystemSql && format != MassTagDatabaseFormat.None);
+                var isLocal = (format != MassTagDatabaseFormat.MassTagSystemSql && format != MassTagDatabaseFormat.None);
                 if (isLocal != value)
                 {
                     // If we are being told not to set it to be local...we change...
@@ -180,7 +180,7 @@ namespace MultiAlign.ViewModels.Wizard
             get { return (m_analysis.MetaData.Database.DatabaseFormat == MassTagDatabaseFormat.MassTagSystemSql); }
             set
             {
-                bool isDms = (m_analysis.MetaData.Database.DatabaseFormat == MassTagDatabaseFormat.MassTagSystemSql);
+                var isDms = (m_analysis.MetaData.Database.DatabaseFormat == MassTagDatabaseFormat.MassTagSystemSql);
                 if (isDms != value)
                 {
                     // If we are being told to set it to be local...we change...
@@ -218,7 +218,7 @@ namespace MultiAlign.ViewModels.Wizard
         public void UpdateDatasets()
         {
             Datasets.Clear();
-            foreach (DatasetInformation info in m_analysis.MetaData.Datasets)
+            foreach (var info in m_analysis.MetaData.Datasets)
             {
                 var viewmodel = new DatasetInformationViewModel(info);
                 Datasets.Add(viewmodel);
@@ -261,10 +261,10 @@ namespace MultiAlign.ViewModels.Wizard
             var databaseView = new DatabasesViewModel();
             dmsWindow.DataContext = databaseView;
             dmsWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            IDatabaseServerLoader loader = MassTagDatabaseLoaderFactory.Create(MtdbDatabaseServerType.Dms);
-            ICollection<InputDatabase> databases = loader.LoadDatabases();
+            var loader = MassTagDatabaseLoaderFactory.Create(MtdbDatabaseServerType.Dms);
+            var databases = loader.LoadDatabases();
 
-            foreach (InputDatabase database in databases)
+            foreach (var database in databases)
             {
                 databaseView.AddDatabase(database);
             }
@@ -272,13 +272,13 @@ namespace MultiAlign.ViewModels.Wizard
             if (SelectedDatabaseServer != null)
                 databaseView.SelectedDatabase = SelectedDatabaseServer;
 
-            bool? result = dmsWindow.ShowDialog();
+            var result = dmsWindow.ShowDialog();
             if (result == true)
             {
                 if (databaseView.SelectedDatabase != null)
                 {
                     SelectedDatabaseServer = databaseView.SelectedDatabase;
-                    InputDatabase database = SelectedDatabaseServer.Database;
+                    var database = SelectedDatabaseServer.Database;
                     database.DatabaseName = database.DatabaseName;
                     database.DatabaseServer = database.DatabaseServer;
                     m_analysis.MetaData.Database = database;

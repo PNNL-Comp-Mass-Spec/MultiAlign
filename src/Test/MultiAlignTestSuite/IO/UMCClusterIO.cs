@@ -1,16 +1,20 @@
-﻿using System.Collections.Generic;
+﻿#region
+
+using System.Collections.Generic;
 using System.IO;
 using MultiAlignCore.IO.Features;
 using NUnit.Framework;
 using PNNLOmics.Data.Features;
 
+#endregion
+
 namespace MultiAlignTestSuite.IO
 {
     [TestFixture]
-    class UMCClusterIO
+    internal class UMCClusterIO
     {
         protected string m_basePath;
-        
+
         [SetUp]
         public void TestSetup()
         {
@@ -31,7 +35,7 @@ namespace MultiAlignTestSuite.IO
             for (var i = 0; i < 10; i++)
             {
                 var cluster = new UMCClusterLight();
-                cluster.Id      = i;
+                cluster.Id = i;
                 cluster.GroupId = 0;
             }
             providers.ClusterCache.AddAll(clusters);

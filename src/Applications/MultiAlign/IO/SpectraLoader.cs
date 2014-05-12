@@ -17,7 +17,7 @@ namespace MultiAlign.IO
         public static List<XYData> LoadSpectrum(MSSpectra spectrum)
         {
             var peaks = new List<XYData>();
-            DatasetInformation info = SingletonDataProviders.GetDatasetInformation(spectrum.GroupId);
+            var info = SingletonDataProviders.GetDatasetInformation(spectrum.GroupId);
             if (info != null && info.Raw != null && info.RawPath != null)
             {
                 peaks = ParentSpectraFinder.GetDaughterSpectrum(info.RawPath, spectrum.Scan);

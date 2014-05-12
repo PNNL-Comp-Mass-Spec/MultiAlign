@@ -1,29 +1,32 @@
-﻿
-namespace MultiAlignCore.IO.InputFiles
+﻿namespace MultiAlignCore.IO.InputFiles
 {
     /// <summary>
-    /// Input file type.
+    ///     Input file type.
     /// </summary>
     public enum InputFileType
     {
         /// <summary>
-        /// Raw data
+        ///     Raw data
         /// </summary>
         Raw,
+
         /// <summary>
-        /// Holds information about each scan for provenance tracking.
+        ///     Holds information about each scan for provenance tracking.
         /// </summary>
         Scans,
+
         /// <summary>
-        /// Holds information about MS features (decon2ls output or LCMS Feature Finder).
+        ///     Holds information about MS features (decon2ls output or LCMS Feature Finder).
         /// </summary>
         Features,
+
         /// <summary>
-        /// The input File format could not be recognized.
+        ///     The input File format could not be recognized.
         /// </summary>
         NotRecognized,
+
         /// <summary>
-        /// Database search results.
+        ///     Database search results.
         /// </summary>
         Sequence
     }

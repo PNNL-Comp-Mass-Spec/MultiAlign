@@ -1,9 +1,13 @@
+#region
+
 using System.Collections.Generic;
+
+#endregion
 
 namespace MultiAlignCore.Data.Factors
 {
     /// <summary>
-    /// Enumerates the possible ways a factor can be edited.
+    ///     Enumerates the possible ways a factor can be edited.
     /// </summary>
     public enum FactorEditResult
     {
@@ -15,55 +19,56 @@ namespace MultiAlignCore.Data.Factors
     }
 
     /// <summary>
-    /// Class that holds all factor definitions.
+    ///     Class that holds all factor definitions.
     /// </summary>
-    public class FactorCollection: ICloneable<FactorCollection>
-    {        
+    public class FactorCollection : ICloneable<FactorCollection>
+    {
         /// <summary>
-        /// List of available factors.
+        ///     List of available factors.
         /// </summary>
-        private Dictionary<string, FactorInformation> m_factors;
-        		
+        private readonly Dictionary<string, FactorInformation> m_factors;
+
         /// <summary>
-        /// Default constructor for a factor definition class.
+        ///     Default constructor for a factor definition class.
         /// </summary>
-		public FactorCollection()
-		{
+        public FactorCollection()
+        {
             m_factors = new Dictionary<string, FactorInformation>();
         }
 
         #region Properties 
+
         /// <summary>
-        /// Gets whether the factors are fully defined or not.
+        ///     Gets whether the factors are fully defined or not.
         /// </summary>
         /// <returns>True if all factors have at least 2 factor values.  False if one does not.</returns>
         public bool AreAllFactorsDefined
         {
             get
-            {                
+            {
                 foreach (var information in m_factors.Values)
                 {
                     if (!information.IsFullyDefined)
-                        return false;                    
+                        return false;
                 }
                 return true;
-            }                        
+            }
         }
+
         /// <summary>
-        /// Gets the dictionary of factor-factor value pairs.
+        ///     Gets the dictionary of factor-factor value pairs.
         /// </summary>
         public Dictionary<string, FactorInformation> Factors
         {
-            get            
-            {
-                return m_factors;
-            }
+            get { return m_factors; }
         }
+
         #endregion
 
         #region Adding Factors/Factor Values
+
         /// <summary>
-        /// Creates a new factor.
+        ///     Creates a new factor.
         /// </summary>
         /// <param name="factor">Factor to create.</param>
         /// <returns>A enumerated result detailing if the factor was created or not.</returns>
@@ -74,7 +79,7 @@ namespace MultiAlignCore.Data.Factors
             {
                 return FactorEditResult.IncorrectFormat;
             }
-            
+
             // Make sure the factor does not already exist.
             if (m_factors.ContainsKey(factorName))
                 return FactorEditResult.Exists;
@@ -85,8 +90,9 @@ namespace MultiAlignCore.Data.Factors
             m_factors.Add(factorName, newFactor);
             return FactorEditResult.Added;
         }
+
         /// <summary>
-        /// Adds factor information to the collection.
+        ///     Adds factor information to the collection.
         /// </summary>
         /// <param name="information"></param>
         /// <returns></returns>
@@ -99,37 +105,39 @@ namespace MultiAlignCore.Data.Factors
         }
 
         /// <summary>
-        /// Add the factor value to the factor name.
+        ///     Add the factor value to the factor name.
         /// </summary>
         /// <param name="value">Value to add to the currently selected value.</param>
         /// <returns>Result indicating whether the factor value was added or not. </returns>
         public FactorEditResult AddFactorValue(string factorName, string factorValue)
         {
             // Make sure the factor and factor value is in the correct format.
-            if (string.IsNullOrEmpty(factorValue))            
+            if (string.IsNullOrEmpty(factorValue))
                 return FactorEditResult.IncorrectFormat;
-            
-            if (string.IsNullOrEmpty(factorName))            
+
+            if (string.IsNullOrEmpty(factorName))
                 return FactorEditResult.IncorrectFormat;
-            
+
             // Make sure the factor exists.
-            if (!m_factors.ContainsKey(factorName))                        
+            if (!m_factors.ContainsKey(factorName))
                 return FactorEditResult.DoesNotExist;
-            
+
             // Make sure the factor value does not exist.
             var values = m_factors[factorName].FactorValues;
-            if (values.Contains(factorValue))            
+            if (values.Contains(factorValue))
                 return FactorEditResult.Exists;
-            
+
             // Finally add if no conflicts exist.
             values.Add(factorValue);
             return FactorEditResult.Added;
         }
+
         #endregion
 
         #region Deleting Factors/Factor Values
+
         /// <summary>
-        /// Deletes the currently selected tree node from the tree view.
+        ///     Deletes the currently selected tree node from the tree view.
         /// </summary>
         public bool DeleteFactor(string factorName)
         {
@@ -145,8 +153,9 @@ namespace MultiAlignCore.Data.Factors
             m_factors.Remove(factorName);
             return true;
         }
+
         /// <summary>
-        /// Removes the factor value from the specified factor key.
+        ///     Removes the factor value from the specified factor key.
         /// </summary>
         /// <returns></returns>
         public bool DeleteFactorValue(string factorName, string factorValue)
@@ -167,11 +176,13 @@ namespace MultiAlignCore.Data.Factors
             information.FactorValues.Remove(factorValue);
             return true;
         }
-        #endregion  
+
+        #endregion
 
         #region Re-naming
+
         /// <summary>
-        /// Renames the factor name.
+        ///     Renames the factor name.
         /// </summary>
         /// <param name="factorName">Name of the factor to rename.</param>
         /// <returns>CONST_FACTOR_RENAMED if rename is successful.</returns>
@@ -182,7 +193,7 @@ namespace MultiAlignCore.Data.Factors
 
             if (m_factors.ContainsKey(newFactorName))
                 return FactorEditResult.Exists;
-            
+
             // Create a new deep list reference of the values
             var information = m_factors[oldFactorName];
 
@@ -194,20 +205,25 @@ namespace MultiAlignCore.Data.Factors
 
             return FactorEditResult.Renamed;
         }
+
         /// <summary>
-        /// Renames the factor value.
+        ///     Renames the factor value.
         /// </summary>
-        /// <param name="factorName">Name of the factor the value 
-        /// is contained in.</param>
-        /// <param name="factorValue">Name of the factor value to 
-        /// rename.</param>
+        /// <param name="factorName">
+        ///     Name of the factor the value
+        ///     is contained in.
+        /// </param>
+        /// <param name="factorValue">
+        ///     Name of the factor value to
+        ///     rename.
+        /// </param>
         /// <returns>CONST_FACTOR_VALUE_RENAMED if factor value rename is successful.</returns>
         public FactorEditResult RenameFactorValue(string factorName,
-                            string oldFactorValue, string newFactorValue)
+            string oldFactorValue, string newFactorValue)
         {
             if (!m_factors.ContainsKey(factorName))
                 return FactorEditResult.DoesNotExist;
-         
+
             var information = m_factors[factorName];
             if (!information.FactorValues.Contains(oldFactorValue))
                 return FactorEditResult.DoesNotExist;
@@ -219,11 +235,13 @@ namespace MultiAlignCore.Data.Factors
 
             return FactorEditResult.Renamed;
         }
+
         #endregion
 
         #region ICloneable Members
+
         /// <summary>
-        /// Returns a new object of a cloned type.
+        ///     Returns a new object of a cloned type.
         /// </summary>
         /// <returns></returns>
         public FactorCollection Clone()
@@ -241,5 +259,5 @@ namespace MultiAlignCore.Data.Factors
         }
 
         #endregion
-    }      
+    }
 }

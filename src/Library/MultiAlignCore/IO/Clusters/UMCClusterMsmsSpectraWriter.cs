@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿#region
+
+using System.Collections.Generic;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO.Clusters;
@@ -6,36 +8,39 @@ using PNNLOmics.Data.Features;
 using PNNLOmics.Data.MassTags;
 using PNNLOmicsIO.IO;
 
+#endregion
+
 namespace MultiAlignCore.IO.Features
 {
-    
     /// <summary>
-    /// Writes a list of clusters to a cross tab.
+    ///     Writes a list of clusters to a cross tab.
     /// </summary>
-    public class UMCClusterMsmsSpectraWriter: BaseUmcClusterWriter 
+    public class UMCClusterMsmsSpectraWriter : BaseUmcClusterWriter
     {
         private IMsMsSpectraWriter m_spectraWriter;
 
         /// <summary>
-        /// Default constructor.
+        ///     Default constructor.
         /// </summary>
         /// <param name="path"></param>
         public UMCClusterMsmsSpectraWriter(string name, IMsMsSpectraWriter spectraWriter, string extension)
-            : base (true)
+            : base(true)
         {
-            m_spectraWriter = spectraWriter;              
-            Extension       = extension;
-            Name            = name; 
-            Description     = "Writes the a cluster and the associated MS/MS meta-data.";
+            m_spectraWriter = spectraWriter;
+            Extension = extension;
+            Name = name;
+            Description = "Writes the a cluster and the associated MS/MS meta-data.";
         }
 
-        
+
         protected override void Write(List<UMCClusterLight> clusters, List<DatasetInformation> datasets)
         {
             WriteClusters(clusters, datasets);
         }
 
-        protected override void Write(List<UMCClusterLight> clusters, Dictionary<int, List<ClusterToMassTagMap>> clusterMap, List<DatasetInformation> datasets, Dictionary<string, MassTagLight> tags)
+        protected override void Write(List<UMCClusterLight> clusters,
+            Dictionary<int, List<ClusterToMassTagMap>> clusterMap, List<DatasetInformation> datasets,
+            Dictionary<string, MassTagLight> tags)
         {
             //using (TextWriter writer = File.CreateText(Path))
             //{

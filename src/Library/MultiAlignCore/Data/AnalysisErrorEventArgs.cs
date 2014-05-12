@@ -1,30 +1,26 @@
+#region
+
 using System;
+
+#endregion
 
 namespace MultiAlignCore.Data
 {
     /// <summary>
-    /// Analysis Error Event Arguments
+    ///     Analysis Error Event Arguments
     /// </summary>
     public class AnalysisErrorEventArgs : EventArgs
     {
         public AnalysisErrorEventArgs(string error, Exception ex)
         {
-            Exception    = ex;
-            ErrorMessage = error;   
+            Exception = ex;
+            ErrorMessage = error;
         }
 
-        public string ErrorMessage
-        {
-            get;
-            private set;
-        }
+        public string ErrorMessage { get; private set; }
+
         /// <summary>
-        /// 
         /// </summary>
-        public Exception Exception
-        {
-            get;
-            private set;
-        }
+        public Exception Exception { get; private set; }
     }
 }

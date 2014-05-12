@@ -1,19 +1,21 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using PNNLOmics.Algorithms.Alignment;
 using PNNLOmics.Algorithms.Alignment.SpectralMatching;
 
+#endregion
+
 namespace MultiAlignTestSuite.Papers.Alignment.IO
 {
-
     /// <summary>
-    /// Writes data from an analysis for figure 1
+    ///     Writes data from an analysis for figure 1
     /// </summary>
     public class SpectralWriterFigureOne : PaperFileWriter, ISpectralAnalysisWriter
     {
-
-        public SpectralWriterFigureOne(string name, string path):
+        public SpectralWriterFigureOne(string name, string path) :
             base(name, path, true)
         {
         }
@@ -30,14 +32,14 @@ namespace MultiAlignTestSuite.Papers.Alignment.IO
 
             WriteLine("[Histogram]");
             var falseMatches = MatchCountHistogramBuilder.SimilarityScore(0,
-                                                                                1,
-                                                                                .05,
-                                                                                analysis.Matches.Where(x => x.IsValidMatch == AnchorPointMatchType.FalseMatch));
+                1,
+                .05,
+                analysis.Matches.Where(x => x.IsValidMatch == AnchorPointMatchType.FalseMatch));
 
             var trueMatches = MatchCountHistogramBuilder.SimilarityScore(0,
-                                                                                1,
-                                                                                .05,
-                                                                                analysis.Matches.Where(x => x.IsValidMatch == AnchorPointMatchType.TrueMatch));
+                1,
+                .05,
+                analysis.Matches.Where(x => x.IsValidMatch == AnchorPointMatchType.TrueMatch));
 
             var allMatches = MatchCountHistogramBuilder.SimilarityScore(0, 1, .05, analysis.Matches);
 
@@ -45,11 +47,11 @@ namespace MultiAlignTestSuite.Papers.Alignment.IO
             for (var i = 0; i < falseMatches.Bins.Count; i++)
             {
                 var score = falseMatches.Bins[i];
-                WriteLine(string.Format("{0}\t{1}\t{2}\t{3}", 
-                                                 score,
-                                                 falseMatches.Data[i],
-                                                 trueMatches.Data[i],
-                                                 allMatches.Data[i]));
+                WriteLine(string.Format("{0}\t{1}\t{2}\t{3}",
+                    score,
+                    falseMatches.Data[i],
+                    trueMatches.Data[i],
+                    allMatches.Data[i]));
             }
             // Determine how many matches we have
             WriteLine("[Matches]");
@@ -57,7 +59,7 @@ namespace MultiAlignTestSuite.Papers.Alignment.IO
 
             // Here we tally the number of matches
             foreach (var match in analysis.Matches)
-            {         
+            {
                 var scanX = match.AnchorPointX.Scan;
                 if (!datasetX.ContainsKey(scanX))
                     datasetX.Add(scanX, new List<SpectralAnchorPoint>());
@@ -68,18 +70,18 @@ namespace MultiAlignTestSuite.Papers.Alignment.IO
             }
 
             var maxMatch = 0;
-            var matchCount   = new Dictionary<int, int>();
+            var matchCount = new Dictionary<int, int>();
             var multipleTrue = new Dictionary<int, int>();
             foreach (var points in datasetX.Values)
             {
                 // Then we go through the list...
                 // count the number of true matches
-                var total       = points.Count;
-                var totalTrue   = points.Count(x => x.IsTrue);
+                var total = points.Count;
+                var totalTrue = points.Count(x => x.IsTrue);
 
                 // first time to see this match total...then make a new list
-                maxMatch        = Math.Max(maxMatch, total);
-                if (!matchCount.ContainsKey(total))                
+                maxMatch = Math.Max(maxMatch, total);
+                if (!matchCount.ContainsKey(total))
                     matchCount.Add(total, 0);
 
                 // if we have more than one entry for this spectrum
@@ -99,17 +101,16 @@ namespace MultiAlignTestSuite.Papers.Alignment.IO
             for (var i = 1; i < maxMatch; i++)
             {
                 var totalTrue = 0;
-                var total     = 0;
-                if (multipleTrue.ContainsKey(i)) totalTrue  = multipleTrue[i];
-                if (matchCount.ContainsKey(i)) total        = matchCount[i];
- 
+                var total = 0;
+                if (multipleTrue.ContainsKey(i)) totalTrue = multipleTrue[i];
+                if (matchCount.ContainsKey(i)) total = matchCount[i];
+
                 WriteLine(string.Format("{0}\t{1}\t{2}", i, total, totalTrue));
             }
             WriteLine();
 
-          
+
             Close();
         }
     }
-
 }

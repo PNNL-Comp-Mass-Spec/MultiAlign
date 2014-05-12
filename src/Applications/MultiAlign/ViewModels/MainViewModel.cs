@@ -35,7 +35,7 @@ namespace MultiAlign.ViewModels
 
 
             // Titles and Status
-            string version = ApplicationUtility.GetEntryAssemblyData();
+            var version = ApplicationUtility.GetEntryAssemblyData();
             Title = version;
 
             // Command Setup
@@ -44,7 +44,7 @@ namespace MultiAlign.ViewModels
 
             // View Models
 
-            string workSpacePath = ApplicationUtility.GetApplicationDataFolderPath("MultiAlign");
+            var workSpacePath = ApplicationUtility.GetApplicationDataFolderPath("MultiAlign");
             workSpacePath = Path.Combine(workSpacePath, Settings.Default.WorkspaceFile);
             GettingStartedViewModel = new GettingStartedViewModel(workSpacePath, StateModerator);
 
@@ -207,7 +207,7 @@ namespace MultiAlign.ViewModels
                 return;
             }
 
-            string filename = Path.Combine(recentAnalysis.Path, recentAnalysis.Name);
+            var filename = Path.Combine(recentAnalysis.Path, recentAnalysis.Name);
             if (!File.Exists(filename))
             {
                 StateModerator.CurrentViewState = ViewState.HomeView;
@@ -233,7 +233,7 @@ namespace MultiAlign.ViewModels
         private void DisplayAnalysis(MultiAlignAnalysis analysis)
         {
             // Change the title
-            string version = ApplicationUtility.GetEntryAssemblyData();
+            var version = ApplicationUtility.GetEntryAssemblyData();
             Title = string.Format("{0} - {1}", version, analysis.MetaData.AnalysisName);
 
             var model = new AnalysisViewModel(analysis);
@@ -254,7 +254,7 @@ namespace MultiAlign.ViewModels
         private void ShowNewAnalysisSetup()
         {
             string message;
-            bool canStart = StateModerator.CanPerformNewAnalysis(out message);
+            var canStart = StateModerator.CanPerformNewAnalysis(out message);
             Status = message;
             if (!canStart)
             {
@@ -287,7 +287,7 @@ namespace MultiAlign.ViewModels
         private void ShowLoadedAnalysis()
         {
             string message;
-            bool isRunning = StateModerator.IsAnalysisRunning(out message);
+            var isRunning = StateModerator.IsAnalysisRunning(out message);
 
             if (isRunning)
             {
@@ -389,8 +389,8 @@ namespace MultiAlign.ViewModels
         /// <param name="e"></param>
         private void AnalysisRunningViewModel_AnalysisComplete(object sender, AnalysisStatusArgs e)
         {
-            string path = e.Configuration.AnalysisPath;
-            string name = Path.GetFileName(e.Configuration.AnalysisName);
+            var path = e.Configuration.AnalysisPath;
+            var name = Path.GetFileName(e.Configuration.AnalysisName);
             var recent = new RecentAnalysis(path, name);
             StateModerator.CurrentViewState = ViewState.AnalysisView;
             StateModerator.CurrentAnalysisState = AnalysisState.Viewing;

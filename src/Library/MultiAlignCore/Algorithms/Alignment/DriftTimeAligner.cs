@@ -1,15 +1,18 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using PNNLOmics.Algorithms;
 using PNNLOmics.Algorithms.Alignment;
 using PNNLOmics.Data.Features;
 
+#endregion
+
 namespace MultiAlignCore.Algorithms.Alignment
 {
-    public class DriftTimeAligner: IProgressNotifer
+    public class DriftTimeAligner : IProgressNotifer
     {
-
         #region IProgressNotifer Members
 
         public event EventHandler<ProgressNotifierArgs> Progress;
@@ -17,7 +20,7 @@ namespace MultiAlignCore.Algorithms.Alignment
         #endregion
 
         /// <summary>
-        /// Updates listeners with status messages.
+        ///     Updates listeners with status messages.
         /// </summary>
         /// <param name="message"></param>
         private void UpdateStatus(string message)
@@ -29,12 +32,13 @@ namespace MultiAlignCore.Algorithms.Alignment
         }
 
         /// <summary>
-        /// Correct for the drift times.
+        ///     Correct for the drift times.
         /// </summary>
         /// <param name="features"></param>
         /// <param name="baselineFeatures"></param>
         /// <param name="options"></param>
-        public KeyValuePair<DriftTimeAlignmentResults<UMCLight, UMCLight>, DriftTimeAlignmentResults<UMCLight, UMCLight>>
+        public
+            KeyValuePair<DriftTimeAlignmentResults<UMCLight, UMCLight>, DriftTimeAlignmentResults<UMCLight, UMCLight>>
             AlignDriftTimes(List<UMCLight> features, List<UMCLight> baselineFeatures, DriftTimeAlignmentOptions options)
         {
             UpdateStatus("Correcting drift times.");
@@ -46,7 +50,7 @@ namespace MultiAlignCore.Algorithms.Alignment
 
             foreach (var feature in features)
             {
-                var umc                     = new UMCLight
+                var umc = new UMCLight
                 {
                     MassMonoisotopicAligned = feature.MassMonoisotopicAligned,
                     NetAligned = feature.NetAligned,
@@ -76,19 +80,20 @@ namespace MultiAlignCore.Algorithms.Alignment
             var chargeMax = options.MaxChargeState;
             var chargeMin = options.MinChargeState;
 
-            UpdateStatus(string.Format("Filtering Features Min Charge: {0} <= charge <= Max Charge {1}", chargeMin, chargeMax));
+            UpdateStatus(string.Format("Filtering Features Min Charge: {0} <= charge <= Max Charge {1}", chargeMin,
+                chargeMax));
             var filteredQuery = from feature in aligneeUmCs
-                                where feature.ChargeState <= chargeMax && feature.ChargeState >= chargeMin
-                                select feature;
+                where feature.ChargeState <= chargeMax && feature.ChargeState >= chargeMin
+                select feature;
             var filteredUmCs = filteredQuery.ToList();
 
             UpdateStatus("Finding Aligned Matches and correcting drift times.");
             var alignedResults =
-                            DriftTimeAlignment<UMCLight, UMCLight>.AlignObservedEnumerable(aligneeUmCs,
-                                                                                filteredUmCs,
-                                                                                baselineUmCs,
-                                                                                options.MassPPMTolerance,
-                                                                                options.NETTolerance);
+                DriftTimeAlignment<UMCLight, UMCLight>.AlignObservedEnumerable(aligneeUmCs,
+                    filteredUmCs,
+                    baselineUmCs,
+                    options.MassPPMTolerance,
+                    options.NETTolerance);
 
 
             DriftTimeAlignmentResults<UMCLight, UMCLight> offsetResults = null;
@@ -105,7 +110,8 @@ namespace MultiAlignCore.Algorithms.Alignment
                 {
                     UpdateStatus("Using all feature matches for offset correction.");
                 }
-                offsetResults = DriftTimeAlignment<UMCLight, UMCLight>.CorrectForOffset(aligneeData, baselineUmCs, options.MassPPMTolerance, options.NETTolerance, options.DriftTimeTolerance);
+                offsetResults = DriftTimeAlignment<UMCLight, UMCLight>.CorrectForOffset(aligneeData, baselineUmCs,
+                    options.MassPPMTolerance, options.NETTolerance, options.DriftTimeTolerance);
             }
 
 
@@ -116,10 +122,12 @@ namespace MultiAlignCore.Algorithms.Alignment
                 featureIdMap[umc.Id].DriftTime = umc.DriftTimeAligned;
             }
 
-            var pair =  new KeyValuePair<DriftTimeAlignmentResults<UMCLight, UMCLight>, DriftTimeAlignmentResults<UMCLight, UMCLight>>(alignedResults,
-                                                                                                                                offsetResults);
+            var pair =
+                new KeyValuePair
+                    <DriftTimeAlignmentResults<UMCLight, UMCLight>, DriftTimeAlignmentResults<UMCLight, UMCLight>>(
+                    alignedResults,
+                    offsetResults);
             return pair;
         }
-
     }
 }

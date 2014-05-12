@@ -1,12 +1,16 @@
+#region
+
 using System.Collections.Generic;
 using PNNLOmics.Data.MassTags;
+
+#endregion
 
 namespace MultiAlignCore.IO.Features
 {
     public interface IMassTagDAO : IGenericDAO<MassTagLight>
     {
         /// <summary>
-        /// Finds nearby tags based on mass and net.
+        ///     Finds nearby tags based on mass and net.
         /// </summary>
         /// <param name="massMin"></param>
         /// <param name="massMax"></param>
@@ -14,8 +18,9 @@ namespace MultiAlignCore.IO.Features
         /// <param name="netMax"></param>
         /// <returns></returns>
         List<MassTagLight> FindNearby(double massMin, double massMax, double netMin, double netMax);
+
         /// <summary>
-        /// Finds nearby mass tags based on mass, net, and drift time.
+        ///     Finds nearby mass tags based on mass, net, and drift time.
         /// </summary>
         /// <param name="massMin"></param>
         /// <param name="massMax"></param>
@@ -24,8 +29,9 @@ namespace MultiAlignCore.IO.Features
         /// <param name="driftMin"></param>
         /// <param name="driftMax"></param>
         /// <returns></returns>
-        List<MassTagLight> FindNearby(double massMin, double massMax, double netMin, double netMax, double driftMin, double driftMax);
+        List<MassTagLight> FindNearby(double massMin, double massMax, double netMin, double netMax, double driftMin,
+            double driftMax);
+
         List<MassTagLight> FindMassTags(List<int> ids);
     }
-
 }

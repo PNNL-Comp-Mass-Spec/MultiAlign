@@ -19,12 +19,12 @@ namespace MultiAlign.Commands.Viewers
 
         public override void Execute(object parameter)
         {
-            DialogResult result = m_analysisLoadDialog.ShowDialog();
+            var result = m_analysisLoadDialog.ShowDialog();
 
             if (result != DialogResult.OK) return;
-            string filename = m_analysisLoadDialog.FileName;
-            string path = Path.GetDirectoryName(filename);
-            string name = Path.GetFileName(filename);
+            var filename = m_analysisLoadDialog.FileName;
+            var path = Path.GetDirectoryName(filename);
+            var name = Path.GetFileName(filename);
 
             var newAnalysis = new RecentAnalysis(path, name);
 

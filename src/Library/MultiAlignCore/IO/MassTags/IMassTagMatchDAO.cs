@@ -1,5 +1,9 @@
-﻿using System.Collections.Generic;
+﻿#region
+
+using System.Collections.Generic;
 using MultiAlignCore.Data;
+
+#endregion
 
 namespace MultiAlignCore.IO.Features
 {

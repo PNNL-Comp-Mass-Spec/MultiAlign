@@ -4,7 +4,7 @@
     {
         public override bool Equals(object obj)
         {
-            var other = (MSMSClusterMap)obj;
+            var other = (MSMSClusterMap) obj;
 
             if (other == null)
             {
@@ -25,28 +25,16 @@
         {
             var hash = 17;
 
-            hash = hash * 23 + ClusterID.GetHashCode();
-            hash = hash * 23 + MSMSID.GetHashCode();
-            hash = hash * 23 + GroupID.GetHashCode();
+            hash = hash*23 + ClusterID.GetHashCode();
+            hash = hash*23 + MSMSID.GetHashCode();
+            hash = hash*23 + GroupID.GetHashCode();
 
             return hash;
         }
 
-        public int ClusterID
-        {
-            get;
-            set;
-        }
+        public int ClusterID { get; set; }
 
-        public int MSMSID
-        {
-            get;
-            set;
-        }
-        public int GroupID
-        {
-            get;
-            set;
-        }
+        public int MSMSID { get; set; }
+        public int GroupID { get; set; }
     }
 }

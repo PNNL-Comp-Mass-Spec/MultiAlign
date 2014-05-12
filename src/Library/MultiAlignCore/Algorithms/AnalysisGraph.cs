@@ -1,13 +1,17 @@
-﻿using System.Collections.Generic;
+﻿#region
+
+using System.Collections.Generic;
+
+#endregion
 
 namespace MultiAlignCore.Algorithms
 {
     /// <summary>
-    /// Encapsulates the list of workflow items to execute.
+    ///     Encapsulates the list of workflow items to execute.
     /// </summary>
     public class AnalysisGraph
     {
-        readonly List<AnalysisGraphNode> m_nodes;
+        private readonly List<AnalysisGraphNode> m_nodes;
 
         public AnalysisGraph()
         {
@@ -15,17 +19,15 @@ namespace MultiAlignCore.Algorithms
         }
 
         /// <summary>
-        /// Gets the list of nodes to execute.
+        ///     Gets the list of nodes to execute.
         /// </summary>
         public List<AnalysisGraphNode> Nodes
         {
-            get
-            {
-                return m_nodes;
-            }
+            get { return m_nodes; }
         }
+
         /// <summary>
-        /// Add a new node to the list of those to execute.
+        ///     Add a new node to the list of those to execute.
         /// </summary>
         /// <param name="node"></param>
         public void AddNode(AnalysisGraphNode node)
@@ -38,6 +40,7 @@ namespace MultiAlignCore.Algorithms
                 m_nodes.Add(node);
             }
         }
+
         public void Clear()
         {
             m_nodes.Clear();

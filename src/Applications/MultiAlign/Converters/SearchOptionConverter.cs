@@ -34,7 +34,7 @@ namespace MultiAlign.Converters
             if (value == null)
                 return SearchOption.TopDirectoryOnly;
 
-            bool status = false;
+            var status = false;
 
             try
             {

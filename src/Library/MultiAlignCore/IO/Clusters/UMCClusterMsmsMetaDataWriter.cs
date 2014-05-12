@@ -1,39 +1,44 @@
-﻿using System.Collections.Generic;
+﻿#region
+
+using System.Collections.Generic;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO.Clusters;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Data.MassTags;
 
+#endregion
+
 namespace MultiAlignCore.IO.Features
 {
-    
     /// <summary>
-    /// Writes a list of clusters to a cross tab.
+    ///     Writes a list of clusters to a cross tab.
     /// </summary>
-    public sealed class UMCClusterMsmsWriter: BaseUmcClusterWriter
+    public sealed class UMCClusterMsmsWriter : BaseUmcClusterWriter
     {
         /// <summary>
-        /// Default constructor.
+        ///     Default constructor.
         /// </summary>
         public UMCClusterMsmsWriter()
             : base(true)
         {
-            Extension   = "_msms.csv";   
-            Name        = "Cluster MS/MS meta-data";
+            Extension = "_msms.csv";
+            Name = "Cluster MS/MS meta-data";
             Description = "Writes the a cluster and the associated MS/MS meta-data.";
         }
 
-                
+
         protected override void Write(List<UMCClusterLight> clusters, List<DatasetInformation> datasets)
         {
-            WriteClusters(  clusters,
-                            new Dictionary<int,List<ClusterToMassTagMap>>(),
-                            datasets,
-                            new Dictionary<string, MassTagLight>());
+            WriteClusters(clusters,
+                new Dictionary<int, List<ClusterToMassTagMap>>(),
+                datasets,
+                new Dictionary<string, MassTagLight>());
         }
 
-        protected override void Write(List<UMCClusterLight> clusters, Dictionary<int, List<ClusterToMassTagMap>> clusterMap, List<DatasetInformation> datasets, Dictionary<string, MassTagLight> tags)
+        protected override void Write(List<UMCClusterLight> clusters,
+            Dictionary<int, List<ClusterToMassTagMap>> clusterMap, List<DatasetInformation> datasets,
+            Dictionary<string, MassTagLight> tags)
         {
             //using (TextWriter writer = File.CreateText(Path))
             //{

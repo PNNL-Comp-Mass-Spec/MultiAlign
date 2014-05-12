@@ -1,6 +1,10 @@
-﻿using System.Collections.Generic;
+﻿#region
+
+using System.Collections.Generic;
 using MultiAlignCore.Algorithms;
 using MultiAlignCore.Data;
+
+#endregion
 
 namespace MultiAlignCore.IO
 {

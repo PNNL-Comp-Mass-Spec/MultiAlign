@@ -1,23 +1,28 @@
-﻿using System.Collections.Generic;
+﻿#region
+
+using System.Collections.Generic;
 using System.Linq;
 using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
 
+#endregion
+
 namespace MultiAlignCore.IO.RawData
 {
     /// <summary>
-    /// Allows the context to use the spectra provider, and filters spectra available by 
-    /// only suggesting spectra that are associated with an LC-MS feature.
+    ///     Allows the context to use the spectra provider, and filters spectra available by
+    ///     only suggesting spectra that are associated with an LC-MS feature.
     /// </summary>
     public class CachedFeatureSpectraProvider : ISpectraProvider
     {
         /// <summary>
-        /// Maps the scans to spectra that are related to features passed in.
+        ///     Maps the scans to spectra that are related to features passed in.
         /// </summary>
-        private Dictionary<int, MSSpectra>   m_spectraMap;
-        private ISpectraProvider m_reader;
+        private readonly Dictionary<int, MSSpectra> m_spectraMap;
 
-        public CachedFeatureSpectraProvider(ISpectraProvider reader, IEnumerable<UMCLight> features )
+        private readonly ISpectraProvider m_reader;
+
+        public CachedFeatureSpectraProvider(ISpectraProvider reader, IEnumerable<UMCLight> features)
         {
             m_reader = reader;
             m_spectraMap = new Dictionary<int, MSSpectra>();
@@ -30,14 +35,14 @@ namespace MultiAlignCore.IO.RawData
                 foreach (var msFeature in feature.MsFeatures)
                 {
                     foreach (var spectrum in msFeature.MSnSpectra)
-                    {                        
+                    {
                         if (!m_spectraMap.ContainsKey(spectrum.Scan))
                             m_spectraMap.Add(spectrum.Scan, spectrum);
                     }
                 }
             }
         }
-        
+
         public List<XYData> GetRawSpectra(int scan, int group, out ScanSummary summary)
         {
             return m_reader.GetRawSpectra(scan, group, out summary);
@@ -55,7 +60,6 @@ namespace MultiAlignCore.IO.RawData
 
         public List<MSSpectra> GetMSMSSpectra(int group)
         {
-
             return m_spectraMap.Values.ToList();
         }
 
@@ -106,7 +110,7 @@ namespace MultiAlignCore.IO.RawData
                 return m_spectraMap[scan];
             }
 
-    return m_reader.GetSpectrum(scan, group, scanLevel, out summary, loadPeaks);
+            return m_reader.GetSpectrum(scan, group, scanLevel, out summary, loadPeaks);
         }
     }
 }

@@ -1,14 +1,18 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
 using PNNLOmics.Data.Features;
 
+#endregion
+
 namespace MultiAlignCore.IO.Features
 {
     /// <summary>
-    /// Class that extracts features from a sqlite database using ADO
+    ///     Class that extracts features from a sqlite database using ADO
     /// </summary>
-    public class UmcAdoDAO: IUmcDAO 
+    public class UmcAdoDAO : IUmcDAO
     {
         public string DatabasePath { get; set; }
 
@@ -21,12 +25,12 @@ namespace MultiAlignCore.IO.Features
 
         public List<UMCLight> FindByMassRange(double mass1, double mass2)
         {
-            throw new NotImplementedException();            
+            throw new NotImplementedException();
         }
 
         public UMCLight FindByFeatureID(int id)
         {
-            throw new NotImplementedException();   
+            throw new NotImplementedException();
         }
 
         public List<UMCLight> FindByClusterID(List<int> idList)
@@ -51,7 +55,7 @@ namespace MultiAlignCore.IO.Features
 
             var featurecount = 0;
             var cuont = 0;
-            using (var connection = new SQLiteConnection(string.Format("Data Source = {0}", DatabasePath))) 
+            using (var connection = new SQLiteConnection(string.Format("Data Source = {0}", DatabasePath)))
             {
                 connection.Open();
                 using (var command = connection.CreateCommand())
@@ -64,15 +68,15 @@ namespace MultiAlignCore.IO.Features
                             var values = new object[20];
                             reader.GetValues(values);
 
-                            var feature    = new UMCLight();
+                            var feature = new UMCLight();
                             feature.ChargeState = Convert.ToInt32(values[11]);
                             feature.MassMonoisotopicAligned = Convert.ToDouble(values[5]);
-                            feature.RetentionTime           = Convert.ToDouble(values[6]);
-                            feature.DriftTime               = Convert.ToDouble(values[15]);
-                            feature.AbundanceSum            = Convert.ToInt64(values[14]);
-                            feature.Abundance               = Convert.ToInt64(values[13]);
-                            feature.GroupId                 = Convert.ToInt32(values[1]);
-                            feature.Id                      = Convert.ToInt32(values[0]);
+                            feature.RetentionTime = Convert.ToDouble(values[6]);
+                            feature.DriftTime = Convert.ToDouble(values[15]);
+                            feature.AbundanceSum = Convert.ToInt64(values[14]);
+                            feature.Abundance = Convert.ToInt64(values[13]);
+                            feature.GroupId = Convert.ToInt32(values[1]);
+                            feature.Id = Convert.ToInt32(values[0]);
                             features.Add(feature);
 
                             featurecount++;
@@ -156,7 +160,6 @@ namespace MultiAlignCore.IO.Features
         }
 
         #endregion
-
 
         public IEnumerable<int> RetrieveChargeStates()
         {

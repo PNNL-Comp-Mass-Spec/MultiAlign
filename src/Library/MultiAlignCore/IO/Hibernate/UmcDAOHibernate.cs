@@ -1,3 +1,5 @@
+#region
+
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -5,14 +7,14 @@ using System.Data.SQLite;
 using NHibernate.Criterion;
 using PNNLOmics.Data.Features;
 
+#endregion
+
 namespace MultiAlignCore.IO.Features.Hibernate
 {
-
     public class UmcDAOHibernate : GenericDAOHibernate<UMCLight>, IUmcDAO
     {
-		
         /// <summary>
-        /// Searches for and returns a List of Umc Objects in the Database that have the exact Mass given.
+        ///     Searches for and returns a List of Umc Objects in the Database that have the exact Mass given.
         /// </summary>
         /// <param name="mass">Mass value to be searched for</param>
         /// <returns>List of Umc Objects</returns>
@@ -21,13 +23,13 @@ namespace MultiAlignCore.IO.Features.Hibernate
             ICriterion criterion = Restrictions.Eq("Mass", mass);
             var criterionList = new List<ICriterion>();
             criterionList.Add(criterion);
-            
+
             return FindByCriteria(criterionList);
         }
 
         /// <summary>
-        /// Searches for and returns a List of Umc Objects in the Database that have a Mass inside the given range.
-        /// If the Lower Mass Value given is greater than the Upper Mass Value given, they are switched.
+        ///     Searches for and returns a List of Umc Objects in the Database that have a Mass inside the given range.
+        ///     If the Lower Mass Value given is greater than the Upper Mass Value given, they are switched.
         /// </summary>
         /// <param name="mass1">Lower mass value</param>
         /// <param name="mass2">Upper mass value</param>
@@ -39,7 +41,8 @@ namespace MultiAlignCore.IO.Features.Hibernate
             if (mass1 <= mass2)
             {
                 criterion = Restrictions.Between("Mass", mass1, mass2);
-            } else
+            }
+            else
             {
                 criterion = Restrictions.Between("Mass", mass2, mass1);
             }
@@ -49,8 +52,9 @@ namespace MultiAlignCore.IO.Features.Hibernate
 
             return FindByCriteria(criterionList);
         }
+
         /// <summary>
-        /// Finds a feature based on a feature id.
+        ///     Finds a feature based on a feature id.
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -67,7 +71,7 @@ namespace MultiAlignCore.IO.Features.Hibernate
         }
 
         /// <summary>
-        /// Finds a feature based on a charge state.
+        ///     Finds a feature based on a charge state.
         /// </summary>
         /// <returns></returns>
         public List<UMCLight> FindByCharge(int charge)
@@ -77,8 +81,9 @@ namespace MultiAlignCore.IO.Features.Hibernate
             criterionList.Add(criterion);
             return FindByCriteria(criterionList);
         }
+
         /// <summary>
-        /// Finds a feature based on a charge state.
+        ///     Finds a feature based on a charge state.
         /// </summary>
         /// <param name="charge">Charge state interested in</param>
         /// <param name="dataset">Dataset interested in</param>
@@ -90,8 +95,9 @@ namespace MultiAlignCore.IO.Features.Hibernate
             criterionList.Add(criterion);
             return FindByCriteria(criterionList);
         }
+
         /// <summary>
-        /// Finds a feature based on a feature id.
+        ///     Finds a feature based on a feature id.
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -106,15 +112,17 @@ namespace MultiAlignCore.IO.Features.Hibernate
 
             return umcs;
         }
+
         public int FindMaxCharge()
         {
-            var data = GetSession().CreateCriteria(typeof(UMCLight))
-                            .SetProjection(Projections.Max("ChargeState"))
-                                .UniqueResult();
+            var data = GetSession().CreateCriteria(typeof (UMCLight))
+                .SetProjection(Projections.Max("ChargeState"))
+                .UniqueResult();
             return Convert.ToInt32(data);
         }
+
         /// <summary>
-        /// Finds a feature based on a cluster id.
+        ///     Finds a feature based on a cluster id.
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -131,41 +139,41 @@ namespace MultiAlignCore.IO.Features.Hibernate
         }
 
         /// <summary>
-        /// Finds a feature based on a List of cluster IDs.
+        ///     Finds a feature based on a List of cluster IDs.
         /// </summary>
         /// <returns></returns>
         public List<UMCLight> FindByClusterID(List<int> idList)
-		{
-			ICriterion criterion = Restrictions.In("ClusterId", idList);
-			var criterionList = new List<ICriterion>();
-			criterionList.Add(criterion);
+        {
+            ICriterion criterion = Restrictions.In("ClusterId", idList);
+            var criterionList = new List<ICriterion>();
+            criterionList.Add(criterion);
             var umcs = FindByCriteria(criterionList);
-			if (umcs.Count < 1)
-			{
-				return null;
-			}
+            if (umcs.Count < 1)
+            {
+                return null;
+            }
 
-			return umcs;
-		}
+            return umcs;
+        }
 
         /// <summary>
-        /// Searches for and returns a List of Umc Objects in the Database that have the exact Dataset Id given.
+        ///     Searches for and returns a List of Umc Objects in the Database that have the exact Dataset Id given.
         /// </summary>
         /// <returns>List of Umc Objects</returns>
         public List<UMCLight> FindByDatasetId(int datasetId)
-		{
-			ICriterion criterion = Restrictions.Eq("GroupId", datasetId);
-			var criterionList = new List<ICriterion>();
-			criterionList.Add(criterion);
-			return FindByCriteria(criterionList);
-		}
+        {
+            ICriterion criterion = Restrictions.Eq("GroupId", datasetId);
+            var criterionList = new List<ICriterion>();
+            criterionList.Add(criterion);
+            return FindByCriteria(criterionList);
+        }
 
         /// <summary>
-        /// Finds all features that are clustered.
+        ///     Finds all features that are clustered.
         /// </summary>
         /// <returns></returns>
         /// <summary>
-        /// Searches for and returns a List of Umc Objects in the Database that have the exact Dataset Id given.
+        ///     Searches for and returns a List of Umc Objects in the Database that have the exact Dataset Id given.
         /// </summary>
         /// <returns>List of Umc Objects</returns>
         public List<UMCLight> FindAllClustered()
@@ -174,7 +182,8 @@ namespace MultiAlignCore.IO.Features.Hibernate
             var criterionList = new List<ICriterion>();
             criterionList.Add(criterion);
             return FindByCriteria(criterionList);
-        }        
+        }
+
         public void ClearAlignmentData()
         {
             using (var connection = new SQLiteConnection("Data Source=" + NHibernateUtil.Path))
@@ -183,7 +192,8 @@ namespace MultiAlignCore.IO.Features.Hibernate
                 using (var command = connection.CreateCommand())
                 {
                     command.CommandType = CommandType.Text;
-                    command.CommandText = "UPDATE T_LCMS_Features  SET Mass_Calibrated = -1, NET = -1, Scan_Aligned = -1";
+                    command.CommandText =
+                        "UPDATE T_LCMS_Features  SET Mass_Calibrated = -1, NET = -1, Scan_Aligned = -1";
                     command.ExecuteNonQuery();
                 }
                 connection.Close();

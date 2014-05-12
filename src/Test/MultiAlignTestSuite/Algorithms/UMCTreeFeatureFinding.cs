@@ -1,4 +1,6 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -14,6 +16,8 @@ using PNNLOmics.Data.Features;
 using PNNLOmics.Extensions;
 using PNNLOmicsIO.IO;
 
+#endregion
+
 namespace MultiAlignTestSuite.Algorithms
 {
     [TestFixture]
@@ -23,7 +27,7 @@ namespace MultiAlignTestSuite.Algorithms
         [TestCase(@"M:\data\proteomics\TestData\QC-Shew\226151_QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27_isos.csv")]
         public IEnumerable<UMCLight> TestUmcFeatures(string path)
         {
-            var reader = new MsFeatureLightFileReader { Delimeter = "," };
+            var reader = new MsFeatureLightFileReader {Delimeter = ","};
             var newMsFeatures = reader.ReadFile(path);
 
             var finder = new UmcTreeFeatureFinder
@@ -31,12 +35,12 @@ namespace MultiAlignTestSuite.Algorithms
                 MaximumNet = .005,
                 MaximumScan = 50
             };
-            var tolerances  = new FeatureTolerances
+            var tolerances = new FeatureTolerances
             {
                 Mass = 8,
                 RetentionTime = .005
             };
-            var options  = new LcmsFeatureFindingOptions(tolerances); 
+            var options = new LcmsFeatureFindingOptions(tolerances);
             var features = finder.FindFeatures(newMsFeatures.ToList(), options, null);
 
             // Work on total feature count here.
@@ -47,28 +51,29 @@ namespace MultiAlignTestSuite.Algorithms
 
         [Test]
         [TestCase(@"M:\data\proteomics\TestData\QC-Shew\226151_QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27_isos.csv",
-                  @"M:\data\proteomics\TestData\QC-Shew\226151_QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27.RAW",
-                  Ignore = false)]
-        [TestCase(@"M:\data\proteomics\TestData\QC-Shew\smallTest\226151_QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27_isos.csv",
-                  @"M:\data\proteomics\TestData\QC-Shew\smallTest\226151_QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27.RAW",
-                  Ignore = true)]
+            @"M:\data\proteomics\TestData\QC-Shew\226151_QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27.RAW",
+            Ignore = false)]
+        [TestCase(
+            @"M:\data\proteomics\TestData\QC-Shew\smallTest\226151_QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27_isos.csv",
+            @"M:\data\proteomics\TestData\QC-Shew\smallTest\226151_QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27.RAW",
+            Ignore = true)]
         [TestCase(@"M:\data\proteomics\TestData\QC-Shew\226159_QC_Shew_11_02_pt5-d_6Jun11_Sphinx_11-04-05_isos.csv",
-                  @"M:\data\proteomics\TestData\QC-Shew\226159_QC_Shew_11_02_pt5-d_6Jun11_Sphinx_11-04-05.RAW",
-                  Ignore = true)]
+            @"M:\data\proteomics\TestData\QC-Shew\226159_QC_Shew_11_02_pt5-d_6Jun11_Sphinx_11-04-05.RAW",
+            Ignore = true)]
         public void TestUmcFeatures(string path, string rawPath)
         {
-            var reader          = new MsFeatureLightFileReader{ Delimeter = "," };
-            var newMsFeatures   = reader.ReadFile(path);
-            var finder          = new UmcTreeFeatureFinder();
-            var featureTolerances        = new FeatureTolerances
+            var reader = new MsFeatureLightFileReader {Delimeter = ","};
+            var newMsFeatures = reader.ReadFile(path);
+            var finder = new UmcTreeFeatureFinder();
+            var featureTolerances = new FeatureTolerances
             {
-                Mass            = 12,
-                RetentionTime   = .04
+                Mass = 12,
+                RetentionTime = .04
             };
-            var options         = new LcmsFeatureFindingOptions(featureTolerances)
-            { 
-                    MaximumNetRange = .003,
-                    MaximumScanRange = 50                    
+            var options = new LcmsFeatureFindingOptions(featureTolerances)
+            {
+                MaximumNetRange = .003,
+                MaximumScanRange = 50
             };
 
 
@@ -80,19 +85,20 @@ namespace MultiAlignTestSuite.Algorithms
             var end = DateTime.Now;
             Console.WriteLine(@"Test Took: " + end.Subtract(start).TotalSeconds);
 
-            
 
             if (features == null)
                 throw new NullReferenceException("The feature list came back empty.  This is a problem.");
- 
 
-            
+
             var dirPath = Path.GetDirectoryName(path);
             if (dirPath != null)
-                using (var writer = File.CreateText(Path.Combine(dirPath,  Path.GetFileName(path).Replace("_isos.csv", "_xics.csv"))))
+                using (
+                    var writer =
+                        File.CreateText(Path.Combine(dirPath, Path.GetFileName(path).Replace("_isos.csv", "_xics.csv")))
+                    )
                 {
                     foreach (var feature in features)
-                    {                    
+                    {
                         writer.WriteLine();
                         writer.WriteLine("Feature {0}", feature.Id);
                         var chargeMap = feature.CreateChargeMap();
@@ -102,7 +108,8 @@ namespace MultiAlignTestSuite.Algorithms
                             foreach (var msFeature in chargeMap[charge])
                             {
                                 var count = msFeature.MSnSpectra.Count;
-                                writer.WriteLine("{0},{1},{2},{3},{4}", charge, msFeature.Mz, msFeature.Scan, msFeature.Abundance, count);
+                                writer.WriteLine("{0},{1},{2},{3},{4}", charge, msFeature.Mz, msFeature.Scan,
+                                    msFeature.Abundance, count);
                             }
                         }
                     }
@@ -115,24 +122,25 @@ namespace MultiAlignTestSuite.Algorithms
 
         [Test]
         [TestCase(@"M:\data\proteomics\Applications\lewy-small\Lewy2_18Cs_2Nov13_Samwise_13-07-28_isos.csv",
-                  @"M:\data\proteomics\Applications\lewy-small\Lewy2_18Cs_2Nov13_Samwise_13-07-28.raw",
-                  500,
-                  Ignore = false)]
+            @"M:\data\proteomics\Applications\lewy-small\Lewy2_18Cs_2Nov13_Samwise_13-07-28.raw",
+            500,
+            Ignore = false)]
         [TestCase(@"M:\data\proteomics\TestData\QC-Shew\226151_QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27_isos.csv",
-                  @"M:\data\proteomics\TestData\QC-Shew\226151_QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27.RAW",
-                  500,
-                  Ignore = true)]
-        [TestCase(@"M:\data\proteomics\TestData\QC-Shew\smallTest\226151_QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27_isos.csv",
-                  @"M:\data\proteomics\TestData\QC-Shew\smallTest\226151_QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27.RAW",
-                  500,
-                  Ignore = true)]
+            @"M:\data\proteomics\TestData\QC-Shew\226151_QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27.RAW",
+            500,
+            Ignore = true)]
+        [TestCase(
+            @"M:\data\proteomics\TestData\QC-Shew\smallTest\226151_QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27_isos.csv",
+            @"M:\data\proteomics\TestData\QC-Shew\smallTest\226151_QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27.RAW",
+            500,
+            Ignore = true)]
         [TestCase(@"M:\data\proteomics\TestData\QC-Shew\226159_QC_Shew_11_02_pt5-d_6Jun11_Sphinx_11-04-05_isos.csv",
-                  @"M:\data\proteomics\TestData\QC-Shew\226159_QC_Shew_11_02_pt5-d_6Jun11_Sphinx_11-04-05.RAW",
-                  500,
-                  Ignore = true)]
+            @"M:\data\proteomics\TestData\QC-Shew\226159_QC_Shew_11_02_pt5-d_6Jun11_Sphinx_11-04-05.RAW",
+            500,
+            Ignore = true)]
         public void TestUmcFeaturesMultipleCharges(string path, string rawPath, int maxScanDiff)
         {
-            var reader = new MsFeatureLightFileReader { Delimeter = "," };
+            var reader = new MsFeatureLightFileReader {Delimeter = ","};
             var newMsFeatures = reader.ReadFile(path);
             var finder = new UmcTreeFeatureFinder();
             var featureTolerances = new FeatureTolerances
@@ -144,7 +152,6 @@ namespace MultiAlignTestSuite.Algorithms
             {
                 MaximumNetRange = .002,
                 MaximumScanRange = 50
-
             };
 
             var provider = RawLoaderFactory.CreateFileReader(rawPath);
@@ -160,10 +167,12 @@ namespace MultiAlignTestSuite.Algorithms
                 throw new NullReferenceException("The feature list came back empty.  This is a problem.");
 
 
-
             var dirPath = Path.GetDirectoryName(path);
             if (dirPath != null)
-                using (var writer = File.CreateText(Path.Combine(dirPath, Path.GetFileName(path).Replace("_isos.csv", "_xics.csv"))))
+                using (
+                    var writer =
+                        File.CreateText(Path.Combine(dirPath, Path.GetFileName(path).Replace("_isos.csv", "_xics.csv")))
+                    )
                 {
                     foreach (var feature in features)
                     {
@@ -180,11 +189,12 @@ namespace MultiAlignTestSuite.Algorithms
                             foreach (var msFeature in chargeMap[charge])
                             {
                                 var count = msFeature.MSnSpectra.Count;
-                                writer.WriteLine("{0},{1},{2},{3},{4}", charge, msFeature.Mz, msFeature.Scan, msFeature.Abundance, count);
+                                writer.WriteLine("{0},{1},{2},{3},{4}", charge, msFeature.Mz, msFeature.Scan,
+                                    msFeature.Abundance, count);
                             }
                         }
 
-                    
+
                         var charges = chargeMap.Keys.ToList();
 
                         for (var i = 0; i < charges.Count; i++)
@@ -197,7 +207,8 @@ namespace MultiAlignTestSuite.Algorithms
                                 var diff = x.MinScan() - y.MinScan();
                                 if (diff > maxScanDiff)
                                 {
-                                    throw new Exception("There is a problem with the feature finder across charge states");
+                                    throw new Exception(
+                                        "There is a problem with the feature finder across charge states");
                                 }
                             }
                         }
@@ -211,21 +222,21 @@ namespace MultiAlignTestSuite.Algorithms
 
         [Test]
         [TestCase(@"M:\data\proteomics\TestData\QC-Shew\smallFeature.csv",
-                  Ignore = false)]
+            Ignore = false)]
         public void TestChargeStateSplit(string path)
-        {            
+        {
             var data = File.ReadAllLines(path);
-            var map  = new Dictionary<int, List<MSFeatureLight>>();
+            var map = new Dictionary<int, List<MSFeatureLight>>();
 
             for (var i = 1; i < data.Length; i++)
             {
-                var feature         = new MSFeatureLight();
-                var msFeatureData   = data[i].Split(',');
-                
-                feature.ChargeState         = Convert.ToInt32(msFeatureData[0]);
-                feature.MassMonoisotopic    = Convert.ToDouble(msFeatureData[1]);
-                feature.Scan                = Convert.ToInt32(msFeatureData[2]);
-                feature.Abundance           = Convert.ToInt64(msFeatureData[3]);
+                var feature = new MSFeatureLight();
+                var msFeatureData = data[i].Split(',');
+
+                feature.ChargeState = Convert.ToInt32(msFeatureData[0]);
+                feature.MassMonoisotopic = Convert.ToDouble(msFeatureData[1]);
+                feature.Scan = Convert.ToInt32(msFeatureData[2]);
+                feature.Abundance = Convert.ToInt64(msFeatureData[3]);
 
                 if (!map.ContainsKey(feature.ChargeState))
                 {
@@ -248,15 +259,16 @@ namespace MultiAlignTestSuite.Algorithms
                 features.Add(feature);
             }
 
-            var finder      = new MsFeatureTreeClusterer<MSFeatureLight, UMCLight>();
-            var comparison  = finder.CompareMonoisotopic(features[0], features[1]);
+            var finder = new MsFeatureTreeClusterer<MSFeatureLight, UMCLight>();
+            var comparison = finder.CompareMonoisotopic(features[0], features[1]);
 
             Assert.AreNotEqual(comparison, 0);
         }
 
 
         [Test]
-        [TestCase(@"M:\data\proteomics\TestData\QC-Shew\smallTest\226151_QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27.RAW")]
+        [TestCase(@"M:\data\proteomics\TestData\QC-Shew\smallTest\226151_QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27.RAW"
+            )]
         public void ReadTime(string path)
         {
             using (var provider = RawLoaderFactory.CreateFileReader(path))
@@ -278,32 +290,32 @@ namespace MultiAlignTestSuite.Algorithms
 
         [Test]
         [TestCase(@"M:\data\proteomics\TestData\QC-Shew\smallTest\226151_QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27.RAW",
-            ExpectedException = typeof(ScanOutOfRangeException))]
+            ExpectedException = typeof (ScanOutOfRangeException))]
         public void AskForBigScan(string path)
         {
             using (var provider = RawLoaderFactory.CreateFileReader(path))
             {
                 provider.AddDataFile(path, 0);
-                ScanSummary summary;                
-                provider.GetRawSpectra(10000000, 0, 1, out summary);         
+                ScanSummary summary;
+                provider.GetRawSpectra(10000000, 0, 1, out summary);
             }
         }
 
         [Test]
-        [TestCase(  @"M:\data\proteomics\TestData\QC-Shew\226151_QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27_isos.csv",
-                    @"M:\data\proteomics\TestData\QC-Shew\226151-testDatabase.db3")]
+        [TestCase(@"M:\data\proteomics\TestData\QC-Shew\226151_QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27_isos.csv",
+            @"M:\data\proteomics\TestData\QC-Shew\226151-testDatabase.db3")]
         public void TestDatabaseInsertion(string path, string databasePath)
         {
             var features = TestUmcFeatures(path);
 
-            if (File.Exists(databasePath))            
-                File.Delete(databasePath);   
-            
+            if (File.Exists(databasePath))
+                File.Delete(databasePath);
+
             NHibernateUtil.ConnectToDatabase(databasePath, true);
-            var cache             = new MSFeatureDAOHibernate();
+            var cache = new MSFeatureDAOHibernate();
             var msFeatures = new List<MSFeatureLight>();
-            foreach(var feature in features)            
-                msFeatures.AddRange(feature.MsFeatures);            
+            foreach (var feature in features)
+                msFeatures.AddRange(feature.MsFeatures);
             cache.AddAll(msFeatures);
 
             var umcCache = new UmcDAOHibernate();

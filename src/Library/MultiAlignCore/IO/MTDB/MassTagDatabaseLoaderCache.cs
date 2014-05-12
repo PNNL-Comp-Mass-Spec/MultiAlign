@@ -1,5 +1,8 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Collections.Generic;
+using MultiAlignCore.Algorithms.Options;
 using MultiAlignCore.Data;
 using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.Features.Hibernate;
@@ -7,14 +10,16 @@ using PNNLOmics.Algorithms;
 using PNNLOmics.Data;
 using PNNLOmics.Data.MassTags;
 
+#endregion
+
 namespace MultiAlignCore.IO.MTDB
 {
-    public class MassTagDatabaseLoaderCache: IMtdbLoader, IProgressNotifer
+    public class MassTagDatabaseLoaderCache : IMtdbLoader, IProgressNotifer
     {
-
         public event EventHandler<ProgressNotifierArgs> Progress;
+
         /// <summary>
-        /// Updates listeners with status messages.
+        ///     Updates listeners with status messages.
         /// </summary>
         /// <param name="message"></param>
         private void UpdateStatus(string message)
@@ -24,20 +29,16 @@ namespace MultiAlignCore.IO.MTDB
                 Progress(this, new ProgressNotifierArgs(message));
             }
         }
+
         #region Properties
+
         /// <summary>
-        /// Gets or sets the default mass tag database options.
+        ///     Gets or sets the default mass tag database options.
         /// </summary>
-        public Algorithms.Options.MassTagDatabaseOptions Options
-        {
-            get;
-            set;
-        }
-        public IMassTagDAO Provider
-        {
-            get;
-            set;
-        }
+        public MassTagDatabaseOptions Options { get; set; }
+
+        public IMassTagDAO Provider { get; set; }
+
         #endregion
 
         #region IMtdbLoader Members
@@ -112,7 +113,7 @@ namespace MultiAlignCore.IO.MTDB
                 }
                 massTagProteinMap[id].AddRange(newProteins);
             }
-            
+
             UpdateStatus("Building the in memory mass tag database.");
             database.AddMassTagsAndProteins(massTags, massTagProteinMap);
             database.AllProteins = proteins;
@@ -126,7 +127,6 @@ namespace MultiAlignCore.IO.MTDB
         #endregion
 
         #region IProgressNotifer Members
-
 
         #endregion
     }

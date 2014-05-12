@@ -14,7 +14,7 @@ namespace MultiAlign.Converters
             if (value == null)
                 return DataGridRowDetailsVisibilityMode.Collapsed;
 
-            bool boolValue = System.Convert.ToBoolean(value);
+            var boolValue = System.Convert.ToBoolean(value);
 
             return (boolValue)
                 ? DataGridRowDetailsVisibilityMode.Visible

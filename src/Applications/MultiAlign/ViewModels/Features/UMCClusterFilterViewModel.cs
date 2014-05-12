@@ -136,11 +136,11 @@ namespace MultiAlign.ViewModels.Features
             {
                 // First map the cluster ID's from the text...who cares if some malformed.
                 var hasClusters = new Dictionary<int, bool>();
-                string[] data = m_clusterIdFilter.Replace("\r", " ").Replace("\n", " ").Split(' ');
-                foreach (string id in data)
+                var data = m_clusterIdFilter.Replace("\r", " ").Replace("\n", " ").Split(' ');
+                foreach (var id in data)
                 {
-                    int clusterId = 0;
-                    bool worked = int.TryParse(id, out clusterId);
+                    var clusterId = 0;
+                    var worked = int.TryParse(id, out clusterId);
                     if (worked)
                     {
                         if (!hasClusters.ContainsKey(clusterId))

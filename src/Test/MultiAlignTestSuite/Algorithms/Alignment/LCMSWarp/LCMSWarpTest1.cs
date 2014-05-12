@@ -1,4 +1,6 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -12,16 +14,19 @@ using PNNLOmics.Algorithms.Alignment.LcmsWarp;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Data.MassTags;
 
+#endregion
 
 namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
 {
     [TestFixture]
     public class LcmsWarpTest1
     {
-        [Test (Description = "This tests the new LCMSWarp port between two database search results converted to UmcLights")]
+        [Test(
+            Description = "This tests the new LCMSWarp port between two database search results converted to UmcLights")
+        ]
         [TestCase(
-             @"C:\UnitTestFolder\dataset1.txt",
-             @"C:\UnitTestFolder\dataset2.txt"
+            @"C:\UnitTestFolder\dataset1.txt",
+            @"C:\UnitTestFolder\dataset2.txt"
             )]
         public void TestLcmsWarpPort(string baselinePath, string aligneePath)
         {
@@ -31,8 +36,8 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
 
             var baseline = new List<UMCLight>();
 
-            var rawBaselineData = System.IO.File.ReadAllLines(baselinePath);
-            var rawFeaturesData = System.IO.File.ReadAllLines(aligneePath);
+            var rawBaselineData = File.ReadAllLines(baselinePath);
+            var rawFeaturesData = File.ReadAllLines(aligneePath);
 
             foreach (var line in rawBaselineData)
             {
@@ -54,19 +59,19 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
             }
 
             var features = (from line in rawFeaturesData
-                            where line != ""
-                            select line.Split(',')
-                                into parsed
-                                select new UMCLight
-                                {
-                                    Net = Convert.ToDouble(parsed[0]),
-                                    ChargeState = Convert.ToInt32(parsed[1]),
-                                    Mz = Convert.ToDouble(parsed[2]),
-                                    Scan = Convert.ToInt32(parsed[3]),
-                                    MassMonoisotopic = Convert.ToDouble(parsed[4]),
-                                    MassMonoisotopicAligned = Convert.ToDouble(parsed[5]),
-                                    Id = Convert.ToInt32(parsed[6])
-                                }).ToList();
+                where line != ""
+                select line.Split(',')
+                into parsed
+                select new UMCLight
+                {
+                    Net = Convert.ToDouble(parsed[0]),
+                    ChargeState = Convert.ToInt32(parsed[1]),
+                    Mz = Convert.ToDouble(parsed[2]),
+                    Scan = Convert.ToInt32(parsed[3]),
+                    MassMonoisotopic = Convert.ToDouble(parsed[4]),
+                    MassMonoisotopicAligned = Convert.ToDouble(parsed[5]),
+                    Id = Convert.ToInt32(parsed[6])
+                }).ToList();
 
 
             var outputData = aligner.Align(baseline, features);
@@ -76,13 +81,13 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
 
         [Test(Description = "Tests the old C++ version, to make sure it sets the reference features correctly.")]
         [TestCase(
-             @"C:\UnitTestFolder\dataset1.txt"
+            @"C:\UnitTestFolder\dataset1.txt"
             )]
         public void TestCppSetReferenceFeatures(string baselinePath)
         {
             Console.WriteLine(@"I'm Testing!");
 
-            var rawBaselineData = System.IO.File.ReadAllLines(baselinePath);
+            var rawBaselineData = File.ReadAllLines(baselinePath);
 
             var baseline = new List<UMCLight>();
 
@@ -104,15 +109,15 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
                     baseline.Add(data);
                 }
             }
-            
+
             var oldStyle = new clsAlignmentProcessor();
             var oldBaseline = baseline.Select(baseData => new clsUMC
             {
-                Net = baseData.Net, 
+                Net = baseData.Net,
                 MZForCharge = baseData.Mz,
-                Scan = baseData.Scan, 
-                Mass = baseData.MassMonoisotopic, 
-                MassCalibrated = baseData.MassMonoisotopicAligned, 
+                Scan = baseData.Scan,
+                Mass = baseData.MassMonoisotopic,
+                MassCalibrated = baseData.MassMonoisotopicAligned,
                 Id = baseData.Id
             }).ToList();
 
@@ -122,36 +127,36 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
 
         [Test(Description = "Tests the old C++ version, to make sure it sets the alignee features correctly.")]
         [TestCase(
-             @"C:\UnitTestFolder\dataset2.txt"
+            @"C:\UnitTestFolder\dataset2.txt"
             )]
         public void TestSetAligneeFeatures(string aligneePath)
         {
             Console.WriteLine(@"I'm Testing!");
-            var rawFeaturesData = System.IO.File.ReadAllLines(aligneePath);
+            var rawFeaturesData = File.ReadAllLines(aligneePath);
 
             var features = (from line in rawFeaturesData
-                            where line != ""
-                            select line.Split(',')
-                                into parsed
-                                select new UMCLight
-                                {
-                                    Net = Convert.ToDouble(parsed[0]),
-                                    ChargeState = Convert.ToInt32(parsed[1]),
-                                    Mz = Convert.ToDouble(parsed[2]),
-                                    Scan = Convert.ToInt32(parsed[3]),
-                                    MassMonoisotopic = Convert.ToDouble(parsed[4]),
-                                    MassMonoisotopicAligned = Convert.ToDouble(parsed[5]),
-                                    Id = Convert.ToInt32(parsed[6])
-                                }).ToList();
-            
-            var oldStyle = new clsAlignmentProcessor();            
+                where line != ""
+                select line.Split(',')
+                into parsed
+                select new UMCLight
+                {
+                    Net = Convert.ToDouble(parsed[0]),
+                    ChargeState = Convert.ToInt32(parsed[1]),
+                    Mz = Convert.ToDouble(parsed[2]),
+                    Scan = Convert.ToInt32(parsed[3]),
+                    MassMonoisotopic = Convert.ToDouble(parsed[4]),
+                    MassMonoisotopicAligned = Convert.ToDouble(parsed[5]),
+                    Id = Convert.ToInt32(parsed[6])
+                }).ToList();
+
+            var oldStyle = new clsAlignmentProcessor();
             var oldFeatures = features.Select(baseData => new clsUMC
             {
                 Net = baseData.Net,
                 MZForCharge = baseData.Mz,
-                Scan = baseData.Scan, 
+                Scan = baseData.Scan,
                 Mass = baseData.MassMonoisotopic,
-                MassCalibrated = baseData.MassMonoisotopicAligned, 
+                MassCalibrated = baseData.MassMonoisotopicAligned,
                 Id = baseData.Id
             }).ToList();
 
@@ -163,16 +168,16 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
 
         [Test(Description = "Tests the old C++ version, to make sure it sets the reference features correctly.")]
         [TestCase(
-             @"C:\UnitTestFolder\dataset1.txt",
-             @"C:\UnitTestFolder\dataset2.txt"
+            @"C:\UnitTestFolder\dataset1.txt",
+            @"C:\UnitTestFolder\dataset2.txt"
             )]
         public void TestPerformNetAlignment(string baselinePath, string aligneePath)
         {
-            Console.WriteLine(@"I'm Testing!");            
+            Console.WriteLine(@"I'm Testing!");
             var baseline = new List<UMCLight>();
 
-            var rawBaselineData = System.IO.File.ReadAllLines(baselinePath);
-            var rawFeaturesData = System.IO.File.ReadAllLines(aligneePath);
+            var rawBaselineData = File.ReadAllLines(baselinePath);
+            var rawFeaturesData = File.ReadAllLines(aligneePath);
 
             foreach (var line in rawBaselineData)
             {
@@ -208,10 +213,10 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
                     ScanStart = Convert.ToInt32(parsed[3]),
                     Scan = Convert.ToInt32(parsed[3]),
                     MassMonoisotopic = Convert.ToDouble(parsed[4]),
-                    MassMonoisotopicAligned = Convert.ToDouble(parsed[5]), 
+                    MassMonoisotopicAligned = Convert.ToDouble(parsed[5]),
                     Id = Convert.ToInt32(parsed[6])
                 }).ToList();
-            
+
             var oldStyle = new LcmsWarpFeatureAligner();
 
             var oldOutputData = oldStyle.Align(baseline, features);
@@ -227,7 +232,7 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
             //Read a csv file, put the data into a new UMCLight for each one
             var csvFileText = File.ReadAllLines(csvPath);
 
-            var csvDataList = new List<UMCLight> { Capacity = csvFileText.Length };
+            var csvDataList = new List<UMCLight> {Capacity = csvFileText.Length};
 
             foreach (var line in csvFileText)
             {
@@ -237,7 +242,6 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
                 //put the data from the parsed line into the umcDataMember in the appropriate fashion
 
                 csvDataList.Add(umcDataMember);
-
             }
 
             //Create clusters from the data read in from the file
@@ -254,7 +258,8 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
 
 
             //Read a mtdb file using MACore or sqliteDb
-            var databasePath = "C:\\UnitTestFolder\\MSGFPlus\\blah.db"; //Either read from console, or entered at program execution
+            var databasePath = "C:\\UnitTestFolder\\MSGFPlus\\blah.db";
+                //Either read from console, or entered at program execution
             // Console.ReadLine(databasePath) or databasePath = args[2]
             var database = ReadDatabase(databasePath);
 
@@ -294,7 +299,7 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
         }
 
         private static void WriteData(List<FeatureMatchLight<UMCClusterLight, MassTagLight>> matchList,
-                                      string writePath)
+            string writePath)
         {
             if (writePath == null)
             {

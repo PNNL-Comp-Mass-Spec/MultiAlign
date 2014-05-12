@@ -23,7 +23,7 @@ namespace MultiAlign.ViewModels.Datasets
 
         public DatasetCollectionViewModel(IEnumerable<DatasetInformation> datasets)
         {
-            List<DatasetInformationViewModel> datasetViewModels = (from dataset in datasets
+            var datasetViewModels = (from dataset in datasets
                 select new DatasetInformationViewModel(dataset)).ToList();
             m_models = datasetViewModels;
             Datasets = new ObservableCollection<DatasetInformationViewModel>(datasetViewModels);
@@ -46,7 +46,7 @@ namespace MultiAlign.ViewModels.Datasets
                 if (value == m_expandImagesall) return;
                 m_expandImagesall = value;
 
-                foreach (DatasetInformationViewModel model in Datasets)
+                foreach (var model in Datasets)
                 {
                     model.ShouldExpand = value;
                 }
@@ -79,28 +79,28 @@ namespace MultiAlign.ViewModels.Datasets
         /// <param name="path"></param>
         private void ReconcilePaths(string path)
         {
-            string[] files = Directory.GetFiles(path);
+            var files = Directory.GetFiles(path);
             var nameMap = new Dictionary<string, string>();
             // Map the names of the files to the dictionary
-            foreach (string file in files)
+            foreach (var file in files)
             {
-                string filenameOnly = Path.GetFileName(file);
+                var filenameOnly = Path.GetFileName(file);
                 if (filenameOnly == null) continue;
                 if (nameMap.ContainsKey(filenameOnly)) continue;
                 nameMap.Add(filenameOnly, file);
             }
 
             var newPaths = new List<DatasetResolveMatchViewModel>();
-            foreach (DatasetInformationViewModel dataset in Datasets)
+            foreach (var dataset in Datasets)
             {
                 if (dataset.Dataset.RawPath == null)
                     continue;
 
 
-                string filename = Path.GetFileName(dataset.Dataset.RawPath);
+                var filename = Path.GetFileName(dataset.Dataset.RawPath);
                 if (nameMap.ContainsKey(filename))
                 {
-                    string newPath = nameMap[filename];
+                    var newPath = nameMap[filename];
                     var model = new DatasetResolveMatchViewModel(dataset, newPath);
                     newPaths.Add(model);
                 }
@@ -112,11 +112,11 @@ namespace MultiAlign.ViewModels.Datasets
                 var viewModel = new DatasetResolveCollectionViewModel(newPaths);
                 view.DataContext = viewModel;
 
-                bool? result = view.ShowDialog();
+                var result = view.ShowDialog();
 
                 if (result == true)
                 {
-                    foreach (DatasetResolveMatchViewModel match in newPaths)
+                    foreach (var match in newPaths)
                     {
                         if (match.IsSelected)
                         {
@@ -130,7 +130,7 @@ namespace MultiAlign.ViewModels.Datasets
 
         private void FilterDatasets()
         {
-            string filter = m_filter.ToLower();
+            var filter = m_filter.ToLower();
             IEnumerable<DatasetInformationViewModel> filtered = new List<DatasetInformationViewModel>(m_models);
             filtered = filtered.Where(x => x.Name.ToLower().Contains(filter));
             FilteredDatasets.Clear();

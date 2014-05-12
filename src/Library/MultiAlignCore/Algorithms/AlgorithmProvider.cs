@@ -1,3 +1,5 @@
+#region
+
 using System;
 using System.Collections.Generic;
 using MultiAlignCore.Algorithms.FeatureMatcher;
@@ -8,48 +10,54 @@ using PNNLOmics.Algorithms.FeatureClustering;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Data.MassTags;
 
+#endregion
+
 namespace MultiAlignCore.Algorithms
 {
-
     /// <summary>
-    /// Class that holds the algorithms to use.
+    ///     Class that holds the algorithms to use.
     /// </summary>
-    public class AlgorithmProvider: IProgressNotifer
+    public class AlgorithmProvider : IProgressNotifer
     {
         /// <summary>
-        /// Fired when a status message needs to be logged.
-        /// </summary> 
+        ///     Fired when a status message needs to be logged.
+        /// </summary>
         public event EventHandler<ProgressNotifierArgs> Progress;
-    
+
         /// <summary>
-        /// Gets or sets the clustering algorithm used.
+        ///     Gets or sets the clustering algorithm used.
         /// </summary>
-        public IClusterer<UMCLight, UMCClusterLight> Clusterer { get; set; }        
+        public IClusterer<UMCLight, UMCClusterLight> Clusterer { get; set; }
+
         /// <summary>
-        /// Gets or sets the feature/database aligner.
+        ///     Gets or sets the feature/database aligner.
         /// </summary>
-        public IFeatureAligner<IEnumerable<UMCLight>, IEnumerable<UMCLight>, classAlignmentData> DatasetAligner { get; set; }
+        public IFeatureAligner<IEnumerable<UMCLight>, IEnumerable<UMCLight>, classAlignmentData> DatasetAligner { get;
+            set; }
+
         /// <summary>
-        /// Gets or sets the database aligner.
+        ///     Gets or sets the database aligner.
         /// </summary>
         public IFeatureAligner<MassTagDatabase, IEnumerable<UMCLight>, classAlignmentData> DatabaseAligner { get; set; }
+
         /// <summary>
-        /// Gets or sets the peak matcher object.
+        ///     Gets or sets the peak matcher object.
         /// </summary>
         public IPeakMatcher<UMCClusterLight> PeakMatcher { get; set; }
-                
+
         /// <summary>
-        /// Registers events for algorithms.
+        ///     Registers events for algorithms.
         /// </summary>
         public void RegisterEvents()
         {
             RegisterEvents(PeakMatcher, DatasetAligner, DatabaseAligner, Clusterer);
         }
+
         /// <summary>
-        /// Registers status event handlers for each algorithm type.
+        ///     Registers status event handlers for each algorithm type.
         /// </summary>
         /// <param name="providers"></param>
-        private void RegisterEvents(params IProgressNotifer [] providers)
+        private void RegisterEvents(params IProgressNotifer[] providers)
         {
             foreach (var provider in providers)
             {
@@ -60,12 +68,12 @@ namespace MultiAlignCore.Algorithms
             }
         }
 
-        void provider_Progress(object sender, ProgressNotifierArgs e)
+        private void provider_Progress(object sender, ProgressNotifierArgs e)
         {
             if (Progress != null)
             {
                 Progress(sender, e);
             }
-        }                
+        }
     }
 }

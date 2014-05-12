@@ -1,4 +1,6 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Collections.Generic;
 using PNNLOmics.Algorithms.Solvers;
 using PNNLOmics.Algorithms.Solvers.LevenburgMarquadt;
@@ -6,41 +8,36 @@ using PNNLOmics.Algorithms.Solvers.LevenburgMarquadt.BasisFunctions;
 using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
 
+#endregion
+
 namespace MultiAlignCore.Algorithms.FeatureFinding
 {
     /// <summary>
-    /// Finds an XIC based on DeconTools profile data.
+    ///     Finds an XIC based on DeconTools profile data.
     /// </summary>
     public class FeatureEvaluator
     {
         /// <summary>
-        /// Default constructor.
+        ///     Default constructor.
         /// </summary>
         public FeatureEvaluator()
         {
-            BasisFunction   = BasisFunctionsEnum.Gaussian;
+            BasisFunction = BasisFunctionsEnum.Gaussian;
             IntegrationType = NumericalIntegrationEnum.Trapezoidal;
         }
 
         /// <summary>
-        /// Gets or sets the basis function to use when fitting XIC profiles.
+        ///     Gets or sets the basis function to use when fitting XIC profiles.
         /// </summary>
-        public BasisFunctionsEnum BasisFunction
-        {
-            get;
-            set;
-        }
+        public BasisFunctionsEnum BasisFunction { get; set; }
+
         /// <summary>
-        /// Gets or sets the type of integration to perform.
+        ///     Gets or sets the type of integration to perform.
         /// </summary>
-        public NumericalIntegrationEnum IntegrationType
-        {
-            get;
-            set;
-        }
-        
+        public NumericalIntegrationEnum IntegrationType { get; set; }
+
         /// <summary>
-        /// Scores a feature and adjusts its abundance accordingly.
+        ///     Scores a feature and adjusts its abundance accordingly.
         /// </summary>
         /// <param name="mz"></param>
         /// <param name="scan"></param>
@@ -48,15 +45,15 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
         public void ScoreFeature(UMCLight feature)
         {
             // Get the basis function of interest
-            var basisFunction     = BasisFunctionFactory.BasisFunctionSelector(BasisFunction);
+            var basisFunction = BasisFunctionFactory.BasisFunctionSelector(BasisFunction);
             var integrator = NumericalIntegrationFactory.CreateIntegrator(IntegrationType);
 
 
             // Evaluate every charge state XIC.
-            foreach(var charge in feature.ChargeStateChromatograms.Keys)
+            foreach (var charge in feature.ChargeStateChromatograms.Keys)
             {
-                var gram   = feature.ChargeStateChromatograms[charge];
-                var totalPoints     = gram.Points.Count;
+                var gram = feature.ChargeStateChromatograms[charge];
+                var totalPoints = gram.Points.Count;
                 if (totalPoints > 1)
                 {
                     // Convert the data types, not sure why this has to be done...
@@ -70,26 +67,26 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
                     }
 
                     // First solve for the function
-                    var coefficients          = basisFunction.Coefficients; 
-                    var solver  = new LevenburgMarquadtSolver();
-                    var report             = solver.Solve(x, y, ref coefficients);
-                    gram.FitPoints                  = new List<XYData>();
-                
+                    var coefficients = basisFunction.Coefficients;
+                    var solver = new LevenburgMarquadtSolver();
+                    var report = solver.Solve(x, y, ref coefficients);
+                    gram.FitPoints = new List<XYData>();
+
                     foreach (var datum in gram.Points)
                     {
                         var yValue = basisFunction.Evaluate(coefficients, datum.X);
                         gram.FitPoints.Add(new XYData(datum.X, yValue));
                     }
-                    
-                    var totalSamples = 4 * Math.Abs(gram.EndScan - gram.StartScan);
+
+                    var totalSamples = 4*Math.Abs(gram.EndScan - gram.StartScan);
 
                     // Then integrate the function
                     // Let's integrate with 4x the number of scans
-                    gram.Area       = integrator.Integrate( basisFunction,
-                                                            coefficients, 
-                                                            Convert.ToDouble(gram.StartScan), 
-                                                            Convert.ToDouble(gram.EndScan),
-                                                            totalSamples);
+                    gram.Area = integrator.Integrate(basisFunction,
+                        coefficients,
+                        Convert.ToDouble(gram.StartScan),
+                        Convert.ToDouble(gram.EndScan),
+                        totalSamples);
                 }
             }
             // Then calculate all of the fits for each 
@@ -121,19 +118,19 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
                             var yValue = basisFunction.Evaluate(coefficients, datum.X);
                             gram.FitPoints.Add(new XYData(datum.X, yValue));
                         }
-                        
-                        var totalSamples = 4 * Math.Abs(gram.EndScan - gram.StartScan);
+
+                        var totalSamples = 4*Math.Abs(gram.EndScan - gram.StartScan);
 
                         // Then integrate the function
                         // Let's integrate with 4x the number of scans
                         gram.Area = integrator.Integrate(basisFunction,
-                                                                coefficients,
-                                                                Convert.ToDouble(gram.StartScan),
-                                                                Convert.ToDouble(gram.EndScan),
-                                                                totalSamples);
+                            coefficients,
+                            Convert.ToDouble(gram.StartScan),
+                            Convert.ToDouble(gram.EndScan),
+                            totalSamples);
                     }
                 }
             }
-        }               
-    }    
+        }
+    }
 }

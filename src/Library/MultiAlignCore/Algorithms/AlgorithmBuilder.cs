@@ -1,3 +1,5 @@
+#region
+
 using System;
 using MultiAlignCore.Algorithms.Alignment;
 using MultiAlignCore.Algorithms.FeatureMatcher;
@@ -7,28 +9,30 @@ using PNNLOmics.Algorithms.FeatureClustering;
 using PNNLOmics.Algorithms.FeatureMatcher.Data;
 using PNNLOmics.Data.Features;
 
+#endregion
+
 namespace MultiAlignCore.Algorithms
 {
     /// <summary>
-    /// Builds the set of algorithms using the builder design pattern.
+    ///     Builds the set of algorithms using the builder design pattern.
     /// </summary>
     public class AlgorithmBuilder
     {
         /// <summary>
-        /// Final provider.
+        ///     Final provider.
         /// </summary>
-        private AlgorithmProvider m_provider;
+        private readonly AlgorithmProvider m_provider;
 
         /// <summary>
-        /// Default constructor.
+        ///     Default constructor.
         /// </summary>
         public AlgorithmBuilder()
         {
-            m_provider = new AlgorithmProvider();            
+            m_provider = new AlgorithmProvider();
         }
 
         /// <summary>
-        /// Builds the algorithm types.
+        ///     Builds the algorithm types.
         /// </summary>
         /// <param name="clusterType"></param>
         /// <returns></returns>
@@ -36,22 +40,25 @@ namespace MultiAlignCore.Algorithms
         {
             m_provider.Clusterer = ClusterFactory.Create(clusterType);
         }
+
         /// <summary>
-        /// Builds the feature aligner.
+        ///     Builds the feature aligner.
         /// </summary>
         public void BuildAligner(AlignmentOptions options, SpectralOptions spectralOptions)
         {
-            m_provider.DatasetAligner  = FeatureAlignerFactory.CreateDatasetAligner(options.AlignmentAlgorithm, options, spectralOptions);
-            m_provider.DatabaseAligner = FeatureAlignerFactory.CreateDatabaseAligner(options.AlignmentAlgorithm, options, spectralOptions);
+            m_provider.DatasetAligner = FeatureAlignerFactory.CreateDatasetAligner(options.AlignmentAlgorithm, options,
+                spectralOptions);
+            m_provider.DatabaseAligner = FeatureAlignerFactory.CreateDatabaseAligner(options.AlignmentAlgorithm, options,
+                spectralOptions);
         }
+
         /// <summary>
-        /// Builds a peak matcher object.
+        ///     Builds a peak matcher object.
         /// </summary>
         public void BuildPeakMatcher(MultiAlignAnalysisOptions options)
         {
-            
-            var tolerances          = new FeatureMatcherTolerances();            
-            var stanleyMatcher      = new STACAdapter<UMCClusterLight>
+            var tolerances = new FeatureMatcherTolerances();
+            var stanleyMatcher = new STACAdapter<UMCClusterLight>
             {
                 Options =
                 {
@@ -67,17 +74,16 @@ namespace MultiAlignCore.Algorithms
                     UsePriors = options.StacOptions.UsePriors
                 }
             };
-            tolerances.DriftTimeTolerance                       = Convert.ToSingle(options.StacOptions.DriftTimeTolerance);
-            tolerances.MassTolerancePPM                         = options.StacOptions.MassTolerancePPM;
-            tolerances.NETTolerance                             = options.StacOptions.NETTolerance;
-            tolerances.Refined                                  = options.StacOptions.Refined;
-            stanleyMatcher.Options.UserTolerances               = tolerances;                    
-            m_provider.PeakMatcher                              = stanleyMatcher;
-            
+            tolerances.DriftTimeTolerance = Convert.ToSingle(options.StacOptions.DriftTimeTolerance);
+            tolerances.MassTolerancePPM = options.StacOptions.MassTolerancePPM;
+            tolerances.NETTolerance = options.StacOptions.NETTolerance;
+            tolerances.Refined = options.StacOptions.Refined;
+            stanleyMatcher.Options.UserTolerances = tolerances;
+            m_provider.PeakMatcher = stanleyMatcher;
         }
 
         /// <summary>
-        /// Returns the list of algorithms post build.
+        ///     Returns the list of algorithms post build.
         /// </summary>
         /// <returns></returns>
         public AlgorithmProvider GetAlgorithmProvider(MultiAlignAnalysisOptions options)

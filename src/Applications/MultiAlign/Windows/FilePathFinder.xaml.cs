@@ -52,16 +52,16 @@ namespace MultiAlign.Windows
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            bool isEmpty = string.IsNullOrWhiteSpace(FilePath);
+            var isEmpty = string.IsNullOrWhiteSpace(FilePath);
 
             if (!isEmpty)
             {
-                bool doesExist = File.Exists(FilePath);
+                var doesExist = File.Exists(FilePath);
                 if (!doesExist)
                 {
                     try
                     {
-                        string dirName = Path.GetDirectoryName(FilePath);
+                        var dirName = Path.GetDirectoryName(FilePath);
                         doesExist = Directory.Exists(dirName);
                         if (doesExist)
                         {
@@ -79,7 +79,7 @@ namespace MultiAlign.Windows
             }
 
 
-            DialogResult result = m_dialog.ShowDialog();
+            var result = m_dialog.ShowDialog();
             if (result == DialogResult.OK)
             {
                 FilePath = m_dialog.FileName;

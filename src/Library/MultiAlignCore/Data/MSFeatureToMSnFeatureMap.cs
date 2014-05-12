@@ -1,55 +1,38 @@
 ﻿namespace MultiAlignCore.Data
 {
-    
     /// <summary>
-    /// Maps a MS Feature to a MSMS feature 
+    ///     Maps a MS Feature to a MSMS feature
     /// </summary>
     public class MSFeatureToMSnFeatureMap
     {
         /// <summary>
-        /// The raw dataset ID link.
+        ///     The raw dataset ID link.
         /// </summary>
-        public int RawDatasetID
-        {
-            get;
-            set;
-        }
+        public int RawDatasetID { get; set; }
+
         /// <summary>
-        /// The MS dataset ID link
+        ///     The MS dataset ID link
         /// </summary>
-        public int MSDatasetID
-        {
-            get;
-            set;
-        }
+        public int MSDatasetID { get; set; }
+
         /// <summary>
-        /// The MS Feature ID
+        ///     The MS Feature ID
         /// </summary>
-        public int MSFeatureID
-        {
-            get;
-            set;
-        }
+        public int MSFeatureID { get; set; }
+
         /// <summary>
-        /// The MSMS Feature ID
+        ///     The MSMS Feature ID
         /// </summary>
-        public int MSMSFeatureID
-        {
-            get;
-            set;
-        }
+        public int MSMSFeatureID { get; set; }
+
         /// <summary>
-        /// Gets or sets the ID of the parent feature to the MS feature. 
+        ///     Gets or sets the ID of the parent feature to the MS feature.
         /// </summary>
-        public int LCMSFeatureID
-        {
-            get;
-            set;
-        }
+        public int LCMSFeatureID { get; set; }
 
         public override bool Equals(object obj)
         {
-            var other = (MSFeatureToMSnFeatureMap)obj;
+            var other = (MSFeatureToMSnFeatureMap) obj;
 
             if (other == null)
             {
@@ -74,10 +57,10 @@
         {
             var hash = 17;
 
-            hash = hash * 23 + MSFeatureID.GetHashCode();
-            hash = hash * 23 + MSMSFeatureID.GetHashCode();
-            hash = hash * 23 + MSDatasetID.GetHashCode();
-            hash = hash * 23 + RawDatasetID.GetHashCode();
+            hash = hash*23 + MSFeatureID.GetHashCode();
+            hash = hash*23 + MSMSFeatureID.GetHashCode();
+            hash = hash*23 + MSDatasetID.GetHashCode();
+            hash = hash*23 + RawDatasetID.GetHashCode();
 
             return hash;
         }

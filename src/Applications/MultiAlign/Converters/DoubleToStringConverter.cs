@@ -44,7 +44,7 @@ namespace MultiAlign.Converters
                 return "";
 
             var x = (double) value;
-            string format = GetFormat();
+            var format = GetFormat();
             return x.ToString(format);
         }
 

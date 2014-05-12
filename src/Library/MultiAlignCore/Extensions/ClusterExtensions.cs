@@ -1,4 +1,6 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using MultiAlignCore.Data;
@@ -8,36 +10,38 @@ using MultiAlignCore.IO.Features;
 using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Data.MassTags;
-using PNNLOmics.Extensions;
 using PNNLOmicsIO.IO;
+
+#endregion
 
 namespace MultiAlignCore.Extensions
 {
     public static class ClusterExtensions
-    {        
-       
+    {
         /// <summary>
-        /// Gets a cluster and it's subsequent data structures.
+        ///     Gets a cluster and it's subsequent data structures.
         /// </summary>
         /// <param name="cluster"></param>
         /// <param name="providers"></param>
         public static void ReconstructUMCCluster(this UMCClusterLight cluster, FeatureDataAccessProviders providers)
         {
-            cluster.ReconstructUMCCluster(providers, true, true);            
+            cluster.ReconstructUMCCluster(providers, true, true);
         }
+
         /// <summary>
-        /// Determines if MS/MS should also be discovered.
+        ///     Determines if MS/MS should also be discovered.
         /// </summary>
         /// <param name="cluster"></param>
         /// <param name="providers"></param>
         /// <param name="getMsMS"></param>
-        public static void ReconstructUMCCluster(this UMCClusterLight cluster, FeatureDataAccessProviders providers, bool getMsFeature, bool getMsMs)
+        public static void ReconstructUMCCluster(this UMCClusterLight cluster, FeatureDataAccessProviders providers,
+            bool getMsFeature, bool getMsMs)
         {
             cluster.Features.Clear();
 
             var features = providers.FeatureCache.FindByClusterID(cluster.Id);
-            
-            var totalSpectra    = 0;
+
+            var totalSpectra = 0;
             var totalIdentified = 0;
             foreach (var feature in features)
             {
@@ -60,10 +64,11 @@ namespace MultiAlignCore.Extensions
             }
 
             cluster.IdentifiedSpectraCount = totalIdentified;
-            cluster.MsMsCount              = totalSpectra;
-        }        
+            cluster.MsMsCount = totalSpectra;
+        }
+
         /// <summary>
-        /// Retrieves a list of known peptides attributed to this cluster.
+        ///     Retrieves a list of known peptides attributed to this cluster.
         /// </summary>
         /// <param name="cluster"></param>
         /// <param name="providers"></param>
@@ -84,8 +89,9 @@ namespace MultiAlignCore.Extensions
             }
             return peptides;
         }
+
         /// <summary>
-        /// Retrieves a list of known peptides attributed to this cluster.
+        ///     Retrieves a list of known peptides attributed to this cluster.
         /// </summary>
         /// <param name="cluster"></param>
         /// <param name="providers"></param>
@@ -103,8 +109,9 @@ namespace MultiAlignCore.Extensions
             }
             return spectra;
         }
+
         /// <summary>
-        /// Retrieves a list of known peptides attributed to this cluster.
+        ///     Retrieves a list of known peptides attributed to this cluster.
         /// </summary>
         /// <param name="cluster"></param>
         /// <param name="providers"></param>
@@ -116,7 +123,7 @@ namespace MultiAlignCore.Extensions
         }
 
         /// <summary>
-        /// Retrieves a list of known peptides attributed to this cluster.
+        ///     Retrieves a list of known peptides attributed to this cluster.
         /// </summary>
         /// <param name="cluster"></param>
         /// <param name="providers"></param>
@@ -133,26 +140,27 @@ namespace MultiAlignCore.Extensions
             }
             return peptides;
         }
+
         /// <summary>
-        /// Reconstructs the mass tags and clusters joining tabled data.
+        ///     Reconstructs the mass tags and clusters joining tabled data.
         /// </summary>
         /// <param name="clusters"></param>
         /// <param name="matches"></param>
         /// <param name="database"></param>
         /// <returns></returns>
-        public static Tuple<List<UMCClusterLightMatched>, List<MassTagToCluster>> MapMassTagsToClusters(this List<UMCClusterLight>  clusters, 
-                                                                    List<ClusterToMassTagMap>   matches,
-                                                                    MassTagDatabase             database)
+        public static Tuple<List<UMCClusterLightMatched>, List<MassTagToCluster>> MapMassTagsToClusters(
+            this List<UMCClusterLight> clusters,
+            List<ClusterToMassTagMap> matches,
+            MassTagDatabase database)
         {
-
             var matchedClusters = new List<UMCClusterLightMatched>();
-            var matchedTags           = new List<MassTagToCluster>();
+            var matchedTags = new List<MassTagToCluster>();
 
             // Maps a cluster ID to a cluster that was matched (or not in which case it will have zero matches).
-            var clusterMap               = new Dictionary<int, UMCClusterLightMatched>();
-            
+            var clusterMap = new Dictionary<int, UMCClusterLightMatched>();
+
             // Maps the mass tags to clusters, the second dictionary is for the conformations.
-            var massTagMap = 
+            var massTagMap =
                 new Dictionary<int, Dictionary<int, MassTagToCluster>>();
 
             // Index the clusters.
@@ -161,7 +169,7 @@ namespace MultiAlignCore.Extensions
                 if (!clusterMap.ContainsKey(cluster.Id))
                 {
                     var matchedCluster = new UMCClusterLightMatched();
-                    matchedCluster.Cluster           = cluster;
+                    matchedCluster.Cluster = cluster;
                     clusterMap.Add(cluster.Id, matchedCluster);
                 }
             }
@@ -178,13 +186,13 @@ namespace MultiAlignCore.Extensions
                     if (!massTagMap[tag.Id].ContainsKey(tag.ConformationId))
                     {
                         var matchedTag = new MassTagToCluster();
-                        matchedTag.MassTag = tag;                        
+                        matchedTag.MassTag = tag;
                         massTagMap[tag.Id].Add(tag.ConformationId, matchedTag);
                     }
                 }
 
                 // Keeps track of all the proteins that we have mapped so far.
-                var proteinList = new Dictionary<int,ProteinToMassTags>();
+                var proteinList = new Dictionary<int, ProteinToMassTags>();
 
                 // Link up the protein data
                 foreach (var massTagId in massTagMap.Keys)
@@ -206,9 +214,9 @@ namespace MultiAlignCore.Extensions
                             {
                                 if (!proteinList.ContainsKey(p.ProteinId))
                                 {
-                                    var tempProtein   = new ProteinToMassTags();
-                                    tempProtein.Protein             = p;
-                                    proteinList.Add(p.ProteinId, tempProtein);                                    
+                                    var tempProtein = new ProteinToMassTags();
+                                    tempProtein.Protein = p;
+                                    proteinList.Add(p.ProteinId, tempProtein);
                                 }
 
                                 var protein = proteinList[p.ProteinId];
@@ -216,19 +224,19 @@ namespace MultiAlignCore.Extensions
                                 // Double link the data so we can go back and forth
                                 protein.MassTags.Add(clusterTag);
                                 clusterTag.MatchingProteins.Add(protein);
-                            }                            
+                            }
                         }
-                    }                    
+                    }
                 }
             }
-            
+
             // Index and align matches
             foreach (var match in matches)
             {
                 // Find the cluster map
                 if (clusterMap.ContainsKey(match.ClusterId))
                 {
-                    var cluster           = clusterMap[match.ClusterId];
+                    var cluster = clusterMap[match.ClusterId];
                     cluster.ClusterMatches.Add(match);
 
                     MassTagToCluster tag = null;
@@ -236,7 +244,7 @@ namespace MultiAlignCore.Extensions
                     {
                         tag = massTagMap[match.MassTagId][match.ConformerId];
                         tag.Matches.Add(cluster);
-                        match.MassTag = tag;                                                
+                        match.MassTag = tag;
                     }
                 }
             }
@@ -273,11 +281,12 @@ namespace MultiAlignCore.Extensions
             return false;
         }
 
-        public static void ExportMsMs(this UMCClusterLight cluster, string path, List<DatasetInformation> datasets, IMsMsSpectraWriter writer)
+        public static void ExportMsMs(this UMCClusterLight cluster, string path, List<DatasetInformation> datasets,
+            IMsMsSpectraWriter writer)
         {
             // Let's map the datasets first.
-            var readers = new Dictionary<int,ISpectraProvider>();    
-            var information = new Dictionary<int,DatasetInformation>();
+            var readers = new Dictionary<int, ISpectraProvider>();
+            var information = new Dictionary<int, DatasetInformation>();
 
             datasets.ForEach(x => information.Add(x.DatasetId, x));
 
@@ -321,18 +330,18 @@ namespace MultiAlignCore.Extensions
                     var provider = readers[feature.GroupId];
                     foreach (var msFeature in feature.MsFeatures)
                     {
-                        foreach(var spectrum in msFeature.MSnSpectra)
+                        foreach (var spectrum in msFeature.MSnSpectra)
                         {
-                            var summary       = new ScanSummary();
+                            var summary = new ScanSummary();
                             var data = provider.GetRawSpectra(spectrum.Scan, spectrum.GroupId, out summary);
-                            spectrum.Peaks    = data;
+                            spectrum.Peaks = data;
                             spectrum.ScanMetaData = summary;
                         }
                         if (firstWrite)
                         {
                             writer.Write(path, msFeature.MSnSpectra);
                         }
-                        else 
+                        else
                         {
                             writer.Append(path, msFeature.MSnSpectra);
                         }

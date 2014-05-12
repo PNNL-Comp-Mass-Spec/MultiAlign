@@ -1,12 +1,14 @@
+#region
+
 using System.Data.SQLite;
 using MultiAlignCore.Data.Alignment;
 
+#endregion
+
 namespace MultiAlignCore.IO.Features.Hibernate
 {
-
-	public class AlignmentDAOHibernate : GenericDAOHibernate<classAlignmentData>, IAlignmentDAO
+    public class AlignmentDAOHibernate : GenericDAOHibernate<classAlignmentData>, IAlignmentDAO
     {
-
         public void ClearAll()
         {
             var path = NHibernateUtil.Connection;
@@ -21,5 +23,4 @@ namespace MultiAlignCore.IO.Features.Hibernate
             }
         }
     }
-
 }

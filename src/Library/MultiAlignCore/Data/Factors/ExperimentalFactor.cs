@@ -1,25 +1,17 @@
-﻿using System;
+﻿#region
+
+using System;
+
+#endregion
 
 namespace MultiAlignCore.Data.Factors
 {
     [Serializable]
     public class ExperimentalFactor
     {
-        public int FactorID
-        {
-            get;
-            set;
-        }
-        public string Name
-        {
-            get;
-            set;
-        }
-        public string Value
-        {
-            get;
-            set;
-        }
+        public int FactorID { get; set; }
+        public string Name { get; set; }
+        public string Value { get; set; }
 
 
         public override bool Equals(object obj)
@@ -35,9 +27,9 @@ namespace MultiAlignCore.Data.Factors
         {
             var hash = 17;
 
-            hash = hash * 23 + FactorID.GetHashCode();
-            hash = hash * 23 + Name.GetHashCode();
-            hash = hash * 23 + Value.GetHashCode();
+            hash = hash*23 + FactorID.GetHashCode();
+            hash = hash*23 + Name.GetHashCode();
+            hash = hash*23 + Value.GetHashCode();
 
             return hash;
         }

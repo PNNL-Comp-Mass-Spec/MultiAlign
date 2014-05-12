@@ -108,8 +108,8 @@ namespace MultiAlign.Windows.Plots
         ///
         private void CreatePlots()
         {
-            BaselineFeaturesLoadedEventArgs data = BaselineData;
-            string name = "";
+            var data = BaselineData;
+            var name = "";
             if (data.DatasetInformation == null)
             {
                 if (data.Database != null)
@@ -123,16 +123,16 @@ namespace MultiAlign.Windows.Plots
             }
 
             PlotName = string.Format("Baseline: {0}", name);
-            PlotBase plot = ScatterPlotFactory.CreateFeatureMassScatterPlot(data.Features);
+            var plot = ScatterPlotFactory.CreateFeatureMassScatterPlot(data.Features);
             FeaturesImage = ImageConverter.ConvertImage(PlotImageUtility.CreateImage(plot));
         }
 
 
         private void CreateMassTagPlots()
         {
-            MassTagsLoadedEventArgs data = MassTagsData;
+            var data = MassTagsData;
             PlotName = string.Format("Mass Tag Database");
-            PlotBase plot = ScatterPlotFactory.CreateFeatureMassScatterPlot(data.MassTags);
+            var plot = ScatterPlotFactory.CreateFeatureMassScatterPlot(data.MassTags);
             plot.Model.Title = PlotName;
             FeaturesImage = ImageConverter.ConvertImage(PlotImageUtility.CreateImage(plot));
         }

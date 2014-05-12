@@ -1,15 +1,17 @@
+#region
+
 using System.Collections.Generic;
 using MultiAlignCore.Data.SequenceData;
 using MultiAlignCore.IO.Features.Hibernate;
 using NHibernate.Criterion;
 
+#endregion
+
 namespace MultiAlignCore.IO.SequenceData
 {
-
-	public class DatabaseSearchSequenceDAOHiberate : GenericDAOHibernate<DatabaseSearchSequence>, IDatabaseSearchSequenceDAO 
-	{
-
-        
+    public class DatabaseSearchSequenceDAOHiberate : GenericDAOHibernate<DatabaseSearchSequence>,
+        IDatabaseSearchSequenceDAO
+    {
         List<DatabaseSearchSequence> IDatabaseSearchSequenceDAO.FindByDatasetId(int datasetId, int lcmsFeatureId)
         {
             ICriterion criterionDataset = Restrictions.Eq("GroupId", datasetId);
@@ -18,7 +20,7 @@ namespace MultiAlignCore.IO.SequenceData
             criterionList.Add(criterionDataset);
             criterionList.Add(criterionFeature);
 
-            return FindByCriteria(criterionList); 
+            return FindByCriteria(criterionList);
         }
 
 
@@ -31,5 +33,4 @@ namespace MultiAlignCore.IO.SequenceData
             return FindByCriteria(criterionList);
         }
     }
-
 }

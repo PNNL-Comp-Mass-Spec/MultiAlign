@@ -1,9 +1,13 @@
-﻿using MultiAlignCore.Data;
+﻿#region
+
+using MultiAlignCore.Data;
+
+#endregion
 
 namespace MultiAlignCore.Algorithms
-{    
+{
     /// <summary>
-    /// Next analysis method step to run.
+    ///     Next analysis method step to run.
     /// </summary>
     /// <param name="config"></param>
     /// <returns></returns>

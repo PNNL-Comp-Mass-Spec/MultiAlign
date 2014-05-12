@@ -15,7 +15,7 @@ namespace MultiAlign.ViewModels.Proteins
         {
             m_peptide = peptide;
 
-            DatasetInformation info = SingletonDataProviders.GetDatasetInformation(peptide.GroupId);
+            var info = SingletonDataProviders.GetDatasetInformation(peptide.GroupId);
             if (info != null)
             {
                 m_dataset = new DatasetInformationViewModel(info);

@@ -82,16 +82,19 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework">
+      <HintPath>..\..\packages\EntityFramework.6.0.2\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\..\packages\EntityFramework.6.0.2\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
     <Reference Include="Mage, Version=1.3.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\$(Platform)\Mage.dll</HintPath>
-    </Reference>
-    <Reference Include="MTDBFramework">
-      <HintPath>..\..\lib\MTDBFramework.dll</HintPath>
+      <HintPath>..\..\..\lib\$(Platform)\Mage.dll</HintPath>
     </Reference>
     <Reference Include="MultiAlignEngine">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\$(Platform)\MultiAlignEngine.dll</HintPath>
+      <HintPath>..\..\..\lib\$(Platform)\MultiAlignEngine.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework, Version=2.6.3.13283, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -120,9 +123,16 @@
       <HintPath>..\..\packages\Svg.1.6.1\lib\Svg.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.SQLite">
-      <HintPath>..\..\lib\$(Platform)\System.Data.SQLite.dll</HintPath>
+      <HintPath>..\..\packages\System.Data.SQLite.Core.1.0.92.0\lib\net45\System.Data.SQLite.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data.SQLite.EF6">
+      <HintPath>..\..\packages\System.Data.SQLite.EF6.1.0.92.0\lib\net45\System.Data.SQLite.EF6.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data.SQLite.Linq">
+      <HintPath>..\..\packages\System.Data.SQLite.Linq.1.0.92.0\lib\net45\System.Data.SQLite.Linq.dll</HintPath>
     </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
@@ -144,6 +154,7 @@
     <Compile Include="Algorithms\UMCTreeFeatureFinding.cs" />
     <Compile Include="Drawing\HeatmapTest.cs" />
     <Compile Include="Drawing\ScatterPlotTest.cs" />
+    <Compile Include="IO\Databases\LocalDatabaseTests.cs" />
     <Compile Include="Papers\Alignment\ClusterIdentificationStatistic.cs" />
     <Compile Include="Papers\Alignment\ClusterValidationTests.cs" />
     <Compile Include="Papers\Alignment\IO\AlignmentAnalysisWriterFactory.cs" />
@@ -164,12 +175,12 @@
     <Compile Include="IO\Databases\DatabaseIoTests.cs" />
     <Compile Include="IO\UMCClusterIO.cs" />
     <Compile Include="IO\UMCFeatureDOATest.cs" />
-    <Compile Include="IO\MSFeatureDOATest.cs" />
-    <Compile Include="IO\MassTagDOATest.cs" />
-    <Compile Include="IO\NHibernateFeatureTests.cs" />
-    <Compile Include="IO\MTDB\MTDBLoaderTests.cs" />
+    <Compile Include="IO\DAO\MSFeatureDOATest.cs" />
+    <Compile Include="IO\DAO\MassTagDOATest.cs" />
+    <Compile Include="IO\DAO\NHibernateFeatureTests.cs" />
+    <Compile Include="IO\Databases\MtsFrameworkTests.cs" />
     <Compile Include="IO\UMCReaderFailure.cs" />
-    <Compile Include="IO\DataProviderTests.cs" />
+    <Compile Include="IO\DAO\DataProviderTests.cs" />
     <Compile Include="IO\UMCClusterReconstruction.cs" />
     <Compile Include="OHSU\ExtractClusters.cs" />
     <Compile Include="OHSU\LargeScaleClusterTests.cs" />
@@ -183,6 +194,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\..\MTBD\trunk\MTDBFramework\MTDBFramework.csproj">
+      <Project>{3ee14e5d-3881-410e-86df-611bae112e90}</Project>
+      <Name>MTDBFramework</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\..\..\..\PNNLOmics\development\trunk\PNNLOmicsIO\PNNLOmicsIO.csproj">
       <Project>{20d49543-cd31-44d2-8403-f045b3fb363d}</Project>
       <Name>PNNLOmicsIO</Name>
@@ -204,7 +219,14 @@
       <Name>MultiAlign</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="x64\SQLite.Interop.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="x86\SQLite.Interop.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

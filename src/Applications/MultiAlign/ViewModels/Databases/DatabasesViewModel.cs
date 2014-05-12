@@ -97,8 +97,8 @@ namespace MultiAlign.ViewModels.Databases
         private void BuildOrganismsList(ObservableCollection<DmsDatabaseServerViewModel> servers)
         {
             var map = new Dictionary<string, string>();
-            IOrderedEnumerable<DmsDatabaseServerViewModel> orderedServers = servers.OrderBy(x => x.Organism.ToLower());
-            foreach (DmsDatabaseServerViewModel server in orderedServers)
+            var orderedServers = servers.OrderBy(x => x.Organism.ToLower());
+            foreach (var server in orderedServers)
             {
                 if (!map.ContainsKey(server.Organism))
                 {
@@ -106,11 +106,11 @@ namespace MultiAlign.ViewModels.Databases
                 }
             }
 
-            string tempOrganism = m_organismFilter;
+            var tempOrganism = m_organismFilter;
 
             Organisms.Clear();
             Organisms.Add(CONST_ANY_ORGANISM);
-            foreach (string organism in map.Values)
+            foreach (var organism in map.Values)
             {
                 if (organism != "")
                 {
@@ -141,7 +141,7 @@ namespace MultiAlign.ViewModels.Databases
                         x.Organism.ToLower().Contains(m_organismFilter.ToLower()))
                     .OrderBy(x => x.DatabaseName.ToLower());
             FilteredDatabases.Clear();
-            foreach (DmsDatabaseServerViewModel server in databases)
+            foreach (var server in databases)
             {
                 FilteredDatabases.Add(server);
             }

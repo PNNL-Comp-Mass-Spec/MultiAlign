@@ -1,16 +1,19 @@
-﻿using System.Collections.Generic;
+﻿#region
+
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
 using MultiAlignCore.Data;
 using NHibernate.Criterion;
 
+#endregion
+
 namespace MultiAlignCore.IO.Features.Hibernate
 {
-    public class MassTagMatchDAO : GenericDAOHibernate<ClusterToMassTagMap>,  IMassTagMatchDAO
+    public class MassTagMatchDAO : GenericDAOHibernate<ClusterToMassTagMap>, IMassTagMatchDAO
     {
         public void ClearAllMatches()
         {
-
             using (var connection = new SQLiteConnection("Data Source=" + NHibernateUtil.Path))
             {
                 connection.Open();
@@ -29,9 +32,8 @@ namespace MultiAlignCore.IO.Features.Hibernate
             ICriterion criterion = Restrictions.Eq("ClusterId", id);
             var criterionList = new List<ICriterion>();
             criterionList.Add(criterion);
-            
+
             return FindByCriteria(criterionList);
-        
         }
     }
 }

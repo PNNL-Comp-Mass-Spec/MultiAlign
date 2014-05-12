@@ -28,14 +28,14 @@ namespace MultiAlign.ViewModels.TreeView
             if (m_loaded)
                 return;
 
-            List<Peptide> peptides = m_parentCluster.FindPeptides();
+            var peptides = m_parentCluster.FindPeptides();
 
             if (peptides.Count < 1)
                 return;
 
             // Tally up the unique peptides
             var uniqueCounts = new Dictionary<string, List<Peptide>>();
-            foreach (Peptide peptide in peptides)
+            foreach (var peptide in peptides)
             {
                 if (!uniqueCounts.ContainsKey(peptide.Sequence))
                 {
@@ -48,14 +48,14 @@ namespace MultiAlign.ViewModels.TreeView
             AddStatistic("Total Identifications", peptides.Count);
 
 
-            foreach (string sequence in uniqueCounts.Keys)
+            foreach (var sequence in uniqueCounts.Keys)
             {
                 // Create a collection for each unique sequence
                 var model = new GenericCollectionTreeViewModel();
                 model.Name = sequence;
                 model.AddStatistic("Total Members", uniqueCounts[sequence].Count);
 
-                foreach (Peptide p in uniqueCounts[sequence])
+                foreach (var p in uniqueCounts[sequence])
                 {
                     var peptideModel = new PeptideTreeViewModel(p);
                     peptideModel.FeatureSelected += peptideModel_FeatureSelected;

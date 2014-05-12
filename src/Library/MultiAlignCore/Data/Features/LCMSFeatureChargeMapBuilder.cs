@@ -1,10 +1,14 @@
-﻿using System.Collections.Generic;
+﻿#region
+
+using System.Collections.Generic;
 using PNNLOmics.Data.Features;
+
+#endregion
 
 namespace MultiAlignCore.Data.Features
 {
     /// <summary>
-    /// Given a UMC builds charge maps of it's features.
+    ///     Given a UMC builds charge maps of it's features.
     /// </summary>
     public static class LCMSFeatureChargeMapBuilder
     {

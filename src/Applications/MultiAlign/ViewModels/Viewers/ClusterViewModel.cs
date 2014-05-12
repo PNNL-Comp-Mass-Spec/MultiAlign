@@ -176,11 +176,11 @@ namespace MultiAlign.ViewModels.Viewers
             //TODO: Make this select drift time!
             ClusterDriftPlot = ScatterPlotFactory.CreateFeatureDriftTimeScatterPlot(matchedCluster.Cluster.Features);
 
-            UMCClusterLight cluster = matchedCluster.Cluster;
+            var cluster = matchedCluster.Cluster;
 
             // Then we find all the nearby clusters
-            double massPpm = ClusterTolerances.Mass;
-            double net = ClusterTolerances.RetentionTime;
+            var massPpm = ClusterTolerances.Mass;
+            var net = ClusterTolerances.RetentionTime;
 
 
             //TODO: Add other clusters back
@@ -214,9 +214,9 @@ namespace MultiAlign.ViewModels.Viewers
 
             // Map out the MS/MS spectra.
             var msmsFeatures = new List<MSFeatureMsMs>();
-            foreach (UMCLight feature in cluster.Features)
+            foreach (var feature in cluster.Features)
             {
-                foreach (MSFeatureLight msFeature in feature.MsFeatures)
+                foreach (var msFeature in feature.MsFeatures)
                 {
                     msmsFeatures.AddRange(msFeature.MSnSpectra.Select(spectrum => new MSFeatureMsMs
                     {
@@ -310,7 +310,7 @@ namespace MultiAlign.ViewModels.Viewers
             if (feature == null)
                 return;
 
-            DatasetInformation info = SingletonDataProviders.GetDatasetInformation(feature.GroupId);
+            var info = SingletonDataProviders.GetDatasetInformation(feature.GroupId);
 
             if (info != null)
             {
@@ -325,7 +325,7 @@ namespace MultiAlign.ViewModels.Viewers
 
         private void model_PointClicked(object sender, PositionArgs e)
         {
-            MSFeatureLight best = FindFeature(e.X);
+            var best = FindFeature(e.X);
             if (best != null)
             {
                 LoadSpectrum(best);
@@ -349,14 +349,14 @@ namespace MultiAlign.ViewModels.Viewers
             Charges.Clear();
             m_scanMaps = feature.CreateChargeMap();
 
-            foreach (int charge in m_scanMaps.Keys)
+            foreach (var charge in m_scanMaps.Keys)
             {
                 double mz = 0;
-                int minScan = int.MaxValue;
-                int maxScan = int.MinValue;
+                var minScan = int.MaxValue;
+                var maxScan = int.MinValue;
                 long maxIntensity = 0;
 
-                foreach (MSFeatureLight msFeature in m_scanMaps[charge])
+                foreach (var msFeature in m_scanMaps[charge])
                 {
                     minScan = Math.Min(minScan, msFeature.Scan);
                     maxScan = Math.Max(maxScan, msFeature.Scan);
@@ -381,10 +381,10 @@ namespace MultiAlign.ViewModels.Viewers
 
             if (!m_scanMaps.ContainsKey(SelectedCharge.ChargeState)) return best;
 
-            double bestDist = double.MaxValue;
-            foreach (MSFeatureLight msFeature in m_scanMaps[SelectedCharge.ChargeState])
+            var bestDist = double.MaxValue;
+            foreach (var msFeature in m_scanMaps[SelectedCharge.ChargeState])
             {
-                double dist = Math.Abs(msFeature.Scan - x);
+                var dist = Math.Abs(msFeature.Scan - x);
                 if (!(dist < bestDist)) continue;
                 best = msFeature;
                 bestDist = dist;
@@ -408,11 +408,11 @@ namespace MultiAlign.ViewModels.Viewers
                         return;
 
                     if (!m_scanMaps.ContainsKey(value.ChargeState)) return;
-                    int minScan = int.MaxValue;
-                    int maxScan = int.MinValue;
+                    var minScan = int.MaxValue;
+                    var maxScan = int.MinValue;
                     long bestAbundance = 0;
                     MSFeatureLight bestFeature = null;
-                    foreach (MSFeatureLight msFeature in m_scanMaps[value.ChargeState])
+                    foreach (var msFeature in m_scanMaps[value.ChargeState])
                     {
                         minScan = Math.Min(minScan, msFeature.Scan);
                         maxScan = Math.Max(maxScan, msFeature.Scan);
@@ -468,23 +468,23 @@ namespace MultiAlign.ViewModels.Viewers
 
         private void LoadSpectrum(MSFeatureLight msFeature)
         {
-            DatasetInformation info = SingletonDataProviders.GetDatasetInformation(msFeature.GroupId);
+            var info = SingletonDataProviders.GetDatasetInformation(msFeature.GroupId);
             if (info == null || info.Raw == null || info.RawPath == null) return;
 
-            double mz = msFeature.Mz;
-            int charge = msFeature.ChargeState;
-            double spacing = 1.0/Convert.ToDouble(charge);
-            double lowMz = mz - spacing*3;
-            double highMz = mz + spacing*(NumberOfIsotopes + 1);
+            var mz = msFeature.Mz;
+            var charge = msFeature.ChargeState;
+            var spacing = 1.0/Convert.ToDouble(charge);
+            var lowMz = mz - spacing*3;
+            var highMz = mz + spacing*(NumberOfIsotopes + 1);
 
-            List<XYData> spectrum = ParentSpectraFinder.GetParentSpectrum(info.RawPath,
+            var spectrum = ParentSpectraFinder.GetParentSpectrum(info.RawPath,
                 msFeature.Scan,
                 lowMz,
                 highMz);
             if (spectrum == null)
                 return;
 
-            string name = string.Format("Scan {0} Charge {1} Dataset {2}",
+            var name = string.Format("Scan {0} Charge {1} Dataset {2}",
                 msFeature.Scan,
                 msFeature.ChargeState,
                 msFeature.GroupId

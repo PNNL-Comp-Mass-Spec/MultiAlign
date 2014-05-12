@@ -1,19 +1,23 @@
-﻿using System.Collections.Generic;
+﻿#region
+
+using System.Collections.Generic;
 using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
+
+#endregion
 
 namespace MultiAlignCore.Extensions
 {
     public static class MSFeatureExtensions
     {
-
         public static UMCLight GetParentUmc(this MSFeatureLight feature)
         {
-            if (feature == null) return null;            
-            return feature.ParentFeature;                    
+            if (feature == null) return null;
+            return feature.ParentFeature;
         }
-        /// <summary>        
-        /// Maps all of the MS Features to an indexed scan map.
+
+        /// <summary>
+        ///     Maps all of the MS Features to an indexed scan map.
         /// </summary>
         /// <param name="msFeatures"></param>
         /// <returns></returns>
@@ -31,15 +35,16 @@ namespace MultiAlignCore.Extensions
             }
             return msFeatureMap;
         }
+
         /// <summary>
-        /// Maps all of the MS/MS spectra to an indexed scan map.
+        ///     Maps all of the MS/MS spectra to an indexed scan map.
         /// </summary>
         /// <param name="msFeatures"></param>
         /// <returns></returns>
         public static Dictionary<int, List<MSSpectra>> CreateScanMapsForMsMs(this List<MSSpectra> spectra)
         {
             var msFeatureMap = new Dictionary<int, List<MSSpectra>>();
-            
+
             foreach (var spectrum in spectra)
             {
                 if (!msFeatureMap.ContainsKey(spectrum.Scan))
@@ -48,7 +53,7 @@ namespace MultiAlignCore.Extensions
                 }
                 msFeatureMap[spectrum.Scan].Add(spectrum);
             }
-            
+
 
             return msFeatureMap;
         }

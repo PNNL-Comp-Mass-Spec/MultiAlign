@@ -1,3 +1,5 @@
+#region
+
 using System;
 using System.Collections.Generic;
 using MultiAlignCore.Algorithms;
@@ -8,30 +10,33 @@ using MultiAlignCore.IO.Features;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Data.MassTags;
 
+#endregion
+
 namespace MultiAlignCore.Data
 {
-	
-	public class MultiAlignAnalysis :  IDisposable
-    {                             
+    public class MultiAlignAnalysis : IDisposable
+    {
         #region Constructor
+
         /// <summary>
-        /// Default constructor for a MultiAlign analysis object.
+        ///     Default constructor for a MultiAlign analysis object.
         /// </summary>
         public MultiAlignAnalysis()
         {
             // Meta Data Information about the analysis and datasets.
-            MetaData                        = new AnalysisMetaData {AnalysisName = string.Empty};
-            Options                         = new MultiAlignAnalysisOptions();
-            MassTagDatabase                 = new MassTagDatabase();
-            
+            MetaData = new AnalysisMetaData {AnalysisName = string.Empty};
+            Options = new MultiAlignAnalysisOptions();
+            MassTagDatabase = new MassTagDatabase();
+
             // Alignment options and data.
-            AlignmentData                   = new List<classAlignmentData>();
-            MatchResults                    = null;
+            AlignmentData = new List<classAlignmentData>();
+            MatchResults = null;
         }
-        #endregion       
-	                      
+
+        #endregion
+
         /// <summary>
-        /// Dispose method that will kill the analysis thread.
+        ///     Dispose method that will kill the analysis thread.
         /// </summary>
         public void Dispose()
         {
@@ -41,73 +46,50 @@ namespace MultiAlignCore.Data
         #region Properties
 
         /// <summary>
-        /// Objects that access data from the databases.
+        ///     Objects that access data from the databases.
         /// </summary>
-        public FeatureDataAccessProviders DataProviders { get; set; }   
+        public FeatureDataAccessProviders DataProviders { get; set; }
+
         /// <summary>
-        /// Gets or sets the list of data providers.
+        ///     Gets or sets the list of data providers.
         /// </summary>
-        public List<UMCClusterLight> Clusters
-        {
-            get;
-            set;
-        }
+        public List<UMCClusterLight> Clusters { get; set; }
+
         /// <summary>
-        /// Gets or sets what kind of analysis to do.  
+        ///     Gets or sets what kind of analysis to do.
         /// </summary>
-        public AnalysisType AnalysisType
-        {
-            get;
-            set;
-        }
+        public AnalysisType AnalysisType { get; set; }
+
         /// <summary>
-        /// Gets or est the analysis options.
+        ///     Gets or est the analysis options.
         /// </summary>
-        public MultiAlignAnalysisOptions Options
-        {
-            get;
-            set;
-        }
+        public MultiAlignAnalysisOptions Options { get; set; }
+
         /// <summary>
-        /// Gets or sets the cluster alignment data.
+        ///     Gets or sets the cluster alignment data.
         /// </summary>
-        public classAlignmentData ClusterAlignmentData
-        {
-            get;
-            set;
-        }   
+        public classAlignmentData ClusterAlignmentData { get; set; }
+
         /// <summary>
-        /// Gets or sets the alignment data.
+        ///     Gets or sets the alignment data.
         /// </summary>
-        public List<classAlignmentData> AlignmentData
-        {
-            get;
-            set;
-        }
+        public List<classAlignmentData> AlignmentData { get; set; }
+
         /// <summary>
-        /// Gets or sets the analysis meta-data.
+        ///     Gets or sets the analysis meta-data.
         /// </summary>
-        public AnalysisMetaData MetaData
-        {
-            get;
-            set;
-        }
+        public AnalysisMetaData MetaData { get; set; }
+
         /// <summary>
-        /// Gets the peak matching results 
+        ///     Gets the peak matching results
         /// </summary>
-        public PeakMatchingResults<UMCClusterLight, MassTagLight> MatchResults
-        {
-            get;
-            set;
-        }        
+        public PeakMatchingResults<UMCClusterLight, MassTagLight> MatchResults { get; set; }
+
         /// <summary>
-        /// Gets or sets the mass tag database.
+        ///     Gets or sets the mass tag database.
         /// </summary>
-        public MassTagDatabase MassTagDatabase
-        {
-            get;
-            set;
-        }    
+        public MassTagDatabase MassTagDatabase { get; set; }
+
         #endregion
-    }    
+    }
 }

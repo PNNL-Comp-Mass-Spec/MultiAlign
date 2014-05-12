@@ -1,15 +1,18 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 
+#endregion
+
 namespace MultiAlignCore
 {
     public static class ApplicationUtility
-    {  
-
+    {
         /// <summary>
-        /// Calculates the current usage of current processes memory.
+        ///     Calculates the current usage of current processes memory.
         /// </summary>
         /// <returns>Memory usage of current process.</returns>
         public static long GetMemory()
@@ -21,8 +24,9 @@ namespace MultiAlignCore
             process.Dispose();
             return memory;
         }
+
         /// <summary>
-        /// Retrieves the assembly information.
+        ///     Retrieves the assembly information.
         /// </summary>
         /// <returns></returns>
         public static string GetAssemblyData()
@@ -39,14 +43,15 @@ namespace MultiAlignCore
             }
 
             var data = string.Format("{0} - version: {1} process type: {2}",
-                                            name,
-                                            version,
-                                            versionType);
+                name,
+                version,
+                versionType);
 
             return data;
         }
+
         /// <summary>
-        /// Retrieves the assembly information.
+        ///     Retrieves the assembly information.
         /// </summary>
         /// <returns></returns>
         public static string GetEntryAssemblyData()
@@ -63,18 +68,19 @@ namespace MultiAlignCore
             }
 
             var data = string.Format("{0} - v{1} - {2}",
-                                            name.Name,
-                                            version,
-                                            versionType);
+                name.Name,
+                version,
+                versionType);
 
             return data;
         }
+
         /// <summary>
-        /// Retrieves the system data.
+        ///     Retrieves the system data.
         /// </summary>
         /// <returns></returns>
         public static string GetSystemData()
-        {            
+        {
             var operationSystemType = "32-bit OS";
             if (Environment.Is64BitOperatingSystem)
             {
@@ -82,31 +88,33 @@ namespace MultiAlignCore
             }
 
 
-            var data = string.Format("OS Version: {0} Processor Count: {1} Operating System Type: {2}  Memory: {3}  Page Size: {4}",
-                                Environment.OSVersion,
-                                Environment.ProcessorCount,
-                                operationSystemType,
-                                Environment.WorkingSet,
-                                Environment.SystemPageSize);
+            var data =
+                string.Format(
+                    "OS Version: {0} Processor Count: {1} Operating System Type: {2}  Memory: {3}  Page Size: {4}",
+                    Environment.OSVersion,
+                    Environment.ProcessorCount,
+                    operationSystemType,
+                    Environment.WorkingSet,
+                    Environment.SystemPageSize);
 
             return data;
         }
+
         /// <summary>
-        /// Gets the application data folder for the application.  
+        ///     Gets the application data folder for the application.
         /// </summary>
         /// <returns>Path to application data, null if path not applicable.</returns>
         public static string GetApplicationDataFolderPath(string applicationName)
         {
-            string appDataFolderPath = null;            
-            appDataFolderPath        = Path.Combine(
-                                        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                                        applicationName);
+            string appDataFolderPath = null;
+            appDataFolderPath = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                applicationName);
             if (!Directory.Exists(appDataFolderPath))
             {
                 Directory.CreateDirectory(appDataFolderPath);
-            }            
+            }
             return appDataFolderPath;
         }
-
     }
 }

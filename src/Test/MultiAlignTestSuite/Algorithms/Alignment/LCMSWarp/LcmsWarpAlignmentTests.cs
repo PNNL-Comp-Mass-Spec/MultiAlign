@@ -1,7 +1,11 @@
-﻿using MultiAlignCore.Algorithms.Alignment;
+﻿#region
+
+using MultiAlignCore.Algorithms.Alignment;
 using MultiAlignCore.Algorithms.Options;
 using MultiAlignCore.IO.Features.Hibernate;
 using NUnit.Framework;
+
+#endregion
 
 namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
 {
@@ -23,11 +27,11 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
             foreach (var feature in features1)
             {
                 feature.MassMonoisotopicAligned = feature.MassMonoisotopic;
-                feature.NetAligned              = feature.Net;
+                feature.NetAligned = feature.Net;
             }
 
-            aligner.Options = new AlignmentOptions();            
-            var data = aligner.Align(features0, features1); 
+            aligner.Options = new AlignmentOptions();
+            var data = aligner.Align(features0, features1);
         }
     }
 }

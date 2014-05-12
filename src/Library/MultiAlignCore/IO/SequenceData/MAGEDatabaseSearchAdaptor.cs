@@ -1,13 +1,17 @@
-﻿using System;
+﻿#region
+
+using System;
 using Mage;
 using PNNLOmics.Algorithms;
+
+#endregion
 
 namespace MultiAlignCore.IO.SequenceData
 {
     /// <summary>
-    /// Adapter to the MAGE file library.
+    ///     Adapter to the MAGE file library.
     /// </summary>
-    public class MAGEDatabaseSearchAdaptor: IProgressNotifer
+    public class MAGEDatabaseSearchAdaptor : IProgressNotifer
     {
         private void UpdateStatus(string message)
         {
@@ -17,18 +21,18 @@ namespace MultiAlignCore.IO.SequenceData
             }
         }
 
-        public void LoadSequenceData(string                      path,
-                                     int                         datasetID,
-                                     IDatabaseSearchSequenceDAO  databaseSequenceCache)
-        {            
-            IMageSink sink = null;                
+        public void LoadSequenceData(string path,
+            int datasetID,
+            IDatabaseSearchSequenceDAO databaseSequenceCache)
+        {
+            IMageSink sink = null;
             if (path.ToLower().EndsWith("fht.txt"))
             {
                 UpdateStatus("First Hit File MAGE Sink created. ");
 
                 var sequest = new SequestFirstHitSink(databaseSequenceCache);
-                sequest.DatasetID           = datasetID;
-                sink                        = sequest;                
+                sequest.DatasetID = datasetID;
+                sink = sequest;
             }
             else
             {
@@ -38,12 +42,12 @@ namespace MultiAlignCore.IO.SequenceData
             using (var reader = new DelimitedFileReader())
             {
                 reader.Delimiter = "\t";
-                reader.FilePath  = path;
+                reader.FilePath = path;
 
                 var pipeline = ProcessingPipeline.Assemble("PlainFactors", reader, sink);
                 pipeline.RunRoot(null);
                 sink.CommitChanges();
-            }                                     
+            }
         }
 
         #region IProgressNotifer Members

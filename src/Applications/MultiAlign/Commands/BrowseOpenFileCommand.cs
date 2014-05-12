@@ -23,7 +23,7 @@ namespace MultiAlign.Commands
 
         public override void Execute(object parameter)
         {
-            DialogResult result = m_dialog.ShowDialog();
+            var result = m_dialog.ShowDialog();
 
             if (result != DialogResult.OK)
                 return;

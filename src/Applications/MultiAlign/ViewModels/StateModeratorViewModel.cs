@@ -73,7 +73,7 @@ namespace MultiAlign.ViewModels
 
         public bool CanPerformNewAnalysis(out string message)
         {
-            bool canHappen = true;
+            var canHappen = true;
             message = "";
             switch (CurrentAnalysisState)
             {
@@ -95,7 +95,7 @@ namespace MultiAlign.ViewModels
 
         public bool IsAnalysisRunning(out string message)
         {
-            bool canHappen = false;
+            var canHappen = false;
             message = "";
             switch (CurrentAnalysisState)
             {

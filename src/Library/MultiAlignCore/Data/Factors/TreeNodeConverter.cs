@@ -1,11 +1,11 @@
 namespace MultiAlignCore.Data.Factors
 {
-	/// <summary>
-	/// Summary description for clsTreeNodeConverter.
-	/// </summary>
-	public sealed class classTreeNodeConverter
-	{
-	    ///// <summary>
+    /// <summary>
+    ///     Summary description for clsTreeNodeConverter.
+    /// </summary>
+    public sealed class classTreeNodeConverter
+    {
+        ///// <summary>
         ///// Converts a tree node heirachy to the data label heirachy for visualization.
         ///// </summary>
         ///// <param name="root">current root of the tree node structure.</param>
@@ -32,5 +32,5 @@ namespace MultiAlignCore.Data.Factors
         //        }
         //    }			
         //}
-	}
+    }
 }

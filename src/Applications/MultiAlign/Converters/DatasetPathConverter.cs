@@ -16,7 +16,7 @@ namespace MultiAlign.Converters
                 return false;
             }
 
-            string data = value.ToString();
+            var data = value.ToString();
             return DatasetInformation.ExtractDatasetName(data);
         }
 

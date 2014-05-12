@@ -124,7 +124,7 @@ namespace MultiAlign.ViewModels.TreeView
         /// </summary>
         private void RegisterEvents()
         {
-            foreach (UMCClusterTreeViewModel cluster in m_filteredClusters)
+            foreach (var cluster in m_filteredClusters)
             {
                 cluster.Selected += cluster_Selected;
                 cluster.FeatureSelected += cluster_FeatureSelected;
@@ -185,7 +185,7 @@ namespace MultiAlign.ViewModels.TreeView
         {
             m_filteredClusters.Clear();
 
-            foreach (UMCClusterLightMatched cluster in clusters)
+            foreach (var cluster in clusters)
             {
                 m_filteredClusters.Add(new UMCClusterTreeViewModel(cluster));
             }
@@ -208,7 +208,7 @@ namespace MultiAlign.ViewModels.TreeView
                 WindowStyle = WindowStyle.ToolWindow
             };
 
-            bool? worked = m_newWindow.ShowDialog();
+            var worked = m_newWindow.ShowDialog();
             if (worked == true)
             {
                 Filter();
@@ -218,7 +218,7 @@ namespace MultiAlign.ViewModels.TreeView
         private void Filter()
         {
             FilteredClusters.Clear();
-            IEnumerable<UMCClusterLightMatched> clusters = m_filterViewModel.ApplyFilters();
+            var clusters = m_filterViewModel.ApplyFilters();
             ResetClusters(clusters);
         }
     }

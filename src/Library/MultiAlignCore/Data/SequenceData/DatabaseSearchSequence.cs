@@ -1,44 +1,47 @@
-﻿using PNNLOmics.Data;
+﻿#region
+
+using PNNLOmics.Data;
+
+#endregion
 
 namespace MultiAlignCore.Data.SequenceData
 {
     /// <summary>
-    /// Database Search Result 
+    ///     Database Search Result
     /// </summary>
     public class DatabaseSearchSequence
     {
-
         public DatabaseSearchSequence()
         {
         }
 
         public DatabaseSearchSequence(Peptide peptide, int featureId)
         {
-            Sequence     = peptide.Sequence;
-            Scan         = peptide.Scan;
-            Score        = peptide.Score;
-            GroupId      = peptide.GroupId;               
+            Sequence = peptide.Sequence;
+            Scan = peptide.Scan;
+            Score = peptide.Score;
+            GroupId = peptide.GroupId;
             UmcFeatureId = featureId;
-            Id           = peptide.Id;
+            Id = peptide.Id;
         }
 
-        public string   Sequence    { get; set; }
-        public int      Scan        { get; set; }
-        public double   Score       { get; set; }        
-        public int      Id          { get; set; }
-        public int GroupId          { get; set; }
+        public string Sequence { get; set; }
+        public int Scan { get; set; }
+        public double Score { get; set; }
+        public int Id { get; set; }
+        public int GroupId { get; set; }
         public double Mz { get; set; }
         public double MassMonoisotopic { get; set; }
 
 
         /// <summary>
-        /// Gets or sets the parent feature this is associated with.
+        ///     Gets or sets the parent feature this is associated with.
         /// </summary>
         public int UmcFeatureId { get; set; }
-        
+
         public override bool Equals(object obj)
         {
-            var other = (DatabaseSearchSequence)obj;
+            var other = (DatabaseSearchSequence) obj;
 
             if (other == null)
             {
@@ -59,7 +62,7 @@ namespace MultiAlignCore.Data.SequenceData
             if (!Scan.Equals(other.Scan))
             {
                 return false;
-            }            
+            }
             if (!Score.Equals(other.Score))
             {
                 return false;
@@ -70,11 +73,11 @@ namespace MultiAlignCore.Data.SequenceData
         public override int GetHashCode()
         {
             var hash = 17;
-            hash = hash * 23 + Sequence.GetHashCode();
-            hash = hash * 23 + Scan.GetHashCode();
-            hash = hash * 23 + Score.GetHashCode();
-            hash = hash * 23 + Id.GetHashCode();
-            hash = hash * 23 + GroupId.GetHashCode();            
+            hash = hash*23 + Sequence.GetHashCode();
+            hash = hash*23 + Scan.GetHashCode();
+            hash = hash*23 + Score.GetHashCode();
+            hash = hash*23 + Id.GetHashCode();
+            hash = hash*23 + GroupId.GetHashCode();
             return hash;
         }
     }

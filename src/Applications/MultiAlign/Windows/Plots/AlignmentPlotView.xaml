@@ -4,17 +4,22 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
-             d:DesignHeight="360" d:DesignWidth="1200">
+             d:DesignHeight="600" d:DesignWidth="1200">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="256" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="256" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="256" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="256" />
+            <ColumnDefinition Width="256" />
+            <ColumnDefinition Width="256" />
+            <ColumnDefinition Width="256" />
         </Grid.ColumnDefinitions>
         <Label
             FontSize="14pt"
@@ -25,156 +30,139 @@
             <Binding Path="PlotName" />
         </Label>
 
-        <StackPanel
+        <Label
             Grid.Row="1"
-            Grid.Column="0">
-            <Label
-                HorizontalContentAlignment="Center"
-                Height="24">
-                Features
-            </Label>
-            <Border Padding="2"
-                    Margin="5"
-                    Height="256"
-                    Width="256"
-                    BorderBrush="LightGray"
-                    BorderThickness="4"
-                    Background="White"
-                    CornerRadius="3">
-                <Image Source="{Binding Path=FeaturePlotImage}" />
-            </Border>
-        </StackPanel>
-        <StackPanel
+            Grid.Column="0"
+            HorizontalContentAlignment="Center"
+            Height="24">
+            Features
+        </Label>
+        <Border 
+            Grid.Row="2"
+            Grid.Column="0"
+            Padding="2"
+            Margin="5"
+            BorderBrush="LightGray"
+            BorderThickness="4"
+            Background="White"
+            CornerRadius="3">
+            <Image Source="{Binding Path=FeaturePlotImage}" />
+        </Border>
+       
+        <Label            
             Grid.Row="1"
-            Grid.Column="1">
-            <Label
-                HorizontalContentAlignment="Center"
-                Height="24">
-                Alignment Heatmap
-            </Label>
-            <Border
-                Padding="2"
+            Grid.Column="1"
+            HorizontalContentAlignment="Center"
+            Height="24">
+            Alignment Heatmap
+        </Label>
+        <Border                
+            Grid.Row="2"
+            Grid.Column="1"
+            Padding="2"
+            Margin="5"                
+            BorderBrush="LightGray"
+            BorderThickness="4"
+            Background="White"
+            CornerRadius="3">
+            <Image Source="{Binding Path=HeatmapImage}" />
+        </Border>
+
+        <Label    
+            Grid.Row="1"
+            Grid.Column="3"
+            HorizontalContentAlignment="Center"
+            Height="24">
+            NET Errors
+        </Label>
+        <Border             
+            Grid.Row="2"
+            Grid.Column="3"            
+            Padding="2"
+                        Margin="5"
+                        BorderBrush="LightGray"
+                        BorderThickness="4"
+                        Background="White"
+                        CornerRadius="3">
+            <Image Source="{Binding Path=NetHistogram}" />
+        </Border>
+
+        <Label            
+            Grid.Row="3"
+            Grid.Column="0"
+            HorizontalContentAlignment="Center"
+            Height="24">
+            NET Residuals
+        </Label>
+        <Border 
+            
+                Grid.Row="4"
+                Grid.Column="0"
+                Padding="2"      
                 Margin="5"
-                Height="256"
-                Width="256"
                 BorderBrush="LightGray"
                 BorderThickness="4"
                 Background="White"
                 CornerRadius="3">
-                <Image Source="{Binding Path=HeatmapImage}" />
-            </Border>
-        </StackPanel>
-        <Grid
+            <Image Source="{Binding Path=NetScanImage}" />
+        </Border>
+
+        <Label             
             Grid.Row="1"
-            Grid.Column="2">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-            <StackPanel
-                Grid.Row="0"
-                Grid.Column="0">
-                <Label
-                    HorizontalContentAlignment="Center"
-                    Height="24">
-                    NET Errors
-                </Label>
-                <Border Padding="2"
+            Grid.Column="2"
+            HorizontalContentAlignment="Center"
+            Height="24">
+            Mass Errors
+        </Label>
+        <Border             
+            Grid.Row="2"
+            Grid.Column="2"
+            Padding="2"
                         Margin="5"
-                        Height="128"
-                        Width="128"
                         BorderBrush="LightGray"
                         BorderThickness="4"
                         Background="White"
                         CornerRadius="3">
-                    <Image Source="{Binding Path=NetHistogram}" />
-                </Border>
-            </StackPanel>
-            <StackPanel
-                Grid.Row="0"
-                Grid.Column="1">
-                <Label
-                    HorizontalContentAlignment="Center"
-                    Height="24">
-                    NET Residuals
-                </Label>
-                <Border Padding="2"
-                        Margin="5"
-                        Height="128"
-                        Width="128"
-                        BorderBrush="LightGray"
-                        BorderThickness="4"
-                        Background="White"
-                        CornerRadius="3">
-                    <Image Source="{Binding Path=NetScanImage}" />
+            <Image Source="{Binding Path=MassHistogram}" />
 
-                </Border>
-            </StackPanel>
-            <StackPanel
-                Grid.Row="1"
-                Grid.Column="0">
-                <Label
-                    HorizontalContentAlignment="Center"
-                    Height="24">
-                    Mass Errors
-                </Label>
-                <Border Padding="2"
-                        Margin="5"
-                        Height="128"
-                        Width="128"
-                        BorderBrush="LightGray"
-                        BorderThickness="4"
-                        Background="White"
-                        CornerRadius="3">
-                    <Image Source="{Binding Path=MassHistogram}" />
-
-                </Border>
-            </StackPanel>
-            <StackPanel
-                Grid.Row="1"
-                Grid.Column="1">
-                <Label
-                    HorizontalContentAlignment="Center"
-                    Height="24">
-                    Mass Error (ppm) vs. Scan
-                </Label>
-                <Border Padding="2"
-                        Margin="5"
-                        Height="128"
-                        Width="128"
-                        BorderBrush="LightGray"
-                        BorderThickness="4"
-                        Background="White"
-                        CornerRadius="3">
-                    <Image Source="{Binding Path=MassScanImage}" />
-                </Border>
-            </StackPanel>
-            <StackPanel
-                Grid.Row="1"
-                Grid.Column="3">
-                <Label
-                    HorizontalContentAlignment="Center"
-                    Height="24">
-                    Mass Error (ppm) vs. m/z
-                </Label>
-                <Border Padding="2"
-                        Margin="5"
-                        Height="128"
-                        Width="128"
-
-                        Background="White"
-                        BorderBrush="LightGray"
-                        BorderThickness="4"
-                        CornerRadius="3">
-                    <Image Source="{Binding Path=MassMzImage}" />
-                </Border>
-            </StackPanel>
-        </Grid>
+        </Border>
+        <Label
+            Grid.Row="3"
+            Grid.Column="2"
+            HorizontalContentAlignment="Center"
+            Height="24">
+            Mass Error (ppm) vs. Scan
+        </Label>
+        <Border
+                Grid.Row="4"
+                Grid.Column="2"
+                Padding="2"
+                Margin="5"                
+                BorderBrush="LightGray"
+                BorderThickness="4"
+                Background="White"
+                CornerRadius="3">
+            <Image Source="{Binding Path=MassScanImage}" />
+        </Border>
+           
+        <Label
+            
+            Grid.Row="3"
+            Grid.Column="1"
+            HorizontalContentAlignment="Center"
+            Height="24">
+            Mass Error (ppm) vs. m/z
+        </Label>
+        <Border             
+            Grid.Row="4"
+            Grid.Column="1"
+            Padding="2"
+                    Margin="5"
+                    Background="White"
+                    BorderBrush="LightGray"
+                    BorderThickness="4"
+                    CornerRadius="3">
+            <Image Source="{Binding Path=MassMzImage}" />
+        </Border>        
     </Grid>
 </UserControl>

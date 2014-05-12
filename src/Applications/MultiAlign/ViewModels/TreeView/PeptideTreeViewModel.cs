@@ -20,7 +20,7 @@ namespace MultiAlign.ViewModels.TreeView
             m_parent = parent;
             m_peptide = peptide;
 
-            DatasetInformation information = SingletonDataProviders.GetDatasetInformation(m_peptide.GroupId);
+            var information = SingletonDataProviders.GetDatasetInformation(m_peptide.GroupId);
 
             if (information != null)
             {
@@ -57,7 +57,7 @@ namespace MultiAlign.ViewModels.TreeView
                 base.IsSelected = value;
                 if (m_peptide != null)
                 {
-                    UMCLight feature = m_peptide.GetParentUmc();
+                    var feature = m_peptide.GetParentUmc();
                     OnFeatureSelected(feature);
                 }
             }

@@ -17,7 +17,7 @@ namespace MultiAlign.Commands
 
         public override void Execute(object parameter)
         {
-            bool? result = m_dialog.ShowDialog();
+            var result = m_dialog.ShowDialog();
             if (result != true) return;
 
             if (m_saveAction != null)

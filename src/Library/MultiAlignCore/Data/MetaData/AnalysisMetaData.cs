@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿#region
+
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
@@ -6,50 +8,43 @@ using MultiAlignCore.Data.Factors;
 using MultiAlignCore.Data.MassTags;
 using MultiAlignCore.IO.InputFiles;
 
+#endregion
+
 namespace MultiAlignCore.Data.MetaData
 {
     /// <summary>
-    /// Class that holds meta-data information about the analysis.
+    ///     Class that holds meta-data information about the analysis.
     /// </summary>
-    public class AnalysisMetaData: INotifyPropertyChanged
+    public class AnalysisMetaData : INotifyPropertyChanged
     {
         /// <summary>
-        /// Constructor.
+        ///     Constructor.
         /// </summary>
         public AnalysisMetaData()
         {
-            Datasets            = new ObservableCollection<DatasetInformation>(); //new List<DatasetInformation>();
+            Datasets = new ObservableCollection<DatasetInformation>(); //new List<DatasetInformation>();
             InputFileDefinition = null;
-            ParameterFile       = null;
-            FactorTreeNode      = null;
-            Database            = new InputDatabase(MassTagDatabaseFormat.None);
+            ParameterFile = null;
+            FactorTreeNode = null;
+            Database = new InputDatabase(MassTagDatabaseFormat.None);
         }
 
-        public InputDatabase Database
-        {
-            get;
-            set;
-        }
+        public InputDatabase Database { get; set; }
 
         /// <summary>
-        /// Gets or sets the list of dataset information.
+        ///     Gets or sets the list of dataset information.
         /// </summary>
-        public ObservableCollection<DatasetInformation> Datasets
-        {
-            get;
-            set;
-        }
+        public ObservableCollection<DatasetInformation> Datasets { get; set; }
+
         private DatasetInformation m_baseline;
+
         /// <summary>
-        /// Gets or sets the name of the baseline dataset.
+        ///     Gets or sets the name of the baseline dataset.
         /// </summary>
         [DataSummary("Baseline Dataset")]
         public DatasetInformation BaselineDataset
         {
-            get
-            {
-                return m_baseline;
-            }
+            get { return m_baseline; }
             set
             {
                 /// Here we say, is the baseline the same?
@@ -62,7 +57,7 @@ namespace MultiAlignCore.Data.MetaData
                     if (m_baseline != null)
                     {
                         m_baseline.IsBaseline = false;
-                    }                    
+                    }
                     // Then update
                     m_baseline = value;
 
@@ -71,13 +66,14 @@ namespace MultiAlignCore.Data.MetaData
                     {
                         m_baseline.IsBaseline = true;
                     }
-                    
+
                     OnNotify("BaselineDataset");
-                }                
+                }
             }
         }
+
         /// <summary>
-        /// Notify the listener that our internal data has changed.
+        ///     Notify the listener that our internal data has changed.
         /// </summary>
         /// <param name="name"></param>
         private void OnNotify(string name)
@@ -87,71 +83,49 @@ namespace MultiAlignCore.Data.MetaData
                 PropertyChanged(this, new PropertyChangedEventArgs(name));
             }
         }
+
         /// <summary>
-        /// Gets or sets the input file used.
+        ///     Gets or sets the input file used.
         /// </summary>
-		[DataSummary("Input File Definition Name")]
-        public string InputFileDefinition
-        {
-            get;
-            set;
-        }
+        [DataSummary("Input File Definition Name")]
+        public string InputFileDefinition { get; set; }
+
         /// <summary>
-        /// Gets or sets the parameter file used.
+        ///     Gets or sets the parameter file used.
         /// </summary>
         [DataSummary("Parameter File")]
-        public string ParameterFile
-        {
-            get;
-            set;
-        }
+        public string ParameterFile { get; set; }
+
         /// <summary>
-        /// Gets or sets the job id for this analysis.
+        ///     Gets or sets the job id for this analysis.
         /// </summary>
         [DataSummary("Job ID")]
-        public int JobID
-        {
-            get;
-            set;
-        }        
-		/// <summary>
-		/// Get/Set the analysis as a hiearchy of datasets with related factor information for grouping.
-		/// </summary>
-		public classTreeNode FactorTreeNode
-		{
-			get;
-            set;
-		}        
+        public int JobID { get; set; }
+
         /// <summary>
-        /// Gets or sets the name of the analysis.
+        ///     Get/Set the analysis as a hiearchy of datasets with related factor information for grouping.
+        /// </summary>
+        public classTreeNode FactorTreeNode { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the name of the analysis.
         /// </summary>
         [DataSummary("Analysis Name")]
-        public string AnalysisName
-        {
-            get;
-            set;
-        }
+        public string AnalysisName { get; set; }
+
         /// <summary>
-        /// Gets or sets the pathname associated with the analysis.
+        ///     Gets or sets the pathname associated with the analysis.
         /// </summary>
         [DataSummary("Analysis Path")]
-        public string AnalysisPath
-        {
-            get;
-            set;
-        }
+        public string AnalysisPath { get; set; }
 
         /// <summary>
-        /// Gets or sets the initial analysis setup information.
+        ///     Gets or sets the initial analysis setup information.
         /// </summary>
-        public InputAnalysisInfo AnalysisSetupInfo
-        {
-            get;
-            set;
-        }
+        public InputAnalysisInfo AnalysisSetupInfo { get; set; }
 
         /// <summary>
-        /// Adds a new dataset to the list. 
+        ///     Adds a new dataset to the list.
         /// </summary>
         /// <param name="info"></param>
         /// <returns>A list of added datasets</returns>
@@ -183,17 +157,17 @@ namespace MultiAlignCore.Data.MetaData
             var i = 0;
             foreach (var datasetName in inputMap.Keys)
             {
-                var files                   = inputMap[datasetName];
-                var datasetInformation   = new DatasetInformation();
-                datasetInformation.DatasetId            = i++;
-                datasetInformation.DatasetName          = datasetName;
+                var files = inputMap[datasetName];
+                var datasetInformation = new DatasetInformation();
+                datasetInformation.DatasetId = i++;
+                datasetInformation.DatasetName = datasetName;
 
                 var doesDatasetExist = datasetMap.ContainsKey(datasetName);
 
                 // Here we map the old dataset if it existed already.
                 if (datasetMap.ContainsKey(datasetName))
                 {
-                    datasetInformation = datasetMap[datasetName]; 
+                    datasetInformation = datasetMap[datasetName];
                 }
 
                 foreach (var file in files)
@@ -218,7 +192,7 @@ namespace MultiAlignCore.Data.MetaData
 
                 /// Add the dataset
                 if (!doesDatasetExist)
-                {                    
+                {
                     addedSets.Add(datasetInformation);
                     Datasets.Add(datasetInformation);
                 }
@@ -234,8 +208,9 @@ namespace MultiAlignCore.Data.MetaData
 
             return addedSets;
         }
+
         /// <summary>
-        /// Finds the dataset information for the dataset ID provided.
+        ///     Finds the dataset information for the dataset ID provided.
         /// </summary>
         /// <param name="datasetId"></param>
         /// <returns></returns>
@@ -249,7 +224,7 @@ namespace MultiAlignCore.Data.MetaData
                     info = datasetInfo;
                     break;
                 }
-            }            
+            }
             return info;
         }
 
@@ -258,7 +233,5 @@ namespace MultiAlignCore.Data.MetaData
         public event PropertyChangedEventHandler PropertyChanged;
 
         #endregion
-
-
     }
 }

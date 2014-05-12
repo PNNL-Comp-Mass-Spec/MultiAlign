@@ -17,16 +17,16 @@ namespace MultiAlign.IO
             var datasetList = new List<InputFile>();
             var candidates = new List<string>();
 
-            foreach (string extension in extensions)
+            foreach (var extension in extensions)
             {
-                string[] paths = Directory.GetFiles(folderPath, "*" + extension, options);
+                var paths = Directory.GetFiles(folderPath, "*" + extension, options);
                 candidates.AddRange(paths);
             }
 
 
-            foreach (string path in candidates)
+            foreach (var path in candidates)
             {
-                InputFileType type = DatasetInformation.GetInputFileType(path);
+                var type = DatasetInformation.GetInputFileType(path);
 
                 if (type == InputFileType.NotRecognized)
                 {

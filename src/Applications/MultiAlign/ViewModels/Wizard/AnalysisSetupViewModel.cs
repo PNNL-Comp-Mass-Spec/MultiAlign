@@ -124,8 +124,8 @@ namespace MultiAlign.ViewModels.Wizard
         public void MoveNext()
         {
             // Validate the move
-            string errorMessage = "";
-            bool isValid = MultiAlignAnalysisValidator.IsStepValid(AnalysisConfiguration, CurrentStep, ref errorMessage);
+            var errorMessage = "";
+            var isValid = MultiAlignAnalysisValidator.IsStepValid(AnalysisConfiguration, CurrentStep, ref errorMessage);
 
             // Then display the error if exists...
             if (!isValid)

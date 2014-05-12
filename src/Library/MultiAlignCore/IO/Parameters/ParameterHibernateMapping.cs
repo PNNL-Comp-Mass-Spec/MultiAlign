@@ -3,38 +3,27 @@
     public class ParameterHibernateMapping
     {
         #region Properties
+
         /// <summary>
-        /// Gets or sets the id.
+        ///     Gets or sets the id.
         /// </summary>
-        public int ID
-        {
-            get;
-            set;
-        }
+        public int ID { get; set; }
+
         /// <summary>
-        /// Gets or sets the parameter name.
+        ///     Gets or sets the parameter name.
         /// </summary>
-        public string Parameter
-        {
-            get;
-            set;
-        }
+        public string Parameter { get; set; }
+
         /// <summary>
-        /// Gets or sets the option group.
+        ///     Gets or sets the option group.
         /// </summary>
-        public string OptionGroup
-        {
-            get;
-            set;
-        }
+        public string OptionGroup { get; set; }
+
         /// <summary>
-        /// Gets or sets the value of the parameter.
+        ///     Gets or sets the value of the parameter.
         /// </summary>
-        public string Value
-        {
-            get;
-            set;
-        }
+        public string Value { get; set; }
+
         #endregion
 
         public override bool Equals(object obj)
@@ -45,6 +34,7 @@
 
             return Parameter == map.Parameter && Value == map.Value && OptionGroup == map.OptionGroup;
         }
+
         public override int GetHashCode()
         {
             return Value.GetHashCode() ^ Parameter.GetHashCode() ^ OptionGroup.GetHashCode();

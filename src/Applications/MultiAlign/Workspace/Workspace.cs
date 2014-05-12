@@ -19,7 +19,7 @@ namespace MultiAlign.Workspace
             var analysis = new RecentAnalysisViewModel(recent);
             RecentAnalysisViewModel model = null;
 
-            foreach (RecentAnalysisViewModel x in RecentAnalysis)
+            foreach (var x in RecentAnalysis)
             {
                 if (x.Analysis == recent)
                     model = x;

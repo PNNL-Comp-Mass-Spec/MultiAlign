@@ -1,4 +1,6 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -13,14 +15,15 @@ using PNNLOmics.Algorithms.FeatureClustering;
 using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
 
+#endregion
+
 namespace MultiAlignTestSuite.Papers.Alignment.SSM
 {
     /// <summary>
-    /// Base class for setting up tests`
+    ///     Base class for setting up tests`
     /// </summary>
     public abstract class BaseSpectralAlignmentTest
     {
-
         protected void PrintHistogram(Histogram histogram)
         {
             Print("Histogram: " + histogram.Name);
@@ -29,6 +32,7 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
                 Print(string.Format("{0},{1}", histogram.Bins[i], histogram.Data[i]));
             }
         }
+
         protected void PrintHistogram(string title, List<Histogram> histograms)
         {
             Print("Histograms: " + title);
@@ -45,7 +49,7 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
         }
 
         /// <summary>
-        /// Returns a list of MS/MS spectra
+        ///     Returns a list of MS/MS spectra
         /// </summary>
         /// <param name="features"></param>
         /// <returns></returns>
@@ -60,7 +64,7 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
         }
 
         /// <summary>
-        /// Prints meta-data about how many features match up
+        ///     Prints meta-data about how many features match up
         /// </summary>
         /// <param name="features"></param>
         protected void PrintFeatureMsMsData(List<UMCLight> features)
@@ -81,10 +85,12 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
                 doubleCount += (singleCount > 0) ? 1 : 0;
             }
 
-            Console.WriteLine("{0} Features Have {1} MS/MS spectra - {2} have more than one", features.Count, count, doubleCount);
+            Console.WriteLine("{0} Features Have {1} MS/MS spectra - {2} have more than one", features.Count, count,
+                doubleCount);
         }
+
         /// <summary>
-        /// Retrieves a list of features.
+        ///     Retrieves a list of features.
         /// </summary>
         /// <param name="rawFile"></param>
         /// <param name="featureFile"></param>
@@ -108,24 +114,24 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
                     Mass = 8,
                     RetentionTime = .005
                 };
-                var options = new LcmsFeatureFindingOptions(tolerances); 
+                var options = new LcmsFeatureFindingOptions(tolerances);
 
 
                 // Load and create features
                 var msFeatures = UmcLoaderFactory.LoadMsFeatureData(info.Features.Path);
-                var provider       = RawLoaderFactory.CreateFileReader(rawFile);
-                features           = finder.FindFeatures(msFeatures, options, provider);                
+                var provider = RawLoaderFactory.CreateFileReader(rawFile);
+                features = finder.FindFeatures(msFeatures, options, provider);
             }
             return features;
         }
 
         /// <summary>
-        /// Gets the root data path
+        ///     Gets the root data path
         /// </summary>
         public string RootDataPath { get; set; }
 
         /// <summary>
-        /// Creates the root test path
+        ///     Creates the root test path
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
@@ -139,12 +145,13 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
         #endregion
 
         #region Spectra Retrieval
-        
+
         #endregion
 
         #region Peptide file reading
+
         /// <summary>
-        /// Gets a list of the peptide matches from the path provided.
+        ///     Gets a list of the peptide matches from the path provided.
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
@@ -176,8 +183,9 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
 
             return matches;
         }
+
         /// <summary>
-        /// Creates a dictionary for scan to peptide match
+        ///     Creates a dictionary for scan to peptide match
         /// </summary>
         /// <param name="matches"></param>
         /// <param name="type"></param>
@@ -209,8 +217,9 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
 
             return matchesX;
         }
+
         /// <summary>
-        /// Reads a peptide file.
+        ///     Reads a peptide file.
         /// </summary>
         /// <param name="peptidePathX"></param>
         /// <returns></returns>
@@ -272,11 +281,12 @@ namespace MultiAlignTestSuite.Papers.Alignment.SSM
             }
             return peptideMap;
         }
+
         #endregion
 
         protected void Print(string message)
         {
-            System.Console.WriteLine(message);
+            Console.WriteLine(message);
         }
     }
 }

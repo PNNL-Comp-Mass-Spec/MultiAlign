@@ -1,18 +1,19 @@
-﻿using System.Collections.Generic;
+﻿#region
+
+using System.Collections.Generic;
 using System.Linq;
 using PNNLOmics.Data;
+
+#endregion
 
 namespace MultiAlignCore.IO.Features
 {
     /// <summary>
-    /// Finds the spectra for a given feature's scan
+    ///     Finds the spectra for a given feature's scan
     /// </summary>
     public class ParentSpectraFinder
     {
-
-
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="scan"></param>
         /// <param name="path"></param>
@@ -45,8 +46,8 @@ namespace MultiAlignCore.IO.Features
                     }
 
                     var data = (from x in spectrum
-                                where x.X > minMz && x.X < maxMz
-                                select x).ToList();
+                        where x.X > minMz && x.X < maxMz
+                        select x).ToList();
 
                     return data;
                 }

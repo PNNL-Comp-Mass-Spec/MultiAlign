@@ -72,8 +72,8 @@ namespace MultiAlign.ViewModels.Charting
                 m_selectedCharge = value;
                 if (m_scanAnnotation == null) return;
 
-                OxyColor color = m_colorIterator.GetColor(value);
-                OxyColor newColor = OxyColor.FromAColor(120, color);
+                var color = m_colorIterator.GetColor(value);
+                var newColor = OxyColor.FromAColor(120, color);
 
                 m_scanAnnotation.Color = newColor;
                 m_scanAnnotation.TextColor = newColor;
@@ -97,7 +97,7 @@ namespace MultiAlign.ViewModels.Charting
             {
                 if (!m_movingMouse) return;
 
-                DataPoint point = FindPoint(e.Position);
+                var point = FindPoint(e.Position);
                 if (PointClicked != null)
                     PointClicked(this, new PositionArgs(point.X, point.Y));
                 ScanAnnotationX = point.X;
@@ -110,7 +110,7 @@ namespace MultiAlign.ViewModels.Charting
             {
                 m_movingMouse = true;
 
-                DataPoint point = FindPoint(e.Position);
+                var point = FindPoint(e.Position);
 
                 if (PointClicked != null)
                     PointClicked(this, new PositionArgs(point.X, point.Y));
@@ -120,12 +120,12 @@ namespace MultiAlign.ViewModels.Charting
 
         private DataPoint FindPoint(ScreenPoint point)
         {
-            foreach (Series series in Model.Series)
+            foreach (var series in Model.Series)
             {
                 var charge = (int) series.Tag;
                 if (charge == m_selectedCharge)
                 {
-                    TrackerHitResult dataPoint = series.GetNearestPoint(point, false);
+                    var dataPoint = series.GetNearestPoint(point, false);
                     return dataPoint.DataPoint;
                 }
             }
@@ -141,7 +141,7 @@ namespace MultiAlign.ViewModels.Charting
             var markerIterator = new MarkerTypeIterator();
             m_colorIterator = new ColorTypeIterator();
 
-            int i = 0;
+            var i = 0;
 
             m_scanAnnotation = new LineAnnotation
             {
@@ -156,15 +156,15 @@ namespace MultiAlign.ViewModels.Charting
 
             Model.Annotations.Add(m_scanAnnotation);
 
-            foreach (UMCLight feature in features)
+            foreach (var feature in features)
             {
-                Dictionary<int, List<MSFeatureLight>> chargeMap = feature.CreateChargeMap();
+                var chargeMap = feature.CreateChargeMap();
 
-                foreach (int charge in chargeMap.Keys)
+                foreach (var charge in chargeMap.Keys)
                 {
-                    List<MSFeatureLight> msFeatures = chargeMap[charge];
+                    var msFeatures = chargeMap[charge];
                     msFeatures = msFeatures.OrderBy(x => x.Scan).ToList();
-                    double mz = msFeatures[0].Mz;
+                    var mz = msFeatures[0].Mz;
 
                     var newSeries = new LineSeries
                     {
@@ -182,7 +182,7 @@ namespace MultiAlign.ViewModels.Charting
                     long abundance = 0;
                     MSFeatureLight bestFeature = null;
 
-                    foreach (MSFeatureLight msFeature in msFeatures)
+                    foreach (var msFeature in msFeatures)
                     {
                         if (abundance < msFeature.Abundance)
                         {
@@ -190,9 +190,9 @@ namespace MultiAlign.ViewModels.Charting
                             abundance = msFeature.Abundance;
                         }
 
-                        foreach (MSSpectra msms in msFeature.MSnSpectra)
+                        foreach (var msms in msFeature.MSnSpectra)
                         {
-                            string peptideSequence = "";
+                            var peptideSequence = "";
                             if (msms.Peptides.Count > 0)
                                 peptideSequence = msms.Peptides[0].Sequence;
 

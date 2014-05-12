@@ -16,8 +16,8 @@ namespace MultiAlign.Data
         /// <returns></returns>
         public static bool IsStepValid(AnalysisConfig config, AnalysisSetupStep step, ref string errorMessage)
         {
-            MultiAlignAnalysis analysis = config.Analysis;
-            bool isStepValid = true;
+            var analysis = config.Analysis;
+            var isStepValid = true;
 
             switch (step)
             {
@@ -49,7 +49,7 @@ namespace MultiAlign.Data
 
         private static bool ValidateNames(AnalysisConfig config, ref string errorMessage)
         {
-            bool isStepValid = true;
+            var isStepValid = true;
             if (config.AnalysisPath == null)
             {
                 errorMessage = "An output folder location needs to be supplied.";
@@ -57,9 +57,9 @@ namespace MultiAlign.Data
             }
             else
             {
-                char[] chars = Path.GetInvalidPathChars();
-                string name = config.AnalysisPath;
-                foreach (char c in chars)
+                var chars = Path.GetInvalidPathChars();
+                var name = config.AnalysisPath;
+                foreach (var c in chars)
                 {
                     if (name.Contains(c))
                     {
@@ -85,12 +85,12 @@ namespace MultiAlign.Data
 
         private static bool ValidateBaseline(MultiAlignAnalysis analysis, ref string errorMessage)
         {
-            bool isStepValid = true;
+            var isStepValid = true;
 
             if (analysis.Options.AlignmentOptions.IsAlignmentBaselineAMasstagDB)
             {
-                InputDatabase database = analysis.MetaData.Database;
-                string databasePath = analysis.MetaData.Database.DatabaseName;
+                var database = analysis.MetaData.Database;
+                var databasePath = analysis.MetaData.Database.DatabaseName;
 
                 switch (database.DatabaseFormat)
                 {

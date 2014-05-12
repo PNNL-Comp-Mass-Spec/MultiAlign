@@ -19,7 +19,7 @@ namespace MultiAlign.Commands
 
         public override void Execute(object parameter)
         {
-            DialogResult result = m_folderBrowser.ShowDialog();
+            var result = m_folderBrowser.ShowDialog();
 
             if (result != DialogResult.OK)
                 return;

@@ -1,10 +1,14 @@
-﻿using System.Collections.Generic;
+﻿#region
+
+using System.Collections.Generic;
 using System.IO;
 using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.Extensions;
 using MultiAlignCore.IO.Features;
 using NUnit.Framework;
 using PNNLOmics.Data;
+
+#endregion
 
 namespace MultiAlignTestSuite.IO
 {
@@ -18,9 +22,9 @@ namespace MultiAlignTestSuite.IO
         {
             m_basePath = @"M:\data\proteomics\Applications\Kyle_IFL001_NEG\test";
         }
-        
+
         [Test]
-        [TestCase(@"Kyle-IFL001_NEG_MultiAlign.db3")]   
+        [TestCase(@"Kyle-IFL001_NEG_MultiAlign.db3")]
         public void TestClusterReconstruction(string name)
         {
             CreateUMCClusterLight(Path.Combine(m_basePath, name), false);
@@ -47,33 +51,33 @@ namespace MultiAlignTestSuite.IO
             //List<UMCClusterLight> clusters  = clusterCache.FindAll();
 
             var clusters = providers.ClusterCache.FindAll();
-            var shouldGetMsFeatures   = true;
+            var shouldGetMsFeatures = true;
             var shouldGetMsMsFeatures = true;
-            var shouldGetRawData      = false;
-           
+            var shouldGetRawData = false;
+
             // This gets all of the dataset information and maps to a dictionary...if you want the raw data
             // otherwise comment this out.
             var datasets = providers.DatasetCache.FindAll();
-            var datasetMap = new Dictionary<int,DatasetInformation>();
+            var datasetMap = new Dictionary<int, DatasetInformation>();
             datasets.ForEach(x => datasetMap.Add(x.DatasetId, x));
 
-            foreach(var cluster in clusters)
+            foreach (var cluster in clusters)
             {
                 cluster.ReconstructUMCCluster(providers,
-                                              shouldGetMsFeatures, 
-                                              shouldGetMsMsFeatures);
+                    shouldGetMsFeatures,
+                    shouldGetMsMsFeatures);
 
                 foreach (var feature in cluster.Features)
                 {
                     foreach (var msFeature in feature.Features)
                     {
-                        foreach(var spectrumMetaData in msFeature.MSnSpectra)
+                        foreach (var spectrumMetaData in msFeature.MSnSpectra)
                         {
                             // then you can do stuff with the ms/ms spectra
                             // If you had the path to the raw file, you could create a reader for you to extract the MS/MS spectra
                             // This supports mzXML and .RAW Thermo files based on the file extension.
                             if (shouldGetRawData)
-                            {                                        
+                            {
                                 DatasetInformation info = null;
                                 var hasKey = datasetMap.TryGetValue(spectrumMetaData.GroupId, out info);
                                 if (hasKey)
@@ -89,7 +93,8 @@ namespace MultiAlignTestSuite.IO
 
                                         // Then grab the actual spectrum...
                                         var summary = new ScanSummary();
-                                        var spectrum = rawReader.GetRawSpectra(spectrumMetaData.Scan, spectrumMetaData.GroupId, 2, out summary);
+                                        var spectrum = rawReader.GetRawSpectra(spectrumMetaData.Scan,
+                                            spectrumMetaData.GroupId, 2, out summary);
 
                                         // Then do what you want...
                                         // Profit???
@@ -100,7 +105,6 @@ namespace MultiAlignTestSuite.IO
                     }
                 }
             }
-
         }
     }
 }

@@ -21,7 +21,7 @@ namespace MultiAlign.ViewModels.Spectra
             Peptides = new ObservableCollection<PeptideViewModel>();
             spectrum.Peptides.ForEach(x => Peptides.Add(new PeptideViewModel(x)));
 
-            DatasetInformation info = SingletonDataProviders.GetDatasetInformation(spectrum.GroupId);
+            var info = SingletonDataProviders.GetDatasetInformation(spectrum.GroupId);
             if (info != null)
             {
                 Dataset = new DatasetInformationViewModel(info);
@@ -32,8 +32,8 @@ namespace MultiAlign.ViewModels.Spectra
 
             if (spectrum.ParentFeature != null)
             {
-                MSFeatureLight msFeature = spectrum.ParentFeature;
-                UMCLight umc = msFeature.ParentFeature;
+                var msFeature = spectrum.ParentFeature;
+                var umc = msFeature.ParentFeature;
                 if (umc != null)
                 {
                     var newList = new List<UMCLight> {umc};

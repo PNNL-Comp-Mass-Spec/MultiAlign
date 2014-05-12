@@ -1,24 +1,25 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.IO;
 using System.Text;
+
+#endregion
 
 namespace MultiAlignCore.IO
 {
     /// <summary>
-    /// Class that handles logging messages to the console and log files.
+    ///     Class that handles logging messages to the console and log files.
     /// </summary>
     public static class Logger
     {
-        public static event EventHandler<StatusEventArgs> Status;        
+        public static event EventHandler<StatusEventArgs> Status;
 
         /// <summary>
-        /// File to log information to.
+        ///     File to log information to.
         /// </summary>
-        public static string LogPath
-        {
-            get;
-            set;
-        }
+        public static string LogPath { get; set; }
+
         private static void OnMessage(string message, long size, DateTime time)
         {
             if (Status != null)
@@ -26,8 +27,9 @@ namespace MultiAlignCore.IO
                 Status(null, new StatusEventArgs(message, size, time));
             }
         }
+
         /// <summary>
-        /// Prints a message to the console and log file.
+        ///     Prints a message to the console and log file.
         /// </summary>
         public static void PrintSpacer()
         {
@@ -38,15 +40,17 @@ namespace MultiAlignCore.IO
             }
             PrintMessage(builder.ToString(), false);
         }
+
         /// <summary>
-        /// Prints a message to the console and log file.
+        ///     Prints a message to the console and log file.
         /// </summary>
         public static void PrintMessage(string message)
         {
             PrintMessage(message, true);
         }
+
         /// <summary>
-        /// Prints a message to the console and log file.
+        ///     Prints a message to the console and log file.
         /// </summary>
         public static void PrintMessage(string message, bool useMemory)
         {
@@ -55,6 +59,7 @@ namespace MultiAlignCore.IO
                 SynchMessaged(message, useMemory);
             }
         }
+
         public static void PrintMessageWorker(string message, int size, bool useMemory)
         {
             lock (Synched)
@@ -67,22 +72,23 @@ namespace MultiAlignCore.IO
 
         private static void SynchMessaged(string message, bool useMemory)
         {
-            var newMessage  = message;
-            var size        = ApplicationUtility.GetMemory();
-            var time        = DateTime.Now;
+            var newMessage = message;
+            var size = ApplicationUtility.GetMemory();
+            var time = DateTime.Now;
 
             if (LogPath != null)
             {
                 if (useMemory)
                     File.AppendAllText(LogPath, time + " - " + size + " MB - " + newMessage + Environment.NewLine);
                 else
-                    File.AppendAllText(LogPath, time + " - " + newMessage + Environment.NewLine);                                    
+                    File.AppendAllText(LogPath, time + " - " + newMessage + Environment.NewLine);
             }
             OnMessage(newMessage, size, DateTime.Now);
             Console.WriteLine(newMessage);
         }
+
         /// <summary>
-        /// Prints the version of MA to the log file.
+        ///     Prints the version of MA to the log file.
         /// </summary>
         public static void PrintVersion()
         {
@@ -98,8 +104,8 @@ namespace MultiAlignCore.IO
             {
                 var subName = subAssembly.GetName();
                 PrintMessage(string.Format("\t\t{0} - version {1}",
-                                                                subName,
-                                                                subName.Version));
+                    subName,
+                    subName.Version));
             }
 
             PrintMessage("[System Information]");

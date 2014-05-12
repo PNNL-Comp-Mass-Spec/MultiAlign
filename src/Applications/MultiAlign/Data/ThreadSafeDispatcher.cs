@@ -13,7 +13,7 @@ namespace MultiAlign.Data
                 return;
             }
 
-            Dispatcher dispatchObject = Application.Current.Dispatcher;
+            var dispatchObject = Application.Current.Dispatcher;
             if (dispatchObject == null || dispatchObject.CheckAccess())
             {
                 action();

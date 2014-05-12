@@ -12,10 +12,10 @@ namespace MultiAlign.IO
         {
             var document = new XmlDocument();
 
-            XmlElement element = document.CreateElement("MultiAlignWorkspace");
+            var element = document.CreateElement("MultiAlignWorkspace");
             document.AppendChild(element);
 
-            XmlElement recent = document.CreateElement("RecentAnalysis");
+            var recent = document.CreateElement("RecentAnalysis");
             element.AppendChild(recent);
 
             WriteRecent(document, recent, workspace.RecentAnalysis);
@@ -31,12 +31,12 @@ namespace MultiAlign.IO
         private void WriteRecent(XmlDocument document, XmlElement data,
             ObservableCollection<RecentAnalysisViewModel> analysis)
         {
-            foreach (RecentAnalysisViewModel recent in analysis)
+            foreach (var recent in analysis)
             {
-                XmlElement element = document.CreateElement("Analysis");
-                XmlAttribute nameAttribute = document.CreateAttribute("Name");
+                var element = document.CreateElement("Analysis");
+                var nameAttribute = document.CreateAttribute("Name");
                 nameAttribute.Value = recent.Name;
-                XmlAttribute pathAttribute = document.CreateAttribute("Path");
+                var pathAttribute = document.CreateAttribute("Path");
                 pathAttribute.Value = recent.Path;
                 element.Attributes.Append(nameAttribute);
                 element.Attributes.Append(pathAttribute);

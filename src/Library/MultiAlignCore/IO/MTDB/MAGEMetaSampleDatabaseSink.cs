@@ -1,27 +1,32 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Collections.Generic;
 using Mage;
 using PNNLOmics.Data.MassTags;
 
+#endregion
+
 namespace MultiAlignCore.IO.MTDB
 {
-    class MAGEMetaSampleDatabaseSink: ISinkModule
-    {       
+    internal class MAGEMetaSampleDatabaseSink : ISinkModule
+    {
         /// <summary>
-        /// Maps a column 
+        ///     Maps a column
         /// </summary>
         private readonly Dictionary<string, int> m_columnMapping;
 
         /// <summary>
-        /// Constructor.
+        ///     Constructor.
         /// </summary>
         public MAGEMetaSampleDatabaseSink()
         {
-            MassTags        = new List<MassTagLight>();
+            MassTags = new List<MassTagLight>();
             m_columnMapping = new Dictionary<string, int>();
         }
+
         /// <summary>
-        /// Handles the column definitions for a factor module.
+        ///     Handles the column definitions for a factor module.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="args"></param>
@@ -29,7 +34,7 @@ namespace MultiAlignCore.IO.MTDB
         {
             m_columnMapping.Clear();
 
-            for(var i = 0; i < args.ColumnDefs.Count; i++)                
+            for (var i = 0; i < args.ColumnDefs.Count; i++)
             {
                 var def = args.ColumnDefs[i];
                 m_columnMapping.Add(def.Name.Trim(), i);
@@ -38,7 +43,7 @@ namespace MultiAlignCore.IO.MTDB
         }
 
         /// <summary>
-        /// Handles converting the rows to factor objects.
+        ///     Handles converting the rows to factor objects.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="args"></param>
@@ -74,8 +79,8 @@ namespace MultiAlignCore.IO.MTDB
 
             if (m_columnMapping.ContainsKey("NET"))
             {
-                tag.NetAverage  = Convert.ToDouble(args.Fields[m_columnMapping["NET"]]);
-                tag.Net         = tag.NetAverage;                
+                tag.NetAverage = Convert.ToDouble(args.Fields[m_columnMapping["NET"]]);
+                tag.Net = tag.NetAverage;
             }
             else
             {
@@ -107,7 +112,7 @@ namespace MultiAlignCore.IO.MTDB
             {
                 return;
             }
-            
+
             if (m_columnMapping.ContainsKey("Charge"))
             {
                 tag.ChargeState = Convert.ToInt32(args.Fields[m_columnMapping["Charge"]]);
@@ -130,12 +135,8 @@ namespace MultiAlignCore.IO.MTDB
         }
 
         /// <summary>
-        /// Gets a list of the mass tags
+        ///     Gets a list of the mass tags
         /// </summary>
-        public List<MassTagLight> MassTags
-        {
-            get;
-            private set;
-        }
+        public List<MassTagLight> MassTags { get; private set; }
     }
 }

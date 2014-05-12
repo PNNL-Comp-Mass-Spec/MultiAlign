@@ -21,7 +21,7 @@ namespace MultiAlign.Converters
                 return null;
 
             var isAlignedToDatabase = (bool) value;
-            Color x = Colors.Green;
+            var x = Colors.Green;
 
             if (IsDataset == true)
             {

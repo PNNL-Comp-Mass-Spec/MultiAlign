@@ -1,12 +1,16 @@
-﻿using System.Data;
+﻿#region
+
+using System.Data;
 using System.Data.SqlClient;
+
+#endregion
 
 namespace MultiAlignCore.IO.MTDB
 {
-    public class MTSSqlServerPeakMatchResultWriter: MTSPeakMatchResultsWriter
+    public class MTSSqlServerPeakMatchResultWriter : MTSPeakMatchResultsWriter
     {
         /// <summary>
-        /// Creates a new database connection.
+        ///     Creates a new database connection.
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
@@ -15,40 +19,40 @@ namespace MultiAlignCore.IO.MTDB
             var connectionString = path;
             return new SqlConnection(connectionString);
         }
+
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="name"></param>
         /// <param name="value"></param>
         /// <returns></returns>
         protected override IDbDataParameter CreateParameter(string name,
-                                                            object value)
+            object value)
         {
             return new SqlParameter(name, value);
         }
+
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="name"></param>
         /// <param name="type"></param>
         /// <param name="size"></param>
         /// <returns></returns>
-        protected override IDbDataParameter CreateOutputParameter(  string name, 
-                                                                    DbType type,
-                                                                    int size,
-                                                                    byte precision,
-                                                                    byte scale)
-        {            
-            IDbDataParameter param = new SqlParameter(  name,
-                                                        (SqlDbType) type,
-                                                        size,
-                                                        ParameterDirection.Output,
-                                                        false,
-                                                        precision,
-                                                        scale,
-                                                        name,
-                                                        DataRowVersion.Current,
-                                                        null);
+        protected override IDbDataParameter CreateOutputParameter(string name,
+            DbType type,
+            int size,
+            byte precision,
+            byte scale)
+        {
+            IDbDataParameter param = new SqlParameter(name,
+                (SqlDbType) type,
+                size,
+                ParameterDirection.Output,
+                false,
+                precision,
+                scale,
+                name,
+                DataRowVersion.Current,
+                null);
             return param;
         }
     }

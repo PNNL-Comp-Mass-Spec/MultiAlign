@@ -1,58 +1,53 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Collections.Generic;
 using PNNLOmics.Algorithms;
 using PNNLOmics.Algorithms.FeatureMatcher;
 using PNNLOmics.Algorithms.FeatureMatcher.Data;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Data.MassTags;
-using PNNLOmics.Utilities;
+
+#endregion
 
 namespace MultiAlignCore.Algorithms.FeatureMatcher
 {
     /// <summary>
-    /// Adapts the STAC computation code from PNNL OMICS into the MultiAlign workflow.
+    ///     Adapts the STAC computation code from PNNL OMICS into the MultiAlign workflow.
     /// </summary>
-    public class STACAdapter<T>: IProgressNotifer, IPeakMatcher<T> 
-        where T: UMCClusterLight
+    public class STACAdapter<T> : IProgressNotifer, IPeakMatcher<T>
+        where T : UMCClusterLight
     {
         public event EventHandler<ProgressNotifierArgs> Progress;
-        
+
 
         public STACAdapter()
         {
             Options = new FeatureMatcherParameters();
         }
+
         /// <summary>
-        /// Gets the peak matching object.
+        ///     Gets the peak matching object.
         /// </summary>
-        public FeatureMatcher<UMCClusterLight, MassTagLight> Matcher
-        {
-            get;
-            private set;
-        }
+        public FeatureMatcher<UMCClusterLight, MassTagLight> Matcher { get; private set; }
 
 
         /// <summary>
-        /// Gets or sets the feature matching parameters.
+        ///     Gets or sets the feature matching parameters.
         /// </summary>
-        public FeatureMatcherParameters Options
-        {
-            get;
-            set;
-        }
+        public FeatureMatcherParameters Options { get; set; }
 
         /// <summary>
-        /// Performs STAC against the mass tag database.
+        ///     Performs STAC against the mass tag database.
         /// </summary>
         public List<FeatureMatchLight<T, MassTagLight>> PerformPeakMatching(List<T> clusters, MassTagDatabase database)
         {
-            
-            var clusterMap                           = new Dictionary<int,T>();
-            var tagMap   = new Dictionary<int, Dictionary<int, MassTagLight>>();
+            var clusterMap = new Dictionary<int, T>();
+            var tagMap = new Dictionary<int, Dictionary<int, MassTagLight>>();
 
             var massTags = new List<MassTagLight>();
-            var i = 0 ;
-            foreach(var tag in database.MassTags)
+            var i = 0;
+            foreach (var tag in database.MassTags)
             {
                 var mt = new MassTagLight
                 {
@@ -81,13 +76,13 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
                     QualityScore = tag.QualityScore,
                     XCorr = tag.XCorr
                 };
-                mt.Index                         = i++;
+                mt.Index = i++;
                 massTags.Add(mt);
                 if (!tagMap.ContainsKey(tag.Id))
                 {
                     tagMap.Add(tag.Id, new Dictionary<int, MassTagLight>());
                 }
-                tagMap[tag.Id].Add(tag.ConformationId, tag);                
+                tagMap[tag.Id].Add(tag.ConformationId, tag);
             }
 
             // convert data needed by the algorithm.
@@ -100,11 +95,11 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
                     MassMonoisotopicAligned = cluster.MassMonoisotopic,
                     MassMonoisotopic = cluster.MassMonoisotopic
                 };
-                feature.Net                     = cluster.Net;
-                feature.NetAligned              = cluster.Net;
-                feature.ChargeState             = cluster.ChargeState;
-                feature.DriftTime               = Convert.ToSingle(cluster.DriftTime);
-                feature.DriftTimeAligned        = Convert.ToDouble(cluster.DriftTime);
+                feature.Net = cluster.Net;
+                feature.NetAligned = cluster.Net;
+                feature.ChargeState = cluster.ChargeState;
+                feature.DriftTime = Convert.ToSingle(cluster.DriftTime);
+                feature.DriftTimeAligned = Convert.ToDouble(cluster.DriftTime);
                 features.Add(feature);
 
                 clusterMap.Add(cluster.Id, cluster);
@@ -113,7 +108,7 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
             // create a stac manager and run.
             var matcher = new FeatureMatcher<UMCClusterLight, MassTagLight>(features, massTags, Options);
 
-            matcher.MessageEvent            += StatusHandler;
+            matcher.MessageEvent += StatusHandler;
             matcher.ProcessingCompleteEvent += StatusHandler;
             matcher.MatchFeatures();
             Matcher = matcher;
@@ -124,7 +119,7 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
             var matches = new List<FeatureMatchLight<T, MassTagLight>>();
             foreach (var match in matcher.MatchList)
             {
-                var matched  = new FeatureMatchLight<T, MassTagLight>
+                var matched = new FeatureMatchLight<T, MassTagLight>
                 {
                     Observed = clusterMap[match.ObservedFeature.Id],
                     Target = tagMap[match.TargetFeature.Id][match.TargetFeature.ConformationId],
@@ -135,18 +130,18 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
             }
 
 
-            matcher.MessageEvent            -= StatusHandler;
+            matcher.MessageEvent -= StatusHandler;
             matcher.ProcessingCompleteEvent -= StatusHandler;
 
             return matches;
         }
 
         /// <summary>
-        /// Handles status messages from the attributes.
+        ///     Handles status messages from the attributes.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void StatusHandler(object sender, ProgressNotifierArgs e)
+        private void StatusHandler(object sender, ProgressNotifierArgs e)
         {
             if (Progress != null)
             {

@@ -42,7 +42,7 @@ namespace MultiAlign.ViewModels.Wizard
             ExperimentPresets = new ObservableCollection<ExperimentPresetViewModel>();
 
             var presets = new Dictionary<string, bool>();
-            foreach (ExperimentPresetViewModel preset in ExperimentPresetFactory.Create())
+            foreach (var preset in ExperimentPresetFactory.Create())
             {
                 ExperimentPresets.Add(preset);
 
@@ -53,7 +53,7 @@ namespace MultiAlign.ViewModels.Wizard
                 }
             }
 
-            foreach (InstrumentPresetViewModel preset in InstrumentPresetFactory.Create())
+            foreach (var preset in InstrumentPresetFactory.Create())
             {
                 if (!presets.ContainsKey(preset.Name))
                 {
@@ -115,7 +115,7 @@ namespace MultiAlign.ViewModels.Wizard
             try
             {
                 //TODO: Replace with OOKI dialogs
-                DialogResult result = m_dialog.ShowDialog();
+                var result = m_dialog.ShowDialog();
                 if (result == DialogResult.OK)
                 {
                     var reader = new JsonReader<MultiAlignAnalysisOptions>();
@@ -134,7 +134,7 @@ namespace MultiAlign.ViewModels.Wizard
         {
             try
             {
-                DialogResult result = m_saveDialog.ShowDialog();
+                var result = m_saveDialog.ShowDialog();
                 if (result == DialogResult.OK)
                 {
                     var writer = new JsonWriter<MultiAlignAnalysisOptions>();

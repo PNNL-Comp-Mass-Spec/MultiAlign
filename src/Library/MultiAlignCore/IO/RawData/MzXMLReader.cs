@@ -1,50 +1,49 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using MSDataFileReader;
 using PNNLOmics.Data;
 
+#endregion
+
 namespace MultiAlignCore.IO.Features
 {
     /// <summary>
-    /// Adapter for reading mzXML files from a reader by Matt Monroe.
+    ///     Adapter for reading mzXML files from a reader by Matt Monroe.
     /// </summary>
     public class MzXMLReader : ISpectraProvider
     {
-        
         /// <summary>
-        /// Readers for each dataset.
+        ///     Readers for each dataset.
         /// </summary>
-        private Dictionary<int, clsMzXMLFileAccessor> m_readers;
+        private readonly Dictionary<int, clsMzXMLFileAccessor> m_readers;
 
-        private Dictionary<int, string> m_dataFiles;
+        private readonly Dictionary<int, string> m_dataFiles;
 
         public MzXMLReader()
         {
             m_dataFiles = new Dictionary<int, string>();
             m_readers = new Dictionary<int, clsMzXMLFileAccessor>();
-            BinSize     = .5; 
-        }
-       
-        /// <summary>
-        /// Gets or sets the bin size for mass spectra
-        /// </summary>
-        public double BinSize
-        {
-            get;
-            set;
+            BinSize = .5;
         }
 
         /// <summary>
-        /// Reads a list of MSMS Spectra header data from the mzXML file.
+        ///     Gets or sets the bin size for mass spectra
+        /// </summary>
+        public double BinSize { get; set; }
+
+        /// <summary>
+        ///     Reads a list of MSMS Spectra header data from the mzXML file.
         /// </summary>
         /// <param name="file">file to read.</param>
         /// <returns>List of MSMS spectra data</returns>
         public List<MSSpectra> ReadMSMSSpectra(string file)
         {
-            var spectra  = new List<MSSpectra>();
-            var reader   = new clsMzXMLFileReader {SkipBinaryData = true};
-            var opened                 = reader.OpenFile(file);
+            var spectra = new List<MSSpectra>();
+            var reader = new clsMzXMLFileReader {SkipBinaryData = true};
+            var opened = reader.OpenFile(file);
 
             if (!opened)
             {
@@ -55,12 +54,11 @@ namespace MultiAlignCore.IO.Features
 
             for (var i = 0; i < totalScans; i++)
             {
-                
                 var info = new clsSpectrumInfo();
                 reader.GetSpectrumByScanNumber(i, ref info);
                 if (info.MSLevel > 1)
                 {
-                    var spectrum          = new MSSpectra
+                    var spectrum = new MSSpectra
                     {
                         MsLevel = info.MSLevel,
                         RetentionTime = info.RetentionTimeMin,
@@ -77,15 +75,17 @@ namespace MultiAlignCore.IO.Features
             reader.CloseFile();
             return spectra;
         }
+
         public List<MSSpectra> GetRawSpectra(int group)
         {
             return new List<MSSpectra>();
         }
+
         public List<XYData> GetRawSpectra(int scan, int group, out ScanSummary summary)
         {
             return GetRawSpectra(scan, group, -11, out summary);
         }
-        
+
 
         public void AddDataFile(string path, int groupId)
         {
@@ -98,6 +98,7 @@ namespace MultiAlignCore.IO.Features
                 m_dataFiles[groupId] = path;
             }
         }
+
         public List<MSSpectra> GetMSMSSpectra(int group)
         {
             return GetMSMSSpectra(group, new Dictionary<int, int>());
@@ -107,6 +108,7 @@ namespace MultiAlignCore.IO.Features
         {
             return GetMSMSSpectra(group, excludeMap, false);
         }
+
         public List<MSSpectra> GetMSMSSpectra(int group, Dictionary<int, int> excludeMap, bool loadPeaks)
         {
             var spectra = new List<MSSpectra>();
@@ -120,8 +122,8 @@ namespace MultiAlignCore.IO.Features
             // opening the file.
             if (!m_readers.ContainsKey(group))
             {
-                var path                 = m_dataFiles[group];
-                var reader = new clsMzXMLFileAccessor();                
+                var path = m_dataFiles[group];
+                var reader = new clsMzXMLFileAccessor();
                 m_readers.Add(group, reader);
 
                 var opened = reader.OpenFile(path);
@@ -132,9 +134,9 @@ namespace MultiAlignCore.IO.Features
             }
             var rawReader = m_readers[group];
 
-            var numberOfScans = rawReader.ScanCount;            
+            var numberOfScans = rawReader.ScanCount;
             var info = new clsSpectrumInfo();
-            
+
             for (var i = 0; i < numberOfScans; i++)
             {
                 // This scan is not to be used.
@@ -147,13 +149,13 @@ namespace MultiAlignCore.IO.Features
                 rawReader.GetSpectrumHeaderInfoByIndex(i, ref header);
                 if (header.MSLevel > 1)
                 {
-                    var spectrum       = new MSSpectra();
-                    spectrum.MsLevel         = header.MSLevel;
-                    spectrum.RetentionTime   = header.RetentionTimeMin;
-                    spectrum.Scan            = i;
-                    spectrum.PrecursorMz     = header.ParentIonMZ;
+                    var spectrum = new MSSpectra();
+                    spectrum.MsLevel = header.MSLevel;
+                    spectrum.RetentionTime = header.RetentionTimeMin;
+                    spectrum.Scan = i;
+                    spectrum.PrecursorMz = header.ParentIonMZ;
                     spectrum.TotalIonCurrent = header.TotalIonCurrent;
-                    spectrum.CollisionType   = CollisionType.Other;                    
+                    spectrum.CollisionType = CollisionType.Other;
                     spectra.Add(spectrum);
                 }
             }
@@ -162,7 +164,7 @@ namespace MultiAlignCore.IO.Features
         }
 
         /// <summary>
-        /// Gets the total number of scans for the group id provided
+        ///     Gets the total number of scans for the group id provided
         /// </summary>
         /// <param name="group"></param>
         /// <returns></returns>
@@ -187,7 +189,7 @@ namespace MultiAlignCore.IO.Features
                     throw new IOException("Could not open the mzXML file " + path);
                 }
             }
-            var rawReader = m_readers[group];            
+            var rawReader = m_readers[group];
             return rawReader.ScanCount;
         }
 
@@ -198,7 +200,6 @@ namespace MultiAlignCore.IO.Features
 
         public void Dispose()
         {
-
         }
 
         public List<XYData> GetRawSpectra(int scan, int group, int scanLevel, out ScanSummary summary)
@@ -215,7 +216,7 @@ namespace MultiAlignCore.IO.Features
             if (!m_readers.ContainsKey(group))
             {
                 var path = m_dataFiles[group];
-                var reader  = new clsMzXMLFileAccessor();
+                var reader = new clsMzXMLFileAccessor();
                 m_readers.Add(group, reader);
 
                 var opened = reader.OpenFile(path);
@@ -226,18 +227,18 @@ namespace MultiAlignCore.IO.Features
             }
             var rawReader = m_readers[group];
 
-            var totalScans  = rawReader.ScanCount;
-            var info        = new clsSpectrumInfo();
+            var totalScans = rawReader.ScanCount;
+            var info = new clsSpectrumInfo();
 
-                        
+
             rawReader.GetSpectrumByScanNumber(scan, ref info);
-            
+
             summary = new ScanSummary
             {
-                Bpi             = Convert.ToInt64(info.BasePeakIntensity),
-                BpiMz           = info.BasePeakMZ,
-                MsLevel         = info.MSLevel,
-                PrecursorMz     = info.ParentIonMZ,
+                Bpi = Convert.ToInt64(info.BasePeakIntensity),
+                BpiMz = info.BasePeakMZ,
+                MsLevel = info.MSLevel,
+                PrecursorMz = info.ParentIonMZ,
                 TotalIonCurrent = Convert.ToInt64(info.TotalIonCurrent)
             };
 
@@ -252,7 +253,6 @@ namespace MultiAlignCore.IO.Features
 
             return spectrum;
         }
-
 
 
         public MSSpectra GetSpectrum(int scan, int group, int scanLevel, out ScanSummary summary, bool loadPeaks)

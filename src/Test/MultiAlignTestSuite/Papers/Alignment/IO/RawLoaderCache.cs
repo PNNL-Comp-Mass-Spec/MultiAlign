@@ -1,13 +1,17 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Collections.Generic;
 using PNNLOmics.Data;
 
+#endregion
+
 namespace MultiAlignTestSuite.Papers.Alignment.IO
 {
-    public class RawLoaderCache: ISpectraProvider   
+    public class RawLoaderCache : ISpectraProvider
     {
-        Dictionary<int, Dictionary<int, ScanSummary>> m_summaryMap;        
-        ISpectraProvider m_provider;
+        private readonly Dictionary<int, Dictionary<int, ScanSummary>> m_summaryMap;
+        private readonly ISpectraProvider m_provider;
 
 
         public RawLoaderCache(ISpectraProvider provider)
@@ -16,7 +20,7 @@ namespace MultiAlignTestSuite.Papers.Alignment.IO
             m_provider = provider;
         }
 
-        public  Dictionary<int, ScanSummary> GetScanData(int group)
+        public Dictionary<int, ScanSummary> GetScanData(int group)
         {
             if (!m_summaryMap.ContainsKey(group))
             {
@@ -25,9 +29,9 @@ namespace MultiAlignTestSuite.Papers.Alignment.IO
 
             return m_summaryMap[group];
         }
-    
+
         #region ISpectraProvider Members
-        
+
         public void AddDataFile(string path, int groupId)
         {
             m_provider.AddDataFile(path, groupId);
@@ -38,42 +42,40 @@ namespace MultiAlignTestSuite.Papers.Alignment.IO
             if (m_summaryMap.ContainsKey(groupID))
                 throw new Exception("The scan summary already exists for this group.");
 
-            m_summaryMap.Add(groupID, cache);            
+            m_summaryMap.Add(groupID, cache);
         }
 
-        public List<MSSpectra>  GetMSMSSpectra(int group, Dictionary<int,int> excludeMap, bool loadPeaks)
+        public List<MSSpectra> GetMSMSSpectra(int group, Dictionary<int, int> excludeMap, bool loadPeaks)
         {
             return m_provider.GetMSMSSpectra(group, excludeMap, loadPeaks);
         }
 
-        public List<MSSpectra>  GetMSMSSpectra(int group, Dictionary<int,int> excludeMap)
+        public List<MSSpectra> GetMSMSSpectra(int group, Dictionary<int, int> excludeMap)
         {
             return m_provider.GetMSMSSpectra(group, excludeMap);
         }
 
-        public List<MSSpectra>  GetMSMSSpectra(int group)
+        public List<MSSpectra> GetMSMSSpectra(int group)
         {
             return m_provider.GetMSMSSpectra(group);
         }
 
 
-        public List<MSSpectra>  GetRawSpectra(int group)
+        public List<MSSpectra> GetRawSpectra(int group)
         {
             return m_provider.GetRawSpectra(group);
         }
-
 
         #endregion
 
         #region IDisposable Members
 
-        public void  Dispose()
+        public void Dispose()
         {
             m_provider.Dispose();
         }
 
         #endregion
-
 
         public List<XYData> GetRawSpectra(int scan, int group, int scanLevel, out ScanSummary summary)
         {

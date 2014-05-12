@@ -1,19 +1,23 @@
-﻿using System.Collections.Generic;
+﻿#region
+
+using System.Collections.Generic;
 using MultiAlignCore.IO.Clusters;
 using PNNLOmicsIO.IO;
+
+#endregion
 
 namespace MultiAlignCore.IO.Features
 {
     public static class UmcClusterExporterFactory
     {
         /// <summary>
-        /// Creates a UMC Cluster  exporter
+        ///     Creates a UMC Cluster  exporter
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
         public static IFeatureClusterWriter Create(ClusterFeatureExporters type)
         {
-            IFeatureClusterWriter exporter = null;           
+            IFeatureClusterWriter exporter = null;
             switch (type)
             {
                 case ClusterFeatureExporters.CrossTab:
@@ -33,15 +37,15 @@ namespace MultiAlignCore.IO.Features
                     break;
                 case ClusterFeatureExporters.MsMsDta:
                     exporter = new UMCClusterMsmsSpectraWriter(
-                                                                "DTA Spectra",
-                                                                MsMsFileWriterFactory.CreateSpectraWriter(MsMsWriterType.DTA),
-                                                                ".dta");
+                        "DTA Spectra",
+                        MsMsFileWriterFactory.CreateSpectraWriter(MsMsWriterType.DTA),
+                        ".dta");
                     break;
                 case ClusterFeatureExporters.MsMsMgf:
                     exporter = new UMCClusterMsmsSpectraWriter(
-                                                                "MGF Spectra", 
-                                                                MsMsFileWriterFactory.CreateSpectraWriter(MsMsWriterType.MGF),
-                                                                ".mgf");
+                        "MGF Spectra",
+                        MsMsFileWriterFactory.CreateSpectraWriter(MsMsWriterType.MGF),
+                        ".mgf");
                     break;
                 default:
                     break;
@@ -49,8 +53,9 @@ namespace MultiAlignCore.IO.Features
 
             return exporter;
         }
+
         /// <summary>
-        /// Creates all UMC Cluster exporters
+        ///     Creates all UMC Cluster exporters
         /// </summary>
         /// <returns></returns>
         public static IEnumerable<IFeatureClusterWriter> Create()

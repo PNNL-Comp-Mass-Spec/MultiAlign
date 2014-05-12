@@ -22,7 +22,7 @@ namespace MultiAlign.ViewModels.TreeView
             m_feature = feature;
             m_parent = parent;
 
-            DatasetInformation information = SingletonDataProviders.GetDatasetInformation(m_feature.GroupId);
+            var information = SingletonDataProviders.GetDatasetInformation(m_feature.GroupId);
 
             if (information != null)
             {

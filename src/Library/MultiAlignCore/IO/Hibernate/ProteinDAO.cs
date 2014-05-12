@@ -1,25 +1,26 @@
+#region
+
 using System.Collections.Generic;
 using NHibernate.Criterion;
 using PNNLOmics.Data;
 
+#endregion
+
 namespace MultiAlignCore.IO.Features.Hibernate
 {
-
-	public class ProteinDAO : GenericDAOHibernate<Protein>, IProteinDAO
+    public class ProteinDAO : GenericDAOHibernate<Protein>, IProteinDAO
     {
         /// <summary>
-        /// Searches for and returns a List of Protein Objects in the Database that have the exact Protein String given.
+        ///     Searches for and returns a List of Protein Objects in the Database that have the exact Protein String given.
         /// </summary>
         /// <param name="proteinString">Protein String to be searched for</param>
         /// <returns>List of Protein Objects</returns>
-		public ICollection<Protein> FindByProteinString(string proteinString)
+        public ICollection<Protein> FindByProteinString(string proteinString)
         {
-            ICriterion criterion            = Restrictions.Eq("ProteinString", proteinString);
-            var criterionList  = new List<ICriterion>();
+            ICriterion criterion = Restrictions.Eq("ProteinString", proteinString);
+            var criterionList = new List<ICriterion>();
             criterionList.Add(criterion);
             return FindByCriteria(criterionList);
         }
-
     }
-
 }

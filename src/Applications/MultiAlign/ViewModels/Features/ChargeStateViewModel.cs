@@ -13,7 +13,7 @@ namespace MultiAlign.ViewModels.Features
             int scanEnd)
         {
             var iterator = new ColorTypeIterator();
-            OxyColor oldColor = iterator.GetColor(charge);
+            var oldColor = iterator.GetColor(charge);
             var newColor = new Color
             {
                 A = oldColor.A,

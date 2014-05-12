@@ -37,10 +37,10 @@ namespace MultiAlign.ViewModels.IO
             m_filteredClusters = filteredClusters;
             m_datasets = SingletonDataProviders.GetAllInformation();
             Exporters = new ObservableCollection<IFeatureClusterWriter>();
-            string filters = "";
+            var filters = "";
 
             m_writerExtensionMap = new Dictionary<string, IFeatureClusterWriter>();
-            foreach (IFeatureClusterWriter exporter in UmcClusterExporterFactory.Create())
+            foreach (var exporter in UmcClusterExporterFactory.Create())
             {
                 exporter.ShouldLoadClusterData = true;
 
@@ -67,12 +67,12 @@ namespace MultiAlign.ViewModels.IO
                 var clusters = new List<UMCClusterLight>();
                 if (IsFilteredClusters)
                 {
-                    foreach (UMCClusterTreeViewModel x in m_filteredClusters)
+                    foreach (var x in m_filteredClusters)
                         clusters.Add(x.Cluster.Cluster);
                 }
                 else
                 {
-                    foreach (UMCClusterLightMatched x in m_allClusters)
+                    foreach (var x in m_allClusters)
                         clusters.Add(x.Cluster);
                 }
 
@@ -125,7 +125,7 @@ namespace MultiAlign.ViewModels.IO
                     {
                         // We have to do it this way because of the stupid numerous extensions
                         // but this can break if we have a _isos.csv and .csv ...fix!
-                        foreach (string extension in m_writerExtensionMap.Keys)
+                        foreach (var extension in m_writerExtensionMap.Keys)
                         {
                             if (value.EndsWith(extension))
                             {

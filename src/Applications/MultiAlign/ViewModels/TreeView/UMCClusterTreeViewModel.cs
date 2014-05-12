@@ -38,7 +38,7 @@ namespace MultiAlign.ViewModels.TreeView
             features.Name = "Features";
 
             // Cluster level statistics
-            UMCClusterLight cluster = matchedCluster.Cluster;
+            var cluster = matchedCluster.Cluster;
             AddStatistics("Mass", cluster.MassMonoisotopic);
 
 
@@ -141,20 +141,20 @@ namespace MultiAlign.ViewModels.TreeView
             {
                 m_cluster.Cluster.ReconstructUMCCluster(SingletonDataProviders.Providers, true, true);
 
-                foreach (TreeItemViewModel treeModel in m_items)
+                foreach (var treeModel in m_items)
                 {
                     treeModel.LoadChildren();
                 }
 
 
-                foreach (TreeItemViewModel treeModel in m_allIdentifications.Items)
+                foreach (var treeModel in m_allIdentifications.Items)
                 {
                     treeModel.LoadChildren();
                 }
             }
             catch (Exception ex)
             {
-                int x = 0;
+                var x = 0;
                 x++;
                 if (x > 5)
                 {

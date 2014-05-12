@@ -1,9 +1,12 @@
+#region
+
 using System.Data.SQLite;
 using PNNLOmics.Algorithms.FeatureMatcher.Data;
 
+#endregion
+
 namespace MultiAlignCore.IO.Features.Hibernate
 {
-
     public class STACDAOHibernate : GenericDAOHibernate<STACFDR>
     {
         public void ClearAll()
@@ -20,5 +23,4 @@ namespace MultiAlignCore.IO.Features.Hibernate
             }
         }
     }
-
 }

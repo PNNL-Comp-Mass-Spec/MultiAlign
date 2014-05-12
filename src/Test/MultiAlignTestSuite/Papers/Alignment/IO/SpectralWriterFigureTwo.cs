@@ -1,10 +1,13 @@
-﻿using PNNLOmics.Algorithms.Alignment.SpectralMatching;
+﻿#region
+
+using PNNLOmics.Algorithms.Alignment.SpectralMatching;
+
+#endregion
 
 namespace MultiAlignTestSuite.Papers.Alignment.IO
 {
-
     /// <summary>
-    /// Writes data from an analysis for figure 1
+    ///     Writes data from an analysis for figure 1
     /// </summary>
     public class SpectralWriterFigureTwo : PaperFileWriter, ISpectralAnalysisWriter
     {
@@ -19,13 +22,13 @@ namespace MultiAlignTestSuite.Papers.Alignment.IO
         }
 
         /// <summary>
-        /// Serializes the data provided.
+        ///     Serializes the data provided.
         /// </summary>
         /// <param name="analysis"></param>
         public void Write(SpectralAnalysis analysis)
-        {            
+        {
             WriteLine(string.Format("NET,{0}", analysis.Options.NetTolerance));
-            WriteLine(string.Format("Mass,{0}", analysis.Options.MzTolerance));            
+            WriteLine(string.Format("Mass,{0}", analysis.Options.MzTolerance));
         }
     }
 }

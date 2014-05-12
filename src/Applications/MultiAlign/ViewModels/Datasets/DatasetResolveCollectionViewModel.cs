@@ -22,7 +22,7 @@ namespace MultiAlign.ViewModels.Datasets
 
         private void UncheckAll()
         {
-            foreach (DatasetResolveMatchViewModel dataset in Datasets)
+            foreach (var dataset in Datasets)
             {
                 dataset.IsSelected = false;
             }
@@ -30,7 +30,7 @@ namespace MultiAlign.ViewModels.Datasets
 
         private void CheckAll()
         {
-            foreach (DatasetResolveMatchViewModel dataset in Datasets)
+            foreach (var dataset in Datasets)
             {
                 dataset.IsSelected = true;
             }

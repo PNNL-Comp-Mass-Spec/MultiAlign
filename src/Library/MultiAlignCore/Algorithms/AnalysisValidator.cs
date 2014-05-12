@@ -1,12 +1,16 @@
-﻿using MultiAlignCore.Data;
+﻿#region
+
+using MultiAlignCore.Data;
 using MultiAlignCore.IO;
+
+#endregion
 
 namespace MultiAlignCore.Algorithms
 {
     public static class AnalysisValidator
-    {        
+    {
         /// <summary>
-        /// Validates the input options to make sure everything is set.
+        ///     Validates the input options to make sure everything is set.
         /// </summary>
         /// <returns></returns>
         public static AnalysisType ValidateSetup(AnalysisConfig config)
@@ -69,7 +73,7 @@ namespace MultiAlignCore.Algorithms
                     return analysisType;
                 }
             }
-            
+
             return analysisType;
         }
     }

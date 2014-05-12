@@ -15,7 +15,7 @@ namespace MultiAlign.Converters
                 return "No Datasets are selected.";
             }
 
-            string message = "No datasets are selected.";
+            var message = "No datasets are selected.";
             try
             {
                 var datasets = (int) value;

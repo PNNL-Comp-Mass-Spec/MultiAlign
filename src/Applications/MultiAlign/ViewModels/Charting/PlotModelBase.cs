@@ -8,10 +8,11 @@ namespace MultiAlign.ViewModels.Charting
 
         public PlotModelBase(string name)
         {
-            Model = new PlotModel(name);
+            Model = new PlotModel();
+            Name = name;
         }
 
-
+        public string Name { get; set; }
         public PlotModel Model
         {
             get { return m_model; }

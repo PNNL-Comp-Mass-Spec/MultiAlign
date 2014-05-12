@@ -2,6 +2,6 @@
 {
     public interface IMageSink
     {
-        void CommitChanges();        
+        void CommitChanges();
     }
 }

@@ -1,13 +1,18 @@
+#region
+
 using System.Collections.Generic;
 using PNNLOmics.Data.Features;
+
+#endregion
 
 namespace MultiAlignCore.IO.Features
 {
     public interface IUmcClusterDAO : IGenericDAO<UMCClusterLight>
     {
         List<UMCClusterLight> FindByMass(double mass);
+
         /// <summary>
-        /// Find nearby clusters skipping the one specified.
+        ///     Find nearby clusters skipping the one specified.
         /// </summary>
         /// <param name="massMin"></param>
         /// <param name="massMax"></param>
@@ -16,8 +21,9 @@ namespace MultiAlignCore.IO.Features
         /// <param name="id"></param>
         /// <returns></returns>
         List<UMCClusterLight> FindNearby(double massMin, double massMax, double netMin, double netMax);
+
         /// <summary>
-        /// Finds nearby mass tags based on mass, net, and drift time.
+        ///     Finds nearby mass tags based on mass, net, and drift time.
         /// </summary>
         /// <param name="massMin"></param>
         /// <param name="massMax"></param>
@@ -26,7 +32,9 @@ namespace MultiAlignCore.IO.Features
         /// <param name="driftMin"></param>
         /// <param name="driftMax"></param>
         /// <returns></returns>
-        List<UMCClusterLight> FindNearby(double massMin, double massMax, double netMin, double netMax, double driftMin, double driftMax);
+        List<UMCClusterLight> FindNearby(double massMin, double massMax, double netMin, double netMax, double driftMin,
+            double driftMax);
+
         void ClearAllClusters();
         List<UMCClusterLight> FindByCharge(int charge);
     }

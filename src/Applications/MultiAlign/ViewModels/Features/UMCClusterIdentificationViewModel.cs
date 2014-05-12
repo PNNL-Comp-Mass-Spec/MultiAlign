@@ -42,7 +42,7 @@ namespace MultiAlign.ViewModels.Features
             MassTagResults.Clear();
             DatabaseResults.Clear();
 
-            List<Peptide> peptides = cluster.Cluster.FindPeptides();
+            var peptides = cluster.Cluster.FindPeptides();
             peptides.ForEach(x => DatabaseResults.Add(new PeptideViewModel(x)));
             cluster.ClusterMatches.ForEach(x => MassTagResults.Add(new MassTagMatchedViewModel(x)));
         }

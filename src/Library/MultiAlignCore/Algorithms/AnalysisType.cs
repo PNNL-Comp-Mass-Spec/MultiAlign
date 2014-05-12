@@ -1,26 +1,28 @@
 ﻿namespace MultiAlignCore.Algorithms
 {
     /// <summary>
-    /// Analysis Type to be performed.  Some types are modifications to the 
+    ///     Analysis Type to be performed.  Some types are modifications to the
     /// </summary>
     public enum AnalysisType
     {
         /// <summary>
-        /// Import factors into a database.
+        ///     Import factors into a database.
         /// </summary>
         FactorImporting,
+
         /// <summary>
-        /// Do everything, as is tradition.
+        ///     Do everything, as is tradition.
         /// </summary>
-        Full,          
+        Full,
+
         /// <summary>
-        /// Export data only.
+        ///     Export data only.
         /// </summary>
         ExportDataOnly,
+
         /// <summary>
-        /// Invalid analysis specified.
+        ///     Invalid analysis specified.
         /// </summary>
-        InvalidParameters        
+        InvalidParameters
     }
-    
 }

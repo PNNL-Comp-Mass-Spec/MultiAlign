@@ -1,58 +1,61 @@
-﻿using System.Data;
+﻿#region
+
+using System.Data;
 using System.Data.SQLite;
+using MultiAlignCore.Algorithms.Options;
+
+#endregion
 
 namespace MultiAlignCore.IO.MTDB
 {
     /// <summary>
-    /// Stub class.
+    ///     Stub class.
     /// </summary>
     public class SQLiteMassTagDatabaseLoader : MassTagDatabaseLoader
     {
         /// <summary>
-        /// Sqlite database loader constructor.
+        ///     Sqlite database loader constructor.
         /// </summary>
-        public SQLiteMassTagDatabaseLoader(string databasePath, Algorithms.Options.MassTagDatabaseOptions options)
+        public SQLiteMassTagDatabaseLoader(string databasePath, MassTagDatabaseOptions options)
         {
-            DatabasePath    = databasePath;
-            Options         = options;
+            DatabasePath = databasePath;
+            Options = options;
         }
 
         /// <summary>
-        /// Gets or sets the database path.
+        ///     Gets or sets the database path.
         /// </summary>
-        public string DatabasePath
-        {
-            get;
-            set;
-        }
+        public string DatabasePath { get; set; }
 
         #region Abstract Method Implementations.
+
         /// <summary>
-        /// Sets up the command for execution.
+        ///     Sets up the command for execution.
         /// </summary>
         /// <param name="command"></param>
         protected override void SetupProteinMassTagCommand(IDbCommand command)
         {
-            command.CommandText     = "";
-            command.CommandTimeout  = 180;
-            command.CommandType     = CommandType.Text;
-            var commandString    = "SELECT * FROM T_Mass_Tag_To_Protein_Name_Map ";
-            command.CommandText     = commandString;
+            command.CommandText = "";
+            command.CommandTimeout = 180;
+            command.CommandType = CommandType.Text;
+            var commandString = "SELECT * FROM T_Mass_Tag_To_Protein_Name_Map ";
+            command.CommandText = commandString;
         }
+
         /// <summary>
-        /// Sets up the mass tag command.
+        ///     Sets up the mass tag command.
         /// </summary>
         /// <param name="command"></param>
         protected override void SetupMassTagCommand(IDbCommand command)
         {
-            command.CommandText     = "";
-            command.CommandTimeout  = 180;
-            command.CommandType     = CommandType.Text;
-            var commandString    = "SELECT * FROM T_Mass_Tags_plus_Conformers ";
-            command.CommandText     = commandString;
+            command.CommandText = "";
+            command.CommandTimeout = 180;
+            command.CommandType = CommandType.Text;
+            var commandString = "SELECT * FROM T_Mass_Tags_plus_Conformers ";
+            command.CommandText = commandString;
         }
+
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="connectionString"></param>
         /// <returns></returns>
@@ -60,14 +63,15 @@ namespace MultiAlignCore.IO.MTDB
         {
             return new SQLiteConnection(connectionString);
         }
+
         /// <summary>
-        /// Creates a new connection string.
+        ///     Creates a new connection string.
         /// </summary>
         /// <returns>String to use for connecting to local databases.</returns>
         protected override string CreateConnectionString()
         {
             var newPath = DatabasePath.Trim();
-            
+
 
             var builder = new SQLiteConnectionStringBuilder
             {
@@ -76,8 +80,9 @@ namespace MultiAlignCore.IO.MTDB
 
             return builder.ConnectionString;
         }
+
         /// <summary>
-        /// Creates a new Sqlite data paramter for use in queries.
+        ///     Creates a new Sqlite data paramter for use in queries.
         /// </summary>
         /// <param name="name">Name of parameter.</param>
         /// <param name="value">Value of parameter.</param>
@@ -86,6 +91,7 @@ namespace MultiAlignCore.IO.MTDB
         {
             return new SQLiteParameter(name, value);
         }
+
         #endregion
     }
 }

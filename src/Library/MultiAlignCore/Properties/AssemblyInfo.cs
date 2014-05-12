@@ -1,5 +1,9 @@
-﻿using System.Reflection;
+﻿#region
+
+using System.Reflection;
 using System.Runtime.InteropServices;
+
+#endregion
 
 [assembly: AssemblyTitle("MultiAlignCore")]
 [assembly: AssemblyDescription("Class Library Assembly for MultAlign tools")]

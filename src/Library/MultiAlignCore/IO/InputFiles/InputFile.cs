@@ -1,20 +1,25 @@
-﻿using System.ComponentModel;
+﻿#region
+
+using System.ComponentModel;
+
+#endregion
 
 namespace MultiAlignCore.IO.InputFiles
 {
     /// <summary>
-    /// Holds information about input files. 
+    ///     Holds information about input files.
     /// </summary>
-    public class InputFile: INotifyPropertyChanged
+    public class InputFile : INotifyPropertyChanged
     {
-        private string m_path; 
+        private string m_path;
+
         /// <summary>
-        /// Constructor.
+        ///     Constructor.
         /// </summary>
         public InputFile()
         {
-            Path        = null;
-            FileType    = InputFileType.NotRecognized;         
+            Path = null;
+            FileType = InputFileType.NotRecognized;
         }
 
         private void OnNotify(string propertyName)
@@ -24,32 +29,27 @@ namespace MultiAlignCore.IO.InputFiles
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
+
         /// <summary>
-        /// Gets or sets the path to the input file.
+        ///     Gets or sets the path to the input file.
         /// </summary>
         public string Path
         {
-            get
-            {
-                return m_path;
-            }
+            get { return m_path; }
             set
             {
                 if (m_path != value)
                 {
                     m_path = value;
-                    OnNotify("Path");                    
+                    OnNotify("Path");
                 }
             }
         }
+
         /// <summary>
-        /// Gets or sets the input file type.
+        ///     Gets or sets the input file type.
         /// </summary>
-        public InputFileType FileType
-        {
-            get;
-            set;
-        }
+        public InputFileType FileType { get; set; }
 
         #region INotifyPropertyChanged Members
 
@@ -57,5 +57,4 @@ namespace MultiAlignCore.IO.InputFiles
 
         #endregion
     }
-
 }

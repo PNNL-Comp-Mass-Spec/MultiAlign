@@ -1,15 +1,19 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Collections.Generic;
+
+#endregion
 
 namespace MultiAlignCore.IO.InputFiles
 {
     /// <summary>
-    /// Parses a list of strings for command line processing.
+    ///     Parses a list of strings for command line processing.
     /// </summary>
     public class CommandLineParser
     {
         /// <summary>
-        /// Processes the command line args into a dictionary.  Skips any non-option items at beggnining of args list.
+        ///     Processes the command line args into a dictionary.  Skips any non-option items at beggnining of args list.
         /// </summary>
         /// <param name="args">Args to process</param>
         /// <param name="offset">Starting index of argument array.</param>
@@ -18,10 +22,10 @@ namespace MultiAlignCore.IO.InputFiles
         {
             IDictionary<string, List<string>> options = new Dictionary<string, List<string>>();
 
-            var i               = offset;            
-            while(i < args.Length)            
+            var i = offset;
+            while (i < args.Length)
             {
-                var key          = args[i].ToLower();
+                var key = args[i].ToLower();
                 if (key.StartsWith("-"))
                 {
                     if (options.ContainsKey(key))
@@ -47,6 +51,6 @@ namespace MultiAlignCore.IO.InputFiles
                 }
             }
             return options;
-        }        
+        }
     }
 }

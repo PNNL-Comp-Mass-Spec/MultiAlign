@@ -1,5 +1,9 @@
+#region
+
 using System;
 using System.Collections.Generic;
+
+#endregion
 
 namespace MultiAlignTestSuite.Papers.Alignment
 {
@@ -7,7 +11,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
     {
         public ClusterIdentificationStatistic()
         {
-            Peptides        = new Dictionary<string, int>();
+            Peptides = new Dictionary<string, int>();
             PeptideDatasets = new Dictionary<string, List<int>>();
         }
 
@@ -18,10 +22,10 @@ namespace MultiAlignTestSuite.Papers.Alignment
         {
             get
             {
-                var total   = 0;                
+                var total = 0;
                 foreach (var peptide in PeptideDatasets.Keys)
                 {
-                    var counter  = new Dictionary<int, int>();
+                    var counter = new Dictionary<int, int>();
                     var subTotal = 0;
                     foreach (var dataset in PeptideDatasets[peptide])
                     {

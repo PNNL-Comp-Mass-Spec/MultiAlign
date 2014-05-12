@@ -49,7 +49,7 @@ namespace MultiAlign.ViewModels.Charting
             Model.Series.Clear();
 
             var colorIterator = new ColorTypeIterator();
-            int charge = 0;
+            var charge = 0;
             if (spectrum.ParentFeature != null)
             {
                 charge = spectrum.ParentFeature.ChargeState;
@@ -62,7 +62,7 @@ namespace MultiAlign.ViewModels.Charting
                 Color = colorIterator.GetColor(charge)
             };
 
-            foreach (XYData peak in spectrum.Peaks)
+            foreach (var peak in spectrum.Peaks)
             {
                 series.Points.Add(new DataPoint(peak.X, peak.Y));
             }

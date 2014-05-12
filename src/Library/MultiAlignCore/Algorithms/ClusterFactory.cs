@@ -1,5 +1,9 @@
+#region
+
 using PNNLOmics.Algorithms.FeatureClustering;
 using PNNLOmics.Data.Features;
+
+#endregion
 
 namespace MultiAlignCore.Algorithms
 {

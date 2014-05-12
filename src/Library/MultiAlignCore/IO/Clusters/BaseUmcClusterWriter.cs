@@ -1,13 +1,16 @@
-﻿using System.Collections.Generic;
+﻿#region
+
+using System.Collections.Generic;
 using MultiAlign.IO;
 using MultiAlignCore.Algorithms.FeatureFinding;
 using MultiAlignCore.Algorithms.Features;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.Extensions;
-using MultiAlignCore.IO.Features;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Data.MassTags;
+
+#endregion
 
 namespace MultiAlignCore.IO.Clusters
 {
@@ -20,97 +23,75 @@ namespace MultiAlignCore.IO.Clusters
         public BaseUmcClusterWriter(bool shouldLoadMsData)
         {
             Consolidator = FeatureConsolidatorFactory.CreateConsolidator(AbundanceReportingType.Sum,
-                                                                         AbundanceReportingType.Sum);
+                AbundanceReportingType.Sum);
 
-            ShouldLoadClusterData   = false;
+            ShouldLoadClusterData = false;
             ShouldLoadMsFeatureData = shouldLoadMsData;
         }
 
-        public string Extension
-        {
-            get;
-            protected set;
-        }
+        public string Extension { get; protected set; }
+
         public string Path
         {
-            get
-            {
-                return m_path;
-            }
+            get { return m_path; }
             set
             {
-                if (value!= null)
-                {                    
+                if (value != null)
+                {
                     if (!value.EndsWith(Extension))
                     {
-                        m_path = value + Extension;        
+                        m_path = value + Extension;
                     }
-
-                }                
+                }
             }
         }
 
-        public LCMSFeatureConsolidator Consolidator
-        {
-            get;
-            set;
-        }
+        public LCMSFeatureConsolidator Consolidator { get; set; }
 
         public string Name
         {
-            get
-            {
-                return m_name;
-            }
-            protected set
-            {
-                m_name = value;
-            }
+            get { return m_name; }
+            protected set { m_name = value; }
         }
 
         public string Description
         {
-            get
-            {
-                return m_description;
-            }
-            protected set
-            {
-                m_description = value;
-            }
+            get { return m_description; }
+            protected set { m_description = value; }
         }
+
         /// <summary>
-        /// Gets or sets whether cluster data needs to be loaded.  In case it was loaded from a cache.
+        ///     Gets or sets whether cluster data needs to be loaded.  In case it was loaded from a cache.
         /// </summary>
         public bool ShouldLoadClusterData { get; set; }
+
         /// <summary>
-        /// Gets or sets whether cluster data needs to be loaded, including the MS/MS data.
+        ///     Gets or sets whether cluster data needs to be loaded, including the MS/MS data.
         /// </summary>
         public bool ShouldLoadMsFeatureData { get; private set; }
 
-        protected abstract void Write(  List<UMCClusterLight> clusters,
-                                        List<DatasetInformation> datasets);
         protected abstract void Write(List<UMCClusterLight> clusters,
-                                            Dictionary<int, List<ClusterToMassTagMap>> clusterMap,
-                                            List<DatasetInformation> datasets,
-                                            Dictionary<string, MassTagLight> tags);
+            List<DatasetInformation> datasets);
 
-        public void WriteClusters(List<UMCClusterLight> clusters, 
-                                 List<DatasetInformation> datasets)
+        protected abstract void Write(List<UMCClusterLight> clusters,
+            Dictionary<int, List<ClusterToMassTagMap>> clusterMap,
+            List<DatasetInformation> datasets,
+            Dictionary<string, MassTagLight> tags);
+
+        public void WriteClusters(List<UMCClusterLight> clusters,
+            List<DatasetInformation> datasets)
         {
-
             WriteClusters(clusters,
-                            new Dictionary<int, List<ClusterToMassTagMap>>(), 
-                            datasets, 
-                            new Dictionary<string, MassTagLight>());
-
+                new Dictionary<int, List<ClusterToMassTagMap>>(),
+                datasets,
+                new Dictionary<string, MassTagLight>());
         }
 
 
         public void WriteClusters(List<UMCClusterLight> clusters,
-                                            Dictionary<int, List<ClusterToMassTagMap>> clusterMap,
-                                            List<DatasetInformation> datasets,
-                                            Dictionary<string, MassTagLight> tags)
+            Dictionary<int, List<ClusterToMassTagMap>> clusterMap,
+            List<DatasetInformation> datasets,
+            Dictionary<string, MassTagLight> tags)
         {
             if (ShouldLoadClusterData)
                 LoadClusterData(clusters);
@@ -121,9 +102,10 @@ namespace MultiAlignCore.IO.Clusters
         protected virtual void LoadClusterData(IEnumerable<UMCClusterLight> clusters)
         {
             var shouldLoadFeatureData = ShouldLoadMsFeatureData;
-            foreach(var cluster in clusters)
+            foreach (var cluster in clusters)
             {
-                cluster.ReconstructUMCCluster(SingletonDataProviders.Providers, shouldLoadFeatureData, shouldLoadFeatureData);
+                cluster.ReconstructUMCCluster(SingletonDataProviders.Providers, shouldLoadFeatureData,
+                    shouldLoadFeatureData);
             }
         }
     }

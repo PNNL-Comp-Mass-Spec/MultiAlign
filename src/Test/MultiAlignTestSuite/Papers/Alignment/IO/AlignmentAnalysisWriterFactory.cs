@@ -1,10 +1,13 @@
-﻿using PNNLOmics.Algorithms.Alignment.SpectralMatching;
+﻿#region
+
+using PNNLOmics.Algorithms.Alignment.SpectralMatching;
+
+#endregion
 
 namespace MultiAlignTestSuite.Papers.Alignment.IO
 {
-
     /// <summary>
-    /// Factory for creating figure writers
+    ///     Factory for creating figure writers
     /// </summary>
     public static class AlignmentAnalysisWriterFactory
     {
@@ -27,7 +30,7 @@ namespace MultiAlignTestSuite.Papers.Alignment.IO
         }
 
         /// <summary>
-        /// Gets or sets the base path for the data.
+        ///     Gets or sets the base path for the data.
         /// </summary>
         public static string BasePath { get; set; }
     }

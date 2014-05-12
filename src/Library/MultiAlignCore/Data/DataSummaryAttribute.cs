@@ -1,4 +1,8 @@
-﻿using System;
+﻿#region
+
+using System;
+
+#endregion
 
 namespace MultiAlignCore.Data
 {
@@ -7,14 +11,9 @@ namespace MultiAlignCore.Data
     {
         public DataSummaryAttribute(string name)
         {
-            Name = name;            
+            Name = name;
         }
-        
-        public string Name
-        {
-            get;
-            private set;
-        }        
+
+        public string Name { get; private set; }
     }
 }
-

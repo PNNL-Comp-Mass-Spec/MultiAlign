@@ -17,7 +17,7 @@ namespace MultiAlign.ViewModels.Datasets
         public DatasetInformationViewModel(DatasetInformation information)
         {
             m_information = information;
-            DatasetPlotInformation data = information.PlotData;
+            var data = information.PlotData;
             PlotData = new ObservableCollection<PlotViewModel>();
 
             if (data != null)
@@ -76,7 +76,7 @@ namespace MultiAlign.ViewModels.Datasets
         {
             get
             {
-                string name = "";
+                var name = "";
                 if (m_information != null)
                 {
                     name = m_information.DatasetName;
@@ -98,7 +98,7 @@ namespace MultiAlign.ViewModels.Datasets
         {
             get
             {
-                int id = 0;
+                var id = 0;
                 if (m_information != null)
                 {
                     id = m_information.DatasetId;

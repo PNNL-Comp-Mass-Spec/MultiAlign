@@ -44,7 +44,7 @@ namespace MultiAlign.ViewModels.Spectra
 
             ExpandIdentifications = new BaseCommand(delegate
             {
-                foreach (MsSpectraViewModel spectrum in Spectra)
+                foreach (var spectrum in Spectra)
                 {
                     spectrum.IdentificationsExpanded = true;
                 }
@@ -54,7 +54,7 @@ namespace MultiAlign.ViewModels.Spectra
 
             CollapseIdentifications = new BaseCommand(delegate
             {
-                foreach (MsSpectraViewModel spectrum in Spectra)
+                foreach (var spectrum in Spectra)
                 {
                     spectrum.IdentificationsExpanded = false;
                 }
@@ -137,10 +137,10 @@ namespace MultiAlign.ViewModels.Spectra
             //TODO: Make this a task!!!
 
 
-            List<MSSpectra> spectra = cluster.Cluster.GetLoadedSpectra();
+            var spectra = cluster.Cluster.GetLoadedSpectra();
             m_maxMz = 0.0;
             m_maxIntensity = 0.0;
-            foreach (MSSpectra spectrum in spectra)
+            foreach (var spectrum in spectra)
             {
                 spectrum.Peaks = SpectraLoader.LoadSpectrum(spectrum);
                 m_maxMz = Math.Max(m_maxMz, spectrum.Peaks.Max(x => x.X));
@@ -150,7 +150,7 @@ namespace MultiAlign.ViewModels.Spectra
                 Spectra.Add(msSpectrum);
             }
 
-            foreach (MsSpectraViewModel model in Spectra)
+            foreach (var model in Spectra)
             {
                 model.SetMax(m_maxMz, m_maxIntensity);
                 model.SelectedSpectrumPlotModel.PlotSpectra(model.Spectrum);
@@ -170,7 +170,7 @@ namespace MultiAlign.ViewModels.Spectra
                     from x in Spectra orderby x.Spectrum.ParentFeature.ChargeState select x);
 
                 Spectra.Clear();
-                foreach (MsSpectraViewModel x in temp)
+                foreach (var x in temp)
                 {
                     var newmodel = new MsSpectraViewModel(x.Spectrum);
                     Spectra.Add(newmodel);
@@ -185,7 +185,7 @@ namespace MultiAlign.ViewModels.Spectra
                     from x in Spectra orderby x.Spectrum.GroupId select x);
 
                 Spectra.Clear();
-                foreach (MsSpectraViewModel x in temp)
+                foreach (var x in temp)
                 {
                     var newmodel = new MsSpectraViewModel(x.Spectrum);
                     Spectra.Add(newmodel);
@@ -199,7 +199,7 @@ namespace MultiAlign.ViewModels.Spectra
                     from x in Spectra orderby x.Spectrum.PrecursorMz select x);
 
                 Spectra.Clear();
-                foreach (MsSpectraViewModel x in temp)
+                foreach (var x in temp)
                 {
                     var newmodel = new MsSpectraViewModel(x.Spectrum);
                     Spectra.Add(newmodel);
@@ -215,7 +215,7 @@ namespace MultiAlign.ViewModels.Spectra
 
 
                 Spectra.Clear();
-                foreach (MsSpectraViewModel x in temp)
+                foreach (var x in temp)
                 {
                     var newmodel = new MsSpectraViewModel(x.Spectrum);
                     Spectra.Add(newmodel);
@@ -228,8 +228,8 @@ namespace MultiAlign.ViewModels.Spectra
         {
             if (value != null)
             {
-                MSSpectra spectrum = value.Spectrum;
-                string name = string.Format("scan {0} @ {1} m/z ", spectrum.Scan,
+                var spectrum = value.Spectrum;
+                var name = string.Format("scan {0} @ {1} m/z ", spectrum.Scan,
                     spectrum.PrecursorMz);
                 SelectedSpectrumPlotModel = new MsMsSpectraViewModel(value.Spectrum, name);
 

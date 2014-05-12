@@ -27,7 +27,7 @@ namespace MultiAlign.ViewModels.TreeView
             m_parent = parent;
 
 
-            DatasetInformation information = SingletonDataProviders.GetDatasetInformation(m_feature.GroupId);
+            var information = SingletonDataProviders.GetDatasetInformation(m_feature.GroupId);
 
 
             AddStatistic("Id", m_feature.Id);
@@ -47,7 +47,7 @@ namespace MultiAlign.ViewModels.TreeView
             Peptides = new ObservableCollection<Peptide>();
 
             Peptide maxPeptide = null;
-            foreach (Peptide p in m_feature.Peptides)
+            foreach (var p in m_feature.Peptides)
             {
                 Peptides.Add(p);
                 if (maxPeptide == null)
@@ -83,7 +83,7 @@ namespace MultiAlign.ViewModels.TreeView
                 base.IsSelected = value;
                 if (m_feature != null)
                 {
-                    UMCLight feature = m_feature.GetParentUmc();
+                    var feature = m_feature.GetParentUmc();
                     OnFeatureSelected(feature);
                     OnSpectrumSelected(feature);
                 }

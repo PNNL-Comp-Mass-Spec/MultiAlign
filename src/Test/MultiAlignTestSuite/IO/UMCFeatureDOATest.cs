@@ -1,8 +1,12 @@
-﻿using System.Collections.Generic;
+﻿#region
+
+using System.Collections.Generic;
 using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.Features.Hibernate;
 using NUnit.Framework;
 using PNNLOmics.Data.Features;
+
+#endregion
 
 namespace MultiAlignTestSuite
 {
@@ -14,6 +18,7 @@ namespace MultiAlignTestSuite
         {
             NHibernateUtil.CreateDatabase("test.db3");
         }
+
         [Test]
         public void SaveUMCFeatures()
         {
@@ -21,11 +26,11 @@ namespace MultiAlignTestSuite
             for (var i = 0; i < 100; i++)
             {
                 lights.Add(new UMCLight());
-                lights[i].Id = i;                
+                lights[i].Id = i;
             }
 
             IUmcDAO cache = new UmcDAOHibernate();
-            cache.AddAll(lights);            
+            cache.AddAll(lights);
         }
     }
 }

@@ -56,10 +56,10 @@ namespace MultiAlign.ViewModels.Wizard
 
             Action loadAnalysis = delegate
             {
-                string filename = Path.Combine(recentAnalysis.Path, recentAnalysis.Name);
+                var filename = Path.Combine(recentAnalysis.Path, recentAnalysis.Name);
 
                 OnStatus("Gaining access to the analysis database...");
-                FeatureDataAccessProviders providers = DataAccessFactory.CreateDataAccessProviders(filename, false);
+                var providers = DataAccessFactory.CreateDataAccessProviders(filename, false);
                 var analysis = new MultiAlignAnalysis();
                 analysis.MetaData.AnalysisPath = recentAnalysis.Path;
                 analysis.MetaData.AnalysisName = recentAnalysis.Name;

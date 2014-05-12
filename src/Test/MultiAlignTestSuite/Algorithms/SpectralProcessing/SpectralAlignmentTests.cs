@@ -1,6 +1,5 @@
 ﻿namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
 {
-    
 //    [TestFixture]
 //    public class SpectralAlignmentTests: BaseSpectralAlignmentTest
 //    {
@@ -22,10 +21,10 @@
 //            IFeatureFinder finder               = FeatureFinderFactory.CreateFeatureFinder(FeatureFinderType.DeconToolsCSV);            
 //            LCMSFeatureFindingOptions options   = new LCMSFeatureFindingOptions();
 //            features                            = finder.FindFeatures(msFeatures, options);
-            
+
 //            return new Tuple<List<UMCLight>,List<MSFeatureLight>>(features, msFeatures);
 //        }
-       
+
 //        #region p-value
 //        /// <summary>
 //        /// Tests distributions using the peptide match file (uniqued matches for building error distributions)
@@ -108,8 +107,8 @@
 //                                    options.AlignmentOptions);
 
 //            // at this point we still have to link these data...
-            
-            
+
+
 //            Dictionary<int, PeptideTest> peptideMapX = new Dictionary<int, PeptideTest>();
 //            Dictionary<int, PeptideTest> peptideMapY = new Dictionary<int, PeptideTest>();
 
@@ -187,7 +186,7 @@
 
 //                            if (Math.Abs(xsum.PrecursorMZ - ysum.PrecursorMZ) >= mzTolerance)                            
 //                                continue;
-                            
+
 
 //                            // Grab the first spectra...if we have it, great dont re-read
 //                            MSSpectra spectrumY = null;
@@ -268,7 +267,7 @@
 //                            match.Similarity    = value;
 //                            match.Index         = index;
 //                            match.IsMatch       = isMatch;
-                            
+
 
 //                            if (analysis.NetTolerance >= net)
 //                            {
@@ -350,7 +349,6 @@
 //                }
 //            }
 
-         
 
 //            analysis.Write();
 //            Console.WriteLine();

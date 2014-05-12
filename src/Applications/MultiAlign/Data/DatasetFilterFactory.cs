@@ -23,7 +23,7 @@ namespace MultiAlign.Data
 
         public static string BuildFileFilters(InputFileType type)
         {
-            string fileFilter = "All Files (*.*)|*.*";
+            var fileFilter = "All Files (*.*)|*.*";
 
             switch (type)
             {

@@ -1,36 +1,42 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Collections.Generic;
 using Mage;
 using MultiAlignCore.Data.SequenceData;
 
+#endregion
+
 namespace MultiAlignCore.IO.SequenceData
 {
     /// <summary>
-    /// You can make your own object that can be included 
-    /// as the last module in a Mage pipeline and receive the data stream directly.
+    ///     You can make your own object that can be included
+    ///     as the last module in a Mage pipeline and receive the data stream directly.
     /// </summary>
-    public class SequestFirstHitSink: ISinkModule, IMageSink
+    public class SequestFirstHitSink : ISinkModule, IMageSink
     {
-        private int m_count; 
-        private List<DatabaseSearchSequence> m_sequences;
-        private IDatabaseSearchSequenceDAO   m_database;
-        /// <summary>
-        /// Maps a column 
-        /// </summary>
-        private Dictionary<string, int> m_columnMapping;
+        private int m_count;
+        private readonly List<DatabaseSearchSequence> m_sequences;
+        private readonly IDatabaseSearchSequenceDAO m_database;
 
         /// <summary>
-        /// Constructor.
+        ///     Maps a column
+        /// </summary>
+        private readonly Dictionary<string, int> m_columnMapping;
+
+        /// <summary>
+        ///     Constructor.
         /// </summary>
         /// <param name="datasets">Datasets to store data about.</param>
         public SequestFirstHitSink(IDatabaseSearchSequenceDAO databaseInterface)
-        {                 
-            m_sequences         = new List<DatabaseSearchSequence>();
-            m_columnMapping     = new Dictionary<string, int>(); 
-            m_database          = databaseInterface;
+        {
+            m_sequences = new List<DatabaseSearchSequence>();
+            m_columnMapping = new Dictionary<string, int>();
+            m_database = databaseInterface;
         }
+
         /// <summary>
-        /// Handles the column definitions for a factor module.
+        ///     Handles the column definitions for a factor module.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="args"></param>
@@ -40,15 +46,15 @@ namespace MultiAlignCore.IO.SequenceData
             m_count = 0;
             m_columnMapping.Clear();
 
-            for(var i = 0; i < args.ColumnDefs.Count; i++)                
+            for (var i = 0; i < args.ColumnDefs.Count; i++)
             {
                 var def = args.ColumnDefs[i];
                 m_columnMapping.Add(def.Name.Trim(), i);
-            }            
+            }
         }
 
         /// <summary>
-        /// Handles converting the rows to factor objects.
+        ///     Handles converting the rows to factor objects.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="args"></param>
@@ -72,7 +78,7 @@ namespace MultiAlignCore.IO.SequenceData
             }
 
             var sequence = new DatabaseSearchSequence();
-            
+
             if (m_columnMapping.ContainsKey("Peptide"))
             {
                 sequence.Sequence = Convert.ToString(args.Fields[m_columnMapping["Peptide"]]);
@@ -81,8 +87,8 @@ namespace MultiAlignCore.IO.SequenceData
             {
                 return;
             }
-            
-                                                   
+
+
             if (m_columnMapping.ContainsKey("ScanNum"))
             {
                 sequence.Scan = Convert.ToInt32(args.Fields[m_columnMapping["ScanNum"]]);
@@ -92,7 +98,6 @@ namespace MultiAlignCore.IO.SequenceData
                 return;
             }
 
-            
 
             if (m_columnMapping.ContainsKey("XCorr"))
             {
@@ -102,26 +107,23 @@ namespace MultiAlignCore.IO.SequenceData
             {
                 return;
             }
-            
-                                    
-            sequence.Id      = m_count ++;
-            sequence.GroupId = DatasetID;    
+
+
+            sequence.Id = m_count ++;
+            sequence.GroupId = DatasetID;
             m_sequences.Add(sequence);
         }
 
         /// <summary>
-        /// Gets or sets the current Group ID to use.
+        ///     Gets or sets the current Group ID to use.
         /// </summary>
-        public int DatasetID
-        {
-            get;set;
-        }
+        public int DatasetID { get; set; }
 
         /// <summary>
-        /// Commits the factor data to the repository.
+        ///     Commits the factor data to the repository.
         /// </summary>
         public void CommitChanges()
-        {                                   
+        {
             m_database.AddAll(m_sequences);
         }
     }

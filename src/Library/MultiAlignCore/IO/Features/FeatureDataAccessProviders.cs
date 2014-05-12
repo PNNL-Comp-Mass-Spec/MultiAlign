@@ -1,28 +1,29 @@
+#region
+
 using MultiAlignCore.IO.Analysis;
 using MultiAlignCore.IO.SequenceData;
+
+#endregion
 
 namespace MultiAlignCore.IO.Features
 {
     /// <summary>
-    /// Holds all feature access providers required by a MA analysis.
+    ///     Holds all feature access providers required by a MA analysis.
     /// </summary>
     public sealed class FeatureDataAccessProviders
     {
         public FeatureDataAccessProviders()
         {
             Synch = new object();
-            
         }
+
         /// <summary>
-        /// Gets the object to synch on for concurrent access.
+        ///     Gets the object to synch on for concurrent access.
         /// </summary>
-        public object Synch
-        {
-            get;
-            private set;
-        }
+        public object Synch { get; private set; }
+
         /// <summary>
-        /// Constructor.
+        ///     Constructor.
         /// </summary>
         /// <param name="featureCache">LCMS Features</param>
         /// <param name="clusterCache">LCMS Feature clusters</param>
@@ -30,125 +31,89 @@ namespace MultiAlignCore.IO.Features
         /// <param name="msnFeatureCache">MS/MS Features</param>
         /// <param name="msFeatureMap">MS To LCMS Feature map</param>
         /// <param name="msnFeatureMap">MS to MSn Feature map</param>
-        public FeatureDataAccessProviders(  IUmcDAO                     featureCache,
-                                            IUmcClusterDAO              clusterCache,
-                                            IMSFeatureDAO               msFeatureCache,
-                                            IMSnFeatureDAO              msnFeatureCache,                                            
-                                            IMsnFeatureToMSFeatureDAO   msnFeatureMap,
-                                            IDatasetDAO                 datasetCache,
-                                            IMassTagMatchDAO            massTagMatches,
-                                            IMassTagDAO                 massTags,
-                                            IFactorDao                  factorCache,
-                                            IDatasetToFactorMapDAO      factorAssignmentCache,
-                                            IMSMSClusterMapDAO          msmsClusterCache,
-                                            IDatabaseSearchSequenceDAO  sequenceCache,
-                                            ISequenceToMsnFeatureDAO    sequenceMapCache ):
-            this()
+        public FeatureDataAccessProviders(IUmcDAO featureCache,
+            IUmcClusterDAO clusterCache,
+            IMSFeatureDAO msFeatureCache,
+            IMSnFeatureDAO msnFeatureCache,
+            IMsnFeatureToMSFeatureDAO msnFeatureMap,
+            IDatasetDAO datasetCache,
+            IMassTagMatchDAO massTagMatches,
+            IMassTagDAO massTags,
+            IFactorDao factorCache,
+            IDatasetToFactorMapDAO factorAssignmentCache,
+            IMSMSClusterMapDAO msmsClusterCache,
+            IDatabaseSearchSequenceDAO sequenceCache,
+            ISequenceToMsnFeatureDAO sequenceMapCache) :
+                this()
         {
-            ClusterCache                = clusterCache;
-            FeatureCache                = featureCache;
-            MSFeatureCache              = msFeatureCache;
-            MSnFeatureCache             = msnFeatureCache;            
-            MSFeatureToMSnFeatureCache  = msnFeatureMap;
-            DatasetCache                = datasetCache;
-            MassTagMatches              = massTagMatches;
-            MassTags                    = massTags;
-            FactorAssignmentCache       = factorAssignmentCache;
-            FactorCache                 = factorCache;
-            MSMSClusterCache            = msmsClusterCache;
-            DatabaseSequenceCache  = sequenceCache;
-            SequenceMsnMapCache    = sequenceMapCache;
+            ClusterCache = clusterCache;
+            FeatureCache = featureCache;
+            MSFeatureCache = msFeatureCache;
+            MSnFeatureCache = msnFeatureCache;
+            MSFeatureToMSnFeatureCache = msnFeatureMap;
+            DatasetCache = datasetCache;
+            MassTagMatches = massTagMatches;
+            MassTags = massTags;
+            FactorAssignmentCache = factorAssignmentCache;
+            FactorCache = factorCache;
+            MSMSClusterCache = msmsClusterCache;
+            DatabaseSequenceCache = sequenceCache;
+            SequenceMsnMapCache = sequenceMapCache;
         }
-        public ISequenceToMsnFeatureDAO  SequenceMsnMapCache { get; set; }
+
+        public ISequenceToMsnFeatureDAO SequenceMsnMapCache { get; set; }
+
         /// <summary>
-        /// Gets or sets the data provider for storing MS/MS Clusters.
+        ///     Gets or sets the data provider for storing MS/MS Clusters.
         /// </summary>
-        public IDatabaseSearchSequenceDAO DatabaseSequenceCache
-        {
-            get;
-            set;
-        }
+        public IDatabaseSearchSequenceDAO DatabaseSequenceCache { get; set; }
+
         /// <summary>
-        /// Gets or sets the data provider for storing MS/MS Clusters.
+        ///     Gets or sets the data provider for storing MS/MS Clusters.
         /// </summary>
-        public IMSMSClusterMapDAO MSMSClusterCache
-        {
-            get;
-            set;
-        }
-        public IFactorDao FactorCache
-        {
-            get;
-            set;
-        }
-        public IDatasetToFactorMapDAO FactorAssignmentCache
-        {
-            get;
-            set;
-        }
+        public IMSMSClusterMapDAO MSMSClusterCache { get; set; }
+
+        public IFactorDao FactorCache { get; set; }
+        public IDatasetToFactorMapDAO FactorAssignmentCache { get; set; }
+
         /// <summary>
-        /// Gets or sets the mass tags loaded.
+        ///     Gets or sets the mass tags loaded.
         /// </summary>
-        public IMassTagDAO MassTags
-        {
-            get;
-            set;
-        }
+        public IMassTagDAO MassTags { get; set; }
+
         /// <summary>
-        /// Gets or sets the cluster to mass tag matches.
+        ///     Gets or sets the cluster to mass tag matches.
         /// </summary>
-        public IMassTagMatchDAO MassTagMatches
-        {
-            get;
-            set;
-        }
+        public IMassTagMatchDAO MassTagMatches { get; set; }
+
         /// <summary>
-        /// Gets or sets the cache where the datasets information are stored.
+        ///     Gets or sets the cache where the datasets information are stored.
         /// </summary>
-        public IDatasetDAO DatasetCache
-        {
-            get;
-            set;
-        }
+        public IDatasetDAO DatasetCache { get; set; }
+
         /// <summary>
-        /// Gets or sets the interface to teh MS Feature to LCMS Feature map.
+        ///     Gets or sets the interface to teh MS Feature to LCMS Feature map.
         /// </summary>
-        public IMsnFeatureToMSFeatureDAO MSFeatureToMSnFeatureCache
-        {
-            get;
-            set;
-        }
+        public IMsnFeatureToMSFeatureDAO MSFeatureToMSnFeatureCache { get; set; }
+
         /// <summary>
-        /// Gets or sets the data acces object to LCMS features
+        ///     Gets or sets the data acces object to LCMS features
         /// </summary>
-        public IUmcDAO FeatureCache
-        {
-            get;
-            set;
-        }
+        public IUmcDAO FeatureCache { get; set; }
+
         /// <summary>
-        /// Gets or sets the data access object to clusters.
+        ///     Gets or sets the data access object to clusters.
         /// </summary>
-        public IUmcClusterDAO ClusterCache
-        {
-            get;
-            set;
-        }
+        public IUmcClusterDAO ClusterCache { get; set; }
+
         /// <summary>
-        /// Gets or sets the data acces object to MS features.
+        ///     Gets or sets the data acces object to MS features.
         /// </summary>
-        public IMSFeatureDAO MSFeatureCache
-        {
-            get;
-            set;
-        }
+        public IMSFeatureDAO MSFeatureCache { get; set; }
+
         /// <summary>
-        /// Gets or sets the data acces object to MS features.
+        ///     Gets or sets the data acces object to MS features.
         /// </summary>
-        public IMSnFeatureDAO MSnFeatureCache
-        {
-            get;
-            set;
-        }
+        public IMSnFeatureDAO MSnFeatureCache { get; set; }
     }
 }

@@ -19,11 +19,11 @@ namespace MultiAlign.Data
             fileList.AddRange(files);
 
             var datasetFiles = new List<string>();
-            string name = info.DatasetName.ToLower();
+            var name = info.DatasetName.ToLower();
 
-            foreach (string filename in fileList)
+            foreach (var filename in fileList)
             {
-                string file = filename.ToLower();
+                var file = filename.ToLower();
                 if (file.Contains(name))
                 {
                     if (file.Contains("featureplot"))
@@ -62,7 +62,7 @@ namespace MultiAlign.Data
 
         public void LoadDatasetPlots(string path, List<DatasetInformation> datasets)
         {
-            string[] files = Directory.GetFiles(path);
+            var files = Directory.GetFiles(path);
             datasets.ForEach(x => LoadDatasetPlots(files, x));
         }
     }

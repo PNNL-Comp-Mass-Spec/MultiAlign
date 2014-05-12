@@ -1,22 +1,24 @@
 ﻿using System.Collections.Generic;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media.Imaging;
+using MultiAlign.Data;
 using PNNLOmics.Data.Features;
+using PNNLOmics.Extensions;
+using PNNLOmicsViz.Drawing;
 
 namespace MultiAlign.Windows.Plots
 {
     /// <summary>
     ///     Interaction logic for ClustersView.xaml
     /// </summary>
-    public partial class ClustersPlotView : UserControl
+    public partial class ClustersPlotView
     {
         public static readonly DependencyProperty ClustersProperty =
             DependencyProperty.Register("Clusters", typeof (List<UMCClusterLight>), typeof (ClustersPlotView),
                 new PropertyMetadata(delegate(DependencyObject sender, DependencyPropertyChangedEventArgs args)
                 {
                     var x = sender as ClustersPlotView;
-                    x.SetClusters();
+                    if (x != null) x.SetClusters();
                 }));
 
         public static readonly DependencyProperty PlotWidthProperty =
@@ -91,10 +93,14 @@ namespace MultiAlign.Windows.Plots
 
         private void SetClusters()
         {
-            //var data                        = AnalysisPlotFactory.CreateClusterPlots(Clusters, PlotWidth, PlotHeight, false);
-            //ClustersImage                   = ImageConverter.ConvertImage(data.ClustersImage);
-            //ClustersDatasetSizeHistogram    = ImageConverter.ConvertImage(data.ClustersDatasetSizeHistogramImage);
-            //ClusterSizeHistogram            = ImageConverter.ConvertImage(data.ClustersSizeHistogramImage);
+            //var datasetHistogram    = HistogramFactory.CreateHistogram(Clusters.CreateClusterDatasetMemeberSizeHistogram(), "Dataset Members");
+            //var sizeHistogram       = HistogramFactory.CreateHistogram(Clusters.CreateClusterSizeHistogram(), "Cluster Members");
+            var clustersHistogram   = ScatterPlotFactory.CreateClusterMassScatterPlot(Clusters);            
+
+           // ClustersDatasetSizeHistogram    = ImageConverter.ConvertImage(PlotImageUtility.CreateImage(datasetHistogram));
+           // ClusterSizeHistogram            = ImageConverter.ConvertImage(PlotImageUtility.CreateImage(sizeHistogram));
+            ClustersImage                   = ImageConverter.ConvertImage(PlotImageUtility.CreateImage(clustersHistogram));
+
         }
 
         // Using a DependencyProperty as the backing store for ClustersDatasetSizeHistogram.  This enables animation, styling, binding, etc...

@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Windows.Forms.Integration;
 using System.Windows.Input;
 using MultiAlign.Commands;
 using MultiAlign.Data;
@@ -35,8 +34,7 @@ namespace MultiAlign.ViewModels
         private ClusterDetailViewModel m_clusterViewModel;
         private PlotBase m_clustersPlotModel;
         private GlobalStatisticsViewModel m_globalStatistics;
-        private bool m_hasIdentifications;
-        private WindowsFormsHost m_host;
+        private bool m_hasIdentifications;        
         private ObservableCollection<MassTagToCluster> m_massTags;
         private string m_selectedClusterName;
         private bool m_showDriftTime;
@@ -49,8 +47,8 @@ namespace MultiAlign.ViewModels
             LoadDatasets(analysis);
 
             // Create matching clusters and AMT Matches.
-            List<ClusterToMassTagMap> matches = analysis.DataProviders.MassTagMatches.FindAll();
-            Tuple<List<UMCClusterLightMatched>, List<MassTagToCluster>> clusters =
+            var matches = analysis.DataProviders.MassTagMatches.FindAll();
+            var clusters =
                 analysis.Clusters.MapMassTagsToClusters(matches, analysis.MassTagDatabase);
 
             // Cache the clusters so that they can be readily accessible later on.
@@ -69,7 +67,7 @@ namespace MultiAlign.ViewModels
             AnalysisOptionsViewModel = new AnalysisOptionsViewModel(analysis.Options);
             ClusterViewModel = new ClusterDetailViewModel();
 
-            IEnumerable<int> charges = SingletonDataProviders.Providers.FeatureCache.RetrieveChargeStates();
+            var charges = SingletonDataProviders.Providers.FeatureCache.RetrieveChargeStates();
 
             GlobalStatisticsViewModel = new GlobalStatisticsViewModel(clusters.Item1, charges);
             HasIdentifications = (MassTags.Count > 0);
@@ -98,7 +96,7 @@ namespace MultiAlign.ViewModels
         {
             if (m_clustersPlotModel == null) return;
 
-            PlotModel model = m_clustersPlotModel.Model;
+            var model = m_clustersPlotModel.Model;
             //var viewport = m_clusterChart.ViewPort;
             var mass = new FilterRange(model.DefaultYAxis.ActualMinimum, model.DefaultYAxis.ActualMaximum);
             var net = new FilterRange(model.DefaultXAxis.ActualMinimum, model.DefaultXAxis.ActualMaximum);
@@ -109,13 +107,13 @@ namespace MultiAlign.ViewModels
 
         private void LoadClusters(IEnumerable<UMCClusterLightMatched> clusters)
         {
-            List<UMCClusterLight> clustersOnly = clusters.Select(cluster => cluster.Cluster).ToList();
+            var clustersOnly = clusters.Select(cluster => cluster.Cluster).ToList();
             ClustersPlotModel = ScatterPlotFactory.CreateClusterMassScatterPlot(clustersOnly);
         }
 
         private void LoadDatasets(MultiAlignAnalysis analysis)
         {
-            List<DatasetInformation> datasets = analysis.MetaData.Datasets.ToList();
+            var datasets = analysis.MetaData.Datasets.ToList();
 
             // Sort the datasets for the view...
             datasets.Sort(delegate(DatasetInformation x, DatasetInformation y)
@@ -130,7 +128,7 @@ namespace MultiAlign.ViewModels
             });
 
             // Make the dataset plots.                    
-            string plotPath = Path.Combine(analysis.MetaData.AnalysisPath, "plots");
+            var plotPath = Path.Combine(analysis.MetaData.AnalysisPath, "plots");
             if (Directory.Exists(plotPath))
             {
                 var loader = new DatasetPlotLoader();
@@ -162,7 +160,7 @@ namespace MultiAlign.ViewModels
         private void value_ClustersFiltered(object sender, ClustersUpdatedEventArgs e)
         {
             var clusters = new List<UMCClusterLightMatched>();
-            foreach (UMCClusterTreeViewModel cluster in e.Clusters)
+            foreach (var cluster in e.Clusters)
             {
                 clusters.Add(cluster.Cluster);
             }

@@ -1,5 +1,9 @@
-﻿using System.Collections.Generic;
+﻿#region
+
+using System.Collections.Generic;
 using MultiAlignCore.IO.InputFiles;
+
+#endregion
 
 namespace MultiAlignCore.IO.MTDB
 {

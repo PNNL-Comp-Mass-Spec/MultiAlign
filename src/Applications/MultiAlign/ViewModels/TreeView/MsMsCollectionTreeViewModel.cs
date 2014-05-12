@@ -38,13 +38,13 @@ namespace MultiAlign.ViewModels.TreeView
             if (m_loaded)
                 return;
 
-            List<MSSpectra> spectra = m_cluster.FindSpectra();
+            var spectra = m_cluster.FindSpectra();
 
-            List<MsMsTreeViewModel> peptideModels =
+            var peptideModels =
                 (from spectrum in spectra
                     select new MsMsTreeViewModel(spectrum)).ToList();
 
-            foreach (MsMsTreeViewModel model in peptideModels)
+            foreach (var model in peptideModels)
             {
                 m_spectra.Add(model);
                 model.FeatureSelected += model_FeatureSelected;

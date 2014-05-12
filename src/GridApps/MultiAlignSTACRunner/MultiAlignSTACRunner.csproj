@@ -71,11 +71,11 @@
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\PNNLOmics\development\trunk\PNNLOmics\PNNLOmics.csproj">
+    <ProjectReference Include="..\..\..\..\..\..\PNNLOmics\development\trunk\PNNLOmics\PNNLOmics.csproj">
       <Project>{8A934DC1-3418-449F-ADF6-9962499F49B2}</Project>
       <Name>PNNLOmics</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MultiAlignCore\MultiAlignCore.csproj">
+    <ProjectReference Include="..\..\Library\MultiAlignCore\MultiAlignCore.csproj">
       <Project>{bdfa22c4-5822-4aa5-996e-6fde57f7118b}</Project>
       <Name>MultiAlignCore</Name>
     </ProjectReference>

@@ -1,24 +1,27 @@
-﻿using System.Collections.Generic;
-using MultiAlignCore.Extensions;
+﻿#region
+
+using System.Collections.Generic;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Extensions;
+
+#endregion
 
 namespace MultiAlignCore.Data.Features
 {
     public static class ClusterStats
     {
         /// <summary>
-        /// Creates a cluster size histogram for dataset members.
+        ///     Creates a cluster size histogram for dataset members.
         /// </summary>
         /// <param name="clusters"></param>
         /// <returns></returns>
         public static float[] GetClusterMemberSizes(List<UMCClusterLight> clusters)
-        {            
+        {
             if (clusters.Count < 1)
                 return null;
 
             var clusterMaps = clusters.CreateClusterDatasetMemeberSizeHistogram();
-                        
+
             // Find the maximum cluster size.
             var sizes = new List<int>();
             foreach (var key in clusterMaps.Keys)
@@ -30,7 +33,7 @@ namespace MultiAlignCore.Data.Features
 
             // Create the histogram.
             var freqs = new float[maxClusters];
-            
+
             for (var i = 0; i < maxClusters; i++)
             {
                 if (clusterMaps.ContainsKey(i))
@@ -45,6 +48,5 @@ namespace MultiAlignCore.Data.Features
 
             return freqs;
         }
-
     }
 }

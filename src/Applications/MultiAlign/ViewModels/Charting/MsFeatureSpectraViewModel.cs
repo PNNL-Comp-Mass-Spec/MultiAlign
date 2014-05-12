@@ -63,14 +63,14 @@ namespace MultiAlign.ViewModels.Charting
                 Color = OxyColors.Black
             };
 
-            double minimumMz = double.MaxValue;
-            double maximumMz = double.MinValue;
-            double maxAbundance = double.MinValue;
+            var minimumMz = double.MaxValue;
+            var maximumMz = double.MinValue;
+            var maxAbundance = double.MinValue;
 
             if (spectrum.Count() < 1)
                 return;
 
-            foreach (XYData peak in spectrum)
+            foreach (var peak in spectrum)
             {
                 minimumMz = Math.Min(peak.X, minimumMz);
                 maximumMz = Math.Max(peak.X, maximumMz);
@@ -79,7 +79,7 @@ namespace MultiAlign.ViewModels.Charting
                 series.Points.Add(new DataPoint(peak.X, peak.Y));
             }
 
-            double maxAbundanceTop = maxAbundance*.5;
+            var maxAbundanceTop = maxAbundance*.5;
 
             Model.Axes[0].AbsoluteMinimum = minimumMz;
             Model.Axes[0].AbsoluteMaximum = maximumMz;
@@ -88,16 +88,19 @@ namespace MultiAlign.ViewModels.Charting
 
             // Add in the monoisotopic peak
             var colors = new ColorTypeIterator();
-            OxyColor chargeColor = colors.GetColor(feature.ChargeState);
-            var msFeature = new StemSeries(chargeColor);
+            var chargeColor = colors.GetColor(feature.ChargeState);
+            var msFeature = new StemSeries
+            {
+                Color = chargeColor
+            };
             msFeature.Points.Add(new DataPoint(feature.Mz, feature.Abundance));
             Model.Series.Add(msFeature);
 
             // Add in the rest of the isotopes
-            OxyColor alphaColor = OxyColor.FromAColor(100, OxyColors.Red);
-            int charge = feature.ChargeState;
-            double mz = feature.Mz;
-            double abundance = Convert.ToDouble(feature.Abundance);
+            var alphaColor = OxyColor.FromAColor(100, OxyColors.Red);
+            var charge = feature.ChargeState;
+            var mz = feature.Mz;
+            var abundance = Convert.ToDouble(feature.Abundance);
             var monoPeakAnnotation = new LineAnnotation
             {
                 Type = LineAnnotationType.Vertical,
@@ -109,8 +112,8 @@ namespace MultiAlign.ViewModels.Charting
             };
             Model.Annotations.Add(monoPeakAnnotation);
 
-            double lastMz = mz;
-            double spacing = 1.0/charge;
+            var lastMz = mz;
+            var spacing = 1.0/charge;
             while (mz < maximumMz && abundance > 1)
             {
                 mz = mz + (1.0/charge);
@@ -146,12 +149,12 @@ namespace MultiAlign.ViewModels.Charting
 
             if (feature.ParentFeature != null)
             {
-                List<MSFeatureLight> features = feature.ParentFeature.Features;
-                foreach (MSFeatureLight subFeature in features)
+                var features = feature.ParentFeature.Features;
+                foreach (var subFeature in features)
                 {
-                    IEnumerable<MSSpectra> msms =
+                    var msms =
                         subFeature.MSnSpectra.Where(x => x.PrecursorMz > minimumMz && x.PrecursorMz < maximumMz);
-                    foreach (MSSpectra fragmentation  in msms)
+                    foreach (var fragmentation  in msms)
                     {
                         var spaceAnnotation = new LineAnnotation
                         {

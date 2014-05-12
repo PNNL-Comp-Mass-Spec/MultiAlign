@@ -9,80 +9,76 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="30*" />
+            <ColumnDefinition Width="30*" />
+            <ColumnDefinition Width="30*" />
         </Grid.ColumnDefinitions>
         <Label
             FontSize="14pt"
             Height="24pt"
             HorizontalContentAlignment="Center"
-            Grid.ColumnSpan="7"
+            Grid.ColumnSpan="3"
             Grid.Row="0">
             <Binding Path="Name" />
         </Label>
-
-        <StackPanel
+        
+        <Label                
             Grid.Row="1"
-            Grid.Column="0">
-            <Label
-                HorizontalContentAlignment="Center"
-                Height="24">
-                Clusters
-            </Label>
-            <Border Padding="2"
-                    Margin="5"
-                    Height="256"
-                    Width="256"
-                    BorderBrush="LightGray"
-                    BorderThickness="4"
-                    CornerRadius="3">
-                <Image Source="{Binding Path=ClustersImage}" />
-            </Border>
-        </StackPanel>
-        <StackPanel
-            Grid.Row="1"
-            Grid.Column="1">
-            <Label
-                HorizontalContentAlignment="Center"
-                Height="24">
-                Cluster Size Histogram
-            </Label>
-            <Border
+            Grid.Column="0"
+            HorizontalContentAlignment="Center"
+            Height="24">
+            Clusters
+        </Label>
+        <Border                 
+                Grid.Row="2"
+                Grid.Column="0"
                 Padding="2"
-                Margin="5"
-                Height="256"
-                Width="256"
+                Margin="5"                
                 BorderBrush="LightGray"
                 BorderThickness="4"
                 CornerRadius="3">
-
-                <Image Source="{Binding Path=ClusterSizeHistogram}" />
-
-            </Border>
-        </StackPanel>
-        <StackPanel
+            <Image Source="{Binding Path=ClustersImage}" />
+        </Border>        
+        <Label            
             Grid.Row="1"
-            Grid.Column="2">
-            <Label
-                HorizontalContentAlignment="Center"
-                Height="24">
-                Cluster Dataset Size Histogram
-            </Label>
-            <Border
-                Padding="2"
-                Margin="5"
-                Height="256"
-                Width="256"
-                BorderBrush="LightGray"
-                BorderThickness="4"
-                CornerRadius="3">
-                <Image Source="{Binding Path=ClustersDatasetSizeHistogram}" />
+            Grid.Column="2"
+            HorizontalContentAlignment="Center"
+            Height="24">
+            Cluster Size Histogram
+        </Label>
+        <Border
+            Padding="2"
+            Margin="5"
+            Grid.Row="2"
+            Grid.Column="2"
+            BorderBrush="LightGray"
+            BorderThickness="4"
+            CornerRadius="3">
 
-            </Border>
-        </StackPanel>
+            <Image Source="{Binding Path=ClusterSizeHistogram}" />
+
+        </Border> 
+        <Label            
+            Grid.Row="1"
+            Grid.Column="1"
+            HorizontalContentAlignment="Center"
+            Height="24">
+            Cluster Dataset Size Histogram
+        </Label>
+        <Border
+            
+            Grid.Row="2"
+            Grid.Column="1"
+            Padding="2"
+            Margin="5"
+            BorderBrush="LightGray"
+            BorderThickness="4"
+            CornerRadius="3">
+            <Image Source="{Binding Path=ClustersDatasetSizeHistogram}" />
+
+        </Border>
     </Grid>
 </UserControl>

@@ -1,6 +1,10 @@
-﻿using System.Collections.Generic;
+﻿#region
+
+using System.Collections.Generic;
 using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
+
+#endregion
 
 namespace MultiAlignCore.Extensions
 {
@@ -32,7 +36,7 @@ namespace MultiAlignCore.Extensions
     }
 
     public static class MsnExtensions
-    {        
+    {
         public static UMCLight GetParentUmc(this MSSpectra spectrum)
         {
             if (spectrum == null) return null;

@@ -28,7 +28,7 @@ namespace MultiAlign.ViewModels.Viewers
             CreateCommands();
             LoadWorkspace(workspacePath);
 
-            foreach (RecentAnalysisViewModel item in CurrentWorkspace.RecentAnalysis)
+            foreach (var item in CurrentWorkspace.RecentAnalysis)
                 item.RecentAnalysisSelected += item_RecentAnalysisSelected;
         }
 

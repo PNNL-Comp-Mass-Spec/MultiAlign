@@ -42,7 +42,7 @@ namespace MultiAlign.ViewModels.Wizard
 
             // Create The Dataset View Model for Binding
             Datasets = new ObservableCollection<DatasetInformationViewModel>();
-            foreach (DatasetInformation information in analysis.MetaData.Datasets)
+            foreach (var information in analysis.MetaData.Datasets)
             {
                 var info = new DatasetInformationViewModel(information);
                 info.Selected += info_Selected;
@@ -81,7 +81,7 @@ namespace MultiAlign.ViewModels.Wizard
         /// </summary>
         private void SelectAllDelegate()
         {
-            foreach (DatasetInformationViewModel dataset in Datasets)
+            foreach (var dataset in Datasets)
                 dataset.IsSelected = true;
         }
 
@@ -90,7 +90,7 @@ namespace MultiAlign.ViewModels.Wizard
         /// </summary>
         private void SelectNoneDelegate()
         {
-            foreach (DatasetInformationViewModel dataset in Datasets)
+            foreach (var dataset in Datasets)
                 dataset.IsSelected = false;
         }
 
@@ -99,17 +99,17 @@ namespace MultiAlign.ViewModels.Wizard
         /// </summary>
         private void RemoveSelected()
         {
-            List<DatasetInformationViewModel> datasets = Datasets.Where(dataset => dataset.IsSelected).ToList();
+            var datasets = Datasets.Where(dataset => dataset.IsSelected).ToList();
 
 
-            foreach (DatasetInformationViewModel dataset in datasets)
+            foreach (var dataset in datasets)
             {
                 Datasets.Remove(dataset);
                 Analysis.MetaData.Datasets.Remove(dataset.Dataset);
             }
 
-            int id = 0;
-            foreach (DatasetInformationViewModel info in Datasets)
+            var id = 0;
+            foreach (var info in Datasets)
             {
                 info.DatasetId = id++;
             }
@@ -121,7 +121,7 @@ namespace MultiAlign.ViewModels.Wizard
         {
             m_openFileDialog.Filter = m_featureFileFilter;
             m_openFileDialog.FileName = SingleFilePath;
-            DialogResult result = m_openFileDialog.ShowDialog();
+            var result = m_openFileDialog.ShowDialog();
             if (result == DialogResult.OK)
             {
                 SingleFilePath = m_openFileDialog.FileName;
@@ -132,7 +132,7 @@ namespace MultiAlign.ViewModels.Wizard
         {
             m_openFileDialog.Filter = m_inputFileFilter;
             m_openFileDialog.FileName = InputFilePath;
-            DialogResult result = m_openFileDialog.ShowDialog();
+            var result = m_openFileDialog.ShowDialog();
             if (result == DialogResult.OK)
             {
                 InputFilePath = m_openFileDialog.FileName;
@@ -144,12 +144,12 @@ namespace MultiAlign.ViewModels.Wizard
         /// </summary>
         private void AddFolderDelegate()
         {
-            List<SupportedDatasetType> supportedTypes = DatasetInformation.SupportedFileTypes;
+            var supportedTypes = DatasetInformation.SupportedFileTypes;
             var extensions = new List<string>();
 
             supportedTypes.ForEach(x => extensions.Add("*" + x.Extension));
 
-            SearchOption option = ShouldSearchSubDirectories;
+            var option = ShouldSearchSubDirectories;
             if (FolderPath == null)
             {
                 ApplicationStatusMediator.SetStatus("The directory specified does not exist.");
@@ -162,7 +162,7 @@ namespace MultiAlign.ViewModels.Wizard
                 return;
             }
 
-            List<InputFile> files = DatasetSearcher.FindDatasets(FolderPath,
+            var files = DatasetSearcher.FindDatasets(FolderPath,
                 extensions,
                 option);
             AddDatasets(files);
@@ -173,13 +173,13 @@ namespace MultiAlign.ViewModels.Wizard
         /// </summary>
         private void AddInputFileDelegate()
         {
-            bool fileExists = File.Exists(InputFilePath);
+            var fileExists = File.Exists(InputFilePath);
             if (fileExists)
             {
                 // Read input files
                 try
                 {
-                    InputAnalysisInfo info = MultiAlignFileInputReader.ReadInputFile(InputFilePath);
+                    var info = MultiAlignFileInputReader.ReadInputFile(InputFilePath);
                     AddDatasets(info.Files);
                 }
                 catch
@@ -198,11 +198,11 @@ namespace MultiAlign.ViewModels.Wizard
         /// </summary>
         private void AddSingleFileDelegate()
         {
-            bool fileExists = File.Exists(SingleFilePath);
+            var fileExists = File.Exists(SingleFilePath);
 
             if (fileExists)
             {
-                InputFileType type = DatasetInformation.GetInputFileType(SingleFilePath);
+                var type = DatasetInformation.GetInputFileType(SingleFilePath);
 
                 if (type == InputFileType.NotRecognized)
                 {
@@ -361,9 +361,9 @@ namespace MultiAlign.ViewModels.Wizard
         /// </summary>
         private void AddDatasets(List<InputFile> information)
         {
-            List<DatasetInformation> datasets = Analysis.MetaData.AddInputFiles(information);
+            var datasets = Analysis.MetaData.AddInputFiles(information);
             foreach (
-                DatasetInformationViewModel infoViewModel in
+                var infoViewModel in
                     datasets.Select(info => new DatasetInformationViewModel(info)))
             {
                 infoViewModel.Selected += info_Selected;
