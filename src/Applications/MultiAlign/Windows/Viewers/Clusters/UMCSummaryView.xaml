@@ -71,7 +71,7 @@
                         Grid.Row="1"
                         Grid.Column="2"
                         HorizontalAlignment="Left"
-                        Margin="5" Text="{Binding Path=Feature.RetentionTime, StringFormat=F3}" />
+                        Margin="5" Text="{Binding Path=Feature.NetAligned, StringFormat=F3}" />
                 <TextBlock
                         Grid.Row="2"
                         Grid.Column="2"

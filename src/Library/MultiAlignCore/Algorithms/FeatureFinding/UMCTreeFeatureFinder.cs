@@ -47,7 +47,7 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
                     new FeatureTolerances
                     {
                         Mass = options.InstrumentTolerances.Mass,
-                        RetentionTime = options.MaximumNetRange
+                        Net = options.MaximumNetRange
                     },
                 ScanTolerance = options.MaximumScanRange,
                 SpectraProvider = provider
@@ -78,7 +78,7 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
 
                 feature.Net = Convert.ToDouble(feature.Scan - minScan)/Convert.ToDouble(maxScan - minScan);
                 feature.CalculateStatistics(ClusterCentroidRepresentation.Median);
-                feature.RetentionTime = feature.Net;
+                feature.Net = feature.Net;
                 feature.Id = id++;
                 newFeatures.Add(feature);
             }

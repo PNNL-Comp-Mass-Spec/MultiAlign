@@ -121,7 +121,7 @@ namespace MultiAlignChargeStateProcessor
                 clusterer.Progress      += clusterer_Progress;
                 clusterer.Parameters.Tolerances.DriftTime           = .3;
                 clusterer.Parameters.Tolerances.Mass                = 16;
-                clusterer.Parameters.Tolerances.RetentionTime       = .014;
+                clusterer.Parameters.Tolerances.Net       = .014;
                 clusterer.Parameters.OnlyClusterSameChargeStates    = true;
                 clusterer.Parameters.CentroidRepresentation         = ClusterCentroidRepresentation.Mean;
                 clusterer.Parameters.DistanceFunction               = PNNLOmics.Algorithms.Distance.DistanceFactory<UMCLight>.CreateDistanceFunction(PNNLOmics.Algorithms.Distance.DistanceMetric.WeightedEuclidean);

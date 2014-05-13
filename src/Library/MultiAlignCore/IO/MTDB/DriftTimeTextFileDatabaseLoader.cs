@@ -41,7 +41,7 @@ namespace MultiAlignCore.IO.MTDB
                     tag.Id = Convert.ToInt32(data[0]);
                     tag.PeptideSequence = data[1];
                     tag.MassMonoisotopic = Convert.ToDouble(data[2]);
-                    tag.RetentionTime = Convert.ToDouble(data[3]);
+                    tag.Net = Convert.ToDouble(data[3]);
                     tag.DriftTime = Convert.ToDouble(data[4]);
                 }
                 massTags.Add(tag);

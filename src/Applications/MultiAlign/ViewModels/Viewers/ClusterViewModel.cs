@@ -52,13 +52,13 @@ namespace MultiAlign.ViewModels.Viewers
             {
                 Mass = 10,
                 DriftTime = 3,
-                RetentionTime = 50
+                Net = 50
             };
             ClusterTolerances = new FeatureTolerances
             {
                 Mass = 10,
                 DriftTime = 3,
-                RetentionTime = .03
+                Net = .03
             };
 
 
@@ -180,14 +180,14 @@ namespace MultiAlign.ViewModels.Viewers
 
             // Then we find all the nearby clusters
             var massPpm = ClusterTolerances.Mass;
-            var net = ClusterTolerances.RetentionTime;
+            var net = ClusterTolerances.Net;
 
 
             //TODO: Add other clusters back
             // var minMass = FeatureLight.ComputeDaDifferenceFromPPM(cluster.MassMonoisotopic, massPpm);
             //var maxMass = FeatureLight.ComputeDaDifferenceFromPPM(cluster.MassMonoisotopic, -massPpm);
-            //var minNet = cluster.RetentionTime - net;
-            //var maxNet = cluster.RetentionTime + net;
+            //var minNet = cluster.Net - net;
+            //var maxNet = cluster.Net + net;
 
             //var otherClusters
             //    = SingletonDataProviders.Providers.ClusterCache.FindNearby(minMass, maxMass, minNet, maxNet);

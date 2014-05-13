@@ -131,7 +131,7 @@ namespace MultiAlignTestSuite.Algorithms
             var tolerances = new FeatureTolerances
             {
                 Mass = 8,
-                RetentionTime = .005
+                Net = .005
             };
             var options = new LcmsFeatureFindingOptions(tolerances);
 

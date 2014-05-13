@@ -35,7 +35,7 @@ namespace MultiAlignTestSuite.Algorithms
                     var lineData = data[i].Split(',');
                     cluster.Id = Convert.ToInt32(lineData[0]);
                     cluster.MassMonoisotopic = Convert.ToDouble(lineData[1]);
-                    cluster.RetentionTime = Convert.ToDouble(lineData[2]);
+                    cluster.Net = Convert.ToDouble(lineData[2]);
                     cluster.Net = Convert.ToDouble(lineData[2]);
                     cluster.DriftTime = Convert.ToDouble(lineData[3]);
                     cluster.ChargeState = Convert.ToInt32(lineData[4]);
@@ -62,7 +62,7 @@ namespace MultiAlignTestSuite.Algorithms
                     feature.GroupId = Convert.ToInt32(lineData[1]);
                     feature.Id = Convert.ToInt32(lineData[2]);
                     feature.MassMonoisotopic = Convert.ToDouble(lineData[3]);
-                    feature.RetentionTime = Convert.ToDouble(lineData[4]);
+                    feature.Net = Convert.ToDouble(lineData[4]);
                     feature.NetAligned = Convert.ToDouble(lineData[4]);
                     feature.DriftTime = Convert.ToDouble(lineData[5]);
                     feature.ChargeState = Convert.ToInt32(lineData[6]);
@@ -102,7 +102,7 @@ namespace MultiAlignTestSuite.Algorithms
                     feature.GroupId = Convert.ToInt32(lineData[1]);
                     feature.Id = Convert.ToInt32(lineData[2]);
                     feature.MassMonoisotopicAligned = Convert.ToDouble(lineData[3]);
-                    feature.RetentionTime = Convert.ToDouble(lineData[4]);
+                    feature.Net = Convert.ToDouble(lineData[4]);
                     feature.MassMonoisotopic = feature.MassMonoisotopicAligned;
                     feature.NetAligned = Convert.ToDouble(lineData[4]);
                     feature.Net = feature.NetAligned;
@@ -126,7 +126,7 @@ namespace MultiAlignTestSuite.Algorithms
                 {
                     var x = new UMCClusterLight();
                     x.MassMonoisotopic = feature.MassMonoisotopic;
-                    x.RetentionTime = feature.RetentionTime;
+                    x.Net = feature.Net;
                     x.Net = feature.NetAligned;
                     x.DriftTime = feature.DriftTime;
                     x.ChargeState = feature.ChargeState;
@@ -147,7 +147,7 @@ namespace MultiAlignTestSuite.Algorithms
             {
                 Console.WriteLine("{0},{1},{2},{3}",
                     clusters[i].Id,
-                    clusters[i].RetentionTime,
+                    clusters[i].Net,
                     clusters[i].MassMonoisotopic,
                     clusters[i].DriftTime);
             }
@@ -162,7 +162,7 @@ namespace MultiAlignTestSuite.Algorithms
                         feature.GroupId,
                         feature.Id,
                         feature.ChargeState,
-                        feature.RetentionTime,
+                        feature.Net,
                         feature.MassMonoisotopic,
                         feature.DriftTime);
                 }
@@ -183,7 +183,7 @@ namespace MultiAlignTestSuite.Algorithms
             clusterer.Parameters.OnlyClusterSameChargeStates = true;
             clusterer.Parameters.Tolerances.Mass = 10;
             clusterer.Parameters.Tolerances.DriftTime = .3;
-            clusterer.Parameters.Tolerances.RetentionTime = .03;
+            clusterer.Parameters.Tolerances.Net = .03;
             var clusters = clusterer.Cluster(features);
             var i = 0;
             clusters.ForEach(x => x.Id = i++);
@@ -204,7 +204,7 @@ namespace MultiAlignTestSuite.Algorithms
             clusterer.Parameters.OnlyClusterSameChargeStates = true;
             clusterer.Parameters.Tolerances.Mass = 10;
             clusterer.Parameters.Tolerances.DriftTime = .3;
-            clusterer.Parameters.Tolerances.RetentionTime = .03;
+            clusterer.Parameters.Tolerances.Net = .03;
             var clusters = clusterer.Cluster(features);
 
             var distances = new List<double>();
@@ -212,7 +212,7 @@ namespace MultiAlignTestSuite.Algorithms
             {
                 var centroid = new UMCLight();
                 centroid.MassMonoisotopicAligned = cluster.MassMonoisotopic;
-                centroid.RetentionTime = cluster.RetentionTime;
+                centroid.Net = cluster.Net;
                 centroid.DriftTime = cluster.DriftTime;
 
                 var func = clusterer.Parameters.DistanceFunction;
@@ -264,7 +264,7 @@ namespace MultiAlignTestSuite.Algorithms
             var cluster = new UMCClusterLight();
             cluster.MassMonoisotopic = 500;
             cluster.Net = .5;
-            cluster.RetentionTime = .5;
+            cluster.Net = .5;
             cluster.DriftTime = 20;
 
 
@@ -285,21 +285,21 @@ namespace MultiAlignTestSuite.Algorithms
 
                 clusterM.DriftTime = cluster.DriftTime + deltaDriftTime;
                 clusterM.Net = cluster.Net + deltaNet;
-                clusterM.RetentionTime = cluster.RetentionTime + deltaNet;
+                clusterM.Net = cluster.Net + deltaNet;
                 clusterM.MassMonoisotopic = FeatureLight.ComputeDaDifferenceFromPPM(cluster.MassMonoisotopic,
                     deltaMassPPM*i);
 
 
                 clusterN.DriftTime = cluster.DriftTime + deltaDriftTime;
                 clusterN.Net = cluster.Net + (deltaNet*i);
-                clusterN.RetentionTime = cluster.RetentionTime + (deltaNet*i);
+                clusterN.Net = cluster.Net + (deltaNet*i);
                 clusterN.MassMonoisotopic = FeatureLight.ComputeDaDifferenceFromPPM(cluster.MassMonoisotopic,
                     deltaMassPPM);
 
 
                 clusterD.DriftTime = cluster.DriftTime + (deltaDriftTime*i);
                 clusterD.Net = cluster.Net + deltaNet;
-                clusterD.RetentionTime = cluster.RetentionTime + deltaNet;
+                clusterD.Net = cluster.Net + deltaNet;
                 clusterD.MassMonoisotopic = FeatureLight.ComputeDaDifferenceFromPPM(cluster.MassMonoisotopic,
                     deltaMassPPM);
 

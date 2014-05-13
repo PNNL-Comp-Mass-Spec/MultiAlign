@@ -60,12 +60,12 @@ namespace MultiAlignCore.IO.Features
                 {
                     var spectrum = new MSSpectra
                     {
-                        MsLevel = info.MSLevel,
-                        RetentionTime = info.RetentionTimeMin,
-                        Scan = i,
-                        PrecursorMz = info.ParentIonMZ,
+                        MsLevel         = info.MSLevel,
+                        RetentionTime   = info.RetentionTimeMin,
+                        Scan            = i,
+                        PrecursorMz     = info.ParentIonMZ,
                         TotalIonCurrent = info.TotalIonCurrent,
-                        CollisionType = CollisionType.Other
+                        CollisionType   = CollisionType.Other
                     };
 
                     // Need to make this a standard type of collision based off of the data.

@@ -36,7 +36,7 @@ namespace MultiAlign.ViewModels.TreeView
             AddStatistic("Id", m_feature.Id);
             AddStatistic("Dataset Id", m_feature.GroupId);
             AddStatistic("Mass", m_feature.MassMonoisotopicAligned, "N2");
-            AddStatistic("NET", m_feature.RetentionTime, "N2");
+            AddStatistic("NET", m_feature.Net, "N2");
             if (m_feature.DriftTime > 0)
             {
                 AddStatistic("Drift Time", m_feature.DriftTime, "N2");

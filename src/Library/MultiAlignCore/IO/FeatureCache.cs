@@ -198,8 +198,8 @@ namespace MultiAlignCore.IO
                 foreach (var feature in features)
                 {
                     feature.Id = id++;
-                    feature.RetentionTime = (Convert.ToDouble(feature.Scan) - minScan)/(maxScan - minScan);
-                    feature.Net = feature.RetentionTime;
+                    feature.Net = (Convert.ToDouble(feature.Scan) - minScan)/(maxScan - minScan);
+                    feature.Net = feature.Net;
                     feature.MassMonoisotopicAligned = feature.MassMonoisotopic;
                     feature.NetAligned = feature.Net;
                     feature.GroupId = datasetId;

@@ -379,8 +379,8 @@ namespace MultiAlignCore.Extensions
                 minMass = Math.Min(minMass, feature.MassMonoisotopicAligned);
                 maxMass = Math.Max(maxMass, feature.MassMonoisotopicAligned);
 
-                minNet = Math.Min(minNet, feature.RetentionTime);
-                maxNet = Math.Max(maxNet, feature.RetentionTime);
+                minNet = Math.Min(minNet, feature.Net);
+                maxNet = Math.Max(maxNet, feature.Net);
 
                 minDrift = Math.Min(minDrift, feature.DriftTime);
                 maxDrift = Math.Max(maxDrift, feature.DriftTime);

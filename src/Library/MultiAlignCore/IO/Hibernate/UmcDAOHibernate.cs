@@ -193,7 +193,7 @@ namespace MultiAlignCore.IO.Features.Hibernate
                 {
                     command.CommandType = CommandType.Text;
                     command.CommandText =
-                        "UPDATE T_LCMS_Features  SET Mass_Calibrated = -1, NET = -1, Scan_Aligned = -1";
+                        "UPDATE T_LCMS_Features  SET Mass_Aligned = -1, NET = -1, Scan_Aligned = -1";
                     command.ExecuteNonQuery();
                 }
                 connection.Close();

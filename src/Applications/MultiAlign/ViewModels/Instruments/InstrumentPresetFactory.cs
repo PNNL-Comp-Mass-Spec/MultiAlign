@@ -40,7 +40,7 @@ namespace MultiAlign.ViewModels.Instruments
                     break;
                 case InstrumentPresets.LtqOrbitrap:
                     model = new InstrumentPresetViewModel("LTQ Orbitrap",
-                        8,
+                        13,
                         .03,
                         50,
                         .5,

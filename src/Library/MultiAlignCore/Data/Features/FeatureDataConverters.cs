@@ -58,7 +58,7 @@ namespace MultiAlignCore.Data.Features
             umc.ChargeMax = Convert.ToInt16(maxCharge);
             umc.Scan = scan;
             umc.MZForCharge = mz;
-            umc.Net = feature.RetentionTime;
+            umc.Net = feature.Net;
             umc.DriftTime = feature.DriftTime;
             umc.Id = feature.Id;
             umc.mint_umc_id = feature.Id;

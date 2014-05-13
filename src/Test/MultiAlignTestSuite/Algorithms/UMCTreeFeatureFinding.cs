@@ -38,7 +38,7 @@ namespace MultiAlignTestSuite.Algorithms
             var tolerances = new FeatureTolerances
             {
                 Mass = 8,
-                RetentionTime = .005
+                Net = .005
             };
             var options = new LcmsFeatureFindingOptions(tolerances);
             var features = finder.FindFeatures(newMsFeatures.ToList(), options, null);
@@ -68,7 +68,7 @@ namespace MultiAlignTestSuite.Algorithms
             var featureTolerances = new FeatureTolerances
             {
                 Mass = 12,
-                RetentionTime = .04
+                Net = .04
             };
             var options = new LcmsFeatureFindingOptions(featureTolerances)
             {
@@ -146,7 +146,7 @@ namespace MultiAlignTestSuite.Algorithms
             var featureTolerances = new FeatureTolerances
             {
                 Mass = 12,
-                RetentionTime = .05
+                Net = .05
             };
             var options = new LcmsFeatureFindingOptions(featureTolerances)
             {

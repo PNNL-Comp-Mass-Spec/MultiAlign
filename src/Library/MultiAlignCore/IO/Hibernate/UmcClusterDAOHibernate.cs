@@ -45,7 +45,7 @@ namespace MultiAlignCore.IO.Features.Hibernate
         {
             var criterionList = new List<ICriterion>();
             ICriterion criterionMass = Restrictions.Between("MassMonoisotopic", massMin, massMax);
-            ICriterion criterionNet = Restrictions.Between("RetentionTime", netMin, netMax);
+            ICriterion criterionNet = Restrictions.Between("Net", netMin, netMax);
 
             criterionList.Add(criterionMass);
             criterionList.Add(criterionNet);
@@ -68,7 +68,7 @@ namespace MultiAlignCore.IO.Features.Hibernate
         {
             var criterionList = new List<ICriterion>();
             ICriterion criterionMass = Restrictions.Between("MassMonoisotopic", massMin, massMax);
-            ICriterion criterionNet = Restrictions.Between("RetentionTime", netMin, netMax);
+            ICriterion criterionNet = Restrictions.Between("Net", netMin, netMax);
             ICriterion criterionDriftTime = Restrictions.Between("DriftTime", driftMin, driftMax);
 
             criterionList.Add(criterionMass);

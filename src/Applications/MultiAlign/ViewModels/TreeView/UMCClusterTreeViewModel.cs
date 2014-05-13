@@ -43,7 +43,7 @@ namespace MultiAlign.ViewModels.TreeView
 
 
             var item = new StringTreeViewItem(
-                cluster.RetentionTime.ToString("F3",
+                cluster.Net.ToString("F3",
                     CultureInfo.InvariantCulture),
                 "NET");
 

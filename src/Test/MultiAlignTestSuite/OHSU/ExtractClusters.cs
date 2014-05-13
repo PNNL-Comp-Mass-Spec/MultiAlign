@@ -134,7 +134,7 @@ namespace MultiAlignTestSuite.OHSU
                     feature.MassMonoisotopicAligned = feature.MassMonoisotopic;
                     feature.Net = net + .03*x.NextDouble();
                     feature.NetAligned = feature.Net;
-                    feature.RetentionTime = feature.Net;
+                    feature.Net = feature.Net;
                     feature.DriftTime = dt;
                     feature.AbundanceSum = x.Next(100, 200);
                     feature.Abundance = feature.Abundance;

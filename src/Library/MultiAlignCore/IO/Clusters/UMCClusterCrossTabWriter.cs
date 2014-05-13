@@ -104,7 +104,7 @@ namespace MultiAlignCore.IO.Features
                     // We may have multiple matches to a single cluster.
                     var builder = new StringBuilder();
                     builder.Append(string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8}", cluster.Id,
-                        cluster.MassMonoisotopic, cluster.RetentionTime, cluster.DriftTime, cluster.ChargeState,
+                        cluster.MassMonoisotopic, cluster.Net, cluster.DriftTime, cluster.ChargeState,
                         cluster.UmcList.Count, features.Keys.Count, cluster.Tightness, cluster.AmbiguityScore));
                     if (clusterMap.Count > 0)
                     {

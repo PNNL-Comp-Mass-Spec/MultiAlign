@@ -189,7 +189,7 @@ namespace MultiAlign.ViewModels.Features
             {
                 filtered =
                     filtered.Where(
-                        x => x.Cluster.RetentionTime >= NetRange.Minimum && x.Cluster.RetentionTime <= NetRange.Maximum);
+                        x => x.Cluster.Net >= NetRange.Minimum && x.Cluster.Net <= NetRange.Maximum);
             }
             if (DriftRange.ShouldUse)
             {

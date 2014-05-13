@@ -108,7 +108,7 @@ namespace MultiAlignTestSuite.Drawing.Graphics
                 FragmentationWindowSize = .5,
                 Mass = 13,
                 DriftTime = .3,
-                RetentionTime = .01
+                Net = .01
             };
             var options = new LcmsFeatureFindingOptions(tolerances);
             options.MaximumNetRange = .002;

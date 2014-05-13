@@ -267,11 +267,11 @@ namespace MultiAlign.ViewModels.Wizard
 
         public double NetTolerance
         {
-            get { return m_options.InstrumentTolerances.RetentionTime; }
+            get { return m_options.InstrumentTolerances.Net; }
             set
             {
                 m_options.AlignmentOptions.NETTolerance = value;
-                m_options.InstrumentTolerances.RetentionTime = value;
+                m_options.InstrumentTolerances.Net = value;
                 OnPropertyChanged("NETTolerance");
             }
         }

@@ -164,7 +164,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
             var featureTolerances = new FeatureTolerances
             {
                 Mass = instrumentOptions.Mass,
-                RetentionTime = instrumentOptions.NetTolerance,
+                Net = instrumentOptions.NetTolerance,
                 DriftTime = instrumentOptions.DriftTimeTolerance
             };
 
@@ -373,7 +373,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
             var featureTolerances = new FeatureTolerances
             {
                 Mass = instrumentOptions.Mass + 6,
-                RetentionTime = instrumentOptions.NetTolerance,
+                Net = instrumentOptions.NetTolerance,
                 DriftTime = instrumentOptions.DriftTimeTolerance
             };
             var featureFindingOptions = new LcmsFeatureFindingOptions(featureTolerances)
@@ -485,7 +485,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
                         allFeatures.AddRange(aligneeFeatures);
                         foreach (var feature in allFeatures)
                         {
-                            feature.RetentionTime = feature.Net;
+                            feature.Net = feature.Net;
                             feature.MassMonoisotopicAligned = feature.MassMonoisotopic;
                         }
 

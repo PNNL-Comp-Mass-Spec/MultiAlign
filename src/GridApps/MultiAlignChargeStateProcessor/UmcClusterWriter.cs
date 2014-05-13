@@ -73,7 +73,7 @@ namespace MultiAlignChargeStateProcessor
                 cluster.Tightness,
                 cluster.AmbiguityScore,
                 cluster.MassMonoisotopicAligned,
-                cluster.RetentionTime,
+                cluster.Net,
                 cluster.DriftTime);
 
             var clustermap = new Dictionary<int, long>();

@@ -55,8 +55,8 @@ namespace MultiAlignCore.IO.Features
                     var umcBuilder = new StringBuilder();
                     foreach (var umc in cluster.UmcList)
                     {
-                        minNet = Math.Min(umc.RetentionTime, minNet);
-                        maxNet = Math.Max(umc.RetentionTime, maxNet);
+                        minNet = Math.Min(umc.Net, minNet);
+                        maxNet = Math.Max(umc.Net, maxNet);
 
                         umcBuilder.Append(string.Format(",{0},{1},{2},{3},{4},{5},{6},{7}", umc.Id, umc.GroupId,
                             umc.MassMonoisotopic, umc.Net, umc.Abundance, umc.Scan, umc.ScanStart, umc.ScanEnd));
@@ -64,7 +64,7 @@ namespace MultiAlignCore.IO.Features
 
                     var builder = new StringBuilder();
                     builder.Append(string.Format("{0},{1},{2},{3},{4}", cluster.Id, cluster.MassMonoisotopic,
-                        cluster.RetentionTime, minNet, maxNet));
+                        cluster.Net, minNet, maxNet));
 
                     writer.WriteLine(builder.Append(umcBuilder));
                 }

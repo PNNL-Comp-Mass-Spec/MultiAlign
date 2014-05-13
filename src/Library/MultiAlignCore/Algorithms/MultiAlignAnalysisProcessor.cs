@@ -658,7 +658,7 @@ namespace MultiAlignCore.Algorithms
                 }
 
                 var matchResults = new PeakMatchingResults<UMCClusterLight, MassTagLight>();
-                clusters.ForEach(x => x.Net = x.RetentionTime);
+                clusters.ForEach(x => x.Net = x.Net);
                 matchResults.Matches = peakMatcher.PerformPeakMatching(clusters, m_config.Analysis.MassTagDatabase);
 
                 if (adapter != null)

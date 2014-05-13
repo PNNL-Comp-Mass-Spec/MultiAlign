@@ -9,7 +9,7 @@
       <key-property name="GroupId"            column="DATASET_ID" type="integer" />
     </composite-id>
     <property name="MsLevel"                  column="MS_LEVEL"           type="int"    not-null="false" />
-		<property name="RetentionTime"            column="RETENTION_TIME"     type="double" not-null="false" />
+		<property name="Net"                      column="Net"     type="double" not-null="false" />
 		<property name="Scan"                     column="SCAN"               type="int"    not-null="false" />
 		<property name="PrecursorMz"              column="PRECURSOR_MZ"       type="double" not-null="false" />
 		<property name="TotalIonCurrent"          column="TOTAL_ION_CURRENT"  type="double" not-null="false" />		

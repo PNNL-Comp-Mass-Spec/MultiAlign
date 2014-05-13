@@ -171,7 +171,7 @@ namespace MultiAlignCore.IO.Reports
             var heatmap         = HeatmapFactory.CreateAlignedHeatmap(alignmentData.heatScores);
             var feature         = ScatterPlotFactory.CreateFeatureMassScatterPlot(e.AligneeFeatures);
             var netHistomgram   = HistogramFactory.CreateHistogram(alignmentData.netErrorHistogram, "NET Error");
-            var massHistomgram  = HistogramFactory.CreateHistogram(alignmentData.netErrorHistogram, "Mass Error");
+            var massHistomgram  = HistogramFactory.CreateHistogram(alignmentData.massErrorHistogram, "Mass Error");
             var residuals       = alignmentData.ResidualData;
 
             var netResidual         = ScatterPlotFactory.CreateResidualPlot(residuals.scans, residuals.linearCustomNet,

@@ -96,7 +96,7 @@ namespace MultiAlignCore.IO.Features
                     var builder = new StringBuilder();
                     builder.Append(string.Format("{0},{1},{2},{3},{4}", cluster.Id, cluster.UmcList.Count,
                         features.Keys.Count, cluster.Tightness, cluster.AmbiguityScore));
-                    builder.Append(string.Format(",{0},{1},{2},{3}", cluster.MassMonoisotopic, cluster.RetentionTime,
+                    builder.Append(string.Format(",{0},{1},{2},{3}", cluster.MassMonoisotopic, cluster.Net,
                         cluster.DriftTime, cluster.MsMsCount));
 
                     if (clusterMap.Count > 0)

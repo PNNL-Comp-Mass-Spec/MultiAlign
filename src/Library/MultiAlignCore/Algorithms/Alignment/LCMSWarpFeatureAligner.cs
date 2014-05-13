@@ -197,7 +197,7 @@ namespace MultiAlignCore.Algorithms.Alignment
 
                     map[featureId].MassMonoisotopicAligned = feature.MassCalibrated;
                     map[featureId].NetAligned = feature.Net;
-                    map[featureId].RetentionTime = feature.Net;
+                    map[featureId].Net = feature.Net;
                     map[featureId].ScanAligned = feature.ScanAligned;
                 }
 

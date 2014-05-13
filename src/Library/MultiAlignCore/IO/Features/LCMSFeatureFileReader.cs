@@ -299,7 +299,7 @@ namespace MultiAlignCore.IO.Features
                 x.ScanAligned = x.Scan;
                 x.Net = (Convert.ToDouble(x.Scan - minScan)/Convert.ToDouble(maxScan - minScan));
                 x.NetAligned = x.Net;
-                x.RetentionTime = (Convert.ToDouble(x.Scan - minScan)/Convert.ToDouble(maxScan - minScan));
+                x.Net = (Convert.ToDouble(x.Scan - minScan)/Convert.ToDouble(maxScan - minScan));
             }
             return umcList;
         }

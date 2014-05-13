@@ -39,7 +39,7 @@ namespace PNNLOmics.UnitTests.AlgorithmTests.FeatureClustering
             var massDiff =
                 Math.Abs(FeatureLight.ComputeMassPPMDifference(clusterX.MassMonoisotopicAligned,
                     clusterY.MassMonoisotopicAligned));
-            var netDiff = Math.Abs(clusterX.RetentionTime - clusterY.RetentionTime);
+            var netDiff = Math.Abs(clusterX.Net - clusterY.Net);
             var driftDiff = Math.Abs(clusterX.DriftTime - clusterY.DriftTime);
 
             // Return true only if all differences are within tolerance
@@ -62,7 +62,7 @@ namespace PNNLOmics.UnitTests.AlgorithmTests.FeatureClustering
             {
                 var featureX = data[i];
                 var driftTimeX = featureX.DriftTime;
-                var netAlignedX = featureX.RetentionTime;
+                var netAlignedX = featureX.Net;
                 var massAlignedX = featureX.MassMonoisotopicAligned;
                 var chargeStateX = featureX.ChargeState;
 

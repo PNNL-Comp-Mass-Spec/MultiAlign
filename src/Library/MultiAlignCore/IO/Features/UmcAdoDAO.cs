@@ -71,7 +71,7 @@ namespace MultiAlignCore.IO.Features
                             var feature = new UMCLight();
                             feature.ChargeState = Convert.ToInt32(values[11]);
                             feature.MassMonoisotopicAligned = Convert.ToDouble(values[5]);
-                            feature.RetentionTime = Convert.ToDouble(values[6]);
+                            feature.Net = Convert.ToDouble(values[6]);
                             feature.DriftTime = Convert.ToDouble(values[15]);
                             feature.AbundanceSum = Convert.ToInt64(values[14]);
                             feature.Abundance = Convert.ToInt64(values[13]);

@@ -54,10 +54,9 @@ namespace MultiAlignSTACRunner
                             {
                                 Id                      = Convert.ToInt32(data[CONST_COLUMN_ID]),
                                 MassMonoisotopic        = mass,
-                                MassMonoisotopicAligned = mass,                                
-                                Net                     = retentionTime,
+                                MassMonoisotopicAligned = mass,                                                                
                                 NetAligned              = retentionTime,            
-                                RetentionTime           = retentionTime,     
+                                Net                     = retentionTime,     
                                 DriftTime               = Convert.ToDouble(data[CONST_COLUMN_DRIFT]),                                                                
                                 Tightness               = Convert.ToDouble(data[CONST_COLUMN_TIGHTNESS]),
                                 AmbiguityScore          = Convert.ToDouble(data[CONST_COLUMN_AMBIGUITY]),
