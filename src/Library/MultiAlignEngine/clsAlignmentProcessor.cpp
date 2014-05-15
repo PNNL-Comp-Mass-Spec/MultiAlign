@@ -763,38 +763,56 @@ namespace MultiAlignEngine
 			return fnc; 
 		}
 
+		
 		void clsAlignmentProcessor::PerformNetWarp()
 		{
 			mstrMessage = new System::String (S"Performing Alignment between UMCs and Mass Tag Database");
 			mstrMessage = new System::String(S"Generating Candidate Matches");
+			ofstream crap;
+
+			crap.open("m:\matchcounts-old.txt");
 
 			mobjLCMSWarp->GenerateCandidateMatches();
+			crap << "NET  WARP canidate matches yep" << mobjLCMSWarp->mvect_feature_matches.size() << endl;
+			m_matchCount = mobjLCMSWarp->GetMatchCount();
+		
+			crap << "NET  WARP  dirka dirka" << mobjLCMSWarp->mvect_feature_matches.size() << endl;
 			if (mobjLCMSWarp->GetNumCandidateMatches() <10)
 			{
 				menmState = ERROR; 
 				throw new System::ApplicationException(S"Insufficient number of candidate matches by mass alone"); 
 			}
 
+			crap << "NET  WARP derererer" << mobjLCMSWarp->mvect_feature_matches.size() << endl;
 			mstrMessage = new System::String("Get Match Scores Between Sections");
 			mobjLCMSWarp->GetMatchProbabilities();
 
+			crap << "NET  WARP match probs" << mobjLCMSWarp->mvect_feature_matches.size() << endl;
 			mstrMessage = new System::String("Calculating Alignment Scores Between Sections");
 			mobjLCMSWarp->CalculateAlignmentMatrix();
 
+			crap << "NET  WARP farting" << mobjLCMSWarp->mvect_feature_matches.size() << endl;
 			mstrMessage = new System::String("Calculating Alignment Function");
 			mobjLCMSWarp->CalculateAlignmentFunction(); 
 
+			crap << "NET  WARP after calc align funcs " << mobjLCMSWarp->mvect_feature_matches.size() << endl;
 			mstrMessage = new System::String("Getting Transformed Scans");
 			mobjLCMSWarp->GetTransformedNets(); 
 
+			crap << "NET  WARP get transformed nets " << mobjLCMSWarp->mvect_feature_matches.size() << endl;
 			mstrMessage = new System::String("Calculating Matches");
 			mobjLCMSWarp->CalculateAlignmentMatches(); 
 
+			crap << "NET  WARP after alignmentmatches " << mobjLCMSWarp->mvect_feature_matches.size() << endl;
 			mstrMessage = new System::String("Done with Alignment");
 
+			crap.close();
 		}
 		void clsAlignmentProcessor::PerformNetMassWarp()
 		{
+			ofstream ggg;
+			ggg.open("m:\\numMatches-old-post.txt");
+
 			// first perform a net calibration using a wide mass tolerance which is the same as the 
 			// mass window parameter.
 			double mass_tolerance = mobjLCMSWarp->GetMassTolerance(); 
@@ -803,15 +821,40 @@ namespace MultiAlignEngine
 
 			PerformNetWarp(); 
 
+			ggg << mobjLCMSWarp->mvect_feature_matches.size() << endl;
+
 			mstrMessage = new System::String("Performing Mass Recalibration");
 			mobjLCMSWarp->PerformMassCalibration(); 
+			
+			ggg << mobjLCMSWarp->mvect_feature_matches.size() << endl;
+
 
 			mstrMessage = new System::String("Calculate Standard Deviations");
 			mobjLCMSWarp->CalculateStandardDeviations();
+
 			
+			ggg << mobjLCMSWarp->mvect_feature_matches.size() << endl;
+			ggg << "Mass tolerance " << mass_tolerance << endl;
 			mobjLCMSWarp->SetMassTolerance(mass_tolerance); 
+			
+			ggg << mobjLCMSWarp->mvect_feature_matches.size() << endl;
 			mobjLCMSWarp->UseMassAndNetScore(true); 
+			
+			ggg << mobjLCMSWarp->mvect_feature_matches.size() << endl;
 			PerformNetWarp(); 
+			
+			ggg << mobjLCMSWarp->mvect_feature_matches.size() << endl;
+
+			ggg.close();
+
+			ofstream file;
+			file.open("m:\\featureMatches-old-post.txt");
+			for(int i = 0; i < mobjLCMSWarp->mvect_feature_matches.size(); i++)
+			{
+				FeatureMatch x = mobjLCMSWarp->mvect_feature_matches[i];
+				file << x.mint_feature_index << "\t" << x.mint_feature_index_2 << "\t" << x.mdouble_net << "\t"  << x.mdouble_net_2 << "\t"  << x.mdouble_netError << "\t"  << x.mdouble_ppmMassError << endl;
+			}
+			file.close();
 		}
 		void clsAlignmentProcessor::GetAlignmentHeatMap(float (&alignmentScores) __gc[,], 
 														float (&xIntervals) __gc[], 

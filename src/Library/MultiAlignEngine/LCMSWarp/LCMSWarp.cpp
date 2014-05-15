@@ -318,6 +318,7 @@ namespace MultiAlignEngine
 				}
 			}
 
+
 			mvect_feature_matches = temp_matches; 
 		}
 
@@ -455,10 +456,13 @@ namespace MultiAlignEngine
 					vector<FeatureMatch>::iterator stop_iter = start_iter + (end_match_index - start_match_index); 
 					vect_section_features.insert(vect_section_features.begin(), start_iter, stop_iter); 
 				}
+				
+								
 				// now we have the appropriate matches for the section stored in vect_section_features. 
 				// Lets compute all the matching scores of this ms section against all pairs of baseline sections.
 				ComputeSectionMatch(section, vect_section_features, section_start_net, section_end_net); 
 			}
+	
 		}
 
 		double LCMSWarp::GetCurrentlyStoredSectionMatchScore(double max_miss_zscore,
@@ -680,7 +684,7 @@ namespace MultiAlignEngine
 				for (int section_width = 0; section_width < mint_num_matches_per_baseline_start; section_width++)
 				{
 					// no need multiplying with ms_section because its 0
-					int alignment_index = baseline_section * mint_num_matches_per_baseline_start + section_width; 
+					int alignment_index = baseline_section * mint_num_matches_per_baseline_start + section_width;
 					//marr_alignment_score[alignment_index] = match_score + mvect_subsection_match_scores[alignment_index]; 
 					//marr_alignment_score[alignment_index] = mvect_subsection_match_scores[alignment_index]; 
 					marr_alignment_score[alignment_index] = 0; 
@@ -754,7 +758,7 @@ namespace MultiAlignEngine
 							marr_alignment_score[alignment_index] = -1 * DBL_MAX; 
 					}
 				}
-			}
+			}			
 
 		}
 
@@ -864,6 +868,26 @@ namespace MultiAlignEngine
 				mvect_alignment_func.push_back(alignment_match); 
 			}
 			sort(mvect_alignment_func.begin(), mvect_alignment_func.end(), &AlignmentMatchCompareBySection1); 
+
+			
+			ofstream file;
+			file.open("m:\\functions-old.txt");
+			for(int i = 0; i < mvect_alignment_func.size(); i++)
+			{
+				AlignmentMatch t = mvect_alignment_func[i];
+
+				file << t.mdouble_net_start << "\t" <<
+					t.mdouble_net_end << "\t" <<
+					t.mint_section_start << "\t" <<
+					t.mint_section_end << "\t" <<
+	
+					t.mdouble_net_start_2 << "\t" <<
+					t.mdouble_net_end_2 << "\t" <<
+					t.mint_section_start_2 << "\t" <<
+					t.mint_section_end_2 << "\t" <<
+					t.mdouble_alignment_score << "\t" <<
+					t.mdouble_match_score << endl;				
+			}
 		}
 
 		void LCMSWarp::GetSubsectionMatchScores(std::vector<float> &vectSubsectionMatchScores,
@@ -1162,6 +1186,9 @@ namespace MultiAlignEngine
 				}
 				feature_index++; 
 			}
+
+
+
 			CalculateNETSlopeAndIntercept(); 
 		}
 
@@ -1227,6 +1254,9 @@ namespace MultiAlignEngine
 			{
 				map_section_to_index.insert(pair<int,int>(mvect_alignment_func[i].mint_section_start, i)); 
 			}
+	
+			ofstream file;
+			file.open("m:\\features-old.txt");
 
 			for( int feature_index = 0; feature_index < num_features; feature_index++)
 			{
@@ -1271,7 +1301,10 @@ namespace MultiAlignEngine
 
 				double net_transformed = ((feature.mdouble_net - net_start) * (net_end_baseline - net_start_baseline)) / (net_end - net_start) + net_start_baseline;
 				mvect_features[feature_index].mdouble_aligned_net = net_transformed; 
-			}
+
+				file << mvect_features[feature_index].mint_id << "\t" << mvect_features[feature_index].mdouble_aligned_net << endl;
+			}			     
+			file.close();
 		}
 
 		void LCMSWarp::GetMatchDeltas(vector<double> &ppms)
@@ -1460,6 +1493,15 @@ namespace MultiAlignEngine
 				//mdouble_net_std = mixture_model_resolver.GetStd(); 
 
 				// Similarly calculate net standard deviations.
+
+				
+			ofstream xxx;
+			xxx.open("m:\\standards-old-post.txt");				
+			xxx << mdblNormalProb << endl;
+			xxx << mdblU << endl;
+			xxx << mdblMuMass << endl; 
+			xxx << mdblMuNET << endl;			
+			xxx.close();
 			}
 
 		}
@@ -1656,6 +1698,8 @@ namespace MultiAlignEngine
 				/// Using an iterator to move through the vector, find all the NET residuals for the mass and time features
 				/// that matched.
 				///
+				ofstream xxx;
+				xxx.open("m:\\ppmCheck-old.txt");
 				for (std::vector<FeatureMatch>::const_iterator iter = mvect_feature_matches.begin();
 																				iter != mvect_feature_matches.end(); 
 																				iter++)
@@ -1686,7 +1730,10 @@ namespace MultiAlignEngine
 					double ppmShift = 0.0;				
 					if (mbln_use_mass) 
 					{
+
 						ppmShift = GetPPMShift(feature.mdouble_mz, scanNumber);
+						xxx << scanNumber << "\t" << feature.mdouble_mz  << "\t" << ppmShift << endl;
+							
 					}
 					/// Mass Residuals
 					vectMZ.push_back(feature.mdouble_mz);					
@@ -1694,6 +1741,7 @@ namespace MultiAlignEngine
 					
 					vectMassErrorCorrected.push_back(massError - ppmShift);
 				}
+				xxx.close();
 			}
 	}
 }

@@ -111,7 +111,6 @@ namespace MultiAlignEngine
 			vector<AlignmentMatch> mvect_alignment_func; 
 			vector<MassTimeFeature> mvect_features; 
 			vector<MassTimeFeature> mvect_baseline_features; 
-			vector<FeatureMatch> mvect_feature_matches; 
 			vector<double> mvect_subsection_match_scores; 
 			#pragma warning(default:4251)
 			double mdblNETSlope; 
@@ -137,7 +136,9 @@ namespace MultiAlignEngine
 			}
 
 		public:
+			vector<FeatureMatch> mvect_feature_matches; 
 
+			int GetMatchCount() { return mvect_feature_matches.size();}
 
 			void SetNETOptions(int num_ms_sections, int contraction_factor, int max_jump, int max_promiscuity)
 			{

@@ -25,6 +25,7 @@ namespace MultiAlignEngine
 			bool mblnAligningToMassTagDB; 
 			bool mblnMassTagDBLoaded; 
 			bool mblnClusterAlignee; 
+			int m_matchCount;
 			// in case alignment was to ms features this keeps track of the minimum scan in the 
 			// reference features. These are needed because LCMSWarp uses net values for reference
 			// values and those are scaled from 0, 1. To scale back, we need these guys.
@@ -64,6 +65,7 @@ namespace MultiAlignEngine
 			void PerformNetWarp(); 
 
 		public:
+			int NumberMatches() {return m_matchCount;}
 			void Dispose();
 			void OnDeserialization(System::Object* sender) 
 			{

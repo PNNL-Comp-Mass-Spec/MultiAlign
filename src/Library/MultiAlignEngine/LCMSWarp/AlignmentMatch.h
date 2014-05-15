@@ -6,20 +6,21 @@ namespace MultiAlignEngine
 		class AlignmentMatch
 		{
 			public:
-				double mdouble_net_start; 
-				double mdouble_net_end; 
-				int mint_section_start; 
-				int mint_section_end;
+				double	mdouble_net_start; 
+				double	mdouble_net_end; 
+				int		mint_section_start; 
+				int		mint_section_end;
 
-				double mdouble_net_start_2; 
-				double mdouble_net_end_2; 
-				int mint_section_start_2; 
-				int mint_section_end_2;
+				double	mdouble_net_start_2; 
+				double	mdouble_net_end_2; 
+				int		mint_section_start_2; 
+				int		mint_section_end_2;
 
 				// score of the alignments between the two maps till (and including) this section match. 
-				double mdouble_alignment_score; 
+				double	mdouble_alignment_score; 
 				// score of just the match between the two maps and their sections. 
-				double mdouble_match_score; 
+				double	mdouble_match_score; 
+
 				void Set(double net_start_a, double net_end_a, int section_start_a, int section_end_a, 
 						double net_start_b, double net_end_b, int section_start_b, int section_end_b, 
 						double alignment_score, double match_score)

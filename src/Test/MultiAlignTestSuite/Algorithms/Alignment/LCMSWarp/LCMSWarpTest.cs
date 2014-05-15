@@ -44,7 +44,7 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
             var aligneePath     = GetPath(relativeAligneePath);
             var options = new LcmsWarpAlignmentOptions
             {
-                AlignType = LcmsWarpAlignmentOptions.AlignmentType.NET_WARP
+                AlignType = LcmsWarpAlignmentOptions.AlignmentType.NET_MASS_WARP
             };
             var aligner         = new LcmsWarpAdapter(options); 
            
@@ -189,7 +189,7 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
             var mind = features.Min(x => x.Net);
             if (maxd - mind < double.Epsilon)
                 throw new Exception("There is something wrong with the features NET values");
-            aligner.Options.AlignmentType = enmAlignmentType.NET_WARP;
+            aligner.Options.AlignmentType = enmAlignmentType.NET_MASS_WARP;
 
             var outputData      = aligner.Align(baseline, features);
             var residuals       = outputData.ResidualData;
