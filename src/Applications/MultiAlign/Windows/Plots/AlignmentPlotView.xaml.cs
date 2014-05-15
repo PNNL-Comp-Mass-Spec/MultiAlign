@@ -169,8 +169,8 @@ namespace MultiAlign.Windows.Plots
 
             var heatmap = HeatmapFactory.CreateAlignedHeatmap(alignmentData.heatScores);
             var feature = ScatterPlotFactory.CreateFeatureMassScatterPlot(AlignmentData.AligneeFeatures);
-            var netHistomgram = HistogramFactory.CreateHistogram(alignmentData.netErrorHistogram, "NET Error");
-            var massHistomgram = HistogramFactory.CreateHistogram(alignmentData.netErrorHistogram, "Mass Error");
+            var netHistomgram = HistogramFactory.CreateHistogram(alignmentData.netErrorHistogram, "NET Error", "NET Error");
+            var massHistomgram = HistogramFactory.CreateHistogram(alignmentData.netErrorHistogram, "Mass Error", "Mass Error (ppm)");
 
             var residuals = alignmentData.ResidualData;
             var netResidual = ScatterPlotFactory.CreateResidualPlot(residuals.scans, residuals.linearCustomNet,

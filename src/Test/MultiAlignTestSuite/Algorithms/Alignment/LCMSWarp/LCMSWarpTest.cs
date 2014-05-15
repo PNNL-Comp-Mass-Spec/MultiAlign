@@ -42,7 +42,12 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
         {
             var baselinePath    = GetPath(relativeBaselinePath);
             var aligneePath     = GetPath(relativeAligneePath);
-            var aligner         = new LcmsWarpAdapter();
+            var options = new LcmsWarpAlignmentOptions
+            {
+                AlignType = LcmsWarpAlignmentOptions.AlignmentType.NET_WARP
+            };
+            var aligner         = new LcmsWarpAdapter(options); 
+           
             var rawBaselineData = File.ReadAllLines(baselinePath);
             var rawFeaturesData = File.ReadAllLines(aligneePath);
             var outputPath      = GetOutputPath(relativeOutput);
@@ -65,7 +70,10 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
                     Scan                    = Convert.ToInt32(parsed[3]),
                     MassMonoisotopic        = Convert.ToDouble(parsed[4]),
                     MassMonoisotopicAligned = Convert.ToDouble(parsed[5]),
-                    Id                      = Convert.ToInt32(parsed[6])
+                    Id                      = Convert.ToInt32(parsed[6]),
+                    ScanStart               = Convert.ToInt32(parsed[7]),
+                    ScanEnd                 = Convert.ToInt32(parsed[8]),
+                    ScanAligned             = Convert.ToInt32(parsed[9])
                 }).ToList();
 
             var features = (from line in rawFeaturesData
@@ -80,7 +88,10 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
                     Scan                    = Convert.ToInt32(parsed[3]),
                     MassMonoisotopic        = Convert.ToDouble(parsed[4]),
                     MassMonoisotopicAligned = Convert.ToDouble(parsed[5]),
-                    Id                      = Convert.ToInt32(parsed[6])
+                    Id                      = Convert.ToInt32(parsed[6]),
+                    ScanStart               = Convert.ToInt32(parsed[7]),
+                    ScanEnd                 = Convert.ToInt32(parsed[8]),
+                    ScanAligned             = Convert.ToInt32(parsed[9])
                 }).ToList();
 
 
@@ -88,8 +99,8 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
             var residuals   = outputData.ResidualData;
 
             var heatmap        = HeatmapFactory.CreateAlignedHeatmap(outputData.HeatScores);
-            var netHistomgram  = HistogramFactory.CreateHistogram(outputData.NetErrorHistogram, "NET Error");
-            var massHistomgram = HistogramFactory.CreateHistogram(outputData.MassErrorHistogram, "Mass Error");
+            var netHistogram = HistogramFactory.CreateHistogram(outputData.NetErrorHistogram, "NET Error", "NET Error");
+            var massHistogram = HistogramFactory.CreateHistogram(outputData.MassErrorHistogram, "Mass Error", "Mass Error (ppm)");
 
             var netResidual         = ScatterPlotFactory.CreateResidualPlot(residuals.Scan, residuals.LinearCustomNet,
                residuals.LinearNet, "NET Residuals", "Scans", "NET");
@@ -105,8 +116,8 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
             PlotImageUtility.SaveImage(netResidual,         directory + "_netResidual.svg",         encoder);
             PlotImageUtility.SaveImage(massMzResidual,      directory + "_massMzResidual.svg",      encoder);
             PlotImageUtility.SaveImage(massScanResidual,    directory + "_massScanResidual.svg",    encoder);
-            PlotImageUtility.SaveImage(netHistomgram,       directory + "_netHistomgram.svg",       encoder);
-            PlotImageUtility.SaveImage(massHistomgram,      directory + "_massHistomgram.svg",      encoder);
+            PlotImageUtility.SaveImage(netHistogram,       directory + "_netHistogram.svg",       encoder);
+            PlotImageUtility.SaveImage(massHistogram,      directory + "_massHistogram.svg",      encoder);
         }
 
         [Test(Description = "This tests the new LCMSWarp port between two database search results converted to UmcLights")]
@@ -178,12 +189,14 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
             var mind = features.Min(x => x.Net);
             if (maxd - mind < double.Epsilon)
                 throw new Exception("There is something wrong with the features NET values");
+            aligner.Options.AlignmentType = enmAlignmentType.NET_WARP;
+
             var outputData      = aligner.Align(baseline, features);
             var residuals       = outputData.ResidualData;
 
             var heatmap         = HeatmapFactory.CreateAlignedHeatmap(outputData.heatScores);
-            var netHistomgram   = HistogramFactory.CreateHistogram(outputData.netErrorHistogram, "NET Error");
-            var massHistomgram  = HistogramFactory.CreateHistogram(outputData.massErrorHistogram, "Mass Error");
+            var netHistogram   = HistogramFactory.CreateHistogram(outputData.netErrorHistogram, "NET Error Histogram", "NET Error");
+            var massHistogram  = HistogramFactory.CreateHistogram(outputData.massErrorHistogram, "Mass Error Histogram", "Mass Error (ppm)");
 
             var netResidual         = ScatterPlotFactory.CreateResidualPlot(residuals.scans, residuals.linearCustomNet,
                residuals.linearNet, "NET Residuals", "Scans", "NET");
@@ -199,8 +212,8 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
             PlotImageUtility.SaveImage(netResidual,         directory + "_netResidual.svg",         encoder);
             PlotImageUtility.SaveImage(massMzResidual,      directory + "_massMzResidual.svg",      encoder);
             PlotImageUtility.SaveImage(massScanResidual,    directory + "_massScanResidual.svg",    encoder);
-            PlotImageUtility.SaveImage(netHistomgram,       directory + "_netHistomgram.svg",       encoder);
-            PlotImageUtility.SaveImage(massHistomgram,      directory + "_massHistomgram.svg",      encoder);
+            PlotImageUtility.SaveImage(netHistogram,       directory + "_netHistogram.svg",       encoder);
+            PlotImageUtility.SaveImage(massHistogram,      directory + "_massHistogram.svg",      encoder);
         }
 
 

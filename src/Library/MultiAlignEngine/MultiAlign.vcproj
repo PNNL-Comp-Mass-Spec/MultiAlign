@@ -177,7 +177,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="dir $(TargetDir)$(TargetName)*&#x0D;&#x0A;dir ..\..\&#x0D;&#x0A;dir ..\..\lib\$(PlatformName)&#x0D;&#x0A;copy $(TargetDir)$(TargetName)* ..\..\lib\$(PlatformName)&#x0D;&#x0A;"
+				CommandLine="dir $(TargetDir)$(TargetName)*&#x0D;&#x0A;dir ..\..\&#x0D;&#x0A;dir ..\..\lib\$(PlatformName)&#x0D;&#x0A;copy $(TargetDir)$(TargetName)* ..\..\..\lib\$(PlatformName)&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration

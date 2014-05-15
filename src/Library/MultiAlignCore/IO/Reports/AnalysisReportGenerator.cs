@@ -77,12 +77,12 @@ namespace MultiAlignCore.IO.Reports
             report.PushStartTableRow();
             path                        = Path.Combine(Config.AnalysisPath, PlotPath, "clusters_datasetMembersHistogram.png");
             var datasetMemberHistogram  =
-                HistogramFactory.CreateHistogram(clusters.CreateClusterDatasetMemeberSizeHistogram(), "Dataset Members");
+                HistogramFactory.CreateHistogram(clusters.CreateClusterDatasetMemeberSizeHistogram(), "Dataset Members", "Dataset Count");
             PlotImageUtility.SaveImage(datasetMemberHistogram, path);
             report.PushImageColumn(path, WIDTH, HEIGHT);
 
             path                        = Path.Combine(Config.AnalysisPath, PlotPath, "clusters_clusterSizeHistogram.png");
-            var clusterSizeHistogram    = HistogramFactory.CreateHistogram(clusters.CreateClusterSizeHistogram(), "Cluster Members");
+            var clusterSizeHistogram    = HistogramFactory.CreateHistogram(clusters.CreateClusterSizeHistogram(), "Cluster Members", "Cluster Size");
             PlotImageUtility.SaveImage(clusterSizeHistogram, path);
             report.PushImageColumn(path, WIDTH, HEIGHT);
 
@@ -102,7 +102,7 @@ namespace MultiAlignCore.IO.Reports
             report.PushTextHeader("Cluster Charge States"); 
             report.PushStartTable();
             var path        = Path.Combine(Config.AnalysisPath, PlotPath, "clusters_chargestates.png");
-            var histogram   = HistogramFactory.CreateHistogram(chargeMap, "Charge States");            
+            var histogram   = HistogramFactory.CreateHistogram(chargeMap, "Charge States", "Charge States");            
             PlotImageUtility.SaveImage(histogram, path);            
             report.PushImageColumn(path);
             report.PushEndTable();
@@ -170,8 +170,8 @@ namespace MultiAlignCore.IO.Reports
             var directory       = Path.Combine(Config.AnalysisPath, PlotPath, name);
             var heatmap         = HeatmapFactory.CreateAlignedHeatmap(alignmentData.heatScores);
             var feature         = ScatterPlotFactory.CreateFeatureMassScatterPlot(e.AligneeFeatures);
-            var netHistomgram   = HistogramFactory.CreateHistogram(alignmentData.netErrorHistogram, "NET Error");
-            var massHistomgram  = HistogramFactory.CreateHistogram(alignmentData.massErrorHistogram, "Mass Error");
+            var netHistomgram   = HistogramFactory.CreateHistogram(alignmentData.netErrorHistogram, "NET Error", "NET Error");
+            var massHistomgram  = HistogramFactory.CreateHistogram(alignmentData.massErrorHistogram, "Mass Error", "Mass Error (ppm)");
             var residuals       = alignmentData.ResidualData;
 
             var netResidual         = ScatterPlotFactory.CreateResidualPlot(residuals.scans, residuals.linearCustomNet,
