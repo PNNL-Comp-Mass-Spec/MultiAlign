@@ -1346,6 +1346,9 @@ namespace MultiAlignEngine
 			Regression::RegressionPts			calib_match; 
 			int num_matches = mvect_feature_matches.size(); 
 			
+			ofstream calibs;
+			calibs.open("d://calibs.csv");
+
 			for (int match_num = 0; match_num < num_matches; match_num++)
 			{
 				FeatureMatch feature_match			= mvect_feature_matches[match_num]; 
@@ -1358,9 +1361,12 @@ namespace MultiAlignEngine
 				calib_match.mdouble_net_error		= net_diff; 
 				calib_match.mdouble_mass_error		= ppm; 
 
+				calibs<<mz<<","<<ppm<<","<<net_diff<<endl;
 
 				vect_calibrations.push_back(calib_match) ;
 			}
+			calibs.close();
+			
 
 			mobj_mz_recalibration.CalculateRegressionFunction(vect_calibrations); 
 
