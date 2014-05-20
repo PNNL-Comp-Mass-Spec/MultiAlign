@@ -33,10 +33,18 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
             Ignore = true
             )]
         [TestCase(
-           @"QC-Shew-Annotated3\QC_Shew_13_04_1b_6Oct13_Cougar_13-06-14.features",
-           @"QC-Shew-Annotated3\QC_Shew_13_04_1b_18Sep13_Cougar_13-06-14.features",
+           @"Lamarche-Data\QC_Shew_13_04_1b_6Oct13_Cougar_13-06-14.features",
+           @"Lamarche-Data\QC_Shew_13_04_1b_18Sep13_Cougar_13-06-14.features",
            @"Alignment\QC-Shew-Annotated3\",
-           @"qc_shew_13_04_1b"
+           @"qc_shew_13_04_1b",
+           Ignore = false
+           )]
+        [TestCase(
+           @"Lamarche-Data\169091_Schutzer_CF_10937_18Jan10_Owl_09-08-18.features",
+           @"Lamarche-Data\169114_Schutzer_CF_10818_18Jan10_Owl_09-08-18.features",
+           @"Alignment\Schutzer-CF\",
+           @"Schutzer_CF_18_01_10",
+           Ignore = true
            )]
         public void TestLcmsWarpPort(string relativeBaselinePath, string relativeAligneePath, string relativeOutput, string name)
         {
@@ -97,7 +105,13 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
 
             var outputData  = aligner.Align(baseline, features);
             var residuals   = outputData.ResidualData;
-
+            using (var writer = new StreamWriter(@"d:\heat-scores-us.txt"))
+            {
+                foreach (var oovarscore in outputData.HeatScores)
+                {
+                    writer.WriteLine(oovarscore);
+                }
+            }
             var heatmap        = HeatmapFactory.CreateAlignedHeatmap(outputData.HeatScores);
             var netHistogram = HistogramFactory.CreateHistogram(outputData.NetErrorHistogram, "NET Error", "NET Error");
             var massHistogram = HistogramFactory.CreateHistogram(outputData.MassErrorHistogram, "Mass Error", "Mass Error (ppm)");
@@ -116,7 +130,7 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
             PlotImageUtility.SaveImage(netResidual,         directory + "_netResidual.svg",         encoder);
             PlotImageUtility.SaveImage(massMzResidual,      directory + "_massMzResidual.svg",      encoder);
             PlotImageUtility.SaveImage(massScanResidual,    directory + "_massScanResidual.svg",    encoder);
-            PlotImageUtility.SaveImage(netHistogram,       directory + "_netHistogram.svg",       encoder);
+            //PlotImageUtility.SaveImage(netHistogram,       directory + "_netHistogram.svg",       encoder);
             PlotImageUtility.SaveImage(massHistogram,      directory + "_massHistogram.svg",      encoder);
         }
 
@@ -129,10 +143,18 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
             Ignore = true
             )]
         [TestCase(
-           @"QC-Shew-Annotated3\QC_Shew_13_04_1b_6Oct13_Cougar_13-06-14.features",
-           @"QC-Shew-Annotated3\QC_Shew_13_04_1b_18Sep13_Cougar_13-06-14.features",
+           @"Lamarche-Data\QC_Shew_13_04_1b_6Oct13_Cougar_13-06-14.features",
+           @"Lamarche-Data\QC_Shew_13_04_1b_18Sep13_Cougar_13-06-14.features",
            @"Alignment\QC-Shew-Annotated3-CPP\",
-           @"qc_shew_13_04_1b"
+           @"qc_shew_13_04_1b",
+           Ignore = false
+           )]
+        [TestCase(
+           @"Lamarche-Data\169091_Schutzer_CF_10937_18Jan10_Owl_09-08-18.features",
+           @"Lamarche-Data\169114_Schutzer_CF_10818_18Jan10_Owl_09-08-18.features",
+           @"Alignment\Schutzer-CF-CPP\",
+           @"Schutzer_CF_18_01_10",
+           Ignore = true
            )]
         public void TestLcmsWarpPortCpp(string relativeBaselinePath, string relativeAligneePath, string relativeOutput, string name)
         {
@@ -191,8 +213,17 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
                 throw new Exception("There is something wrong with the features NET values");
             aligner.Options.AlignmentType = enmAlignmentType.NET_MASS_WARP;
 
+
             var outputData      = aligner.Align(baseline, features);
             var residuals       = outputData.ResidualData;
+
+            using (var writer = new StreamWriter(@"d:\heat-scores-old.txt"))
+            {
+                foreach (var oovarscore in outputData.heatScores)
+                {
+                    writer.WriteLine(oovarscore);
+                }
+            }
 
             var heatmap         = HeatmapFactory.CreateAlignedHeatmap(outputData.heatScores);
             var netHistogram   = HistogramFactory.CreateHistogram(outputData.netErrorHistogram, "NET Error Histogram", "NET Error");
@@ -212,7 +243,7 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
             PlotImageUtility.SaveImage(netResidual,         directory + "_netResidual.svg",         encoder);
             PlotImageUtility.SaveImage(massMzResidual,      directory + "_massMzResidual.svg",      encoder);
             PlotImageUtility.SaveImage(massScanResidual,    directory + "_massScanResidual.svg",    encoder);
-            PlotImageUtility.SaveImage(netHistogram,       directory + "_netHistogram.svg",       encoder);
+            //PlotImageUtility.SaveImage(netHistogram,       directory + "_netHistogram.svg",       encoder);
             PlotImageUtility.SaveImage(massHistogram,      directory + "_massHistogram.svg",      encoder);
         }
 

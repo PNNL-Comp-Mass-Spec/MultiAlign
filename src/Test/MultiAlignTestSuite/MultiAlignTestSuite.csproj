@@ -101,21 +101,18 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
     </Reference>
-    <Reference Include="OxyPlot, Version=2014.1.297.1, Culture=neutral, PublicKeyToken=638079a8f0bd61e9, processorArchitecture=MSIL">
+    <Reference Include="OxyPlot, Version=2014.1.303.1, Culture=neutral, PublicKeyToken=638079a8f0bd61e9, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\OxyPlot.WindowsForms.2014.1.297.1\lib\NET45\OxyPlot.dll</HintPath>
+      <HintPath>..\..\packages\OxyPlot.WindowsForms.2014.1.303.1\lib\NET45\OxyPlot.dll</HintPath>
     </Reference>
-    <Reference Include="OxyPlot.WindowsForms, Version=2014.1.297.1, Culture=neutral, PublicKeyToken=245eacd6b5d2d338, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\OxyPlot.WindowsForms.2014.1.297.1\lib\NET45\OxyPlot.WindowsForms.dll</HintPath>
+    <Reference Include="OxyPlot.WindowsForms">
+      <HintPath>..\..\packages\OxyPlot.WindowsForms.2014.1.303.1\lib\NET45\OxyPlot.WindowsForms.dll</HintPath>
     </Reference>
-    <Reference Include="OxyPlot.Wpf, Version=2014.1.297.1, Culture=neutral, PublicKeyToken=75e952ba404cdbb0, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\OxyPlot.Wpf.2014.1.297.1\lib\NET45\OxyPlot.Wpf.dll</HintPath>
+    <Reference Include="OxyPlot.Wpf">
+      <HintPath>..\..\packages\OxyPlot.Wpf.2014.1.303.1\lib\NET45\OxyPlot.Wpf.dll</HintPath>
     </Reference>
-    <Reference Include="OxyPlot.Xps, Version=2014.1.297.1, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\OxyPlot.Wpf.2014.1.297.1\lib\NET45\OxyPlot.Xps.dll</HintPath>
+    <Reference Include="OxyPlot.Xps">
+      <HintPath>..\..\packages\OxyPlot.Wpf.2014.1.303.1\lib\NET45\OxyPlot.Xps.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -195,7 +192,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\..\MTBD\trunk\MTDBFramework\MTDBFramework.csproj">
+    <ProjectReference Include="..\..\..\..\..\..\MTDB\trunk\MTDBFramework\MTDBFramework.csproj">
       <Project>{3ee14e5d-3881-410e-86df-611bae112e90}</Project>
       <Name>MTDBFramework</Name>
     </ProjectReference>

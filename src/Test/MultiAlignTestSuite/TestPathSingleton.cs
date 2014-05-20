@@ -9,9 +9,9 @@ namespace MultiAlignTestSuite.Algorithms.FeatureFinding
     {
         static TestPathSingleton()
         {
-            TestDirectory   = @"m:\data\proteomics\TestData\";
+            TestDirectory   = @"d:\data\proteomics\TestData\";
             var now         = DateTime.Now;
-            OutputDirectory = string.Format(@"m:\testResults\{0}_{1}_{2}_{3}_{4}_{5}",
+            OutputDirectory = string.Format(@"d:\testResults\{0}_{1}_{2}_{3}_{4}_{5}",
                                                 now.Year,
                                                 now.Month,
                                                 now.Day,

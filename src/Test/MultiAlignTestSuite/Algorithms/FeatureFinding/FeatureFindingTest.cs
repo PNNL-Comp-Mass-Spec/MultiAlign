@@ -19,11 +19,14 @@ namespace MultiAlignTestSuite.Algorithms.FeatureFinding
         /// <param name="relativePath"></param>
         /// <param name="outputPath"></param>
         [Test]
-        [TestCase(  @"QC-Shew-Annotated3\QC_Shew_13_04_1b_6Oct13_Cougar_13-06-14_isos.csv", 
-                    @"QC-Shew-Annotated3\QC_Shew_13_04_1b_6Oct13_Cougar_13-06-14.features" )]
-
-        [TestCase(  @"QC-Shew-Annotated3\QC_Shew_13_04_1b_18Sep13_Cougar_13-06-14_isos.csv",
-                    @"QC-Shew-Annotated3\QC_Shew_13_04_1b_18Sep13_Cougar_13-06-14.features")]
+        [TestCase(  @"Lamarche-Data\QC_Shew_13_04_1b_6Oct13_Cougar_13-06-14_isos.csv",
+                    @"Lamarche-Data\QC_Shew_13_04_1b_6Oct13_Cougar_13-06-14.features", Ignore = false)]
+        [TestCase(  @"Lamarche-Data\QC_Shew_13_04_1b_18Sep13_Cougar_13-06-14_isos.csv",
+                    @"Lamarche-Data\QC_Shew_13_04_1b_18Sep13_Cougar_13-06-14.features", Ignore = false)]
+        [TestCase(  @"Lamarche-Data\169091_Schutzer_CF_10937_18Jan10_Owl_09-08-18_isos.csv",
+                    @"Lamarche-Data\169091_Schutzer_CF_10937_18Jan10_Owl_09-08-18.features", Ignore = true)]
+        [TestCase(  @"Lamarche-Data\169114_Schutzer_CF_10818_18Jan10_Owl_09-08-18_isos.csv",
+                    @"Lamarche-Data\169114_Schutzer_CF_10818_18Jan10_Owl_09-08-18.features", Ignore = true)]
         public void CreateFeaturesTest(string relativePath, string outputPath)
         {            
             var path = GetPath(relativePath);
