@@ -416,7 +416,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\..\MTBD\trunk\MTDBFramework\MTDBFramework.csproj">
+    <ProjectReference Include="..\..\..\..\..\..\MTDB\trunk\MTDBFramework\MTDBFramework.csproj">
       <Project>{3ee14e5d-3881-410e-86df-611bae112e90}</Project>
       <Name>MTDBFramework</Name>
     </ProjectReference>

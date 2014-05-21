@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -74,13 +74,13 @@
       <HintPath>..\..\..\lib\Ookii.Dialogs.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="OxyPlot">
-      <HintPath>..\..\packages\OxyPlot.Core.2014.1.299.1\lib\portable-net4+sl4+wp71+win8\OxyPlot.dll</HintPath>
+      <HintPath>..\..\packages\OxyPlot.Core.2014.1.303.1\lib\portable-net4+sl4+wp71+win8\OxyPlot.dll</HintPath>
     </Reference>
     <Reference Include="OxyPlot.Wpf">
-      <HintPath>..\..\packages\OxyPlot.Wpf.2014.1.297.1\lib\NET45\OxyPlot.Wpf.dll</HintPath>
+      <HintPath>..\..\packages\OxyPlot.Wpf.2014.1.303.1\lib\NET45\OxyPlot.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="OxyPlot.Xps">
-      <HintPath>..\..\packages\OxyPlot.Wpf.2014.1.297.1\lib\NET45\OxyPlot.Xps.dll</HintPath>
+      <HintPath>..\..\packages\OxyPlot.Wpf.2014.1.303.1\lib\NET45\OxyPlot.Xps.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />

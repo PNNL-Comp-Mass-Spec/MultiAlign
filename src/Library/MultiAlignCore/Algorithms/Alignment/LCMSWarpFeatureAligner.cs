@@ -171,8 +171,7 @@ namespace MultiAlignCore.Algorithms.Alignment
                 // Find alignment 
                 OnStatus("Performing alignment warping.");
                 alignmentProcessor.PerformAlignmentToMSFeatures();
-                var matches = alignmentProcessor.NumberMatches();
-
+                
                 // Extract alignment function
                 var alignmentFunction = alignmentProcessor.GetAlignmentFunction();
                 alignmentFunctions.Add(alignmentFunction);
