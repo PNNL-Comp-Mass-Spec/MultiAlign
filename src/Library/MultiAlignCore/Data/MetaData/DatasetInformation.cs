@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using MultiAlignCore.Data.Factors;
 using MultiAlignCore.IO.InputFiles;
 using PNNLOmics.Data;
 
@@ -21,8 +20,7 @@ namespace MultiAlignCore.Data.MetaData
         public DatasetInformation()
         {
             MetaData = new Dictionary<string, string>();
-            FactorInformation = new Dictionary<FactorInformation, string>();
-            Factors = new List<Factor>();
+            
             Scans = null;
             Raw = null;
             Sequence = null;
@@ -51,15 +49,6 @@ namespace MultiAlignCore.Data.MetaData
         /// </summary>
         public Dictionary<string, string> MetaData { get; set; }
 
-        /// <summary>
-        ///     Gets or sets
-        /// </summary>
-        public Dictionary<FactorInformation, string> FactorInformation { get; set; }
-
-        /// <summary>
-        ///     Gets or sets
-        /// </summary>
-        public List<Factor> Factors { get; set; }
 
         /// <summary>
         ///     Gets or sets the key used for access to the db.

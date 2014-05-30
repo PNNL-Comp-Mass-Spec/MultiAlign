@@ -54,9 +54,7 @@ namespace MultiAlignCore.Data
             InitialStep = AnalysisStep.FindFeatures;
             ShouldLoadMTDB = true;
             ShouldCreateFeatureDatabaseOnly = false;
-            ShouldUseFactors = false;
-            ShouldExportSICs = false;
-            ShouldExportMSMS = false;
+            
             ShouldUseExistingDatabase = false;
             ShouldPeakMatch = true;
             ChargeState = 1;
@@ -236,28 +234,7 @@ namespace MultiAlignCore.Data
         /// <summary>
         ///     Tracks the names of the files to export.
         /// </summary>
-        public ClusterExporterComposite ExporterNames { get; set; }
-
-        /// <summary>
-        ///     Determines if we need to use factors.
-        /// </summary>
-        public bool ShouldUseFactors { get; set; }
-
-        /// <summary>
-        ///     Gets or sets whether to cluster spectra to find links between datasets.
-        /// </summary>
-        public bool ShouldClusterSpectra { get; set; }
-
-        /// <summary>
-        ///     Extract the SIC's for each umc.
-        /// </summary>
-        public bool ShouldExportSICs { get; set; }
-
-        /// <summary>
-        ///     Flag indicating whether export the MS/MS spectra or not.
-        /// </summary>
-        public bool ShouldExportMSMS { get; set; }
-
+        public ClusterExporterComposite ExporterNames { get; set; }                
         /// <summary>
         ///     Gets or sets whetehr to use an existing database.
         /// </summary>

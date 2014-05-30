@@ -30,29 +30,24 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
             @"C:\UnitTestFolder\dataset2.txt",
             "asdf",
             "asdfasdf",
+            LcmsWarpAlignmentOptions.AlignmentType.NET_WARP,
             Ignore = true
             )]
         [TestCase(
-           @"Lamarche-Data\QC_Shew_13_04_1b_6Oct13_Cougar_13-06-14.features",
-           @"Lamarche-Data\QC_Shew_13_04_1b_18Sep13_Cougar_13-06-14.features",
+           @"QC-Shew-Annotated3\QC_Shew_13_04_1b_6Oct13_Cougar_13-06-14.features",
+           @"QC-Shew-Annotated3\QC_Shew_13_04_1b_18Sep13_Cougar_13-06-14.features",
            @"Alignment\QC-Shew-Annotated3\",
            @"qc_shew_13_04_1b",
-           Ignore = false
+           LcmsWarpAlignmentOptions.AlignmentType.NET_MASS_WARP
            )]
-        [TestCase(
-           @"Lamarche-Data\169091_Schutzer_CF_10937_18Jan10_Owl_09-08-18.features",
-           @"Lamarche-Data\169114_Schutzer_CF_10818_18Jan10_Owl_09-08-18.features",
-           @"Alignment\Schutzer-CF\",
-           @"Schutzer_CF_18_01_10",
-           Ignore = true
-           )]
-        public void TestLcmsWarpPort(string relativeBaselinePath, string relativeAligneePath, string relativeOutput, string name)
+        public void TestLcmsWarpPort(string relativeBaselinePath, string relativeAligneePath, string relativeOutput, string name, LcmsWarpAlignmentOptions.AlignmentType alignmentType)
         {
             var baselinePath    = GetPath(relativeBaselinePath);
             var aligneePath     = GetPath(relativeAligneePath);
             var options = new LcmsWarpAlignmentOptions
             {
-                AlignType = LcmsWarpAlignmentOptions.AlignmentType.NET_MASS_WARP
+                AlignType = alignmentType,
+                CalibrationType = LcmsWarpCalibrationType.Both
             };
             var aligner         = new LcmsWarpAdapter(options); 
            
@@ -105,7 +100,7 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
 
             var outputData  = aligner.Align(baseline, features);
             var residuals   = outputData.ResidualData;
-            
+
             var heatmap        = HeatmapFactory.CreateAlignedHeatmap(outputData.HeatScores);
             var netHistogram = HistogramFactory.CreateHistogram(outputData.NetErrorHistogram, "NET Error", "NET Error");
             var massHistogram = HistogramFactory.CreateHistogram(outputData.MassErrorHistogram, "Mass Error", "Mass Error (ppm)");
@@ -137,21 +132,14 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
             Ignore = true
             )]
         [TestCase(
-           @"Lamarche-Data\QC_Shew_13_04_1b_6Oct13_Cougar_13-06-14.features",
-           @"Lamarche-Data\QC_Shew_13_04_1b_18Sep13_Cougar_13-06-14.features",
+           @"QC-Shew-Annotated3\QC_Shew_13_04_1b_6Oct13_Cougar_13-06-14.features",
+           @"QC-Shew-Annotated3\QC_Shew_13_04_1b_18Sep13_Cougar_13-06-14.features",
            @"Alignment\QC-Shew-Annotated3-CPP\",
-           @"qc_shew_13_04_1b",
-           Ignore = false
-           )]
-        [TestCase(
-           @"Lamarche-Data\169091_Schutzer_CF_10937_18Jan10_Owl_09-08-18.features",
-           @"Lamarche-Data\169114_Schutzer_CF_10818_18Jan10_Owl_09-08-18.features",
-           @"Alignment\Schutzer-CF-CPP\",
-           @"Schutzer_CF_18_01_10",
-           Ignore = true
+           @"qc_shew_13_04_1b"
+
            )]
         public void TestLcmsWarpPortCpp(string relativeBaselinePath, string relativeAligneePath, string relativeOutput, string name)
-        {
+        { 
             var baselinePath    = GetPath(relativeBaselinePath);
             var aligneePath     = GetPath(relativeAligneePath);
             var aligner         = new LcmsWarpFeatureAligner();
@@ -206,7 +194,7 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
             if (maxd - mind < double.Epsilon)
                 throw new Exception("There is something wrong with the features NET values");
             aligner.Options.AlignmentType = enmAlignmentType.NET_MASS_WARP;
-
+            aligner.Options.RecalibrationType = enmCalibrationType.HYBRID_CALIB;
 
             var outputData      = aligner.Align(baseline, features);
             var residuals       = outputData.ResidualData;

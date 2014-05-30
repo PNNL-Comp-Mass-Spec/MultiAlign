@@ -13,6 +13,8 @@ namespace MultiAlignCore.Data.SequenceData
     {
         public DatabaseSearchSequence()
         {
+            Sequence = "";
+            
         }
 
         public DatabaseSearchSequence(Peptide peptide, int featureId)
@@ -32,7 +34,6 @@ namespace MultiAlignCore.Data.SequenceData
         public int GroupId { get; set; }
         public double Mz { get; set; }
         public double MassMonoisotopic { get; set; }
-
 
         /// <summary>
         ///     Gets or sets the parent feature this is associated with.

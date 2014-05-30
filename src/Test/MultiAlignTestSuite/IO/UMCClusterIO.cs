@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using System.IO;
+using MultiAlignCore.IO;
 using MultiAlignCore.IO.Features;
 using NUnit.Framework;
 using PNNLOmics.Data.Features;
@@ -11,9 +12,9 @@ using PNNLOmics.Data.Features;
 namespace MultiAlignTestSuite.IO
 {
     [TestFixture]
-    internal class UMCClusterIO
+    internal sealed class UmcClusterIo
     {
-        protected string m_basePath;
+        private string m_basePath;
 
         [SetUp]
         public void TestSetup()

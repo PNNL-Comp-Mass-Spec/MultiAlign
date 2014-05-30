@@ -25,12 +25,6 @@ namespace MultiAlignCore.IO.Features
         /// <summary>
         ///     Constructor.
         /// </summary>
-        /// <param name="featureCache">LCMS Features</param>
-        /// <param name="clusterCache">LCMS Feature clusters</param>
-        /// <param name="msFeatureCache">MS Features</param>
-        /// <param name="msnFeatureCache">MS/MS Features</param>
-        /// <param name="msFeatureMap">MS To LCMS Feature map</param>
-        /// <param name="msnFeatureMap">MS to MSn Feature map</param>
         public FeatureDataAccessProviders(IUmcDAO featureCache,
             IUmcClusterDAO clusterCache,
             IMSFeatureDAO msFeatureCache,
@@ -39,42 +33,29 @@ namespace MultiAlignCore.IO.Features
             IDatasetDAO datasetCache,
             IMassTagMatchDAO massTagMatches,
             IMassTagDAO massTags,
-            IFactorDao factorCache,
-            IDatasetToFactorMapDAO factorAssignmentCache,
-            IMSMSClusterMapDAO msmsClusterCache,
             IDatabaseSearchSequenceDAO sequenceCache,
-            ISequenceToMsnFeatureDAO sequenceMapCache) :
+            ISequenceToMsnFeatureDao sequenceMapCache) :
                 this()
         {
             ClusterCache = clusterCache;
             FeatureCache = featureCache;
-            MSFeatureCache = msFeatureCache;
+            MsFeatureCache = msFeatureCache;
             MSnFeatureCache = msnFeatureCache;
-            MSFeatureToMSnFeatureCache = msnFeatureMap;
+            MsFeatureToMSnFeatureCache = msnFeatureMap;
             DatasetCache = datasetCache;
             MassTagMatches = massTagMatches;
             MassTags = massTags;
-            FactorAssignmentCache = factorAssignmentCache;
-            FactorCache = factorCache;
-            MSMSClusterCache = msmsClusterCache;
             DatabaseSequenceCache = sequenceCache;
             SequenceMsnMapCache = sequenceMapCache;
         }
 
-        public ISequenceToMsnFeatureDAO SequenceMsnMapCache { get; set; }
+        public ISequenceToMsnFeatureDao SequenceMsnMapCache { get; set; }
 
         /// <summary>
         ///     Gets or sets the data provider for storing MS/MS Clusters.
         /// </summary>
         public IDatabaseSearchSequenceDAO DatabaseSequenceCache { get; set; }
 
-        /// <summary>
-        ///     Gets or sets the data provider for storing MS/MS Clusters.
-        /// </summary>
-        public IMSMSClusterMapDAO MSMSClusterCache { get; set; }
-
-        public IFactorDao FactorCache { get; set; }
-        public IDatasetToFactorMapDAO FactorAssignmentCache { get; set; }
 
         /// <summary>
         ///     Gets or sets the mass tags loaded.
@@ -94,7 +75,7 @@ namespace MultiAlignCore.IO.Features
         /// <summary>
         ///     Gets or sets the interface to teh MS Feature to LCMS Feature map.
         /// </summary>
-        public IMsnFeatureToMSFeatureDAO MSFeatureToMSnFeatureCache { get; set; }
+        public IMsnFeatureToMSFeatureDAO MsFeatureToMSnFeatureCache { get; set; }
 
         /// <summary>
         ///     Gets or sets the data acces object to LCMS features
@@ -109,7 +90,7 @@ namespace MultiAlignCore.IO.Features
         /// <summary>
         ///     Gets or sets the data acces object to MS features.
         /// </summary>
-        public IMSFeatureDAO MSFeatureCache { get; set; }
+        public IMSFeatureDAO MsFeatureCache { get; set; }
 
         /// <summary>
         ///     Gets or sets the data acces object to MS features.

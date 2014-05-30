@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Windows;
 using MultiAlign.IO;
 using MultiAlign.ViewModels.Plotting;
 using MultiAlign.Windows.Plots;
 using MultiAlignCore.Data.MetaData;
-using PNNLOmics.Data.Features;
 
 namespace MultiAlign.Commands.Plotting
 {

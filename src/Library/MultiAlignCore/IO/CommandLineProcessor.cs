@@ -60,9 +60,6 @@ namespace MultiAlignCore.IO
                         case "-params":
                             config.ParameterFile = values[0];
                             break;
-                        case "-usefactors":
-                            config.ShouldUseFactors = true;
-                            break;
                             //--------------------------------------------------------------------
                             //  Log, HTML names
                             //--------------------------------------------------------------------
@@ -93,13 +90,7 @@ namespace MultiAlignCore.IO
                             //--------------------------------------------------------------------
                             //  Data exporting
                             //--------------------------------------------------------------------                        
-                        case "-exportmsms":
-                            config.ExporterNames.ClusterMSMSPath = values[0];
-                            config.ShouldExportMSMS = true;
-                            break;
-                        case "-exportsics":
-                            config.ShouldExportSICs = true;
-                            break;
+                        
                         case "-exportcrosstab":
                             config.ExporterNames.CrossTabPath = values[0];
                             break;

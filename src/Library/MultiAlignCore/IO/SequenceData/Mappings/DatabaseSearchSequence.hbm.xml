@@ -5,10 +5,10 @@
 
 	<class name="DatabaseSearchSequence" table="T_DatabaseSearch" lazy="false">
     <composite-id>
-      <key-property name="Id"             column="Sequence_ID"      type="integer" />
-      <key-property name="GroupId"        column="Dataset_ID"       type="integer" />
+      <key-property name="Id"             column="Sequence_Id"      type="integer" />
+      <key-property name="GroupId"        column="Dataset_Id"       type="integer" />
     </composite-id>
-    <property name="UmcFeatureId"         column="LCMS_Feature_ID"  type="integer" />
+    <property name="UmcFeatureId"         column="Lcms_Feature_Id"  type="integer" />
     <property name="Sequence"             column="Sequence"         type="string"   not-null="false" />
     <property name="Scan"                 column="Scan"             type="integer"  not-null="false" />
     <property name="Score"                column="Score"            type="double"   not-null="false" />    

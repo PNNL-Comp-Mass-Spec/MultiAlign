@@ -103,15 +103,18 @@
     </Reference>
     <Reference Include="OxyPlot, Version=2014.1.303.1, Culture=neutral, PublicKeyToken=638079a8f0bd61e9, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\OxyPlot.WindowsForms.2014.1.303.1\lib\NET45\OxyPlot.dll</HintPath>
+      <HintPath>..\..\packages\OxyPlot.Core.2014.1.303.1\lib\portable-net4+sl4+wp71+win8\OxyPlot.dll</HintPath>
     </Reference>
-    <Reference Include="OxyPlot.WindowsForms">
-      <HintPath>..\..\packages\OxyPlot.WindowsForms.2014.1.303.1\lib\NET45\OxyPlot.WindowsForms.dll</HintPath>
+    <Reference Include="OxyPlot.WindowsForms, Version=2014.1.297.1, Culture=neutral, PublicKeyToken=245eacd6b5d2d338, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\OxyPlot.WindowsForms.2014.1.297.1\lib\NET45\OxyPlot.WindowsForms.dll</HintPath>
     </Reference>
-    <Reference Include="OxyPlot.Wpf">
+    <Reference Include="OxyPlot.Wpf, Version=2014.1.303.1, Culture=neutral, PublicKeyToken=75e952ba404cdbb0, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\OxyPlot.Wpf.2014.1.303.1\lib\NET45\OxyPlot.Wpf.dll</HintPath>
     </Reference>
-    <Reference Include="OxyPlot.Xps">
+    <Reference Include="OxyPlot.Xps, Version=2014.1.303.1, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\OxyPlot.Wpf.2014.1.303.1\lib\NET45\OxyPlot.Xps.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
@@ -143,32 +146,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Algorithms\Alignment\LCMSWarp\LCMSWarpTest.cs" />
-    <Compile Include="Algorithms\CallisterClusters\CompareClusters.cs" />
     <Compile Include="Algorithms\FeatureFinding\FeatureFindingTest.cs" />
-    <Compile Include="TestBase.cs" />
-    <Compile Include="TestPathSingleton.cs" />
+    <Compile Include="Algorithms\SpectralProcessing\PeptideMatch.cs" />
     <Compile Include="Algorithms\MsMsClustering.cs" />
     <Compile Include="Algorithms\SpectralProcessing\SpectralAlignmentTests.cs" />
     <Compile Include="Algorithms\SpectralProcessing\SpectralComparisonTests.cs" />
-    <Compile Include="Algorithms\UMCTreeFeatureFinding.cs" />
+    <Compile Include="Algorithms\FeatureFinding\UMCTreeFeatureFinding.cs" />
     <Compile Include="Drawing\HeatmapTest.cs" />
     <Compile Include="Drawing\ScatterPlotTest.cs" />
     <Compile Include="IO\Databases\LocalDatabaseTests.cs" />
-    <Compile Include="Papers\Alignment\ClusterIdentificationStatistic.cs" />
-    <Compile Include="Papers\Alignment\ClusterValidationTests.cs" />
-    <Compile Include="Papers\Alignment\IO\AlignmentAnalysisWriterFactory.cs" />
-    <Compile Include="Papers\Alignment\IO\AlignmentFigureType.cs" />
-    <Compile Include="Papers\Alignment\IO\PaperFileWriter.cs" />
-    <Compile Include="Papers\Alignment\IO\RawLoaderCache.cs" />
-    <Compile Include="Papers\Alignment\IO\ReportFileUtility.cs" />
-    <Compile Include="Papers\Alignment\IO\ScanSummaryCache.cs" />
-    <Compile Include="Papers\Alignment\IO\SpectralWriterFigureThree.cs" />
-    <Compile Include="Papers\Alignment\IO\SpectralWriterFigureTwo.cs" />
-    <Compile Include="Papers\Alignment\IO\SpectralWriterFigureOne.cs" />
-    <Compile Include="Papers\Alignment\MatchCountHistogramBuilder.cs" />
-    <Compile Include="Papers\Alignment\SpectralCacheUtility.cs" />
-    <Compile Include="Papers\Alignment\SSM\BaseSpectralAlignmentTest.cs" />
-    <Compile Include="Papers\Alignment\SSM\TestSpectralLinking.cs" />
     <Compile Include="Algorithms\UMCClustering.cs" />
     <Compile Include="IO\Databases\DatabaseIoTests.cs" />
     <Compile Include="IO\UMCClusterIO.cs" />
@@ -180,9 +166,8 @@
     <Compile Include="IO\UMCReaderFailure.cs" />
     <Compile Include="IO\DAO\DataProviderTests.cs" />
     <Compile Include="IO\UMCClusterReconstruction.cs" />
-    <Compile Include="OHSU\ExtractClusters.cs" />
-    <Compile Include="OHSU\LargeScaleClusterTests.cs" />
-    <Compile Include="Papers\Alignment\FigureGenerator.cs" />
+    <Compile Include="IO\DAO\ExtractClusters.cs" />
+    <Compile Include="Algorithms\LargeScaleClusterTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -192,7 +177,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\..\MTDB\trunk\MTDBFramework\MTDBFramework.csproj">
+    <ProjectReference Include="..\..\..\..\..\..\MTBD\trunk\MTDBFramework\MTDBFramework.csproj">
       <Project>{3ee14e5d-3881-410e-86df-611bae112e90}</Project>
       <Name>MTDBFramework</Name>
     </ProjectReference>
@@ -215,6 +200,10 @@
     <ProjectReference Include="..\..\Applications\MultiAlign\MultiAlign.csproj">
       <Project>{6EC23CCC-4F36-47BF-B997-F0A5727822A5}</Project>
       <Name>MultiAlign</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TestCore\TestCore\TestCore.csproj">
+      <Project>{2b216610-b41c-4b55-9efa-6aac8cd91e32}</Project>
+      <Name>TestCore</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -15,7 +15,6 @@ using MultiAlignCore.Data.MassTags;
 using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.Extensions;
 using MultiAlignCore.IO;
-using MultiAlignCore.IO.Factors;
 using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.Features.Hibernate;
 using MultiAlignCore.IO.Generic;
@@ -792,26 +791,6 @@ namespace MultiAlignCore.Algorithms
         }
 
         /// <summary>
-        ///     Loads factors from file or other.
-        /// </summary>
-        private void ConstructFactorInformation(InputAnalysisInfo analysisSetupInformation,
-            ObservableCollection<DatasetInformation> datasets, FeatureDataAccessProviders providers)
-        {
-            var mage = new MAGEFactorAdapter();
-
-            if (analysisSetupInformation.FactorFile == null)
-            {
-                Logger.PrintMessage("Loading Factor Information from DMS");
-                mage.LoadFactorsFromDMS(datasets, providers);
-            }
-            else
-            {
-                Logger.PrintMessage("Loading Factor Information from file: " + analysisSetupInformation.FactorFile);
-                mage.LoadFactorsFromFile(analysisSetupInformation.FactorFile, datasets, providers);
-            }
-        }
-
-        /// <summary>
         ///     Constructs dataset infromation from the input analysis information.
         /// </summary>
         private void ConstructDatasetInformation(InputAnalysisInfo analysisSetupInformation, MultiAlignAnalysis analysis,
@@ -975,9 +954,6 @@ namespace MultiAlignCore.Algorithms
 
             switch (m_config.Analysis.AnalysisType)
             {
-                case AnalysisType.FactorImporting:
-                    ImportFactors(m_config, databaseExists);
-                    break;
                 case AnalysisType.Full:
                     PerformAnalysisGui(m_config, builder, validated, createDatabase, m_workerManager);
                     break;
@@ -1264,11 +1240,6 @@ namespace MultiAlignCore.Algorithms
             // Construct the dataset information for export.
             ConstructDatasetInformation(analysisSetupInformation, config.Analysis, createDatabase);
 
-            if (config.ShouldUseFactors)
-            {
-                ConstructFactorInformation(analysisSetupInformation, config.Analysis.MetaData.Datasets,
-                    config.Analysis.DataProviders);
-            }
 
             var isBaselineSpecified = ConstructBaselines(analysisSetupInformation, config.Analysis.MetaData, useMtdb);
             if (!isBaselineSpecified)
@@ -1375,45 +1346,6 @@ namespace MultiAlignCore.Algorithms
             ExportData(providers, datasets);
             CleanupDataProviders();
         }
-
-        private void ImportFactors(AnalysisConfig config, bool databaseExists)
-        {
-            Logger.PrintMessage("Updating factors");
-            if (!databaseExists)
-            {
-                Logger.PrintMessage("The database you specified to extract data from does not exist.");
-                return;
-            }
-
-            // Create access to data.
-            var providers = SetupDataProviders(false);
-            if (providers == null)
-            {
-                Logger.PrintMessage("Could not create connection to database.");
-                return;
-            }
-
-            // Find all the datasets 
-            var datasetsFactors = providers.DatasetCache.FindAll();
-            if (datasetsFactors == null || datasetsFactors.Count == 0)
-            {
-                Logger.PrintMessage("There are no datasets present in the current database.");
-                CleanupDataProviders();
-                return;
-            }
-
-            var info = new InputAnalysisInfo();
-
-            if (config.options.ContainsKey("-factors"))
-            {
-                Logger.PrintMessage("Factor file specified.");
-                var factorFile = config.options["-factors"][0];
-                info.FactorFile = factorFile;
-            }
-            ConstructFactorInformation(info, datasetsFactors.ToObservableCollection(), providers);
-            CleanupDataProviders();
-        }
-
         #endregion
     }
 

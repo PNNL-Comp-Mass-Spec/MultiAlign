@@ -13,7 +13,7 @@ namespace MultiAlignCore.IO.RawData
     ///     Allows the context to use the spectra provider, and filters spectra available by
     ///     only suggesting spectra that are associated with an LC-MS feature.
     /// </summary>
-    public class CachedFeatureSpectraProvider : ISpectraProvider
+    public sealed class CachedFeatureSpectraProvider : ISpectraProvider
     {
         /// <summary>
         ///     Maps the scans to spectra that are related to features passed in.
@@ -40,6 +40,21 @@ namespace MultiAlignCore.IO.RawData
                             m_spectraMap.Add(spectrum.Scan, spectrum);
                     }
                 }
+            }
+        }
+
+        public CachedFeatureSpectraProvider(ISpectraProvider reader, IEnumerable<MSSpectra> spectra)
+        {
+            m_reader     = reader;
+            m_spectraMap = new Dictionary<int, MSSpectra>();
+
+            // Sort out the features to make a dictionary so we can look up spectra
+            // and summary information later on without having to touch the disk again...and 
+            // this restricts all possible spectra to those that came from deisotoped data.
+            foreach (var spectrum in spectra)
+            {
+                if (!m_spectraMap.ContainsKey(spectrum.Scan))
+                    m_spectraMap.Add(spectrum.Scan, spectrum);             
             }
         }
 

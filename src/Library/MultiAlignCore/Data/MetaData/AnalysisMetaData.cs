@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
-using MultiAlignCore.Data.Factors;
 using MultiAlignCore.Data.MassTags;
 using MultiAlignCore.IO.InputFiles;
 
@@ -25,7 +24,7 @@ namespace MultiAlignCore.Data.MetaData
             Datasets = new ObservableCollection<DatasetInformation>(); //new List<DatasetInformation>();
             InputFileDefinition = null;
             ParameterFile = null;
-            FactorTreeNode = null;
+            
             Database = new InputDatabase(MassTagDatabaseFormat.None);
         }
 
@@ -102,11 +101,7 @@ namespace MultiAlignCore.Data.MetaData
         [DataSummary("Job ID")]
         public int JobID { get; set; }
 
-        /// <summary>
-        ///     Get/Set the analysis as a hiearchy of datasets with related factor information for grouping.
-        /// </summary>
-        public classTreeNode FactorTreeNode { get; set; }
-
+        
         /// <summary>
         ///     Gets or sets the name of the analysis.
         /// </summary>

@@ -108,8 +108,7 @@ namespace MultiAlignEngine
 			double mdblMuMass; 
 			double mdblMuNET; 
 			#pragma warning(disable:4251)
-			vector<AlignmentMatch> mvect_alignment_func; 
-			vector<MassTimeFeature> mvect_features; 
+			vector<AlignmentMatch> mvect_alignment_func;
 			vector<MassTimeFeature> mvect_baseline_features; 
 			vector<double> mvect_subsection_match_scores; 
 			#pragma warning(default:4251)
@@ -137,7 +136,8 @@ namespace MultiAlignEngine
 
 		public:
 			vector<FeatureMatch> mvect_feature_matches; 
-
+ 
+			vector<MassTimeFeature> mvect_features; 
 			int GetMatchCount() { return mvect_feature_matches.size();}
 
 			void SetNETOptions(int num_ms_sections, int contraction_factor, int max_jump, int max_promiscuity)
