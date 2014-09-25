@@ -82,9 +82,10 @@ namespace MultiAlign.ViewModels.TreeView
                 base.IsSelected = value;
                 if (m_feature != null)
                 {
-                    var feature = m_feature.GetParentUmc();
-                    OnFeatureSelected(feature);
-                    OnSpectrumSelected(feature);
+                    // TODO: Contact Brian to get the updated code that implements this
+                    // var feature = m_feature.GetParentUmc();
+                    // OnFeatureSelected(feature);
+                    // OnSpectrumSelected(feature);
                 }
             }
         }
