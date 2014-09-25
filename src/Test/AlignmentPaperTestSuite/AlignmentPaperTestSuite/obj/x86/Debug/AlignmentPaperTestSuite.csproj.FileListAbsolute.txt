@@ -63,3 +63,5 @@ C:\development\Proteomics\MultiAlign\development\trunk\src\Test\AlignmentPaperTe
 C:\development\Proteomics\MultiAlign\development\trunk\src\Test\AlignmentPaperTestSuite\AlignmentPaperTestSuite\bin\x86\Debug\ThermoRawFileReaderDLL.xml
 C:\development\Proteomics\MultiAlign\development\trunk\src\Test\AlignmentPaperTestSuite\AlignmentPaperTestSuite\obj\x86\Debug\AlignmentPaperTestSuite.dll
 C:\development\Proteomics\MultiAlign\development\trunk\src\Test\AlignmentPaperTestSuite\AlignmentPaperTestSuite\obj\x86\Debug\AlignmentPaperTestSuite.pdb
+F:\My Documents\Projects\BrianLaMarche\MultiAlign\src\Test\AlignmentPaperTestSuite\AlignmentPaperTestSuite\obj\x86\Debug\AlignmentPaperTestSuite.csprojResolveAssemblyReference.cache
+F:\My Documents\Projects\BrianLaMarche\MultiAlign\src\Test\AlignmentPaperTestSuite\AlignmentPaperTestSuite\obj\x86\Debug\AlignmentPaperTestSuite.dll
