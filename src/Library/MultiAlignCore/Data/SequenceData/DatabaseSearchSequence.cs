@@ -13,6 +13,7 @@ namespace MultiAlignCore.Data.SequenceData
     {
         public DatabaseSearchSequence()
         {
+           Sequence = "";
         }
 
         public DatabaseSearchSequence(Peptide peptide, int featureId)

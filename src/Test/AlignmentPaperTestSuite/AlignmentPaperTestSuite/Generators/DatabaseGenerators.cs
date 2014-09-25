@@ -32,8 +32,9 @@ namespace AlignmentPaperTestSuite.Generators
         /// <summary>
         /// Creates a database file so that other unit tests can use the data
         /// </summary>
-        [Test]
-        [TestCase(@"QC-Shew-Annotated2", @"QC-Shew-Annotated2\shewAnnotated-features.mta")]
+       [Test]
+       [TestCase(@"QC-Shew-Annotated2", @"QC-Shew-Annotated2\shewAnnotated-features.mta")]
+       [TestCase(@"Bad-03", @"Bad-03\qc-alignment-03.mta")]
         public void CreateFeatureDatabase(string directoryPath, string databasePath)
         {
             var directory  = GetPath(directoryPath);

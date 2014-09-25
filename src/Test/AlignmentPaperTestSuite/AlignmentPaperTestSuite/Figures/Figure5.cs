@@ -32,8 +32,23 @@ namespace AlignmentPaperTestSuite.Figures
                     "figure5-qc-shew",
                     FeatureAlignmentType.SpectralAlignment,
                     LcmsFeatureClusteringAlgorithmType.AverageLinkage,
-                    Ignore = false
+                    Ignore = true
                     )]
+
+        [TestCase(@"QC-Shew-Annotated2\shewAnnotated-features.mta",
+                    @"AlignmentPaper\Figure5\",
+                    "figure5-qc-shew",
+                    FeatureAlignmentType.SpectralAlignment,
+                    LcmsFeatureClusteringAlgorithmType.AverageLinkage,
+                    Ignore = true
+                    )]
+        [TestCase(@"bad-03\qc-alignment-03.mta",
+                   @"AlignmentPaper\Figure5\",
+                   "figure5-qc-shew",
+                   FeatureAlignmentType.SpectralAlignment,
+                   LcmsFeatureClusteringAlgorithmType.AverageLinkage,
+                   Ignore = false
+                   )]
         public void GenerateClusterAlignmentStatistics(string relativeDatabasePath,
             string relativeName,
             string name,
@@ -140,8 +155,8 @@ namespace AlignmentPaperTestSuite.Figures
 
             var sequences    = providers.DatabaseSequenceCache.FindAll();
             var sequenceMaps = providers.SequenceMsnMapCache.FindByDatasetId(datasetId);
-            var spectraMaps  = providers.MsFeatureToMSnFeatureCache.FindByDatasetId(datasetId);
-            var msFeatures   = providers.MsFeatureCache.FindByDatasetId(datasetId);
+            var spectraMaps  = providers.MSFeatureToMSnFeatureCache.FindByDatasetId(datasetId);
+            var msFeatures   = providers.MSFeatureCache.FindByDatasetId(datasetId);
 
             // Make a one pass through each enumerable list, 
             // then use the maps to join the data together

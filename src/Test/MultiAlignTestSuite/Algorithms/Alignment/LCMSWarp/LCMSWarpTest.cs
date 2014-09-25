@@ -36,10 +36,6 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
            @"Lamarche-Data\QC_Shew_13_04_1b_6Oct13_Cougar_13-06-14.features",
            @"Lamarche-Data\QC_Shew_13_04_1b_18Sep13_Cougar_13-06-14.features",
            @"Alignment\QC-Shew-Annotated3\",
-<<<<<<< HEAD
-           @"qc_shew_13_04_1b"
-           )]
-=======
            @"qc_shew_13_04_1b",
            Ignore = false
            )]
@@ -50,19 +46,14 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
            @"Schutzer_CF_18_01_10",
            Ignore = true
            )]
->>>>>>> parent of b23e01e... 
         public void TestLcmsWarpPort(string relativeBaselinePath, string relativeAligneePath, string relativeOutput, string name)
         {
             var baselinePath    = GetPath(relativeBaselinePath);
             var aligneePath     = GetPath(relativeAligneePath);
             var options = new LcmsWarpAlignmentOptions
             {
-<<<<<<< HEAD
                 AlignType = AlignmentType.NET_MASS_WARP,
                 CalibrationType = LcmsWarpCalibrationType.Both
-=======
-                AlignType = LcmsWarpAlignmentOptions.AlignmentType.NET_MASS_WARP
->>>>>>> parent of b23e01e... 
             };
             var aligner         = new LcmsWarpAdapter(options); 
            

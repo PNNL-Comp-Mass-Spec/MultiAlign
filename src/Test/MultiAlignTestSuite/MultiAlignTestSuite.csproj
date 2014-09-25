@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -192,11 +192,11 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\..\MTDB\trunk\MTDBFramework\MTDBFramework.csproj">
+    <ProjectReference Include="..\..\..\..\MTDB-Creator\trunk\MTDBFramework\MTDBFramework.csproj">
       <Project>{3ee14e5d-3881-410e-86df-611bae112e90}</Project>
       <Name>MTDBFramework</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\..\..\PNNLOmics\development\trunk\PNNLOmicsIO\PNNLOmicsIO.csproj">
+    <ProjectReference Include="..\..\..\..\PNNL-Omics\PNNLOmicsIO\PNNLOmicsIO.csproj">
       <Project>{20d49543-cd31-44d2-8403-f045b3fb363d}</Project>
       <Name>PNNLOmicsIO</Name>
     </ProjectReference>
@@ -205,17 +205,20 @@
       <Name>PNNLOmicsViz</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\PNNL-Omics\PNNLOmics\PNNLOmics.csproj">
-
       <Project>{8a934dc1-3418-449f-adf6-9962499f49b2}</Project>
       <Name>PNNLOmics</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Applications\MultiAlign\MultiAlign.csproj">
+      <Project>{6ec23ccc-4f36-47bf-b997-f0a5727822a5}</Project>
+      <Name>MultiAlign</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Library\MultiAlignCore\MultiAlignCore.csproj">
       <Project>{bdfa22c4-5822-4aa5-996e-6fde57f7118b}</Project>
       <Name>MultiAlignCore</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Applications\MultiAlign\MultiAlign.csproj">
-      <Project>{6EC23CCC-4F36-47BF-B997-F0A5727822A5}</Project>
-      <Name>MultiAlign</Name>
+    <ProjectReference Include="..\TestCore\TestCore\TestCore.csproj">
+      <Project>{2b216610-b41c-4b55-9efa-6aac8cd91e32}</Project>
+      <Name>TestCore</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

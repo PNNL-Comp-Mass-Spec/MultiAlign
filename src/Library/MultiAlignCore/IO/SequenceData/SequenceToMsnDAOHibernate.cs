@@ -11,15 +11,23 @@ namespace MultiAlignCore.IO.SequenceData
 {
     public class SequenceToMsnDAOHibernate : GenericDAOHibernate<SequenceToMsnFeature>, ISequenceToMsnFeatureDAO
     {
-        public List<SequenceToMsnFeature> FindByDatasetId(int datasetId, int lcmsFeatureId)
-        {
-            ICriterion criterionDataset = Restrictions.Eq("DatasetId", datasetId);
-            ICriterion criterionFeature = Restrictions.Eq("UmcFeatureId", lcmsFeatureId);
-            var criterionList = new List<ICriterion>();
-            criterionList.Add(criterionDataset);
-            criterionList.Add(criterionFeature);
+       public List<SequenceToMsnFeature> FindByDatasetId(int datasetId, int lcmsFeatureId)
+       {
+          ICriterion criterionDataset = Restrictions.Eq("DatasetId", datasetId);
+          ICriterion criterionFeature = Restrictions.Eq("UmcFeatureId", lcmsFeatureId);
+          var criterionList = new List<ICriterion>();
+          criterionList.Add(criterionDataset);
+          criterionList.Add(criterionFeature);
 
-            return FindByCriteria(criterionList);
-        }
+          return FindByCriteria(criterionList);
+       }
+       public List<SequenceToMsnFeature> FindByDatasetId(int datasetId)
+       {
+          ICriterion criterionDataset = Restrictions.Eq("DatasetId", datasetId);
+          var criterionList = new List<ICriterion>();
+          criterionList.Add(criterionDataset);          
+
+          return FindByCriteria(criterionList);
+       }
     }
 }
