@@ -1,0 +1,6 @@
+*.csproj.user
+*.suo
+src/*/*/bin/
+src/*/*/obj/
+src/*/*/*/obj/
+src/*/*/*/bin/
