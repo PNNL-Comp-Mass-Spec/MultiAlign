@@ -32,16 +32,21 @@ namespace AlignmentPaperTestSuite.Generators
         /// <summary>
         /// Creates a database file so that other unit tests can use the data
         /// </summary>
-        [Test]
-        [TestCase(@"QC-Shew-Annotated2", @"QC-Shew-Annotated2\shewAnnotated-features.mta")]
+       [Test]
+       [TestCase( @"QC-Shew-Annotated2", 
+                  @"QC-Shew-Annotated2\shewAnnotated-features.mta",
+                  Ignore = true)]
+       [TestCase( @"Bad-03", 
+                  @"Bad-03\shewAnnotated-bad-03.mta",
+                  Ignore = false)]
         public void CreateFeatureDatabase(string directoryPath, string databasePath)
         {
             var directory  = GetPath(directoryPath);
             databasePath   = GetPath(databasePath);
             
             // Loads the supported MultiAlign types 
-            var supportedTypes = DatasetInformation.SupportedFileTypes;
-            var extensions = new List<string>();
+            var supportedTypes   = DatasetInformation.SupportedFileTypes;
+            var extensions       = new List<string>();
             supportedTypes.ForEach(x => extensions.Add("*" + x.Extension));
 
             // Find our datasets

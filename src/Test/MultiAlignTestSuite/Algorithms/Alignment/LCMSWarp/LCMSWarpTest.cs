@@ -30,23 +30,21 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
             @"C:\UnitTestFolder\dataset2.txt",
             "asdf",
             "asdfasdf",
-            LcmsWarpAlignmentOptions.AlignmentType.NET_WARP,
             Ignore = true
             )]
         [TestCase(
            @"QC-Shew-Annotated3\QC_Shew_13_04_1b_6Oct13_Cougar_13-06-14.features",
            @"QC-Shew-Annotated3\QC_Shew_13_04_1b_18Sep13_Cougar_13-06-14.features",
            @"Alignment\QC-Shew-Annotated3\",
-           @"qc_shew_13_04_1b",
-           LcmsWarpAlignmentOptions.AlignmentType.NET_MASS_WARP
+           @"qc_shew_13_04_1b"
            )]
-        public void TestLcmsWarpPort(string relativeBaselinePath, string relativeAligneePath, string relativeOutput, string name, LcmsWarpAlignmentOptions.AlignmentType alignmentType)
+        public void TestLcmsWarpPort(string relativeBaselinePath, string relativeAligneePath, string relativeOutput, string name)
         {
             var baselinePath    = GetPath(relativeBaselinePath);
             var aligneePath     = GetPath(relativeAligneePath);
             var options = new LcmsWarpAlignmentOptions
             {
-                AlignType = alignmentType,
+                AlignType = AlignmentType.NET_MASS_WARP,
                 CalibrationType = LcmsWarpCalibrationType.Both
             };
             var aligner         = new LcmsWarpAdapter(options); 
