@@ -177,19 +177,19 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\..\MTBD\trunk\MTDBFramework\MTDBFramework.csproj">
+    <ProjectReference Include="..\..\..\..\..\DataMining\MTDB_Creator\trunk\MTDBFramework\MTDBFramework.csproj">
       <Project>{3ee14e5d-3881-410e-86df-611bae112e90}</Project>
       <Name>MTDBFramework</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\..\..\PNNLOmics\development\trunk\PNNLOmicsIO\PNNLOmicsIO.csproj">
+    <ProjectReference Include="..\..\..\..\..\OMICS\development\PNNLOmicsIO\PNNLOmicsIO.csproj">
       <Project>{20d49543-cd31-44d2-8403-f045b3fb363d}</Project>
       <Name>PNNLOmicsIO</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\..\..\PNNLOmics\development\trunk\PNNLOmicsViz\PNNLOmicsViz\PNNLOmicsViz.csproj">
+    <ProjectReference Include="..\..\..\..\..\OMICS\development\PNNLOmicsViz\PNNLOmicsViz\PNNLOmicsViz.csproj">
       <Project>{6F933E2A-AEA8-43E1-A8E1-5F9207704B21}</Project>
       <Name>PNNLOmicsViz</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\..\..\PNNLOmics\development\trunk\PNNLOmics\PNNLOmics.csproj">
+    <ProjectReference Include="..\..\..\..\..\OMICS\development\PNNLOmics\PNNLOmics.csproj">
       <Project>{8a934dc1-3418-449f-adf6-9962499f49b2}</Project>
       <Name>PNNLOmics</Name>
     </ProjectReference>

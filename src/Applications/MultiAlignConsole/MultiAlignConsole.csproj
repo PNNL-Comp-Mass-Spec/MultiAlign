@@ -80,7 +80,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\..\PNNLOmics\development\trunk\PNNLOmics\PNNLOmics.csproj">
+    <ProjectReference Include="..\..\..\..\..\OMICS\development\PNNLOmics\PNNLOmics.csproj">
       <Project>{8A934DC1-3418-449F-ADF6-9962499F49B2}</Project>
       <Name>PNNLOmics</Name>
     </ProjectReference>
@@ -121,7 +121,7 @@
   -->
   <PropertyGroup>
     <PostBuildEvent>
-</PostBuildEvent>
+    </PostBuildEvent>
     <PreBuildEvent>
     </PreBuildEvent>
   </PropertyGroup>
