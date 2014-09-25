@@ -20,16 +20,9 @@ namespace MultiAlignCore.IO.Features
         ///     Readers for each dataset.
         /// </summary>
         private readonly Dictionary<int, XRawFileIO> m_readers;
+
         private readonly Dictionary<int, string> m_dataFiles;
         private readonly Dictionary<int, bool> m_opened;
-        /// <summary>
-        /// This is a cache so we dont have to allocate a ton of memory each time we are reading large blocks of data over and over
-        /// </summary>
-        private double[] m_mzArray;
-        /// <summary>
-        /// This is a cache so we dont have to allocate a ton of memory each time we are reading large blocks of data over and over
-        /// </summary>
-        private double[] m_intensityArray;
 
         /// <summary>
         ///     Gets or sets the map
@@ -38,10 +31,10 @@ namespace MultiAlignCore.IO.Features
 
         public ThermoRawDataFileReader()
         {
-            m_datasetMetaData   = new Dictionary<int, DatasetSummary>();
-            m_dataFiles         = new Dictionary<int, string>();
-            m_readers           = new Dictionary<int, XRawFileIO>();
-            m_opened            = new Dictionary<int, bool>();
+            m_datasetMetaData = new Dictionary<int, DatasetSummary>();
+            m_dataFiles = new Dictionary<int, string>();
+            m_readers = new Dictionary<int, XRawFileIO>();
+            m_opened = new Dictionary<int, bool>();
         }
 
         public int GetTotalScans(int group)
@@ -315,22 +308,17 @@ namespace MultiAlignCore.IO.Features
                 return null;
 
             var n = header.NumPeaks;
-
-            if (m_mzArray == null || m_mzArray.Length < n)
-                m_mzArray = new double[n];
-            if (m_intensityArray == null || m_intensityArray.Length < n)
-                m_intensityArray = new double[n];
-
-            rawReader.GetScanData(scan, ref m_mzArray, ref m_intensityArray, ref header);
+            var mz = new double[n];
+            var intensities = new double[n];
+            rawReader.GetScanData(scan, ref mz, ref intensities, ref header);
 
 
-            // construct tAhe array.
-            var data = new List<XYData>(m_mzArray.Length);
-            for (var i = 0; i < m_mzArray.Length; i++)
+            // construct the array.
+            var data = new List<XYData>(mz.Length);
+            for (var i = 0; i < mz.Length; i++)
             {
-                var intensity = m_intensityArray[i];
-                if (intensity  <=0 ) continue;
-                data.Add(new XYData(m_mzArray[i], intensity));
+                var intensity = intensities[i];
+                data.Add(new XYData(mz[i], intensity));
             }
             return data;
         }

@@ -4,6 +4,7 @@ using MultiAlign.Data.States;
 using MultiAlignCore.Algorithms;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.MassTags;
+using MultiAlignCore.IO.InputFiles;
 
 namespace MultiAlign.Data
 {

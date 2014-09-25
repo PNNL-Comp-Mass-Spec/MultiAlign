@@ -8,6 +8,7 @@ using MultiAlign.ViewModels.Charting;
 using MultiAlign.ViewModels.Features;
 using MultiAlign.ViewModels.TreeView;
 using MultiAlignCore.Data.Features;
+using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO.Features;
 using PNNLOmics.Algorithms;
 using PNNLOmics.Annotations;

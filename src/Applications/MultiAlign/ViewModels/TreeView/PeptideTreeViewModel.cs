@@ -1,6 +1,8 @@
 ﻿using MultiAlign.IO;
+using MultiAlignCore.Data.MetaData;
+using MultiAlignCore.Extensions;
 using PNNLOmics.Data;
-using PNNLOmics.Extensions;
+using PNNLOmics.Data.Features;
 
 namespace MultiAlign.ViewModels.TreeView
 {

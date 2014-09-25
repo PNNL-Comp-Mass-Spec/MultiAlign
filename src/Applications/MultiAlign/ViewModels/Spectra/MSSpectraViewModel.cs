@@ -4,6 +4,7 @@ using MultiAlign.IO;
 using MultiAlign.ViewModels.Charting;
 using MultiAlign.ViewModels.Datasets;
 using MultiAlign.ViewModels.Proteins;
+using MultiAlignCore.Data.MetaData;
 using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
 

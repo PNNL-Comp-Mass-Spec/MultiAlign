@@ -1,4 +1,5 @@
 ﻿using MultiAlign.IO;
+using MultiAlignCore.Data.MetaData;
 using PNNLOmics.Data.Features;
 
 namespace MultiAlign.ViewModels.TreeView

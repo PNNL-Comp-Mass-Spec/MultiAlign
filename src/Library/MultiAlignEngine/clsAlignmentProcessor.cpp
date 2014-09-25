@@ -2,7 +2,6 @@
 #include "clsalignmentprocessor.h"
 #include "classAlignmentMZBoundary.h"
 
-#include <iostream>
 #include <fstream> 
 #using <mscorlib.dll>
 #include <float.h> 
@@ -824,46 +823,9 @@ namespace MultiAlignEngine
 
 			ggg << mobjLCMSWarp->mvect_feature_matches.size() << endl;
 
-			ofstream file;
-			
-			file.open("m:\\feature-old-preCalib.txt");
-			file.precision(12);
-			for(int i = 0; i < mobjLCMSWarp->mvect_features.size(); i++)
-			{
-				MassTimeFeature x = mobjLCMSWarp->mvect_features[i];
-				file << x.mdouble_mono_mass_original << "\t" << x.mdouble_mono_mass_calibrated << "\t" << x.mdouble_net << "\t"  << x.mdouble_aligned_net << "\t"  << x.mint_id << endl;
-			}
-			file.close();
-
-			file.open("m:\\featureMatches-old-pre.txt");
-			for(int i = 0; i < mobjLCMSWarp->mvect_feature_matches.size(); i++)
-			{
-				FeatureMatch x = mobjLCMSWarp->mvect_feature_matches[i];
-				file << x.mint_feature_index << "\t" << x.mint_feature_index_2 << "\t" << x.mdouble_net << "\t"  << x.mdouble_net_2 << "\t"  << x.mdouble_netError << "\t"  << x.mdouble_ppmMassError << endl;
-			}
-			file.close();
-
 			mstrMessage = new System::String("Performing Mass Recalibration");
 			mobjLCMSWarp->PerformMassCalibration(); 
 			
-			
-			file.open("m:\\feature-old-postCalib.txt");
-			file.precision(12);
-			for(int i = 0; i < mobjLCMSWarp->mvect_features.size(); i++)
-			{
-				MassTimeFeature x = mobjLCMSWarp->mvect_features[i];
-				file << x.mdouble_mono_mass_original << "\t" << x.mdouble_mono_mass_calibrated << "\t" << x.mdouble_net << "\t"  << x.mdouble_aligned_net << "\t"  << x.mint_id << endl;
-			}
-			file.close();
- 
-			file.open("m:\\featureMatches-old-preMass.txt");
-			for(int i = 0; i < mobjLCMSWarp->mvect_feature_matches.size(); i++)
-			{
-				FeatureMatch x = mobjLCMSWarp->mvect_feature_matches[i];
-				file << x.mint_feature_index << "\t" << x.mint_feature_index_2 << "\t" << x.mdouble_net << "\t"  << x.mdouble_net_2 << "\t"  << x.mdouble_netError << "\t"  << x.mdouble_ppmMassError << endl;
-			}
-			file.close();
-
 			ggg << mobjLCMSWarp->mvect_feature_matches.size() << endl;
 
 
@@ -885,6 +847,7 @@ namespace MultiAlignEngine
 
 			ggg.close();
 
+			ofstream file;
 			file.open("m:\\featureMatches-old-post.txt");
 			for(int i = 0; i < mobjLCMSWarp->mvect_feature_matches.size(); i++)
 			{

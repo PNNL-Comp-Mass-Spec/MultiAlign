@@ -169,7 +169,7 @@ namespace MultiAlignCore.Extensions
         public static void ReconstructUMC(this UMCLight feature, FeatureDataAccessProviders providers, bool getMsMs)
         {
             // This is easy to grab all ms features for this feature.
-            var msFeatures = providers.MsFeatureCache.FindByFeatureId(feature.GroupId, feature.Id);
+            var msFeatures = providers.MSFeatureCache.FindByFeatureId(feature.GroupId, feature.Id);
 
 
             foreach (var msFeature in msFeatures)
@@ -206,7 +206,7 @@ namespace MultiAlignCore.Extensions
                 = new Dictionary<int, Dictionary<int, MSFeatureToMSnFeatureMap>>();
 
 
-            msmsFeatures = providers.MsFeatureToMSnFeatureCache.FindByUMCFeatureId(msFeature.GroupId,
+            msmsFeatures = providers.MSFeatureToMSnFeatureCache.FindByUMCFeatureId(msFeature.GroupId,
                 msFeature.Id);
             // Then grab the spectra id list
             ids = msmsFeatures.ConvertAll(x => x.MSMSFeatureID);
@@ -265,7 +265,7 @@ namespace MultiAlignCore.Extensions
 
             if (getMsMs)
             {
-                msmsFeatureMaps = providers.MsFeatureToMSnFeatureCache.FindByUMCFeatureId(feature.GroupId, feature.Id);
+                msmsFeatureMaps = providers.MSFeatureToMSnFeatureCache.FindByUMCFeatureId(feature.GroupId, feature.Id);
                 mappedSequences = providers.SequenceMsnMapCache.FindByDatasetId(feature.GroupId, feature.Id);
                 sequences = providers.DatabaseSequenceCache.FindByDatasetId(feature.GroupId, feature.Id);
             }

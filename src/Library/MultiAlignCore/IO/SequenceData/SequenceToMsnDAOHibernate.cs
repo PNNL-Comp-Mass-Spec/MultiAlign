@@ -9,7 +9,7 @@ using NHibernate.Criterion;
 
 namespace MultiAlignCore.IO.SequenceData
 {
-    public sealed class SequenceToMsnDaoHibernate : GenericDAOHibernate<SequenceToMsnFeature>, ISequenceToMsnFeatureDao
+    public class SequenceToMsnDAOHibernate : GenericDAOHibernate<SequenceToMsnFeature>, ISequenceToMsnFeatureDAO
     {
         public List<SequenceToMsnFeature> FindByDatasetId(int datasetId, int lcmsFeatureId)
         {
@@ -18,15 +18,6 @@ namespace MultiAlignCore.IO.SequenceData
             var criterionList = new List<ICriterion>();
             criterionList.Add(criterionDataset);
             criterionList.Add(criterionFeature);
-
-            return FindByCriteria(criterionList);
-        }
-
-        public List<SequenceToMsnFeature> FindByDatasetId(int datasetId)
-        {
-            ICriterion criterionDataset = Restrictions.Eq("DatasetId", datasetId);
-            var criterionList = new List<ICriterion>();
-            criterionList.Add(criterionDataset);
 
             return FindByCriteria(criterionList);
         }

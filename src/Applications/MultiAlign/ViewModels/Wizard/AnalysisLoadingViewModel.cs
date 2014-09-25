@@ -4,12 +4,12 @@ using System.Threading.Tasks;
 using MultiAlign.Data;
 using MultiAlignCore.Data;
 using MultiAlignCore.Extensions;
-using MultiAlignCore.IO;
+using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.MTDB;
 
 namespace MultiAlign.ViewModels.Wizard
 {
-    public sealed class AnalysisLoadingViewModel : ViewModelBase
+    public class AnalysisLoadingViewModel : ViewModelBase
     {
         /// <summary>
         ///     Loads the analysis from disk.

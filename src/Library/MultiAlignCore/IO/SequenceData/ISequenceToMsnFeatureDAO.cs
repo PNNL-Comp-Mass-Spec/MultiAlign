@@ -8,9 +8,8 @@ using MultiAlignCore.IO.Features;
 
 namespace MultiAlignCore.IO.SequenceData
 {
-    public interface ISequenceToMsnFeatureDao : IGenericDAO<SequenceToMsnFeature>
+    public interface ISequenceToMsnFeatureDAO : IGenericDAO<SequenceToMsnFeature>
     {
         List<SequenceToMsnFeature> FindByDatasetId(int datasetId, int featureId);
-        List<SequenceToMsnFeature> FindByDatasetId(int datasetId);
     }
 }

@@ -171,8 +171,7 @@ namespace MultiAlignCore.Algorithms.Alignment
                 // Find alignment 
                 OnStatus("Performing alignment warping.");
                 alignmentProcessor.PerformAlignmentToMSFeatures();
-                //var matches = alignmentProcessor.Mat();
-
+                
                 // Extract alignment function
                 var alignmentFunction = alignmentProcessor.GetAlignmentFunction();
                 alignmentFunctions.Add(alignmentFunction);
@@ -268,7 +267,7 @@ namespace MultiAlignCore.Algorithms.Alignment
 
 
             OnStatus("Combining alignment residual and mass / net error data for split analysis.");
-            var mergedData              = new classAlignmentData();
+            var mergedData = new classAlignmentData();
             var mergedAlignmentFunction = alignmentFunctions[alignmentFunctions.Count - 1];
 
 

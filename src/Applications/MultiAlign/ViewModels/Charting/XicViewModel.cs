@@ -5,6 +5,7 @@ using OxyPlot;
 using OxyPlot.Annotations;
 using OxyPlot.Axes;
 using OxyPlot.Series;
+using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Extensions;
 using PNNLOmicsViz.Drawing;

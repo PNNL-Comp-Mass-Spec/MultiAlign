@@ -80,23 +80,23 @@ namespace MultiAlignCore.IO
                         foreach (var peptide in spectrum.Peptides)
                         {
                             peptide.GroupId = datasetId;
-                            peptide.Id      = peptideId++;
-                            var newPeptide  = new DatabaseSearchSequence(peptide, feature.Id)
+                            var newPeptide = new DatabaseSearchSequence(peptide, feature.Id)
                             {
-                                GroupId     = datasetId,
-                                Id          = peptide.Id,
+                                GroupId = datasetId,
+                                Id = peptideId++
                             };
                             mappedPeptides.Add(newPeptide);
 
-                            var sequenceMap  = new SequenceToMsnFeature
+                            var sequenceMap = new SequenceToMsnFeature
                             {
                                 UmcFeatureId = feature.Id,
-                                DatasetId    = msFeature.GroupId,
+                                DatasetId = msFeature.GroupId,
                                 MsnFeatureId = spectrum.Id,
-                                SequenceId   = newPeptide.Id
+                                SequenceId = peptide.Id
                             };
                             sequenceMaps.Add(sequenceMap);
                         }
+
                         totalIdentified += spectrum.Peptides.Count;
                     }
                 }
@@ -113,7 +113,7 @@ namespace MultiAlignCore.IO
                 Providers.MSnFeatureCache.AddAll(msmsFeatures);
 
             if (matches.Count > 0)
-                Providers.MsFeatureToMSnFeatureCache.AddAll(matches);
+                Providers.MSFeatureToMSnFeatureCache.AddAll(matches);
 
             if (sequenceMaps.Count > 0)
                 Providers.SequenceMsnMapCache.AddAll(sequenceMaps);
@@ -122,7 +122,7 @@ namespace MultiAlignCore.IO
                 Providers.DatabaseSequenceCache.AddAll(mappedPeptides);
 
             if (msFeatures.Count > 0)
-                Providers.MsFeatureCache.AddAll(msFeatures);
+                Providers.MSFeatureCache.AddAll(msFeatures);
             Providers.FeatureCache.AddAll(features);
         }
 

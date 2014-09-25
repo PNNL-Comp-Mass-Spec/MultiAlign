@@ -1443,25 +1443,19 @@ namespace MultiAlignEngine
 
 		void LCMSWarp::PerformMassCalibration()
 		{
-			ofstream x;
-			x.open("m:\\recalibs.txt");
 			switch (menmCalibrationType)
 			{
 				case MZ_REGRESSION:
-					x << "mz regression only" << endl;
 					PerformMZMassErrorRegression(); 
 					break; 
 				case SCAN_REGRESSION:
-					x << "scan regression only" << endl;
 					PerformScanMassErrorRegression(); 
 					break; 
 				case BOTH:
-					x << "both regressions" << endl;
 					PerformMZMassErrorRegression(); 
 					PerformScanMassErrorRegression(); 
 					break; 
 			}
-			x.close();
 		}
 
 
@@ -1480,11 +1474,6 @@ namespace MultiAlignEngine
 				vector<double> vect_net_deltas; 
 				vect_mass_deltas.reserve(num_matches); 
 				vect_net_deltas.reserve(num_matches); 
-
-				ofstream xxx;
-				xxx.open("m:\\deltas-old.txt");
-
-
 				for (int match_num = 0; match_num < num_matches; match_num++)
 				{
 					match = mvect_feature_matches[match_num]; 
@@ -1495,11 +1484,7 @@ namespace MultiAlignEngine
 					
 					vect_mass_deltas.push_back(current_mass_delta); 
 					vect_net_deltas.push_back(current_net_delta); 
-
-					xxx  << feature.mint_id << "\t" << baseline_feature.mint_id << "\t" << feature.mdouble_mono_mass << "\t" << baseline_feature.mdouble_mono_mass << "\t" << feature.mdouble_aligned_net 
-						 << "\t" << baseline_feature.mdouble_net << "\t" <<  current_mass_delta << "\t" << current_net_delta  << "\t" << endl;
 				}
-				xxx.close();
 				mdblNormalProb=0;
 				mdblU=0; 
 				mdblMuMass=0; 
@@ -1516,6 +1501,7 @@ namespace MultiAlignEngine
 				// Similarly calculate net standard deviations.
 
 				
+			ofstream xxx;
 			xxx.open("m:\\standards-old-post.txt");				
 			xxx << mdblNormalProb << endl;
 			xxx << mdblU << endl;

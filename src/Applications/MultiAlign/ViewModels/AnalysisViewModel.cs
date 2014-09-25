@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
 using System.IO;
@@ -17,7 +18,9 @@ using MultiAlignCore.Data;
 using MultiAlignCore.Data.Features;
 using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.Extensions;
+using OxyPlot;
 using PNNLOmics.Data;
+using PNNLOmics.Data.Features;
 using PNNLOmicsViz.Drawing;
 
 namespace MultiAlign.ViewModels
