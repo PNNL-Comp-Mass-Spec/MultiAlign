@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="12.0">
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
     <DebugSymbols>true</DebugSymbols>
@@ -80,10 +80,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-<<<<<<< HEAD
-    <ProjectReference Include="..\..\..\..\..\OMICS\development\PNNLOmics\PNNLOmics.csproj">
-      <Project>{8A934DC1-3418-449F-ADF6-9962499F49B2}</Project>
-=======
+
     <ProjectReference Include="..\..\..\..\MTDB-Creator\trunk\MTDBFramework\MTDBFramework.csproj">
       <Project>{3ee14e5d-3881-410e-86df-611bae112e90}</Project>
       <Name>MTDBFramework</Name>
@@ -98,7 +95,7 @@
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\PNNL-Omics\PNNLOmics\PNNLOmics.csproj">
       <Project>{8a934dc1-3418-449f-adf6-9962499f49b2}</Project>
->>>>>>> fixed some reference problems
+
       <Name>PNNLOmics</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Library\MultiAlignCore\MultiAlignCore.csproj">

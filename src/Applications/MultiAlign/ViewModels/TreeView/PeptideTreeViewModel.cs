@@ -55,9 +55,8 @@ namespace MultiAlign.ViewModels.TreeView
                 base.IsSelected = value;
                 if (m_peptide != null)
                 {
-                    // TODO: Contact Brian to get the updated code that implements this
-                    // var feature = m_peptide.GetParentUmc();
-                    // OnFeatureSelected(feature);
+                    var feature = m_peptide.GetParentUmc();
+                    OnFeatureSelected(feature);
                 }
             }
         }
