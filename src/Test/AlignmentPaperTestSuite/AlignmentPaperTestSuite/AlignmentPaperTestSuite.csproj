@@ -123,6 +123,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+<<<<<<< HEAD
     <ProjectReference Include="..\..\..\..\..\..\DataMining\MTDB_Creator\trunk\MTDBFramework\MTDBFramework.csproj">
       <Project>{3ee14e5d-3881-410e-86df-611bae112e90}</Project>
       <Name>MTDBFramework</Name>
@@ -136,6 +137,17 @@
       <Name>PNNLOmicsViz</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\..\..\OMICS\development\PNNLOmics\PNNLOmics.csproj">
+=======
+    <ProjectReference Include="..\..\..\..\..\PNNL-Omics\PNNLOmicsIO\PNNLOmicsIO.csproj">
+      <Project>{20d49543-cd31-44d2-8403-f045b3fb363d}</Project>
+      <Name>PNNLOmicsIO</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\PNNL-Omics\PNNLOmicsViz\PNNLOmicsViz\PNNLOmicsViz.csproj">
+      <Project>{6f933e2a-aea8-43e1-a8e1-5f9207704b21}</Project>
+      <Name>PNNLOmicsViz</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\PNNL-Omics\PNNLOmics\PNNLOmics.csproj">
+>>>>>>> fixed some reference problems
       <Project>{8a934dc1-3418-449f-adf6-9962499f49b2}</Project>
       <Name>PNNLOmics</Name>
     </ProjectReference>
