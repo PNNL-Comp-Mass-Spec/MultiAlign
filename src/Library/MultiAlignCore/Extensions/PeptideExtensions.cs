@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using PNNLOmics.Data;
+using PNNLOmics.Data.Features;
 
 #endregion
 
@@ -9,7 +10,7 @@ namespace MultiAlignCore.Extensions
 {
     public static class PeptideExtensions
     {
-<<<<<<< HEAD
+
         public static Dictionary<int, List<Peptide>> CreateScanMaps<T>(this List<T> peptides) where T : Peptide
         {
             var map = new Dictionary<int, List<Peptide>>();
@@ -23,9 +24,8 @@ namespace MultiAlignCore.Extensions
             }
             return map;
         }
-    }
-}
-=======
+    
+
         public static Dictionary<int, List<Peptide>> CreateScanMaps(this List<Peptide> peptides)
         {
             var peptideMap = new Dictionary<int, List<Peptide>>();
@@ -65,4 +65,3 @@ namespace MultiAlignCore.Extensions
         }
     }
 }
->>>>>>> parent of b23e01e... 

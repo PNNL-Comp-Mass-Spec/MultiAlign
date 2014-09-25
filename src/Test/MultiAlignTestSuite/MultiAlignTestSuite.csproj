@@ -192,15 +192,11 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-<<<<<<< HEAD
-    <ProjectReference Include="..\..\..\..\PNNL-Omics\PNNLOmicsIO\PNNLOmicsIO.csproj">
-=======
     <ProjectReference Include="..\..\..\..\..\..\MTDB\trunk\MTDBFramework\MTDBFramework.csproj">
       <Project>{3ee14e5d-3881-410e-86df-611bae112e90}</Project>
       <Name>MTDBFramework</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\..\..\PNNLOmics\development\trunk\PNNLOmicsIO\PNNLOmicsIO.csproj">
->>>>>>> parent of b23e01e... 
       <Project>{20d49543-cd31-44d2-8403-f045b3fb363d}</Project>
       <Name>PNNLOmicsIO</Name>
     </ProjectReference>

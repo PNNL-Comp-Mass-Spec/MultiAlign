@@ -8,6 +8,7 @@ namespace MultiAlign.ViewModels.Wizard
 
         public StacOptionsViewModel(StacOptions options)
         {
+           
             m_options = options;
         }
 
