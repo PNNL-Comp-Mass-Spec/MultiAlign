@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using MTDBFramework.IO;
 using PNNLOmics.Data;
 using PNNLOmics.Data.MassTags;
@@ -22,7 +23,7 @@ namespace MultiAlignCore.IO.MTDB
             //Implement the loading / reading of the MTDB Framework objects.
 
             var reader          = new SqLiteTargetDatabaseReader();
-            var mtdbDatabase    = reader.Read(m_path);
+            var mtdbDatabase    = reader.Read(m_path).ToList();
             var massTags        = new List<MassTagLight>();
 
             // Mapping objects to create unique proteins and for the mass tag database to load only those proteins for
@@ -30,17 +31,20 @@ namespace MultiAlignCore.IO.MTDB
             var proteinMap          = new Dictionary<int, Protein>();
             var massTagProteinMap   = new Dictionary<int, List<Protein>>();
 
-            foreach (var target in mtdbDatabase.ConsensusTargets)
+            if (mtdbDatabase.Count == 0)
+                return database;
+
+            foreach (var target in mtdbDatabase.First().Evidences)
             {
                 // Copy the consensus data into a mass tag light.
                 var tag = new MassTagLight
                 {
                     Id = target.Id,
-                    MassMonoisotopic = target.TheoreticalMonoIsotopicMass,
-                    NetAverage = target.Net,
+                    MassMonoisotopic = target.MonoisotopicMass,
+                    NetAverage = target.ObservedNet,
                     NetPredicted = target.PredictedNet,
                     PeptideSequence = target.Sequence,
-                    NetStandardDeviation = target.StdevNet
+                    NetStandardDeviation = 0          // target.StdevNet
                 };
 
 

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30501.0
+VisualStudioVersion = 12.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GridApps", "GridApps", "{47B0F1FD-E120-4077-9F16-0E042648FD8E}"
 EndProject
@@ -148,8 +148,8 @@ Global
 		{3EE14E5D-3881-410E-86DF-611BAE112E90}.Debug|x64.ActiveCfg = Debug|x64
 		{3EE14E5D-3881-410E-86DF-611BAE112E90}.Debug|x64.Build.0 = Debug|x64
 		{3EE14E5D-3881-410E-86DF-611BAE112E90}.Debug|x64.Deploy.0 = Debug|x64
-		{3EE14E5D-3881-410E-86DF-611BAE112E90}.Debug|x86.ActiveCfg = Debug|x64
-		{3EE14E5D-3881-410E-86DF-611BAE112E90}.Debug|x86.Build.0 = Debug|x64
+		{3EE14E5D-3881-410E-86DF-611BAE112E90}.Debug|x86.ActiveCfg = Debug|x86
+		{3EE14E5D-3881-410E-86DF-611BAE112E90}.Debug|x86.Build.0 = Debug|x86
 		{3EE14E5D-3881-410E-86DF-611BAE112E90}.Release|Any CPU.ActiveCfg = Debug|x64
 		{3EE14E5D-3881-410E-86DF-611BAE112E90}.Release|Mixed Platforms.ActiveCfg = Release|x86
 		{3EE14E5D-3881-410E-86DF-611BAE112E90}.Release|Mixed Platforms.Build.0 = Release|x86

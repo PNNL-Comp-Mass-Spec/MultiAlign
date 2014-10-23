@@ -91,6 +91,14 @@ namespace MultiAlignCore.IO.Features
             extension = extension.ToUpper();
             switch (extension)
             {
+                case ".PEK":
+                    throw new NotImplementedException("Support for .PEK files is not available at this time");
+                    // var pekReader = new PEKFileReader();
+                    // var pekMsFeatures = pekReader.ReadFile(path);
+                    // msFeatures.AddRange(pekMsFeatures);
+                    // UpdateStatus("Loaded features from the PEK file.");
+                    break;
+
                 default:
                     var reader = new MsFeatureLightFileReader {Delimeter = ","};
                     var newMsFeatures = reader.ReadFile(path);
