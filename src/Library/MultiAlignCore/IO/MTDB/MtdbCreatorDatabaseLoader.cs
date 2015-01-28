@@ -22,7 +22,7 @@ namespace MultiAlignCore.IO.MTDB
             //Implement the loading / reading of the MTDB Framework objects.
 
             var reader          = new SqLiteTargetDatabaseReader();
-            var mtdbDatabase    = reader.Read(m_path);
+            var mtdbDatabase    = reader.ReadDb(m_path);
             var massTags        = new List<MassTagLight>();
 
             // Mapping objects to create unique proteins and for the mass tag database to load only those proteins for
@@ -37,7 +37,7 @@ namespace MultiAlignCore.IO.MTDB
                 {
                     Id = target.Id,
                     MassMonoisotopic = target.TheoreticalMonoIsotopicMass,
-                    NetAverage = target.Net,
+                    NetAverage = target.AverageNet,
                     NetPredicted = target.PredictedNet,
                     PeptideSequence = target.Sequence,
                     NetStandardDeviation = target.StdevNet

@@ -26,14 +26,14 @@ namespace MultiAlignCore.IO.MTDB
 
 
             var sink = new MAGEMetaSampleDatabaseSink();
-            using (var reader = new DelimitedFileReader())
-            {
-                reader.Delimiter = ",";
-                reader.FilePath = Path;
+            var reader = new DelimitedFileReader();
+            
+            reader.Delimiter = ",";
+            reader.FilePath = Path;
 
-                var pipeline = ProcessingPipeline.Assemble("MetaSample", reader, sink);
-                pipeline.RunRoot(null);
-            }
+            var pipeline = ProcessingPipeline.Assemble("MetaSample", reader, sink);
+            pipeline.RunRoot(null);
+            
 
 
             var tags =
