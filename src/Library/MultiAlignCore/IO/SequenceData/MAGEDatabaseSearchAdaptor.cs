@@ -39,15 +39,15 @@ namespace MultiAlignCore.IO.SequenceData
                 UpdateStatus("File type is not supported for this kind of sequence data. ");
                 return;
             }
-            using (var reader = new DelimitedFileReader())
-            {
-                reader.Delimiter = "\t";
-                reader.FilePath = path;
+            var reader = new DelimitedFileReader();
+            
+            reader.Delimiter = "\t";
+            reader.FilePath = path;
 
-                var pipeline = ProcessingPipeline.Assemble("PlainFactors", reader, sink);
-                pipeline.RunRoot(null);
-                sink.CommitChanges();
-            }
+            var pipeline = ProcessingPipeline.Assemble("PlainFactors", reader, sink);
+            pipeline.RunRoot(null);
+            sink.CommitChanges();
+            
         }
 
         #region IProgressNotifer Members
