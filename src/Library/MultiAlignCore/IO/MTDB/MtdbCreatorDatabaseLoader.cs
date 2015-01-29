@@ -30,7 +30,7 @@ namespace MultiAlignCore.IO.MTDB
             var proteinMap          = new Dictionary<int, Protein>();
             var massTagProteinMap   = new Dictionary<int, List<Protein>>();
 
-            if (mtdbDatabase.Count == 0)
+            if (mtdbDatabase == null)
                 return database;
 
             foreach (var target in mtdbDatabase.ConsensusTargets)
