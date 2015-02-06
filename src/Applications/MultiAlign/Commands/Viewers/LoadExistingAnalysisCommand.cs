@@ -21,7 +21,9 @@ namespace MultiAlign.Commands.Viewers
         {
             var result = m_analysisLoadDialog.ShowDialog();
 
-            if (result != DialogResult.OK) return;
+            if (result != DialogResult.OK)
+                return;
+
             var filename = m_analysisLoadDialog.FileName;
             var path = Path.GetDirectoryName(filename);
             var name = Path.GetFileName(filename);

@@ -171,7 +171,8 @@ namespace MultiAlignSTACRunner
                         if (filename == null)
                             continue;
 
-                        if (!filename.Contains(chargeString)) continue;
+                        if (!filename.Contains(chargeString))
+                            continue;
 
                         // Read each file.
                         var start = DateTime.Now;

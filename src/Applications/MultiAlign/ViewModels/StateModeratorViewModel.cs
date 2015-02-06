@@ -25,7 +25,9 @@ namespace MultiAlign.ViewModels
             get { return m_currentViewState; }
             set
             {
-                if (value == m_currentViewState) return;
+                if (value == m_currentViewState)
+                    return;
+
                 m_currentViewState = value;
                 OnPropertyChanged("CurrentViewState");
             }
@@ -37,7 +39,9 @@ namespace MultiAlign.ViewModels
             get { return m_previousViewState; }
             set
             {
-                if (value == m_currentViewState) return;
+                if (value == m_currentViewState)
+                    return;
+
                 m_previousViewState = value;
                 OnPropertyChanged("PreviousViewState");
             }
@@ -49,7 +53,9 @@ namespace MultiAlign.ViewModels
             get { return m_currentAnalysisState; }
             set
             {
-                if (value == m_currentAnalysisState) return;
+                if (value == m_currentAnalysisState)
+                    return;
+
                 m_currentAnalysisState = value;
                 OnPropertyChanged("CurrentAnalysisState");
             }

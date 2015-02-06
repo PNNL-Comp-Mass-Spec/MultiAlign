@@ -22,7 +22,9 @@ namespace MultiAlign.Commands.Datasets
         {
             var information = parameter as DatasetInformationViewModel;
 
-            if (information == null) return;
+            if (information == null)
+                return;
+
             var newWindow = new Window {Width = 650, Height = 350};
 
             var viewer = new DatasetInputFileEditor {DataContext = information};

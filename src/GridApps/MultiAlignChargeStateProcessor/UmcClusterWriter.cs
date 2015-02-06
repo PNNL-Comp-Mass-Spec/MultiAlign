@@ -76,7 +76,7 @@ namespace MultiAlignChargeStateProcessor
                 cluster.Net,
                 cluster.DriftTime);
 
-            var clustermap = new Dictionary<int, long>();
+            var clustermap = new Dictionary<int, double>();
             foreach (var feature in cluster.Features)
             {
                 if (clustermap.ContainsKey(feature.GroupId))
@@ -107,7 +107,9 @@ namespace MultiAlignChargeStateProcessor
             builder.Clear();
             idMapper.Clear();
 
-            if (m_count <= 1000) return;
+            if (m_count <= 1000)
+                return;
+
             m_count = 0;
             m_writer.Flush();
             m_idMapper.Flush();

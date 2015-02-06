@@ -86,7 +86,9 @@ namespace MultiAlign.ViewModels.TreeView
             get { return m_selectedSpectrum; }
             set
             {
-                if (value == m_selectedSpectrum) return;
+                if (value == m_selectedSpectrum)
+                    return;
+
 
                 m_selectedSpectrum = value;
                 OnPropertyChanged("SelectedSpectrum");
@@ -98,7 +100,9 @@ namespace MultiAlign.ViewModels.TreeView
             get { return m_selectedFeature; }
             set
             {
-                if (value == m_selectedFeature) return;
+                if (value == m_selectedFeature)
+                    return;
+
                 m_selectedFeature = value;
                 OnPropertyChanged("SelectedFeature");
             }
@@ -145,7 +149,8 @@ namespace MultiAlign.ViewModels.TreeView
         private void cluster_Selected(object sender, EventArgs e)
         {
             var model = sender as UMCClusterTreeViewModel;
-            if (model == null) return;
+            if (model == null)
+                return;
 
             model.LoadChildren();
             SelectedCluster = model.Cluster;

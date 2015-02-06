@@ -9,10 +9,10 @@ using MultiAlign.Commands;
 using MultiAlign.Properties;
 using MultiAlign.ViewModels.Instruments;
 using MultiAlign.Windows.Controls;
-using MultiAlignCore.Algorithms.Alignment;
 using MultiAlignCore.Algorithms.FeatureFinding;
 using MultiAlignCore.Algorithms.Options;
 using MultiAlignCore.IO.Generic;
+using PNNLOmics.Algorithms.Alignment.LcmsWarp;
 using PNNLOmics.Algorithms.FeatureClustering;
 
 namespace MultiAlign.ViewModels.Wizard
@@ -229,7 +229,8 @@ namespace MultiAlign.ViewModels.Wizard
             get { return m_options.UsedIonMobility; }
             set
             {
-                if (m_options.UsedIonMobility == value) return;
+                if (m_options.UsedIonMobility == value)
+                    return;
 
                 m_options.UsedIonMobility = value;
                 m_options.InstrumentTolerances.DriftTime = value ? 3 : 50;
@@ -244,7 +245,9 @@ namespace MultiAlign.ViewModels.Wizard
             get { return m_options.HasMsMs; }
             set
             {
-                if (m_options.HasMsMs == value) return;
+                if (m_options.HasMsMs == value)
+                    return;
+
                 m_options.HasMsMs = value;
                 OnPropertyChanged("HasMsMsFragmentation");
             }

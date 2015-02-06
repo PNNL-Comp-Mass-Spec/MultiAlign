@@ -317,7 +317,7 @@ namespace MultiAlign.ViewModels.Viewers
                 SelectedFeatureName = info.DatasetName;
             }
 
-            var model = new XicViewModel(new List<UMCLight> {feature}, "XIC");
+            var model = new XicViewModel(new List<UMCLight> { feature }, "XIC");
             model.PointClicked += model_PointClicked;
             XicModel = model;
             UpdateCharges(feature);
@@ -354,13 +354,15 @@ namespace MultiAlign.ViewModels.Viewers
                 double mz = 0;
                 var minScan = int.MaxValue;
                 var maxScan = int.MinValue;
-                long maxIntensity = 0;
+                double maxIntensity = 0;
 
                 foreach (var msFeature in m_scanMaps[charge])
                 {
                     minScan = Math.Min(minScan, msFeature.Scan);
                     maxScan = Math.Max(maxScan, msFeature.Scan);
-                    if (maxIntensity >= msFeature.Abundance) continue;
+
+                    if (maxIntensity >= msFeature.Abundance)
+                        continue;
 
                     maxIntensity = msFeature.Abundance;
                     mz = msFeature.Mz;
@@ -368,7 +370,9 @@ namespace MultiAlign.ViewModels.Viewers
 
                 Charges.Add(new ChargeStateViewModel(charge, mz, minScan, maxScan));
             }
-            if (Charges.Count <= 0) return;
+            if (Charges.Count <= 0)
+                return;
+
             SelectedCharge = Charges[0];
         }
 
@@ -379,20 +383,23 @@ namespace MultiAlign.ViewModels.Viewers
             if (SelectedCharge == null)
                 return null;
 
-            if (!m_scanMaps.ContainsKey(SelectedCharge.ChargeState)) return best;
+            if (!m_scanMaps.ContainsKey(SelectedCharge.ChargeState))
+                return best;
 
             var bestDist = double.MaxValue;
             foreach (var msFeature in m_scanMaps[SelectedCharge.ChargeState])
             {
                 var dist = Math.Abs(msFeature.Scan - x);
-                if (!(dist < bestDist)) continue;
+                if (!(dist < bestDist))
+                    continue;
+
                 best = msFeature;
                 bestDist = dist;
             }
             return best;
         }
 
-        #region View Model 
+        #region View Model
 
         public ChargeStateViewModel SelectedCharge
         {
@@ -407,20 +414,26 @@ namespace MultiAlign.ViewModels.Viewers
                     if (value == null)
                         return;
 
-                    if (!m_scanMaps.ContainsKey(value.ChargeState)) return;
+                    if (!m_scanMaps.ContainsKey(value.ChargeState))
+                        return;
+
                     var minScan = int.MaxValue;
                     var maxScan = int.MinValue;
-                    long bestAbundance = 0;
+                    double bestAbundance = 0;
                     MSFeatureLight bestFeature = null;
                     foreach (var msFeature in m_scanMaps[value.ChargeState])
                     {
                         minScan = Math.Min(minScan, msFeature.Scan);
                         maxScan = Math.Max(maxScan, msFeature.Scan);
-                        if (msFeature.Abundance < bestAbundance) continue;
+                        if (msFeature.Abundance < bestAbundance)
+                            continue;
+
                         bestAbundance = msFeature.Abundance;
                         bestFeature = msFeature;
                     }
-                    if (m_scanMaps[value.ChargeState].Count <= 0) return;
+
+                    if (m_scanMaps[value.ChargeState].Count <= 0)
+                        return;
 
                     MinimumScan = minScan;
                     MaximumScan = maxScan;
@@ -464,18 +477,20 @@ namespace MultiAlign.ViewModels.Viewers
 
         #endregion
 
-        #region Spectrum Loading                
+        #region Spectrum Loading
 
         private void LoadSpectrum(MSFeatureLight msFeature)
         {
             var info = SingletonDataProviders.GetDatasetInformation(msFeature.GroupId);
-            if (info == null || info.Raw == null || info.RawPath == null) return;
+            if (info == null || info.Raw == null || info.RawPath == null)
+                return;
+
 
             var mz = msFeature.Mz;
             var charge = msFeature.ChargeState;
-            var spacing = 1.0/Convert.ToDouble(charge);
-            var lowMz = mz - spacing*3;
-            var highMz = mz + spacing*(NumberOfIsotopes + 1);
+            var spacing = 1.0 / Convert.ToDouble(charge);
+            var lowMz = mz - spacing * 3;
+            var highMz = mz + spacing * (NumberOfIsotopes + 1);
 
             var spectrum = ParentSpectraFinder.GetParentSpectrum(info.RawPath,
                 msFeature.Scan,

@@ -43,7 +43,9 @@ namespace MultiAlign.ViewModels.Datasets
             get { return m_expandImagesall; }
             set
             {
-                if (value == m_expandImagesall) return;
+                if (value == m_expandImagesall)
+                    return;
+
                 m_expandImagesall = value;
 
                 foreach (var model in Datasets)
@@ -85,8 +87,12 @@ namespace MultiAlign.ViewModels.Datasets
             foreach (var file in files)
             {
                 var filenameOnly = Path.GetFileName(file);
-                if (filenameOnly == null) continue;
-                if (nameMap.ContainsKey(filenameOnly)) continue;
+                if (filenameOnly == null)
+                    continue;
+
+                if (nameMap.ContainsKey(filenameOnly))
+                    continue;
+
                 nameMap.Add(filenameOnly, file);
             }
 

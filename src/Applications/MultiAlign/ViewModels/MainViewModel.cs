@@ -102,7 +102,9 @@ namespace MultiAlign.ViewModels
             get { return m_currentAnalysis; }
             set
             {
-                if (m_currentAnalysis == value) return;
+                if (m_currentAnalysis == value)
+                    return;
+
                 m_currentAnalysis = value;
                 OnPropertyChanged("CurrentAnalysis");
             }
@@ -117,7 +119,9 @@ namespace MultiAlign.ViewModels
             get { return m_title; }
             set
             {
-                if (m_title == value) return;
+                if (m_title == value)
+                    return;
+
                 m_title = value;
                 OnPropertyChanged("Title");
             }
@@ -132,7 +136,9 @@ namespace MultiAlign.ViewModels
             get { return m_status; }
             set
             {
-                if (m_status == value) return;
+                if (m_status == value)
+                    return;
+
                 m_status = value;
                 OnPropertyChanged("Status");
             }
@@ -157,7 +163,9 @@ namespace MultiAlign.ViewModels
             get { return m_analysisSetupViewModel; }
             set
             {
-                if (m_analysisSetupViewModel == value) return;
+                if (m_analysisSetupViewModel == value)
+                    return;
+
                 m_analysisSetupViewModel = value;
                 OnPropertyChanged("AnalysisSetupViewModel");
             }
@@ -172,7 +180,9 @@ namespace MultiAlign.ViewModels
             get { return m_analysisRunningViewModel; }
             set
             {
-                if (m_analysisRunningViewModel == value) return;
+                if (m_analysisRunningViewModel == value)
+                    return;
+
                 m_analysisRunningViewModel = value;
                 OnPropertyChanged("AnalysisRunningViewModel");
             }

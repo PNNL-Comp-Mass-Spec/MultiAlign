@@ -92,7 +92,9 @@ namespace MultiAlign.ViewModels.Wizard
             get { return m_configuration; }
             set
             {
-                if (m_configuration == value) return;
+                if (m_configuration == value)
+                    return;
+
                 m_configuration = value;
                 OnPropertyChanged("AnalysisConfiguration");
             }

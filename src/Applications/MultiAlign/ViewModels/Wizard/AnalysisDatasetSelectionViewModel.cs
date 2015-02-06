@@ -239,7 +239,9 @@ namespace MultiAlign.ViewModels.Wizard
             get { return m_analysisInput; }
             set
             {
-                if (m_analysisInput == value) return;
+                if (m_analysisInput == value)
+                    return;
+
                 m_analysisInput = value;
                 OnPropertyChanged("AnalysisInputInformation");
             }
@@ -253,7 +255,9 @@ namespace MultiAlign.ViewModels.Wizard
             get { return m_folderPath; }
             set
             {
-                if (m_folderPath == value) return;
+                if (m_folderPath == value)
+                    return;
+
                 m_folderPath = value;
                 OnPropertyChanged("FolderPath");
             }
@@ -267,7 +271,9 @@ namespace MultiAlign.ViewModels.Wizard
             get { return m_singleFilePath; }
             set
             {
-                if (m_singleFilePath == value) return;
+                if (m_singleFilePath == value)
+                    return;
+
                 m_singleFilePath = value;
                 OnPropertyChanged("SingleFilePath");
             }
@@ -281,7 +287,9 @@ namespace MultiAlign.ViewModels.Wizard
             get { return m_inputFilePath; }
             set
             {
-                if (m_inputFilePath == value) return;
+                if (m_inputFilePath == value)
+                    return;
+
                 m_inputFilePath = value;
                 OnPropertyChanged("InputFilePath");
             }
@@ -295,7 +303,9 @@ namespace MultiAlign.ViewModels.Wizard
             get { return m_analysis; }
             set
             {
-                if (value == m_analysis) return;
+                if (value == m_analysis)
+                    return;
+
                 m_analysis = value;
                 OnPropertyChanged("Analysis");
             }
@@ -309,7 +319,9 @@ namespace MultiAlign.ViewModels.Wizard
             get { return m_shouldSearchSubdirectories; }
             set
             {
-                if (value == m_shouldSearchSubdirectories) return;
+                if (value == m_shouldSearchSubdirectories)
+                    return;
+
                 m_shouldSearchSubdirectories = value;
                 OnPropertyChanged("ShouldSearchSubDirectories");
             }
@@ -328,7 +340,9 @@ namespace MultiAlign.ViewModels.Wizard
             get { return m_selectedDmsDatabase; }
             set
             {
-                if (m_selectedDmsDatabase == value) return;
+                if (m_selectedDmsDatabase == value)
+                    return;
+
                 m_selectedDmsDatabase = value;
                 OnPropertyChanged("SelectedDatabaseServer");
             }

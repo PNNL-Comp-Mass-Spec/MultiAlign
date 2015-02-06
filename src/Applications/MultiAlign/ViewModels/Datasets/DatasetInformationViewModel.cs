@@ -45,7 +45,9 @@ namespace MultiAlign.ViewModels.Datasets
             get { return m_isSelected; }
             set
             {
-                if (value == m_isSelected) return;
+                if (value == m_isSelected)
+                    return;
+
                 m_isSelected = value;
                 OnPropertyChanged("IsSelected");
 

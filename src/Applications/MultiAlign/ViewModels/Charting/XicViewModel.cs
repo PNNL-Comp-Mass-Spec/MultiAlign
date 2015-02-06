@@ -57,7 +57,9 @@ namespace MultiAlign.ViewModels.Charting
             {
                 m_selectedScan = value;
 
-                if (m_scanAnnotation == null) return;
+                if (m_scanAnnotation == null)
+                    return;
+
                 m_scanAnnotation.X = value;
                 m_scanAnnotation.Text = value.ToString("F0");
                 Model.Update(false);
@@ -70,7 +72,9 @@ namespace MultiAlign.ViewModels.Charting
             set
             {
                 m_selectedCharge = value;
-                if (m_scanAnnotation == null) return;
+                if (m_scanAnnotation == null)
+                    return;
+
 
                 var color = m_colorIterator.GetColor(value);
                 var newColor = OxyColor.FromAColor(120, color);
@@ -95,7 +99,9 @@ namespace MultiAlign.ViewModels.Charting
         {
             //if (e.ChangedButton == OxyMouseButton.Left)
             {
-                if (!m_movingMouse) return;
+                if (!m_movingMouse)
+                    return;
+
 
                 var point = FindPoint(e.Position);
                 if (PointClicked != null)
@@ -179,7 +185,7 @@ namespace MultiAlign.ViewModels.Charting
                             charge)
                     };
 
-                    long abundance = 0;
+                    double abundance = 0;
                     MSFeatureLight bestFeature = null;
 
                     foreach (var msFeature in msFeatures)

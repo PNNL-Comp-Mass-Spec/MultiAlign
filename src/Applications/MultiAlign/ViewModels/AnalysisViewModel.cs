@@ -86,7 +86,9 @@ namespace MultiAlign.ViewModels
             get { return m_clustersPlotModel; }
             set
             {
-                if (value == null || value == m_clustersPlotModel) return;
+                if (value == null || value == m_clustersPlotModel)
+                    return;
+
                 m_clustersPlotModel = value;
                 OnPropertyChanged("ClustersPlotModel");
             }
@@ -94,7 +96,9 @@ namespace MultiAlign.ViewModels
 
         private void FilterFromView()
         {
-            if (m_clustersPlotModel == null) return;
+            if (m_clustersPlotModel == null)
+                return;
+
 
             var model = m_clustersPlotModel.Model;
             //var viewport = m_clusterChart.ViewPort;
