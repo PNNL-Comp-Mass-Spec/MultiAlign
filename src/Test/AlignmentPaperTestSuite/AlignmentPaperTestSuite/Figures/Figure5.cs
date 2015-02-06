@@ -14,6 +14,7 @@ using MultiAlignTestSuite;
 using NUnit.Framework;
 using PNNLOmics.Algorithms;
 using PNNLOmics.Algorithms.Alignment;
+using PNNLOmics.Algorithms.Alignment.LcmsWarp;
 using PNNLOmics.Algorithms.Alignment.SpectralMatches;
 using PNNLOmics.Algorithms.Alignment.SpectralMatching;
 using PNNLOmics.Algorithms.FeatureClustering;
@@ -30,7 +31,7 @@ namespace AlignmentPaperTestSuite.Figures
         [TestCase(  @"QC-Shew-Annotated2\shewAnnotated-features.mta",
                     @"AlignmentPaper\Figure5\",
                     "figure5-qc-shew",
-                    FeatureAlignmentType.SpectralAlignment,
+                    FeatureAlignmentType.SPECTRAL_ALIGNMENT,
                     LcmsFeatureClusteringAlgorithmType.AverageLinkage,
                     Ignore = true
                     )]
@@ -38,14 +39,14 @@ namespace AlignmentPaperTestSuite.Figures
         [TestCase(@"QC-Shew-Annotated2\shewAnnotated-features.mta",
                     @"AlignmentPaper\Figure5\",
                     "figure5-qc-shew",
-                    FeatureAlignmentType.SpectralAlignment,
+                    FeatureAlignmentType.SPECTRAL_ALIGNMENT,
                     LcmsFeatureClusteringAlgorithmType.AverageLinkage,
                     Ignore = true
                     )]
         [TestCase(@"bad-03\qc-alignment-03.mta",
                    @"AlignmentPaper\Figure5\",
                    "figure5-qc-shew",
-                   FeatureAlignmentType.SpectralAlignment,
+                   FeatureAlignmentType.SPECTRAL_ALIGNMENT,
                    LcmsFeatureClusteringAlgorithmType.AverageLinkage,
                    Ignore = false
                    )]
@@ -67,7 +68,7 @@ namespace AlignmentPaperTestSuite.Figures
             var providers = DataAccessFactory.CreateDataAccessProviders(databasePath, false);
 
             // Setup our alignment options
-            var warpOptions = new AlignmentOptions();
+            var alignmentOptions = new AlignmentOptions();
             var spectralOptions = new SpectralOptions
             {
                 ComparerType = SpectralComparison.CosineDotProduct,
@@ -95,7 +96,7 @@ namespace AlignmentPaperTestSuite.Figures
 
             // Create our algorithms
             var aligner     = FeatureAlignerFactory.CreateDatasetAligner(alignmentType,
-                warpOptions,
+                alignmentOptions.LCMSWarpOptions,
                 spectralOptions);
             var clusterer   = ClusterFactory.Create(clusterType);
             clusterer.Parameters = new FeatureClusterParameters<UMCLight>
@@ -167,7 +168,9 @@ namespace AlignmentPaperTestSuite.Figures
 
             foreach (var sequence in sequences)
             {
-                if (sequence.GroupId != datasetId) continue;
+                if (sequence.GroupId != datasetId)
+                    continue;
+
                 var peptide = new Peptide
                 {
                     Sequence =  sequence.Sequence,
@@ -209,8 +212,9 @@ namespace AlignmentPaperTestSuite.Figures
                 
                 var workedFeatures  = dictFeatures.TryGetValue(map.LCMSFeatureID, out feature);
                 var workedSpectra   = dictSpectra.TryGetValue(map.MSMSFeatureID,  out spectrum);
-                var workedMsFeature = dictMsFeatures.TryGetValue(map.MSFeatureID, out msFeature); 
-                if (!workedFeatures || !workedSpectra || !workedMsFeature) continue;
+                var workedMsFeature = dictMsFeatures.TryGetValue(map.MSFeatureID, out msFeature);
+                if (!workedFeatures || !workedSpectra || !workedMsFeature)
+                    continue;
 
                 var metaData = new ScanSummary
                 {

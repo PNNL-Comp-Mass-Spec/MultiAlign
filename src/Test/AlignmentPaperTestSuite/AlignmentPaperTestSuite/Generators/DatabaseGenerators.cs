@@ -179,12 +179,13 @@ namespace AlignmentPaperTestSuite.Generators
         /// <summary>
         /// Links a list of peptides to the features provided if the dataset has knowledge of the sequence file file
         /// </summary>
-        private void LinkPeptidesToFeatures(string sequencePath, List<UMCLight> aligneeFeatures, double fdr,
+        private void LinkPeptidesToFeatures(string sequencePath, IEnumerable<UMCLight> aligneeFeatures, double fdr,
             double idScore)
         {
             // Get the peptides associated with this feature set.
             var peptideReaderY = PeptideReaderFactory.CreateReader(sequencePath);
-            if (peptideReaderY == null) return;
+            if (peptideReaderY == null)
+                return;
 
             // Load the peptide Y
             UpdateStatus("Linking peptides to ms/ms");

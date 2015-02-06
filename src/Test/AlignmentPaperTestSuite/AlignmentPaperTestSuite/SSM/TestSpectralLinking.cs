@@ -76,8 +76,8 @@ namespace AlignmentPaperTestSuite.SSM
             Print("Aligning Features");
             // Align the features
             var aligner = new LcmsWarpFeatureAligner();
-            var options = new AlignmentOptions();
-            aligner.Options = options;
+            var alignmentOptions = new AlignmentOptions();
+            aligner.Options = alignmentOptions.LCMSWarpOptions;
             aligner.Align(featuresX, featuresY);
 
             Print("");
@@ -126,8 +126,8 @@ namespace AlignmentPaperTestSuite.SSM
             Print("Aligning Features");
             // Align the features
             var aligner = new LcmsWarpFeatureAligner();
-            var options = new AlignmentOptions();
-            aligner.Options = options;
+            var alignmentOptions = new AlignmentOptions();
+            aligner.Options = alignmentOptions.LCMSWarpOptions;
             aligner.Align(baselineFeatures, aligneeFeatures);
 
             PrintFeatureMsMsData(baselineFeatures);
