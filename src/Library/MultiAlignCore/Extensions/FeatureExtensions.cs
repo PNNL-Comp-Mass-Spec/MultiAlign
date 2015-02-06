@@ -282,7 +282,9 @@ namespace MultiAlignCore.Extensions
 
             foreach (var map in mappedSequences)
             {
-                if (sequenceMap.ContainsKey(map.MsnFeatureId)) continue;
+                if (sequenceMap.ContainsKey(map.MsnFeatureId))
+                    continue;
+
                 sequenceMap.Add(map.MsnFeatureId, map.SequenceId);
             }
 
@@ -294,8 +296,11 @@ namespace MultiAlignCore.Extensions
                 var msFeatureId = msmsFeature.MSFeatureID;
                 var spectraId = msmsFeature.MSMSFeatureID;
 
-                if (!msFeatures.ContainsKey(msFeatureId)) continue;
-                if (!spectraMap.ContainsKey(spectraId)) continue;
+                if (!msFeatures.ContainsKey(msFeatureId))
+                    continue;
+
+                if (!spectraMap.ContainsKey(spectraId))
+                    continue;
 
                 var msFeature = msFeatures[msFeatureId];
                 var spectrum = spectraMap[spectraId];
@@ -339,7 +344,8 @@ namespace MultiAlignCore.Extensions
                     Id = sequence.Id
                 };
 
-                if (peptideSequenceMaps.ContainsKey(newPeptide.Id)) continue;
+                if (peptideSequenceMaps.ContainsKey(newPeptide.Id))
+                    continue;
 
                 peptideSequenceMaps.Add(newPeptide.Id, newPeptide);
             }

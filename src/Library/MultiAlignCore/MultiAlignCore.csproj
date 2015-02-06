@@ -122,9 +122,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\lib\$(Platform)\ThermoRawFileReaderDLL.dll</HintPath>
     </Reference>
-    <Reference Include="MultiAlignEngine">
-      <HintPath>..\..\..\lib\$(Platform)\MultiAlignEngine.dll</HintPath>
-    </Reference>
     <Reference Include="MSDataFileReader">
       <HintPath>..\..\..\lib\MSDataFileReader.dll</HintPath>
     </Reference>
@@ -134,14 +131,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Algorithms\AlgorithmProvider.cs" />
-    <Compile Include="Algorithms\Alignment\FeatureAlignmentType.cs" />
     <Compile Include="Algorithms\Alignment\SpectralAlignerWrapper.cs" />
     <Compile Include="Algorithms\ClusterFactory.cs" />
     <Compile Include="Algorithms\FeatureFinding\FeatureFinderType.cs" />
     <Compile Include="Algorithms\FeatureFinding\UMCTreeFeatureFinder.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Algorithms\Options\AlignmentOptions.cs" />
     <Compile Include="Algorithms\Alignment\DriftTimeAligner.cs" />
     <Compile Include="Algorithms\Alignment\DummyAlignment.cs" />
     <Compile Include="Algorithms\Alignment\FeatureAlignerFactory.cs" />
@@ -159,11 +154,15 @@
     <Compile Include="Algorithms\Clustering\ClusteringOptions.cs" />
     <Compile Include="Algorithms\Clustering\MsnClusterer.cs" />
     <Compile Include="Algorithms\DelegateAnalysisMethod.cs" />
+    <Compile Include="Algorithms\Options\AlignmentOptions.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Algorithms\Options\MultiAlignAnalysisOptions.cs" />
     <Compile Include="Algorithms\Options\MassTagDatabaseOptions.cs" />
     <Compile Include="Data\AnalysisCompleteEventArgs.cs" />
     <Compile Include="Data\AnalysisErrorEventArgs.cs" />
     <Compile Include="Data\BaselineFeaturesLoadedEventArgs.cs" />
+    <Compile Include="Data\Features\UMCExtended.cs" />
     <Compile Include="Data\MassTagsLoadedEventArgs.cs" />
     <Compile Include="Data\MetaData\SupportedDatasetType.cs" />
     <Compile Include="Extensions\MSSpectraExtensions.cs" />

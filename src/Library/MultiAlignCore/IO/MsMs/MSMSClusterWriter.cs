@@ -26,7 +26,8 @@ namespace MultiAlignCore.IO.Features.Exporters
                     var line = string.Format("{0},", cluster.Id);
 
                     // This is temporary.  So that we only export clusters with two features.
-                    if (cluster.Features.Count > 2) continue;
+                    if (cluster.Features.Count > 2)
+                        continue;
 
                     // Organize the spectra so they are sorted by dataset.
                     cluster.Features.Sort(delegate(MSFeatureLight x, MSFeatureLight y)
@@ -102,7 +103,8 @@ namespace MultiAlignCore.IO.Features.Exporters
                     var line = string.Format("{0},{1},", cluster.Id, cluster.MeanScore);
 
                     // This is temporary.  So that we only export clusters with two features.
-                    if (cluster.Features.Count > 2) continue;
+                    if (cluster.Features.Count > 2)
+                        continue;
 
                     // Organize the spectra so they are sorted by dataset.
                     cluster.Features.Sort(delegate(MSFeatureLight x, MSFeatureLight y)

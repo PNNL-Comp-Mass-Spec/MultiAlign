@@ -1,11 +1,8 @@
 ﻿#region
 
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using MultiAlignCore.Algorithms.Alignment;
 using MultiAlignCore.IO.Parameters;
-using MultiAlignEngine.Alignment;
+using PNNLOmics.Algorithms.Alignment.LcmsWarp;
 
 #endregion
 
@@ -15,67 +12,37 @@ namespace MultiAlignCore.Algorithms.Options
     {
         public AlignmentOptions()
         {
-            NumTimeSections = 100;
-            TopFeatureAbundancePercent = 0;
-            ContractionFactor = 3;
-            MaxTimeJump = 10;
-            MaxPromiscuity = 3;
-            UsePromiscuousPoints = false;
-            MassCalibrationUseLSQ = false;
-            MassCalibrationWindow = 6.0;
-            MassCalibrationNumXSlices = 12;
-            MassCalibrationNumMassDeltaBins = 50;
-            MassCalibrationMaxJump = 20;
-            MassCalibrationMaxZScore = 3;
-            MassCalibrationLSQZScore = 2.5;
-            MassCalibrationLSQNumKnots = 12;
-            MassTolerance = 6.0;
-            NETTolerance = 0.03;
-            AlignmentType = enmAlignmentType.NET_MASS_WARP;
-            RecalibrationType = enmCalibrationType.HYBRID_CALIB;
-            IsAlignmentBaselineAMasstagDB = true;
+            LCMSWarpOptions = new LcmsWarpAlignmentOptions();
             AlignmentBaselineName = "";
-            MassBinSize = .2;
-            NETBinSize = .001;
-            DriftTimeBinSize = .03;
-            ShouldStoreAlignmentFunction = false;
-            SplitAlignmentInMZ = false;
-            MZBoundaries = new List<classAlignmentMZBoundary>();
-
-            AlignmentAlgorithm = FeatureAlignmentType.LcmsWarp;
-
-            /// Construct the m/z boundary object.			
-            MZBoundaries.Add(new classAlignmentMZBoundary(0.0, 505.7));
-            MZBoundaries.Add(new classAlignmentMZBoundary(505.7, 999999999.0));
+            MassTagObservationCount = 0;
         }
 
+        #region Fields
+
+        private bool m_isAlignmentBaselineAMasstagDB;
+
+        public LcmsWarpAlignmentOptions LCMSWarpOptions { get; private set; }
+
+        #endregion
+
+        #region Properties
         [ParameterFile("AlignmentAlgorithmType", "Alignment")]
         [Category("Algorithm")]
         [Description("Type of algorithm to use for alignment.")]
-        public FeatureAlignmentType AlignmentAlgorithm { get; set; }
+        public FeatureAlignmentType AlignmentAlgorithm { get { return LCMSWarpOptions.AlignmentAlgorithmType; } set { LCMSWarpOptions.AlignmentAlgorithmType = value; } }
 
         /// <summary>
-        ///     Gets or sets whether to store alignment data.
+        /// Gets or sets whether to store alignment data.
         /// </summary>
         [ParameterFile("ShouldStoreAlignmentFunction", "Alignment")]
         [Description(
             "Stores the alignment function per dataset.  Optional only.  Set to false if processing a large amount of data."
             )]
-        public bool ShouldStoreAlignmentFunction { get; set; }
+        public bool ShouldStoreAlignmentFunction { get { return LCMSWarpOptions.StoreAlignmentFunction; } set { LCMSWarpOptions.StoreAlignmentFunction = value; } }
 
         [ParameterFile("TopFeatureAbundancePercent", "Alignment")]
-        [Description("Percentage of top Abundance features to use for alignment. ")]
-        public double TopFeatureAbundancePercent { get; set; }
-
-        private void OnNotify(string name)
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(name));
-            }
-        }
-
-        private bool m_isAlignmentBaselineAMasstagDB;
+        [Description("Percentage of top Abundance features to use for alignment (value between 0 and 100). Set to 0 means all features are matched, set to 100 means no features are matched, set to 33 the top 67% of features sorted by abundance are matched.")]
+        public int TopFeatureAbundancePercent { get { return LCMSWarpOptions.TopFeatureAbundancePercent; } set { LCMSWarpOptions.TopFeatureAbundancePercent = value; } }
 
         [Browsable(false)]
         public bool IsAlignmentBaselineAMasstagDB
@@ -96,7 +63,7 @@ namespace MultiAlignCore.Algorithms.Options
         /// </summary>
         [ParameterFile("MassTagObservationCount", "Alignment")]
         [Category("Filtering")]
-        [Description("Says how many LC-MS sample runs the mass tag must have been seen in.")]
+        [Description("Minimum number of LC-MS/MS sample runs that the mass tag must have been seen in.")]
         public int MassTagObservationCount { get; set; }
 
         [Browsable(false)]
@@ -105,152 +72,130 @@ namespace MultiAlignCore.Algorithms.Options
         [ParameterFile("MassCalibrationLSQNumKnots", "Alignment")]
         [Category("Alignment Function")]
         [Description("Determines how many least square knots should be used.")]
-        public int MassCalibrationLSQNumKnots { get; set; }
+        public int MassCalibrationLSQNumKnots { get { return LCMSWarpOptions.MassCalibLsqNumKnots; } set { LCMSWarpOptions.MassCalibLsqNumKnots = value; } }
 
         [ParameterFile("HistogramDriftTimeBinSize", "Alignment")]
         [Category("Binning")]
         [Description("Histogram size of alignment (ms)")]
-        public double DriftTimeBinSize { get; set; }
+        public double DriftTimeBinSize { get { return LCMSWarpOptions.DriftTimeBinSize; } set { LCMSWarpOptions.DriftTimeBinSize = value; } }
 
         [ParameterFile("HistogramNETBinSize", "Alignment")]
         [Category("Binning")]
         [Description("Bin size for NET error histograms.")]
-        public double NETBinSize { get; set; }
+        public double NETBinSize { get { return LCMSWarpOptions.NetBinSize; } set { LCMSWarpOptions.NetBinSize = value; } }
 
         [ParameterFile("HistogramMassBinSize", "Alignment")]
         [Category("Binning")]
         [Description("Histogram size of alignment in parts per million (PPM)")]
-        public double MassBinSize { get; set; }
+        public double MassBinSize { get { return LCMSWarpOptions.MassBinSize; } set { LCMSWarpOptions.MassBinSize = value; } }
 
         [ParameterFile("AlignmentType", "Alignment")]
         [Category("General Calibration")]
         [Description("Determines if NET only, or Mass and NET alignment should be performed.")]
-        public enmAlignmentType AlignmentType { get; set; }
+        public AlignmentType AlignmentType { get { return LCMSWarpOptions.AlignType; } set { LCMSWarpOptions.AlignType = value; } }
 
         [ParameterFile("RecalibrationType", "Alignment")]
         [Category("General Calibration")]
         [Description("Type of recalibration to perform, NET only, or NET and Mass")]
-        public enmCalibrationType RecalibrationType { get; set; }
+        public LcmsWarpCalibrationType RecalibrationType { get { return LCMSWarpOptions.CalibrationType; } set { LCMSWarpOptions.CalibrationType = value; } }
 
-        [ParameterFile("SplitAlignmentMZ", "Alignment")]
-        [Category("General Calibration")]
-        [Description("Determines whether the m/z boundaries should be used for analysis.  False if recommended.")]
-        public bool SplitAlignmentInMZ { get; set; }
+        // Legacy
+        // [ParameterFile("SplitAlignmentMZ", "Alignment")]
+        // [Category("General Calibration")]
+        // [Description("Determines whether the m/z boundaries should be used for analysis.  False if recommended.")]
+        // public bool SplitAlignmentInMZ { get; set; }
 
-        [Category("General Calibration")]
-        [Description("m/z calibration ranges if the detector is not calibrated.  Not normal mode of operation")]
-        public List<classAlignmentMZBoundary> MZBoundaries { get; set; }
+        // Legacy
+        // [Category("General Calibration")]
+        // [Description("m/z calibration ranges if the detector is not calibrated.  Not normal mode of operation")]
+        // public List<classAlignmentMZBoundary> MZBoundaries { get; set; }
 
         [ParameterFile("MassCalibrationLSQZScore", "Alignment")]
         [Category("Mass Calibration")]
         [Description("Determines the z-score cutoff for mass calibration")]
-        public double MassCalibrationLSQZScore { get; set; }
+        public double MassCalibrationLSQZScore { get { return LCMSWarpOptions.MassCalibLsqMaxZScore; } set { LCMSWarpOptions.MassCalibLsqMaxZScore = value; } }
 
         [ParameterFile("MassCalibrationMaxJump", "Alignment")]
         [Category("Mass Calibration")]
         [Description("")]
-        public int MassCalibrationMaxJump { get; set; }
+        public int MassCalibrationMaxJump { get { return LCMSWarpOptions.MassCalibMaxJump; } set { LCMSWarpOptions.MassCalibMaxJump = value; } }
 
         [ParameterFile("MassCalibrationMaxZScore", "Alignment")]
         [Category("Mass Calibration")]
         [Description("")]
-        public double MassCalibrationMaxZScore { get; set; }
+        public double MassCalibrationMaxZScore { get { return LCMSWarpOptions.MassCalibMaxZScore; } set { LCMSWarpOptions.MassCalibMaxZScore = value; } }
 
         [ParameterFile("MassCalibrationNumMassDeltaBins", "Alignment")]
         [Category("Mass Calibration")]
         [Description("Number of divisions to make in the mass dimension.")]
-        public int MassCalibrationNumMassDeltaBins { get; set; }
+        public int MassCalibrationNumMassDeltaBins { get { return LCMSWarpOptions.MassCalibNumYSlices; } set { LCMSWarpOptions.MassCalibNumYSlices = value; } }
 
         [ParameterFile("MassCalibrationNumXSlices", "Alignment")]
         [Category("Mass Calibration")]
         [Description("Number of divisions to make in NET.")]
-        public int MassCalibrationNumXSlices { get; set; }
+        public int MassCalibrationNumXSlices { get { return LCMSWarpOptions.MassCalibNumXSlices; } set { LCMSWarpOptions.MassCalibNumXSlices = value; } }
 
         [ParameterFile("MassCalibrationUseLSQ", "Alignment")]
         [Category("Mass Calibration")]
         [Description("Determines whether least squares is used for the fit.")]
-        public bool MassCalibrationUseLSQ { get; set; }
+        public bool MassCalibrationUseLSQ { get { return LCMSWarpOptions.MassCalibUseLsq; } set { LCMSWarpOptions.MassCalibUseLsq = value; } }
 
         [ParameterFile("MassCalibrationWindow", "Alignment")]
         [Category("Mass Calibration")]
         [Description("Mass Calibration window to use in parts per million (PPM)")]
-        public double MassCalibrationWindow { get; set; }
+        public double MassCalibrationWindow { get { return LCMSWarpOptions.MassCalibrationWindow; } set { LCMSWarpOptions.MassCalibrationWindow = value; } }
 
         [ParameterFile("MaxPromiscuity", "Alignment")]
         [Category("Matching")]
         [Description(
             "Total number of candidate matches that can be allowed for a single LC-MS Features before being discarded.")
         ]
-        public int MaxPromiscuity { get; set; }
+        public int MaxPromiscuity { get { return LCMSWarpOptions.MaxPromiscuity; } set { LCMSWarpOptions.MaxPromiscuity = value; } }
 
         [ParameterFile("UsePromiscuousPoints", "Alignment")]
         [Category("Matching")]
         [Description(
             "Determines whether features can match to multiple features or whether they are considered ambiguous.")]
-        public bool UsePromiscuousPoints { get; set; }
+        public bool UsePromiscuousPoints { get { return LCMSWarpOptions.UsePromiscuousPoints; } set { LCMSWarpOptions.UsePromiscuousPoints = value; } }
 
         [ParameterFile("MassTolerance", "Alignment")]
         [Category("Tolerances")]
         [Description("Mass tolerance in parts per million (PPM)")]
-        public double MassTolerance { get; set; }
+        public double MassTolerance { get { return LCMSWarpOptions.MassTolerance; } set { LCMSWarpOptions.MassTolerance = value; } }
 
         [ParameterFile("MaxTimeJump", "Alignment")]
         [Category("Tolerances")]
         [Description("Largest scan range allowed for a feature match.")]
-        public int MaxTimeJump { get; set; }
+        public int MaxTimeJump { get { return LCMSWarpOptions.MaxTimeDistortion; } set { LCMSWarpOptions.MaxTimeDistortion = value; } }
 
         [ParameterFile("NETTolerance", "Alignment")]
         [Category("Tolerances")]
         [Description("NET tolerance for allowable feature matches.")]
-        public double NETTolerance { get; set; }
+        public double NETTolerance { get { return LCMSWarpOptions.NetTolerance; } set { LCMSWarpOptions.NetTolerance = value; } }
 
         [ParameterFile("NumTimeSections", "Alignment")]
         [Category("Tolerances")]
         [Description("Number of divisions to make in NET.")]
-        public int NumTimeSections { get; set; }
+        public int NumTimeSections { get { return LCMSWarpOptions.NumTimeSections; } set { LCMSWarpOptions.NumTimeSections = value; } }
 
         [ParameterFile("ContractionFactor", "Alignment")]
         [Category("Weights")]
         [Description("Determines how far away a baseline scan can be compared to alignee scans.")]
-        public int ContractionFactor { get; set; }
+        public int ContractionFactor { get { return LCMSWarpOptions.ContractionFactor; } set { LCMSWarpOptions.ContractionFactor = value; } }
 
-        /// <summary>
-        ///     Converts the current options into the older engine based ones.
-        /// </summary>
-        /// <param name="newOptions"></param>
-        /// <returns></returns>
-        public static clsAlignmentOptions ConvertToEngine(AlignmentOptions newOptions)
+        #endregion
+
+        #region Methods
+
+        private void OnNotify(string name)
         {
-            var options = new clsAlignmentOptions
+            if (PropertyChanged != null)
             {
-                AlignmentBaselineName = newOptions.AlignmentBaselineName,
-                AlignmentType = newOptions.AlignmentType,
-                ContractionFactor = Convert.ToInt16(newOptions.ContractionFactor),
-                DriftTimeBinSize = newOptions.DriftTimeBinSize,
-                IsAlignmentBaselineAMasstagDB = newOptions.IsAlignmentBaselineAMasstagDB,
-                MassBinSize = newOptions.MassBinSize,
-                MassCalibrationLSQNumKnots = Convert.ToInt16(newOptions.MassCalibrationLSQNumKnots),
-                MassCalibrationLSQZScore = newOptions.MassCalibrationLSQZScore,
-                MassCalibrationMaxJump = Convert.ToInt16(newOptions.MassCalibrationMaxJump),
-                MassCalibrationMaxZScore = newOptions.MassCalibrationMaxZScore,
-                MassCalibrationNumMassDeltaBins = Convert.ToInt16(newOptions.MassCalibrationNumMassDeltaBins),
-                MassCalibrationNumXSlices = Convert.ToInt16(newOptions.MassCalibrationNumXSlices),
-                MassCalibrationUseLSQ = newOptions.MassCalibrationUseLSQ,
-                MassCalibrationWindow = newOptions.MassCalibrationWindow,
-                MassTolerance = newOptions.MassTolerance,
-                MaxPromiscuity = Convert.ToInt16(newOptions.MaxPromiscuity),
-                MaxTimeJump = Convert.ToInt16(newOptions.MaxTimeJump),
-                MZBoundaries = newOptions.MZBoundaries,
-                NETBinSize = newOptions.NETBinSize,
-                NETTolerance = newOptions.NETTolerance,
-                NumTimeSections = newOptions.NumTimeSections,
-                RecalibrationType = newOptions.RecalibrationType,
-                SplitAlignmentInMZ = newOptions.SplitAlignmentInMZ,
-                UsePromiscuousPoints = newOptions.UsePromiscuousPoints
-            };
-
-            return options;
+                PropertyChanged(this, new PropertyChangedEventArgs(name));
+            }
         }
+
+        #endregion
 
         #region INotifyPropertyChanged Members
 

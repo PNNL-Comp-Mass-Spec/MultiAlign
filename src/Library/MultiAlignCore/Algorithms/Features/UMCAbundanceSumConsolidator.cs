@@ -27,8 +27,8 @@ namespace MultiAlignCore.Algorithms.Features
         public override Dictionary<int, UMCLight> ConsolidateUMCs(List<UMCLight> features)
         {
             // Maps the UMC abundances to sum across the groups.
-            var umcAbundanceMap = new Dictionary<int, long>();
-            var umcAbundanceSumMap = new Dictionary<int, long>();
+            var umcAbundanceMap = new Dictionary<int, double>();
+            var umcAbundanceSumMap = new Dictionary<int, double>();
 
             // Map the UMC's to datasets so we can choose only one.
             var umcs = new Dictionary<int, UMCLight>();

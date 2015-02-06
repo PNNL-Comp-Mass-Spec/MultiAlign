@@ -322,7 +322,8 @@ namespace MultiAlignCore.Algorithms
 
             foreach (var dataset in datasets)
             {
-                if (dataset.IsBaseline) continue;
+                if (dataset.IsBaseline)
+                    continue;
 
                 var features = featureCache.LoadDataset(dataset,
                     analysisOptions.MsFilteringOptions,
@@ -639,7 +640,8 @@ namespace MultiAlignCore.Algorithms
         /// </summary>
         private void PerformPeakMatching(AnalysisConfig config)
         {
-            if (!config.ShouldPeakMatch) return;
+            if (!config.ShouldPeakMatch)
+                return;
 
             if (m_config.Analysis.MassTagDatabase == null)
             {
@@ -790,7 +792,9 @@ namespace MultiAlignCore.Algorithms
             config.Analysis.MassTagDatabase = database;
 
 
-            if (database == null) return;
+            if (database == null)
+                return;
+
             config.Analysis.DataProviders.MassTags.AddAll(database.MassTags);
 
             var proteinCache = new ProteinDAO();

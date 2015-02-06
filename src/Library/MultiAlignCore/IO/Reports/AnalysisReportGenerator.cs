@@ -127,8 +127,11 @@ namespace MultiAlignCore.IO.Reports
         {
             Logger.PrintMessage("Creating Mass Tag Plot.");
 
-            if (e.Database == null) return;
-            if (e.MassTags == null) return;
+            if (e.Database == null)
+                return;
+
+            if (e.MassTags == null)
+                return;
 
             var feature = ScatterPlotFactory.CreateFeatureMassScatterPlot(e.MassTags);
             var name = e.Database.Name;
@@ -144,7 +147,8 @@ namespace MultiAlignCore.IO.Reports
         public void CreateBaselinePlots(BaselineFeaturesLoadedEventArgs e)
         {
             var baselineInfo = e.DatasetInformation;
-            if (baselineInfo == null) return;
+            if (baselineInfo == null)
+                return;
 
             var feature = ScatterPlotFactory.CreateFeatureMassScatterPlot(e.Features);
             var name = e.DatasetInformation.DatasetName;
@@ -165,7 +169,8 @@ namespace MultiAlignCore.IO.Reports
         {
             var name = e.AligneeDatasetInformation.DatasetName;
             var alignmentData = e.AlignmentData;
-            if (alignmentData == null) return;
+            if (alignmentData == null)
+                return;
             
             var directory       = Path.Combine(Config.AnalysisPath, PlotPath, name);
             var heatmap         = HeatmapFactory.CreateAlignedHeatmap(alignmentData.heatScores);
@@ -174,13 +179,13 @@ namespace MultiAlignCore.IO.Reports
             var massHistomgram  = HistogramFactory.CreateHistogram(alignmentData.massErrorHistogram, "Mass Error", "Mass Error (ppm)");
             var residuals       = alignmentData.ResidualData;
 
-            var netResidual         = ScatterPlotFactory.CreateResidualPlot(residuals.scans, residuals.linearCustomNet,
-                residuals.linearNet, "NET Residuals", "Scans", "NET");
-            var massMzResidual      = ScatterPlotFactory.CreateResidualPlot(residuals.mz, residuals.mzMassError,
-                residuals.mzMassErrorCorrected, "Mass Residuals", "m/z", "Mass Errors");
+            var netResidual         = ScatterPlotFactory.CreateResidualPlot(residuals.Scan, residuals.LinearCustomNet,
+                residuals.LinearNet, "NET Residuals", "Scans", "NET");
+            var massMzResidual = ScatterPlotFactory.CreateResidualPlot(residuals.Mz, residuals.MzMassError,
+                residuals.MzMassErrorCorrected, "Mass Residuals", "m/z", "Mass Errors");
 
-            var massScanResidual    = ScatterPlotFactory.CreateResidualPlot(residuals.scans, residuals.mzMassError,
-                residuals.mzMassErrorCorrected, "Mass Residuals", "Scan", "Mass Errors");
+            var massScanResidual = ScatterPlotFactory.CreateResidualPlot(residuals.Scan, residuals.MzMassError,
+                residuals.MzMassErrorCorrected, "Mass Residuals", "Scan", "Mass Errors");
             
             var report = Config.Report;
             report.PushLargeText(string.Format("Alignee Statistics - {0}", name));            

@@ -7,6 +7,7 @@ using PNNLOmics.Algorithms.Alignment;
 using PNNLOmics.Algorithms.Alignment.SpectralMatches;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Data.MassTags;
+using PNNLOmics.Algorithms.Alignment.LcmsWarp;
 
 #endregion
 
@@ -23,19 +24,19 @@ namespace MultiAlignCore.Algorithms.Alignment
 
         public static IFeatureAligner<IEnumerable<UMCLight>, IEnumerable<UMCLight>, classAlignmentData>
             CreateDatasetAligner(FeatureAlignmentType type,
-                AlignmentOptions options,
+                LcmsWarpAlignmentOptions options,
                 SpectralOptions spectralOptions)
         {
             IFeatureAligner<IEnumerable<UMCLight>, IEnumerable<UMCLight>, classAlignmentData> aligner = null;
             switch (type)
             {
-                case FeatureAlignmentType.LcmsWarp:
+                case FeatureAlignmentType.LCMS_WARP:
                     aligner = new LcmsWarpFeatureAligner {Options = options};
                     break;
-                case FeatureAlignmentType.DirectImsInfusion:
+                case FeatureAlignmentType.DIRECT_IMS_INFUSION:
                     aligner = new DummyAlignment();
                     break;
-                case FeatureAlignmentType.SpectralAlignment:
+                case FeatureAlignmentType.SPECTRAL_ALIGNMENT:
                     aligner = new SpectralAlignerWrapper {Options = spectralOptions, Bandwidth = Bandwidth};
                     break;
             }
@@ -45,20 +46,20 @@ namespace MultiAlignCore.Algorithms.Alignment
 
         public static IFeatureAligner<MassTagDatabase, IEnumerable<UMCLight>, classAlignmentData> CreateDatabaseAligner(
             FeatureAlignmentType type,
-            AlignmentOptions options,
+            LcmsWarpAlignmentOptions options,
             SpectralOptions spectralOptions)
         {
             IFeatureAligner<MassTagDatabase, IEnumerable<UMCLight>, classAlignmentData> aligner = null;
 
             switch (type)
             {
-                case FeatureAlignmentType.LcmsWarp:
-                    aligner = new LcmsWarpFeatureAligner {Options = options};
+                case FeatureAlignmentType.LCMS_WARP:
+                    aligner = new LcmsWarpFeatureAligner { Options = options };
                     break;
-                case FeatureAlignmentType.DirectImsInfusion:
+                case FeatureAlignmentType.DIRECT_IMS_INFUSION:
                     aligner = new DummyAlignment();
                     break;
-                case FeatureAlignmentType.SpectralAlignment:
+                case FeatureAlignmentType.SPECTRAL_ALIGNMENT:
                     aligner = new SpectralAlignerWrapper {Options = spectralOptions};
                     break;
             }

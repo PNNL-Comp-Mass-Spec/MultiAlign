@@ -147,7 +147,8 @@ namespace MultiAlignCore.Algorithms
 
         private void ReportPeptideFeatures(DatasetInformation information, IEnumerable<UMCLight> features)
         {
-            if (!m_config.ShouldCreatePeptideScanFiles) return;
+            if (!m_config.ShouldCreatePeptideScanFiles)
+                return;
 
             var path = Path.Combine(m_config.AnalysisPath, information.DatasetName + "_peptide_scans.csv");
             var writer = new PeptideScanWriter();
@@ -698,7 +699,9 @@ namespace MultiAlignCore.Algorithms
         {
             // Output the settings to INI for viewing.
             var outParamName = Path.GetFileNameWithoutExtension(m_config.ParameterFile);
-            if (outParamName == null) return;
+            if (outParamName == null)
+                return;
+
             var outParamPath = Path.Combine(m_config.AnalysisPath, outParamName);
             var writer = new JsonWriter<MultiAlignAnalysisOptions>();
             writer.Write(outParamPath + ".json", m_config.Analysis.Options);

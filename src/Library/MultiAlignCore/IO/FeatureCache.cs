@@ -68,7 +68,8 @@ namespace MultiAlignCore.IO
                         spectrum.GroupId = datasetId;
                         matches.Add(match);
 
-                        if (spectraTracker.ContainsKey(spectrum.Id)) continue;
+                        if (spectraTracker.ContainsKey(spectrum.Id))
+                            continue;
 
                         msmsFeatures.Add(spectrum);
                         spectraTracker.Add(spectrum.Id, spectrum);

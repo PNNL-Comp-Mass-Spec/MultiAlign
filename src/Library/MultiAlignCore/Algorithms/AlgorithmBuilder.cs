@@ -4,6 +4,7 @@ using System;
 using MultiAlignCore.Algorithms.Alignment;
 using MultiAlignCore.Algorithms.FeatureMatcher;
 using MultiAlignCore.Algorithms.Options;
+using PNNLOmics.Algorithms.Alignment.LcmsWarp;
 using PNNLOmics.Algorithms.Alignment.SpectralMatches;
 using PNNLOmics.Algorithms.FeatureClustering;
 using PNNLOmics.Algorithms.FeatureMatcher.Data;
@@ -44,11 +45,12 @@ namespace MultiAlignCore.Algorithms
         /// <summary>
         ///     Builds the feature aligner.
         /// </summary>
-        public void BuildAligner(AlignmentOptions options, SpectralOptions spectralOptions)
+        public void BuildAligner(LcmsWarpAlignmentOptions options, SpectralOptions spectralOptions)
         {
-            m_provider.DatasetAligner = FeatureAlignerFactory.CreateDatasetAligner(options.AlignmentAlgorithm, options,
+            m_provider.DatasetAligner = FeatureAlignerFactory.CreateDatasetAligner(options.AlignmentAlgorithmType, options,
                 spectralOptions);
-            m_provider.DatabaseAligner = FeatureAlignerFactory.CreateDatabaseAligner(options.AlignmentAlgorithm, options,
+
+            m_provider.DatabaseAligner = FeatureAlignerFactory.CreateDatabaseAligner(options.AlignmentAlgorithmType, options,
                 spectralOptions);
         }
 
@@ -94,7 +96,7 @@ namespace MultiAlignCore.Algorithms
             }
             if (m_provider.DatabaseAligner == null && m_provider.DatabaseAligner == null)
             {
-                BuildAligner(options.AlignmentOptions, options.SpectralOptions);
+                BuildAligner(options.AlignmentOptions.LCMSWarpOptions, options.SpectralOptions);
             }
             if (m_provider.PeakMatcher == null)
             {

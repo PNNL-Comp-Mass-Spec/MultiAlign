@@ -2,8 +2,8 @@
 
 using System;
 using System.Collections.Generic;
-using MultiAlignEngine.Alignment;
 using PNNLOmics.Algorithms.Alignment.SpectralMatching;
+using PNNLOmics.Algorithms.Alignment.LcmsWarp;
 
 #endregion
 
@@ -12,12 +12,12 @@ namespace MultiAlignCore.Data.Alignment
     [Serializable]
     public class classAlignmentData
     {
-        private classAlignmentResidualData mobj_residualData;
+        private ResidualData mobj_residualData;
 
         public int DatasetID { get; set; }
-        public clsAlignmentFunction alignmentFunction;
+        public LcmsWarpAlignmentFunction alignmentFunction;
         public string aligneeDataset;
-        public float[,] heatScores;
+        public double[,] heatScores;
         public int minScanBaseline;
         public int maxScanBaseline;
         public float minMTDBNET;
@@ -43,7 +43,7 @@ namespace MultiAlignCore.Data.Alignment
         /// <summary>
         ///     Gets or sets the residual alignment data.
         /// </summary>
-        public classAlignmentResidualData ResidualData
+        public ResidualData ResidualData
         {
             get { return mobj_residualData; }
             set { mobj_residualData = value; }
