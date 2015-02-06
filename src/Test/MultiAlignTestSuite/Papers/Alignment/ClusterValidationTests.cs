@@ -19,6 +19,7 @@ using MultiAlignCore.IO.RawData;
 using NUnit.Framework;
 using PNNLOmics.Algorithms;
 using PNNLOmics.Algorithms.Alignment;
+using PNNLOmics.Algorithms.Alignment.LcmsWarp;
 using PNNLOmics.Algorithms.Alignment.SpectralMatches;
 using PNNLOmics.Algorithms.Alignment.SpectralMatching;
 using PNNLOmics.Algorithms.FeatureClustering;
@@ -322,13 +323,13 @@ namespace MultiAlignTestSuite.Papers.Alignment
         [Test]
         [TestCase(@"M:\data\proteomics\TestData\QC-Shew-Annotated2",
             @"M:\data\proteomics\TestData\QC-Shew-Annotated2\matches",
-            FeatureAlignmentType.SpectralAlignment,
+            FeatureAlignmentType.SPECTRAL_ALIGNMENT,
             LcmsFeatureClusteringAlgorithmType.AverageLinkage,
             Ignore = false
             )]
         [TestCase(@"M:\data\proteomics\TestData\LipidTests",
             @"M:\data\proteomics\TestData\QC-Shew-Annotated2\lipidMatches",
-            FeatureAlignmentType.SpectralAlignment,
+            FeatureAlignmentType.SPECTRAL_ALIGNMENT,
             LcmsFeatureClusteringAlgorithmType.AverageLinkage,
             Ignore = true
             )]
@@ -353,7 +354,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
             var datasets = DatasetInformation.ConvertInputFilesIntoDatasets(inputFiles);
 
             // Setup our alignment options
-            var warpOptions = new AlignmentOptions();
+            var alignmentOptions = new AlignmentOptions();
             var spectralOptions = new SpectralOptions
             {
                 ComparerType = SpectralComparison.CosineDotProduct,
@@ -385,7 +386,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
             // Create our algorithms
             var finder = FeatureFinderFactory.CreateFeatureFinder(FeatureFinderType.TreeBased);
             var aligner = FeatureAlignerFactory.CreateDatasetAligner(alignmentType,
-                warpOptions,
+                alignmentOptions.LCMSWarpOptions,
                 spectralOptions);
             var clusterer = ClusterFactory.Create(clusterType);
             clusterer.Parameters = new FeatureClusterParameters<UMCLight>
@@ -632,7 +633,8 @@ namespace MultiAlignTestSuite.Papers.Alignment
         {
             // Get the peptides associated with this feature set.
             var peptideReaderY = PeptideReaderFactory.CreateReader(sequencePath);
-            if (peptideReaderY == null) return;
+            if (peptideReaderY == null)
+                return;
 
             // Load the peptide Y
             UpdateStatus("Linking peptides to ms/ms");

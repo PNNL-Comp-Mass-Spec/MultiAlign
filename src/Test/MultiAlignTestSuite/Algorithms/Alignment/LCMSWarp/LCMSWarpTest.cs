@@ -8,9 +8,6 @@ using System.Text;
 using MultiAlignCore.Algorithms.Alignment;
 using MultiAlignCore.Algorithms.FeatureMatcher;
 using MultiAlignCore.Drawing;
-using MultiAlignEngine.Alignment;
-using MultiAlignEngine.Features;
-using MultiAlignTestSuite.Algorithms.FeatureFinding;
 using NUnit.Framework;
 using PNNLOmics.Algorithms.Alignment.LcmsWarp;
 using PNNLOmics.Data.Features;
@@ -206,7 +203,7 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
             var mind = features.Min(x => x.Net);
             if (maxd - mind < double.Epsilon)
                 throw new Exception("There is something wrong with the features NET values");
-            aligner.Options.AlignmentType = enmAlignmentType.NET_MASS_WARP;
+            aligner.Options.AlignType = AlignmentType.NET_MASS_WARP;
 
 
             var outputData      = aligner.Align(baseline, features);
@@ -216,12 +213,14 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
             var netHistogram   = HistogramFactory.CreateHistogram(outputData.netErrorHistogram, "NET Error Histogram", "NET Error");
             var massHistogram  = HistogramFactory.CreateHistogram(outputData.massErrorHistogram, "Mass Error Histogram", "Mass Error (ppm)");
 
-            var netResidual         = ScatterPlotFactory.CreateResidualPlot(residuals.scans, residuals.linearCustomNet,
-               residuals.linearNet, "NET Residuals", "Scans", "NET");
-            var massMzResidual      = ScatterPlotFactory.CreateResidualPlot(residuals.mz, residuals.mzMassError,
-                residuals.mzMassErrorCorrected, "Mass Residuals", "m/z", "Mass Errors");
-            var massScanResidual    = ScatterPlotFactory.CreateResidualPlot(residuals.scans, residuals.mzMassError,
-                residuals.mzMassErrorCorrected, "Mass Residuals", "Scan", "Mass Errors");
+            var netResidual         = ScatterPlotFactory.CreateResidualPlot(residuals.Scan, residuals.LinearCustomNet,
+               residuals.LinearNet, "NET Residuals", "Scans", "NET");
+
+            var massMzResidual      = ScatterPlotFactory.CreateResidualPlot(residuals.Mz, residuals.MzMassError,
+                residuals.MzMassErrorCorrected, "Mass Residuals", "m/z", "Mass Errors");
+
+            var massScanResidual    = ScatterPlotFactory.CreateResidualPlot(residuals.Scan, residuals.MzMassError,
+                residuals.MzMassErrorCorrected, "Mass Residuals", "Scan", "Mass Errors");
 
             var directory   = Path.Combine(outputPath, name);
 
@@ -266,8 +265,8 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
                 }
             }
 
-            var oldStyle = new clsAlignmentProcessor();
-            var oldBaseline = baseline.Select(baseData => new clsUMC
+            var oldStyle = new MultiAlignEngine.Alignment.clsAlignmentProcessor();
+            var oldBaseline = baseline.Select(baseData => new MultiAlignEngine.Features.clsUMC
             {
                 Net = baseData.Net,
                 MZForCharge = baseData.Mz,
@@ -305,8 +304,8 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
                     Id = Convert.ToInt32(parsed[6])
                 }).ToList();
 
-            var oldStyle = new clsAlignmentProcessor();
-            var oldFeatures = features.Select(baseData => new clsUMC
+            var oldStyle = new MultiAlignEngine.Alignment.clsAlignmentProcessor();
+            var oldFeatures = features.Select(baseData => new MultiAlignEngine.Features.clsUMC
             {
                 Net = baseData.Net,
                 MZForCharge = baseData.Mz,
@@ -316,7 +315,7 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
                 Id = baseData.Id
             }).ToList();
 
-            var oldMzBound = new classAlignmentMZBoundary(0, 9999999.0);
+            var oldMzBound = new MultiAlignEngine.Alignment.classAlignmentMZBoundary(0, 9999999.0);
             oldStyle.SetAligneeDatasetFeatures(oldFeatures, oldMzBound);
 
             Console.WriteLine(@"Done testing");

@@ -135,8 +135,6 @@
     <Compile Include="Algorithms\Alignment\LCMSWarp\LCMSWarpTest.cs" />
     <Compile Include="Algorithms\CallisterClusters\CompareClusters.cs" />
     <Compile Include="Algorithms\FeatureFinding\FeatureFindingTest.cs" />
-    <Compile Include="TestBase.cs" />
-    <Compile Include="TestPathSingleton.cs" />
     <Compile Include="Algorithms\MsMsClustering.cs" />
     <Compile Include="Algorithms\SpectralProcessing\SpectralAlignmentTests.cs" />
     <Compile Include="Algorithms\SpectralProcessing\SpectralComparisonTests.cs" />
