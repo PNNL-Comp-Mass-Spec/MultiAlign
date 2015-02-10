@@ -9,9 +9,9 @@
       <key-property name="GroupId"                column="DATASET_ID" type="integer" />
     </composite-id>
     <property name="DriftTime"                    column="DriftTime"                  type="double"   not-null="false" />
-		<property name="Scan"                         column="SCAN_NUM"                   type="integer"  not-null="false" />
+		<property name="Scan"                         column="SCAN_NUM"                   type="int"  not-null="false" />
 		<property name="ChargeState"                  column="CHARGE"                     type="int"      not-null="false" />
-		<property name="Abundance"                    column="ABUNDANCE"                  type="long"     not-null="false" />
+		<property name="Abundance"                    column="ABUNDANCE"                  type="double"     not-null="false" />
 		<property name="Mz"                           column="MZ"                         type="double"   not-null="false" />
 		<property name="MassMonoisotopic"             column="MONOISOTOPIC_MW"            type="double"   not-null="false" />    
     <property name="UmcId"                        column="LCMS_FEATURE_ID"   type="int"   not-null="false" />
