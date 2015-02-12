@@ -29,6 +29,9 @@ namespace MultiAlignCore.IO.Features
         /// </summary>
         private readonly Dictionary<int, DatasetSummary> m_datasetMetaData;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public ThermoRawDataFileReader()
         {
             m_datasetMetaData = new Dictionary<int, DatasetSummary>();
@@ -37,6 +40,11 @@ namespace MultiAlignCore.IO.Features
             m_opened = new Dictionary<int, bool>();
         }
 
+        /// <summary>
+        /// Get the total number of scans for the given dataset
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <returns></returns>
         public int GetTotalScans(int groupId)
         {
             // Get the RawFileReader for this group
@@ -46,8 +54,8 @@ namespace MultiAlignCore.IO.Features
         }
 
         /// <summary>
-        ///     Adds a dataset file to the reader map so when in use the application
-        ///     knows where to get raw data from.
+        /// Adds a dataset file to the reader map so when in use the application
+        /// knows where to get raw data from.
         /// </summary>
         /// <param name="path"></param>
         /// <param name="groupId"></param>
@@ -77,6 +85,12 @@ namespace MultiAlignCore.IO.Features
 
         #region IRawDataFileReader Members
 
+        /// <summary>
+        /// Reads a list of MSMS Spectra header data from the Raw file
+        /// </summary>
+        /// <param name="groupId">File group ID</param>
+        /// <param name="excludeMap">Dictionary indicating which scans and related feature ID's to ignore.</param>
+        /// <returns>List of MSMS spectra data</returns>
         public List<MSSpectra> GetMSMSSpectra(int groupId, Dictionary<int, int> excludeMap)
         {
             return GetMSMSSpectra(groupId, excludeMap, false);
@@ -87,7 +101,7 @@ namespace MultiAlignCore.IO.Features
         /// </summary>
         /// <param name="groupId">File group ID</param>
         /// <param name="excludeMap">Dictionary indicating which scans and related feature ID's to ignore.</param>
-        /// <param name="loadPeaks"></param>
+        /// <param name="loadPeaks">True to also load the mass/intensity pairs for each spectrum</param>
         /// <returns>List of MSMS spectra data</returns>
         public List<MSSpectra> GetMSMSSpectra(int groupId, Dictionary<int, int> excludeMap, bool loadPeaks)
         {
@@ -99,44 +113,28 @@ namespace MultiAlignCore.IO.Features
             var numberOfScans = rawReader.GetNumScans();
             for (var i = 0; i < numberOfScans; i++)
             {
-                // This scan is not to be used.
                 var isInExcludeMap = excludeMap.ContainsKey(i);
                 if (isInExcludeMap)
+                {
+                    // This scan is not to be used.
                     continue;
+                }
 
-                var header = new FinniganFileReaderBaseClass.udtScanHeaderInfoType();
-                rawReader.GetScanInfo(i, out header);
+                FinniganFileReaderBaseClass.udtScanHeaderInfoType header;
+                var summary = GetScanSummary(i, rawReader, out header);
 
                 if (header.MSLevel > 1)
                 {
-                    var spectrum = new MSSpectra();
-                    spectrum.MsLevel = header.MSLevel;
-                    spectrum.RetentionTime = header.RetentionTime;
-                    spectrum.Scan = i;
-                    spectrum.PrecursorMz = header.ParentIonMZ;
-                    spectrum.TotalIonCurrent = header.TotalIonCurrent;
-                    spectrum.CollisionType = CollisionType.Other;
-
-
-                    switch (header.CollisionMode)
+                    var spectrum = new MSSpectra
                     {
-                        case "cid":
-                            spectrum.CollisionType = CollisionType.Cid;
-                            break;
-                        case "hcd":
-                            spectrum.CollisionType = CollisionType.Hcd;
-                            break;
-                        case "etd":
-                            spectrum.CollisionType = CollisionType.Etd;
-                            break;
-                        case "ecd":
-                            spectrum.CollisionType = CollisionType.Ecd;
-                            break;
-                        case "hid":
-                            spectrum.CollisionType = CollisionType.Hid;
-                            break;
-                    }
-
+                        MsLevel = header.MSLevel,
+                        RetentionTime = header.RetentionTime,
+                        Scan = i,
+                        PrecursorMz = header.ParentIonMZ,
+                        TotalIonCurrent = header.TotalIonCurrent,
+                        CollisionType = summary.CollisionType
+                    };
+                   
                     // Need to make this a standard type of collision based off of the data.
                     if (loadPeaks)
                     {
@@ -144,13 +142,13 @@ namespace MultiAlignCore.IO.Features
                     }
                     spectra.Add(spectrum);
                 }
-            }            
+            }
 
             return spectra;
         }
 
         /// <summary>
-        ///     Reads a list of MSMS Spectra header data from the mzXML file.
+        /// Reads a list of MSMS Spectra header data from the mzXML file.
         /// </summary>
         /// <param name="groupId">File Group ID</param>
         /// <returns>List of MSMS spectra data</returns>
@@ -200,11 +198,11 @@ namespace MultiAlignCore.IO.Features
         }
 
         /// <summary>
-        ///     Gets the raw data from the data file.
+        /// Gets the raw data from the data file.
         /// </summary>
         public List<XYData> GetRawSpectra(int scan, int groupId, int msLevel)
         {
-            var summary = new ScanSummary();
+            ScanSummary summary;
             return GetRawSpectra(scan, groupId, msLevel, out summary);
         }
 
@@ -213,43 +211,10 @@ namespace MultiAlignCore.IO.Features
             // Get the RawFileReader for this group
             var rawReader = GetReaderForGroup(groupId);
 
-            var totalSpectra = rawReader.GetNumScans();
+            ValidateScanNumber(scan, rawReader);
 
-            if (scan > totalSpectra)
-                throw new ScanOutOfRangeException("The requested scan is out of range.");
-
-            var header = new FinniganFileReaderBaseClass.udtScanHeaderInfoType();
-            rawReader.GetScanInfo(scan, out header);
-
-            summary = new ScanSummary
-            {
-                MsLevel = header.MSLevel,
-                Time = header.RetentionTime,
-                Scan = scan,
-                TotalIonCurrent = Convert.ToInt64(header.TotalIonCurrent),
-                PrecursorMz = header.ParentIonMZ,
-                CollisionType = CollisionType.Other,
-            };
-
-
-            switch (header.CollisionMode)
-            {
-                case "cid":
-                    summary.CollisionType = CollisionType.Cid;
-                    break;
-                case "hcd":
-                    summary.CollisionType = CollisionType.Hcd;
-                    break;
-                case "etd":
-                    summary.CollisionType = CollisionType.Etd;
-                    break;
-                case "ecd":
-                    summary.CollisionType = CollisionType.Ecd;
-                    break;
-                case "hid":
-                    summary.CollisionType = CollisionType.Hid;
-                    break;
-            }
+            FinniganFileReaderBaseClass.udtScanHeaderInfoType header;
+            summary = GetScanSummary(scan, rawReader, out header);
 
             if (header.MSLevel != msLevel && msLevel != -1)
                 return null;
@@ -300,7 +265,7 @@ namespace MultiAlignCore.IO.Features
             // Get the RawFileReader for this group
             var rawReader = GetReaderForGroup(groupId);
 
-            var header = new FinniganFileReaderBaseClass.udtScanHeaderInfoType();
+            FinniganFileReaderBaseClass.udtScanHeaderInfoType header;
             rawReader.GetScanInfo(scan, out header);
 
             return header.MSLevel == 1;
@@ -355,36 +320,9 @@ namespace MultiAlignCore.IO.Features
             var numberOfScans = rawReader.GetNumScans();
             for (var i = 0; i < numberOfScans; i++)
             {
-                var header = new FinniganFileReaderBaseClass.udtScanHeaderInfoType();
-                rawReader.GetScanInfo(i, out header);
-
-                var summary = new ScanSummary();
-                summary.MsLevel = header.MSLevel;
-                summary.Time = header.RetentionTime;
-                summary.Scan = i;
-                summary.TotalIonCurrent = Convert.ToInt64(header.TotalIonCurrent);
-                summary.PrecursorMz = header.ParentIonMZ;
-                summary.CollisionType = CollisionType.Other;
-
-
-                switch (header.CollisionMode)
-                {
-                    case "cid":
-                        summary.CollisionType = CollisionType.Cid;
-                        break;
-                    case "hcd":
-                        summary.CollisionType = CollisionType.Hcd;
-                        break;
-                    case "etd":
-                        summary.CollisionType = CollisionType.Etd;
-                        break;
-                    case "ecd":
-                        summary.CollisionType = CollisionType.Ecd;
-                        break;
-                    case "hid":
-                        summary.CollisionType = CollisionType.Hid;
-                        break;
-                }
+                FinniganFileReaderBaseClass.udtScanHeaderInfoType header;
+                var summary = GetScanSummary(i, rawReader, out header);
+                
                 scanMap.Add(i, summary);
             }
 
@@ -401,15 +339,36 @@ namespace MultiAlignCore.IO.Features
             // Get the RawFileReader for this group
             var rawReader = GetReaderForGroup(groupId);
 
-            var totalSpectra = rawReader.GetNumScans();
+            ValidateScanNumber(scan, rawReader);
 
-            if (scan > totalSpectra)
-                throw new ScanOutOfRangeException("The requested scan is out of range.");
+            FinniganFileReaderBaseClass.udtScanHeaderInfoType header;
+            summary = GetScanSummary(scan, rawReader, out header);
 
-            var header = new FinniganFileReaderBaseClass.udtScanHeaderInfoType();
+            var spectrum = new MSSpectra
+            {
+                MsLevel = header.MSLevel,
+                RetentionTime = header.RetentionTime,
+                Scan = scan,
+                PrecursorMz = header.ParentIonMZ,
+                TotalIonCurrent = header.TotalIonCurrent,
+                CollisionType = summary.CollisionType
+            };
+
+            // Need to make this a standard type of collision based off of the data.
+            if (loadPeaks)
+            {
+                spectrum.Peaks = LoadRawSpectra(rawReader, scan);
+            }
+
+            return spectrum;
+        }
+
+
+        private ScanSummary GetScanSummary(int scan, XRawFileIO rawReader, out FinniganFileReaderBaseClass.udtScanHeaderInfoType header)
+        {
             rawReader.GetScanInfo(scan, out header);
 
-            summary = new ScanSummary
+            var summary = new ScanSummary
             {
                 MsLevel = header.MSLevel,
                 Time = header.RetentionTime,
@@ -418,7 +377,6 @@ namespace MultiAlignCore.IO.Features
                 PrecursorMz = header.ParentIonMZ,
                 CollisionType = CollisionType.Other,
             };
-
 
             switch (header.CollisionMode)
             {
@@ -438,44 +396,19 @@ namespace MultiAlignCore.IO.Features
                     summary.CollisionType = CollisionType.Hid;
                     break;
             }
-           
-            var spectrum = new MSSpectra
-            {
-                MsLevel = header.MSLevel,
-                RetentionTime = header.RetentionTime,
-                Scan = scan,
-                PrecursorMz = header.ParentIonMZ,
-                TotalIonCurrent = header.TotalIonCurrent,
-                CollisionType = CollisionType.Other
-            };
+            return summary;
+        }
 
+        private int ValidateScanNumber(int scan, XRawFileIO rawReader)
+        {
+            var totalSpectra = rawReader.GetNumScans();
 
-            switch (header.CollisionMode)
+            if (scan > totalSpectra)
             {
-                case "cid":
-                    spectrum.CollisionType = CollisionType.Cid;
-                    break;
-                case "hcd":
-                    spectrum.CollisionType = CollisionType.Hcd;
-                    break;
-                case "etd":
-                    spectrum.CollisionType = CollisionType.Etd;
-                    break;
-                case "ecd":
-                    spectrum.CollisionType = CollisionType.Ecd;
-                    break;
-                case "hid":
-                    spectrum.CollisionType = CollisionType.Hid;
-                    break;
+                throw new ScanOutOfRangeException("The requested scan is out of range.");
             }
 
-            // Need to make this a standard type of collision based off of the data.
-            if (loadPeaks)
-            {
-                spectrum.Peaks = LoadRawSpectra(rawReader, scan);
-            }
-
-            return spectrum;
+            return scan;
         }
     }
 }
