@@ -78,10 +78,26 @@ namespace MultiAlignCore.IO
 
             if (LogPath != null)
             {
-                if (useMemory)
-                    File.AppendAllText(LogPath, time + " - " + size + " MB - " + newMessage + Environment.NewLine);
-                else
-                    File.AppendAllText(LogPath, time + " - " + newMessage + Environment.NewLine);
+                try
+                {
+                    var fiLogFile = new FileInfo(LogPath);
+                    var diLogFolder = fiLogFile.Directory;
+                    if (diLogFolder != null)
+                    {
+                        if (!diLogFolder.Exists)
+                            diLogFolder.Create();
+
+                        if (useMemory)
+                            File.AppendAllText(LogPath,
+                                               time + " - " + size + " MB - " + newMessage + Environment.NewLine);
+                        else
+                            File.AppendAllText(LogPath, time + " - " + newMessage + Environment.NewLine);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Unable to write to log file: " + ex.Message);
+                }
             }
             OnMessage(newMessage, size, DateTime.Now);
             Console.WriteLine(newMessage);
