@@ -37,23 +37,11 @@ namespace MultiAlignCore.IO.Features
             m_opened = new Dictionary<int, bool>();
         }
 
-        public int GetTotalScans(int group)
+        public int GetTotalScans(int groupId)
         {
-            if (!m_readers.ContainsKey(group))
-            {
-                var reader = new XRawFileIO();
-                m_readers.Add(group, reader);
-            }
+            // Get the RawFileReader for this group
+            var rawReader = GetReaderForGroup(groupId);
 
-            var rawReader = m_readers[group];
-            if (!m_opened[group])
-            {
-                var opened = rawReader.OpenRawFile(m_dataFiles[group]);
-                if (!opened)
-                {
-                    throw new IOException("Could not open the Thermo raw file " + m_dataFiles[group]);
-                }
-            }
             return rawReader.GetNumScans();
         }
 
@@ -89,39 +77,24 @@ namespace MultiAlignCore.IO.Features
 
         #region IRawDataFileReader Members
 
-        public
-            List<MSSpectra> GetMSMSSpectra(int group, Dictionary<int, int> excludeMap)
+        public List<MSSpectra> GetMSMSSpectra(int groupId, Dictionary<int, int> excludeMap)
         {
-            return GetMSMSSpectra(group, excludeMap, false);
+            return GetMSMSSpectra(groupId, excludeMap, false);
         }
 
         /// <summary>
-        ///     Reads a list of MSMS Spectra header data from the mzXML file.
+        /// Reads a list of MSMS Spectra header data from the Raw file
         /// </summary>
-        /// <param name="file">file to read.</param>
+        /// <param name="groupId">File group ID</param>
         /// <param name="excludeMap">Dictionary indicating which scans and related feature ID's to ignore.</param>
+        /// <param name="loadPeaks"></param>
         /// <returns>List of MSMS spectra data</returns>
-        public List<MSSpectra> GetMSMSSpectra(int group, Dictionary<int, int> excludeMap, bool loadPeaks)
+        public List<MSSpectra> GetMSMSSpectra(int groupId, Dictionary<int, int> excludeMap, bool loadPeaks)
         {
+            // Get the RawFileReader for this group
+            var rawReader = GetReaderForGroup(groupId);
+
             var spectra = new List<MSSpectra>();
-
-            if (!m_readers.ContainsKey(group))
-            {
-                var path = m_dataFiles[group];
-                var reader = new XRawFileIO();
-                m_readers.Add(group, reader);
-            }
-
-            var rawReader = m_readers[group];
-            if (!m_opened[group])
-            {
-                var opened = rawReader.OpenRawFile(m_dataFiles[group]);
-                if (!opened)
-                {
-                    throw new IOException("Could not open the Thermo raw file " + m_dataFiles[group]);
-                }
-            }
-
 
             var numberOfScans = rawReader.GetNumScans();
             for (var i = 0; i < numberOfScans; i++)
@@ -171,8 +144,7 @@ namespace MultiAlignCore.IO.Features
                     }
                     spectra.Add(spectrum);
                 }
-            }
-            rawReader.CloseRawFile();
+            }            
 
             return spectra;
         }
@@ -180,11 +152,11 @@ namespace MultiAlignCore.IO.Features
         /// <summary>
         ///     Reads a list of MSMS Spectra header data from the mzXML file.
         /// </summary>
-        /// <param name="file">file to read.</param>
+        /// <param name="groupId">File Group ID</param>
         /// <returns>List of MSMS spectra data</returns>
-        public List<MSSpectra> GetMSMSSpectra(int group)
+        public List<MSSpectra> GetMSMSSpectra(int groupId)
         {
-            return GetMSMSSpectra(group, new Dictionary<int, int>(), false);
+            return GetMSMSSpectra(groupId, new Dictionary<int, int>(), false);
         }
 
         #endregion
@@ -195,18 +167,20 @@ namespace MultiAlignCore.IO.Features
         ///     Gets the raw data from the data file.
         /// </summary>
         /// <param name="scan"></param>
+        /// <param name="groupId">File Group ID</param>
+        /// <param name="summary"></param>
         /// <returns></returns>
-        public List<XYData> GetRawSpectra(int scan, int group, out ScanSummary summary)
+        public List<XYData> GetRawSpectra(int scan, int groupId, out ScanSummary summary)
         {
-            return GetRawSpectra(scan, group, -1, out summary);
+            return GetRawSpectra(scan, groupId, -1, out summary);
         }
 
         /// <summary>
-        ///     Gets the raw data from the data file.
+        /// Gets the raw data from the data file.
         /// </summary>
-        public List<MSSpectra> GetRawSpectra(int group)
+        public List<MSSpectra> GetRawSpectra(int groupId)
         {
-            return GetMSMSSpectra(group, new Dictionary<int, int>(), true);
+            return GetMSMSSpectra(groupId, new Dictionary<int, int>(), true);
         }
 
         private List<XYData> LoadRawSpectra(XRawFileIO rawReader, int scan)
@@ -219,8 +193,6 @@ namespace MultiAlignCore.IO.Features
             var intensities = new double[N];
             rawReader.GetScanData(scan, ref mz, ref intensities, ref header);
 
-            //rawReader.CloseRawFile();
-            // construct the array.
             var data = new List<XYData>(mz.Length);
             for (var i = 0; i < mz.Length; i++)
             {
@@ -233,38 +205,16 @@ namespace MultiAlignCore.IO.Features
         /// <summary>
         ///     Gets the raw data from the data file.
         /// </summary>
-        public List<XYData> GetRawSpectra(int scan, int group, int msLevel)
+        public List<XYData> GetRawSpectra(int scan, int groupId, int msLevel)
         {
             var summary = new ScanSummary();
-            return GetRawSpectra(scan, group, msLevel, out summary);
+            return GetRawSpectra(scan, groupId, msLevel, out summary);
         }
 
-        public List<XYData> GetRawSpectra(int scan, int group, int msLevel, out ScanSummary summary)
+        public List<XYData> GetRawSpectra(int scan, int groupId, int msLevel, out ScanSummary summary)
         {
-            if (!m_dataFiles.ContainsKey(group))
-            {
-                throw new Exception("The group-dataset ID provided was not found.");
-            }
-            // If we dont have a reader, then create one for this group 
-            // next time, it will be available and we won't have to waste time
-            // opening the file.
-            if (!m_readers.ContainsKey(group))
-            {
-                var path = m_dataFiles[group];
-                var reader = new XRawFileIO();
-
-                m_readers.Add(group, reader);
-                var opened = reader.OpenRawFile(path);
-
-                if (!opened)
-                {
-                    throw new IOException("Could not open the Thermo raw file " + m_dataFiles[group]);
-                }
-            }
-
-            var spectra = new List<MSSpectra>();
-            var rawReader = m_readers[group];
-
+            // Get the RawFileReader for this group
+            var rawReader = GetReaderForGroup(groupId);
 
             var totalSpectra = rawReader.GetNumScans();
 
@@ -312,7 +262,6 @@ namespace MultiAlignCore.IO.Features
             var intensities = new double[n];
             rawReader.GetScanData(scan, ref mz, ref intensities, ref header);
 
-
             // construct the array.
             var data = new List<XYData>(mz.Length);
             for (var i = 0; i < mz.Length; i++)
@@ -323,36 +272,54 @@ namespace MultiAlignCore.IO.Features
             return data;
         }
 
-        /// <summary>
-        ///     Determines if the scan is a precursor scan or not.
-        /// </summary>
-        /// <param name="scan"></param>
-        /// <param name="group"></param>
-        /// <returns></returns>
-        public bool IsPrecursorScan(int scan, int group)
+        private XRawFileIO GetReaderForGroup(int groupId)
         {
+            if (!m_dataFiles.ContainsKey(groupId))
+            {
+                throw new Exception("The group-dataset ID provided was not found.");
+            }
+
             // If we dont have a reader, then create one for this group 
             // next time, it will be available and we won't have to waste time
             // opening the file.
-            if (!m_readers.ContainsKey(group))
+
+            if (!m_readers.ContainsKey(groupId))
             {
-                var path = m_dataFiles[group];
+                var path = m_dataFiles[groupId];
                 var reader = new XRawFileIO();
-                m_readers.Add(group, reader);
+
+                m_readers.Add(groupId, reader);
 
                 var opened = reader.OpenRawFile(path);
                 if (!opened)
                 {
-                    throw new IOException("Could not open the Thermo raw file " + m_dataFiles[group]);
+                    throw new IOException("Could not open the Thermo raw file " + m_dataFiles[groupId]);
                 }
             }
 
-            var rawReader = m_readers[group];
+            var rawReader = m_readers[groupId];
+
+            return rawReader;
+        }
+
+        /// <summary>
+        ///     Determines if the scan is a precursor scan or not.
+        /// </summary>
+        /// <param name="scan"></param>
+        /// <param name="groupId"></param>
+        /// <returns></returns>
+        public bool IsPrecursorScan(int scan, int groupId)
+        {
+            // Get the RawFileReader for this group
+            var rawReader = GetReaderForGroup(groupId);
+
             var header = new FinniganFileReaderBaseClass.udtScanHeaderInfoType();
             rawReader.GetScanInfo(scan, out header);
 
             return header.MSLevel == 1;
         }
+
+
 
         #endregion
 
@@ -384,32 +351,17 @@ namespace MultiAlignCore.IO.Features
         /// <summary>
         ///     Retrieves a dictionary of scan data
         /// </summary>
-        /// <param name="groupId">Group ID to </param>
+        /// <param name="groupId">Group ID for dataset</param>
         /// <returns>Map between </returns>
-        public Dictionary<int, ScanSummary> GetScanData(int group)
+        public Dictionary<int, ScanSummary> GetScanData(int groupId)
         {
-            if (m_datasetMetaData.ContainsKey(group))
+            if (m_datasetMetaData.ContainsKey(groupId))
             {
-                return m_datasetMetaData[group].ScanMetaData;
+                return m_datasetMetaData[groupId].ScanMetaData;
             }
 
-
-            if (!m_readers.ContainsKey(group))
-            {
-                var path = m_dataFiles[group];
-                var reader = new XRawFileIO();
-                m_readers.Add(group, reader);
-            }
-
-            var rawReader = m_readers[group];
-            if (!m_opened[group])
-            {
-                var opened = rawReader.OpenRawFile(m_dataFiles[group]);
-                if (!opened)
-                {
-                    throw new IOException("Could not open the Thermo raw file " + m_dataFiles[group]);
-                }
-            }
+            // Get the RawFileReader for this group
+            var rawReader = GetReaderForGroup(groupId);
 
             var datasetSummary = new DatasetSummary();
             var scanMap = new Dictionary<int, ScanSummary>();
@@ -451,39 +403,16 @@ namespace MultiAlignCore.IO.Features
 
             datasetSummary.ScanMetaData = scanMap;
 
-            //rawReader.CloseRawFile();                        
-            m_datasetMetaData.Add(group, datasetSummary);
+            m_datasetMetaData.Add(groupId, datasetSummary);
             return datasetSummary.ScanMetaData;
         }
 
         #endregion
 
-        public MSSpectra GetSpectrum(int scan, int group, int scanLevel, out ScanSummary summary, bool loadPeaks)
+        public MSSpectra GetSpectrum(int scan, int groupId, int scanLevel, out ScanSummary summary, bool loadPeaks)
         {
-            if (!m_dataFiles.ContainsKey(group))
-            {
-                throw new Exception("The group-dataset ID provided was not found.");
-            }
-            // If we dont have a reader, then create one for this group 
-            // next time, it will be available and we won't have to waste time
-            // opening the file.
-            if (!m_readers.ContainsKey(group))
-            {
-                var path = m_dataFiles[group];
-                var reader = new XRawFileIO();
-
-                m_readers.Add(group, reader);
-                var opened = reader.OpenRawFile(path);
-
-                if (!opened)
-                {
-                    throw new IOException("Could not open the Thermo raw file " + m_dataFiles[group]);
-                }
-            }
-
-            var spectra = new List<MSSpectra>();
-            var rawReader = m_readers[group];
-
+            // Get the RawFileReader for this group
+            var rawReader = GetReaderForGroup(groupId);
 
             var totalSpectra = rawReader.GetNumScans();
 
@@ -529,7 +458,6 @@ namespace MultiAlignCore.IO.Features
             var intensities = new double[n];
             rawReader.GetScanData(scan, ref mz, ref intensities, ref header);
 
-
             // construct the array.
             var data = new List<XYData>(mz.Length);
             for (var i = 0; i < mz.Length; i++)
@@ -537,7 +465,6 @@ namespace MultiAlignCore.IO.Features
                 var intensity = intensities[i];
                 data.Add(new XYData(mz[i], intensity));
             }
-
 
             var spectrum = new MSSpectra
             {
