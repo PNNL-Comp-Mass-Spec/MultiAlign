@@ -185,13 +185,10 @@ namespace MultiAlignCore.IO.Features
 
         private List<XYData> LoadRawSpectra(XRawFileIO rawReader, int scan)
         {
-            var header = new FinniganFileReaderBaseClass.udtScanHeaderInfoType();
-            rawReader.GetScanInfo(scan, out header);
-            var N = header.NumPeaks;
 
-            var mz = new double[N];
-            var intensities = new double[N];
-            rawReader.GetScanData(scan, ref mz, ref intensities, ref header);
+            double[] mz;
+            double[] intensities;
+            rawReader.GetScanData(scan, out mz, out intensities);
 
             var data = new List<XYData>(mz.Length);
             for (var i = 0; i < mz.Length; i++)
@@ -257,18 +254,8 @@ namespace MultiAlignCore.IO.Features
             if (header.MSLevel != msLevel && msLevel != -1)
                 return null;
 
-            var n = header.NumPeaks;
-            var mz = new double[n];
-            var intensities = new double[n];
-            rawReader.GetScanData(scan, ref mz, ref intensities, ref header);
+            var data = LoadRawSpectra(rawReader, scan);
 
-            // construct the array.
-            var data = new List<XYData>(mz.Length);
-            for (var i = 0; i < mz.Length; i++)
-            {
-                var intensity = intensities[i];
-                data.Add(new XYData(mz[i], intensity));
-            }
             return data;
         }
 
@@ -451,21 +438,7 @@ namespace MultiAlignCore.IO.Features
                     summary.CollisionType = CollisionType.Hid;
                     break;
             }
-
-
-            var n = header.NumPeaks;
-            var mz = new double[n];
-            var intensities = new double[n];
-            rawReader.GetScanData(scan, ref mz, ref intensities, ref header);
-
-            // construct the array.
-            var data = new List<XYData>(mz.Length);
-            for (var i = 0; i < mz.Length; i++)
-            {
-                var intensity = intensities[i];
-                data.Add(new XYData(mz[i], intensity));
-            }
-
+           
             var spectrum = new MSSpectra
             {
                 MsLevel = header.MSLevel,
