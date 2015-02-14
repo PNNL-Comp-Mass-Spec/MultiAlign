@@ -143,8 +143,11 @@ namespace MultiAlign.ViewModels.Spectra
             foreach (var spectrum in spectra)
             {
                 spectrum.Peaks = SpectraLoader.LoadSpectrum(spectrum);
-                m_maxMz = Math.Max(m_maxMz, spectrum.Peaks.Max(x => x.X));
-                m_maxIntensity = Math.Max(m_maxIntensity, spectrum.Peaks.Max(x => x.Y));
+                if (spectrum.Peaks.Count > 0)
+                {
+                    m_maxMz = Math.Max(m_maxMz, spectrum.Peaks.Max(x => x.X));
+                    m_maxIntensity = Math.Max(m_maxIntensity, spectrum.Peaks.Max(x => x.Y));
+                }
 
                 var msSpectrum = new MsSpectraViewModel(spectrum);
                 Spectra.Add(msSpectrum);

@@ -10,6 +10,7 @@ using MultiAlign.ViewModels.IO;
 using MultiAlign.Windows.IO;
 using MultiAlign.Windows.Viewers.Clusters;
 using MultiAlignCore.Data.Features;
+using MultiAlignCore.IO;
 using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
 
@@ -148,22 +149,42 @@ namespace MultiAlign.ViewModels.TreeView
 
         private void cluster_Selected(object sender, EventArgs e)
         {
-            var model = sender as UMCClusterTreeViewModel;
-            if (model == null)
-                return;
+            DateTime dtStart = DateTime.UtcNow;
 
-            model.LoadChildren();
-            SelectedCluster = model.Cluster;
+            try
+            {           
+                Console.WriteLine(DateTime.Now.ToString("mm:ss:fff") + ", " + DateTime.UtcNow.Subtract(dtStart).TotalSeconds.ToString("0.000") + " sec: Instantiate model");
+                var model = sender as UMCClusterTreeViewModel;
+                if (model == null)
+                {
+                    Console.WriteLine(DateTime.Now.ToString("mm:ss:fff") + ", " + DateTime.UtcNow.Subtract(dtStart).TotalSeconds.ToString("0.000") + " sec: Null Model; done");
+                    Console.WriteLine();
+                    return;
+                }
 
-            if (ClusterSelected != null)
+                model.LoadChildren();
+                SelectedCluster = model.Cluster;
+
+                if (ClusterSelected != null)
+                {
+                    ClusterSelected(this, new ClusterSelectedEventArgs(model));
+                }
+
+                if (model.Cluster.Cluster.Features.Count > 0)
+                {
+                    SelectedFeature = model.Cluster.Cluster.Features[0];
+                }
+
+            }
+            catch (Exception ex)
             {
-                ClusterSelected(this, new ClusterSelectedEventArgs(model));
+                Console.WriteLine(DateTime.Now.ToString("mm:ss:fff") + ", " +
+                                  DateTime.UtcNow.Subtract(dtStart).TotalSeconds.ToString("0.000") + " sec: Exception, " +
+                                  ex.Message);
             }
 
-            if (model.Cluster.Cluster.Features.Count > 0)
-            {
-                SelectedFeature = model.Cluster.Cluster.Features[0];
-            }
+            Console.WriteLine(DateTime.Now.ToString("mm:ss:fff") + ", " + DateTime.UtcNow.Subtract(dtStart).TotalSeconds.ToString("0.000") + " sec: Done");
+            Console.WriteLine();
         }
 
         /// <summary>

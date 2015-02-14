@@ -13,6 +13,17 @@ namespace MultiAlignCore.IO.Features
     /// </summary>
     public class ParentSpectraFinder
     {
+
+        private static Dictionary<string, ISpectraProvider> mRawDataProviders;
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        public ParentSpectraFinder()
+        {
+           
+        }
+
         /// <summary>
         /// </summary>
         /// <param name="scan"></param>
@@ -22,64 +33,77 @@ namespace MultiAlignCore.IO.Features
         /// <returns></returns>
         public static List<XYData> GetParentSpectrum(string path, int scan, double minMz, double maxMz)
         {
-            using (var provider = RawLoaderFactory.CreateFileReader(path))
+            ISpectraProvider provider = GetProvider(path);
+
+            if (provider == null)
             {
-                if (provider != null)
-                {
-                    provider.AddDataFile(path, 0);
+                return null;
+            }
 
-                    List<XYData> spectrum = null;
-                    try
-                    {
-                        var summary = new ScanSummary();
-                        spectrum = provider.GetRawSpectra(scan, 0, 1, out summary);
-                    }
-                    catch
-                    {
-                        Logger.PrintMessage("Could not load the raw spectra");
-                        return null;
-                    }
+            List<XYData> spectrum = null;
+            try
+            {
+                var summary = new ScanSummary();
+                spectrum = provider.GetRawSpectra(scan, 0, 1, out summary);
+            }
+            catch
+            {
+                Logger.PrintMessage("Could not load the raw spectra");
+                return null;
+            }
 
-                    if (spectrum == null)
-                    {
-                        return null;
-                    }
+            if (spectrum == null)
+            {
+                return null;
+            }
 
-                    var data = (from x in spectrum
+            var data = (from x in spectrum
                         where x.X > minMz && x.X < maxMz
                         select x).ToList();
 
-                    return data;
-                }
-            }
-            return null;
+            return data;
         }
 
         public static List<XYData> GetDaughterSpectrum(string path, int scan)
         {
-            using (var provider = RawLoaderFactory.CreateFileReader(path))
+            ISpectraProvider provider = GetProvider(path);
+
+            if (provider == null)
             {
-                if (provider != null)
-                {
-                    provider.AddDataFile(path, 0);
-
-                    List<XYData> spectrum = null;
-                    try
-                    {
-                        var summary = new ScanSummary();
-                        spectrum = provider.GetRawSpectra(scan, 0, 2, out summary);
-                    }
-                    catch
-                    {
-                        Logger.PrintMessage("Could not load the raw spectra");
-                        return null;
-                    }
-
-
-                    return spectrum;
-                }
+                return null;
             }
-            return null;
+
+            List<XYData> spectrum = null;
+            try
+            {
+                var summary = new ScanSummary();
+                spectrum = provider.GetRawSpectra(scan, 0, 2, out summary);
+            }
+            catch
+            {
+                Logger.PrintMessage("Could not load the raw spectra");
+                return null;
+            }
+
+            return spectrum;
         }
+
+        private static ISpectraProvider GetProvider(string path)
+        {
+            if (mRawDataProviders == null)
+                mRawDataProviders = new Dictionary<string, ISpectraProvider>();
+
+            ISpectraProvider provider;
+            if (!mRawDataProviders.TryGetValue(path, out provider))
+            {
+                provider = RawLoaderFactory.CreateFileReader(path);
+                mRawDataProviders.Add(path, provider);
+
+                provider.AddDataFile(path, 0);
+            }
+
+            return provider;
+        }
+
     }
 }

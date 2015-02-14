@@ -188,6 +188,9 @@ namespace MultiAlignCore.IO.Features
             double[] intensities;
             rawReader.GetScanData(scan, out mz, out intensities);
 
+            if (mz == null)
+                return new List<XYData>();
+
             var data = new List<XYData>(mz.Length);
             for (var i = 0; i < mz.Length; i++)
             {
