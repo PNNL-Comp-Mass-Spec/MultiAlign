@@ -17,14 +17,6 @@ namespace MultiAlignCore.IO.Features
         private static Dictionary<string, ISpectraProvider> mRawDataProviders;
 
         /// <summary>
-        /// Constructor
-        /// </summary>
-        public ParentSpectraFinder()
-        {
-           
-        }
-
-        /// <summary>
         /// </summary>
         /// <param name="scan"></param>
         /// <param name="path"></param>
