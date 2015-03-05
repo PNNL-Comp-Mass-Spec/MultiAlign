@@ -81,6 +81,34 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
                 feature.Net = feature.Net;
                 feature.Id = id++;
                 newFeatures.Add(feature);
+                //Sets the width of the feature to be the width of the peak, not the width of the tails
+                var maxAbundance = double.MinValue;
+                var maxAbundanceIndex = 0;
+                for (var msFeatureIndex = 0; msFeatureIndex < feature.MsFeatures.Count - 1; msFeatureIndex++)
+                {
+                    var msFeature = feature.MsFeatures[msFeatureIndex];
+                    if (msFeature.Abundance > maxAbundance)
+                    {
+                        maxAbundance = msFeature.Abundance;
+                        maxAbundanceIndex = msFeatureIndex;
+                    }
+                }
+                for (var msFeatureIndex = maxAbundanceIndex; msFeatureIndex > 0; msFeatureIndex--)
+                {
+                    if (feature.MsFeatures[msFeatureIndex].Abundance / maxAbundance <= 0.05)
+                    {
+                        feature.ScanStart = feature.MsFeatures[msFeatureIndex].Scan;
+                        break;
+                    }
+                }
+                for (var msFeatureIndex = maxAbundanceIndex; msFeatureIndex < feature.MsFeatures.Count - 1; msFeatureIndex++)
+                {
+                    if (feature.MsFeatures[msFeatureIndex].Abundance / maxAbundance <= 0.05)
+                    {
+                        feature.ScanEnd = feature.MsFeatures[msFeatureIndex].Scan;
+                        break;
+                    }
+                }
             }
             return features;
         }

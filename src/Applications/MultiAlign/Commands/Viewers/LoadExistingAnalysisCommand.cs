@@ -12,7 +12,8 @@ namespace MultiAlign.Commands.Viewers
         public LoadExistingAnalysisCommand()
             : base(null, AlwaysPass)
         {
-            m_analysisLoadDialog = new OpenFileDialog();
+            const string fileTypeFilter = "Input Files (*.db3)| *.db3| All Files (*.*)|*.*";
+            m_analysisLoadDialog = new OpenFileDialog {Filter = fileTypeFilter};
         }
 
         public event EventHandler<OpenAnalysisArgs> ExistingAnalysisSelected;

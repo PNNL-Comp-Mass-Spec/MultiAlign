@@ -25,7 +25,7 @@ namespace MultiAlign.ViewModels.Wizard
         private MultiAlignAnalysis m_analysis;
         private InputAnalysisInfo m_analysisInput;
         private Dictionary<InputFileType, string> m_filterMap = new Dictionary<InputFileType, string>();
-        private string m_folderPath;
+        private string m_dataFolderPath;
         private string m_inputFilePath;
         private DmsDatabaseServerViewModel m_selectedDmsDatabase;
         private SearchOption m_shouldSearchSubdirectories;
@@ -57,7 +57,7 @@ namespace MultiAlign.ViewModels.Wizard
 
             BrowseSingleFileCommand = new BaseCommand(BrowseSingleFile, BaseCommand.AlwaysPass);
             BrowseInputFileCommand = new BaseCommand(BrowseInput, BaseCommand.AlwaysPass);
-            BrowseFolderCommand = new BrowseFolderCommand(x => { FolderPath = x; });
+            BrowseDataFolderCommand = new BrowseFolderCommand(x => { DataFolderPath = x; });
 
             RemoveSelectedCommand = new BaseCommand(RemoveSelected, BaseCommand.AlwaysPass);
             SelectAllCommand = new BaseCommand(SelectAllDelegate, BaseCommand.AlwaysPass);
@@ -150,19 +150,19 @@ namespace MultiAlign.ViewModels.Wizard
             supportedTypes.ForEach(x => extensions.Add("*" + x.Extension));
 
             var option = ShouldSearchSubDirectories;
-            if (FolderPath == null)
+            if (DataFolderPath == null)
             {
                 ApplicationStatusMediator.SetStatus("The directory specified does not exist.");
                 return;
             }
 
-            if (!Directory.Exists(FolderPath))
+            if (!Directory.Exists(DataFolderPath))
             {
                 ApplicationStatusMediator.SetStatus("The directory specified does not exist.");
                 return;
             }
 
-            var files = DatasetSearcher.FindDatasets(FolderPath,
+            var files = DatasetSearcher.FindDatasets(DataFolderPath,
                 extensions,
                 option);
             AddDatasets(files);
@@ -250,16 +250,16 @@ namespace MultiAlign.ViewModels.Wizard
         /// <summary>
         ///     Gets or sets the input folder path
         /// </summary>
-        public string FolderPath
+        public string DataFolderPath
         {
-            get { return m_folderPath; }
+            get { return m_dataFolderPath; }
             set
             {
-                if (m_folderPath == value)
+                if (m_dataFolderPath == value)
                     return;
 
-                m_folderPath = value;
-                OnPropertyChanged("FolderPath");
+                m_dataFolderPath = value;
+                OnPropertyChanged("DataFolderPath");
             }
         }
 
@@ -353,7 +353,7 @@ namespace MultiAlign.ViewModels.Wizard
         #region Commands
 
         public ICommand BrowseInputFileCommand { get; set; }
-        public ICommand BrowseFolderCommand { get; set; }
+        public ICommand BrowseDataFolderCommand { get; set; }
         public ICommand BrowseSingleFileCommand { get; set; }
         public ICommand AddFolderCommand { get; set; }
         public ICommand AddInputFileCommand { get; set; }
