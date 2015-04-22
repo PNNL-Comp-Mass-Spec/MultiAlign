@@ -153,8 +153,16 @@ namespace MultiAlignCore.IO
             var features = finder.FindFeatures(msFeatures, options, provider);
 
             UpdateStatus("Filtering features.");
-            var filteredFeatures = LcmsFeatureFilters.FilterFeatures(features,
-                filterOptions);
+            List<UMCLight> filteredFeatures;
+            if (filterOptions.TreatAsTimeNotScan) //Feature length determined based on time (mins)
+            {
+                filteredFeatures = LcmsFeatureFilters.FilterFeatures(features,
+                    filterOptions, information.ScanTimes);
+            }
+            else //Feature length determined based on scans
+            {
+                filteredFeatures = LcmsFeatureFilters.FilterFeatures(features, filterOptions);
+            }
 
             UpdateStatus(string.Format("Filtered features from: {0} to {1}.", features.Count, filteredFeatures.Count));
             return filteredFeatures;
@@ -184,7 +192,7 @@ namespace MultiAlignCore.IO
             if (features.Count < 1)
             {
                 msFeatures = LcmsFeatureFilters.FilterMsFeatures(msFeatures, msFilteringOptions);
-                msFeatures = Filter(msFeatures, dataset.RawPath);
+                msFeatures = Filter(msFeatures, ref dataset);
 
 
                 features = CreateLcmsFeatures(dataset,
@@ -266,8 +274,9 @@ namespace MultiAlignCore.IO
         /// <summary>
         ///     Filters the list of MS Features that may be from MS/MS deisotoped data.
         /// </summary>
-        private List<MSFeatureLight> Filter(List<MSFeatureLight> msFeatures, string rawPath)
+        private List<MSFeatureLight> Filter(List<MSFeatureLight> msFeatures, ref DatasetInformation dataset)
         {
+            string rawPath = dataset.RawPath;
             if (rawPath == null || string.IsNullOrWhiteSpace(rawPath))
                 return msFeatures;
 
@@ -294,6 +303,7 @@ namespace MultiAlignCore.IO
                         provider.GetRawSpectra(scan, 0, out summary);
                         if (summary.MsLevel == 1)
                             fullScans.Add(scan, true);
+                        dataset.ScanTimes.Add(scan, summary.Time);
                     }
                 }
             }

@@ -30,6 +30,7 @@ namespace MultiAlignCore.Data.MetaData
             IsBaseline = false;
             DatasetSummary = new DatasetSummary();
             PlotData = new DatasetPlotInformation();
+            ScanTimes = new Dictionary<int, double>();
         }
 
         /// <summary>
@@ -45,6 +46,11 @@ namespace MultiAlignCore.Data.MetaData
         ///     Gets or sets whether this dataset is a baseline or not.
         /// </summary>
         public bool IsBaseline { get; set; }
+        
+        /// <summary>
+        ///     Gets or sets a mapping of scans to retention times 
+        /// </summary>
+        public Dictionary<int, double> ScanTimes { get; set; }
 
         /// <summary>
         ///     Gets or sets

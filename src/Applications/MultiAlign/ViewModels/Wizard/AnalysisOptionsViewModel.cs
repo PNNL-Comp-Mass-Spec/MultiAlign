@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
+using System.Windows.Media.Animation;
 using MultiAlign.Commands;
 using MultiAlign.Properties;
 using MultiAlign.ViewModels.Instruments;
@@ -40,6 +41,7 @@ namespace MultiAlign.ViewModels.Wizard
 
             InstrumentPresets = new ObservableCollection<InstrumentPresetViewModel>();
             ExperimentPresets = new ObservableCollection<ExperimentPresetViewModel>();
+            TimeOptions = new ObservableCollection<string>();
 
             var presets = new Dictionary<string, bool>();
             foreach (var preset in ExperimentPresetFactory.Create())
@@ -60,10 +62,13 @@ namespace MultiAlign.ViewModels.Wizard
                     InstrumentPresets.Add(preset);
                 }
             }
+            TimeOptions.Add("Minutes");
+            TimeOptions.Add("Scans");
 
 
             SelectedPreset = InstrumentPresets[0];
             SelectedExperimentPreset = ExperimentPresets[0];
+            TreatAsTimeOrScan = TimeOptions[0];
 
             m_saveDialog = new SaveFileDialog();
             m_dialog = new OpenFileDialog
@@ -417,6 +422,30 @@ namespace MultiAlign.ViewModels.Wizard
         #endregion
 
         #region Feature Definition Algorithm Parameters
+
+        public string TreatAsTimeOrScan
+        {
+            get
+            {
+                if (m_options.LcmsFilteringOptions.TreatAsTimeNotScan)
+                {
+                    return "Minutes";
+                }
+                else
+                {
+                    return "Scans";
+                }
+            }
+            set
+            {
+                m_options.LcmsFilteringOptions.TreatAsTimeNotScan = value.Equals("Minutes");
+                OnPropertyChanged("TreatAsTimeOrScan");
+            }
+        }
+
+        public ObservableCollection<string> TimeOptions { get; set; }
+        
+
 
         public double MinimumFeatureLength
         {

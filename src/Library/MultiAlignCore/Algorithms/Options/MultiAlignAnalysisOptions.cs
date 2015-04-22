@@ -4,6 +4,7 @@ using MultiAlignCore.IO.Parameters;
 using PNNLOmics.Algorithms;
 using PNNLOmics.Algorithms.Alignment.SpectralMatches;
 using PNNLOmics.Algorithms.FeatureClustering;
+using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
 
 #endregion
@@ -25,6 +26,8 @@ namespace MultiAlignCore.Algorithms.Options
             MsFilteringOptions = new MsFeatureFilteringOptions();
             LcmsFindingOptions = new LcmsFeatureFindingOptions(InstrumentTolerances);
             LcmsFilteringOptions = new LcmsFeatureFilteringOptions();
+            LcmsFilteringOptions.TreatAsTimeNotScan = true;
+            LcmsFilteringOptions.FeatureLengthRange = new FilterRange(0,10);
             AlignmentOptions = new AlignmentOptions();
             LcmsClusteringOptions = new LcmsClusteringOptions(InstrumentTolerances);
             StacOptions = new StacOptions();
