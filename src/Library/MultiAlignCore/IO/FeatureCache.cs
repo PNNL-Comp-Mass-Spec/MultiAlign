@@ -148,6 +148,9 @@ namespace MultiAlignCore.IO
                 provider = RawLoaderFactory.CreateFileReader(information.RawPath);
                 provider.AddDataFile(information.RawPath, 0);
             }
+
+            ValidateFeatureFinderMaxScanLength(information, options, filterOptions);
+
             var finder = FeatureFinderFactory.CreateFeatureFinder(FeatureFinderType.TreeBased);
             finder.Progress += (sender, args) => UpdateStatus(args.Message);
             var features = finder.FindFeatures(msFeatures, options, provider);
@@ -166,6 +169,83 @@ namespace MultiAlignCore.IO
 
             UpdateStatus(string.Format("Filtered features from: {0} to {1}.", features.Count, filteredFeatures.Count));
             return filteredFeatures;
+        }
+
+        /// <summary>
+        /// Make sure the value for options.MaximumScanRange, which is used by the Feature Finder, 
+        /// is at least as large as the filterOptions.FeatureLengthRange.Maximum value, 
+        /// which is used for filtering the features by length
+        /// </summary>
+        /// <param name="information"></param>
+        /// <param name="options"></param>
+        /// <param name="filterOptions"></param>
+        private static void ValidateFeatureFinderMaxScanLength(
+            DatasetInformation information,
+            LcmsFeatureFindingOptions options,
+            LcmsFeatureFilteringOptions filterOptions)
+        {
+            if (!filterOptions.TreatAsTimeNotScan)
+            {
+                if (options.MaximumScanRange < filterOptions.FeatureLengthRange.Maximum)
+                {
+                    // Bump up the scan range used by the LCMS Feature Finder to allow for longer featuers
+                    options.MaximumScanRange = (int)filterOptions.FeatureLengthRange.Maximum;
+                }
+                return;
+            }
+
+            int maxScanLength;
+
+            if (information.ScanTimes.Count == 0)
+            {
+                // FeatureLengthRange.Maximum is in minutes
+                // Assume 3 scans/second (ballpark estimate)
+                maxScanLength = (int)filterOptions.FeatureLengthRange.Maximum * 60 * 3;
+            }
+            else
+            {
+                // Find the average number of scans that spans FeatureLengthRange.Maximum minutes
+
+                // Step through the dictionary to find the average number of scans per minute
+                var minuteThreshold = 1;
+                var scanCountCurrent = 0;
+                var scanCountsPerMinute = new List<int>();
+
+                foreach (var entry in information.ScanTimes)
+                {
+                    if (entry.Value < minuteThreshold)
+                    {
+                        scanCountCurrent++;
+                    }
+                    else
+                    {
+                        if (scanCountCurrent > 0)
+                        {
+                            scanCountsPerMinute.Add(scanCountCurrent);
+                        }
+                        scanCountCurrent = 0;
+                        minuteThreshold++;
+                    }
+                }
+
+                int averageScansPerMinute;
+                if (scanCountsPerMinute.Count > 0)
+                {
+                    averageScansPerMinute = (int)scanCountsPerMinute.Average();
+                }
+                else
+                {
+                    averageScansPerMinute = 180;
+                }
+
+                maxScanLength = (int)(filterOptions.FeatureLengthRange.Maximum * averageScansPerMinute * 1.25);
+            }
+
+            if (options.MaximumScanRange < maxScanLength)
+            {
+                // Bump up the scan range used by the LCMS Feature Finder to allow for longer featuers
+                options.MaximumScanRange = maxScanLength;
+            }
         }
 
         /// <summary>
@@ -207,7 +287,7 @@ namespace MultiAlignCore.IO
                 foreach (var feature in features)
                 {
                     feature.Id = id++;
-                    feature.Net = (Convert.ToDouble(feature.Scan) - minScan)/(maxScan - minScan);
+                    feature.Net = (Convert.ToDouble(feature.Scan) - minScan) / (maxScan - minScan);
                     feature.Net = feature.Net;
                     feature.MassMonoisotopicAligned = feature.MassMonoisotopic;
                     feature.NetAligned = feature.Net;
@@ -294,13 +374,24 @@ namespace MultiAlignCore.IO
             var fullScans = new Dictionary<int, bool>();
             using (var provider = RawLoaderFactory.CreateFileReader(rawPath))
             {
-                if (provider != null)
+                if (provider == null)
                 {
+                    UpdateStatus(string.Format("Warning: Raw file not found ({0}); scan times are not available!", System.IO.Path.GetFileName(rawPath)));
+                }
+                else
+                {
+                    UpdateStatus(string.Format("Reading scan info from {0}", System.IO.Path.GetFileName(rawPath)));
+
                     provider.AddDataFile(rawPath, 0);
                     foreach (var scan in scanMap.Keys)
                     {
-                        ScanSummary summary;
-                        provider.GetRawSpectra(scan, 0, out summary);
+                        ScanSummary summary = provider.GetScanSummary(scan, 0);
+
+                        if (summary == null)
+                        {
+                            continue;
+                        }
+
                         if (summary.MsLevel == 1)
                             fullScans.Add(scan, true);
                         dataset.ScanTimes.Add(scan, summary.Time);

@@ -41,7 +41,7 @@ namespace MultiAlignCore.Algorithms
         public event EventHandler AnalysisCancelled;
         public event EventHandler<AnalysisGraphEventArgs> AnalysisStarted;
 
-        #region Analysis Config and Reporting     
+        #region Analysis Config and Reporting
 
         private IAnalysisReportGenerator m_reportCreator;
         private AnalysisConfig m_config;
@@ -636,7 +636,7 @@ namespace MultiAlignCore.Algorithms
             Logger.PrintMessage("Creating Analysis Objects.");
             var analysis = new MultiAlignAnalysis
             {
-                MetaData = {AnalysisPath = m_config.AnalysisPath, AnalysisName = m_config.AnalysisName}
+                MetaData = { AnalysisPath = m_config.AnalysisPath, AnalysisName = m_config.AnalysisName }
             };
             analysis.Options.AlignmentOptions.IsAlignmentBaselineAMasstagDB = true;
             analysis.MetaData.ParameterFile = m_config.ParameterFile;
@@ -888,7 +888,7 @@ namespace MultiAlignCore.Algorithms
 
         #endregion
 
-        #region Cleanup 
+        #region Cleanup
 
         public void CleanupOldAnalysisBranches(AnalysisConfig config)
         {
@@ -1084,7 +1084,7 @@ namespace MultiAlignCore.Algorithms
 
                 Logger.PrintMessage("Cancelling Analysis.");
 
-                var handles = new WaitHandle[] {m_workerManager.SynchEvent};
+                var handles = new WaitHandle[] { m_workerManager.SynchEvent };
                 WaitHandle.WaitAll(handles, 1000);
 
                 // Then the background worker threads.  
@@ -1103,7 +1103,7 @@ namespace MultiAlignCore.Algorithms
 
         private WorkerObject m_workerManager;
 
-        #region Processing 
+        #region Processing
 
         /// <summary>
         ///     Performs the analysis.
@@ -1113,83 +1113,96 @@ namespace MultiAlignCore.Algorithms
         {
             Logger.PrintMessage("Performing analysis.");
 
-            // Creates or connects to the underlying analysis database.
-            var providers = SetupDataProviders(createDatabase);
+            MultiAlignAnalysisProcessor processor = null;
 
-            // Create the clustering, analysis, and plotting paths.
-            builder.BuildClusterer(config.Analysis.Options.LcmsClusteringOptions.LcmsFeatureClusteringAlgorithm);
-            config.Analysis.DataProviders = providers;
-            config.Analysis.AnalysisType = validated;
-            ConstructPlotPath();
-
-            ExportParameterFile();
-            Logger.PrintSpacer();
-            PrintParameters(config.Analysis, createDatabase);
-            Logger.PrintSpacer();
-
-            // Setup the processor.
-            var processor = ConstructAnalysisProcessor(builder, providers);
-
-            // Tell the processor whether to load data or not.
-            processor.ShouldLoadData = createDatabase;
-
-
-            // Construct the dataset information for export.// Create dataset information.
-            Logger.PrintMessage("Storing dataset information into the database.");
-
-            var information = Enumerable.ToList(config.Analysis.MetaData.Datasets);
-            m_config.Analysis.DataProviders.DatasetCache.AddAll(information);
-
-
-            Logger.PrintMessage("Creating exporter options.");
-            if (config.ExporterNames.CrossTabPath == null)
+            try
             {
-                config.ExporterNames.CrossTabPath = config.AnalysisName.Replace(".db3", "");
-            }
-            if (config.ExporterNames.CrossTabAbundance == null)
-            {
-                config.ExporterNames.CrossTabAbundance = config.AnalysisName.Replace(".db3", "");
-            }
-            ConstructExporting();
+                // Creates or connects to the underlying analysis database.
+                var providers = SetupDataProviders(createDatabase);
 
-            Logger.PrintMessage("Cleaning up old analysis branches.");
-            CleanupOldAnalysisBranches(config);
+                // Create the clustering, analysis, and plotting paths.
+                builder.BuildClusterer(config.Analysis.Options.LcmsClusteringOptions.LcmsFeatureClusteringAlgorithm);
+                config.Analysis.DataProviders = providers;
+                config.Analysis.AnalysisType = validated;
+                ConstructPlotPath();
 
-            Logger.PrintMessage("Analysis Started.");
-            processor.StartAnalysis(config);
+                ExportParameterFile();
+                Logger.PrintSpacer();
+                PrintParameters(config.Analysis, createDatabase);
+                Logger.PrintSpacer();
 
-            var handleId =
-                WaitHandle.WaitAny(new WaitHandle[] {config.triggerEvent, config.errorEvent, config.stopEvent});
+                // Setup the processor.
+                processor = ConstructAnalysisProcessor(builder, providers);
 
-            if (handleId == 1)
-            {
-                Logger.PrintMessageWorker("There was an error during processing.", 1, false);
-                config.triggerEvent.Dispose();
-                config.errorEvent.Dispose();
-                processor.Dispose();
+                // Tell the processor whether to load data or not.
+                processor.ShouldLoadData = createDatabase;
 
-                if (AnalysisError != null)
+
+                // Construct the dataset information for export.// Create dataset information.
+                Logger.PrintMessage("Storing dataset information into the database.");
+
+                var information = Enumerable.ToList(config.Analysis.MetaData.Datasets);
+                m_config.Analysis.DataProviders.DatasetCache.AddAll(information);
+
+
+                Logger.PrintMessage("Creating exporter options.");
+                if (config.ExporterNames.CrossTabPath == null)
                 {
-                    AnalysisError(this, null);
+                    config.ExporterNames.CrossTabPath = config.AnalysisName.Replace(".db3", "");
                 }
-                return;
-            }
-            if (handleId == 2)
-            {
-                Logger.PrintMessageWorker("Stopping the analysis.", 1, false);
-                processor.StopAnalysis();
-
-                worker.SynchEvent.Set();
-                Thread.Sleep(50);
-
-                config.triggerEvent.Dispose();
-                config.errorEvent.Dispose();
-                processor.Dispose();
-
-                if (AnalysisCancelled != null)
+                if (config.ExporterNames.CrossTabAbundance == null)
                 {
-                    AnalysisCancelled(this, null);
+                    config.ExporterNames.CrossTabAbundance = config.AnalysisName.Replace(".db3", "");
                 }
+                ConstructExporting();
+
+                Logger.PrintMessage("Cleaning up old analysis branches.");
+                CleanupOldAnalysisBranches(config);
+
+                Logger.PrintMessage("Analysis Started.");
+                processor.StartAnalysis(config);
+
+                var handleId =
+                    WaitHandle.WaitAny(new WaitHandle[] { config.triggerEvent, config.errorEvent, config.stopEvent });
+
+                if (handleId == 1)
+                {
+                    Logger.PrintMessageWorker("There was an error during processing.", 1, false);
+                    config.triggerEvent.Dispose();
+                    config.errorEvent.Dispose();
+                    processor.Dispose();
+
+                    if (AnalysisError != null)
+                    {
+                        AnalysisError(this, null);
+                    }
+                    return;
+                }
+                if (handleId == 2)
+                {
+                    Logger.PrintMessageWorker("Stopping the analysis.", 1, false);
+                    processor.StopAnalysis();
+
+                    worker.SynchEvent.Set();
+                    Thread.Sleep(50);
+
+                    config.triggerEvent.Dispose();
+                    config.errorEvent.Dispose();
+                    processor.Dispose();
+
+                    if (AnalysisCancelled != null)
+                    {
+                        AnalysisCancelled(this, null);
+                    }
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.PrintMessage(
+                    "There was an error Performing analysis");
+                Logger.PrintMessage(ex.Message);
+                Logger.PrintMessage(ex.StackTrace);
                 return;
             }
 
@@ -1307,7 +1320,7 @@ namespace MultiAlignCore.Algorithms
             // Start the analysis
             Logger.PrintMessage("Analysis Started.");
             processor.StartAnalysis(config);
-            var handleId = WaitHandle.WaitAny(new WaitHandle[] {config.triggerEvent, config.errorEvent});
+            var handleId = WaitHandle.WaitAny(new WaitHandle[] { config.triggerEvent, config.errorEvent });
 
             var wasError = false;
 

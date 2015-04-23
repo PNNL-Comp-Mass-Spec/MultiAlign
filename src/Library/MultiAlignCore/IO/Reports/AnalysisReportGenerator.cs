@@ -175,8 +175,8 @@ namespace MultiAlignCore.IO.Reports
             var directory       = Path.Combine(Config.AnalysisPath, PlotPath, name);
             var heatmap         = HeatmapFactory.CreateAlignedHeatmap(alignmentData.heatScores);
             var feature         = ScatterPlotFactory.CreateFeatureMassScatterPlot(e.AligneeFeatures);
-            var netHistomgram   = HistogramFactory.CreateHistogram(alignmentData.netErrorHistogram, "NET Error", "NET Error");
-            var massHistomgram  = HistogramFactory.CreateHistogram(alignmentData.massErrorHistogram, "Mass Error", "Mass Error (ppm)");
+            var netHistogram = HistogramFactory.CreateHistogram(alignmentData.netErrorHistogram, "NET Error", "NET Error");
+            var massHistogram = HistogramFactory.CreateHistogram(alignmentData.massErrorHistogram, "Mass Error", "Mass Error (ppm)");
             var residuals       = alignmentData.ResidualData;
 
             var netResidual         = ScatterPlotFactory.CreateResidualPlot(residuals.Scan, residuals.LinearCustomNet,
@@ -209,10 +209,10 @@ namespace MultiAlignCore.IO.Reports
             report.PushEndTableRow();
             report.PushStartTableRow();
 
-            Config.Report.PushImageColumn(directory + "_netHistomgram.png");
-            Config.Report.PushImageColumn(directory + "_massHistomgram.png");
-            PlotImageUtility.SaveImage(netHistomgram, directory + "_netHistomgram.png");
-            PlotImageUtility.SaveImage(massHistomgram, directory + "_massHistomgram.png");
+            Config.Report.PushImageColumn(directory + "_netHistogram.png");
+            Config.Report.PushImageColumn(directory + "_massHistogram.png");
+            PlotImageUtility.SaveImage(netHistogram, directory + "_netHistogram.png");
+            PlotImageUtility.SaveImage(massHistogram, directory + "_massHistogram.png");
             report.PushEndTableRow();
 
             // Residuals

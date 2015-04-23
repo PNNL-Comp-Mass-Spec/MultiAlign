@@ -76,6 +76,16 @@ namespace MultiAlignCore.IO.RawData
             return m_spectraMap.Values.Where(x => !excludeMap.ContainsKey(x.Scan)).ToList();
         }
 
+        /// <summary>
+        /// Gets the scan header information for the specified scan
+        /// </summary>
+        /// <param name="scan"></param>
+        /// <param name="groupId"></param>
+        public ScanSummary GetScanSummary(int scan, int groupId)
+        {
+          return m_reader.GetScanSummary(scan, groupId);
+        }
+
         public void AddDataFile(string path, int groupId)
         {
             m_reader.AddDataFile(path, groupId);

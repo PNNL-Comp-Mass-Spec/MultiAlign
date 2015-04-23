@@ -211,15 +211,12 @@ namespace MultiAlignCore.IO.Features
 
         public List<XYData> GetRawSpectra(int scan, int groupId, int msLevel, out ScanSummary summary)
         {
-            // Get the RawFileReader for this group
-            var rawReader = GetReaderForGroup(groupId);
 
-            ValidateScanNumber(scan, rawReader);
-
-            FinniganFileReaderBaseClass.udtScanHeaderInfoType header;
-            summary = GetScanSummary(scan, rawReader, out header);
-
-            if (header.MSLevel != msLevel && msLevel != -1)
+            var rawReader = GetScanSummaryAndReader(scan, groupId, out summary);
+            if (rawReader == null)
+                return null;
+            
+            if (summary.MsLevel != msLevel && msLevel > 0)
                 return null;
 
             var data = LoadRawSpectra(rawReader, scan);
@@ -253,6 +250,31 @@ namespace MultiAlignCore.IO.Features
             }
 
             var rawReader = m_readers[groupId];
+
+            return rawReader;
+        }
+
+        /// <summary>
+        /// Gets the scan header information for the specified scan
+        /// </summary>
+        /// <param name="scan"></param>
+        /// <param name="groupId"></param>
+        public ScanSummary GetScanSummary(int scan, int groupId)
+        {
+            ScanSummary summary;
+            GetScanSummaryAndReader(scan, groupId, out summary);
+            return summary;
+        }
+
+        private XRawFileIO GetScanSummaryAndReader(int scan, int groupId, out ScanSummary summary)
+        {
+            // Get the RawFileReader for this group
+            var rawReader = GetReaderForGroup(groupId);
+
+            ValidateScanNumber(scan, rawReader);
+
+            FinniganFileReaderBaseClass.udtScanHeaderInfoType header;
+            summary = GetScanSummary(scan, rawReader, out header);
 
             return rawReader;
         }

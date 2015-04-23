@@ -202,22 +202,40 @@ namespace MultiAlignCore.IO.Features
         {
         }
 
-        public List<XYData> GetRawSpectra(int scan, int group, int scanLevel, out ScanSummary summary)
+        public List<XYData> GetRawSpectra(int scan, int groupId, int scanLevel, out ScanSummary summary)
         {
             List<XYData> spectrum = null;
 
-            if (!m_dataFiles.ContainsKey(group))
+            var info = GetScanInfo(scan, groupId, out summary);
+            if (info == null)
+                return null;
+
+            if (info.MSLevel == scanLevel || scanLevel < 1)
+            {
+                spectrum = new List<XYData>();
+                for (var j = 0; j < info.MZList.Length; j++)
+                {
+                    spectrum.Add(new XYData(info.MZList[j], info.IntensityList[j]));
+                }
+            }
+
+            return spectrum;
+        }
+
+        private clsSpectrumInfo GetScanInfo(int scan, int groupId, out ScanSummary summary)
+        {
+            if (!m_dataFiles.ContainsKey(groupId))
             {
                 throw new Exception("The group-dataset ID provided was not found.");
             }
             // If we dont have a reader, then create one for this group 
             // next time, it will be available and we won't have to waste time
             // opening the file.
-            if (!m_readers.ContainsKey(group))
+            if (!m_readers.ContainsKey(groupId))
             {
-                var path = m_dataFiles[group];
+                var path = m_dataFiles[groupId];
                 var reader = new clsMzXMLFileAccessor();
-                m_readers.Add(group, reader);
+                m_readers.Add(groupId, reader);
 
                 var opened = reader.OpenFile(path);
                 if (!opened)
@@ -225,11 +243,10 @@ namespace MultiAlignCore.IO.Features
                     throw new IOException("Could not open the mzXML file " + path);
                 }
             }
-            var rawReader = m_readers[group];
+            var rawReader = m_readers[groupId];
 
             var totalScans = rawReader.ScanCount;
             var info = new clsSpectrumInfo();
-
 
             rawReader.GetSpectrumByScanNumber(scan, ref info);
 
@@ -242,18 +259,22 @@ namespace MultiAlignCore.IO.Features
                 TotalIonCurrent = Convert.ToInt64(info.TotalIonCurrent)
             };
 
-            if (info.MSLevel == scanLevel)
-            {
-                spectrum = new List<XYData>();
-                for (var j = 0; j < info.MZList.Length; j++)
-                {
-                    spectrum.Add(new XYData(info.MZList[j], info.IntensityList[j]));
-                }
-            }
-
-            return spectrum;
+            return info;
         }
 
+        /// <summary>
+        /// Gets the scan header information for the specified scan
+        /// </summary>
+        /// <param name="scan"></param>
+        /// <param name="groupId"></param>
+        public ScanSummary GetScanSummary(int scan, int groupId)
+        {
+            ScanSummary summary;
+
+            var info = GetScanInfo(scan, groupId, out summary);
+
+            return summary;
+        }
 
         public MSSpectra GetSpectrum(int scan, int group, int scanLevel, out ScanSummary summary, bool loadPeaks)
         {

@@ -66,6 +66,11 @@ namespace MultiAlignTestSuite.Papers.Alignment.IO
             return m_provider.GetRawSpectra(group);
         }
 
+        public ScanSummary GetScanSummary(int scan, int @group)
+        {
+            return m_provider.GetScanSummary(scan, group);
+        }
+
         #endregion
 
         #region IDisposable Members

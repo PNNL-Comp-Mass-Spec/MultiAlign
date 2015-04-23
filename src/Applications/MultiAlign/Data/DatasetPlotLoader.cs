@@ -26,7 +26,7 @@ namespace MultiAlign.Data
                 var file = filename.ToLower();
                 if (file.Contains(name))
                 {
-                    if (file.Contains("featureplot"))
+                    if (file.Contains("_features"))
                     {
                         plotInfo.Features = file;
                     }
@@ -34,23 +34,23 @@ namespace MultiAlign.Data
                     {
                         plotInfo.Alignment = file;
                     }
-                    else if (file.Contains("_masserrorhistogram"))
+                    else if (file.Contains("_masshistogram"))
                     {
                         plotInfo.MassErrorHistogram = file;
                     }
-                    else if (file.Contains("_neterrorhistogram"))
+                    else if (file.Contains("_nethistogram"))
                     {
                         plotInfo.NetErrorHistogram = file;
                     }
-                    else if (file.Contains("_massmzresiduals"))
+                    else if (file.Contains("_massmzresidual"))
                     {
                         plotInfo.MassMzResidual = file;
                     }
-                    else if (file.Contains("_massscanresiduals"))
+                    else if (file.Contains("_massscanresidual"))
                     {
                         plotInfo.MassScanResidual = file;
                     }
-                    else if (file.Contains("_netresiduals"))
+                    else if (file.Contains("_netresidual"))
                     {
                         plotInfo.NetResiduals = file;
                     }

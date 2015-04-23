@@ -172,8 +172,8 @@ namespace MultiAlign.Windows.Plots
 
             var heatmap = HeatmapFactory.CreateAlignedHeatmap(alignmentData.heatScores);
             var feature = ScatterPlotFactory.CreateFeatureMassScatterPlot(AlignmentData.AligneeFeatures);
-            var netHistomgram = HistogramFactory.CreateHistogram(alignmentData.netErrorHistogram, "NET Error", "NET Error");
-            var massHistomgram = HistogramFactory.CreateHistogram(alignmentData.netErrorHistogram, "Mass Error", "Mass Error (ppm)");
+            var netHistogram = HistogramFactory.CreateHistogram(alignmentData.netErrorHistogram, "NET Error", "NET Error");
+            var massHistogram = HistogramFactory.CreateHistogram(alignmentData.netErrorHistogram, "Mass Error", "Mass Error (ppm)");
 
             var residuals = alignmentData.ResidualData;
             
@@ -187,8 +187,8 @@ namespace MultiAlign.Windows.Plots
                 residuals.MzMassErrorCorrected, "Mass Residuals", "Scan", "Mass Errors");
 
             NetScanImage = ImageConverter.ConvertImage(PlotImageUtility.CreateImage(netResidual));
-            MassHistogram = ImageConverter.ConvertImage(PlotImageUtility.CreateImage(massHistomgram));
-            NetHistogram = ImageConverter.ConvertImage(PlotImageUtility.CreateImage(netHistomgram));
+            MassHistogram = ImageConverter.ConvertImage(PlotImageUtility.CreateImage(massHistogram));
+            NetHistogram = ImageConverter.ConvertImage(PlotImageUtility.CreateImage(netHistogram));
             HeatmapImage = ImageConverter.ConvertImage(PlotImageUtility.CreateImage(heatmap));
             MassMzImage = ImageConverter.ConvertImage(PlotImageUtility.CreateImage(massMzResidual));
             MassScanImage = ImageConverter.ConvertImage(PlotImageUtility.CreateImage(massScanResidual));
