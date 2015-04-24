@@ -10,6 +10,7 @@ using PNNLOmicsIO.IO;
 
 namespace MultiAlignTestSuite.Algorithms.FeatureFinding
 {
+
     [TestFixture]
     public class FeatureFindingTest: TestBase
     {
@@ -19,14 +20,14 @@ namespace MultiAlignTestSuite.Algorithms.FeatureFinding
         /// <param name="relativePath"></param>
         /// <param name="outputPath"></param>
         [Test]
-        [TestCase(  @"Lamarche-Data\QC_Shew_13_04_1b_6Oct13_Cougar_13-06-14_isos.csv",
-                    @"Lamarche-Data\QC_Shew_13_04_1b_6Oct13_Cougar_13-06-14.features", Ignore = false)]
-        [TestCase(  @"Lamarche-Data\QC_Shew_13_04_1b_18Sep13_Cougar_13-06-14_isos.csv",
-                    @"Lamarche-Data\QC_Shew_13_04_1b_18Sep13_Cougar_13-06-14.features", Ignore = false)]
-        [TestCase(  @"Lamarche-Data\169091_Schutzer_CF_10937_18Jan10_Owl_09-08-18_isos.csv",
-                    @"Lamarche-Data\169091_Schutzer_CF_10937_18Jan10_Owl_09-08-18.features", Ignore = true)]
-        [TestCase(  @"Lamarche-Data\169114_Schutzer_CF_10818_18Jan10_Owl_09-08-18_isos.csv",
-                    @"Lamarche-Data\169114_Schutzer_CF_10818_18Jan10_Owl_09-08-18.features", Ignore = true)]
+        [TestCase(@"Data\QC_SHEW\QC_Shew_13_04_1b_6Oct13_Cougar_13-06-14_isos.csv",
+                  @"Data\QC_SHEW\QC_Shew_13_04_1b_6Oct13_Cougar_13-06-14.features", Ignore = false)]
+        [TestCase(@"Data\QC_SHEW\QC_Shew_13_04_1b_18Sep13_Cougar_13-06-14_isos.csv",
+                  @"Data\QC_SHEW\QC_Shew_13_04_1b_18Sep13_Cougar_13-06-14.features", Ignore = false)]
+        [TestCase(@"Data\chronicFatigue\data\169091_Schutzer_CF_10937_18Jan10_Owl_09-08-18_isos.csv",
+                  @"Data\chronicFatigue\data\169091_Schutzer_CF_10937_18Jan10_Owl_09-08-18.features", Ignore = false)]
+        [TestCase(@"Data\chronicFatigue\data\169114_Schutzer_CF_10818_18Jan10_Owl_09-08-18_isos.csv",
+                  @"Data\chronicFatigue\data\169114_Schutzer_CF_10818_18Jan10_Owl_09-08-18.features", Ignore = false)]
         public void CreateFeaturesTest(string relativePath, string outputPath)
         {            
             var path = GetPath(relativePath);

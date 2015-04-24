@@ -142,6 +142,7 @@
     <Compile Include="Drawing\HeatmapTest.cs" />
     <Compile Include="Drawing\ScatterPlotTest.cs" />
     <Compile Include="IO\Databases\LocalDatabaseTests.cs" />
+    <Compile Include="IO\Utilities.cs" />
     <Compile Include="Papers\Alignment\ClusterIdentificationStatistic.cs" />
     <Compile Include="Papers\Alignment\ClusterValidationTests.cs" />
     <Compile Include="Papers\Alignment\IO\AlignmentAnalysisWriterFactory.cs" />

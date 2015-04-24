@@ -24,7 +24,8 @@ namespace MultiAlignTestSuite.OHSU
             @"M:\data\proteomics\OHSU\Data\results.db3",
             @"M:\data\proteomics\OHSU\Data\Sarc-3000_charge-1",
             1,
-            10)]
+            10, 
+            Ignore=true)]
         public void CreateDatasetMap(string databasePath, string crossPath, int charge, int minimumClusterSize)
         {
             NHibernateUtil.ConnectToDatabase(databasePath, false);
@@ -50,7 +51,8 @@ namespace MultiAlignTestSuite.OHSU
             @"M:\data\proteomics\OHSU\Data\results.db3",
             @"M:\data\proteomics\OHSU\Data\Sarc-3000_charge-1",
             1,
-            10)]
+            10,
+            Ignore = true)]
         public void TestClusterWriting(string databasePath, string crossPath, int charge, int minimumClusterSize)
         {
             NHibernateUtil.ConnectToDatabase(databasePath, false);
@@ -70,7 +72,8 @@ namespace MultiAlignTestSuite.OHSU
 
         [Test]
         [TestCase(
-            @"M:\data\proteomics\OHSU\Data\dummy_database-charge.db3", 20, 400)]
+            @"M:\data\proteomics\OHSU\Data\dummy_database-charge.db3", 20, 400,
+            Ignore = true)]
         public void TestCreateDummyDatabase(string databasePath, int totalDatasets, int totalClusters)
         {
             File.Delete(databasePath);
@@ -126,13 +129,15 @@ namespace MultiAlignTestSuite.OHSU
                     } while (true);
 
 
-                    var feature = new UMCLight();
-                    feature.GroupId = did;
-                    feature.Id = featureId++;
-                    feature.ChargeState = charge;
-                    feature.MassMonoisotopic = FeatureLight.ComputeDaDifferenceFromPPM(mass, 3);
+                    var feature = new UMCLight
+                    {
+                        GroupId = did,
+                        Id = featureId++,
+                        ChargeState = charge,
+                        MassMonoisotopic = FeatureLight.ComputeDaDifferenceFromPPM(mass, 3)
+                    };
                     feature.MassMonoisotopicAligned = feature.MassMonoisotopic;
-                    feature.Net = net + .03*x.NextDouble();
+                    feature.Net = net + 0.03 * x.NextDouble();
                     feature.NetAligned = feature.Net;
                     feature.Net = feature.Net;
                     feature.DriftTime = dt;
@@ -150,7 +155,8 @@ namespace MultiAlignTestSuite.OHSU
             @"M:\data\proteomics\OHSU\Data\dummy_database.db3",
             @"M:\data\proteomics\OHSU\Data\dummy_charge-1",
             1,
-            1)]
+            1,
+            Ignore = true)]
         public void TestClusterGeneration(string databasePath,
             string crossPath,
             int charge,
@@ -242,6 +248,9 @@ namespace MultiAlignTestSuite.OHSU
                 300000);
         }
 
+        /// <summary>
+        /// Creates a cross tab
+        /// </summary>
         [Test]
         [TestCase(
             //@"M:\data\proteomics\OHSU\Data\results.db3",
@@ -249,12 +258,8 @@ namespace MultiAlignTestSuite.OHSU
             @"M:\data\proteomics\OHSU\Data\results-boneLossNoMeds\results-boneLossNoMeds-charge-1",
             //@"M:\data\proteomics\OHSU\Data\Sarc-3000_charge-1",
             1,
-            2)]
-        /// <summary>
-        /// Creates a cross tab
-        /// </summary>
-        /// <param name="charge"></param>
-        /// <param name="path"></param>
+            2,
+            Ignore = true)]
         public void CreateCrossTab(string databasePath, string crossPath, int charge, int minimumClusterSize)
         {
             NHibernateUtil.ConnectToDatabase(databasePath, false);

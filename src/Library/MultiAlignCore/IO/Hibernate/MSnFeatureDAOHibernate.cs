@@ -41,7 +41,7 @@ namespace MultiAlignCore.IO.Features.Hibernate
         {
             var count = 0;
             var path = NHibernateUtil.Connection;
-            using (var connection = new SQLiteConnection("Data Source = " + path + " ;"))
+            using (var connection = new SQLiteConnection("Data Source = " + path + " ;", true))
             {
                 connection.Open();
                 using (var command = connection.CreateCommand())

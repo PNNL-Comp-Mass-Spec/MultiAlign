@@ -13,7 +13,7 @@ namespace MultiAlignCore.IO.Features
     {
         public static void IndexClusters(string path)
         {
-            using (var connection = new SQLiteConnection(string.Format("Data Source = {0};", path)))
+            using (var connection = new SQLiteConnection(string.Format("Data Source = {0};", path), true))
             {
                 connection.Open();
 
@@ -34,7 +34,7 @@ namespace MultiAlignCore.IO.Features
 
         public static void IndexFeatures(string path)
         {
-            using (var connection = new SQLiteConnection(string.Format("Data Source = {0};", path)))
+            using (var connection = new SQLiteConnection(string.Format("Data Source = {0};", path), true))
             {
                 connection.Open();
 

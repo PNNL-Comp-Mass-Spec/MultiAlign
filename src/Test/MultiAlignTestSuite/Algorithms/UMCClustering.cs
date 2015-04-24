@@ -58,14 +58,16 @@ namespace MultiAlignTestSuite.Algorithms
                 if (line.Length > 6)
                 {
                     var clusterID = Convert.ToInt32(lineData[0]);
-                    var feature = new UMCLight();
-                    feature.GroupId = Convert.ToInt32(lineData[1]);
-                    feature.Id = Convert.ToInt32(lineData[2]);
-                    feature.MassMonoisotopic = Convert.ToDouble(lineData[3]);
-                    feature.Net = Convert.ToDouble(lineData[4]);
-                    feature.NetAligned = Convert.ToDouble(lineData[4]);
-                    feature.DriftTime = Convert.ToDouble(lineData[5]);
-                    feature.ChargeState = Convert.ToInt32(lineData[6]);
+                    var feature = new UMCLight
+                    {
+                        GroupId = Convert.ToInt32(lineData[1]),
+                        Id = Convert.ToInt32(lineData[2]),
+                        MassMonoisotopic = Convert.ToDouble(lineData[3]),
+                        Net = Convert.ToDouble(lineData[4]),
+                        NetAligned = Convert.ToDouble(lineData[4]),
+                        DriftTime = Convert.ToDouble(lineData[5]),
+                        ChargeState = Convert.ToInt32(lineData[6])
+                    };
 
                     if (clusterMap.ContainsKey(clusterID))
                     {
@@ -98,11 +100,13 @@ namespace MultiAlignTestSuite.Algorithms
                 if (line.Length > 6)
                 {
                     var clusterID = Convert.ToInt32(lineData[0]);
-                    var feature = new UMCLight();
-                    feature.GroupId = Convert.ToInt32(lineData[1]);
-                    feature.Id = Convert.ToInt32(lineData[2]);
-                    feature.MassMonoisotopicAligned = Convert.ToDouble(lineData[3]);
-                    feature.Net = Convert.ToDouble(lineData[4]);
+                    var feature = new UMCLight
+                    {
+                        GroupId = Convert.ToInt32(lineData[1]),
+                        Id = Convert.ToInt32(lineData[2]),
+                        MassMonoisotopicAligned = Convert.ToDouble(lineData[3]),
+                        Net = Convert.ToDouble(lineData[4])
+                    };
                     feature.MassMonoisotopic = feature.MassMonoisotopicAligned;
                     feature.NetAligned = Convert.ToDouble(lineData[4]);
                     feature.Net = feature.NetAligned;
@@ -124,9 +128,11 @@ namespace MultiAlignTestSuite.Algorithms
             {
                 foreach (var feature in cluster.Features)
                 {
-                    var x = new UMCClusterLight();
-                    x.MassMonoisotopic = feature.MassMonoisotopic;
-                    x.Net = feature.Net;
+                    var x = new UMCClusterLight
+                    {
+                        MassMonoisotopic = feature.MassMonoisotopic,
+                        Net = feature.Net
+                    };
                     x.Net = feature.NetAligned;
                     x.DriftTime = feature.DriftTime;
                     x.ChargeState = feature.ChargeState;
@@ -170,20 +176,28 @@ namespace MultiAlignTestSuite.Algorithms
         }
 
         [Test(Description = "Tests how clusters form when the are within tolerance boolean is not set")]
-        [TestCase(@"M:\data\proteomics\Clusters\twoClusters-split.csv", DistanceMetric.WeightedEuclidean, true)]
-        [TestCase(@"M:\data\proteomics\Clusters\twoClusters-split.csv", DistanceMetric.Euclidean, true)]
+        [TestCase(@"M:\data\proteomics\Clusters\twoClusters-split.csv", DistanceMetric.WeightedEuclidean, true, Ignore=true)]
+        [TestCase(@"M:\data\proteomics\Clusters\twoClusters-split.csv", DistanceMetric.Euclidean, true, Ignore = true)]
         public void TestRestrictiveBoxMethod(string path, DistanceMetric dist, bool useBoxMethod)
         {
             var features = ReadFeatures(path);
-            var clusterer = new UMCAverageLinkageClusterer<UMCLight, UMCClusterLight>();
+            var clusterer = new UMCAverageLinkageClusterer<UMCLight, UMCClusterLight>
+            {
+                ShouldTestClustersWithinTolerance = useBoxMethod,
+                Parameters =
+                {
+                    CentroidRepresentation = ClusterCentroidRepresentation.Mean,
+                    DistanceFunction = DistanceFactory<UMCLight>.CreateDistanceFunction(dist),
+                    OnlyClusterSameChargeStates = true,
+                    Tolerances =
+                    {
+                        Mass = 10,
+                        DriftTime = .3,
+                        Net = .03
+                    }
+                }
+            };
 
-            clusterer.ShouldTestClustersWithinTolerance = useBoxMethod;
-            clusterer.Parameters.CentroidRepresentation = ClusterCentroidRepresentation.Mean;
-            clusterer.Parameters.DistanceFunction = DistanceFactory<UMCLight>.CreateDistanceFunction(dist);
-            clusterer.Parameters.OnlyClusterSameChargeStates = true;
-            clusterer.Parameters.Tolerances.Mass = 10;
-            clusterer.Parameters.Tolerances.DriftTime = .3;
-            clusterer.Parameters.Tolerances.Net = .03;
             var clusters = clusterer.Cluster(features);
             var i = 0;
             clusters.ForEach(x => x.Id = i++);
@@ -191,20 +205,28 @@ namespace MultiAlignTestSuite.Algorithms
         }
 
         [Test(Description = "Tests how clusters form when the are within tolerance boolean is not set")]
-        [TestCase(@"M:\data\proteomics\Clusters\twoClusters-split.csv", DistanceMetric.WeightedEuclidean)]
-        [TestCase(@"M:\data\proteomics\Clusters\twoClusters-split.csv", DistanceMetric.Euclidean)]
+        [TestCase(@"M:\data\proteomics\Clusters\twoClusters-split.csv", DistanceMetric.WeightedEuclidean, Ignore = true)]
+        [TestCase(@"M:\data\proteomics\Clusters\twoClusters-split.csv", DistanceMetric.Euclidean, Ignore = true)]
         public void TestDistanceDistributions(string path, DistanceMetric dist)
         {
             var features = ReadFeatures(path);
-            var clusterer = new UMCAverageLinkageClusterer<UMCLight, UMCClusterLight>();
+            var clusterer = new UMCAverageLinkageClusterer<UMCLight, UMCClusterLight>
+            {
+                ShouldTestClustersWithinTolerance = false,
+                Parameters =
+                {
+                    CentroidRepresentation = ClusterCentroidRepresentation.Mean,
+                    DistanceFunction = DistanceFactory<UMCLight>.CreateDistanceFunction(dist),
+                    OnlyClusterSameChargeStates = true,
+                    Tolerances =
+                    {
+                        Mass = 10,
+                        DriftTime = .3,
+                        Net = .03
+                    }
+                }
+            };
 
-            clusterer.ShouldTestClustersWithinTolerance = false;
-            clusterer.Parameters.CentroidRepresentation = ClusterCentroidRepresentation.Mean;
-            clusterer.Parameters.DistanceFunction = DistanceFactory<UMCLight>.CreateDistanceFunction(dist);
-            clusterer.Parameters.OnlyClusterSameChargeStates = true;
-            clusterer.Parameters.Tolerances.Mass = 10;
-            clusterer.Parameters.Tolerances.DriftTime = .3;
-            clusterer.Parameters.Tolerances.Net = .03;
             var clusters = clusterer.Cluster(features);
 
             var distances = new List<double>();
@@ -232,7 +254,7 @@ namespace MultiAlignTestSuite.Algorithms
         }
 
         [Test]
-        [TestCase(@"M:\data\proteomics\Clusters\clusterBaseline-01.csv", DistanceMetric.WeightedEuclidean)]
+        [TestCase(@"M:\data\proteomics\Clusters\clusterBaseline-01.csv", DistanceMetric.WeightedEuclidean, Ignore = true)]
         public void TestDistancesEuclidean(string path, DistanceMetric dist)
         {
             var func = DistanceFactory<UMCClusterLight>.CreateDistanceFunction(DistanceMetric.Euclidean);

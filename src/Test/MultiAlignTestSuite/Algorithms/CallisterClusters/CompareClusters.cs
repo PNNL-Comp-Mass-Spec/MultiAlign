@@ -116,7 +116,9 @@ namespace MultiAlignTestSuite.Algorithms
             form.Size = Screen.PrimaryScreen.WorkingArea.Size;
             plot.Dock = DockStyle.Fill;
             form.Controls.Add(plot);
-            form.ShowDialog();
+            form.Show();
+
+            IO.Utilities.SleepNow(3);
 
             using (var bitmap = new Bitmap(form.Width, form.Height))
             {
@@ -188,7 +190,9 @@ namespace MultiAlignTestSuite.Algorithms
             form.Size = Screen.PrimaryScreen.WorkingArea.Size;
             plot.Dock = DockStyle.Fill;
             form.Controls.Add(plot);
-            form.ShowDialog();
+            form.Show();
+
+            IO.Utilities.SleepNow(3);
 
             using (var bitmap = new Bitmap(form.Width, form.Height))
             {
@@ -198,7 +202,7 @@ namespace MultiAlignTestSuite.Algorithms
         }
 
         [Test]
-        [TestCase(@"m:\clusters\99665", SpectralComparison.CosineDotProduct, .8)]
+        [TestCase(@"m:\clusters\99665", SpectralComparison.CosineDotProduct, .8, Ignore=true)]
         public void Create(string directory, SpectralComparison comparerType, double percent)
         {
             var comparer = SpectralComparerFactory.CreateSpectraComparer(comparerType, percent);

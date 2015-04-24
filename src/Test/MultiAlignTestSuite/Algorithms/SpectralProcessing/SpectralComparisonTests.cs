@@ -20,7 +20,7 @@ using PNNLOmics.Data;
 namespace MultiAlignTestSuite.Algorithms
 {
     [TestFixture]
-    public class SpectralComparisonTest
+    public class SpectralComparisonTest: TestBase
     {
         /// <summary>
         ///     Maps the path to a group ID for reading multiple files.
@@ -135,8 +135,10 @@ namespace MultiAlignTestSuite.Algorithms
             form.Size = Screen.PrimaryScreen.WorkingArea.Size;
             plot.Dock = DockStyle.Fill;
             form.Controls.Add(plot);
-            form.ShowDialog();
+            form.Show();
 
+            IO.Utilities.SleepNow(3);
+            
             using (var bitmap = new Bitmap(form.Width, form.Height))
             {
                 form.DrawToBitmap(bitmap, form.DisplayRectangle);
@@ -150,21 +152,28 @@ namespace MultiAlignTestSuite.Algorithms
 
         [Test(Description = "Compares two spectra against each other.")]
         [TestCase(
-            @"M:\data\proteomics\MsMsAlignment\data\Shewanella\ConstantPressure\TechReplicates-00\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32.RAW",
+            @"Data\QC_SHEW\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32.RAW",
             3726,
-            @"M:\data\proteomics\MsMsAlignment\data\Shewanella\ConstantPressure\TechReplicates-00\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32.RAW",
+            @"Data\QC_SHEW\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32.RAW",
             3541,
             .5,
             Ignore = false)]
         [TestCase(
-            @"M:\data\proteomics\MsMsAlignment\data\Shewanella\ConstantPressure\TechReplicates-00\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32.RAW",
+            @"Data\QC_SHEW\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32.RAW",
             3726,
-            @"M:\data\proteomics\MsMsAlignment\data\Shewanella\ConstantPressure\TechReplicates-00\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32.RAW",
+            @"Data\QC_SHEW\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32.RAW",
             7413,
             1,
             Ignore = false)]
-        public void DisplayComparisonFigure(string pathX, int scanX, string pathY, int scanY, double mzTolerance)
+        public void DisplayComparisonFigure(
+            string pathX, int scanX, 
+            string pathY, int scanY, 
+            double mzTolerance)
         {
+            // Convert relative paths to absolute paths
+            pathX = GetPath(pathX);
+            pathY = GetPath(pathY);
+
             var spectrumX = GetSpectrum(pathX, scanX);
             var spectrumY = GetSpectrum(pathY, scanY);
 
@@ -186,25 +195,25 @@ namespace MultiAlignTestSuite.Algorithms
 
         [Test(Description = "Compares two spectra against each other.")]
         [TestCase(
-            @"M:\data\proteomics\MsMsAlignment\data\Shewanella\ConstantPressure\TechReplicates-00\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32.RAW",
+            @"Data\QC_SHEW\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32.RAW",
             3726,
-            @"M:\data\proteomics\MsMsAlignment\data\Shewanella\ConstantPressure\TechReplicates-00\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32.RAW",
+            @"Data\QC_SHEW\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32.RAW",
             3541,
             SpectralComparison.NormalizedDotProduct,
             .5,
             Ignore = true)]
         [TestCase(
-            @"M:\data\proteomics\MsMsAlignment\data\Shewanella\ConstantPressure\TechReplicates-00\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32.RAW",
+            @"Data\QC_SHEW\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32.RAW",
             15304,
-            @"M:\data\proteomics\MsMsAlignment\data\Shewanella\ConstantPressure\TechReplicates-00\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32.RAW",
+            @"Data\QC_SHEW\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32.RAW",
             17614,
             SpectralComparison.NormalizedDotProduct,
             .5,
             Ignore = true)]
         [TestCase(
-            @"M:\data\proteomics\MsMsAlignment\data\Shewanella\ConstantPressure\TechReplicates-00\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32.RAW",
+            @"Data\QC_SHEW\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32.RAW",
             3726,
-            @"M:\data\proteomics\MsMsAlignment\data\Shewanella\ConstantPressure\TechReplicates-00\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32.RAW",
+            @"Data\QC_SHEW\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32.RAW",
             3541,
             SpectralComparison.PeakCounts,
             SpectraFilters.TopPercent,
@@ -212,9 +221,9 @@ namespace MultiAlignTestSuite.Algorithms
             1,
             Ignore = false)]
         [TestCase(
-            @"M:\data\proteomics\MsMsAlignment\data\Shewanella\ConstantPressure\TechReplicates-00\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32.RAW",
+            @"Data\QC_SHEW\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32.RAW",
             3726,
-            @"M:\data\proteomics\MsMsAlignment\data\Shewanella\ConstantPressure\TechReplicates-00\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32.RAW",
+            @"Data\QC_SHEW\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32.RAW",
             7413,
             SpectralComparison.PeakCounts,
             SpectraFilters.TopPercent,
@@ -222,9 +231,9 @@ namespace MultiAlignTestSuite.Algorithms
             1,
             Ignore = false)]
         [TestCase(
-            @"M:\data\proteomics\MsMsAlignment\data\Shewanella\ConstantPressure\TechReplicates-00\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32.RAW",
+            @"Data\QC_SHEW\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32.RAW",
             3726,
-            @"M:\data\proteomics\MsMsAlignment\data\Shewanella\ConstantPressure\TechReplicates-00\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32.RAW",
+            @"Data\QC_SHEW\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32.RAW",
             3541,
             SpectralComparison.CosineDotProduct,
             SpectraFilters.TopPercent,
@@ -232,24 +241,27 @@ namespace MultiAlignTestSuite.Algorithms
             1,
             Ignore = false)]
         [TestCase(
-            @"M:\data\proteomics\Papers\AlignmentPaper\data\Shewanella\ConstantPressure\TechReplicates-00\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32.RAW",
+            @"Data\QC_SHEW\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32.RAW",
             3726,
-            @"M:\data\proteomics\Papers\AlignmentPaper\data\Shewanella\ConstantPressure\TechReplicates-00\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32.RAW",
+            @"Data\QC_SHEW\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32.RAW",
             7413,
             SpectralComparison.CosineDotProduct,
             SpectraFilters.TopPercent,
             .8,
             1,
             Ignore = false)]
-        public void TestSpectralSimilarityScore(string pathX,
-            int scanX,
-            string pathY,
-            int scanY,
+        public void TestSpectralSimilarityScore(
+            string pathX, int scanX,
+            string pathY, int scanY,
             SpectralComparison comparerType,
             SpectraFilters filterType,
             double percent,
             double mzTolerance)
         {
+            // Convert relative paths to absolute paths
+            pathX = GetPath(pathX);
+            pathY = GetPath(pathY);
+
             var spectrumX = GetSpectrum(pathX, scanX);
             var spectrumY = GetSpectrum(pathY, scanY);
             var comparer = SpectralComparerFactory.CreateSpectraComparer(comparerType, percent);
@@ -438,22 +450,26 @@ namespace MultiAlignTestSuite.Algorithms
 
         //#region Error Distribution Construction
         //[Test(Description = "Compares two spectra against each other.")]
-        //[TestCase(@"M:\data\proteomics\MsMsAlignment\data\Shewanella\ConstantPressure\TechReplicates-00\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32.RAW", 3726,
-        //            @"M:\data\proteomics\MsMsAlignment\data\Shewanella\ConstantPressure\TechReplicates-00\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32.RAW", 3541,
+        //[TestCase(@"Data\QC_SHEW\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32.RAW", 3726,
+        //            @"Data\QC_SHEW\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32.RAW", 3541,
         //            SpectralComparison.NormalizedDotProduct,
         //            .5,
         //            Ignore = true)]
-        //[TestCase(@"M:\data\proteomics\MsMsAlignment\data\Shewanella\ConstantPressure\TechReplicates-00\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32.RAW", 15304,
-        //            @"M:\data\proteomics\MsMsAlignment\data\Shewanella\ConstantPressure\TechReplicates-00\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32.RAW", 17614,
+        //[TestCase(@"Data\QC_SHEW\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32.RAW", 15304,
+        //            @"Data\QC_SHEW\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32.RAW", 17614,
         //            SpectralComparison.NormalizedDotProduct,
         //            .5,
         //            Ignore = true)]
-        //[TestCase(@"M:\data\proteomics\MsMsAlignment\data\Shewanella\ConstantPressure\TechReplicates-00\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32.RAW", 
-        //            @"M:\data\proteomics\MsMsAlignment\data\Shewanella\ConstantPressure\TechReplicates-00\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32.RAW",
+        //[TestCase(@"Data\QC_SHEW\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32.RAW", 
+        //            @"Data\QC_SHEW\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32.RAW",
         //            SpectralComparison.CosineDotProduct,
         //            .8)]
         //public void TestConstructErrorDistributions(string pathX, string pathY, SpectralComparison comparerType, double mzTolerance)
         //{
+        //    // Convert relative paths to absolute paths
+        //    pathX = GetPath(pathX);
+        //    pathY = GetPath(pathY);
+        //
         //    double percent = .8;
         //    Console.WriteLine("{2}, Test: {0}\tcompared to\t{1}", pathX, pathY, comparerType);
 
@@ -546,14 +562,14 @@ namespace MultiAlignTestSuite.Algorithms
         ///// <param name="comparerType"></param>
         ///// <param name="mzTolerance"></param>
         //[Test(Description = "Compares two spectra against each other.")]
-        //[TestCase(@"M:\data\proteomics\MsMsAlignment\data\Shewanella\ConstantPressure\TechReplicates-00\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32.RAW",
-        //            @"M:\data\proteomics\MsMsAlignment\data\Shewanella\ConstantPressure\TechReplicates-00\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32.RAW",
+        //[TestCase(@"Data\QC_SHEW\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32.RAW",
+        //            @"Data\QC_SHEW\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32.RAW",
         //            @"M:\data\proteomics\Thesis\testpaa-tr-cp-00-00\tr-cp-00-00-1.0e+00_matches.csv",
         //            SpectralComparison.NormalizedDotProduct,
         //            .5,
         //            Ignore=true)]
-        //[TestCase(@"M:\data\proteomics\MsMsAlignment\data\Shewanella\ConstantPressure\TechReplicates-00\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32.RAW",
-        //            @"M:\data\proteomics\MsMsAlignment\data\Shewanella\ConstantPressure\TechReplicates-00\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32.RAW",
+        //[TestCase(@"Data\QC_SHEW\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32.RAW",
+        //            @"Data\QC_SHEW\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32.RAW",
         //            @"M:\data\proteomics\Thesis\testpaa-tr-cp-00-00\tr-cp-00-00-1.0e+00_matches.csv",
         //            SpectralComparison.CosineDotProduct,
         //            .8)]
@@ -563,6 +579,11 @@ namespace MultiAlignTestSuite.Algorithms
         //                                            SpectralComparison comparerType,
         //                                            double mzTolerance)
         //{
+        //
+        //    // Convert relative paths to absolute paths
+        //    pathX = GetPath(pathX);
+        //    pathY = GetPath(pathY);
+        //
         //    double percent = .8;
         //    Console.WriteLine("{2}, Test: {0}\tcompared to\t{1}", pathX, pathY, comparerType);
 
@@ -736,10 +757,10 @@ namespace MultiAlignTestSuite.Algorithms
         ///// <param name="comparerType"></param>
         ///// <param name="mzTolerance"></param>
         //[Test(Description = "Compares two spectra against each other.")]        
-        //[TestCase(@"M:\data\proteomics\MsMsAlignment\data\Shewanella\ConstantPressure\TechReplicates-00\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32.RAW",
-        //            @"M:\data\proteomics\MsMsAlignment\data\Shewanella\ConstantPressure\TechReplicates-00\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32.RAW",
-        //            @"M:\data\proteomics\MsMsAlignment\data\Shewanella\ConstantPressure\TechReplicates-00\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32_msgfdb_fht.txt",
-        //            @"M:\data\proteomics\MsMsAlignment\data\Shewanella\ConstantPressure\TechReplicates-00\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32_msgfdb_fht.txt",
+        //[TestCase(@"Data\QC_SHEW\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32.RAW",
+        //            @"Data\QC_SHEW\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32.RAW",
+        //            @"Data\QC_SHEW\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32_msgfdb_fht.txt",
+        //            @"Data\QC_SHEW\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32_msgfdb_fht.txt",
         //            SpectralComparison.DotProduct,
         //            .5,
         //            .25,
@@ -747,10 +768,10 @@ namespace MultiAlignTestSuite.Algorithms
         //            .7,
         //            .01,
         //            .5, Ignore = false)]
-        //[TestCase(@"M:\data\proteomics\MsMsAlignment\data\Shewanella\ConstantPressure\TechReplicates-00\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32.RAW",
-        //            @"M:\data\proteomics\MsMsAlignment\data\Shewanella\ConstantPressure\TechReplicates-00\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32.RAW",
-        //            @"M:\data\proteomics\MsMsAlignment\data\Shewanella\ConstantPressure\TechReplicates-00\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32_msgfdb_fht.txt",
-        //            @"M:\data\proteomics\MsMsAlignment\data\Shewanella\ConstantPressure\TechReplicates-00\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32_msgfdb_fht.txt",
+        //[TestCase(@"Data\QC_SHEW\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32.RAW",
+        //            @"Data\QC_SHEW\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32.RAW",
+        //            @"Data\QC_SHEW\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32_msgfdb_fht.txt",
+        //            @"Data\QC_SHEW\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32_msgfdb_fht.txt",
         //            SpectralComparison.PeakCounts,
         //            .5,
         //            .25,
@@ -759,10 +780,10 @@ namespace MultiAlignTestSuite.Algorithms
         //            .01,
         //            .5
         //            , Ignore = true)]
-        //[TestCase(@"M:\data\proteomics\MsMsAlignment\data\Shewanella\ConstantPressure\TechReplicates-00\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32.RAW",
-        //            @"M:\data\proteomics\MsMsAlignment\data\Shewanella\ConstantPressure\TechReplicates-00\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32.RAW",
-        //            @"M:\data\proteomics\MsMsAlignment\data\Shewanella\ConstantPressure\TechReplicates-00\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32_msgfdb_fht.txt",
-        //            @"M:\data\proteomics\MsMsAlignment\data\Shewanella\ConstantPressure\TechReplicates-00\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32_msgfdb_fht.txt",
+        //[TestCase(@"Data\QC_SHEW\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32.RAW",
+        //            @"Data\QC_SHEW\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32.RAW",
+        //            @"Data\QC_SHEW\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32_msgfdb_fht.txt",
+        //            @"Data\QC_SHEW\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32_msgfdb_fht.txt",
         //            SpectralComparison.CosineDotProduct,
         //            .5,
         //            .25,
@@ -782,6 +803,10 @@ namespace MultiAlignTestSuite.Algorithms
         //                                                double fdr,
         //                                                double percent)
         //{
+        //    // Convert relative paths to absolute paths
+        //    pathX = GetPath(pathX);
+        //    pathY = GetPath(pathY);
+        //
         //    Console.WriteLine("{2}, Test: {0}\tcompared to\t{1}", pathX, pathY, comparerType);
 
         //    Dictionary<int, PeptideTest> peptideMapX = new Dictionary<int, PeptideTest>();

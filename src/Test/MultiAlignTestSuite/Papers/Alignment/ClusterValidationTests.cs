@@ -38,7 +38,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
     public class Figure4ClusterValidationTests : WorkflowBase
     {
         [Test]
-        [TestCase(@"M:\data\proteomics\Papers\AlignmentPaper\data\annotated-QC-6\test-annotated-6.db3", 2)]
+        [TestCase(@"M:\data\proteomics\Papers\AlignmentPaper\data\annotated-QC-6\test-annotated-6.db3", 2, Ignore = true)]
         public void TestClusters(string databasetPath, int minMsMsCount)
         {
             var providers = DataAccessFactory.CreateDataAccessProviders(databasetPath, false);
@@ -86,8 +86,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
         ///     Matches Peptides and then asks what clusters they are in
         /// </summary>
         [Test]
-        [TestCase(@"M:\data\proteomics\Papers\AlignmentPaper\data\annotated-QC-6\clusterTests-matches.txt",
-            900)]
+        [TestCase(@"M:\data\proteomics\Papers\AlignmentPaper\data\annotated-QC-6\clusterTests-matches.txt", 900, Ignore = true)]
         public void TestPeptides(string databasePath, int scanTolerance)
         {
             var data = File.ReadAllLines(databasePath).ToList();
@@ -145,7 +144,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
 
         [Test]
         [TestCase(@"M:\data\proteomics\TestData\QC-Shew-Annotated2",
-            @"M:\data\proteomics\TestData\QC-Shew-Annotated2\peptidematches-2.txt")]
+            @"M:\data\proteomics\TestData\QC-Shew-Annotated2\peptidematches-2.txt", Ignore = true)]
         public void TestPeptideBands(string directory,
             string matchPath)
         {
@@ -258,33 +257,33 @@ namespace MultiAlignTestSuite.Papers.Alignment
         [TestCase(@"M:\errors.txt",
             @"M:\errors-fit-05.txt",
             .05,
-            5
-            )]
+            5,
+            Ignore = true)]
         [TestCase(@"M:\errors.txt",
             @"M:\errors-fit-02.txt",
             .02,
-            5
-            )]
+            5,
+            Ignore = true)]
         [TestCase(@"M:\errors.txt",
             @"M:\errors-fit-20.txt",
             .2,
-            5
-            )]
+            5,
+            Ignore = true)]
         [TestCase(@"M:\errors.txt",
             @"M:\errors-fit-30.txt",
             .3,
-            15
-            )]
+            15,
+            Ignore = true)]
         [TestCase(@"M:\errors.txt",
             @"M:\errors-fit-10.txt",
             .1,
-            5
-            )]
+            5,
+            Ignore = true)]
         [TestCase(@"M:\errors.txt",
             @"M:\errors-fit-90.txt",
             .9,
-            5
-            )]
+            5,
+            Ignore = true)]
         public void TestAlignmentfunction(
             string path,
             string outputPath,
@@ -325,7 +324,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
             @"M:\data\proteomics\TestData\QC-Shew-Annotated2\matches",
             FeatureAlignmentType.SPECTRAL_ALIGNMENT,
             LcmsFeatureClusteringAlgorithmType.AverageLinkage,
-            Ignore = false
+            Ignore = true
             )]
         [TestCase(@"M:\data\proteomics\TestData\LipidTests",
             @"M:\data\proteomics\TestData\QC-Shew-Annotated2\lipidMatches",

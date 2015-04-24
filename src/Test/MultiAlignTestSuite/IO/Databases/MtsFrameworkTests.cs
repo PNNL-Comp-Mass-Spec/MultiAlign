@@ -15,7 +15,7 @@ namespace MultiAlignTestSuite.IO.MTDB
     public sealed class MtsLoaderTests
     {
         [Test]
-        [TestCase("elmer", "MT_Human_Sarcopenia_MixedLC_P692", Description = "MTS Based Tests")]
+        [TestCase("elmer", "MT_Human_Sarcopenia_P789", Description = "MTS Based Tests")]
         public void OnlyLoadWithDriftTime(string server, string databaseName)
         {
             var analysis = new MultiAlignAnalysis();
@@ -37,7 +37,7 @@ namespace MultiAlignTestSuite.IO.MTDB
         }
 
         [Test]
-        [TestCase("elmer", "MT_Human_Sarcopenia_MixedLC_P692")]
+        [TestCase("elmer", "MT_Human_Sarcopenia_P789")]
         public void LoadWithoutDriftTime(string server, string databaseName)
         {
             var analysis = new MultiAlignAnalysis();

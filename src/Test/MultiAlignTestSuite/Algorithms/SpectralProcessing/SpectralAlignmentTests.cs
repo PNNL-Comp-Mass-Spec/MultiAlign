@@ -35,10 +35,10 @@
 //        /// <param name="comparerType"></param>
 //        /// <param name="mzTolerance"></param>
 //        [Test(Description = "Compares two spectra against each other.")]
-//        [TestCase(@"M:\data\proteomics\MsMsAlignment\data\Shewanella\ConstantPressure\TechReplicates-00\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32.RAW",
-//                    @"M:\data\proteomics\MsMsAlignment\data\Shewanella\ConstantPressure\TechReplicates-00\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32.RAW",
-//                    @"M:\data\proteomics\MsMsAlignment\data\Shewanella\ConstantPressure\TechReplicates-00\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32_msgfdb_fht.txt",
-//                    @"M:\data\proteomics\MsMsAlignment\data\Shewanella\ConstantPressure\TechReplicates-00\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32_msgfdb_fht.txt",
+//        [TestCase(@"Data\QC_SHEW\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32.RAW",
+//                    @"Data\QC_SHEW\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32.RAW",
+//                    @"Data\QC_SHEW\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32_msgfdb_fht.txt",
+//                    @"Data\QC_SHEW\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32_msgfdb_fht.txt",
 //                    SpectralComparison.DotProduct,
 //                    .5,
 //                    .25,
@@ -46,10 +46,10 @@
 //                    .7,
 //                    .01,
 //                    .5, Ignore = true)]
-//        [TestCase(@"M:\data\proteomics\MsMsAlignment\data\Shewanella\ConstantPressure\TechReplicates-00\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32.RAW",
-//                    @"M:\data\proteomics\MsMsAlignment\data\Shewanella\ConstantPressure\TechReplicates-00\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32.RAW",
-//                    @"M:\data\proteomics\MsMsAlignment\data\Shewanella\ConstantPressure\TechReplicates-00\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32_msgfdb_fht.txt",
-//                    @"M:\data\proteomics\MsMsAlignment\data\Shewanella\ConstantPressure\TechReplicates-00\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32_msgfdb_fht.txt",
+//        [TestCase(@"Data\QC_SHEW\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32.RAW",
+//                    @"Data\QC_SHEW\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32.RAW",
+//                    @"Data\QC_SHEW\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32_msgfdb_fht.txt",
+//                    @"Data\QC_SHEW\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32_msgfdb_fht.txt",
 //                    SpectralComparison.PeakCounts,
 //                    .5,
 //                    .25,
@@ -58,10 +58,10 @@
 //                    .01,
 //                    .5
 //                    , Ignore = true)]
-//        [TestCase(@"M:\data\proteomics\MsMsAlignment\data\Shewanella\ConstantPressure\TechReplicates-00\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32.RAW",
-//                    @"M:\data\proteomics\MsMsAlignment\data\Shewanella\ConstantPressure\TechReplicates-00\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32.RAW",
-//                    @"M:\data\proteomics\MsMsAlignment\data\Shewanella\ConstantPressure\TechReplicates-00\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32_msgfdb_fht.txt",
-//                    @"M:\data\proteomics\MsMsAlignment\data\Shewanella\ConstantPressure\TechReplicates-00\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32_msgfdb_fht.txt",
+//        [TestCase(@"Data\QC_SHEW\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32.RAW",
+//                    @"Data\QC_SHEW\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32.RAW",
+//                    @"Data\QC_SHEW\QC_Shew_11_06-pt5_1_11Jun12_Falcon_12-03-32_msgfdb_fht.txt",
+//                    @"Data\QC_SHEW\QC_Shew_11_06-pt5_5_11Jun12_Falcon_12-03-32_msgfdb_fht.txt",
 //                    SpectralComparison.CosineDotProduct,
 //                    .5,
 //                    .25,

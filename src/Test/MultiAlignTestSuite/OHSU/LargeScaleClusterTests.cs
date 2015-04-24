@@ -106,7 +106,8 @@ namespace PNNLOmics.UnitTests.AlgorithmTests.FeatureClustering
             5,
             16,
             .014,
-            .3)]
+            .3,
+            Ignore = true)]
         public void MassPartitionTest(string databasePath,
             int chargeState,
             double massTolerance,

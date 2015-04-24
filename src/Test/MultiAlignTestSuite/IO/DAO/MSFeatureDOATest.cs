@@ -31,7 +31,7 @@ namespace MultiAlignTestSuite
         }
 
         [Test]
-        [TestCase(@"m:\data\proteomics\matest-gui\guitest.db3")]
+        [TestCase(@"m:\data\proteomics\matest-gui\guitest.db3", Ignore = true)]
         public List<MSFeatureLight> LoadMSFeaturesFromCache(string path)
         {
             var features = new List<MSFeatureLight>();

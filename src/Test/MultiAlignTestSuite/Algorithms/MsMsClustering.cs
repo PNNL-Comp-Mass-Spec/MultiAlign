@@ -58,8 +58,8 @@ namespace MultiAlignTestSuite.Algorithms
             SequenceFileType.SkylineTransitionFile,
             @"M:\data\proteomics\MsMsAlignment\HideousComplexity\Complex-plantHuman\Align_complex_02_Run3_24Jul12_Falcon_12-06-01_isos.csv",
             @"M:\data\proteomics\MsMsAlignment\HideousComplexity\Complex-plantHuman\Align_complex_02_Run2_20Jul12_Falcon_12-06-01_isos.csv",
-            .4
-            )]
+            .4, 
+            Ignore = true)]
         [TestCase(
             "hideous-complexity-a-8",
             @"m:\data\proteomics\msmsalignment\HideousComplexity\Complex-plantHuman",
@@ -67,8 +67,8 @@ namespace MultiAlignTestSuite.Algorithms
             SequenceFileType.SkylineTransitionFile,
             @"M:\data\proteomics\MsMsAlignment\HideousComplexity\Complex-plantHuman\Align_complex_02_Run3_24Jul12_Falcon_12-06-01_isos.csv",
             @"M:\data\proteomics\MsMsAlignment\HideousComplexity\Complex-plantHuman\Align_complex_02_Run2_20Jul12_Falcon_12-06-01_isos.csv",
-            .8
-            )]
+            .8,
+            Ignore = true)]
         [TestCase(
             "low-complexity-a-4",
             @"m:\data\proteomics\msmsalignment\LowComplexity\PepMix\",
@@ -76,7 +76,8 @@ namespace MultiAlignTestSuite.Algorithms
             SequenceFileType.SkylineTransitionFile,
             @"M:\data\proteomics\MsMsAlignment\LowComplexity\PepMix\Align_pepmix_01_Run2_30May12_Falcon_12-03-34_isos.csv",
             @"M:\data\proteomics\MsMsAlignment\LowComplexity\PepMix\Align_pepmix_01_Run1_30May12_Falcon_12-03-34_isos.csv",
-            .4)]
+            .4, 
+            Ignore = true)]
         [TestCase(
             "low-complexity-a-8",
             @"m:\data\proteomics\msmsalignment\LowComplexity\PepMix\",
@@ -84,7 +85,8 @@ namespace MultiAlignTestSuite.Algorithms
             SequenceFileType.SkylineTransitionFile,
             @"M:\data\proteomics\MsMsAlignment\LowComplexity\PepMix\Align_pepmix_01_Run2_30May12_Falcon_12-03-34_isos.csv",
             @"M:\data\proteomics\MsMsAlignment\LowComplexity\PepMix\Align_pepmix_01_Run1_30May12_Falcon_12-03-34_isos.csv",
-            .8)]
+            .8, 
+            Ignore = true)]
         public void ClusterMsMs(string name,
             string resultPath,
             string sequencePath,

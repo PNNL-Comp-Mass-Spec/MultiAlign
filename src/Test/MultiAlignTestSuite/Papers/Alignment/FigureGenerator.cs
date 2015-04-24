@@ -115,7 +115,10 @@ namespace MultiAlignTestSuite.Papers.Alignment
             var plot = new Plot {Model = model, Dock = DockStyle.Fill};
             var form = new Form {Size = Screen.PrimaryScreen.WorkingArea.Size};
             form.Controls.Add(plot);
-            form.ShowDialog();
+            form.Show();
+
+            MultiAlignTestSuite.IO.Utilities.SleepNow(3);
+
         }
 
 

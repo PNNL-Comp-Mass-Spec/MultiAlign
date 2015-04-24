@@ -55,7 +55,7 @@ namespace MultiAlignCore.IO.Features
 
             var featurecount = 0;
             var cuont = 0;
-            using (var connection = new SQLiteConnection(string.Format("Data Source = {0}", DatabasePath)))
+            using (var connection = new SQLiteConnection(string.Format("Data Source = {0}", DatabasePath), true))
             {
                 connection.Open();
                 using (var command = connection.CreateCommand())

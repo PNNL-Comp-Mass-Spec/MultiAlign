@@ -82,7 +82,7 @@ namespace MultiAlignCore.IO.Features.Hibernate
             m_dbLocation = dbLocation;
             m_sessionFactory = null;
 
-            using (var conn = new SQLiteConnection("Data Source=" + dbLocation + ";Version=3;New=True"))
+            using (var conn = new SQLiteConnection("Data Source=" + dbLocation + ";Version=3;New=True", true))
             {
                 conn.Open();
                 var schemaExport = new SchemaExport(Configuration);

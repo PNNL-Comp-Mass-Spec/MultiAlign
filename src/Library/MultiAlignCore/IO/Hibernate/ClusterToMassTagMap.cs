@@ -12,7 +12,7 @@ namespace MultiAlignCore.IO.Features.Hibernate
         public void ClearAll()
         {
             var path = NHibernateUtil.Connection;
-            using (var connection = new SQLiteConnection("Data Source = " + path + " ;"))
+            using (var connection = new SQLiteConnection("Data Source = " + path + " ;", true))
             {
                 connection.Open();
                 using (var command = connection.CreateCommand())

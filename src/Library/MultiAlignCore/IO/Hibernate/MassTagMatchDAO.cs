@@ -14,7 +14,7 @@ namespace MultiAlignCore.IO.Features.Hibernate
     {
         public void ClearAllMatches()
         {
-            using (var connection = new SQLiteConnection("Data Source=" + NHibernateUtil.Path))
+            using (var connection = new SQLiteConnection("Data Source=" + NHibernateUtil.Path, true))
             {
                 connection.Open();
                 using (var command = connection.CreateCommand())

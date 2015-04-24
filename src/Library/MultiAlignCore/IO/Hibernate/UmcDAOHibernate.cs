@@ -186,7 +186,7 @@ namespace MultiAlignCore.IO.Features.Hibernate
 
         public void ClearAlignmentData()
         {
-            using (var connection = new SQLiteConnection("Data Source=" + NHibernateUtil.Path))
+            using (var connection = new SQLiteConnection("Data Source=" + NHibernateUtil.Path, true))
             {
                 connection.Open();
                 using (var command = connection.CreateCommand())
@@ -203,7 +203,7 @@ namespace MultiAlignCore.IO.Features.Hibernate
         public IEnumerable<int> RetrieveChargeStates()
         {
             var charges = new List<int>();
-            using (var connection = new SQLiteConnection("Data Source=" + NHibernateUtil.Path))
+            using (var connection = new SQLiteConnection("Data Source=" + NHibernateUtil.Path, true))
             {
                 connection.Open();
                 using (var command = connection.CreateCommand())

@@ -167,7 +167,7 @@
 
     //        int totalDatasets = 0;
     //        /// Get the factor data.
-    //        using (SQLiteConnection connection = new SQLiteConnection("Data Source = " + m_databasePath + ";"))
+    //        using (SQLiteConnection connection = new SQLiteConnection("Data Source = " + m_databasePath + ";", true))
     //        {
     //            connection.Open();
     //            using (SQLiteCommand command = connection.CreateCommand())

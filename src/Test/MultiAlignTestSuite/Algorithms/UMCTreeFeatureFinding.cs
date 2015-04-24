@@ -21,12 +21,15 @@ using PNNLOmicsIO.IO;
 namespace MultiAlignTestSuite.Algorithms
 {
     [TestFixture]
-    public class UmcTreeFeatureFinding
+    public class UmcTreeFeatureFinding: TestBase
     {
         [Test]
-        [TestCase(@"M:\data\proteomics\TestData\QC-Shew\226151_QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27_isos.csv")]
-        public IEnumerable<UMCLight> TestUmcFeatures(string path)
+        [TestCase(@"Data\QC_SHEW\QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27_isos.csv")]
+        public IEnumerable<UMCLight> TestUmcFeatures(string relativePath)
         {
+            // Get the absolute path
+            var path = GetPath(relativePath);
+
             var reader = new MsFeatureLightFileReader {Delimeter = ","};
             var newMsFeatures = reader.ReadFile(path);
 
@@ -50,18 +53,18 @@ namespace MultiAlignTestSuite.Algorithms
         }
 
         [Test]
-        [TestCase(@"M:\data\proteomics\TestData\QC-Shew\226151_QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27_isos.csv",
-            @"M:\data\proteomics\TestData\QC-Shew\226151_QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27.RAW",
+        [TestCase(@"Data\QC_SHEW\QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27_isos.csv",
+            @"Data\QC_SHEW\QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27.RAW",
             Ignore = false)]
-        [TestCase(
-            @"M:\data\proteomics\TestData\QC-Shew\smallTest\226151_QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27_isos.csv",
-            @"M:\data\proteomics\TestData\QC-Shew\smallTest\226151_QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27.RAW",
-            Ignore = true)]
-        [TestCase(@"M:\data\proteomics\TestData\QC-Shew\226159_QC_Shew_11_02_pt5-d_6Jun11_Sphinx_11-04-05_isos.csv",
-            @"M:\data\proteomics\TestData\QC-Shew\226159_QC_Shew_11_02_pt5-d_6Jun11_Sphinx_11-04-05.RAW",
-            Ignore = true)]
-        public void TestUmcFeatures(string path, string rawPath)
+        [TestCase(@"Data\QC_SHEW\QC_Shew_11_02_pt5-d_6Jun11_Sphinx_11-04-05_isos.csv",
+            @"Data\QC_SHEW\QC_Shew_11_02_pt5-d_6Jun11_Sphinx_11-04-05.RAW",
+            Ignore = false)]
+        public void TestUmcFeatures(string relativePath, string relativeRawPath)
         {
+            // Get absolute paths
+            var path = GetPath(relativePath);
+            var rawPath = GetPath(relativeRawPath);
+
             var reader = new MsFeatureLightFileReader {Delimeter = ","};
             var newMsFeatures = reader.ReadFile(path);
             var finder = new UmcTreeFeatureFinder();
@@ -121,25 +124,24 @@ namespace MultiAlignTestSuite.Algorithms
 
 
         [Test]
-        [TestCase(@"M:\data\proteomics\Applications\lewy-small\Lewy2_18Cs_2Nov13_Samwise_13-07-28_isos.csv",
-            @"M:\data\proteomics\Applications\lewy-small\Lewy2_18Cs_2Nov13_Samwise_13-07-28.raw",
+        [TestCase(@"Data\Lewy\Lewy2_18Cs_2Nov13_Samwise_13-07-28_isos.csv",
+            @"Data\Lewy\Lewy2_18Cs_2Nov13_Samwise_13-07-28.raw",
             500,
             Ignore = false)]
-        [TestCase(@"M:\data\proteomics\TestData\QC-Shew\226151_QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27_isos.csv",
-            @"M:\data\proteomics\TestData\QC-Shew\226151_QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27.RAW",
+        [TestCase(@"Data\QC_SHEW\QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27_isos.csv",
+            @"Data\QC_SHEW\QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27.RAW",
             500,
-            Ignore = true)]
-        [TestCase(
-            @"M:\data\proteomics\TestData\QC-Shew\smallTest\226151_QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27_isos.csv",
-            @"M:\data\proteomics\TestData\QC-Shew\smallTest\226151_QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27.RAW",
+            Ignore = false)]
+        [TestCase(@"Data\QC_SHEW\QC_Shew_11_02_pt5-d_6Jun11_Sphinx_11-04-05_isos.csv",
+            @"Data\QC_SHEW\QC_Shew_11_02_pt5-d_6Jun11_Sphinx_11-04-05.RAW",
             500,
-            Ignore = true)]
-        [TestCase(@"M:\data\proteomics\TestData\QC-Shew\226159_QC_Shew_11_02_pt5-d_6Jun11_Sphinx_11-04-05_isos.csv",
-            @"M:\data\proteomics\TestData\QC-Shew\226159_QC_Shew_11_02_pt5-d_6Jun11_Sphinx_11-04-05.RAW",
-            500,
-            Ignore = true)]
-        public void TestUmcFeaturesMultipleCharges(string path, string rawPath, int maxScanDiff)
+            Ignore = false)]
+        public void TestUmcFeaturesMultipleCharges(string relativePath, string relativeRawPath, int maxScanDiff)
         {
+            // Get absolute paths
+            var path = GetPath(relativePath);
+            var rawPath = GetPath(relativeRawPath);
+
             var reader = new MsFeatureLightFileReader {Delimeter = ","};
             var newMsFeatures = reader.ReadFile(path);
             var finder = new UmcTreeFeatureFinder();
@@ -153,7 +155,7 @@ namespace MultiAlignTestSuite.Algorithms
                 MaximumNetRange = .002,
                 MaximumScanRange = 50
             };
-
+            
             var provider = RawLoaderFactory.CreateFileReader(rawPath);
             provider.AddDataFile(rawPath, 0);
 
@@ -222,7 +224,7 @@ namespace MultiAlignTestSuite.Algorithms
 
         [Test]
         [TestCase(@"M:\data\proteomics\TestData\QC-Shew\smallFeature.csv",
-            Ignore = false)]
+            Ignore = true)]
         public void TestChargeStateSplit(string path)
         {
             var data = File.ReadAllLines(path);
@@ -267,10 +269,13 @@ namespace MultiAlignTestSuite.Algorithms
 
 
         [Test]
-        [TestCase(@"M:\data\proteomics\TestData\QC-Shew\smallTest\226151_QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27.RAW"
+        [TestCase(@"Data\QC_SHEW\QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27.RAW"
             )]
-        public void ReadTime(string path)
+        public void ReadTime(string relativePath)
         {
+            // Get the absolute path
+            var path = GetPath(relativePath);
+
             using (var provider = RawLoaderFactory.CreateFileReader(path))
             {
                 provider.AddDataFile(path, 0);
@@ -289,10 +294,13 @@ namespace MultiAlignTestSuite.Algorithms
         }
 
         [Test]
-        [TestCase(@"M:\data\proteomics\TestData\QC-Shew\smallTest\226151_QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27.RAW",
+        [TestCase(@"Data\QC_SHEW\QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27.RAW",
             ExpectedException = typeof (ScanOutOfRangeException))]
-        public void AskForBigScan(string path)
+        public void AskForBigScan(string relativePath)
         {
+            // Get the absolute path
+            var path = GetPath(relativePath);
+
             using (var provider = RawLoaderFactory.CreateFileReader(path))
             {
                 provider.AddDataFile(path, 0);
@@ -302,10 +310,14 @@ namespace MultiAlignTestSuite.Algorithms
         }
 
         [Test]
-        [TestCase(@"M:\data\proteomics\TestData\QC-Shew\226151_QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27_isos.csv",
-            @"M:\data\proteomics\TestData\QC-Shew\226151-testDatabase.db3")]
-        public void TestDatabaseInsertion(string path, string databasePath)
+        [TestCase(@"Data\QC_SHEW\QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27_isos.csv",
+            @"testResults\QC_Shew_11_02_pt5-b_6Jun11_Sphinx_11-03-27_TestDatabaseInsertion.db3")]
+        public void TestDatabaseInsertion(string relativePath, string databasePathRelative)
         {
+            // Get the absolute path
+            var path = GetPath(relativePath);
+            var databasePath = GetPath(databasePathRelative);
+
             var features = TestUmcFeatures(path);
 
             if (File.Exists(databasePath))

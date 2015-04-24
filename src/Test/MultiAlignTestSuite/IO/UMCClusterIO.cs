@@ -22,7 +22,7 @@ namespace MultiAlignTestSuite.IO
         }
 
         [Test]
-        [TestCase(@"clusterTest.db3")]
+        [TestCase(@"clusterTest.db3", Ignore = true)]
         public void TestAddClusters(string name)
         {
             var databasePath = Path.Combine(m_basePath, name);

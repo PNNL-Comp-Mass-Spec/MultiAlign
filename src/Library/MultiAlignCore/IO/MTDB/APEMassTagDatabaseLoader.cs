@@ -68,7 +68,7 @@ namespace MultiAlignCore.IO.MTDB
         /// <returns></returns>
         protected override IDbConnection CreateConnection(string connectionString)
         {
-            return new SQLiteConnection(connectionString);
+            return new SQLiteConnection(connectionString, true);
         }
 
         /// <summary>

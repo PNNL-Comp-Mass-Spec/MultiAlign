@@ -30,18 +30,18 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
             Ignore = true
             )]
         [TestCase(
-           @"Lamarche-Data\QC_Shew_13_04_1b_6Oct13_Cougar_13-06-14.features",
-           @"Lamarche-Data\QC_Shew_13_04_1b_18Sep13_Cougar_13-06-14.features",
-           @"Alignment\QC-Shew-Annotated3\",
+           @"Data\QC_Shew\QC_Shew_13_04_1b_6Oct13_Cougar_13-06-14.features",
+           @"Data\QC_Shew\QC_Shew_13_04_1b_18Sep13_Cougar_13-06-14.features",
+           @"testResults\Alignment\QC-Shew-Annotated3\",
            @"qc_shew_13_04_1b",
            Ignore = false
            )]
         [TestCase(
-           @"Lamarche-Data\169091_Schutzer_CF_10937_18Jan10_Owl_09-08-18.features",
-           @"Lamarche-Data\169114_Schutzer_CF_10818_18Jan10_Owl_09-08-18.features",
-           @"Alignment\Schutzer-CF\",
+           @"Data\chronicFatigue\data\169091_Schutzer_CF_10937_18Jan10_Owl_09-08-18.features",
+           @"Data\chronicFatigue\data\169114_Schutzer_CF_10818_18Jan10_Owl_09-08-18.features",
+           @"testResults\Alignment\Schutzer-CF\",
            @"Schutzer_CF_18_01_10",
-           Ignore = true
+           Ignore = false
            )]
         public void TestLcmsWarpPort(string relativeBaselinePath, string relativeAligneePath, string relativeOutput, string name)
         {
@@ -135,18 +135,18 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
             Ignore = true
             )]
         [TestCase(
-           @"Lamarche-Data\QC_Shew_13_04_1b_6Oct13_Cougar_13-06-14.features",
-           @"Lamarche-Data\QC_Shew_13_04_1b_18Sep13_Cougar_13-06-14.features",
-           @"Alignment\QC-Shew-Annotated3-CPP\",
+           @"Data\QC_Shew\QC_Shew_13_04_1b_6Oct13_Cougar_13-06-14.features",
+           @"Data\QC_Shew\QC_Shew_13_04_1b_18Sep13_Cougar_13-06-14.features",
+           @"testResults\Alignment\QC-Shew-Annotated3-CPP\",
            @"qc_shew_13_04_1b",
            Ignore = false
            )]
         [TestCase(
-           @"Lamarche-Data\169091_Schutzer_CF_10937_18Jan10_Owl_09-08-18.features",
-           @"Lamarche-Data\169114_Schutzer_CF_10818_18Jan10_Owl_09-08-18.features",
-           @"Alignment\Schutzer-CF-CPP\",
+           @"Data\chronicFatigue\data\169091_Schutzer_CF_10937_18Jan10_Owl_09-08-18.features",
+           @"Data\chronicFatigue\data\169114_Schutzer_CF_10818_18Jan10_Owl_09-08-18.features",
+           @"testResults\Alignment\Schutzer-CF-CPP\",
            @"Schutzer_CF_18_01_10",
-           Ignore = true
+           Ignore = false
            )]
         public void TestLcmsWarpPortCpp(string relativeBaselinePath, string relativeAligneePath, string relativeOutput, string name)
         {
@@ -236,8 +236,8 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
 
         [Test(Description = "Tests the old C++ version, to make sure it sets the reference features correctly.")]
         [TestCase(
-            @"C:\UnitTestFolder\dataset1.txt"
-            )]
+            @"C:\UnitTestFolder\dataset1.txt",
+            Ignore=true)]
         public void TestCppSetReferenceFeatures(string baselinePath)
         {
             Console.WriteLine(@"I'm Testing!");
@@ -282,8 +282,8 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
 
         [Test(Description = "Tests the old C++ version, to make sure it sets the alignee features correctly.")]
         [TestCase(
-            @"C:\UnitTestFolder\dataset2.txt"
-            )]
+            @"C:\UnitTestFolder\dataset2.txt",
+            Ignore=true)]
         public void TestSetAligneeFeatures(string aligneePath)
         {
             Console.WriteLine(@"I'm Testing!");
@@ -324,8 +324,8 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
         [Test(Description = "Tests the old C++ version, to make sure it sets the reference features correctly.")]
         [TestCase(
             @"C:\UnitTestFolder\dataset1.txt",
-            @"C:\UnitTestFolder\dataset2.txt"
-            )]
+            @"C:\UnitTestFolder\dataset2.txt",
+            Ignore = true)]
         public void TestPerformNetAlignment(string baselinePath, string aligneePath)
         {
             Console.WriteLine(@"I'm Testing!");
@@ -375,7 +375,7 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
 
 
         [Test(Description = "Testing the grid app being developed (will be moved to appropriate folder)")]
-        [TestCase(@"C:\UnitTestFolder\csvFolder\mz.csv")]
+        [TestCase(@"C:\UnitTestFolder\csvFolder\mz.csv", Ignore = true)]
         public void TestLamarcheGridApp(string csvPath)
         {
             //Read a csv file, put the data into a new UMCLight for each one
@@ -407,7 +407,7 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
 
 
             //Read a mtdb file using MACore or sqliteDb
-            var databasePath = "C:\\UnitTestFolder\\MSGFPlus\\blah.db";
+            var databasePath = @"C:\UnitTestFolder\MSGFPlus\blah.db";
                 //Either read from console, or entered at program execution
             // Console.ReadLine(databasePath) or databasePath = args[2]
             var database = ReadDatabase(databasePath);
@@ -452,7 +452,7 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
         {
             if (writePath == null)
             {
-                writePath = "C:\\DataGoesHere.csv";
+                writePath = @"C:\DataGoesHere.csv";
             }
 
             // Open the file, or create it if it didn't exist, for write access

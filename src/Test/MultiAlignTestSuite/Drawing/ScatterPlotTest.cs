@@ -2,9 +2,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Xml;
 using MultiAlignCore.Algorithms.Alignment;
 using MultiAlignCore.Algorithms.FeatureFinding;
+using MultiAlignCore.Drawing;
 using MultiAlignCore.IO.Features;
 using NUnit.Framework;
 using OxyPlot;
@@ -13,6 +15,7 @@ using OxyPlot.Series;
 using PNNLOmics.Algorithms;
 using PNNLOmics.Algorithms.FeatureClustering;
 using PNNLOmics.Annotations;
+using PNNLOmicsViz.Drawing;
 using Svg;
 
 #endregion
@@ -21,7 +24,7 @@ namespace MultiAlignTestSuite.Drawing.Graphics
 {
     [TestFixture]
     [UsedImplicitly]
-    public class ScatterPlotTest
+    public class ScatterPlotTest: TestBase
     {
         [Test]
         [UsedImplicitly]
@@ -69,7 +72,7 @@ namespace MultiAlignTestSuite.Drawing.Graphics
                 scatterSeries1.Points.AddRange(pointList);
                 plotModel1.Series.Add(scatterSeries1);
                 end = DateTime.Now;
-                Console.WriteLine("ScCatter Plot Part of Test Took: {0:.00} seconds for {1} points",
+                Console.WriteLine("Scatter Plot Part of Test Took: {0:.00} seconds for {1} points",
                     end.Subtract(start).TotalSeconds, totalPoints);
 
                 start = DateTime.Now;
@@ -80,7 +83,8 @@ namespace MultiAlignTestSuite.Drawing.Graphics
                 xml.LoadXml(svgString);
                 var x = SvgDocument.Open(xml); // Svg.SvgDocument();            
                 var bmp = x.Draw();
-                bmp.Save(string.Format(@"m:\testScatter{0}.jpg", totalPoints));
+                var outputFilePath = GetPath(@"testResults\ScatterPlot\testScatter" + totalPoints + ".jpg");
+                bmp.Save(outputFilePath);
 
                 end = DateTime.Now;
                 Console.WriteLine("Saving Part of Test Took: {0:.00} seconds for {1} points",
@@ -91,12 +95,26 @@ namespace MultiAlignTestSuite.Drawing.Graphics
         [Test]
         [UsedImplicitly]
         [TestCase(
-            @"M:\data\proteomics\TestData\QC-Shew-Annotated2\QC_Shew_13_04_1b_6Oct13_Cougar_13-06-14_isos.csv",
-            @"M:\scatter.png"
+            @"Data\QC_Shew\QC_Shew_13_04_1b_6Oct13_Cougar_13-06-14_isos.csv",
+            @"Data\QC_Shew\QC_Shew_13_04_1b_18Sep13_Cougar_13-06-14_isos.csv",
+            @"testResults\ScatterPlot\QC_Shew_13_04_1b_scatter.png"
             )
         ]
-        public void TestMsFeatureScatterPlot(string path1, string path2, string svgPath)
+        public void TestMsFeatureScatterPlot(string path1, string path2, string pngPath)
         {
+            // Convert relative paths to absolute paths
+            path1 = GetPath(path1);
+            path2 = GetPath(path2);
+            pngPath = GetPath(pngPath);
+
+            var fiOutput = new FileInfo(pngPath);
+            var didirectory = fiOutput.Directory;
+            if (didirectory == null)
+                throw new DirectoryNotFoundException(pngPath);
+
+            if (!didirectory.Exists)
+                didirectory.Create();
+
             var aligner = new LcmsWarpFeatureAligner();
 
             var baselineMs = UmcLoaderFactory.LoadMsFeatureData(path1);
@@ -115,7 +133,7 @@ namespace MultiAlignTestSuite.Drawing.Graphics
 
             var baseline = finder.FindFeatures(baselineMs, options, null);
             var alignee = finder.FindFeatures(aligneeMs, options, null);
-            var data = aligner.Align(baseline, alignee);
+            var alignmentResults = aligner.Align(baseline, alignee);
 
             var plotModel1 = new PlotModel
             {
@@ -150,7 +168,7 @@ namespace MultiAlignTestSuite.Drawing.Graphics
                 FontSize = .2
             };
 
-            var scores = data.heatScores;
+            var scores = alignmentResults.heatScores;
             var width = scores.GetLength(0);
             var height = scores.GetLength(1);
 
@@ -167,7 +185,6 @@ namespace MultiAlignTestSuite.Drawing.Graphics
 
             plotModel1.Series.Add(heatMapSeries1);
 
-
             var svg = new SvgExporter();
             var svgString = svg.ExportToString(plotModel1);
 
@@ -175,7 +192,22 @@ namespace MultiAlignTestSuite.Drawing.Graphics
             xml.LoadXml(svgString);
             var x = SvgDocument.Open(xml); // Svg.SvgDocument();            
             var bmp = x.Draw();
-            bmp.Save(svgPath);
+
+            bmp.Save(pngPath);
+
+
+            var heatmap = HeatmapFactory.CreateAlignedHeatmap(alignmentResults.heatScores);
+            var netHistogram = HistogramFactory.CreateHistogram(alignmentResults.netErrorHistogram, "NET Error", "NET Error");
+            var massHistogram = HistogramFactory.CreateHistogram(alignmentResults.massErrorHistogram, "Mass Error", "Mass Error (ppm)");          
+
+            var baseName = Path.Combine(didirectory.FullName, Path.GetFileNameWithoutExtension(fiOutput.Name));
+
+            var encoder = new SvgEncoder();
+            PlotImageUtility.SaveImage(heatmap, baseName + "_heatmap.svg", encoder);
+            PlotImageUtility.SaveImage(netHistogram, baseName + "_netHistogram.svg", encoder);
+            PlotImageUtility.SaveImage(massHistogram, baseName + "_massHistogram.svg", encoder);
+
+
         }
     }
 }

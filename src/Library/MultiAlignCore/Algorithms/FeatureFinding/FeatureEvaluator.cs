@@ -39,8 +39,7 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
         /// <summary>
         ///     Scores a feature and adjusts its abundance accordingly.
         /// </summary>
-        /// <param name="mz"></param>
-        /// <param name="scan"></param>
+        /// <param name="feature"></param>
         /// <returns></returns>
         public void ScoreFeature(UMCLight feature)
         {

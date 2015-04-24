@@ -22,12 +22,15 @@ namespace MultiAlignTestSuite.Drawing.Graphics
 {
     [TestFixture]
     [UsedImplicitly]
-    public class HeatmapTest
+    public class HeatmapTest: TestBase
     {
+        const string HEATMAP_RESULTS_FOLDER_BASE = @"testResults\HeatMap\";
+
         [Test]
         [UsedImplicitly]
         public void TestSimpleCreation()
         {
+
             var plotModel1 = new PlotModel
             {
                 PlotType = PlotType.Cartesian,
@@ -74,22 +77,27 @@ namespace MultiAlignTestSuite.Drawing.Graphics
             xml.LoadXml(svgString);
             var x = SvgDocument.Open(xml); // Svg.SvgDocument();            
             var bmp = x.Draw();
-            bmp.Save(@"m:\testbmp.jpg");
+            bmp.Save(GetPath(HEATMAP_RESULTS_FOLDER_BASE + "testbmp.jpg"));
 
             var encoder = new PngPlotModelEncoder();
-            encoder.SaveImage(plotModel1, @"m:\mine.png");
+            encoder.SaveImage(plotModel1, GetPath(HEATMAP_RESULTS_FOLDER_BASE + "mine.png"));
         }
 
         [Test]
         [UsedImplicitly]
         [TestCase(
-            @"M:\data\proteomics\TestData\QC-Shew-Annotated2\QC_Shew_13_04_1b_6Oct13_Cougar_13-06-14_isos.csv",
-            @"M:\data\proteomics\TestData\QC-Shew-Annotated2\QC_Shew_13_04_1b_18Sep13_Cougar_13-06-14_isos.csv",
-            @"M:\Heatmap.png"
+            @"Data\QC_Shew\QC_Shew_13_04_1b_6Oct13_Cougar_13-06-14_isos.csv",
+            @"Data\QC_Shew\QC_Shew_13_04_1b_18Sep13_Cougar_13-06-14_isos.csv",
+            @"QC_Shew_13_04_1b_Heatmap"
             )
         ]
         public void TestLcmsWarpAlignment(string path1, string path2, string svgPath)
         {
+            // Convert relative paths to absolute paths
+            path1 = GetPath(path1);
+            path2 = GetPath(path2);
+            svgPath = GetPath(HEATMAP_RESULTS_FOLDER_BASE + svgPath);
+
             var aligner = new LcmsWarpFeatureAligner();
 
             var baselineMs = UmcLoaderFactory.LoadMsFeatureData(path1);
@@ -103,8 +111,10 @@ namespace MultiAlignTestSuite.Drawing.Graphics
                 DriftTime = .3,
                 Net = .01
             };
-            var options = new LcmsFeatureFindingOptions(tolerances);
-            options.MaximumNetRange = .002;
+            var options = new LcmsFeatureFindingOptions(tolerances)
+            {
+                MaximumNetRange = .002
+            };
 
             var baseline = finder.FindFeatures(baselineMs, options, null);
             var alignee = finder.FindFeatures(aligneeMs, options, null);
