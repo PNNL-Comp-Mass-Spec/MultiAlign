@@ -265,6 +265,9 @@ namespace MultiAlignCore.IO
             UpdateStatus(string.Format("[{0}] Loading MS Feature Data [{0}] - {1}.", dataset.DatasetId,
                 dataset.DatasetName));
             var msFeatures = UmcLoaderFactory.LoadMsFeatureData(dataset.Features.Path);
+            var scansInfo = UmcLoaderFactory.LoadScanSummaries(dataset.Scans.Path);
+            dataset.BuildScanTimes(scansInfo);
+
             var msnSpectra = new List<MSSpectra>();
 
             // If we don't have any features, then we have to create some from the MS features
@@ -372,6 +375,7 @@ namespace MultiAlignCore.IO
             }
             // Then parse each to figure out if this is true.
             var fullScans = new Dictionary<int, bool>();
+            var scanTimes = new Dictionary<int, double>();
             using (var provider = RawLoaderFactory.CreateFileReader(rawPath))
             {
                 if (provider == null)
@@ -394,8 +398,9 @@ namespace MultiAlignCore.IO
 
                         if (summary.MsLevel == 1)
                             fullScans.Add(scan, true);
-                        dataset.ScanTimes.Add(scan, summary.Time);
+                        scanTimes.Add(scan, summary.Time);
                     }
+                    dataset.ScanTimes = scanTimes;
                 }
             }
 

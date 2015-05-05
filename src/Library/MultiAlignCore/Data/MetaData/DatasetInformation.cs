@@ -229,6 +229,16 @@ namespace MultiAlignCore.Data.MetaData
             return System.IO.Path.GetFileNameWithoutExtension(datasetName);
         }
 
+        public void BuildScanTimes(List<ScanSummary> scanSummaries)
+        {
+            Dictionary<int, double> scanTimeMap = new Dictionary<int, double>();
+            foreach (var scan in scanSummaries)
+            {
+                scanTimeMap.Add(scan.Scan, scan.Time);
+            }
+            this.ScanTimes = scanTimeMap;
+        } 
+
         public static List<DatasetInformation> CreateDatasetsFromInputFile(List<InputFile> inputFiles)
         {
             var datasets = new List<DatasetInformation>();
@@ -293,6 +303,7 @@ namespace MultiAlignCore.Data.MetaData
                 if (SupportedTypes.Count < 1)
                 {
                     SupportedTypes.Add(new SupportedDatasetType("Decon Tools Isos", "_isos.csv", InputFileType.Features));
+                    SupportedTypes.Add(new SupportedDatasetType("Decon Tools scans", "_scans.csv", InputFileType.Scans));
                     SupportedTypes.Add(new SupportedDatasetType("LCMS Feature Finder", "_LCMSFeatures.txt",
                         InputFileType.Features));
                     SupportedTypes.Add(new SupportedDatasetType("Sequest First Hit", ".fht", InputFileType.Sequence));

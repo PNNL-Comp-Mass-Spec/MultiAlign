@@ -36,6 +36,9 @@ namespace MultiAlign.Data
                     fileFilter = AppendExtension(fileFilter, "DeconTools Features Files", "_isos.csv");
                     fileFilter = AppendExtension(fileFilter, "LCMS Feature Finder Files", "LCMSFeatures.txt");
                     break;
+                case InputFileType.Scans:
+                    fileFilter = AppendExtension(fileFilter, "DeconTools Scan Files", "_scans.csv");
+                    break;
                 case InputFileType.Raw:
                     fileFilter = AppendExtension(fileFilter, "Thermo Raw", ".raw");
                     fileFilter = AppendExtension(fileFilter, "MZ XML", ".mzxml");

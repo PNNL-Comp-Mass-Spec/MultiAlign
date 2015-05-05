@@ -32,10 +32,6 @@ namespace MultiAlign.IO
                 {
                     continue;
                 }
-                if (type == InputFileType.Scans)
-                {
-                    continue;
-                }
 
                 var file = new InputFile();
                 file.Path = path;

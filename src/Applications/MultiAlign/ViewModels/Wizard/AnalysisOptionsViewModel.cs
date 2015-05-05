@@ -439,6 +439,16 @@ namespace MultiAlign.ViewModels.Wizard
             set
             {
                 m_options.LcmsFilteringOptions.TreatAsTimeNotScan = value.Equals("Minutes");
+                if (value.Equals("Minutes"))
+                {
+                    MinimumFeatureLength = 0;
+                    MaximumFeatureLength = 20;
+                }
+                else
+                {
+                    MinimumFeatureLength = 0;
+                    MaximumFeatureLength = 2000;
+                }
                 OnPropertyChanged("TreatAsTimeOrScan");
             }
         }

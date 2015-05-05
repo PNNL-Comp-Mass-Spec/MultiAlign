@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
 using PNNLOmicsIO.IO;
 
@@ -109,5 +110,15 @@ namespace MultiAlignCore.IO.Features
 
             return msFeatures;
         }
+
+        public static List<ScanSummary> LoadScanSummaries(string path)
+        {
+            var scanSummaries = new List<ScanSummary>();
+            var reader = new ScansFileReader {Delimeter = ","};
+            var scans = reader.ReadFile(path);
+            scanSummaries.AddRange(scans);
+            UpdateStatus("Loaded scan summaries from CSV files.");
+            return scanSummaries;
+        } 
     }
 }
