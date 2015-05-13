@@ -142,7 +142,7 @@ namespace MultiAlign.ViewModels.Wizard
         /// <summary>
         ///     Adds the  folder containing dataset specific elements
         /// </summary>
-        private void AddFolderDelegate()
+        public void AddFolderDelegate()
         {
             var supportedTypes = DatasetInformation.SupportedFileTypes;
             var extensions = new List<string>();
@@ -373,7 +373,7 @@ namespace MultiAlign.ViewModels.Wizard
         /// <summary>
         ///     Adds the list of input files into the analysis configuration.
         /// </summary>
-        private void AddDatasets(List<InputFile> information)
+        public void AddDatasets(List<InputFile> information)
         {
             var datasets = Analysis.MetaData.AddInputFiles(information);
             foreach (

@@ -48,6 +48,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Performance3.psess = Performance3.psess
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiAlignRogue", "MultiAlignRogue\MultiAlignRogue.csproj", "{DA869866-52CD-4053-BFC2-51CD3846ED3C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -280,6 +282,19 @@ Global
 		{57AE3323-1592-4CFE-A054-3EB2F468BC5C}.Release|x64.ActiveCfg = Release|Any CPU
 		{57AE3323-1592-4CFE-A054-3EB2F468BC5C}.Release|x86.ActiveCfg = Release|x86
 		{57AE3323-1592-4CFE-A054-3EB2F468BC5C}.Release|x86.Build.0 = Release|x86
+		{DA869866-52CD-4053-BFC2-51CD3846ED3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA869866-52CD-4053-BFC2-51CD3846ED3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA869866-52CD-4053-BFC2-51CD3846ED3C}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{DA869866-52CD-4053-BFC2-51CD3846ED3C}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{DA869866-52CD-4053-BFC2-51CD3846ED3C}.Debug|x64.ActiveCfg = Debug|x64
+		{DA869866-52CD-4053-BFC2-51CD3846ED3C}.Debug|x64.Build.0 = Debug|x64
+		{DA869866-52CD-4053-BFC2-51CD3846ED3C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{DA869866-52CD-4053-BFC2-51CD3846ED3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA869866-52CD-4053-BFC2-51CD3846ED3C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA869866-52CD-4053-BFC2-51CD3846ED3C}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{DA869866-52CD-4053-BFC2-51CD3846ED3C}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{DA869866-52CD-4053-BFC2-51CD3846ED3C}.Release|x64.ActiveCfg = Release|Any CPU
+		{DA869866-52CD-4053-BFC2-51CD3846ED3C}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -300,5 +315,9 @@ Global
 		{9ACDB6EB-377D-4249-9E8A-9E73CBB5EC26} = {2C157EF4-2595-452C-B9A8-4910985257AB}
 		{2B216610-B41C-4B55-9EFA-6AAC8CD91E32} = {2C157EF4-2595-452C-B9A8-4910985257AB}
 		{57AE3323-1592-4CFE-A054-3EB2F468BC5C} = {66F2B136-AC6E-49A8-9244-3C3D2D421987}
+		{DA869866-52CD-4053-BFC2-51CD3846ED3C} = {093E911F-F413-4FAE-BCD7-79E106A03366}
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
 	EndGlobalSection
 EndGlobal

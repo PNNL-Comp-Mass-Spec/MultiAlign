@@ -166,11 +166,23 @@ namespace MultiAlignCore.Data.MetaData
         ///     Path to the scans file.
         /// </summary>
         public InputFile Scans { get; set; }
-
+        
+        public bool ScansBool
+        {
+            get { return Scans != null; }
+            set { }
+        }
         /// <summary>
         ///     Path to the Raw data file.
         /// </summary>
         public InputFile Raw { get; set; }
+
+        public bool RawBool
+        {
+            get { return Raw != null; }
+            set { }
+        }
+
 
         /// <summary>
         ///     Path to the Raw data file.

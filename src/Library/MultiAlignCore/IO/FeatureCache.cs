@@ -130,7 +130,7 @@ namespace MultiAlignCore.IO
         /// <summary>
         ///     Creates LCMS Features
         /// </summary>
-        private List<UMCLight> CreateLcmsFeatures(
+        public List<UMCLight> CreateLcmsFeatures(
             DatasetInformation information,
             List<MSFeatureLight> msFeatures,
             LcmsFeatureFindingOptions options,
@@ -357,7 +357,7 @@ namespace MultiAlignCore.IO
         /// <summary>
         ///     Filters the list of MS Features that may be from MS/MS deisotoped data.
         /// </summary>
-        private List<MSFeatureLight> Filter(List<MSFeatureLight> msFeatures, ref DatasetInformation dataset)
+        public List<MSFeatureLight> Filter(List<MSFeatureLight> msFeatures, ref DatasetInformation dataset)
         {
             string rawPath = dataset.RawPath;
             if (rawPath == null || string.IsNullOrWhiteSpace(rawPath))
