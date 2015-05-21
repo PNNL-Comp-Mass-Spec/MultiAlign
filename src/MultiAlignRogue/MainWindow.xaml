@@ -3,13 +3,13 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:multiAlignRogue="clr-namespace:MultiAlignRogue"
         xmlns:oxy="http://oxyplot.org/wpf"
-        Title="MainWindow" Height="508.075" Width="976">
+        Title="MultiAlign Rogue" Height="508.075" Width="976">
     <Window.DataContext>
         <multiAlignRogue:MainViewModel/>
     </Window.DataContext>
     <Grid Name ="MainGrid">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="405"/>
+            <ColumnDefinition Width="500"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Menu Grid.ColumnSpan="2" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="{Binding ElementName=MainGrid,Path=ActualWidth}">
@@ -19,16 +19,18 @@
                 <MenuItem Header="Save Project" HorizontalAlignment="Left" Width="168"/>
             </MenuItem>
         </Menu>
-        <DataGrid Name="FileSelectionDataGrid" Grid.Column="0" HorizontalAlignment="Left" Margin="10,53,0,46" Width="384" AutoGenerateColumns="False" CanUserReorderColumns="False" CanUserAddRows="False" ItemsSource="{Binding m_analysis.MetaData.Datasets}" SelectionChanged="DataGrid_SelectionChanged">
+        <DataGrid Name="FileSelectionDataGrid" Grid.Column="0" HorizontalAlignment="Left" Margin="10,53,0,46" Width="480" AutoGenerateColumns="False" CanUserReorderColumns="False" CanUserAddRows="False" ItemsSource="{Binding m_analysis.MetaData.Datasets, UpdateSourceTrigger=PropertyChanged}" SelectionChanged="DataGrid_SelectionChanged">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="File Name" Width="300" Binding="{Binding DatasetName}"/>
                 <DataGridCheckBoxColumn Header="Scans" IsReadOnly="True" Binding="{Binding ScansBool}"/>
-                <DataGridCheckBoxColumn Header="Raw" IsReadOnly="True" Binding="{Binding RawBool}"></DataGridCheckBoxColumn>
+                <DataGridCheckBoxColumn Header="Raw" IsReadOnly="True" Binding="{Binding RawBool}"/>
+                <DataGridCheckBoxColumn Header="Features" Width="55" IsReadOnly="True" Binding="{Binding FeaturesFound, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridCheckBoxColumn Header="Aligned" IsReadOnly="True" Binding="{Binding IsAligned}"/>
             </DataGrid.Columns>
         </DataGrid>
-        <TabControl Grid.Column="1" Margin="0,25,10,10">
+        <TabControl Grid.Column="1" Margin="10,25,10,10">
             <TabItem Header="MS Features">
-                <Grid Margin="10,19,145,8">
+                <Grid Margin="0,19,39,8" HorizontalAlignment="Right" Width="384">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="183*"/>
                         <ColumnDefinition Width="84*"/>
@@ -67,7 +69,7 @@
                     <Button Content="Plot MS Features" HorizontalAlignment="Left" Height="24" Margin="0,332,0,0" VerticalAlignment="Top" Width="114" Command="{Binding PlotMSFeaturesCommand}"/>
                     <ProgressBar HorizontalAlignment="Left" Height="15" Margin="0,361,0,0" VerticalAlignment="Top" Width="114"/>
 
-                    
+
                 </Grid>
             </TabItem>
             <TabItem Header="LC-MS Features">

@@ -23,8 +23,11 @@ using MultiAlign.ViewModels.Wizard;
 using MultiAlignCore.Algorithms.Options;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.MetaData;
+using MultiAlignCore.IO;
+using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.InputFiles;
 using OxyPlot;
+using PNNLOmics.Data.Features;
 
 namespace MultiAlignRogue
 {
@@ -46,6 +49,9 @@ namespace MultiAlignRogue
         public string inputFilePath { get; set; }
         public DataTable datasetInfo { get; set; }
         public MSFeatureFinding featureFinder { get; set; }
+        private FeatureDataAccessProviders Providers;
+        private Dictionary<DatasetInformation, IList<UMCLight>> Features { get; set; }
+
  
 
         public MainViewModel()
@@ -53,14 +59,17 @@ namespace MultiAlignRogue
             m_config = new AnalysisConfig();
             m_analysis = new MultiAlignAnalysis();
             m_options = m_analysis.Options;
+            m_config.AnalysisName = "Analysis";
             m_config.Analysis = m_analysis;
+            
             SelectFilesCommand = new RelayCommand(SelectFiles);
             FindMSFeaturesCommand = new RelayCommand(LoadMSFeatures);
             PlotMSFeaturesCommand = new RelayCommand(PlotMSFeatures);
-
-            DataSelectionViewModel = new AnalysisDatasetSelectionViewModel(m_config.Analysis);
             AddFolderCommand = new BaseCommand(AddFolderDelegate, BaseCommand.AlwaysPass);
-            featureFinder = new MSFeatureFinding{Providers = m_config.Analysis.DataProviders};
+            DataSelectionViewModel = new AnalysisDatasetSelectionViewModel(m_config.Analysis);
+
+            featureFinder = new MSFeatureFinding();
+            Features = new Dictionary<DatasetInformation, IList<UMCLight>>();
             this.selectedFiles = new List<DatasetInformation>();
         }
 
@@ -104,8 +113,11 @@ namespace MultiAlignRogue
                 extensions,
                 SearchOption.TopDirectoryOnly);
             DataSelectionViewModel.AddDatasets(files);
-            OnPropertyChanged("m_analysis");
-            //DisplayWorkingDataset();
+            m_config.AnalysisPath = inputFilePath;
+            Providers = SetupDataProviders(true);
+            m_analysis.DataProviders = Providers;
+            featureFinder.Providers = Providers;
+            OnPropertyChanged("m_config");
         }
         #endregion
 
@@ -114,19 +126,55 @@ namespace MultiAlignRogue
         {
             foreach (var file in selectedFiles)
             {
-                featureFinder.LoadDataset(file, m_options.MsFilteringOptions, m_options.LcmsFindingOptions, m_options.LcmsFilteringOptions);
-            }
-            
+                var currentFeatures = featureFinder.LoadDataset(file, m_options.MsFilteringOptions, m_options.LcmsFindingOptions, m_options.LcmsFilteringOptions);
+                if (!Features.ContainsKey(file))
+                {
+                    Features.Add(file, currentFeatures);
+                    file.FeaturesFound = true;
+                    OnPropertyChanged("m_analysis");
+                    OnPropertyChanged("m_analysis.Metadata.Datasets.FeaturesFound");
+                }
+            }            
         }
 
         public void PlotMSFeatures()
         {
-            
+            int i = 0;
         }
 
 
+        #region Data Providers
+        private FeatureDataAccessProviders SetupDataProviders(bool createNewDatabase)
+        {
+            FeatureDataAccessProviders providers;
+            Logger.PrintMessage("Setting up data providers for caching and storage.");
+            try
+            {
+                var path = AnalysisPathUtils.BuildAnalysisName(m_config.AnalysisPath, m_config.AnalysisName);
+                providers = SetupDataProviders(path, createNewDatabase);
+            }
+            catch (IOException ex)
+            {
+                Logger.PrintMessage(ex.Message);
+                Logger.PrintMessage(ex.StackTrace);
+                throw;
+            }
+            return providers;
+        }
 
-        
+        private FeatureDataAccessProviders SetupDataProviders(string path, bool createNew)
+        {
+            try
+            {
+                return DataAccessFactory.CreateDataAccessProviders(path, createNew);
+            }
+            catch (IOException ex)
+            {
+                Logger.PrintMessage("Could not access the database.  Is it opened somewhere else?" + ex.Message);
+                throw;
+            }
+        }
+        #endregion
 
 
         #region MS Feature Settings

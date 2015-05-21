@@ -31,6 +31,8 @@ namespace MultiAlignCore.Data.MetaData
             DatasetSummary = new DatasetSummary();
             PlotData = new DatasetPlotInformation();
             ScanTimes = new Dictionary<int, double>();
+            FeaturesFound = false;
+            IsAligned = false;
         }
 
         /// <summary>
@@ -182,6 +184,10 @@ namespace MultiAlignCore.Data.MetaData
             get { return Raw != null; }
             set { }
         }
+
+        public bool FeaturesFound { get; set; }
+
+        public bool IsAligned { get; set; }
 
 
         /// <summary>
