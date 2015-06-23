@@ -26,7 +26,6 @@ using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO;
 using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.InputFiles;
-using OxyPlot;
 using PNNLOmics.Data.Features;
 
 namespace MultiAlignRogue
@@ -41,7 +40,8 @@ namespace MultiAlignRogue
         private AnalysisConfig m_config;
         private MultiAlignAnalysisOptions m_options;
         private string[] files; 
-        public List<DatasetInformation> selectedFiles; 
+        public List<DatasetInformation> selectedFiles;
+        private IWindowFactory msFeatureWindowFactory;
         public RelayCommand SelectFilesCommand { get; private set; }
         public RelayCommand FindMSFeaturesCommand { get; private set; }
         public RelayCommand PlotMSFeaturesCommand { get; private set; }
@@ -51,6 +51,8 @@ namespace MultiAlignRogue
         public MSFeatureFinding featureFinder { get; set; }
         private FeatureDataAccessProviders Providers;
         private Dictionary<DatasetInformation, IList<UMCLight>> Features { get; set; }
+
+        public int ProgressTracker { get; private set; }
 
  
 
@@ -71,6 +73,7 @@ namespace MultiAlignRogue
             featureFinder = new MSFeatureFinding();
             Features = new Dictionary<DatasetInformation, IList<UMCLight>>();
             this.selectedFiles = new List<DatasetInformation>();
+            msFeatureWindowFactory = new MSFeatureViewFactory();
         }
 
 
@@ -122,24 +125,38 @@ namespace MultiAlignRogue
         #endregion
 
 
-        public void LoadMSFeatures()
+        public async void LoadMSFeatures()
         {
-            foreach (var file in selectedFiles)
-            {
-                var currentFeatures = featureFinder.LoadDataset(file, m_options.MsFilteringOptions, m_options.LcmsFindingOptions, m_options.LcmsFilteringOptions);
-                if (!Features.ContainsKey(file))
-                {
-                    Features.Add(file, currentFeatures);
-                    file.FeaturesFound = true;
-                    OnPropertyChanged("m_analysis");
-                    OnPropertyChanged("m_analysis.Metadata.Datasets.FeaturesFound");
-                }
-            }            
+            await Task.Run(() => LoadFeatures());
         }
+
+        private void LoadFeatures()
+        {
+            List<DatasetInformation> selectedFilesCopy = new List<DatasetInformation>();
+            foreach (var dataset in selectedFiles)
+            {
+                selectedFilesCopy.Add(dataset); //Prevents crashes from changing selected files while this thread is running
+            }
+            foreach (var file in selectedFilesCopy)
+            {
+                IProgress<int> progress = new Progress<int>(ReportProgess);
+                var currentFeatures = featureFinder.LoadDataset(file, m_options.MsFilteringOptions, m_options.LcmsFindingOptions,
+                    m_options.LcmsFilteringOptions, progress);
+                if (Features.ContainsKey(file))
+                {
+                    Features.Remove(file);
+                }
+                Features.Add(file, currentFeatures);
+                file.FeaturesFound = true;
+                OnPropertyChanged("m_analysis");
+                progress.Report(0);
+            }
+        }
+
 
         public void PlotMSFeatures()
         {
-            int i = 0;
+            msFeatureWindowFactory.CreateNewWindow(Features, selectedFiles);  
         }
 
 
@@ -323,7 +340,11 @@ namespace MultiAlignRogue
         }
         #endregion
 
-        
+        private void ReportProgess(int value)
+        {
+            this.ProgressTracker = value;
+            OnPropertyChanged("ProgressTracker");
+        }
 
         protected void OnPropertyChanged(string name)
         {

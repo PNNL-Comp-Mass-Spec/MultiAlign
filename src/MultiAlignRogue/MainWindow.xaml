@@ -2,7 +2,6 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:multiAlignRogue="clr-namespace:MultiAlignRogue"
-        xmlns:oxy="http://oxyplot.org/wpf"
         Title="MultiAlign Rogue" Height="508.075" Width="976">
     <Window.DataContext>
         <multiAlignRogue:MainViewModel/>
@@ -19,7 +18,10 @@
                 <MenuItem Header="Save Project" HorizontalAlignment="Left" Width="168"/>
             </MenuItem>
         </Menu>
-        <DataGrid Name="FileSelectionDataGrid" Grid.Column="0" HorizontalAlignment="Left" Margin="10,53,0,46" Width="480" AutoGenerateColumns="False" CanUserReorderColumns="False" CanUserAddRows="False" ItemsSource="{Binding m_analysis.MetaData.Datasets, UpdateSourceTrigger=PropertyChanged}" SelectionChanged="DataGrid_SelectionChanged">
+        <ProgressBar HorizontalAlignment="Right" Margin="0,0,10,19" Width="90" Height="20" VerticalAlignment="Bottom" Value="{Binding ProgressTracker, Mode = OneWay}"/>
+        <DataGrid Name="FileSelectionDataGrid" Grid.Column="0" HorizontalAlignment="Left" Margin="10,53,0,46" 
+                  Width="480" AutoGenerateColumns="False" CanUserReorderColumns="False" CanUserAddRows="False" 
+                  ItemsSource="{Binding m_analysis.MetaData.Datasets, UpdateSourceTrigger=PropertyChanged}" SelectionChanged="DataGrid_SelectionChanged">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="File Name" Width="300" Binding="{Binding DatasetName}"/>
                 <DataGridCheckBoxColumn Header="Scans" IsReadOnly="True" Binding="{Binding ScansBool}"/>
@@ -67,7 +69,7 @@
                              Text="{Binding MinimumIntensity, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Right" Width="60"/>
                     <Button Content="Load MS Features" HorizontalAlignment="Left" Height="24" Margin="0,303,0,0" VerticalAlignment="Top" Width="114" Command="{Binding FindMSFeaturesCommand}"/>
                     <Button Content="Plot MS Features" HorizontalAlignment="Left" Height="24" Margin="0,332,0,0" VerticalAlignment="Top" Width="114" Command="{Binding PlotMSFeaturesCommand}"/>
-                    <ProgressBar HorizontalAlignment="Left" Height="15" Margin="0,361,0,0" VerticalAlignment="Top" Width="114"/>
+
 
 
                 </Grid>

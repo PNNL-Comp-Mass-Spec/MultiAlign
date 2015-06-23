@@ -1,0 +1,20 @@
+﻿<Window x:Class="MultiAlignRogue.MSFeatureView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:multiAlignRogue="clr-namespace:MultiAlignRogue"
+        xmlns:oxy="http://oxyplot.org/wpf"
+        xmlns:oxyPlot="clr-namespace:OxyPlot;assembly=OxyPlot"
+        Title="MSFeatureView" Height="437.35" Width="641">
+    <Window.DataContext>
+        <multiAlignRogue:MSFeatureViewModel/>
+    </Window.DataContext>
+    
+    <Grid>
+        <!--<oxy:PlotView Title="{Binding model.Title}">
+            <oxy:PlotView.Series>
+                <oxy:ScatterSeries ItemsSource="{Binding model.Series, Mode=OneWay}" MarkerType="Circle"/>
+            </oxy:PlotView.Series>
+        </oxy:PlotView>-->
+        <oxy:PlotView Model="{Binding Model}"/>
+    </Grid>
+</Window>

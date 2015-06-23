@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace MultiAlign.ViewModels
 {
@@ -10,7 +11,7 @@ namespace MultiAlign.ViewModels
 
         #endregion
 
-        protected void OnPropertyChanged(string propertyName)
+        protected void OnPropertyChanged([CallerMemberName]string propertyName="")
         {
             if (PropertyChanged != null)
             {

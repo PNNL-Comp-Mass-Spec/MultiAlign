@@ -2,8 +2,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using MultiAlignCore.Data.Factors;
 using MultiAlignCore.IO.InputFiles;
+using PNNLOmics.Annotations;
 using PNNLOmics.Data;
 
 #endregion
@@ -13,8 +16,12 @@ namespace MultiAlignCore.Data.MetaData
     /// <summary>
     ///     Contains information about a dataset used for analysis.r
     /// </summary>
-    public class DatasetInformation : IComparable<DatasetInformation>
+    public class DatasetInformation : IComparable<DatasetInformation>, INotifyPropertyChanged
     {
+        private DatasetSummary summary;
+
+        private bool featuresFound;
+
         /// <summary>
         ///     Default constructor.
         /// </summary>
@@ -38,7 +45,19 @@ namespace MultiAlignCore.Data.MetaData
         /// <summary>
         ///     Gets or sets the dataset summary.
         /// </summary>
-        public DatasetSummary DatasetSummary { get; set; }
+        public DatasetSummary DatasetSummary
+        {
+            get
+            {
+                return this.summary;
+            }
+
+            set
+            {
+                summary = value;
+                this.OnPropertyChanged();
+            }
+        }
 
         #region Properties
 
@@ -185,7 +204,19 @@ namespace MultiAlignCore.Data.MetaData
             set { }
         }
 
-        public bool FeaturesFound { get; set; }
+        public bool FeaturesFound
+        {
+            get
+            {
+                return this.featuresFound;
+            }
+
+            set
+            {
+                featuresFound = value;
+                this.OnPropertyChanged();
+            }
+        }
 
         public bool IsAligned { get; set; }
 
@@ -433,6 +464,15 @@ namespace MultiAlignCore.Data.MetaData
                 x.DatasetId = id++;
             }
             return addedSets;
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            var handler = PropertyChanged;
+            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

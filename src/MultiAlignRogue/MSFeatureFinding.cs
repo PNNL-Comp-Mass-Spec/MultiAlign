@@ -34,8 +34,10 @@ namespace MultiAlignRogue
         public IList<UMCLight> LoadDataset(DatasetInformation dataset,
            MsFeatureFilteringOptions msFilteringOptions,
            LcmsFeatureFindingOptions lcmsFindingOptions,
-           LcmsFeatureFilteringOptions lcmsFilteringOptions)
+           LcmsFeatureFilteringOptions lcmsFilteringOptions,
+            IProgress<int> progress = null )
         {
+            if (progress != null) progress.Report(100);
             UpdateStatus(string.Format("[{0}] - Loading dataset [{0}] - {1}.", dataset.DatasetId, dataset.DatasetName));
             var datasetId = dataset.DatasetId;
             var features = UmcLoaderFactory.LoadUmcFeatureData(dataset.Features.Path, dataset.DatasetId,
@@ -54,8 +56,7 @@ namespace MultiAlignRogue
             if (features.Count < 1)
             {
                 msFeatures = LcmsFeatureFilters.FilterMsFeatures(msFeatures, msFilteringOptions);
-                msFeatures = Filter(msFeatures, ref dataset);
-
+                msFeatures = Filter(msFeatures, ref dataset);           
 
                 features = CreateLcmsFeatures(dataset,
                     msFeatures,
@@ -65,6 +66,9 @@ namespace MultiAlignRogue
                 var maxScan = Convert.ToDouble(features.Max(feature => feature.Scan));
                 var minScan = Convert.ToDouble(features.Min(feature => feature.Scan));
                 var id = 0;
+
+                double featureIndex = 0;
+                double totalFeatures = features.Count;
 
                 foreach (var feature in features)
                 {
@@ -82,6 +86,12 @@ namespace MultiAlignRogue
                         msFeature.GroupId = datasetId;
                         msFeature.MSnSpectra.ForEach(x => x.GroupId = datasetId);
                         msnSpectra.AddRange(msFeature.MSnSpectra);
+                    }
+                    if (progress != null)
+                    {
+                        int currentProgress = (int) ((featureIndex/totalFeatures)*100);
+                        progress.Report(currentProgress);
+                        featureIndex++;
                     }
                 }
             }
@@ -193,8 +203,7 @@ namespace MultiAlignRogue
                 }
             }
             // Then parse each to figure out if this is true.
-            var fullScans = new Dictionary<int, bool>();
-            var scanTimes = new Dictionary<int, double>();
+            var fullScans = new Dictionary<int, bool>();;
             using (var provider = RawLoaderFactory.CreateFileReader(rawPath))
             {
                 if (provider == null)
@@ -217,9 +226,7 @@ namespace MultiAlignRogue
 
                         if (summary.MsLevel == 1)
                             fullScans.Add(scan, true);
-                        scanTimes.Add(scan, summary.Time);
                     }
-                    dataset.ScanTimes = scanTimes;
                 }
             }
 
