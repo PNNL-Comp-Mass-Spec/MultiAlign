@@ -30,7 +30,7 @@ namespace MultiAlignTestSuite.Algorithms
             // Get the absolute path
             var path = GetPath(relativePath);
 
-            var reader = new MsFeatureLightFileReader {Delimeter = ","};
+            var reader = new MsFeatureLightFileReader { Delimiter = ',' };
             var newMsFeatures = reader.ReadFile(path);
 
             var finder = new UmcTreeFeatureFinder
@@ -65,7 +65,7 @@ namespace MultiAlignTestSuite.Algorithms
             var path = GetPath(relativePath);
             var rawPath = GetPath(relativeRawPath);
 
-            var reader = new MsFeatureLightFileReader {Delimeter = ","};
+            var reader = new MsFeatureLightFileReader { Delimiter = ',' };
             var newMsFeatures = reader.ReadFile(path);
             var finder = new UmcTreeFeatureFinder();
             var featureTolerances = new FeatureTolerances
@@ -142,7 +142,7 @@ namespace MultiAlignTestSuite.Algorithms
             var path = GetPath(relativePath);
             var rawPath = GetPath(relativeRawPath);
 
-            var reader = new MsFeatureLightFileReader {Delimeter = ","};
+            var reader = new MsFeatureLightFileReader { Delimiter = ',' };
             var newMsFeatures = reader.ReadFile(path);
             var finder = new UmcTreeFeatureFinder();
             var featureTolerances = new FeatureTolerances

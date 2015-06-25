@@ -14,13 +14,7 @@ using PNNLOmics.Data.Features;
 using MultiAlignCore.Algorithms.FeatureFinding;
 using MultiAlignCore.Algorithms.Workflow;
 using MultiAlignCore.Data;
-using MultiAlignCore.Data.Features;
-using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.Data.SequenceData;
-using MultiAlignCore.IO.Features;
-using PNNLOmics.Algorithms.FeatureClustering;
-using PNNLOmics.Data;
-using PNNLOmics.Data.Features;
 using PNNLOmicsIO.IO;
 
 

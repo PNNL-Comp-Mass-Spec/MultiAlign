@@ -101,7 +101,7 @@ namespace MultiAlignCore.IO.Features
                     break;
 
                 default:
-                    var reader = new MsFeatureLightFileReader {Delimeter = ","};
+                    var reader = new MsFeatureLightFileReader {Delimiter = ','};
                     var newMsFeatures = reader.ReadFile(path);
                     msFeatures.AddRange(newMsFeatures);
                     UpdateStatus("Loaded features from the CSV files.");
@@ -114,7 +114,7 @@ namespace MultiAlignCore.IO.Features
         public static List<ScanSummary> LoadScanSummaries(string path)
         {
             var scanSummaries = new List<ScanSummary>();
-            var reader = new ScansFileReader {Delimeter = ","};
+            var reader = new ScansFileReader {Delimiter = ','};
             var scans = reader.ReadFile(path);
             scanSummaries.AddRange(scans);
             UpdateStatus("Loaded scan summaries from CSV files.");

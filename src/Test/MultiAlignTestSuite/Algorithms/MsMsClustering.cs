@@ -283,8 +283,7 @@ namespace MultiAlignTestSuite.Algorithms
 
         private static void MapSequencesToSpectra(List<MSFeatureLight> features, string path)
         {
-            var reader = new MsgfReader();
-            reader.Delimeter = "\t";
+            var reader = new MsgfReader { Delimiter = '\t' };
             var peptides = reader.ReadFile(path);
 
             var scanMap = new Dictionary<int, Peptide>();
