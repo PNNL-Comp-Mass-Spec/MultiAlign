@@ -64,6 +64,10 @@
     <Reference Include="GalaSoft.MvvmLight">
       <HintPath>..\..\packages\MvvmLightLibs.5.1.1.0\lib\net45\GalaSoft.MvvmLight.dll</HintPath>
     </Reference>
+    <Reference Include="PNNLOmics, Version=1.1.5385.41078, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\lib\PNNLOmics.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
   </ItemGroup>
@@ -93,10 +97,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\PNNL-Omics\PNNLOmics\PNNLOmics.csproj">
-      <Project>{8a934dc1-3418-449f-adf6-9962499f49b2}</Project>
-      <Name>PNNLOmics</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Library\MultiAlignCore\MultiAlignCore.csproj">
       <Project>{BDFA22C4-5822-4AA5-996E-6FDE57F7118B}</Project>
       <Name>MultiAlignCore</Name>

@@ -39,6 +39,18 @@
     <Reference Include="OxyPlot">
       <HintPath>..\packages\OxyPlot.Core.2014.1.303.1\lib\portable-net4+sl4+wp71+win8\OxyPlot.dll</HintPath>
     </Reference>
+    <Reference Include="PNNLOmics, Version=1.1.5385.41078, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\PNNLOmics.dll</HintPath>
+    </Reference>
+    <Reference Include="PNNLOmicsIO, Version=1.1.5385.36913, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\PNNLOmicsIO.dll</HintPath>
+    </Reference>
+    <Reference Include="PNNLOmicsViz, Version=1.1.5385.36913, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\PNNLOmicsViz.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -53,24 +65,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\..\_CommunityApplications\OMICS\development\PNNLOmicsIO\PNNLOmicsIO.csproj">
-      <Project>{20d49543-cd31-44d2-8403-f045b3fb363d}</Project>
-      <Name>PNNLOmicsIO</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\_CommunityApplications\OMICS\development\PNNLOmicsViz\PNNLOmicsViz\PNNLOmicsViz.csproj">
-      <Project>{6f933e2a-aea8-43e1-a8e1-5f9207704b21}</Project>
-      <Name>PNNLOmicsViz</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\_CommunityApplications\OMICS\development\PNNLOmics\PNNLOmics.csproj">
-      <Project>{8a934dc1-3418-449f-adf6-9962499f49b2}</Project>
-      <Name>PNNLOmics</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Library\MultiAlignCore\MultiAlignCore.csproj">
-      <Project>{bdfa22c4-5822-4aa5-996e-6fde57f7118b}</Project>
-      <Name>MultiAlignCore</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -101,6 +101,18 @@
     <Reference Include="OxyPlot.Xps">
       <HintPath>..\..\packages\OxyPlot.Wpf.2014.1.303.1\lib\NET45\OxyPlot.Xps.dll</HintPath>
     </Reference>
+    <Reference Include="PNNLOmics, Version=1.1.5385.41078, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\lib\PNNLOmics.dll</HintPath>
+    </Reference>
+    <Reference Include="PNNLOmicsIO, Version=1.1.5385.36913, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\lib\PNNLOmicsIO.dll</HintPath>
+    </Reference>
+    <Reference Include="PNNLOmicsViz, Version=1.1.5385.36913, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\lib\PNNLOmicsViz.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data.SQLite">
@@ -667,18 +679,6 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\PNNL-Omics\PNNLOmicsIO\PNNLOmicsIO.csproj">
-      <Project>{20d49543-cd31-44d2-8403-f045b3fb363d}</Project>
-      <Name>PNNLOmicsIO</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\PNNL-Omics\PNNLOmicsViz\PNNLOmicsViz\PNNLOmicsViz.csproj">
-      <Project>{6f933e2a-aea8-43e1-a8e1-5f9207704b21}</Project>
-      <Name>PNNLOmicsViz</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\PNNL-Omics\PNNLOmics\PNNLOmics.csproj">
-      <Project>{8a934dc1-3418-449f-adf6-9962499f49b2}</Project>
-      <Name>PNNLOmics</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Library\MultiAlignCore\MultiAlignCore.csproj">
       <Project>{bdfa22c4-5822-4aa5-996e-6fde57f7118b}</Project>
       <Name>MultiAlignCore</Name>
