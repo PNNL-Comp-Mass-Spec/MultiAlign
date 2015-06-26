@@ -88,6 +88,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\lib\$(Platform)\Mage.dll</HintPath>
     </Reference>
+    <Reference Include="MTDBFramework, Version=1.0.5655.19433, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\lib\MTDBFramework\MTDBFramework.dll</HintPath>
+    </Reference>
     <Reference Include="MultiAlignEngine">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\lib\$(Platform)\MultiAlignEngine.dll</HintPath>
@@ -181,10 +185,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\MTDB-Creator\trunk\MTDBFramework\MTDBFramework.csproj">
-      <Project>{3ee14e5d-3881-410e-86df-611bae112e90}</Project>
-      <Name>MTDBFramework</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\..\PNNL-Omics\PNNLOmicsIO\PNNLOmicsIO.csproj">
       <Project>{20d49543-cd31-44d2-8403-f045b3fb363d}</Project>
       <Name>PNNLOmicsIO</Name>
