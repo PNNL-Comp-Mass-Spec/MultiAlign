@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using MultiAlignCore.IO.Features;
+using MultiAlignCore.IO.RawData;
 using NUnit.Framework;
 using OxyPlot;
 using OxyPlot.Axes;

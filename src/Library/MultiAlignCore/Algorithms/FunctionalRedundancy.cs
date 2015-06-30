@@ -1,4 +1,4 @@
-﻿namespace MultiAlignCore
+﻿namespace MultiAlignCore.Algorithms
 {
     //class FunctionalRedundancy
     //{

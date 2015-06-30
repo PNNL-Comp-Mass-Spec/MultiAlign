@@ -5,13 +5,12 @@ using System.IO;
 using System.Text;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.MetaData;
-using MultiAlignCore.IO.Clusters;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Data.MassTags;
 
 #endregion
 
-namespace MultiAlignCore.IO.Features
+namespace MultiAlignCore.IO.Clusters
 {
     /// <summary>
     ///     Writes a list of clusters to a cross tab.

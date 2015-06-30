@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using MultiAlign.Data;
 using MultiAlignCore.Data;
 using MultiAlignCore.Extensions;
+using MultiAlignCore.IO;
 using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.MTDB;
 

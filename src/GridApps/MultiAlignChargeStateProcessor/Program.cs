@@ -6,8 +6,9 @@ using System.Runtime.InteropServices;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO;
+using MultiAlignCore.IO.Datasets;
 using MultiAlignCore.IO.Features;
-using MultiAlignCore.IO.Features.Hibernate;
+using MultiAlignCore.IO.Hibernate;
 using PNNLOmics.Algorithms.FeatureClustering;
 using PNNLOmics.Data.Features;
 

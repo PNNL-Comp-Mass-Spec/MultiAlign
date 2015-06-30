@@ -15,6 +15,7 @@ using MultiAlignCore.Algorithms.FeatureFinding;
 using MultiAlignCore.Algorithms.Workflow;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.SequenceData;
+using MultiAlignCore.IO.RawData;
 using PNNLOmicsIO.IO;
 
 

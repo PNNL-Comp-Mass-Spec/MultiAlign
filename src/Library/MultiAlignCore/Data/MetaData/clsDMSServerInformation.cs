@@ -20,7 +20,7 @@ using System.ComponentModel;
 
 #endregion
 
-namespace MultiAlignCore.Data
+namespace MultiAlignCore.Data.MetaData
 {
     /// <summary>
     ///     Class that tests a connection to DMS on the PNNL domain.

@@ -7,6 +7,7 @@ using Mage;
 using MultiAlignCore.Data.Factors;
 using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO.Analysis;
+using MultiAlignCore.IO.Datasets;
 using MultiAlignCore.IO.Features;
 
 #endregion

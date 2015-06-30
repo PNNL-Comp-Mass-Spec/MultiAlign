@@ -2,11 +2,12 @@
 
 using System.Collections.Generic;
 using MultiAlignCore.Data;
+using MultiAlignCore.IO.MsMs;
 using NHibernate.Criterion;
 
 #endregion
 
-namespace MultiAlignCore.IO.Features.Hibernate
+namespace MultiAlignCore.IO.Hibernate
 {
     public class MSnFeatureToMSFeatureDAOHibernate :
         GenericDAOHibernate<MSFeatureToMSnFeatureMap>,

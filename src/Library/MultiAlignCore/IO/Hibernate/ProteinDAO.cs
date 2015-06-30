@@ -1,12 +1,13 @@
 #region
 
 using System.Collections.Generic;
+using MultiAlignCore.IO.Proteins;
 using NHibernate.Criterion;
 using PNNLOmics.Data;
 
 #endregion
 
-namespace MultiAlignCore.IO.Features.Hibernate
+namespace MultiAlignCore.IO.Hibernate
 {
     public class ProteinDAO : GenericDAOHibernate<Protein>, IProteinDAO
     {

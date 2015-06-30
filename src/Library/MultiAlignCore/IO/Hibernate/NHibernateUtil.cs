@@ -9,7 +9,7 @@ using NHibernate.Tool.hbm2ddl;
 
 #endregion
 
-namespace MultiAlignCore.IO.Features.Hibernate
+namespace MultiAlignCore.IO.Hibernate
 {
     /// <summary>
     ///     Hibernate Session Factory that will create a session if one does not already exist.

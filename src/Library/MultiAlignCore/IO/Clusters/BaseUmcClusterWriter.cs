@@ -1,7 +1,6 @@
 ﻿#region
 
 using System.Collections.Generic;
-using MultiAlign.IO;
 using MultiAlignCore.Algorithms.FeatureFinding;
 using MultiAlignCore.Algorithms.Features;
 using MultiAlignCore.Data;

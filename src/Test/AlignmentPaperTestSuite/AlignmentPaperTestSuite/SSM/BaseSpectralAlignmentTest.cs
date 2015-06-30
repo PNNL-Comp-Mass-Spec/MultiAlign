@@ -9,6 +9,7 @@ using MultiAlignCore.Algorithms.FeatureFinding;
 using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.InputFiles;
+using MultiAlignCore.IO.RawData;
 using MultiAlignTestSuite.Algorithms.SpectralProcessing;
 using PNNLOmics.Algorithms;
 using PNNLOmics.Algorithms.FeatureClustering;

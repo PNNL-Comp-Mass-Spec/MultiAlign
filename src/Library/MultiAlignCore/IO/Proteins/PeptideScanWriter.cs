@@ -8,7 +8,7 @@ using PNNLOmics.Data.Features;
 
 #endregion
 
-namespace MultiAlignCore.IO
+namespace MultiAlignCore.IO.Proteins
 {
     /// <summary>
     ///     Writes the features that have MS/MS spectra

@@ -4,7 +4,7 @@ using MultiAlignCore.Data.Factors;
 
 #endregion
 
-namespace MultiAlignCore.IO.Features
+namespace MultiAlignCore.IO.Datasets
 {
     public interface IDatasetToFactorMapDAO : IGenericDAO<DatasetToExperimentalFactorMap>
     {

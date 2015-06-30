@@ -4,12 +4,13 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
+using MultiAlignCore.IO.MsMs;
 using NHibernate.Criterion;
 using PNNLOmics.Data;
 
 #endregion
 
-namespace MultiAlignCore.IO.Features.Hibernate
+namespace MultiAlignCore.IO.Hibernate
 {
     public class MSnFeatureDAOHibernate : GenericDAOHibernate<MSSpectra>, IMSnFeatureDAO
     {

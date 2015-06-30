@@ -4,11 +4,12 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
 using MultiAlignCore.Data;
+using MultiAlignCore.IO.MassTags;
 using NHibernate.Criterion;
 
 #endregion
 
-namespace MultiAlignCore.IO.Features.Hibernate
+namespace MultiAlignCore.IO.Hibernate
 {
     public class MassTagMatchDAO : GenericDAOHibernate<ClusterToMassTagMap>, IMassTagMatchDAO
     {

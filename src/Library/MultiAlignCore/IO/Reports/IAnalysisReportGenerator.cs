@@ -6,7 +6,7 @@ using MultiAlignCore.Data;
 
 #endregion
 
-namespace MultiAlignCore.IO
+namespace MultiAlignCore.IO.Reports
 {
     public interface IAnalysisReportGenerator
     {

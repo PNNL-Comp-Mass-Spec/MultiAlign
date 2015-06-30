@@ -4,7 +4,7 @@ using MultiAlignCore.Data.MetaData;
 
 #endregion
 
-namespace MultiAlignCore.IO.Features
+namespace MultiAlignCore.IO.Datasets
 {
     public interface IDatasetDAO : IGenericDAO<DatasetInformation>
     {

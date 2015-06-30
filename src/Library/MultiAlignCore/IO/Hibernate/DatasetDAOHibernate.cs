@@ -1,10 +1,11 @@
 #region
 
 using MultiAlignCore.Data.MetaData;
+using MultiAlignCore.IO.Datasets;
 
 #endregion
 
-namespace MultiAlignCore.IO.Features.Hibernate
+namespace MultiAlignCore.IO.Hibernate
 {
     public class DatasetDAOHibernate : GenericDAOHibernate<DatasetInformation>, IDatasetDAO
     {

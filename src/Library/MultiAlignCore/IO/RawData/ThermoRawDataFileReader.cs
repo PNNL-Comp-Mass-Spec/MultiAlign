@@ -3,13 +3,12 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using MultiAlignCore.IO.RawData;
 using PNNLOmics.Data;
 using ThermoRawFileReaderDLL.FinniganFileIO;
 
 #endregion
 
-namespace MultiAlignCore.IO.Features
+namespace MultiAlignCore.IO.RawData
 {
     /// <summary>
     ///     Adapter for the Thermo Finnigan file format reader made by Matt Monroe.

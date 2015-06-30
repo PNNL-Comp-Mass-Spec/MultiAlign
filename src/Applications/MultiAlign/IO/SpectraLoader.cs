@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using MultiAlignCore.Data.MetaData;
+using MultiAlignCore.IO;
 using MultiAlignCore.IO.Features;
+using MultiAlignCore.IO.MsMs;
 using PNNLOmics.Data;
 
 namespace MultiAlign.IO

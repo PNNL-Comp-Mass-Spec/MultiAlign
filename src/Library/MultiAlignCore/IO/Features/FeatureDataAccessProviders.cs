@@ -1,6 +1,9 @@
 #region
 
 using MultiAlignCore.IO.Analysis;
+using MultiAlignCore.IO.Datasets;
+using MultiAlignCore.IO.MassTags;
+using MultiAlignCore.IO.MsMs;
 using MultiAlignCore.IO.SequenceData;
 
 #endregion

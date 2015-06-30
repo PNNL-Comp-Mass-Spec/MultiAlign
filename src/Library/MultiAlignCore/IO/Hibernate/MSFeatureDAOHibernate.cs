@@ -1,12 +1,13 @@
 #region
 
 using System.Collections.Generic;
+using MultiAlignCore.IO.Features;
 using NHibernate.Criterion;
 using PNNLOmics.Data.Features;
 
 #endregion
 
-namespace MultiAlignCore.IO.Features.Hibernate
+namespace MultiAlignCore.IO.Hibernate
 {
     public class MSFeatureDAOHibernate : GenericDAOHibernate<MSFeatureLight>, IMSFeatureDAO
     {

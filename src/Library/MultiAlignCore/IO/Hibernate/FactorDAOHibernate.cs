@@ -5,7 +5,7 @@ using MultiAlignCore.IO.Analysis;
 
 #endregion
 
-namespace MultiAlignCore.IO.Features.Hibernate
+namespace MultiAlignCore.IO.Hibernate
 {
     public class FactorDAOHibernate : GenericDAOHibernate<ExperimentalFactor>, IFactorDao
     {
