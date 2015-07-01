@@ -31,6 +31,10 @@ using PNNLOmics.Data.Features;
 
 namespace MultiAlignRogue
 {
+    using MultiAlignRogue.DMS;
+
+    using MessageBox = System.Windows.MessageBox;
+
     public class MainViewModel : INotifyPropertyChanged
     {
 
@@ -53,6 +57,7 @@ namespace MultiAlignRogue
         public RelayCommand SelectFilesCommand { get; private set; }
         public RelayCommand FindMSFeaturesCommand { get; private set; }
         public RelayCommand PlotMSFeaturesCommand { get; private set; }
+        public RelayCommand SearchDmsCommand { get; private set; }
         public RelayCommand AlignToBaselineCommand { get; private set; }
         public RelayCommand ClusterListCommand { get; private set; }
         public ICommand AddFolderCommand { get; private set; }
@@ -80,6 +85,7 @@ namespace MultiAlignRogue
             PlotMSFeaturesCommand = new RelayCommand(PlotMSFeatures);
             AddFolderCommand = new BaseCommand(AddFolderDelegate, BaseCommand.AlwaysPass);
             DataSelectionViewModel = new AnalysisDatasetSelectionViewModel(m_config.Analysis);
+            SearchDmsCommand = new RelayCommand(() => this.SearchDms());
             AlignToBaselineCommand = new RelayCommand(AlignToBaseline);
             ClusterListCommand = new RelayCommand(ShowClusterList);
             FeatureCache = new FeatureLoader { Providers = m_analysis.DataProviders };
@@ -378,6 +384,15 @@ namespace MultiAlignRogue
                 OnPropertyChanged("ShouldUseDeisotopingFilter");
             }
         }
+
+        /// <summary>
+        /// Gets a value indicating whether or not "Open From DMS" should be shown on the menu based on whether
+        /// or not the user is on the PNNL network or not.
+        /// </summary>
+        public bool ShowOpenFromDms
+        {
+            get { return System.Net.Dns.GetHostEntry(string.Empty).HostName.Contains("pnl.gov"); }
+        }
         #endregion
 
         #region LC-MS Cluster Settings
@@ -472,6 +487,19 @@ namespace MultiAlignRogue
         {
             this.ProgressTracker = value;
             OnPropertyChanged("ProgressTracker");
+        }
+
+        private async Task SearchDms()
+        {
+            var dmsLookupViewModel = new DmsLookupViewModel();
+            var dialog = new DmsLookupView { DataContext = dmsLookupViewModel };
+            dmsLookupViewModel.DatasetSelected += (o, e) => dialog.Close();
+            dialog.ShowDialog();
+            if (dmsLookupViewModel.Status)
+            {
+                this.inputFilePath = dmsLookupViewModel.OutputDirectory;
+                this.AddFolderCommand.Execute(null);
+            }
         }
 
         protected void OnPropertyChanged(string name)
