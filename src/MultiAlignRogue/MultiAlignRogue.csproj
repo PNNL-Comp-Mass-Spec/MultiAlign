@@ -131,7 +131,6 @@
     <Compile Include="MSFeatureViewFactory.cs" />
     <Compile Include="MSFeatureViewModel.cs" />
     <Compile Include="PlotViewModelBase.cs" />
-    <Compile Include="ThreadedRelayCommand.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Page Include="MainWindow.xaml">

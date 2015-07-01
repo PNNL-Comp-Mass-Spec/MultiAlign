@@ -69,9 +69,6 @@
                              Text="{Binding MinimumIntensity, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Right" Width="60"/>
                     <Button Content="Load MS Features" HorizontalAlignment="Left" Height="24" Margin="0,303,0,0" VerticalAlignment="Top" Width="114" Command="{Binding FindMSFeaturesCommand}"/>
                     <Button Content="Plot MS Features" HorizontalAlignment="Left" Height="24" Margin="0,332,0,0" VerticalAlignment="Top" Width="114" Command="{Binding PlotMSFeaturesCommand}"/>
-
-
-
                 </Grid>
             </TabItem>
             <TabItem Header="LC-MS Features">
@@ -83,15 +80,46 @@
                 </Grid>
             </TabItem>
             <TabItem Header="LC-MS Clusters" HorizontalAlignment="Left" Width="97" Margin="-2,0,0,0">
-                <Grid/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="22*"/>
+                        <ColumnDefinition Width="51*"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Content="Baseline" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="39,0,0,387" Width="79" Height="24" Grid.Column="1"/>
+                    <ComboBox HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="424" Margin="4,0,0,365" Grid.ColumnSpan="2" DisplayMemberPath="DatasetName" 
+                              ItemsSource="{Binding m_analysis.MetaData.Datasets}"
+                              SelectedItem="{Binding SelectedBaseline, Mode=TwoWay}"/>
+                    <Label Content="Tolerances" HorizontalAlignment="Left" Height="24" Margin="10,51,0,0" VerticalAlignment="Top" Width="77" FontWeight="Bold"/>
+
+                    <Label Content="Mass Tolerance" VerticalContentAlignment="Top"  HorizontalAlignment="Left" Height="28" Margin="11,73,0,0" VerticalAlignment="Top" Width="168" Grid.ColumnSpan="2"/>
+                    <TextBox HorizontalContentAlignment="Center" Height="19" Margin="0,76,261,0" TextWrapping="Wrap" VerticalAlignment="Top" 
+                             Text="{Binding MassTolerance, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Right" Width="60" Grid.ColumnSpan="2"/>
+                    <Label Content="NET Tolerance" VerticalContentAlignment="Top"  HorizontalAlignment="Left" Height="28" Margin="11,93,0,0" VerticalAlignment="Top" Width="168" Grid.ColumnSpan="2"/>
+                    <TextBox HorizontalContentAlignment="Center" Height="19" Margin="0,97,261,0" TextWrapping="Wrap" VerticalAlignment="Top" 
+                             Text="{Binding NetTolerance, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Right" Width="60" Grid.ColumnSpan="2"/>
+                    <Label Content="Alignment Algorithm" HorizontalContentAlignment="Left" Height="28" VerticalAlignment="Top" Margin="151,51,0,0" Width="150" HorizontalAlignment="Left" FontWeight="Bold" Grid.Column="1"/>
+                    <ComboBox HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="150" Margin="142,0,0,309" Grid.Column="1" SelectedItem="{Binding SelectedAlignmentAlgorithm}"
+                              ItemsSource="{Binding m_AnalysisOptions.AlignmentAlgorithms, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Label Content="Clustering Method" HorizontalContentAlignment="Left" Height="28" VerticalAlignment="Top" Margin="150,104,0,0" Width="150" HorizontalAlignment="Left" FontWeight="Bold" Grid.Column="1"/>
+                    <ComboBox HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="150" Margin="142,0,0,256" Grid.Column="1" SelectedItem="{Binding SelectedLcmsFeatureClusteringAlgorithm}"
+                              ItemsSource="{Binding m_AnalysisOptions.ClusteringAlgorithms}"/>
+                    <Label Content="Calibration Method" HorizontalContentAlignment="Left" Height="28" VerticalAlignment="Top" Margin="150,152,0,0" Width="150" HorizontalAlignment="Left" FontWeight="Bold" Grid.Column="1"/>
+                    <ComboBox HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="150" Margin="142,0,0,208" Grid.Column="1" SelectedItem="{Binding SelectedCalibrationType}"
+                              ItemsSource="{Binding CalibrationOptions}"/>
+                    <Button Content="Align to Baseline" HorizontalAlignment="Left" Height="24" Margin="12,377,0,0" VerticalAlignment="Top" Width="110" Command="{Binding AlignToBaselineCommand}"/>
+                    <Button Content="Cluster List" Grid.Column="1" HorizontalAlignment="Left" Height="24" Margin="184,377,0,0" VerticalAlignment="Top" Width="108" Command="{Binding ClusterListCommand}"/>
+
+                </Grid>
             </TabItem>
             <TabItem Header="AMT Alignment" HorizontalAlignment="Left" VerticalAlignment="Top" Width="107" Margin="-2,0,0,0">
                 <Grid/>
             </TabItem>
+
         </TabControl>
         <Label Content="Working Data Files" HorizontalContentAlignment="Left" Height="28" Margin="10,25,0,0" VerticalAlignment="Top" Width="211" HorizontalAlignment="Left" FontSize="14"/>
         <TextBox HorizontalAlignment="Left" Margin="10,0,0,19" Text="{Binding inputFilePath}" IsReadOnly="True" TextWrapping="Wrap" Width="329" Height="22" VerticalAlignment="Bottom" />
         <Button Content="Add" HorizontalAlignment="Left" Margin="344,0,0,19" Width="50" Height="22" VerticalAlignment="Bottom" Command="{Binding AddFolderCommand}"/>
+
 
     </Grid>
 </Window>

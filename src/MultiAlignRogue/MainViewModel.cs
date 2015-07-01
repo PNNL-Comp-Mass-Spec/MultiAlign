@@ -5,7 +5,7 @@ using System.ComponentModel;
 using System.Data;
 using System.IO;
 using System.Linq;
-using System.Text;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
@@ -25,7 +25,8 @@ using MultiAlignCore.Data;
 using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO;
 using MultiAlignCore.IO.Features;
-using MultiAlignCore.IO.InputFiles;
+using PNNLOmics.Algorithms.Alignment.LcmsWarp;
+using PNNLOmics.Algorithms.FeatureClustering;
 using PNNLOmics.Data.Features;
 
 namespace MultiAlignRogue
@@ -35,17 +36,26 @@ namespace MultiAlignRogue
 
 
         public AnalysisDatasetSelectionViewModel DataSelectionViewModel;
-        public MultiAlignAnalysis m_analysis { get; set; }
+        public MultiAlignAnalysis m_analysis { get; set;}
         VistaFolderBrowserDialog folderBrowser = new VistaFolderBrowserDialog();
-        private AnalysisConfig m_config;
-        private MultiAlignAnalysisOptions m_options;
-        private string[] files; 
+        public AnalysisConfig m_config { get; set;}
+        public MultiAlignAnalysisOptions m_options { get; set;}
+        public AnalysisOptionsViewModel m_AnalysisOptions { get; set;}
+        private DatasetInformation m_baseline { get; set; }
+
+        //private string[] files; 
+        public ObservableCollection<DatasetInformationViewModel> Datasets { get; private set;}
         public List<DatasetInformation> selectedFiles;
+        public List<AlignmentType> CalibrationOptions { get; set; }
         private IWindowFactory msFeatureWindowFactory;
+
         public RelayCommand SelectFilesCommand { get; private set; }
         public RelayCommand FindMSFeaturesCommand { get; private set; }
         public RelayCommand PlotMSFeaturesCommand { get; private set; }
+        public RelayCommand AlignToBaselineCommand { get; private set; }
+        public RelayCommand ClusterListCommand { get; private set; }
         public ICommand AddFolderCommand { get; private set; }
+
         public string inputFilePath { get; set; }
         public DataTable datasetInfo { get; set; }
         public MSFeatureFinding featureFinder { get; set; }
@@ -63,17 +73,25 @@ namespace MultiAlignRogue
             m_options = m_analysis.Options;
             m_config.AnalysisName = "Analysis";
             m_config.Analysis = m_analysis;
+            m_AnalysisOptions = new AnalysisOptionsViewModel(m_options);
             
             SelectFilesCommand = new RelayCommand(SelectFiles);
             FindMSFeaturesCommand = new RelayCommand(LoadMSFeatures);
             PlotMSFeaturesCommand = new RelayCommand(PlotMSFeatures);
             AddFolderCommand = new BaseCommand(AddFolderDelegate, BaseCommand.AlwaysPass);
             DataSelectionViewModel = new AnalysisDatasetSelectionViewModel(m_config.Analysis);
+            AlignToBaselineCommand = new RelayCommand(AlignToBaseline);
+            ClusterListCommand = new RelayCommand(ShowClusterList);
+            
 
             featureFinder = new MSFeatureFinding();
             Features = new Dictionary<DatasetInformation, IList<UMCLight>>();
             this.selectedFiles = new List<DatasetInformation>();
             msFeatureWindowFactory = new MSFeatureViewFactory();
+            Datasets = new ObservableCollection<DatasetInformationViewModel>();
+
+            CalibrationOptions = new List<AlignmentType>();
+            Enum.GetValues(typeof(AlignmentType)).Cast<AlignmentType>().ToList().ForEach(x => CalibrationOptions.Add(x));
         }
 
 
@@ -85,8 +103,7 @@ namespace MultiAlignRogue
             {
                 inputFilePath = folderBrowser.SelectedPath;
                 OnPropertyChanged("inputFilePath");
-                files = Directory.GetFiles(inputFilePath, "*isos.csv");
-
+                //files = Directory.GetFiles(inputFilePath, "*isos.csv");
             }
 
         }
@@ -120,7 +137,19 @@ namespace MultiAlignRogue
             Providers = SetupDataProviders(true);
             m_analysis.DataProviders = Providers;
             featureFinder.Providers = Providers;
+            UpdateDatasets();
             OnPropertyChanged("m_config");
+            OnPropertyChanged("Datasets");
+        }
+
+        public void UpdateDatasets()
+        {
+            Datasets.Clear();
+            foreach (var info in m_analysis.MetaData.Datasets)
+            {
+                var viewmodel = new DatasetInformationViewModel(info);
+                Datasets.Add(viewmodel);
+            }
         }
         #endregion
 
@@ -159,6 +188,15 @@ namespace MultiAlignRogue
             msFeatureWindowFactory.CreateNewWindow(Features, selectedFiles);  
         }
 
+        public async void AsyncAlignToBaseline()
+        {
+            await Task.Run(() => AlignToBaseline());
+        }
+
+        private void AlignToBaseline()
+        {
+            System.Windows.MessageBox.Show("Working Command");
+        }
 
         #region Data Providers
         private FeatureDataAccessProviders SetupDataProviders(bool createNewDatabase)
@@ -339,6 +377,94 @@ namespace MultiAlignRogue
             }
         }
         #endregion
+
+        #region LC-MS Cluster Settings
+
+        public DatasetInformation SelectedBaseline
+        {
+            get { return m_baseline; }
+            set
+            {
+                if (m_baseline != value)
+                {
+                    if (value == null)
+                    {
+                        m_analysis.MetaData.BaselineDataset = null;
+                    }
+                    else
+                    {
+                        m_baseline = value;
+                        m_analysis.MetaData.BaselineDataset = value;
+                    }
+                    OnPropertyChanged("SelectedBaseline");
+                }
+            }
+        }
+
+        public void ShowClusterList()
+        {
+            System.Windows.MessageBox.Show("Working Command");
+        }
+
+        public double MassTolerance
+        {
+            get { return m_options.LcmsClusteringOptions.InstrumentTolerances.Mass; }
+            set
+            {
+                m_options.LcmsClusteringOptions.InstrumentTolerances.Mass = value;
+                OnPropertyChanged("MassTolerance");
+            }
+        }
+
+        public double NetTolerance
+        {
+            get { return m_options.LcmsClusteringOptions.InstrumentTolerances.Net; }
+            set
+            {
+                m_options.LcmsClusteringOptions.InstrumentTolerances.Net = value;
+                OnPropertyChanged("NetTolerance");
+            }
+        }
+
+        public FeatureAlignmentType SelectedAlignmentAlgorithm 
+        {
+            get { return m_options.AlignmentOptions.AlignmentAlgorithm; }
+            set
+            {
+                if (m_options.AlignmentOptions.AlignmentAlgorithm != value)
+                {
+                    m_options.AlignmentOptions.AlignmentAlgorithm = value;
+                    OnPropertyChanged("SelectedAlignmentAlgorithm");
+                }
+            }
+        }
+        public LcmsFeatureClusteringAlgorithmType SelectedLcmsFeatureClusteringAlgorithm
+        {
+            get { return m_options.LcmsClusteringOptions.LcmsFeatureClusteringAlgorithm; }
+            set
+            {
+                if (m_options.LcmsClusteringOptions.LcmsFeatureClusteringAlgorithm != value)
+                {
+                    m_options.LcmsClusteringOptions.LcmsFeatureClusteringAlgorithm = value;
+                    OnPropertyChanged("SelectedClusteringAlgorithm");
+                }
+            }
+        }
+        public AlignmentType SelectedCalibrationType
+        {
+            get { return m_options.AlignmentOptions.AlignmentType; }
+            set
+            {
+                if (m_options.AlignmentOptions.AlignmentType != value)
+                {
+                    m_options.AlignmentOptions.AlignmentType = value;
+                    OnPropertyChanged("SelectedCalibrationType");
+                }
+            }
+        }
+          
+        
+        #endregion 
 
         private void ReportProgess(int value)
         {
