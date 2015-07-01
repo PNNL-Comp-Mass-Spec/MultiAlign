@@ -6,6 +6,9 @@
     <Window.DataContext>
         <multiAlignRogue:MainViewModel/>
     </Window.DataContext>
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+    </Window.Resources>
     <Grid Name ="MainGrid">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="500"/>
@@ -14,6 +17,7 @@
         <Menu Grid.ColumnSpan="2" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="{Binding ElementName=MainGrid,Path=ActualWidth}">
             <MenuItem Header="File">
                 <MenuItem Header="Select Files" HorizontalAlignment="Left" Width="168" Margin="0,0,-8,0" Command="{Binding SelectFilesCommand}"/>
+                <MenuItem Header="Search DMS" Command="{Binding SearchDmsCommand}" Visibility="{Binding ShowOpenFromDms, Converter={StaticResource BoolToVis}}" />
                 <MenuItem Header="Load Project" HorizontalAlignment="Left" Width="168"/>
                 <MenuItem Header="Save Project" HorizontalAlignment="Left" Width="168"/>
             </MenuItem>
@@ -67,11 +71,9 @@
                               IsChecked="{Binding ShouldUseIntensityFilter, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
                     <TextBox Grid.Column="1" HorizontalContentAlignment="Center" Height="19" Margin="0,132,14,0" TextWrapping="Wrap" VerticalAlignment="Top" 
                              Text="{Binding MinimumIntensity, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Right" Width="60"/>
+                    
                     <Button Content="Load MS Features" HorizontalAlignment="Left" Height="24" Margin="0,303,0,0" VerticalAlignment="Top" Width="114" Command="{Binding FindMSFeaturesCommand}"/>
                     <Button Content="Plot MS Features" HorizontalAlignment="Left" Height="24" Margin="0,332,0,0" VerticalAlignment="Top" Width="114" Command="{Binding PlotMSFeaturesCommand}"/>
-
-
-
                 </Grid>
             </TabItem>
             <TabItem Header="LC-MS Features">

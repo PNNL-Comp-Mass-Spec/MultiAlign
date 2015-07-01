@@ -131,6 +131,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="DMS\DmsLookupUtility.cs" />
+    <Compile Include="DMS\DmsDatasetViewModel.cs" />
+    <Compile Include="DMS\DmsLookupView.xaml.cs">
+      <DependentUpon>DmsLookupView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DMS\DmsLookupViewModel.cs" />
     <Compile Include="IWindowFactory.cs" />
     <Compile Include="MSFeatureFinding.cs" />
     <Compile Include="MSFeatureView.xaml.cs">
@@ -142,6 +148,10 @@
     <Compile Include="ThreadedRelayCommand.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
+    <Page Include="DMS\DmsLookupView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
