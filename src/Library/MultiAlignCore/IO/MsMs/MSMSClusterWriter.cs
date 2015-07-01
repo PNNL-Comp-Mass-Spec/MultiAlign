@@ -10,7 +10,7 @@ using PNNLOmics.Data.Features;
 
 #endregion
 
-namespace MultiAlignCore.IO.Features.Exporters
+namespace MultiAlignCore.IO.MsMs
 {
     public class MSMSClusterWriter
     {

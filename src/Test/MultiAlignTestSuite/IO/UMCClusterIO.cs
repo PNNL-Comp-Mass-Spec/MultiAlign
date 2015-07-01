@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using System.IO;
+using MultiAlignCore.IO;
 using MultiAlignCore.IO.Features;
 using NUnit.Framework;
 using PNNLOmics.Data.Features;

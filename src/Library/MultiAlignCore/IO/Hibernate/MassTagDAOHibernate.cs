@@ -1,12 +1,13 @@
 #region
 
 using System.Collections.Generic;
+using MultiAlignCore.IO.MassTags;
 using NHibernate.Criterion;
 using PNNLOmics.Data.MassTags;
 
 #endregion
 
-namespace MultiAlignCore.IO.Features.Hibernate
+namespace MultiAlignCore.IO.Hibernate
 {
     /// <summary>
     ///     Accesses mass tags from the underlying database.

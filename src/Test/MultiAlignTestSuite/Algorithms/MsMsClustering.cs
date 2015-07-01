@@ -8,6 +8,7 @@ using MultiAlignCore.Algorithms.FeatureFinding;
 using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.InputFiles;
+using MultiAlignCore.IO.RawData;
 using NUnit.Framework;
 using PNNLOmics.Algorithms;
 using PNNLOmics.Algorithms.FeatureClustering;

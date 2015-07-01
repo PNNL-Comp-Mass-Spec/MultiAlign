@@ -3,12 +3,16 @@
 using System;
 using System.IO;
 using MultiAlignCore.Data;
-using MultiAlignCore.IO.Features.Hibernate;
+using MultiAlignCore.IO.Datasets;
+using MultiAlignCore.IO.Features;
+using MultiAlignCore.IO.Hibernate;
+using MultiAlignCore.IO.MassTags;
+using MultiAlignCore.IO.MsMs;
 using MultiAlignCore.IO.SequenceData;
 
 #endregion
 
-namespace MultiAlignCore.IO.Features
+namespace MultiAlignCore.IO
 {
     public class DataAccessFactory
     {

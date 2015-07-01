@@ -7,7 +7,7 @@ using NHibernate.Criterion;
 
 #endregion
 
-namespace MultiAlignCore.IO.Features.Hibernate
+namespace MultiAlignCore.IO.Hibernate
 {
     /// <summary>
     ///     A Generic class that contains methods that will be used to manipulate Objects in the Database using Hibernate.

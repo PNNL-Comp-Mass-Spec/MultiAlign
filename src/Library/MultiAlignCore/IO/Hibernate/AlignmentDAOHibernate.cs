@@ -2,10 +2,11 @@
 
 using System.Data.SQLite;
 using MultiAlignCore.Data.Alignment;
+using MultiAlignCore.IO.Features;
 
 #endregion
 
-namespace MultiAlignCore.IO.Features.Hibernate
+namespace MultiAlignCore.IO.Hibernate
 {
     public class AlignmentDAOHibernate : GenericDAOHibernate<classAlignmentData>, IAlignmentDAO
     {

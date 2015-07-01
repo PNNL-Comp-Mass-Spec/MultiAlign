@@ -4,7 +4,7 @@ using System.Data.SQLite;
 
 #endregion
 
-namespace MultiAlignCore.IO.Features
+namespace MultiAlignCore.IO
 {
     /// <summary>
     ///     Indexes a database for faster retrieval times.

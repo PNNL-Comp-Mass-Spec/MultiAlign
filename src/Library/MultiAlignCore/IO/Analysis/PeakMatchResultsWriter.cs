@@ -3,7 +3,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using MultiAlignCore.Data;
-using MultiAlignCore.IO.Features.Hibernate;
+using MultiAlignCore.IO.Hibernate;
 using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Data.MassTags;

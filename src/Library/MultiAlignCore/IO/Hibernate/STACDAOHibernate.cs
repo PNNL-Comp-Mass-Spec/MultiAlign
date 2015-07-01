@@ -5,7 +5,7 @@ using PNNLOmics.Algorithms.FeatureMatcher.Data;
 
 #endregion
 
-namespace MultiAlignCore.IO.Features.Hibernate
+namespace MultiAlignCore.IO.Hibernate
 {
     public class STACDAOHibernate : GenericDAOHibernate<STACFDR>
     {

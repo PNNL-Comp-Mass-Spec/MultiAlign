@@ -5,7 +5,7 @@ using PNNLOmics.Data;
 
 #endregion
 
-namespace MultiAlignCore.IO.Features
+namespace MultiAlignCore.IO.RawData
 {
     /// <summary>
     ///     Class in charge of creating RAW Data file readers.

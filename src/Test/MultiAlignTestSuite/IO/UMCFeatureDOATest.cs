@@ -2,7 +2,7 @@
 
 using System.Collections.Generic;
 using MultiAlignCore.IO.Features;
-using MultiAlignCore.IO.Features.Hibernate;
+using MultiAlignCore.IO.Hibernate;
 using NUnit.Framework;
 using PNNLOmics.Data.Features;
 

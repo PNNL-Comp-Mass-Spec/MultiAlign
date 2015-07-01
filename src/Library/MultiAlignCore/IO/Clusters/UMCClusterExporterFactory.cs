@@ -1,12 +1,11 @@
 ﻿#region
 
 using System.Collections.Generic;
-using MultiAlignCore.IO.Clusters;
 using PNNLOmicsIO.IO;
 
 #endregion
 
-namespace MultiAlignCore.IO.Features
+namespace MultiAlignCore.IO.Clusters
 {
     public static class UmcClusterExporterFactory
     {

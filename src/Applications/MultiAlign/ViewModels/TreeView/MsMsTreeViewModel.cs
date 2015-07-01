@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using MultiAlign.IO;
 using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.Extensions;
+using MultiAlignCore.IO;
 using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
 

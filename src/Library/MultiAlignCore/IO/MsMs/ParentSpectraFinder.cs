@@ -2,11 +2,12 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using MultiAlignCore.IO.RawData;
 using PNNLOmics.Data;
 
 #endregion
 
-namespace MultiAlignCore.IO.Features
+namespace MultiAlignCore.IO.MsMs
 {
     /// <summary>
     ///     Finds the spectra for a given feature's scan

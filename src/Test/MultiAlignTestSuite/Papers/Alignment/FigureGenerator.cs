@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using MultiAlignCore.IO.Features;
+using MultiAlignCore.IO.RawData;
 using MultiAlignTestSuite.Papers.Alignment.IO;
 using NUnit.Framework;
 using OxyPlot;

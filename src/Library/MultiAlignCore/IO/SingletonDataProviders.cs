@@ -6,7 +6,7 @@ using MultiAlignCore.IO.Features;
 
 #endregion
 
-namespace MultiAlign.IO
+namespace MultiAlignCore.IO
 {
     public static class SingletonDataProviders
     {

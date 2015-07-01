@@ -1,4 +1,4 @@
-﻿namespace MultiAlignCore.Algorithms.Alignment
+﻿namespace MultiAlignCore.Algorithms.Clustering
 {
     public class MsnClusterer
     {

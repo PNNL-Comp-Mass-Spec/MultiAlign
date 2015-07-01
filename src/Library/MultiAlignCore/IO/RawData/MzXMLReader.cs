@@ -8,7 +8,7 @@ using PNNLOmics.Data;
 
 #endregion
 
-namespace MultiAlignCore.IO.Features
+namespace MultiAlignCore.IO.RawData
 {
     /// <summary>
     ///     Adapter for reading mzXML files from a reader by Matt Monroe.

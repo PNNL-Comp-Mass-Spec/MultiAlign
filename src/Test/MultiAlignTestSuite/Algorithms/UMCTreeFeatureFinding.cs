@@ -6,7 +6,7 @@ using System.IO;
 using System.Linq;
 using MultiAlignCore.Algorithms.FeatureFinding;
 using MultiAlignCore.IO.Features;
-using MultiAlignCore.IO.Features.Hibernate;
+using MultiAlignCore.IO.Hibernate;
 using MultiAlignCore.IO.RawData;
 using NUnit.Framework;
 using PNNLOmics.Algorithms;

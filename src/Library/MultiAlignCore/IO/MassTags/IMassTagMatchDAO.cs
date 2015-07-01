@@ -5,7 +5,7 @@ using MultiAlignCore.Data;
 
 #endregion
 
-namespace MultiAlignCore.IO.Features
+namespace MultiAlignCore.IO.MassTags
 {
     public interface IMassTagMatchDAO : IGenericDAO<ClusterToMassTagMap>
     {

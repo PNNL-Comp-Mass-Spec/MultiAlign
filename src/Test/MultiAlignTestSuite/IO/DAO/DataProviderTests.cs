@@ -1,8 +1,9 @@
 #region
 
 using System;
+using MultiAlignCore.IO;
 using MultiAlignCore.IO.Features;
-using MultiAlignCore.IO.Features.Hibernate;
+using MultiAlignCore.IO.Hibernate;
 using NUnit.Framework;
 
 #endregion

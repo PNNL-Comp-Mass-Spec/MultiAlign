@@ -95,6 +95,14 @@
       <HintPath>..\packages\OxyPlot.Wpf.2014.1.546\lib\net45\OxyPlot.Xps.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="PNNLOmics, Version=1.1.5385.41078, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\PNNLOmics.dll</HintPath>
+    </Reference>
+    <Reference Include="PNNLOmicsIO, Version=1.1.5385.36913, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\PNNLOmicsIO.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.SQLite, Version=1.0.94.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
@@ -180,14 +188,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\PNNL-Omics\PNNLOmicsIO\PNNLOmicsIO.csproj">
-      <Project>{20d49543-cd31-44d2-8403-f045b3fb363d}</Project>
-      <Name>PNNLOmicsIO</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\PNNL-Omics\PNNLOmics\PNNLOmics.csproj">
-      <Project>{8a934dc1-3418-449f-adf6-9962499f49b2}</Project>
-      <Name>PNNLOmics</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Applications\MultiAlign\MultiAlign.csproj">
       <Project>{6ec23ccc-4f36-47bf-b997-f0a5727822a5}</Project>
       <Name>MultiAlign</Name>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using MultiAlignCore.IO.Features;
+using MultiAlignCore.IO.RawData;
 using MultiAlignTestSuite.Papers.Alignment.IO;
 using NUnit.Framework;
 using PNNLOmics.Algorithms.Alignment.SpectralMatches;

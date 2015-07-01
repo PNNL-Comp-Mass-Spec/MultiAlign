@@ -5,7 +5,7 @@ using PNNLOmics.Data.MassTags;
 
 #endregion
 
-namespace MultiAlignCore.IO.Features
+namespace MultiAlignCore.IO.MassTags
 {
     public interface IMassTagDAO : IGenericDAO<MassTagLight>
     {

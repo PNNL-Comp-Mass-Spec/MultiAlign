@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace MultiAlignCore.IO.Features
+namespace MultiAlignCore.IO
 {
     public interface IGenericDAO<T>
     {

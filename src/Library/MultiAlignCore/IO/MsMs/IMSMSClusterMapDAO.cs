@@ -4,7 +4,7 @@ using MultiAlignCore.Data;
 
 #endregion
 
-namespace MultiAlignCore.IO.Features
+namespace MultiAlignCore.IO.MsMs
 {
     public interface IMSMSClusterMapDAO : IGenericDAO<MSMSClusterMap>
     {

@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.IO;
 using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.Extensions;
+using MultiAlignCore.IO;
 using MultiAlignCore.IO.Features;
+using MultiAlignCore.IO.RawData;
 using NUnit.Framework;
 using PNNLOmics.Data;
 
