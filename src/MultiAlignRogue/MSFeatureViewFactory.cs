@@ -14,11 +14,11 @@ namespace MultiAlignRogue
         {
             
         }
-        public void CreateNewWindow(Dictionary<DatasetInformation, IList<UMCLight>> Features, List<DatasetInformation> selectedFiles)
+        public void CreateNewWindow(Dictionary<DatasetInformation, IList<UMCLight>> Features)
         {
             MSFeatureView window = new MSFeatureView
             {
-                DataContext = new MSFeatureViewModel(Features, selectedFiles)
+                DataContext = new MSFeatureViewModel(Features)
             };
             window.Show();
         }

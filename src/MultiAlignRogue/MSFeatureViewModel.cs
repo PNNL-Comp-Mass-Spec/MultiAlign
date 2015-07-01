@@ -22,7 +22,7 @@ namespace MultiAlignRogue
 
         }
 
-        public MSFeatureViewModel(Dictionary<DatasetInformation, IList<UMCLight>> Features, List<DatasetInformation> selectedFiles)
+        public MSFeatureViewModel(Dictionary<DatasetInformation, IList<UMCLight>> features)
         {   
             this.Model = new PlotModel{Title = "MS Features"};
             this.Model.IsLegendVisible = true;
@@ -31,16 +31,16 @@ namespace MultiAlignRogue
             this.Model.LegendOrientation = LegendOrientation.Vertical;
             this.Model.Axes.Add(new LinearAxis{Title = "NET", Position = AxisPosition.Bottom, IsAxisVisible = true});
             this.Model.Axes.Add(new LinearAxis { Title = "Monoisotopic Mass", Position = AxisPosition.Left, IsAxisVisible = true });
-            PlotFeatures(Features, selectedFiles);
+            PlotFeatures(features);
             
         }
 
-        private void PlotFeatures(Dictionary<DatasetInformation, IList<UMCLight>> Features, List<DatasetInformation> selectedFiles)
+        private void PlotFeatures(Dictionary<DatasetInformation, IList<UMCLight>> Features)
         {
             try
             {
                 int i = 0;
-                foreach (var file in selectedFiles)
+                foreach (var file in Features.Keys)
                 {
                     ScatterSeries currentFeatures = GetPoints(Features[file]);
                     currentFeatures.MarkerFill = Colors.ElementAt(i);

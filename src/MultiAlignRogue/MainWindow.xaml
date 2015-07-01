@@ -31,7 +31,7 @@
             </DataGrid.Columns>
         </DataGrid>
         <TabControl Grid.Column="1" Margin="10,25,10,10">
-            <TabItem Header="MS Features">
+            <TabItem Header="Feature Finding">
                 <Grid Margin="0,19,39,8" HorizontalAlignment="Right" Width="384">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="183*"/>
@@ -71,15 +71,7 @@
                     <Button Content="Plot MS Features" HorizontalAlignment="Left" Height="24" Margin="0,332,0,0" VerticalAlignment="Top" Width="114" Command="{Binding PlotMSFeaturesCommand}"/>
                 </Grid>
             </TabItem>
-            <TabItem Header="LC-MS Features">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="168*"/>
-                        <ColumnDefinition Width="335*"/>
-                    </Grid.ColumnDefinitions>
-                </Grid>
-            </TabItem>
-            <TabItem Header="LC-MS Clusters" HorizontalAlignment="Left" Width="97" Margin="-2,0,0,0">
+            <TabItem Header="Dataset Alignment" HorizontalAlignment="Left" Width="113" Margin="-2,0,-14,0">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="22*"/>
@@ -114,7 +106,14 @@
             <TabItem Header="AMT Alignment" HorizontalAlignment="Left" VerticalAlignment="Top" Width="107" Margin="-2,0,0,0">
                 <Grid/>
             </TabItem>
-
+            <TabItem Header="LC-MS Clustering" Margin="-2,-2,-3,-1">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="168*"/>
+                        <ColumnDefinition Width="335*"/>
+                    </Grid.ColumnDefinitions>
+                </Grid>
+            </TabItem>
         </TabControl>
         <Label Content="Working Data Files" HorizontalContentAlignment="Left" Height="28" Margin="10,25,0,0" VerticalAlignment="Top" Width="211" HorizontalAlignment="Left" FontSize="14"/>
         <TextBox HorizontalAlignment="Left" Margin="10,0,0,19" Text="{Binding inputFilePath}" IsReadOnly="True" TextWrapping="Wrap" Width="329" Height="22" VerticalAlignment="Bottom" />

@@ -45,6 +45,7 @@ namespace MultiAlignRogue
 
         //private string[] files; 
         public ObservableCollection<DatasetInformationViewModel> Datasets { get; private set;}
+        public FeatureLoader FeatureCache;
         public List<DatasetInformation> selectedFiles;
         public List<AlignmentType> CalibrationOptions { get; set; }
         private IWindowFactory msFeatureWindowFactory;
@@ -58,7 +59,6 @@ namespace MultiAlignRogue
 
         public string inputFilePath { get; set; }
         public DataTable datasetInfo { get; set; }
-        public MSFeatureFinding featureFinder { get; set; }
         private FeatureDataAccessProviders Providers;
         private Dictionary<DatasetInformation, IList<UMCLight>> Features { get; set; }
 
@@ -82,9 +82,8 @@ namespace MultiAlignRogue
             DataSelectionViewModel = new AnalysisDatasetSelectionViewModel(m_config.Analysis);
             AlignToBaselineCommand = new RelayCommand(AlignToBaseline);
             ClusterListCommand = new RelayCommand(ShowClusterList);
-            
+            FeatureCache = new FeatureLoader { Providers = m_analysis.DataProviders };
 
-            featureFinder = new MSFeatureFinding();
             Features = new Dictionary<DatasetInformation, IList<UMCLight>>();
             this.selectedFiles = new List<DatasetInformation>();
             msFeatureWindowFactory = new MSFeatureViewFactory();
@@ -103,7 +102,6 @@ namespace MultiAlignRogue
             {
                 inputFilePath = folderBrowser.SelectedPath;
                 OnPropertyChanged("inputFilePath");
-                //files = Directory.GetFiles(inputFilePath, "*isos.csv");
             }
 
         }
@@ -136,7 +134,6 @@ namespace MultiAlignRogue
             m_config.AnalysisPath = inputFilePath;
             Providers = SetupDataProviders(true);
             m_analysis.DataProviders = Providers;
-            featureFinder.Providers = Providers;
             UpdateDatasets();
             OnPropertyChanged("m_config");
             OnPropertyChanged("Datasets");
@@ -162,20 +159,19 @@ namespace MultiAlignRogue
         private void LoadFeatures()
         {
             List<DatasetInformation> selectedFilesCopy = new List<DatasetInformation>();
+            FeatureCache.Providers = m_analysis.DataProviders;
             foreach (var dataset in selectedFiles)
             {
                 selectedFilesCopy.Add(dataset); //Prevents crashes from changing selected files while this thread is running
             }
+
             foreach (var file in selectedFilesCopy)
             {
                 IProgress<int> progress = new Progress<int>(ReportProgess);
-                var currentFeatures = featureFinder.LoadDataset(file, m_options.MsFilteringOptions, m_options.LcmsFindingOptions,
-                    m_options.LcmsFilteringOptions, progress);
-                if (Features.ContainsKey(file))
-                {
-                    Features.Remove(file);
-                }
-                Features.Add(file, currentFeatures);
+                var features = FeatureCache.LoadDataset(file, m_options.MsFilteringOptions, m_options.LcmsFindingOptions,
+                    m_options.LcmsFilteringOptions);
+                FeatureCache.CacheFeatures(features);
+                
                 file.FeaturesFound = true;
                 OnPropertyChanged("m_analysis");
                 progress.Report(0);
@@ -185,7 +181,13 @@ namespace MultiAlignRogue
 
         public void PlotMSFeatures()
         {
-            msFeatureWindowFactory.CreateNewWindow(Features, selectedFiles);  
+            Features = new Dictionary<DatasetInformation, IList<UMCLight>>();
+            foreach (var file in selectedFiles)
+            {
+                Features.Add(file, UmcLoaderFactory.LoadUmcFeatureData(file.Features.Path, file.DatasetId,
+                Providers.FeatureCache));
+            }
+            msFeatureWindowFactory.CreateNewWindow(Features);  
         }
 
         public async void AsyncAlignToBaseline()

@@ -55,6 +55,9 @@ namespace MultiAlignCore.IO.Features
                 case ".DB3":
                     features = featureCache.FindByDatasetId(datasetId);
                     break;
+                default: //Was reconstructing features from scratch even when they were already cached because the file extention was ".csv" not ".db3"
+                    features = featureCache.FindByDatasetId(datasetId);
+                    break;
             }
             return features;
         }

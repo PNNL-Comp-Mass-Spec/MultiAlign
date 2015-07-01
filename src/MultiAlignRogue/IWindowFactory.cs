@@ -11,6 +11,6 @@ namespace MultiAlignRogue
     interface IWindowFactory
     {
         void CreateNewWindow();
-        void CreateNewWindow(Dictionary<DatasetInformation, IList<UMCLight>> Features, List<DatasetInformation> selectedFiles);
+        void CreateNewWindow(Dictionary<DatasetInformation, IList<UMCLight>> Features);
     }
 }

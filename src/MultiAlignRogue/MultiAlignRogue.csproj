@@ -132,7 +132,6 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="IWindowFactory.cs" />
-    <Compile Include="MSFeatureFinding.cs" />
     <Compile Include="MSFeatureView.xaml.cs">
       <DependentUpon>MSFeatureView.xaml</DependentUpon>
     </Compile>
@@ -177,6 +176,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="ClassDiagram1.cd" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
