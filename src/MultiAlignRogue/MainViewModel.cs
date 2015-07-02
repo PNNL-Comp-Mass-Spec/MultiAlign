@@ -20,11 +20,14 @@ using MultiAlign.Data;
 using MultiAlign.IO;
 using MultiAlign.ViewModels.Datasets;
 using MultiAlign.ViewModels.Wizard;
+using MultiAlignCore.Algorithms;
 using MultiAlignCore.Algorithms.Options;
 using MultiAlignCore.Data;
+using MultiAlignCore.Data.Alignment;
 using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO;
 using MultiAlignCore.IO.Features;
+using MultiAlignCore.IO.Hibernate;
 using PNNLOmics.Algorithms.Alignment.LcmsWarp;
 using PNNLOmics.Algorithms.FeatureClustering;
 using PNNLOmics.Data.Features;
@@ -46,26 +49,30 @@ namespace MultiAlignRogue
         public MultiAlignAnalysisOptions m_options { get; set;}
         public AnalysisOptionsViewModel m_AnalysisOptions { get; set;}
         private DatasetInformation m_baseline { get; set; }
+        private AlgorithmBuilder builder { get; set; }
+        private AlgorithmProvider algorithms { get; set; }
+        private LCMSFeatureAligner aligner { get; set; }
 
-        //private string[] files; 
         public ObservableCollection<DatasetInformationViewModel> Datasets { get; private set;}
-        public FeatureLoader FeatureCache;
+        public FeatureLoader UnalignedFeatureCache;
+        public FeatureLoader AlignedFeatureCache;
         public List<DatasetInformation> selectedFiles;
         public List<AlignmentType> CalibrationOptions { get; set; }
-        private IWindowFactory msFeatureWindowFactory;
+        private IFeatureWindowFactory msFeatureWindowFactory;
 
         public RelayCommand SelectFilesCommand { get; private set; }
         public RelayCommand FindMSFeaturesCommand { get; private set; }
         public RelayCommand PlotMSFeaturesCommand { get; private set; }
         public RelayCommand SearchDmsCommand { get; private set; }
         public RelayCommand AlignToBaselineCommand { get; private set; }
-        public RelayCommand ClusterListCommand { get; private set; }
+        public RelayCommand DisplayAlignmentCommand { get; private set; }
         public ICommand AddFolderCommand { get; private set; }
 
         public string inputFilePath { get; set; }
         public DataTable datasetInfo { get; set; }
         private FeatureDataAccessProviders Providers;
         private Dictionary<DatasetInformation, IList<UMCLight>> Features { get; set; }
+        private List<classAlignmentData> AlignmentInformation { get; set; } 
 
         public int ProgressTracker { get; private set; }
 
@@ -79,6 +86,8 @@ namespace MultiAlignRogue
             m_config.AnalysisName = "Analysis";
             m_config.Analysis = m_analysis;
             m_AnalysisOptions = new AnalysisOptionsViewModel(m_options);
+            builder = new AlgorithmBuilder();
+            aligner = new LCMSFeatureAligner();
             
             SelectFilesCommand = new RelayCommand(SelectFiles);
             FindMSFeaturesCommand = new RelayCommand(LoadMSFeatures);
@@ -87,13 +96,15 @@ namespace MultiAlignRogue
             DataSelectionViewModel = new AnalysisDatasetSelectionViewModel(m_config.Analysis);
             SearchDmsCommand = new RelayCommand(() => this.SearchDms());
             AlignToBaselineCommand = new RelayCommand(AlignToBaseline);
-            ClusterListCommand = new RelayCommand(ShowClusterList);
-            FeatureCache = new FeatureLoader { Providers = m_analysis.DataProviders };
+            DisplayAlignmentCommand = new RelayCommand(DisplayAlignment);
+            UnalignedFeatureCache = new FeatureLoader { Providers = m_analysis.DataProviders };
+            AlignedFeatureCache = new FeatureLoader { Providers = m_analysis.DataProviders };
 
             Features = new Dictionary<DatasetInformation, IList<UMCLight>>();
             this.selectedFiles = new List<DatasetInformation>();
             msFeatureWindowFactory = new MSFeatureViewFactory();
             Datasets = new ObservableCollection<DatasetInformationViewModel>();
+            AlignmentInformation = new List<classAlignmentData>();
 
             CalibrationOptions = new List<AlignmentType>();
             Enum.GetValues(typeof(AlignmentType)).Cast<AlignmentType>().ToList().ForEach(x => CalibrationOptions.Add(x));
@@ -165,7 +176,7 @@ namespace MultiAlignRogue
         private void LoadFeatures()
         {
             List<DatasetInformation> selectedFilesCopy = new List<DatasetInformation>();
-            FeatureCache.Providers = m_analysis.DataProviders;
+            UnalignedFeatureCache.Providers = m_analysis.DataProviders;
             foreach (var dataset in selectedFiles)
             {
                 selectedFilesCopy.Add(dataset); //Prevents crashes from changing selected files while this thread is running
@@ -174,9 +185,9 @@ namespace MultiAlignRogue
             foreach (var file in selectedFilesCopy)
             {
                 IProgress<int> progress = new Progress<int>(ReportProgess);
-                var features = FeatureCache.LoadDataset(file, m_options.MsFilteringOptions, m_options.LcmsFindingOptions,
+                var features = UnalignedFeatureCache.LoadDataset(file, m_options.MsFilteringOptions, m_options.LcmsFindingOptions,
                     m_options.LcmsFilteringOptions);
-                FeatureCache.CacheFeatures(features);
+                UnalignedFeatureCache.CacheFeatures(features);
                 
                 file.FeaturesFound = true;
                 OnPropertyChanged("m_analysis");
@@ -203,7 +214,46 @@ namespace MultiAlignRogue
 
         private void AlignToBaseline()
         {
-            System.Windows.MessageBox.Show("Working Command");
+            if (SelectedBaseline != null && SelectedBaseline.FeaturesFound)
+            {
+                //Update algorithms and providers
+                AlignedFeatureCache.Providers = m_analysis.DataProviders;
+                algorithms = builder.GetAlgorithmProvider(m_options);
+                aligner.m_algorithms = algorithms;
+
+                var baselineFeatures = UnalignedFeatureCache.LoadDataset(m_baseline, m_options.MsFilteringOptions,
+                    m_options.LcmsFindingOptions, m_options.LcmsFilteringOptions);
+                var alignmentData = new AlignmentDAOHibernate();
+                alignmentData.ClearAll();
+
+                foreach (var file in selectedFiles)
+                {
+                    if (file.IsBaseline || !file.FeaturesFound) continue;
+                    var features = UnalignedFeatureCache.LoadDataset(file, m_options.MsFilteringOptions,
+                        m_options.LcmsFindingOptions, m_options.LcmsFilteringOptions);
+                    var alignment = aligner.AlignToDataset(ref features, baselineFeatures, file, m_baseline);
+                    //Check if there is information from a previous alignment for this dataset. If so, replace it. If not, just add the new one.
+                    var priorAlignment = from x in AlignmentInformation where x.DatasetID == alignment.DatasetID select x;
+                    if (priorAlignment.Any())
+                    {
+                        AlignmentInformation.Remove(priorAlignment.Single());
+                        AlignmentInformation.Add(alignment);
+                    }
+                    else
+                    {
+                        AlignmentInformation.Add(alignment);
+                    }
+
+                    AlignedFeatureCache.CacheFeatures(features);
+                    file.IsAligned = true;
+                    OnPropertyChanged("m_analysis");
+                }
+            }
+            else
+            {
+                MessageBox.Show("Please select a baseline with detected features.");
+            }
+
         }
 
         #region Data Providers
@@ -418,8 +468,12 @@ namespace MultiAlignRogue
             }
         }
 
-        public void ShowClusterList()
+        public void DisplayAlignment()
         {
+            foreach (var alignment in AlignmentInformation)
+            {
+                
+            }
             System.Windows.MessageBox.Show("Working Command");
         }
 

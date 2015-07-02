@@ -90,18 +90,9 @@ namespace MultiAlignCore.Algorithms
         /// <returns></returns>
         public AlgorithmProvider GetAlgorithmProvider(MultiAlignAnalysisOptions options)
         {
-            if (m_provider.Clusterer == null)
-            {
-                BuildClusterer(LcmsFeatureClusteringAlgorithmType.AverageLinkage);
-            }
-            if (m_provider.DatabaseAligner == null && m_provider.DatabaseAligner == null)
-            {
-                BuildAligner(options.AlignmentOptions.LCMSWarpOptions, options.SpectralOptions);
-            }
-            if (m_provider.PeakMatcher == null)
-            {
-                BuildPeakMatcher(options);
-            }
+            BuildClusterer(LcmsFeatureClusteringAlgorithmType.AverageLinkage);
+            BuildAligner(options.AlignmentOptions.LCMSWarpOptions, options.SpectralOptions);
+            BuildPeakMatcher(options);
             return m_provider;
         }
     }

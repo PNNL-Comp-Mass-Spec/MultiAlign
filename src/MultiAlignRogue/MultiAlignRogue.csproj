@@ -103,6 +103,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\PNNLOmicsIO.dll</HintPath>
     </Reference>
+    <Reference Include="PNNLOmicsViz, Version=1.1.5385.36913, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Applications\MultiAlign\bin\x64\Debug\PNNLOmicsViz.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.SQLite, Version=1.0.94.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
@@ -137,14 +141,15 @@
       <DependentUpon>DmsLookupView.xaml</DependentUpon>
     </Compile>
     <Compile Include="DMS\DmsLookupViewModel.cs" />
-    <Compile Include="IWindowFactory.cs" />
+    <Compile Include="IAlignmentWindowFactory.cs" />
+    <Compile Include="IFeatureWindowFactory.cs" />
+    <Compile Include="LCMSFeatureAligner.cs" />
     <Compile Include="MSFeatureView.xaml.cs">
       <DependentUpon>MSFeatureView.xaml</DependentUpon>
     </Compile>
     <Compile Include="MSFeatureViewFactory.cs" />
     <Compile Include="MSFeatureViewModel.cs" />
     <Compile Include="PlotViewModelBase.cs" />
-    <Compile Include="ThreadedRelayCommand.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Page Include="DMS\DmsLookupView.xaml">

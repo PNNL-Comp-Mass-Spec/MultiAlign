@@ -21,6 +21,7 @@ namespace MultiAlignCore.Data.MetaData
         private DatasetSummary summary;
 
         private bool featuresFound;
+        private bool isAligned;
 
         /// <summary>
         ///     Default constructor.
@@ -218,7 +219,15 @@ namespace MultiAlignCore.Data.MetaData
             }
         }
 
-        public bool IsAligned { get; set; }
+        public bool IsAligned
+        {
+            get { return this.isAligned; }
+            set
+            {
+                isAligned = value;
+                this.OnPropertyChanged();
+            }
+        }
 
 
         /// <summary>

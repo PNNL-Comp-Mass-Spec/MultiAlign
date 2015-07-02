@@ -8,7 +8,7 @@ using PNNLOmics.Data.Features;
 
 namespace MultiAlignRogue
 {
-    class MSFeatureViewFactory: IWindowFactory
+    class MSFeatureViewFactory: IFeatureWindowFactory
     {
         public void CreateNewWindow()
         {

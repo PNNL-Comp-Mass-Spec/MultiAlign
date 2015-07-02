@@ -96,13 +96,15 @@ namespace MultiAlignCore.IO.Hibernate
         /// <param name="tCollection">Collection of Objects to be added</param>
         public virtual void AddAll(ICollection<T> tCollection)
         {
-            using (var session = GetStatelessSession())
+            using (var session = GetSession())
             {
                 using (var transaction = session.BeginTransaction())
                 {
                     foreach (var t in tCollection)
                     {
-                        session.Insert(t);
+                        session.SaveOrUpdate(t); //If we don't want to keep the unaligned features
+                        //    session.Insert(t); 
+                        
                     }
                     transaction.Commit();
                 }

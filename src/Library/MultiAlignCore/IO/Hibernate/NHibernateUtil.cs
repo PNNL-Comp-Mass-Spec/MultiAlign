@@ -163,6 +163,7 @@ namespace MultiAlignCore.IO.Hibernate
                             CreateDatabase(fileLocation);
                         }
                     }
+                    Configuration.SetProperty("adonet.batch_size", "1000");
                     m_sessionFactory = Configuration.BuildSessionFactory();
                 }
                 return m_sessionFactory;

@@ -31,7 +31,7 @@
                 <DataGridCheckBoxColumn Header="Scans" IsReadOnly="True" Binding="{Binding ScansBool}"/>
                 <DataGridCheckBoxColumn Header="Raw" IsReadOnly="True" Binding="{Binding RawBool}"/>
                 <DataGridCheckBoxColumn Header="Features" Width="55" IsReadOnly="True" Binding="{Binding FeaturesFound, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                <DataGridCheckBoxColumn Header="Aligned" IsReadOnly="True" Binding="{Binding IsAligned}"/>
+                <DataGridCheckBoxColumn Header="Aligned" IsReadOnly="True" Binding="{Binding IsAligned, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
             </DataGrid.Columns>
         </DataGrid>
         <TabControl Grid.Column="1" Margin="10,25,10,10">
@@ -104,7 +104,7 @@
                     <ComboBox HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="150" Margin="142,0,0,208" Grid.Column="1" SelectedItem="{Binding SelectedCalibrationType}"
                               ItemsSource="{Binding CalibrationOptions}"/>
                     <Button Content="Align to Baseline" HorizontalAlignment="Left" Height="24" Margin="12,377,0,0" VerticalAlignment="Top" Width="110" Command="{Binding AlignToBaselineCommand}"/>
-                    <Button Content="Cluster List" Grid.Column="1" HorizontalAlignment="Left" Height="24" Margin="184,377,0,0" VerticalAlignment="Top" Width="108" Command="{Binding ClusterListCommand}"/>
+                    <Button Content="Display Alignment" Grid.Column="1" HorizontalAlignment="Left" Height="24" Margin="184,377,0,0" VerticalAlignment="Top" Width="108" Command="{Binding DisplayAlignmentCommand}"/>
 
                 </Grid>
             </TabItem>
