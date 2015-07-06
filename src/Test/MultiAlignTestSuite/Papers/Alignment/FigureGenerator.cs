@@ -10,7 +10,6 @@ using MultiAlignCore.IO.RawData;
 using MultiAlignTestSuite.Papers.Alignment.IO;
 using NUnit.Framework;
 using OxyPlot;
-using OxyPlot.Axes;
 using OxyPlot.Series;
 using OxyPlot.WindowsForms;
 using PNNLOmics.Algorithms.Alignment.SpectralMatches;
@@ -21,6 +20,7 @@ using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Utilities;
 using PNNLOmicsIO.IO;
+using LinearAxis = OxyPlot.Axes.LinearAxis;
 
 #endregion
 

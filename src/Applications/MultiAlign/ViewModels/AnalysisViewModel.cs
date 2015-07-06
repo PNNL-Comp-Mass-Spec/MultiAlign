@@ -17,12 +17,12 @@ using MultiAlign.ViewModels.Wizard;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.Features;
 using MultiAlignCore.Data.MetaData;
+using MultiAlignCore.Drawing;
 using MultiAlignCore.Extensions;
 using MultiAlignCore.IO;
 using OxyPlot;
 using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
-using PNNLOmicsViz.Drawing;
 
 namespace MultiAlign.ViewModels
 {

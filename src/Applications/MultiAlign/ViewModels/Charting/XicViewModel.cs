@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using MultiAlignCore.Drawing;
 using OxyPlot;
 using OxyPlot.Annotations;
 using OxyPlot.Axes;
@@ -8,7 +9,6 @@ using OxyPlot.Series;
 using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Extensions;
-using PNNLOmicsViz.Drawing;
 
 namespace MultiAlign.ViewModels.Charting
 {
@@ -62,7 +62,7 @@ namespace MultiAlign.ViewModels.Charting
 
                 m_scanAnnotation.X = value;
                 m_scanAnnotation.Text = value.ToString("F0");
-                Model.Update(false);
+                Model.InvalidatePlot(false);
             }
         }
 
@@ -81,7 +81,7 @@ namespace MultiAlign.ViewModels.Charting
 
                 m_scanAnnotation.Color = newColor;
                 m_scanAnnotation.TextColor = newColor;
-                Model.Update(false);
+                Model.InvalidatePlot(false);
             }
         }
 

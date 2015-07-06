@@ -9,6 +9,7 @@ using MultiAlign.ViewModels.Features;
 using MultiAlign.ViewModels.TreeView;
 using MultiAlignCore.Data.Features;
 using MultiAlignCore.Data.MetaData;
+using MultiAlignCore.Drawing;
 using MultiAlignCore.IO;
 using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.MsMs;
@@ -17,7 +18,6 @@ using PNNLOmics.Annotations;
 using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Extensions;
-using PNNLOmicsViz.Drawing;
 
 namespace MultiAlign.ViewModels.Viewers
 {

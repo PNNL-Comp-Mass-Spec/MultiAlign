@@ -14,7 +14,6 @@ using MultiAlignEngine.Features;
 using PNNLOmics.Algorithms.Alignment.LcmsWarp;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Data.MassTags;
-using PNNLOmicsViz.Drawing;
 
 namespace TestWrapper
 {

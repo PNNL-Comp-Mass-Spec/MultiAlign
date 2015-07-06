@@ -10,11 +10,11 @@ using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.RawData;
 using NUnit.Framework;
 using OxyPlot;
-using OxyPlot.Axes;
 using OxyPlot.Series;
 using OxyPlot.WindowsForms;
 using PNNLOmics.Algorithms.SpectralProcessing;
 using PNNLOmics.Data;
+using LinearAxis = OxyPlot.Axes.LinearAxis;
 
 #endregion
 

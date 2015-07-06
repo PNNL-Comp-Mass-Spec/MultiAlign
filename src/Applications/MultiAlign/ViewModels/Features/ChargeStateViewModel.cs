@@ -1,7 +1,7 @@
 ﻿using System.Windows.Media;
+using MultiAlignCore.Drawing;
 using OxyPlot;
 using PNNLOmics.Annotations;
-using PNNLOmicsViz.Drawing;
 
 namespace MultiAlign.ViewModels.Features
 {

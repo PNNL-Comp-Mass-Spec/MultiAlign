@@ -2,9 +2,9 @@
 using System.Windows;
 using System.Windows.Media.Imaging;
 using MultiAlign.Data;
+using MultiAlignCore.Drawing;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Extensions;
-using PNNLOmicsViz.Drawing;
 
 namespace MultiAlign.Windows.Plots
 {

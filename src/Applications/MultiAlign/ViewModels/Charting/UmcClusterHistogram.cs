@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
+using MultiAlignCore.Drawing;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Extensions;
-using PNNLOmicsViz.Drawing;
 
 namespace MultiAlign.ViewModels.Charting
 {

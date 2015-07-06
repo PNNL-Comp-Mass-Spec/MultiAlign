@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:oxy="http://oxyplot.codeplex.com"
+             xmlns:wpf="http://oxyplot.org/wpf"
              mc:Ignorable="d"
              d:DesignHeight="600" d:DesignWidth="800">
     <Grid>
@@ -16,12 +17,12 @@
             <ColumnDefinition Width="50*" />
         </Grid.ColumnDefinitions>
         
-        <oxy:Plot Model="{Binding ClusterMassPlot.Model}" />
-        <oxy:Plot
+        <wpf:Plot Model="{Binding ClusterMassPlot.Model}" />
+        <wpf:Plot
             Grid.Row="0"
             Grid.Column="1"
             Model="{Binding ClusterDriftPlot.Model}" />
-        <oxy:Plot
+        <wpf:Plot
             Margin="5"
             Grid.Row="1"
             Grid.Column="0"

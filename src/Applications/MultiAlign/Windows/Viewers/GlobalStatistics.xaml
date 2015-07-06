@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:oxy="http://oxyplot.codeplex.com"
+             xmlns:wpf="http://oxyplot.org/wpf"
              mc:Ignorable="d" 
              d:DesignHeight="800" d:DesignWidth="800">
     <Border
@@ -25,14 +26,14 @@
                             <ColumnDefinition Width="50*"/>
                         </Grid.ColumnDefinitions>
 
-                        <oxy:Plot 
+                        <wpf:Plot 
                             Grid.Column="0"
                             Grid.Row="0"
                             Title="All Cluster Charge States"
                             Margin="5"
                             Model="{Binding AllChargeHistogramModel.Model}"/>
                         
-                        <oxy:Plot 
+                        <wpf:Plot 
                             Grid.Column="1"
                             Grid.Row="0"
                             Title="Filtered Cluster Charge States"
