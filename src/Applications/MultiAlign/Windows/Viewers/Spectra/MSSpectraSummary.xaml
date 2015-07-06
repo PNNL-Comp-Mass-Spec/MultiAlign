@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:oxy="http://oxyplot.codeplex.com"
+             xmlns:wpf="http://oxyplot.org/wpf"
              mc:Ignorable="d"
              Height="300" d:DesignWidth="500">
     <Border
@@ -167,11 +168,11 @@
                         <ColumnDefinition Width="50*" />
                         <ColumnDefinition Width="50*" />
                     </Grid.ColumnDefinitions>
-                    <oxy:Plot
+                    <wpf:Plot
                         Grid.Column="0"
                         Margin="2"
                         Model="{Binding SelectedSpectrumPlotModel.Model}" />
-                    <oxy:Plot
+                    <wpf:Plot
                         Grid.Column="1"
                         Margin="2"
                         Model="{Binding SelectedSpectrumXic.Model}" />

@@ -15,7 +15,6 @@ using OxyPlot.Series;
 using PNNLOmics.Algorithms;
 using PNNLOmics.Algorithms.FeatureClustering;
 using PNNLOmics.Annotations;
-using PNNLOmicsViz.Drawing;
 using Svg;
 
 #endregion

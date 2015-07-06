@@ -8,7 +8,6 @@ using MultiAlignCore.Algorithms;
 using MultiAlignCore.Data;
 using MultiAlignCore.Drawing;
 using PNNLOmics.Extensions;
-using PNNLOmicsViz.Drawing;
 
 #endregion
 

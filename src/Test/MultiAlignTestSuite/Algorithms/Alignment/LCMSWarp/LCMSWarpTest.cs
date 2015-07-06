@@ -12,7 +12,6 @@ using NUnit.Framework;
 using PNNLOmics.Algorithms.Alignment.LcmsWarp;
 using PNNLOmics.Data.Features;
 using PNNLOmics.Data.MassTags;
-using PNNLOmicsViz.Drawing;
 
 #endregion
 

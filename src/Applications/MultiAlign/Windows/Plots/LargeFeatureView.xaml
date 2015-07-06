@@ -3,13 +3,14 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:oxy="http://oxyplot.codeplex.com"
+        xmlns:wpf="http://oxyplot.org/wpf"
         Title="{Binding Path=Text}"
         MaxHeight="{Binding Path=Height}"
         MaxWidth="{Binding Path=Width}"
         MinHeight="{Binding Path=Height}"
         MinWidth="{Binding Path=Width}">
     <Grid>
-        <oxy:Plot Model="{Binding Path=FeaturesPlot.Model}"
+        <wpf:Plot Model="{Binding Path=FeaturesPlot.Model}"
                   Grid.Row="0"
                   Margin="5" />
 

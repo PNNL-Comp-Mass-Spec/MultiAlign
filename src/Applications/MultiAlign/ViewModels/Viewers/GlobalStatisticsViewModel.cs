@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using MultiAlignCore.Data.Features;
+using MultiAlignCore.Drawing;
 using MultiAlignCore.Extensions;
-using PNNLOmicsViz.Drawing;
 
 namespace MultiAlign.ViewModels.Viewers
 {

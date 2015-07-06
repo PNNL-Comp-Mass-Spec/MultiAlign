@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:spectraViews="clr-namespace:MultiAlign.Windows.Viewers.Spectra"
              xmlns:wpf="http://oxyplot.codeplex.com"
+             xmlns:oxy="http://oxyplot.org/wpf"
              mc:Ignorable="d" 
              d:DesignHeight="598" d:DesignWidth="920">
     <UserControl.Resources>        
@@ -44,7 +45,7 @@
                             Background="Gray"
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Stretch"/>
-            <wpf:Plot
+            <oxy:Plot
                 Margin="5"
                 Model="{Binding SelectedSpectrumPlotModel.Model}"
                 />

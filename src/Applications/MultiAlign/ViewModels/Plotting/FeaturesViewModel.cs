@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
+using MultiAlignCore.Drawing;
 using PNNLOmics.Annotations;
 using PNNLOmics.Data.Features;
-using PNNLOmicsViz.Drawing;
 
 namespace MultiAlign.ViewModels.Plotting
 {

@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using MultiAlignCore.Drawing;
 using OxyPlot;
 using OxyPlot.Annotations;
 using OxyPlot.Axes;
 using OxyPlot.Series;
 using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
-using PNNLOmicsViz.Drawing;
 
 namespace MultiAlign.ViewModels.Charting
 {
@@ -53,7 +53,7 @@ namespace MultiAlign.ViewModels.Charting
         {
             m_mzAxis.Minimum = minimumX;
             m_mzAxis.Maximum = maximumY;
-            Model.Update();
+            Model.InvalidatePlot(true);
         }
 
         public void PlotSpectra(MSFeatureLight feature, IEnumerable<XYData> spectrum)
