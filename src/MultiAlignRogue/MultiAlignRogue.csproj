@@ -135,6 +135,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AlignmentView.xaml.cs">
+      <DependentUpon>AlignmentView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AlignmentViewFactory.cs" />
+    <Compile Include="AlignmentViewModel.cs" />
     <Compile Include="DMS\DmsLookupUtility.cs" />
     <Compile Include="DMS\DmsDatasetViewModel.cs" />
     <Compile Include="DMS\DmsLookupView.xaml.cs">
@@ -152,6 +157,10 @@
     <Compile Include="PlotViewModelBase.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
+    <Page Include="AlignmentView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="DMS\DmsLookupView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

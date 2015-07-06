@@ -10,11 +10,6 @@
     </Window.DataContext>
     
     <Grid>
-        <!--<oxy:PlotView Title="{Binding model.Title}">
-            <oxy:PlotView.Series>
-                <oxy:ScatterSeries ItemsSource="{Binding model.Series, Mode=OneWay}" MarkerType="Circle"/>
-            </oxy:PlotView.Series>
-        </oxy:PlotView>-->
         <oxy:PlotView Model="{Binding Model}"/>
     </Grid>
 </Window>

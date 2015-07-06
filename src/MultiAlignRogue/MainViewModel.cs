@@ -59,6 +59,7 @@ namespace MultiAlignRogue
         public List<DatasetInformation> selectedFiles;
         public List<AlignmentType> CalibrationOptions { get; set; }
         private IFeatureWindowFactory msFeatureWindowFactory;
+        private IAlignmentWindowFactory alignmentWindowFactory;
 
         public RelayCommand SelectFilesCommand { get; private set; }
         public RelayCommand FindMSFeaturesCommand { get; private set; }
@@ -103,6 +104,7 @@ namespace MultiAlignRogue
             Features = new Dictionary<DatasetInformation, IList<UMCLight>>();
             this.selectedFiles = new List<DatasetInformation>();
             msFeatureWindowFactory = new MSFeatureViewFactory();
+            alignmentWindowFactory = new AlignmentViewFactory();
             Datasets = new ObservableCollection<DatasetInformationViewModel>();
             AlignmentInformation = new List<classAlignmentData>();
 
@@ -133,14 +135,14 @@ namespace MultiAlignRogue
             if (inputFilePath == null)
             {
                 ApplicationStatusMediator.SetStatus("Select a folder path first. File -> Select Files");
-                System.Windows.MessageBox.Show("Select a folder path first. File -> Select Files");
+                MessageBox.Show("Select a folder path first. File -> Select Files");
                 return;
             }
 
             if (!Directory.Exists(inputFilePath))
             {
                 ApplicationStatusMediator.SetStatus("The directory specified does not exist.");
-                System.Windows.MessageBox.Show("The directory specified does not exist.");
+                MessageBox.Show("The directory specified does not exist.");
                 return;
             }
 
@@ -198,13 +200,20 @@ namespace MultiAlignRogue
 
         public void PlotMSFeatures()
         {
-            Features = new Dictionary<DatasetInformation, IList<UMCLight>>();
-            foreach (var file in selectedFiles)
+            try
             {
-                Features.Add(file, UmcLoaderFactory.LoadUmcFeatureData(file.Features.Path, file.DatasetId,
-                Providers.FeatureCache));
+                Features = new Dictionary<DatasetInformation, IList<UMCLight>>();
+                foreach (var file in selectedFiles)
+                {
+                    Features.Add(file, UmcLoaderFactory.LoadUmcFeatureData(file.Features.Path, file.DatasetId,
+                        Providers.FeatureCache));
+                }
+                msFeatureWindowFactory.CreateNewWindow(Features);
             }
-            msFeatureWindowFactory.CreateNewWindow(Features);  
+            catch
+            {
+                MessageBox.Show("Feature cache currently being accessed. Try again in a few moments");
+            }
         }
 
         public async void AsyncAlignToBaseline()
@@ -470,11 +479,13 @@ namespace MultiAlignRogue
 
         public void DisplayAlignment()
         {
-            foreach (var alignment in AlignmentInformation)
+            foreach (var file in (selectedFiles.FindAll(x => x.IsAligned)))
             {
-                
+                var alignment = AlignmentInformation.Find(x => x.DatasetID == file.DatasetId);
+                alignmentWindowFactory.CreateNewWindow(alignment);
             }
-            System.Windows.MessageBox.Show("Working Command");
+            
+            MessageBox.Show("Working Command");
         }
 
         public double MassTolerance
