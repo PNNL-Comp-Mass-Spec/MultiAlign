@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text;
 using MultiAlignCore.Algorithms.Alignment;
 using MultiAlignCore.Algorithms.FeatureMatcher;
-using MultiAlignCore.Drawing;
 using NUnit.Framework;
 using PNNLOmics.Algorithms.Alignment.LcmsWarp;
 using PNNLOmics.Data.Features;

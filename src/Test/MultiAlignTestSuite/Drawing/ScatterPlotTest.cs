@@ -6,7 +6,6 @@ using System.IO;
 using System.Xml;
 using MultiAlignCore.Algorithms.Alignment;
 using MultiAlignCore.Algorithms.FeatureFinding;
-using MultiAlignCore.Drawing;
 using MultiAlignCore.IO.Features;
 using NUnit.Framework;
 using OxyPlot;

@@ -4,7 +4,6 @@ using System.Windows.Media.Imaging;
 using MultiAlign.Data;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.Alignment;
-using MultiAlignCore.Drawing;
 using MultiAlignEngine.Alignment;
 using PNNLOmicsViz.Drawing;
 

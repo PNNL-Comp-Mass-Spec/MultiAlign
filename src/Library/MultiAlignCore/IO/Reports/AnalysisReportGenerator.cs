@@ -6,7 +6,6 @@ using System.Drawing.Imaging;
 using System.IO;
 using MultiAlignCore.Algorithms;
 using MultiAlignCore.Data;
-using MultiAlignCore.Drawing;
 using PNNLOmics.Extensions;
 using PNNLOmicsViz.Drawing;
 
