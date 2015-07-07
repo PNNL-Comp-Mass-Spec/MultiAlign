@@ -27,8 +27,6 @@ namespace MultiAlignRogue.DMS
 
     using Ookii.Dialogs;
 
-    using MessageBox = System.Windows.Forms.MessageBox;
-
     /// <summary>
     /// A view model for searching DMS for datasets and jobs.
     /// </summary>
@@ -81,6 +79,11 @@ namespace MultiAlignRogue.DMS
         private bool isCopying;
 
         /// <summary>
+        /// A value indicating whether files should be copied to the output directory upon opening.
+        /// </summary>
+        private bool shouldCopyFiles;
+
+        /// <summary>
         /// The progress of the file copy.
         /// </summary>
         private double progress;
@@ -100,12 +103,13 @@ namespace MultiAlignRogue.DMS
                                                 async () => await this.OpenImpl(), 
                                                 () => this.SelectedDataset != null &&
                                                       !string.IsNullOrEmpty(this.SelectedDataset.DatasetFolderPath) &&
-                                                      !string.IsNullOrEmpty(this.OutputDirectory) && !this.IsCopying);
+                                                      !string.IsNullOrEmpty(this.OutputDirectory) &&
+                                                      Directory.Exists(this.OutputDirectory) && !this.IsCopying);
             this.CancelCommand = new RelayCommand(this.CancelImpl);
             this.BrowseOutputDirectoriesCommand = new RelayCommand(this.BrowseOutputDirectoriesImpl);
-            
+
+            this.ShouldCopyFiles = true;
             this.Status = false;
-            this.PreviousSearches = new Dictionary<string, int>();
             this.NumberOfWeeks = 10;
             this.Datasets = new ObservableCollection<DmsDatasetViewModel>();
             this.AvailableFiles = new ObservableCollection<string>();
@@ -155,11 +159,6 @@ namespace MultiAlignRogue.DMS
         /// Gets a value indicating whether a valid data set has been selected.
         /// </summary>
         public bool Status { get; private set; }
-
-        /// <summary>
-        /// Gets a dictionary mapping name of dataset to number of weeks for quick lookup.
-        /// </summary>
-        public Dictionary<string, int> PreviousSearches { get; private set; }
 
         /// <summary>
         /// Gets or sets the progress of the file copy.
@@ -300,6 +299,23 @@ namespace MultiAlignRogue.DMS
         }
 
         /// <summary>
+        /// Gets or sets a value indicating whether files should be copied to the output directory upon opening.
+        /// </summary>
+        public bool ShouldCopyFiles
+        {
+            get { return this.shouldCopyFiles; }
+            set
+            {
+                if (this.shouldCopyFiles != value)
+                {
+                    this.shouldCopyFiles = value;
+                    this.RaisePropertyChanged();
+                    this.BrowseOutputDirectoriesCommand.RaiseCanExecuteChanged();
+                }
+            }
+        }
+
+        /// <summary>
         /// Checks to see if the data set selected is a valid data set.
         /// </summary>
         /// <returns>A value indicating whether the data set selected is valid.</returns>
@@ -424,15 +440,6 @@ namespace MultiAlignRogue.DMS
                 this.Datasets.Add(new DmsDatasetViewModel(dataset.Value));
             }
 
-            // Add search to Previous Searches.
-            var datasetName = this.DatasetFilter.Trim();
-            if (!this.PreviousSearches.ContainsKey(datasetName))
-            {
-                this.PreviousSearches.Add(datasetName, 0);
-            }
-
-            this.PreviousSearches[datasetName] = this.NumberOfWeeks;
-
             // Select first dataset in search results, if available
             if (this.Datasets.Count == 0)
             {   // Show no results message if nothing was found.
@@ -460,7 +467,10 @@ namespace MultiAlignRogue.DMS
 
         private async Task OpenImpl()
         {
-            await this.CopyFilesAsync();
+            if (this.ShouldCopyFiles)
+            {
+                await this.CopyFilesAsync();
+            }
 
             if (this.DatasetSelected != null)
             {

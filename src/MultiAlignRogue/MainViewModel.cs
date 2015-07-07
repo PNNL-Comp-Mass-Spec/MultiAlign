@@ -141,19 +141,8 @@ namespace MultiAlignRogue
                     return;
                 }
 
-                var files = new List<InputFile> { Capacity = filePaths.Length };
-                foreach (var filePath in filePaths)
-                {
-                    var type = DatasetInformation.SupportedFileTypes.FirstOrDefault(sft => filePath.Contains(sft.Extension));
-                    if (type != null)
-                    {
-                        files.Add(new InputFile { Path = filePath, FileType = type.InputType });   
-                    }
-                }
-
-                this.AddDataset(files, Path.GetDirectoryName(filePaths[0]));
+                this.AddDataset(this.GetInputFilesFromPath(filePaths), Path.GetDirectoryName(filePaths[0]));
             }
-
         }
 
         public void SelectDirectory()
@@ -631,16 +620,41 @@ namespace MultiAlignRogue
             this.RaisePropertyChanged("ProgressTracker");
         }
 
+        private List<InputFile> GetInputFilesFromPath(IEnumerable<string> filePaths)
+        {
+            var files = new List<InputFile>();
+            foreach (var filePath in filePaths)
+            {
+                var type = DatasetInformation.SupportedFileTypes.FirstOrDefault(sft => filePath.ToLower().Contains(sft.Extension));
+                if (type != null)
+                {
+                    files.Add(new InputFile { Path = filePath, FileType = type.InputType });
+                }
+            }
+
+            return files;
+        }
+
         private async Task SearchDms()
         {
             var dmsLookupViewModel = new DmsLookupViewModel();
             var dialog = new DmsLookupView { DataContext = dmsLookupViewModel };
             dmsLookupViewModel.DatasetSelected += (o, e) => dialog.Close();
             dialog.ShowDialog();
-            if (dmsLookupViewModel.Status)
+            if (!dmsLookupViewModel.Status) return;
+
+            if (dmsLookupViewModel.ShouldCopyFiles)
             {
                 this.InputFilePath = dmsLookupViewModel.OutputDirectory;
                 this.AddFolderCommand.Execute(null);
+            }
+            else
+            {
+                var filePaths = dmsLookupViewModel.SelectedDataset.GetAvailableFiles();
+                if (filePaths.Count > 0)
+                {
+                    this.AddDataset(this.GetInputFilesFromPath(filePaths), dmsLookupViewModel.OutputDirectory);
+                }
             }
         }
     }
