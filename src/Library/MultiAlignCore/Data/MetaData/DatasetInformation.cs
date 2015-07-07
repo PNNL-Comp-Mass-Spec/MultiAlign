@@ -110,6 +110,11 @@ namespace MultiAlignCore.Data.MetaData
         public string Path { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether work is being performed on this dataset.
+        /// </summary>
+        public bool DoingWork { get; set; }
+
+        /// <summary>
         ///     Gets or sets the path to the raw file.
         /// </summary>
         public string RawPath

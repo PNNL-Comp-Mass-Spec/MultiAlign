@@ -90,8 +90,8 @@ namespace MultiAlignRogue
             aligner = new LCMSFeatureAligner();
             
             SelectFilesCommand = new RelayCommand(SelectFiles);
-            FindMSFeaturesCommand = new RelayCommand(LoadMSFeatures, () => this.selectedFiles != null && this.selectedFiles.Count > 0);
-            PlotMSFeaturesCommand = new RelayCommand(async () => await PlotMSFeatures(), () => this.selectedFiles.Where(file => file.FeaturesFound).Any());
+            FindMSFeaturesCommand = new RelayCommand(LoadMSFeatures, () => this.selectedFiles != null && this.selectedFiles.Count > 0 && this.selectedFiles.Any(file => !file.DoingWork));
+            PlotMSFeaturesCommand = new RelayCommand(async () => await PlotMSFeatures(), () => this.selectedFiles.Any(file => file.FeaturesFound));
             AddFolderCommand = new BaseCommand(AddFolderDelegate, BaseCommand.AlwaysPass);
             DataSelectionViewModel = new AnalysisDatasetSelectionViewModel(m_config.Analysis);
             SearchDmsCommand = new RelayCommand(() => this.SearchDms(), () => this.ShowOpenFromDms);
@@ -183,8 +183,11 @@ namespace MultiAlignRogue
                 selectedFilesCopy.Add(dataset); //Prevents crashes from changing selected files while this thread is running
             }
 
-            foreach (var file in selectedFilesCopy)
+            foreach (var file in selectedFilesCopy.Where(file => !file.DoingWork)) // Do not try to run on files already loading features.
             {
+                file.DoingWork = true;
+                ThreadSafeDispatcher.Invoke(() => PlotMSFeaturesCommand.RaiseCanExecuteChanged());
+                ThreadSafeDispatcher.Invoke(() => FindMSFeaturesCommand.RaiseCanExecuteChanged());
                 IProgress<int> progress = new Progress<int>(ReportProgess);
                 var features = UnalignedFeatureCache.LoadDataset(file, m_options.MsFilteringOptions, m_options.LcmsFindingOptions,
                     m_options.LcmsFilteringOptions);
@@ -194,7 +197,9 @@ namespace MultiAlignRogue
                 OnPropertyChanged("m_analysis");
                 progress.Report(0);
 
+                file.DoingWork = false;
                 ThreadSafeDispatcher.Invoke(() => PlotMSFeaturesCommand.RaiseCanExecuteChanged());
+                ThreadSafeDispatcher.Invoke(() => FindMSFeaturesCommand.RaiseCanExecuteChanged());
             }
         }
         #endregion
@@ -205,7 +210,7 @@ namespace MultiAlignRogue
             try
             {
                 Features = new Dictionary<DatasetInformation, IList<UMCLight>>();
-                foreach (var file in selectedFiles)
+                foreach (var file in selectedFiles.Where(file => file.FeaturesFound)) // Select only datasets with features.
                 {
                     var features = await Task.Run(() => UmcLoaderFactory.LoadUmcFeatureData(file.Features.Path, file.DatasetId,
                             Providers.FeatureCache));

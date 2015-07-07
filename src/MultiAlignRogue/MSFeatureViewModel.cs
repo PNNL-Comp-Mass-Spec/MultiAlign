@@ -29,8 +29,26 @@ namespace MultiAlignRogue
             this.Model.LegendPlacement = LegendPlacement.Inside;
             this.Model.LegendPosition = LegendPosition.LeftTop;
             this.Model.LegendOrientation = LegendOrientation.Vertical;
-            this.Model.Axes.Add(new LinearAxis{Title = "NET", Position = AxisPosition.Bottom, IsAxisVisible = true});
-            this.Model.Axes.Add(new LinearAxis { Title = "Monoisotopic Mass", Position = AxisPosition.Left, IsAxisVisible = true });
+
+            var netAxis = new LinearAxis
+            {
+                Title = "NET",
+                Position = AxisPosition.Bottom,
+                IsAxisVisible = true,
+                AbsoluteMinimum = 0,
+                AbsoluteMaximum = 1.0
+            };
+
+            var massAxis = new LinearAxis
+            {
+                Title = "Monoisotopic Mass",
+                Position = AxisPosition.Left,
+                IsAxisVisible = true,
+                AbsoluteMinimum = 0
+            };
+
+            this.Model.Axes.Add(netAxis);
+            this.Model.Axes.Add(massAxis);
             PlotFeatures(features);
             
         }
@@ -60,15 +78,15 @@ namespace MultiAlignRogue
             ScatterSeries scatter = new ScatterSeries{MarkerFill = OxyColors.Red, MarkerType = MarkerType.Circle};
             foreach (var feature in Features)
             {
-                    ScatterPoint point = new ScatterPoint(feature.Net, feature.MassMonoisotopic, .8, 0);
-                    try
-                    {
-                        scatter.Points.Add(point);
-                    }
-                    catch
-                    {
-                        continue;
-                    }         
+                ScatterPoint point = new ScatterPoint(feature.Net, feature.MassMonoisotopic, .8, 0);
+                try
+                {
+                    scatter.Points.Add(point);
+                }
+                catch
+                {
+                    continue;
+                }         
             }        
             return scatter;
         }
