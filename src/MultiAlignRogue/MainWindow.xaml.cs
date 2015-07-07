@@ -38,6 +38,7 @@ namespace MultiAlignRogue
             foreach (var selectedItem in selectedItems)
             {
                 selectedFiles.Add(selectedItem as DatasetInformation);
+                this.viewModel.FindMSFeaturesCommand.RaiseCanExecuteChanged();
             }
         }
 

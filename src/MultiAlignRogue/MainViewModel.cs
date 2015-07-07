@@ -90,11 +90,11 @@ namespace MultiAlignRogue
             aligner = new LCMSFeatureAligner();
             
             SelectFilesCommand = new RelayCommand(SelectFiles);
-            FindMSFeaturesCommand = new RelayCommand(LoadMSFeatures);
+            FindMSFeaturesCommand = new RelayCommand(LoadMSFeatures, () => this.selectedFiles != null && this.selectedFiles.Count > 0);
             PlotMSFeaturesCommand = new RelayCommand(PlotMSFeatures);
             AddFolderCommand = new BaseCommand(AddFolderDelegate, BaseCommand.AlwaysPass);
             DataSelectionViewModel = new AnalysisDatasetSelectionViewModel(m_config.Analysis);
-            SearchDmsCommand = new RelayCommand(() => this.SearchDms());
+            SearchDmsCommand = new RelayCommand(() => this.SearchDms(), () => this.ShowOpenFromDms);
             AlignToBaselineCommand = new RelayCommand(AlignToBaseline);
             DisplayAlignmentCommand = new RelayCommand(DisplayAlignment);
             UnalignedFeatureCache = new FeatureLoader { Providers = m_analysis.DataProviders };
