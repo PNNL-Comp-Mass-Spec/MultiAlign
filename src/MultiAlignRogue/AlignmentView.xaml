@@ -1,13 +1,22 @@
 ﻿<Window x:Class="MultiAlignRogue.AlignmentView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:multiAlignRogue="clr-namespace:MultiAlignRogue"
-        Title="AlignmentView" Height="601.429" Width="707.143">
-    <Window.DataContext>
-        <multiAlignRogue:AlignmentViewModel/>
-    </Window.DataContext>
+        Title="{Binding WindowTitle}" Height="930" Width="700">
     <Grid>
-        <Image Source="{Binding Heatmap2}"  Stretch="Fill">
-        </Image>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="300"/>
+            <RowDefinition Height="300"/>
+            <RowDefinition Height="300"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="350"/>
+            <ColumnDefinition Width="350"/>
+        </Grid.ColumnDefinitions>
+        <Image Source="{Binding HeatmapImage}"  Stretch="Fill" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" Width="350" Height="300" VerticalAlignment="Top"/>
+        <Image Source="{Binding NetScanImage}"  Stretch="Fill" Grid.Row="0" Grid.Column="1"/>
+        <Image Source="{Binding MassHistogram}"  Stretch="Fill" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left" Width="350" Height="300" VerticalAlignment="Top"/>
+        <Image Source="{Binding NetHistogram}"  Stretch="Fill" Grid.Row="1" Grid.Column="1"/>
+        <Image Source="{Binding MassMzImage}"  Stretch="Fill" Grid.Row="2" Grid.Column="0"  HorizontalAlignment="Left" Width="350" Height="300" VerticalAlignment="Top"/>
+        <Image Source="{Binding MassScanImage}"  Stretch="Fill" Grid.Row="2" Grid.Column="1"/>
     </Grid>
 </Window>
