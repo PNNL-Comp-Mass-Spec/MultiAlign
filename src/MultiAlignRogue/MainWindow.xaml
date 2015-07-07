@@ -121,7 +121,9 @@
             </TabItem>
         </TabControl>
         <Label Content="Working Data Files" HorizontalContentAlignment="Left" Height="28" Margin="10,25,0,0" VerticalAlignment="Top" Width="211" HorizontalAlignment="Left" FontSize="14"/>
-        <TextBox HorizontalAlignment="Left" Margin="10,0,0,19" Text="{Binding inputFilePath}" IsReadOnly="True" TextWrapping="Wrap" Width="329" Height="22" VerticalAlignment="Bottom" />
+        <TextBox HorizontalAlignment="Left" Margin="10,0,0,19" Text="{Binding InputFilePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap" Width="275" Height="22" VerticalAlignment="Bottom" />
+        
+        <Button Content="Browse" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="50" Height="22" Margin="290,0,0,19" Command="{Binding SelectDirectoryCommand}"></Button>
         <Button Content="Add" HorizontalAlignment="Left" Margin="344,0,0,19" Width="50" Height="22" VerticalAlignment="Bottom" Command="{Binding AddFolderCommand}"/>
 
     </Grid>
