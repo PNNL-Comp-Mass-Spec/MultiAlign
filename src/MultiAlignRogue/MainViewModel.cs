@@ -91,7 +91,7 @@ namespace MultiAlignRogue
             
             SelectFilesCommand = new RelayCommand(SelectFiles);
             FindMSFeaturesCommand = new RelayCommand(LoadMSFeatures, () => this.selectedFiles != null && this.selectedFiles.Count > 0);
-            PlotMSFeaturesCommand = new RelayCommand(PlotMSFeatures, () => this.selectedFiles.Where(file => file.FeaturesFound).Any());
+            PlotMSFeaturesCommand = new RelayCommand(async () => await PlotMSFeatures(), () => this.selectedFiles.Where(file => file.FeaturesFound).Any());
             AddFolderCommand = new BaseCommand(AddFolderDelegate, BaseCommand.AlwaysPass);
             DataSelectionViewModel = new AnalysisDatasetSelectionViewModel(m_config.Analysis);
             SearchDmsCommand = new RelayCommand(() => this.SearchDms(), () => this.ShowOpenFromDms);
@@ -200,15 +200,17 @@ namespace MultiAlignRogue
         #endregion
 
         #region Plot Features
-        public void PlotMSFeatures()
+        public async Task PlotMSFeatures()
         {
             try
             {
                 Features = new Dictionary<DatasetInformation, IList<UMCLight>>();
                 foreach (var file in selectedFiles)
                 {
-                    Features.Add(file, UmcLoaderFactory.LoadUmcFeatureData(file.Features.Path, file.DatasetId,
-                        Providers.FeatureCache));
+                    var features = await Task.Run(() => UmcLoaderFactory.LoadUmcFeatureData(file.Features.Path, file.DatasetId,
+                            Providers.FeatureCache));
+
+                    Features.Add(file, features);
                 }
                 msFeatureWindowFactory.CreateNewWindow(Features);
             }

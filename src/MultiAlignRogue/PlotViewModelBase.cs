@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GalaSoft.MvvmLight;
 using OxyPlot;
 
 namespace MultiAlignRogue
 {
-    public class PlotViewModelBase
+    public class PlotViewModelBase : ViewModelBase
     {
         public List<OxyColor> Colors { get; set; }
 

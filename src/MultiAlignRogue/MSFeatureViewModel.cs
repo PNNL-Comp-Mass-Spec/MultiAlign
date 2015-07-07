@@ -14,7 +14,7 @@ using ScatterSeries = OxyPlot.Series.ScatterSeries;
 
 namespace MultiAlignRogue
 {
-    class MSFeatureViewModel : PlotViewModelBase, INotifyPropertyChanged
+    class MSFeatureViewModel : PlotViewModelBase
     {
         public PlotModel Model { get; private set; }
         public MSFeatureViewModel()
@@ -72,16 +72,5 @@ namespace MultiAlignRogue
             }        
             return scatter;
         }
-
-        
-        protected void OnPropertyChanged(string name)
-        {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null)
-            {
-                handler(this, new PropertyChangedEventArgs(name));
-            }
-        }
-        public event PropertyChangedEventHandler PropertyChanged;
-        }
+    }
 }
