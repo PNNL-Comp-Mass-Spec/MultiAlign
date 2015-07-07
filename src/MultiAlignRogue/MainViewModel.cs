@@ -40,8 +40,7 @@ namespace MultiAlignRogue
 
     public class MainViewModel : INotifyPropertyChanged
     {
-
-
+        #region Properties
         public AnalysisDatasetSelectionViewModel DataSelectionViewModel;
         public MultiAlignAnalysis m_analysis { get; set;}
         VistaFolderBrowserDialog folderBrowser = new VistaFolderBrowserDialog();
@@ -76,9 +75,9 @@ namespace MultiAlignRogue
         private List<classAlignmentData> AlignmentInformation { get; set; } 
 
         public int ProgressTracker { get; private set; }
+        #endregion
 
- 
-
+        #region Constructor
         public MainViewModel()
         {
             m_config = new AnalysisConfig();
@@ -96,7 +95,7 @@ namespace MultiAlignRogue
             AddFolderCommand = new BaseCommand(AddFolderDelegate, BaseCommand.AlwaysPass);
             DataSelectionViewModel = new AnalysisDatasetSelectionViewModel(m_config.Analysis);
             SearchDmsCommand = new RelayCommand(() => this.SearchDms());
-            AlignToBaselineCommand = new RelayCommand(AlignToBaseline);
+            AlignToBaselineCommand = new RelayCommand(AsyncAlignToBaseline);
             DisplayAlignmentCommand = new RelayCommand(DisplayAlignment);
             UnalignedFeatureCache = new FeatureLoader { Providers = m_analysis.DataProviders };
             AlignedFeatureCache = new FeatureLoader { Providers = m_analysis.DataProviders };
@@ -111,7 +110,7 @@ namespace MultiAlignRogue
             CalibrationOptions = new List<AlignmentType>();
             Enum.GetValues(typeof(AlignmentType)).Cast<AlignmentType>().ToList().ForEach(x => CalibrationOptions.Add(x));
         }
-
+        #endregion
 
         #region Import Files
         public void SelectFiles()
@@ -169,7 +168,7 @@ namespace MultiAlignRogue
         }
         #endregion
 
-
+        #region Feature Loading
         public async void LoadMSFeatures()
         {
             await Task.Run(() => LoadFeatures());
@@ -196,8 +195,9 @@ namespace MultiAlignRogue
                 progress.Report(0);
             }
         }
+        #endregion
 
-
+        #region Plot Features
         public void PlotMSFeatures()
         {
             try
@@ -215,7 +215,9 @@ namespace MultiAlignRogue
                 MessageBox.Show("Feature cache currently being accessed. Try again in a few moments");
             }
         }
+        #endregion
 
+        #region Align Features
         public async void AsyncAlignToBaseline()
         {
             await Task.Run(() => AlignToBaseline());
@@ -264,6 +266,7 @@ namespace MultiAlignRogue
             }
 
         }
+        #endregion
 
         #region Data Providers
         private FeatureDataAccessProviders SetupDataProviders(bool createNewDatabase)
@@ -297,7 +300,6 @@ namespace MultiAlignRogue
             }
         }
         #endregion
-
 
         #region MS Feature Settings
         public double MassResolution
@@ -454,7 +456,7 @@ namespace MultiAlignRogue
         }
         #endregion
 
-        #region LC-MS Cluster Settings
+        #region Alignment Settings
 
         public DatasetInformation SelectedBaseline
         {
@@ -484,8 +486,6 @@ namespace MultiAlignRogue
                 var alignment = AlignmentInformation.Find(x => x.DatasetID == file.DatasetId);
                 alignmentWindowFactory.CreateNewWindow(alignment);
             }
-            
-            MessageBox.Show("Working Command");
         }
 
         public double MassTolerance

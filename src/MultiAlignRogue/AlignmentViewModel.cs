@@ -8,68 +8,21 @@ using MultiAlignCore.Data.Alignment;
 using MultiAlignCore.Drawing;
 using System.Windows.Media.Imaging;
 using MultiAlign.Data;
-using PNNLOmicsViz.Drawing;
-using OxyPlot;
-using OxyPlot.Axes;
-using OxyPlot.Series;
-using System.Windows.Controls;
 using MultiAlignCore.Data;
 
 
 namespace MultiAlignRogue
 {
-    class AlignmentViewModel: DependencyObject
+    class AlignmentViewModel
     {
-
-        public static readonly DependencyProperty PlotWidthProperty =
-    DependencyProperty.Register("PlotWidth", typeof(int), typeof(AlignmentView),
-        new UIPropertyMetadata(256));
-
-        public static readonly DependencyProperty PlotHeightProperty =
-            DependencyProperty.Register("PlotHeight", typeof(int), typeof(AlignmentView),
-                new UIPropertyMetadata(256));
-
-        public static readonly DependencyProperty FeaturePlotImageProperty =
-            DependencyProperty.Register("FeaturePlotImage", typeof(BitmapImage), typeof(AlignmentView));
-
-        public static readonly DependencyProperty HeatmapImageProperty =
-            DependencyProperty.Register("HeatmapImage", typeof(BitmapImage), typeof(AlignmentView));
-
-        public static readonly DependencyProperty MassHistogramProperty =
-            DependencyProperty.Register("MassHistogram", typeof(BitmapImage), typeof(AlignmentView));
-
-        public static readonly DependencyProperty NetHistogramProperty =
-            DependencyProperty.Register("NetHistogram", typeof(BitmapImage), typeof(AlignmentView));
-
-        public static readonly DependencyProperty PlotNameProperty =
-            DependencyProperty.Register("PlotName", typeof(string), typeof(AlignmentView));
-
-        public static readonly DependencyProperty NetScanImageProperty =
-            DependencyProperty.Register("NetScanImage", typeof(BitmapImage), typeof(AlignmentView));
-
-        public static readonly DependencyProperty MassScanImageProperty =
-            DependencyProperty.Register("MassScanImage", typeof(BitmapImage), typeof(AlignmentView));
-
-        public static readonly DependencyProperty MassMzImageProperty =
-            DependencyProperty.Register("MassMzImage", typeof(BitmapImage), typeof(AlignmentView));
-
+        public BitmapImage HeatmapImage { get; private set; }
+        public BitmapImage NetScanImage { get; private set; }
+        public BitmapImage MassHistogram { get; private set; }
+        public BitmapImage NetHistogram { get; private set; }        
+        public BitmapImage MassMzImage { get; private set; }
+        public BitmapImage MassScanImage { get; private set; }
+        public String WindowTitle { get; private set; }
         
-        
-        public BitmapImage FeaturePlotImage
-        {
-            get { return (BitmapImage)GetValue(FeaturePlotImageProperty); }
-            set { SetValue(FeaturePlotImageProperty, value); }
-        }
-        
-        public BitmapImage HeatmapImage
-        {
-            get { return (BitmapImage)GetValue(HeatmapImageProperty); }
-            set { SetValue(HeatmapImageProperty, value); }
-        }
-
-        public BitmapImage Heatmap2 { get; private set; }
-        
-
         public AlignmentViewModel()
         {
 
@@ -77,10 +30,25 @@ namespace MultiAlignRogue
 
         public AlignmentViewModel(classAlignmentData alignment)
         {
-            var heatmap = HeatmapFactory.CreateAlignedHeatmap(alignment.heatScores);
+            WindowTitle = String.Format("{0} Alignment Data",alignment.aligneeDataset);
+            var residuals = alignment.ResidualData;
 
-            Heatmap2 = ImageConverter.ConvertImage(PlotImageUtility.CreateImage(heatmap));
+            var heatmap = HeatmapFactory.CreateAlignedHeatmap(alignment.heatScores);
+            var netResidual = ScatterPlotFactory.CreateResidualPlot(residuals.Scan, residuals.LinearCustomNet,
+                residuals.LinearNet, "NET Residuals", "Scans", "NET");
+            var massHistogram = HistogramFactory.CreateHistogram(alignment.netErrorHistogram, "Mass Error", "Mass Error (ppm)");
+            var netHistogram = HistogramFactory.CreateHistogram(alignment.netErrorHistogram, "NET Error", "NET Error");            
+            var massMzResidual = ScatterPlotFactory.CreateResidualPlot(residuals.Mz, residuals.MzMassError,
+                residuals.MzMassErrorCorrected, "Mass Residuals", "m/z", "Mass Errors");
+            var massScanResidual = ScatterPlotFactory.CreateResidualPlot(residuals.Scan, residuals.MzMassError,
+                residuals.MzMassErrorCorrected, "Mass Residuals", "Scan", "Mass Errors");
             
+            HeatmapImage = ImageConverter.ConvertImage(PlotImageUtility.CreateImage(heatmap));
+            NetScanImage = ImageConverter.ConvertImage(PlotImageUtility.CreateImage(netResidual));
+            MassHistogram = ImageConverter.ConvertImage(PlotImageUtility.CreateImage(massHistogram));
+            NetHistogram = ImageConverter.ConvertImage(PlotImageUtility.CreateImage(netHistogram));         
+            MassMzImage = ImageConverter.ConvertImage(PlotImageUtility.CreateImage(massMzResidual));
+            MassScanImage = ImageConverter.ConvertImage(PlotImageUtility.CreateImage(massScanResidual));          
         }
 
     }
