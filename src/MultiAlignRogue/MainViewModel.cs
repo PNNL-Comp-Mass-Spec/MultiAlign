@@ -92,7 +92,7 @@ namespace MultiAlignRogue
             
             SelectFilesCommand = new RelayCommand(SelectFiles);
             FindMSFeaturesCommand = new RelayCommand(LoadMSFeatures, () => this.selectedFiles != null && this.selectedFiles.Count > 0);
-            PlotMSFeaturesCommand = new RelayCommand(PlotMSFeatures);
+            PlotMSFeaturesCommand = new RelayCommand(PlotMSFeatures, () => this.selectedFiles.Where(file => file.FeaturesFound).Any());
             AddFolderCommand = new BaseCommand(AddFolderDelegate, BaseCommand.AlwaysPass);
             DataSelectionViewModel = new AnalysisDatasetSelectionViewModel(m_config.Analysis);
             SearchDmsCommand = new RelayCommand(() => this.SearchDms(), () => this.ShowOpenFromDms);
@@ -194,6 +194,8 @@ namespace MultiAlignRogue
                 file.FeaturesFound = true;
                 OnPropertyChanged("m_analysis");
                 progress.Report(0);
+
+                ThreadSafeDispatcher.Invoke(() => PlotMSFeaturesCommand.RaiseCanExecuteChanged());
             }
         }
 

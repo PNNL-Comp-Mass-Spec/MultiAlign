@@ -39,6 +39,7 @@ namespace MultiAlignRogue
             {
                 selectedFiles.Add(selectedItem as DatasetInformation);
                 this.viewModel.FindMSFeaturesCommand.RaiseCanExecuteChanged();
+                this.viewModel.PlotMSFeaturesCommand.RaiseCanExecuteChanged();
             }
         }
 
