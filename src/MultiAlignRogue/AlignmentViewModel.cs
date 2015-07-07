@@ -8,7 +8,6 @@ using MultiAlignCore.Data.Alignment;
 using MultiAlignCore.Drawing;
 using System.Windows.Media.Imaging;
 using MultiAlign.Data;
-using PNNLOmicsViz.Drawing;
 using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
