@@ -11,6 +11,7 @@ using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using System.Windows.Input;
+using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Ookii.Dialogs;
 using Ookii;
@@ -28,6 +29,7 @@ using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO;
 using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.Hibernate;
+using MultiAlignCore.IO.InputFiles;
 using PNNLOmics.Algorithms.Alignment.LcmsWarp;
 using PNNLOmics.Algorithms.FeatureClustering;
 using PNNLOmics.Data.Features;
@@ -38,7 +40,7 @@ namespace MultiAlignRogue
 
     using MessageBox = System.Windows.MessageBox;
 
-    public class MainViewModel : INotifyPropertyChanged
+    public class MainViewModel : ViewModelBase
     {
         #region Properties
         public AnalysisDatasetSelectionViewModel DataSelectionViewModel;
@@ -61,14 +63,14 @@ namespace MultiAlignRogue
         private IAlignmentWindowFactory alignmentWindowFactory;
 
         public RelayCommand SelectFilesCommand { get; private set; }
+        public RelayCommand SelectDirectoryCommand { get; private set; }
         public RelayCommand FindMSFeaturesCommand { get; private set; }
         public RelayCommand PlotMSFeaturesCommand { get; private set; }
         public RelayCommand SearchDmsCommand { get; private set; }
         public RelayCommand AlignToBaselineCommand { get; private set; }
         public RelayCommand DisplayAlignmentCommand { get; private set; }
-        public ICommand AddFolderCommand { get; private set; }
+        public RelayCommand AddFolderCommand { get; private set; }
 
-        public string inputFilePath { get; set; }
         public DataTable datasetInfo { get; set; }
         private FeatureDataAccessProviders Providers;
         private Dictionary<DatasetInformation, IList<UMCLight>> Features { get; set; }
@@ -90,9 +92,10 @@ namespace MultiAlignRogue
             aligner = new LCMSFeatureAligner();
             
             SelectFilesCommand = new RelayCommand(SelectFiles);
+            SelectDirectoryCommand = new RelayCommand(SelectDirectory);
             FindMSFeaturesCommand = new RelayCommand(LoadMSFeatures, () => this.selectedFiles != null && this.selectedFiles.Count > 0 && this.selectedFiles.Any(file => !file.DoingWork));
             PlotMSFeaturesCommand = new RelayCommand(async () => await PlotMSFeatures(), () => this.selectedFiles.Any(file => file.FeaturesFound));
-            AddFolderCommand = new BaseCommand(AddFolderDelegate, BaseCommand.AlwaysPass);
+            AddFolderCommand = new RelayCommand(AddFolderDelegate, () => !string.IsNullOrWhiteSpace(this.InputFilePath) && Directory.Exists(this.InputFilePath));
             DataSelectionViewModel = new AnalysisDatasetSelectionViewModel(m_config.Analysis);
             SearchDmsCommand = new RelayCommand(() => this.SearchDms(), () => this.ShowOpenFromDms);
             AlignToBaselineCommand = new RelayCommand(AsyncAlignToBaseline);
@@ -115,13 +118,41 @@ namespace MultiAlignRogue
         #region Import Files
         public void SelectFiles()
         {
-            var result = folderBrowser.ShowDialog();
+            var openFileDialog = new OpenFileDialog
+            {
+                Multiselect = true,
+                DefaultExt = ".raw|.csv",
+                Filter = @"Supported Files|*.raw;*.csv;|Raw Files (*.raw)|*.raw|CSV Files (*.csv)|*.csv;"
+            };
+
+            var result = openFileDialog.ShowDialog();
             if (result == DialogResult.OK)
             {
-                inputFilePath = folderBrowser.SelectedPath;
-                OnPropertyChanged("inputFilePath");
-            }
+                var filePaths = openFileDialog.FileNames;
+                var allFilesSelected = filePaths.Any(file => file.EndsWith(".raw")) &&
+                                       filePaths.Any(file => file.EndsWith("_isos.csv")) &&
+                                       filePaths.Any(file => file.EndsWith("_scans.csv"));
+                if (!allFilesSelected)
+                {
+                    var statusMessage =
+                        "MultiAlign Rogue requires at least a .raw file, an isos file, and a scans file.";
+                    ApplicationStatusMediator.SetStatus(statusMessage);
+                    MessageBox.Show(statusMessage);
+                    return;
+                }
 
+                this.AddDataset(this.GetInputFilesFromPath(filePaths), Path.GetDirectoryName(filePaths[0]));
+            }
+        }
+
+        public void SelectDirectory()
+        {
+            var result = folderBrowser.ShowDialog();
+
+            if (result == DialogResult.OK)
+            {
+                InputFilePath = folderBrowser.SelectedPath;
+            }
         }
 
         public void AddFolderDelegate()
@@ -131,30 +162,31 @@ namespace MultiAlignRogue
 
             supportedTypes.ForEach(x => extensions.Add("*" + x.Extension));
 
-            if (inputFilePath == null)
+            if (string.IsNullOrEmpty(InputFilePath))
             {
                 ApplicationStatusMediator.SetStatus("Select a folder path first. File -> Select Files");
                 MessageBox.Show("Select a folder path first. File -> Select Files");
                 return;
             }
 
-            if (!Directory.Exists(inputFilePath))
+            if (!Directory.Exists(InputFilePath))
             {
                 ApplicationStatusMediator.SetStatus("The directory specified does not exist.");
                 MessageBox.Show("The directory specified does not exist.");
                 return;
             }
 
-            var files = DatasetSearcher.FindDatasets(inputFilePath,
+            var files = DatasetSearcher.FindDatasets(InputFilePath,
                 extensions,
                 SearchOption.TopDirectoryOnly);
-            DataSelectionViewModel.AddDatasets(files);
-            m_config.AnalysisPath = inputFilePath;
-            Providers = SetupDataProviders(true);
-            m_analysis.DataProviders = Providers;
-            UpdateDatasets();
-            OnPropertyChanged("m_config");
-            OnPropertyChanged("Datasets");
+            this.AddDataset(files, InputFilePath);
+            ////DataSelectionViewModel.AddDatasets(files);
+            ////m_config.AnalysisPath = inputFilePath;
+            ////Providers = SetupDataProviders(true);
+            ////m_analysis.DataProviders = Providers;
+            ////UpdateDatasets();
+            ////OnPropertyChanged("m_config");
+            ////OnPropertyChanged("Datasets");
         }
 
         public void UpdateDatasets()
@@ -172,6 +204,17 @@ namespace MultiAlignRogue
         public async void LoadMSFeatures()
         {
             await Task.Run(() => LoadFeatures());
+        }
+
+        private void AddDataset(List<InputFile> files, string analysisPath)
+        {
+            DataSelectionViewModel.AddDatasets(files);
+            m_config.AnalysisPath = analysisPath;
+            Providers = SetupDataProviders(true);
+            m_analysis.DataProviders = Providers;
+            UpdateDatasets();
+            this.RaisePropertyChanged("m_config");
+            this.RaisePropertyChanged("Datasets");
         }
 
         private void LoadFeatures()
@@ -194,7 +237,7 @@ namespace MultiAlignRogue
                 UnalignedFeatureCache.CacheFeatures(features);
                 
                 file.FeaturesFound = true;
-                OnPropertyChanged("m_analysis");
+                this.RaisePropertyChanged("m_analysis");
                 progress.Report(0);
 
                 file.DoingWork = false;
@@ -272,7 +315,7 @@ namespace MultiAlignRogue
 
                     AlignedFeatureCache.CacheFeatures(features);
                     file.IsAligned = true;
-                    OnPropertyChanged("m_analysis");
+                    this.RaisePropertyChanged("m_analysis");
                 }
             }
             else
@@ -324,7 +367,7 @@ namespace MultiAlignRogue
             {
                 m_options.AlignmentOptions.MassTolerance = value;
                 m_options.InstrumentTolerances.Mass = value;
-                OnPropertyChanged("MassResolution");
+                this.RaisePropertyChanged("MassResolution");
             }
         }
 
@@ -335,7 +378,7 @@ namespace MultiAlignRogue
             {
                 m_options.LcmsFilteringOptions.FeatureLengthRange.Minimum = value;
                 m_options.LcmsFilteringOptions.FeatureLengthRange.Minimum = value;
-                OnPropertyChanged("MinimumFeatureLength");
+                this.RaisePropertyChanged("MinimumFeatureLength");
             }
         }
 
@@ -346,7 +389,7 @@ namespace MultiAlignRogue
             {
                 m_options.LcmsFilteringOptions.FeatureLengthRange.Maximum = value;
                 m_options.LcmsFilteringOptions.FeatureLengthRange.Maximum = value;
-                OnPropertyChanged("MaximumFeatureLength");
+                this.RaisePropertyChanged("MaximumFeatureLength");
             }
         }
 
@@ -356,7 +399,7 @@ namespace MultiAlignRogue
             set
             {
                 m_options.MsFilteringOptions.MinimumIntensity = value;
-                OnPropertyChanged("MinimumIntensity");
+                this.RaisePropertyChanged("MinimumIntensity");
             }
         }
 
@@ -366,7 +409,7 @@ namespace MultiAlignRogue
             set
             {
                 m_options.InstrumentTolerances.FragmentationWindowSize = value;
-                OnPropertyChanged("FragmentationTolerance");
+                this.RaisePropertyChanged("FragmentationTolerance");
             }
         }
 
@@ -376,7 +419,7 @@ namespace MultiAlignRogue
             set
             {
                 m_options.MsFilteringOptions.MzRange.Maximum = value;
-                OnPropertyChanged("MaximumMz");
+                this.RaisePropertyChanged("MaximumMz");
             }
         }
 
@@ -386,7 +429,7 @@ namespace MultiAlignRogue
             set
             {
                 m_options.MsFilteringOptions.MzRange.Minimum = value;
-                OnPropertyChanged("MinimumMz");
+                this.RaisePropertyChanged("MinimumMz");
             }
         }
 
@@ -397,7 +440,7 @@ namespace MultiAlignRogue
             set
             {
                 m_options.MsFilteringOptions.ChargeRange.Maximum = value;
-                OnPropertyChanged("MaximumCharge");
+                this.RaisePropertyChanged("MaximumCharge");
             }
         }
 
@@ -407,7 +450,7 @@ namespace MultiAlignRogue
             set
             {
                 m_options.MsFilteringOptions.ChargeRange.Minimum = value;
-                OnPropertyChanged("MinimumCharge");
+                this.RaisePropertyChanged("MinimumCharge");
             }
         }
 
@@ -417,7 +460,7 @@ namespace MultiAlignRogue
             set
             {
                 m_options.MsFilteringOptions.MinimumDeisotopingScore = value;
-                OnPropertyChanged("MinimumDeisotopingScore");
+                this.RaisePropertyChanged("MinimumDeisotopingScore");
             }
         }
 
@@ -427,7 +470,7 @@ namespace MultiAlignRogue
             set
             {
                 m_options.MsFilteringOptions.ShouldUseChargeFilter = value;
-                OnPropertyChanged("ShouldUseChargeStateFilter");
+                this.RaisePropertyChanged("ShouldUseChargeStateFilter");
             }
         }
 
@@ -437,7 +480,7 @@ namespace MultiAlignRogue
             set
             {
                 m_options.MsFilteringOptions.ShouldUseMzFilter = value;
-                OnPropertyChanged("ShouldUseMzFilter");
+                this.RaisePropertyChanged("ShouldUseMzFilter");
             }
         }
 
@@ -447,7 +490,7 @@ namespace MultiAlignRogue
             set
             {
                 m_options.MsFilteringOptions.ShouldUseIntensityFilter = value;
-                OnPropertyChanged("ShouldUseIntensityFilter");
+                this.RaisePropertyChanged("ShouldUseIntensityFilter");
             }
         }
 
@@ -457,7 +500,7 @@ namespace MultiAlignRogue
             set
             {
                 m_options.MsFilteringOptions.ShouldUseDeisotopingFilter = value;
-                OnPropertyChanged("ShouldUseDeisotopingFilter");
+                this.RaisePropertyChanged("ShouldUseDeisotopingFilter");
             }
         }
 
@@ -489,7 +532,7 @@ namespace MultiAlignRogue
                         m_baseline = value;
                         m_analysis.MetaData.BaselineDataset = value;
                     }
-                    OnPropertyChanged("SelectedBaseline");
+                    this.RaisePropertyChanged("SelectedBaseline");
                 }
             }
         }
@@ -509,7 +552,7 @@ namespace MultiAlignRogue
             set
             {
                 m_options.LcmsClusteringOptions.InstrumentTolerances.Mass = value;
-                OnPropertyChanged("MassTolerance");
+                this.RaisePropertyChanged("MassTolerance");
             }
         }
 
@@ -519,7 +562,7 @@ namespace MultiAlignRogue
             set
             {
                 m_options.LcmsClusteringOptions.InstrumentTolerances.Net = value;
-                OnPropertyChanged("NetTolerance");
+                this.RaisePropertyChanged("NetTolerance");
             }
         }
 
@@ -531,7 +574,7 @@ namespace MultiAlignRogue
                 if (m_options.AlignmentOptions.AlignmentAlgorithm != value)
                 {
                     m_options.AlignmentOptions.AlignmentAlgorithm = value;
-                    OnPropertyChanged("SelectedAlignmentAlgorithm");
+                    this.RaisePropertyChanged("SelectedAlignmentAlgorithm");
                 }
             }
         }
@@ -543,7 +586,7 @@ namespace MultiAlignRogue
                 if (m_options.LcmsClusteringOptions.LcmsFeatureClusteringAlgorithm != value)
                 {
                     m_options.LcmsClusteringOptions.LcmsFeatureClusteringAlgorithm = value;
-                    OnPropertyChanged("SelectedClusteringAlgorithm");
+                    this.RaisePropertyChanged("SelectedClusteringAlgorithm");
                 }
             }
         }
@@ -555,18 +598,47 @@ namespace MultiAlignRogue
                 if (m_options.AlignmentOptions.AlignmentType != value)
                 {
                     m_options.AlignmentOptions.AlignmentType = value;
-                    OnPropertyChanged("SelectedCalibrationType");
+                    this.RaisePropertyChanged("SelectedCalibrationType");
                 }
             }
         }
-          
+
+        private string inputFilePath;
+        public string InputFilePath
+        {
+            get { return this.inputFilePath; }
+            set
+            {
+                if (this.inputFilePath != value)
+                {
+                    this.inputFilePath = value;
+                    this.RaisePropertyChanged();
+                    this.AddFolderCommand.RaiseCanExecuteChanged();
+                }
+            }
+        }
         
         #endregion 
 
         private void ReportProgess(int value)
         {
             this.ProgressTracker = value;
-            OnPropertyChanged("ProgressTracker");
+            this.RaisePropertyChanged("ProgressTracker");
+        }
+
+        private List<InputFile> GetInputFilesFromPath(IEnumerable<string> filePaths)
+        {
+            var files = new List<InputFile>();
+            foreach (var filePath in filePaths)
+            {
+                var type = DatasetInformation.SupportedFileTypes.FirstOrDefault(sft => filePath.ToLower().Contains(sft.Extension));
+                if (type != null)
+                {
+                    files.Add(new InputFile { Path = filePath, FileType = type.InputType });
+                }
+            }
+
+            return files;
         }
 
         private async Task SearchDms()
@@ -575,21 +647,21 @@ namespace MultiAlignRogue
             var dialog = new DmsLookupView { DataContext = dmsLookupViewModel };
             dmsLookupViewModel.DatasetSelected += (o, e) => dialog.Close();
             dialog.ShowDialog();
-            if (dmsLookupViewModel.Status)
+            if (!dmsLookupViewModel.Status) return;
+
+            if (dmsLookupViewModel.ShouldCopyFiles)
             {
-                this.inputFilePath = dmsLookupViewModel.OutputDirectory;
+                this.InputFilePath = dmsLookupViewModel.OutputDirectory;
                 this.AddFolderCommand.Execute(null);
             }
-        }
-
-        protected void OnPropertyChanged(string name)
-        {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null)
+            else
             {
-                handler(this, new PropertyChangedEventArgs(name));
+                var filePaths = dmsLookupViewModel.SelectedDataset.GetAvailableFiles();
+                if (filePaths.Count > 0)
+                {
+                    this.AddDataset(this.GetInputFilesFromPath(filePaths), dmsLookupViewModel.OutputDirectory);
+                }
             }
         }
-        public event PropertyChangedEventHandler PropertyChanged;
     }
 }
