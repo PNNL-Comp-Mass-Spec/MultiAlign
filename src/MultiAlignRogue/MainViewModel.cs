@@ -246,7 +246,13 @@ namespace MultiAlignRogue
                 var alignmentData = new AlignmentDAOHibernate();
                 alignmentData.ClearAll();
 
-                foreach (var file in selectedFiles)
+                List<DatasetInformation> selectedFilesCopy = new List<DatasetInformation>();
+                foreach (var dataset in selectedFiles)
+                {
+                    selectedFilesCopy.Add(dataset); //Prevents crashes from changing selected files while this thread is running
+                }
+
+                foreach (var file in selectedFilesCopy)
                 {
                     if (file.IsBaseline || !file.FeaturesFound) continue;
                     var features = UnalignedFeatureCache.LoadDataset(file, m_options.MsFilteringOptions,
