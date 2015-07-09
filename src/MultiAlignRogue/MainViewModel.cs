@@ -11,6 +11,8 @@ using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using System.Windows.Input;
+using System.Xml;
+using System.Xml.Serialization;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Ookii.Dialogs;
@@ -76,6 +78,9 @@ namespace MultiAlignRogue
         public RelayCommand ClusterFeaturesCommand { get; private set; }
         public RelayCommand DisplayClustersCommand { get; private set; }
 
+        public RelayCommand SaveProjectCommand { get; private set; }
+        public RelayCommand LoadProjectCommand { get; private set; }
+
         public DataTable datasetInfo { get; set; }
         private FeatureDataAccessProviders Providers;
         private Dictionary<DatasetInformation, IList<UMCLight>> Features { get; set; }
@@ -108,6 +113,8 @@ namespace MultiAlignRogue
             DisplayAlignmentCommand = new RelayCommand(DisplayAlignment);
             ClusterFeaturesCommand = new RelayCommand(AsyncClusterFeatures);
             DisplayClustersCommand = new RelayCommand(DisplayFeatures);
+            SaveProjectCommand = new RelayCommand(SaveProject);
+            LoadProjectCommand = new RelayCommand(LoadProject);
             
             FeatureCache = new FeatureLoader { Providers = m_analysis.DataProviders };
             Features = new Dictionary<DatasetInformation, IList<UMCLight>>();
@@ -793,6 +800,62 @@ namespace MultiAlignRogue
                 if (filePaths.Count > 0)
                 {
                     this.AddDataset(this.GetInputFilesFromPath(filePaths), dmsLookupViewModel.OutputDirectory);
+                }
+            }
+        }
+
+        private void SaveProject()
+        {
+            var saveFileDialog = new SaveFileDialog
+            {
+                DefaultExt = ".xml",
+                Filter = @"Supported Files|*.xml"
+            };
+
+            var result = saveFileDialog.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                this.Serialize(saveFileDialog.FileName);
+            }
+        }
+
+        private void LoadProject()
+        {
+            var openFileDialog = new OpenFileDialog
+            {
+                DefaultExt = ".xml",
+                Filter = @"Supported Files|*.xml"
+            };
+
+            var result = openFileDialog.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                this.Deserialize(openFileDialog.FileName);
+            }
+        }
+
+        private void Serialize(string filePath)
+        {
+            var xmlSerializer = new XmlSerializer(typeof (MultiAlignAnalysisOptions));
+
+            using (var writer = new StreamWriter(filePath))
+            {
+                xmlSerializer.Serialize(writer, m_analysis.Options);
+            }
+        }
+
+        private void Deserialize(string filePath)
+        {
+            var xmlSerializer = new XmlSerializer(typeof(MultiAlignAnalysisOptions));
+            using (var reader = new StreamReader(filePath))
+            {
+                try
+                {
+                    this.m_analysis.Options = (MultiAlignAnalysisOptions) xmlSerializer.Deserialize(reader);
+                }
+                catch (InvalidCastException)
+                {
+                    MessageBox.Show("Could not deserialize analysis options.");
                 }
             }
         }

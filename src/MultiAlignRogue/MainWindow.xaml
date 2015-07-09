@@ -18,8 +18,8 @@
             <MenuItem Header="File">
                 <MenuItem Header="Select Files" HorizontalAlignment="Left" Width="168" Margin="0,0,-8,0" Command="{Binding SelectFilesCommand}"/>
                 <MenuItem Header="Search DMS" Command="{Binding SearchDmsCommand}" Visibility="{Binding ShowOpenFromDms, Converter={StaticResource BoolToVis}}" />
-                <MenuItem Header="Load Project" HorizontalAlignment="Left" Width="168"/>
-                <MenuItem Header="Save Project" HorizontalAlignment="Left" Width="168"/>
+                <MenuItem Header="Load Project" HorizontalAlignment="Left" Width="168" Command="{Binding LoadProjectCommand}" />
+                <MenuItem Header="Save Project" HorizontalAlignment="Left" Command="{Binding SaveProjectCommand}"  Width="168"/>
             </MenuItem>
         </Menu>
         <ProgressBar HorizontalAlignment="Right" Margin="0,0,10,19" Width="90" Height="20" VerticalAlignment="Bottom" Value="{Binding ProgressTracker, Mode = OneWay}"/>
