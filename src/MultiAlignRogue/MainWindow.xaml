@@ -35,7 +35,7 @@
             </DataGrid.Columns>
         </DataGrid>
         <TabControl Grid.Column="1" Margin="10,25,10,10">
-            <TabItem Header="Feature Finding" Height="23" VerticalAlignment="Bottom">
+            <TabItem Header="Feature Finding" Height="23" VerticalAlignment="Bottom" DataContext="{Binding FeatureFindingSettingsViewModel, UpdateSourceTrigger=PropertyChanged}">
                 <Grid Margin="0,19,39,8" HorizontalAlignment="Right" Width="384">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="183*"/>

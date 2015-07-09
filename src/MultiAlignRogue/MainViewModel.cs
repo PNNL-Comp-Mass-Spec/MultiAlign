@@ -15,6 +15,7 @@ using System.Xml;
 using System.Xml.Serialization;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Messaging;
 using Ookii.Dialogs;
 using Ookii;
 using MultiAlign;
@@ -60,7 +61,6 @@ namespace MultiAlignRogue
 
         public ObservableCollection<DatasetInformationViewModel> Datasets { get; private set;}
         public FeatureLoader FeatureCache;
-        public List<DatasetInformation> selectedFiles;
         public List<AlignmentType> CalibrationOptions { get; set; }
         public List<DistanceMetric> DistanceMetrics { get; set; }
         public List<ClusterCentroidRepresentation> CentroidRepresentations { get; set; } 
@@ -69,8 +69,6 @@ namespace MultiAlignRogue
 
         public RelayCommand SelectFilesCommand { get; private set; }
         public RelayCommand SelectDirectoryCommand { get; private set; }
-        public RelayCommand FindMSFeaturesCommand { get; private set; }
-        public RelayCommand PlotMSFeaturesCommand { get; private set; }
         public RelayCommand SearchDmsCommand { get; private set; }
         public RelayCommand AlignToBaselineCommand { get; private set; }
         public RelayCommand DisplayAlignmentCommand { get; private set; }
@@ -84,7 +82,11 @@ namespace MultiAlignRogue
         public DataTable datasetInfo { get; set; }
         private FeatureDataAccessProviders Providers;
         private Dictionary<DatasetInformation, IList<UMCLight>> Features { get; set; }
-        private List<classAlignmentData> AlignmentInformation { get; set; } 
+        private List<classAlignmentData> AlignmentInformation { get; set; }
+
+        private FeatureFindingSettingsViewModel featureFindingSettingsViewModel;
+
+        private IReadOnlyCollection<DatasetInformation> selectedDatasets; 
 
         public int ProgressTracker { get; private set; }
         #endregion
@@ -101,11 +103,9 @@ namespace MultiAlignRogue
             m_AnalysisOptions = new AnalysisOptionsViewModel(m_options);
             builder = new AlgorithmBuilder();
             aligner = new LCMSFeatureAligner();
-            
+           
             SelectFilesCommand = new RelayCommand(SelectFiles);
             SelectDirectoryCommand = new RelayCommand(SelectDirectory);
-            FindMSFeaturesCommand = new RelayCommand(LoadMSFeatures, () => this.selectedFiles != null && this.selectedFiles.Count > 0 && this.selectedFiles.Any(file => !file.DoingWork));
-            PlotMSFeaturesCommand = new RelayCommand(async () => await PlotMSFeatures(), () => this.selectedFiles.Any(file => file.FeaturesFound));
             AddFolderCommand = new RelayCommand(AddFolderDelegate, () => !string.IsNullOrWhiteSpace(this.InputFilePath) && Directory.Exists(this.InputFilePath));
             DataSelectionViewModel = new AnalysisDatasetSelectionViewModel(m_config.Analysis);
             SearchDmsCommand = new RelayCommand(() => this.SearchDms(), () => this.ShowOpenFromDms);
@@ -118,11 +118,13 @@ namespace MultiAlignRogue
             
             FeatureCache = new FeatureLoader { Providers = m_analysis.DataProviders };
             Features = new Dictionary<DatasetInformation, IList<UMCLight>>();
-            this.selectedFiles = new List<DatasetInformation>();
+            this.SelectedDatasets = new List<DatasetInformation>();
             msFeatureWindowFactory = new MSFeatureViewFactory();
             alignmentWindowFactory = new AlignmentViewFactory();
             Datasets = new ObservableCollection<DatasetInformationViewModel>();
             AlignmentInformation = new List<classAlignmentData>();
+
+            this.FeatureFindingSettingsViewModel = new FeatureFindingSettingsViewModel(m_analysis.Options, FeatureCache, Providers);
 
             CalibrationOptions = new List<AlignmentType>();
             Enum.GetValues(typeof(AlignmentType)).Cast<AlignmentType>().ToList().ForEach(x => CalibrationOptions.Add(x));
@@ -132,6 +134,26 @@ namespace MultiAlignRogue
             Enum.GetValues(typeof(ClusterCentroidRepresentation)).Cast<ClusterCentroidRepresentation>().ToList().ForEach(x => CentroidRepresentations.Add(x));
         }
         #endregion
+
+        public FeatureFindingSettingsViewModel FeatureFindingSettingsViewModel
+        {
+            get { return this.featureFindingSettingsViewModel; }
+            private set
+            {
+                this.featureFindingSettingsViewModel = value;
+                this.RaisePropertyChanged();
+            }
+        }
+
+        public IReadOnlyCollection<DatasetInformation> SelectedDatasets
+        {
+            get { return this.selectedDatasets; }
+            set
+            {
+                this.selectedDatasets = value;
+                this.RaisePropertyChanged("SelectedDatasets", null, value, true);
+            }
+        }
 
         #region Import Files
         public void SelectFiles()
@@ -198,13 +220,6 @@ namespace MultiAlignRogue
                 extensions,
                 SearchOption.TopDirectoryOnly);
             this.AddDataset(files, InputFilePath);
-            ////DataSelectionViewModel.AddDatasets(files);
-            ////m_config.AnalysisPath = inputFilePath;
-            ////Providers = SetupDataProviders(true);
-            ////m_analysis.DataProviders = Providers;
-            ////UpdateDatasets();
-            ////OnPropertyChanged("m_config");
-            ////OnPropertyChanged("Datasets");
         }
 
         public void UpdateDatasets()
@@ -219,72 +234,6 @@ namespace MultiAlignRogue
         #endregion
 
         #region Feature Loading
-        public async void LoadMSFeatures()
-        {
-            await Task.Run(() => LoadFeatures());
-        }
-
-        private void AddDataset(List<InputFile> files, string analysisPath)
-        {
-            DataSelectionViewModel.AddDatasets(files);
-            m_config.AnalysisPath = analysisPath;
-            Providers = SetupDataProviders(true);
-            m_analysis.DataProviders = Providers;
-            UpdateDatasets();
-            this.RaisePropertyChanged("m_config");
-            this.RaisePropertyChanged("Datasets");
-        }
-
-        private void LoadFeatures()
-        {
-            List<DatasetInformation> selectedFilesCopy = new List<DatasetInformation>();
-            FeatureCache.Providers = m_analysis.DataProviders;
-            foreach (var dataset in selectedFiles)
-            {
-                selectedFilesCopy.Add(dataset); //Prevents crashes from changing selected files while this thread is running
-            }
-
-            foreach (var file in selectedFilesCopy.Where(file => !file.DoingWork)) // Do not try to run on files already loading features.
-            {
-                file.DoingWork = true;
-                ThreadSafeDispatcher.Invoke(() => PlotMSFeaturesCommand.RaiseCanExecuteChanged());
-                ThreadSafeDispatcher.Invoke(() => FindMSFeaturesCommand.RaiseCanExecuteChanged());
-                IProgress<int> progress = new Progress<int>(ReportProgess);
-                var features = FeatureCache.LoadDataset(file, m_options.MsFilteringOptions, m_options.LcmsFindingOptions,
-                    m_options.LcmsFilteringOptions);
-                FeatureCache.CacheFeatures(features);
-                
-                file.FeaturesFound = true;
-                this.RaisePropertyChanged("m_analysis");
-                progress.Report(0);
-
-                file.DoingWork = false;
-                ThreadSafeDispatcher.Invoke(() => PlotMSFeaturesCommand.RaiseCanExecuteChanged());
-                ThreadSafeDispatcher.Invoke(() => FindMSFeaturesCommand.RaiseCanExecuteChanged());
-            }
-        }
-        #endregion
-
-        #region Plot Features
-        public async Task PlotMSFeatures()
-        {
-            try
-            {
-                Features = new Dictionary<DatasetInformation, IList<UMCLight>>();
-                foreach (var file in selectedFiles.Where(file => file.FeaturesFound)) // Select only datasets with features.
-                {
-                    var features = await Task.Run(() => UmcLoaderFactory.LoadUmcFeatureData(file.Features.Path, file.DatasetId,
-                            Providers.FeatureCache));
-
-                    Features.Add(file, features);
-                }
-                msFeatureWindowFactory.CreateNewWindow(Features);
-            }
-            catch
-            {
-                MessageBox.Show("Feature cache currently being accessed. Try again in a few moments");
-            }
-        }
         #endregion
 
         #region Align Features
@@ -307,13 +256,7 @@ namespace MultiAlignRogue
                 var alignmentData = new AlignmentDAOHibernate();
                 alignmentData.ClearAll();
 
-                List<DatasetInformation> selectedFilesCopy = new List<DatasetInformation>();
-                foreach (var dataset in selectedFiles)
-                {
-                    selectedFilesCopy.Add(dataset); //Prevents crashes from changing selected files while this thread is running
-                }
-
-                foreach (var file in selectedFilesCopy)
+                foreach (var file in SelectedDatasets)
                 {
                     if (file.IsBaseline || !file.FeaturesFound) continue;
                     var features = FeatureCache.LoadDataset(file, m_options.MsFilteringOptions,
@@ -377,150 +320,6 @@ namespace MultiAlignRogue
         }
         #endregion
 
-        #region MS Feature Settings
-        public double MassResolution
-        {
-            get { return m_options.InstrumentTolerances.Mass; }
-            set
-            {
-                m_options.AlignmentOptions.MassTolerance = value;
-                m_options.InstrumentTolerances.Mass = value;
-                this.RaisePropertyChanged("MassResolution");
-            }
-        }
-
-        public double MinimumFeatureLength
-        {
-            get { return m_options.LcmsFilteringOptions.FeatureLengthRange.Minimum; }
-            set
-            {
-                m_options.LcmsFilteringOptions.FeatureLengthRange.Minimum = value;
-                m_options.LcmsFilteringOptions.FeatureLengthRange.Minimum = value;
-                this.RaisePropertyChanged("MinimumFeatureLength");
-            }
-        }
-
-        public double MaximumFeatureLength
-        {
-            get { return m_options.LcmsFilteringOptions.FeatureLengthRange.Maximum; }
-            set
-            {
-                m_options.LcmsFilteringOptions.FeatureLengthRange.Maximum = value;
-                m_options.LcmsFilteringOptions.FeatureLengthRange.Maximum = value;
-                this.RaisePropertyChanged("MaximumFeatureLength");
-            }
-        }
-
-        public double MinimumIntensity
-        {
-            get { return m_options.MsFilteringOptions.MinimumIntensity; }
-            set
-            {
-                m_options.MsFilteringOptions.MinimumIntensity = value;
-                this.RaisePropertyChanged("MinimumIntensity");
-            }
-        }
-
-        public double FragmentationTolerance
-        {
-            get { return m_options.InstrumentTolerances.FragmentationWindowSize; }
-            set
-            {
-                m_options.InstrumentTolerances.FragmentationWindowSize = value;
-                this.RaisePropertyChanged("FragmentationTolerance");
-            }
-        }
-
-        public double MaximumMz
-        {
-            get { return m_options.MsFilteringOptions.MzRange.Maximum; }
-            set
-            {
-                m_options.MsFilteringOptions.MzRange.Maximum = value;
-                this.RaisePropertyChanged("MaximumMz");
-            }
-        }
-
-        public double MinimumMz
-        {
-            get { return m_options.MsFilteringOptions.MzRange.Minimum; }
-            set
-            {
-                m_options.MsFilteringOptions.MzRange.Minimum = value;
-                this.RaisePropertyChanged("MinimumMz");
-            }
-        }
-
-
-        public double MaximumCharge
-        {
-            get { return m_options.MsFilteringOptions.ChargeRange.Maximum; }
-            set
-            {
-                m_options.MsFilteringOptions.ChargeRange.Maximum = value;
-                this.RaisePropertyChanged("MaximumCharge");
-            }
-        }
-
-        public double MinimumCharge
-        {
-            get { return m_options.MsFilteringOptions.ChargeRange.Minimum; }
-            set
-            {
-                m_options.MsFilteringOptions.ChargeRange.Minimum = value;
-                this.RaisePropertyChanged("MinimumCharge");
-            }
-        }
-
-        public double MinimumDeisotopingScore
-        {
-            get { return m_options.MsFilteringOptions.MinimumDeisotopingScore; }
-            set
-            {
-                m_options.MsFilteringOptions.MinimumDeisotopingScore = value;
-                this.RaisePropertyChanged("MinimumDeisotopingScore");
-            }
-        }
-
-        public bool ShouldUseChargeStateFilter
-        {
-            get { return m_options.MsFilteringOptions.ShouldUseChargeFilter; }
-            set
-            {
-                m_options.MsFilteringOptions.ShouldUseChargeFilter = value;
-                this.RaisePropertyChanged("ShouldUseChargeStateFilter");
-            }
-        }
-
-        public bool ShouldUseMzFilter
-        {
-            get { return m_options.MsFilteringOptions.ShouldUseMzFilter; }
-            set
-            {
-                m_options.MsFilteringOptions.ShouldUseMzFilter = value;
-                this.RaisePropertyChanged("ShouldUseMzFilter");
-            }
-        }
-
-        public bool ShouldUseIntensityFilter
-        {
-            get { return m_options.MsFilteringOptions.ShouldUseIntensityFilter; }
-            set
-            {
-                m_options.MsFilteringOptions.ShouldUseIntensityFilter = value;
-                this.RaisePropertyChanged("ShouldUseIntensityFilter");
-            }
-        }
-
-        public bool ShouldUseDeisotopingFilter
-        {
-            get { return m_options.MsFilteringOptions.ShouldUseDeisotopingFilter; }
-            set
-            {
-                m_options.MsFilteringOptions.ShouldUseDeisotopingFilter = value;
-                this.RaisePropertyChanged("ShouldUseDeisotopingFilter");
-            }
-        }
 
         /// <summary>
         /// Gets a value indicating whether or not "Open From DMS" should be shown on the menu based on whether
@@ -530,7 +329,6 @@ namespace MultiAlignRogue
         {
             get { return System.Net.Dns.GetHostEntry(string.Empty).HostName.Contains("pnl.gov"); }
         }
-        #endregion
 
         #region Alignment Settings
 
@@ -557,7 +355,7 @@ namespace MultiAlignRogue
 
         public void DisplayAlignment()
         {
-            foreach (var file in (selectedFiles.FindAll(x => x.IsAligned)))
+            foreach (var file in (SelectedDatasets.Where(x => x.IsAligned)))
             {
                 var alignment = AlignmentInformation.Find(x => x.DatasetID == file.DatasetId);
                 alignmentWindowFactory.CreateNewWindow(alignment);
@@ -678,11 +476,6 @@ namespace MultiAlignRogue
         //TODO:Finish integrating clustering from MultiAlignAnalysisProcessor into Rogue
         public void ClusterFeatures()
         {
-            List<DatasetInformation> selectedFilesCopy = new List<DatasetInformation>();
-            foreach (var dataset in selectedFiles)
-            {
-                selectedFilesCopy.Add(dataset); //Prevents crashes from changing selected files while this thread is running
-            }
             var clusterer = m_algorithms.Clusterer;
             clusterer.Parameters = LcmsClusteringOptions.ConvertToOmics(m_options.LcmsClusteringOptions);
 
@@ -804,6 +597,17 @@ namespace MultiAlignRogue
             }
         }
 
+        private void AddDataset(List<InputFile> files, string analysisPath)
+        {
+            DataSelectionViewModel.AddDatasets(files);
+            m_config.AnalysisPath = analysisPath;
+            Providers = SetupDataProviders(true);
+            m_analysis.DataProviders = Providers;
+            UpdateDatasets();
+            this.RaisePropertyChanged("m_config");
+            this.RaisePropertyChanged("Datasets");
+        }
+
         private void SaveProject()
         {
             var saveFileDialog = new SaveFileDialog
@@ -832,6 +636,8 @@ namespace MultiAlignRogue
             {
                 this.Deserialize(openFileDialog.FileName);
             }
+
+            this.FeatureFindingSettingsViewModel = new FeatureFindingSettingsViewModel(m_analysis.Options, FeatureCache, Providers);
         }
 
         private void Serialize(string filePath)
