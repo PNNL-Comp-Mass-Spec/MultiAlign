@@ -22,18 +22,23 @@ namespace MultiAlignRogue
 
         private readonly FeatureLoader featureCache;
 
-        private readonly IProgress<int> progress;
-
         private readonly IFeatureWindowFactory msFeatureWindowFactory;
+
+        private readonly IProgress<int> progress;
 
         private Dictionary<DatasetInformation, IList<UMCLight>> features;
 
         private IReadOnlyCollection<DatasetInformation> selectedDatasets;
 
-        public FeatureFindingSettingsViewModel(MultiAlignAnalysis analysis, FeatureLoader featureCache, IProgress<int> progressReporter = null)
+        public FeatureFindingSettingsViewModel(
+                                               MultiAlignAnalysis analysis,
+                                               FeatureLoader featureCache,
+                                               IFeatureWindowFactory msFeatureWindowFactory = null,
+                                               IProgress<int> progressReporter = null)
         {
             this.analysis = analysis;
             this.featureCache = featureCache;
+            this.msFeatureWindowFactory = msFeatureWindowFactory ?? new MSFeatureViewFactory();
             this.progress = progressReporter ?? new Progress<int>();
             this.selectedDatasets = new ReadOnlyCollection<DatasetInformation>(new List<DatasetInformation>());
             this.msFeatureWindowFactory = new MSFeatureViewFactory();

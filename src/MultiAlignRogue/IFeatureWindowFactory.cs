@@ -9,7 +9,7 @@ using PNNLOmics.Data.Features;
 
 namespace MultiAlignRogue
 {
-    interface IFeatureWindowFactory
+    public interface IFeatureWindowFactory
     {
         void CreateNewWindow();
         void CreateNewWindow(Dictionary<DatasetInformation, IList<UMCLight>> Features);

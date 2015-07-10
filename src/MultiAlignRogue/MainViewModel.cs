@@ -1,25 +1,15 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.IO;
 using System.Linq;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Forms;
-using System.Windows.Forms.VisualStyles;
-using System.Windows.Input;
-using System.Xml;
 using System.Xml.Serialization;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using GalaSoft.MvvmLight.Messaging;
 using Ookii.Dialogs;
-using Ookii;
-using MultiAlign;
-using MultiAlign.Commands;
 using MultiAlign.Data;
 using MultiAlign.IO;
 using MultiAlign.ViewModels.Datasets;
@@ -27,11 +17,9 @@ using MultiAlign.ViewModels.Wizard;
 using MultiAlignCore.Algorithms;
 using MultiAlignCore.Algorithms.Options;
 using MultiAlignCore.Data;
-using MultiAlignCore.Data.Alignment;
 using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO;
 using MultiAlignCore.IO.Features;
-using MultiAlignCore.IO.Hibernate;
 using MultiAlignCore.IO.InputFiles;
 using PNNLOmics.Algorithms.Alignment.LcmsWarp;
 using PNNLOmics.Algorithms.Distance;
@@ -40,7 +28,7 @@ using PNNLOmics.Data.Features;
 
 namespace MultiAlignRogue
 {
-    using MultiAlignRogue.DMS;
+    using DMS;
 
     using MessageBox = System.Windows.MessageBox;
 
@@ -53,24 +41,17 @@ namespace MultiAlignRogue
         public AnalysisConfig m_config { get; set;}
         public AlgorithmProvider m_algorithms { get; set; }
         public MultiAlignAnalysisOptions m_options { get; set;}
-        public AnalysisOptionsViewModel m_AnalysisOptions { get; set;}
         private DatasetInformation m_baseline { get; set; }
-        private AlgorithmBuilder builder { get; set; }
         private AlgorithmProvider algorithms { get; set; }
-        private LCMSFeatureAligner aligner { get; set; }
 
         public ObservableCollection<DatasetInformationViewModel> Datasets { get; private set;}
         public FeatureLoader FeatureCache;
-        public List<AlignmentType> CalibrationOptions { get; set; }
         public List<DistanceMetric> DistanceMetrics { get; set; }
         public List<ClusterCentroidRepresentation> CentroidRepresentations { get; set; } 
-        private IAlignmentWindowFactory alignmentWindowFactory;
 
         public RelayCommand SelectFilesCommand { get; private set; }
         public RelayCommand SelectDirectoryCommand { get; private set; }
         public RelayCommand SearchDmsCommand { get; private set; }
-        public RelayCommand AlignToBaselineCommand { get; private set; }
-        public RelayCommand DisplayAlignmentCommand { get; private set; }
         public RelayCommand AddFolderCommand { get; private set; }
         public RelayCommand ClusterFeaturesCommand { get; private set; }
         public RelayCommand DisplayClustersCommand { get; private set; }
@@ -80,12 +61,13 @@ namespace MultiAlignRogue
 
         public DataTable datasetInfo { get; set; }
         private FeatureDataAccessProviders Providers;
-        private Dictionary<DatasetInformation, IList<UMCLight>> Features { get; set; }
-        private List<classAlignmentData> AlignmentInformation { get; set; }
 
         private FeatureFindingSettingsViewModel featureFindingSettingsViewModel;
+        private AlignmentSettingsViewModel alignmentSettingsViewModel;
 
-        private IReadOnlyCollection<DatasetInformation> selectedDatasets; 
+        private IReadOnlyCollection<DatasetInformation> selectedDatasets;
+
+        private string inputFilePath;
 
         public int ProgressTracker { get; private set; }
         #endregion
@@ -99,34 +81,25 @@ namespace MultiAlignRogue
             m_options = m_analysis.Options;
             m_config.AnalysisName = "Analysis";
             m_config.Analysis = m_analysis;
-            m_AnalysisOptions = new AnalysisOptionsViewModel(m_options);
-            builder = new AlgorithmBuilder();
-            aligner = new LCMSFeatureAligner();
            
             SelectFilesCommand = new RelayCommand(SelectFiles);
             SelectDirectoryCommand = new RelayCommand(SelectDirectory);
             AddFolderCommand = new RelayCommand(AddFolderDelegate, () => !string.IsNullOrWhiteSpace(this.InputFilePath) && Directory.Exists(this.InputFilePath));
             DataSelectionViewModel = new AnalysisDatasetSelectionViewModel(m_config.Analysis);
-            SearchDmsCommand = new RelayCommand(() => this.SearchDms(), () => this.ShowOpenFromDms);
-            AlignToBaselineCommand = new RelayCommand(AsyncAlignToBaseline);
-            DisplayAlignmentCommand = new RelayCommand(DisplayAlignment);
+            SearchDmsCommand = new RelayCommand(SearchDms, () => this.ShowOpenFromDms);
             ClusterFeaturesCommand = new RelayCommand(AsyncClusterFeatures);
             DisplayClustersCommand = new RelayCommand(DisplayFeatures);
             SaveProjectCommand = new RelayCommand(SaveProject);
             LoadProjectCommand = new RelayCommand(LoadProject);
             
             FeatureCache = new FeatureLoader { Providers = m_analysis.DataProviders };
-            Features = new Dictionary<DatasetInformation, IList<UMCLight>>();
             this.SelectedDatasets = new List<DatasetInformation>();
-            alignmentWindowFactory = new AlignmentViewFactory();
             Datasets = new ObservableCollection<DatasetInformationViewModel>();
-            AlignmentInformation = new List<classAlignmentData>();
 
             FeatureCache.Providers = m_analysis.DataProviders;
             this.FeatureFindingSettingsViewModel = new FeatureFindingSettingsViewModel(m_analysis, FeatureCache);
+            this.AlignmentSettingsViewModel = new AlignmentSettingsViewModel(m_analysis, FeatureCache);
 
-            CalibrationOptions = new List<AlignmentType>();
-            Enum.GetValues(typeof(AlignmentType)).Cast<AlignmentType>().ToList().ForEach(x => CalibrationOptions.Add(x));
             DistanceMetrics = new List<DistanceMetric>();
             Enum.GetValues(typeof(DistanceMetric)).Cast<DistanceMetric>().ToList().ForEach(x => DistanceMetrics.Add(x));
             CentroidRepresentations = new List<ClusterCentroidRepresentation>();
@@ -140,6 +113,16 @@ namespace MultiAlignRogue
             private set
             {
                 this.featureFindingSettingsViewModel = value;
+                this.RaisePropertyChanged();
+            }
+        }
+
+        public AlignmentSettingsViewModel AlignmentSettingsViewModel
+        {
+            get { return this.alignmentSettingsViewModel; }
+            set
+            {
+                this.alignmentSettingsViewModel = value;
                 this.RaisePropertyChanged();
             }
         }
@@ -230,56 +213,28 @@ namespace MultiAlignRogue
                 Datasets.Add(viewmodel);
             }
         }
-        #endregion
 
-        #region Align Features
-        public async void AsyncAlignToBaseline()
+        /// <summary>
+        /// Gets a value indicating whether or not "Open From DMS" should be shown on the menu based on whether
+        /// or not the user is on the PNNL network or not.
+        /// </summary>
+        public bool ShowOpenFromDms
         {
-            await Task.Run(() => AlignToBaseline());
+            get { return System.Net.Dns.GetHostEntry(string.Empty).HostName.Contains("pnl.gov"); }
         }
 
-        private void AlignToBaseline()
+        public string InputFilePath
         {
-            if (SelectedBaseline != null && SelectedBaseline.FeaturesFound)
+            get { return this.inputFilePath; }
+            set
             {
-                //Update algorithms and providers
-                FeatureCache.Providers = m_analysis.DataProviders;
-                algorithms = builder.GetAlgorithmProvider(m_options);
-                aligner.m_algorithms = algorithms;
-
-                var baselineFeatures = FeatureCache.LoadDataset(m_baseline, m_options.MsFilteringOptions,
-                    m_options.LcmsFindingOptions, m_options.LcmsFilteringOptions);
-                var alignmentData = new AlignmentDAOHibernate();
-                alignmentData.ClearAll();
-
-                foreach (var file in SelectedDatasets)
+                if (this.inputFilePath != value)
                 {
-                    if (file.IsBaseline || !file.FeaturesFound) continue;
-                    var features = FeatureCache.LoadDataset(file, m_options.MsFilteringOptions,
-                        m_options.LcmsFindingOptions, m_options.LcmsFilteringOptions);
-                    var alignment = aligner.AlignToDataset(ref features, baselineFeatures, file, m_baseline);
-                    //Check if there is information from a previous alignment for this dataset. If so, replace it. If not, just add the new one.
-                    var priorAlignment = from x in AlignmentInformation where x.DatasetID == alignment.DatasetID select x;
-                    if (priorAlignment.Any())
-                    {
-                        AlignmentInformation.Remove(priorAlignment.Single());
-                        AlignmentInformation.Add(alignment);
-                    }
-                    else
-                    {
-                        AlignmentInformation.Add(alignment);
-                    }
-
-                    FeatureCache.CacheFeatures(features);
-                    file.IsAligned = true;
-                    this.RaisePropertyChanged("m_analysis");
+                    this.inputFilePath = value;
+                    this.RaisePropertyChanged();
+                    this.AddFolderCommand.RaiseCanExecuteChanged();
                 }
             }
-            else
-            {
-                MessageBox.Show("Please select a baseline with detected features.");
-            }
-
         }
         #endregion
 
@@ -316,110 +271,6 @@ namespace MultiAlignRogue
         }
         #endregion
 
-
-        /// <summary>
-        /// Gets a value indicating whether or not "Open From DMS" should be shown on the menu based on whether
-        /// or not the user is on the PNNL network or not.
-        /// </summary>
-        public bool ShowOpenFromDms
-        {
-            get { return System.Net.Dns.GetHostEntry(string.Empty).HostName.Contains("pnl.gov"); }
-        }
-
-        #region Alignment Settings
-
-        public DatasetInformation SelectedBaseline
-        {
-            get { return m_baseline; }
-            set
-            {
-                if (m_baseline != value)
-                {
-                    if (value == null)
-                    {
-                        m_analysis.MetaData.BaselineDataset = null;
-                    }
-                    else
-                    {
-                        m_baseline = value;
-                        m_analysis.MetaData.BaselineDataset = value;
-                    }
-                    this.RaisePropertyChanged("SelectedBaseline");
-                }
-            }
-        }
-
-        public void DisplayAlignment()
-        {
-            foreach (var file in (SelectedDatasets.Where(x => x.IsAligned)))
-            {
-                var alignment = AlignmentInformation.Find(x => x.DatasetID == file.DatasetId);
-                alignmentWindowFactory.CreateNewWindow(alignment);
-            }
-        }
-
-        public double MassTolerance
-        {
-            get { return m_options.LcmsClusteringOptions.InstrumentTolerances.Mass; }
-            set
-            {
-                m_options.LcmsClusteringOptions.InstrumentTolerances.Mass = value;
-                this.RaisePropertyChanged("MassTolerance");
-            }
-        }
-
-        public double NetTolerance
-        {
-            get { return m_options.LcmsClusteringOptions.InstrumentTolerances.Net; }
-            set
-            {
-                m_options.LcmsClusteringOptions.InstrumentTolerances.Net = value;
-                this.RaisePropertyChanged("NetTolerance");
-            }
-        }
-
-        public FeatureAlignmentType SelectedAlignmentAlgorithm 
-        {
-            get { return m_options.AlignmentOptions.AlignmentAlgorithm; }
-            set
-            {
-                if (m_options.AlignmentOptions.AlignmentAlgorithm != value)
-                {
-                    m_options.AlignmentOptions.AlignmentAlgorithm = value;
-                    this.RaisePropertyChanged("SelectedAlignmentAlgorithm");
-                }
-            }
-        }
-
-        public AlignmentType SelectedCalibrationType
-        {
-            get { return m_options.AlignmentOptions.AlignmentType; }
-            set
-            {
-                if (m_options.AlignmentOptions.AlignmentType != value)
-                {
-                    m_options.AlignmentOptions.AlignmentType = value;
-                    this.RaisePropertyChanged("SelectedCalibrationType");
-                }
-            }
-        }
-
-        private string inputFilePath;
-        public string InputFilePath
-        {
-            get { return this.inputFilePath; }
-            set
-            {
-                if (this.inputFilePath != value)
-                {
-                    this.inputFilePath = value;
-                    this.RaisePropertyChanged();
-                    this.AddFolderCommand.RaiseCanExecuteChanged();
-                }
-            }
-        }
-        
-        #endregion
 
         #region Clustering Settings
         public LcmsFeatureClusteringAlgorithmType SelectedLcmsFeatureClusteringAlgorithm
@@ -570,7 +421,7 @@ namespace MultiAlignRogue
             return files;
         }
 
-        private async Task SearchDms()
+        private void SearchDms()
         {
             var dmsLookupViewModel = new DmsLookupViewModel();
             var dialog = new DmsLookupView { DataContext = dmsLookupViewModel };
@@ -633,7 +484,8 @@ namespace MultiAlignRogue
                 this.Deserialize(openFileDialog.FileName);
             }
 
-            this.FeatureFindingSettingsViewModel = new FeatureFindingSettingsViewModel(m_analysis, FeatureCache);
+            this.FeatureFindingSettingsViewModel = new FeatureFindingSettingsViewModel(m_analysis, this.FeatureCache);
+            this.AlignmentSettingsViewModel = new AlignmentSettingsViewModel(m_analysis, this.FeatureCache);
         }
 
         private void Serialize(string filePath)
