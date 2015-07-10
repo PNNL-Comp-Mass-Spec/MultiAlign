@@ -131,13 +131,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="AlignmentSettingsViewModel.cs" />
     <Compile Include="AlignmentView.xaml.cs">
       <DependentUpon>AlignmentView.xaml</DependentUpon>
     </Compile>
     <Compile Include="AlignmentViewFactory.cs" />
     <Compile Include="AlignmentViewModel.cs" />
-    <Compile Include="DatasetViewModel.cs" />
     <Compile Include="DMS\DmsLookupUtility.cs" />
     <Compile Include="DMS\DmsDatasetViewModel.cs" />
     <Compile Include="DMS\DmsLookupView.xaml.cs">

@@ -64,7 +64,6 @@ namespace MultiAlignRogue
         public List<AlignmentType> CalibrationOptions { get; set; }
         public List<DistanceMetric> DistanceMetrics { get; set; }
         public List<ClusterCentroidRepresentation> CentroidRepresentations { get; set; } 
-        private IFeatureWindowFactory msFeatureWindowFactory;
         private IAlignmentWindowFactory alignmentWindowFactory;
 
         public RelayCommand SelectFilesCommand { get; private set; }
@@ -119,12 +118,12 @@ namespace MultiAlignRogue
             FeatureCache = new FeatureLoader { Providers = m_analysis.DataProviders };
             Features = new Dictionary<DatasetInformation, IList<UMCLight>>();
             this.SelectedDatasets = new List<DatasetInformation>();
-            msFeatureWindowFactory = new MSFeatureViewFactory();
             alignmentWindowFactory = new AlignmentViewFactory();
             Datasets = new ObservableCollection<DatasetInformationViewModel>();
             AlignmentInformation = new List<classAlignmentData>();
 
-            this.FeatureFindingSettingsViewModel = new FeatureFindingSettingsViewModel(m_analysis.Options, FeatureCache, Providers);
+            FeatureCache.Providers = m_analysis.DataProviders;
+            this.FeatureFindingSettingsViewModel = new FeatureFindingSettingsViewModel(m_analysis, FeatureCache);
 
             CalibrationOptions = new List<AlignmentType>();
             Enum.GetValues(typeof(AlignmentType)).Cast<AlignmentType>().ToList().ForEach(x => CalibrationOptions.Add(x));
@@ -231,9 +230,6 @@ namespace MultiAlignRogue
                 Datasets.Add(viewmodel);
             }
         }
-        #endregion
-
-        #region Feature Loading
         #endregion
 
         #region Align Features
@@ -637,7 +633,7 @@ namespace MultiAlignRogue
                 this.Deserialize(openFileDialog.FileName);
             }
 
-            this.FeatureFindingSettingsViewModel = new FeatureFindingSettingsViewModel(m_analysis.Options, FeatureCache, Providers);
+            this.FeatureFindingSettingsViewModel = new FeatureFindingSettingsViewModel(m_analysis, FeatureCache);
         }
 
         private void Serialize(string filePath)
