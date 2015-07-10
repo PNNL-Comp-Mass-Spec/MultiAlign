@@ -35,6 +35,17 @@ namespace MultiAlignCore.IO.RawData
                 case ".mzxml":
                     reader = new MzXMLReader();
                     break;
+                case ".mzml":
+                    reader = new InformedProteomicsReader();
+                    break;
+                case ".gz":
+                    if (name.ToLower().EndsWith(".mzml.gz"))
+                    {
+                        reader = new InformedProteomicsReader();
+                    }
+                    break;
+                default:
+                    reader = new InformedProteomicsReader();
             }
 
             return reader;
