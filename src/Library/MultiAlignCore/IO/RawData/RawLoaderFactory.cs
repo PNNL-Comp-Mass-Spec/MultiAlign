@@ -46,6 +46,7 @@ namespace MultiAlignCore.IO.RawData
                     break;
                 default:
                     reader = new InformedProteomicsReader();
+                    break;
             }
 
             return reader;
