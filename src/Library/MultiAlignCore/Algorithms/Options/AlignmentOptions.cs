@@ -21,7 +21,7 @@ namespace MultiAlignCore.Algorithms.Options
 
         private bool m_isAlignmentBaselineAMasstagDB;
 
-        public LcmsWarpAlignmentOptions LCMSWarpOptions { get; private set; }
+        public LcmsWarpAlignmentOptions LCMSWarpOptions { get; set; }
 
         #endregion
 

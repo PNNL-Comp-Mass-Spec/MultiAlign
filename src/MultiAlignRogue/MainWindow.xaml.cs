@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -26,20 +27,18 @@ namespace MultiAlignRogue
         public MainWindow()
         {
             InitializeComponent();
+
             this.viewModel = this.DataContext as MainViewModel;
+            this.DataContextChanged += (o, e) => this.viewModel = this.DataContext as MainViewModel;
         }
 
          
         private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var selectedItems = this.FileSelectionDataGrid.SelectedItems;
-            var selectedFiles = this.viewModel.selectedFiles;
-            selectedFiles.Clear();
-            foreach (var selectedItem in selectedItems)
+            if (this.viewModel != null)
             {
-                selectedFiles.Add(selectedItem as DatasetInformation);
-                this.viewModel.FindMSFeaturesCommand.RaiseCanExecuteChanged();
-                this.viewModel.PlotMSFeaturesCommand.RaiseCanExecuteChanged();
+                this.viewModel.SelectedDatasets = new List<DatasetInformation>(selectedItems.Cast<DatasetInformation>());
             }
         }
 

@@ -17,6 +17,15 @@ namespace MultiAlignRogue
     class MSFeatureViewModel : PlotViewModelBase
     {
         public PlotModel Model { get; private set; }
+
+        private readonly LinearAxis netAxis;
+        private readonly LinearAxis massAxis;
+
+        private int numSections;
+        private int featuresPerSection;
+
+        private IList<UMCLight> features; 
+
         public MSFeatureViewModel()
         {
 
@@ -30,7 +39,7 @@ namespace MultiAlignRogue
             this.Model.LegendPosition = LegendPosition.LeftTop;
             this.Model.LegendOrientation = LegendOrientation.Vertical;
 
-            var netAxis = new LinearAxis
+            this.netAxis = new LinearAxis
             {
                 Title = "NET",
                 Position = AxisPosition.Bottom,
@@ -39,7 +48,7 @@ namespace MultiAlignRogue
                 AbsoluteMaximum = 1.0
             };
 
-            var massAxis = new LinearAxis
+            this.massAxis = new LinearAxis
             {
                 Title = "Monoisotopic Mass",
                 Position = AxisPosition.Left,
@@ -47,10 +56,28 @@ namespace MultiAlignRogue
                 AbsoluteMinimum = 0
             };
 
-            this.Model.Axes.Add(netAxis);
-            this.Model.Axes.Add(massAxis);
+            this.Model.Axes.Add(this.netAxis);
+            this.Model.Axes.Add(this.massAxis);
             PlotFeatures(features);
             
+        }
+
+        public ScatterSeries GetPoints(IList<UMCLight> Features)
+        {
+            ScatterSeries scatter = new ScatterSeries { MarkerFill = OxyColors.Red, MarkerType = MarkerType.Circle };
+            foreach (var feature in Features)
+            {
+                ScatterPoint point = new ScatterPoint(feature.Net, feature.MassMonoisotopic, .8, 0);
+                try
+                {
+                    scatter.Points.Add(point);
+                }
+                catch
+                {
+                    continue;
+                }
+            }
+            return scatter;
         }
 
         private void PlotFeatures(Dictionary<DatasetInformation, IList<UMCLight>> Features)
@@ -73,22 +100,27 @@ namespace MultiAlignRogue
             }
         }
 
-        public ScatterSeries GetPoints(IList<UMCLight> Features)
+        private void Partition()
         {
-            ScatterSeries scatter = new ScatterSeries{MarkerFill = OxyColors.Red, MarkerType = MarkerType.Circle};
-            foreach (var feature in Features)
+            var massStepSize = (massAxis.ActualMaximum - massAxis.ActualMinimum) / numSections;
+            var netStepSize = (netAxis.ActualMaximum - netAxis.ActualMinimum) / numSections;
+
+            ////var featureList = features.OrderByDescending(feat => feat.Abundance).ToList();
+
+            for (int i = 0; i < numSections; i++)
             {
-                ScatterPoint point = new ScatterPoint(feature.Net, feature.MassMonoisotopic, .8, 0);
-                try
+                var minMass = i * massStepSize;
+                var maxMass = (i + 1) * massStepSize;
+
+                for (int j = 0; j < numSections; j++)
                 {
-                    scatter.Points.Add(point);
+                    var minNet = i * netStepSize;
+                    var maxNet = (i + 1) * netStepSize;
+
+                    ////var sectionFeatures = featureList.Where(feat => feat.)
                 }
-                catch
-                {
-                    continue;
-                }         
-            }        
-            return scatter;
+            }
+
         }
     }
 }

@@ -7,7 +7,7 @@ using MultiAlignCore.Data.Alignment;
 
 namespace MultiAlignRogue
 {
-    interface IAlignmentWindowFactory
+    public interface IAlignmentWindowFactory
     {
         void CreateNewWindow();
         void CreateNewWindow(classAlignmentData alignment);
