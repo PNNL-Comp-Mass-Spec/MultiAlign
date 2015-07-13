@@ -32,6 +32,16 @@ namespace MultiAlignTestSuite.Papers.Alignment.IO
 
         #region ISpectraProvider Members
 
+        public int GetMinScan(int group)
+        {
+            return m_provider.GetMinScan(group);
+        }
+
+        public int GetMaxScan(int group)
+        {
+            return m_provider.GetMaxScan(group);
+        }
+
         public void AddDataFile(string path, int groupId)
         {
             m_provider.AddDataFile(path, groupId);

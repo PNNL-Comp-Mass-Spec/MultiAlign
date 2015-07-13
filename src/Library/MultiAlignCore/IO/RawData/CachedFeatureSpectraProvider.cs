@@ -106,6 +106,16 @@ namespace MultiAlignCore.IO.RawData
             m_reader.Dispose();
         }
 
+        public int GetMinScan(int group)
+        {
+            return m_reader.GetMinScan(group);
+        }
+
+        public int GetMaxScan(int group)
+        {
+            return m_reader.GetMaxScan(group);
+        }
+
 
         public MSSpectra GetSpectrum(int scan, int group, int scanLevel, out ScanSummary summary, bool loadPeaks)
         {

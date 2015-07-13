@@ -324,6 +324,16 @@ namespace MultiAlignCore.IO.RawData
 
         #region ISpectraProvider Members
 
+        public int GetMinScan(int groupId)
+        {
+            return 1;
+        }
+
+        public int GetMaxScan(int groupId)
+        {
+            return GetReaderForGroup(groupId).GetNumScans();
+        }
+
         /// <summary>
         ///     Retrieves a dictionary of scan data
         /// </summary>

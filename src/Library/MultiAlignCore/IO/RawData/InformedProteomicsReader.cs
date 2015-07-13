@@ -66,6 +66,16 @@ namespace MultiAlignCore.IO.RawData
         #endregion
         #region ISpectraProvider
 
+        public int GetMinScan(int groupId)
+        {
+            return GetReaderForGroup(groupId).MinLcScan;
+        }
+
+        public int GetMaxScan(int groupId)
+        {
+            return GetReaderForGroup(groupId).MaxLcScan;
+        }
+
         /// <summary>
         /// Reads a list of MSMS Spectra header data from the Raw file
         /// </summary>
@@ -87,12 +97,12 @@ namespace MultiAlignCore.IO.RawData
         public List<MSSpectra> GetMSMSSpectra(int groupId, Dictionary<int, int> excludeMap, bool loadPeaks)
         {
             // Get the RawFileReader for this group
-            var rawReader = GetReaderForGroup(groupId);
+            var ipbReader = GetReaderForGroup(groupId);
 
             var spectra = new List<MSSpectra>();
 
-            var numberOfScans = rawReader.NumSpectra;
-            for (var i = 0; i < numberOfScans; i++)
+            var numberOfScans = ipbReader.NumSpectra;
+            for (var i = 1; i <= numberOfScans; i++)
             {
                 var isInExcludeMap = excludeMap.ContainsKey(i);
                 if (isInExcludeMap)
@@ -101,7 +111,7 @@ namespace MultiAlignCore.IO.RawData
                     continue;
                 }
 
-                var summary = GetScanSummary(i, rawReader);
+                var summary = GetScanSummary(i, ipbReader);
 
                 if (summary.MsLevel > 1)
                 {
@@ -109,7 +119,7 @@ namespace MultiAlignCore.IO.RawData
                     {
                         MsLevel = summary.MsLevel,
                         RetentionTime = summary.Time,
-                        Scan = i,
+                        Scan = summary.Scan,
                         PrecursorMz = summary.PrecursorMz,
                         TotalIonCurrent = summary.TotalIonCurrent,
                         CollisionType = summary.CollisionType
@@ -118,7 +128,7 @@ namespace MultiAlignCore.IO.RawData
                     // Need to make this a standard type of collision based off of the data.
                     if (loadPeaks)
                     {
-                        spectrum.Peaks = LoadRawSpectra(rawReader, i);
+                        spectrum.Peaks = LoadSpectra(ipbReader, i);
                     }
                     spectra.Add(spectrum);
                 }
@@ -151,14 +161,14 @@ namespace MultiAlignCore.IO.RawData
 
         public List<XYData> GetRawSpectra(int scan, int groupId, int scanLevel, out ScanSummary summary)
         {
-            var rawReader = GetScanSummaryAndReader(scan, groupId, out summary);
-            if (rawReader == null)
+            var ipbReader = GetScanSummaryAndReader(scan, groupId, out summary);
+            if (ipbReader == null)
                 return null;
 
             if (summary.MsLevel != scanLevel && scanLevel > 0)
                 return null;
 
-            var data = LoadRawSpectra(rawReader, scan);
+            var data = LoadSpectra(ipbReader, scan);
 
             return data;
         }
@@ -184,14 +194,14 @@ namespace MultiAlignCore.IO.RawData
             }
 
             // Get the RawFileReader for this group
-            var rawReader = GetReaderForGroup(groupId);
+            var ipbReader = GetReaderForGroup(groupId);
 
             var datasetSummary = new DatasetSummary();
             var scanMap = new Dictionary<int, ScanSummary>();
-            var numberOfScans = rawReader.NumSpectra;
-            for (var i = 0; i < numberOfScans; i++)
+            var numberOfScans = ipbReader.NumSpectra;
+            for (var i = 1; i <= numberOfScans; i++)
             {
-                var summary = GetScanSummary(i, rawReader);
+                var summary = GetScanSummary(i, ipbReader);
 
                 scanMap.Add(i, summary);
             }
@@ -217,23 +227,23 @@ namespace MultiAlignCore.IO.RawData
         private LcMsRun GetScanSummaryAndReader(int scan, int groupId, out ScanSummary summary)
         {
             // Get the RawFileReader for this group
-            var rawReader = GetReaderForGroup(groupId);
+            var ipbReader = GetReaderForGroup(groupId);
 
-            ValidateScanNumber(scan, rawReader);
+            scan = ValidateScanNumber(scan, ipbReader);
 
-            summary = GetScanSummary(scan, rawReader);
+            summary = GetScanSummary(scan, ipbReader);
 
-            return rawReader;
+            return ipbReader;
         }
 
         public MSSpectra GetSpectrum(int scan, int groupId, int scanLevel, out ScanSummary summary, bool loadPeaks)
         {
             // Get the RawFileReader for this group
-            var rawReader = GetReaderForGroup(groupId);
+            var ipbReader = GetReaderForGroup(groupId);
 
-            ValidateScanNumber(scan, rawReader);
+            scan = ValidateScanNumber(scan, ipbReader);
 
-            summary = GetScanSummary(scan, rawReader);
+            summary = GetScanSummary(scan, ipbReader);
 
             var spectrum = new MSSpectra
             {
@@ -248,15 +258,15 @@ namespace MultiAlignCore.IO.RawData
             // Need to make this a standard type of collision based off of the data.
             if (loadPeaks)
             {
-                spectrum.Peaks = LoadRawSpectra(rawReader, scan);
+                spectrum.Peaks = LoadSpectra(ipbReader, scan);
             }
 
             return spectrum;
         }
 
-        private List<XYData> LoadRawSpectra(LcMsRun rawReader, int scan)
+        private List<XYData> LoadSpectra(LcMsRun ipbReader, int scan)
         {
-            var spec = rawReader.GetSpectrum(scan);
+            var spec = ipbReader.GetSpectrum(scan);
 
             if (spec.Peaks == null)
                 return new List<XYData>();
@@ -324,24 +334,25 @@ namespace MultiAlignCore.IO.RawData
                 m_readers.Add(groupId, reader);
             }
 
-            var rawReader = m_readers[groupId];
+            var ipbReader = m_readers[groupId];
 
-            return rawReader;
+            return ipbReader;
         }
         #endregion
 
         #region Private functions
 
-        private ScanSummary GetScanSummary(int scan, LcMsRun rawReader)
+        private ScanSummary GetScanSummary(int scan, LcMsRun ipbReader)
         {
-            var spec = rawReader.GetSpectrum(scan);
+            var spec = ipbReader.GetSpectrum(scan, true);
 
             var summary = new ScanSummary
             {
                 MsLevel = spec.MsLevel,
                 Time = spec.ElutionTime,
-                Scan = scan,
+                Scan = spec.ScanNum,
                 //TotalIonCurrent = Convert.ToInt64(header.TotalIonCurrent), // Only used in PNNLOmics.Algorithms.Chromatograms.XicCreator.CreateXic(...)
+                TotalIonCurrent = spec.Peaks.Select(peak => (long)peak.Intensity).Sum(), // Only used in PNNLOmics.Algorithms.Chromatograms.XicCreator.CreateXic(...)
                 PrecursorMz = 0,
                 CollisionType = CollisionType.Other,
             };
@@ -376,13 +387,22 @@ namespace MultiAlignCore.IO.RawData
             return summary;
         }
 
-        private int ValidateScanNumber(int scan, LcMsRun rawReader)
+        private int ValidateScanNumber(int scan, LcMsRun ipbReader)
         {
-            var totalSpectra = rawReader.NumSpectra;
+            var totalSpectra = ipbReader.NumSpectra;
 
             if (scan > totalSpectra)
             {
                 throw new ScanOutOfRangeException("The requested scan is out of range.");
+            }
+
+            if (scan < ipbReader.MinLcScan)
+            {
+                scan = ipbReader.MinLcScan;
+            }
+            else if (scan > ipbReader.MaxLcScan)
+            {
+                scan = ipbReader.MaxLcScan;
             }
 
             return scan;

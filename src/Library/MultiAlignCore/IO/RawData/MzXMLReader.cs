@@ -34,6 +34,16 @@ namespace MultiAlignCore.IO.RawData
         /// </summary>
         public double BinSize { get; set; }
 
+        public int GetMinScan(int groupId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int GetMaxScan(int groupId)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         ///     Reads a list of MSMS Spectra header data from the mzXML file.
         /// </summary>
