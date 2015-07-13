@@ -4,6 +4,7 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Collections.ObjectModel;
+using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Serialization;
@@ -41,8 +42,6 @@ namespace MultiAlignRogue
         public AnalysisConfig m_config { get; set;}
         public AlgorithmProvider m_algorithms { get; set; }
         public MultiAlignAnalysisOptions m_options { get; set;}
-        private DatasetInformation m_baseline { get; set; }
-        private AlgorithmProvider algorithms { get; set; }
 
         public ObservableCollection<DatasetInformationViewModel> Datasets { get; private set;}
         public FeatureLoader FeatureCache;
@@ -482,30 +481,42 @@ namespace MultiAlignRogue
             if (result == DialogResult.OK)
             {
                 this.Deserialize(openFileDialog.FileName);
-            }
 
-            this.FeatureFindingSettingsViewModel = new FeatureFindingSettingsViewModel(m_analysis, this.FeatureCache);
-            this.AlignmentSettingsViewModel = new AlignmentSettingsViewModel(m_analysis, this.FeatureCache);
+                this.UpdateDatasets();
+                this.FeatureFindingSettingsViewModel = new FeatureFindingSettingsViewModel(m_analysis, this.FeatureCache);
+                this.AlignmentSettingsViewModel = new AlignmentSettingsViewModel(m_analysis, this.FeatureCache);
+            }
         }
 
         private void Serialize(string filePath)
         {
-            var xmlSerializer = new XmlSerializer(typeof (MultiAlignAnalysisOptions));
-
-            using (var writer = new StreamWriter(filePath))
+            var rogueProjectSerializer = new DataContractSerializer(typeof (RogueProject));
+            var datasetInfoList = this.Datasets.Select(datasetInformation => datasetInformation.Dataset).ToList();
+            var rogueProject = new RogueProject
             {
-                xmlSerializer.Serialize(writer, m_analysis.Options);
+                MultiAlignAnalysisOptions = this.m_analysis.Options,
+                Datasets = datasetInfoList
+            };
+            using (var writer = File.Open(filePath, FileMode.OpenOrCreate))
+            {
+                rogueProjectSerializer.WriteObject(writer, rogueProject);
             }
         }
 
         private void Deserialize(string filePath)
         {
-            var xmlSerializer = new XmlSerializer(typeof(MultiAlignAnalysisOptions));
-            using (var reader = new StreamReader(filePath))
+            var rogueProjectSerializer = new DataContractSerializer(typeof(RogueProject));
+
+            using (var reader = File.Open(filePath, FileMode.Open))
             {
                 try
                 {
-                    this.m_analysis.Options = (MultiAlignAnalysisOptions) xmlSerializer.Deserialize(reader);
+                    RogueProject rogueProject = (RogueProject) rogueProjectSerializer.ReadObject(reader);
+                    this.m_analysis.Options = rogueProject.MultiAlignAnalysisOptions;                   
+                    foreach (var dataset in rogueProject.Datasets)
+                    {
+                        this.m_analysis.MetaData.Datasets.Add(dataset);
+                    }
                 }
                 catch (InvalidCastException)
                 {
