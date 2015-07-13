@@ -482,6 +482,8 @@ namespace MultiAlignRogue
             {
                 this.Deserialize(openFileDialog.FileName);
 
+                Providers = SetupDataProviders(string.IsNullOrEmpty(this.m_config.AnalysisPath));
+                m_analysis.DataProviders = Providers;
                 this.UpdateDatasets();
                 this.FeatureFindingSettingsViewModel = new FeatureFindingSettingsViewModel(m_analysis, this.FeatureCache);
                 this.AlignmentSettingsViewModel = new AlignmentSettingsViewModel(m_analysis, this.FeatureCache);
@@ -495,7 +497,8 @@ namespace MultiAlignRogue
             var rogueProject = new RogueProject
             {
                 MultiAlignAnalysisOptions = this.m_analysis.Options,
-                Datasets = datasetInfoList
+                Datasets = datasetInfoList,
+                AnalysisPath = this.m_config.AnalysisPath
             };
             using (var writer = File.Open(filePath, FileMode.OpenOrCreate))
             {
@@ -517,6 +520,8 @@ namespace MultiAlignRogue
                     {
                         this.m_analysis.MetaData.Datasets.Add(dataset);
                     }
+
+                    this.m_config.AnalysisPath = rogueProject.AnalysisPath;
                 }
                 catch (InvalidCastException)
                 {

@@ -15,6 +15,11 @@ namespace MultiAlignRogue
         /// <summary>
         /// Gets or sets the list of datasets.
         /// </summary>
-        public List<DatasetInformation> Datasets { get; set; } 
+        public List<DatasetInformation> Datasets { get; set; }
+
+        /// <summary>
+        /// Gets or sets the path for the analysis file.
+        /// </summary>
+        public string AnalysisPath { get; set; }
     }
 }
