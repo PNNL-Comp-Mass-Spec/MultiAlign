@@ -110,7 +110,7 @@ namespace MultiAlignTestSuite.Algorithms
             var model = CreatePlot(spectrumX.Peaks, spectrumY.Peaks, mzTolerance);
             model.Title = newTitle;
 
-            var plot = new Plot();
+            var plot = new PlotView();
             plot.Model = model;
             var form = new Form();
             form.Size = Screen.PrimaryScreen.WorkingArea.Size;
@@ -184,7 +184,7 @@ namespace MultiAlignTestSuite.Algorithms
             var model = CreatePlot(spectrumX.Peaks, mzTolerance);
             model.Title = newTitle;
 
-            var plot = new Plot();
+            var plot = new PlotView();
             plot.Model = model;
             var form = new Form();
             form.Size = Screen.PrimaryScreen.WorkingArea.Size;
