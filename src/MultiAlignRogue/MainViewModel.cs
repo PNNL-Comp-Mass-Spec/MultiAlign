@@ -483,6 +483,7 @@ namespace MultiAlignRogue
                 this.Deserialize(openFileDialog.FileName);
 
                 Providers = SetupDataProviders(string.IsNullOrEmpty(this.m_config.AnalysisPath));
+                this.FeatureCache.Providers = Providers;
                 m_analysis.DataProviders = Providers;
                 this.UpdateDatasets();
                 this.FeatureFindingSettingsViewModel = new FeatureFindingSettingsViewModel(m_analysis, this.FeatureCache);
