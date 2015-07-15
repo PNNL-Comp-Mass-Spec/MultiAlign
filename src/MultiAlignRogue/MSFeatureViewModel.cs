@@ -32,16 +32,19 @@ namespace MultiAlignRogue
         }
 
         public MSFeatureViewModel(Dictionary<DatasetInformation, IList<UMCLight>> features)
-        {   
-            this.Model = new PlotModel{Title = "MS Features"};
-            this.Model.IsLegendVisible = true;
-            this.Model.LegendPlacement = LegendPlacement.Inside;
-            this.Model.LegendPosition = LegendPosition.LeftTop;
-            this.Model.LegendOrientation = LegendOrientation.Vertical;
+        {
+            this.Model = new PlotModel
+            {
+                Title = "MS Features",
+                IsLegendVisible = true,
+                LegendPlacement = LegendPlacement.Inside,
+                LegendPosition = LegendPosition.LeftTop,
+                LegendOrientation = LegendOrientation.Vertical
+            };
 
             this.netAxis = new LinearAxis
             {
-                Title = "NET",
+                Title = "Scan",
                 Position = AxisPosition.Bottom,
                 IsAxisVisible = true,
                 AbsoluteMinimum = 0,
@@ -62,22 +65,16 @@ namespace MultiAlignRogue
             
         }
 
-        public ScatterSeries GetPoints(IList<UMCLight> Features)
+        public IEnumerable<DataPoint> GetPoints(IList<UMCLight> Features, int maxScan)
         {
-            ScatterSeries scatter = new ScatterSeries { MarkerFill = OxyColors.Red, MarkerType = MarkerType.Circle };
+            var dataPoints = new List<DataPoint>();
             foreach (var feature in Features)
             {
-                ScatterPoint point = new ScatterPoint(feature.Net, feature.MassMonoisotopic, .8, 0);
-                try
-                {
-                    scatter.Points.Add(point);
-                }
-                catch
-                {
-                    continue;
-                }
+                dataPoints.Add(new DataPoint(feature.ScanStart / (double)maxScan, feature.MassMonoisotopic));
+                dataPoints.Add(new DataPoint(feature.ScanEnd / (double)maxScan, feature.MassMonoisotopic));
+                dataPoints.Add(new DataPoint(Double.NaN, feature.MassMonoisotopic));
             }
-            return scatter;
+            return dataPoints;
         }
 
         private void PlotFeatures(Dictionary<DatasetInformation, IList<UMCLight>> Features)
@@ -87,9 +84,13 @@ namespace MultiAlignRogue
                 int i = 0;
                 foreach (var file in Features.Keys)
                 {
-                    ScatterSeries currentFeatures = GetPoints(Features[file]);
-                    currentFeatures.MarkerFill = Colors.ElementAt(i);
-                    currentFeatures.Title = file.DatasetName;
+                    LineSeries currentFeatures = new LineSeries
+                    {
+                        Color = Colors.ElementAt(i),
+                        Title = file.DatasetName,
+                        StrokeThickness = 0.8
+                    };
+                    currentFeatures.Points.AddRange(GetPoints(Features[file], file.ScanTimes.Keys.Max()));
                     this.Model.Series.Add(currentFeatures);
                     i = (i + 1)%Colors.Count; //Cycle through available colors if we run out
                 }
@@ -98,29 +99,6 @@ namespace MultiAlignRogue
             {
                 MessageBox.Show("Make sure that the selected files have detected features.");
             }
-        }
-
-        private void Partition()
-        {
-            var massStepSize = (massAxis.ActualMaximum - massAxis.ActualMinimum) / numSections;
-            var netStepSize = (netAxis.ActualMaximum - netAxis.ActualMinimum) / numSections;
-
-            ////var featureList = features.OrderByDescending(feat => feat.Abundance).ToList();
-
-            for (int i = 0; i < numSections; i++)
-            {
-                var minMass = i * massStepSize;
-                var maxMass = (i + 1) * massStepSize;
-
-                for (int j = 0; j < numSections; j++)
-                {
-                    var minNet = i * netStepSize;
-                    var maxNet = (i + 1) * netStepSize;
-
-                    ////var sectionFeatures = featureList.Where(feat => feat.)
-                }
-            }
-
         }
     }
 }
