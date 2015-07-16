@@ -7,6 +7,7 @@ using System.Windows;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
+using MultiAlign.Data;
 using MultiAlign.ViewModels.Datasets;
 using MultiAlignCore.Algorithms;
 using MultiAlignCore.Data;
@@ -54,14 +55,20 @@ namespace MultiAlignRogue
             this.CalibrationOptions = new ObservableCollection<AlignmentType>(Enum.GetValues(typeof(AlignmentType)).Cast<AlignmentType>());
             this.AlignmentAlgorithms = new ObservableCollection<FeatureAlignmentType>(
                                            Enum.GetValues(typeof(FeatureAlignmentType)).Cast<FeatureAlignmentType>());
+            this.selectedDatasets = new ReadOnlyCollection<DatasetInformation>(new List<DatasetInformation>());
 
             MessengerInstance.Register<PropertyChangedMessage<IReadOnlyCollection<DatasetInformation>>>(this, sds =>
             {
                 this.selectedDatasets = sds.NewValue;
+                ThreadSafeDispatcher.Invoke(() => AlignToBaselineCommand.RaiseCanExecuteChanged());
+                ThreadSafeDispatcher.Invoke(() => DisplayAlignmentCommand.RaiseCanExecuteChanged());
             });
 
-            AlignToBaselineCommand = new RelayCommand(AsyncAlignToBaseline);
-            DisplayAlignmentCommand = new RelayCommand(DisplayAlignment);
+            AlignToBaselineCommand = new RelayCommand(AsyncAlignToBaseline, () => this.SelectedBaseline != null && 
+                                                                                  this.selectedDatasets != null &&
+                                                                                  this.selectedDatasets.Count > 0 &&
+                                                                                  this.selectedDatasets.Any(file => !file.DoingWork));
+            DisplayAlignmentCommand = new RelayCommand(DisplayAlignment, () => this.selectedDatasets.Any(file => file.IsAligned));
         }
 
         public RelayCommand AlignToBaselineCommand { get; private set; }
@@ -159,8 +166,11 @@ namespace MultiAlignRogue
                 var alignmentData = new AlignmentDAOHibernate();
                 alignmentData.ClearAll();
 
-                foreach (var file in this.selectedDatasets)
+                foreach (var file in this.selectedDatasets.Where(file => !file.DoingWork))
                 {
+                    file.DoingWork = true;
+                    ThreadSafeDispatcher.Invoke(() => AlignToBaselineCommand.RaiseCanExecuteChanged());
+                    ThreadSafeDispatcher.Invoke(() => DisplayAlignmentCommand.RaiseCanExecuteChanged());
                     if (file.IsBaseline || !file.FeaturesFound) continue;
                     var features = this.featureCache.LoadDataset(file, this.analysis.Options.MsFilteringOptions,
                         this.analysis.Options.LcmsFindingOptions, this.analysis.Options.LcmsFilteringOptions);
@@ -179,6 +189,9 @@ namespace MultiAlignRogue
 
                     this.featureCache.CacheFeatures(features);
                     file.IsAligned = true;
+                    file.DoingWork = false;
+                    ThreadSafeDispatcher.Invoke(() => AlignToBaselineCommand.RaiseCanExecuteChanged());
+                    ThreadSafeDispatcher.Invoke(() => DisplayAlignmentCommand.RaiseCanExecuteChanged());
                 }
             }
             else
