@@ -235,8 +235,8 @@ namespace MultiAlignRogue
 
         public async Task PlotMSFeatures()
         {
-            try
-            {
+            //try
+            //{
                 features = new Dictionary<DatasetInformation, IList<UMCLight>>();
                 foreach (var file in selectedDatasets.Where(file => file.FeaturesFound)) // Select only datasets with features.
                 {
@@ -246,11 +246,11 @@ namespace MultiAlignRogue
                     features.Add(file, feat);
                 }
                 msFeatureWindowFactory.CreateNewWindow(features);
-            }
-            catch
-            {
-                MessageBox.Show("Feature cache currently being accessed. Try again in a few moments");
-            }
+            //}
+            //catch
+            //{
+            //    MessageBox.Show("Feature cache currently being accessed. Try again in a few moments");
+            //}
         }
     }
 }

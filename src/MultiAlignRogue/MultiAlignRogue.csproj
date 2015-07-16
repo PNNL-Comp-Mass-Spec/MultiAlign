@@ -155,6 +155,7 @@
     <Compile Include="MSFeatureViewModel.cs" />
     <Compile Include="PlotViewModelBase.cs" />
     <Compile Include="RogueProject.cs" />
+    <Compile Include="Throttler.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Page Include="AlignmentView.xaml">

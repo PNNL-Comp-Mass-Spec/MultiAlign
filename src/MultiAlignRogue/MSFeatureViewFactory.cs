@@ -16,10 +16,12 @@ namespace MultiAlignRogue
         }
         public void CreateNewWindow(Dictionary<DatasetInformation, IList<UMCLight>> Features)
         {
+            var viewModel = new MSFeatureViewModel(Features);
             MSFeatureView window = new MSFeatureView
             {
-                DataContext = new MSFeatureViewModel(Features)
+                DataContext = viewModel
             };
+
             window.Show();
         }
     }
