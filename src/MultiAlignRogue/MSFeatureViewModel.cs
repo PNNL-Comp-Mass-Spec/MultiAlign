@@ -51,11 +51,11 @@ namespace MultiAlignRogue
             
         }
 
-        public MSFeatureViewModel(Dictionary<DatasetInformation, IList<UMCLight>> features)
+        public MSFeatureViewModel(Dictionary<DatasetInformation, IList<UMCLight>> features, int numSectionsPerAxis = 15, int featuresPerSection = 100)
         {
             this.allFeatures = features;
-            this.numSectionsPerAxis = 10;
-            this.featuresPerSection = 50;
+            this.numSectionsPerAxis = numSectionsPerAxis;
+            this.featuresPerSection = featuresPerSection / features.Keys.Count;
             this.throttler = new Throttler(TimeSpan.FromMilliseconds(100));
             this.globalMaxMass = this.GetGlobalMaxMass(features);
 
