@@ -12,6 +12,10 @@ using PNNLOmics.Data.Features;
 
 namespace MultiAlignRogue
 {
+    using System.Drawing;
+
+    using QuadTreeLib;
+
     class MSFeatureViewModel : PlotViewModelBase
     {
         /// <summary>
@@ -41,6 +45,8 @@ namespace MultiAlignRogue
 
         private readonly double globalMaxMass;
 
+        private QuadTree<FeaturePoint> quadTree; 
+
         /// <summary>
         /// All features on plot.
         /// </summary>
@@ -58,6 +64,13 @@ namespace MultiAlignRogue
             this.featuresPerSection = featuresPerSection / features.Keys.Count;
             this.throttler = new Throttler(TimeSpan.FromMilliseconds(100));
             this.globalMaxMass = this.GetGlobalMaxMass(features);
+            this.quadTree = new QuadTree<FeaturePoint>(new RectangleF
+                                                           {
+                                                               X = 0,
+                                                               Y = 0,
+                                                               Width = 1,
+                                                               Height = (float)this.globalMaxMass
+                                                           });
 
             this.Model = new PlotModel
             {
@@ -163,7 +176,7 @@ namespace MultiAlignRogue
                 var netMin = this.netAxis.ActualMinimum + (i * netStep);
                 var netMax = this.netAxis.ActualMinimum + ((i + 1) * netStep);
                 var lowScan = netMin * maxScan;
-                var hiScan = netMax  *maxScan;
+                var hiScan = netMax  * maxScan;
                 for (int j = 0; j < this.numSectionsPerAxis; j++)
                 {
                     var massMin = this.massAxis.ActualMinimum + (i * massStep);
