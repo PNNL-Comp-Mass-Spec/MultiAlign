@@ -57,7 +57,7 @@ namespace MultiAlignRogue
             
         }
 
-        public MSFeatureViewModel(Dictionary<DatasetInformation, IList<UMCLight>> features, int numSectionsPerAxis = 15, int featuresPerSection = 100)
+        public MSFeatureViewModel(Dictionary<DatasetInformation, IList<UMCLight>> features, int numSectionsPerAxis = 10, int featuresPerSection = 50)
         {
             this.allFeatures = features;
             this.numSectionsPerAxis = numSectionsPerAxis;
@@ -189,8 +189,8 @@ namespace MultiAlignRogue
                 var highScan = netMax  * maxScan;
                 for (int j = 0; j < this.numSectionsPerAxis; j++)
                 {
-                    var massMin = this.massAxis.ActualMinimum + (i * massStep);
-                    var massMax = this.massAxis.ActualMinimum + ((i + 1) * massStep);
+                    var massMin = this.massAxis.ActualMinimum + (j * massStep);
+                    var massMax = this.massAxis.ActualMinimum + ((j + 1) * massStep);
 
                     ////var featureRange = features.Where(feat => (feat.MassMonoisotopic >= massMin &&
                     ////                                           feat.MassMonoisotopic <= massMax) &&
@@ -201,7 +201,7 @@ namespace MultiAlignRogue
                     var treeFeatures = featureTree.Query(new RectangleF
                                           {
                                               X = (float)lowScan,
-                                              Y = (float)massMin,
+                                              Y = (float)massMax,
                                               Height = (float)(massMax - massMin),
                                               Width = (float)(highScan - lowScan)
                                           });
@@ -232,7 +232,7 @@ namespace MultiAlignRogue
                 dataPoints.Add(new DataPoint(feature.ScanEnd / (double)maxScan, feature.MassMonoisotopic));
 
                 // Insert NaN point to cause broken line series
-                dataPoints.Add(new DataPoint(Double.NaN, feature.MassMonoisotopic));
+                dataPoints.Add(new DataPoint(double.NaN, feature.MassMonoisotopic));
             }
 
             return dataPoints;
