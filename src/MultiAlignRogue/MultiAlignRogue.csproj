@@ -138,6 +138,7 @@
     </Compile>
     <Compile Include="AlignmentViewFactory.cs" />
     <Compile Include="AlignmentViewModel.cs" />
+    <Compile Include="ClusterSettingsViewModel.cs" />
     <Compile Include="DMS\DmsLookupUtility.cs" />
     <Compile Include="DMS\DmsDatasetViewModel.cs" />
     <Compile Include="DMS\DmsLookupView.xaml.cs">

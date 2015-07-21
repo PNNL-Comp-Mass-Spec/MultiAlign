@@ -16,6 +16,7 @@ using MultiAlign.IO;
 using MultiAlign.ViewModels.Datasets;
 using MultiAlign.ViewModels.Wizard;
 using MultiAlignCore.Algorithms;
+using MultiAlignCore.Algorithms.Clustering;
 using MultiAlignCore.Algorithms.Options;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.MetaData;
@@ -40,21 +41,17 @@ namespace MultiAlignRogue
         public MultiAlignAnalysis m_analysis { get; set;}
         VistaFolderBrowserDialog folderBrowser = new VistaFolderBrowserDialog();
         public AnalysisConfig m_config { get; set;}
-        public AlgorithmProvider m_algorithms { get; set; }
+        
         public MultiAlignAnalysisOptions m_options { get; set;}
 
         public ObservableCollection<DatasetInformationViewModel> Datasets { get; private set;}
         public FeatureLoader FeatureCache;
-        public List<DistanceMetric> DistanceMetrics { get; set; }
-        public List<ClusterCentroidRepresentation> CentroidRepresentations { get; set; } 
+
 
         public RelayCommand SelectFilesCommand { get; private set; }
         public RelayCommand SelectDirectoryCommand { get; private set; }
         public RelayCommand SearchDmsCommand { get; private set; }
         public RelayCommand AddFolderCommand { get; private set; }
-        public RelayCommand ClusterFeaturesCommand { get; private set; }
-        public RelayCommand DisplayClustersCommand { get; private set; }
-
         public RelayCommand SaveProjectCommand { get; private set; }
         public RelayCommand LoadProjectCommand { get; private set; }
 
@@ -63,6 +60,7 @@ namespace MultiAlignRogue
 
         private FeatureFindingSettingsViewModel featureFindingSettingsViewModel;
         private AlignmentSettingsViewModel alignmentSettingsViewModel;
+        private ClusterSettingsViewModel clusterSettingsViewModel;
 
         private IReadOnlyCollection<DatasetInformation> selectedDatasets;
 
@@ -75,7 +73,6 @@ namespace MultiAlignRogue
         public MainViewModel()
         {
             m_config = new AnalysisConfig();
-            m_algorithms = new AlgorithmProvider();
             m_analysis = new MultiAlignAnalysis();
             m_options = m_analysis.Options;
             m_config.AnalysisName = "Analysis";
@@ -85,9 +82,7 @@ namespace MultiAlignRogue
             SelectDirectoryCommand = new RelayCommand(SelectDirectory);
             AddFolderCommand = new RelayCommand(AddFolderDelegate, () => !string.IsNullOrWhiteSpace(this.InputFilePath) && Directory.Exists(this.InputFilePath));
             DataSelectionViewModel = new AnalysisDatasetSelectionViewModel(m_config.Analysis);
-            SearchDmsCommand = new RelayCommand(SearchDms, () => this.ShowOpenFromDms);
-            ClusterFeaturesCommand = new RelayCommand(AsyncClusterFeatures);
-            DisplayClustersCommand = new RelayCommand(DisplayFeatures);
+            SearchDmsCommand = new RelayCommand(SearchDms, () => this.ShowOpenFromDms);          
             SaveProjectCommand = new RelayCommand(SaveProject);
             LoadProjectCommand = new RelayCommand(LoadProject);
             
@@ -98,11 +93,7 @@ namespace MultiAlignRogue
             FeatureCache.Providers = m_analysis.DataProviders;
             this.FeatureFindingSettingsViewModel = new FeatureFindingSettingsViewModel(m_analysis, FeatureCache);
             this.AlignmentSettingsViewModel = new AlignmentSettingsViewModel(m_analysis, FeatureCache);
-
-            DistanceMetrics = new List<DistanceMetric>();
-            Enum.GetValues(typeof(DistanceMetric)).Cast<DistanceMetric>().ToList().ForEach(x => DistanceMetrics.Add(x));
-            CentroidRepresentations = new List<ClusterCentroidRepresentation>();
-            Enum.GetValues(typeof(ClusterCentroidRepresentation)).Cast<ClusterCentroidRepresentation>().ToList().ForEach(x => CentroidRepresentations.Add(x));
+            this.ClusterSettingsViewModel = new ClusterSettingsViewModel(m_analysis);
         }
         #endregion
 
@@ -122,6 +113,16 @@ namespace MultiAlignRogue
             set
             {
                 this.alignmentSettingsViewModel = value;
+                this.RaisePropertyChanged();
+            }
+        }
+
+        public ClusterSettingsViewModel ClusterSettingsViewModel
+        {
+            get { return this.clusterSettingsViewModel; }
+            set
+            {
+                this.clusterSettingsViewModel = value;
                 this.RaisePropertyChanged();
             }
         }
@@ -270,134 +271,6 @@ namespace MultiAlignRogue
         }
         #endregion
 
-
-        #region Clustering Settings
-        public LcmsFeatureClusteringAlgorithmType SelectedLcmsFeatureClusteringAlgorithm
-        {
-            get { return m_options.LcmsClusteringOptions.LcmsFeatureClusteringAlgorithm; }
-            set
-            {
-                if (m_options.LcmsClusteringOptions.LcmsFeatureClusteringAlgorithm != value)
-                {
-                    m_options.LcmsClusteringOptions.LcmsFeatureClusteringAlgorithm = value;
-                    this.RaisePropertyChanged("SelectedLcmsFeatureClusteringAlgorithm");
-                }
-            }
-        }
-
-        public ClusterCentroidRepresentation SelectedCentroidMethod
-        {
-            get { return m_options.LcmsClusteringOptions.ClusterCentroidRepresentation; }
-            set
-            {
-                if (m_options.LcmsClusteringOptions.ClusterCentroidRepresentation != value)
-                {
-                    m_options.LcmsClusteringOptions.ClusterCentroidRepresentation = value;
-                    this.RaisePropertyChanged("SelectedCentroidMethod");
-                }
-            }
-        }
-
-        public DistanceMetric SelectedDistanceFunction
-        {
-            get { return m_options.LcmsClusteringOptions.DistanceFunction; }
-            set
-            {
-                if (m_options.LcmsClusteringOptions.DistanceFunction != value)
-                {
-                    m_options.LcmsClusteringOptions.DistanceFunction = value;
-                    this.RaisePropertyChanged("SelectedDistanceFunction");
-                }
-            }
-        }
-        #endregion
-
-        #region Clustering
-
-        public async void AsyncClusterFeatures()
-        {
-            await Task.Run(() => ClusterFeatures());
-        }
-        
-        //TODO:Finish integrating clustering from MultiAlignAnalysisProcessor into Rogue
-        public void ClusterFeatures()
-        {
-            var clusterer = m_algorithms.Clusterer;
-            clusterer.Parameters = LcmsClusteringOptions.ConvertToOmics(m_options.LcmsClusteringOptions);
-
-            // This just tells us whether we are using mammoth memory partitions or not.          
-            var featureCache = m_analysis.DataProviders.FeatureCache;
-            var clusterCount = 0;
-
-            var providers = m_config.Analysis.DataProviders;
-
-            // Here we see if we need to separate the charge...
-            // IMS is said to require charge separation 
-            if (!m_analysis.Options.LcmsClusteringOptions.ShouldSeparateCharge)
-            {
-                var features = featureCache.FindAll();
-                var clusters = new List<UMCClusterLight>();
-                clusters = clusterer.Cluster(features, clusters);
-                foreach (var cluster in clusters)
-                {
-                    cluster.Id = clusterCount++;
-                    cluster.UmcList.ForEach(x => x.ClusterId = cluster.Id);
-
-                    // Updates the cluster with statistics
-                    foreach (var feature in cluster.UmcList)
-                    {
-                        cluster.MsMsCount += feature.MsMsCount;
-                        cluster.IdentifiedSpectraCount += feature.IdentifiedSpectraCount;
-                    }
-                }
-                providers.ClusterCache.AddAll(clusters);
-                providers.FeatureCache.UpdateAll(features);
-                m_config.Analysis.Clusters = clusters;
-            }
-            else
-            {
-                var maxChargeState = featureCache.FindMaxCharge();
-
-                /*
-                 * Here we cluster all charge states separately.  Probably IMS Data.
-                 */
-                for (var chargeState = 1; chargeState <= maxChargeState; chargeState++)
-                {
-                    var features = featureCache.FindByCharge(chargeState);
-                    if (features.Count < 1)
-                    {
-                        break;
-                    }
-
-                    var clusters = clusterer.Cluster(features);
-                    foreach (var cluster in clusters)
-                    {
-                        cluster.Id = clusterCount++;
-                        cluster.UmcList.ForEach(x => x.ClusterId = cluster.Id);
-
-                        // Updates the cluster with statistics
-                        foreach (var feature in cluster.Features)
-                        {
-                            cluster.MsMsCount += feature.MsMsCount;
-                            cluster.IdentifiedSpectraCount += feature.IdentifiedSpectraCount;
-                        }
-                    }
-
-                    m_config.Analysis.DataProviders.ClusterCache.AddAll(clusters);
-                    m_config.Analysis.DataProviders.FeatureCache.UpdateAll(features);
-                }
-                m_config.Analysis.Clusters = m_config.Analysis.DataProviders.ClusterCache.FindAll();
-            }
-
-            MessageBox.Show("Working Command");
-        }
-
-        public void DisplayFeatures()
-        {
-            MessageBox.Show("Working command");
-            //TODO: Implement
-        }
-        #endregion
 
         private void ReportProgess(int value)
         {

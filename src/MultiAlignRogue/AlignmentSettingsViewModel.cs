@@ -56,6 +56,7 @@ namespace MultiAlignRogue
             this.AlignmentAlgorithms = new ObservableCollection<FeatureAlignmentType>(
                                            Enum.GetValues(typeof(FeatureAlignmentType)).Cast<FeatureAlignmentType>());
             this.selectedDatasets = new ReadOnlyCollection<DatasetInformation>(new List<DatasetInformation>());
+            this.alignmentInformation = new List<classAlignmentData>();
 
             MessengerInstance.Register<PropertyChangedMessage<IReadOnlyCollection<DatasetInformation>>>(this, sds =>
             {
