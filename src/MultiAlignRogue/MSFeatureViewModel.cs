@@ -45,7 +45,7 @@ namespace MultiAlignRogue
 
         private readonly double globalMaxMass;
 
-        private QuadTree<FeaturePoint> quadTree; 
+        private Dictionary<DatasetInformation, QuadTree<FeaturePoint>> quadTrees; 
 
         /// <summary>
         /// All features on plot.
@@ -64,13 +64,21 @@ namespace MultiAlignRogue
             this.featuresPerSection = featuresPerSection / features.Keys.Count;
             this.throttler = new Throttler(TimeSpan.FromMilliseconds(100));
             this.globalMaxMass = this.GetGlobalMaxMass(features);
-            this.quadTree = new QuadTree<FeaturePoint>(new RectangleF
-                                                           {
-                                                               X = 0,
-                                                               Y = 0,
-                                                               Width = 1,
-                                                               Height = (float)this.globalMaxMass
-                                                           });
+
+            this.quadTrees = new Dictionary<DatasetInformation, QuadTree<FeaturePoint>>();
+            foreach (var dataset in features)
+            {
+                var maxScan = dataset.Key.ScanTimes.Keys.Max();
+                this.quadTrees.Add(
+                    dataset.Key,
+                    new QuadTree<FeaturePoint>(
+                        new RectangleF { X = 0, Y = 0, Width = maxScan, Height = (float)this.globalMaxMass }));
+                foreach (var feature in dataset.Value)
+                {
+                    this.quadTrees[dataset.Key].Insert(new FeaturePoint(feature));
+                }
+            }
+
 
             this.Model = new PlotModel
             {
@@ -139,10 +147,12 @@ namespace MultiAlignRogue
                         StrokeThickness = 0.8,
                     };
 
-                    currentFeatures.Points.AddRange(GetPartitionedPoints(features[file], file.ScanTimes.Keys.Max(), globalMaxMass));
-                    //currentFeatures.Points.AddRange(GetPoints(features[file], file.ScanTimes.Keys.Max()));
+                    currentFeatures.Points.AddRange(this.GetPartitionedPoints(this.quadTrees[file], file.ScanTimes.Keys.Max(), this.globalMaxMass));
+
+                    ////currentFeatures.Points.AddRange(GetPoints(features[file], file.ScanTimes.Keys.Max()));
+
                     this.Model.Series.Add(currentFeatures);
-                    i = (i + 1)%Colors.Count; //Cycle through available colors if we run out
+                    i = (i + 1) % this.Colors.Count; // Cycle through available colors if we run out
                 }
             }
             catch
@@ -157,17 +167,17 @@ namespace MultiAlignRogue
         /// Partition the current view into (numSectionsPerAxis)^2 sections and select the top 
         /// "featuresPerSection" in each section.
         /// </summary>
-        /// <param name="features">List of features for one dataset.</param>
+        /// <param name="featureTree">QuadTree of features for one dataset.</param>
         /// <param name="maxScan">The maximum LC scan number in the dataset.</param>
         /// <param name="globalMax">The maximum mass in all datasets.</param>
         /// <returns>Collection of datapoints for features.</returns>
-        private IEnumerable<DataPoint> GetPartitionedPoints(IList<UMCLight> features, int maxScan, double globalMax)
+        private IEnumerable<DataPoint> GetPartitionedPoints(QuadTree<FeaturePoint> featureTree, int maxScan, double globalMax)
         {
-            var netActMaximum = netAxis.ActualMaximum.Equals(0) ? 1.0 : netAxis.ActualMaximum;
-            var massActMaximum = massAxis.ActualMaximum.Equals(0) ? globalMax : massAxis.ActualMaximum;
+            var netActMaximum = this.netAxis.ActualMaximum.Equals(0) ? 1.0 : this.netAxis.ActualMaximum;
+            var massActMaximum = this.massAxis.ActualMaximum.Equals(0) ? globalMax : this.massAxis.ActualMaximum;
 
-            var netStep = (netActMaximum - netAxis.ActualMinimum) / this.numSectionsPerAxis;
-            var massStep = (massActMaximum - massAxis.ActualMinimum) / this.numSectionsPerAxis;
+            var netStep = (netActMaximum - this.netAxis.ActualMinimum) / this.numSectionsPerAxis;
+            var massStep = (massActMaximum - this.massAxis.ActualMinimum) / this.numSectionsPerAxis;
 
             var featureHash = new HashSet<UMCLight>();
 
@@ -176,17 +186,30 @@ namespace MultiAlignRogue
                 var netMin = this.netAxis.ActualMinimum + (i * netStep);
                 var netMax = this.netAxis.ActualMinimum + ((i + 1) * netStep);
                 var lowScan = netMin * maxScan;
-                var hiScan = netMax  * maxScan;
+                var highScan = netMax  * maxScan;
                 for (int j = 0; j < this.numSectionsPerAxis; j++)
                 {
                     var massMin = this.massAxis.ActualMinimum + (i * massStep);
                     var massMax = this.massAxis.ActualMinimum + ((i + 1) * massStep);
 
-                    var featureRange = features.Where(feat => (feat.MassMonoisotopic >= massMin &&
-                                                               feat.MassMonoisotopic <= massMax) &&
-                                                              (feat.ScanStart >= lowScan || feat.ScanEnd <= hiScan ||
-                                                               (feat.ScanStart <= lowScan && feat.ScanStart >= hiScan)))
-                        .AsParallel().OrderByDescending(feat => feat.Abundance).Take(this.featuresPerSection);
+                    ////var featureRange = features.Where(feat => (feat.MassMonoisotopic >= massMin &&
+                    ////                                           feat.MassMonoisotopic <= massMax) &&
+                    ////                                          (feat.ScanStart >= lowScan || feat.ScanEnd <= hiScan ||
+                    ////                                           (feat.ScanStart <= lowScan && feat.ScanStart >= hiScan)))
+                    ////    .AsParallel().OrderByDescending(feat => feat.Abundance).Take(this.featuresPerSection);
+
+                    var treeFeatures = featureTree.Query(new RectangleF
+                                          {
+                                              X = (float)lowScan,
+                                              Y = (float)massMin,
+                                              Height = (float)(massMax - massMin),
+                                              Width = (float)(highScan - lowScan)
+                                          });
+                    var featureRange =
+                        treeFeatures.Select(feat => feat.UMCLight)
+                            .OrderByDescending(umc => umc.Abundance)
+                            .Take(this.featuresPerSection);
+
                     featureHash.UnionWith(featureRange);
                 }
             }
@@ -199,7 +222,7 @@ namespace MultiAlignRogue
         /// </summary>
         /// <param name="features">List of features for one dataset.</param>
         /// <param name="maxScan">The maximum LC scan number in the dataset.</param>
-        /// <returns>Collection of datapoints for features.</returns>
+        /// <returns>Collection of data points for features.</returns>
         private IEnumerable<DataPoint> GetPoints(IEnumerable<UMCLight> features, int maxScan)
         {
             var dataPoints = new List<DataPoint>();
@@ -207,6 +230,7 @@ namespace MultiAlignRogue
             {
                 dataPoints.Add(new DataPoint(feature.ScanStart / (double)maxScan, feature.MassMonoisotopic));
                 dataPoints.Add(new DataPoint(feature.ScanEnd / (double)maxScan, feature.MassMonoisotopic));
+
                 // Insert NaN point to cause broken line series
                 dataPoints.Add(new DataPoint(Double.NaN, feature.MassMonoisotopic));
             }
