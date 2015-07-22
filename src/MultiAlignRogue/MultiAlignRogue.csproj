@@ -159,6 +159,10 @@
     </Compile>
     <Compile Include="MSFeatureViewFactory.cs" />
     <Compile Include="MSFeatureViewModel.cs" />
+    <Compile Include="NewProjectViewModel.cs" />
+    <Compile Include="NewProjectWindow.xaml.cs">
+      <DependentUpon>NewProjectWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PlotViewModelBase.cs" />
     <Compile Include="RogueProject.cs" />
     <Compile Include="Throttler.cs" />
@@ -186,6 +190,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="MSFeatureView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="NewProjectWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

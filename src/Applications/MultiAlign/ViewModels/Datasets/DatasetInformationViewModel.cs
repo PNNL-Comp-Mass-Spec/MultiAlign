@@ -8,6 +8,8 @@ using MultiAlignCore.Data.MetaData;
 
 namespace MultiAlign.ViewModels.Datasets
 {
+    using MultiAlign.Commands;
+
     public class DatasetInformationViewModel : ViewModelBase
     {
         private readonly DatasetInformation m_information;
@@ -19,6 +21,15 @@ namespace MultiAlign.ViewModels.Datasets
             m_information = information;
             var data = information.PlotData;
             PlotData = new ObservableCollection<PlotViewModel>();
+
+            RequestRemovalCommand = new BaseCommand(
+                () =>
+                    {
+                        if (RemovalRequested != null)
+                        {
+                            RemovalRequested(this, EventArgs.Empty);
+                        }
+                    });
 
             if (data != null)
             {
@@ -39,6 +50,10 @@ namespace MultiAlign.ViewModels.Datasets
 
             ModifyDatasetCommand = new ShowDatasetDetailCommand();
         }
+
+        public event EventHandler RemovalRequested;
+
+        public BaseCommand RequestRemovalCommand { get; private set; }
 
         public bool IsSelected
         {
