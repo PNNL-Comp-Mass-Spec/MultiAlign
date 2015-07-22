@@ -201,7 +201,7 @@ namespace MultiAlignRogue
                     var treeFeatures = featureTree.Query(new RectangleF
                                           {
                                               X = (float)lowScan,
-                                              Y = (float)massMax,
+                                              Y = (float)massMin,
                                               Height = (float)(massMax - massMin),
                                               Width = (float)(highScan - lowScan)
                                           });
