@@ -25,6 +25,7 @@ namespace MultiAlignRogue
 
     using DMS;
 
+    using MultiAlignCore.Algorithms.Options;
     using MultiAlignCore.Extensions;
 
     using MultiAlignRogue.Alignment;
@@ -452,7 +453,9 @@ namespace MultiAlignRogue
 
             if (success)
             {
-                this.LoadRogueProject(newProjectViewModel.GetRogueProject(), true);
+                var rogueProject = newProjectViewModel.GetRogueProject();
+                rogueProject.MultiAlignAnalysisOptions = new MultiAlignAnalysisOptions();
+                this.LoadRogueProject(rogueProject, true);
                 this.Serialize(newProjectViewModel.ProjectFilePath);
                 this.ProjectPath = newProjectViewModel.ProjectFilePath;
                 this.outputDirectory = newProjectViewModel.OutputDirectory;
