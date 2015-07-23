@@ -2,12 +2,14 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:multiAlignRogue="clr-namespace:MultiAlignRogue"
+        xmlns:utils="clr-namespace:MultiAlignRogue.Utils"
         Title="{Binding WindowTitle}" Height="508.075" Width="976" x:Name="RogueMainWindow">
     <Window.DataContext>
         <multiAlignRogue:MainViewModel/>
     </Window.DataContext>
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
+        <utils:BoolToColorConverter x:Key="BoolToColor" />
     </Window.Resources>
     <Window.InputBindings>
         <KeyBinding Key="S" Modifiers="Control" Command="{Binding SaveProjectCommand}" />
@@ -45,10 +47,22 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
                 <DataGridTextColumn Header="File Name" Width="275" Binding="{Binding Dataset.DatasetName}"/>
-                <DataGridCheckBoxColumn Header="Scans" IsReadOnly="True" Binding="{Binding ScansBool}"/>
+                <DataGridCheckBoxColumn Header="Scans" IsReadOnly="True" Binding="{Binding ScansBool}" />
                 <DataGridCheckBoxColumn Header="Raw" IsReadOnly="True" Binding="{Binding RawBool}"/>
-                <DataGridCheckBoxColumn Header="Features" Width="55" IsReadOnly="True" Binding="{Binding FeaturesFound, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                <DataGridCheckBoxColumn Header="Aligned" IsReadOnly="True" Binding="{Binding IsAligned, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridCheckBoxColumn Header="Features" Width="55" IsReadOnly="True" Binding="{Binding FeaturesFound, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                    <DataGridCheckBoxColumn.CellStyle>
+                        <Style TargetType="{x:Type DataGridCell}">
+                            <Setter Property="Background" Value="{Binding IsFindingFeatures, Converter={StaticResource BoolToColor}, UpdateSourceTrigger=PropertyChanged}" />
+                        </Style>
+                    </DataGridCheckBoxColumn.CellStyle>
+                </DataGridCheckBoxColumn>
+                <DataGridCheckBoxColumn Header="Aligned" IsReadOnly="True" Binding="{Binding IsAligned, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                    <DataGridCheckBoxColumn.CellStyle>
+                        <Style TargetType="{x:Type DataGridCell}">
+                            <Setter Property="Background" Value="{Binding IsAligning, Converter={StaticResource BoolToColor}, UpdateSourceTrigger=PropertyChanged}" />
+                        </Style>
+                    </DataGridCheckBoxColumn.CellStyle>
+                </DataGridCheckBoxColumn>
             </DataGrid.Columns>
         </DataGrid>
         

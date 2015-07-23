@@ -172,7 +172,7 @@
 
                 foreach (var file in this.selectedDatasets.Where(file => !file.DoingWork))
                 {
-                    file.DoingWork = true;
+                    file.IsAligning = true;
                     ThreadSafeDispatcher.Invoke(() => this.AlignToBaselineCommand.RaiseCanExecuteChanged());
                     ThreadSafeDispatcher.Invoke(() => this.DisplayAlignmentCommand.RaiseCanExecuteChanged());
                     if (file.Dataset.IsBaseline || !file.FeaturesFound) continue;
@@ -193,7 +193,7 @@
 
                     this.featureCache.CacheFeatures(features);
                     file.IsAligned = true;
-                    file.DoingWork = false;
+                    file.IsAligning = false;
                     ThreadSafeDispatcher.Invoke(() => this.AlignToBaselineCommand.RaiseCanExecuteChanged());
                     ThreadSafeDispatcher.Invoke(() => this.DisplayAlignmentCommand.RaiseCanExecuteChanged());
                 }

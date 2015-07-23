@@ -163,6 +163,7 @@
     <Compile Include="NewProjectWindow.xaml.cs">
       <DependentUpon>NewProjectWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Utils\BoolToColorConverter.cs" />
     <Compile Include="Utils\PlotViewModelBase.cs" />
     <Compile Include="RogueProject.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />

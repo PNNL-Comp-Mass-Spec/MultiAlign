@@ -222,7 +222,7 @@
             var selectedFiles = this.selectedDatasets;
             foreach (var file in selectedFiles.Where(file => !file.DoingWork)) // Do not try to run on files already loading features.
             {
-                file.DoingWork = true;
+                file.IsFindingFeatures = true;
                 ThreadSafeDispatcher.Invoke(() => this.PlotMSFeaturesCommand.RaiseCanExecuteChanged());
                 ThreadSafeDispatcher.Invoke(() => this.FindMSFeaturesCommand.RaiseCanExecuteChanged());
                 var features = this.featureCache.LoadDataset(file.Dataset, this.analysis.Options.MsFilteringOptions, this.analysis.Options.LcmsFindingOptions, this.analysis.Options.LcmsFilteringOptions);
@@ -231,7 +231,7 @@
                 file.FeaturesFound = true;
                 this.progress.Report(0);
 
-                file.DoingWork = false;
+                file.IsFindingFeatures = false;
                 ThreadSafeDispatcher.Invoke(() => this.PlotMSFeaturesCommand.RaiseCanExecuteChanged());
                 ThreadSafeDispatcher.Invoke(() => this.FindMSFeaturesCommand.RaiseCanExecuteChanged());
             }

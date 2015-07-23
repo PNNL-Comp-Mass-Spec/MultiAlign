@@ -126,18 +126,41 @@ namespace MultiAlign.ViewModels.Datasets
             }
         }
 
-        public bool DoingWork
+        private bool isFindingFeatures;
+        public bool IsFindingFeatures
         {
-            get { return this.Dataset.DoingWork; }
+            get { return this.isFindingFeatures; }
             set
             {
-                if (this.Dataset.DoingWork != value)
+                if (this.isFindingFeatures != value)
                 {
-                    this.Dataset.DoingWork = value;
+                    this.isFindingFeatures = value;
                     ThreadSafeDispatcher.Invoke(() => this.RequestRemovalCommand.InvokeCanExecuteChanged());
+                    this.OnPropertyChanged("IsFindingFeatures");
                     this.OnPropertyChanged("DoingWork");
                 }
             }
+        }
+
+        private bool isAligning;
+        public bool IsAligning
+        {
+            get { return this.isAligning; }
+            set
+            {
+                if (this.isAligning != value)
+                {
+                    this.isAligning = value;
+                    ThreadSafeDispatcher.Invoke(() => this.RequestRemovalCommand.InvokeCanExecuteChanged());
+                    this.OnPropertyChanged("IsAligning");
+                    this.OnPropertyChanged("DoingWork");
+                }
+            }
+        }
+
+        public bool DoingWork
+        {
+            get { return this.IsAligning || this.IsFindingFeatures; }
         }
 
         public DatasetInformation Dataset
