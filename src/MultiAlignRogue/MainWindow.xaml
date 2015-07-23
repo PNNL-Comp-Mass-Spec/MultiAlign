@@ -9,6 +9,10 @@
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </Window.Resources>
+    <Window.InputBindings>
+        <KeyBinding Key="S" Modifiers="Control" Command="{Binding SaveProjectCommand}" />
+    </Window.InputBindings>
+    
     <Grid Name ="MainGrid">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="500"/>
@@ -18,7 +22,7 @@
             <MenuItem Header="File">
                 <MenuItem Header="New Project" Command="{Binding CreateNewProjectCommand}" />
                 <MenuItem Header="Load Project" HorizontalAlignment="Left" Width="168" Command="{Binding LoadProjectCommand}" />
-                <MenuItem Header="Open Dataset">
+                <MenuItem Header="Open Dataset" Command="{Binding SelectFilesCommand}">
                     <MenuItem Header="Select Files" HorizontalAlignment="Left" Width="168" Margin="0,0,-8,0" Command="{Binding SelectFilesCommand}"/>
                     <MenuItem Header="Select Directory" Command="{Binding SelectDirectoryCommand}" />
                     <MenuItem Header="From DMS" Command="{Binding SearchDmsCommand}" Visibility="{Binding ShowOpenFromDms, Converter={StaticResource BoolToVis}}" />
@@ -31,15 +35,23 @@
         <!--<ProgressBar HorizontalAlignment="Right" Margin="0,0,10,19" Width="90" Height="20" VerticalAlignment="Bottom" Value="{Binding ProgressTracker, Mode = OneWay}"/> -->
         <DataGrid Name="FileSelectionDataGrid" Grid.Column="0" HorizontalAlignment="Left" Margin="10,53,0,10" 
                   Width="480" AutoGenerateColumns="False" CanUserReorderColumns="False" CanUserAddRows="False" 
-                  ItemsSource="{Binding Analysis.MetaData.Datasets, UpdateSourceTrigger=PropertyChanged}" SelectionChanged="DataGrid_SelectionChanged">
+                  ItemsSource="{Binding Datasets, UpdateSourceTrigger=PropertyChanged}" SelectionChanged="DataGrid_SelectionChanged">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="File Name" Width="300" Binding="{Binding DatasetName}"/>
+                <DataGridTemplateColumn Width="25">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Content="-" Command="{Binding RequestRemovalCommand}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="File Name" Width="275" Binding="{Binding Dataset.DatasetName}"/>
                 <DataGridCheckBoxColumn Header="Scans" IsReadOnly="True" Binding="{Binding ScansBool}"/>
                 <DataGridCheckBoxColumn Header="Raw" IsReadOnly="True" Binding="{Binding RawBool}"/>
                 <DataGridCheckBoxColumn Header="Features" Width="55" IsReadOnly="True" Binding="{Binding FeaturesFound, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                 <DataGridCheckBoxColumn Header="Aligned" IsReadOnly="True" Binding="{Binding IsAligned, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
             </DataGrid.Columns>
         </DataGrid>
+        
         <TabControl Grid.Column="1" Margin="10,25,10,10">
             <TabItem Header="Feature Finding" Height="23" VerticalAlignment="Bottom" DataContext="{Binding FeatureFindingSettingsViewModel, UpdateSourceTrigger=PropertyChanged}">
                 <Grid Margin="0,19,39,8" HorizontalAlignment="Right" Width="384">

@@ -18,6 +18,8 @@ using MultiAlignCore.Data.MetaData;
 
 namespace MultiAlignRogue
 {
+    using MultiAlign.ViewModels.Datasets;
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -38,7 +40,7 @@ namespace MultiAlignRogue
             var selectedItems = this.FileSelectionDataGrid.SelectedItems;
             if (this.viewModel != null)
             {
-                this.viewModel.SelectedDatasets = new List<DatasetInformation>(selectedItems.Cast<DatasetInformation>());
+                this.viewModel.SelectedDatasets = new List<DatasetInformationViewModel>(selectedItems.Cast<DatasetInformationViewModel>());
             }
         }
 

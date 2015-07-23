@@ -16,6 +16,8 @@ using PNNLOmics.Data.Features;
 
 namespace MultiAlignRogue
 {
+    using MultiAlign.ViewModels.Datasets;
+
     public class FeatureFindingSettingsViewModel : ViewModelBase
     {
         private readonly MultiAlignAnalysis analysis;
@@ -28,7 +30,7 @@ namespace MultiAlignRogue
 
         private Dictionary<DatasetInformation, IList<UMCLight>> features;
 
-        private IReadOnlyCollection<DatasetInformation> selectedDatasets;
+        private IReadOnlyCollection<DatasetInformationViewModel> selectedDatasets;
 
         public FeatureFindingSettingsViewModel(
                                                MultiAlignAnalysis analysis,
@@ -40,10 +42,10 @@ namespace MultiAlignRogue
             this.featureCache = featureCache;
             this.msFeatureWindowFactory = msFeatureWindowFactory ?? new MSFeatureViewFactory();
             this.progress = progressReporter ?? new Progress<int>();
-            this.selectedDatasets = new ReadOnlyCollection<DatasetInformation>(new List<DatasetInformation>());
+            this.selectedDatasets = new ReadOnlyCollection<DatasetInformationViewModel>(new List<DatasetInformationViewModel>());
             this.msFeatureWindowFactory = new MSFeatureViewFactory();
 
-            MessengerInstance.Register<PropertyChangedMessage<IReadOnlyCollection<DatasetInformation>>>(this, sds =>
+            MessengerInstance.Register<PropertyChangedMessage<IReadOnlyCollection<DatasetInformationViewModel>>>(this, sds =>
             {
                 this.selectedDatasets = sds.NewValue;
                 this.FindMSFeaturesCommand.RaiseCanExecuteChanged();
@@ -221,7 +223,7 @@ namespace MultiAlignRogue
                 file.DoingWork = true;
                 ThreadSafeDispatcher.Invoke(() => PlotMSFeaturesCommand.RaiseCanExecuteChanged());
                 ThreadSafeDispatcher.Invoke(() => FindMSFeaturesCommand.RaiseCanExecuteChanged());
-                var features = this.featureCache.LoadDataset(file, this.analysis.Options.MsFilteringOptions, this.analysis.Options.LcmsFindingOptions, this.analysis.Options.LcmsFilteringOptions);
+                var features = this.featureCache.LoadDataset(file.Dataset, this.analysis.Options.MsFilteringOptions, this.analysis.Options.LcmsFindingOptions, this.analysis.Options.LcmsFilteringOptions);
                 this.featureCache.CacheFeatures(features);
 
                 file.FeaturesFound = true;
@@ -240,10 +242,10 @@ namespace MultiAlignRogue
                 features = new Dictionary<DatasetInformation, IList<UMCLight>>();
                 foreach (var file in selectedDatasets.Where(file => file.FeaturesFound)) // Select only datasets with features.
                 {
-                    var feat = await Task.Run(() => UmcLoaderFactory.LoadUmcFeatureData(file.Features.Path, file.DatasetId,
+                    var feat = await Task.Run(() => UmcLoaderFactory.LoadUmcFeatureData(file.Dataset.Features.Path, file.DatasetId,
                             featureCache.Providers.FeatureCache));
 
-                    features.Add(file, feat);
+                    features.Add(file.Dataset, feat);
                 }
                 msFeatureWindowFactory.CreateNewWindow(features);
             //}

@@ -35,7 +35,7 @@ namespace MultiAlignRogue
 
         private AlgorithmProvider algorithms;
 
-        private IReadOnlyCollection<DatasetInformation> selectedDatasets;
+        private IReadOnlyCollection<DatasetInformationViewModel> selectedDatasets;
 
         private DatasetInformationViewModel selectedBaseline;
 
@@ -55,10 +55,10 @@ namespace MultiAlignRogue
             this.CalibrationOptions = new ObservableCollection<AlignmentType>(Enum.GetValues(typeof(AlignmentType)).Cast<AlignmentType>());
             this.AlignmentAlgorithms = new ObservableCollection<FeatureAlignmentType>(
                                            Enum.GetValues(typeof(FeatureAlignmentType)).Cast<FeatureAlignmentType>());
-            this.selectedDatasets = new ReadOnlyCollection<DatasetInformation>(new List<DatasetInformation>());
+            this.selectedDatasets = new ReadOnlyCollection<DatasetInformationViewModel>(new List<DatasetInformationViewModel>());
             this.alignmentInformation = new List<classAlignmentData>();
 
-            MessengerInstance.Register<PropertyChangedMessage<IReadOnlyCollection<DatasetInformation>>>(this, sds =>
+            MessengerInstance.Register<PropertyChangedMessage<IReadOnlyCollection<DatasetInformationViewModel>>>(this, sds =>
             {
                 this.selectedDatasets = sds.NewValue;
                 ThreadSafeDispatcher.Invoke(() => AlignToBaselineCommand.RaiseCanExecuteChanged());
@@ -172,10 +172,10 @@ namespace MultiAlignRogue
                     file.DoingWork = true;
                     ThreadSafeDispatcher.Invoke(() => AlignToBaselineCommand.RaiseCanExecuteChanged());
                     ThreadSafeDispatcher.Invoke(() => DisplayAlignmentCommand.RaiseCanExecuteChanged());
-                    if (file.IsBaseline || !file.FeaturesFound) continue;
-                    var features = this.featureCache.LoadDataset(file, this.analysis.Options.MsFilteringOptions,
+                    if (file.Dataset.IsBaseline || !file.FeaturesFound) continue;
+                    var features = this.featureCache.LoadDataset(file.Dataset, this.analysis.Options.MsFilteringOptions,
                         this.analysis.Options.LcmsFindingOptions, this.analysis.Options.LcmsFilteringOptions);
-                    var alignment = aligner.AlignToDataset(ref features, baselineFeatures, file, this.selectedBaseline.Dataset);
+                    var alignment = aligner.AlignToDataset(ref features, baselineFeatures, file.Dataset, this.selectedBaseline.Dataset);
                     //Check if there is information from a previous alignment for this dataset. If so, replace it. If not, just add the new one.
                     var priorAlignment = from x in alignmentInformation where x.DatasetID == alignment.DatasetID select x;
                     if (priorAlignment.Any())

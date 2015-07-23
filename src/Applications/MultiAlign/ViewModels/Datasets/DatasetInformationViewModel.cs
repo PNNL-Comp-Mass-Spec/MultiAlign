@@ -9,6 +9,9 @@ using MultiAlignCore.Data.MetaData;
 namespace MultiAlign.ViewModels.Datasets
 {
     using MultiAlign.Commands;
+    using MultiAlign.Data;
+
+    using Xceed.Wpf.DataGrid.Converters;
 
     public class DatasetInformationViewModel : ViewModelBase
     {
@@ -29,7 +32,7 @@ namespace MultiAlign.ViewModels.Datasets
                         {
                             RemovalRequested(this, EventArgs.Empty);
                         }
-                    });
+                    }, s => !this.DoingWork);
 
             if (data != null)
             {
@@ -68,6 +71,72 @@ namespace MultiAlign.ViewModels.Datasets
 
                 if (Selected != null)
                     Selected(this, null);
+            }
+        }
+
+        public bool ScansBool
+        {
+            get { return this.Dataset.ScansBool; }
+            set
+            {
+                if (this.Dataset.ScansBool != value)
+                {
+                    this.Dataset.ScansBool = value;
+                    this.OnPropertyChanged("ScansBool");
+                }
+            }
+        }
+
+        public bool RawBool
+        {
+            get { return this.Dataset.RawBool; }
+            set
+            {
+                if (this.Dataset.RawBool != value)
+                {
+                    this.Dataset.RawBool = value;
+                    this.OnPropertyChanged("RawBool");
+                }
+            }
+        }
+
+        public bool FeaturesFound
+        {
+            get { return this.Dataset.FeaturesFound; }
+            set
+            {
+                if (this.Dataset.FeaturesFound != value)
+                {
+                    this.Dataset.FeaturesFound = value;
+                    this.OnPropertyChanged("FeaturesFound");
+                }
+            }
+        }
+
+        public bool IsAligned
+        {
+            get { return this.Dataset.IsAligned; }
+            set
+            {
+                if (this.Dataset.IsAligned != value)
+                {
+                    this.Dataset.IsAligned = value;
+                    this.OnPropertyChanged("IsAligned");
+                }
+            }
+        }
+
+        public bool DoingWork
+        {
+            get { return this.Dataset.DoingWork; }
+            set
+            {
+                if (this.Dataset.DoingWork != value)
+                {
+                    this.Dataset.DoingWork = value;
+                    ThreadSafeDispatcher.Invoke(() => this.RequestRemovalCommand.InvokeCanExecuteChanged());
+                    this.OnPropertyChanged("DoingWork");
+                }
             }
         }
 

@@ -21,6 +21,8 @@ using MultiAlignCore.IO.InputFiles;
 
 namespace MultiAlignRogue
 {
+    using System.Windows;
+
     using DMS;
 
     using MultiAlignCore.Extensions;
@@ -42,13 +44,15 @@ namespace MultiAlignRogue
         private AlignmentSettingsViewModel alignmentSettingsViewModel;
         private ClusterSettingsViewModel clusterSettingsViewModel;
 
-        private IReadOnlyCollection<DatasetInformation> selectedDatasets;
+        private IReadOnlyCollection<DatasetInformationViewModel> selectedDatasets;
 
         private string inputFilePath;
 
         private string projectPath;
 
         private string windowTitle;
+
+        private string outputDirectory;
 
         private int progressTracker;
         #endregion
@@ -70,7 +74,7 @@ namespace MultiAlignRogue
             DataSelectionViewModel = new AnalysisDatasetSelectionViewModel(Analysis);
             
             SelectFilesCommand = new RelayCommand(SelectFiles, () => !string.IsNullOrWhiteSpace(this.ProjectPath));
-            SelectDirectoryCommand = new RelayCommand(SelectDirectory);
+            SelectDirectoryCommand = new RelayCommand(SelectDirectory, () => !string.IsNullOrWhiteSpace(this.ProjectPath));
             AddFolderCommand = new RelayCommand(AddFolderDelegate, () => !string.IsNullOrWhiteSpace(this.InputFilePath) && Directory.Exists(this.InputFilePath) && !string.IsNullOrWhiteSpace(this.ProjectPath));
             SearchDmsCommand = new RelayCommand(SearchDms, () => this.ShowOpenFromDms && !string.IsNullOrWhiteSpace(this.ProjectPath));
             CreateNewProjectCommand = new RelayCommand(this.CreateNewProject);
@@ -79,7 +83,7 @@ namespace MultiAlignRogue
             SaveAsProjectCommand = new RelayCommand(this.SaveProjectAs, () => !string.IsNullOrWhiteSpace(this.ProjectPath));
             
             featureCache = new FeatureLoader { Providers = Analysis.DataProviders };
-            this.SelectedDatasets = new List<DatasetInformation>();
+            this.SelectedDatasets = new List<DatasetInformationViewModel>();
             Datasets = new ObservableCollection<DatasetInformationViewModel>();
 
             featureCache.Providers = Analysis.DataProviders;
@@ -163,6 +167,7 @@ namespace MultiAlignRogue
                     this.SaveProjectCommand.RaiseCanExecuteChanged();
                     this.SaveAsProjectCommand.RaiseCanExecuteChanged();
                     this.SelectFilesCommand.RaiseCanExecuteChanged();
+                    this.SelectDirectoryCommand.RaiseCanExecuteChanged();
                     this.SearchDmsCommand.RaiseCanExecuteChanged();
                     this.AddFolderCommand.RaiseCanExecuteChanged();
                     this.RaisePropertyChanged();   
@@ -206,7 +211,7 @@ namespace MultiAlignRogue
             }
         }
 
-        public IReadOnlyCollection<DatasetInformation> SelectedDatasets
+        public IReadOnlyCollection<DatasetInformationViewModel> SelectedDatasets
         {
             get { return this.selectedDatasets; }
             set
@@ -336,7 +341,7 @@ namespace MultiAlignRogue
 
         private void SearchDms()
         {
-            var dmsLookupViewModel = new DmsLookupViewModel();
+            var dmsLookupViewModel = new DmsLookupViewModel { OutputDirectory = this.outputDirectory };
             var dialog = new DmsLookupView { DataContext = dmsLookupViewModel };
             dmsLookupViewModel.DatasetSelected += (o, e) => dialog.Close();
             dialog.ShowDialog();
@@ -366,6 +371,23 @@ namespace MultiAlignRogue
             foreach (var info in Analysis.MetaData.Datasets)
             {
                 var viewmodel = new DatasetInformationViewModel(info);
+                viewmodel.RemovalRequested += (s, e) =>
+                {
+                    var vm = s as DatasetInformationViewModel;
+                    if (vm != null)
+                    {
+                        var result =
+                            MessageBox.Show(
+                                string.Format("Are you sure that you'd like to remove {0}", vm.Dataset.DatasetName),
+                                "Remove Dataset?",
+                                MessageBoxButton.YesNo);
+                        if (result == MessageBoxResult.Yes)
+                        {
+                            this.Datasets.Remove(vm);
+                            this.Analysis.MetaData.Datasets.Remove(vm.Dataset);
+                        }
+                    }
+                };
                 Datasets.Add(viewmodel);
             }
         }
@@ -429,6 +451,7 @@ namespace MultiAlignRogue
                 this.LoadRogueProject(newProjectViewModel.GetRogueProject(), true);
                 this.Serialize(newProjectViewModel.ProjectFilePath);
                 this.ProjectPath = newProjectViewModel.ProjectFilePath;
+                this.outputDirectory = newProjectViewModel.OutputDirectory;
                 this.RaisePropertyChanged("Analysis");
             }
         }
@@ -437,15 +460,18 @@ namespace MultiAlignRogue
         {
             this.Analysis = new MultiAlignAnalysis
             {
-                DataProviders = this.SetupDataProviders(rogueProject.AnalysisPath, isNewProject)
+                DataProviders = this.SetupDataProviders(rogueProject.AnalysisPath, isNewProject),
+                Options = rogueProject.MultiAlignAnalysisOptions
             };
 
             this.DataSelectionViewModel.Analysis = this.Analysis;
             this.Analysis.MetaData.Datasets.AddRange(rogueProject.Datasets);
-            this.featureCache.Providers = Analysis.DataProviders;
+            this.featureCache.Providers = this.Analysis.DataProviders;
+            this.m_config.AnalysisPath = rogueProject.AnalysisPath;
             this.UpdateDatasets();
-            this.FeatureFindingSettingsViewModel = new FeatureFindingSettingsViewModel(Analysis, this.featureCache);
-            this.AlignmentSettingsViewModel = new AlignmentSettingsViewModel(Analysis, this.featureCache);
+            this.FeatureFindingSettingsViewModel = new FeatureFindingSettingsViewModel(this.Analysis, this.featureCache);
+            this.AlignmentSettingsViewModel = new AlignmentSettingsViewModel(this.Analysis, this.featureCache);
+            this.RaisePropertyChanged("Analysis");
         }
 
         private void SaveProjectAs()
@@ -484,6 +510,7 @@ namespace MultiAlignRogue
             {
                 var rogueProject = this.Deserialize(openFileDialog.FileName);
                 this.LoadRogueProject(rogueProject, false);
+                this.outputDirectory = Path.GetDirectoryName(rogueProject.AnalysisPath);
                 this.ProjectPath = openFileDialog.FileName;
             }
         }
