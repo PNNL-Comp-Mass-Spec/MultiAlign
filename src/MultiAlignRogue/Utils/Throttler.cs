@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using MultiAlign.Data;
-
-namespace MultiAlignRogue
+﻿namespace MultiAlignRogue.Utils
 {
+    using System;
+    using System.Threading;
+    using System.Threading.Tasks;
+
+    using MultiAlign.Data;
+
     public class Throttler
     {
         private readonly TimeSpan timeSpan;
@@ -44,11 +42,11 @@ namespace MultiAlignRogue
 
         private void Run()
         {
-            while (hasRun == false)
+            while (this.hasRun == false)
             {
-                if (DateTime.UtcNow >= startTime.Add(timeSpan))
+                if (DateTime.UtcNow >= this.startTime.Add(this.timeSpan))
                 {
-                    ThreadSafeDispatcher.Invoke(actionToRun);
+                    ThreadSafeDispatcher.Invoke(this.actionToRun);
                     this.hasRun = true;
                 }
 

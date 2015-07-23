@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MultiAlignCore.Algorithms;
-using MultiAlignCore.Data;
-using MultiAlignCore.Data.Alignment;
-using MultiAlignCore.Data.MetaData;
-using PNNLOmics.Data.Features;
-using PNNLOmics.Data.MassTags;
-
-namespace MultiAlignRogue
+﻿namespace MultiAlignRogue.Alignment
 {
+    using System;
+    using System.Collections.Generic;
+
+    using MultiAlignCore.Algorithms;
+    using MultiAlignCore.Data.Alignment;
+    using MultiAlignCore.Data.MetaData;
+
+    using PNNLOmics.Data.Features;
+
     class LCMSFeatureAligner
     {
 
@@ -30,7 +26,7 @@ namespace MultiAlignRogue
                 throw new NullReferenceException("No reference was set for LC-MS alignment.");
             }
             // Align pairwise and cache results intermediately.
-            var aligner = m_algorithms.DatasetAligner;
+            var aligner = this.m_algorithms.DatasetAligner;
             alignmentData = aligner.Align(baselineFeatures, features);
             
             if (alignmentData != null)

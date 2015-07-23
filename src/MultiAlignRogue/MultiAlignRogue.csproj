@@ -136,35 +136,40 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="AlignmentSettingsViewModel.cs" />
-    <Compile Include="AlignmentView.xaml.cs">
+    <Compile Include="Alignment\AlignmentSettingsViewModel.cs" />
+    <Compile Include="Alignment\AlignmentView.xaml.cs">
       <DependentUpon>AlignmentView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="AlignmentViewFactory.cs" />
-    <Compile Include="AlignmentViewModel.cs" />
-    <Compile Include="ClusterSettingsViewModel.cs" />
+    <Compile Include="Alignment\AlignmentViewFactory.cs" />
+    <Compile Include="Alignment\AlignmentViewModel.cs" />
+    <Compile Include="Clustering\ClusterSettingsViewModel.cs" />
     <Compile Include="DMS\DmsLookupUtility.cs" />
     <Compile Include="DMS\DmsDatasetViewModel.cs" />
     <Compile Include="DMS\DmsLookupView.xaml.cs">
       <DependentUpon>DmsLookupView.xaml</DependentUpon>
     </Compile>
     <Compile Include="DMS\DmsLookupViewModel.cs" />
-    <Compile Include="FeatureFindingSettingsViewModel.cs" />
-    <Compile Include="FeaturePoint.cs" />
-    <Compile Include="IAlignmentWindowFactory.cs" />
-    <Compile Include="IFeatureWindowFactory.cs" />
-    <Compile Include="LCMSFeatureAligner.cs" />
-    <Compile Include="MSFeatureView.xaml.cs">
+    <Compile Include="Feature Finding\FeatureFindingSettingsViewModel.cs" />
+    <Compile Include="Feature Finding\FeaturePoint.cs" />
+    <Compile Include="Alignment\IAlignmentWindowFactory.cs" />
+    <Compile Include="Feature Finding\IFeatureWindowFactory.cs" />
+    <Compile Include="Alignment\LCMSFeatureAligner.cs" />
+    <Compile Include="Feature Finding\MSFeatureView.xaml.cs">
       <DependentUpon>MSFeatureView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MSFeatureViewFactory.cs" />
-    <Compile Include="MSFeatureViewModel.cs" />
-    <Compile Include="PlotViewModelBase.cs" />
+    <Compile Include="Feature Finding\MSFeatureViewFactory.cs" />
+    <Compile Include="Feature Finding\MSFeatureViewModel.cs" />
+    <Compile Include="NewProjectViewModel.cs" />
+    <Compile Include="NewProjectWindow.xaml.cs">
+      <DependentUpon>NewProjectWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Utils\BoolToColorConverter.cs" />
+    <Compile Include="Utils\PlotViewModelBase.cs" />
     <Compile Include="RogueProject.cs" />
-    <Compile Include="Throttler.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
-    <Page Include="AlignmentView.xaml">
+    <Compile Include="Utils\Throttler.cs" />
+    <Page Include="Alignment\AlignmentView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -185,7 +190,11 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="MSFeatureView.xaml">
+    <Page Include="Feature Finding\MSFeatureView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="NewProjectWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -240,6 +249,7 @@
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.94.0\build\net45\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.94.0\build\net45\System.Data.SQLite.Core.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

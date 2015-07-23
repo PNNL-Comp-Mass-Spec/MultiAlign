@@ -5,9 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Collections.ObjectModel;
 using System.Runtime.Serialization;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Xml.Serialization;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Ookii.Dialogs;
@@ -15,88 +13,220 @@ using MultiAlign.Data;
 using MultiAlign.IO;
 using MultiAlign.ViewModels.Datasets;
 using MultiAlign.ViewModels.Wizard;
-using MultiAlignCore.Algorithms;
-using MultiAlignCore.Algorithms.Clustering;
-using MultiAlignCore.Algorithms.Options;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO;
 using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.InputFiles;
-using PNNLOmics.Algorithms.Alignment.LcmsWarp;
-using PNNLOmics.Algorithms.Distance;
-using PNNLOmics.Algorithms.FeatureClustering;
-using PNNLOmics.Data.Features;
 
 namespace MultiAlignRogue
 {
+    using System.Windows;
+
     using DMS;
+
+    using MultiAlignCore.Extensions;
+
+    using MultiAlignRogue.Alignment;
+    using MultiAlignRogue.Clustering;
+    using MultiAlignRogue.Feature_Finding;
 
     using MessageBox = System.Windows.MessageBox;
 
     public class MainViewModel : ViewModelBase
     {
-        #region Properties
+        #region Private Data Members
         public AnalysisDatasetSelectionViewModel DataSelectionViewModel;
-        public MultiAlignAnalysis m_analysis { get; set;}
-        VistaFolderBrowserDialog folderBrowser = new VistaFolderBrowserDialog();
-        public AnalysisConfig m_config { get; set;}
-        
-        public MultiAlignAnalysisOptions m_options { get; set;}
 
-        public ObservableCollection<DatasetInformationViewModel> Datasets { get; private set;}
-        public FeatureLoader FeatureCache;
+        private readonly AnalysisConfig m_config;
+        private readonly FeatureLoader featureCache;
 
-
-        public RelayCommand SelectFilesCommand { get; private set; }
-        public RelayCommand SelectDirectoryCommand { get; private set; }
-        public RelayCommand SearchDmsCommand { get; private set; }
-        public RelayCommand AddFolderCommand { get; private set; }
-        public RelayCommand SaveProjectCommand { get; private set; }
-        public RelayCommand LoadProjectCommand { get; private set; }
-
-        public DataTable datasetInfo { get; set; }
-        private FeatureDataAccessProviders Providers;
+        private DataTable datasetInfo;
+        private FeatureDataAccessProviders providers;
 
         private FeatureFindingSettingsViewModel featureFindingSettingsViewModel;
         private AlignmentSettingsViewModel alignmentSettingsViewModel;
         private ClusterSettingsViewModel clusterSettingsViewModel;
 
-        private IReadOnlyCollection<DatasetInformation> selectedDatasets;
+        private IReadOnlyCollection<DatasetInformationViewModel> selectedDatasets;
 
         private string inputFilePath;
 
-        public int ProgressTracker { get; private set; }
+        private string projectPath;
+
+        private string windowTitle;
+
+        private string outputDirectory;
+
+        private int progressTracker;
         #endregion
 
         #region Constructor
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MainViewModel"/> class.
+        /// </summary>
         public MainViewModel()
         {
             m_config = new AnalysisConfig();
-            m_analysis = new MultiAlignAnalysis();
-            m_options = m_analysis.Options;
+            Analysis = new MultiAlignAnalysis();
             m_config.AnalysisName = "Analysis";
-            m_config.Analysis = m_analysis;
-           
-            SelectFilesCommand = new RelayCommand(SelectFiles);
-            SelectDirectoryCommand = new RelayCommand(SelectDirectory);
-            AddFolderCommand = new RelayCommand(AddFolderDelegate, () => !string.IsNullOrWhiteSpace(this.InputFilePath) && Directory.Exists(this.InputFilePath));
-            DataSelectionViewModel = new AnalysisDatasetSelectionViewModel(m_config.Analysis);
-            SearchDmsCommand = new RelayCommand(SearchDms, () => this.ShowOpenFromDms);          
-            SaveProjectCommand = new RelayCommand(SaveProject);
-            LoadProjectCommand = new RelayCommand(LoadProject);
+            m_config.Analysis = Analysis;
+
+            this.WindowTitle = "MultiAlign Rogue";
+
+            DataSelectionViewModel = new AnalysisDatasetSelectionViewModel(Analysis);
             
-            FeatureCache = new FeatureLoader { Providers = m_analysis.DataProviders };
-            this.SelectedDatasets = new List<DatasetInformation>();
+            SelectFilesCommand = new RelayCommand(SelectFiles, () => !string.IsNullOrWhiteSpace(this.ProjectPath));
+            SelectDirectoryCommand = new RelayCommand(SelectDirectory, () => !string.IsNullOrWhiteSpace(this.ProjectPath));
+            AddFolderCommand = new RelayCommand(AddFolderDelegate, () => !string.IsNullOrWhiteSpace(this.InputFilePath) && Directory.Exists(this.InputFilePath) && !string.IsNullOrWhiteSpace(this.ProjectPath));
+            SearchDmsCommand = new RelayCommand(SearchDms, () => this.ShowOpenFromDms && !string.IsNullOrWhiteSpace(this.ProjectPath));
+            CreateNewProjectCommand = new RelayCommand(this.CreateNewProject);
+            SaveProjectCommand = new RelayCommand(SaveProject, () => !string.IsNullOrWhiteSpace(this.ProjectPath));
+            LoadProjectCommand = new RelayCommand(LoadProject);
+            SaveAsProjectCommand = new RelayCommand(this.SaveProjectAs, () => !string.IsNullOrWhiteSpace(this.ProjectPath));
+            
+            featureCache = new FeatureLoader { Providers = Analysis.DataProviders };
+            this.SelectedDatasets = new List<DatasetInformationViewModel>();
             Datasets = new ObservableCollection<DatasetInformationViewModel>();
 
-            FeatureCache.Providers = m_analysis.DataProviders;
-            this.FeatureFindingSettingsViewModel = new FeatureFindingSettingsViewModel(m_analysis, FeatureCache);
-            this.AlignmentSettingsViewModel = new AlignmentSettingsViewModel(m_analysis, FeatureCache);
-            this.ClusterSettingsViewModel = new ClusterSettingsViewModel(m_analysis);
+            featureCache.Providers = Analysis.DataProviders;
+            this.FeatureFindingSettingsViewModel = new FeatureFindingSettingsViewModel(Analysis, featureCache);
+            this.AlignmentSettingsViewModel = new AlignmentSettingsViewModel(Analysis, featureCache);
+            this.ClusterSettingsViewModel = new ClusterSettingsViewModel(Analysis);
         }
         #endregion
 
+        #region Command
+        /// <summary>
+        /// Gets a command for selecting files for a new dataset (scans, isos, raw).
+        /// </summary>
+        public RelayCommand SelectFilesCommand { get; private set; }
+
+        /// <summary>
+        /// Gets a command for adding a dataset from DMS.
+        /// </summary>
+        public RelayCommand SearchDmsCommand { get; private set; }
+
+        /// <summary>
+        /// Gets a command for selecting a directory path for a new dataset.
+        /// </summary>
+        public RelayCommand SelectDirectoryCommand { get; private set; }
+
+        /// <summary>
+        /// Gets a command for adding the dataset in the selected directory.
+        /// </summary>
+        public RelayCommand AddFolderCommand { get; private set; }
+
+        /// <summary>
+        /// Gets a command for creating a new <see cref="RogueProject" />.
+        /// </summary>
+        public RelayCommand CreateNewProjectCommand { get; private set; }
+
+        /// <summary>
+        /// Gets a command for loading an existing <see cref="RogueProject" />.
+        /// </summary>
+        public RelayCommand LoadProjectCommand { get; private set; }
+
+        /// <summary>
+        /// Gets a command for saving the current <see cref="RogueProject" />.
+        /// </summary>
+        public RelayCommand SaveProjectCommand { get; private set; }
+
+        /// <summary>
+        /// Gets a command for saving the current <see cref="RogueProject" />
+        /// in a new project file.
+        /// </summary>
+        public RelayCommand SaveAsProjectCommand { get; private set; }
+        #endregion
+
+        #region Public Properties
+        public MultiAlignAnalysis Analysis { get; private set; }
+
+        public ObservableCollection<DatasetInformationViewModel> Datasets { get; private set; }
+
+        public int ProgressTracker
+        {
+            get { return this.progressTracker; }
+            private set
+            {
+                if (this.progressTracker != value)
+                {
+                    this.progressTracker = value;
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
+
+        public string ProjectPath
+        {
+            get { return this.projectPath; }
+            set
+            {
+                if (this.projectPath != value)
+                {
+                    this.projectPath = value;
+                    var fileName = Path.GetFileNameWithoutExtension(this.projectPath);
+                    this.WindowTitle = string.Format("MultiAlign Rogue ({0})", fileName);
+                    this.SaveProjectCommand.RaiseCanExecuteChanged();
+                    this.SaveAsProjectCommand.RaiseCanExecuteChanged();
+                    this.SelectFilesCommand.RaiseCanExecuteChanged();
+                    this.SelectDirectoryCommand.RaiseCanExecuteChanged();
+                    this.SearchDmsCommand.RaiseCanExecuteChanged();
+                    this.AddFolderCommand.RaiseCanExecuteChanged();
+                    this.RaisePropertyChanged();   
+                }
+            }
+        }
+
+        public string WindowTitle
+        {
+            get { return this.windowTitle; }
+            set
+            {
+                if (this.WindowTitle != value)
+                {
+                    this.windowTitle = value;
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether or not "Open From DMS" should be shown on the menu based on whether
+        /// or not the user is on the PNNL network or not.
+        /// </summary>
+        public bool ShowOpenFromDms
+        {
+            get { return System.Net.Dns.GetHostEntry(string.Empty).HostName.Contains("pnl.gov"); }
+        }
+
+        public string InputFilePath
+        {
+            get { return this.inputFilePath; }
+            set
+            {
+                if (this.inputFilePath != value)
+                {
+                    this.inputFilePath = value;
+                    this.RaisePropertyChanged();
+                    this.AddFolderCommand.RaiseCanExecuteChanged();
+                }
+            }
+        }
+
+        public IReadOnlyCollection<DatasetInformationViewModel> SelectedDatasets
+        {
+            get { return this.selectedDatasets; }
+            set
+            {
+                this.selectedDatasets = value;
+                this.RaisePropertyChanged("SelectedDatasets", null, value, true);
+            }
+        }
+        #endregion
+
+        #region Child ViewModels
         public FeatureFindingSettingsViewModel FeatureFindingSettingsViewModel
         {
             get { return this.featureFindingSettingsViewModel; }
@@ -126,16 +256,7 @@ namespace MultiAlignRogue
                 this.RaisePropertyChanged();
             }
         }
-
-        public IReadOnlyCollection<DatasetInformation> SelectedDatasets
-        {
-            get { return this.selectedDatasets; }
-            set
-            {
-                this.selectedDatasets = value;
-                this.RaisePropertyChanged("SelectedDatasets", null, value, true);
-            }
-        }
+        #endregion
 
         #region Import Files
         public void SelectFiles()
@@ -163,18 +284,21 @@ namespace MultiAlignRogue
                     return;
                 }
 
-                this.AddDataset(this.GetInputFilesFromPath(filePaths), Path.GetDirectoryName(filePaths[0]));
+                this.AddDatasets(this.GetInputFilesFromPath(filePaths));
             }
         }
 
         public void SelectDirectory()
         {
+            var folderBrowser = new VistaFolderBrowserDialog();
             var result = folderBrowser.ShowDialog();
 
             if (result == DialogResult.OK)
             {
                 InputFilePath = folderBrowser.SelectedPath;
             }
+
+            this.AddFolderCommand.Execute(null);
         }
 
         public void AddFolderDelegate()
@@ -201,40 +325,82 @@ namespace MultiAlignRogue
             var files = DatasetSearcher.FindDatasets(InputFilePath,
                 extensions,
                 SearchOption.TopDirectoryOnly);
-            this.AddDataset(files, InputFilePath);
+            this.AddDatasets(files);
+        }
+
+        private List<InputFile> GetInputFilesFromPath(IEnumerable<string> filePaths)
+        {
+            var files = new List<InputFile>();
+            foreach (var filePath in filePaths)
+            {
+                var type = DatasetInformation.SupportedFileTypes.FirstOrDefault(sft => filePath.ToLower().Contains(sft.Extension));
+                if (type != null)
+                {
+                    files.Add(new InputFile { Path = filePath, FileType = type.InputType });
+                }
+            }
+
+            return files;
+        }
+
+        private void SearchDms()
+        {
+            var dmsLookupViewModel = new DmsLookupViewModel { OutputDirectory = this.outputDirectory };
+            var dialog = new DmsLookupView { DataContext = dmsLookupViewModel };
+            dmsLookupViewModel.DatasetSelected += (o, e) => dialog.Close();
+            dialog.ShowDialog();
+            if (!dmsLookupViewModel.Status)
+            {
+                return;
+            }
+
+            if (dmsLookupViewModel.ShouldCopyFiles)
+            {
+                this.InputFilePath = dmsLookupViewModel.OutputDirectory;
+                this.AddFolderCommand.Execute(null);
+            }
+            else
+            {
+                var filePaths = dmsLookupViewModel.SelectedDataset.GetAvailableFiles();
+                if (filePaths.Count > 0)
+                {
+                    this.AddDatasets(this.GetInputFilesFromPath(filePaths));
+                }
+            }
         }
 
         public void UpdateDatasets()
         {
             Datasets.Clear();
-            foreach (var info in m_analysis.MetaData.Datasets)
+            foreach (var info in Analysis.MetaData.Datasets)
             {
                 var viewmodel = new DatasetInformationViewModel(info);
+                viewmodel.RemovalRequested += (s, e) =>
+                {
+                    var vm = s as DatasetInformationViewModel;
+                    if (vm != null)
+                    {
+                        var result =
+                            MessageBox.Show(
+                                string.Format("Are you sure that you'd like to remove {0}", vm.Dataset.DatasetName),
+                                "Remove Dataset?",
+                                MessageBoxButton.YesNo);
+                        if (result == MessageBoxResult.Yes)
+                        {
+                            this.Datasets.Remove(vm);
+                            this.Analysis.MetaData.Datasets.Remove(vm.Dataset);
+                        }
+                    }
+                };
                 Datasets.Add(viewmodel);
             }
         }
 
-        /// <summary>
-        /// Gets a value indicating whether or not "Open From DMS" should be shown on the menu based on whether
-        /// or not the user is on the PNNL network or not.
-        /// </summary>
-        public bool ShowOpenFromDms
+        private void AddDatasets(List<InputFile> files)
         {
-            get { return System.Net.Dns.GetHostEntry(string.Empty).HostName.Contains("pnl.gov"); }
-        }
-
-        public string InputFilePath
-        {
-            get { return this.inputFilePath; }
-            set
-            {
-                if (this.inputFilePath != value)
-                {
-                    this.inputFilePath = value;
-                    this.RaisePropertyChanged();
-                    this.AddFolderCommand.RaiseCanExecuteChanged();
-                }
-            }
+            DataSelectionViewModel.AddDatasets(files);
+            UpdateDatasets();
+            this.RaisePropertyChanged("m_config");
         }
         #endregion
 
@@ -271,63 +437,48 @@ namespace MultiAlignRogue
         }
         #endregion
 
-
-        private void ReportProgess(int value)
+        #region Project Loading
+        private void CreateNewProject()
         {
-            this.ProgressTracker = value;
-            this.RaisePropertyChanged("ProgressTracker");
-        }
-
-        private List<InputFile> GetInputFilesFromPath(IEnumerable<string> filePaths)
-        {
-            var files = new List<InputFile>();
-            foreach (var filePath in filePaths)
-            {
-                var type = DatasetInformation.SupportedFileTypes.FirstOrDefault(sft => filePath.ToLower().Contains(sft.Extension));
-                if (type != null)
+            var success = false;
+            var newProjectViewModel = new NewProjectViewModel();
+            var dialog = new NewProjectWindow { DataContext = newProjectViewModel };
+            newProjectViewModel.Success += (s, e) =>
                 {
-                    files.Add(new InputFile { Path = filePath, FileType = type.InputType });
-                }
-            }
-
-            return files;
-        }
-
-        private void SearchDms()
-        {
-            var dmsLookupViewModel = new DmsLookupViewModel();
-            var dialog = new DmsLookupView { DataContext = dmsLookupViewModel };
-            dmsLookupViewModel.DatasetSelected += (o, e) => dialog.Close();
+                    success = true;
+                    dialog.Close();
+                };
             dialog.ShowDialog();
-            if (!dmsLookupViewModel.Status) return;
 
-            if (dmsLookupViewModel.ShouldCopyFiles)
+            if (success)
             {
-                this.InputFilePath = dmsLookupViewModel.OutputDirectory;
-                this.AddFolderCommand.Execute(null);
-            }
-            else
-            {
-                var filePaths = dmsLookupViewModel.SelectedDataset.GetAvailableFiles();
-                if (filePaths.Count > 0)
-                {
-                    this.AddDataset(this.GetInputFilesFromPath(filePaths), dmsLookupViewModel.OutputDirectory);
-                }
+                this.LoadRogueProject(newProjectViewModel.GetRogueProject(), true);
+                this.Serialize(newProjectViewModel.ProjectFilePath);
+                this.ProjectPath = newProjectViewModel.ProjectFilePath;
+                this.outputDirectory = newProjectViewModel.OutputDirectory;
+                this.RaisePropertyChanged("Analysis");
             }
         }
 
-        private void AddDataset(List<InputFile> files, string analysisPath)
+        private void LoadRogueProject(RogueProject rogueProject, bool isNewProject)
         {
-            DataSelectionViewModel.AddDatasets(files);
-            m_config.AnalysisPath = analysisPath;
-            Providers = SetupDataProviders(true);
-            m_analysis.DataProviders = Providers;
-            UpdateDatasets();
-            this.RaisePropertyChanged("m_config");
-            this.RaisePropertyChanged("Datasets");
+            this.Analysis = new MultiAlignAnalysis
+            {
+                DataProviders = this.SetupDataProviders(rogueProject.AnalysisPath, isNewProject),
+                Options = rogueProject.MultiAlignAnalysisOptions
+            };
+
+            this.DataSelectionViewModel.Analysis = this.Analysis;
+            this.Analysis.MetaData.Datasets.AddRange(rogueProject.Datasets);
+            this.featureCache.Providers = this.Analysis.DataProviders;
+            this.m_config.AnalysisPath = rogueProject.AnalysisPath;
+            this.UpdateDatasets();
+            this.FeatureFindingSettingsViewModel = new FeatureFindingSettingsViewModel(this.Analysis, this.featureCache);
+            this.AlignmentSettingsViewModel = new AlignmentSettingsViewModel(this.Analysis, this.featureCache);
+            this.RaisePropertyChanged("Analysis");
         }
 
-        private void SaveProject()
+        private void SaveProjectAs()
         {
             var saveFileDialog = new SaveFileDialog
             {
@@ -342,6 +493,14 @@ namespace MultiAlignRogue
             }
         }
 
+        private void SaveProject()
+        {
+            if (!string.IsNullOrWhiteSpace(this.ProjectPath))
+            {
+                this.Serialize(this.ProjectPath);   
+            }
+        }
+
         private void LoadProject()
         {
             var openFileDialog = new OpenFileDialog
@@ -353,14 +512,10 @@ namespace MultiAlignRogue
             var result = openFileDialog.ShowDialog();
             if (result == DialogResult.OK)
             {
-                this.Deserialize(openFileDialog.FileName);
-
-                Providers = SetupDataProviders(string.IsNullOrEmpty(this.m_config.AnalysisPath));
-                this.FeatureCache.Providers = Providers;
-                m_analysis.DataProviders = Providers;
-                this.UpdateDatasets();
-                this.FeatureFindingSettingsViewModel = new FeatureFindingSettingsViewModel(m_analysis, this.FeatureCache);
-                this.AlignmentSettingsViewModel = new AlignmentSettingsViewModel(m_analysis, this.FeatureCache);
+                var rogueProject = this.Deserialize(openFileDialog.FileName);
+                this.LoadRogueProject(rogueProject, false);
+                this.outputDirectory = Path.GetDirectoryName(rogueProject.AnalysisPath);
+                this.ProjectPath = openFileDialog.FileName;
             }
         }
 
@@ -370,7 +525,7 @@ namespace MultiAlignRogue
             var datasetInfoList = this.Datasets.Select(datasetInformation => datasetInformation.Dataset).ToList();
             var rogueProject = new RogueProject
             {
-                MultiAlignAnalysisOptions = this.m_analysis.Options,
+                MultiAlignAnalysisOptions = this.Analysis.Options,
                 Datasets = datasetInfoList,
                 AnalysisPath = this.m_config.AnalysisPath
             };
@@ -380,28 +535,27 @@ namespace MultiAlignRogue
             }
         }
 
-        private void Deserialize(string filePath)
+        private RogueProject Deserialize(string filePath)
         {
             var rogueProjectSerializer = new DataContractSerializer(typeof(RogueProject));
+            var rogueProject = new RogueProject();
 
             using (var reader = File.Open(filePath, FileMode.Open))
             {
                 try
                 {
-                    RogueProject rogueProject = (RogueProject) rogueProjectSerializer.ReadObject(reader);
-                    this.m_analysis.Options = rogueProject.MultiAlignAnalysisOptions;                   
-                    foreach (var dataset in rogueProject.Datasets)
-                    {
-                        this.m_analysis.MetaData.Datasets.Add(dataset);
-                    }
-
-                    this.m_config.AnalysisPath = rogueProject.AnalysisPath;
+                    rogueProject = (RogueProject) rogueProjectSerializer.ReadObject(reader);
+                    this.Analysis.Options = rogueProject.MultiAlignAnalysisOptions;                   
+                    
                 }
                 catch (InvalidCastException)
                 {
                     MessageBox.Show("Could not deserialize analysis options.");
                 }
             }
+
+            return rogueProject;
         }
+        #endregion
     }
 }

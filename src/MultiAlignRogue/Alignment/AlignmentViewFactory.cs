@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MultiAlignCore.Data.Alignment;
-
-namespace MultiAlignRogue
+﻿namespace MultiAlignRogue.Alignment
 {
+    using MultiAlignCore.Data.Alignment;
+
     class AlignmentViewFactory : IAlignmentWindowFactory
     {
         public void CreateNewWindow()

@@ -1,18 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Windows;
-using MultiAlignCore.Data.MetaData;
-using OxyPlot;
-using OxyPlot.Axes;
-using OxyPlot.Series;
-using PNNLOmics.Data.Features;
-
-namespace MultiAlignRogue
+﻿namespace MultiAlignRogue.Feature_Finding
 {
+    using System;
+    using System.Collections.Generic;
     using System.Drawing;
+    using System.Linq;
+    using System.Windows;
+
+    using MultiAlignCore.Data.MetaData;
+
+    using MultiAlignRogue.Utils;
+
+    using OxyPlot;
+    using OxyPlot.Axes;
+    using OxyPlot.Series;
+
+    using PNNLOmics.Data.Features;
 
     using QuadTreeLib;
 
@@ -92,7 +94,7 @@ namespace MultiAlignRogue
             // x axis
             this.netAxis = new LinearAxis
             {
-                Title = "Scan",
+                Title = "NET",
                 Position = AxisPosition.Bottom,
                 IsAxisVisible = true,
                 Minimum = 0,
@@ -108,7 +110,7 @@ namespace MultiAlignRogue
                 Position = AxisPosition.Left,
                 IsAxisVisible = true,
                 Minimum = 0,
-                Maximum = globalMaxMass,
+                Maximum = this.globalMaxMass,
                 AbsoluteMinimum = 0,
                 AbsoluteMaximum = this.globalMaxMass
             };
@@ -116,8 +118,8 @@ namespace MultiAlignRogue
             this.Model.Axes.Add(this.netAxis);
             this.Model.Axes.Add(this.massAxis);
 
-            netAxis.AxisChanged += (s, e) => this.throttler.Run(() => this.PlotFeatures(this.allFeatures));
-            massAxis.AxisChanged += (s, e) => this.throttler.Run(() => this.PlotFeatures(this.allFeatures));
+            this.netAxis.AxisChanged += (s, e) => this.throttler.Run(() => this.PlotFeatures(this.allFeatures));
+            this.massAxis.AxisChanged += (s, e) => this.throttler.Run(() => this.PlotFeatures(this.allFeatures));
 
             this.throttler.Run(() => this.PlotFeatures(this.allFeatures));
         }
@@ -135,6 +137,10 @@ namespace MultiAlignRogue
         {
             this.Model.Series.Clear();
 
+            var massPercent = (this.massAxis.ActualMaximum - this.massAxis.ActualMinimum) / this.massAxis.AbsoluteMaximum;
+            var rtPercent = this.netAxis.ActualMaximum - this.netAxis.ActualMinimum;
+            var showMsFeatures = (massPercent <= 0.1) && (rtPercent <= 0.1);
+
             try
             {
                 int i = 0;
@@ -142,16 +148,28 @@ namespace MultiAlignRogue
                 {
                     LineSeries currentFeatures = new LineSeries
                     {
-                        Color = Colors.ElementAt(i),
+                        Color = this.Colors.ElementAt(i),
                         Title = file.DatasetName,
                         StrokeThickness = 0.8,
                     };
 
-                    currentFeatures.Points.AddRange(this.GetPartitionedPoints(this.quadTrees[file], file.ScanTimes.Keys.Max(), this.globalMaxMass));
+                    ScatterSeries currentMsFeatures = new ScatterSeries
+                    {
+                        MarkerStroke = OxyColors.Black,
+                        MarkerType = MarkerType.Circle
+                    };
 
-                    ////currentFeatures.Points.AddRange(GetPoints(features[file], file.ScanTimes.Keys.Max()));
+                    var dataPoints = this.GetPartitionedPoints(
+                        this.quadTrees[file],
+                        file.ScanTimes.Keys.Max(),
+                        this.globalMaxMass,
+                        showMsFeatures);
+
+                    currentFeatures.Points.AddRange(dataPoints.Item1);
+                    currentMsFeatures.Points.AddRange(dataPoints.Item2);
 
                     this.Model.Series.Add(currentFeatures);
+                    this.Model.Series.Add(currentMsFeatures);
                     i = (i + 1) % this.Colors.Count; // Cycle through available colors if we run out
                 }
             }
@@ -170,8 +188,12 @@ namespace MultiAlignRogue
         /// <param name="featureTree">QuadTree of features for one dataset.</param>
         /// <param name="maxScan">The maximum LC scan number in the dataset.</param>
         /// <param name="globalMax">The maximum mass in all datasets.</param>
-        /// <returns>Collection of datapoints for features.</returns>
-        private IEnumerable<DataPoint> GetPartitionedPoints(QuadTree<FeaturePoint> featureTree, int maxScan, double globalMax)
+        /// <param name="showMsFeatures">A value indicating whether points with Ms features should be returned.</param>
+        /// <returns>
+        /// Collection of datapoints for features.
+        /// Item 1: LCMS feature datapoints. Item2: MS Feature datapoints.
+        /// </returns>
+        private Tuple<IEnumerable<DataPoint>, IEnumerable<ScatterPoint>> GetPartitionedPoints(QuadTree<FeaturePoint> featureTree, int maxScan, double globalMax, bool showMsFeatures = false)
         {
             var netActMaximum = this.netAxis.ActualMaximum.Equals(0) ? 1.0 : this.netAxis.ActualMaximum;
             var massActMaximum = this.massAxis.ActualMaximum.Equals(0) ? globalMax : this.massAxis.ActualMaximum;
@@ -191,17 +213,10 @@ namespace MultiAlignRogue
                 {
                     var massMin = this.massAxis.ActualMinimum + (j * massStep);
                     var massMax = this.massAxis.ActualMinimum + ((j + 1) * massStep);
-
-                    ////var featureRange = features.Where(feat => (feat.MassMonoisotopic >= massMin &&
-                    ////                                           feat.MassMonoisotopic <= massMax) &&
-                    ////                                          (feat.ScanStart >= lowScan || feat.ScanEnd <= hiScan ||
-                    ////                                           (feat.ScanStart <= lowScan && feat.ScanStart >= hiScan)))
-                    ////    .AsParallel().OrderByDescending(feat => feat.Abundance).Take(this.featuresPerSection);
-
                     var treeFeatures = featureTree.Query(new RectangleF
                                           {
                                               X = (float)lowScan,
-                                              Y = (float)massMax,
+                                              Y = (float)massMin,
                                               Height = (float)(massMax - massMin),
                                               Width = (float)(highScan - lowScan)
                                           });
@@ -214,7 +229,7 @@ namespace MultiAlignRogue
                 }
             }
 
-            return this.GetPoints(featureHash, maxScan);
+            return this.GetPoints(featureHash, maxScan, showMsFeatures);
         }
 
         /// <summary>
@@ -222,20 +237,43 @@ namespace MultiAlignRogue
         /// </summary>
         /// <param name="features">List of features for one dataset.</param>
         /// <param name="maxScan">The maximum LC scan number in the dataset.</param>
-        /// <returns>Collection of data points for features.</returns>
-        private IEnumerable<DataPoint> GetPoints(IEnumerable<UMCLight> features, int maxScan)
+        /// <param name="showMsFeatures">A value indicating whether points with Ms features should be returned.</param>
+        /// <returns>
+        /// Collection of datapoints for features.
+        /// Item 1: LCMS feature datapoints. Item2: MS Feature datapoints.
+        /// </returns>
+        private Tuple<IEnumerable<DataPoint>, IEnumerable<ScatterPoint>> GetPoints(IEnumerable<UMCLight> features, int maxScan, bool showMsFeatures)
         {
-            var dataPoints = new List<DataPoint>();
+            var lcmsDataPoints = new List<DataPoint>();
+            var msDataPoints = new List<ScatterPoint>();
             foreach (var feature in features)
             {
-                dataPoints.Add(new DataPoint(feature.ScanStart / (double)maxScan, feature.MassMonoisotopic));
-                dataPoints.Add(new DataPoint(feature.ScanEnd / (double)maxScan, feature.MassMonoisotopic));
+                lcmsDataPoints.Add(new DataPoint(feature.ScanStart / (double)maxScan, feature.MassMonoisotopic));
+                lcmsDataPoints.Add(new DataPoint(feature.ScanEnd / (double)maxScan, feature.MassMonoisotopic));
 
                 // Insert NaN point to cause broken line series
-                dataPoints.Add(new DataPoint(double.NaN, feature.MassMonoisotopic));
+                lcmsDataPoints.Add(new DataPoint(double.NaN, feature.MassMonoisotopic));
+
+                if (showMsFeatures)
+                {
+                    ////foreach (var msfeature in feature.MsFeatures)
+                    ////{
+                    ////    msDataPoints.Add(new ScatterPoint(msfeature.Net, msfeature.MassMonoisotopic, 0.8));
+                    ////}
+
+                    // TODO: Show actual MS features.
+                    // This is just a sample to show how I will show MS features.
+                    for (int i = feature.ScanStart; i < feature.ScanEnd; i++)
+                    {
+                        if (i % 20 == 0)
+                        {
+                            msDataPoints.Add(new ScatterPoint(i / (double)maxScan, feature.MassMonoisotopic, 0.8));   
+                        }
+                    }
+                }
             }
 
-            return dataPoints;
+            return new Tuple<IEnumerable<DataPoint>, IEnumerable<ScatterPoint>>(lcmsDataPoints, msDataPoints);
         }
 
         /// <summary>

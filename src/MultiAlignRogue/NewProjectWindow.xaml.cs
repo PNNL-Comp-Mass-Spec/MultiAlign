@@ -15,11 +15,11 @@ using System.Windows.Shapes;
 namespace MultiAlignRogue
 {
     /// <summary>
-    /// Interaction logic for AlignmentView.xaml
+    /// Interaction logic for NewProjectWindow.xaml
     /// </summary>
-    public partial class AlignmentView : Window
+    public partial class NewProjectWindow : Window
     {
-        public AlignmentView()
+        public NewProjectWindow()
         {
             InitializeComponent();
         }

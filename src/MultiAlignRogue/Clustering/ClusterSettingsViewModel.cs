@@ -1,22 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MultiAlignCore.Data;
-using MultiAlignCore.IO;
-using PNNLOmics.Algorithms.Distance;
-using PNNLOmics.Algorithms.FeatureClustering;
-using PNNLOmics.Data.Features;
-using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
-using MultiAlignCore.Algorithms;
-using MultiAlignCore.Algorithms.Options;
-using MultiAlignCore.IO.Features;
-using Remotion.Linq.Collections;
-
-namespace MultiAlignRogue
+﻿namespace MultiAlignRogue.Clustering
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+
+    using GalaSoft.MvvmLight;
+    using GalaSoft.MvvmLight.Command;
+
+    using MultiAlignCore.Algorithms;
+    using MultiAlignCore.Algorithms.Options;
+    using MultiAlignCore.Data;
+    using MultiAlignCore.IO.Features;
+
+    using PNNLOmics.Algorithms.Distance;
+    using PNNLOmics.Algorithms.FeatureClustering;
+    using PNNLOmics.Data.Features;
+
+    using Remotion.Linq.Collections;
+
     using MessageBox = System.Windows.MessageBox;
 
     public class ClusterSettingsViewModel : ViewModelBase
@@ -48,36 +50,36 @@ namespace MultiAlignRogue
             this.options = analysis.Options;
             this.builder = new AlgorithmBuilder();
 
-            ClusterFeaturesCommand = new RelayCommand(AsyncClusterFeatures);
-            DisplayClustersCommand = new RelayCommand(DisplayFeatures);
+            this.ClusterFeaturesCommand = new RelayCommand(this.AsyncClusterFeatures);
+            this.DisplayClustersCommand = new RelayCommand(this.DisplayFeatures);
 
-            DistanceMetrics = new ObservableCollection<DistanceMetric>();
-            Enum.GetValues(typeof(DistanceMetric)).Cast<DistanceMetric>().ToList().ForEach(x => DistanceMetrics.Add(x));
-            CentroidRepresentations = new ObservableCollection<ClusterCentroidRepresentation>();
-            Enum.GetValues(typeof(ClusterCentroidRepresentation)).Cast<ClusterCentroidRepresentation>().ToList().ForEach(x => CentroidRepresentations.Add(x));
-            ClusteringMethods = new ObservableCollection<LcmsFeatureClusteringAlgorithmType>();
-            Enum.GetValues(typeof(LcmsFeatureClusteringAlgorithmType)).Cast<LcmsFeatureClusteringAlgorithmType>().ToList().ForEach(x => ClusteringMethods.Add(x));
+            this.DistanceMetrics = new ObservableCollection<DistanceMetric>();
+            Enum.GetValues(typeof(DistanceMetric)).Cast<DistanceMetric>().ToList().ForEach(x => this.DistanceMetrics.Add(x));
+            this.CentroidRepresentations = new ObservableCollection<ClusterCentroidRepresentation>();
+            Enum.GetValues(typeof(ClusterCentroidRepresentation)).Cast<ClusterCentroidRepresentation>().ToList().ForEach(x => this.CentroidRepresentations.Add(x));
+            this.ClusteringMethods = new ObservableCollection<LcmsFeatureClusteringAlgorithmType>();
+            Enum.GetValues(typeof(LcmsFeatureClusteringAlgorithmType)).Cast<LcmsFeatureClusteringAlgorithmType>().ToList().ForEach(x => this.ClusteringMethods.Add(x));
 
         }
 
         public bool ShouldSeparateByCharge
         {
-            get { return options.LcmsClusteringOptions.ShouldSeparateCharge; }
+            get { return this.options.LcmsClusteringOptions.ShouldSeparateCharge; }
             set
             {
-                options.LcmsClusteringOptions.ShouldSeparateCharge = value;
+                this.options.LcmsClusteringOptions.ShouldSeparateCharge = value;
                 this.RaisePropertyChanged("ShouldSeparateByCharge");
             }
         }
 
         public LcmsFeatureClusteringAlgorithmType SelectedLcmsFeatureClusteringAlgorithm
         {
-            get { return options.LcmsClusteringOptions.LcmsFeatureClusteringAlgorithm; }
+            get { return this.options.LcmsClusteringOptions.LcmsFeatureClusteringAlgorithm; }
             set
             {
-                if (options.LcmsClusteringOptions.LcmsFeatureClusteringAlgorithm != value)
+                if (this.options.LcmsClusteringOptions.LcmsFeatureClusteringAlgorithm != value)
                 {
-                    options.LcmsClusteringOptions.LcmsFeatureClusteringAlgorithm = value;
+                    this.options.LcmsClusteringOptions.LcmsFeatureClusteringAlgorithm = value;
                     this.RaisePropertyChanged("SelectedLcmsFeatureClusteringAlgorithm");
                 }
             }
@@ -85,12 +87,12 @@ namespace MultiAlignRogue
 
         public ClusterCentroidRepresentation SelectedCentroidMethod
         {
-            get { return options.LcmsClusteringOptions.ClusterCentroidRepresentation; }
+            get { return this.options.LcmsClusteringOptions.ClusterCentroidRepresentation; }
             set
             {
-                if (options.LcmsClusteringOptions.ClusterCentroidRepresentation != value)
+                if (this.options.LcmsClusteringOptions.ClusterCentroidRepresentation != value)
                 {
-                    options.LcmsClusteringOptions.ClusterCentroidRepresentation = value;
+                    this.options.LcmsClusteringOptions.ClusterCentroidRepresentation = value;
                     this.RaisePropertyChanged("SelectedCentroidMethod");
                 }
             }
@@ -98,12 +100,12 @@ namespace MultiAlignRogue
 
         public DistanceMetric SelectedDistanceFunction
         {
-            get { return options.LcmsClusteringOptions.DistanceFunction; }
+            get { return this.options.LcmsClusteringOptions.DistanceFunction; }
             set
             {
-                if (options.LcmsClusteringOptions.DistanceFunction != value)
+                if (this.options.LcmsClusteringOptions.DistanceFunction != value)
                 {
-                    options.LcmsClusteringOptions.DistanceFunction = value;
+                    this.options.LcmsClusteringOptions.DistanceFunction = value;
                     this.RaisePropertyChanged("SelectedDistanceFunction");
                 }
             }
@@ -111,26 +113,26 @@ namespace MultiAlignRogue
 
         public async void AsyncClusterFeatures()
         {
-            await Task.Run(() => ClusterFeatures());
+            await Task.Run(() => this.ClusterFeatures());
         }
 
         public void ClusterFeatures()
         {
             
-            algorithms = builder.GetAlgorithmProvider(options);
-            var clusterer = algorithms.Clusterer;
-            clusterer.Parameters = LcmsClusteringOptions.ConvertToOmics(options.LcmsClusteringOptions);
-            featureCache = analysis.DataProviders.FeatureCache;
+            this.algorithms = this.builder.GetAlgorithmProvider(this.options);
+            var clusterer = this.algorithms.Clusterer;
+            clusterer.Parameters = LcmsClusteringOptions.ConvertToOmics(this.options.LcmsClusteringOptions);
+            this.featureCache = this.analysis.DataProviders.FeatureCache;
 
             // This just tells us whether we are using mammoth memory partitions or not.          
             var clusterCount = 0;
-            var providers = analysis.DataProviders;
+            var providers = this.analysis.DataProviders;
 
             // Here we see if we need to separate the charge...
             // IMS is said to require charge separation 
-            if (!analysis.Options.LcmsClusteringOptions.ShouldSeparateCharge)
+            if (!this.analysis.Options.LcmsClusteringOptions.ShouldSeparateCharge)
             {
-                var features = featureCache.FindAll();
+                var features = this.featureCache.FindAll();
                 var clusters = new List<UMCClusterLight>();
                 clusters = clusterer.Cluster(features, clusters);
                 foreach (var cluster in clusters)
@@ -147,18 +149,18 @@ namespace MultiAlignRogue
                 }
                 providers.ClusterCache.AddAll(clusters);
                 providers.FeatureCache.UpdateAll(features);
-                analysis.Clusters = clusters;
+                this.analysis.Clusters = clusters;
             }
             else
             {
-                var maxChargeState = featureCache.FindMaxCharge();
+                var maxChargeState = this.featureCache.FindMaxCharge();
 
                 /*
                  * Here we cluster all charge states separately.  Probably IMS Data.
                  */
                 for (var chargeState = 1; chargeState <= maxChargeState; chargeState++)
                 {
-                    var features = featureCache.FindByCharge(chargeState);
+                    var features = this.featureCache.FindByCharge(chargeState);
                     if (features.Count < 1)
                     {
                         break;
@@ -178,10 +180,10 @@ namespace MultiAlignRogue
                         }
                     }
 
-                    analysis.DataProviders.ClusterCache.AddAll(clusters);
-                    analysis.DataProviders.FeatureCache.UpdateAll(features);
+                    this.analysis.DataProviders.ClusterCache.AddAll(clusters);
+                    this.analysis.DataProviders.FeatureCache.UpdateAll(features);
                 }
-                analysis.Clusters = analysis.DataProviders.ClusterCache.FindAll();
+                this.analysis.Clusters = this.analysis.DataProviders.ClusterCache.FindAll();
             }
 
             MessageBox.Show("Working Command");

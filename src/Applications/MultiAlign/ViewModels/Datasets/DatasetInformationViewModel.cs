@@ -8,6 +8,11 @@ using MultiAlignCore.Data.MetaData;
 
 namespace MultiAlign.ViewModels.Datasets
 {
+    using MultiAlign.Commands;
+    using MultiAlign.Data;
+
+    using Xceed.Wpf.DataGrid.Converters;
+
     public class DatasetInformationViewModel : ViewModelBase
     {
         private readonly DatasetInformation m_information;
@@ -19,6 +24,15 @@ namespace MultiAlign.ViewModels.Datasets
             m_information = information;
             var data = information.PlotData;
             PlotData = new ObservableCollection<PlotViewModel>();
+
+            RequestRemovalCommand = new BaseCommand(
+                () =>
+                    {
+                        if (RemovalRequested != null)
+                        {
+                            RemovalRequested(this, EventArgs.Empty);
+                        }
+                    }, s => !this.DoingWork);
 
             if (data != null)
             {
@@ -40,6 +54,10 @@ namespace MultiAlign.ViewModels.Datasets
             ModifyDatasetCommand = new ShowDatasetDetailCommand();
         }
 
+        public event EventHandler RemovalRequested;
+
+        public BaseCommand RequestRemovalCommand { get; private set; }
+
         public bool IsSelected
         {
             get { return m_isSelected; }
@@ -54,6 +72,95 @@ namespace MultiAlign.ViewModels.Datasets
                 if (Selected != null)
                     Selected(this, null);
             }
+        }
+
+        public bool ScansBool
+        {
+            get { return this.Dataset.ScansBool; }
+            set
+            {
+                if (this.Dataset.ScansBool != value)
+                {
+                    this.Dataset.ScansBool = value;
+                    this.OnPropertyChanged("ScansBool");
+                }
+            }
+        }
+
+        public bool RawBool
+        {
+            get { return this.Dataset.RawBool; }
+            set
+            {
+                if (this.Dataset.RawBool != value)
+                {
+                    this.Dataset.RawBool = value;
+                    this.OnPropertyChanged("RawBool");
+                }
+            }
+        }
+
+        public bool FeaturesFound
+        {
+            get { return this.Dataset.FeaturesFound; }
+            set
+            {
+                if (this.Dataset.FeaturesFound != value)
+                {
+                    this.Dataset.FeaturesFound = value;
+                    this.OnPropertyChanged("FeaturesFound");
+                }
+            }
+        }
+
+        public bool IsAligned
+        {
+            get { return this.Dataset.IsAligned; }
+            set
+            {
+                if (this.Dataset.IsAligned != value)
+                {
+                    this.Dataset.IsAligned = value;
+                    this.OnPropertyChanged("IsAligned");
+                }
+            }
+        }
+
+        private bool isFindingFeatures;
+        public bool IsFindingFeatures
+        {
+            get { return this.isFindingFeatures; }
+            set
+            {
+                if (this.isFindingFeatures != value)
+                {
+                    this.isFindingFeatures = value;
+                    ThreadSafeDispatcher.Invoke(() => this.RequestRemovalCommand.InvokeCanExecuteChanged());
+                    this.OnPropertyChanged("IsFindingFeatures");
+                    this.OnPropertyChanged("DoingWork");
+                }
+            }
+        }
+
+        private bool isAligning;
+        public bool IsAligning
+        {
+            get { return this.isAligning; }
+            set
+            {
+                if (this.isAligning != value)
+                {
+                    this.isAligning = value;
+                    ThreadSafeDispatcher.Invoke(() => this.RequestRemovalCommand.InvokeCanExecuteChanged());
+                    this.OnPropertyChanged("IsAligning");
+                    this.OnPropertyChanged("DoingWork");
+                }
+            }
+        }
+
+        public bool DoingWork
+        {
+            get { return this.IsAligning || this.IsFindingFeatures; }
         }
 
         public DatasetInformation Dataset
