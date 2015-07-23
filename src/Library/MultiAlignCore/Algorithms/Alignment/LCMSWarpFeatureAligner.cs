@@ -192,7 +192,7 @@ namespace MultiAlignCore.Algorithms.Alignment
 
 
                 map[featureId].MassMonoisotopicAligned = feature.MassMonoisotopicAligned;
-                map[featureId].NetAligned = feature.Net;
+                map[featureId].NetAligned = feature.NetAligned;
                 map[featureId].Net = feature.Net;
                 map[featureId].ScanAligned = feature.ScanAligned;
             }
