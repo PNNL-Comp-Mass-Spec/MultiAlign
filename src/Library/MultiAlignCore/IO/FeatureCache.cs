@@ -284,15 +284,18 @@ namespace MultiAlignCore.IO
                     lcmsFindingOptions,
                     lcmsFilteringOptions);
 
-                var maxScan = Convert.ToDouble(features.Max(feature => feature.Scan));
-                var minScan = Convert.ToDouble(features.Min(feature => feature.Scan));
+                //var maxScan = Convert.ToDouble(features.Max(feature => feature.Scan));
+                //var minScan = Convert.ToDouble(features.Min(feature => feature.Scan));
+                var maxScan = features.Max(feature => feature.Scan);
+                var minScan = features.Min(feature => feature.Scan);
                 var id = 0;
+                var scanTimes = dataset.ScanTimes;
 
                 foreach (var feature in features)
                 {
                     feature.Id = id++;
-                    feature.Net = (Convert.ToDouble(feature.Scan) - minScan) / (maxScan - minScan);
-                    feature.Net = feature.Net;
+                    //feature.Net = (Convert.ToDouble(feature.Scan) - minScan) / (maxScan - minScan);
+                    feature.Net = (Convert.ToDouble(scanTimes[feature.Scan]) - scanTimes[minScan]) / (scanTimes[maxScan] - scanTimes[minScan]);
                     feature.MassMonoisotopicAligned = feature.MassMonoisotopic;
                     feature.NetAligned = feature.Net;
                     feature.GroupId = datasetId;
@@ -376,7 +379,7 @@ namespace MultiAlignCore.IO
             }
             // Then parse each to figure out if this is true.
             var fullScans = new Dictionary<int, bool>();
-            var scanTimes = new Dictionary<int, double>();
+            var scanTimes = dataset.ScanTimes;
             using (var provider = RawLoaderFactory.CreateFileReader(rawPath))
             {
                 if (provider == null)
@@ -392,14 +395,10 @@ namespace MultiAlignCore.IO
                     {
                         ScanSummary summary = provider.GetScanSummary(scan, 0);
 
-                        if (summary == null)
-                        {
-                            continue;
-                        }
-
-                        if (summary.MsLevel == 1)
-                            fullScans.Add(scan, true);
-                        scanTimes.Add(scan, summary.Time);
+                        if (summary == null) { continue;}
+                        if (summary.MsLevel == 1) { fullScans.Add(scan, true); }         
+                        if (scanTimes.ContainsKey(scan)){ scanTimes[scan] = summary.Time; }
+                        else { scanTimes.Add(scan, summary.Time); }                    
                     }
                     dataset.ScanTimes = scanTimes;
                 }
