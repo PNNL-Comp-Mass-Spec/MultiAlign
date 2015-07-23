@@ -1,12 +1,13 @@
-﻿<Window x:Class="MultiAlignRogue.MSFeatureView"
+﻿<Window x:Class="MultiAlignRogue.Feature_Finding.MSFeatureView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:multiAlignRogue="clr-namespace:MultiAlignRogue"
         xmlns:oxy="http://oxyplot.org/wpf"
         xmlns:oxyPlot="clr-namespace:OxyPlot;assembly=OxyPlot"
+        xmlns:featureFinding="clr-namespace:MultiAlignRogue.Feature_Finding"
         Title="MSFeatureView" Height="437.35" Width="641">
     <Window.DataContext>
-        <multiAlignRogue:MSFeatureViewModel/>
+        <featureFinding:MSFeatureViewModel/>
     </Window.DataContext>
     
     <Grid>

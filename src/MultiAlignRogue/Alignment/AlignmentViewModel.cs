@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using MultiAlignCore.Data.Alignment;
-using MultiAlignCore.Drawing;
-using System.Windows.Media.Imaging;
-using MultiAlign.Data;
-using MultiAlignCore.Data;
-
-
-namespace MultiAlignRogue
+﻿namespace MultiAlignRogue.Alignment
 {
+    using System;
+    using System.Windows.Media.Imaging;
+
+    using MultiAlign.Data;
+
+    using MultiAlignCore.Data.Alignment;
+    using MultiAlignCore.Drawing;
+
     class AlignmentViewModel
     {
         public BitmapImage HeatmapImage { get; private set; }
@@ -30,7 +25,7 @@ namespace MultiAlignRogue
 
         public AlignmentViewModel(classAlignmentData alignment)
         {
-            WindowTitle = String.Format("{0} Alignment Data",alignment.aligneeDataset);
+            this.WindowTitle = String.Format("{0} Alignment Data",alignment.aligneeDataset);
             var residuals = alignment.ResidualData;
 
             var heatmap = HeatmapFactory.CreateAlignedHeatmap(alignment.heatScores);
@@ -43,12 +38,12 @@ namespace MultiAlignRogue
             var massScanResidual = ScatterPlotFactory.CreateResidualPlot(residuals.Scan, residuals.MzMassError,
                 residuals.MzMassErrorCorrected, "Mass Residuals", "Scan", "Mass Errors");
             
-            HeatmapImage = ImageConverter.ConvertImage(PlotImageUtility.CreateImage(heatmap));
-            NetScanImage = ImageConverter.ConvertImage(PlotImageUtility.CreateImage(netResidual));
-            MassHistogram = ImageConverter.ConvertImage(PlotImageUtility.CreateImage(massHistogram));
-            NetHistogram = ImageConverter.ConvertImage(PlotImageUtility.CreateImage(netHistogram));         
-            MassMzImage = ImageConverter.ConvertImage(PlotImageUtility.CreateImage(massMzResidual));
-            MassScanImage = ImageConverter.ConvertImage(PlotImageUtility.CreateImage(massScanResidual));          
+            this.HeatmapImage = ImageConverter.ConvertImage(PlotImageUtility.CreateImage(heatmap));
+            this.NetScanImage = ImageConverter.ConvertImage(PlotImageUtility.CreateImage(netResidual));
+            this.MassHistogram = ImageConverter.ConvertImage(PlotImageUtility.CreateImage(massHistogram));
+            this.NetHistogram = ImageConverter.ConvertImage(PlotImageUtility.CreateImage(netHistogram));         
+            this.MassMzImage = ImageConverter.ConvertImage(PlotImageUtility.CreateImage(massMzResidual));
+            this.MassScanImage = ImageConverter.ConvertImage(PlotImageUtility.CreateImage(massScanResidual));          
         }
 
     }

@@ -1,18 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Windows;
-using MultiAlignCore.Data.MetaData;
-using OxyPlot;
-using OxyPlot.Axes;
-using OxyPlot.Series;
-using PNNLOmics.Data.Features;
-
-namespace MultiAlignRogue
+﻿namespace MultiAlignRogue.Feature_Finding
 {
+    using System;
+    using System.Collections.Generic;
     using System.Drawing;
+    using System.Linq;
+    using System.Windows;
+
+    using MultiAlignCore.Data.MetaData;
+
+    using MultiAlignRogue.Utils;
+
+    using OxyPlot;
+    using OxyPlot.Axes;
+    using OxyPlot.Series;
+
+    using PNNLOmics.Data.Features;
 
     using QuadTreeLib;
 
@@ -108,7 +110,7 @@ namespace MultiAlignRogue
                 Position = AxisPosition.Left,
                 IsAxisVisible = true,
                 Minimum = 0,
-                Maximum = globalMaxMass,
+                Maximum = this.globalMaxMass,
                 AbsoluteMinimum = 0,
                 AbsoluteMaximum = this.globalMaxMass
             };
@@ -116,8 +118,8 @@ namespace MultiAlignRogue
             this.Model.Axes.Add(this.netAxis);
             this.Model.Axes.Add(this.massAxis);
 
-            netAxis.AxisChanged += (s, e) => this.throttler.Run(() => this.PlotFeatures(this.allFeatures));
-            massAxis.AxisChanged += (s, e) => this.throttler.Run(() => this.PlotFeatures(this.allFeatures));
+            this.netAxis.AxisChanged += (s, e) => this.throttler.Run(() => this.PlotFeatures(this.allFeatures));
+            this.massAxis.AxisChanged += (s, e) => this.throttler.Run(() => this.PlotFeatures(this.allFeatures));
 
             this.throttler.Run(() => this.PlotFeatures(this.allFeatures));
         }
@@ -142,7 +144,7 @@ namespace MultiAlignRogue
                 {
                     LineSeries currentFeatures = new LineSeries
                     {
-                        Color = Colors.ElementAt(i),
+                        Color = this.Colors.ElementAt(i),
                         Title = file.DatasetName,
                         StrokeThickness = 0.8,
                     };

@@ -27,6 +27,10 @@ namespace MultiAlignRogue
 
     using MultiAlignCore.Extensions;
 
+    using MultiAlignRogue.Alignment;
+    using MultiAlignRogue.Clustering;
+    using MultiAlignRogue.Feature_Finding;
+
     using MessageBox = System.Windows.MessageBox;
 
     public class MainViewModel : ViewModelBase
