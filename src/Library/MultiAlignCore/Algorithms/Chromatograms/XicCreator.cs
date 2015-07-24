@@ -228,7 +228,7 @@ namespace MultiAlignCore.Algorithms.Chromatograms
                         GroupId = umc.GroupId
                     };
                     parentMsList.Add(msFeature);
-                    xic.Feature.AddChildFeature(msFeature);
+                    xic.Feature.AddChildFeature(msFeature); // Adds to MsFeatures
                 }
 
                 // Remove features that end their elution prior to the current scan
@@ -242,6 +242,13 @@ namespace MultiAlignCore.Algorithms.Chromatograms
             return RefineFeatureXics(features);
 
         }
+
+
+        /*
+         * Notes: 
+         * MsFeatures is what needs to be populated
+         * xic.Feature.AddChildFeature(msFeature) adds to xic.Feature.MsFeatures
+         */
 
         private IEnumerable<UMCLight> RefineFeatureXics(IList<UMCLight> features)
         {
@@ -453,40 +460,62 @@ namespace MultiAlignCore.Algorithms.Chromatograms
             var lower = FeatureLight.ComputeDaDifferenceFromPPM(mz, massError);
             var higher = FeatureLight.ComputeDaDifferenceFromPPM(mz, -massError);
 
+            var ipr = provider.GetReaderForGroup(0);
+            var xic = ipr.GetFullPrecursorIonExtractedIonChromatogram(lower, higher);
 
+            var scans = xic.Select(x => x.ScanNum).Distinct().Where(x => minScan <= x && x <= maxScan);
 
-            for (var i = minScan; i < maxScan; i++)
+            //foreach (var scan in scans)
+            //{
+            //    var newFeature = new MSFeatureLight
+            //    {
+            //        Scan = scan,
+            //        Net = ipr.GetElutionTime(scan),
+            //        Abundance = xic.Where(x => x.ScanNum == scan).Sum(x => x.Mz),
+            //    };
+            //    newFeatures.Add(newFeature);
+            //}
+
+            newFeatures.AddRange(scans.Select(scan => new MSFeatureLight
             {
-                List<XYData> spectrum = null;
+                Scan = scan,
+                Net = ipr.GetElutionTime(scan),
+                Abundance = xic.Where(x => x.ScanNum == scan).Sum(x => x.Mz),
+            
+            }));
 
-                try
-                {
-                    var summary = new ScanSummary();
-                    spectrum = provider.GetRawSpectra(i, 0, 1, out summary);
-                }
-                catch
-                {
-
-                }
-
-                if (spectrum == null)
-                    continue;
-
-                var data = (from x in spectrum
-                            where x.X > lower && x.X < higher
-                            select x).ToList();
-
-                var summedIntensity = data.Sum(x => x.Y);
-
-
-                var newFeature = new MSFeatureLight
-                {
-                    Scan = i,
-                    Net = i,
-                    Abundance = Convert.ToInt64(summedIntensity)
-                };
-                newFeatures.Add(newFeature);
-            }
+            //for (var i = minScan; i < maxScan; i++)
+            //{
+            //    List<XYData> spectrum = null;
+            //
+            //    try
+            //    {
+            //        var summary = new ScanSummary();
+            //        spectrum = provider.GetRawSpectra(i, 0, 1, out summary);
+            //    }
+            //    catch
+            //    {
+            //
+            //    }
+            //
+            //    if (spectrum == null)
+            //        continue;
+            //
+            //    var data = (from x in spectrum
+            //                where x.X > lower && x.X < higher
+            //                select x).ToList();
+            //
+            //    var summedIntensity = data.Sum(x => x.Y);
+            //
+            //
+            //    var newFeature = new MSFeatureLight
+            //    {
+            //        Scan = i,
+            //        Net = i,
+            //        Abundance = Convert.ToInt64(summedIntensity)
+            //    };
+            //    newFeatures.Add(newFeature);
+            //}
             return newFeatures;
         }
 
