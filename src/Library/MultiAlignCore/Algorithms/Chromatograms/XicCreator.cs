@@ -471,7 +471,7 @@ namespace MultiAlignCore.Algorithms.Chromatograms
             //    {
             //        Scan = scan,
             //        Net = ipr.GetElutionTime(scan),
-            //        Abundance = xic.Where(x => x.ScanNum == scan).Sum(x => x.Mz),
+            //        Abundance = xic.Where(x => x.ScanNum == scan).Sum(x => x.Intensity),
             //    };
             //    newFeatures.Add(newFeature);
             //}
@@ -480,7 +480,7 @@ namespace MultiAlignCore.Algorithms.Chromatograms
             {
                 Scan = scan,
                 Net = ipr.GetElutionTime(scan),
-                Abundance = xic.Where(x => x.ScanNum == scan).Sum(x => x.Mz),
+                Abundance = xic.Where(x => x.ScanNum == scan).Sum(x => x.Intensity),
             
             }));
 
