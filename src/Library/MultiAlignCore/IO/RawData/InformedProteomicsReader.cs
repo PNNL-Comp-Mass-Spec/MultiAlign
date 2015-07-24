@@ -344,6 +344,7 @@ namespace MultiAlignCore.IO.RawData
 
         private ScanSummary GetScanSummary(int scan, LcMsRun ipbReader)
         {
+            // Peaks needed to calculate Total ion current
             var spec = ipbReader.GetSpectrum(scan, true);
 
             var summary = new ScanSummary
