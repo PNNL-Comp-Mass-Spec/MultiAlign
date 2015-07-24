@@ -78,7 +78,8 @@
                         new RectangleF { X = 0, Y = 0, Width = 1, Height = (float)this.globalMaxMass }));
                 foreach (var feature in dataset.Value)
                 {
-                    this.quadTrees[dataset.Key].Insert(new FeaturePoint(feature, dataset.Key));
+                    var dataset1 = dataset;
+                    this.quadTrees[dataset.Key].Insert(new FeaturePoint(feature, scan => (float)this.GetNet(dataset1.Key, scan)));
                 }
             }
 
@@ -289,6 +290,19 @@
             }
 
             return maxMass;
+        }
+
+        private double GetNet(DatasetInformation dataset, int scan)
+        {
+            var minScan = dataset.ScanTimes.Keys.Min();
+            var minEt = dataset.ScanTimes[minScan];
+
+            var maxScan = dataset.ScanTimes.Keys.Max();
+            var maxEt = dataset.ScanTimes[maxScan];
+
+            var et = dataset.ScanTimes[scan];
+
+            return (et - minEt) / (maxEt - minEt);
         }
     }
 }

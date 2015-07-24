@@ -1,5 +1,6 @@
 ﻿namespace MultiAlignRogue.Feature_Finding
 {
+    using System;
     using System.Drawing;
     using System.Linq;
 
@@ -11,12 +12,14 @@
 
     class FeaturePoint : IHasRect
     {
-        public FeaturePoint(UMCLight umcLight, DatasetInformation dataset)
+        public delegate float GetNet(int scan);
+
+        public FeaturePoint(UMCLight umcLight, GetNet getNet)
         {
             this.UMCLight = umcLight;
 
-            var etStart = (float)this.GetNet(dataset, umcLight.ScanStart);
-            var etEnd = (float)this.GetNet(dataset, umcLight.ScanEnd);
+            var etStart = getNet(umcLight.ScanStart);
+            var etEnd = getNet(umcLight.ScanEnd);
 
             this.Rectangle = new RectangleF
             {
@@ -30,18 +33,5 @@
         public UMCLight UMCLight { get; private set; }
 
         public RectangleF Rectangle { get; private set; }
-
-        private double GetNet(DatasetInformation dataset, int scan)
-        {
-            var minScan = dataset.ScanTimes.Keys.Min();
-            var minEt = dataset.ScanTimes[minScan];
-
-            var maxScan = dataset.ScanTimes.Keys.Max();
-            var maxEt = dataset.ScanTimes[maxScan];
-
-            var et = dataset.ScanTimes[scan];
-
-            return (et - minEt) / (maxEt - minEt);
-        }
     }
 }
