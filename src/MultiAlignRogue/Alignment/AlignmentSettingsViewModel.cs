@@ -175,7 +175,12 @@
                     file.IsAligning = true;
                     ThreadSafeDispatcher.Invoke(() => this.AlignToBaselineCommand.RaiseCanExecuteChanged());
                     ThreadSafeDispatcher.Invoke(() => this.DisplayAlignmentCommand.RaiseCanExecuteChanged());
-                    if (file.Dataset.IsBaseline || !file.FeaturesFound) continue;
+                    if (file.Dataset.IsBaseline || !file.FeaturesFound)
+                    {
+                        file.IsAligned = true;
+                        file.IsAligning = false;
+                        continue;
+                    }
                     var features = this.featureCache.LoadDataset(file.Dataset, this.analysis.Options.MsFilteringOptions,
                         this.analysis.Options.LcmsFindingOptions, this.analysis.Options.LcmsFilteringOptions);
                     var alignment = this.aligner.AlignToDataset(ref features, baselineFeatures, file.Dataset, this.selectedBaseline.Dataset);

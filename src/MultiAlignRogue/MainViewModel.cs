@@ -71,7 +71,7 @@ namespace MultiAlignRogue
         {
             m_config = new AnalysisConfig();
             Analysis = new MultiAlignAnalysis();
-            m_config.AnalysisName = "Analysis";
+            m_config.AnalysisName = "Analysis.db3";
             m_config.Analysis = Analysis;
 
             this.WindowTitle = "MultiAlign Rogue";
