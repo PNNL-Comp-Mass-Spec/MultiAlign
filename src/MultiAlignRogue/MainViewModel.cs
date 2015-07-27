@@ -71,7 +71,7 @@ namespace MultiAlignRogue
         {
             m_config = new AnalysisConfig();
             Analysis = new MultiAlignAnalysis();
-            m_config.AnalysisName = "Analysis";
+            m_config.AnalysisName = "Analysis.db3";
             m_config.Analysis = Analysis;
 
             this.WindowTitle = "MultiAlign Rogue";
@@ -532,7 +532,7 @@ namespace MultiAlignRogue
                 Datasets = datasetInfoList,
                 AnalysisPath = this.m_config.AnalysisPath
             };
-            using (var writer = File.Open(filePath, FileMode.OpenOrCreate))
+            using (var writer = File.Open(filePath, FileMode.Create))
             {
                 rogueProjectSerializer.WriteObject(writer, rogueProject);
             }
