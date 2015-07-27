@@ -170,9 +170,15 @@
                 var alignmentData = new AlignmentDAOHibernate();
                 alignmentData.ClearAll();
 
-                foreach (var file in this.selectedDatasets.Where(file => !file.DoingWork))
+                this.SelectedBaseline.IsAligning = true;
+                var selectedFiles = this.selectedDatasets.Where(file => !file.DoingWork).ToList();
+                foreach (var file in selectedFiles)
                 {
                     file.IsAligning = true;
+                }
+
+                foreach (var file in selectedFiles)
+                {
                     ThreadSafeDispatcher.Invoke(() => this.AlignToBaselineCommand.RaiseCanExecuteChanged());
                     ThreadSafeDispatcher.Invoke(() => this.DisplayAlignmentCommand.RaiseCanExecuteChanged());
                     if (file.Dataset.IsBaseline || !file.FeaturesFound)
@@ -202,6 +208,8 @@
                     ThreadSafeDispatcher.Invoke(() => this.AlignToBaselineCommand.RaiseCanExecuteChanged());
                     ThreadSafeDispatcher.Invoke(() => this.DisplayAlignmentCommand.RaiseCanExecuteChanged());
                 }
+
+                this.SelectedBaseline.IsAligning = false;
             }
             else
             {

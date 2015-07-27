@@ -219,12 +219,16 @@
         private void LoadFeatures()
         {
             this.featureCache.Providers = this.analysis.DataProviders;
-            var selectedFiles = this.selectedDatasets;
-            foreach (var file in selectedFiles.Where(file => !file.DoingWork)) // Do not try to run on files already loading features.
+            var selectedFiles = this.selectedDatasets.Where(file => !file.DoingWork).ToList();
+            foreach (var file in selectedFiles)
             {
                 file.IsFindingFeatures = true;
                 ThreadSafeDispatcher.Invoke(() => this.PlotMSFeaturesCommand.RaiseCanExecuteChanged());
                 ThreadSafeDispatcher.Invoke(() => this.FindMSFeaturesCommand.RaiseCanExecuteChanged());
+            }
+
+            foreach (var file in selectedFiles) // Do not try to run on files already loading features.
+            {
                 var features = this.featureCache.LoadDataset(file.Dataset, this.analysis.Options.MsFilteringOptions, this.analysis.Options.LcmsFindingOptions, this.analysis.Options.LcmsFilteringOptions);
                 this.featureCache.CacheFeatures(features);
 

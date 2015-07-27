@@ -1,6 +1,10 @@
 ﻿namespace MultiAlignRogue.Feature_Finding
 {
+    using System;
     using System.Drawing;
+    using System.Linq;
+
+    using MultiAlignCore.Data.MetaData;
 
     using PNNLOmics.Data.Features;
 
@@ -8,14 +12,20 @@
 
     class FeaturePoint : IHasRect
     {
-        public FeaturePoint(UMCLight umcLight)
+        public delegate float GetNet(int scan);
+
+        public FeaturePoint(UMCLight umcLight, GetNet getNet)
         {
             this.UMCLight = umcLight;
+
+            var etStart = getNet(umcLight.ScanStart);
+            var etEnd = getNet(umcLight.ScanEnd);
+
             this.Rectangle = new RectangleF
             {
-                X = umcLight.ScanStart,
-                Y = (float)umcLight.MassMonoisotopic,
-                Width = umcLight.ScanEnd - umcLight.ScanStart,
+                X = etStart,
+                Y = (float)umcLight.MassMonoisotopicAligned,
+                Width = etEnd - etStart,
                 Height = 1
             };
         }

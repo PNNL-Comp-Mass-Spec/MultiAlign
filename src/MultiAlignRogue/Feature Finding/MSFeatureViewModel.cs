@@ -10,6 +10,8 @@
 
     using MultiAlignRogue.Utils;
 
+    using NHibernate.Linq.Functions;
+
     using OxyPlot;
     using OxyPlot.Axes;
     using OxyPlot.Series;
@@ -70,14 +72,14 @@
             this.quadTrees = new Dictionary<DatasetInformation, QuadTree<FeaturePoint>>();
             foreach (var dataset in features)
             {
-                var maxScan = dataset.Key.ScanTimes.Keys.Max();
                 this.quadTrees.Add(
                     dataset.Key,
                     new QuadTree<FeaturePoint>(
-                        new RectangleF { X = 0, Y = 0, Width = maxScan, Height = (float)this.globalMaxMass }));
+                        new RectangleF { X = 0, Y = 0, Width = 1, Height = (float)this.globalMaxMass }));
                 foreach (var feature in dataset.Value)
                 {
-                    this.quadTrees[dataset.Key].Insert(new FeaturePoint(feature));
+                    var dataset1 = dataset;
+                    this.quadTrees[dataset.Key].Insert(new FeaturePoint(feature, scan => (float)this.GetNet(dataset1.Key, scan)));
                 }
             }
 
@@ -138,8 +140,8 @@
             this.Model.Series.Clear();
 
             var massPercent = (this.massAxis.ActualMaximum - this.massAxis.ActualMinimum) / this.massAxis.AbsoluteMaximum;
-            var rtPercent = this.netAxis.ActualMaximum - this.netAxis.ActualMinimum;
-            var showMsFeatures = (massPercent <= 0.1) && (rtPercent <= 0.1);
+            var netPercent = this.netAxis.ActualMaximum - this.netAxis.ActualMinimum;
+            var showMsFeatures = (massPercent <= 0.1) && (netPercent <= 0.1);
 
             try
             {
@@ -159,9 +161,14 @@
                         MarkerType = MarkerType.Circle
                     };
 
+                    ScatterSeries alignedNets = new ScatterSeries
+                    {
+                        MarkerStroke = this.Colors.ElementAt(i),
+                        MarkerType = MarkerType.Circle    
+                    };
+
                     var dataPoints = this.GetPartitionedPoints(
-                        this.quadTrees[file],
-                        file.ScanTimes.Keys.Max(),
+                        file,
                         this.globalMaxMass,
                         showMsFeatures);
 
@@ -170,6 +177,7 @@
 
                     this.Model.Series.Add(currentFeatures);
                     this.Model.Series.Add(currentMsFeatures);
+                    this.Model.Series.Add(alignedNets);
                     i = (i + 1) % this.Colors.Count; // Cycle through available colors if we run out
                 }
             }
@@ -185,15 +193,14 @@
         /// Partition the current view into (numSectionsPerAxis)^2 sections and select the top 
         /// "featuresPerSection" in each section.
         /// </summary>
-        /// <param name="featureTree">QuadTree of features for one dataset.</param>
-        /// <param name="maxScan">The maximum LC scan number in the dataset.</param>
+        /// <param name="dataset">Dataset to get features points for.</param>
         /// <param name="globalMax">The maximum mass in all datasets.</param>
         /// <param name="showMsFeatures">A value indicating whether points with Ms features should be returned.</param>
         /// <returns>
         /// Collection of datapoints for features.
         /// Item 1: LCMS feature datapoints. Item2: MS Feature datapoints.
         /// </returns>
-        private Tuple<IEnumerable<DataPoint>, IEnumerable<ScatterPoint>> GetPartitionedPoints(QuadTree<FeaturePoint> featureTree, int maxScan, double globalMax, bool showMsFeatures = false)
+        private Tuple<IEnumerable<DataPoint>, IEnumerable<ScatterPoint>> GetPartitionedPoints(DatasetInformation dataset, double globalMax, bool showMsFeatures = false)
         {
             var netActMaximum = this.netAxis.ActualMaximum.Equals(0) ? 1.0 : this.netAxis.ActualMaximum;
             var massActMaximum = this.massAxis.ActualMaximum.Equals(0) ? globalMax : this.massAxis.ActualMaximum;
@@ -201,35 +208,33 @@
             var netStep = (netActMaximum - this.netAxis.ActualMinimum) / this.numSectionsPerAxis;
             var massStep = (massActMaximum - this.massAxis.ActualMinimum) / this.numSectionsPerAxis;
 
-            var featureHash = new HashSet<UMCLight>();
+            var featureHash = new HashSet<FeaturePoint>();
+
+            var featureTree = this.quadTrees[dataset];
 
             for (int i = 0; i < this.numSectionsPerAxis; i++)
             {
                 var netMin = this.netAxis.ActualMinimum + (i * netStep);
                 var netMax = this.netAxis.ActualMinimum + ((i + 1) * netStep);
-                var lowScan = netMin * maxScan;
-                var highScan = netMax  * maxScan;
                 for (int j = 0; j < this.numSectionsPerAxis; j++)
                 {
                     var massMin = this.massAxis.ActualMinimum + (j * massStep);
                     var massMax = this.massAxis.ActualMinimum + ((j + 1) * massStep);
                     var treeFeatures = featureTree.Query(new RectangleF
                                           {
-                                              X = (float)lowScan,
+                                              X = (float)netMin,
                                               Y = (float)massMin,
                                               Height = (float)(massMax - massMin),
-                                              Width = (float)(highScan - lowScan)
+                                              Width = (float)(netMax - netMin)
                                           });
-                    var featureRange =
-                        treeFeatures.Select(feat => feat.UMCLight)
-                            .OrderByDescending(umc => umc.Abundance)
-                            .Take(this.featuresPerSection);
+                    var featureRange = treeFeatures.OrderByDescending(feat => feat.UMCLight.Abundance)
+                                                   .Take(this.featuresPerSection);
 
                     featureHash.UnionWith(featureRange);
                 }
             }
 
-            return this.GetPoints(featureHash, maxScan, showMsFeatures);
+            return this.GetPoints(featureHash, showMsFeatures);
         }
 
         /// <summary>
@@ -242,33 +247,23 @@
         /// Collection of datapoints for features.
         /// Item 1: LCMS feature datapoints. Item2: MS Feature datapoints.
         /// </returns>
-        private Tuple<IEnumerable<DataPoint>, IEnumerable<ScatterPoint>> GetPoints(IEnumerable<UMCLight> features, int maxScan, bool showMsFeatures)
+        private Tuple<IEnumerable<DataPoint>, IEnumerable<ScatterPoint>> GetPoints(IEnumerable<FeaturePoint> features, bool showMsFeatures)
         {
             var lcmsDataPoints = new List<DataPoint>();
             var msDataPoints = new List<ScatterPoint>();
             foreach (var feature in features)
             {
-                lcmsDataPoints.Add(new DataPoint(feature.ScanStart / (double)maxScan, feature.MassMonoisotopic));
-                lcmsDataPoints.Add(new DataPoint(feature.ScanEnd / (double)maxScan, feature.MassMonoisotopic));
+                lcmsDataPoints.Add(new DataPoint(feature.Rectangle.X, feature.UMCLight.MassMonoisotopicAligned));
+                lcmsDataPoints.Add(new DataPoint(feature.Rectangle.X + feature.Rectangle.Width, feature.UMCLight.MassMonoisotopicAligned));
 
                 // Insert NaN point to cause broken line series
-                lcmsDataPoints.Add(new DataPoint(double.NaN, feature.MassMonoisotopic));
+                lcmsDataPoints.Add(new DataPoint(double.NaN, feature.UMCLight.MassMonoisotopicAligned));
 
                 if (showMsFeatures)
                 {
-                    ////foreach (var msfeature in feature.MsFeatures)
-                    ////{
-                    ////    msDataPoints.Add(new ScatterPoint(msfeature.Net, msfeature.MassMonoisotopic, 0.8));
-                    ////}
-
-                    // TODO: Show actual MS features.
-                    // This is just a sample to show how I will show MS features.
-                    for (int i = feature.ScanStart; i < feature.ScanEnd; i++)
+                    foreach (var msfeature in feature.UMCLight.MsFeatures)
                     {
-                        if (i % 20 == 0)
-                        {
-                            msDataPoints.Add(new ScatterPoint(i / (double)maxScan, feature.MassMonoisotopic, 0.8));   
-                        }
+                        msDataPoints.Add(new ScatterPoint(msfeature.Net, msfeature.MassMonoisotopic, 0.8));
                     }
                 }
             }
@@ -295,6 +290,19 @@
             }
 
             return maxMass;
+        }
+
+        private double GetNet(DatasetInformation dataset, int scan)
+        {
+            var minScan = dataset.ScanTimes.Keys.Min();
+            var minEt = dataset.ScanTimes[minScan];
+
+            var maxScan = dataset.ScanTimes.Keys.Max();
+            var maxEt = dataset.ScanTimes[maxScan];
+
+            var et = dataset.ScanTimes[scan];
+
+            return (et - minEt) / (maxEt - minEt);
         }
     }
 }
