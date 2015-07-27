@@ -532,7 +532,7 @@ namespace MultiAlignRogue
                 Datasets = datasetInfoList,
                 AnalysisPath = this.m_config.AnalysisPath
             };
-            using (var writer = File.Open(filePath, FileMode.OpenOrCreate))
+            using (var writer = File.Open(filePath, FileMode.Create))
             {
                 rogueProjectSerializer.WriteObject(writer, rogueProject);
             }
