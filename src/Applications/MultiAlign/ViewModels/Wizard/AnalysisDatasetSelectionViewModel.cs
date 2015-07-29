@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Windows.Forms;
 using System.Windows.Input;
+using Microsoft.Win32;
 using MultiAlign.Commands;
 using MultiAlign.Data;
 using MultiAlign.IO;
@@ -122,7 +122,7 @@ namespace MultiAlign.ViewModels.Wizard
             m_openFileDialog.Filter = m_featureFileFilter;
             m_openFileDialog.FileName = SingleFilePath;
             var result = m_openFileDialog.ShowDialog();
-            if (result == DialogResult.OK)
+            if (result != null && result.Value)
             {
                 SingleFilePath = m_openFileDialog.FileName;
             }
@@ -133,7 +133,7 @@ namespace MultiAlign.ViewModels.Wizard
             m_openFileDialog.Filter = m_inputFileFilter;
             m_openFileDialog.FileName = InputFilePath;
             var result = m_openFileDialog.ShowDialog();
-            if (result == DialogResult.OK)
+            if (result != null && result.Value)
             {
                 InputFilePath = m_openFileDialog.FileName;
             }

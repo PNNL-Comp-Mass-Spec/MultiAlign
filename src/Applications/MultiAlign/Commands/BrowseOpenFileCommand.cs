@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Windows.Forms;
-using Ookii.Dialogs;
+using Ookii.Dialogs.Wpf;
 
 namespace MultiAlign.Commands
 {
@@ -25,7 +24,7 @@ namespace MultiAlign.Commands
         {
             var result = m_dialog.ShowDialog();
 
-            if (result != DialogResult.OK)
+            if (result == null || !result.Value)
                 return;
 
             if (m_browseAction != null)
