@@ -117,17 +117,25 @@ namespace MultiAlignCore.Algorithms.Chromatograms
             {
                 //var target = feature.StartScan + (feature.EndScan - feature.StartScan) / 2;
                 var xic = ipr.GetPrecursorExtractedIonChromatogram(feature.LowMz, feature.HighMz);
-                var validXic = xic.Where(x => feature.StartScan <= x.ScanNum).ToList();
+                //var validXic = xic.Where(x => feature.StartScan <= x.ScanNum).ToList();
+                //validXic.Sort();
 
-                var scans = validXic.Select(x => x.ScanNum).Where(x => x >= feature.StartScan).ToList();
-                foreach (var scan in scans)
+                //var scans = validXic.Select(x => x.ScanNum).Where(x => x >= feature.StartScan).ToList();
+                //foreach (var scan in scans)
+                foreach (var xicp in xic)
                 {
-                    var sxic = validXic.Where(x => x.ScanNum == scan).ToList();
-                    var summedIntensity = sxic.Sum(x => x.Intensity); // InformedProteomics gives us base peak intensity per scan for the xic
+                    //var sxic = validXic.Where(x => x.ScanNum == scan).ToList();
+                    //var summedIntensity = sxic.Sum(x => x.Intensity); // InformedProteomics gives us base peak intensity per scan for the xic
+
+                    if (xicp.ScanNum < feature.StartScan)
+                    {
+                        continue;
+                    }
 
                     // See if we need to remove this feature
                     // We only do so if the intensity has dropped off and we are past the end of the feature.
-                    if (summedIntensity < 1 && scan > feature.EndScan)
+                    //if (summedIntensity < 1 && scan > feature.EndScan)
+                    if (xicp.Intensity < 1 && xicp.ScanNum > feature.EndScan)
                     {
                         break;
                     }
@@ -140,58 +148,82 @@ namespace MultiAlignCore.Algorithms.Chromatograms
                         ChargeState = feature.ChargeState,
                         Mz = feature.Mz,
                         MassMonoisotopic = umc.MassMonoisotopic,
-                        Scan = scan,
-                        Abundance = Convert.ToInt64(summedIntensity),
+                        //Scan = scan,
+                        Scan = xicp.ScanNum,
+                        //Abundance = Convert.ToInt64(summedIntensity),
+                        Abundance = Convert.ToInt64(xicp.Intensity),
                         Id = msFeatureId++,
                         DriftTime = umc.DriftTime,
-                        Net = ipr.GetElutionTime(scan),
+                        //Net = ipr.GetElutionTime(scan),
+                        Net = ipr.GetElutionTime(xicp.ScanNum),
                         GroupId = umc.GroupId
                     };
                     //parentMsList.Add(msFeature);
-                    precursorScans[scan].Add(msFeature);
+                    //precursorScans[scan].Add(msFeature);
+                    precursorScans[xicp.ScanNum].Add(msFeature);
                     feature.Feature.AddChildFeature(msFeature); // Adds to MsFeatures
                 }
             }
 
+            //int lastMs1ScanNum = -1;
+            var ms1Scans = ipr.GetScanNumbers(1).GetEnumerator();
             int lastMs1ScanNum = -1;
-            //Spectrum lastMs1Spectrum = null;
-            for (int i = ipr.MinLcScan; i <= ipr.MaxLcScan; i++)
+            if (ms1Scans.MoveNext())
             {
-                var spectrum = ipr.GetSpectrum(i, false);
-                if (spectrum is ProductSpectrum)
-                {
-                    var summary = provider.GetScanSummary(i, 0);
-                    // If it is an MS 2 spectra... then let's link it to the parent MS
-                    // Feature
-                    var matching = precursorScans[lastMs1ScanNum].FindAll(
-                        x => Math.Abs(x.Mz - summary.PrecursorMz) <= FragmentationSizeWindow
-                        );
+                lastMs1ScanNum = ms1Scans.Current;
+                int nextMs1ScanNum = lastMs1ScanNum;
 
-                    foreach (var match in matching)
+                //Spectrum lastMs1Spectrum = null;
+                //for (int i = ipr.MinLcScan; i <= ipr.MaxLcScan; i++)
+                foreach (var scan in ipr.GetScanNumbers(2))
+                {
+                    if (lastMs1ScanNum == nextMs1ScanNum && ms1Scans.MoveNext())
                     {
-                        // We create multiple spectra because this guy is matched to multiple ms
-                        // features
-                        var spectraData = new MSSpectra
-                        {
-                            Id = msmsFeatureId,
-                            ScanMetaData = summary,
-                            CollisionType = summary.CollisionType,
-                            Scan = spectrum.ScanNum,
-                            MsLevel = summary.MsLevel,
-                            PrecursorMz = summary.PrecursorMz,
-                            TotalIonCurrent = summary.TotalIonCurrent
-                        };
-
-                        spectraData.ParentFeature = match;
-                        match.MSnSpectra.Add(spectraData);
-
-                        msmsFeatureId++;
+                        nextMs1ScanNum = ms1Scans.Current;
                     }
-                }
-                else
-                {
-                    lastMs1ScanNum = spectrum.ScanNum;
-                    //lastMs1Spectrum = spectrum;
+                    if (scan > lastMs1ScanNum && ms1Scans.MoveNext())
+                    {
+                        lastMs1ScanNum = ms1Scans.Current;
+                    }
+                    //var spectrum = ipr.GetSpectrum(i, false);
+                    //var spectrum = ipr.GetSpectrum(scan, false);
+                    //if (spectrum is ProductSpectrum)
+                    //{
+                        //var summary = provider.GetScanSummary(i, 0);
+                        var summary = provider.GetScanSummary(scan, 0);
+                        // If it is an MS 2 spectra... then let's link it to the parent MS
+                        // Feature
+                        var matching = precursorScans[lastMs1ScanNum].FindAll(
+                            x => Math.Abs(x.Mz - summary.PrecursorMz) <= FragmentationSizeWindow
+                            );
+
+                        foreach (var match in matching)
+                        {
+                            // We create multiple spectra because this guy is matched to multiple ms
+                            // features
+                            var spectraData = new MSSpectra
+                            {
+                                Id = msmsFeatureId,
+                                ScanMetaData = summary,
+                                CollisionType = summary.CollisionType,
+                                //Scan = spectrum.ScanNum,
+                                Scan = scan,
+                                MsLevel = summary.MsLevel,
+                                PrecursorMz = summary.PrecursorMz,
+                                TotalIonCurrent = summary.TotalIonCurrent
+                            };
+
+                            spectraData.ParentFeature = match;
+                            match.MSnSpectra.Add(spectraData);
+
+                            msmsFeatureId++;
+                        }
+                    //}
+                    //else
+                    //{
+                    //    lastMs1ScanNum = spectrum.ScanNum;
+                    //    //lastMs1Spectrum = spectrum;
+                    //}
                 }
             }
 
