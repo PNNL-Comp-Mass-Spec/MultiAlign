@@ -479,6 +479,7 @@ namespace MultiAlignRogue
             this.UpdateDatasets();
             this.FeatureFindingSettingsViewModel = new FeatureFindingSettingsViewModel(this.Analysis, this.featureCache);
             this.AlignmentSettingsViewModel = new AlignmentSettingsViewModel(this.Analysis, this.featureCache);
+            this.ClusterSettingsViewModel = new ClusterSettingsViewModel(this.Analysis);
             this.RaisePropertyChanged("Analysis");
         }
 
