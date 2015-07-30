@@ -8,6 +8,8 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
+using Ookii.Dialogs.Wpf;
+
 namespace MultiAlignRogue.DMS
 {
     using System;
@@ -18,7 +20,6 @@ namespace MultiAlignRogue.DMS
     using System.Threading;
     using System.Threading.Tasks;
     using System.Windows;
-    using System.Windows.Forms;
 
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.Command;
@@ -459,7 +460,7 @@ namespace MultiAlignRogue.DMS
         {
             var folderBrowser = new VistaFolderBrowserDialog();
             var result = folderBrowser.ShowDialog();
-            if (result == DialogResult.OK)
+            if (result != null && result.Value)
             {
                 this.OutputDirectory = folderBrowser.SelectedPath;
             }

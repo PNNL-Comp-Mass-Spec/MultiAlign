@@ -5,9 +5,9 @@ using System.IO;
 using System.Linq;
 using System.Collections.ObjectModel;
 using System.Runtime.Serialization;
-using System.Windows.Forms;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using Microsoft.Win32;
 using Ookii.Dialogs;
 using MultiAlign.Data;
 using MultiAlign.IO;
@@ -18,6 +18,7 @@ using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO;
 using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.InputFiles;
+using Ookii.Dialogs.Wpf;
 
 namespace MultiAlignRogue
 {
@@ -270,7 +271,7 @@ namespace MultiAlignRogue
             };
 
             var result = openFileDialog.ShowDialog();
-            if (result == DialogResult.OK)
+            if (result != null && result.Value)
             {
                 var filePaths = openFileDialog.FileNames;
                 var allFilesSelected = filePaths.Any(file => file.EndsWith(".raw")) &&
@@ -294,7 +295,7 @@ namespace MultiAlignRogue
             var folderBrowser = new VistaFolderBrowserDialog();
             var result = folderBrowser.ShowDialog();
 
-            if (result == DialogResult.OK)
+            if (result != null && result.Value)
             {
                 InputFilePath = folderBrowser.SelectedPath;
             }
@@ -478,6 +479,7 @@ namespace MultiAlignRogue
             this.UpdateDatasets();
             this.FeatureFindingSettingsViewModel = new FeatureFindingSettingsViewModel(this.Analysis, this.featureCache);
             this.AlignmentSettingsViewModel = new AlignmentSettingsViewModel(this.Analysis, this.featureCache);
+            this.ClusterSettingsViewModel = new ClusterSettingsViewModel(this.Analysis);
             this.RaisePropertyChanged("Analysis");
         }
 
@@ -490,7 +492,7 @@ namespace MultiAlignRogue
             };
 
             var result = saveFileDialog.ShowDialog();
-            if (result == DialogResult.OK)
+            if (result != null && result.Value)
             {
                 this.Serialize(saveFileDialog.FileName);
             }
@@ -513,7 +515,7 @@ namespace MultiAlignRogue
             };
 
             var result = openFileDialog.ShowDialog();
-            if (result == DialogResult.OK)
+            if (result != null && result.Value)
             {
                 var rogueProject = this.Deserialize(openFileDialog.FileName);
                 this.LoadRogueProject(rogueProject, false);

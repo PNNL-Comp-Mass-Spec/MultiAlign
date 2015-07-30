@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Windows.Input;
 using MultiAlign.Commands.Datasets;
 using MultiAlign.Commands.Plotting;
 using MultiAlign.ViewModels.Plotting;
@@ -8,10 +7,11 @@ using MultiAlignCore.Data.MetaData;
 
 namespace MultiAlign.ViewModels.Datasets
 {
+    using System.Windows.Input;
+    using System.Windows.Media;
+
     using MultiAlign.Commands;
     using MultiAlign.Data;
-
-    using Xceed.Wpf.DataGrid.Converters;
 
     public class DatasetInformationViewModel : ViewModelBase
     {
@@ -136,10 +136,16 @@ namespace MultiAlign.ViewModels.Datasets
                 {
                     this.isFindingFeatures = value;
                     ThreadSafeDispatcher.Invoke(() => this.RequestRemovalCommand.InvokeCanExecuteChanged());
-                    this.OnPropertyChanged("IsFindingFeatures");
+                    this.OnPropertyChanged();
+                    this.OnPropertyChanged("FindingFeatureLabelColor");
                     this.OnPropertyChanged("DoingWork");
                 }
             }
+        }
+
+        public Brush FindingFeatureLabelColor
+        {
+            get { return this.IsFindingFeatures ? Brushes.Red : Brushes.Transparent; }
         }
 
         private bool isAligning;
@@ -152,10 +158,16 @@ namespace MultiAlign.ViewModels.Datasets
                 {
                     this.isAligning = value;
                     ThreadSafeDispatcher.Invoke(() => this.RequestRemovalCommand.InvokeCanExecuteChanged());
-                    this.OnPropertyChanged("IsAligning");
+                    this.OnPropertyChanged();
+                    this.OnPropertyChanged("AligningLabelColor");
                     this.OnPropertyChanged("DoingWork");
                 }
             }
+        }
+
+        public Brush AligningLabelColor
+        {
+            get { return this.IsAligning ? Brushes.Red : Brushes.Transparent; }
         }
 
         public bool DoingWork

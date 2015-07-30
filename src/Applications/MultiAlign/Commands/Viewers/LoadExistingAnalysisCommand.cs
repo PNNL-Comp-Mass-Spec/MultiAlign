@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-using System.Windows.Forms;
+using Microsoft.Win32;
 using MultiAlign.Data;
 
 namespace MultiAlign.Commands.Viewers
@@ -22,7 +22,7 @@ namespace MultiAlign.Commands.Viewers
         {
             var result = m_analysisLoadDialog.ShowDialog();
 
-            if (result != DialogResult.OK)
+            if (result == null || !result.Value)
                 return;
 
             var filename = m_analysisLoadDialog.FileName;

@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Windows.Forms;
-using Ookii.Dialogs;
+using Ookii.Dialogs.Wpf;
 
 namespace MultiAlign.Commands
 {
@@ -21,7 +20,7 @@ namespace MultiAlign.Commands
         {
             var result = m_folderBrowser.ShowDialog();
 
-            if (result != DialogResult.OK)
+            if (result == null || !result.Value)
                 return;
             if (m_saveAction != null)
                 m_saveAction(m_folderBrowser.SelectedPath);
