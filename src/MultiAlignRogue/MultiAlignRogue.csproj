@@ -160,8 +160,6 @@
     </Compile>
     <Compile Include="Utils\PlotViewModelBase.cs" />
     <Compile Include="RogueProject.cs" />
-    <Compile Include="ViewModel\MainViewModel.cs" />
-    <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Compile Include="Utils\Throttler.cs" />
     <Page Include="Alignment\AlignmentView.xaml">
       <SubType>Designer</SubType>
