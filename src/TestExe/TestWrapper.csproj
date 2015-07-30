@@ -34,7 +34,7 @@
   <ItemGroup>
     <Reference Include="MultiAlignEngine, Version=1.0.5253.22057, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\x86\MultiAlignEngine.dll</HintPath>
+      <HintPath>..\..\lib\$(Platform)\MultiAlignEngine.dll</HintPath>
     </Reference>
     <Reference Include="OxyPlot">
       <HintPath>..\packages\OxyPlot.Core.2014.1.303.1\lib\portable-net4+sl4+wp71+win8\OxyPlot.dll</HintPath>
