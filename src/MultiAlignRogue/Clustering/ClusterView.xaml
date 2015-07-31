@@ -1,0 +1,27 @@
+﻿<Window x:Class="MultiAlignRogue.Clustering.ClusterView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:oxy="http://oxyplot.org/wpf"
+        Title="ClusterView" Height="400" Width="1000">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="20*" />
+            <ColumnDefinition Width="50*" />
+            <ColumnDefinition Width="30*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        
+        <TextBlock Grid.Row="0" Grid.Column="0" FontSize="16" TextAlignment="Center">Cluster List</TextBlock>
+        <DataGrid Grid.Row="0" Grid.Column="0">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Width="25" />
+                <DataGridTextColumn Header="Cluster" Width="*" />
+                <DataGridTextColumn Header="# Members" Width="75" />
+            </DataGrid.Columns>
+        </DataGrid>
+        
+        <oxy:PlotView Title="Clusters" Grid.Row="0" Grid.Column="1" />
+    </Grid>
+</Window>

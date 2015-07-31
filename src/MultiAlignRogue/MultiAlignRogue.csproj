@@ -139,6 +139,11 @@
     <Compile Include="Alignment\AlignmentViewFactory.cs" />
     <Compile Include="Alignment\AlignmentViewModel.cs" />
     <Compile Include="Clustering\ClusterSettingsViewModel.cs" />
+    <Compile Include="Clustering\ClusterView.xaml.cs">
+      <DependentUpon>ClusterView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Clustering\ClusterViewModel.cs" />
+    <Compile Include="Clustering\IClusterViewFactory.cs" />
     <Compile Include="DMS\DmsLookupUtility.cs" />
     <Compile Include="DMS\DmsDatasetViewModel.cs" />
     <Compile Include="DMS\DmsLookupView.xaml.cs">
@@ -163,6 +168,10 @@
     <Compile Include="RogueProject.cs" />
     <Compile Include="Utils\Throttler.cs" />
     <Page Include="Alignment\AlignmentView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Clustering\ClusterView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
