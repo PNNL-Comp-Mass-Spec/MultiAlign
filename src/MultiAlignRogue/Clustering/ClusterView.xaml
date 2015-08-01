@@ -2,26 +2,42 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:oxy="http://oxyplot.org/wpf"
-        Title="ClusterView" Height="400" Width="1000">
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="20*" />
-            <ColumnDefinition Width="50*" />
-            <ColumnDefinition Width="30*"></ColumnDefinition>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition></RowDefinition>
-        </Grid.RowDefinitions>
-        
-        <TextBlock Grid.Row="0" Grid.Column="0" FontSize="16" TextAlignment="Center">Cluster List</TextBlock>
-        <DataGrid Grid.Row="0" Grid.Column="0">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="ID" Width="25" />
-                <DataGridTextColumn Header="Cluster" Width="*" />
-                <DataGridTextColumn Header="# Members" Width="75" />
-            </DataGrid.Columns>
-        </DataGrid>
-        
-        <oxy:PlotView Title="Clusters" Grid.Row="0" Grid.Column="1" />
+        xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
+        Title="Cluster Viewer" Height="600" Width="1000">
+    <Grid Margin="5">
+        <xcad:DockingManager AllowMixedOrientation="True">
+            <xcad:LayoutRoot>
+                <xcad:LayoutPanel>
+                    <xcad:LayoutAnchorablePaneGroup Orientation="Vertical">
+                        <xcad:LayoutAnchorablePane IsMaximized="True">
+                            <xcad:LayoutAnchorable Title="Cluster List" CanHide="False" CanClose="False">
+                                <DataGrid ItemsSource="{Binding Clusters}">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="ID" Width="30" Binding="{Binding }" />
+                                        <DataGridTextColumn Header="Cluster" Width="*" />
+                                        <DataGridTextColumn Header="# Members" Width="75" />
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </xcad:LayoutAnchorable>
+                            <xcad:LayoutAnchorable Title="Feature List" CanHide="False" CanClose="False">
+                                <DataGrid>
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="ID" Width="30" />
+                                        <DataGridTextColumn Header="Feature" Width="75*" />
+                                        <DataGridTextColumn Header="Dataset" Width="25*" />
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </xcad:LayoutAnchorable>
+                        </xcad:LayoutAnchorablePane>
+                    </xcad:LayoutAnchorablePaneGroup>
+                    
+                    <xcad:LayoutDocumentPane>
+                        <xcad:LayoutDocument Title="Clusters" CanClose="False"></xcad:LayoutDocument>
+                        <xcad:LayoutDocument Title="Extracted Ion Chromatogram" CanClose="False"></xcad:LayoutDocument>
+                        <xcad:LayoutDocument Title="MS/MS Spectra" CanClose="False"></xcad:LayoutDocument>
+                    </xcad:LayoutDocumentPane>
+                </xcad:LayoutPanel>
+            </xcad:LayoutRoot>
+        </xcad:DockingManager>
     </Grid>
 </Window>

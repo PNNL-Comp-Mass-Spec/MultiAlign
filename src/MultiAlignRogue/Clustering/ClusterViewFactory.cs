@@ -21,14 +21,12 @@ namespace MultiAlignRogue.Clustering
 
         public void CreateNewWindow(IEnumerable<UMCClusterLight> clusters)
         {
-            var window = new Window();
+            var clusterViewModel = new ClusterViewModel(clusters);
+            var window = new ClusterView
+                             {
+                                 DataContext = clusterViewModel
+                             };
 
-            ClusterControl clusterControl = new ClusterControl()
-            {
-                DataContext = new ClusterDetailViewModel()
-            };
-
-            window.Content = clusterControl;
             window.Show();
         }
     }

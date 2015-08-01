@@ -192,7 +192,7 @@
 
         public void DisplayFeatures()
         {
-            this.clusterViewFactory.CreateNewWindow(new List<UMCClusterLight>());
+            this.clusterViewFactory.CreateNewWindow(this.analysis.Clusters ?? this.analysis.DataProviders.ClusterCache.FindAll());
         }
     }
 }
