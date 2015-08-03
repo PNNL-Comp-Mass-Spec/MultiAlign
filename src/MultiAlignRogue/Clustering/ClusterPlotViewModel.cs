@@ -81,7 +81,7 @@ namespace MultiAlignRogue.Clustering
             this.maxClustersPerDivision = 10;
 
             this.throttler = new Throttler(TimeSpan.FromMilliseconds(100));
-            this.BuildClusterTree(clusters);
+            this.BuildClusterTree();
 
             this.netAxis = new LinearAxis
             {
@@ -148,10 +148,9 @@ namespace MultiAlignRogue.Clustering
         /// <summary>
         /// Build cluster quad tree from list of clusters.
         /// </summary>
-        /// <param name="clusters">The list of clusters.</param>
-        private void BuildClusterTree(List<UMCClusterLight> clusters)
+        private void BuildClusterTree()
         {
-            var maxMass = (float)clusters.Max(cluster => cluster.MassMonoisotopicAligned);
+            var maxMass = (float)this.clusters.Max(cluster => cluster.MassMonoisotopicAligned);
             var rectangle = new RectangleF
             {
                 X = 0,
@@ -161,7 +160,7 @@ namespace MultiAlignRogue.Clustering
             };
 
             this.clusterTree = new QuadTree<ClusterPoint>(rectangle);
-            clusters.ForEach(cluster => this.clusterTree.Insert(new ClusterPoint(cluster)));
+            this.clusters.ForEach(cluster => this.clusterTree.Insert(new ClusterPoint(cluster)));
         }
 
         /// <summary>

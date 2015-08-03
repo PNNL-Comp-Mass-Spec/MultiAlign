@@ -162,6 +162,7 @@
     <Compile Include="Clustering\ClusterViewFactory.cs" />
     <Compile Include="Clustering\ClusterViewModel.cs" />
     <Compile Include="Clustering\IClusterViewFactory.cs" />
+    <Compile Include="Clustering\XicPlotViewModel.cs" />
     <Compile Include="DMS\DmsLookupUtility.cs" />
     <Compile Include="DMS\DmsDatasetViewModel.cs" />
     <Compile Include="DMS\DmsLookupView.xaml.cs">

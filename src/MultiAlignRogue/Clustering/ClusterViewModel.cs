@@ -1,15 +1,12 @@
-﻿namespace MultiAlignRogue.Clustering
+﻿using NHibernate.Mapping;
+
+namespace MultiAlignRogue.Clustering
 {
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
 
     using GalaSoft.MvvmLight;
-
-    using OxyPlot;
 
     using PNNLOmics.Data.Features;
 
@@ -26,20 +23,19 @@
         /// <summary>
         /// The selected feature.
         /// </summary>
-        private UMCLight selectedFeature;
-
+        private IEnumerable<UMCLight> selectedFeatures;
+        
         /// <summary>
         /// Initializes a new instance of the <see cref="ClusterViewModel"/> class.
         /// </summary>
-        /// <param name="clusters">
-        /// The clusters.
-        /// </param>
+        /// <param name="clusters">The clusters.</param>
         public ClusterViewModel(List<UMCClusterLight> clusters)
         {
+            this.XicPlotViewModel = new XicPlotViewModel();
+            this.SelectedFeatures = new List<UMCLight>();
             this.Clusters = new ObservableCollection<UMCClusterLight>(clusters ?? new List<UMCClusterLight>());
             this.Features = new ObservableCollection<UMCLight>();
 
-            this.XicPlotModel = new PlotModel();
             this.ClusterPlotViewModel = new ClusterPlotViewModel(clusters);
             this.ClusterPlotViewModel.ClusterSelected += (s, e) =>
             {
@@ -66,9 +62,9 @@
         public ObservableCollection<UMCLight> Features { get; private set; } 
 
         /// <summary>
-        /// Gets the plot model for extracted ion chromatogram plots.
+        /// Gets the view model for extracted ion chromatogram plots.
         /// </summary>
-        public PlotModel XicPlotModel { get; private set; }
+        public XicPlotViewModel XicPlotViewModel { get; private set; }
 
         /// <summary>
         /// Gets the view model for the cluster plot.
@@ -103,14 +99,15 @@
         /// <summary>
         /// Gets or sets the selected feature.
         /// </summary>
-        public UMCLight SelectedFeature
+        public IEnumerable<UMCLight> SelectedFeatures
         {
-            get { return this.selectedFeature; }
+            get { return this.selectedFeatures; }
             set
             {
-                if (!this.selectedFeature.Equals(value))
+                if (this.selectedFeatures != value)
                 {
-                    this.selectedFeature = value;
+                    this.selectedFeatures = value;
+                    this.XicPlotViewModel.Features = this.selectedFeatures;
                     this.RaisePropertyChanged();
                 }
             }

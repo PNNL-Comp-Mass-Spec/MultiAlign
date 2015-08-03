@@ -22,7 +22,7 @@
                                 </DataGrid>
                             </xcad:LayoutAnchorable>
                             <xcad:LayoutAnchorable Title="Feature List" CanHide="False" CanClose="False">
-                                <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding Features}" CanUserAddRows="False">
+                                <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding Features}" CanUserAddRows="False" Name="FeatureDataGrid">
                                     <DataGrid.Columns>
                                         <DataGridTextColumn Header="ID" Width="10*" Binding="{Binding Id}" />
                                         <DataGridTextColumn Header="Mass" Width="20*" Binding="{Binding MassMonoisotopicAligned}" />
@@ -36,9 +36,15 @@
                     
                     <xcad:LayoutDocumentPane>
                         <xcad:LayoutDocument Title="Clusters" CanClose="False">
-                            <oxy:PlotView Title="Clusters" DataContext="{Binding ClusterPlotViewModel}" Model="{Binding ClusterPlotModel}" />
+                            <Grid DataContext="{Binding ClusterPlotViewModel}">
+                                <oxy:PlotView Title="Clusters" Model="{Binding ClusterPlotModel}" />
+                            </Grid>
                         </xcad:LayoutDocument>
-                        <xcad:LayoutDocument Title="Extracted Ion Chromatogram" CanClose="False"></xcad:LayoutDocument>
+                        <xcad:LayoutDocument Title="Extracted Ion Chromatogram" CanClose="False">
+                            <Grid DataContext="{Binding XicPlotViewModel}">
+                                <oxy:PlotView Title="Extracted Ion Chromatograms" Model="{Binding XicPlotModel}" />
+                            </Grid>
+                        </xcad:LayoutDocument>
                         <xcad:LayoutDocument Title="MS/MS Spectra" CanClose="False"></xcad:LayoutDocument>
                     </xcad:LayoutDocumentPane>
                 </xcad:LayoutPanel>
