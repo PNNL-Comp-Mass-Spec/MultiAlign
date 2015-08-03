@@ -153,6 +153,8 @@
     </Compile>
     <Compile Include="Alignment\AlignmentViewFactory.cs" />
     <Compile Include="Alignment\AlignmentViewModel.cs" />
+    <Compile Include="Clustering\ClusterPlotViewModel.cs" />
+    <Compile Include="Clustering\ClusterPoint.cs" />
     <Compile Include="Clustering\ClusterSettingsViewModel.cs" />
     <Compile Include="Clustering\ClusterView.xaml.cs">
       <DependentUpon>ClusterView.xaml</DependentUpon>

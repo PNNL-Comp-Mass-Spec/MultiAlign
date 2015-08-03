@@ -1,27 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-
-namespace MultiAlignRogue.Clustering
+﻿namespace MultiAlignRogue.Clustering
 {
+    using System.Windows;
+    
     /// <summary>
     /// Interaction logic for ClusterView.xaml
     /// </summary>
     public partial class ClusterView : Window
     {
+        /// <summary>
+        /// The selected item in the ScanDataGrid.
+        /// </summary>
+        private object selectedItem;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ClusterView"/> class.
+        /// </summary>
         public ClusterView()
         {
-            InitializeComponent();
+            this.InitializeComponent();
+
+            ClusterDataGrid.SelectionChanged += (o, e) =>
+            {
+                object item = ClusterDataGrid.SelectedItem;
+                if (ClusterDataGrid.SelectedItem == null && selectedItem != null)
+                {
+                    item = selectedItem;
+                }
+
+                selectedItem = item;
+                ClusterDataGrid.ScrollIntoView(item);
+                ClusterDataGrid.UpdateLayout();
+            };
         }
     }
 }

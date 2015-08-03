@@ -13,6 +13,6 @@ namespace MultiAlignRogue.Clustering
     public interface IClusterViewFactory
     {
         void CreateNewWindow();
-        void CreateNewWindow(IEnumerable<UMCClusterLight> clusters);
+        void CreateNewWindow(List<UMCClusterLight> clusters);
     }
 }

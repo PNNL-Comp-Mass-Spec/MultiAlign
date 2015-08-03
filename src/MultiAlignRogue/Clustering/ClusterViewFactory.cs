@@ -19,7 +19,7 @@ namespace MultiAlignRogue.Clustering
             throw new NotImplementedException();
         }
 
-        public void CreateNewWindow(IEnumerable<UMCClusterLight> clusters)
+        public void CreateNewWindow(List<UMCClusterLight> clusters)
         {
             var clusterViewModel = new ClusterViewModel(clusters);
             var window = new ClusterView

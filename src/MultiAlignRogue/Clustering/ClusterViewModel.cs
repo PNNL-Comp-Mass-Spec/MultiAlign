@@ -34,13 +34,25 @@
         /// <param name="clusters">
         /// The clusters.
         /// </param>
-        public ClusterViewModel(IEnumerable<UMCClusterLight> clusters)
+        public ClusterViewModel(List<UMCClusterLight> clusters)
         {
             this.Clusters = new ObservableCollection<UMCClusterLight>(clusters ?? new List<UMCClusterLight>());
             this.Features = new ObservableCollection<UMCLight>();
 
             this.XicPlotModel = new PlotModel();
             this.ClusterPlotViewModel = new ClusterPlotViewModel(clusters);
+            this.ClusterPlotViewModel.ClusterSelected += (s, e) =>
+            {
+                if (!this.ClusterPlotViewModel.SelectedCluster.Equals(this.SelectedCluster))
+                {
+                    this.SelectedCluster = this.ClusterPlotViewModel.SelectedCluster;
+                }
+            };
+
+            if (this.Clusters.Count > 0)
+            {
+                this.SelectedCluster = this.Clusters[0];
+            }
         }
 
         /// <summary>
@@ -58,6 +70,9 @@
         /// </summary>
         public PlotModel XicPlotModel { get; private set; }
 
+        /// <summary>
+        /// Gets the view model for the cluster plot.
+        /// </summary>
         public ClusterPlotViewModel ClusterPlotViewModel { get; private set; }
 
         /// <summary>
@@ -68,7 +83,7 @@
             get { return this.selectedCluster; }
             set
             {
-                if (!this.selectedCluster.Equals(value))
+                if (this.selectedCluster != value)
                 {
                     this.selectedCluster = value;
                     this.Features.Clear();
@@ -77,6 +92,7 @@
                     if (this.selectedCluster != null && this.selectedCluster.UmcList != null)
                     {
                         this.selectedCluster.UmcList.ForEach(cluster => this.Features.Add(cluster));
+                        this.ClusterPlotViewModel.SelectedCluster = this.selectedCluster;
                     }
 
                     this.RaisePropertyChanged();
