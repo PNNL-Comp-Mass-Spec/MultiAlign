@@ -1,6 +1,6 @@
 ﻿using System.IO;
 using System.Windows;
-using System.Windows.Forms;
+using Microsoft.Win32;
 using UserControl = System.Windows.Controls.UserControl;
 
 namespace MultiAlign.Windows
@@ -80,7 +80,7 @@ namespace MultiAlign.Windows
 
 
             var result = m_dialog.ShowDialog();
-            if (result == DialogResult.OK)
+            if (result != null && result.Value)
             {
                 FilePath = m_dialog.FileName;
             }

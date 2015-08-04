@@ -1,11 +1,13 @@
-﻿namespace MultiAlignRogue
+﻿using Microsoft.Win32;
+using Ookii.Dialogs.Wpf;
+
+namespace MultiAlignRogue
 {
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.IO;
     using System.Linq;
-    using System.Windows.Forms;
 
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.Command;
@@ -153,7 +155,7 @@
             };
 
             var result = saveFileDialog.ShowDialog();
-            if (result == DialogResult.OK)
+            if (result != null && result.Value)
             {
                 this.ProjectFilePath = saveFileDialog.FileName;
             }
@@ -166,7 +168,7 @@
         {
             var folderBrowser = new VistaFolderBrowserDialog();
             var result = folderBrowser.ShowDialog();
-            if (result == DialogResult.OK)
+            if (result != null && result.Value)
             {
                 this.OutputDirectory = folderBrowser.SelectedPath;
             }
@@ -185,7 +187,7 @@
             };
 
             var result = openFileDialog.ShowDialog();
-            if (result == DialogResult.OK)
+            if (result != null && result.Value)
             {
                 var filePaths = openFileDialog.FileNames;
                 var allFilesSelected = filePaths.Any(file => file.EndsWith(".raw")) &&

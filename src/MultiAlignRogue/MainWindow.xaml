@@ -9,7 +9,6 @@
     </Window.DataContext>
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
-        <utils:BoolToColorConverter x:Key="BoolToColor" />
     </Window.Resources>
     <Window.InputBindings>
         <KeyBinding Key="S" Modifiers="Control" Command="{Binding SaveProjectCommand}" />
@@ -52,14 +51,14 @@
                 <DataGridCheckBoxColumn Header="Features" Width="55" IsReadOnly="True" Binding="{Binding FeaturesFound, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                     <DataGridCheckBoxColumn.CellStyle>
                         <Style TargetType="{x:Type DataGridCell}">
-                            <Setter Property="Background" Value="{Binding IsFindingFeatures, Converter={StaticResource BoolToColor}, UpdateSourceTrigger=PropertyChanged}" />
+                            <Setter Property="Background" Value="{Binding FindingFeatureLabelColor, UpdateSourceTrigger=PropertyChanged}" />
                         </Style>
                     </DataGridCheckBoxColumn.CellStyle>
                 </DataGridCheckBoxColumn>
                 <DataGridCheckBoxColumn Header="Aligned" IsReadOnly="True" Binding="{Binding IsAligned, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                     <DataGridCheckBoxColumn.CellStyle>
                         <Style TargetType="{x:Type DataGridCell}">
-                            <Setter Property="Background" Value="{Binding IsAligning, Converter={StaticResource BoolToColor}, UpdateSourceTrigger=PropertyChanged}" />
+                            <Setter Property="Background" Value="{Binding AligningLabelColor, UpdateSourceTrigger=PropertyChanged}" />
                         </Style>
                     </DataGridCheckBoxColumn.CellStyle>
                 </DataGridCheckBoxColumn>

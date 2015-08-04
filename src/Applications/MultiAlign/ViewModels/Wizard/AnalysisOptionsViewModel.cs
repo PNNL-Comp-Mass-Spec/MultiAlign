@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
-using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
+using Microsoft.Win32;
 using MultiAlign.Commands;
 using MultiAlign.Properties;
 using MultiAlign.ViewModels.Instruments;
@@ -121,7 +121,7 @@ namespace MultiAlign.ViewModels.Wizard
             {
                 //TODO: Replace with OOKI dialogs
                 var result = m_dialog.ShowDialog();
-                if (result == DialogResult.OK)
+                if (result != null && result.Value)
                 {
                     var reader = new JsonReader<MultiAlignAnalysisOptions>();
                     m_options = reader.Read(m_dialog.FileName);
@@ -140,7 +140,7 @@ namespace MultiAlign.ViewModels.Wizard
             try
             {
                 var result = m_saveDialog.ShowDialog();
-                if (result == DialogResult.OK)
+                if (result != null && result.Value)
                 {
                     var writer = new JsonWriter<MultiAlignAnalysisOptions>();
                     writer.Write(m_saveDialog.FileName, m_options);
