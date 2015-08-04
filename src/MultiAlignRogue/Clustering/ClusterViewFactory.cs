@@ -15,17 +15,26 @@ namespace MultiAlignRogue.Clustering
 
     public class ClusterViewFactory : IClusterViewFactory
     {
+        private readonly string layoutFilePath;
+
+        public ClusterViewFactory(string layoutFilePath = null)
+        {
+            this.layoutFilePath = layoutFilePath ?? "layout.xml";
+        }
+
         public void CreateNewWindow()
         {
             throw new NotImplementedException();
         }
 
+        public ClusterViewModel ClusterViewModel { get; private set; }
+
         public void CreateNewWindow(List<UMCClusterLight> clusters)
         {
-            var clusterViewModel = new ClusterViewModel(clusters);
+            this.ClusterViewModel = this.ClusterViewModel ?? new ClusterViewModel(clusters, this.layoutFilePath);
             var window = new ClusterView
             {
-                DataContext = clusterViewModel
+                DataContext = this.ClusterViewModel
             };
 
             window.Show();

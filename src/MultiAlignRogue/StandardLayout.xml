@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<LayoutRoot xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <RootPanel Orientation="Horizontal">
+    <LayoutAnchorablePaneGroup Orientation="Vertical" DockWidth="231">
+      <LayoutAnchorablePane Id="06955c8d-7a2f-4d41-a93b-c7b602af7f8d" DockWidth="231" DockHeight="1.35531135531136*" IsMaximized="True">
+        <LayoutAnchorable CanHide="False" AutoHideMinWidth="100" AutoHideMinHeight="100" Title="Cluster List" IsSelected="True" ContentId="ClusterDataGrid" CanClose="False" LastActivationTimeStamp="08/04/2015 14:15:44" />
+      </LayoutAnchorablePane>
+      <LayoutAnchorablePane DockHeight="0.644688644688645*" FloatingWidth="231" FloatingHeight="552" FloatingLeft="122" FloatingTop="459">
+        <LayoutAnchorable CanHide="False" AutoHideMinWidth="100" AutoHideMinHeight="100" Title="Feature List" IsSelected="True" ContentId="FeatureDataGrid" FloatingLeft="122" FloatingTop="459" FloatingWidth="231" FloatingHeight="552" CanClose="False" LastActivationTimeStamp="08/04/2015 14:15:45" PreviousContainerId="06955c8d-7a2f-4d41-a93b-c7b602af7f8d" PreviousContainerIndex="1" />
+      </LayoutAnchorablePane>
+    </LayoutAnchorablePaneGroup>
+    <LayoutDocumentPane>
+      <LayoutDocument Title="Clusters" IsSelected="True" IsLastFocusedDocument="True" ContentId="ClusterPlotGrid" CanClose="False" LastActivationTimeStamp="08/04/2015 14:16:09" />
+      <LayoutDocument Title="Extracted Ion Chromatogram" ContentId="XicPlotGrid" CanClose="False" />
+      <LayoutDocument Title="MS/MS Spectra" CanClose="False" />
+    </LayoutDocumentPane>
+  </RootPanel>
+  <TopSide />
+  <RightSide />
+  <LeftSide />
+  <BottomSide />
+  <FloatingWindows />
+  <Hidden />
+</LayoutRoot>

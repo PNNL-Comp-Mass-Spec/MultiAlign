@@ -93,8 +93,14 @@ namespace MultiAlignRogue.Clustering
             {
                 // Get dataset info for mapping scan # -> retention time
                 var dsinfo = SingletonDataProviders.GetDatasetInformation(feature.GroupId);
+                if (dsinfo == null)
+                {
+                    continue;
+                }
+
                 var series = new LineSeries
                 {
+                    Title = string.Format("{0}-{1}", dsinfo.DatasetName, feature.Id),
                     ItemsSource = feature.MsFeatures,
                     Mapping = o => new DataPoint(
                                                  dsinfo.ScanTimes[((MSFeatureLight)o).Scan],

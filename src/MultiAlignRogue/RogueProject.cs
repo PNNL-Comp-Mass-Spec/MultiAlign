@@ -21,5 +21,10 @@ namespace MultiAlignRogue
         /// Gets or sets the path for the analysis file.
         /// </summary>
         public string AnalysisPath { get; set; }
+
+        /// <summary>
+        /// Gets or sets the path for the layout file.
+        /// </summary>
+        public string LayoutFilePath { get; set; }
     }
 }

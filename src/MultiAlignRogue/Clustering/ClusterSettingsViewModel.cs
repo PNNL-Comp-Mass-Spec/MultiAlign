@@ -29,7 +29,7 @@
 
         private IUmcDAO featureCache;
 
-        //private readonly IClusterWindowFactory clusterWindowFactory;
+        private readonly IClusterViewFactory clusterWindowFactory;
 
         private IClusterViewFactory clusterViewFactory;
 
@@ -40,7 +40,6 @@
 
         public RelayCommand ClusterFeaturesCommand { get; private set; }
         public RelayCommand DisplayClustersCommand { get; private set; }
-
 
         public ObservableCollection<DistanceMetric> DistanceMetrics { get; private set; }
         public ObservableCollection<ClusterCentroidRepresentation> CentroidRepresentations { get; private set; }

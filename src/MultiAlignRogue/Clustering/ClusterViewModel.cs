@@ -24,17 +24,24 @@ namespace MultiAlignRogue.Clustering
         /// The selected feature.
         /// </summary>
         private IEnumerable<UMCLight> selectedFeatures;
+
+        /// <summary>
+        /// Path to layout file.
+        /// </summary>
+        private string layoutFilePath;
         
         /// <summary>
         /// Initializes a new instance of the <see cref="ClusterViewModel"/> class.
         /// </summary>
         /// <param name="clusters">The clusters.</param>
-        public ClusterViewModel(List<UMCClusterLight> clusters)
+        /// <param name="layoutFilePath">Path to layout file.</param>
+        public ClusterViewModel(List<UMCClusterLight> clusters, string layoutFilePath)
         {
             this.XicPlotViewModel = new XicPlotViewModel();
             this.SelectedFeatures = new List<UMCLight>();
             this.Clusters = new ObservableCollection<UMCClusterLight>(clusters ?? new List<UMCClusterLight>());
             this.Features = new ObservableCollection<UMCLight>();
+            this.LayoutFilePath = layoutFilePath;
 
             this.ClusterPlotViewModel = new ClusterPlotViewModel(clusters);
             this.ClusterPlotViewModel.ClusterSelected += (s, e) =>
@@ -70,6 +77,22 @@ namespace MultiAlignRogue.Clustering
         /// Gets the view model for the cluster plot.
         /// </summary>
         public ClusterPlotViewModel ClusterPlotViewModel { get; private set; }
+
+        /// <summary>
+        /// Gets the path to the layout file.
+        /// </summary>
+        public string LayoutFilePath
+        {
+            get { return this.layoutFilePath; }
+            private set
+            {
+                if (this.layoutFilePath != value)
+                {
+                    this.layoutFilePath = value;
+                    this.RaisePropertyChanged("LayoutFilePath", string.Empty, this.layoutFilePath, true);
+                }
+            }
+        }
 
         /// <summary>
         /// Gets or sets the selected cluster.

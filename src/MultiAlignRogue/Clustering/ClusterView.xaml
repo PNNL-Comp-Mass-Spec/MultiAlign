@@ -5,14 +5,14 @@
         xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"  
         Title="Cluster Viewer" Height="600" Width="1000">
     <Grid Margin="5">
-        <xcad:DockingManager AllowMixedOrientation="True">
+        <xcad:DockingManager AllowMixedOrientation="True" Name="AvDock">
             <xcad:LayoutRoot>
                 <xcad:LayoutPanel>
                     <xcad:LayoutAnchorablePaneGroup Orientation="Vertical">
                         <xcad:LayoutAnchorablePane IsMaximized="True">
                             <xcad:LayoutAnchorable Title="Cluster List" CanHide="False" CanClose="False">
                                 <DataGrid ItemsSource="{Binding Clusters}" SelectedItem="{Binding SelectedCluster}" AutoGenerateColumns="False" CanUserAddRows="False"
-                                          x:Name="ClusterDataGrid">
+                                          Name="ClusterDataGrid">
                                     <DataGrid.Columns>
                                         <DataGridTextColumn Header="ID" Width="10*" Binding="{Binding Id}" />
                                         <DataGridTextColumn Header="Mass" Width="35*" Binding="{Binding MassMonoisotopic}" />
@@ -36,12 +36,12 @@
                     
                     <xcad:LayoutDocumentPane>
                         <xcad:LayoutDocument Title="Clusters" CanClose="False">
-                            <Grid DataContext="{Binding ClusterPlotViewModel}">
+                            <Grid DataContext="{Binding ClusterPlotViewModel}" Name="ClusterPlotGrid">
                                 <oxy:PlotView Title="Clusters" Model="{Binding ClusterPlotModel}" />
                             </Grid>
                         </xcad:LayoutDocument>
                         <xcad:LayoutDocument Title="Extracted Ion Chromatogram" CanClose="False">
-                            <Grid DataContext="{Binding XicPlotViewModel}">
+                            <Grid DataContext="{Binding XicPlotViewModel}" Name="XicPlotGrid">
                                 <oxy:PlotView Title="Extracted Ion Chromatograms" Model="{Binding XicPlotModel}" />
                             </Grid>
                         </xcad:LayoutDocument>
