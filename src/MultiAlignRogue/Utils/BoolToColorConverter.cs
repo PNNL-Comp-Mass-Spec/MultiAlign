@@ -10,7 +10,7 @@ namespace MultiAlignRogue.Utils
     /// Converts a boolean flag value to a color.
     /// True = red, False = white
     /// </summary>
-    class BoolToColorConverter : IValueConverter
+    public class BoolToColorConverter : IValueConverter
     {
         /// <summary>
         /// Convert boolean value to color.

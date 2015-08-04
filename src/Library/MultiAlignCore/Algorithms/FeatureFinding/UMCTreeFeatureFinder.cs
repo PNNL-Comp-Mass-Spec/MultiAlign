@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using MultiAlignCore.Data.MetaData;
 using PNNLOmics.Algorithms;
 using PNNLOmics.Algorithms.FeatureClustering;
 using PNNLOmics.Data;
@@ -39,7 +40,7 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
         /// <returns></returns>
         public List<UMCLight> FindFeatures(List<MSFeatureLight> msFeatures,
             LcmsFeatureFindingOptions options,
-            ISpectraProvider provider)
+            ISpectraProvider provider, DatasetInformation information)
         {
             var clusterer = new MsFeatureTreeClusterer<MSFeatureLight, UMCLight>
             {
@@ -69,16 +70,16 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
                 maxScan = Math.Max(feature.Scan, maxScan);
             }
 
+            var scanTimes = information.ScanTimes;
             var id = 0;
             var newFeatures = new List<UMCLight>();
             foreach (var feature in features)
             {
                 if (feature.MsFeatures.Count < 1)
                     continue;
-
-                feature.Net = Convert.ToDouble(feature.Scan - minScan)/Convert.ToDouble(maxScan - minScan);
+                feature.Net = Convert.ToDouble(scanTimes[feature.Scan] - scanTimes[minScan])/
+                              Convert.ToDouble(scanTimes[maxScan] - scanTimes[minScan]);
                 feature.CalculateStatistics(ClusterCentroidRepresentation.Median);
-                feature.Net = feature.Net;
                 feature.Id = id++;
                 newFeatures.Add(feature);
                 //Sets the width of the feature to be the width of the peak, not the width of the tails
