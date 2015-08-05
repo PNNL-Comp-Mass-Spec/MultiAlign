@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using MultiAlignCore.Data.MetaData;
 using PNNLOmics.Algorithms;
 using PNNLOmics.Algorithms.FeatureClustering;
@@ -16,7 +17,15 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
         /// Finds features from the file of MS Features.
         /// </summary>
         List<UMCLight> FindFeatures(List<MSFeatureLight> features, 
-                                    LcmsFeatureFindingOptions   options,                                     
+                                    LcmsFeatureFindingOptions   options,
                                     ISpectraProvider provider, DatasetInformation information);
+
+        /// <summary>
+        /// Finds features from the file of MS Features.
+        /// </summary>
+        [Obsolete("Does not provide means to properly determine elution time")]
+        List<UMCLight> FindFeatures(List<MSFeatureLight> features,
+                                    LcmsFeatureFindingOptions options,
+                                    ISpectraProvider provider);
     }
 }
