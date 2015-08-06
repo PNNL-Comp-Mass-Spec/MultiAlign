@@ -437,7 +437,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
             MsFeatureFilteringOptions msFilterOptions,
             LcmsFeatureFilteringOptions lcmsFilterOptions,
             SpectralOptions peptideOptions,
-            IFeatureFinder featureFinder,
+            MultiAlignCore.Algorithms.FeatureFinding.IFeatureFinder featureFinder,
             IFeatureAligner<IEnumerable<UMCLight>,
                 IEnumerable<UMCLight>,
                 classAlignmentData> aligner,
