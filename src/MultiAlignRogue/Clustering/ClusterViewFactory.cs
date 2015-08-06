@@ -1,20 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using MultiAlign.ViewModels.Charting;
-using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO.Features;
-using OxyPlot.Wpf;
+using PNNLOmics.Data.Features;
 
 namespace MultiAlignRogue.Clustering
 {
-    using System.Windows;
-
-    using MultiAlignRogue.Alignment;
-
-    using PNNLOmics.Data.Features;
 
     public class ClusterViewFactory : IClusterViewFactory
     {
@@ -33,14 +24,12 @@ namespace MultiAlignRogue.Clustering
             throw new NotImplementedException();
         }
 
-        public ClusterViewModel ClusterViewModel { get; private set; }
-
         public void CreateNewWindow(List<UMCClusterLight> clusters)
         {
-            this.ClusterViewModel = this.ClusterViewModel ?? new ClusterViewModel(this, clusters, providers, this.layoutFilePath);
+            var clusterViewModel = new ClusterViewModel(this, clusters, providers, this.layoutFilePath);
             var window = new ClusterView
             {
-                DataContext = this.ClusterViewModel
+                DataContext = clusterViewModel
             };
 
             window.Show();
@@ -49,15 +38,12 @@ namespace MultiAlignRogue.Clustering
         public void CreateChargeStateDistributionWindow(IEnumerable<UMCClusterLight> clusters, string title)
         {
             var viewModel = new UmcClusterChargeHistogram(clusters, title);
-            var window = new Window
+            var window = new ChargeStateDistributionWindow
             {
-                Content = new PlotView
-                {
-                    Model = viewModel.Model
-                }
+                DataContext = viewModel
             };
 
-            window.Show();
+            window.ShowDialog();
         }
     }
 }

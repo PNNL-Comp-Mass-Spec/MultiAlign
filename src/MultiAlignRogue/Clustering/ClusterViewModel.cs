@@ -1,25 +1,18 @@
-﻿using System.Threading.Tasks;
-using System.Windows;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using System.Windows.Input;
-using GalaSoft.MvvmLight.CommandWpf;
+using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Messaging;
-using MultiAlign.Data;
-using MultiAlign.ViewModels.Charting;
 using MultiAlignCore.Extensions;
 using MultiAlignCore.IO.Features;
 using MultiAlignRogue.Utils;
 using MultiAlignRogue.ViewModels;
-using NHibernate.Mapping;
+using PNNLOmics.Data.Features;
 
 namespace MultiAlignRogue.Clustering
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-
-    using GalaSoft.MvvmLight;
-
-    using PNNLOmics.Data.Features;
 
     /// <summary>
     /// The view model for the ClusterView.
@@ -80,11 +73,7 @@ namespace MultiAlignRogue.Clustering
 
             this.ClusterPlotViewModel = new ClusterPlotViewModel(clusters);
 
-            this.ShowChargeStateDistributionCommand = new RelayCommand(
-                () =>
-                {
-                    this.viewFactory.CreateChargeStateDistributionWindow(clusters, "Charge State Distribution");
-                });
+            this.ShowChargeStateDistributionCommand = new GalaSoft.MvvmLight.Command.RelayCommand(this.ShowChargeStateDistributionImpl);
 
             // Listen for changes in selected cluster in ClusterViewModel.
             Messenger.Default.Register<PropertyChangedMessage<UMCClusterLight>>(
@@ -117,7 +106,7 @@ namespace MultiAlignRogue.Clustering
         /// <summary>
         /// Gets a command that displays a charge state distribution plot.
         /// </summary>
-        public RelayCommand ShowChargeStateDistributionCommand { get; private set; }
+        public ICommand ShowChargeStateDistributionCommand { get; private set; }
 
         /// <summary>
         /// Gets the list of clusters.
@@ -195,6 +184,14 @@ namespace MultiAlignRogue.Clustering
                 cluster.UmcList.ForEach(c => this.Features.Add(new UMCLightViewModel(c)));
                 this.XicPlotViewModel.Features = new List<UMCLightViewModel>(this.Features);
             }
+        }
+
+        /// <summary>
+        /// Gets a command that displays a charge state distribution plot.
+        /// </summary>
+        private void ShowChargeStateDistributionImpl()
+        {
+            this.viewFactory.CreateChargeStateDistributionWindow(this.Clusters, "Charge State Distribution");
         }
     }
 }

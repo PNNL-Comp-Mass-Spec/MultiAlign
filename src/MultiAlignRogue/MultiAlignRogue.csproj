@@ -163,6 +163,9 @@
     </Compile>
     <Compile Include="Alignment\AlignmentViewFactory.cs" />
     <Compile Include="Alignment\AlignmentViewModel.cs" />
+    <Compile Include="Clustering\ChargeStateDistributionWindow.xaml.cs">
+      <DependentUpon>ChargeStateDistributionWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Clustering\ClusterPlotViewModel.cs" />
     <Compile Include="Clustering\ClusterPoint.cs" />
     <Compile Include="Clustering\ClusterSettingsViewModel.cs" />
@@ -199,6 +202,10 @@
     <Compile Include="Utils\Throttler.cs" />
     <Compile Include="ViewModels\UMCLightViewModel.cs" />
     <Page Include="Alignment\AlignmentView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Clustering\ChargeStateDistributionWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
