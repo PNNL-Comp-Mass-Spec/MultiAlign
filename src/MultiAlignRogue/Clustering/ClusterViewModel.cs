@@ -1,4 +1,15 @@
-﻿using NHibernate.Mapping;
+﻿using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Input;
+using GalaSoft.MvvmLight.CommandWpf;
+using GalaSoft.MvvmLight.Messaging;
+using MultiAlign.Data;
+using MultiAlign.ViewModels.Charting;
+using MultiAlignCore.Extensions;
+using MultiAlignCore.IO.Features;
+using MultiAlignRogue.Utils;
+using MultiAlignRogue.ViewModels;
+using NHibernate.Mapping;
 
 namespace MultiAlignRogue.Clustering
 {
@@ -16,6 +27,26 @@ namespace MultiAlignRogue.Clustering
     public class ClusterViewModel : ViewModelBase
     {
         /// <summary>
+        /// Data access providers for reconstructing clusters.
+        /// </summary>
+        private readonly FeatureDataAccessProviders providers;
+
+        /// <summary>
+        /// Lock for database access.
+        /// </summary>
+        private readonly object dbLock;
+
+        /// <summary>
+        /// The throttler.
+        /// </summary>
+        private readonly Throttler throttler;
+
+        /// <summary>
+        /// Factory for creating child windows.
+        /// </summary>
+        private readonly IClusterViewFactory viewFactory;
+
+        /// <summary>
         /// The selected cluster.
         /// </summary>
         private UMCClusterLight selectedCluster;
@@ -23,7 +54,7 @@ namespace MultiAlignRogue.Clustering
         /// <summary>
         /// The selected feature.
         /// </summary>
-        private IEnumerable<UMCLight> selectedFeatures;
+        private IEnumerable<UMCLightViewModel> selectedFeatures;
 
         /// <summary>
         /// Path to layout file.
@@ -33,30 +64,60 @@ namespace MultiAlignRogue.Clustering
         /// <summary>
         /// Initializes a new instance of the <see cref="ClusterViewModel"/> class.
         /// </summary>
+        /// <param name="viewFactory">Factory for creating child windows.</param>
         /// <param name="clusters">The clusters.</param>
         /// <param name="layoutFilePath">Path to layout file.</param>
-        public ClusterViewModel(List<UMCClusterLight> clusters, string layoutFilePath)
+        public ClusterViewModel(IClusterViewFactory viewFactory, List<UMCClusterLight> clusters, FeatureDataAccessProviders providers, string layoutFilePath)
         {
+            this.viewFactory = viewFactory;
+            this.providers = providers;
+            this.dbLock = new object();
+            this.throttler = new Throttler(TimeSpan.FromMilliseconds(500));
             this.XicPlotViewModel = new XicPlotViewModel();
-            this.SelectedFeatures = new List<UMCLight>();
             this.Clusters = new ObservableCollection<UMCClusterLight>(clusters ?? new List<UMCClusterLight>());
-            this.Features = new ObservableCollection<UMCLight>();
+            this.Features = new ObservableCollection<UMCLightViewModel>();
             this.LayoutFilePath = layoutFilePath;
 
             this.ClusterPlotViewModel = new ClusterPlotViewModel(clusters);
-            this.ClusterPlotViewModel.ClusterSelected += (s, e) =>
+
+            this.ShowChargeStateDistributionCommand = new RelayCommand(
+                () =>
+                {
+                    this.viewFactory.CreateChargeStateDistributionWindow(clusters, "Charge State Distribution");
+                });
+
+            // Listen for changes in selected cluster in ClusterViewModel.
+            Messenger.Default.Register<PropertyChangedMessage<UMCClusterLight>>(
+                this,
+                args =>
             {
-                if (!this.ClusterPlotViewModel.SelectedCluster.Equals(this.SelectedCluster))
+                if (args.Sender == this.ClusterPlotViewModel && !this.ClusterPlotViewModel.SelectedCluster.Equals(this.SelectedCluster))
                 {
                     this.SelectedCluster = this.ClusterPlotViewModel.SelectedCluster;
+                } 
+            });
+
+            // Listen for changes in selected cluster internally.
+            Messenger.Default.Register<PropertyChangedMessage<UMCClusterLight>>(
+                this,
+                arg =>
+            {
+                if (arg.Sender == this)
+                {
+                    this.throttler.Run(() => this.ClusterSelected(arg));
                 }
-            };
+            });
 
             if (this.Clusters.Count > 0)
             {
                 this.SelectedCluster = this.Clusters[0];
             }
         }
+
+        /// <summary>
+        /// Gets a command that displays a charge state distribution plot.
+        /// </summary>
+        public RelayCommand ShowChargeStateDistributionCommand { get; private set; }
 
         /// <summary>
         /// Gets the list of clusters.
@@ -66,7 +127,7 @@ namespace MultiAlignRogue.Clustering
         /// <summary>
         /// Gets the list of features for the selected cluster.
         /// </summary>
-        public ObservableCollection<UMCLight> Features { get; private set; } 
+        public ObservableCollection<UMCLightViewModel> Features { get; private set; } 
 
         /// <summary>
         /// Gets the view model for extracted ion chromatogram plots.
@@ -105,34 +166,34 @@ namespace MultiAlignRogue.Clustering
                 if (this.selectedCluster != value)
                 {
                     this.selectedCluster = value;
-                    this.Features.Clear();
-
-                    // Set feature list for this cluster.
-                    if (this.selectedCluster != null && this.selectedCluster.UmcList != null)
-                    {
-                        this.selectedCluster.UmcList.ForEach(cluster => this.Features.Add(cluster));
-                        this.ClusterPlotViewModel.SelectedCluster = this.selectedCluster;
-                    }
-
-                    this.RaisePropertyChanged();
+                    this.RaisePropertyChanged("SelectedCluster", null, value, true);
                 }
             }
         }
 
         /// <summary>
-        /// Gets or sets the selected feature.
+        /// Event handler for SelectedCluster changed.
         /// </summary>
-        public IEnumerable<UMCLight> SelectedFeatures
+        /// <param name="args">Event arguments.</param>
+        private async void ClusterSelected(PropertyChangedMessage<UMCClusterLight> args)
         {
-            get { return this.selectedFeatures; }
-            set
+            var cluster = args.NewValue;
+
+            this.Features.Clear();
+
+            // Set feature list for this cluster.
+            if (this.selectedCluster != null)
             {
-                if (this.selectedFeatures != value)
+                this.ClusterPlotViewModel.SelectedCluster = cluster;
+                await Task.Run(() =>
                 {
-                    this.selectedFeatures = value;
-                    this.XicPlotViewModel.Features = this.selectedFeatures;
-                    this.RaisePropertyChanged();
-                }
+                    lock (this.dbLock)
+                    {
+                        cluster.ReconstructUMCCluster(this.providers);
+                    }
+                });
+                cluster.UmcList.ForEach(c => this.Features.Add(new UMCLightViewModel(c)));
+                this.XicPlotViewModel.Features = new List<UMCLightViewModel>(this.Features);
             }
         }
     }

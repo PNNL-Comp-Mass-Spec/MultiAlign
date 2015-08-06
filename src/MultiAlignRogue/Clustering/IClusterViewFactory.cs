@@ -15,5 +15,6 @@ namespace MultiAlignRogue.Clustering
     {
         void CreateNewWindow();
         void CreateNewWindow(List<UMCClusterLight> clusters);
+        void CreateChargeStateDistributionWindow(IEnumerable<UMCClusterLight> clusters, string title);
     }
 }

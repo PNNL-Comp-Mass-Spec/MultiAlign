@@ -2,10 +2,22 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:oxy="http://oxyplot.org/wpf"
-        xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"  
+        xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:viewModels="clr-namespace:MultiAlignRogue.ViewModels"
         Title="Cluster Viewer" Height="600" Width="1000">
-    <Grid Margin="5">
-        <xcad:DockingManager AllowMixedOrientation="True" Name="AvDock">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20" />
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Menu Grid.Row="0">
+            <MenuItem Header="Tools">
+                <MenuItem Header="Charge State Distribution" Command="{Binding ShowChargeStateDistributionCommand}" />
+            </MenuItem>
+        </Menu>
+        
+        <xcad:DockingManager Grid.Row="1" Margin="5"  AllowMixedOrientation="True" Name="AvDock">
             <xcad:LayoutRoot>
                 <xcad:LayoutPanel>
                     <xcad:LayoutAnchorablePaneGroup Orientation="Vertical">
@@ -23,11 +35,16 @@
                             </xcad:LayoutAnchorable>
                             <xcad:LayoutAnchorable Title="Feature List" CanHide="False" CanClose="False">
                                 <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding Features}" CanUserAddRows="False" Name="FeatureDataGrid">
+                                    <DataGrid.Resources>
+                                        <Style TargetType="DataGridRow">
+                                            <Setter Property="IsSelected" Value="{Binding Selected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                        </Style>
+                                    </DataGrid.Resources>
                                     <DataGrid.Columns>
-                                        <DataGridTextColumn Header="ID" Width="10*" Binding="{Binding Id}" />
-                                        <DataGridTextColumn Header="Mass" Width="20*" Binding="{Binding MassMonoisotopicAligned}" />
-                                        <DataGridTextColumn Header="NET" Width="20*" Binding="{Binding NetAligned}" />
-                                        <DataGridTextColumn Header="Dataset" Width="40*" />
+                                        <DataGridTextColumn Header="ID" Width="10*" Binding="{Binding UMCLight.Id}" />
+                                        <DataGridTextColumn Header="Mass" Width="20*" Binding="{Binding UMCLight.MassMonoisotopicAligned}" />
+                                        <DataGridTextColumn Header="NET" Width="20*" Binding="{Binding UMCLight.NetAligned}" />
+                                        <DataGridTextColumn Header="Dataset" Binding="{Binding DatasetInformation.DatasetName}" Width="40*" />
                                     </DataGrid.Columns>
                                 </DataGrid>
                             </xcad:LayoutAnchorable>
@@ -41,8 +58,27 @@
                             </Grid>
                         </xcad:LayoutDocument>
                         <xcad:LayoutDocument Title="Extracted Ion Chromatogram" CanClose="False">
-                            <Grid DataContext="{Binding XicPlotViewModel}" Name="XicPlotGrid">
-                                <oxy:PlotView Title="Extracted Ion Chromatograms" Model="{Binding XicPlotModel}" />
+                            <Grid DataContext="{Binding XicPlotViewModel}" Name="XicPlotGrid" Background="White">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="5" />
+                                    <RowDefinition Height="30" />
+                                </Grid.RowDefinitions>
+                                <oxy:PlotView Grid.Row="0" Title="Extracted Ion Chromatograms" Model="{Binding XicPlotModel}" />
+                                <xctk:DropDownButton Grid.Row="2" Width="190" HorizontalAlignment="Right" Content="Charge States">
+                                    <xctk:DropDownButton.DropDownContent>
+                                        <ListBox ItemsSource="{Binding ChargeStates}">
+                                            <ListBox.ItemTemplate>
+                                                <DataTemplate DataType="{x:Type viewModels:ChargeStateViewModel}">
+                                                    <StackPanel Orientation="Horizontal" Width="177" Margin="3">
+                                                        <CheckBox IsChecked="{Binding Selected}" />
+                                                        <TextBlock Text="{Binding ChargeLabel}" Margin="3,0,0,0" />
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </ListBox.ItemTemplate>
+                                        </ListBox>
+                                    </xctk:DropDownButton.DropDownContent>
+                                </xctk:DropDownButton>
                             </Grid>
                         </xcad:LayoutDocument>
                         <xcad:LayoutDocument Title="MS/MS Spectra" CanClose="False"></xcad:LayoutDocument>

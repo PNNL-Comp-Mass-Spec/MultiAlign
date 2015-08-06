@@ -1,6 +1,7 @@
 ﻿#region
 
 using System.Collections.Generic;
+using InformedProteomics.Backend.MassFeature;
 using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO.Features;
 
@@ -20,6 +21,14 @@ namespace MultiAlignCore.IO
             {
                 m_providers = value;
                 UpdateDatasets();
+            }
+        }
+
+        public static void AddDataset(DatasetInformation dataset)
+        {
+            if (!m_datasets.ContainsKey(dataset.DatasetId))
+            {
+                m_datasets.Add(dataset.DatasetId, dataset);
             }
         }
 

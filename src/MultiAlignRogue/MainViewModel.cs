@@ -378,6 +378,7 @@ namespace MultiAlignRogue
             Datasets.Clear();
             foreach (var info in Analysis.MetaData.Datasets)
             {
+                SingletonDataProviders.AddDataset(info);
                 var viewmodel = new DatasetInformationViewModel(info);
                 viewmodel.RemovalRequested += (s, e) =>
                 {
@@ -479,7 +480,7 @@ namespace MultiAlignRogue
             this.featureCache.Providers = this.Analysis.DataProviders;
             this.m_config.AnalysisPath = rogueProject.AnalysisPath;
             this.UpdateDatasets();
-            this.clusterViewFactory = new ClusterViewFactory(rogueProject.LayoutFilePath);
+            this.clusterViewFactory = new ClusterViewFactory(this.Analysis.DataProviders, rogueProject.LayoutFilePath);
             this.FeatureFindingSettingsViewModel = new FeatureFindingSettingsViewModel(this.Analysis, this.featureCache);
             this.AlignmentSettingsViewModel = new AlignmentSettingsViewModel(this.Analysis, this.featureCache);
             this.ClusterSettingsViewModel = new ClusterSettingsViewModel(this.Analysis, this.clusterViewFactory);

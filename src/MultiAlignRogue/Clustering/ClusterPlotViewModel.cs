@@ -114,11 +114,6 @@ namespace MultiAlignRogue.Clustering
         }
 
         /// <summary>
-        /// Event that is triggered when a cluster is selected on the plot.
-        /// </summary>
-        public event EventHandler ClusterSelected;
-
-        /// <summary>
         /// Gets the plot model for cluster plot.
         /// </summary>
         public PlotModel ClusterPlotModel { get; private set; }
@@ -134,13 +129,8 @@ namespace MultiAlignRogue.Clustering
                 if (this.selectedCluster != value)
                 {
                     this.selectedCluster = value;
-                    if (this.selectedCluster != null && this.ClusterSelected != null)
-                    {
-                        this.ClusterSelected(this, EventArgs.Empty);
-                    }
-
                     this.throttler.Run(this.BuildClusterPlot);
-                    this.RaisePropertyChanged();
+                    this.RaisePropertyChanged("SelectedCluster", null, value, true);
                 }
             }
         }

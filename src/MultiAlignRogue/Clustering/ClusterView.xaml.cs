@@ -92,16 +92,6 @@ namespace MultiAlignRogue.Clustering
                 ClusterDataGrid.ScrollIntoView(item);
                 ClusterDataGrid.UpdateLayout();
             };
-            
-            // Set selected features when selection is changed.
-            this.FeatureDataGrid.SelectionChanged += (s, e) =>
-            {
-                var selectedItems = this.FeatureDataGrid.SelectedItems;
-                if (this.viewModel != null)
-                {
-                    this.viewModel.SelectedFeatures = new List<UMCLight>(selectedItems.Cast<UMCLight>());
-                }
-            };
 
             // Serialize layout when window is closed.
             this.AvDock.Unloaded += (s, e) => this.SaveLayout();

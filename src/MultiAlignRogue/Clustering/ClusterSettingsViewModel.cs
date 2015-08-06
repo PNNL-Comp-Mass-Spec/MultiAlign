@@ -50,7 +50,7 @@
             this.analysis = analysis;
             this.options = analysis.Options;
             this.builder = new AlgorithmBuilder();
-            this.clusterViewFactory = clusterViewFactory ?? new ClusterViewFactory();
+            this.clusterViewFactory = clusterViewFactory ?? new ClusterViewFactory(analysis.DataProviders);
 
             this.ClusterFeaturesCommand = new RelayCommand(this.AsyncClusterFeatures);
             this.DisplayClustersCommand = new RelayCommand(this.DisplayFeatures);
