@@ -125,7 +125,11 @@ namespace MultiAlignRogue.Clustering
                         this.MsMsSpectra.Add(msmsSpectrum);
                     }
 
-                    this.SelectedMsMsSpectra = this.MsMsSpectra.FirstOrDefault();
+                    var first = this.MsMsSpectra.FirstOrDefault();
+                    if (first != null)
+                    {
+                        this.SelectedMsMsSpectra = first;
+                    } 
                 }
             });
 
