@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MultiAlign.ViewModels.Charting;
 using NHibernate.Util;
 using OxyPlot.Annotations;
 using OxyPlot.Series;

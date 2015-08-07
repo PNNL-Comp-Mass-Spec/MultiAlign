@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Messaging;
+using MultiAlign.ViewModels.Charting;
 using MultiAlignCore.Extensions;
 using MultiAlignCore.IO.Features;
 using MultiAlignRogue.Utils;
 using MultiAlignRogue.ViewModels;
+using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
 
 namespace MultiAlignRogue.Clustering
@@ -53,6 +56,16 @@ namespace MultiAlignRogue.Clustering
         /// Path to layout file.
         /// </summary>
         private string layoutFilePath;
+
+        /// <summary>
+        /// The selected MS/MS spectrum.
+        /// </summary>
+        private MSSpectra selectedMsMsSpectra;
+
+        /// <summary>
+        /// The MsMsSpectraViewModel.
+        /// </summary>
+        private MsMsSpectraViewModel msMsSpectraViewModel;
         
         /// <summary>
         /// Initializes a new instance of the <see cref="ClusterViewModel"/> class.
@@ -69,7 +82,10 @@ namespace MultiAlignRogue.Clustering
             this.XicPlotViewModel = new XicPlotViewModel();
             this.Clusters = new ObservableCollection<UMCClusterLight>(clusters ?? new List<UMCClusterLight>());
             this.Features = new ObservableCollection<UMCLightViewModel>();
+            this.MsMsSpectra = new ObservableCollection<MSSpectra>();
             this.LayoutFilePath = layoutFilePath;
+
+            this.MsMsSpectraViewModel = new MsMsSpectraViewModel(new MSSpectra(), "MsMs Spectrum");
 
             this.ClusterPlotViewModel = new ClusterPlotViewModel(clusters);
 
@@ -97,6 +113,22 @@ namespace MultiAlignRogue.Clustering
                 }
             });
 
+            Messenger.Default.Register<PropertyChangedMessage<MSFeatureLight>>(
+                this,
+                arg =>
+            {
+                if (arg.Sender == this.XicPlotViewModel)
+                {
+                    this.MsMsSpectra.Clear();
+                    foreach (var msmsSpectrum in arg.NewValue.MSnSpectra)
+                    {
+                        this.MsMsSpectra.Add(msmsSpectrum);
+                    }
+
+                    this.SelectedMsMsSpectra = this.MsMsSpectra.FirstOrDefault();
+                }
+            });
+
             if (this.Clusters.Count > 0)
             {
                 this.SelectedCluster = this.Clusters[0];
@@ -116,7 +148,45 @@ namespace MultiAlignRogue.Clustering
         /// <summary>
         /// Gets the list of features for the selected cluster.
         /// </summary>
-        public ObservableCollection<UMCLightViewModel> Features { get; private set; } 
+        public ObservableCollection<UMCLightViewModel> Features { get; private set; }
+
+        /// <summary>
+        /// Gets the list of MsMs spectra.
+        /// </summary>
+        public ObservableCollection<MSSpectra> MsMsSpectra { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the selected MS/MS spectrum.
+        /// </summary>
+        public MSSpectra SelectedMsMsSpectra
+        {
+            get { return this.selectedMsMsSpectra; }
+            set
+            {
+                if (this.selectedMsMsSpectra != value)
+                {
+                    this.selectedMsMsSpectra = value;
+                    this.MsMsSpectraViewModel = new MsMsSpectraViewModel(this.selectedMsMsSpectra, "MS/MS Spectrum");
+                    this.RaisePropertyChanged("SelectedMsMsSpectra", null, value, true);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the MsMsSpectraViewModel.
+        /// </summary>
+        public MsMsSpectraViewModel MsMsSpectraViewModel
+        {
+            get { return this.msMsSpectraViewModel; }
+            private set
+            {
+                if (this.msMsSpectraViewModel != value)
+                {
+                    this.msMsSpectraViewModel = value;
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
 
         /// <summary>
         /// Gets the view model for extracted ion chromatogram plots.

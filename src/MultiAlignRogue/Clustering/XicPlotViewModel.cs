@@ -11,6 +11,7 @@ using MultiAlignRogue.Utils;
 using MultiAlignRogue.ViewModels;
 using NHibernate.Util;
 using OxyPlot;
+using OxyPlot.Annotations;
 using OxyPlot.Axes;
 using OxyPlot.Series;
 using PNNLOmics.Data.Features;
@@ -47,6 +48,11 @@ namespace MultiAlignRogue.Clustering
         private IEnumerable<int> selectedChargeStates;
 
         /// <summary>
+        /// The selected MS feature.
+        /// </summary>
+        private MSFeatureLight selectedMsFeature;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="XicPlotViewModel"/> class.
         /// </summary>
         public XicPlotViewModel()
@@ -78,8 +84,15 @@ namespace MultiAlignRogue.Clustering
             this.XicPlotModel.Axes.Add(this.xaxis);
             this.XicPlotModel.Axes.Add(this.yaxis);
 
+            this.XicPlotModel.MouseDown += this.XicPlotMouseDown;
+
             Messenger.Default.Register<PropertyChangedMessage<bool>>(this, this.ChargeStateSelectionChanged);
             Messenger.Default.Register<PropertyChangedMessage<bool>>(this, this.FeatureSelectionChanged);
+            Messenger.Default.Register<PropertyChangedMessage<MSFeatureLight>>(this, arg =>
+            {
+                this.SetMsFeatureAnnotation();
+                this.XicPlotModel.InvalidatePlot(true);
+            });
         }
 
         /// <summary>
@@ -110,6 +123,22 @@ namespace MultiAlignRogue.Clustering
         }
 
         /// <summary>
+        /// Gets or sets the selected MS feature.
+        /// </summary>
+        public MSFeatureLight SelectedMsFeature
+        {
+            get { return this.selectedMsFeature; }
+            set
+            {
+                if (this.selectedMsFeature != value)
+                {
+                    this.selectedMsFeature = value;
+                    this.RaisePropertyChanged("SelectedMsFeature", null, value, true);
+                }
+            }
+        }
+
+        /// <summary>
         /// Builds XIC plot based on selected charge state chromatograms.
         /// </summary>
         private void BuildPlot()
@@ -122,6 +151,8 @@ namespace MultiAlignRogue.Clustering
             double maxY = 0;
 
             var chargeHash = new HashSet<int>();
+
+            MSFeatureLight maxFeature = null;
 
             int i = 0;
             foreach (var feature in this.Features)
@@ -145,6 +176,13 @@ namespace MultiAlignRogue.Clustering
                     minY = Math.Min(feature.UMCLight.MsFeatures.Min(msfeature => msfeature.Abundance), minY);
                     maxY = Math.Max(feature.UMCLight.MsFeatures.Max(msfeature => msfeature.Abundance), maxY);
 
+                    var maxA = msfeatures.Max(msf => msf.Abundance);
+                    var maxL = msfeatures.FirstOrDefault(msf => msf.Abundance.Equals(maxA));
+                    if (maxFeature == null || (maxL != null && maxL.Abundance >= maxFeature.Abundance))
+                    {
+                        maxFeature = maxL;
+                    }
+
                     var color = this.Colors[i++ % this.Colors.Count];
                     var series = new LineSeries
                     {
@@ -165,12 +203,17 @@ namespace MultiAlignRogue.Clustering
                 }
             }
 
+            this.SelectedMsFeature = maxFeature;
+            this.SetMsFeatureAnnotation();
+
             this.ChargeStates.Clear();
             foreach (var chargeState in chargeHash)
             {
                 this.ChargeStates.Add(new ChargeStateViewModel(chargeState));
             }
 
+            minX = Math.Max(0, minX - (0.01 * minX));
+            maxX = maxX + (0.01 * maxX);
             maxY = maxY + (0.05 * maxY);
 
             this.xaxis.Minimum = minX;
@@ -234,6 +277,54 @@ namespace MultiAlignRogue.Clustering
 
                 this.XicPlotModel.InvalidatePlot(true);
             }
+        }
+
+        /// <summary>
+        /// Event handler for OxyPlot left mouse click.
+        /// </summary>
+        /// <param name="sender">The sending PlotView.</param>
+        /// <param name="args">The event arguments.</param>
+        private void XicPlotMouseDown(object sender, OxyMouseEventArgs args)
+        {
+            var series = this.XicPlotModel.GetSeriesFromPoint(args.Position, 10);
+            if (series != null)
+            {
+                var result = series.GetNearestPoint(args.Position, false);
+                if (result != null)
+                {
+                    var msfeaturePoint = result.Item as MSFeatureLight;
+                    if (msfeaturePoint != null)
+                    {
+                        this.SelectedMsFeature = msfeaturePoint;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Set the annotation for selected MS feature.
+        /// </summary>
+        private void SetMsFeatureAnnotation()
+        {
+            if (this.SelectedMsFeature == null)
+            {
+                return;
+            }
+
+            this.XicPlotModel.Annotations.Clear();
+            var dsinfo = SingletonDataProviders.GetDatasetInformation(this.SelectedMsFeature.GroupId);
+            var elutionTime = dsinfo.ScanTimes[this.SelectedMsFeature.Scan];
+            var annotation = new LineAnnotation
+            {
+                X = elutionTime,
+                TextColor = OxyColors.Gray,
+                Text = elutionTime.ToString("0.###"),
+                TextOrientation = AnnotationTextOrientation.Vertical,
+                LineStyle = LineStyle.Dash,
+                Type = LineAnnotationType.Vertical,
+            };
+
+            this.XicPlotModel.Annotations.Add(annotation);
         }
     }
 }
