@@ -29,7 +29,9 @@
 
         private IUmcDAO featureCache;
 
-        //private readonly IClusterWindowFactory clusterWindowFactory;
+        private readonly IClusterViewFactory clusterWindowFactory;
+
+        private IClusterViewFactory clusterViewFactory;
 
         private readonly IProgress<int> progress;
 
@@ -39,16 +41,16 @@
         public RelayCommand ClusterFeaturesCommand { get; private set; }
         public RelayCommand DisplayClustersCommand { get; private set; }
 
-
         public ObservableCollection<DistanceMetric> DistanceMetrics { get; private set; }
         public ObservableCollection<ClusterCentroidRepresentation> CentroidRepresentations { get; private set; }
         public ObservableCollection<LcmsFeatureClusteringAlgorithmType> ClusteringMethods { get; private set; }
 
-        public ClusterSettingsViewModel(MultiAlignAnalysis analysis, IProgress<int> progressReporter = null)
+        public ClusterSettingsViewModel(MultiAlignAnalysis analysis, IClusterViewFactory clusterViewFactory = null, IProgress<int> progressReporter = null)
         {
             this.analysis = analysis;
             this.options = analysis.Options;
             this.builder = new AlgorithmBuilder();
+            this.clusterViewFactory = clusterViewFactory ?? new ClusterViewFactory(analysis.DataProviders);
 
             this.ClusterFeaturesCommand = new RelayCommand(this.AsyncClusterFeatures);
             this.DisplayClustersCommand = new RelayCommand(this.DisplayFeatures);
@@ -185,14 +187,11 @@
                 }
                 this.analysis.Clusters = this.analysis.DataProviders.ClusterCache.FindAll();
             }
-
-            MessageBox.Show("Working Command");
         }
 
         public void DisplayFeatures()
         {
-            MessageBox.Show("Working command");
-            //TODO: Implement
+            this.clusterViewFactory.CreateNewWindow(this.analysis.Clusters ?? this.analysis.DataProviders.ClusterCache.FindAll());
         }
     }
 }

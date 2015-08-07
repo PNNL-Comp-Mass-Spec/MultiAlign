@@ -126,6 +126,31 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="Xceed.Wpf.AvalonDock, Version=2.5.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Extended.Wpf.Toolkit.2.5\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Aero, Version=2.5.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Extended.Wpf.Toolkit.2.5\lib\net40\Xceed.Wpf.AvalonDock.Themes.Aero.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Expression">
+      <HintPath>..\packages\AvalonDock.2.0.2000\lib\net40\Xceed.Wpf.AvalonDock.Themes.Expression.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Metro, Version=2.5.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Extended.Wpf.Toolkit.2.5\lib\net40\Xceed.Wpf.AvalonDock.Themes.Metro.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.VS2010, Version=2.5.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Extended.Wpf.Toolkit.2.5\lib\net40\Xceed.Wpf.AvalonDock.Themes.VS2010.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.DataGrid">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.2.5\lib\net40\Xceed.Wpf.DataGrid.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.Toolkit">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.2.5\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -138,7 +163,19 @@
     </Compile>
     <Compile Include="Alignment\AlignmentViewFactory.cs" />
     <Compile Include="Alignment\AlignmentViewModel.cs" />
+    <Compile Include="Clustering\ChargeStateDistributionWindow.xaml.cs">
+      <DependentUpon>ChargeStateDistributionWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Clustering\ClusterPlotViewModel.cs" />
+    <Compile Include="Clustering\ClusterPoint.cs" />
     <Compile Include="Clustering\ClusterSettingsViewModel.cs" />
+    <Compile Include="Clustering\ClusterView.xaml.cs">
+      <DependentUpon>ClusterView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Clustering\ClusterViewFactory.cs" />
+    <Compile Include="Clustering\ClusterViewModel.cs" />
+    <Compile Include="Clustering\IClusterViewFactory.cs" />
+    <Compile Include="Clustering\XicPlotViewModel.cs" />
     <Compile Include="DMS\DmsLookupUtility.cs" />
     <Compile Include="DMS\DmsDatasetViewModel.cs" />
     <Compile Include="DMS\DmsLookupView.xaml.cs">
@@ -159,10 +196,20 @@
     <Compile Include="NewProjectWindow.xaml.cs">
       <DependentUpon>NewProjectWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\ChargeStateViewModel.cs" />
     <Compile Include="Utils\PlotViewModelBase.cs" />
     <Compile Include="RogueProject.cs" />
     <Compile Include="Utils\Throttler.cs" />
+    <Compile Include="ViewModels\UMCLightViewModel.cs" />
     <Page Include="Alignment\AlignmentView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Clustering\ChargeStateDistributionWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Clustering\ClusterView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -241,7 +288,12 @@
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="StandardLayout.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.97.0\build\net45\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.97.0\build\net45\System.Data.SQLite.Core.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

@@ -50,6 +50,8 @@ namespace MultiAlignRogue
         private AlignmentSettingsViewModel alignmentSettingsViewModel;
         private ClusterSettingsViewModel clusterSettingsViewModel;
 
+        private IClusterViewFactory clusterViewFactory;
+
         private IReadOnlyCollection<DatasetInformationViewModel> selectedDatasets;
 
         private string inputFilePath;
@@ -376,6 +378,7 @@ namespace MultiAlignRogue
             Datasets.Clear();
             foreach (var info in Analysis.MetaData.Datasets)
             {
+                SingletonDataProviders.AddDataset(info);
                 var viewmodel = new DatasetInformationViewModel(info);
                 viewmodel.RemovalRequested += (s, e) =>
                 {
@@ -477,9 +480,10 @@ namespace MultiAlignRogue
             this.featureCache.Providers = this.Analysis.DataProviders;
             this.m_config.AnalysisPath = rogueProject.AnalysisPath;
             this.UpdateDatasets();
+            this.clusterViewFactory = new ClusterViewFactory(this.Analysis.DataProviders, rogueProject.LayoutFilePath);
             this.FeatureFindingSettingsViewModel = new FeatureFindingSettingsViewModel(this.Analysis, this.featureCache);
             this.AlignmentSettingsViewModel = new AlignmentSettingsViewModel(this.Analysis, this.featureCache);
-            this.ClusterSettingsViewModel = new ClusterSettingsViewModel(this.Analysis);
+            this.ClusterSettingsViewModel = new ClusterSettingsViewModel(this.Analysis, this.clusterViewFactory);
             this.RaisePropertyChanged("Analysis");
         }
 
@@ -518,6 +522,12 @@ namespace MultiAlignRogue
             if (result != null && result.Value)
             {
                 var rogueProject = this.Deserialize(openFileDialog.FileName);
+                if (string.IsNullOrWhiteSpace(rogueProject.LayoutFilePath))
+                {
+                    rogueProject.LayoutFilePath = string.Format("{0}\\Layout.xml",
+                        Path.GetDirectoryName(rogueProject.AnalysisPath));
+                }
+
                 this.LoadRogueProject(rogueProject, false);
                 this.outputDirectory = Path.GetDirectoryName(rogueProject.AnalysisPath);
                 this.ProjectPath = openFileDialog.FileName;

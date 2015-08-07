@@ -157,6 +157,7 @@
     <Compile Include="Algorithms\ClusterFactory.cs" />
     <Compile Include="Algorithms\FeatureClustering\MSFeatureTreeClusterer.cs" />
     <Compile Include="Algorithms\FeatureFinding\FeatureFinderType.cs" />
+    <Compile Include="Algorithms\FeatureFinding\IFeatureFinder.cs" />
     <Compile Include="Algorithms\FeatureFinding\UMCTreeFeatureFinder.cs">
       <SubType>Code</SubType>
     </Compile>

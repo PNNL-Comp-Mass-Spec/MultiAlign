@@ -154,7 +154,7 @@ namespace MultiAlignCore.IO
 
             var finder = FeatureFinderFactory.CreateFeatureFinder(FeatureFinderType.TreeBased);
             finder.Progress += (sender, args) => UpdateStatus(args.Message);
-            var features = finder.FindFeatures(msFeatures, options, provider);
+            var features = finder.FindFeatures(msFeatures, options, provider, information);
 
             UpdateStatus("Filtering features.");
             List<UMCLight> filteredFeatures;
