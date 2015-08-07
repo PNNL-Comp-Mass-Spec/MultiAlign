@@ -11,6 +11,10 @@ using MultiAlignCore.Extensions;
 using MultiAlignCore.IO.Features;
 using MultiAlignRogue.Utils;
 using MultiAlignRogue.ViewModels;
+using OxyPlot;
+using OxyPlot.Annotations;
+using OxyPlot.Axes;
+using OxyPlot.Series;
 using PNNLOmics.Data;
 using PNNLOmics.Data.Features;
 
@@ -80,13 +84,13 @@ namespace MultiAlignRogue.Clustering
             this.dbLock = new object();
             this.throttler = new Throttler(TimeSpan.FromMilliseconds(500));
             this.XicPlotViewModel = new XicPlotViewModel();
+            this.ClusterFeaturePlotViewModel = new ClusterFeaturePlotViewModel();
             this.Clusters = new ObservableCollection<UMCClusterLight>(clusters ?? new List<UMCClusterLight>());
             this.Features = new ObservableCollection<UMCLightViewModel>();
             this.MsMsSpectra = new ObservableCollection<MSSpectra>();
             this.LayoutFilePath = layoutFilePath;
 
             this.MsMsSpectraViewModel = new MsMsSpectraViewModel(new MSSpectra(), "MsMs Spectrum");
-
             this.ClusterPlotViewModel = new ClusterPlotViewModel(clusters);
 
             this.ShowChargeStateDistributionCommand = new GalaSoft.MvvmLight.Command.RelayCommand(this.ShowChargeStateDistributionImpl);
@@ -117,7 +121,7 @@ namespace MultiAlignRogue.Clustering
                 this,
                 arg =>
             {
-                if (arg.Sender == this.XicPlotViewModel)
+                if (arg.Sender == this.XicPlotViewModel && arg.NewValue != null)
                 {
                     this.MsMsSpectra.Clear();
                     foreach (var msmsSpectrum in arg.NewValue.MSnSpectra)
@@ -170,7 +174,11 @@ namespace MultiAlignRogue.Clustering
                 if (this.selectedMsMsSpectra != value)
                 {
                     this.selectedMsMsSpectra = value;
-                    this.MsMsSpectraViewModel = new MsMsSpectraViewModel(this.selectedMsMsSpectra, "MS/MS Spectrum");
+                    if (this.selectedMsMsSpectra != null)
+                    {
+                        this.MsMsSpectraViewModel = new MsMsSpectraViewModel(this.selectedMsMsSpectra, "MS/MS Spectrum");
+                    }
+
                     this.RaisePropertyChanged("SelectedMsMsSpectra", null, value, true);
                 }
             }
@@ -201,6 +209,8 @@ namespace MultiAlignRogue.Clustering
         /// Gets the view model for the cluster plot.
         /// </summary>
         public ClusterPlotViewModel ClusterPlotViewModel { get; private set; }
+
+        public ClusterFeaturePlotViewModel ClusterFeaturePlotViewModel { get; private set; }
 
         /// <summary>
         /// Gets the path to the layout file.
@@ -257,6 +267,7 @@ namespace MultiAlignRogue.Clustering
                 });
                 cluster.UmcList.ForEach(c => this.Features.Add(new UMCLightViewModel(c)));
                 this.XicPlotViewModel.Features = new List<UMCLightViewModel>(this.Features);
+                this.ClusterFeaturePlotViewModel.Features = new List<UMCLightViewModel>(this.Features);
             }
         }
 

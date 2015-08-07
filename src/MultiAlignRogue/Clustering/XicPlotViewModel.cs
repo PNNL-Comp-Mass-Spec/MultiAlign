@@ -61,7 +61,6 @@ namespace MultiAlignRogue.Clustering
             this.ChargeStates = new ObservableCollection<ChargeStateViewModel>();
             this.XicPlotModel = new PlotModel
             {
-                Title = "Extracted Ion Chromatograms",
                 ////RenderingDecorator = rc => new XkcdRenderingDecorator(rc)
             };
 
@@ -79,6 +78,7 @@ namespace MultiAlignRogue.Clustering
                 Position = AxisPosition.Left,
                 AbsoluteMinimum = 0,
                 Minimum = 0,
+                StringFormat = "0.###E0"
             };
 
             this.XicPlotModel.Axes.Add(this.xaxis);
@@ -196,7 +196,10 @@ namespace MultiAlignRogue.Clustering
                         MarkerSize = 3,
                         MarkerFill = OxyColors.White,
                         MarkerStroke = color,
-                        MarkerStrokeThickness = 0.5
+                        MarkerStrokeThickness = 0.5,
+                        TrackerFormatString = "{0}" + Environment.NewLine +
+                                   "{1}: {2:0.###} (Scan: {Scan:0})" + Environment.NewLine +
+                                   "{3}: {4:0.###E0}" + Environment.NewLine
                     };
 
                     this.XicPlotModel.Series.Add(series);   

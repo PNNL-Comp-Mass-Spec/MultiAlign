@@ -120,6 +120,7 @@ namespace MultiAlignRogue.Clustering
             if (!File.Exists(this.layoutFilePath) && File.Exists(StandardLayoutFileName))
             {
                 path = StandardLayoutFileName;
+                ////this.SaveLayout();
             }
 
             var serializer = new XmlLayoutSerializer(AvDock);

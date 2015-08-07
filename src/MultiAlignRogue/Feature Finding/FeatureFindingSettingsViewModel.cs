@@ -1,4 +1,7 @@
-﻿namespace MultiAlignRogue.Feature_Finding
+﻿using MultiAlignCore.Extensions;
+using NHibernate.Util;
+
+namespace MultiAlignRogue.Feature_Finding
 {
     using System;
     using System.Collections.Generic;

@@ -166,6 +166,7 @@
     <Compile Include="Clustering\ChargeStateDistributionWindow.xaml.cs">
       <DependentUpon>ChargeStateDistributionWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Clustering\ClusterFeaturePlotViewModel.cs" />
     <Compile Include="Clustering\ClusterPlotViewModel.cs" />
     <Compile Include="Clustering\ClusterPoint.cs" />
     <Compile Include="Clustering\ClusterSettingsViewModel.cs" />
