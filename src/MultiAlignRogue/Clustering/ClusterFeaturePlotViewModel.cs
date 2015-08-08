@@ -140,9 +140,9 @@ namespace MultiAlignRogue.Clustering
 
             var verticalAnnotation = new LineAnnotation
             {
-                X = maxNet + (0.01 * maxNet),
-                MinimumY = Math.Max(minMass - (0.01 * minMass), 0),
-                MaximumY = maxMass + (0.01 * maxMass),
+                X = maxNet + (0.05 * netRange),
+                MinimumY = Math.Max(minMass - (0.05 * massRange), 0),
+                MaximumY = maxMass + (0.05 * massRange),
                 TextColor = OxyColors.Gray,
                 Text = massRange.ToString("0.###"),
                 TextOrientation = AnnotationTextOrientation.Vertical,
@@ -152,9 +152,9 @@ namespace MultiAlignRogue.Clustering
 
             var horizontalAnnotation = new LineAnnotation
             {
-                Y = minMass - (0.01 * minMass),
-                MinimumX = Math.Max(minNet - (0.01 * minNet), 0),
-                MaximumX = maxNet + (0.01 * maxNet),
+                Y = minMass - (0.05 * massRange),
+                MinimumX = Math.Max(minNet - (0.05 * netRange), 0),
+                MaximumX = maxNet + (0.05 * netRange),
                 TextColor = OxyColors.Gray,
                 Text = netRange.ToString("0.###"),
                 TextOrientation = AnnotationTextOrientation.Horizontal,
@@ -168,10 +168,13 @@ namespace MultiAlignRogue.Clustering
                 this.ClusterFeaturePlotModel.Annotations.Add(horizontalAnnotation);
             }
 
-            minNet = Math.Max(minNet - (0.025 * minNet), 0);
-            maxNet = maxNet + (0.025 * maxNet);
-            minMass = Math.Max(minMass - (0.025 * minMass), 0);
-            maxMass = maxMass + (0.025 * maxMass);
+            netRange = netRange.Equals(0) ? 0.1 : netRange;
+            massRange = massRange.Equals(0) ? 1.0 : massRange;
+
+            minNet = Math.Max(minNet - (0.095 * netRange), 0);
+            maxNet = maxNet + (0.095 * netRange);
+            minMass = Math.Max(minMass - (0.095 * massRange), 0);
+            maxMass = maxMass + (0.095 * massRange);
 
             this.clusterFeaturePlotXaxis.Minimum = minNet;
             this.clusterFeaturePlotXaxis.Maximum = maxNet;
