@@ -24,7 +24,7 @@
             this.Rectangle = new RectangleF
             {
                 X = etStart,
-                Y = (float)umcLight.MassMonoisotopicAligned,
+                Y = (float)umcLight.MassMonoisotopic,
                 Width = etEnd - etStart,
                 Height = 1
             };
