@@ -86,7 +86,7 @@ namespace MultiAlignRogue.Clustering
             this.ClusterFeaturePlotModel.Series.Clear();
 
             var trackerFormatString = "{1}: {2:0.###}" + Environment.NewLine +
-                                      "{3}: {4:0.###E0}";
+                                      "{3}: {4:0.###}";
 
             var unselectedFeatures = this.Features.Where(feat => !feat.Selected).ToArray();
             var unselectedSeries = new ScatterSeries
@@ -140,34 +140,38 @@ namespace MultiAlignRogue.Clustering
 
             var verticalAnnotation = new LineAnnotation
             {
-                X = maxNet + (0.01*maxNet),
-                MinimumY = Math.Max(minMass - (0.01*minMass), 0),
-                MaximumY = maxMass + (0.01*maxMass),
+                X = maxNet + (0.01 * maxNet),
+                MinimumY = Math.Max(minMass - (0.01 * minMass), 0),
+                MaximumY = maxMass + (0.01 * maxMass),
                 TextColor = OxyColors.Gray,
                 Text = massRange.ToString("0.###"),
                 TextOrientation = AnnotationTextOrientation.Vertical,
                 LineStyle = LineStyle.Dash,
                 Type = LineAnnotationType.Vertical,
             };
-            this.ClusterFeaturePlotModel.Annotations.Add(verticalAnnotation);
 
             var horizontalAnnotation = new LineAnnotation
             {
-                Y = minMass - (0.01*minMass),
-                MinimumX = Math.Max(minNet - (0.01*minNet), 0),
-                MaximumX = maxNet + (0.01*maxNet),
+                Y = minMass - (0.01 * minMass),
+                MinimumX = Math.Max(minNet - (0.01 * minNet), 0),
+                MaximumX = maxNet + (0.01 * maxNet),
                 TextColor = OxyColors.Gray,
                 Text = netRange.ToString("0.###"),
                 TextOrientation = AnnotationTextOrientation.Horizontal,
                 LineStyle = LineStyle.Dash,
                 Type = LineAnnotationType.Horizontal,
             };
-            this.ClusterFeaturePlotModel.Annotations.Add(horizontalAnnotation);
 
-            minNet = Math.Max(minNet - (0.025*minNet), 0);
-            maxNet = maxNet + (0.025*maxNet);
-            minMass = Math.Max(minMass - (0.025*minMass), 0);
-            maxMass = maxMass + (0.025*maxMass);
+            if (this.Features.Count() > 1)
+            {
+                this.ClusterFeaturePlotModel.Annotations.Add(verticalAnnotation);
+                this.ClusterFeaturePlotModel.Annotations.Add(horizontalAnnotation);
+            }
+
+            minNet = Math.Max(minNet - (0.025 * minNet), 0);
+            maxNet = maxNet + (0.025 * maxNet);
+            minMass = Math.Max(minMass - (0.025 * minMass), 0);
+            maxMass = maxMass + (0.025 * maxMass);
 
             this.clusterFeaturePlotXaxis.Minimum = minNet;
             this.clusterFeaturePlotXaxis.Maximum = maxNet;
