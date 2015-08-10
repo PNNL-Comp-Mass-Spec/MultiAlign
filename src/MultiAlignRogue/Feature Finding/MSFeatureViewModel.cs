@@ -52,7 +52,9 @@ namespace MultiAlignRogue.Feature_Finding
 
         private readonly double globalMaxMass;
 
-        private Dictionary<DatasetInformation, QuadTree<FeaturePoint>> quadTrees; 
+        private Dictionary<DatasetInformation, QuadTree<FeaturePoint>> quadTrees;
+
+        private readonly bool aligned;
 
         /// <summary>
         /// All features on plot.
@@ -64,9 +66,10 @@ namespace MultiAlignRogue.Feature_Finding
             
         }
 
-        public MSFeatureViewModel(Dictionary<DatasetInformation, IList<UMCLight>> features, int numSectionsPerAxis = 10, int featuresPerSection = 50)
+        public MSFeatureViewModel(Dictionary<DatasetInformation, IList<UMCLight>> features, bool aligned, int numSectionsPerAxis = 10, int featuresPerSection = 50)
         {
             this.allFeatures = features;
+            this.aligned = aligned;
             this.numSectionsPerAxis = numSectionsPerAxis;
             this.featuresPerSection = featuresPerSection / features.Keys.Count;
             this.throttler = new Throttler(TimeSpan.FromMilliseconds(100));
@@ -82,7 +85,7 @@ namespace MultiAlignRogue.Feature_Finding
                 foreach (var feature in dataset.Value)
                 {
                     var dataset1 = dataset;
-                    this.quadTrees[dataset.Key].Insert(new FeaturePoint(feature, scan => (float)this.GetNet(dataset1.Key, scan)));
+                    this.quadTrees[dataset.Key].Insert(new FeaturePoint(feature, scan => (float)this.GetNet(dataset1.Key, scan), aligned));
                 }
             }
 
@@ -93,7 +96,8 @@ namespace MultiAlignRogue.Feature_Finding
                 IsLegendVisible = true,
                 LegendPlacement = LegendPlacement.Inside,
                 LegendPosition = LegendPosition.LeftTop,
-                LegendOrientation = LegendOrientation.Vertical
+                LegendOrientation = LegendOrientation.Vertical,
+                RenderingDecorator = rc => new XkcdRenderingDecorator(rc)
             };
 
             // x axis
@@ -152,45 +156,59 @@ namespace MultiAlignRogue.Feature_Finding
                 int i = 0;
                 foreach (var file in features.Keys)
                 {
-                    LineSeries currentFeatures = new LineSeries
-                    {
-                        Color = this.Colors.ElementAt(i),
-                        Title = file.DatasetName,
-                        StrokeThickness = 0.8,
-                    };
-
-                    ScatterSeries currentMsFeatures = new ScatterSeries
-                    {
-                        MarkerStroke = OxyColors.Black,
-                        MarkerType = MarkerType.Circle
-                    };
-
                     var featurePoints = this.GetPartitionedPoints(
                         file,
                         this.globalMaxMass);
 
-                    foreach (var feature in featurePoints)
+                    if (!this.aligned)
                     {
-                        if (showMsFeatures && feature.UMCLight.MsFeatures.Count > 0)
+                        LineSeries currentFeatures = new LineSeries
                         {
-                            var points = this.GetMsFeaturesAndAnnotations(feature, file);
-                            currentMsFeatures.Points.AddRange(points.Item2);
-                            points.Item1.Stroke = this.Colors.ElementAt(i);
-                            this.Model.Annotations.Add(points.Item1);
+                            Color = this.Colors.ElementAt(i),
+                            Title = file.DatasetName,
+                            StrokeThickness = 0.8,
+                        };
+
+                        ScatterSeries currentMsFeatures = new ScatterSeries
+                        {
+                            MarkerStroke = OxyColors.Black,
+                            MarkerType = MarkerType.Circle
+                        };
+
+                        foreach (var feature in featurePoints)
+                        {
+                            if (showMsFeatures && feature.UMCLight.MsFeatures.Count > 0)
+                            {
+                                var points = this.GetMsFeaturesAndAnnotations(feature, file);
+                                currentMsFeatures.Points.AddRange(points.Item2);
+                                points.Item1.Stroke = this.Colors.ElementAt(i);
+                                this.Model.Annotations.Add(points.Item1);
+                            }
+                            else
+                            {
+                                currentFeatures.Points.AddRange(this.GetLcmsScatterPoints(feature));
+                            }
                         }
-                        else
+
+                        if (currentFeatures.Points.Count > 0)
                         {
-                            currentFeatures.Points.AddRange(this.GetLcmsScatterPoints(feature));
+                            this.Model.Series.Add(currentFeatures);
+                        }
+                        if (currentMsFeatures.Points.Count > 0)
+                        {
+                            this.Model.Series.Add(currentMsFeatures);
                         }   
                     }
-
-                    if (currentFeatures.Points.Count > 0)
+                    else
                     {
-                        this.Model.Series.Add(currentFeatures);
-                    }
-                    if (currentMsFeatures.Points.Count > 0)
-                    {
-                        this.Model.Series.Add(currentMsFeatures);
+                        var lcmsScatterSeries = new ScatterSeries
+                        {
+                            MarkerStroke = this.Colors.ElementAt(i),
+                            Title = file.DatasetName,
+                            MarkerType = MarkerType.Circle
+                        };
+                        lcmsScatterSeries.Points.AddRange(featurePoints.Select(feature => new ScatterPoint(feature.Rectangle.X, feature.Rectangle.Y, 0.8)));  
+                        this.Model.Series.Add(lcmsScatterSeries);
                     }
 
                     i = (i + 1) % this.Colors.Count; // Cycle through available colors if we run out

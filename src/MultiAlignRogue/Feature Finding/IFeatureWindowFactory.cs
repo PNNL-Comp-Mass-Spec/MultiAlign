@@ -9,6 +9,6 @@
     public interface IFeatureWindowFactory
     {
         void CreateNewWindow();
-        void CreateNewWindow(Dictionary<DatasetInformation, IList<UMCLight>> Features);
+        void CreateNewWindow(Dictionary<DatasetInformation, IList<UMCLight>> Features, bool showAlignedFeatures);
     }
 }

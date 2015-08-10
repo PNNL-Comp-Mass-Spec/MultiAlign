@@ -12,9 +12,9 @@
         {
             
         }
-        public void CreateNewWindow(Dictionary<DatasetInformation, IList<UMCLight>> Features)
+        public void CreateNewWindow(Dictionary<DatasetInformation, IList<UMCLight>> Features, bool showAlignedFeatures)
         {
-            var viewModel = new MSFeatureViewModel(Features);
+            var viewModel = new MSFeatureViewModel(Features, showAlignedFeatures);
             MSFeatureView window = new MSFeatureView
             {
                 DataContext = viewModel

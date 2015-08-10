@@ -65,13 +65,19 @@ namespace MultiAlignRogue.Feature_Finding
                                               this.selectedDatasets.Count > 0 && 
                                               this.selectedDatasets.Any(file => !file.IsFindingFeatures));
             this.PlotMSFeaturesCommand = new RelayCommand(
-                                        async () => await this.PlotMSFeatures(), 
+                                        async () => await this.PlotMSFeatures(false), 
                                         () => this.selectedDatasets.Any(file => file.DatasetState > DatasetInformation.DatasetStates.FindingFeatures));
+
+            this.PlotAlignedFeaturesCommand = new RelayCommand(
+                                        async () => await this.PlotMSFeatures(true),
+                                        () => this.selectedDatasets.Any(file => file.IsAligned));
         }
 
         public RelayCommand FindMSFeaturesCommand { get; private set; }
 
         public RelayCommand PlotMSFeaturesCommand { get; private set; }
+
+        public RelayCommand PlotAlignedFeaturesCommand { get; private set; }
 
         public double MassResolution
         {
@@ -253,37 +259,53 @@ namespace MultiAlignRogue.Feature_Finding
             }
         }
 
-        public async Task PlotMSFeatures()
+        public async Task PlotMSFeatures(bool showAlignedFeatures)
         {
             try
             {
-                var datasetFeatures = new Dictionary<DatasetInformation, IList<UMCLight>>();
-                foreach (var file in this.selectedDatasets.Where(file => file.DatasetState > DatasetInformation.DatasetStates.FindingFeatures))
-                {   // Select only datasets with features.
-                    IList<UMCLight> feat;
-                    if (this.features.ContainsKey(file.Dataset))
-                    {
-                        feat = this.features[file.Dataset];
-                    }
-                    else
-                    {
-                        DatasetInformationViewModel file1 = file;
-                        feat = await Task.Run(() => UmcLoaderFactory.LoadUmcFeatureData(
-                                file1.Dataset.Features.Path,
-                                file1.DatasetId,
-                                this.featureCache.Providers.FeatureCache));   
-                        this.features.Add(file.Dataset, feat);
-                    }
-
-                    datasetFeatures.Add(file.Dataset, feat);
+                if (showAlignedFeatures)
+                {
+                    this.msFeatureWindowFactory.CreateNewWindow(
+                        await this.GetFeatures(this.selectedDatasets.Where(file => file.IsAligned)),
+                        true);
                 }
-
-                this.msFeatureWindowFactory.CreateNewWindow(datasetFeatures);
+                else
+                {
+                    this.msFeatureWindowFactory.CreateNewWindow(
+                        await this.GetFeatures(this.selectedDatasets.Where(file => file.DatasetState > DatasetInformation.DatasetStates.FindingFeatures)),
+                        false);
+                }
             }
             catch
             {
                 MessageBox.Show("Feature cache currently being accessed. Try again in a few moments");
             }
+        }
+
+        private async Task<Dictionary<DatasetInformation, IList<UMCLight>>>  GetFeatures(IEnumerable<DatasetInformationViewModel> datasets)
+        {
+            var datasetFeatures = new Dictionary<DatasetInformation, IList<UMCLight>>();
+            foreach (var file in datasets)
+            {   // Select only datasets with features.
+                IList<UMCLight> feat;
+                if (this.features.ContainsKey(file.Dataset))
+                {
+                    feat = this.features[file.Dataset];
+                }
+                else
+                {
+                    DatasetInformationViewModel file1 = file;
+                    feat = await Task.Run(() => UmcLoaderFactory.LoadUmcFeatureData(
+                            file1.Dataset.Features.Path,
+                            file1.DatasetId,
+                            this.featureCache.Providers.FeatureCache));
+                    this.features.Add(file.Dataset, feat);
+                }
+
+                datasetFeatures.Add(file.Dataset, feat);
+            }
+
+            return datasetFeatures;
         }
     }
 }
