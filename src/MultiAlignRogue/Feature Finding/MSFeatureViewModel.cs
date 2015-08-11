@@ -97,7 +97,7 @@ namespace MultiAlignRogue.Feature_Finding
                 LegendPlacement = LegendPlacement.Inside,
                 LegendPosition = LegendPosition.LeftTop,
                 LegendOrientation = LegendOrientation.Vertical,
-                RenderingDecorator = rc => new XkcdRenderingDecorator(rc)
+                ////RenderingDecorator = rc => new XkcdRenderingDecorator(rc)
             };
 
             // x axis
@@ -194,6 +194,7 @@ namespace MultiAlignRogue.Feature_Finding
                         {
                             this.Model.Series.Add(currentFeatures);
                         }
+
                         if (currentMsFeatures.Points.Count > 0)
                         {
                             this.Model.Series.Add(currentMsFeatures);

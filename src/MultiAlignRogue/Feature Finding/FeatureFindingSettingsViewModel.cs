@@ -57,6 +57,7 @@ namespace MultiAlignRogue.Feature_Finding
                 this.selectedDatasets = sds.NewValue;
                 this.FindMSFeaturesCommand.RaiseCanExecuteChanged();
                 this.PlotMSFeaturesCommand.RaiseCanExecuteChanged();
+                this.PlotAlignedFeaturesCommand.RaiseCanExecuteChanged();
             });
 
             this.FindMSFeaturesCommand = new RelayCommand(
