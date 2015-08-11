@@ -6,11 +6,13 @@ using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
 using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO;
+using OxyPlot;
+using OxyPlot.Series;
 using PNNLOmics.Data.Features;
 
 namespace MultiAlignRogue.ViewModels
 {
-    public class UMCLightViewModel : ViewModelBase
+    public class UMCLightViewModel : ViewModelBase, IScatterPointProvider
     {
         private bool selected;
 
@@ -48,6 +50,11 @@ namespace MultiAlignRogue.ViewModels
 
                 return this.datasetInformation;
             }
+        }
+
+        public ScatterPoint GetScatterPoint()
+        {
+            return new ScatterPoint(this.UMCLight.NetAligned, this.UMCLight.MassMonoisotopicAligned, 3.0);
         }
     }
 }

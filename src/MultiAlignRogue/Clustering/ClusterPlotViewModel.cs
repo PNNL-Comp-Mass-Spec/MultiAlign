@@ -86,6 +86,7 @@ namespace MultiAlignRogue.Clustering
 
             this.netAxis = new LinearAxis
             {
+                Title = "NET",
                 Position = AxisPosition.Bottom,
                 AbsoluteMinimum = 0,
                 Minimum = 0,
@@ -96,6 +97,7 @@ namespace MultiAlignRogue.Clustering
             var maxMass = this.clusters.Max(x => x.MassMonoisotopicAligned);
             this.massAxis = new LinearAxis
             {
+                Title = "Mass",
                 Position = AxisPosition.Left,
                 AbsoluteMinimum = 0,
                 Minimum = 0,

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using MultiAlign.ViewModels.Charting;
+using MultiAlignCore.Drawing;
+using MultiAlignCore.Extensions;
 using MultiAlignCore.IO.Features;
 using PNNLOmics.Data.Features;
 
@@ -37,7 +39,8 @@ namespace MultiAlignRogue.Clustering
 
         public void CreateChargeStateDistributionWindow(IEnumerable<UMCClusterLight> clusters, string title)
         {
-            var viewModel = new UmcClusterChargeHistogram(clusters, title);
+            var charges = this.providers.FeatureCache.RetrieveChargeStates();
+            var viewModel = new ChargeHistogramPlot(charges.CreateHistogram(1, 10), "Charge Distribution");
             var window = new ChargeStateDistributionWindow
             {
                 DataContext = viewModel

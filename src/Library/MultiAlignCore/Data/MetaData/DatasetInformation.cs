@@ -18,6 +18,19 @@ namespace MultiAlignCore.Data.MetaData
     /// </summary>
     public class DatasetInformation : IComparable<DatasetInformation>, INotifyPropertyChanged
     {
+        public enum DatasetStates
+        {
+            None,
+            FindingFeatures,
+            PersistingFeatures,
+            FeaturesFound,
+            Aligning,
+            PersistingAlignment,
+            Aligned,
+            Clustering,
+            Clustered
+        };
+
         private DatasetSummary summary;
 
         private bool featuresFound;
@@ -39,6 +52,7 @@ namespace MultiAlignCore.Data.MetaData
             DatasetSummary = new DatasetSummary();
             PlotData = new DatasetPlotInformation();
             ScanTimes = new Dictionary<int, double>();
+            DatasetState = DatasetStates.None;
             FeaturesFound = false;
             IsAligned = false;
         }
@@ -61,6 +75,8 @@ namespace MultiAlignCore.Data.MetaData
         }
 
         #region Properties
+
+        public DatasetStates DatasetState { get; set; }
 
         public string Alias { get; set; }
 

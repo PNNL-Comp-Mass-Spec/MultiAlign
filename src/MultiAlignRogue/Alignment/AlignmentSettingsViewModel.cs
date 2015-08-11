@@ -1,4 +1,8 @@
-﻿namespace MultiAlignRogue.Alignment
+﻿using MultiAlignCore.Data.MetaData;
+using MultiAlignCore.IO.Features;
+using PNNLOmics.Data.Features;
+
+namespace MultiAlignRogue.Alignment
 {
     using System;
     using System.Collections.Generic;
@@ -165,16 +169,17 @@
                 this.algorithms = this.builder.GetAlgorithmProvider(this.analysis.Options);
                 this.aligner.m_algorithms = this.algorithms;
 
-                var baselineFeatures = this.featureCache.LoadDataset(this.selectedBaseline.Dataset, this.analysis.Options.MsFilteringOptions,
-                    this.analysis.Options.LcmsFindingOptions, this.analysis.Options.LcmsFilteringOptions);
+                /*var baselineFeatures = this.featureCache.LoadDataset(this.selectedBaseline.Dataset, this.analysis.Options.MsFilteringOptions,
+                    this.analysis.Options.LcmsFindingOptions, this.analysis.Options.LcmsFilteringOptions);*/
+                var baselineFeatures = this.featureCache.Providers.FeatureCache.FindByDatasetId(this.selectedBaseline.DatasetId);
                 var alignmentData = new AlignmentDAOHibernate();
                 alignmentData.ClearAll();
 
-                this.SelectedBaseline.IsAligning = true;
+                this.SelectedBaseline.DatasetState = DatasetInformation.DatasetStates.Aligning;
                 var selectedFiles = this.selectedDatasets.Where(file => !file.DoingWork).ToList();
                 foreach (var file in selectedFiles)
                 {
-                    file.IsAligning = true;
+                    file.DatasetState = DatasetInformation.DatasetStates.Aligning;
                 }
 
                 foreach (var file in selectedFiles)
@@ -183,12 +188,13 @@
                     ThreadSafeDispatcher.Invoke(() => this.DisplayAlignmentCommand.RaiseCanExecuteChanged());
                     if (file.Dataset.IsBaseline || !file.FeaturesFound)
                     {
-                        file.IsAligned = true;
-                        file.IsAligning = false;
+                        file.DatasetState = DatasetInformation.DatasetStates.Aligned;
                         continue;
                     }
-                    var features = this.featureCache.LoadDataset(file.Dataset, this.analysis.Options.MsFilteringOptions,
-                        this.analysis.Options.LcmsFindingOptions, this.analysis.Options.LcmsFilteringOptions);
+                    /*var features = this.featureCache.LoadDataset(file.Dataset, this.analysis.Options.MsFilteringOptions,
+                        this.analysis.Options.LcmsFindingOptions, this.analysis.Options.LcmsFilteringOptions);*/
+
+                    IList<UMCLight> features = this.featureCache.Providers.FeatureCache.FindByDatasetId(file.DatasetId);
                     var alignment = this.aligner.AlignToDataset(ref features, baselineFeatures, file.Dataset, this.selectedBaseline.Dataset);
                     //Check if there is information from a previous alignment for this dataset. If so, replace it. If not, just add the new one.
                     var priorAlignment = from x in this.alignmentInformation where x.DatasetID == alignment.DatasetID select x;
@@ -203,13 +209,12 @@
                     }
 
                     this.featureCache.CacheFeatures(features);
-                    file.IsAligned = true;
-                    file.IsAligning = false;
+                    file.DatasetState = DatasetInformation.DatasetStates.Aligned;
                     ThreadSafeDispatcher.Invoke(() => this.AlignToBaselineCommand.RaiseCanExecuteChanged());
                     ThreadSafeDispatcher.Invoke(() => this.DisplayAlignmentCommand.RaiseCanExecuteChanged());
                 }
 
-                this.SelectedBaseline.IsAligning = false;
+                this.SelectedBaseline.DatasetState = DatasetInformation.DatasetStates.Aligned;
             }
             else
             {

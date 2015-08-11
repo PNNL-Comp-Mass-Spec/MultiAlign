@@ -61,7 +61,6 @@ namespace MultiAlignRogue.Clustering
             this.ChargeStates = new ObservableCollection<ChargeStateViewModel>();
             this.XicPlotModel = new PlotModel
             {
-                Title = "Extracted Ion Chromatograms",
                 ////RenderingDecorator = rc => new XkcdRenderingDecorator(rc)
             };
 
@@ -79,6 +78,7 @@ namespace MultiAlignRogue.Clustering
                 Position = AxisPosition.Left,
                 AbsoluteMinimum = 0,
                 Minimum = 0,
+                StringFormat = "0.###E0"
             };
 
             this.XicPlotModel.Axes.Add(this.xaxis);
@@ -160,8 +160,14 @@ namespace MultiAlignRogue.Clustering
                 var chargeMap = feature.UMCLight.CreateChargeMap();
                 chargeHash.UnionWith(chargeMap.Keys);
 
+                ////if (feature.UMCLight.Id == 0)
+                ////{
+                ////    continue;
+                ////}
+
                 foreach (var charge in chargeMap.Keys)
                 {
+
                     var msfeatures = chargeMap[charge];
 
                     // Get dataset info for mapping scan # -> retention time
@@ -171,10 +177,14 @@ namespace MultiAlignRogue.Clustering
                         continue;
                     }
 
-                    minX = Math.Min(feature.UMCLight.MsFeatures.Select(msfeature => dsinfo.ScanTimes[msfeature.Scan]).Min(), minX);
-                    maxX = Math.Max(feature.UMCLight.MsFeatures.Select(msfeature => dsinfo.ScanTimes[msfeature.Scan]).Max(), maxX);
-                    minY = Math.Min(feature.UMCLight.MsFeatures.Min(msfeature => msfeature.Abundance), minY);
-                    maxY = Math.Max(feature.UMCLight.MsFeatures.Max(msfeature => msfeature.Abundance), maxY);
+                    foreach (var msfeature in msfeatures)
+                    {
+                        var rt = dsinfo.ScanTimes[msfeature.Scan];
+                        minX = Math.Min(minX, rt);
+                        maxX = Math.Max(maxX, rt);
+                        minY = Math.Min(minY, msfeature.Abundance);
+                        maxY = Math.Max(maxY, msfeature.Abundance);
+                    }
 
                     var maxA = msfeatures.Max(msf => msf.Abundance);
                     var maxL = msfeatures.FirstOrDefault(msf => msf.Abundance.Equals(maxA));
@@ -196,7 +206,10 @@ namespace MultiAlignRogue.Clustering
                         MarkerSize = 3,
                         MarkerFill = OxyColors.White,
                         MarkerStroke = color,
-                        MarkerStrokeThickness = 0.5
+                        MarkerStrokeThickness = 0.5,
+                        TrackerFormatString = "{0}" + Environment.NewLine +
+                                   "{1}: {2:0.###} (Scan: {Scan:0})" + Environment.NewLine +
+                                   "{3}: {4:0.###E0}" + Environment.NewLine
                     };
 
                     this.XicPlotModel.Series.Add(series);   

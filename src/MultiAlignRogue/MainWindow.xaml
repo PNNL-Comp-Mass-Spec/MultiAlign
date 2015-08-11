@@ -103,8 +103,9 @@
                     <TextBox Grid.Column="1" HorizontalContentAlignment="Center" Height="19" Margin="0,161,14,0" TextWrapping="Wrap" VerticalAlignment="Top" 
                              Text="{Binding MinimumIntensity, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Right" Width="60"/>
 
-                    <Button Content="Load MS Features" HorizontalAlignment="Left" Height="24" Margin="0,303,0,0" VerticalAlignment="Top" Width="114" Command="{Binding FindMSFeaturesCommand}"/>
-                    <Button Content="Plot MS Features" HorizontalAlignment="Left" Height="24" Margin="0,332,0,0" VerticalAlignment="Top" Width="114" Command="{Binding PlotMSFeaturesCommand}"/>
+                    <Button Content="Load LCMS Features" HorizontalAlignment="Left" Height="24" Margin="0,347,0,0" VerticalAlignment="Top" Width="120" Command="{Binding FindMSFeaturesCommand}"/>
+                    <Button Content="Plot Unaligned Features" HorizontalAlignment="Left" Height="24" Margin="10,318,-25,39" Width="135" Command="{Binding PlotMSFeaturesCommand}" Grid.Column="2" Grid.ColumnSpan="2"/>
+                    <Button Content="Plot Aligned Features" HorizontalAlignment="Left" Height="24" Margin="10,347,-25,0" VerticalAlignment="Top" Width="135" Command="{Binding PlotAlignedFeaturesCommand}" Grid.Column="2" Grid.ColumnSpan="2"/>
                     <Label Content="Only consider feature lengths" VerticalContentAlignment="Top"  HorizontalAlignment="Left" Height="28" Margin="8,105,0,0" VerticalAlignment="Top" Width="168" />
                     <TextBox Grid.Column="1" HorizontalContentAlignment="Center" Height="19" Margin="0,110,14,0" TextWrapping="Wrap" VerticalAlignment="Top"
                     	Text="{Binding MinimumFeatureLength, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Right" Width="60"/>

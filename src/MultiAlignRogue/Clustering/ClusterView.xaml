@@ -5,7 +5,11 @@
         xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:viewModels="clr-namespace:MultiAlignRogue.ViewModels"
-        Title="Cluster Viewer" Height="600" Width="1000">
+        xmlns:converters="clr-namespace:MultiAlign.Converters;assembly=MultiAlign"
+        Title="Cluster Viewer" Height="1000" Width="1250">
+    <Window.Resources>
+        <converters:DoubleToStringConverter Precision="3" x:Key="DoubleToString" />
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="20" />
@@ -27,9 +31,9 @@
                                           Name="ClusterDataGrid">
                                     <DataGrid.Columns>
                                         <DataGridTextColumn Header="ID" Width="10*" Binding="{Binding Id}" />
-                                        <DataGridTextColumn Header="Mass" Width="35*" Binding="{Binding MassMonoisotopic}" />
-                                        <DataGridTextColumn Header="NET" Width="35*" Binding="{Binding Net}" />
-                                        <DataGridTextColumn Header="# Members" Width="20*" Binding="{Binding MemberCount}" />
+                                        <DataGridTextColumn Header="Mass" Width="35*" Binding="{Binding MassMonoisotopic, Converter={StaticResource DoubleToString}}" />
+                                        <DataGridTextColumn Header="NET" Width="35*" Binding="{Binding Net, Converter={StaticResource DoubleToString}}" />
+                                        <DataGridTextColumn Header="#" Width="20*" Binding="{Binding MemberCount}" />
                                     </DataGrid.Columns>
                                 </DataGrid>
                             </xcad:LayoutAnchorable>
@@ -42,8 +46,8 @@
                                     </DataGrid.Resources>
                                     <DataGrid.Columns>
                                         <DataGridTextColumn Header="ID" Width="10*" Binding="{Binding UMCLight.Id}" />
-                                        <DataGridTextColumn Header="Mass" Width="20*" Binding="{Binding UMCLight.MassMonoisotopicAligned}" />
-                                        <DataGridTextColumn Header="NET" Width="20*" Binding="{Binding UMCLight.NetAligned}" />
+                                        <DataGridTextColumn Header="Mass" Width="20*" Binding="{Binding UMCLight.MassMonoisotopicAligned, Converter={StaticResource DoubleToString}}" />
+                                        <DataGridTextColumn Header="NET" Width="20*" Binding="{Binding UMCLight.NetAligned, Converter={StaticResource DoubleToString}}" />
                                         <DataGridTextColumn Header="Dataset" Binding="{Binding DatasetInformation.DatasetName}" Width="40*" />
                                     </DataGrid.Columns>
                                 </DataGrid>
@@ -62,7 +66,7 @@
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="*" />
                                     <RowDefinition Height="5" />
-                                    <RowDefinition Height="30" />
+                                    <RowDefinition Height="20" />
                                 </Grid.RowDefinitions>
                                 <oxy:PlotView Grid.Row="0" Title="Extracted Ion Chromatograms" Model="{Binding XicPlotModel}" />
                                 <xctk:DropDownButton Grid.Row="2" Width="190" HorizontalAlignment="Right" Content="Charge States">
@@ -86,12 +90,17 @@
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="*" />
                                     <RowDefinition Height="5" />
-                                    <RowDefinition Height="30" />
+                                    <RowDefinition Height="20" />
                                 </Grid.RowDefinitions>
                                 
-                                <oxy:PlotView DataContext="{Binding MsMsSpectraViewModel}" Grid.Row="0" Title="Ms/Ms Spectrum" Model="{Binding Model}" />
+                                <oxy:PlotView DataContext="{Binding MsMsSpectraViewModel}" Grid.Row="0" Model="{Binding Model}" />
                                 
                                 <ComboBox Grid.Row="2" ItemsSource="{Binding MsMsSpectra}" SelectedItem="{Binding SelectedMsMsSpectra}" Width="190" HorizontalAlignment="Right"></ComboBox>
+                            </Grid>
+                        </xcad:LayoutDocument>
+                        <xcad:LayoutDocument Title="Cluster Features" CanClose="False">
+                            <Grid Name="ClusterFeatureGrid" DataContext="{Binding ClusterFeaturePlotViewModel}">
+                                <oxy:PlotView Model="{Binding ClusterFeaturePlotModel}" />
                             </Grid>
                         </xcad:LayoutDocument>
                     </xcad:LayoutDocumentPane>

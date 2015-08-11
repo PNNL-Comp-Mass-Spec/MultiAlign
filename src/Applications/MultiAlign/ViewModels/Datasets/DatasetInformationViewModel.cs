@@ -4,6 +4,7 @@ using MultiAlign.Commands.Datasets;
 using MultiAlign.Commands.Plotting;
 using MultiAlign.ViewModels.Plotting;
 using MultiAlignCore.Data.MetaData;
+using NHibernate.Mapping;
 
 namespace MultiAlign.ViewModels.Datasets
 {
@@ -100,10 +101,42 @@ namespace MultiAlign.ViewModels.Datasets
             }
         }
 
+        public DatasetInformation.DatasetStates DatasetState
+        {
+            get { return this.Dataset.DatasetState; }
+            set
+            {
+                if (this.Dataset.DatasetState != value)
+                {
+                    this.Dataset.DatasetState = value;
+
+                    this.IsFindingFeatures = value == DatasetInformation.DatasetStates.FindingFeatures ||
+                                              value == DatasetInformation.DatasetStates.PersistingFeatures;
+
+                    this.IsAligning = value == DatasetInformation.DatasetStates.Aligning ||
+                                       value == DatasetInformation.DatasetStates.PersistingAlignment;
+
+                    if (value >= DatasetInformation.DatasetStates.FeaturesFound)
+                    {
+                        this.FeaturesFound = true;
+                    }
+
+                    if (value >= DatasetInformation.DatasetStates.Aligned)
+                    {
+                        this.IsAligned = true;
+                    }
+
+                    this.OnPropertyChanged("FindingFeatureLabelColor");
+                    this.OnPropertyChanged("AligningLabelColor");
+                    this.OnPropertyChanged();
+                }
+            }
+        }
+
         public bool FeaturesFound
         {
             get { return this.Dataset.FeaturesFound; }
-            set
+            private set
             {
                 if (this.Dataset.FeaturesFound != value)
                 {
@@ -116,7 +149,7 @@ namespace MultiAlign.ViewModels.Datasets
         public bool IsAligned
         {
             get { return this.Dataset.IsAligned; }
-            set
+            private set
             {
                 if (this.Dataset.IsAligned != value)
                 {
@@ -130,7 +163,7 @@ namespace MultiAlign.ViewModels.Datasets
         public bool IsFindingFeatures
         {
             get { return this.isFindingFeatures; }
-            set
+            private set
             {
                 if (this.isFindingFeatures != value)
                 {
@@ -145,14 +178,31 @@ namespace MultiAlign.ViewModels.Datasets
 
         public Brush FindingFeatureLabelColor
         {
-            get { return this.IsFindingFeatures ? Brushes.Red : Brushes.Transparent; }
+            get
+            {
+                Brush brush;
+                switch (this.DatasetState)
+                {
+                    case DatasetInformation.DatasetStates.FindingFeatures:
+                        brush = Brushes.Red;
+                        break;
+                    case DatasetInformation.DatasetStates.PersistingFeatures:
+                        brush = Brushes.Yellow;
+                        break;
+                    default:
+                        brush = Brushes.Transparent;
+                        break;
+                }
+
+                return brush;
+            }
         }
 
         private bool isAligning;
         public bool IsAligning
         {
             get { return this.isAligning; }
-            set
+            private set
             {
                 if (this.isAligning != value)
                 {
@@ -167,7 +217,24 @@ namespace MultiAlign.ViewModels.Datasets
 
         public Brush AligningLabelColor
         {
-            get { return this.IsAligning ? Brushes.Red : Brushes.Transparent; }
+            get
+            {
+                Brush brush;
+                switch (this.DatasetState)
+                {
+                    case DatasetInformation.DatasetStates.Aligning:
+                        brush = Brushes.Red;
+                        break;
+                    case DatasetInformation.DatasetStates.PersistingAlignment:
+                        brush = Brushes.Yellow;
+                        break;
+                    default:
+                        brush = Brushes.Transparent;
+                        break;
+                }
+
+                return brush;
+            }
         }
 
         public bool DoingWork

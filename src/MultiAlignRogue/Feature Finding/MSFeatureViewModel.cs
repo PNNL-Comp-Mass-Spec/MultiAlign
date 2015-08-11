@@ -1,4 +1,7 @@
-﻿namespace MultiAlignRogue.Feature_Finding
+﻿using NHibernate.Mapping;
+using OxyPlot.Annotations;
+
+namespace MultiAlignRogue.Feature_Finding
 {
     using System;
     using System.Collections.Generic;
@@ -49,7 +52,9 @@
 
         private readonly double globalMaxMass;
 
-        private Dictionary<DatasetInformation, QuadTree<FeaturePoint>> quadTrees; 
+        private Dictionary<DatasetInformation, QuadTree<FeaturePoint>> quadTrees;
+
+        private readonly bool aligned;
 
         /// <summary>
         /// All features on plot.
@@ -61,9 +66,10 @@
             
         }
 
-        public MSFeatureViewModel(Dictionary<DatasetInformation, IList<UMCLight>> features, int numSectionsPerAxis = 10, int featuresPerSection = 50)
+        public MSFeatureViewModel(Dictionary<DatasetInformation, IList<UMCLight>> features, bool aligned, int numSectionsPerAxis = 10, int featuresPerSection = 50)
         {
             this.allFeatures = features;
+            this.aligned = aligned;
             this.numSectionsPerAxis = numSectionsPerAxis;
             this.featuresPerSection = featuresPerSection / features.Keys.Count;
             this.throttler = new Throttler(TimeSpan.FromMilliseconds(100));
@@ -79,7 +85,7 @@
                 foreach (var feature in dataset.Value)
                 {
                     var dataset1 = dataset;
-                    this.quadTrees[dataset.Key].Insert(new FeaturePoint(feature, scan => (float)this.GetNet(dataset1.Key, scan)));
+                    this.quadTrees[dataset.Key].Insert(new FeaturePoint(feature, scan => (float)this.GetNet(dataset1.Key, scan), aligned));
                 }
             }
 
@@ -90,7 +96,8 @@
                 IsLegendVisible = true,
                 LegendPlacement = LegendPlacement.Inside,
                 LegendPosition = LegendPosition.LeftTop,
-                LegendOrientation = LegendOrientation.Vertical
+                LegendOrientation = LegendOrientation.Vertical,
+                ////RenderingDecorator = rc => new XkcdRenderingDecorator(rc)
             };
 
             // x axis
@@ -138,6 +145,7 @@
         private void PlotFeatures(Dictionary<DatasetInformation, IList<UMCLight>> features)
         {
             this.Model.Series.Clear();
+            this.Model.Annotations.Clear();
 
             var massPercent = (this.massAxis.ActualMaximum - this.massAxis.ActualMinimum) / this.massAxis.AbsoluteMaximum;
             var netPercent = this.netAxis.ActualMaximum - this.netAxis.ActualMinimum;
@@ -148,36 +156,62 @@
                 int i = 0;
                 foreach (var file in features.Keys)
                 {
-                    LineSeries currentFeatures = new LineSeries
-                    {
-                        Color = this.Colors.ElementAt(i),
-                        Title = file.DatasetName,
-                        StrokeThickness = 0.8,
-                    };
-
-                    ScatterSeries currentMsFeatures = new ScatterSeries
-                    {
-                        MarkerStroke = OxyColors.Black,
-                        MarkerType = MarkerType.Circle
-                    };
-
-                    ScatterSeries alignedNets = new ScatterSeries
-                    {
-                        MarkerStroke = this.Colors.ElementAt(i),
-                        MarkerType = MarkerType.Circle    
-                    };
-
-                    var dataPoints = this.GetPartitionedPoints(
+                    var featurePoints = this.GetPartitionedPoints(
                         file,
-                        this.globalMaxMass,
-                        showMsFeatures);
+                        this.globalMaxMass);
 
-                    currentFeatures.Points.AddRange(dataPoints.Item1);
-                    currentMsFeatures.Points.AddRange(dataPoints.Item2);
+                    if (!this.aligned)
+                    {
+                        LineSeries currentFeatures = new LineSeries
+                        {
+                            Color = this.Colors.ElementAt(i),
+                            Title = file.DatasetName,
+                            StrokeThickness = 0.8,
+                        };
 
-                    this.Model.Series.Add(currentFeatures);
-                    this.Model.Series.Add(currentMsFeatures);
-                    this.Model.Series.Add(alignedNets);
+                        ScatterSeries currentMsFeatures = new ScatterSeries
+                        {
+                            MarkerStroke = OxyColors.Black,
+                            MarkerType = MarkerType.Circle
+                        };
+
+                        foreach (var feature in featurePoints)
+                        {
+                            if (showMsFeatures && feature.UMCLight.MsFeatures.Count > 0)
+                            {
+                                var points = this.GetMsFeaturesAndAnnotations(feature, file);
+                                currentMsFeatures.Points.AddRange(points.Item2);
+                                points.Item1.Stroke = this.Colors.ElementAt(i);
+                                this.Model.Annotations.Add(points.Item1);
+                            }
+                            else
+                            {
+                                currentFeatures.Points.AddRange(this.GetLcmsScatterPoints(feature));
+                            }
+                        }
+
+                        if (currentFeatures.Points.Count > 0)
+                        {
+                            this.Model.Series.Add(currentFeatures);
+                        }
+
+                        if (currentMsFeatures.Points.Count > 0)
+                        {
+                            this.Model.Series.Add(currentMsFeatures);
+                        }   
+                    }
+                    else
+                    {
+                        var lcmsScatterSeries = new ScatterSeries
+                        {
+                            MarkerStroke = this.Colors.ElementAt(i),
+                            Title = file.DatasetName,
+                            MarkerType = MarkerType.Circle
+                        };
+                        lcmsScatterSeries.Points.AddRange(featurePoints.Select(feature => new ScatterPoint(feature.Rectangle.X, feature.Rectangle.Y, 0.8)));  
+                        this.Model.Series.Add(lcmsScatterSeries);
+                    }
+
                     i = (i + 1) % this.Colors.Count; // Cycle through available colors if we run out
                 }
             }
@@ -195,12 +229,11 @@
         /// </summary>
         /// <param name="dataset">Dataset to get features points for.</param>
         /// <param name="globalMax">The maximum mass in all datasets.</param>
-        /// <param name="showMsFeatures">A value indicating whether points with Ms features should be returned.</param>
         /// <returns>
         /// Collection of datapoints for features.
         /// Item 1: LCMS feature datapoints. Item2: MS Feature datapoints.
         /// </returns>
-        private Tuple<IEnumerable<DataPoint>, IEnumerable<ScatterPoint>> GetPartitionedPoints(DatasetInformation dataset, double globalMax, bool showMsFeatures = false)
+        private IEnumerable<FeaturePoint> GetPartitionedPoints(DatasetInformation dataset, double globalMax)
         {
             var netActMaximum = this.netAxis.ActualMaximum.Equals(0) ? 1.0 : this.netAxis.ActualMaximum;
             var massActMaximum = this.massAxis.ActualMaximum.Equals(0) ? globalMax : this.massAxis.ActualMaximum;
@@ -234,41 +267,73 @@
                 }
             }
 
-            return this.GetPoints(featureHash, showMsFeatures);
+            return featureHash;
         }
 
         /// <summary>
         /// Get a list of data points for a collection of features.
         /// </summary>
         /// <param name="features">List of features for one dataset.</param>
-        /// <param name="maxScan">The maximum LC scan number in the dataset.</param>
-        /// <param name="showMsFeatures">A value indicating whether points with Ms features should be returned.</param>
         /// <returns>
         /// Collection of datapoints for features.
         /// Item 1: LCMS feature datapoints. Item2: MS Feature datapoints.
         /// </returns>
-        private Tuple<IEnumerable<DataPoint>, IEnumerable<ScatterPoint>> GetPoints(IEnumerable<FeaturePoint> features, bool showMsFeatures)
+        private IEnumerable<DataPoint> GetLcmsScatterPoints(FeaturePoint feature)
         {
-            var lcmsDataPoints = new List<DataPoint>();
-            var msDataPoints = new List<ScatterPoint>();
-            foreach (var feature in features)
+            var lcmsDataPoints = new List<DataPoint> { Capacity = 3 };
+            lcmsDataPoints.Add(new DataPoint(feature.Rectangle.X, feature.UMCLight.MassMonoisotopic));
+            lcmsDataPoints.Add(new DataPoint(feature.Rectangle.X + feature.Rectangle.Width, feature.UMCLight.MassMonoisotopic));
+
+            // Insert NaN point to cause broken line series
+            lcmsDataPoints.Add(new DataPoint(double.NaN, feature.UMCLight.MassMonoisotopic));
+
+            return lcmsDataPoints;
+        }
+
+        /// <summary>Get scatter points for MS features and a rectangle annotation for the LCMS feature.</summary>
+        /// <param name="feature">An LCMS feature.</param>
+        /// <param name="dataset">The dataset that the LCMS feature comes from.</param>
+        /// <returns>The tuple containing the LCMS feature annotation and the MS feature scatter points..</returns>
+        private Tuple<RectangleAnnotation, IEnumerable<ScatterPoint>> GetMsFeaturesAndAnnotations(FeaturePoint feature, DatasetInformation dataset)
+        {
+            var msdataPoints = new List<ScatterPoint> { Capacity = feature.UMCLight.MsFeatures.Count };
+
+            var minNet = double.PositiveInfinity;
+            var maxNet = 0.0;
+            var minMass = double.PositiveInfinity;
+            var maxMass = 0.0;
+
+            foreach (var msfeature in feature.UMCLight.MsFeatures)
             {
-                lcmsDataPoints.Add(new DataPoint(feature.Rectangle.X, feature.UMCLight.MassMonoisotopicAligned));
-                lcmsDataPoints.Add(new DataPoint(feature.Rectangle.X + feature.Rectangle.Width, feature.UMCLight.MassMonoisotopicAligned));
-
-                // Insert NaN point to cause broken line series
-                lcmsDataPoints.Add(new DataPoint(double.NaN, feature.UMCLight.MassMonoisotopicAligned));
-
-                if (showMsFeatures)
-                {
-                    foreach (var msfeature in feature.UMCLight.MsFeatures)
-                    {
-                        msDataPoints.Add(new ScatterPoint(msfeature.Net, msfeature.MassMonoisotopic, 0.8));
-                    }
-                }
+                var net = this.GetNet(dataset, msfeature.Scan);
+                minNet = Math.Min(minNet, net);
+                maxNet = Math.Max(maxNet, net);
+                minMass = Math.Min(minMass, msfeature.MassMonoisotopic);
+                maxMass = Math.Max(maxMass, msfeature.MassMonoisotopic);
+                msdataPoints.Add(new ScatterPoint(net, msfeature.MassMonoisotopic, 0.8));
             }
 
-            return new Tuple<IEnumerable<DataPoint>, IEnumerable<ScatterPoint>>(lcmsDataPoints, msDataPoints);
+            var netRange = maxNet - minNet;
+            netRange = netRange.Equals(0.0) ? 0.01 : netRange;
+            var massRange = maxMass - minMass;
+            massRange = Math.Max(1.0, massRange);
+
+            minNet = minNet - (0.25 * netRange);
+            maxNet = maxNet + (0.25 * netRange);
+            minMass = Math.Max(minMass - (massRange * 0.5), 0);
+            maxMass = maxMass + (massRange * 0.5);
+
+            var annotation = new RectangleAnnotation
+            {
+                MinimumX = minNet,
+                MaximumX = maxNet,
+                MinimumY = minMass,
+                MaximumY = maxMass,
+                Fill = OxyColors.Transparent,
+                StrokeThickness = 1.0,
+            };
+
+            return new Tuple<RectangleAnnotation, IEnumerable<ScatterPoint>>(annotation, msdataPoints);
         }
 
         /// <summary>
