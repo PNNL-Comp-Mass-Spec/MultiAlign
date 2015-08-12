@@ -351,8 +351,7 @@ namespace MultiAlignCore.IO.RawData
                 MsLevel = spec.MsLevel,
                 Time = spec.ElutionTime,
                 Scan = spec.ScanNum,
-                //TotalIonCurrent = Convert.ToInt64(header.TotalIonCurrent), // Only used in PNNLOmics.Algorithms.Chromatograms.XicCreator.CreateXic(...)
-                TotalIonCurrent = spec.Peaks.Select(peak => (long)peak.Intensity).Sum(), // Only used in PNNLOmics.Algorithms.Chromatograms.XicCreator.CreateXic(...)
+                TotalIonCurrent = Convert.ToInt64(spec.TotalIonCurrent), // Only used in PNNLOmics.Algorithms.Chromatograms.XicCreator.CreateXic(...)
                 PrecursorMz = 0,
                 CollisionType = CollisionType.Other,
             };
