@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:multiAlignRogue="clr-namespace:MultiAlignRogue"
         xmlns:utils="clr-namespace:MultiAlignRogue.Utils"
-        Title="{Binding WindowTitle}" Height="508.075" Width="976" x:Name="RogueMainWindow">
+        Title="{Binding WindowTitle}" Height="520" Width="1100" x:Name="RogueMainWindow">
     <Window.DataContext>
         <multiAlignRogue:MainViewModel/>
     </Window.DataContext>
@@ -16,8 +16,8 @@
 
     <Grid Name ="MainGrid">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="500"/>
-            <ColumnDefinition/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="475" />
         </Grid.ColumnDefinitions>
         <Menu Grid.ColumnSpan="2" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="{Binding ElementName=MainGrid,Path=ActualWidth}">
             <MenuItem Header="File">
@@ -34,8 +34,8 @@
             </MenuItem>
         </Menu>
         <!--<ProgressBar HorizontalAlignment="Right" Margin="0,0,10,19" Width="90" Height="20" VerticalAlignment="Bottom" Value="{Binding ProgressTracker, Mode = OneWay}"/> -->
-        <DataGrid Name="FileSelectionDataGrid" Grid.Column="0" HorizontalAlignment="Left" Margin="10,53,0,10" 
-                  Width="480" AutoGenerateColumns="False" CanUserReorderColumns="False" CanUserAddRows="False" 
+        <DataGrid Name="FileSelectionDataGrid" Grid.Column="0" HorizontalAlignment="Stretch" Margin="10,55,10,10"
+                  AutoGenerateColumns="False" CanUserReorderColumns="False" CanUserAddRows="False" 
                   ItemsSource="{Binding Datasets, UpdateSourceTrigger=PropertyChanged}" SelectionChanged="DataGrid_SelectionChanged">
             <DataGrid.Columns>
                 <DataGridTemplateColumn Width="25">
@@ -45,20 +45,27 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="File Name" Width="275" Binding="{Binding Dataset.DatasetName}"/>
-                <DataGridCheckBoxColumn Header="Scans" IsReadOnly="True" Binding="{Binding ScansBool}" />
-                <DataGridCheckBoxColumn Header="Raw" IsReadOnly="True" Binding="{Binding RawBool}"/>
-                <DataGridCheckBoxColumn Header="Features" Width="55" IsReadOnly="True" Binding="{Binding FeaturesFound, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                <DataGridTextColumn Header="File Name" Width="*" Binding="{Binding Dataset.DatasetName}"/>
+                <DataGridCheckBoxColumn Header="Scans" Width="45" IsReadOnly="True" Binding="{Binding ScansBool}" />
+                <DataGridCheckBoxColumn Header="Raw" Width="40" IsReadOnly="True" Binding="{Binding RawBool}"/>
+                <DataGridCheckBoxColumn Header="Features" Width="60" IsReadOnly="True" Binding="{Binding FeaturesFound, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                     <DataGridCheckBoxColumn.CellStyle>
                         <Style TargetType="{x:Type DataGridCell}">
                             <Setter Property="Background" Value="{Binding FindingFeatureLabelColor, UpdateSourceTrigger=PropertyChanged}" />
                         </Style>
                     </DataGridCheckBoxColumn.CellStyle>
                 </DataGridCheckBoxColumn>
-                <DataGridCheckBoxColumn Header="Aligned" IsReadOnly="True" Binding="{Binding IsAligned, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                <DataGridCheckBoxColumn Header="Aligned" Width="60" IsReadOnly="True" Binding="{Binding IsAligned, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                     <DataGridCheckBoxColumn.CellStyle>
                         <Style TargetType="{x:Type DataGridCell}">
                             <Setter Property="Background" Value="{Binding AligningLabelColor, UpdateSourceTrigger=PropertyChanged}" />
+                        </Style>
+                    </DataGridCheckBoxColumn.CellStyle>
+                </DataGridCheckBoxColumn>
+                <DataGridCheckBoxColumn Header="Clustered" Width="60" IsReadOnly="True" Binding="{Binding IsClustered, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                    <DataGridCheckBoxColumn.CellStyle>
+                        <Style TargetType="{x:Type DataGridCell}">
+                            <Setter Property="Background" Value="{Binding ClusterLabelColor, UpdateSourceTrigger=PropertyChanged}" />
                         </Style>
                     </DataGridCheckBoxColumn.CellStyle>
                 </DataGridCheckBoxColumn>
@@ -66,7 +73,7 @@
         </DataGrid>
 
         <TabControl Grid.Column="1" Margin="10,25,10,10">
-            <TabItem Header="Feature Finding" Height="23" VerticalAlignment="Bottom" DataContext="{Binding FeatureFindingSettingsViewModel, UpdateSourceTrigger=PropertyChanged}">
+            <TabItem Header="1. Feature Finding" Height="23" VerticalAlignment="Bottom" DataContext="{Binding FeatureFindingSettingsViewModel, UpdateSourceTrigger=PropertyChanged}">
                 <Grid Margin="0,19,39,8" HorizontalAlignment="Right" Width="384">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="183*"/>
@@ -114,7 +121,7 @@
                     <Label Content="to" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,106,0,0" Grid.Column="2" Height="26" Width="30" Grid.ColumnSpan="2"/>
                 </Grid>
             </TabItem>
-            <TabItem Header="Dataset Alignment" HorizontalAlignment="Left" Width="113" Margin="-2,0,-14,0" DataContext="{Binding AlignmentSettingsViewModel, UpdateSourceTrigger=PropertyChanged}">
+            <TabItem Header="2. Alignment" HorizontalAlignment="Left" DataContext="{Binding AlignmentSettingsViewModel, UpdateSourceTrigger=PropertyChanged}">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="22*"/>
@@ -143,10 +150,10 @@
 
                 </Grid>
             </TabItem>
-            <TabItem Header="AMT Alignment" HorizontalAlignment="Left" VerticalAlignment="Top" Width="107" Margin="-2,0,0,0" Height="23">
+            <TabItem Header="3. AMT Alignment" HorizontalAlignment="Left">
                 <Grid/>
             </TabItem>
-            <TabItem Header="LC-MS Clustering" Margin="-2,-2,-3,-1" DataContext="{Binding ClusterSettingsViewModel}">
+            <TabItem Header="4. Clustering" DataContext="{Binding ClusterSettingsViewModel}">
                 <Grid>
                     <Label Content="Clustering Method" HorizontalContentAlignment="Left" Height="28" VerticalAlignment="Top" Margin="10,11,0,0" Width="150" HorizontalAlignment="Left" FontWeight="Bold"/>
                     <ComboBox Margin="10,37,278,0" SelectedItem="{Binding SelectedLcmsFeatureClusteringAlgorithm}"

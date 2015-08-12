@@ -111,23 +111,20 @@ namespace MultiAlign.ViewModels.Datasets
                     this.Dataset.DatasetState = value;
 
                     this.IsFindingFeatures = value == DatasetInformation.DatasetStates.FindingFeatures ||
-                                              value == DatasetInformation.DatasetStates.PersistingFeatures;
+                                             value == DatasetInformation.DatasetStates.PersistingFeatures;
 
                     this.IsAligning = value == DatasetInformation.DatasetStates.Aligning ||
-                                       value == DatasetInformation.DatasetStates.PersistingAlignment;
+                                      value == DatasetInformation.DatasetStates.PersistingAlignment;
 
-                    if (value >= DatasetInformation.DatasetStates.FeaturesFound)
-                    {
-                        this.FeaturesFound = true;
-                    }
-
-                    if (value >= DatasetInformation.DatasetStates.Aligned)
-                    {
-                        this.IsAligned = true;
-                    }
+                    this.IsClustering = value == DatasetInformation.DatasetStates.Clustering ||
+                                        value == DatasetInformation.DatasetStates.PersistingClusters;
+                    this.FeaturesFound = value >= DatasetInformation.DatasetStates.FeaturesFound;
+                    this.IsAligned = value >= DatasetInformation.DatasetStates.Aligned;
+                    this.IsClustered = value >= DatasetInformation.DatasetStates.Clustered;
 
                     this.OnPropertyChanged("FindingFeatureLabelColor");
                     this.OnPropertyChanged("AligningLabelColor");
+                    this.OnPropertyChanged("ClusterLabelColor");
                     this.OnPropertyChanged();
                 }
             }
@@ -156,6 +153,58 @@ namespace MultiAlign.ViewModels.Datasets
                     this.Dataset.IsAligned = value;
                     this.OnPropertyChanged("IsAligned");
                 }
+            }
+        }
+
+        private bool isClustering;
+
+        public bool IsClustering
+        {
+            get { return this.isClustering; }
+            private set
+            {
+                if (this.isClustering != value)
+                {
+                    this.isClustering = value;
+                    this.OnPropertyChanged("ClusterLabelColor");
+                    this.OnPropertyChanged("DoingWork");
+                    this.OnPropertyChanged("IsClustering");
+                }
+            }
+        }
+
+        public bool IsClustered
+        {
+            get { return this.Dataset.IsClustered; }
+            private set
+            {
+                if (this.Dataset.IsClustered != value)
+                {
+                    this.Dataset.IsClustered = value;
+                    this.OnPropertyChanged("IsClustered");
+                }
+            }
+        }
+
+        public Brush ClusterLabelColor
+        {
+            get
+            {
+                Brush brush;
+                switch (this.DatasetState)
+                {
+                    case DatasetInformation.DatasetStates.Clustering:
+                        brush = Brushes.Red;
+                        break;
+                    case DatasetInformation.DatasetStates.PersistingClusters:
+                        brush = Brushes.Yellow;
+                        break;
+                    default:
+                        brush = Brushes.Transparent;
+                        break;
+                }
+
+                return brush;
             }
         }
 
@@ -239,7 +288,7 @@ namespace MultiAlign.ViewModels.Datasets
 
         public bool DoingWork
         {
-            get { return this.IsAligning || this.IsFindingFeatures; }
+            get { return this.IsAligning || this.IsFindingFeatures || this.IsClustering; }
         }
 
         public DatasetInformation Dataset

@@ -76,7 +76,7 @@ namespace MultiAlignRogue.Alignment
                                                                                   this.selectedDatasets != null &&
                                                                                   this.selectedDatasets.Count > 0 &&
                                                                                   this.selectedDatasets.Any(file => !file.DoingWork));
-            this.DisplayAlignmentCommand = new RelayCommand(this.DisplayAlignment, () => this.selectedDatasets.Any(file => file.IsAligned));
+            this.DisplayAlignmentCommand = new RelayCommand(this.DisplayAlignment, () => this.selectedDatasets.Any(file => file.IsAligned && !file.Dataset.IsBaseline));
         }
 
         public RelayCommand AlignToBaselineCommand { get; private set; }
@@ -224,7 +224,7 @@ namespace MultiAlignRogue.Alignment
 
         private void DisplayAlignment()
         {
-            foreach (var file in (this.selectedDatasets.Where(x => x.IsAligned)))
+            foreach (var file in (this.selectedDatasets.Where(x => x.IsAligned && !x.Dataset.IsBaseline)))
             {
                 var alignment = this.alignmentInformation.Find(x => x.DatasetID == file.DatasetId);
                 this.alignmentWindowFactory.CreateNewWindow(alignment);

@@ -1,4 +1,11 @@
-﻿namespace MultiAlignRogue.Clustering
+﻿using System.Collections.ObjectModel;
+using GalaSoft.MvvmLight.Messaging;
+using MultiAlign.Data;
+using MultiAlign.ViewModels.Datasets;
+using MultiAlignCore.Data.MetaData;
+using NHibernate.Util;
+
+namespace MultiAlignRogue.Clustering
 {
     using System;
     using System.Collections.Generic;
@@ -45,6 +52,8 @@
         public ObservableCollection<ClusterCentroidRepresentation> CentroidRepresentations { get; private set; }
         public ObservableCollection<LcmsFeatureClusteringAlgorithmType> ClusteringMethods { get; private set; }
 
+        private IEnumerable<DatasetInformationViewModel> datasets; 
+
         public ClusterSettingsViewModel(MultiAlignAnalysis analysis, IClusterViewFactory clusterViewFactory = null, IProgress<int> progressReporter = null)
         {
             this.analysis = analysis;
@@ -52,8 +61,11 @@
             this.builder = new AlgorithmBuilder();
             this.clusterViewFactory = clusterViewFactory ?? new ClusterViewFactory(analysis.DataProviders);
 
-            this.ClusterFeaturesCommand = new RelayCommand(this.AsyncClusterFeatures);
-            this.DisplayClustersCommand = new RelayCommand(this.DisplayFeatures);
+            this.ClusterFeaturesCommand = new RelayCommand(this.AsyncClusterFeatures, () => this.datasets != null &&
+                                                                                            this.datasets.Any());
+            this.DisplayClustersCommand = new RelayCommand(this.DisplayFeatures, () => this.datasets != null &&
+                                                                                       this.datasets.Any() &&
+                                                                                       this.datasets.All(ds => ds.DatasetState >= DatasetInformation.DatasetStates.PersistingClusters));
 
             this.DistanceMetrics = new ObservableCollection<DistanceMetric>();
             Enum.GetValues(typeof(DistanceMetric)).Cast<DistanceMetric>().ToList().ForEach(x => this.DistanceMetrics.Add(x));
@@ -61,7 +73,6 @@
             Enum.GetValues(typeof(ClusterCentroidRepresentation)).Cast<ClusterCentroidRepresentation>().ToList().ForEach(x => this.CentroidRepresentations.Add(x));
             this.ClusteringMethods = new ObservableCollection<LcmsFeatureClusteringAlgorithmType>();
             Enum.GetValues(typeof(LcmsFeatureClusteringAlgorithmType)).Cast<LcmsFeatureClusteringAlgorithmType>().ToList().ForEach(x => this.ClusteringMethods.Add(x));
-
         }
 
         public bool ShouldSeparateByCharge
@@ -118,6 +129,21 @@
             await Task.Run(() => this.ClusterFeatures());
         }
 
+        public IEnumerable<DatasetInformationViewModel> Datasets
+        {
+            get { return this.datasets; }
+            set
+            {
+                if (this.datasets != value)
+                {
+                    this.datasets = value;
+                    this.ClusterFeaturesCommand.RaiseCanExecuteChanged();
+                    this.DisplayClustersCommand.RaiseCanExecuteChanged();
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
+
         public void ClusterFeatures()
         {
             
@@ -129,6 +155,10 @@
             // This just tells us whether we are using mammoth memory partitions or not.          
             var clusterCount = 0;
             var providers = this.analysis.DataProviders;
+
+            this.datasets.ForEach(ds => ds.DatasetState = DatasetInformation.DatasetStates.Clustering);
+            ThreadSafeDispatcher.Invoke(this.ClusterFeaturesCommand.RaiseCanExecuteChanged);
+            ThreadSafeDispatcher.Invoke(this.DisplayClustersCommand.RaiseCanExecuteChanged);
 
             // Here we see if we need to separate the charge...
             // IMS is said to require charge separation 
@@ -149,9 +179,19 @@
                         cluster.IdentifiedSpectraCount += feature.IdentifiedSpectraCount;
                     }
                 }
+
+                this.analysis.Clusters = clusters;
+
+                this.datasets.ForEach(ds => ds.DatasetState = DatasetInformation.DatasetStates.PersistingClusters);
+                ThreadSafeDispatcher.Invoke(this.ClusterFeaturesCommand.RaiseCanExecuteChanged);
+                ThreadSafeDispatcher.Invoke(this.DisplayClustersCommand.RaiseCanExecuteChanged);
+
                 providers.ClusterCache.AddAll(clusters);
                 providers.FeatureCache.UpdateAll(features);
-                this.analysis.Clusters = clusters;
+
+                this.datasets.ForEach(ds => ds.DatasetState = DatasetInformation.DatasetStates.Clustered);
+                ThreadSafeDispatcher.Invoke(this.ClusterFeaturesCommand.RaiseCanExecuteChanged);
+                ThreadSafeDispatcher.Invoke(this.DisplayClustersCommand.RaiseCanExecuteChanged);
             }
             else
             {
@@ -182,10 +222,21 @@
                         }
                     }
 
+                    this.analysis.Clusters = clusters;
+
+                    this.datasets.ForEach(ds => ds.DatasetState = DatasetInformation.DatasetStates.PersistingClusters);
+                    ThreadSafeDispatcher.Invoke(this.ClusterFeaturesCommand.RaiseCanExecuteChanged);
+                    ThreadSafeDispatcher.Invoke(this.DisplayClustersCommand.RaiseCanExecuteChanged);
+
                     this.analysis.DataProviders.ClusterCache.AddAll(clusters);
                     this.analysis.DataProviders.FeatureCache.UpdateAll(features);
                 }
+
                 this.analysis.Clusters = this.analysis.DataProviders.ClusterCache.FindAll();
+
+                this.datasets.ForEach(ds => ds.DatasetState = DatasetInformation.DatasetStates.Clustered);
+                ThreadSafeDispatcher.Invoke(this.ClusterFeaturesCommand.RaiseCanExecuteChanged);
+                ThreadSafeDispatcher.Invoke(this.DisplayClustersCommand.RaiseCanExecuteChanged);
             }
         }
 

@@ -399,6 +399,8 @@ namespace MultiAlignRogue
                 };
                 Datasets.Add(viewmodel);
             }
+
+            this.ClusterSettingsViewModel.Datasets = new List<DatasetInformationViewModel>(this.Datasets);
         }
 
         private void AddDatasets(List<InputFile> files)
@@ -483,7 +485,10 @@ namespace MultiAlignRogue
             this.clusterViewFactory = new ClusterViewFactory(this.Analysis.DataProviders, rogueProject.LayoutFilePath);
             this.FeatureFindingSettingsViewModel = new FeatureFindingSettingsViewModel(this.Analysis, this.featureCache);
             this.AlignmentSettingsViewModel = new AlignmentSettingsViewModel(this.Analysis, this.featureCache);
-            this.ClusterSettingsViewModel = new ClusterSettingsViewModel(this.Analysis, this.clusterViewFactory);
+            this.ClusterSettingsViewModel = new ClusterSettingsViewModel(this.Analysis, this.clusterViewFactory)
+            {
+                Datasets = this.Datasets
+            };
             this.RaisePropertyChanged("Analysis");
         }
 

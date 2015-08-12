@@ -28,6 +28,7 @@ namespace MultiAlignCore.Data.MetaData
             PersistingAlignment,
             Aligned,
             Clustering,
+            PersistingClusters,
             Clustered
         };
 
@@ -249,6 +250,8 @@ namespace MultiAlignCore.Data.MetaData
                 this.OnPropertyChanged();
             }
         }
+
+        public bool IsClustered { get; set; }
 
 
         /// <summary>
