@@ -31,7 +31,7 @@ namespace MultiAlign.ViewModels
             BuildStateModerator();
 
             MainDataDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            MainDataName = "analysis";
+            MainDataName = "analysis.db3";
 
 
             // Titles and Status
