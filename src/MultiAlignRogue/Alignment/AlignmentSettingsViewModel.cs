@@ -175,11 +175,11 @@ namespace MultiAlignRogue.Alignment
                 var alignmentData = new AlignmentDAOHibernate();
                 alignmentData.ClearAll();
 
-                this.SelectedBaseline.DatasetState = DatasetInformation.DatasetStates.Aligning;
+                this.SelectedBaseline.DatasetState = DatasetInformationViewModel.DatasetStates.Aligning;
                 var selectedFiles = this.selectedDatasets.Where(file => !file.DoingWork).ToList();
                 foreach (var file in selectedFiles)
                 {
-                    file.DatasetState = DatasetInformation.DatasetStates.Aligning;
+                    file.DatasetState = DatasetInformationViewModel.DatasetStates.Aligning;
                 }
 
                 foreach (var file in selectedFiles)
@@ -188,7 +188,7 @@ namespace MultiAlignRogue.Alignment
                     ThreadSafeDispatcher.Invoke(() => this.DisplayAlignmentCommand.RaiseCanExecuteChanged());
                     if (file.Dataset.IsBaseline || !file.FeaturesFound)
                     {
-                        file.DatasetState = DatasetInformation.DatasetStates.Aligned;
+                        file.DatasetState = DatasetInformationViewModel.DatasetStates.Aligned;
                         continue;
                     }
                     /*var features = this.featureCache.LoadDataset(file.Dataset, this.analysis.Options.MsFilteringOptions,
@@ -209,12 +209,12 @@ namespace MultiAlignRogue.Alignment
                     }
 
                     this.featureCache.CacheFeatures(features);
-                    file.DatasetState = DatasetInformation.DatasetStates.Aligned;
+                    file.DatasetState = DatasetInformationViewModel.DatasetStates.Aligned;
                     ThreadSafeDispatcher.Invoke(() => this.AlignToBaselineCommand.RaiseCanExecuteChanged());
                     ThreadSafeDispatcher.Invoke(() => this.DisplayAlignmentCommand.RaiseCanExecuteChanged());
                 }
 
-                this.SelectedBaseline.DatasetState = DatasetInformation.DatasetStates.Aligned;
+                this.SelectedBaseline.DatasetState = DatasetInformationViewModel.DatasetStates.Aligned;
             }
             else
             {
