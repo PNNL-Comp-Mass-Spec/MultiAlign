@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System.Diagnostics;
+using System.IO;
+using System.Windows;
 using MultiAlignCore.Extensions;
 using NHibernate.Util;
 
@@ -67,7 +69,7 @@ namespace MultiAlignRogue.Feature_Finding
                                               this.selectedDatasets.Any(file => !file.IsFindingFeatures));
             this.PlotMSFeaturesCommand = new RelayCommand(
                                         async () => await this.PlotMSFeatures(false), 
-                                        () => this.selectedDatasets.Any(file => file.DatasetState > DatasetInformation.DatasetStates.FindingFeatures));
+                                        () => this.selectedDatasets.Any(file => file.DatasetState > DatasetInformationViewModel.DatasetStates.FindingFeatures));
 
             this.PlotAlignedFeaturesCommand = new RelayCommand(
                                         async () => await this.PlotMSFeatures(true),
@@ -234,7 +236,7 @@ namespace MultiAlignRogue.Feature_Finding
             var selectedFiles = this.selectedDatasets.Where(file => !file.DoingWork).ToList();
             foreach (var file in selectedFiles)
             {
-                file.DatasetState = DatasetInformation.DatasetStates.FindingFeatures;
+                file.DatasetState = DatasetInformationViewModel.DatasetStates.FindingFeatures;
                 ThreadSafeDispatcher.Invoke(() => this.PlotMSFeaturesCommand.RaiseCanExecuteChanged());
                 ThreadSafeDispatcher.Invoke(() => this.FindMSFeaturesCommand.RaiseCanExecuteChanged());
             }
@@ -249,12 +251,21 @@ namespace MultiAlignRogue.Feature_Finding
 
                 this.features[file.Dataset] = features;
 
-                file.DatasetState = DatasetInformation.DatasetStates.PersistingFeatures;
+                file.DatasetState = DatasetInformationViewModel.DatasetStates.PersistingFeatures;
                 ThreadSafeDispatcher.Invoke(() => this.PlotMSFeaturesCommand.RaiseCanExecuteChanged());
 
-                this.featureCache.CacheFeatures(features);
+                using (var logger = new StreamWriter("nhibernate_stats.txt", true))
+                {
+                    logger.WriteLine();
+                    var stopWatch = new Stopwatch();
+                    stopWatch.Start();
 
-                file.DatasetState = DatasetInformation.DatasetStates.FeaturesFound;
+                    this.featureCache.CacheFeatures(features);
+                    stopWatch.Stop();
+                    logger.WriteLine("Writing: {0}s", stopWatch.Elapsed.TotalSeconds);
+                }
+
+                file.DatasetState = DatasetInformationViewModel.DatasetStates.FeaturesFound;
                 ThreadSafeDispatcher.Invoke(() => this.FindMSFeaturesCommand.RaiseCanExecuteChanged());
                 this.progress.Report(0);
             }
@@ -273,7 +284,7 @@ namespace MultiAlignRogue.Feature_Finding
                 else
                 {
                     this.msFeatureWindowFactory.CreateNewWindow(
-                        await this.GetFeatures(this.selectedDatasets.Where(file => file.DatasetState > DatasetInformation.DatasetStates.FindingFeatures)),
+                        await this.GetFeatures(this.selectedDatasets.Where(file => file.DatasetState > DatasetInformationViewModel.DatasetStates.FindingFeatures)),
                         false);
                 }
             }
