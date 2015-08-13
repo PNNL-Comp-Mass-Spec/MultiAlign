@@ -1,5 +1,8 @@
-﻿using MultiAlignCore.Data.MetaData;
+﻿using MultiAlign.ViewModels.Databases;
+using MultiAlign.Windows.Viewers.Databases;
+using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO.Features;
+using MultiAlignCore.IO.MTDB;
 using PNNLOmics.Data.Features;
 
 namespace MultiAlignRogue.Alignment
@@ -62,30 +65,35 @@ namespace MultiAlignRogue.Alignment
             this.CalibrationOptions = new ObservableCollection<AlignmentType>(Enum.GetValues(typeof(AlignmentType)).Cast<AlignmentType>());
             this.AlignmentAlgorithms = new ObservableCollection<FeatureAlignmentType>(
                                            Enum.GetValues(typeof(FeatureAlignmentType)).Cast<FeatureAlignmentType>());
+            this.ShouldAlignToBaseline = true;
+            this.ShouldAlignToAMT = false;
             this.selectedDatasets = new ReadOnlyCollection<DatasetInformationViewModel>(new List<DatasetInformationViewModel>());
             this.alignmentInformation = new List<classAlignmentData>();
 
             this.MessengerInstance.Register<PropertyChangedMessage<IReadOnlyCollection<DatasetInformationViewModel>>>(this, sds =>
             {
                 this.selectedDatasets = sds.NewValue;
-                ThreadSafeDispatcher.Invoke(() => this.AlignToBaselineCommand.RaiseCanExecuteChanged());
+                ThreadSafeDispatcher.Invoke(() => this.AlignCommand.RaiseCanExecuteChanged());
                 ThreadSafeDispatcher.Invoke(() => this.DisplayAlignmentCommand.RaiseCanExecuteChanged());
             });
 
-            this.AlignToBaselineCommand = new RelayCommand(this.AsyncAlignToBaseline, () => this.SelectedBaseline != null && 
-                                                                                  this.selectedDatasets != null &&
+            this.AlignCommand = new RelayCommand(this.AsyncAlign, () => this.selectedDatasets != null &&
                                                                                   this.selectedDatasets.Count > 0 &&
                                                                                   this.selectedDatasets.Any(file => !file.DoingWork));
             this.DisplayAlignmentCommand = new RelayCommand(this.DisplayAlignment, () => this.selectedDatasets.Any(file => file.IsAligned && !file.Dataset.IsBaseline));
         }
 
-        public RelayCommand AlignToBaselineCommand { get; private set; }
+        public RelayCommand AlignCommand { get; private set; }
 
         public RelayCommand DisplayAlignmentCommand { get; private set; }
 
         public ObservableCollection<FeatureAlignmentType> AlignmentAlgorithms { get; private set; }
 
         public ObservableCollection<AlignmentType> CalibrationOptions { get; private set; }
+
+        public bool ShouldAlignToBaseline { get; set; }
+
+        public bool ShouldAlignToAMT { get; set; }
 
         public DatasetInformationViewModel SelectedBaseline
         {
@@ -155,10 +163,19 @@ namespace MultiAlignRogue.Alignment
             }
         }
 
-        public async void AsyncAlignToBaseline()
+        public async void AsyncAlign()
         {
-            await Task.Run(() => this.AlignToBaseline());
+            if (ShouldAlignToBaseline == true && this.SelectedBaseline != null)
+            {
+                await Task.Run(() => this.AlignToBaseline());
+            }
+            else if (ShouldAlignToAMT == true)
+            {
+                //await Task.Run(() => this.AlignToAMT());
+                ThreadSafeDispatcher.Invoke(this.AlignToAMT);
+            }
         }
+
 
         private void AlignToBaseline()
         {
@@ -184,7 +201,7 @@ namespace MultiAlignRogue.Alignment
 
                 foreach (var file in selectedFiles)
                 {
-                    ThreadSafeDispatcher.Invoke(() => this.AlignToBaselineCommand.RaiseCanExecuteChanged());
+                    ThreadSafeDispatcher.Invoke(() => this.AlignCommand.RaiseCanExecuteChanged());
                     ThreadSafeDispatcher.Invoke(() => this.DisplayAlignmentCommand.RaiseCanExecuteChanged());
                     if (file.Dataset.IsBaseline || !file.FeaturesFound)
                     {
@@ -210,7 +227,7 @@ namespace MultiAlignRogue.Alignment
 
                     this.featureCache.CacheFeatures(features);
                     file.DatasetState = DatasetInformation.DatasetStates.Aligned;
-                    ThreadSafeDispatcher.Invoke(() => this.AlignToBaselineCommand.RaiseCanExecuteChanged());
+                    ThreadSafeDispatcher.Invoke(() => this.AlignCommand.RaiseCanExecuteChanged());
                     ThreadSafeDispatcher.Invoke(() => this.DisplayAlignmentCommand.RaiseCanExecuteChanged());
                 }
 
@@ -220,6 +237,24 @@ namespace MultiAlignRogue.Alignment
             {
                 MessageBox.Show("Please select a baseline with detected features.");
             }
+        }
+        
+
+        private void AlignToAMT()
+        {
+            var dmsWindow = new DatabaseSearchToolWindow();
+            var databaseView = new DatabasesViewModel();
+            dmsWindow.DataContext = databaseView;
+            dmsWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            var loader = MassTagDatabaseLoaderFactory.Create(MtdbDatabaseServerType.Dms);
+            var databases = loader.LoadDatabases();
+
+            foreach (var database in databases)
+            {
+                databaseView.AddDatabase(database);
+            }
+
+
         }
 
         private void DisplayAlignment()
