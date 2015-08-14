@@ -1,5 +1,6 @@
 #region
 
+using System;
 using System.Collections.Generic;
 using MultiAlignCore.Data.SequenceData;
 using MultiAlignCore.IO.Hibernate;
@@ -11,7 +12,12 @@ namespace MultiAlignCore.IO.SequenceData
 {
     public class SequenceToMsnDAOHibernate : GenericDAOHibernate<SequenceToMsnFeature>, ISequenceToMsnFeatureDAO
     {
-       public List<SequenceToMsnFeature> FindByDatasetId(int datasetId, int lcmsFeatureId)
+        public void DeleteByDatasetId(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<SequenceToMsnFeature> FindByDatasetId(int datasetId, int lcmsFeatureId)
        {
           ICriterion criterionDataset = Restrictions.Eq("DatasetId", datasetId);
           ICriterion criterionFeature = Restrictions.Eq("UmcFeatureId", lcmsFeatureId);

@@ -112,20 +112,36 @@ namespace MultiAlignCore.IO
             sequenceMaps.ForEach(x => x.Id = count++);
 
             if (msmsFeatures.Count > 0)
+            {
                 Providers.MSnFeatureCache.AddAll(msmsFeatures);
+            }
 
             if (matches.Count > 0)
+            {
                 Providers.MSFeatureToMSnFeatureCache.AddAll(matches);
+            }
 
             if (sequenceMaps.Count > 0)
+            {
                 Providers.SequenceMsnMapCache.AddAll(sequenceMaps);
+            }
 
             if (mappedPeptides.Count > 0)
+            {
                 Providers.DatabaseSequenceCache.AddAll(mappedPeptides);
+            }
 
             if (msFeatures.Count > 0)
-                Providers.MSFeatureCache.AddAll(msFeatures);
-            Providers.FeatureCache.AddAll(features);
+            {
+                Providers.MSFeatureCache.DeleteByDatasetId(msFeatures[0].GroupId);
+                Providers.MSFeatureCache.AddAllStateless(msFeatures);
+            }
+
+            if (features.Count > 0)
+            {
+                Providers.FeatureCache.DeleteByDataset(features[0].GroupId);
+                Providers.FeatureCache.AddAllStateless(features);
+            }
         }
 
         /// <summary>

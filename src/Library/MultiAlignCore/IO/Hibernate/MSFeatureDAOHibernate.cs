@@ -23,6 +23,11 @@ namespace MultiAlignCore.IO.Hibernate
             return FindByCriteria(criterionList);
         }
 
+        public void DeleteByDatasetId(int datasetId)
+        {
+            DeleteByCriteria("T_MSFeatures", "DATASET_ID", datasetId);
+        } 
+
         public List<MSFeatureLight> FindByFeatureId(int datasetId, int featureId)
         {
             ICriterion criterion = Restrictions.Eq("GroupId", datasetId);

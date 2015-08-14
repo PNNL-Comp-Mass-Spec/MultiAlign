@@ -71,6 +71,11 @@ namespace MultiAlignCore.IO.Hibernate
             return umcs[0];
         }
 
+        public void DeleteByDataset(int datasetId)
+        {
+            DeleteByCriteria("T_LCMS_Features", "DATASET_ID", datasetId);
+        }
+
         /// <summary>
         ///     Finds a feature based on a charge state.
         /// </summary>

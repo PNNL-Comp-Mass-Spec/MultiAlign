@@ -82,13 +82,9 @@ namespace MultiAlignCore.IO.Hibernate
             m_dbLocation = dbLocation;
             m_sessionFactory = null;
 
-            using (var conn = new SQLiteConnection("Data Source=" + dbLocation + ";Version=3;New=True", true))
+            using (var conn = new SQLiteConnection("Data Source=" + dbLocation + ";Version=3;New=True;PRAGMA journal_mode=OFF;PRAGMA synchronous=OFF;PRAGMA page_size=65536", true))
             {
                 conn.Open();
-                var schemaExport = new SchemaExport(Configuration);
-                //schemaExport.Execute(false, true, false, false, conn, null);
-                schemaExport.Execute(false, true, false, conn, null);
-
                 var optimizationCommands = new[]
                 {
                     "PRAGMA journal_mode = OFF",
@@ -103,6 +99,10 @@ namespace MultiAlignCore.IO.Hibernate
                         command.ExecuteNonQuery();
                     }
                 }
+
+                var schemaExport = new SchemaExport(Configuration);
+                //schemaExport.Execute(false, true, false, false, conn, null);
+                schemaExport.Execute(false, true, false, conn, null);
             }
         }
 

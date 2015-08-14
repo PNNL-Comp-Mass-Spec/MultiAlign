@@ -1,6 +1,7 @@
 #region
 
 using System.Collections.Generic;
+using PNNLOmics.Annotations;
 using PNNLOmics.Data.Features;
 
 #endregion
@@ -51,6 +52,8 @@ namespace MultiAlignCore.IO.Features
         /// <param name="mass">Dataset value to be searched for</param>
         /// <returns>List of Umc Objects</returns>
         List<UMCLight> FindByDatasetId(int datasetId);
+
+        void DeleteByDataset(int datasetId);
 
         /// <summary>
         ///     Finds the set of UMC's based on a specific charge state.

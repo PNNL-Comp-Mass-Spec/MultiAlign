@@ -1,5 +1,6 @@
 #region
 
+using System;
 using System.Collections.Generic;
 using MultiAlignCore.Data.SequenceData;
 using MultiAlignCore.IO.Hibernate;
@@ -12,6 +13,11 @@ namespace MultiAlignCore.IO.SequenceData
     public class DatabaseSearchSequenceDAOHiberate : GenericDAOHibernate<DatabaseSearchSequence>,
         IDatabaseSearchSequenceDAO
     {
+        public void DeleteByDatasetId(int id)
+        {
+            throw new NotImplementedException();
+        }
+
         List<DatabaseSearchSequence> IDatabaseSearchSequenceDAO.FindByDatasetId(int datasetId, int lcmsFeatureId)
         {
             ICriterion criterionDataset = Restrictions.Eq("GroupId", datasetId);

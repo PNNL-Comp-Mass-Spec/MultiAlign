@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using NHibernate;
 using NHibernate.Criterion;
+using NHibernate.Mapping.ByCode.Impl;
 
 #endregion
 
@@ -92,6 +93,7 @@ namespace MultiAlignCore.IO.Hibernate
 
         /// <summary>
         ///     Adds a Collection of Objects to the Database.
+        ///     Not good for very large bulk inserts.
         /// </summary>
         /// <param name="tCollection">Collection of Objects to be added</param>
         public virtual void AddAll(ICollection<T> tCollection)
@@ -106,6 +108,32 @@ namespace MultiAlignCore.IO.Hibernate
                         //    session.Insert(t); 
                         
                     }
+                    transaction.Commit();
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Adds a Collection of Objects to the Database.
+        /// </summary>
+        /// <param name="tCollection">Collection of Objects to be added</param>
+        public virtual void AddAllStateless(ICollection<T> tCollection)
+        {
+            using (var session = GetStatelessSession())
+            {
+                using (var transaction = session.BeginTransaction())
+                {
+                    var query1 = session.CreateSQLQuery("PRAGMA defer_foreign_keys = ON");
+                    var query2 = session.CreateSQLQuery("PRAGMA ignore_check_constraints = ON");
+                    query2.ExecuteUpdate();
+                    query1.ExecuteUpdate();
+                    foreach (var t in tCollection)
+                    {
+                        session.Insert(t); //If we don't want to keep the unaligned features
+                        //    session.Insert(t); 
+                    }
+                    var query3 = session.CreateSQLQuery("PRAGMA ignore_check_constraints = OFF");
+                    query3.ExecuteUpdate();
                     transaction.Commit();
                 }
             }
@@ -213,7 +241,7 @@ namespace MultiAlignCore.IO.Hibernate
         /// <param name="criterionList">A list of Hibernate ICriterion - refer to Hibernate docs</param>
         /// <returns>A List of T Objects</returns>
         protected List<T> FindByCriteria(List<ICriterion> criterionList)
-        {
+        {   
             List<T> list = null;
             using (var session = GetSession())
             {
@@ -228,6 +256,19 @@ namespace MultiAlignCore.IO.Hibernate
                 list = (List<T>) crit.List<T>();
             }
             return list;
+        }
+
+        protected void DeleteByCriteria(string tableName, string keyName, int value)
+        {
+            using (var session = GetStatelessSession())
+            {
+                using (var transaction = session.BeginTransaction())
+                {
+                    var query = session.CreateSQLQuery(string.Format("DELETE FROM {0} WHERE {1} = {2}", tableName, keyName, value));
+                    query.ExecuteUpdate();
+                    transaction.Commit();
+                }
+            }
         }
 
         #endregion
