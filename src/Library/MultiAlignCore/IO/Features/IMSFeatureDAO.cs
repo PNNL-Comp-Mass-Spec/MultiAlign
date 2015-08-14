@@ -17,6 +17,12 @@ namespace MultiAlignCore.IO.Features
         List<MSFeatureLight> FindByDatasetId(int datasetId);
 
         /// <summary>
+        /// Delete all entries corresponding to a specific dataset.
+        /// </summary>
+        /// <param name="datasetId"></param>
+        void DeleteByDatasetId(int datasetId);
+
+        /// <summary>
         ///     Finds a feature based on its dataset id and feature id.
         /// </summary>
         /// <param name="datasetId"></param>

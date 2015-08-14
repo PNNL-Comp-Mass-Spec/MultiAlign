@@ -10,6 +10,7 @@ namespace MultiAlignCore.IO
     {
         void Add(T t);
         void AddAll(ICollection<T> tList);
+        void AddAllStateless(ICollection<T> tList);
         void Update(T t);
         void UpdateAll(ICollection<T> tList);
         void Delete(T t);
