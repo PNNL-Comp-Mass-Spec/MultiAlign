@@ -123,12 +123,17 @@ namespace MultiAlignCore.IO.Hibernate
             {
                 using (var transaction = session.BeginTransaction())
                 {
+                    var query1 = session.CreateSQLQuery("PRAGMA defer_foreign_keys = ON");
+                    var query2 = session.CreateSQLQuery("PRAGMA ignore_check_constraints = ON");
+                    query2.ExecuteUpdate();
+                    query1.ExecuteUpdate();
                     foreach (var t in tCollection)
                     {
                         session.Insert(t); //If we don't want to keep the unaligned features
                         //    session.Insert(t); 
-
                     }
+                    var query3 = session.CreateSQLQuery("PRAGMA ignore_check_constraints = OFF");
+                    query3.ExecuteUpdate();
                     transaction.Commit();
                 }
             }
