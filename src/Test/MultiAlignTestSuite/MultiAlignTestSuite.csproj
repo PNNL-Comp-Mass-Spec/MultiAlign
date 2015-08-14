@@ -67,7 +67,7 @@
   <ItemGroup>
     <Reference Include="Mage, Version=1.3.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\lib\$(Platform)\Mage.dll</HintPath>
+      <HintPath>..\..\..\lib\Mage\Mage.dll</HintPath>
     </Reference>
     <Reference Include="MTDBFramework, Version=1.0.5655.19433, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>

@@ -1,31 +1,21 @@
-﻿using System.Diagnostics;
-using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
-using MultiAlignCore.Extensions;
-using NHibernate.Util;
+using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Messaging;
+using MultiAlign.Data;
+using MultiAlignCore.Data;
+using MultiAlignCore.Data.MetaData;
+using MultiAlignCore.IO;
+using MultiAlignCore.IO.Features;
+using PNNLOmics.Data.Features;
 
-namespace MultiAlignRogue.Feature_Finding
+namespace MultiAlignRogue
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.Linq;
-    using System.Threading.Tasks;
-
-    using GalaSoft.MvvmLight;
-    using GalaSoft.MvvmLight.Command;
-    using GalaSoft.MvvmLight.Messaging;
-
-    using MultiAlign.Data;
-    using MultiAlign.ViewModels.Datasets;
-
-    using MultiAlignCore.Data;
-    using MultiAlignCore.Data.MetaData;
-    using MultiAlignCore.IO;
-    using MultiAlignCore.IO.Features;
-
-    using PNNLOmics.Data.Features;
-
     public class FeatureFindingSettingsViewModel : ViewModelBase
     {
         private readonly MultiAlignAnalysis analysis;
@@ -38,7 +28,7 @@ namespace MultiAlignRogue.Feature_Finding
 
         private Dictionary<DatasetInformation, IList<UMCLight>> features;
 
-        private IReadOnlyCollection<DatasetInformationViewModel> selectedDatasets;
+        private IReadOnlyCollection<DatasetInformation> selectedDatasets;
 
         public FeatureFindingSettingsViewModel(
                                                MultiAlignAnalysis analysis,
@@ -50,37 +40,29 @@ namespace MultiAlignRogue.Feature_Finding
             this.featureCache = featureCache;
             this.msFeatureWindowFactory = msFeatureWindowFactory ?? new MSFeatureViewFactory();
             this.progress = progressReporter ?? new Progress<int>();
-            this.selectedDatasets = new ReadOnlyCollection<DatasetInformationViewModel>(new List<DatasetInformationViewModel>());
+            this.selectedDatasets = new ReadOnlyCollection<DatasetInformation>(new List<DatasetInformation>());
             this.msFeatureWindowFactory = new MSFeatureViewFactory();
-            this.features = new Dictionary<DatasetInformation, IList<UMCLight>>();
 
-            this.MessengerInstance.Register<PropertyChangedMessage<IReadOnlyCollection<DatasetInformationViewModel>>>(this, sds =>
+            MessengerInstance.Register<PropertyChangedMessage<IReadOnlyCollection<DatasetInformation>>>(this, sds =>
             {
                 this.selectedDatasets = sds.NewValue;
                 this.FindMSFeaturesCommand.RaiseCanExecuteChanged();
                 this.PlotMSFeaturesCommand.RaiseCanExecuteChanged();
-                this.PlotAlignedFeaturesCommand.RaiseCanExecuteChanged();
             });
 
-            this.FindMSFeaturesCommand = new RelayCommand(
-                                        async () => await this.LoadMSFeaturesAsync(),
+            FindMSFeaturesCommand = new RelayCommand(
+                                        async () => await LoadMSFeaturesAsync(),
                                         () => this.selectedDatasets != null && 
                                               this.selectedDatasets.Count > 0 && 
-                                              this.selectedDatasets.Any(file => !file.IsFindingFeatures));
-            this.PlotMSFeaturesCommand = new RelayCommand(
-                                        async () => await this.PlotMSFeatures(false), 
-                                        () => this.selectedDatasets.Any(file => file.DatasetState > DatasetInformationViewModel.DatasetStates.FindingFeatures));
-
-            this.PlotAlignedFeaturesCommand = new RelayCommand(
-                                        async () => await this.PlotMSFeatures(true),
-                                        () => this.selectedDatasets.Any(file => file.IsAligned));
+                                              this.selectedDatasets.Any(file => !file.DoingWork));
+            PlotMSFeaturesCommand = new RelayCommand(
+                                        async () => await PlotMSFeatures(), 
+                                        () => this.selectedDatasets.Any(file => file.FeaturesFound));
         }
 
         public RelayCommand FindMSFeaturesCommand { get; private set; }
 
         public RelayCommand PlotMSFeaturesCommand { get; private set; }
-
-        public RelayCommand PlotAlignedFeaturesCommand { get; private set; }
 
         public double MassResolution
         {
@@ -227,97 +209,48 @@ namespace MultiAlignRogue.Feature_Finding
 
         public async Task LoadMSFeaturesAsync()
         {
-            await Task.Run(() => this.LoadFeatures());
+            await Task.Run(() => LoadFeatures());
         }
 
         private void LoadFeatures()
         {
             this.featureCache.Providers = this.analysis.DataProviders;
-            var selectedFiles = this.selectedDatasets.Where(file => !file.DoingWork).ToList();
-            foreach (var file in selectedFiles)
+            var selectedFiles = selectedDatasets;
+            foreach (var file in selectedFiles.Where(file => !file.DoingWork)) // Do not try to run on files already loading features.
             {
-                file.DatasetState = DatasetInformationViewModel.DatasetStates.FindingFeatures;
-                ThreadSafeDispatcher.Invoke(() => this.PlotMSFeaturesCommand.RaiseCanExecuteChanged());
-                ThreadSafeDispatcher.Invoke(() => this.FindMSFeaturesCommand.RaiseCanExecuteChanged());
-            }
+                file.DoingWork = true;
+                ThreadSafeDispatcher.Invoke(() => PlotMSFeaturesCommand.RaiseCanExecuteChanged());
+                ThreadSafeDispatcher.Invoke(() => FindMSFeaturesCommand.RaiseCanExecuteChanged());
+                var features = this.featureCache.LoadDataset(file, this.analysis.Options.MsFilteringOptions, this.analysis.Options.LcmsFindingOptions, this.analysis.Options.LcmsFilteringOptions);
+                this.featureCache.CacheFeatures(features);
 
-            foreach (var file in selectedFiles)
-            {
-                var features = this.featureCache.LoadDataset(file.Dataset, this.analysis.Options.MsFilteringOptions, this.analysis.Options.LcmsFindingOptions, this.analysis.Options.LcmsFilteringOptions);
-                if (!this.features.ContainsKey(file.Dataset))
-                {
-                    this.features.Add(file.Dataset, new List<UMCLight>());
-                }
+                file.FeaturesFound = true;
+                progress.Report(0);
 
-                this.features[file.Dataset] = features;
-
-                file.DatasetState = DatasetInformationViewModel.DatasetStates.PersistingFeatures;
-                ThreadSafeDispatcher.Invoke(() => this.PlotMSFeaturesCommand.RaiseCanExecuteChanged());
-
-                using (var logger = new StreamWriter("nhibernate_stats.txt", true))
-                {
-                    logger.WriteLine();
-                    var stopWatch = new Stopwatch();
-                    stopWatch.Start();
-
-                    this.featureCache.CacheFeatures(features);
-                    stopWatch.Stop();
-                    logger.WriteLine("Writing: {0}s", stopWatch.Elapsed.TotalSeconds);
-                }
-
-                file.DatasetState = DatasetInformationViewModel.DatasetStates.FeaturesFound;
-                ThreadSafeDispatcher.Invoke(() => this.FindMSFeaturesCommand.RaiseCanExecuteChanged());
-                this.progress.Report(0);
+                file.DoingWork = false;
+                ThreadSafeDispatcher.Invoke(() => PlotMSFeaturesCommand.RaiseCanExecuteChanged());
+                ThreadSafeDispatcher.Invoke(() => FindMSFeaturesCommand.RaiseCanExecuteChanged());
             }
         }
 
-        public async Task PlotMSFeatures(bool showAlignedFeatures)
+        public async Task PlotMSFeatures()
         {
-            try
-            {
-                if (showAlignedFeatures)
+            //try
+            //{
+                features = new Dictionary<DatasetInformation, IList<UMCLight>>();
+                foreach (var file in selectedDatasets.Where(file => file.FeaturesFound)) // Select only datasets with features.
                 {
-                    this.msFeatureWindowFactory.CreateNewWindow(
-                        await this.GetFeatures(this.selectedDatasets.Where(file => file.IsAligned)),
-                        true);
-                }
-                else
-                {
-                    this.msFeatureWindowFactory.CreateNewWindow(
-                        await this.GetFeatures(this.selectedDatasets.Where(file => file.DatasetState > DatasetInformationViewModel.DatasetStates.FindingFeatures)),
-                        false);
-                }
-            }
-            catch
-            {
-                MessageBox.Show("Feature cache currently being accessed. Try again in a few moments");
-            }
-        }
+                    var feat = await Task.Run(() => UmcLoaderFactory.LoadUmcFeatureData(file.Features.Path, file.DatasetId,
+                            featureCache.Providers.FeatureCache));
 
-        private async Task<Dictionary<DatasetInformation, IList<UMCLight>>>  GetFeatures(IEnumerable<DatasetInformationViewModel> datasets)
-        {
-            var datasetFeatures = new Dictionary<DatasetInformation, IList<UMCLight>>();
-            foreach (var file in datasets)
-            {   // Select only datasets with features.
-                IList<UMCLight> feat;
-                if (this.features.ContainsKey(file.Dataset))
-                {
-                    feat = this.features[file.Dataset];
+                    features.Add(file, feat);
                 }
-                else
-                {
-                    DatasetInformationViewModel file1 = file;
-                    feat = await Task.Run(() => UmcLoaderFactory.LoadUmcFeatureData(
-                            file1.Dataset.Features.Path,
-                            file1.DatasetId,
-                            this.featureCache.Providers.FeatureCache));
-                    this.features.Add(file.Dataset, feat);
-                }
-
-                datasetFeatures.Add(file.Dataset, feat);
-            }
-
-            return datasetFeatures;
+                msFeatureWindowFactory.CreateNewWindow(features);
+            //}
+            //catch
+            //{
+            //    MessageBox.Show("Feature cache currently being accessed. Try again in a few moments");
+            //}
         }
     }
 }
