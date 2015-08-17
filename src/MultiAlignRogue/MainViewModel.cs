@@ -365,10 +365,13 @@ namespace MultiAlignRogue
             }
             else
             {
-                var filePaths = dmsLookupViewModel.SelectedDataset.GetAvailableFiles();
-                if (filePaths.Count > 0)
+                foreach (var dataset in dmsLookupViewModel.Datasets)
                 {
-                    this.AddDatasets(this.GetInputFilesFromPath(filePaths));
+                    var filePaths = dataset.GetAvailableFiles();
+                    if (filePaths.Count > 0)
+                    {
+                        this.AddDatasets(this.GetInputFilesFromPath(filePaths));
+                    }
                 }
             }
         }
