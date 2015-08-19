@@ -34,6 +34,7 @@
                                         <DataGridTextColumn Header="Mass" Width="35*" Binding="{Binding MassMonoisotopic, Converter={StaticResource DoubleToString}}" />
                                         <DataGridTextColumn Header="NET" Width="35*" Binding="{Binding Net, Converter={StaticResource DoubleToString}}" />
                                         <DataGridTextColumn Header="#" Width="20*" Binding="{Binding MemberCount}" />
+                                        <DataGridTextColumn Header="Abundance" Width="35*"/>
                                     </DataGrid.Columns>
                                 </DataGrid>
                             </xcad:LayoutAnchorable>
@@ -48,6 +49,7 @@
                                         <DataGridTextColumn Header="ID" Width="10*" Binding="{Binding UMCLight.Id}" />
                                         <DataGridTextColumn Header="Mass" Width="20*" Binding="{Binding UMCLight.MassMonoisotopicAligned, Converter={StaticResource DoubleToString}}" />
                                         <DataGridTextColumn Header="NET" Width="20*" Binding="{Binding UMCLight.NetAligned, Converter={StaticResource DoubleToString}}" />
+                                        <DataGridTextColumn Header="Abundance" Width="35*" Binding="{Binding UMCLight.Abundance}"/>
                                         <DataGridTextColumn Header="Dataset" Binding="{Binding DatasetInformation.DatasetName}" Width="40*" />
                                     </DataGrid.Columns>
                                 </DataGrid>

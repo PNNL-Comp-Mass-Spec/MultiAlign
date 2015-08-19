@@ -50,8 +50,7 @@ namespace MultiAlignRogue
             this.AddDatasetCommand = new RelayCommand(this.AddDatasetImpl);
             this.CreateCommand = new RelayCommand(
                                                   this.CreateImpl,
-                                                  () => this.Datasets.Count > 0 &&
-                                                        !string.IsNullOrWhiteSpace(this.OutputDirectory) &&
+                                                  () => !string.IsNullOrWhiteSpace(this.OutputDirectory) &&
                                                         !string.IsNullOrWhiteSpace(this.ProjectFilePath));
         }
 

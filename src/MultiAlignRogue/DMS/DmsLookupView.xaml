@@ -60,7 +60,12 @@
                           CanUserAddRows="False"
                           IsReadOnly="False" RowHeaderWidth="0"
                           Grid.Row="0" Grid.Column="0"
-                          ItemsSource="{Binding Datasets}" SelectedItem="{Binding SelectedDataset}">
+                          ItemsSource="{Binding Datasets}">
+                        <DataGrid.Resources>
+                            <Style TargetType="DataGridRow">
+                                <Setter Property="IsSelected" Value="{Binding Selected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            </Style>
+                        </DataGrid.Resources>
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Dataset ID" Width="80" Binding="{Binding DatasetId}" />
                             <DataGridTextColumn Header="Name" Width="3*" Binding="{Binding Dataset}" />

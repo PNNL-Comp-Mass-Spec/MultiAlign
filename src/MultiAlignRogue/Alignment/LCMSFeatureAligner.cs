@@ -1,4 +1,6 @@
-﻿namespace MultiAlignRogue.Alignment
+﻿using PNNLOmics.Data.MassTags;
+
+namespace MultiAlignRogue.Alignment
 {
     using System;
     using System.Collections.Generic;
@@ -16,26 +18,36 @@
 
         public classAlignmentData AlignToDataset(
             ref IList<UMCLight> features,
-            IEnumerable<UMCLight> baselineFeatures,
             DatasetInformation datasetInfo,
-            DatasetInformation baselineInfo)
-        {
-            classAlignmentData alignmentData;
-            if (baselineInfo == null)
-            {
-                throw new NullReferenceException("No reference was set for LC-MS alignment.");
-            }
-            // Align pairwise and cache results intermediately.
+            IEnumerable<UMCLight> baselineFeatures)
+        {            
+            // Align pairwise and cache results intermediately.           
             var aligner = this.m_algorithms.DatasetAligner;
-            alignmentData = aligner.Align(baselineFeatures, features);
+            classAlignmentData alignmentData = aligner.Align(baselineFeatures, features);
             
             if (alignmentData != null)
             {
                 alignmentData.aligneeDataset = datasetInfo.DatasetName;
                 alignmentData.DatasetID = datasetInfo.DatasetId;
             }
-            
-            //var args = new FeaturesAlignedEventArgs(datasetInfo, baselineFeatures, features, alignmentData);
+           
+            return alignmentData;
+        }
+
+        public classAlignmentData AlignToDatabase(
+            ref IList<UMCLight> features,
+            DatasetInformation datasetInfo,
+            MassTagDatabase mtdb)
+        {
+            var aligner = this.m_algorithms.DatabaseAligner;
+            classAlignmentData alignmentData = aligner.Align(mtdb, features);            
+
+            if (alignmentData != null)
+            {
+                alignmentData.aligneeDataset = datasetInfo.DatasetName;
+                alignmentData.DatasetID = datasetInfo.DatasetId;
+            }
+
             return alignmentData;
         }
 
