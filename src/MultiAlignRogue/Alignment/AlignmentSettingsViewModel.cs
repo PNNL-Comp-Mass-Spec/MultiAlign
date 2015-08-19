@@ -82,8 +82,8 @@ namespace MultiAlignRogue.Alignment
             this.AlignCommand = new RelayCommand(this.AsyncAlign, () => this.selectedDatasets != null &&
                                                                                   this.selectedDatasets.Count > 0 &&
                                                                                   this.selectedDatasets.Any(file => !file.DoingWork));
-            this.DisplayAlignmentCommand = new RelayCommand(this.DisplayAlignment, () => this.selectedDatasets.Any(file => file.IsAligned && !file.Dataset.IsBaseline));
-            this.SelectAMTCommand = new RelayCommand(this.SelectAMT, () => this.ShouldAlignToAMT);
+            this.DisplayAlignmentCommand = new RelayCommand(this.DisplayAlignment, () => this.selectedDatasets.Any(file => file.IsAligned)); //file => file.IsAligned && !file.Dataset.IsBaseline
+            this.SelectAMTCommand = new RelayCommand(this.AsyncSelectAMT, () => this.ShouldAlignToAMT);
             this.ShouldAlignToBaseline = true;
             this.ShouldAlignToAMT = false;
         }
@@ -203,7 +203,6 @@ namespace MultiAlignRogue.Alignment
             else if (ShouldAlignToAMT == true)
             {
                 await Task.Run(() => this.AlignToBaseline());
-                //ThreadSafeDispatcher.Invoke(this.AlignToAMT);
             }
         }
 
@@ -218,11 +217,16 @@ namespace MultiAlignRogue.Alignment
             if (ShouldAlignToBaseline)
             {
                 baselineFeatures = this.featureCache.Providers.FeatureCache.FindByDatasetId(this.selectedBaseline.DatasetId);
+                this.SelectedBaseline.DatasetState = DatasetInformationViewModel.DatasetStates.Aligning;
+                var priorAlignment = from x in this.alignmentInformation where x.DatasetID == this.selectedBaseline.DatasetId select x;
+                if (priorAlignment.Any())
+                {
+                    this.alignmentInformation.Remove(priorAlignment.Single());
+                }
             }
             var alignmentData = new AlignmentDAOHibernate();
             alignmentData.ClearAll();
-
-            this.SelectedBaseline.DatasetState = DatasetInformationViewModel.DatasetStates.Aligning;
+         
             var selectedFiles = this.selectedDatasets.Where(file => !file.DoingWork).ToList();
             foreach (var file in selectedFiles)
             {
@@ -266,12 +270,18 @@ namespace MultiAlignRogue.Alignment
                 ThreadSafeDispatcher.Invoke(() => this.AlignCommand.RaiseCanExecuteChanged());
                 ThreadSafeDispatcher.Invoke(() => this.DisplayAlignmentCommand.RaiseCanExecuteChanged());
             }
-
-            this.SelectedBaseline.DatasetState = DatasetInformationViewModel.DatasetStates.Aligned;
+            if (ShouldAlignToBaseline) { this.SelectedBaseline.DatasetState = DatasetInformationViewModel.DatasetStates.Aligned; }
+            
 
         }
 
         public DmsDatabaseServerViewModel SelectedDatabaseServer { get; set; }
+
+        private void AsyncSelectAMT()
+        {
+            ThreadSafeDispatcher.Invoke(() => SelectAMT());
+            ThreadSafeDispatcher.Invoke(() => AsyncAddMassTags());
+        }
 
         private void SelectAMT()
         {
@@ -287,39 +297,51 @@ namespace MultiAlignRogue.Alignment
                 databaseView.AddDatabase(database);
             }
 
-            if (SelectedDatabaseServer != null)
-                databaseView.SelectedDatabase = SelectedDatabaseServer;
+            if (this.SelectedDatabaseServer != null)
+                databaseView.SelectedDatabase = this.SelectedDatabaseServer;
 
             var result = dmsWindow.ShowDialog();
             if (result == true)
             {
                 if (databaseView.SelectedDatabase != null)
                 {
-                    SelectedDatabaseServer = databaseView.SelectedDatabase;
-                    var database = SelectedDatabaseServer.Database;
-                    database.DatabaseName = database.DatabaseName;
-                    database.DatabaseServer = database.DatabaseServer;
-                    analysis.MetaData.Database = database;
-                    analysis.MetaData.Database.DatabaseFormat = MassTagDatabaseFormat.MassTagSystemSql;
-                    analysis.MassTagDatabase = MtdbLoaderFactory.LoadMassTagDatabase(this.analysis.MetaData.Database,
-                                                this.analysis.Options.MassTagDatabaseOptions);
-                    analysis.DataProviders.MassTags.AddAll(analysis.MassTagDatabase.MassTags);
+                    this.SelectedDatabaseServer = databaseView.SelectedDatabase;
                 }
             }
-            this.RaisePropertyChanged("SelectedDatabaseServer");
+
         }
 
-        private void AlignToAMT()
+        private async void AsyncAddMassTags()
         {
-            MessageBox.Show("Working Command");
+            await Task.Run(() => AddMassTags());
+        }
+
+        private void AddMassTags()
+        {
+            var database = this.SelectedDatabaseServer.Database;
+            database.DatabaseName = database.DatabaseName;
+            database.DatabaseServer = database.DatabaseServer;
+            analysis.MetaData.Database = database;
+            analysis.MetaData.Database.DatabaseFormat = MassTagDatabaseFormat.MassTagSystemSql;
+            analysis.MassTagDatabase = MtdbLoaderFactory.LoadMassTagDatabase(this.analysis.MetaData.Database,
+                                        this.analysis.Options.MassTagDatabaseOptions);
+            analysis.DataProviders.MassTags.AddAll(analysis.MassTagDatabase.MassTags);
+            this.RaisePropertyChanged("SelectedDatabaseServer");
         }
 
         private void DisplayAlignment()
         {
-            foreach (var file in (this.selectedDatasets.Where(x => x.IsAligned && !x.Dataset.IsBaseline)))
+            foreach (var file in (this.selectedDatasets.Where(x => x.IsAligned))) //x => x.IsAligned && !x.Dataset.IsBaseline
             {
                 var alignment = this.alignmentInformation.Find(x => x.DatasetID == file.DatasetId);
-                this.alignmentWindowFactory.CreateNewWindow(alignment);
+                if (alignment != null)
+                {
+                    this.alignmentWindowFactory.CreateNewWindow(alignment);
+                }
+                else
+                {
+                    MessageBox.Show(String.Format("No alignment to show for {0}", file.Dataset.DatasetName));
+                }
             }
         }
     }
