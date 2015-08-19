@@ -5,7 +5,6 @@ using MultiAlign.Data;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.Alignment;
 using MultiAlignCore.Drawing;
-using MultiAlignEngine.Alignment;
 
 namespace MultiAlign.Windows.Plots
 {

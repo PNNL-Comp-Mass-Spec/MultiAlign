@@ -48,6 +48,11 @@ namespace MultiAlignCore.IO.Features
             throw new NotImplementedException();
         }
 
+        public void DeleteByDataset(int datasetId)
+        {
+            throw new NotImplementedException();
+        }
+
         public List<UMCLight> FindByCharge(int charge)
         {
             var features = new List<UMCLight>();
@@ -125,6 +130,11 @@ namespace MultiAlignCore.IO.Features
         }
 
         public void AddAll(ICollection<UMCLight> tList)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void AddAllStateless(ICollection<UMCLight> tList)
         {
             throw new NotImplementedException();
         }

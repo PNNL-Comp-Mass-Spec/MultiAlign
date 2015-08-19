@@ -10,6 +10,7 @@ namespace MultiAlignCore.IO.SequenceData
 {
     public interface IDatabaseSearchSequenceDAO : IGenericDAO<DatabaseSearchSequence>
     {
+        void DeleteByDatasetId(int id);
         List<DatabaseSearchSequence> FindByDatasetId(int datasetId, int featureId);
         List<DatabaseSearchSequence> FindByDatasetId(int datasetId);
     }

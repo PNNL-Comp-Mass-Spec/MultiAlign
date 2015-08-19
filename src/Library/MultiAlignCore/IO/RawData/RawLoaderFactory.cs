@@ -23,7 +23,10 @@ namespace MultiAlignCore.IO.RawData
             if (name == null)
                 return null;
 
-            InformedProteomicsReader reader = null;
+            // Just use InformedProteomics...
+            return new InformedProteomicsReader();
+
+            ISpectraProvider reader = null;
             var extension = Path.GetExtension(name);
 
             // Otherwise create a new one.

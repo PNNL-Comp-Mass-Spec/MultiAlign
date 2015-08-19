@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Messaging;
+using Microsoft.Win32.SafeHandles;
 using MultiAlign.ViewModels.Charting;
 using MultiAlignCore.Extensions;
 using MultiAlignCore.IO.Features;
@@ -86,6 +87,10 @@ namespace MultiAlignRogue.Clustering
             this.XicPlotViewModel = new XicPlotViewModel();
             this.ClusterFeaturePlotViewModel = new ClusterFeaturePlotViewModel();
             this.Clusters = new ObservableCollection<UMCClusterLight>(clusters ?? new List<UMCClusterLight>());
+
+            //TODO: Clusters are showing up as having no features so the abundance for each cluster is always 0. Find where actual abudance values are stored.
+            this.ClusterAbundance = this.Clusters.Where(cluster => cluster.MemberCount > 0).ToDictionary(cluster => cluster, cluster => (from feature in cluster.Features select feature.Abundance).Sum() / cluster.MemberCount);
+            
             this.Features = new ObservableCollection<UMCLightViewModel>();
             this.MsMsSpectra = new ObservableCollection<MSSpectra>();
             this.LayoutFilePath = layoutFilePath;
@@ -152,6 +157,11 @@ namespace MultiAlignRogue.Clustering
         /// Gets the list of clusters.
         /// </summary>
         public ObservableCollection<UMCClusterLight> Clusters { get; private set; }
+
+        /// <summary>
+        /// Gets the average abundance for features in a cluster.
+        /// </summary>
+        public Dictionary<UMCClusterLight, double> ClusterAbundance { get; private set; }
 
         /// <summary>
         /// Gets the list of features for the selected cluster.

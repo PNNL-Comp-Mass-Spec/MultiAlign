@@ -23,6 +23,11 @@ namespace MultiAlignRogue.DMS
     public class DmsDatasetViewModel : ViewModelBase
     {
         /// <summary>
+        /// The list of available files.
+        /// </summary>
+        private readonly List<string> availableFiles; 
+
+        /// <summary>
         /// The id of the DMS data set.
         /// </summary>
         private int datasetId;
@@ -60,9 +65,7 @@ namespace MultiAlignRogue.DMS
         /// <summary>
         /// Initializes a new instance of the <see cref="DmsDatasetViewModel"/> class. 
         /// </summary>
-        /// <param name="datasetInfo">
-        /// Existing data set to edit.
-        /// </param>
+        /// <param name="datasetInfo">Existing data set to edit.</param>
         public DmsDatasetViewModel(DmsLookupUtility.UdtDatasetInfo? datasetInfo = null)
         {
             if (datasetInfo != null)
@@ -75,6 +78,8 @@ namespace MultiAlignRogue.DMS
                 this.Created = datasetInfo.Value.Created;
                 this.DatasetFolderPath = datasetInfo.Value.DatasetFolderPath;
             }
+
+            this.availableFiles = new List<string>();
         }
 
         /// <summary>
@@ -93,6 +98,27 @@ namespace MultiAlignRogue.DMS
                 udtDatasetInfo.Created = this.Created;
                 udtDatasetInfo.DatasetFolderPath = this.DatasetFolderPath;
                 return udtDatasetInfo;
+            }
+        }
+
+        /// <summary>
+        /// A value that indicates whether this dataset has been selected.
+        /// </summary>
+        private bool selected;
+
+        /// <summary>
+        /// Gets or sets a value that indicates whether this dataset has been selected.
+        /// </summary>
+        public bool Selected
+        {
+            get { return this.selected; }
+            set
+            {
+                if (this.selected != value)
+                {
+                    this.selected = value;
+                    this.RaisePropertyChanged("Selected", !value, value, true);
+                }
             }
         }
 
@@ -210,28 +236,30 @@ namespace MultiAlignRogue.DMS
 
         public List<string> GetAvailableFiles()
         {
-            var fileList = new List<string>();
-            if (!Directory.Exists(this.DatasetFolderPath))
+            if (this.availableFiles.Count == 0)
             {
-                return fileList;
+                if (!Directory.Exists(this.DatasetFolderPath))
+                {
+                    return this.availableFiles;
+                }
+
+                var directories = Directory.GetDirectories(this.DatasetFolderPath, "DLS*");
+                if (directories.Length == 0)
+                {
+                    return this.availableFiles;
+                }
+
+                var folderPath = directories[0];
+                var scanFiles = Directory.GetFiles(folderPath, "*_scans.csv");
+                var isosFiles = Directory.GetFiles(folderPath, "*_isos.csv");
+                var rawFiles = Directory.GetFiles(this.DatasetFolderPath, "*.raw");
+
+                this.availableFiles.AddRange(scanFiles);
+                this.availableFiles.AddRange(isosFiles);
+                this.availableFiles.AddRange(rawFiles);
             }
 
-            var directories = Directory.GetDirectories(this.DatasetFolderPath, "DLS*");
-            if (directories.Length == 0)
-            {
-                return fileList;
-            }
-
-            var folderPath = directories[0];
-            var scanFiles = Directory.GetFiles(folderPath, "*_scans.csv");
-            var isosFiles = Directory.GetFiles(folderPath, "*_isos.csv");
-            var rawFiles = Directory.GetFiles(this.DatasetFolderPath, "*.raw");
-
-            fileList.AddRange(scanFiles);
-            fileList.AddRange(isosFiles);
-            fileList.AddRange(rawFiles);
-
-            return fileList;
+            return this.availableFiles;
         }
     }
 }

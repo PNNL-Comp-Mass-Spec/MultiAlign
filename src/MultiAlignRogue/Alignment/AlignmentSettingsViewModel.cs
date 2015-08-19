@@ -1,6 +1,12 @@
-﻿using MultiAlignCore.Data.MetaData;
+﻿using System.Windows.Navigation;
+using MultiAlign.ViewModels.Databases;
+using MultiAlign.Windows.Viewers.Databases;
+using MultiAlignCore.Data.MassTags;
+using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO.Features;
+using MultiAlignCore.IO.MTDB;
 using PNNLOmics.Data.Features;
+using PNNLOmics.Data.MassTags;
 
 namespace MultiAlignRogue.Alignment
 {
@@ -68,24 +74,57 @@ namespace MultiAlignRogue.Alignment
             this.MessengerInstance.Register<PropertyChangedMessage<IReadOnlyCollection<DatasetInformationViewModel>>>(this, sds =>
             {
                 this.selectedDatasets = sds.NewValue;
-                ThreadSafeDispatcher.Invoke(() => this.AlignToBaselineCommand.RaiseCanExecuteChanged());
+                ThreadSafeDispatcher.Invoke(() => this.AlignCommand.RaiseCanExecuteChanged());
                 ThreadSafeDispatcher.Invoke(() => this.DisplayAlignmentCommand.RaiseCanExecuteChanged());
             });
+            
 
-            this.AlignToBaselineCommand = new RelayCommand(this.AsyncAlignToBaseline, () => this.SelectedBaseline != null && 
-                                                                                  this.selectedDatasets != null &&
+            this.AlignCommand = new RelayCommand(this.AsyncAlign, () => this.selectedDatasets != null &&
                                                                                   this.selectedDatasets.Count > 0 &&
                                                                                   this.selectedDatasets.Any(file => !file.DoingWork));
-            this.DisplayAlignmentCommand = new RelayCommand(this.DisplayAlignment, () => this.selectedDatasets.Any(file => file.IsAligned && !file.Dataset.IsBaseline));
+            this.DisplayAlignmentCommand = new RelayCommand(this.DisplayAlignment, () => this.selectedDatasets.Any(file => file.IsAligned)); //file => file.IsAligned && !file.Dataset.IsBaseline
+            this.SelectAMTCommand = new RelayCommand(this.AsyncSelectAMT, () => this.ShouldAlignToAMT);
+            this.ShouldAlignToBaseline = true;
+            this.ShouldAlignToAMT = false;
         }
 
-        public RelayCommand AlignToBaselineCommand { get; private set; }
+        public RelayCommand AlignCommand { get; private set; }
 
         public RelayCommand DisplayAlignmentCommand { get; private set; }
+
+        public RelayCommand SelectAMTCommand { get; private set; }
 
         public ObservableCollection<FeatureAlignmentType> AlignmentAlgorithms { get; private set; }
 
         public ObservableCollection<AlignmentType> CalibrationOptions { get; private set; }
+
+        public bool ShouldAlignToBaseline
+        {
+            get
+            {
+                return _ShouldAlignToBaseline;
+            }
+            set
+            {
+                _ShouldAlignToBaseline = value; 
+                this.RaisePropertyChanged();
+            }
+        }
+
+        private bool _ShouldAlignToBaseline { get; set; }
+
+        public bool ShouldAlignToAMT
+        {
+            get { return _ShouldAlignToAMT; }
+            set
+            {
+                _ShouldAlignToAMT = value; 
+                SelectAMTCommand.RaiseCanExecuteChanged();
+                this.RaisePropertyChanged();
+            }
+        }
+
+        private bool _ShouldAlignToAMT { get; set; }
 
         public DatasetInformationViewModel SelectedBaseline
         {
@@ -155,79 +194,154 @@ namespace MultiAlignRogue.Alignment
             }
         }
 
-        public async void AsyncAlignToBaseline()
+        public async void AsyncAlign()
         {
-            await Task.Run(() => this.AlignToBaseline());
+            if (ShouldAlignToBaseline == true && this.SelectedBaseline != null)
+            {
+                await Task.Run(() => this.AlignToBaseline());
+            }
+            else if (ShouldAlignToAMT == true)
+            {
+                await Task.Run(() => this.AlignToBaseline());
+            }
         }
+
 
         private void AlignToBaseline()
         {
-            if (this.SelectedBaseline != null && this.SelectedBaseline.Dataset.FeaturesFound)
+            //Update algorithms and providers
+            this.featureCache.Providers = this.analysis.DataProviders;
+            this.algorithms = this.builder.GetAlgorithmProvider(this.analysis.Options);
+            this.aligner.m_algorithms = this.algorithms;
+            List<UMCLight> baselineFeatures = new List<UMCLight>();
+            if (ShouldAlignToBaseline)
             {
-                //Update algorithms and providers
-                this.featureCache.Providers = this.analysis.DataProviders;
-                this.algorithms = this.builder.GetAlgorithmProvider(this.analysis.Options);
-                this.aligner.m_algorithms = this.algorithms;
-
-                /*var baselineFeatures = this.featureCache.LoadDataset(this.selectedBaseline.Dataset, this.analysis.Options.MsFilteringOptions,
-                    this.analysis.Options.LcmsFindingOptions, this.analysis.Options.LcmsFilteringOptions);*/
-                var baselineFeatures = this.featureCache.Providers.FeatureCache.FindByDatasetId(this.selectedBaseline.DatasetId);
-                var alignmentData = new AlignmentDAOHibernate();
-                alignmentData.ClearAll();
-
-                this.SelectedBaseline.DatasetState = DatasetInformation.DatasetStates.Aligning;
-                var selectedFiles = this.selectedDatasets.Where(file => !file.DoingWork).ToList();
-                foreach (var file in selectedFiles)
+                baselineFeatures = this.featureCache.Providers.FeatureCache.FindByDatasetId(this.selectedBaseline.DatasetId);
+                this.SelectedBaseline.DatasetState = DatasetInformationViewModel.DatasetStates.Aligning;
+                var priorAlignment = from x in this.alignmentInformation where x.DatasetID == this.selectedBaseline.DatasetId select x;
+                if (priorAlignment.Any())
                 {
-                    file.DatasetState = DatasetInformation.DatasetStates.Aligning;
+                    this.alignmentInformation.Remove(priorAlignment.Single());
+                }
+            }
+            var alignmentData = new AlignmentDAOHibernate();
+            alignmentData.ClearAll();
+         
+            var selectedFiles = this.selectedDatasets.Where(file => !file.DoingWork).ToList();
+            foreach (var file in selectedFiles)
+            {
+                file.DatasetState = DatasetInformationViewModel.DatasetStates.Aligning;
+            }
+
+            foreach (var file in selectedFiles)
+            {
+                ThreadSafeDispatcher.Invoke(() => this.AlignCommand.RaiseCanExecuteChanged());
+                ThreadSafeDispatcher.Invoke(() => this.DisplayAlignmentCommand.RaiseCanExecuteChanged());
+                if ((file.Dataset.IsBaseline || !file.FeaturesFound) && ShouldAlignToBaseline)
+                {
+                    file.DatasetState = DatasetInformationViewModel.DatasetStates.Aligned;
+                    continue;
                 }
 
-                foreach (var file in selectedFiles)
+                IList<UMCLight> features = this.featureCache.Providers.FeatureCache.FindByDatasetId(file.DatasetId);
+                classAlignmentData alignment = new classAlignmentData();
+                if (ShouldAlignToBaseline)
                 {
-                    ThreadSafeDispatcher.Invoke(() => this.AlignToBaselineCommand.RaiseCanExecuteChanged());
-                    ThreadSafeDispatcher.Invoke(() => this.DisplayAlignmentCommand.RaiseCanExecuteChanged());
-                    if (file.Dataset.IsBaseline || !file.FeaturesFound)
-                    {
-                        file.DatasetState = DatasetInformation.DatasetStates.Aligned;
-                        continue;
-                    }
-                    /*var features = this.featureCache.LoadDataset(file.Dataset, this.analysis.Options.MsFilteringOptions,
-                        this.analysis.Options.LcmsFindingOptions, this.analysis.Options.LcmsFilteringOptions);*/
-
-                    IList<UMCLight> features = this.featureCache.Providers.FeatureCache.FindByDatasetId(file.DatasetId);
-                    var alignment = this.aligner.AlignToDataset(ref features, baselineFeatures, file.Dataset, this.selectedBaseline.Dataset);
-                    //Check if there is information from a previous alignment for this dataset. If so, replace it. If not, just add the new one.
-                    var priorAlignment = from x in this.alignmentInformation where x.DatasetID == alignment.DatasetID select x;
-                    if (priorAlignment.Any())
-                    {
-                        this.alignmentInformation.Remove(priorAlignment.Single());
-                        this.alignmentInformation.Add(alignment);
-                    }
-                    else
-                    {
-                        this.alignmentInformation.Add(alignment);
-                    }
-
-                    this.featureCache.CacheFeatures(features);
-                    file.DatasetState = DatasetInformation.DatasetStates.Aligned;
-                    ThreadSafeDispatcher.Invoke(() => this.AlignToBaselineCommand.RaiseCanExecuteChanged());
-                    ThreadSafeDispatcher.Invoke(() => this.DisplayAlignmentCommand.RaiseCanExecuteChanged());
+                    alignment = this.aligner.AlignToDataset(ref features, file.Dataset, baselineFeatures);
+                }
+                else
+                {
+                    alignment = this.aligner.AlignToDatabase(ref features, file.Dataset, this.analysis.MassTagDatabase);
+                }
+                //Check if there is information from a previous alignment for this dataset. If so, replace it. If not, just add the new one.
+                var priorAlignment = from x in this.alignmentInformation where x.DatasetID == alignment.DatasetID select x;
+                if (priorAlignment.Any())
+                {
+                    this.alignmentInformation.Remove(priorAlignment.Single());
+                    this.alignmentInformation.Add(alignment);
+                }
+                else
+                {
+                    this.alignmentInformation.Add(alignment);
                 }
 
-                this.SelectedBaseline.DatasetState = DatasetInformation.DatasetStates.Aligned;
+                this.featureCache.CacheFeatures(features);
+                file.DatasetState = DatasetInformationViewModel.DatasetStates.Aligned;
+                ThreadSafeDispatcher.Invoke(() => this.AlignCommand.RaiseCanExecuteChanged());
+                ThreadSafeDispatcher.Invoke(() => this.DisplayAlignmentCommand.RaiseCanExecuteChanged());
             }
-            else
+            if (ShouldAlignToBaseline) { this.SelectedBaseline.DatasetState = DatasetInformationViewModel.DatasetStates.Aligned; }
+            
+
+        }
+
+        public DmsDatabaseServerViewModel SelectedDatabaseServer { get; set; }
+
+        private void AsyncSelectAMT()
+        {
+            ThreadSafeDispatcher.Invoke(() => SelectAMT());
+            ThreadSafeDispatcher.Invoke(() => AsyncAddMassTags());
+        }
+
+        private void SelectAMT()
+        {
+            var dmsWindow = new DatabaseSearchToolWindow();
+            var databaseView = new DatabasesViewModel();
+            dmsWindow.DataContext = databaseView;
+            dmsWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            var loader = MassTagDatabaseLoaderFactory.Create(MtdbDatabaseServerType.Dms);
+            var databases = loader.LoadDatabases();
+
+            foreach (var database in databases)
             {
-                MessageBox.Show("Please select a baseline with detected features.");
+                databaseView.AddDatabase(database);
             }
+
+            if (this.SelectedDatabaseServer != null)
+                databaseView.SelectedDatabase = this.SelectedDatabaseServer;
+
+            var result = dmsWindow.ShowDialog();
+            if (result == true)
+            {
+                if (databaseView.SelectedDatabase != null)
+                {
+                    this.SelectedDatabaseServer = databaseView.SelectedDatabase;
+                }
+            }
+
+        }
+
+        private async void AsyncAddMassTags()
+        {
+            await Task.Run(() => AddMassTags());
+        }
+
+        private void AddMassTags()
+        {
+            var database = this.SelectedDatabaseServer.Database;
+            database.DatabaseName = database.DatabaseName;
+            database.DatabaseServer = database.DatabaseServer;
+            analysis.MetaData.Database = database;
+            analysis.MetaData.Database.DatabaseFormat = MassTagDatabaseFormat.MassTagSystemSql;
+            analysis.MassTagDatabase = MtdbLoaderFactory.LoadMassTagDatabase(this.analysis.MetaData.Database,
+                                        this.analysis.Options.MassTagDatabaseOptions);
+            analysis.DataProviders.MassTags.AddAll(analysis.MassTagDatabase.MassTags);
+            this.RaisePropertyChanged("SelectedDatabaseServer");
         }
 
         private void DisplayAlignment()
         {
-            foreach (var file in (this.selectedDatasets.Where(x => x.IsAligned && !x.Dataset.IsBaseline)))
+            foreach (var file in (this.selectedDatasets.Where(x => x.IsAligned))) //x => x.IsAligned && !x.Dataset.IsBaseline
             {
                 var alignment = this.alignmentInformation.Find(x => x.DatasetID == file.DatasetId);
-                this.alignmentWindowFactory.CreateNewWindow(alignment);
+                if (alignment != null)
+                {
+                    this.alignmentWindowFactory.CreateNewWindow(alignment);
+                }
+                else
+                {
+                    MessageBox.Show(String.Format("No alignment to show for {0}", file.Dataset.DatasetName));
+                }
             }
         }
     }

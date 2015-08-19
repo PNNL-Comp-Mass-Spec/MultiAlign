@@ -23,9 +23,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiAlignTestSuite", "Test
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiAlignSTACRunner", "GridApps\MultiAlignSTACRunner\MultiAlignSTACRunner.csproj", "{76365337-8504-4F92-BADE-B1C31F98D6D9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlignmentPaperTestSuite", "Test\AlignmentPaperTestSuite\AlignmentPaperTestSuite\AlignmentPaperTestSuite.csproj", "{9ACDB6EB-377D-4249-9E8A-9E73CBB5EC26}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlignmentPaperTestSuite", "Test\AlignmentPaperTestSuite\AlignmentPaperTestSuite.csproj", "{9ACDB6EB-377D-4249-9E8A-9E73CBB5EC26}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestCore", "Test\TestCore\TestCore\TestCore.csproj", "{2B216610-B41C-4B55-9EFA-6AAC8CD91E32}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestCore", "Test\TestCore\TestCore.csproj", "{2B216610-B41C-4B55-9EFA-6AAC8CD91E32}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiAlignRogue", "MultiAlignRogue\MultiAlignRogue.csproj", "{DA869866-52CD-4053-BFC2-51CD3846ED3C}"
 EndProject

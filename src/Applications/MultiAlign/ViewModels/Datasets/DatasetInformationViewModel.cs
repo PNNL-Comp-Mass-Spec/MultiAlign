@@ -16,6 +16,20 @@ namespace MultiAlign.ViewModels.Datasets
 
     public class DatasetInformationViewModel : ViewModelBase
     {
+        public enum DatasetStates
+        {
+            None,
+            FindingFeatures,
+            PersistingFeatures,
+            FeaturesFound,
+            Aligning,
+            PersistingAlignment,
+            Aligned,
+            Clustering,
+            PersistingClusters,
+            Clustered
+        };
+
         private readonly DatasetInformation m_information;
         private bool m_expand;
         private bool m_isSelected;
@@ -56,6 +70,8 @@ namespace MultiAlign.ViewModels.Datasets
         }
 
         public event EventHandler RemovalRequested;
+
+        public event EventHandler StateChanged;
 
         public BaseCommand RequestRemovalCommand { get; private set; }
 
@@ -101,26 +117,32 @@ namespace MultiAlign.ViewModels.Datasets
             }
         }
 
-        public DatasetInformation.DatasetStates DatasetState
+        private DatasetStates datasetState;
+        public DatasetStates DatasetState
         {
-            get { return this.Dataset.DatasetState; }
+            get { return this.datasetState; }
             set
             {
-                if (this.Dataset.DatasetState != value)
+                if (this.datasetState != value)
                 {
-                    this.Dataset.DatasetState = value;
+                    this.datasetState = value;
 
-                    this.IsFindingFeatures = value == DatasetInformation.DatasetStates.FindingFeatures ||
-                                             value == DatasetInformation.DatasetStates.PersistingFeatures;
+                    this.IsFindingFeatures = value == DatasetInformationViewModel.DatasetStates.FindingFeatures ||
+                                             value == DatasetInformationViewModel.DatasetStates.PersistingFeatures;
 
-                    this.IsAligning = value == DatasetInformation.DatasetStates.Aligning ||
-                                      value == DatasetInformation.DatasetStates.PersistingAlignment;
+                    this.IsAligning = value == DatasetInformationViewModel.DatasetStates.Aligning ||
+                                      value == DatasetInformationViewModel.DatasetStates.PersistingAlignment;
 
-                    this.IsClustering = value == DatasetInformation.DatasetStates.Clustering ||
-                                        value == DatasetInformation.DatasetStates.PersistingClusters;
-                    this.FeaturesFound = value >= DatasetInformation.DatasetStates.FeaturesFound;
-                    this.IsAligned = value >= DatasetInformation.DatasetStates.Aligned;
-                    this.IsClustered = value >= DatasetInformation.DatasetStates.Clustered;
+                    this.IsClustering = value == DatasetInformationViewModel.DatasetStates.Clustering ||
+                                        value == DatasetInformationViewModel.DatasetStates.PersistingClusters;
+                    this.FeaturesFound = value >= DatasetInformationViewModel.DatasetStates.FeaturesFound;
+                    this.IsAligned = value >= DatasetInformationViewModel.DatasetStates.Aligned;
+                    this.IsClustered = value >= DatasetInformationViewModel.DatasetStates.Clustered;
+
+                    if (this.StateChanged != null)
+                    {
+                        this.StateChanged(this, EventArgs.Empty);
+                    }
 
                     this.OnPropertyChanged("FindingFeatureLabelColor");
                     this.OnPropertyChanged("AligningLabelColor");
@@ -193,10 +215,10 @@ namespace MultiAlign.ViewModels.Datasets
                 Brush brush;
                 switch (this.DatasetState)
                 {
-                    case DatasetInformation.DatasetStates.Clustering:
+                    case DatasetInformationViewModel.DatasetStates.Clustering:
                         brush = Brushes.Red;
                         break;
-                    case DatasetInformation.DatasetStates.PersistingClusters:
+                    case DatasetInformationViewModel.DatasetStates.PersistingClusters:
                         brush = Brushes.Yellow;
                         break;
                     default:
@@ -232,10 +254,10 @@ namespace MultiAlign.ViewModels.Datasets
                 Brush brush;
                 switch (this.DatasetState)
                 {
-                    case DatasetInformation.DatasetStates.FindingFeatures:
+                    case DatasetInformationViewModel.DatasetStates.FindingFeatures:
                         brush = Brushes.Red;
                         break;
-                    case DatasetInformation.DatasetStates.PersistingFeatures:
+                    case DatasetInformationViewModel.DatasetStates.PersistingFeatures:
                         brush = Brushes.Yellow;
                         break;
                     default:
@@ -271,10 +293,10 @@ namespace MultiAlign.ViewModels.Datasets
                 Brush brush;
                 switch (this.DatasetState)
                 {
-                    case DatasetInformation.DatasetStates.Aligning:
+                    case DatasetInformationViewModel.DatasetStates.Aligning:
                         brush = Brushes.Red;
                         break;
-                    case DatasetInformation.DatasetStates.PersistingAlignment:
+                    case DatasetInformationViewModel.DatasetStates.PersistingAlignment:
                         brush = Brushes.Yellow;
                         break;
                     default:

@@ -8,6 +8,7 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
+using GalaSoft.MvvmLight.Messaging;
 using Ookii.Dialogs.Wpf;
 
 namespace MultiAlignRogue.DMS
@@ -49,11 +50,6 @@ namespace MultiAlignRogue.DMS
         /// </summary>
         private bool isNoResultsShown;
         
-        /// <summary>
-        /// The selected DMS dataset.
-        /// </summary>
-        private DmsDatasetViewModel selectedDataset;
-
         /// <summary>
         /// The number of weeks in the past to search for datasets.
         /// </summary>
@@ -102,8 +98,8 @@ namespace MultiAlignRogue.DMS
             this.SearchCommand = new RelayCommand(this.SearchImpl, () => !string.IsNullOrWhiteSpace(this.dataSetFilter) && this.numberOfWeeks > 0);
             this.OpenCommand = new RelayCommand(
                                                 async () => await this.OpenImpl(), 
-                                                () => this.SelectedDataset != null &&
-                                                      !string.IsNullOrEmpty(this.SelectedDataset.DatasetFolderPath) &&
+                                                () => this.Datasets.Any(ds => ds.Selected) &&
+                                                      this.ValidateDataSet() &&
                                                       !string.IsNullOrEmpty(this.OutputDirectory) &&
                                                       Directory.Exists(this.OutputDirectory) && !this.IsCopying);
             this.CancelCommand = new RelayCommand(this.CancelImpl);
@@ -115,10 +111,27 @@ namespace MultiAlignRogue.DMS
             this.Datasets = new ObservableCollection<DmsDatasetViewModel>();
             this.AvailableFiles = new ObservableCollection<string>();
             this.dmsLookupUtility = new DmsLookupUtility();
-            this.SelectedDataset = new DmsDatasetViewModel();
             this.OutputDirectory = string.Empty;
             this.CopyStatusText = string.Empty;
             this.cancellationTokenSource = new CancellationTokenSource();
+
+            // Update file list when dataset is selected/deselected.
+            MessengerInstance.Register<PropertyChangedMessage<bool>>(
+                this,
+                args =>
+            {
+                if (args.Sender is DmsDatasetViewModel && args.PropertyName == "Selected")
+                {
+                    var availableFiles = this.Datasets.Where(ds => ds.Selected).SelectMany(ds => ds.GetAvailableFiles());
+                    this.AvailableFiles.Clear();
+                    foreach (var file in availableFiles)
+                    {
+                        this.AvailableFiles.Add(Path.GetFileName(file));
+                    }
+
+                    this.OpenCommand.RaiseCanExecuteChanged();
+                }
+            });
         }
 
         /// <summary>
@@ -178,30 +191,6 @@ namespace MultiAlignRogue.DMS
         }
 
         /// <summary>
-        /// Gets or sets the selected DMS dataset.
-        /// </summary>
-        public DmsDatasetViewModel SelectedDataset
-        {
-            get { return this.selectedDataset; }
-            set
-            {
-                if (this.selectedDataset != value)
-                {
-                    this.selectedDataset = value;
-                    this.RaisePropertyChanged();
-                    this.OpenCommand.RaiseCanExecuteChanged();
-
-                    this.AvailableFiles.Clear();
-                    var availableFiles = this.selectedDataset.GetAvailableFiles();
-                    foreach (var file in availableFiles)
-                    {
-                        this.AvailableFiles.Add(Path.GetFileName(file));
-                    }
-                }
-            }
-        }
-
-        /// <summary>
         /// Gets a value indicating whether or not the No Results alert should be shown.
         /// Set to true when a search has been performed that yielded 0 results.
         /// </summary>
@@ -252,6 +241,9 @@ namespace MultiAlignRogue.DMS
             }
         }
 
+        /// <summary>
+        /// Gets or sets the path to the output directory.
+        /// </summary>
         public string OutputDirectory
         {
             get { return this.outputDirectory; }
@@ -322,8 +314,11 @@ namespace MultiAlignRogue.DMS
         /// <returns>A value indicating whether the data set selected is valid.</returns>
         public bool ValidateDataSet()
         {
-            return this.SelectedDataset != null && !string.IsNullOrEmpty(this.SelectedDataset.DatasetFolderPath)
-                    && Directory.Exists(this.SelectedDataset.DatasetFolderPath);
+            return
+                this.Datasets.Any(
+                    ds =>
+                        ds.Selected && !string.IsNullOrEmpty(ds.DatasetFolderPath) &&
+                        Directory.Exists(ds.DatasetFolderPath));
         }
 
         /// <summary>
@@ -332,24 +327,28 @@ namespace MultiAlignRogue.DMS
         /// <returns>List containing full paths associated with the selected data set.</returns>
         public List<string> GetRawFileNames()
         {
+            var rawFileNames = new List<string>();
             if (!this.ValidateDataSet())
             {
-                return new List<string>();
+                return rawFileNames;
             }
 
-            var dataSetDirFiles = Directory.GetFiles(this.SelectedDataset.DatasetFolderPath);
-            var rawFileNames = (from filePath in dataSetDirFiles
-                            let ext = Path.GetExtension(filePath)
-                            where !string.IsNullOrEmpty(ext)
-                            let extL = ext.ToLower()
-                            where (extL == ".raw" || extL == ".mzml" || extL == ".gz")
-                            select filePath).ToList();
-            for (int i = 0; i < rawFileNames.Count; i++)
+            foreach (var dataset in this.Datasets.Where(ds => ds.Selected))
             {
-                var pbfFile = this.GetPbfFileName(rawFileNames[i]);
-                if (!string.IsNullOrEmpty(pbfFile))
+                var dataSetDirFiles = Directory.GetFiles(dataset.DatasetFolderPath);
+                rawFileNames.AddRange(from filePath in dataSetDirFiles
+                                      let ext = Path.GetExtension(filePath)
+                                      where !string.IsNullOrEmpty(ext)
+                                      let extL = ext.ToLower()
+                                      where (extL == ".raw" || extL == ".mzml" || extL == ".gz")
+                                      select filePath);
+                for (int i = 0; i < rawFileNames.Count; i++)
                 {
-                    rawFileNames[i] = pbfFile;
+                    var pbfFile = this.GetPbfFileName(rawFileNames[i], dataset.DatasetFolderPath);
+                    if (!string.IsNullOrEmpty(pbfFile))
+                    {
+                        rawFileNames[i] = pbfFile;
+                    }
                 }
             }
 
@@ -366,24 +365,28 @@ namespace MultiAlignRogue.DMS
             await Task.Run(
                 () =>
                 {
+                    if (!Directory.Exists(this.OutputDirectory))
+                    {
+                        return;
+                    }
+
                     ThreadSafeDispatcher.Invoke(() => this.IsCopying = true);
                     this.Progress = 0;
-                    var files = this.SelectedDataset.GetAvailableFiles();
-                    if (Directory.Exists(this.OutputDirectory))
+
+                    var files = this.Datasets.Where(ds => ds.Selected).SelectMany(ds => ds.GetAvailableFiles()).ToArray();
+
+                    for (int i = 0; i < files.Length; i++)
                     {
-                        for (int i = 0; i < files.Count; i++)
+                        if (this.cancellationTokenSource.IsCancellationRequested)
                         {
-                            if (this.cancellationTokenSource.IsCancellationRequested)
-                            {
-                                break;
-                            }
-
-                            var fileName = Path.GetFileName(files[i]);
-                            this.CopyStatusText = string.Format("Copying {0}", fileName);
-                            File.Copy(files[i], string.Format("{0}\\{1}", this.OutputDirectory, fileName), true);
-
-                            this.Progress = ((i + 1) / (double)files.Count) * 100;
+                            break;
                         }
+
+                        var fileName = Path.GetFileName(files[i]);
+                        this.CopyStatusText = string.Format("Copying {0}", fileName);
+                        File.Copy(files[i], string.Format("{0}\\{1}", this.OutputDirectory, fileName), true);
+
+                        this.Progress = ((i + 1) / (double)files.Length) * 100;
                     }
 
                     this.CopyStatusText = string.Empty;
@@ -397,8 +400,9 @@ namespace MultiAlignRogue.DMS
         /// Get the PBF file (if it exists) for a certain raw file associated with this data set.
         /// </summary>
         /// <param name="rawFilePath">The path of the raw file to find associated PBF files.</param>
+        /// <param name="datasetPath">The path to the dataset.</param>
         /// <returns>The full path to the PBF file.</returns>
-        private string GetPbfFileName(string rawFilePath)
+        private string GetPbfFileName(string rawFilePath, string datasetPath)
         {
             string pbfFilePath = null;
             if (!this.ValidateDataSet())
@@ -406,7 +410,7 @@ namespace MultiAlignRogue.DMS
                 return null;
             }
 
-            var dataSetDirDirectories = Directory.GetDirectories(this.SelectedDataset.DatasetFolderPath);
+            var dataSetDirDirectories = Directory.GetDirectories(datasetPath);
             var pbfFolderPath = (from folderPath in dataSetDirDirectories
                                  let folderName = Path.GetFileNameWithoutExtension(folderPath)
                                  where folderName.StartsWith("PBF_Gen")
@@ -449,7 +453,7 @@ namespace MultiAlignRogue.DMS
             else
             {
                 this.IsNoResultsShown = false;
-                this.SelectedDataset = this.Datasets[0];
+                this.Datasets[0].Selected = true;
             }
         }
 
