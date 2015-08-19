@@ -23,7 +23,7 @@
 
         }
 
-        public AlignmentViewModel(classAlignmentData alignment)
+        public AlignmentViewModel(AlignmentData alignment)
         {
             this.WindowTitle = String.Format("{0} Alignment Data",alignment.aligneeDataset);
             var residuals = alignment.ResidualData;

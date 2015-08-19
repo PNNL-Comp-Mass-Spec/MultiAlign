@@ -13,7 +13,7 @@ namespace MultiAlignTestSuite.IO.DAO
     /// <summary>
     ///     Main application.
     /// </summary>
-    public sealed class DataProviderTest
+    public sealed class DataProviderTests
     {
 
         /// <summary>

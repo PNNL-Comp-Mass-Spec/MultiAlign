@@ -5,6 +5,6 @@
     public interface IAlignmentWindowFactory
     {
         void CreateNewWindow();
-        void CreateNewWindow(classAlignmentData alignment);
+        void CreateNewWindow(AlignmentData alignment);
     }
 }

@@ -8,7 +8,7 @@ using MultiAlignCore.IO.Features;
 
 namespace MultiAlignCore.IO.Hibernate
 {
-    public class AlignmentDAOHibernate : GenericDAOHibernate<classAlignmentData>, IAlignmentDAO
+    public class AlignmentDAOHibernate : GenericDAOHibernate<AlignmentData>, IAlignmentDAO
     {
         public void ClearAll()
         {

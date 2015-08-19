@@ -64,7 +64,7 @@ namespace MultiAlignCore.IO
                     new FactorDAOHibernate(),
                     new DatasetToFactorDAOHibernate(),
                     new MSMSClusterMapClusterDAOHibernate(),
-                    new DatabaseSearchSequenceDAOHiberate(),
+                    new DatabaseSearchSequenceDAOHibernate(),
                     sequenceMap);
 
             return providers;

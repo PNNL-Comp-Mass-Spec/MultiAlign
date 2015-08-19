@@ -16,14 +16,14 @@ namespace MultiAlignRogue.Alignment
 
         public AlgorithmProvider m_algorithms { get; set; }
 
-        public classAlignmentData AlignToDataset(
+        public AlignmentData AlignToDataset(
             ref IList<UMCLight> features,
             DatasetInformation datasetInfo,
             IEnumerable<UMCLight> baselineFeatures)
         {            
             // Align pairwise and cache results intermediately.           
             var aligner = this.m_algorithms.DatasetAligner;
-            classAlignmentData alignmentData = aligner.Align(baselineFeatures, features);
+            AlignmentData alignmentData = aligner.Align(baselineFeatures, features);
             
             if (alignmentData != null)
             {
@@ -34,13 +34,13 @@ namespace MultiAlignRogue.Alignment
             return alignmentData;
         }
 
-        public classAlignmentData AlignToDatabase(
+        public AlignmentData AlignToDatabase(
             ref IList<UMCLight> features,
             DatasetInformation datasetInfo,
             MassTagDatabase mtdb)
         {
             var aligner = this.m_algorithms.DatabaseAligner;
-            classAlignmentData alignmentData = aligner.Align(mtdb, features);            
+            AlignmentData alignmentData = aligner.Align(mtdb, features);            
 
             if (alignmentData != null)
             {

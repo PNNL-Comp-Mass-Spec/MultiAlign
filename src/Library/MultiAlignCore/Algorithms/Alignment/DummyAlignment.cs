@@ -17,8 +17,8 @@ namespace MultiAlignCore.Algorithms.Alignment
     ///     Dummy alignment class
     /// </summary>
     public class DummyAlignment :
-        IFeatureAligner<IEnumerable<UMCLight>, IEnumerable<UMCLight>, classAlignmentData>,
-        IFeatureAligner<MassTagDatabase, IEnumerable<UMCLight>, classAlignmentData>
+        IFeatureAligner<IEnumerable<UMCLight>, IEnumerable<UMCLight>, AlignmentData>,
+        IFeatureAligner<MassTagDatabase, IEnumerable<UMCLight>, AlignmentData>
     {
         /// <summary>
         ///     Gets or sets the baseline spectra provider
@@ -38,13 +38,13 @@ namespace MultiAlignCore.Algorithms.Alignment
             }
         }
 
-        public classAlignmentData Align(MassTagDatabase database,
+        public AlignmentData Align(MassTagDatabase database,
             IEnumerable<UMCLight> features)
         {
             return null;
         }
 
-        public classAlignmentData Align(IEnumerable<UMCLight> baseline,
+        public AlignmentData Align(IEnumerable<UMCLight> baseline,
             IEnumerable<UMCLight> features)
         {
             return null;

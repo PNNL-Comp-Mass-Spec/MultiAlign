@@ -32,13 +32,13 @@ namespace MultiAlignCore.Algorithms
         /// <summary>
         ///     Gets or sets the feature/database aligner.
         /// </summary>
-        public IFeatureAligner<IEnumerable<UMCLight>, IEnumerable<UMCLight>, classAlignmentData> DatasetAligner { get;
+        public IFeatureAligner<IEnumerable<UMCLight>, IEnumerable<UMCLight>, AlignmentData> DatasetAligner { get;
             set; }
 
         /// <summary>
         ///     Gets or sets the database aligner.
         /// </summary>
-        public IFeatureAligner<MassTagDatabase, IEnumerable<UMCLight>, classAlignmentData> DatabaseAligner { get; set; }
+        public IFeatureAligner<MassTagDatabase, IEnumerable<UMCLight>, AlignmentData> DatabaseAligner { get; set; }
 
         /// <summary>
         ///     Gets or sets the peak matcher object.

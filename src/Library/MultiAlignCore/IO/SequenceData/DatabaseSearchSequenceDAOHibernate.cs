@@ -10,7 +10,7 @@ using NHibernate.Criterion;
 
 namespace MultiAlignCore.IO.SequenceData
 {
-    public class DatabaseSearchSequenceDAOHiberate : GenericDAOHibernate<DatabaseSearchSequence>,
+    public class DatabaseSearchSequenceDAOHibernate : GenericDAOHibernate<DatabaseSearchSequence>,
         IDatabaseSearchSequenceDAO
     {
         public void DeleteByDatasetId(int id)

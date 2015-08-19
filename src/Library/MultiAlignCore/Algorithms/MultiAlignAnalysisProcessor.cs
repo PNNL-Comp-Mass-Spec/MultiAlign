@@ -474,7 +474,7 @@ namespace MultiAlignCore.Algorithms
             DatasetInformation datasetInfo,
             DatasetInformation baselineInfo)
         {
-            classAlignmentData alignmentData;
+            AlignmentData alignmentData;
 
             if (baselineInfo == null && database == null)
             {

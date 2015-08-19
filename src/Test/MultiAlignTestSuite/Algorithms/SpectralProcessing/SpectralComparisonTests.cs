@@ -21,7 +21,7 @@ using LinearAxis = OxyPlot.Axes.LinearAxis;
 namespace MultiAlignTestSuite.Algorithms
 {
     [TestFixture]
-    public class SpectralComparisonTest: TestBase
+    public class SpectralComparisonTests: TestBase
     {
         /// <summary>
         ///     Maps the path to a group ID for reading multiple files.

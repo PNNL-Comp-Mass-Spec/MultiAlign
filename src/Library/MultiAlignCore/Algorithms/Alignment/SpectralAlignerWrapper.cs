@@ -12,23 +12,23 @@ using PNNLOmics.Data.MassTags;
 namespace MultiAlignCore.Algorithms.Alignment
 {
     public class SpectralAlignerWrapper : SpectralAligner,
-        IFeatureAligner<IEnumerable<UMCLight>, IEnumerable<UMCLight>, classAlignmentData>,
-        IFeatureAligner<MassTagDatabase, IEnumerable<UMCLight>, classAlignmentData>
+        IFeatureAligner<IEnumerable<UMCLight>, IEnumerable<UMCLight>, AlignmentData>,
+        IFeatureAligner<MassTagDatabase, IEnumerable<UMCLight>, AlignmentData>
     {
-        public new classAlignmentData Align(IEnumerable<UMCLight> baseline, IEnumerable<UMCLight> alignee)
+        public new AlignmentData Align(IEnumerable<UMCLight> baseline, IEnumerable<UMCLight> alignee)
         {
             var matches = base.Align(baseline, alignee);
-            var data = new classAlignmentData {Matches = matches};
+            var data = new AlignmentData {Matches = matches};
 
             Matches = matches;
 
             return data;
         }
 
-        public new classAlignmentData Align(MassTagDatabase database, IEnumerable<UMCLight> alignee)
+        public new AlignmentData Align(MassTagDatabase database, IEnumerable<UMCLight> alignee)
         {
             var matches = base.Align(database, alignee);
-            var data = new classAlignmentData {Matches = matches};
+            var data = new AlignmentData {Matches = matches};
 
             Matches = matches;
 

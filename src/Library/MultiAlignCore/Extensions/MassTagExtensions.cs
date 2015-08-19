@@ -8,7 +8,7 @@ using PNNLOmics.Data.MassTags;
 
 namespace MultiAlignCore.Extensions
 {
-    public static class MassTagExtesnsions
+    public static class MassTagExtensions
     {
         /// <summary>
         ///     Builds an ID for mapping and caching features
