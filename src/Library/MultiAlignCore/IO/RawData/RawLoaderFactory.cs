@@ -26,33 +26,33 @@ namespace MultiAlignCore.IO.RawData
             // Just use InformedProteomics...
             return new InformedProteomicsReader();
 
-            ISpectraProvider reader = null;
-            var extension = Path.GetExtension(name);
-
-            // Otherwise create a new one.
-            switch (extension.ToLower())
-            {
-                //case ".raw":
-                //    reader = new ThermoRawDataFileReader();
-                //    break;
-                //case ".mzxml":
-                //    reader = new MzXMLReader();
-                //    break;
-                //case ".mzml":
-                //    reader = new InformedProteomicsReader();
-                //    break;
-                //case ".gz":
-                //    if (name.ToLower().EndsWith(".mzml.gz"))
-                //    {
-                //        reader = new InformedProteomicsReader();
-                //    }
-                //    break;
-                default:
-                    reader = new InformedProteomicsReader();
-                    break;
-            }
-
-            return reader;
+            //ISpectraProvider reader = null;
+            //var extension = Path.GetExtension(name);
+            //
+            //// Otherwise create a new one.
+            //switch (extension.ToLower())
+            //{
+            //    case ".raw":
+            //        reader = new ThermoRawDataFileReader();
+            //        break;
+            //    case ".mzxml":
+            //        reader = new MzXMLReader();
+            //        break;
+            //    case ".mzml":
+            //        reader = new InformedProteomicsReader();
+            //        break;
+            //    case ".gz":
+            //        if (name.ToLower().EndsWith(".mzml.gz"))
+            //        {
+            //            reader = new InformedProteomicsReader();
+            //        }
+            //        break;
+            //    default:
+            //        reader = new InformedProteomicsReader();
+            //        break;
+            //}
+            //
+            //return reader;
         }
     }
 }
