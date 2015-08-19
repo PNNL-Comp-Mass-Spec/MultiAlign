@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using InformedProteomics.Backend.Data.Spectrometry;
 using MultiAlignCore.IO.RawData;
 using PNNLOmics.Algorithms;
@@ -82,7 +84,7 @@ namespace MultiAlignCore.Algorithms.Chromatograms
             // PART B 
             // sort the features...
             var featureCount = allFeatures.Count;
-            allFeatures = allFeatures.OrderBy(x => x.StartScan).ToList();
+            //allFeatures = allFeatures.OrderBy(x => x.StartScan).ToList();
 
             // This map tracks all possible features to keep            
             
@@ -102,10 +104,11 @@ namespace MultiAlignCore.Algorithms.Chromatograms
 
             var ipr = provider.GetReaderForGroup(0);
 
-            var precursorScans = new Dictionary<int, List<MSFeatureLight>>(totalScans + 1);
-            for (int i = 0; i <= totalScans; i++)
+            var ms1ScanNums = ipr.GetScanNumbers(1);
+            var precursorScans = new Dictionary<int, List<MSFeatureLight>>(ms1ScanNums.Count + 1);
+            foreach (var scanNum in ms1ScanNums)
             {
-                precursorScans.Add(i, new List<MSFeatureLight>());
+                precursorScans.Add(scanNum, new List<MSFeatureLight>());
             }
 
             // 
@@ -114,9 +117,11 @@ namespace MultiAlignCore.Algorithms.Chromatograms
             // xic.Feature.AddChildFeature(msFeature) adds to xic.Feature.MsFeatures
             // 
             foreach (var feature in allFeatures)
+            //Parallel.ForEach(allFeatures, feature =>
             {
-                //var target = feature.StartScan + (feature.EndScan - feature.StartScan) / 2;
-                var xic = ipr.GetPrecursorExtractedIonChromatogram(feature.LowMz, feature.HighMz);
+                var target = feature.StartScan + (feature.EndScan - feature.StartScan) / 2;
+                var xic = ipr.GetPrecursorExtractedIonChromatogram(feature.LowMz, feature.HighMz, target);
+                //var xic = ipr.GetPrecursorExtractedIonChromatogram(feature.LowMz, feature.HighMz);
                 //var validXic = xic.Where(x => feature.StartScan <= x.ScanNum).ToList();
                 //validXic.Sort();
 
@@ -126,12 +131,12 @@ namespace MultiAlignCore.Algorithms.Chromatograms
                 {
                     //var sxic = validXic.Where(x => x.ScanNum == scan).ToList();
                     //var summedIntensity = sxic.Sum(x => x.Intensity); // InformedProteomics gives us base peak intensity per scan for the xic
-
+                
                     if (xicp.ScanNum < feature.StartScan)
                     {
                         continue;
                     }
-
+                
                     // See if we need to remove this feature
                     // We only do so if the intensity has dropped off and we are past the end of the feature.
                     //if (summedIntensity < 1 && scan > feature.EndScan)
@@ -139,9 +144,9 @@ namespace MultiAlignCore.Algorithms.Chromatograms
                     {
                         break;
                     }
-
+                
                     var umc = feature.Feature;
-
+                
                     // otherwise create a new feature here...
                     var msFeature = new MSFeatureLight
                     {
@@ -152,7 +157,8 @@ namespace MultiAlignCore.Algorithms.Chromatograms
                         Scan = xicp.ScanNum,
                         //Abundance = Convert.ToInt64(summedIntensity),
                         Abundance = Convert.ToInt64(xicp.Intensity),
-                        Id = msFeatureId++,
+                        //Id = msFeatureId++,
+                        Id = Interlocked.Increment(ref msFeatureId) - 1,
                         DriftTime = umc.DriftTime,
                         //Net = ipr.GetElutionTime(scan),
                         Net = ipr.GetElutionTime(xicp.ScanNum),
@@ -160,13 +166,70 @@ namespace MultiAlignCore.Algorithms.Chromatograms
                     };
                     //parentMsList.Add(msFeature);
                     //precursorScans[scan].Add(msFeature);
-                    precursorScans[xicp.ScanNum].Add(msFeature);
-                    feature.Feature.AddChildFeature(msFeature); // Adds to MsFeatures
+                    //precursorScans[xicp.ScanNum].Add(msFeature);
+                    //feature.Feature.AddChildFeature(msFeature); // Adds to MsFeatures
+                    lock (precursorScans[xicp.ScanNum])
+                    {
+                        precursorScans[xicp.ScanNum].Add(msFeature);
+                    }
+                    lock (feature.Feature)
+                    {
+                        feature.Feature.AddChildFeature(msFeature); // Adds to MsFeatures
+                    }
                 }
-            }
+                //Parallel.ForEach(xic.Where(xicp => xicp.ScanNum >= feature.StartScan).TakeWhile(xicp => xicp.Intensity < 1 && xicp.ScanNum > feature.EndScan), xicp =>
+                //xic.TakeWhile(xicp => xicp.Intensity < 1 && xicp.ScanNum > feature.EndScan).AsParallel().Where(xicp => xicp.ScanNum >= feature.StartScan).ForAll(xicp =>
+                //{
+                //    //var sxic = validXic.Where(x => x.ScanNum == scan).ToList();
+                //    //var summedIntensity = sxic.Sum(x => x.Intensity); // InformedProteomics gives us base peak intensity per scan for the xic
+                //
+                //    //if (xicp.ScanNum < feature.StartScan)
+                //    //{
+                //    //    return;
+                //    //}
+                //
+                //    // See if we need to remove this feature
+                //    // We only do so if the intensity has dropped off and we are past the end of the feature.
+                //    //if (summedIntensity < 1 && scan > feature.EndScan)
+                //    //if (xicp.Intensity < 1 && xicp.ScanNum > feature.EndScan)
+                //    //{
+                //    //    return;
+                //    //}
+                //
+                //    var umc = feature.Feature;
+                //
+                //    // otherwise create a new feature here...
+                //    var msFeature = new MSFeatureLight
+                //    {
+                //        ChargeState = feature.ChargeState,
+                //        Mz = feature.Mz,
+                //        MassMonoisotopic = umc.MassMonoisotopic,
+                //        //Scan = scan,
+                //        Scan = xicp.ScanNum,
+                //        //Abundance = Convert.ToInt64(summedIntensity),
+                //        Abundance = Convert.ToInt64(xicp.Intensity),
+                //        //Id = msFeatureId++,
+                //        Id = Interlocked.Increment(ref msFeatureId) - 1,
+                //        DriftTime = umc.DriftTime,
+                //        //Net = ipr.GetElutionTime(scan),
+                //        Net = ipr.GetElutionTime(xicp.ScanNum),
+                //        GroupId = umc.GroupId
+                //    };
+                //    //parentMsList.Add(msFeature);
+                //    //precursorScans[scan].Add(msFeature);
+                //    lock (precursorScans[xicp.ScanNum])
+                //    {
+                //        precursorScans[xicp.ScanNum].Add(msFeature);
+                //    }
+                //    lock (feature.Feature)
+                //    {
+                //        feature.Feature.AddChildFeature(msFeature); // Adds to MsFeatures
+                //    }
+                //});
+            }//);
 
             //int lastMs1ScanNum = -1;
-            var ms1Scans = ipr.GetScanNumbers(1).GetEnumerator();
+            var ms1Scans = ms1ScanNums.GetEnumerator();
             int lastMs1ScanNum = -1;
             if (ms1Scans.MoveNext())
             {
@@ -193,31 +256,62 @@ namespace MultiAlignCore.Algorithms.Chromatograms
                         var summary = provider.GetScanSummary(scan, 0);
                         // If it is an MS 2 spectra... then let's link it to the parent MS
                         // Feature
-                        var matching = precursorScans[lastMs1ScanNum].FindAll(
-                            x => Math.Abs(x.Mz - summary.PrecursorMz) <= FragmentationSizeWindow
-                            );
+                        //var matching = precursorScans[lastMs1ScanNum].FindAll(
+                        //    x => Math.Abs(x.Mz - summary.PrecursorMz) <= FragmentationSizeWindow
+                        //    );
 
-                        foreach (var match in matching)
-                        {
-                            // We create multiple spectra because this guy is matched to multiple ms
-                            // features
-                            var spectraData = new MSSpectra
+                        //foreach (var match in matching)
+                        //foreach (var match in precursorScans[lastMs1ScanNum].Where(x => Math.Abs(x.Mz - summary.PrecursorMz) <= FragmentationSizeWindow))
+                        //{
+                        //    // We create multiple spectra because this guy is matched to multiple ms
+                        //    // features
+                        //    var spectraData = new MSSpectra
+                        //    {
+                        //        Id = msmsFeatureId,
+                        //        ScanMetaData = summary,
+                        //        CollisionType = summary.CollisionType,
+                        //        //Scan = spectrum.ScanNum,
+                        //        Scan = scan,
+                        //        MsLevel = summary.MsLevel,
+                        //        PrecursorMz = summary.PrecursorMz,
+                        //        TotalIonCurrent = summary.TotalIonCurrent
+                        //    };
+                        //
+                        //    spectraData.ParentFeature = match;
+                        //    match.MSnSpectra.Add(spectraData);
+                        //
+                        //    msmsFeatureId++;
+                        //}
+                        //Parallel.ForEach(precursorScans[lastMs1ScanNum]
+                        //    .Where(x => Math.Abs(x.Mz - summary.PrecursorMz) <= FragmentationSizeWindow), match =>
+                        //Parallel.ForEach(precursorScans[lastMs1ScanNum], match =>
+                        precursorScans[lastMs1ScanNum].AsParallel().Where(x => Math.Abs(x.Mz - summary.PrecursorMz) <= FragmentationSizeWindow).ForAll(match =>
                             {
-                                Id = msmsFeatureId,
-                                ScanMetaData = summary,
-                                CollisionType = summary.CollisionType,
-                                //Scan = spectrum.ScanNum,
-                                Scan = scan,
-                                MsLevel = summary.MsLevel,
-                                PrecursorMz = summary.PrecursorMz,
-                                TotalIonCurrent = summary.TotalIonCurrent
-                            };
-
-                            spectraData.ParentFeature = match;
-                            match.MSnSpectra.Add(spectraData);
-
-                            msmsFeatureId++;
-                        }
+                                //if (Math.Abs(match.Mz - summary.PrecursorMz) > FragmentationSizeWindow)
+                                //{
+                                //    return;
+                                //}
+                                int featureId = Interlocked.Increment(ref msmsFeatureId) - 1;
+                                // We create multiple spectra because this guy is matched to multiple ms
+                                // features
+                                var spectraData = new MSSpectra
+                                {
+                                    //Id = msmsFeatureId,
+                                    Id = featureId,
+                                    ScanMetaData = summary,
+                                    CollisionType = summary.CollisionType,
+                                    //Scan = spectrum.ScanNum,
+                                    Scan = scan,
+                                    MsLevel = summary.MsLevel,
+                                    PrecursorMz = summary.PrecursorMz,
+                                    TotalIonCurrent = summary.TotalIonCurrent
+                                };
+                        
+                                spectraData.ParentFeature = match;
+                                match.MSnSpectra.Add(spectraData);
+                        
+                                //msmsFeatureId++;
+                            });
                     //}
                     //else
                     //{
@@ -228,7 +322,9 @@ namespace MultiAlignCore.Algorithms.Chromatograms
             }
 
             /*/
-
+            
+            allFeatures = allFeatures.OrderBy(x => x.StartScan).ToList();
+            
             // Iterate over all the scans...
             for (var currentScan = minScan; currentScan < maxScan && currentScan <= totalScans; currentScan++)
             {
