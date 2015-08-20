@@ -277,8 +277,8 @@ namespace MultiAlignCore.Algorithms.Alignment
             var threshold = features[Math.Min(features.Count - 1, Math.Max(0, total))].AbundanceSum;
 
             // Filters features below a certain threshold.
-            var filteredFeatures = features.FindAll(feature => feature.AbundanceSum >= threshold);
-            return filteredFeatures;
+            var filteredFeatures = features.Where(feature => feature.AbundanceSum >= threshold);
+            return filteredFeatures.ToList();
         }
 
     }
