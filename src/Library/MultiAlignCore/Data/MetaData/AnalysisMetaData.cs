@@ -105,7 +105,7 @@ namespace MultiAlignCore.Data.MetaData
         /// <summary>
         ///     Get/Set the analysis as a hiearchy of datasets with related factor information for grouping.
         /// </summary>
-        public classTreeNode FactorTreeNode { get; set; }
+        public TreeNode FactorTreeNode { get; set; }
 
         /// <summary>
         ///     Gets or sets the name of the analysis.

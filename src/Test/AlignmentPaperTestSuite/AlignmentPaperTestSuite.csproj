@@ -97,7 +97,7 @@
     <Compile Include="Figures\Figure4.cs" />
     <Compile Include="Figures\Figure5.cs" />
     <Compile Include="Generators\DatabaseGenerators.cs" />
-    <Compile Include="Figures\FigureGenerator.cs" />
+    <Compile Include="Figures\FigureBase.cs" />
     <Compile Include="IO\AlignmentAnalysisWriterFactory.cs" />
     <Compile Include="IO\AlignmentFigureType.cs" />
     <Compile Include="IO\PaperFileWriter.cs" />
@@ -111,7 +111,7 @@
     <Compile Include="MatchCountHistogramBuilder.cs" />
     <Compile Include="PeptideMatch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SpectralCacheUtility.cs" />
+    <Compile Include="SpectralCacheUtilityTests.cs" />
     <Compile Include="SSM\BaseSpectralAlignmentTest.cs" />
     <Compile Include="SSM\TestSpectralLinking.cs" />
   </ItemGroup>

@@ -36,7 +36,7 @@ using PNNLOmicsIO.IO;
 namespace MultiAlignTestSuite.Papers.Alignment
 {
     [TestFixture]
-    public class Figure4ClusterValidationTests : WorkflowBase
+    public class ClusterValidationTests : WorkflowBase
     {
         [Test]
         [TestCase(@"M:\data\proteomics\Papers\AlignmentPaper\data\annotated-QC-6\test-annotated-6.db3", 2, Ignore = true)]
@@ -440,7 +440,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
             MultiAlignCore.Algorithms.FeatureFinding.IFeatureFinder featureFinder,
             IFeatureAligner<IEnumerable<UMCLight>,
                 IEnumerable<UMCLight>,
-                classAlignmentData> aligner,
+                AlignmentData> aligner,
             IClusterer<UMCLight, UMCClusterLight> clusterer,
             string matchPath,
             string errorPath)
@@ -734,7 +734,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
             base.UpdateStatus(message);
         }
 
-        private void ExportAlignmentData(classAlignmentData data,
+        private void ExportAlignmentData(AlignmentData data,
             DatasetInformation baselineDatasetInformation,
             DatasetInformation alignDatasetInformation,
             IEnumerable<UMCLight> baselineFeatures,

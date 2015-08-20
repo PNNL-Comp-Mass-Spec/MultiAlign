@@ -11,7 +11,7 @@ namespace MultiAlignCore.Data.Factors
     /// <summary>
     ///     Manages a group of tree nodes and sorting methods.
     /// </summary>
-    public class classFactorTree : IComparer, ICloneable
+    public class FactorTree : IComparer, ICloneable
     {
         private ArrayList m_factorList;
 
@@ -23,7 +23,7 @@ namespace MultiAlignCore.Data.Factors
         /// <summary>
         ///     Current value of the tree built from hashtables and factors supplied.
         /// </summary>
-        private classTreeNode m_currentTree;
+        private TreeNode m_currentTree;
 
         /// <summary>
         ///     Flag if the tree-hash has been modified and needs to be re-sorted.
@@ -38,7 +38,7 @@ namespace MultiAlignCore.Data.Factors
         /// <summary>
         ///     Constructor for the tree.
         /// </summary>
-        public classFactorTree()
+        public FactorTree()
         {
             m_datasetList = new ArrayList();
             m_factorList = new ArrayList();
@@ -75,7 +75,7 @@ namespace MultiAlignCore.Data.Factors
         public void AddFactor(string factorName, StringCollection table)
         {
             m_treeDirty = true;
-            var newFactor = new clsFactor(factorName, table);
+            var newFactor = new FactorData(factorName, table);
             m_factorList.Add(newFactor);
         }
 
@@ -94,7 +94,7 @@ namespace MultiAlignCore.Data.Factors
         /// <param name="factors">Hashtable of factors.  Factor name is key, factor value is value.</param>
         public void AddData(string dataName, Hashtable factors)
         {
-            var newData = new clsFactorDataset(dataName, factors);
+            var newData = new FactorDataset(dataName, factors);
             long index = m_datasetList.Add(newData);
             newData.Index = index;
             m_treeDirty = true;
@@ -104,10 +104,10 @@ namespace MultiAlignCore.Data.Factors
         ///     Builds a tree from the hash-table for visualization or hierachy parsing.
         /// </summary>
         /// <returns></returns>
-        public classTreeNode BuildTree()
+        public TreeNode BuildTree()
         {
             m_currentTree = null;
-            m_currentTree = new classTreeNode();
+            m_currentTree = new TreeNode();
 
             // Only sort if there were changes made to the ordering.
             if (m_treeDirty)
@@ -127,10 +127,10 @@ namespace MultiAlignCore.Data.Factors
                 /// Un-mapped items will be -1
                 for (var i = 0; i < tempDatasort.Count; i++)
                 {
-                    var oldName = tempDatasort[i] as clsFactorDataset;
+                    var oldName = tempDatasort[i] as FactorDataset;
                     for (var j = 0; j < m_datasetList.Count; j++)
                     {
-                        var newName = m_datasetList[j] as clsFactorDataset;
+                        var newName = m_datasetList[j] as FactorDataset;
                         if (oldName.Name == newName.Name)
                         {
                             m_datasetMapping[oldName.Index] = j;
@@ -152,7 +152,7 @@ namespace MultiAlignCore.Data.Factors
             /// 			
             var root = m_currentTree;
 
-            foreach (clsFactorDataset data in  m_datasetList)
+            foreach (FactorDataset data in  m_datasetList)
             {
                 var tempRootNode = root;
                 var createNew = false;
@@ -160,7 +160,7 @@ namespace MultiAlignCore.Data.Factors
                 ///
                 /// Foreach factor, find where the tree needs to branch.
                 /// 
-                foreach (clsFactor factor in m_factorList)
+                foreach (FactorData factor in m_factorList)
                 {
                     /// 
                     /// Get the factor value information
@@ -177,7 +177,7 @@ namespace MultiAlignCore.Data.Factors
                         /// 
                         /// The last node should be the one we need to examine against.
                         /// 
-                        var node = tempRootNode.Children[tempRootNode.Children.Count - 1] as classTreeNode;
+                        var node = tempRootNode.Children[tempRootNode.Children.Count - 1] as TreeNode;
                         if (node.Name != factorValue)
                             createNew = true;
                         else
@@ -189,7 +189,7 @@ namespace MultiAlignCore.Data.Factors
                     }
                     if (createNew)
                     {
-                        var newNode = new classTreeNode();
+                        var newNode = new TreeNode();
                         newNode.Name = factorValue;
                         newNode.Parent = tempRootNode;
                         newNode.Level = i;
@@ -202,7 +202,7 @@ namespace MultiAlignCore.Data.Factors
                 /// 
                 /// Add the dataset 
                 /// 
-                var dataNode = new classTreeNode();
+                var dataNode = new TreeNode();
                 dataNode.Name = data.Name;
                 dataNode.Parent = tempRootNode;
                 dataNode.Level = i;
@@ -221,13 +221,13 @@ namespace MultiAlignCore.Data.Factors
         /// <returns>0 for equal, 1 for x > y, -1 for y > x</returns>
         public int Compare(object x, object y)
         {
-            var data1 = x as clsFactorDataset;
-            var data2 = y as clsFactorDataset;
+            var data1 = x as FactorDataset;
+            var data2 = y as FactorDataset;
 
             /// 
             /// We have to look at all the factor information
             /// 
-            foreach (clsFactor factor in m_factorList)
+            foreach (FactorData factor in m_factorList)
             {
                 var factorValue1 = data1.Values[factor.Name] as string;
                 var factorValue2 = data2.Values[factor.Name] as string;
@@ -273,13 +273,13 @@ namespace MultiAlignCore.Data.Factors
 
         public object Clone()
         {
-            var newTree = new classFactorTree();
-            foreach (clsFactor o in Factors)
+            var newTree = new FactorTree();
+            foreach (FactorData o in Factors)
             {
                 newTree.Factors.Add(o);
             }
 
-            foreach (clsFactorDataset data in  Data)
+            foreach (FactorDataset data in  Data)
             {
                 newTree.Data.Add(data);
             }
@@ -300,7 +300,7 @@ namespace MultiAlignCore.Data.Factors
     /// <summary>
     ///     Describes a factor or group entity.  Holds a collection of factor values with their sorted keys.
     /// </summary>
-    public class clsFactor : ICloneable
+    public class FactorData : ICloneable
     {
         /// <summary>
         ///     Name of the factor.
@@ -321,7 +321,7 @@ namespace MultiAlignCore.Data.Factors
         ///     Constructor for the factor.  Name is the key of the factor.
         /// </summary>
         /// <param name="name">Key for use in the collection</param>
-        public clsFactor(string name)
+        public FactorData(string name)
         {
             m_name = name;
             m_factorValues = null;
@@ -333,7 +333,7 @@ namespace MultiAlignCore.Data.Factors
         /// </summary>
         /// <param name="name">Key for use in the collection.</param>
         /// <param name="factorValues">Collection of sorted-factor values.</param>
-        public clsFactor(string name, StringCollection factorValues)
+        public FactorData(string name, StringCollection factorValues)
         {
             m_name = name;
             m_factorValues = new Hashtable();
@@ -383,7 +383,7 @@ namespace MultiAlignCore.Data.Factors
 
         public object Clone()
         {
-            var newFactor = new clsFactor(Name);
+            var newFactor = new FactorData(Name);
             foreach (string key in m_factorValues.Keys)
             {
                 newFactor.Values.Add(key, m_factorValues[key]);
@@ -400,7 +400,7 @@ namespace MultiAlignCore.Data.Factors
     /// <summary>
     ///     Describes a dataset with some factor information.
     /// </summary>
-    public class clsFactorDataset : ICloneable
+    public class FactorDataset : ICloneable
     {
         private string m_datasetName;
         private Hashtable m_factorKeys;
@@ -411,7 +411,7 @@ namespace MultiAlignCore.Data.Factors
         /// </summary>
         /// <param name="name">Name of the dataset</param>
         /// <param name="keys">Factor values of </param>
-        public clsFactorDataset(string name, Hashtable keys)
+        public FactorDataset(string name, Hashtable keys)
         {
             m_datasetName = name;
             m_factorKeys = keys;
@@ -454,7 +454,7 @@ namespace MultiAlignCore.Data.Factors
                 newTable.Add(o, m_factorKeys[o]);
             }
 
-            var newData = new clsFactorDataset(Name, newTable);
+            var newData = new FactorDataset(Name, newTable);
             newData.Name = Name;
             newData.Index = Index;
 

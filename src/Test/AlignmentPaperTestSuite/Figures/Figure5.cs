@@ -244,7 +244,7 @@ namespace AlignmentPaperTestSuite.Figures
                                     ISpectraProvider        providerY,
                                     IFeatureAligner<IEnumerable<UMCLight>,
                                         IEnumerable<UMCLight>,
-                                        classAlignmentData> aligner,
+                                        AlignmentData> aligner,
                                     IClusterer<UMCLight, UMCClusterLight> clusterer,
                                     string matchPath,
                                     string errorPath)

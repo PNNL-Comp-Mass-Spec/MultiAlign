@@ -1,6 +1,7 @@
 ﻿#region
 
 using System.Collections.Generic;
+using System.Linq;
 using Mage;
 using MultiAlignCore.Algorithms.Options;
 using PNNLOmics.Data;
@@ -36,11 +37,9 @@ namespace MultiAlignCore.IO.MTDB
             
 
 
-            var tags =
-                sink.MassTags.FindAll(
-                    delegate(MassTagLight x) { return x.ObservationCount >= m_options.MinimumObservationCountFilter; });
+            var tags = sink.MassTags.Where(x => x.ObservationCount >= m_options.MinimumObservationCountFilter);
 
-            database.AddMassTagsAndProteins(tags, new Dictionary<int, List<Protein>>());
+            database.AddMassTagsAndProteins(tags.ToList(), new Dictionary<int, List<Protein>>());
 
             // Fill in logic to read new type of mass tag database.
             return database;

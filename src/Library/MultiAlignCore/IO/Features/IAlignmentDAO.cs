@@ -6,7 +6,7 @@ using MultiAlignCore.Data.Alignment;
 
 namespace MultiAlignCore.IO.Features
 {
-    public interface IAlignmentDAO : IGenericDAO<classAlignmentData>
+    public interface IAlignmentDAO : IGenericDAO<AlignmentData>
     {
         void ClearAll();
     }

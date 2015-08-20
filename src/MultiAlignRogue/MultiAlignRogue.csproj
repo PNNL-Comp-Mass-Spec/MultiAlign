@@ -163,6 +163,8 @@
     </Compile>
     <Compile Include="Alignment\AlignmentViewFactory.cs" />
     <Compile Include="Alignment\AlignmentViewModel.cs" />
+    <Compile Include="Alignment\IAlignmentWindowFactory.cs" />
+    <Compile Include="Alignment\LCMSFeatureAligner.cs" />
     <Compile Include="Clustering\ChargeStateDistributionWindow.xaml.cs">
       <DependentUpon>ChargeStateDistributionWindow.xaml</DependentUpon>
     </Compile>
@@ -177,31 +179,36 @@
     <Compile Include="Clustering\ClusterViewModel.cs" />
     <Compile Include="Clustering\IClusterViewFactory.cs" />
     <Compile Include="Clustering\XicPlotViewModel.cs" />
-    <Compile Include="DMS\DmsLookupUtility.cs" />
     <Compile Include="DMS\DmsDatasetViewModel.cs" />
+    <Compile Include="DMS\DmsLookupUtility.cs" />
     <Compile Include="DMS\DmsLookupView.xaml.cs">
       <DependentUpon>DmsLookupView.xaml</DependentUpon>
     </Compile>
     <Compile Include="DMS\DmsLookupViewModel.cs" />
     <Compile Include="Feature Finding\FeatureFindingSettingsViewModel.cs" />
     <Compile Include="Feature Finding\FeaturePoint.cs" />
-    <Compile Include="Alignment\IAlignmentWindowFactory.cs" />
     <Compile Include="Feature Finding\IFeatureWindowFactory.cs" />
-    <Compile Include="Alignment\LCMSFeatureAligner.cs" />
     <Compile Include="Feature Finding\MSFeatureView.xaml.cs">
       <DependentUpon>MSFeatureView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Feature Finding\MSFeatureViewFactory.cs" />
     <Compile Include="Feature Finding\MSFeatureViewModel.cs" />
+    <Compile Include="Utils\PlotViewModelBase.cs" />
+    <Compile Include="Utils\Throttler.cs" />
+    <Compile Include="ViewModels\ChargeStateViewModel.cs" />
+    <Compile Include="ViewModels\UMCLightViewModel.cs" />
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MainViewModel.cs" />
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="NewProjectViewModel.cs" />
     <Compile Include="NewProjectWindow.xaml.cs">
       <DependentUpon>NewProjectWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\ChargeStateViewModel.cs" />
-    <Compile Include="Utils\PlotViewModelBase.cs" />
     <Compile Include="RogueProject.cs" />
-    <Compile Include="Utils\Throttler.cs" />
-    <Compile Include="ViewModels\UMCLightViewModel.cs" />
     <Page Include="Alignment\AlignmentView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -222,15 +229,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="App.xaml.cs">
-      <DependentUpon>App.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="MainViewModel.cs" />
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
     <Page Include="Feature Finding\MSFeatureView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

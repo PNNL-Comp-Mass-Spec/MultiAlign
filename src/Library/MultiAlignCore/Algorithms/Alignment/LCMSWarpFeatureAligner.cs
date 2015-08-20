@@ -17,8 +17,8 @@ using PNNLOmics.Data.MassTags;
 namespace MultiAlignCore.Algorithms.Alignment
 {
     public class LcmsWarpFeatureAligner :
-        IFeatureAligner<IEnumerable<UMCLight>, IEnumerable<UMCLight>, classAlignmentData>,
-        IFeatureAligner<MassTagDatabase, IEnumerable<UMCLight>, classAlignmentData>
+        IFeatureAligner<IEnumerable<UMCLight>, IEnumerable<UMCLight>, AlignmentData>,
+        IFeatureAligner<MassTagDatabase, IEnumerable<UMCLight>, AlignmentData>
     {
         public event EventHandler<ProgressNotifierArgs> Progress;
 
@@ -61,7 +61,7 @@ namespace MultiAlignCore.Algorithms.Alignment
         /// <summary>
         ///     Aligns a dataset to a mass tag database.
         /// </summary>
-        public classAlignmentData Align(MassTagDatabase massTagDatabase,
+        public AlignmentData Align(MassTagDatabase massTagDatabase,
             IEnumerable<UMCLight> features)
         {
 
@@ -94,7 +94,7 @@ namespace MultiAlignCore.Algorithms.Alignment
         /// <summary>
         ///     Aligns a dataset to a dataset
         /// </summary>
-        public classAlignmentData Align(IEnumerable<UMCLight> baselineFeatures,
+        public AlignmentData Align(IEnumerable<UMCLight> baselineFeatures,
             IEnumerable<UMCLight> features)
         {
             var alignmentProcessor = new LcmsWarpAlignmentProcessor
@@ -132,7 +132,7 @@ namespace MultiAlignCore.Algorithms.Alignment
         /// <summary>
         ///     Aligns the dataset to the data stored in the alignment processor.
         /// </summary>
-        private classAlignmentData AlignFeatures(LcmsWarpAlignmentProcessor alignmentProcessor,
+        private AlignmentData AlignFeatures(LcmsWarpAlignmentProcessor alignmentProcessor,
             IEnumerable<UMCLight> features,
             LcmsWarpAlignmentOptions alignmentOptions)
         {
@@ -231,7 +231,7 @@ namespace MultiAlignCore.Algorithms.Alignment
             var residualData = alignmentProcessor.GetResidualData();
 
             // Set all of the data now 
-            var alignmentData = new classAlignmentData
+            var alignmentData = new AlignmentData
             {
                 massErrorHistogram = massErrorHistogram,
                 driftErrorHistogram = driftErrorHistogram,
@@ -277,8 +277,8 @@ namespace MultiAlignCore.Algorithms.Alignment
             var threshold = features[Math.Min(features.Count - 1, Math.Max(0, total))].AbundanceSum;
 
             // Filters features below a certain threshold.
-            var filteredFeatures = features.FindAll(feature => feature.AbundanceSum >= threshold);
-            return filteredFeatures;
+            var filteredFeatures = features.Where(feature => feature.AbundanceSum >= threshold);
+            return filteredFeatures.ToList();
         }
 
     }

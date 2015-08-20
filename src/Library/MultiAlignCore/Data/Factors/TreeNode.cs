@@ -6,9 +6,9 @@ using System.Collections;
 
 namespace MultiAlignCore.Data.Factors
 {
-    public class classTreeNode
+    public class TreeNode
     {
-        private classTreeNode m_parent;
+        private TreeNode m_parent;
         private ArrayList m_children;
         private long m_level;
         private long m_idNumber;
@@ -16,12 +16,12 @@ namespace MultiAlignCore.Data.Factors
         private string m_groupIDName;
         private string m_name;
 
-        public classTreeNode()
+        public TreeNode()
         {
             Init();
         }
 
-        public classTreeNode(classTreeNode parent)
+        public TreeNode(TreeNode parent)
         {
             Init();
             m_parent = parent;
@@ -81,7 +81,7 @@ namespace MultiAlignCore.Data.Factors
             set { m_idNumber = value; }
         }
 
-        public classTreeNode Parent
+        public TreeNode Parent
         {
             get { return m_parent; }
             set { m_parent = value; }

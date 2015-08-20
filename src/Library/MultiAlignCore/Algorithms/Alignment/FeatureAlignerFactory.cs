@@ -22,12 +22,12 @@ namespace MultiAlignCore.Algorithms.Alignment
 
         public static double Bandwidth { get; set; }
 
-        public static IFeatureAligner<IEnumerable<UMCLight>, IEnumerable<UMCLight>, classAlignmentData>
+        public static IFeatureAligner<IEnumerable<UMCLight>, IEnumerable<UMCLight>, AlignmentData>
             CreateDatasetAligner(FeatureAlignmentType type,
                 LcmsWarpAlignmentOptions options,
                 SpectralOptions spectralOptions)
         {
-            IFeatureAligner<IEnumerable<UMCLight>, IEnumerable<UMCLight>, classAlignmentData> aligner = null;
+            IFeatureAligner<IEnumerable<UMCLight>, IEnumerable<UMCLight>, AlignmentData> aligner = null;
             switch (type)
             {
                 case FeatureAlignmentType.LCMS_WARP:
@@ -44,12 +44,12 @@ namespace MultiAlignCore.Algorithms.Alignment
             return aligner;
         }
 
-        public static IFeatureAligner<MassTagDatabase, IEnumerable<UMCLight>, classAlignmentData> CreateDatabaseAligner(
+        public static IFeatureAligner<MassTagDatabase, IEnumerable<UMCLight>, AlignmentData> CreateDatabaseAligner(
             FeatureAlignmentType type,
             LcmsWarpAlignmentOptions options,
             SpectralOptions spectralOptions)
         {
-            IFeatureAligner<MassTagDatabase, IEnumerable<UMCLight>, classAlignmentData> aligner = null;
+            IFeatureAligner<MassTagDatabase, IEnumerable<UMCLight>, AlignmentData> aligner = null;
 
             switch (type)
             {

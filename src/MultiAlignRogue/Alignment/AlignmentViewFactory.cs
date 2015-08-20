@@ -8,7 +8,7 @@
         {
 
         }
-        public void CreateNewWindow(classAlignmentData alignment)
+        public void CreateNewWindow(AlignmentData alignment)
         {
             AlignmentView window = new AlignmentView()
             {

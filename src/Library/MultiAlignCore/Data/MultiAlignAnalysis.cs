@@ -29,7 +29,7 @@ namespace MultiAlignCore.Data
             MassTagDatabase = new MassTagDatabase();
 
             // Alignment options and data.
-            AlignmentData = new List<classAlignmentData>();
+            AlignmentData = new List<AlignmentData>();
             MatchResults = null;
         }
 
@@ -68,12 +68,12 @@ namespace MultiAlignCore.Data
         /// <summary>
         ///     Gets or sets the cluster alignment data.
         /// </summary>
-        public classAlignmentData ClusterAlignmentData { get; set; }
+        public AlignmentData ClusterAlignmentData { get; set; }
 
         /// <summary>
         ///     Gets or sets the alignment data.
         /// </summary>
-        public List<classAlignmentData> AlignmentData { get; set; }
+        public List<AlignmentData> AlignmentData { get; set; }
 
         /// <summary>
         ///     Gets or sets the analysis meta-data.

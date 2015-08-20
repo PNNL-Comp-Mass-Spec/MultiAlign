@@ -52,7 +52,7 @@ namespace MultiAlignRogue.Alignment
 
         private DatasetInformationViewModel selectedBaseline;
 
-        private List<classAlignmentData> alignmentInformation;
+        private List<AlignmentData> alignmentInformation;
 
         public AlignmentSettingsViewModel(MultiAlignAnalysis analysis,
                                           FeatureLoader featureCache,
@@ -69,7 +69,7 @@ namespace MultiAlignRogue.Alignment
             this.AlignmentAlgorithms = new ObservableCollection<FeatureAlignmentType>(
                                            Enum.GetValues(typeof(FeatureAlignmentType)).Cast<FeatureAlignmentType>());
             this.selectedDatasets = new ReadOnlyCollection<DatasetInformationViewModel>(new List<DatasetInformationViewModel>());
-            this.alignmentInformation = new List<classAlignmentData>();
+            this.alignmentInformation = new List<AlignmentData>();
 
             this.MessengerInstance.Register<PropertyChangedMessage<IReadOnlyCollection<DatasetInformationViewModel>>>(this, sds =>
             {
@@ -244,7 +244,7 @@ namespace MultiAlignRogue.Alignment
                 }
 
                 IList<UMCLight> features = this.featureCache.Providers.FeatureCache.FindByDatasetId(file.DatasetId);
-                classAlignmentData alignment = new classAlignmentData();
+                AlignmentData alignment = new AlignmentData();
                 if (ShouldAlignToBaseline)
                 {
                     alignment = this.aligner.AlignToDataset(ref features, file.Dataset, baselineFeatures);

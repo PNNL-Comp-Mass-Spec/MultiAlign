@@ -152,128 +152,125 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </ApplicationDefinition>
-    <Compile Include="Commands\BaseCommand.cs" />
-    <Compile Include="Commands\BrowseSaveFileCommand.cs" />
-    <Compile Include="Commands\BrowseOpenFileCommand.cs" />
-    <Compile Include="Commands\BrowseFolderCommand.cs" />
     <Compile Include="Commands\Clusters\ClusterExportCommand.cs" />
     <Compile Include="Commands\Datasets\ShowDatasetDetailCommand.cs" />
     <Compile Include="Commands\Plotting\FeatureDisplayCommand.cs" />
     <Compile Include="Commands\Plotting\PictureDisplayCommand.cs" />
-    <Compile Include="Commands\Viewers\StartNewAnalysisCommand.cs" />
     <Compile Include="Commands\Viewers\LoadExistingAnalysisCommand.cs" />
     <Compile Include="Commands\Viewers\LoadRecentAnalysisCommand.cs" />
+    <Compile Include="Commands\Viewers\StartNewAnalysisCommand.cs" />
     <Compile Include="Commands\Wizard\AnalysisBackCommand.cs" />
     <Compile Include="Commands\Wizard\AnalysisCancelCommand.cs" />
     <Compile Include="Commands\Wizard\AnalysisNextCommand.cs" />
+    <Compile Include="Commands\BaseCommand.cs" />
+    <Compile Include="Commands\BrowseFolderCommand.cs" />
+    <Compile Include="Commands\BrowseOpenFileCommand.cs" />
+    <Compile Include="Commands\BrowseSaveFileCommand.cs" />
+    <Compile Include="Converters\AnalysisStepVisibilityConverter.cs" />
     <Compile Include="Converters\BooleanToDataGridVisibilityModeConverter.cs" />
     <Compile Include="Converters\BoolInverter.cs" />
-    <Compile Include="Converters\BoolVisibilityConverter.cs" />
     <Compile Include="Converters\BoolListSizeConverter.cs" />
-    <Compile Include="Converters\AnalysisStepVisibilityConverter.cs" />
+    <Compile Include="Converters\BoolVisibilityConverter.cs" />
     <Compile Include="Converters\BoolWidthConverter.cs" />
-    <Compile Include="Converters\HasPathConverter.cs" />
-    <Compile Include="Converters\DoubleToStringConverter.cs" />
-    <Compile Include="Converters\IntToStringConverter.cs" />
-    <Compile Include="Converters\ViewStateVisibilityConverter.cs" />
-    <Compile Include="Converters\ViewStateIsSelectedConverter.cs" />
-    <Compile Include="Converters\IntVisibilityConverter.cs" />
-    <Compile Include="Converters\OrientationMsMsConverter.cs" />
     <Compile Include="Converters\DatasetColorConverter.cs" />
+    <Compile Include="Converters\DatasetCountConverter.cs" />
     <Compile Include="Converters\DatasetFolderPathConverter.cs" />
     <Compile Include="Converters\DatasetPathConverter.cs" />
-    <Compile Include="Converters\SearchOptionConverter.cs" />
     <Compile Include="Converters\DatasetSelectedConverter.cs" />
-    <Compile Include="Converters\DatasetCountConverter.cs" />
+    <Compile Include="Converters\DoubleToStringConverter.cs" />
+    <Compile Include="Converters\HasPathConverter.cs" />
+    <Compile Include="Converters\IntToStringConverter.cs" />
+    <Compile Include="Converters\IntVisibilityConverter.cs" />
+    <Compile Include="Converters\OrientationMsMsConverter.cs" />
+    <Compile Include="Converters\SearchOptionConverter.cs" />
     <Compile Include="Converters\UriToBitmapConverter.cs" />
-    <Compile Include="Data\LogicLayerViewModel.cs" />
-    <Compile Include="Data\OpenAnalysisArgs.cs" />
+    <Compile Include="Converters\ViewStateIsSelectedConverter.cs" />
+    <Compile Include="Converters\ViewStateVisibilityConverter.cs" />
     <Compile Include="Data\States\AnalysisSetupState.cs" />
     <Compile Include="Data\States\AnalysisState.cs" />
-    <Compile Include="Data\ApplicationStatusMediator.cs" />
     <Compile Include="Data\States\ViewState.cs" />
+    <Compile Include="Data\ApplicationStatusMediator.cs" />
     <Compile Include="Data\DatasetFilterFactory.cs" />
     <Compile Include="Data\DatasetPlotLoader.cs" />
     <Compile Include="Data\ImageConverter.cs" />
+    <Compile Include="Data\LogicLayerViewModel.cs" />
     <Compile Include="Data\MultiAlignAnalysisValidator.cs" />
+    <Compile Include="Data\OpenAnalysisArgs.cs" />
     <Compile Include="Data\RecentAnalysis.cs" />
     <Compile Include="Data\StatusMessageWrapper.cs" />
     <Compile Include="Data\ThreadSafeDispatcher.cs" />
+    <Compile Include="IO\DatasetSearcher.cs" />
+    <Compile Include="IO\MultiAlignWorkspaceReader.cs" />
+    <Compile Include="IO\MultiAlignWorkspaceWriter.cs" />
+    <Compile Include="IO\SpectraLoader.cs" />
     <Compile Include="ViewModels\Charting\MsFeatureSpectraViewModel.cs" />
-    <Compile Include="ViewModels\Charting\PlotModelBase.cs" />
     <Compile Include="ViewModels\Charting\MsMsSpectraViewModel.cs" />
+    <Compile Include="ViewModels\Charting\PlotModelBase.cs" />
     <Compile Include="ViewModels\Charting\PositionArgs.cs" />
-    <Compile Include="ViewModels\Charting\UmcClusterHistogram.cs" />
+    <Compile Include="ViewModels\Charting\UmcClusterChargeHistogram.cs" />
     <Compile Include="ViewModels\Charting\XicViewModel.cs" />
+    <Compile Include="ViewModels\Databases\DatabasesViewModel.cs" />
+    <Compile Include="ViewModels\Databases\DmsDatabaseServerViewModel.cs" />
+    <Compile Include="ViewModels\Datasets\DatasetCollectionViewModel.cs" />
+    <Compile Include="ViewModels\Datasets\DatasetInformationViewModel.cs" />
     <Compile Include="ViewModels\Datasets\DatasetResolveCollectionViewModel.cs" />
     <Compile Include="ViewModels\Datasets\DatasetResolveMatchViewModel.cs" />
     <Compile Include="ViewModels\Features\ChargeStateViewModel.cs" />
-    <Compile Include="ViewModels\Instruments\InstrumentPresetFactory.cs" />
     <Compile Include="ViewModels\Features\SpectraSortOptions.cs" />
+    <Compile Include="ViewModels\Features\UMCClusterFilterViewModel.cs" />
+    <Compile Include="ViewModels\Features\UMCClusterIdentificationViewModel.cs" />
+    <Compile Include="ViewModels\Instruments\InstrumentPresetFactory.cs" />
     <Compile Include="ViewModels\Instruments\InstrumentPresets.cs" />
-    <Compile Include="ViewModels\IO\MassTagDatabaseOptionsViewModel.cs" />
-    <Compile Include="ViewModels\StateModeratorViewModel.cs" />
-    <Compile Include="IO\ManassaWorkspaceWriter.cs" />
-    <Compile Include="IO\DatasetSearcher.cs" />
-    <Compile Include="IO\ManassaWorkspaceReader.cs" />
-    <Compile Include="IO\SpectraLoader.cs" />
-    <Compile Include="ViewModels\RecentAnalysisViewModel.cs" />
-    <Compile Include="ViewModels\Viewers\ClusterViewModel.cs" />
-    <Compile Include="ViewModels\Viewers\GlobalStatisticsViewModel.cs" />
-    <Compile Include="ViewModels\Wizard\AnalysisDatasetSelectionViewModel.cs" />
-    <Compile Include="ViewModels\Wizard\AnalysisGraphNodeViewModel.cs" />
-    <Compile Include="ViewModels\Wizard\AnalysisLoadingViewModel.cs" />
-    <Compile Include="ViewModels\Wizard\AnalysisNamingViewModel.cs" />
-    <Compile Include="ViewModels\Wizard\AnalysisRunningViewModel.cs" />
-    <Compile Include="ViewModels\Wizard\AnalysisSetupViewModel.cs" />
-    <Compile Include="ViewModels\AnalysisViewModel.cs" />
-    <Compile Include="ViewModels\Wizard\AnalysisOptionsViewModel.cs" />
-    <Compile Include="ViewModels\Datasets\DatasetCollectionViewModel.cs" />
-    <Compile Include="ViewModels\Datasets\DatasetInformationViewModel.cs" />
-    <Compile Include="ViewModels\Viewers\GettingStartedViewModel.cs" />
-    <Compile Include="ViewModels\ImageViewModel.cs" />
+    <Compile Include="ViewModels\Instruments\InstrumentPresetViewModel.cs" />
     <Compile Include="ViewModels\IO\ClusterExportViewModel.cs" />
-    <Compile Include="ViewModels\MainViewModel.cs" />
-    <Compile Include="ViewModels\MassTagMatchedViewModel.cs" />
-    <Compile Include="ViewModels\Spectra\MSSpectraViewModel.cs" />
-    <Compile Include="ViewModels\Proteins\PeptideViewModel.cs" />
-    <Compile Include="ViewModels\PictureViewModel.cs" />
+    <Compile Include="ViewModels\IO\MassTagDatabaseOptionsViewModel.cs" />
     <Compile Include="ViewModels\Plotting\FeaturesViewModel.cs" />
-    <Compile Include="ViewModels\Plotting\PlotDataViewModel.cs" />
+    <Compile Include="ViewModels\Plotting\PlotViewModel.cs" />
+    <Compile Include="ViewModels\Proteins\PeptideViewModel.cs" />
     <Compile Include="ViewModels\Proteins\ProteinViewModel.cs" />
-    <Compile Include="ViewModels\TreeView\IdentificationCollectionTreeViewModel.cs" />
+    <Compile Include="ViewModels\Spectra\MSSpectraViewModel.cs" />
+    <Compile Include="ViewModels\Spectra\UMCClusterSpectraViewModel.cs" />
     <Compile Include="ViewModels\TreeView\FeatureSelectedEventArgs.cs" />
     <Compile Include="ViewModels\TreeView\GenericCollectionTreeViewModel.cs" />
+    <Compile Include="ViewModels\TreeView\IdentificationCollectionTreeViewModel.cs" />
     <Compile Include="ViewModels\TreeView\MassTagCollectionMatchTreeViewModel.cs" />
+    <Compile Include="ViewModels\TreeView\MassTagMatchTreeViewModel.cs" />
     <Compile Include="ViewModels\TreeView\MassTagToClusterMatch.cs" />
     <Compile Include="ViewModels\TreeView\MassTagTreeViewModel.cs" />
     <Compile Include="ViewModels\TreeView\MsMsCollectionTreeViewModel.cs" />
     <Compile Include="ViewModels\TreeView\MsMsTreeViewModel.cs" />
-    <Compile Include="ViewModels\Databases\DatabasesViewModel.cs" />
-    <Compile Include="ViewModels\Databases\DmsDatabaseServerViewModel.cs" />
-    <Compile Include="ViewModels\TreeView\MassTagMatchTreeViewModel.cs" />
     <Compile Include="ViewModels\TreeView\PeptideCollectionTreeViewModel.cs" />
     <Compile Include="ViewModels\TreeView\PeptideTreeViewModel.cs" />
     <Compile Include="ViewModels\TreeView\StatisticTreeViewItem.cs" />
     <Compile Include="ViewModels\TreeView\TreeItemViewModel.cs" />
     <Compile Include="ViewModels\TreeView\UMCClusterCollectionTreeViewModel.cs" />
+    <Compile Include="ViewModels\TreeView\UMCClusterTreeViewModel.cs" />
     <Compile Include="ViewModels\TreeView\UMCCollectionTreeViewModel.cs" />
     <Compile Include="ViewModels\TreeView\UMCTreeViewModel.cs" />
-    <Compile Include="ViewModels\Features\UMCClusterFilterViewModel.cs" />
-    <Compile Include="ViewModels\Features\UMCClusterIdentificationViewModel.cs" />
-    <Compile Include="ViewModels\Spectra\UMCClusterSpectraViewModel.cs" />
-    <Compile Include="ViewModels\ViewModelBase.cs" />
+    <Compile Include="ViewModels\Viewers\ClusterDetailViewModel.cs" />
+    <Compile Include="ViewModels\Viewers\GettingStartedViewModel.cs" />
+    <Compile Include="ViewModels\Viewers\GlobalStatisticsViewModel.cs" />
     <Compile Include="ViewModels\Wizard\AnalysisBaselineSelectionViewModel.cs" />
-    <Compile Include="ViewModels\Instruments\InstrumentPresetViewModel.cs" />
+    <Compile Include="ViewModels\Wizard\AnalysisDatasetSelectionViewModel.cs" />
+    <Compile Include="ViewModels\Wizard\AnalysisGraphNodeViewModel.cs" />
+    <Compile Include="ViewModels\Wizard\AnalysisLoadingViewModel.cs" />
+    <Compile Include="ViewModels\Wizard\AnalysisNamingViewModel.cs" />
+    <Compile Include="ViewModels\Wizard\AnalysisOptionsViewModel.cs" />
+    <Compile Include="ViewModels\Wizard\AnalysisRunningViewModel.cs" />
+    <Compile Include="ViewModels\Wizard\AnalysisSetupViewModel.cs" />
     <Compile Include="ViewModels\Wizard\AnalysisStatusArgs.cs" />
     <Compile Include="ViewModels\Wizard\ExperimentPresetFactory.cs" />
     <Compile Include="ViewModels\Wizard\ExperimentPresets.cs" />
     <Compile Include="ViewModels\Wizard\ExperimentPresetViewModel.cs" />
     <Compile Include="ViewModels\Wizard\StacOptionsViewModel.cs" />
+    <Compile Include="ViewModels\AnalysisViewModel.cs" />
+    <Compile Include="ViewModels\ImageViewModel.cs" />
+    <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="ViewModels\MassTagMatchedViewModel.cs" />
+    <Compile Include="ViewModels\PictureViewModel.cs" />
+    <Compile Include="ViewModels\RecentAnalysisViewModel.cs" />
+    <Compile Include="ViewModels\StateModeratorViewModel.cs" />
+    <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="Windows\Controls\AdvancedOptionsWindow.xaml.cs">
       <DependentUpon>AdvancedOptionsWindow.xaml</DependentUpon>
     </Compile>
@@ -328,7 +325,6 @@
     <Compile Include="Windows\Viewers\Clusters\ClusterTree.xaml.cs">
       <DependentUpon>ClusterTree.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\TreeView\UMCClusterTreeViewModel.cs" />
     <Compile Include="Windows\Viewers\Clusters\UMCSummaryView.xaml.cs">
       <DependentUpon>UMCSummaryView.xaml</DependentUpon>
     </Compile>
@@ -431,7 +427,15 @@
     <Compile Include="Windows\Wizard\StacOptionsView.xaml.cs">
       <DependentUpon>StacOptionsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Workspace\Workspace.cs" />
+    <Compile Include="Windows\MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Workspace\MultiAlignWorkspace.cs" />
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Settings.cs" />
     <Page Include="Windows\Controls\AdvancedOptionsWindow.xaml">
       <SubType>Designer</SubType>
@@ -465,14 +469,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="App.xaml.cs">
-      <DependentUpon>App.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Windows\MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
     <Page Include="Windows\Plots\LargeFeatureView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -653,6 +649,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
