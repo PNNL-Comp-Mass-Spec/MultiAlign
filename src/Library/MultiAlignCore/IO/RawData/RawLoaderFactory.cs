@@ -32,12 +32,12 @@ namespace MultiAlignCore.IO.RawData
             // Otherwise create a new one.
             switch (extension.ToLower())
             {
-                case ".raw":
-                    reader = new ThermoRawDataFileReader();
-                    break;
-                case ".mzxml":
-                    reader = new MzXMLReader();
-                    break;
+                //case ".raw":
+                //    reader = new ThermoRawDataFileReader();
+                //    break;
+                //case ".mzxml":
+                //    reader = new MzXMLReader();
+                //    break;
                 case ".mzml":
                     reader = new InformedProteomicsReader();
                     break;

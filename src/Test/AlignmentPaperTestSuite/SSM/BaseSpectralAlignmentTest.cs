@@ -99,7 +99,7 @@ namespace AlignmentPaperTestSuite.SSM
         public List<UMCLight> FindFeatures(string rawFile, string featureFile)
         {
             List<UMCLight> features;
-            using (ISpectraProvider raw = new ThermoRawDataFileReader())
+            using (ISpectraProvider raw = new InformedProteomicsReader())
             {
                 // Read the raw file summary data...
                 raw.AddDataFile(rawFile, 0);
