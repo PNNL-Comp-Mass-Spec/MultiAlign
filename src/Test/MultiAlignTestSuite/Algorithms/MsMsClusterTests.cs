@@ -165,7 +165,7 @@ namespace MultiAlignTestSuite.Algorithms
             allFeatures.AddRange(aligneeFeatures);
 
             List<MsmsCluster> clusters = null;
-            using (var rawReader = new ThermoRawDataFileReader())
+            using (var rawReader = new InformedProteomicsReader())
             {
                 rawReader.AddDataFile(baselineInfo.Raw.Path, baselineInfo.DatasetId);
                 rawReader.AddDataFile(aligneeInfo.Raw.Path, aligneeInfo.DatasetId);

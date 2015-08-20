@@ -32,7 +32,7 @@ namespace MultiAlignTestSuite.Algorithms
 
         private MSSpectra GetSpectrum(string path, int scan)
         {
-            ISpectraProvider reader = new ThermoRawDataFileReader();
+            ISpectraProvider reader = new InformedProteomicsReader();
             reader.AddDataFile(path, 0);
             return GetSpectrum(reader, scan, 0);
         }

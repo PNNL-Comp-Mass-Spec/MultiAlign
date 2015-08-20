@@ -3,7 +3,7 @@
                    assembly="MultiAlignCore" 
                    namespace="MultiAlignCore.Data.Alignment">
 
-	<class name="classAlignmentData" table="T_AlignmentData" lazy="false">
+	<class name="AlignmentData" table="T_AlignmentData" lazy="false">
 		<composite-id>
 			<key-property name="DatasetID" column="Dataset_ID" type="int" />      
 		</composite-id>
