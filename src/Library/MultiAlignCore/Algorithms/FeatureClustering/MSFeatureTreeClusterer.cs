@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using MultiAlignCore.Algorithms.Chromatograms;
@@ -174,62 +175,88 @@ namespace MultiAlignCore.Algorithms.FeatureClustering
                 msFeature.Net = (Convert.ToDouble(msFeature.Scan) - minScan)/(maxScan - minScan);
             }
 
-            OnProgress("Filtering ambiguous features");
-            //rawMsFeatures = FilterMsFeatures(rawMsFeatures);
-
-            OnProgress("Clustering child features into potential UMC candidates");
-            // First cluster based on m/z finding the XIC's 
-            var features     = Cluster<TChildFeature, TParentFeature>(    rawMsFeatures, 
-                                                        mzSort,
-                                                        mzDiff,
-                                                        CompareMz,
-                                                        Tolerances.Mass).ToList();
-
-            var n = features.Count();
-            OnProgress(string.Format("Found {0} unique  child features from {1} total features", 
-                                            n,
-                                            rawMsFeatures.Count()));
-
-            OnProgress("Filtering Features");
-
-            // Then we group into UMC's for clustering across charge states...
-            if (features == null)
-                throw new InvalidDataException("No features were found from the input MS Feature list.");
-
-            OnProgress("Filtering poor features with no data.  Calculating statistics for the good ones.");
-            features = features.Where(x => x.MsFeatures.Count > 0).ToList();
-            foreach (var feature in features)
+            IEnumerable<TParentFeature> features;
+            using (var logger = new StreamWriter("msfeatureClusteringStats.txt", true))
             {
-                feature.CalculateStatistics(ClusterCentroidRepresentation.Median); 
-                feature.MassMonoisotopic = (feature.Mz * feature.ChargeState) - (SubAtomicParticleLibrary.MASS_PROTON * feature.ChargeState);                            
-            }
-            
-            // Here we should merge the XIC data...trying to find the best possible feature
-            // Note that at this point we dont have UMC's.  We only have features
-            // that are separated by mass , scan , and charge 
-            // so this method should interrogate each one of these....
-            if (SpectraProvider != null)
-            {                
-                OnProgress(string.Format("Building XIC's from child features"));
-                var generator = new XicCreator();
-                generator.Progress += generator_Progress;                
-                features = generator.CreateXic(features as List<UMCLight>, Tolerances.Mass, SpectraProvider) as List<TParentFeature>;
-                generator.Progress -= generator_Progress;
-            }
+                logger.WriteLine();
 
-            OnProgress(string.Format("Calculating statistics for each feature"));
-            foreach (var feature in features)
-            {
-                feature.CalculateStatistics(ClusterCentroidRepresentation.Median);
-                feature.Net = Convert.ToDouble(feature.Scan - minScan) / Convert.ToDouble(maxScan - minScan);
-            }
+                OnProgress("Filtering ambiguous features");
+                //rawMsFeatures = FilterMsFeatures(rawMsFeatures);
 
-            OnProgress(string.Format("Combining child feature charge states"));
-            features = Cluster<TParentFeature, TParentFeature>(features,
-                                    monoSort,
-                                    monoDiff,
-                                    CompareMonoisotopic,
-                                    Tolerances.Mass).ToList();
+                var stopWatch = new Stopwatch();
+
+                stopWatch.Start();
+                OnProgress("Clustering child features into potential UMC candidates");
+                // First cluster based on m/z finding the XIC's
+                //var clusterer = new MSFeatureSingleLinkageClustering<TChildFeature, TParentFeature>();
+                //features = clusterer.Cluster(rawMsFeatures);
+
+                features = Cluster<TChildFeature, TParentFeature>(rawMsFeatures,
+                                                            mzSort,
+                                                            mzDiff,
+                                                            CompareMz,
+                                                            Tolerances.Mass).ToList();
+
+                stopWatch.Stop();
+                logger.WriteLine("Initial isos clustering: {0}s", stopWatch.Elapsed.TotalSeconds);
+
+                var n = features.Count();
+                OnProgress(string.Format("Found {0} unique  child features from {1} total features",
+                                                n,
+                                                rawMsFeatures.Count()));
+
+                OnProgress("Filtering Features");
+
+                // Then we group into UMC's for clustering across charge states...
+                if (features == null)
+                    throw new InvalidDataException("No features were found from the input MS Feature list.");
+
+                OnProgress("Filtering poor features with no data.  Calculating statistics for the good ones.");
+                features = features.Where(x => x.MsFeatures.Count > 0).ToList();
+                foreach (var feature in features)
+                {
+                    feature.CalculateStatistics(ClusterCentroidRepresentation.Median);
+                    feature.MassMonoisotopic = (feature.Mz * feature.ChargeState) - (SubAtomicParticleLibrary.MASS_PROTON * feature.ChargeState);
+                }
+
+                stopWatch.Restart();
+
+                // Here we should merge the XIC data...trying to find the best possible feature
+                // Note that at this point we dont have UMC's.  We only have features
+                // that are separated by mass , scan , and charge 
+                // so this method should interrogate each one of these....
+                if (SpectraProvider != null)
+                {
+                    OnProgress(string.Format("Building XIC's from child features"));
+                    var generator = new XicCreator();
+                    generator.Progress += generator_Progress;
+                    features = generator.CreateXicNew(features as List<UMCLight>, Tolerances.Mass, SpectraProvider) as List<TParentFeature>;
+                    generator.Progress -= generator_Progress;
+                }
+
+                stopWatch.Stop();
+                logger.WriteLine("XIC creation: {0}s", stopWatch.Elapsed.TotalSeconds);
+
+                stopWatch.Restart();
+
+                OnProgress(string.Format("Calculating statistics for each feature"));
+                foreach (var feature in features)
+                {
+                    feature.CalculateStatistics(ClusterCentroidRepresentation.Median);
+                    feature.Net = Convert.ToDouble(feature.Scan - minScan) / Convert.ToDouble(maxScan - minScan);
+                }
+
+                OnProgress(string.Format("Combining child feature charge states"));
+
+                features = Cluster<TParentFeature, TParentFeature>(features,
+                                        monoSort,
+                                        monoDiff,
+                                        CompareMonoisotopic,
+                                        Tolerances.Mass).ToList();
+
+                stopWatch.Stop();
+                logger.WriteLine("Final clustering time: {0}", stopWatch.Elapsed.TotalSeconds);
+            }
 
             var id = 0;
             OnProgress(string.Format("Assigning unique feature id's to each feature."));

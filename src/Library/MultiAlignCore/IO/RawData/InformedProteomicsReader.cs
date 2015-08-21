@@ -330,6 +330,7 @@ namespace MultiAlignCore.IO.RawData
             {
                 var path = m_dataFiles[groupId];
                 var reader = PbfLcMsRun.GetLcMsRun(path);
+                ////var reader = InMemoryLcMsRun.GetLcMsRun(path);
 
                 m_readers.Add(groupId, reader);
             }
