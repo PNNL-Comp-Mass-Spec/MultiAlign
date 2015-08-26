@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MultiAlign.ViewModels.Charting;
+using MultiAlignCore.Data.Features;
 using NHibernate.Util;
 using OxyPlot.Annotations;
 using OxyPlot.Series;
@@ -19,8 +20,7 @@ namespace MultiAlignRogue.Clustering
     using OxyPlot;
     using OxyPlot.Axes;
 
-    using PNNLOmics.Data.Features;
-
+    
     using QuadTreeLib;
 
     public class ClusterPlotViewModel : ViewModelBase

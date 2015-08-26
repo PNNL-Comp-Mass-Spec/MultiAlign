@@ -6,7 +6,6 @@ using MultiAlignTestSuite.IO;
 using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.Features.Hibernate;
 using MultiAlignTestSuite.Algorithms;
-using PNNLOmics.Data.Features;
 
 namespace MultiAlignTestSuite
 {

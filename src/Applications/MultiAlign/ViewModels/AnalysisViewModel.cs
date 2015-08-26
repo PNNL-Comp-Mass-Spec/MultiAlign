@@ -21,8 +21,6 @@ using MultiAlignCore.Drawing;
 using MultiAlignCore.Extensions;
 using MultiAlignCore.IO;
 using OxyPlot;
-using PNNLOmics.Data;
-using PNNLOmics.Data.Features;
 
 namespace MultiAlign.ViewModels
 {

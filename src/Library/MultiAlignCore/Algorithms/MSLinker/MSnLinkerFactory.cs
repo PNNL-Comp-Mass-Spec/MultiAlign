@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using PNNLOmics.Algorithms.FeatureMatcher.MSnLinker;
 
 namespace MultiAlignCore.Algorithms
 {

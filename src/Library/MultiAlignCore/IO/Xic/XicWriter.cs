@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using PNNLOmics.Data.Features;
 using System.IO;
-using PNNLOmics.Data;
 
 namespace MultiAlignCore.IO.Features
 {
@@ -24,7 +22,7 @@ namespace MultiAlignCore.IO.Features
 
                         Chromatogram gram = feature.ChargeStateChromatograms[charge];
 
-                        foreach (PNNLOmics.Data.XYData point in gram.Points)
+                        foreach (XYData point in gram.Points)
                         {
                             writer.WriteLine("{0}\t{1}\t{2}", gram.Mz, point.X, point.Y);
                         }                        

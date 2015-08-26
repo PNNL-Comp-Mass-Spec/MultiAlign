@@ -4,7 +4,6 @@ using System.Data.SQLite;
 using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.Features.Hibernate;
 using NUnit.Framework;
-using PNNLOmics.Data.Features;
 
 namespace MultiAlignTestSuite
 {

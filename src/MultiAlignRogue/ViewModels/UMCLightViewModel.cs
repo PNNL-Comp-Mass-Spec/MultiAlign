@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
+using MultiAlignCore.Data.Features;
 using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO;
 using OxyPlot;
 using OxyPlot.Series;
-using PNNLOmics.Data.Features;
 
 namespace MultiAlignRogue.ViewModels
 {

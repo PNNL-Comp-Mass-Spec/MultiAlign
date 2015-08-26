@@ -1,6 +1,5 @@
 ﻿using MultiAlignCore.Algorithms.FeatureFinding;
 using NUnit.Framework;
-using PNNLOmicsIO.IO;
 using System;
 using System.Linq;
 

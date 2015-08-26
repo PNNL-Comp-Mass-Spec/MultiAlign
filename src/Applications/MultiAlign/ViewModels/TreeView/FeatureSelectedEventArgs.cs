@@ -1,6 +1,7 @@
 ﻿using System;
-using PNNLOmics.Data;
-using PNNLOmics.Data.Features;
+using MultiAlignCore.Data;
+using MultiAlignCore.Data.Features;
+using MultiAlignCore.Data.MassTags;
 
 namespace MultiAlign.ViewModels.TreeView
 {

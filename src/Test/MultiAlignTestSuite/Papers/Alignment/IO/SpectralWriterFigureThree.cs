@@ -1,8 +1,8 @@
 ﻿#region
 
 using System.Linq;
-using PNNLOmics.Algorithms.Alignment;
-using PNNLOmics.Algorithms.Alignment.SpectralMatching;
+using MultiAlignCore.Algorithms.Alignment;
+using MultiAlignCore.Algorithms.Alignment.SpectralMatching;
 
 #endregion
 

@@ -4,17 +4,15 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using AlignmentPaperTestSuite.IO;
+using MultiAlignCore.Algorithms.Alignment.SpectralMatching;
+using MultiAlignCore.Algorithms.Regression;
+using MultiAlignCore.Algorithms.SpectralProcessing;
+using MultiAlignCore.Data;
+using MultiAlignCore.Data.Features;
 using MultiAlignCore.IO.Features;
-using MultiAlignTestSuite.Papers.Alignment;
-using MultiAlignTestSuite.Papers.Alignment.IO;
+using MultiAlignCore.IO.TextFiles;
 using NUnit.Framework;
-using PNNLOmics.Algorithms.Alignment.SpectralMatches;
-using PNNLOmics.Algorithms.Alignment.SpectralMatching;
-using PNNLOmics.Algorithms.Regression;
-using PNNLOmics.Algorithms.SpectralProcessing;
-using PNNLOmics.Data;
-using PNNLOmics.Data.Features;
-using PNNLOmicsIO.IO;
 
 #endregion
 

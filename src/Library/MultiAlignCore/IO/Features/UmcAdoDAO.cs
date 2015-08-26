@@ -3,7 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
-using PNNLOmics.Data.Features;
+using MultiAlignCore.Data.Features;
 
 #endregion
 

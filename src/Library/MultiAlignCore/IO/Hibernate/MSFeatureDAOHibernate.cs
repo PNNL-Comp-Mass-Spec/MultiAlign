@@ -1,9 +1,9 @@
 #region
 
 using System.Collections.Generic;
+using MultiAlignCore.Data.Features;
 using MultiAlignCore.IO.Features;
 using NHibernate.Criterion;
-using PNNLOmics.Data.Features;
 
 #endregion
 

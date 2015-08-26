@@ -3,9 +3,9 @@
 using System.Collections.Generic;
 using MultiAlignCore.Algorithms.Features;
 using MultiAlignCore.Data;
+using MultiAlignCore.Data.Features;
+using MultiAlignCore.Data.MassTags;
 using MultiAlignCore.Data.MetaData;
-using PNNLOmics.Data.Features;
-using PNNLOmics.Data.MassTags;
 
 #endregion
 

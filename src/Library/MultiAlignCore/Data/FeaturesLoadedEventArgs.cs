@@ -2,8 +2,8 @@
 
 using System;
 using System.Collections.Generic;
+using MultiAlignCore.Data.Features;
 using MultiAlignCore.Data.MetaData;
-using PNNLOmics.Data.Features;
 
 #endregion
 

@@ -2,11 +2,11 @@
 
 using System;
 using System.Collections.Generic;
-using PNNLOmics.Algorithms.Solvers;
-using PNNLOmics.Algorithms.Solvers.LevenburgMarquadt;
-using PNNLOmics.Algorithms.Solvers.LevenburgMarquadt.BasisFunctions;
-using PNNLOmics.Data;
-using PNNLOmics.Data.Features;
+using MultiAlignCore.Algorithms.Solvers;
+using MultiAlignCore.Algorithms.Solvers.LevenburgMarquadt;
+using MultiAlignCore.Algorithms.Solvers.LevenburgMarquadt.BasisFunctions;
+using MultiAlignCore.Data;
+using MultiAlignCore.Data.Features;
 
 #endregion
 

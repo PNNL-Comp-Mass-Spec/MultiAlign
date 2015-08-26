@@ -9,12 +9,6 @@ using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.Features.Hibernate;
 using MultiAlignCore.IO.RawData;
 using NUnit.Framework;
-using PNNLOmics.Algorithms;
-using PNNLOmics.Algorithms.FeatureClustering;
-using PNNLOmics.Data;
-using PNNLOmics.Data.Features;
-using PNNLOmics.Extensions;
-using PNNLOmicsIO.IO;
 
 #endregion
 

@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using PNNLOmics.Data;
+using MultiAlignCore.Data.MassTags;
 
 namespace MultiAlign.Windows.Viewers.Proteins
 {

@@ -1,7 +1,7 @@
 using System;
-using PNNLOmics.Data;
+using MultiAlignCore.Data;
 
-namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
+namespace AlignmentPaperTestSuite
 {
     public class PeptideMatch
     {

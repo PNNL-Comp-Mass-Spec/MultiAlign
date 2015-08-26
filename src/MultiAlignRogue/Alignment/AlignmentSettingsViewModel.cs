@@ -1,12 +1,12 @@
 ﻿using System.Windows.Navigation;
 using MultiAlign.ViewModels.Databases;
 using MultiAlign.Windows.Viewers.Databases;
+using MultiAlignCore.Algorithms.Alignment.LcmsWarp;
+using MultiAlignCore.Data.Features;
 using MultiAlignCore.Data.MassTags;
 using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.MTDB;
-using PNNLOmics.Data.Features;
-using PNNLOmics.Data.MassTags;
 
 namespace MultiAlignRogue.Alignment
 {
@@ -29,8 +29,6 @@ namespace MultiAlignRogue.Alignment
     using MultiAlignCore.Data.Alignment;
     using MultiAlignCore.IO;
     using MultiAlignCore.IO.Hibernate;
-
-    using PNNLOmics.Algorithms.Alignment.LcmsWarp;
 
     public class AlignmentSettingsViewModel : ViewModelBase
     {

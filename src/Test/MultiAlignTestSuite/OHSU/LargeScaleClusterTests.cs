@@ -2,16 +2,16 @@
 
 using System;
 using System.Collections.Generic;
+using MultiAlignCore.Algorithms.Distance;
+using MultiAlignCore.Data;
+using MultiAlignCore.Data.Features;
 using MultiAlignCore.IO;
 using MultiAlignCore.IO.Features;
 using NUnit.Framework;
-using PNNLOmics.Algorithms.Distance;
-using PNNLOmics.Data;
-using PNNLOmics.Data.Features;
 
 #endregion
 
-namespace PNNLOmics.UnitTests.AlgorithmTests.FeatureClustering
+namespace MultiAlignTestSuite.OHSU
 {
     [TestFixture]
     public class LargeScaleClusterTests

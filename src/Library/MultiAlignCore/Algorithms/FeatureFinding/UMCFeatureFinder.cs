@@ -1,7 +1,4 @@
-﻿using PNNLOmics.Algorithms.FeatureClustering;
-using PNNLOmics.Data;
-using PNNLOmics.Data.Features;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 

@@ -3,14 +3,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using MultiAlignCore.Algorithms.Alignment.LcmsWarp;
+using MultiAlignCore.Data;
 using MultiAlignCore.Data.Alignment;
 using MultiAlignCore.Data.Features;
-using PNNLOmics.Algorithms;
-using PNNLOmics.Algorithms.Alignment;
-using PNNLOmics.Algorithms.Alignment.LcmsWarp;
-using PNNLOmics.Data;
-using PNNLOmics.Data.Features;
-using PNNLOmics.Data.MassTags;
+using MultiAlignCore.Data.MassTags;
 
 #endregion
 

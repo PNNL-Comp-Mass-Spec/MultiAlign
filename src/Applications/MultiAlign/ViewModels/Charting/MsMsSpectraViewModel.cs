@@ -1,8 +1,8 @@
-﻿using MultiAlignCore.Drawing;
+﻿using MultiAlignCore.Data;
+using MultiAlignCore.Drawing;
 using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
-using PNNLOmics.Data;
 
 namespace MultiAlign.ViewModels.Charting
 {

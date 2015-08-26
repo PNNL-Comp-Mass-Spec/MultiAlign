@@ -4,9 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using MultiAlignCore.Data;
+using MultiAlignCore.Data.Features;
 using MultiAlignCore.Data.SequenceData;
-using PNNLOmics.Data;
-using PNNLOmics.Data.Features;
 
 #endregion
 

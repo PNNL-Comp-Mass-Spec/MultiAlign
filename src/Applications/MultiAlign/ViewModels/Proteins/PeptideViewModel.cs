@@ -1,9 +1,9 @@
 ﻿using System.Collections.ObjectModel;
 using MultiAlign.IO;
 using MultiAlign.ViewModels.Datasets;
+using MultiAlignCore.Data.MassTags;
 using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO;
-using PNNLOmics.Data;
 
 namespace MultiAlign.ViewModels.Proteins
 {

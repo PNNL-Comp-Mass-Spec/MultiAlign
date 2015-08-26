@@ -6,12 +6,12 @@ using System.Data;
 using System.Data.SQLite;
 using System.IO;
 using System.Text;
+using MultiAlignCore.Data.Features;
 using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO.Datasets;
 using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.Hibernate;
 using NUnit.Framework;
-using PNNLOmics.Data.Features;
 
 #endregion
 

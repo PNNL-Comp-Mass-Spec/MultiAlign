@@ -2,7 +2,7 @@
 
 using System;
 using Mage;
-using PNNLOmics.Algorithms;
+using MultiAlignCore.Algorithms;
 
 #endregion
 

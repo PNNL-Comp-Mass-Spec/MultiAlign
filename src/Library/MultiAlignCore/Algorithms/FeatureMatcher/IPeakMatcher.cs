@@ -1,9 +1,8 @@
 #region
 
 using System.Collections.Generic;
-using PNNLOmics.Algorithms;
-using PNNLOmics.Data.Features;
-using PNNLOmics.Data.MassTags;
+using MultiAlignCore.Data.Features;
+using MultiAlignCore.Data.MassTags;
 
 #endregion
 
@@ -19,7 +18,7 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
         /// <summary>
         ///     Performs the peak matching of UMC's to the MTDB and inherent scoring.
         /// </summary>
-        List<FeatureMatchLight<T, MassTagLight>> PerformPeakMatching(List<T> clusters,
+        List<MultiAlignCore.Data.MassTags.FeatureMatchLight<T, MassTagLight>> PerformPeakMatching(List<T> clusters,
             MassTagDatabase massTagDatabase);
     }
 }

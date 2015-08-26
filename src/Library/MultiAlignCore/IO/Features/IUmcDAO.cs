@@ -1,8 +1,8 @@
 #region
 
 using System.Collections.Generic;
+using MultiAlignCore.Data.Features;
 using PNNLOmics.Annotations;
-using PNNLOmics.Data.Features;
 
 #endregion
 

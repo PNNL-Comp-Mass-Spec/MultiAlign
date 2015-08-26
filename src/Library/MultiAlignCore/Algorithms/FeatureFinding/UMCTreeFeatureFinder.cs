@@ -3,12 +3,10 @@
 using System;
 using System.Collections.Generic;
 using MultiAlignCore.Algorithms.Clustering;
+using MultiAlignCore.Data;
+using MultiAlignCore.Data.Features;
 using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO.RawData;
-using PNNLOmics.Algorithms;
-using PNNLOmics.Algorithms.FeatureClustering;
-using PNNLOmics.Data;
-using PNNLOmics.Data.Features;
 
 #endregion
 
@@ -44,52 +42,26 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
             LcmsFeatureFindingOptions options,
             ISpectraProvider provider, DatasetInformation information)
         {
-            List<UMCLight> features;
-            if (provider is InformedProteomicsReader)
+            // MultiAlignCore.Algorithms.FeatureClustering.MsFeatureTreeClusterer
+            var clusterer = new MsFeatureTreeClusterer<MSFeatureLight, UMCLight>
             {
-                // MultiAlignCore.Algorithms.FeatureClustering.MsFeatureTreeClusterer
-                var clusterer = new MsFeatureTreeClusterer<MSFeatureLight, UMCLight>
-                {
-                    Tolerances =
-                        new FeatureTolerances
-                        {
-                            Mass = options.InstrumentTolerances.Mass,
-                            Net = options.MaximumNetRange
-                        },
-                    ScanTolerance = options.MaximumScanRange,
-                    SpectraProvider = (InformedProteomicsReader) provider
-                    //TODO: Make sure we have a mass range for XIC's too....
-                };
+                Tolerances =
+                    new FeatureTolerances
+                    {
+                        Mass = options.InstrumentTolerances.Mass,
+                        Net = options.MaximumNetRange
+                    },
+                ScanTolerance = options.MaximumScanRange,
+                SpectraProvider = (InformedProteomicsReader) provider
+                //TODO: Make sure we have a mass range for XIC's too....
+            };
 
-                clusterer.SpectraProvider = (InformedProteomicsReader) provider;
+            clusterer.SpectraProvider = (InformedProteomicsReader) provider;
 
-                OnStatus("Starting cluster definition");
-                clusterer.Progress += (sender, args) => OnStatus(args.Message);
+            OnStatus("Starting cluster definition");
+            clusterer.Progress += (sender, args) => OnStatus(args.Message);
 
-                features = clusterer.Cluster(msFeatures);
-            }
-            else
-            {
-                var clusterer = new MsFeatureTreeClusterer<MSFeatureLight, UMCLight>
-                {
-                    Tolerances =
-                        new FeatureTolerances
-                        {
-                            Mass = options.InstrumentTolerances.Mass,
-                            Net = options.MaximumNetRange
-                        },
-                    ScanTolerance = options.MaximumScanRange,
-                    SpectraProvider = provider
-                    //TODO: Make sure we have a mass range for XIC's too....
-                };
-
-                clusterer.SpectraProvider = provider;
-
-                OnStatus("Starting cluster definition");
-                clusterer.Progress += (sender, args) => OnStatus(args.Message);
-
-                features = clusterer.Cluster(msFeatures);
-            }
+            var features = clusterer.Cluster(msFeatures);
 
             var minScan = int.MaxValue;
             var maxScan = int.MinValue;
@@ -152,53 +124,26 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
             LcmsFeatureFindingOptions options,
             ISpectraProvider provider)
         {
-            List<UMCLight> features;
-            if (provider is InformedProteomicsReader)
+            // MultiAlignCore.Algorithms.FeatureClustering.MsFeatureTreeClusterer
+            var clusterer = new MsFeatureTreeClusterer<MSFeatureLight, UMCLight>
             {
-                // MultiAlignCore.Algorithms.FeatureClustering.MsFeatureTreeClusterer
-                var clusterer = new MsFeatureTreeClusterer<MSFeatureLight, UMCLight>
-                {
-                    Tolerances =
-                        new FeatureTolerances
-                        {
-                            Mass = options.InstrumentTolerances.Mass,
-                            Net = options.MaximumNetRange
-                        },
-                    ScanTolerance = options.MaximumScanRange,
-                    SpectraProvider = (InformedProteomicsReader)provider
-                    //TODO: Make sure we have a mass range for XIC's too....
-                };
+                Tolerances =
+                    new FeatureTolerances
+                    {
+                        Mass = options.InstrumentTolerances.Mass,
+                        Net = options.MaximumNetRange
+                    },
+                ScanTolerance = options.MaximumScanRange,
+                SpectraProvider = (InformedProteomicsReader)provider
+                //TODO: Make sure we have a mass range for XIC's too....
+            };
 
-                clusterer.SpectraProvider = (InformedProteomicsReader)provider;
+            clusterer.SpectraProvider = (InformedProteomicsReader)provider;
 
-                OnStatus("Starting cluster definition");
-                clusterer.Progress += (sender, args) => OnStatus(args.Message);
+            OnStatus("Starting cluster definition");
+            clusterer.Progress += (sender, args) => OnStatus(args.Message);
 
-                features = clusterer.Cluster(msFeatures);
-            }
-            else
-            {
-                // PNNLOmics.Algorithms.FeatureClustering.MsFeatureTreeClusterer
-                var clusterer = new MsFeatureTreeClusterer<MSFeatureLight, UMCLight>
-                {
-                    Tolerances =
-                        new FeatureTolerances
-                        {
-                            Mass = options.InstrumentTolerances.Mass,
-                            Net = options.MaximumNetRange
-                        },
-                    ScanTolerance = options.MaximumScanRange,
-                    SpectraProvider = provider
-                    //TODO: Make sure we have a mass range for XIC's too....
-                };
-
-                clusterer.SpectraProvider = provider;
-
-                OnStatus("Starting cluster definition");
-                clusterer.Progress += (sender, args) => OnStatus(args.Message);
-
-                features = clusterer.Cluster(msFeatures);
-            }
+            var features = clusterer.Cluster(msFeatures);
 
             var minScan = int.MaxValue;
             var maxScan = int.MinValue;

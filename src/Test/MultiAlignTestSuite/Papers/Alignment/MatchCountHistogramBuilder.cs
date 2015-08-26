@@ -3,8 +3,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using MultiAlignCore.Algorithms.Alignment.SpectralMatching;
 using MultiAlignTestSuite.Papers.Alignment.SSM;
-using PNNLOmics.Algorithms.Alignment.SpectralMatching;
 
 #endregion
 

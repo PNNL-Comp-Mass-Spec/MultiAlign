@@ -3,7 +3,7 @@
 using System;
 using System.Collections.Generic;
 using Mage;
-using PNNLOmics.Data.MassTags;
+using MultiAlignCore.Data.MassTags;
 
 #endregion
 

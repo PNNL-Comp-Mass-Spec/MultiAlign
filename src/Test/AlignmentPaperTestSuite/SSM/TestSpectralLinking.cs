@@ -6,12 +6,12 @@ using System.IO;
 using System.Linq;
 using MultiAlignCore.Algorithms.Alignment;
 using MultiAlignCore.Algorithms.Options;
+using MultiAlignCore.Algorithms.SpectralProcessing;
+using MultiAlignCore.Algorithms.Statistics;
+using MultiAlignCore.Data;
+using MultiAlignCore.Data.Features;
 using MultiAlignCore.Extensions;
 using NUnit.Framework;
-using PNNLOmics.Algorithms.SpectralProcessing;
-using PNNLOmics.Algorithms.Statistics;
-using PNNLOmics.Data;
-using PNNLOmics.Data.Features;
 
 #endregion
 

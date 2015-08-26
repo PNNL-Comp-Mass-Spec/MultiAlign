@@ -4,14 +4,11 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using InformedProteomics.Backend.Data.Spectrometry;
+using MultiAlignCore.Algorithms.SpectralProcessing;
+using MultiAlignCore.Data;
+using MultiAlignCore.Data.Features;
+using MultiAlignCore.Extensions;
 using MultiAlignCore.IO.RawData;
-using NHibernate.Mapping;
-using PNNLOmics.Algorithms;
-using PNNLOmics.Algorithms.Chromatograms;
-using PNNLOmics.Algorithms.SpectralProcessing;
-using PNNLOmics.Data;
-using PNNLOmics.Data.Features;
-using PNNLOmics.Extensions;
 
 namespace MultiAlignCore.Algorithms.Chromatograms
 {

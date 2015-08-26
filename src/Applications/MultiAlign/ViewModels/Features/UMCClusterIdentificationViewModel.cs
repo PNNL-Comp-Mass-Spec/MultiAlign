@@ -3,7 +3,6 @@ using System.Collections.ObjectModel;
 using MultiAlign.ViewModels.Proteins;
 using MultiAlignCore.Data.Features;
 using MultiAlignCore.Extensions;
-using PNNLOmics.Data;
 
 namespace MultiAlign.ViewModels.Features
 {

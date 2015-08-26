@@ -4,8 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Mage;
 using MultiAlignCore.Algorithms.Options;
-using PNNLOmics.Data;
-using PNNLOmics.Data.MassTags;
+using MultiAlignCore.Data.MassTags;
 
 #endregion
 

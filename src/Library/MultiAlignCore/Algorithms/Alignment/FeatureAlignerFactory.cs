@@ -1,13 +1,12 @@
 ﻿#region
 
 using System.Collections.Generic;
+using MultiAlignCore.Algorithms.Alignment.LcmsWarp;
+using MultiAlignCore.Algorithms.Alignment.SpectralMatching;
 using MultiAlignCore.Algorithms.Options;
 using MultiAlignCore.Data.Alignment;
-using PNNLOmics.Algorithms.Alignment;
-using PNNLOmics.Algorithms.Alignment.SpectralMatches;
-using PNNLOmics.Data.Features;
-using PNNLOmics.Data.MassTags;
-using PNNLOmics.Algorithms.Alignment.LcmsWarp;
+using MultiAlignCore.Data.Features;
+using MultiAlignCore.Data.MassTags;
 
 #endregion
 

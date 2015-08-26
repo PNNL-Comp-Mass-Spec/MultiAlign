@@ -1,4 +1,5 @@
-﻿using NHibernate.Mapping;
+﻿using MultiAlignCore.Data.Features;
+using NHibernate.Mapping;
 using OxyPlot.Annotations;
 
 namespace MultiAlignRogue.Feature_Finding
@@ -19,8 +20,7 @@ namespace MultiAlignRogue.Feature_Finding
     using OxyPlot.Axes;
     using OxyPlot.Series;
 
-    using PNNLOmics.Data.Features;
-
+    
     using QuadTreeLib;
 
     class MSFeatureViewModel : PlotViewModelBase

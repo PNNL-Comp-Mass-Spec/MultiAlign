@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.Features.Hibernate;
-using PNNLOmics.Data.MassTags;
 
 namespace MultiAlignTestSuite
 {

@@ -4,16 +4,12 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AlignmentPaperTestSuite.IO;
+using MultiAlignCore.Algorithms.Alignment.SpectralMatching;
+using MultiAlignCore.Algorithms.SpectralProcessing;
 using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.RawData;
-using MultiAlignTestSuite.Papers.Alignment;
-using MultiAlignTestSuite.Papers.Alignment.IO;
 using NUnit.Framework;
-using PNNLOmics.Algorithms.Alignment.SpectralMatches;
-using PNNLOmics.Algorithms.Alignment.SpectralMatching;
-using PNNLOmics.Algorithms.Regression;
-using PNNLOmics.Algorithms.SpectralProcessing;
-using PNNLOmics.Data.Features;
 
 namespace AlignmentPaperTestSuite.Figures
 {

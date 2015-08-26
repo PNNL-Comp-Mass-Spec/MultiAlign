@@ -1,8 +1,8 @@
 ﻿#region
 
 using System.Collections.Generic;
-using PNNLOmics.Data;
-using PNNLOmics.Data.Features;
+using MultiAlignCore.Data.Features;
+using MultiAlignCore.Data.MassTags;
 
 #endregion
 
@@ -49,19 +49,20 @@ namespace MultiAlignCore.Extensions
 
             return peptide.Spectrum.GetParentUmc();
         }
-    }
-
-    public static class MsnExtensions
-    {
-        public static UMCLight GetParentUmc(this MSSpectra spectrum)
+        
+        public static Dictionary<int, List<Peptide>> CreateScanMaps(this IEnumerable<Peptide> peptides)
         {
-            if (spectrum == null) return null;
-
-            if (spectrum.ParentFeature != null)
+            var peptideMap = new Dictionary<int, List<Peptide>>();
+            foreach (var p in peptides)
             {
-                return spectrum.ParentFeature.GetParentUmc();
+                if (!peptideMap.ContainsKey(p.Scan))
+                {
+                    peptideMap.Add(p.Scan, new List<Peptide>());
+                }
+                peptideMap[p.Scan].Add(p);
             }
-            return null;
+
+            return peptideMap;
         }
     }
 }

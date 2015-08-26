@@ -1,8 +1,9 @@
 ﻿#region
 
 using System.Collections.Generic;
+using MultiAlignCore.Data;
+using MultiAlignCore.Data.MassTags;
 using MultiAlignCore.Extensions;
-using PNNLOmics.Data;
 
 #endregion
 

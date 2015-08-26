@@ -5,21 +5,20 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using MultiAlignCore.Algorithms.Alignment.SpectralMatching;
+using MultiAlignCore.Algorithms.Regression;
+using MultiAlignCore.Algorithms.SpectralProcessing;
+using MultiAlignCore.Data;
+using MultiAlignCore.Data.Features;
 using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.RawData;
+using MultiAlignCore.IO.TextFiles;
+using MultiAlignCore.Utilities;
 using MultiAlignTestSuite.Papers.Alignment.IO;
 using NUnit.Framework;
 using OxyPlot;
 using OxyPlot.Series;
 using OxyPlot.WindowsForms;
-using PNNLOmics.Algorithms.Alignment.SpectralMatches;
-using PNNLOmics.Algorithms.Alignment.SpectralMatching;
-using PNNLOmics.Algorithms.Regression;
-using PNNLOmics.Algorithms.SpectralProcessing;
-using PNNLOmics.Data;
-using PNNLOmics.Data.Features;
-using PNNLOmics.Utilities;
-using PNNLOmicsIO.IO;
 using LinearAxis = OxyPlot.Axes.LinearAxis;
 
 #endregion

@@ -1,4 +1,6 @@
-﻿using PNNLOmics.Data.MassTags;
+﻿
+using MultiAlignCore.Data.Features;
+using MultiAlignCore.Data.MassTags;
 
 namespace MultiAlignRogue.Alignment
 {
@@ -9,8 +11,7 @@ namespace MultiAlignRogue.Alignment
     using MultiAlignCore.Data.Alignment;
     using MultiAlignCore.Data.MetaData;
 
-    using PNNLOmics.Data.Features;
-
+    
     class LCMSFeatureAligner
     {
 

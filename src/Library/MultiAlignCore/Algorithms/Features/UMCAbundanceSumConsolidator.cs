@@ -2,7 +2,7 @@
 
 using System.Collections.Generic;
 using MultiAlignCore.Algorithms.FeatureFinding;
-using PNNLOmics.Data.Features;
+using MultiAlignCore.Data.Features;
 
 #endregion
 

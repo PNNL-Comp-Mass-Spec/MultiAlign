@@ -7,15 +7,13 @@ using MultiAlignCore.Algorithms;
 using MultiAlignCore.Algorithms.FeatureFinding;
 using MultiAlignCore.Algorithms.Workflow;
 using MultiAlignCore.Data;
-using MultiAlignCore.Data.Features;
 using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.Data.SequenceData;
 using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.RawData;
-using PNNLOmics.Algorithms.FeatureClustering;
-using PNNLOmics.Data;
-using PNNLOmics.Data.Features;
-using PNNLOmicsIO.IO;
+using MultiAlignCore.Algorithms.Clustering;
+using MultiAlignCore.Data.Features;
+using MultiAlignCore.IO.TextFiles;
 
 #endregion
 

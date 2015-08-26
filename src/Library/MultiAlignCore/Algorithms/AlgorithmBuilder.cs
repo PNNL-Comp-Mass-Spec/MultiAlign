@@ -2,13 +2,13 @@
 
 using System;
 using MultiAlignCore.Algorithms.Alignment;
+using MultiAlignCore.Algorithms.Alignment.LcmsWarp;
+using MultiAlignCore.Algorithms.Alignment.SpectralMatching;
+using MultiAlignCore.Algorithms.Clustering;
 using MultiAlignCore.Algorithms.FeatureMatcher;
+using MultiAlignCore.Algorithms.FeatureMatcher.Data;
 using MultiAlignCore.Algorithms.Options;
-using PNNLOmics.Algorithms.Alignment.LcmsWarp;
-using PNNLOmics.Algorithms.Alignment.SpectralMatches;
-using PNNLOmics.Algorithms.FeatureClustering;
-using PNNLOmics.Algorithms.FeatureMatcher.Data;
-using PNNLOmics.Data.Features;
+using MultiAlignCore.Data.Features;
 
 #endregion
 

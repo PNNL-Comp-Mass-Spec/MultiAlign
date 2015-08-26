@@ -1,12 +1,12 @@
 ﻿#region
 
 using System.Linq;
-using PNNLOmics.Algorithms.Alignment;
-using PNNLOmics.Algorithms.Alignment.SpectralMatching;
+using MultiAlignCore.Algorithms.Alignment;
+using MultiAlignCore.Algorithms.Alignment.SpectralMatching;
 
 #endregion
 
-namespace MultiAlignTestSuite.Papers.Alignment.IO
+namespace AlignmentPaperTestSuite.IO
 {
     internal class SpectralWriterFigureThree : PaperFileWriter, ISpectralAnalysisWriter
     {

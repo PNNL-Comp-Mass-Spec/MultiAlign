@@ -1,8 +1,9 @@
 ﻿#region
 
-using PNNLOmics.Data.MassTags;
 
 #endregion
+
+using MultiAlignCore.Data.MassTags;
 
 namespace MultiAlignCore.IO.MTDB
 {

@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Messaging;
+using MultiAlignCore.Data.Features;
+using MultiAlignCore.Extensions;
 using MultiAlignCore.IO;
 using MultiAlignRogue.Utils;
 using MultiAlignRogue.ViewModels;
@@ -14,8 +16,6 @@ using OxyPlot;
 using OxyPlot.Annotations;
 using OxyPlot.Axes;
 using OxyPlot.Series;
-using PNNLOmics.Data.Features;
-using PNNLOmics.Extensions;
 using Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
 
 namespace MultiAlignRogue.Clustering

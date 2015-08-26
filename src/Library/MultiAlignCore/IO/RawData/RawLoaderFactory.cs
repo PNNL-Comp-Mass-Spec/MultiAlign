@@ -1,7 +1,7 @@
 ﻿#region
 
 using System.IO;
-using PNNLOmics.Data;
+using MultiAlignCore.Data;
 
 #endregion
 

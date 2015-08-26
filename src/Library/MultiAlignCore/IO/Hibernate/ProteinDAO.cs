@@ -1,9 +1,9 @@
 #region
 
 using System.Collections.Generic;
+using MultiAlignCore.Data.MassTags;
 using MultiAlignCore.IO.Proteins;
 using NHibernate.Criterion;
-using PNNLOmics.Data;
 
 #endregion
 

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using MultiAlignCore.Algorithms.Clustering;
 using MultiAlignCore.Algorithms.FeatureMatcher;
 using MultiAlignCore.Algorithms.Workflow;
 using MultiAlignCore.Data;
@@ -17,10 +18,6 @@ using MultiAlignCore.IO.Analysis;
 using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.Hibernate;
 using MultiAlignCore.IO.MTDB;
-using PNNLOmics.Algorithms;
-using PNNLOmics.Algorithms.FeatureClustering;
-using PNNLOmics.Data.Features;
-using PNNLOmics.Data.MassTags;
 
 #endregion
 

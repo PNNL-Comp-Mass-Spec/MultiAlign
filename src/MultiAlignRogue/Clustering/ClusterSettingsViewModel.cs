@@ -2,6 +2,9 @@
 using GalaSoft.MvvmLight.Messaging;
 using MultiAlign.Data;
 using MultiAlign.ViewModels.Datasets;
+using MultiAlignCore.Algorithms.Clustering;
+using MultiAlignCore.Algorithms.Distance;
+using MultiAlignCore.Data.Features;
 using MultiAlignCore.Data.MetaData;
 using NHibernate.Util;
 
@@ -20,10 +23,7 @@ namespace MultiAlignRogue.Clustering
     using MultiAlignCore.Data;
     using MultiAlignCore.IO.Features;
 
-    using PNNLOmics.Algorithms.Distance;
-    using PNNLOmics.Algorithms.FeatureClustering;
-    using PNNLOmics.Data.Features;
-
+    
     using Remotion.Linq.Collections;
 
     using MessageBox = System.Windows.MessageBox;

@@ -2,15 +2,14 @@
 
 using System;
 using System.Collections.Generic;
+using MultiAlignCore.Algorithms;
 using MultiAlignCore.Algorithms.Options;
 using MultiAlignCore.Data;
+using MultiAlignCore.Data.MassTags;
 using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.Hibernate;
 using MultiAlignCore.IO.MassTags;
 using MultiAlignCore.IO.Proteins;
-using PNNLOmics.Algorithms;
-using PNNLOmics.Data;
-using PNNLOmics.Data.MassTags;
 
 #endregion
 

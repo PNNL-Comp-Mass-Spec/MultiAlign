@@ -2,11 +2,9 @@
 
 using System;
 using System.Collections.Generic;
-using PNNLOmics.Algorithms;
-using PNNLOmics.Algorithms.FeatureMatcher;
-using PNNLOmics.Algorithms.FeatureMatcher.Data;
-using PNNLOmics.Data.Features;
-using PNNLOmics.Data.MassTags;
+using MultiAlignCore.Algorithms.FeatureMatcher.Data;
+using MultiAlignCore.Data.Features;
+using MultiAlignCore.Data.MassTags;
 
 #endregion
 
@@ -40,7 +38,7 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
         /// <summary>
         ///     Performs STAC against the mass tag database.
         /// </summary>
-        public List<FeatureMatchLight<T, MassTagLight>> PerformPeakMatching(List<T> clusters, MassTagDatabase database)
+        public List<MultiAlignCore.Data.MassTags.FeatureMatchLight<T, MassTagLight>> PerformPeakMatching(List<T> clusters, MassTagDatabase database)
         {
             var clusterMap = new Dictionary<int, T>();
             var tagMap = new Dictionary<int, Dictionary<int, MassTagLight>>();
@@ -116,10 +114,10 @@ namespace MultiAlignCore.Algorithms.FeatureMatcher
 
             Matcher.PopulateStacfdrTable(matcher.MatchList);
 
-            var matches = new List<FeatureMatchLight<T, MassTagLight>>();
+            var matches = new List<MultiAlignCore.Data.MassTags.FeatureMatchLight<T, MassTagLight>>();
             foreach (var match in matcher.MatchList)
             {
-                var matched = new FeatureMatchLight<T, MassTagLight>
+                var matched = new MultiAlignCore.Data.MassTags.FeatureMatchLight<T, MassTagLight>
                 {
                     Observed = clusterMap[match.ObservedFeature.Id],
                     Target = tagMap[match.TargetFeature.Id][match.TargetFeature.ConformationId],

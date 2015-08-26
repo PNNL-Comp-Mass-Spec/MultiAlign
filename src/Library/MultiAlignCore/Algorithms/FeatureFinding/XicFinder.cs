@@ -14,9 +14,9 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
         /// <param name="points"></param>
         /// <param name="targetScan"></param>
         /// <returns></returns>
-        public List<PNNLOmics.Data.XYData> FindTarget(List<PNNLOmics.Data.XYData> points, int targetScan)
+        public List<XYData> FindTarget(List<XYData> points, int targetScan)
         {
-            List<PNNLOmics.Data.XYData> target = new List<PNNLOmics.Data.XYData>();
+            List<XYData> target = new List<XYData>();
             if (points.Count < 1)
                 return target;
 
@@ -88,9 +88,9 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
         /// <param name="intensity">Intesity to create XIC from</param>
         /// <param name="targetScan"></param>
         /// <returns></returns>
-        private List<PNNLOmics.Data.XYData> CreateXic(List<PNNLOmics.Data.XYData> points, double intensity, int targetScan)
+        private List<XYData> CreateXic(List<XYData> points, double intensity, int targetScan)
         {
-            List<PNNLOmics.Data.XYData> target = new List<PNNLOmics.Data.XYData>();
+            List<XYData> target = new List<XYData>();
 
             int scan = targetScan;
             int j = targetScan;
@@ -114,7 +114,7 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
 
             for (targetScan = leftScan + 1; targetScan < rightScan; targetScan++)
             {
-                target.Add(new PNNLOmics.Data.XYData(points[targetScan].X, points[targetScan].Y));
+                target.Add(new XYData(points[targetScan].X, points[targetScan].Y));
 
             }
             return target;

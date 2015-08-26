@@ -6,12 +6,12 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using MultiAlignCore.Algorithms.Alignment;
+using MultiAlignCore.Algorithms.Alignment.LcmsWarp;
 using MultiAlignCore.Algorithms.FeatureMatcher;
+using MultiAlignCore.Data.Features;
+using MultiAlignCore.Data.MassTags;
 using MultiAlignCore.Drawing;
 using NUnit.Framework;
-using PNNLOmics.Algorithms.Alignment.LcmsWarp;
-using PNNLOmics.Data.Features;
-using PNNLOmics.Data.MassTags;
 
 #endregion
 

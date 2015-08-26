@@ -4,17 +4,16 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media.Animation;
 using Microsoft.Win32;
 using MultiAlign.Commands;
 using MultiAlign.Properties;
 using MultiAlign.ViewModels.Instruments;
 using MultiAlign.Windows.Controls;
+using MultiAlignCore.Algorithms.Alignment.LcmsWarp;
+using MultiAlignCore.Algorithms.Clustering;
 using MultiAlignCore.Algorithms.FeatureFinding;
 using MultiAlignCore.Algorithms.Options;
 using MultiAlignCore.IO.Generic;
-using PNNLOmics.Algorithms.Alignment.LcmsWarp;
-using PNNLOmics.Algorithms.FeatureClustering;
 
 namespace MultiAlign.ViewModels.Wizard
 {

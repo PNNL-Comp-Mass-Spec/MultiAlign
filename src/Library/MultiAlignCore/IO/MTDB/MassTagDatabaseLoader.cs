@@ -4,8 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using MultiAlignCore.Algorithms.Options;
-using PNNLOmics.Data;
-using PNNLOmics.Data.MassTags;
+using MultiAlignCore.Data;
+using MultiAlignCore.Data.MassTags;
 
 #endregion
 

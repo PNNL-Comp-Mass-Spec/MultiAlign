@@ -1,7 +1,7 @@
 ﻿#region
 
 using System.Collections.Generic;
-using PNNLOmicsIO.IO;
+using MultiAlignCore.IO.TextFiles;
 
 #endregion
 

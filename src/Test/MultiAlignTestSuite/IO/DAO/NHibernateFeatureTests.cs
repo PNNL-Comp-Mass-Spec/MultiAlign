@@ -6,7 +6,7 @@ using NUnit.Framework;
 
 #endregion
 
-namespace MultiAlignTestSuite.IO
+namespace MultiAlignTestSuite.IO.DAO
 {
     /// <summary>
     ///     Testing for loading a MSn database using hibernate.

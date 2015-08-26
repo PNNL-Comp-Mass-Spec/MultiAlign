@@ -4,11 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using MultiAlignCore.Data;
+using MultiAlignCore.Data.Features;
+using MultiAlignCore.Data.MassTags;
 using MultiAlignCore.Data.SequenceData;
 using MultiAlignCore.IO.Features;
-using PNNLOmics.Data;
-using PNNLOmics.Data.Features;
-using PNNLOmics.Extensions;
 
 #endregion
 

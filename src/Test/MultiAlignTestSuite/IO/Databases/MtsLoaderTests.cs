@@ -1,6 +1,5 @@
 ﻿#region
 
-using MultiAlignCore.Algorithms.Options;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.MassTags;
 using MultiAlignCore.IO.InputFiles;
@@ -9,7 +8,7 @@ using NUnit.Framework;
 
 #endregion
 
-namespace MultiAlignTestSuite.IO.MTDB
+namespace MultiAlignTestSuite.IO.Databases
 {
     [TestFixture]
     public sealed class MtsLoaderTests

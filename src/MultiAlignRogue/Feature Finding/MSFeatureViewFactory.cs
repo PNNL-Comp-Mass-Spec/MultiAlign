@@ -1,11 +1,12 @@
-﻿namespace MultiAlignRogue.Feature_Finding
+﻿using MultiAlignCore.Data.Features;
+
+namespace MultiAlignRogue.Feature_Finding
 {
     using System.Collections.Generic;
 
     using MultiAlignCore.Data.MetaData;
 
-    using PNNLOmics.Data.Features;
-
+    
     class MSFeatureViewFactory: IFeatureWindowFactory
     {
         public void CreateNewWindow()

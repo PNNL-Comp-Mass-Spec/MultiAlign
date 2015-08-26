@@ -7,7 +7,7 @@ using System.IO;
 using MultiAlignCore.Algorithms;
 using MultiAlignCore.Data;
 using MultiAlignCore.Drawing;
-using PNNLOmics.Extensions;
+using MultiAlignCore.Extensions;
 
 #endregion
 
@@ -76,7 +76,7 @@ namespace MultiAlignCore.IO.Reports
             report.PushStartTableRow();
             path                        = Path.Combine(Config.AnalysisPath, PlotPath, "clusters_datasetMembersHistogram.png");
             var datasetMemberHistogram  =
-                HistogramFactory.CreateHistogram(clusters.CreateClusterDatasetMemeberSizeHistogram(), "Dataset Members", "Dataset Count");
+                HistogramFactory.CreateHistogram(clusters.CreateClusterDatasetMemberSizeHistogram(), "Dataset Members", "Dataset Count");
             PlotImageUtility.SaveImage(datasetMemberHistogram, path);
             report.PushImageColumn(path, WIDTH, HEIGHT);
 

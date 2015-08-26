@@ -1,11 +1,10 @@
 ﻿#region
 
 using System.ComponentModel;
+using MultiAlignCore.Algorithms.Distance;
 using MultiAlignCore.Data;
+using MultiAlignCore.Data.Features;
 using MultiAlignCore.IO.Parameters;
-using PNNLOmics.Algorithms.Distance;
-using PNNLOmics.Algorithms.FeatureClustering;
-using PNNLOmics.Data.Features;
 
 #endregion
 
