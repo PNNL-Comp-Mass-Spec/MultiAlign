@@ -1,18 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using MultiAlignCore.Algorithms.Chromatograms;
 using MultiAlignCore.IO.RawData;
-using PNNLOmics.Algorithms;
-using PNNLOmics.Algorithms.FeatureClustering;
-using PNNLOmics.Annotations;
-using PNNLOmics.Data;
-using PNNLOmics.Data.Constants.Libraries;
-using PNNLOmics.Data.Features;
 
-namespace MultiAlignCore.Algorithms.FeatureClustering
+namespace MultiAlignCore.Algorithms.Clustering
 {
     /// <summary>
     /// Finds clusters using a tree aproach

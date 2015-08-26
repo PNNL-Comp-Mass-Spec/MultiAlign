@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using MultiAlignCore.Algorithms.Clustering;
 using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO.RawData;
 using PNNLOmics.Algorithms;
@@ -47,7 +48,7 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
             if (provider is InformedProteomicsReader)
             {
                 // MultiAlignCore.Algorithms.FeatureClustering.MsFeatureTreeClusterer
-                var clusterer = new FeatureClustering.MsFeatureTreeClusterer<MSFeatureLight, UMCLight>
+                var clusterer = new MsFeatureTreeClusterer<MSFeatureLight, UMCLight>
                 {
                     Tolerances =
                         new FeatureTolerances
@@ -155,7 +156,7 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
             if (provider is InformedProteomicsReader)
             {
                 // MultiAlignCore.Algorithms.FeatureClustering.MsFeatureTreeClusterer
-                var clusterer = new FeatureClustering.MsFeatureTreeClusterer<MSFeatureLight, UMCLight>
+                var clusterer = new MsFeatureTreeClusterer<MSFeatureLight, UMCLight>
                 {
                     Tolerances =
                         new FeatureTolerances
