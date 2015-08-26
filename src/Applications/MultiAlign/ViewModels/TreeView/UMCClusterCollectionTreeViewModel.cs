@@ -9,10 +9,9 @@ using MultiAlign.ViewModels.Features;
 using MultiAlign.ViewModels.IO;
 using MultiAlign.Windows.IO;
 using MultiAlign.Windows.Viewers.Clusters;
+using MultiAlignCore.Data;
 using MultiAlignCore.Data.Features;
 using MultiAlignCore.IO;
-using PNNLOmics.Data;
-using PNNLOmics.Data.Features;
 
 namespace MultiAlign.ViewModels.TreeView
 {

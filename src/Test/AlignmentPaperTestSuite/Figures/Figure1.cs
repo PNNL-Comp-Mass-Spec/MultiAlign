@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using AlignmentPaperTestSuite.IO;
+using MultiAlignCore.Algorithms.Alignment.SpectralMatching;
+using MultiAlignCore.Algorithms.SpectralProcessing;
 using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.RawData;
-using MultiAlignTestSuite.Papers.Alignment.IO;
 using NUnit.Framework;
-using PNNLOmics.Algorithms.Alignment.SpectralMatches;
-using PNNLOmics.Algorithms.Alignment.SpectralMatching;
-using PNNLOmics.Algorithms.SpectralProcessing;
 
 namespace AlignmentPaperTestSuite.Figures
 {

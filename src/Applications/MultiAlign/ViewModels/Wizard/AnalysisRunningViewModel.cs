@@ -8,9 +8,9 @@ using MultiAlign.Data;
 using MultiAlign.Windows.Plots;
 using MultiAlignCore.Algorithms;
 using MultiAlignCore.Data;
+using MultiAlignCore.Data.Features;
 using MultiAlignCore.IO;
 using MultiAlignCore.IO.Reports;
-using PNNLOmics.Data.Features;
 
 namespace MultiAlign.ViewModels.Wizard
 {

@@ -3,9 +3,8 @@ using System.IO;
 using System.Linq;
 
 using MultiAlignCore.Algorithms.Alignment;
+using MultiAlignCore.Algorithms.Alignment.LcmsWarp;
 using MultiAlignCore.Drawing;
-using PNNLOmics.Algorithms.Alignment.LcmsWarp;
-using PNNLOmics.Data.Features;
 
 namespace TestWrapper
 {

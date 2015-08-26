@@ -1,11 +1,10 @@
 ﻿#region
 
+using MultiAlignCore.Algorithms.Alignment.SpectralMatching;
+using MultiAlignCore.Algorithms.Clustering;
+using MultiAlignCore.Data;
+using MultiAlignCore.Data.Features;
 using MultiAlignCore.IO.Parameters;
-using PNNLOmics.Algorithms;
-using PNNLOmics.Algorithms.Alignment.SpectralMatches;
-using PNNLOmics.Algorithms.FeatureClustering;
-using PNNLOmics.Data;
-using PNNLOmics.Data.Features;
 
 #endregion
 

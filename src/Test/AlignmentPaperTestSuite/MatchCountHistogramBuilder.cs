@@ -4,11 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using AlignmentPaperTestSuite.SSM;
-using PNNLOmics.Algorithms.Alignment.SpectralMatching;
+using MultiAlignCore.Algorithms.Alignment.SpectralMatching;
 
 #endregion
 
-namespace MultiAlignTestSuite.Papers.Alignment
+namespace AlignmentPaperTestSuite
 {
     public class MatchCountHistogramBuilder
     {

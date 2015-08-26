@@ -1,5 +1,4 @@
-﻿using PNNLOmics.Data.Features;
-
+﻿
 namespace MultiAlignCore.Data.Features
 {
     /// <summary>

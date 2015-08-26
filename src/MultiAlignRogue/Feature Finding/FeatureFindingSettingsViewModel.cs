@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.IO;
 using System.Windows;
+using MultiAlignCore.Data.Features;
 using MultiAlignCore.Extensions;
 using NHibernate.Util;
 
@@ -24,8 +25,7 @@ namespace MultiAlignRogue.Feature_Finding
     using MultiAlignCore.IO;
     using MultiAlignCore.IO.Features;
 
-    using PNNLOmics.Data.Features;
-
+    
     public class FeatureFindingSettingsViewModel : ViewModelBase
     {
         private readonly MultiAlignAnalysis analysis;

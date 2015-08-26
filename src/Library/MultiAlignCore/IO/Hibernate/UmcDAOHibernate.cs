@@ -4,9 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
+using MultiAlignCore.Data.Features;
 using MultiAlignCore.IO.Features;
 using NHibernate.Criterion;
-using PNNLOmics.Data.Features;
 
 #endregion
 

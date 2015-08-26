@@ -1,14 +1,14 @@
 ﻿#region
 
 using System.Collections.Generic;
+using MultiAlignCore.Data.Features;
 using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.Hibernate;
 using NUnit.Framework;
-using PNNLOmics.Data.Features;
 
 #endregion
 
-namespace MultiAlignTestSuite
+namespace MultiAlignTestSuite.IO
 {
     [TestFixture]
     public class UMCFeatureDOATest

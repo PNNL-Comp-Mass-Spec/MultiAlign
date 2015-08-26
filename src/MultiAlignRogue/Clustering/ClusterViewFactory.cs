@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using MultiAlign.ViewModels.Charting;
+using MultiAlignCore.Data.Features;
 using MultiAlignCore.Drawing;
 using MultiAlignCore.Extensions;
 using MultiAlignCore.IO.Features;
-using PNNLOmics.Data.Features;
 
 namespace MultiAlignRogue.Clustering
 {

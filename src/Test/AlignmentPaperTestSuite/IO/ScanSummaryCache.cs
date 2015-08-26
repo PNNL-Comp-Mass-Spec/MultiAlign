@@ -3,11 +3,11 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using PNNLOmics.Data;
+using MultiAlignCore.Data;
 
 #endregion
 
-namespace MultiAlignTestSuite.Papers.Alignment.IO
+namespace AlignmentPaperTestSuite.IO
 {
     /// <summary>
     ///     Creates a scan cache summary.

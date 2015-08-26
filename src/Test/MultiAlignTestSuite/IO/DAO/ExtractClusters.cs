@@ -10,7 +10,6 @@ using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.Features.Hibernate;
 using NUnit.Framework;
-using PNNLOmics.Data.Features;
 
 #endregion
 

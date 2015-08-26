@@ -10,7 +10,6 @@ using OxyPlot;
 using OxyPlot.Annotations;
 using OxyPlot.Axes;
 using OxyPlot.Series;
-using PNNLOmics.Data.Features;
 
 namespace MultiAlignRogue.Clustering
 {

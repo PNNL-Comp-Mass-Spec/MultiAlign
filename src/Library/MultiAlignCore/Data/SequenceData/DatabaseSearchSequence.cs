@@ -1,8 +1,9 @@
 ﻿#region
 
-using PNNLOmics.Data;
 
 #endregion
+
+using MultiAlignCore.Data.MassTags;
 
 namespace MultiAlignCore.Data.SequenceData
 {

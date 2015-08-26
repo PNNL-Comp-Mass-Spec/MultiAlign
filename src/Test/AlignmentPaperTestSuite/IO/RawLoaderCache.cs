@@ -2,11 +2,11 @@
 
 using System;
 using System.Collections.Generic;
-using PNNLOmics.Data;
+using MultiAlignCore.Data;
 
 #endregion
 
-namespace MultiAlignTestSuite.Papers.Alignment.IO
+namespace AlignmentPaperTestSuite.IO
 {
     public class RawLoaderCache : ISpectraProvider
     {

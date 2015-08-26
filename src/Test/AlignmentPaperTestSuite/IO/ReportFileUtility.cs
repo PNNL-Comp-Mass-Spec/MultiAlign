@@ -4,7 +4,7 @@ using System;
 
 #endregion
 
-namespace MultiAlignTestSuite.Papers.Alignment.IO
+namespace AlignmentPaperTestSuite.IO
 {
     public class ReportFileUtility
     {

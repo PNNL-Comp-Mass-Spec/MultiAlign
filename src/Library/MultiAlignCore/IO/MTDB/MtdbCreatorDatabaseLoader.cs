@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using MTDBFramework.IO;
-using PNNLOmics.Data;
-using PNNLOmics.Data.MassTags;
+using MultiAlignCore.Data.MassTags;
 
 
 namespace MultiAlignCore.IO.MTDB

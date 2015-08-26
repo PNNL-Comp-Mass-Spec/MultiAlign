@@ -4,14 +4,14 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
+using MultiAlignCore.Data.Features;
 using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.Hibernate;
 using NUnit.Framework;
-using PNNLOmics.Data.Features;
 
 #endregion
 
-namespace MultiAlignTestSuite
+namespace MultiAlignTestSuite.IO.DAO
 {
     [TestFixture]
     public class MSFeatureDOATest

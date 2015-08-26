@@ -4,7 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
+using MultiAlignCore.Algorithms;
 using MultiAlignCore.Algorithms.Alignment;
+using MultiAlignCore.Algorithms.Clustering;
 using MultiAlignCore.Algorithms.FeatureFinding;
 using MultiAlignCore.Drawing;
 using MultiAlignCore.IO.Features;
@@ -12,14 +14,12 @@ using NUnit.Framework;
 using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
-using PNNLOmics.Algorithms;
-using PNNLOmics.Algorithms.FeatureClustering;
 using PNNLOmics.Annotations;
 using Svg;
 
 #endregion
 
-namespace MultiAlignTestSuite.Drawing.Graphics
+namespace MultiAlignTestSuite.Drawing
 {
     [TestFixture]
     [UsedImplicitly]

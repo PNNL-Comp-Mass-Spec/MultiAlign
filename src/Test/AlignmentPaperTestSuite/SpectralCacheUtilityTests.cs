@@ -4,10 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using AlignmentPaperTestSuite.IO;
 using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.MTDB;
 using MultiAlignCore.IO.RawData;
-using MultiAlignTestSuite.Papers.Alignment.IO;
 using NUnit.Framework;
 
 #endregion

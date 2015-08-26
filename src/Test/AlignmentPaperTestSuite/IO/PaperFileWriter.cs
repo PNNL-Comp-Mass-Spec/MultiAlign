@@ -5,7 +5,7 @@ using System.IO;
 
 #endregion
 
-namespace MultiAlignTestSuite.Papers.Alignment.IO
+namespace AlignmentPaperTestSuite.IO
 {
     /// <summary>
     ///     Class for writing

@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using PNNLOmics.Data;
 using InformedProteomics.Backend;
 using InformedProteomics.Backend.Data.Spectrometry;
 using InformedProteomics.Backend.MassSpecData;
+using MultiAlignCore.Data;
 
 namespace MultiAlignCore.IO.RawData
 {
@@ -351,7 +351,7 @@ namespace MultiAlignCore.IO.RawData
                 MsLevel = spec.MsLevel,
                 Time = spec.ElutionTime,
                 Scan = spec.ScanNum,
-                TotalIonCurrent = Convert.ToInt64(spec.TotalIonCurrent), // Only used in PNNLOmics.Algorithms.Chromatograms.XicCreator.CreateXic(...)
+                TotalIonCurrent = Convert.ToInt64(spec.TotalIonCurrent), // Only used in MultiAlignCore.Algorithms.Chromatograms.XicCreator.CreateXic(...)
                 PrecursorMz = 0,
                 CollisionType = CollisionType.Other,
             };

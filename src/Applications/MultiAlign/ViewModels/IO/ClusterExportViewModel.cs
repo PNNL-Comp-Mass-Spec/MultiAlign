@@ -11,7 +11,6 @@ using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO;
 using MultiAlignCore.IO.Clusters;
 using MultiAlignCore.IO.Features;
-using PNNLOmics.Data.Features;
 
 namespace MultiAlign.ViewModels.IO
 {

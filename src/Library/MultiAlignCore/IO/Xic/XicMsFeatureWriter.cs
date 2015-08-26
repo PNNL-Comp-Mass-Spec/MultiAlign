@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using PNNLOmics.Data.Features;
 using System.IO;
-using PNNLOmics.Data;
 using MultiAlignCore.Extensions;
 
 namespace MultiAlignCore.IO.Features
@@ -30,7 +28,7 @@ namespace MultiAlignCore.IO.Features
 
 
                         List<XYZData> gram = chargeMap[charge];
-                        foreach (PNNLOmics.Data.XYZData point in gram)
+                        foreach (XYZData point in gram)
                         {
                             writer.WriteLine("{0}\t{1}t{2}", point.Z, point.X, point.Y);
                         }                        

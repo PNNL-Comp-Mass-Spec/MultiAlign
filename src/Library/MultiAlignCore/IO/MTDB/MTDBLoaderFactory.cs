@@ -4,7 +4,6 @@ using System;
 using MultiAlignCore.Algorithms.Options;
 using MultiAlignCore.Data.MassTags;
 using MultiAlignCore.IO.InputFiles;
-using PNNLOmics.Data.MassTags;
 
 #endregion
 

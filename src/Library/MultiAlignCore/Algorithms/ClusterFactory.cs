@@ -1,7 +1,7 @@
 #region
 
-using PNNLOmics.Algorithms.FeatureClustering;
-using PNNLOmics.Data.Features;
+using MultiAlignCore.Algorithms.Clustering;
+using MultiAlignCore.Data.Features;
 
 #endregion
 
@@ -9,22 +9,22 @@ namespace MultiAlignCore.Algorithms
 {
     public static class ClusterFactory
     {
-        public static IClusterer<UMCLight, UMCClusterLight> Create(LcmsFeatureClusteringAlgorithmType clusterType)
+        public static Clustering.IClusterer<UMCLight, UMCClusterLight> Create(LcmsFeatureClusteringAlgorithmType clusterType)
         {
-            IClusterer<UMCLight, UMCClusterLight> clusterer = null;
+            Clustering.IClusterer<UMCLight, UMCClusterLight> clusterer = null;
             switch (clusterType)
             {
                 case LcmsFeatureClusteringAlgorithmType.AverageLinkage:
-                    clusterer = new UMCAverageLinkageClusterer<UMCLight, UMCClusterLight>();
+                    clusterer = new Clustering.UMCAverageLinkageClusterer<UMCLight, UMCClusterLight>();
                     break;
                 case LcmsFeatureClusteringAlgorithmType.Centroid:
-                    clusterer = new UMCCentroidClusterer<UMCLight, UMCClusterLight>();
+                    clusterer = new Clustering.UMCCentroidClusterer<UMCLight, UMCClusterLight>();
                     break;
                 case LcmsFeatureClusteringAlgorithmType.SingleLinkage:
-                    clusterer = new UMCSingleLinkageClusterer<UMCLight, UMCClusterLight>();
+                    clusterer = new Clustering.UMCSingleLinkageClusterer<UMCLight, UMCClusterLight>();
                     break;
                 case LcmsFeatureClusteringAlgorithmType.Prims:
-                    clusterer = new UMCPrimsClustering<UMCLight, UMCClusterLight>();
+                    clusterer = new Clustering.UMCPrimsClustering<UMCLight, UMCClusterLight>();
                     break;
             }
 

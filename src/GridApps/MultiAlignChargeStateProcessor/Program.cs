@@ -3,14 +3,16 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using MultiAlignCore.Algorithms;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO;
 using MultiAlignCore.IO.Datasets;
 using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.Hibernate;
-using PNNLOmics.Algorithms.FeatureClustering;
-using PNNLOmics.Data.Features;
+using MultiAlignCore.Algorithms.Clustering;
+using MultiAlignCore.Algorithms.Distance;
+using MultiAlignCore.Data.Features;
 
 namespace MultiAlignChargeStateProcessor
 {
@@ -125,7 +127,7 @@ namespace MultiAlignChargeStateProcessor
                 clusterer.Parameters.Tolerances.Net       = .014;
                 clusterer.Parameters.OnlyClusterSameChargeStates    = true;
                 clusterer.Parameters.CentroidRepresentation         = ClusterCentroidRepresentation.Mean;
-                clusterer.Parameters.DistanceFunction               = PNNLOmics.Algorithms.Distance.DistanceFactory<UMCLight>.CreateDistanceFunction(PNNLOmics.Algorithms.Distance.DistanceMetric.WeightedEuclidean);
+                clusterer.Parameters.DistanceFunction = DistanceFactory<UMCLight>.CreateDistanceFunction(DistanceMetric.WeightedEuclidean);
                 
                 // Then cluster
                 var clusterWriter = new UmcClusterWriter();
@@ -175,7 +177,7 @@ namespace MultiAlignChargeStateProcessor
             }
         }
 
-        static void clusterer_Progress(object sender, PNNLOmics.Algorithms.ProgressNotifierArgs e)
+        static void clusterer_Progress(object sender, ProgressNotifierArgs e)
         {
             Logger.PrintMessage(e.Message, true);
         }

@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using MultiAlignCore.Data;
+using MultiAlignCore.Data.Features;
 using MultiAlignCore.Drawing;
 using OxyPlot;
 using OxyPlot.Annotations;
 using OxyPlot.Axes;
 using OxyPlot.Series;
-using PNNLOmics.Data;
-using PNNLOmics.Data.Features;
 
 namespace MultiAlign.ViewModels.Charting
 {

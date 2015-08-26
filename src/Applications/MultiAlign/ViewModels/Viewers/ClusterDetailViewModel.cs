@@ -7,17 +7,16 @@ using MultiAlign.IO;
 using MultiAlign.ViewModels.Charting;
 using MultiAlign.ViewModels.Features;
 using MultiAlign.ViewModels.TreeView;
+using MultiAlignCore.Algorithms;
+using MultiAlignCore.Data;
 using MultiAlignCore.Data.Features;
 using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.Drawing;
+using MultiAlignCore.Extensions;
 using MultiAlignCore.IO;
 using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.MsMs;
-using PNNLOmics.Algorithms;
 using PNNLOmics.Annotations;
-using PNNLOmics.Data;
-using PNNLOmics.Data.Features;
-using PNNLOmics.Extensions;
 
 namespace MultiAlign.ViewModels.Viewers
 {

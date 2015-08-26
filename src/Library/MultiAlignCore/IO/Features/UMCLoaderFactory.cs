@@ -3,9 +3,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using PNNLOmics.Data;
-using PNNLOmics.Data.Features;
-using PNNLOmicsIO.IO;
+using MultiAlignCore.Data;
+using MultiAlignCore.Data.Features;
+using MultiAlignCore.IO.TextFiles;
 
 #endregion
 

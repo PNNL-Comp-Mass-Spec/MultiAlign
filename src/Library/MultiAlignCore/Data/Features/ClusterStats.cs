@@ -1,8 +1,7 @@
 ﻿#region
 
 using System.Collections.Generic;
-using PNNLOmics.Data.Features;
-using PNNLOmics.Extensions;
+using MultiAlignCore.Extensions;
 
 #endregion
 
@@ -20,7 +19,7 @@ namespace MultiAlignCore.Data.Features
             if (clusters.Count < 1)
                 return null;
 
-            var clusterMaps = clusters.CreateClusterDatasetMemeberSizeHistogram();
+            var clusterMaps = clusters.CreateClusterDatasetMemberSizeHistogram();
 
             // Find the maximum cluster size.
             var sizes = new List<int>();

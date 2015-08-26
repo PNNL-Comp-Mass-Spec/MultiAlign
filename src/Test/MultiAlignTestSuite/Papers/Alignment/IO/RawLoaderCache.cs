@@ -2,7 +2,7 @@
 
 using System;
 using System.Collections.Generic;
-using PNNLOmics.Data;
+using MultiAlignCore.Data;
 
 #endregion
 

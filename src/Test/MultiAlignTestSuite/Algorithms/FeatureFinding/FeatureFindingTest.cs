@@ -1,12 +1,12 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using MultiAlignCore.Algorithms;
+using MultiAlignCore.Algorithms.Clustering;
+using MultiAlignCore.Data;
+using MultiAlignCore.Data.Features;
+using MultiAlignCore.IO.TextFiles;
 using NUnit.Framework;
-using PNNLOmics.Algorithms;
-using PNNLOmics.Algorithms.FeatureClustering;
-using PNNLOmics.Data;
-using PNNLOmics.Data.Features;
-using PNNLOmicsIO.IO;
 
 namespace MultiAlignTestSuite.Algorithms.FeatureFinding
 {

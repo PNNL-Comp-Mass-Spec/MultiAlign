@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using PNNLOmics.Data.Features;
 using System.IO;
 using MultiAlignCore.Extensions;
 

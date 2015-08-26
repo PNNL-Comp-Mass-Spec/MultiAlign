@@ -1,6 +1,6 @@
 ﻿#region
 
-using PNNLOmics.Algorithms.FeatureClustering;
+using MultiAlignCore.Algorithms.Clustering;
 
 #endregion
 

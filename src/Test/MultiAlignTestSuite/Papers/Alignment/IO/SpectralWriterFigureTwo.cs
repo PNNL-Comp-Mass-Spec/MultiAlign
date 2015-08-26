@@ -1,6 +1,6 @@
 ﻿#region
 
-using PNNLOmics.Algorithms.Alignment.SpectralMatching;
+using MultiAlignCore.Algorithms.Alignment.SpectralMatching;
 
 #endregion
 

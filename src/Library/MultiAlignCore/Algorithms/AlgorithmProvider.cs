@@ -2,13 +2,12 @@
 
 using System;
 using System.Collections.Generic;
+using MultiAlignCore.Algorithms.Alignment;
+using MultiAlignCore.Algorithms.Clustering;
 using MultiAlignCore.Algorithms.FeatureMatcher;
 using MultiAlignCore.Data.Alignment;
-using PNNLOmics.Algorithms;
-using PNNLOmics.Algorithms.Alignment;
-using PNNLOmics.Algorithms.FeatureClustering;
-using PNNLOmics.Data.Features;
-using PNNLOmics.Data.MassTags;
+using MultiAlignCore.Data.Features;
+using MultiAlignCore.Data.MassTags;
 
 #endregion
 
@@ -27,7 +26,7 @@ namespace MultiAlignCore.Algorithms
         /// <summary>
         ///     Gets or sets the clustering algorithm used.
         /// </summary>
-        public IClusterer<UMCLight, UMCClusterLight> Clusterer { get; set; }
+        public Clustering.IClusterer<UMCLight, UMCClusterLight> Clusterer { get; set; }
 
         /// <summary>
         ///     Gets or sets the feature/database aligner.

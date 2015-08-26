@@ -5,22 +5,20 @@ using System.Linq;
 using MultiAlign.ViewModels.Instruments;
 using MultiAlignCore.Algorithms;
 using MultiAlignCore.Algorithms.Alignment;
+using MultiAlignCore.Algorithms.Alignment.LcmsWarp;
+using MultiAlignCore.Algorithms.Alignment.SpectralMatching;
+using MultiAlignCore.Algorithms.Clustering;
 using MultiAlignCore.Algorithms.Options;
+using MultiAlignCore.Algorithms.SpectralProcessing;
+using MultiAlignCore.Data;
 using MultiAlignCore.Data.Alignment;
+using MultiAlignCore.Data.Features;
+using MultiAlignCore.Data.MassTags;
 using MultiAlignCore.IO;
 using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.RawData;
 using MultiAlignTestSuite;
 using NUnit.Framework;
-using PNNLOmics.Algorithms;
-using PNNLOmics.Algorithms.Alignment;
-using PNNLOmics.Algorithms.Alignment.LcmsWarp;
-using PNNLOmics.Algorithms.Alignment.SpectralMatches;
-using PNNLOmics.Algorithms.Alignment.SpectralMatching;
-using PNNLOmics.Algorithms.FeatureClustering;
-using PNNLOmics.Algorithms.SpectralProcessing;
-using PNNLOmics.Data;
-using PNNLOmics.Data.Features;
 
 namespace AlignmentPaperTestSuite.Figures
 {

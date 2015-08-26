@@ -1,4 +1,4 @@
-﻿namespace MultiAlignTestSuite.Papers.Alignment.IO
+﻿namespace AlignmentPaperTestSuite.IO
 {
     public enum AlignmentFigureType
     {

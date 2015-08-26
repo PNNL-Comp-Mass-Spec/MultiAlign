@@ -2,12 +2,10 @@
 
 using System;
 using System.Collections.Generic;
+using MultiAlignCore.Data;
 using MultiAlignCore.Data.Alignment;
-using PNNLOmics.Algorithms;
-using PNNLOmics.Algorithms.Alignment;
-using PNNLOmics.Data;
-using PNNLOmics.Data.Features;
-using PNNLOmics.Data.MassTags;
+using MultiAlignCore.Data.Features;
+using MultiAlignCore.Data.MassTags;
 
 #endregion
 

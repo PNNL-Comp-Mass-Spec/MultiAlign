@@ -9,7 +9,6 @@ using MultiAlign.ViewModels.Charting;
 using MultiAlign.ViewModels.Features;
 using MultiAlignCore.Data.Features;
 using MultiAlignCore.Extensions;
-using PNNLOmics.Data;
 
 namespace MultiAlign.ViewModels.Spectra
 {

@@ -1,4 +1,6 @@
-﻿namespace MultiAlignRogue.Feature_Finding
+﻿using MultiAlignCore.Data.Features;
+
+namespace MultiAlignRogue.Feature_Finding
 {
     using System;
     using System.Drawing;
@@ -6,8 +8,7 @@
 
     using MultiAlignCore.Data.MetaData;
 
-    using PNNLOmics.Data.Features;
-
+    
     using QuadTreeLib;
 
     class FeaturePoint : IHasRect

@@ -2,8 +2,8 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using MultiAlignCore.Data;
 using MultiAlignCore.IO.RawData;
-using PNNLOmics.Data;
 
 #endregion
 

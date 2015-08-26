@@ -1,10 +1,10 @@
 ﻿#region
 
-using PNNLOmics.Algorithms.Alignment.SpectralMatching;
+using MultiAlignCore.Algorithms.Alignment.SpectralMatching;
 
 #endregion
 
-namespace MultiAlignTestSuite.Papers.Alignment.IO
+namespace AlignmentPaperTestSuite.IO
 {
     /// <summary>
     ///     Writes data from an analysis for figure 1

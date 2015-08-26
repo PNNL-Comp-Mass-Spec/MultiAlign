@@ -5,11 +5,10 @@
 //using MultiAlignCore.Algorithms.Alignment;
 //using MultiAlignCore.IO.Features;
 //using MultiAlignCore.Data.Alignment;
-//using PNNLOmics.Data.Features;
-//using MultiAlignCore.Data.MassTags;
-//using PNNLOmics.Algorithms;
+////using MultiAlignCore.Data.MassTags;
+//using MultiAlignCore.Algorithms;
 //using MultiAlignCore.Data;
-//using PNNLOmics.Algorithms.Alignment;
+//using MultiAlignCore.Algorithms.Alignment;
 
 //namespace MultiAlignCore.Algorithms.Workflow
 //{

@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using MultiAlignCore.Algorithms.Regression;
 using NUnit.Framework;
-using PNNLOmics.Algorithms.Regression;
 
 namespace AlignmentPaperTestSuite
 {

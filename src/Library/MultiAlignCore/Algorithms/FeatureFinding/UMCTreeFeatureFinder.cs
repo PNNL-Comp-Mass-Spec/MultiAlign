@@ -2,11 +2,10 @@
 
 using System;
 using System.Collections.Generic;
+using MultiAlignCore.Algorithms.Clustering;
+using MultiAlignCore.Data;
+using MultiAlignCore.Data.Features;
 using MultiAlignCore.Data.MetaData;
-using PNNLOmics.Algorithms;
-using PNNLOmics.Algorithms.FeatureClustering;
-using PNNLOmics.Data;
-using PNNLOmics.Data.Features;
 
 #endregion
 
@@ -42,7 +41,7 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
             LcmsFeatureFindingOptions options,
             ISpectraProvider provider, DatasetInformation information)
         {
-            var clusterer = new MsFeatureTreeClusterer<MSFeatureLight, UMCLight>
+            var clusterer = new Clustering.MsFeatureTreeClusterer<MSFeatureLight, UMCLight>
             {
                 Tolerances =
                     new FeatureTolerances
@@ -123,7 +122,7 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
             LcmsFeatureFindingOptions options,
             ISpectraProvider provider)
         {
-            var clusterer = new MsFeatureTreeClusterer<MSFeatureLight, UMCLight>
+            var clusterer = new Clustering.MsFeatureTreeClusterer<MSFeatureLight, UMCLight>
             {
                 Tolerances =
                     new FeatureTolerances

@@ -9,9 +9,6 @@ using DeconTools.Backend.ProcessingTasks.Smoothers;
 using DeconTools.Backend.Utilities;
 using MultiAlignCore.Data;
 using MultiAlignCore.Extensions;
-using PNNLOmics.Algorithms;
-using PNNLOmics.Data;
-using PNNLOmics.Data.Features;
 using System.Text;
 using System.Linq;
 using DeconTools.Utilities;
@@ -64,7 +61,7 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
         /// <param name="mz"></param>
         /// <param name="scan"></param>
         /// <returns></returns>
-        public List<PNNLOmics.Data.XYData> FindXic(double mz, int scan, bool shouldSmooth)
+        public List<XYData> FindXic(double mz, int scan, bool shouldSmooth)
         {
             LcmsFeatureTarget target    = new LcmsFeatureTarget();
             target.ID                   = 0;
@@ -110,11 +107,11 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
             chromPeakSelector.Execute(m_run.ResultCollection);
 
             //Here's the chromatogram data... 
-            List<PNNLOmics.Data.XYData> data = new List<PNNLOmics.Data.XYData>();
+            List<XYData> data = new List<XYData>();
 
             for (int i = 0; i < m_run.XYData.Xvalues.Length; i++)
             {
-                PNNLOmics.Data.XYData datum = new PNNLOmics.Data.XYData(m_run.XYData.Xvalues[i], m_run.XYData.Yvalues[i]);
+                XYData datum = new XYData(m_run.XYData.Xvalues[i], m_run.XYData.Yvalues[i]);
                 data.Add(datum);
             }
 
@@ -150,7 +147,7 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
                 double  targetMz    = maxPoint.Z; 
 
                 // Find the Xic based on the target point, this may include other peaks
-                List<PNNLOmics.Data.XYData> totalXic = null;
+                List<XYData> totalXic = null;
 
                 try
                 {
@@ -159,7 +156,7 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
                     if (totalXic.Count > 1)
                     {
                         // Then find a specific Xic based on the target scan.
-                        List<PNNLOmics.Data.XYData> specificXic = finder.FindTarget(totalXic, targetScan);
+                        List<XYData> specificXic = finder.FindTarget(totalXic, targetScan);
 
                         // Add the targeted Xic to the charge state map so that we can create Xic's for each charge state.
                         Chromatogram gram = new Chromatogram(specificXic, maxPoint.Z, charge);
@@ -180,9 +177,9 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
         /// <param name="mz"></param>
         /// <param name="scan"></param>
         /// <returns></returns>
-        public List<PNNLOmics.Data.XYData> CreateIsotopicProfile(double monoisotopicPeak, double scan, int charge)
+        public List<XYData> CreateIsotopicProfile(double monoisotopicPeak, double scan, int charge)
         {
-            return new List<PNNLOmics.Data.XYData>();
+            return new List<XYData>();
         }
 
         /// <summary>
@@ -214,15 +211,15 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
                 int targetScan  = Convert.ToInt32(maxPoint.X);
                 double targetMz = maxPoint.Z;
 
-                List<PNNLOmics.Data.XYData>  isotopicProfile = CreateIsotopicProfile(targetMz, targetScan, charge);
+                List<XYData>  isotopicProfile = CreateIsotopicProfile(targetMz, targetScan, charge);
 
-                foreach (PNNLOmics.Data.XYData isotope in isotopicProfile)
+                foreach (XYData isotope in isotopicProfile)
                 {
                     // Find the Xic based on the target point, this may include other peaks
-                    List<PNNLOmics.Data.XYData> totalXic = FindXic(targetMz, targetScan, shouldSmooth);
+                    List<XYData> totalXic = FindXic(targetMz, targetScan, shouldSmooth);
 
                     // Then find a specific Xic based on the target scan.
-                    List<PNNLOmics.Data.XYData> targetIsotopeXic = finder.FindTarget(totalXic, targetScan);
+                    List<XYData> targetIsotopeXic = finder.FindTarget(totalXic, targetScan);
 
                     // Add the targeted Xic to the charge state map so that we can create Xic's for each charge state.
                     Chromatogram gram = new Chromatogram(targetIsotopeXic, maxPoint.Z, charge);                

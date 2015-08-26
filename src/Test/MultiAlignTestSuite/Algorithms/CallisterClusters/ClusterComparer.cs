@@ -5,18 +5,18 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using MultiAlignCore.Algorithms.SpectralProcessing;
+using MultiAlignCore.Data;
 using MultiAlignTestSuite.Papers.Alignment.SSM;
 using NUnit.Framework;
 using OxyPlot;
 using OxyPlot.Series;
 using OxyPlot.WindowsForms;
-using PNNLOmics.Algorithms.SpectralProcessing;
-using PNNLOmics.Data;
 using LinearAxis = OxyPlot.Axes.LinearAxis;
 
 #endregion
 
-namespace MultiAlignTestSuite.Algorithms
+namespace MultiAlignTestSuite.Algorithms.CallisterClusters
 {
     [TestFixture]
     public class ClusterComparer : BaseSpectralAlignmentTest

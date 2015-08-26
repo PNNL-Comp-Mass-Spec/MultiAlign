@@ -8,6 +8,8 @@ using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Messaging;
 using Microsoft.Win32.SafeHandles;
 using MultiAlign.ViewModels.Charting;
+using MultiAlignCore.Data;
+using MultiAlignCore.Data.Features;
 using MultiAlignCore.Extensions;
 using MultiAlignCore.IO.Features;
 using MultiAlignRogue.Utils;
@@ -16,8 +18,6 @@ using OxyPlot;
 using OxyPlot.Annotations;
 using OxyPlot.Axes;
 using OxyPlot.Series;
-using PNNLOmics.Data;
-using PNNLOmics.Data.Features;
 
 namespace MultiAlignRogue.Clustering
 {

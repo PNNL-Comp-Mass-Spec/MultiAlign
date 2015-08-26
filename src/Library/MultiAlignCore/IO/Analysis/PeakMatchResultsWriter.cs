@@ -3,10 +3,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using MultiAlignCore.Data;
+using MultiAlignCore.Data.Features;
+using MultiAlignCore.Data.MassTags;
 using MultiAlignCore.IO.Hibernate;
-using PNNLOmics.Data;
-using PNNLOmics.Data.Features;
-using PNNLOmics.Data.MassTags;
 
 #endregion
 

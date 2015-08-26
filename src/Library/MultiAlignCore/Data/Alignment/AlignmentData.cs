@@ -2,8 +2,8 @@
 
 using System;
 using System.Collections.Generic;
-using PNNLOmics.Algorithms.Alignment.SpectralMatching;
-using PNNLOmics.Algorithms.Alignment.LcmsWarp;
+using MultiAlignCore.Algorithms.Alignment.LcmsWarp;
+using MultiAlignCore.Algorithms.Alignment.SpectralMatching;
 
 #endregion
 

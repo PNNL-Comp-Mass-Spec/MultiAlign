@@ -7,7 +7,6 @@ using System.Runtime.CompilerServices;
 using MultiAlignCore.Data.Factors;
 using MultiAlignCore.IO.InputFiles;
 using PNNLOmics.Annotations;
-using PNNLOmics.Data;
 
 #endregion
 

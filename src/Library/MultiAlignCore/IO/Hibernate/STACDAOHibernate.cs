@@ -1,7 +1,7 @@
 #region
 
 using System.Data.SQLite;
-using PNNLOmics.Algorithms.FeatureMatcher.Data;
+using MultiAlignCore.Algorithms.FeatureMatcher.Data;
 
 #endregion
 

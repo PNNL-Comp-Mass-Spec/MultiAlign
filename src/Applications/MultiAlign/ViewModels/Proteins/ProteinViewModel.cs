@@ -1,4 +1,5 @@
-﻿using PNNLOmics.Data;
+﻿
+using MultiAlignCore.Data.MassTags;
 
 namespace MultiAlign.ViewModels.Proteins
 {

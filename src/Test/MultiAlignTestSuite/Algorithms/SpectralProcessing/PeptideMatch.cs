@@ -1,5 +1,4 @@
 using System;
-using PNNLOmics.Data;
 
 namespace MultiAlignTestSuite.Algorithms.SpectralProcessing
 {

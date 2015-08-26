@@ -1,12 +1,12 @@
-﻿using OxyPlot;
+﻿using MultiAlignCore.Data.Features;
+using OxyPlot;
 using OxyPlot.Series;
 
 namespace MultiAlignRogue.Clustering
 {
     using System.Drawing;
 
-    using PNNLOmics.Data.Features;
-
+    
     using QuadTreeLib;
 
     public class ClusterPoint : IHasRect, IScatterPointProvider

@@ -2,7 +2,6 @@
 using System.IO;
 using System.Linq;
 using GalaSoft.MvvmLight.Messaging;
-using PNNLOmics.Data.Features;
 using Xceed.Wpf.AvalonDock.Layout.Serialization;
 
 namespace MultiAlignRogue.Clustering

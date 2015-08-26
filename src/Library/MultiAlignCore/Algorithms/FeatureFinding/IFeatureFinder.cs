@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using MultiAlignCore.Algorithms.Clustering;
+using MultiAlignCore.Data;
+using MultiAlignCore.Data.Features;
 using MultiAlignCore.Data.MetaData;
-using PNNLOmics.Algorithms;
-using PNNLOmics.Algorithms.FeatureClustering;
-using PNNLOmics.Data;
-using PNNLOmics.Data.Features;
 
 namespace MultiAlignCore.Algorithms.FeatureFinding
 {

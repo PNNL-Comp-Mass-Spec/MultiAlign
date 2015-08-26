@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using PNNLOmics.Data.Features;
+using MultiAlignCore.Data.Features;
 
 namespace MultiAlign.ViewModels.TreeView
 {

@@ -1,9 +1,9 @@
 ﻿#region
 
 using System.Collections.Generic;
-using PNNLOmics.Algorithms.FeatureMatcher.Data;
-using PNNLOmics.Data.Features;
-using PNNLOmics.Data.MassTags;
+using MultiAlignCore.Algorithms.FeatureMatcher.Data;
+using MultiAlignCore.Data.Features;
+using MultiAlignCore.Data.MassTags;
 
 #endregion
 
@@ -23,8 +23,8 @@ namespace MultiAlignCore.Data
         /// </summary>
         public PeakMatchingResults()
         {
-            ShiftedMatches = new List<FeatureMatchLight<UMCClusterLight, MassTagLight>>();
-            Matches = new List<FeatureMatchLight<UMCClusterLight, MassTagLight>>();
+            ShiftedMatches = new List<MassTags.FeatureMatchLight<UMCClusterLight, MassTagLight>>();
+            Matches = new List<MassTags.FeatureMatchLight<UMCClusterLight, MassTagLight>>();
             FdrTable = new List<STACFDR>();
             PeakMatchedToMassTagDB = false;
         }
@@ -32,12 +32,12 @@ namespace MultiAlignCore.Data
         /// <summary>
         ///     Gets or sets the list of available matches.
         /// </summary>
-        public List<FeatureMatchLight<UMCClusterLight, MassTagLight>> Matches { get; set; }
+        public List<MassTags.FeatureMatchLight<UMCClusterLight, MassTagLight>> Matches { get; set; }
 
         /// <summary>
         ///     Gets or sets the list of available matches shifted by the dalton correction.
         /// </summary>
-        public List<FeatureMatchLight<UMCClusterLight, MassTagLight>> ShiftedMatches { get; set; }
+        public List<MassTags.FeatureMatchLight<UMCClusterLight, MassTagLight>> ShiftedMatches { get; set; }
 
         /// <summary>
         ///     Gets or sets the FDR Table from STAC

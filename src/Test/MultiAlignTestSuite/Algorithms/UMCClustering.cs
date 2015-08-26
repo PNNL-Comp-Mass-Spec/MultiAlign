@@ -4,10 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using MultiAlignCore.Algorithms.Clustering;
+using MultiAlignCore.Algorithms.Distance;
+using MultiAlignCore.Data.Features;
 using NUnit.Framework;
-using PNNLOmics.Algorithms.Distance;
-using PNNLOmics.Algorithms.FeatureClustering;
-using PNNLOmics.Data.Features;
 
 #endregion
 

@@ -2,8 +2,7 @@
 
 using System;
 using System.Collections.Generic;
-using PNNLOmics.Data.Features;
-using PNNLOmics.Data.MassTags;
+using MultiAlignCore.Data.MassTags;
 
 #endregion
 

@@ -12,7 +12,6 @@ using MultiAlignCore.Data;
 using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO;
 using MultiAlignCore.IO.Features;
-using PNNLOmics.Data.Features;
 
 namespace MultiAlignRogue
 {

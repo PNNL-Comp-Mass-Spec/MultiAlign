@@ -4,9 +4,6 @@ using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using PNNLOmics.Data;
-using PNNLOmics.Algorithms;
-using PNNLOmics.Data.Features;
 
 namespace MultiAlignCore.Algorithms.Features
 {

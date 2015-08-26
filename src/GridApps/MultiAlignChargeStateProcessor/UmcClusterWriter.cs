@@ -2,8 +2,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using MultiAlignCore.Data.MetaData;
-using PNNLOmics.Algorithms.FeatureClustering;
-using PNNLOmics.Data.Features;
+using MultiAlignCore.Algorithms.Clustering;
+using MultiAlignCore.Data.Features;
 
 namespace MultiAlignChargeStateProcessor
 {

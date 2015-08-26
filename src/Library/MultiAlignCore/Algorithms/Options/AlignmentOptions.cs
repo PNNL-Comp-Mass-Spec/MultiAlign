@@ -1,8 +1,8 @@
 ﻿#region
 
 using System.ComponentModel;
+using MultiAlignCore.Algorithms.Alignment.LcmsWarp;
 using MultiAlignCore.IO.Parameters;
-using PNNLOmics.Algorithms.Alignment.LcmsWarp;
 
 #endregion
 

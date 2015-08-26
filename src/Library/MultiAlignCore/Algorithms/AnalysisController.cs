@@ -7,10 +7,12 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using MultiAlignCore.Algorithms.Clustering;
 using MultiAlignCore.Algorithms.FeatureFinding;
 using MultiAlignCore.Algorithms.Features;
 using MultiAlignCore.Algorithms.Options;
 using MultiAlignCore.Data;
+using MultiAlignCore.Data.Features;
 using MultiAlignCore.Data.MassTags;
 using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.Extensions;
@@ -25,10 +27,6 @@ using MultiAlignCore.IO.MTDB;
 using MultiAlignCore.IO.Parameters;
 using MultiAlignCore.IO.Proteins;
 using MultiAlignCore.IO.Reports;
-using PNNLOmics.Algorithms;
-using PNNLOmics.Algorithms.FeatureClustering;
-using PNNLOmics.Data.Features;
-using PNNLOmics.Data.MassTags;
 
 #endregion
 
