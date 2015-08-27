@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" 
-                   assembly="PNNLOmics" 
-                   namespace="PNNLOmics.Data.Features">
+                   assembly="MultiAlignCore" 
+                   namespace="MultiAlignCore.Data.Features">
 
 	<class name="UMCLight" table="T_LCMS_Features" lazy="false">
 		<composite-id>
