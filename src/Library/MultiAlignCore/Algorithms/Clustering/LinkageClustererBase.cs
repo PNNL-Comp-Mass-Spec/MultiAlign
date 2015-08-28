@@ -422,7 +422,7 @@ namespace MultiAlignCore.Algorithms.Clustering
 
             // Calculate differences
             var massDiff = Math.Abs(FeatureLight.ComputeMassPPMDifference(clusterX.MassMonoisotopicAligned, clusterY.MassMonoisotopicAligned));
-            var netDiff = Math.Abs(clusterX.Net - clusterY.Net);
+            var netDiff = Math.Abs(clusterX.NetAligned - clusterY.NetAligned);
             var driftDiff = Math.Abs(clusterX.DriftTime - clusterY.DriftTime);
 
             // Return true only if all differences are within tolerance

@@ -694,9 +694,10 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
                                                              ref List<double> umcDriftTimes, int minScan, int maxScan)
         {
             var numFeatures = m_features.Count;
+            var sortedFeatures = m_features.OrderBy(x => x.Id).ToList();
             for (var featureNum = 0; featureNum < numFeatures; featureNum++)
             {
-                var feature = m_features[featureNum];
+                var feature = sortedFeatures[featureNum];
                 umcIndices.Add(feature.Id);
                 umcCalibratedMasses.Add(feature.MassMonoisotopicAligned);
                 umcAlignedNets.Add(feature.NetAligned);
