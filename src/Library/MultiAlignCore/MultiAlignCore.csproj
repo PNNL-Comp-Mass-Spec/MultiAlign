@@ -198,6 +198,7 @@
     <Compile Include="Algorithms\Chromatograms\IChromatogramProvider.cs" />
     <Compile Include="Algorithms\Chromatograms\XicCreator.cs" />
     <Compile Include="Algorithms\Chromatograms\XicFeature.cs" />
+    <Compile Include="Algorithms\Chromatograms\XicRefiner.cs" />
     <Compile Include="Algorithms\Clustering\BinarySearchTree.cs" />
     <Compile Include="Algorithms\Clustering\Edge.cs" />
     <Compile Include="Algorithms\Clustering\FeatureClusterParameters.cs" />
@@ -219,6 +220,7 @@
     <Compile Include="Algorithms\Clustering\MSFeatureSingleLinkageClustering.cs" />
     <Compile Include="Algorithms\Clustering\MSMSClusterer.cs" />
     <Compile Include="Algorithms\Clustering\MsnClusterer.cs" />
+    <Compile Include="Algorithms\Clustering\MsToLcmsFeatures.cs" />
     <Compile Include="Algorithms\Clustering\TreeNode.cs" />
     <Compile Include="Algorithms\Clustering\UMCCentroidClusterer.cs" />
     <Compile Include="Algorithms\Clustering\UMCAverageLinkageClusterer.cs" />

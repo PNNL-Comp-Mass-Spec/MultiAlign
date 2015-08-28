@@ -313,6 +313,21 @@ namespace MultiAlign.ViewModels.Datasets
             get { return this.IsAligning || this.IsFindingFeatures || this.IsClustering; }
         }
 
+        private double progress;
+        
+        public double Progress
+        {
+            get { return this.progress; }
+            set
+            {
+                if (this.progress != value)
+                {
+                    this.progress = value;
+                    this.OnPropertyChanged("Progress");
+                }
+            }
+        }
+
         public DatasetInformation Dataset
         {
             get { return m_information; }

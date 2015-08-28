@@ -9,7 +9,9 @@
  *          5-19-2010 - BLL - Created interface.
  ////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 
+using System;
 using System.Collections.Generic;
+using InformedProteomics.Backend.Utils;
 using MultiAlignCore.Data.Features;
 
 namespace MultiAlignCore.Algorithms.Clustering
@@ -27,13 +29,13 @@ namespace MultiAlignCore.Algorithms.Clustering
         /// Clusters the data objects provided in the list.
         /// </summary>
         /// <param name="data">Data to cluster.</param>                
-        List<U> Cluster(List<T> data, List<U> clusters);
-        List<U> Cluster(List<T> data);
+        List<U> Cluster(List<T> data, List<U> clusters, IProgress<ProgressData> progress = null);
+        List<U> Cluster(List<T> data, IProgress<ProgressData> progress = null);
         /// <summary>
         /// Clusters and writes data to teh stream writer provided.
         /// </summary>
         /// <param name="data"></param>
         /// <param name="writer"></param>
-        void ClusterAndProcess(List<T> data, IClusterWriter<U> writer);
+        void ClusterAndProcess(List<T> data, IClusterWriter<U> writer, IProgress<ProgressData> progress = null);
     }
 }

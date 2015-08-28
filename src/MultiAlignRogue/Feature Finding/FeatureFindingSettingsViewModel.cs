@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.IO;
 using System.Windows;
+using InformedProteomics.Backend.Utils;
 using MultiAlignCore.Data.Features;
 using MultiAlignCore.Extensions;
 using NHibernate.Util;
@@ -243,7 +244,14 @@ namespace MultiAlignRogue.Feature_Finding
 
             foreach (var file in selectedFiles)
             {
-                var features = this.featureCache.LoadDataset(file.Dataset, this.analysis.Options.MsFilteringOptions, this.analysis.Options.LcmsFindingOptions, this.analysis.Options.LcmsFilteringOptions);
+                var progress = new Progress<ProgressData>(progData => file.Progress = progData.Percent);
+                var features = this.featureCache.LoadDataset(
+                                                    file.Dataset,
+                                                    this.analysis.Options.MsFilteringOptions,
+                                                    this.analysis.Options.LcmsFindingOptions,
+                                                    this.analysis.Options.LcmsFilteringOptions,
+                                                    progress);
+
                 if (!this.features.ContainsKey(file.Dataset))
                 {
                     this.features.Add(file.Dataset, new List<UMCLight>());

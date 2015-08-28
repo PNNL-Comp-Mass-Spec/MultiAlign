@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using InformedProteomics.Backend.Utils;
 using MultiAlignCore.Algorithms;
 using MultiAlignCore.Algorithms.FeatureFinding;
 using MultiAlignCore.Algorithms.Workflow;
@@ -149,7 +150,8 @@ namespace MultiAlignCore.IO
             DatasetInformation information,
             List<MSFeatureLight> msFeatures,
             LcmsFeatureFindingOptions options,
-            LcmsFeatureFilteringOptions filterOptions)
+            LcmsFeatureFilteringOptions filterOptions,
+            IProgress<ProgressData> progress = null)
         {
             // Make features
             if (msFeatures.Count < 1)
@@ -270,20 +272,38 @@ namespace MultiAlignCore.IO
         public IList<UMCLight> LoadDataset(DatasetInformation dataset,
             MsFeatureFilteringOptions msFilteringOptions,
             LcmsFeatureFindingOptions lcmsFindingOptions,
-            LcmsFeatureFilteringOptions lcmsFilteringOptions)
+            LcmsFeatureFilteringOptions lcmsFilteringOptions,
+            IProgress<ProgressData> progress = null)
         {
+            progress = progress ?? new Progress<ProgressData>();
+            var progData = new ProgressData { IsPartialRange = true };
+            IProgress<ProgressData> internalProgress = new Progress<ProgressData>(pd => progress.Report(progData.UpdatePercent(pd.Percent)));
+
+            progData.MaxPercentage = 3;
+            progData.Status = "Looking for existing features in the database.";
             UpdateStatus(string.Format("[{0}] - Loading dataset [{0}] - {1}.", dataset.DatasetId, dataset.DatasetName));
             var datasetId = dataset.DatasetId;
             var features = UmcLoaderFactory.LoadUmcFeatureData(dataset.Features.Path, dataset.DatasetId,
                 Providers.FeatureCache);
+            internalProgress.Report(new ProgressData { Percent = 100 });
 
+
+            progData.StepRange(7);
+            progData.Status = "Loading MS Feature Data.";
             UpdateStatus(string.Format("[{0}] Loading MS Feature Data [{0}] - {1}.", dataset.DatasetId,
                 dataset.DatasetName));
             var msFeatures = UmcLoaderFactory.LoadMsFeatureData(dataset.Features.Path);
+            internalProgress.Report(new ProgressData { Percent = 100 });
+
+            progData.StepRange(10);
+            progData.Status = "Loading scan summaries.";
             var scansInfo = UmcLoaderFactory.LoadScanSummaries(dataset.Scans.Path);
             dataset.BuildScanTimes(scansInfo);
+            internalProgress.Report(new ProgressData { Percent = 100 });
 
             var msnSpectra = new List<MSSpectra>();
+
+            progData.StepRange(100);
 
             // If we don't have any features, then we have to create some from the MS features
             // provided to us.
@@ -292,11 +312,12 @@ namespace MultiAlignCore.IO
                 msFeatures = LcmsFeatureFilters.FilterMsFeatures(msFeatures, msFilteringOptions);
                 msFeatures = Filter(msFeatures, ref dataset);
 
-
+                progData.Status = "Creating LCMS features.";
                 features = CreateLcmsFeatures(dataset,
                     msFeatures,
                     lcmsFindingOptions,
-                    lcmsFilteringOptions);
+                    lcmsFilteringOptions,
+                    internalProgress);
 
                 //var maxScan = Convert.ToDouble(features.Max(feature => feature.Scan));
                 //var minScan = Convert.ToDouble(features.Min(feature => feature.Scan));
@@ -350,6 +371,8 @@ namespace MultiAlignCore.IO
                         map[feature.UmcId].AddChildFeature(feature);
                     }
                 }
+
+                internalProgress.Report(new ProgressData { Percent = 100 });
             }
 
 

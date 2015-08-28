@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using InformedProteomics.Backend.Utils;
 using MultiAlignCore.Data.Features;
 
 namespace MultiAlignCore.Algorithms.Clustering
@@ -38,7 +39,7 @@ namespace MultiAlignCore.Algorithms.Clustering
             return true;
         }
 
-        public override List<U> Cluster(List<T> data, List<U> clusters)
+        public override List<U> Cluster(List<T> data, List<U> clusters, IProgress<ProgressData> progress = null)
         {
 
             return base.Cluster(data, clusters);

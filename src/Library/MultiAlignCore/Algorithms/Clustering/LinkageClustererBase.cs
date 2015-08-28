@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using InformedProteomics.Backend.Utils;
 using MultiAlignCore.Data.Features;
 
 namespace MultiAlignCore.Algorithms.Clustering
@@ -59,7 +60,7 @@ namespace MultiAlignCore.Algorithms.Clustering
 		/// </summary>
 		/// <param name="data">Data to cluster.</param>
 		/// <returns>List of UMC clusters.</returns>
-		public List<U> Cluster(List<T> data)
+        public List<U> Cluster(List<T> data, IProgress<ProgressData> progress = null)
 		{
 			return Cluster(data, new List<U>());
 		}
@@ -80,7 +81,7 @@ namespace MultiAlignCore.Algorithms.Clustering
         /// <param name="data"></param>
         /// <param name="clusters"></param>
         /// <returns></returns>
-		public virtual List<U> Cluster(List<T> data, List<U> clusters)
+        public virtual List<U> Cluster(List<T> data, List<U> clusters, IProgress<ProgressData> progress = null)
         {        
 			/*
 			 * This clustering algorithm first sorts the list of input UMC's by mass.  It then iterates
@@ -440,7 +441,7 @@ namespace MultiAlignCore.Algorithms.Clustering
         /// </summary>
         /// <param name="data"></param>
         /// <param name="writer"></param>
-        public void ClusterAndProcess(List<T> data, IClusterWriter<U> writer)
+        public void ClusterAndProcess(List<T> data, IClusterWriter<U> writer, IProgress<ProgressData> progress = null)
         {        
             /*
              * This clustering algorithm first sorts the list of input UMC's by mass.  It then iterates

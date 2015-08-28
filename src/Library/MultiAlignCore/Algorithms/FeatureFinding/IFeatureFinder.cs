@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using InformedProteomics.Backend.Utils;
 using MultiAlignCore.Algorithms.Clustering;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.Features;
@@ -17,7 +18,8 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
         /// </summary>
         List<UMCLight> FindFeatures(List<MSFeatureLight> features, 
                                     LcmsFeatureFindingOptions   options,
-                                    ISpectraProvider provider, DatasetInformation information);
+                                    ISpectraProvider provider, DatasetInformation information,
+                                    IProgress<ProgressData> progress = null);
 
         /// <summary>
         /// Finds features from the file of MS Features.

@@ -45,7 +45,16 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="File Name" Width="*" Binding="{Binding Dataset.DatasetName}"/>
+                <DataGridTemplateColumn Header="File Name" Width="*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <ProgressBar Value="{Binding Progress}" />
+                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Dataset.DatasetName}" />
+                            </Grid>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
                 <DataGridCheckBoxColumn Header="Scans" Width="45" IsReadOnly="True" Binding="{Binding ScansBool}" />
                 <DataGridCheckBoxColumn Header="Raw" Width="40" IsReadOnly="True" Binding="{Binding RawBool}"/>
                 <DataGridCheckBoxColumn Header="Features" Width="60" IsReadOnly="True" Binding="{Binding FeaturesFound, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">

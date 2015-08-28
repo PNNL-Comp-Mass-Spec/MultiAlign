@@ -49,8 +49,6 @@ namespace MultiAlignCore.Algorithms.SpectralProcessing
             return SmoothOmicsList(xyData);            
         }
 
-        
-
         /// <summary>
         /// Performs SavitzkyGolay smoothing
         /// </summary>
@@ -234,6 +232,7 @@ namespace MultiAlignCore.Algorithms.SpectralProcessing
 
             var sTranspose = (DenseMatrix)denseMatrix.ConjugateTranspose();
             var f = sTranspose * denseMatrix;
+
             var fInverse = (DenseMatrix)f.LU().Solve(DenseMatrix.CreateIdentity(f.ColumnCount));
             var smoothingFilters = denseMatrix * fInverse * sTranspose;
 
