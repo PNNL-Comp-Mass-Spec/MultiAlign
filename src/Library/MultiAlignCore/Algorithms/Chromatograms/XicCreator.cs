@@ -22,7 +22,10 @@ namespace MultiAlignCore.Algorithms.Chromatograms
             ScanWindowSize = 100;
             FragmentationSizeWindow = .5;
             NumberOfPoints = 5;
+            this.XicRefiner = new XicRefiner();
         }
+
+        public XicRefiner XicRefiner { get; set; }
 
         public IEnumerable<UMCLight> CreateXicNew(List<UMCLight> features,
             double massError,
@@ -43,8 +46,13 @@ namespace MultiAlignCore.Algorithms.Chromatograms
                 var ipr = provider.GetReaderForGroup(0);
                 var target = xicTarget.StartScan + ((xicTarget.EndScan - xicTarget.StartScan) / 2);
                 var xic = ipr.GetPrecursorExtractedIonChromatogram(xicTarget.LowMz, xicTarget.HighMz, target);
-                //var xicRefiner = new XicRefiner();
-                //xic = xicRefiner.RefineXic(xic);
+
+                if (refine)
+                {
+                    var xicRefiner = this.XicRefiner ?? new XicRefiner();
+                    xic = xicRefiner.RefineXic(xic);
+                }
+
                 if (xic.Count < 3)
                 {
                     continue;

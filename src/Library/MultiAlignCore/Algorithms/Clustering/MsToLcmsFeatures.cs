@@ -115,23 +115,29 @@ namespace MultiAlignCore.Algorithms.Clustering
                 features = this.FirstPassClustering(msFeatures, internalProgress);
                 stopWatch.Stop();
                 logger.WriteLine("{0}: {1}s", progressData.Status, stopWatch.Elapsed.TotalSeconds);
-                stopWatch.Restart();
 
                 // Step 2
-                progressData.Status = "Creating Xics";
-                progressData.StepRange(90);
-                features = this.CreateXics(features, internalProgress);
-                features.ForEach(feature => feature.CalculateStatistics(ClusterCentroidRepresentation.Median));
-                stopWatch.Stop();
-                logger.WriteLine("{0}: {1}s", progressData.Status, stopWatch.Elapsed.TotalSeconds);
-                stopWatch.Restart();
+                if (this.options.FindXics)
+                {
+                    stopWatch.Restart();
+                    progressData.Status = "Creating Xics";
+                    progressData.StepRange(90);
+                    features = this.CreateXics(features, internalProgress);
+                    features.ForEach(feature => feature.CalculateStatistics(ClusterCentroidRepresentation.Median));
+                    stopWatch.Stop();
+                    logger.WriteLine("{0}: {1}s", progressData.Status, stopWatch.Elapsed.TotalSeconds);  
+                }
 
                 // Step 3
-                progressData.Status = "Second Pass Clustering";
-                progressData.StepRange(100);
-                features = this.SecondPassClustering(features, internalProgress);
-                stopWatch.Stop();
-                logger.WriteLine("{0}: {1}s", progressData.Status, stopWatch.Elapsed.TotalSeconds);
+                if (this.options.SecondPassClustering)
+                {
+                    stopWatch.Restart(); 
+                    progressData.Status = "Second Pass Clustering";
+                    progressData.StepRange(100);
+                    features = this.SecondPassClustering(features, internalProgress);
+                    stopWatch.Stop();
+                    logger.WriteLine("{0}: {1}s", progressData.Status, stopWatch.Elapsed.TotalSeconds);   
+                }
             }
 
             return features;
@@ -160,7 +166,7 @@ namespace MultiAlignCore.Algorithms.Clustering
         private List<UMCLight> FirstPassClustering(List<MSFeatureLight> msFeatures, IProgress<ProgressData> progress)
         {
             var featureList = new List<UMCLight>();
-            var features =  firstPassClusterer.Cluster(msFeatures);
+            var features =  firstPassClusterer.Cluster(msFeatures, progress);
             foreach (var feature in features)
             {
                 if (feature.MsFeatures.Count == 0)
@@ -185,8 +191,13 @@ namespace MultiAlignCore.Algorithms.Clustering
         /// <returns></returns>
         private List<UMCLight> CreateXics(List<UMCLight> umcLights, IProgress<ProgressData> progress)
         {
-            var xicCreator = new XicCreator();
-            return xicCreator.CreateXicNew(umcLights, this.options.InstrumentTolerances.Mass, provider, true, progress).ToList();
+            var xicCreator = new XicCreator { XicRefiner = new XicRefiner(this.options.XicRelativeIntensityThreshold) };
+            return xicCreator.CreateXicNew(
+                            umcLights,
+                            this.options.InstrumentTolerances.Mass,
+                            provider,
+                            this.options.RefineXics,
+                            progress).ToList();
         }
 
         /// <summary>

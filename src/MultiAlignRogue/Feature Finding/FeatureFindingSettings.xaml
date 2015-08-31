@@ -133,7 +133,8 @@
                                                Minimum="0" Maximum="1" Increment="0.01"
                                                Value="{Binding XicRelativeIntensityThreshold, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                             
-                            <CheckBox Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            <CheckBox Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                      IsChecked="{Binding ShouldRefineXics, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                             <TextBlock Grid.Row="1" Grid.Column="1" VerticalAlignment="Center">Refine XICs</TextBlock>
                             
                         </Grid>
@@ -165,8 +166,8 @@
                 <ColumnDefinition Width="30*" />
             </Grid.ColumnDefinitions>
 
-            <Button Grid.Column="0" HorizontalAlignment="Left" Command="{Binding FindMsFeaturesCommand}">Find Features</Button>
-            <Button Grid.Column="2" HorizontalAlignment="Right" Command="{Binding PlotMsFeaturesCommand}">Plot Features</Button>
+            <Button Grid.Column="0" HorizontalAlignment="Left" Command="{Binding FindMSFeaturesCommand}">Find Features</Button>
+            <Button Grid.Column="2" HorizontalAlignment="Right" Command="{Binding PlotMSFeaturesCommand}">Plot Features</Button>
         </Grid>
     </Grid>
 </UserControl>

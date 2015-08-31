@@ -24,8 +24,14 @@ namespace MultiAlignCore.Algorithms.Chromatograms
         /// </summary>
         private readonly SavitzkyGolaySmoother smoother;
 
-        public XicRefiner(SavitzkyGolaySmoother smoother = null)
+        /// <summary>
+        /// Relative intensity threshold for snipping XICs.
+        /// </summary>
+        private double relativeIntensityThreshold;
+
+        public XicRefiner(double relativeIntensityThreshold = 0.05, SavitzkyGolaySmoother smoother = null)
         {
+            this.relativeIntensityThreshold = relativeIntensityThreshold;
             this.smoother = smoother ?? new SavitzkyGolaySmoother(CONST_POLYNOMIAL_ORDER, NUMBER_OF_POINTS);
         }
 
@@ -83,7 +89,7 @@ namespace MultiAlignCore.Algorithms.Chromatograms
             // If we hit zero, then keep
             for (; startIndex > 0; startIndex--)
             {
-                if (xic[startIndex].Intensity < 1)
+                if ((xic[startIndex].Intensity / maxAbundance) < this.relativeIntensityThreshold)
                     break;
             }
 
@@ -91,7 +97,7 @@ namespace MultiAlignCore.Algorithms.Chromatograms
             var stopIndex = maxScanIndex;
             for (; stopIndex < xic.Count - 1; stopIndex++)
             {
-                if (xic[stopIndex].Intensity < 1)
+                if ((xic[stopIndex].Intensity / maxAbundance) < this.relativeIntensityThreshold)
                     break;
             }
 
