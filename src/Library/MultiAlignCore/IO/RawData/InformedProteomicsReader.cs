@@ -329,8 +329,8 @@ namespace MultiAlignCore.IO.RawData
             if (!m_readers.ContainsKey(groupId))
             {
                 var path = m_dataFiles[groupId];
-                var reader = PbfLcMsRun.GetLcMsRun(path);
-                ////var reader = InMemoryLcMsRun.GetLcMsRun(path);
+                ////var reader = PbfLcMsRun.GetLcMsRun(path);
+                var reader = InMemoryLcMsRun.GetLcMsRun(path);
 
                 m_readers.Add(groupId, reader);
             }

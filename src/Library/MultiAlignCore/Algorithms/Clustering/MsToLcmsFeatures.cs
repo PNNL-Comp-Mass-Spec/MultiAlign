@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using InformedProteomics.Backend.Utils;
 using MultiAlignCore.Algorithms.Chromatograms;
@@ -14,6 +16,11 @@ namespace MultiAlignCore.Algorithms.Clustering
     public class MsToLcmsFeatures
     {
         /// <summary>
+        /// Spectra provider for extracting XICs and MS/MS spectra data.
+        /// </summary>
+        private readonly InformedProteomicsReader provider;
+
+        /// <summary>
         /// Clusterer for first pass clustering.
         /// </summary>
         private readonly IClusterer<MSFeatureLight, UMCLight> firstPassClusterer;
@@ -24,32 +31,26 @@ namespace MultiAlignCore.Algorithms.Clustering
         private readonly IClusterer<UMCLight, UMCLight> secondPassClusterer; 
 
         /// <summary>
-        /// Options for filtering UMCLights.
-        /// </summary>
-        private LcmsFeatureFilteringOptions options;
-
-        /// <summary>
         /// Options for clustering features (NET tolerance, Mass tolerance, M/Z tolerance).
         /// </summary>
-        private FeatureTolerances tolerances;
-
-        /// <summary>
-        /// Spectra provider for extracting XICs and MS/MS spectra data.
-        /// </summary>
-        private InformedProteomicsReader provider;
+        private readonly FeatureTolerances tolerances;
         
-        public MsToLcmsFeatures(InformedProteomicsReader provider, LcmsFeatureFilteringOptions options = null, FeatureTolerances tolerances = null)
+        public MsToLcmsFeatures(InformedProteomicsReader provider, FeatureTolerances tolerances = null)
         {
+            if (provider == null)
+            {
+                throw new ArgumentNullException();
+            }
+
             Comparison<MSFeatureLight> mzSort = (x, y) => x.Mz.CompareTo(y.Mz);
             Comparison<UMCLight> monoSort = (x, y) => x.MassMonoisotopic.CompareTo(y.MassMonoisotopic);
             Func<MSFeatureLight, MSFeatureLight, double> mzDiff = (x, y) => FeatureLight.ComputeMassPPMDifference(x.Mz, y.Mz);
             Func<UMCLight, UMCLight, double> monoDiff = (x, y) => FeatureLight.ComputeMassPPMDifference(x.MassMonoisotopic, y.MassMonoisotopic);
 
             this.provider = provider;
-            this.options = options ?? new LcmsFeatureFilteringOptions();
             this.tolerances = tolerances ?? new FeatureTolerances();
             this.firstPassClusterer = new MsFeatureTreeClusterer<MSFeatureLight, UMCLight>(mzSort, mzDiff, MassComparison.Mz, tolerances.Mass);
-            this.secondPassClusterer = new MsFeatureTreeClusterer<UMCLight, UMCLight>(monoSort, monoDiff, MassComparison.Monoisotopic, tolerances.Mass);
+            this.secondPassClusterer = new MsFeatureTreeClusterer<UMCLight, UMCLight>(monoSort, monoDiff, MassComparison.Monoisotopic, tolerances.Net);
         }
 
         /// <summary>
@@ -67,28 +68,59 @@ namespace MultiAlignCore.Algorithms.Clustering
             //      3. Second pass clustering: Cluster the UMCLights with XICs into UMCLights.
             // The only mandatory step is the first one.
 
+            this.SetNets(msFeatures);
+
             // Set up progress reporter
             progress = progress ?? new Progress<ProgressData>();
             var progressData = new ProgressData { IsPartialRange = true };
             var internalProgress = new Progress<ProgressData>(pd => progress.Report(progressData.UpdatePercent(pd.Percent)));
 
-            // Step 1
-            progressData.MaxPercentage = 5;
-            progressData.Status = "First Pass Clustering";
-            var features = this.FirstPassClustering(msFeatures, internalProgress);
+            var features = new List<UMCLight>();
+            using (var logger = new StreamWriter("msfeatureClusteringStats.txt", true))
+            {
+                logger.WriteLine();
+                var stopWatch = new Stopwatch();
+                stopWatch.Start();
 
-            // Step 2
-            progressData.Status = "Creating Xics";
-            progressData.StepRange(90);
-            features = this.CreateXics(features, internalProgress);
-            features.ForEach(feature => feature.CalculateStatistics(ClusterCentroidRepresentation.Median));
+                // Step 1
+                progressData.MaxPercentage = 5;
+                progressData.Status = "First Pass Clustering";
+                features = this.FirstPassClustering(msFeatures, internalProgress);
+                stopWatch.Stop();
+                logger.WriteLine("{0}: {1}s", progressData.Status, stopWatch.Elapsed.TotalSeconds);
+                stopWatch.Restart();
 
-            // Step 3
-            progressData.Status = "Second Pass Clustering";
-            progressData.StepRange(100);
-            features = this.SecondPassClustering(features, internalProgress);
+                // Step 2
+                progressData.Status = "Creating Xics";
+                progressData.StepRange(90);
+                features = this.CreateXics(features, internalProgress);
+                features.ForEach(feature => feature.CalculateStatistics(ClusterCentroidRepresentation.Median));
+                stopWatch.Stop();
+                logger.WriteLine("{0}: {1}s", progressData.Status, stopWatch.Elapsed.TotalSeconds);
+                stopWatch.Restart();
+
+                // Step 3
+                progressData.Status = "Second Pass Clustering";
+                progressData.StepRange(100);
+                features = this.SecondPassClustering(features, internalProgress);
+                stopWatch.Stop();
+                logger.WriteLine("{0}: {1}s", progressData.Status, stopWatch.Elapsed.TotalSeconds);
+            }
 
             return features;
+        }
+
+        /// <summary>
+        /// Assigns the NET for the raw MS features.
+        /// </summary>
+        /// <param name="rawFeatures">The raw features to set nets for.</param>
+        private void SetNets(List<MSFeatureLight> rawFeatures)
+        {
+            var reader = this.provider.GetReaderForGroup(0);
+            var max = reader.GetElutionTime(reader.MaxLcScan);
+            var min = reader.GetElutionTime(reader.MinLcScan);
+            var diff = max - min;
+            rawFeatures.ForEach(feat => feat.Net = (reader.GetElutionTime(feat.Scan) - min) / diff);
         }
 
         /// <summary>
@@ -100,7 +132,7 @@ namespace MultiAlignCore.Algorithms.Clustering
         /// <returns>Clustered MSFeatures as <see cref="UMCLight" />.</returns>
         private List<UMCLight> FirstPassClustering(List<MSFeatureLight> msFeatures, IProgress<ProgressData> progress)
         {
-            return firstPassClusterer.Cluster(msFeatures).ToList();
+            return firstPassClusterer.Cluster(msFeatures, progress).ToList();
         }
 
         /// <summary>
@@ -113,7 +145,7 @@ namespace MultiAlignCore.Algorithms.Clustering
         private List<UMCLight> CreateXics(List<UMCLight> umcLights, IProgress<ProgressData> progress)
         {
             var xicCreator = new XicCreator();
-            return xicCreator.CreateXicNew(umcLights, tolerances.Mass, provider).ToList();
+            return xicCreator.CreateXicNew(umcLights, tolerances.Mass, provider, true, progress).ToList();
         }
 
         /// <summary>
@@ -124,7 +156,7 @@ namespace MultiAlignCore.Algorithms.Clustering
         /// <returns></returns>
         private List<UMCLight> SecondPassClustering(List<UMCLight> umcLights, IProgress<ProgressData> progress)
         {
-            return secondPassClusterer.Cluster(umcLights).ToList();
+            return secondPassClusterer.Cluster(umcLights, progress).ToList();
         }
     }
 }
