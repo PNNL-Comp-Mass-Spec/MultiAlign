@@ -51,7 +51,7 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
                 Net = options.MaximumNetRange
             };
 
-            var clusterer = new MsToLcmsFeatures((InformedProteomicsReader) provider, tolerances);
+            var clusterer = new MsToLcmsFeatures((InformedProteomicsReader) provider, options);
 
             // MultiAlignCore.Algorithms.FeatureClustering.MsFeatureTreeClusterer
             //var clusterer = new MsFeatureTreeClusterer<MSFeatureLight, UMCLight>

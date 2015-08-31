@@ -1,11 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using InformedProteomics.Backend.Utils;
 using MultiAlignCore.Data.Features;
 
 namespace MultiAlignCore.Algorithms.Clustering
 {
-    public class MSFeatureSingleLinkageClustering <T, U>
-        where T: MSFeatureLight, new()
-        where U: UMCLight, new ()
+    public class MSFeatureSingleLinkageClustering <T, U>: IClusterer<T,U> 
+        where T: FeatureLight,  new()
+        where U : FeatureLight, IFeatureCluster<T>, new()
     {
 
         public MSFeatureSingleLinkageClustering()
@@ -21,12 +23,22 @@ namespace MultiAlignCore.Algorithms.Clustering
             set;
         }
 
+        public List<U> Cluster(List<T> data, List<U> clusters, IProgress<ProgressData> progress = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ClusterAndProcess(List<T> data, IClusterWriter<U> writer, IProgress<ProgressData> progress = null)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Finds LCMS Features from MS Features.
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        public List<U> Cluster(List<T> rawMSFeatures)
+        public List<U> Cluster(List<T> rawMSFeatures, IProgress<ProgressData> progress = null)
         {
             var centroidType  = ClusterCentroidRepresentation.Mean;
             List<U> features                            = null;
@@ -125,7 +137,7 @@ namespace MultiAlignCore.Algorithms.Clustering
                 var umc                = new U();
                 foreach (var tempFeature in tempFeatures)
                 {
-                    tempFeature.SetParentFeature(umc);
+                    ////tempFeature.SetParentFeature(umc);
                     umc.AddChildFeature(tempFeature);
                 }
                 umc.CalculateStatistics(centroidType);
@@ -140,5 +152,8 @@ namespace MultiAlignCore.Algorithms.Clustering
             return features;
         }
         #endregion
+
+        public event EventHandler<ProgressNotifierArgs> Progress;
+        FeatureClusterParameters<T> IClusterer<T, U>.Parameters { get; set; }
     }
 }

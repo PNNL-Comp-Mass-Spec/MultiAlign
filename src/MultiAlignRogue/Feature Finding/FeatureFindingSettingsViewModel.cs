@@ -2,6 +2,7 @@
 using System.IO;
 using System.Windows;
 using InformedProteomics.Backend.Utils;
+using MultiAlignCore.Algorithms.Clustering;
 using MultiAlignCore.Data.Features;
 using MultiAlignCore.Extensions;
 using NHibernate.Util;
@@ -54,6 +55,8 @@ namespace MultiAlignRogue.Feature_Finding
             this.selectedDatasets = new ReadOnlyCollection<DatasetInformationViewModel>(new List<DatasetInformationViewModel>());
             this.msFeatureWindowFactory = new MSFeatureViewFactory();
             this.features = new Dictionary<DatasetInformation, IList<UMCLight>>();
+            this.MsFeatureClusterers = new ObservableCollection<LcmsFeatureFindingOptions.MsFeatureClusterers>(
+                                       Enum.GetValues(typeof(LcmsFeatureFindingOptions.MsFeatureClusterers)).Cast<LcmsFeatureFindingOptions.MsFeatureClusterers>());
 
             this.MessengerInstance.Register<PropertyChangedMessage<IReadOnlyCollection<DatasetInformationViewModel>>>(this, sds =>
             {
@@ -76,6 +79,8 @@ namespace MultiAlignRogue.Feature_Finding
                                         async () => await this.PlotMSFeatures(true),
                                         () => this.selectedDatasets.Any(file => file.IsAligned));
         }
+
+        public ObservableCollection<LcmsFeatureFindingOptions.MsFeatureClusterers> MsFeatureClusterers { get; private set; } 
 
         public RelayCommand FindMSFeaturesCommand { get; private set; }
 
@@ -224,7 +229,111 @@ namespace MultiAlignRogue.Feature_Finding
                 this.analysis.Options.MsFilteringOptions.ShouldUseDeisotopingFilter = value;
                 this.RaisePropertyChanged();
             }
-        } 
+        }
+
+        public bool ShouldCreateXics
+        {
+            get { return this.analysis.Options.LcmsFindingOptions.FindXics; }
+            set
+            {
+                if (this.analysis.Options.LcmsFindingOptions.FindXics != value)
+                {
+                    this.analysis.Options.LcmsFindingOptions.FindXics = value;
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
+
+        public bool ShouldRefineXics
+        {
+            get { return this.analysis.Options.LcmsFindingOptions.RefineXics; }
+            set
+            {
+                if (this.analysis.Options.LcmsFindingOptions.RefineXics != value)
+                {
+                    this.analysis.Options.LcmsFindingOptions.RefineXics = value;
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
+
+        public int SmoothingWindowSize
+        {
+            get { return this.analysis.Options.LcmsFindingOptions.SmoothingWindowSize; }
+            set
+            {
+                if (this.analysis.Options.LcmsFindingOptions.SmoothingWindowSize != value)
+                {
+                    this.analysis.Options.LcmsFindingOptions.SmoothingWindowSize = value;
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
+
+        public int SmoothingPolynomialOrder
+        {
+            get { return this.analysis.Options.LcmsFindingOptions.SmoothingPolynomialOrder; }
+            set
+            {
+                if (this.analysis.Options.LcmsFindingOptions.SmoothingPolynomialOrder != value)
+                {
+                    this.analysis.Options.LcmsFindingOptions.SmoothingPolynomialOrder = value;
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
+
+        public double XicRelativeIntensityThreshold
+        {
+            get { return this.analysis.Options.LcmsFindingOptions.XicRelativeIntensityThreshold; }
+            set
+            {
+                if (this.analysis.Options.LcmsFindingOptions.XicRelativeIntensityThreshold != value)
+                {
+                    this.analysis.Options.LcmsFindingOptions.XicRelativeIntensityThreshold = value;
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
+
+        public bool ShouldPerformSecondPassClustering
+        {
+            get { return this.analysis.Options.LcmsFindingOptions.SecondPassClustering; }
+            set
+            {
+                if (this.analysis.Options.LcmsFindingOptions.SecondPassClustering != value)
+                {
+                    this.analysis.Options.LcmsFindingOptions.SecondPassClustering = value;
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
+
+        public LcmsFeatureFindingOptions.MsFeatureClusterers FirstPassClusterer
+        {
+            get { return this.analysis.Options.LcmsFindingOptions.FirstPassClusterer; }
+            set
+            {
+                if (this.analysis.Options.LcmsFindingOptions.FirstPassClusterer != value)
+                {
+                    this.analysis.Options.LcmsFindingOptions.FirstPassClusterer = value;
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
+
+        public LcmsFeatureFindingOptions.MsFeatureClusterers SecondPassClusterer
+        {
+            get { return this.analysis.Options.LcmsFindingOptions.SecondPassClusterer; }
+            set
+            {
+                if (this.analysis.Options.LcmsFindingOptions.SecondPassClusterer != value)
+                {
+                    this.analysis.Options.LcmsFindingOptions.SecondPassClusterer = value;
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
 
         public async Task LoadMSFeaturesAsync()
         {

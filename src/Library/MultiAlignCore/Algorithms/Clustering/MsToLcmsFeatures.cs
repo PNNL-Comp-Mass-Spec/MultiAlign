@@ -6,7 +6,9 @@ using System.Linq;
 using InformedProteomics.Backend.Utils;
 using MultiAlignCore.Algorithms.Chromatograms;
 using MultiAlignCore.Data.Features;
+using MultiAlignCore.Extensions;
 using MultiAlignCore.IO.RawData;
+using PNNLOmics.Data.Constants.Libraries;
 
 namespace MultiAlignCore.Algorithms.Clustering
 {
@@ -33,9 +35,9 @@ namespace MultiAlignCore.Algorithms.Clustering
         /// <summary>
         /// Options for clustering features (NET tolerance, Mass tolerance, M/Z tolerance).
         /// </summary>
-        private readonly FeatureTolerances tolerances;
+        private readonly LcmsFeatureFindingOptions options;
         
-        public MsToLcmsFeatures(InformedProteomicsReader provider, FeatureTolerances tolerances = null)
+        public MsToLcmsFeatures(InformedProteomicsReader provider, LcmsFeatureFindingOptions options = null)
         {
             if (provider == null)
             {
@@ -48,9 +50,34 @@ namespace MultiAlignCore.Algorithms.Clustering
             Func<UMCLight, UMCLight, double> monoDiff = (x, y) => FeatureLight.ComputeMassPPMDifference(x.MassMonoisotopic, y.MassMonoisotopic);
 
             this.provider = provider;
-            this.tolerances = tolerances ?? new FeatureTolerances();
-            this.firstPassClusterer = new MsFeatureTreeClusterer<MSFeatureLight, UMCLight>(mzSort, mzDiff, MassComparison.Mz, tolerances.Mass);
-            this.secondPassClusterer = new MsFeatureTreeClusterer<UMCLight, UMCLight>(monoSort, monoDiff, MassComparison.Monoisotopic, tolerances.Net);
+            this.options = options ?? new LcmsFeatureFindingOptions();
+            
+            // Set clusterers
+            if (this.options.FirstPassClusterer == LcmsFeatureFindingOptions.MsFeatureClusterers.TreeClusterer)
+            {
+                this.firstPassClusterer = new MsFeatureTreeClusterer<MSFeatureLight, UMCLight>(
+                    mzSort,
+                    mzDiff,
+                    MassComparison.Mz,
+                    this.options.InstrumentTolerances.Mass);
+            }
+            else
+            {
+                this.firstPassClusterer = new MSFeatureSingleLinkageClustering<MSFeatureLight, UMCLight>();                
+            }
+
+            if (this.options.SecondPassClusterer == LcmsFeatureFindingOptions.MsFeatureClusterers.TreeClusterer)
+            {
+                this.secondPassClusterer = new MsFeatureTreeClusterer<UMCLight, UMCLight>(
+                                                            monoSort,
+                                                            monoDiff,
+                                                            MassComparison.Monoisotopic,
+                                                            this.options.InstrumentTolerances.Net);   
+            }
+            else
+            {
+                this.secondPassClusterer = new MSFeatureSingleLinkageClustering<UMCLight, UMCLight>();
+            }
         }
 
         /// <summary>
@@ -125,14 +152,28 @@ namespace MultiAlignCore.Algorithms.Clustering
 
         /// <summary>
         /// First pass clustering: Cluster MSFeatureLight (typically corresponding to
-        //  lines in an _isos file) features by M/Z into UMCLights.
+        ///  lines in an _isos file) features by M/Z into UMCLights.
         /// </summary>
         /// <param name="msFeatures"></param>
         /// <param name="progress">The progress reporter.</param>
         /// <returns>Clustered MSFeatures as <see cref="UMCLight" />.</returns>
         private List<UMCLight> FirstPassClustering(List<MSFeatureLight> msFeatures, IProgress<ProgressData> progress)
         {
-            return firstPassClusterer.Cluster(msFeatures, progress).ToList();
+            var featureList = new List<UMCLight>();
+            var features =  firstPassClusterer.Cluster(msFeatures);
+            foreach (var feature in features)
+            {
+                if (feature.MsFeatures.Count == 0)
+                {
+                    continue;
+                }
+
+                ////feature.CalculateStatistics(ClusterCentroidRepresentation.Median);
+                feature.MassMonoisotopic = (feature.Mz * feature.ChargeState) - (SubAtomicParticleLibrary.MASS_PROTON * feature.ChargeState);
+                featureList.Add(feature);
+            }
+
+            return featureList;
         }
 
         /// <summary>
@@ -145,7 +186,7 @@ namespace MultiAlignCore.Algorithms.Clustering
         private List<UMCLight> CreateXics(List<UMCLight> umcLights, IProgress<ProgressData> progress)
         {
             var xicCreator = new XicCreator();
-            return xicCreator.CreateXicNew(umcLights, tolerances.Mass, provider, true, progress).ToList();
+            return xicCreator.CreateXicNew(umcLights, this.options.InstrumentTolerances.Mass, provider, true, progress).ToList();
         }
 
         /// <summary>

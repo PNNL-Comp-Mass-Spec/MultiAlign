@@ -1,0 +1,172 @@
+﻿<UserControl x:Class="MultiAlignRogue.Feature_Finding.FeatureFindingSettings"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             mc:Ignorable="d" 
+             d:DesignHeight="500" d:DesignWidth="500">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="30" />
+        </Grid.RowDefinitions>
+        
+        <Grid> <!-- Grid For settings -->
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30" />
+                <RowDefinition Height="30" />
+                <RowDefinition Height="30" />
+                <RowDefinition Height="30" />
+                <RowDefinition Height="30" />
+                <RowDefinition Height="30" />
+                <RowDefinition Height="30" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="25" />
+                <ColumnDefinition Width="60*" />
+                <ColumnDefinition Width="40*" />
+            </Grid.ColumnDefinitions>
+            
+            <!-- Precursor Mass Resolution -->
+            <TextBlock Grid.Row="0" Grid.Column="1" VerticalAlignment="Center">Precursor Mass Resolution</TextBlock>
+            <xctk:DoubleUpDown Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Left" Height="25" Width="60"
+                               Minimum="0" Increment="0.1"
+                               Value="{Binding MassResolution, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
+            
+            <!-- Fragmentation Window Size -->
+            <TextBlock Grid.Row="1" Grid.Column="1" VerticalAlignment="Center">Fragmentation Window Size</TextBlock>
+            <xctk:DoubleUpDown Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Left" Height="25" Width="60"
+                               Minimum="0" Increment="0.1"
+                               Value="{Binding FragmentationTolerance, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
+            
+            <!-- M/Z range -->
+            <CheckBox Grid.Row="2" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"
+                      IsChecked="{Binding ShouldUseMzFilter, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBlock Grid.Row="2" Grid.Column="1" VerticalAlignment="Center">Only analyze M/Z from</TextBlock>
+            <xctk:DoubleUpDown Grid.Row="2" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Left" Width="60" Height="25"
+                               Minimum="0" Increment="0.1"
+                               Value="{Binding MinimumMz, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBlock Grid.Row="2" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center">to</TextBlock>
+            <xctk:DoubleUpDown Grid.Row="2" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" Width="60" Height="25"
+                               Minimum="0" Increment="0.1"
+                               Value="{Binding MaximumMz, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
+            
+            <!-- Charge state range -->
+            <CheckBox Grid.Row="3" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"
+                      IsChecked="{Binding ShouldUseChargeStateFilter, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBlock Grid.Row="3" Grid.Column="1" VerticalAlignment="Center">Only consider charge states from </TextBlock>
+            <xctk:IntegerUpDown Grid.Row="3" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Left" Width="60" Height="25"
+                                Minimum="0"
+                                Value="{Binding MinimumCharge, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBlock Grid.Row="3" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center">to</TextBlock>
+            <xctk:IntegerUpDown Grid.Row="3" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" Width="60" Height="25"
+                                Minimum="0"
+                                Value="{Binding MaximumCharge, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
+            
+            <!-- Feature length range -->
+            <TextBlock Grid.Row="4" Grid.Column="1" VerticalAlignment="Center">Only consider feature lengths from</TextBlock>
+            <xctk:IntegerUpDown Grid.Row="4" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Left" Width="60" Height="25"
+                                Minimum="0"
+                                Value="{Binding MinimumFeatureLength, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBlock Grid.Row="4" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center">to</TextBlock>
+            <xctk:IntegerUpDown Grid.Row="4" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" Width="60" Height="25"
+                                Minimum="0"
+                                Value="{Binding MaximumFeatureLength, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
+            
+            <!-- Fit score filter -->
+            <CheckBox Grid.Row="5" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"
+                      IsChecked="{Binding ShouldUseDeisotopingFilter, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBlock Grid.Row="5" Grid.Column="1" VerticalAlignment="Center">Maximum Deisotoping fit</TextBlock>
+            <xctk:DoubleUpDown Grid.Row="5" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Left" Width="60" Height="25"
+                               Minimum="0" Increment="0.01" Maximum="1"
+                               Value="{Binding MinimumDeisotopingScore, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
+            
+            <!-- Minimum Intensity -->
+            <CheckBox Grid.Row="6" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"
+                      IsChecked="{Binding ShouldUseDeisotopingFilter, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBlock Grid.Row="6" Grid.Column="1" VerticalAlignment="Center">Minimum Intensity</TextBlock>
+            <xctk:DoubleUpDown Grid.Row="6" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Left" Width="60" Height="25"
+                               Minimum="0" Increment="1000"
+                               Value="{Binding MinimumIntensity, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
+            
+            <Expander Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="3" Header="Advanced Settings">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="25*" />
+                        <RowDefinition Height="50*" />
+                        <RowDefinition Height="25*" />
+                    </Grid.RowDefinitions>
+                    
+                    <!-- First pass clustering -->
+                    <GroupBox Grid.Row="0" Header="First Pass Clustering">
+                        <Grid Margin="3">
+                            <TextBlock VerticalAlignment="Center">Clusterer</TextBlock>
+                            <ComboBox HorizontalAlignment="Right" Width="150" Height="25" 
+                                      ItemsSource="{Binding MsFeatureClusterers}" SelectedItem="{Binding FirstPassClusterer}" />
+                        </Grid>
+                    </GroupBox>
+                    
+                    <!-- XIC settings -->
+                    <GroupBox Grid.Row="1">
+                        <GroupBox.Header>
+                            <StackPanel Orientation="Horizontal">
+                                <CheckBox VerticalAlignment="Center" IsChecked="{Binding ShouldCreateXics, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                <TextBlock Margin="3,0,0,0">Extracted Ion Chromatograms</TextBlock>
+                            </StackPanel>
+                        </GroupBox.Header>
+
+                        <Grid Margin="3" IsEnabled="{Binding ShouldCreateXics, UpdateSourceTrigger=PropertyChanged}">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="30" />
+                                <RowDefinition Height="30" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="25" />
+                                <ColumnDefinition Width="60*" />
+                                <ColumnDefinition Width="40*" />
+                            </Grid.ColumnDefinitions>
+                            
+                            <TextBlock Grid.Row="0" Grid.Column="1" VerticalAlignment="Center">Relative Intensity Threshold</TextBlock>
+                            <xctk:DoubleUpDown Grid.Row="0" Grid.Column="2" Width="60" Height="25" VerticalAlignment="Center" HorizontalAlignment="Left"
+                                               Minimum="0" Maximum="1" Increment="0.01"
+                                               Value="{Binding XicRelativeIntensityThreshold, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            
+                            <CheckBox Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            <TextBlock Grid.Row="1" Grid.Column="1" VerticalAlignment="Center">Refine XICs</TextBlock>
+                            
+                        </Grid>
+                    </GroupBox>
+                    
+                    <!-- Second pass clustering -->
+                    <GroupBox Grid.Row="2">
+                        <GroupBox.Header>
+                            <StackPanel Orientation="Horizontal">
+                                <CheckBox VerticalAlignment="Center" IsChecked="{Binding ShouldPerformSecondPassClustering, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                <TextBlock Margin="3,0,0,0">Second Pass Clustering</TextBlock>
+                            </StackPanel>
+                        </GroupBox.Header>
+                        
+                        <Grid IsEnabled="{Binding ShouldPerformSecondPassClustering, UpdateSourceTrigger=PropertyChanged}">
+                            <TextBlock VerticalAlignment="Center">Clusterer</TextBlock>
+                            <ComboBox HorizontalAlignment="Right" Width="150" Height="25" 
+                                      ItemsSource="{Binding MsFeatureClusterers}" SelectedItem="{Binding SecondPassClusterer}" />
+                        </Grid>
+                    </GroupBox>
+                </Grid>
+            </Expander>
+        </Grid>
+
+        <Grid Grid.Row="1" Height="25">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="40*" />
+                <ColumnDefinition Width="30*" />
+                <ColumnDefinition Width="30*" />
+            </Grid.ColumnDefinitions>
+
+            <Button Grid.Column="0" HorizontalAlignment="Left" Command="{Binding FindMsFeaturesCommand}">Find Features</Button>
+            <Button Grid.Column="2" HorizontalAlignment="Right" Command="{Binding PlotMsFeaturesCommand}">Plot Features</Button>
+        </Grid>
+    </Grid>
+</UserControl>
