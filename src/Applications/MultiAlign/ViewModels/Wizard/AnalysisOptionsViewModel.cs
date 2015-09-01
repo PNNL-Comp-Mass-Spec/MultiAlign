@@ -544,6 +544,16 @@ namespace MultiAlign.ViewModels.Wizard
             }
         }
 
+        public double MinimumFeatureDataPoints
+        {
+            get { return m_options.LcmsFilteringOptions.MinimumDataPoints; }
+            set
+            {
+                m_options.LcmsFilteringOptions.MinimumDataPoints = value;
+                OnPropertyChanged("MinimumFeatureDataPoints");
+            }
+        }
+
         public double MinimumDeisotopingScore
         {
             get { return m_options.MsFilteringOptions.MinimumDeisotopingScore; }

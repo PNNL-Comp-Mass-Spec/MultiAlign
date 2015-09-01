@@ -14,19 +14,21 @@
         
         <Grid> <!-- Grid For settings -->
             <Grid.RowDefinitions>
-                <RowDefinition Height="30" />
-                <RowDefinition Height="30" />
-                <RowDefinition Height="30" />
-                <RowDefinition Height="30" />
-                <RowDefinition Height="30" />
-                <RowDefinition Height="30" />
-                <RowDefinition Height="30" />
+                <RowDefinition Height="26" />
+                <RowDefinition Height="26" />
+                <RowDefinition Height="26" />
+                <RowDefinition Height="26" />
+                <RowDefinition Height="26" />
+                <RowDefinition Height="26" />
+                <RowDefinition Height="26" />
+                <RowDefinition Height="26" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="25" />
-                <ColumnDefinition Width="60*" />
-                <ColumnDefinition Width="40*" />
+                <ColumnDefinition Width="47*" />
+                <ColumnDefinition Width="35*" />
+                <ColumnDefinition Width="18*" />
             </Grid.ColumnDefinitions>
             
             <!-- Precursor Mass Resolution -->
@@ -74,24 +76,32 @@
             <xctk:IntegerUpDown Grid.Row="4" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" Width="60" Height="25"
                                 Minimum="0"
                                 Value="{Binding MaximumFeatureLength, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
-            
+            <ComboBox Grid.Row="4" Grid.Column="3" HorizontalContentAlignment="Center" Margin="0,1,0,0" VerticalAlignment="Top" Width="70" Height="24" ItemsSource="{Binding Path = TimeOptions}"
+                                              SelectedItem="{Binding Path = TreatAsTimeOrScan, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
+
+            <!-- Minimum data points per feature -->
+            <TextBlock Grid.Row="5" Grid.Column="1" VerticalAlignment="Center">Minimum data points per feature</TextBlock>
+            <xctk:IntegerUpDown Grid.Row="5" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Left" Height="25" Width="60"
+                               Minimum="0"
+                               Value="{Binding MinimumFeatureDataPoints, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
+
             <!-- Fit score filter -->
-            <CheckBox Grid.Row="5" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"
+            <CheckBox Grid.Row="6" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"
                       IsChecked="{Binding ShouldUseDeisotopingFilter, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
-            <TextBlock Grid.Row="5" Grid.Column="1" VerticalAlignment="Center">Maximum Deisotoping fit</TextBlock>
-            <xctk:DoubleUpDown Grid.Row="5" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Left" Width="60" Height="25"
+            <TextBlock Grid.Row="6" Grid.Column="1" VerticalAlignment="Center">Maximum Deisotoping fit</TextBlock>
+            <xctk:DoubleUpDown Grid.Row="6" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Left" Width="60" Height="25"
                                Minimum="0" Increment="0.01" Maximum="1"
                                Value="{Binding MinimumDeisotopingScore, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
             
             <!-- Minimum Intensity -->
-            <CheckBox Grid.Row="6" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"
+            <CheckBox Grid.Row="7" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"
                       IsChecked="{Binding ShouldUseDeisotopingFilter, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
-            <TextBlock Grid.Row="6" Grid.Column="1" VerticalAlignment="Center">Minimum Intensity</TextBlock>
-            <xctk:DoubleUpDown Grid.Row="6" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Left" Width="60" Height="25"
+            <TextBlock Grid.Row="7" Grid.Column="1" VerticalAlignment="Center">Minimum Intensity</TextBlock>
+            <xctk:DoubleUpDown Grid.Row="7" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Left" Width="60" Height="25"
                                Minimum="0" Increment="1000"
                                Value="{Binding MinimumIntensity, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
             
-            <Expander Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="3" Header="Advanced Settings">
+            <Expander Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="4" Header="Advanced Settings">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="25*" />

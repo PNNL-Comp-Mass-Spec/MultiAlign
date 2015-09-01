@@ -27,6 +27,7 @@ namespace MultiAlignCore.Data.Features
             {
                 var minimumSize = options.FeatureLengthRangeMinutes.Minimum;
                 var maximumSize = options.FeatureLengthRangeMinutes.Maximum;
+                var minimumPoints = options.MinimumDataPoints;
 
                 // Scan Length
                 newFeatures = features.Where(x =>
@@ -42,7 +43,7 @@ namespace MultiAlignCore.Data.Features
                         {
                             size = scanTimes[x.ScanEnd];
                         }
-                        return size >= minimumSize && size <= maximumSize;
+                        return size >= minimumSize && size <= maximumSize && x.Features.Count >= minimumPoints;
                     }
                     catch
                     {

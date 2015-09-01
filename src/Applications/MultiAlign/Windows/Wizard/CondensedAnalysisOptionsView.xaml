@@ -632,6 +632,22 @@
                                     <ComboBox HorizontalAlignment="Left" Margin="1,6,0,0" VerticalAlignment="Top" Width="76" Grid.Column="5" Height="25" 
                                               ItemsSource="{Binding Path = TimeOptions}"
                                               SelectedItem="{Binding Path = TreatAsTimeOrScan, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <Label
+                                        Foreground="Gray"
+                                        FontSize="14"
+                                        Margin="150,4,-35,6"
+                                        Grid.Column="5"
+                                        Grid.Row="0">
+                                        Minimum data points:
+                                    </Label>
+                                    <TextBox 
+                                    Margin="300,7,-105,7"
+                                    Grid.Row="0"
+                                    Grid.Column="5"                                
+                                    Text="{Binding  Path=MinimumDataPoints, 
+                                                    Mode=TwoWay, 
+                                                    NotifyOnSourceUpdated=True, 
+                                                    UpdateSourceTrigger=PropertyChanged}" Height="25" Width="Auto"/>
                                 </Grid>
                             </Border>
                         </Expander>
