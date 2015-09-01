@@ -93,23 +93,129 @@ namespace MultiAlignRogue.Feature_Finding
             }
         }
 
-        public double MinimumFeatureLength
+        public string[] TimeOptions
         {
-            get { return this.analysis.Options.LcmsFilteringOptions.FeatureLengthRange.Minimum; }
+            get { return _timeOptions; }
+        }
+
+        private string[] _timeOptions = {"Minutes", "Scans"};
+
+        public string TreatAsTimeOrScan
+        {
+            get
+            {
+                if (FilterOnMinutes)
+                {
+                    return "Minutes";
+                }
+                else
+                {
+                    return "Scans";
+                }
+            }
             set
             {
-                this.analysis.Options.LcmsFilteringOptions.FeatureLengthRange.Minimum = value;
-                this.analysis.Options.LcmsFilteringOptions.FeatureLengthRange.Minimum = value;
+                FilterOnMinutes = value.Equals("Minutes");
+                this.RaisePropertyChanged();
+                this.RaisePropertyChanged("MinimumFeatureLength");
+                this.RaisePropertyChanged("MaximumFeatureLength");
+            }
+        }
+
+        public bool FilterOnMinutes
+        {
+            get { return this.analysis.Options.LcmsFilteringOptions.FilterOnMinutes; }
+            set
+            {
+                this.analysis.Options.LcmsFilteringOptions.FilterOnMinutes = value;
+                this.RaisePropertyChanged();
+            }
+        }
+
+        public double MinimumFeatureLength
+        {
+            get
+            {
+                if (FilterOnMinutes)
+                {
+                    return MinimumFeatureLengthMinutes;
+                }
+                return MinimumFeatureLengthScans;
+            }
+            set
+            {
+                if (FilterOnMinutes)
+                {
+                    MinimumFeatureLengthMinutes = value;
+                }
+                else
+                {
+                    MinimumFeatureLengthScans = value;
+                }
                 this.RaisePropertyChanged();
             }
         }
 
         public double MaximumFeatureLength
         {
-            get { return this.analysis.Options.LcmsFilteringOptions.FeatureLengthRange.Maximum; }
+            get
+            {
+                if (FilterOnMinutes)
+                {
+                    return MaximumFeatureLengthMinutes;
+                }
+                return MaximumFeatureLengthScans;
+            }
             set
             {
-                this.analysis.Options.LcmsFilteringOptions.FeatureLengthRange.Maximum = value;
+                if (FilterOnMinutes)
+                {
+                    MaximumFeatureLengthMinutes = value;
+                }
+                else
+                {
+                    MaximumFeatureLengthScans = value;
+                }
+                this.RaisePropertyChanged();
+            }
+        }
+
+        public double MinimumFeatureLengthMinutes
+        {
+            get { return this.analysis.Options.LcmsFilteringOptions.FeatureLengthRangeMinutes.Minimum; }
+            set
+            {
+                this.analysis.Options.LcmsFilteringOptions.FeatureLengthRangeMinutes.Minimum = value;
+                this.RaisePropertyChanged();
+            }
+        }
+
+        public double MaximumFeatureLengthMinutes
+        {
+            get { return this.analysis.Options.LcmsFilteringOptions.FeatureLengthRangeMinutes.Maximum; }
+            set
+            {
+                this.analysis.Options.LcmsFilteringOptions.FeatureLengthRangeMinutes.Maximum = value;
+                this.RaisePropertyChanged();
+            }
+        }
+
+        public double MinimumFeatureLengthScans
+        {
+            get { return this.analysis.Options.LcmsFilteringOptions.FeatureLengthRangeScans.Minimum; }
+            set
+            {
+                this.analysis.Options.LcmsFilteringOptions.FeatureLengthRangeScans.Minimum = value;
+                this.RaisePropertyChanged();
+            }
+        }
+
+        public double MaximumFeatureLengthScans
+        {
+            get { return this.analysis.Options.LcmsFilteringOptions.FeatureLengthRangeScans.Maximum; }
+            set
+            {
+                this.analysis.Options.LcmsFilteringOptions.FeatureLengthRangeScans.Maximum = value;
                 this.RaisePropertyChanged();
             }
         }

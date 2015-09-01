@@ -426,7 +426,7 @@ namespace MultiAlign.ViewModels.Wizard
         {
             get
             {
-                if (m_options.LcmsFilteringOptions.TreatAsTimeNotScan)
+                if (FilterOnMinutes)
                 {
                     return "Minutes";
                 }
@@ -437,44 +437,110 @@ namespace MultiAlign.ViewModels.Wizard
             }
             set
             {
-                m_options.LcmsFilteringOptions.TreatAsTimeNotScan = value.Equals("Minutes");
-                if (value.Equals("Minutes"))
-                {
-                    MinimumFeatureLength = 0;
-                    MaximumFeatureLength = 20;
-                }
-                else
-                {
-                    MinimumFeatureLength = 0;
-                    MaximumFeatureLength = 2000;
-                }
+                FilterOnMinutes = value.Equals("Minutes");
                 OnPropertyChanged("TreatAsTimeOrScan");
+                OnPropertyChanged("MinimumFeatureLength");
+                OnPropertyChanged("MaximumFeatureLength");
+            }
+        }
+
+        public bool FilterOnMinutes
+        {
+            get { return m_options.LcmsFilteringOptions.FilterOnMinutes; }
+            set
+            {
+                m_options.LcmsFilteringOptions.FilterOnMinutes = value;
+                OnPropertyChanged("FilterOnMinutes");
             }
         }
 
         public ObservableCollection<string> TimeOptions { get; set; }
         
-
-
         public double MinimumFeatureLength
         {
-            get { return m_options.LcmsFilteringOptions.FeatureLengthRange.Minimum; }
+            get 
+            {
+                if (FilterOnMinutes)
+                {
+                    return MinimumFeatureLengthMinutes;
+                }
+                return MinimumFeatureLengthScans;
+            }
             set
             {
-                m_options.LcmsFilteringOptions.FeatureLengthRange.Minimum = value;
-                m_options.LcmsFilteringOptions.FeatureLengthRange.Minimum = value;
+                if (FilterOnMinutes)
+                {
+                    MinimumFeatureLengthMinutes = value;
+                }
+                else
+                {
+                    MinimumFeatureLengthScans = value;
+                }
                 OnPropertyChanged("MinimumFeatureLength");
             }
         }
 
         public double MaximumFeatureLength
         {
-            get { return m_options.LcmsFilteringOptions.FeatureLengthRange.Maximum; }
+            get
+            {
+                if (FilterOnMinutes)
+                {
+                    return MaximumFeatureLengthMinutes;
+                }
+                return MaximumFeatureLengthScans;
+            }
             set
             {
-                m_options.LcmsFilteringOptions.FeatureLengthRange.Maximum = value;
-                m_options.LcmsFilteringOptions.FeatureLengthRange.Maximum = value;
+                if (FilterOnMinutes)
+                {
+                    MaximumFeatureLengthMinutes = value;
+                }
+                else
+                {
+                    MaximumFeatureLengthScans = value;
+                }
                 OnPropertyChanged("MaximumFeatureLength");
+            }
+        }
+
+        public double MinimumFeatureLengthMinutes
+        {
+            get { return m_options.LcmsFilteringOptions.FeatureLengthRangeMinutes.Minimum; }
+            set
+            {
+                m_options.LcmsFilteringOptions.FeatureLengthRangeMinutes.Minimum = value;
+                OnPropertyChanged("MinimumFeatureLengthMinutes");
+            }
+        }
+
+        public double MaximumFeatureLengthMinutes
+        {
+            get { return m_options.LcmsFilteringOptions.FeatureLengthRangeMinutes.Maximum; }
+            set
+            {
+                m_options.LcmsFilteringOptions.FeatureLengthRangeMinutes.Maximum = value;
+                OnPropertyChanged("MaximumFeatureLengthMinutes");
+            }
+        }
+
+        public double MinimumFeatureLengthScans
+        {
+            get { return m_options.LcmsFilteringOptions.FeatureLengthRangeScans.Minimum; }
+            set
+            {
+                m_options.LcmsFilteringOptions.FeatureLengthRangeScans.Minimum = value;
+                OnPropertyChanged("MinimumFeatureLengthScans");
+            }
+        }
+
+        public double MaximumFeatureLengthScans
+        {
+            get { return m_options.LcmsFilteringOptions.FeatureLengthRangeScans.Maximum; }
+            set
+            {
+                m_options.LcmsFilteringOptions.FeatureLengthRangeScans.Maximum = value;
+                OnPropertyChanged("MaximumFeatureLengthScans");
             }
         }
 

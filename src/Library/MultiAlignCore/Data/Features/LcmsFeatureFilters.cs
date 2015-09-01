@@ -6,51 +6,50 @@ namespace MultiAlignCore.Data.Features
 {
     public static class LcmsFeatureFilters
     {
-        public static List<T> FilterFeatures<T>(List<T> features, LcmsFeatureFilteringOptions options)
+        public static List<T> FilterFeatures<T>(List<T> features, LcmsFeatureFilteringOptions options, Dictionary<int, double> scanTimes = null)
             where T: UMCLight
         {
-            var minimumSize = options.FeatureLengthRange.Minimum;
-            var maximumSize = options.FeatureLengthRange.Maximum;
-
-
-            // Scan Length
-            var newFeatures = features.Where(delegate(T x)
+            IEnumerable<T> newFeatures;
+            if (scanTimes == null || !options.FilterOnMinutes)
             {
-                var size = Math.Abs(x.ScanStart - x.ScanEnd);
-                return size >= minimumSize && size <= maximumSize;
-            });
-
-            return newFeatures.Where(x => x.Abundance > 0).ToList();
-        }
-
-        public static List<T> FilterFeatures<T>(List<T> features, LcmsFeatureFilteringOptions options, Dictionary<int, double> scanTimes)
-    where T : UMCLight
-        {
-            var minimumSize = options.FeatureLengthRange.Minimum;
-            var maximumSize = options.FeatureLengthRange.Maximum;
+                var minimumSize = options.FeatureLengthRangeScans.Minimum;
+                var maximumSize = options.FeatureLengthRangeScans.Maximum;
 
 
-            // Scan Length
-            var newFeatures = features.Where(delegate(T x)
-            {
-                try
+                // Scan Length
+                newFeatures = features.Where(x =>
                 {
-                    if (x.ScanStart != 0)
+                    var size = Math.Abs(x.ScanStart - x.ScanEnd);
+                    return size >= minimumSize && size <= maximumSize;
+                });
+            }
+            else
+            {
+                var minimumSize = options.FeatureLengthRangeMinutes.Minimum;
+                var maximumSize = options.FeatureLengthRangeMinutes.Maximum;
+
+                // Scan Length
+                newFeatures = features.Where(x =>
+                {
+                    try
                     {
-                        var size = Math.Abs(scanTimes[x.ScanStart] - scanTimes[x.ScanEnd]);
+                        double size = 0;
+                        if (x.ScanStart != 0)
+                        {
+                            size = Math.Abs(scanTimes[x.ScanEnd] - scanTimes[x.ScanStart]);
+                        }
+                        else //Scan 0 won't show up in scanTimes dictionary, so the feature length is just the time of the last feature scan.
+                        {
+                            size = scanTimes[x.ScanEnd];
+                        }
                         return size >= minimumSize && size <= maximumSize;
                     }
-                    else //Scan 0 won't show up in scanTimes dictionary, so the feature length is just the time of the last feature scan.
+                    catch
                     {
-                        var size = scanTimes[x.ScanEnd];
-                        return size >= minimumSize && size <= maximumSize;
+                        throw (new IndexOutOfRangeException(String.Format("Scan {0} or {1} not found in scan to time map.", x.ScanStart, x.ScanEnd)));
                     }
-                }
-                catch
-                {
-                    throw (new IndexOutOfRangeException(String.Format("Scan {0} or {1} not found in scan to time map.", x.ScanStart, x.ScanEnd)));
-                }
-            });
+                });
+            }
 
             return newFeatures.Where(x => x.Abundance > 0).ToList();
         }

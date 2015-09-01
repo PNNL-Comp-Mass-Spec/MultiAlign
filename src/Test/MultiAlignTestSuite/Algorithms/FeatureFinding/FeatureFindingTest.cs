@@ -57,7 +57,7 @@ namespace MultiAlignTestSuite.Algorithms.FeatureFinding
 
             var filterOptions = new LcmsFeatureFilteringOptions
             {
-                FeatureLengthRange = new FilterRange
+                FeatureLengthRangeScans = new FilterRange
                 {
                     Maximum = 30,
                     Minimum = 10

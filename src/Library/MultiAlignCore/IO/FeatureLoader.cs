@@ -171,16 +171,7 @@ namespace MultiAlignCore.IO
             var features = finder.FindFeatures(msFeatures, options, provider, information);
 
             UpdateStatus("Filtering features.");
-            List<UMCLight> filteredFeatures;
-            if (filterOptions.TreatAsTimeNotScan) //Feature length determined based on time (mins)
-            {
-                filteredFeatures = LcmsFeatureFilters.FilterFeatures(features,
-                    filterOptions, information.ScanTimes);
-            }
-            else //Feature length determined based on scans
-            {
-                filteredFeatures = LcmsFeatureFilters.FilterFeatures(features, filterOptions);
-            }
+            List<UMCLight> filteredFeatures = LcmsFeatureFilters.FilterFeatures(features, filterOptions, information.ScanTimes);
 
             UpdateStatus(string.Format("Filtered features from: {0} to {1}.", features.Count, filteredFeatures.Count));
             return filteredFeatures;
@@ -199,67 +190,21 @@ namespace MultiAlignCore.IO
             LcmsFeatureFindingOptions options,
             LcmsFeatureFilteringOptions filterOptions)
         {
-            if (!filterOptions.TreatAsTimeNotScan)
+            if (!filterOptions.FilterOnMinutes)
             {
-                if (options.MaximumScanRange < filterOptions.FeatureLengthRange.Maximum)
+                if (options.MaximumScanRange < filterOptions.FeatureLengthRangeMinutes.Maximum)
                 {
-                    // Bump up the scan range used by the LCMS Feature Finder to allow for longer featuers
-                    options.MaximumScanRange = (int)filterOptions.FeatureLengthRange.Maximum;
+                    // Bump up the scan range used by the LCMS Feature Finder to allow for longer features
+                    options.MaximumScanRange = (int) filterOptions.FeatureLengthRangeMinutes.Maximum;
                 }
-                return;
-            }
-
-            int maxScanLength;
-
-            if (information.ScanTimes.Count == 0)
-            {
-                // FeatureLengthRange.Maximum is in minutes
-                // Assume 3 scans/second (ballpark estimate)
-                maxScanLength = (int)filterOptions.FeatureLengthRange.Maximum * 60 * 3;
             }
             else
             {
-                // Find the average number of scans that spans FeatureLengthRange.Maximum minutes
-
-                // Step through the dictionary to find the average number of scans per minute
-                var minuteThreshold = 1;
-                var scanCountCurrent = 0;
-                var scanCountsPerMinute = new List<int>();
-
-                foreach (var entry in information.ScanTimes)
+                if (options.MaximumScanRange < filterOptions.FeatureLengthRangeScans.Maximum)
                 {
-                    if (entry.Value < minuteThreshold)
-                    {
-                        scanCountCurrent++;
-                    }
-                    else
-                    {
-                        if (scanCountCurrent > 0)
-                        {
-                            scanCountsPerMinute.Add(scanCountCurrent);
-                        }
-                        scanCountCurrent = 0;
-                        minuteThreshold++;
-                    }
+                    // Bump up the scan range used by the LCMS Feature Finder to allow for longer features
+                    options.MaximumScanRange = (int)filterOptions.FeatureLengthRangeScans.Maximum;
                 }
-
-                int averageScansPerMinute;
-                if (scanCountsPerMinute.Count > 0)
-                {
-                    averageScansPerMinute = (int)scanCountsPerMinute.Average();
-                }
-                else
-                {
-                    averageScansPerMinute = 180;
-                }
-
-                maxScanLength = (int)(filterOptions.FeatureLengthRange.Maximum * averageScansPerMinute * 1.25);
-            }
-
-            if (options.MaximumScanRange < maxScanLength)
-            {
-                // Bump up the scan range used by the LCMS Feature Finder to allow for longer featuers
-                options.MaximumScanRange = maxScanLength;
             }
         }
 
