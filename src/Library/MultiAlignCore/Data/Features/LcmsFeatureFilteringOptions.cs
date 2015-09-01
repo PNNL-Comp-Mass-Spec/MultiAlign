@@ -1,4 +1,6 @@
 ﻿
+using System;
+
 namespace MultiAlignCore.Data.Features
 {
     /// <summary>
@@ -11,18 +13,24 @@ namespace MultiAlignCore.Data.Features
 
         public LcmsFeatureFilteringOptions()
         {
-            FeatureLengthRange = new FilterRange(MIN_FEATURE_LENGTH, MAX_FEATURE_LENGTH);
-            TreatAsTimeNotScan = false;
+            FilterOnMinutes = false;
+            FeatureLengthRangeScans = new FilterRange(MIN_FEATURE_LENGTH, MAX_FEATURE_LENGTH);
+            FeatureLengthRangeMinutes = new FilterRange(double.MinValue, double.MaxValue);
         }
-        /// <summary>
-        /// Gets or sets the range to use for feature lengths
-        /// </summary>
-        /// <remarks>Scan numbers if TreatAsTimeNotScan=False, or time (in minutes) if TreatAsTimeNotScan=True</remarks>
-        public FilterRange FeatureLengthRange { get; set; }
 
         /// <summary>
         /// If true, then feature lengths are defined based on times rather than scans.
         /// </summary>
-        public bool TreatAsTimeNotScan { get; set; }
+        public bool FilterOnMinutes { get; set; }
+
+        /// <summary>
+        /// Gets or sets the range (in minutes) to use for feature lengths
+        /// </summary>
+        public FilterRange FeatureLengthRangeScans { get; set; }
+
+        /// <summary>
+        /// Gets or sets the range (in scans) to use for feature lengths
+        /// </summary>
+        public FilterRange FeatureLengthRangeMinutes { get; set; }
     }
 }

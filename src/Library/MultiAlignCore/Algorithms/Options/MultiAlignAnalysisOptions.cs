@@ -25,8 +25,9 @@ namespace MultiAlignCore.Algorithms.Options
             MsFilteringOptions = new MsFeatureFilteringOptions();
             LcmsFindingOptions = new LcmsFeatureFindingOptions(InstrumentTolerances);
             LcmsFilteringOptions = new LcmsFeatureFilteringOptions();
-            LcmsFilteringOptions.TreatAsTimeNotScan = true;
-            LcmsFilteringOptions.FeatureLengthRange = new FilterRange(0, 20);
+            LcmsFilteringOptions.FilterOnMinutes = true;
+            LcmsFilteringOptions.FeatureLengthRangeMinutes = new FilterRange(0, 20);
+            LcmsFilteringOptions.FeatureLengthRangeScans = new FilterRange(0, 2000);
             AlignmentOptions = new AlignmentOptions();
             LcmsClusteringOptions = new LcmsClusteringOptions(InstrumentTolerances);
             StacOptions = new StacOptions();

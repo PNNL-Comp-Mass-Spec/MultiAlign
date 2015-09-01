@@ -66,7 +66,7 @@ namespace AlignmentPaperTestSuite.Generators
             };
             var lcmsFilters = new LcmsFeatureFilteringOptions
             {
-                FeatureLengthRange = new FilterRange(50, 300)
+                FeatureLengthRangeScans = new FilterRange(50, 300)
             };
             var msFilterOptions = new MsFeatureFilteringOptions
             {
@@ -137,7 +137,7 @@ namespace AlignmentPaperTestSuite.Generators
                 var features    = featureFinder.FindFeatures(msFeatures,
                                                              featureFindingOptions,
                                                              rawProviderX);
-                features        = LcmsFeatureFilters.FilterFeatures(features, lcmsFilterOptions);
+                features        = LcmsFeatureFilters.FilterFeatures(features, lcmsFilterOptions, information.ScanTimes);
 
                 var datasetId = information.DatasetId;
                 foreach (var feature in features)

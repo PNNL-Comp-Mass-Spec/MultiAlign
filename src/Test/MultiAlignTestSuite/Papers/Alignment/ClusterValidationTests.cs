@@ -398,7 +398,7 @@ namespace MultiAlignTestSuite.Papers.Alignment
 
             var lcmsFilters = new LcmsFeatureFilteringOptions
             {
-                FeatureLengthRange = new FilterRange(50, 300)
+                FeatureLengthRangeScans = new FilterRange(50, 300)
             };
             var msFilterOptions = new MsFeatureFilteringOptions
             {
