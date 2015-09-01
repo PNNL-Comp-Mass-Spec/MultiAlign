@@ -150,8 +150,8 @@ namespace AlignmentPaperTestSuite.SSM
 
             foreach (var match in matches)
             {
-                var baselineFeature = match.Baseline.ParentFeature.ParentFeature;
-                var aligneeFeature = match.Alignee.ParentFeature.ParentFeature;
+                var baselineFeature = match.Baseline.ParentFeature.GetParentFeature();
+                var aligneeFeature = match.Alignee.ParentFeature.GetParentFeature();
 
                 var preAlignment = baselineFeature.Net - aligneeFeature.Net;
                 var postAlignment = baselineFeature.Net - aligneeFeature.NetAligned;

@@ -57,8 +57,8 @@ namespace MultiAlignCore.Algorithms.Clustering
                 var featureX = distance.FeatureX;
                 var featureY = distance.FeatureY;
 
-                var clusterX = featureX.ParentFeature;
-                var clusterY = featureY.ParentFeature;
+                var clusterX = featureX.GetParentFeature();
+                var clusterY = featureY.GetParentFeature();
                  
                 // Determine if they are already clustered into the same cluster                                 
                 if (clusterX == clusterY && clusterX != null)

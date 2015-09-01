@@ -13,7 +13,7 @@ namespace MultiAlignCore.Extensions
         public static UMCLight GetParentUmc(this MSFeatureLight feature)
         {
             if (feature == null) return null;
-            return feature.ParentFeature;
+            return feature.GetParentFeature();
         }
 
         /// <summary>

@@ -72,10 +72,12 @@ namespace MultiAlignCore.Data.Features
             Umc   = parentFeature;
             UmcId = Umc.Id;
         }
-        public UMCLight ParentFeature
-        {
-            get { return Umc; }
-        }
+
+	    public UMCLight GetParentFeature()
+	    {
+	        return Umc;
+	    }
+
         public int UmcId
         {
             get;

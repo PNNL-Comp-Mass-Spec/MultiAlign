@@ -10,7 +10,8 @@ namespace MultiAlignCore.Data.Features
     public class UMCLight : FeatureLight,
                             IFeatureCluster<MSFeatureLight>,        // This allows for ms features
                             IFeatureCluster<UMCLight>,              // This allows for labeled development
-                            IChildFeature<UMCClusterLight>
+                            IChildFeature<UMCClusterLight>,
+                            IChildFeature<UMCLight>
 	{
 		/// <summary>
 		/// Default group ID.
@@ -168,6 +169,8 @@ namespace MultiAlignCore.Data.Features
             get;
             set;
         }
+
+        public UMCLight ParentUMC { get; private set; }
         
 
         #region IMS Data Members
@@ -391,18 +394,30 @@ namespace MultiAlignCore.Data.Features
             UmcCluster = parentFeature;
         }
 
-        public UMCClusterLight ParentFeature
-        {
-            get { return UmcCluster; }
-        }
+	    public UMCClusterLight GetParentFeature()
+	    {
+	        return UmcCluster;
+	    }
 
         #endregion
+
+        # region IChihldFeature<UMCLight> Members
+        public void SetParentFeature(UMCLight parentFeature)
+        {
+            ParentUMC = parentFeature;
+        }
+
+        UMCLight IChildFeature<UMCLight>.GetParentFeature()
+        {
+            return ParentUMC;
+        }
 
         public void AddChildFeature(UMCLight feature)
         {
             m_umcList.Add(feature);
             feature.MsFeatures.ForEach(AddChildFeature);
         }
+        #endregion
 
         List<UMCLight> IFeatureCluster<UMCLight>.Features
         {

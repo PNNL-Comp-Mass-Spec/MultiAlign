@@ -12,12 +12,10 @@
         /// </summary>
         /// <param name="parentFeature">Parent feature to reference.</param>
         void SetParentFeature(T parentFeature);
+
         /// <summary>
         /// Gets the parent feature for this object.
         /// </summary>
-        T ParentFeature
-        {
-            get;
-        }
+        T GetParentFeature();
     }
 }

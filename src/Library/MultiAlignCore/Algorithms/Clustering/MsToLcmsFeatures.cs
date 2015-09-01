@@ -53,7 +53,7 @@ namespace MultiAlignCore.Algorithms.Clustering
             this.options = options ?? new LcmsFeatureFindingOptions();
             
             // Set clusterers
-            if (this.options.FirstPassClusterer == LcmsFeatureFindingOptions.MsFeatureClusterers.TreeClusterer)
+            if (this.options.FirstPassClusterer == LcmsFeatureClusteringAlgorithmType.BinarySearchTree)
             {
                 this.firstPassClusterer = new MsFeatureTreeClusterer<MSFeatureLight, UMCLight>(
                     mzSort,
@@ -63,10 +63,11 @@ namespace MultiAlignCore.Algorithms.Clustering
             }
             else
             {
-                this.firstPassClusterer = new MSFeatureSingleLinkageClustering<MSFeatureLight, UMCLight>();                
+                var clusterFactory = new GenericClusterFactory<MSFeatureLight, UMCLight>();
+                this.firstPassClusterer = clusterFactory.Create(this.options.FirstPassClusterer);
             }
 
-            if (this.options.SecondPassClusterer == LcmsFeatureFindingOptions.MsFeatureClusterers.TreeClusterer)
+            if (this.options.SecondPassClusterer == LcmsFeatureClusteringAlgorithmType.BinarySearchTree)
             {
                 this.secondPassClusterer = new MsFeatureTreeClusterer<UMCLight, UMCLight>(
                                                             monoSort,
@@ -76,7 +77,8 @@ namespace MultiAlignCore.Algorithms.Clustering
             }
             else
             {
-                this.secondPassClusterer = new MSFeatureSingleLinkageClustering<UMCLight, UMCLight>();
+                var clusterFactory = new GenericClusterFactory<UMCLight, UMCLight>();
+                this.secondPassClusterer = clusterFactory.Create(this.options.SecondPassClusterer);
             }
         }
 

@@ -28,8 +28,8 @@ namespace MultiAlignCore.Algorithms.Alignment.SpectralMatching
                 if (featureX == null || featureY == null)
                     continue;
 
-                var umcX = featureX.ParentFeature;
-                var umcY = featureY.ParentFeature;
+                var umcX = featureX.GetParentFeature();
+                var umcY = featureY.GetParentFeature();
 
                 netError.PreAlignment.Add(umcX.Net  - umcY.Net);
                 netError.PostAlignment.Add(umcX.Net - umcY.NetAligned);

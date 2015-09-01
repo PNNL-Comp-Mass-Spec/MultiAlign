@@ -4,7 +4,9 @@ namespace MultiAlignCore.Algorithms.Clustering
     {
         AverageLinkage,
         SingleLinkage,
+        FastSingleLinkage,
         Centroid,
-        Prims
+        Prims,
+        BinarySearchTree,
     }
 }

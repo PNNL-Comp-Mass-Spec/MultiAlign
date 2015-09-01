@@ -361,13 +361,13 @@ namespace AlignmentPaperTestSuite.Figures
                     var data =
                         string.Format( "{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}",
 
-                                        parentFeatureX.ParentFeature.Net,
-                                        parentFeatureX.ParentFeature.Mz,
-                                        parentFeatureX.ParentFeature.Scan,
+                                        parentFeatureX.GetParentFeature().Net,
+                                        parentFeatureX.GetParentFeature().Mz,
+                                        parentFeatureX.GetParentFeature().Scan,
 
-                                        parentFeatureY.ParentFeature.Net,
-                                        parentFeatureY.ParentFeature.Mz,
-                                        parentFeatureY.ParentFeature.Scan,
+                                        parentFeatureY.GetParentFeature().Net,
+                                        parentFeatureY.GetParentFeature().Mz,
+                                        parentFeatureY.GetParentFeature().Scan,
 
                                         FeatureLight.ComputeMassPPMDifference(parentFeatureX.Mz, parentFeatureY.Mz),
                                         match.SimilarityScore);

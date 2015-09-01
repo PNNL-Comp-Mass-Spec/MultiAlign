@@ -34,7 +34,7 @@ namespace MultiAlign.ViewModels.Spectra
             if (spectrum.ParentFeature != null)
             {
                 var msFeature = spectrum.ParentFeature;
-                var umc = msFeature.ParentFeature;
+                var umc = msFeature.GetParentFeature();
                 if (umc != null)
                 {
                     var newList = new List<UMCLight> {umc};

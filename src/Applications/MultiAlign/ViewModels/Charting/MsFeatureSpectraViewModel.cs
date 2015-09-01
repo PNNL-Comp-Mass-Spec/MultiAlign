@@ -147,9 +147,9 @@ namespace MultiAlign.ViewModels.Charting
                 Model.Annotations.Add(peakAnnotation);
             }
 
-            if (feature.ParentFeature != null)
+            if (feature.GetParentFeature() != null)
             {
-                var features = feature.ParentFeature.Features;
+                var features = feature.GetParentFeature().Features;
                 foreach (var subFeature in features)
                 {
                     var msms =

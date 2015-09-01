@@ -55,8 +55,8 @@ namespace MultiAlignRogue.Feature_Finding
             this.selectedDatasets = new ReadOnlyCollection<DatasetInformationViewModel>(new List<DatasetInformationViewModel>());
             this.msFeatureWindowFactory = new MSFeatureViewFactory();
             this.features = new Dictionary<DatasetInformation, IList<UMCLight>>();
-            this.MsFeatureClusterers = new ObservableCollection<LcmsFeatureFindingOptions.MsFeatureClusterers>(
-                                       Enum.GetValues(typeof(LcmsFeatureFindingOptions.MsFeatureClusterers)).Cast<LcmsFeatureFindingOptions.MsFeatureClusterers>());
+            this.MsFeatureClusterers = new ObservableCollection<LcmsFeatureClusteringAlgorithmType>(
+                                       Enum.GetValues(typeof(LcmsFeatureClusteringAlgorithmType)).Cast<LcmsFeatureClusteringAlgorithmType>());
 
             this.MessengerInstance.Register<PropertyChangedMessage<IReadOnlyCollection<DatasetInformationViewModel>>>(this, sds =>
             {
@@ -80,7 +80,7 @@ namespace MultiAlignRogue.Feature_Finding
                                         () => this.selectedDatasets.Any(file => file.IsAligned));
         }
 
-        public ObservableCollection<LcmsFeatureFindingOptions.MsFeatureClusterers> MsFeatureClusterers { get; private set; } 
+        public ObservableCollection<LcmsFeatureClusteringAlgorithmType> MsFeatureClusterers { get; private set; } 
 
         public RelayCommand FindMSFeaturesCommand { get; private set; }
 
@@ -309,7 +309,7 @@ namespace MultiAlignRogue.Feature_Finding
             }
         }
 
-        public LcmsFeatureFindingOptions.MsFeatureClusterers FirstPassClusterer
+        public LcmsFeatureClusteringAlgorithmType FirstPassClusterer
         {
             get { return this.analysis.Options.LcmsFindingOptions.FirstPassClusterer; }
             set
@@ -322,7 +322,7 @@ namespace MultiAlignRogue.Feature_Finding
             }
         }
 
-        public LcmsFeatureFindingOptions.MsFeatureClusterers SecondPassClusterer
+        public LcmsFeatureClusteringAlgorithmType SecondPassClusterer
         {
             get { return this.analysis.Options.LcmsFindingOptions.SecondPassClusterer; }
             set

@@ -607,15 +607,15 @@ namespace MultiAlignTestSuite.Papers.Alignment
                             parentFeatureY.Mz,
                             parentFeatureX.MassMonoisotopic,
                             parentFeatureY.MassMonoisotopic,
-                            parentFeatureX.ParentFeature.Net,
-                            parentFeatureY.ParentFeature.Net,
-                            parentFeatureX.ParentFeature.NetAligned,
-                            parentFeatureY.ParentFeature.NetAligned,
-                            parentFeatureX.ParentFeature.MassMonoisotopicAligned,
-                            parentFeatureY.ParentFeature.MassMonoisotopicAligned,
+                            parentFeatureX.GetParentFeature().Net,
+                            parentFeatureY.GetParentFeature().Net,
+                            parentFeatureX.GetParentFeature().NetAligned,
+                            parentFeatureY.GetParentFeature().NetAligned,
+                            parentFeatureX.GetParentFeature().MassMonoisotopicAligned,
+                            parentFeatureY.GetParentFeature().MassMonoisotopicAligned,
                             FeatureLight.ComputeMassPPMDifference(parentFeatureX.Mz, parentFeatureY.Mz),
-                            FeatureLight.ComputeMassPPMDifference(parentFeatureX.ParentFeature.MassMonoisotopicAligned,
-                                parentFeatureY.ParentFeature.MassMonoisotopicAligned)
+                            FeatureLight.ComputeMassPPMDifference(parentFeatureX.GetParentFeature().MassMonoisotopicAligned,
+                                parentFeatureY.GetParentFeature().MassMonoisotopicAligned)
                             );
 
                     writer.WriteLine(data);
