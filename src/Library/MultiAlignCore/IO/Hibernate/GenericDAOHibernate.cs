@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using InformedProteomics.Backend.Utils;
 using NHibernate;
 using NHibernate.Criterion;
 using NHibernate.Mapping.ByCode.Impl;
@@ -96,19 +97,25 @@ namespace MultiAlignCore.IO.Hibernate
         ///     Not good for very large bulk inserts.
         /// </summary>
         /// <param name="tCollection">Collection of Objects to be added</param>
-        public virtual void AddAll(ICollection<T> tCollection)
+        public virtual void AddAll(ICollection<T> tCollection, IProgress<ProgressData> progress = null)
         {
+            progress = progress ?? new Progress<ProgressData>();
             using (var session = GetSession())
             {
                 using (var transaction = session.BeginTransaction())
                 {
+                    var progressData = new ProgressData { IsPartialRange = true, MaxPercentage = 75 };
+                    int i = 0;
                     foreach (var t in tCollection)
                     {
                         session.SaveOrUpdate(t); //If we don't want to keep the unaligned features
                         //    session.Insert(t); 
-                        
+                        progress.Report(progressData.UpdatePercent((100.0 * i++) / tCollection.Count));
                     }
+
+                    progressData.StepRange(100);
                     transaction.Commit();
+                    progress.Report(progressData.UpdatePercent(100));
                 }
             }
         }
@@ -117,12 +124,15 @@ namespace MultiAlignCore.IO.Hibernate
         ///     Adds a Collection of Objects to the Database.
         /// </summary>
         /// <param name="tCollection">Collection of Objects to be added</param>
-        public virtual void AddAllStateless(ICollection<T> tCollection)
+        public virtual void AddAllStateless(ICollection<T> tCollection, IProgress<ProgressData> progress = null)
         {
+            progress = progress ?? new Progress<ProgressData>();
             using (var session = GetStatelessSession())
             {
                 using (var transaction = session.BeginTransaction())
                 {
+                    var progressData = new ProgressData { IsPartialRange = true, MaxPercentage = 75 };
+                    int i = 0;
                     var query1 = session.CreateSQLQuery("PRAGMA defer_foreign_keys = ON");
                     var query2 = session.CreateSQLQuery("PRAGMA ignore_check_constraints = ON");
                     query2.ExecuteUpdate();
@@ -130,11 +140,13 @@ namespace MultiAlignCore.IO.Hibernate
                     foreach (var t in tCollection)
                     {
                         session.Insert(t); //If we don't want to keep the unaligned features
-                        //    session.Insert(t); 
+                        progress.Report(progressData.UpdatePercent((100.0 * i++) / tCollection.Count));
                     }
                     var query3 = session.CreateSQLQuery("PRAGMA ignore_check_constraints = OFF");
                     query3.ExecuteUpdate();
+                    progressData.StepRange(100);
                     transaction.Commit();
+                    progress.Report(progressData.UpdatePercent(100));
                 }
             }
         }

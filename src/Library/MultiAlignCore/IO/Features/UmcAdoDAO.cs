@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
+using InformedProteomics.Backend.Utils;
 using MultiAlignCore.Data.Features;
 
 #endregion
@@ -129,12 +130,12 @@ namespace MultiAlignCore.IO.Features
             throw new NotImplementedException();
         }
 
-        public void AddAll(ICollection<UMCLight> tList)
+        public void AddAll(ICollection<UMCLight> tList, IProgress<ProgressData> progress = null)
         {
             throw new NotImplementedException();
         }
 
-        public void AddAllStateless(ICollection<UMCLight> tList)
+        public void AddAllStateless(ICollection<UMCLight> tList, IProgress<ProgressData> progress = null)
         {
             throw new NotImplementedException();
         }

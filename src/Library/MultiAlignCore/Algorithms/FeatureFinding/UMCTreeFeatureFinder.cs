@@ -72,7 +72,7 @@ namespace MultiAlignCore.Algorithms.FeatureFinding
             //OnStatus("Starting cluster definition");
             //clusterer.Progress += (sender, args) => OnStatus(args.Message);
 
-            var features = clusterer.Convert(msFeatures);
+            var features = clusterer.Convert(msFeatures, progress);
 
             var minScan = int.MaxValue;
             var maxScan = int.MinValue;

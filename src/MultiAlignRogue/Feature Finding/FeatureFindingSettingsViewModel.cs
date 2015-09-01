@@ -469,7 +469,12 @@ namespace MultiAlignRogue.Feature_Finding
 
             foreach (var file in selectedFiles)
             {
-                var progress = new Progress<ProgressData>(progData => file.Progress = progData.Percent);
+                var progData = new ProgressData { IsPartialRange = true, MaxPercentage = 30 };
+                var progress = new Progress<ProgressData>(pd =>
+                {
+                    file.Progress = progData.UpdatePercent(pd.Percent).Percent;
+                });
+
                 var features = this.featureCache.LoadDataset(
                                                     file.Dataset,
                                                     this.analysis.Options.MsFilteringOptions,
@@ -493,14 +498,15 @@ namespace MultiAlignRogue.Feature_Finding
                     var stopWatch = new Stopwatch();
                     stopWatch.Start();
 
-                    this.featureCache.CacheFeatures(features);
+                    progData.StepRange(100);
+                    this.featureCache.CacheFeatures(features, progress);
                     stopWatch.Stop();
                     logger.WriteLine("Writing: {0}s", stopWatch.Elapsed.TotalSeconds);
                 }
 
                 file.DatasetState = DatasetInformationViewModel.DatasetStates.FeaturesFound;
                 ThreadSafeDispatcher.Invoke(() => this.FindMSFeaturesCommand.RaiseCanExecuteChanged());
-                this.progress.Report(0);
+                file.Progress = 0;
             }
         }
 

@@ -111,6 +111,7 @@ namespace MultiAlignCore.Algorithms.Clustering
             var progressData = new ProgressData();
             var clusters            = new List<TParentFeature>();            
             var currentIndex        = 0;
+            int i = 0;
             //var n                   = features.Count();
 
             // Sort the features based on m/z first
@@ -133,7 +134,7 @@ namespace MultiAlignCore.Algorithms.Clustering
                 var gapFeatures  = new List<TChildFeature> { lastFeature };
                 while (!hasGap && lastIndex < n)
                 {
-
+                    i++;
                     var currentFeature      = msFeatures[lastIndex];
                     var massDiff         = this.massDiffFunc(currentFeature, lastFeature);
 
@@ -176,7 +177,7 @@ namespace MultiAlignCore.Algorithms.Clustering
 
                 var newFeatures = tree.Build();
                 clusters.AddRange(newFeatures);
-                progressData.Percent = (currentIndex / n) * 100;
+                progressData.Percent = (100.0 * i) / n;
                 progress.Report(progressData);
             }
             return clusters;          

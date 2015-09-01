@@ -121,8 +121,10 @@ namespace MultiAlignCore.Algorithms.Chromatograms
                 }
 
                 resultFeatures.Add(xicTarget.Feature);
-                progressData.Percent = (count / features.Count) * 100;
-                progress.Report(progressData);
+                if (count%100 == 0 || count == features.Count - 1)
+                {
+                    progress.Report(progressData.UpdatePercent((100.0 * count) / features.Count));
+                }
             }
 
             return resultFeatures;

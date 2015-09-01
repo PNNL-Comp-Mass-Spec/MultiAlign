@@ -102,7 +102,7 @@ namespace MultiAlignCore.Algorithms.Clustering
             // Set up progress reporter
             progress = progress ?? new Progress<ProgressData>();
             var progressData = new ProgressData { IsPartialRange = true };
-            var internalProgress = new Progress<ProgressData>(pd => progress.Report(progressData.UpdatePercent(pd.Percent)));
+            var internalProgress = new Progress<ProgressData>(pd =>  progress.Report(progressData.UpdatePercent(pd.Percent)));
 
             var features = new List<UMCLight>();
             using (var logger = new StreamWriter("msfeatureClusteringStats.txt", true))

@@ -27,8 +27,9 @@ namespace MultiAlignCore.IO
     {
         public FeatureDataAccessProviders Providers { get; set; }
 
-        public void CacheFeatures(IList<UMCLight> features)
+        public void CacheFeatures(IList<UMCLight> features, IProgress<ProgressData> progress = null)
         {
+            progress = progress ?? new Progress<ProgressData>();
             // SpectraTracker - Makes sure that we only record a MS spectra once, before we cache
             // this keeps us from trying to put duplicate entries into the MS/MS data 
             // table/container.
@@ -110,36 +111,44 @@ namespace MultiAlignCore.IO
             //TODO: Fix!!! make sure sequence maps are unique
             sequenceMaps.ForEach(x => x.Id = count++);
 
+            var progData = new ProgressData { IsPartialRange = true, MaxPercentage = 1 };
+            var internalProgress = new Progress<ProgressData>(pd => progress.Report(progData.UpdatePercent(pd.Percent)));
+
             if (msmsFeatures.Count > 0)
             {
-                Providers.MSnFeatureCache.AddAll(msmsFeatures);
+                Providers.MSnFeatureCache.AddAll(msmsFeatures, internalProgress);
             }
 
             if (matches.Count > 0)
             {
-                Providers.MSFeatureToMSnFeatureCache.AddAll(matches);
+                progData.StepRange(2);
+                Providers.MSFeatureToMSnFeatureCache.AddAll(matches, internalProgress);
             }
 
             if (sequenceMaps.Count > 0)
             {
-                Providers.SequenceMsnMapCache.AddAll(sequenceMaps);
+                progData.StepRange(3);
+                Providers.SequenceMsnMapCache.AddAll(sequenceMaps, internalProgress);
             }
 
             if (mappedPeptides.Count > 0)
             {
-                Providers.DatabaseSequenceCache.AddAll(mappedPeptides);
+                progData.StepRange(4);
+                Providers.DatabaseSequenceCache.AddAll(mappedPeptides, internalProgress);
             }
 
             if (msFeatures.Count > 0)
             {
+                progData.StepRange(99);
                 Providers.MSFeatureCache.DeleteByDatasetId(msFeatures[0].GroupId);
-                Providers.MSFeatureCache.AddAllStateless(msFeatures);
+                Providers.MSFeatureCache.AddAllStateless(msFeatures, internalProgress);
             }
 
             if (features.Count > 0)
             {
+                progData.StepRange(100);
                 Providers.FeatureCache.DeleteByDataset(features[0].GroupId);
-                Providers.FeatureCache.AddAllStateless(features);
+                Providers.FeatureCache.AddAllStateless(features, internalProgress);
             }
         }
 
@@ -170,7 +179,7 @@ namespace MultiAlignCore.IO
 
             var finder = FeatureFinderFactory.CreateFeatureFinder(FeatureFinderType.TreeBased);
             finder.Progress += (sender, args) => UpdateStatus(args.Message);
-            var features = finder.FindFeatures(msFeatures, options, provider, information);
+            var features = finder.FindFeatures(msFeatures, options, provider, information, progress);
 
             UpdateStatus("Filtering features.");
             List<UMCLight> filteredFeatures = LcmsFeatureFilters.FilterFeatures(features, filterOptions, information.ScanTimes);
@@ -222,7 +231,6 @@ namespace MultiAlignCore.IO
         {
             progress = progress ?? new Progress<ProgressData>();
             var progData = new ProgressData { IsPartialRange = true };
-            IProgress<ProgressData> internalProgress = new Progress<ProgressData>(pd => progress.Report(progData.UpdatePercent(pd.Percent)));
 
             progData.MaxPercentage = 3;
             progData.Status = "Looking for existing features in the database.";
@@ -230,7 +238,7 @@ namespace MultiAlignCore.IO
             var datasetId = dataset.DatasetId;
             var features = UmcLoaderFactory.LoadUmcFeatureData(dataset.Features.Path, dataset.DatasetId,
                 Providers.FeatureCache);
-            internalProgress.Report(new ProgressData { Percent = 100 });
+            progress.Report(progData.UpdatePercent(100));
 
 
             progData.StepRange(7);
@@ -238,17 +246,15 @@ namespace MultiAlignCore.IO
             UpdateStatus(string.Format("[{0}] Loading MS Feature Data [{0}] - {1}.", dataset.DatasetId,
                 dataset.DatasetName));
             var msFeatures = UmcLoaderFactory.LoadMsFeatureData(dataset.Features.Path);
-            internalProgress.Report(new ProgressData { Percent = 100 });
+            progress.Report(progData.UpdatePercent(100));
 
             progData.StepRange(10);
             progData.Status = "Loading scan summaries.";
             var scansInfo = UmcLoaderFactory.LoadScanSummaries(dataset.Scans.Path);
             dataset.BuildScanTimes(scansInfo);
-            internalProgress.Report(new ProgressData { Percent = 100 });
+            progress.Report(progData.UpdatePercent(100));
 
             var msnSpectra = new List<MSSpectra>();
-
-            progData.StepRange(100);
 
             // If we don't have any features, then we have to create some from the MS features
             // provided to us.
@@ -257,12 +263,16 @@ namespace MultiAlignCore.IO
                 msFeatures = LcmsFeatureFilters.FilterMsFeatures(msFeatures, msFilteringOptions);
                 msFeatures = Filter(msFeatures, ref dataset);
 
+                progData.StepRange(100);
                 progData.Status = "Creating LCMS features.";
                 features = CreateLcmsFeatures(dataset,
                     msFeatures,
                     lcmsFindingOptions,
                     lcmsFilteringOptions,
-                    internalProgress);
+                    new Progress<ProgressData>(pd =>
+                    {
+                        progress.Report(progData.UpdatePercent(pd.Percent));
+                    }));
 
                 //var maxScan = Convert.ToDouble(features.Max(feature => feature.Scan));
                 //var minScan = Convert.ToDouble(features.Min(feature => feature.Scan));
@@ -316,8 +326,6 @@ namespace MultiAlignCore.IO
                         map[feature.UmcId].AddChildFeature(feature);
                     }
                 }
-
-                internalProgress.Report(new ProgressData { Percent = 100 });
             }
 
 
