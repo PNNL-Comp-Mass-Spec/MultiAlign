@@ -90,7 +90,7 @@ namespace MultiAlignCore.Algorithms
         /// <returns></returns>
         public AlgorithmProvider GetAlgorithmProvider(MultiAlignAnalysisOptions options)
         {
-            BuildClusterer(LcmsFeatureClusteringAlgorithmType.AverageLinkage);
+            BuildClusterer(options.LcmsClusteringOptions.LcmsFeatureClusteringAlgorithm);
             BuildAligner(options.AlignmentOptions.LCMSWarpOptions, options.SpectralOptions);
             BuildPeakMatcher(options);
             return m_provider;
