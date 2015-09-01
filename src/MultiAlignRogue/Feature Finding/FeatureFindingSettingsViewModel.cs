@@ -220,6 +220,16 @@ namespace MultiAlignRogue.Feature_Finding
             }
         }
 
+        public double MinimumFeatureDataPoints
+        {
+            get { return this.analysis.Options.LcmsFilteringOptions.MinimumDataPoints; }
+            set
+            {
+                this.analysis.Options.LcmsFilteringOptions.MinimumDataPoints = value;
+                this.RaisePropertyChanged();
+            }
+        }
+
         public double MinimumIntensity
         {
             get { return this.analysis.Options.MsFilteringOptions.MinimumIntensity; }

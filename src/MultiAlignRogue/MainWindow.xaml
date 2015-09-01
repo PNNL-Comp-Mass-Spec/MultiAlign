@@ -76,52 +76,68 @@
             <TabItem Header="1. Feature Finding" Height="23" VerticalAlignment="Bottom" DataContext="{Binding FeatureFindingSettingsViewModel, UpdateSourceTrigger=PropertyChanged}">
                 <Grid Margin="5,5,5,5" HorizontalAlignment="Center" Width="445">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="160*"/>
-                        <ColumnDefinition Width="66*"/>
+                        <ColumnDefinition Width="180*"/>
+                        <ColumnDefinition Width="50"/>
                         <ColumnDefinition Width="20*"/>
-                        <ColumnDefinition Width="66*"/>
-                        <ColumnDefinition Width="92*"/>
+                        <ColumnDefinition Width="50"/>
+                        <ColumnDefinition Width="70*"/>
                     </Grid.ColumnDefinitions>
-                    <Label Content="Precursor Mass Resolution" VerticalContentAlignment="Top"  HorizontalAlignment="Left" Height="28" Margin="20,7,0,0" VerticalAlignment="Top" Width="168" Grid.ColumnSpan="2"/>
-                    <TextBox Grid.Column="1" HorizontalContentAlignment="Center" Height="19" Margin="0,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" 
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="24"/>
+                        <RowDefinition Height="24"/>
+                        <RowDefinition Height="24"/>
+                        <RowDefinition Height="24"/>
+                        <RowDefinition Height="24"/>
+                        <RowDefinition Height="24"/>
+                        <RowDefinition Height="24"/>
+                        <RowDefinition Height="24"/>
+                        <RowDefinition Height="24*"/>
+                        <RowDefinition Height="24"/>
+                        <RowDefinition Height="24"/>
+                    </Grid.RowDefinitions>
+                    <Label Content="Precursor Mass Resolution" VerticalContentAlignment="Top"  HorizontalAlignment="Left" Height="28" Grid.Column="0" Grid.Row="0" Margin="17,0,0,0" VerticalAlignment="Top" Width="168"/>
+                    <TextBox Grid.Column="1" Grid.Row="0" HorizontalContentAlignment="Center" Height="19" Margin="0,3,0,0" TextWrapping="Wrap" VerticalAlignment="Top" 
                              Text="{Binding MassResolution, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Right" Width="50"/>
-                    <Label Content="Fragmentation Window Size" VerticalContentAlignment="Top"  HorizontalAlignment="Left" Height="28" Margin="20,31,0,0" VerticalAlignment="Top" Width="168" Grid.ColumnSpan="2"/>
-                    <TextBox Grid.Column="1" HorizontalContentAlignment="Center" Height="19" Margin="0,34,0,0" TextWrapping="Wrap" VerticalAlignment="Top" 
+                    <Label Content="Fragmentation Window Size" Grid.Column="0" Grid.Row="1" VerticalContentAlignment="Top"  HorizontalAlignment="Left" Height="28" Margin="17,0,0,0" VerticalAlignment="Top" Width="168" Grid.ColumnSpan="2"/>
+                    <TextBox Grid.Column="1" Grid.Row="1" HorizontalContentAlignment="Center" Height="19" Margin="0,3,0,0" TextWrapping="Wrap" VerticalAlignment="Top" 
                              Text="{Binding FragmentationTolerance, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Right" Width="50"/>
-                    <CheckBox Content="Only analyze m/z from" VerticalContentAlignment="Top"  HorizontalAlignment="Left" Height="28" Margin="8,59,0,0" VerticalAlignment="Top" Width="168" 
+                    <CheckBox Content="Only analyze m/z from" Grid.Column="0" Grid.Row="2" VerticalContentAlignment="Top"  HorizontalAlignment="Left" Height="19" Margin="5,3,0,0" VerticalAlignment="Top" Width="168" 
                               IsChecked="{Binding ShouldUseMzFilter, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
-                    <TextBox Grid.Column="1" HorizontalContentAlignment="Center" Height="19" Margin="0,58,0,0" TextWrapping="Wrap" VerticalAlignment="Top" 
+                    <TextBox Grid.Column="1" Grid.Row="2" HorizontalContentAlignment="Center" Height="19" Margin="0,3,0,0" TextWrapping="Wrap" VerticalAlignment="Top" 
                              Text="{Binding MinimumMz, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Right" Width="50"/>
-                    <TextBox Grid.Column="3" HorizontalContentAlignment="Center" Height="19" Margin="10,58,0,0" TextWrapping="Wrap" VerticalAlignment="Top" 
+                    <TextBox Grid.Column="3" Grid.Row="2" HorizontalContentAlignment="Center" Height="19" Margin="0,3,0,0" TextWrapping="Wrap" VerticalAlignment="Top" 
                              Text="{Binding MaximumMz, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Width="50"/>
-                    <Label Content="to" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,54,0,0" Grid.Column="2" Height="26" Width="30" Grid.ColumnSpan="2"/>
-                    <CheckBox Content="Only consider charge states" VerticalContentAlignment="Top"  HorizontalAlignment="Left" Height="28" Margin="8,84,0,0" VerticalAlignment="Top" Width="168" 
+                    <Label Content="to" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,0,0,0" Grid.Column="2" Grid.Row="2" Height="28" Width="23"/>
+                    <CheckBox Content="Only consider charge states" Grid.Column="0" Grid.Row="3" VerticalContentAlignment="Top"  HorizontalAlignment="Left" Height="19" Margin="5,3,0,0" VerticalAlignment="Top" Width="168" 
                               IsChecked="{Binding ShouldUseChargeStateFilter, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
-                    <TextBox Grid.Column="1" HorizontalContentAlignment="Center" Height="19" Margin="0,84,0,0" TextWrapping="Wrap" VerticalAlignment="Top"
+                    <TextBox Grid.Column="1" Grid.Row="3" HorizontalContentAlignment="Center" Height="19" Margin="0,3,0,0" TextWrapping="Wrap" VerticalAlignment="Top"
                              Text="{Binding MinimumCharge, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Right" Width="50"/>
-                    <TextBox Grid.Column="3" HorizontalContentAlignment="Center" Height="19" Margin="10,84,0,0" TextWrapping="Wrap" VerticalAlignment="Top" 
+                    <TextBox Grid.Column="3" Grid.Row="3" HorizontalContentAlignment="Center" Height="19" Margin="0,3,0,0" TextWrapping="Wrap" VerticalAlignment="Top" 
                              Text="{Binding MaximumCharge, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Width="50"/>
-                    <Label Content="to" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,80,0,0" Grid.Column="2" Height="26" Width="30" Grid.ColumnSpan="2"/>
-                    <CheckBox Content="Minimum Deisotoping Fit" VerticalContentAlignment="Top"  HorizontalAlignment="Left" Height="28" Margin="8,137,0,0" VerticalAlignment="Top" Width="168"
+                    <Label Content="to" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,0,0,0" Grid.Column="2" Grid.Row="3" Height="26" Width="30" />
+                    <CheckBox Content="Minimum Deisotoping Fit" Grid.Column="0" Grid.Row="6" VerticalContentAlignment="Top"  HorizontalAlignment="Left" Height="19" Margin="5,3,0,0" VerticalAlignment="Top" Width="168"
                               IsChecked="{Binding ShouldUseDeisotopingFilter, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
-                    <TextBox Grid.Column="1" HorizontalContentAlignment="Center" Height="19" Margin="0,137,0,0" TextWrapping="Wrap" VerticalAlignment="Top" 
+                    <TextBox Grid.Column="1" Grid.Row="6" HorizontalContentAlignment="Center" Height="19" Margin="0,3,0,0" TextWrapping="Wrap" VerticalAlignment="Top" 
                              Text="{Binding MinimumDeisotopingScore, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Right" Width="50"/>
-                    <CheckBox Content="Minimum Intensity" VerticalContentAlignment="Top"  HorizontalAlignment="Left" Height="28" Margin="8,161,0,0" VerticalAlignment="Top" Width="168"
+                    <CheckBox Content="Minimum Intensity" Grid.Column="0" Grid.Row="7" VerticalContentAlignment="Top"  HorizontalAlignment="Left" Height="19" Margin="5,3,0,0" VerticalAlignment="Top" Width="168"
                               IsChecked="{Binding ShouldUseIntensityFilter, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
-                    <TextBox Grid.Column="1" HorizontalContentAlignment="Center" Height="19" Margin="0,161,0,0" TextWrapping="Wrap" VerticalAlignment="Top" 
+                    <TextBox Grid.Column="1" Grid.Row="7" HorizontalContentAlignment="Center" Height="19" Margin="0,3,0,0" TextWrapping="Wrap" VerticalAlignment="Top" 
                              Text="{Binding MinimumIntensity, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Right" Width="50"/>
 
-                    <Button Content="Load LCMS Features" HorizontalAlignment="Left" Height="24" Margin="10,347,0,0" VerticalAlignment="Top" Width="120" Command="{Binding FindMSFeaturesCommand}"/>
-                    <Button Content="Plot Unaligned Features" HorizontalAlignment="Left" Height="24" Margin="20,318,0,39" VerticalAlignment="Top" Width="135" Command="{Binding PlotMSFeaturesCommand}" Grid.Column="3" Grid.ColumnSpan="2"/>
-                    <Button Content="Plot Aligned Features" HorizontalAlignment="Left" Height="24" Margin="20,347,0,0" VerticalAlignment="Top" Width="135" Command="{Binding PlotAlignedFeaturesCommand}" Grid.Column="3" Grid.ColumnSpan="2"/>
-                    <Label Content="Only consider feature lengths" VerticalContentAlignment="Top"  HorizontalAlignment="Left" Height="28" Margin="8,105,0,0" VerticalAlignment="Top" Width="168" />
-                    <TextBox Grid.Column="1" HorizontalContentAlignment="Center" Height="19" Margin="0,110,0,0" TextWrapping="Wrap" VerticalAlignment="Top"
+                    <Button Content="Load LCMS Features" Grid.Column="0" Grid.Row="10" HorizontalAlignment="Left" Height="24" Margin="5,0,0,0" VerticalAlignment="Top" Width="120" Command="{Binding FindMSFeaturesCommand}"/>
+                    <Button Content="Plot Unaligned Features" HorizontalAlignment="Left" Height="24" Margin="20,0,0,0" VerticalAlignment="Top" Width="135" Command="{Binding PlotMSFeaturesCommand}" Grid.Column="2" Grid.ColumnSpan="3" Grid.Row="9" />
+                    <Button Content="Plot Aligned Features" HorizontalAlignment="Left" Height="24" Margin="20,0,0,0" VerticalAlignment="Top" Width="135" Command="{Binding PlotAlignedFeaturesCommand}" Grid.Column="2" Grid.ColumnSpan="3" Grid.Row="10" />
+                    <Label Content="Only consider feature lengths" Grid.Column="0" Grid.Row="4" VerticalContentAlignment="Top"  HorizontalAlignment="Left" Height="28" Margin="17,0,0,0" VerticalAlignment="Top" Width="168" />
+                    <TextBox Grid.Column="1" Grid.Row="4" HorizontalContentAlignment="Center" Height="19" Margin="0,3,0,0" TextWrapping="Wrap" VerticalAlignment="Top"
                     	Text="{Binding MinimumFeatureLength, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Right" Width="50"/>
-                    <TextBox Grid.Column="3" HorizontalContentAlignment="Center" Height="19" Margin="10,110,0,0" TextWrapping="Wrap" VerticalAlignment="Top" 
+                    <TextBox Grid.Column="3" Grid.Row="4" HorizontalContentAlignment="Center" Height="19" Margin="0,3,0,0" TextWrapping="Wrap" VerticalAlignment="Top" 
                     	Text="{Binding MaximumFeatureLength, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Width="50"/>
-                    <ComboBox HorizontalContentAlignment="Center" Margin="0,110,0,0" VerticalAlignment="Top" Width="70" Grid.Column="4" Height="19" ItemsSource="{Binding Path = TimeOptions}"
+                    <ComboBox HorizontalContentAlignment="Center" Margin="0,3,0,0" VerticalAlignment="Top" Width="70" Grid.Column="4" Grid.Row="4" Height="19" ItemsSource="{Binding Path = TimeOptions}"
                                               SelectedItem="{Binding Path = TreatAsTimeOrScan, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
-                    <Label Content="to" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,106,0,0" Grid.Column="2" Height="26" Width="30" Grid.ColumnSpan="2"/>
+                    <Label Content="to" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,0,0,0" Grid.Column="2" Grid.Row="4" Height="26" Width="30" />
+                    <Label Content="Minimum data points per feature" Grid.Column="0" Grid.Row="5" VerticalContentAlignment="Top"  HorizontalAlignment="Left" Height="28" Margin="17,0,0,0" VerticalAlignment="Top" Width="185" />
+                    <TextBox Grid.Column="3" Grid.Row="5" HorizontalContentAlignment="Center" Height="19" Margin="0,3,0,0" TextWrapping="Wrap" VerticalAlignment="Top" 
+                    	Text="{Binding MinimumFeatureDataPoints, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Width="50"/>
                 </Grid>
             </TabItem>
             <TabItem Header="2. Alignment" HorizontalAlignment="Left" DataContext="{Binding AlignmentSettingsViewModel, UpdateSourceTrigger=PropertyChanged}">
