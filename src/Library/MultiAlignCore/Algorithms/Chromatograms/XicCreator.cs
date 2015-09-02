@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using InformedProteomics.Backend.Data.Spectrometry;
 using InformedProteomics.Backend.Utils;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.Features;
@@ -38,12 +35,17 @@ namespace MultiAlignCore.Algorithms.Chromatograms
             int id = 0, count = 0;
             int msmsFeatureId = 0;
             var resultFeatures = new List<UMCLight> { Capacity = features.Count };
+            var ipr = provider.GetReaderForGroup(0);
+
+            ipr.HigherPrecursorChromatogramCacheSize = 2000;
+            
+            features.Sort((x,y) => x.Mz.CompareTo(y.Mz));
+
             // Iterate over XIC targets.
             foreach (var xicTarget in CreateXicTargetsYield(features, massError))
             {
                 count++;
                 // Read XIC
-                var ipr = provider.GetReaderForGroup(0);
                 var target = xicTarget.StartScan + ((xicTarget.EndScan - xicTarget.StartScan) / 2);
                 var xic = ipr.GetPrecursorExtractedIonChromatogram(xicTarget.LowMz, xicTarget.HighMz, target);
 
