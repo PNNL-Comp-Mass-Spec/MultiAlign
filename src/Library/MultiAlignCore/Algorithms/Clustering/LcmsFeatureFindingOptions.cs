@@ -23,7 +23,7 @@
         {
             InstrumentTolerances = new FeatureTolerances();
 
-            this.FirstPassClusterer = LcmsFeatureClusteringAlgorithmType.BinarySearchTree;
+            this.FirstPassClusterer = LcmsFeatureClusteringAlgorithmType.FastSingleLinkage;
             this.SecondPassClusterer = LcmsFeatureClusteringAlgorithmType.BinarySearchTree;
             this.FindXics = true;
             this.RefineXics = true;
