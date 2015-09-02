@@ -50,7 +50,7 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Grid>
-                                <ProgressBar Value="{Binding Progress}" />
+                                <ProgressBar Value="{Binding Progress}" Visibility="{Binding DoingWork, Converter={StaticResource BoolToVis}}" />
                                 <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Dataset.DatasetName}" />
                             </Grid>
                         </DataTemplate>

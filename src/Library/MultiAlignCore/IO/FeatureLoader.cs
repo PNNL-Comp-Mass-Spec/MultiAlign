@@ -232,7 +232,7 @@ namespace MultiAlignCore.IO
             progress = progress ?? new Progress<ProgressData>();
             var progData = new ProgressData { IsPartialRange = true };
 
-            progData.MaxPercentage = 3;
+            progData.MaxPercentage = 1;
             progData.Status = "Looking for existing features in the database.";
             UpdateStatus(string.Format("[{0}] - Loading dataset [{0}] - {1}.", dataset.DatasetId, dataset.DatasetName));
             var datasetId = dataset.DatasetId;
@@ -241,14 +241,14 @@ namespace MultiAlignCore.IO
             progress.Report(progData.UpdatePercent(100));
 
 
-            progData.StepRange(7);
+            progData.StepRange(2);
             progData.Status = "Loading MS Feature Data.";
             UpdateStatus(string.Format("[{0}] Loading MS Feature Data [{0}] - {1}.", dataset.DatasetId,
                 dataset.DatasetName));
             var msFeatures = UmcLoaderFactory.LoadMsFeatureData(dataset.Features.Path);
             progress.Report(progData.UpdatePercent(100));
 
-            progData.StepRange(10);
+            progData.StepRange(3);
             progData.Status = "Loading scan summaries.";
             var scansInfo = UmcLoaderFactory.LoadScanSummaries(dataset.Scans.Path);
             dataset.BuildScanTimes(scansInfo);
@@ -269,10 +269,7 @@ namespace MultiAlignCore.IO
                     msFeatures,
                     lcmsFindingOptions,
                     lcmsFilteringOptions,
-                    new Progress<ProgressData>(pd =>
-                    {
-                        progress.Report(progData.UpdatePercent(pd.Percent));
-                    }));
+                    new Progress<ProgressData>(pd => progress.Report(progData.UpdatePercent(pd.Percent))));
 
                 //var maxScan = Convert.ToDouble(features.Max(feature => feature.Scan));
                 //var minScan = Convert.ToDouble(features.Min(feature => feature.Scan));
