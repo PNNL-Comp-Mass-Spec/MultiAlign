@@ -22,17 +22,17 @@ namespace MultiAlignCore.Algorithms.Chromatograms
         /// <summary>
         /// Smoother to smooth Xics with.
         /// </summary>
-        private readonly SavitzkyGolaySmoother smoother;
+        private readonly SpectralProcessing.SavitzkyGolaySmoother smoother;
 
         /// <summary>
-        /// Relative intensity threshold for snipping XICs.
+        /// Relative intensity threshold for snipping XICs
         /// </summary>
-        private double relativeIntensityThreshold;
+        private readonly double relativeIntensityThreshold;
 
-        public XicRefiner(double relativeIntensityThreshold = 0.05, SavitzkyGolaySmoother smoother = null)
+        public XicRefiner(double relativeIntensityThreshold = 0.05, SpectralProcessing.SavitzkyGolaySmoother smoother = null)
         {
             this.relativeIntensityThreshold = relativeIntensityThreshold;
-            this.smoother = smoother ?? new SavitzkyGolaySmoother(CONST_POLYNOMIAL_ORDER, NUMBER_OF_POINTS);
+            this.smoother = smoother ?? new SpectralProcessing.SavitzkyGolaySmoother(NUMBER_OF_POINTS, CONST_POLYNOMIAL_ORDER, false);
         }
 
         /// <summary>
@@ -67,7 +67,8 @@ namespace MultiAlignCore.Algorithms.Chromatograms
             if (xic.Count == 0)
                 return xic;
 
-            var unsmoothedPoints = xic.Select(x => x.Intensity).ToArray(); 
+            var unsmoothedPoints = xic.Select(xicp => new XYData(xicp.ScanNum, xicp.Intensity))
+                                      .OrderBy(p => p.X).ToList(); 
             var points = smoother.Smooth(unsmoothedPoints);
 
             // Find the biggest peak...
@@ -104,8 +105,7 @@ namespace MultiAlignCore.Algorithms.Chromatograms
             // Add the features back
             for (var i = startIndex; i <= stopIndex; i++)
             {
-                points[i] = Convert.ToInt64(points[i]);
-                xic[i] = new XicPoint(Convert.ToInt32(xic[i].ScanNum), xic[i].Mz, points[i]);
+                xic[i] = new XicPoint(Convert.ToInt32(xic[i].ScanNum), xic[i].Mz, Convert.ToInt64(points[i].Y));
             }
 
             return xic;
