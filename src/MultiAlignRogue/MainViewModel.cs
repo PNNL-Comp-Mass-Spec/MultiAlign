@@ -11,13 +11,13 @@ using Microsoft.Win32;
 using Ookii.Dialogs;
 using MultiAlign.Data;
 using MultiAlign.IO;
-using MultiAlign.ViewModels.Datasets;
 using MultiAlign.ViewModels.Wizard;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO;
 using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.InputFiles;
+using MultiAlignRogue.ViewModels;
 using Ookii.Dialogs.Wpf;
 
 namespace MultiAlignRogue
@@ -96,7 +96,7 @@ namespace MultiAlignRogue
 
             featureCache.Providers = Analysis.DataProviders;
             this.FeatureFindingSettingsViewModel = new FeatureFindingSettingsViewModel(Analysis, featureCache);
-            this.AlignmentSettingsViewModel = new AlignmentSettingsViewModel(Analysis, featureCache);
+            this.AlignmentSettingsViewModel = new AlignmentSettingsViewModel(Analysis, featureCache, Datasets);
             this.ClusterSettingsViewModel = new ClusterSettingsViewModel(Analysis);
         }
         #endregion
@@ -489,7 +489,7 @@ namespace MultiAlignRogue
             this.UpdateDatasets();
             this.clusterViewFactory = new ClusterViewFactory(this.Analysis.DataProviders, rogueProject.LayoutFilePath);
             this.FeatureFindingSettingsViewModel = new FeatureFindingSettingsViewModel(this.Analysis, this.featureCache);
-            this.AlignmentSettingsViewModel = new AlignmentSettingsViewModel(this.Analysis, this.featureCache);
+            this.AlignmentSettingsViewModel = new AlignmentSettingsViewModel(this.Analysis, this.featureCache, this.Datasets);
             this.ClusterSettingsViewModel = new ClusterSettingsViewModel(this.Analysis, this.clusterViewFactory)
             {
                 Datasets = this.Datasets

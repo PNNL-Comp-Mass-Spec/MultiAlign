@@ -170,6 +170,9 @@
     <Compile Include="Alignment\AlignmentViewModel.cs" />
     <Compile Include="Alignment\IAlignmentWindowFactory.cs" />
     <Compile Include="Alignment\LCMSFeatureAligner.cs" />
+    <Compile Include="Alignment\AlignmentSettings.xaml.cs">
+      <DependentUpon>AlignmentSettings.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Clustering\ChargeStateDistributionWindow.xaml.cs">
       <DependentUpon>ChargeStateDistributionWindow.xaml</DependentUpon>
     </Compile>
@@ -204,6 +207,7 @@
     <Compile Include="Utils\PlotViewModelBase.cs" />
     <Compile Include="Utils\Throttler.cs" />
     <Compile Include="ViewModels\ChargeStateViewModel.cs" />
+    <Compile Include="ViewModels\DatasetInformationViewModel.cs" />
     <Compile Include="ViewModels\UMCLightViewModel.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
@@ -218,6 +222,10 @@
     </Compile>
     <Compile Include="RogueProject.cs" />
     <Page Include="Alignment\AlignmentView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Alignment\AlignmentSettings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

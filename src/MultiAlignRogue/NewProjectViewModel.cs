@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using MultiAlignRogue.ViewModels;
 using Ookii.Dialogs.Wpf;
 
 namespace MultiAlignRogue
@@ -13,7 +14,6 @@ namespace MultiAlignRogue
     using GalaSoft.MvvmLight.Command;
 
     using MultiAlign.Data;
-    using MultiAlign.ViewModels.Datasets;
 
     using MultiAlignCore.Algorithms.Options;
     using MultiAlignCore.Data.MetaData;

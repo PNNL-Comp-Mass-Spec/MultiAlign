@@ -15,11 +15,10 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using MultiAlignCore.Data.MetaData;
+using MultiAlignRogue.ViewModels;
 
 namespace MultiAlignRogue
 {
-    using MultiAlign.ViewModels.Datasets;
-
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>

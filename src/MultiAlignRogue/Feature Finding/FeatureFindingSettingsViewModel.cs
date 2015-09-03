@@ -5,6 +5,7 @@ using InformedProteomics.Backend.Utils;
 using MultiAlignCore.Algorithms.Clustering;
 using MultiAlignCore.Data.Features;
 using MultiAlignCore.Extensions;
+using MultiAlignRogue.ViewModels;
 using NHibernate.Util;
 
 namespace MultiAlignRogue.Feature_Finding
@@ -20,7 +21,6 @@ namespace MultiAlignRogue.Feature_Finding
     using GalaSoft.MvvmLight.Messaging;
 
     using MultiAlign.Data;
-    using MultiAlign.ViewModels.Datasets;
 
     using MultiAlignCore.Data;
     using MultiAlignCore.Data.MetaData;

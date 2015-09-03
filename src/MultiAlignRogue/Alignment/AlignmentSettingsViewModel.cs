@@ -7,6 +7,7 @@ using MultiAlignCore.Data.MassTags;
 using MultiAlignCore.Data.MetaData;
 using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.MTDB;
+using MultiAlignRogue.ViewModels;
 
 namespace MultiAlignRogue.Alignment
 {
@@ -22,7 +23,6 @@ namespace MultiAlignRogue.Alignment
     using GalaSoft.MvvmLight.Messaging;
 
     using MultiAlign.Data;
-    using MultiAlign.ViewModels.Datasets;
 
     using MultiAlignCore.Algorithms;
     using MultiAlignCore.Data;
@@ -54,11 +54,13 @@ namespace MultiAlignRogue.Alignment
 
         public AlignmentSettingsViewModel(MultiAlignAnalysis analysis,
                                           FeatureLoader featureCache,
+                                          ObservableCollection<DatasetInformationViewModel> datasets,
                                           IAlignmentWindowFactory alignmentWindowFactory = null,
                                           IProgress<int> progressReporter = null)
         {
             this.analysis = analysis;
             this.featureCache = featureCache;
+            this.Datasets = datasets;
             this.alignmentWindowFactory = alignmentWindowFactory ?? new AlignmentViewFactory();
             this.progress = progressReporter ?? new Progress<int>();
             this.aligner = new LCMSFeatureAligner();
@@ -80,7 +82,7 @@ namespace MultiAlignRogue.Alignment
             this.AlignCommand = new RelayCommand(this.AsyncAlign, () => this.selectedDatasets != null &&
                                                                                   this.selectedDatasets.Count > 0 &&
                                                                                   this.selectedDatasets.Any(file => !file.DoingWork));
-            this.DisplayAlignmentCommand = new RelayCommand(this.DisplayAlignment, () => this.selectedDatasets.Any(file => file.IsAligned)); //file => file.IsAligned && !file.Dataset.IsBaseline
+            this.DisplayAlignmentCommand = new RelayCommand(this.DisplayAlignment, () => this.selectedDatasets.Any(file => file.IsAligned && this.alignmentInformation.Any(data => data.DatasetID == file.DatasetId))); //file => file.IsAligned && !file.Dataset.IsBaseline
             this.SelectAMTCommand = new RelayCommand(this.AsyncSelectAMT, () => this.ShouldAlignToAMT);
             this.ShouldAlignToBaseline = true;
             this.ShouldAlignToAMT = false;
@@ -95,6 +97,8 @@ namespace MultiAlignRogue.Alignment
         public ObservableCollection<FeatureAlignmentType> AlignmentAlgorithms { get; private set; }
 
         public ObservableCollection<AlignmentType> CalibrationOptions { get; private set; }
+
+        public ObservableCollection<DatasetInformationViewModel> Datasets { get; private set; }
 
         public bool ShouldAlignToBaseline
         {
@@ -252,7 +256,7 @@ namespace MultiAlignRogue.Alignment
                     alignment = this.aligner.AlignToDatabase(ref features, file.Dataset, this.analysis.MassTagDatabase);
                 }
                 //Check if there is information from a previous alignment for this dataset. If so, replace it. If not, just add the new one.
-                var priorAlignment = from x in this.alignmentInformation where x.DatasetID == alignment.DatasetID select x;
+                var priorAlignment = this.alignmentInformation.Where(x => x.DatasetID == alignment.DatasetID);
                 if (priorAlignment.Any())
                 {
                     this.alignmentInformation.Remove(priorAlignment.Single());
@@ -268,8 +272,10 @@ namespace MultiAlignRogue.Alignment
                 ThreadSafeDispatcher.Invoke(() => this.AlignCommand.RaiseCanExecuteChanged());
                 ThreadSafeDispatcher.Invoke(() => this.DisplayAlignmentCommand.RaiseCanExecuteChanged());
             }
-            if (ShouldAlignToBaseline) { this.SelectedBaseline.DatasetState = DatasetInformationViewModel.DatasetStates.Aligned; }
-            
+            if (ShouldAlignToBaseline)
+            {
+                this.SelectedBaseline.DatasetState = DatasetInformationViewModel.DatasetStates.Aligned;
+            }
 
         }
 
@@ -278,7 +284,10 @@ namespace MultiAlignRogue.Alignment
         private void AsyncSelectAMT()
         {
             ThreadSafeDispatcher.Invoke(() => SelectAMT());
-            ThreadSafeDispatcher.Invoke(() => AsyncAddMassTags());
+            if (this.SelectedDatabaseServer != null)
+            {
+                ThreadSafeDispatcher.Invoke(() => AsyncAddMassTags());
+            }
         }
 
         private void SelectAMT()

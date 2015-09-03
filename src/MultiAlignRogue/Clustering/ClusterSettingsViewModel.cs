@@ -1,11 +1,11 @@
 ﻿using System.Collections.ObjectModel;
 using GalaSoft.MvvmLight.Messaging;
 using MultiAlign.Data;
-using MultiAlign.ViewModels.Datasets;
 using MultiAlignCore.Algorithms.Clustering;
 using MultiAlignCore.Algorithms.Distance;
 using MultiAlignCore.Data.Features;
 using MultiAlignCore.Data.MetaData;
+using MultiAlignRogue.ViewModels;
 using NHibernate.Util;
 
 namespace MultiAlignRogue.Clustering

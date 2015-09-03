@@ -100,7 +100,7 @@ namespace MultiAlignCore.IO.Hibernate
         public virtual void AddAll(ICollection<T> tCollection, IProgress<ProgressData> progress = null)
         {
             progress = progress ?? new Progress<ProgressData>();
-            var progressStep = (int)(0.01 * tCollection.Count);
+            var progressStep = (int)Math.Ceiling(0.01 * tCollection.Count);
             using (var session = GetSession())
             {
                 using (var transaction = session.BeginTransaction())
@@ -132,7 +132,7 @@ namespace MultiAlignCore.IO.Hibernate
         public virtual void AddAllStateless(ICollection<T> tCollection, IProgress<ProgressData> progress = null)
         {
             progress = progress ?? new Progress<ProgressData>();
-            var progressStep = (int)(0.01 * tCollection.Count);
+            var progressStep = (int)Math.Ceiling(0.01 * tCollection.Count);
             using (var session = GetStatelessSession())
             {
                 using (var transaction = session.BeginTransaction())

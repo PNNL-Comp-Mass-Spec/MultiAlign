@@ -4,6 +4,7 @@
         xmlns:multiAlignRogue="clr-namespace:MultiAlignRogue"
         xmlns:utils="clr-namespace:MultiAlignRogue.Utils"
         xmlns:featureFinding="clr-namespace:MultiAlignRogue.Feature_Finding"
+        xmlns:alignment="clr-namespace:MultiAlignRogue.Alignment"
         Title="{Binding WindowTitle}" Height="600" Width="1100" x:Name="RogueMainWindow">
     <Window.DataContext>
         <multiAlignRogue:MainViewModel/>
@@ -35,7 +36,7 @@
             </MenuItem>
         </Menu>
         <!--<ProgressBar HorizontalAlignment="Right" Margin="0,0,10,19" Width="90" Height="20" VerticalAlignment="Bottom" Value="{Binding ProgressTracker, Mode = OneWay}"/> -->
-        <DataGrid Name="FileSelectionDataGrid" Grid.Column="0" HorizontalAlignment="Stretch" Margin="10,55,10,10"
+        <DataGrid Name="FileSelectionDataGrid" Grid.Column="0" HorizontalAlignment="Stretch" Margin="0,53,20,12"
                   AutoGenerateColumns="False" CanUserReorderColumns="False" CanUserAddRows="False" 
                   ItemsSource="{Binding Datasets, UpdateSourceTrigger=PropertyChanged}" SelectionChanged="DataGrid_SelectionChanged">
             <DataGrid.Columns>
@@ -85,42 +86,7 @@
                 <featureFinding:FeatureFindingSettings Margin="5" />
             </TabItem>
             <TabItem Header="2. Alignment" HorizontalAlignment="Left" DataContext="{Binding AlignmentSettingsViewModel, UpdateSourceTrigger=PropertyChanged}">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="22*"/>
-                        <ColumnDefinition Width="51*"/>
-                    </Grid.ColumnDefinitions>
-                    <RadioButton Name="SelectBaseline" GroupName="ShouldAlignToBaseline" IsChecked="{Binding ShouldAlignToBaseline}" Margin="12,32,102,0" ToolTip="Align to a Baseline Dataset" Height="14" VerticalAlignment="Top"/>
-                    <RadioButton Name="SelectAMT" GroupName="ShouldAlignToBaseline" IsChecked="{Binding ShouldAlignToAMT}" Margin="10,88,103,0" ToolTip="Align to an AMT Tag Database" Height="14" VerticalAlignment="Top"/>
-                    <Label Content="Baseline" Margin="39,0,188,0" Grid.Column="1" Height="24" VerticalAlignment="Top"/>
-                    <ComboBox Margin="37,24,10,0" Grid.ColumnSpan="2" DisplayMemberPath="Dataset.DatasetName" 
-                              ItemsSource="{Binding DataContext.Datasets, ElementName=RogueMainWindow}"
-                              SelectedItem="{Binding SelectedBaseline, Mode=TwoWay}" Height="22" VerticalAlignment="Top" 
-                              IsEnabled="{Binding ShouldAlignToBaseline, UpdateSourceTrigger=PropertyChanged}"/>
-
-                    <TextBox Grid.ColumnSpan="2" HorizontalAlignment="Left" Height="25" Margin="37,82,0,0" TextWrapping="Wrap" IsReadOnly="True" IsEnabled="{Binding ShouldAlignToAMT, UpdateSourceTrigger=PropertyChanged}"
-                             Text="{Binding SelectedDatabaseServer.DatabaseName, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, NotifyOnSourceUpdated=True}" VerticalAlignment="Top" Width="292"/>
-                    <Label Content="AMT Tag Database" Margin="24,54,174,0" Grid.Column="1" Height="28" VerticalAlignment="Top"/>
-                    <Button Content="Select Database" Command="{Binding SelectAMTCommand}" Grid.Column="1" HorizontalAlignment="Left" Height="25" Margin="200,81,0,0" VerticalAlignment="Top" Width="97"/>
-
-                    <Label Content="Tolerances" HorizontalAlignment="Left" Height="24" Margin="10,186,0,0" VerticalAlignment="Top" Width="77" FontWeight="Bold"/>
-                    <Label Content="Mass Tolerance" VerticalContentAlignment="Top"  HorizontalAlignment="Left" Height="28" Margin="11,208,0,0" VerticalAlignment="Top" Width="168" Grid.ColumnSpan="2"/>
-                    <TextBox HorizontalContentAlignment="Center" Height="19" Margin="117,211,0,0" TextWrapping="Wrap" VerticalAlignment="Top" 
-                             Text="{Binding MassTolerance, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" Grid.ColumnSpan="2" HorizontalAlignment="Left" Width="60"/>
-                    <Label Content="NET Tolerance" VerticalContentAlignment="Top"  HorizontalAlignment="Left" Height="28" Margin="11,228,0,0" VerticalAlignment="Top" Width="168" Grid.ColumnSpan="2"/>
-                    <TextBox HorizontalContentAlignment="Center" Height="19" Margin="117,232,0,0" TextWrapping="Wrap" VerticalAlignment="Top" 
-                             Text="{Binding NetTolerance, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" Grid.ColumnSpan="2" HorizontalAlignment="Left" Width="60"/>
-                    <Label Content="Alignment Algorithm" HorizontalContentAlignment="Left" Margin="151,186,5,0" FontWeight="Bold" Grid.Column="1" Height="28" VerticalAlignment="Top"/>
-                    <ComboBox Margin="142,215,14,0" Grid.Column="1" SelectedItem="{Binding SelectedAlignmentAlgorithm}"
-                              ItemsSource="{Binding AlignmentAlgorithms, UpdateSourceTrigger=PropertyChanged}" Height="22" VerticalAlignment="Top"/>
-                    <Label Content="Calibration Method" HorizontalContentAlignment="Left" Margin="150,236,6,0" FontWeight="Bold" Grid.Column="1" Height="28" VerticalAlignment="Top"/>
-                    <ComboBox Margin="142,265,14,0" Grid.Column="1" SelectedItem="{Binding SelectedCalibrationType}"
-                              ItemsSource="{Binding CalibrationOptions}" Height="22" VerticalAlignment="Top"/>
-                    <Button Content="Align Datasets" HorizontalAlignment="Left" Margin="12,0,0,10" Width="110" Command="{Binding AlignCommand}" Height="24" VerticalAlignment="Bottom"/>
-                    <Button Content="Display Alignment" Grid.Column="1" Margin="0,0,14,10" Command="{Binding DisplayAlignmentCommand}" HorizontalAlignment="Right" Width="108" Height="24" VerticalAlignment="Bottom"/>
-
-
-                </Grid>
+                <alignment:AlignmentSettings Margin="5" />
             </TabItem>
             <TabItem Header="3. Clustering" DataContext="{Binding ClusterSettingsViewModel}">
                 <Grid>
