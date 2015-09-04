@@ -62,7 +62,7 @@ namespace MultiAlignCore.Algorithms.Clustering
 		/// <returns>List of UMC clusters.</returns>
         public List<U> Cluster(List<T> data, IProgress<ProgressData> progress = null)
 		{
-			return Cluster(data, new List<U>());
+			return Cluster(data, new List<U>(), progress);
 		}
 
 
@@ -88,7 +88,10 @@ namespace MultiAlignCore.Algorithms.Clustering
 			 * through this list partitioning the data into blocks of UMC's based on a mass tolerance.
 			 * When it finds gaps larger or equal to the mass (ppm) tolerance specified by the user,
 			 * it will process the data before the gap (a block) until the current index of the features in question.
-			 */  
+			 */
+
+            progress = progress ?? new Progress<ProgressData>();
+            var progressData = new ProgressData();
 
 			// Make sure we have data to cluster first.
 			if (data == null)
@@ -163,6 +166,9 @@ namespace MultiAlignCore.Algorithms.Clustering
 
 					startUMCIndex = i + 1;
 				}
+
+                var progressPercent = (100.0 * i) / totalFeatures;
+			    progress.Report(progressData.UpdatePercent(progressPercent));
 			}
 
 			// Make sure that we cluster what is left over.

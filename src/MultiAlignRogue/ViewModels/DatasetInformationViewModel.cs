@@ -130,6 +130,11 @@ namespace MultiAlignRogue.ViewModels
                         this.StateChanged(this, EventArgs.Empty);
                     }
 
+                    this.ShouldShowProgress = (value == DatasetStates.FindingFeatures) ||
+                                              (value == DatasetStates.PersistingFeatures) ||
+                                              (value == DatasetStates.Aligning) ||
+                                              (value == DatasetStates.PersistingAlignment);
+
                     this.RaisePropertyChanged("FindingFeatureLabelColor");
                     this.RaisePropertyChanged("AligningLabelColor");
                     this.RaisePropertyChanged("ClusterLabelColor");
@@ -310,6 +315,20 @@ namespace MultiAlignRogue.ViewModels
                 {
                     this.progress = value;
                     this.RaisePropertyChanged("Progress");
+                }
+            }
+        }
+
+        private bool shouldShowProgress;
+        public bool ShouldShowProgress
+        {
+            get { return this.shouldShowProgress; }
+            set
+            {
+                if (this.shouldShowProgress != value)
+                {
+                    this.shouldShowProgress = value;
+                    this.RaisePropertyChanged();
                 }
             }
         }

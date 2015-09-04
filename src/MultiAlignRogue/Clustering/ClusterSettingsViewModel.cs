@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using GalaSoft.MvvmLight.Messaging;
+using InformedProteomics.Backend.Utils;
 using MultiAlign.Data;
 using MultiAlignCore.Algorithms.Clustering;
 using MultiAlignCore.Algorithms.Distance;
@@ -53,6 +54,7 @@ namespace MultiAlignRogue.Clustering
                                         IClusterViewFactory clusterViewFactory = null,
                                         IProgress<int> progressReporter = null)
         {
+            this.progress = progressReporter ?? new Progress<int>();
             this.analysis = analysis;
             this.Datasets = datasets;
             this.options = analysis.Options;
@@ -119,6 +121,36 @@ namespace MultiAlignRogue.Clustering
             }
         }
 
+        private bool shouldShowProgress;
+
+        public bool ShouldShowProgress
+        {
+            get { return this.shouldShowProgress; }
+            set
+            {
+                if (this.shouldShowProgress != value)
+                {
+                    this.shouldShowProgress = value;
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
+
+        private double progressPercent;
+
+        public double ProgressPercent
+        {
+            get { return this.progressPercent; }
+            set
+            {
+                if (this.progressPercent != value)
+                {
+                    this.progressPercent = value;
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
+
         public async void AsyncClusterFeatures()
         {
             await Task.Run(() => this.ClusterFeatures());
@@ -128,7 +160,12 @@ namespace MultiAlignRogue.Clustering
 
         public void ClusterFeatures()
         {
-            
+            IProgress<ProgressData> internalProgress = new Progress<ProgressData>(pd =>
+            {
+                this.progress.Report((int)pd.Percent);
+                this.ProgressPercent = pd.Percent;
+            });
+
             this.algorithms = this.builder.GetAlgorithmProvider(this.options);
             var clusterer = this.algorithms.Clusterer;
             clusterer.Parameters = LcmsClusteringOptions.ConvertToOmics(this.options.LcmsClusteringOptions);
@@ -149,13 +186,27 @@ namespace MultiAlignRogue.Clustering
             ThreadSafeDispatcher.Invoke(this.ClusterFeaturesCommand.RaiseCanExecuteChanged);
             ThreadSafeDispatcher.Invoke(this.DisplayClustersCommand.RaiseCanExecuteChanged);
 
+            this.ShouldShowProgress = true;
+
             // Here we see if we need to separate the charge...
             // IMS is said to require charge separation 
             if (!this.analysis.Options.LcmsClusteringOptions.ShouldSeparateCharge)
             {
-                var features = this.featureCache.FindAll();
-                var clusters = new List<UMCClusterLight>();
-                clusters = clusterer.Cluster(features, clusters);
+                var progData = new ProgressData { IsPartialRange = true, MaxPercentage = 45 };
+                IProgress<ProgressData> clusterProgress =
+                    new Progress<ProgressData>(pd => internalProgress.Report(progData.UpdatePercent(pd.Percent)));
+
+                var features = new List<UMCLight>();
+                int i = 0;
+                var datasets = this.Datasets.Where(ds => ds.FeaturesFound).ToList();
+                foreach (var dataset in datasets)
+                {
+                    features.AddRange(this.featureCache.FindByDatasetId(dataset.DatasetId));
+                    clusterProgress.Report(progData.UpdatePercent((100.0 * ++i) / datasets.Count));
+                }
+
+                progData.StepRange(50);
+                var clusters = clusterer.Cluster(features, clusterProgress);
                 foreach (var cluster in clusters)
                 {
                     cluster.Id = clusterCount++;
@@ -182,8 +233,11 @@ namespace MultiAlignRogue.Clustering
                 ThreadSafeDispatcher.Invoke(this.ClusterFeaturesCommand.RaiseCanExecuteChanged);
                 ThreadSafeDispatcher.Invoke(this.DisplayClustersCommand.RaiseCanExecuteChanged);
 
-                providers.ClusterCache.AddAll(clusters);
-                providers.FeatureCache.UpdateAll(features);
+                progData.StepRange(60);
+                providers.ClusterCache.AddAll(clusters, clusterProgress);
+
+                progData.StepRange(100);
+                providers.FeatureCache.UpdateAll(features, clusterProgress);
 
                 foreach (var dataset in this.Datasets)
                 {
@@ -199,19 +253,24 @@ namespace MultiAlignRogue.Clustering
             else
             {
                 var maxChargeState = this.featureCache.FindMaxCharge();
+                var clusterProgress = new Progress<ProgressData>();
+                var progData = new ProgressData { IsPartialRange = true, MaxPercentage = 0 };
 
                 /*
                  * Here we cluster all charge states separately.  Probably IMS Data.
                  */
                 for (var chargeState = 1; chargeState <= maxChargeState; chargeState++)
                 {
+                    var maxPercent = ((100.0 * chargeState) / maxChargeState);
+                    var maxFirstStep = (maxPercent - progData.MaxPercentage) / 2;
+                    progData.StepRange(maxFirstStep);
                     var features = this.featureCache.FindByCharge(chargeState);
                     if (features.Count < 1)
                     {
                         break;
                     }
 
-                    var clusters = clusterer.Cluster(features);
+                    var clusters = clusterer.Cluster(features, clusterProgress);
                     foreach (var cluster in clusters)
                     {
                         cluster.Id = clusterCount++;
@@ -235,11 +294,15 @@ namespace MultiAlignRogue.Clustering
                         }
                     }
 
+                    progData.StepRange((maxPercent - maxFirstStep) / 3);
+                    this.analysis.DataProviders.ClusterCache.AddAll(this.analysis.Clusters, clusterProgress);
+
+                    progData.StepRange(maxPercent);
+                    this.analysis.DataProviders.FeatureCache.UpdateAll(features, clusterProgress);
+
                     ThreadSafeDispatcher.Invoke(this.ClusterFeaturesCommand.RaiseCanExecuteChanged);
                     ThreadSafeDispatcher.Invoke(this.DisplayClustersCommand.RaiseCanExecuteChanged);
 
-                    this.analysis.DataProviders.ClusterCache.AddAll(clusters);
-                    this.analysis.DataProviders.FeatureCache.UpdateAll(features);
                 }
 
                 this.analysis.Clusters = this.analysis.DataProviders.ClusterCache.FindAll();
@@ -255,6 +318,8 @@ namespace MultiAlignRogue.Clustering
                 ThreadSafeDispatcher.Invoke(this.ClusterFeaturesCommand.RaiseCanExecuteChanged);
                 ThreadSafeDispatcher.Invoke(this.DisplayClustersCommand.RaiseCanExecuteChanged);
             }
+
+            this.ShouldShowProgress = false;
         }
 
         public void DisplayFeatures()

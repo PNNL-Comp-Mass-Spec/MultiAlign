@@ -40,6 +40,8 @@ namespace MultiAlignCore.Algorithms.Clustering
         /// <returns></returns>
         public List<U> Cluster(List<T> rawMSFeatures, IProgress<ProgressData> progress = null)
         {
+            progress = progress ?? new Progress<ProgressData>();
+            var progressData = new ProgressData();
             var centroidType  = ClusterCentroidRepresentation.Mean;
             List<U> features                            = null;
             
@@ -128,6 +130,7 @@ namespace MultiAlignCore.Algorithms.Clustering
                     }
                 }
                 currentIndex++;
+                progress.Report(progressData.UpdatePercent((100.0 * currentIndex) / N));
             }
 
             features = new List<U>();

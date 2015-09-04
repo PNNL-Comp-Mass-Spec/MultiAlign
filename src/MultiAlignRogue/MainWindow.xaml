@@ -69,7 +69,7 @@
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <Grid>
-                                        <ProgressBar Value="{Binding Progress}" Visibility="{Binding DoingWork, Converter={StaticResource BoolToVis}}" />
+                                        <ProgressBar Value="{Binding Progress}" Visibility="{Binding ShouldShowProgress, Converter={StaticResource BoolToVis}}" />
                                         <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Dataset.DatasetName}" />
                                     </Grid>
                                 </DataTemplate>
@@ -109,18 +109,45 @@
                     <alignment:AlignmentSettings Margin="5" />
                 </TabItem>
                 <TabItem Header="3. Clustering" DataContext="{Binding ClusterSettingsViewModel}">
-                    <Grid>
-                        <Label Content="Clustering Method" HorizontalContentAlignment="Left" Height="28" VerticalAlignment="Top" Margin="10,11,0,0" Width="150" HorizontalAlignment="Left" FontWeight="Bold"/>
-                        <ComboBox Margin="10,37,278,0" SelectedItem="{Binding SelectedLcmsFeatureClusteringAlgorithm}"
-                              ItemsSource="{Binding ClusteringMethods}" Height="22" VerticalAlignment="Top"/>
-                        <Label Content="Distance Function" Margin="10,62,298,0" FontWeight="Bold" Height="26" VerticalAlignment="Top"/>
-                        <ComboBox Margin="10,88,278,0" SelectedItem="{Binding SelectedDistanceFunction}" ItemsSource="{Binding DistanceMetrics}" Height="22" VerticalAlignment="Top"/>
-                        <Label Content="Centroid Representation" Margin="275,11,13,0" FontWeight="Bold" Height="26" VerticalAlignment="Top"/>
-                        <ComboBox Margin="275,37,13,0" SelectedItem="{Binding SelectedCentroidMethod}" ItemsSource="{Binding CentroidRepresentations}" Height="22" VerticalAlignment="Top"/>
-                        <CheckBox Content="Separate by Charge" Margin="275,75,25,0" FontWeight="Bold" Height="22" VerticalAlignment="Top" 
-                              IsChecked="{Binding ShouldSeparateByCharge, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                        <Button Content="Cluster Features" Margin="12,0,323,10" Height="24" Command="{Binding ClusterFeaturesCommand}" VerticalAlignment="Bottom"/>
-                        <Button Content="View Clusters" Margin="322,0,13,10" Height="24" Command="{Binding DisplayClustersCommand}" VerticalAlignment="Bottom"/>
+                    <Grid Margin="5">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="20" />
+                            <RowDefinition Height="25" />
+                            <RowDefinition Height="20" />
+                            <RowDefinition Height="20" />
+                            <RowDefinition Height="25" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="25" />
+                            <RowDefinition Height="5" />
+                            <RowDefinition Height="25" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="50*" />
+                            <ColumnDefinition Width="3" />
+                            <ColumnDefinition Width=" 50*" />
+                        </Grid.ColumnDefinitions>
+                        
+                        <!-- Clustering Method -->
+                        <TextBlock Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center" Text="Clustering Method" FontWeight="Bold">Clustering Method</TextBlock>
+                        <ComboBox Grid.Row="1" Grid.Column="0" SelectedItem="{Binding SelectedLcmsFeatureClusteringAlgorithm}"
+                              ItemsSource="{Binding ClusteringMethods}" Height="22" />
+                        
+                        <!-- Distance Function -->
+                        <TextBlock Grid.Row="0" Grid.Column="2" FontWeight="Bold" HorizontalAlignment="Center">Distance Function</TextBlock>
+                        <ComboBox Grid.Row="1" Grid.Column="2" SelectedItem="{Binding SelectedDistanceFunction}" ItemsSource="{Binding DistanceMetrics}" />
+                        
+                        <!-- Centroid Representation -->
+                        <TextBlock Grid.Row="3" Grid.Column="0"  FontWeight="Bold" HorizontalAlignment="Center">Centroid Representation</TextBlock>
+                        <ComboBox Grid.Row="4" Grid.Column="0" SelectedItem="{Binding SelectedCentroidMethod}" ItemsSource="{Binding CentroidRepresentations}" />
+
+                        <CheckBox Grid.Row="4" Grid.Column="2" Content="Separate by Charge" FontWeight="Bold" HorizontalAlignment="Center"
+                                  VerticalAlignment="Center" IsChecked="{Binding ShouldSeparateByCharge, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        
+                        <ProgressBar Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="3" Value="{Binding ProgressPercent}"
+                                     Visibility="{Binding ShouldShowProgress, Converter={StaticResource BoolToVis}}" />
+                        
+                        <Button Grid.Row="8" Grid.Column="0" Content="Cluster Features" Command="{Binding ClusterFeaturesCommand}" Width="125" HorizontalAlignment="Left" />
+                        <Button Grid.Row="8" Grid.Column="2" Content="View Clusters" Command="{Binding DisplayClustersCommand}" Width="125" HorizontalAlignment="Right" />
                     </Grid>
                 </TabItem>
             </TabControl>

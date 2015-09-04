@@ -183,17 +183,31 @@ namespace MultiAlignCore.IO.Hibernate
         ///     Update method will not save a new Object; it will only update the Object if it already exists in the Database.
         /// </summary>
         /// <param name="tCollection">Collection of Objects to be updated</param>
-        public void UpdateAll(ICollection<T> tCollection)
+        public void UpdateAll(ICollection<T> tCollection, IProgress<ProgressData> progress = null)
         {
+            progress = progress ?? new Progress<ProgressData>();
+            var progressStep = (int)Math.Ceiling(0.01 * tCollection.Count);
             using (var session = GetStatelessSession())
             {
                 using (var transaction = session.BeginTransaction())
                 {
+                    var progressData = new ProgressData { IsPartialRange = true, MaxPercentage = 95 };
+                    int i = 0;
                     foreach (var t in tCollection)
                     {
                         session.Update(t);
+
+                        if ((i > 0 && i % progressStep == 0) || i == tCollection.Count - 1)
+                        {
+                            progress.Report(progressData.UpdatePercent((100.0 * i) / tCollection.Count));
+                        }
+
+                        i++;
                     }
+
+                    progressData.StepRange(100);
                     transaction.Commit();
+                    progress.Report(progressData.UpdatePercent(100));
                 }
             }
         }
