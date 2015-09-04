@@ -3,65 +3,115 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:multiAlignRogue="clr-namespace:MultiAlignRogue"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              mc:Ignorable="d" 
              d:DesignHeight="500" d:DesignWidth="500">
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="10*"/>
-            <ColumnDefinition Width="15*"/>
-            <ColumnDefinition Width="15*"/>
-            <ColumnDefinition Width="27*"/>
-            <ColumnDefinition Width="33*"/>
-        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="25*"/>
-            <RowDefinition Height="25*"/>
-            <RowDefinition Height="25*"/>
-            <RowDefinition Height="25*"/>
-            <RowDefinition Height="128*"/>
-            <RowDefinition Height="25*"/>
-            <RowDefinition Height="25*"/>
-            <RowDefinition Height="25*"/>
-            <RowDefinition Height="25*"/>
-            <RowDefinition Height="128*"/>
-            <RowDefinition Height="38*"/>
+            <RowDefinition Height="150" />
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="75" />
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="80" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="25"/>
         </Grid.RowDefinitions>
 
-        <!-- Baseline dataset -->
-        <RadioButton Name="SelectBaseline" GroupName="ShouldAlignToBaseline" IsChecked="{Binding ShouldAlignToBaseline}" ToolTip="Align to a Baseline Dataset" Height="14" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1" Grid.Column="0" Width="12" />
-        <Label Content="Baseline" Height="24" VerticalAlignment="Top" Grid.Row="0" Grid.Column="1" />
-        <ComboBox DisplayMemberPath="Dataset.DatasetName" 
+        <!-- Alignment Baseline -->
+        <GroupBox Grid.Row="0" Grid.Column="0">
+            <GroupBox.Header>
+                <TextBlock FontWeight="Bold">Reference Dataset</TextBlock>
+            </GroupBox.Header>
+            <Grid Margin="3">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="25"/>
+                    <RowDefinition Height="25"/>
+                    <RowDefinition Height="25"/>
+                    <RowDefinition Height="25"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="30"/>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="100"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Reference Dataset -->
+                <RadioButton Name="SelectBaseline" GroupName="ShouldAlignToBaseline" IsChecked="{Binding ShouldAlignToBaseline}" ToolTip="Align to a Baseline Dataset" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1" Grid.Column="0" Width="12" />
+                <Label Content="Baseline" Height="24" VerticalAlignment="Top" Grid.Row="0" Grid.Column="1" />
+                <ComboBox DisplayMemberPath="Dataset.DatasetName" 
                               ItemsSource="{Binding Datasets}"
-                              SelectedItem="{Binding SelectedBaseline, Mode=TwoWay}" Height="22" VerticalAlignment="Top" 
-                              IsEnabled="{Binding ShouldAlignToBaseline, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="4"/>
+                              SelectedItem="{Binding SelectedBaseline, Mode=TwoWay}" VerticalAlignment="Top" 
+                              IsEnabled="{Binding ShouldAlignToBaseline, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" />
 
-        <!-- AMT Tag database -->
-        <RadioButton Name="SelectAMT" GroupName="ShouldAlignToBaseline" IsChecked="{Binding ShouldAlignToAMT}" ToolTip="Align to an AMT Tag Database" Height="14" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="3" Grid.Column="0" Width="12" />
-        <TextBox HorizontalAlignment="Left" Height="25" TextWrapping="Wrap" IsReadOnly="True" IsEnabled="{Binding ShouldAlignToAMT, UpdateSourceTrigger=PropertyChanged}"
-                             Text="{Binding SelectedDatabaseServer.DatabaseName, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, NotifyOnSourceUpdated=True}" VerticalAlignment="Top" Width="285" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="4"/>
-        <Label Content="AMT Tag Database" Margin="0,3,0,0" Height="28" VerticalAlignment="Top" Grid.Row="2" Grid.RowSpan="2" Grid.Column="1" Grid.ColumnSpan="2" />
-        <Button Content="Select Database" Command="{Binding SelectAMTCommand}" HorizontalAlignment="Right" Height="25" VerticalAlignment="Top" Width="100" Grid.Row="3" Grid.Column="4"/>
-
+                <!-- AMT Tag database -->
+                <RadioButton Name="SelectAMT" GroupName="ShouldAlignToBaseline" IsChecked="{Binding ShouldAlignToAMT}" ToolTip="Align to an AMT Tag Database" Height="14" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="3" Grid.Column="0" Width="12" />
+                <Label Content="AMT Tag Database" Margin="0,3,0,0" Grid.Row="2" Grid.RowSpan="2" Grid.Column="1" Grid.ColumnSpan="2" />
+                <TextBox TextWrapping="Wrap" IsReadOnly="True" IsEnabled="{Binding ShouldAlignToAMT, UpdateSourceTrigger=PropertyChanged}"
+                         Text="{Binding SelectedDatabaseServer.DatabaseName, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, NotifyOnSourceUpdated=True}"
+                         Grid.Row="3" Grid.Column="1" Margin="0,0,5,0" />
+                <Button Content="Select Database" Command="{Binding SelectAMTCommand}" Grid.Row="3" Grid.Column="2"/>
+            </Grid>
+        </GroupBox>
+        
         <!-- Tolerances -->
-        <Label Content="Tolerances" HorizontalAlignment="Left" Height="24" VerticalAlignment="Top" Width="77" FontWeight="Bold" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="5"/>
-        <Label Content="Mass Tolerance" VerticalContentAlignment="Top"  HorizontalAlignment="Left" Height="28" VerticalAlignment="Top" Width="113" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="6" Grid.RowSpan="2"/>
-        <TextBox HorizontalContentAlignment="Center" Height="19" TextWrapping="Wrap" VerticalAlignment="Top" Margin="0,3,0,0" 
-                             Text="{Binding MassTolerance, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Width="60" Grid.Column="2" Grid.Row="6"/>
-        <Label Content="NET Tolerance" VerticalContentAlignment="Top"  HorizontalAlignment="Left" Height="28" VerticalAlignment="Top" Width="113" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="7" Grid.RowSpan="2" />
-        <TextBox HorizontalContentAlignment="Center" Height="19" TextWrapping="Wrap" VerticalAlignment="Top" Margin="0,3,0,0" 
-                             Text="{Binding NetTolerance, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Width="60" Grid.Column="2" Grid.Row="7"/>
+        <GroupBox Grid.Row="2">
+            <GroupBox.Header>
+                <TextBlock FontWeight="Bold">Tolerances</TextBlock>
+            </GroupBox.Header>
+            <Grid Margin="3">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="25" />
+                    <RowDefinition Height="25" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="50*" />
+                    <ColumnDefinition Width="3" />
+                    <ColumnDefinition Width="50*" />
+                </Grid.ColumnDefinitions>
+
+                <!-- Mass Tolerance -->
+                <Label Content="Mass Tolerance" Grid.Column="0" FontWeight="Bold" HorizontalAlignment="Center" />
+                <xctk:DoubleUpDown HorizontalContentAlignment="Center" Grid.Row="1" Grid.Column="0" Minimum="0" Increment="1.0"
+                                   Value="{Binding MassTolerance, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
+                
+                <!-- Net Tolerance -->
+                <Label Content="NET Tolerance" HorizontalAlignment="Center" Grid.Row="0" Grid.Column="2" FontWeight="Bold" />
+                <xctk:DoubleUpDown HorizontalContentAlignment="Center" Grid.Row="1" Grid.Column="2" Minimum="0" Increment="0.1" Maximum="1.0"
+                                   Value="{Binding NetTolerance, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
+
+            </Grid>
+        </GroupBox>
 
         <!-- Alignment Algorithm -->
-        <Label Content="Alignment Algorithm" HorizontalContentAlignment="Left" FontWeight="Bold" Height="28" VerticalAlignment="Top" Grid.Column="4" Grid.Row="5" Grid.RowSpan="2" />
-        <ComboBox Margin="0,1,0,0" SelectedItem="{Binding SelectedAlignmentAlgorithm}"
-                              ItemsSource="{Binding AlignmentAlgorithms, UpdateSourceTrigger=PropertyChanged}" Height="22" VerticalAlignment="Top" Grid.Column="4" Grid.Row="6" />
-        <Label Content="Calibration Method" HorizontalContentAlignment="Left" Margin="0,0,0,0" FontWeight="Bold" Height="28" VerticalAlignment="Top" Grid.Column="4" Grid.Row="7" Grid.RowSpan="2" />
-        <ComboBox Margin="0,1,0,0" SelectedItem="{Binding SelectedCalibrationType}"
-                              ItemsSource="{Binding CalibrationOptions}" Height="22" VerticalAlignment="Top" Grid.Column="4" Grid.Row="8" />
+        <GroupBox Grid.Row="4">
+            <GroupBox.Header>
+                <TextBlock FontWeight="Bold">Algorithm</TextBlock>
+            </GroupBox.Header>
+            <Grid Margin="3">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="25" />
+                    <RowDefinition Height="25" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="50*" />
+                    <ColumnDefinition Width="3" />
+                    <ColumnDefinition Width="50*" />
+                </Grid.ColumnDefinitions>
+
+                <!-- Alignment Algorithm -->
+                <Label Content="Alignment Algorithm" FontWeight="Bold" HorizontalAlignment="Center" Grid.Row="0" Grid.Column="0" />
+                <ComboBox SelectedItem="{Binding SelectedAlignmentAlgorithm}" Grid.Row="1" Grid.Column="0"
+                              ItemsSource="{Binding AlignmentAlgorithms, UpdateSourceTrigger=PropertyChanged}" />
+                
+                <!-- Calibration Method -->
+                <Label Content="Calibration Method" FontWeight="Bold"  HorizontalContentAlignment="Center" Grid.Row="0" Grid.Column="2" />
+                <ComboBox SelectedItem="{Binding SelectedCalibrationType}" Grid.Row="1" Grid.Column="2"
+                          ItemsSource="{Binding CalibrationOptions}" />
+            </Grid>
+        </GroupBox>
 
         <!-- Buttons -->
-        <Button Content="Align Datasets" HorizontalAlignment="Left" Margin="5,0,0,5" Width="110" Command="{Binding AlignCommand}" Height="24" VerticalAlignment="Bottom" Grid.Column="0" Grid.Row="10" Grid.ColumnSpan="3"/>
-        <Button Content="Display Alignment" Margin="0,0,5,5" Command="{Binding DisplayAlignmentCommand}" HorizontalAlignment="Right" Width="108" Height="24" VerticalAlignment="Bottom" Grid.Row="10" Grid.Column="4"/>
+        <Button Content="Align Datasets" HorizontalAlignment="Left" Width="125" Command="{Binding AlignCommand}" Grid.Row="6" />
+        <Button Content="Display Alignment" Command="{Binding DisplayAlignmentCommand}" HorizontalAlignment="Right" Width="125" Grid.Row="6" />
     </Grid>
 </UserControl>

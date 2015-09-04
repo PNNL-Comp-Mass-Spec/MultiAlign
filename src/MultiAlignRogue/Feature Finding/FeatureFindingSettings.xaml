@@ -176,8 +176,8 @@
                 <ColumnDefinition Width="30*" />
             </Grid.ColumnDefinitions>
 
-            <Button Grid.Column="0" HorizontalAlignment="Left" Command="{Binding FindMSFeaturesCommand}">Find Features</Button>
-            <Button Grid.Column="2" HorizontalAlignment="Right" Command="{Binding PlotMSFeaturesCommand}">Plot Features</Button>
+            <Button Grid.Column="0" HorizontalAlignment="Left" Command="{Binding FindMSFeaturesCommand}" Width="125">Find Features</Button>
+            <Button Grid.Column="2" HorizontalAlignment="Right" Command="{Binding PlotMSFeaturesCommand}" Width="125">Plot Features</Button>
         </Grid>
     </Grid>
 </UserControl>
