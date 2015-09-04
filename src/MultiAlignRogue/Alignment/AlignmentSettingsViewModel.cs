@@ -1,4 +1,5 @@
 ﻿using System.Windows.Navigation;
+using InformedProteomics.Backend.MassFeature;
 using MultiAlign.ViewModels.Databases;
 using MultiAlign.Windows.Viewers.Databases;
 using MultiAlignCore.Algorithms.Alignment.LcmsWarp;
@@ -46,8 +47,6 @@ namespace MultiAlignRogue.Alignment
 
         private AlgorithmProvider algorithms;
 
-        private IReadOnlyCollection<DatasetInformationViewModel> selectedDatasets;
-
         private DatasetInformationViewModel selectedBaseline;
 
         private List<AlignmentData> alignmentInformation;
@@ -68,7 +67,6 @@ namespace MultiAlignRogue.Alignment
             this.CalibrationOptions = new ObservableCollection<AlignmentType>(Enum.GetValues(typeof(AlignmentType)).Cast<AlignmentType>());
             this.AlignmentAlgorithms = new ObservableCollection<FeatureAlignmentType>(
                                            Enum.GetValues(typeof(FeatureAlignmentType)).Cast<FeatureAlignmentType>());
-            this.selectedDatasets = new ReadOnlyCollection<DatasetInformationViewModel>(new List<DatasetInformationViewModel>());
             this.alignmentInformation = new List<AlignmentData>();
 
             this.MessengerInstance.Register<PropertyChangedMessage<bool>>(this, args =>
@@ -90,17 +88,11 @@ namespace MultiAlignRogue.Alignment
                 }
             });
 
-            this.AlignCommand = new RelayCommand(this.AsyncAlign, () =>
-            {
-                var x = this.Datasets.Any(ds => ds.IsSelected && !ds.DoingWork && ds.FeaturesFound) &&
-                ((this.ShouldAlignToBaseline && this.SelectedBaseline != null) ||
-                 (this.ShouldAlignToAMT && analysis.MassTagDatabase != null));
-                return x;
-            });
+            this.AlignCommand = new RelayCommand(this.AsyncAlign, this.CanAlign);
             this.DisplayAlignmentCommand = new RelayCommand(
                                                             this.DisplayAlignment,
                                                             () => this.Datasets.Any(file => file.IsAligned && file.IsSelected &&
-                                                                                            this.alignmentInformation.Any(data => data.DatasetID == file.DatasetId))); //file => file.IsAligned && !file.Dataset.IsBaseline
+                                                                  this.alignmentInformation.Any(data => data.DatasetID == file.DatasetId)));
             this.SelectAMTCommand = new RelayCommand(this.AsyncSelectAMT, () => this.ShouldAlignToAMT);
             this.ShouldAlignToBaseline = true;
             this.ShouldAlignToAMT = false;
@@ -248,7 +240,7 @@ namespace MultiAlignRogue.Alignment
             var alignmentData = new AlignmentDAOHibernate();
             alignmentData.ClearAll();
          
-            var selectedFiles = this.selectedDatasets.Where(file => !file.DoingWork).ToList();
+            var selectedFiles = this.Datasets.Where(file => file.IsSelected && !file.DoingWork).ToList();
             foreach (var file in selectedFiles)
             {
                 file.DatasetState = DatasetInformationViewModel.DatasetStates.Aligning;
@@ -358,7 +350,7 @@ namespace MultiAlignRogue.Alignment
 
         private void DisplayAlignment()
         {
-            foreach (var file in (this.selectedDatasets.Where(x => x.IsAligned))) //x => x.IsAligned && !x.Dataset.IsBaseline
+            foreach (var file in (this.Datasets.Where(x => x.IsSelected && x.IsAligned))) //x => x.IsAligned && !x.Dataset.IsBaseline
             {
                 var alignment = this.alignmentInformation.Find(x => x.DatasetID == file.DatasetId);
                 if (alignment != null)
@@ -370,6 +362,17 @@ namespace MultiAlignRogue.Alignment
                     MessageBox.Show(String.Format("No alignment to show for {0}", file.Dataset.DatasetName));
                 }
             }
+        }
+
+        private bool CanAlign()
+        {
+            var selectedDatasets = this.Datasets.Where(ds => ds.IsSelected).ToList();
+            var validDatasetsSelected = selectedDatasets.Any(ds => !ds.DoingWork && ds.FeaturesFound);
+            var validBaselineSelected = this.ShouldAlignToBaseline && this.SelectedBaseline != null &&
+                                        // something other than baseline should be selected
+                                        selectedDatasets.Any(ds => ds != this.SelectedBaseline);
+            var validAmtSelected = this.ShouldAlignToAMT && analysis.MassTagDatabase != null;
+            return validDatasetsSelected && (validBaselineSelected || validAmtSelected);
         }
     }
 }

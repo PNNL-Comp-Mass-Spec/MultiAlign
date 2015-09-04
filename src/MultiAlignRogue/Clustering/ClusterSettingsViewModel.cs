@@ -23,11 +23,6 @@ namespace MultiAlignRogue.Clustering
     using MultiAlignCore.Data;
     using MultiAlignCore.IO.Features;
 
-    
-    using Remotion.Linq.Collections;
-
-    using MessageBox = System.Windows.MessageBox;
-
     public class ClusterSettingsViewModel : ViewModelBase
     {
         private readonly MultiAlignAnalysis analysis;
@@ -52,20 +47,20 @@ namespace MultiAlignRogue.Clustering
         public ObservableCollection<ClusterCentroidRepresentation> CentroidRepresentations { get; private set; }
         public ObservableCollection<LcmsFeatureClusteringAlgorithmType> ClusteringMethods { get; private set; }
 
-        private IEnumerable<DatasetInformationViewModel> datasets; 
-
-        public ClusterSettingsViewModel(MultiAlignAnalysis analysis, IClusterViewFactory clusterViewFactory = null, IProgress<int> progressReporter = null)
+        public ClusterSettingsViewModel(
+                                        MultiAlignAnalysis analysis,
+                                        ObservableCollection<DatasetInformationViewModel> datasets,
+                                        IClusterViewFactory clusterViewFactory = null,
+                                        IProgress<int> progressReporter = null)
         {
             this.analysis = analysis;
+            this.Datasets = datasets;
             this.options = analysis.Options;
             this.builder = new AlgorithmBuilder();
             this.clusterViewFactory = clusterViewFactory ?? new ClusterViewFactory(analysis.DataProviders);
 
-            this.ClusterFeaturesCommand = new RelayCommand(this.AsyncClusterFeatures, () => this.datasets != null &&
-                                                                                            this.datasets.Any());
-            this.DisplayClustersCommand = new RelayCommand(this.DisplayFeatures, () => this.datasets != null &&
-                                                                                       this.datasets.Any() &&
-                                                                                       this.datasets.All(ds => ds.DatasetState >= DatasetInformationViewModel.DatasetStates.PersistingClusters));
+            this.ClusterFeaturesCommand = new RelayCommand(this.AsyncClusterFeatures, () => this.Datasets.Any(ds => ds.FeaturesFound));
+            this.DisplayClustersCommand = new RelayCommand(this.DisplayFeatures, () => this.Datasets.Any(ds => ds.IsClustered));
 
             this.DistanceMetrics = new ObservableCollection<DistanceMetric>();
             Enum.GetValues(typeof(DistanceMetric)).Cast<DistanceMetric>().ToList().ForEach(x => this.DistanceMetrics.Add(x));
@@ -129,20 +124,7 @@ namespace MultiAlignRogue.Clustering
             await Task.Run(() => this.ClusterFeatures());
         }
 
-        public IEnumerable<DatasetInformationViewModel> Datasets
-        {
-            get { return this.datasets; }
-            set
-            {
-                if (this.datasets != value)
-                {
-                    this.datasets = value;
-                    this.ClusterFeaturesCommand.RaiseCanExecuteChanged();
-                    this.DisplayClustersCommand.RaiseCanExecuteChanged();
-                    this.RaisePropertyChanged();
-                }
-            }
-        }
+        public ObservableCollection<DatasetInformationViewModel> Datasets { get; private set; } 
 
         public void ClusterFeatures()
         {
@@ -156,7 +138,14 @@ namespace MultiAlignRogue.Clustering
             var clusterCount = 0;
             var providers = this.analysis.DataProviders;
 
-            this.datasets.ForEach(ds => ds.DatasetState = DatasetInformationViewModel.DatasetStates.Clustering);
+            foreach (var dataset in this.Datasets)
+            {
+                if (dataset.FeaturesFound)
+                {
+                    dataset.DatasetState = DatasetInformationViewModel.DatasetStates.Clustering;
+                }
+            }
+
             ThreadSafeDispatcher.Invoke(this.ClusterFeaturesCommand.RaiseCanExecuteChanged);
             ThreadSafeDispatcher.Invoke(this.DisplayClustersCommand.RaiseCanExecuteChanged);
 
@@ -182,14 +171,28 @@ namespace MultiAlignRogue.Clustering
 
                 this.analysis.Clusters = clusters;
 
-                this.datasets.ForEach(ds => ds.DatasetState = DatasetInformationViewModel.DatasetStates.PersistingClusters);
+                foreach (var dataset in this.Datasets)
+                {
+                    if (dataset.DatasetState == DatasetInformationViewModel.DatasetStates.Clustering)
+                    {
+                        dataset.DatasetState = DatasetInformationViewModel.DatasetStates.PersistingClusters;
+                    }
+                }
+
                 ThreadSafeDispatcher.Invoke(this.ClusterFeaturesCommand.RaiseCanExecuteChanged);
                 ThreadSafeDispatcher.Invoke(this.DisplayClustersCommand.RaiseCanExecuteChanged);
 
                 providers.ClusterCache.AddAll(clusters);
                 providers.FeatureCache.UpdateAll(features);
 
-                this.datasets.ForEach(ds => ds.DatasetState = DatasetInformationViewModel.DatasetStates.Clustered);
+                foreach (var dataset in this.Datasets)
+                {
+                    if (dataset.DatasetState == DatasetInformationViewModel.DatasetStates.PersistingClusters)
+                    {
+                        dataset.DatasetState = DatasetInformationViewModel.DatasetStates.Clustered;
+                    }
+                }
+
                 ThreadSafeDispatcher.Invoke(this.ClusterFeaturesCommand.RaiseCanExecuteChanged);
                 ThreadSafeDispatcher.Invoke(this.DisplayClustersCommand.RaiseCanExecuteChanged);
             }
@@ -224,7 +227,14 @@ namespace MultiAlignRogue.Clustering
 
                     this.analysis.Clusters = clusters;
 
-                    this.datasets.ForEach(ds => ds.DatasetState = DatasetInformationViewModel.DatasetStates.PersistingClusters);
+                    foreach (var dataset in this.Datasets)
+                    {
+                        if (dataset.DatasetState == DatasetInformationViewModel.DatasetStates.Clustering)
+                        {
+                            dataset.DatasetState = DatasetInformationViewModel.DatasetStates.PersistingClusters;
+                        }
+                    }
+
                     ThreadSafeDispatcher.Invoke(this.ClusterFeaturesCommand.RaiseCanExecuteChanged);
                     ThreadSafeDispatcher.Invoke(this.DisplayClustersCommand.RaiseCanExecuteChanged);
 
@@ -234,7 +244,14 @@ namespace MultiAlignRogue.Clustering
 
                 this.analysis.Clusters = this.analysis.DataProviders.ClusterCache.FindAll();
 
-                this.datasets.ForEach(ds => ds.DatasetState = DatasetInformationViewModel.DatasetStates.Clustered);
+                foreach (var dataset in this.Datasets)
+                {
+                    if (dataset.DatasetState == DatasetInformationViewModel.DatasetStates.PersistingClusters)
+                    {
+                        dataset.DatasetState = DatasetInformationViewModel.DatasetStates.Clustered;
+                    }
+                }
+
                 ThreadSafeDispatcher.Invoke(this.ClusterFeaturesCommand.RaiseCanExecuteChanged);
                 ThreadSafeDispatcher.Invoke(this.DisplayClustersCommand.RaiseCanExecuteChanged);
             }

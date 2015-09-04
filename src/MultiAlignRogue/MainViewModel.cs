@@ -96,7 +96,7 @@ namespace MultiAlignRogue
             featureCache.Providers = Analysis.DataProviders;
             this.FeatureFindingSettingsViewModel = new FeatureFindingSettingsViewModel(Analysis, featureCache, Datasets);
             this.AlignmentSettingsViewModel = new AlignmentSettingsViewModel(Analysis, featureCache, Datasets);
-            this.ClusterSettingsViewModel = new ClusterSettingsViewModel(Analysis);
+            this.ClusterSettingsViewModel = new ClusterSettingsViewModel(Analysis, Datasets);
         }
         #endregion
 
@@ -393,8 +393,6 @@ namespace MultiAlignRogue
                 viewmodel.StateChanged += (s, e) => this.SaveProject();
                 Datasets.Add(viewmodel);
             }
-
-            this.ClusterSettingsViewModel.Datasets = new List<DatasetInformationViewModel>(this.Datasets);
         }
 
         private void AddDatasets(List<InputFile> files)
@@ -479,10 +477,7 @@ namespace MultiAlignRogue
             this.clusterViewFactory = new ClusterViewFactory(this.Analysis.DataProviders, rogueProject.LayoutFilePath);
             this.FeatureFindingSettingsViewModel = new FeatureFindingSettingsViewModel(this.Analysis, this.featureCache, this.Datasets);
             this.AlignmentSettingsViewModel = new AlignmentSettingsViewModel(this.Analysis, this.featureCache, this.Datasets);
-            this.ClusterSettingsViewModel = new ClusterSettingsViewModel(this.Analysis, this.clusterViewFactory)
-            {
-                Datasets = this.Datasets
-            };
+            this.ClusterSettingsViewModel = new ClusterSettingsViewModel(this.Analysis, this.Datasets, this.clusterViewFactory);
             this.RaisePropertyChanged("Analysis");
         }
 
