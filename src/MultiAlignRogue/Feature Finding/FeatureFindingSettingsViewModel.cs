@@ -38,47 +38,65 @@ namespace MultiAlignRogue.Feature_Finding
 
         private readonly IProgress<int> progress;
 
-        private Dictionary<DatasetInformation, IList<UMCLight>> features;
+        private readonly string[] _timeOptions = { "Minutes", "Scans" };
 
-        private IReadOnlyCollection<DatasetInformationViewModel> selectedDatasets;
+        private readonly Dictionary<DatasetInformation, IList<UMCLight>> features;
 
         public FeatureFindingSettingsViewModel(
                                                MultiAlignAnalysis analysis,
                                                FeatureLoader featureCache,
+                                               ObservableCollection<DatasetInformationViewModel> datasets,
                                                IFeatureWindowFactory msFeatureWindowFactory = null,
                                                IProgress<int> progressReporter = null)
         {
             this.analysis = analysis;
             this.featureCache = featureCache;
+            this.Datasets = datasets;
             this.msFeatureWindowFactory = msFeatureWindowFactory ?? new MSFeatureViewFactory();
             this.progress = progressReporter ?? new Progress<int>();
-            this.selectedDatasets = new ReadOnlyCollection<DatasetInformationViewModel>(new List<DatasetInformationViewModel>());
             this.msFeatureWindowFactory = new MSFeatureViewFactory();
             this.features = new Dictionary<DatasetInformation, IList<UMCLight>>();
             this.MsFeatureClusterers = new ObservableCollection<LcmsFeatureClusteringAlgorithmType>(
                                        Enum.GetValues(typeof(LcmsFeatureClusteringAlgorithmType)).Cast<LcmsFeatureClusteringAlgorithmType>());
 
-            this.MessengerInstance.Register<PropertyChangedMessage<IReadOnlyCollection<DatasetInformationViewModel>>>(this, sds =>
+            // When dataset is selected/unselected, update can executes.
+            this.MessengerInstance.Register<PropertyChangedMessage<bool>>(this, args =>
             {
-                this.selectedDatasets = sds.NewValue;
-                this.FindMSFeaturesCommand.RaiseCanExecuteChanged();
-                this.PlotMSFeaturesCommand.RaiseCanExecuteChanged();
-                this.PlotAlignedFeaturesCommand.RaiseCanExecuteChanged();
+                if (args.Sender is DatasetInformationViewModel && args.PropertyName == "IsSelected")
+                {
+                    this.FindMSFeaturesCommand.RaiseCanExecuteChanged();
+                    this.PlotMSFeaturesCommand.RaiseCanExecuteChanged();
+                    this.PlotAlignedFeaturesCommand.RaiseCanExecuteChanged();   
+                }
+            });
+
+            // When dataset state changes, update can executes.
+            this.MessengerInstance.Register<PropertyChangedMessage<DatasetInformationViewModel.DatasetStates>>(this, args =>
+            {
+                if (args.Sender is DatasetInformationViewModel && args.PropertyName == "DatasetState")
+                {
+                    ThreadSafeDispatcher.Invoke(() =>
+                    {
+                        this.FindMSFeaturesCommand.RaiseCanExecuteChanged();
+                        this.PlotMSFeaturesCommand.RaiseCanExecuteChanged();
+                        this.PlotAlignedFeaturesCommand.RaiseCanExecuteChanged(); 
+                    });
+                }
             });
 
             this.FindMSFeaturesCommand = new RelayCommand(
                                         async () => await this.LoadMSFeaturesAsync(),
-                                        () => this.selectedDatasets != null && 
-                                              this.selectedDatasets.Count > 0 && 
-                                              this.selectedDatasets.Any(file => !file.IsFindingFeatures));
+                                        () => this.Datasets.Any(ds => ds.IsSelected && !ds.IsFindingFeatures));
             this.PlotMSFeaturesCommand = new RelayCommand(
                                         async () => await this.PlotMSFeatures(false), 
-                                        () => this.selectedDatasets.Any(file => file.DatasetState > DatasetInformationViewModel.DatasetStates.FindingFeatures));
+                                        () => this.Datasets.Any(ds => ds.DatasetState > DatasetInformationViewModel.DatasetStates.FindingFeatures));
 
             this.PlotAlignedFeaturesCommand = new RelayCommand(
                                         async () => await this.PlotMSFeatures(true),
-                                        () => this.selectedDatasets.Any(file => file.IsAligned));
+                                        () => this.Datasets.Any(ds => ds.IsAligned));
         }
+
+        public ObservableCollection<DatasetInformationViewModel> Datasets { get; private set; } 
 
         public ObservableCollection<LcmsFeatureClusteringAlgorithmType> MsFeatureClusterers { get; private set; } 
 
@@ -104,21 +122,9 @@ namespace MultiAlignRogue.Feature_Finding
             get { return _timeOptions; }
         }
 
-        private string[] _timeOptions = {"Minutes", "Scans"};
-
         public string TreatAsTimeOrScan
         {
-            get
-            {
-                if (FilterOnMinutes)
-                {
-                    return "Minutes";
-                }
-                else
-                {
-                    return "Scans";
-                }
-            }
+            get { return FilterOnMinutes ? "Minutes" : "Scans"; }
             set
             {
                 FilterOnMinutes = value.Equals("Minutes");
@@ -459,7 +465,7 @@ namespace MultiAlignRogue.Feature_Finding
         private void LoadFeatures()
         {
             this.featureCache.Providers = this.analysis.DataProviders;
-            var selectedFiles = this.selectedDatasets.Where(file => !file.DoingWork).ToList();
+            var selectedFiles = this.Datasets.Where(file => !file.DoingWork).Where(ds => ds.IsSelected).ToList();
             foreach (var file in selectedFiles)
             {
                 file.DatasetState = DatasetInformationViewModel.DatasetStates.FindingFeatures;
@@ -470,10 +476,7 @@ namespace MultiAlignRogue.Feature_Finding
             foreach (var file in selectedFiles)
             {
                 var progData = new ProgressData { IsPartialRange = true, MaxPercentage = 30 };
-                var progress = new Progress<ProgressData>(pd =>
-                {
-                    file.Progress = progData.UpdatePercent(pd.Percent).Percent;
-                });
+                var progress = new Progress<ProgressData>(pd => file.Progress = progData.UpdatePercent(pd.Percent).Percent);
 
                 var features = this.featureCache.LoadDataset(
                                                     file.Dataset,
@@ -517,13 +520,14 @@ namespace MultiAlignRogue.Feature_Finding
                 if (showAlignedFeatures)
                 {
                     this.msFeatureWindowFactory.CreateNewWindow(
-                        await this.GetFeatures(this.selectedDatasets.Where(file => file.IsAligned)),
+                        await this.GetFeatures(this.Datasets.Where(ds => ds.IsSelected).Where(file => file.IsAligned)),
                         true);
                 }
                 else
                 {
                     this.msFeatureWindowFactory.CreateNewWindow(
-                        await this.GetFeatures(this.selectedDatasets.Where(file => file.DatasetState > DatasetInformationViewModel.DatasetStates.FindingFeatures)),
+                        await this.GetFeatures(this.Datasets.Where(ds => ds.IsSelected)
+                                  .Where(file => file.DatasetState > DatasetInformationViewModel.DatasetStates.FindingFeatures)),
                         false);
                 }
             }

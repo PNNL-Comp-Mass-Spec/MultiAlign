@@ -76,22 +76,6 @@ namespace MultiAlignRogue.ViewModels
 
         public BaseCommand RequestRemovalCommand { get; private set; }
 
-        public bool IsSelected
-        {
-            get { return m_isSelected; }
-            set
-            {
-                if (value == m_isSelected)
-                    return;
-
-                m_isSelected = value;
-                this.RaisePropertyChanged("IsSelected");
-
-                if (Selected != null)
-                    Selected(this, null);
-            }
-        }
-
         public bool ScansBool
         {
             get { return this.Dataset.ScansBool; }
@@ -126,6 +110,7 @@ namespace MultiAlignRogue.ViewModels
             {
                 if (this.datasetState != value)
                 {
+                    var prevValue = this.datasetState;
                     this.datasetState = value;
 
                     this.IsFindingFeatures = value == DatasetInformationViewModel.DatasetStates.FindingFeatures ||
@@ -148,7 +133,7 @@ namespace MultiAlignRogue.ViewModels
                     this.RaisePropertyChanged("FindingFeatureLabelColor");
                     this.RaisePropertyChanged("AligningLabelColor");
                     this.RaisePropertyChanged("ClusterLabelColor");
-                    this.RaisePropertyChanged();
+                    this.RaisePropertyChanged("DatasetState", prevValue, value, true);
                 }
             }
         }
@@ -161,7 +146,7 @@ namespace MultiAlignRogue.ViewModels
                 if (this.Dataset.FeaturesFound != value)
                 {
                     this.Dataset.FeaturesFound = value;
-                    this.RaisePropertyChanged("FeaturesFound");
+                    this.RaisePropertyChanged();
                 }
             }
         }
@@ -174,7 +159,7 @@ namespace MultiAlignRogue.ViewModels
                 if (this.Dataset.IsAligned != value)
                 {
                     this.Dataset.IsAligned = value;
-                    this.RaisePropertyChanged("IsAligned");
+                    this.RaisePropertyChanged();
                 }
             }
         }
@@ -191,7 +176,7 @@ namespace MultiAlignRogue.ViewModels
                     this.isClustering = value;
                     this.RaisePropertyChanged("ClusterLabelColor");
                     this.RaisePropertyChanged("DoingWork");
-                    this.RaisePropertyChanged("IsClustering");
+                    this.RaisePropertyChanged();
                 }
             }
         }
@@ -204,7 +189,7 @@ namespace MultiAlignRogue.ViewModels
                 if (this.Dataset.IsClustered != value)
                 {
                     this.Dataset.IsClustered = value;
-                    this.RaisePropertyChanged("IsClustered");
+                    this.RaisePropertyChanged();
                 }
             }
         }
@@ -393,6 +378,20 @@ namespace MultiAlignRogue.ViewModels
                 {
                     m_expand = value;
                     RaisePropertyChanged("ShouldExpand");
+                }
+            }
+        }
+
+        private bool isSelected;
+        public bool IsSelected
+        {
+            get { return this.isSelected; }
+            set
+            {
+                if (this.isSelected != value)
+                {
+                    this.isSelected = value;
+                    this.RaisePropertyChanged("IsSelected", !value, value, true);
                 }
             }
         }

@@ -71,18 +71,36 @@ namespace MultiAlignRogue.Alignment
             this.selectedDatasets = new ReadOnlyCollection<DatasetInformationViewModel>(new List<DatasetInformationViewModel>());
             this.alignmentInformation = new List<AlignmentData>();
 
-            this.MessengerInstance.Register<PropertyChangedMessage<IReadOnlyCollection<DatasetInformationViewModel>>>(this, sds =>
+            this.MessengerInstance.Register<PropertyChangedMessage<bool>>(this, args =>
             {
-                this.selectedDatasets = sds.NewValue;
-                ThreadSafeDispatcher.Invoke(() => this.AlignCommand.RaiseCanExecuteChanged());
-                ThreadSafeDispatcher.Invoke(() => this.DisplayAlignmentCommand.RaiseCanExecuteChanged());
+                if (args.Sender is DatasetInformationViewModel && args.PropertyName == "IsSelected")
+                {
+                    ThreadSafeDispatcher.Invoke(() => this.AlignCommand.RaiseCanExecuteChanged());
+                    ThreadSafeDispatcher.Invoke(() => this.DisplayAlignmentCommand.RaiseCanExecuteChanged());
+                }
             });
-            
 
-            this.AlignCommand = new RelayCommand(this.AsyncAlign, () => this.selectedDatasets != null &&
-                                                                                  this.selectedDatasets.Count > 0 &&
-                                                                                  this.selectedDatasets.Any(file => !file.DoingWork));
-            this.DisplayAlignmentCommand = new RelayCommand(this.DisplayAlignment, () => this.selectedDatasets.Any(file => file.IsAligned && this.alignmentInformation.Any(data => data.DatasetID == file.DatasetId))); //file => file.IsAligned && !file.Dataset.IsBaseline
+            // When dataset state changes, update can executes.
+            this.MessengerInstance.Register<PropertyChangedMessage<DatasetInformationViewModel.DatasetStates>>(this, args =>
+            {
+                if (args.Sender is DatasetInformationViewModel && args.PropertyName == "DatasetState")
+                {
+                    ThreadSafeDispatcher.Invoke(() => this.AlignCommand.RaiseCanExecuteChanged());
+                    ThreadSafeDispatcher.Invoke(() => this.DisplayAlignmentCommand.RaiseCanExecuteChanged());
+                }
+            });
+
+            this.AlignCommand = new RelayCommand(this.AsyncAlign, () =>
+            {
+                var x = this.Datasets.Any(ds => ds.IsSelected && !ds.DoingWork && ds.FeaturesFound) &&
+                ((this.ShouldAlignToBaseline && this.SelectedBaseline != null) ||
+                 (this.ShouldAlignToAMT && analysis.MassTagDatabase != null));
+                return x;
+            });
+            this.DisplayAlignmentCommand = new RelayCommand(
+                                                            this.DisplayAlignment,
+                                                            () => this.Datasets.Any(file => file.IsAligned && file.IsSelected &&
+                                                                                            this.alignmentInformation.Any(data => data.DatasetID == file.DatasetId))); //file => file.IsAligned && !file.Dataset.IsBaseline
             this.SelectAMTCommand = new RelayCommand(this.AsyncSelectAMT, () => this.ShouldAlignToAMT);
             this.ShouldAlignToBaseline = true;
             this.ShouldAlignToAMT = false;
@@ -100,33 +118,33 @@ namespace MultiAlignRogue.Alignment
 
         public ObservableCollection<DatasetInformationViewModel> Datasets { get; private set; }
 
+        private bool shouldAlignToBaseline;
         public bool ShouldAlignToBaseline
         {
             get
             {
-                return _ShouldAlignToBaseline;
+                return shouldAlignToBaseline;
             }
             set
             {
-                _ShouldAlignToBaseline = value; 
+                shouldAlignToBaseline = value;
+                this.AlignCommand.RaiseCanExecuteChanged();
                 this.RaisePropertyChanged();
             }
         }
 
-        private bool _ShouldAlignToBaseline { get; set; }
-
+        private bool shouldAlignToAMT;
         public bool ShouldAlignToAMT
         {
-            get { return _ShouldAlignToAMT; }
+            get { return shouldAlignToAMT; }
             set
             {
-                _ShouldAlignToAMT = value; 
+                shouldAlignToAMT = value; 
                 SelectAMTCommand.RaiseCanExecuteChanged();
+                this.AlignCommand.RaiseCanExecuteChanged();
                 this.RaisePropertyChanged();
             }
         }
-
-        private bool _ShouldAlignToAMT { get; set; }
 
         public DatasetInformationViewModel SelectedBaseline
         {
@@ -145,6 +163,7 @@ namespace MultiAlignRogue.Alignment
                         this.analysis.MetaData.BaselineDataset = value.Dataset;
                     }
 
+                    this.AlignCommand.RaiseCanExecuteChanged();
                     this.RaisePropertyChanged();
                 }
             }
@@ -283,10 +302,10 @@ namespace MultiAlignRogue.Alignment
 
         private void AsyncSelectAMT()
         {
-            ThreadSafeDispatcher.Invoke(() => SelectAMT());
+            ThreadSafeDispatcher.Invoke(SelectAMT);
             if (this.SelectedDatabaseServer != null)
             {
-                ThreadSafeDispatcher.Invoke(() => AsyncAddMassTags());
+                ThreadSafeDispatcher.Invoke(AsyncAddMassTags);
             }
         }
 
@@ -316,6 +335,7 @@ namespace MultiAlignRogue.Alignment
                 }
             }
 
+            this.AlignCommand.RaiseCanExecuteChanged();
         }
 
         private async void AsyncAddMassTags()

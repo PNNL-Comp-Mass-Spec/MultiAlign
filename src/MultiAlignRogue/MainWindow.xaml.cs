@@ -24,24 +24,9 @@ namespace MultiAlignRogue
     /// </summary>
     public partial class MainWindow : Window
     {
-        private MainViewModel viewModel;
         public MainWindow()
         {
             InitializeComponent();
-
-            this.viewModel = this.DataContext as MainViewModel;
-            this.DataContextChanged += (o, e) => this.viewModel = this.DataContext as MainViewModel;
         }
-
-         
-        private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            var selectedItems = this.FileSelectionDataGrid.SelectedItems;
-            if (this.viewModel != null)
-            {
-                this.viewModel.SelectedDatasets = new List<DatasetInformationViewModel>(selectedItems.Cast<DatasetInformationViewModel>());
-            }
-        }
-
     }
 }

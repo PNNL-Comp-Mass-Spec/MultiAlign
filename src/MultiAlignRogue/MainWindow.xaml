@@ -51,7 +51,12 @@
 
                 <DataGrid Name="FileSelectionDataGrid" Grid.Row="1" Margin="0,0,10,0"
                   AutoGenerateColumns="False" CanUserReorderColumns="False" CanUserAddRows="False" 
-                  ItemsSource="{Binding Datasets, UpdateSourceTrigger=PropertyChanged}" SelectionChanged="DataGrid_SelectionChanged">
+                  ItemsSource="{Binding Datasets, UpdateSourceTrigger=PropertyChanged}">
+                    <DataGrid.Resources>
+                        <Style TargetType="DataGridRow">
+                            <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </Style>
+                    </DataGrid.Resources>
                     <DataGrid.Columns>
                         <DataGridTemplateColumn Width="25">
                             <DataGridTemplateColumn.CellTemplate>

@@ -91,11 +91,10 @@ namespace MultiAlignRogue
             SaveAsProjectCommand = new RelayCommand(this.SaveProjectAs, () => !string.IsNullOrWhiteSpace(this.ProjectPath));
             
             featureCache = new FeatureLoader { Providers = Analysis.DataProviders };
-            this.SelectedDatasets = new List<DatasetInformationViewModel>();
             Datasets = new ObservableCollection<DatasetInformationViewModel>();
 
             featureCache.Providers = Analysis.DataProviders;
-            this.FeatureFindingSettingsViewModel = new FeatureFindingSettingsViewModel(Analysis, featureCache);
+            this.FeatureFindingSettingsViewModel = new FeatureFindingSettingsViewModel(Analysis, featureCache, Datasets);
             this.AlignmentSettingsViewModel = new AlignmentSettingsViewModel(Analysis, featureCache, Datasets);
             this.ClusterSettingsViewModel = new ClusterSettingsViewModel(Analysis);
         }
@@ -216,16 +215,6 @@ namespace MultiAlignRogue
                     this.RaisePropertyChanged();
                     this.AddFolderCommand.RaiseCanExecuteChanged();
                 }
-            }
-        }
-
-        public IReadOnlyCollection<DatasetInformationViewModel> SelectedDatasets
-        {
-            get { return this.selectedDatasets; }
-            set
-            {
-                this.selectedDatasets = value;
-                this.RaisePropertyChanged("SelectedDatasets", null, value, true);
             }
         }
         #endregion
@@ -488,7 +477,7 @@ namespace MultiAlignRogue
             this.m_config.AnalysisPath = rogueProject.AnalysisPath;
             this.UpdateDatasets();
             this.clusterViewFactory = new ClusterViewFactory(this.Analysis.DataProviders, rogueProject.LayoutFilePath);
-            this.FeatureFindingSettingsViewModel = new FeatureFindingSettingsViewModel(this.Analysis, this.featureCache);
+            this.FeatureFindingSettingsViewModel = new FeatureFindingSettingsViewModel(this.Analysis, this.featureCache, this.Datasets);
             this.AlignmentSettingsViewModel = new AlignmentSettingsViewModel(this.Analysis, this.featureCache, this.Datasets);
             this.ClusterSettingsViewModel = new ClusterSettingsViewModel(this.Analysis, this.clusterViewFactory)
             {
