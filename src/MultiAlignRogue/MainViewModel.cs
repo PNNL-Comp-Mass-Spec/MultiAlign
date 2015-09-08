@@ -474,7 +474,7 @@ namespace MultiAlignRogue
             this.featureCache.Providers = this.Analysis.DataProviders;
             this.m_config.AnalysisPath = rogueProject.AnalysisPath;
             this.UpdateDatasets();
-            this.clusterViewFactory = new ClusterViewFactory(this.Analysis.DataProviders, rogueProject.LayoutFilePath);
+            this.clusterViewFactory = new ClusterViewFactory(this.Analysis.DataProviders, rogueProject.ClusterViewerSettings, rogueProject.LayoutFilePath);
             this.FeatureFindingSettingsViewModel = new FeatureFindingSettingsViewModel(this.Analysis, this.featureCache, this.Datasets);
             this.AlignmentSettingsViewModel = new AlignmentSettingsViewModel(this.Analysis, this.featureCache, this.Datasets);
             this.ClusterSettingsViewModel = new ClusterSettingsViewModel(this.Analysis, this.Datasets, this.clusterViewFactory);
@@ -532,9 +532,20 @@ namespace MultiAlignRogue
         {
             var rogueProjectSerializer = new DataContractSerializer(typeof (RogueProject));
             var datasetInfoList = this.Datasets.Select(datasetInformation => datasetInformation.Dataset).ToList();
+            ClusterViewerSettings clusterViewerSettings = null;
+            if (this.clusterViewFactory is ClusterViewFactory)
+            {
+                var cvf = clusterViewFactory as ClusterViewFactory;
+                if (cvf.ClusterViewModel != null)
+                {
+                    clusterViewerSettings = cvf.ClusterViewModel.ClusterPlotViewModel.ClusterViewerSettings;
+                }
+            }
+
             var rogueProject = new RogueProject
             {
                 MultiAlignAnalysisOptions = this.Analysis.Options,
+                ClusterViewerSettings = clusterViewerSettings ?? new ClusterViewerSettings(),
                 Datasets = datasetInfoList,
                 AnalysisPath = this.m_config.AnalysisPath
             };

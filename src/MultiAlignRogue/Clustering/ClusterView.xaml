@@ -18,6 +18,7 @@
         <Menu Grid.Row="0">
             <MenuItem Header="Tools">
                 <MenuItem Header="Charge State Distribution" Command="{Binding ShowChargeStateDistributionCommand}" />
+                <MenuItem Header="Settings" Command="{Binding SettingsCommand}" />
             </MenuItem>
         </Menu>
         
@@ -34,7 +35,6 @@
                                         <DataGridTextColumn Header="Mass" Width="35*" Binding="{Binding MassMonoisotopic, Converter={StaticResource DoubleToString}}" />
                                         <DataGridTextColumn Header="NET" Width="35*" Binding="{Binding Net, Converter={StaticResource DoubleToString}}" />
                                         <DataGridTextColumn Header="#" Width="20*" Binding="{Binding MemberCount}" />
-                                        <DataGridTextColumn Header="Abundance" Width="35*"/>
                                     </DataGrid.Columns>
                                 </DataGrid>
                             </xcad:LayoutAnchorable>

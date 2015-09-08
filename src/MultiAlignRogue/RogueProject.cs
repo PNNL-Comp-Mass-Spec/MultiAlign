@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using MultiAlignCore.Algorithms.Options;
 using MultiAlignCore.Data.MetaData;
+using MultiAlignRogue.Clustering;
 
 namespace MultiAlignRogue
 {
@@ -11,6 +12,11 @@ namespace MultiAlignRogue
         /// Gets or sets the MultiAlign analysis options.
         /// </summary>
         public MultiAlignAnalysisOptions MultiAlignAnalysisOptions { get; set; }
+
+        /// <summary>
+        /// Gets or sets the settings for the cluster viewer.
+        /// </summary>
+        public ClusterViewerSettings ClusterViewerSettings { get; set; }
 
         /// <summary>
         /// Gets or sets the list of datasets.

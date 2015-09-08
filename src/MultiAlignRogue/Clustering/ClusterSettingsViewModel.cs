@@ -59,7 +59,7 @@ namespace MultiAlignRogue.Clustering
             this.Datasets = datasets;
             this.options = analysis.Options;
             this.builder = new AlgorithmBuilder();
-            this.clusterViewFactory = clusterViewFactory ?? new ClusterViewFactory(analysis.DataProviders);
+            this.clusterViewFactory = clusterViewFactory ?? new ClusterViewFactory(analysis.DataProviders, new ClusterViewerSettings());
 
             this.ClusterFeaturesCommand = new RelayCommand(this.AsyncClusterFeatures, () => this.Datasets.Any(ds => ds.FeaturesFound));
             this.DisplayClustersCommand = new RelayCommand(this.DisplayFeatures, () => this.Datasets.Any(ds => ds.IsClustered));

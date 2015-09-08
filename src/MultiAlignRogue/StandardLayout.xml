@@ -12,7 +12,7 @@
     <LayoutDocumentPaneGroup Orientation="Vertical">
       <LayoutDocumentPane Id="a510b441-bc75-402d-82d7-42f213a7cf1f">
         <LayoutDocument Title="Clusters" IsSelected="True" IsLastFocusedDocument="True" ContentId="ClusterPlotGrid" CanClose="False" LastActivationTimeStamp="08/07/2015 14:50:31" />
-        <LayoutDocument Title="MS/MS Spectra" ContentId="MsmsSpectrumGrid" CanClose="False" LastActivationTimeStamp="08/07/2015 14:29:31" />
+        <!-- <LayoutDocument Title="MS/MS Spectra" ContentId="MsmsSpectrumGrid" CanClose="False" LastActivationTimeStamp="08/07/2015 14:29:31" /> -->
       </LayoutDocumentPane>
       <LayoutDocumentPaneGroup Orientation="Horizontal">
         <LayoutDocumentPane>

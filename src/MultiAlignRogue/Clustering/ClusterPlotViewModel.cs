@@ -42,36 +42,14 @@ namespace MultiAlignRogue.Clustering
         private readonly LinearAxis massAxis;
 
         /// <summary>
-        /// Number of divisions on mass axis.
-        /// </summary>
-        private readonly int massAxisDivisions;
-
-        /// <summary>
-        /// Number of divisions on net axis.
-        /// </summary>
-        private readonly int netAxisDivisions;
-
-        /// <summary>
-        /// Maximum number of clusters in a single division of the view.
-        /// </summary>
-        private readonly int maxClustersPerDivision;
-
-        /// <summary>
         /// The list of clusters.
         /// </summary>
         private readonly List<UMCClusterLight> clusters;
 
         /// <summary>
-        /// A value that indicates whether the quad tree should be used
-        /// to reduce the total number of points displayed.
+        /// The settings for the cluster viewer.
         /// </summary>
-        private readonly bool reducePoints;
-
-        /// <summary>
-        /// A value that indicates whether lines should be displayed where
-        /// for each range query on the quad tree.
-        /// </summary>
-        private readonly bool showDivisionLines;
+        private ClusterViewerSettings clusterViewerSettings;
 
         /// <summary>
         /// QuadTree of clusters.
@@ -90,14 +68,11 @@ namespace MultiAlignRogue.Clustering
         public ClusterPlotViewModel(List<UMCClusterLight> clusters)
         {
             this.clusters = clusters;
-            this.massAxisDivisions = 100;
-            this.netAxisDivisions = 100;
-            this.maxClustersPerDivision = 2;
-            this.reducePoints = true;
-            this.showDivisionLines = false;
 
             this.throttler = new Throttler(TimeSpan.FromMilliseconds(100));
             this.BuildClusterTree();
+
+            this.ClusterViewerSettings = new ClusterViewerSettings();
 
             this.netAxis = new LinearAxis
             {
@@ -122,7 +97,7 @@ namespace MultiAlignRogue.Clustering
 
             this.netAxis.AxisChanged += (s, e) =>
             {
-                if (this.reducePoints)
+                if (this.ClusterViewerSettings.ShouldReducePoints)
                 {
                     this.throttler.Run(this.BuildClusterPlot);
                 }
@@ -130,7 +105,7 @@ namespace MultiAlignRogue.Clustering
 
             this.massAxis.AxisChanged += (s, e) =>
             {
-                if (this.reducePoints)
+                if (this.ClusterViewerSettings.ShouldReducePoints)
                 {
                     this.throttler.Run(this.BuildClusterPlot);
                 }
@@ -148,6 +123,32 @@ namespace MultiAlignRogue.Clustering
         /// Gets the plot model for cluster plot.
         /// </summary>
         public PlotModel ClusterPlotModel { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the settings for the cluster viewer.
+        /// </summary>
+        public ClusterViewerSettings ClusterViewerSettings
+        {
+            get { return this.clusterViewerSettings; }
+            set
+            {
+                if (this.clusterViewerSettings != value)
+                {
+                    this.clusterViewerSettings = value;
+                    if (this.clusterViewerSettings == null)
+                    {
+                        this.clusterViewerSettings = new ClusterViewerSettings();    
+                    }
+
+                    if (this.throttler != null && this.ClusterPlotModel != null)
+                    {
+                        this.throttler.Run(this.BuildClusterPlot);
+                    }
+
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
 
         /// <summary>
         /// Gets or sets the cluster selected and highlighted on the plot.
@@ -191,12 +192,12 @@ namespace MultiAlignRogue.Clustering
         {
             this.SetClusterHighlight();
 
-            if (this.showDivisionLines)
+            if (this.ClusterViewerSettings.ShowDivisionLines)
             {
                 this.ShowDivisions();
             }
 
-            var clusterPoints = this.reducePoints
+            var clusterPoints = this.ClusterViewerSettings.ShouldReducePoints
                 ? this.SelectClusters()
                 : this.clusters.Select(c => new ClusterPoint(c));
 
@@ -219,8 +220,8 @@ namespace MultiAlignRogue.Clustering
         /// <returns>A collection of cluster points.</returns>
         private IEnumerable<ClusterPoint> SelectClusters()
         {
-            var netRange = (this.netAxis.ActualMaximum - this.netAxis.ActualMinimum)/this.netAxisDivisions;
-            var massRange = (this.massAxis.ActualMaximum - this.massAxis.ActualMinimum)/this.massAxisDivisions;
+            var netRange = (this.netAxis.ActualMaximum - this.netAxis.ActualMinimum) / this.ClusterViewerSettings.NetDivisions;
+            var massRange = (this.massAxis.ActualMaximum - this.massAxis.ActualMinimum) / this.ClusterViewerSettings.MassDivisions;
 
             // Select clusters to display
             var clusterHash = new HashSet<ClusterPoint>();
@@ -229,11 +230,11 @@ namespace MultiAlignRogue.Clustering
                 clusterHash.Add(new ClusterPoint(this.SelectedCluster));
             }
 
-            for (int i = 0; i < this.netAxisDivisions; i++)
+            for (int i = 0; i < this.ClusterViewerSettings.NetDivisions; i++)
             {
                 var minNet = (float) (this.netAxis.ActualMinimum + (i*netRange));
                 var maxNet = (float) (this.netAxis.ActualMinimum + ((i + 1)*netRange));
-                for (int j = 0; j < this.massAxisDivisions; j++)
+                for (int j = 0; j < this.ClusterViewerSettings.MassDivisions; j++)
                 {
                     var minMass = (float) (this.massAxis.ActualMinimum + (j*massRange));
                     var maxMass = (float) (this.massAxis.ActualMinimum + ((j + 1)*massRange));
@@ -247,7 +248,7 @@ namespace MultiAlignRogue.Clustering
 
                     var clusterPoints = this.clusterTree.Query(rectangle);
                     var sorted = clusterPoints.OrderByDescending(clusterPoint => clusterPoint.UMCClusterLight.Abundance);
-                    var reduced = sorted.Take(this.maxClustersPerDivision);
+                    var reduced = sorted.Take(this.ClusterViewerSettings.PointsPerDivision);
                     clusterHash.UnionWith(reduced);
                 }
             }
@@ -304,9 +305,9 @@ namespace MultiAlignRogue.Clustering
 
         private void ShowDivisions()
         {
-            var netRange = (this.netAxis.ActualMaximum - this.netAxis.ActualMinimum)/this.netAxisDivisions;
-            var massRange = (this.massAxis.ActualMaximum - this.massAxis.ActualMinimum)/this.massAxisDivisions;
-            for (int i = 0; i < this.netAxisDivisions; i++)
+            var netRange = (this.netAxis.ActualMaximum - this.netAxis.ActualMinimum) / this.ClusterViewerSettings.NetDivisions;
+            var massRange = (this.massAxis.ActualMaximum - this.massAxis.ActualMinimum)/this.ClusterViewerSettings.MassDivisions;
+            for (int i = 0; i < this.clusterViewerSettings.NetDivisions; i++)
             {
                 var maxNet = (float) (this.netAxis.ActualMinimum + ((i + 1)*netRange));
                 var netAnnotation = new LineAnnotation
@@ -316,7 +317,7 @@ namespace MultiAlignRogue.Clustering
                     Type = LineAnnotationType.Vertical,
                 };
                 this.ClusterPlotModel.Annotations.Add(netAnnotation);
-                for (int j = 0; j < this.massAxisDivisions; j++)
+                for (int j = 0; j < this.ClusterViewerSettings.MassDivisions; j++)
                 {
                     var maxMass = (float)(this.massAxis.ActualMinimum + ((j + 1) * massRange));
                     var massAnnotation = new LineAnnotation

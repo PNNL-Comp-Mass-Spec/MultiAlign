@@ -5,8 +5,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
-using Microsoft.Win32.SafeHandles;
 using MultiAlign.ViewModels.Charting;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.Features;
@@ -14,10 +14,6 @@ using MultiAlignCore.Extensions;
 using MultiAlignCore.IO.Features;
 using MultiAlignRogue.Utils;
 using MultiAlignRogue.ViewModels;
-using OxyPlot;
-using OxyPlot.Annotations;
-using OxyPlot.Axes;
-using OxyPlot.Series;
 
 namespace MultiAlignRogue.Clustering
 {
@@ -91,6 +87,8 @@ namespace MultiAlignRogue.Clustering
             //TODO: Clusters are showing up as having no features so the abundance for each cluster is always 0. Find where actual abudance values are stored.
             this.ClusterAbundance = this.Clusters.Where(cluster => cluster.MemberCount > 0).ToDictionary(cluster => cluster, cluster => (from feature in cluster.Features select feature.Abundance).Sum() / cluster.MemberCount);
             
+            this.SettingsCommand = new RelayCommand(() => this.viewFactory.CreateSettingsWindow(this.ClusterPlotViewModel.ClusterViewerSettings));
+
             this.Features = new ObservableCollection<UMCLightViewModel>();
             this.MsMsSpectra = new ObservableCollection<MSSpectra>();
             this.LayoutFilePath = layoutFilePath;
@@ -152,6 +150,11 @@ namespace MultiAlignRogue.Clustering
         /// Gets a command that displays a charge state distribution plot.
         /// </summary>
         public ICommand ShowChargeStateDistributionCommand { get; private set; }
+
+        /// <summary>
+        /// Gets a command that shows the settings window.
+        /// </summary>
+        public ICommand SettingsCommand { get; private set; }
 
         /// <summary>
         /// Gets the list of clusters.

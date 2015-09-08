@@ -183,6 +183,11 @@
     <Compile Include="Clustering\ClusterView.xaml.cs">
       <DependentUpon>ClusterView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Clustering\ClusterViewerSettings.cs" />
+    <Compile Include="Clustering\ClusterViewerSettingsViewModel.cs" />
+    <Compile Include="Clustering\ClusterViewerSettingsWindow.xaml.cs">
+      <DependentUpon>ClusterViewerSettingsWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Clustering\ClusterViewFactory.cs" />
     <Compile Include="Clustering\ClusterViewModel.cs" />
     <Compile Include="Clustering\IClusterViewFactory.cs" />
@@ -234,6 +239,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Clustering\ClusterView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Clustering\ClusterViewerSettingsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

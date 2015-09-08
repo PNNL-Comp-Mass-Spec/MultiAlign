@@ -15,10 +15,13 @@ namespace MultiAlignRogue.Clustering
 
         private readonly FeatureDataAccessProviders providers;
 
-        public ClusterViewFactory(FeatureDataAccessProviders providers, string layoutFilePath = null)
+        private readonly ClusterViewerSettings clusterViewerSettings;
+
+        public ClusterViewFactory(FeatureDataAccessProviders providers, ClusterViewerSettings settings, string layoutFilePath = null)
         {
             this.providers = providers;
             this.layoutFilePath = layoutFilePath ?? "layout.xml";
+            this.clusterViewerSettings = settings;
         }
 
         public void CreateNewWindow()
@@ -26,12 +29,19 @@ namespace MultiAlignRogue.Clustering
             throw new NotImplementedException();
         }
 
+        public ClusterViewModel ClusterViewModel { get; private set; }
+
         public void CreateNewWindow(List<UMCClusterLight> clusters)
         {
-            var clusterViewModel = new ClusterViewModel(this, clusters, providers, this.layoutFilePath);
+            if (this.ClusterViewModel == null)
+            {
+                this.ClusterViewModel = new ClusterViewModel(this, clusters, providers, layoutFilePath);
+                this.ClusterViewModel.ClusterPlotViewModel.ClusterViewerSettings = this.clusterViewerSettings;
+            }
+
             var window = new ClusterView
             {
-                DataContext = clusterViewModel
+                DataContext = this.ClusterViewModel
             };
 
             window.Show();
@@ -47,6 +57,24 @@ namespace MultiAlignRogue.Clustering
             };
 
             window.ShowDialog();
+        }
+
+        public void CreateSettingsWindow(ClusterViewerSettings clusterViewerSettings)
+        {
+            var viewModel = new ClusterViewerSettingsViewModel(clusterViewerSettings);
+            var window = new ClusterViewerSettingsWindow
+            {
+                DataContext = viewModel,
+            };
+
+            viewModel.ReadyToClose += (o, e) => window.Close();
+
+            window.ShowDialog();
+
+            if (this.ClusterViewModel != null && viewModel.Status)
+            {
+                this.ClusterViewModel.ClusterPlotViewModel.ClusterViewerSettings = viewModel.ClusterViewerSettings;
+            }
         }
     }
 }

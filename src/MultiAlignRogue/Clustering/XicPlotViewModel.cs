@@ -177,7 +177,7 @@ namespace MultiAlignRogue.Clustering
                         continue;
                     }
 
-                    foreach (var msfeature in msfeatures)
+                    foreach (var msfeature in msfeatures.Where(msf => dsinfo.ScanTimes.ContainsKey(msf.Scan)))
                     {
                         var rt = dsinfo.ScanTimes[msfeature.Scan];
                         minX = Math.Min(minX, rt);
