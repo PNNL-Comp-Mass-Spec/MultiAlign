@@ -4,7 +4,7 @@
         xmlns:multiAlignRogue="clr-namespace:MultiAlignRogue"
         xmlns:featureFinding="clr-namespace:MultiAlignRogue.Feature_Finding"
         xmlns:alignment="clr-namespace:MultiAlignRogue.Alignment"
-        Title="{Binding WindowTitle}" Height="600" Width="1100" x:Name="RogueMainWindow">
+        Title="{Binding WindowTitle}" Height="650" Width="1100" x:Name="RogueMainWindow">
     <Window.DataContext>
         <multiAlignRogue:MainViewModel/>
     </Window.DataContext>
