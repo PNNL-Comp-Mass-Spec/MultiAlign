@@ -18,8 +18,8 @@ namespace MultiAlignRogue.Clustering
             {
                 X = (float)umcClusterLight.Net,
                 Y = (float)umcClusterLight.MassMonoisotopicAligned,
-                Width = 0.001f,
-                Height = 1.0f
+                Width = 0.00001f,
+                Height = 0.01f
             };
         }
 

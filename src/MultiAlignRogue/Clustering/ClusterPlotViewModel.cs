@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using MultiAlign.ViewModels.Charting;
@@ -58,7 +59,19 @@ namespace MultiAlignRogue.Clustering
         /// <summary>
         /// The list of clusters.
         /// </summary>
-        private List<UMCClusterLight> clusters; 
+        private readonly List<UMCClusterLight> clusters;
+
+        /// <summary>
+        /// A value that indicates whether the quad tree should be used
+        /// to reduce the total number of points displayed.
+        /// </summary>
+        private readonly bool reducePoints;
+
+        /// <summary>
+        /// A value that indicates whether lines should be displayed where
+        /// for each range query on the quad tree.
+        /// </summary>
+        private readonly bool showDivisionLines;
 
         /// <summary>
         /// QuadTree of clusters.
@@ -77,9 +90,11 @@ namespace MultiAlignRogue.Clustering
         public ClusterPlotViewModel(List<UMCClusterLight> clusters)
         {
             this.clusters = clusters;
-            this.massAxisDivisions = 20;
-            this.netAxisDivisions = 20;
-            this.maxClustersPerDivision = 10;
+            this.massAxisDivisions = 100;
+            this.netAxisDivisions = 100;
+            this.maxClustersPerDivision = 2;
+            this.reducePoints = true;
+            this.showDivisionLines = false;
 
             this.throttler = new Throttler(TimeSpan.FromMilliseconds(100));
             this.BuildClusterTree();
@@ -105,8 +120,21 @@ namespace MultiAlignRogue.Clustering
                 Maximum = maxMass
             };
 
-            this.netAxis.AxisChanged += (s, e) => this.throttler.Run(this.BuildClusterPlot);
-            this.massAxis.AxisChanged += (s, e) => this.throttler.Run(this.BuildClusterPlot);
+            this.netAxis.AxisChanged += (s, e) =>
+            {
+                if (this.reducePoints)
+                {
+                    this.throttler.Run(this.BuildClusterPlot);
+                }
+            };
+
+            this.massAxis.AxisChanged += (s, e) =>
+            {
+                if (this.reducePoints)
+                {
+                    this.throttler.Run(this.BuildClusterPlot);
+                }
+            };
 
             this.ClusterPlotModel = new PlotModel();
             this.ClusterPlotModel.Axes.Add(this.netAxis);
@@ -143,7 +171,7 @@ namespace MultiAlignRogue.Clustering
         /// </summary>
         private void BuildClusterTree()
         {
-            var maxMass = (float)this.clusters.Max(cluster => cluster.MassMonoisotopicAligned);
+            var maxMass = (float) this.clusters.Max(cluster => cluster.MassMonoisotopicAligned);
             var rectangle = new RectangleF
             {
                 X = 0,
@@ -163,8 +191,36 @@ namespace MultiAlignRogue.Clustering
         {
             this.SetClusterHighlight();
 
-            var netRange = (this.netAxis.ActualMaximum - this.netAxis.ActualMinimum) / this.netAxisDivisions;
-            var massRange = (this.massAxis.ActualMaximum - this.massAxis.ActualMinimum) / this.massAxisDivisions;
+            if (this.showDivisionLines)
+            {
+                this.ShowDivisions();
+            }
+
+            var clusterPoints = this.reducePoints
+                ? this.SelectClusters()
+                : this.clusters.Select(c => new ClusterPoint(c));
+
+            // Create cluster series
+            this.ClusterPlotModel.Series.Clear();
+            var clusterSeries = new ScatterSeries
+            {
+                ItemsSource = clusterPoints,
+                MarkerFill = OxyColors.Red,
+                MarkerType = MarkerType.Circle
+            };
+
+            this.ClusterPlotModel.Series.Add(clusterSeries);
+            this.ClusterPlotModel.InvalidatePlot(true);
+        }
+
+        /// <summary>
+        /// Divide view into subdivisions and get highest features in each subdivision.
+        /// </summary>
+        /// <returns>A collection of cluster points.</returns>
+        private IEnumerable<ClusterPoint> SelectClusters()
+        {
+            var netRange = (this.netAxis.ActualMaximum - this.netAxis.ActualMinimum)/this.netAxisDivisions;
+            var massRange = (this.massAxis.ActualMaximum - this.massAxis.ActualMinimum)/this.massAxisDivisions;
 
             // Select clusters to display
             var clusterHash = new HashSet<ClusterPoint>();
@@ -175,12 +231,12 @@ namespace MultiAlignRogue.Clustering
 
             for (int i = 0; i < this.netAxisDivisions; i++)
             {
-                var minNet = (float)(this.netAxis.ActualMinimum + (i * netRange));
-                var maxNet = (float)(this.netAxis.ActualMinimum + ((i + 1) * netRange));
+                var minNet = (float) (this.netAxis.ActualMinimum + (i*netRange));
+                var maxNet = (float) (this.netAxis.ActualMinimum + ((i + 1)*netRange));
                 for (int j = 0; j < this.massAxisDivisions; j++)
                 {
-                    var minMass = (float)(this.massAxis.ActualMinimum + (j * massRange));
-                    var maxMass = (float)(this.massAxis.ActualMinimum + ((j + 1) * massRange));
+                    var minMass = (float) (this.massAxis.ActualMinimum + (j*massRange));
+                    var maxMass = (float) (this.massAxis.ActualMinimum + ((j + 1)*massRange));
                     var rectangle = new RectangleF
                     {
                         X = minNet,
@@ -189,24 +245,14 @@ namespace MultiAlignRogue.Clustering
                         Height = maxMass - minMass
                     };
 
-                    var clusterPoints = this.clusterTree.Query(rectangle)
-                                       .OrderByDescending(clusterPoint => clusterPoint.UMCClusterLight.Abundance)
-                                       .Take(this.maxClustersPerDivision);
-                    clusterHash.UnionWith(clusterPoints);
+                    var clusterPoints = this.clusterTree.Query(rectangle);
+                    var sorted = clusterPoints.OrderByDescending(clusterPoint => clusterPoint.UMCClusterLight.Abundance);
+                    var reduced = sorted.Take(this.maxClustersPerDivision);
+                    clusterHash.UnionWith(reduced);
                 }
             }
 
-            // Create cluster series
-            this.ClusterPlotModel.Series.Clear();
-            var clusterSeries = new ScatterSeries
-            {
-                ItemsSource = clusterHash,
-                MarkerFill = OxyColors.Red,
-                MarkerType = MarkerType.Circle
-            };
-
-            this.ClusterPlotModel.Series.Add(clusterSeries);
-            this.ClusterPlotModel.InvalidatePlot(true);
+            return clusterHash;
         }
 
         /// <summary>
@@ -214,8 +260,8 @@ namespace MultiAlignRogue.Clustering
         /// </summary>
         private void SetClusterHighlight()
         {
-            var netRange = (this.netAxis.ActualMaximum - this.netAxis.ActualMinimum) * 0.01;
-            var massRange = (this.massAxis.ActualMaximum - this.netAxis.ActualMinimum) * 0.01;
+            var netRange = (this.netAxis.ActualMaximum - this.netAxis.ActualMinimum)*0.01;
+            var massRange = (this.massAxis.ActualMaximum - this.netAxis.ActualMinimum)*0.01;
             this.ClusterPlotModel.Annotations.Clear();
             if (this.SelectedCluster != null)
             {
@@ -252,6 +298,34 @@ namespace MultiAlignRogue.Clustering
                     {
                         this.SelectedCluster = clusterPoint.UMCClusterLight;
                     }
+                }
+            }
+        }
+
+        private void ShowDivisions()
+        {
+            var netRange = (this.netAxis.ActualMaximum - this.netAxis.ActualMinimum)/this.netAxisDivisions;
+            var massRange = (this.massAxis.ActualMaximum - this.massAxis.ActualMinimum)/this.massAxisDivisions;
+            for (int i = 0; i < this.netAxisDivisions; i++)
+            {
+                var maxNet = (float) (this.netAxis.ActualMinimum + ((i + 1)*netRange));
+                var netAnnotation = new LineAnnotation
+                {
+                    X = maxNet,
+                    LineStyle = LineStyle.Dash,
+                    Type = LineAnnotationType.Vertical,
+                };
+                this.ClusterPlotModel.Annotations.Add(netAnnotation);
+                for (int j = 0; j < this.massAxisDivisions; j++)
+                {
+                    var maxMass = (float)(this.massAxis.ActualMinimum + ((j + 1) * massRange));
+                    var massAnnotation = new LineAnnotation
+                    {
+                        Y = maxMass,
+                        LineStyle = LineStyle.Dash,
+                        Type = LineAnnotationType.Horizontal,
+                    };
+                    this.ClusterPlotModel.Annotations.Add(massAnnotation);
                 }
             }
         }
