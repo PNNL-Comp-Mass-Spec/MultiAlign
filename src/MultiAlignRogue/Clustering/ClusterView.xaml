@@ -87,7 +87,7 @@
                                 </xctk:DropDownButton>
                             </Grid>
                         </xcad:LayoutDocument>
-                        <xcad:LayoutDocument Title="MS/MS Spectra" CanClose="False">
+                        <!--<xcad:LayoutDocument Title="MS/MS Spectra" CanClose="False">
                             <Grid Name="MsmsSpectrumGrid" Background="White">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="*" />
@@ -99,7 +99,7 @@
                                 
                                 <ComboBox Grid.Row="2" ItemsSource="{Binding MsMsSpectra}" SelectedItem="{Binding SelectedMsMsSpectra}" Width="190" HorizontalAlignment="Right"></ComboBox>
                             </Grid>
-                        </xcad:LayoutDocument>
+                        </xcad:LayoutDocument>-->
                         <xcad:LayoutDocument Title="Cluster Features" CanClose="False">
                             <Grid Name="ClusterFeatureGrid" DataContext="{Binding ClusterFeaturePlotViewModel}">
                                 <oxy:PlotView Model="{Binding ClusterFeaturePlotModel}" />

@@ -1,25 +1,26 @@
 <?xml version="1.0"?>
 <LayoutRoot xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <RootPanel Orientation="Horizontal">
-    <LayoutAnchorablePaneGroup Orientation="Vertical" DockWidth="244">
-      <LayoutAnchorablePane Id="b7dc93c4-e92d-40f2-a692-9fdd92603a4a" DockWidth="244" DockHeight="1.40304182509506*" IsMaximized="True">
-        <LayoutAnchorable CanHide="False" AutoHideMinWidth="100" AutoHideMinHeight="100" Title="Cluster List" IsSelected="True" ContentId="ClusterDataGrid" CanClose="False" LastActivationTimeStamp="08/07/2015 14:51:01" />
+    <LayoutAnchorablePaneGroup Orientation="Vertical" DockWidth="240">
+      <LayoutAnchorablePane Id="25fce64d-417e-426d-9dfe-127944f86330" DockWidth="240" DockHeight="1.58747300215983*" FloatingWidth="252" FloatingHeight="932" FloatingLeft="5" FloatingTop="582">
+        <LayoutAnchorable CanHide="False" AutoHideMinWidth="100" AutoHideMinHeight="100" Title="Cluster List" IsSelected="True" ContentId="ClusterDataGrid" FloatingLeft="5" FloatingTop="582" FloatingWidth="252" FloatingHeight="932" CanClose="False" LastActivationTimeStamp="09/08/2015 14:29:18" />
       </LayoutAnchorablePane>
-      <LayoutAnchorablePane DockHeight="0.596958174904943*" FloatingWidth="192" FloatingHeight="532" FloatingLeft="141" FloatingTop="475">
-        <LayoutAnchorable CanHide="False" AutoHideMinWidth="100" AutoHideMinHeight="100" Title="Feature List" IsSelected="True" ContentId="FeatureDataGrid" FloatingLeft="141" FloatingTop="475" FloatingWidth="192" FloatingHeight="532" CanClose="False" LastActivationTimeStamp="08/07/2015 14:25:20" PreviousContainerId="b7dc93c4-e92d-40f2-a692-9fdd92603a4a" PreviousContainerIndex="1" />
-      </LayoutAnchorablePane>
+      <LayoutAnchorablePaneGroup Orientation="Horizontal" DockHeight="0.412526997840173*" FloatingWidth="252" FloatingHeight="932" FloatingLeft="96" FloatingTop="611">
+        <LayoutAnchorablePane FloatingWidth="252" FloatingHeight="932" FloatingLeft="96" FloatingTop="611">
+          <LayoutAnchorable CanHide="False" AutoHideMinWidth="100" AutoHideMinHeight="100" Title="Feature List" IsSelected="True" ContentId="FeatureDataGrid" FloatingLeft="96" FloatingTop="611" FloatingWidth="252" FloatingHeight="932" CanClose="False" LastActivationTimeStamp="09/08/2015 14:29:17" PreviousContainerId="25fce64d-417e-426d-9dfe-127944f86330" PreviousContainerIndex="1" />
+        </LayoutAnchorablePane>
+      </LayoutAnchorablePaneGroup>
     </LayoutAnchorablePaneGroup>
     <LayoutDocumentPaneGroup Orientation="Vertical">
-      <LayoutDocumentPane Id="a510b441-bc75-402d-82d7-42f213a7cf1f">
-        <LayoutDocument Title="Clusters" IsSelected="True" IsLastFocusedDocument="True" ContentId="ClusterPlotGrid" CanClose="False" LastActivationTimeStamp="08/07/2015 14:50:31" />
-        <!-- <LayoutDocument Title="MS/MS Spectra" ContentId="MsmsSpectrumGrid" CanClose="False" LastActivationTimeStamp="08/07/2015 14:29:31" /> -->
+      <LayoutDocumentPane DockHeight="1.37580993520518*">
+        <LayoutDocument Title="Clusters" IsSelected="True" ContentId="ClusterPlotGrid" FloatingLeft="135" FloatingTop="547" FloatingWidth="1193" FloatingHeight="932" CanClose="False" LastActivationTimeStamp="09/08/2015 14:28:59" PreviousContainerId="23c30642-43ed-43bb-865d-6e39cea93855" PreviousContainerIndex="0" />
       </LayoutDocumentPane>
       <LayoutDocumentPaneGroup Orientation="Horizontal">
-        <LayoutDocumentPane>
-          <LayoutDocument Title="Extracted Ion Chromatogram" IsSelected="True" ContentId="XicPlotGrid" FloatingLeft="412" FloatingTop="558" FloatingWidth="776" FloatingHeight="532" CanClose="False" LastActivationTimeStamp="08/07/2015 14:50:22" PreviousContainerId="a510b441-bc75-402d-82d7-42f213a7cf1f" PreviousContainerIndex="0" />
+        <LayoutDocumentPane Id="23c30642-43ed-43bb-865d-6e39cea93855" DockHeight="0.624190064794816*">
+          <LayoutDocument Title="Extracted Ion Chromatogram" IsSelected="True" ContentId="XicPlotGrid" CanClose="False" LastActivationTimeStamp="09/08/2015 14:29:05" />
         </LayoutDocumentPane>
         <LayoutDocumentPane>
-          <LayoutDocument Title="Cluster Features" IsSelected="True" ContentId="ClusterFeatureGrid" FloatingLeft="706" FloatingTop="885" FloatingWidth="776" FloatingHeight="532" CanClose="False" LastActivationTimeStamp="08/07/2015 14:50:22" PreviousContainerId="a510b441-bc75-402d-82d7-42f213a7cf1f" PreviousContainerIndex="2" />
+          <LayoutDocument Title="Cluster Features" IsSelected="True" IsLastFocusedDocument="True" ContentId="ClusterFeatureGrid" FloatingLeft="177" FloatingTop="908" FloatingWidth="1193" FloatingHeight="289" CanClose="False" LastActivationTimeStamp="09/08/2015 14:29:05" PreviousContainerId="23c30642-43ed-43bb-865d-6e39cea93855" PreviousContainerIndex="1" />
         </LayoutDocumentPane>
       </LayoutDocumentPaneGroup>
     </LayoutDocumentPaneGroup>
