@@ -197,6 +197,24 @@ namespace MultiAlignRogue.Clustering
         }
 
         /// <summary>
+        /// Gets or sets a value indicating whether the legend on the XIC plot
+        /// should be visible.
+        /// </summary>
+        public bool IsLegendVisible
+        {
+            get { return this.XicPlotModel.IsLegendVisible; }
+            set
+            {
+                if (this.XicPlotModel.IsLegendVisible != value)
+                {
+                    this.XicPlotModel.IsLegendVisible = value;
+                    this.XicPlotModel.InvalidatePlot(false);
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
         /// Builds XIC plot based on selected charge state chromatograms.
         /// </summary>
         private void BuildPlot()

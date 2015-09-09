@@ -75,6 +75,8 @@
                                         <ContextMenu Name="XicPlotMenu">
                                             <MenuItem IsCheckable="True" IsChecked="{Binding AutoScaleYAxis, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                       Header="Auto Scale Y Axis" />
+                                            <MenuItem IsCheckable="True" IsChecked="{Binding IsLegendVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                      Header="Show Legend"/>
                                         </ContextMenu>
                                     </oxy:PlotView.ContextMenu>
                                 </oxy:PlotView>
