@@ -47,6 +47,7 @@ namespace MultiAlignRogue.Clustering
 
             this.isLoaded = false;
             this.viewModel = this.DataContext as ClusterViewModel;
+            this.XicPlotMenu.DataContext = this.DataContext;
 
             // Update layout when AvDock is loaded.
             this.AvDock.Loaded += (s, e) =>
@@ -58,6 +59,7 @@ namespace MultiAlignRogue.Clustering
             // Update layout when view model changes.
             this.DataContextChanged += (o, e) =>
             {
+                this.XicPlotMenu.DataContext = this.DataContext;
                 if (this.isLoaded)
                 {
                     this.LoadNewViewModel();

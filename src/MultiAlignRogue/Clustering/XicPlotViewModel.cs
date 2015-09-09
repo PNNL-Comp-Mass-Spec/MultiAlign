@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Runtime.Serialization.Configuration;
 using System.Text;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Messaging;
+using InformedProteomics.Backend.MassFeature;
 using MultiAlignCore.Data.Features;
 using MultiAlignCore.Extensions;
 using MultiAlignCore.IO;
@@ -16,7 +18,6 @@ using OxyPlot;
 using OxyPlot.Annotations;
 using OxyPlot.Axes;
 using OxyPlot.Series;
-using Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
 
 namespace MultiAlignRogue.Clustering
 {
@@ -25,7 +26,12 @@ namespace MultiAlignRogue.Clustering
         /// <summary>
         /// For throttling plot updates.
         /// </summary>
-        private readonly Throttler throttler;
+        private readonly Throttler plotBuilderthrottler;
+
+        /// <summary>
+        /// For throttling Y-Axis scale adjustments.
+        /// </summary>
+        private readonly Throttler yaxisScaleThrottler;
 
         /// <summary>
         /// The retention time axis.
@@ -53,16 +59,25 @@ namespace MultiAlignRogue.Clustering
         private MSFeatureLight selectedMsFeature;
 
         /// <summary>
+        /// A value indicating whether the Y axis on this plot should
+        /// automatically zoom based on the visible range in the x axis.
+        /// </summary>
+        private bool autoScaleYAxis;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="XicPlotViewModel"/> class.
         /// </summary>
         public XicPlotViewModel()
         {
-            this.throttler = new Throttler(TimeSpan.FromMilliseconds(100));
+            this.plotBuilderthrottler = new Throttler(TimeSpan.FromMilliseconds(100));
+            this.yaxisScaleThrottler = new Throttler(TimeSpan.FromMilliseconds(20));
             this.ChargeStates = new ObservableCollection<ChargeStateViewModel>();
             this.XicPlotModel = new PlotModel
             {
                 ////RenderingDecorator = rc => new XkcdRenderingDecorator(rc)
             };
+
+            this.AutoScaleYAxis = true;
 
             this.xaxis = new LinearAxis
             {
@@ -78,7 +93,17 @@ namespace MultiAlignRogue.Clustering
                 Position = AxisPosition.Left,
                 AbsoluteMinimum = 0,
                 Minimum = 0,
-                StringFormat = "0.###E0"
+                StringFormat = "0.###E0",
+                IsPanEnabled = false,
+                IsZoomEnabled = false,
+            };
+
+            this.xaxis.AxisChanged += (o, e) =>
+            {
+                if (this.AutoScaleYAxis)
+                {
+                    this.ScaleYAxis();
+                }
             };
 
             this.XicPlotModel.Axes.Add(this.xaxis);
@@ -92,6 +117,22 @@ namespace MultiAlignRogue.Clustering
             {
                 this.SetMsFeatureAnnotation();
                 this.XicPlotModel.InvalidatePlot(true);
+            });
+
+            Messenger.Default.Register<PropertyChangedMessage<bool>>(this, arg =>
+            {
+                if (arg.Sender == this && arg.PropertyName == "AutoScaleYAxis")
+                {
+                    this.yaxis.IsZoomEnabled = !arg.NewValue;
+                    this.yaxis.IsPanEnabled = !arg.NewValue;
+                    if (arg.NewValue)
+                    {
+                        this.xaxis.Reset();
+                        this.yaxis.Reset();
+                        this.ScaleYAxis();
+                        this.XicPlotModel.InvalidatePlot(false);
+                    }
+                }
             });
         }
 
@@ -116,7 +157,7 @@ namespace MultiAlignRogue.Clustering
                 if (this.features != value)
                 {
                     this.features = value;
-                    this.throttler.Run(this.BuildPlot);
+                    this.plotBuilderthrottler.Run(this.BuildPlot);
                     this.RaisePropertyChanged();
                 }
             }
@@ -134,6 +175,23 @@ namespace MultiAlignRogue.Clustering
                 {
                     this.selectedMsFeature = value;
                     this.RaisePropertyChanged("SelectedMsFeature", null, value, true);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the Y axis on this plot should
+        /// automatically zoom based on the visible range in the x axis.
+        /// </summary>
+        public bool AutoScaleYAxis
+        {
+            get { return this.autoScaleYAxis; }
+            set
+            {
+                if (this.autoScaleYAxis != value)
+                {
+                    this.autoScaleYAxis = value;
+                    this.RaisePropertyChanged("AutoScaleYAxis", !value, value, true);
                 }
             }
         }
@@ -159,11 +217,6 @@ namespace MultiAlignRogue.Clustering
             {
                 var chargeMap = feature.UMCLight.CreateChargeMap();
                 chargeHash.UnionWith(chargeMap.Keys);
-
-                ////if (feature.UMCLight.Id == 0)
-                ////{
-                ////    continue;
-                ////}
 
                 foreach (var charge in chargeMap.Keys)
                 {
@@ -197,10 +250,6 @@ namespace MultiAlignRogue.Clustering
                     var series = new LineSeries
                     {
                         Title = string.Format("{0}({1}+) ID({2})", dsinfo.DatasetName, charge, feature.UMCLight.Id),
-                        ItemsSource = msfeatures,
-                        Mapping = o => new DataPoint(
-                                                     dsinfo.ScanTimes[((MSFeatureLight)o).Scan],
-                                                     ((MSFeatureLight)o).Abundance),
                         Color = color,
                         MarkerType = MarkerType.Circle,
                         MarkerSize = 3,
@@ -211,6 +260,10 @@ namespace MultiAlignRogue.Clustering
                                    "{1}: {2:0.###} (Scan: {Scan:0})" + Environment.NewLine +
                                    "{3}: {4:0.###E0}" + Environment.NewLine
                     };
+
+                    msfeatures.ForEach(point => series.Points.Add(new DataPoint(
+                                                     dsinfo.ScanTimes[point.Scan],
+                                                     point.Abundance)));
 
                     this.XicPlotModel.Series.Add(series);   
                 }
@@ -238,6 +291,29 @@ namespace MultiAlignRogue.Clustering
             this.yaxis.Zoom(minY, maxY);
 
             this.XicPlotModel.InvalidatePlot(true);
+        }
+
+        private void ScaleYAxis()
+        {
+            var minX = this.xaxis.ActualMinimum;
+            var maxX = this.xaxis.ActualMaximum;
+            var maxY = 0.0;
+            var minY = Double.NegativeInfinity;
+            foreach (var series in this.XicPlotModel.Series.OfType<LineSeries>())
+            {
+                foreach (var point in series.Points.Where(p => p.X >= minX && p.X <= maxX))
+                {
+                    maxY = Math.Max(maxY, point.Y);
+                    minY = Math.Min(minY, point.Y);
+                }
+            }
+
+            var paddedMax = maxY + (0.03 * maxY);
+            var paddedMin = Math.Max(0, minY - (0.005 * minY));
+
+            this.yaxis.Minimum = paddedMin;
+            this.yaxis.Maximum = paddedMax;
+            this.yaxis.Zoom(paddedMin, paddedMax);
         }
 
         /// <summary>

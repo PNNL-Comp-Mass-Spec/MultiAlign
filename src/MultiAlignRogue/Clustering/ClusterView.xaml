@@ -70,7 +70,14 @@
                                     <RowDefinition Height="5" />
                                     <RowDefinition Height="20" />
                                 </Grid.RowDefinitions>
-                                <oxy:PlotView Grid.Row="0" Title="Extracted Ion Chromatograms" Model="{Binding XicPlotModel}" />
+                                <oxy:PlotView Grid.Row="0" Title="Extracted Ion Chromatograms" Model="{Binding XicPlotModel}">
+                                    <oxy:PlotView.ContextMenu>
+                                        <ContextMenu Name="XicPlotMenu">
+                                            <MenuItem IsCheckable="True" IsChecked="{Binding AutoScaleYAxis, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                      Header="Auto Scale Y Axis" />
+                                        </ContextMenu>
+                                    </oxy:PlotView.ContextMenu>
+                                </oxy:PlotView>
                                 <xctk:DropDownButton Grid.Row="2" Width="190" HorizontalAlignment="Right" Content="Charge States">
                                     <xctk:DropDownButton.DropDownContent>
                                         <ListBox ItemsSource="{Binding ChargeStates}">
