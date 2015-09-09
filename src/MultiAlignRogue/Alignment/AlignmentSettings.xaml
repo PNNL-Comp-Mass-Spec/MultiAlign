@@ -6,9 +6,12 @@
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              mc:Ignorable="d" 
              d:DesignHeight="500" d:DesignWidth="500">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="150" />
+            <RowDefinition Height="170" />
             <RowDefinition Height="30"/>
             <RowDefinition Height="75" />
             <RowDefinition Height="30"/>
@@ -28,6 +31,7 @@
                     <RowDefinition Height="25"/>
                     <RowDefinition Height="25"/>
                     <RowDefinition Height="25"/>
+                    <RowDefinition Height="25" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="30"/>
@@ -50,6 +54,8 @@
                          Text="{Binding SelectedDatabaseServer.DatabaseName, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, NotifyOnSourceUpdated=True}"
                          Grid.Row="3" Grid.Column="1" Margin="0,0,5,0" />
                 <Button Content="Select Database" Command="{Binding SelectAMTCommand}" Grid.Row="3" Grid.Column="2"/>
+                <ProgressBar Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,5,0,0" Value="{Binding MassTagLoadProgress}"
+                             Visibility="{Binding ShowMassTagProgress, Converter={StaticResource BoolToVis}}" />
             </Grid>
         </GroupBox>
         

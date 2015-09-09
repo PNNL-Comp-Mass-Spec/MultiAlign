@@ -296,6 +296,19 @@ namespace MultiAlignCore.IO.Hibernate
             return list;
         }
 
+        protected void DeleteAllFromTable(string tableName)
+        {
+            using (var session = GetStatelessSession())
+            {
+                using (var transaction = session.BeginTransaction())
+                {
+                    var query = session.CreateSQLQuery(string.Format("DELETE FROM {0}", tableName));
+                    query.ExecuteUpdate();
+                    transaction.Commit();
+                }
+            }
+        }
+
         protected void DeleteByCriteria(string tableName, string keyName, int value)
         {
             using (var session = GetStatelessSession())

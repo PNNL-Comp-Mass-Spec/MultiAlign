@@ -57,6 +57,11 @@ namespace MultiAlignCore.IO.Hibernate
             return FindByCriteria(criterionList);
         }
 
+        public void DeleteAll()
+        {
+            this.DeleteAllFromTable("T_Mass_Tags");
+        }
+
         /// <summary>
         ///     Finds mass tags based on an ID list.
         /// </summary>

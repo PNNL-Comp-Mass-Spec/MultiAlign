@@ -1,5 +1,6 @@
 ﻿using System.Windows.Navigation;
 using InformedProteomics.Backend.MassFeature;
+using InformedProteomics.Backend.Utils;
 using MultiAlign.ViewModels.Databases;
 using MultiAlign.Windows.Viewers.Databases;
 using MultiAlignCore.Algorithms.Alignment.LcmsWarp;
@@ -181,6 +182,36 @@ namespace MultiAlignRogue.Alignment
             }
         }
 
+
+        private double massTagLoadProgress;
+        public double MassTagLoadProgress
+        {
+            get { return this.massTagLoadProgress; }
+            set
+            {
+                if (this.massTagLoadProgress != value)
+                {
+                    this.massTagLoadProgress = value;
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool showMassTagProgress;
+
+        public bool ShowMassTagProgress
+        {
+            get { return this.showMassTagProgress; }
+            set
+            {
+                if (this.showMassTagProgress != value)
+                {
+                    this.showMassTagProgress = value;
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
+
         public FeatureAlignmentType SelectedAlignmentAlgorithm
         {
             get { return this.analysis.Options.AlignmentOptions.AlignmentAlgorithm; }
@@ -307,6 +338,7 @@ namespace MultiAlignRogue.Alignment
             var databaseView = new DatabasesViewModel();
             dmsWindow.DataContext = databaseView;
             dmsWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+
             var loader = MassTagDatabaseLoaderFactory.Create(MtdbDatabaseServerType.Dms);
             var databases = loader.LoadDatabases();
 
@@ -337,6 +369,8 @@ namespace MultiAlignRogue.Alignment
 
         private void AddMassTags()
         {
+            var loadProgress = new Progress<ProgressData>(pd => this.MassTagLoadProgress = pd.Percent);
+            this.RaisePropertyChanged("SelectedDatabaseServer");
             var database = this.SelectedDatabaseServer.Database;
             database.DatabaseName = database.DatabaseName;
             database.DatabaseServer = database.DatabaseServer;
@@ -344,8 +378,10 @@ namespace MultiAlignRogue.Alignment
             analysis.MetaData.Database.DatabaseFormat = MassTagDatabaseFormat.MassTagSystemSql;
             analysis.MassTagDatabase = MtdbLoaderFactory.LoadMassTagDatabase(this.analysis.MetaData.Database,
                                         this.analysis.Options.MassTagDatabaseOptions);
-            analysis.DataProviders.MassTags.AddAll(analysis.MassTagDatabase.MassTags);
-            this.RaisePropertyChanged("SelectedDatabaseServer");
+            analysis.DataProviders.MassTags.DeleteAll();
+            this.ShowMassTagProgress = true;
+            analysis.DataProviders.MassTags.AddAllStateless(analysis.MassTagDatabase.MassTags, loadProgress);
+            this.ShowMassTagProgress = false;
         }
 
         private void DisplayAlignment()

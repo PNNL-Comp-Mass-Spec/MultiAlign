@@ -32,6 +32,8 @@ namespace MultiAlignCore.IO.MassTags
         List<MassTagLight> FindNearby(double massMin, double massMax, double netMin, double netMax, double driftMin,
             double driftMax);
 
+        void DeleteAll();
+
         List<MassTagLight> FindMassTags(List<int> ids);
     }
 }
