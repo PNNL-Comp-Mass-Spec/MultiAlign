@@ -517,7 +517,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
 
         /// <summary>
         /// Method to return the heatmap of the alignment (as a 2D array of doubles) based on
-        /// the output scores taht 
+        /// the output scores 
         /// </summary>
         /// <param name="outputScores"></param>
         /// <param name="xIntervals"></param>
@@ -578,7 +578,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         }
 
         /// <summary>
-        /// Method which copies the baseline nets into the parameters passed in
+        /// Method that copies the baseline nets into the parameters passed in
         /// </summary>
         /// <param name="minRefNet"></param>
         /// <param name="maxRefNet"></param>

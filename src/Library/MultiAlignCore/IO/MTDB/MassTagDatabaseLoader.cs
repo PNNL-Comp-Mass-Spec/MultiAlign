@@ -105,12 +105,18 @@ namespace MultiAlignCore.IO.MTDB
             command.CommandTimeout = 180;
             command.CommandText = m_massTagsPlusPeptideProphetStats_sp;
 
-            command.Parameters.Add(CreateParameter("@ConfirmedOnly", 1));
             command.Parameters.Add(CreateParameter("@MinimumHighNormalizedScore", Options.MinimumXCorr));
             command.Parameters.Add(CreateParameter("@MinimumPMTQualityScore", Options.MinimumPmtScore));
             command.Parameters.Add(CreateParameter("@MinimumHighDiscriminantScore", Options.MinimumDiscriminant));
-            command.Parameters.Add(CreateParameter("@MinimumPeptideProphetProbability",
-                Options.MinimumPeptideProphetScore));
+            command.Parameters.Add(CreateParameter("@MinimumPeptideProphetProbability", Options.MinimumPeptideProphetScore));
+
+            // Optional filters that are not accessible from the GUI
+            if (!string.IsNullOrWhiteSpace(Options.ExperimentFilter))
+                command.Parameters.Add(CreateParameter("@ExperimentFilter", Options.ExperimentFilter));
+
+            if (!string.IsNullOrWhiteSpace(Options.ExperimentExclusionFilter))
+                command.Parameters.Add(CreateParameter("@ExperimentExclusionFilter", Options.ExperimentExclusionFilter));
+
         }
 
         /// <summary>
@@ -122,12 +128,10 @@ namespace MultiAlignCore.IO.MTDB
             command.CommandTimeout = 180;
             command.CommandText = m_protein2MassTags_sp;
 
-            command.Parameters.Add(CreateParameter("@ConfirmedOnly", 1));
             command.Parameters.Add(CreateParameter("@MinimumHighNormalizedScore", Options.MinimumXCorr));
             command.Parameters.Add(CreateParameter("@MinimumPMTQualityScore", Options.MinimumPmtScore));
             command.Parameters.Add(CreateParameter("@MinimumHighDiscriminantScore", Options.MinimumDiscriminant));
-            command.Parameters.Add(CreateParameter("@MinimumPeptideProphetProbability",
-                Options.MinimumPeptideProphetScore));
+            command.Parameters.Add(CreateParameter("@MinimumPeptideProphetProbability", Options.MinimumPeptideProphetScore));
         }
 
         /// <summary>
@@ -155,15 +159,16 @@ namespace MultiAlignCore.IO.MTDB
                                 if (reader["Mass_Tag_ID"] != DBNull.Value)
                                 {
                                     var id = Convert.ToInt32(reader["Mass_Tag_ID"]);
-                                    var peptide = "";
+                                    var peptide = string.Empty;
                                     float ganet = -1;
+                                    var netDefined = false;
                                     float xcorr_max = 0;
                                     float stdNet = 0;
                                     var monoMass = 0.0;
                                     float highDiscriminant = 0;
                                     var numObservations = 0;
-                                    var modification = "";
                                     var modCount = 0;
+                                    var modDescription = string.Empty;
                                     short cleaveageState = 2;
                                     float driftTime = 0;
                                     var charge = 0;
@@ -172,27 +177,39 @@ namespace MultiAlignCore.IO.MTDB
                                     double msgf = 0;
 
 
-                                    if (reader["Peptide"] != DBNull.Value) peptide = reader["Peptide"].ToString();
+                                    if (reader["Peptide"] != DBNull.Value) 
+                                        peptide = reader["Peptide"].ToString();
+                                    
                                     if (reader["Net_Value_to_Use"] != DBNull.Value)
+                                    {
                                         ganet = Convert.ToSingle(reader["Net_Value_to_Use"]);
+                                        netDefined = true;
+                                    }
+
                                     if (reader["High_Normalized_Score"] != DBNull.Value)
                                         xcorr_max = Convert.ToSingle(reader["High_Normalized_Score"]);
-                                    if (reader["StD_GANET"] != DBNull.Value)
+
+                                    if (netDefined && reader["StD_GANET"] != DBNull.Value)
                                         stdNet = Convert.ToSingle(reader["StD_GANET"]);
+
                                     if (reader["Monoisotopic_Mass"] != DBNull.Value)
                                         monoMass = Convert.ToDouble(reader["Monoisotopic_Mass"]);
+                                    
                                     if (reader["Min_MSGF_SpecProb"] != DBNull.Value)
                                         msgf = Convert.ToDouble(reader["Min_MSGF_SpecProb"]);
                                     if (reader["Peptide_Obs_Count_Passing_Filter"] != DBNull.Value)
                                         numObservations = Convert.ToInt32(reader["Peptide_Obs_Count_Passing_Filter"]);
+
                                     if (reader["Mod_Count"] != DBNull.Value)
                                         modCount = Convert.ToInt32(reader["Mod_Count"]);
                                     if (reader["Mod_Description"] != DBNull.Value)
-                                        modification = reader["Mod_Description"].ToString();
+                                        modDescription = reader["Mod_Description"].ToString();
+
                                     if (reader["High_Peptide_Prophet_Probability"] != DBNull.Value)
-                                        highPeptideProphetProbability =
-                                            Convert.ToSingle(reader["High_Peptide_Prophet_Probability"]);
+                                        highPeptideProphetProbability = Convert.ToSingle(reader["High_Peptide_Prophet_Probability"]);
+
                                     if (reader["Cleavage_State"] != DBNull.Value)
+
                                         cleaveageState = Convert.ToInt16(reader["Cleavage_State"]);
                                     if (reader["Drift_Time_Avg"] != DBNull.Value)
                                         driftTime = Convert.ToSingle(reader["Drift_Time_Avg"]);
@@ -201,50 +218,58 @@ namespace MultiAlignCore.IO.MTDB
                                     if (reader["Conformer_ID"] != DBNull.Value)
                                         conformerID = Convert.ToInt32(reader["Conformer_ID"]);
 
-                                    /// Make sure the mass tag has been seen enough times
+                                    // Make sure the mass tag has been seen enough times
                                     if (numObservations >= Options.MinimumObservationCountFilter)
                                     {
-                                        var molecule = new Molecule();
-                                        molecule.Name = peptide;
+                                        var molecule = new Molecule
+                                        {
+                                            Name = peptide
+                                        };
+
                                         massTag.Id = id;
                                         massTag.Molecule = molecule;
                                         massTag.Net = ganet;
                                         massTag.NetAverage = ganet;
+                                        massTag.NetStandardDeviation = stdNet;
                                         massTag.XCorr = xcorr_max;
                                         massTag.DiscriminantMax = highDiscriminant;
                                         massTag.MassMonoisotopic = monoMass;
                                         massTag.ConformationId = conformerID;
-                                        massTag.NetStandardDeviation = stdNet;
+                                        
                                         massTag.ObservationCount = numObservations;
                                         massTag.DriftTime = driftTime;
                                         massTag.PriorProbability = highPeptideProphetProbability;
                                         massTag.CleavageState = cleaveageState;
                                         massTag.ModificationCount = modCount;
+                                        massTag.Modifications = modDescription;
                                         massTag.MsgfSpecProbMax = msgf;
                                         massTag.PeptideSequence = peptide;
                                         massTag.ChargeState = charge;
 
-                                        if (massTag.NetAverage != -1)
+                                        if (!netDefined)
                                         {
-                                            var shouldAdd = false;
-                                            // If we are using drift time, then we should only 
-                                            // use mass tags that have drift time.
-                                            if (Options.OnlyLoadTagsWithDriftTime)
-                                            {
-                                                if (driftTime > 0)
-                                                {
-                                                    shouldAdd = true;
-                                                }
-                                            }
-                                            else
+                                            continue;
+                                        }
+
+                                        var shouldAdd = false;
+
+                                        // If we are using drift time, then we should only 
+                                        // use mass tags that have drift time.
+                                        if (Options.OnlyLoadTagsWithDriftTime)
+                                        {
+                                            if (driftTime > 0)
                                             {
                                                 shouldAdd = true;
                                             }
+                                        }
+                                        else
+                                        {
+                                            shouldAdd = true;
+                                        }
 
-                                            if (shouldAdd)
-                                            {
-                                                massTags.Add(massTag);
-                                            }
+                                        if (shouldAdd)
+                                        {
+                                            massTags.Add(massTag);
                                         }
                                     }
                                 }

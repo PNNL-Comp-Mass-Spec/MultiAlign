@@ -7,11 +7,11 @@
             MinimumObservationCountFilter = 0;
             OnlyLoadTagsWithDriftTime = false;
             MinimumXCorr = 0.0F;
-            MinimumPmtScore = 1;
+            MinimumPmtScore = 2;
             MinimumDiscriminant = 0;
-            MinimumPeptideProphetScore = 0.5;
-            ExperimentExclusionFilter = "";
-            ExperimentFilter = "";
+            MinimumPeptideProphetScore = 0;
+            ExperimentExclusionFilter = string.Empty;
+            ExperimentFilter = string.Empty;
         }
 
         public string ExperimentFilter { get; set; }
