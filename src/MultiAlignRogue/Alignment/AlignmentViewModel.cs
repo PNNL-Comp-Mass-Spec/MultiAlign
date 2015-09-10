@@ -32,7 +32,7 @@
             var netResidual = ScatterPlotFactory.CreateResidualPlot(residuals.Scan, residuals.LinearCustomNet,
                 residuals.LinearNet, "NET Residuals", "Scans", "NET");
             
-            var massHistogram = HistogramFactory.CreateHistogram(alignment.netErrorHistogram, "Mass Error", "Mass Error (ppm)");
+            var massHistogram = HistogramFactory.CreateHistogram(alignment.massErrorHistogram, "Mass Error", "Mass Error (ppm)");
             var netHistogram = HistogramFactory.CreateHistogram(alignment.netErrorHistogram, "NET Error", "NET Error");            
             
             var massMzResidual = ScatterPlotFactory.CreateResidualPlot(residuals.Mz, residuals.MzMassError,
