@@ -99,7 +99,7 @@ namespace MultiAlignCore.Algorithms.Alignment
                 Options = Options
             };
 
-
+            alignmentProcessor.Progress += alignmentProcessor_Progress;
             OnStatus("Setting features from baseline dataset.");
 
 
