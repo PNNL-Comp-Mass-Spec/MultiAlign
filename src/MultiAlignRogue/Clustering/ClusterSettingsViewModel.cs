@@ -244,7 +244,8 @@ namespace MultiAlignRogue.Clustering
                 ThreadSafeDispatcher.Invoke(this.DisplayClustersCommand.RaiseCanExecuteChanged);
 
                 progData.StepRange(60);
-                providers.ClusterCache.AddAll(clusters, clusterProgress);
+                providers.ClusterCache.ClearAllClusters();
+                providers.ClusterCache.AddAllStateless(clusters, clusterProgress);
 
                 progData.StepRange(100);
                 providers.FeatureCache.UpdateAll(features, clusterProgress);
@@ -305,7 +306,8 @@ namespace MultiAlignRogue.Clustering
                     }
 
                     progData.StepRange((maxPercent - maxFirstStep) / 3);
-                    this.analysis.DataProviders.ClusterCache.AddAll(this.analysis.Clusters, clusterProgress);
+                    providers.ClusterCache.ClearAllClusters();
+                    this.analysis.DataProviders.ClusterCache.AddAllStateless(this.analysis.Clusters, clusterProgress);
 
                     progData.StepRange(maxPercent);
                     this.analysis.DataProviders.FeatureCache.UpdateAll(features, clusterProgress);
