@@ -1,4 +1,5 @@
 ﻿
+using InformedProteomics.Backend.Utils;
 using MultiAlignCore.Data.Features;
 using MultiAlignCore.Data.MassTags;
 
@@ -20,13 +21,15 @@ namespace MultiAlignRogue.Alignment
         public AlignmentData AlignToDataset(
             ref IList<UMCLight> features,
             DatasetInformation datasetInfo,
-            IEnumerable<UMCLight> baselineFeatures)
-        {            
+            IEnumerable<UMCLight> baselineFeatures,
+            IProgress<ProgressData> progress = null)
+        {
+            progress = progress ?? new Progress<ProgressData>();
             // Align pairwise and cache results intermediately.           
             var aligner = this.m_algorithms.DatasetAligner;
             aligner.Progress += aligner_Progress;
 
-            var alignmentData = aligner.Align(baselineFeatures, features);
+            var alignmentData = aligner.Align(baselineFeatures, features, progress);
             
             if (alignmentData != null)
             {
@@ -42,10 +45,12 @@ namespace MultiAlignRogue.Alignment
         public AlignmentData AlignToDatabase(
             ref IList<UMCLight> features,
             DatasetInformation datasetInfo,
-            MassTagDatabase mtdb)
+            MassTagDatabase mtdb,
+            IProgress<ProgressData> progress = null)
         {
+            progress = progress ?? new Progress<ProgressData>();
             var aligner = this.m_algorithms.DatabaseAligner;
-            var alignmentData = aligner.Align(mtdb, features);
+            var alignmentData = aligner.Align(mtdb, features, progress);
             aligner.Progress += aligner_Progress;
 
             if (alignmentData != null)

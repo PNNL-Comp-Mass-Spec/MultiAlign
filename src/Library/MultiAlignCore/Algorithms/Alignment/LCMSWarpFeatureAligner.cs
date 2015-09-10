@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using InformedProteomics.Backend.Utils;
 using MultiAlignCore.Algorithms.Alignment.LcmsWarp;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.Alignment;
@@ -59,15 +60,23 @@ namespace MultiAlignCore.Algorithms.Alignment
         ///     Aligns a dataset to a mass tag database.
         /// </summary>
         public AlignmentData Align(MassTagDatabase massTagDatabase,
-            IEnumerable<UMCLight> features)
+            IEnumerable<UMCLight> features,
+            IProgress<ProgressData> progress = null)
         {
-
+            progress = progress ?? new Progress<ProgressData>();
+            var progData = new ProgressData();
             var alignmentProcessor = new LcmsWarpAlignmentProcessor
             {
                 Options = Options
             };
 
             alignmentProcessor.Progress += alignmentProcessor_Progress;
+            alignmentProcessor.Progress += (o, e) =>
+            {
+                progData.Status = e.Message;
+                progData.Percent = e.PercentComplete;
+                progress.Report(progData);
+            };
 
             var umcLights = features as IList<UMCLight> ?? features.ToList();
             var featureTest = umcLights.ToList().Find(x => x.DriftTime > 0);
@@ -92,14 +101,24 @@ namespace MultiAlignCore.Algorithms.Alignment
         ///     Aligns a dataset to a dataset
         /// </summary>
         public AlignmentData Align(IEnumerable<UMCLight> baselineFeatures,
-            IEnumerable<UMCLight> features)
+            IEnumerable<UMCLight> features,
+            IProgress<ProgressData> progress = null)
         {
+            progress = progress ?? new Progress<ProgressData>();
+            var progData = new ProgressData();
             var alignmentProcessor = new LcmsWarpAlignmentProcessor
             {
                 Options = Options
             };
 
             alignmentProcessor.Progress += alignmentProcessor_Progress;
+            alignmentProcessor.Progress += (o, e) =>
+            {
+                progData.Status = e.Message;
+                progData.Percent = e.PercentComplete;
+                progress.Report(progData);
+            };
+
             OnStatus("Setting features from baseline dataset.");
 
 

@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using InformedProteomics.Backend.Utils;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.Alignment;
 using MultiAlignCore.Data.Features;
@@ -37,13 +38,13 @@ namespace MultiAlignCore.Algorithms.Alignment
         }
 
         public AlignmentData Align(MassTagDatabase database,
-            IEnumerable<UMCLight> features)
+            IEnumerable<UMCLight> features, IProgress<ProgressData> progress = null)
         {
             return null;
         }
 
         public AlignmentData Align(IEnumerable<UMCLight> baseline,
-            IEnumerable<UMCLight> features)
+            IEnumerable<UMCLight> features, IProgress<ProgressData> progress = null)
         {
             return null;
         }

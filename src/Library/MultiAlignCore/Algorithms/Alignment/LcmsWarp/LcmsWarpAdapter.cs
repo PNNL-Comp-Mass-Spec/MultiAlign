@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using InformedProteomics.Backend.Utils;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.Features;
 using MultiAlignCore.Data.MassTags;
@@ -45,7 +46,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <param name="baseline"></param>
         /// <param name="features"></param>
         /// <returns></returns>
-        public LcmsWarpAlignmentData Align(IEnumerable<UMCLight> baseline, IEnumerable<UMCLight> features)
+        public LcmsWarpAlignmentData Align(IEnumerable<UMCLight> baseline, IEnumerable<UMCLight> features, IProgress<ProgressData> progress = null)
         {
 
             return AlignFeatures(baseline as List<UMCLight>, features as List<UMCLight>, m_options);
@@ -59,7 +60,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <param name="baseline"></param>
         /// <param name="features"></param>
         /// <returns></returns>
-        public LcmsWarpAlignmentData Align(IEnumerable<MassTagLight> baseline, IEnumerable<UMCLight> features)
+        public LcmsWarpAlignmentData Align(IEnumerable<MassTagLight> baseline, IEnumerable<UMCLight> features, IProgress<ProgressData> progress = null)
         {
             return AlignFeatures(baseline as List<MassTagLight>, features as List<UMCLight>, m_options);
         }

@@ -348,8 +348,8 @@ namespace MultiAlignRogue.Alignment
             this.featureCache.Providers = this.analysis.DataProviders;
             this.algorithms = this.builder.GetAlgorithmProvider(this.analysis.Options);
 
-            this.algorithms.DatabaseAligner.Progress += aligner_Progress;
-            this.algorithms.DatasetAligner.Progress += aligner_Progress;
+            ////this.algorithms.DatabaseAligner.Progress += aligner_Progress;
+            ////this.algorithms.DatasetAligner.Progress += aligner_Progress;
 
             this.aligner.m_algorithms = this.algorithms;
             var baselineFeatures = new List<UMCLight>();
@@ -373,6 +373,8 @@ namespace MultiAlignRogue.Alignment
                 file.DatasetState = DatasetInformationViewModel.DatasetStates.Aligning;
             }
 
+            IProgress<ProgressData> totalProgress = new Progress<ProgressData>(pd => this.AlignmentProgress = pd.Percent);
+            int i = 1;
             foreach (var file in selectedFiles)
             {
                 ThreadSafeDispatcher.Invoke(() => this.AlignCommand.RaiseCanExecuteChanged());
@@ -386,10 +388,18 @@ namespace MultiAlignRogue.Alignment
                 IList<UMCLight> features = this.featureCache.Providers.FeatureCache.FindByDatasetId(file.DatasetId);
                 AlignmentData alignment;
 
+                var datasetProgress =
+                    new Progress<ProgressData>(
+                        pd =>
+                        {
+                            file.Progress = pd.Percent;
+                            totalProgress.Report(new ProgressData {Percent = (((100.0 * (i - 1)) / selectedFiles.Count)) + ((i * pd.Percent) / selectedFiles.Count)});
+                        });
+
                 if (ShouldAlignToBaseline)
                 {                 
                     // Aligning to a baseline dataset
-                    alignment = this.aligner.AlignToDataset(ref features, file.Dataset, baselineFeatures);
+                    alignment = this.aligner.AlignToDataset(ref features, file.Dataset, baselineFeatures, datasetProgress);
                     alignment.baselineIsAmtDB = false;
                 }
                 else
@@ -415,6 +425,7 @@ namespace MultiAlignRogue.Alignment
                 file.DatasetState = DatasetInformationViewModel.DatasetStates.Aligned;
                 ThreadSafeDispatcher.Invoke(() => this.AlignCommand.RaiseCanExecuteChanged());
                 ThreadSafeDispatcher.Invoke(() => this.DisplayAlignmentCommand.RaiseCanExecuteChanged());
+                i++;
             }
 
             if (ShouldAlignToBaseline)

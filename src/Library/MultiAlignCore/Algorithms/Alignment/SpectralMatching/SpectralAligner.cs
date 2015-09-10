@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using InformedProteomics.Backend.Utils;
 using MultiAlignCore.Algorithms.SpectralProcessing;
 using MultiAlignCore.Data;
 using MultiAlignCore.Data.Features;
@@ -65,7 +66,7 @@ namespace MultiAlignCore.Algorithms.Alignment.SpectralMatching
         /// <param name="alignee"></param>
         /// <returns></returns>
         public IEnumerable<SpectralAnchorPointMatch> Align( MassTagDatabase baseline,
-                                                            IEnumerable<UMCLight> alignee)
+                                                            IEnumerable<UMCLight> alignee, IProgress<ProgressData> progress = null)
         {
             OnProgress("Finding anchor point matches");
             var finder  = new SpectralAnchorPointFinder();
@@ -96,8 +97,8 @@ namespace MultiAlignCore.Algorithms.Alignment.SpectralMatching
         /// <param name="baseline"></param>
         /// <param name="alignee"></param>
         /// <returns></returns>
-        public IEnumerable<SpectralAnchorPointMatch> Align( IEnumerable<UMCLight> baseline, 
-                                                            IEnumerable<UMCLight> alignee)
+        public IEnumerable<SpectralAnchorPointMatch> Align( IEnumerable<UMCLight> baseline,
+                                                            IEnumerable<UMCLight> alignee, IProgress<ProgressData> progress = null)
         {
             OnProgress("Finding anchor point matches");
             var finder  = new SpectralAnchorPointFinder();
