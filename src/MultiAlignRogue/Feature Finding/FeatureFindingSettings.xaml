@@ -48,9 +48,10 @@
                                Value="{Binding FragmentationTolerance, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
             
             <!-- M/Z range -->
-            <CheckBox Grid.Row="2" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"
-                      IsChecked="{Binding ShouldUseMzFilter, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
-            <TextBlock Grid.Row="2" Grid.Column="1" VerticalAlignment="Center">Only analyze M/Z from</TextBlock>
+            <CheckBox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center" Margin="7,0,0,0"
+                      IsChecked="{Binding ShouldUseMzFilter, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}">
+                Only analyze M/Z from
+            </CheckBox>
             <xctk:DoubleUpDown Grid.Row="2" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Left" Width="60" Height="25"
                                Minimum="0" Increment="0.1"
                                Value="{Binding MinimumMz, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
@@ -60,9 +61,10 @@
                                Value="{Binding MaximumMz, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
             
             <!-- Charge state range -->
-            <CheckBox Grid.Row="3" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"
-                      IsChecked="{Binding ShouldUseChargeStateFilter, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
-            <TextBlock Grid.Row="3" Grid.Column="1" VerticalAlignment="Center">Only consider charge states from </TextBlock>
+            <CheckBox Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center" Margin="7,0,0,0"
+                      IsChecked="{Binding ShouldUseChargeStateFilter, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}">
+                Only consider charge states from
+            </CheckBox>
             <xctk:IntegerUpDown Grid.Row="3" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Left" Width="60" Height="25"
                                 Minimum="0"
                                 Value="{Binding MinimumCharge, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
@@ -90,17 +92,19 @@
                                Value="{Binding MinimumFeatureDataPoints, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
 
             <!-- Fit score filter -->
-            <CheckBox Grid.Row="6" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"
-                      IsChecked="{Binding ShouldUseDeisotopingFilter, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
-            <TextBlock Grid.Row="6" Grid.Column="1" VerticalAlignment="Center">Maximum Deisotoping fit</TextBlock>
+            <CheckBox Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center" Margin="7,0,0,0"
+                      IsChecked="{Binding ShouldUseDeisotopingFilter, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}">
+                Maximum Deisotoping fit
+            </CheckBox>
             <xctk:DoubleUpDown Grid.Row="6" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Left" Width="60" Height="25"
                                Minimum="0" Increment="0.01" Maximum="1"
                                Value="{Binding MinimumDeisotopingScore, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
             
             <!-- Minimum Intensity -->
-            <CheckBox Grid.Row="7" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"
-                      IsChecked="{Binding ShouldUseDeisotopingFilter, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
-            <TextBlock Grid.Row="7" Grid.Column="1" VerticalAlignment="Center">Minimum Intensity</TextBlock>
+            <CheckBox Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center" Margin="7,0,0,0"
+                      IsChecked="{Binding ShouldUseDeisotopingFilter, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}">
+                Minimum Intensity
+            </CheckBox>
             <xctk:DoubleUpDown Grid.Row="7" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Left" Width="60" Height="25"
                                Minimum="0" Increment="1000"
                                Value="{Binding MinimumIntensity, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
@@ -126,8 +130,9 @@
                     <GroupBox Grid.Row="1">
                         <GroupBox.Header>
                             <StackPanel Orientation="Horizontal">
-                                <CheckBox VerticalAlignment="Center" IsChecked="{Binding ShouldCreateXics, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                                <TextBlock Margin="3,0,0,0">Extracted Ion Chromatograms</TextBlock>
+                                <CheckBox VerticalAlignment="Center" IsChecked="{Binding ShouldCreateXics, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                    Extracted Ion Chromatograms
+                                </CheckBox>
                             </StackPanel>
                         </GroupBox.Header>
 
@@ -146,10 +151,9 @@
                             <xctk:DoubleUpDown Grid.Row="0" Grid.Column="2" Width="60" Height="25" VerticalAlignment="Center" HorizontalAlignment="Left"
                                                Minimum="0" Maximum="1" Increment="0.01"
                                                Value="{Binding XicRelativeIntensityThreshold, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                            
-                            <CheckBox Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"
-                                      IsChecked="{Binding ShouldRefineXics, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                            <TextBlock Grid.Row="1" Grid.Column="1" VerticalAlignment="Center">Refine XICs</TextBlock>
+
+                            <CheckBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center" Margin="7,0,0,0"
+                                      IsChecked="{Binding ShouldRefineXics, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">Refine XICs</CheckBox>
                             
                         </Grid>
                     </GroupBox>
@@ -158,8 +162,9 @@
                     <GroupBox Grid.Row="2">
                         <GroupBox.Header>
                             <StackPanel Orientation="Horizontal">
-                                <CheckBox VerticalAlignment="Center" IsChecked="{Binding ShouldPerformSecondPassClustering, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                                <TextBlock Margin="3,0,0,0">Second Pass Clustering</TextBlock>
+                                <CheckBox IsChecked="{Binding ShouldPerformSecondPassClustering, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                    Second Pass Clustering
+                                </CheckBox>
                             </StackPanel>
                         </GroupBox.Header>
                         
