@@ -32,6 +32,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// <summary>
         /// Flag for whether to even use promiscuous points or not
         /// </summary>
+        /// <remarks>This should be true when aligning to AMT tag databases
+        /// It should be false when aligning MS data to MS data</remarks>
         public bool UsePromiscuousPoints { get; set; }
 
         /// <summary>
@@ -100,7 +102,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         public bool AlignToMassTagDatabase { get; set; }
 
         /// <summary>
-        /// How wide the Mass histogram bins are
+        /// How wide the Mass histogram bins are (in ppm)
         /// </summary>
         public double MassBinSize { get; set; }
 
@@ -138,29 +140,29 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// </summary>
         public LcmsWarpAlignmentOptions()
         {
-            NumTimeSections = 100;
+            NumTimeSections = 100;              // 100 in VIPER
             TopFeatureAbundancePercent = 0;
-            ContractionFactor = 3;
-            MaxTimeDistortion = 10;
-            MaxPromiscuity = 3;
-            UsePromiscuousPoints = false;
+            ContractionFactor = 3;              //   3 in VIPER
+            MaxTimeDistortion = 10;             //  10 in VIPER
+            MaxPromiscuity = 3;                 //   2 in VIPER
+            UsePromiscuousPoints = false;       // false for Dataset to Dataset alignment; true for Dataset to AMT tag alignment
             MassCalibUseLsq = false;
-            MassCalibrationWindow = 6.0;
-            MassCalibNumXSlices = 12;
-            MassCalibNumYSlices = 50;
-            MassCalibMaxJump = 20;
-            MassCalibMaxZScore = 3;
-            MassCalibLsqMaxZScore = 2.5;
-            MassCalibLsqNumKnots = 12;
-            MassTolerance = 6.0;
-            NetTolerance = 0.03;
+            MassCalibrationWindow = 40.0;       //  50 ppm in VIPER
+            MassCalibNumXSlices = 12;           //  20 in VIPER
+            MassCalibNumYSlices = 50;           // 100 in VIPER
+            MassCalibMaxJump = 20;              //  50 in VIPER
+            MassCalibMaxZScore = 3;             //   3 in VIPER
+            MassCalibLsqMaxZScore = 2.5;        //   3 in VIPER
+            MassCalibLsqNumKnots = 12;          //  12 in VIPER
+            MassTolerance = 10;                 //  10 in VIPER
+            NetTolerance = 0.02;                //   0.02 in VIPER
 
             AlignType = AlignmentType.NET_MASS_WARP;
             CalibrationType = LcmsWarpCalibrationType.Both;
 
             AlignToMassTagDatabase = false;
-            MassBinSize = 0.2;
-            NetBinSize = 0.001;
+            MassBinSize = 0.2;                  // 0.2 in VIPER
+            NetBinSize = 0.001;                 // 0.001 in VIPER
             DriftTimeBinSize = 0.03;
             StoreAlignmentFunction = false;
             AlignmentAlgorithmType = FeatureAlignmentType.LCMS_WARP;
@@ -178,10 +180,12 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// Uses LCMSWarp
         /// </summary>
         LCMS_WARP,
+
         /// <summary>
         /// Not Implemented.
         /// </summary>
         DIRECT_IMS_INFUSION,
+
         SPECTRAL_ALIGNMENT
     }
     /// <summary>

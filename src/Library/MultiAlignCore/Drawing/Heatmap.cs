@@ -60,12 +60,14 @@ namespace MultiAlignCore.Drawing
             };
             int width = data.GetLength(0);
             int height = data.GetLength(1);
-            series.Data = new double[width, height];
+
+            series.Data = new double[height, width];
+
             for (int i = 0; i < width; i++)
             {
                 for (int j = 0; j < height; j++)
                 {
-                    series.Data[i, j] = data[i, j];
+                    series.Data[j, i] = data[i, j];
                 }
             }
 

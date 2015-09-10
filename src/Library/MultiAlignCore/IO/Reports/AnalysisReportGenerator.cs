@@ -170,12 +170,12 @@ namespace MultiAlignCore.IO.Reports
             var alignmentData = e.AlignmentData;
             if (alignmentData == null)
                 return;
-            
+
             var directory       = Path.Combine(Config.AnalysisPath, PlotPath, name);
-            var heatmap         = HeatmapFactory.CreateAlignedHeatmap(alignmentData.heatScores);
+            var heatmap         = HeatmapFactory.CreateAlignedHeatmap(alignmentData.heatScores, alignmentData.baselineIsAmtDB);
             var feature         = ScatterPlotFactory.CreateFeatureMassScatterPlot(e.AligneeFeatures);
-            var netHistogram = HistogramFactory.CreateHistogram(alignmentData.netErrorHistogram, "NET Error", "NET Error");
-            var massHistogram = HistogramFactory.CreateHistogram(alignmentData.massErrorHistogram, "Mass Error", "Mass Error (ppm)");
+            var netHistogram    = HistogramFactory.CreateHistogram(alignmentData.netErrorHistogram, "NET Error", "NET Error");
+            var massHistogram   = HistogramFactory.CreateHistogram(alignmentData.massErrorHistogram, "Mass Error", "Mass Error (ppm)");
             var residuals       = alignmentData.ResidualData;
 
             var netResidual         = ScatterPlotFactory.CreateResidualPlot(residuals.Scan, residuals.LinearCustomNet,

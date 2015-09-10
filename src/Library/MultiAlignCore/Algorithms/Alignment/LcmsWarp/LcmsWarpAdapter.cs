@@ -72,10 +72,12 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// back the alignment data to the caller.
         /// </summary>
         /// <param name="massTags"></param>
-        /// <param name="features"></param>
+        /// <param name="aligneeFeatures"></param>
         /// <param name="options"></param>        
         /// <returns></returns>
-        private LcmsWarpAlignmentData AlignFeatures(List<MassTagLight> massTags, List<UMCLight> aligneeFeatures,
+        private LcmsWarpAlignmentData AlignFeatures(
+            List<MassTagLight> massTags, 
+            List<UMCLight> aligneeFeatures,
             LcmsWarpAlignmentOptions options)
         {
             var alignmentProcessor = new LcmsWarpAlignmentProcessor
@@ -128,7 +130,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// back the alignment data to the caller.
         /// </summary>
         /// <param name="baseline"></param>
-        /// <param name="alignee"></param>
+        /// <param name="aligneeFeatures"></param>
         /// <param name="options"></param>
         /// <returns></returns>
         private LcmsWarpAlignmentData AlignFeatures(List<UMCLight> baseline, List<UMCLight> aligneeFeatures, LcmsWarpAlignmentOptions options)

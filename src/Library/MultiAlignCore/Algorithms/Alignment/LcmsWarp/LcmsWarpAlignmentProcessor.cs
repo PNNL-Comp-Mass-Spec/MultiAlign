@@ -14,7 +14,21 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         IFeatureAligner<IEnumerable<UMCLight>, IEnumerable<UMCLight>, LcmsWarpAlignmentData>,
         IFeatureAligner<MassTagDatabase, IEnumerable<UMCLight>, LcmsWarpAlignmentData>
     {
-        // In case alignment was to ms features, this will kepe track of the minimum scan in the
+
+        private enum CurrentLcmsWarpTask
+        {
+            Unstarted,
+            GenerateCandidateMatches,
+            GetMatchProbabilities,
+            CalculateAlignmentMatrix,
+            CalculateAlignmentFunction,
+            GetTransformedNets,
+            CalculateAlignmentMatches,
+            Complete
+        }
+
+
+        // In case alignment was to MS features, this will keep track of the minimum scan in the
         // reference features. They are needed because LCMSWarp uses NET values for reference and
         // are scaled to between 0 and 1. These will scale it back to actual scan numbers
         int m_minReferenceDatasetScan;
@@ -25,13 +39,22 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         double m_minAligneeDatasetMz;
         double m_maxAligneeDatasetMz;
 
-        // LCMSWarp instance which will do the alignment when processing
+        // LCMSWarp instance that will do the alignment when processing
         LcmsWarp m_lcmsWarp;
 
         /// <summary>
-        /// Percent complete, value between 0 and 100
+        /// Alignment options
         /// </summary>
-        double m_progress;
+        private LcmsWarpAlignmentOptions m_Options;
+
+        private readonly Dictionary<CurrentLcmsWarpTask, double> mCurrentTaskPercentCompleteAtStart;
+        private double mPercentCompleteAtStartOfTask;
+        private double mPercentCompleteAtEndOfTask;
+
+        /// <summary>
+        /// Most recent progress message
+        /// </summary>
+        private string m_LastProgressMessage;
 
         #region Public properties
         /// <summary>
@@ -58,10 +81,20 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         {
             get { return m_lcmsWarp.NetSlope; }
         }
+
         /// <summary>
         /// Options for the Alignment processor
         /// </summary>
-        public LcmsWarpAlignmentOptions Options { get; set; }
+        public LcmsWarpAlignmentOptions Options
+        {
+            get { 
+                return m_Options; 
+            }
+            set { 
+                m_Options = value;
+                ApplyAlignmentOptions();
+            }
+        }
 
         /// <summary>
         /// Flag for if the Processor is aligning to a Mass Tag Database
@@ -79,8 +112,23 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             m_lcmsWarp  = new LcmsWarp();
             Options     = new LcmsWarpAlignmentOptions();
 
-            ApplyAlignmentOptions();
+            m_lcmsWarp.Progress += lcmsWarp_Progress;
 
+            mCurrentTaskPercentCompleteAtStart = new Dictionary<CurrentLcmsWarpTask, double>
+            {
+                {CurrentLcmsWarpTask.Unstarted, 0},
+                {CurrentLcmsWarpTask.GenerateCandidateMatches, 0},
+                {CurrentLcmsWarpTask.GetMatchProbabilities, 10},
+                {CurrentLcmsWarpTask.CalculateAlignmentMatrix, 30},
+                {CurrentLcmsWarpTask.CalculateAlignmentFunction, 50},
+                {CurrentLcmsWarpTask.GetTransformedNets, 70},
+                {CurrentLcmsWarpTask.CalculateAlignmentMatches, 90},
+                {CurrentLcmsWarpTask.Complete, 100}
+            };
+
+            mPercentCompleteAtStartOfTask = 0;
+            mPercentCompleteAtEndOfTask = 100;
+            
             AligningToMassTagDb = false;
         }
 
@@ -99,6 +147,8 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             m_lcmsWarp.NumBaselineSections = Options.NumTimeSections * Options.ContractionFactor;
             m_lcmsWarp.NumMatchesPerBaseline = Options.ContractionFactor*Options.ContractionFactor;
             m_lcmsWarp.NumMatchesPerSection = m_lcmsWarp.NumBaselineSections * m_lcmsWarp.NumMatchesPerBaseline;
+
+            m_lcmsWarp.KeepPromiscuousMatches = Options.UsePromiscuousPoints;
             m_lcmsWarp.MaxPromiscuousUmcMatches = Options.MaxPromiscuity;
 
             // Applying options for Mass Calibration
@@ -229,7 +279,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             for (var index = 0; index < numPts; index++)
             {
                 // Note: We are using ScanStart for the NET of the feature
-                // This is to void odd effects from broad or tailing LC-MS features
+                // This is to avoid odd effects from broad or tailing LC-MS features
 
                 var mtFeature = new UMCLight
                 {
@@ -447,28 +497,37 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         /// </summary>
         private void PerformNetWarp(double percentCompleteAtStart, double percentCompleteAtEnd)
         {
-            OnProgress("NET Warp, get candidate matches", ComputeIncrementalProgress(percentCompleteAtStart, percentCompleteAtEnd, 0));
 
+            var percentCompleteOverall = UpdateCurrentTask(percentCompleteAtStart, percentCompleteAtEnd, CurrentLcmsWarpTask.GenerateCandidateMatches);
+            OnProgress("NET Warp, get candidate matches", percentCompleteOverall);
             m_lcmsWarp.GenerateCandidateMatches();
+
             if (m_lcmsWarp.NumCandidateMatches < 10)
             {
                 throw new ApplicationException("Insufficient number of candidate matches by mass alone");
             }
 
-            OnProgress("NET Warp, get match probabilities", ComputeIncrementalProgress(percentCompleteAtStart, percentCompleteAtEnd, 10));
+            percentCompleteOverall = UpdateCurrentTask(percentCompleteAtStart, percentCompleteAtEnd, CurrentLcmsWarpTask.GetMatchProbabilities);
+            OnProgress("NET Warp, get match probabilities", percentCompleteOverall);
             m_lcmsWarp.GetMatchProbabilities();
 
-            OnProgress("NET Warp, calculate alignment matrix", ComputeIncrementalProgress(percentCompleteAtStart, percentCompleteAtEnd, 30));
+            percentCompleteOverall = UpdateCurrentTask(percentCompleteAtStart, percentCompleteAtEnd, CurrentLcmsWarpTask.CalculateAlignmentMatrix);
+            OnProgress("NET Warp, calculate alignment matrix", percentCompleteOverall);
             m_lcmsWarp.CalculateAlignmentMatrix();
 
-            OnProgress("NET Warp, calculate alignment function", ComputeIncrementalProgress(percentCompleteAtStart, percentCompleteAtEnd, 50));
+            percentCompleteOverall = UpdateCurrentTask(percentCompleteAtStart, percentCompleteAtEnd, CurrentLcmsWarpTask.CalculateAlignmentFunction);
+            OnProgress("NET Warp, calculate alignment function", percentCompleteOverall);
             m_lcmsWarp.CalculateAlignmentFunction();
 
-            OnProgress("NET Warp, get transformed NETs", ComputeIncrementalProgress(percentCompleteAtStart, percentCompleteAtEnd, 70));
+            percentCompleteOverall = UpdateCurrentTask(percentCompleteAtStart, percentCompleteAtEnd, CurrentLcmsWarpTask.GetTransformedNets);
+            OnProgress("NET Warp, get transformed NETs", percentCompleteOverall);
             m_lcmsWarp.GetTransformedNets();
 
-            OnProgress("NET Warp, calculate alignment matches", ComputeIncrementalProgress(percentCompleteAtStart, percentCompleteAtEnd, 90));
+            percentCompleteOverall = UpdateCurrentTask(percentCompleteAtStart, percentCompleteAtEnd, CurrentLcmsWarpTask.CalculateAlignmentMatches);
+            OnProgress("NET Warp, calculate alignment matches", percentCompleteOverall);
             m_lcmsWarp.CalculateAlignmentMatches();
+
+            UpdateCurrentTask(percentCompleteAtStart, percentCompleteAtEnd, CurrentLcmsWarpTask.Complete);
         }
 
         /// <summary>
@@ -481,6 +540,23 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         private double ComputeIncrementalProgress(double percentCompleteAtStart, double percentCompleteAtEnd, double subtaskPercentComplete)
         {
             return percentCompleteAtStart + (percentCompleteAtEnd - percentCompleteAtStart) * subtaskPercentComplete / 100;
+        }
+
+        /// <summary>
+        /// Updates mCurrentTask
+        /// </summary>
+        /// <param name="percentCompleteAtStart"></param>
+        /// <param name="percentCompleteAtEnd"></param>
+        /// <param name="currentTask"></param>
+        /// <returns>Effective percent complete overall</returns>
+        private double UpdateCurrentTask(double percentCompleteAtStart, double percentCompleteAtEnd, CurrentLcmsWarpTask currentTask)
+        {
+            mPercentCompleteAtStartOfTask = ComputeIncrementalProgress(percentCompleteAtStart, percentCompleteAtEnd, mCurrentTaskPercentCompleteAtStart[currentTask]);
+            
+            if (!mCurrentTaskPercentCompleteAtStart.TryGetValue(currentTask + 1, out mPercentCompleteAtEndOfTask))
+                mPercentCompleteAtEndOfTask = mPercentCompleteAtStartOfTask;
+
+            return mPercentCompleteAtStartOfTask;
         }
 
         /// <summary>
@@ -498,7 +574,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             m_lcmsWarp.MassTolerance = m_lcmsWarp.MassCalibrationWindow;
             m_lcmsWarp.UseMassAndNetScore(false);
             
-            PerformNetWarp(m_progress, 50);
+            PerformNetWarp(0, 50);
 
             OnProgress("Calibrating mass", 50);
 
@@ -510,7 +586,7 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             m_lcmsWarp.MassTolerance = massTolerance;
             m_lcmsWarp.UseMassAndNetScore(true);
 
-            PerformNetWarp(m_progress, 100);            
+            PerformNetWarp(60, 100);            
 
             OnProgress("Complete", 100);
         }
@@ -534,8 +610,6 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             var aligneeIntervals = new List<double>();
             var baselineIntervals = new List<double>();
 
-            // Original .cpp code did not include the boolean standardize. Hard coding to false for the moment
-            // Mike - 3/10/14
             m_lcmsWarp.GetSubsectionMatchScore(ref alignmentScores, ref aligneeIntervals, ref baselineIntervals, true);
 
             var numBaselineSections = baselineIntervals.Count;
@@ -752,22 +826,37 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
         public ISpectraProvider BaselineSpectraProvider { get; set; }
         public ISpectraProvider AligneeSpectraProvider  { get; set; }
 
-        public event EventHandler<ProgressNotifierArgs> Progress;
+        #region ProgressReporting
 
-        private void OnProgress(string message)
+        void lcmsWarp_Progress(object sender, ProgressNotifierArgs e)
         {
-            OnProgress(message, m_progress);
+            // e.PercentComplete is a value between 0 and 100
+
+            var percentCompleteOverall = ComputeIncrementalProgress(
+                mPercentCompleteAtStartOfTask,
+                mPercentCompleteAtEndOfTask,                
+                e.PercentComplete);
+
+            OnProgress(m_LastProgressMessage, percentCompleteOverall);
         }
 
+        public event EventHandler<ProgressNotifierArgs> Progress;
+
+        /// <summary>
+        /// Update progress
+        /// </summary>
+        /// <param name="message">Current task</param>
+        /// <param name="percentComplete">Percent complete (value between 0 and 100)</param>
         private void OnProgress(string message, double percentComplete)
         {
-            m_progress = percentComplete;
-
+            m_LastProgressMessage = message;
+            
             if (Progress != null)
             {
                 Progress(this, new ProgressNotifierArgs(message, percentComplete));
             }
         }
+        #endregion region
 
         public LcmsWarpAlignmentData Align(MassTagDatabase baseline, IEnumerable<UMCLight> alignee)
         {

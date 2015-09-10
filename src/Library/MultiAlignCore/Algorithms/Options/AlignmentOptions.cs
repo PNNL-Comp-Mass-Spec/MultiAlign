@@ -14,7 +14,7 @@ namespace MultiAlignCore.Algorithms.Options
         {
             LCMSWarpOptions = new LcmsWarpAlignmentOptions();
             AlignmentBaselineName = "";
-            MassTagObservationCount = 0;
+            MassTagObservationCount = 5;
         }
 
         #region Fields

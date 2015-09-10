@@ -16,7 +16,10 @@ namespace MultiAlignCore.Data.Alignment
 
         public int DatasetID { get; set; }
         public LcmsWarpAlignmentFunction alignmentFunction;
+
         public string aligneeDataset;
+        public bool baselineIsAmtDB { get; set; }
+
         public double[,] heatScores;
         public int minScanBaseline;
         public int maxScanBaseline;
@@ -58,7 +61,6 @@ namespace MultiAlignCore.Data.Alignment
         {
             get { return Math.Pow(NETMean, 4)/Math.Pow(NETStandardDeviation, 4); }
         }
-
 
         public override bool Equals(object obj)
         {

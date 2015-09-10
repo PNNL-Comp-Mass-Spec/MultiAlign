@@ -24,14 +24,18 @@ namespace MultiAlignRogue.Alignment
         {            
             // Align pairwise and cache results intermediately.           
             var aligner = this.m_algorithms.DatasetAligner;
-            AlignmentData alignmentData = aligner.Align(baselineFeatures, features);
+            aligner.Progress += aligner_Progress;
+
+            var alignmentData = aligner.Align(baselineFeatures, features);
             
             if (alignmentData != null)
             {
                 alignmentData.aligneeDataset = datasetInfo.DatasetName;
                 alignmentData.DatasetID = datasetInfo.DatasetId;
             }
-           
+
+            aligner.Progress -= aligner_Progress;
+
             return alignmentData;
         }
 
@@ -41,7 +45,8 @@ namespace MultiAlignRogue.Alignment
             MassTagDatabase mtdb)
         {
             var aligner = this.m_algorithms.DatabaseAligner;
-            AlignmentData alignmentData = aligner.Align(mtdb, features);            
+            var alignmentData = aligner.Align(mtdb, features);
+            aligner.Progress += aligner_Progress;
 
             if (alignmentData != null)
             {
@@ -49,8 +54,24 @@ namespace MultiAlignRogue.Alignment
                 alignmentData.DatasetID = datasetInfo.DatasetId;
             }
 
+            aligner.Progress -= aligner_Progress;
+
             return alignmentData;
         }
+
+        #region ProgressReporting
+
+        public event EventHandler<ProgressNotifierArgs> Progress;
+
+        void aligner_Progress(object sender, ProgressNotifierArgs e)
+        {
+            if (Progress != null)
+            {
+                Progress(sender, e);
+            }
+        }
+
+        #endregion
 
     }
 }

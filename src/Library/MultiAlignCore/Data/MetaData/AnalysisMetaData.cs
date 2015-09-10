@@ -127,7 +127,7 @@ namespace MultiAlignCore.Data.MetaData
         /// <summary>
         ///     Adds a new dataset to the list.
         /// </summary>
-        /// <param name="info"></param>
+        /// <param name="inputFiles"></param>
         /// <returns>A list of added datasets</returns>
         public List<DatasetInformation> AddInputFiles(List<InputFile> inputFiles)
         {

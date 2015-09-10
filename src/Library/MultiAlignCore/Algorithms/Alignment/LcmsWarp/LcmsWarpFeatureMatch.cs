@@ -81,5 +81,10 @@ namespace MultiAlignCore.Algorithms.Alignment.LcmsWarp
             }
             return Net.CompareTo(compareFeature.Net);    
         }
+        
+        public override string ToString()
+        {
+        	return "Index=" + FeatureIndex + "; Index2=" + FeatureIndex2 + "; NET=" + Net.ToString("0.000") + "; NET2=" + Net2.ToString("0.000");
+        }
     }
 }

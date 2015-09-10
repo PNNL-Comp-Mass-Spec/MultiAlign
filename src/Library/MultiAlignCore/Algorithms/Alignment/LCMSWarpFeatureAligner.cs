@@ -144,6 +144,9 @@ namespace MultiAlignCore.Algorithms.Alignment
 
             double minMtdbnet;
             double maxMtdbnet;
+            
+            // This function will set minMtdbnet and maxMtdbnet to 0 when aligning against AMT tags from a database
+            // The values will be updated later
             alignmentProcessor.GetReferenceNetRange(out minMtdbnet, out maxMtdbnet);
 
             var minScanBaseline = int.MaxValue;
@@ -153,7 +156,7 @@ namespace MultiAlignCore.Algorithms.Alignment
 
             var filteredFeatures = FilterFeaturesByAbundance(umcLights.ToList(), alignmentOptions);
 
-            // Conver the features, and make a map, so that we can re-adjust the aligned values later.                        
+            // Convert the features, and make a map, so that we can re-adjust the aligned values later.                        
             var map = FeatureDataConverters.MapFeature(umcLights);
 
 
@@ -244,7 +247,8 @@ namespace MultiAlignCore.Algorithms.Alignment
                 MassMean = alignmentProcessor.MassMu,
                 MassStandardDeviation = alignmentProcessor.MassStd,
                 NETMean = alignmentProcessor.NetMu,
-                NETStandardDeviation = alignmentProcessor.NetStd
+                NETStandardDeviation = alignmentProcessor.NetStd,
+                baselineIsAmtDB = Options.AlignToMassTagDatabase
             };
 
             // Find out the max scan or NET value to use for the range depending on what 
@@ -260,7 +264,6 @@ namespace MultiAlignCore.Algorithms.Alignment
 
         void alignmentProcessor_Progress(object sender, ProgressNotifierArgs e)
         {
-            // OnStatus(e.Message + ", " + e.PercentComplete.ToString("0.0") + "% complete");
             OnStatus(e);
         }
 
@@ -269,6 +272,11 @@ namespace MultiAlignCore.Algorithms.Alignment
         {
             features.Sort((x, y) => x.AbundanceSum.CompareTo(y.AbundanceSum));
 
+            if (alignmentOptions.TopFeatureAbundancePercent <= 0)
+            {
+                return features;
+            }
+            
             var percent = 1 - (alignmentOptions.TopFeatureAbundancePercent / 100);
             var total = features.Count - Convert.ToInt32(features.Count * percent);
             var threshold = features[Math.Min(features.Count - 1, Math.Max(0, total))].AbundanceSum;

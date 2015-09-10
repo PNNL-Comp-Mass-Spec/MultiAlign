@@ -195,7 +195,7 @@ namespace MultiAlignTestSuite.Drawing
             bmp.Save(pngPath);
 
 
-            var heatmap = HeatmapFactory.CreateAlignedHeatmap(alignmentResults.heatScores);
+            var heatmap = HeatmapFactory.CreateAlignedHeatmap(alignmentResults.heatScores, false);
             var netHistogram = HistogramFactory.CreateHistogram(alignmentResults.netErrorHistogram, "NET Error", "NET Error");
             var massHistogram = HistogramFactory.CreateHistogram(alignmentResults.massErrorHistogram, "Mass Error", "Mass Error (ppm)");          
 

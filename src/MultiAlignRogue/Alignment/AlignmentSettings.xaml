@@ -16,12 +16,13 @@
             <RowDefinition Height="75" />
             <RowDefinition Height="30"/>
             <RowDefinition Height="80" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="25"/>
+            <RowDefinition />
+            <RowDefinition Height="32"/>
+            <RowDefinition Height="29.6"/>
         </Grid.RowDefinitions>
 
         <!-- Alignment Baseline -->
-        <GroupBox Grid.Row="0" Grid.Column="0">
+        <GroupBox Grid.Row="0" Grid.Column="0" Margin="0,0,0,29.6" Grid.RowSpan="2">
             <GroupBox.Header>
                 <TextBlock FontWeight="Bold">Reference Dataset</TextBlock>
             </GroupBox.Header>
@@ -58,9 +59,9 @@
                              Visibility="{Binding ShowMassTagProgress, Converter={StaticResource BoolToVis}}" />
             </Grid>
         </GroupBox>
-        
+
         <!-- Tolerances -->
-        <GroupBox Grid.Row="2">
+        <GroupBox Grid.Row="2" Margin="0,0.4,0,29.8" Grid.RowSpan="2">
             <GroupBox.Header>
                 <TextBlock FontWeight="Bold">Tolerances</TextBlock>
             </GroupBox.Header>
@@ -79,7 +80,7 @@
                 <Label Content="Mass Tolerance" Grid.Column="0" FontWeight="Bold" HorizontalAlignment="Center" />
                 <xctk:DoubleUpDown HorizontalContentAlignment="Center" Grid.Row="1" Grid.Column="0" Minimum="0" Increment="1.0"
                                    Value="{Binding MassTolerance, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" />
-                
+
                 <!-- Net Tolerance -->
                 <Label Content="NET Tolerance" HorizontalAlignment="Center" Grid.Row="0" Grid.Column="2" FontWeight="Bold" />
                 <xctk:DoubleUpDown HorizontalContentAlignment="Center" Grid.Row="1" Grid.Column="2" Minimum="0" Increment="0.1" Maximum="1.0"
@@ -89,7 +90,7 @@
         </GroupBox>
 
         <!-- Alignment Algorithm -->
-        <GroupBox Grid.Row="4">
+        <GroupBox Grid.Row="4" Margin="0,0.2,0,31.4" Grid.RowSpan="2">
             <GroupBox.Header>
                 <TextBlock FontWeight="Bold">Algorithm</TextBlock>
             </GroupBox.Header>
@@ -108,7 +109,7 @@
                 <Label Content="Alignment Algorithm" FontWeight="Bold" HorizontalAlignment="Center" Grid.Row="0" Grid.Column="0" />
                 <ComboBox SelectedItem="{Binding SelectedAlignmentAlgorithm}" Grid.Row="1" Grid.Column="0"
                               ItemsSource="{Binding AlignmentAlgorithms, UpdateSourceTrigger=PropertyChanged}" />
-                
+
                 <!-- Calibration Method -->
                 <Label Content="Calibration Method" FontWeight="Bold"  HorizontalContentAlignment="Center" Grid.Row="0" Grid.Column="2" />
                 <ComboBox SelectedItem="{Binding SelectedCalibrationType}" Grid.Row="1" Grid.Column="2"
@@ -116,8 +117,10 @@
             </Grid>
         </GroupBox>
 
+        <ProgressBar Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="1" Margin="0,4.6,0,1.4" Value="{Binding AlignmentProgress}"
+                             Visibility="{Binding ShowAlignmentProgress, Converter={StaticResource BoolToVis}}" />
         <!-- Buttons -->
-        <Button Content="Align Datasets" HorizontalAlignment="Left" Width="125" Command="{Binding AlignCommand}" Grid.Row="6" />
-        <Button Content="Display Alignment" Command="{Binding DisplayAlignmentCommand}" HorizontalAlignment="Right" Width="125" Grid.Row="6" />
+        <Button Content="Align Datasets" HorizontalAlignment="Left" Width="125" Command="{Binding AlignCommand}" Grid.Row="7" Margin="0,0,0,0" />
+        <Button Content="Display Alignment" Command="{Binding DisplayAlignmentCommand}" HorizontalAlignment="Right" Width="125" Grid.Row="7" Margin="0,0,0,0" />
     </Grid>
 </UserControl>

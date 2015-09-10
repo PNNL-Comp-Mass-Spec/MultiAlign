@@ -103,9 +103,9 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
             var outputData  = aligner.Align(baseline, features);
             var residuals   = outputData.ResidualData;
             
-            var heatmap        = HeatmapFactory.CreateAlignedHeatmap(outputData.HeatScores);
-            var netHistogram = HistogramFactory.CreateHistogram(outputData.NetErrorHistogram, "NET Error", "NET Error");
-            var massHistogram = HistogramFactory.CreateHistogram(outputData.MassErrorHistogram, "Mass Error", "Mass Error (ppm)");
+            var heatmap        = HeatmapFactory.CreateAlignedHeatmap(outputData.HeatScores, false);
+            var netHistogram   = HistogramFactory.CreateHistogram(outputData.NetErrorHistogram, "NET Error", "NET Error");
+            var massHistogram  = HistogramFactory.CreateHistogram(outputData.MassErrorHistogram, "Mass Error", "Mass Error (ppm)");
 
             var netResidual         = ScatterPlotFactory.CreateResidualPlot(residuals.Scan, residuals.LinearCustomNet,
                residuals.LinearNet, "NET Residuals", "Scans", "NET");
@@ -208,9 +208,9 @@ namespace MultiAlignTestSuite.Algorithms.Alignment.LCMSWarp
             var outputData      = aligner.Align(baseline, features);
             var residuals       = outputData.ResidualData;
 
-            var heatmap         = HeatmapFactory.CreateAlignedHeatmap(outputData.heatScores);
-            var netHistogram   = HistogramFactory.CreateHistogram(outputData.netErrorHistogram, "NET Error Histogram", "NET Error");
-            var massHistogram  = HistogramFactory.CreateHistogram(outputData.massErrorHistogram, "Mass Error Histogram", "Mass Error (ppm)");
+            var heatmap         = HeatmapFactory.CreateAlignedHeatmap(outputData.heatScores, false);
+            var netHistogram    = HistogramFactory.CreateHistogram(outputData.netErrorHistogram, "NET Error Histogram", "NET Error");
+            var massHistogram   = HistogramFactory.CreateHistogram(outputData.massErrorHistogram, "Mass Error Histogram", "Mass Error (ppm)");
 
             var netResidual         = ScatterPlotFactory.CreateResidualPlot(residuals.Scan, residuals.LinearCustomNet,
                residuals.LinearNet, "NET Residuals", "Scans", "NET");

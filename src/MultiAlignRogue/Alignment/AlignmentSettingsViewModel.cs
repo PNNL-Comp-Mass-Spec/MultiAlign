@@ -1,13 +1,10 @@
 ﻿using System.Windows.Navigation;
-using InformedProteomics.Backend.MassFeature;
 using InformedProteomics.Backend.Utils;
 using MultiAlign.ViewModels.Databases;
 using MultiAlign.Windows.Viewers.Databases;
 using MultiAlignCore.Algorithms.Alignment.LcmsWarp;
 using MultiAlignCore.Data.Features;
 using MultiAlignCore.Data.MassTags;
-using MultiAlignCore.Data.MetaData;
-using MultiAlignCore.IO.Features;
 using MultiAlignCore.IO.MTDB;
 using MultiAlignRogue.ViewModels;
 
@@ -50,7 +47,7 @@ namespace MultiAlignRogue.Alignment
 
         private DatasetInformationViewModel selectedBaseline;
 
-        private List<AlignmentData> alignmentInformation;
+        private readonly List<AlignmentData> alignmentInformation;
 
         public AlignmentSettingsViewModel(MultiAlignAnalysis analysis,
                                           FeatureLoader featureCache,
@@ -63,7 +60,7 @@ namespace MultiAlignRogue.Alignment
             this.Datasets = datasets;
             this.alignmentWindowFactory = alignmentWindowFactory ?? new AlignmentViewFactory();
             this.progress = progressReporter ?? new Progress<int>();
-            this.aligner = new LCMSFeatureAligner();
+            this.aligner = new LCMSFeatureAligner();            
             this.builder = new AlgorithmBuilder();
             this.CalibrationOptions = new ObservableCollection<AlignmentType>(Enum.GetValues(typeof(AlignmentType)).Cast<AlignmentType>());
             this.AlignmentAlgorithms = new ObservableCollection<FeatureAlignmentType>(
@@ -112,6 +109,10 @@ namespace MultiAlignRogue.Alignment
         public ObservableCollection<DatasetInformationViewModel> Datasets { get; private set; }
 
         private bool shouldAlignToBaseline;
+
+        /// <summary>
+        /// True when aligning to a baseline dataset; false when aligning to an AMT tag database
+        /// </summary>
         public bool ShouldAlignToBaseline
         {
             get
@@ -149,11 +150,13 @@ namespace MultiAlignRogue.Alignment
                     if (value == null)
                     {
                         this.analysis.MetaData.BaselineDataset = null;
+                        this.analysis.Options.AlignmentOptions.UsePromiscuousPoints = true;
                     }
                     else
                     {
                         this.selectedBaseline = value;
                         this.analysis.MetaData.BaselineDataset = value.Dataset;
+                        this.analysis.Options.AlignmentOptions.UsePromiscuousPoints = true;
                     }
 
                     this.AlignCommand.RaiseCanExecuteChanged();
@@ -189,7 +192,7 @@ namespace MultiAlignRogue.Alignment
             get { return this.massTagLoadProgress; }
             set
             {
-                if (this.massTagLoadProgress != value)
+                if (Math.Abs(this.massTagLoadProgress - value) > float.Epsilon)
                 {
                     this.massTagLoadProgress = value;
                     this.RaisePropertyChanged();
@@ -238,13 +241,90 @@ namespace MultiAlignRogue.Alignment
             }
         }
 
+        // ToDo: Add this to the GUI
+        public int AlignmentContractionFactor
+        {
+            get { return this.analysis.Options.AlignmentOptions.ContractionFactor; }
+            set
+            {
+                if (this.analysis.Options.AlignmentOptions.ContractionFactor != value)
+                {
+                    this.analysis.Options.AlignmentOptions.ContractionFactor = value;
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
+
+        // ToDo: Add this to the GUI
+        public int AlignmentMinMsMsObservations
+        {
+            get { return this.analysis.Options.AlignmentOptions.MassTagObservationCount; }
+            set
+            {
+                if (this.analysis.Options.AlignmentOptions.MassTagObservationCount != value)
+                {
+                    this.analysis.Options.AlignmentOptions.MassTagObservationCount = value;
+                    this.RaisePropertyChanged();
+                }
+            }
+        }  
+
+        // ToDo: Add this to the GUI
+        public int AlignmentNumTimeSections
+        {
+            get { return this.analysis.Options.AlignmentOptions.NumTimeSections; }
+            set
+            {
+                if (this.analysis.Options.AlignmentOptions.NumTimeSections != value)
+                {
+                    this.analysis.Options.AlignmentOptions.NumTimeSections = value;
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
+        
+
+        private double alignmentProgress;
+        public double AlignmentProgress
+        {
+            get { return this.alignmentProgress; }
+            set
+            {
+                if (Math.Abs(this.alignmentProgress - value) > float.Epsilon)
+                {
+                    this.alignmentProgress = value;
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
+
+        private bool showAlignmentProgress;
+
+        public bool ShowAlignmentProgress
+        {
+            get { return this.showAlignmentProgress; }
+            set
+            {
+                if (this.showAlignmentProgress != value)
+                {
+                    this.showAlignmentProgress = value;
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
+
+        void aligner_Progress(object sender, ProgressNotifierArgs e)
+        {
+            AlignmentProgress = e.PercentComplete;
+        }
+        
         public async void AsyncAlign()
         {
-            if (ShouldAlignToBaseline == true && this.SelectedBaseline != null)
+            if (ShouldAlignToBaseline && this.SelectedBaseline != null)
             {
                 await Task.Run(() => this.AlignToBaseline());
             }
-            else if (ShouldAlignToAMT == true)
+            else if (ShouldAlignToAMT)
             {
                 await Task.Run(() => this.AlignToBaseline());
             }
@@ -253,16 +333,32 @@ namespace MultiAlignRogue.Alignment
 
         private void AlignToBaseline()
         {
+
+            // Use Promiscuous points when aligning to an AMT tag database
+            // Do not use Promiscuous points when aligning to a baseline dataset
+            this.analysis.Options.AlignmentOptions.UsePromiscuousPoints = !ShouldAlignToBaseline;
+
+            // Flag whether we are aligning to an AMT tag database
+            this.analysis.Options.AlignmentOptions.LCMSWarpOptions.AlignToMassTagDatabase = !ShouldAlignToBaseline;
+            
+            // Show the progress bar
+            ShowAlignmentProgress = true;
+
             //Update algorithms and providers
             this.featureCache.Providers = this.analysis.DataProviders;
             this.algorithms = this.builder.GetAlgorithmProvider(this.analysis.Options);
+
+            this.algorithms.DatabaseAligner.Progress += aligner_Progress;
+            this.algorithms.DatasetAligner.Progress += aligner_Progress;
+
             this.aligner.m_algorithms = this.algorithms;
-            List<UMCLight> baselineFeatures = new List<UMCLight>();
+            var baselineFeatures = new List<UMCLight>();
+
             if (ShouldAlignToBaseline)
             {
                 baselineFeatures = this.featureCache.Providers.FeatureCache.FindByDatasetId(this.selectedBaseline.DatasetId);
                 this.SelectedBaseline.DatasetState = DatasetInformationViewModel.DatasetStates.Aligning;
-                var priorAlignment = from x in this.alignmentInformation where x.DatasetID == this.selectedBaseline.DatasetId select x;
+                var priorAlignment = (from x in this.alignmentInformation where x.DatasetID == this.selectedBaseline.DatasetId select x).ToList();
                 if (priorAlignment.Any())
                 {
                     this.alignmentInformation.Remove(priorAlignment.Single());
@@ -288,17 +384,23 @@ namespace MultiAlignRogue.Alignment
                 }
 
                 IList<UMCLight> features = this.featureCache.Providers.FeatureCache.FindByDatasetId(file.DatasetId);
-                AlignmentData alignment = new AlignmentData();
+                AlignmentData alignment;
+
                 if (ShouldAlignToBaseline)
-                {
+                {                 
+                    // Aligning to a baseline dataset
                     alignment = this.aligner.AlignToDataset(ref features, file.Dataset, baselineFeatures);
+                    alignment.baselineIsAmtDB = false;
                 }
                 else
                 {
+                    // Aligning to a database
                     alignment = this.aligner.AlignToDatabase(ref features, file.Dataset, this.analysis.MassTagDatabase);
+                    alignment.baselineIsAmtDB = true;
                 }
+
                 //Check if there is information from a previous alignment for this dataset. If so, replace it. If not, just add the new one.
-                var priorAlignment = this.alignmentInformation.Where(x => x.DatasetID == alignment.DatasetID);
+                var priorAlignment = (this.alignmentInformation.Where(x => x.DatasetID == alignment.DatasetID)).ToList();
                 if (priorAlignment.Any())
                 {
                     this.alignmentInformation.Remove(priorAlignment.Single());
@@ -308,17 +410,19 @@ namespace MultiAlignRogue.Alignment
                 {
                     this.alignmentInformation.Add(alignment);
                 }
-
+             
                 this.featureCache.CacheFeatures(features);
                 file.DatasetState = DatasetInformationViewModel.DatasetStates.Aligned;
                 ThreadSafeDispatcher.Invoke(() => this.AlignCommand.RaiseCanExecuteChanged());
                 ThreadSafeDispatcher.Invoke(() => this.DisplayAlignmentCommand.RaiseCanExecuteChanged());
             }
+
             if (ShouldAlignToBaseline)
             {
                 this.SelectedBaseline.DatasetState = DatasetInformationViewModel.DatasetStates.Aligned;
             }
 
+            ShowAlignmentProgress = false;
         }
 
         public DmsDatabaseServerViewModel SelectedDatabaseServer { get; set; }
