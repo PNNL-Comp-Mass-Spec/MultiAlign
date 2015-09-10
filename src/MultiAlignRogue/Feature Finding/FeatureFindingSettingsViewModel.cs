@@ -42,6 +42,10 @@ namespace MultiAlignRogue.Feature_Finding
 
         private readonly Dictionary<DatasetInformation, IList<UMCLight>> features;
 
+        private double totalProgress;
+
+        private bool shouldShowProgress;
+
         public FeatureFindingSettingsViewModel(
                                                MultiAlignAnalysis analysis,
                                                FeatureLoader featureCache,
@@ -457,6 +461,32 @@ namespace MultiAlignRogue.Feature_Finding
             }
         }
 
+        public double TotalProgress
+        {
+            get { return this.totalProgress; }
+            set
+            {
+                if (this.totalProgress != value)
+                {
+                    this.totalProgress = value;
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
+
+        public bool ShouldShowProgress
+        {
+            get { return this.shouldShowProgress; }
+            set
+            {
+                if (this.shouldShowProgress != value)
+                {
+                    this.shouldShowProgress = value;
+                    this.RaisePropertyChanged();
+                }
+            }
+        }
+
         public async Task LoadMSFeaturesAsync()
         {
             await Task.Run(() => this.LoadFeatures());
@@ -464,6 +494,7 @@ namespace MultiAlignRogue.Feature_Finding
 
         private void LoadFeatures()
         {
+            this.ShouldShowProgress = true;
             this.featureCache.Providers = this.analysis.DataProviders;
             var selectedFiles = this.Datasets.Where(file => !file.DoingWork).Where(ds => ds.IsSelected).ToList();
             foreach (var file in selectedFiles)
@@ -473,10 +504,20 @@ namespace MultiAlignRogue.Feature_Finding
                 ThreadSafeDispatcher.Invoke(() => this.FindMSFeaturesCommand.RaiseCanExecuteChanged());
             }
 
+            IProgress<ProgressData> totalProgress = new Progress<ProgressData>(pd => this.TotalProgress = pd.Percent);
+
+            int i = 0;
             foreach (var file in selectedFiles)
             {
                 var progData = new ProgressData { IsPartialRange = true, MaxPercentage = 30 };
-                var progress = new Progress<ProgressData>(pd => file.Progress = progData.UpdatePercent(pd.Percent).Percent);
+                var progress = new Progress<ProgressData>(pd =>
+                {
+                    file.Progress = progData.UpdatePercent(pd.Percent).Percent;
+                    totalProgress.Report(new ProgressData
+                    {
+                        Percent = ((100.0 * i) / selectedFiles.Count) + (file.Progress / selectedFiles.Count)
+                    });
+                });
 
                 var features = this.featureCache.LoadDataset(
                                                     file.Dataset,
@@ -510,7 +551,9 @@ namespace MultiAlignRogue.Feature_Finding
                 file.DatasetState = DatasetInformationViewModel.DatasetStates.FeaturesFound;
                 ThreadSafeDispatcher.Invoke(() => this.FindMSFeaturesCommand.RaiseCanExecuteChanged());
                 file.Progress = 0;
+                i++;
             }
+            this.ShouldShowProgress = false;
         }
 
         public async Task PlotMSFeatures(bool showAlignedFeatures)
